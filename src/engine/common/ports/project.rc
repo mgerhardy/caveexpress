@@ -1,0 +1,49 @@
+#include <winresrc.h>
+
+#ifdef PROJECT_REVISION
+# define VER_FILEVERSION_STR PROJECT_REVISION
+#else
+# define VER_FILEVERSION_STR ""
+#endif
+
+1 RT_MANIFEST DISCARDABLE "contrib/installer/windows/exe.manifest"
+1 ICON DISCARDABLE "contrib/icon.ico"
+
+#define ID_GDF_XML __GDF_XML
+ID_GDF_XML DATA "contrib/installer/windows/gameexplorer.xml"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1,6,0,0
+FILEFLAGSMASK 0x17L
+#ifdef DEBUG
+# define VER_SPECIAL_STR "Debug"
+	FILEFLAGS 0x3L
+#else
+# define VER_SPECIAL_STR "Release"
+	FILEFLAGS 0x2L
+#endif
+FILEOS 0x4L
+FILETYPE 0x1L
+FILESUBTYPE 0x0L
+BEGIN
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "040004b0"
+		BEGIN
+			VALUE "Comments", "CaveExpress"
+			VALUE "CompanyName", "CaveProductions"
+			VALUE "FileDescription", "caveexpress"
+			VALUE "FileVersion", VER_FILEVERSION_STR
+			VALUE "InternalName", "caveexpress"
+			VALUE "LegalCopyright", "Copyright (C) 2013-2014"
+			VALUE "OriginalFilename", "caveexpress.exe"
+			VALUE "ProductName", "Cave Express"
+			VALUE "ProductVersion", "1.6"
+			VALUE "SpecialBuild", VER_SPECIAL_STR
+		END
+	END
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x400, 1200
+	END
+END

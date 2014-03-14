@@ -1,0 +1,20 @@
+Version 1.5
+** put image 1024x768 **
+** record video **
+
+The new version of CaveExpress is now available. It includes some bugfixes and a lot of new features.
+
+Let's talk about the bugs first:
+A very annoying bug was fixed that could lead to a sliding mastodon while it was dazed by a stone.
+In addition to the linux versions are no longer linked against the most recent glibc version - you should now be able to run the game on most of the older distributions, too.
+Another SDL2 related bug was fixed that could cause some OpenGL drivers to go nuts (on Android GLES2 devices it for example caused a red screen rendering).
+
+The biggest changes (besides the bug fixes) are that the multiplayer menu and lobby was improved a lot.
+For the multiplayer part I also added a crashed player animation that is of course also part of the singleplayer mode.
+Most noticeable to player is maybe the water physic change. The items are no longer jumping out of the water and the diving into the water is more realistic now.
+A very minor thing but worth a few words is maybe that the 'continue campaign' button is no longer in the main menu - it's now in the campaign overview menu.
+Last but not least I've put some work into the UI joystick support. You can now use the analog stick to scroll through the menus.
+
+I hope you enjoy playing the new release as I did creating it.
+
+The next release will again contain a new campaign with fresh maps. The usual bugfixes as well as an improved map editor.

@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<GameDefinitionFile
+	xmlns:baseTypes="urn:schemas-microsoft-com:GamesExplorerBaseTypes.v1"
+	xmlns="urn:schemas-microsoft-com:GameDescription.v1">
+	<GameDefinition gameID="{TODO}">
+		<Name>CaveExpress</Name>
+		<Description>CaveExpress is a classic 2D platformer with physics-based gameplay
+			and dozens of levels. Master your pedal-powered flying machine to
+			pick up packages from your cave-dwelling clients and drop them off
+			at the collection point. But beware! Mighty mastodons, terrifying
+			pterodactyls and others would rather see you extinct.</Description>
+		<ReleaseDate>2013-08-01</ReleaseDate>
+		<Genres>
+			<Genre>Platformer</Genre>
+		</Genres>
+		<Version>
+			<VersionFile path="caveexpress.exe" />
+		</Version>
+		<WindowsSystemPerformanceRating
+			minimum="1.0" recommended="2.0" />
+		<Developers>
+			<Developer URI="http://www.caveproductions.org">CaveProductions</Developer>
+		</Developers>
+		<Publishers>
+			<Publisher URI="http://www.caveproductions.org">CaveProductions</Publisher>
+		</Publishers>
+		<GameExecutables>
+			<GameExecutable path="caveexpress.exe" />
+		</GameExecutables>
+		<ExtendedProperties>
+			<GameTasks>
+				<Play>
+					<Primary>
+						<FileTask path="caveexpress.exe" arguments="" />
+					</Primary>
+					<Task index="1" name="Editor">
+						<FileTask path="caveexpress.exe" arguments="-ui_push editor" />
+					</Task>
+				</Play>
+				<Support>
+					<Task index="0" name="CaveExpress Website">
+						<URLTask Link="http://www.caveproductions.org" />
+					</Task>
+				</Support>
+			</GameTasks>
+		</ExtendedProperties>
+	</GameDefinition>
+</GameDefinitionFile>

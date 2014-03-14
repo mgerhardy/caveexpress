@@ -1,0 +1,123 @@
+#include "UINodeMapFingerControl.h"
+#include "engine/client/ui/windows/UIWindow.h"
+#include "caveexpress/client/ui/nodes/UINodeMap.h"
+#include "engine/client/ClientMap.h"
+#include "engine/common/ConfigManager.h"
+#include "engine/common/Logger.h"
+
+UINodeMapFingerControl::UINodeMapFingerControl (IFrontend *frontend, UINodeMap *mapNode) :
+		UINode(frontend), _map(mapNode->getMap()), _finger(-1), _pressX(0), _pressY(0), _moveX(0), _moveY(0), _lastMoveX(0), _lastMoveY(0)
+{
+	setPos(mapNode->getX(), mapNode->getY());
+	setSize(mapNode->getWidth(), mapNode->getHeight());
+}
+
+UINodeMapFingerControl::~UINodeMapFingerControl ()
+{
+}
+
+void UINodeMapFingerControl::removeFocus ()
+{
+	UINode::removeFocus();
+	_finger = -1;
+	_lastMoveX = _lastMoveY = _moveX = _moveY = 0;
+	_map.resetAcceleration();
+}
+
+bool UINodeMapFingerControl::onPush ()
+{
+	_finger = -1;
+	_lastMoveX = _lastMoveY = _moveX = _moveY = 0;
+	return UINode::onPush();
+}
+
+void UINodeMapFingerControl::update (uint32_t deltaTime)
+{
+	UINode::update(deltaTime);
+	if (!isPressed()) {
+		return;
+	}
+
+	if (_lastMoveX == _moveX && _lastMoveY == _moveY) {
+		return;
+	}
+
+	_map.setAcceleration(_moveX, _moveY);
+	_lastMoveX = _moveX;
+	_lastMoveY = _moveY;
+	_moveX = _moveY = 0;
+}
+
+bool UINodeMapFingerControl::isActive () const
+{
+	return _map.isStarted() && !_map.isPause();
+}
+
+bool UINodeMapFingerControl::onFingerPress (int64_t finger, uint16_t x, uint16_t y)
+{
+	UINode::onFingerPress(finger, x, y);
+
+	if (_map.isPause())
+		return false;
+
+	if (isPressed()) {
+		return _map.secondFinger();
+	}
+
+	const ClientPlayer* player = _map.getPlayer();
+	if (player != nullptr) {
+		const int playerClickGap = 0;
+		int px, py;
+		int pw, ph;
+		player->getScreenSize(pw, ph);
+		player->getScreenPos(px, py);
+
+		px -= playerClickGap;
+		py -= playerClickGap;
+
+		pw += playerClickGap;
+		ph += playerClickGap;
+
+		if (x >= px && x < px + pw && y >= py && y < py + ph) {
+			return _map.playerClickedByFinger();
+		}
+	}
+
+	_lastMoveX = _lastMoveY = -1;
+	_moveX = _moveY = 0;
+	_finger = finger;
+	_pressX = x;
+	_pressY = y;
+
+	return true;
+}
+
+bool UINodeMapFingerControl::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
+{
+	const bool val = UINode::onFingerRelease(finger, x, y);
+
+	if (_finger == finger) {
+		_finger = -1;
+		_lastMoveX = _lastMoveY = _moveX = _moveY = 0;
+		_map.resetAcceleration();
+		return true;
+	}
+
+	return val;
+}
+
+bool UINodeMapFingerControl::onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy)
+{
+	UINode::onFingerMotion(finger, x, y, dx, dy);
+	if (_map.isPause()) {
+		return false;
+	}
+
+	if (_finger != finger)
+		return false;
+
+	_moveX = dx;
+	_moveY = dy;
+
+	return true;
+}

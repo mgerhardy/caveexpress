@@ -1,0 +1,696 @@
+#! /bin/sh
+
+ARGS=$*
+
+#set -e
+#set -x
+
+echo "" > config.log
+CONFIG_H=config.h
+MAKEFILE_LOCAL=Makefile.local
+
+APPNAME=caveexpress
+APPNAME_FULL=CaveExpress
+VERSION=1.6
+VERSION_CODE=21
+
+DEBUG=1
+HD_VERSION=
+PROFILING=
+PREFIX=/usr/local
+PKGDATADIR=
+PKGBINDIR=
+PKGLIBDIR=
+MODE=
+CROSS=
+USE_CCACHE=
+HAVE_NCURSES_H=no
+STATIC=
+STATIC_SDL=
+DISABLE_DEPENDENCY_TRACKING=
+DEFAULT_COMPILER_CC=cc
+DEFAULT_COMPILER_CXX=c++
+
+HOST_OS=`uname | sed -e s/_.*// | tr '[:upper:]' '[:lower:]'`
+HOST_ARCH=`dpkg --print-architecture`
+TARGET_OS=${HOST_OS}
+
+if [ "${HOST_OS}" = "sunos" ] || [ "${HOST_OS}" = "darwin" ]; then
+	TARGET_ARCH=`uname -p | sed -e s/i.86/i386/`
+else
+	TARGET_ARCH=`uname -m | sed -e s/i.86/i386/`
+fi
+
+STEAM_ROOT=/home/mattn/Downloads/steam-runtime-sdk_2013-09-05
+STEAM_RUNTIME_HOST_ARCH=${HOST_ARCH}
+
+add_line_to_makefile_local() {
+	makefile_local_data="${makefile_local_data}"'
+'"$1"
+}
+
+error() {
+	echo $@
+	exit 1
+}
+
+# @param 1 The variable name
+# @param 2 The text that is written to the console on success
+# @param 3 The text that is written to the console on failure
+# @param 4 If 'yes' is given here, the variable must be set in order to let configure continue
+add_to_makefile_local_quote() {
+	VALUE=`get_var $1`
+	if [ -n "$VALUE" ]; then
+		# these are internal make variables and are already set, so don't use ?= here
+		if [ "$1" = "CC" ] || [ "$1" = "CXX" ]; then
+			add_line_to_makefile_local "$1 := \"$VALUE\""
+		else
+			add_line_to_makefile_local "$1 ?= \"$VALUE\""
+		fi
+		[ -n "$2" ] && echo $2
+	else
+		add_line_to_makefile_local "# $1 ?= \"$VALUE\""
+		[ -n "$3" ] && echo $3
+		[ "$4" = "yes" ] && exit 1
+	fi
+}
+
+# @param 1 The variable name
+# @param 2 The text that is written to the console on success
+# @param 3 The text that is written to the console on failure
+# @param 4 If 'yes' is given here, the variable must be set in order to let configure continue
+add_to_makefile_local() {
+	VALUE=`get_var $1`
+	if [ -n "$VALUE" ]; then
+		# these are internal make variables and are already set, so don't use ?= here
+		if [ "$1" = "CC" ] || [ "$1" = "CXX" ]; then
+			add_line_to_makefile_local "$1 := $VALUE"
+		else
+			add_line_to_makefile_local "$1 ?= $VALUE"
+		fi
+		[ -n "$2" ] && echo $2
+	else
+		add_line_to_makefile_local "# $1 ?= $VALUE"
+		[ -n "$3" ] && echo $3
+		[ "$4" = "yes" ] && exit 1
+	fi
+}
+
+add_line_to_config_h() {
+	config_h_data="${config_h_data}"'
+'"$1"
+}
+
+add_to_config_h_quote() {
+	VALUE=`get_var $1`
+	if [ -n "$VALUE" ] && [ "$VALUE" != "no" ]; then
+		add_line_to_config_h "#define $1 \"$VALUE\""
+		[ -n "$2" ] && echo $2
+	else
+		add_line_to_config_h "/* #define $1 \"$VALUE\" */"
+		[ -n "$3" ] && echo $3
+		[ "$4" = "yes" ] && exit 1
+	fi
+}
+
+add_to_config_h() {
+	VALUE=`get_var $1`
+	if [ -n "$VALUE" ] && [ "$VALUE" != "no" ]; then
+		add_line_to_config_h "#define $1 $VALUE"
+		[ -n "$2" ] && echo $2
+	else
+		add_line_to_config_h "/* #define $1 $VALUE */"
+		[ -n "$3" ] && echo $3
+		[ "$4" = "yes" ] && exit 1
+	fi
+}
+
+config_h() {
+	add_to_config_h DEBUG "Debug build"
+	add_to_config_h PARANOID "Enable paranoid build"
+	add_to_config_h_quote APPNAME "Application name"
+	add_to_config_h_quote APPNAME_FULL "Full application name"
+	add_to_config_h_quote VERSION
+	add_to_config_h_quote HD_VERSION
+	add_to_config_h_quote VERSION_CODE
+	add_to_config_h_quote PKGDATADIR "Setting custom data directory"
+	add_to_config_h_quote PKGLIBDIR "Setting custom library directory"
+	add_to_config_h_quote LOCALEDIR "Setting custom locale directory"
+}
+
+makefile_local() {
+	add_to_makefile_local DEBUG "Debug build"
+	add_to_makefile_local APPNAME "Application name: ${APPNAME}"
+	add_to_makefile_local APPNAME_FULL "Full application name: ${APPNAME_FULL}"
+	add_to_makefile_local VERSION
+	add_to_makefile_local VERSION_CODE
+	add_to_makefile_local PROFILING "Enable profiling"
+	add_to_makefile_local STATIC "Enable static linking"
+	add_to_makefile_local STATIC_SDL "Enable static SDL linking"
+	add_to_makefile_local HD_VERSION "Enable HD version"
+	add_to_makefile_local DISABLE_DEPENDENCY_TRACKING "Disable dependency tracking"
+	add_to_makefile_local TARGET_OS "Compile for ${TARGET_OS}"
+	add_to_makefile_local TARGET_ARCH "Compile for ${TARGET_ARCH}"
+	add_to_makefile_local MODE "Compile in ${MODE} mode"
+	add_to_makefile_local HOST_OS "Compile on ${HOST_OS}"
+	add_to_makefile_local HOST_ARCH "Compile on ${HOST_ARCH}"
+	add_to_makefile_local USE_CCACHE "Use ccache" "Disable ccache"
+	add_to_makefile_local_quote CC "Found cc ${CC}"
+	add_to_makefile_local_quote CXX "Found cxx ${CXX}"
+	add_to_makefile_local_quote CROSS "Using tools prefix ${CROSS}"
+	add_to_makefile_local_quote PKGBINDIR "Using bindir ${PKGBINDIR}"
+	add_to_makefile_local_quote PKGDATADIR "Using datadir ${PKGDATADIR}"
+	add_to_makefile_local_quote PKGLIBDIR "Using libdir ${PKGLIBDIR}"
+	add_to_makefile_local_quote PREFIX "Using prefix ${PREFIX}"
+	add_to_makefile_local_quote DISABLE_SDL_RENDERER "Disable SDL_Renderer" "Use SDL_Renderer"
+
+	echo "Build modules:"
+	for i in `get_modules`; do
+		add_to_makefile_local ${i}_DISABLE
+		if [ "`get_var ${i}_DISABLE`" = "yes" ]; then
+			echo "Disable $i"
+		else
+			echo "Build $i"
+		fi
+	done
+}
+
+check_compilation_cc() {
+	SOURCE=`cat << EOF
+#include <stdlib.h>
+#include <stdio.h>
+${2}
+int main (int argc, char *argv[]) {
+	${1}
+	return EXIT_SUCCESS;
+}
+EOF`
+	( echo "$SOURCE" | ${CROSS}${CXX} ${3} ${CCFLAGS} ${CXXFLAGS} ${CFLAGS} -o /dev/null -xc++ - 2>> config.log ) && echo "1" || echo ""
+}
+
+check_compilation() {
+	HAVE=$1
+	VALUE=`get_var $HAVE`
+	if [ "$VALUE" != "no" ]; then
+		set_var $HAVE `check_compilation_cc "${4}" "${5}" "${6}"`
+		add_to_config_h $HAVE "$2" "$3"
+		add_to_makefile_local $HAVE
+	else
+		add_to_config_h $HAVE "$2" "$3"
+	fi
+}
+
+check_header_cc() {
+	SOURCE=`cat << EOF
+#include <stdlib.h>
+#include <stdio.h>
+#include <${1}>
+EOF`
+	if [ -n "${2}" ]; then
+		( echo "$SOURCE" | ${CROSS}${CXX} ${CCFLAGS} ${CXXFLAGS} ${CFLAGS} $(${CROSS}pkg-config --cflags ${2} 2> /dev/null) -o /dev/null -xc++ -c - 2>> config.log ) && echo "1" || echo ""
+	else
+		( echo "$SOURCE" | ${CROSS}${CXX} ${CCFLAGS} ${CXXFLAGS} ${CFLAGS} -o /dev/null -xc++ -c - 2>> config.log ) && echo "1" || echo ""
+	fi
+}
+
+check_header() {
+	HEADER=$1
+	HAVE=HAVE_`echo ${HEADER%.*} | sed 's,/,_,g' | tr '[a-z]' '[A-Z]'`_H
+	VALUE=`get_var $HAVE`
+	if [ "$VALUE" != "no" ]; then
+		if [ "$VALUE" != "internal" ]; then
+			set_var $HAVE `check_header_cc $1 $2`
+			add_to_config_h $HAVE "Found $1" "Could not find $1" $2
+			add_to_makefile_local $HAVE
+		else
+			set_var $HAVE ""
+			add_to_config_h $HAVE "" "Use embedded $1" $2
+			add_to_makefile_local $HAVE
+		fi
+	else
+		set_var $HAVE ""
+		add_to_config_h $HAVE "Found $1" "Disable $1"
+		add_to_makefile_local $HAVE
+	fi
+}
+
+check_header_bundled() {
+	HEADER=$1
+	PACKAGE=$2
+	VAR="WITH_EMBEDDED_${PACKAGE}"
+	VALUE=`get_var $VAR`
+	if [ -n "$VALUE" ]; then
+		HEADER=${HEADER%.*}
+		HEADER="`echo ${HEADER} | sed 's,/,_,g'`"
+		HEADER="`echo ${HEADER} | sed 's,\.,_,g' | sed 's,-,_,g' | tr '[a-z]' '[A-Z]'`"
+
+		HAVE=HAVE_${HEADER}_H
+		set_var $HAVE "internal"
+	fi
+	check_header "${1}" "${2}"
+}
+
+check_headers() {
+	check_header_bundled "SDL.h" "sdl2"
+	check_header_bundled "SDL_image.h" "SDL2_image"
+	check_header_bundled "SDL_mixer.h" "SDL2_mixer"
+	check_header_bundled "SDL_net.h" "SDL2_net"
+	check_header "SDL_rwhttp.h" "SDL_rwhttp"
+	check_header "png.h" "libpng"
+	check_header "ncurses.h" "ncurses"
+	check_header "vorbis/vorbisfile.h" "vorbisfile"
+	check_header "vorbis/codec.h" "vorbis"
+	check_header "syslog.h"
+	check_header "execinfo.h"
+	check_header "ogg/ogg.h" "ogg"
+	check_header_bundled "sqlite3.h" "sqlite3"
+	check_header_bundled "tinyxml2.h" "tinyxml2"
+}
+
+check_versions() {
+	check_compilation HAVE_CLOCKGETTIME "clock_gettime without -rt", "skip clock_gettime", "timespec temp;clock_gettime(CLOCK_REALTIME, &temp);" "#include <time.h>" "-lrt"
+}
+
+check_compiler() {
+	# TODO Implement compiler check
+	CC=${CC:-${DEFAULT_COMPILER_CC}}
+	CXX=${CXX:-${DEFAULT_COMPILER_CXX}}
+
+	if [ "${TARGET_OS}" = "mingw32" ] && [ "${HOST_OS}" != "mingw32" ]; then
+		CROSS="i686-pc-mingw32-"
+		CC=gcc
+	fi
+
+	if [ "${TARGET_OS}" = "mingw64" ] && [ "${HOST_OS}" != "mingw64" ]; then
+		CROSS="i686-w64-mingw32-"
+		CC=gcc
+	fi
+
+	if [ "${TARGET_OS}" = "mingw64_64" ] && [ "${HOST_OS}" != "mingw64_64" ]; then
+		CROSS="x86_64-w64-mingw32-"
+		CC=gcc
+	fi
+
+	if [ -n "${CROSS}" ]; then
+		command -v "${CROSS}${CC}" 2>> config.log >> config.log
+		if [ $? -eq 0 ]; then
+			echo "Found ${CROSS}${CC} in the path"
+		else
+			echo "Cross compiling, make sure that ${CROSS}${CC} is in your path"
+		fi
+		command -v "${CROSS}pkg-config" 2>> config.log >> config.log
+		if [ $? -eq 0 ]; then
+			echo "Found ${CROSS}pkg-config in the path"
+		else
+			echo "Cross compiling, make sure that ${CROSS}pkg-config is in your path"
+		fi
+	fi
+
+	echo "use c compiler: ${CROSS}${CC}"
+	echo "use c++ compiler: ${CROSS}${CXX}"
+
+	${CROSS}${CC} --help > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		error "Could not find the c compiler: ${CROSS}${CC}"
+	fi
+	${CROSS}${CXX} --help > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		error "Could not find the c++ compiler: ${CROSS}${CXX}"
+	fi
+}
+
+usage() {
+	echo "Usage: $0"
+	echo " --help                     show this help message"
+	echo " --enable-ccache            use ccache for building"
+	echo " --enable-profiling         activates profiling"
+	echo " --enable-release           build with optimizations"
+	echo " --enable-static            enable static linking"
+	echo " --enable-static-sdl        enable static linking for the sdl libs only"
+	echo " --enable-hd                enable the HD version of the game (e.g. without ads)"
+	echo
+	echo " --with-ncurses             use ncurses for the server console"
+	echo " --with-embedded-sqlite3    use the copy of sqlite3 bundled with the source"
+	echo " --with-embedded-tinyxml2   use the copy of tinyxml2 bundled with the source"
+	echo " --with-embedded-sdl2       use the copy of SDL bundled with the source"
+	echo " --with-embedded-SDL2_mixer use the copy of SDL_mixer bundled with the source"
+	echo " --with-embedded-SDL2_image use the copy of SDL_image bundled with the source"
+	echo " --with-embedded-SDL2_net   use the copy of SDL_net bundled with the source"
+	echo
+	echo " --target-os=               specify the target os"
+	(cd build/platforms; for i in *.mk; do echo "  * ${i%.mk}"; done)
+	echo
+	echo " --bindir=                  path for the ufoai binaries"
+	echo " --datadir=                 path for the ufoai game data"
+	echo " --libdir=                  path for the ufoai shared objects"
+	echo " --prefix=                  prefix for directories"
+	echo
+	echo " --disable-*                specify which target should not get built"
+	echo " --enable-*                 specify which target should get built"
+	echo " --enable-only-*            disable all other targets"
+	(cd build/modules; for i in *.mk; do echo "  * ${i%.mk}"; done)
+	echo
+	echo " --app=                     the game to compile"
+	echo "  * caveexpress             (the default)"
+	echo "  * cavepacker"
+	echo " --disable-dependency-tracking"
+	echo " --disable-sdl-renderer     disable the SDL renderer frontend"
+	echo " --disable-sdl-rwhttp       disable the SDL_rwhttp use"
+	echo " --clang                    build with clang"
+	echo " --gcc                      build with gcc (default)"
+	exit 1
+}
+
+make_var() {
+	echo "$1" | sed 's/-/_/g' | sed 's/\./_/g'
+}
+
+set_var() {
+	eval `make_var "$1"`=\""$2"\"
+}
+
+get_var() {
+	eval echo \${`make_var "$1"`}
+}
+
+get_modules() {
+	(cd build/modules; for i in *.mk; do echo "${i%.mk}"; done)
+}
+
+check_path_characters() {
+	# Find out where configure is (in what dir)
+	ROOT_DIR="`dirname $0`"
+	# For MSYS/MinGW we want to know the FULL path. This as that path is generated
+	# once you call an outside binary. Having the same path for the rest is needed
+	# for dependency checking.
+	# pwd -W returns said FULL path, but doesn't exist on others so fall back.
+	ROOT_DIR="`cd $ROOT_DIR && (pwd -W 2>/dev/null || pwd 2>/dev/null)`"
+
+	if [ -n "`echo \"$ROOT_DIR\" | grep '[^-\w\/\\\.:]~?'`" ]; then
+		echo "WARNING: The path contains a non-alphanumeric character that might cause"
+		echo "         failures in subsequent build stages. Any failures with the build"
+		echo "         will most likely be caused by this."
+		echo "         $ROOT_DIR"
+	fi
+	if [ -n "`echo \"$ROOT_DIR\" | grep '[\(\)]'`" ]; then
+		echo "ERROR: The path contains a square character that cause"
+		echo "       failures in subsequent build stages!!!"
+		echo "       $ROOT_DIR"
+		exit 1
+	fi
+}
+
+check_ccache() {
+	if [ "$USE_CCACHE" = "1" ]; then
+		ccache --help 2>> config.log >> config.log
+		if [ $? -ne 0 ]; then
+			USE_CCACHE=0
+		fi
+	fi
+}
+
+check_program() {
+	BINARY=$1
+	TOOL=${2:-${BINARY}}
+	MANDATORY=${3:-0}
+	HAVE=PROGRAM_`echo ${BINARY%.*} | sed 's,/,_,g' | tr '[a-z]' '[A-Z]'`
+	command -v "${BINARY}" 2>> config.log >> config.log
+	if [ $? -eq 0 ]; then
+		set_var $HAVE "$1"
+	fi
+	add_to_makefile_local $HAVE "Found ${BINARY} from ${TOOL}" "Could not find ${BINARY} from ${TOOL}" $MANDATORY
+}
+
+check_programs() {
+	check_program convert imagemagicks
+	check_program TexturePacker
+	check_program pngcrush
+}
+
+check_target_os() {
+	local FOUND=0
+	for i in build/platforms/*.mk; do
+		if [ `basename $i .mk` = $1 ]; then
+			FOUND=1
+		fi
+	done
+
+	[ $FOUND -eq 0 ] && echo "invalid target-os given: $1" && exit 1
+}
+
+check_module() {
+	local FOUND=0
+	for i in `get_modules`; do
+		if [ $i = $1 ]; then
+			FOUND=1
+		fi
+	done
+
+	[ $FOUND -eq 0 ] && error "invalid module given: $1"
+}
+
+get_ini_value() {
+	awk -v str="$2" -F '[ \t]*=[ \t]*' '{if (! ($0 ~ /^;/) && $0 ~ str) print $2}' "$1" 2>> config.log
+}
+
+set_path_env() {
+	case ${TARGET_OS} in
+	mingw*)
+		MXE_FILE=~/.mxe.settings
+		set_var "ADDITIONAL_PATH" `get_ini_value "${MXE_FILE}" "PATH"`
+		add_to_makefile_local ADDITIONAL_PATH "Found mxe additional path settings" "Could not get the mxe path from ${MXE_FILE}"
+		PATH="${ADDITIONAL_PATH}:$PATH"
+		;;
+	linux32|linux64)
+		set_var "ADDITIONAL_PATH" "${STEAM_ROOT}/bin"
+		add_to_makefile_local ADDITIONAL_PATH "" ""
+		PATH="${ADDITIONAL_PATH}:$PATH"
+		;;
+	esac
+}
+
+enable_only() {
+	for i in `get_modules`; do
+		if [ "$i" = "$1" ]; then
+			set_var "${i}_DISABLE" ""
+		else
+			set_var "${i}_DISABLE" "yes"
+		fi
+	done
+}
+
+check_path_characters
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+	--help|-h)
+		usage
+		;;
+	--enable-ccache)
+		USE_CCACHE=1
+		;;
+	--disable-ccache)
+		USE_CCACHE=0
+		;;
+	--enable-release)
+		MODE=release
+		DEBUG=
+		;;
+	--disable-release)
+		MODE=debug
+		DEBUG=1
+		;;
+	--enable-static)
+		STATIC=1
+		;;
+	--enable-static-sdl)
+		STATIC_SDL=1
+		;;
+	--enable-hd)
+		HD_VERSION=1
+		;;
+	--disable-static)
+		STATIC=
+		;;
+	--clang)
+		DEFAULT_COMPILER_CC=clang
+		DEFAULT_COMPILER_CXX=clang++
+		;;
+	--gcc)
+		DEFAULT_COMPILER_CC=cc
+		DEFAULT_COMPILER_CXX=c++
+		;;
+	--enable-profiling)
+		PROFILING=1
+		;;
+	--disable-profiling)
+		PROFILING=
+		;;
+	--disable-dependency-tracking)
+		DISABLE_DEPENDENCY_TRACKING=1
+		;;
+	--disable-sdl-renderer)
+		set_var "DISABLE_SDL_RENDERER" "1"
+		;;
+	--disable-sdl-rwhttp)
+		set_var "HAVE_SDL_RWHTTP_H" "no"
+		;;
+	--prefix=*)
+		PREFIX="${1#*=}"
+		;;
+	--datadir=*)
+		PKGDATADIR="${1#*=}"
+		;;
+	--libdir=*)
+		PKGLIBDIR="${1#*=}"
+		;;
+	--bindir=*)
+		PKGBINDIR="${1#*=}"
+		;;
+	--target-os=*)
+		TARGET_OS="${1#*=}"
+		check_target_os $TARGET_OS
+		;;
+	--target-arch=*)
+		TARGET_ARCH="${1#*=}"
+		;;
+	--with-ncurses)
+		HAVE_NCURSES_H=
+		;;
+	--with-embedded-*)
+		echo "try to use the embedded version of ${1#--with-embedded-}"
+		set_var "WITH_EMBEDDED_${1#--with-embedded-}" "1"
+		;;
+	--disable-*)
+		OPTION="${1#--disable-}"
+		check_module $OPTION
+		set_var "${OPTION}_DISABLE" "yes"
+		;;
+	--enable-only-*)
+		OPTION="${1#--enable-only-}"
+		check_module $OPTION
+		enable_only $OPTION
+		;;
+	--enable-*)
+		OPTION="${1#--enable-}"
+		check_module $OPTION
+		set_var "${OPTION}_DISABLE" ""
+		;;
+	CC=*)       CC="${1#CC=}";;
+	CXX=*)      CXX="${1#CXX=}";;
+	CFLAGS=*)   CFLAGS="${1#*=}";;
+	LDFLAGS=*)  LDFLAGS="${1#*=}";;
+	*)
+		echo "invalid option $1"
+		exit 1
+		;;
+	esac
+	shift
+done
+
+set_path_env
+
+CONFIG_H_NAME=${TARGET_OS}
+
+case ${TARGET_OS} in
+*)
+	HD_VERSION=1
+	;;
+esac
+
+case ${TARGET_OS} in
+linux32)
+	STEAM_RUNTIME_TARGET_ARCH=i386
+	TARGET_ARCH=i386
+	CONFIG_H_NAME=linux
+	enable_only ${APPNAME}
+	;;
+linux64)
+	STEAM_RUNTIME_TARGET_ARCH=amd64
+	CONFIG_H_NAME=linux
+	TARGET_ARCH=x86_64
+	enable_only ${APPNAME}
+	;;
+linux)
+	;;
+*)
+	enable_only ${APPNAME}
+	;;
+esac
+
+case ${TARGET_OS} in
+mingw32|mingw64)
+	TARGET_ARCH=i386
+	;;
+mingw64_64)
+	TARGET_ARCH=x86_64
+	;;
+linux32|linux64)
+	STEAM_RUNTIME_ROOT=${STEAM_ROOT}/runtime/${STEAM_RUNTIME_TARGET_ARCH}
+	STATIC_SDL=1
+	HAVE_NCURSES_H=no
+	HAVE_SDL_IMAGE_H=no
+	HAVE_SDL_MIXER_H=no
+	HAVE_SDL_NET_H=no
+	HAVE_LUA_H=no
+	HAVE_SQLITE3_H=no
+	HAVE_TINYXML2_H=no
+	export STEAM_RUNTIME_TARGET_ARCH=${STEAM_RUNTIME_TARGET_ARCH}
+	export STEAM_RUNTIME_HOST_ARCH=${STEAM_RUNTIME_HOST_ARCH}
+	export STEAM_RUNTIME_ROOT=${STEAM_RUNTIME_ROOT}
+	add_to_makefile_local_quote STEAM_RUNTIME_ROOT "Steam runtime root at ${STEAM_RUNTIME_ROOT}"
+	add_to_makefile_local STEAM_RUNTIME_TARGET_ARCH "Steam runtime target arch ${STEAM_RUNTIME_TARGET_ARCH}"
+	add_to_makefile_local STEAM_RUNTIME_HOST_ARCH "Steam runtime host arch ${STEAM_RUNTIME_HOST_ARCH}"
+	;;
+esac
+HAVE_SDL_RWHTTP_H=no
+HAVE_EXECINFO_H=no
+
+cat > scale.tmp << EOF
+${TEXTURE_SCALE}
+EOF
+if diff scale.tmp scale 2>/dev/null >/dev/null; then
+	if [ configure -nt scale ]; then
+		mv scale.tmp scale
+	else
+		rm -f scale.tmp
+	fi
+else
+	mv scale.tmp scale
+fi
+
+PKGDATADIR=${PKGDATADIR:-${PREFIX}/games/${APPNAME}/}
+PKGBINDIR=${PKGBINDIR:-${PREFIX}/bin/}
+PKGLIBDIR=${PKGLIBDIR:-${PREFIX}/lib/}
+
+check_compiler
+check_ccache
+makefile_local
+config_h
+check_headers
+check_versions
+check_programs
+
+cat > ${MAKEFILE_LOCAL} << EOF
+# -------- Automatically generated -----------
+$makefile_local_data
+
+# allow to specify your own targets
+-include config.mk
+EOF
+
+cat > ${CONFIG_H_NAME}-${CONFIG_H}.tmp << EOF
+/* This file is automatically generated */
+#pragma once
+$config_h_data
+EOF
+
+if diff ${CONFIG_H_NAME}-${CONFIG_H}.tmp ${CONFIG_H_NAME}-${CONFIG_H} 2>/dev/null >/dev/null; then
+	if [ configure -nt ${CONFIG_H_NAME}-${CONFIG_H} ]; then
+		mv ${CONFIG_H_NAME}-${CONFIG_H}.tmp ${CONFIG_H_NAME}-${CONFIG_H}
+	else
+		rm -f ${CONFIG_H_NAME}-${CONFIG_H}.tmp
+	fi
+else
+	mv ${CONFIG_H_NAME}-${CONFIG_H}.tmp ${CONFIG_H_NAME}-${CONFIG_H}
+fi

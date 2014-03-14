@@ -1,0 +1,15 @@
+#pragma once
+
+namespace NPCState {
+enum {
+	NPC_IDLE,
+	NPC_FALLING,
+	NPC_SWIMMING,
+	NPC_DYING,
+	NPC_MOVING,
+	NPC_FLYING,
+	NPC_DAZED,
+	NPC_DONE,
+	NPC_ATTACKING
+};
+}

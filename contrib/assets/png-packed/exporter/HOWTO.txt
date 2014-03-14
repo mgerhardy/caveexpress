@@ -1,0 +1,5 @@
+copy the folder "caveexpress" to the "exporters"-directory of TexturePacker 3.
+
+example for windows: "C:\Program Files (x86)\CodeAndWeb\TexturePacker3\bin\exporters"
+
+now you can chose the data format "Cave Express" in the output options.

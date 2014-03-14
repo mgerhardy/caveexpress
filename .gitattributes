@@ -1,0 +1,12 @@
+*.png binary diff=exif
+*.jpg binary diff=exif
+*.gif binary diff=exif
+*.txt text
+*.sh text
+*.lua text
+*.html text diff=html
+*.xml text
+.gitattributes export-ignore
+.gitignore export-ignore
+/contrib export-ignore
+/src export-ignore
