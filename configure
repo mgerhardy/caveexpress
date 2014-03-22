@@ -24,7 +24,7 @@ PKGLIBDIR=
 MODE=
 CROSS=
 USE_CCACHE=
-HAVE_NCURSES_H=no
+HAVE_NCURSES_H=0
 STATIC=
 STATIC_SDL=
 DISABLE_DEPENDENCY_TRACKING=
@@ -103,7 +103,7 @@ add_line_to_config_h() {
 
 add_to_config_h_quote() {
 	VALUE=`get_var $1`
-	if [ -n "$VALUE" ] && [ "$VALUE" != "no" ]; then
+	if [ -n "$VALUE" ] && [ "$VALUE" != "0" ]; then
 		add_line_to_config_h "#define $1 \"$VALUE\""
 		[ -n "$2" ] && echo $2
 	else
@@ -115,7 +115,7 @@ add_to_config_h_quote() {
 
 add_to_config_h() {
 	VALUE=`get_var $1`
-	if [ -n "$VALUE" ] && [ "$VALUE" != "no" ]; then
+	if [ -n "$VALUE" ] && [ "$VALUE" != "0" ]; then
 		add_line_to_config_h "#define $1 $VALUE"
 		[ -n "$2" ] && echo $2
 	else
@@ -191,7 +191,7 @@ EOF`
 check_compilation() {
 	HAVE=$1
 	VALUE=`get_var $HAVE`
-	if [ "$VALUE" != "no" ]; then
+	if [ "$VALUE" != "0" ]; then
 		set_var $HAVE `check_compilation_cc "${4}" "${5}" "${6}"`
 		add_to_config_h $HAVE "$2" "$3"
 		add_to_makefile_local $HAVE
@@ -217,7 +217,7 @@ check_header() {
 	HEADER=$1
 	HAVE=HAVE_`echo ${HEADER%.*} | sed 's,/,_,g' | tr '[a-z]' '[A-Z]'`_H
 	VALUE=`get_var $HAVE`
-	if [ "$VALUE" != "no" ]; then
+	if [ "$VALUE" != "1" ] && [ "$VALUE" != "0" ]; then
 		if [ "$VALUE" != "internal" ]; then
 			set_var $HAVE `check_header_cc $1 $2`
 			add_to_config_h $HAVE "Found $1" "Could not find $1" $2
@@ -228,7 +228,7 @@ check_header() {
 			add_to_makefile_local $HAVE
 		fi
 	else
-		set_var $HAVE ""
+		#set_var $HAVE ""
 		add_to_config_h $HAVE "Found $1" "Disable $1"
 		add_to_makefile_local $HAVE
 	fi
@@ -533,7 +533,7 @@ while [ $# -gt 0 ]; do
 		set_var "DISABLE_SDL_RENDERER" "1"
 		;;
 	--disable-sdl-rwhttp)
-		set_var "HAVE_SDL_RWHTTP_H" "no"
+		set_var "HAVE_SDL_RWHTTP_H" "0"
 		;;
 	--prefix=*)
 		PREFIX="${1#*=}"
@@ -628,13 +628,13 @@ mingw64_64)
 linux32|linux64)
 	STEAM_RUNTIME_ROOT=${STEAM_ROOT}/runtime/${STEAM_RUNTIME_TARGET_ARCH}
 	STATIC_SDL=1
-	HAVE_NCURSES_H=no
-	HAVE_SDL_IMAGE_H=no
-	HAVE_SDL_MIXER_H=no
-	HAVE_SDL_NET_H=no
-	HAVE_LUA_H=no
-	HAVE_SQLITE3_H=no
-	HAVE_TINYXML2_H=no
+	HAVE_NCURSES_H=0
+	HAVE_SDL_IMAGE_H=0
+	HAVE_SDL_MIXER_H=0
+	HAVE_SDL_NET_H=0
+	HAVE_LUA_H=0
+	HAVE_SQLITE3_H=0
+	HAVE_TINYXML2_H=0
 	export STEAM_RUNTIME_TARGET_ARCH=${STEAM_RUNTIME_TARGET_ARCH}
 	export STEAM_RUNTIME_HOST_ARCH=${STEAM_RUNTIME_HOST_ARCH}
 	export STEAM_RUNTIME_ROOT=${STEAM_RUNTIME_ROOT}
@@ -643,8 +643,8 @@ linux32|linux64)
 	add_to_makefile_local STEAM_RUNTIME_HOST_ARCH "Steam runtime host arch ${STEAM_RUNTIME_HOST_ARCH}"
 	;;
 esac
-HAVE_SDL_RWHTTP_H=no
-HAVE_EXECINFO_H=no
+HAVE_SDL_RWHTTP_H=0
+HAVE_EXECINFO_H=0
 
 cat > scale.tmp << EOF
 ${TEXTURE_SCALE}
