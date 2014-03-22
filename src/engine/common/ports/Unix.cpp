@@ -201,7 +201,9 @@ void Unix::exit (const std::string& reason, int errorCode)
 	}
 
 #ifdef DEBUG
-	raise(SIGTRAP);
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	SDL_TriggerBreakpoint();
+#endif
 #endif
 	::exit(errorCode);
 }
