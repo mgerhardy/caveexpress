@@ -10,7 +10,7 @@ typedef unsigned int TexNum;
 
 class GLFrontend: public SDLFrontend {
 protected:
-#ifndef DISABLE_SDL_WINDOW
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_GLContext _context;
 #endif
 

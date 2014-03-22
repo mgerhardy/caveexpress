@@ -144,7 +144,7 @@ int SDLSoundEngine::playMusic (const std::string& music, bool loop)
 		error(LOG_CLIENT, "unable to load music file: " + music);
 		return -1;
 	}
-#if SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_MIXER_MAJOR_VERSION >= 2
 	_music = Mix_LoadMUS_RW(rwops, 1);
 #else
 	_music = Mix_LoadMUS_RW(rwops);
