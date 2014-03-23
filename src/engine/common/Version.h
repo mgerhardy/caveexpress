@@ -1,11 +1,15 @@
 #include "engine/common/Config.h"
 
 #ifndef APPNAME
-#define APPNAME "CaveExpress"
+#define APPNAME "caveexpress"
+#endif
+
+#ifndef APPNAME_FULL
+#define APPNAME_FULL "CaveExpress"
 #endif
 
 #ifndef VERSION
-#define VERSION "0.1"
+#define VERSION "1.6"
 #endif
 
 #ifndef VERSION_CODE
