@@ -187,7 +187,10 @@ void File::close ()
 		SDL_RWclose(_file);
 	if (_useRaw) {
 		if (fileno(_filePtr) != -1) {
+			// TODO: fails on emscripten
+#ifndef EMSCRIPTEN
 			::fclose(_filePtr);
+#endif
 		}
 		_filePtr = nullptr;
 	}

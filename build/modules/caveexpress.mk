@@ -87,6 +87,15 @@ ifneq ($(findstring $(TARGET_OS), netbsd freebsd linux),)
 	$(TARGET)_LDFLAGS +=
 endif
 
+ifneq ($(findstring $(TARGET_OS), html5),)
+	$(TARGET)_SRCS +=\
+		engine/common/ports/Unix.cpp \
+		engine/common/ports/HTML5.cpp
+	TMP := $(filter-out engine/common/Network.cpp,$($(TARGET)_SRCS))
+	$(TARGET)_SRCS = $(TMP)
+	$(TARGET)_LDFLAGS +=
+endif
+
 ifeq ($(TARGET_OS),darwin)
 	$(TARGET)_SRCS +=\
 		$(SDL_NET_SRCS) \

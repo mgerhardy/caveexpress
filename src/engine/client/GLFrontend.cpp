@@ -372,6 +372,7 @@ void GLFrontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
 
 void GLFrontend::makeScreenshot (const std::string& filename)
 {
+#ifndef EMSCRIPTEN
 	const int bytesPerPixel = 3;
 	ScopedPtr<GLubyte> pixels(new GLubyte[bytesPerPixel * _width * _height]);
 	int rowPack;
@@ -394,6 +395,7 @@ void GLFrontend::makeScreenshot (const std::string& filename)
 		memcpy((uint8 *) surface->pixels + surface->pitch * y, (uint8 *) pixels + pitch * (_height - y - 1), pitch);
 	const std::string fullFilename = FS.getAbsoluteWritePath() + filename + "-" + dateutil::getDateString() + ".png";
 	IMG_SavePNG(surface, fullFilename.c_str());
+#endif
 }
 
 void GLFrontend::updateViewport (int x, int y, int width, int height)

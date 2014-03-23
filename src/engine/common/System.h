@@ -8,6 +8,8 @@
 #include "engine/common/ports/Windows.h"
 #elif defined __MACOSX__
 #include "engine/common/ports/Darwin.h"
+#elif defined EMSCRIPTEN
+#include "engine/common/ports/HTML5.h"
 #else
 #include "engine/common/ports/Unix.h"
 #endif
@@ -18,6 +20,8 @@ inline ISystem& getSystem ()
 	static Windows _system;
 #elif defined __MACOSX__
 	static Darwin _system;
+#elif defined EMSCRIPTEN
+	static HTML5 _system;
 #else
 	static Unix _system;
 #endif

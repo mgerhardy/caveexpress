@@ -246,6 +246,7 @@ Mix_Chunk* SDLSoundEngine::getChunk (const std::string& filename)
 void SDLSoundEngine::update (uint32_t deltaTime)
 {
 	_time += deltaTime;
+#ifndef EMSCRIPTEN
 	if (!isActive()) {
 		return;
 	}
@@ -261,6 +262,7 @@ void SDLSoundEngine::update (uint32_t deltaTime)
 				channel.pos.y);
 		Mix_SetPosition(channel.channel, static_cast<int16_t>(angleInDegrees), std::min(dist, 255));
 	}
+#endif
 }
 
 void SDLSoundEngine::setListenerPosition (const vec2& position, const vec2& velocity)

@@ -24,6 +24,21 @@
 #include <time.h>
 
 static SDLBackend *INSTANCE;
+#ifdef EMSCRIPTEN
+#include <emscripten.h>
+
+static void runFrameEmscripten() {
+	if (!INSTANCE->isRunning()) {
+		Config.shutdown();
+		System.track("SDLBackend", "shutdown");
+		info(LOG_BACKEND, "shut down the main loop");
+		emscripten_cancel_main_loop();
+		return;
+	}
+
+	INSTANCE->runFrame();
+}
+#endif
 
 SDLBackend::SDLBackend () :
 		_dedicated(false), _running(true), _frontend(nullptr)
@@ -71,8 +86,11 @@ int SDLBackend::init (int argc, char **argv)
 
 	srand(time(nullptr));
 
-	//FS.get().init("http", "127.0.0.1/");
+#ifdef EMSCRIPTEN
+	FS.get().init("http", "127.0.0.1/");
+#else
 	FS.get().init("file", "");
+#endif
 
 	Config.get().init(this, argc, argv);
 	if (System.wantQuit()) {
@@ -278,6 +296,9 @@ void SDLBackend::mainLoop (int argc, char **argv)
 		return;
 
 	INSTANCE = this;
+#ifdef EMSCRIPTEN
+	emscripten_set_main_loop(runFrameEmscripten, 0, 1);
+#else
 	while (_running) {
 		runFrame();
 
@@ -287,6 +308,7 @@ void SDLBackend::mainLoop (int argc, char **argv)
 	Config.shutdown();
 	_serviceProvider.getNetwork().shutdown();
 
+#endif
 	System.track("SDLBackend", "shutdown");
 }
 

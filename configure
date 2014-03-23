@@ -625,6 +625,25 @@ mingw32|mingw64)
 mingw64_64)
 	TARGET_ARCH=x86_64
 	;;
+html5)
+	HAVE_SYSLOG_H=0
+	HAVE_NCURSES_H=0
+	HAVE_SDL_H=1
+	HAVE_SDL_IMAGE_H=1
+	HAVE_SDL_MIXER_H=1
+	HAVE_SDL_NET_H=0
+	if [ -z "$EMSCRIPTEN_ROOT" ]; then
+		EMSCRIPTEN_ROOT=`python -c "import os, sys, re, json, shutil; exec(open(os.path.expanduser('~/.emscripten'), 'r').read()); print EMSCRIPTEN_ROOT"`
+		CONFIGURE_PREFIX=${EMSCRIPTEN_ROOT}/emconfigure
+		echo "restart configure ($ARGS)"
+		EMSCRIPTEN_ROOT="${EMSCRIPTEN_ROOT}" CONFIGURE_PREFIX="${EMSCRIPTEN_ROOT}/emconfigure" $CONFIGURE_PREFIX ./configure $ARGS
+		exit
+	else
+		enable_only ${APPNAME}
+		add_to_makefile_local EMSCRIPTEN_ROOT "Emscripten found at ${EMSCRIPTEN_ROOT}"
+		add_to_makefile_local CONFIGURE_PREFIX "Use ${EMSCRIPTEN_ROOT}/emconfigure"
+	fi
+	;;
 linux32|linux64)
 	STEAM_RUNTIME_ROOT=${STEAM_ROOT}/runtime/${STEAM_RUNTIME_TARGET_ARCH}
 	STATIC_SDL=1

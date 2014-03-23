@@ -9,6 +9,10 @@
 #include <iostream>
 #include <fstream>
 
+#ifdef EMSCRIPTEN
+#include <emscripten.h>
+#endif
+
 namespace {
 const std::string ROOT = "/$root";
 const std::string BASEDIR = "base/" APPNAME;
@@ -173,6 +177,46 @@ SDL_RWops* FileSystem::createRWops (const URI& uri) const
 	return createRWops(uri, path);
 }
 
+#if defined(EMSCRIPTEN)
+struct Emscripten_UserData {
+	void* srcData;
+	int srcDataSize;
+	bool done;
+};
+
+static void Emscripten_OnFailed (void* userData)
+{
+	Emscripten_UserData* u = (Emscripten_UserData*) userData;
+	u->srcDataSize = -1;
+	u->done = true;
+}
+
+static void Emscripten_OnLoaded (void* userData, void* srcData, int srcDataSize)
+{
+	Emscripten_UserData* u = (Emscripten_UserData*) userData;
+	u->srcData = malloc(srcDataSize);
+	u->srcDataSize = srcDataSize;
+	memcpy(u->srcData, srcData, srcDataSize);
+	u->done = true;
+}
+
+static SDL_RWops* Emscripten_RWFromHttp (const URI& uri) {
+	Emscripten_UserData u;
+	u.done = false;
+	u.srcDataSize = -1;
+	emscripten_async_wget_data(uri.print().c_str(), (void*)&u, Emscripten_OnLoaded, Emscripten_OnFailed);
+	while (!u.done) {
+	}
+	if (u.srcDataSize != -1) {
+		info(LOG_FILE, "downloaded file " + uri.print());
+		return SDL_RWFromMem(u.srcData, u.srcDataSize);
+	}
+
+	error(LOG_FILE, "failed to download file " + uri.print());
+	return nullptr;
+}
+#endif
+
 SDL_RWops* FileSystem::createRWops (const URI& uri, std::string& path) const
 {
 	if (uri.getProtocol() == "file") {
@@ -185,23 +229,29 @@ SDL_RWops* FileSystem::createRWops (const URI& uri, std::string& path) const
 		}
 		return rwops;
 	}
-#ifdef HAVE_SDL_RWHTTP_H
-	if (uri.getProtocol() == "http") {
-		const URI uriCached("file://" + _homeDir + getPath(uri));
+	if (uri.getProtocol() == "http" || uri.getProtocol() == "https") {
+#if not defined(EMSCRIPTEN)
+		const URI uriCached("file://" + getAbsoluteWritePath() + getPath(uri));
 		SDL_RWops *cached = createRWops(uriCached, path);
 		if (cached != nullptr) {
 			info(LOG_FILE, "used cached version: " + uriCached.print());
 			return cached;
 		}
 		SDL_ClearError();
+#endif
 		info(LOG_FILE, "try to fetch " + uri.print());
+#if defined(EMSCRIPTEN)
+		SDL_RWops *http = Emscripten_RWFromHttp(uri);
+#elif defined(HAVE_SDL_RWHTTP_H)
 		SDL_RWops *http = SDL_RWFromHttpSync(uri.print().c_str());
+#else
+		SDL_RWops *http = nullptr;
+#endif
 		if (http == nullptr) {
 			error(LOG_FILE, "could not download: " + uri.print());
 		}
 		return http;
 	}
-#endif
 	System.exit("No " + uri.getProtocol() + " implemented yet", 1);
 	return nullptr;
 }
@@ -277,10 +327,27 @@ const std::string FileSystem::getAbsoluteWritePath () const
 
 DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const std::string& subdir)
 {
+	DirectoryEntries entriesAll;
+#ifdef EMSCRIPTEN
+	// TODO: move this into files that are generated at build time
+	if (basedir == FS.getTexturesDir()) {
+		entriesAll.push_back("textures.lua");
+		return entriesAll;
+	} else if (basedir == FS.getCampaignsDir()) {
+		entriesAll.push_back("00-tutorial-campaign.lua");
+		entriesAll.push_back("01-ice-campaign.lua");
+		entriesAll.push_back("02-rock-campaign.lua");
+		entriesAll.push_back("03-second-rock-campaign.lua");
+		entriesAll.push_back("04-second-ice-campaign.lua");
+		entriesAll.push_back("05-third-ice-campaign.lua");
+		entriesAll.push_back("06-wind-campaign.lua");
+		return entriesAll;
+	}
+#endif
+
 	if (!_initialized)
 		System.exit("Filesystem is not yet initialized", 1);
 
-	DirectoryEntries entriesAll;
 	const std::string sysWritePath = replaceSpecialMarkers(getAbsoluteWritePath() + basedir, false);
 	if (!sysWritePath.empty())
 		entriesAll = System.listDirectory(sysWritePath, subdir);
