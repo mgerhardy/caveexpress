@@ -39,6 +39,7 @@ public:
 	SDL_RWops* createRWops (const URI& uri) const;
 	SDL_RWops* createRWops (const URI& uri, std::string& path) const;
 	void init (const std::string& protocol, const std::string& protocolPostfix);
+	void shutdown ();
 	// writes a file to the users home directory
 	long writeFile (const std::string& filename, const unsigned char *buf, size_t length, bool overwrite = false) const;
 	// writes a file into the game system wide data directory

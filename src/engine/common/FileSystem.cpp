@@ -34,6 +34,16 @@ FileSystem& FileSystem::get ()
 	return instance;
 }
 
+void FileSystem::shutdown ()
+{
+	_initialized = false;
+	_dataDir = BASEDIR + "/";
+#ifdef HAVE_SDL_RWHTTP_H
+	SDL_RWHttpShutdown();
+	info(LOG_FILE, "shutdown SDL_rwhttp");
+#endif
+}
+
 void FileSystem::init (const std::string& protocol, const std::string& protocolPostfix)
 {
 	if (_initialized) {
