@@ -125,6 +125,8 @@ std::string Unix::normalizePath (const std::string& path)
 
 bool Unix::mkdir (const std::string& directory)
 {
+	if (directory.empty())
+		return false;
 	std::string s = directory;
 	if (s[s.size() - 1] != '/') {
 		// force trailing / so we can handle everything in loop

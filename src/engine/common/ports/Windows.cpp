@@ -27,6 +27,8 @@ Windows::~Windows ()
 
 bool Windows::mkdir (const std::string& directory)
 {
+	if (directory.empty())
+		return false;
 	const bool bCD = CreateDirectory(directory.c_str(), nullptr);
 	if (bCD)
 		return true;

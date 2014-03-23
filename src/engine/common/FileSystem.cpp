@@ -202,7 +202,7 @@ void FileSystem::cache (FilePtr& file, const std::string& subdir) const
 		return;
 
 	const std::string& filename = file->getFileName() + "." + file->getExtension();
-	const URI uri("file://" + _homeDir + subdir + filename);
+	const URI uri("file://" + getAbsoluteWritePath() + subdir + filename);
 	std::string path;
 	SDL_RWops *rwops = createRWops(uri, path);
 	File target(uri, rwops, path);
@@ -212,7 +212,7 @@ void FileSystem::cache (FilePtr& file, const std::string& subdir) const
 	int fileLen = file->read((void **) &buffer);
 	if (fileLen < 0)
 		return;
-	System.mkdir(_homeDir);
+	System.mkdir(getAbsoluteWritePath());
 	createDir(target);
 	target.write(reinterpret_cast<const unsigned char*>(buffer), fileLen);
 	info(LOG_FILE, "cached " + file->getURI().print());
