@@ -2,8 +2,8 @@
 
 #include "engine/common/URI.h"
 #include "engine/common/Compiler.h"
-#include "engine/common/String.h"
 #include "engine/common/Pointers.h"
+#include <string>
 
 struct SDL_RWops;
 
