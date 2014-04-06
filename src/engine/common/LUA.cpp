@@ -30,10 +30,14 @@ LUA::LUA (bool debug)
 	_state = luaL_newstate();
 	luaL_openlibs(_state);
 
+	lua_register(_state, "isAndroid", isAndroid);
 	lua_register(_state, "isWindows", isWindows);
 	lua_register(_state, "isMacOSX", isMacOSX);
 	lua_register(_state, "isLinux", isLinux);
+	lua_register(_state, "isOUYA", isOUYA);
+	lua_register(_state, "isHTML5", isHTML5);
 	lua_register(_state, "isDebug", isDebug);
+	lua_register(_state, "isTouch", isTouch);
 
 	if (debug) {
 		const int mask = LUA_MASKCALL | LUA_MASKRET | LUA_MASKLINE | LUA_MASKCOUNT;
@@ -321,6 +325,16 @@ void LUA::debugHook (lua_State *L, lua_Debug *ar)
 	info(LOG_LUA, String::format("%s %s: %s %d", ar->namewhat, ar->name, ar->short_src, ar->currentline));
 }
 
+int LUA::isAndroid (lua_State *L)
+{
+#if defined(__ANDROID__)
+	lua_pushboolean(L, true);
+#else
+	lua_pushboolean(L, false);
+#endif
+	return 1;
+}
+
 int LUA::isWindows (lua_State *L)
 {
 #if defined(__WIN32__)
@@ -351,10 +365,46 @@ int LUA::isLinux (lua_State *L)
 	return 1;
 }
 
+int LUA::isHTML5 (lua_State *L)
+{
+#ifdef EMSCRIPTEN
+	lua_pushboolean(L, true);
+#else
+	lua_pushboolean(L, false);
+#endif
+	return 1;
+}
+
 int LUA::isDebug (lua_State *L)
 {
 #ifdef DEBUG
 	lua_pushboolean(L, true);
+#else
+	lua_pushboolean(L, false);
+#endif
+	return 1;
+}
+
+int LUA::isTouch (lua_State *L)
+{
+#if defined(__ANDROID__)
+	Android& system = static_cast<Android&>(getSystem());
+	lua_pushboolean(L, !system.isOUYA());
+#else
+#if defined(__IPHONEOS__)
+	lua_pushboolean(L, true);
+#else
+	lua_pushboolean(L, false);
+#endif
+#endif
+	return 1;
+}
+
+int LUA::isOUYA (lua_State *L)
+{
+#if defined(__ANDROID__)
+	Android& system = static_cast<Android&>(getSystem());
+	lua_pushboolean(L, system.isOUYA());
 #else
 	lua_pushboolean(L, false);
 #endif

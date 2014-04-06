@@ -185,7 +185,11 @@ function initMap()
 	map:setSetting("fishnpc", "true")
 	map:setSetting("flyingnpc", "false")
 	map:setSetting("gravity", "9.81")
-	map:setSetting("packagetransfercount", "3")
+	if isTouch() then
+		map:setSetting("packagetransfercount", "1")
+	else
+		map:setSetting("packagetransfercount", "3")
+	end
 	map:setSetting("playerX", "6")
 	map:setSetting("playerY", "5")
 	map:setSetting("points", "100")

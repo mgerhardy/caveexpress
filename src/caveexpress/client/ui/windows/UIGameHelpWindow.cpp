@@ -34,6 +34,14 @@ UIGameHelpWindow::UIGameHelpWindow (IFrontend* frontend) :
 		addLivesHelp(panel);
 	}
 
+	if (System.isOUYA()) {
+		addOuyaButton(panel, "ouyaO", tr("Select"));
+		addOuyaButton(panel, "ouyaU", tr("Drop the package and the stone"));
+		addOuyaButton(panel, "ouyaY", tr("Drop the package and the stone"));
+		addOuyaButton(panel, "ouyaA", tr("Back"));
+		//addOuyaButton(panel, "ouyaSystem", tr("Hit twice to end the game"));
+	}
+
 	add(panel);
 
 	if (!wantBackButton())
@@ -74,6 +82,19 @@ UINode* UIGameHelpWindow::createHPanel ()
 	hbox->setBorderColor(colorWhite);
 	hbox->setStandardPadding();
 	return hbox;
+}
+
+void UIGameHelpWindow::addOuyaButton (UINode *panel, const std::string& texture, const std::string& title)
+{
+	UINode* hbox = createHPanel();
+	UINode* imageNode = new UINode(_frontend);
+	imageNode->setImage(texture);
+	hbox->add(imageNode);
+	UINodeLabel *label = new UINodeLabel(_frontend, title);
+	label->setColor(colorWhite);
+	label->setPos(0.0f, imageNode->getHeight() / 2.0f - label->getHeight() / 2.0f);
+	hbox->add(label);
+	panel->add(hbox);
 }
 
 void UIGameHelpWindow::addTreeHelp (UINode *panel)

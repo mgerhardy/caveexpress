@@ -93,6 +93,8 @@ public:
 
 	virtual bool hasItem (const std::string& id) { return false; }
 
+	virtual bool isOUYA () const { return false; }
+
 	virtual int openURL (const std::string& url) const { return 0; }
 
 	virtual void getPaymentEntries (std::vector<PaymentEntry>& entries) { }

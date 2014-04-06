@@ -65,7 +65,12 @@ function initMap()
 	map:addTile("tile-rock-02", 9, 4)
 	map:addTile("tile-rock-02", 9, 5)
 
-	map:addEmitter("item-stone", 2, 0, 1, 2000, "")
+	-- the time when the flying npc is exactly hit by the falling stone
+	if isAndroid() or isOUYA() then
+		map:addEmitter("item-stone", 2, 0, 1, 2700, "")
+	else
+		map:addEmitter("item-stone", 2, 0, 1, 2000, "")
+	end
 	map:addEmitter("item-package", 5.2, 0, 1, 2500, "")
 
 	map:setSetting("fishnpc", "false")

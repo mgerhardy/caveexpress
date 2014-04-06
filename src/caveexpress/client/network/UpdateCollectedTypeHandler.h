@@ -46,9 +46,13 @@ public:
 
 		UINode* mapNode = UI::get().getNode<UINode>(UI_WINDOW_MAP, UINODE_MAP);
 		if (EntityTypes::isStone(type)) {
-			mapNode->displayText("Drop the stone to collect packages again");
+			mapNode->displayText(tr("Drop the stone to collect packages again"));
+			if (System.hasTouch() && !System.isOUYA())
+				mapNode->displayText(tr("Use the second finger to drop the stone"));
 		} else if (EntityTypes::isPackage(type)) {
 			mapNode->displayText("Drop off at the collection point");
+			if (System.hasTouch() && !System.isOUYA())
+				mapNode->displayText(tr("Use the second finger to drop the package"));
 		}
  	}
 };

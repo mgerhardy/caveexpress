@@ -5,6 +5,7 @@ Activate the fish spawn|Aktiviere den Fisch fuer diese Map
 Activate the pterodactyls spawn|Aktiviere den Pterodactylus fuer diese Map
 Are you sure?|Wirklich fortfahren?
 Auto|Auto
+Back|Abbrechen
 Big|Riesig
 CTRL|STRG
 CURSOR|CURSOR
@@ -14,6 +15,8 @@ Cancel|Abbrechen
 Continue|Weiter
 Create server|Server erstellen
 Decrease map size|Map verkleinern
+Drop the package and the stone|Den Stein und das Paket fallen lassen
+Drop the stone to collect packages again|Drop the stone to collect packages again
 Extras|Extras
 Facebook|Facebook
 Fall delay|Fall delay
@@ -24,6 +27,7 @@ General|Allgemein
 Gravity|Gravitation
 Hard|Schwer
 Help|Hilfe
+Hit twice to end the game|Zweimal druecken um das Spiel zu beenden
 Ice|Eis
 Increase map size|Map vergroessern
 Initial npc spawn delay for the pterodactyls and the fish|Initial npc spawn delay for the pterodactyls and the fish
@@ -68,6 +72,7 @@ Save|Speichern
 Save & Go|Testen
 Save map|Speichere Map
 Scroll map|Scrolle Map
+Select|Auswahl
 Select game mode|Auswahl des Spielmodus
 Select tile|Teil selektieren
 Settings|Einstellungen
@@ -86,6 +91,8 @@ Time|Zeit
 Tutorial|Tutorial
 Twitter|Twitter
 Undo|Undo
+Use the second finger to drop the package|Use the second finger to drop the package
+Use the second finger to drop the stone|Use the second finger to drop the stone
 Water|Wasser
 Water fall delay in milliseconds|Water fall delay in milliseconds
 Waterheight|Wasserhoehe

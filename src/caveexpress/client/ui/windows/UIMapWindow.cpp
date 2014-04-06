@@ -144,12 +144,10 @@ void UIMapWindow::onActive ()
 		UI::get().showCursor(false);
 	_livesSprite->setVisible(Config.isModeHard());
 
-#ifndef HD_VERSION
 	if (!getSystem().hasItem(PAYMENT_ADFREE)) {
 		const int h = _frontend->getHeight() - getSystem().getAdHeight();
 		_nodeMap->setMapRect(0, 0, _frontend->getWidth(), h);
 	}
-#endif
 
 	if (_nodeMap->getMap().isStarted())
 		Config.setBindingsSpace(BINDINGS_MAP);

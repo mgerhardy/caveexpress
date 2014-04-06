@@ -158,11 +158,16 @@ inline std::string FileSystem::replaceSpecialMarkers (const std::string& path, b
 		return path;
 
 	if (systemRoot) {
+#ifdef __ANDROID__
+		const std::string root = SDL_AndroidGetInternalStoragePath();
+		return root + path.substr(l);
+#else
 #ifdef PKGDATADIR
 		const std::string root = PKGDATADIR;
 		return root + path.substr(l);
 #else
 		return "";
+#endif
 #endif
 	}
 	if (path.length() > l)

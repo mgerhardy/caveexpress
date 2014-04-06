@@ -19,10 +19,14 @@ private:
 
 	static void debugHook (lua_State *L, lua_Debug *ar);
 
+	static int isAndroid (lua_State *L);
 	static int isWindows (lua_State *L);
 	static int isMacOSX (lua_State *L);
 	static int isLinux (lua_State *L);
+	static int isHTML5 (lua_State *L);
+	static int isOUYA (lua_State *L);
 	static int isDebug (lua_State *L);
+	static int isTouch (lua_State *L);
 
 public:
 	LUA (bool debug = false);

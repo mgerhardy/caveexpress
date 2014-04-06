@@ -58,6 +58,27 @@ endif
 clean-textures:
 	rm -f $(TEXTURE_DIR)/$(APPNAME)-*.lua
 
+android-setup:
+	$(Q)ARCH=x86_64; \
+	NDK_VERSION=r9b; \
+	SDK_VERSION=20131030; \
+	[ $(TARGET_ARCH) = "i386" ] && ARCH=x86; \
+	echo "Downloading the ndk..."; \
+	wget --quiet --continue http://dl.google.com/android/ndk/android-ndk-$$NDK_VERSION-linux-$$ARCH.tar.bz2; \
+	echo "Extracting the ndk..."; \
+	tar -xjf android-ndk-$$NDK_VERSION-linux-$$ARCH.tar.bz2 -C ~/; \
+	echo "Downloading the sdk..."; \
+	wget --quiet --continue http://dl.google.com/android/adt/adt-bundle-linux-$$ARCH-$$SDK_VERSION.zip; \
+	echo "Extracting the sdk..."; \
+	ARCHIVE=`readlink -f adt-bundle-linux-$$ARCH-$$SDK_VERSION.zip`; \
+	cd ~; \
+	unzip -o -qq $$ARCHIVE; \
+	echo "Configure paths..."; \
+	echo "export ANDROID_SDK=~/adt-bundle-linux-$$ARCH-$$SDK_VERSION/sdk" >> ~/.bashrc; \
+	echo "export ANDROID_NDK=~/android-ndk-$$NDK_VERSION" >> ~/.bashrc; \
+	echo "export NDK_ROOT=\$$ANDROID_NDK" >> ~/.bashrc; \
+	echo "export PATH=\$$PATH:\$$ANDROID_NDK:\$$ANDROID_SDK/tools:\$$ANDROID_SDK/platform-tools" >> ~/.bashrc;
+
 git:
 	$(Q)git config diff.exif.textconv exiftool
 	$(Q)git config core.eol lf

@@ -177,6 +177,21 @@ OGG_LIBS                 += $(call PKG_LIBS,ogg)
 else
 SDL_MIXER_LIBS           +=
 SDL_MIXER_CFLAGS         ?= -Isrc/libs/libogg-1.3.1/include -Isrc/libs/SDL_mixer -DOGG_MUSIC -DWAV_MUSIC -DHAVE_SDL_MIXER_H
+TREMOR_CFLAGS             = -Isrc/libs/libvorbisidec-1.2.1 -DOGG_USE_TREMOR
+TREMOR_SRCS               = \
+	libs/libvorbisidec-1.2.1/mdct.c \
+	libs/libvorbisidec-1.2.1/block.c \
+	libs/libvorbisidec-1.2.1/window.c \
+	libs/libvorbisidec-1.2.1/synthesis.c \
+	libs/libvorbisidec-1.2.1/info.c \
+	libs/libvorbisidec-1.2.1/floor1.c \
+	libs/libvorbisidec-1.2.1/floor0.c \
+	libs/libvorbisidec-1.2.1/vorbisfile.c \
+	libs/libvorbisidec-1.2.1/res012.c \
+	libs/libvorbisidec-1.2.1/mapping0.c \
+	libs/libvorbisidec-1.2.1/registry.c \
+	libs/libvorbisidec-1.2.1/codebook.c \
+	libs/libvorbisidec-1.2.1/sharedbook.c
 VORBIS_CFLAGS             = -Isrc/libs/libvorbis-1.3.3/include/vorbis -Isrc/libs/libvorbis-1.3.3/include -Isrc/libs/libvorbis-1.3.3/lib
 VORBIS_SRCS               = \
 	libs/libvorbis-1.3.3/lib/mapping0.c \
@@ -227,8 +242,13 @@ SDL_MIXER_SRCS            = \
 	libs/SDL_mixer/music_ogg.c \
 	libs/SDL_mixer/wavestream.c
 
-SDL_MIXER_CFLAGS += $(VORBIS_CFLAGS)
-SDL_MIXER_SRCS   += $(VORBIS_SRCS)
+ifneq ($(findstring $(TARGET_OS), android ouya),)
+	SDL_MIXER_CFLAGS += $(TREMOR_CFLAGS)
+	SDL_MIXER_SRCS   += $(TREMOR_SRCS)
+else
+	SDL_MIXER_CFLAGS += $(VORBIS_CFLAGS)
+	SDL_MIXER_SRCS   += $(VORBIS_SRCS)
+endif
 
 endif
 OPENGLES_CFLAGS          ?= $(call PKG_CFLAGS,glesv2) $(call PKG_CFLAGS,egl)

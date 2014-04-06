@@ -105,6 +105,14 @@ ifeq ($(TARGET_OS),darwin)
 	$(TARGET)_LDFLAGS +=
 endif
 
+ifeq ($(TARGET_OS),android)
+	$(TARGET)_SRCS +=\
+		$(SDL_NET_SRCS) \
+		engine/common/ports/Android.cpp \
+		engine/common/ports/Unix.cpp
+	$(TARGET)_LDFLAGS +=
+endif
+
 ifneq ($(APPNAME),$(TARGET))
 	$(TARGET)_IGNORE := yes
 endif

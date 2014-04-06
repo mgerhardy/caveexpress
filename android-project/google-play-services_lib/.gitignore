@@ -1,0 +1,11 @@
+/obj
+/bin
+/gen
+/assets
+/local.properties
+/build.xml
+/default.properties
+/libs
+/.project
+/.settings
+/proguard-project.txt

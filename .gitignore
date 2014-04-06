@@ -52,3 +52,5 @@
 /android-ndk-*
 /adt-bundle-*
 /*.apk
+/.cproject
+/.project

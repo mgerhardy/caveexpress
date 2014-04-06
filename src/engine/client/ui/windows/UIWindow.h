@@ -88,23 +88,19 @@ public:
 
 	void showFullscreenAds ()
 	{
-#ifndef HD_VERSION
 		if (getSystem().hasItem(PAYMENT_ADFREE))
 			return;
 
 		if (!getSystem().showFullscreenAds())
 			error(LOG_CLIENT, "failed to show the fullscreen ads");
-#endif
 	}
 
 	void showAds ()
 	{
-#ifndef HD_VERSION
 		if (getSystem().hasItem(PAYMENT_ADFREE))
 			return;
 
 		getSystem().showAds(true, false);
-#endif
 	}
 
 	void hideAds ()

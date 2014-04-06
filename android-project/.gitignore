@@ -1,0 +1,10 @@
+/obj
+/bin
+/gen
+/assets
+/local.properties
+/AndroidManifest.xml
+/build.xml
+/default.properties
+/project.properties
+/libs

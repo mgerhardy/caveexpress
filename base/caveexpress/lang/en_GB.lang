@@ -5,6 +5,7 @@ Activate the fish spawn|Activate the fish spawn
 Activate the pterodactyls spawn|Activate the pterodactyls spawn
 Are you sure?|Are you sure?
 Auto|Auto
+Back|Back
 Big|Big
 CTRL|CTRL
 CURSOR|CURSOR
@@ -14,6 +15,8 @@ Cancel|Cancel
 Continue|Continue
 Create server|Create server
 Decrease map size|Decrease map size
+Drop the package and the stone|Drop the package and the stone
+Drop the stone to collect packages again|Drop the stone to collect packages again
 Extras|Extras
 Facebook|Facebook
 Fall delay|Fall delay
@@ -24,6 +27,7 @@ General|General
 Gravity|Gravity
 Hard|Hard
 Help|Help
+Hit twice to end the game|Hit twice to end the game
 Ice|Ice
 Increase map size|Increase map size
 Initial npc spawn delay for the pterodactyls and the fish|Initial npc spawn delay for the pterodactyls and the fish
@@ -68,6 +72,7 @@ Save|Save
 Save & Go|Save & Go
 Save map|Save map
 Scroll map|Scroll map
+Select|Select
 Select game mode|Select game mode
 Select tile|Select tile
 Settings|Settings
@@ -86,6 +91,8 @@ Time|Time
 Tutorial|Tutorial
 Twitter|Twitter
 Undo|Undo
+Use the second finger to drop the package|Use the second finger to drop the package
+Use the second finger to drop the stone|Use the second finger to drop the stone
 Water|Water
 Water fall delay in milliseconds|Water fall delay in milliseconds
 Waterheight|Waterheight

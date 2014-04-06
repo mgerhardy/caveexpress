@@ -4,7 +4,9 @@
 #include "engine/common/ports/ISystem.h"
 #include <SDL_platform.h>
 
-#ifdef __WIN32__
+#ifdef __ANDROID__
+#include "engine/common/ports/Android.h"
+#elif defined __WIN32__
 #include "engine/common/ports/Windows.h"
 #elif defined __MACOSX__
 #include "engine/common/ports/Darwin.h"
@@ -18,6 +20,8 @@ inline ISystem& getSystem ()
 {
 #ifdef __WIN32__
 	static Windows _system;
+#elif defined __ANDROID__
+	static Android _system;
 #elif defined __MACOSX__
 	static Darwin _system;
 #elif defined EMSCRIPTEN

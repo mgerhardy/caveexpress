@@ -746,12 +746,21 @@ void SDLFrontend::setGLAttributes ()
 	sdlCheckError();
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
 	sdlCheckError();
+#ifdef __ANDROID__
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 6);
+	sdlCheckError();
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+	sdlCheckError();
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 6);
+	sdlCheckError();
+#else
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 	sdlCheckError();
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	sdlCheckError();
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	sdlCheckError();
+#endif
 #endif
 }
 
