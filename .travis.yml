@@ -1,0 +1,12 @@
+language: cpp
+compiler:
+  - gcc
+  - clang
+
+script:
+  - make
+  - ./tests
+
+notifications:
+  email: true
+
