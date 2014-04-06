@@ -63,7 +63,6 @@ ifneq (,$(findstring clang,$(CXX)))
   CXXFLAGS += -Wexit-time-destructors
   CXXFLAGS += -Wglobal-constructors
   CFLAGS += -Wno-extended-offsetof
-  CFLAGS += -Wno-c++11-extensions
   CFLAGS += -Wno-cast-align
   CFLAGS += -Wno-shift-op-parentheses
 ifeq ($(DEBUG),1)
@@ -76,7 +75,6 @@ endif
 endif
 
 CCFLAGS += $(CFLAGS)
-CCFLAGS += -std=c99
 CCFLAGS += -Wimplicit
 
 #CCFLAGS += -Werror-implicit-function-declaration
@@ -86,6 +84,6 @@ CCFLAGS += -Wimplicit
 #CCFLAGS += -Wc++-compat
 
 CXXFLAGS += $(CFLAGS)
-CXXFLAGS += -std=gnu++98
+CXXFLAGS += -std=c++11
 CXXFLAGS += -Wnon-virtual-dtor
 CXXFLAGS += -Wno-reorder
