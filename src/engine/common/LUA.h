@@ -22,6 +22,7 @@ private:
 	static int isAndroid (lua_State *L);
 	static int isWindows (lua_State *L);
 	static int isMacOSX (lua_State *L);
+	static int isIOS (lua_State *L);
 	static int isLinux (lua_State *L);
 	static int isHTML5 (lua_State *L);
 	static int isOUYA (lua_State *L);

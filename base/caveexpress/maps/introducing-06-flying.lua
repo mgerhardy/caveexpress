@@ -66,7 +66,7 @@ function initMap()
 	map:addTile("tile-rock-02", 9, 5)
 
 	-- the time when the flying npc is exactly hit by the falling stone
-	if isAndroid() or isOUYA() then
+	if isAndroid() or isIOS() or isOUYA() then
 		map:addEmitter("item-stone", 2, 0, 1, 2700, "")
 	else
 		map:addEmitter("item-stone", 2, 0, 1, 2000, "")

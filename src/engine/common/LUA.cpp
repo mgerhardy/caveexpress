@@ -33,6 +33,7 @@ LUA::LUA (bool debug)
 	lua_register(_state, "isAndroid", isAndroid);
 	lua_register(_state, "isWindows", isWindows);
 	lua_register(_state, "isMacOSX", isMacOSX);
+	lua_register(_state, "isIOS", isIOS);
 	lua_register(_state, "isLinux", isLinux);
 	lua_register(_state, "isOUYA", isOUYA);
 	lua_register(_state, "isHTML5", isHTML5);
@@ -348,6 +349,16 @@ int LUA::isWindows (lua_State *L)
 int LUA::isMacOSX (lua_State *L)
 {
 #if defined(__MACOSX__)
+	lua_pushboolean(L, true);
+#else
+	lua_pushboolean(L, false);
+#endif
+	return 1;
+}
+
+int LUA::isIOS (lua_State *L)
+{
+#if defined(__IPHONEOS__)
 	lua_pushboolean(L, true);
 #else
 	lua_pushboolean(L, false);

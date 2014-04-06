@@ -127,6 +127,15 @@ void SDLFrontend::update (uint32_t deltaTime)
 
 bool SDLFrontend::setFrameCallback (int interval, void (*callback) (void*), void *callbackParam)
 {
+#if 0
+#ifdef __IPHONEOS__
+	// Set up the game to run in the window animation callback on iOS
+	// so that Game Center and so forth works correctly.
+	SDL_iPhoneSetAnimationCallback(_window, interval, callback, callbackParam);
+	return true;
+#endif
+#endif
+
 	return false;
 }
 
@@ -603,10 +612,18 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	info(LOG_CLIENT, String::format("doublebuffer: %s", doubleBuffered ? "activated" : "disabled"));
 
 	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+#ifdef __IPHONEOS__
+	flags |= SDL_WINDOW_RESIZABLE;
+#endif
 
 
+#if defined __IPHONEOS__ || defined __ANDROID__
+	if (fullscreen)
+		flags |= SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS;
+#else
 	if (fullscreen)
 		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_BORDERLESS;
+#endif
 
 	const int videoDrivers = SDL_GetNumVideoDrivers();
 	for (int i = 0; i < videoDrivers; ++i) {
@@ -761,12 +778,21 @@ void SDLFrontend::setGLAttributes ()
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	sdlCheckError();
 #endif
+#ifdef __IPHONEOS__
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	sdlCheckError();
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+	sdlCheckError();
+#endif
 #endif
 }
 
 void SDLFrontend::setHints ()
 {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
+#ifdef __IPHONEOS__
+	SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
+#endif
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 	SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
 #endif

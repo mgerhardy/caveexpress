@@ -8,6 +8,8 @@
 #include "engine/common/ports/Android.h"
 #elif defined __WIN32__
 #include "engine/common/ports/Windows.h"
+#elif defined __IPHONEOS__
+#include "engine/common/ports/IOS.h"
 #elif defined __MACOSX__
 #include "engine/common/ports/Darwin.h"
 #elif defined EMSCRIPTEN
@@ -22,6 +24,8 @@ inline ISystem& getSystem ()
 	static Windows _system;
 #elif defined __ANDROID__
 	static Android _system;
+#elif defined __IPHONEOS__
+	static IOS _system;
 #elif defined __MACOSX__
 	static Darwin _system;
 #elif defined EMSCRIPTEN

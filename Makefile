@@ -375,3 +375,7 @@ endif
 
 lang:
 	$(Q)for i in en_GB de; do contrib/scripts/lang.sh "$$i" "$(APPNAME)"; done
+
+.PHONY: ios
+ios:
+	$(Q)xcodebuild -sdk iphoneos6.1 -project ios/CaveExpress.xcodeproj

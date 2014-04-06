@@ -1,5 +1,5 @@
 function isMobile()
-	return isAndroid() and not isOUYA();
+	return (isAndroid() or isIOS()) and not isOUYA();
 end
 
 defaultwidth = -1
