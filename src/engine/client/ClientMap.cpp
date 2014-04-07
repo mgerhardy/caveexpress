@@ -50,6 +50,7 @@ void ClientMap::resetCurrentMap ()
 	_name.clear();
 	_time = 0;
 	_started = false;
+	_introWindow = "";
 	_tutorial = false;
 	_mapWidth = 0;
 	_mapHeight = 0;
@@ -198,6 +199,10 @@ void ClientMap::init (uint16_t playerID)
 			_particleSystem.spawn(ParticlePtr(new Snow(*this)));
 		}
 	}
+
+	if (!_introWindow.empty()) {
+		UI::get().push(_introWindow);
+	}
 }
 
 TexturePtr ClientMap::loadTexture (const std::string& name) const
@@ -291,6 +296,18 @@ void ClientMap::setSetting (const std::string& key, const std::string& value)
 {
 	debug(LOG_CLIENT, "client key: " + key + " = " + value);
 	_settings[key] = value;
+
+	if (key == msn::WIDTH) {
+		_mapWidth = string::toInt(value);
+	} else if (key == msn::HEIGHT) {
+		_mapHeight = string::toInt(value);
+	} else if (key == msn::THEME) {
+		_theme = &ThemeType::getByName(value);
+	} else if (key == msn::TUTORIAL) {
+		_tutorial = string::toBool(value);
+	} else if (key == msn::INTROWINDOW) {
+		_introWindow = value;
+	}
 }
 
 void ClientMap::couldNotFindEntity (const std::string& prefix, uint16_t id) const

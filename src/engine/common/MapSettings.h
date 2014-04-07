@@ -8,6 +8,7 @@ const std::string WIDTH = "width";
 const std::string HEIGHT = "height";
 const std::string POINTS = "points";
 const std::string TUTORIAL = "tutorial";
+const std::string INTROWINDOW = "introwindow";
 const std::string REFERENCETIME = "referencetime";
 // can be used for those wind levels where you lose if not all packages are
 // delivered when you are touching the side borders
@@ -41,6 +42,7 @@ const std::string PLAYER_X = "2";
 const std::string PLAYER_Y = "1";
 const std::string WATER_RISING_DELAY = "0";
 const std::string WATER_FALLING_DELAY = "0";
+const std::string INTROWINDOW = "";
 }
 
 // map setting default values

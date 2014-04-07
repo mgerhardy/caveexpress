@@ -52,4 +52,5 @@ function initMap()
 	map:setSetting("width", "6")
 	map:setSetting("wind", "0")
 	map:setSetting("tutorial", "true")
+	map:setSetting("introwindow", "intro1")
 end

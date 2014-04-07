@@ -29,7 +29,6 @@ public:
 	bool playerClickedByFinger (bool up) override;
 
 	void render (int x, int y) const override;
-	void setSetting (const std::string& key, const std::string& value) override;
 };
 
 inline void CaveExpressClientMap::handleWaterImpact (float x, float force)

@@ -65,6 +65,7 @@ protected:
 	ParticleSystem _particleSystem;
 
 	bool _tutorial;
+	std::string _introWindow;
 	bool _started;
 	const ThemeType* _theme;
 

@@ -136,17 +136,3 @@ void CaveExpressClientMap::render (int x, int y) const
 
 	_frontend->disableScissor();
 }
-
-void CaveExpressClientMap::setSetting (const std::string& key, const std::string& value)
-{
-	ClientMap::setSetting(key, value);
-	if (key == msn::WIDTH) {
-		_mapWidth = string::toInt(value);
-	} else if (key == msn::HEIGHT) {
-		_mapHeight = string::toInt(value);
-	} else if (key == msn::THEME) {
-		_theme = &ThemeType::getByName(value);
-	} else if (key == msn::TUTORIAL) {
-		_tutorial = string::toBool(value);
-	}
-}
