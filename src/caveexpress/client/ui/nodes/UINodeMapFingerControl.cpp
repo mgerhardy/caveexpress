@@ -5,6 +5,10 @@
 #include "engine/common/ConfigManager.h"
 #include "engine/common/Logger.h"
 
+namespace {
+const int playerClickGap = 0;
+}
+
 UINodeMapFingerControl::UINodeMapFingerControl (IFrontend *frontend, UINodeMap *mapNode) :
 		UINode(frontend), _map(mapNode->getMap()), _finger(-1), _pressX(0), _pressY(0), _moveX(0), _moveY(0), _lastMoveX(0), _lastMoveY(0)
 {
@@ -66,7 +70,6 @@ bool UINodeMapFingerControl::onFingerPress (int64_t finger, uint16_t x, uint16_t
 
 	const ClientPlayer* player = _map.getPlayer();
 	if (player != nullptr) {
-		const int playerClickGap = 0;
 		int px, py;
 		int pw, ph;
 		player->getScreenSize(pw, ph);
@@ -79,7 +82,8 @@ bool UINodeMapFingerControl::onFingerPress (int64_t finger, uint16_t x, uint16_t
 		ph += playerClickGap;
 
 		if (x >= px && x < px + pw && y >= py && y < py + ph) {
-			return _map.playerClickedByFinger();
+			if (_map.playerClickedByFinger(false))
+				return true;
 		}
 	}
 
@@ -101,6 +105,25 @@ bool UINodeMapFingerControl::onFingerRelease (int64_t finger, uint16_t x, uint16
 		_lastMoveX = _lastMoveY = _moveX = _moveY = 0;
 		_map.resetAcceleration();
 		return true;
+	} else {
+		const ClientPlayer* player = _map.getPlayer();
+		if (player != nullptr) {
+			int px, py;
+			int pw, ph;
+			player->getScreenSize(pw, ph);
+			player->getScreenPos(px, py);
+
+			px -= playerClickGap;
+			py -= playerClickGap;
+
+			pw += playerClickGap;
+			ph += playerClickGap;
+
+			if (x >= px && x < px + pw && y >= py && y < py + ph) {
+				if (_map.playerClickedByFinger(true))
+					return true;
+			}
+		}
 	}
 
 	return val;

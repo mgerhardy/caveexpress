@@ -5,6 +5,7 @@
 class CaveExpressClientMap: public ClientMap {
 private:
 	float _waterHeight;
+	uint32_t _lastClickedOnPlayer;
 
 	void renderWater (int x, int y) const;
 	void couldNotFindEntity (const std::string& prefix, uint16_t id) const override;
@@ -25,7 +26,7 @@ public:
 	int getWaterGround () const override { return getWaterSurface() + (_mapHeight - _waterHeight) * _scale; }
 
 	bool secondFinger () override { return drop(); }
-	bool playerClickedByFinger () override { return drop(); }
+	bool playerClickedByFinger (bool up) override;
 
 	void render (int x, int y) const override;
 	void setSetting (const std::string& key, const std::string& value) override;

@@ -25,7 +25,7 @@
 
 CaveExpressClientMap::CaveExpressClientMap (int x, int y, int width, int height, IFrontend *frontend,
 		ServiceProvider& serviceProvider, int referenceTileWidth) :
-		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth), _waterHeight(0.0)
+		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth), _waterHeight(0.0), _lastClickedOnPlayer(0U)
 {
 }
 
@@ -33,6 +33,7 @@ void CaveExpressClientMap::resetCurrentMap ()
 {
 	ClientMap::resetCurrentMap();
 	_waterHeight = 0.0f;
+	_lastClickedOnPlayer = 0L;
 }
 
 void CaveExpressClientMap::renderWater (int x, int y) const
@@ -94,6 +95,16 @@ void CaveExpressClientMap::couldNotFindEntity (const std::string& prefix, uint16
 			continue;
 		info(LOG_CLIENT, String::format("id: %i, type: %s", e->getID(), e->getType().name.c_str()));
 	}
+}
+
+bool CaveExpressClientMap::playerClickedByFinger (bool up) {
+	const int millisDoubleClick = 50;
+	if (up && _lastClickedOnPlayer >= _time - millisDoubleClick)
+		return drop();
+	_lastClickedOnPlayer = _time;
+	if (!up)
+		setAcceleration(0, -10);
+	return false;
 }
 
 void CaveExpressClientMap::render (int x, int y) const
