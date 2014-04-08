@@ -156,7 +156,7 @@ SDL_SYS_HapticInit(void)
     io_service_t device;
 
     if (numhaptics != -1) {
-        return SDL_Error("Haptic subsystem already initialized!");
+        return SDL_SetError("Haptic subsystem already initialized!");
     }
     numhaptics = 0;
 
@@ -237,7 +237,7 @@ MacHaptic_MaybeAddDevice( io_object_t device )
         }
     }
 
-    item = (SDL_hapticlist_item *)SDL_malloc( sizeof(SDL_hapticlist_item));
+    item = (SDL_hapticlist_item *)SDL_calloc(1, sizeof(SDL_hapticlist_item));
     if (item == NULL) {
         return SDL_SetError("Could not allocate haptic storage");
     }
@@ -248,7 +248,6 @@ MacHaptic_MaybeAddDevice( io_object_t device )
     /* Set basic device data. */
     HIDGetDeviceProduct(device, item->name);
     item->dev = device;
-    item->haptic = NULL;
 
     /* Set usage pages. */
     hidProperties = 0;
@@ -486,7 +485,7 @@ GetSupportedFeatures(SDL_Haptic * haptic)
     supported |= SDL_HAPTIC_STATUS | SDL_HAPTIC_PAUSE;
 
     haptic->supported = supported;
-    return 0;;
+    return 0;
 }
 
 

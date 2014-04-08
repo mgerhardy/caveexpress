@@ -50,6 +50,9 @@ static const SDL_RenderDriver *render_drivers[] = {
 #if SDL_VIDEO_RENDER_D3D
     &D3D_RenderDriver,
 #endif
+#if SDL_VIDEO_RENDER_D3D11
+    &D3D11_RenderDriver,
+#endif
 #if SDL_VIDEO_RENDER_OGL
     &GL_RenderDriver,
 #endif
@@ -347,7 +350,7 @@ SDL_GetRendererOutputSize(SDL_Renderer * renderer, int *w, int *h)
         SDL_GetWindowSize(renderer->window, w, h);
         return 0;
     } else {
-        /* This should never happen */
+        SDL_assert(0 && "This should never happen");
         return SDL_SetError("Renderer doesn't support querying output size");
     }
 }
@@ -400,6 +403,10 @@ SDL_CreateTexture(SDL_Renderer * renderer, Uint32 format, int access, int w, int
 
     if (!format) {
         format = renderer->info.texture_formats[0];
+    }
+    if (SDL_BYTESPERPIXEL(format) == 0) {
+        SDL_SetError("Invalid texture format");
+        return NULL;
     }
     if (SDL_ISPIXELFORMAT_INDEXED(format)) {
         SDL_SetError("Palettized textures are not supported");
@@ -967,8 +974,8 @@ static void
 SDL_UnlockTextureYUV(SDL_Texture * texture)
 {
     SDL_Texture *native = texture->native;
-    void *native_pixels;
-    int native_pitch;
+    void *native_pixels = NULL;
+    int native_pitch = 0;
     SDL_Rect rect;
 
     rect.x = 0;
@@ -988,8 +995,8 @@ static void
 SDL_UnlockTextureNative(SDL_Texture * texture)
 {
     SDL_Texture *native = texture->native;
-    void *native_pixels;
-    int native_pitch;
+    void *native_pixels = NULL;
+    int native_pitch = 0;
     const SDL_Rect *rect = &texture->locked_rect;
     const void* pixels = (void *) ((Uint8 *) texture->pixels +
                         rect->y * texture->pitch +
@@ -1110,7 +1117,7 @@ SDL_GetRenderTarget(SDL_Renderer *renderer)
 static int
 UpdateLogicalSize(SDL_Renderer *renderer)
 {
-    int w, h;
+    int w = 1, h = 1;
     float want_aspect;
     float real_aspect;
     float scale;
@@ -1876,7 +1883,9 @@ int SDL_GL_UnbindTexture(SDL_Texture *texture)
 
     CHECK_TEXTURE_MAGIC(texture, -1);
     renderer = texture->renderer;
-    if (renderer && renderer->GL_UnbindTexture) {
+    if (texture->native) {
+        return SDL_GL_UnbindTexture(texture->native);
+    } else if (renderer && renderer->GL_UnbindTexture) {
         return renderer->GL_UnbindTexture(renderer, texture);
     }
 

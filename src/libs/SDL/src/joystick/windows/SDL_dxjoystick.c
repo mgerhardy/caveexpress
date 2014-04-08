@@ -782,7 +782,7 @@ EnumXInputDevices(JoyStick_DeviceData **pContext)
             XINPUT_CAPABILITIES capabilities;
             if (XINPUTGETCAPABILITIES(userid, XINPUT_FLAG_GAMEPAD, &capabilities) == ERROR_SUCCESS) {
                 /* Current version of XInput mistakenly returns 0 as the Type. Ignore it and ensure the subtype is a gamepad. */
-                /* !!! FIXME: we might want to support steering wheels or guitars or whatever laster. */
+                /* !!! FIXME: we might want to support steering wheels or guitars or whatever later. */
                 if (capabilities.SubType == XINPUT_DEVSUBTYPE_GAMEPAD) {
                     AddXInputDevice(userid, pContext);
                 }
@@ -959,12 +959,13 @@ SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int device_index)
     SDL_zerop(joystick->hwdata);
 
     if (joystickdevice->bXInputDevice) {
-        const SDL_bool bIs14OrLater = (SDL_XInputVersion >= ((1<<16)|4));
         const Uint8 userId = joystickdevice->XInputUserId;
         XINPUT_CAPABILITIES capabilities;
+        XINPUT_VIBRATION state;
 
         SDL_assert(s_bXInputEnabled);
         SDL_assert(XINPUTGETCAPABILITIES);
+        SDL_assert(XINPUTSETSTATE);
         SDL_assert(userId >= 0);
         SDL_assert(userId < SDL_XINPUT_MAX_DEVICES);
 
@@ -977,9 +978,8 @@ SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int device_index)
         } else {
             /* Current version of XInput mistakenly returns 0 as the Type. Ignore it and ensure the subtype is a gamepad. */
             SDL_assert(capabilities.SubType == XINPUT_DEVSUBTYPE_GAMEPAD);
-            if ((!bIs14OrLater) || (capabilities.Flags & XINPUT_CAPS_FFB_SUPPORTED)) {
-                joystick->hwdata->bXInputHaptic = SDL_TRUE;
-            }
+            SDL_zero(state);
+            joystick->hwdata->bXInputHaptic = (XINPUTSETSTATE(userId, &state) == ERROR_SUCCESS);
             joystick->hwdata->userid = userId;
 
             /* The XInput API has a hard coded button/axis mapping, so we just match it */
@@ -987,7 +987,7 @@ SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int device_index)
             joystick->nbuttons = 15;
             joystick->nballs = 0;
             joystick->nhats = 0;
-		}
+        }
     } else {  /* use DirectInput, not XInput. */
         LPDIRECTINPUTDEVICE8 device;
         DIPROPDWORD dipdw;
@@ -1025,7 +1025,7 @@ SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int device_index)
         result =
             IDirectInputDevice8_SetCooperativeLevel(joystick->hwdata->
                                                     InputDevice, SDL_HelperWindow,
-                                                    DISCL_NONEXCLUSIVE |
+                                                    DISCL_EXCLUSIVE |
                                                     DISCL_BACKGROUND);
         if (FAILED(result)) {
             return SetDIerror("IDirectInputDevice8::SetCooperativeLevel", result);
@@ -1448,6 +1448,7 @@ SDL_SYS_JoystickUpdate_XInput(SDL_Joystick * joystick)
         XINPUT_STATE_EX *pXInputState = &joystick->hwdata->XInputState[joystick->hwdata->currentXInputSlot];
         XINPUT_STATE_EX *pXInputStatePrev = &joystick->hwdata->XInputState[joystick->hwdata->currentXInputSlot ^ 1];
 
+        /* !!! FIXME: why isn't this just using SDL_PrivateJoystickAxis_Int()? */
         SDL_PrivateJoystickAxis( joystick, 0, (Sint16)pXInputState->Gamepad.sThumbLX );
         SDL_PrivateJoystickAxis( joystick, 1, (Sint16)(-SDL_max(-32767, pXInputState->Gamepad.sThumbLY)) );
         SDL_PrivateJoystickAxis( joystick, 2, (Sint16)pXInputState->Gamepad.sThumbRX );
@@ -1455,6 +1456,7 @@ SDL_SYS_JoystickUpdate_XInput(SDL_Joystick * joystick)
         SDL_PrivateJoystickAxis( joystick, 4, (Sint16)(((int)pXInputState->Gamepad.bLeftTrigger*65535/255) - 32768));
         SDL_PrivateJoystickAxis( joystick, 5, (Sint16)(((int)pXInputState->Gamepad.bRightTrigger*65535/255) - 32768));
 
+        /* !!! FIXME: why isn't this just using SDL_PrivateJoystickButton_Int(), instead of keeping these two alternating state buffers? */
         if ( ButtonChanged( pXInputState->Gamepad.wButtons, pXInputStatePrev->Gamepad.wButtons, XINPUT_GAMEPAD_DPAD_UP ) )
             SDL_PrivateJoystickButton(joystick, 0, pXInputState->Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP ? SDL_PRESSED :  SDL_RELEASED );
         if ( ButtonChanged( pXInputState->Gamepad.wButtons, pXInputStatePrev->Gamepad.wButtons, XINPUT_GAMEPAD_DPAD_DOWN ) )
@@ -1522,6 +1524,7 @@ TranslatePOV(DWORD value)
 
 /* SDL_PrivateJoystick* doesn't discard duplicate events, so we need to
  * do it. */
+/* !!! FIXME: SDL_PrivateJoystickAxis _does_ discard duplicate events now. Ditch this code. */
 static int
 SDL_PrivateJoystickAxis_Int(SDL_Joystick * joystick, Uint8 axis, Sint16 value)
 {
@@ -1672,7 +1675,7 @@ SDL_bool SDL_SYS_IsXInputDeviceIndex(int device_index)
 /* return SDL_TRUE if this device was opened with XInput */
 SDL_bool SDL_SYS_IsXInputJoystick(SDL_Joystick * joystick)
 {
-	return joystick->hwdata->bXInputDevice;
+    return joystick->hwdata->bXInputDevice;
 }
 
 #endif /* SDL_JOYSTICK_DINPUT */

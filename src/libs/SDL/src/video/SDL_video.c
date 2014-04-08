@@ -31,6 +31,8 @@
 #include "../events/SDL_events_c.h"
 #include "../timer/SDL_timer_c.h"
 
+#include "SDL_syswm.h"
+
 #if SDL_VIDEO_OPENGL
 #include "SDL_opengl.h"
 #endif /* SDL_VIDEO_OPENGL */
@@ -43,8 +45,6 @@
 #if SDL_VIDEO_OPENGL_ES2 && !SDL_VIDEO_OPENGL
 #include "SDL_opengles2.h"
 #endif /* SDL_VIDEO_OPENGL_ES2 && !SDL_VIDEO_OPENGL */
-
-#include "SDL_syswm.h"
 
 /* On Windows, windows.h defines CreateWindow */
 #ifdef CreateWindow
@@ -67,6 +67,9 @@ static VideoBootStrap *bootstrap[] = {
 #endif
 #if SDL_VIDEO_DRIVER_WINDOWS
     &WINDOWS_bootstrap,
+#endif
+#if SDL_VIDEO_DRIVER_WINRT
+    &WINRT_bootstrap,
 #endif
 #if SDL_VIDEO_DRIVER_HAIKU
     &HAIKU_bootstrap,
@@ -103,7 +106,7 @@ static SDL_VideoDevice *_this = NULL;
         return retval; \
     } \
     if (!window || window->magic != &_this->window_magic) { \
-        SDL_SetError("Invalid window: %s", __func__); \
+        SDL_SetError("Invalid window"); \
         return retval; \
     }
 
@@ -112,6 +115,7 @@ static SDL_VideoDevice *_this = NULL;
         SDL_UninitializedVideo(); \
         return retval; \
     } \
+    SDL_assert(_this->displays != NULL); \
     if (displayIndex < 0 || displayIndex >= _this->num_displays) { \
         SDL_SetError("displayIndex must be in the range 0 - %d", \
                      _this->num_displays - 1); \
@@ -421,8 +425,10 @@ int
 SDL_VideoInit(const char *driver_name)
 {
     SDL_VideoDevice *video;
+    const char *hint;
     int index;
     int i;
+    SDL_bool allow_screensaver;
 
     /* Check to make sure we don't overwrite '_this' */
     if (_this != NULL) {
@@ -430,7 +436,7 @@ SDL_VideoInit(const char *driver_name)
     }
 
 #if !SDL_TIMERS_DISABLED
-    SDL_InitTicks();
+    SDL_TicksInit();
 #endif
 
     /* Start the event loop */
@@ -502,6 +508,22 @@ SDL_VideoInit(const char *driver_name)
         _this->CreateWindowFramebuffer = SDL_CreateWindowTexture;
         _this->UpdateWindowFramebuffer = SDL_UpdateWindowTexture;
         _this->DestroyWindowFramebuffer = SDL_DestroyWindowTexture;
+    }
+
+    /* Disable the screen saver by default. This is a change from <= 2.0.1,
+       but most things using SDL are games or media players; you wouldn't
+       want a screensaver to trigger if you're playing exclusively with a
+       joystick, or passively watching a movie. Things that use SDL but
+       function more like a normal desktop app should explicitly reenable the
+       screensaver. */
+    hint = SDL_GetHint(SDL_HINT_VIDEO_ALLOW_SCREENSAVER);
+    if (hint) {
+        allow_screensaver = SDL_atoi(hint) ? SDL_TRUE : SDL_FALSE;
+    } else {
+        allow_screensaver = SDL_FALSE;
+    }
+    if (!allow_screensaver) {
+        SDL_DisableScreenSaver();
     }
 
     /* If we don't use a screen keyboard, turn on text input by default,
@@ -1106,6 +1128,8 @@ SDL_UpdateFullscreenMode(SDL_Window * window, SDL_bool fullscreen)
         if (setDisplayMode) {
             SDL_DisplayMode fullscreen_mode;
 
+            SDL_zero(fullscreen_mode);
+
             if (SDL_GetWindowDisplayMode(other, &fullscreen_mode) == 0) {
                 SDL_bool resized = SDL_TRUE;
 
@@ -1547,6 +1571,8 @@ SDL_SetWindowPosition(SDL_Window * window, int x, int y)
         SDL_VideoDisplay *display = SDL_GetDisplayForWindow(window);
         int displayIndex;
         SDL_Rect bounds;
+
+        SDL_zero(bounds);
 
         displayIndex = SDL_GetIndexOfDisplay(display);
         SDL_GetDisplayBounds(displayIndex, &bounds);
@@ -2103,7 +2129,13 @@ SDL_OnWindowMinimized(SDL_Window * window)
 void
 SDL_OnWindowRestored(SDL_Window * window)
 {
-    SDL_RaiseWindow(window);
+    /*
+     * FIXME: Is this fine to just remove this, or should it be preserved just
+     * for the fullscreen case? In principle it seems like just hiding/showing
+     * windows shouldn't affect the stacking order; maybe the right fix is to
+     * re-decouple OnWindowShown and OnWindowRestored.
+     */
+    /*SDL_RaiseWindow(window);*/
 
     if (FULLSCREEN_VISIBLE(window)) {
         SDL_UpdateFullscreenMode(window, SDL_TRUE);
@@ -3195,6 +3227,9 @@ SDL_IsScreenKeyboardShown(SDL_Window *window)
 #if SDL_VIDEO_DRIVER_WINDOWS
 #include "windows/SDL_windowsmessagebox.h"
 #endif
+#if SDL_VIDEO_DRIVER_WINRT
+#include "winrt/SDL_winrtmessagebox.h"
+#endif
 #if SDL_VIDEO_DRIVER_COCOA
 #include "cocoa/SDL_cocoamessagebox.h"
 #endif
@@ -3251,6 +3286,13 @@ SDL_ShowMessageBox(const SDL_MessageBoxData *messageboxdata, int *buttonid)
     if (retval == -1 &&
         SDL_MessageboxValidForDriver(messageboxdata, SDL_SYSWM_WINDOWS) &&
         WIN_ShowMessageBox(messageboxdata, buttonid) == 0) {
+        retval = 0;
+    }
+#endif
+#if SDL_VIDEO_DRIVER_WINRT
+    if (retval == -1 &&
+        SDL_MessageboxValidForDriver(messageboxdata, SDL_SYSWM_WINRT) &&
+        WINRT_ShowMessageBox(messageboxdata, buttonid) == 0) {
         retval = 0;
     }
 #endif

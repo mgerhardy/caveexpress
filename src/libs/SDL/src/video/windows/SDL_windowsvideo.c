@@ -247,7 +247,7 @@ SDL_Direct3D9GetAdapterIndex( int displayIndex )
 
 #define CINTERFACE
 #define COBJMACROS
-#include <DXGI.h>
+#include <dxgi.h>
 
 SDL_bool 
 DXGI_LoadDLL( void **pDXGIDLL , IDXGIFactory **pDXGIFactory )
@@ -261,7 +261,7 @@ DXGI_LoadDLL( void **pDXGIDLL , IDXGIFactory **pDXGIFactory )
 			"CreateDXGIFactory");
 		if (CreateDXGI) {
 			GUID dxgiGUID = {0x7b7166ec,0x21c7,0x44ae,{0xb2,0x1a,0xc9,0xae,0x32,0x1a,0xe3,0x69}};
-			if( !SUCCEEDED( CreateDXGI( &dxgiGUID, pDXGIFactory ))) {
+			if( !SUCCEEDED( CreateDXGI( &dxgiGUID, (void**)pDXGIFactory ))) {
 				*pDXGIFactory = NULL;
 			}
 		}

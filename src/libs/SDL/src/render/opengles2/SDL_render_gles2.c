@@ -28,6 +28,12 @@
 #include "../../video/SDL_blit.h"
 #include "SDL_shaders_gles2.h"
 
+/* To prevent unnecessary window recreation, 
+ * these should match the defaults selected in SDL_GL_ResetAttributes 
+ */
+#define RENDERER_CONTEXT_MAJOR 2
+#define RENDERER_CONTEXT_MINOR 0
+
 /* Used to re-create the window with OpenGL ES capability */
 extern int SDL_RecreateWindow(SDL_Window * window, Uint32 flags);
 
@@ -1740,15 +1746,25 @@ GLES2_CreateRenderer(SDL_Window *window, Uint32 flags)
     Uint32 windowFlags;
     GLint window_framebuffer;
     GLint value;
+    int profile_mask, major, minor;
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &profile_mask);
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
 
     windowFlags = SDL_GetWindowFlags(window);
-    if (!(windowFlags & SDL_WINDOW_OPENGL)) {
+    if (!(windowFlags & SDL_WINDOW_OPENGL) ||
+        profile_mask != SDL_GL_CONTEXT_PROFILE_ES || major != RENDERER_CONTEXT_MAJOR || minor != RENDERER_CONTEXT_MINOR) {
+        
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, RENDERER_CONTEXT_MAJOR);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, RENDERER_CONTEXT_MINOR);
+
         if (SDL_RecreateWindow(window, windowFlags | SDL_WINDOW_OPENGL) < 0) {
             /* Uh oh, better try to put it back... */
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, profile_mask);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor);
             SDL_RecreateWindow(window, windowFlags);
             return NULL;
         }
@@ -1768,7 +1784,7 @@ GLES2_CreateRenderer(SDL_Window *window, Uint32 flags)
         return NULL;
     }
     renderer->info = GLES2_RenderDriver.info;
-    renderer->info.flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE;
+    renderer->info.flags = (SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
     renderer->driverdata = data;
     renderer->window = window;
 
@@ -1788,6 +1804,14 @@ GLES2_CreateRenderer(SDL_Window *window, Uint32 flags)
         GLES2_DestroyRenderer(renderer);
         return NULL;
     }
+
+#if __WINRT__
+    /* DLudwig, 2013-11-29: ANGLE for WinRT doesn't seem to work unless VSync
+     * is turned on.  Not doing so will freeze the screen's contents to that
+     * of the first drawn frame.
+     */
+    flags |= SDL_RENDERER_PRESENTVSYNC;
+#endif
 
     if (flags & SDL_RENDERER_PRESENTVSYNC) {
         SDL_GL_SetSwapInterval(1);

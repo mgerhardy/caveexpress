@@ -26,6 +26,13 @@
 #include "SDL_opengles.h"
 #include "../SDL_sysrender.h"
 
+/* To prevent unnecessary window recreation, 
+ * these should match the defaults selected in SDL_GL_ResetAttributes 
+ */
+
+#define RENDERER_CONTEXT_MAJOR 1
+#define RENDERER_CONTEXT_MINOR 1
+
 #if defined(SDL_VIDEO_DRIVER_PANDORA)
 
 /* Empty function stub to get OpenGL ES 1.x support without  */
@@ -96,7 +103,7 @@ SDL_RenderDriver GLES_RenderDriver = {
     GLES_CreateRenderer,
     {
      "opengles",
-     (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC ),
+     (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC),
      1,
      {SDL_PIXELFORMAT_ABGR8888},
      0,
@@ -279,15 +286,25 @@ GLES_CreateRenderer(SDL_Window * window, Uint32 flags)
     GLES_RenderData *data;
     GLint value;
     Uint32 windowFlags;
+    int profile_mask, major, minor;
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &profile_mask);
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
 
     windowFlags = SDL_GetWindowFlags(window);
-    if (!(windowFlags & SDL_WINDOW_OPENGL)) {
+    if (!(windowFlags & SDL_WINDOW_OPENGL) ||
+        profile_mask != SDL_GL_CONTEXT_PROFILE_ES || major != RENDERER_CONTEXT_MAJOR || minor != RENDERER_CONTEXT_MINOR) {
+
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, RENDERER_CONTEXT_MAJOR);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, RENDERER_CONTEXT_MINOR);
+
         if (SDL_RecreateWindow(window, windowFlags | SDL_WINDOW_OPENGL) < 0) {
             /* Uh oh, better try to put it back... */
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, profile_mask);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor);
             SDL_RecreateWindow(window, windowFlags);
             return NULL;
         }

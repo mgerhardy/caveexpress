@@ -243,6 +243,7 @@ finalize_audio_entry_points(void)
 #undef FILL_STUB
 }
 
+#if 0  /* !!! FIXME: rewrite/remove this streamer code. */
 /* Streaming functions (for when the input and output buffer sizes are different) */
 /* Write [length] bytes from buf into the streamer */
 static void
@@ -302,6 +303,7 @@ SDL_StreamDeinit(SDL_AudioStreamer * stream)
 {
     SDL_free(stream->buffer);
 }
+#endif
 
 #if defined(ANDROID)
 #include <android/log.h>
@@ -317,9 +319,12 @@ SDL_RunAudio(void *devicep)
     void *udata;
     void (SDLCALL * fill) (void *userdata, Uint8 * stream, int len);
     Uint32 delay;
+
+#if 0  /* !!! FIXME: rewrite/remove this streamer code. */
     /* For streaming when the buffer sizes don't match up */
     Uint8 *istream;
     int istream_len = 0;
+#endif
 
     /* The audio mixing is always a high priority thread */
     SDL_SetThreadPriority(SDL_THREAD_PRIORITY_HIGH);
@@ -367,6 +372,7 @@ SDL_RunAudio(void *devicep)
     delay = ((device->spec.samples * 1000) / device->spec.freq);
 
     /* Determine if the streamer is necessary here */
+#if 0  /* !!! FIXME: rewrite/remove this streamer code. */
     if (device->use_streamer == 1) {
         /* This code is almost the same as the old code. The difference is, instead of reading
            directly from the callback into "stream", then converting and sending the audio off,
@@ -455,7 +461,9 @@ SDL_RunAudio(void *devicep)
             }
 
         }
-    } else {
+    } else
+#endif
+    {
         /* Otherwise, do not use the streamer. This is the old code. */
         const int silence = (int) device->spec.silence;
 
@@ -510,8 +518,10 @@ SDL_RunAudio(void *devicep)
     current_audio.impl.WaitDone(device);
 
     /* If necessary, deinit the streamer */
+#if 0  /* !!! FIXME: rewrite/remove this streamer code. */
     if (device->use_streamer == 1)
         SDL_StreamDeinit(&device->streamer);
+#endif
 
     return (0);
 }

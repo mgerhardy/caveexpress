@@ -25,6 +25,7 @@
 
 #include "SDL_cocoavideo.h"
 #include "../../events/SDL_events_c.h"
+#include "SDL_assert.h"
 
 #if !defined(UsrActivity) && defined(__LP64__) && !defined(__POWER__)
 /*
@@ -158,13 +159,19 @@ CreateApplicationMenus(void)
     NSMenu *windowMenu;
     NSMenu *viewMenu;
     NSMenuItem *menuItem;
+    NSMenu *mainMenu;
 
     if (NSApp == nil) {
         return;
     }
-    
+
+    mainMenu = [[NSMenu alloc] init];
+
     /* Create the main menu bar */
-    [NSApp setMainMenu:[[NSMenu alloc] init]];
+    [NSApp setMainMenu:mainMenu];
+
+    [mainMenu release];  /* we're done with it, let NSApp own it. */
+    mainMenu = nil;
 
     /* Create the application menu */
     appName = GetApplicationName();
@@ -266,14 +273,18 @@ Cocoa_RegisterApp(void)
     pool = [[NSAutoreleasePool alloc] init];
     if (NSApp == nil) {
         [SDLApplication sharedApplication];
+        SDL_assert(NSApp != nil);
 
         if ([NSApp mainMenu] == nil) {
             CreateApplicationMenus();
         }
         [NSApp finishLaunching];
-        NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:@"NO" forKey:@"AppleMomentumScrollSupported"];
+        NSDictionary *appDefaults = [[NSDictionary alloc] initWithObjectsAndKeys:
+            [NSNumber numberWithBool:NO], @"AppleMomentumScrollSupported",
+            [NSNumber numberWithBool:NO], @"ApplePressAndHoldEnabled",
+            nil];
         [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
-
+        [appDefaults release];
     }
     if (NSApp && !appDelegate) {
         appDelegate = [[SDLAppDelegate alloc] init];

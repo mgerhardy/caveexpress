@@ -560,9 +560,7 @@ X11_DispatchEvent(_THIS)
                    xevent.xconfigure.width, xevent.xconfigure.height);
 #endif
             long border_left = 0;
-            long border_right = 0;
             long border_top = 0;
-            long border_bottom = 0;
             if (data->xwindow) {
                 Atom _net_frame_extents = X11_XInternAtom(display, "_NET_FRAME_EXTENTS", 0);
                 Atom type = None;
@@ -577,9 +575,7 @@ X11_DispatchEvent(_THIS)
                 if (type != None && nitems == 4)
                 {
                     border_left = ((long*)property)[0];
-                    border_right = ((long*)property)[1];
                     border_top = ((long*)property)[2];
-                    border_bottom = ((long*)property)[3];
                 }
             }
 
@@ -1029,7 +1025,19 @@ X11_SuspendScreenSaver(_THIS)
     SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
     int dummy;
     int major_version, minor_version;
+#endif /* SDL_VIDEO_DRIVER_X11_XSCRNSAVER */
 
+#if SDL_USE_LIBDBUS
+    if (SDL_dbus_screensaver_inhibit(_this)) {
+        return;
+    }
+
+    if (_this->suspend_screensaver) {
+        SDL_dbus_screensaver_tickle(_this);
+    }
+#endif
+
+#if SDL_VIDEO_DRIVER_X11_XSCRNSAVER
     if (SDL_X11_HAVE_XSS) {
         /* X11_XScreenSaverSuspend was introduced in MIT-SCREEN-SAVER 1.1 */
         if (!X11_XScreenSaverQueryExtension(data->display, &dummy, &dummy) ||
@@ -1041,12 +1049,6 @@ X11_SuspendScreenSaver(_THIS)
 
         X11_XScreenSaverSuspend(data->display, _this->suspend_screensaver);
         X11_XResetScreenSaver(data->display);
-    }
-#endif
-
-#if SDL_USE_LIBDBUS
-    if (_this->suspend_screensaver) {
-        SDL_dbus_screensaver_tickle(_this);
     }
 #endif
 }

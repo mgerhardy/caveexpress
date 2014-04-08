@@ -106,6 +106,19 @@ extern "C" {
 #define SDL_HINT_RENDER_DIRECT3D_THREADSAFE "SDL_RENDER_DIRECT3D_THREADSAFE"
 
 /**
+ *  \brief  A variable controlling whether to enable Direct3D 11+'s Debug Layer.
+ *
+ *  This variable does not have any effect on the Direct3D 9 based renderer.
+ *
+ *  This variable can be set to the following values:
+ *    "0"       - Disable Debug Layer use
+ *    "1"       - Enable Debug Layer use
+ *
+ *  By default, SDL does not use Direct3D Debug Layer.
+ */
+#define SDL_HINT_RENDER_DIRECT3D11_DEBUG    "SDL_RENDER_DIRECT3D11_DEBUG"
+
+/**
  *  \brief  A variable controlling the scaling quality
  *
  *  This variable can be set to the following values:
@@ -127,6 +140,17 @@ extern "C" {
  *  By default SDL does not sync screen surface updates with vertical refresh.
  */
 #define SDL_HINT_RENDER_VSYNC               "SDL_RENDER_VSYNC"
+
+/**
+ *  \brief  A variable controlling whether the screensaver is enabled. 
+ *
+ *  This variable can be set to the following values:
+ *    "0"       - Disable screensaver
+ *    "1"       - Enable screensaver
+ *
+ *  By default SDL will disable the screensaver.
+ */
+#define SDL_HINT_VIDEO_ALLOW_SCREENSAVER    "SDL_VIDEO_ALLOW_SCREENSAVER"
 
 /**
  *  \brief  A variable controlling whether the X11 VidMode extension should be used.
@@ -190,17 +214,6 @@ extern "C" {
 #define SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS   "SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS"
 
 /**
- *  \brief Set whether windows go fullscreen in their own spaces on Mac OS X
- *
- *  This variable can be set to the following values:
- *    "0"       - Fullscreen windows will use the classic fullscreen mode
- *    "1"       - Fullscreen windows will use fullscreen spaces
- *
- *  By default SDL will use the classic fullscreen mode.
- */
-#define SDL_HINT_VIDEO_FULLSCREEN_SPACES   "SDL_VIDEO_FULLSCREEN_SPACES"
-
-/**
  *  \brief  A variable controlling whether the idle timer is disabled on iOS.
  *
  *  When an iOS app does not receive touches for some time, the screen is
@@ -233,7 +246,7 @@ extern "C" {
  *    "0"       - List only real joysticks and accept input from them
  *    "1"       - List real joysticks along with the accelerometer as if it were a 3 axis joystick (the default).
  */
-#define SDL_HINT_ACCEL_AS_JOY "SDL_ACCEL_AS_JOY"
+#define SDL_HINT_ACCELEROMETER_AS_JOYSTICK "SDL_ACCELEROMETER_AS_JOYSTICK"
 
 
 /**
@@ -272,7 +285,7 @@ extern "C" {
 
 
 /**
- *  \brief If set to 0 then never set the top most bit on a SDL Window, even if the video mode expects it.
+ *  \brief If set to "0" then never set the top most bit on a SDL Window, even if the video mode expects it.
  *      This is a debugging aid for developers and not expected to be used by end users. The default is "1"
  *
  *  This variable can be set to the following values:
@@ -306,7 +319,7 @@ extern "C" {
 
 /**
  *  \brief A variable that determines whether ctrl+click should generate a right-click event on Mac
- *  
+ *
  *  If present, holding ctrl while left clicking will generate a right click
  *  event when on Mac.
  */
@@ -334,7 +347,7 @@ extern "C" {
 *  If this hint is set before SDL_CreateWindowFrom() and the SDL_Window* it is set to has
 *  SDL_WINDOW_OPENGL set (and running on WGL only, currently), then two things will occur on the newly 
 *  created SDL_Window:
-
+*
 *  1. Its pixel format will be set to the same pixel format as this SDL_Window.  This is
 *  needed for example when sharing an OpenGL context across multiple windows.
 *
@@ -346,6 +359,82 @@ extern "C" {
 *    share a pixel format with.
 */
 #define SDL_HINT_VIDEO_WINDOW_SHARE_PIXEL_FORMAT    "SDL_VIDEO_WINDOW_SHARE_PIXEL_FORMAT"
+
+/**
+ *  \brief A URL to a WinRT app's privacy policy
+ *
+ *  All network-enabled WinRT apps must make a privacy policy available to its
+ *  users.  On Windows 8, 8.1, and RT, Microsoft mandates that this policy be
+ *  be available in the Windows Settings charm, as accessed from within the app.
+ *  SDL provides code to add a URL-based link there, which can point to the app's
+ *  privacy policy.
+ *
+ *  To setup a URL to an app's privacy policy, set SDL_HINT_WINRT_PRIVACY_POLICY_URL
+ *  before calling any SDL_Init functions.  The contents of the hint should
+ *  be a valid URL.  For example, "http://www.example.com".
+ *
+ *  The default value is "", which will prevent SDL from adding a privacy policy
+ *  link to the Settings charm.  This hint should only be set during app init.
+ *
+ *  The label text of an app's "Privacy Policy" link may be customized via another
+ *  hint, SDL_HINT_WINRT_PRIVACY_POLICY_LABEL.
+ *
+ *  Please note that on Windows Phone, Microsoft does not provide standard UI
+ *  for displaying a privacy policy link, and as such, SDL_HINT_WINRT_PRIVACY_POLICY_URL
+ *  will not get used on that platform.  Network-enabled phone apps should display
+ *  their privacy policy through some other, in-app means.
+ */
+#define SDL_HINT_WINRT_PRIVACY_POLICY_URL "SDL_WINRT_PRIVACY_POLICY_URL"
+
+/** \brief Label text for a WinRT app's privacy policy link
+ *
+ *  Network-enabled WinRT apps must include a privacy policy.  On Windows 8, 8.1, and RT,
+ *  Microsoft mandates that this policy be available via the Windows Settings charm.
+ *  SDL provides code to add a link there, with its label text being set via the
+ *  optional hint, SDL_HINT_WINRT_PRIVACY_POLICY_LABEL.
+ *
+ *  Please note that a privacy policy's contents are not set via this hint.  A separate
+ *  hint, SDL_HINT_WINRT_PRIVACY_POLICY_URL, is used to link to the actual text of the
+ *  policy.
+ *
+ *  The contents of this hint should be encoded as a UTF8 string.
+ *
+ *  The default value is "Privacy Policy".  This hint should only be set during app
+ *  initialization, preferably before any calls to SDL_Init.
+ *
+ *  For additional information on linking to a privacy policy, see the documentation for
+ *  SDL_HINT_WINRT_PRIVACY_POLICY_URL.
+ */
+#define SDL_HINT_WINRT_PRIVACY_POLICY_LABEL "SDL_WINRT_PRIVACY_POLICY_LABEL"
+
+/** \brief If set to "1", back button press events on Windows Phone 8+ will be marked as handled.
+ *
+ *  TODO, WinRT: document SDL_HINT_WINRT_HANDLE_BACK_BUTTON need and use
+ *  For now, more details on why this is needed can be found at the
+ *  beginning of the following web page:
+ *  http://msdn.microsoft.com/en-us/library/windowsphone/develop/jj247550(v=vs.105).aspx
+ */
+#define SDL_HINT_WINRT_HANDLE_BACK_BUTTON "SDL_WINRT_HANDLE_BACK_BUTTON"
+
+/**
+ *  \brief  A variable that dictates policy for fullscreen Spaces on Mac OS X.
+ *
+ *  This hint only applies to Mac OS X.
+ *
+ *  The variable can be set to the following values:
+ *    "0"       - Disable Spaces support (FULLSCREEN_DESKTOP won't use them and
+ *                SDL_WINDOW_RESIZABLE windows won't offer the "fullscreen"
+ *                button on their titlebars).
+ *    "1"       - Enable Spaces support (FULLSCREEN_DESKTOP will use them and
+ *                SDL_WINDOW_RESIZABLE windows will offer the "fullscreen"
+ *                button on their titlebars).
+ *
+ *  The default value is "1". Spaces are disabled regardless of this hint if
+ *   the OS isn't at least Mac OS X Lion (10.7). This hint must be set before
+ *   any windows are created.
+ */
+#define SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES    "SDL_VIDEO_MAC_FULLSCREEN_SPACES"
+
 
 /**
  *  \brief  An enumeration of hint priorities
