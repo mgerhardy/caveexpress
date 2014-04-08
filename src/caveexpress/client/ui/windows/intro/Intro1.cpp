@@ -17,16 +17,3 @@ Intro1::Intro1 (IFrontend* frontend) :
 
 	add(new UINodeBackButton(frontend, background));
 }
-
-Intro1::~Intro1 ()
-{
-}
-
-bool Intro1::onPop () {
-	return UIWindow::onPop();
-}
-
-void Intro1::onActive ()
-{
-	UIWindow::onActive();
-}
