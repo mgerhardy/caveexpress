@@ -3,6 +3,7 @@
 #include <map>
 #include <list>
 #include <string>
+#include <string.h>
 #include <iostream>
 #include <Box2D/Common/b2Math.h>
 #include <SDL.h>
