@@ -38,6 +38,15 @@ void ClientMap::close ()
 	resetCurrentMap();
 }
 
+void ClientMap::start ()
+{
+	_started = true;
+
+	if (!_introWindow.empty()) {
+		UI::get().push(_introWindow);
+	}
+}
+
 bool ClientMap::isStarted () const
 {
 	return !_serviceProvider.getNetwork().isMultiplayer() || _started;
@@ -198,10 +207,6 @@ void ClientMap::init (uint16_t playerID)
 		for (int i = 0; i < snowFlakes; ++i) {
 			_particleSystem.spawn(ParticlePtr(new Snow(*this)));
 		}
-	}
-
-	if (!_introWindow.empty()) {
-		UI::get().push(_introWindow);
 	}
 }
 

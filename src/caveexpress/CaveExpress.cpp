@@ -35,6 +35,7 @@
 #include "caveexpress/client/ui/windows/UIPaymentWindow.h"
 #include "caveexpress/client/ui/windows/UIPopupWindow.h"
 #include "caveexpress/client/ui/windows/UIModeSelectionWindow.h"
+#include "caveexpress/client/ui/windows/intro/Intro1.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/client/CaveExpressClientMap.h"
 #include "caveexpress/client/commands/CmdMapOpenInEditor.h"
@@ -208,6 +209,7 @@ void CaveExpress::initUI (IFrontend* _frontend, ServiceProvider& serviceProvider
 	ui.addWindow(mapWindow);
 	ui.addWindow(new UIModeSelectionWindow(_frontend, campaignMgr));
 	ui.addWindow(new UISettingsWindow(_frontend, serviceProvider, campaignMgr));
+	ui.addWindow(new Intro1(_frontend));
 	ui.addWindow(new UIPaymentWindow(_frontend));
 	ui.addWindow(new UIMultiplayerWindow(_frontend, serviceProvider.getMapManager(), serviceProvider));
 	ui.addWindow(new UICreateServerWindow(_frontend, serviceProvider.getMapManager()));

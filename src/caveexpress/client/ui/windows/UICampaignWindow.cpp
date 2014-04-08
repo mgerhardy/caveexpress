@@ -12,7 +12,7 @@
 UICampaignWindow::UICampaignWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager) :
 		UIWindow(UI_WINDOW_CAMPAIGN, frontend), _campaignManager(campaignManager)
 {
-	UINodeBackground *background = new UINodeBackground(frontend, tr("Campaign"));
+	UINodeBackground *background = new UINodeBackground(frontend, tr("Campaigns"));
 	add(background);
 
 	const float gap = 0.001f;

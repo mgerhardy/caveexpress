@@ -151,11 +151,6 @@ inline const ThemeType& ClientMap::getTheme () const
 	return *_theme;
 }
 
-inline void ClientMap::start ()
-{
-	_started = true;
-}
-
 inline bool ClientMap::isActive () const
 {
 	return _mapWidth > 0 && _mapHeight > 0 && !_name.empty();

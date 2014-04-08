@@ -40,6 +40,7 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/caveexpress/client/ui/*.cpp) \
 	$(wildcard $(SRCDIR)/caveexpress/client/ui/nodes/*.cpp) \
 	$(wildcard $(SRCDIR)/caveexpress/client/ui/windows/*.cpp) \
+	$(wildcard $(SRCDIR)/caveexpress/client/ui/windows/intro/*.cpp) \
 	$(wildcard $(SRCDIR)/caveexpress/shared/*.cpp) \
 	$(wildcard $(SRCDIR)/caveexpress/shared/network/*.cpp) \
 	$(wildcard $(SRCDIR)/caveexpress/server/*.cpp) \

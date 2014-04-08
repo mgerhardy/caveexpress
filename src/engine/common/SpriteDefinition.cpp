@@ -222,6 +222,8 @@ SpriteDefPtr SpriteDefinition::getFromEntityType (const EntityType& entityType, 
 
 SpriteDefPtr SpriteDefinition::getSpriteDefinition (const std::string& spriteName) const
 {
+	if (spriteName.empty())
+		return SpriteDefPtr();
 	SpriteDefMapConstIter i = _spriteDefs.find(spriteName);
 	if (i == _spriteDefs.end()) {
 		error(LOG_GENERAL, "could not find sprite definition for " + spriteName);

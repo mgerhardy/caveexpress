@@ -192,8 +192,14 @@ void UI::addWindow (UIWindow *window)
 void UI::showCursor (bool show)
 {
 	// check if the system wants a cursor
-	if (!_showCursor)
+	if (!_showCursor) {
+		debug(LOG_CLIENT, "ignore show cursor call because the system does not want a cursor");
 		return;
+	}
+	if (show)
+		debug(LOG_CLIENT, "show the cursor");
+	else
+		debug(LOG_CLIENT, "hide the cursor");
 	_cursor = show;
 }
 
