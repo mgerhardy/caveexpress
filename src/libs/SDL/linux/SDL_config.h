@@ -1,7 +1,7 @@
 /* include/SDL_config.h.  Generated from SDL_config.h.in by configure.  */
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -134,6 +134,8 @@
 #define HAVE_M_PI /**/
 #define HAVE_ATAN 1
 #define HAVE_ATAN2 1
+#define HAVE_ACOS 1
+#define HAVE_ASIN 1
 #define HAVE_CEIL 1
 #define HAVE_COPYSIGN 1
 #define HAVE_COS 1
@@ -194,7 +196,7 @@
 /* #undef SDL_AUDIO_DRIVER_ARTS_DYNAMIC */
 #define SDL_AUDIO_DRIVER_PULSEAUDIO 1
 #define SDL_AUDIO_DRIVER_PULSEAUDIO_DYNAMIC "libpulse-simple.so.0"
-/* #undef SDL_AUDIO_DRIVER_BEOSAUDIO */
+/* #undef SDL_AUDIO_DRIVER_HAIKUAUDIO */
 /* #undef SDL_AUDIO_DRIVER_BSD */
 /* #undef SDL_AUDIO_DRIVER_COREAUDIO */
 #define SDL_AUDIO_DRIVER_DISK 1
@@ -220,7 +222,7 @@
 #define SDL_INPUT_LINUXEV 1
 #define SDL_INPUT_LINUXKD 1
 #define SDL_INPUT_TSLIB 1
-/* #undef SDL_JOYSTICK_BEOS */
+/* #undef SDL_JOYSTICK_HAIKU */
 /* #undef SDL_JOYSTICK_DINPUT */
 /* #undef SDL_JOYSTICK_DUMMY */
 /* #undef SDL_JOYSTICK_IOKIT */
@@ -234,32 +236,40 @@
 /* #undef SDL_HAPTIC_DINPUT */
 
 /* Enable various shared object loading systems */
-/* #undef SDL_LOADSO_BEOS */
+/* #undef SDL_LOADSO_HAIKU */
 #define SDL_LOADSO_DLOPEN 1
 /* #undef SDL_LOADSO_DUMMY */
 /* #undef SDL_LOADSO_LDG */
 /* #undef SDL_LOADSO_WINDOWS */
 
 /* Enable various threading systems */
-/* #undef SDL_THREAD_BEOS */
 #define SDL_THREAD_PTHREAD 1
 #define SDL_THREAD_PTHREAD_RECURSIVE_MUTEX 1
 /* #undef SDL_THREAD_PTHREAD_RECURSIVE_MUTEX_NP */
 /* #undef SDL_THREAD_WINDOWS */
 
 /* Enable various timer systems */
-/* #undef SDL_TIMER_BEOS */
+/* #undef SDL_TIMER_HAIKU */
 /* #undef SDL_TIMER_DUMMY */
 #define SDL_TIMER_UNIX 1
 /* #undef SDL_TIMER_WINDOWS */
 
 /* Enable various video drivers */
-/* #undef SDL_VIDEO_DRIVER_BWINDOW */
+/* #undef SDL_VIDEO_DRIVER_HAIKU */
 /* #undef SDL_VIDEO_DRIVER_COCOA */
 /* #undef SDL_VIDEO_DRIVER_DIRECTFB */
 /* #undef SDL_VIDEO_DRIVER_DIRECTFB_DYNAMIC */
 #define SDL_VIDEO_DRIVER_DUMMY 1
 /* #undef SDL_VIDEO_DRIVER_WINDOWS */
+/* #undef SDL_VIDEO_DRIVER_WAYLAND */
+/* #undef SDL_VIDEO_DRIVER_WAYLAND_QT_TOUCH */
+/* #undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC */
+/* #undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_EGL */
+/* #undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_CURSOR */
+/* #undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_XKBCOMMON */
+/* #undef SDL_VIDEO_DRIVER_MIR */
+/* #undef SDL_VIDEO_DRIVER_MIR_DYNAMIC */
+/* #undef SDL_VIDEO_DRIVER_MIR_DYNAMIC_XKBCOMMON */
 #define SDL_VIDEO_DRIVER_X11 1
 /* #undef SDL_VIDEO_DRIVER_RPI */
 #define SDL_VIDEO_DRIVER_X11_DYNAMIC "libX11.so.6"
@@ -284,6 +294,7 @@
 #define SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM 1
 
 /* #undef SDL_VIDEO_RENDER_D3D */
+/* #undef SDL_VIDEO_RENDER_D3D11 */
 #define SDL_VIDEO_RENDER_OGL 1
 /* #undef SDL_VIDEO_RENDER_OGL_ES */
 /* #undef SDL_VIDEO_RENDER_OGL_ES2 */
@@ -305,11 +316,11 @@
 #define SDL_POWER_LINUX 1
 /* #undef SDL_POWER_WINDOWS */
 /* #undef SDL_POWER_MACOSX */
-/* #undef SDL_POWER_BEOS */
+/* #undef SDL_POWER_HAIKU */
 /* #undef SDL_POWER_HARDWIRED */
 
 /* Enable system filesystem support */
-/* #undef SDL_FILESYSTEM_BEOS */
+/* #undef SDL_FILESYSTEM_HAIKU */
 /* #undef SDL_FILESYSTEM_COCOA */
 /* #undef SDL_FILESYSTEM_DUMMY */
 #define SDL_FILESYSTEM_UNIX 1
