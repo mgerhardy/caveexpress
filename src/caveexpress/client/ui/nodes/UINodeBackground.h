@@ -67,6 +67,14 @@ public:
 		_amountVertical = amount - 1;
 	}
 
+	inline void setAmount (int amountHorizontal, int amountVertical)
+	{
+		setSize(1.0, 1.0f);
+		setSize(amountHorizontal * _imageWidth / static_cast<float>(getRenderWidth()), amountVertical * _imageHeight / static_cast<float>(getRenderHeight()));
+		_amountHorizontal = amountHorizontal - 1;
+		_amountVertical = amountVertical - 1;
+	}
+
 	virtual TexturePtr getCave () const
 	{
 		return _cave;
