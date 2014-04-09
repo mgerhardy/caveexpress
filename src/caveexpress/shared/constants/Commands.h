@@ -3,8 +3,5 @@
 #define CMD_FINISHMAP "finish"
 #define CMD_MAP_PAUSE "cl_triggerpause"
 #define CMD_MAP_OPEN_IN_EDITOR "map_open_in_editor"
-#define CMD_START "start"
 #define CMD_MAP_DEBUG "map_debug"
 #define CMD_LOADMAP "loadmap"
-// TODO: move into engine/
-#define CMD_MAP_RESTART "map_restart"
