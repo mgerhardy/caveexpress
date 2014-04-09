@@ -18,6 +18,8 @@
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/DateUtil.h"
 #include <SDL.h>
+// TODO: move CMD_START into engine space
+#include "caveexpress/shared/constants/Commands.h"
 
 ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth) :
 		IMap(), _x(x), _y(y), _width(width), _height(height), _scale(referenceTileWidth), _restartDue(0), _restartInitialized(0), _mapWidth(
@@ -41,10 +43,6 @@ void ClientMap::close ()
 void ClientMap::start ()
 {
 	_started = true;
-
-	if (!_introWindow.empty()) {
-		UI::get().push(_introWindow);
-	}
 }
 
 bool ClientMap::isStarted () const
@@ -246,6 +244,20 @@ void ClientMap::resetAcceleration (Direction dir) const
 	const StopMovementMessage msg(dir);
 	INetwork& network = _serviceProvider.getNetwork();
 	network.sendToServer(msg);
+}
+
+bool ClientMap::initWaitingForPlayer () {
+	INetwork& network = _serviceProvider.getNetwork();
+	if (network.isMultiplayer())
+		return false;
+
+	if (!_introWindow.empty()) {
+		UI::get().push(_introWindow);
+	} else {
+		Commands.executeCommandLine(CMD_START);
+	}
+
+	return true;
 }
 
 void ClientMap::update (uint32_t deltaTime)

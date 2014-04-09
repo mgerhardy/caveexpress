@@ -4,6 +4,9 @@
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
 #include "engine/client/ui/UI.h"
 
+/**
+ * @brief Informs the client that the map is now started
+ */
 class StartMapHandler: public IClientProtocolHandler {
 public:
 	void execute (const IProtocolMessage& message) override

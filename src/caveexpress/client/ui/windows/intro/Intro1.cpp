@@ -1,15 +1,16 @@
 #include "Intro1.h"
 #include "engine/client/ui/nodes/UINodeBackButton.h"
 #include "caveexpress/client/ui/nodes/UINodeBackground.h"
+#include "caveexpress/client/ui/nodes/UINodeIntroBackground.h"
 #include "caveexpress/shared/constants/Commands.h"
 #include "engine/client/ui/UI.h"
 
 Intro1::Intro1 (IFrontend* frontend) :
 		UIWindow("intro1", frontend, WINDOW_FLAG_MODAL)
 {
-	_onPush = _onPop = CMD_MAP_PAUSE;
+	_onPop = CMD_START;
 
-	UINodeBackground *background = new UINodeBackground(frontend, tr("Introduction"));
+	UINode *background = new UINodeIntroBackground(frontend);
 	add(background);
 
 	if (!wantBackButton())

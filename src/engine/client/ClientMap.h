@@ -97,6 +97,8 @@ public:
 	void setAcceleration (int dx, int dy) const;
 	void resetAcceleration () const;
 
+	bool initWaitingForPlayer ();
+
 	bool wantInformation (const EntityType& type) const;
 	bool isTutorial () const;
 

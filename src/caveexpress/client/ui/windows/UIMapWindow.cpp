@@ -180,6 +180,10 @@ bool UIMapWindow::onPop ()
 
 void UIMapWindow::initWaitingForPlayers (bool adminOptions)
 {
+	if (_nodeMap->initWaitingForPlayer()) {
+		return;
+	}
+
 	if (adminOptions) {
 		_startButton->setVisible(true);
 		_waitLabel->setVisible(false);

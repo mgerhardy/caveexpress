@@ -33,6 +33,8 @@ public:
 	bool onPush () override;
 	bool onPop () override;
 
+	bool initWaitingForPlayer ();
+
 	void setMapRect (int x, int y, int w, int h);
 	ClientMap& getMap();
 };
@@ -56,4 +58,9 @@ inline void UINodeMap::start()
 {
 	_map.start();
 	displayText(_title);
+}
+
+inline bool UINodeMap::initWaitingForPlayer ()
+{
+	return _map.initWaitingForPlayer();
 }

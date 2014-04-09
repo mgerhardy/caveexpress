@@ -4,6 +4,9 @@
 #include "engine/common/network/messages/RumbleMessage.h"
 #include "engine/client/ClientMap.h"
 
+/**
+ * @brief Informs the client that it could play a rumble effect on the map because the player hit something
+ */
 class RumbleHandler: public IClientProtocolHandler {
 private:
 	ClientMap& _map;

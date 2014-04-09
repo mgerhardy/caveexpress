@@ -6,6 +6,9 @@
 #include "engine/client/ui/UI.h"
 #include "engine/common/ServiceProvider.h"
 
+/**
+ * @brief The server is done loading everything and now waits for the client to start the session.
+ */
 class InitWaitingMapHandler: public IClientProtocolHandler {
 private:
 	ServiceProvider& _serviceProvider;

@@ -667,19 +667,14 @@ void Map::initPlayer (Player* player)
 
 	sendSound(0, SoundTypes::SOUND_PLAYER_SPAWN);
 
-	if (!network.isMultiplayer()) {
-		_playersWaitingForSpawn.push_back(player);
-		startMap();
-	} else {
-		network.sendToClient(clientId, InitWaitingMapMessage());
+	network.sendToClient(clientId, InitWaitingMapMessage());
+	updateVisMask();
+	sendMapToClient(clientId);
+	if (!_players.empty()) {
+		spawnPlayer(player);
 		updateVisMask();
-		sendMapToClient(clientId);
-		if (!_players.empty()) {
-			spawnPlayer(player);
-			updateVisMask();
-		} else {
-			_playersWaitingForSpawn.push_back(player);
-		}
+	} else {
+		_playersWaitingForSpawn.push_back(player);
 	}
 }
 
