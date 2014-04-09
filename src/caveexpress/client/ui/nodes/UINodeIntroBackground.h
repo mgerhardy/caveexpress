@@ -1,17 +1,17 @@
 #pragma once
 
-#include "engine/client/ui/nodes/UINode.h"
+#include "caveexpress/client/ui/nodes/UINodeBackground.h"
 
-class UINodeIntroBackground: public UINode {
+class UINodeIntroBackground: public UINodeBackground {
 public:
-	UINodeIntroBackground (IFrontend *frontend) :
-			UINode(frontend)
+	UINodeIntroBackground (IFrontend *frontend, int width = 2, int height = 1) :
+			UINodeBackground(frontend, "", false)
 	{
-		setBackgroundColor(colorBlack);
-		_texture = loadTexture("ui-scene-tile1-ice");
-		setSize(_texture->getWidth() / static_cast<float>(frontend->getWidth()), _texture->getHeight() / static_cast<float>(frontend->getHeight()));
+		setAmount(width, height);
 		setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_MIDDLE);
-		setBorder(true);
-		setBorderColor(colorWhite);
+	}
+
+	TexturePtr getCave () const override {
+		return _tiles[0];
 	}
 };
