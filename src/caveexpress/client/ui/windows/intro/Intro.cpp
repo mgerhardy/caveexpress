@@ -12,10 +12,17 @@ Intro::Intro(const std::string& name, IFrontend* frontend) :
 	UINode *background = new UINodeIntroBackground(frontend);
 	add(background);
 
-	addIntroNodes();
+	UINode* child = new UINode(frontend);
+	child->setBackgroundColor(colorGrayAlpha40);
+	const float padding = 2 * 10.0f / std::max(_frontend->getWidth(), _frontend->getHeight());
+	child->setSize(background->getWidth() - padding, background->getHeight() - padding);
+	child->alignTo(background, NODE_ALIGN_CENTER | NODE_ALIGN_MIDDLE);
+	add(child);
+
+	addIntroNodes(child);
 
 	if (!wantBackButton())
 		return;
 
-	add(new UINodeBackButton(frontend, background));
+	add(new UINodeBackButton(frontend, child));
 }

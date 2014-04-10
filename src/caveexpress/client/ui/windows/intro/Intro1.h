@@ -7,5 +7,5 @@ class Intro1: public Intro {
 public:
 	Intro1 (IFrontend* frontend);
 protected:
-	void addIntroNodes() override;
+	void addIntroNodes(UINode* parent) override;
 };

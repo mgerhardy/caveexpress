@@ -10,5 +10,5 @@ public:
 	}
 
 protected:
-	virtual void addIntroNodes() {}
+	virtual void addIntroNodes(UINode* parent) {}
 };
