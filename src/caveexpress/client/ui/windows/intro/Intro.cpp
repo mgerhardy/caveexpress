@@ -12,7 +12,7 @@ IntroTypeDescription::IntroTypeDescription(IFrontend* frontend, const EntityType
 		UINode(frontend) {
 	setLayout(new UIHBoxLayout(0.01f, false, NODE_ALIGN_MIDDLE));
 	UINodeSprite* sprite = new UINodeSprite(frontend, type, animation);
-	sprite->setAspectRatioSize(0.1f, 0.1f, 1.0f);
+	sprite->setAspectRatioSize(0.1f, 0.1f);
 	add(sprite);
 	UINodeLabel* label = new UINodeLabel(frontend, text, getFont(HUGE_FONT));
 	label->setColor(colorBlack);
