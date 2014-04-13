@@ -13,9 +13,9 @@ public:
 		_gameover = loadTexture("ui-background-gameover");
 	}
 
-	void render (int x, int y) const override
+	void renderMiddle (int x, int y) const override
 	{
-		UINodeBackground::render(x, y);
+		UINodeBackground::renderMiddle(x, y);
 		renderImage(_gameover, x + getRenderCenterX() - _gameover->getWidth() / 2, y + getRenderCenterY() - _gameover->getHeight() / 2);
 	}
 };

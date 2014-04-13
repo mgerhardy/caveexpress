@@ -4,7 +4,7 @@
 
 class UINodeIntroBackground: public UINodeBackground {
 public:
-	UINodeIntroBackground (IFrontend *frontend, int width = 2, int height = 1) :
+	UINodeIntroBackground (IFrontend *frontend, int width = 2, int height = 2) :
 			UINodeBackground(frontend, "", false)
 	{
 		setAmount(width, height);

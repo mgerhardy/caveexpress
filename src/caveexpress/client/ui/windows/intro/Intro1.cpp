@@ -1,5 +1,6 @@
 #include "Intro1.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
+#include "engine/client/ui/nodes/UINodeLabel.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "engine/common/SpriteDefinition.h"
@@ -7,6 +8,7 @@
 
 Intro1::Intro1(IFrontend* frontend) :
 		Intro("intro1", frontend) {
+	init();
 }
 
 void Intro1::addIntroNodes(UINode* parent) {

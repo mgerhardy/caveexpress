@@ -13,9 +13,9 @@ public:
 		_mainTitle = loadTexture("ui-background-title");
 	}
 
-	void render (int x, int y) const override
+	void renderMiddle (int x, int y) const override
 	{
-		UINodeBackground::render(x, y);
+		UINodeBackground::renderMiddle(x, y);
 		if (!_renderTitle)
 			return;
 		renderImage(_mainTitle, x + getRenderWidth(false) / 2 - _mainTitle->getWidth() / 2, y);

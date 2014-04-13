@@ -9,6 +9,11 @@ public:
 	virtual ~Intro() {
 	}
 
+	void init ();
+
 protected:
-	virtual void addIntroNodes(UINode* parent) {}
+	UINode *_background;
+	UINode *_child;
+
+	virtual void addIntroNodes(UINode* parent) = 0;
 };

@@ -64,7 +64,7 @@ public:
 		return _caveArt;
 	}
 
-	virtual void render (int x, int y) const override;
+	virtual void renderMiddle (int x, int y) const override;
 
 	int getY () const
 	{

@@ -80,6 +80,7 @@ typedef float Color[4];
 static const Color colorGrayAlpha40 = { 0.976f, 0.976f, 0.976f, 0.4f };
 static const Color colorGrayAlpha = { 0.976f, 0.976f, 0.976f, 0.8f };
 static const Color colorGray = { 0.6f, 0.6f, 0.6f, 1.0f };
+static const Color colorWhiteAlpha80 = { 1.0f, 1.0f, 1.0f, 0.8f };
 static const Color colorWhite = { 1.0f, 1.0f, 1.0f, 1.0f };
 static const Color colorGreen = { 0.0f, 1.0f, 0.0f, 1.0f };
 static const Color colorBrightGreen = { 0.0f, 0.6f, 0.0f, 1.0f };

@@ -240,6 +240,9 @@ public:
 	virtual void removeFocus ();
 	virtual void update (uint32_t deltaTime);
 	virtual void render (int x, int y) const;
+	virtual void renderBack (int x, int y) const;
+	virtual void renderMiddle (int x, int y) const;
+	virtual void renderTop (int x, int y) const;
 	virtual void renderOnTop (int x, int y) const;
 	virtual void initDrag (int32_t x, int32_t y);
 	virtual void handleDrop (uint16_t x, uint16_t y);

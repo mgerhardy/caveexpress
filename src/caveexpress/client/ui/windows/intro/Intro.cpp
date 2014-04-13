@@ -9,20 +9,23 @@ Intro::Intro(const std::string& name, IFrontend* frontend) :
 		UIWindow(name, frontend, WINDOW_FLAG_MODAL) {
 	_onPop = CMD_START;
 
-	UINode *background = new UINodeIntroBackground(frontend);
-	add(background);
+	_background = new UINodeIntroBackground(frontend);
+	add(_background);
 
-	UINode* child = new UINode(frontend);
-	child->setBackgroundColor(colorGrayAlpha40);
+	_child = new UINode(frontend);
+	_child->setBackgroundColor(colorWhiteAlpha80);
 	const float padding = 2 * 10.0f / std::max(_frontend->getWidth(), _frontend->getHeight());
-	child->setSize(background->getWidth() - padding, background->getHeight() - padding);
-	child->alignTo(background, NODE_ALIGN_CENTER | NODE_ALIGN_MIDDLE);
-	add(child);
-
-	addIntroNodes(child);
+	_child->setSize(_background->getWidth() - padding, _background->getHeight() - padding);
+	_child->alignTo(_background, NODE_ALIGN_CENTER | NODE_ALIGN_MIDDLE);
+	add(_child);
 
 	if (!wantBackButton())
 		return;
 
-	add(new UINodeBackButton(frontend, child));
+	add(new UINodeBackButton(frontend, _child));
+}
+
+void Intro::init ()
+{
+	addIntroNodes(_child);
 }

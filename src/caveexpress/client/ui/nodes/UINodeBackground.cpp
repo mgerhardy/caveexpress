@@ -23,9 +23,7 @@ UINodeBackground::UINodeBackground (IFrontend *frontend, const std::string& titl
 	_textHeight = _font->getTextHeight(_title);
 }
 
-void UINodeBackground::render(int x, int y) const {
-	UINode::render(x, y);
-
+void UINodeBackground::renderMiddle(int x, int y) const {
 	const int renderHeight = getRenderHeight(false);
 	renderImage(getCave(), x + getRenderX(false), y + getRenderY(false) + renderHeight - _imageHeight);
 	if (_amountVertical > 1)

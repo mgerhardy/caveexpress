@@ -262,22 +262,34 @@ void UINode::renderOnTop (int x, int y) const
 	font->print(_tooltip, colorWhite, xTooltip, yTooltip);
 }
 
-void UINode::render (int x, int y) const
+void UINode::renderBack (int x, int y) const
 {
 	const int w = getRenderWidth(false);
 	const int h = getRenderHeight(false);
 	if (_backgroundColor[3] > 0.001f) {
 		renderFilledRect(x + getRenderX(false), y + getRenderY(false), w, h, _backgroundColor);
 	}
+}
 
+void UINode::renderMiddle (int x, int y) const
+{
+	if (!_texture)
+		return;
+	const int childX = x + getRenderX();
+	const int childY = y + getRenderY();
+	renderImage(_texture, childX, childY, getRenderWidth(), getRenderHeight(), _alpha);
+}
+
+void UINode::renderTop (int x, int y) const
+{
 	const int childX = x + getRenderX();
 	const int childY = y + getRenderY();
 
-	if (_texture)
-		renderImage(_texture, childX, childY, getRenderWidth(), getRenderHeight(), _alpha);
-
-	if (_renderBorder)
+	if (_renderBorder) {
+		const int w = getRenderWidth(false);
+		const int h = getRenderHeight(false);
 		renderRect(x + getRenderX(false), y + getRenderY(false), w, h, _borderColor);
+	}
 
 	int textYOffset = 0;
 	for (DelayedTextsConstIter i = _texts.begin(); i != _texts.end(); ++i) {
@@ -304,6 +316,13 @@ void UINode::render (int x, int y) const
 			continue;
 		nodePtr->render(childX, childY);
 	}
+}
+
+void UINode::render (int x, int y) const
+{
+	renderBack(x, y);
+	renderMiddle(x, y);
+	renderTop(x, y);
 }
 
 void UINode::renderDebug (int x, int y, int textY) const
