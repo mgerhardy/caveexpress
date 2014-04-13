@@ -21,7 +21,7 @@ SoundType SOUND_PACKAGE_COLLIDE("create-hit", false, 5);
 SoundType SOUND_STONE_COLLIDE("stone-hit");
 SoundType SOUND_FRUIT_SPAWN("fruit-spawn");
 SoundType SOUND_FRUIT_COLLECTED("fruit-eat");
-SoundType SOUND_PLAYER_LAND("player-land1", false, 3);
+SoundType SOUND_PLAYER_LAND("player-land", false, 3);
 SoundType SOUND_PLAYER_LAND1("player-land1");
 SoundType SOUND_PLAYER_LAND2("player-land2");
 SoundType SOUND_PLAYER_LAND3("player-land3");
