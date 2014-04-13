@@ -114,7 +114,7 @@ void UINodeSprite::setAspectRatioSize (float width, float height, float upScaleF
 	_spriteWidth = widthF * _frontend->getWidth();
 	_spriteHeight = heightF * _frontend->getHeight();
 
-	if (upScaleFactor <= 1.0f)
+	if (upScaleFactor <= 1.000001f)
 		return;
 
 	spriteW *= upScaleFactor;
