@@ -171,7 +171,7 @@ Android::Android () :
 	else
 		info(LOG_SYSTEM, "no external storage path with write support");
 
-	SDL_SetHint(SDL_HINT_ACCEL_AS_JOY, "0");
+	SDL_SetHint(SDL_HINT_ACCELEROMETER_AS_JOYSTICK, "0");
 
 	const bool smallScreen = isSmallScreen();
 	if (smallScreen) {
