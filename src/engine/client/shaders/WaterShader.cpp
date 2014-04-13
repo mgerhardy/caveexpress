@@ -1,5 +1,6 @@
 #include "WaterShader.h"
 #include "engine/client/ui/UI.h"
+#include "engine/common/Math.h"
 
 WaterShader::WaterShader () :
 		Shader()

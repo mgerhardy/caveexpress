@@ -23,6 +23,9 @@ GCC_DIAG_ON(shadow)
 #ifndef M_PI
 #define M_PI 3.14159265358979323846  /* matches value in gcc v2 math.h */
 #endif
+#ifndef M_PI_2
+#define M_PI_2 1.57079632679489661923
+#endif
 
 static const double DEG2RAD = M_PI / 180.0;
 static const double RAD2DEG = 180.0 / M_PI;
