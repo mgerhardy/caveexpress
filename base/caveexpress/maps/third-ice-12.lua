@@ -1,4 +1,4 @@
-Bfunction getName()
+function getName()
 	return "Map 12"
 end
 
