@@ -52,7 +52,6 @@ protected:
 	UIWindow (const std::string& id, IFrontend *frontend, WindowFlags flags = WINDOW_FLAG_FULLSCREEN);
 
 	bool wantBackButton () const;
-	BitmapFontPtr getFont (const std::string& font = "") const;
 	UINode* addTextureNode (const std::string& texture, float x, float y, float w, float h);
 	bool isActiveAfterPush () const;
 

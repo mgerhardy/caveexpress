@@ -174,11 +174,6 @@ bool UIWindow::onControllerButtonPress (int x, int y, const std::string& button)
 	return UINode::onControllerButtonPress(x, y, button);
 }
 
-BitmapFontPtr UIWindow::getFont (const std::string& font) const
-{
-	return UI::get().getFont(font);
-}
-
 UINode* UIWindow::addTextureNode (const std::string& texture, float x, float y, float w, float h)
 {
 	UINode* imageNode = new UINode(_frontend);
