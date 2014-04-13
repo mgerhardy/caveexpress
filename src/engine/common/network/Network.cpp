@@ -17,14 +17,6 @@ Network::Network () :
 	_oobSockets.clear();
 
 	init();
-#ifndef WIN32
-	// SIGPIPE has to be ignored so that NET2 can handle broken
-	// connections without raising a program wide exception. SDL_net
-	// "should" do this so that it can handle exception properly, but it
-	// doesn't.
-
-	signal(SIGPIPE, SIG_IGN); // work around for bug in SDL_net
-#endif
 }
 
 Network::~Network ()
