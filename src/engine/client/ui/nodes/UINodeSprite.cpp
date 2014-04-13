@@ -1,11 +1,28 @@
 #include "UINodeSprite.h"
 #include "engine/common/Logger.h"
+#include "engine/common/SpriteDefinition.h"
+#include "engine/client/ui/UI.h"
 #include <cassert>
 
 UINodeSprite::UINodeSprite (IFrontend *frontend, int spriteWidth, int spriteHeight) :
 		UINode(frontend), _offset(0), _borderWidth(-1.0f), _borderHeight(-1.0f), _spriteWidth(
 				spriteWidth), _spriteHeight(spriteHeight), _movementXEnd(0.0f), _movementYEnd(
 				0.0f), _movementSpeed(0.0f), _movementActive(false) {
+}
+
+
+UINodeSprite::UINodeSprite (IFrontend *frontend, const EntityType& type, const Animation& animation, int spriteWidth, int spriteHeight) :
+		UINode(frontend), _offset(0), _borderWidth(-1.0f), _borderHeight(-1.0f), _spriteWidth(
+						spriteWidth), _spriteHeight(spriteHeight), _movementXEnd(0.0f), _movementYEnd(
+						0.0f), _movementSpeed(0.0f), _movementActive(false) {
+	const std::string& spriteName = SpriteDefinition::get().getSpriteName(type, animation);
+	const SpritePtr& spritePtr = UI::get().loadSprite(spriteName);
+	addSprite(spritePtr);
+	if (_spriteWidth == -1 || _spriteHeight == -1) {
+		autoSize();
+		_spriteWidth = getWidth() * _frontend->getWidth();
+		_spriteHeight = getHeight() * _frontend->getHeight();
+	}
 }
 
 UINodeSprite::~UINodeSprite ()

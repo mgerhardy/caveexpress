@@ -1,8 +1,8 @@
 #include "UIHBoxLayout.h"
 #include "engine/client/ui/nodes/UINode.h"
 
-UIHBoxLayout::UIHBoxLayout (float spacing, bool expandChildren) :
-		IUILayout(), _spacing(spacing), _expandChildren(expandChildren)
+UIHBoxLayout::UIHBoxLayout (float spacing, bool expandChildren, int align) :
+		IUILayout(), _spacing(spacing), _expandChildren(expandChildren), _align(align)
 {
 }
 
@@ -28,9 +28,17 @@ void UIHBoxLayout::layout (UINode* parent)
 	float currentPos = parent->getPadding();
 	for (UINodeListIter i = _nodes.begin(); i != _nodes.end(); ++i) {
 		UINode* node = *i;
-		node->setPos(currentPos, node->getY());
 		if (_expandChildren)
 			node->setSize(node->getWidth(), parent->getHeight() - 2.0f * parent->getPadding());
+
+		if (_align & NODE_ALIGN_MIDDLE) {
+			node->setPos(currentPos, parent->getHeight() / 2.0f - node->getHeight() / 2.0f);
+		} else if (_align & NODE_ALIGN_BOTTOM) {
+			node->setPos(currentPos, parent->getHeight() - node->getHeight());
+		} else {
+			node->setPos(currentPos, node->getY());
+		}
+
 		currentPos += node->getWidth() + _spacing;
 	}
 }

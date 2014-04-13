@@ -50,7 +50,7 @@ public:
 			if (System.hasTouch() && !System.isOUYA())
 				mapNode->displayText(tr("Use the second finger to drop the stone"));
 		} else if (EntityTypes::isPackage(type)) {
-			mapNode->displayText("Drop off at the collection point");
+			mapNode->displayText("Drop off at the shredder");
 			if (System.hasTouch() && !System.isOUYA())
 				mapNode->displayText(tr("Use the second finger to drop the package"));
 		}

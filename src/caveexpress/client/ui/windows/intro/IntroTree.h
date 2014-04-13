@@ -3,9 +3,9 @@
 #include "engine/common/Compiler.h"
 #include "Intro.h"
 
-class Intro1: public Intro {
+class IntroTree: public Intro {
 public:
-	Intro1 (IFrontend* frontend);
+	IntroTree (IFrontend* frontend);
 protected:
 	void addIntroNodes(UINode* parent) override;
 };

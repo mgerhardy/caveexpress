@@ -13,11 +13,18 @@ Campaign|Campaign
 Campaigns|Campaigns
 Can't start the map without a packagetarget|Can't start the map without a packagetarget
 Cancel|Cancel
+Collect packages by landing on them|Collect packages by landing on them
 Continue|Continue
 Create server|Create server
 Decrease map size|Decrease map size
+Deliver packages to the shredders|Deliver packages to the shredders
+Description|Description
+Drop during flight|Drop during flight
+Drop stones onto the tree|Drop stones onto the tree
 Drop the package and the stone|Drop the package and the stone
 Drop the stone to collect packages again|Drop the stone to collect packages again
+Drop them by hitting SPACE bar|Drop them by hitting SPACE bar
+Drop them with the second finger|Drop them with the second finger
 Extras|Extras
 Facebook|Facebook
 Fall delay|Fall delay
@@ -28,6 +35,7 @@ General|General
 Gravity|Gravity
 Hard|Hard
 Help|Help
+Hints|Hints
 Hit twice to end the game|Hit twice to end the game
 Ice|Ice
 Increase map size|Increase map size
@@ -47,11 +55,14 @@ New|New
 Normal|Normal
 Npc delay|Npc delay
 OK|OK
+Objectives|Objectives
 Off|Off
 On|On
 Open|Open
+Package|Package
 Packages|Packages
 Place tile|Place tile
+Player|Player
 Points|Points
 Pterodactyls|Pterodactyls
 Pterodactyls is after you|Pterodactyls is after you
@@ -81,19 +92,24 @@ Shift map (cursor direction)|Shift map (cursor direction)
 Shift tile|Shift tile
 Show Grid|Show Grid
 Show help messages to the player|Show help messages to the player
+Shredder|Shredder
 SideScroll|SideScroll
 Small|Small
 Sound/Music|Sound/Music
+Stone|Stone
 Textures|Textures
 The amount of packages to deliver|The amount of packages to deliver
 The points you get for finishing the map|The points you get for finishing the map
 The water change speed|The water change speed
 Time|Time
+Tree|Tree
 Tutorial|Tutorial
 Twitter|Twitter
 Undo|Undo
 Use the second finger to drop the package|Use the second finger to drop the package
 Use the second finger to drop the stone|Use the second finger to drop the stone
+Use the stone|Use the stone
+Use the swing of the package|Use the swing of the package
 Water|Water
 Water fall delay in milliseconds|Water fall delay in milliseconds
 Waterheight|Waterheight

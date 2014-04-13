@@ -13,11 +13,18 @@ Campaign|Kampagne
 Campaigns|Campaigns
 Can't start the map without a packagetarget|Map kann ohne Paketstation nicht gestartet werden
 Cancel|Abbrechen
+Collect packages by landing on them|Collect packages by landing on them
 Continue|Weiter
 Create server|Server erstellen
 Decrease map size|Map verkleinern
+Deliver packages to the shredders|Deliver packages to the shredders
+Description|Description
+Drop during flight|Drop during flight
+Drop stones onto the tree|Drop stones onto the tree
 Drop the package and the stone|Den Stein und das Paket fallen lassen
 Drop the stone to collect packages again|Drop the stone to collect packages again
+Drop them by hitting SPACE bar|Drop them by hitting SPACE bar
+Drop them with the second finger|Drop them with the second finger
 Extras|Extras
 Facebook|Facebook
 Fall delay|Fall delay
@@ -28,6 +35,7 @@ General|Allgemein
 Gravity|Gravitation
 Hard|Schwer
 Help|Hilfe
+Hints|Hints
 Hit twice to end the game|Zweimal druecken um das Spiel zu beenden
 Ice|Eis
 Increase map size|Map vergroessern
@@ -47,11 +55,14 @@ New|Neu
 Normal|Normal
 Npc delay|Npc delay
 OK|OK
+Objectives|Objectives
 Off|Aus
 On|An
 Open|Starten
+Package|Package
 Packages|Pakete
 Place tile|Teil plazieren
+Player|Player
 Points|Punkte
 Pterodactyls|Pterodactylus
 Pterodactyls is after you|Der Pterodactylus hat es auch dich abgesehen
@@ -81,19 +92,24 @@ Shift map (cursor direction)|Map verschieben (In Cursorrichtung)
 Shift tile|Teil verschieben
 Show Grid|Gitter anzeigen
 Show help messages to the player|Dem Spieler Hinweise zum Spiel anzeigen
+Shredder|Shredder
 SideScroll|SideScroll
 Small|Klein
 Sound/Music|Sound/Music
+Stone|Stone
 Textures|Texturen
 The amount of packages to deliver|Anzahl der zu liefernden Pakete
 The points you get for finishing the map|Punktzahl beim Absolvieren der Map
 The water change speed|Die Wasser Steig- und Fallgeschwindigkeit
 Time|Zeit
+Tree|Tree
 Tutorial|Tutorial
 Twitter|Twitter
 Undo|Undo
 Use the second finger to drop the package|Use the second finger to drop the package
 Use the second finger to drop the stone|Use the second finger to drop the stone
+Use the stone|Use the stone
+Use the swing of the package|Use the swing of the package
 Water|Wasser
 Water fall delay in milliseconds|Water fall delay in milliseconds
 Waterheight|Wasserhoehe

@@ -2,6 +2,8 @@
 
 #include "UINode.h"
 #include "engine/client/sprites/Sprite.h"
+#include "engine/common/EntityType.h"
+#include "engine/common/Animation.h"
 
 class UINodeSprite: public UINode {
 private:
@@ -18,6 +20,7 @@ private:
 	bool _movementActive;
 public:
 	UINodeSprite (IFrontend *frontend, int spriteWidth = -1, int spriteHeight = -1);
+	UINodeSprite (IFrontend *frontend, const EntityType& type, const Animation& animation, int spriteWidth = -1, int spriteHeight = -1);
 	virtual ~UINodeSprite ();
 
 	void addSprite (const SpritePtr& sprite);
