@@ -5,6 +5,15 @@
 #include "engine/common/EntityType.h"
 #include "engine/common/Animation.h"
 
+/**
+ * @brief This is a window that is shown before the map is starting.
+ *
+ * As long as it's visible, the map is in a pause mode. Once you close the window,
+ * the map is starting.
+ *
+ * In order to show such a window, you have to tell the map that it should show it
+ * on start. There is a special property for that: @c introwindow
+ */
 class Intro: public UIWindow {
 public:
 	Intro(const std::string& name, IFrontend* frontend);
@@ -12,12 +21,16 @@ public:
 	virtual ~Intro() {
 	}
 
+	// call this in the ctor of your derived class
+	// this ensures, that the vtable of Intro is set up already
 	void init ();
 
 protected:
 	UINode *_background;
 	UINode *_panel;
 
+	// Add your custom nodes for your intro window implementation
+	// Should keep the current style of existing intro windows
 	virtual void addIntroNodes(UINode* parent) = 0;
 };
 
