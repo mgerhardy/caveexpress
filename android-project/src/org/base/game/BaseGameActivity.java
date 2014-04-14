@@ -5,9 +5,7 @@ import org.base.BaseActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.gms.appstate.AppStateClient;
-import com.google.android.gms.games.GamesClient;
-import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.common.api.GoogleApiClient;
 // import com.google.analytics.tracking.android.EasyTracker;
 // import com.google.analytics.tracking.android.Fields;
 // import com.google.analytics.tracking.android.Tracker;
@@ -30,12 +28,9 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
 	// Requested clients. By default, that's just the games client.
 	protected int requestedClients = CLIENT_GAMES;
 
-	// stores any additional scopes.
-	private String[] additionalScopes;
-
 	/** Constructs a BaseGameActivity with default client (GamesClient). */
 	protected BaseGameActivity() {
-		gameHelper = new GameHelper(this);
+		gameHelper = new GameHelper(this, requestedClients);
 	}
 
 	/**
@@ -47,7 +42,11 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
 	 */
 	public BaseGameActivity(int requestedClients) {
 		setRequestedClients(requestedClients);
-		gameHelper = new GameHelper(this);
+		gameHelper = new GameHelper(this, requestedClients);
+	}
+
+	protected GoogleApiClient getApiClient() {
+		return gameHelper.getApiClient();
 	}
 
 	/**
@@ -65,9 +64,8 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
 	 *            . Scopes that should also be requested when the auth request
 	 *            is made.
 	 */
-	protected void setRequestedClients(int requestedClients, String... additionalScopes) {
+	protected void setRequestedClients(int requestedClients) {
 		this.requestedClients = requestedClients;
-		this.additionalScopes = additionalScopes;
 	}
 
 	@Override
@@ -90,18 +88,6 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
 		gameHelper.onActivityResult(request, response, data);
 	}
 
-	protected GamesClient getGamesClient() {
-		return gameHelper.getGamesClient();
-	}
-
-	protected AppStateClient getAppStateClient() {
-		return gameHelper.getAppStateClient();
-	}
-
-	protected PlusClient getPlusClient() {
-		return gameHelper.getPlusClient();
-	}
-
 	protected boolean isSignedIn() {
 		return gameHelper.isSignedIn();
 	}
@@ -114,28 +100,8 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
 		gameHelper.signOut();
 	}
 
-	protected void showAlert(String title, String message) {
-		gameHelper.showAlert(title, message);
-	}
-
-	protected void showAlert(String message) {
-		gameHelper.showAlert(message);
-	}
-
 	protected String getInvitationId() {
 		return gameHelper.getInvitationId();
-	}
-
-	protected void reconnectClients(int whichClients) {
-		gameHelper.reconnectClients(whichClients);
-	}
-
-	protected String getScopes() {
-		return gameHelper.getScopes();
-	}
-
-	protected String[] getScopesArray() {
-		return gameHelper.getScopesArray();
 	}
 
 	protected boolean hasSignInError() {
@@ -149,11 +115,11 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		gameHelper = new GameHelper(this);
+		gameHelper = new GameHelper(this, requestedClients);
 		if (isDebug()) {
-			gameHelper.enableDebugLog(true, NAME);
+			gameHelper.enableDebugLog(true);
 		}
-		gameHelper.setup(this, requestedClients, additionalScopes);
+		gameHelper.setup(this);
 	}
 
 	@Override
