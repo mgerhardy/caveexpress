@@ -229,8 +229,21 @@ endif
 
 ICON := $(APPNAME)-icon.png
 
+.PHONY: clean-android-libs
+clean-android-libs:
+	$(Q)rm -f $(ANDROID_PROJECT)/google-play-services_lib/.project
+	$(Q)rm -rf $(ANDROID_PROJECT)/google-play-services_lib/assets/
+	$(Q)rm -rf $(ANDROID_PROJECT)/google-play-services_lib/bin/
+	$(Q)rm -f $(ANDROID_PROJECT)/google-play-services_lib/build.xml
+	$(Q)rm -rf $(ANDROID_PROJECT)/google-play-services_lib/gen/
+	$(Q)rm -rf $(ANDROID_PROJECT)/google-play-services_lib/libs/
+	$(Q)rm -f $(ANDROID_PROJECT)/google-play-services_lib/local.properties
+	$(Q)rm -f $(ANDROID_PROJECT)/google-play-services_lib/proguard-project.txt
+	$(Q)rm -rf $(ANDROID_PROJECT)/google-play-services_lib/res/drawable-ldpi/
+	$(Q)rm -rf $(ANDROID_PROJECT)/google-play-services_lib/res/layout/
+
 .PHONY: clean-android
-clean-android:
+clean-android: clean-android-libs
 	@echo "===> ANDROID [clean project]"
 	$(Q)rm -rf $(ANDROID_PROJECT)/assets
 	$(Q)rm -rf $(ANDROID_PROJECT)/bin
@@ -323,11 +336,11 @@ android-emulator-run: android-emulator-start android-install android-run
 
 .PHONY: android-all
 .NOTPARALLEL:
-android-all: android-update-project android-copy-assets android-build android-uninstall android-install
+android-all: clean-android-libs android-update-project android-copy-assets android-build android-uninstall android-install
 
 .PHONY: android
 .NOTPARALLEL:
-android: android-update-project android-copy-assets android-build
+android: clean-android-libs android-update-project android-copy-assets android-build
 
 android-backtrace:
 	adb logcat | ndk-stack -sym $(ANDROID_PROJECT)/obj/local/armeabi
