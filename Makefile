@@ -310,7 +310,7 @@ android-copy-assets: data
 	$(Q)rm -f $(ANDROID_PROJECT)/assets/$(BASEDIR)/maps/empty*
 	$(Q)for i in hdpi ldpi mdpi xhdpi; do mkdir -p $(ANDROID_PROJECT)/res/drawable-$${i}; cp -f contrib/$(ICON) $(ANDROID_PROJECT)/res/drawable-$${i}/icon.png; done
 	$(Q)if [ "$(TARGET_OS)" = "ouya" ]; then cp contrib/installer/ouya/ouya_icon.png $(ANDROID_PROJECT)/res/drawable-xhdpi; fi
-	$(Q)if [ "$(TARGET_OS)" = "ouya" ]; then mkdir -p $(ANDROID_PROJECT)/res/raw && cp contrib/installer/ouya/key.der $(ANDROID_PROJECT)/res/raw; fi
+	$(Q)if [ "$(TARGET_OS)" = "ouya" ]; then mkdir -p $(ANDROID_PROJECT)/res/raw && cp ~/ouyakey.der $(ANDROID_PROJECT)/res/raw/key.der; fi
 	$(Q)if [ "$(TARGET_OS)" = "ouya" ]; then cp contrib/installer/ouya/*.jar $(ANDROID_PROJECT)/libs; fi
 	$(Q)if [ "$(TARGET_OS)" = "android" ]; then mkdir -p $(ANDROID_PROJECT)/libs && cp contrib/installer/android/*.jar $(ANDROID_PROJECT)/libs; fi
 

@@ -37,6 +37,10 @@
         <isset property="env.ANDROID_HOME" />
     </condition>
 
+    <property name="key.store" value="${env.CAVEPRODUCTIONS_KEYSTORE_PATH}" />
+    <property name="key.store.password" value="${env.CAVEPRODUCTIONS_KEYSTORE_PASSWD}" />
+    <property name="key.alias.password" value="${env.CAVEPRODUCTIONS_ALIAS_PASSWD}" />
+
     <!-- The project.properties file is created and updated by the 'android'
          tool, as well as ADT.
 
