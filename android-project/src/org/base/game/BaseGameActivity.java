@@ -30,7 +30,6 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
 
 	/** Constructs a BaseGameActivity with default client (GamesClient). */
 	protected BaseGameActivity() {
-		gameHelper = new GameHelper(this, requestedClients);
 	}
 
 	/**
@@ -42,7 +41,6 @@ public abstract class BaseGameActivity extends BaseActivity implements GameHelpe
 	 */
 	public BaseGameActivity(int requestedClients) {
 		setRequestedClients(requestedClients);
-		gameHelper = new GameHelper(this, requestedClients);
 	}
 
 	protected GoogleApiClient getApiClient() {
