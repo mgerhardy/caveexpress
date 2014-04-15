@@ -38,6 +38,7 @@
 #include "caveexpress/client/ui/windows/intro/IntroPackage.h"
 #include "caveexpress/client/ui/windows/intro/IntroTime.h"
 #include "caveexpress/client/ui/windows/intro/IntroTree.h"
+#include "caveexpress/client/ui/windows/intro/IntroGeyser.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/client/CaveExpressClientMap.h"
 #include "caveexpress/client/commands/CmdMapOpenInEditor.h"
@@ -214,6 +215,7 @@ void CaveExpress::initUI (IFrontend* _frontend, ServiceProvider& serviceProvider
 	ui.addWindow(new IntroPackage(_frontend));
 	ui.addWindow(new IntroTime(_frontend));
 	ui.addWindow(new IntroTree(_frontend));
+	ui.addWindow(new IntroGeyser(_frontend));
 	ui.addWindow(new UIPaymentWindow(_frontend));
 	ui.addWindow(new UIMultiplayerWindow(_frontend, serviceProvider.getMapManager(), serviceProvider));
 	ui.addWindow(new UICreateServerWindow(_frontend, serviceProvider.getMapManager()));

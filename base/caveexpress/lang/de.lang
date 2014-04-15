@@ -32,6 +32,7 @@ File|Datei
 Fish|Fisch
 Game mode|Modus
 General|Allgemein
+Geyser|Geyser
 Gravity|Gravitation
 Hard|Schwer
 Help|Hilfe
@@ -99,6 +100,7 @@ Sound/Music|Sound/Music
 Stone|Stone
 Textures|Texturen
 The amount of packages to deliver|Anzahl der zu liefernden Pakete
+The geyser will do the work for you|The geyser will do the work for you
 The points you get for finishing the map|Punktzahl beim Absolvieren der Map
 The water change speed|Die Wasser Steig- und Fallgeschwindigkeit
 Time|Zeit
@@ -110,6 +112,7 @@ Use the second finger to drop the package|Use the second finger to drop the pack
 Use the second finger to drop the stone|Use the second finger to drop the stone
 Use the stone|Use the stone
 Use the swing of the package|Use the swing of the package
+Watch the geyser|Watch the geyser
 Water|Wasser
 Water fall delay in milliseconds|Water fall delay in milliseconds
 Waterheight|Wasserhoehe
