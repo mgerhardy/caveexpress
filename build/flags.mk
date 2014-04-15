@@ -84,6 +84,6 @@ CCFLAGS += -Wimplicit
 #CCFLAGS += -Wc++-compat
 
 CXXFLAGS += $(CFLAGS)
-CXXFLAGS += -std=c++11
+#CXXFLAGS += -std=c++11
 CXXFLAGS += -Wnon-virtual-dtor
 CXXFLAGS += -Wno-reorder
