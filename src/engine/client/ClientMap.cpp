@@ -305,6 +305,7 @@ void ClientMap::addEntity (ClientEntityPtr e)
 	if (e->getID() == _playerID) {
 		_player = static_cast<ClientPlayer*>(e.get());
 	}
+
 	debug(LOG_CLIENT, "add entity " + e->getType().name + " - " + string::toString((int)e->getID()));
 }
 

@@ -939,15 +939,18 @@ MapTile* Map::createMapTileWithoutBody (const SpriteDefPtr& spriteDef, gridCoord
 		mapTile = new MapTile(*this, spriteDef->id, gridX, gridY, EntityTypes::DECORATION);
 	} else if (SpriteTypes::isWindow(type)) {
 		mapTile = new WindowTile(*this, spriteDef->id, gridX, gridY);
+	} else if (SpriteTypes::isLava(type)) {
+		mapTile = new MapTile(*this, spriteDef->id, gridX, gridY, EntityTypes::LAVA);
 	} else if (SpriteTypes::isPackageTarget(type)) {
 		mapTile = new PackageTarget(*this, spriteDef->id, gridX, gridY);
 	} else if (SpriteTypes::isGeyser(type)) {
 		mapTile = new Geyser(*this, spriteDef->id, gridX, gridY);
+	} else if (SpriteTypes::isAnyGround(type) || SpriteTypes::isBridge(type)) {
+		mapTile = new MapTile(*this, spriteDef->id, gridX, gridY, EntityTypes::GROUND);
+	} else if (SpriteTypes::isSolid(type)) {
+		mapTile = new MapTile(*this, spriteDef->id, gridX, gridY, EntityTypes::SOLID);
 	} else {
-		const EntityType& entType = SpriteTypes::isSolid(type)
-						? ((SpriteTypes::isAnyGround(type) || SpriteTypes::isBridge(type)) ? EntityTypes::GROUND : EntityTypes::SOLID)
-						: EntityTypes::DECORATION;
-		mapTile = new MapTile(*this, spriteDef->id, gridX, gridY, entType);
+		mapTile = new MapTile(*this, spriteDef->id, gridX, gridY, EntityTypes::DECORATION);
 	}
 	mapTile->setGridDimensions(spriteDef->width, spriteDef->height, angle);
 	return mapTile;

@@ -116,7 +116,7 @@ public:
 	void setPause (bool pause);
 
 	bool isStarted () const;
-	void start ();
+	virtual void start ();
 
 	void setPos (int x, int y);
 	void setSize (int width, int height);

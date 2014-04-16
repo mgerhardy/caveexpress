@@ -6,6 +6,7 @@ namespace EntityTypes {
 extern EntityType DECORATION;
 extern EntityType SOLID;
 extern EntityType GROUND;
+extern EntityType LAVA;
 extern EntityType NPC_FRIENDLY_GRANDPA;
 extern EntityType NPC_FRIENDLY_WOMAN;
 extern EntityType NPC_FRIENDLY_MAN;
@@ -116,6 +117,11 @@ inline bool isParticle (const EntityType& other)
 	return other == PARTICLE;
 }
 
+inline bool isLava (const EntityType& other)
+{
+	return other == LAVA;
+}
+
 inline bool isWater (const EntityType& other)
 {
 	return other == WATER;
@@ -183,7 +189,7 @@ inline bool isSolid (const EntityType& other)
 
 inline bool isMapTile (const EntityType& other)
 {
-	return isDecoration(other) || isWindow(other) || isSolid(other) || isCave(other);
+	return isDecoration(other) || isWindow(other) || isSolid(other) || isCave(other) || isLava(other);
 }
 
 inline bool isNpcAttacking (const EntityType& other)

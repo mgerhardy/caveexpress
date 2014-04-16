@@ -160,6 +160,7 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	ClientEntityRegistry &r = Singleton<ClientEntityRegistry>::getInstance();
 	r.registerFactory(EntityTypes::DECORATION, ClientMapTile::FACTORY);
 	r.registerFactory(EntityTypes::SOLID, ClientMapTile::FACTORY);
+	r.registerFactory(EntityTypes::LAVA, ClientMapTile::FACTORY);
 	r.registerFactory(EntityTypes::GROUND, ClientMapTile::FACTORY);
 	r.registerFactory(EntityTypes::CAVE, ClientCaveTile::FACTORY);
 	r.registerFactory(EntityTypes::WINDOW, ClientWindowTile::FACTORY);

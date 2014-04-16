@@ -4,6 +4,7 @@ namespace EntityTypes {
 EntityType DECORATION("decoration");
 EntityType SOLID("solid");
 EntityType GROUND("ground");
+EntityType LAVA("lava");
 EntityType NPC_FRIENDLY_GRANDPA("npc-grandpa");
 EntityType NPC_FRIENDLY_WOMAN("npc-woman");
 EntityType NPC_FRIENDLY_MAN("npc-man");

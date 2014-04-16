@@ -375,10 +375,34 @@ sprites = {
 	},
 	["tile-ground-ice-06"] = { type = "ground", theme = "ice", },
 	["tile-ground-ice-big-01"] = { type = "ground", width = 2, height = 2, theme = "ice", },
-	["tile-lava-ice-left-01"] = { type = "lava", theme = "ice", },
-	["tile-lava-ice-left-02"] = { type = "lava", theme = "ice", },
-	["tile-lava-ice-right-01"] = { type = "lava", theme = "ice", },
-	["tile-lava-ice-right-02"] = { type = "lava", theme = "ice", },
+	["tile-lava-ice-left-01"] = {
+		type = "lava",
+		theme = "ice",
+		fps = 2,
+		polygons = {
+			{
+				"solid", -50, 0, 50, 0, 50, -50, -50, -50,
+			},
+			{
+				"lava", -50, 40, 50, 40, 50, 0, -50, 0,
+			},
+		},
+	},
+	["tile-lava-ice-left-02"] = { type = "lava", theme = "ice", fps = 2, },
+	["tile-lava-ice-right-01"] = {
+		type = "lava",
+		theme = "ice",
+		fps = 2,
+		polygons = {
+			{
+				"solid", -50, 0, 50, 0, 50, -50, -50, -50,
+			},
+			{
+				"lava", -50, 40, 50, 40, 50, 0, -50, 0,
+			},
+		},
+	},
+	["tile-lava-ice-right-02"] = { type = "lava", theme = "ice", fps = 2, },
 	["tile-ground-ledge-ice-right-01"] = {
 		type = "ground-right",
 		theme = "ice",
@@ -782,6 +806,32 @@ sprites = {
 		},
 	},
 	["tile-rock-big-01"] = { type = "rock", width = 2, height = 2, theme = "rock", },
+	["tile-lava-rock-left-01"] = {
+		type = "lava",
+		theme = "rock",
+		fps = 2,
+		polygons = {
+			{
+				"solid", -50, 0, 50, 0, 50, -50, -50, -50,
+			},
+			{
+				"lava", -50, 40, 50, 40, 50, 0, -50, 0,
+			},
+		},
+	},
+	["tile-lava-rock-right-01"] = {
+		type = "lava",
+		theme = "rock",
+		fps = 2,
+		polygons = {
+			{
+				"solid", -50, 0, 50, 0, 50, -50, -50, -50,
+			},
+			{
+				"lava", -50, 40, 50, 40, 50, 0, -50, 0,
+			},
+		},
+	},
 	["tile-rock-slope-right-01"] = {
 		type = "slope-right",
 		theme = "rock",

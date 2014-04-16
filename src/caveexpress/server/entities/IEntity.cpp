@@ -166,6 +166,9 @@ void IEntity::update (uint32_t deltaTime)
 
 void IEntity::onContact (b2Contact* contact, IEntity* entity)
 {
+	//if (EntityTypes::isLava(entity->getType())) {
+	// TODO: play sound and handle "death"
+	//}
 }
 
 void IEntity::endContact (b2Contact* contact, IEntity* entity)

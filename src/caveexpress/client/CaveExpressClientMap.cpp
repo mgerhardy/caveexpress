@@ -3,9 +3,8 @@
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
+#include "engine/client/particles/Sparkle.h"
 #include "engine/common/MapSettings.h"
-#include "engine/client/particles/Bubble.h"
-#include "engine/client/particles/Snow.h"
 #include "engine/common/network/messages/StopMovementMessage.h"
 #include "engine/common/network/messages/MovementMessage.h"
 #include "engine/common/network/messages/FingerMovementMessage.h"
@@ -94,6 +93,27 @@ void CaveExpressClientMap::couldNotFindEntity (const std::string& prefix, uint16
 		if (EntityTypes::isMapTile(e->getType()))
 			continue;
 		info(LOG_CLIENT, String::format("id: %i, type: %s", e->getID(), e->getType().name.c_str()));
+	}
+}
+
+void CaveExpressClientMap::start () {
+	ClientMap::start();
+	for (ClientEntityMapConstIter i = _entities.begin(); i != _entities.end(); ++i) {
+		const ClientEntityPtr& e = i->second;
+		if (!EntityTypes::isLava(e->getType())) {
+			continue;
+		}
+		int startX, startY, sizeW, sizeH;
+		e->getScreenPos(startX, startY);
+		e->getScreenSize(sizeW, sizeH);
+		const int border = 5;
+		sizeW -= border;
+		startX += border;
+		startY += sizeH / 2.0f;
+		const int sparklePerLava = 4;
+		for (int p = 0; p < sparklePerLava; ++p) {
+			_particleSystem.spawn(ParticlePtr(new Sparkle(*this, startX, startY, sizeW, sizeH)));
+		}
 	}
 }
 

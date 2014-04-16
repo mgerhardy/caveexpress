@@ -2,17 +2,17 @@
 <data version="1.0">
     <struct type="Settings">
         <key>fileFormatVersion</key>
-        <int>3</int>
-        <key>texturePackerVersion</key>
-        <string>3.2.0</string>
+        <int>1</int>
+        <key>variation</key>
+        <string>main</string>
+        <key>verbose</key>
+        <false/>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
                 <double>1</double>
                 <key>extension</key>
-                <string></string>
-                <key>spriteFilter</key>
                 <string></string>
                 <key>acceptFractionalValues</key>
                 <false/>
@@ -114,6 +114,8 @@
             <enum type="AndEngine::MinFilter">Linear</enum>
             <key>packageName</key>
             <string>Texture</string>
+            <key>javaFileName</key>
+            <filename>../../../base/pics/environment-ice.java</filename>
             <key>wrap</key>
             <struct type="AndEngineWrap">
                 <key>s</key>
@@ -124,21 +126,10 @@
             <key>magFilter</key>
             <enum type="AndEngine::MagFilter">MagLinear</enum>
         </struct>
-        <key>dataFileNames</key>
-        <map type="GFileNameMap">
-            <key>java</key>
-            <struct type="DataFile">
-                <key>name</key>
-                <filename>npc_flying.java</filename>
-            </struct>
-            <key>lua</key>
-            <struct type="DataFile">
-                <key>name</key>
-                <filename>environment-ice.lua</filename>
-            </struct>
-        </map>
-        <key>multiPack</key>
-        <false/>
+        <key>dataFileName</key>
+        <filename>../../../base/pics/environment-ice.lua</filename>
+        <key>mainExtension</key>
+        <string></string>
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
@@ -152,8 +143,6 @@
         <true/>
         <key>trimSpriteNames</key>
         <false/>
-        <key>cleanTransparentPixels</key>
-        <true/>
         <key>globalSpriteSettings</key>
         <struct type="SpriteSettings">
             <key>scale</key>
@@ -223,6 +212,9 @@
             <filename>../png/tile-rock-ice-DIR-05-middle-01.png</filename>
             <filename>../png/tile-lava-ice-DIR-01-middle-01.png</filename>
             <filename>../png/tile-lava-ice-DIR-02-middle-01.png</filename>
+            <filename>../../../../caveexpress/contrib/assets/png/tile-lava-ice-DIR-01-middle-01.png</filename>
+            <filename>../../../../caveexpress/contrib/assets/png/tile-lava-ice-DIR-01-middle-02.png</filename>
+            <filename>../../../../caveexpress/contrib/assets/png/tile-lava-ice-DIR-02-middle-01.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
