@@ -14,7 +14,7 @@ void IntroFlying::addIntroNodes(UINode* parent) {
 	parent->add(new IntroLabelHeadline(_frontend, tr("Objectives")));
 	parent->add(new IntroLabel(_frontend, tr("Just stay and watch what happens")));
 	parent->add(new IntroLabelHeadline(_frontend, tr("Hints")));
-	parent->add(new IntroLabel(_frontend, tr("Dropping stones onto the dinos will stun them")));
+	parent->add(new IntroLabel(_frontend, tr("Dropping stones onto dinos stuns them")));
 	if (System.hasTouch() && !System.isOUYA()) {
 		parent->add(new IntroLabel(_frontend, tr("Drop them with the second finger")));
 	} else {
