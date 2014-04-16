@@ -3,6 +3,7 @@ A player will lose the map if he touches the side borders|A player will lose the
 ALT|ALT
 Activate the fish spawn|Activate the fish spawn
 Activate the pterodactyls spawn|Activate the pterodactyls spawn
+Angry dinosaur|Angry dinosaur
 Are you sure?|Are you sure?
 Auto|Auto
 Back|Back
@@ -25,6 +26,7 @@ Drop the package and the stone|Drop the package and the stone
 Drop the stone to collect packages again|Drop the stone to collect packages again
 Drop them by hitting SPACE bar|Drop them by hitting SPACE bar
 Drop them with the second finger|Drop them with the second finger
+Dropping stones onto the dinos will stun them|Dropping stones onto the dinos will stun them
 Extras|Extras
 Facebook|Facebook
 Fall delay|Fall delay
@@ -43,6 +45,7 @@ Increase map size|Increase map size
 Initial npc spawn delay for the pterodactyls and the fish|Initial npc spawn delay for the pterodactyls and the fish
 Initial water rising delay in milliseconds|Initial water rising delay in milliseconds
 Joystick|Joystick
+Just stay and watch what happens|Just stay and watch what happens
 LMB|LMB
 Load|Load
 MMB|MMB
@@ -67,6 +70,7 @@ Player|Player
 Points|Points
 Pterodactyls|Pterodactyls
 Pterodactyls is after you|Pterodactyls is after you
+Pterodactylus|Pterodactylus
 Quit|Quit
 Quit without saving|Quit without saving
 RMB|RMB
