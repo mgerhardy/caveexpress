@@ -175,8 +175,8 @@ function initMap()
 	map:addTile("tile-background-03", 15, 10)
 	map:addTile("tile-background-03", 15, 11)
 
-	map:addEmitter("item-package", 3.5, 4, 1, 0, "")
 	map:addEmitter("tree", 6, 4, 1, 0, "")
+	map:addEmitter("item-package", 8.5, 9, 1, 0, "")
 
 	map:setSetting("width", "16")
 	map:setSetting("height", "12")
