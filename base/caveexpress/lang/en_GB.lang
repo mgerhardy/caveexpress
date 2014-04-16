@@ -40,6 +40,7 @@ Hard|Hard
 Help|Help
 Hints|Hints
 Hit twice to end the game|Hit twice to end the game
+Hitting walls hard will inflict damage|Hitting walls hard will inflict damage
 Ice|Ice
 Increase map size|Increase map size
 Initial npc spawn delay for the pterodactyls and the fish|Initial npc spawn delay for the pterodactyls and the fish
@@ -109,6 +110,7 @@ The points you get for finishing the map|The points you get for finishing the ma
 The water change speed|The water change speed
 Time|Time
 Tree|Tree
+Try to avoid crashes but still be fast|Try to avoid crashes but still be fast
 Tutorial|Tutorial
 Twitter|Twitter
 Undo|Undo
