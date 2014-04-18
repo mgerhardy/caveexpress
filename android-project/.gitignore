@@ -8,3 +8,5 @@
 /default.properties
 /project.properties
 /libs
+/.gradle
+/.idea
