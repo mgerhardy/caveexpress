@@ -181,9 +181,9 @@
             <filename>../png/bubble-09.png</filename>
             <filename>../png/snow-01.png</filename>
             <filename>../png/particle-water.png</filename>
-            <filename>../../../../caveexpress/contrib/assets/png/sparkle-01.png</filename>
-            <filename>../../../../caveexpress/contrib/assets/png/sparkle-02.png</filename>
-            <filename>../../../../caveexpress/contrib/assets/png/sparkle-03.png</filename>
+            <filename>../png/sparkle-01.png</filename>
+            <filename>../png/sparkle-02.png</filename>
+            <filename>../png/sparkle-03.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

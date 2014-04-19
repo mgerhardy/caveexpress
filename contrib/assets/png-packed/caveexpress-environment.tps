@@ -192,8 +192,8 @@
             <filename>../png/tile-geyser-rock-01-idle-middle-02.png</filename>
             <filename>../png/tile-geyser-rock-01-idle-middle-03.png</filename>
             <filename>../png/tile-geyser-rock-01-idle-middle-04.png</filename>
-            <filename>../../../../caveexpress/contrib/assets/png/tile-lava-rock-DIR-01-middle-01.png</filename>
-            <filename>../../../../caveexpress/contrib/assets/png/tile-lava-rock-DIR-01-middle-02.png</filename>
+            <filename>../png/tile-lava-rock-DIR-01-middle-01.png</filename>
+            <filename>../png/tile-lava-rock-DIR-01-middle-02.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

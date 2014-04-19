@@ -212,9 +212,7 @@
             <filename>../png/tile-rock-ice-DIR-05-middle-01.png</filename>
             <filename>../png/tile-lava-ice-DIR-01-middle-01.png</filename>
             <filename>../png/tile-lava-ice-DIR-02-middle-01.png</filename>
-            <filename>../../../../caveexpress/contrib/assets/png/tile-lava-ice-DIR-01-middle-01.png</filename>
-            <filename>../../../../caveexpress/contrib/assets/png/tile-lava-ice-DIR-01-middle-02.png</filename>
-            <filename>../../../../caveexpress/contrib/assets/png/tile-lava-ice-DIR-02-middle-01.png</filename>
+            <filename>../png/tile-lava-ice-DIR-01-middle-02.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
