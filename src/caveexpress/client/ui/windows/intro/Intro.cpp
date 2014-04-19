@@ -2,6 +2,7 @@
 #include "engine/common/Commands.h"
 #include "engine/client/ui/nodes/UINodeBackButton.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
+#include "engine/client/ui/nodes/UINodeBar.h"
 #include "caveexpress/client/ui/nodes/UINodeBackground.h"
 #include "caveexpress/client/ui/nodes/UINodeIntroBackground.h"
 #include "engine/client/ui/layouts/UIVBoxLayout.h"
@@ -14,6 +15,37 @@ IntroTypeDescription::IntroTypeDescription(IFrontend* frontend, const EntityType
 	UINodeSprite* sprite = new UINodeSprite(frontend, type, animation);
 	sprite->setAspectRatioSize(0.1f, 0.1f);
 	add(sprite);
+	UINodeLabel* label = new UINodeLabel(frontend, text, getFont(HUGE_FONT));
+	label->setColor(colorBlack);
+	add(label);
+}
+
+IntroBarDescription::IntroBarDescription(IFrontend* frontend, const Color& barColor, const std::string& text) :
+		UINode(frontend) {
+	setLayout(new UIHBoxLayout(0.01f, false, NODE_ALIGN_MIDDLE));
+	const float barHeight = 12.0f / _frontend->getHeight();
+	const float barWidth = 102.0f / _frontend->getWidth();
+	UINodeBar* timeBar = new UINodeBar(_frontend);
+	timeBar->setBarColor(barColor);
+	timeBar->setBorder(true);
+	timeBar->setBorderColor(colorWhite);
+	timeBar->setSize(barWidth, barHeight);
+	add(timeBar);
+	UINodeLabel* label = new UINodeLabel(frontend, text, getFont(HUGE_FONT));
+	label->setColor(colorBlack);
+	add(label);
+}
+
+IntroBarDescription::IntroBarDescription(IFrontend* frontend, const std::string& text) :
+		UINode(frontend) {
+	setLayout(new UIHBoxLayout(0.01f, false, NODE_ALIGN_MIDDLE));
+	const float barHeight = 12.0f / _frontend->getHeight();
+	const float barWidth = 102.0f / _frontend->getWidth();
+	UINodeBar* timeBar = new UINodeBar(_frontend);
+	timeBar->setBorder(true);
+	timeBar->setBorderColor(colorWhite);
+	timeBar->setSize(barWidth, barHeight);
+	add(timeBar);
 	UINodeLabel* label = new UINodeLabel(frontend, text, getFont(HUGE_FONT));
 	label->setColor(colorBlack);
 	add(label);

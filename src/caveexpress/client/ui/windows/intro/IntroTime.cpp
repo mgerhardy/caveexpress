@@ -1,6 +1,7 @@
 #include "IntroTime.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
 #include "engine/client/ui/nodes/UINodeLabel.h"
+#include "engine/client/ui/nodes/UINodeBar.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "engine/client/ui/UI.h"
@@ -21,5 +22,6 @@ void IntroTime::addIntroNodes(UINode* parent) {
 		parent->add(new IntroLabel(_frontend, tr("Drop them by hitting SPACE bar")));
 	}
 	parent->add(new IntroLabelHeadline(_frontend, tr("Description")));
-	// TODO: explain the time bar
+	const Color timeBarColor = { 1.0f, 1.0f, 1.0f, 0.5f };
+	parent->add(new IntroBarDescription(_frontend, timeBarColor, tr("Time bar")));
 }

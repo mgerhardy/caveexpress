@@ -15,6 +15,7 @@ Campaigns|Campaigns
 Can't start the map without a packagetarget|Can't start the map without a packagetarget
 Cancel|Cancel
 Collect packages by landing on them|Collect packages by landing on them
+Collecting fruits will restore hitpoints|Collecting fruits will restore hitpoints
 Continue|Continue
 Create server|Create server
 Decrease map size|Decrease map size
@@ -37,6 +38,7 @@ General|General
 Geyser|Geyser
 Gravity|Gravity
 Hard|Hard
+Health bar|Health bar
 Help|Help
 Hints|Hints
 Hit twice to end the game|Hit twice to end the game
@@ -109,6 +111,7 @@ The geyser will do the work for you|The geyser will do the work for you
 The points you get for finishing the map|The points you get for finishing the map
 The water change speed|The water change speed
 Time|Time
+Time bar|Time bar
 Tree|Tree
 Try to avoid crashes but still be fast|Try to avoid crashes but still be fast
 Tutorial|Tutorial

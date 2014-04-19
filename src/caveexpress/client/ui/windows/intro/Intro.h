@@ -54,3 +54,9 @@ class IntroTypeDescription: public UINode {
 public:
 	IntroTypeDescription(IFrontend* frontend, const EntityType& type, const Animation& animation, const std::string& text);
 };
+
+class IntroBarDescription: public UINode {
+public:
+	IntroBarDescription(IFrontend* frontend, const Color& barColor, const std::string& text);
+	IntroBarDescription(IFrontend* frontend, const std::string& text);
+};
