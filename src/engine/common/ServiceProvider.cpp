@@ -43,19 +43,19 @@ void ServiceProvider::updateNetwork (bool network)
 	_currentNetwork->init();
 }
 
-void ServiceProvider::initTextureDefinition (IFrontend *frontend, const std::string& textureSize)
+void ServiceProvider::initTextureDefinition (IFrontend *frontend, const std::string& textureSize, IProgressCallback* progress)
 {
 	if (_textureDefinition != nullptr)
 		delete _textureDefinition;
 	ExecutionTime e("texture definition");
 	if (textureSize == "auto") {
 		if (System.isSmallScreen() || frontend->getHeight() <= 768 || frontend->getWidth() <= 1024) {
-			_textureDefinition = new TextureDefinition("small");
+			_textureDefinition = new TextureDefinition("small", progress);
 		} else {
-			_textureDefinition = new TextureDefinition("big");
+			_textureDefinition = new TextureDefinition("big", progress);
 		}
 	} else {
-		_textureDefinition = new TextureDefinition(textureSize);
+		_textureDefinition = new TextureDefinition(textureSize, progress);
 	}
 }
 

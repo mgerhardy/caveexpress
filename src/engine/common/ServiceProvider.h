@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "engine/common/Compiler.h"
 
 // forward decl
 class CampaignManager;
@@ -9,6 +10,7 @@ class IGameStatePersister;
 class INetwork;
 class TextureDefinition;
 class IFrontend;
+class IProgressCallback;
 
 class ServiceProvider {
 private:
@@ -22,7 +24,7 @@ public:
 	ServiceProvider ();
 	virtual ~ServiceProvider ();
 
-	void initTextureDefinition (IFrontend *frontend, const std::string& textureSize);
+	void initTextureDefinition (IFrontend *frontend, const std::string& textureSize, IProgressCallback* progress = nullptr);
 	void init (IFrontend *frontend);
 
 	// switches the network to either loopback or to real network

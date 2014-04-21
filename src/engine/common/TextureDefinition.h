@@ -2,6 +2,7 @@
 
 #include "engine/common/NonCopyable.h"
 #include "engine/common/Math.h"
+#include "engine/common/Compiler.h"
 #include <map>
 #include <string>
 
@@ -10,6 +11,8 @@ const std::string TEXTURE_DIRECTION = "DIR";
 const std::string TEXTURE_DIRECTION_RIGHT = "right";
 const std::string TEXTURE_DIRECTION_LEFT = "left";
 }
+
+class IProgressCallback;
 
 struct TextureDefinitionTrim {
 	TextureDefinitionTrim() :
@@ -78,16 +81,22 @@ private:
 	TextureDefMap _textureDefs;
 	TextureDef _emptyTextureDef;
 	std::string _textureSize;
+	int _cnt;
 
 	inline void create (const std::string& textureName, const std::string& id, const TextureDefinitionCoords& texcoords,
 			const TextureDefinitionTrim& trim, bool mirror);
 public:
-	TextureDefinition (const std::string& textureSize);
+	TextureDefinition (const std::string& textureSize, IProgressCallback* progress = nullptr);
 	virtual ~TextureDefinition ();
 
 	inline const TextureDefMap& getMap () const
 	{
 		return _textureDefs;
+	}
+
+	inline int getSize () const
+	{
+		return _cnt;
 	}
 
 	inline const std::string& getTextureSize () const

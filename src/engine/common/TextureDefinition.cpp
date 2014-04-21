@@ -6,9 +6,10 @@
 #include "engine/common/System.h"
 #include "engine/common/FileSystem.h"
 #include "engine/common/ExecutionTime.h"
+#include "engine/common/IProgressCallback.h"
 
-TextureDefinition::TextureDefinition (const std::string& textureSize) :
-		_textureSize(textureSize)
+TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressCallback* progress) :
+		_textureSize(textureSize), _cnt(0)
 {
 	if (textureSize != "big" && textureSize != "small") {
 		System.exit("invalid texturesize value given: " + textureSize + ". Valid values are: auto, big, small", 1);
@@ -36,6 +37,9 @@ TextureDefinition::TextureDefinition (const std::string& textureSize) :
 				System.exit("Invalid texture entry found", 1);
 			}
 
+			if (progress != nullptr) {
+				progress->progressStep();
+			}
 			const std::string name = lua.getValueStringFromTable("image");
 			const float x0 = lua.getValueFloatFromTable("x0");
 			const float y0 = lua.getValueFloatFromTable("y0");
@@ -61,6 +65,7 @@ TextureDefinition::TextureDefinition (const std::string& textureSize) :
 				create(name, id, r, trim, mirror);
 			}
 			lua.pop();
+			++_cnt;
 		}
 	}
 

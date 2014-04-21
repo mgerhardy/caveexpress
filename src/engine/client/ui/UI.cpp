@@ -236,11 +236,10 @@ void UI::renderProgress () const
 	_frontend->renderFilledRect(x, y, w, h, colorWhite);
 
 	if (_progress.steps > 0 && _progress.step > 0) {
-		const float factor = static_cast<float>(_progress.step) / static_cast<float>(_progress.steps);
-		assert(factor <= 1.0f + EPSILON);
+		const float factor = std::min(1.0f, static_cast<float>(_progress.step) / static_cast<float>(_progress.steps));
 		const int width = w * factor;
 		if (width > 0) {
-			_frontend->renderFilledRect(x, y, width, h, colorBlue);
+			_frontend->renderFilledRect(x, y, width, h, colorGray);
 		}
 	}
 }

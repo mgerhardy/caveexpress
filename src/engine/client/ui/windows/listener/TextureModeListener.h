@@ -17,7 +17,11 @@ public:
 	{
 		if (_serviceProvider.getTextureDefinition().getTextureSize() == _textureSize)
 			return;
-		_serviceProvider.initTextureDefinition(_frontend, _textureSize);
+		const TextureDefinition& td = _serviceProvider.getTextureDefinition();
+		const int steps = td.getSize();
+		UI::get().progressInit(steps, "");
+		_serviceProvider.initTextureDefinition(_frontend, _textureSize, &UI::get());
+		UI::get().progressDone();
 		Config.setTextureSize(_textureSize);
 		UI::get().initRestart();
 	}
