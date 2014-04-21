@@ -211,6 +211,10 @@ public abstract class BaseActivity extends SDLActivity {
 		mSingleton.startActivity(browserIntent);
 	}
 
+	public static void minimize() {
+		((BaseActivity) mSingleton).finish();
+	}
+
 	static boolean buyItem(String id) {
 		return ((BaseActivity) mSingleton).doBuyItem(id);
 	}

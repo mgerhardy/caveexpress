@@ -24,6 +24,7 @@ private:
 	jmethodID _buyItem;
 	jmethodID _isOUYA;
 	jmethodID _isSmallScreen;
+	jmethodID _minimize;
 	jmethodID _getPaymentEntries;
 	jmethodID _getLocale;
 
@@ -62,7 +63,7 @@ public:
 	void achievementUnlocked (const std::string& id) override;
 	bool hasAchievement (const std::string& id) override;
 	bool hasTouch () const override;
-	bool wantQuit () override;
+	bool quit () override;
 	bool wantCursor () override;
 	bool isSmallScreen () override;
 	bool supportFocusChange () override;

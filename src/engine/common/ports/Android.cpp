@@ -64,7 +64,7 @@ int LocalReferenceHolder::s_active;
 Android::Android () :
 		Unix(), _paymentLoaded(false), _env(nullptr), _cls(nullptr), _assetManager(nullptr), _showAds(nullptr), _hideAds(nullptr),
 		_showFullscreenAds(nullptr), _openURL(nullptr), _buyItem(nullptr), _hasItem(nullptr), _isOUYA(nullptr),
-		_getPaymentEntries(nullptr), _externalState(0) {
+		_minimize(nullptr), _getPaymentEntries(nullptr), _externalState(0) {
 	LocalReferenceHolder refs;
 
 	JNIEnv *env = static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
@@ -118,6 +118,7 @@ Android::Android () :
 	_track = env->GetStaticMethodID(_cls, "track", "(Ljava/lang/String;Ljava/lang/String;)Z");
 	_isOUYA = env->GetStaticMethodID(_cls, "isOUYA", "()Z");
 	_isSmallScreen = env->GetStaticMethodID(_cls, "isSmallScreen", "()Z");
+	_minimize = env->GetStaticMethodID(_cls, "minimize", "()V");
 	_getPaymentEntries = env->GetStaticMethodID(_cls, "getPaymentEntries", "()[Lorg/PaymentEntry;");
 	_getLocale = env->GetStaticMethodID(_cls, "getLocale", "()Ljava/lang/String;");
 
@@ -135,6 +136,9 @@ Android::Android () :
 	}
 	if (_buyItem == 0) {
 		error(LOG_SYSTEM, "error getting buyItem()");
+	}
+	if (_minimize == 0) {
+		error(LOG_SYSTEM, "error getting minimize()");
 	}
 	if (_track == 0) {
 		error(LOG_SYSTEM, "error getting track()");
@@ -477,9 +481,10 @@ bool Android::wantCursor ()
 	return false;
 }
 
-bool Android::wantQuit ()
+bool Android::quit ()
 {
-	return false;
+	_env->CallStaticBooleanMethod(_cls, _minimize);
+	return true;
 }
 
 bool Android::isSmallScreen ()

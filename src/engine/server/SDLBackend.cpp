@@ -63,9 +63,7 @@ SDLBackend::~SDLBackend ()
 
 	Commands.removeCommand(CMD_SCREENSHOT);
 	Commands.removeCommand(CMD_MAP_START);
-	if (System.wantQuit()) {
-		Commands.removeCommand(CMD_QUIT);
-	}
+	Commands.removeCommand(CMD_QUIT);
 
 	if (_frontend) {
 		delete _frontend;
@@ -93,9 +91,7 @@ int SDLBackend::init (int argc, char **argv)
 #endif
 
 	Config.get().init(this, argc, argv);
-	if (System.wantQuit()) {
-		Commands.registerCommand(CMD_QUIT, new CmdQuit(_running));
-	}
+	Commands.registerCommand(CMD_QUIT, new CmdQuit());
 
 	if (_dedicated) {
 		_frontend = new ConsoleFrontend(_console);
@@ -168,7 +164,9 @@ void SDLBackend::handleEvent (SDL_Event &event)
 	switch (event.type) {
 	case SDL_QUIT:
 		info(LOG_BACKEND, "received quit event");
-		_running = false;
+		if (!System.quit()) {
+			_running = false;
+		}
 		break;
 	default: {
 		if (!_running)

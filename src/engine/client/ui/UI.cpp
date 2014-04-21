@@ -625,10 +625,8 @@ void UI::pop ()
 		return;
 
 	if (_stack.size() == 1) {
-		if (System.wantQuit()) {
-			UIPopupCallbackPtr c(new QuitPopupCallback());
-			UI::get().popup(tr("Quit"), UIPOPUP_OK | UIPOPUP_CANCEL, c);
-		}
+		UIPopupCallbackPtr c(new QuitPopupCallback());
+		UI::get().popup(tr("Quit"), UIPOPUP_OK | UIPOPUP_CANCEL, c);
 		return;
 	}
 

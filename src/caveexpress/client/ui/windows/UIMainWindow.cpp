@@ -71,11 +71,9 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 	help->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_HELP)));
 	panel->add(help);
 
-	if (System.wantQuit()) {
-		UINodeMainButton *quit = new UINodeMainButton(_frontend, tr("Quit"));
-		quit->addListener(UINodeListenerPtr(new QuitListener()));
-		panel->add(quit);
-	}
+	UINodeMainButton *quit = new UINodeMainButton(_frontend, tr("Quit"));
+	quit->addListener(UINodeListenerPtr(new QuitListener()));
+	panel->add(quit);
 
 	add(panel);
 

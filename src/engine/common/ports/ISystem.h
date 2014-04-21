@@ -75,7 +75,12 @@ public:
 
 	virtual bool supportPayment () { return false; }
 
-	virtual bool wantQuit () { return true; }
+	/**
+	 * @brief Handle quit in a system specific manner. The default is to not handle it differently.
+	 *
+	 * @return @c true in cases where you don't want to interrupt the mainloop
+	 */
+	virtual bool quit () { return false; }
 
 	virtual bool buyItem (const std::string& id) { return false; }
 
