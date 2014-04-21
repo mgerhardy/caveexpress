@@ -36,9 +36,11 @@ void CaveExpressClientMap::resetCurrentMap ()
 
 void CaveExpressClientMap::renderWater (int x, int y) const
 {
+	const float waterHeight = getWaterHeight();
+	if (waterHeight <= 0.000001f)
+		return;
 	x += _screenRumbleOffsetX;
 	y += _screenRumbleOffsetY;
-	const float waterHeight = getWaterHeight();
 	const int waterHeightPixel = waterHeight * _scale;
 
 	const int mapPosY = y + _y;
@@ -48,7 +50,9 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	static const Color color = { WATERCOLOR[0] / 255.0f, WATERCOLOR[1] / 255.0f, WATERCOLOR[2] / 255.0f, WATER_ALPHA
 			/ 255.0f };
 	_frontend->renderLine(x + _x, yWater - 1, x + _x + widthWater, yWater - 1, waterLineColor);
-	_frontend->renderFilledRect(x + _x, yWater, widthWater, _frontend->getHeight() - yWater, color);
+	const int xWater = x + _x;
+	const int heightWater = _frontend->getHeight() - yWater;
+	_frontend->renderFilledRect(xWater, yWater, widthWater, heightWater, color);
 }
 
 bool CaveExpressClientMap::drop ()
