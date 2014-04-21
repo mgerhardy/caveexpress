@@ -94,17 +94,14 @@ public:
 			error(LOG_CLIENT, "failed to show the fullscreen ads");
 	}
 
-	void showAds ()
-	{
-		if (getSystem().hasItem(PAYMENT_ADFREE))
-			return;
-
-		getSystem().showAds(true, false);
+	void showAds () {
+		//if (getSystem().hasItem(PAYMENT_ADFREE))
+		//	return;
+		//getSystem().showAds(true, false);
 	}
 
-	void hideAds ()
-	{
-		getSystem().showAds(false, false);
+	void hideAds () {
+		//getSystem().showAds(false, false);
 	}
 
 	bool onKeyRelease (int32_t key) override;
