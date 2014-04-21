@@ -58,8 +58,8 @@ bool UINode::isSmallScreen() const
 
 void UINode::setPos (float x, float y)
 {
-	_pos.x = x;
-	_pos.y = y;
+	_pos.x = clamp(x, 0.0f, 1.0f);
+	_pos.y = clamp(y, 0.0f, 1.0f);
 	updateAlignment();
 }
 
