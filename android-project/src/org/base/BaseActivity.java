@@ -212,7 +212,10 @@ public abstract class BaseActivity extends SDLActivity {
 	}
 
 	public static void minimize() {
-		((BaseActivity) mSingleton).finish();
+		Intent main = new Intent(Intent.ACTION_MAIN);
+		main.addCategory(Intent.CATEGORY_HOME);
+		main.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		((BaseActivity) mSingleton).startActivity(main);
 	}
 
 	static boolean buyItem(String id) {
