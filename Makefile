@@ -216,7 +216,11 @@ endif
 
 ifeq ($(TARGET_OS),android)
 PERMISSIONS := <uses-permission android:name="com.android.vending.BILLING" />
+ifeq ($(HD_VERSION),1)
+META_DATA =
+else
 META_DATA = <meta-data android:value="true" android:name="ADMOB_ALLOW_LOCATION_FOR_ADS" />
+endif
 #META_DATA += <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/app_id" />
 #META_DATA += <meta-data android:name="com.google.android.gms.appstate.APP_ID" android:value="@string/app_id" />
 META_DATA += <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
@@ -227,7 +231,11 @@ META_DATA :=
 ANDROID_REFERENCED_LIBS :=
 endif
 
+ifeq ($(HD_VERSION),1)
+ICON := $(APPNAME)hd-icon.png
+else
 ICON := $(APPNAME)-icon.png
+endif
 
 .PHONY: clean-android-libs
 clean-android-libs:
@@ -359,6 +367,8 @@ endif
 release-android:
 	./configure --enable-ccache --target-os=android --enable-release && $(MAKE) clean-android clean && $(MAKE)
 	cp $(ANDROID_PROJECT)/bin/*-release.apk $(APPNAME_FULL)-release.apk
+	./configure --enable-ccache --target-os=android --enable-release --enable-hd && $(MAKE) clean-android clean && $(MAKE)
+	cp $(ANDROID_PROJECT)/bin/*-release.apk $(APPNAME_FULL)-hd-release.apk
 	./configure --enable-ccache --target-os=ouya --enable-release && $(MAKE) clean-android clean && $(MAKE)
 	cp $(ANDROID_PROJECT)/bin/*-release.apk $(APPNAME_FULL)-ouya-release.apk
 

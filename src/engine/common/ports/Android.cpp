@@ -442,6 +442,11 @@ void Android::getPaymentEntries (std::vector<PaymentEntry>& entries)
 
 bool Android::hasItem (const std::string& id)
 {
+#ifndef HD_VERSION
+	if (id == PAYMENT_ADFREE)
+		return true;
+#endif
+
 	LocalReferenceHolder refs;
 
 	if (_env == nullptr || !refs.init(_env)) {
@@ -593,4 +598,15 @@ extern "C" jboolean Java_org_base_BaseActivity_isDebug(JNIEnv* env, jclass jcls)
 	debug = 0;
 #endif
 	return debug;
+}
+
+extern "C" jboolean Java_org_base_BaseActivity_isHD(JNIEnv* env, jclass jcls)
+{
+	jboolean hd;
+#ifdef HD_VERSION
+	hd = 1;
+#else
+	hd = 0;
+#endif
+	return hd;
 }

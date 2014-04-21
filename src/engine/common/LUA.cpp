@@ -38,6 +38,7 @@ LUA::LUA (bool debug)
 	lua_register(_state, "isOUYA", isOUYA);
 	lua_register(_state, "isHTML5", isHTML5);
 	lua_register(_state, "isDebug", isDebug);
+	lua_register(_state, "isHD", isHD);
 	lua_register(_state, "isTouch", isTouch);
 
 	if (debug) {
@@ -407,6 +408,16 @@ int LUA::isTouch (lua_State *L)
 #else
 	lua_pushboolean(L, false);
 #endif
+#endif
+	return 1;
+}
+
+int LUA::isHD (lua_State *L)
+{
+#ifdef HD_VERSION
+	lua_pushboolean(L, true);
+#else
+	lua_pushboolean(L, false);
 #endif
 	return 1;
 }

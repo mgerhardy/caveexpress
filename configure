@@ -18,6 +18,7 @@ CONFIG_H=config.h
 MAKEFILE_LOCAL=Makefile.local
 
 DEBUG=1
+HD_VERSION=
 PROFILING=
 PREFIX=/usr/local
 PKGDATADIR=
@@ -133,6 +134,7 @@ config_h() {
 	add_to_config_h_quote APPNAME "Application name"
 	add_to_config_h_quote APPNAME_FULL "Full application name"
 	add_to_config_h_quote VERSION
+	add_to_config_h_quote HD_VERSION
 	add_to_config_h_quote VERSION_CODE
 	add_to_config_h_quote PKGDATADIR "Setting custom data directory"
 	add_to_config_h_quote PKGLIBDIR "Setting custom library directory"
@@ -149,6 +151,7 @@ makefile_local() {
 	add_to_makefile_local PROFILING "Enable profiling"
 	add_to_makefile_local STATIC "Enable static linking"
 	add_to_makefile_local STATIC_SDL "Enable static SDL linking"
+	add_to_makefile_local HD_VERSION "Enable HD version"
 	add_to_makefile_local DISABLE_DEPENDENCY_TRACKING "Disable dependency tracking"
 	add_to_makefile_local TARGET_OS "Compile for ${TARGET_OS}"
 	add_to_makefile_local TARGET_ARCH "Compile for ${TARGET_ARCH}"
@@ -328,6 +331,7 @@ usage() {
 	echo " --enable-release           build with optimizations"
 	echo " --enable-static            enable static linking"
 	echo " --enable-static-sdl        enable static linking for the sdl libs only"
+	echo " --enable-hd                enable the HD version of the game (e.g. without ads)"
 	echo
 	echo " --with-ncurses             use ncurses for the server console"
 	echo " --with-embedded-sqlite3    use the copy of sqlite3 bundled with the source"
@@ -512,6 +516,10 @@ while [ $# -gt 0 ]; do
 	--enable-static-sdl)
 		STATIC_SDL=1
 		;;
+	--enable-hd)
+		HD_VERSION=1
+		JAVA_PACKAGE=${JAVA_PACKAGE}hd
+		;;
 	--disable-static)
 		STATIC=
 		;;
@@ -600,8 +608,10 @@ android)
 	;;
 ouya)
 	CONFIG_H_NAME="android"
+	HD_VERSION=1
 	;;
 *)
+	HD_VERSION=1
 	;;
 esac
 

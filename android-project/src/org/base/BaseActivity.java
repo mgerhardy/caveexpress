@@ -61,7 +61,9 @@ public abstract class BaseActivity extends SDLActivity {
 				Log.v(NAME, "App billing setup OK, querying inventory.");
 
 				moreSkus.clear();
-				moreSkus.add("adfree");
+				if (!isHD()) {
+					moreSkus.add("adfree");
+				}
 				moreSkus.add("unlockall");
 				// for (int i = 0; i < 20; i++) {
 				// moreSkus.add("campaign" + i);
@@ -296,4 +298,6 @@ public abstract class BaseActivity extends SDLActivity {
 	public static native void onPaymentDone();
 
 	public static native boolean isDebug();
+
+	public static native boolean isHD();
 }
