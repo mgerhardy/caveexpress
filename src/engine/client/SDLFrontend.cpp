@@ -168,6 +168,7 @@ void SDLFrontend::shutdown ()
 		_eventHandler = nullptr;
 	}
 	UI::get().shutdown();
+	SoundControl.close();
 }
 
 bool SDLFrontend::handlesInput () const

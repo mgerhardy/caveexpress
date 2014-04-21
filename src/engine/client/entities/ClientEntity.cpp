@@ -21,9 +21,12 @@ ClientEntity::ClientEntity (const EntityType& type, uint16_t id, float x, float 
 
 ClientEntity::~ClientEntity ()
 {
-	SoundControl.halt(_animationSound);
 	_entityOverlays.clear();
 	_sprites.clear();
+}
+
+void ClientEntity::remove() {
+	SoundControl.halt(_animationSound);
 }
 
 void ClientEntity::onVisibilityChanged ()

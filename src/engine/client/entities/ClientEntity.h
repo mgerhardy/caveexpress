@@ -30,6 +30,7 @@ public:
 	static Factory FACTORY;
 	virtual ~ClientEntity ();
 
+	void remove();
 	const SpritePtr& getSprite () const;
 	const vec2& getPos () const;
 	const vec2& getSize () const;

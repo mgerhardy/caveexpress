@@ -102,6 +102,8 @@ void ClientMap::removeEntity (uint16_t id, bool fadeOut)
 			e->initFadeOut();
 		}
 	} else {
+		ClientEntityPtr e = getEntity(id);
+		e->remove();
 		_entities.erase(id);
 	}
 	if (_playerID == id) {
