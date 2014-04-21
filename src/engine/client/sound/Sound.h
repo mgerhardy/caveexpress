@@ -10,6 +10,7 @@ private:
 	Sound& operator= (const Sound&);
 
 	ISoundEngine *_soundEngine;
+	ISoundEngine _dummy;
 
 public:
 	virtual ~Sound ();
@@ -73,11 +74,6 @@ inline void Sound::haltAll ()
 inline int Sound::play (const std::string& path, const vec2& position, bool loop)
 {
 	return _soundEngine->play(path, position, loop);
-}
-
-inline void Sound::close ()
-{
-	_soundEngine->close();
 }
 
 inline void Sound::pause ()
