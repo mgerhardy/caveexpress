@@ -285,6 +285,7 @@ $(ANDROID_PROJECT)/AndroidManifest.xml: $(SRCDIR)/Android.mk.in $(ANDROID_PROJEC
 	$(Q)cp $(SRCDIR)/Android.mk.in $(SRCDIR)/Android.mk
 	$(Q)sed -i 's/@APPNAME@/$(APPNAME)/g' $(SRCDIR)/Android.mk
 	$(Q)sed -i 's/import org.caveexpress.*R;/import $(JAVA_PACKAGE).R;/g' $(ANDROID_PROJECT)/src/org/base/game/GameHelper.java
+	$(Q)sed -i 's/import org.caveexpress.*R;/import $(JAVA_PACKAGE).R;/g' $(ANDROID_PROJECT)/src/org/base/game/GameHelperUtils.java
 
 android-update-sdk-version:
 	$(Q)cp $(ANDROID_PROJECT)/default.properties.in $(ANDROID_PROJECT)/default.properties
