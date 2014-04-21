@@ -65,26 +65,8 @@ bool UINodeMapFingerControl::onFingerPress (int64_t finger, uint16_t x, uint16_t
 		return false;
 
 	if (isPressed()) {
+		debug(LOG_CLIENT, "pressing second finger");
 		return _map.secondFinger();
-	}
-
-	const ClientPlayer* player = _map.getPlayer();
-	if (player != nullptr) {
-		int px, py;
-		int pw, ph;
-		player->getScreenSize(pw, ph);
-		player->getScreenPos(px, py);
-
-		px -= playerClickGap;
-		py -= playerClickGap;
-
-		pw += playerClickGap;
-		ph += playerClickGap;
-
-		if (x >= px && x < px + pw && y >= py && y < py + ph) {
-			if (_map.playerClickedByFinger(false))
-				return true;
-		}
 	}
 
 	_lastMoveX = _lastMoveY = -1;
@@ -105,25 +87,6 @@ bool UINodeMapFingerControl::onFingerRelease (int64_t finger, uint16_t x, uint16
 		_lastMoveX = _lastMoveY = _moveX = _moveY = 0;
 		_map.resetAcceleration();
 		return true;
-	} else {
-		const ClientPlayer* player = _map.getPlayer();
-		if (player != nullptr) {
-			int px, py;
-			int pw, ph;
-			player->getScreenSize(pw, ph);
-			player->getScreenPos(px, py);
-
-			px -= playerClickGap;
-			py -= playerClickGap;
-
-			pw += playerClickGap;
-			ph += playerClickGap;
-
-			if (x >= px && x < px + pw && y >= py && y < py + ph) {
-				if (_map.playerClickedByFinger(true))
-					return true;
-			}
-		}
 	}
 
 	return val;

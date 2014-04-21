@@ -83,7 +83,6 @@ public:
 	virtual void setSetting (const std::string& key, const std::string& value);
 
 	virtual bool secondFinger () { return false; }
-	virtual bool playerClickedByFinger (bool up) { return false; }
 
 	virtual void resetCurrentMap ();
 	void close ();
