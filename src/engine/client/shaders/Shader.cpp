@@ -280,12 +280,16 @@ void Shader::setModelViewMatrix (const glm::mat4& modelViewMatrix)
 
 bool Shader::activate () const
 {
+	if (!GLContext::get().areShadersSupported())
+		return false;
+
 	if (!Config.isShader()) {
 		return false;
 	}
 
 #ifdef USE_SHADERS
 	GLContext::get().ctx_glUseProgram(_program);
+	GL_checkError();
 #endif
 	_active = true;
 
@@ -294,7 +298,7 @@ bool Shader::activate () const
 
 void Shader::deactivate () const
 {
-	if (!Config.isShader()) {
+	if (!_active) {
 		return;
 	}
 

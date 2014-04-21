@@ -83,6 +83,7 @@ CaveExpress::~CaveExpress ()
 		delete _persister;
 	if (_campaignManager != nullptr)
 		delete _campaignManager;
+	delete _map;
 }
 
 void CaveExpress::initSoundCache ()
