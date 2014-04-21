@@ -9,12 +9,12 @@
 #include "engine/client/ui/layouts/UIHBoxLayout.h"
 #include "engine/client/ui/UI.h"
 
-IntroTypeDescription::IntroTypeDescription(IFrontend* frontend, const EntityType& type, const Animation& animation, const std::string& text) :
+IntroTypeDescription::IntroTypeDescription(UINode* parent, IFrontend* frontend, const EntityType& type, const Animation& animation, const std::string& text) :
 		UINode(frontend) {
 	setLayout(new UIHBoxLayout(0.01f, false, NODE_ALIGN_MIDDLE));
 	UINodeSprite* sprite = new UINodeSprite(frontend, type, animation);
-	// TODO: fix the size - isn't working for small texture set and big resolutions
-	sprite->setAspectRatioSize(0.1f, 0.1f);
+	const float wp = parent->getWidth() / 5.0f;
+	sprite->setAspectRatioSize(wp, wp);
 	add(sprite);
 	UINodeLabel* label = new UINodeLabel(frontend, text, getFont(HUGE_FONT));
 	label->setColor(colorBlack);

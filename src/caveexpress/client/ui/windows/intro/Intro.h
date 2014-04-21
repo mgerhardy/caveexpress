@@ -59,7 +59,7 @@ public:
 
 class IntroTypeDescription: public UINode {
 public:
-	IntroTypeDescription(IFrontend* frontend, const EntityType& type, const Animation& animation, const std::string& text);
+	IntroTypeDescription(UINode* parent, IFrontend* frontend, const EntityType& type, const Animation& animation, const std::string& text);
 };
 
 class IntroBarDescription: public UINode {

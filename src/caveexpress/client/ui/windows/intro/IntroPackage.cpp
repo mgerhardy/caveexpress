@@ -21,7 +21,7 @@ void IntroPackage::addIntroNodes(UINode* parent) {
 		parent->add(new IntroLabel(_frontend, tr("Drop them by hitting SPACE bar")));
 	}
 	parent->add(new IntroLabelHeadline(_frontend, tr("Description")));
-	parent->add(new IntroTypeDescription(_frontend, EntityTypes::PLAYER, Animations::ANIMATION_FLYING, tr("Player")));
-	parent->add(new IntroTypeDescription(_frontend, EntityTypes::PACKAGE_ROCK, Animations::ANIMATION_IDLE, tr("Package")));
-	parent->add(new IntroTypeDescription(_frontend, EntityTypes::PACKAGETARGET_ROCK, Animations::ANIMATION_ROTATE, tr("Shredder")));
+	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PLAYER, Animations::ANIMATION_FLYING, tr("Player")));
+	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PACKAGE_ROCK, Animations::ANIMATION_IDLE, tr("Package")));
+	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PACKAGETARGET_ROCK, Animations::ANIMATION_ROTATE, tr("Shredder")));
 }

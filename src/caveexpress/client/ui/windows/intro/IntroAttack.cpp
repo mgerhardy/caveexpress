@@ -21,6 +21,6 @@ void IntroAttack::addIntroNodes(UINode* parent) {
 		parent->add(new IntroLabel(_frontend, tr("Drop them by hitting SPACE bar")));
 	}
 	parent->add(new IntroLabelHeadline(_frontend, tr("Description")));
-	parent->add(new IntroTypeDescription(_frontend, EntityTypes::NPC_WALKING, Animations::ANIMATION_ATTACK_INIT_RIGHT, tr("Angry dinosaur")));
-	parent->add(new IntroTypeDescription(_frontend, EntityTypes::STONE, Animations::ANIMATION_IDLE, tr("Stone")));
+	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::NPC_WALKING, Animations::ANIMATION_ATTACK_INIT_RIGHT, tr("Angry dinosaur")));
+	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::STONE, Animations::ANIMATION_IDLE, tr("Stone")));
 }
