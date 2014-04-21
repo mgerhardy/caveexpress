@@ -17,6 +17,7 @@ void IntroFindYourWay::addIntroNodes(UINode* parent) {
 	parent->add(new IntroLabel(_frontend, tr("Hitting walls hard will inflict damage")));
 	parent->add(new IntroLabel(_frontend, tr("Collecting fruits will restore hitpoints")));
 	const Color timeBarColor = { 1.0f, 1.0f, 1.0f, 0.5f };
+	parent->add(new IntroLabelHeadline(_frontend, tr("Description")));
 	parent->add(new IntroBarDescription(_frontend, timeBarColor, tr("Time bar")));
 	parent->add(new IntroBarDescription(_frontend, tr("Health bar")));
 }

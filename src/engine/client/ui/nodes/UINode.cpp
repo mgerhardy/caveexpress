@@ -65,8 +65,8 @@ void UINode::setPos (float x, float y)
 
 void UINode::setSize (float w, float h)
 {
-	_size.x = w;
-	_size.y = h;
+	_size.x = clamp(w, 0.0f, 1.0f);
+	_size.y = clamp(h, 0.0f, 1.0f);
 	updateAlignment();
 }
 
