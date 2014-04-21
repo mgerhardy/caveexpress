@@ -106,8 +106,5 @@ void Intro::init ()
 	add(_panel);
 
 	// TODO: a back button to start the map isn't that good ;)
-	if (!wantBackButton())
-		return;
-
 	add(new UINodeBackButton(_frontend, _background));
 }
