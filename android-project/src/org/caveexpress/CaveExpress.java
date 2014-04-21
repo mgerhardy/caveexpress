@@ -1,6 +1,6 @@
 package org.caveexpress;
 
-import org.base.game.BaseGameActivity;
+import org.base.BaseActivity;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +18,7 @@ import com.google.android.gms.ads.InterstitialAd;
  * Activity for the free version of the game with payment support from its super
  * class and ads
  */
-public class CaveExpress extends BaseGameActivity {
+public class CaveExpress extends BaseActivity {
 	protected static AdView adview = null;
 	static RelativeLayout layout;
 
