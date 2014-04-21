@@ -4,6 +4,7 @@
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "engine/client/ui/UI.h"
+#include "engine/client/ui/layouts/UIHBoxLayout.h"
 
 IntroPackage::IntroPackage(IFrontend* frontend) :
 		Intro("intropackage", frontend) {
@@ -22,7 +23,10 @@ void IntroPackage::addIntroNodes(UINode* parent) {
 		parent->add(new IntroLabel(_frontend, tr("Drop them by hitting SPACE bar")));
 	}
 	parent->add(new IntroLabelHeadline(_frontend, tr("Description")));
-	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PLAYER, Animations::ANIMATION_FLYING, tr("Player")));
-	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PACKAGE_ROCK, Animations::ANIMATION_IDLE, tr("Package")));
+	UINode* panel = new UINode(_frontend);
+	panel->setLayout(new UIHBoxLayout(0.01f));
+	panel->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PLAYER, Animations::ANIMATION_FLYING, tr("Player")));
+	panel->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PACKAGE_ROCK, Animations::ANIMATION_IDLE, tr("Package")));
+	parent->add(panel);
 	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PACKAGETARGET_ROCK, Animations::ANIMATION_ROTATE, tr("Shredder")));
 }
