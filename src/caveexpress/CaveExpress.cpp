@@ -242,20 +242,36 @@ void CaveExpress::initUI (IFrontend* _frontend, ServiceProvider& serviceProvider
 	Commands.registerCommand(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*_map));
 
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
+	r.unregisterClientHandler(protocol::PROTO_ADDROPE);
 	r.registerClientHandler(protocol::PROTO_ADDROPE, new AddRopeHandler(*_map));
+	r.unregisterClientHandler(protocol::PROTO_REMOVEROPE);
 	r.registerClientHandler(protocol::PROTO_REMOVEROPE, new RemoveRopeHandler(*_map));
+	r.unregisterClientHandler(protocol::PROTO_WATERHEIGHT);
 	r.registerClientHandler(protocol::PROTO_WATERHEIGHT, new WaterHeightHandler(*map));
+	r.unregisterClientHandler(protocol::PROTO_UPDATEHITPOINTS);
 	r.registerClientHandler(protocol::PROTO_UPDATEHITPOINTS, new UpdateHitpointsHandler());
+	r.unregisterClientHandler(protocol::PROTO_UPDATELIVES);
 	r.registerClientHandler(protocol::PROTO_UPDATELIVES, new UpdateLivesHandler(*_campaignManager));
+	r.unregisterClientHandler(protocol::PROTO_UPDATEPOINTS);
 	r.registerClientHandler(protocol::PROTO_UPDATEPOINTS, new UpdatePointsHandler());
+	r.unregisterClientHandler(protocol::PROTO_UPDATEPACKAGECOUNT);
 	r.registerClientHandler(protocol::PROTO_UPDATEPACKAGECOUNT, new UpdatePackageCountHandler());
+	r.unregisterClientHandler(protocol::PROTO_UPDATECOLLECTEDTYPE);
 	r.registerClientHandler(protocol::PROTO_UPDATECOLLECTEDTYPE, new UpdateCollectedTypeHandler(*_map));
+	r.unregisterClientHandler(protocol::PROTO_TIMEREMAINING);
 	r.registerClientHandler(protocol::PROTO_TIMEREMAINING, new TimeRemainingHandler());
+	r.unregisterClientHandler(protocol::PROTO_WATERIMPACT);
 	r.registerClientHandler(protocol::PROTO_WATERIMPACT, new WaterImpactHandler(*map));
+	r.unregisterClientHandler(protocol::PROTO_ADDCAVE);
 	r.registerClientHandler(protocol::PROTO_ADDCAVE, new AddCaveHandler(*map));
+	r.unregisterClientHandler(protocol::PROTO_LIGHTSTATE);
 	r.registerClientHandler(protocol::PROTO_LIGHTSTATE, new LightStateHandler(*map));
+	r.unregisterClientHandler(protocol::PROTO_ADDENTITY);
 	r.registerClientHandler(protocol::PROTO_ADDENTITY, new AddEntityWithSoundHandler(*_map));
+	r.unregisterClientHandler(protocol::PROTO_LOADMAP);
 	r.registerClientHandler(protocol::PROTO_LOADMAP, new HudLoadMapHandler(*_map, serviceProvider));
+	r.unregisterClientHandler(protocol::PROTO_MAPSETTINGS);
 	r.registerClientHandler(protocol::PROTO_MAPSETTINGS, new HudMapSettingsHandler(*_map));
+	r.unregisterClientHandler(protocol::PROTO_INITDONE);
 	r.registerClientHandler(protocol::PROTO_INITDONE, new HudInitDoneHandler(*_map));
 }

@@ -13,6 +13,7 @@ IntroTypeDescription::IntroTypeDescription(IFrontend* frontend, const EntityType
 		UINode(frontend) {
 	setLayout(new UIHBoxLayout(0.01f, false, NODE_ALIGN_MIDDLE));
 	UINodeSprite* sprite = new UINodeSprite(frontend, type, animation);
+	// TODO: fix the size - isn't working for small texture set and big resolutions
 	sprite->setAspectRatioSize(0.1f, 0.1f);
 	add(sprite);
 	UINodeLabel* label = new UINodeLabel(frontend, text, getFont(HUGE_FONT));
