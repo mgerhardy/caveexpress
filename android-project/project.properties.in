@@ -12,5 +12,5 @@
 
 # Project target.
 target=android-@TARGET_ANDROID_SDK@
-sdk.buildtools=18.1.1
+#sdk.buildtools=18.1.1
 @ANDROID_REFERENCED_LIBS@
