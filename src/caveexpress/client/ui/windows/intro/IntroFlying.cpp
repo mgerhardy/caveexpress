@@ -21,6 +21,6 @@ void IntroFlying::addIntroNodes(UINode* parent) {
 		parent->add(new IntroLabel(_frontend, tr("Drop them by hitting SPACE bar")));
 	}
 	parent->add(new IntroLabelHeadline(_frontend, tr("Description")));
-	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::NPC_FLYING, Animations::ANIMATION_FLYING_RIGHT, tr("Pterodactylus")));
+	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::NPC_FLYING, Animations::ANIMATION_FLYING_RIGHT, tr("Pterodactyls")));
 	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::STONE, Animations::ANIMATION_IDLE, tr("Stone")));
 }

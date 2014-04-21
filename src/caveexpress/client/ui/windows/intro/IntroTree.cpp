@@ -12,7 +12,7 @@ IntroTree::IntroTree(IFrontend* frontend) :
 
 void IntroTree::addIntroNodes(UINode* parent) {
 	parent->add(new IntroLabelHeadline(_frontend, tr("Objectives")));
-	parent->add(new IntroLabel(_frontend, tr("Use the stone")));
+	parent->add(new IntroLabel(_frontend, tr("Learn to use the stone")));
 	parent->add(new IntroLabelHeadline(_frontend, tr("Hints")));
 	parent->add(new IntroLabel(_frontend, tr("Drop stones onto the tree")));
 	if (System.hasTouch() && !System.isOUYA()) {

@@ -13,6 +13,7 @@ IntroPackage::IntroPackage(IFrontend* frontend) :
 void IntroPackage::addIntroNodes(UINode* parent) {
 	parent->add(new IntroLabelHeadline(_frontend, tr("Objectives")));
 	parent->add(new IntroLabel(_frontend, tr("Deliver packages to the shredders")));
+	parent->add(new IntroLabel(_frontend, tr("This is the goal in every map")));
 	parent->add(new IntroLabelHeadline(_frontend, tr("Hints")));
 	parent->add(new IntroLabel(_frontend, tr("Collect packages by landing on them")));
 	if (System.hasTouch() && !System.isOUYA()) {
