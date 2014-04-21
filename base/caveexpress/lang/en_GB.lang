@@ -104,6 +104,7 @@ Shredder|Shredder
 SideScroll|SideScroll
 Small|Small
 Sound/Music|Sound/Music
+Start|Start
 Stone|Stone
 Textures|Textures
 The amount of packages to deliver|The amount of packages to deliver
@@ -121,6 +122,7 @@ Use the second finger to drop the package|Use the second finger to drop the pack
 Use the second finger to drop the stone|Use the second finger to drop the stone
 Use the stone|Use the stone
 Use the swing of the package|Use the swing of the package
+Waiting|Waiting
 Watch the geyser|Watch the geyser
 Water|Water
 Water fall delay in milliseconds|Water fall delay in milliseconds

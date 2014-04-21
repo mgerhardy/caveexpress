@@ -122,14 +122,14 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 	settings->setVisible(System.hasMouseOrFinger());
 	add(settings);
 
-	_startButton = new UINodeButtonText(frontend, "Start", 0.05f);
+	_startButton = new UINodeButtonText(frontend, tr("Start"), 0.05f);
 	_startButton->setOnActivate(CMD_START);
 	_startButton->setFont(getFont(LARGE_FONT), colorBlack);
 	_startButton->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_TOP);
 	_startButton->setVisible(false);
 	add(_startButton);
 
-	_waitLabel = new UINodeLabel(frontend, "Waiting", getFont(LARGE_FONT));
+	_waitLabel = new UINodeLabel(frontend, tr("Waiting"), getFont(LARGE_FONT));
 	_waitLabel->setColor(colorWhite);
 	_waitLabel->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_TOP);
 	_waitLabel->setVisible(false);
