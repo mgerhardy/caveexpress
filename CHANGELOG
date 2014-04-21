@@ -49,6 +49,7 @@ Version 1.5 (2014-01-18)
 * Fixed android red screen issue
 
 Version 1.6 (not yet released)
+* Open sourced the game code and the assets
 * Added ouya joystick button help
 * Allow to switch between big and small layout (If your screen is big enough to allow the big layout)
 * Allow to switch between the game modes (Beware, switching to hard mode will wipe your campaign progress)
@@ -58,3 +59,7 @@ Version 1.6 (not yet released)
 ** The first campaign is also about getting the packages indirectly to their packagetarget
 ** The second (flappy) campaign is not about birds - but almost the same (Cryptic? Try it!)
 * Translation support (english and german currently)
+* Readded android quit button
+* Disable small ads in the android version
+* Introduction windows for the tutorial campaign
+* Player does no longer drop the package when you tap onto it. Use the second finger to handle drops
