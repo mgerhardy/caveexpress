@@ -25,9 +25,16 @@ public:
 	// this ensures, that the vtable of Intro is set up already
 	void init ();
 
+	bool onKeyRelease (int32_t key) override;
+	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y) override;
+	bool onKeyPress (int32_t key, int16_t modifier) override;
+	bool onFingerPress (int64_t finger, uint16_t x, uint16_t y) override;
 protected:
 	UINode *_background;
 	UINode *_panel;
+
+	uint64_t _fingerPressed;
+	uint32_t _keyPressed;
 
 	// Add your custom nodes for your intro window implementation
 	// Should keep the current style of existing intro windows

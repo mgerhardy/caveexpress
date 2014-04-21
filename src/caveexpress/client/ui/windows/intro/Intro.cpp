@@ -52,7 +52,7 @@ IntroBarDescription::IntroBarDescription(IFrontend* frontend, const std::string&
 }
 
 Intro::Intro(const std::string& name, IFrontend* frontend) :
-		UIWindow(name, frontend, WINDOW_FLAG_MODAL) {
+		UIWindow(name, frontend, WINDOW_FLAG_MODAL), _fingerPressed(0UL), _keyPressed(0U) {
 	_onPop = CMD_START;
 
 	_background = new UINodeIntroBackground(frontend);
@@ -71,6 +71,32 @@ Intro::Intro(const std::string& name, IFrontend* frontend) :
 	_panel->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_TOP);
 	UIVBoxLayout *layout = new UIVBoxLayout(0.01f, true, NODE_ALIGN_CENTER);
 	_panel->setLayout(layout);
+}
+
+bool Intro::onKeyRelease (int32_t key)
+{
+	if (_keyPressed == key)
+		UI::get().delayedPop();
+	return UIWindow::onKeyRelease(key);
+}
+
+bool Intro::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
+{
+	if (_fingerPressed == finger)
+		UI::get().delayedPop();
+	return UIWindow::onFingerRelease(finger, x, y);
+}
+
+bool Intro::onKeyPress (int32_t key, int16_t modifier)
+{
+	_keyPressed = key;
+	return UIWindow::onKeyPress(key, modifier);
+}
+
+bool Intro::onFingerPress (int64_t finger, uint16_t x, uint16_t y)
+{
+	_fingerPressed = finger;
+	return UIWindow::onFingerPress(finger, x, y);
 }
 
 void Intro::init ()
