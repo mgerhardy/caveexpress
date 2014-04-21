@@ -306,6 +306,7 @@ android-copy-assets: data
 	@echo "===> CP [copy assets]"
 	$(Q)rm -rf $(ANDROID_PROJECT)/assets
 	$(Q)rm -rf $(ANDROID_PROJECT)/libs
+	$(Q)rm -rf $(ANDROID_PROJECT)/google-play-services_lib/bin/res/crunch
 	$(Q)mkdir -p $(ANDROID_PROJECT)/libs
 	$(Q)mkdir -p $(ANDROID_PROJECT)/assets/$(BASEROOT)
 	$(Q)cp -rf $(BASEDIR) $(ANDROID_PROJECT)/assets/$(BASEROOT)
