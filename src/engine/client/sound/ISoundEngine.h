@@ -12,17 +12,17 @@ public:
 	{
 	}
 
-	virtual bool init (bool initCache) override {return false;}
-	virtual void close () override {}
-	virtual bool exists (const std::string& sound) const override { return false; }
-	virtual void halt (int sound) override {}
-	virtual bool cache (const std::string& sound) override { return false; }
-	virtual void haltAll () override {}
-	virtual void pause () override {}
-	virtual void resume () override {}
-	virtual int playMusic (const std::string& music, bool loop) override { return -1; }
-	virtual void haltMusic (int music) override {}
-	virtual int play (const std::string& filename, const vec2& position, bool loop) override { return -1; }
-	virtual void update (uint32_t deltaTime) override {}
-	virtual void setListenerPosition (const vec2& position, const vec2& velocity = vec2_zero) override {}
+	virtual bool init (bool initCache) {return false;}
+	virtual void close () {}
+	virtual bool exists (const std::string& sound) const { return false; }
+	virtual void halt (int sound) {}
+	virtual bool cache (const std::string& sound) { return false; }
+	virtual void haltAll () {}
+	virtual void pause () {}
+	virtual void resume () {}
+	virtual int playMusic (const std::string& music, bool loop) { return -1; }
+	virtual void haltMusic (int music) {}
+	virtual int play (const std::string& filename, const vec2& position, bool loop) { return -1; }
+	virtual void update (uint32_t deltaTime) {}
+	virtual void setListenerPosition (const vec2& position, const vec2& velocity = vec2_zero) {}
 };
