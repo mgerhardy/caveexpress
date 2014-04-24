@@ -4,6 +4,7 @@ compiler:
   - clang
 
 script:
+  - ./configure --with-embedded-sqlite3
   - make
   - ./tests
 
