@@ -104,17 +104,17 @@ public:
 		//getSystem().showAds(false, false);
 	}
 
-	bool onKeyRelease (int32_t key) override;
+	virtual bool onKeyRelease (int32_t key) override;
 	// returns true if a node handled the key press event
-	bool onKeyPress (int32_t key, int16_t modifier) override;
+	virtual bool onKeyPress (int32_t key, int16_t modifier) override;
 	// returns true if a node handled the finger release event
-	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y) override;
+	virtual bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y) override;
 	// returns true if a node handled the finger press event
-	bool onFingerPress (int64_t finger, uint16_t x, uint16_t y) override;
-	bool onMouseButtonRelease (int32_t x, int32_t y, unsigned char button) override;
-	bool onMouseButtonPress (int32_t x, int32_t y, unsigned char button) override;
-	bool onJoystickButtonPress (int x, int y, uint8_t button) override;
-	bool onControllerButtonPress (int x, int y, const std::string& button) override;
+	virtual bool onFingerPress (int64_t finger, uint16_t x, uint16_t y) override;
+	virtual bool onMouseButtonRelease (int32_t x, int32_t y, unsigned char button) override;
+	virtual bool onMouseButtonPress (int32_t x, int32_t y, unsigned char button) override;
+	virtual bool onJoystickButtonPress (int x, int y, uint8_t button) override;
+	virtual bool onControllerButtonPress (int x, int y, const std::string& button) override;
 };
 
 inline bool UIWindow::isActiveAfterPush () const
