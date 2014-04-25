@@ -69,7 +69,7 @@ public:
 
 	virtual DirectoryEntries listDirectory (const std::string& basedir, const std::string& subdir = "") = 0;
 
-	virtual void showAds (bool show, bool ontop) {}
+	virtual void showAds (bool show) {}
 
 	virtual bool showFullscreenAds () { return false; }
 

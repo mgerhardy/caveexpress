@@ -91,12 +91,6 @@ public class CaveExpress extends BaseActivity {
 	}
 
 	private static final class AddsShowRunnable implements Runnable {
-		private final boolean ontop;
-
-		private AddsShowRunnable(final boolean ontop) {
-			this.ontop = ontop;
-		}
-
 		@Override
 		public void run() {
 			if (adview != null) {
@@ -113,23 +107,25 @@ public class CaveExpress extends BaseActivity {
 				public void onAdFailedToLoad(int errorCode) {
 					super.onAdFailedToLoad(errorCode);
 					if (errorCode == AdRequest.ERROR_CODE_NO_FILL) {
+						Log.v(NAME, "Failed to load the ad: No fill");
 						// TODO: try to get another one?
+					} else if (errorCode == AdRequest.ERROR_CODE_INVALID_REQUEST) {
+						Log.v(NAME, "Failed to load the ad: Invalid request");
+					} else if (errorCode == AdRequest.ERROR_CODE_INTERNAL_ERROR) {
+						Log.v(NAME, "Failed to load the ad: Internal error");
+					} else if (errorCode == AdRequest.ERROR_CODE_NETWORK_ERROR) {
+						Log.v(NAME, "Failed to load the ad: Network errors");
+					} else {
+						Log.v(NAME, "Failed to load the ad");
 					}
-					Log.v(NAME, "Failed to load the ad");
 				}
 			});
 
 			final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-			if (ontop) {
-				params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-				params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-			} else {
-				params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-				params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-				params.addRule(RelativeLayout.ABOVE, 1);
-			}
+			params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+			params.addRule(RelativeLayout.CENTER_HORIZONTAL);
 
 			final AdRequest re = new AdRequest.Builder() // no break
 					.addTestDevice(AdRequest.DEVICE_ID_EMULATOR) // Emulator
@@ -138,7 +134,7 @@ public class CaveExpress extends BaseActivity {
 					.build();
 			adview.loadAd(re);
 			layout.addView(adview, params);
-			Log.v(NAME, "Showing ads, ontop:" + ontop);
+			Log.v(NAME, "Showing ads");
 		}
 	}
 
@@ -192,8 +188,8 @@ public class CaveExpress extends BaseActivity {
 	}
 
 	@Override
-	protected void doShowAds(final boolean ontop) {
-		uiHandler.post(new AddsShowRunnable(ontop));
+	protected void doShowAds() {
+		uiHandler.post(new AddsShowRunnable());
 	}
 
 	@Override

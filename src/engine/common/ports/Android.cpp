@@ -62,7 +62,7 @@ int LocalReferenceHolder::s_active;
 #define _logError(fmt, args...) _ANDROID_LOG(ANDROID_LOG_ERROR, fmt, ##args)
 
 Android::Android () :
-		Unix(), _paymentLoaded(false), _env(nullptr), _cls(nullptr), _assetManager(nullptr), _showAds(nullptr), _hideAds(nullptr),
+		Unix(), _env(nullptr), _cls(nullptr), _assetManager(nullptr), _showAds(nullptr), _hideAds(nullptr),
 		_showFullscreenAds(nullptr), _openURL(nullptr), _buyItem(nullptr), _hasItem(nullptr), _isOUYA(nullptr),
 		_minimize(nullptr), _getPaymentEntries(nullptr), _externalState(0) {
 	LocalReferenceHolder refs;
@@ -109,7 +109,7 @@ Android::Android () :
 	_cls = reinterpret_cast<jclass>(_env->NewGlobalRef(cls));
 	_assetManager = reinterpret_cast<jobject>(_env->NewGlobalRef(assetManager));
 
-	_showAds = _env->GetStaticMethodID(_cls, "showAds", "(Z)V");
+	_showAds = _env->GetStaticMethodID(_cls, "showAds", "()V");
 	_hideAds = _env->GetStaticMethodID(_cls, "hideAds", "()V");
 	_showFullscreenAds = _env->GetStaticMethodID(_cls, "showFullscreenAds", "()Z");
 	_openURL = _env->GetStaticMethodID(_cls, "openURL", "(Ljava/lang/String;)V");
@@ -325,13 +325,13 @@ bool Android::showFullscreenAds ()
 	return retVal;
 }
 
-void Android::showAds (bool show, bool ontop)
+void Android::showAds (bool show)
 {
 	if (_showAds == 0 || _hideAds == 0)
 		return;
 
 	if (show) {
-		_env->CallStaticVoidMethod(_cls, _showAds, ontop);
+		_env->CallStaticVoidMethod(_cls, _showAds);
 	} else {
 		_env->CallStaticVoidMethod(_cls, _hideAds);
 	}
@@ -442,11 +442,6 @@ void Android::getPaymentEntries (std::vector<PaymentEntry>& entries)
 
 bool Android::hasItem (const std::string& id)
 {
-#ifndef HD_VERSION
-	if (id == PAYMENT_ADFREE)
-		return true;
-#endif
-
 	LocalReferenceHolder refs;
 
 	if (_env == nullptr || !refs.init(_env)) {
@@ -521,7 +516,6 @@ int Android::getScreenPadding()
 
 void Android::notifyPaymentLoaded ()
 {
-	_paymentLoaded = true;
 }
 
 bool Android::isOUYA () const
@@ -564,16 +558,6 @@ void Android::exit (const std::string& reason, int errorCode)
 
 void Android::tick (uint32_t deltaTime)
 {
-	if (!_paymentLoaded)
-		return;
-
-	_paymentLoaded = false;
-	if (System.hasItem(PAYMENT_ADFREE)) {
-		info(LOG_SYSTEM, "adfree version");
-		return;
-	}
-	info(LOG_SYSTEM, "show ads");
-	System.showAds(true, true);
 }
 
 int Android::getAdHeight() const

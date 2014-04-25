@@ -85,24 +85,9 @@ public:
 	// called whenever another window is pushed on top of this window (only the direct successor)
 	virtual void onPushedOver ();
 
-	void showFullscreenAds ()
-	{
-		if (getSystem().hasItem(PAYMENT_ADFREE))
-			return;
-
-		if (!getSystem().showFullscreenAds())
-			error(LOG_CLIENT, "failed to show the fullscreen ads");
-	}
-
-	void showAds () {
-		if (getSystem().hasItem(PAYMENT_ADFREE))
-			return;
-		getSystem().showAds(true, false);
-	}
-
-	void hideAds () {
-		getSystem().showAds(false, false);
-	}
+	void showFullscreenAds ();
+	void showAds ();
+	void hideAds ();
 
 	virtual bool onKeyRelease (int32_t key) override;
 	// returns true if a node handled the key press event

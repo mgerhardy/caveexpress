@@ -30,7 +30,7 @@ std::string IOS::getHomeDirectory ()
 	return home;
 }
 
-void IOS::showAds (bool show, bool ontop)
+void IOS::showAds (bool show)
 {
 	// TODO:
 }

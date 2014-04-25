@@ -26,7 +26,7 @@ public class CaveExpress extends BaseActivity {
 	}
 
 	@Override
-	protected void doShowAds(boolean ontop) {
+	protected void doShowAds() {
 	}
 
 	@Override

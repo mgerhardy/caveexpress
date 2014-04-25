@@ -190,11 +190,11 @@ public abstract class BaseActivity extends SDLActivity {
 		inAppBillingHelper = null;
 	}
 
-	public static void showAds(final boolean ontop) {
-		((BaseActivity) mSingleton).doShowAds(ontop);
+	public static void showAds() {
+		((BaseActivity) mSingleton).doShowAds();
 	}
 
-	protected abstract void doShowAds(final boolean ontop);
+	protected abstract void doShowAds();
 
 	public static boolean showFullscreenAds() {
 		return ((BaseActivity) mSingleton).doShowFullscreenAds();

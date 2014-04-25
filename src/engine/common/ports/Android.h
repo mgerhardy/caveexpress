@@ -10,7 +10,6 @@
 
 class Android: public Unix {
 private:
-	bool _paymentLoaded;
 	mutable JNIEnv* _env;
 	jclass _cls;
 	jobject _assetManager;
@@ -53,7 +52,7 @@ public:
 	bool track (const std::string& hitType, const std::string& screenName) override;
 	int getScreenPadding() override;
 	DirectoryEntries listDirectory (const std::string& basedir, const std::string& subdir = "") override;
-	void showAds (bool show, bool ontop) override;
+	void showAds (bool show) override;
 	bool showFullscreenAds () override;
 	int openURL (const std::string& url) const override;
 	void exit (const std::string& reason, int errorCode) override;
