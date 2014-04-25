@@ -45,5 +45,4 @@ public:
 	void onSelectEntry (UINode &node);
 
 	bool onPush () override;
-	bool onPop () override;
 };

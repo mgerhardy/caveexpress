@@ -42,3 +42,15 @@ void UIMapOptionsWindow::update (uint32_t deltaTime)
 	const bool server = _serviceProvider.getNetwork().isServer();
 	_restartMap->setVisible(server);
 }
+
+void UIMapOptionsWindow::onActive ()
+{
+	showAds();
+	UIWindow::onActive();
+}
+
+bool UIMapOptionsWindow::onPop ()
+{
+	hideAds();
+	return UIWindow::onPop();
+}

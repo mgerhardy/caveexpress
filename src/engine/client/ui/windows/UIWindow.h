@@ -95,13 +95,13 @@ public:
 	}
 
 	void showAds () {
-		//if (getSystem().hasItem(PAYMENT_ADFREE))
-		//	return;
-		//getSystem().showAds(true, false);
+		if (getSystem().hasItem(PAYMENT_ADFREE))
+			return;
+		getSystem().showAds(true, false);
 	}
 
 	void hideAds () {
-		//getSystem().showAds(false, false);
+		getSystem().showAds(false, false);
 	}
 
 	virtual bool onKeyRelease (int32_t key) override;

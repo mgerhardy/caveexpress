@@ -228,13 +228,5 @@ bool UIMapEditorWindow::onPush ()
 {
 	const bool ret = UIWindow::onPush();
 	_mapEditor->loadLast();
-	hideAds();
-	return ret;
-}
-
-bool UIMapEditorWindow::onPop ()
-{
-	const bool ret = UIWindow::onPop();
-	showAds();
 	return ret;
 }

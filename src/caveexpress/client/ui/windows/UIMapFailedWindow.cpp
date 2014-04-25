@@ -40,15 +40,3 @@ void UIMapFailedWindow::updateReason (bool isMultiplayer, const MapFailedReason&
 	_replayCampaign->setVisible(!isMultiplayer);
 	_background->updateReason(reason, theme);
 }
-
-void UIMapFailedWindow::onActive ()
-{
-	hideAds();
-	UIWindow::onActive();
-}
-
-bool UIMapFailedWindow::onPop ()
-{
-	showAds();
-	return UIWindow::onPop();
-}

@@ -84,13 +84,6 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 	add(versionLabel);
 }
 
-bool UIMainWindow::onPush ()
-{
-	const bool ret = UIWindow::onPush();
-	showAds();
-	return ret;
-}
-
 void UIMainWindow::update (uint32_t deltaTime)
 {
 	UIWindow::update(deltaTime);

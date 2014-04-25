@@ -54,7 +54,6 @@ UIMultiplayerWindow::~UIMultiplayerWindow ()
 
 void UIMultiplayerWindow::onActive ()
 {
-	hideAds();
 	_serviceProvider.updateNetwork(true);
 	Commands.executeCommand(CMD_CL_PINGSERVERS);
 	UIWindow::onActive();
@@ -65,6 +64,5 @@ bool UIMultiplayerWindow::onPop ()
 	const bool retVal = UIWindow::onPop();
 	if (retVal)
 		_serviceProvider.updateNetwork(false);
-	showAds();
 	return retVal;
 }

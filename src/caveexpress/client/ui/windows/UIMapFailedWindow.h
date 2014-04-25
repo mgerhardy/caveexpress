@@ -17,7 +17,4 @@ private:
 public:
 	UIMapFailedWindow (IFrontend *frontend, CampaignManager& campaignManager);
 	void updateReason (bool isMultiplayer, const MapFailedReason& reason, const ThemeType& theme);
-
-	void onActive () override;
-	bool onPop () override;
 };

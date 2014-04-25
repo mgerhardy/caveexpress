@@ -20,6 +20,5 @@ public:
 	UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvider);
 
 	// UIWindow
-	bool onPush () override;
 	void update (uint32_t deltaTime) override;
 };
