@@ -28,6 +28,8 @@ public class CaveExpress extends BaseActivity {
 	private static final int SDLViewID = 1;
 	private static final int AdViewID = 2;
 
+	private int currentChosenSize = 0;
+
 	private InterstitialAd interstitial;
 
 	/**
@@ -90,6 +92,8 @@ public class CaveExpress extends BaseActivity {
 		super.setContentView(layout);
 	}
 
+	private final AdsSize sizes[] = { AdSize.MEDIUM_RECTANGLE, AdSize.BANNER, AdSize.WIDE_SKYSCRAPER };
+
 	private static final class AddsShowRunnable implements Runnable {
 		@Override
 		public void run() {
@@ -100,15 +104,22 @@ public class CaveExpress extends BaseActivity {
 
 			adview = new AdView(mSingleton);
 			adview.setAdUnitId(adUnitId);
-			adview.setAdSize(AdSize.BANNER);
+			adview.setAdSize(sizes[currentChosenSize]);
 			adview.setId(AdViewID);
 			adview.setAdListener(new AdListener() {
 				@Override
 				public void onAdFailedToLoad(int errorCode) {
 					super.onAdFailedToLoad(errorCode);
 					if (errorCode == AdRequest.ERROR_CODE_NO_FILL) {
-						Log.v(NAME, "Failed to load the ad: No fill");
-						// TODO: try to get another one?
+						Log.v(NAME, "Failed to load the ad: No fill for " + sizes[currentChosenSize] + " ("
+								+ currentChosenSize + ")");
+						currentChosenSize = (currentChosenSize + 1) % sizes.length;
+						if (currentChosenSize != 0) {
+							layout.removeView(adview);
+							adview.destroy();
+							adview = null;
+							showAds();
+						}
 					} else if (errorCode == AdRequest.ERROR_CODE_INVALID_REQUEST) {
 						Log.v(NAME, "Failed to load the ad: Invalid request");
 					} else if (errorCode == AdRequest.ERROR_CODE_INTERNAL_ERROR) {
@@ -127,14 +138,18 @@ public class CaveExpress extends BaseActivity {
 			params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 			params.addRule(RelativeLayout.CENTER_HORIZONTAL);
 
+			loadAd();
+			layout.addView(adview, params);
+			Log.v(NAME, "Showing ads");
+		}
+
+		private void loadAd() {
 			final AdRequest re = new AdRequest.Builder() // no break
 					.addTestDevice(AdRequest.DEVICE_ID_EMULATOR) // Emulator
 					// .setGender(AdRequest.GENDER_FEMALE) // Demographic
 					// .setBirthday(new GregorianCalendar(1985, 1, 1).getTime())
 					.build();
 			adview.loadAd(re);
-			layout.addView(adview, params);
-			Log.v(NAME, "Showing ads");
 		}
 	}
 
