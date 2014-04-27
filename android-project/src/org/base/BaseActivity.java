@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.PaymentEntry;
 import org.base.util.IabHelper;
@@ -20,7 +21,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 // import com.google.analytics.tracking.android.EasyTracker;
 // import com.google.analytics.tracking.android.Fields;
@@ -35,11 +35,11 @@ public abstract class BaseActivity extends SDLActivity {
 	// (arbitrary) request code for the purchase flow
 	protected static final int RC_REQUEST = 10001;
 
-	private static Map<String, Purchase> paymentIds = new ConcurrentHashMap<String, Purchase>();
-	protected static boolean noInAppBilling = false;
-	protected static IabHelper inAppBillingHelper;
-	protected static List<String> moreSkus = new ArrayList<String>();
-	protected static List<PaymentEntry> paymentEntries = new ArrayList<PaymentEntry>();
+	protected Map<String, Purchase> paymentIds = new ConcurrentHashMap<String, Purchase>();
+	protected List<String> moreSkus = new CopyOnWriteArrayList<String>();
+	protected List<PaymentEntry> paymentEntries = new CopyOnWriteArrayList<PaymentEntry>();
+	protected boolean noInAppBilling = false;
+	protected IabHelper inAppBillingHelper;
 
 	/**
 	 * Your application's public key, encoded in base64. This is used for
@@ -89,8 +89,6 @@ public abstract class BaseActivity extends SDLActivity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		final DisplayMetrics dm = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		configureBilling();
 	}
 
@@ -145,7 +143,7 @@ public abstract class BaseActivity extends SDLActivity {
 		}
 	};
 
-	static IabHelper.OnIabPurchaseFinishedListener purchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+	private final IabHelper.OnIabPurchaseFinishedListener purchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
 		@Override
 		public void onIabPurchaseFinished(final IabResult result, final Purchase purchase) {
 			Log.v(NAME, "Purchase finished: " + result + ", purchase: " + purchase);
@@ -191,19 +189,19 @@ public abstract class BaseActivity extends SDLActivity {
 	}
 
 	public static void showAds() {
-		((BaseActivity) mSingleton).doShowAds();
+		getBaseActivity().doShowAds();
 	}
 
 	protected abstract void doShowAds();
 
 	public static boolean showFullscreenAds() {
-		return ((BaseActivity) mSingleton).doShowFullscreenAds();
+		return getBaseActivity().doShowFullscreenAds();
 	}
 
 	protected abstract boolean doShowFullscreenAds();
 
 	public static void hideAds() {
-		((BaseActivity) mSingleton).doHideAds();
+		getBaseActivity().doHideAds();
 	}
 
 	protected abstract void doHideAds();
@@ -217,11 +215,11 @@ public abstract class BaseActivity extends SDLActivity {
 		Intent main = new Intent(Intent.ACTION_MAIN);
 		main.addCategory(Intent.CATEGORY_HOME);
 		main.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		((BaseActivity) mSingleton).startActivity(main);
+		getBaseActivity().startActivity(main);
 	}
 
 	static boolean buyItem(String id) {
-		return ((BaseActivity) mSingleton).doBuyItem(id);
+		return getBaseActivity().doBuyItem(id);
 	}
 
 	protected boolean doBuyItem(String id) {
@@ -246,7 +244,7 @@ public abstract class BaseActivity extends SDLActivity {
 	}
 
 	static boolean hasItem(String id) {
-		return ((BaseActivity) mSingleton).doHasItem(id);
+		return getBaseActivity().doHasItem(id);
 	}
 
 	protected boolean doHasItem(String id) {
@@ -263,7 +261,11 @@ public abstract class BaseActivity extends SDLActivity {
 	}
 
 	static PaymentEntry[] getPaymentEntries() {
-		return paymentEntries.toArray(new PaymentEntry[] {});
+		return getBaseActivity().paymentEntries.toArray(new PaymentEntry[] {});
+	}
+
+	private static BaseActivity getBaseActivity() {
+		return (BaseActivity) getContext();
 	}
 
 	static boolean isSmallScreen() {
@@ -274,8 +276,10 @@ public abstract class BaseActivity extends SDLActivity {
 		// large is 480x640 dp units
 		// xlarge is 720x960 dp units
 		if (i == Configuration.SCREENLAYOUT_SIZE_SMALL || i == Configuration.SCREENLAYOUT_SIZE_NORMAL) {
+			Log.v(NAME, "found small screen: " + i);
 			return true;
 		}
+		Log.v(NAME, "found big screen: " + i);
 		return false;
 	}
 

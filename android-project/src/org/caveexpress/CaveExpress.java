@@ -4,7 +4,9 @@ import org.base.BaseActivity;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -19,18 +21,51 @@ import com.google.android.gms.ads.InterstitialAd;
  * class and ads
  */
 public class CaveExpress extends BaseActivity {
-	protected static AdView adview = null;
-	static RelativeLayout layout;
-
-	protected static Handler uiHandler;
 	private static final String adUnitId = "a151fe5e535a323";
-
 	private static final int SDLViewID = 1;
 	private static final int AdViewID = 2;
 
-	private int currentChosenSize = 0;
+	protected AdView adview = null;
+	protected RelativeLayout layout;
+	protected InterstitialAd interstitial;
 
-	private InterstitialAd interstitial;
+	private static final class HideAddsRunnable implements Runnable {
+		private final AdView adview;
+		private final RelativeLayout layout;
+
+		public HideAddsRunnable(AdView adview, RelativeLayout layout) {
+			this.adview = adview;
+			this.layout = layout;
+		}
+
+		@Override
+		public void run() {
+			layout.removeView(adview);
+			Log.v(NAME, "Hiding ads");
+		}
+	}
+
+	private static final class AddsShowRunnable implements Runnable {
+		private final AdView adview;
+		private final RelativeLayout layout;
+
+		public AddsShowRunnable(AdView adview, RelativeLayout layout) {
+			this.adview = adview;
+			this.layout = layout;
+		}
+
+		@Override
+		public void run() {
+			final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			params.addRule(RelativeLayout.CENTER_VERTICAL);
+
+			layout.addView(adview, params);
+			Log.v(NAME, "Showing ads");
+		}
+	}
 
 	/**
 	 * Your application's public key, encoded in base64. This is used for
@@ -69,21 +104,6 @@ public class CaveExpress extends BaseActivity {
 		}
 	}
 
-	private static final class HideAddsRunnable implements Runnable {
-		@Override
-		public void run() {
-			if (adview == null) {
-				return;
-			}
-
-			layout.removeView(adview);
-			adview.destroy();
-			adview = null;
-
-			Log.v(NAME, "Hiding ads");
-		}
-	}
-
 	@Override
 	public void setContentView(View view) {
 		layout = new RelativeLayout(this);
@@ -92,123 +112,103 @@ public class CaveExpress extends BaseActivity {
 		super.setContentView(layout);
 	}
 
-	private final AdsSize sizes[] = { AdSize.MEDIUM_RECTANGLE, AdSize.BANNER, AdSize.WIDE_SKYSCRAPER };
-
-	private static final class AddsShowRunnable implements Runnable {
-		@Override
-		public void run() {
-			if (adview != null) {
-				Log.v(NAME, "There is already an ads view");
-				return;
-			}
-
-			adview = new AdView(mSingleton);
-			adview.setAdUnitId(adUnitId);
-			adview.setAdSize(sizes[currentChosenSize]);
-			adview.setId(AdViewID);
-			adview.setAdListener(new AdListener() {
-				@Override
-				public void onAdFailedToLoad(int errorCode) {
-					super.onAdFailedToLoad(errorCode);
-					if (errorCode == AdRequest.ERROR_CODE_NO_FILL) {
-						Log.v(NAME, "Failed to load the ad: No fill for " + sizes[currentChosenSize] + " ("
-								+ currentChosenSize + ")");
-						currentChosenSize = (currentChosenSize + 1) % sizes.length;
-						if (currentChosenSize != 0) {
-							layout.removeView(adview);
-							adview.destroy();
-							adview = null;
-							showAds();
-						}
-					} else if (errorCode == AdRequest.ERROR_CODE_INVALID_REQUEST) {
-						Log.v(NAME, "Failed to load the ad: Invalid request");
-					} else if (errorCode == AdRequest.ERROR_CODE_INTERNAL_ERROR) {
-						Log.v(NAME, "Failed to load the ad: Internal error");
-					} else if (errorCode == AdRequest.ERROR_CODE_NETWORK_ERROR) {
-						Log.v(NAME, "Failed to load the ad: Network errors");
-					} else {
-						Log.v(NAME, "Failed to load the ad");
-					}
-				}
-			});
-
-			final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-					RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-			params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-			params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-
-			loadAd();
-			layout.addView(adview, params);
-			Log.v(NAME, "Showing ads");
-		}
-
-		private void loadAd() {
-			final AdRequest re = new AdRequest.Builder() // no break
-					.addTestDevice(AdRequest.DEVICE_ID_EMULATOR) // Emulator
-					// .setGender(AdRequest.GENDER_FEMALE) // Demographic
-					// .setBirthday(new GregorianCalendar(1985, 1, 1).getTime())
-					.build();
-			adview.loadAd(re);
-		}
-	}
-
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-		uiHandler = new Handler();
-
 		super.onCreate(savedInstanceState);
 
 		interstitial = new InterstitialAd(this);
 		interstitial.setAdUnitId(adUnitId);
-		final AdRequest re = new AdRequest.Builder() // no break
-				.addTestDevice(AdRequest.DEVICE_ID_EMULATOR) // Emulator
-				// .setGender(AdRequest.GENDER_FEMALE) // Demographic
-				// .setBirthday(new GregorianCalendar(1985, 1, 1).getTime())
-				.build();
-		interstitial.loadAd(re);
+		interstitial.setAdListener(new AdListener() {
+			@Override
+			public void onAdClosed() {
+				reloadInterstitial();
+			};
+		});
+		reloadInterstitial();
+
+		adview = new AdView(mSingleton);
+		adview.setAdUnitId(adUnitId);
+		adview.setAdSize(getAdSize());
+		adview.setId(AdViewID);
+		adview.setAdListener(new AdListener() {
+			@Override
+			public void onAdFailedToLoad(int errorCode) {
+				super.onAdFailedToLoad(errorCode);
+				if (errorCode == AdRequest.ERROR_CODE_NO_FILL) {
+					Log.v(NAME, "Failed to load the ad: No fill");
+				} else if (errorCode == AdRequest.ERROR_CODE_INVALID_REQUEST) {
+					Log.v(NAME, "Failed to load the ad: Invalid request");
+				} else if (errorCode == AdRequest.ERROR_CODE_INTERNAL_ERROR) {
+					Log.v(NAME, "Failed to load the ad: Internal error");
+				} else if (errorCode == AdRequest.ERROR_CODE_NETWORK_ERROR) {
+					Log.v(NAME, "Failed to load the ad: Network errors");
+				} else {
+					Log.v(NAME, "Failed to load the ad");
+				}
+			}
+
+			@Override
+			public void onAdClosed() {
+				super.onAdClosed();
+				reloadAd();
+			}
+
+			@Override
+			public void onAdLoaded() {
+				super.onAdLoaded();
+				Log.v(NAME, "Loaded an ad");
+			}
+		});
+		reloadAd();
+	}
+
+	private void reloadAd() {
+		adview.loadAd(new AdRequest.Builder().build());
+	}
+
+	private void reloadInterstitial() {
+		interstitial.loadAd(new AdRequest.Builder().build());
+	}
+
+	private AdSize getAdSize() {
+		return AdSize.MEDIUM_RECTANGLE;
 	}
 
 	@Override
 	protected void onPause() {
-		if (adview != null) {
-			adview.pause();
-		}
+		adview.pause();
 		super.onPause();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (adview != null) {
-			adview.resume();
-		}
+		adview.resume();
 	}
 
 	@Override
 	protected void onDestroy() {
-		if (adview != null) {
-			adview.destroy();
-		}
+		adview.destroy();
 		super.onDestroy();
-		System.exit(0);
 	}
 
 	@Override
 	protected boolean doShowFullscreenAds() {
 		Handler mainHandler = new Handler(getContext().getMainLooper());
-		InterstitialRunnable myRunnable = new InterstitialRunnable();
-		mainHandler.post(myRunnable);
-		return myRunnable.getReturn();
+		InterstitialRunnable r = new InterstitialRunnable();
+		mainHandler.post(r);
+		return r.getReturn();
 	}
 
 	@Override
 	protected void doShowAds() {
-		uiHandler.post(new AddsShowRunnable());
+		Handler mainHandler = new Handler(getContext().getMainLooper());
+		mainHandler.post(new AddsShowRunnable(adview, layout));
 	}
 
 	@Override
 	protected void doHideAds() {
-		uiHandler.post(new HideAddsRunnable());
+		Handler mainHandler = new Handler(getContext().getMainLooper());
+		mainHandler.post(new HideAddsRunnable(adview, layout));
 	}
 }
