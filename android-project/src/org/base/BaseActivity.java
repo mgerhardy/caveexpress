@@ -1,6 +1,5 @@
 package org.base;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -275,8 +274,11 @@ public abstract class BaseActivity extends SDLActivity {
 		// normal is 320x470 dp units
 		// large is 480x640 dp units
 		// xlarge is 720x960 dp units
-		if (i == Configuration.SCREENLAYOUT_SIZE_SMALL || i == Configuration.SCREENLAYOUT_SIZE_NORMAL) {
-			Log.v(NAME, "found small screen: " + i);
+		if (i == Configuration.SCREENLAYOUT_SIZE_SMALL) {
+			Log.v(NAME, "found small screen");
+			return true;
+		} else if (i == Configuration.SCREENLAYOUT_SIZE_NORMAL) {
+			Log.v(NAME, "found normal screen");
 			return true;
 		}
 		Log.v(NAME, "found big screen: " + i);
