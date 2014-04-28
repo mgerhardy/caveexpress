@@ -279,7 +279,7 @@ public abstract class BaseActivity extends SDLActivity {
 			return true;
 		} else if (i == Configuration.SCREENLAYOUT_SIZE_NORMAL) {
 			Log.v(NAME, "found normal screen");
-			return true;
+			return false;
 		}
 		Log.v(NAME, "found big screen: " + i);
 		return false;
