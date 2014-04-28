@@ -298,6 +298,9 @@ void UI::update (uint32_t deltaTime)
 
 bool UI::onKeyRelease (int32_t key)
 {
+	if (_restart)
+		return false;
+
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
@@ -312,6 +315,9 @@ bool UI::onKeyRelease (int32_t key)
 
 bool UI::onKeyPress (int32_t key, int16_t modifier)
 {
+	if (_restart)
+		return false;
+
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
@@ -326,6 +332,9 @@ bool UI::onKeyPress (int32_t key, int16_t modifier)
 
 bool UI::onTextInput (const std::string& text)
 {
+	if (_restart)
+		return false;
+
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
@@ -339,6 +348,9 @@ bool UI::onTextInput (const std::string& text)
 
 bool UI::onFingerRelease (int64_t finger, float x, float y)
 {
+	if (_restart)
+		return false;
+
 	const uint16_t _x = _frontend->getCoordinateOffsetX() + x * _frontend->getWidth();
 	const uint16_t _y = _frontend->getCoordinateOffsetY() + y * _frontend->getHeight();
 	UIStack stack = _stack;
@@ -355,6 +367,9 @@ bool UI::onFingerRelease (int64_t finger, float x, float y)
 
 bool UI::onFingerPress (int64_t finger, float x, float y)
 {
+	if (_restart)
+		return false;
+
 	const uint16_t _x = _frontend->getCoordinateOffsetX() + x * _frontend->getWidth();
 	const uint16_t _y = _frontend->getCoordinateOffsetY() + y * _frontend->getHeight();
 	UIStack stack = _stack;
@@ -370,6 +385,9 @@ bool UI::onFingerPress (int64_t finger, float x, float y)
 
 void UI::onFingerMotion (int64_t finger, float x, float y, float dx, float dy)
 {
+	if (_restart)
+		return;
+
 	const uint16_t _x = _frontend->getCoordinateOffsetX() + x * _frontend->getWidth();
 	const uint16_t _y = _frontend->getCoordinateOffsetY() + y * _frontend->getHeight();
 	const int16_t _dx = dx * _frontend->getWidth();
@@ -386,6 +404,9 @@ void UI::onFingerMotion (int64_t finger, float x, float y, float dx, float dy)
 
 void UI::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY)
 {
+	if (_restart)
+		return;
+
 	GETSCALE_W(relX);
 	GETSCALE_H(relY);
 	_frontend->setCursorPosition(_cursorX + relX, _cursorY + relY);
@@ -404,6 +425,9 @@ void UI::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY)
 
 void UI::onMouseButtonRelease (int32_t x, int32_t y, uint8_t button)
 {
+	if (_restart)
+		return;
+
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
@@ -417,6 +441,9 @@ void UI::onMouseButtonRelease (int32_t x, int32_t y, uint8_t button)
 
 void UI::onMouseButtonPress (int32_t x, int32_t y, uint8_t button)
 {
+	if (_restart)
+		return;
+
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
@@ -429,6 +456,9 @@ void UI::onMouseButtonPress (int32_t x, int32_t y, uint8_t button)
 
 void UI::onMouseWheel (int32_t x, int32_t y)
 {
+	if (_restart)
+		return;
+
 	GETSCALE_W(x);
 	GETSCALE_H(y);
 	UIStack stack = _stack;
@@ -443,6 +473,9 @@ void UI::onMouseWheel (int32_t x, int32_t y)
 
 void UI::onJoystickMotion (bool horizontal, int v)
 {
+	if (_restart)
+		return;
+
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
@@ -483,6 +516,9 @@ void UI::onJoystickMotion (bool horizontal, int v)
 
 void UI::onJoystickButtonPress (uint8_t button)
 {
+	if (_restart)
+		return;
+
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
@@ -496,6 +532,9 @@ void UI::onJoystickButtonPress (uint8_t button)
 
 void UI::onControllerButtonPress (const std::string& button)
 {
+	if (_restart)
+		return;
+
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
