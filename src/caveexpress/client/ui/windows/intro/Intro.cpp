@@ -1,5 +1,6 @@
 #include "Intro.h"
 #include "engine/common/Commands.h"
+#include "engine/common/String.h"
 #include "engine/client/ui/nodes/UINodeBackButton.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
 #include "engine/client/ui/nodes/UINodeBar.h"
@@ -72,10 +73,12 @@ Intro::Intro(const std::string& name, IFrontend* frontend) :
 	_panel->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_TOP);
 	UIVBoxLayout *layout = new UIVBoxLayout(0.01f, true, NODE_ALIGN_CENTER);
 	_panel->setLayout(layout);
+	setInactiveAfterPush(1000L);
 }
 
 bool Intro::onKeyRelease (int32_t key)
 {
+	info(LOG_CLIENT, "Released key on intro window: " + string::toString(key));
 	if (_keyPressed == key)
 		UI::get().delayedPop();
 	return UIWindow::onKeyRelease(key);
@@ -83,6 +86,7 @@ bool Intro::onKeyRelease (int32_t key)
 
 bool Intro::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
 {
+	info(LOG_CLIENT, "Released finger on intro window: " + string::toString(finger));
 	if (_fingerPressed == finger)
 		UI::get().delayedPop();
 	return UIWindow::onFingerRelease(finger, x, y);
@@ -91,12 +95,14 @@ bool Intro::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
 bool Intro::onKeyPress (int32_t key, int16_t modifier)
 {
 	_keyPressed = key;
+	info(LOG_CLIENT, "Pressed key on intro window: " + string::toString(key));
 	return UIWindow::onKeyPress(key, modifier);
 }
 
 bool Intro::onFingerPress (int64_t finger, uint16_t x, uint16_t y)
 {
 	_fingerPressed = finger;
+	info(LOG_CLIENT, "Pressed finger on intro window: " + string::toString(finger));
 	return UIWindow::onFingerPress(finger, x, y);
 }
 

@@ -21,6 +21,7 @@ class CampaignManager;
 class ServiceProvider;
 class UINodeButtonText;
 class ClientMap;
+class IMapControl;
 
 class UIMapWindow: public UIWindow {
 private:
@@ -32,7 +33,7 @@ private:
 	UINodeBar *_hitpointsBar;
 	UINodeSprite *_livesSprite;
 	UINodeSprite *_packagesSprite;
-	UINode *_mapControl;
+	IMapControl *_mapControl;
 	UINodeButtonText *_startButton;
 	UINodeLabel *_waitLabel;
 	bool _cursorActive;

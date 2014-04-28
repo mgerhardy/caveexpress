@@ -103,24 +103,23 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 
 	add(_panel);
 
-	UINodeSettingsButton *settings;
 	if (System.hasTouch()) {
-		UINodeMapFingerControl* mapControl = new UINodeMapFingerControl(frontend, _nodeMap);
-		_mapControl = mapControl;
-		settings = new UINodeSettingsButton(frontend, mapControl);
+		UINodeMapFingerControl* node = new UINodeMapFingerControl(frontend, _nodeMap);
+		_mapControl = node;
+		add(node);
 	} else {
-		UINodeMapControl* mapControl = new UINodeMapControl(frontend, _nodeMap);
-		_mapControl = mapControl;
-		settings = new UINodeSettingsButton(frontend, mapControl);
+		UINodeMapControl* node = new UINodeMapControl(frontend, _nodeMap);
+		_mapControl = node;
+		add(node);
 	}
 
-	add(_mapControl);
-
-	settings->setImage("icon-settings");
-	settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_OPTIONS)));
-	settings->setAlignment(NODE_ALIGN_LEFT | NODE_ALIGN_TOP);
-	settings->setVisible(System.hasMouseOrFinger());
-	add(settings);
+	if (!System.hasTouch()) {
+		UINodeSettingsButton *settings = new UINodeSettingsButton(frontend, _mapControl);
+		settings->setImage("icon-settings");
+		settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_OPTIONS)));
+		settings->setAlignment(NODE_ALIGN_LEFT | NODE_ALIGN_TOP);
+		add(settings);
+	}
 
 	_startButton = new UINodeButtonText(frontend, tr("Start"), 0.05f);
 	_startButton->setOnActivate(CMD_START);
@@ -162,7 +161,9 @@ void UIMapWindow::onPushedOver ()
 
 bool UIMapWindow::onPop ()
 {
-	_mapControl->removeFocus();
+	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
+		(*i)->removeFocus();
+	}
 	Config.setBindingsSpace(BINDINGS_UI);
 	if (_cursorActive)
 		UI::get().showCursor(true);
