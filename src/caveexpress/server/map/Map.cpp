@@ -624,6 +624,7 @@ void Map::spawnPlayer (Player* player)
 	const b2Vec2& size = player->getSize();
 	const b2Vec2 pos(playerStartX + size.x / 2.0f, playerStartY + size.y / 2.0f);
 	player->createBody(pos);
+	player->onSpawn();
 	_players.push_back(player);
 }
 
