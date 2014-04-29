@@ -75,7 +75,6 @@ void PackageTarget::clearJoint (b2Joint *joint)
 {
 	IEntity::clearJoint(joint);
 	if (_joint == joint) {
-		_joint = nullptr;
 		removeJoint();
 	}
 }
