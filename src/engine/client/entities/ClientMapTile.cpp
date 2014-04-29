@@ -20,7 +20,8 @@ ClientMapTile::~ClientMapTile ()
 bool ClientMapTile::update (uint32_t deltaTime, bool lerpPos)
 {
 	ClientEntity::update(deltaTime, lerpPos);
-	_currSprite->update(deltaTime);
+	if (_currSprite)
+		_currSprite->update(deltaTime);
 
 	return true;
 }
