@@ -131,3 +131,15 @@ TEST_F(MapTest, testPlatformOneBigPlatform) {
 	GroundVisitor v(_map, 0, 2, 0, _map.getMapWidth() - 1);
 	_map.visitEntities(&v);
 }
+
+TEST_F(MapTest, testMultipleLoad) {
+	for (int i = 0; i < 100; ++i) {
+		ASSERT_TRUE(_map.load("ice-01")) << "Could not load the map ice-01";
+		Player* player = new Player(_map, 1);
+		player->setLives(3);
+		_map.initPlayer(player);
+		_map.spawnPlayer(player);
+		_map.startMap();
+		ASSERT_TRUE(_map.load("ice-01")) << "Could not load the map ice-01";
+	}
+}
