@@ -19,7 +19,7 @@ public:
 	void setCursorPosition (int x, int y) override {}
 	void showCursor (bool show) override {}
 	void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha) override {}
-	bool loadTexture (Texture* texture, const std::string& filename) override { texture->setData(reinterpret_cast<void*>(1)); return true; }
+	bool loadTexture (Texture* texture, const std::string& filename) override { texture->setData(reinterpret_cast<void*>(1)); texture->setRect(0, 0, 1, 1); return true; }
 	void bindTexture (Texture* texture, int textureUnit) override {}
 	void renderRect (int x, int y, int w, int h, const Color& color) override {}
 	void renderFilledRect (int x, int y, int w, int h, const Color& color) override {}
