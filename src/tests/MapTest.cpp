@@ -138,7 +138,6 @@ TEST_F(MapTest, testMultipleLoad) {
 		Player* player = new Player(_map, 1);
 		player->setLives(3);
 		_map.initPlayer(player);
-		_map.spawnPlayer(player);
 		_map.startMap();
 		ASSERT_TRUE(_map.load("ice-01")) << "Could not load the map ice-01";
 	}

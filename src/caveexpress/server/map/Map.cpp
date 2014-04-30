@@ -651,8 +651,8 @@ void Map::startMap ()
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		spawnPlayer(*i);
 	}
-	updateVisMask();
 	_playersWaitingForSpawn.clear();
+	updateVisMask();
 
 	INetwork& network = _serviceProvider->getNetwork();
 	network.sendToAllClients(StartMapMessage());

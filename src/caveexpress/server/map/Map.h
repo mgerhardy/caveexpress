@@ -182,6 +182,9 @@ protected:
 	bool visitEntity (IEntity *entity) override;
 	void handleVisibility (IEntity *entity, const VisMask vismask) const;
 	void sendVisibleEntity (int clientMask, const IEntity *entity) const;
+
+	// do the spawning on the map and add the physic objects
+	void spawnPlayer (Player* player);
 public:
 	Map ();
 	virtual ~Map ();
@@ -242,8 +245,6 @@ public:
 
 	const IEntity* getEntity (int16_t id) const;
 
-	// do the spawning on the map and add the physic objects
-	void spawnPlayer (Player* player);
 	// prepare the spawning
 	void initPlayer (Player* player);
 	// perform the spawning of the players that are in the spawn queue
