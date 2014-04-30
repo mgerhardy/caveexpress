@@ -31,18 +31,8 @@ public:
 UIPopupWindow::UIPopupWindow (IFrontend* frontend, const std::string& text, int flags, UIPopupCallbackPtr callback) :
 		UIWindow("popup", frontend, WINDOW_FLAG_MODAL)
 {
-	UINodePopupBackground *background = new UINodePopupBackground(frontend);
+	UINodePopupBackground *background = new UINodePopupBackground(frontend, text);
 	add(background);
-
-	UINodeLabel *label = new UINodeLabel(frontend, text);
-	label->setFont(LARGE_FONT);
-	label->setColor(colorWhite);
-	label->alignTo(background, NODE_ALIGN_TOP | NODE_ALIGN_CENTER, 0.01f);
-	if (background->getWidth() < label->getWidth()) {
-		background->setSize(label->getWidth(), background->getHeight());
-		background->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_MIDDLE);
-	}
-	add(label);
 
 	if (flags & UIPOPUP_OK) {
 		UINodePopupButton *ok = new UINodePopupButton(frontend, tr("OK"));
