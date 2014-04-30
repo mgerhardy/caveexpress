@@ -61,10 +61,10 @@ UIMapEditorWindow::UIMapEditorWindow (IFrontend *frontend, MapManager& mapManage
 	int cols = 6;
 	int rows = 6;
 
-	if (_frontend->getWidth() <= 1024)
+	if (isSmallScreen()) {
 		cols = 3;
-	if (_frontend->getHeight() < 768)
 		rows = 3;
+	}
 
 	_selectedItemNode = new UINodeMapEditorSelectedItem(_frontend);
 

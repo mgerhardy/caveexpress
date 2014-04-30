@@ -1,5 +1,6 @@
 #pragma once
 
+#include "engine/common/IFrontend.h"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -110,7 +111,7 @@ public:
 
 	virtual bool supportFocusChange () { return true; }
 
-	virtual bool isSmallScreen () { return false; }
+	virtual bool isSmallScreen (IFrontend* frontend) { return frontend->getWidth() <= 1024 || frontend->getHeight() <= 768; }
 
 	virtual bool canDisableJoystick () { return true; }
 

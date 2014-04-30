@@ -64,7 +64,7 @@ public:
 	bool hasTouch () const override;
 	bool quit () override;
 	bool wantCursor () override;
-	bool isSmallScreen () override;
+	bool isSmallScreen (IFrontend*) override;
 	bool supportFocusChange () override;
 	std::string getLanguage () override;
 	bool supportPayment () override;

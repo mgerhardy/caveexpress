@@ -177,7 +177,7 @@ Android::Android () :
 
 	SDL_SetHint(SDL_HINT_ACCELEROMETER_AS_JOYSTICK, "0");
 
-	const bool smallScreen = isSmallScreen();
+	const bool smallScreen = isSmallScreen(nullptr);
 	if (smallScreen) {
 		info(LOG_SYSTEM, "running on a small screen");
 	} else {
@@ -487,7 +487,7 @@ bool Android::quit ()
 	return true;
 }
 
-bool Android::isSmallScreen ()
+bool Android::isSmallScreen (IFrontend*)
 {
 	return _env->CallStaticBooleanMethod(_cls, _isSmallScreen);
 }

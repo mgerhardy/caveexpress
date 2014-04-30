@@ -47,13 +47,7 @@ BitmapFontPtr UINode::getFont (const std::string& font) const
 
 bool UINode::isSmallScreen() const
 {
-	if (System.isSmallScreen())
-		return true;
-	if (_frontend->getWidth() <= 1024)
-		return true;
-	if (_frontend->getHeight() <= 768)
-		return true;
-	return false;
+	return System.isSmallScreen(_frontend);
 }
 
 void UINode::setPos (float x, float y)
