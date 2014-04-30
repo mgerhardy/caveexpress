@@ -48,7 +48,7 @@ protected:
 };
 
 TEST_F(MapTest, testPlatform) {
-	ASSERT_TRUE(_map.load("test-platform")) << "Could not load the map";
+	ASSERT_TRUE(_map.load("test-platform")) << "Could not load the map test-platform";
 	{
 		GroundVisitor v(_map, 0, 2, 0, _map.getMapWidth() - 1);
 		_map.visitEntities(&v);
@@ -126,7 +126,7 @@ TEST_F(MapTest, testPlatform) {
 }
 
 TEST_F(MapTest, testPlatformOneBigPlatform) {
-	ASSERT_TRUE(_map.load("test-platform-big")) << "Could not load the map";
+	ASSERT_TRUE(_map.load("test-platform-big")) << "Could not load the map test-platform-big";
 
 	GroundVisitor v(_map, 0, 2, 0, _map.getMapWidth() - 1);
 	_map.visitEntities(&v);
