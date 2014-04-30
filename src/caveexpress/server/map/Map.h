@@ -120,18 +120,18 @@ protected:
 	uint32_t _waterFallingDelay;
 
 	bool _activateflyingNPC;
-	NPCFlying* _flyingNPC;
-	uint32_t _spawnFlyingNPCTime;
-
 	bool _activateFishNPC;
+
+	NPCFlying* _flyingNPC;
 	NPCFish* _fishNPC;
+
+	uint32_t _spawnFlyingNPCTime;
 	uint32_t _spawnFishNPCTime;
 
 	// the time that passed since this map was started (milliseconds)
 	uint32_t _time;
 	// the last time when the physics was updated
 	int32_t _physicsTime;
-
 	uint32_t _nextFriendlyNPCSpawn;
 
 	int _transferedPackages;
@@ -156,11 +156,11 @@ protected:
 	b2World* _world;
 
 	bool _pause;
-
-	IFrontend *_frontend;
-
 	// sanity check in the world step callbacks
 	bool _entityRemovalAllowed;
+	bool _mapRunning;
+
+	IFrontend *_frontend;
 
 	ServiceProvider *_serviceProvider;
 
@@ -184,7 +184,7 @@ protected:
 	void sendVisibleEntity (int clientMask, const IEntity *entity) const;
 
 	// do the spawning on the map and add the physic objects
-	void spawnPlayer (Player* player);
+	bool spawnPlayer (Player* player);
 public:
 	Map ();
 	virtual ~Map ();
@@ -246,7 +246,7 @@ public:
 	const IEntity* getEntity (int16_t id) const;
 
 	// prepare the spawning
-	void initPlayer (Player* player);
+	bool initPlayer (Player* player);
 	// perform the spawning of the players that are in the spawn queue
 	void startMap ();
 	bool isReadyToStart () const;

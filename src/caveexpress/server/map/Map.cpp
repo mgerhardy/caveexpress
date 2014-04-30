@@ -361,6 +361,7 @@ void Map::resetCurrentMap ()
 	_activateflyingNPC = false;
 	_spawnFishNPCTime = 0;
 	_activateFishNPC = false;
+	_mapRunning = false;
 	_wind = 0.0f;
 	_width = 0;
 	_height = 0;
@@ -530,6 +531,7 @@ bool Map::load (const std::string& name)
 	_frontend->onMapLoaded();
 	GameEvent.loadMap(0, _name, _title);
 
+	_mapRunning = true;
 	return true;
 }
 
@@ -621,7 +623,7 @@ bool Map::trace (int startGridX, int startGridY, int endGridX, int endGridY, IEn
 	return trace(start, end, hit);
 }
 
-void Map::spawnPlayer (Player* player)
+bool Map::spawnPlayer (Player* player)
 {
 	assert(_entityRemovalAllowed);
 
@@ -633,6 +635,7 @@ void Map::spawnPlayer (Player* player)
 	player->createBody(pos);
 	player->onSpawn();
 	_players.push_back(player);
+	return true;
 }
 
 void Map::sendMessage (ClientId clientId, const std::string& message) const
@@ -658,8 +661,14 @@ void Map::startMap ()
 	network.sendToAllClients(StartMapMessage());
 }
 
-void Map::initPlayer (Player* player)
+bool Map::initPlayer (Player* player)
 {
+	if (!_mapRunning)
+		return false;
+
+	if (getPlayer(player->getClientId()) != nullptr)
+		return false;
+
 	assert(_entityRemovalAllowed);
 
 	INetwork& network = _serviceProvider->getNetwork();
@@ -679,11 +688,12 @@ void Map::initPlayer (Player* player)
 	updateVisMask();
 	sendMapToClient(clientId);
 	if (!_players.empty()) {
-		spawnPlayer(player);
+		const bool spawned = spawnPlayer(player);
 		updateVisMask();
-	} else {
-		_playersWaitingForSpawn.push_back(player);
+		return spawned;
 	}
+	_playersWaitingForSpawn.push_back(player);
+	return true;
 }
 
 void Map::printPlayersList () const

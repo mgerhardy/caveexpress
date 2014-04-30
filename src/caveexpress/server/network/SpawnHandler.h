@@ -22,6 +22,7 @@ public:
 		const uint8_t lives = activeCampaign->getLives();
 		player->setLives(lives);
 		info(LOG_SERVER, String::format("spawn client %i with %i lives", clientId, player->getLives()));
-		_map.initPlayer(player);
+		if (!_map.initPlayer(player))
+			delete player;
 	}
 };

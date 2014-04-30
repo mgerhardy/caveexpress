@@ -261,6 +261,7 @@ void Network::update (uint32_t deltaTime)
 		if (SDLNet_SocketReady(_serverSocket)) {
 			TCPsocket csd = SDLNet_TCP_Accept(_serverSocket);
 			if (csd) {
+				// TODO: find same ip and reuse client id
 				IPaddress *remoteIP = SDLNet_TCP_GetPeerAddress(csd);
 				if (remoteIP) {
 					if (SDLNet_TCP_AddSocket(_socketSet, csd) < 0) {
