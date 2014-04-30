@@ -28,6 +28,8 @@ IntroBarDescription::IntroBarDescription(IFrontend* frontend, const Color& barCo
 	const float barHeight = 12.0f / _frontend->getHeight();
 	const float barWidth = 102.0f / _frontend->getWidth();
 	UINodeBar* timeBar = new UINodeBar(_frontend);
+	timeBar->setMax(100);
+	timeBar->setCurrent(100);
 	timeBar->setBarColor(barColor);
 	timeBar->setBorder(true);
 	timeBar->setBorderColor(colorWhite);
@@ -44,6 +46,8 @@ IntroBarDescription::IntroBarDescription(IFrontend* frontend, const std::string&
 	const float barHeight = 12.0f / _frontend->getHeight();
 	const float barWidth = 102.0f / _frontend->getWidth();
 	UINodeBar* timeBar = new UINodeBar(_frontend);
+	timeBar->setMax(100);
+	timeBar->setCurrent(100);
 	timeBar->setBorder(true);
 	timeBar->setBorderColor(colorWhite);
 	timeBar->setSize(barWidth, barHeight);
