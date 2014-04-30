@@ -197,6 +197,9 @@ void Map::clearPhysics ()
 		for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
 			(*i)->prepareRemoval();
 		}
+		for (EntityListIter i = _entitiesToAdd.begin(); i != _entitiesToAdd.end(); ++i) {
+			(*i)->prepareRemoval();
+		}
 		if (!_name.empty())
 			info(LOG_MAP, "* removed box2d references");
 	}
@@ -210,6 +213,10 @@ void Map::clearPhysics ()
 		for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
 			delete *i;
 		}
+		for (EntityListIter i = _entitiesToAdd.begin(); i != _entitiesToAdd.end(); ++i) {
+			delete *i;
+		}
+		_entitiesToAdd.clear();
 		_entities.clear();
 		_caves.clear();
 		_platforms.clear();
