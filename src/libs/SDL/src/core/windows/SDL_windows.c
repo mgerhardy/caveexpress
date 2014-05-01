@@ -28,6 +28,11 @@
 
 #include <objbase.h>  /* for CoInitialize/CoUninitialize (Win32 only) */
 
+#ifndef _WIN32_WINNT_VISTA
+#define _WIN32_WINNT_VISTA  0x0600
+#endif
+
+
 /* Sets an error message based on GetLastError() */
 int
 WIN_SetErrorFromHRESULT(const char *prefix, HRESULT hr)
@@ -85,6 +90,37 @@ WIN_CoUninitialize(void)
 {
 #ifndef __WINRT__
     CoUninitialize();
+#endif
+}
+
+#ifndef __WINRT__
+static BOOL
+IsWindowsVersionOrGreater(WORD wMajorVersion, WORD wMinorVersion, WORD wServicePackMajor)
+{
+    OSVERSIONINFOEXW osvi;
+    DWORDLONG const dwlConditionMask = VerSetConditionMask(
+        VerSetConditionMask(
+        VerSetConditionMask(
+        0, VER_MAJORVERSION, VER_GREATER_EQUAL ),
+        VER_MINORVERSION, VER_GREATER_EQUAL ),
+        VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL );
+
+    SDL_zero(osvi);
+    osvi.dwOSVersionInfoSize = sizeof(osvi);
+    osvi.dwMajorVersion = wMajorVersion;
+    osvi.dwMinorVersion = wMinorVersion;
+    osvi.wServicePackMajor = wServicePackMajor;
+
+    return VerifyVersionInfoW(&osvi, VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR, dwlConditionMask) != FALSE;
+}
+#endif
+
+BOOL WIN_IsWindowsVistaOrGreater()
+{
+#ifdef __WINRT__
+    return TRUE;
+#else
+    return IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_VISTA), LOBYTE(_WIN32_WINNT_VISTA), 0);
 #endif
 }
 
