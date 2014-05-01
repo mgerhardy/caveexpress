@@ -60,7 +60,7 @@ Version 1.6 (not yet released)
 ** The second (flappy) campaign is not about birds - but almost the same (Cryptic? Try it!)
 * Translation support (english and german currently)
 * Readded android quit button
-* Disable small ads in the android version
+* Changed ads handling in the free android version
 * Introduction windows for the tutorial campaign
 * Player does no longer drop the package when you tap onto him. Use the second finger to handle drops
 
