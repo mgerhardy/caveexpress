@@ -299,13 +299,16 @@ $(ANDROID_PROJECT)/build.xml: $(ANDROID_PROJECT)/build.xml.in $(CONFIG_H)-config
 	$(Q)sed -i 's/@APPNAME_FULL@/$(APPNAME_FULL)/g' $(ANDROID_PROJECT)/build.xml
 	$(Q)sed -i 's:@EXCLUDE_PACKAGE_PATHS@:$(EXCLUDE_JAVA_PACKAGE_PATHS):g' $(ANDROID_PROJECT)/build.xml
 
+define ANDROID_PACKAGE
+$(Q)cd $(ANDROID_PROJECT); SDK=`android list sdk | grep $(1) | awk -F'-' ' { print $$1 }'`; [ -n "$$SDK" ] && (SDK2=`android list sdk --all | grep $(1) | awk -F'-' ' { print $$1 }'`; android update sdk -a -u -s -t $$SDK2) || echo
+endef
+
 $(ANDROID_PROJECT)/local.properties: $(ANDROID_PROJECT)/AndroidManifest.xml $(ANDROID_PROJECT)/build.xml $(ANDROID_PROJECT)/google-play-services_lib/build.xml
 	@echo "===> ANDROID [update project]"
-	$(Q)cd $(ANDROID_PROJECT); SDK=`android list sdk --all | grep "SDK Platform Android 3.2" | awk -F'-' ' { print $$1 }'`; [ -n "$$SDK" ] && android update sdk -a -u -s -t $$SDK || echo
-	$(Q)cd $(ANDROID_PROJECT); SDK=`android list sdk --all | grep "SDK Platform Android 4.1.2" | awk -F'-' ' { print $$1 }'`; [ -n "$$SDK" ] && android update sdk -a -u -s -t $$SDK || echo
-	$(Q)cd $(ANDROID_PROJECT); SDK=`android list sdk --all | grep "Google Play Billing Library," | awk -F'-' ' { print $$1 }'`; [ -n "$$SDK" ] && android update sdk -a -u -s -t $$SDK || echo
-	$(Q)cd $(ANDROID_PROJECT); SDK=`android list sdk --all | grep "Google Play services," | awk -F'-' ' { print $$1 }'`; [ -n "$$SDK" ] && android update sdk -a -u -s -t $$SDK || echo
-	#$(Q)cd $(ANDROID_PROJECT); SDK=`android list sdk --all | grep "Build-tools, revision 18.1.1" | awk -F'-' ' { print $$1 }'`; [ -n "$$SDK" ] && android update sdk -a -u -s -t build-tools-18.1.1 || echo
+	$(call ANDROID_PACKAGE,"SDK Platform Android 3.2")
+	$(call ANDROID_PACKAGE,"SDK Platform Android 4.1.2")
+	#$(call ANDROID_PACKAGE,"Google Play Billing Library")
+	$(call ANDROID_PACKAGE,"Google Play services")
 	$(Q)cd $(ANDROID_PROJECT) && android update project -p . -t android-13
 
 $(ANDROID_PROJECT)/google-play-services_lib/build.xml:
