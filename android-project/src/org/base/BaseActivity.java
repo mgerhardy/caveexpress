@@ -20,6 +20,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 // import com.google.analytics.tracking.android.EasyTracker;
 // import com.google.analytics.tracking.android.Fields;
@@ -268,6 +269,11 @@ public abstract class BaseActivity extends SDLActivity {
 	}
 
 	static boolean isSmallScreen() {
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		getBaseActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		int height = displaymetrics.heightPixels;
+		int width = displaymetrics.widthPixels;
+		Log.v(NAME, "resolution " + width + "x" + height);
 		final Configuration config = getContext().getResources().getConfiguration();
 		final int i = config.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
 		// small is 320x426 dp units
