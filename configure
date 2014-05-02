@@ -6,7 +6,7 @@ caveexpress_APPNAME=caveexpress
 caveexpress_APPNAME_FULL=CaveExpress
 caveexpress_JAVA_PACKAGE=org.caveexpress
 caveexpress_VERSION=1.6
-caveexpress_VERSION_CODE=21
+caveexpress_VERSION_CODE=22
 
 DEFAULT_APP=caveexpress
 
