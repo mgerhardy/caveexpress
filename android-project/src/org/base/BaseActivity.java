@@ -269,26 +269,12 @@ public abstract class BaseActivity extends SDLActivity {
 	}
 
 	static boolean isSmallScreen() {
-		DisplayMetrics displaymetrics = new DisplayMetrics();
-		getBaseActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-		int height = displaymetrics.heightPixels;
-		int width = displaymetrics.widthPixels;
-		Log.v(NAME, "resolution " + width + "x" + height);
-		final Configuration config = getContext().getResources().getConfiguration();
-		final int i = config.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
-		// small is 320x426 dp units
-		// normal is 320x470 dp units
-		// large is 480x640 dp units
-		// xlarge is 720x960 dp units
-		if (i == Configuration.SCREENLAYOUT_SIZE_SMALL) {
-			Log.v(NAME, "found small screen");
-			return true;
-		} else if (i == Configuration.SCREENLAYOUT_SIZE_NORMAL) {
-			Log.v(NAME, "found normal screen");
-			return false;
-		}
-		Log.v(NAME, "found big screen: " + i);
-		return false;
+		DisplayMetrics m = new DisplayMetrics();
+		getBaseActivity().getWindowManager().getDefaultDisplay().getMetrics(m);
+		boolean small = /* m.widthPixels < 1280 || */m.heightPixels < 720;
+		Log.v(NAME, "resolution " + m.widthPixels + "x" + m.heightPixels + ", density: " + m.density + ", small: "
+				+ small);
+		return small;
 	}
 
 	static boolean track(String hitType, String screenName) {
