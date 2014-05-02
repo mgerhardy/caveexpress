@@ -145,7 +145,7 @@ if isMobile() or isOUYA() then
 			AC_BACK = "ui_pop",
 		},
 		["map"] = {
-			MENU = "ui_push settings",
+			--MENU = "ui_push settings",
 			AC_BACK = "ui_pop",
 		},
 	}
