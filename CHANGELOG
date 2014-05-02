@@ -48,7 +48,7 @@ Version 1.5 (2014-01-18)
 * Continue button is now in the campaign menu
 * Fixed android red screen issue
 
-Version 1.6 (not yet released)
+Version 1.6 (2014-05-02)
 * Open sourced the game code and the assets
 * Added ouya joystick button help
 * Allow to switch between big and small layout (If your screen is big enough to allow the big layout)
@@ -66,3 +66,5 @@ Version 1.6 (not yet released)
 
 Feedback for the control changes are more than welcome.
 We are working hard on improving the game entry for the next version.
+
+Version 1.7 (not yet released)
