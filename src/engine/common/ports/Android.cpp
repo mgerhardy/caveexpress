@@ -566,14 +566,14 @@ int Android::getAdHeight() const
 	return 50;
 }
 
-extern "C" void Java_org_base_BaseActivity_onPaymentDone(JNIEnv* env, jclass jcls)
+extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPaymentDone(JNIEnv* env, jclass jcls)
 {
 	info(LOG_SYSTEM, "onPaymentDone CaveExpress side");
 	Android& s = static_cast<Android&>(getSystem());
 	s.notifyPaymentLoaded();
 }
 
-extern "C" jboolean Java_org_base_BaseActivity_isDebug(JNIEnv* env, jclass jcls)
+extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isDebug(JNIEnv* env, jclass jcls)
 {
 	jboolean debug;
 #ifdef DEBUG
@@ -584,7 +584,7 @@ extern "C" jboolean Java_org_base_BaseActivity_isDebug(JNIEnv* env, jclass jcls)
 	return debug;
 }
 
-extern "C" jboolean Java_org_base_BaseActivity_isHD(JNIEnv* env, jclass jcls)
+extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isHD(JNIEnv* env, jclass jcls)
 {
 	jboolean hd;
 #ifdef HD_VERSION
