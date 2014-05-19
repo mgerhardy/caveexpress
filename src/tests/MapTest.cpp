@@ -170,3 +170,7 @@ TEST_F(MapTest, testPlayerCrashFlyingPackage) {
 TEST_F(MapTest, testPlayerCrashFishPackage) {
 	testCrash("test-crash-fish-package");
 }
+
+TEST_F(MapTest, testPlayerCrashFishNothingCollected) {
+	testCrash("test-crash-fish-nothing-collected");
+}
