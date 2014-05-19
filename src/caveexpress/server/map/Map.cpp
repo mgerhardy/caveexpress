@@ -167,7 +167,13 @@ void Map::render (void *userdata)
 
 inline bool Map::isActive () const
 {
-	return !_entities.empty() && !_players.empty();
+	const bool noEntities = _entities.empty();
+	if (noEntities)
+		return false;
+	const bool noPlayers = _players.empty();
+	if (noPlayers)
+		return false;
+	return true;
 }
 
 void Map::countTransferedPackage ()
