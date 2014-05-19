@@ -41,6 +41,21 @@ class MapTest: public MapSuite {
 protected:
 	Map _map;
 
+	void testCrash (const std::string& map) {
+		ASSERT_TRUE(_map.load(map)) << "Could not load the map " << map;
+		Player* player = new Player(_map, 1);
+		player->setLives(3);
+		ASSERT_TRUE(_map.initPlayer(player));
+		_map.startMap();
+		ASSERT_TRUE(_map.isActive());
+		int ticksLeft = 10000;
+		while (!player->isCrashed()) {
+			_map.update(1);
+			ASSERT_TRUE(--ticksLeft > 0);
+		}
+		_map.shutdown();
+	}
+
 	virtual void SetUp() override {
 		MapSuite::SetUp();
 		_map.init(&_testFrontend, _serviceProvider);
@@ -148,17 +163,10 @@ TEST_F(MapTest, testMultipleLoad) {
 	}
 }
 
-TEST_F(MapTest, testPlayerCrash) {
-	ASSERT_TRUE(_map.load("test-crash-flying-package")) << "Could not load the map test-crash-flying";
-	Player* player = new Player(_map, 1);
-	player->setLives(3);
-	ASSERT_TRUE(_map.initPlayer(player));
-	_map.startMap();
-	ASSERT_TRUE(_map.isActive());
-	int ticksLeft = 10000;
-	while (player->isCrashed()) {
-		_map.update(1);
-		ASSERT_TRUE(--ticksLeft > 0);
-	}
-	_map.shutdown();
+TEST_F(MapTest, testPlayerCrashFlyingPackage) {
+	testCrash("test-crash-flying-package");
+}
+
+TEST_F(MapTest, testPlayerCrashFishPackage) {
+	testCrash("test-crash-fish-package");
 }
