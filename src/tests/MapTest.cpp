@@ -123,6 +123,7 @@ TEST_F(MapTest, testPlatform) {
 		GroundVisitor v(_map, 3, 22, 3, 4);
 		_map.visitEntities(&v);
 	}
+	_map.shutdown();
 }
 
 TEST_F(MapTest, testPlatformOneBigPlatform) {
@@ -130,6 +131,7 @@ TEST_F(MapTest, testPlatformOneBigPlatform) {
 
 	GroundVisitor v(_map, 0, 2, 0, _map.getMapWidth() - 1);
 	_map.visitEntities(&v);
+	_map.shutdown();
 }
 
 TEST_F(MapTest, testMultipleLoad) {
@@ -142,5 +144,6 @@ TEST_F(MapTest, testMultipleLoad) {
 		ASSERT_FALSE(_map.initPlayer(player));
 		_map.startMap();
 		ASSERT_TRUE(_map.load("ice-01")) << "Could not load the map ice-01";
+		_map.shutdown();
 	}
 }
