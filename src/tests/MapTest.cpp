@@ -42,7 +42,7 @@ protected:
 	GameLogic _game;
 	Map _map;
 
-	void testCrash (const std::string& map, int ticksLeft = 10000) {
+	void testCrash (const std::string& map, PlayerCrashReason crashReason, int ticksLeft = 10000) {
 		ASSERT_TRUE(_game.loadMap(map)) << "Could not load the map " << map;
 		Player* player = new Player(_game.getMap(), 1);
 		player->setLives(3);
@@ -53,6 +53,7 @@ protected:
 			_game.update(1);
 			ASSERT_TRUE(--ticksLeft > 0);
 		}
+		ASSERT_EQ(crashReason, player->getCrashReason());
 		_game.shutdown();
 	}
 
@@ -166,21 +167,21 @@ TEST_F(MapTest, testMultipleLoad) {
 }
 
 TEST_F(MapTest, testPlayerCrashFlyingPackage) {
-	testCrash("test-crash-flying-package");
+	testCrash("test-crash-flying-package", CRASH_NPC_FLYING);
 }
 
 TEST_F(MapTest, testPlayerCrashFishPackage) {
-	testCrash("test-crash-fish-package");
+	testCrash("test-crash-fish-package", CRASH_NPC_FISH);
 }
 
 TEST_F(MapTest, testPlayerCrashFishNothingCollected) {
-	testCrash("test-crash-fish-nothing-collected");
+	testCrash("test-crash-fish-nothing-collected", CRASH_NPC_FISH);
 }
 
 TEST_F(MapTest, testPlayerCrashWalkingPackage) {
-	testCrash("test-crash-walking-package");
+	testCrash("test-crash-walking-package", CRASH_NPC_WALKING);
 }
 
 TEST_F(MapTest, testPlayerCrashWalkingStone) {
-	testCrash("test-crash-walking-stone");
+	testCrash("test-crash-walking-stone", CRASH_NPC_WALKING);
 }
