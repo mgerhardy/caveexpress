@@ -135,6 +135,11 @@ void Player::update (uint32_t deltaTime)
 {
 	IEntity::update(deltaTime);
 
+	if (isCrashed()) {
+		// before we crash, we should drop the stuff we are carrying
+		drop();
+	}
+
 	if (System.hasTouch()) {
 		if (_fingerAcceleration) {
 			const float mass = getCompleteMass();
@@ -226,9 +231,6 @@ void Player::setCrashed (const PlayerCrashReason& reason)
 
 	if (isCrashed())
 		return;
-
-	// before we crash, we should drop the stuff we are carrying
-	drop();
 
 	if (Config.isModeHard()) {
 		reduceLive();
@@ -404,9 +406,6 @@ bool Player::collect (CollectableEntity* entity)
 
 void Player::drop ()
 {
-	if (isCrashed())
-		return;
-
 	for (int i = 0; i < MAX_COLLECTED; ++i) {
 		const Collected &c = _collectedEntities[i];
 		const EntityType *entityType = c.entityType;
