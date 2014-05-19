@@ -41,14 +41,13 @@ class MapTest: public MapSuite {
 protected:
 	Map _map;
 
-	void testCrash (const std::string& map) {
+	void testCrash (const std::string& map, int ticksLeft = 10000) {
 		ASSERT_TRUE(_map.load(map)) << "Could not load the map " << map;
 		Player* player = new Player(_map, 1);
 		player->setLives(3);
 		ASSERT_TRUE(_map.initPlayer(player));
 		_map.startMap();
 		ASSERT_TRUE(_map.isActive());
-		int ticksLeft = 10000;
 		while (!player->isCrashed()) {
 			_map.update(1);
 			ASSERT_TRUE(--ticksLeft > 0);
