@@ -77,7 +77,7 @@ SDL_EGL_GetProcAddress(_THIS, const char *proc)
     void *retval;
     
     /* eglGetProcAddress is busted on Android http://code.google.com/p/android/issues/detail?id=7681 */
-#if !defined(SDL_VIDEO_DRIVER_ANDROID) 
+#if !defined(SDL_VIDEO_DRIVER_ANDROID) && !defined(SDL_VIDEO_DRIVER_MIR) 
     if (_this->egl_data->eglGetProcAddress) {
         retval = _this->egl_data->eglGetProcAddress(proc);
         if (retval) {
@@ -201,6 +201,7 @@ SDL_EGL_LoadLibrary(_THIS, const char *egl_path, NativeDisplayType native_displa
         if (dll_handle == NULL) {
             return SDL_SetError("Could not load EGL library");
         }
+        SDL_ClearError();
     }
 
     _this->egl_data->dll_handle = dll_handle;

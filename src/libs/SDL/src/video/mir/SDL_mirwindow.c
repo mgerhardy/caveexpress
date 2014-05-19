@@ -84,7 +84,8 @@ MIR_CreateWindow(_THIS, SDL_Window* window)
         .width = window->w,
         .height = window->h,
         .pixel_format = mir_pixel_format_invalid,
-        .buffer_usage = mir_buffer_usage_hardware
+        .buffer_usage = mir_buffer_usage_hardware,
+        .output_id = mir_display_output_id_invalid
     };
 
     MirEventDelegate delegate = {
@@ -98,6 +99,9 @@ MIR_CreateWindow(_THIS, SDL_Window* window)
 
     mir_data = _this->driverdata;
     window->driverdata = mir_window;
+
+    if (mir_data->software)
+        surfaceparm.buffer_usage = mir_buffer_usage_software;
 
     if (window->x == SDL_WINDOWPOS_UNDEFINED)
         window->x = 0;
