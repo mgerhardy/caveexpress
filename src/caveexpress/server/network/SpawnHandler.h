@@ -7,9 +7,9 @@
 class SpawnHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
-	CampaignManager& _campaignManager;
+	CampaignManager* _campaignManager;
 public:
-	SpawnHandler (Map& map, CampaignManager& campaignManager) :
+	SpawnHandler (Map& map, CampaignManager* campaignManager) :
 			_map(map), _campaignManager(campaignManager)
 	{
 	}
@@ -18,7 +18,7 @@ public:
 	{
 		// add the new player to every connected player
 		Player* player = new Player(_map, clientId);
-		const CampaignPtr& activeCampaign = _campaignManager.getActiveCampaign();
+		const CampaignPtr& activeCampaign = _campaignManager->getActiveCampaign();
 		const uint8_t lives = activeCampaign->getLives();
 		player->setLives(lives);
 		info(LOG_SERVER, String::format("spawn client %i with %i lives", clientId, player->getLives()));

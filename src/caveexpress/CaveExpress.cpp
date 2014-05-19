@@ -201,7 +201,7 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		_campaignManager = new CampaignManager(_persister, serviceProvider.getMapManager());
 		_campaignManager->init();
 	}
-	_game.init(frontend, &serviceProvider, *_campaignManager);
+	_game.init(frontend, &serviceProvider, _campaignManager);
 }
 
 void CaveExpress::initUI (IFrontend* _frontend, ServiceProvider& serviceProvider)

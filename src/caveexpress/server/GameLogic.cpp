@@ -40,7 +40,7 @@ GameLogic::~GameLogic ()
 	Commands.removeCommand(CMD_FINISHMAP);
 }
 
-void GameLogic::init (IFrontend *frontend, ServiceProvider *serviceProvider, CampaignManager& campaignManager)
+void GameLogic::init (IFrontend *frontend, ServiceProvider *serviceProvider, CampaignManager *campaignManager)
 {
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
 	r.registerServerHandler(protocol::PROTO_SPAWN, new SpawnHandler(_map, campaignManager));
@@ -55,7 +55,7 @@ void GameLogic::init (IFrontend *frontend, ServiceProvider *serviceProvider, Cam
 	r.registerServerHandler(protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
 	_frontend = frontend;
 	_serviceProvider = serviceProvider;
-	_campaignManager = &campaignManager;
+	_campaignManager = campaignManager;
 	_map.init(_frontend, *_serviceProvider);
 	GameEvent.init(*_serviceProvider);
 }

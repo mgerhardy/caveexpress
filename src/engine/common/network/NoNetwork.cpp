@@ -31,7 +31,6 @@ bool NoNetwork::openServer (int port, IServerCallback* func)
 {
 	info(LOG_NET, String::format("open server on port %i", port));
 	_serverFunc = func;
-	assert(func);
 	_server = true;
 	return true;
 }

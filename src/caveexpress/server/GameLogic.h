@@ -35,7 +35,7 @@ public:
 	GameLogic ();
 	virtual ~GameLogic ();
 
-	void init (IFrontend *frontend, ServiceProvider *serviceProvider, CampaignManager& campaignManager);
+	void init (IFrontend *frontend, ServiceProvider *serviceProvider, CampaignManager *campaignManager);
 	void shutdown ();
 	/**
 	 * @param[in] deltaTime The milliseconds since the last frame was executed

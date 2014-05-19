@@ -1,5 +1,5 @@
 #include "MapTest.h"
-#include "caveexpress/server/map/Map.h"
+#include "caveexpress/server/GameLogic.h"
 #include "engine/common/ConfigManager.h"
 
 class GroundVisitor: public IEntityVisitor {
@@ -39,25 +39,28 @@ public:
 
 class MapTest: public MapSuite {
 protected:
+	GameLogic _game;
 	Map _map;
 
 	void testCrash (const std::string& map, int ticksLeft = 10000) {
-		ASSERT_TRUE(_map.load(map)) << "Could not load the map " << map;
-		Player* player = new Player(_map, 1);
+		ASSERT_TRUE(_game.loadMap(map)) << "Could not load the map " << map;
+		Player* player = new Player(_game.getMap(), 1);
 		player->setLives(3);
-		ASSERT_TRUE(_map.initPlayer(player));
-		_map.startMap();
-		ASSERT_TRUE(_map.isActive());
+		ASSERT_TRUE(_game.getMap().initPlayer(player));
+		_game.getMap().startMap();
+		ASSERT_TRUE(_game.getMap().isActive());
 		while (!player->isCrashed()) {
-			_map.update(1);
+			_game.update(1);
 			ASSERT_TRUE(--ticksLeft > 0);
 		}
-		_map.shutdown();
+		_game.shutdown();
 	}
 
 	virtual void SetUp() override {
 		MapSuite::SetUp();
+		_serviceProvider.getNetwork().openServer(12345, nullptr);
 		_map.init(&_testFrontend, _serviceProvider);
+		_game.init(&_testFrontend, &_serviceProvider, nullptr);
 	}
 };
 

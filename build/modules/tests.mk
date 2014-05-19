@@ -35,6 +35,7 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	\
 	$(wildcard $(SRCDIR)/caveexpress/client/particles/*.cpp) \
 	\
+	$(wildcard $(SRCDIR)/caveexpress/server/*.cpp) \
 	$(wildcard $(SRCDIR)/caveexpress/server/map/*.cpp) \
 	$(wildcard $(SRCDIR)/caveexpress/server/events/*.cpp) \
 	$(wildcard $(SRCDIR)/caveexpress/server/entities/*.cpp) \
