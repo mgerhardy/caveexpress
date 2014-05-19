@@ -180,3 +180,7 @@ TEST_F(MapTest, testPlayerCrashFishNothingCollected) {
 TEST_F(MapTest, testPlayerCrashWalkingPackage) {
 	testCrash("test-crash-walking-package");
 }
+
+TEST_F(MapTest, testPlayerCrashWalkingStone) {
+	testCrash("test-crash-walking-stone");
+}
