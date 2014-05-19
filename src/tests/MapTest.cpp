@@ -147,3 +147,18 @@ TEST_F(MapTest, testMultipleLoad) {
 		_map.shutdown();
 	}
 }
+
+TEST_F(MapTest, testPlayerCrash) {
+	ASSERT_TRUE(_map.load("test-crash-flying-package")) << "Could not load the map test-crash-flying";
+	Player* player = new Player(_map, 1);
+	player->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(player));
+	_map.startMap();
+	ASSERT_TRUE(_map.isActive());
+	int ticksLeft = 10000;
+	while (player->isCrashed()) {
+		_map.update(1);
+		ASSERT_TRUE(--ticksLeft > 0);
+	}
+	_map.shutdown();
+}
