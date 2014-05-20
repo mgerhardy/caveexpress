@@ -304,6 +304,8 @@ const MapFailedReason& Map::getFailReason (const Player* player) const
 			return MapFailedReasons::FAILED_NPC_FISH;
 		case CRASH_NPC_FLYING:
 			return MapFailedReasons::FAILED_NPC_FLYING;
+		case CRASH_MAP_FAILED:
+			return MapFailedReasons::FAILED_SIDESCROLL;
 		default:
 			return MapFailedReasons::FAILED_HITPOINTS;
 		}

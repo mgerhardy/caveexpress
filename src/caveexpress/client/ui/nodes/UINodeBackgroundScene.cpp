@@ -29,6 +29,7 @@ UINodeBackgroundScene::UINodeBackgroundScene (IFrontend *frontend) :
 
 	_failed[&MapFailedReasons::FAILED_WATER_HEIGHT] = loadTexture("dead-waterheight");
 	_failed[&MapFailedReasons::FAILED_HITPOINTS] = loadTexture("dead-hitpoints");
+	_failed[&MapFailedReasons::FAILED_SIDESCROLL] = loadTexture("dead-hitpoints");
 	_failed[&MapFailedReasons::FAILED_NPC_FLYING] = loadTexture("dead-npc-flying");
 	_failed[&MapFailedReasons::FAILED_NPC_WALKING] = loadTexture("dead-npc-walking");
 	_failed[&MapFailedReasons::FAILED_NPC_FISH] = loadTexture("dead-npc-fish");
@@ -175,6 +176,6 @@ void UINodeBackgroundScene::render (int x, int y) const
 		renderFailedNpcMammut(x, y);
 	else if (MapFailedReasons::FAILED_NPC_FISH == *_reason)
 		renderFailedNpcFish(x, y);
-	else if (MapFailedReasons::FAILED_HITPOINTS == *_reason)
+	else if (MapFailedReasons::FAILED_HITPOINTS == *_reason || MapFailedReasons::FAILED_SIDESCROLL == *_reason)
 		renderFailedHitpoints(x, y);
 }
