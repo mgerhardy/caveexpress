@@ -1,5 +1,6 @@
 #include "MapTest.h"
 #include "caveexpress/server/GameLogic.h"
+#include "caveexpress/shared/CaveExpressMapFailedReasons.h"
 #include "engine/common/ConfigManager.h"
 
 class GroundVisitor: public IEntityVisitor {
@@ -42,18 +43,18 @@ protected:
 	GameLogic _game;
 	Map _map;
 
-	void testCrash (const std::string& map, PlayerCrashReason crashReason, int ticksLeft = 10000) {
+	void testCrash (const std::string& map, const MapFailedReason& crashReason, int ticksLeft = 10000) {
 		ASSERT_TRUE(_game.loadMap(map)) << "Could not load the map " << map;
 		Player* player = new Player(_game.getMap(), 1);
 		player->setLives(3);
 		ASSERT_TRUE(_game.getMap().initPlayer(player));
 		_game.getMap().startMap();
 		ASSERT_TRUE(_game.getMap().isActive());
-		while (!player->isCrashed()) {
+		while (!player->isCrashed() && !_game.getMap().isFailed()) {
 			_game.update(1);
 			ASSERT_TRUE(--ticksLeft > 0);
 		}
-		ASSERT_EQ(crashReason, player->getCrashReason());
+		ASSERT_EQ(crashReason, _game.getMap().getFailReason(player));
 		_game.shutdown();
 	}
 
@@ -167,21 +168,25 @@ TEST_F(MapTest, testMultipleLoad) {
 }
 
 TEST_F(MapTest, testPlayerCrashFlyingPackage) {
-	testCrash("test-crash-flying-package", CRASH_NPC_FLYING);
+	testCrash("test-crash-flying-package", MapFailedReasons::FAILED_NPC_FLYING);
 }
 
 TEST_F(MapTest, testPlayerCrashFishPackage) {
-	testCrash("test-crash-fish-package", CRASH_NPC_FISH);
+	testCrash("test-crash-fish-package", MapFailedReasons::FAILED_NPC_FISH);
 }
 
 TEST_F(MapTest, testPlayerCrashFishNothingCollected) {
-	testCrash("test-crash-fish-nothing-collected", CRASH_NPC_FISH);
+	testCrash("test-crash-fish-nothing-collected", MapFailedReasons::FAILED_NPC_FISH);
 }
 
 TEST_F(MapTest, testPlayerCrashWalkingPackage) {
-	testCrash("test-crash-walking-package", CRASH_NPC_WALKING);
+	testCrash("test-crash-walking-package", MapFailedReasons::FAILED_NPC_WALKING);
 }
 
 TEST_F(MapTest, testPlayerCrashWalkingStone) {
-	testCrash("test-crash-walking-stone", CRASH_NPC_WALKING);
+	testCrash("test-crash-walking-stone", MapFailedReasons::FAILED_NPC_WALKING);
+}
+
+TEST_F(MapTest, testPlayerCrashWater) {
+	testCrash("test-crash-water", MapFailedReasons::FAILED_WATER_HEIGHT, 100000);
 }
