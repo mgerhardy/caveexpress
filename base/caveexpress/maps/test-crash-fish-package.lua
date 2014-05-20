@@ -50,4 +50,5 @@ function initMap()
 	map:setSetting("waterheight", "1")
 	map:setSetting("waterrisingdelay", "0")
 	map:setSetting("wind", "0.0")
+	map:setSetting("initialspawntime", "0")
 end
