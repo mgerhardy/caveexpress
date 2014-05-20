@@ -1,0 +1,31 @@
+* Graphics
+** Jungle theme
+** Liana graphics (we only have one)
+
+* Android
+** OUYA: game controller support
+** OUYA: After beating a level in campaign mode, the O button brings up the pause menu.
+** OUYA: 01-02 18:31:06.682: I/caveexpress 1.4(1582): INFO: joystick button 5 was pressed and not handled
+** OUYA: Incorporate graphics for the buttons
+** OUYA: Controls are fishy
+** google play integration
+*** achievements
+
+* Others
+** Windows Installer Bitmap
+** Cavebot
+** like us on facebook => unlock new campaign
+** follow us on twitter => unlock new campaign
+** don't use scale for the tps - for small everything should be in one texture
+** Collect stars to unlock campaigns
+
+* Map
+** indicator for being almost dead (red screen?)
+** indicator for where the packagetarget is (arrow?)
+** wind indicator
+** visual indicator for the flying npc and the fish (ClientMap::spawnInfo)
+** powerups (from tree)
+*** kill or stun dinos you are touching while an effect is active
+*** reduce collision damage
+*** packages are easier to carry (reduced weight)
+** finish lava
