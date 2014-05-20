@@ -200,3 +200,5 @@ TEST_F(MapTest, testPlayerCrashHitpoints) {
 	v->setValue("1.0");
 	testCrash("test-crash-hitpoints", MapFailedReasons::FAILED_HITPOINTS);
 }
+
+// TODO: test finishing a map
