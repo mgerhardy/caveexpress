@@ -195,8 +195,8 @@ TEST_F(MapTest, testPlayerCrashSideScroll) {
 	testCrash("test-crash-sidescroll", MapFailedReasons::FAILED_SIDESCROLL);
 }
 
-#if 0
 TEST_F(MapTest, testPlayerCrashHitpoints) {
+	ConfigVarPtr v = Config.getConfigVar("damagethreshold");
+	v->setValue("1.0");
 	testCrash("test-crash-hitpoints", MapFailedReasons::FAILED_HITPOINTS);
 }
-#endif
