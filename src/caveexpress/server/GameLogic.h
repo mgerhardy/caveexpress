@@ -12,7 +12,7 @@ class NPC;
 class Package;
 class IFrontend;
 class ServiceProvider;
-class CampaignManager;
+class ICampaignManager;
 
 class GameLogic: public IEntityVisitor {
 private:
@@ -22,7 +22,7 @@ private:
 
 	IFrontend *_frontend;
 	ServiceProvider *_serviceProvider;
-	CampaignManager *_campaignManager;
+	ICampaignManager *_campaignManager;
 
 	char _connectedClients;
 
@@ -35,7 +35,7 @@ public:
 	GameLogic ();
 	virtual ~GameLogic ();
 
-	void init (IFrontend *frontend, ServiceProvider *serviceProvider, CampaignManager *campaignManager);
+	void init (IFrontend *frontend, ServiceProvider *serviceProvider, ICampaignManager *campaignManager);
 	void shutdown ();
 	/**
 	 * @param[in] deltaTime The milliseconds since the last frame was executed

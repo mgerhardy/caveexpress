@@ -4,7 +4,7 @@
 #include "caveexpress/server/entities/Package.h"
 #include "caveexpress/server/entities/npcs/NPCAttacking.h"
 #include "caveexpress/server/entities/Fruit.h"
-#include "engine/common/campaign/CampaignManager.h"
+#include "engine/common/campaign/ICampaignManager.h"
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/Shared.h"
@@ -40,7 +40,7 @@ GameLogic::~GameLogic ()
 	Commands.removeCommand(CMD_FINISHMAP);
 }
 
-void GameLogic::init (IFrontend *frontend, ServiceProvider *serviceProvider, CampaignManager *campaignManager)
+void GameLogic::init (IFrontend *frontend, ServiceProvider *serviceProvider, ICampaignManager *campaignManager)
 {
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
 	r.registerServerHandler(protocol::PROTO_SPAWN, new SpawnHandler(_map, campaignManager));

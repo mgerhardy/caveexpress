@@ -2,14 +2,14 @@
 
 #include "engine/common/network/IProtocolHandler.h"
 #include "caveexpress/server/map/Map.h"
-#include "engine/common/campaign/CampaignManager.h"
+#include "engine/common/campaign/ICampaignManager.h"
 
 class SpawnHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
-	CampaignManager* _campaignManager;
+	ICampaignManager* _campaignManager;
 public:
-	SpawnHandler (Map& map, CampaignManager* campaignManager) :
+	SpawnHandler (Map& map, ICampaignManager* campaignManager) :
 			_map(map), _campaignManager(campaignManager)
 	{
 	}

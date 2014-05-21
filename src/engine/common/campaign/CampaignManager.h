@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Campaign.h"
+#include "ICampaignManager.h"
 #include "engine/common/NonCopyable.h"
 #include <string>
 #include <map>
@@ -17,7 +18,7 @@ public:
 	virtual void onCampaignUnlock (Campaign* campaign) = 0;
 };
 
-class CampaignManager: public NonCopyable {
+class CampaignManager: public ICampaignManager, public NonCopyable {
 private:
 	typedef std::vector<CampaignPtr> CampaignsMap;
 	CampaignsMap _campaigns;

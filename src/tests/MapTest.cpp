@@ -43,18 +43,48 @@ protected:
 	GameLogic _game;
 	Map _map;
 
-	void testCrash (const std::string& map, const MapFailedReason& crashReason, int ticksLeft = 10000) {
-		ASSERT_TRUE(_game.loadMap(map)) << "Could not load the map " << map;
-		Player* player = new Player(_game.getMap(), 1);
+	class MapTickCallback {
+	public:
+		virtual ~MapTickCallback() {}
+
+		virtual void exec(Map* map, Player* player) = 0;
+
+		void operator()(Map* map, Player* player) {
+			exec(map, player);
+		}
+	};
+
+	void testCrash (const std::string& mapName, const MapFailedReason& crashReason, int ticksLeft = 10000) {
+		ASSERT_TRUE(_game.loadMap(mapName)) << "Could not load the map " << mapName;
+		Map* map = &_game.getMap();
+		Player* player = new Player(*map, 1);
 		player->setLives(3);
-		ASSERT_TRUE(_game.getMap().initPlayer(player));
-		_game.getMap().startMap();
-		ASSERT_TRUE(_game.getMap().isActive());
-		while (!player->isCrashed() && !_game.getMap().isFailed()) {
+		ASSERT_TRUE(map->initPlayer(player));
+		map->startMap();
+		ASSERT_TRUE(map->isActive());
+		while (!player->isCrashed() && !map->isFailed()) {
 			_game.update(1);
 			ASSERT_TRUE(--ticksLeft > 0);
 		}
-		ASSERT_EQ(crashReason, _game.getMap().getFailReason(player));
+		ASSERT_EQ(crashReason, map->getFailReason(player));
+		_game.shutdown();
+	}
+
+	void testSuccess (const std::string& mapName, MapTickCallback& callback, int ticksLeft = 10000) {
+		ASSERT_TRUE(_game.loadMap(mapName)) << "Could not load the map " << mapName;
+		Map* map = &_game.getMap();
+		Player* player = new Player(*map, 1);
+		player->setLives(3);
+		ASSERT_TRUE(map->initPlayer(player));
+		map->startMap();
+		ASSERT_TRUE(map->isActive());
+		while (!map->isFailed() && !map->isDone()) {
+			_game.update(1);
+			callback(map, player);
+			ASSERT_TRUE(--ticksLeft > 0);
+		}
+		ASSERT_FALSE(map->isFailed());
+		ASSERT_TRUE(map->isDone());
 		_game.shutdown();
 	}
 
@@ -62,7 +92,7 @@ protected:
 		MapSuite::SetUp();
 		_serviceProvider.getNetwork().openServer(12345, nullptr);
 		_map.init(&_testFrontend, _serviceProvider);
-		_game.init(&_testFrontend, &_serviceProvider, nullptr);
+		_game.init(&_testFrontend, &_serviceProvider, &_testCampaignMgr);
 	}
 };
 
@@ -201,4 +231,13 @@ TEST_F(MapTest, testPlayerCrashHitpoints) {
 	testCrash("test-crash-hitpoints", MapFailedReasons::FAILED_HITPOINTS);
 }
 
-// TODO: test finishing a map
+TEST_F(MapTest, testPlayerWinCondition) {
+	class PackageCallback : public MapTickCallback {
+	public:
+		void exec(Map* map, Player* player) override {
+			info(LOG_CLIENT, player->getName());
+		}
+	};
+	PackageCallback c;
+	testSuccess("test-win-package", c);
+}
