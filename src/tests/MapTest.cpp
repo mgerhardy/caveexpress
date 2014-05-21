@@ -193,6 +193,7 @@ TEST_F(MapTest, testMultipleLoad) {
 		ASSERT_FALSE(_map.initPlayer(player));
 		_map.startMap();
 		ASSERT_TRUE(_map.load("ice-01")) << "Could not load the map ice-01";
+		_map.update(i);
 		_map.shutdown();
 	}
 }
