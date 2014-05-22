@@ -63,6 +63,8 @@ Map::Map () :
 	Commands.registerCommand(CMD_MAP_RESTART, bind(Map, triggerRestart));
 	Commands.registerCommand(CMD_MAP_DEBUG, bind(Map, triggerDebug));
 	Commands.registerCommand(CMD_START, bind(Map, startMap));
+	Commands.registerCommand(CMD_KILL, bind(Map, killPlayers));
+	Commands.registerCommand(CMD_FINISHMAP, bind(Map, finishMap));
 
 	resetCurrentMap();
 }
@@ -72,7 +74,30 @@ Map::~Map ()
 	Commands.removeCommand(CMD_MAP_DEBUG);
 	Commands.removeCommand(CMD_MAP_PAUSE);
 	Commands.removeCommand(CMD_MAP_RESTART);
+	Commands.removeCommand(CMD_KILL);
+	Commands.removeCommand(CMD_FINISHMAP);
 	clearPhysics();
+}
+
+void Map::finishMap ()
+{
+#ifdef DEBUG
+	const int n = getPackageCount();
+	for (int i = 0; i < n; ++i) {
+		countTransferedPackage();
+	}
+#endif
+}
+
+void Map::killPlayers ()
+{
+#ifdef DEBUG
+	const Map::PlayerList& players = getPlayers();
+	for (Map::PlayerListConstIter i = players.begin(); i != players.end(); ++i) {
+		Player* player = *i;
+		player->setCrashed(CRASH_DAMAGE);
+	}
+#endif
 }
 
 void Map::shutdown ()

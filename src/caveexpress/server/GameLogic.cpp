@@ -30,14 +30,10 @@ GameLogic::GameLogic () :
 		_updateEntitiesTime(0), _frontend(nullptr), _serviceProvider(nullptr), _campaignManager(nullptr), _connectedClients(
 				0), _packageCount(0), _loadDelay(0), _loadDelayName("")
 {
-	Commands.registerCommand(CMD_KILL, bind(GameLogic, killPlayers));
-	Commands.registerCommand(CMD_FINISHMAP, bind(GameLogic, finishMap));
 }
 
 GameLogic::~GameLogic ()
 {
-	Commands.removeCommand(CMD_KILL);
-	Commands.removeCommand(CMD_FINISHMAP);
 }
 
 void GameLogic::init (IFrontend *frontend, ServiceProvider *serviceProvider, ICampaignManager *campaignManager)
@@ -58,27 +54,6 @@ void GameLogic::init (IFrontend *frontend, ServiceProvider *serviceProvider, ICa
 	_campaignManager = campaignManager;
 	_map.init(_frontend, *_serviceProvider);
 	GameEvent.init(*_serviceProvider);
-}
-
-void GameLogic::finishMap ()
-{
-#ifdef DEBUG
-	const int n = _map.getPackageCount();
-	for (int i = 0; i < n; ++i) {
-		_map.countTransferedPackage();
-	}
-#endif
-}
-
-void GameLogic::killPlayers ()
-{
-#ifdef DEBUG
-	const Map::PlayerList& players = _map.getPlayers();
-	for (Map::PlayerListConstIter i = players.begin(); i != players.end(); ++i) {
-		Player* player = *i;
-		player->setCrashed(CRASH_DAMAGE);
-	}
-#endif
 }
 
 void GameLogic::shutdown ()
@@ -177,70 +152,10 @@ bool GameLogic::visitEntity (IEntity *entity)
 	if (!entity->isDynamic() && !entity->isWater() && !entity->isCave())
 		return false;
 
-	bool entityRemoved = false;
-	if (entity->isCave()) {
-		CaveMapTile *mapTile = static_cast<CaveMapTile*>(entity);
-		updateCave(mapTile);
-	} else if (entity->isNpcCave()) {
-		NPCPackage *npc = static_cast<NPCPackage*>(entity);
-		entityRemoved = updatePackageNPC(npc);
-	} else if (entity->isNpcAttacking()) {
-		NPCAttacking *npc = static_cast<NPCAttacking*>(entity);
-		entityRemoved = updateAttackingNPC(npc);
-	} else if (entity->isPackage()) {
-		Package *package = static_cast<Package*>(entity);
-		entityRemoved = updatePackage(package);
-	}
-
-	if (entityRemoved)
-		return true;
-
 	if (entity->isDirty()) {
 		entity->snapshot();
 		GameEvent.updateEntity(entity->getVisMask(), *entity);
 	}
-	return false;
-}
-
-bool GameLogic::updatePackage (Package *package)
-{
-	if (!package->isCounted() && package->isDelivered()) {
-		_map.countTransferedPackage();
-		package->setCounted();
-		return true;
-	}
-	return false;
-}
-
-bool GameLogic::updateAttackingNPC (NPCAttacking *npc)
-{
-	const Map::PlayerList& players = _map.getPlayers();
-	for (Map::PlayerListConstIter i = players.begin(); i != players.end(); ++i) {
-		Player* player = *i;
-		npc->checkAttack(player);
-	}
-	return false;
-}
-
-bool GameLogic::updatePackageNPC (NPCPackage *npc)
-{
-	if (npc->getCave()->moveBackIntoCave()) {
-		info(LOG_SERVER, String::format("npc %i moved back into cave, remove from world", npc->getID()));
-		return true;
-	}
-
-	return false;
-}
-
-bool GameLogic::updateCave (CaveMapTile *caveTile)
-{
-	if (caveTile->shouldSpawnNPC()) {
-		const bool spawnPackage = _packageCount < _map.getPackageCount();
-		if (!spawnPackage)
-			return false;
-		caveTile->spawnNPC();
-	}
-
 	return false;
 }
 

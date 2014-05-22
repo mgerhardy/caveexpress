@@ -325,6 +325,9 @@ public:
 	std::vector<b2Vec2>& getWaterIntersectionPoints () { return _waterIntersectionPoints; }
 
 private:
+	void killPlayers ();
+	void finishMap ();
+
 	void updateVisMask();
 
 	void handleFlyingNPC ();

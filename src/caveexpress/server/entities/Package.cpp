@@ -67,6 +67,11 @@ void Package::update (uint32_t deltaTime)
 		if (!_target)
 			setDestroyed();
 	}
+
+	if (!isCounted() && isDelivered()) {
+		_map.countTransferedPackage();
+		setCounted();
+	}
 }
 
 bool Package::isRemove () const

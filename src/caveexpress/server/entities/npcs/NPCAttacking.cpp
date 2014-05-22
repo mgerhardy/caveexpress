@@ -185,4 +185,11 @@ void NPCAttacking::update (uint32_t deltaTime)
 		const float impulse = getMass() * velChange;
 		applyLinearImpulse(b2Vec2(impulse, 0.0f));
 	}
+
+	// attack player if he is landed
+	const Map::PlayerList& players = _map.getPlayers();
+	for (Map::PlayerListConstIter i = players.begin(); i != players.end(); ++i) {
+		Player* player = *i;
+		checkAttack(player);
+	}
 }

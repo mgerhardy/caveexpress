@@ -43,6 +43,13 @@ void CaveMapTile::update (uint32_t deltaTime)
 		}
 		_shouldSpawnNPC = true;
 	}
+
+	if (shouldSpawnNPC()) {
+		const bool spawnPackage = _map.countPackages() < _map.getPackageCount();
+		if (!spawnPackage)
+			return;
+		spawnNPC();
+	}
 }
 
 void CaveMapTile::setPlatformDimensions (int start, int end)

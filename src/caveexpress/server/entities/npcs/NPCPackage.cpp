@@ -56,6 +56,11 @@ void NPCPackage::update (uint32_t deltaTime)
 
 	if (isIdle() && !returnToInitialPosition())
 		leavePackage();
+
+	if (getCave()->moveBackIntoCave()) {
+		info(LOG_SERVER, String::format("npc %i moved back into cave, remove from world", getID()));
+		_remove = true;
+	}
 }
 
 void NPCPackage::leavePackage ()

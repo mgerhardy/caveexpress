@@ -52,21 +52,7 @@ public:
 	void onData (ClientId clientId, ByteStream &data);
 
 private:
-	void killPlayers ();
-	void finishMap ();
-
 	void loadDelayed (const std::string& name);
-
-	// attack player if he is landed
-	bool updateAttackingNPC (NPCAttacking *npc);
-
-	// count a delivered package
-	bool updatePackage (Package *package);
-
-	bool updatePackageNPC (NPCPackage *npc);
-
-	// Spawn new friendly npc
-	bool updateCave (CaveMapTile *mapTile);
 
 	// IEntityVisitor
 	bool visitEntity (IEntity *entity) override;
