@@ -5,7 +5,7 @@ set -x
 ulimit -c unlimited
 rm -f core
 set -e
-make
+make tests
 set +e
 ./tests $*
 if [ -e core ]; then
