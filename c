@@ -5,7 +5,7 @@ set -x
 ulimit -c unlimited
 rm -f core
 set -e
-make
+make caveexpress
 set +e
 ./caveexpress $*
 if [ -e core ]; then

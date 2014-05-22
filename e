@@ -5,7 +5,7 @@ set -x
 
 ulimit -c unlimited
 rm -f core
-make
+make caveexpress
 ./caveexpress -ui_push editor $*
 if [ -e core ]; then
 	gdb ./caveexpress ./core
