@@ -1407,15 +1407,15 @@ void Map::update (uint32_t deltaTime)
 	_timeManager.update(deltaTime);
 
 	if (_restartDue > 0 && _restartDue <= SDL_GetTicks()) {
-		const std::string currentName = _name;
+		const std::string currentName = getName();
 		info(LOG_MAP, "restarting map " + currentName);
 		if (isFailed()) {
 			const Map::PlayerList& players = getPlayers();
 			for (Map::PlayerListConstIter i = players.begin(); i != players.end(); ++i) {
 				const Player* p = *i;
-				System.track("MapState", "failed:" + getName());
-				GameEvent.failedMap(p->getClientId(), getName(), getFailReason(p), getTheme());
+				GameEvent.failedMap(p->getClientId(), currentName, getFailReason(p), getTheme());
 			}
+			System.track("MapState", "failed:" + currentName);
 		} else {
 			load(currentName);
 		}
