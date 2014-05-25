@@ -12,3 +12,6 @@ archives: strip
 	@echo "Create zip archive of $(APPNAME)"
 	$(Q)git archive -9 --format zip -o $(APPNAME)-$(MODE)-$(TARGET_OS)-$(TARGET_ARCH).zip HEAD $(BASEDIR)
 	$(Q)zip -qu9 $(APPNAME)-$(MODE)-$(TARGET_OS)-$(TARGET_ARCH).zip $(APPNAME)$(EXE_EXT) $(BASEDIR)/textures/*.lua $(BASEDIR)/pics/*.*
+
+sourcearchive:
+	$(Q)git archive --format=tar --prefix=caveexpress-$(VERSION)-source/ HEAD | bzip2 -9 > caveexpress-$(VERSION)-source.tar.bz2
