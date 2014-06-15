@@ -39,5 +39,5 @@ int IOS::openURL (const std::string& url) const
 {
 	const std::string cmd = "open " + url;
 	system(cmd.c_str());
-    return 0;
+	return 0;
 }
