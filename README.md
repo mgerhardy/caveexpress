@@ -1,4 +1,6 @@
-== About ==
+[![Build Status](https://travis-ci.org/mgerhardy/caveexpress.svg?branch=master)](https://travis-ci.org/mgerhardy/caveexpress)
+
+### About
 CaveExpress is a classic 2D platformer with physics-based gameplay
 and dozens of levels. Master your pedal-powered flying machine to
 pick up packages from your cave-dwelling clients and drop them off
@@ -10,7 +12,7 @@ Features:
 * Built-in mapeditor
 * Physics-based gameplay
 
-== Compilation ==
+### Compilation
 * ./configure
 * make
 
@@ -24,6 +26,6 @@ Cross compile for android
 * ./configure --target-os=android
 * make
 
-== License ==
+### License
 Code is released under the GPL3 and the game data is released
 under CC BY-NC-SA 3.0
