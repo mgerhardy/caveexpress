@@ -58,11 +58,11 @@ else
   CCFLAGS  += -DNDEBUG
 endif
 
+CXXFLAGS += -std=c++11
 # clang stuff
 ifneq (,$(findstring clang,$(CXX)))
 #  CXXFLAGS += -Wexit-time-destructors
 #  CXXFLAGS += -Wglobal-constructors
-  CXXFLAGS += -Wno-c++11-extensions
   CFLAGS += -Wno-extended-offsetof
   CFLAGS += -Wno-cast-align
   CFLAGS += -Wno-shift-op-parentheses

@@ -1,3 +1,9 @@
-APP_STL := stlport_static
+APP_STL := gnustl_shared
+#APP_STL := stlport_static
+APP_CXXFLAGS := --std=c++11
+# use gcc
+#NDK_TOOLCHAIN_VERSION := 4.8
+# use clang
+NDK_TOOLCHAIN_VERSION := clang
 # compile with debug symbols - remove on release build (otherwise the binaries are not stripped)
 @APPLICATION_MK@
