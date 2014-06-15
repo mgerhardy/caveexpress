@@ -10,6 +10,20 @@ Features:
 * Built-in mapeditor
 * Physics-based gameplay
 
+== Compilation ==
+* ./configure
+* make
+
+Cross compile from linux for windows:
+* Set up a cross compile tool chain like MXE
+* ./configure --target-os=mingw64
+* make
+
+Cross compile for android
+* download latest ndk and sdk
+* ./configure --target-os=android
+* make
+
 == License ==
 Code is released under the GPL3 and the game data is released
 under CC BY-NC-SA 3.0
