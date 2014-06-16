@@ -118,6 +118,15 @@ ifneq ($(findstring $(TARGET_OS), netbsd freebsd linux),)
 			$(wildcard src/libs/SDL/src/power/linux/*.c) \
 		)
 endif
+ifneq ($(findstring $(TARGET_OS), nacl),)
+	SDL_SRCS += \
+		$(subst src/libs/SDL/,libs/SDL/, \
+			$(wildcard src/libs/SDL/src/audio/nacl/*.c) \
+			$(wildcard src/libs/SDL/src/filesystem/nacl/*.c) \
+			$(wildcard src/libs/SDL/src/video/nacl/*.c) \
+			$(wildcard src/libs/SDL/src/main/nacl/*.c) \
+		)
+endif
 endif
 ifeq ($(HAVE_SDL_RWHTTP_H),1)
 SDL_RWHTTP_LIBS          += $(call PKG_LIBS,SDL_rwhttp)
