@@ -290,6 +290,12 @@ check_compiler() {
 		CC=gcc
 	fi
 
+	if [ "${TARGET_OS}" = "nacl" ]; then
+		CROSS="pnacl-"
+		CC=clang
+		CXX=clang++
+	fi
+
 	if [ "${TARGET_OS}" = "mingw64_64" ] && [ "${HOST_OS}" != "mingw64_64" ]; then
 		CROSS="x86_64-w64-mingw32-"
 		CC=gcc
