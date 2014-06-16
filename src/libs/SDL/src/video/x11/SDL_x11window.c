@@ -361,7 +361,7 @@ X11_CreateWindow(_THIS, SDL_Window * window)
     Atom _NET_WM_WINDOW_TYPE_NORMAL;
     Atom _NET_WM_PID;
     Atom XdndAware, xdnd_version = 5;
-    Uint32 fevent = 0;
+    long fevent = 0;
 
 #if SDL_VIDEO_OPENGL_GLX || SDL_VIDEO_OPENGL_EGL
     if ((window->flags & SDL_WINDOW_OPENGL) &&
@@ -373,7 +373,7 @@ X11_CreateWindow(_THIS, SDL_Window * window)
 #if SDL_VIDEO_OPENGL_GLX            
             && ( !_this->gl_data || ! _this->gl_data->HAS_GLX_EXT_create_context_es2_profile )
 #endif
-        ){
+        ) {
             vinfo = X11_GLES_GetVisual(_this, display, screen);
         } else
 #endif

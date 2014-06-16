@@ -215,8 +215,8 @@ struct SDL_VideoDevice
     SDL_ShapeDriver shape_driver;
 
     /* Get some platform dependent window information */
-      SDL_bool(*GetWindowWMInfo) (_THIS, SDL_Window * window,
-                                  struct SDL_SysWMinfo * info);
+    SDL_bool(*GetWindowWMInfo) (_THIS, SDL_Window * window,
+                                struct SDL_SysWMinfo * info);
 
     /* * * */
     /*
@@ -380,6 +380,9 @@ extern VideoBootStrap DUMMY_bootstrap;
 #endif
 #if SDL_VIDEO_DRIVER_WAYLAND
 extern VideoBootStrap Wayland_bootstrap;
+#endif
+#if SDL_VIDEO_DRIVER_NACL
+extern VideoBootStrap NACL_bootstrap;
 #endif
 
 extern SDL_VideoDevice *SDL_GetVideoDevice(void);

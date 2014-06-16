@@ -290,7 +290,8 @@ GL_ActivateRenderer(SDL_Renderer * renderer)
 {
     GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
 
-    if (SDL_CurrentContext != data->context) {
+    if (SDL_CurrentContext != data->context ||
+        SDL_GL_GetCurrentContext() != data->context) {
         if (SDL_GL_MakeCurrent(renderer->window, data->context) < 0) {
             return -1;
         }
@@ -310,7 +311,7 @@ GL_ResetState(SDL_Renderer *renderer)
 {
     GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
 
-    if (SDL_CurrentContext == data->context) {
+    if (SDL_GL_GetCurrentContext() == data->context) {
         GL_UpdateViewport(renderer);
     } else {
         GL_ActivateRenderer(renderer);
@@ -332,7 +333,7 @@ GL_ResetState(SDL_Renderer *renderer)
 }
 
 static void APIENTRY
-GL_HandleDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const char *message, void *userParam)
+GL_HandleDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const char *message, const void *userParam)
 {
     SDL_Renderer *renderer = (SDL_Renderer *) userParam;
     GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
