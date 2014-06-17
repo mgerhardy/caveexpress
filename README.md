@@ -26,6 +26,16 @@ Cross compile for android
 * ./configure --target-os=android
 * make
 
+Compile for HTML5 (emscripten)
+* download and set up emscripten
+* ./configure --target-os=html5
+* make
+
+Compile for NaCl
+* download the native client sdk from https://developer.chrome.com/native-client/sdk/download
+* ./configure --target-os=nacl
+* make
+
 ### License
 Code is released under the GPL3 and the game data is released
 under CC BY-NC-SA 3.0
