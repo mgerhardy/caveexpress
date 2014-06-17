@@ -118,7 +118,7 @@ ifneq ($(findstring $(TARGET_OS), netbsd freebsd linux),)
 			$(wildcard src/libs/SDL/src/power/linux/*.c) \
 		)
 endif
-ifneq ($(findstring $(TARGET_OS), nacl),)
+ifeq ($(TARGET_OS),nacl)
 	SDL_SRCS += \
 		$(subst src/libs/SDL/,libs/SDL/, \
 			$(wildcard src/libs/SDL/src/audio/nacl/*.c) \
