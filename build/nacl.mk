@@ -1,6 +1,6 @@
-MAKEFILEPATH=$(CURDIR)/$(lastword $(MAKEFILE_LIST))
-NACL_VERSION=35
-NACL_SDK_ROOT=$(realpath $(dir $(MAKEFILEPATH))/../nacl_sdk/pepper_$(NACL_VERSION))
+MAKEFILEPATH   = $(CURDIR)/$(lastword $(MAKEFILE_LIST))
+NACL_VERSION  ?= 35
+NACL_SDK_ROOT ?= $(realpath $(dir $(MAKEFILEPATH))/../nacl_sdk/pepper_$(NACL_VERSION))
 
 nacl-setup:
 	$(Q)echo "Download sdk..."
