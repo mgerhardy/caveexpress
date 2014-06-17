@@ -67,9 +67,11 @@ ifneq (,$(findstring clang,$(CXX)))
   CFLAGS += -Wno-extended-offsetof
   CFLAGS += -Wno-cast-align
   CFLAGS += -Wno-shift-op-parentheses
+ifneq ($(TARGET_OS),nacl)
 ifeq ($(DEBUG),1)
   CFLAGS += -fsanitize=address -fno-omit-frame-pointer
   LDFLAGS += -fsanitize=address
+endif
 endif
 ifeq ($(USE_CCACHE),1)
   CFLAGS += -Qunused-arguments

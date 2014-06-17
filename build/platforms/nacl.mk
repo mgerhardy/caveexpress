@@ -10,3 +10,4 @@ CFLAGS                   += -D_GNU_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE -DSQLITE
 LDFLAGS                  += -L$(NACL_SDK_ROOT)/lib/pnacl/Release -lppapi -lppapi_simple -lppapi_gles2 -lppapi_cpp
 SDL_LIBS                 += -lpthread
 OPENGL_LIBS               =
+SDL_NET_SRCS              =

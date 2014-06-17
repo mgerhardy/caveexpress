@@ -124,6 +124,8 @@ ifeq ($(TARGET_OS),nacl)
 			$(wildcard src/libs/SDL/src/audio/nacl/*.c) \
 			$(wildcard src/libs/SDL/src/filesystem/nacl/*.c) \
 			$(wildcard src/libs/SDL/src/video/nacl/*.c) \
+			$(wildcard src/libs/SDL/src/timer/unix/*.c) \
+			$(wildcard src/libs/SDL/src/thread/pthread/*.c) \
 			$(wildcard src/libs/SDL/src/main/nacl/*.c) \
 		)
 endif
