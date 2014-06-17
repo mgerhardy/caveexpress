@@ -261,6 +261,7 @@ check_headers() {
 	check_header_bundled "SDL_net.h" "SDL2_net"
 	check_header "SDL_rwhttp.h" "SDL_rwhttp"
 	check_header "png.h" "libpng"
+	check_header "zlib.h"
 	check_header "ncurses.h" "ncurses"
 	check_header "vorbis/vorbisfile.h" "vorbisfile"
 	check_header "vorbis/codec.h" "vorbis"

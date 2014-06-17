@@ -353,3 +353,27 @@ YAJL_SRCS                 = \
 	libs/yajl/yajl_tree.c
 YAJL_CFLAGS              ?= -Isrc/libs/yajl
 YAJL_LIBS                +=
+ifeq ($(HAVE_ZLIB_H),1)
+ZLIB_SRCS                 =
+ZLIB_CFLAGS               =
+ZLIB_LIBS                 = -lz
+else
+ZLIB_SRCS                 = \
+	libs/zlib/adler32.c \
+	libs/zlib/compress.c \
+	libs/zlib/crc32.c \
+	libs/zlib/deflate.c \
+	libs/zlib/gzclose.c \
+	libs/zlib/gzlib.c \
+	libs/zlib/gzread.c \
+	libs/zlib/gzwrite.c \
+	libs/zlib/infback.c \
+	libs/zlib/inffast.c \
+	libs/zlib/inflate.c \
+	libs/zlib/inftrees.c \
+	libs/zlib/trees.c \
+	libs/zlib/uncompr.c \
+	libs/zlib/zutil.c
+ZLIB_CFLAGS              ?= -Isrc/libs/zlib
+ZLIB_LIBS                 =
+endif
