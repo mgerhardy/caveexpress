@@ -29,7 +29,7 @@
 #endif
 
 #include <vector>
-#include <memory.h>
+#include <string.h>
 #include <stdio.h>
 
 //#define DEBUG_PATH
