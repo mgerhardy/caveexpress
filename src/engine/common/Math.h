@@ -7,6 +7,7 @@
 #include <iostream>
 #include <math.h>
 #include "engine/common/Compiler.h"
+#define GLM_FORCE_RADIANS
 GCC_DIAG_OFF(shadow)
 GCC_DIAG_OFF(cast-qual)
 GCC_DIAG_OFF(cast-align)
