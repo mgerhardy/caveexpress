@@ -16,3 +16,7 @@ nacl-setup:
 nacl-finalize:
 	$(Q)echo "Finalize"
 	$(Q)$(NACL_SDK_ROOT)/toolchain/$(HOST_OS)_pnacl/bin/pnacl-finalize --compress $(caveexpress_FILE) -o contrib/installer/nacl/$(caveexpress_FILE)
+
+nacl-translate:
+	$(Q)echo "Translate"
+	$(Q)$(NACL_SDK_ROOT)/toolchain/$(HOST_OS)_pnacl/bin/pnacl-translate $(caveexpress_FILE) -o contrib/installer/nacl/caveexpress.nexe -arch x86-64
