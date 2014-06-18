@@ -1,79 +1,115 @@
 <!doctype html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>CaveExpress</title>
-    <style>
-      * { margin: 0px; padding: 0px; font-color: white; font-family: "Courier New", Courier, monospace; }
-      body { background-color: black; }
-      .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
-      textarea.emscripten { font-family: monospace; width: 80%; background-color: #cccccc;  }
-      div.emscripten { text-align: center; }
-      div.emscripten_border { border: 0px none; }
-      /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
-      canvas.emscripten { border: 0px none; background-color: #cccccc; }
-    </style>
-  </head>
-  <body>
-    <hr/>
-    <div class="emscripten" id="status">Downloading...</div>
-    <div class="emscripten">
-      <progress value="0" max="100" id="progress" hidden="1"></progress>
-    </div>
-    <div class="emscripten_border">
-      <canvas class="emscripten" width="1024" height="768" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
-    </div>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+<title>CaveExpress</title>
+<style>
+* {
+	margin: 0px;
+	padding: 0px;
+	font-color: white;
+	font-family: "Courier New", Courier, monospace;
+}
 
-    <div class="emscripten">
-      <input type="button" value="Fullscreen" onclick="Module.requestFullScreen(false, true)">
-    </div>
+body {
+	background-color: black;
+}
 
-    <textarea class="emscripten" id="output" rows="8"></textarea>
-    <script type='text/javascript'>
-      // connect to canvas
-      var Module = {
-        preRun: [],
-        postRun: [],
-        print: (function() {
-          var element = document.getElementById('output');
-          element.value = ''; // clear browser cache
-          return function(text) {
-            text = Array.prototype.slice.call(arguments).join(' ');
-            element.value += text + "\n";
-            element.scrollTop = 99999; // focus on bottom
-          };
-        })(),
-        printErr: function(text) {
-          text = Array.prototype.slice.call(arguments).join(' ');
-          console.log(text);
-        },
-        canvas: document.getElementById('canvas'),
-        setStatus: function(text) {
-          if (Module.setStatus.interval) clearInterval(Module.setStatus.interval);
-          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
-          var statusElement = document.getElementById('status');
-          var progressElement = document.getElementById('progress');
-          if (m) {
-            text = m[1];
-            progressElement.value = parseInt(m[2])*100;
-            progressElement.max = parseInt(m[4])*100;
-            progressElement.hidden = false;
-          } else {
-            progressElement.value = null;
-            progressElement.max = null;
-            progressElement.hidden = true;
-          }
-          statusElement.innerHTML = text;
-        },
-        totalDependencies: 0,
-        monitorRunDependencies: function(left) {
-          this.totalDependencies = Math.max(this.totalDependencies, left);
-          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
-        }
-      };
-      Module.setStatus('Downloading...');
-    </script>
-    {{{ SCRIPT }}}
-  </body>
+.emscripten {
+	padding-right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
+textarea.emscripten {
+	font-family: monospace;
+	width: 80%;
+	background-color: #cccccc;
+}
+
+div.emscripten {
+	text-align: center;
+}
+
+div.emscripten_border {
+	border: 0px none;
+}
+/* the canvas *must not* have any border or padding, or mouse coords will be wrong */
+canvas.emscripten {
+	border: 0px none;
+	background-color: #cccccc;
+}
+</style>
+</head>
+<body>
+	<hr />
+	<div class="emscripten" id="status">Downloading...</div>
+	<div class="emscripten">
+		<progress value="0" max="100" id="progress" hidden="1"></progress>
+	</div>
+	<div class="emscripten_border">
+		<canvas class="emscripten" width="1024" height="768" id="canvas"
+			oncontextmenu="event.preventDefault()"></canvas>
+	</div>
+
+	<div class="emscripten">
+		<input type="button" value="Fullscreen"
+			onclick="Module.requestFullScreen(false, true)">
+	</div>
+
+	<textarea class="emscripten" id="output" rows="8"></textarea>
+	<script type='text/javascript'>
+		// connect to canvas
+		var Module = {
+			preRun : [],
+			postRun : [],
+			print : (function() {
+				var element = document.getElementById('output');
+				element.value = ''; // clear browser cache
+				return function(text) {
+					text = Array.prototype.slice.call(arguments).join(' ');
+					element.value += text + "\n";
+					element.scrollTop = 99999; // focus on bottom
+				};
+			})(),
+			printErr : function(text) {
+				text = Array.prototype.slice.call(arguments).join(' ');
+				console.log(text);
+			},
+			canvas : document.getElementById('canvas'),
+			setStatus : function(text) {
+				if (Module.setStatus.interval)
+					clearInterval(Module.setStatus.interval);
+				var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+				var statusElement = document.getElementById('status');
+				var progressElement = document.getElementById('progress');
+				if (m) {
+					text = m[1];
+					progressElement.value = parseInt(m[2]) * 100;
+					progressElement.max = parseInt(m[4]) * 100;
+					progressElement.hidden = false;
+				} else {
+					progressElement.value = null;
+					progressElement.max = null;
+					progressElement.hidden = true;
+				}
+				statusElement.innerHTML = text;
+			},
+			totalDependencies : 0,
+			monitorRunDependencies : function(left) {
+				this.totalDependencies = Math.max(this.totalDependencies, left);
+				Module.setStatus(left ? 'Preparing... ('
+						+ (this.totalDependencies - left) + '/'
+						+ this.totalDependencies + ')'
+						: 'All downloads complete.');
+			}
+		};
+		Module.setStatus('Downloading...');
+	</script>
+	{{{ SCRIPT }}}
+</body>
 </html>

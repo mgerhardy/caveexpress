@@ -12,3 +12,7 @@ nacl-setup:
 	$(Q)echo "Configure paths..."; \
 	echo "export NACL_SDK_ROOT=$(NACL_SDK_ROOT)" >> ~/.bashrc; \
 	echo "export PATH=\$$PATH:\$$NACL_SDK_ROOT/toolchain/$(HOST_OS)_pnacl/bin" >> ~/.bashrc;
+
+nacl-finalize:
+	$(Q)echo "Finalize"
+	$(Q)$(NACL_SDK_ROOT)/toolchain/$(HOST_OS)_pnacl/bin/pnacl-finalize --compress $(caveexpress_FILE) -o contrib/installer/nacl/$(caveexpress_FILE)

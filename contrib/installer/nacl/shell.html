@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+<title>CaveExpress</title>
+<style>
+* {
+	margin: 0px;
+	padding: 0px;
+	font-color: white;
+	font-family: "Courier New", Courier, monospace;
+}
+
+body {
+	background-color: black;
+}
+
+.nacl {
+	padding-right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
+textarea.nacl {
+	font-family: monospace;
+	width: 80%;
+	background-color: #cccccc;
+}
+
+div.nacl {
+	text-align: center;
+}
+
+div.nacl_border {
+	border: 0px none;
+}
+/* the canvas *must not* have any border or padding, or mouse coords will be wrong */
+canvas.nacl {
+	border: 0px none;
+	background-color: #cccccc;
+}
+</style>
+</head>
+<body>
+	<div class="page">
+		<div class="status">
+			<code id="statusField">NO-STATUS</code>
+		</div>
+		<div class="pnacl_border">
+			<embed src="caveexpress.nmf" class="pnacl" id="pnacl_module"
+				name="pnacl_module" width="1024" height="768"
+				type="application/x-pnacl" />
+		</div>
+		<textarea class="pnacl" id="output" rows="20" cols="80"></textarea>
+		<script type="text/javascript">
+			var progressCount = 0;
+			function updateStatus(text) {
+				document.getElementById('statusField').innerHTML = text;
+			}
+			function handleLoadStart() {
+				updateStatus('LOAD START...');
+			}
+			function handleProgress(event) {
+				var loadPercent = 0.0;
+				var loadPercentString;
+				if (event.lengthComputable && event.total > 0) {
+					loadPercent = (event.loaded / event.total) * 100.0;
+					loadPercentString = 'Downloading & Preparing ('
+							+ loadPercent.toFixed(2) + '%)';
+				} else {
+					loadPercent = -1.0;
+					progressCount++;
+					loadPercentString = 'Downloading... (count='
+							+ progressCount + ')';
+				}
+				updateStatus(loadPercentString);
+			}
+			function handleLoad() {
+				updateStatus('RUNNING...');
+			}
+			function handleError() {
+				updateStatus('ERROR: '
+						+ document.getElementById('pnacl_module').lastError);
+			}
+			function handleCrash() {
+				updateStatus('CRASHED!!!');
+			}
+			function handleMessage(msg) {
+				var element = document.getElementById('output');
+				element.value += msg.data;
+				element.scrollTop = 99999;
+			}
+			var naclModule = document.getElementById('pnacl_module');
+			naclModule.addEventListener('loadstart', handleLoadStart, true);
+			naclModule.addEventListener('progress', handleProgress, true);
+			naclModule.addEventListener('load', handleLoad, true);
+			naclModule.addEventListener('error', handleError, true);
+			naclModule.addEventListener('crash', handleCrash, true);
+			naclModule.addEventListener('message', handleMessage, true);
+			updateStatus('LOADING...');
+		</script>
+	</div>
+</body>
+</html>
