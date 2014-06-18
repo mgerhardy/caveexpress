@@ -12,6 +12,8 @@
 #include "engine/common/ports/IOS.h"
 #elif defined __MACOSX__
 #include "engine/common/ports/Darwin.h"
+#elif defined __NACL__
+#include "engine/common/ports/NaCl.h"
 #elif defined EMSCRIPTEN
 #include "engine/common/ports/HTML5.h"
 #else
@@ -28,6 +30,8 @@ inline ISystem& getSystem ()
 	static IOS _system;
 #elif defined __MACOSX__
 	static Darwin _system;
+#elif defined __NACL__
+	static NaCl _system;
 #elif defined EMSCRIPTEN
 	static HTML5 _system;
 #else

@@ -5,10 +5,6 @@
 #include "engine/common/ConfigManager.h"
 #include "engine/common/Logger.h"
 
-namespace {
-const int playerClickGap = 0;
-}
-
 UINodeMapFingerControl::UINodeMapFingerControl (IFrontend *frontend, UINodeMap *mapNode) :
 		UINode(frontend), _map(mapNode->getMap()), _finger(-1), _pressX(0), _pressY(0), _moveX(0), _moveY(0), _lastMoveX(0), _lastMoveY(0)
 {

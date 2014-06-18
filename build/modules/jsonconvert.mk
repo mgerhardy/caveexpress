@@ -46,6 +46,13 @@ ifneq ($(findstring $(TARGET_OS), netbsd freebsd linux),)
 	$(TARGET)_LDFLAGS +=
 endif
 
+ifeq ($(TARGET_OS),nacl)
+	$(TARGET)_SRCS +=\
+		$(SDL_NET_SRCS) \
+		engine/common/ports/NaCl.cpp
+	$(TARGET)_LDFLAGS +=
+endif
+
 ifeq ($(TARGET_OS),darwin)
 	$(TARGET)_SRCS +=\
 		engine/engine/common/ports/Unix.cpp \
