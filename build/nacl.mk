@@ -20,3 +20,10 @@ nacl-finalize:
 nacl-translate:
 	$(Q)echo "Translate"
 	$(Q)$(NACL_SDK_ROOT)/toolchain/$(HOST_OS)_pnacl/bin/pnacl-translate $(caveexpress_FILE) -o contrib/installer/nacl/caveexpress.nexe -arch x86-64
+
+CHROME_BIN ?= google-chrome
+
+nacl-start:
+	$(Q)cd contrib/installer/nacl/; \
+	python -m SimpleHTTPServer 4242 & \
+	NACL_DEBUG_ENABLE=1 PPAPI_BROWSER_DEBUG=1 $(CHROME_BIN) http://127.0.0.1:4242
