@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <stdio.h>
 
 namespace {
 static const std::string ROOT = "/";
@@ -142,4 +143,14 @@ int NaCl::openURL (const std::string& url) const
 int NaCl::exec (const std::string& command, std::vector<std::string>& arguments) const
 {
 	return -1;
+}
+
+void NaCl::logError (const std::string& error) const
+{
+	fprintf(stderr, "%s", error.c_str());
+}
+
+void NaCl::logOutput (const std::string& string) const
+{
+	fprintf(stdout, "%s", error.c_str());
 }
