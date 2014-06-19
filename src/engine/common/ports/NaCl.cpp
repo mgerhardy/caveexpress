@@ -152,5 +152,5 @@ void NaCl::logError (const std::string& error) const
 
 void NaCl::logOutput (const std::string& string) const
 {
-	fprintf(stdout, "%s", error.c_str());
+	fprintf(stdout, "%s", string.c_str());
 }

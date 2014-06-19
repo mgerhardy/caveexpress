@@ -6,6 +6,10 @@ wininstaller: strip
 	$(Q)md5sum $(INSTALLER_DIR)/windows/$(APPNAME)-$(VERSION).exe > $(INSTALLER_DIR)/windows/$(APPNAME)-$(VERSION).md5
 
 naclinstaller: nacl-finalize
+	@echo "Copy assets"
+	$(Q)rm -rf contrib/installer/nacl/base
+	$(Q)mkdir -p contrib/installer/nacl/base
+	$(Q)cp -rf $(BASEDIR) contrib/installer/nacl/base
 
 archives: strip
 	@echo "Create tar archive of $(APPNAME)"
