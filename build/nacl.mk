@@ -1,6 +1,7 @@
 MAKEFILEPATH   = $(CURDIR)/$(lastword $(MAKEFILE_LIST))
 NACL_VERSION  ?= 35
 NACL_SDK_ROOT ?= $(realpath $(dir $(MAKEFILEPATH))/../nacl_sdk/pepper_$(NACL_VERSION))
+CHROME_BIN    ?= google-chrome
 
 nacl-setup:
 	$(Q)echo "Download sdk..."
@@ -21,9 +22,13 @@ nacl-translate:
 	$(Q)echo "Translate"
 	$(Q)$(NACL_SDK_ROOT)/toolchain/$(HOST_OS)_pnacl/bin/pnacl-translate $(caveexpress_FILE) -o contrib/installer/nacl/caveexpress.nexe -arch x86-64
 
-CHROME_BIN ?= google-chrome
-
 nacl-start:
 	$(Q)cd contrib/installer/nacl/; \
 	python -m SimpleHTTPServer 4242 & \
 	NACL_DEBUG_ENABLE=1 PPAPI_BROWSER_DEBUG=1 $(CHROME_BIN) http://127.0.0.1:4242
+
+nacl-installer: nacl-finalize
+	@echo "Copy assets"
+	$(Q)rm -rf contrib/installer/nacl/base
+	$(Q)mkdir -p contrib/installer/nacl/base
+	$(Q)cp -rf $(BASEDIR) contrib/installer/nacl/base

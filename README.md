@@ -35,9 +35,8 @@ Compile for NaCl
 * download the native client sdk from https://developer.chrome.com/native-client/sdk/download
 * ./configure --target-os=nacl
 * make
-* make naclinstaller
-* cd contrib/installer/nacl && python -m SimpleHTTPServer 4242
-* chrome http://127.0.0.1:4242
+* make nacl-installer
+* make nacl-start
 
 ### License
 Code is released under the GPL3 and the game data is released
