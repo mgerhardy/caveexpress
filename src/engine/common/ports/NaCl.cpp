@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdio.h>
+#include <nacl_io/nacl_io.h>
 
 namespace {
 static const std::string ROOT = "/";
@@ -18,6 +19,7 @@ static const std::string ROOT = "/";
 NaCl::NaCl() :
 		ISystem()
 {
+	nacl_io_init();
 }
 
 NaCl::~NaCl ()
