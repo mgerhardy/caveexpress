@@ -10,6 +10,8 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdio.h>
+#include <sys/mount.h>
+#include <nacl_io/nacl_io.h>
 
 namespace {
 static const std::string ROOT = "/";
@@ -18,10 +20,24 @@ static const std::string ROOT = "/";
 NaCl::NaCl() :
 		ISystem()
 {
+	mountDir("base");
+	mountDir("base/" APPNAME );
+	mountDir("base/" APPNAME "/campaigns");
+	mountDir("base/" APPNAME "/lang");
+	mountDir("base/" APPNAME "/maps");
+	mountDir("base/" APPNAME "/pics");
+	mountDir("base/" APPNAME "/sounds");
+	mountDir("base/" APPNAME "/textures");
 }
 
 NaCl::~NaCl ()
 {
+}
+
+void NaCl::mountDir(const std::string& dir)
+{
+	const std::string target = ROOT + dir;
+	mount(dir.c_str(), target.c_str(), "httpfs", 0, "");
 }
 
 std::string NaCl::getCurrentWorkingDir ()

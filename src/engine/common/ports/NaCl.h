@@ -10,6 +10,8 @@ class NaCl: public ISystem {
 protected:
 	std::string _user;
 
+	void mountDir(const std::string& dir);
+
 public:
 	NaCl ();
 	virtual ~NaCl ();
