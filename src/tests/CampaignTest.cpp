@@ -8,6 +8,7 @@
 #include "engine/common/MapSettings.h"
 
 TEST(CampaignTest, testSave) {
+	SCOPED_TRACE("test/new.sqlite");
 	SQLitePersister persister("test/new.temp");
 	Campaign campaign("testsave", &persister);
 	campaign.addMap("test1", "test1");
@@ -27,18 +28,21 @@ TEST(CampaignTest, testSave) {
 }
 
 TEST(CampaignTest, testLoad) {
+	SCOPED_TRACE("test/gamestate.sqlite");
 	SQLitePersister persister("test/gamestate.sqlite");
 	Campaign campaign("tutorial", &persister);
 	ASSERT_TRUE(campaign.loadProgress()) << "failed to load the campaign progress";
 }
 
 TEST(CampaignTest, testLoad2) {
+	SCOPED_TRACE("test/gamestate2.sqlite");
 	SQLitePersister persister("test/gamestate2.sqlite");
 	Campaign campaign("tutorial", &persister);
 	ASSERT_TRUE(campaign.loadProgress()) << "failed to load the campaign progress";
 }
 
 TEST(CampaignTest, testReset) {
+	SCOPED_TRACE("test/reset.temp");
 	SQLitePersister persister("test/reset.temp");
 	Campaign campaign("testsave", &persister);
 	campaign.addMap("test1", "test1");
@@ -63,6 +67,7 @@ TEST(CampaignTest, testReset) {
 
 // check that all the specified maps exist and are loadable
 TEST(CampaignTest, testMaps) {
+	SCOPED_TRACE("test/idontcare.temp");
 	SQLitePersister persister("test/idontcare.temp");
 	MapManager mapMgr;
 	mapMgr.loadMaps();
@@ -100,6 +105,7 @@ TEST(CampaignTest, testMaps) {
 }
 
 TEST(CampaignTest, testUpdateMapValues) {
+	SCOPED_TRACE("test/updatemapvalues.temp");
 	SQLitePersister persister("test/updatemapvalues.temp");
 	MapManager mapMgr;
 	mapMgr.loadMaps();
@@ -130,6 +136,7 @@ TEST(CampaignTest, testUpdateMapValues) {
 }
 
 TEST(CampaignTest, testResetProgress) {
+	SCOPED_TRACE("test/gamestate2.sqlite");
 	FS.copy("test/gamestate2.sqlite", "test/gamestate2.sqlite.temp");
 	SQLitePersister persister("test/gamestate2.sqlite.temp");
 	MapManager mapMgr;
