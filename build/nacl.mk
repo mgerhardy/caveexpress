@@ -22,9 +22,9 @@ nacl-start:
 
 nacl-installer: $(INSTALLER_DIR)/nacl/$(APPNAME).html $(INSTALLER_DIR)/nacl/$(APPNAME).nmf $(INSTALLER_DIR)/nacl/$(TARGET_FILE)
 	@echo "Copy assets"
-	$(Q)rm -rf $(INSTALLER_DIR)/nacl/base
-	$(Q)mkdir -p $(INSTALLER_DIR)/nacl/base
-	$(Q)cp -rf $(BASEDIR) $(INSTALLER_DIR)/nacl/base
+	$(Q)rm -rf $(INSTALLER_DIR)/nacl/$(BASEROOT)
+	$(Q)mkdir -p $(INSTALLER_DIR)/nacl/$(BASEROOT)
+	$(Q)cp -rf $(BASEDIR) $(INSTALLER_DIR)/nacl/$(BASEROOT)
 
 $(INSTALLER_DIR)/nacl/$(TARGET_FILE): $(TARGET_FILE)
 	@echo "Finalize"
