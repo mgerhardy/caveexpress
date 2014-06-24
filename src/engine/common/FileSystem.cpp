@@ -154,8 +154,10 @@ bool FileSystem::exists (const std::string& filename) const
 inline std::string FileSystem::replaceSpecialMarkers (const std::string& path, bool systemRoot) const
 {
 	const size_t l = ROOT.length();
-	if (strncmp(path.c_str(), ROOT.c_str(), l))
+	if (strncmp(path.c_str(), ROOT.c_str(), l)) {
+		debug(LOG_FILE, "nothing to replace for " + path);
 		return path;
+	}
 
 	if (systemRoot) {
 #ifdef __ANDROID__
@@ -166,7 +168,9 @@ inline std::string FileSystem::replaceSpecialMarkers (const std::string& path, b
 		const std::string root = PKGDATADIR;
 		return root + path.substr(l);
 #else
+#ifndef __NACL__
 		return "";
+#endif
 #endif
 #endif
 	}
@@ -228,9 +232,18 @@ SDL_RWops* FileSystem::createRWops (const URI& uri, std::string& path) const
 		path = getPath(uri, false);
 		SDL_RWops *rwops = SDL_RWFromFile(path.c_str(), "rb");
 		if (rwops == nullptr) {
+			debug(LOG_FILE, SDL_GetError());
 			SDL_ClearError();
 			path = getPath(uri, true);
 			rwops = SDL_RWFromFile(path.c_str(), "rb");
+			if (rwops != nullptr) {
+				debug(LOG_FILE, "successfully loaded file " + path);
+			} else {
+				debug(LOG_FILE, SDL_GetError());
+				debug(LOG_FILE, "failed to load file " + path);
+			}
+		} else {
+			debug(LOG_FILE, "successfully loaded file " + path);
 		}
 		return rwops;
 	}

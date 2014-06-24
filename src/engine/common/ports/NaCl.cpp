@@ -37,7 +37,10 @@ NaCl::~NaCl ()
 void NaCl::mountDir(const std::string& dir)
 {
 	const std::string target = ROOT + dir;
-	mount(dir.c_str(), target.c_str(), "httpfs", 0, "");
+	const int retVal = mount(dir.c_str(), target.c_str(), "httpfs", 0, "");
+	logOutput("mounting dir: '" + dir + "' as target '" + target + "' with return value: " + string::toString(retVal) + "\n");
+	if (retVal == -1)
+		perror("mountDir failed");
 }
 
 std::string NaCl::getCurrentWorkingDir ()

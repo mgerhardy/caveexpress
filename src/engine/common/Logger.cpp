@@ -108,8 +108,10 @@ void Logger::logError (LogCategory category, const std::string &string) const
 
 void Logger::logDebug (LogCategory category, const std::string &string) const
 {
+#ifndef __NACL__
 	if (!Config.isDebug())
 		return;
+#endif
 	if (string.empty())
 		return;
 
