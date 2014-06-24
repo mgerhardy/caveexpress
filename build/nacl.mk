@@ -1,7 +1,4 @@
-MAKEFILEPATH   = $(CURDIR)/$(lastword $(MAKEFILE_LIST))
-NACL_VERSION  ?= 35
-NACL_SDK_ROOT ?= $(realpath $(dir $(MAKEFILEPATH))/../nacl_sdk/pepper_$(NACL_VERSION))
-CHROME_BIN    ?= google-chrome
+TARGET_FILE=caveexpress$(EXE_EXT)
 
 nacl-setup:
 	$(Q)echo "Download sdk..."
@@ -12,23 +9,32 @@ nacl-setup:
 	$(Q)cd nacl_sdk && ./naclsdk update
 	$(Q)echo "Configure paths..."; \
 	echo "export NACL_SDK_ROOT=$(NACL_SDK_ROOT)" >> ~/.bashrc; \
-	echo "export PATH=\$$PATH:\$$NACL_SDK_ROOT/toolchain/$(HOST_OS)_pnacl/bin" >> ~/.bashrc;
+	echo "export PATH=\$$PATH:$(NACL_TOOLCHAIN_ROOT)/bin" >> ~/.bashrc;
 
-nacl-finalize:
-	$(Q)echo "Finalize"
-	$(Q)$(NACL_SDK_ROOT)/toolchain/$(HOST_OS)_pnacl/bin/pnacl-finalize --compress $(caveexpress_FILE) -o contrib/installer/nacl/$(caveexpress_FILE)
-
-nacl-translate:
-	$(Q)echo "Translate"
-	$(Q)$(NACL_SDK_ROOT)/toolchain/$(HOST_OS)_pnacl/bin/pnacl-translate $(caveexpress_FILE) -o contrib/installer/nacl/caveexpress.nexe -arch x86-64
+nacl-translate: $(TARGET_FILE)
+	@echo "Translate"
+	$(Q)$(NACL_TOOLCHAIN_ROOT)/bin/pnacl-translate $@ -o $(INSTALLER_DIR)/nacl/caveexpress.nexe -arch x86-64
 
 nacl-start:
-	$(Q)cd contrib/installer/nacl/; \
+	$(Q)cd $(INSTALLER_DIR)/nacl/; \
 	python -m SimpleHTTPServer 4242 & \
-	NACL_DEBUG_ENABLE=1 PPAPI_BROWSER_DEBUG=1 $(CHROME_BIN) http://127.0.0.1:4242
+	NACL_DEBUG_ENABLE=1 PPAPI_BROWSER_DEBUG=1 $(CHROME_BIN) http://127.0.0.1:4242/caveexpress.html
 
-nacl-installer: nacl-finalize
+nacl-installer: $(INSTALLER_DIR)/nacl/caveexpress.html $(INSTALLER_DIR)/nacl/caveexpress.nmf $(INSTALLER_DIR)/nacl/$(TARGET_FILE)
 	@echo "Copy assets"
-	$(Q)rm -rf contrib/installer/nacl/base
-	$(Q)mkdir -p contrib/installer/nacl/base
-	$(Q)cp -rf $(BASEDIR) contrib/installer/nacl/base
+	$(Q)rm -rf $(INSTALLER_DIR)/nacl/base
+	$(Q)mkdir -p $(INSTALLER_DIR)/nacl/base
+	$(Q)cp -rf $(BASEDIR) $(INSTALLER_DIR)/nacl/base
+
+$(INSTALLER_DIR)/nacl/$(TARGET_FILE): $(TARGET_FILE)
+	@echo "Finalize"
+	$(Q)$(NACL_TOOLCHAIN_ROOT)/bin/pnacl-finalize --compress $< -o $@
+
+$(INSTALLER_DIR)/nacl/%.nmf: $(INSTALLER_DIR)/nacl/$(TARGET_FILE)
+	@echo "Create manifest"
+	$(Q)$(NACL_SDK_ROOT)/tools/create_nmf.py -L $(NACL_TOOLCHAIN_ROOT)/lib -o $@ $<
+
+$(INSTALLER_DIR)/nacl/%.html: $(INSTALLER_DIR)/nacl/caveexpress.nmf
+	@echo "Create html"
+	$(Q)$(NACL_SDK_ROOT)/tools/create_html.py $<
+	$(Q)sed -i 's/x-nacl/x-pnacl/g' $@

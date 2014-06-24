@@ -73,10 +73,10 @@ Makefile.local: configure
 include build/flags.mk
 include build/modes/$(MODE).mk
 include build/default.mk
-include build/platforms/$(TARGET_OS).mk
-include build/tools.mk
 include build/install.mk
+include build/platforms/$(TARGET_OS).mk
 include build/nacl.mk
+include build/tools.mk
 
 # TODO: libs should go into the same dir to build them only once
 ASSEMBLE_OBJECTS = $(patsubst %, $(BUILDDIR)/$(1)/%.o, $(filter %.c %.cc %.cpp %.rc %.m %.mm, $($(1)_SRCS)))
