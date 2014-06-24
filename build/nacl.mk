@@ -12,7 +12,7 @@ nacl-setup:
 	echo "export PATH=\$$PATH:$(NACL_TOOLCHAIN_ROOT)/bin" >> ~/.bashrc;
 
 nacl-translate: $(TARGET_FILE)
-	@echo "Translate"
+	@echo "===> Translate"
 	$(Q)$(NACL_TOOLCHAIN_ROOT)/bin/pnacl-translate $@ -o $(INSTALLER_DIR)/nacl/$(APPNAME).nexe -arch x86-64
 
 nacl-start:
@@ -21,20 +21,20 @@ nacl-start:
 	NACL_DEBUG_ENABLE=1 PPAPI_BROWSER_DEBUG=1 $(CHROME_BIN) http://127.0.0.1:4242/$(APPNAME).html
 
 nacl-installer: $(INSTALLER_DIR)/nacl/$(APPNAME).html $(INSTALLER_DIR)/nacl/$(APPNAME).nmf $(INSTALLER_DIR)/nacl/$(TARGET_FILE)
-	@echo "Copy assets"
+	@echo "===> Copy assets"
 	$(Q)rm -rf $(INSTALLER_DIR)/nacl/$(BASEROOT)
 	$(Q)mkdir -p $(INSTALLER_DIR)/nacl/$(BASEROOT)
 	$(Q)cp -rf $(BASEDIR) $(INSTALLER_DIR)/nacl/$(BASEROOT)
 
 $(INSTALLER_DIR)/nacl/$(TARGET_FILE): $(TARGET_FILE)
-	@echo "Finalize"
+	@echo "===> Finalize"
 	$(Q)$(NACL_TOOLCHAIN_ROOT)/bin/pnacl-finalize --compress $< -o $@
 
 $(INSTALLER_DIR)/nacl/%.nmf: $(INSTALLER_DIR)/nacl/$(TARGET_FILE)
-	@echo "Create manifest"
+	@echo "===> Create manifest"
 	$(Q)$(NACL_SDK_ROOT)/tools/create_nmf.py -L $(NACL_TOOLCHAIN_ROOT)/lib -o $@ $<
 
 $(INSTALLER_DIR)/nacl/%.html: $(INSTALLER_DIR)/nacl/$(APPNAME).nmf
-	@echo "Create html"
+	@echo "===> Create html"
 	$(Q)$(NACL_SDK_ROOT)/tools/create_html.py $<
 	$(Q)sed -i 's/x-nacl/x-pnacl/g' $@
