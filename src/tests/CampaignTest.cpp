@@ -146,11 +146,11 @@ TEST(CampaignTest, testResetProgress) {
 	CampaignManager mgr(&persister, mapMgr);
 	mgr.init();
 	CampaignPtr c = mgr.getAutoActiveCampaign();
+	ASSERT_TRUE(c) << "There is no active campaign";
 	ASSERT_EQ("ice", c->getId());
-	ASSERT_TRUE(c);
-	ASSERT_TRUE(c->isUnlocked());
-	ASSERT_TRUE(mgr.resetAllSavedData());
-	ASSERT_FALSE(c->isUnlocked());
+	ASSERT_TRUE(c->isUnlocked()) << "Campaign ice is not unlocked";
+	ASSERT_TRUE(mgr.resetAllSavedData()) << "Failed to reset the campaign progress";
+	ASSERT_FALSE(c->isUnlocked()) << "Campaign ice is still unlocked";
 	CampaignPtr activeCampaign = mgr.getActiveCampaign();
 	ASSERT_EQ("tutorial", activeCampaign->getId());
 }

@@ -116,11 +116,10 @@ bool GameStateSQLite::updateCampaign (Campaign* campaign)
 bool GameStateSQLite::deleteMaps (Campaign* campaign)
 {
 	SQLiteStatement stmt;
-	prepare(stmt, "DELETE FROM " TABLE_GAMEMAPS " WHERE campaignid = ? AND version = ?;");
+	prepare(stmt, "DELETE FROM " TABLE_GAMEMAPS " WHERE campaignid = ?;");
 	if (!stmt)
 		return false;
 	stmt.bindText(1, campaign->getId());
-	stmt.bindText(2, FULLVERSION);
 	stmt.step();
 	return true;
 }
