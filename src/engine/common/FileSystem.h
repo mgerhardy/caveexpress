@@ -1,7 +1,7 @@
 #pragma once
 
 #include "engine/common/File.h"
-#include "engine/common/System.h"
+#include "engine/common/ports/ISystem.h"
 #include "engine/common/NonCopyable.h"
 
 struct SDL_RWops;

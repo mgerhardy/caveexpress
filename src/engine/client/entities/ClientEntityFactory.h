@@ -8,7 +8,6 @@
 #include "engine/common/Pointers.h"
 #include "engine/client/sound/Sound.h"
 #include "engine/common/Singleton.h"
-#include "engine/common/System.h"
 #include "engine/common/Logger.h"
 #include "engine/common/LUA.h"
 #include "engine/common/ExecutionTime.h"
@@ -62,7 +61,8 @@ private:
 		ExecutionTime cache("Initialize entity sounds");
 		LUA lua;
 		if (!lua.load("entitysounds.lua")) {
-			System.exit("could not load entitysounds.lua script", 1);
+			error(LOG_CLIENT, "could not load entitysounds.lua script");
+			return;
 		}
 
 		for (EntityType::TypeMapConstIter eIter = EntityType::begin(); eIter != EntityType::end(); ++eIter) {

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "UINodeSelector.h"
-#include "engine/common/System.h"
 
 class UINodePaymentSelector: public UINodeBackgroundSelector<PaymentEntry> {
 public:
