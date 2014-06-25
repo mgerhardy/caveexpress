@@ -72,9 +72,9 @@ ifeq ($(DEBUG),1)
   CFLAGS += -fsanitize=address -fno-omit-frame-pointer
   LDFLAGS += -fsanitize=address
 endif
-endif
 ifeq ($(USE_CCACHE),1)
   CFLAGS += -Qunused-arguments
+endif
 endif
 endif
 
