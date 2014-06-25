@@ -66,7 +66,7 @@ endif
 endif
 
 .PHONY: data
-data: textures lang
+data: textures lang filelist
 
 Makefile.local: configure
 	./configure --target-os=$(TARGET_OS)
@@ -229,12 +229,14 @@ emscripten: data
 endif
 
 BASEDIRS := $(patsubst %/,%,$(patsubst $(BASEDIR)/%,%,$(sort $(dir $(wildcard $(BASEDIR)/*/)))))
-filelists:
+filelist: $(SRCDIR)/dir.h
+
+$(SRCDIR)/dir.h:
 	@echo "==> Create filelist for base directories"
 	$(Q)FILENAME=$(SRCDIR)/dir.h; \
 	echo "" > $$FILENAME; \
 	for i in $(BASEDIRS); do \
-		echo "==> $$FILENAME"; \
+		echo "==> $${i}"; \
 		echo "if (basedir == \"$${i}/\") {" >> $$FILENAME; \
 		for file in $(BASEDIR)/$${i}/*; do \
 			echo "entriesAll.push_back(\"`basename $${file}`\");" >> $$FILENAME; \
