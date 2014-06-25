@@ -35,7 +35,7 @@ elseif isHTML5() then
 	defaultfrontend = "opengl"
 	defaultsoundengine = "dummy"
 	defaultnetwork = false
-elseif IsNaCl() then
+elseif isNaCl() then
 	defaultnetwork = false
 else
 	-- workaround for now - remove me later
