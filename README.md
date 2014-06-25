@@ -22,7 +22,7 @@ Cross compile from linux for windows:
 * make
 
 Cross compile for android
-* download latest ndk and sdk
+* make android-setup
 * ./configure --target-os=android
 * make
 
@@ -32,9 +32,8 @@ Compile for HTML5 (emscripten)
 * make
 
 Compile for NaCl
-* download the native client sdk from https://developer.chrome.com/native-client/sdk/download
+* make nacl-setup
 * ./configure --target-os=nacl
-* make
 * make nacl-installer
 * make nacl-start
 
