@@ -77,6 +77,7 @@ include build/default.mk
 include build/install.mk
 include build/platforms/$(TARGET_OS).mk
 include build/nacl.mk
+include build/emscripten.mk
 include build/tools.mk
 
 # TODO: libs should go into the same dir to build them only once
