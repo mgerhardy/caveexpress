@@ -77,7 +77,8 @@ void Logger::logInfo (LogCategory category, const std::string &string) const
 		const std::string incCat = "(" + std::string(loggerTypes[category]) + ") " + string;
 		__android_log_write(ANDROID_LOG_INFO, APPFULLNAME, incCat.c_str());
 #else
-		printf("%s\n", message.c_str());
+		fprintf(stdout, "%s\n", message.c_str());
+		fflush(stdout);
 #endif
 	}
 }
@@ -102,6 +103,7 @@ void Logger::logError (LogCategory category, const std::string &string) const
 		__android_log_write(ANDROID_LOG_ERROR, APPFULLNAME, incCat.c_str());
 #else
 		fprintf(stderr, "%s\n", message.c_str());
+		fflush(stderr);
 #endif
 	}
 }
@@ -130,7 +132,8 @@ void Logger::logDebug (LogCategory category, const std::string &string) const
 		const std::string incCat = "(" + std::string(loggerTypes[category]) + ") " + string;
 		__android_log_write(ANDROID_LOG_DEBUG, APPFULLNAME, incCat.c_str());
 #else
-		printf("%s\n", message.c_str());
+		fprintf(stdout, "%s\n", message.c_str());
+		fflush(stdout);
 #endif
 	}
 }

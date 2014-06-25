@@ -1,4 +1,5 @@
 TARGET_FILE=$(APPNAME)$(EXE_EXT)
+GDB_INIT=naclgdb.init
 
 nacl-setup:
 	$(Q)echo "Download sdk..."
@@ -27,13 +28,20 @@ nacl-start:
 	python -m SimpleHTTPServer 4242 & \
 	NACL_DEBUG_ENABLE=1 PPAPI_BROWSER_DEBUG=1 $(CHROME_BIN) http://127.0.0.1:4242/$(APPNAME).html
 
+NEXE ?= $(INSTALLER_DIR)/nacl/$(TARGET_FILE:.pexe=_$(ARCH).nexe)
 # https://developer.chrome.com/native-client/devguide/devcycle/debugging
-nacl-start-debug: nacl-translate
+nacl-start-debug: nacl-installer nacl-translate
 	@echo "===> Create html"
 	$(Q)$(NACL_SDK_ROOT)/tools/create_html.py $(INSTALLER_DIR)/nacl/$(APPNAME)-debug.nmf
+	#echo "nacl-manifest \"$(INSTALLER_DIR)/nacl/$(APPNAME)-debug.nmf\"" >> $(GDB_INIT)
+	echo "target remote localhost:4014" > $(GDB_INIT); \
+	echo "remote get nexe \"$(NEXE)\"" >>  $(GDB_INIT); \
+	echo "file \"$(NEXE)\"" >> $(GDB_INIT); \
+	echo "nacl-irt \"$(CHROME_NACL_IRT)\"" >> $(GDB_INIT)
 	$(Q)cd $(INSTALLER_DIR)/nacl/; \
 	python -m SimpleHTTPServer 4242 & \
-	NACL_DEBUG_ENABLE=1 PPAPI_BROWSER_DEBUG=1 $(CHROME_BIN) --enable-nacl --enable-nacl-debug --no-sandbox http://127.0.0.1:4242/$(APPNAME)-debug.html
+	NACL_DEBUG_ENABLE=1 PPAPI_BROWSER_DEBUG=1 $(CHROME_BIN) --enable-nacl --enable-nacl-debug --no-sandbox http://127.0.0.1:4242/$(APPNAME)-debug.html & \
+	$(NACL_SDK_ROOT)/toolchain/$(HOST_OS)_x86_$(NACL_LIB)/bin/$(ARCH)-nacl-gdb -x $(GDB_INIT)
 
 nacl-installer: $(INSTALLER_DIR)/nacl/$(APPNAME).html $(INSTALLER_DIR)/nacl/$(APPNAME).nmf $(INSTALLER_DIR)/nacl/$(TARGET_FILE)
 	@echo "===> Copy assets"

@@ -8,6 +8,7 @@ endif
 HOST_OS     ?= $(shell uname | sed -e s/_.*// | tr '[:upper:]' '[:lower:]')
 TARGET_OS   ?= $(HOST_OS)
 TARGET_ARCH ?= $(shell uname -m | sed -e s/i.86/i386/)
+ARCH        ?= $(shell uname -m)
 CONFIG_H    ?= $(TARGET_OS)
 
 ifneq ($(findstring $(HOST_OS),sunos darwin),)

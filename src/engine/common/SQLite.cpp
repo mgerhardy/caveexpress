@@ -142,12 +142,14 @@ bool SQLite::prepare (SQLiteStatement& s, const std::string& statement)
 
 bool SQLite::exec (const std::string& statement)
 {
-	char *zErrMsg = 0;
+	char *zErrMsg = nullptr;
 	debug(LOG_STORAGE, "Statement: " + statement);
 	const int rc = sqlite3_exec(_db, statement.c_str(), 0, 0, &zErrMsg);
 	if (rc != SQLITE_OK) {
-		_error = std::string(zErrMsg);
-		error(LOG_STORAGE, "SQL error: " + _error);
+		if (zErrMsg != nullptr) {
+			_error = std::string(zErrMsg);
+			error(LOG_STORAGE, "SQL error: " + _error);
+		}
 		sqlite3_free(zErrMsg);
 		return false;
 	}

@@ -56,3 +56,4 @@
 /.cproject
 /.project
 /nacl_sdk
+/naclgdb.init

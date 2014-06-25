@@ -20,6 +20,9 @@ SDL_NET_SRCS              =
 
 MAKEFILEPATH   = $(CURDIR)/$(lastword $(MAKEFILE_LIST))
 NACL_VERSION  ?= 35
+NACL_LIB      ?= newlib
 NACL_SDK_ROOT ?= $(realpath $(dir $(MAKEFILEPATH))/../nacl_sdk/pepper_$(NACL_VERSION))
 CHROME_BIN    ?= google-chrome
+# the integrated runtime path
+CHROME_NACL_IRT ?= /opt/google/chrome/nacl_irt_$(ARCH).nexe
 NACL_TOOLCHAIN_ROOT ?= $(NACL_SDK_ROOT)/toolchain/$(HOST_OS)_pnacl
