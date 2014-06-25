@@ -13,6 +13,10 @@
 #include <emscripten.h>
 #endif
 
+#if defined(EMSCRIPTEN) or defined (__NACL__)
+#define DIRLIST_NOT_SUPPORTED 1
+#endif
+
 namespace {
 const std::string ROOT = "/$root";
 const std::string BASEDIR = "base/" APPNAME;
@@ -346,10 +350,10 @@ const std::string FileSystem::getAbsoluteWritePath () const
 DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const std::string& subdir)
 {
 	DirectoryEntries entriesAll;
-#if defined(EMSCRIPTEN) or defined (__NACL__)
+#if DIRLIST_NOT_SUPPORTED
 	// TODO: move this into files that are generated at build time
 	if (basedir == FS.getTexturesDir()) {
-		entriesAll.push_back("textures.lua");
+		entriesAll.push_back("complete.lua");
 		return entriesAll;
 	} else if (basedir == FS.getCampaignsDir()) {
 		entriesAll.push_back("00-tutorial-campaign.lua");
