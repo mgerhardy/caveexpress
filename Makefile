@@ -229,7 +229,6 @@ emscripten: data
 endif
 
 BASEDIRS := $(patsubst %/,%,$(patsubst $(BASEDIR)/%,%,$(sort $(dir $(wildcard $(BASEDIR)/*/)))))
-FILELISTFILES := $(BASEDIRS:%=%dir.h)
 filelists:
 	@echo "==> Create filelist for base directories"
 	$(Q)FILENAME=$(SRCDIR)/dir.h; \
