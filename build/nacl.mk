@@ -11,14 +11,29 @@ nacl-setup:
 	echo "export NACL_SDK_ROOT=$(NACL_SDK_ROOT)" >> ~/.bashrc; \
 	echo "export PATH=\$$PATH:$(NACL_TOOLCHAIN_ROOT)/bin" >> ~/.bashrc;
 
-nacl-translate: $(TARGET_FILE)
-	@echo "===> Translate"
-	$(Q)$(NACL_TOOLCHAIN_ROOT)/bin/pnacl-translate $@ -o $(INSTALLER_DIR)/nacl/$(APPNAME).nexe -arch x86-64
+%_x86-32.nexe: $(TARGET_FILE)
+	@echo "===> Translate 32"
+	$(Q)$(NACL_TOOLCHAIN_ROOT)/bin/pnacl-translate $^ --allow-llvm-bitcode-input -arch x86-32 -o $@
+
+%_x86-64.nexe: $(TARGET_FILE)
+	@echo "===> Translate 64"
+	$(Q)$(NACL_TOOLCHAIN_ROOT)/bin/pnacl-translate $^ --allow-llvm-bitcode-input -arch x86-64 -o $@
+
+nacl-translate: $(INSTALLER_DIR)/nacl/$(TARGET_FILE:.pexe=_x86-32.nexe) $(INSTALLER_DIR)/nacl/$(TARGET_FILE:.pexe=_x86-64.nexe)
+	$(Q)$(NACL_SDK_ROOT)/tools/create_nmf.py -L $(NACL_TOOLCHAIN_ROOT)/lib -o $(INSTALLER_DIR)/nacl/$(APPNAME)-debug.nmf $^
 
 nacl-start:
 	$(Q)cd $(INSTALLER_DIR)/nacl/; \
 	python -m SimpleHTTPServer 4242 & \
 	NACL_DEBUG_ENABLE=1 PPAPI_BROWSER_DEBUG=1 $(CHROME_BIN) http://127.0.0.1:4242/$(APPNAME).html
+
+# https://developer.chrome.com/native-client/devguide/devcycle/debugging
+nacl-start-debug: nacl-translate
+	@echo "===> Create html"
+	$(Q)$(NACL_SDK_ROOT)/tools/create_html.py $(INSTALLER_DIR)/nacl/$(APPNAME)-debug.html
+	$(Q)cd $(INSTALLER_DIR)/nacl/; \
+	python -m SimpleHTTPServer 4242 & \
+	NACL_DEBUG_ENABLE=1 PPAPI_BROWSER_DEBUG=1 $(CHROME_BIN) --enable-nacl --enable-nacl-debug --no-sandbox http://127.0.0.1:4242/$(APPNAME)-debug.html
 
 nacl-installer: $(INSTALLER_DIR)/nacl/$(APPNAME).html $(INSTALLER_DIR)/nacl/$(APPNAME).nmf $(INSTALLER_DIR)/nacl/$(TARGET_FILE)
 	@echo "===> Copy assets"
