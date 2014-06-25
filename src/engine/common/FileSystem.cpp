@@ -346,7 +346,7 @@ const std::string FileSystem::getAbsoluteWritePath () const
 DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const std::string& subdir)
 {
 	DirectoryEntries entriesAll;
-#ifdef EMSCRIPTEN
+#if defined(EMSCRIPTEN) or defined (__NACL__)
 	// TODO: move this into files that are generated at build time
 	if (basedir == FS.getTexturesDir()) {
 		entriesAll.push_back("textures.lua");
