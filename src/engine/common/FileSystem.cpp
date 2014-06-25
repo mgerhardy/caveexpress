@@ -350,12 +350,13 @@ const std::string FileSystem::getAbsoluteWritePath () const
 DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const std::string& subdir)
 {
 	DirectoryEntries entriesAll;
-#if DIRLIST_NOT_SUPPORTED
-#include "dir.h"
-#endif
 
 	if (!_initialized)
 		System.exit("Filesystem is not yet initialized", 1);
+
+#if DIRLIST_NOT_SUPPORTED
+#include "dir.h"
+#endif
 
 	const std::string sysWritePath = replaceSpecialMarkers(getAbsoluteWritePath() + basedir, false);
 	if (!sysWritePath.empty())
