@@ -228,6 +228,24 @@ emscripten: data
 	$(Q)EMCC_FAST_COMPILER=1 $(EMSCRIPTEN_ROOT)/emmake $(MAKE) EMSCRIPTEN_CALLED=1
 endif
 
+BASEDIRS := $(patsubst %/,%,$(patsubst $(BASEDIR)/%,%,$(sort $(dir $(wildcard $(BASEDIR)/*/)))))
+FILELISTFILES := $(BASEDIRS:%=%dir.h)
+filelists:
+	@echo "==> Create filelist for base directories"
+	$(Q)FILENAME=$(SRCDIR)/dir.h; \
+	echo "" > $$FILENAME; \
+	for i in $(BASEDIRS); do \
+		echo "==> $$FILENAME"; \
+		echo "if (basedir == \"$${i}/\") {" >> $$FILENAME; \
+		for file in $(BASEDIR)/$${i}/*; do \
+			echo "entriesAll.push_back(\"`basename $${file}`\");" >> $$FILENAME; \
+		done; \
+		echo "return entriesAll;" >> $$FILENAME; \
+		echo "}" >> $$FILENAME; \
+	done
+
+#	for i in $($@:%dir.h=%)/*; do echo "entriesAll.push_back(\"$(basename $$i)\");" >> $(SRCDIR)/$${DIR}dir.h
+#for dir in $(BASEDIRS); do DIR=`basename $$dir`; echo $$DIR; echo "" > $(SRCDIR)/$${DIR}dir.h; for i in $(BASEDIR)/$$DIR/*; do echo "entriesAll.push_back(\"$(basename $$i)\");" >> $(SRCDIR)/$${DIR}dir.h; done; done
 lang:
 	$(Q)for i in en_GB de; do contrib/scripts/lang.sh "$$i" "$(APPNAME)"; done
 

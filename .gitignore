@@ -57,3 +57,4 @@
 /.project
 /nacl_sdk
 /naclgdb.init
+/src/dir.h

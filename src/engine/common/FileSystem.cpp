@@ -351,20 +351,7 @@ DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const st
 {
 	DirectoryEntries entriesAll;
 #if DIRLIST_NOT_SUPPORTED
-	// TODO: move this into files that are generated at build time
-	if (basedir == FS.getTexturesDir()) {
-		entriesAll.push_back("complete.lua");
-		return entriesAll;
-	} else if (basedir == FS.getCampaignsDir()) {
-		entriesAll.push_back("00-tutorial-campaign.lua");
-		entriesAll.push_back("01-ice-campaign.lua");
-		entriesAll.push_back("02-rock-campaign.lua");
-		entriesAll.push_back("03-second-rock-campaign.lua");
-		entriesAll.push_back("04-second-ice-campaign.lua");
-		entriesAll.push_back("05-third-ice-campaign.lua");
-		entriesAll.push_back("06-wind-campaign.lua");
-		return entriesAll;
-	}
+#include "dir.h"
 #endif
 
 	if (!_initialized)
