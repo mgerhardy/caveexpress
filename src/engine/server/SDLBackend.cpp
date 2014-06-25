@@ -111,7 +111,7 @@ int SDLBackend::init (int argc, char **argv)
 
 	if (!SDL_WasInit(SDL_INIT_TIMER)) {
 		if (SDL_Init(SDL_INIT_TIMER) == -1) {
-			return -1;
+			info(LOG_CLIENT, "Failed to initialize the timers: " + SDL_GetError());
 		}
 	}
 
