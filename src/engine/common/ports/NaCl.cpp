@@ -15,30 +15,23 @@
 
 namespace {
 static const std::string ROOT = "/";
+static const std::string HOMEDIR = "/persistent/";
 }
 
 NaCl::NaCl() :
 		ISystem()
 {
-	mountDir("base");
-	mountDir("base/" APPNAME );
-	mountDir("base/" APPNAME "/campaigns");
-	mountDir("base/" APPNAME "/lang");
-	mountDir("base/" APPNAME "/maps");
-	mountDir("base/" APPNAME "/pics");
-	mountDir("base/" APPNAME "/sounds");
-	mountDir("base/" APPNAME "/textures");
+	mountDir("", HOMEDIR, "html5fs", "type=PERSISTENT,expected_size=1048576");
 }
 
 NaCl::~NaCl ()
 {
 }
 
-void NaCl::mountDir(const std::string& dir)
+void NaCl::mountDir(const std::string& src, const std::string& target, const std::string& filesystem, const std::string& filesystemParams)
 {
-	const std::string target = ROOT + dir;
-	const int retVal = mount(dir.c_str(), target.c_str(), "httpfs", 0, "");
-	logOutput("mounting dir: '" + dir + "' as target '" + target + "' with return value: " + string::toString(retVal) + "\n");
+	const int retVal = mount(src.c_str(), target.c_str(), filesystem.c_str(), 0, filesystemParams.c_str());
+	logOutput("mounting dir: '" + src + "' as target '" + target + "' with return value: " + string::toString(retVal) + "\n");
 	if (retVal == -1)
 		perror("mountDir failed");
 }
@@ -60,10 +53,9 @@ std::string NaCl::getDatabaseDirectory ()
 
 std::string NaCl::getHomeDirectory ()
 {
-	const std::string dir = ROOT + APPNAME + "/";
-	if (!mkdir(dir))
-		return ROOT;
-	return dir;
+	if (!mkdir(HOMEDIR))
+		logError("Failed to create the homedir at " + HOMEDIR);
+	return HOMEDIR;
 }
 
 std::string NaCl::normalizePath (const std::string& path)

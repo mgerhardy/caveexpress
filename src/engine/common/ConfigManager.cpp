@@ -143,7 +143,7 @@ void ConfigManager::setBindingsSpace (BindingSpace bindingSpace)
 
 void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc, char **argv)
 {
-#if defined(EMSCRIPTEN) or defined(__NACL__)
+#if defined(EMSCRIPTEN)
 	_persister = new ConfigPersisterNOP();
 #else
 	_persister = new ConfigPersisterSQL();

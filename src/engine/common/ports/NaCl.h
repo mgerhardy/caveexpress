@@ -10,7 +10,7 @@ class NaCl: public ISystem {
 protected:
 	std::string _user;
 
-	void mountDir(const std::string& dir);
+	void mountDir(const std::string& src, const std::string& target, const std::string& filesystem = "httpfs", const std::string& filesystemParams = "");
 
 public:
 	NaCl ();

@@ -10,6 +10,8 @@ public:
 
 	std::string getValue (const std::string& name) const override
 	{
+		if (name == "persister")
+			return "nop";
 		return "";
 	}
 
