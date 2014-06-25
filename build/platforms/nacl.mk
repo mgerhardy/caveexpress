@@ -24,5 +24,9 @@ NACL_LIB      ?= newlib
 NACL_SDK_ROOT ?= $(realpath $(dir $(MAKEFILEPATH))/../nacl_sdk/pepper_$(NACL_VERSION))
 CHROME_BIN    ?= google-chrome
 # the integrated runtime path
-CHROME_NACL_IRT ?= /opt/google/chrome/nacl_irt_$(ARCH).nexe
+ifeq ($(TARGET_ARCH),i386)
+CHROME_NACL_IRT ?= /opt/google/chrome/nacl_irt_x86_32.nexe
+else
+CHROME_NACL_IRT ?= /opt/google/chrome/nacl_irt_x86_64.nexe
+endif
 NACL_TOOLCHAIN_ROOT ?= $(NACL_SDK_ROOT)/toolchain/$(HOST_OS)_pnacl
