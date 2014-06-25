@@ -31,7 +31,6 @@ SDL_SRCS                  = \
 	$(wildcard src/libs/SDL/src/dynapi/*.c) \
 	$(wildcard src/libs/SDL/src/main/*.c) \
 	$(wildcard src/libs/SDL/src/timer/*.c) \
-	$(wildcard src/libs/SDL/src/timer/unix/*.c) \
 	$(wildcard src/libs/SDL/src/timer/dummy/*.c) \
 	$(wildcard src/libs/SDL/src/filesystem/*.c) \
 	$(wildcard src/libs/SDL/src/filesystem/unix/*.c) \
@@ -83,6 +82,7 @@ ifeq ($(TARGET_OS),darwin)
 		$(wildcard src/libs/SDL/src/filesystem/cocoa/*.c) \
 		$(wildcard src/libs/SDL/src/joystick/iphoneos/*.c) \
 		$(wildcard src/libs/SDL/src/joystick/darwin/*.c) \
+		$(wildcard src/libs/SDL/src/timer/unix/*.c) \
 		$(wildcard src/libs/SDL/src/video/uikit/*.c) \
 		$(wildcard src/libs/SDL/src/main/dummy/*.c) \
 		$(wildcard src/libs/SDL/src/video/cocoa/*.c) \
@@ -114,6 +114,7 @@ ifneq ($(findstring $(TARGET_OS), netbsd freebsd linux),)
 			$(wildcard src/libs/SDL/src/thread/pthread/*.c) \
 			$(wildcard src/libs/SDL/src/haptic/linux/*.c) \
 			$(wildcard src/libs/SDL/src/joystick/linux/*.c) \
+			$(wildcard src/libs/SDL/src/timer/unix/*.c) \
 			$(wildcard src/libs/SDL/src/main/dummy/*.c) \
 			$(wildcard src/libs/SDL/src/core/linux/*.c) \
 			$(wildcard src/libs/SDL/src/power/linux/*.c) \
