@@ -27,7 +27,7 @@ Cross compile for android
 * make
 
 Compile for HTML5 (emscripten)
-* download and set up emscripten
+* make emscripten-setup
 * ./configure --target-os=html5
 * make
 
