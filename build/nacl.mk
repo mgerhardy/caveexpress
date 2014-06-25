@@ -34,7 +34,7 @@ nacl-start-debug: nacl-installer nacl-translate
 	@echo "===> Create html"
 	$(Q)$(NACL_SDK_ROOT)/tools/create_html.py $(INSTALLER_DIR)/nacl/$(APPNAME)-debug.nmf
 	#echo "nacl-manifest \"$(INSTALLER_DIR)/nacl/$(APPNAME)-debug.nmf\"" >> $(GDB_INIT)
-	echo "target remote localhost:4014" > $(GDB_INIT); \
+	$(Q)echo "target remote localhost:4014" > $(GDB_INIT); \
 	echo "remote get nexe \"$(NEXE)\"" >>  $(GDB_INIT); \
 	echo "file \"$(NEXE)\"" >> $(GDB_INIT); \
 	echo "nacl-irt \"$(CHROME_NACL_IRT)\"" >> $(GDB_INIT)
