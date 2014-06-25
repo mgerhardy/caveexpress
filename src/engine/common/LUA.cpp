@@ -39,6 +39,7 @@ LUA::LUA (bool debug)
 	lua_register(_state, "isHTML5", isHTML5);
 	lua_register(_state, "isDebug", isDebug);
 	lua_register(_state, "isHD", isHD);
+	lua_register(_state, "isNaCl", isNaCl);
 	lua_register(_state, "isTouch", isTouch);
 
 	if (debug) {
@@ -427,6 +428,16 @@ int LUA::isOUYA (lua_State *L)
 #if defined(__ANDROID__)
 	Android& system = static_cast<Android&>(getSystem());
 	lua_pushboolean(L, system.isOUYA());
+#else
+	lua_pushboolean(L, false);
+#endif
+	return 1;
+}
+
+int LUA::isNaCl (lua_State *L)
+{
+#if defined(__NACL__)
+	lua_pushboolean(L, true);
 #else
 	lua_pushboolean(L, false);
 #endif
