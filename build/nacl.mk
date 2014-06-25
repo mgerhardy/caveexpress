@@ -30,7 +30,7 @@ nacl-start:
 # https://developer.chrome.com/native-client/devguide/devcycle/debugging
 nacl-start-debug: nacl-translate
 	@echo "===> Create html"
-	$(Q)$(NACL_SDK_ROOT)/tools/create_html.py $(INSTALLER_DIR)/nacl/$(APPNAME)-debug.html
+	$(Q)$(NACL_SDK_ROOT)/tools/create_html.py $(INSTALLER_DIR)/nacl/$(APPNAME)-debug.nmf
 	$(Q)cd $(INSTALLER_DIR)/nacl/; \
 	python -m SimpleHTTPServer 4242 & \
 	NACL_DEBUG_ENABLE=1 PPAPI_BROWSER_DEBUG=1 $(CHROME_BIN) --enable-nacl --enable-nacl-debug --no-sandbox http://127.0.0.1:4242/$(APPNAME)-debug.html
