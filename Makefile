@@ -243,8 +243,6 @@ filelists:
 		echo "}" >> $$FILENAME; \
 	done
 
-#	for i in $($@:%dir.h=%)/*; do echo "entriesAll.push_back(\"$(basename $$i)\");" >> $(SRCDIR)/$${DIR}dir.h
-#for dir in $(BASEDIRS); do DIR=`basename $$dir`; echo $$DIR; echo "" > $(SRCDIR)/$${DIR}dir.h; for i in $(BASEDIR)/$$DIR/*; do echo "entriesAll.push_back(\"$(basename $$i)\");" >> $(SRCDIR)/$${DIR}dir.h; done; done
 lang:
 	$(Q)for i in en_GB de; do contrib/scripts/lang.sh "$$i" "$(APPNAME)"; done
 
