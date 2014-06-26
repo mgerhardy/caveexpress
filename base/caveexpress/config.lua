@@ -36,6 +36,7 @@ elseif isHTML5() then
 	defaultsoundengine = "dummy"
 	defaultnetwork = false
 elseif isNaCl() then
+	defaultpersister = "nop"
 	defaultnetwork = false
 else
 	-- workaround for now - remove me later
