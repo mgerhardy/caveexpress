@@ -11,6 +11,10 @@ script:
   - ./configure --with-embedded-sqlite3
   - make
   - ./tests
+  - make clean
+  - ./configure --with-embedded-sqlite3 --disable-network
+  - make
+  - ./tests
 
 notifications:
   email: true
