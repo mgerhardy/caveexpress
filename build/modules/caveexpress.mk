@@ -93,8 +93,6 @@ endif
 ifeq ($(TARGET_OS),nacl)
 	$(TARGET)_SRCS +=\
 		engine/common/ports/NaCl.cpp
-	TMP := $(filter-out engine/common/network/Network.cpp,$($(TARGET)_SRCS))
-	$(TARGET)_SRCS = $(TMP)
 	$(TARGET)_LDFLAGS +=
 endif
 
@@ -102,8 +100,6 @@ ifneq ($(findstring $(TARGET_OS), html5),)
 	$(TARGET)_SRCS +=\
 		engine/common/ports/Unix.cpp \
 		engine/common/ports/HTML5.cpp
-	TMP := $(filter-out engine/common/network/Network.cpp,$($(TARGET)_SRCS))
-	$(TARGET)_SRCS = $(TMP)
 	$(TARGET)_LDFLAGS +=
 endif
 
@@ -122,6 +118,11 @@ ifeq ($(TARGET_OS),android)
 		engine/common/ports/Android.cpp \
 		engine/common/ports/Unix.cpp
 	$(TARGET)_LDFLAGS +=
+endif
+
+ifneq ($(NETWORKING),1)
+	TMP := $(filter-out engine/common/network/Network.cpp,$($(TARGET)_SRCS))
+	$(TARGET)_SRCS = $(TMP)
 endif
 
 ifneq ($(APPNAME),$(TARGET))

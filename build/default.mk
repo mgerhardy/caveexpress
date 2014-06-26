@@ -333,6 +333,11 @@ TINYXML2_SRCS             = libs/tinyxml2/tinyxml2.cpp
 TINYXML2_CFLAGS          ?= -Isrc/libs/tinyxml2
 TINYXML2_LIBS            +=
 endif
+ifneq ($(NETWORKING),1)
+SDL_NET_SRCS              =
+SDL_NET_CFLAGS           ?= -DNONETWORK
+SDL_NET_LIBS             +=
+else
 ifeq ($(HAVE_SDL_NET_H),1)
 SDL_NET_SRCS              =
 SDL_NET_CFLAGS           ?= $(call PKG_CFLAGS,SDL2_net)
@@ -345,6 +350,7 @@ SDL_NET_SRCS              = \
 	libs/SDL_net/SDLnetUDP.c
 SDL_NET_CFLAGS           ?= -Isrc/libs/SDL_net
 SDL_NET_LIBS             +=
+endif
 endif
 YAJL_SRCS                 = \
 	libs/yajl/yajl_alloc.c \

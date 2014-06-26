@@ -178,7 +178,11 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	_soundEnabled = getConfigValue(_configVarMap, "sound");
 	_port = getConfigValue(_configVarMap, "port", "4567");
 	_debug = getConfigValue(_configVarMap, "debug", "false");
+#ifdef NONETWORK
+	_network = getConfigValue(_configVarMap, "network", "false");
+#else
 	_network = getConfigValue(_configVarMap, "network", "true");
+#endif
 	_vsync = getConfigValue(_configVarMap, "vsync", "true");
 	_textureSize = getConfigValue(_configVarMap, "texturesize", "auto");
 	_maxHitpoints = getConfigValue(_configVarMap, "maxhitpoints", "100");

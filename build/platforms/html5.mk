@@ -3,7 +3,7 @@ SO_LDFLAGS                = -shared
 SO_CFLAGS                 = -fpic
 SO_LIBS                  := -ldl
 
-CFLAGS                   += -D_GNU_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE -DDISABLE_SDL_WINDOW=1 -DSDL_VIDEO_OPENGL=1 -DNONETWORK -DRAWFILE
+CFLAGS                   += -D_GNU_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE -DDISABLE_SDL_WINDOW=1 -DSDL_VIDEO_OPENGL=1 -DRAWFILE
 CFLAGS                   += -Wno-c++11-extensions -Wno-shift-op-parentheses -Wno-warn-absolute-paths
 # CFLAGS                   += --jcache
 # LDFLAGS                  += --jcache
@@ -11,8 +11,6 @@ EMSCRIPTEN               := 1
 EXE_EXT                  ?= .html
 HAVE_SDL_IMAGE_H         ?= 1
 HAVE_SDL_MIXER_H         ?= 1
-# this in fact disables it
-HAVE_SDL_NET_H           ?= 1
 
 $(APPNAME)_LDFLAGS       += -s DEAD_FUNCTIONS="['_glPushClientAttrib','_glPopClientAttrib','_glPointSize','_SDL_SetEventFilter']"
 $(APPNAME)_LDFLAGS       += -s WARN_ON_UNDEFINED_SYMBOLS=1
