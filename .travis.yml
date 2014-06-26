@@ -8,6 +8,7 @@ os:
   - osx
 
 script:
+  - echo "OS: $TRAVIS_OS_NAME"
   - ./configure --with-embedded-sqlite3
   - make
   - ./tests
@@ -20,10 +21,10 @@ notifications:
   email: true
 
 before_install:
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get update -qq; fi
+  - [ "$TRAVIS_OS_NAME" == "linux" ] && sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - [ "$TRAVIS_OS_NAME" == "linux" ] && sudo apt-get update -qq
 
 install:
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -qq g++-4.8; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -qq libasound2-dev libpulse-dev libaudio-dev libx11-dev  libxext-dev libxrandr-dev libxcursor-dev libxi-dev libxinerama-dev  libxxf86vm-dev libxss-dev libgl1-mesa-dev libesd0-dev libdbus-1-dev  libudev-dev libgles1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev; fi
+  - [ "$TRAVIS_OS_NAME" == "linux" ] && sudo apt-get install -qq g++-4.8
+  - [ "$TRAVIS_OS_NAME" == "linux" ] && sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
+  - [ "$TRAVIS_OS_NAME" == "linux" ] && sudo apt-get install -qq libasound2-dev libpulse-dev libaudio-dev libx11-dev  libxext-dev libxrandr-dev libxcursor-dev libxi-dev libxinerama-dev  libxxf86vm-dev libxss-dev libgl1-mesa-dev libesd0-dev libdbus-1-dev  libudev-dev libgles1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev
