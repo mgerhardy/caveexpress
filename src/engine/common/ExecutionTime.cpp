@@ -116,7 +116,7 @@ inline timespec ExecutionTime::diff (const timespec &start, const timespec &end)
 ExecutionTime::ExecutionTime (const std::string& id, long microDelay) :
 		_id(id)
 #ifdef USE_EXECTIME
- _microDelay(microDelay)
+		,_microDelay(microDelay)
 #endif
 {
 #ifdef USE_EXECTIME
