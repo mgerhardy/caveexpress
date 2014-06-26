@@ -57,12 +57,12 @@ public:
 
 	virtual void logError (const std::string& error) const {
 		const std::string str = dateutil::getDateString() + " " + error;
-		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", str.c_str());
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s\n", str.c_str());
 	}
 
 	virtual void logOutput (const std::string& string) const {
 		const std::string str = dateutil::getDateString() + " " + string;
-		SDL_Log("%s", str.c_str());
+		SDL_Log("%s\n", str.c_str());
 	}
 
 	virtual std::string normalizePath (const std::string& path) = 0;
