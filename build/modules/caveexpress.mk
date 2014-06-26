@@ -73,11 +73,12 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	\
 	$(SDL_MIXER_SRCS) \
 	\
-	$(ZLIB_SRCS)
+	$(ZLIB_SRCS) \
+	\
+	$(SDL_NET_SRCS)
 
 ifneq ($(findstring $(TARGET_OS), mingw32 mingw64 mingw64_64),)
 	$(TARGET)_SRCS +=\
-		$(SDL_NET_SRCS) \
 		engine/common/ports/Windows.cpp \
 		engine/common/ports/project.rc
 	$(TARGET)_LDFLAGS +=
@@ -85,7 +86,6 @@ endif
 
 ifneq ($(findstring $(TARGET_OS), netbsd freebsd linux),)
 	$(TARGET)_SRCS +=\
-		$(SDL_NET_SRCS) \
 		engine/common/ports/Unix.cpp
 	$(TARGET)_LDFLAGS +=
 endif
@@ -105,7 +105,6 @@ endif
 
 ifeq ($(TARGET_OS),darwin)
 	$(TARGET)_SRCS +=\
-		$(SDL_NET_SRCS) \
 		engine/common/ports/Unix.cpp \
 		engine/common/ports/Darwin.cpp \
 		engine/common/ports/CocoaLog.mm \
@@ -114,7 +113,6 @@ endif
 
 ifeq ($(TARGET_OS),android)
 	$(TARGET)_SRCS +=\
-		$(SDL_NET_SRCS) \
 		engine/common/ports/Android.cpp \
 		engine/common/ports/Unix.cpp
 	$(TARGET)_LDFLAGS +=
