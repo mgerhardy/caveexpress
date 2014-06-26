@@ -9,7 +9,7 @@ public:
 
 	std::string getHomeDirectory () override;
 	void exit (const std::string& reason, int errorCode) override;
-	void showAds (bool show, bool ontop) override;
+	void showAds (bool show) override;
 	int openURL (const std::string& url) const override;
 	void backtrace (const char *errorMessage) override;
 };

@@ -35,7 +35,7 @@ void HTML5::backtrace (const char *errorMessage)
 	_jsBacktrace();
 }
 
-void HTML5::showAds (bool show, bool ontop)
+void HTML5::showAds (bool show)
 {
 }
 
