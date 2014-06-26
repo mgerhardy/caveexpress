@@ -100,7 +100,7 @@ ifeq ($(TARGET_OS),darwin)
 endif
 
 ifneq ($(NETWORKING),1)
-	TMP := $(filter-out engine/common/network/Network.cpp,$($(TARGET)_SRCS))
+	TMP := $(filter-out engine/common/network/Network.cpp tests/NetworkTest.cpp,$($(TARGET)_SRCS))
 	$(TARGET)_SRCS = $(TMP)
 endif
 
