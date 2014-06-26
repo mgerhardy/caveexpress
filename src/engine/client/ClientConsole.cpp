@@ -74,7 +74,6 @@ void ClientConsole::toggleConsole ()
 
 void ClientConsole::logInfo (const std::string& string)
 {
-	System.logOutput(string);
 	std::vector<std::string> tokens;
 	string::splitString(string, tokens, "\n");
 	for (std::vector<std::string>::const_iterator i = tokens.begin(); i != tokens.end(); ++i) {
@@ -84,7 +83,6 @@ void ClientConsole::logInfo (const std::string& string)
 
 void ClientConsole::logError (const std::string& string)
 {
-	System.logError(string);
 	std::vector<std::string> tokens;
 	string::splitString(string, tokens, "\n");
 	for (std::vector<std::string>::const_iterator i = tokens.begin(); i != tokens.end(); ++i) {
