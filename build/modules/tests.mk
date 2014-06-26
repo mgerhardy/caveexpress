@@ -87,7 +87,6 @@ endif
 
 ifeq ($(TARGET_OS),nacl)
 	$(TARGET)_SRCS +=\
-		$(SDL_NET_SRCS) \
 		engine/common/ports/NaCl.cpp
 	$(TARGET)_LDFLAGS +=
 endif
@@ -98,6 +97,11 @@ ifeq ($(TARGET_OS),darwin)
 		engine/common/ports/Darwin.cpp \
 		engine/common/ports/CocoaLog.mm \
 	$(TARGET)_LDFLAGS +=
+endif
+
+ifneq ($(NETWORKING),1)
+	TMP := $(filter-out engine/common/network/Network.cpp,$($(TARGET)_SRCS))
+	$(TARGET)_SRCS = $(TMP)
 endif
 
 $(TARGET)_OBJS     := $(call ASSEMBLE_OBJECTS,$(TARGET))
