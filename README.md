@@ -1,6 +1,9 @@
 [![Build Status](https://travis-ci.org/mgerhardy/caveexpress.svg?branch=master)](https://travis-ci.org/mgerhardy/caveexpress)
 
 ### About
+
+![Media](https://github.com/mgerhardy/caveexpress/raw/master/contrib/assets/media/950x500.png)
+
 CaveExpress is a classic 2D platformer with physics-based gameplay
 and dozens of levels. Master your pedal-powered flying machine to
 pick up packages from your cave-dwelling clients and drop them off
