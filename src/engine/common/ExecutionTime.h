@@ -26,9 +26,9 @@
 class ExecutionTime {
 private:
 	const std::string _id;
+#ifdef USE_EXECTIME
 	// either 0 - then the time is printed each time - or the amount of micro that the execution time may not exceed
 	const long _microDelay;
-#ifdef USE_EXECTIME
 	mutable timespec _start;
 	std::string format (const char *msg, ...) const;
 	inline void gettime (timespec &ts) const;
