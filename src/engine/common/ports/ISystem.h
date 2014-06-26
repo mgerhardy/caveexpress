@@ -1,6 +1,7 @@
 #pragma once
 
 #include "engine/common/IFrontend.h"
+#include "engine/common/DateUtil.h"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -55,11 +56,13 @@ public:
 	virtual void tick (uint32_t deltaTime) {}
 
 	virtual void logError (const std::string& error) const {
-		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", error.c_str());
+		const std::string str = dateutil::getDateString() + " " + error;
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", str.c_str());
 	}
 
 	virtual void logOutput (const std::string& string) const {
-		SDL_Log("%s", string.c_str());
+		const std::string str = dateutil::getDateString() + " " + string;
+		SDL_Log("%s", str.c_str());
 	}
 
 	virtual std::string normalizePath (const std::string& path) = 0;

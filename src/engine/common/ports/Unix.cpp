@@ -25,7 +25,6 @@
 #include "engine/common/ConfigManager.h"
 #include "engine/common/String.h"
 #include "engine/common/System.h"
-#include "engine/common/DateUtil.h"
 #ifdef HAVE_EXECINFO_H
 #include <execinfo.h>
 #include <signal.h>
@@ -66,7 +65,7 @@ void Unix::logError (const std::string& error) const
 #ifdef HAVE_SYSLOG_H
 	syslog(LOG_ERR, "%s", error.c_str());
 #endif
-	ISystem::logError(dateutil::getDateString() + " " + error);
+	ISystem::logError(error);
 }
 
 void Unix::logOutput (const std::string& string) const
@@ -75,7 +74,7 @@ void Unix::logOutput (const std::string& string) const
 	syslog(LOG_INFO, "%s", string.c_str());
 #endif
 
-	ISystem::logOutput(dateutil::getDateString() + " " + string);
+	ISystem::logOutput(string);
 }
 
 std::string Unix::getCurrentWorkingDir ()

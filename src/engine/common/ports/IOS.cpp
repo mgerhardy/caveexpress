@@ -12,16 +12,6 @@ IOS::~IOS ()
 {
 }
 
-void IOS::logError (const std::string& error) const
-{
-	nslogOutput("ERROR: " + error);
-}
-
-void IOS::logOutput (const std::string& string) const
-{
-	nslogOutput(string);
-}
-
 std::string IOS::getHomeDirectory ()
 {
 	char* home = nsGetHomeDirectory(APPNAME);

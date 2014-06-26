@@ -12,22 +12,12 @@ Darwin::~Darwin ()
 {
 }
 
-void Darwin::logError (const std::string& error) const
-{
-	nslogOutput("ERROR: " + error);
-}
-
 std::string Darwin::getHomeDirectory ()
 {
 	char* home = nsGetHomeDirectory(APPNAME);
 	if (home == nullptr)
 		return "";
 	return home;
-}
-
-void Darwin::logOutput (const std::string& string) const
-{
-	nslogOutput(string);
 }
 
 int Darwin::openURL (const std::string& url) const

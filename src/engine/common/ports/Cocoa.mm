@@ -6,12 +6,6 @@
 #endif
 #include <sys/stat.h>
 
-void nslogOutput (const std::string& string)
-{
-	NSString *format = [NSString stringWithCString:string.c_str()];
-	NSLog(@"%@", format);
-}
-
 #if 1
 static void uncaughtExceptionHandler (NSException *exception)
 {
