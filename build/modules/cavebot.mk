@@ -40,7 +40,6 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 
 ifneq ($(findstring $(TARGET_OS), mingw32 mingw64 mingw64_64),)
 	$(TARGET)_SRCS +=\
-		$(SDL_NET_SRCS) \
 		engine/common/ports/Windows.cpp \
 		engine/common/ports/project.rc
 	$(TARGET)_LDFLAGS +=
@@ -54,7 +53,6 @@ endif
 
 ifeq ($(TARGET_OS),nacl)
 	$(TARGET)_SRCS +=\
-		$(SDL_NET_SRCS) \
 		engine/common/ports/NaCl.cpp
 	$(TARGET)_LDFLAGS +=
 endif
@@ -65,6 +63,12 @@ ifeq ($(TARGET_OS),darwin)
 		engine/common/ports/Darwin.cpp \
 		engine/common/ports/CocoaLog.mm \
 	$(TARGET)_LDFLAGS +=
+endif
+
+ifneq ($(NETWORKING),1)
+	TMP := $(filter-out engine/common/network/Network.cpp,$($(TARGET)_SRCS))
+	$(TARGET)_SRCS = $(TMP)
+	$(TARGET)_IGNORE := yes
 endif
 
 ifneq ($(APPNAME),caveexpress)
