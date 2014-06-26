@@ -71,3 +71,4 @@ Version 1.7 (2014-05-21)
 * Fixed crashes when the player dies
 
 Version 1.8 (not yet released)
+* Google NativeClient port
