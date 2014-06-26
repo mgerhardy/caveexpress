@@ -155,15 +155,3 @@ int NaCl::exec (const std::string& command, std::vector<std::string>& arguments)
 {
 	return -1;
 }
-
-void NaCl::logError (const std::string& error) const
-{
-	fprintf(stderr, "%s", error.c_str());
-	fflush(stderr);
-}
-
-void NaCl::logOutput (const std::string& string) const
-{
-	fprintf(stdout, "%s", string.c_str());
-	fflush(stdout);
-}

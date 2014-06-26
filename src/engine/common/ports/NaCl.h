@@ -36,8 +36,4 @@ public:
 	virtual int openURL (const std::string& url) const override;
 
 	virtual int exec (const std::string& command, std::vector<std::string>& arguments) const override;
-
-	virtual void logError (const std::string& error) const override;
-
-	virtual void logOutput (const std::string& string) const override;
 };

@@ -55,13 +55,11 @@ public:
 	virtual void tick (uint32_t deltaTime) {}
 
 	virtual void logError (const std::string& error) const {
-		std::cerr << error << std::endl;
-		std::cerr.flush();
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", error.c_str());
 	}
 
 	virtual void logOutput (const std::string& string) const {
-		std::cout << string << std::endl;
-		std::cout.flush();
+		SDL_Log("%s", string.c_str());
 	}
 
 	virtual std::string normalizePath (const std::string& path) = 0;
