@@ -58,7 +58,7 @@ else
   CCFLAGS  += -DNDEBUG
 endif
 
-CXXFLAGS += -std=gnu++11
+#CXXFLAGS += -std=gnu++11
 #CXXFLAGS += -std=c++11
 # clang stuff
 ifneq (,$(findstring clang,$(CXX)))

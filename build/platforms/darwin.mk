@@ -7,6 +7,8 @@ CFLAGS                   += -D_BSD_SOURCE -D_XOPEN_SOURCE
 LDFLAGS                  += -framework IOKit -framework Foundation -framework Cocoa
 LDFLAGS                  += -rdynamic
 
+CXXFLAGS                 += -std=c++11
+
 ### most mac users will have their additional libs and headers under $(SDKROOT),
 ### check for that, and if present, add to CFLAGS/LDFLAGS (really convenient!)
 SDKROOT                  ?=
