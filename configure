@@ -8,6 +8,12 @@ caveexpress_JAVA_PACKAGE=org.caveexpress
 caveexpress_VERSION=1.8
 caveexpress_VERSION_CODE=24
 
+cavepacker_APPNAME=cavepacker
+cavepacker_APPNAME_FULL=CavePacker
+cavepacker_JAVA_PACKAGE=org.cavepacker
+cavepacker_VERSION=0.1
+cavepacker_VERSION_CODE=1
+
 DEFAULT_APP=caveexpress
 
 #set -e
@@ -574,6 +580,13 @@ while [ $# -gt 0 ]; do
 		;;
 	--bindir=*)
 		PKGBINDIR="${1#*=}"
+		;;
+	--app=*)
+		APPNAME=`get_var "${1#*=}_APPNAME"`
+		APPNAME_FULL=`get_var "${1#*=}_APPNAME_FULL"`
+		JAVA_PACKAGE=`get_var "${1#*=}_JAVA_PACKAGE"`
+		VERSION=`get_var "${1#*=}_VERSION"`
+		VERSION_CODE=`get_var "${1#*=}_VERSION_CODE"`
 		;;
 	--target-os=*)
 		TARGET_OS="${1#*=}"
