@@ -12,4 +12,17 @@ textures = {
 		untrimmedwidth = 131,
 		untrimmedheight = 126,
 	},
+	["player"] = {
+		image = "cavepacker-entity-big",
+		x0 = 0.51171875,
+		y0 = 0,
+		x1 = 0.25390625,
+		y1 = 0.890625,
+		trimmedoffsetx = 0,
+		trimmedoffsety = 0,
+		trimmedwidth = 65,
+		trimmedheight = 114,
+		untrimmedwidth = 65,
+		untrimmedheight = 114,
+	},
 }

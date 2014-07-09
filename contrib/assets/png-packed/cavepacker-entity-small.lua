@@ -12,4 +12,17 @@ textures = {
 		untrimmedwidth = 66,
 		untrimmedheight = 63,
 	},
+	["player"] = {
+		image = "cavepacker-entity-small",
+		x0 = 0.515625,
+		y0 = 0,
+		x1 = 0.2578125,
+		y1 = 0.890625,
+		trimmedoffsetx = 0,
+		trimmedoffsety = 0,
+		trimmedwidth = 33,
+		trimmedheight = 57,
+		untrimmedwidth = 33,
+		untrimmedheight = 57,
+	},
 }
