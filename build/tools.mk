@@ -36,9 +36,12 @@ ifneq ($(PROGRAM_TEXTUREPACKER),)
 $(TEXTURE_DIR)/$(APPNAME)-u%-big.lua: $(TEXTURE_DIR)/$(APPNAME)-u%.tps
 	@echo "===> TexturePacker [big] [$<]"
 	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 1.0 $(TEXTURE_PACKER_OPTIONS)
-$(TEXTURE_DIR)/$(APPNAME)-npc_blowing-big.lua: $(TEXTURE_DIR)/$(APPNAME)-npc_blowing.tps
+$(TEXTURE_DIR)/caveexpress-npc_blowing-big.lua: $(TEXTURE_DIR)/caveexpress-npc_blowing.tps
 	@echo "===> TexturePacker [big] [$<]"
 	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.38 $(TEXTURE_PACKER_OPTIONS)
+$(TEXTURE_DIR)/cavepacker-entity-big.lua: $(TEXTURE_DIR)/cavepacker-entity.tps
+	@echo "===> TexturePacker [big] [$<]"
+	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.5 $(TEXTURE_PACKER_OPTIONS)
 $(TEXTURE_DIR)/$(APPNAME)-%-big.lua: $(TEXTURE_DIR)/$(APPNAME)-%.tps
 	@echo "===> TexturePacker [big] [$<]"
 	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.25 $(TEXTURE_PACKER_OPTIONS)
@@ -46,9 +49,12 @@ $(TEXTURE_DIR)/$(APPNAME)-%-big.lua: $(TEXTURE_DIR)/$(APPNAME)-%.tps
 $(TEXTURE_DIR)/$(APPNAME)-u%-small.lua: $(TEXTURE_DIR)/$(APPNAME)-u%.tps
 	@echo "===> TexturePacker [small] [$<]"
 	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.5 $(TEXTURE_PACKER_OPTIONS)
-$(TEXTURE_DIR)/$(APPNAME)-npc_blowing-small.lua: $(TEXTURE_DIR)/$(APPNAME)-npc_blowing.tps
+$(TEXTURE_DIR)/caveexpress-npc_blowing-small.lua: $(TEXTURE_DIR)/caveexpress-npc_blowing.tps
 	@echo "===> TexturePacker [small] [$<]"
 	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.19 $(TEXTURE_PACKER_OPTIONS)
+$(TEXTURE_DIR)/cavepacker-entity-small.lua: $(TEXTURE_DIR)/cavepacker-entity.tps
+	@echo "===> TexturePacker [small] [$<]"
+	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.25 $(TEXTURE_PACKER_OPTIONS)
 $(TEXTURE_DIR)/$(APPNAME)-%-small.lua: $(TEXTURE_DIR)/$(APPNAME)-%.tps
 	@echo "===> TexturePacker [small] [$<]"
 	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.125 $(TEXTURE_PACKER_OPTIONS)
