@@ -31,7 +31,7 @@ $(BASEDIR)/textures/complete.lua: $(patsubst %.tps,%-big.lua,$(wildcard $(TEXTUR
 	$(Q)echo "}" >> $@
 
 # --png-opt-level 7
-TEXTURE_PACKER_OPTIONS += --data $@ --sheet $(patsubst $(TEXTURE_DIR)/%.lua,$(BASEDIR)/pics/%.png,$@) --size-constraints POT --texture-format png --max-width 2048 --max-height 2048 --quiet --scale-mode Smooth --dpi 72 --opt RGBA8888 --disable-rotation --pack-mode Best $< > /dev/null
+TEXTURE_PACKER_OPTIONS += --data $@ --sheet $(patsubst $(TEXTURE_DIR)/%.lua,$(BASEDIR)/pics/%.png,$@) --size-constraints POT --texture-format png --max-width 2048 --max-height 2048 --quiet --scale-mode Smooth --dpi 72 --disable-rotation --pack-mode Best $< > /dev/null
 ifneq ($(PROGRAM_TEXTUREPACKER),)
 $(TEXTURE_DIR)/$(APPNAME)-u%-big.lua: $(TEXTURE_DIR)/$(APPNAME)-u%.tps
 	@echo "===> TexturePacker [big] [$<]"
