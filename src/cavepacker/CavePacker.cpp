@@ -1,6 +1,7 @@
 #include "CavePacker.h"
 #include "engine/client/ui/UI.h"
 #include "cavepacker/client/ui/windows/UIMainWindow.h"
+#include "cavepacker/client/ui/windows/UIMapWindow.h"
 
 CavePacker::CavePacker ()
 {
@@ -75,4 +76,5 @@ void CavePacker::initUI (IFrontend* _frontend, ServiceProvider& serviceProvider)
 {
 	UI& ui = UI::get();
 	ui.addWindow(new UIMainWindow(_frontend));
+	ui.addWindow(new UIMapWindow(_frontend));
 }
