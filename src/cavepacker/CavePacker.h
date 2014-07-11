@@ -1,9 +1,18 @@
 #pragma once
 
 #include "engine/GameRegistry.h"
-#include "engine/common/campaign/persister/SQLitePersister.h"
+#include "engine/client/ClientMap.h"
+#include "engine/common/campaign/CampaignManager.h"
+#include "engine/common/campaign/persister/IGameStatePersister.h"
 
 class CavePacker: public IGame {
+private:
+	IGameStatePersister* _persister;
+	CampaignManager *_campaignManager;
+	ClientMap *_map;
+	IFrontend *_frontend;
+	ServiceProvider* _serviceProvider;
+
 public:
 	CavePacker();
 	virtual ~CavePacker();

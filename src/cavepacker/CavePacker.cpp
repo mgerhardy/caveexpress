@@ -2,9 +2,16 @@
 #include "engine/client/ui/UI.h"
 #include "cavepacker/client/ui/windows/UIMainWindow.h"
 #include "cavepacker/client/ui/windows/UIMapWindow.h"
+#include "engine/common/ConfigManager.h"
+#include "engine/common/ServiceProvider.h"
+#include "engine/common/ExecutionTime.h"
 
-CavePacker::CavePacker ()
+CavePacker::CavePacker ():
+	_persister(nullptr), _campaignManager(nullptr), _map(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
 {
+	delete _persister;
+	delete _campaignManager;
+	delete _map;
 }
 
 CavePacker::~CavePacker ()
@@ -70,11 +77,23 @@ void CavePacker::shutdown ()
 
 void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 {
+	_frontend = frontend;
+	_serviceProvider = &serviceProvider;
+
+	{
+		ExecutionTime e("loading persister");
+		_persister = new NOPPersister();
+	}
+	{
+		ExecutionTime e("campaign manager");
+		_campaignManager = new CampaignManager(_persister, serviceProvider.getMapManager());
+		_campaignManager->init();
+	}
 }
 
-void CavePacker::initUI (IFrontend* _frontend, ServiceProvider& serviceProvider)
+void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 {
 	UI& ui = UI::get();
-	ui.addWindow(new UIMainWindow(_frontend));
-	ui.addWindow(new UIMapWindow(_frontend));
+	ui.addWindow(new UIMainWindow(frontend));
+	ui.addWindow(new UIMapWindow(frontend));
 }
