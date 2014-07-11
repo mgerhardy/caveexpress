@@ -2,6 +2,7 @@
 #include "engine/client/ui/UI.h"
 #include "cavepacker/client/ui/windows/UIMainWindow.h"
 #include "cavepacker/client/ui/windows/UIMapWindow.h"
+#include "cavepacker/client/CavePackerClientMap.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/ExecutionTime.h"
@@ -95,5 +96,7 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 {
 	UI& ui = UI::get();
 	ui.addWindow(new UIMainWindow(frontend));
-	ui.addWindow(new UIMapWindow(frontend));
+	CavePackerClientMap *map = new CavePackerClientMap(0, 0, _frontend->getWidth(), _frontend->getHeight(), _frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
+	_map = map;
+	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_map));
 }
