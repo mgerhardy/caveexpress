@@ -19,6 +19,11 @@ inline bool isPlayer (const EntityType& other)
 	return other == PLAYER;
 }
 
+inline bool isTarget (const EntityType& other)
+{
+	return other == TARGET;
+}
+
 inline bool isPackage (const EntityType& other)
 {
 	return other == PACKAGE;
@@ -26,7 +31,7 @@ inline bool isPackage (const EntityType& other)
 
 inline bool isSolid (const EntityType& other)
 {
-	return other == SOLID || isGround(other) || isPackageTarget(other);
+	return other == SOLID || isGround(other) || isTarget(other);
 }
 
 inline bool isMapTile (const EntityType& other)

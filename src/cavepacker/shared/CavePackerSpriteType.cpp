@@ -1,7 +1,6 @@
 #include "CavePackerSpriteType.h"
 
 namespace SpriteTypes {
-SpriteType ROCK("rock");
+SpriteType SOLID("solid");
 SpriteType GROUND("ground");
-SpriteType BACKGROUND("background");
 }
