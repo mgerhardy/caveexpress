@@ -13,7 +13,7 @@
 #include "engine/common/CommandSystem.h"
 #include "engine/common/ConfigManager.h"
 #include "caveexpress/client/ui/nodes/UINodeMap.h"
-#include "caveexpress/client/ui/nodes/UINodeMapControl.h"
+#include "engine/client/ui/nodes/UINodeMapControl.h"
 #include "caveexpress/client/ui/nodes/UINodeMapFingerControl.h"
 #include "caveexpress/shared/constants/PlayerState.h"
 #include "engine/common/campaign/persister/IGameStatePersister.h"
