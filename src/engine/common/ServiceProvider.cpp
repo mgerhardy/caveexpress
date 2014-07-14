@@ -7,6 +7,7 @@
 #include "engine/common/network/NoNetwork.h"
 #include "engine/common/TextureDefinition.h"
 #include "engine/common/IFrontend.h"
+#include "engine/GameRegistry.h"
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/Logger.h"
 
@@ -75,7 +76,7 @@ void ServiceProvider::init (IFrontend *frontend)
 	initTextureDefinition(frontend, Config.getTextureSize());
 	{
 		const ExecutionTime e("map manager");
-		_mapManager = new LUAMapManager();
+		_mapManager = Singleton<GameRegistry>::getInstance().getGame()->getMapManager();
 		_mapManager->init();
 	}
 }

@@ -3,6 +3,7 @@
 #include "engine/client/ui/UI.h"
 #include "engine/common/Pointers.h"
 #include "engine/common/network/IProtocolHandler.h"
+#include "engine/common/MapManager.h"
 
 // TODO: rename methods and document stuff
 class IGame {
@@ -41,6 +42,8 @@ public:
 	virtual bool mapLoad (const std::string& map) { return false; }
 
 	virtual void mapShutdown () {}
+
+	virtual IMapManager* getMapManager () { return nullptr; }
 };
 
 typedef SharedPtr<IGame> GamePtr;

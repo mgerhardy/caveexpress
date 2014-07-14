@@ -86,6 +86,11 @@ CaveExpress::~CaveExpress ()
 	delete _map;
 }
 
+IMapManager* CaveExpress::getMapManager ()
+{
+	return new LUAMapManager();
+}
+
 void CaveExpress::initSoundCache ()
 {
 	// TODO: async

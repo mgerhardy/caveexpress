@@ -66,3 +66,12 @@ public:
 	virtual ~LUAMapManager () {}
 	void loadMaps () override;
 };
+
+class FileMapManager: public IMapManager {
+private:
+	std::string _extension;
+public:
+	FileMapManager (const std::string& extension);
+	virtual ~FileMapManager () {}
+	void loadMaps () override;
+};

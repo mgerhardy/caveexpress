@@ -19,6 +19,11 @@ CavePacker::~CavePacker ()
 {
 }
 
+IMapManager* CavePacker::getMapManager ()
+{
+	return new FileMapManager("map");
+}
+
 void CavePacker::initSoundCache ()
 {
 }
