@@ -108,7 +108,7 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 		_mapControl = node;
 		add(node);
 	} else {
-		UINodeMapControl* node = new UINodeMapControl(frontend, _nodeMap);
+		UINodeMapControl* node = new UINodeMapControl(frontend, _nodeMap->getMap(), _nodeMap->getX(), _nodeMap->getY(), _nodeMap->getWidth(), _nodeMap->getHeight());
 		_mapControl = node;
 		add(node);
 	}

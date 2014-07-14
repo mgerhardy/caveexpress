@@ -1,16 +1,15 @@
 #include "UINodeMapControl.h"
 #include "engine/client/ui/windows/UIWindow.h"
-#include "caveexpress/client/ui/nodes/UINodeMap.h"
 #include "engine/client/ClientMap.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/Logger.h"
 #include "engine/common/Direction.h"
 
-UINodeMapControl::UINodeMapControl (IFrontend *frontend, UINodeMap *mapNode) :
-		UINode(frontend), _map(mapNode->getMap()), _direction(0), _oldDirection(0), _joystick(Config.isJoystick())
+UINodeMapControl::UINodeMapControl (IFrontend *frontend, ClientMap& map, float x, float y, float w, float h) :
+		UINode(frontend), _map(map), _direction(0), _oldDirection(0), _joystick(Config.isJoystick())
 {
-	setPos(mapNode->getX(), mapNode->getY());
-	setSize(mapNode->getWidth(), mapNode->getHeight());
+	setPos(x, y);
+	setSize(w, h);
 }
 
 UINodeMapControl::~UINodeMapControl ()
