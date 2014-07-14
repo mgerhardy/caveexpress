@@ -45,6 +45,8 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/caveexpress/shared/*.cpp) \
 	$(wildcard $(SRCDIR)/caveexpress/shared/network/*.cpp) \
 	\
+	$(wildcard $(SRCDIR)/cavepacker/server/map/SokubanMapContext*.cpp) \
+	\
 	$(wildcard $(SRCDIR)/libs/micropather/*.cpp) \
 	\
 	$(wildcard $(SRCDIR)/libs/Box2D/Common/*.cpp) \
