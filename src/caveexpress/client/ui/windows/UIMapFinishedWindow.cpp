@@ -5,9 +5,9 @@
 #include "engine/client/ui/nodes/UINodeButton.h"
 #include "engine/client/ui/layouts/UIHBoxLayout.h"
 #include "caveexpress/client/ui/nodes/UINodeBackground.h"
-#include "caveexpress/client/ui/nodes/UINodeContinuePlay.h"
+#include "engine/client/ui/nodes/UINodeContinuePlay.h"
 #include "caveexpress/client/ui/nodes/UINodeStar.h"
-#include "caveexpress/client/ui/windows/main/ReplayNodeListener.h"
+#include "engine/client/ui/windows/main/ReplayNodeListener.h"
 #include <string>
 
 UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& campaignManager, ServiceProvider& serviceProvider) :

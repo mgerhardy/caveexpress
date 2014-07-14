@@ -7,7 +7,7 @@
 #include "engine/common/ServiceProvider.h"
 #include "engine/client/ui/nodes/UINodeCampaignSelector.h"
 #include "caveexpress/client/ui/nodes/UINodeBackground.h"
-#include "caveexpress/client/ui/windows/main/ContinuePlayNodeListener.h"
+#include "engine/client/ui/windows/main/ContinuePlayNodeListener.h"
 
 UICampaignWindow::UICampaignWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager) :
 		UIWindow(UI_WINDOW_CAMPAIGN, frontend), _campaignManager(campaignManager)
