@@ -13,7 +13,7 @@
 #include "engine/common/Commands.h"
 #include "caveexpress/shared/constants/Commands.h"
 
-UIMultiplayerWindow::UIMultiplayerWindow (IFrontend *frontend, const MapManager &mapManager, ServiceProvider& serviceProvider) :
+UIMultiplayerWindow::UIMultiplayerWindow (IFrontend *frontend, const IMapManager &mapManager, ServiceProvider& serviceProvider) :
 		UIWindow(UI_WINDOW_MULTIPLAYER, frontend), _serviceProvider(serviceProvider)
 {
 	UINodeBackground *background = new UINodeBackground(frontend, tr("Multiplayer"));

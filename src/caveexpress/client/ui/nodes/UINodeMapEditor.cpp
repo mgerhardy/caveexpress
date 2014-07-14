@@ -76,7 +76,7 @@ public:
 
 #define Undo() StateChecker s(this, _map, _settings, _mapName, _mapWidth, _mapHeight)
 
-UINodeMapEditor::UINodeMapEditor (IFrontend *frontend, MapManager& mapManager) :
+UINodeMapEditor::UINodeMapEditor (IFrontend *frontend, IMapManager& mapManager) :
 		UINode(frontend, "mapeditor"), _activeSpriteAngle(0), _activeEntityType(0), _activeEntityTypeRight(true), _selectedGridX(
 				0.0f), _selectedGridY(0.0f), _gridScrollX(0), _gridScrollY(0), _activeLayer(LAYER_FOREGROUND), _buttonPressed(
 				0), _renderGrid(true), _mapManager(mapManager), _waterHeight(0.0f), _theme(&ThemeTypes::ROCK), _highlightItem(

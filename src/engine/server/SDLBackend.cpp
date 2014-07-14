@@ -459,8 +459,8 @@ void SDLBackend::status ()
 
 void SDLBackend::loadMapCompleter (const std::string& input, std::vector<std::string>& matches)
 {
-	const MapManager::Maps& maps = INSTANCE->_serviceProvider.getMapManager().getMapsByWildcard(input + "*");
-	for (MapManager::Maps::const_iterator i = maps.begin(); i != maps.end(); ++i) {
+	const IMapManager::Maps& maps = INSTANCE->_serviceProvider.getMapManager().getMapsByWildcard(input + "*");
+	for (IMapManager::Maps::const_iterator i = maps.begin(); i != maps.end(); ++i) {
 		matches.push_back(i->first);
 	}
 }

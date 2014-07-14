@@ -61,8 +61,8 @@ public:
 	}
 };
 
-class MapManager: public IMapManager {
+class LUAMapManager: public IMapManager {
 public:
-	virtual ~MapManager ();
+	virtual ~LUAMapManager () {}
 	void loadMaps () override;
 };

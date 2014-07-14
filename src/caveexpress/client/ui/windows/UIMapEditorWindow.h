@@ -9,7 +9,7 @@ class UINodeMapStringSelector;
 class UINodeSpriteSelector;
 class UINodeEntitySelector;
 class UINodeMapEditor;
-class MapManager;
+class IMapManager;
 
 class UIMapEditorWindow: public UIWindow {
 	friend class AutoGenerateListener;
@@ -23,9 +23,9 @@ private:
 
 	UINode *createSettings ();
 	UINode *createLayers ();
-	UINode *createButtons (MapManager& mapManager, UINodeMapStringSelector *mapListNode);
+	UINode *createButtons (IMapManager& mapManager, UINodeMapStringSelector *mapListNode);
 public:
-	UIMapEditorWindow (IFrontend *frontend, MapManager& mapManager);
+	UIMapEditorWindow (IFrontend *frontend, IMapManager& mapManager);
 	virtual ~UIMapEditorWindow ();
 
 	bool nextFocus () override

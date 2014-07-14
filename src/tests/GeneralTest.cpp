@@ -47,7 +47,7 @@ TEST_F(GeneralTest, testKeyValueParser)
 
 TEST_F(GeneralTest, testMapManager)
 {
-	MapManager mgr;
+	LUAMapManager mgr;
 	mgr.init();
 }
 

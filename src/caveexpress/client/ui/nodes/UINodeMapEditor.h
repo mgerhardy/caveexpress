@@ -22,7 +22,7 @@
 // forward decl
 class IMapContext;
 class StateChecker;
-class MapManager;
+class IMapManager;
 
 namespace {
 const int MIN_WIDTH = 6;
@@ -236,7 +236,7 @@ private:
 
 	std::vector<IMapEditorListener*> _editorListeners;
 
-	MapManager& _mapManager;
+	IMapManager& _mapManager;
 	const ThemeType* _theme;
 
 	TileItem* _highlightItem;
@@ -335,7 +335,7 @@ private:
 
 	bool isLayerActive (int layer) const;
 public:
-	UINodeMapEditor (IFrontend *frontend, MapManager& mapManager);
+	UINodeMapEditor (IFrontend *frontend, IMapManager& mapManager);
 	virtual ~UINodeMapEditor ();
 
 	void setSprite (const SpriteDefPtr& spriteDef);

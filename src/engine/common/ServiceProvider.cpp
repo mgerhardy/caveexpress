@@ -62,7 +62,7 @@ void ServiceProvider::initTextureDefinition (IFrontend *frontend, const std::str
 void ServiceProvider::init (IFrontend *frontend)
 {
 	{
-		ExecutionTime e("loading network");
+		const ExecutionTime e("loading network");
 #ifndef NONETWORK
 		if (Config.get().isNetwork())
 			_network = new Network();
@@ -74,8 +74,8 @@ void ServiceProvider::init (IFrontend *frontend)
 	}
 	initTextureDefinition(frontend, Config.getTextureSize());
 	{
-		ExecutionTime e("map manager");
-		_mapManager = new MapManager();
+		const ExecutionTime e("map manager");
+		_mapManager = new LUAMapManager();
 		_mapManager->init();
 	}
 }

@@ -9,7 +9,7 @@
 
 struct lua_State;
 class IGameStatePersister;
-class MapManager;
+class IMapManager;
 
 class ICampaignManagerListener {
 public:
@@ -25,7 +25,7 @@ private:
 
 	mutable CampaignPtr _activeCampaign;
 	IGameStatePersister *_persister;
-	const MapManager& _mapManager;
+	const IMapManager& _mapManager;
 
 	typedef std::vector<ICampaignManagerListener*> Listeners;
 	Listeners _listeners;
@@ -51,7 +51,7 @@ private:
 	void unlock ();
 
 public:
-	CampaignManager (IGameStatePersister *persister, const MapManager& mapManager);
+	CampaignManager (IGameStatePersister *persister, const IMapManager& mapManager);
 	virtual ~CampaignManager ();
 
 	void init ();

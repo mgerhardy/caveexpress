@@ -6,15 +6,15 @@
 #include <string>
 
 // forward decl
-class MapManager;
+class IMapManager;
 class CampaignManager;
 
 class UINodeMapSelector: public UINodeBackgroundSelector<std::string> {
 private:
 	CampaignManager *_campaignManager;
-	const MapManager *_mapManager;
+	const IMapManager *_mapManager;
 public:
-	UINodeMapSelector (IFrontend *frontend, const MapManager &mapManager, int cols = 6, int rows = 4);
+	UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, int cols = 6, int rows = 4);
 	UINodeMapSelector (IFrontend *frontend, CampaignManager &campaignManager, int cols = 6, int rows = 4);
 	virtual ~UINodeMapSelector ();
 

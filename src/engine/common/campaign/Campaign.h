@@ -7,7 +7,6 @@
 #include <inttypes.h>
 #include "CampaignMap.h"
 
-class MapManager;
 class IGameStatePersister;
 
 class Campaign {

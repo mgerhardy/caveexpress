@@ -5,14 +5,14 @@
 #define UINODE_SERVERSELECTOR "servers"
 
 // forward decl
-class MapManager;
+class IMapManager;
 class ServiceProvider;
 
 class UIMultiplayerWindow: public UIWindow {
 private:
 	ServiceProvider& _serviceProvider;
 public:
-	UIMultiplayerWindow (IFrontend *frontend, const MapManager &mapManager, ServiceProvider& serviceProvider);
+	UIMultiplayerWindow (IFrontend *frontend, const IMapManager &mapManager, ServiceProvider& serviceProvider);
 	virtual ~UIMultiplayerWindow ();
 
 	void onActive () override;

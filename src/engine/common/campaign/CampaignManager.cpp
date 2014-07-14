@@ -24,7 +24,7 @@ struct isEqual {
 	bool operator() (const CampaignPtr& l) { return l->getId() == _campaignId; }
 };
 
-CampaignManager::CampaignManager (IGameStatePersister *persister, const MapManager& mapManager) :
+CampaignManager::CampaignManager (IGameStatePersister *persister, const IMapManager& mapManager) :
 		_activeCampaign(), _persister(persister), _mapManager(mapManager), _completed(false)
 {
 	Commands.registerCommand(CMD_UNLOCK, bind(CampaignManager, unlock));
@@ -147,9 +147,9 @@ int CampaignManager::luaAddMaps (lua_State *l)
 {
 	Campaign *ctx = _luaGetContext(l, 1);
 	const std::string mapWildcard = luaL_checkstring(l, 2);
-	const MapManager::Maps& maps = _mgr->_mapManager.getMapsByWildcard(mapWildcard);
+	const IMapManager::Maps& maps = _mgr->_mapManager.getMapsByWildcard(mapWildcard);
 	int cnt = 0;
-	for (MapManager::Maps::const_iterator i = maps.begin(); i != maps.end(); ++i) {
+	for (IMapManager::Maps::const_iterator i = maps.begin(); i != maps.end(); ++i) {
 		++cnt;
 		const std::string name = _mgr->_mapManager.getMapTitle(i->first);
 		ctx->addMap(i->first, name);

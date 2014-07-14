@@ -6,13 +6,13 @@
 #include <string>
 
 // forward decl
-class MapManager;
+class IMapManager;
 
 class UINodeMapStringSelector: public UINodeSelector<std::string> {
 private:
-	const MapManager &_mapManager;
+	const IMapManager &_mapManager;
 public:
-	UINodeMapStringSelector (IFrontend *frontend, const MapManager &mapManager, int rows);
+	UINodeMapStringSelector (IFrontend *frontend, const IMapManager &mapManager, int rows);
 	virtual ~UINodeMapStringSelector ();
 
 	// UINode

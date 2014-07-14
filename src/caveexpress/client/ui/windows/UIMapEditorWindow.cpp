@@ -52,7 +52,7 @@ public:
 	}
 };
 
-UIMapEditorWindow::UIMapEditorWindow (IFrontend *frontend, MapManager& mapManager) :
+UIMapEditorWindow::UIMapEditorWindow (IFrontend *frontend, IMapManager& mapManager) :
 		UIWindow(UI_WINDOW_EDITOR, frontend, WINDOW_FLAG_ROOT)
 {
 	setBackgroundColor(colorDark);
@@ -159,7 +159,7 @@ UINode *UIMapEditorWindow::createSettings ()
 	return settingsNode;
 }
 
-UINode *UIMapEditorWindow::createButtons (MapManager& mapManager,
+UINode *UIMapEditorWindow::createButtons (IMapManager& mapManager,
 		UINodeMapStringSelector *mapListNode)
 {
 	UINode *buttonsNode = new UINode(_frontend, "buttons-panel");

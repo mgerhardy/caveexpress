@@ -69,7 +69,7 @@ TEST(CampaignTest, testReset) {
 TEST(CampaignTest, testMaps) {
 	SCOPED_TRACE("test/idontcare.temp");
 	SQLitePersister persister("test/idontcare.temp");
-	MapManager mapMgr;
+	LUAMapManager mapMgr;
 	mapMgr.loadMaps();
 	TextureDefinition t("small");
 	SpriteDefinition::get().init(t);
@@ -107,7 +107,7 @@ TEST(CampaignTest, testMaps) {
 TEST(CampaignTest, testUpdateMapValues) {
 	SCOPED_TRACE("test/updatemapvalues.temp");
 	SQLitePersister persister("test/updatemapvalues.temp");
-	MapManager mapMgr;
+	LUAMapManager mapMgr;
 	mapMgr.loadMaps();
 	TextureDefinition t("small");
 	SpriteDefinition::get().init(t);
@@ -139,7 +139,7 @@ TEST(CampaignTest, testResetProgress) {
 	SCOPED_TRACE("test/gamestate2.sqlite");
 	FS.copy("test/gamestate2.sqlite", "test/gamestate2.sqlite.temp");
 	SQLitePersister persister("test/gamestate2.sqlite.temp");
-	MapManager mapMgr;
+	LUAMapManager mapMgr;
 	mapMgr.loadMaps();
 	TextureDefinition t("small");
 	SpriteDefinition::get().init(t);

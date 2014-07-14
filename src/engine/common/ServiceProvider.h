@@ -5,7 +5,7 @@
 
 // forward decl
 class CampaignManager;
-class MapManager;
+class IMapManager;
 class IGameStatePersister;
 class INetwork;
 class TextureDefinition;
@@ -14,7 +14,7 @@ class IProgressCallback;
 
 class ServiceProvider {
 private:
-	MapManager* _mapManager;
+	IMapManager* _mapManager;
 	INetwork* _network;
 	INetwork* _loopback;
 	TextureDefinition* _textureDefinition;
@@ -33,7 +33,7 @@ public:
 	// note that this value should not get cached somewhere, as the implementation behind
 	// this might change during runtime (switching between loopback and real network)
 	INetwork& getNetwork ();
-	MapManager& getMapManager ();
+	IMapManager& getMapManager ();
 	// get the texture definition that depends on your current resolution. Either the 'big'
 	// or the 'small' definition was used.
 	TextureDefinition& getTextureDefinition ();
@@ -44,7 +44,7 @@ inline INetwork& ServiceProvider::getNetwork ()
 	return *_currentNetwork;
 }
 
-inline MapManager& ServiceProvider::getMapManager ()
+inline IMapManager& ServiceProvider::getMapManager ()
 {
 	return *_mapManager;
 }

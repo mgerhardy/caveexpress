@@ -27,7 +27,7 @@ const std::string IMapManager::getMapTitle (const std::string& mapId) const
 	return i->second->getName();
 }
 
-void MapManager::loadMaps ()
+void LUAMapManager::loadMaps ()
 {
 	_maps.clear();
 	const std::string& mapsPath = FS.getMapsDir();
@@ -70,7 +70,7 @@ void IMapManager::listMaps ()
 	}
 }
 
-MapManager::Maps IMapManager::getMapsByWildcard (const std::string& wildcard) const
+IMapManager::Maps IMapManager::getMapsByWildcard (const std::string& wildcard) const
 {
 	Maps maps;
 	const String tmp(wildcard);

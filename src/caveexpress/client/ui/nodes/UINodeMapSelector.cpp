@@ -5,7 +5,7 @@
 #include "engine/common/Commands.h"
 #include "engine/common/FileSystem.h"
 
-UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, const MapManager &mapManager, int cols, int rows) :
+UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, int cols, int rows) :
 		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _campaignManager(nullptr), _mapManager(&mapManager)
 {
 	setColsRowsFromTexture("map-icon-locked");
@@ -116,8 +116,8 @@ void UINodeMapSelector::reset ()
 {
 	UINodeSelector<std::string>::reset();
 	if (_mapManager) {
-		const MapManager::Maps &maps = _mapManager->getMaps();
-		for (MapManager::Maps::const_iterator i = maps.begin(); i != maps.end(); ++i) {
+		const IMapManager::Maps &maps = _mapManager->getMaps();
+		for (IMapManager::Maps::const_iterator i = maps.begin(); i != maps.end(); ++i) {
 			addData(i->first);
 		}
 		return;
