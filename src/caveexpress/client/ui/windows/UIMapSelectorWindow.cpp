@@ -8,7 +8,7 @@
 #include "engine/common/SpriteDefinition.h"
 #include "engine/common/ConfigManager.h"
 #include "caveexpress/client/ui/nodes/UINodeBackground.h"
-#include "caveexpress/client/ui/nodes/UINodeMapSelector.h"
+#include "engine/client/ui/nodes/UINodeMapSelector.h"
 #include "engine/common/campaign/persister/IGameStatePersister.h"
 
 UIMapSelectorWindow::UIMapSelectorWindow (UINodeMapSelector* mapSelector, const std::string& title, const std::string& id, IFrontend *frontend,

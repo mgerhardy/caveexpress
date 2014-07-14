@@ -22,7 +22,7 @@
 #include "caveexpress/client/ui/nodes/UINodeSpriteSelector.h"
 #include "caveexpress/client/ui/nodes/UINodeEntitySelector.h"
 #include "caveexpress/client/ui/nodes/UINodeMapEditorSelectedItem.h"
-#include "caveexpress/client/ui/nodes/UINodeMapStringSelector.h"
+#include "engine/client/ui/nodes/UINodeMapStringSelector.h"
 #include "caveexpress/shared/constants/Commands.h"
 
 #include "mapeditor/SaveListener.h"

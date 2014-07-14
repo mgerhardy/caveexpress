@@ -1,5 +1,5 @@
 #include "UICampaignMapWindow.h"
-#include "caveexpress/client/ui/nodes/UINodeMapSelector.h"
+#include "engine/client/ui/nodes/UINodeMapSelector.h"
 #include "engine/client/ui/nodes/UINodeButton.h"
 #include "engine/common/campaign/CampaignManager.h"
 #include "caveexpress/client/ui/windows/campaignmapwindow/ResetCampaignListener.h"
