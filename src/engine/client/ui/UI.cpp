@@ -711,6 +711,8 @@ void UI::popup (const std::string& text, int flags, UIPopupCallbackPtr callback)
 {
 	info(LOG_CLIENT, "push popup");
 	UIWindow* popupWindow = Singleton<GameRegistry>::getInstance().getGame()->createPopupWindow(_frontend, text, flags, callback);
+	if (popupWindow == nullptr)
+		return;
 	_stack.push_back(popupWindow);
 	_stack.back()->onActive();
 }
