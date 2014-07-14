@@ -2,7 +2,6 @@
 
 #include "engine/client/ui/nodes/UINodeButtonImage.h"
 #include "caveexpress/client/ui/windows/main/ContinuePlayNodeListener.h"
-#include "caveexpress/shared/constants/Commands.h"
 
 class UINodeContinuePlay: public UINodeButtonImage {
 public:

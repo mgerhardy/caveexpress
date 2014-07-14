@@ -5,7 +5,7 @@
 #include "engine/client/ui/windows/listener/SelectorPageListener.h"
 #include "engine/client/ui/nodes/UINodeMainButton.h"
 #include "engine/common/ServiceProvider.h"
-#include "caveexpress/client/ui/nodes/UINodeCampaignSelector.h"
+#include "engine/client/ui/nodes/UINodeCampaignSelector.h"
 #include "caveexpress/client/ui/nodes/UINodeBackground.h"
 #include "caveexpress/client/ui/windows/main/ContinuePlayNodeListener.h"
 
