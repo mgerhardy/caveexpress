@@ -24,6 +24,8 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/engine/common/network/*.cpp) \
 	\
 	$(wildcard $(SRCDIR)/engine/common/*.cpp) \
+	\
+	$(wildcard $(SRCDIR)/engine/*.cpp) \
 	) \
 	\
 	$(SDL_SRCS) \
