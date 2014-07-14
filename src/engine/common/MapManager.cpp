@@ -6,11 +6,11 @@
 #include "engine/common/LUA.h"
 #include "engine/common/Commands.h"
 
-MapManager::MapManager ()
+IMapManager::IMapManager ()
 {
 }
 
-MapManager::~MapManager ()
+IMapManager::~IMapManager ()
 {
 	for (MapsIter i = _maps.begin(); i != _maps.end(); ++i) {
 		delete i->second;
@@ -18,7 +18,7 @@ MapManager::~MapManager ()
 	Commands.removeCommand(CMD_LIST_MAPS);
 }
 
-const std::string MapManager::getMapTitle (const std::string& mapId) const
+const std::string IMapManager::getMapTitle (const std::string& mapId) const
 {
 	MapsConstIter i = _maps.find(mapId);
 	if (i == _maps.end())
@@ -55,14 +55,14 @@ void MapManager::loadMaps ()
 	info(LOG_MAP, String::format("loaded %i maps", static_cast<int>(_maps.size())));
 }
 
-void MapManager::init ()
+void IMapManager::init ()
 {
 	loadMaps();
 
-	Commands.registerCommand(CMD_LIST_MAPS, bind(MapManager, listMaps));
+	Commands.registerCommand(CMD_LIST_MAPS, bind(IMapManager, listMaps));
 }
 
-void MapManager::listMaps ()
+void IMapManager::listMaps ()
 {
 	info(LOG_SERVER, "Map list:");
 	for (MapsConstIter i = _maps.begin(); i != _maps.end(); ++i) {
@@ -70,7 +70,7 @@ void MapManager::listMaps ()
 	}
 }
 
-MapManager::Maps MapManager::getMapsByWildcard (const std::string& wildcard) const
+MapManager::Maps IMapManager::getMapsByWildcard (const std::string& wildcard) const
 {
 	Maps maps;
 	const String tmp(wildcard);

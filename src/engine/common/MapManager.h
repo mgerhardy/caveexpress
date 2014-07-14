@@ -34,22 +34,22 @@ public:
 	}
 };
 
-class MapManager: public NonCopyable {
+class IMapManager: public NonCopyable {
 public:
 	typedef std::map<std::string, MapData*> Maps;
 
-private:
+protected:
 	typedef Maps::const_iterator MapsConstIter;
 	typedef Maps::iterator MapsIter;
 	Maps _maps;
 
 	void listMaps ();
 public:
-	MapManager ();
-	virtual ~MapManager ();
+	IMapManager ();
+	virtual ~IMapManager ();
 
 	void init ();
-	void loadMaps ();
+	virtual void loadMaps () = 0;
 
 	Maps getMapsByWildcard (const std::string& wildcard) const;
 
@@ -59,4 +59,10 @@ public:
 	{
 		return _maps;
 	}
+};
+
+class MapManager: public IMapManager {
+public:
+	virtual ~MapManager ();
+	void loadMaps () override;
 };
