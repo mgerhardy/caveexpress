@@ -82,6 +82,10 @@ void LUAMapManager::loadMaps ()
 	info(LOG_MAP, String::format("loaded %i maps", static_cast<int>(_maps.size())));
 }
 
+FileMapManager::FileMapManager(const std::string& extension) :
+		_extension(extension) {
+}
+
 void FileMapManager::loadMaps ()
 {
 	_maps.clear();
