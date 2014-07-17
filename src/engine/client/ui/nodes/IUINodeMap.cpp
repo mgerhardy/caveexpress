@@ -7,6 +7,7 @@
 #include "engine/client/commands/CmdDisconnect.h"
 #include "engine/client/ui/UI.h"
 #include "engine/client/ui/BitmapFont.h"
+#include "engine/client/ui/windows/IUIMapWindow.h"
 #include "engine/client/network/ChangeAnimationHandler.h"
 #include "engine/client/network/MapRestartHandler.h"
 #include "engine/client/network/PauseHandler.h"
@@ -21,6 +22,7 @@
 #include "engine/common/ServiceProvider.h"
 #include "engine/client/commands/CmdMove.h"
 #include "engine/common/campaign/CampaignManager.h"
+#include "engine/client/network/CloseMapHandler.h"
 
 IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
 		UINode(frontend), _map(map), _campaignManager(campaignManager)
@@ -43,6 +45,7 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	r.registerClientHandler(protocol::PROTO_RUMBLE, new RumbleHandler(_map));
 	r.registerClientHandler(protocol::PROTO_PLAYERLIST, new PlayerListHandler(this));
 	r.registerClientHandler(protocol::PROTO_MESSAGE, new TextMessageHandler(this));
+	r.registerClientHandler(protocol::PROTO_CLOSEMAP, new CloseMapHandler(_map));
 
 	_campaignManager.addListener(this);
 
@@ -76,6 +79,7 @@ IUINodeMap::~IUINodeMap ()
 	r.unregisterClientHandler(protocol::PROTO_RUMBLE);
 	r.unregisterClientHandler(protocol::PROTO_PLAYERLIST);
 	r.unregisterClientHandler(protocol::PROTO_MESSAGE);
+	r.unregisterClientHandler(protocol::PROTO_CLOSEMAP);
 }
 
 void IUINodeMap::setMapRect (int x, int y, int w, int h)

@@ -51,7 +51,6 @@
 #include "caveexpress/client/network/AddEntityWithSoundHandler.h"
 #include "caveexpress/client/network/HudMapSettingsHandler.h"
 #include "caveexpress/client/network/WaterHeightHandler.h"
-#include "caveexpress/client/network/CloseMapHandler.h"
 #include "caveexpress/client/network/StartMapHandler.h"
 #include "caveexpress/client/network/UpdateHitpointsHandler.h"
 #include "caveexpress/client/network/UpdateLivesHandler.h"
