@@ -15,6 +15,8 @@
 #include "engine/client/network/SoundHandler.h"
 #include "engine/client/network/BackToMainHandler.h"
 #include "engine/client/network/RumbleHandler.h"
+#include "engine/client/network/PlayerListHandler.h"
+#include "engine/client/network/TextMessageHandler.h"
 #include "engine/common/network/ProtocolHandlerRegistry.h"
 #include "engine/common/ServiceProvider.h"
 #include "engine/client/commands/CmdMove.h"
@@ -39,6 +41,8 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	r.registerClientHandler(protocol::PROTO_SOUND, new SoundHandler());
 	r.registerClientHandler(protocol::PROTO_BACKTOMAIN, new BackToMainHandler());
 	r.registerClientHandler(protocol::PROTO_RUMBLE, new RumbleHandler(_map));
+	r.registerClientHandler(protocol::PROTO_PLAYERLIST, new PlayerListHandler(this));
+	r.registerClientHandler(protocol::PROTO_MESSAGE, new TextMessageHandler(this));
 
 	_campaignManager.addListener(this);
 
@@ -70,6 +74,8 @@ IUINodeMap::~IUINodeMap ()
 	r.unregisterClientHandler(protocol::PROTO_SOUND);
 	r.unregisterClientHandler(protocol::PROTO_BACKTOMAIN);
 	r.unregisterClientHandler(protocol::PROTO_RUMBLE);
+	r.unregisterClientHandler(protocol::PROTO_PLAYERLIST);
+	r.unregisterClientHandler(protocol::PROTO_MESSAGE);
 }
 
 void IUINodeMap::setMapRect (int x, int y, int w, int h)

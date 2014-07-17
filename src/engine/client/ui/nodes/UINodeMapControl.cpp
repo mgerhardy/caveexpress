@@ -7,11 +7,11 @@
 #include "engine/common/Direction.h"
 
 
-UINodeMapControl::UINodeMapControl (IFrontend *frontend, ClientMap& map, float x, float y, float w, float h) :
-		UINode(frontend), _map(map), _direction(0), _oldDirection(0), _joystick(Config.isJoystick())
+UINodeMapControl::UINodeMapControl (IFrontend *frontend, IUINodeMap *mapNode) :
+		UINode(frontend), _map(mapNode->getMap()), _direction(0), _oldDirection(0), _joystick(Config.isJoystick())
 {
-	setPos(x, y);
-	setSize(w, h);
+	setPos(mapNode->getX(), mapNode->getY());
+	setSize(mapNode->getWidth(), mapNode->getHeight());
 }
 
 UINodeMapControl::~UINodeMapControl ()

@@ -17,7 +17,7 @@ private:
 	bool _joystick;
 
 public:
-	UINodeMapControl (IFrontend *frontend, ClientMap& map, float x, float y, float w, float h);
+	UINodeMapControl (IFrontend *frontend, IUINodeMap *mapNode);
 	virtual ~UINodeMapControl ();
 
 	// IMapControl

@@ -6,8 +6,6 @@
 #include "caveexpress/client/network/SpawnInfoHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
 #include "caveexpress/client/network/InitWaitingMapHandler.h"
-#include "engine/client/network/PlayerListHandler.h"
-#include "engine/client/network/TextMessageHandler.h"
 
 UINodeMap::UINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
 		IUINodeMap(frontend, serviceProvider, campaignManager, x, y, width, height, map)
@@ -20,8 +18,6 @@ UINodeMap::UINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, Cam
 	r.registerClientHandler(protocol::PROTO_SPAWNINFO, new SpawnInfoHandler(_map, this));
 	r.registerClientHandler(protocol::PROTO_UPDATEPARTICLE, new UpdateParticleHandler(_map));
 	r.registerClientHandler(protocol::PROTO_INITWAITING, new InitWaitingMapHandler(serviceProvider));
-	r.registerClientHandler(protocol::PROTO_PLAYERLIST, new PlayerListHandler(this));
-	r.registerClientHandler(protocol::PROTO_MESSAGE, new TextMessageHandler(this));
 }
 
 UINodeMap::~UINodeMap ()
@@ -34,6 +30,4 @@ UINodeMap::~UINodeMap ()
 	r.unregisterClientHandler(protocol::PROTO_SPAWNINFO);
 	r.unregisterClientHandler(protocol::PROTO_UPDATEPARTICLE);
 	r.unregisterClientHandler(protocol::PROTO_INITWAITING);
-	r.unregisterClientHandler(protocol::PROTO_PLAYERLIST);
-	r.unregisterClientHandler(protocol::PROTO_MESSAGE);
 }
