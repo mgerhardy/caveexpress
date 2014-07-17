@@ -1,7 +1,7 @@
 #pragma once
 
 #include "engine/common/network/IProtocolHandler.h"
-#include "caveexpress/client/ui/windows/UIMapWindow.h"
+#include "engine/client/ui/windows/IUIMapWindow.h"
 #include "engine/client/ui/UI.h"
 
 /**
@@ -11,7 +11,7 @@ class StartMapHandler: public IClientProtocolHandler {
 public:
 	void execute (const IProtocolMessage& message) override
 	{
-		UIMapWindow* window = static_cast<UIMapWindow*>(UI::get().getWindow(UI_WINDOW_MAP));
+		IUIMapWindow* window = static_cast<IUIMapWindow*>(UI::get().getWindow(UI_WINDOW_MAP));
 		window->start();
 	}
 };

@@ -25,6 +25,8 @@
 #include "engine/client/network/CloseMapHandler.h"
 #include "engine/client/network/HudLoadMapHandler.h"
 #include "engine/client/network/HudMapSettingsHandler.h"
+#include "engine/client/network/InitWaitingMapHandler.h"
+#include "engine/client/network/StartMapHandler.h"
 
 IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
 		UINode(frontend), _map(map), _campaignManager(campaignManager)
@@ -50,6 +52,8 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	r.registerClientHandler(protocol::PROTO_CLOSEMAP, new CloseMapHandler(_map));
 	r.registerClientHandler(protocol::PROTO_LOADMAP, new HudLoadMapHandler(_map, serviceProvider));
 	r.registerClientHandler(protocol::PROTO_MAPSETTINGS, new HudMapSettingsHandler(_map));
+	r.registerClientHandler(protocol::PROTO_INITWAITING, new InitWaitingMapHandler(serviceProvider));
+	r.registerClientHandler(protocol::PROTO_STARTMAP, new StartMapHandler());
 
 	_campaignManager.addListener(this);
 
@@ -86,6 +90,8 @@ IUINodeMap::~IUINodeMap ()
 	r.unregisterClientHandler(protocol::PROTO_CLOSEMAP);
 	r.unregisterClientHandler(protocol::PROTO_LOADMAP);
 	r.unregisterClientHandler(protocol::PROTO_MAPSETTINGS);
+	r.unregisterClientHandler(protocol::PROTO_INITWAITING);
+	r.unregisterClientHandler(protocol::PROTO_STARTMAP);
 }
 
 void IUINodeMap::setMapRect (int x, int y, int w, int h)
