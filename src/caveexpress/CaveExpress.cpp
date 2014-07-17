@@ -45,11 +45,9 @@
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/client/CaveExpressClientMap.h"
 #include "caveexpress/client/commands/CmdMapOpenInEditor.h"
-#include "caveexpress/client/network/HudLoadMapHandler.h"
 #include "caveexpress/client/network/AddRopeHandler.h"
 #include "caveexpress/client/network/RemoveRopeHandler.h"
 #include "caveexpress/client/network/AddEntityWithSoundHandler.h"
-#include "caveexpress/client/network/HudMapSettingsHandler.h"
 #include "caveexpress/client/network/WaterHeightHandler.h"
 #include "caveexpress/client/network/StartMapHandler.h"
 #include "caveexpress/client/network/UpdateHitpointsHandler.h"
@@ -270,10 +268,6 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.registerClientHandler(protocol::PROTO_LIGHTSTATE, new LightStateHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_ADDENTITY);
 	r.registerClientHandler(protocol::PROTO_ADDENTITY, new AddEntityWithSoundHandler(*_map));
-	r.unregisterClientHandler(protocol::PROTO_LOADMAP);
-	r.registerClientHandler(protocol::PROTO_LOADMAP, new HudLoadMapHandler(*_map, serviceProvider));
-	r.unregisterClientHandler(protocol::PROTO_MAPSETTINGS);
-	r.registerClientHandler(protocol::PROTO_MAPSETTINGS, new HudMapSettingsHandler(*_map));
 	r.unregisterClientHandler(protocol::PROTO_INITDONE);
 	r.registerClientHandler(protocol::PROTO_INITDONE, new HudInitDoneHandler(*_map));
 }

@@ -4,7 +4,7 @@
 #include "engine/client/network/MapSettingsHandler.h"
 #include "engine/client/ClientMap.h"
 #include "engine/client/ui/UI.h"
-#include "caveexpress/client/ui/windows/UIMapWindow.h"
+#include "engine/client/ui/windows/IUIMapWindow.h"
 #include "engine/client/ui/nodes/IUINodeMap.h"
 
 class HudMapSettingsHandler: public MapSettingsHandler {

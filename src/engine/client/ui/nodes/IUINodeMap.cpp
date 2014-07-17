@@ -24,6 +24,7 @@
 #include "engine/common/campaign/CampaignManager.h"
 #include "engine/client/network/CloseMapHandler.h"
 #include "engine/client/network/HudLoadMapHandler.h"
+#include "engine/client/network/HudMapSettingsHandler.h"
 
 IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
 		UINode(frontend), _map(map), _campaignManager(campaignManager)
@@ -48,6 +49,7 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	r.registerClientHandler(protocol::PROTO_MESSAGE, new TextMessageHandler(this));
 	r.registerClientHandler(protocol::PROTO_CLOSEMAP, new CloseMapHandler(_map));
 	r.registerClientHandler(protocol::PROTO_LOADMAP, new HudLoadMapHandler(_map, serviceProvider));
+	r.registerClientHandler(protocol::PROTO_MAPSETTINGS, new HudMapSettingsHandler(_map));
 
 	_campaignManager.addListener(this);
 
@@ -83,6 +85,7 @@ IUINodeMap::~IUINodeMap ()
 	r.unregisterClientHandler(protocol::PROTO_MESSAGE);
 	r.unregisterClientHandler(protocol::PROTO_CLOSEMAP);
 	r.unregisterClientHandler(protocol::PROTO_LOADMAP);
+	r.unregisterClientHandler(protocol::PROTO_MAPSETTINGS);
 }
 
 void IUINodeMap::setMapRect (int x, int y, int w, int h)
