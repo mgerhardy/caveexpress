@@ -207,39 +207,39 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	_game.init(frontend, &serviceProvider, _campaignManager);
 }
 
-void CaveExpress::initUI (IFrontend* _frontend, ServiceProvider& serviceProvider)
+void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 {
 	UI& ui = UI::get();
 	CampaignManager& campaignMgr = *_campaignManager;
-	ui.addWindow(new UIMainWindow(_frontend, serviceProvider));
-	ui.addWindow(new UICampaignWindow(_frontend, serviceProvider, campaignMgr));
-	ui.addWindow(new UICampaignMapWindow(_frontend, campaignMgr));
-	CaveExpressClientMap *map = new CaveExpressClientMap(0, 0, _frontend->getWidth(), _frontend->getHeight(), _frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
+	ui.addWindow(new UIMainWindow(frontend, serviceProvider));
+	ui.addWindow(new UICampaignWindow(frontend, serviceProvider, campaignMgr));
+	ui.addWindow(new UICampaignMapWindow(frontend, campaignMgr));
+	CaveExpressClientMap *map = new CaveExpressClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
 	_map = map;
-	UIMapWindow *mapWindow = new UIMapWindow(_frontend, serviceProvider, campaignMgr, *_map);
+	UIMapWindow *mapWindow = new UIMapWindow(frontend, serviceProvider, campaignMgr, *_map);
 	ui.addWindow(mapWindow);
-	ui.addWindow(new UIModeSelectionWindow(_frontend, campaignMgr));
-	ui.addWindow(new UISettingsWindow(_frontend, serviceProvider, campaignMgr));
-	ui.addWindow(new IntroPackage(_frontend));
-	ui.addWindow(new IntroTime(_frontend));
-	ui.addWindow(new IntroTree(_frontend));
-	ui.addWindow(new IntroGeyser(_frontend));
-	ui.addWindow(new IntroAttack(_frontend));
-	ui.addWindow(new IntroFlying(_frontend));
-	ui.addWindow(new IntroFindYourWay(_frontend));
-	ui.addWindow(new UIPaymentWindow(_frontend));
-	ui.addWindow(new UIMultiplayerWindow(_frontend, serviceProvider.getMapManager(), serviceProvider));
-	ui.addWindow(new UICreateServerWindow(_frontend, serviceProvider.getMapManager()));
-	UIMapEditorWindow* mapEditorWindow = new UIMapEditorWindow(_frontend, serviceProvider.getMapManager());
+	ui.addWindow(new UIModeSelectionWindow(frontend, campaignMgr));
+	ui.addWindow(new UISettingsWindow(frontend, serviceProvider, campaignMgr));
+	ui.addWindow(new IntroPackage(frontend));
+	ui.addWindow(new IntroTime(frontend));
+	ui.addWindow(new IntroTree(frontend));
+	ui.addWindow(new IntroGeyser(frontend));
+	ui.addWindow(new IntroAttack(frontend));
+	ui.addWindow(new IntroFlying(frontend));
+	ui.addWindow(new IntroFindYourWay(frontend));
+	ui.addWindow(new UIPaymentWindow(frontend));
+	ui.addWindow(new UIMultiplayerWindow(frontend, serviceProvider.getMapManager(), serviceProvider));
+	ui.addWindow(new UICreateServerWindow(frontend, serviceProvider.getMapManager()));
+	UIMapEditorWindow* mapEditorWindow = new UIMapEditorWindow(frontend, serviceProvider.getMapManager());
 	ui.addWindow(mapEditorWindow);
-	ui.addWindow(new UIGameHelpWindow(_frontend));
-	ui.addWindow(new UIGameOverWindow(_frontend, campaignMgr));
-	ui.addWindow(new UIMapOptionsWindow(_frontend, serviceProvider));
-	ui.addWindow(new UIGameFinishedWindow(_frontend));
-	ui.addWindow(new UIMapFinishedWindow(_frontend, campaignMgr, serviceProvider));
-	ui.addWindow(new UIMapFailedWindow(_frontend, campaignMgr));
-	ui.addWindow(new UIMapEditorHelpWindow(_frontend));
-	ui.addWindow(new UIMapEditorOptionsWindow(_frontend, mapEditorWindow->getMapEditorNode()));
+	ui.addWindow(new UIGameHelpWindow(frontend));
+	ui.addWindow(new UIGameOverWindow(frontend, campaignMgr));
+	ui.addWindow(new UIMapOptionsWindow(frontend, serviceProvider));
+	ui.addWindow(new UIGameFinishedWindow(frontend));
+	ui.addWindow(new UIMapFinishedWindow(frontend, campaignMgr, serviceProvider));
+	ui.addWindow(new UIMapFailedWindow(frontend, campaignMgr));
+	ui.addWindow(new UIMapEditorHelpWindow(frontend));
+	ui.addWindow(new UIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));
 
 	Commands.registerCommand(CMD_DROP, new CmdDrop(*map));
 	Commands.registerCommand(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*_map));
