@@ -101,7 +101,7 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 {
 	UI& ui = UI::get();
 	ui.addWindow(new UIMainWindow(frontend));
-	CavePackerClientMap *map = new CavePackerClientMap(0, 0, _frontend->getWidth(), _frontend->getHeight(), _frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
+	CavePackerClientMap *map = new CavePackerClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
 	_map = map;
 	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_map));
 }
