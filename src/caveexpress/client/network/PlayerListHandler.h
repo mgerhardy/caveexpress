@@ -4,7 +4,7 @@
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 #include "engine/client/ClientMap.h"
 #include "engine/client/ui/UI.h"
-#include "caveexpress/client/ui/nodes/UINodeMap.h"
+#include "engine/client/ui/nodes/IUINodeMap.h"
 
 class PlayerListHandler: public IClientProtocolHandler {
 private:
