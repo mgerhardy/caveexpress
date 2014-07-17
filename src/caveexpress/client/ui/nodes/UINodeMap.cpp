@@ -6,8 +6,8 @@
 #include "caveexpress/client/network/SpawnInfoHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
 #include "caveexpress/client/network/InitWaitingMapHandler.h"
-#include "caveexpress/client/network/PlayerListHandler.h"
-#include "caveexpress/client/network/TextMessageHandler.h"
+#include "engine/client/network/PlayerListHandler.h"
+#include "engine/client/network/TextMessageHandler.h"
 
 UINodeMap::UINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
 		IUINodeMap(frontend, serviceProvider, campaignManager, x, y, width, height, map)

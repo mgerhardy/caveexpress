@@ -1,11 +1,11 @@
 #include "UINodeMapFingerControl.h"
 #include "engine/client/ui/windows/UIWindow.h"
-#include "caveexpress/client/ui/nodes/UINodeMap.h"
+#include "engine/client/ui/nodes/IUINodeMap.h"
 #include "engine/client/ClientMap.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/Logger.h"
 
-UINodeMapFingerControl::UINodeMapFingerControl (IFrontend *frontend, UINodeMap *mapNode) :
+UINodeMapFingerControl::UINodeMapFingerControl (IFrontend *frontend, IUINodeMap *mapNode) :
 		UINode(frontend), _map(mapNode->getMap()), _finger(-1), _pressX(0), _pressY(0), _moveX(0), _moveY(0), _lastMoveX(0), _lastMoveY(0)
 {
 	setPos(mapNode->getX(), mapNode->getY());

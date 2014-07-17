@@ -8,9 +8,9 @@
 class SpawnInfoHandler: public IClientProtocolHandler {
 private:
 	ClientMap& _clientMap;
-	UINodeMap *_mapNode;
+	IUINodeMap *_mapNode;
 public:
-	SpawnInfoHandler(ClientMap& clientMap, UINodeMap* mapNode) :
+	SpawnInfoHandler(ClientMap& clientMap, IUINodeMap* mapNode) :
 			_clientMap(clientMap), _mapNode(mapNode) {
 	}
 

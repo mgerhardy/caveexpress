@@ -1,16 +1,15 @@
 #pragma once
 
 #include "engine/common/network/IProtocolHandler.h"
-#include "caveexpress/shared/network/messages/ProtocolMessages.h"
 #include "engine/client/ClientMap.h"
 #include "engine/client/ui/UI.h"
 #include "engine/client/ui/nodes/IUINodeMap.h"
 
 class PlayerListHandler: public IClientProtocolHandler {
 private:
-	UINodeMap* _mapNode;
+	IUINodeMap* _mapNode;
 public:
-	PlayerListHandler (UINodeMap* mapNode) :
+	PlayerListHandler (IUINodeMap* mapNode) :
 			_mapNode(mapNode)
 	{
 	}

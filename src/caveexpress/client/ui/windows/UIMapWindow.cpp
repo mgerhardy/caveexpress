@@ -12,6 +12,7 @@
 #include "caveexpress/shared/constants/Commands.h"
 #include "engine/common/CommandSystem.h"
 #include "engine/common/ConfigManager.h"
+#include "engine/client/ui/nodes/IUINodeMap.h"
 #include "caveexpress/client/ui/nodes/UINodeMap.h"
 #include "engine/client/ui/nodes/UINodeMapControl.h"
 #include "caveexpress/client/ui/nodes/UINodeMapFingerControl.h"

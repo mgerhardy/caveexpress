@@ -5,9 +5,9 @@
 
 class TextMessageHandler: public IClientProtocolHandler {
 private:
-	UINodeMap *_mapNode;
+	IUINodeMap *_mapNode;
 public:
-	TextMessageHandler (UINodeMap* mapNode) :
+	TextMessageHandler (IUINodeMap* mapNode) :
 			_mapNode(mapNode)
 	{
 	}

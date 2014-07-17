@@ -3,7 +3,7 @@
 #include "engine/common/network/IProtocolHandler.h"
 #include "engine/client/network/LoadMapHandler.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
-#include "caveexpress/client/ui/nodes/UINodeMap.h"
+#include "engine/client/ui/nodes/IUINodeMap.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
 #include "engine/client/ui/nodes/UINodeLabel.h"
 #include "engine/client/ClientMap.h"
@@ -24,7 +24,7 @@ public:
 		collectedNode->clearSprites();
 		UINodeLabel* pointsNode = UI::get().getNode<UINodeLabel>(UI_WINDOW_MAP, UINODE_POINTS);
 		pointsNode->setLabel("0");
-		UINodeMap* mapNode = UI::get().getNode<UINodeMap>(UI_WINDOW_MAP, UINODE_MAP);
+		IUINodeMap* mapNode = UI::get().getNode<IUINodeMap>(UI_WINDOW_MAP, UINODE_MAP);
 		mapNode->setTitle(msg->getTitle());
 	}
 };

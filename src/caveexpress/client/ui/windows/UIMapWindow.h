@@ -13,7 +13,7 @@
 // forward decl
 class UINode;
 class UINodeLabel;
-class UINodeMap;
+class IUINodeMap;
 class UINodePoint;
 class UINodeBar;
 class UINodeSprite;
@@ -26,7 +26,7 @@ class IMapControl;
 class UIMapWindow: public UIWindow {
 private:
 	friend class UIMapHelpWindow;
-	UINodeMap *_nodeMap;
+	IUINodeMap *_nodeMap;
 	UINode *_panel;
 	UINodePoint *_points;
 	UINodeBar *_timeBar;
