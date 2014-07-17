@@ -23,6 +23,7 @@
 #include "engine/client/commands/CmdMove.h"
 #include "engine/common/campaign/CampaignManager.h"
 #include "engine/client/network/CloseMapHandler.h"
+#include "engine/client/network/HudLoadMapHandler.h"
 
 IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
 		UINode(frontend), _map(map), _campaignManager(campaignManager)
@@ -46,6 +47,7 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	r.registerClientHandler(protocol::PROTO_PLAYERLIST, new PlayerListHandler(this));
 	r.registerClientHandler(protocol::PROTO_MESSAGE, new TextMessageHandler(this));
 	r.registerClientHandler(protocol::PROTO_CLOSEMAP, new CloseMapHandler(_map));
+	r.registerClientHandler(protocol::PROTO_LOADMAP, new HudLoadMapHandler(_map, serviceProvider));
 
 	_campaignManager.addListener(this);
 
@@ -80,6 +82,7 @@ IUINodeMap::~IUINodeMap ()
 	r.unregisterClientHandler(protocol::PROTO_PLAYERLIST);
 	r.unregisterClientHandler(protocol::PROTO_MESSAGE);
 	r.unregisterClientHandler(protocol::PROTO_CLOSEMAP);
+	r.unregisterClientHandler(protocol::PROTO_LOADMAP);
 }
 
 void IUINodeMap::setMapRect (int x, int y, int w, int h)

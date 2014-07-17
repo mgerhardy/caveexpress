@@ -2,7 +2,7 @@
 
 #include "engine/common/network/IProtocolHandler.h"
 #include "engine/client/network/LoadMapHandler.h"
-#include "caveexpress/client/ui/windows/UIMapWindow.h"
+#include "engine/client/ui/windows/IUIMapWindow.h"
 #include "engine/client/ui/nodes/IUINodeMap.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
 #include "engine/client/ui/nodes/UINodeLabel.h"
