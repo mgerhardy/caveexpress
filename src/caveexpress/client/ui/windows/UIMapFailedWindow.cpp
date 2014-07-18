@@ -3,7 +3,7 @@
 #include "engine/client/ui/nodes/UINodeBackButton.h"
 #include "engine/client/ui/nodes/UINodeButton.h"
 #include "engine/client/ui/layouts/UIHBoxLayout.h"
-#include "engine/client/ui/nodes/UINodeBackgroundScene.h"
+#include "caveexpress/client/ui/nodes/UINodeBackgroundScene.h"
 #include "engine/client/ui/nodes/UINodeContinuePlay.h"
 #include "engine/client/ui/windows/main/ReplayNodeListener.h"
 #include <string>

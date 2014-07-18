@@ -19,7 +19,7 @@
 #include "engine/client/ui/windows/UICampaignWindow.h"
 #include "engine/client/ui/windows/UICampaignMapWindow.h"
 #include "engine/client/ui/windows/UICreateServerWindow.h"
-#include "engine/client/ui/windows/UIMapFailedWindow.h"
+#include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
 #include "caveexpress/client/entities/ClientParticle.h"
@@ -66,6 +66,7 @@
 #include "caveexpress/client/network/TimeRemainingHandler.h"
 #include "caveexpress/client/network/FinishedMapHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
+#include "caveexpress/client/network/FailedMapHandler.h"
 
 CaveExpress::CaveExpress () :
 		_persister(nullptr), _campaignManager(nullptr), _map(nullptr)
@@ -259,4 +260,6 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.registerClientHandler(protocol::PROTO_ADDENTITY, new AddEntityWithSoundHandler(*_map));
 	r.unregisterClientHandler(protocol::PROTO_INITDONE);
 	r.registerClientHandler(protocol::PROTO_INITDONE, new HudInitDoneHandler(*_map));
+	r.unregisterClientHandler(protocol::PROTO_FAILEDMAP);
+	r.registerClientHandler(protocol::PROTO_FAILEDMAP, new FailedMapHandler(*_map, serviceProvider));
 }

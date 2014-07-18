@@ -4,7 +4,7 @@
 #include "engine/common/network/IProtocolHandler.h"
 #include "engine/common/network/INetwork.h"
 #include "engine/common/network/messages/FailedMapMessage.h"
-#include "engine/client/ui/windows/UIMapFailedWindow.h"
+#include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
 #include "engine/client/ClientMap.h"
 #include "engine/common/Commands.h"
 #include "engine/common/ServiceProvider.h"
