@@ -6,6 +6,8 @@
 #include "engine/common/ConfigManager.h"
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/ExecutionTime.h"
+#include "engine/common/Commands.h"
+#include "engine/common/CommandSystem.h"
 
 CavePacker::CavePacker ():
 	_persister(nullptr), _campaignManager(nullptr), _map(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
@@ -30,6 +32,8 @@ void CavePacker::initSoundCache ()
 
 void CavePacker::connect ()
 {
+	const std::string command = CMD_CL_CONNECT " localhost " + string::toString(Config.getPort());
+	Commands.executeCommandLine(command);
 }
 
 void CavePacker::update (uint32_t deltaTime)
