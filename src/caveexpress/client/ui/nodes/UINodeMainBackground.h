@@ -1,6 +1,6 @@
 #pragma once
 
-#include "UINodeBackground.h"
+#include "engine/client/ui/nodes/UINodeBackground.h"
 
 class UINodeMainBackground: public UINodeBackground {
 private:

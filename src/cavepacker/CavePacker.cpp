@@ -8,13 +8,14 @@
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/Commands.h"
 #include "engine/common/CommandSystem.h"
+#include "engine/common/network/messages/LoadMapMessage.h"
 
 CavePacker::CavePacker ():
-	_persister(nullptr), _campaignManager(nullptr), _map(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
+	_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
 {
 	delete _persister;
 	delete _campaignManager;
-	delete _map;
+	delete _clientMap;
 }
 
 CavePacker::~CavePacker ()
@@ -30,35 +31,41 @@ void CavePacker::initSoundCache ()
 {
 }
 
-void CavePacker::connect ()
-{
-	const std::string command = CMD_CL_CONNECT " localhost " + string::toString(Config.getPort());
-	Commands.executeCommandLine(command);
-}
-
 void CavePacker::update (uint32_t deltaTime)
 {
-}
+	if (!_map.isActive() || deltaTime == 0)
+		return;
 
-void CavePacker::onData (ClientId clientId, ByteStream &data)
-{
+	if (!_serviceProvider->getNetwork().isServer()) {
+		_map.resetCurrentMap();
+		return;
+	}
+
+	if (_map.isPause())
+		return;
+
+	_map.update(deltaTime);
 }
 
 bool CavePacker::mapLoad (const std::string& map)
 {
-	return false;
+	return _map.load(map);
 }
 
 void CavePacker::mapReload ()
 {
+	_map.reload();
 }
 
 void CavePacker::mapShutdown ()
 {
+	_map.shutdown();
 }
 
 void CavePacker::connect (ClientId clientId)
 {
+	const LoadMapMessage msg(_map.getName(), _map.getTitle());
+	_serviceProvider->getNetwork().sendToClients(ClientIdToClientMask(clientId), msg);
 }
 
 UIWindow* CavePacker::createPopupWindow (IFrontend* frontend, const std::string& text, int flags, UIPopupCallbackPtr callback)
@@ -68,21 +75,23 @@ UIWindow* CavePacker::createPopupWindow (IFrontend* frontend, const std::string&
 
 int CavePacker::disconnect (ClientId clientId)
 {
+	_map.removePlayer(clientId);
 	return 0;
 }
 
 int CavePacker::getPlayers ()
 {
-	return 0;
+	return _map.getPlayers().size();
 }
 
 std::string CavePacker::getMapName ()
 {
-	return "";
+	return _map.getName();
 }
 
 void CavePacker::shutdown ()
 {
+	mapShutdown();
 }
 
 void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
@@ -99,6 +108,8 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		_campaignManager = new CampaignManager(_persister, serviceProvider.getMapManager());
 		_campaignManager->init();
 	}
+
+	_map.init(_frontend, *_serviceProvider);
 }
 
 void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
@@ -106,6 +117,6 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	UI& ui = UI::get();
 	ui.addWindow(new UIMainWindow(frontend));
 	CavePackerClientMap *map = new CavePackerClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
-	_map = map;
-	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_map));
+	_clientMap = map;
+	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_clientMap));
 }

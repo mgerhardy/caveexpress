@@ -18,6 +18,7 @@
 #include "engine/GameRegistry.h"
 #include "engine/common/network/messages/PingMessage.h"
 #include "engine/common/MapManager.h"
+#include "engine/common/network/ProtocolHandlerRegistry.h"
 #include "engine/client/entities/ClientEntityFactory.h"
 #include <SDL.h>
 #include <iostream>
@@ -482,7 +483,19 @@ void SDLBackend::loadMap (const std::string& mapName)
 
 void SDLBackend::onData (ClientId clientId, ByteStream &data)
 {
-	Singleton<GameRegistry>::getInstance().getGame()->onData(clientId, data);
+	while (!data.empty()) {
+		const ScopedPtr<IProtocolMessage> msg(ProtocolMessageFactory::get().create(data));
+		if (!msg) {
+			error(LOG_SERVER, "no message for type " + string::toString(static_cast<int>(data.readByte())));
+			continue;
+		}
+		IServerProtocolHandler* handler = ProtocolHandlerRegistry::get().getServerHandler(*msg);
+		if (handler == nullptr) {
+			error(LOG_SERVER, String::format("no server handler for message type %i", msg->getId()));
+			continue;
+		}
+		handler->execute(clientId, *msg);
+	}
 }
 
 ProtocolMessagePtr SDLBackend::onOOBData (const unsigned char *data)

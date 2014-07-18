@@ -7,7 +7,7 @@
 #include "engine/client/ui/UI.h"
 #include "engine/common/SpriteDefinition.h"
 #include "engine/common/ConfigManager.h"
-#include "caveexpress/client/ui/nodes/UINodeBackground.h"
+#include "engine/client/ui/nodes/UINodeBackground.h"
 #include "engine/client/ui/nodes/UINodeMapSelector.h"
 #include "engine/common/campaign/persister/IGameStatePersister.h"
 

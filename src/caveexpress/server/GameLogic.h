@@ -49,7 +49,6 @@ public:
 	int disconnect (ClientId clientId);
 	void connect (ClientId clientId);
 	Map& getMap ();
-	void onData (ClientId clientId, ByteStream &data);
 
 private:
 	void loadDelayed (const std::string& name);

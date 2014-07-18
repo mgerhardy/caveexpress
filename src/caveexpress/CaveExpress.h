@@ -18,11 +18,9 @@ public:
 	CaveExpress();
 	virtual ~CaveExpress();
 
-	void connect () override;
 	void initUI (IFrontend* frontend, ServiceProvider& serviceProvider) override;
 	void initSoundCache () override;
 	void update (uint32_t deltaTime) override;
-	void onData (ClientId clientId, ByteStream &data) override;
 	std::string getMapName () override;
 	void init (IFrontend *frontend, ServiceProvider& serviceProvider) override;
 	void shutdown () override;

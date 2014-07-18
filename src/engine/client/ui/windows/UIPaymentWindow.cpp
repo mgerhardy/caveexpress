@@ -2,7 +2,7 @@
 #include "engine/client/ui/UI.h"
 #include "engine/client/ui/nodes/UINodeBackButton.h"
 #include "engine/client/ui/nodes/UINodeLabel.h"
-#include "caveexpress/client/ui/nodes/UINodeBackground.h"
+#include "engine/client/ui/nodes/UINodeBackground.h"
 #include "engine/client/ui/nodes/UINodePaymentSelector.h"
 
 UIPaymentWindow::UIPaymentWindow (IFrontend *frontend) :

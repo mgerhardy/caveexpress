@@ -3,7 +3,7 @@
 #include "engine/client/ui/nodes/UINodeLabel.h"
 #include "engine/client/ui/nodes/UINodeBackButton.h"
 #include "engine/common/Commands.h"
-#include "caveexpress/client/ui/nodes/UINodeBackground.h"
+#include "engine/client/ui/nodes/UINodeBackground.h"
 
 UIGameFinishedWindow::UIGameFinishedWindow (IFrontend *frontend) :
 		UIWindow(UI_WINDOW_GAMEFINISHED, frontend)

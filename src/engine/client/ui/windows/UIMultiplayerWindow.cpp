@@ -1,5 +1,5 @@
 #include "UIMultiplayerWindow.h"
-#include "caveexpress/client/ui/nodes/UINodeBackground.h"
+#include "engine/client/ui/nodes/UINodeBackground.h"
 #include "engine/client/ui/nodes/UINodeBackButton.h"
 #include "engine/client/ui/nodes/UINodeMainButton.h"
 #include "engine/client/ui/nodes/UINodeTextInput.h"
@@ -11,7 +11,6 @@
 #include "engine/client/ui/windows/listener/OpenWindowListener.h"
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/Commands.h"
-#include "caveexpress/shared/constants/Commands.h"
 
 UIMultiplayerWindow::UIMultiplayerWindow (IFrontend *frontend, const IMapManager &mapManager, ServiceProvider& serviceProvider) :
 		UIWindow(UI_WINDOW_MULTIPLAYER, frontend), _serviceProvider(serviceProvider)

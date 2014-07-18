@@ -1,6 +1,6 @@
 #include "UIMapEditorOptionsWindow.h"
 #include "engine/client/ui/UI.h"
-#include "caveexpress/client/ui/nodes/UINodeBackground.h"
+#include "engine/client/ui/nodes/UINodeBackground.h"
 #include "caveexpress/client/ui/nodes/UINodeMapEditor.h"
 
 #include "engine/client/ui/nodes/UINodeBackButton.h"

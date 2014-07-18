@@ -4,7 +4,7 @@
 #include "engine/client/ui/nodes/UINodeBackButton.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
 #include "engine/client/ui/nodes/UINodeBar.h"
-#include "caveexpress/client/ui/nodes/UINodeBackground.h"
+#include "engine/client/ui/nodes/UINodeBackground.h"
 #include "caveexpress/client/ui/nodes/UINodeIntroBackground.h"
 #include "engine/client/ui/layouts/UIVBoxLayout.h"
 #include "engine/client/ui/layouts/UIHBoxLayout.h"

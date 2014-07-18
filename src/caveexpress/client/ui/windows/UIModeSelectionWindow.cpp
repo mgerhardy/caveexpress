@@ -2,7 +2,7 @@
 #include "engine/client/ui/nodes/UINodeMainButton.h"
 #include "engine/client/ui/layouts/UIVBoxLayout.h"
 #include "engine/common/ConfigManager.h"
-#include "caveexpress/client/ui/nodes/UINodeBackground.h"
+#include "engine/client/ui/nodes/UINodeBackground.h"
 #include "modeselection/ModeSetListener.h"
 
 UIModeSelectionWindow::UIModeSelectionWindow (IFrontend *frontend, CampaignManager& campaignManager) :

@@ -13,6 +13,12 @@
 #include "engine/client/ui/nodes/IUINodeMap.h"
 #include "engine/client/ui/windows/IUIMapWindow.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
+#include "engine/client/ui/windows/UIPaymentWindow.h"
+#include "engine/client/ui/windows/UIPopupWindow.h"
+#include "engine/client/ui/windows/UIMultiplayerWindow.h"
+#include "engine/client/ui/windows/UICampaignWindow.h"
+#include "engine/client/ui/windows/UICampaignMapWindow.h"
+#include "engine/client/ui/windows/UICreateServerWindow.h"
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
 #include "caveexpress/client/entities/ClientParticle.h"
@@ -20,11 +26,7 @@
 #include "caveexpress/client/commands/CmdDrop.h"
 #include "caveexpress/shared/constants/Commands.h"
 #include "caveexpress/client/ui/windows/UIMainWindow.h"
-#include "caveexpress/client/ui/windows/UICampaignWindow.h"
-#include "caveexpress/client/ui/windows/UICampaignMapWindow.h"
-#include "caveexpress/client/ui/windows/UICreateServerWindow.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
-#include "caveexpress/client/ui/windows/UIMultiplayerWindow.h"
 #include "caveexpress/client/ui/windows/UIMapOptionsWindow.h"
 #include "caveexpress/client/ui/windows/UISettingsWindow.h"
 #include "caveexpress/client/ui/windows/UIMapEditorWindow.h"
@@ -35,8 +37,6 @@
 #include "caveexpress/client/ui/windows/UIGameFinishedWindow.h"
 #include "caveexpress/client/ui/windows/UIMapFinishedWindow.h"
 #include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
-#include "caveexpress/client/ui/windows/UIPaymentWindow.h"
-#include "caveexpress/client/ui/windows/UIPopupWindow.h"
 #include "caveexpress/client/ui/windows/UIModeSelectionWindow.h"
 #include "caveexpress/client/ui/windows/intro/IntroPackage.h"
 #include "caveexpress/client/ui/windows/intro/IntroTime.h"
@@ -96,20 +96,9 @@ void CaveExpress::initSoundCache ()
 	}
 }
 
-void CaveExpress::connect ()
-{
-	const std::string command = CMD_CL_CONNECT " localhost " + string::toString(Config.getPort());
-	Commands.executeCommandLine(command);
-}
-
 void CaveExpress::update (uint32_t deltaTime)
 {
 	_game.update(deltaTime);
-}
-
-void CaveExpress::onData (ClientId clientId, ByteStream &data)
-{
-	_game.onData(clientId, data);
 }
 
 bool CaveExpress::mapLoad (const std::string& map)

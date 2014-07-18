@@ -4,7 +4,7 @@
 #include "engine/client/ui/nodes/UINodePoint.h"
 #include "engine/client/ui/nodes/UINodeButton.h"
 #include "engine/client/ui/layouts/UIHBoxLayout.h"
-#include "caveexpress/client/ui/nodes/UINodeBackground.h"
+#include "engine/client/ui/nodes/UINodeBackground.h"
 #include "engine/client/ui/nodes/UINodeContinuePlay.h"
 #include "caveexpress/client/ui/nodes/UINodeStar.h"
 #include "engine/client/ui/windows/main/ReplayNodeListener.h"

@@ -1,6 +1,6 @@
 #include "UIGameHelpWindow.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
-#include "caveexpress/client/ui/nodes/UINodeBackground.h"
+#include "engine/client/ui/nodes/UINodeBackground.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/client/ui/nodes/UINodeBackButton.h"
 #include "engine/client/ui/layouts/UIHBoxLayout.h"

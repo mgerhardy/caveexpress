@@ -2,6 +2,7 @@
 
 #include "engine/GameRegistry.h"
 #include "engine/client/ClientMap.h"
+#include "cavepacker/server/map/Map.h"
 #include "engine/common/campaign/CampaignManager.h"
 #include "engine/common/campaign/persister/IGameStatePersister.h"
 
@@ -9,7 +10,8 @@ class CavePacker: public IGame {
 private:
 	IGameStatePersister* _persister;
 	CampaignManager *_campaignManager;
-	ClientMap *_map;
+	ClientMap *_clientMap;
+	Map _map;
 	IFrontend *_frontend;
 	ServiceProvider* _serviceProvider;
 
@@ -17,11 +19,9 @@ public:
 	CavePacker();
 	virtual ~CavePacker();
 
-	void connect () override;
 	void initUI (IFrontend* frontend, ServiceProvider& serviceProvider) override;
 	void initSoundCache () override;
 	void update (uint32_t deltaTime) override;
-	void onData (ClientId clientId, ByteStream &data) override;
 	std::string getMapName () override;
 	void init (IFrontend *frontend, ServiceProvider& serviceProvider) override;
 	void shutdown () override;

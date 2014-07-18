@@ -160,23 +160,6 @@ bool GameLogic::visitEntity (IEntity *entity)
 	return false;
 }
 
-void GameLogic::onData (ClientId clientId, ByteStream &data)
-{
-	while (!data.empty()) {
-		const ScopedPtr<IProtocolMessage> msg(ProtocolMessageFactory::get().create(data));
-		if (!msg) {
-			error(LOG_SERVER, "no message for type " + string::toString(static_cast<int>(data.readByte())));
-			continue;
-		}
-		IServerProtocolHandler* handler = ProtocolHandlerRegistry::get().getServerHandler(*msg);
-		if (handler == nullptr) {
-			error(LOG_SERVER, String::format("no server handler for message type %i", msg->getId()));
-			continue;
-		}
-		handler->execute(clientId, *msg);
-	}
-}
-
 int GameLogic::disconnect (ClientId clientId)
 {
 	_map.removePlayer(clientId);

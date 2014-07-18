@@ -1,7 +1,7 @@
 #pragma once
 
 #include "engine/client/ui/nodes/UINode.h"
-#include "UINodeBackground.h"
+#include "engine/client/ui/nodes/UINodeBackground.h"
 
 class UINodeGameOverBackground: public UINodeBackground {
 private:
