@@ -3,6 +3,8 @@
 #include "engine/common/network/IProtocolHandler.h"
 #include "engine/common/network/messages/FinishedMapMessage.h"
 #include "engine/common/network/INetwork.h"
+#include "engine/common/Commands.h"
+#include "engine/client/ui/UI.h"
 #include "caveexpress/client/ui/windows/UIMapFinishedWindow.h"
 #include "engine/client/ui/nodes/UINodePoint.h"
 #include "caveexpress/client/ui/nodes/UINodeStar.h"

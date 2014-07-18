@@ -4,7 +4,7 @@
 #include "engine/client/ui/nodes/UINodeButtonText.h"
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/network/INetwork.h"
-#include "caveexpress/client/ui/nodes/UINodeSettingsBackground.h"
+#include "engine/client/ui/nodes/UINodeSettingsBackground.h"
 #include "caveexpress/shared/constants/Commands.h"
 
 UIMapOptionsWindow::UIMapOptionsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :

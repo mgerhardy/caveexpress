@@ -6,7 +6,7 @@
 #include "engine/client/ui/nodes/UINodeButtonImage.h"
 #include "engine/client/ui/nodes/UINodeButtonText.h"
 #include "engine/client/ui/layouts/UIHBoxLayout.h"
-#include "caveexpress/client/ui/nodes/UINodeSettingsBackground.h"
+#include "engine/client/ui/nodes/UINodeSettingsBackground.h"
 #include "caveexpress/client/ui/windows/modeselection/ModeSetListener.h"
 #include "engine/client/sound/Sound.h"
 #include "engine/common/ConfigManager.h"

@@ -19,6 +19,7 @@
 #include "engine/client/ui/windows/UICampaignWindow.h"
 #include "engine/client/ui/windows/UICampaignMapWindow.h"
 #include "engine/client/ui/windows/UICreateServerWindow.h"
+#include "engine/client/ui/windows/UIMapFailedWindow.h"
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
 #include "caveexpress/client/entities/ClientParticle.h"
@@ -36,7 +37,6 @@
 #include "caveexpress/client/ui/windows/UIMapEditorOptionsWindow.h"
 #include "caveexpress/client/ui/windows/UIGameFinishedWindow.h"
 #include "caveexpress/client/ui/windows/UIMapFinishedWindow.h"
-#include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
 #include "caveexpress/client/ui/windows/UIModeSelectionWindow.h"
 #include "caveexpress/client/ui/windows/intro/IntroPackage.h"
 #include "caveexpress/client/ui/windows/intro/IntroTime.h"
@@ -65,7 +65,6 @@
 #include "caveexpress/client/network/UpdatePointsHandler.h"
 #include "caveexpress/client/network/TimeRemainingHandler.h"
 #include "caveexpress/client/network/FinishedMapHandler.h"
-#include "caveexpress/client/network/FailedMapHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
 
 CaveExpress::CaveExpress () :
