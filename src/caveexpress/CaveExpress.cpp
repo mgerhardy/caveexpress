@@ -18,6 +18,12 @@
 #include "engine/client/ui/windows/UICampaignWindow.h"
 #include "engine/client/ui/windows/UICampaignMapWindow.h"
 #include "engine/client/ui/windows/UICreateServerWindow.h"
+#include "engine/common/campaign/ICampaignManager.h"
+#include "engine/common/Shared.h"
+#include "engine/common/Logger.h"
+#include "engine/common/SQLite.h"
+#include "engine/common/network/messages/LoadMapMessage.h"
+#include "engine/common/network/ProtocolHandlerRegistry.h"
 #include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
@@ -66,9 +72,28 @@
 #include "caveexpress/client/network/FinishedMapHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
 #include "caveexpress/client/network/FailedMapHandler.h"
+#include "caveexpress/server/events/GameEventHandler.h"
+#include "caveexpress/server/entities/CaveMapTile.h"
+#include "caveexpress/server/entities/Package.h"
+#include "caveexpress/server/entities/npcs/NPCAttacking.h"
+#include "caveexpress/server/entities/Fruit.h"
+#include "caveexpress/shared/constants/Commands.h"
+#include "caveexpress/shared/CaveExpressSoundType.h"
+#include "caveexpress/server/network/SpawnHandler.h"
+#include "caveexpress/server/network/DisconnectHandler.h"
+#include "caveexpress/server/network/DropHandler.h"
+#include "caveexpress/server/network/StartMapHandler.h"
+#include "caveexpress/server/network/FingerMovementHandler.h"
+#include "caveexpress/server/network/StopFingerMovementHandler.h"
+#include "caveexpress/server/network/MovementHandler.h"
+#include "caveexpress/server/network/StopMovementHandler.h"
+#include "caveexpress/server/network/ClientInitHandler.h"
+#include "caveexpress/server/network/ErrorHandler.h"
+#include "caveexpress/shared/network/messages/ProtocolMessages.h"
 
 CaveExpress::CaveExpress () :
-		_persister(nullptr), _campaignManager(nullptr), _map(nullptr)
+		_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _updateEntitiesTime(0), _frontend(nullptr), _serviceProvider(nullptr),_connectedClients(
+				0), _packageCount(0), _loadDelay(0), _loadDelayName("")
 {
 }
 
@@ -78,7 +103,7 @@ CaveExpress::~CaveExpress ()
 		delete _persister;
 	if (_campaignManager != nullptr)
 		delete _campaignManager;
-	delete _map;
+	delete _clientMap;
 }
 
 IMapManager* CaveExpress::getMapManager ()
@@ -95,49 +120,136 @@ void CaveExpress::initSoundCache ()
 	}
 }
 
+/**
+ * @param[in] deltaTime The milliseconds since the last frame was executed
+ * @return If @c true is returned, the next map in the campaign is going to be started.
+ * @c false is returned if the map is still running or whenever it failed.
+ */
 void CaveExpress::update (uint32_t deltaTime)
 {
-	_game.update(deltaTime);
+	if (!_map.isActive() || deltaTime == 0)
+		return;
+
+	if (!_serviceProvider->getNetwork().isServer()) {
+		_map.resetCurrentMap();
+		return;
+	}
+
+	if (_map.isPause())
+		return;
+
+	_updateEntitiesTime -= deltaTime;
+	_map.update(deltaTime);
+
+	if (_updateEntitiesTime <= 0) {
+		_packageCount = _map.countPackages();
+		_map.visitEntities(this);
+		_updateEntitiesTime = Constant::DELTA_PHYSICS_MILLIS;
+	}
+
+	if (_loadDelay > 0) {
+		_loadDelay -= deltaTime;
+
+		if (_loadDelay <= 0) {
+			mapLoad(_loadDelayName);
+			return;
+		}
+
+		return;
+	}
+
+	if (_map.handleDeadPlayers() > 0 && !_map.isActive()) {
+		info(LOG_SERVER, "reset the game state");
+		_campaignManager->reset();
+		return;
+	}
+
+	const bool isDone = _map.isDone();
+	if (isDone && !_map.isRestartInitialized()) {
+		const uint32_t playTime = _map.getTime();
+		const uint32_t referenceTime = _map.getReferenceTime();
+		const float relativeRefTime = ConfigManager::get().getReferenceTimeFactor() * referenceTime;
+		// this max is needed for debug reasons (if you force a map win)
+		const float time = std::max(1.0f, playTime / 1000.0f);
+		const uint32_t timeSeconds = std::max(1U, playTime / 1000U);
+		const float pointsRate = relativeRefTime / time;
+		const uint32_t timePoints = pointsRate * _map.getFinishPoints();
+		const uint32_t finishPoints = timePoints + _map.getPoints();
+		const int percent = time * 100.0f / relativeRefTime;
+		info(LOG_SERVER, String::format(
+						"seconds: %.0f, refseconds: %i, rate: %f, refpoints: %i, timePoints: %i, finishPoints: %i, percent: %i",
+						time, _map.getReferenceTime(), pointsRate, _map.getFinishPoints(), timePoints, finishPoints, percent));
+		_map.sendSound(0, SoundTypes::SOUND_MUSIC_WIN);
+		uint8_t stars = 0;
+		if (percent <= 70) {
+			stars = 3;
+		} else if (percent <= 90) {
+			stars = 2;
+		} else if (percent <= 100) {
+			stars = 1;
+		}
+		if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, timeSeconds, stars))
+			error(LOG_SERVER, "Could not save the values for the map");
+
+		System.track("MapState", String::format("finished: %s with %i points in %i seconds and with %i stars", _map.getName().c_str(), finishPoints, timeSeconds, stars));
+		GameEvent.finishedMap(_map.getName(), finishPoints, timeSeconds, stars);
+	} else if (!isDone && _map.isFailed()) {
+		debug(LOG_SERVER, "map failed");
+		const uint32_t delay = 1000;
+		_map.restart(delay);
+	}
 }
 
 bool CaveExpress::mapLoad (const std::string& map)
 {
-	return _game.loadMap(map);
+	_loadDelay = 0;
+	_updateEntitiesTime = 0;
+	_packageCount = 0;
+	return _map.load(map);
 }
 
 void CaveExpress::mapReload ()
 {
-	_game.getMap().reload();
+	_map.reload();
 }
 
 void CaveExpress::mapShutdown ()
 {
-	_game.shutdown();
+	_map.shutdown();
 }
 
 void CaveExpress::connect (ClientId clientId)
 {
-	_game.connect(clientId);
+	_connectedClients++;
+	const LoadMapMessage msg(_map.getName(), _map.getTitle());
+	_serviceProvider->getNetwork().sendToClients(ClientIdToClientMask(clientId), msg);
 }
 
 int CaveExpress::disconnect (ClientId clientId)
 {
-	return _game.disconnect(clientId);
+	_map.removePlayer(clientId);
+	_connectedClients--;
+	if (_connectedClients < 0) {
+		_connectedClients = 0;
+		error(LOG_SERVER, "client counts are out of sync");
+	}
+
+	return _connectedClients;
 }
 
 int CaveExpress::getPlayers ()
 {
-	return _game.getMap().getPlayers().size();
+	return _map.getPlayers().size();
 }
 
 std::string CaveExpress::getMapName ()
 {
-	return _game.getMap().getName();
+	return _map.getName();
 }
 
 void CaveExpress::shutdown ()
 {
-	_game.shutdown();
+	_map.shutdown();
 }
 
 void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
@@ -185,7 +297,21 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		_campaignManager = new CampaignManager(_persister, serviceProvider.getMapManager());
 		_campaignManager->init();
 	}
-	_game.init(frontend, &serviceProvider, _campaignManager);
+	ProtocolHandlerRegistry& rp = ProtocolHandlerRegistry::get();
+	rp.registerServerHandler(protocol::PROTO_SPAWN, new SpawnHandler(_map, _campaignManager));
+	rp.registerServerHandler(protocol::PROTO_DISCONNECT, new DisconnectHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_STARTMAP, new StartMapHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_MOVEMENT, new MovementHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_FINGERMOVEMENT, new FingerMovementHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_STOPFINGERMOVEMENT, new StopFingerMovementHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_STOPMOVEMENT, new StopMovementHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_DROP, new DropHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_ERROR, new ErrorHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
+	_frontend = frontend;
+	_serviceProvider = &serviceProvider;
+	_map.init(_frontend, *_serviceProvider);
+	GameEvent.init(*_serviceProvider);
 }
 
 void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
@@ -196,8 +322,8 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UICampaignWindow(frontend, serviceProvider, campaignMgr));
 	ui.addWindow(new UICampaignMapWindow(frontend, campaignMgr));
 	CaveExpressClientMap *map = new CaveExpressClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
-	_map = map;
-	UIMapWindow *mapWindow = new UIMapWindow(frontend, serviceProvider, campaignMgr, *_map);
+	_clientMap = map;
+	UIMapWindow *mapWindow = new UIMapWindow(frontend, serviceProvider, campaignMgr, *_clientMap);
 	ui.addWindow(mapWindow);
 	ui.addWindow(new UIModeSelectionWindow(frontend, campaignMgr));
 	ui.addWindow(new UISettingsWindow(frontend, serviceProvider, campaignMgr));
@@ -223,13 +349,13 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));
 
 	Commands.registerCommand(CMD_DROP, new CmdDrop(*map));
-	Commands.registerCommand(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*_map));
+	Commands.registerCommand(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
 
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
 	r.unregisterClientHandler(protocol::PROTO_ADDROPE);
-	r.registerClientHandler(protocol::PROTO_ADDROPE, new AddRopeHandler(*_map));
+	r.registerClientHandler(protocol::PROTO_ADDROPE, new AddRopeHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_REMOVEROPE);
-	r.registerClientHandler(protocol::PROTO_REMOVEROPE, new RemoveRopeHandler(*_map));
+	r.registerClientHandler(protocol::PROTO_REMOVEROPE, new RemoveRopeHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_WATERHEIGHT);
 	r.registerClientHandler(protocol::PROTO_WATERHEIGHT, new WaterHeightHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_UPDATEHITPOINTS);
@@ -241,7 +367,7 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.unregisterClientHandler(protocol::PROTO_UPDATEPACKAGECOUNT);
 	r.registerClientHandler(protocol::PROTO_UPDATEPACKAGECOUNT, new UpdatePackageCountHandler());
 	r.unregisterClientHandler(protocol::PROTO_UPDATECOLLECTEDTYPE);
-	r.registerClientHandler(protocol::PROTO_UPDATECOLLECTEDTYPE, new UpdateCollectedTypeHandler(*_map));
+	r.registerClientHandler(protocol::PROTO_UPDATECOLLECTEDTYPE, new UpdateCollectedTypeHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_TIMEREMAINING);
 	r.registerClientHandler(protocol::PROTO_TIMEREMAINING, new TimeRemainingHandler());
 	r.unregisterClientHandler(protocol::PROTO_WATERIMPACT);
@@ -251,9 +377,26 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.unregisterClientHandler(protocol::PROTO_LIGHTSTATE);
 	r.registerClientHandler(protocol::PROTO_LIGHTSTATE, new LightStateHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_ADDENTITY);
-	r.registerClientHandler(protocol::PROTO_ADDENTITY, new AddEntityWithSoundHandler(*_map));
+	r.registerClientHandler(protocol::PROTO_ADDENTITY, new AddEntityWithSoundHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_INITDONE);
-	r.registerClientHandler(protocol::PROTO_INITDONE, new HudInitDoneHandler(*_map));
+	r.registerClientHandler(protocol::PROTO_INITDONE, new HudInitDoneHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_FAILEDMAP);
-	r.registerClientHandler(protocol::PROTO_FAILEDMAP, new FailedMapHandler(*_map, serviceProvider));
+	r.registerClientHandler(protocol::PROTO_FAILEDMAP, new FailedMapHandler(*map, serviceProvider));
+}
+
+Map& CaveExpress::getMap ()
+{
+	return _map;
+}
+
+bool CaveExpress::visitEntity (IEntity *entity)
+{
+	if (!entity->isDynamic() && !entity->isWater() && !entity->isCave())
+		return false;
+
+	if (entity->isDirty()) {
+		entity->snapshot();
+		GameEvent.updateEntity(entity->getVisMask(), *entity);
+	}
+	return false;
 }

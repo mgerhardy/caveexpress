@@ -37,4 +37,4 @@ protected:
 class TestGame : public IGame {
 };
 
-static GameRegisterStatic CAVEEXPRESS("test", GamePtr(new TestGame()));
+static GameRegisterStatic TESTGAME("test", GamePtr(new TestGame()));

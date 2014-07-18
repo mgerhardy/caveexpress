@@ -1,7 +1,8 @@
 #include "MapTest.h"
-#include "caveexpress/server/GameLogic.h"
+#include "caveexpress/CaveExpress.h"
 #include "caveexpress/shared/CaveExpressMapFailedReasons.h"
 #include "engine/common/ConfigManager.h"
+#include "engine/common/network/INetwork.h"
 
 class GroundVisitor: public IEntityVisitor {
 private:
@@ -40,7 +41,7 @@ public:
 
 class MapTest: public MapSuite {
 protected:
-	GameLogic _game;
+	CaveExpress _game;
 	Map _map;
 
 	class MapTickCallback {
@@ -55,7 +56,7 @@ protected:
 	};
 
 	void testCrash (const std::string& mapName, const MapFailedReason& crashReason, int ticksLeft = 10000) {
-		ASSERT_TRUE(_game.loadMap(mapName)) << "Could not load the map " << mapName;
+		ASSERT_TRUE(_game.mapLoad(mapName)) << "Could not load the map " << mapName;
 		Map* map = &_game.getMap();
 		Player* player = new Player(*map, 1);
 		player->setLives(3);
@@ -71,7 +72,7 @@ protected:
 	}
 
 	void testSuccess (const std::string& mapName, MapTickCallback& callback, int ticksLeft = 10000) {
-		ASSERT_TRUE(_game.loadMap(mapName)) << "Could not load the map " << mapName;
+		ASSERT_TRUE(_game.mapLoad(mapName)) << "Could not load the map " << mapName;
 		Map* map = &_game.getMap();
 		Player* player = new Player(*map, 1);
 		player->setLives(3);
@@ -92,7 +93,7 @@ protected:
 		MapSuite::SetUp();
 		_serviceProvider.getNetwork().openServer(12345, nullptr);
 		_map.init(&_testFrontend, _serviceProvider);
-		_game.init(&_testFrontend, &_serviceProvider, &_testCampaignMgr);
+		_game.init(&_testFrontend, _serviceProvider);
 	}
 };
 
