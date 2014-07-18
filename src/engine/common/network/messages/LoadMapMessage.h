@@ -3,6 +3,9 @@
 #include "engine/common/network/IProtocolMessage.h"
 #include <string>
 
+// inform the client that the map should get loaded. After the client loaded the map, it
+// will send a spawn command to the server which will trigger the player spawn on the map
+// @sa Map::initPlayer
 class LoadMapMessage: public IProtocolMessage {
 private:
 	std::string _name;

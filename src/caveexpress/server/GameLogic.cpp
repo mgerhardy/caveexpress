@@ -23,6 +23,7 @@
 #include "caveexpress/server/network/StopMovementHandler.h"
 #include "caveexpress/server/network/ClientInitHandler.h"
 #include "caveexpress/server/network/ErrorHandler.h"
+#include "engine/common/network/messages/LoadMapMessage.h"
 #include "engine/common/network/ProtocolHandlerRegistry.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 
@@ -196,7 +197,8 @@ Map& GameLogic::getMap ()
 void GameLogic::connect (ClientId clientId)
 {
 	_connectedClients++;
-	GameEvent.loadMap(ClientIdToClientMask(clientId), _map.getName(), _map.getTitle());
+	const LoadMapMessage msg(_map.getName(), _map.getTitle());
+	_serviceProvider->getNetwork().sendToClients(ClientIdToClientMask(clientId), msg);
 }
 
 bool GameLogic::loadMap (const std::string& mapName)

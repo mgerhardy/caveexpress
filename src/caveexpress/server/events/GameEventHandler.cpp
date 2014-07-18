@@ -1,7 +1,6 @@
 #include "GameEventHandler.h"
 #include "engine/common/network/ProtocolHandlerRegistry.h"
 #include "engine/common/ServiceProvider.h"
-#include "engine/common/network/messages/LoadMapMessage.h"
 #include "engine/common/network/messages/MapRestartMessage.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 #include "caveexpress/shared/network/messages/RemoveRopeMessage.h"
@@ -180,12 +179,6 @@ void GameEventHandler::sendLightState (int clientMask, int id, bool state) const
 void GameEventHandler::addCave (int clientMask, int id, bool state) const
 {
 	const AddCaveMessage msg(id, state);
-	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
-}
-
-void GameEventHandler::loadMap (int clientMask, const std::string& mapName, const std::string& title) const
-{
-	const LoadMapMessage msg(mapName, title);
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 

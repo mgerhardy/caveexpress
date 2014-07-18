@@ -7,6 +7,7 @@
 #include "engine/common/Logger.h"
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/SpriteDefinition.h"
+#include "engine/common/network/messages/LoadMapMessage.h"
 #include "engine/common/IFrontend.h"
 #include "engine/common/network/INetwork.h"
 #include "engine/common/IMapContext.h"
@@ -562,7 +563,8 @@ bool Map::load (const std::string& name)
 	ctx->onMapLoaded();
 
 	_frontend->onMapLoaded();
-	GameEvent.loadMap(0, _name, _title);
+	const LoadMapMessage msg(_name, _title);
+	_serviceProvider->getNetwork().sendToClients(0, msg);
 
 	_mapRunning = true;
 	return true;

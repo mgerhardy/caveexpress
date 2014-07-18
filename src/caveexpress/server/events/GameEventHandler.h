@@ -64,11 +64,6 @@ public:
 	// used to e.g. change a npc animation to walking
 	void changeAnimation (int clientMask, const IEntity& entity, const Animation& animation) const;
 
-	// inform the client that the map should get loaded. After the client loaded the map, it
-	// will send a spawn command to the server which will trigger the player spawn on the map
-	// @sa Map::initPlayer
-	void loadMap (int clientMask, const std::string& mapName, const std::string& title) const;
-
 	void sendWaterUpdate (int clientMask, const Water& map) const;
 
 	// sends a water impact event to all of the clients
