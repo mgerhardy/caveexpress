@@ -14,7 +14,6 @@
 #include "engine/client/ui/windows/IUIMapWindow.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
 #include "engine/client/ui/windows/UIPaymentWindow.h"
-#include "engine/client/ui/windows/UIPopupWindow.h"
 #include "engine/client/ui/windows/UIMultiplayerWindow.h"
 #include "engine/client/ui/windows/UICampaignWindow.h"
 #include "engine/client/ui/windows/UICampaignMapWindow.h"
@@ -129,11 +128,6 @@ int CaveExpress::disconnect (ClientId clientId)
 int CaveExpress::getPlayers ()
 {
 	return _game.getMap().getPlayers().size();
-}
-
-UIWindow* CaveExpress::createPopupWindow (IFrontend* frontend, const std::string& text, int flags, UIPopupCallbackPtr callback)
-{
-	return new UIPopupWindow(frontend, text, flags, callback);
 }
 
 std::string CaveExpress::getMapName ()

@@ -35,8 +35,6 @@ public:
 
 	virtual void connect (ClientId clientId) {}
 
-	virtual UIWindow* createPopupWindow (IFrontend* frontend, const std::string& text, int flags, UIPopupCallbackPtr callback) { return nullptr; }
-
 	virtual int disconnect (ClientId clientId) { return -1; }
 
 	virtual void init (IFrontend *frontend, ServiceProvider& serviceProvider) {}

@@ -31,7 +31,6 @@ public:
 	void mapShutdown () override;
 	bool mapLoad (const std::string& map) override;
 	IMapManager* getMapManager () override;
-	UIWindow* createPopupWindow (IFrontend* frontend, const std::string& text, int flags, UIPopupCallbackPtr callback) override;
 };
 
 static GameRegisterStatic CAVEEXPRESS("caveexpress", GamePtr(new CaveExpress()));

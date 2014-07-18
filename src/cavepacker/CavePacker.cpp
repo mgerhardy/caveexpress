@@ -68,11 +68,6 @@ void CavePacker::connect (ClientId clientId)
 	_serviceProvider->getNetwork().sendToClients(ClientIdToClientMask(clientId), msg);
 }
 
-UIWindow* CavePacker::createPopupWindow (IFrontend* frontend, const std::string& text, int flags, UIPopupCallbackPtr callback)
-{
-	return nullptr;
-}
-
 int CavePacker::disconnect (ClientId clientId)
 {
 	_map.removePlayer(clientId);
