@@ -5,7 +5,7 @@
 #include "engine/client/ui/nodes/UINodeSprite.h"
 #include "engine/client/ui/nodes/UINodeBar.h"
 #include "engine/client/ui/nodes/UINodeBackground.h"
-#include "caveexpress/client/ui/nodes/UINodeIntroBackground.h"
+#include "engine/client/ui/nodes/UINodeIntroBackground.h"
 #include "engine/client/ui/layouts/UIVBoxLayout.h"
 #include "engine/client/ui/layouts/UIHBoxLayout.h"
 #include "engine/client/ui/UI.h"

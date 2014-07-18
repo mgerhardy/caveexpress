@@ -1,7 +1,7 @@
 #pragma once
 
 #include "engine/common/Compiler.h"
-#include "Intro.h"
+#include "engine/client/ui/windows/intro/Intro.h"
 
 class IntroFlying: public Intro {
 public:

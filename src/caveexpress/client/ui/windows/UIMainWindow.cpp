@@ -2,7 +2,7 @@
 #include "engine/client/ui/UI.h"
 #include "engine/client/ui/nodes/UINodeButton.h"
 #include "engine/client/ui/nodes/UINodeMainButton.h"
-#include "caveexpress/client/ui/nodes/UINodeMainBackground.h"
+#include "engine/client/ui/nodes/UINodeMainBackground.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
 #include "engine/client/ui/nodes/UINodeLabel.h"
 #include "engine/client/ui/windows/listener/QuitListener.h"

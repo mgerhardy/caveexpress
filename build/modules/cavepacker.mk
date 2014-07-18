@@ -24,6 +24,7 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/engine/client/ui/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/client/ui/nodes/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/client/ui/windows/*.cpp) \
+	$(wildcard $(SRCDIR)/engine/client/ui/windows/intro/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/client/ui/layouts/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/common/*.cpp) \
