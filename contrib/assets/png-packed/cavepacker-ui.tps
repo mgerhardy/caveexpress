@@ -22,7 +22,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/cavepacker/pics/environment.png</filename>
+        <filename>../../../base/pics/ui.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>ditherType</key>
@@ -54,9 +54,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>1024</int>
+            <int>2048</int>
             <key>height</key>
-            <int>1024</int>
+            <int>2048</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -66,7 +66,7 @@
             <int>-1</int>
         </QSize>
         <key>reduceBorderArtifacts</key>
-        <false/>
+        <true/>
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
@@ -99,7 +99,7 @@
             <key>packageName</key>
             <string>Texture</string>
             <key>javaFileName</key>
-            <filename>npc_flying.java</filename>
+            <filename>ui.java</filename>
             <key>wrap</key>
             <struct type="AndEngineWrap">
                 <key>s</key>
@@ -111,13 +111,13 @@
             <enum type="AndEngine::MagFilter">MagLinear</enum>
         </struct>
         <key>dataFileName</key>
-        <filename>cavepacker-environment.lua</filename>
+        <filename>ui.lua</filename>
         <key>mainExtension</key>
         <string></string>
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGB565</enum>
+        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -130,7 +130,7 @@
         <key>globalSpriteSettings</key>
         <struct type="SpriteSettings">
             <key>scale</key>
-            <double>0.125</double>
+            <double>1</double>
             <key>scaleMode</key>
             <enum type="ScaleMode">Smooth</enum>
             <key>innerPadding</key>
@@ -138,22 +138,29 @@
             <key>extrude</key>
             <uint>0</uint>
             <key>trimThreshold</key>
-            <uint>8</uint>
+            <uint>1</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">None</enum>
+            <enum type="SpriteSettings::TrimMode">Trim</enum>
             <key>heuristicMask</key>
             <false/>
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/tile-background-big-01-back-01.png</filename>
-            <filename>../png/tile-rock-01-middle-01.png</filename>
-            <filename>../png/tile-rock-02-middle-01.png</filename>
-            <filename>../png/tile-rock-03-middle-01.png</filename>
-            <filename>../png/tile-rock-big-01-middle-01.png</filename>
-            <filename>../png/tile-rock-big-02-middle-01.png</filename>
-            <filename>../png/tile-background-04-back-01.png</filename>
-            <filename>../png/tile-reference.png</filename>
+            <filename>../png/ui/icon-settings.png</filename>
+            <filename>../png/ui/icon-arrow-left.png</filename>
+            <filename>../png/ui/icon-scroll-page-DIR.png</filename>
+            <filename>../png/ui/mouse.png</filename>
+            <filename>../png/ui/map-icon-unlocked.png</filename>
+            <filename>../png/ui/icon-sound-off.png</filename>
+            <filename>../png/ui/icon-sound-on.png</filename>
+            <filename>../png/ui/icon-back-to-root.png</filename>
+            <filename>../png/ui/ui-button-start.png</filename>
+            <filename>../png/ui/ui-scene-caveart-ice.png</filename>
+            <filename>../png/ui/ui-scene-cave-ice.png</filename>
+            <filename>../png/ui/ui-scene-ground1-ice.png</filename>
+            <filename>../png/ui/ui-scene-ground2-ice.png</filename>
+            <filename>../png/ui/ui-scene-tile1-ice.png</filename>
+            <filename>../png/ui/ui-scene-tile2-ice.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
