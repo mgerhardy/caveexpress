@@ -3,9 +3,11 @@
 #include "engine/common/EventHandler.h"
 #include "engine/common/Logger.h"
 #include "engine/common/Math.h"
+#include "engine/common/SoundType.h"
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/Singleton.h"
 #include "engine/GameRegistry.h"
+#include "engine/client/sound/Sound.h"
 #include <SDL.h>
 #include <SDL_mixer.h>
 #include <assert.h>
@@ -87,7 +89,10 @@ bool SDLSoundEngine::init (bool initCache)
 	info(LOG_CLIENT, "sound initialized");
 
 	if (initCache) {
-		Singleton<GameRegistry>::getInstance().getGame()->initSoundCache();
+		ExecutionTime timeCache("Sound cache");
+		for (SoundType::TypeMapConstIter i = SoundType::begin(); i != SoundType::end(); ++i) {
+			SoundControl.cache(i->second->getSound());
+		}
 	}
 	_state = SOUND_INITIALIZED;
 	return true;

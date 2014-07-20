@@ -25,7 +25,6 @@ public:
 	virtual ~CaveExpress();
 
 	void initUI (IFrontend* frontend, ServiceProvider& serviceProvider) override;
-	void initSoundCache () override;
 	void update (uint32_t deltaTime) override;
 	std::string getMapName () override;
 	void init (IFrontend *frontend, ServiceProvider& serviceProvider) override;

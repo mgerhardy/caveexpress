@@ -39,10 +39,6 @@ IMapManager* CavePacker::getMapManager ()
 	return new FileMapManager("map");
 }
 
-void CavePacker::initSoundCache ()
-{
-}
-
 void CavePacker::update (uint32_t deltaTime)
 {
 	if (!_map.isActive() || deltaTime == 0)

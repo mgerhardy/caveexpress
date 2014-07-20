@@ -14,8 +14,6 @@ public:
 	virtual ~IGame() {
 	}
 
-	virtual void initSoundCache () {}
-
 	// called to connect to a local running server
 	virtual void connect () {
 		const std::string command = CMD_CL_CONNECT " localhost " + string::toString(Config.getPort());

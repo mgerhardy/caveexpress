@@ -111,15 +111,6 @@ IMapManager* CaveExpress::getMapManager ()
 	return new LUAMapManager();
 }
 
-void CaveExpress::initSoundCache ()
-{
-	// TODO: async
-	ExecutionTime timeCache("Sound cache");
-	for (SoundType::TypeMapConstIter i = SoundType::begin(); i != SoundType::end(); ++i) {
-		SoundControl.cache(i->second->getSound());
-	}
-}
-
 /**
  * @param[in] deltaTime The milliseconds since the last frame was executed
  * @return If @c true is returned, the next map in the campaign is going to be started.
