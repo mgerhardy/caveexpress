@@ -139,3 +139,8 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	_clientMap = map;
 	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_clientMap));
 }
+
+bool CavePacker::visitEntity (IEntity *entity)
+{
+	return false;
+}

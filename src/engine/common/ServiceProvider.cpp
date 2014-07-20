@@ -46,6 +46,7 @@ void ServiceProvider::updateNetwork (bool network)
 
 void ServiceProvider::initTextureDefinition (IFrontend *frontend, const std::string& textureSize, IProgressCallback* progress)
 {
+	info(LOG_BACKEND, "initialize the texture definition");
 	if (_textureDefinition != nullptr)
 		delete _textureDefinition;
 	ExecutionTime e("texture definition");
@@ -79,4 +80,5 @@ void ServiceProvider::init (IFrontend *frontend)
 		_mapManager = Singleton<GameRegistry>::getInstance().getGame()->getMapManager();
 		_mapManager->init();
 	}
+	info(LOG_BACKEND, "initialized the serviceprovider");
 }

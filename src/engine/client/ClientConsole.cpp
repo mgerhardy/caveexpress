@@ -79,6 +79,7 @@ void ClientConsole::logInfo (const std::string& string)
 	for (std::vector<std::string>::const_iterator i = tokens.begin(); i != tokens.end(); ++i) {
 		_text.push_back(*i);
 	}
+	System.logOutput(string);
 }
 
 void ClientConsole::logError (const std::string& string)
@@ -88,6 +89,7 @@ void ClientConsole::logError (const std::string& string)
 	for (std::vector<std::string>::const_iterator i = tokens.begin(); i != tokens.end(); ++i) {
 		_text.push_back(*i);
 	}
+	System.logError(string);
 }
 
 void ClientConsole::logDebug (const std::string& string)

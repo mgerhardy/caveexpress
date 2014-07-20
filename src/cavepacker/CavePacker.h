@@ -6,7 +6,7 @@
 #include "engine/common/campaign/CampaignManager.h"
 #include "engine/common/campaign/persister/IGameStatePersister.h"
 
-class CavePacker: public IGame {
+class CavePacker: public IGame, public IEntityVisitor {
 private:
 	IGameStatePersister* _persister;
 	CampaignManager *_campaignManager;
@@ -31,6 +31,10 @@ public:
 	void mapShutdown () override;
 	bool mapLoad (const std::string& map) override;
 	IMapManager* getMapManager () override;
+
+private:
+	// IEntityVisitor
+	bool visitEntity (IEntity *entity) override;
 };
 
 static GameRegisterStatic CAVEEXPRESS("cavepacker", GamePtr(new CavePacker()));

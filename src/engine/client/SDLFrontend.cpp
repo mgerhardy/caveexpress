@@ -494,14 +494,6 @@ void SDLFrontend::setFullscreen (bool fullscreen)
 #endif
 }
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-static void logDebug (void *userdata, int category, SDL_LogPriority priority, const char *message)
-{
-	// SDLFrontend *frontend = static_cast<SDLFrontend*>(userdata);
-	debug(LOG_CLIENT, String::format("SDL: %s (level: %i, category: %i)", message, priority, category));
-}
-#endif
-
 #define INIT_Subsystem(flags, fatal) if (!SDL_WasInit(flags)) { if (SDL_Init(flags) == -1) { sdlCheckError(); if (fatal) return -1; } }
 
 void SDLFrontend::initUI (ServiceProvider& serviceProvider)
@@ -571,12 +563,6 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 
 	info(LOG_CLIENT,
 			String::format("initializing: %i:%i - fullscreen: %s", width, height, fullscreen ? "true" : "false"));
-
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-	if (Config.isDebug()) {
-		SDL_LogSetOutputFunction(logDebug, this);
-	}
-#endif
 
 	INIT_Subsystem(SDL_INIT_VIDEO, true);
 
