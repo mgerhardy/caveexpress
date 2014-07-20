@@ -14,12 +14,6 @@ public:
 	virtual ~IGame() {
 	}
 
-	// called to connect to a local running server
-	virtual void connect () {
-		const std::string command = CMD_CL_CONNECT " localhost " + string::toString(Config.getPort());
-		Commands.executeCommandLine(command);
-	}
-
 	// create the windows
 	virtual void initUI (IFrontend* frontend, ServiceProvider& serviceProvider) {}
 

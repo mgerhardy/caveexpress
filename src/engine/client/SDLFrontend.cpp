@@ -178,7 +178,8 @@ bool SDLFrontend::handlesInput () const
 
 void SDLFrontend::connect ()
 {
-	Singleton<GameRegistry>::getInstance().getGame()->connect();
+	const std::string command = CMD_CL_CONNECT " localhost " + string::toString(Config.getPort());
+	Commands.executeCommandLine(command);
 }
 
 void SDLFrontend::getTrimmed (const Texture* texture, int& x, int& y, int& w, int& h) const
