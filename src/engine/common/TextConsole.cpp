@@ -99,17 +99,11 @@ void TextConsole::cursorDelete (bool moveCursor)
 void TextConsole::logInfo (const std::string& string)
 {
 	_entries.push_back(new ConsoleEntry(COLOR_DEFAULT, false, string));
-#ifndef HAVE_NCURSES_H
-	System.logOutput(string);
-#endif
 }
 
 void TextConsole::logError (const std::string& string)
 {
 	_entries.push_back(new ConsoleEntry(COLOR_ALT, true, string));
-#ifndef HAVE_NCURSES_H
-	System.logError(string);
-#endif
 }
 
 void TextConsole::logDebug (const std::string& string)

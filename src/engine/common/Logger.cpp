@@ -1,11 +1,8 @@
 #include "Logger.h"
 #include "engine/common/ConfigManager.h"
+#include "engine/common/System.h"
 #include <sstream>
 #include <SDL_platform.h>
-#ifdef __ANDROID__
-#include <android/log.h>
-#include "engine/common/Version.h"
-#endif
 
 char const* const loggerTypes[] = {
 	"LOG_BACKEND",
@@ -72,15 +69,7 @@ void Logger::logInfo (LogCategory category, const std::string &string) const
 		(*i)->logInfo(message);
 	}
 
-	if (_consoles.empty()) {
-#ifdef __ANDROID__
-		const std::string incCat = "(" + std::string(loggerTypes[category]) + ") " + string;
-		__android_log_write(ANDROID_LOG_INFO, APPFULLNAME, incCat.c_str());
-#else
-		fprintf(stdout, "%s\n", message.c_str());
-		fflush(stdout);
-#endif
-	}
+	System.logOutput(message);
 }
 
 void Logger::logError (LogCategory category, const std::string &string) const
@@ -97,23 +86,11 @@ void Logger::logError (LogCategory category, const std::string &string) const
 		(*i)->logError(message);
 	}
 
-	if (_consoles.empty()) {
-#ifdef __ANDROID__
-		const std::string incCat = "(" + std::string(loggerTypes[category]) + ") " + string;
-		__android_log_write(ANDROID_LOG_ERROR, APPFULLNAME, incCat.c_str());
-#else
-		fprintf(stderr, "%s\n", message.c_str());
-		fflush(stderr);
-#endif
-	}
+	System.logError(message);
 }
 
 void Logger::logDebug (LogCategory category, const std::string &string) const
 {
-#ifndef __NACL__
-	if (!Config.isDebug())
-		return;
-#endif
 	if (string.empty())
 		return;
 
@@ -128,12 +105,6 @@ void Logger::logDebug (LogCategory category, const std::string &string) const
 	}
 
 	if (_consoles.empty()) {
-#ifdef __ANDROID__
-		const std::string incCat = "(" + std::string(loggerTypes[category]) + ") " + string;
-		__android_log_write(ANDROID_LOG_DEBUG, APPFULLNAME, incCat.c_str());
-#else
-		fprintf(stdout, "%s\n", message.c_str());
-		fflush(stdout);
-#endif
+		System.logOutput(message);
 	}
 }
