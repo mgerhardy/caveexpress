@@ -282,6 +282,16 @@ extern "C" {
 
 
 /**
+ *  \brief  A variable that causes SDL to use the old axis and button mapping for XInput devices.
+ *
+ *  This hint is for backwards compatibility only and will be removed in SDL 2.1
+ *
+ *  The default value is "0".  This hint must be set before SDL_Init()
+ */
+#define SDL_HINT_XINPUT_USE_OLD_JOYSTICK_MAPPING "SDL_XINPUT_USE_OLD_JOYSTICK_MAPPING"
+
+
+/**
  *  \brief  A variable that lets you manually hint extra gamecontroller db entries
  *
  *  The variable should be newline delimited rows of gamecontroller config data, see SDL_gamecontroller.h
@@ -456,6 +466,16 @@ extern "C" {
  *   any windows are created.
  */
 #define SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES    "SDL_VIDEO_MAC_FULLSCREEN_SPACES"
+
+/**
+ * \brief Android APK expansion main file version. Should be a string number like "1", "2" etc.
+ */
+#define SDL_HINT_ANDROID_APK_EXPANSION_MAIN_FILE_VERSION "SDL_ANDROID_APK_EXPANSION_MAIN_FILE_VERSION"
+ 
+/**
+ * \brief Android APK expansion patch file version. Should be a string number like "1", "2" etc.
+ */
+#define SDL_HINT_ANDROID_APK_EXPANSION_PATCH_FILE_VERSION "SDL_ANDROID_APK_EXPANSION_PATCH_FILE_VERSION"
 
 
 /**

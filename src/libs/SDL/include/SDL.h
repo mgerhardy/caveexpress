@@ -114,7 +114,7 @@ extern "C" {
 #define SDL_INIT_HAPTIC         0x00001000
 #define SDL_INIT_GAMECONTROLLER 0x00002000  /**< SDL_INIT_GAMECONTROLLER implies SDL_INIT_JOYSTICK */
 #define SDL_INIT_EVENTS         0x00004000
-#define SDL_INIT_NOPARACHUTE    0x00100000  /**< Don't catch fatal signals */
+#define SDL_INIT_NOPARACHUTE    0x00100000  /**< compatibility; this flag is ignored. */
 #define SDL_INIT_EVERYTHING ( \
                 SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS | \
                 SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER \
@@ -123,13 +123,17 @@ extern "C" {
 
 /**
  *  This function initializes  the subsystems specified by \c flags
- *  Unless the ::SDL_INIT_NOPARACHUTE flag is set, it will install cleanup
- *  signal handlers for some commonly ignored fatal signals (like SIGSEGV).
  */
 extern DECLSPEC int SDLCALL SDL_Init(Uint32 flags);
 
 /**
  *  This function initializes specific SDL subsystems
+ *
+ *  Subsystem initialization is ref-counted, you must call
+ *  SDL_QuitSubSystem for each SDL_InitSubSystem to correctly
+ *  shutdown a subsystem manually (or call SDL_Quit to force shutdown).
+ *  If a subsystem is already loaded then this call will
+ *  increase the ref-count and return.
  */
 extern DECLSPEC int SDLCALL SDL_InitSubSystem(Uint32 flags);
 

@@ -1393,7 +1393,6 @@ void
 X11_DestroyWindow(_THIS, SDL_Window * window)
 {
     SDL_WindowData *data = (SDL_WindowData *) window->driverdata;
-    window->driverdata = NULL;
 
     if (data) {
         SDL_VideoData *videodata = (SDL_VideoData *) data->videodata;
@@ -1423,6 +1422,7 @@ X11_DestroyWindow(_THIS, SDL_Window * window)
         }
         SDL_free(data);
     }
+    window->driverdata = NULL;
 }
 
 SDL_bool
@@ -1442,6 +1442,12 @@ X11_GetWindowWMInfo(_THIS, SDL_Window * window, SDL_SysWMinfo * info)
                      SDL_MAJOR_VERSION, SDL_MINOR_VERSION);
         return SDL_FALSE;
     }
+}
+
+int
+X11_SetWindowHitTest(SDL_Window *window, SDL_bool enabled)
+{
+    return 0;  /* just succeed, the real work is done elsewhere. */
 }
 
 #endif /* SDL_VIDEO_DRIVER_X11 */

@@ -40,6 +40,42 @@
 
 #include <stdio.h>
 
+#ifndef _NET_WM_MOVERESIZE_SIZE_TOPLEFT
+#define _NET_WM_MOVERESIZE_SIZE_TOPLEFT      0
+#endif
+
+#ifndef _NET_WM_MOVERESIZE_SIZE_TOP
+#define _NET_WM_MOVERESIZE_SIZE_TOP          1
+#endif
+
+#ifndef _NET_WM_MOVERESIZE_SIZE_TOPRIGHT
+#define _NET_WM_MOVERESIZE_SIZE_TOPRIGHT     2
+#endif
+
+#ifndef _NET_WM_MOVERESIZE_SIZE_RIGHT
+#define _NET_WM_MOVERESIZE_SIZE_RIGHT        3
+#endif
+
+#ifndef _NET_WM_MOVERESIZE_SIZE_BOTTOMRIGHT
+#define _NET_WM_MOVERESIZE_SIZE_BOTTOMRIGHT  4
+#endif
+
+#ifndef _NET_WM_MOVERESIZE_SIZE_BOTTOM
+#define _NET_WM_MOVERESIZE_SIZE_BOTTOM       5
+#endif
+
+#ifndef _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT
+#define _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT   6
+#endif
+
+#ifndef _NET_WM_MOVERESIZE_SIZE_LEFT
+#define _NET_WM_MOVERESIZE_SIZE_LEFT         7
+#endif
+
+#ifndef _NET_WM_MOVERESIZE_MOVE
+#define _NET_WM_MOVERESIZE_MOVE              8
+#endif
+
 typedef struct {
     unsigned char *data;
     int format, count;
@@ -348,6 +384,124 @@ X11_DispatchUnmapNotify(SDL_WindowData *data)
 }
 
 static void
+InitiateWindowMove(_THIS, const SDL_WindowData *data, const SDL_Point *point)
+{
+    SDL_VideoData *viddata = (SDL_VideoData *) _this->driverdata;
+    SDL_Window* window = data->window;
+    Display *display = viddata->display;
+    XEvent evt;
+
+    /* !!! FIXME: we need to regrab this if necessary when the drag is done. */
+    X11_XUngrabPointer(display, 0L);
+    X11_XFlush(display);
+
+    evt.xclient.type = ClientMessage;
+    evt.xclient.window = data->xwindow;
+    evt.xclient.message_type = X11_XInternAtom(display, "_NET_WM_MOVERESIZE", True);
+    evt.xclient.format = 32;
+    evt.xclient.data.l[0] = window->x + point->x;
+    evt.xclient.data.l[1] = window->y + point->y;
+    evt.xclient.data.l[2] = _NET_WM_MOVERESIZE_MOVE;
+    evt.xclient.data.l[3] = Button1;
+    evt.xclient.data.l[4] = 0;
+    X11_XSendEvent(display, DefaultRootWindow(display), False, SubstructureRedirectMask | SubstructureNotifyMask, &evt);
+
+    X11_XSync(display, 0);
+}
+
+static void
+InitiateWindowResize(_THIS, const SDL_WindowData *data, const SDL_Point *point, int direction)
+{
+    SDL_VideoData *viddata = (SDL_VideoData *) _this->driverdata;
+    SDL_Window* window = data->window;
+    Display *display = viddata->display;
+    XEvent evt;
+
+    if (direction < _NET_WM_MOVERESIZE_SIZE_TOPLEFT || direction > _NET_WM_MOVERESIZE_SIZE_LEFT)
+        return;
+
+    /* !!! FIXME: we need to regrab this if necessary when the drag is done. */
+    X11_XUngrabPointer(display, 0L);
+    X11_XFlush(display);
+
+    evt.xclient.type = ClientMessage;
+    evt.xclient.window = data->xwindow;
+    evt.xclient.message_type = X11_XInternAtom(display, "_NET_WM_MOVERESIZE", True);
+    evt.xclient.format = 32;
+    evt.xclient.data.l[0] = window->x + point->x;
+    evt.xclient.data.l[1] = window->y + point->y;
+    evt.xclient.data.l[2] = direction;
+    evt.xclient.data.l[3] = Button1;
+    evt.xclient.data.l[4] = 0;
+    X11_XSendEvent(display, DefaultRootWindow(display), False, SubstructureRedirectMask | SubstructureNotifyMask, &evt);
+
+    X11_XSync(display, 0);
+}
+
+static SDL_bool
+ProcessHitTest(_THIS, const SDL_WindowData *data, const XEvent *xev)
+{
+    SDL_Window *window = data->window;
+    SDL_bool ret = SDL_FALSE;
+
+    if (window->hit_test) {
+        const SDL_Point point = { xev->xbutton.x, xev->xbutton.y };
+        const SDL_HitTestResult rc = window->hit_test(window, &point, window->hit_test_data);
+        switch (rc) {
+            case SDL_HITTEST_DRAGGABLE: {
+                    InitiateWindowMove(_this, data, &point);
+                    ret = SDL_TRUE;
+                }
+                break;
+            case SDL_HITTEST_RESIZE_TOPLEFT: {
+                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_TOPLEFT);
+                    ret = SDL_TRUE;
+                }
+                break;
+            case SDL_HITTEST_RESIZE_TOP: {
+                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_TOP);
+                    ret = SDL_TRUE;
+                }
+                break;
+            case SDL_HITTEST_RESIZE_TOPRIGHT: {
+                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_TOPRIGHT);
+                    ret = SDL_TRUE;
+                }
+                break;
+            case SDL_HITTEST_RESIZE_RIGHT: {
+                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_RIGHT);
+                    ret = SDL_TRUE;
+                }
+                break;
+            case SDL_HITTEST_RESIZE_BOTTOMRIGHT: {
+                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_BOTTOMRIGHT);
+                    ret = SDL_TRUE;
+                }
+                break;
+            case SDL_HITTEST_RESIZE_BOTTOM: {
+                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_BOTTOM);
+                    ret = SDL_TRUE;
+                }
+                break;
+            case SDL_HITTEST_RESIZE_BOTTOMLEFT: {
+                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT);
+                    ret = SDL_TRUE;
+                }
+                break;
+            case SDL_HITTEST_RESIZE_LEFT: {
+                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_LEFT);
+                    ret = SDL_TRUE;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    return ret;
+}
+
+static void
 X11_DispatchEvent(_THIS)
 {
     SDL_VideoData *videodata = (SDL_VideoData *) _this->driverdata;
@@ -493,6 +647,11 @@ X11_DispatchEvent(_THIS)
 #ifdef DEBUG_XEVENTS
             printf("window %p: FocusIn!\n", data);
 #endif
+#ifdef SDL_USE_IBUS
+            if(SDL_GetEventState(SDL_TEXTINPUT) == SDL_ENABLE){
+                SDL_IBus_SetFocus(SDL_TRUE);
+            }
+#endif
             if (data->pending_focus == PENDING_FOCUS_OUT &&
                 data->window == SDL_GetKeyboardFocus()) {
                 /* We want to reset the keyboard here, because we may have
@@ -530,6 +689,11 @@ X11_DispatchEvent(_THIS)
 #ifdef DEBUG_XEVENTS
             printf("window %p: FocusOut!\n", data);
 #endif
+#ifdef SDL_USE_IBUS
+            if(SDL_GetEventState(SDL_TEXTINPUT) == SDL_ENABLE){
+                SDL_IBus_SetFocus(SDL_FALSE);
+            }
+#endif
             data->pending_focus = PENDING_FOCUS_OUT;
             data->pending_focus_time = SDL_GetTicks() + PENDING_FOCUS_OUT_TIME;
         }
@@ -561,11 +725,16 @@ X11_DispatchEvent(_THIS)
             KeySym keysym = NoSymbol;
             char text[SDL_TEXTINPUTEVENT_TEXT_SIZE];
             Status status = 0;
+#ifdef SDL_USE_IBUS
+            Bool handled = False;
+#endif
 
 #ifdef DEBUG_XEVENTS
             printf("window %p: KeyPress (X11 keycode = 0x%X)\n", data, xevent.xkey.keycode);
 #endif
+#ifndef SDL_USE_IBUS
             SDL_SendKeyboardKey(SDL_PRESSED, videodata->key_layout[keycode]);
+#endif
 #if 1
             if (videodata->key_layout[keycode] == SDL_SCANCODE_UNKNOWN && keycode) {
                 int min_keycode, max_keycode;
@@ -591,9 +760,21 @@ X11_DispatchEvent(_THIS)
 #else
             XLookupString(&xevent.xkey, text, sizeof(text), &keysym, NULL);
 #endif
-            if (*text) {
-                SDL_SendKeyboardText(text);
+#ifdef SDL_USE_IBUS
+            if(SDL_GetEventState(SDL_TEXTINPUT) == SDL_ENABLE){
+                if(!(handled = SDL_IBus_ProcessKeyEvent(keysym, keycode))){
+#endif
+                    if(*text){
+                        SDL_SendKeyboardText(text);
+                    }
+#ifdef SDL_USE_IBUS
+                }
             }
+
+            if (!handled) {
+                SDL_SendKeyboardKey(SDL_PRESSED, videodata->key_layout[keycode]);
+            }
+#endif
         }
         break;
 
@@ -663,6 +844,12 @@ X11_DispatchEvent(_THIS)
                 SDL_SendWindowEvent(data->window, SDL_WINDOWEVENT_MOVED,
                                     xevent.xconfigure.x - border_left,
                                     xevent.xconfigure.y - border_top);
+#ifdef SDL_USE_IBUS
+                if(SDL_GetEventState(SDL_TEXTINPUT) == SDL_ENABLE){
+                    /* Update IBus candidate list position */
+                    SDL_IBus_UpdateTextRect(NULL);
+                }
+#endif
             }
             if (xevent.xconfigure.width != data->last_xconfigure.width ||
                 xevent.xconfigure.height != data->last_xconfigure.height) {
@@ -787,6 +974,11 @@ X11_DispatchEvent(_THIS)
             if (X11_IsWheelEvent(display,&xevent,&ticks)) {
                 SDL_SendMouseWheel(data->window, 0, 0, ticks);
             } else {
+                if(xevent.xbutton.button == Button1) {
+                    if (ProcessHitTest(_this, data, &xevent)) {
+                        break;  /* don't pass this event on to app. */
+                    }
+                }
                 SDL_SendMouseButton(data->window, 0, SDL_PRESSED, xevent.xbutton.button);
             }
         }
@@ -1079,13 +1271,19 @@ X11_PumpEvents(_THIS)
             SDL_TICKS_PASSED(now, data->screensaver_activity + 30000)) {
             X11_XResetScreenSaver(data->display);
 
-            #if SDL_USE_LIBDBUS
-            SDL_dbus_screensaver_tickle(_this);
-            #endif
+#if SDL_USE_LIBDBUS
+            SDL_DBus_ScreensaverTickle();
+#endif
 
             data->screensaver_activity = now;
         }
     }
+
+#ifdef SDL_USE_IBUS
+    if(SDL_GetEventState(SDL_TEXTINPUT) == SDL_ENABLE){
+        SDL_IBus_PumpEvents();
+    }
+#endif
 
     /* Keep processing pending events */
     while (X11_Pending(data->display)) {
@@ -1107,12 +1305,12 @@ X11_SuspendScreenSaver(_THIS)
 #endif /* SDL_VIDEO_DRIVER_X11_XSCRNSAVER */
 
 #if SDL_USE_LIBDBUS
-    if (SDL_dbus_screensaver_inhibit(_this)) {
+    if (SDL_DBus_ScreensaverInhibit(_this->suspend_screensaver)) {
         return;
     }
 
     if (_this->suspend_screensaver) {
-        SDL_dbus_screensaver_tickle(_this);
+        SDL_DBus_ScreensaverTickle();
     }
 #endif
 

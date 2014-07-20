@@ -192,6 +192,7 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
     inFullscreenTransition = NO;
     pendingWindowOperation = PENDING_OPERATION_NONE;
     isMoving = NO;
+    isDragAreaRunning = NO;
 
     center = [NSNotificationCenter defaultCenter];
 
@@ -361,8 +362,7 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
        !!! FIXME:   http://bugzilla.libsdl.org/show_bug.cgi?id=1825
     */
     windows = [NSApp orderedWindows];
-    for (NSWindow *win in windows)
-    {
+    for (NSWindow *win in windows) {
         if (win == window) {
             continue;
         }
@@ -385,8 +385,7 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
 
 - (void)windowDidFinishMoving
 {
-    if ([self isMoving])
-    {
+    if ([self isMoving]) {
         isMoving = NO;
 
         SDL_Mouse *mouse = SDL_GetMouse();
@@ -663,9 +662,47 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
     /*Cocoa_HandleKeyEvent(SDL_GetVideoDevice(), theEvent);*/
 }
 
+/* We'll respond to selectors by doing nothing so we don't beep.
+ * The escape key gets converted to a "cancel" selector, etc.
+ */
+- (void)doCommandBySelector:(SEL)aSelector
+{
+    /*NSLog(@"doCommandBySelector: %@\n", NSStringFromSelector(aSelector));*/
+}
+
+- (BOOL)processHitTest:(NSEvent *)theEvent
+{
+    SDL_assert(isDragAreaRunning == [_data->nswindow isMovableByWindowBackground]);
+
+    if (_data->window->hit_test) {  /* if no hit-test, skip this. */
+        const NSPoint location = [theEvent locationInWindow];
+        const SDL_Point point = { (int) location.x, _data->window->h - (((int) location.y)-1) };
+        const SDL_HitTestResult rc = _data->window->hit_test(_data->window, &point, _data->window->hit_test_data);
+        if (rc == SDL_HITTEST_DRAGGABLE) {
+            if (!isDragAreaRunning) {
+                isDragAreaRunning = YES;
+                [_data->nswindow setMovableByWindowBackground:YES];
+            }
+            return YES;  /* dragging! */
+        }
+    }
+
+    if (isDragAreaRunning) {
+        isDragAreaRunning = NO;
+        [_data->nswindow setMovableByWindowBackground:NO];
+        return YES;  /* was dragging, drop event. */
+    }
+
+    return NO;  /* not a special area, carry on. */
+}
+
 - (void)mouseDown:(NSEvent *)theEvent
 {
     int button;
+
+    if ([self processHitTest:theEvent]) {
+        return;  /* dragging, drop event. */
+    }
 
     switch ([theEvent buttonNumber]) {
     case 0:
@@ -704,6 +741,10 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
 - (void)mouseUp:(NSEvent *)theEvent
 {
     int button;
+
+    if ([self processHitTest:theEvent]) {
+        return;  /* stopped dragging, drop event. */
+    }
 
     switch ([theEvent buttonNumber]) {
     case 0:
@@ -744,6 +785,10 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
     NSPoint point;
     int x, y;
 
+    if ([self processHitTest:theEvent]) {
+        return;  /* dragging, drop event. */
+    }
+
     if (mouse->relative_mode) {
         return;
     }
@@ -752,8 +797,8 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
     x = (int)point.x;
     y = (int)(window->h - point.y);
 
-    if (x < 0 || x >= window->w || y < 0 || y >= window->h) {
-        if (window->flags & SDL_WINDOW_INPUT_GRABBED) {
+    if (window->flags & SDL_WINDOW_INPUT_GRABBED) {
+        if (x < 0 || x >= window->w || y < 0 || y >= window->h) {
             if (x < 0) {
                 x = 0;
             } else if (x >= window->w) {
@@ -812,48 +857,29 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
 
 - (void)touchesBeganWithEvent:(NSEvent *) theEvent
 {
-    [self handleTouches:COCOA_TOUCH_DOWN withEvent:theEvent];
+    [self handleTouches:NSTouchPhaseBegan withEvent:theEvent];
 }
 
 - (void)touchesMovedWithEvent:(NSEvent *) theEvent
 {
-    [self handleTouches:COCOA_TOUCH_MOVE withEvent:theEvent];
+    [self handleTouches:NSTouchPhaseMoved withEvent:theEvent];
 }
 
 - (void)touchesEndedWithEvent:(NSEvent *) theEvent
 {
-    [self handleTouches:COCOA_TOUCH_UP withEvent:theEvent];
+    [self handleTouches:NSTouchPhaseEnded withEvent:theEvent];
 }
 
 - (void)touchesCancelledWithEvent:(NSEvent *) theEvent
 {
-    [self handleTouches:COCOA_TOUCH_CANCELLED withEvent:theEvent];
+    [self handleTouches:NSTouchPhaseCancelled withEvent:theEvent];
 }
 
-- (void)handleTouches:(cocoaTouchType)type withEvent:(NSEvent *)event
+- (void)handleTouches:(NSTouchPhase) phase withEvent:(NSEvent *) theEvent
 {
-    NSSet *touches = 0;
-    NSEnumerator *enumerator;
-    NSTouch *touch;
+    NSSet *touches = [theEvent touchesMatchingPhase:phase inView:nil];
 
-    switch (type) {
-        case COCOA_TOUCH_DOWN:
-            touches = [event touchesMatchingPhase:NSTouchPhaseBegan inView:nil];
-            break;
-        case COCOA_TOUCH_UP:
-            touches = [event touchesMatchingPhase:NSTouchPhaseEnded inView:nil];
-            break;
-        case COCOA_TOUCH_CANCELLED:
-            touches = [event touchesMatchingPhase:NSTouchPhaseCancelled inView:nil];
-            break;
-        case COCOA_TOUCH_MOVE:
-            touches = [event touchesMatchingPhase:NSTouchPhaseMoved inView:nil];
-            break;
-    }
-
-    enumerator = [touches objectEnumerator];
-    touch = (NSTouch*)[enumerator nextObject];
-    while (touch) {
+    for (NSTouch *touch in touches) {
         const SDL_TouchID touchId = (SDL_TouchID)(intptr_t)[touch device];
         if (!SDL_GetTouch(touchId)) {
             if (SDL_AddTouch(touchId, "") < 0) {
@@ -867,20 +893,20 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
         /* Make the origin the upper left instead of the lower left */
         y = 1.0f - y;
 
-        switch (type) {
-        case COCOA_TOUCH_DOWN:
+        switch (phase) {
+        case NSTouchPhaseBegan:
             SDL_SendTouch(touchId, fingerId, SDL_TRUE, x, y, 1.0f);
             break;
-        case COCOA_TOUCH_UP:
-        case COCOA_TOUCH_CANCELLED:
+        case NSTouchPhaseEnded:
+        case NSTouchPhaseCancelled:
             SDL_SendTouch(touchId, fingerId, SDL_FALSE, x, y, 1.0f);
             break;
-        case COCOA_TOUCH_MOVE:
+        case NSTouchPhaseMoved:
             SDL_SendTouchMotion(touchId, fingerId, x, y, 1.0f);
             break;
+        default:
+            break;
         }
-
-        touch = (NSTouch*)[enumerator nextObject];
     }
 }
 
@@ -890,12 +916,21 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
 
 /* The default implementation doesn't pass rightMouseDown to responder chain */
 - (void)rightMouseDown:(NSEvent *)theEvent;
+- (BOOL)mouseDownCanMoveWindow;
 @end
 
 @implementation SDLView
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
     [[self nextResponder] rightMouseDown:theEvent];
+}
+
+- (BOOL)mouseDownCanMoveWindow
+{
+    /* Always say YES, but this doesn't do anything until we call
+       -[NSWindow setMovableByWindowBackground:YES], which we ninja-toggle
+       during mouse events when we're using a drag area. */
+    return YES;
 }
 
 - (void)resetCursorRects
@@ -921,7 +956,7 @@ SetupWindowData(_THIS, SDL_Window * window, NSWindow *nswindow, SDL_bool created
     SDL_WindowData *data;
 
     /* Allocate the window data */
-    data = (SDL_WindowData *) SDL_calloc(1, sizeof(*data));
+    window->driverdata = data = (SDL_WindowData *) SDL_calloc(1, sizeof(*data));
     if (!data) {
         return SDL_OutOfMemory();
     }
@@ -1009,23 +1044,20 @@ Cocoa_CreateWindow(_THIS, SDL_Window * window)
     NSRect rect;
     SDL_Rect bounds;
     unsigned int style;
+    NSArray *screens = [NSScreen screens];
 
     Cocoa_GetDisplayBounds(_this, display, &bounds);
     rect.origin.x = window->x;
     rect.origin.y = window->y;
     rect.size.width = window->w;
     rect.size.height = window->h;
-    ConvertNSRect([[NSScreen screens] objectAtIndex:0], (window->flags & FULLSCREEN_MASK), &rect);
+    ConvertNSRect([screens objectAtIndex:0], (window->flags & FULLSCREEN_MASK), &rect);
 
     style = GetWindowStyle(window);
 
     /* Figure out which screen to place this window */
-    NSArray *screens = [NSScreen screens];
     NSScreen *screen = nil;
-    NSScreen *candidate;
-    int i, count = [screens count];
-    for (i = 0; i < count; ++i) {
-        candidate = [screens objectAtIndex:i];
+    for (NSScreen *candidate in screens) {
         NSRect screenRect = [candidate frame];
         if (rect.origin.x >= screenRect.origin.x &&
             rect.origin.x < screenRect.origin.x + screenRect.size.width &&
@@ -1048,7 +1080,7 @@ Cocoa_CreateWindow(_THIS, SDL_Window * window)
     [nswindow setBackgroundColor:[NSColor blackColor]];
 
     if (videodata->allow_spaces) {
-        SDL_assert(videodata->osversion >= 0x1070);
+        SDL_assert(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6);
         SDL_assert([nswindow respondsToSelector:@selector(toggleFullScreen:)]);
         /* we put FULLSCREEN_DESKTOP windows in their own Space, without a toggle button or menubar, later */
         if (window->flags & SDL_WINDOW_RESIZABLE) {
@@ -1504,6 +1536,8 @@ Cocoa_DestroyWindow(_THIS, SDL_Window * window)
 
         SDL_free(data);
     }
+    window->driverdata = NULL;
+
     [pool release];
 }
 
@@ -1563,6 +1597,12 @@ Cocoa_SetWindowFullscreenSpace(SDL_Window * window, SDL_bool state)
     [pool release];
 
     return succeeded;
+}
+
+int
+Cocoa_SetWindowHitTest(SDL_Window * window, SDL_bool enabled)
+{
+    return 0;  /* just succeed, the real work is done elsewhere. */
 }
 
 #endif /* SDL_VIDEO_DRIVER_COCOA */
