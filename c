@@ -2,12 +2,14 @@
 
 set -x
 
+APP=${1:-caveexpress}
+
 ulimit -c unlimited
 rm -f core
 set -e
-make caveexpress
+make ${APP}
 set +e
-./caveexpress $*
+./${APP} -set fullscreen false -set width 800 -set height 600 -set debug true -set grabmouse false $*
 if [ -e core ]; then
-	gdb ./caveexpress ./core
+	gdb ./${APP} ./core
 fi
