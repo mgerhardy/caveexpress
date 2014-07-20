@@ -3,6 +3,18 @@
 #include "cavepacker/client/ui/windows/UIMainWindow.h"
 #include "cavepacker/client/ui/windows/UIMapWindow.h"
 #include "cavepacker/client/CavePackerClientMap.h"
+#include "engine/client/entities/ClientPlayer.h"
+#include "engine/client/entities/ClientMapTile.h"
+#include "cavepacker/server/network/SpawnHandler.h"
+#include "cavepacker/server/network/DisconnectHandler.h"
+#include "cavepacker/server/network/StartMapHandler.h"
+#include "cavepacker/server/network/MovementHandler.h"
+#include "cavepacker/server/network/StopMovementHandler.h"
+#include "cavepacker/server/network/ClientInitHandler.h"
+#include "cavepacker/server/network/ErrorHandler.h"
+#include "cavepacker/shared/CavePackerEntityType.h"
+#include "engine/client/entities/ClientEntityFactory.h"
+#include "engine/common/network/ProtocolHandlerRegistry.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/ExecutionTime.h"
@@ -105,6 +117,22 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	}
 
 	_map.init(_frontend, *_serviceProvider);
+
+	ClientEntityRegistry &r = Singleton<ClientEntityRegistry>::getInstance();
+	r.registerFactory(EntityTypes::SOLID, ClientMapTile::FACTORY);
+	r.registerFactory(EntityTypes::GROUND, ClientMapTile::FACTORY);
+	r.registerFactory(EntityTypes::PACKAGE, ClientEntity::FACTORY);
+	r.registerFactory(EntityTypes::PLAYER, ClientPlayer::FACTORY);
+	r.registerFactory(EntityTypes::TARGET, ClientMapTile::FACTORY);
+
+	ProtocolHandlerRegistry& rp = ProtocolHandlerRegistry::get();
+	rp.registerServerHandler(protocol::PROTO_SPAWN, new SpawnHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_DISCONNECT, new DisconnectHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_STARTMAP, new StartMapHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_MOVEMENT, new MovementHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_STOPMOVEMENT, new StopMovementHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_ERROR, new ErrorHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
 }
 
 void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
