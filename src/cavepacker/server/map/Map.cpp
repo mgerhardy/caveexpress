@@ -15,6 +15,7 @@
 #include "engine/common/network/messages/MapSettingsMessage.h"
 #include "engine/common/network/messages/TextMessage.h"
 #include "engine/common/network/messages/SpawnInfoMessage.h"
+#include "engine/common/network/messages/LoadMapMessage.h"
 #include "engine/common/CommandSystem.h"
 #include "engine/common/System.h"
 #include "engine/common/vec2.h"
@@ -213,12 +214,13 @@ bool Map::load (const std::string& name)
 		loadEntity(mapTile);
 	}
 
-	info(LOG_MAP, "map loading done");
+	info(LOG_MAP, String::format("map loading done with %i tiles", mapTileList.size()));
 
 	ctx->onMapLoaded();
 
 	_frontend->onMapLoaded();
-	//GameEvent.loadMap(0, _name, _title);
+	const LoadMapMessage msg(_name, _title);
+	_serviceProvider->getNetwork().sendToClients(0, msg);
 
 	_mapRunning = true;
 	return true;
