@@ -7,7 +7,8 @@ const int PLAYER = '@';
 const int PACKAGE = '$';
 const int TARGET = '.';
 const int GROUND = ' ';
-const int PACKAGEONTARGET = ','; // TODO: not correct'
+const int PACKAGEONTARGET = '*';
+const int PLAYERONTARGET = '+';
 }
 
 SokubanMapContext::SokubanMapContext(const std::string& map) :
