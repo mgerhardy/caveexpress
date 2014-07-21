@@ -32,12 +32,6 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	panel->add(settings);
 #endif
 
-	if (System.supportPayment()) {
-		UINodeMainButton *payment = new UINodeMainButton(_frontend, tr("Extras"));
-		payment->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_PAYMENT)));
-		panel->add(payment);
-	}
-
 	UINodeMainButton *twitter = new UINodeMainButton(_frontend, tr("Twitter"));
 	twitter->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "https://twitter.com/MartinGerhardy")));
 	panel->add(twitter);
