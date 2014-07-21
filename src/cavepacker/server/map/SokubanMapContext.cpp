@@ -98,19 +98,19 @@ inline void SokubanMapContext::addTarget(int col, int row) {
 }
 
 inline void SokubanMapContext::addWall(int col, int row) {
-	addTile("wall", col, row);
+	addTile("tile-rock-01", col, row);
 }
 
 inline void SokubanMapContext::addPackage(int col, int row) {
-	addTile("package", col, row);
+	addTile("item-package-idle", col, row);
 }
 
 inline void SokubanMapContext::addPlayer(int col, int row) {
-	addTile("player", col, row);
+	addTile("player-idle", col, row);
 	_settings[msn::PLAYER_X] = string::toString(col);
 	_settings[msn::PLAYER_Y] = string::toString(row);
 }
 
 inline void SokubanMapContext::addGround(int col, int row) {
-	addTile("ground", col, row);
+	addTile("tile-background-01", col, row);
 }
