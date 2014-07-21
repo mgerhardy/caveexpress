@@ -21,6 +21,7 @@
 #include "engine/common/Commands.h"
 #include "engine/common/CommandSystem.h"
 #include "engine/common/network/messages/LoadMapMessage.h"
+#include "engine/client/ui/windows/UICampaignMapWindow.h"
 
 CavePacker::CavePacker ():
 	_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
@@ -138,6 +139,7 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	CavePackerClientMap *map = new CavePackerClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
 	_clientMap = map;
 	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_clientMap));
+	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));
 }
 
 bool CavePacker::visitEntity (IEntity *entity)
