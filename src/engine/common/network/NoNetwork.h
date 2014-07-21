@@ -30,6 +30,7 @@ public:
 	{
 	}
 
+	void init () override;
 	void update (uint32_t deltaTime) override;
 	bool openServer (int port, IServerCallback* func) override;
 	int sendToClients (int clientMask, const IProtocolMessage& msg) override;

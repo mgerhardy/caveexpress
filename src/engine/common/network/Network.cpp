@@ -25,6 +25,7 @@ Network::~Network ()
 
 void Network::init ()
 {
+	info(LOG_NET, "init the network layer");
 	if (SDLNet_Init() < 0)
 		System.exit(getError(), 1);
 

@@ -78,6 +78,11 @@ bool NoNetwork::isClient () const
 	return _connected;
 }
 
+void NoNetwork::init ()
+{
+	info(LOG_NET, "init the network layer (local)");
+}
+
 bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* func)
 {
 	if (isClientConnected())
