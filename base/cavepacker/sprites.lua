@@ -2,10 +2,12 @@ sprites = {
 
 -- Player
 
-	["player-walk"] = {
-		fps = 14,
-	},
 	["player-idle"] = {
+		frames = {
+			{}, --back
+			{ "player", }, --middle
+			{}, --front
+		}
 	},
 
 -- Package
