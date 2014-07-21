@@ -12,7 +12,8 @@ const int PLAYERONTARGET = '+';
 }
 
 SokubanMapContext::SokubanMapContext(const std::string& map) :
-		IMapContext(map) {
+		IMapContext(map), _playerSpawned(false) {
+	_title = map;
 }
 
 SokubanMapContext::~SokubanMapContext() {
@@ -77,14 +78,14 @@ bool SokubanMapContext::load(bool skipErrors) {
 	_settings[msn::WIDTH] = string::toString(maxCol);
 	_settings[msn::HEIGHT] = string::toString(row);
 
-	return true;
+	return _playerSpawned;
 }
 
 void SokubanMapContext::addTile(const std::string& tile, int col, int row) {
-	SpriteDefPtr spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(
+	const SpriteDefPtr &spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(
 			tile);
 	if (!spriteDefPtr) {
-		info(LOG_SERVER, "could not add tile: " + tile);
+		error(LOG_SERVER, "could not add tile: " + tile);
 		return;
 	}
 
@@ -109,6 +110,7 @@ inline void SokubanMapContext::addPlayer(int col, int row) {
 	addTile("player-idle", col, row);
 	_settings[msn::PLAYER_X] = string::toString(col);
 	_settings[msn::PLAYER_Y] = string::toString(row);
+	_playerSpawned = true;
 }
 
 inline void SokubanMapContext::addGround(int col, int row) {

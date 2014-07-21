@@ -5,6 +5,8 @@
 
 class SokubanMapContext : public IMapContext {
 private:
+	bool _playerSpawned;
+
 	void addPlayer(int col, int row);
 	void addWall(int col, int row);
 	void addGround(int col, int row);
