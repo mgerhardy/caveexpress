@@ -2,6 +2,7 @@
 
 #include <string>
 #include "engine/common/Compiler.h"
+#include "engine/common/NonCopyable.h"
 
 // forward decl
 class CampaignManager;
@@ -12,7 +13,7 @@ class TextureDefinition;
 class IFrontend;
 class IProgressCallback;
 
-class ServiceProvider {
+class ServiceProvider: public NonCopyable {
 private:
 	IMapManager* _mapManager;
 	INetwork* _network;
