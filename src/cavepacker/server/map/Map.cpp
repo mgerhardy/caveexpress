@@ -16,6 +16,10 @@
 #include "engine/common/network/messages/TextMessage.h"
 #include "engine/common/network/messages/SpawnInfoMessage.h"
 #include "engine/common/network/messages/LoadMapMessage.h"
+#include "engine/common/network/messages/AddEntityMessage.h"
+#include "engine/common/network/messages/RemoveEntityMessage.h"
+#include "engine/common/network/messages/UpdateEntityMessage.h"
+#include "engine/common/network/messages/MapRestartMessage.h"
 #include "engine/common/CommandSystem.h"
 #include "engine/common/System.h"
 #include "engine/common/vec2.h"
@@ -147,14 +151,16 @@ void Map::restart (uint32_t delay)
 
 	info(LOG_MAP, "trigger map restart");
 	_restartDue = SDL_GetTicks() + delay;
-//	GameEvent.restartMap(delay);
+	const MapRestartMessage msg(delay);
+	_serviceProvider->getNetwork().sendToAllClients(msg);
 }
 
 void Map::resetCurrentMap ()
 {
 	_timeManager.reset();
 	if (!_name.empty()) {
-//		GameEvent.closeMap();
+		const CloseMapMessage msg;
+		_serviceProvider->getNetwork().sendToAllClients(msg);
 		info(LOG_MAP, "reset map: " + _name);
 	}
 	_gamePoints = 0;
@@ -211,6 +217,7 @@ bool Map::load (const std::string& name)
 	const std::vector<MapTileDefinition>& mapTileList = ctx->getMapTileDefinitions();
 	for (std::vector<MapTileDefinition>::const_iterator i = mapTileList.begin(); i != mapTileList.end(); ++i) {
 		MapTile *mapTile = new MapTile(*this, i->x, i->y, EntityTypes::SOLID);
+		mapTile->setSpriteID(i->spriteDef->id);
 		loadEntity(mapTile);
 	}
 
@@ -319,10 +326,8 @@ void Map::initPhysics ()
 
 void Map::removeEntity (int clientMask, const IEntity& entity) const
 {
-#if 0
-	const RemoveEntityMessage msg(entity.getID(), fadeOut);
+	const RemoveEntityMessage msg(entity.getID(), false);
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
-#endif
 }
 
 void Map::addEntity (IEntity *entity)
@@ -333,24 +338,17 @@ void Map::addEntity (IEntity *entity)
 
 void Map::addEntity (int clientMask, const IEntity& entity) const
 {
-#if 0
-	const b2Vec2& pos = entity.getPos();
-	const b2Vec2& size = entity.getSize();
 	const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(entity.getAngle()));
-	const AddEntityMessage msg(entity.getID(), entity.getType(), entity.getAnimationType(),
-			entity.getSpriteID(), pos.x, pos.y, size.x, size.y, angle, entity.getSpriteAlignment());
+	const AddEntityMessage msg(entity.getID(), entity.getType(), Animation::NONE,
+			entity.getSpriteID(), entity.getCol(), entity.getRow(), 1.0f, 1.0f, angle, ENTITY_ALIGN_LOWER_LEFT);
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
-#endif
 }
 
 void Map::updateEntity (int clientMask, const IEntity& entity) const
 {
-#if 0
-	const b2Vec2& vec = entity.getPos();
 	const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(entity.getAngle()));
-	const UpdateEntityMessage msg(entity.getID(), vec.x, vec.y, angle, entity.getState());
+	const UpdateEntityMessage msg(entity.getID(), entity.getCol(), entity.getRow(), angle, 0);
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
-#endif
 }
 
 void Map::sendMapToClient (ClientId clientId) const

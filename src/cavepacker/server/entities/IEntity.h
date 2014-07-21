@@ -44,11 +44,16 @@ protected:
 	EntityObservers _observers;
 
 	Map& _map;
+	int _col;
+	int _row;
 
 public:
-	IEntity (const EntityType &type, Map& map);
+	IEntity (const EntityType &type, Map& map, int col, int row);
 
 	virtual ~IEntity ();
+
+	inline int getRow() const { return _row; }
+	inline int getCol() const { return _col; }
 
 	// called when the entity is added to the world
 	virtual void onSpawn ();

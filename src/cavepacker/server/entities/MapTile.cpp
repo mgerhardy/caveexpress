@@ -3,7 +3,7 @@
 #include "engine/common/SpriteDefinition.h"
 
 MapTile::MapTile (Map& map, int col, int row, const EntityType &type) :
-		IEntity(type, map), _col(col), _row(row)
+		IEntity(type, map, col, row)
 {
 	setSpriteID(_type.name);
 }
