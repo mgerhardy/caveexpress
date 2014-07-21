@@ -7,7 +7,6 @@
 #include "engine/client/ui/layouts/UIVBoxLayout.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/Version.h"
-#include "engine/common/System.h"
 #include "engine/client/ui/windows/listener/OpenWindowListener.h"
 #include "engine/client/ui/nodes/UINodeMainButton.h"
 
