@@ -41,6 +41,7 @@ bool SokubanMapContext::load(bool skipErrors) {
 
 	int col = 0;
 	int row = 0;
+	int maxCol = 0;
 	for (int i = 0; i < fileLen; ++i) {
 		switch (buffer[i]) {
 		case WALL:
@@ -68,7 +69,11 @@ bool SokubanMapContext::load(bool skipErrors) {
 			break;
 		}
 		++col;
+		maxCol = std::max(maxCol, col);
 	}
+
+	_settings[msn::WIDTH] = string::toString(maxCol);
+	_settings[msn::HEIGHT] = string::toString(row);
 
 	return true;
 }
@@ -100,6 +105,8 @@ inline void SokubanMapContext::addPackage(int col, int row) {
 
 inline void SokubanMapContext::addPlayer(int col, int row) {
 	addTile("player", col, row);
+	_settings[msn::PLAYER_X] = string::toString(col);
+	_settings[msn::PLAYER_Y] = string::toString(row);
 }
 
 inline void SokubanMapContext::addGround(int col, int row) {
