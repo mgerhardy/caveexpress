@@ -21,6 +21,7 @@
 #include "engine/common/Commands.h"
 #include "engine/common/CommandSystem.h"
 #include "engine/common/network/messages/LoadMapMessage.h"
+#include "engine/client/network/InitDoneHandler.h"
 #include "engine/client/ui/windows/UICampaignMapWindow.h"
 
 CavePacker::CavePacker ():
@@ -140,6 +141,10 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	_clientMap = map;
 	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_clientMap));
 	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));
+
+	ProtocolHandlerRegistry& rp = ProtocolHandlerRegistry::get();
+	rp.unregisterClientHandler(protocol::PROTO_INITDONE);
+	rp.registerClientHandler(protocol::PROTO_INITDONE, new InitDoneHandler(*_clientMap));
 }
 
 bool CavePacker::visitEntity (IEntity *entity)
