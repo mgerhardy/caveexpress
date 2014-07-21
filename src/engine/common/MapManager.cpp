@@ -95,7 +95,7 @@ void FileMapManager::loadMaps ()
 		const std::string filename = mapsPath + *i;
 		if (!FS.hasExtension(filename, _extension))
 			continue;
-		const int baseLength = i->size() - 4;
+		const int baseLength = i->size() - (_extension.size() + 1);
 		const std::string id = i->substr(0, baseLength);
 		if (_maps.find(id) != _maps.end()) {
 			error(LOG_MAP, "map with id " + id + " already exists");
