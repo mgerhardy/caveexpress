@@ -3,9 +3,9 @@
 #include "engine/client/ui/nodes/UINodeBackToRootButton.h"
 #include "engine/client/ui/nodes/UINodeButtonText.h"
 #include "engine/common/ServiceProvider.h"
+#include "engine/common/Commands.h"
 #include "engine/common/network/INetwork.h"
 #include "engine/client/ui/nodes/UINodeSettingsBackground.h"
-#include "caveexpress/shared/constants/Commands.h"
 
 UIMapOptionsWindow::UIMapOptionsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
 		UIWindow(UI_WINDOW_OPTIONS, frontend, WINDOW_FLAG_MODAL), _serviceProvider(serviceProvider)

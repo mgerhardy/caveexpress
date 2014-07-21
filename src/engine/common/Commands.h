@@ -20,3 +20,4 @@
 #define CMD_MOVE_RIGHT "move_right"
 #define CMD_START "start"
 #define CMD_MAP_RESTART "map_restart"
+#define CMD_MAP_PAUSE "cl_triggerpause"

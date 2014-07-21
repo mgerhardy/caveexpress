@@ -24,6 +24,7 @@
 #include "engine/client/network/InitDoneHandler.h"
 #include "engine/client/network/AddEntityHandler.h"
 #include "engine/client/ui/windows/UICampaignMapWindow.h"
+#include "engine/client/ui/windows/UIMapOptionsWindow.h"
 
 CavePacker::CavePacker ():
 	_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
@@ -142,6 +143,7 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	_clientMap = map;
 	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_clientMap));
 	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));
+	ui.addWindow(new UIMapOptionsWindow(frontend, serviceProvider));
 
 	ProtocolHandlerRegistry& rp = ProtocolHandlerRegistry::get();
 	rp.unregisterClientHandler(protocol::PROTO_INITDONE);

@@ -33,7 +33,7 @@
 #include "caveexpress/shared/constants/Commands.h"
 #include "caveexpress/client/ui/windows/UIMainWindow.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
-#include "caveexpress/client/ui/windows/UIMapOptionsWindow.h"
+#include "engine/client/ui/windows/UIMapOptionsWindow.h"
 #include "caveexpress/client/ui/windows/UISettingsWindow.h"
 #include "caveexpress/client/ui/windows/UIMapEditorWindow.h"
 #include "caveexpress/client/ui/windows/UIGameHelpWindow.h"
