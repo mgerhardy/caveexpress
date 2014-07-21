@@ -54,6 +54,7 @@ bool SokubanMapContext::load(bool skipErrors) {
 			addGround(col, row);
 			break;
 		case PLAYER:
+			addGround(col, row);
 			addPlayer(col, row);
 			break;
 		case PACKAGE:
@@ -65,6 +66,10 @@ bool SokubanMapContext::load(bool skipErrors) {
 		case PACKAGEONTARGET:
 			addTarget(col, row);
 			addPackage(col, row);
+			break;
+		case PLAYERONTARGET:
+			addTarget(col, row);
+			addPlayer(col, row);
 			break;
 		case '\n':
 			col = -1;
