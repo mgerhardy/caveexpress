@@ -95,11 +95,12 @@ void SokubanMapContext::addTile(const std::string& tile, int col, int row) {
 }
 
 inline void SokubanMapContext::addTarget(int col, int row) {
-	addTile("target", col, row);
+	addTile("tile-target-01", col, row);
 }
 
 inline void SokubanMapContext::addWall(int col, int row) {
-	addTile("tile-rock-01", col, row);
+	const int rnd = rand() % 3 + 1;
+	addTile("tile-rock-" + String::format("%02i", rnd), col, row);
 }
 
 inline void SokubanMapContext::addPackage(int col, int row) {
@@ -114,5 +115,6 @@ inline void SokubanMapContext::addPlayer(int col, int row) {
 }
 
 inline void SokubanMapContext::addGround(int col, int row) {
-	addTile("tile-background-01", col, row);
+	const int rnd = rand() % 4 + 1;
+	addTile("tile-background-" + String::format("%02i", rnd), col, row);
 }

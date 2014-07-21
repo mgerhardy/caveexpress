@@ -12,6 +12,11 @@ sprites = {
 
 -- Package
 
+	["tile-target-01"] = {
+		rotateable = 1,
+		theme = "rock",
+	},
+
 	["item-package-idle"] = {
 		rotateable = 1,
 		theme = "rock",
