@@ -13,3 +13,8 @@ Player::Player (Map& map, ClientId clientId, int col, int row) :
 Player::~Player ()
 {
 }
+
+void Player::move (int x, int y)
+{
+	// move player and move touching packages
+}

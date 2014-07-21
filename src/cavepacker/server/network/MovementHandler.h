@@ -21,6 +21,19 @@ public:
 			return;
 		}
 		const MovementMessage* msg = static_cast<const MovementMessage*>(&message);
-		//player->accelerate(msg->getDirection());
+		switch (msg->getDirection()) {
+		case DIRECTION_UP:
+			player->move(0, -1);
+			break;
+		case DIRECTION_DOWN:
+			player->move(0, 1);
+			break;
+		case DIRECTION_LEFT:
+			player->move(-1, 0);
+			break;
+		case DIRECTION_RIGHT:
+			player->move(1, 0);
+			break;
+		}
 	}
 };

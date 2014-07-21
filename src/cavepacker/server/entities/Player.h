@@ -23,6 +23,7 @@ public:
 	ClientId getClientId () const;
 	const std::string& getName () const;
 	void setName (const std::string& name);
+	void move (int x, int y);
 };
 
 inline ClientId Player::getClientId () const
