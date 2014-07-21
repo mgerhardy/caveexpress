@@ -22,11 +22,12 @@ void SokubanMapContext::onMapLoaded() {
 }
 
 bool SokubanMapContext::load(bool skipErrors) {
+	info(LOG_SERVER, "load the map " + _name);
 	resetTiles();
 
 	FilePtr filePtr = FS.getFile(_name);
 	if (!filePtr->exists()) {
-		error(LOG_CONFIG,
+		error(LOG_SERVER,
 				"sokuban map file " + filePtr->getURI().print()
 						+ " does not exist");
 		return false;
@@ -36,7 +37,7 @@ bool SokubanMapContext::load(bool skipErrors) {
 	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		error(LOG_CONFIG, "sokuban map file " + filePtr->getURI().print());
+		error(LOG_SERVER, "sokuban map file " + filePtr->getURI().print());
 		return false;
 	}
 
