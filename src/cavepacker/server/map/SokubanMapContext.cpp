@@ -25,7 +25,7 @@ bool SokubanMapContext::load(bool skipErrors) {
 	info(LOG_SERVER, "load the map " + _name);
 	resetTiles();
 
-	FilePtr filePtr = FS.getFile(_name);
+	FilePtr filePtr = FS.getFile(FS.getMapsDir() + _name + ".map");
 	if (!filePtr->exists()) {
 		error(LOG_SERVER,
 				"sokuban map file " + filePtr->getURI().print()
