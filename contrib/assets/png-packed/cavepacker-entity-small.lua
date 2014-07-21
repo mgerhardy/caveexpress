@@ -1,7 +1,7 @@
 textures = {
 	["item-package-idle-middle-01"] = {
 		image = "cavepacker-entity-small",
-		x0 = 0,
+		x0 = 0.2890625,
 		y0 = 0,
 		x1 = 0.515625,
 		y1 = 0.984375,
@@ -14,15 +14,15 @@ textures = {
 	},
 	["player"] = {
 		image = "cavepacker-entity-small",
-		x0 = 0.515625,
+		x0 = 0,
 		y0 = 0,
-		x1 = 0.2578125,
-		y1 = 0.890625,
+		x1 = 0.2890625,
+		y1 = 1,
 		trimmedoffsetx = 0,
 		trimmedoffsety = 0,
-		trimmedwidth = 33,
-		trimmedheight = 57,
-		untrimmedwidth = 33,
-		untrimmedheight = 57,
+		trimmedwidth = 37,
+		trimmedheight = 64,
+		untrimmedwidth = 37,
+		untrimmedheight = 64,
 	},
 }
