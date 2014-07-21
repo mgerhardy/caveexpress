@@ -182,6 +182,8 @@ void ClientMap::render (int x, int y) const
 
 void ClientMap::init (uint16_t playerID)
 {
+	info(LOG_CLIENT, String::format("init client map for player %i", playerID));
+
 	_camera.init(getWidth(), getHeight(), _mapWidth, _mapHeight, _scale);
 
 	_restartInitialized = 0U;
