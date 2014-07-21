@@ -3,6 +3,8 @@
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
+#include "engine/client/particles/Bubble.h"
+#include "engine/client/particles/Snow.h"
 #include "engine/client/particles/Sparkle.h"
 #include "engine/common/MapSettings.h"
 #include "engine/common/network/messages/StopMovementMessage.h"
@@ -96,6 +98,26 @@ void CaveExpressClientMap::couldNotFindEntity (const std::string& prefix, uint16
 		if (EntityTypes::isMapTile(e->getType()))
 			continue;
 		info(LOG_CLIENT, String::format("id: %i, type: %s", e->getID(), e->getType().name.c_str()));
+	}
+}
+
+void CaveExpressClientMap::init (uint16_t playerID) {
+	ClientMap::init(playerID);
+	// TODO: also take the non water height into account - so not have the amount of bubbles
+	// on a small area when the water is rising
+	const int bubbles = getWidth() / 100;
+	for (int i = 0; i < bubbles; ++i) {
+		_particleSystem.spawn(ParticlePtr(new Bubble(*this)));
+	}
+
+	const bool xmas = dateutil::isXmas();
+	if (xmas || ThemeTypes::isIce(*_theme)) {
+		// TODO: also take the non water height into account - so not have the amount of flakes
+		// on a small area when the water is rising
+		const int snowFlakes = getWidth() / 10;
+		for (int i = 0; i < snowFlakes; ++i) {
+			_particleSystem.spawn(ParticlePtr(new Snow(*this)));
+		}
 	}
 }
 

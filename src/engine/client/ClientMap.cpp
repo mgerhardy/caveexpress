@@ -1,7 +1,5 @@
 #include "engine/client/ClientMap.h"
 #include "engine/common/MapSettings.h"
-#include "engine/client/particles/Bubble.h"
-#include "engine/client/particles/Snow.h"
 #include "engine/common/network/messages/StopMovementMessage.h"
 #include "engine/common/network/messages/MovementMessage.h"
 #include "engine/common/network/messages/FingerMovementMessage.h"
@@ -194,23 +192,6 @@ void ClientMap::init (uint16_t playerID)
 	const ClientInitMessage msgInit(name);
 	INetwork& network = _serviceProvider.getNetwork();
 	network.sendToServer(msgInit);
-
-	// TODO: also take the non water height into account - so not have the amount of bubbles
-	// on a small area when the water is rising
-	const int bubbles = getWidth() / 100;
-	for (int i = 0; i < bubbles; ++i) {
-		_particleSystem.spawn(ParticlePtr(new Bubble(*this)));
-	}
-
-	const bool xmas = dateutil::isXmas();
-	if (xmas || ThemeTypes::isIce(*_theme)) {
-		// TODO: also take the non water height into account - so not have the amount of flakes
-		// on a small area when the water is rising
-		const int snowFlakes = getWidth() / 10;
-		for (int i = 0; i < snowFlakes; ++i) {
-			_particleSystem.spawn(ParticlePtr(new Snow(*this)));
-		}
-	}
 }
 
 TexturePtr ClientMap::loadTexture (const std::string& name) const

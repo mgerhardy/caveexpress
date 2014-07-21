@@ -17,6 +17,7 @@ public:
 	void setCaveState (uint16_t id, bool state);
 	bool drop ();
 	void start () override;
+	void init (uint16_t playerID) override;
 	void handleWaterImpact (float x, float force);
 	void setWaterHeight (float height);
 	// the water height in physic units

@@ -87,7 +87,7 @@ public:
 	virtual void resetCurrentMap ();
 	void close ();
 	void disconnect ();
-	void init (uint16_t playerID);
+	virtual void init (uint16_t playerID);
 	bool load (const std::string& name, const std::string& title);
 
 	void accelerate (Direction dir) const;
