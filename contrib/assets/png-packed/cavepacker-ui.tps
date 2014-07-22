@@ -140,7 +140,7 @@
             <key>trimThreshold</key>
             <uint>1</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">Trim</enum>
+            <enum type="SpriteSettings::TrimMode">None</enum>
             <key>heuristicMask</key>
             <false/>
         </struct>
@@ -161,6 +161,11 @@
             <filename>../png/ui/ui-scene-ground2-ice.png</filename>
             <filename>../png/ui/ui-scene-tile1-ice.png</filename>
             <filename>../png/ui/ui-scene-tile2-ice.png</filename>
+            <filename>../png/ui/map-icon-locked.png</filename>
+            <filename>../png/ui/map-icon-unlocked-0.png</filename>
+            <filename>../png/ui/map-icon-unlocked-1.png</filename>
+            <filename>../png/ui/map-icon-unlocked-2.png</filename>
+            <filename>../png/ui/map-icon-unlocked-3.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
