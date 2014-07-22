@@ -35,6 +35,7 @@ Map::Map () :
 {
 	Commands.registerCommand(CMD_MAP_RESTART, bind(Map, triggerRestart));
 	Commands.registerCommand(CMD_START, bind(Map, startMap));
+	Commands.registerCommand("map_print", bind(Map, printMap));
 
 	resetCurrentMap();
 }
@@ -172,6 +173,7 @@ void Map::resetCurrentMap ()
 		info(LOG_MAP, "reset map: " + _name);
 	}
 	_field.clear();
+	_state.clear();
 	_moves = 0;
 	_restartDue = 0;
 	_pause = false;
@@ -266,6 +268,24 @@ bool Map::isReadyToStart () const
 	return _playersWaitingForSpawn.size() > 1;
 }
 
+void Map::printMap ()
+{
+	std::stringstream ss;
+	for (int col = 0; col < _width; ++col) {
+		for (int row = 0; row < _height; ++row) {
+			const StateMapConstIter& i = _state.find(col + row * _width);
+			if (i == _state.end()) {
+				ss << ' ';
+				continue;
+			}
+			const char c = i->second;
+			ss << c;
+		}
+		ss << '\n';
+	}
+	ss << '\n';
+}
+
 void Map::startMap ()
 {
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
@@ -289,16 +309,22 @@ MapTile* Map::getPackage (int col, int row)
 
 bool Map::isFree (int col, int row)
 {
-	FieldMapConstIter i = _field.find(col + _width * row);
-	return i == _field.end();
+	StateMapConstIter i = _state.find(col + _width * row);
+	// not part of the map - thus, not free
+	if (i == _state.end())
+		return false;
+
+	const char c = i->second;
+	return c == Sokuban::GROUND || c == Sokuban::TARGET;
 }
 
 bool Map::isTarget (int col, int row)
 {
-	FieldMapConstIter i = _field.find(col + _width * row);
-	if (i == _field.end())
+	StateMapConstIter i = _state.find(col + _width * row);
+	if (i == _state.end())
 		return false;
-	return EntityTypes::isTarget(i->second->getType());
+	const char c = i->second;
+	return c == Sokuban::PACKAGEONTARGET || c == Sokuban::PLAYERONTARGET || c == Sokuban::TARGET;
 }
 
 bool Map::initPlayer (Player* player)

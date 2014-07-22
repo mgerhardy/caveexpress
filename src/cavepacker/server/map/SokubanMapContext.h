@@ -3,6 +3,16 @@
 #include "engine/common/IMapContext.h"
 #include <string>
 
+namespace Sokuban {
+const int WALL = '#';
+const int PLAYER = '@';
+const int PACKAGE = '$';
+const int TARGET = '.';
+const int GROUND = ' ';
+const int PACKAGEONTARGET = '*';
+const int PLAYERONTARGET = '+';
+}
+
 class SokubanMapContext : public IMapContext {
 private:
 	bool _playerSpawned;

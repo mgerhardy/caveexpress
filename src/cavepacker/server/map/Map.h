@@ -45,6 +45,10 @@ protected:
 	int _width;
 
 	int _restartDue;
+	typedef std::map<int, char> StateMap;
+	typedef StateMap::iterator StateMapIter;
+	typedef StateMap::const_iterator StateMapConstIter;
+	StateMap _state;
 	typedef std::map<int, IEntity*> FieldMap;
 	typedef FieldMap::iterator FieldMapIter;
 	typedef FieldMap::const_iterator FieldMapConstIter;
@@ -81,6 +85,7 @@ protected:
 	bool spawnPlayer (Player* player);
 	void setField (IEntity *entity, int col, int row);
 	void rebuildField ();
+	void printMap ();
 public:
 	Map ();
 	virtual ~Map ();

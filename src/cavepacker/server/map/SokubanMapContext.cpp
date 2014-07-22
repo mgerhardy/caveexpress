@@ -1,16 +1,6 @@
 #include "SokubanMapContext.h"
 #include "engine/common/FileSystem.h"
 
-namespace {
-const int WALL = '#';
-const int PLAYER = '@';
-const int PACKAGE = '$';
-const int TARGET = '.';
-const int GROUND = ' ';
-const int PACKAGEONTARGET = '*';
-const int PLAYERONTARGET = '+';
-}
-
 SokubanMapContext::SokubanMapContext(const std::string& map) :
 		IMapContext(map), _playerSpawned(false) {
 	_title = map;
@@ -48,29 +38,29 @@ bool SokubanMapContext::load(bool skipErrors) {
 	bool empty = true;
 	for (int i = 0; i < fileLen; ++i) {
 		switch (buffer[i]) {
-		case WALL:
+		case Sokuban::WALL:
 			addWall(col, row);
 			empty = false;
 			break;
-		case GROUND:
+		case Sokuban::GROUND:
 			if (!empty)
 				addGround(col, row);
 			break;
-		case PLAYER:
+		case Sokuban::PLAYER:
 			addGround(col, row);
 			addPlayer(col, row);
 			break;
-		case PACKAGE:
+		case Sokuban::PACKAGE:
 			addPackage(col, row);
 			break;
-		case TARGET:
+		case Sokuban::TARGET:
 			addTarget(col, row);
 			break;
-		case PACKAGEONTARGET:
+		case Sokuban::PACKAGEONTARGET:
 			addTarget(col, row);
 			addPackage(col, row);
 			break;
-		case PLAYERONTARGET:
+		case Sokuban::PLAYERONTARGET:
 			addTarget(col, row);
 			addPlayer(col, row);
 			break;
@@ -79,6 +69,8 @@ bool SokubanMapContext::load(bool skipErrors) {
 			++row;
 			empty = true;
 			break;
+		case '\r':
+			continue;
 		default:
 			break;
 		}
