@@ -20,5 +20,6 @@ public:
 	{
 		_clientMap.resetCurrentMap();
 		Commands.executeCommandLine(CMD_CL_DISCONNECT);
+		UI::get().pop();
 	}
 };
