@@ -7,6 +7,7 @@
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/SpriteDefinition.h"
 #include "engine/common/IFrontend.h"
+#include "engine/common/Math.h"
 #include "engine/common/network/INetwork.h"
 #include "engine/common/IMapContext.h"
 #include "cavepacker/server/map/SokubanMapContext.h"
@@ -245,7 +246,7 @@ bool Map::load (const std::string& name)
 		info(LOG_MAP, "sprite type: " + t.name + ", " + i->spriteDef->id);
 		MapTile *mapTile = new MapTile(*this, i->x, i->y, getEntityTypeForSpriteType(t));
 		mapTile->setSpriteID(i->spriteDef->id);
-		mapTile->setAngle(i->angle);
+		mapTile->setAngle(randBetweenf(-0.1, 0.1f));
 		loadEntity(mapTile);
 	}
 
