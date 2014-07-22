@@ -8,9 +8,6 @@
 class Map;
 
 class MapTile: public IEntity {
-private:
-	int _col;
-	int _row;
 public:
 	MapTile (Map& map, int col, int row, const EntityType &type);
 	virtual ~MapTile ();
