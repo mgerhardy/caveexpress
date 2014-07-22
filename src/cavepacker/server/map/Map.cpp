@@ -265,6 +265,7 @@ bool Map::spawnPlayer (Player* player)
 	const int row = getSetting(msn::PLAYER_Y, msd::PLAYER_Y).toInt();
 	player->setPos(col, row);
 	player->onSpawn();
+	addEntity(0, *player);
 	_players.push_back(player);
 	return true;
 }
@@ -486,7 +487,7 @@ void Map::sendMapToClient (ClientId clientId) const
 	const int clientMask = ClientIdToClientMask(clientId);
 	for (EntityListConstIter i = _entities.begin(); i != _entities.end(); ++i) {
 		const IEntity* e = *i;
-		if (!e->isMapTile())
+		if (!e->isMapTile() && !e->isPackage())
 			continue;
 		addEntity(clientMask, *e);
 	}

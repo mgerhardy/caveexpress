@@ -163,5 +163,8 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 
 bool CavePacker::visitEntity (IEntity *entity)
 {
+	if (entity->isDynamic()) {
+		_map.updateEntity(0, *entity);
+	}
 	return false;
 }
