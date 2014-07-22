@@ -109,7 +109,7 @@ inline void SokubanMapContext::addWall(int col, int row) {
 }
 
 inline void SokubanMapContext::addPackage(int col, int row) {
-	addTile("item-package", col, row);
+	addTile("package", col, row);
 }
 
 inline void SokubanMapContext::addPlayer(int col, int row) {
