@@ -45,6 +45,10 @@ protected:
 	int _width;
 
 	int _restartDue;
+	typedef std::map<int, IEntity*> FieldMap;
+	typedef FieldMap::iterator FieldMapIter;
+	typedef FieldMap::const_iterator FieldMapConstIter;
+	FieldMap _field;
 
 	// the time that passed since this map was started (milliseconds)
 	uint32_t _time;
@@ -75,6 +79,8 @@ protected:
 
 	// do the spawning on the map and add the physic objects
 	bool spawnPlayer (Player* player);
+	void setField (IEntity *entity, int col, int row);
+	void rebuildField ();
 public:
 	Map ();
 	virtual ~Map ();

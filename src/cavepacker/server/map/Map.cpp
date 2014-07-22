@@ -171,6 +171,7 @@ void Map::resetCurrentMap ()
 		_serviceProvider->getNetwork().sendToAllClients(msg);
 		info(LOG_MAP, "reset map: " + _name);
 	}
+	_field.clear();
 	_moves = 0;
 	_restartDue = 0;
 	_pause = false;
@@ -278,20 +279,26 @@ void Map::startMap ()
 
 MapTile* Map::getPackage (int col, int row)
 {
-	// TODO: return the package at the given position or null
+	FieldMapIter i = _field.find(col + _width * row);
+	if (i == _field.end())
+		return nullptr;
+	if (EntityTypes::isPackage(i->second->getType()))
+		return static_cast<MapTile*>(i->second);
 	return nullptr;
 }
 
 bool Map::isFree (int col, int row)
 {
-	// TODO: check that there is no wall and no package - a target is allowed here
-	return true;
+	FieldMapConstIter i = _field.find(col + _width * row);
+	return i == _field.end();
 }
 
 bool Map::isTarget (int col, int row)
 {
-	// TODO: check that this is a target
-	return false;
+	FieldMapConstIter i = _field.find(col + _width * row);
+	if (i == _field.end())
+		return false;
+	return EntityTypes::isTarget(i->second->getType());
 }
 
 bool Map::initPlayer (Player* player)
@@ -355,6 +362,11 @@ void Map::removeEntity (int clientMask, const IEntity& entity) const
 {
 	const RemoveEntityMessage msg(entity.getID(), false);
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
+}
+
+void Map::setField (IEntity *entity, int col, int row)
+{
+	_field[col + _width * row] = entity;
 }
 
 void Map::addEntity (IEntity *entity)
@@ -429,12 +441,25 @@ bool Map::visitEntity (IEntity *entity)
 	return false;
 }
 
+void Map::rebuildField ()
+{
+	_field.clear();
+	for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
+		setField(*i, (*i)->getCol(), (*i)->getRow());
+	}
+	for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
+		setField(*i, (*i)->getCol(), (*i)->getRow());
+	}
+}
+
 void Map::update (uint32_t deltaTime)
 {
 	if (_pause)
 		return;
 
 	_timeManager.update(deltaTime);
+
+	rebuildField();
 
 	if (_restartDue > 0 && _restartDue <= SDL_GetTicks()) {
 		const std::string currentName = getName();
