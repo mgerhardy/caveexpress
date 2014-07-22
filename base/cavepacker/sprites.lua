@@ -2,7 +2,7 @@ sprites = {
 
 -- Player
 
-	["player-idle"] = {
+	["player"] = {
 		frames = {
 			{}, --back
 			{ "player", }, --middle
@@ -18,7 +18,7 @@ sprites = {
 
 -- Package
 
-	["item-package"] = {
+	["package"] = {
 		type = "package",
 		rotateable = 1,
 		theme = "rock",
