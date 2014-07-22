@@ -295,14 +295,13 @@ std::string Map::getMapString() const {
 		}
 		ss << '\n';
 	}
-	ss << '\n';
 	return ss.str();
 }
 
 void Map::printMap ()
 {
 	const std::string& mapString = getMapString();
-	info(LOG_CLIENT, mapString);
+	info(LOG_CLIENT, "\n" + mapString);
 }
 
 void Map::startMap ()
