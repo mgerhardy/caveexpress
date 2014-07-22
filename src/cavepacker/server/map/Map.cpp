@@ -459,6 +459,11 @@ void Map::update (uint32_t deltaTime)
 
 	_timeManager.update(deltaTime);
 
+	_time += deltaTime;
+
+	ExecutionTime visitTime("VisitTime", 2000L);
+	visitEntities(this);
+
 	rebuildField();
 
 	if (_restartDue > 0 && _restartDue <= SDL_GetTicks()) {
