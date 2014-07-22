@@ -64,6 +64,12 @@ public:
 	// returns the angle of the entity in radians
 	virtual float getAngle () const;
 
+	// angle in radians
+	inline void setAngle (float angle)
+	{
+		_angle = angle;
+	}
+
 	virtual void update (uint32_t deltaTime);
 
 	virtual void remove ();
