@@ -21,8 +21,6 @@
 #include "engine/common/Commands.h"
 #include "engine/common/CommandSystem.h"
 #include "engine/common/network/messages/LoadMapMessage.h"
-#include "engine/client/network/InitDoneHandler.h"
-#include "engine/client/network/AddEntityHandler.h"
 #include "engine/client/ui/windows/UICampaignMapWindow.h"
 #include "engine/client/ui/windows/UIMapOptionsWindow.h"
 
@@ -57,6 +55,12 @@ void CavePacker::update (uint32_t deltaTime)
 		return;
 
 	_map.update(deltaTime);
+
+	if (_map.isDone()) {
+		// TODO:
+	} else if (_map.isFailed()) {
+		// TODO:
+	}
 }
 
 bool CavePacker::mapLoad (const std::string& map)
@@ -144,12 +148,6 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_clientMap));
 	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));
 	ui.addWindow(new UIMapOptionsWindow(frontend, serviceProvider));
-
-	ProtocolHandlerRegistry& rp = ProtocolHandlerRegistry::get();
-	rp.unregisterClientHandler(protocol::PROTO_INITDONE);
-	rp.registerClientHandler(protocol::PROTO_INITDONE, new InitDoneHandler(*_clientMap));
-	rp.unregisterClientHandler(protocol::PROTO_ADDENTITY);
-	rp.registerClientHandler(protocol::PROTO_ADDENTITY, new AddEntityHandler(*_clientMap));
 }
 
 bool CavePacker::visitEntity (IEntity *entity)

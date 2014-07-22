@@ -136,6 +136,13 @@ Player* Map::getPlayer (ClientId clientId)
 	return nullptr;
 }
 
+bool Map::isDone () const
+{
+	if (isFailed())
+		return false;
+	return true;
+}
+
 bool Map::isFailed () const
 {
 	if (_players.empty())
@@ -240,6 +247,7 @@ bool Map::spawnPlayer (Player* player)
 	info(LOG_SERVER, "spawn player " + player->toString());
 	const int col = getSetting(msn::PLAYER_X, msd::PLAYER_X).toInt();
 	const int row = getSetting(msn::PLAYER_Y, msd::PLAYER_Y).toInt();
+	player->setPos(col, row);
 	player->onSpawn();
 	_players.push_back(player);
 	return true;
@@ -265,6 +273,24 @@ void Map::startMap ()
 
 	INetwork& network = _serviceProvider->getNetwork();
 	network.sendToAllClients(StartMapMessage());
+}
+
+MapTile* Map::getPackage (int col, int row)
+{
+	// TODO: return the package at the given position or null
+	return nullptr;
+}
+
+bool Map::isFree (int col, int row)
+{
+	// TODO: check that there is no wall and no package - a target is allowed here
+	return true;
+}
+
+bool Map::isTarget (int col, int row)
+{
+	// TODO: check that this is a target
+	return false;
 }
 
 bool Map::initPlayer (Player* player)

@@ -55,6 +55,8 @@ public:
 	inline int getRow() const { return _row; }
 	inline int getCol() const { return _col; }
 
+	virtual bool setPos (int col, int row);
+
 	// called when the entity is added to the world
 	virtual void onSpawn ();
 

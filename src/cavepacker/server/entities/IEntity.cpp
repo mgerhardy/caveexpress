@@ -27,6 +27,16 @@ float IEntity::getAngle () const
 	return 0.0f;
 }
 
+bool IEntity::setPos (int col, int row)
+{
+	if (!_map.isFree(col, row))
+		return false;
+	_col = col;
+	_row = row;
+	_map.updateEntity(0, *this);
+	return true;
+}
+
 void IEntity::update (uint32_t deltaTime)
 {
 	_time += deltaTime;

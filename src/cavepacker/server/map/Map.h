@@ -117,7 +117,6 @@ public:
 	void disconnect (ClientId clientId);
 
 	// checks the winning conditions of the map
-	// e.g. if enough npcs were brought to their target cave, the map is done
 	bool isDone () const;
 
 	bool isRestartInitialized () const;
@@ -125,6 +124,10 @@ public:
 	// returns the time that was needed to finish the map
 	uint32_t getTime () const;
 	const ThemeType& getTheme () const;
+
+	MapTile* getPackage (int col, int row);
+	bool isFree (int col, int row);
+	bool isTarget (int col, int row);
 
 	uint32_t getFinishPoints () const;
 
@@ -183,13 +186,6 @@ inline int Map::getMapWidth () const
 inline int Map::getMapHeight () const
 {
 	return _height;
-}
-
-inline bool Map::isDone () const
-{
-	if (isFailed())
-		return false;
-	return true;
 }
 
 inline IFrontend *Map::getFrontend () const
