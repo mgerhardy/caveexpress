@@ -29,8 +29,6 @@ float IEntity::getAngle () const
 
 bool IEntity::setPos (int col, int row)
 {
-	if (!_map.isFree(col, row))
-		return false;
 	if (_col != 0 && _row != 0) {
 		const int x = col - _col;
 		const int y = row - _row;
@@ -43,7 +41,10 @@ bool IEntity::setPos (int col, int row)
 		} else if (y < 0) {
 			_angle = -M_PI_2;
 		}
-		info(LOG_SERVER, String::format("x: %i, y: %i", x, y));
+	}
+	if (!_map.isFree(col, row)) {
+		_map.updateEntity(0, *this);
+		return false;
 	}
 	_col = col;
 	_row = row;

@@ -288,7 +288,7 @@ std::string Map::getMapString() const {
 		for (int col = 0; col < _width; ++col) {
 			const StateMapConstIter& i = _state.find(INDEX(col, row));
 			if (i == _state.end()) {
-				ss << ' ';
+				ss << '+';
 				continue;
 			}
 			const char c = i->second;
@@ -331,10 +331,13 @@ bool Map::isFree (int col, int row)
 {
 	StateMapConstIter i = _state.find(INDEX(col, row));
 	// not part of the map - thus, not free
-	if (i == _state.end())
+	if (i == _state.end()) {
+		info(LOG_MAP, String::format("col: %i, row: %i is not part of the map", col, row));
 		return false;
+	}
 
 	const char c = i->second;
+	info(LOG_MAP, String::format("col: %i, row: %i is of type %c", col, row, c));
 	return c == Sokuban::GROUND || c == Sokuban::TARGET;
 }
 

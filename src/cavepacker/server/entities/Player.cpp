@@ -16,7 +16,7 @@ Player::~Player ()
 
 bool Player::move (int x, int y)
 {
-	info(LOG_SERVER, String::format("move player %i:%i", x, y));
+	info(LOG_SERVER, String::format("move player %i:%i (current: %i:%i)", x, y, _col, _row));
 	// move player and move touching packages
 	const int targetCol = _col + x;
 	const int targetRow = _row + y;
@@ -34,11 +34,6 @@ bool Player::move (int x, int y)
 		}
 		info(LOG_SERVER, "moved package");
 		_map.rebuildField();
-	}
-
-	if (!_map.isFree(targetCol, targetRow)) {
-		info(LOG_SERVER, "target field is blocked");
-		return false;
 	}
 	if (!setPos(targetCol, targetRow)) {
 		info(LOG_SERVER, "failed to move the player");
