@@ -98,7 +98,8 @@ void SokubanMapContext::addTile(const std::string& tile, int col, int row) {
 }
 
 inline void SokubanMapContext::addTarget(int col, int row) {
-	addTile("tile-target-01", col, row);
+	const int rnd = rand() % 1 + 1;
+	addTile("tile-target-" + String::format("%02i", rnd), col, row);
 }
 
 inline void SokubanMapContext::addWall(int col, int row) {
@@ -107,11 +108,10 @@ inline void SokubanMapContext::addWall(int col, int row) {
 }
 
 inline void SokubanMapContext::addPackage(int col, int row) {
-	addTile("item-package-idle", col, row);
+	addTile("item-package", col, row);
 }
 
 inline void SokubanMapContext::addPlayer(int col, int row) {
-	addTile("player-idle", col, row);
 	_settings[msn::PLAYER_X] = string::toString(col);
 	_settings[msn::PLAYER_Y] = string::toString(row);
 	_playerSpawned = true;

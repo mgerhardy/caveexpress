@@ -10,6 +10,7 @@
 #include "engine/common/network/INetwork.h"
 #include "engine/common/IMapContext.h"
 #include "cavepacker/server/map/SokubanMapContext.h"
+#include "cavepacker/shared/CavePackerSpriteType.h"
 #include "engine/common/network/messages/InitDoneMessage.h"
 #include "engine/common/network/messages/SoundMessage.h"
 #include "engine/common/network/messages/MapSettingsMessage.h"
@@ -89,38 +90,6 @@ inline bool Map::isActive () const
 	return true;
 }
 
-void Map::clearPhysics ()
-{
-	if (!_name.empty())
-		info(LOG_MAP, "* clear physics");
-
-	{ // now free the allocated memory
-		for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
-			delete *i;
-		}
-		for (EntityListIter i = _entitiesToAdd.begin(); i != _entitiesToAdd.end(); ++i) {
-			delete *i;
-		}
-		_entitiesToAdd.clear();
-		_entities.clear();
-		_entities.reserve(400);
-
-		for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
-			delete *i;
-		}
-		_players.clear();
-		_players.reserve(MAX_CLIENTS);
-		if (!_name.empty())
-			info(LOG_MAP, "* removed allocated memory");
-	}
-
-	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
-		delete *i;
-	}
-	_playersWaitingForSpawn.clear();
-	_playersWaitingForSpawn.reserve(MAX_CLIENTS);
-}
-
 Player* Map::getPlayer (ClientId clientId)
 {
 	for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
@@ -184,7 +153,35 @@ void Map::resetCurrentMap ()
 	_height = 0;
 	_time = 0;
 	_entityRemovalAllowed = true;
-	clearPhysics();
+	if (!_name.empty())
+		info(LOG_MAP, "* clear map");
+
+	{ // now free the allocated memory
+		for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
+			delete *i;
+		}
+		for (EntityListIter i = _entitiesToAdd.begin(); i != _entitiesToAdd.end(); ++i) {
+			delete *i;
+		}
+		_entitiesToAdd.clear();
+		_entities.clear();
+		_entities.reserve(400);
+
+		for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
+			delete *i;
+		}
+		_players.clear();
+		_players.reserve(MAX_CLIENTS);
+		if (!_name.empty())
+			info(LOG_MAP, "* removed allocated memory");
+	}
+
+	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
+		delete *i;
+	}
+	_playersWaitingForSpawn.clear();
+	_playersWaitingForSpawn.reserve(MAX_CLIENTS);
+
 	if (!_name.empty())
 		info(LOG_MAP, "done with resetting: " + _name);
 	_name.clear();
@@ -193,6 +190,20 @@ void Map::resetCurrentMap ()
 inline IMapContext* getMapContext (const std::string& name)
 {
 	return new SokubanMapContext(name);
+}
+
+inline const EntityType& getEntityTypeForSpriteType (const SpriteType& spriteType)
+{
+	if (SpriteTypes::isTarget(spriteType))
+		return EntityTypes::TARGET;
+	if (SpriteTypes::isGround(spriteType))
+		return EntityTypes::GROUND;
+	if (SpriteTypes::isSolid(spriteType))
+		return EntityTypes::SOLID;
+	if (SpriteTypes::isPackage(spriteType))
+		return EntityTypes::PACKAGE;
+	System.exit("unknown sprite type given: " + spriteType.name, 1);
+	return EntityType::NONE;
 }
 
 bool Map::load (const std::string& name)
@@ -224,12 +235,11 @@ bool Map::load (const std::string& name)
 		return false;
 	}
 
-	initPhysics();
-	info(LOG_MAP, "physics initialized");
-
 	const std::vector<MapTileDefinition>& mapTileList = ctx->getMapTileDefinitions();
 	for (std::vector<MapTileDefinition>::const_iterator i = mapTileList.begin(); i != mapTileList.end(); ++i) {
-		MapTile *mapTile = new MapTile(*this, i->x, i->y, EntityTypes::SOLID);
+		const SpriteType& t = i->spriteDef->type;
+		info(LOG_MAP, "sprite type: " + t.name + ", " + i->spriteDef->id);
+		MapTile *mapTile = new MapTile(*this, i->x, i->y, getEntityTypeForSpriteType(t));
 		mapTile->setSpriteID(i->spriteDef->id);
 		loadEntity(mapTile);
 	}
@@ -388,10 +398,6 @@ void Map::sendPlayersList () const
 	network.sendToAllClients(PlayerListMessage(names));
 }
 
-void Map::initPhysics ()
-{
-}
-
 void Map::removeEntity (int clientMask, const IEntity& entity) const
 {
 	const RemoveEntityMessage msg(entity.getID(), false);
@@ -464,7 +470,7 @@ void Map::addEntity (int clientMask, const IEntity& entity) const
 {
 	const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(entity.getAngle()));
 	const AddEntityMessage msg(entity.getID(), entity.getType(), Animation::NONE,
-			entity.getSpriteID(), entity.getCol() + 0.5f, entity.getRow() + 0.5f, 1.0f, 1.0f, angle, ENTITY_ALIGN_MIDDLE_CENTER);
+			entity.getSpriteID(), entity.getCol() + 0.5f, entity.getRow() + 0.5f, 1.0f, 1.0f, angle, ENTITY_ALIGN_LOWER_LEFT);
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 

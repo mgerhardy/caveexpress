@@ -13,13 +13,20 @@ sprites = {
 -- Package
 
 	["tile-target-01"] = {
+		type = "target",
 		rotateable = 1,
 		theme = "rock",
 	},
 
-	["item-package-idle"] = {
+	["item-package"] = {
+		type = "package",
 		rotateable = 1,
 		theme = "rock",
+		frames = {
+			{}, --back
+			{ "item-package-idle", }, --middle
+			{}, --front
+		}
 	},
 
 -- Rock Tiles

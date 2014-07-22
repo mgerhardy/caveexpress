@@ -172,12 +172,6 @@ public:
 private:
 	void finishMap ();
 
-	// init the map boundaries and configure the box2d stuff
-	void initPhysics ();
-
-	// cleanup on map shutdown
-	void clearPhysics ();
-
 	// command callbacks
 	void triggerRestart ();
 	void triggerPause ();
