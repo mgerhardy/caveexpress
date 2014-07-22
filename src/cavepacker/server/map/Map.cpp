@@ -307,6 +307,7 @@ void Map::printMap ()
 
 void Map::startMap ()
 {
+	rebuildField();
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		spawnPlayer(*i);
 	}
