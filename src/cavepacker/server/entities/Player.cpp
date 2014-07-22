@@ -24,8 +24,5 @@ bool Player::move (int x, int y)
 		}
 		package->setPos(_col + x * 2, _row + y * 2);
 	}
-	_col += x;
-	_row += y;
-	_map.updateEntity(0, *this);
-	return true;
+	return setPos(_col + x, _row + y);
 }
