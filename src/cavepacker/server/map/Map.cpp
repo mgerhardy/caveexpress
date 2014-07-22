@@ -112,8 +112,12 @@ bool Map::isDone () const
 {
 	if (isFailed())
 		return false;
-	// TODO: check that all packages are on their targets
-	return false;
+	for (StateMapConstIter i = _state.begin(); i != _state.end(); ++i) {
+		// if there is an empty target left, we are not yet done
+		if (i->second == Sokuban::TARGET)
+			return false;
+	}
+	return true;
 }
 
 bool Map::isFailed () const
