@@ -144,6 +144,7 @@ public:
 	MapTile* getPackage (int col, int row);
 	bool isFree (int col, int row);
 	bool isTarget (int col, int row);
+	bool isPackage (int col, int row);
 
 	uint32_t getFinishPoints () const;
 

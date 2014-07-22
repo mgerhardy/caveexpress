@@ -320,10 +320,12 @@ void Map::startMap ()
 MapTile* Map::getPackage (int col, int row)
 {
 	FieldMapIter i = _field.find(INDEX(col, row));
-	if (i == _field.end())
+	if (i == _field.end()) {
 		return nullptr;
-	if (EntityTypes::isPackage(i->second->getType()))
+	}
+	if (EntityTypes::isPackage(i->second->getType())) {
 		return static_cast<MapTile*>(i->second);
+	}
 	return nullptr;
 }
 
@@ -348,6 +350,15 @@ bool Map::isTarget (int col, int row)
 		return false;
 	const char c = i->second;
 	return c == Sokuban::PACKAGEONTARGET || c == Sokuban::PLAYERONTARGET || c == Sokuban::TARGET;
+}
+
+bool Map::isPackage (int col, int row)
+{
+	StateMapConstIter i = _state.find(INDEX(col, row));
+	if (i == _state.end())
+		return false;
+	const char c = i->second;
+	return c == Sokuban::PACKAGE || c == Sokuban::PACKAGEONTARGET;
 }
 
 bool Map::initPlayer (Player* player)
@@ -429,7 +440,14 @@ char Map::getSokubanFieldId (const IEntity *entity) const
 bool Map::setField (IEntity *entity, int col, int row)
 {
 	const int index = INDEX(col, row);
-	_field[index] = entity;
+	FieldMapConstIter fi = _field.find(index);
+	if (fi == _field.end()) {
+		_field[index] = entity;
+	} else {
+		// ground and target have low prio
+		if (fi->second->isGround() || fi->second->isTarget())
+			_field[index] = entity;
+	}
 	StateMapConstIter i = _state.find(index);
 	if (i == _state.end()) {
 		_state[index] = getSokubanFieldId(entity);
