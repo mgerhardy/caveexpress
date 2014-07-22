@@ -4,6 +4,7 @@
 #include "engine/client/ui/UI.h"
 #include "engine/client/ui/BitmapFont.h"
 #include "engine/common/Shared.h"
+#include "engine/common/Direction.h"
 #include "engine/common/Logger.h"
 #include "engine/common/FileSystem.h"
 #include "engine/common/ConfigManager.h"

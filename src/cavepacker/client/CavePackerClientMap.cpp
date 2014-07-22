@@ -28,6 +28,11 @@ void CavePackerClientMap::start ()
 {
 }
 
+bool CavePackerClientMap::wantLerp()
+{
+	return false;
+}
+
 void CavePackerClientMap::render (int x, int y) const
 {
 	ExecutionTime renderTime("ClientMapRender", 2000L);

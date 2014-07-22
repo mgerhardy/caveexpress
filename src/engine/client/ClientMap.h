@@ -75,6 +75,8 @@ protected:
 	virtual void couldNotFindEntity (const std::string& prefix, uint16_t id) const;
 	void disableScreenRumble ();
 
+	virtual bool wantLerp () { return _restartDue == 0; }
+
 public:
 	ClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth);
 	virtual ~ClientMap ();

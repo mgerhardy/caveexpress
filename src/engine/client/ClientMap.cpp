@@ -268,8 +268,9 @@ void ClientMap::update (uint32_t deltaTime)
 		SoundControl.setListenerPosition(_player->getPos());
 	}
 	const ExecutionTime updateTime("ClientMap", 2000L);
+	const bool lerp = wantLerp();
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end();) {
-		const bool val = i->second->update(deltaTime, _restartDue == 0);
+		const bool val = i->second->update(deltaTime, lerp);
 		if (!val) {
 			_entities.erase(i++);
 		} else {
