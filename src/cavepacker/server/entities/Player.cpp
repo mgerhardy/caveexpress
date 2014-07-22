@@ -22,8 +22,8 @@ bool Player::move (int x, int y)
 	const int targetRow = _row + y;
 	MapTile* package = _map.getPackage(targetCol, targetRow);
 	if (package != nullptr) {
-		const int pCol = _col + x * 2;
-		const int pRow = _row + y * 2;
+		const int pCol = targetCol + x;
+		const int pRow = targetRow + y;
 		if (!_map.isFree(pCol, pRow)) {
 			info(LOG_SERVER, "can't move here - can't move package. target field is blocked");
 			return false;
@@ -33,6 +33,7 @@ bool Player::move (int x, int y)
 			return false;
 		}
 		info(LOG_SERVER, "moved package");
+		_map.rebuildField();
 	}
 
 	if (!_map.isFree(targetCol, targetRow)) {
