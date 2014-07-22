@@ -69,7 +69,7 @@ protected:
 
 	TimeManager _timeManager;
 
-	uint16_t _gamePoints;
+	uint16_t _moves;
 
 	bool visitEntity (IEntity *entity) override;
 
@@ -83,6 +83,9 @@ public:
 	Player* getPlayer (ClientId clientId);
 
 	TimeManager& getTimeManager ();
+
+	inline int getMoves() const { return _moves; }
+	void increaseMoves () { ++_moves; }
 
 	void loadDelayed (uint32_t delay, const std::string& name);
 	bool load (const std::string& name);
@@ -208,11 +211,6 @@ inline TimeManager& Map::getTimeManager ()
 inline bool Map::isRestartInitialized () const
 {
 	return _restartDue > 0;
-}
-
-inline uint16_t Map::getPoints () const
-{
-	return _gamePoints;
 }
 
 inline bool Map::isPause () const

@@ -3,7 +3,6 @@
 #include "cavepacker/client/ui/windows/UIMainWindow.h"
 #include "cavepacker/client/ui/windows/UIMapWindow.h"
 #include "cavepacker/client/CavePackerClientMap.h"
-#include "engine/client/entities/ClientPlayer.h"
 #include "engine/client/entities/ClientMapTile.h"
 #include "cavepacker/server/network/SpawnHandler.h"
 #include "cavepacker/server/network/DisconnectHandler.h"
@@ -21,6 +20,7 @@
 #include "engine/common/Commands.h"
 #include "engine/common/CommandSystem.h"
 #include "engine/common/network/messages/LoadMapMessage.h"
+#include "engine/common/network/messages/FinishedMapMessage.h"
 #include "engine/client/ui/windows/UICampaignMapWindow.h"
 #include "engine/client/ui/windows/UIMapOptionsWindow.h"
 
@@ -56,10 +56,21 @@ void CavePacker::update (uint32_t deltaTime)
 
 	_map.update(deltaTime);
 
-	if (_map.isDone()) {
-		// TODO:
-	} else if (_map.isFailed()) {
-		// TODO:
+	const bool isDone = _map.isDone();
+	if (isDone && !_map.isRestartInitialized()) {
+		const uint32_t finishPoints = _map.getMoves();
+		const uint32_t timeSeconds = 1;
+		const uint8_t stars = 3;
+		if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, timeSeconds, stars))
+			error(LOG_SERVER, "Could not save the values for the map");
+
+		System.track("MapState", String::format("finished: %s with %i points in %i seconds and with %i stars", _map.getName().c_str(), finishPoints, timeSeconds, stars));
+		const FinishedMapMessage msg(_map.getName(), finishPoints, timeSeconds, stars);
+		_serviceProvider->getNetwork().sendToAllClients(msg);
+	} else if (!isDone && _map.isFailed()) {
+		debug(LOG_SERVER, "map failed");
+		const uint32_t delay = 1000;
+		_map.restart(delay);
 	}
 }
 
@@ -126,7 +137,7 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	r.registerFactory(EntityTypes::SOLID, ClientMapTile::FACTORY);
 	r.registerFactory(EntityTypes::GROUND, ClientMapTile::FACTORY);
 	r.registerFactory(EntityTypes::PACKAGE, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::PLAYER, ClientPlayer::FACTORY);
+	r.registerFactory(EntityTypes::PLAYER, ClientEntity::FACTORY);
 	r.registerFactory(EntityTypes::TARGET, ClientMapTile::FACTORY);
 
 	ProtocolHandlerRegistry& rp = ProtocolHandlerRegistry::get();

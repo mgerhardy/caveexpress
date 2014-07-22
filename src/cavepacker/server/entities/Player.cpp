@@ -24,5 +24,6 @@ bool Player::move (int x, int y)
 		}
 		package->setPos(_col + x * 2, _row + y * 2);
 	}
+	_map.increaseMoves();
 	return setPos(_col + x, _row + y);
 }

@@ -170,7 +170,7 @@ void Map::resetCurrentMap ()
 		_serviceProvider->getNetwork().sendToAllClients(msg);
 		info(LOG_MAP, "reset map: " + _name);
 	}
-	_gamePoints = 0;
+	_moves = 0;
 	_restartDue = 0;
 	_pause = false;
 	_mapRunning = false;
