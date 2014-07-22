@@ -44,7 +44,9 @@
 #include "engine/common/vec2.h"
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/Commands.h"
+#include <Box2D/Common/b2Settings.h>
 #include <SDL.h>
+#include <SDL_stdinc.h>
 #include <algorithm>
 #include <functional>
 #include <cassert>

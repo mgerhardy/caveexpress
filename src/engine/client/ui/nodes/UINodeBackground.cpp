@@ -1,4 +1,5 @@
 #include "UINodeBackground.h"
+#include "engine/common/IFrontend.h"
 
 UINodeBackground::UINodeBackground (IFrontend *frontend, const std::string& title, bool showVehicle) :
 		UINode(frontend), _showVehicle(showVehicle), _title(title)

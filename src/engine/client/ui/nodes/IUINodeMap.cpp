@@ -20,6 +20,7 @@
 #include "engine/client/network/TextMessageHandler.h"
 #include "engine/common/network/ProtocolHandlerRegistry.h"
 #include "engine/common/ServiceProvider.h"
+#include "engine/common/IFrontend.h"
 #include "engine/client/commands/CmdMove.h"
 #include "engine/common/campaign/CampaignManager.h"
 #include "engine/client/network/CloseMapHandler.h"

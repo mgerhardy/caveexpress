@@ -90,6 +90,8 @@
 #include "caveexpress/server/network/ClientInitHandler.h"
 #include "caveexpress/server/network/ErrorHandler.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
+#include "engine/common/System.h"
+#include "engine/common/network/INetwork.h"
 
 CaveExpress::CaveExpress () :
 		_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _updateEntitiesTime(0), _frontend(nullptr), _serviceProvider(nullptr),_connectedClients(

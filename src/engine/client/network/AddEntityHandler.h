@@ -3,6 +3,7 @@
 #include "engine/common/network/IProtocolHandler.h"
 #include "engine/common/network/messages/AddEntityMessage.h"
 #include "engine/client/ClientMap.h"
+#include "engine/common/System.h"
 
 class AddEntityHandler: public IClientProtocolHandler {
 protected:

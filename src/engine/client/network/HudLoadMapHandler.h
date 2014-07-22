@@ -6,6 +6,7 @@
 #include "engine/client/ui/nodes/IUINodeMap.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
 #include "engine/client/ui/nodes/UINodeLabel.h"
+#include "engine/client/ui/windows/UIWindow.h"
 #include "engine/client/ClientMap.h"
 #include "engine/client/ui/UI.h"
 

@@ -1,5 +1,6 @@
 #include "SokubanMapContext.h"
 #include "engine/common/FileSystem.h"
+#include "engine/common/Logger.h"
 
 SokubanMapContext::SokubanMapContext(const std::string& map) :
 		IMapContext(map), _playerSpawned(false) {

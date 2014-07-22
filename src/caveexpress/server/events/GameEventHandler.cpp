@@ -23,6 +23,7 @@
 #include "engine/common/network/messages/FinishedMapMessage.h"
 #include "engine/common/network/messages/FailedMapMessage.h"
 #include "engine/common/network/messages/UpdateParticleMessage.h"
+#include "engine/common/network/INetwork.h"
 
 #include "caveexpress/server/entities/IEntity.h"
 #include "caveexpress/server/entities/Player.h"

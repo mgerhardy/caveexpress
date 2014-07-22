@@ -12,10 +12,12 @@
 #include "engine/common/ConfigManager.h"
 #include "engine/common/EventHandler.h"
 #include "engine/common/ServiceProvider.h"
+#include "engine/common/CommandSystem.h"
 #include "engine/common/GLShared.h"
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/DateUtil.h"
 #include "engine/common/Commands.h"
+#include "engine/common/Logger.h"
 #include <SDL.h>
 
 ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth) :

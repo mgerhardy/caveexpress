@@ -8,6 +8,7 @@
 #endif
 #include "engine/client/ClientConsole.h"
 #include "engine/common/ConfigManager.h"
+#include "engine/common/System.h"
 #include "engine/common/SpriteDefinition.h"
 #include "engine/common/CommandSystem.h"
 #include "engine/common/FileSystem.h"
@@ -286,7 +287,7 @@ void SDLBackend::mainLoop (int argc, char **argv)
 	System.track("SDLBackend", "start");
 
 	if (init(argc, argv) == -1) {
-		System.exit("Initialization error", EXIT_FAILURE);
+		System.exit("Initialization error", 1);
 	}
 
 	info(LOG_BACKEND, "initialization done");
