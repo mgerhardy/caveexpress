@@ -262,7 +262,8 @@ bool Map::spawnPlayer (Player* player)
 
 	const int col = getSetting(msn::PLAYER_X).toInt();
 	const int row = getSetting(msn::PLAYER_Y).toInt();
-	player->setPos(col, row);
+	if (!player->setPos(col, row))
+		error(LOG_SERVER, String::format("failed to set the player position to %i:%i", col, row));
 	player->onSpawn();
 	addEntity(0, *player);
 	info(LOG_SERVER, "spawned player " + player->toString());
