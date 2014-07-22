@@ -45,13 +45,16 @@ bool SokubanMapContext::load(bool skipErrors) {
 	int col = 0;
 	int row = 0;
 	int maxCol = 0;
+	bool empty = true;
 	for (int i = 0; i < fileLen; ++i) {
 		switch (buffer[i]) {
 		case WALL:
 			addWall(col, row);
+			empty = false;
 			break;
 		case GROUND:
-			addGround(col, row);
+			if (!empty)
+				addGround(col, row);
 			break;
 		case PLAYER:
 			addGround(col, row);
@@ -74,6 +77,9 @@ bool SokubanMapContext::load(bool skipErrors) {
 		case '\n':
 			col = -1;
 			++row;
+			empty = true;
+			break;
+		default:
 			break;
 		}
 		++col;
