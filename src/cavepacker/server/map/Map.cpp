@@ -260,8 +260,8 @@ bool Map::spawnPlayer (Player* player)
 {
 	assert(_entityRemovalAllowed);
 
-	const int col = getSetting(msn::PLAYER_X, msd::PLAYER_X).toInt();
-	const int row = getSetting(msn::PLAYER_Y, msd::PLAYER_Y).toInt();
+	const int col = getSetting(msn::PLAYER_X).toInt();
+	const int row = getSetting(msn::PLAYER_Y).toInt();
 	player->setPos(col, row);
 	player->onSpawn();
 	addEntity(0, *player);
