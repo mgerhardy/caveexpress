@@ -140,7 +140,8 @@ bool Map::isDone () const
 {
 	if (isFailed())
 		return false;
-	return true;
+	// TODO: check that all packages are on their targets
+	return false;
 }
 
 bool Map::isFailed () const
