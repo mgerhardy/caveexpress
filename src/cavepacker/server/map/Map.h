@@ -84,7 +84,6 @@ protected:
 	// do the spawning on the map and add the physic objects
 	bool spawnPlayer (Player* player);
 	bool setField (IEntity *entity, int col, int row);
-	void rebuildField ();
 	void printMap ();
 	std::string getMapString() const;
 	char getSokubanFieldId (const IEntity *entity) const;
@@ -95,6 +94,7 @@ public:
 	const PlayerList& getPlayers () const;
 	Player* getPlayer (ClientId clientId);
 
+	void rebuildField ();
 	TimeManager& getTimeManager ();
 
 	inline int getMoves() const { return _moves; }

@@ -36,7 +36,7 @@ public:
 	const vec2& getSize () const;
 	virtual bool update (uint32_t deltaTime, bool lerpPos);
 	void setAnimationType (const Animation& type);
-	void setPos (const vec2& pos);
+	void setPos (const vec2& pos, bool lerp);
 	Direction getMoveDirection ();
 	void setAngle (int16_t angle);
 	void initFadeOut ();

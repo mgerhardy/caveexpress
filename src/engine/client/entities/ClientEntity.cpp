@@ -184,11 +184,15 @@ bool ClientEntity::update (uint32_t deltaTime, bool lerpPos)
 	return true;
 }
 
-void ClientEntity::setPos (const vec2& pos)
+void ClientEntity::setPos (const vec2& pos, bool lerp)
 {
-	_prevPos = _nextPos;
-	_nextPos = pos;
-	_pos = _prevPos;
+	if (lerp) {
+		_prevPos = _nextPos;
+		_nextPos = pos;
+		_pos = _prevPos;
+	} else {
+		_prevPos = _nextPos = _pos = pos;
+	}
 }
 
 Direction ClientEntity::getMoveDirection ()

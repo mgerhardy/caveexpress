@@ -336,7 +336,7 @@ bool ClientMap::updateEntity (uint16_t id, float x, float y, EntityAngle angle, 
 {
 	const ClientEntityMapIter& iter = _entities.find(id);
 	if (iter != _entities.end()) {
-		iter->second->setPos(vec2(x, y));
+		iter->second->setPos(vec2(x, y), wantLerp());
 		iter->second->setAngle(angle);
 		iter->second->changeState(state);
 		return true;

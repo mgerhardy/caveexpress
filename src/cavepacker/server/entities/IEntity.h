@@ -46,6 +46,7 @@ protected:
 	Map& _map;
 	int _col;
 	int _row;
+	float _angle;
 
 public:
 	IEntity (const EntityType &type, Map& map, int col, int row);

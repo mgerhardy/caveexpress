@@ -39,11 +39,11 @@ bool Player::move (int x, int y)
 		info(LOG_SERVER, "target field is blocked");
 		return false;
 	}
-
 	if (!setPos(targetCol, targetRow)) {
 		info(LOG_SERVER, "failed to move the player");
 		return false;
 	}
+
 	_map.increaseMoves();
 	return true;
 }
