@@ -30,6 +30,8 @@
 #include <functional>
 #include <cassert>
 
+#define INDEX(col, row) ((col) + _width * (row))
+
 Map::Map () :
 		IMap(), _frontend(nullptr), _serviceProvider(nullptr)
 {
@@ -272,7 +274,7 @@ std::string Map::getMapString() const {
 	std::stringstream ss;
 	for (int row = 0; row < _height; ++row) {
 		for (int col = 0; col < _width; ++col) {
-			const StateMapConstIter& i = _state.find(col + row * _width);
+			const StateMapConstIter& i = _state.find(INDEX(col, row));
 			if (i == _state.end()) {
 				ss << ' ';
 				continue;
@@ -305,7 +307,7 @@ void Map::startMap ()
 
 MapTile* Map::getPackage (int col, int row)
 {
-	FieldMapIter i = _field.find(col + _width * row);
+	FieldMapIter i = _field.find(INDEX(col, row));
 	if (i == _field.end())
 		return nullptr;
 	if (EntityTypes::isPackage(i->second->getType()))
@@ -315,7 +317,7 @@ MapTile* Map::getPackage (int col, int row)
 
 bool Map::isFree (int col, int row)
 {
-	StateMapConstIter i = _state.find(col + _width * row);
+	StateMapConstIter i = _state.find(INDEX(col, row));
 	// not part of the map - thus, not free
 	if (i == _state.end())
 		return false;
@@ -326,7 +328,7 @@ bool Map::isFree (int col, int row)
 
 bool Map::isTarget (int col, int row)
 {
-	StateMapConstIter i = _state.find(col + _width * row);
+	StateMapConstIter i = _state.find(INDEX(col, row));
 	if (i == _state.end())
 		return false;
 	const char c = i->second;
@@ -396,9 +398,60 @@ void Map::removeEntity (int clientMask, const IEntity& entity) const
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 
-void Map::setField (IEntity *entity, int col, int row)
+char Map::getSokubanFieldId (const IEntity *entity) const
 {
-	_field[col + _width * row] = entity;
+	const EntityType& t = entity->getType();
+	if (EntityTypes::isGround(t))
+		return Sokuban::GROUND;
+	if (EntityTypes::isTarget(t))
+		return Sokuban::TARGET;
+	// the order matters
+	if (EntityTypes::isSolid(t))
+		return Sokuban::WALL;
+	if (EntityTypes::isPackage(t))
+		return Sokuban::PACKAGE;
+	if (EntityTypes::isPlayer(t))
+		return Sokuban::PLAYER;
+	return Sokuban::GROUND;
+}
+
+bool Map::setField (IEntity *entity, int col, int row)
+{
+	const int index = INDEX(col, row);
+	_field[index] = entity;
+	StateMapConstIter i = _state.find(index);
+	if (i == _state.end()) {
+		_state[index] = getSokubanFieldId(entity);
+		return true;
+	}
+	const char c = i->second;
+	char nc = getSokubanFieldId(entity);
+	if (c == Sokuban::PLAYER) {
+		if (nc == Sokuban::TARGET)
+			nc = Sokuban::PLAYERONTARGET;
+		else if (nc == Sokuban::GROUND)
+			nc = c;
+		else
+			return false;
+	} else if (c == Sokuban::PACKAGE) {
+		if (nc == Sokuban::TARGET)
+			nc = Sokuban::PACKAGEONTARGET;
+		else if (nc == Sokuban::GROUND)
+			nc = c;
+		else
+			return false;
+	} else if (c == Sokuban::TARGET) {
+		if (nc == Sokuban::PACKAGE)
+			nc = Sokuban::PACKAGEONTARGET;
+		else if (nc == Sokuban::PLAYER)
+			nc = Sokuban::PLAYERONTARGET;
+		else if (nc == Sokuban::GROUND)
+			nc = c;
+		else
+			return false;
+	}
+	_state[index] = nc;
+	return true;
 }
 
 void Map::addEntity (IEntity *entity)
@@ -476,11 +529,14 @@ bool Map::visitEntity (IEntity *entity)
 void Map::rebuildField ()
 {
 	_field.clear();
+	_state.clear();
 	for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
-		setField(*i, (*i)->getCol(), (*i)->getRow());
+		if (!setField(*i, (*i)->getCol(), (*i)->getRow()))
+			System.exit("invalid map state", 1);
 	}
 	for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
-		setField(*i, (*i)->getCol(), (*i)->getRow());
+		if (!setField(*i, (*i)->getCol(), (*i)->getRow()))
+			System.exit("invalid map state", 1);
 	}
 }
 

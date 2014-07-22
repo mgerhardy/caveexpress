@@ -83,10 +83,11 @@ protected:
 
 	// do the spawning on the map and add the physic objects
 	bool spawnPlayer (Player* player);
-	void setField (IEntity *entity, int col, int row);
+	bool setField (IEntity *entity, int col, int row);
 	void rebuildField ();
 	void printMap ();
 	std::string getMapString() const;
+	char getSokubanFieldId (const IEntity *entity) const;
 public:
 	Map ();
 	virtual ~Map ();
