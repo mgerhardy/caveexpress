@@ -163,7 +163,7 @@ public:
 	virtual inline operator std::string () const
 	{
 		std::stringstream ss;
-		ss << "IEntity " << _id;
+		ss << "IEntity " << _id << ", col: " << _col << ", row: " << _row;
 		return ss.str();
 	}
 
