@@ -106,7 +106,9 @@ TexturePtr UINodeMapSelector::getIcon (const std::string& data) const
 			if (map->isLocked())
 				return loadTexture("map-icon-locked");
 
-			return loadTexture("map-icon-unlocked-" + string::toString(static_cast<int>(map->getStars())));
+			const TexturePtr& ptr = loadTexture("map-icon-unlocked-" + string::toString(static_cast<int>(map->getStars())));
+			if (ptr)
+				return ptr;
 		}
 	}
 	return loadTexture("map-icon-unlocked");
