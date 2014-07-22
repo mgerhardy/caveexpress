@@ -268,11 +268,10 @@ bool Map::isReadyToStart () const
 	return _playersWaitingForSpawn.size() > 1;
 }
 
-void Map::printMap ()
-{
+std::string Map::getMapString() const {
 	std::stringstream ss;
-	for (int col = 0; col < _width; ++col) {
-		for (int row = 0; row < _height; ++row) {
+	for (int row = 0; row < _height; ++row) {
+		for (int col = 0; col < _width; ++col) {
 			const StateMapConstIter& i = _state.find(col + row * _width);
 			if (i == _state.end()) {
 				ss << ' ';
@@ -284,6 +283,13 @@ void Map::printMap ()
 		ss << '\n';
 	}
 	ss << '\n';
+	return ss.str();
+}
+
+void Map::printMap ()
+{
+	const std::string& mapString = getMapString();
+	info(LOG_CLIENT, mapString);
 }
 
 void Map::startMap ()

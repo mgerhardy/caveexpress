@@ -86,6 +86,7 @@ protected:
 	void setField (IEntity *entity, int col, int row);
 	void rebuildField ();
 	void printMap ();
+	std::string getMapString() const;
 public:
 	Map ();
 	virtual ~Map ();
