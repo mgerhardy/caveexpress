@@ -10,13 +10,13 @@ sprites = {
 		}
 	},
 
--- Package
-
 	["tile-target-01"] = {
 		type = "target",
 		rotateable = 1,
 		theme = "rock",
 	},
+
+-- Package
 
 	["item-package"] = {
 		type = "package",

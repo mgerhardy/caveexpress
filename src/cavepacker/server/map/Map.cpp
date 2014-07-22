@@ -260,12 +260,12 @@ bool Map::spawnPlayer (Player* player)
 {
 	assert(_entityRemovalAllowed);
 
-	info(LOG_SERVER, "spawn player " + player->toString());
 	const int col = getSetting(msn::PLAYER_X, msd::PLAYER_X).toInt();
 	const int row = getSetting(msn::PLAYER_Y, msd::PLAYER_Y).toInt();
 	player->setPos(col, row);
 	player->onSpawn();
 	addEntity(0, *player);
+	info(LOG_SERVER, "spawned player " + player->toString());
 	_players.push_back(player);
 	return true;
 }
