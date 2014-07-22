@@ -38,7 +38,7 @@ CavePacker::~CavePacker ()
 
 IMapManager* CavePacker::getMapManager ()
 {
-	return new FileMapManager("map");
+	return new FileMapManager("sok");
 }
 
 void CavePacker::update (uint32_t deltaTime)
