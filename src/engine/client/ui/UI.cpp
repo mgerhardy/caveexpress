@@ -295,6 +295,10 @@ void UI::update (uint32_t deltaTime)
 		UIWindow* window = *i;
 		window->update(deltaTime);
 	}
+
+	for (Fonts::iterator i = _fonts.begin(); i != _fonts.end(); ++i) {
+		i->second->update(deltaTime);
+	}
 }
 
 bool UI::onKeyRelease (int32_t key)

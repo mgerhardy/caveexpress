@@ -5,7 +5,7 @@
 #include "engine/common/System.h"
 
 BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr, IFrontend *frontend) :
-		_frontend(frontend),_fontDefPtr(fontDefPtr) {
+		_frontend(frontend),_fontDefPtr(fontDefPtr), _time(0U) {
 	_font = UI::get().loadTexture(fontDefPtr->textureName);
 	if (!_font || !_font->isValid()) {
 		System.exit("invalid font definition with texture " + fontDefPtr->textureName, 1);
@@ -37,6 +37,11 @@ int BitmapFont::getMaxCharsForLength (const std::string& string, int pixelWidth)
 			break;
 	}
 	return chars;
+}
+
+void BitmapFont::update (uint32_t deltaTime)
+{
+	_time += deltaTime;
 }
 
 int BitmapFont::getCharWidth () const
