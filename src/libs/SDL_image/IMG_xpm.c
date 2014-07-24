@@ -1140,7 +1140,7 @@ done:
             SDL_FreeSurface(image);
             image = NULL;
         }
-        IMG_SetError(error);
+        IMG_SetError("%s", error);
     }
     if (keystrings)
         SDL_free(keystrings);
