@@ -115,7 +115,7 @@ bool Map::isDone () const
 		return false;
 	for (StateMapConstIter i = _state.begin(); i != _state.end(); ++i) {
 		// if there is an empty target left, we are not yet done
-		if (i->second == Sokuban::TARGET)
+		if (i->second == Sokuban::TARGET || i->second == Sokuban::PLAYERONTARGET)
 			return false;
 	}
 	return true;
