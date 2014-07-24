@@ -100,7 +100,7 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 		}
 		if (maxLength <= 0 || x + fontChr->getWidth() - beginX <= maxLength) {
 			_font->setRect(sourceRect.x + fontChr->getX(), sourceRect.y + fontChr->getY(), fontChr->getW(), fontChr->getH());
-			const int angle = randBetween(-10, 10);
+			const int angle = RadiansToDegrees(cos(_time / 100 + _rand) / 5.0f);
 			_frontend->renderImage(_font.get(), x + fontChr->getOX(), y + yShift + _fontDefPtr->getHeight() - fontChr->getOY(), fontChr->getW(), fontChr->getH(), angle, color[3]);
 		}
 		x += fontChr->getWidth();
