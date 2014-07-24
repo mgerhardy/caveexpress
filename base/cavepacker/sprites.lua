@@ -24,8 +24,8 @@ sprites = {
 		theme = "rock",
 		frames = {
 			{}, --back
-			{ "item-package-idle-middle-01", }, --middle
-			{}, --front
+			{}, --middle
+			{ "item-package-idle-middle-01", }, --front
 		}
 	},
 
