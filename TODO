@@ -10,6 +10,8 @@
 ** OUYA: Controls are fishy
 ** google play integration
 *** achievements
+** Fix CavePacker name in logs (See BaseActivity)
+** Fix CavePacker startup
 
 * Others
 ** Windows Installer Bitmap
