@@ -121,6 +121,13 @@ bool Map::isDone () const
 	return true;
 }
 
+void Map::increaseMoves ()
+{
+	++_moves;
+	info(LOG_SERVER, String::format("moved fields: %i", _moves));
+	//_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
+}
+
 bool Map::isFailed () const
 {
 	if (_players.empty())

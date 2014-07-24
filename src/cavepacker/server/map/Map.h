@@ -98,7 +98,7 @@ public:
 	TimeManager& getTimeManager ();
 
 	inline int getMoves() const { return _moves; }
-	void increaseMoves () { ++_moves; info(LOG_SERVER, String::format("moved fields: %i", _moves)); }
+	void increaseMoves ();
 
 	void loadDelayed (uint32_t delay, const std::string& name);
 	bool load (const std::string& name);
