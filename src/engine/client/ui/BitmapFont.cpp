@@ -7,10 +7,10 @@
 BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr, IFrontend *frontend) :
 		_frontend(frontend),_fontDefPtr(fontDefPtr), _time(0U) {
 	_font = UI::get().loadTexture(fontDefPtr->textureName);
+	_rand = randBetween(0, 10000);
 	if (!_font || !_font->isValid()) {
 		System.exit("invalid font definition with texture " + fontDefPtr->textureName, 1);
 	}
-	// TODO: doesn't work on ui restart
 	_fontDefPtr->updateChars(_font->getWidth(), _font->getHeight());
 }
 

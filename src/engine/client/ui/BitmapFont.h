@@ -11,6 +11,7 @@ class BitmapFont {
 	IFrontend *_frontend;
 	FontDefPtr _fontDefPtr;
 	uint32_t _time;
+	int _rand;
 public:
 	BitmapFont (const FontDefPtr& fontDefPtr, IFrontend *frontend);
 	virtual ~BitmapFont (void);
