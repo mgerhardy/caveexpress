@@ -1,8 +1,8 @@
 #include "LUA.h"
 #include "engine/common/FileSystem.h"
 #include "engine/common/Config.h"
+#include "engine/common/System.h"
 #include <assert.h>
-#include <SDL_platform.h>
 
 class StackChecker {
 private:
