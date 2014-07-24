@@ -9,7 +9,7 @@ endif
 $(TARGET)_LINKER   := $(CXX)
 $(TARGET)_FILE     := $(TARGET)$(EXE_EXT)
 $(TARGET)_LDFLAGS  += $(SDL_LIBS) $(SDL_IMAGE_LIBS) $(SDL_MIXER_LIBS) $(OPENGL_LIBS) $(OGG_LIBS) $(VORBIS_LIBS) $(PNG_LIBS) -lz $(SO_LIBS) $(LUA_LIBS) $(SQLITE3_LIBS) $(SDL_NET_LIBS) $(SDL_RWHTTP_LIBS)
-$(TARGET)_CFLAGS   += $(SDL_CFLAGS) $(SDL_IMAGE_CFLAGS) $(SDL_MIXER_CFLAGS) $(OPENGL_CFLAGS) $(OGG_CFLAGS) $(VORBIS_CFLAGS) $(LUA_CFLAGS) $(PNG_CFLAGS) $(SQLITE3_CFLAGS) $(SDL_NET_CFLAGS) $(SDL_RWHTTP_CFLAGS) -DNONETWORK
+$(TARGET)_CFLAGS   += $(SDL_CFLAGS) $(SDL_IMAGE_CFLAGS) $(SDL_MIXER_CFLAGS) $(OPENGL_CFLAGS) $(OGG_CFLAGS) $(VORBIS_CFLAGS) $(LUA_CFLAGS) $(PNG_CFLAGS) $(SQLITE3_CFLAGS) $(SDL_NET_CFLAGS) $(SDL_RWHTTP_CFLAGS)
 $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/*.cpp) \
 	\
@@ -29,8 +29,7 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/engine/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/common/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/common/campaign/*.cpp) \
-	$(wildcard $(SRCDIR)/engine/common/network/INetwork.cpp) \
-	$(wildcard $(SRCDIR)/engine/common/network/NoNetwork.cpp) \
+	$(wildcard $(SRCDIR)/engine/common/network/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/server/*.cpp) \	\
 	\
 	$(wildcard $(SRCDIR)/cavepacker/client/ui/windows/*.cpp) \
@@ -86,6 +85,11 @@ ifeq ($(TARGET_OS),darwin)
 		engine/common/ports/Darwin.cpp \
 		engine/common/ports/CocoaLog.mm \
 	$(TARGET)_LDFLAGS +=
+endif
+
+ifneq ($(NETWORKING),1)
+	TMP := $(filter-out engine/common/network/Network.cpp,$($(TARGET)_SRCS))
+	$(TARGET)_SRCS = $(TMP)
 endif
 
 ifneq ($(APPNAME),$(TARGET))
