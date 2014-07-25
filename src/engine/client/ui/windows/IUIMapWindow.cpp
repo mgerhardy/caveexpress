@@ -112,9 +112,7 @@ IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 		UINodeMapControl* node = new UINodeMapControl(frontend, _nodeMap);
 		_mapControl = node;
 		add(node);
-	}
 
-	if (!System.hasTouch()) {
 		UINodeSettingsButton *settings = new UINodeSettingsButton(frontend, _mapControl);
 		settings->setImage("icon-settings");
 		settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_OPTIONS)));
