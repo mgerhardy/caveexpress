@@ -69,7 +69,7 @@ endif
 data: textures lang filelist
 
 Makefile.local: configure
-	./configure --target-os=$(TARGET_OS)
+	./configure --target-os=$(TARGET_OS) --app=$(APPNAME)
 
 include build/flags.mk
 include build/modes/$(MODE).mk
