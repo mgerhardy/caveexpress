@@ -68,7 +68,7 @@ int BitmapFont::getTextWidth (const std::string& string) const
 	return std::max(lineWidth, width);
 }
 
-int BitmapFont::printMax (const std::string& text, const Color& color, int x, int y, int maxLength) const
+int BitmapFont::printMax (const std::string& text, const Color& color, int x, int y, int maxLength, bool rotate) const
 {
 	if (_fontDefPtr->getHeight() < 8)
 		return 0;
@@ -101,7 +101,7 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 		if (maxLength <= 0 || x + fontChr->getWidth() - beginX <= maxLength) {
 			_font->setRect(sourceRect.x + fontChr->getX(), sourceRect.y + fontChr->getY(), fontChr->getW(), fontChr->getH());
 			const int letterAngleMod = x + fontChr->getOX() + y + yShift + _fontDefPtr->getHeight() - fontChr->getOY() + fontChr->getW() + fontChr->getH();
-			const int angle = RadiansToDegrees(cos(static_cast<double>(letterAngleMod * 100 + _time + _rand) / 100.0) / 6.0);
+			const int angle = rotate ? RadiansToDegrees(cos(static_cast<double>(letterAngleMod * 100 + _time + _rand) / 100.0) / 6.0) : 0;
 			_frontend->renderImage(_font.get(), x + fontChr->getOX(), y + yShift + _fontDefPtr->getHeight() - fontChr->getOY(), fontChr->getW(), fontChr->getH(), angle, color[3]);
 		}
 		x += fontChr->getWidth();
@@ -111,7 +111,7 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 	return yShift;
 }
 
-int BitmapFont::print (const std::string& text, const Color& color, int x, int y) const
+int BitmapFont::print (const std::string& text, const Color& color, int x, int y, bool rotate) const
 {
-	return printMax(text, color, x, y, -1);
+	return printMax(text, color, x, y, -1, rotate);
 }

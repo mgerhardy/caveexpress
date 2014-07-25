@@ -15,8 +15,8 @@ class BitmapFont {
 public:
 	BitmapFont (const FontDefPtr& fontDefPtr, IFrontend *frontend);
 	virtual ~BitmapFont (void);
-	int print (const std::string& text, const Color& color, int x, int y) const;
-	int printMax (const std::string& text, const Color& color, int x, int y, int maxLength) const;
+	int print (const std::string& text, const Color& color, int x, int y, bool rotate = true) const;
+	int printMax (const std::string& text, const Color& color, int x, int y, int maxLength, bool rotate = true) const;
 	int getCharHeight () const;
 	int getCharWidth () const;
 	void update (uint32_t deltaTime);

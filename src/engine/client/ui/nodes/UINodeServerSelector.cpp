@@ -54,9 +54,9 @@ void UINodeServerSelector::render (int x, int y) const
 	x += getRenderX();
 	y += getRenderY();
 	_frontend->renderFilledRect(x, y, _colWidth * _frontend->getWidth(), _headlineHeight, colorGray);
-	_headlineFont->print(NAME_HEADLINE, _fontColor, x + getNameX(), y);
-	_headlineFont->print(MAP_HEADLINE, _fontColor, x + getMapX(), y);
-	_headlineFont->print(PLAYERS_HEADLINE, _fontColor, x + getPlayersX(), y);
+	_headlineFont->print(NAME_HEADLINE, _fontColor, x + getNameX(), y, false);
+	_headlineFont->print(MAP_HEADLINE, _fontColor, x + getMapX(), y, false);
+	_headlineFont->print(PLAYERS_HEADLINE, _fontColor, x + getPlayersX(), y, false);
 }
 
 int UINodeServerSelector::getNameX () const
@@ -90,9 +90,9 @@ void UINodeServerSelector::renderSelectorEntry (int index, const ServerEntry& da
 	const int playersWidth = _font->getTextWidth(PLAYERS_HEADLINE) - _rowSpacing;
 
 	_frontend->renderFilledRect(x, y, colWidth, rowHeight, color);
-	_font->printMax(data.name, _fontColor, x + getNameX(), y, nameWidth);
-	_font->printMax(data.mapName, _fontColor, x + getMapX(), y, mapNameWidth);
-	_font->printMax(players, _fontColor, x + getPlayersX(), y, playersWidth);
+	_font->printMax(data.name, _fontColor, x + getNameX(), y, nameWidth, false);
+	_font->printMax(data.mapName, _fontColor, x + getMapX(), y, mapNameWidth, false);
+	_font->printMax(players, _fontColor, x + getPlayersX(), y, playersWidth, false);
 }
 
 bool UINodeServerSelector::onPush ()
