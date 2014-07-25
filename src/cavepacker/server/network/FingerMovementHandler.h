@@ -21,6 +21,8 @@ public:
 			return;
 		}
 		const FingerMovementMessage* msg = static_cast<const FingerMovementMessage*>(&message);
-		player->move(msg->getDeltaX() / std::abs(msg->getDeltaX()), msg->getDeltaY() / std::abs(msg->getDeltaY()));
+		const int dx = msg->getDeltaX() == 0 ? 0 : msg->getDeltaX() / std::abs(msg->getDeltaX());
+		const int dy = msg->getDeltaY() == 0 ? 0 : msg->getDeltaY() / std::abs(msg->getDeltaY());
+		player->move(dx, dy);
 	}
 };
