@@ -37,8 +37,10 @@ public:
 };
 
 IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map, IUINodeMap* nodeMap) :
-		UIWindow(UI_WINDOW_MAP, frontend, WINDOW_FLAG_MODAL | WINDOW_FLAG_FULLSCREEN), _nodeMap(nodeMap), _cursorActive(false), _serviceProvider(serviceProvider)
-{
+		UIWindow(UI_WINDOW_MAP, frontend,
+				WINDOW_FLAG_MODAL | WINDOW_FLAG_FULLSCREEN), _nodeMap(nodeMap), _cursorActive(
+				false), _serviceProvider(serviceProvider), _startButton(
+				nullptr), _waitLabel(nullptr), _mapControl(nullptr) {
 	const float screenPadding = getScreenPadding();
 	setPadding(screenPadding);
 	_playClickSound = false;
@@ -103,7 +105,10 @@ IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 	_panel->add(_packagesSprite);
 
 	add(_panel);
+}
 
+void IUIMapWindow::init()
+{
 	if (System.hasTouch()) {
 		UINode* node = getFingerControl();
 		add(node);
@@ -111,28 +116,28 @@ IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 		UINode* node = getControl();
 		add(node);
 
-		UINodeSettingsButton *settings = new UINodeSettingsButton(frontend, _mapControl);
+		UINodeSettingsButton *settings = new UINodeSettingsButton(_frontend, _mapControl);
 		settings->setImage("icon-settings");
 		settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_OPTIONS)));
 		settings->setAlignment(NODE_ALIGN_LEFT | NODE_ALIGN_TOP);
 		add(settings);
 	}
 
-	_startButton = new UINodeButtonText(frontend, tr("Start"), 0.05f);
+	_startButton = new UINodeButtonText(_frontend, tr("Start"), 0.05f);
 	_startButton->setOnActivate(CMD_START);
 	_startButton->setFont(getFont(LARGE_FONT), colorBlack);
 	_startButton->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_TOP);
 	_startButton->setVisible(false);
 	add(_startButton);
 
-	_waitLabel = new UINodeLabel(frontend, tr("Waiting"), getFont(LARGE_FONT));
+	_waitLabel = new UINodeLabel(_frontend, tr("Waiting"), getFont(LARGE_FONT));
 	_waitLabel->setColor(colorWhite);
 	_waitLabel->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_TOP);
 	_waitLabel->setVisible(false);
 	add(_waitLabel);
 }
 
-virtual UINode* IUIMapWindow::getControl ()
+UINode* IUIMapWindow::getControl ()
 {
 	UINodeMapControl* node = new UINodeMapControl(_frontend, _nodeMap);
 	_mapControl = node;

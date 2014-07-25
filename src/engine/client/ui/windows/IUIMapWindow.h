@@ -41,9 +41,12 @@ protected:
 
 	virtual UINode* getFingerControl ();
 	virtual UINode* getControl ();
+	// call this in your derived classes
+	void init();
 
 public:
 	IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map, IUINodeMap* nodeMap);
+	virtual ~IUIMapWindow() {}
 
 	bool isGameActive () const;
 
