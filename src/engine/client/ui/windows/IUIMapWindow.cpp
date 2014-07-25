@@ -19,8 +19,6 @@
 #include "engine/client/ui/nodes/UINodeMapControl.h"
 #include "engine/client/ui/nodes/UINodeMapFingerControl.h"
 #include "engine/common/campaign/persister/IGameStatePersister.h"
-#include "caveexpress/shared/constants/Commands.h"
-#include "caveexpress/shared/constants/PlayerState.h"
 #include <SDL_platform.h>
 
 class UINodeSettingsButton: public UINodeButton {
