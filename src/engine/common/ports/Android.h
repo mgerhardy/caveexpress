@@ -37,6 +37,8 @@ public:
 	Android ();
 	virtual ~Android ();
 
+	void init() override;
+
 	void logError (const std::string& error) const override {
 		__android_log_write(ANDROID_LOG_ERROR, APPFULLNAME, error.c_str());
 	}

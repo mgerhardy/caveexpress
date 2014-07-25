@@ -8,6 +8,7 @@
 
 extern "C" int main (int argc, char *argv[])
 {
+	getSystem().init();
 	const std::string workingDir = getSystem().getCurrentWorkingDir();
 	info(LOG_MAIN, "current working dir: " + workingDir);
 

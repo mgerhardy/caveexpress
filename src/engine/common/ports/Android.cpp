@@ -65,6 +65,9 @@ Android::Android () :
 		Unix(), _env(nullptr), _cls(nullptr), _assetManager(nullptr), _showAds(nullptr), _hideAds(nullptr),
 		_showFullscreenAds(nullptr), _openURL(nullptr), _buyItem(nullptr), _hasItem(nullptr), _isOUYA(nullptr),
 		_minimize(nullptr), _getPaymentEntries(nullptr), _externalState(0) {
+}
+
+void Android::init() {
 	LocalReferenceHolder refs;
 
 	JNIEnv *env = static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());

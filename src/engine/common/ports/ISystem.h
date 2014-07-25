@@ -35,6 +35,8 @@ public:
 	{
 	}
 
+	virtual void init () {}
+
 	void signalHandler (int s) {
 		backtrace("");
 		exit("quitting via signal", s);
