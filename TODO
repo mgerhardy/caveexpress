@@ -29,3 +29,6 @@
 *** reduce collision damage
 *** packages are easier to carry (reduced weight)
 ** finish lava
+
+* Windows
+** project.rc.in to replace the appname
