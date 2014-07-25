@@ -32,8 +32,10 @@ public class CaveExpress extends BaseActivity {
 	private static final class HideAddsRunnable implements Runnable {
 		private final AdView adview;
 		private final RelativeLayout layout;
+		private final BaseActivity activity;
 
-		public HideAddsRunnable(AdView adview, RelativeLayout layout) {
+		public HideAddsRunnable(BaseActivity activity, AdView adview, RelativeLayout layout) {
+			this.activity = activity;
 			this.adview = adview;
 			this.layout = layout;
 		}
@@ -41,15 +43,17 @@ public class CaveExpress extends BaseActivity {
 		@Override
 		public void run() {
 			layout.removeView(adview);
-			Log.v(NAME, "Hiding ads");
+			Log.v(activity.getName(), "Hiding ads");
 		}
 	}
 
 	private static final class AddsShowRunnable implements Runnable {
 		private final AdView adview;
 		private final RelativeLayout layout;
+		private final BaseActivity activity;
 
-		public AddsShowRunnable(AdView adview, RelativeLayout layout) {
+		public AddsShowRunnable(BaseActivity activity, AdView adview, RelativeLayout layout) {
+			this.activity = activity;
 			this.adview = adview;
 			this.layout = layout;
 		}
@@ -63,7 +67,7 @@ public class CaveExpress extends BaseActivity {
 			params.addRule(RelativeLayout.CENTER_VERTICAL);
 
 			layout.addView(adview, params);
-			Log.v(NAME, "Showing ads");
+			Log.v(activity.getName(), "Showing ads");
 		}
 	}
 
@@ -84,11 +88,11 @@ public class CaveExpress extends BaseActivity {
 		@Override
 		public void run() {
 			if (!interstitial.isLoaded()) {
-				Log.v(NAME, "don't show fullscreen ads");
+				Log.v(getName(), "don't show fullscreen ads");
 				retVal = false;
 				return;
 			}
-			Log.v(NAME, "show fullscreen ads");
+			Log.v(getName(), "show fullscreen ads");
 			interstitial.show();
 			retVal = true;
 		}
@@ -135,15 +139,15 @@ public class CaveExpress extends BaseActivity {
 			public void onAdFailedToLoad(int errorCode) {
 				super.onAdFailedToLoad(errorCode);
 				if (errorCode == AdRequest.ERROR_CODE_NO_FILL) {
-					Log.v(NAME, "Failed to load the ad: No fill");
+					Log.v(getName(), "Failed to load the ad: No fill");
 				} else if (errorCode == AdRequest.ERROR_CODE_INVALID_REQUEST) {
-					Log.v(NAME, "Failed to load the ad: Invalid request");
+					Log.v(getName(), "Failed to load the ad: Invalid request");
 				} else if (errorCode == AdRequest.ERROR_CODE_INTERNAL_ERROR) {
-					Log.v(NAME, "Failed to load the ad: Internal error");
+					Log.v(getName(), "Failed to load the ad: Internal error");
 				} else if (errorCode == AdRequest.ERROR_CODE_NETWORK_ERROR) {
-					Log.v(NAME, "Failed to load the ad: Network errors");
+					Log.v(getName(), "Failed to load the ad: Network errors");
 				} else {
-					Log.v(NAME, "Failed to load the ad");
+					Log.v(getName(), "Failed to load the ad");
 				}
 			}
 
@@ -156,7 +160,7 @@ public class CaveExpress extends BaseActivity {
 			@Override
 			public void onAdLoaded() {
 				super.onAdLoaded();
-				Log.v(NAME, "Loaded an ad");
+				Log.v(getName(), "Loaded an ad");
 			}
 		});
 		reloadAd();
@@ -203,12 +207,17 @@ public class CaveExpress extends BaseActivity {
 	@Override
 	protected void doShowAds() {
 		Handler mainHandler = new Handler(getContext().getMainLooper());
-		mainHandler.post(new AddsShowRunnable(adview, layout));
+		mainHandler.post(new AddsShowRunnable(this, adview, layout));
 	}
 
 	@Override
 	protected void doHideAds() {
 		Handler mainHandler = new Handler(getContext().getMainLooper());
-		mainHandler.post(new HideAddsRunnable(adview, layout));
+		mainHandler.post(new HideAddsRunnable(this, adview, layout));
+	}
+
+	@Override
+	public String getName() {
+		return "caveexpress";
 	}
 }

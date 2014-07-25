@@ -30,8 +30,6 @@ import android.util.Log;
  * Base activity class with google play payment support
  */
 public abstract class BaseActivity extends SDLActivity {
-	public static final String NAME = "caveexpress";
-
 	// (arbitrary) request code for the purchase flow
 	protected static final int RC_REQUEST = 10001;
 
@@ -51,14 +49,16 @@ public abstract class BaseActivity extends SDLActivity {
 		return "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4KxbS8KykHzthKhIkWcfbGeJsUAApOtLH5t4jWxLy2j6ISpL72w66a6cEjB+YC8hJSPQ8TjvAKCHAqSmi23F1f9eUiuJ8WhMysESfJuyOdCXdQ4swVsKDLdwcR7tu69X5yEoJd0eHJ0TaEu5YXd8FPg6VRzxIf9H+NlDyeDGIai332kwlbyaPtyNGym8BnDpKh1TwC1bEwNYbZiL+CBe/1B+ZxxdTkGb/0/Sp4y+TpjD42vhQp9VzeiEeJqYlP6c1A0Dh1guKPEIAiowmyjm2rKCya85EKC4IUl9/QgyO/BGZFG13Em/JIr9rFoGygZ3igYLlWuWeUfJUTmgcBJchwIDAQAB";
 	}
 
+	public abstract String getName();
+
 	private final class InAppBillingSetupFinishedListener implements IabHelper.OnIabSetupFinishedListener {
 		@Override
 		public void onIabSetupFinished(final IabResult result) {
 			if (!result.isSuccess()) {
 				noInAppBilling = true;
-				Log.e(NAME, "Problem setting up In-app Billing: " + result);
+				Log.e(getName(), "Problem setting up In-app Billing: " + result);
 			} else {
-				Log.v(NAME, "App billing setup OK, querying inventory.");
+				Log.v(getName(), "App billing setup OK, querying inventory.");
 
 				moreSkus.clear();
 				if (!isHD()) {
@@ -95,7 +95,7 @@ public abstract class BaseActivity extends SDLActivity {
 	protected void configureBilling() {
 		inAppBillingHelper = new IabHelper(this, getPublicKey());
 		inAppBillingHelper.startSetup(new InAppBillingSetupFinishedListener());
-		inAppBillingHelper.enableDebugLogging(isDebug(), NAME);
+		inAppBillingHelper.enableDebugLogging(isDebug(), getName());
 	}
 
 	/**
@@ -106,11 +106,11 @@ public abstract class BaseActivity extends SDLActivity {
 		@Override
 		public void onQueryInventoryFinished(final IabResult result, final Inventory inventory) {
 			if (result.isFailure()) {
-				Log.e(NAME, "Failed to query inventory: " + result);
+				Log.e(getName(), "Failed to query inventory: " + result);
 				return;
 			}
 
-			Log.d(NAME, "Query inventory was successful.");
+			Log.d(getName(), "Query inventory was successful.");
 
 			/**
 			 * Check for items we own. Notice that for each purchase, we check
@@ -118,27 +118,27 @@ public abstract class BaseActivity extends SDLActivity {
 			 */
 			List<Purchase> allPurchases = inventory.getAllPurchases();
 			for (Purchase purchase : allPurchases) {
-				final String orig = NAME + purchase.getSku();
+				final String orig = getName() + purchase.getSku();
 				final String payload = purchase.getDeveloperPayload();
 				if (payload.equals(orig)) {
 					paymentIds.put(purchase.getSku(), purchase);
-					Log.v(NAME, "Users has bought: " + purchase.getSku());
+					Log.v(getName(), "Users has bought: " + purchase.getSku());
 				} else {
-					Log.v(NAME, purchase.getSku() + " is invalid.");
+					Log.v(getName(), purchase.getSku() + " is invalid.");
 				}
 			}
-			Log.d(NAME, "more SKUs: " + moreSkus.size());
+			Log.d(getName(), "more SKUs: " + moreSkus.size());
 			for (String sku : moreSkus) {
 				SkuDetails skuDetails = inventory.getSkuDetails(sku);
 				if (skuDetails == null) {
-					Log.v(NAME, "Could not get details for sku: " + sku);
+					Log.v(getName(), "Could not get details for sku: " + sku);
 					continue;
 				}
 				paymentEntries.add(new PaymentEntry(skuDetails.getSku(), skuDetails.getDescription(), skuDetails
 						.getPrice()));
 			}
 
-			Log.d(NAME, "user purchased " + allPurchases.size() + " items.");
+			Log.d(getName(), "user purchased " + allPurchases.size() + " items.");
 			onPaymentDone();
 		}
 	};
@@ -146,24 +146,24 @@ public abstract class BaseActivity extends SDLActivity {
 	private final IabHelper.OnIabPurchaseFinishedListener purchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
 		@Override
 		public void onIabPurchaseFinished(final IabResult result, final Purchase purchase) {
-			Log.v(NAME, "Purchase finished: " + result + ", purchase: " + purchase);
+			Log.v(getName(), "Purchase finished: " + result + ", purchase: " + purchase);
 			if (result.isFailure()) {
-				Log.e(NAME, "Failed purchase!");
+				Log.e(getName(), "Failed purchase!");
 				return;
 			}
 			if (!verifyDeveloperPayload(purchase, purchase.getSku())) {
-				Log.e(NAME, "Error purchasing. Authenticity verification failed.");
+				Log.e(getName(), "Error purchasing. Authenticity verification failed.");
 				return;
 			}
 
 			paymentIds.put(purchase.getSku(), purchase);
 
-			Log.v(NAME, "Purchase successful.");
+			Log.v(getName(), "Purchase successful.");
 		}
 	};
 
 	protected static boolean verifyDeveloperPayload(final Purchase p, String sku) {
-		final String orig = NAME + sku;
+		final String orig = getBaseActivity().getName() + sku;
 		final String payload = p.getDeveloperPayload();
 		return payload.equals(orig);
 	}
@@ -224,12 +224,12 @@ public abstract class BaseActivity extends SDLActivity {
 
 	protected boolean doBuyItem(String id) {
 		if (noInAppBilling) {
-			Log.v(NAME, "Purchase procedure not available");
+			Log.v(getName(), "Purchase procedure not available");
 			return false;
 		}
 
-		Log.v(NAME, "Purchase procedure started");
-		final String payload = NAME + id;
+		Log.v(getName(), "Purchase procedure started");
+		final String payload = getName() + id;
 
 		inAppBillingHelper.launchPurchaseFlow(mSingleton, id, RC_REQUEST, purchaseFinishedListener, payload);
 		return true;
@@ -239,7 +239,7 @@ public abstract class BaseActivity extends SDLActivity {
 		final AlertDialog.Builder bld = new AlertDialog.Builder(mSingleton);
 		bld.setMessage(message);
 		bld.setNeutralButton("OK", null);
-		Log.d(NAME, "Showing alert dialog: " + message);
+		Log.d(getBaseActivity().getName(), "Showing alert dialog: " + message);
 		bld.create().show();
 	}
 
@@ -272,8 +272,8 @@ public abstract class BaseActivity extends SDLActivity {
 		DisplayMetrics m = new DisplayMetrics();
 		getBaseActivity().getWindowManager().getDefaultDisplay().getMetrics(m);
 		boolean small = /* m.widthPixels < 1280 || */m.heightPixels < 720;
-		Log.v(NAME, "resolution " + m.widthPixels + "x" + m.heightPixels + ", density: " + m.density + ", small: "
-				+ small);
+		Log.v(getBaseActivity().getName(), "resolution " + m.widthPixels + "x" + m.heightPixels + ", density: "
+				+ m.density + ", small: " + small);
 		return small;
 	}
 
@@ -289,7 +289,7 @@ public abstract class BaseActivity extends SDLActivity {
 
 	static String getLocale() {
 		Locale current = getContext().getResources().getConfiguration().locale;
-		Log.v(NAME, "locale: " + current);
+		Log.v(getBaseActivity().getName(), "locale: " + current);
 		return current.getDisplayLanguage();
 	}
 

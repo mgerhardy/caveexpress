@@ -59,7 +59,7 @@ public class CaveExpress extends BaseActivity {
 			InputStream is = getResources().openRawResource(R.raw.key);
 			purchaseListener.init(is);
 		} catch (Exception e) {
-			Log.e(NAME, "Unable to open raw encryption key", e);
+			Log.e(getName(), "Unable to open raw encryption key", e);
 		}
 
 		OuyaFacade.getInstance().requestGamerInfo(gamerInfoListener);
@@ -71,5 +71,10 @@ public class CaveExpress extends BaseActivity {
 	@Override
 	protected boolean doShowFullscreenAds() {
 		return false;
+	}
+
+	@Override
+	public String getName() {
+		return "caveexpressouya";
 	}
 }

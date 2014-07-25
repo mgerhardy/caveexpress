@@ -24,4 +24,9 @@ public class CaveExpress extends BaseActivity {
 	protected boolean doShowFullscreenAds() {
 		return false;
 	}
+
+	@Override
+	public String getName() {
+		return "caveexpresshd";
+	}
 }
