@@ -38,6 +38,10 @@ protected:
 	UINodeLabel *_waitLabel;
 	bool _cursorActive;
 	ServiceProvider& _serviceProvider;
+
+	virtual UINode* getFingerControl ();
+	virtual UINode* getControl ();
+
 public:
 	IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map, IUINodeMap* nodeMap);
 

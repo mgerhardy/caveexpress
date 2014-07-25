@@ -105,12 +105,10 @@ IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 	add(_panel);
 
 	if (System.hasTouch()) {
-		UINodeMapFingerControl* node = new UINodeMapFingerControl(frontend, _nodeMap);
-		_mapControl = node;
+		UINode* node = getFingerControl();
 		add(node);
 	} else {
-		UINodeMapControl* node = new UINodeMapControl(frontend, _nodeMap);
-		_mapControl = node;
+		UINode* node = getControl();
 		add(node);
 
 		UINodeSettingsButton *settings = new UINodeSettingsButton(frontend, _mapControl);
@@ -132,6 +130,20 @@ IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 	_waitLabel->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_TOP);
 	_waitLabel->setVisible(false);
 	add(_waitLabel);
+}
+
+virtual UINode* IUIMapWindow::getControl ()
+{
+	UINodeMapControl* node = new UINodeMapControl(_frontend, _nodeMap);
+	_mapControl = node;
+	return node;
+}
+
+UINode* IUIMapWindow::getFingerControl ()
+{
+	UINodeMapFingerControl* node = new UINodeMapFingerControl(_frontend, _nodeMap);
+	_mapControl = node;
+	return node;
 }
 
 void IUIMapWindow::onActive ()
