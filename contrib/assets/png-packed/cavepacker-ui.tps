@@ -166,6 +166,10 @@
             <filename>../png/ui/map-icon-unlocked-1.png</filename>
             <filename>../png/ui/map-icon-unlocked-2.png</filename>
             <filename>../png/ui/map-icon-unlocked-3.png</filename>
+            <filename>../png/ui/icon-cursor-down.png</filename>
+            <filename>../png/ui/icon-cursor-left.png</filename>
+            <filename>../png/ui/icon-cursor-right.png</filename>
+            <filename>../png/ui/icon-cursor-up.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
