@@ -1,7 +1,7 @@
 #pragma once
 
 #include "engine/common/network/IProtocolHandler.h"
-#include "caveexpress/server/map/Map.h"
+#include "cavepacker/server/map/Map.h"
 #include "engine/common/network/messages/FingerMovementMessage.h"
 
 class StopFingerMovementHandler: public IServerProtocolHandler {
