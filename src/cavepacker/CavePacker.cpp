@@ -10,6 +10,8 @@
 #include "cavepacker/server/network/StopMovementHandler.h"
 #include "cavepacker/server/network/ClientInitHandler.h"
 #include "cavepacker/server/network/ErrorHandler.h"
+#include "cavepacker/server/network/StopFingerMovementHandler.h"
+#include "cavepacker/server/network/FingerMovementHandler.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
 #include "engine/client/entities/ClientEntityFactory.h"
 #include "engine/client/entities/ClientMapTile.h"
@@ -146,6 +148,8 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	rp.registerServerHandler(protocol::PROTO_DISCONNECT, new DisconnectHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_STARTMAP, new StartMapHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_MOVEMENT, new MovementHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_FINGERMOVEMENT, new FingerMovementHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_STOPFINGERMOVEMENT, new StopFingerMovementHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_STOPMOVEMENT, new StopMovementHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_ERROR, new ErrorHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
