@@ -170,6 +170,7 @@
             <filename>../png/ui/icon-cursor-left.png</filename>
             <filename>../png/ui/icon-cursor-right.png</filename>
             <filename>../png/ui/icon-cursor-up.png</filename>
+            <filename>../png/ui/icon-reload.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

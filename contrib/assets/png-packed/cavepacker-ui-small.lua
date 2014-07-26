@@ -1,8 +1,8 @@
 textures = {
 	["icon-arrow-left"] = {
 		image = "cavepacker-ui-small",
-		x0 = 0.765625,
-		y0 = 0.80078125,
+		x0 = 0.7109375,
+		y0 = 0.86328125,
 		x1 = 0.125,
 		y1 = 0.0625,
 		trimmedoffsetx = 0,
@@ -14,8 +14,8 @@ textures = {
 	},
 	["icon-back-to-root"] = {
 		image = "cavepacker-ui-small",
-		x0 = 0.8203125,
-		y0 = 0.73828125,
+		x0 = 0.765625,
+		y0 = 0.80078125,
 		x1 = 0.125,
 		y1 = 0.0625,
 		trimmedoffsetx = 0,
@@ -76,6 +76,19 @@ textures = {
 		trimmedheight = 100,
 		untrimmedwidth = 100,
 		untrimmedheight = 100,
+	},
+	["icon-reload"] = {
+		image = "cavepacker-ui-small",
+		x0 = 0.8203125,
+		y0 = 0.73828125,
+		x1 = 0.125,
+		y1 = 0.0625,
+		trimmedoffsetx = 0,
+		trimmedoffsety = 0,
+		trimmedwidth = 64,
+		trimmedheight = 64,
+		untrimmedwidth = 64,
+		untrimmedheight = 64,
 	},
 	["icon-scroll-page-DIR"] = {
 		image = "cavepacker-ui-small",
