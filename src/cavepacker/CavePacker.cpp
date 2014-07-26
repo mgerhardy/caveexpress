@@ -156,6 +156,8 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	rp.registerServerHandler(protocol::PROTO_STOPMOVEMENT, new StopMovementHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_ERROR, new ErrorHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
+
+	_campaignManager->getAutoActiveCampaign();
 }
 
 void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
