@@ -37,10 +37,11 @@
 #define INDEX(col, row) ((col) + _width * (row))
 
 Map::Map () :
-		IMap(), _frontend(nullptr), _serviceProvider(nullptr)
+		IMap(), _frontend(nullptr), _serviceProvider(nullptr), _forcedFinish(false)
 {
 	Commands.registerCommand(CMD_MAP_RESTART, bind(Map, triggerRestart));
 	Commands.registerCommand(CMD_START, bind(Map, startMap));
+	Commands.registerCommand(CMD_FINISHMAP, bind(Map, finishMap));
 	Commands.registerCommand("map_print", bind(Map, printMap));
 
 	resetCurrentMap();
@@ -50,6 +51,8 @@ Map::~Map ()
 {
 	Commands.removeCommand(CMD_MAP_RESTART);
 	Commands.removeCommand(CMD_START);
+	Commands.removeCommand(CMD_FINISHMAP);
+	Commands.removeCommand("map_print");
 }
 
 void Map::shutdown ()
@@ -93,6 +96,13 @@ inline bool Map::isActive () const
 	return true;
 }
 
+void Map::finishMap ()
+{
+#ifdef DEBUG
+	_forcedFinish = true;
+#endif
+}
+
 Player* Map::getPlayer (ClientId clientId)
 {
 	for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
@@ -113,6 +123,8 @@ Player* Map::getPlayer (ClientId clientId)
 
 bool Map::isDone () const
 {
+	if (_forcedFinish)
+		return true;
 	if (isFailed())
 		return false;
 	for (StateMapConstIter i = _state.begin(); i != _state.end(); ++i) {

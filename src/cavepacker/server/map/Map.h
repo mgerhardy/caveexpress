@@ -80,6 +80,8 @@ protected:
 	uint16_t _moves;
 	uint16_t _pushes;
 
+	bool _forcedFinish;
+
 	bool visitEntity (IEntity *entity) override;
 
 	// do the spawning on the map and add the physic objects
