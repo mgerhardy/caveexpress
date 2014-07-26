@@ -1,9 +1,9 @@
 #pragma once
 
 #include "engine/common/network/IProtocolHandler.h"
-#include "caveexpress/shared/network/messages/TimeRemainingMessage.h"
+#include "engine/common/network/messages/TimeRemainingMessage.h"
 #include "engine/client/ui/UI.h"
-#include "caveexpress/client/ui/windows/UIMapWindow.h"
+#include "engine/client/ui/windows/IUIMapWindow.h"
 
 class TimeRemainingHandler: public IClientProtocolHandler {
 public:

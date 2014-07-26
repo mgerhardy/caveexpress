@@ -22,6 +22,7 @@
 #include "engine/common/network/messages/RemoveEntityMessage.h"
 #include "engine/common/network/messages/UpdateEntityMessage.h"
 #include "engine/common/network/messages/MapRestartMessage.h"
+#include "engine/common/network/messages/UpdatePointsMessage.h"
 #include "engine/common/CommandSystem.h"
 #include "engine/common/System.h"
 #include "engine/common/vec2.h"
@@ -125,7 +126,7 @@ void Map::increaseMoves ()
 {
 	++_moves;
 	info(LOG_SERVER, String::format("moved fields: %i", _moves));
-	//_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
+	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
 }
 
 bool Map::isFailed () const

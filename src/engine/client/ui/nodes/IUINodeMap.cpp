@@ -28,6 +28,10 @@
 #include "engine/client/network/HudMapSettingsHandler.h"
 #include "engine/client/network/InitWaitingMapHandler.h"
 #include "engine/client/network/StartMapHandler.h"
+#include "engine/client/network/UpdateHitpointsHandler.h"
+#include "engine/client/network/UpdateLivesHandler.h"
+#include "engine/client/network/UpdatePointsHandler.h"
+#include "engine/client/network/TimeRemainingHandler.h"
 
 IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
 		UINode(frontend), _map(map), _campaignManager(campaignManager)
@@ -55,6 +59,10 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	r.registerClientHandler(protocol::PROTO_MAPSETTINGS, new HudMapSettingsHandler(_map));
 	r.registerClientHandler(protocol::PROTO_INITWAITING, new InitWaitingMapHandler(serviceProvider));
 	r.registerClientHandler(protocol::PROTO_STARTMAP, new StartMapHandler());
+	r.registerClientHandler(protocol::PROTO_UPDATEHITPOINTS, new UpdateHitpointsHandler());
+	r.registerClientHandler(protocol::PROTO_UPDATELIVES, new UpdateLivesHandler(campaignManager));
+	r.registerClientHandler(protocol::PROTO_UPDATEPOINTS, new UpdatePointsHandler());
+	r.registerClientHandler(protocol::PROTO_TIMEREMAINING, new TimeRemainingHandler());
 
 	_campaignManager.addListener(this);
 
@@ -93,6 +101,10 @@ IUINodeMap::~IUINodeMap ()
 	r.unregisterClientHandler(protocol::PROTO_MAPSETTINGS);
 	r.unregisterClientHandler(protocol::PROTO_INITWAITING);
 	r.unregisterClientHandler(protocol::PROTO_STARTMAP);
+	r.unregisterClientHandler(protocol::PROTO_UPDATEHITPOINTS);
+	r.unregisterClientHandler(protocol::PROTO_UPDATELIVES);
+	r.unregisterClientHandler(protocol::PROTO_UPDATEPOINTS);
+	r.unregisterClientHandler(protocol::PROTO_TIMEREMAINING);
 }
 
 void IUINodeMap::setMapRect (int x, int y, int w, int h)

@@ -83,6 +83,11 @@ public:
 
 namespace protocol
 {
+const uint8_t PROTO_UPDATEHITPOINTS = 221;
+const uint8_t PROTO_UPDATELIVES = 222;
+const uint8_t PROTO_TIMEREMAINING = 223;
+const uint8_t PROTO_UPDATEPOINTS = 224;
+const uint8_t PROTO_UPDATEPACKAGECOUNT = 225;
 const uint8_t PROTO_STOPMOVEMENT = 226;
 const uint8_t PROTO_MOVEMENT = 227;
 const uint8_t PROTO_FINGERMOVEMENT = 228;

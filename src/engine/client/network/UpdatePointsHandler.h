@@ -1,10 +1,10 @@
 #pragma once
 
 #include "engine/common/network/IProtocolHandler.h"
-#include "caveexpress/shared/network/messages/UpdatePointsMessage.h"
+#include "engine/common/network/messages/UpdatePointsMessage.h"
 #include "engine/client/ui/UI.h"
 #include "engine/client/ui/nodes/UINodePoint.h"
-#include "caveexpress/client/ui/windows/UIMapWindow.h"
+#include "engine/client/ui/windows/IUIMapWindow.h"
 
 class UpdatePointsHandler: public IClientProtocolHandler {
 public:

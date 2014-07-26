@@ -57,20 +57,15 @@
 #include "caveexpress/client/network/RemoveRopeHandler.h"
 #include "caveexpress/client/network/AddEntityWithSoundHandler.h"
 #include "caveexpress/client/network/WaterHeightHandler.h"
-#include "caveexpress/client/network/UpdateHitpointsHandler.h"
-#include "caveexpress/client/network/UpdateLivesHandler.h"
-#include "caveexpress/client/network/UpdateHitpointsHandler.h"
 #include "caveexpress/client/network/UpdateCollectedTypeHandler.h"
 #include "caveexpress/client/network/SpawnInfoHandler.h"
-#include "caveexpress/client/network/UpdatePackageCountHandler.h"
 #include "caveexpress/client/network/WaterImpactHandler.h"
 #include "caveexpress/client/network/AddCaveHandler.h"
 #include "caveexpress/client/network/LightStateHandler.h"
 #include "caveexpress/client/network/HudInitDoneHandler.h"
-#include "caveexpress/client/network/UpdatePointsHandler.h"
-#include "caveexpress/client/network/TimeRemainingHandler.h"
 #include "caveexpress/client/network/FinishedMapHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
+#include "caveexpress/client/network/UpdatePackageCountHandler.h"
 #include "caveexpress/client/network/FailedMapHandler.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/server/entities/CaveMapTile.h"
@@ -351,18 +346,10 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.registerClientHandler(protocol::PROTO_REMOVEROPE, new RemoveRopeHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_WATERHEIGHT);
 	r.registerClientHandler(protocol::PROTO_WATERHEIGHT, new WaterHeightHandler(*map));
-	r.unregisterClientHandler(protocol::PROTO_UPDATEHITPOINTS);
-	r.registerClientHandler(protocol::PROTO_UPDATEHITPOINTS, new UpdateHitpointsHandler());
-	r.unregisterClientHandler(protocol::PROTO_UPDATELIVES);
-	r.registerClientHandler(protocol::PROTO_UPDATELIVES, new UpdateLivesHandler(*_campaignManager));
-	r.unregisterClientHandler(protocol::PROTO_UPDATEPOINTS);
-	r.registerClientHandler(protocol::PROTO_UPDATEPOINTS, new UpdatePointsHandler());
 	r.unregisterClientHandler(protocol::PROTO_UPDATEPACKAGECOUNT);
 	r.registerClientHandler(protocol::PROTO_UPDATEPACKAGECOUNT, new UpdatePackageCountHandler());
 	r.unregisterClientHandler(protocol::PROTO_UPDATECOLLECTEDTYPE);
 	r.registerClientHandler(protocol::PROTO_UPDATECOLLECTEDTYPE, new UpdateCollectedTypeHandler(*map));
-	r.unregisterClientHandler(protocol::PROTO_TIMEREMAINING);
-	r.registerClientHandler(protocol::PROTO_TIMEREMAINING, new TimeRemainingHandler());
 	r.unregisterClientHandler(protocol::PROTO_WATERIMPACT);
 	r.registerClientHandler(protocol::PROTO_WATERIMPACT, new WaterImpactHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_ADDCAVE);

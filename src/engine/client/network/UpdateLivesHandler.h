@@ -1,9 +1,9 @@
 #pragma once
 
 #include "engine/common/network/IProtocolHandler.h"
-#include "caveexpress/shared/network/messages/UpdateLivesMessage.h"
+#include "engine/common/network/messages/UpdateLivesMessage.h"
 #include "engine/client/ui/UI.h"
-#include "caveexpress/client/ui/windows/UIMapWindow.h"
+#include "engine/client/ui/windows/IUIMapWindow.h"
 #include "engine/common/campaign/CampaignManager.h"
 
 class UpdateLivesHandler: public IClientProtocolHandler {

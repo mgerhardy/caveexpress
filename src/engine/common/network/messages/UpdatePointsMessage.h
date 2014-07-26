@@ -1,7 +1,6 @@
 #pragma once
 
 #include "engine/common/network/IProtocolMessage.h"
-#include "caveexpress/shared/network/ProtocolMessageTypes.h"
 
 class UpdatePointsMessage: public IProtocolMessage {
 private:
