@@ -2,6 +2,7 @@
 #include "engine/client/ui/UI.h"
 #include "cavepacker/client/ui/windows/UIMainWindow.h"
 #include "cavepacker/client/ui/windows/UIMapWindow.h"
+#include "cavepacker/client/ui/windows/intro/IntroGame.h"
 #include "cavepacker/client/CavePackerClientMap.h"
 #include "cavepacker/server/network/SpawnHandler.h"
 #include "cavepacker/server/network/DisconnectHandler.h"
@@ -26,6 +27,7 @@
 #include "engine/common/network/messages/FinishedMapMessage.h"
 #include "engine/client/ui/windows/UICampaignMapWindow.h"
 #include "engine/client/ui/windows/UIMapOptionsWindow.h"
+#include "engine/client/ui/windows/UIPaymentWindow.h"
 
 CavePacker::CavePacker ():
 	_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
@@ -163,6 +165,8 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	_clientMap = map;
 	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_clientMap));
 	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));
+	ui.addWindow(new UIPaymentWindow(frontend));
+	ui.addWindow(new IntroGame(frontend));
 	ui.addWindow(new UIMapOptionsWindow(frontend, serviceProvider));
 }
 

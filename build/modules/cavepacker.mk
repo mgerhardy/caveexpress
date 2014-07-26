@@ -33,6 +33,7 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/engine/server/*.cpp) \	\
 	\
 	$(wildcard $(SRCDIR)/cavepacker/client/ui/windows/*.cpp) \
+	$(wildcard $(SRCDIR)/cavepacker/client/ui/windows/intro/*.cpp) \
 	$(wildcard $(SRCDIR)/cavepacker/client/ui/nodes/*.cpp) \
 	\
 	$(wildcard $(SRCDIR)/cavepacker/client/*.cpp) \
