@@ -1,6 +1,7 @@
 #include "SokubanMapContext.h"
 #include "engine/common/FileSystem.h"
 #include "engine/common/Logger.h"
+#include "cavepacker/shared/CavePackerEntityType.h"
 
 SokubanMapContext::SokubanMapContext(const std::string& map) :
 		IMapContext(map), _playerSpawned(false) {
@@ -100,8 +101,7 @@ void SokubanMapContext::addTile(const std::string& tile, int col, int row) {
 }
 
 inline void SokubanMapContext::addTarget(int col, int row) {
-	const int rnd = rand() % 1 + 1;
-	addTile("tile-target-" + String::format("%02i", rnd), col, row);
+	addTile("target", col, row);
 }
 
 inline void SokubanMapContext::addWall(int col, int row) {

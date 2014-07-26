@@ -10,10 +10,15 @@ sprites = {
 		}
 	},
 
-	["tile-target-01"] = {
+	["target"] = {
 		type = "target",
 		rotateable = 1,
 		theme = "rock",
+		frames = {
+			{ "tile-target-01-middle-01" }, --back
+			{}, --middle
+			{}, --front
+		}
 	},
 
 -- Package
