@@ -2,7 +2,7 @@
 
 ### About
 
-![Media](https://github.com/mgerhardy/caveexpress/raw/master/contrib/assets/media/950x500.png)
+![Media](https://github.com/mgerhardy/caveexpress/raw/master/contrib/assets/media/caveexpress/950x500.png)
 
 **[Homepage](http://www.caveproductions.org/)**
 
