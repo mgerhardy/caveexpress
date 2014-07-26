@@ -26,6 +26,11 @@
 #include "engine/common/network/messages/FailedMapMessage.h"
 #include "engine/common/network/messages/UpdateParticleMessage.h"
 #include "engine/common/network/messages/SoundMessage.h"
+#include "engine/common/network/messages/UpdateHitpointsMessage.h"
+#include "engine/common/network/messages/UpdateLivesMessage.h"
+#include "engine/common/network/messages/TimeRemainingMessage.h"
+#include "engine/common/network/messages/UpdatePointsMessage.h"
+#include "engine/common/network/messages/UpdatePackageCountMessage.h"
 
 ProtocolMessageFactory::ProtocolMessageFactory ()
 {
@@ -96,6 +101,14 @@ IProtocolMessage *ProtocolMessageFactory::create (ByteStream& stream)
 		return new TextMessage(stream);
 	case protocol::PROTO_UPDATEPARTICLE:
 		return new UpdateParticleMessage(stream);
+	case protocol::PROTO_UPDATEHITPOINTS:
+		return new UpdateHitpointsMessage(stream);
+	case protocol::PROTO_UPDATELIVES:
+		return new UpdateLivesMessage(stream);
+	case protocol::PROTO_UPDATEPOINTS:
+		return new UpdatePointsMessage(stream);
+	case protocol::PROTO_UPDATEPACKAGECOUNT:
+		return new UpdatePackageCountMessage(stream);
 	default:
 		stream.addByte(type, true);
 		error(LOG_NET, String::format("unknown module type given: %i", type));
