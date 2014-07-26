@@ -32,7 +32,7 @@ UINodeMapOnScreenCursorControl::UINodeMapOnScreenCursorControl (IFrontend *front
 	UINodeButton *down = new UINodeButton(frontend);
 	down->setImage("icon-cursor-down");
 	down->setOnActivate(CMD_MOVE_DOWN);
-	down->putLeft(up);
+	down->putAbove(up);
 	add(down);
 }
 
