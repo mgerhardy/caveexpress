@@ -1,10 +1,14 @@
 [![Build Status](https://travis-ci.org/mgerhardy/caveexpress.svg?branch=master)](https://travis-ci.org/mgerhardy/caveexpress)
 
-### About
+### General
 
-![Media](https://github.com/mgerhardy/caveexpress/raw/master/contrib/assets/media/caveexpress/950x500.png)
+This code repository contains the code and gamedata for two games
 
 **[Homepage](http://www.caveproductions.org/)**
+
+### CaveExpress
+
+![Media](https://github.com/mgerhardy/caveexpress/raw/master/contrib/assets/media/caveexpress/950x500.png)
 
 CaveExpress is a classic 2D platformer with physics-based gameplay
 and dozens of levels. Master your pedal-powered flying machine to
@@ -17,7 +21,7 @@ Features:
 * Built-in mapeditor
 * Physics-based gameplay
 
-### Compilation
+#### Compilation
 * ./configure
 * make
 
@@ -41,6 +45,12 @@ Compile for NaCl
 * ./configure --target-os=nacl
 * make nacl-installer
 * make nacl-start
+
+#### CavePacker
+
+![Media](https://github.com/mgerhardy/caveexpress/raw/master/contrib/assets/media/cavepacker/cavepacker-02.png)
+
+CavePacker is a sokoban game.
 
 ### License
 Code is released under the GPL3 and the game data is released
