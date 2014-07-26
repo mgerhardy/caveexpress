@@ -32,6 +32,7 @@
 #include <algorithm>
 #include <functional>
 #include <cassert>
+#include <climits>
 
 #define INDEX(col, row) ((col) + _width * (row))
 
@@ -125,13 +126,22 @@ bool Map::isDone () const
 void Map::increaseMoves ()
 {
 	++_moves;
-	info(LOG_SERVER, String::format("moved fields: %i", _moves));
+	debug(LOG_SERVER, String::format("moved fields: %i", _moves));
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
+}
+
+void Map::increasePushes ()
+{
+	++_pushes;
 }
 
 bool Map::isFailed () const
 {
 	if (_players.empty())
+		return true;
+
+	const uint16_t limit = USHRT_MAX - 10;
+	if (_moves >= limit || _pushes >= limit)
 		return true;
 
 	return false;

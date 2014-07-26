@@ -78,6 +78,7 @@ protected:
 	TimeManager _timeManager;
 
 	uint16_t _moves;
+	uint16_t _pushes;
 
 	bool visitEntity (IEntity *entity) override;
 
@@ -98,7 +99,9 @@ public:
 	TimeManager& getTimeManager ();
 
 	inline int getMoves() const { return _moves; }
+	inline int getPushes() const { return _pushes; }
 	void increaseMoves ();
+	void increasePushes ();
 
 	void loadDelayed (uint32_t delay, const std::string& name);
 	bool load (const std::string& name);
