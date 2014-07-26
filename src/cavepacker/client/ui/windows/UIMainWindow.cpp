@@ -21,7 +21,7 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	panel->setAlignment(NODE_ALIGN_MIDDLE | NODE_ALIGN_CENTER);
 	panel->setPadding(padding);
 
-	UINodeMainButton *campaign = new UINodeMainButton(_frontend, tr("Maps"));
+	UINodeMainButton *campaign = new UINodeMainButton(_frontend, tr("Start"));
 	campaign->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_CAMPAIGN_MAPS)));
 	panel->add(campaign);
 
