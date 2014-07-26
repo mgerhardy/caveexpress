@@ -24,16 +24,16 @@ UINodeMapOnScreenCursorControl::UINodeMapOnScreenCursorControl (IFrontend *front
 	right->putRight(left);
 	add(right);
 
-	UINodeButton *up = new UINodeButton(frontend);
-	up->setImage("icon-cursor-up");
-	up->setOnActivate(CMD_MOVE_UP);
-	up->setAlignment(NODE_ALIGN_RIGHT | NODE_ALIGN_BOTTOM);
-	add(up);
 	UINodeButton *down = new UINodeButton(frontend);
 	down->setImage("icon-cursor-down");
 	down->setOnActivate(CMD_MOVE_DOWN);
-	down->putAbove(up);
+	down->setAlignment(NODE_ALIGN_RIGHT | NODE_ALIGN_BOTTOM);
 	add(down);
+	UINodeButton *up = new UINodeButton(frontend);
+	up->setImage("icon-cursor-up");
+	up->setOnActivate(CMD_MOVE_UP);
+	up->putAbove(down);
+	add(up);
 }
 
 UINodeMapOnScreenCursorControl::~UINodeMapOnScreenCursorControl ()
