@@ -142,14 +142,11 @@ public:
 
 	// returns the time that was needed to finish the map
 	uint32_t getTime () const;
-	const ThemeType& getTheme () const;
 
 	MapTile* getPackage (int col, int row);
 	bool isFree (int col, int row);
 	bool isTarget (int col, int row);
 	bool isPackage (int col, int row);
-
-	uint32_t getFinishPoints () const;
 
 	void resetCurrentMap ();
 
