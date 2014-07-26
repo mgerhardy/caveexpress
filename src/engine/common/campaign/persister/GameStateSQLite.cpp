@@ -85,6 +85,7 @@ bool GameStateSQLite::activateCampaign (const std::string& id)
 
 bool GameStateSQLite::updateCampaign (Campaign* campaign)
 {
+	info(LOG_CAMPAIGN, "update campaign progress in database for " + campaign->getId());
 	Transaction t(*this);
 	ExecutionTime e("save progress");
 

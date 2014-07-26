@@ -29,6 +29,7 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/engine/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/common/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/common/campaign/*.cpp) \
+	$(wildcard $(SRCDIR)/engine/common/campaign/persister/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/common/network/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/server/*.cpp) \	\
 	\

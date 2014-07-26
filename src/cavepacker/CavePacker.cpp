@@ -17,8 +17,10 @@
 #include "engine/client/entities/ClientEntityFactory.h"
 #include "engine/client/entities/ClientMapTile.h"
 #include "engine/common/network/ProtocolHandlerRegistry.h"
+#include "engine/common/campaign/ICampaignManager.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/ServiceProvider.h"
+#include "engine/common/System.h"
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/Commands.h"
 #include "engine/common/CommandSystem.h"
@@ -28,6 +30,7 @@
 #include "engine/client/ui/windows/UICampaignMapWindow.h"
 #include "engine/client/ui/windows/UIMapOptionsWindow.h"
 #include "engine/client/ui/windows/UIPaymentWindow.h"
+#include "engine/common/campaign/persister/SQLitePersister.h"
 
 CavePacker::CavePacker ():
 	_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
@@ -129,7 +132,11 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 
 	{
 		ExecutionTime e("loading persister");
-		_persister = new NOPPersister();
+		const ConfigVarPtr& persister = Config.get().getConfigVar("persister", "sqlite", true, CV_READONLY);
+		if (persister->getValue() == "nop")
+			_persister = new NOPPersister();
+		else
+			_persister = new SQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
 	}
 	{
 		ExecutionTime e("campaign manager");
