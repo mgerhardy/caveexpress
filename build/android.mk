@@ -40,27 +40,6 @@ else
 ICON := $(APPNAME)-icon.png
 endif
 
-android-setup:
-	$(Q)ARCH=x86_64; \
-	NDK_VERSION=r10; \
-	SDK_VERSION=20140702; \
-	[ $(TARGET_ARCH) = "i386" ] && ARCH=x86; \
-	echo "Downloading the ndk..."; \
-	wget --quiet --continue http://dl.google.com/android/ndk/android-ndk32-$$NDK_VERSION-linux-$$ARCH.tar.bz2; \
-	echo "Extracting the ndk..."; \
-	tar -xjf android-ndk32-$$NDK_VERSION-linux-$$ARCH.tar.bz2 -C ~/; \
-	echo "Downloading the sdk..."; \
-	wget --quiet --continue http://dl.google.com/android/adt/adt-bundle-linux-$$ARCH-$$SDK_VERSION.zip; \
-	echo "Extracting the sdk..."; \
-	ARCHIVE=`readlink -f adt-bundle-linux-$$ARCH-$$SDK_VERSION.zip`; \
-	cd ~; \
-	unzip -o -qq $$ARCHIVE; \
-	echo "Configure paths..."; \
-	echo "export ANDROID_SDK=~/adt-bundle-linux-$$ARCH-$$SDK_VERSION/sdk" >> ~/.bashrc; \
-	echo "export ANDROID_NDK=~/android-ndk-$$NDK_VERSION" >> ~/.bashrc; \
-	echo "export NDK_ROOT=\$$ANDROID_NDK" >> ~/.bashrc; \
-	echo "export PATH=\$$PATH:\$$ANDROID_NDK:\$$ANDROID_SDK/tools:\$$ANDROID_SDK/platform-tools" >> ~/.bashrc;
-
 .PHONY: clean-android-libs
 clean-android-libs:
 	$(Q)rm -f $(ANDROID_PROJECT)/google-play-services_lib/.project
@@ -202,3 +181,24 @@ release-android:
 	cp $(ANDROID_PROJECT)/bin/*-release.apk $(APPNAME_FULL)-hd-release.apk
 	./configure --enable-ccache --target-os=ouya --enable-release && $(MAKE) clean-android clean && $(MAKE)
 	cp $(ANDROID_PROJECT)/bin/*-release.apk $(APPNAME_FULL)-ouya-release.apk
+
+android-setup:
+	$(Q)ARCH=x86_64; \
+	NDK_VERSION=r10; \
+	SDK_VERSION=20140702; \
+	[ $(TARGET_ARCH) = "i386" ] && ARCH=x86; \
+	echo "Downloading the ndk..."; \
+	wget --quiet --continue http://dl.google.com/android/ndk/android-ndk32-$$NDK_VERSION-linux-$$ARCH.tar.bz2; \
+	echo "Extracting the ndk..."; \
+	tar -xjf android-ndk32-$$NDK_VERSION-linux-$$ARCH.tar.bz2 -C ~/; \
+	echo "Downloading the sdk..."; \
+	wget --quiet --continue http://dl.google.com/android/adt/adt-bundle-linux-$$ARCH-$$SDK_VERSION.zip; \
+	echo "Extracting the sdk..."; \
+	ARCHIVE=`readlink -f adt-bundle-linux-$$ARCH-$$SDK_VERSION.zip`; \
+	cd ~; \
+	unzip -o -qq $$ARCHIVE; \
+	echo "Configure paths..."; \
+	echo "export ANDROID_SDK=~/adt-bundle-linux-$$ARCH-$$SDK_VERSION/sdk" >> ~/.bashrc; \
+	echo "export ANDROID_NDK=~/android-ndk-$$NDK_VERSION" >> ~/.bashrc; \
+	echo "export NDK_ROOT=\$$ANDROID_NDK" >> ~/.bashrc; \
+	echo "export PATH=\$$PATH:\$$ANDROID_NDK:\$$ANDROID_SDK/tools:\$$ANDROID_SDK/platform-tools" >> ~/.bashrc;
