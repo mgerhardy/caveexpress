@@ -735,7 +735,6 @@ bool Map::initPlayer (Player* player)
 
 void Map::printPlayersList () const
 {
-	std::vector<std::string> names;
 	for (PlayerListConstIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		const std::string& name = (*i)->getName();
 		info(LOG_SERVER, "* " + name + " (waiting)");
