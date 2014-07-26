@@ -53,7 +53,7 @@ Compile for NaCl
 CavePacker is a sokoban game. It's just a few days old and only the basic things are working. This was meant as an experiment on how
 easy it would be to create a totally different game with the CaveExpress code base.
 
-Btw.: Did I meantion that this is a sokoban game that could even support network based multiplayer gaming (well... it already does, just not activated)
+Btw.: Did I mention that this is a sokoban game that could even support network based multiplayer gaming (well... it already does, just not activated)
 
 ### License
 Code is released under the GPL3 and the game data is released
