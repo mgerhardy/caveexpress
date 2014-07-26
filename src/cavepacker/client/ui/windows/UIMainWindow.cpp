@@ -45,10 +45,3 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 
 	add(panel);
 }
-
-bool UIMainWindow::onPush ()
-{
-	const bool ret = UIWindow::onPush();
-	showAds();
-	return ret;
-}

@@ -5,7 +5,4 @@
 class UIMainWindow: public UIWindow {
 public:
 	UIMainWindow (IFrontend *frontend);
-
-	// UIWindow
-	bool onPush () override;
 };

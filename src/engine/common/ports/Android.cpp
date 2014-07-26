@@ -68,6 +68,8 @@ Android::Android () :
 }
 
 void Android::init() {
+	signal(SIGPIPE, SIG_IGN);
+
 	LocalReferenceHolder refs;
 
 	JNIEnv *env = static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
