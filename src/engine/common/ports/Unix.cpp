@@ -33,10 +33,12 @@
 #ifdef HAVE_SYSLOG_H
 #include <syslog.h>
 #endif
+#include <signal.h>
 
 Unix::Unix() :
 		ISystem()
 {
+	signal(SIGPIPE, SIG_IGN);
 	struct passwd *p;
 
 	if ((p = getpwuid(getuid())) == nullptr)
