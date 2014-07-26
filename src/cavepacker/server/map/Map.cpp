@@ -363,7 +363,7 @@ bool Map::isFree (int col, int row)
 	}
 
 	const char c = i->second;
-	debug(LOG_MAP, String::format("col: %i, row: %i is of type %c", col, row, c));
+	debug(LOG_MAP, String::format("col: %i, row: %i is of type '%c'", col, row, c));
 	return c == Sokuban::GROUND || c == Sokuban::TARGET;
 }
 
