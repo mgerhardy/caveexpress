@@ -64,8 +64,8 @@ void CavePacker::update (uint32_t deltaTime)
 	const bool isDone = _map.isDone();
 	if (isDone && !_map.isRestartInitialized()) {
 		const uint32_t finishPoints = _map.getMoves();
-		const uint32_t timeSeconds = 1;
-		const uint8_t stars = 3;
+		const uint32_t timeSeconds = _map.getPushes();
+		const uint8_t stars = 3; // TODO: get stars
 		if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, timeSeconds, stars))
 			error(LOG_SERVER, "Could not save the values for the map");
 
