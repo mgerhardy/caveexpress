@@ -67,7 +67,7 @@ controllerbindings = {
 		--DPRIGHT = "",
 	},
 	["map"] = {
-		A = "drop",
+		A = "ui_pop",
 		--B = "",
 		--X = "ui_execute",
 		--Y = "ui_focus_next",
@@ -101,16 +101,16 @@ if isOUYA() then
 			JOY1 = "+move_down",
 			JOY2 = "+move_left",
 			JOY3 = "+move_right",
-			JOY4 = "drop",
+			JOY4 = "ui_pop",
 			JOY5 = "ui_execute",
 			JOY6 = "ui_pop",
-			JOY7 = "drop",
-			JOY8 = "drop",
-			JOY9 = "drop",
-			JOY11 = "drop",
-			JOY12 = "drop",
-			JOY13 = "drop",
-			JOY14 = "drop",
+			JOY7 = "ui_pop",
+			JOY8 = "ui_pop",
+			JOY9 = "ui_pop",
+			JOY11 = "ui_pop",
+			JOY12 = "ui_pop",
+			JOY13 = "ui_pop",
+			JOY14 = "ui_pop",
 		},
 	}
 else
@@ -152,8 +152,8 @@ else
 			RIGHT = "+move_right",
 			UP = "+move_up",
 			DOWN = "+move_down",
-			SPACE = "drop",
-			RETURN = "drop",
+			SPACE = "ui_pop",
+			RETURN = "ui_pop",
 			ESCAPE = "ui_pop",
 			TAB = "ui_focus_next",
 		},
@@ -162,9 +162,6 @@ else
 	if isDebug() then
 		keybindings["ui"]["."] = "screenshot"
 		keybindings["map"]["."] = "screenshot"
-		keybindings["map"]["BACKSPACE"] = "map_debug"
-		keybindings["map"]["E"] = "map_open_in_editor"
-		keybindings["map"]["X"] = "kill"
 		keybindings["map"]["F"] = "finish"
 	end
 end
