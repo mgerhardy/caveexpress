@@ -7,7 +7,7 @@
 #include "engine/client/ui/nodes/UINodeButtonText.h"
 #include "engine/client/ui/layouts/UIHBoxLayout.h"
 #include "engine/client/ui/nodes/UINodeSettingsBackground.h"
-#include "caveexpress/client/ui/windows/modeselection/ModeSetListener.h"
+#include "engine/client/ui/windows/modeselection/ModeSetListener.h"
 #include "engine/client/sound/Sound.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/ServiceProvider.h"
@@ -18,37 +18,46 @@
 #include "engine/client/ui/windows/listener/SoundNodeListener.h"
 
 UISettingsWindow::UISettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager) :
-		UIWindow(UI_WINDOW_SETTINGS, frontend, WINDOW_FLAG_MODAL)
+		UIWindow(UI_WINDOW_SETTINGS, frontend, WINDOW_FLAG_MODAL), _background(nullptr), _serviceProvider(serviceProvider), _campaignManager(campaignManager)
 {
-	UINodeSettingsBackground *background = new UINodeSettingsBackground(frontend);
-	add(background);
+}
 
-	UINode* last;
-	last = addSection(nullptr, background, tr("Textures"),
-			tr("Big"), new TextureModeListener("big", _frontend, serviceProvider),
-			tr("Small"), new TextureModeListener("small", _frontend, serviceProvider));
+void UISettingsWindow::init()
+{
+	_background = new UINodeSettingsBackground(_frontend);
+	add(_background);
+
+	addSections();
+
+	if (!wantBackButton())
+		return;
+
+	UINodeBackButton *backButton = new UINodeBackButton(_frontend);
+	const float gapBack = std::max(0.01f, getScreenPadding());
+	backButton->alignTo(_background, NODE_ALIGN_BOTTOM | NODE_ALIGN_LEFT, gapBack);
+	add(backButton);
+}
+
+void UISettingsWindow::addSections()
+{
+	UINode* last = nullptr;
+	last = addSection(last, _background, tr("Textures"),
+			tr("Big"), new TextureModeListener("big", _frontend, _serviceProvider),
+			tr("Small"), new TextureModeListener("small", _frontend, _serviceProvider));
 
 	last = addSection(last, nullptr, tr("Game mode"),
-			tr("Normal"), new ModeSetListener("easy", campaignManager),
-			tr("Hard"), new ModeSetListener("hard", campaignManager));
+			tr("Normal"), new ModeSetListener("easy", _campaignManager),
+			tr("Hard"), new ModeSetListener("hard", _campaignManager));
 
 	last = addSection(last, nullptr, tr("Sound/Music"),
 			tr("On"), new SoundNodeListener(this, true),
 			tr("Off"), new SoundNodeListener(this, false));
 
-	if (System.canDisableJoystick() && frontend->hasJoystick()) {
+	if (System.canDisableJoystick() && _frontend->hasJoystick()) {
 		last = addSection(last, nullptr, tr("Joystick"),
 			tr("On"), new JoystickNodeListener(true),
 			tr("Off"), new JoystickNodeListener(false));
 	}
-
-	if (!wantBackButton())
-		return;
-
-	UINodeBackButton *backButton = new UINodeBackButton(frontend);
-	const float gapBack = std::max(0.01f, getScreenPadding());
-	backButton->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_LEFT, gapBack);
-	add(backButton);
 }
 
 UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& option1, UINodeListener* option1Listener, const std::string& option2, UINodeListener* option2Listener)

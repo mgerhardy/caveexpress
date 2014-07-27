@@ -16,7 +16,7 @@
 #include "engine/common/ConfigManager.h"
 #include "engine/common/TextureDefinition.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
-#include "caveexpress/client/ui/windows/UISettingsWindow.h"
+#include "engine/client/ui/windows/UISettingsWindow.h"
 #include "caveexpress/client/ui/windows/mapeditor/QuitEditorListener.h"
 #include "caveexpress/client/ui/nodes/UINodeMapEditor.h"
 #include "caveexpress/client/ui/nodes/UINodeSpriteSelector.h"

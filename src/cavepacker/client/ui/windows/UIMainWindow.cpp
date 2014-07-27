@@ -25,11 +25,9 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	campaign->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_CAMPAIGN_MAPS)));
 	panel->add(campaign);
 
-#if 0
 	UINodeMainButton *settings = new UINodeMainButton(_frontend, tr("Settings"));
 	settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_SETTINGS)));
 	panel->add(settings);
-#endif
 
 	if (System.supportPayment()) {
 		UINodeMainButton *payment = new UINodeMainButton(_frontend, tr("Extras"));
