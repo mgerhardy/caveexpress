@@ -32,19 +32,24 @@ public:
 
 		UINodeSprite* node = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_COLLECTED);
 		if (!collected || type.isNone()) {
-			node->clearSprites();
+			if (node)
+				node->clearSprites();
 			return;
 		}
 
-		const Animation& animation = EntityTypes::hasDirection(type) ? Animations::ANIMATION_IDLE_RIGHT : Animations::ANIMATION_IDLE;
-		const std::string name = SpriteDefinition::get().getSpriteName(type, animation);
-		const SpritePtr& sprite = UI::get().loadSprite(name);
-		node->addSprite(sprite);
-		node->flash();
+		if (node) {
+			const Animation& animation = EntityTypes::hasDirection(type) ? Animations::ANIMATION_IDLE_RIGHT : Animations::ANIMATION_IDLE;
+			const std::string name = SpriteDefinition::get().getSpriteName(type, animation);
+			const SpritePtr& sprite = UI::get().loadSprite(name);
+			node->addSprite(sprite);
+			node->flash();
+		}
 		if (!_map.wantInformation(type))
 			return;
 
 		UINode* mapNode = UI::get().getNode<UINode>(UI_WINDOW_MAP, UINODE_MAP);
+		if (!mapNode)
+			return;
 		if (EntityTypes::isStone(type)) {
 			mapNode->displayText(tr("Drop the stone to collect packages again"));
 			if (System.hasTouch() && !System.isOUYA())

@@ -19,12 +19,14 @@ public:
 		const uint8_t packages = msg->getPackages();
 		{
 			UINodeSprite* node = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_PACKAGES);
-			node->clearSprites();
-			const std::string name = SpriteDefinition::get().getSpriteName(EntityTypes::PACKAGE_ROCK,
-					Animations::ANIMATION_IDLE);
-			const SpritePtr sprite = UI::get().loadSprite(name);
-			for (uint8_t i = 0; i < packages; ++i) {
-				node->addSprite(sprite);
+			if (node) {
+				node->clearSprites();
+				const std::string name = SpriteDefinition::get().getSpriteName(EntityTypes::PACKAGE_ROCK,
+						Animations::ANIMATION_IDLE);
+				const SpritePtr sprite = UI::get().loadSprite(name);
+				for (uint8_t i = 0; i < packages; ++i) {
+					node->addSprite(sprite);
+				}
 			}
 		}
 
@@ -33,10 +35,12 @@ public:
 		{
 			const uint8_t lives = msg->getLives();
 			UINodeSprite* node = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_LIVES);
-			node->clearSprites();
-			const SpritePtr sprite = UI::get().loadSprite("icon-heart");
-			for (uint8_t i = 0; i < lives; ++i) {
-				node->addSprite(sprite);
+			if (node) {
+				node->clearSprites();
+				const SpritePtr sprite = UI::get().loadSprite("icon-heart");
+				for (uint8_t i = 0; i < lives; ++i) {
+					node->addSprite(sprite);
+				}
 			}
 		}
 	}

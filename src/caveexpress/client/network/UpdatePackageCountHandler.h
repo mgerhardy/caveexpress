@@ -13,6 +13,8 @@ public:
 		const UpdatePackageCountMessage *msg = static_cast<const UpdatePackageCountMessage*>(&message);
 		const uint8_t packages = msg->getPackages();
 		UINodeSprite* node = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_PACKAGES);
+		if (!node)
+			return;
 		node->clearSprites();
 		const std::string name = SpriteDefinition::get().getSpriteName(EntityTypes::PACKAGE_ROCK,
 				Animations::ANIMATION_IDLE);

@@ -19,18 +19,22 @@ private:
 		UI::get().pop(); // pop the map
 		UI::get().push(UI_WINDOW_MAPFINISHED);
 		UINodePoint *finishedPointsLabel = UI::get().getNode<UINodePoint>(UI_WINDOW_MAPFINISHED, UINODE_FINISHEDPOINTS);
-		finishedPointsLabel->setPoints(msg.getFinishPoints());
+		if (finishedPointsLabel)
+			finishedPointsLabel->setPoints(msg.getFinishPoints());
 		UINodeStar *star1 = UI::get().getNode<UINodeStar>(UI_WINDOW_MAPFINISHED, "star0");
 		UINodeStar *star2 = UI::get().getNode<UINodeStar>(UI_WINDOW_MAPFINISHED, "star1");
 		UINodeStar *star3 = UI::get().getNode<UINodeStar>(UI_WINDOW_MAPFINISHED, "star2");
-		star1->disable();
-		star2->disable();
-		star3->disable();
-		if (msg.getStars() >= 1)
+		if (star1)
+			star1->disable();
+		if (star2)
+			star2->disable();
+		if (star3)
+			star3->disable();
+		if (msg.getStars() >= 1 && star1)
 			star1->enable(500);
-		if (msg.getStars() >= 2)
+		if (msg.getStars() >= 2 && star2)
 			star2->enable(1000);
-		if (msg.getStars() >= 3)
+		if (msg.getStars() >= 3 && star3)
 			star3->enable(1500);
 		System.track("MapStats", String::format("%i:%i:%i:%s", msg.getTime(), msg.getStars(), msg.getFinishPoints(), msg.getMapName().c_str()));
 	}

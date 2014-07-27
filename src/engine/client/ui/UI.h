@@ -5,6 +5,7 @@
 #include "engine/client/ui/windows/UIWindow.h"
 #include "engine/common/Common.h"
 #include "engine/common/System.h"
+#include "engine/common/Logger.h"
 #include "engine/common/Pointers.h"
 #include "engine/common/IProgressCallback.h"
 #include "engine/client/textures/TextureCache.h"
@@ -102,13 +103,16 @@ public:
 	{
 		UIWindowMap::iterator i = _windows.find(window);
 		if (i == _windows.end()) {
-			System.exit("could not find window " + window, 1);
+			debug(LOG_CLIENT, "could not find window " + window);
+			return nullptr;
 		}
 
 		UIWindow* windowPtr = i->second;
 		UINode* node = windowPtr->getNode(nodeId);
-		if (node == nullptr)
-			System.exit("could not find node " + nodeId, 1);
+		if (node == nullptr) {
+			debug(LOG_CLIENT, "could not find node " + nodeId);
+			return nullptr;
+		}
 		return static_cast<UINodeType*>(node);
 	}
 	UIWindow* getWindow (const std::string& windowID);

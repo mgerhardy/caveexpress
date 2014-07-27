@@ -29,9 +29,11 @@ public:
 		if (player != nullptr)
 			player->setCollected(EntityType::NONE);
 		UINodeSprite* collectedNode = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_COLLECTED);
-		collectedNode->clearSprites();
+		if (collectedNode)
+			collectedNode->clearSprites();
 		UINodeLabel* pointsNode = UI::get().getNode<UINodeLabel>(UI_WINDOW_MAP, UINODE_POINTS);
-		pointsNode->setLabel("0");
+		if (pointsNode)
+			pointsNode->setLabel("0");
 		_map.close();
 		UI::get().pop();
 	}

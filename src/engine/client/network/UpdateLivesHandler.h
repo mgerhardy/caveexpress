@@ -25,6 +25,8 @@ public:
 			campaign->saveProgress();
 		}
 		UINodeSprite* node = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_LIVES);
+		if (!node)
+			return;
 		node->clearSprites();
 		const SpritePtr sprite = UI::get().loadSprite("icon-heart");
 		for (uint8_t i = 0; i < lives; ++i) {

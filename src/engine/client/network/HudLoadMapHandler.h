@@ -22,10 +22,13 @@ public:
 		LoadMapHandler::execute(message);
 		const LoadMapMessage *msg = static_cast<const LoadMapMessage*>(&message);
 		UINodeSprite* collectedNode = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_COLLECTED);
-		collectedNode->clearSprites();
+		if (collectedNode)
+			collectedNode->clearSprites();
 		UINodeLabel* pointsNode = UI::get().getNode<UINodeLabel>(UI_WINDOW_MAP, UINODE_POINTS);
-		pointsNode->setLabel("0");
+		if (pointsNode)
+			pointsNode->setLabel("0");
 		IUINodeMap* mapNode = UI::get().getNode<IUINodeMap>(UI_WINDOW_MAP, UINODE_MAP);
-		mapNode->setTitle(msg->getTitle());
+		if (mapNode)
+			mapNode->setTitle(msg->getTitle());
 	}
 };
