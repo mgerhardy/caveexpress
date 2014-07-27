@@ -14,9 +14,6 @@
 class UINode;
 class UINodeLabel;
 class IUINodeMap;
-class UINodePoint;
-class UINodeBar;
-class UINodeSprite;
 class CampaignManager;
 class ServiceProvider;
 class UINodeButtonText;
@@ -27,12 +24,6 @@ class IUIMapWindow: public UIWindow {
 protected:
 	friend class UIMapHelpWindow;
 	IUINodeMap *_nodeMap;
-	UINode *_panel;
-	UINodePoint *_points;
-	UINodeBar *_timeBar;
-	UINodeBar *_hitpointsBar;
-	UINodeSprite *_livesSprite;
-	UINodeSprite *_packagesSprite;
 	IMapControl *_mapControl;
 	UINodeButtonText *_startButton;
 	UINodeLabel *_waitLabel;
@@ -43,6 +34,7 @@ protected:
 	virtual UINode* getControl ();
 	// call this in your derived classes
 	void init();
+	virtual void initHudNodes();
 
 public:
 	IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map, IUINodeMap* nodeMap);

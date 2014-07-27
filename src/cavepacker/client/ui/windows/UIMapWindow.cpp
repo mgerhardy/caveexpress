@@ -2,15 +2,31 @@
 #include "cavepacker/client/ui/nodes/UINodeMap.h"
 #include "engine/client/ui/nodes/UINodeBar.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
+#include "engine/client/ui/nodes/UINodePoint.h"
 #include "engine/client/ui/nodes/UINodeMapOnScreenCursorControl.h"
+#include "engine/client/ui/layouts/UIHBoxLayout.h"
 
 UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map) :
 	IUIMapWindow(frontend, serviceProvider, campaignManager, map, new UINodeMap(frontend, serviceProvider, campaignManager, 0, 0, frontend->getWidth(), frontend->getHeight(), map))
 {
 	init();
-	_timeBar->setVisible(false);
-	_hitpointsBar->setVisible(false);
-	_livesSprite->setVisible(false);
+
+	_musicFile = "";
+}
+
+void UIMapWindow::initHudNodes ()
+{
+	UINode* panel = new UINode(_frontend);
+	panel->setImage("bones");
+	panel->setStandardPadding();
+	panel->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_CENTER);
+	add(panel);
+
+	UINodePoint* points = new UINodePoint(_frontend, 150);
+	points->setLabel("00000");
+	points->setPos(panel->getX() + 0.1f, panel->getY());
+	points->setId(UINODE_POINTS);
+	add(points);
 }
 
 UINode* UIMapWindow::getFingerControl ()

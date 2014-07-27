@@ -48,25 +48,28 @@ IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 	_onPop = CMD_CL_DISCONNECT;
 	_nodeMap->setId(UINODE_MAP);
 	add(_nodeMap);
+}
 
+void IUIMapWindow::initHudNodes()
+{
 	const float barHeight = 12.0f / _frontend->getHeight();
 	const int spriteHeight = 30;
 	const float barWidth = 102.0f / _frontend->getWidth();
 	const int spriteNodeOffset = 15;
 
-	_panel = new UINode(frontend);
+	UINode* _panel = new UINode(_frontend);
 	UIHBoxLayout* layout = new UIHBoxLayout();
 	layout->setSpacing(0.02f);
 	_panel->setLayout(layout);
 	_panel->setStandardPadding();
 	_panel->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_CENTER);
 
-	_points = new UINodePoint(frontend, 150);
+	UINodePoint* _points = new UINodePoint(_frontend, 150);
 	_points->setLabel("00000");
 	_points->setId(UINODE_POINTS);
 	_panel->add(_points);
 
-	_timeBar = new UINodeBar(frontend);
+	UINodeBar* _timeBar = new UINodeBar(_frontend);
 	_timeBar->setId(UINODE_SECONDS_REMAINING);
 	const Color timeBarColor = { 1.0f, 1.0f, 1.0f, 0.5f };
 	_timeBar->setSize(barWidth, barHeight);
@@ -75,7 +78,7 @@ IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 	_timeBar->setBorderColor(colorWhite);
 	_panel->add(_timeBar);
 
-	_hitpointsBar = new UINodeBar(frontend);
+	UINodeBar* _hitpointsBar = new UINodeBar(_frontend);
 	_hitpointsBar->setId(UINODE_HITPOINTS);
 	const int maxHitpoints = Config.getMaxHitpoints();
 	_hitpointsBar->setMax(maxHitpoints);
@@ -86,7 +89,7 @@ IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 
 	_panel->add(_hitpointsBar);
 
-	_livesSprite = new UINodeSprite(frontend, spriteHeight, spriteHeight);
+	UINodeSprite* _livesSprite = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
 	_livesSprite->setId(UINODE_LIVES);
 	_livesSprite->setSpriteOffset(spriteHeight);
 	const SpritePtr sprite = UI::get().loadSprite("icon-heart");
@@ -95,11 +98,11 @@ IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 	}
 	_panel->add(_livesSprite);
 
-	UINodeSprite *collected = new UINodeSprite(frontend, spriteHeight, spriteHeight);
+	UINodeSprite *collected = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
 	collected->setId(UINODE_COLLECTED);
 	_panel->add(collected);
 
-	_packagesSprite = new UINodeSprite(frontend, spriteHeight, spriteHeight);
+	UINodeSprite* _packagesSprite = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
 	_packagesSprite->setId(UINODE_PACKAGES);
 	_packagesSprite->setSpriteOffset(spriteNodeOffset);
 	_panel->add(_packagesSprite);
@@ -109,6 +112,7 @@ IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 
 void IUIMapWindow::init()
 {
+	initHudNodes();
 	if (System.hasTouch()) {
 		UINode* node = getFingerControl();
 		add(node);
@@ -157,7 +161,9 @@ void IUIMapWindow::onActive ()
 	_cursorActive = UI::get().isCursorVisible();
 	if (_cursorActive && !_startButton->isVisible())
 		UI::get().showCursor(false);
-	_livesSprite->setVisible(Config.isModeHard());
+	UINode* lives = getNode(UINODE_LIVES);
+	if (lives != nullptr)
+		lives->setVisible(Config.isModeHard());
 
 	//if (!getSystem().hasItem(PAYMENT_ADFREE)) {
 	//	const int h = _frontend->getHeight() - getSystem().getAdHeight();

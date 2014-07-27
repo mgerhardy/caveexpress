@@ -154,9 +154,7 @@
             <filename>../png/ui/icon-sound-off.png</filename>
             <filename>../png/ui/icon-sound-on.png</filename>
             <filename>../png/ui/icon-back-to-root.png</filename>
-            <filename>../png/ui/ui-button-start.png</filename>
             <filename>../png/ui/ui-scene-caveart-ice.png</filename>
-            <filename>../png/ui/ui-scene-cave-ice.png</filename>
             <filename>../png/ui/ui-scene-ground1-ice.png</filename>
             <filename>../png/ui/ui-scene-ground2-ice.png</filename>
             <filename>../png/ui/ui-scene-tile1-ice.png</filename>
@@ -171,6 +169,8 @@
             <filename>../png/ui/icon-cursor-right.png</filename>
             <filename>../png/ui/icon-cursor-up.png</filename>
             <filename>../png/ui/icon-reload.png</filename>
+            <filename>../png/ui/bones.png</filename>
+            <filename>../png/ui/ui-scene-cave-ice.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
