@@ -1,7 +1,7 @@
 #pragma once
 
 #include "engine/common/network/IProtocolHandler.h"
-#include "caveexpress/shared/network/messages/UpdateLivesMessage.h"
+#include "engine/common/network/messages/UpdateLivesMessage.h"
 
 class UpdateLivesHandler: public IClientProtocolHandler {
 public:
