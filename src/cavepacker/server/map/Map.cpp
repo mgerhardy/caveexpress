@@ -206,7 +206,7 @@ void Map::resetCurrentMap ()
 	}
 	_field.clear();
 	_state.clear();
-	_forcedFinish = false
+	_forcedFinish = false;
 	_moves = 0;
 	_restartDue = 0;
 	_pause = false;
@@ -669,7 +669,12 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 
 	_nextSolveStep = 100;
 
-	Player *p = *getPlayers().begin();
+	if (_solution[0] == '(') {
+		_autoSolve = false;
+		error(LOG_SERVER, "x() repeat syntax is not supported");
+		return;
+	}
+
 	int l = 0;
 	for (std::string::iterator i = _solution.begin(); i != _solution.end(); ++i) {
 		if (*i >= '0' && *i <= '9') {
@@ -679,6 +684,7 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 		}
 	}
 
+	Player *p = *getPlayers().begin();
 	if (l == 0) {
 		p->moveByChar(_solution[0]);
 		_solution = _solution.substr(1);
