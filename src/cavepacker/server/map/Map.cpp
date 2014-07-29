@@ -206,6 +206,7 @@ void Map::resetCurrentMap ()
 	}
 	_field.clear();
 	_state.clear();
+	_forcedFinish = false
 	_moves = 0;
 	_restartDue = 0;
 	_pause = false;
