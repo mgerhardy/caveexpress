@@ -82,6 +82,46 @@ void Map::solveMap ()
 	}
 
 	_solution = string::toLower(std::string(buffer, fileLen));
+	for (std::string::iterator i = _solution.begin(); i != _solution.end(); ++i) {
+		if (!isdigit(*i))
+			continue;
+		std::string digit;
+		digit += *i;
+		for (++i; isdigit(*i) && i != _solution.end(); ++i) {
+			digit += *i;
+		}
+		const int n = string::toInt(digit);
+		if (i == _solution.end()) {
+			error(LOG_SERVER, "invalid rle encoded solution found");
+			break;
+		}
+		if (*i != '(') {
+			std::string repeat;
+			repeat += *i;
+			const std::string r = repeat;
+			for (int k = 1; k < n; ++k) {
+				repeat += r;
+			}
+			_solution = string::replaceAll(_solution, digit + r, repeat);
+			i = _solution.begin();
+			continue;
+		}
+		std::string repeat;
+		for (++i; i != _solution.end(); ++i) {
+			if (*i == ')') {
+				++i;
+				break;
+			}
+			repeat += *i;
+		}
+		const std::string r = repeat;
+		for (int k = 1; k < n; ++k) {
+			repeat += r;
+		}
+		_solution = string::replaceAll(_solution, digit + "(" + r + ")", repeat);
+		i = _solution.begin();
+	}
+
 	_autoSolve = true;
 }
 
