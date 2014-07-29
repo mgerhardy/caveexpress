@@ -195,6 +195,9 @@ void Map::restart (uint32_t delay)
 
 void Map::resetCurrentMap ()
 {
+	_autoSolve = false;
+	_nextSolveStep = 0;
+	_solution = "";
 	_timeManager.reset();
 	if (!_name.empty()) {
 		const CloseMapMessage msg;
