@@ -5,7 +5,7 @@
 #include "engine/client/ui/windows/IUIMapWindow.h"
 #include "engine/client/ui/nodes/IUINodeMap.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
-#include "engine/client/ui/nodes/UINodeLabel.h"
+#include "engine/client/ui/nodes/UINodePoint.h"
 #include "engine/client/ui/windows/UIWindow.h"
 #include "engine/client/ClientMap.h"
 #include "engine/client/ui/UI.h"
@@ -24,9 +24,9 @@ public:
 		UINodeSprite* collectedNode = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_COLLECTED);
 		if (collectedNode)
 			collectedNode->clearSprites();
-		UINodeLabel* pointsNode = UI::get().getNode<UINodeLabel>(UI_WINDOW_MAP, UINODE_POINTS);
+		UINodePoint* pointsNode = UI::get().getNode<UINodePoint>(UI_WINDOW_MAP, UINODE_POINTS);
 		if (pointsNode)
-			pointsNode->setLabel("0");
+			pointsNode->setPoints(0);
 		IUINodeMap* mapNode = UI::get().getNode<IUINodeMap>(UI_WINDOW_MAP, UINODE_MAP);
 		if (mapNode)
 			mapNode->setTitle(msg->getTitle());

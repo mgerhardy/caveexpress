@@ -34,8 +34,11 @@ public:
 
 	void addPoints (int points)
 	{
-		_points = points;
-		_lastUpdate = _time;
+		_points += points;
+		const uint32_t passed = _time - _lastUpdate;
+		if (passed > _updateDelay) {
+			_lastUpdate = _time;
+		}
 		_current = clamp(_current, 0, _points);
 	}
 
@@ -44,5 +47,7 @@ public:
 		_current = 0;
 		_points = points;
 		_lastUpdate = _time;
+		if (points == 0)
+			setLabel("0");
 	}
 };

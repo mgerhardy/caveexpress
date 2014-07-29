@@ -5,7 +5,7 @@
 #include "engine/client/ClientMap.h"
 #include "engine/client/ui/UI.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
-#include "engine/client/ui/nodes/UINodeLabel.h"
+#include "engine/client/ui/nodes/UINodePoint.h"
 #include "engine/common/SpriteType.h"
 
 class CloseMapHandler: public IClientProtocolHandler {
@@ -31,9 +31,9 @@ public:
 		UINodeSprite* collectedNode = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_COLLECTED);
 		if (collectedNode)
 			collectedNode->clearSprites();
-		UINodeLabel* pointsNode = UI::get().getNode<UINodeLabel>(UI_WINDOW_MAP, UINODE_POINTS);
+		UINodePoint* pointsNode = UI::get().getNode<UINodePoint>(UI_WINDOW_MAP, UINODE_POINTS);
 		if (pointsNode)
-			pointsNode->setLabel("0");
+			pointsNode->setPoints(0);
 		_map.close();
 		UI::get().pop();
 	}

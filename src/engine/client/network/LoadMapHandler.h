@@ -2,6 +2,7 @@
 
 #include "engine/common/network/IProtocolHandler.h"
 #include "engine/common/network/messages/LoadMapMessage.h"
+#include "engine/client/ui/nodes/UINodePoint.h"
 #include "engine/client/ClientMap.h"
 #include "engine/client/ui/UI.h"
 
@@ -27,6 +28,9 @@ public:
 
 		const LoadMapMessage *msg = static_cast<const LoadMapMessage*>(&message);
 		System.track("MapName", msg->getName());
+		UINodePoint* pointsNode = UI::get().getNode<UINodePoint>(UI_WINDOW_MAP, UINODE_POINTS);
+		if (pointsNode)
+			pointsNode->setPoints(0);
 		_map.load(msg->getName(), msg->getTitle());
 	}
 };

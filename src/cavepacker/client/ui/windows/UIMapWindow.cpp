@@ -22,7 +22,7 @@ void UIMapWindow::initHudNodes ()
 	panel->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_CENTER);
 	add(panel);
 
-	UINodePoint* points = new UINodePoint(_frontend, 150);
+	UINodePoint* points = new UINodePoint(_frontend, 50);
 	points->setLabel("00000");
 	points->setPos(panel->getX() + 0.1f, panel->getY());
 	points->setId(UINODE_POINTS);
