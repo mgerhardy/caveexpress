@@ -38,7 +38,13 @@ bool SokubanMapContext::load(bool skipErrors) {
 	int row = 0;
 	int maxCol = 0;
 	bool empty = true;
+	bool inComment = false;
 	for (int i = 0; i < fileLen; ++i) {
+		if (inComment) {
+			inComment = buffer[i] == '\n';
+			if (inComment)
+				continue;
+		}
 		switch (buffer[i]) {
 		case Sokuban::WALL:
 			addWall(col, row);
@@ -74,8 +80,10 @@ bool SokubanMapContext::load(bool skipErrors) {
 			break;
 		case '\r':
 			continue;
+		case ';':
 		default:
-			break;
+			inComment = true;
+			continue;
 		}
 		++col;
 		maxCol = std::max(maxCol, col);
