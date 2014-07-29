@@ -25,16 +25,16 @@ public:
 		const MovementMessage* msg = static_cast<const MovementMessage*>(&message);
 		switch (msg->getDirection()) {
 		case DIRECTION_UP:
-			player->move(0, -1);
+			player->moveByChar('u');
 			break;
 		case DIRECTION_DOWN:
-			player->move(0, 1);
+			player->moveByChar('d');
 			break;
 		case DIRECTION_LEFT:
-			player->move(-1, 0);
+			player->moveByChar('l');
 			break;
 		case DIRECTION_RIGHT:
-			player->move(1, 0);
+			player->moveByChar('r');
 			break;
 		}
 	}
