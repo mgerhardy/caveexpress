@@ -169,6 +169,9 @@ void Map::increaseMoves ()
 
 void Map::undo ()
 {
+	if (_autoSolve)
+		return;
+
 	if (_moves <= 0)
 		return;
 
