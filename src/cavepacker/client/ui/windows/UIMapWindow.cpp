@@ -27,6 +27,13 @@ void UIMapWindow::initHudNodes ()
 	points->setPos(panel->getX() + 0.1f, panel->getY());
 	points->setId(UINODE_POINTS);
 	add(points);
+
+	UINode* undo = new UINode(_frontend);
+	undo->setImage("icon-undo");
+	undo->setStandardPadding();
+	undo->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_RIGHT);
+	undo->setOnActivate("undo");
+	add(undo);
 }
 
 UINode* UIMapWindow::getFingerControl ()
