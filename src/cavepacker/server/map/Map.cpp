@@ -44,7 +44,7 @@ Map::Map () :
 	Commands.registerCommand(CMD_START, bind(Map, startMap));
 	Commands.registerCommand(CMD_FINISHMAP, bind(Map, finishMap));
 	Commands.registerCommand("map_print", bind(Map, printMap));
-	Commands.registerCommand("map_solve", bind(Map, solveMap));
+	Commands.registerCommand("solve", bind(Map, solveMap));
 
 	resetCurrentMap();
 }
@@ -55,7 +55,7 @@ Map::~Map ()
 	Commands.removeCommand(CMD_START);
 	Commands.removeCommand(CMD_FINISHMAP);
 	Commands.removeCommand("map_print");
-	Commands.removeCommand("map_solve");
+	Commands.removeCommand("solve");
 }
 
 void Map::shutdown ()

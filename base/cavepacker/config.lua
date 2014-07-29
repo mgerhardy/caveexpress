@@ -163,6 +163,7 @@ else
 		keybindings["ui"]["."] = "screenshot"
 		keybindings["map"]["."] = "screenshot"
 		keybindings["map"]["F"] = "finish"
+		keybindings["map"]["S"] = "solve"
 	end
 end
 
