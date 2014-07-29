@@ -24,6 +24,7 @@ public:
 	const std::string& getName () const;
 	void setName (const std::string& name);
 	bool move (int x, int y);
+	bool moveByChar (char step);
 };
 
 inline ClientId Player::getClientId () const

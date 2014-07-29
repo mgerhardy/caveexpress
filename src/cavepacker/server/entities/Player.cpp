@@ -14,6 +14,25 @@ Player::~Player ()
 {
 }
 
+bool Player::moveByChar (char step)
+{
+	switch (tolower(step)) {
+	case 'w':
+	case 'l':
+		return move(-1, 0);
+	case 'e':
+	case 'r':
+		return move(1, 0);
+	case 'n':
+	case 'u':
+		return move(0, -1);
+	case 's':
+	case 'd':
+		return move(0, 1);
+	}
+	return false;
+}
+
 bool Player::move (int x, int y)
 {
 	debug(LOG_SERVER, String::format("move player %i:%i (current: %i:%i)", x, y, _col, _row));

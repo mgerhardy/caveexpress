@@ -82,6 +82,10 @@ protected:
 
 	bool _forcedFinish;
 
+	bool _autoSolve;
+	int32_t _nextSolveStep;
+	std::string _solution;
+
 	bool visitEntity (IEntity *entity) override;
 
 	// do the spawning on the map and add the physic objects
@@ -90,6 +94,7 @@ protected:
 	void printMap ();
 	std::string getMapString() const;
 	char getSokubanFieldId (const IEntity *entity) const;
+	void handleAutoSolve (uint32_t deltaTime);
 public:
 	Map ();
 	virtual ~Map ();
@@ -99,6 +104,8 @@ public:
 
 	void rebuildField ();
 	TimeManager& getTimeManager ();
+
+	inline bool isAutoSolve () const { return _autoSolve; }
 
 	inline int getMoves() const { return _moves; }
 	inline int getPushes() const { return _pushes; }
@@ -174,6 +181,7 @@ public:
 	void shutdown ();
 private:
 	void finishMap ();
+	void solveMap ();
 
 	// command callbacks
 	void triggerRestart ();

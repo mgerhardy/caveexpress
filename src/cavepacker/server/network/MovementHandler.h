@@ -15,6 +15,8 @@ public:
 
 	void execute (const ClientId& clientId, const IProtocolMessage& message) override
 	{
+		if (_map.isAutoSolve())
+			return;
 		Player* player = _map.getPlayer(clientId);
 		if (player == nullptr) {
 			error(LOG_SERVER, "movement for player with clientId " + string::toString((int)clientId) + " failed");

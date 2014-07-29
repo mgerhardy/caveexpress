@@ -24,6 +24,7 @@
 #include "engine/common/network/messages/MapRestartMessage.h"
 #include "engine/common/network/messages/UpdatePointsMessage.h"
 #include "engine/common/CommandSystem.h"
+#include "engine/common/FileSystem.h"
 #include "engine/common/System.h"
 #include "engine/common/vec2.h"
 #include "engine/common/ExecutionTime.h"
@@ -37,12 +38,13 @@
 #define INDEX(col, row) ((col) + _width * (row))
 
 Map::Map () :
-		IMap(), _frontend(nullptr), _serviceProvider(nullptr), _forcedFinish(false)
+		IMap(), _frontend(nullptr), _serviceProvider(nullptr), _forcedFinish(false), _autoSolve(false), _nextSolveStep(0)
 {
 	Commands.registerCommand(CMD_MAP_RESTART, bind(Map, triggerRestart));
 	Commands.registerCommand(CMD_START, bind(Map, startMap));
 	Commands.registerCommand(CMD_FINISHMAP, bind(Map, finishMap));
 	Commands.registerCommand("map_print", bind(Map, printMap));
+	Commands.registerCommand("map_solve", bind(Map, solveMap));
 
 	resetCurrentMap();
 }
@@ -53,11 +55,32 @@ Map::~Map ()
 	Commands.removeCommand(CMD_START);
 	Commands.removeCommand(CMD_FINISHMAP);
 	Commands.removeCommand("map_print");
+	Commands.removeCommand("map_solve");
 }
 
 void Map::shutdown ()
 {
 	resetCurrentMap();
+}
+
+void Map::solveMap ()
+{
+	const FilePtr& filePtr = FS.getFile(FS.getMapsDir() + _name + ".sol");
+	if (!filePtr) {
+		info(LOG_SERVER, "no solution file found for " + _name);
+		return;
+	}
+
+	char *buffer;
+	const int fileLen = filePtr->read((void **) &buffer);
+	ScopedArrayPtr<char> p(buffer);
+	if (!buffer || fileLen <= 0) {
+		error(LOG_SERVER, "solution file " + filePtr->getURI().print() + " can't get loaded");
+		return;
+	}
+
+	_solution = string::toLower(std::string(buffer, fileLen));
+	_autoSolve = true;
 }
 
 void Map::sendSound (int clientMask, const SoundType& type, const b2Vec2& pos) const
@@ -628,6 +651,45 @@ void Map::update (uint32_t deltaTime)
 		const std::string currentName = getName();
 		info(LOG_MAP, "restarting map " + currentName);
 		load(currentName);
+	}
+	handleAutoSolve(deltaTime);
+}
+
+void Map::handleAutoSolve (uint32_t deltaTime)
+{
+	if (!_autoSolve)
+		return;
+	_nextSolveStep -= deltaTime;
+	if (_nextSolveStep > 0)
+		return;
+
+	_nextSolveStep = 100;
+
+	Player *p = *getPlayers().begin();
+	int l = 0;
+	for (std::string::iterator i = _solution.begin(); i != _solution.end(); ++i) {
+		if (*i >= '0' && *i <= '9') {
+			++l;
+		} else {
+			break;
+		}
+	}
+
+	if (l == 0) {
+		p->moveByChar(_solution[0]);
+		_solution = _solution.substr(1);
+		return;
+	}
+
+	const std::string& rle = _solution.substr(0, l);
+	const int n = string::toInt(rle);
+	if (n <= 1) {
+		_solution = _solution.substr(l);
+		p->moveByChar(_solution[0]);
+		_solution = _solution.substr(1);
+	} else {
+		p->moveByChar(_solution[l]);
+		_solution = string::toString(n - 1) + _solution.substr(l);
 	}
 }
 
