@@ -45,6 +45,7 @@ Map::Map () :
 	Commands.registerCommand(CMD_FINISHMAP, bind(Map, finishMap));
 	Commands.registerCommand("map_print", bind(Map, printMap));
 	Commands.registerCommand("solve", bind(Map, solveMap));
+	Commands.registerCommand("undo", bind(Map, undo));
 
 	resetCurrentMap();
 }
@@ -56,6 +57,7 @@ Map::~Map ()
 	Commands.removeCommand(CMD_FINISHMAP);
 	Commands.removeCommand("map_print");
 	Commands.removeCommand("solve");
+	Commands.removeCommand("undo");
 }
 
 void Map::shutdown ()
@@ -163,6 +165,69 @@ void Map::increaseMoves ()
 	++_moves;
 	debug(LOG_SERVER, String::format("moved fields: %i", _moves));
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
+}
+
+void Map::undo ()
+{
+	if (_moves <= 0)
+		return;
+
+	Player* player = *getPlayers().begin();
+	player->undo();
+
+	--_moves;
+	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
+}
+
+void Map::undoPackage (int col, int row, int targetCol, int targetRow)
+{
+	MapTile* package = getPackage(col, row);
+	if (package != nullptr) {
+		info(LOG_SERVER, "move package back");
+		rebuildField();
+		package->setPos(targetCol, targetRow);
+		rebuildField();
+		--_pushes;
+	} else {
+		info(LOG_SERVER, "dont move package back");
+	}
+}
+
+bool Map::movePlayer (Player* player, char step)
+{
+	int x;
+	int y;
+	getXY(step, x, y);
+	debug(LOG_SERVER, String::format("move player %i:%i (current: %i:%i)", x, y, player->getCol(), player->getRow()));
+	// move player and move touching packages
+	const int targetCol = player->getCol() + x;
+	const int targetRow = player->getRow() + y;
+	MapTile* package = getPackage(targetCol, targetRow);
+	if (package != nullptr) {
+		const int pCol = targetCol + x;
+		const int pRow = targetRow + y;
+		if (!isFree(pCol, pRow)) {
+			debug(LOG_SERVER, "can't move here - can't move package. target field is blocked");
+			return false;
+		}
+		if (!package->setPos(pCol, pRow)) {
+			debug(LOG_SERVER, "failed to move the package - thus can't move the player");
+			return false;
+		}
+		debug(LOG_SERVER, "moved package");
+		increasePushes();
+		rebuildField();
+		// sokoban standard - if a package was moved, the move char is uppercase
+		step = toupper(step);
+	}
+	if (!player->setPos(targetCol, targetRow)) {
+		debug(LOG_SERVER, "failed to move the player");
+		return false;
+	}
+
+	player->storeStep(step);
+	increaseMoves();
+	return true;
 }
 
 void Map::increasePushes ()
@@ -686,7 +751,7 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 
 	Player *p = *getPlayers().begin();
 	if (l == 0) {
-		p->moveByChar(_solution[0]);
+		movePlayer(p, _solution[0]);
 		_solution = _solution.substr(1);
 		return;
 	}
@@ -695,10 +760,10 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 	const int n = string::toInt(rle);
 	if (n <= 1) {
 		_solution = _solution.substr(l);
-		p->moveByChar(_solution[0]);
+		movePlayer(p, _solution[0]);
 		_solution = _solution.substr(1);
 	} else {
-		p->moveByChar(_solution[l]);
+		movePlayer(p, _solution[l]);
 		_solution = string::toString(n - 1) + _solution.substr(l);
 	}
 }

@@ -159,6 +159,8 @@ else
 		},
 	}
 
+	keybindings["map"]["U"] = "undo"
+
 	if isDebug() then
 		keybindings["ui"]["."] = "screenshot"
 		keybindings["map"]["."] = "screenshot"

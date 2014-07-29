@@ -18,6 +18,40 @@ class SpriteDef;
 class IFrontend;
 class ServiceProvider;
 
+#define MOVE_LEFT 'l'
+#define MOVE_RIGHT 'r'
+#define MOVE_UP 'u'
+#define MOVE_DOWN 'd'
+
+inline void getXY (char step, int& x, int& y)
+{
+	switch (tolower(step)) {
+	case MOVE_LEFT:
+		x = -1;
+		y = 0;
+		break;
+	case MOVE_RIGHT:
+		x = 1;
+		y = 0;
+		break;
+	case MOVE_UP:
+		x = 0;
+		y = -1;
+		break;
+	case MOVE_DOWN:
+		x = 0;
+		y = 1;
+		break;
+	}
+}
+
+inline void getOppositeXY (char step, int& x, int& y)
+{
+	getXY(step, x, y);
+	x *= -1;
+	y *= -1;
+}
+
 class IEntityVisitor {
 public:
 	virtual ~IEntityVisitor ()
@@ -111,12 +145,16 @@ public:
 	inline int getPushes() const { return _pushes; }
 	void increaseMoves ();
 	void increasePushes ();
+	void undo ();
 
 	void loadDelayed (uint32_t delay, const std::string& name);
 	bool load (const std::string& name);
 
 	uint16_t getPoints () const;
 	void addPoints (const IEntity* entity, uint16_t points);
+
+	// move into directions l,r,d,u (sokoban standard)
+	bool movePlayer (Player* player, char step);
 
 	void reload ();
 	bool isFailed () const;
@@ -156,6 +194,8 @@ public:
 	bool isFree (int col, int row);
 	bool isTarget (int col, int row);
 	bool isPackage (int col, int row);
+
+	void undoPackage (int col, int row, int targetCol, int targetRow);
 
 	void resetCurrentMap ();
 

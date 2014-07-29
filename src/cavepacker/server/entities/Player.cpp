@@ -8,58 +8,40 @@
 
 Player::Player (Map& map, ClientId clientId, int col, int row) :
 		IEntity(EntityTypes::PLAYER, map, col, row), _clientId(clientId) {
+	_solutionSave.reserve(256);
 }
 
 Player::~Player ()
 {
 }
 
-bool Player::moveByChar (char step)
+void Player::storeStep (char step)
 {
-	switch (tolower(step)) {
-	case 'w':
-	case 'l':
-		return move(-1, 0);
-	case 'e':
-	case 'r':
-		return move(1, 0);
-	case 'n':
-	case 'u':
-		return move(0, -1);
-	case 's':
-	case 'd':
-		return move(0, 1);
-	}
-	return false;
+	_solutionSave += step;
 }
 
-bool Player::move (int x, int y)
+void Player::undo ()
 {
-	debug(LOG_SERVER, String::format("move player %i:%i (current: %i:%i)", x, y, _col, _row));
-	// move player and move touching packages
-	const int targetCol = _col + x;
-	const int targetRow = _row + y;
-	MapTile* package = _map.getPackage(targetCol, targetRow);
-	if (package != nullptr) {
-		const int pCol = targetCol + x;
-		const int pRow = targetRow + y;
-		if (!_map.isFree(pCol, pRow)) {
-			debug(LOG_SERVER, "can't move here - can't move package. target field is blocked");
-			return false;
-		}
-		if (!package->setPos(pCol, pRow)) {
-			debug(LOG_SERVER, "failed to move the package - thus can't move the player");
-			return false;
-		}
-		debug(LOG_SERVER, "moved package");
-		_map.increasePushes();
-		_map.rebuildField();
-	}
-	if (!setPos(targetCol, targetRow)) {
-		debug(LOG_SERVER, "failed to move the player");
-		return false;
-	}
+	std::string::reverse_iterator i = _solutionSave.rbegin();
+	const char s = *i;
+	_solutionSave.erase(_solutionSave.size() - 1);
 
-	_map.increaseMoves();
-	return true;
+	int xPlayer;
+	int yPlayer;
+	getOppositeXY(s, xPlayer, yPlayer);
+	const int origCol = _col;
+	const int origRow = _row;
+	const int targetCol = origCol + xPlayer;
+	const int targetRow = origRow + yPlayer;
+	if (!setPos(targetCol, targetRow)) {
+		debug(LOG_SERVER, "failed to undo a move of the player");
+	}
+	if (tolower(s) != s) {
+		int xPackage;
+		int yPackage;
+		getXY(s, xPackage, yPackage);
+		const int packageCol = origCol + xPackage;
+		const int packageRow = origRow + yPackage;
+		_map.undoPackage(packageCol, packageRow, origCol, origRow);
+	}
 }

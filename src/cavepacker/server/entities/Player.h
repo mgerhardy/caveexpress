@@ -15,7 +15,7 @@ class Player: public IEntity {
 private:
 	ClientId _clientId;
 	std::string _name;
-
+	std::string _solutionSave;
 public:
 	Player (Map& map, ClientId clientId, int col, int row);
 	virtual ~Player ();
@@ -23,8 +23,8 @@ public:
 	ClientId getClientId () const;
 	const std::string& getName () const;
 	void setName (const std::string& name);
-	bool move (int x, int y);
-	bool moveByChar (char step);
+	void storeStep (char step);
+	void undo ();
 };
 
 inline ClientId Player::getClientId () const
