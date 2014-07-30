@@ -78,7 +78,8 @@ void ServiceProvider::init (IFrontend *frontend)
 	{
 		const ExecutionTime e("map manager");
 		_mapManager = Singleton<GameRegistry>::getInstance().getGame()->getMapManager();
-		_mapManager->init();
+		if (_mapManager != nullptr)
+			_mapManager->init();
 	}
 	info(LOG_BACKEND, "initialized the serviceprovider");
 }

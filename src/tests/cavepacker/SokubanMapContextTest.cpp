@@ -3,8 +3,6 @@
 
 TEST(SokubanMapContextTest, testMapCreation)
 {
-#if 0
-	SokubanMapContext ctx("map-1");
+	SokubanMapContext ctx("0001");
 	ASSERT_TRUE(ctx.load(false));
-#endif
 }
