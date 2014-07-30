@@ -3,6 +3,9 @@
 
 TEST(SokubanMapContextTest, testMapCreation)
 {
-	SokubanMapContext ctx("0001");
-	ASSERT_TRUE(ctx.load(false));
+	for (int i = 1; i <= 90; ++i) {
+		const std::string name = String::format("%04i", i);
+		SokubanMapContext ctx(name);
+		ASSERT_TRUE(ctx.load(false));
+	}
 }
