@@ -22,9 +22,9 @@ void UIMapWindow::initHudNodes ()
 	panel->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_CENTER);
 	add(panel);
 
-	UINodePoint* points = new UINodePoint(_frontend, 50);
+	UINodePoint* points = new UINodePoint(_frontend, 30);
 	points->setLabel("00000");
-	points->setPos(panel->getX() + 0.1f, panel->getY());
+	points->setPos(panel->getX() + 0.02f, panel->getY());
 	points->setId(UINODE_POINTS);
 	add(points);
 }
@@ -32,7 +32,7 @@ void UIMapWindow::initHudNodes ()
 UINode* UIMapWindow::getFingerControl ()
 {
 	UINodeMapOnScreenCursorControl* node = new UINodeMapOnScreenCursorControl(_frontend, _nodeMap);
-	_mapControl = node ;
+	_mapControl = node;
 
 	UINode* undo = new UINode(_frontend);
 	undo->setImage("icon-undo");
