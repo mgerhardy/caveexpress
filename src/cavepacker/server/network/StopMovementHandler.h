@@ -6,10 +6,8 @@
 
 class StopMovementHandler: public IServerProtocolHandler {
 private:
-	Map& _map;
 public:
-	StopMovementHandler (Map& map) :
-			_map(map)
+	StopMovementHandler (Map& map)
 	{
 	}
 

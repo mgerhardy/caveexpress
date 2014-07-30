@@ -6,10 +6,15 @@
 
 class FingerMovementHandler: public IServerProtocolHandler {
 private:
+#if 0
 	Map& _map;
+#endif
 public:
-	FingerMovementHandler (Map& map) :
+	FingerMovementHandler (Map& map)
+#if 0
+ :
 			_map(map)
+#endif
 	{
 	}
 
