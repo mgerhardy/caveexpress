@@ -177,7 +177,9 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_clientMap));
 	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));
 	ui.addWindow(new UIPaymentWindow(frontend));
-	ui.addWindow(new UISettingsWindow(frontend, serviceProvider, *_campaignManager));
+	UISettingsWindow* settings = new UISettingsWindow(frontend, serviceProvider);
+	settings->init();
+	ui.addWindow(settings);
 	ui.addWindow(new IntroGame(frontend));
 	ui.addWindow(new UIMapOptionsWindow(frontend, serviceProvider));
 }

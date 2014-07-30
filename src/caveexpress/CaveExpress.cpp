@@ -42,6 +42,7 @@
 #include "caveexpress/client/ui/windows/UIMapEditorOptionsWindow.h"
 #include "caveexpress/client/ui/windows/UIGameFinishedWindow.h"
 #include "caveexpress/client/ui/windows/UIMapFinishedWindow.h"
+#include "caveexpress/client/ui/windows/UICaveExpressSettingsWindow.h"
 #include "engine/client/ui/windows/UIModeSelectionWindow.h"
 #include "caveexpress/client/ui/windows/intro/IntroPackage.h"
 #include "caveexpress/client/ui/windows/intro/IntroTime.h"
@@ -314,7 +315,7 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	UIMapWindow *mapWindow = new UIMapWindow(frontend, serviceProvider, campaignMgr, *_clientMap);
 	ui.addWindow(mapWindow);
 	ui.addWindow(new UIModeSelectionWindow(frontend, campaignMgr));
-	ui.addWindow(new UISettingsWindow(frontend, serviceProvider, campaignMgr));
+	ui.addWindow(new UICaveExpressSettingsWindow(frontend, serviceProvider, campaignMgr));
 	ui.addWindow(new IntroPackage(frontend));
 	ui.addWindow(new IntroTime(frontend));
 	ui.addWindow(new IntroTree(frontend));

@@ -9,7 +9,6 @@
 #include "engine/client/ui/nodes/UINodeSettingsBackground.h"
 #include "engine/client/ui/windows/modeselection/ModeSetListener.h"
 #include "engine/client/sound/Sound.h"
-#include "engine/common/ConfigManager.h"
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/network/INetwork.h"
 
@@ -17,8 +16,8 @@
 #include "engine/client/ui/windows/listener/JoystickNodeListener.h"
 #include "engine/client/ui/windows/listener/SoundNodeListener.h"
 
-UISettingsWindow::UISettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager) :
-		UIWindow(UI_WINDOW_SETTINGS, frontend, WINDOW_FLAG_MODAL), _background(nullptr), _serviceProvider(serviceProvider), _campaignManager(campaignManager)
+UISettingsWindow::UISettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
+		UIWindow(UI_WINDOW_SETTINGS, frontend, WINDOW_FLAG_MODAL), _background(nullptr), _serviceProvider(serviceProvider)
 {
 }
 
@@ -38,16 +37,12 @@ void UISettingsWindow::init()
 	add(backButton);
 }
 
-void UISettingsWindow::addSections()
+UINode* UISettingsWindow::addSections()
 {
 	UINode* last = nullptr;
 	last = addSection(last, _background, tr("Textures"),
 			tr("Big"), new TextureModeListener("big", _frontend, _serviceProvider),
 			tr("Small"), new TextureModeListener("small", _frontend, _serviceProvider));
-
-	last = addSection(last, nullptr, tr("Game mode"),
-			tr("Normal"), new ModeSetListener("easy", _campaignManager),
-			tr("Hard"), new ModeSetListener("hard", _campaignManager));
 
 	last = addSection(last, nullptr, tr("Sound/Music"),
 			tr("On"), new SoundNodeListener(this, true),
