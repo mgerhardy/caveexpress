@@ -12,6 +12,7 @@ $(TARGET)_LDFLAGS  += $(SDL_LIBS) $(SDL_IMAGE_LIBS) $(SDL_MIXER_LIBS) $(OPENGL_L
 $(TARGET)_CFLAGS   += $(SDL_CFLAGS) $(SDL_IMAGE_CFLAGS) $(SDL_MIXER_CFLAGS) $(OPENGL_CFLAGS) $(GTEST_CFLAGS) $(LUA_CFLAGS) $(LUA_CFLAGS) $(SQLITE3_CFLAGS) $(TINYXML2_CFLAGS) $(SDL_NET_CFLAGS) $(SDL_RWHTTP_CFLAGS) -DNO_DEBUG_RENDERER
 $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/tests/*.cpp) \
+	$(wildcard $(SRCDIR)/tests/$(APPNAME)/*.cpp) \
 	\
 	$(wildcard $(SRCDIR)/engine/client/shaders/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/client/sprites/*.cpp) \
@@ -35,25 +36,6 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/engine/server/box2d/*.cpp) \
 	\
 	$(wildcard $(SRCDIR)/caveexpress/client/particles/*.cpp) \
-	\
-	$(wildcard $(SRCDIR)/caveexpress/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/particles/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/entities/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/ui/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/ui/nodes/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/ui/windows/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/ui/windows/intro/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/shared/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/shared/network/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/server/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/server/map/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/server/events/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/server/entities/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/server/entities/modificators/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/server/entities/npcs/*.cpp) \
-	\
-	$(wildcard $(SRCDIR)/cavepacker/server/map/SokubanMapContext*.cpp) \
 	\
 	$(wildcard $(SRCDIR)/libs/micropather/*.cpp) \
 	\
@@ -81,6 +63,41 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(SQLITE3_SRCS) \
 	\
 	$(GTEST_SRCS)
+
+ifeq ($(APPNAME),caveexpress)
+	$(TARGET)_SRCS      += $(subst $(SRCDIR)/,, \
+		$(wildcard $(SRCDIR)/caveexpress/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/client/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/client/entities/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/client/ui/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/client/ui/nodes/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/client/ui/windows/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/client/ui/windows/intro/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/shared/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/shared/network/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/server/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/server/map/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/server/events/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/server/entities/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/server/entities/modificators/*.cpp) \
+		$(wildcard $(SRCDIR)/caveexpress/server/entities/npcs/*.cpp) \
+	)
+endif
+
+ifeq ($(APPNAME),cavepacker)
+	$(TARGET)_SRCS      += $(subst $(SRCDIR)/,, \
+		$(wildcard $(SRCDIR)/cavepacker/client/*.cpp) \
+		$(wildcard $(SRCDIR)/cavepacker/client/entities/*.cpp) \
+		$(wildcard $(SRCDIR)/cavepacker/client/ui/*.cpp) \
+		$(wildcard $(SRCDIR)/cavepacker/client/ui/nodes/*.cpp) \
+		$(wildcard $(SRCDIR)/cavepacker/client/ui/windows/*.cpp) \
+		$(wildcard $(SRCDIR)/cavepacker/client/ui/windows/intro/*.cpp) \
+		$(wildcard $(SRCDIR)/cavepacker/shared/*.cpp) \
+		$(wildcard $(SRCDIR)/cavepacker/server/*.cpp) \
+		$(wildcard $(SRCDIR)/cavepacker/server/map/*.cpp) \
+		$(wildcard $(SRCDIR)/cavepacker/server/entities/*.cpp) \
+	)
+endif
 
 ifneq ($(findstring $(TARGET_OS), mingw32 mingw64 mingw64_64),)
 	$(TARGET)_SRCS +=\

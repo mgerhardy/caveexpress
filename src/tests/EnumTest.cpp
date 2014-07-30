@@ -1,5 +1,4 @@
 #include "EnumTest.h"
-#include "caveexpress/shared/CaveExpressSpriteType.h"
 #include "engine/common/Enum.h"
 
 class EnumTest: public MapSuite {
@@ -38,10 +37,4 @@ TEST_F(EnumTest, testNew) {
 	ASSERT_EQ(BarEnum::get(1), test2_1);
 
 	//ASSERT_NE(BarEnum::get(1), FooEnum::get(1));
-}
-
-TEST_F(EnumTest, testEnums) {
-	ASSERT_EQ(1, SpriteTypes::WATERFALL.id);
-	ASSERT_TRUE(SpriteTypes::isWaterFall(SpriteTypes::WATERFALL));
-	ASSERT_EQ(SpriteTypes::WATERFALL, SpriteTypes::WATERFALL);
 }

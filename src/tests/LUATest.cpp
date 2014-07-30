@@ -1,7 +1,4 @@
 #include "tests/LUATest.h"
-#include "caveexpress/shared/CaveExpressEntityType.h"
-#include "caveexpress/shared/CaveExpressAnimation.h"
-#include "caveexpress/shared/CaveExpressSpriteType.h"
 #include "engine/common/Logger.h"
 #include "engine/common/SpriteDefinition.h"
 #include "engine/common/TextureDefinition.h"
@@ -11,14 +8,6 @@
 
 class LUATest: public MapSuite {
 };
-
-TEST_F(LUATest, testSpriteDefinition)
-{
-	const std::string spriteId = SpriteDefinition::get().getSpriteName(EntityTypes::PACKAGETARGET_ROCK,
-			Animations::ANIMATION_IDLE);
-	SpriteDefPtr sprite = SpriteDefinition::get().getSpriteDefinition(spriteId);
-	ASSERT_TRUE(sprite.get()) << "sprite " + spriteId + " wasn't found";
-}
 
 TEST_F(LUATest, testFontDefinition)
 {
