@@ -17,7 +17,7 @@ private:
 	std::string _name;
 	std::string _solutionSave;
 public:
-	Player (Map& map, ClientId clientId, int col, int row);
+	Player (Map& map, ClientId clientId);
 	virtual ~Player ();
 
 	ClientId getClientId () const;

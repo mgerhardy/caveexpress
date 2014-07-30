@@ -6,8 +6,8 @@
 #include "engine/common/ConfigManager.h"
 #include "engine/common/network/IProtocolHandler.h"
 
-Player::Player (Map& map, ClientId clientId, int col, int row) :
-		IEntity(EntityTypes::PLAYER, map, col, row), _clientId(clientId) {
+Player::Player (Map& map, ClientId clientId) :
+		IEntity(EntityTypes::PLAYER, map, 0, 0), _clientId(clientId) {
 	_solutionSave.reserve(256);
 }
 

@@ -53,6 +53,8 @@ UINode* UISettingsWindow::addSections()
 			tr("On"), new JoystickNodeListener(true),
 			tr("Off"), new JoystickNodeListener(false));
 	}
+
+	return last;
 }
 
 UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& option1, UINodeListener* option1Listener, const std::string& option2, UINodeListener* option2Listener)

@@ -15,7 +15,7 @@ public:
 
 	void execute (const ClientId& clientId, const IProtocolMessage& message) override
 	{
-		Player* player = new Player(_map, clientId, 0, 0);
+		Player* player = new Player(_map, clientId);
 		info(LOG_SERVER, String::format("spawn client %i", clientId));
 		if (!_map.initPlayer(player))
 			delete player;
