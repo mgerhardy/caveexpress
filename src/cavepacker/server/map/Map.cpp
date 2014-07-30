@@ -219,6 +219,7 @@ void Map::undo ()
 	player->undo();
 
 	--_moves;
+	debug(LOG_SERVER, String::format("moved fields after undo: %i", _moves));
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
 }
 

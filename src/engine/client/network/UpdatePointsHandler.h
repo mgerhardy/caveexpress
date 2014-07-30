@@ -15,7 +15,7 @@ public:
 		UINodePoint* node = UI::get().getNode<UINodePoint>(UI_WINDOW_MAP, UINODE_POINTS);
 		if (!node)
 			return;
-		node->addPoints(points);
+		node->increasePoints(points);
 		node->flash();
 	}
 };

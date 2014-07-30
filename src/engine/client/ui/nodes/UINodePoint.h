@@ -32,16 +32,21 @@ public:
 		}
 	}
 
-	void addPoints (int points)
+	// this will increase the points over time. The given points value is an absolute value
+	void increasePoints (int points)
 	{
-		_points += points;
-		const uint32_t passed = _time - _lastUpdate;
-		if (passed > _updateDelay) {
-			_lastUpdate = _time;
-		}
+		_points = points;
 		_current = clamp(_current, 0, _points);
 	}
 
+	// this will increase the points over time. The given points value is a relative value
+	void addPoints (int points)
+	{
+		_points += points;
+		_current = clamp(_current, 0, _points);
+	}
+
+	// this sets the points and starts the increasing from the beginning. The give points value is an absolute value
 	void setPoints (int points)
 	{
 		_current = 0;
