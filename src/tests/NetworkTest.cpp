@@ -1,4 +1,7 @@
 #include "tests/NetworkTest.h"
+
+#if NETWORKING == 1
+
 #include "engine/common/network/Network.h"
 #include "engine/common/Logger.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
@@ -118,3 +121,5 @@ TEST(NetworkTest, testSendToServer)
 	network.closeClient();
 	network.closeServer();
 }
+
+#endif
