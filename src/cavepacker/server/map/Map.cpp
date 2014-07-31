@@ -803,11 +803,11 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 		}
 	}
 
-	Player *p = *getPlayers().begin();
-	if (!p) {
+	if (_players.empty()) {
 		_autoSolve = false;
 		return;
 	}
+	Player *p = *_players.begin();
 	if (l == 0) {
 		const char step = _solution[0];
 		movePlayer(p, step);
