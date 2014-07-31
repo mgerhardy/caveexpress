@@ -10,8 +10,7 @@
 UICavePackerMapOptionsWindow::UICavePackerMapOptionsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
 		UIMapOptionsWindow(frontend, serviceProvider)
 {
-	UINodeButtonImage *solve = new UINodeButtonImage(frontend, "icon-reload");
-	solve->setId("restart-map");
+	UINodeButtonImage *solve = new UINodeButtonImage(frontend, "icon-solve");
 	solve->putUnder(_restartMap, 0.02f);
 	solve->setOnActivate(CMD_UI_POP ";solve");
 	add(solve);
