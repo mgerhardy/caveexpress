@@ -69,7 +69,9 @@ void Logger::logInfo (LogCategory category, const std::string &string) const
 		(*i)->logInfo(message);
 	}
 
-	System.logOutput(message);
+	if (_consoles.empty()) {
+		System.logOutput(message);
+	}
 }
 
 void Logger::logError (LogCategory category, const std::string &string) const
@@ -86,7 +88,9 @@ void Logger::logError (LogCategory category, const std::string &string) const
 		(*i)->logError(message);
 	}
 
-	System.logError(message);
+	if (_consoles.empty()) {
+		System.logError(message);
+	}
 }
 
 void Logger::logDebug (LogCategory category, const std::string &string) const
