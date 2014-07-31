@@ -14,5 +14,11 @@ TEST_F(SokubanMapTest, testMaps)
 		ASSERT_TRUE(map.load(mapName));
 		Player* player = new Player(map, 1);
 		ASSERT_TRUE(map.initPlayer(player));
+		const int steps = map.solve();
+		ASSERT_TRUE(steps >= 1);
+		for (int s = 0; s < steps; ++s) {
+			map.update(10000);
+		}
+		ASSERT_TRUE(map.isDone());
 	}
 }

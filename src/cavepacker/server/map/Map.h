@@ -219,9 +219,10 @@ public:
 	void init (IFrontend *frontend, ServiceProvider& serviceProvider);
 
 	void shutdown ();
+	int solve ();
 private:
+	void solveMap () { solve(); }
 	void finishMap ();
-	void solveMap ();
 
 	// command callbacks
 	void triggerRestart ();

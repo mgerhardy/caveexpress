@@ -23,6 +23,7 @@
 #include "engine/common/network/messages/UpdateEntityMessage.h"
 #include "engine/common/network/messages/MapRestartMessage.h"
 #include "engine/common/network/messages/UpdatePointsMessage.h"
+#include "engine/common/network/messages/PauseMessage.h"
 #include "engine/common/CommandSystem.h"
 #include "engine/common/FileSystem.h"
 #include "engine/common/System.h"
@@ -67,12 +68,12 @@ void Map::shutdown ()
 	resetCurrentMap();
 }
 
-void Map::solveMap ()
+int Map::solve ()
 {
 	const FilePtr& filePtr = FS.getFile(FS.getMapsDir() + _name + ".sol");
 	if (!filePtr) {
 		info(LOG_SERVER, "no solution file found for " + _name);
-		return;
+		return -1;
 	}
 
 	char *buffer;
@@ -80,7 +81,7 @@ void Map::solveMap ()
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
 		error(LOG_SERVER, "solution file " + filePtr->getURI().print() + " can't get loaded");
-		return;
+		return -1;
 	}
 
 	_solution = string::toLower(std::string(buffer, fileLen));
@@ -125,6 +126,7 @@ void Map::solveMap ()
 	}
 
 	_autoSolve = true;
+	return _solution.size();
 }
 
 void Map::sendSound (int clientMask, const SoundType& type, const b2Vec2& pos) const
@@ -882,4 +884,14 @@ void Map::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 {
 	_frontend = frontend;
 	_serviceProvider = &serviceProvider;
+}
+
+void Map::triggerPause ()
+{
+	if (!_serviceProvider->getNetwork().isServer())
+		return;
+	_pause ^= true;
+	const PauseMessage msg(_pause);
+	_serviceProvider->getNetwork().sendToAllClients(msg);
+	info(LOG_MAP, String::format("pause: %s", _pause ? "true" : "false"));
 }
