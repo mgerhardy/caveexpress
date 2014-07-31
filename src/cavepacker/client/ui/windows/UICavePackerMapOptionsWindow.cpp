@@ -13,6 +13,6 @@ UICavePackerMapOptionsWindow::UICavePackerMapOptionsWindow (IFrontend *frontend,
 	UINodeButtonImage *solve = new UINodeButtonImage(frontend, "icon-reload");
 	solve->setId("restart-map");
 	solve->putUnder(_restartMap, 0.02f);
-	solve->setOnActivate("solve");
+	solve->setOnActivate(CMD_UI_POP ";solve");
 	add(solve);
 }
