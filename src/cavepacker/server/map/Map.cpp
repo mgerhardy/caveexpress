@@ -799,6 +799,7 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 	if (l == 0) {
 		movePlayer(p, _solution[0]);
 		_solution = _solution.substr(1);
+		_autoSolve = !_solution.empty();
 		return;
 	}
 
@@ -812,6 +813,7 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 		movePlayer(p, _solution[l]);
 		_solution = string::toString(n - 1) + _solution.substr(l);
 	}
+	_autoSolve = !_solution.empty();
 }
 
 const IEntity* Map::getEntity (int16_t id) const
