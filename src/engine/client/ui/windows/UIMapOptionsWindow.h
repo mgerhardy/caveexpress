@@ -6,7 +6,7 @@
 class ServiceProvider;
 
 class UIMapOptionsWindow: public UIWindow {
-private:
+protected:
 	UINode *_restartMap;
 	ServiceProvider& _serviceProvider;
 public:

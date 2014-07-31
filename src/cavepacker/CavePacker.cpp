@@ -28,7 +28,7 @@
 #include "engine/common/network/messages/LoadMapMessage.h"
 #include "engine/common/network/messages/FinishedMapMessage.h"
 #include "engine/client/ui/windows/UICampaignMapWindow.h"
-#include "engine/client/ui/windows/UIMapOptionsWindow.h"
+#include "cavepacker/client/ui/windows/UICavePackerMapOptionsWindow.h"
 #include "engine/client/ui/windows/UIPaymentWindow.h"
 #include "engine/client/ui/windows/UISettingsWindow.h"
 #include "engine/common/campaign/persister/SQLitePersister.h"
@@ -181,7 +181,7 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	settings->init();
 	ui.addWindow(settings);
 	ui.addWindow(new IntroGame(frontend));
-	ui.addWindow(new UIMapOptionsWindow(frontend, serviceProvider));
+	ui.addWindow(new UICavePackerMapOptionsWindow(frontend, serviceProvider));
 }
 
 bool CavePacker::visitEntity (IEntity *entity)
