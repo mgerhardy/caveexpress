@@ -68,6 +68,7 @@ public:
 	bool resetActiveCampaign ();
 	bool saveActiveCampaign ();
 
+	bool firstMap () const;
 	void startMap (const std::string& map);
 
 	void addListener (ICampaignManagerListener *listener);

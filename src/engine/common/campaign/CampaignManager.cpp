@@ -386,6 +386,16 @@ bool CampaignManager::continuePlay ()
 	return true;
 }
 
+bool CampaignManager::firstMap () const
+{
+	const CampaignPtr& c = getAutoActiveCampaign();
+	if (!c) {
+		error(LOG_CAMPAIGN, "could not find any active campaign");
+		return false;
+	}
+	return c->firstMap();
+}
+
 void CampaignManager::startMap (const std::string& map)
 {
 	info(LOG_CAMPAIGN, "start map " + map);

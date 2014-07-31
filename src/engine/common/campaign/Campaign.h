@@ -73,6 +73,7 @@ public:
 	std::string toString() const;
 
 	bool isUnlocked () const;
+	bool firstMap () const;
 };
 
 inline const Campaign::MapList& Campaign::getMaps () const

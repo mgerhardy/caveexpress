@@ -102,6 +102,11 @@ bool Campaign::saveProgress ()
 	return _persister->saveCampaign(this);
 }
 
+bool Campaign::firstMap () const
+{
+	return _currentMap == 1;
+}
+
 bool Campaign::isUnlocked () const
 {
 	return _currentMap != 0;
