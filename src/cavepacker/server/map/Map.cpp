@@ -776,6 +776,12 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 {
 	if (!_autoSolve)
 		return;
+
+	if (_solution.empty()) {
+		_autoSolve = false;
+		return;
+	}
+
 	_nextSolveStep -= deltaTime;
 	if (_nextSolveStep > 0)
 		return;
@@ -798,8 +804,13 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 	}
 
 	Player *p = *getPlayers().begin();
+	if (!p) {
+		_autoSolve = false;
+		return;
+	}
 	if (l == 0) {
-		movePlayer(p, _solution[0]);
+		const char step = _solution[0];
+		movePlayer(p, step);
 		_solution = _solution.substr(1);
 		_autoSolve = !_solution.empty();
 		return;
