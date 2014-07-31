@@ -779,6 +779,7 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 
 	if (_solution.empty()) {
 		_autoSolve = false;
+		error(LOG_SERVER, "no solution");
 		return;
 	}
 
@@ -805,6 +806,7 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 
 	if (_players.empty()) {
 		_autoSolve = false;
+		error(LOG_SERVER, "no player connected");
 		return;
 	}
 	Player *p = *_players.begin();
@@ -812,7 +814,6 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 		const char step = _solution[0];
 		movePlayer(p, step);
 		_solution = _solution.substr(1);
-		_autoSolve = !_solution.empty();
 		return;
 	}
 
@@ -826,7 +827,6 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 		movePlayer(p, _solution[l]);
 		_solution = string::toString(n - 1) + _solution.substr(l);
 	}
-	_autoSolve = !_solution.empty();
 }
 
 const IEntity* Map::getEntity (int16_t id) const
