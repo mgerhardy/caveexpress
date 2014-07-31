@@ -40,6 +40,7 @@
 Map::Map () :
 		IMap(), _frontend(nullptr), _serviceProvider(nullptr), _forcedFinish(false), _autoSolve(false), _nextSolveStep(0)
 {
+	Commands.registerCommand(CMD_MAP_PAUSE, bind(Map, triggerPause));
 	Commands.registerCommand(CMD_MAP_RESTART, bind(Map, triggerRestart));
 	Commands.registerCommand(CMD_START, bind(Map, startMap));
 	Commands.registerCommand(CMD_FINISHMAP, bind(Map, finishMap));
@@ -52,6 +53,7 @@ Map::Map () :
 
 Map::~Map ()
 {
+	Commands.removeCommand(CMD_MAP_PAUSE);
 	Commands.removeCommand(CMD_MAP_RESTART);
 	Commands.removeCommand(CMD_START);
 	Commands.removeCommand(CMD_FINISHMAP);
