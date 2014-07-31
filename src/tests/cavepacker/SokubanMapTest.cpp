@@ -11,14 +11,16 @@ TEST_F(SokubanMapTest, testMaps)
 		Map map;
 		map.init(&_testFrontend, _serviceProvider);
 		std::string mapName = String::format("%04i", i);
+		SCOPED_TRACE(mapName);
 		ASSERT_TRUE(map.load(mapName));
 		Player* player = new Player(map, 1);
 		ASSERT_TRUE(map.initPlayer(player));
 		const int steps = map.solve();
-		ASSERT_TRUE(steps >= 1);
+		EXPECT_TRUE(steps >= 1);
 		for (int s = 0; s < steps; ++s) {
 			map.update(10000);
+			EXPECT_TRUE(map.isAutoSolve());
 		}
-		ASSERT_TRUE(map.isDone());
+		EXPECT_TRUE(map.isDone());
 	}
 }
