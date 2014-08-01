@@ -691,13 +691,7 @@ void Map::sendMapToClient (ClientId clientId) const
 	const int clientMask = ClientIdToClientMask(clientId);
 	for (EntityListConstIter i = _entities.begin(); i != _entities.end(); ++i) {
 		const IEntity* e = *i;
-		if (!e->isMapTile())
-			continue;
-		addEntity(clientMask, *e);
-	}
-	for (EntityListConstIter i = _entities.begin(); i != _entities.end(); ++i) {
-		const IEntity* e = *i;
-		if (!e->isPackage())
+		if (!e->isMapTile() && !e->isPackage())
 			continue;
 		addEntity(clientMask, *e);
 	}
