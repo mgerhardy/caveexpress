@@ -226,7 +226,9 @@ void Map::undo ()
 	if (_moves <= 0)
 		return;
 
-	Player* player = *getPlayers().begin();
+	if (_players.empty())
+		return;
+	Player *player = *_players.begin();
 	player->undo();
 
 	--_moves;
