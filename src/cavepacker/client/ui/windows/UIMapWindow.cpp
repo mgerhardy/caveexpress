@@ -44,13 +44,15 @@ void UIMapWindow::hideAutoSolveSlider()
 void UIMapWindow::hideHud()
 {
 	IUIMapWindow::hideHud();
-	_undo->setVisible(false);
+	if (_undo)
+		_undo->setVisible(false);
 }
 
 void UIMapWindow::showHud()
 {
 	IUIMapWindow::showHud();
-	_undo->setVisible(true);
+	if (_undo)
+		_undo->setVisible(true);
 	hideAutoSolveSlider();
 }
 
