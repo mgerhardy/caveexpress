@@ -41,7 +41,6 @@
 ** autosolve interrupt
 ** crash on some maps (0019)
 ** sound if you hit the best points available
-** autosolve need to restart the map first
 ** undo graphic on the hud is a little bit too opaque
 ** autosolve button graphic in map options window
 ** change campaign to save the lowest points

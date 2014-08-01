@@ -71,6 +71,7 @@ void Map::shutdown ()
 
 int Map::solve ()
 {
+	triggerRestart();
 	_solution = getSolution();
 	_autoSolve = true;
 	_serviceProvider->getNetwork().sendToAllClients(AutoSolveStartedMessage());
