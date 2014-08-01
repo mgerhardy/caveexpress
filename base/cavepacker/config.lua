@@ -160,6 +160,7 @@ else
 	}
 
 	keybindings["map"]["U"] = "undo"
+	keybindings["map"]["BACKSPACE"] = "undo"
 
 	if isDebug() then
 		keybindings["ui"]["."] = "screenshot"
