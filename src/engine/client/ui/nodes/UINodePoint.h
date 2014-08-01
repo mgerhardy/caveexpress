@@ -22,16 +22,14 @@ public:
 		if (_current == _points)
 			return;
 
-		if (_points > 0) {
-			const uint32_t passed = _time - _lastUpdate;
-			if (passed > _updateDelay) {
-				_lastUpdate += _updateDelay;
-				if (_current > _points)
-					--_current;
-				else
-					++_current;
-				setLabel(string::toString(_current));
-			}
+		const uint32_t passed = _time - _lastUpdate;
+		if (passed > _updateDelay) {
+			_lastUpdate += _updateDelay;
+			if (_current > _points)
+				--_current;
+			else
+				++_current;
+			setLabel(string::toString(_current));
 		}
 	}
 
