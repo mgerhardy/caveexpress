@@ -5,6 +5,7 @@
 #include "engine/client/ui/nodes/UINodePoint.h"
 #include "engine/client/ui/nodes/UINodeMapOnScreenCursorControl.h"
 #include "engine/client/ui/layouts/UIHBoxLayout.h"
+#include "engine/client/ui/UI.h"
 #include "engine/common/ConfigManager.h"
 
 UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map) :
