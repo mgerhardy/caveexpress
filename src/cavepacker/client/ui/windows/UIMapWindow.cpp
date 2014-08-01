@@ -16,6 +16,9 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 
 	_autoSolveSlider = new UINodeSlider(frontend, 100.0f, 1000.0f, 100.0f);
 	hideAutoSolveSlider();
+
+	if (campaignManager.firstMap())
+		UI::get().push("introgame");
 }
 
 void UIMapWindow::update (uint32_t deltaTime)
