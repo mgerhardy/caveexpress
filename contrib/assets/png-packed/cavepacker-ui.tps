@@ -172,6 +172,7 @@
             <filename>../png/ui/bones.png</filename>
             <filename>../png/ui/ui-scene-cave-ice.png</filename>
             <filename>../png/ui/icon-undo.png</filename>
+            <filename>../png/ui/icon-solve.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
