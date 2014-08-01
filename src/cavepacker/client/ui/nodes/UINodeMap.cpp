@@ -12,7 +12,7 @@ UINodeMap::UINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, Cam
 	r.registerClientHandler(protocol::PROTO_ADDENTITY, new AddEntityHandler(_map));
 	r.registerClientHandler(protocol::PROTO_INITDONE, new InitDoneHandler(_map));
 	r.registerClientHandler(protocol::PROTO_FINISHEDMAP, new FinishedMapHandler(_map));
-	r.registerServerHandler(protocol::PROTO_AUTOSOLVE, new ClientAutoSolveHandler());
+	r.registerClientHandler(protocol::PROTO_AUTOSOLVE, new ClientAutoSolveHandler());
 }
 
 UINodeMap::~UINodeMap ()
@@ -21,4 +21,5 @@ UINodeMap::~UINodeMap ()
 	r.unregisterClientHandler(protocol::PROTO_ADDENTITY);
 	r.unregisterClientHandler(protocol::PROTO_INITDONE);
 	r.unregisterClientHandler(protocol::PROTO_FINISHEDMAP);
+	r.unregisterClientHandler(protocol::PROTO_AUTOSOLVE);
 }

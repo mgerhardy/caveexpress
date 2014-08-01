@@ -4,13 +4,9 @@
 #include "cavepacker/shared/network/messages/AutoSolveStartedMessage.h"
 #include "cavepacker/client/ui/windows/UIMapWindow.h"
 
-class ClientAutoSolveHandler: public IServerProtocolHandler {
+class ClientAutoSolveHandler: public IClientProtocolHandler {
 public:
-	ClientAutoSolveHandler ()
-	{
-	}
-
-	void execute (const ClientId& clientId, const IProtocolMessage& message) override
+	void execute (const IProtocolMessage& message) override
 	{
 		UIMapWindow* window = static_cast<UIMapWindow*>(UI::get().getWindow(UI_WINDOW_MAP));
 		window->hideHud();
