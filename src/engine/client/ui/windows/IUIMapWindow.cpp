@@ -55,7 +55,7 @@ void IUIMapWindow::hideHud()
 	if (_panel)
 		_panel->setVisible(false);
 	if (_mapControl)
-		_mapControl->setVisible(false);
+		_mapControl->hide();
 }
 
 void IUIMapWindow::showHud()
@@ -63,7 +63,7 @@ void IUIMapWindow::showHud()
 	if (_panel)
 		_panel->setVisible(true);
 	if (_mapControl)
-		_mapControl->setVisible(true);
+		_mapControl->show();
 }
 
 void IUIMapWindow::initHudNodes()

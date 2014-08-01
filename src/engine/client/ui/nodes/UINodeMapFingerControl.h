@@ -29,12 +29,13 @@ public:
 	{
 		return _finger != -1;
 	}
+	void hide () override { setVisible(false); }
+	void show () override { setVisible(true); }
 
 	// UINode
 	void removeFocus () override;
 	bool isActive () const override;
 	void update (uint32_t deltaTime) override;
-	void setVisible (bool visible) override { UINode::setVisible(visible); }
 	bool onPush () override;
 	bool onFingerPress (int64_t finger, uint16_t x, uint16_t y) override;
 	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y) override;

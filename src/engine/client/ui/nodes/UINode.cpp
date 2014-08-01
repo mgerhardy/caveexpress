@@ -314,6 +314,8 @@ void UINode::renderTop (int x, int y) const
 
 void UINode::render (int x, int y) const
 {
+	if (!isVisible())
+		return;
 	renderBack(x, y);
 	renderMiddle(x, y);
 	renderTop(x, y);
