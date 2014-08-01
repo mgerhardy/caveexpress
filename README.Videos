@@ -1,0 +1,20 @@
+recordmydesktop
+===================
+* 640x480
+* video quality 60
+* audio quality 50
+* zero compression
+* disable window decoration
+* fast subsampling
+
+oggcut
+===================
+* Use oggcut (package oggvideotools on debian based systems) to cut
+  the recorded video into pieces.
+
+convert to avi
+===================
+* Some platforms need the video in the avi format. There is a makefile
+  target for this. You need the memcoder tool installed in addition to
+  the mp3 lame package
+  >> just execute make convert-to-avi
