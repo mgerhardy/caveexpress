@@ -26,7 +26,10 @@ public:
 			const uint32_t passed = _time - _lastUpdate;
 			if (passed > _updateDelay) {
 				_lastUpdate += _updateDelay;
-				++_current;
+				if (_current > _points)
+					--_current;
+				else
+					++_current;
 				setLabel(string::toString(_current));
 			}
 		}
@@ -36,7 +39,6 @@ public:
 	void increasePoints (int points)
 	{
 		_points = points;
-		_current = clamp(_current, 0, _points);
 	}
 
 	// this will increase the points over time. The given points value is a relative value
