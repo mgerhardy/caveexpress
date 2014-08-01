@@ -10,7 +10,6 @@ protected:
 			Map map;
 			map.init(&_testFrontend, _serviceProvider);
 			std::string mapName = String::format("%04i", i);
-			SCOPED_TRACE(mapName);
 			ASSERT_TRUE(map.load(mapName)) << "Failed to load map " << mapName;
 			Player* player = new Player(map, 1);
 			ASSERT_TRUE(map.initPlayer(player)) << "Failed to init the player for map " << mapName;
