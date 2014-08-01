@@ -14,8 +14,6 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 				nullptr), _autoSolveSlider(nullptr) {
 	init();
 
-	_musicFile = "";
-
 	_autoSolveSlider = new UINodeSlider(frontend, 100.0f, 1000.0f, 100.0f);
 	hideAutoSolveSlider();
 }
