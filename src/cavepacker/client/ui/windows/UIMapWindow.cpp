@@ -64,11 +64,16 @@ void UIMapWindow::initHudNodes ()
 	panel->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_CENTER);
 	add(panel);
 
+	UINode *innerPanel = new UINode(_frontend);
+	innerPanel->setLayout(new UIHBoxLayout(0.01f));
+	innerPanel->setPos(panel->getX() + 0.03f, panel->getY());
+	UINodeLabel* label = new UINodeLabel(_frontend, tr("Steps"), getFont(HUGE_FONT));
+	label->setColor(colorWhite);
+	innerPanel->add(label);
 	UINodePoint* points = new UINodePoint(_frontend, 30);
-	points->setLabel("00000");
-	points->setPos(panel->getX() + 0.02f, panel->getY());
 	points->setId(UINODE_POINTS);
-	add(points);
+	innerPanel->add(points);
+	add(innerPanel);
 }
 
 UINode* UIMapWindow::getFingerControl ()
