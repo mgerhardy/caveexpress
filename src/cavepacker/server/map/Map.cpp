@@ -71,10 +71,18 @@ void Map::shutdown ()
 
 int Map::solve ()
 {
+	_solution = getSolution();
+	_autoSolve = true;
+	_serviceProvider->getNetwork().sendToAllClients(AutoSolveStartedMessage());
+	return _solution.size();
+}
+
+std::string Map::getSolution() const
+{
 	const FilePtr& filePtr = FS.getFile(FS.getMapsDir() + _name + ".sol");
 	if (!filePtr) {
 		info(LOG_SERVER, "no solution file found for " + _name);
-		return -1;
+		return "";
 	}
 
 	char *buffer;
@@ -82,20 +90,20 @@ int Map::solve ()
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
 		error(LOG_SERVER, "solution file " + filePtr->getURI().print() + " can't get loaded");
-		return -1;
+		return "";
 	}
 
-	_solution = string::toLower(std::string(buffer, fileLen));
-	for (std::string::iterator i = _solution.begin(); i != _solution.end(); ++i) {
+	std::string solution = string::toLower(std::string(buffer, fileLen));
+	for (std::string::iterator i = solution.begin(); i != solution.end(); ++i) {
 		if (!isdigit(*i))
 			continue;
 		std::string digit;
 		digit += *i;
-		for (++i; isdigit(*i) && i != _solution.end(); ++i) {
+		for (++i; isdigit(*i) && i != solution.end(); ++i) {
 			digit += *i;
 		}
 		const int n = string::toInt(digit);
-		if (i == _solution.end()) {
+		if (i == solution.end()) {
 			error(LOG_SERVER, "invalid rle encoded solution found");
 			break;
 		}
@@ -106,12 +114,12 @@ int Map::solve ()
 			for (int k = 1; k < n; ++k) {
 				repeat += r;
 			}
-			_solution = string::replaceAll(_solution, digit + r, repeat);
-			i = _solution.begin();
+			solution = string::replaceAll(solution, digit + r, repeat);
+			i = solution.begin();
 			continue;
 		}
 		std::string repeat;
-		for (++i; i != _solution.end(); ++i) {
+		for (++i; i != solution.end(); ++i) {
 			if (*i == ')') {
 				++i;
 				break;
@@ -122,13 +130,10 @@ int Map::solve ()
 		for (int k = 1; k < n; ++k) {
 			repeat += r;
 		}
-		_solution = string::replaceAll(_solution, digit + "(" + r + ")", repeat);
-		i = _solution.begin();
+		solution = string::replaceAll(solution, digit + "(" + r + ")", repeat);
+		i = solution.begin();
 	}
-
-	_autoSolve = true;
-	_serviceProvider->getNetwork().sendToAllClients(AutoSolveStartedMessage());
-	return _solution.size();
+	return solution;
 }
 
 void Map::sendSound (int clientMask, const SoundType& type, const b2Vec2& pos) const

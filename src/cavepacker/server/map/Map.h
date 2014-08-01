@@ -220,6 +220,7 @@ public:
 
 	void shutdown ();
 	int solve ();
+	std::string getSolution() const;
 private:
 	void solveMap () { solve(); }
 	void finishMap ();
