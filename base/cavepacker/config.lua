@@ -10,7 +10,7 @@ defaultfrontend = "sdl"
 defaultsoundengine = "sdl"
 defaultshowcursor = true
 defaultjoystick = false
-defaulttexturesize = "small"
+defaulttexturesize = "auto"
 defaultparticles = 100
 
 if isOUYA() then

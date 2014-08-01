@@ -1013,3 +1013,10 @@ void UINode::setLayout (IUILayout* layout)
 		_layout->addNode(nodePtr);
 	}
 }
+
+void UINode::setVisible (bool visible)
+{
+	if (!visible)
+		removeFocus();
+	_visible = visible;
+}

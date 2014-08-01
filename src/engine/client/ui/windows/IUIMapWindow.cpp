@@ -40,7 +40,7 @@ IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 		UIWindow(UI_WINDOW_MAP, frontend,
 				WINDOW_FLAG_MODAL | WINDOW_FLAG_FULLSCREEN), _nodeMap(nodeMap), _cursorActive(
 				false), _serviceProvider(serviceProvider), _startButton(
-				nullptr), _waitLabel(nullptr), _mapControl(nullptr) {
+				nullptr), _waitLabel(nullptr), _mapControl(nullptr), _panel(nullptr) {
 	const float screenPadding = getScreenPadding();
 	setPadding(screenPadding);
 	_playClickSound = false;
@@ -50,6 +50,22 @@ IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 	add(_nodeMap);
 }
 
+void IUIMapWindow::hideHud()
+{
+	if (_panel)
+		_panel->setVisible(false);
+	if (_mapControl)
+		_mapControl->setVisible(false);
+}
+
+void IUIMapWindow::showHud()
+{
+	if (_panel)
+		_panel->setVisible(true);
+	if (_mapControl)
+		_mapControl->setVisible(true);
+}
+
 void IUIMapWindow::initHudNodes()
 {
 	const float barHeight = 12.0f / _frontend->getHeight();
@@ -57,7 +73,7 @@ void IUIMapWindow::initHudNodes()
 	const float barWidth = 102.0f / _frontend->getWidth();
 	const int spriteNodeOffset = 15;
 
-	UINode* _panel = new UINode(_frontend);
+	_panel = new UINode(_frontend);
 	UIHBoxLayout* layout = new UIHBoxLayout();
 	layout->setSpacing(0.02f);
 	_panel->setLayout(layout);
@@ -176,6 +192,7 @@ void IUIMapWindow::onActive ()
 
 void IUIMapWindow::onPushedOver ()
 {
+	showHud();
 	UIWindow::onPushedOver();
 	if (_cursorActive)
 		UI::get().showCursor(true);

@@ -24,6 +24,7 @@
 #include "engine/common/network/messages/MapRestartMessage.h"
 #include "engine/common/network/messages/UpdatePointsMessage.h"
 #include "engine/common/network/messages/PauseMessage.h"
+#include "cavepacker/shared/network/messages/AutoSolveStartedMessage.h"
 #include "engine/common/CommandSystem.h"
 #include "engine/common/FileSystem.h"
 #include "engine/common/System.h"
@@ -126,6 +127,7 @@ int Map::solve ()
 	}
 
 	_autoSolve = true;
+	_serviceProvider->getNetwork().sendToAllClients(AutoSolveStartedMessage());
 	return _solution.size();
 }
 

@@ -29,6 +29,7 @@ protected:
 	UINodeLabel *_waitLabel;
 	bool _cursorActive;
 	ServiceProvider& _serviceProvider;
+	UINode* _panel;
 
 	virtual UINode* getFingerControl ();
 	virtual UINode* getControl ();
@@ -41,6 +42,9 @@ public:
 	virtual ~IUIMapWindow() {}
 
 	bool isGameActive () const;
+
+	virtual void hideHud();
+	virtual void showHud();
 
 	void start ();
 	// called for multiplayer -waiting-for-players dialog.

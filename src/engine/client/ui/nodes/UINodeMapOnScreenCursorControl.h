@@ -16,6 +16,8 @@ public:
 	UINodeMapOnScreenCursorControl (IFrontend *frontend, IUINodeMap *mapNode);
 	virtual ~UINodeMapOnScreenCursorControl ();
 
+	void setVisible (bool visible) override { UINode::setVisible(visible); }
+
 	// IMapControl
 	bool isPressed () const override
 	{

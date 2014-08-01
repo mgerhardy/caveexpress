@@ -394,7 +394,7 @@ public:
 	void putLeft (UINode *node, float gap = 0.01f);
 
 	bool isVisible () const;
-	void setVisible (bool visible);
+	virtual void setVisible (bool visible);
 	void setAlignment (int align);
 	void setMargin (float top, float left);
 	void setEnabled (bool enable);
@@ -474,13 +474,6 @@ inline void UINode::putRight (UINode *node, float gap)
 inline void UINode::putLeft (UINode *node, float gap)
 {
 	setPos(node->getLeft() - gap - getWidth(), node->getTop());
-}
-
-inline void UINode::setVisible (bool visible)
-{
-	if (!visible)
-		removeFocus();
-	_visible = visible;
 }
 
 inline void UINode::setEnabled (bool enable)

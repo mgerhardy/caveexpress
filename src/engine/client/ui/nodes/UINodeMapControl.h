@@ -26,6 +26,7 @@ public:
 	// UINode
 	void renderDebug (int x, int y, int textY) const override;
 	void removeFocus () override;
+	void setVisible (bool visible) override { UINode::setVisible(visible); }
 	bool isActive () const;
 	void update (uint32_t deltaTime) override;
 	bool onJoystickMotion (bool horizontal, int value) override;

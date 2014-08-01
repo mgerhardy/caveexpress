@@ -14,6 +14,10 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 	_musicFile = "";
 }
 
+void UIMapWindow::showAutoSolveSlider()
+{
+}
+
 void UIMapWindow::initHudNodes ()
 {
 	UINode* panel = new UINode(_frontend);

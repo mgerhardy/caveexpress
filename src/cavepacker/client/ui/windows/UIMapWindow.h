@@ -8,4 +8,6 @@ protected:
 	void initHudNodes () override;
 public:
 	UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map);
+
+	void showAutoSolveSlider();
 };

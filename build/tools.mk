@@ -41,7 +41,10 @@ $(TEXTURE_DIR)/caveexpress-npc_blowing-big.lua: $(TEXTURE_DIR)/caveexpress-npc_b
 	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.38 $(TEXTURE_PACKER_OPTIONS)
 $(TEXTURE_DIR)/cavepacker-entity-big.lua: $(TEXTURE_DIR)/cavepacker-entity.tps
 	@echo "===> TexturePacker [big] [$<]"
-	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.5 $(TEXTURE_PACKER_OPTIONS)
+	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.125 $(TEXTURE_PACKER_OPTIONS)
+$(TEXTURE_DIR)/cavepacker-environment-big.lua: $(TEXTURE_DIR)/cavepacker-environment.tps
+	@echo "===> TexturePacker [big] [$<]"
+	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.125 $(TEXTURE_PACKER_OPTIONS)
 $(TEXTURE_DIR)/$(APPNAME)-%-big.lua: $(TEXTURE_DIR)/$(APPNAME)-%.tps
 	@echo "===> TexturePacker [big] [$<]"
 	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.25 $(TEXTURE_PACKER_OPTIONS)
@@ -54,7 +57,10 @@ $(TEXTURE_DIR)/caveexpress-npc_blowing-small.lua: $(TEXTURE_DIR)/caveexpress-npc
 	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.19 $(TEXTURE_PACKER_OPTIONS)
 $(TEXTURE_DIR)/cavepacker-entity-small.lua: $(TEXTURE_DIR)/cavepacker-entity.tps
 	@echo "===> TexturePacker [small] [$<]"
-	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.25 $(TEXTURE_PACKER_OPTIONS)
+	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.125 $(TEXTURE_PACKER_OPTIONS)
+$(TEXTURE_DIR)/cavepacker-environment-small.lua: $(TEXTURE_DIR)/cavepacker-environment.tps
+	@echo "===> TexturePacker [small] [$<]"
+	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.125 $(TEXTURE_PACKER_OPTIONS)
 $(TEXTURE_DIR)/$(APPNAME)-%-small.lua: $(TEXTURE_DIR)/$(APPNAME)-%.tps
 	@echo "===> TexturePacker [small] [$<]"
 	$(Q)$(PROGRAM_TEXTUREPACKER) --scale 0.125 $(TEXTURE_PACKER_OPTIONS)
