@@ -11,11 +11,12 @@
 UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map) :
 		IUIMapWindow(frontend, serviceProvider, campaignManager, map,
 				new UINodeMap(frontend, serviceProvider, campaignManager, 0, 0,
-						frontend->getWidth(), frontend->getHeight(), map)), _undo(
-				nullptr), _autoSolveSlider(nullptr) {
+						frontend->getWidth(), frontend->getHeight(), map)), _undo(nullptr) {
 	init();
 
 	_autoSolveSlider = new UINodeSlider(frontend, 100.0f, 1000.0f, 100.0f);
+	_autoSolveSlider->setAlignment(NODE_ALIGN_MIDDLE | NODE_ALIGN_CENTER);
+	add(_autoSolveSlider);
 	hideAutoSolveSlider();
 
 	if (campaignManager.firstMap())
