@@ -18,7 +18,7 @@ public:
 	}
 
 	bool updateMapValues(const std::string& mapname, uint32_t finishPoints,
-			uint32_t time, uint8_t stars) override {
+			uint32_t time, uint8_t stars, bool lowerPointsAreBetter = false) override {
 		return true;
 	}
 };
@@ -30,6 +30,7 @@ protected:
 	ServiceProvider _serviceProvider;
 	EventHandler _eventHandler;
 
+	virtual ~MapSuite() {}
 	virtual void SetUp() override;
 	virtual void TearDown() override;
 };
