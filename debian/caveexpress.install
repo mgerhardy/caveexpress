@@ -1,0 +1,4 @@
+debian/caveexpress.desktop      usr/share/applications
+caveexpress                     usr/games
+base/caveexpress/*              usr/share/games/caveexpress/base/caveexpress
+debian/caveexpress.xpm          usr/share/pixmaps

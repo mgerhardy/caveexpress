@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=CaveExpress
+Comment=CaveExpress is a classic 2D platformer with physics-based gameplay
+Exec=caveexpress
+Icon=caveexpress
+Terminal=false
+Type=Application
+Categories=Application;Game;
+Keywords=real-time;platformer;physics;
