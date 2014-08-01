@@ -291,7 +291,7 @@ bool CampaignManager::activateNextCampaign () const
 	return false;
 }
 
-bool CampaignManager::updateMapValues (const std::string& mapname, uint32_t finishPoints, uint32_t time, uint8_t stars)
+bool CampaignManager::updateMapValues (const std::string& mapname, uint32_t finishPoints, uint32_t time, uint8_t stars, bool lowerPointsAreBetter)
 {
 	_lastPlayedMap = mapname;
 
@@ -313,8 +313,14 @@ bool CampaignManager::updateMapValues (const std::string& mapname, uint32_t fini
 	if (map->getStars() < stars)
 		map->setStars(stars);
 	map->setTime(time);
-	if (map->getFinishPoints() < finishPoints)
-		map->setFinishPoints(finishPoints);
+	if (lowerPointsAreBetter) {
+		const int p = map->getFinishPoints();
+		if (p <= 0 || p > finishPoints)
+			map->setFinishPoints(finishPoints);
+	} else {
+		if (map->getFinishPoints() < finishPoints)
+			map->setFinishPoints(finishPoints);
+	}
 
 	if (alreadyPlayed) {
 		_activeCampaign->saveProgress();

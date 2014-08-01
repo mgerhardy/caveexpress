@@ -83,5 +83,5 @@ public:
 
 	void reset ();
 
-	bool updateMapValues (const std::string& mapname, uint32_t finishPoints, uint32_t time, uint8_t stars);
+	bool updateMapValues (const std::string& mapname, uint32_t finishPoints, uint32_t time, uint8_t stars, bool lowerPointsAreBetter = false);
 };

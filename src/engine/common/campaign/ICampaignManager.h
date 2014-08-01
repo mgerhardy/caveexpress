@@ -12,5 +12,5 @@ public:
 
 	virtual CampaignPtr getActiveCampaign () const = 0;
 
-	virtual bool updateMapValues (const std::string& mapname, uint32_t finishPoints, uint32_t time, uint8_t stars) = 0;
+	virtual bool updateMapValues (const std::string& mapname, uint32_t finishPoints, uint32_t time, uint8_t stars, bool lowerPointsAreBetter = false) = 0;
 };

@@ -71,7 +71,7 @@ void CavePacker::update (uint32_t deltaTime)
 		const uint32_t timeSeconds = _map.getPushes();
 		const uint8_t stars = 3; // TODO: get stars
 		_campaignManager->getAutoActiveCampaign();
-		if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, timeSeconds, stars))
+		if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, timeSeconds, stars, true))
 			error(LOG_SERVER, "Could not save the values for the map");
 
 		System.track("MapState", String::format("finished: %s with %i points in %i seconds and with %i stars", _map.getName().c_str(), finishPoints, timeSeconds, stars));
