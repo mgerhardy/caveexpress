@@ -10,6 +10,8 @@
 ** OUYA: Controls are fishy
 ** google play integration
 *** achievements
+** Failed to query inventory: IabResult: Error refreshing inventory (querying prices of items). (response: 6:Error)
+*** Don't show the empty extra window - but a popup
 
 * Others
 ** Windows Installer Bitmap
