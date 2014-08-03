@@ -140,6 +140,7 @@ public:
 	TimeManager& getTimeManager ();
 
 	inline bool isAutoSolve () const { return _autoSolve; }
+	void abortAutoSolve ();
 
 	inline int getMoves() const { return _moves; }
 	inline int getPushes() const { return _pushes; }

@@ -2,6 +2,7 @@
 
 namespace protocol {
 enum {
-	PROTO_AUTOSOLVE
+	PROTO_AUTOSOLVE,
+	PROTO_AUTOSOLVEABORT
 };
 }

@@ -10,8 +10,6 @@
 #include "engine/common/Math.h"
 #include "engine/common/network/INetwork.h"
 #include "engine/common/IMapContext.h"
-#include "cavepacker/server/map/SokubanMapContext.h"
-#include "cavepacker/shared/CavePackerSpriteType.h"
 #include "engine/common/network/messages/InitDoneMessage.h"
 #include "engine/common/network/messages/SoundMessage.h"
 #include "engine/common/network/messages/MapSettingsMessage.h"
@@ -24,13 +22,15 @@
 #include "engine/common/network/messages/MapRestartMessage.h"
 #include "engine/common/network/messages/UpdatePointsMessage.h"
 #include "engine/common/network/messages/PauseMessage.h"
-#include "cavepacker/shared/network/messages/AutoSolveStartedMessage.h"
 #include "engine/common/CommandSystem.h"
 #include "engine/common/FileSystem.h"
 #include "engine/common/System.h"
 #include "engine/common/vec2.h"
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/Commands.h"
+#include "cavepacker/server/map/SokubanMapContext.h"
+#include "cavepacker/shared/CavePackerSpriteType.h"
+#include "cavepacker/shared/network/messages/ProtocolMessages.h"
 #include <SDL.h>
 #include <algorithm>
 #include <functional>
@@ -249,6 +249,12 @@ void Map::undoPackage (int col, int row, int targetCol, int targetRow)
 	} else {
 		info(LOG_SERVER, "dont move package back");
 	}
+}
+
+void Map::abortAutoSolve ()
+{
+	_autoSolve = false;
+	_serviceProvider->getNetwork().sendToAllClients(AutoSolveAbortedMessage());
 }
 
 bool Map::movePlayer (Player* player, char step)
