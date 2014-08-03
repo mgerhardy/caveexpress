@@ -245,7 +245,7 @@ public:
 		return *_pointer < *other;
 	}
 
-	inline bool operator< (const ReferenceType other) const
+	inline bool operator< (ReferenceType other) const
 	{
 		return *_pointer < other;
 	}
