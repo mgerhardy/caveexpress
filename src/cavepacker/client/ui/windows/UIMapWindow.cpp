@@ -8,14 +8,37 @@
 #include "engine/client/ui/UI.h"
 #include "engine/common/ConfigManager.h"
 
+class SolveListener: public UINodeListener {
+private:
+	UINodeSlider *_sliderNode;
+	std::string _configVar;
+public:
+	SolveListener (UINodeSlider *sliderNode, const std::string& configVar) :
+			_sliderNode(sliderNode), _configVar(configVar)
+	{
+		_sliderNode->setValue(Config.getConfigVar(_configVar)->getFloatValue());
+	}
+
+	void onValueChanged () override
+	{
+		const float val = _sliderNode->getValue();
+		Config.getConfigVar(_configVar)->setValue(string::toString(val));
+	}
+};
+
+
 UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map) :
 		IUIMapWindow(frontend, serviceProvider, campaignManager, map,
 				new UINodeMap(frontend, serviceProvider, campaignManager, 0, 0,
 						frontend->getWidth(), frontend->getHeight(), map)), _undo(nullptr) {
 	init();
 
+	const float height = 0.05f;
+	const float sliderWidth = 0.3f;
 	_autoSolveSlider = new UINodeSlider(frontend, 100.0f, 1000.0f, 100.0f);
-	_autoSolveSlider->setAlignment(NODE_ALIGN_MIDDLE | NODE_ALIGN_CENTER);
+	_autoSolveSlider->setAlignment(NODE_ALIGN_BOTTOM | NODE_ALIGN_CENTER);
+	_autoSolveSlider->setSize(sliderWidth, height);
+	_autoSolveSlider->addListener(UINodeListenerPtr(new SolveListener(_autoSolveSlider, "solvestepmillis")));
 	add(_autoSolveSlider);
 	hideAutoSolveSlider();
 
@@ -23,21 +46,15 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 		UI::get().push("introgame");
 }
 
-void UIMapWindow::update (uint32_t deltaTime)
-{
-	IUIMapWindow::update(deltaTime);
-	if (_autoSolveSlider->isVisible()) {
-		Config.getConfigVar("solvestepmillis")->setValue(string::toString(_autoSolveSlider->getValue()));
-	}
-}
-
 void UIMapWindow::showAutoSolveSlider()
 {
+	UI::get().showCursor(true);
 	_autoSolveSlider->setVisible(true);
 }
 
 void UIMapWindow::hideAutoSolveSlider()
 {
+	UI::get().showCursor(false);
 	_autoSolveSlider->setVisible(false);
 }
 

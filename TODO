@@ -37,7 +37,6 @@
 ** project.rc.in to replace the appname
 
 * Cavepacker
-** autosolve time slider and activate mouse cursor in that mode
 ** crash on some maps (0019)
 ** sound if you hit the best points available
 ** undo graphic on the hud is a little bit too opaque

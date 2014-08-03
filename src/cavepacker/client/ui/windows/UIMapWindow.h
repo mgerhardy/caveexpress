@@ -12,7 +12,6 @@ protected:
 public:
 	UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map);
 
-	void update (uint32_t deltaTime);
 	void hideHud() override;
 	void showHud() override;
 	void showAutoSolveSlider();
