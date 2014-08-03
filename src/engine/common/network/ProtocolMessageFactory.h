@@ -109,6 +109,8 @@ protected:
 			return new UpdatePointsMessage(stream);
 		case protocol::PROTO_UPDATEPACKAGECOUNT:
 			return new UpdatePackageCountMessage(stream);
+		case protocol::PROTO_TIMEREMAINING:
+			return new TimeRemainingMessage(stream);
 		default:
 			return nullptr;
 		}
