@@ -688,6 +688,7 @@ bool Map::isReadyToStart () const
 
 void Map::startMap ()
 {
+	info(LOG_SERVER, "start the map and spawn pending players");
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		spawnPlayer(*i);
 	}
@@ -729,6 +730,7 @@ bool Map::initPlayer (Player* player)
 		updateVisMask();
 		return spawned;
 	}
+	info(LOG_SERVER, "delay spawn of player");
 	_playersWaitingForSpawn.push_back(player);
 	return true;
 }
