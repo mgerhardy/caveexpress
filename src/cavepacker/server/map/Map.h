@@ -145,7 +145,7 @@ public:
 	inline int getMoves() const { return _moves; }
 	inline int getPushes() const { return _pushes; }
 	// return the best known moves from the solution
-	inline int getBestMoves () const { return _solution.length(); }
+	inline int getBestMoves () const { return getSetting("best").toInt(); }
 	void increaseMoves ();
 	void increasePushes ();
 	void undo ();

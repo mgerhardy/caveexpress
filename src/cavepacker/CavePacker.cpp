@@ -94,7 +94,7 @@ uint8_t CavePacker::getStars () const {
 
 	const uint32_t finishPoints = _map.getMoves();
 	const float p = finishPoints * 100.0f / static_cast<float>(bestMoves);
-	info(LOG_SERVER, "pushes to best pushes => " + string::toString(p));
+	info(LOG_SERVER, String::format("best pushed: %i, your pushes: %i => pushes to best pushes: %f", bestMoves, finishPoints, p));
 	if (p < 120.0f)
 		return 3;
 	if (p < 130.0f)
