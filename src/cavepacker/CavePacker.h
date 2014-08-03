@@ -15,6 +15,7 @@ private:
 	IFrontend *_frontend;
 	ServiceProvider* _serviceProvider;
 
+	uint8_t getStars () const;
 public:
 	CavePacker();
 	virtual ~CavePacker();

@@ -18,7 +18,7 @@ ProtocolMessageFactory::ProtocolMessageFactory ()
 IProtocolMessage *ProtocolMessageFactory::create (ByteStream& stream)
 {
 	const protocolId type = stream.readByte();
-	info(LOG_GENERAL, String::format("msg type => %i", (int)type));
+	debug(LOG_GENERAL, String::format("msg type => %i", (int)type));
 	IProtocolMessage *msg = getForProtocolId(stream, type);
 	if (msg != nullptr)
 		return msg;

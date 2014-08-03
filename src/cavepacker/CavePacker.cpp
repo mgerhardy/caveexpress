@@ -67,9 +67,9 @@ void CavePacker::update (uint32_t deltaTime)
 
 	const bool isDone = _map.isDone();
 	if (isDone && !_map.isRestartInitialized()) {
-		const uint32_t finishPoints = _map.getMoves();
-		const uint32_t timeSeconds = _map.getPushes();
-		const uint8_t stars = 3; // TODO: get stars
+		const uint32_t finishPoints = _map.isAutoSolve() ? 0 : _map.getMoves();
+		const uint32_t timeSeconds = _map.isAutoSolve() ? 0 : _map.getPushes();
+		const uint8_t stars = getStars();
 		_campaignManager->getAutoActiveCampaign();
 		if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, timeSeconds, stars, true))
 			error(LOG_SERVER, "Could not save the values for the map");
@@ -82,6 +82,25 @@ void CavePacker::update (uint32_t deltaTime)
 		const uint32_t delay = 1000;
 		_map.restart(delay);
 	}
+}
+
+uint8_t CavePacker::getStars () const {
+	if (_map.isAutoSolve())
+		return 0;
+	const int bestMoves = _map.getBestMoves();
+	if (bestMoves == 0)
+		return 3;
+
+	const uint32_t finishPoints = _map.getMoves();
+	const float p = finishPoints * 100.0f / static_cast<float>(bestMoves);
+	info(LOG_SERVER, "pushes to best pushes => " + string::toString(p));
+	if (p < 120.0f)
+		return 3;
+	if (p < 130.0f)
+		return 2;
+	if (p < 160.0f)
+		return 1;
+	return 0;
 }
 
 bool CavePacker::mapLoad (const std::string& map)

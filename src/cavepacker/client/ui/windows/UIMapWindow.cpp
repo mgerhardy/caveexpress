@@ -1,5 +1,6 @@
 #include "UIMapWindow.h"
 #include "cavepacker/client/ui/nodes/UINodeMap.h"
+#include "cavepacker/client/ui/nodes/UICavePackerNodePoint.h"
 #include "engine/client/ui/nodes/UINodeBar.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
 #include "engine/client/ui/nodes/UINodePoint.h"
@@ -30,7 +31,8 @@ public:
 UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map) :
 		IUIMapWindow(frontend, serviceProvider, campaignManager, map,
 				new UINodeMap(frontend, serviceProvider, campaignManager, 0, 0,
-						frontend->getWidth(), frontend->getHeight(), map)), _undo(nullptr) {
+						frontend->getWidth(), frontend->getHeight(), map)), _undo(
+				nullptr), _points(nullptr), _campaignManager(campaignManager) {
 	init();
 
 	const float height = 0.05f;
@@ -83,13 +85,11 @@ void UIMapWindow::initHudNodes ()
 
 	UINode *innerPanel = new UINode(_frontend);
 	innerPanel->setLayout(new UIHBoxLayout(0.01f));
-	innerPanel->setPos(panel->getX() + 0.03f, panel->getY());
-	UINodeLabel* label = new UINodeLabel(_frontend, tr("Steps"), getFont(HUGE_FONT));
-	label->setColor(colorWhite);
-	innerPanel->add(label);
-	UINodePoint* points = new UINodePoint(_frontend, 30);
-	points->setId(UINODE_POINTS);
-	innerPanel->add(points);
+	innerPanel->setPos(panel->getX() + 0.07f, panel->getY());
+	_points = new UICavePackerNodePoint(_frontend, 30);
+	_points->setFont(HUGE_FONT);
+	_points->setId(UINODE_POINTS);
+	innerPanel->add(_points);
 	add(innerPanel);
 }
 
@@ -106,4 +106,16 @@ UINode* UIMapWindow::getFingerControl ()
 	add(_undo);
 
 	return node;
+}
+
+void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
+	IUIMapWindow::initWaitingForPlayers(adminOptions);
+	ClientMap& map = _nodeMap->getMap();
+	const std::string& name = map.getName();
+	const int ownBest = _campaignManager.getActiveCampaign()->getMapById(name)->getFinishPoints();
+	const std::string best = map.getSetting("best", "0" /* string::toString(ownBest) */);
+	info(LOG_CLIENT, "got best points from server: " + best);
+	_points->setOwnAndGlobalBest(ownBest, string::toInt(best));
+	_points->setLabel("0");
+
 }

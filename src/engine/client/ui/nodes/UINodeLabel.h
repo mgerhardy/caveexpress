@@ -15,7 +15,7 @@ public:
 	UINodeLabel (IFrontend *frontend, const std::string& label, const BitmapFontPtr& font);
 	virtual ~UINodeLabel ();
 
-	void setLabel (const std::string& label);
+	virtual void setLabel (const std::string& label);
 
 	void setFont (const std::string& font);
 	void setColor (const Color& color);

@@ -72,7 +72,6 @@ void Map::shutdown ()
 int Map::solve ()
 {
 	triggerRestart();
-	_solution = getSolution();
 	_autoSolve = true;
 	_serviceProvider->getNetwork().sendToAllClients(AutoSolveStartedMessage());
 	return _solution.size();
@@ -414,12 +413,17 @@ bool Map::load (const std::string& name)
 		error(LOG_MAP, "failed to load the map " + name);
 		return false;
 	}
+
 	ctx->save();
 	_settings = ctx->getSettings();
 	_name = ctx->getName();
 	_title = ctx->getTitle();
 	_width = getSetting(msn::WIDTH, "-1").toInt();
 	_height = getSetting(msn::HEIGHT, "-1").toInt();
+	_solution = getSolution();
+	const std::string solutionSteps = string::toString(_solution.length());
+	_settings.insert(std::make_pair("best", solutionSteps));
+	info(LOG_MAP, "Solution has " + solutionSteps + " steps");
 
 	if (_width <= 0 || _height <= 0) {
 		error(LOG_MAP, "invalid map dimensions given");

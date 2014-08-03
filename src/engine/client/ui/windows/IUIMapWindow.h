@@ -46,11 +46,11 @@ public:
 	virtual void hideHud();
 	virtual void showHud();
 
-	void start ();
+	virtual void start ();
 	// called for multiplayer -waiting-for-players dialog.
 	// the server admin has the option to force a start of the match even if not
 	// all players are connected.
-	void initWaitingForPlayers (bool adminOptions);
+	virtual void initWaitingForPlayers (bool adminOptions);
 
 	bool onPop () override;
 	void onPushedOver () override;
