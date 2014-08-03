@@ -44,6 +44,7 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/cavepacker/server/map/*.cpp) \
 	\
 	$(wildcard $(SRCDIR)/cavepacker/shared/*.cpp) \
+	$(wildcard $(SRCDIR)/cavepacker/shared/network/*.cpp) \
 	\
 	$(wildcard $(SRCDIR)/cavepacker/*.cpp) \
 	) \
