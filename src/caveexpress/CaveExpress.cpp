@@ -41,7 +41,7 @@
 #include "caveexpress/client/ui/windows/UIMapEditorHelpWindow.h"
 #include "caveexpress/client/ui/windows/UIMapEditorOptionsWindow.h"
 #include "caveexpress/client/ui/windows/UIGameFinishedWindow.h"
-#include "caveexpress/client/ui/windows/UIMapFinishedWindow.h"
+#include "engine/client/ui/windows/UIMapFinishedWindow.h"
 #include "caveexpress/client/ui/windows/UICaveExpressSettingsWindow.h"
 #include "engine/client/ui/windows/UIModeSelectionWindow.h"
 #include "caveexpress/client/ui/windows/intro/IntroPackage.h"
@@ -64,7 +64,6 @@
 #include "caveexpress/client/network/AddCaveHandler.h"
 #include "caveexpress/client/network/LightStateHandler.h"
 #include "caveexpress/client/network/HudInitDoneHandler.h"
-#include "caveexpress/client/network/FinishedMapHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
 #include "caveexpress/client/network/UpdatePackageCountHandler.h"
 #include "caveexpress/client/network/FailedMapHandler.h"
@@ -88,6 +87,7 @@
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 #include "engine/common/System.h"
 #include "engine/common/network/INetwork.h"
+#include "caveexpress/shared/CaveExpressSoundType.h"
 
 CaveExpress::CaveExpress () :
 		_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _updateEntitiesTime(0), _frontend(nullptr), _serviceProvider(nullptr),_connectedClients(
@@ -332,7 +332,7 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIGameOverWindow(frontend, campaignMgr));
 	ui.addWindow(new UIMapOptionsWindow(frontend, serviceProvider));
 	ui.addWindow(new UIGameFinishedWindow(frontend));
-	ui.addWindow(new UIMapFinishedWindow(frontend, campaignMgr, serviceProvider));
+	ui.addWindow(new UIMapFinishedWindow(frontend, campaignMgr, serviceProvider, SoundTypes::SOUND_PACKAGE_COLLIDE));
 	ui.addWindow(new UIMapFailedWindow(frontend, campaignMgr));
 	ui.addWindow(new UIMapEditorHelpWindow(frontend));
 	ui.addWindow(new UIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));

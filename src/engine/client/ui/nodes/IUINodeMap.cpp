@@ -32,6 +32,7 @@
 #include "engine/client/network/UpdateLivesHandler.h"
 #include "engine/client/network/UpdatePointsHandler.h"
 #include "engine/client/network/TimeRemainingHandler.h"
+#include "engine/client/network/FinishedMapHandler.h"
 
 IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
 		UINode(frontend), _map(map), _campaignManager(campaignManager)
@@ -63,6 +64,7 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	r.registerClientHandler(protocol::PROTO_UPDATELIVES, new UpdateLivesHandler(campaignManager));
 	r.registerClientHandler(protocol::PROTO_UPDATEPOINTS, new UpdatePointsHandler());
 	r.registerClientHandler(protocol::PROTO_TIMEREMAINING, new TimeRemainingHandler());
+	r.registerClientHandler(protocol::PROTO_FINISHEDMAP, new FinishedMapHandler(_map));
 
 	_campaignManager.addListener(this);
 
@@ -105,6 +107,7 @@ IUINodeMap::~IUINodeMap ()
 	r.unregisterClientHandler(protocol::PROTO_UPDATELIVES);
 	r.unregisterClientHandler(protocol::PROTO_UPDATEPOINTS);
 	r.unregisterClientHandler(protocol::PROTO_TIMEREMAINING);
+	r.unregisterClientHandler(protocol::PROTO_FINISHEDMAP);
 }
 
 void IUINodeMap::setMapRect (int x, int y, int w, int h)

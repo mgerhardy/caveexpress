@@ -17,5 +17,4 @@ public:
 inline void UICavePackerNodePoint::setOwnAndGlobalBest (int ownBest, int globalBest) {
 	_ownBest = ownBest;
 	_globalBest = globalBest;
-	setPoints(0);
 }

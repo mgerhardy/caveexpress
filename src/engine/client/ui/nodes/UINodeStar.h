@@ -2,14 +2,15 @@
 
 #include "engine/client/ui/nodes/UINode.h"
 #include "engine/client/sound/Sound.h"
-#include "caveexpress/shared/CaveExpressSoundType.h"
+#include "engine/common/SoundType.h"
 
 class UINodeStar: public UINode {
 private:
 	int32_t _enableDelay;
+	const SoundType& _soundType;
 public:
-	UINodeStar (IFrontend *frontend, int position) :
-			UINode(frontend), _enableDelay(-1)
+	UINodeStar (IFrontend *frontend, int position, const SoundType& soundType) :
+			UINode(frontend), _enableDelay(-1), _soundType(soundType)
 	{
 		setImage("icon-star-disabled");
 		setId("star" + string::toString(position));
@@ -26,7 +27,9 @@ public:
 			return;
 
 		setImage("icon-star-enabled");
-		SoundControl.play(SoundTypes::SOUND_PACKAGE_COLLIDE.getSound());
+		if (_soundType.isNone())
+			return;
+		SoundControl.play(_soundType.getSound());
 	}
 
 	void enable (uint32_t delay = 0)

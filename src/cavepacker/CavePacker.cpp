@@ -31,6 +31,7 @@
 #include "cavepacker/client/ui/windows/UICavePackerMapOptionsWindow.h"
 #include "engine/client/ui/windows/UIPaymentWindow.h"
 #include "engine/client/ui/windows/UISettingsWindow.h"
+#include "engine/client/ui/windows/UIMapFinishedWindow.h"
 #include "engine/common/campaign/persister/SQLitePersister.h"
 
 CavePacker::CavePacker ():
@@ -199,6 +200,7 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	UISettingsWindow* settings = new UISettingsWindow(frontend, serviceProvider);
 	settings->init();
 	ui.addWindow(settings);
+	ui.addWindow(new UIMapFinishedWindow(frontend, *_campaignManager, serviceProvider, SoundType::NONE));
 	ui.addWindow(new IntroGame(frontend));
 	ui.addWindow(new UICavePackerMapOptionsWindow(frontend, serviceProvider));
 }

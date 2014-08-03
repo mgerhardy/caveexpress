@@ -3,6 +3,7 @@
 #include "engine/common/network/IProtocolHandler.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
 #include "cavepacker/client/ui/windows/UIMapWindow.h"
+#include "engine/client/ui/UI.h"
 
 class ClientAutoSolveHandler: public IClientProtocolHandler {
 private:

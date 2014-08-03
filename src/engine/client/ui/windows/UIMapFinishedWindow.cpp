@@ -6,11 +6,11 @@
 #include "engine/client/ui/layouts/UIHBoxLayout.h"
 #include "engine/client/ui/nodes/UINodeBackground.h"
 #include "engine/client/ui/nodes/UINodeContinuePlay.h"
-#include "caveexpress/client/ui/nodes/UINodeStar.h"
+#include "engine/client/ui/nodes/UINodeStar.h"
 #include "engine/client/ui/windows/main/ReplayNodeListener.h"
 #include <string>
 
-UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& campaignManager, ServiceProvider& serviceProvider) :
+UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& campaignManager, ServiceProvider& serviceProvider, const SoundType& soundType) :
 		UIWindow(UI_WINDOW_MAPFINISHED, frontend), _serviceProvider(serviceProvider)
 {
 	setInactiveAfterPush();
@@ -25,7 +25,7 @@ UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& 
 	stars->setAlignment(NODE_ALIGN_CENTER);
 	stars->setLayout(new UIHBoxLayout());
 	for (int i = 0; i < 3; ++i) {
-		UINodeStar *star = new UINodeStar(frontend, i);
+		UINodeStar *star = new UINodeStar(frontend, i, soundType);
 		stars->add(star);
 	}
 	add(stars);

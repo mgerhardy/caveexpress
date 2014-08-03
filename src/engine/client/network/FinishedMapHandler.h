@@ -5,9 +5,9 @@
 #include "engine/common/network/INetwork.h"
 #include "engine/common/Commands.h"
 #include "engine/client/ui/UI.h"
-#include "caveexpress/client/ui/windows/UIMapFinishedWindow.h"
+#include "engine/client/ui/windows/UIMapFinishedWindow.h"
 #include "engine/client/ui/nodes/UINodePoint.h"
-#include "caveexpress/client/ui/nodes/UINodeStar.h"
+#include "engine/client/ui/nodes/UINodeStar.h"
 #include "engine/client/ClientMap.h"
 
 class FinishedMapHandler: public IClientProtocolHandler {
