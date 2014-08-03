@@ -35,6 +35,11 @@ Cross compile for android
 * ./configure --target-os=android
 * make
 
+If you get an aapt - no such file or directory on 64bit debian based
+distributions, do the following:
+ sudo apt-get install lib32stdc++6
+ sudo apt-get install lib32z1
+
 Compile for HTML5 (emscripten)
 * make emscripten-setup
 * ./configure --target-os=html5
