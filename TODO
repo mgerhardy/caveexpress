@@ -37,7 +37,7 @@
 ** project.rc.in to replace the appname
 
 * Cavepacker
-** crash on some maps (0019)
+** crash on some maps (0019) related to the amount of packages (11 are working, 12 are not)
 ** sound if you hit the best points available
 ** undo graphic on the hud is a little bit too opaque
 ** upload solutions to google play or twitter or ...

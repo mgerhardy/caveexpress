@@ -446,7 +446,7 @@ bool Map::load (const std::string& name)
 
 	_frontend->onMapLoaded();
 	const LoadMapMessage msg(_name, _title);
-	_serviceProvider->getNetwork().sendToClients(0, msg);
+	_serviceProvider->getNetwork().sendToAllClients(msg);
 
 	_mapRunning = true;
 	return true;
