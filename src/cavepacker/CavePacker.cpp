@@ -33,6 +33,7 @@
 #include "engine/client/ui/windows/UISettingsWindow.h"
 #include "engine/client/ui/windows/UIMapFinishedWindow.h"
 #include "engine/common/campaign/persister/SQLitePersister.h"
+#include <SDL.h>
 
 CavePacker::CavePacker ():
 	_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
@@ -79,6 +80,9 @@ void CavePacker::update (uint32_t deltaTime)
 			const Player* player = _map.getPlayers()[0];
 			const std::string& solution = player->getSolution();
 			info(LOG_SERVER, "solution: " + solution);
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+			SDL_SetClipboardText(solution.c_str());
+#endif
 		} else {
 			info(LOG_SERVER, "no solution in multiplayer games");
 		}
