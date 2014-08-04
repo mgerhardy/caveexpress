@@ -36,7 +36,9 @@ protected:
 	// call this in your derived classes
 	void init();
 	virtual void initHudNodes();
-
+	// override this if you need nodes on top of the IMapControl nodes
+	virtual void initInputHudNodes();
+	virtual void showCursor (bool show);
 public:
 	IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map, IUINodeMap* nodeMap);
 	virtual ~IUIMapWindow() {}
@@ -52,7 +54,7 @@ public:
 	// all players are connected.
 	virtual void initWaitingForPlayers (bool adminOptions);
 
-	bool onPop () override;
-	void onPushedOver () override;
-	void onActive () override;
+	virtual bool onPop () override;
+	virtual void onPushedOver () override;
+	virtual void onActive () override;
 };

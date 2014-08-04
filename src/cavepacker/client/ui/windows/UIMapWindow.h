@@ -9,6 +9,7 @@ class UIMapWindow: public IUIMapWindow {
 protected:
 	UINode* getFingerControl () override;
 	void initHudNodes () override;
+	void initInputHudNodes () override;
 	UINode* _undo;
 	UINodeSlider* _autoSolveSlider;
 	UICavePackerNodePoint* _points;
@@ -21,4 +22,5 @@ public:
 	void showHud() override;
 	void showAutoSolveSlider();
 	void hideAutoSolveSlider();
+	void showCursor (bool show) override;
 };

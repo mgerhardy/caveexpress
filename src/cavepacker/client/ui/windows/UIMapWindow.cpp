@@ -4,6 +4,7 @@
 #include "engine/client/ui/nodes/UINodeBar.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
 #include "engine/client/ui/nodes/UINodePoint.h"
+#include "engine/client/ui/nodes/UINodeButton.h"
 #include "engine/client/ui/nodes/UINodeMapOnScreenCursorControl.h"
 #include "engine/client/ui/layouts/UIHBoxLayout.h"
 #include "engine/client/ui/UI.h"
@@ -27,7 +28,6 @@ public:
 	}
 };
 
-
 UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map) :
 		IUIMapWindow(frontend, serviceProvider, campaignManager, map,
 				new UINodeMap(frontend, serviceProvider, campaignManager, 0, 0,
@@ -50,28 +50,29 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 
 void UIMapWindow::showAutoSolveSlider()
 {
-	UI::get().showCursor(true);
 	_autoSolveSlider->setVisible(true);
 }
 
 void UIMapWindow::hideAutoSolveSlider()
 {
-	UI::get().showCursor(false);
 	_autoSolveSlider->setVisible(false);
+}
+
+void UIMapWindow::showCursor (bool /*show*/)
+{
+	IUIMapWindow::showCursor(true);
 }
 
 void UIMapWindow::hideHud()
 {
 	IUIMapWindow::hideHud();
-	if (_undo)
-		_undo->setVisible(false);
+	_undo->setVisible(false);
 }
 
 void UIMapWindow::showHud()
 {
 	IUIMapWindow::showHud();
-	if (_undo)
-		_undo->setVisible(true);
+	_undo->setVisible(true);
 	hideAutoSolveSlider();
 }
 
@@ -93,18 +94,20 @@ void UIMapWindow::initHudNodes ()
 	add(innerPanel);
 }
 
+void UIMapWindow::initInputHudNodes ()
+{
+	IUIMapWindow::initInputHudNodes();
+	_undo = new UINodeButton(_frontend);
+	_undo->setImage("icon-undo");
+	_undo->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_RIGHT);
+	_undo->setOnActivate("undo");
+	add(_undo);
+}
+
 UINode* UIMapWindow::getFingerControl ()
 {
 	UINodeMapOnScreenCursorControl* node = new UINodeMapOnScreenCursorControl(_frontend, _nodeMap);
 	_mapControl = node;
-
-	_undo = new UINode(_frontend);
-	_undo->setImage("icon-undo");
-	_undo->setStandardPadding();
-	_undo->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_RIGHT);
-	_undo->setOnActivate("undo");
-	add(_undo);
-
 	return node;
 }
 

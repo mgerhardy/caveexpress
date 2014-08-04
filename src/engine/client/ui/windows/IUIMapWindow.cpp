@@ -66,6 +66,15 @@ void IUIMapWindow::showHud()
 		_mapControl->show();
 }
 
+void IUIMapWindow::initInputHudNodes()
+{
+	UINodeSettingsButton *settings = new UINodeSettingsButton(_frontend, _mapControl);
+	settings->setImage("icon-settings");
+	settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_OPTIONS)));
+	settings->setAlignment(NODE_ALIGN_LEFT | NODE_ALIGN_TOP);
+	add(settings);
+}
+
 void IUIMapWindow::initHudNodes()
 {
 	const float barHeight = 12.0f / _frontend->getHeight();
@@ -135,13 +144,9 @@ void IUIMapWindow::init()
 	} else {
 		UINode* node = getControl();
 		add(node);
-
-		UINodeSettingsButton *settings = new UINodeSettingsButton(_frontend, _mapControl);
-		settings->setImage("icon-settings");
-		settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_OPTIONS)));
-		settings->setAlignment(NODE_ALIGN_LEFT | NODE_ALIGN_TOP);
-		add(settings);
 	}
+
+	initInputHudNodes();
 
 	_startButton = new UINodeButtonText(_frontend, tr("Start"), 0.05f);
 	_startButton->setOnActivate(CMD_START);
@@ -176,7 +181,7 @@ void IUIMapWindow::onActive ()
 	UIWindow::onActive();
 	_cursorActive = UI::get().isCursorVisible();
 	if (_cursorActive && !_startButton->isVisible())
-		UI::get().showCursor(false);
+		showCursor(false);
 	UINode* lives = getNode(UINODE_LIVES);
 	if (lives != nullptr)
 		lives->setVisible(Config.isModeHard());
@@ -195,7 +200,7 @@ void IUIMapWindow::onPushedOver ()
 	showHud();
 	UIWindow::onPushedOver();
 	if (_cursorActive)
-		UI::get().showCursor(true);
+		showCursor(true);
 }
 
 bool IUIMapWindow::onPop ()
@@ -205,7 +210,7 @@ bool IUIMapWindow::onPop ()
 	}
 	Config.setBindingsSpace(BINDINGS_UI);
 	if (_cursorActive)
-		UI::get().showCursor(true);
+		showCursor(true);
 	if (!UI::get().isMainRoot()) {
 		// editor
 		Commands.executeCommandLine(CMD_CL_DISCONNECT);
@@ -229,11 +234,16 @@ void IUIMapWindow::initWaitingForPlayers (bool adminOptions)
 		_waitLabel->setVisible(false);
 		// we need the cursor back to click onto the start button
 		if (_cursorActive)
-			UI::get().showCursor(true);
+			showCursor(true);
 	} else {
 		_startButton->setVisible(false);
 		_waitLabel->setVisible(true);
 	}
+}
+
+void IUIMapWindow::showCursor (bool show)
+{
+	UI::get().showCursor(show);
 }
 
 void IUIMapWindow::start ()
@@ -241,7 +251,7 @@ void IUIMapWindow::start ()
 	_startButton->setVisible(false);
 	_waitLabel->setVisible(false);
 	if (_cursorActive)
-		UI::get().showCursor(false);
+		showCursor(false);
 	_nodeMap->start();
 	Config.setBindingsSpace(BINDINGS_MAP);
 }
