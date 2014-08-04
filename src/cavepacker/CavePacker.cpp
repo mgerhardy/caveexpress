@@ -75,6 +75,14 @@ void CavePacker::update (uint32_t deltaTime)
 		if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, pushes, stars, true))
 			error(LOG_SERVER, "Could not save the values for the map");
 
+		if (_map.getPlayers().size() == 1) {
+			const Player* player = _map.getPlayers()[0];
+			const std::string& solution = player->getSolution();
+			info(LOG_SERVER, "solution: " + solution);
+		} else {
+			info(LOG_SERVER, "no solution in multiplayer games");
+		}
+
 		System.track("MapState", String::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), finishPoints, pushes, stars));
 		const FinishedMapMessage msg(_map.getName(), finishPoints, pushes, stars);
 		_serviceProvider->getNetwork().sendToAllClients(msg);
