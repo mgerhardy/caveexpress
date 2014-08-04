@@ -116,6 +116,8 @@ public:
 
 	virtual bool isSmallScreen (IFrontend* frontend) { return frontend->getWidth() <= 1024 || frontend->getHeight() <= 768; }
 
+	virtual bool isFullscreenSupported () { return true; }
+
 	virtual bool canDisableJoystick () { return true; }
 
 	virtual void backtrace (const char *errorMessage) {}

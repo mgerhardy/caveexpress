@@ -6,15 +6,21 @@
 #include "engine/client/ui/nodes/UINodeButtonImage.h"
 #include "engine/client/ui/nodes/UINodeButtonText.h"
 #include "engine/client/ui/layouts/UIHBoxLayout.h"
+#include "engine/client/ui/windows/UIWindow.h"
 #include "engine/client/ui/nodes/UINodeSettingsBackground.h"
 #include "engine/client/ui/windows/modeselection/ModeSetListener.h"
 #include "engine/client/sound/Sound.h"
+#include "engine/common/IFrontend.h"
 #include "engine/common/ServiceProvider.h"
+#include "engine/common/System.h"
 #include "engine/common/network/INetwork.h"
 
 #include "engine/client/ui/windows/listener/TextureModeListener.h"
 #include "engine/client/ui/windows/listener/JoystickNodeListener.h"
 #include "engine/client/ui/windows/listener/SoundNodeListener.h"
+#include "engine/client/ui/windows/listener/FullscreenListener.h"
+
+#include <SDL_platform.h>
 
 UISettingsWindow::UISettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
 		UIWindow(UI_WINDOW_SETTINGS, frontend, WINDOW_FLAG_MODAL), _background(nullptr), _serviceProvider(serviceProvider)
@@ -47,6 +53,12 @@ UINode* UISettingsWindow::addSections()
 	last = addSection(last, nullptr, tr("Sound/Music"),
 			tr("On"), new SoundNodeListener(this, true),
 			tr("Off"), new SoundNodeListener(this, false));
+
+	if (System.isFullscreenSupported()) {
+		last = addSection(last, nullptr, tr("Fullscreen"),
+				tr("On"), new FullscreenListener(this, true),
+				tr("Off"), new FullscreenListener(this, false));
+	}
 
 	if (System.canDisableJoystick() && _frontend->hasJoystick()) {
 		last = addSection(last, nullptr, tr("Joystick"),
