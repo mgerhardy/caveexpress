@@ -371,6 +371,7 @@ int Network::sendToClients (int clientMask, const IProtocolMessage& msg)
 {
 	ByteStream s;
 	msg.serialize(s);
+	s.addShort(s.getSize(), true);
 	count(msg);
 	return sendToClients(clientMask, s);
 }
@@ -483,6 +484,7 @@ int Network::sendToServer (const IProtocolMessage& msg)
 {
 	ByteStream s;
 	msg.serialize(s);
+	s.addShort(s.getSize(), true);
 	count(msg);
 	return sendToServer(s);
 }

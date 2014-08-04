@@ -38,6 +38,22 @@ class ByteStream;
 class ProtocolMessageFactory {
 private:
 	ProtocolMessageFactory ();
+
+public:
+	bool isNewMessageAvailable(const ByteStream& in) const {
+		const int16_t size = in.peekShort();
+		if (size == -1) {
+			// not enough data yet, wait a little bit more
+			return false;
+		}
+		const int streamSize = static_cast<int>(in.getSize() - sizeof(int16_t));
+		if (size > streamSize) {
+			// not enough data yet, wait a little bit more
+			return false;
+		}
+		return true;
+	}
+
 protected:
 	virtual IProtocolMessage *getForProtocolId (ByteStream& stream, const protocolId& type) {
 		switch (type) {

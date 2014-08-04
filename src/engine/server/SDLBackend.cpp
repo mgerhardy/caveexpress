@@ -484,8 +484,11 @@ void SDLBackend::loadMap (const std::string& mapName)
 
 void SDLBackend::onData (ClientId clientId, ByteStream &data)
 {
-	while (!data.empty()) {
-		const ScopedPtr<IProtocolMessage> msg(ProtocolMessageFactory::get().create(data));
+	ProtocolMessageFactory& factory = ProtocolMessageFactory::get();
+	while (factory.isNewMessageAvailable(data)) {
+		// remove the size from the stream
+		data.readShort();
+		const ScopedPtr<IProtocolMessage> msg(factory.create(data));
 		if (!msg) {
 			error(LOG_SERVER, "no message for type " + string::toString(static_cast<int>(data.readByte())));
 			continue;

@@ -19,6 +19,36 @@ void ByteStream::checkSize () const
 	}
 }
 
+int32_t ByteStream::peekInt() const {
+	uint8_t buf[4];
+	const int l = sizeof(buf);
+	VectorBuffer::const_iterator it = _buffer.begin();
+	for (int i = 0; i < l; ++i) {
+		if (it == _buffer.end())
+			return -1;
+		buf[i] = *it;
+		++it;
+	}
+	const int32_t *word = (const int32_t*) (void*) &buf;
+	const int32_t val = SDL_SwapLE32(*word);
+	return val;
+}
+
+int16_t ByteStream::peekShort() const {
+	uint8_t buf[2];
+	const int l = sizeof(buf);
+	VectorBuffer::const_iterator it = _buffer.begin();
+	for (int i = 0; i < l; ++i) {
+		if (it == _buffer.end())
+			return -1;
+		buf[i] = *it;
+		++it;
+	}
+	const int16_t *word = (const int16_t*) (void*) &buf;
+	const int16_t val = SDL_SwapLE16(*word);
+	return val;
+}
+
 void ByteStream::addFormat (const char *fmt, ...)
 {
 	va_list ap;

@@ -31,7 +31,7 @@ public:
 	void addBool (bool value, bool prepend = false);
 	void addByte (uint8_t byte, bool prepend = false);
 	void addShortScaled (float value);
-	void addShort (int16_t word);
+	void addShort (int16_t word, bool prepend = false);
 	void addInt (int32_t dword);
 	void addFloat (float value);
 	void addString (const std::string& string);
@@ -47,6 +47,8 @@ public:
 	void readFormat (const char *fmt, ...);
 
 	uint8_t peekByte () const;
+	int32_t peekInt () const;
+	int16_t peekShort () const;
 
 	// get the raw data pointer for the buffer
 	const uint8_t* getBuffer () const;
@@ -160,11 +162,16 @@ inline void ByteStream::addShortScaled (float value)
 	addShort(value * Constant::SCALE_FACTOR);
 }
 
-inline void ByteStream::addShort (int16_t word)
+inline void ByteStream::addShort (int16_t word, bool prepend)
 {
 	const int16_t swappedWord = SDL_SwapLE16(word);
-	_buffer.push_back(uint8_t(swappedWord));
-	_buffer.push_back(uint8_t(swappedWord >> CHAR_BIT));
+	if (prepend) {
+		_buffer.insert(_buffer.begin(), uint8_t(swappedWord >> CHAR_BIT));
+		_buffer.insert(_buffer.begin(), uint8_t(swappedWord));
+	} else {
+		_buffer.push_back(uint8_t(swappedWord));
+		_buffer.push_back(uint8_t(swappedWord >> CHAR_BIT));
+	}
 	_size += 2;
 }
 

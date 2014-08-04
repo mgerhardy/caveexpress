@@ -74,8 +74,11 @@ void BotBackend::onOOBData (const std::string& host, const IProtocolMessage* mes
 
 void BotBackend::onData (ByteStream &data)
 {
-	while (!data.empty()) {
-		const ScopedPtr<IProtocolMessage> msg(ProtocolMessageFactory::get().create(data));
+	ProtocolMessageFactory& factory = ProtocolMessageFactory::get();
+	while (factory.isNewMessageAvailable(data)) {
+		// remove the size from the stream
+		data.readShort();
+		const ScopedPtr<IProtocolMessage> msg(factory.create(data));
 		if (!msg) {
 			error(LOG_BACKEND, "no message for type " + string::toString(static_cast<int>(data.readByte())));
 			continue;

@@ -39,6 +39,7 @@ int NoNetwork::sendToClients (int clientMask, const IProtocolMessage& msg)
 {
 	ByteStream s;
 	msg.serialize(s);
+	s.addShort(s.getSize(), true);
 	count(msg);
 	enqueueClient(s);
 	return 1;
@@ -111,6 +112,7 @@ int NoNetwork::sendToServer (const IProtocolMessage& msg)
 {
 	ByteStream s;
 	msg.serialize(s);
+	s.addShort(s.getSize(), true);
 	count(msg);
 	enqueueServer(s);
 	return s.getSize();

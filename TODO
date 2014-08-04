@@ -20,7 +20,6 @@
 ** follow us on twitter => unlock new campaign
 ** don't use scale for the tps - for small everything should be in one texture
 ** Collect stars to unlock campaigns
-** fixed Network.cpp to send the size in front of the message as a short
 
 * Map
 ** indicator for being almost dead (red screen?)
