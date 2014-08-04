@@ -43,9 +43,6 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 	_autoSolveSlider->addListener(UINodeListenerPtr(new SolveListener(_autoSolveSlider, "solvestepmillis")));
 	add(_autoSolveSlider);
 	hideAutoSolveSlider();
-
-	if (campaignManager.firstMap())
-		UI::get().push("introgame");
 }
 
 void UIMapWindow::showAutoSolveSlider()
@@ -121,4 +118,6 @@ void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
 	_points->setOwnAndGlobalBest(ownBest, string::toInt(best));
 	_points->setLabel("0");
 
+	if (_campaignManager.firstMap())
+		UI::get().push("introgame");
 }
