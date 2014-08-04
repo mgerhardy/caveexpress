@@ -56,8 +56,8 @@ UINode* UISettingsWindow::addSections()
 
 	if (System.isFullscreenSupported()) {
 		last = addSection(last, nullptr, tr("Fullscreen"),
-				tr("On"), new FullscreenListener(this, true),
-				tr("Off"), new FullscreenListener(this, false));
+				tr("On"), new FullscreenListener(_frontend, true),
+				tr("Off"), new FullscreenListener(_frontend, false));
 	}
 
 	if (System.canDisableJoystick() && _frontend->hasJoystick()) {
