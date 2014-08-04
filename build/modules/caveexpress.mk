@@ -34,22 +34,22 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/engine/server/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/server/box2d/*.cpp) \
 	\
-	$(wildcard $(SRCDIR)/caveexpress/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/particles/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/entities/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/ui/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/ui/nodes/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/ui/windows/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/client/ui/windows/intro/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/shared/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/shared/network/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/server/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/server/map/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/server/events/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/server/entities/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/server/entities/modificators/*.cpp) \
-	$(wildcard $(SRCDIR)/caveexpress/server/entities/npcs/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/client/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/client/particles/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/client/entities/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/client/ui/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/client/ui/nodes/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/client/ui/windows/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/client/ui/windows/intro/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/shared/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/shared/network/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/server/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/server/map/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/server/events/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/server/entities/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/server/entities/modificators/*.cpp) \
+	$(wildcard $(SRCDIR)/$(TARGET)/server/entities/npcs/*.cpp) \
 	\
 	$(wildcard $(SRCDIR)/libs/micropather/*.cpp) \
 	\
