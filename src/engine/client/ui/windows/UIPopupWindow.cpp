@@ -2,6 +2,7 @@
 #include "engine/client/ui/nodes/UINodePopupBackground.h"
 #include "engine/client/ui/nodes/UINodeButton.h"
 #include "engine/client/ui/nodes/UINodeLabel.h"
+#include "engine/common/Commands.h"
 
 class UINodePopupButton: public UINodeButton {
 public:
@@ -33,6 +34,12 @@ UIPopupWindow::UIPopupWindow (IFrontend* frontend, const std::string& text, int 
 {
 	UINodePopupBackground *background = new UINodePopupBackground(frontend, text);
 	add(background);
+
+	UINodeButton* close = new UINodeButton(_frontend);
+	close->setImage("icon-close");
+	close->setOnActivate(CMD_UI_POP);
+	close->alignTo(background, NODE_ALIGN_RIGHT | NODE_ALIGN_TOP, 0.01f);
+	add(close);
 
 	if (flags & UIPOPUP_OK) {
 		UINodePopupButton *ok = new UINodePopupButton(frontend, tr("OK"));

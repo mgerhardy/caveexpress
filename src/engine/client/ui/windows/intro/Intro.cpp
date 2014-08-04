@@ -70,7 +70,7 @@ Intro::Intro(const std::string& name, IFrontend* frontend) :
 	_background->add(overlay);
 	add(_background);
 
-	UINodeButton* close = new UINodeButton(_frontend, "");
+	UINodeButton* close = new UINodeButton(_frontend);
 	close->setImage("icon-close");
 	close->setOnActivate(CMD_UI_POP);
 	close->alignTo(_background, NODE_ALIGN_RIGHT | NODE_ALIGN_TOP, 0.01f);
