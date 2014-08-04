@@ -203,6 +203,7 @@
             <filename>../png/ui/icon-star-disabled.png</filename>
             <filename>../png/ui/icon-star-enabled.png</filename>
             <filename>../png/ui/ui-button-start.png</filename>
+            <filename>../png/ui/icon-close.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

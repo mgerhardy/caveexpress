@@ -2,13 +2,29 @@
 <data version="1.0">
     <struct type="Settings">
         <key>fileFormatVersion</key>
-        <int>1</int>
-        <key>variation</key>
-        <string>main</string>
-        <key>verbose</key>
-        <false/>
+        <int>3</int>
+        <key>texturePackerVersion</key>
+        <string>3.2.0</string>
         <key>autoSDSettings</key>
-        <array/>
+        <array>
+            <struct type="AutoSDSettings">
+                <key>scale</key>
+                <double>1</double>
+                <key>extension</key>
+                <string></string>
+                <key>spriteFilter</key>
+                <string></string>
+                <key>acceptFractionalValues</key>
+                <false/>
+                <key>maxTextureSize</key>
+                <QSize>
+                    <key>width</key>
+                    <int>-1</int>
+                    <key>height</key>
+                    <int>-1</int>
+                </QSize>
+            </struct>
+        </array>
         <key>allowRotation</key>
         <false/>
         <key>quiet</key>
@@ -98,8 +114,6 @@
             <enum type="AndEngine::MinFilter">Linear</enum>
             <key>packageName</key>
             <string>Texture</string>
-            <key>javaFileName</key>
-            <filename>ui.java</filename>
             <key>wrap</key>
             <struct type="AndEngineWrap">
                 <key>s</key>
@@ -110,10 +124,21 @@
             <key>magFilter</key>
             <enum type="AndEngine::MagFilter">MagLinear</enum>
         </struct>
-        <key>dataFileName</key>
-        <filename>ui.lua</filename>
-        <key>mainExtension</key>
-        <string></string>
+        <key>dataFileNames</key>
+        <map type="GFileNameMap">
+            <key>java</key>
+            <struct type="DataFile">
+                <key>name</key>
+                <filename>ui.java</filename>
+            </struct>
+            <key>lua</key>
+            <struct type="DataFile">
+                <key>name</key>
+                <filename>ui.lua</filename>
+            </struct>
+        </map>
+        <key>multiPack</key>
+        <false/>
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
@@ -127,6 +152,8 @@
         <true/>
         <key>trimSpriteNames</key>
         <false/>
+        <key>cleanTransparentPixels</key>
+        <true/>
         <key>globalSpriteSettings</key>
         <struct type="SpriteSettings">
             <key>scale</key>
@@ -175,6 +202,7 @@
             <filename>../png/ui/icon-star-enabled.png</filename>
             <filename>../png/ui/ui-background-gameover.png</filename>
             <filename>../png/ui/ui-button-start.png</filename>
+            <filename>../png/ui/icon-close.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
