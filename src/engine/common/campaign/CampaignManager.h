@@ -83,5 +83,6 @@ public:
 
 	void reset ();
 
+	bool addAdditionMapData (const std::string& mapname, const std::string& additionData);
 	bool updateMapValues (const std::string& mapname, uint32_t finishPoints, uint32_t time, uint8_t stars, bool lowerPointsAreBetter = false);
 };

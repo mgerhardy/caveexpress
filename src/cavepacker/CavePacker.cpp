@@ -83,6 +83,8 @@ void CavePacker::update (uint32_t deltaTime)
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 			SDL_SetClipboardText(solution.c_str());
 #endif
+			if (!_campaignManager->addAdditionMapData(_map.getName(), solution))
+				error(LOG_SERVER, "Could not save the solution for the map");
 		} else {
 			info(LOG_SERVER, "no solution in multiplayer games");
 		}

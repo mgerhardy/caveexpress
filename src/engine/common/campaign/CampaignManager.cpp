@@ -291,6 +291,12 @@ bool CampaignManager::activateNextCampaign () const
 	return false;
 }
 
+bool CampaignManager::addAdditionMapData (const std::string& mapname, const std::string& additionData)
+{
+	// TODO: implement me
+	return false;
+}
+
 bool CampaignManager::updateMapValues (const std::string& mapname, uint32_t finishPoints, uint32_t time, uint8_t stars, bool lowerPointsAreBetter)
 {
 	_lastPlayedMap = mapname;
