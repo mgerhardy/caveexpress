@@ -9,6 +9,8 @@
 #include "engine/client/ui/layouts/UIHBoxLayout.h"
 #include "engine/client/ui/UI.h"
 #include "engine/common/ConfigManager.h"
+#include "engine/common/Logger.h"
+#include "engine/common/IFrontend.h"
 
 class SolveListener: public UINodeListener {
 private:
