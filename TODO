@@ -36,7 +36,6 @@
 ** project.rc.in to replace the appname
 
 * Cavepacker
-** crash on some maps (0019) related to the amount of entities
 ** sound if you hit the best points available
 ** upload solutions to google play or twitter or ...
 ** save the solutions via the persister and maybe allow to replay them
