@@ -33,20 +33,20 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/engine/common/network/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/server/*.cpp) \	\
 	\
-	$(wildcard $(SRCDIR)/$(TARGET)/client/ui/windows/*.cpp) \
-	$(wildcard $(SRCDIR)/$(TARGET)/client/ui/windows/intro/*.cpp) \
-	$(wildcard $(SRCDIR)/$(TARGET)/client/ui/nodes/*.cpp) \
+	$(wildcard $(SRCDIR)/cavepacker/client/ui/windows/*.cpp) \
+	$(wildcard $(SRCDIR)/cavepacker/client/ui/windows/intro/*.cpp) \
+	$(wildcard $(SRCDIR)/cavepacker/client/ui/nodes/*.cpp) \
 	\
-	$(wildcard $(SRCDIR)/$(TARGET)/client/*.cpp) \
+	$(wildcard $(SRCDIR)/cavepacker/client/*.cpp) \
 	\
-	$(wildcard $(SRCDIR)/$(TARGET)/server/*.cpp) \
-	$(wildcard $(SRCDIR)/$(TARGET)/server/entities/*.cpp) \
-	$(wildcard $(SRCDIR)/$(TARGET)/server/map/*.cpp) \
+	$(wildcard $(SRCDIR)/cavepacker/server/*.cpp) \
+	$(wildcard $(SRCDIR)/cavepacker/server/entities/*.cpp) \
+	$(wildcard $(SRCDIR)/cavepacker/server/map/*.cpp) \
 	\
-	$(wildcard $(SRCDIR)/$(TARGET)/shared/*.cpp) \
-	$(wildcard $(SRCDIR)/$(TARGET)/shared/network/*.cpp) \
+	$(wildcard $(SRCDIR)/cavepacker/shared/*.cpp) \
+	$(wildcard $(SRCDIR)/cavepacker/shared/network/*.cpp) \
 	\
-	$(wildcard $(SRCDIR)/$(TARGET)/*.cpp) \
+	$(wildcard $(SRCDIR)/cavepacker/*.cpp) \
 	) \
 	\
 	$(SQLITE3_SRCS) \
