@@ -33,20 +33,20 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/engine/common/network/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/server/*.cpp) \	\
 	\
-	$(wildcard $(SRCDIR)/$(TARGET)/client/ui/windows/*.cpp) \
-	$(wildcard $(SRCDIR)/$(TARGET)/client/ui/windows/intro/*.cpp) \
-	$(wildcard $(SRCDIR)/$(TARGET)/client/ui/nodes/*.cpp) \
+	$(wildcard $(SRCDIR)/caveanddiamonds/client/ui/windows/*.cpp) \
+	$(wildcard $(SRCDIR)/caveanddiamonds/client/ui/windows/intro/*.cpp) \
+	$(wildcard $(SRCDIR)/caveanddiamonds/client/ui/nodes/*.cpp) \
 	\
-	$(wildcard $(SRCDIR)/$(TARGET)/client/*.cpp) \
+	$(wildcard $(SRCDIR)/caveanddiamonds/client/*.cpp) \
 	\
-	$(wildcard $(SRCDIR)/$(TARGET)/server/*.cpp) \
-	$(wildcard $(SRCDIR)/$(TARGET)/server/entities/*.cpp) \
-	$(wildcard $(SRCDIR)/$(TARGET)/server/map/*.cpp) \
+	$(wildcard $(SRCDIR)/caveanddiamonds/server/*.cpp) \
+	$(wildcard $(SRCDIR)/caveanddiamonds/server/entities/*.cpp) \
+	$(wildcard $(SRCDIR)/caveanddiamonds/server/map/*.cpp) \
 	\
-	$(wildcard $(SRCDIR)/$(TARGET)/shared/*.cpp) \
-	$(wildcard $(SRCDIR)/$(TARGET)/shared/network/*.cpp) \
+	$(wildcard $(SRCDIR)/caveanddiamonds/shared/*.cpp) \
+	$(wildcard $(SRCDIR)/caveanddiamonds/shared/network/*.cpp) \
 	\
-	$(wildcard $(SRCDIR)/$(TARGET)/*.cpp) \
+	$(wildcard $(SRCDIR)/caveanddiamonds/*.cpp) \
 	) \
 	\
 	$(SQLITE3_SRCS) \
