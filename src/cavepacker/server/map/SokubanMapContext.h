@@ -23,6 +23,7 @@ private:
 	void addPackage(int col, int row);
 	void addTarget(int col, int row);
 	void addTile(const std::string& tile, int col, int row);
+	bool isEmpty(int col, int row) const;
 public:
 	SokubanMapContext(const std::string& map);
 	virtual ~SokubanMapContext();

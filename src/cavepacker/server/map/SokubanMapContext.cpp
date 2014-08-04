@@ -14,6 +14,21 @@ SokubanMapContext::~SokubanMapContext() {
 void SokubanMapContext::onMapLoaded() {
 }
 
+bool SokubanMapContext::isEmpty(int col, int row) const {
+	if (row < 0)
+		return false;
+
+	for (std::vector<MapTileDefinition>::const_iterator i = _definitions.begin(); i != _definitions.end(); ++i) {
+		const MapTileDefinition& tileDef = *i;
+		if (tileDef.x != col)
+			continue;
+		if (tileDef.y != row)
+			continue;
+		return false;
+	}
+	return true;
+}
+
 bool SokubanMapContext::load(bool skipErrors) {
 	info(LOG_SERVER, "load the map " + _name);
 	resetTiles();
@@ -51,7 +66,7 @@ bool SokubanMapContext::load(bool skipErrors) {
 			empty = false;
 			break;
 		case Sokuban::GROUND:
-			if (!empty)
+			if (!empty && !isEmpty(col, row - 1))
 				addGround(col, row);
 			break;
 		case Sokuban::PLAYER:
