@@ -2,11 +2,13 @@
 #include "engine/client/ui/UI.h"
 #include "engine/client/ui/nodes/UINodeButton.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
+#include "engine/client/ui/windows/UIWindow.h"
 #include "engine/client/ui/windows/listener/QuitListener.h"
 #include "engine/client/ui/nodes/UINodeMainBackground.h"
 #include "engine/client/ui/layouts/UIVBoxLayout.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/Version.h"
+#include "engine/common/System.h"
 #include "engine/client/ui/windows/listener/OpenWindowListener.h"
 #include "engine/client/ui/nodes/UINodeMainButton.h"
 
