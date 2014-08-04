@@ -39,8 +39,8 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	twitter->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "https://twitter.com/MartinGerhardy")));
 	panel->add(twitter);
 
-	UINodeMainButton *facebook = new UINodeMainButton(_frontend, tr("Facebook"));
-	facebook->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "https://facebook.com/" APPNAME)));
+	UINodeMainButton *facebook = new UINodeMainButton(_frontend, tr("Homepage"));
+	facebook->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "http://caveproductions.org/")));
 	panel->add(facebook);
 
 	UINodeMainButton *quit = new UINodeMainButton(_frontend, tr("Quit"));
