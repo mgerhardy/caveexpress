@@ -25,6 +25,7 @@ public:
 	void setName (const std::string& name);
 	void storeStep (char step);
 	void undo ();
+	const std::string& getSolution () const;
 };
 
 inline ClientId Player::getClientId () const
@@ -40,4 +41,9 @@ inline const std::string& Player::getName () const
 inline void Player::setName (const std::string& name)
 {
 	_name = name;
+}
+
+inline const std::string& Player::getSolution () const
+{
+	return _solutionSave;
 }
