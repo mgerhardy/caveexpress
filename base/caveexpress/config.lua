@@ -4,7 +4,7 @@ end
 
 defaultwidth = -1
 defaultheight = -1
-defaultfullscreen = false
+defaultfullscreen = true
 defaultpersister = "sqlite"
 defaultfrontend = "sdl"
 defaultsoundengine = "sdl"
