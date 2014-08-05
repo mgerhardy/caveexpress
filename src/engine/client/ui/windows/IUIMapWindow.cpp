@@ -260,3 +260,14 @@ bool IUIMapWindow::isGameActive () const
 {
 	return _nodeMap->getMap().isActive();
 }
+
+bool IUIMapWindow::onMouseWheel (int32_t x, int32_t y)
+{
+	const float currentZoom = _nodeMap->getMap().getZoom();
+	const float step = 0.1f;
+	if (y < 0)
+		_nodeMap->getMap().setZoom(currentZoom + step);
+	else
+		_nodeMap->getMap().setZoom(currentZoom - step);
+	return UIWindow::onMouseWheel(x, y);
+}

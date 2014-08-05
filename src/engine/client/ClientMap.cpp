@@ -21,7 +21,7 @@
 #include <SDL.h>
 
 ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth) :
-		IMap(), _x(x), _y(y), _width(width), _height(height), _scale(referenceTileWidth), _viewScale(1.0f), _restartDue(0), _restartInitialized(0), _mapWidth(
+		IMap(), _x(x), _y(y), _width(width), _height(height), _scale(referenceTileWidth), _zoom(1.0f), _restartDue(0), _restartInitialized(0), _mapWidth(
 				0), _mapHeight(0), _player(nullptr), _time(0), _playerID(0), _frontend(frontend), _pause(false), _serviceProvider(
 						serviceProvider), _screenRumble(false), _screenRumbleStrength(0.0f), _screenRumbleOffsetX(
 						0), _screenRumbleOffsetY(0), _particleSystem(
@@ -51,7 +51,7 @@ bool ClientMap::isStarted () const
 
 void ClientMap::resetCurrentMap ()
 {
-	_viewScale = 1.0f;
+	_zoom = 1.0f;
 	_timeManager.reset();
 	_settings.clear();
 	_name.clear();
@@ -65,7 +65,7 @@ void ClientMap::resetCurrentMap ()
 	_player = nullptr;
 	_pause = false;
 	_playerID = 0;
-	_camera.update(vec2_zero, 0);
+	_camera.update(vec2_zero, 0, 1.0f);
 	_restartDue = 0;
 	_restartInitialized = 0;
 	_particleSystem.clear();
@@ -76,9 +76,9 @@ void ClientMap::resetCurrentMap ()
 	SoundControl.haltAll();
 }
 
-void ClientMap::setScale (const float viewScale)
+void ClientMap::setZoom (const float zoom)
 {
-	_viewScale = clamp(viewScale, 0.1f, 4.0f);
+	_zoom = clamp(zoom, 0.1f, 4.0f);
 }
 
 void ClientMap::disconnect ()
@@ -139,7 +139,7 @@ void ClientMap::renderLayer (int x, int y, Layer layer) const
 
 	for (ClientEntityMapConstIter iter = _entities.begin(); iter != _entities.end(); ++iter) {
 		const ClientEntityPtr e = iter->second;
-		e->render(_frontend, layer, _scale, _viewScale, mapPosX, mapPosY);
+		e->render(_frontend, layer, _scale, _zoom, mapPosX, mapPosY);
 	}
 }
 
@@ -167,9 +167,9 @@ void ClientMap::render (int x, int y) const
 	int layerY = baseY;
 	getLayerOffset(layerX, layerY);
 
-	_frontend->enableScissor(layerX * _viewScale, layerY * _viewScale,
-			std::min(getWidth() - layerX, _mapWidth * _scale) * _viewScale,
-			std::min(getHeight() - layerY, _mapHeight * _scale) * _viewScale);
+	_frontend->enableScissor(layerX, layerY,
+			std::min(getWidth() - layerX, _mapWidth * _scale),
+			std::min(getHeight() - layerY, _mapHeight * _scale));
 	renderLayer(layerX, layerY, LAYER_BACK);
 	renderLayer(layerX, layerY, LAYER_MIDDLE);
 	renderLayer(layerX, layerY, LAYER_FRONT);
@@ -178,7 +178,7 @@ void ClientMap::render (int x, int y) const
 		renderFadeOutOverlay(x, y);
 	}
 
-	Config.setDebugRendererData(layerX, layerY, getWidth(), getHeight(), _scale * _viewScale);
+	Config.setDebugRendererData(layerX, layerY, getWidth(), getHeight(), _scale);
 	Config.getDebugRenderer().render();
 
 	_particleSystem.render(_frontend, layerX, layerY);
@@ -270,7 +270,7 @@ void ClientMap::update (uint32_t deltaTime)
 
 	_time += deltaTime;
 	if (_player) {
-		_camera.update(_player->getPos(), _player->getMoveDirection());
+		_camera.update(_player->getPos(), _player->getMoveDirection(), _zoom);
 		SoundControl.setListenerPosition(_player->getPos());
 	}
 	const ExecutionTime updateTime("ClientMap", 2000L);

@@ -24,11 +24,13 @@ private:
 	// the pixels of one grid tile
 	int _scale;
 
+	float _zoom;
+
 	void reset ();
 
 public:
 	void init (int width, int height, int mapGridWidth, int mapGridHeight, int scale);
-	void update (const vec2& playerPos, Direction direction);
+	void update (const vec2& playerPos, Direction direction, float zoom);
 	int getViewportX () const;
 	int getViewportY () const;
 

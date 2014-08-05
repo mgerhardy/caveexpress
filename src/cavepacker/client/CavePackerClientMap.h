@@ -13,5 +13,4 @@ public:
 	int getWaterGround() const override { return 0; }
 
 	void start () override;
-	void render (int x, int y) const override;
 };

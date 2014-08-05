@@ -57,4 +57,5 @@ public:
 	virtual bool onPop () override;
 	virtual void onPushedOver () override;
 	virtual void onActive () override;
+	virtual bool onMouseWheel (int32_t x, int32_t y) override;
 };
