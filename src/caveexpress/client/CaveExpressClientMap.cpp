@@ -48,14 +48,14 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 
 	const int mapPosY = y + _y;
 	const int yWater = mapPosY + waterHeightPixel;
-	const int widthWater = _frontend->getWidth();
+	const int widthWater = std::min(getWidth(), static_cast<int>(getMapWidth() * _scale * _viewScale));
 	const Color waterLineColor = { 0.99f, 0.99f, 1.0f, 1.0f };
 	static const Color color = { WATERCOLOR[0] / 255.0f, WATERCOLOR[1] / 255.0f, WATERCOLOR[2] / 255.0f, WATER_ALPHA
 			/ 255.0f };
-	_frontend->renderLine(x + _x, yWater - 1, x + _x + widthWater, yWater - 1, waterLineColor);
+	_frontend->renderLine((x + _x) * _viewScale, (yWater - 1) * _viewScale, (x + _x) * _viewScale + widthWater, (yWater - 1) * _viewScale, waterLineColor);
 	const int xWater = x + _x;
 	const int heightWater = _frontend->getHeight() - yWater;
-	_frontend->renderFilledRect(xWater, yWater, widthWater, heightWater, color);
+	_frontend->renderFilledRect(xWater * _viewScale, yWater * _viewScale, widthWater, heightWater * _viewScale, color);
 }
 
 bool CaveExpressClientMap::drop ()

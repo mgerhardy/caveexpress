@@ -34,7 +34,7 @@ void ClientEntity::onVisibilityChanged ()
 {
 }
 
-void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, int offsetX, int offsetY) const
+void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY) const
 {
 	if (!_currSprite)
 		return;
@@ -61,23 +61,25 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, int offs
 		break;
 	}
 	}
+	posX *= zoom;
+	posY *= zoom;
 
 	setScreenPos(posX, posY);
 
-	const int ropeX1 = basePosX;
-	const int ropeY1 = basePosY - _size.y * scale / 2.0f;
+	const int ropeX1 = basePosX * zoom;
+	const int ropeY1 = (basePosY - _size.y * scale / 2.0f) * zoom;
 	int ropeX2 = 0;
 	int ropeY2 = 0;
 	if (ropeEntity && layer == LAYER_MIDDLE) {
 		const vec2& pos = ropeEntity->getPos();
 		const vec2& size = ropeEntity->getSize();
-		ropeX2 = offsetX + pos.x * scale;
-		ropeY2 = offsetY + pos.y * scale + size.y * scale / 2.0f;
+		ropeX2 = (offsetX + pos.x * scale) * zoom;
+		ropeY2 = (offsetY + pos.y * scale + size.y * scale / 2.0f) * zoom;
 		const Color color = { 0.5f, 0.3f, 0.3f, 1.0f };
 		frontend->renderLine(ropeX1, ropeY1, ropeX2, ropeY2, color);
 	}
 
-	const bool visible = _currSprite->render(frontend, layer, posX, posY, _angle, _alpha);
+	const bool visible = _currSprite->render(frontend, layer, posX, posY, zoom, _angle, _alpha);
 	_visChanged = visible != _visible;
 
 	int offsetPosX = posX;
@@ -93,7 +95,7 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, int offs
 	}
 	for (EntityOverlaysConstIter i = _entityOverlays.begin(); i != _entityOverlays.end(); ++i) {
 		const SpritePtr& overlay = *i;
-		overlay->render(frontend, layer, _align, offsetPosX, offsetPosY, _angle, _alpha);
+		overlay->render(frontend, layer, _align, offsetPosX, offsetPosY, zoom, _angle, _alpha);
 	}
 
 	const bool debug = Config.getConfigVar("debugentity")->getBoolValue();

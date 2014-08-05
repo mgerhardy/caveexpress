@@ -30,7 +30,9 @@ protected:
 	int _y;
 	int _width;
 	int _height;
+	// the reference tile width to convert the grid sizes into pixels
 	int _scale;
+	float _viewScale;
 
 	// all the maptiles and other entities (e.g. stones) in this map
 	ClientEntityMap _entities;
@@ -88,6 +90,7 @@ public:
 
 	virtual void resetCurrentMap ();
 	void close ();
+	void setScale (const float viewScale);
 	void disconnect ();
 	virtual void init (uint16_t playerID);
 	bool load (const std::string& name, const std::string& title);

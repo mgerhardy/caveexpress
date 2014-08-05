@@ -115,6 +115,11 @@ bool Sprite::render (IFrontend *frontend, Layer layer, int y) const
 
 bool Sprite::render (IFrontend *frontend, Layer layer, int x, int y, int16_t angle, float alpha) const
 {
+	return render(frontend, layer, x, y, 1.0f, angle, alpha);
+}
+
+bool Sprite::render (IFrontend *frontend, Layer layer, int x, int y, float zoom, int16_t angle, float alpha) const
+{
 	if (_currentFrame == -1)
 		return false;
 
@@ -137,6 +142,6 @@ bool Sprite::render (IFrontend *frontend, Layer layer, int x, int y, int16_t ang
 		return false;
 
 	// the positions are the center of the sprites - so we have to offset them here
-	frontend->renderImage(t.get(), x, y, t->getWidth(), t->getHeight(), angle, alpha);
+	frontend->renderImage(t.get(), x, y, t->getWidth() * zoom, t->getHeight() * zoom, angle, alpha);
 	return true;
 }

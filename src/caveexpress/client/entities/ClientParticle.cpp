@@ -46,7 +46,7 @@ void ClientParticle::updateParticle (int index, float x, float y, uint32_t lifet
 	d.lifetime = lifetime;
 }
 
-void ClientParticle::render (IFrontend *frontend, Layer layer, int scale, int offsetX, int offsetY) const
+void ClientParticle::render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY) const
 {
 	const TexturePtr& texture = UI::get().loadTexture(_sprite);
 	if (!texture || !texture->isValid()) {
@@ -63,7 +63,7 @@ void ClientParticle::render (IFrontend *frontend, Layer layer, int scale, int of
 		const int posX = basePosX + p.pos.x * scale;
 		const int posY = basePosY + p.pos.y * scale;
 		const float alpha = p.lifetime / static_cast<float>(_lifetime);
-		frontend->renderImage(texture.get(), posX, posY, 20, 16, p.angle, alpha);
+		frontend->renderImage(texture.get(), posX, posY, 20.0f * zoom, 16.0f * zoom, p.angle, alpha);
 	}
 }
 

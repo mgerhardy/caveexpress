@@ -62,6 +62,7 @@ public:
 	// param[in] x normalized x screen coordinates (0 - EventHandler::WIDTH)
 	// param[in] y normalized y screen coordinates (0 - EventHandler::HEIGHT)
 	bool render (IFrontend *frontend, Layer layer, int x, int y, int16_t angle = 0, float alpha = 1.0f) const;
+	bool render (IFrontend *frontend, Layer layer, int x, int y, float zoom, int16_t angle = 0, float alpha = 1.0f) const;
 
 	void setCurrentFrame (int frame);
 

@@ -12,14 +12,14 @@ ClientWindowTile::~ClientWindowTile ()
 {
 }
 
-void ClientWindowTile::render (IFrontend *frontend, Layer layer, int scale, int offsetX, int offsetY) const
+void ClientWindowTile::render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY) const
 {
 	if (_lightState)
 		_currSprite->setCurrentFrame(0);
 	else
 		_currSprite->setCurrentFrame(1);
 
-	ClientMapTile::render(frontend, layer, scale, offsetX, offsetY);
+	ClientMapTile::render(frontend, layer, scale, zoom, offsetX, offsetY);
 }
 
 ClientEntityPtr ClientWindowTile::Factory::create (const ClientEntityFactoryContext *ctx) const

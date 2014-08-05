@@ -22,7 +22,7 @@ public:
 	bool isLightState () const;
 
 	// ClientEntity
-	void render (IFrontend *frontend, Layer layer, int scale, int offsetX, int offsetY) const override;
+	void render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY) const override;
 };
 
 inline bool ClientCaveTile::isLightState () const

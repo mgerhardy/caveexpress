@@ -82,7 +82,7 @@ public:
 	}
 
 	// @param[in] scale The conversion from the physics coordinate system to the pixel coordinate system.
-	virtual void render (IFrontend *frontend, Layer layer, int scale, int offsetX = 0, int offsetY = 0) const;
+	virtual void render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX = 0, int offsetY = 0) const;
 
 	inline const Animation& getAnimation () const
 	{
