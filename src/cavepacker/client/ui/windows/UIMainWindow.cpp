@@ -31,6 +31,10 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_SETTINGS)));
 	panel->add(settings);
 
+	UINodeMainButton *gesture = new UINodeMainButton(_frontend, tr("Gesture"));
+	gesture->addListener(UINodeListenerPtr(new OpenWindowListener("gesture")));
+	panel->add(gesture);
+
 	if (System.supportPayment()) {
 		UINodeMainButton *payment = new UINodeMainButton(_frontend, tr("Extras"));
 		payment->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_PAYMENT)));

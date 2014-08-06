@@ -7,5 +7,4 @@ public:
 	UIGestureWindow (IFrontend *frontend);
 	void onActive () override;
 	bool onGestureRecord (int64_t gestureId) override;
-	bool onGesture (int64_t gestureId) override;
 };

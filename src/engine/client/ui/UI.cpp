@@ -172,6 +172,14 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 	Singleton<GameRegistry>::getInstance().getGame()->initUI(_frontend, serviceProvider);
 
 	_mouseCursor = loadTexture("mouse");
+
+	const FilePtr& f = FS.getFile("gesture");
+	SDL_RWops* rwops = SDL_RWFromFile(f->getURI().getPath().c_str(), "rb");
+	if (SDL_LoadDollarTemplates(-1, rwops) == 0) {
+		info(LOG_CLIENT, "Could not load " + f->getURI().getPath());
+	} else {
+		info(LOG_CLIENT, "Loaded gestures " + f->getURI().getPath());
+	}
 }
 
 void UI::initStack ()
@@ -539,6 +547,8 @@ void UI::onGesture (int64_t gestureId)
 {
 	if (_restart)
 		return;
+
+	info(LOG_CLIENT, String::format("detected gesture %i", gestureId));
 
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {

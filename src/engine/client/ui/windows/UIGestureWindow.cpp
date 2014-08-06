@@ -35,10 +35,3 @@ bool UIGestureWindow::onGestureRecord (int64_t gestureId)
 	SDL_RWclose(rwops);
 	return retVal;
 }
-
-bool UIGestureWindow::onGesture (int64_t gestureId)
-{
-	const bool retVal = UIWindow::onGesture(gestureId);
-	info(LOG_CLIENT, String::format("detected gesture %i", gestureId));
-	return retVal;
-}
