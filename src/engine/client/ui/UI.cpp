@@ -176,7 +176,7 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 	const FilePtr& f = FS.getFile("gesture");
 	SDL_RWops* rwops = SDL_RWFromFile(f->getURI().getPath().c_str(), "rb");
 	if (SDL_LoadDollarTemplates(-1, rwops) == 0) {
-		info(LOG_CLIENT, "Could not load " + f->getURI().getPath());
+		info(LOG_CLIENT, "Could not load gesture " + f->getURI().getPath());
 	} else {
 		info(LOG_CLIENT, "Loaded gestures " + f->getURI().getPath());
 	}
