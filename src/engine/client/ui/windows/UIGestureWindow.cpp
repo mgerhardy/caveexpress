@@ -25,7 +25,14 @@ bool UIGestureWindow::onGestureRecord (int64_t gestureId)
 	std::string path;
 	const FilePtr& f = FS.getFile(uriLocal);
 	SDL_RWops* rwops = SDL_RWFromFile(f->getURI().getPath().c_str(), "wb");
-	SDL_SaveAllDollarTemplates(rwops);
-	SDL_RWclose(rwops);
+	if (rwops) {
+		info(LOG_CLIENT, "Save gestures to " + f->getURI().getPath());
+		if (SDL_SaveAllDollarTemplates(rwops) <= 0) {
+			info(LOG_CLIENT, "Failed to save gestures to " + f->getURI().getPath());
+		}
+		SDL_RWclose(rwops);
+	} else {
+		info(LOG_CLIENT, "Failed to save gestures to " + f->getURI().getPath());
+	}
 	return retVal;
 }
