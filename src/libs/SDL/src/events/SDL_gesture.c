@@ -184,7 +184,7 @@ static int SDL_AddDollarGesture(SDL_GestureTouch* inTouch, SDL_FloatPoint* path)
     int index = -1;
     int i = 0;
     if (inTouch == NULL) {
-        if (SDL_numGestureTouches == 0) return -1;
+        if (SDL_numGestureTouches == 0) return SDL_SetError("no gesture touch devices registered");
         for (i = 0; i < SDL_numGestureTouches; i++) {
             inTouch = &SDL_gestureTouch[i];
             index = SDL_AddDollarGesture_one(inTouch, path);
@@ -201,12 +201,12 @@ int SDL_LoadDollarTemplates(SDL_TouchID touchId, SDL_RWops *src)
 {
     int i,loaded = 0;
     SDL_GestureTouch *touch = NULL;
-    if (src == NULL) return 0;
+    if (src == NULL) return SDL_SetError("a NULL rwops given");
     if (touchId >= 0) {
         for (i = 0; i < SDL_numGestureTouches; i++)
             if (SDL_gestureTouch[i].id == touchId)
                 touch = &SDL_gestureTouch[i];
-        if (touch == NULL) return -1;
+        if (touch == NULL) return SDL_SetError("given touch id not found");
     }
 
     while (1) {
