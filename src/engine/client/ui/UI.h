@@ -178,6 +178,8 @@ public:
 	void onJoystickMotion (bool horizontal, int value) override;
 	void onJoystickButtonPress (uint8_t button) override;
 	void onControllerButtonPress (const std::string& button) override;
+	void onGesture (int64_t gestureId) override;
+	void onGestureRecord (int64_t gestureId) override;
 };
 
 inline TexturePtr UI::loadTexture (const std::string& name) const

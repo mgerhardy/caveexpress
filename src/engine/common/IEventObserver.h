@@ -124,4 +124,12 @@ public:
 	virtual void onWindowResize ()
 	{
 	}
+
+	virtual void onGesture (int64_t gestureId)
+	{
+	}
+
+	virtual void onGestureRecord (int64_t gestureId)
+	{
+	}
 };

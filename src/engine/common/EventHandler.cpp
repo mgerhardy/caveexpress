@@ -120,6 +120,15 @@ bool EventHandler::handleEvent (SDL_Event &event)
 	case SDL_JOYDEVICEREMOVED:
 		joystickDeviceRemoved(event.jdevice.which);
 		break;
+	case SDL_DOLLARRECORD:
+		gestureRecord(event.dgesture.gestureId);
+		break;
+	case SDL_DOLLARGESTURE:
+		gesture(event.dgesture.gestureId);
+		break;
+	case SDL_MULTIGESTURE:
+		//gesture(event.mgesture.gestureId);
+		break;
 #endif
 	case SDL_JOYHATMOTION:
 		break;
@@ -352,5 +361,19 @@ void EventHandler::fingerMotion (int64_t finger, float x, float y, float dx, flo
 {
 	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
 		(*i)->onFingerMotion(finger, x, y, dx, dy);
+	}
+}
+
+void EventHandler::gestureRecord (int64_t gestureId)
+{
+	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
+		(*i)->onGestureRecord(gestureId);
+	}
+}
+
+void EventHandler::gesture (int64_t gestureId)
+{
+	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
+		(*i)->onGesture(gestureId);
 	}
 }

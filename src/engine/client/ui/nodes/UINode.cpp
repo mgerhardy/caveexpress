@@ -780,6 +780,40 @@ bool UINode::onMouseButtonRelease (int32_t x, int32_t y, unsigned char button)
 	return false;
 }
 
+bool UINode::onGesture (int64_t gestureId)
+{
+	if (!_enabled)
+		return false;
+
+	for (UINodeListRevIter i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
+		UINode* nodePtr = *i;
+		if (!nodePtr->hasFocus())
+			continue;
+		if ((*i)->onGesture(gestureId)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool UINode::onGestureRecord (int64_t gestureId)
+{
+	if (!_enabled)
+		return false;
+
+	for (UINodeListRevIter i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
+		UINode* nodePtr = *i;
+		if (!nodePtr->hasFocus())
+			continue;
+		if ((*i)->onGestureRecord(gestureId)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool UINode::onMouseButtonPress (int32_t x, int32_t y, unsigned char button)
 {
 	if (!_enabled)

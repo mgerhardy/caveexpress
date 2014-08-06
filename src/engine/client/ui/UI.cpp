@@ -535,6 +535,38 @@ void UI::onJoystickButtonPress (uint8_t button)
 	debug(LOG_CLIENT, String::format("joystick button %i was pressed and not handled", (int)button));
 }
 
+void UI::onGesture (int64_t gestureId)
+{
+	if (_restart)
+		return;
+
+	UIStack stack = _stack;
+	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
+		UIWindow* window = *i;
+		if (window->onGesture(gestureId))
+			return;
+		if (window->isModal() || window->isFullscreen())
+			return;
+	}
+	debug(LOG_CLIENT, "gesture event was not handled");
+}
+
+void UI::onGestureRecord (int64_t gestureId)
+{
+	if (_restart)
+		return;
+
+	UIStack stack = _stack;
+	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
+		UIWindow* window = *i;
+		if (window->onGestureRecord(gestureId))
+			return;
+		if (window->isModal() || window->isFullscreen())
+			return;
+	}
+	debug(LOG_CLIENT, "gesture record event was not handled");
+}
+
 void UI::onControllerButtonPress (const std::string& button)
 {
 	if (_restart)

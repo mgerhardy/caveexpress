@@ -364,7 +364,8 @@ public:
 	virtual bool onKeyRelease (int32_t key);
 	virtual bool onMouseButtonRelease (int32_t x, int32_t y, unsigned char button);
 	virtual bool onMouseButtonPress (int32_t x, int32_t y, unsigned char button);
-
+	virtual bool onGesture (int64_t gestureId);
+	virtual bool onGestureRecord (int64_t gestureId);
 	virtual bool onMouseLeftRelease (int32_t x, int32_t y);
 	virtual bool onMouseMiddleRelease (int32_t x, int32_t y);
 	virtual bool onMouseRightRelease (int32_t x, int32_t y);

@@ -49,4 +49,6 @@ public:
 	void fingerPress (int64_t finger, float x, float y);
 	void fingerRelease (int64_t finger, float x, float y);
 	void fingerMotion (int64_t finger, float x, float y, float dx, float dy);
+	void gestureRecord (int64_t gestureId);
+	void gesture (int64_t gestureId);
 };
