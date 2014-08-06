@@ -31,6 +31,7 @@
 *** reduce collision damage
 *** packages are easier to carry (reduced weight)
 ** finish lava
+** fix zooming for some maps (e.g. last map of first campaign)
 
 * Windows
 ** project.rc.in to replace the appname
