@@ -46,13 +46,13 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	y += _screenRumbleOffsetY;
 	const int heightWater = waterHeight * _scale;
 	const int yWater = y + getMapHeight() * _scale - heightWater;
-	const int widthWater = getMapWidth() * _scale * _zoom;
+	const int widthWater = getMapWidth() * _scale;
 	const Color waterLineColor = { 0.99f, 0.99f, 1.0f, 1.0f };
 	static const Color color = { WATERCOLOR[0] / 255.0f, WATERCOLOR[1] / 255.0f, WATERCOLOR[2] / 255.0f, WATER_ALPHA
 			/ 255.0f };
-	const int xWater = (x + _x) * _zoom;
-	_frontend->renderLine(xWater, (yWater - 1) * _zoom, (x + _x) * _zoom + widthWater, (yWater - 1) * _zoom, waterLineColor);
-	_frontend->renderFilledRect(xWater, yWater * _zoom, widthWater, heightWater * _zoom, color);
+	const int xWater = x * _zoom;
+	_frontend->renderLine(xWater, (yWater - 1) * _zoom, x * _zoom + widthWater * _zoom, (yWater - 1) * _zoom, waterLineColor);
+	_frontend->renderFilledRect(xWater, yWater * _zoom, widthWater * _zoom, heightWater * _zoom, color);
 }
 
 bool CaveExpressClientMap::drop ()
