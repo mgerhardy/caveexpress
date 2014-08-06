@@ -13,6 +13,12 @@ void UIGestureWindow::onActive() {
 	if (!SDL_RecordGesture(-1)) {
 		return;
 	}
+
+	const FilePtr& f = FS.getFile("gesture");
+	SDL_RWops* rwops = SDL_RWFromFile(f->getURI().getPath().c_str(), "rb");
+	if (SDL_LoadDollarTemplates(-1, rwops) == 0) {
+		info(LOG_CLIENT, "Could not load " + f->getURI().getPath());
+	}
 }
 
 bool UIGestureWindow::onGestureRecord (int64_t gestureId)
