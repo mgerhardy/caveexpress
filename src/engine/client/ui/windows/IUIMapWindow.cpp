@@ -261,6 +261,12 @@ bool IUIMapWindow::isGameActive () const
 	return _nodeMap->getMap().isActive();
 }
 
+bool IUIMapWindow::onGesture (int64_t gesture)
+{
+	const bool retVal = UIWindow::onGesture(gesture);
+	return retVal;
+}
+
 bool IUIMapWindow::onMouseWheel (int32_t x, int32_t y)
 {
 	const float currentZoom = _nodeMap->getMap().getZoom();

@@ -175,7 +175,14 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 
 	const FilePtr& f = FS.getFile("gesture");
 	SDL_RWops* rwops = SDL_RWFromFile(f->getURI().getPath().c_str(), "rb");
-	if (SDL_LoadDollarTemplates(-1, rwops) == 0) {
+	if (rwops == nullptr) {
+		error(LOG_FILE, "Could not create rwops: " + f->getURI().getPath());
+		return;
+	}
+	const int n = SDL_LoadDollarTemplates(-1, rwops);
+	if (n == -1) {
+		error(LOG_CLIENT, "Failed to load gesture " + std::string(SDL_GetError()));
+	} else if (n == 0) {
 		info(LOG_CLIENT, "Could not load gesture " + f->getURI().getPath());
 	} else {
 		info(LOG_CLIENT, "Loaded gestures " + f->getURI().getPath());

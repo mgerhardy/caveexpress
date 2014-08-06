@@ -54,6 +54,7 @@ public:
 	// all players are connected.
 	virtual void initWaitingForPlayers (bool adminOptions);
 
+	virtual bool onGesture (int64_t gesture) override;
 	virtual bool onPop () override;
 	virtual void onPushedOver () override;
 	virtual void onActive () override;
