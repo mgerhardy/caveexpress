@@ -27,6 +27,8 @@ ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, 
 						0), _screenRumbleOffsetY(0), _particleSystem(
 				Config.getClientSideParticleMaxAmount()), _tutorial(false), _started(false), _theme(&ThemeTypes::ROCK)
 {
+	_maxZoom = Config.getConfigVar("maxzoom", "4.0");
+	_minZoom = Config.getConfigVar("minzoom", "0.1");
 }
 
 ClientMap::~ClientMap ()
@@ -78,7 +80,9 @@ void ClientMap::resetCurrentMap ()
 
 void ClientMap::setZoom (const float zoom)
 {
-	_zoom = clamp(zoom, 0.1f, 4.0f);
+	const float maxZoom = _maxZoom->getFloatValue();
+	const float minZoom = _minZoom->getFloatValue();
+	_zoom = clamp(zoom, minZoom, maxZoom);
 }
 
 void ClientMap::disconnect ()

@@ -7,6 +7,7 @@
 #include "engine/common/Animation.h"
 #include "engine/common/IEventObserver.h"
 #include "engine/common/IMap.h"
+#include "engine/common/ConfigVar.h"
 #include "engine/common/ThemeType.h"
 #include "engine/common/TimeManager.h"
 #include "engine/common/network/INetwork.h"
@@ -70,6 +71,9 @@ protected:
 	std::string _introWindow;
 	bool _started;
 	const ThemeType* _theme;
+
+	ConfigVarPtr _minZoom;
+	ConfigVarPtr _maxZoom;
 
 	void renderLayer (int x, int y, Layer layer) const;
 	void renderFadeOutOverlay (int x, int y) const;
