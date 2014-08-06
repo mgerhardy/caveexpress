@@ -167,9 +167,7 @@ void ClientMap::render (int x, int y) const
 	int layerY = baseY;
 	getLayerOffset(layerX, layerY);
 
-	_frontend->enableScissor(layerX, layerY,
-			std::min(getWidth() - layerX, _mapWidth * _scale),
-			std::min(getHeight() - layerY, _mapHeight * _scale));
+	_frontend->enableScissor(x, y, getMapWidth() * _scale * _zoom, getMapHeight() * _scale * _zoom);
 	renderLayer(layerX, layerY, LAYER_BACK);
 	renderLayer(layerX, layerY, LAYER_MIDDLE);
 	renderLayer(layerX, layerY, LAYER_FRONT);
@@ -178,12 +176,17 @@ void ClientMap::render (int x, int y) const
 		renderFadeOutOverlay(x, y);
 	}
 
-	Config.setDebugRendererData(layerX, layerY, getWidth(), getHeight(), _scale);
+	Config.setDebugRendererData(layerX, layerY, getWidth(), getHeight(), _scale * _zoom);
 	Config.getDebugRenderer().render();
 
-	_particleSystem.render(_frontend, layerX, layerY);
+	renderParticles(layerX, layerY);
 
 	_frontend->disableScissor();
+}
+
+void ClientMap::renderParticles (int x, int y) const
+{
+	_particleSystem.render(_frontend, x, y, _zoom);
 }
 
 void ClientMap::init (uint16_t playerID)

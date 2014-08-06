@@ -26,7 +26,7 @@ TEST_F(ParticleTest, testParticleSystem) {
 	ASSERT_EQ(bubbles, system.getParticleAmount());
 	ASSERT_TRUE(system.hasParticles());
 	system.update(1);
-	system.render(&_testFrontend, 0, 0);
+	system.render(&_testFrontend, 0, 0, 1.0f);
 	system.clear();
 	ASSERT_FALSE(system.hasParticles());
 }

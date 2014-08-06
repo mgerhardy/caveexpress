@@ -17,7 +17,7 @@ public:
 
 	void clear ();
 
-	void render (IFrontend* frontend, int x, int y) const;
+	void render (IFrontend* frontend, int x, int y, float zoom) const;
 	void update (uint32_t deltaTime);
 	bool spawn (const ParticlePtr& particle);
 	void remove (const ParticlePtr& particle);

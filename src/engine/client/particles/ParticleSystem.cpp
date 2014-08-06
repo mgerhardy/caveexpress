@@ -10,11 +10,11 @@ ParticleSystem::~ParticleSystem ()
 	clear();
 }
 
-void ParticleSystem::render (IFrontend* frontend, int x, int y) const
+void ParticleSystem::render (IFrontend* frontend, int x, int y, float zoom) const
 {
 	for (ParticlesConstIter i = _particles.begin(); i != _particles.end(); ++i) {
 		const ParticlePtr& t = *i;
-		t->render(frontend, x, y);
+		t->render(frontend, x, y, zoom);
 	}
 }
 

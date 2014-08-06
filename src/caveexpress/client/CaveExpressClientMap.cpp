@@ -44,18 +44,15 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 		return;
 	x += _screenRumbleOffsetX;
 	y += _screenRumbleOffsetY;
-	const int waterHeightPixel = waterHeight * _scale;
-
-	const int mapPosY = y + _y;
-	const int yWater = mapPosY + waterHeightPixel;
-	const int widthWater = std::min(getWidth(), static_cast<int>(getMapWidth() * _scale * _zoom));
+	const int heightWater = waterHeight * _scale;
+	const int yWater = y + getMapHeight() * _scale - heightWater;
+	const int widthWater = getMapWidth() * _scale * _zoom;
 	const Color waterLineColor = { 0.99f, 0.99f, 1.0f, 1.0f };
 	static const Color color = { WATERCOLOR[0] / 255.0f, WATERCOLOR[1] / 255.0f, WATERCOLOR[2] / 255.0f, WATER_ALPHA
 			/ 255.0f };
-	_frontend->renderLine((x + _x) * _zoom, (yWater - 1) * _zoom, (x + _x) * _zoom + widthWater, (yWater - 1) * _zoom, waterLineColor);
-	const int xWater = x + _x;
-	const int heightWater = _frontend->getHeight() - yWater;
-	_frontend->renderFilledRect(xWater * _zoom, yWater * _zoom, widthWater, heightWater * _zoom, color);
+	const int xWater = (x + _x) * _zoom;
+	_frontend->renderLine(xWater, (yWater - 1) * _zoom, (x + _x) * _zoom + widthWater, (yWater - 1) * _zoom, waterLineColor);
+	_frontend->renderFilledRect(xWater, yWater * _zoom, widthWater, heightWater * _zoom, color);
 }
 
 bool CaveExpressClientMap::drop ()
@@ -122,6 +119,12 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 	}
 }
 
+void CaveExpressClientMap::renderParticles (int x, int y) const
+{
+	renderWater(x, y);
+	ClientMap::renderParticles(x, y);
+}
+
 void CaveExpressClientMap::start () {
 	ClientMap::start();
 	for (ClientEntityMapConstIter i = _entities.begin(); i != _entities.end(); ++i) {
@@ -141,34 +144,4 @@ void CaveExpressClientMap::start () {
 			_particleSystem.spawn(ParticlePtr(new Sparkle(*this, startX, startY, sizeW, sizeH)));
 		}
 	}
-}
-
-void CaveExpressClientMap::render (int x, int y) const
-{
-	ExecutionTime renderTime("ClientMapRender", 2000L);
-	const int baseX = x + _x + _camera.getViewportX();
-	const int baseY = y + _y + _camera.getViewportY();
-	int layerX = baseX;
-	int layerY = baseY;
-	getLayerOffset(layerX, layerY);
-
-	_frontend->enableScissor(layerX, layerY,
-			std::min(getWidth() - layerX, _mapWidth * _scale),
-			std::min(getHeight() - layerY, _mapHeight * _scale));
-	renderLayer(layerX, layerY, LAYER_BACK);
-	renderLayer(layerX, layerY, LAYER_MIDDLE);
-	renderLayer(layerX, layerY, LAYER_FRONT);
-
-	if (_restartDue != 0) {
-		renderFadeOutOverlay(x, y);
-	}
-
-	Config.setDebugRendererData(layerX, layerY, getWidth(), getHeight(), _scale);
-	Config.getDebugRenderer().render();
-
-	renderWater(x + _x, layerY);
-
-	_particleSystem.render(_frontend, layerX, layerY);
-
-	_frontend->disableScissor();
 }

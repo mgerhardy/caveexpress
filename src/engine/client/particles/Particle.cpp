@@ -56,11 +56,11 @@ bool Particle::update (uint32_t deltaTime)
 	return true;
 }
 
-void Particle::render (IFrontend* frontend, int x, int y) const
+void Particle::render (IFrontend* frontend, int x, int y, float zoom) const
 {
 	if (!_texture || !_texture->isValid())
 		return;
-	frontend->renderImage(_texture.get(), x + _s.x, y + _s.y, _texture->getWidth(), _texture->getHeight(), _angle, _alpha);
+	frontend->renderImage(_texture.get(), x + _s.x * zoom, y + _s.y * zoom, _texture->getWidth() * zoom, _texture->getHeight() * zoom, _angle, _alpha);
 }
 
 std::string Particle::toString() const

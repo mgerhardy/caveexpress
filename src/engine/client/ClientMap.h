@@ -84,6 +84,7 @@ public:
 	virtual ~ClientMap ();
 
 	virtual void render (int x, int y) const;
+	virtual void renderParticles (int x, int y) const;
 	virtual void setSetting (const std::string& key, const std::string& value);
 
 	virtual bool secondFinger () { return false; }
@@ -137,9 +138,9 @@ public:
 	void rumble (float strength, int lengthMillis);
 	void spawnInfo (const vec2& position, const EntityType& type);
 
-	int getWaterWidth () const override { return _mapWidth * _scale; }
-	int getPixelWidth () const override { return _mapWidth * _scale; }
-	int getPixelHeight () const override { return _mapHeight * _scale; }
+	int getWaterWidth () const override { return _mapWidth * _scale * _zoom; }
+	int getPixelWidth () const override { return _mapWidth * _scale * _zoom; }
+	int getPixelHeight () const override { return _mapHeight * _scale * _zoom; }
 	TexturePtr loadTexture (const std::string& name) const override;
 
 	// IMap
