@@ -10,6 +10,9 @@ private:
 	int _mapPixelWidth;
 	int _mapPixelHeight;
 
+	int _mapGridWidth;
+	int _mapGridHeight;
+
 	int _viewportX;
 	int _viewportY;
 
