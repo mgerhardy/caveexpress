@@ -178,7 +178,7 @@ void ClientMap::render (int x, int y) const
 	int layerY = baseY;
 	getLayerOffset(layerX, layerY);
 
-	_frontend->enableScissor(x + _x, y + _y, getMapWidth() * _scale * _zoom, getMapHeight() * _scale * _zoom);
+	_frontend->enableScissor(std::max(0, layerX), std::max(0, layerY), getMapWidth() * _scale * _zoom, getMapHeight() * _scale * _zoom);
 	renderLayer(layerX, layerY, LAYER_BACK);
 	renderLayer(layerX, layerY, LAYER_MIDDLE);
 	renderLayer(layerX, layerY, LAYER_FRONT);
