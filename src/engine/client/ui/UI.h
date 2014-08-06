@@ -88,6 +88,7 @@ private:
 
 	UI ();
 	void pushCmd (const std::string& windowID);
+	bool loadGesture (const std::string& name);
 
 public:
 	virtual ~UI ();

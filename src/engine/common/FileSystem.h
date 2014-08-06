@@ -20,6 +20,7 @@ private:
 	const std::string _musicDir;
 	const std::string _shaderDir;
 	const std::string _languageDir;
+	const std::string _gesturesDir;
 
 	FileSystem ();
 
@@ -59,6 +60,7 @@ public:
 	const std::string& getSoundsDir () const;
 	const std::string& getMusicDir () const;
 	const std::string& getLanguageDir () const;
+	const std::string& getGesturesDir () const;
 	const std::string& getShaderDir () const;
 	const std::string getAbsoluteWritePath () const;
 
@@ -117,6 +119,11 @@ inline const std::string& FileSystem::getMusicDir () const
 inline const std::string& FileSystem::getLanguageDir () const
 {
 	return _languageDir;
+}
+
+inline const std::string& FileSystem::getGesturesDir () const
+{
+	return _gesturesDir;
 }
 
 inline const std::string& FileSystem::getShaderDir () const

@@ -173,20 +173,29 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 
 	_mouseCursor = loadTexture("mouse");
 
-	const FilePtr& f = FS.getFile("gesture");
+	loadGesture("zoomin");
+	loadGesture("zoomout");
+}
+
+bool UI::loadGesture (const std::string& name)
+{
+	const FilePtr& f = FS.getFile(FS.getGesturesDir() + name + ".gesture");
 	SDL_RWops* rwops = SDL_RWFromFile(f->getURI().getPath().c_str(), "rb");
 	if (rwops == nullptr) {
 		error(LOG_FILE, "Could not create rwops: " + f->getURI().getPath());
-		return;
+		return false;
 	}
 	const int n = SDL_LoadDollarTemplates(-1, rwops);
 	if (n == -1) {
 		error(LOG_CLIENT, "Failed to load gesture " + std::string(SDL_GetError()));
+		return false;
 	} else if (n == 0) {
 		info(LOG_CLIENT, "Could not load gesture " + f->getURI().getPath());
-	} else {
-		info(LOG_CLIENT, "Loaded gestures " + f->getURI().getPath());
+		return false;
 	}
+
+	info(LOG_CLIENT, "Loaded gestures " + f->getURI().getPath());
+	return true;
 }
 
 void UI::initStack ()

@@ -24,7 +24,7 @@ const std::string BASEDIR = "base/" APPNAME;
 
 FileSystem::FileSystem () :
 		_homeDir(System.getHomeDirectory()), _dataDir(BASEDIR + "/"), _mapsDir("maps/"), _campaignsDir("campaigns/"), _texturesDir(
-				"textures/"), _picsDir("pics/"), _soundsDir("sounds/"), _musicDir("music/"), _shaderDir("shaders/"), _languageDir("lang/"), _initialized(
+				"textures/"), _picsDir("pics/"), _soundsDir("sounds/"), _musicDir("music/"), _shaderDir("shaders/"), _languageDir("lang/"), _gesturesDir("gestures/"), _initialized(
 				false)
 {
 }
