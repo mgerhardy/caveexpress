@@ -10,12 +10,6 @@ UIGestureWindow::UIGestureWindow(IFrontend *frontend) :
 void UIGestureWindow::onActive() {
 	UIWindow::onActive();
 
-	const FilePtr& f = FS.getFile("gesture");
-	SDL_RWops* rwops = SDL_RWFromFile(f->getURI().getPath().c_str(), "rb");
-	if (SDL_LoadDollarTemplates(-1, rwops) == 0) {
-		info(LOG_CLIENT, "Could not load " + f->getURI().getPath());
-	}
-
 	if (!SDL_RecordGesture(-1)) {
 		info(LOG_CLIENT, "Could not start gesture recording");
 	} else {
