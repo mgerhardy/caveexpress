@@ -179,22 +179,24 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 
 bool UI::loadGesture (const std::string& name)
 {
-	const FilePtr& f = FS.getFile(FS.getGesturesDir() + name + ".gesture");
-	SDL_RWops* rwops = SDL_RWFromFile(f->getURI().getPath().c_str(), "rb");
+	FilePtr f = FS.getFile(FS.getGesturesDir() + name + ".gesture");
+	SDL_RWops* rwops = FS.createRWops(f->getURI());
 	if (rwops == nullptr) {
 		error(LOG_FILE, "Could not create rwops: " + f->getURI().getPath());
 		return false;
 	}
 	const int n = SDL_LoadDollarTemplates(-1, rwops);
+	SDL_RWclose(rwops);
 	if (n == -1) {
-		error(LOG_CLIENT, "Failed to load gesture " + std::string(SDL_GetError()));
+		const std::string e = SDL_GetError();
+		error(LOG_CLIENT, "Failed to load gesture " + name + ": " + e);
 		return false;
 	} else if (n == 0) {
-		info(LOG_CLIENT, "Could not load gesture " + f->getURI().getPath());
+		info(LOG_CLIENT, "Could not load gesture " + name);
 		return false;
 	}
 
-	info(LOG_CLIENT, "Loaded gestures " + f->getURI().getPath());
+	info(LOG_CLIENT, "Loaded gesture " + name);
 	return true;
 }
 
