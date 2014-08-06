@@ -35,6 +35,7 @@
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
 #include "engine/client/ui/windows/UIMapOptionsWindow.h"
 #include "engine/client/ui/windows/UISettingsWindow.h"
+#include "engine/client/ui/windows/UIGestureWindow.h"
 #include "caveexpress/client/ui/windows/UIMapEditorWindow.h"
 #include "caveexpress/client/ui/windows/UIGameHelpWindow.h"
 #include "caveexpress/client/ui/windows/UIGameOverWindow.h"
@@ -329,6 +330,7 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	UIMapEditorWindow* mapEditorWindow = new UIMapEditorWindow(frontend, serviceProvider.getMapManager());
 	ui.addWindow(mapEditorWindow);
 	ui.addWindow(new UIGameHelpWindow(frontend));
+	ui.addWindow(new UIGestureWindow(frontend));
 	ui.addWindow(new UIGameOverWindow(frontend, campaignMgr));
 	ui.addWindow(new UIMapOptionsWindow(frontend, serviceProvider));
 	ui.addWindow(new UIGameFinishedWindow(frontend));
