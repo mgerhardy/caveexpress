@@ -34,9 +34,9 @@ void Camera::update (const vec2& playerPos, Direction direction, float zoom)
 {
 	_zoom = zoom;
 	if (_scrollingAreaWidth > 0) {
-		_viewportX = -clamp(playerPos.x * _scale * _zoom - _mapPixelWidth / 2.0f * _zoom, 0.0f, _scrollingAreaWidth * _zoom);
+		_viewportX = -clamp(playerPos.x * _scale * _zoom - _mapPixelWidth / 2.0f, 0.0f, static_cast<float>(_scrollingAreaWidth));
 	}
 	if (_scrollingAreaHeight > 0) {
-		_viewportY = -clamp(playerPos.y * _scale * _zoom - _mapPixelHeight / 2.0f * _zoom, 0.0f, _scrollingAreaHeight * _zoom);
+		_viewportY = -clamp(playerPos.y * _scale * _zoom - _mapPixelHeight / 2.0f, 0.0f, static_cast<float>(_scrollingAreaHeight));
 	}
 }
