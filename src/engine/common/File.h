@@ -36,9 +36,6 @@ public:
 	std::string getPath () const;
 	std::string getFileName () const;
 
-	// returns a new read/write operation structure. It's the callers responsibility to close it
-	SDL_RWops* createRWops ();
-
 	long write (const unsigned char *buf, size_t len) const;
 	int read (void **buffer);
 	int read (void *buffer, int n);

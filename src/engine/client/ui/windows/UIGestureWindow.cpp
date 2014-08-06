@@ -1,4 +1,5 @@
 #include "UIGestureWindow.h"
+#include "engine/common/FileSystem.h"
 
 #include <SDL.h>
 
@@ -17,7 +18,12 @@ void UIGestureWindow::onActive() {
 bool UIGestureWindow::onGestureRecord (int64_t gestureId)
 {
 	const bool retVal = UIWindow::onGestureRecord(gestureId);
-	info(LOG_CLIENT, "TODO: save gesture");
+	const URI uriLocal("file://" + FS.getAbsoluteWritePath() + "gesture");
+	std::string path;
+	const FilePtr& f = FS.getFile(uriLocal);
+	SDL_RWops* rwops = SDL_RWFromFile(f->getURI().getPath().c_str(), "wb");
+	SDL_SaveAllDollarTemplates(rwops);
+	SDL_RWclose(rwops);
 	return retVal;
 }
 
@@ -25,12 +31,5 @@ bool UIGestureWindow::onGesture (int64_t gestureId)
 {
 	const bool retVal = UIWindow::onGesture(gestureId);
 	info(LOG_CLIENT, String::format("detected gesture %i", gestureId));
-	return retVal;
-}
-
-bool UIGestureWindow::onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy)
-{
-	const bool retVal = UIWindow::onFingerMotion(finger, x, y, dx, dy);
-	// TODO: record
 	return retVal;
 }
