@@ -10,19 +10,22 @@ UIGestureWindow::UIGestureWindow(IFrontend *frontend) :
 void UIGestureWindow::onActive() {
 	UIWindow::onActive();
 
-	if (!SDL_RecordGesture(-1)) {
-		return;
-	}
-
 	const FilePtr& f = FS.getFile("gesture");
 	SDL_RWops* rwops = SDL_RWFromFile(f->getURI().getPath().c_str(), "rb");
 	if (SDL_LoadDollarTemplates(-1, rwops) == 0) {
 		info(LOG_CLIENT, "Could not load " + f->getURI().getPath());
 	}
+
+	if (!SDL_RecordGesture(-1)) {
+		info(LOG_CLIENT, "Could not start gesture recording");
+	} else {
+		info(LOG_CLIENT, "Started gesture recording");
+	}
 }
 
 bool UIGestureWindow::onGestureRecord (int64_t gestureId)
 {
+	info(LOG_CLIENT, "Save gestures");
 	const bool retVal = UIWindow::onGestureRecord(gestureId);
 	const URI uriLocal("file://" + FS.getAbsoluteWritePath() + "gesture");
 	std::string path;
