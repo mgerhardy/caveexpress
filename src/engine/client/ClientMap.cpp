@@ -160,11 +160,11 @@ void ClientMap::getLayerOffset (int &x, int &y) const
 	const int screenPixelWidth = _frontend->getWidth();
 	const int mapPixelHeight = _mapHeight * _scale;
 	const int screenPixelHeight = _frontend->getHeight();
-	if (mapPixelWidth < screenPixelWidth) {
+	if (mapPixelWidth * _zoom < screenPixelWidth) {
 		x += screenPixelWidth / 2 - mapPixelWidth / 2;
 	}
 
-	if (mapPixelHeight < screenPixelHeight) {
+	if (mapPixelHeight * _zoom < screenPixelHeight) {
 		y += screenPixelHeight / 2 - mapPixelHeight / 2;
 	}
 }
