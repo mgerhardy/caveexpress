@@ -127,11 +127,11 @@ bool Sprite::render (IFrontend *frontend, Layer layer, int x, int y, float zoom,
 	if (x >= frontend->getWidth())
 		return false;
 
-	const int h = _spriteHeight;
+	const int h = _spriteHeight * zoom;
 	if (y >= frontend->getHeight())
 		return false;
 
-	const int w = _spriteWidth;
+	const int w = _spriteWidth * zoom;
 	if (x + w < 0)
 		return false;
 	else if (y + h < 0)
