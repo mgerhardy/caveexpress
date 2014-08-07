@@ -66,7 +66,7 @@ endif
 endif
 
 .PHONY: data
-data: textures lang filelist
+data: textures lang filelist $(SRCDIR)/engine/common/ports/project.rc
 
 Makefile.local: configure
 	./configure --target-os=$(TARGET_OS) --app=$(APPNAME)
@@ -110,6 +110,12 @@ install: install-pre $(addprefix install-,$(TARGETS))
 
 .PHONY: strip
 strip: $(addprefix strip-,$(TARGETS))
+
+$(SRCDIR)/engine/common/ports/project.rc: $(SRCDIR)/engine/common/ports/project.rc.in
+	@echo '===> RC [$@]'
+	$(Q)sed "s/%%APPNAME%%/$(APPNAME)/" $< > $@
+	$(Q)sed -i "s/%%APPNAME_FULL%%/$(APPNAME_FULL)/" $@
+	$(Q)sed -i "s/%%VERSION%%/$(VERSION)/" $@
 
 $(CONFIG_H)-config.h: configure
 	@echo "restarting configure for $(CONFIG_H)"

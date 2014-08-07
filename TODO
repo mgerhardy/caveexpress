@@ -33,9 +33,6 @@
 ** finish lava
 ** fix zooming for some maps (e.g. last map of first campaign)
 
-* Windows
-** project.rc.in to replace the appname
-
 * Cavepacker
 ** sound if you hit the best points available
 ** upload solutions to google play or twitter or ...
