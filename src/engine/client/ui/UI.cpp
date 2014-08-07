@@ -564,8 +564,6 @@ void UI::onGesture (int64_t gestureId)
 	if (_restart)
 		return;
 
-	info(LOG_CLIENT, String::format("detected gesture %l", gestureId));
-
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;

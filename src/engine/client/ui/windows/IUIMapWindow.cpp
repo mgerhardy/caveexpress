@@ -261,9 +261,10 @@ bool IUIMapWindow::isGameActive () const
 	return _nodeMap->getMap().isActive();
 }
 
-bool IUIMapWindow::onGesture (int64_t gesture)
+bool IUIMapWindow::onGesture (int64_t gestureId)
 {
-	const bool retVal = UIWindow::onGesture(gesture);
+	const bool retVal = UIWindow::onGesture(gestureId);
+	info(LOG_CLIENT, String::format("detected gesture %l", gestureId));
 	return retVal;
 }
 
