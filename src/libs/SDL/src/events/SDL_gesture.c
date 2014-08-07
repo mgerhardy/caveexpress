@@ -24,6 +24,7 @@
 /* General mouse handling code for SDL */
 
 #include "SDL_events.h"
+#include "SDL_endian.h"
 #include "SDL_events_c.h"
 #include "SDL_gesture_c.h"
 
@@ -114,13 +115,23 @@ static unsigned long SDL_HashDollar(SDL_FloatPoint* points)
 
 static int SaveTemplate(SDL_DollarTemplate *templ, SDL_RWops *dst)
 {
+    int i;
+    SDL_DollarTemplate copy;
+
     if (dst == NULL) return 0;
 
     /* No Longer storing the Hash, rehash on load */
     /* if (SDL_RWops.write(dst, &(templ->hash), sizeof(templ->hash), 1) != 1) return 0; */
 
-    if (SDL_RWwrite(dst, templ->path,
-                    sizeof(templ->path[0]),DOLLARNPOINTS) != DOLLARNPOINTS)
+    copy = *templ;
+    for (i = 0; i < DOLLARNPOINTS; ++i) {
+        SDL_FloatPoint *p = &copy.path[i];
+        p->x = SDL_SwapFloatLE(p->x);
+        p->y = SDL_SwapFloatLE(p->y);
+    }
+
+    if (SDL_RWwrite(dst, copy.path,
+                    sizeof(copy.path[0]),DOLLARNPOINTS) != DOLLARNPOINTS)
         return 0;
 
     return 1;
@@ -213,7 +224,17 @@ int SDL_LoadDollarTemplates(SDL_TouchID touchId, SDL_RWops *src)
         SDL_DollarTemplate templ;
 
         if (SDL_RWread(src,templ.path,sizeof(templ.path[0]),DOLLARNPOINTS) <
-           DOLLARNPOINTS) break;
+           DOLLARNPOINTS) {
+            if (loaded == 0)
+                return SDL_SetError("could not read any dollar gesture from rwops");
+            break;
+        }
+
+        for (i = 0; i < DOLLARNPOINTS; ++i) {
+            SDL_FloatPoint *p = &templ.path[i];
+            p->x = SDL_SwapFloatLE(p->x);
+            p->y = SDL_SwapFloatLE(p->y);
+        }
 
         if (touchId >= 0) {
             /* printf("Adding loaded gesture to 1 touch\n"); */
