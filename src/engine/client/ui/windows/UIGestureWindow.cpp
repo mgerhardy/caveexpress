@@ -1,6 +1,7 @@
 #include "UIGestureWindow.h"
 #include "engine/common/FileSystem.h"
 #include "engine/common/Logger.h"
+#include "engine/client/ui/UI.h"
 
 #include <SDL.h>
 
@@ -51,5 +52,6 @@ bool UIGestureWindow::onGestureRecord (int64_t gestureId)
 	} else {
 		info(LOG_CLIENT, "Failed to save gestures to " + f->getURI().getPath());
 	}
+	UI::get().pop();
 	return retVal;
 }
