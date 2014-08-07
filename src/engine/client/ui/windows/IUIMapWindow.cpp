@@ -265,6 +265,11 @@ bool IUIMapWindow::onGesture (int64_t gestureId)
 {
 	const bool retVal = UIWindow::onGesture(gestureId);
 	info(LOG_CLIENT, String::format("detected gesture %li", gestureId));
+	if (gestureId == 2027645606) {
+		_nodeMap->getMap().setZoom(_nodeMap->getMap().getZoom() + 0.1f);
+	} else if (gestureId == -1605403666) {
+		_nodeMap->getMap().setZoom(_nodeMap->getMap().getZoom() - 0.1f);
+	}
 	return retVal;
 }
 
