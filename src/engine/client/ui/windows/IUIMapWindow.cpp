@@ -264,11 +264,13 @@ bool IUIMapWindow::isGameActive () const
 bool IUIMapWindow::onGesture (int64_t gestureId)
 {
 	const bool retVal = UIWindow::onGesture(gestureId);
+	const float currentZoom = _nodeMap->getMap().getZoom();
+	const float step = 0.1f;
 	info(LOG_CLIENT, String::format("detected gesture %li", gestureId));
 	if (gestureId == 2027645606) {
-		_nodeMap->getMap().setZoom(_nodeMap->getMap().getZoom() + 0.1f);
+		_nodeMap->getMap().setZoom(currentZoom + step);
 	} else if (gestureId == -1605403666) {
-		_nodeMap->getMap().setZoom(_nodeMap->getMap().getZoom() - 0.1f);
+		_nodeMap->getMap().setZoom(currentZoom - step);
 	}
 	return retVal;
 }
