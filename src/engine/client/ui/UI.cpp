@@ -15,7 +15,10 @@
 #include "engine/common/Singleton.h"
 #include "engine/common/FileSystem.h"
 #include "engine/GameRegistry.h"
+#include "engine/common/gestures/ZoomIn.h"
+#include "engine/common/gestures/ZoomOut.h"
 #include <SDL.h>
+#include <SDL_stdinc.h>
 
 #define GETSCALE_W(x) (x) = (static_cast<float>(x + _frontend->getCoordinateOffsetX()) / _frontend->getWidthScale())
 #define GETSCALE_H(y) (y) = (static_cast<float>(y + _frontend->getCoordinateOffsetY()) / _frontend->getHeightScale())
@@ -173,30 +176,25 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 
 	_mouseCursor = loadTexture("mouse");
 
-	loadGesture("zoomin");
-	loadGesture("zoomout");
+	loadGesture(zoominGesture, SDL_arraysize(zoominGesture));
+	loadGesture(zoomoutGesture, SDL_arraysize(zoomoutGesture));
 }
 
-bool UI::loadGesture (const std::string& name)
+bool UI::loadGesture (const unsigned char* data, int length)
 {
-	FilePtr f = FS.getFile(FS.getGesturesDir() + name + ".gesture");
-	SDL_RWops* rwops = FS.createRWops(f->getURI());
-	if (rwops == nullptr) {
-		error(LOG_FILE, "Could not create rwops: " + f->getURI().getPath());
-		return false;
-	}
+	SDL_RWops* rwops = SDL_RWFromConstMem(static_cast<const void*>(data), length);
 	const int n = SDL_LoadDollarTemplates(-1, rwops);
 	SDL_RWclose(rwops);
 	if (n == -1) {
 		const std::string e = SDL_GetError();
-		error(LOG_CLIENT, "Failed to load gesture " + name + ": " + e);
+		error(LOG_CLIENT, "Failed to load gesture: " + e);
 		return false;
 	} else if (n == 0) {
-		info(LOG_CLIENT, "Could not load gesture " + name);
+		info(LOG_CLIENT, "Could not load gesture");
 		return false;
 	}
 
-	info(LOG_CLIENT, "Loaded gesture " + name);
+	info(LOG_CLIENT, "Loaded gesture");
 	return true;
 }
 
@@ -566,7 +564,7 @@ void UI::onGesture (int64_t gestureId)
 	if (_restart)
 		return;
 
-	info(LOG_CLIENT, String::format("detected gesture %i", gestureId));
+	info(LOG_CLIENT, String::format("detected gesture %l", gestureId));
 
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
