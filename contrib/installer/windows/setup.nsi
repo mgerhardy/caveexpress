@@ -24,7 +24,7 @@ ShowUninstDetails "nevershow"
 ; MUI Settings
 !define MUI_ICON "..\..\icon.ico"
 !define MUI_UNICON "..\..\icon.ico"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "project.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "${APPNAME}.bmp"
 
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT HKCU
 !define MUI_STARTMENUPAGE_REGISTRY_KEY ${PRODUCT_DIR_REGKEY}
@@ -68,8 +68,8 @@ InstallDirRegKey HKCU "${PRODUCT_DIR_REGKEY}" "InstallPath"
 Section "${PRODUCT_NAME}" SecMain
 	SetOverwrite on
 
-	SetOutPath "$INSTDIR\base"
-		File /r "..\..\..\base\"
+	SetOutPath "$INSTDIR\base\${APPNAME}"
+		File /r "..\..\..\base\${APPNAME}\"
 
 	SetOutPath "$INSTDIR"
 		File "..\..\..\${PRODUCT_NAME}.exe"
