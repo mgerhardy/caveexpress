@@ -264,7 +264,7 @@ bool IUIMapWindow::isGameActive () const
 bool IUIMapWindow::onGesture (int64_t gestureId)
 {
 	const bool retVal = UIWindow::onGesture(gestureId);
-	info(LOG_CLIENT, String::format("detected gesture %l", gestureId));
+	info(LOG_CLIENT, String::format("detected gesture %li", gestureId));
 	return retVal;
 }
 
