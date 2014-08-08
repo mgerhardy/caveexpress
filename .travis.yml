@@ -16,6 +16,10 @@ script:
   - ./configure --with-embedded-sqlite3 --disable-network
   - make
   - ./tests
+  - make clean
+  - ./configure --with-embedded-sqlite3 --app=cavepacker
+  - make
+  - ./tests
 
 notifications:
   email: true
