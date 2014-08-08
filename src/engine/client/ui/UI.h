@@ -179,7 +179,21 @@ public:
 	void onJoystickMotion (bool horizontal, int value) override;
 	void onJoystickButtonPress (uint8_t button) override;
 	void onControllerButtonPress (const std::string& button) override;
+	/**
+	 * @brief pinch/rotate/swipe gestures
+	 * @param theta the amount that the fingers rotated during this motion
+	 * @param dist the amount that the fingers pinched during this motion
+	 * @param numFingers the number of fingers used in the gesture
+	 */
 	void onMultiGesture (float theta, float dist, int32_t numFingers) override;
+	/**
+	 * $1 gesture recognition system
+	 * @param gestureId a hash of the gesture data. If you have duplicates, just re-record the gesture.
+	 * The unique id of the closest gesture to the performed stroke
+	 * @param error the difference between the gesture template and the actual performed gesture. Lower error is a better match.
+	 * @param numFingers the number of fingers used to draw the stroke.
+	 * @sa loadGesture
+	 */
 	void onGesture (int64_t gestureId, float error, int32_t numFingers) override;
 	void onGestureRecord (int64_t gestureId) override;
 };
