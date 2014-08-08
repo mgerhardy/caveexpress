@@ -7,9 +7,11 @@ class IFrontend;
 
 class Camera {
 private:
+	// the dimensions of the area the map is rendered in (might be only a portion of the real map dimensions)
 	int _mapPixelWidth;
 	int _mapPixelHeight;
 
+	// the full map grid width - in combination with the scale for one tile, you can get the full map size in pixels, too
 	int _mapGridWidth;
 	int _mapGridHeight;
 
