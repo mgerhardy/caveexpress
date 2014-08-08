@@ -780,7 +780,7 @@ bool UINode::onMouseButtonRelease (int32_t x, int32_t y, unsigned char button)
 	return false;
 }
 
-bool UINode::onGesture (int64_t gestureId)
+bool UINode::onMultiGesture (float theta, float dist, int32_t numFingers)
 {
 	if (!_enabled)
 		return false;
@@ -789,7 +789,24 @@ bool UINode::onGesture (int64_t gestureId)
 		UINode* nodePtr = *i;
 		if (!nodePtr->hasFocus())
 			continue;
-		if ((*i)->onGesture(gestureId)) {
+		if ((*i)->onMultiGesture(theta, dist, numFingers)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool UINode::onGesture (int64_t gestureId, float error, int32_t numFingers)
+{
+	if (!_enabled)
+		return false;
+
+	for (UINodeListRevIter i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
+		UINode* nodePtr = *i;
+		if (!nodePtr->hasFocus())
+			continue;
+		if ((*i)->onGesture(gestureId, error, numFingers)) {
 			return true;
 		}
 	}

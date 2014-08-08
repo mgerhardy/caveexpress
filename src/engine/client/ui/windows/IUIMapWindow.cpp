@@ -261,16 +261,17 @@ bool IUIMapWindow::isGameActive () const
 	return _nodeMap->getMap().isActive();
 }
 
-bool IUIMapWindow::onGesture (int64_t gestureId)
+bool IUIMapWindow::onMultiGesture (float theta, float dist, int32_t numFingers)
 {
-	const bool retVal = UIWindow::onGesture(gestureId);
-	const float currentZoom = _nodeMap->getMap().getZoom();
-	const float step = 0.1f;
-	info(LOG_CLIENT, String::format("detected gesture %li", gestureId));
-	if (gestureId == 2027645606) {
-		_nodeMap->getMap().setZoom(currentZoom + step);
-	} else if (gestureId == -1605403666) {
-		_nodeMap->getMap().setZoom(currentZoom - step);
+	const bool retVal = UIWindow::onMultiGesture(theta, dist, numFingers);
+	if (numFingers == 2) {
+		const float currentZoom = _nodeMap->getMap().getZoom();
+		const float step = dist;
+		if (dist > 0.0f) {
+			_nodeMap->getMap().setZoom(currentZoom - step);
+		} else if (dist < 0.0f) {
+			_nodeMap->getMap().setZoom(currentZoom + step);
+		}
 	}
 	return retVal;
 }

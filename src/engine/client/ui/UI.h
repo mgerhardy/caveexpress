@@ -179,7 +179,8 @@ public:
 	void onJoystickMotion (bool horizontal, int value) override;
 	void onJoystickButtonPress (uint8_t button) override;
 	void onControllerButtonPress (const std::string& button) override;
-	void onGesture (int64_t gestureId) override;
+	void onMultiGesture (float theta, float dist, int32_t numFingers) override;
+	void onGesture (int64_t gestureId, float error, int32_t numFingers) override;
 	void onGestureRecord (int64_t gestureId) override;
 };
 

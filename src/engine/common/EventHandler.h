@@ -50,5 +50,6 @@ public:
 	void fingerRelease (int64_t finger, float x, float y);
 	void fingerMotion (int64_t finger, float x, float y, float dx, float dy);
 	void gestureRecord (int64_t gestureId);
-	void gesture (int64_t gestureId);
+	void gesture (int64_t gestureId, float error, int32_t numFingers);
+	void multiGesture (float theta, float dist, int32_t numFingers);
 };

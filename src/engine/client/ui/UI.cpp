@@ -559,7 +559,7 @@ void UI::onJoystickButtonPress (uint8_t button)
 	debug(LOG_CLIENT, String::format("joystick button %i was pressed and not handled", (int)button));
 }
 
-void UI::onGesture (int64_t gestureId)
+void UI::onMultiGesture (float theta, float dist, int32_t numFingers)
 {
 	if (_restart)
 		return;
@@ -567,7 +567,23 @@ void UI::onGesture (int64_t gestureId)
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		if (window->onGesture(gestureId))
+		if (window->onMultiGesture(theta, dist, numFingers))
+			return;
+		if (window->isModal() || window->isFullscreen())
+			return;
+	}
+	debug(LOG_CLIENT, "multi gesture event was not handled");
+}
+
+void UI::onGesture (int64_t gestureId, float error, int32_t numFingers)
+{
+	if (_restart)
+		return;
+
+	UIStack stack = _stack;
+	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
+		UIWindow* window = *i;
+		if (window->onGesture(gestureId, error, numFingers))
 			return;
 		if (window->isModal() || window->isFullscreen())
 			return;

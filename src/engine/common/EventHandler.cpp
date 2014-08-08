@@ -124,10 +124,10 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		gestureRecord(event.dgesture.gestureId);
 		break;
 	case SDL_DOLLARGESTURE:
-		gesture(event.dgesture.gestureId);
+		gesture(event.dgesture.gestureId, event.dgesture.error, event.dgesture.numFingers);
 		break;
 	case SDL_MULTIGESTURE:
-		//gesture(event.mgesture.gestureId);
+		multiGesture(event.mgesture.dTheta, event.mgesture.dDist, event.mgesture.numFingers);
 		break;
 #endif
 	case SDL_JOYHATMOTION:
@@ -371,9 +371,16 @@ void EventHandler::gestureRecord (int64_t gestureId)
 	}
 }
 
-void EventHandler::gesture (int64_t gestureId)
+void EventHandler::gesture (int64_t gestureId, float error, int32_t numFingers)
 {
 	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onGesture(gestureId);
+		(*i)->onGesture(gestureId, error, numFingers);
+	}
+}
+
+void EventHandler::multiGesture (float theta, float dist, int32_t numFingers)
+{
+	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
+		(*i)->onMultiGesture(theta, dist, numFingers);
 	}
 }
