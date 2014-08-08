@@ -32,14 +32,17 @@ import android.util.Log;
 import com.google.android.gms.appstate.AppStateManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.Api.ApiOptions.NoOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.Games.GamesOptions;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
 import com.google.android.gms.games.request.GameRequest;
 import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.Plus.PlusOptions;
 
 public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -107,9 +110,9 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	GoogleApiClient.Builder mGoogleApiClientBuilder = null;
 
 	// Api options to use when adding each API, null for none
-	GoogleApiClient.ApiOptions mGamesApiOptions = null;
-	GoogleApiClient.ApiOptions mPlusApiOptions = null;
-	GoogleApiClient.ApiOptions mAppStateApiOptions = null;
+	GamesOptions mGamesApiOptions = GamesOptions.builder().build();
+	PlusOptions mPlusApiOptions = null;
+	NoOptions mAppStateApiOptions = null;
 
 	// Google API client object we manage.
 	GoogleApiClient mGoogleApiClient = null;
@@ -230,7 +233,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	 * Sets the options to pass when setting up the Games API. Call before
 	 * setup().
 	 */
-	public void setGamesApiOptions(GoogleApiClient.ApiOptions options) {
+	public void setGamesApiOptions(GamesOptions options) {
 		doApiOptionsPreCheck();
 		mGamesApiOptions = options;
 	}
@@ -239,7 +242,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	 * Sets the options to pass when setting up the AppState API. Call before
 	 * setup().
 	 */
-	public void setAppStateApiOptions(GoogleApiClient.ApiOptions options) {
+	public void setAppStateApiOptions(NoOptions options) {
 		doApiOptionsPreCheck();
 		mAppStateApiOptions = options;
 	}
@@ -248,7 +251,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	 * Sets the options to pass when setting up the Plus API. Call before
 	 * setup().
 	 */
-	public void setPlusApiOptions(GoogleApiClient.ApiOptions options) {
+	public void setPlusApiOptions(PlusOptions options) {
 		doApiOptionsPreCheck();
 		mPlusApiOptions = options;
 	}
@@ -280,7 +283,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 		}
 
 		if (0 != (mRequestedClients & CLIENT_APPSTATE)) {
-			builder.addApi(AppStateManager.API, mAppStateApiOptions);
+			builder.addApi(AppStateManager.API);
 			builder.addScope(AppStateManager.SCOPE_APP_STATE);
 		}
 
@@ -527,7 +530,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 		// For the games client, signing out means calling signOut and
 		// disconnecting
 		if (0 != (mRequestedClients & CLIENT_GAMES)) {
-			debugLog("Signing out from GamesClient.");
+			debugLog("Signing out from the Google API Client.");
 			Games.signOut(mGoogleApiClient);
 		}
 
@@ -760,9 +763,9 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 
 		mConnectionResult = result;
 		debugLog("Connection failure:");
-		debugLog("   - code: " + GameHelperUtils.errorCodeToString(mConnectionResult.getErrorCode()));
-		debugLog("   - resolvable: " + mConnectionResult.hasResolution());
-		debugLog("   - details: " + mConnectionResult.toString());
+		debugLog(" - code: " + GameHelperUtils.errorCodeToString(mConnectionResult.getErrorCode()));
+		debugLog(" - resolvable: " + mConnectionResult.hasResolution());
+		debugLog(" - details: " + mConnectionResult.toString());
 
 		int cancellations = getSignInCancellations();
 		boolean shouldResolve = false;
