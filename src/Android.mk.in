@@ -9,6 +9,8 @@ SDL_IMAGE_PATH := ../SDL_image
 SDL_MIXER_PATH := ../SDL_mixer
 SDL_NET_PATH := ../SDL_net
 
+NETWORKING := @NETWORKING@
+
 NAME := @APPNAME@
 
 HAVE_LUA_H :=
