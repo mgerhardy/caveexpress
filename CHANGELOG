@@ -73,3 +73,4 @@ Version 1.7 (2014-05-21)
 Version 1.8 (not yet released)
 * Google NativeClient port
 * Reduced file sizes
+* Add zooming support
