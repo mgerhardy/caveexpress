@@ -4,7 +4,7 @@
 #include "engine/common/ConfigManager.h"
 #include <SDL.h>
 
-EventHandler::EventHandler ()
+EventHandler::EventHandler () : _multiGesture(false)
 {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	//SDL_JoystickEventState(SDL_DISABLE);
@@ -352,6 +352,7 @@ void EventHandler::fingerPress (int64_t finger, float x, float y)
 
 void EventHandler::fingerRelease (int64_t finger, float x, float y)
 {
+	_multiGesture = false;
 	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
 		(*i)->onFingerRelease(finger, x, y);
 	}
@@ -359,6 +360,8 @@ void EventHandler::fingerRelease (int64_t finger, float x, float y)
 
 void EventHandler::fingerMotion (int64_t finger, float x, float y, float dx, float dy)
 {
+	if (_multiGesture)
+		return;
 	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
 		(*i)->onFingerMotion(finger, x, y, dx, dy);
 	}
@@ -380,6 +383,7 @@ void EventHandler::gesture (int64_t gestureId, float error, int32_t numFingers)
 
 void EventHandler::multiGesture (float theta, float dist, int32_t numFingers)
 {
+	_multiGesture = true;
 	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
 		(*i)->onMultiGesture(theta, dist, numFingers);
 	}

@@ -10,6 +10,8 @@ union SDL_Event;
 
 class EventHandler {
 private:
+	bool _multiGesture;
+
 	typedef std::vector<IEventObserver*> EventObservers;
 	EventObservers _observers;
 

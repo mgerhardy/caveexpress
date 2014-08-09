@@ -266,12 +266,7 @@ bool IUIMapWindow::onMultiGesture (float theta, float dist, int32_t numFingers)
 	const bool retVal = UIWindow::onMultiGesture(theta, dist, numFingers);
 	if (numFingers == 2) {
 		const float currentZoom = _nodeMap->getMap().getZoom();
-		const float step = dist;
-		if (dist > 0.0f) {
-			_nodeMap->getMap().setZoom(currentZoom - step);
-		} else if (dist < 0.0f) {
-			_nodeMap->getMap().setZoom(currentZoom + step);
-		}
+		_nodeMap->getMap().setZoom(currentZoom + dist * 4.0f);
 	}
 	return retVal;
 }
