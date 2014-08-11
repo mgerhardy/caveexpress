@@ -156,6 +156,8 @@ else
 			RETURN = "ui_pop",
 			ESCAPE = "ui_pop",
 			TAB = "ui_focus_next",
+			PAGEDOWN = "zoom -0.1",
+			PAGEUP = "zoom 0.1",
 		},
 	}
 
