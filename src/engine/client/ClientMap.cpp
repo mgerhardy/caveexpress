@@ -125,7 +125,7 @@ void ClientMap::removeEntity (uint16_t id, bool fadeOut)
 	}
 }
 
-void ClientMap::renderFadeOutOverlay (int x, int y) const
+void ClientMap::renderFadeOutOverlay () const
 {
 	const uint32_t now = _time;
 	const uint32_t delay = _restartDue - _restartInitialized;
@@ -133,50 +133,47 @@ void ClientMap::renderFadeOutOverlay (int x, int y) const
 	const uint32_t delta = now > _restartDue ? 0U : _restartDue - now;
 	const float alpha = 1.0 - delta * restartFadeStepWidth;
 	const Color color = { 0.0, 0.0, 0.0, alpha };
-	_frontend->renderFilledRect(x + _x, y + _y, 0, 0, color);
+	_frontend->renderFilledRect(_x, _y, getPixelWidth() * _zoom, getPixelHeight() * _zoom, color);
 }
 
 void ClientMap::renderLayer (int x, int y, Layer layer) const
 {
-	const int mapPosX = x + _screenRumbleOffsetX;
-	const int mapPosY = y + _screenRumbleOffsetY;
-
 	if (Config.isDebug()) {
-		_frontend->renderRect(mapPosX, mapPosY, 4, 4, colorYellow);
+		_frontend->renderRect(x, y, 4, 4, colorYellow);
 	}
 
 	for (ClientEntityMapConstIter iter = _entities.begin(); iter != _entities.end(); ++iter) {
 		const ClientEntityPtr e = iter->second;
-		e->render(_frontend, layer, _scale, _zoom, mapPosX, mapPosY);
+		e->render(_frontend, layer, _scale, _zoom, x, y);
 	}
 }
 
-void ClientMap::render (int x, int y) const
+void ClientMap::render () const
 {
 	ExecutionTime renderTime("ClientMapRender", 2000L);
-	const int layerX = x + _x + _camera.getViewportX();
-	const int layerY = y + _y + _camera.getViewportY();
+	const int x = _screenRumbleOffsetX + _x + _camera.getViewportX();
+	const int y = _screenRumbleOffsetY + _y + _camera.getViewportY();
 
-	const int scissorX = std::max(0, layerX);
-	const int scissorY = std::max(0, layerY);
+	const int scissorX = std::max(0, x);
+	const int scissorY = std::max(0, y);
 	if (Config.isDebug()) {
 		_frontend->renderRect(scissorX, scissorY, getPixelWidth() * _zoom, getPixelHeight() * _zoom, colorRed);
 	}
-	_frontend->enableScissor(scissorX, scissorY, getPixelWidth() * _zoom, getPixelHeight() * _zoom);
-	renderLayer(layerX, layerY, LAYER_BACK);
-	renderLayer(layerX, layerY, LAYER_MIDDLE);
-	renderLayer(layerX, layerY, LAYER_FRONT);
+	//_frontend->enableScissor(scissorX, scissorY, getPixelWidth() * _zoom, getPixelHeight() * _zoom);
+	renderLayer(x, y, LAYER_BACK);
+	renderLayer(x, y, LAYER_MIDDLE);
+	renderLayer(x, y, LAYER_FRONT);
 
 	if (_restartDue != 0) {
-		renderFadeOutOverlay(x, y);
+		renderFadeOutOverlay();
 	}
 
-	Config.setDebugRendererData(layerX, layerY, getWidth(), getHeight(), _scale * _zoom);
+	Config.setDebugRendererData(x, y, getWidth(), getHeight(), _scale * _zoom);
 	Config.getDebugRenderer().render();
 
-	renderParticles(layerX, layerY);
+	renderParticles(x, y);
 
-	_frontend->disableScissor();
+	//_frontend->disableScissor();
 }
 
 void ClientMap::renderParticles (int x, int y) const

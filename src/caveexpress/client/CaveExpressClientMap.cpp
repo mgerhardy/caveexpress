@@ -39,24 +39,20 @@ void CaveExpressClientMap::resetCurrentMap ()
 
 void CaveExpressClientMap::renderWater (int x, int y) const
 {
-	const float waterHeight = getWaterHeight();
-	if (waterHeight <= 0.000001f)
-		return;
-	x += _screenRumbleOffsetX;
-	y += _screenRumbleOffsetY;
-	const int heightWater = waterHeight * _scale;
-	const int yWater = y + _y + heightWater;
-	const int waterPlaneHeight = (getPixelHeight() - heightWater) * _zoom;
-	const int widthWater = getPixelWidth() * _zoom;
-	const Color waterLineColor = { 0.99f, 0.99f, 1.0f, 1.0f };
+	static const Color waterLineColor = { 0.99f, 0.99f, 1.0f, 1.0f };
 	static const Color color = { WATERCOLOR[0] / 255.0f, WATERCOLOR[1] / 255.0f, WATERCOLOR[2] / 255.0f, WATER_ALPHA
 			/ 255.0f };
-	const int xWater = x * _zoom;
-	_frontend->renderLine(xWater, (yWater - 1) * _zoom, xWater + widthWater, (yWater - 1) * _zoom, waterLineColor);
-	_frontend->renderFilledRect(xWater, yWater * _zoom, widthWater, waterPlaneHeight, color);
+	if (getWaterHeight() <= 0.000001f)
+		return;
+	const int widthWater = getPixelWidth() * _zoom;
+	const int waterSurface = getWaterSurface();
+	const int waterGround = getWaterGround();
+	const int waterHeight = waterGround - waterSurface;
+	_frontend->renderLine(x, waterSurface - 1, x + widthWater, waterSurface - 1, waterLineColor);
+	_frontend->renderFilledRect(x, waterSurface, widthWater, waterHeight, color);
 	if (Config.isDebug()) {
-		_frontend->renderLine(xWater, getWaterSurface(), xWater + widthWater, getWaterSurface(), colorRed);
-		_frontend->renderLine(xWater, getWaterGround(), xWater + widthWater, getWaterGround(), colorGreen);
+		_frontend->renderLine(x, waterSurface, x + widthWater, waterSurface, colorRed);
+		_frontend->renderLine(x, waterGround, x + widthWater, waterGround, colorGreen);
 	}
 }
 
@@ -126,8 +122,8 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 
 void CaveExpressClientMap::renderParticles (int x, int y) const
 {
-	renderWater(x, y);
 	ClientMap::renderParticles(x, y);
+	renderWater(x, y);
 }
 
 void CaveExpressClientMap::start () {

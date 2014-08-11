@@ -76,7 +76,7 @@ protected:
 	ConfigVarPtr _maxZoom;
 
 	void renderLayer (int x, int y, Layer layer) const;
-	void renderFadeOutOverlay (int x, int y) const;
+	void renderFadeOutOverlay () const;
 	virtual void couldNotFindEntity (const std::string& prefix, uint16_t id) const;
 	void disableScreenRumble ();
 
@@ -86,7 +86,7 @@ public:
 	ClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth);
 	virtual ~ClientMap ();
 
-	virtual void render (int x, int y) const;
+	virtual void render () const;
 	virtual void renderParticles (int x, int y) const;
 	virtual void setSetting (const std::string& key, const std::string& value);
 
