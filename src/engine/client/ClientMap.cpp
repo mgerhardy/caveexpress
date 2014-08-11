@@ -83,13 +83,6 @@ void ClientMap::setZoom (const float zoom)
 	const float minZoom = _minZoom->getFloatValue();
 	const float maxZoom = _maxZoom->getFloatValue();
 	_zoom = clamp(zoom, minZoom, maxZoom);
-	const int pixelW = getMapWidth() * _scale;
-	const int pixelH = getMapHeight() * _scale;
-	const int nodeW = getWidth();
-	const int nodeH = getHeight();
-	if (_zoom * pixelW < nodeW || _zoom * pixelH < nodeH) {
-		_zoom = std::max(nodeW / static_cast<float>(pixelW), nodeH / static_cast<float>(pixelH));
-	}
 }
 
 void ClientMap::disconnect ()
@@ -154,31 +147,15 @@ void ClientMap::renderLayer (int x, int y, Layer layer) const
 	}
 }
 
-void ClientMap::getLayerOffset (int &x, int &y) const
-{
-	const int mapPixelWidth = _mapWidth * _scale;
-	const int screenPixelWidth = _frontend->getWidth();
-	const int mapPixelHeight = _mapHeight * _scale;
-	const int screenPixelHeight = _frontend->getHeight();
-	if (mapPixelWidth * _zoom < screenPixelWidth) {
-		x += screenPixelWidth / 2 - mapPixelWidth / 2;
-	}
-
-	if (mapPixelHeight * _zoom < screenPixelHeight) {
-		y += screenPixelHeight / 2 - mapPixelHeight / 2;
-	}
-}
-
 void ClientMap::render (int x, int y) const
 {
 	ExecutionTime renderTime("ClientMapRender", 2000L);
-	const int baseX = x + _x + _camera.getViewportX();
-	const int baseY = y + _y + _camera.getViewportY();
-	int layerX = baseX;
-	int layerY = baseY;
-	getLayerOffset(layerX, layerY);
+	const int layerX = x + _x + _camera.getViewportX();
+	const int layerY = y + _y + _camera.getViewportY();
 
-	_frontend->enableScissor(std::max(0, layerX), std::max(0, layerY), getMapWidth() * _scale * _zoom, getMapHeight() * _scale * _zoom);
+	const int scissorX = x + _x;
+	const int scissorY = y + _y;
+	_frontend->enableScissor(std::max(0, scissorX), std::max(0, scissorY), getPixelWidth() * _zoom, getPixelHeight() * _scale * _zoom);
 	renderLayer(layerX, layerY, LAYER_BACK);
 	renderLayer(layerX, layerY, LAYER_MIDDLE);
 	renderLayer(layerX, layerY, LAYER_FRONT);

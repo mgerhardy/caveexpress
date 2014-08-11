@@ -29,8 +29,6 @@ private:
 	// the pixels of one grid tile
 	int _scale;
 
-	float _zoom;
-
 	void reset ();
 
 public:

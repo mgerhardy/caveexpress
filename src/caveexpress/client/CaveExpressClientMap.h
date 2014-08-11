@@ -24,8 +24,8 @@ public:
 	// the water height in physic units
 	float getWaterHeight () const;
 
-	int getWaterSurface () const override { return _y + _waterHeight * _scale; }
-	int getWaterGround () const override { return getWaterSurface() + (_mapHeight - _waterHeight) * _scale; }
+	int getWaterSurface () const override { return _y + _camera.getViewportY() + (_waterHeight * _scale * _zoom); }
+	int getWaterGround () const override { return getWaterSurface() + ((_mapHeight - _waterHeight) * _scale) * _zoom; }
 
 	bool secondFinger () override { return drop(); }
 };

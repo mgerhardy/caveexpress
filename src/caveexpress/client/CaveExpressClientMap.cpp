@@ -46,8 +46,8 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	y += _screenRumbleOffsetY;
 	const int heightWater = waterHeight * _scale;
 	const int yWater = y + _y + heightWater;
-	const int waterPlaneHeight = (getMapHeight() * _scale - heightWater) * _zoom;
-	const int widthWater = getMapWidth() * _scale * _zoom;
+	const int waterPlaneHeight = (getPixelHeight() - heightWater) * _zoom;
+	const int widthWater = getPixelWidth() * _zoom;
 	const Color waterLineColor = { 0.99f, 0.99f, 1.0f, 1.0f };
 	static const Color color = { WATERCOLOR[0] / 255.0f, WATERCOLOR[1] / 255.0f, WATERCOLOR[2] / 255.0f, WATER_ALPHA
 			/ 255.0f };

@@ -77,7 +77,6 @@ protected:
 
 	void renderLayer (int x, int y, Layer layer) const;
 	void renderFadeOutOverlay (int x, int y) const;
-	void getLayerOffset (int &x, int &y) const;
 	virtual void couldNotFindEntity (const std::string& prefix, uint16_t id) const;
 	void disableScreenRumble ();
 
@@ -142,9 +141,9 @@ public:
 	void rumble (float strength, int lengthMillis);
 	void spawnInfo (const vec2& position, const EntityType& type);
 
-	int getWaterWidth () const override { return _mapWidth * _scale * _zoom; }
-	int getPixelWidth () const override { return _mapWidth * _scale * _zoom; }
-	int getPixelHeight () const override { return _mapHeight * _scale * _zoom; }
+	int getWaterWidth () const override { return _mapWidth * _scale; }
+	int getPixelWidth () const override { return _mapWidth * _scale; }
+	int getPixelHeight () const override { return _mapHeight * _scale; }
 	TexturePtr loadTexture (const std::string& name) const override;
 
 	// IMap
