@@ -21,7 +21,6 @@ import com.google.android.gms.ads.InterstitialAd;
  * class and ads
  */
 public class CaveExpress extends BaseActivity {
-	private static final String adUnitId = "a151fe5e535a323";
 	private static final int SDLViewID = 1;
 	private static final int AdViewID = 2;
 
@@ -121,7 +120,7 @@ public class CaveExpress extends BaseActivity {
 		super.onCreate(savedInstanceState);
 
 		interstitial = new InterstitialAd(this);
-		interstitial.setAdUnitId(adUnitId);
+		interstitial.setAdUnitId("ca-app-pub-5370378935428600/4094881177");
 		interstitial.setAdListener(new AdListener() {
 			@Override
 			public void onAdClosed() {
@@ -131,7 +130,7 @@ public class CaveExpress extends BaseActivity {
 		reloadInterstitial();
 
 		adview = new AdView(mSingleton);
-		adview.setAdUnitId(adUnitId);
+		adview.setAdUnitId("ca-app-pub-5370378935428600/2618147974");
 		adview.setAdSize(getAdSize());
 		adview.setId(AdViewID);
 		adview.setAdListener(new AdListener() {
