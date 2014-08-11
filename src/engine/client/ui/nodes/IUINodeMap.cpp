@@ -22,6 +22,7 @@
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/IFrontend.h"
 #include "engine/client/commands/CmdMove.h"
+#include "engine/client/commands/CmdZoom.h"
 #include "engine/common/campaign/CampaignManager.h"
 #include "engine/client/network/CloseMapHandler.h"
 #include "engine/client/network/HudLoadMapHandler.h"
@@ -41,6 +42,7 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	Commands.registerCommand(CMD_CL_DISCONNECT, new CmdDisconnect(serviceProvider));
 	Commands.registerCommand(CMD_MOVE_UP, new CmdMove(_map, DIRECTION_UP));
 	Commands.registerCommand(CMD_MOVE_DOWN, new CmdMove(_map, DIRECTION_DOWN));
+	Commands.registerCommand(CMD_ZOOM, new CmdZoom(_map));
 	Commands.registerCommand(CMD_MOVE_LEFT, new CmdMove(_map, DIRECTION_LEFT));
 	Commands.registerCommand(CMD_MOVE_RIGHT, new CmdMove(_map, DIRECTION_RIGHT));
 
@@ -84,6 +86,7 @@ IUINodeMap::~IUINodeMap ()
 	Commands.removeCommand(CMD_MOVE_DOWN);
 	Commands.removeCommand(CMD_MOVE_LEFT);
 	Commands.removeCommand(CMD_MOVE_RIGHT);
+	Commands.removeCommand(CMD_ZOOM);
 
 	_campaignManager.removeListener(this);
 

@@ -16,6 +16,7 @@
 #define CMD_UNLOCK "unlock"
 #define CMD_MOVE_UP "move_up"
 #define CMD_MOVE_DOWN "move_down"
+#define CMD_ZOOM "zoom"
 #define CMD_MOVE_LEFT "move_left"
 #define CMD_MOVE_RIGHT "move_right"
 #define CMD_START "start"
