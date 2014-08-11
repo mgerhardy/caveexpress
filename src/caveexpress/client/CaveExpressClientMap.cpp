@@ -46,13 +46,18 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	y += _screenRumbleOffsetY;
 	const int heightWater = waterHeight * _scale;
 	const int yWater = y + _y + heightWater;
-	const int widthWater = getMapWidth() * _scale;
+	const int waterPlaneHeight = (getMapHeight() * _scale - heightWater) * _zoom;
+	const int widthWater = getMapWidth() * _scale * _zoom;
 	const Color waterLineColor = { 0.99f, 0.99f, 1.0f, 1.0f };
 	static const Color color = { WATERCOLOR[0] / 255.0f, WATERCOLOR[1] / 255.0f, WATERCOLOR[2] / 255.0f, WATER_ALPHA
 			/ 255.0f };
 	const int xWater = x * _zoom;
-	_frontend->renderLine(xWater, (yWater - 1) * _zoom, x * _zoom + widthWater * _zoom, (yWater - 1) * _zoom, waterLineColor);
-	_frontend->renderFilledRect(xWater, yWater * _zoom, widthWater * _zoom, heightWater * _zoom, color);
+	_frontend->renderLine(xWater, (yWater - 1) * _zoom, xWater + widthWater, (yWater - 1) * _zoom, waterLineColor);
+	_frontend->renderFilledRect(xWater, yWater * _zoom, widthWater, waterPlaneHeight, color);
+	if (Config.isDebug()) {
+		_frontend->renderLine(xWater, getWaterSurface(), xWater + widthWater, getWaterSurface(), colorRed);
+		_frontend->renderLine(xWater, getWaterGround(), xWater + widthWater, getWaterGround(), colorGreen);
+	}
 }
 
 bool CaveExpressClientMap::drop ()
