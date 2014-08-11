@@ -153,9 +153,12 @@ void ClientMap::render (int x, int y) const
 	const int layerX = x + _x + _camera.getViewportX();
 	const int layerY = y + _y + _camera.getViewportY();
 
-	const int scissorX = x + _x;
-	const int scissorY = y + _y;
-	_frontend->enableScissor(std::max(0, scissorX), std::max(0, scissorY), getPixelWidth() * _zoom, getPixelHeight() * _scale * _zoom);
+	const int scissorX = std::max(0, layerX);
+	const int scissorY = std::max(0, layerY);
+	if (Config.isDebug()) {
+		_frontend->renderRect(scissorX, scissorY, getPixelWidth() * _zoom, getPixelHeight() * _zoom, colorRed);
+	}
+	_frontend->enableScissor(scissorX, scissorY, getPixelWidth() * _zoom, getPixelHeight() * _zoom);
 	renderLayer(layerX, layerY, LAYER_BACK);
 	renderLayer(layerX, layerY, LAYER_MIDDLE);
 	renderLayer(layerX, layerY, LAYER_FRONT);

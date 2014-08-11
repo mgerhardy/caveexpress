@@ -688,14 +688,14 @@ void Map::addEntity (int clientMask, const IEntity& entity) const
 {
 	const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(entity.getAngle()));
 	const AddEntityMessage msg(entity.getID(), entity.getType(), Animation::NONE,
-			entity.getSpriteID(), entity.getCol() + 0.5f, entity.getRow() + 0.5f, 1.0f, 1.0f, angle, ENTITY_ALIGN_LOWER_LEFT);
+			entity.getSpriteID(), entity.getCol(), entity.getRow(), 1.0f, 1.0f, angle, ENTITY_ALIGN_LOWER_LEFT);
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 
 void Map::updateEntity (int clientMask, const IEntity& entity) const
 {
 	const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(entity.getAngle()));
-	const UpdateEntityMessage msg(entity.getID(), entity.getCol() + 0.5f, entity.getRow() + 0.5f, angle, 0);
+	const UpdateEntityMessage msg(entity.getID(), entity.getCol(), entity.getRow(), angle, 0);
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 
