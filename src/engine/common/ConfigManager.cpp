@@ -25,6 +25,10 @@ const char *KEY_CONFIG_JOYSTICKBINDINGS = "joystickbindings";
 static inline std::string EMSCRIPTEN_GetNameForKey (SDL_Keycode key)
 {
 	switch (key) {
+	case SDLK_PAGEUP:
+		return "PageUp";
+	case SDLK_PAGEDOWN:
+		return "PageDown";
 	case SDLK_RETURN:
 		return "Return";
 	case SDLK_ESCAPE:
@@ -81,6 +85,10 @@ static inline SDL_Keycode SDL_GetKeyFromName(const char *n)
 		return SDLK_RETURN;
 	} else if (name == "ESC") {
 		return SDLK_ESCAPE;
+	} else if (name == "PAGEUP") {
+		return SDLK_PAGEUP;
+	} else if (name == "PAGEDOWN") {
+		return SDLK_PAGEDOWN;
 	} else if (name == "AC BACK") {
 		return SDLK_AC_BACK;
 	} else if (name == "BACKSPACE") {
