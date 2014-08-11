@@ -18,7 +18,7 @@ public:
 
 	void run (const Args& args) override
 	{
-		if (args.size() != 0) {
+		if (!args.empty()) {
 			_map.resetAcceleration(_dir);
 			return;
 		}
