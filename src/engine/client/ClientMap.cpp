@@ -156,10 +156,12 @@ void ClientMap::render () const
 
 	const int scissorX = std::max(0, x);
 	const int scissorY = std::max(0, y);
-	if (Config.isDebug()) {
+	const bool debug = Config.isDebug();
+	if (debug) {
 		_frontend->renderRect(scissorX, scissorY, getPixelWidth() * _zoom, getPixelHeight() * _zoom, colorRed);
+	} else {
+		_frontend->enableScissor(scissorX, scissorY, getPixelWidth() * _zoom, getPixelHeight() * _zoom);
 	}
-	//_frontend->enableScissor(scissorX, scissorY, getPixelWidth() * _zoom, getPixelHeight() * _zoom);
 	renderLayer(x, y, LAYER_BACK);
 	renderLayer(x, y, LAYER_MIDDLE);
 	renderLayer(x, y, LAYER_FRONT);
@@ -173,7 +175,9 @@ void ClientMap::render () const
 
 	renderParticles(x, y);
 
-	//_frontend->disableScissor();
+	if (!debug) {
+		_frontend->disableScissor();
+	}
 }
 
 void ClientMap::renderParticles (int x, int y) const
