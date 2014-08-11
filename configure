@@ -6,13 +6,13 @@ caveexpress_APPNAME=caveexpress
 caveexpress_APPNAME_FULL=CaveExpress
 caveexpress_JAVA_PACKAGE=org.caveexpress
 caveexpress_VERSION=1.8
-caveexpress_VERSION_CODE=24
+caveexpress_VERSION_CODE=25
 
 cavepacker_APPNAME=cavepacker
 cavepacker_APPNAME_FULL=CavePacker
 cavepacker_JAVA_PACKAGE=org.cavepacker
 cavepacker_VERSION=0.1
-cavepacker_VERSION_CODE=1
+cavepacker_VERSION_CODE=2
 
 DEFAULT_APP=caveexpress
 
