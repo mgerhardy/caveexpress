@@ -50,6 +50,8 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 	int posY = basePosY;
 
 	switch (_align) {
+	case ENTITY_ALIGN_UPPER_LEFT:
+		break;
 	case ENTITY_ALIGN_LOWER_LEFT:
 		posX -= texture->getWidth() / 2;
 		posY += _size.y * scale / 2.0f;
@@ -63,6 +65,10 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 	}
 	posX *= zoom;
 	posY *= zoom;
+
+	if (Config.isDebug()) {
+		frontend->renderFilledRect(posX, posY, 4, 4, colorRed);
+	}
 
 	setScreenPos(posX, posY);
 
@@ -85,6 +91,8 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 	int offsetPosX = posX;
 	int offsetPosY = posY;
 	switch (_align) {
+	case ENTITY_ALIGN_UPPER_LEFT:
+		break;
 	case ENTITY_ALIGN_LOWER_LEFT:
 		offsetPosX += _size.x * scale;
 		break;

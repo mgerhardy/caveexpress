@@ -141,6 +141,10 @@ void ClientMap::renderLayer (int x, int y, Layer layer) const
 	const int mapPosX = x + _screenRumbleOffsetX;
 	const int mapPosY = y + _screenRumbleOffsetY;
 
+	if (Config.isDebug()) {
+		_frontend->renderRect(mapPosX, mapPosY, 4, 4, colorYellow);
+	}
+
 	for (ClientEntityMapConstIter iter = _entities.begin(); iter != _entities.end(); ++iter) {
 		const ClientEntityPtr e = iter->second;
 		e->render(_frontend, layer, _scale, _zoom, mapPosX, mapPosY);
