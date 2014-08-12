@@ -25,8 +25,8 @@ public:
 		return fequals(x, other.x) && fequals(y, other.y);
 	}
 
-	bool isZero() const {
-		return fequals(x, 0.0f) && fequals(y, 0.0f);
+	bool isZero(float epsilon = EPSILON) const {
+		return fequals(x, 0.0f, epsilon) && fequals(y, 0.0f, epsilon);
 	}
 
 	vec2 operator -() const {
@@ -47,6 +47,11 @@ public:
 	void operator *=(float scalar) {
 		x *= scalar;
 		y *= scalar;
+	}
+
+	inline float sqrDistance(const vec2& other) const {
+		const vec2 d(x - other.x, y - other.y);
+		return d.x * d.x + d.y * d.y;
 	}
 
 	float x;

@@ -164,8 +164,13 @@ bool ClientEntity::update (uint32_t deltaTime, bool lerpPos)
 	static const float interval = Constant::FPS_SERVER / (float) Constant::FPS_CLIENT;
 	_time += deltaTime;
 	if (lerpPos) {
-		const vec2 inc = interval * (_nextPos - _prevPos);
-		_pos += inc;
+		const vec2 before = _pos - _nextPos;
+		if (!before.isZero(0.2f)) {
+			const vec2 inc = interval * (_nextPos - _prevPos);
+			_pos += inc;
+		} else {
+			_pos = _nextPos;
+		}
 	}
 	if (_currSprite) {
 		_currSprite->update(deltaTime);

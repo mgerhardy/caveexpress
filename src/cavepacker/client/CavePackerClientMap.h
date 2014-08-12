@@ -3,8 +3,6 @@
 #include "engine/client/ClientMap.h"
 
 class CavePackerClientMap: public ClientMap {
-protected:
-	bool wantLerp() override;
 public:
 	CavePackerClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider,
 			int referenceTileWidth);

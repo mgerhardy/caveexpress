@@ -27,8 +27,3 @@ CavePackerClientMap::CavePackerClientMap (int x, int y, int width, int height, I
 void CavePackerClientMap::start ()
 {
 }
-
-bool CavePackerClientMap::wantLerp()
-{
-	return false;
-}
