@@ -27,7 +27,7 @@ ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, 
 						0), _screenRumbleOffsetY(0), _particleSystem(
 				Config.getClientSideParticleMaxAmount()), _tutorial(false), _started(false), _theme(&ThemeTypes::ROCK)
 {
-	_maxZoom = Config.getConfigVar("maxzoom", "2.0");
+	_maxZoom = Config.getConfigVar("maxzoom", "1.2");
 	_minZoom = Config.getConfigVar("minzoom", "0.5");
 }
 
