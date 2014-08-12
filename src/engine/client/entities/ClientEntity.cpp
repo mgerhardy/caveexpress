@@ -165,7 +165,7 @@ bool ClientEntity::update (uint32_t deltaTime, bool lerpPos)
 	_time += deltaTime;
 	if (lerpPos) {
 		const vec2 before = _pos - _nextPos;
-		if (!before.isZero(0.2f)) {
+		if (!before.isZero(0.01f)) {
 			const vec2 inc = interval * (_nextPos - _prevPos);
 			_pos += inc;
 		} else {
