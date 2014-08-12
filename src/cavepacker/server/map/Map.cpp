@@ -316,7 +316,7 @@ void Map::restart (uint32_t delay)
 		return;
 
 	info(LOG_MAP, "trigger map restart");
-	_restartDue = SDL_GetTicks() + delay;
+	_restartDue = _time + delay;
 	const MapRestartMessage msg(delay);
 	_serviceProvider->getNetwork().sendToAllClients(msg);
 }
@@ -778,7 +778,7 @@ void Map::update (uint32_t deltaTime)
 
 	rebuildField();
 
-	if (_restartDue > 0 && _restartDue <= SDL_GetTicks()) {
+	if (_restartDue > 0 && _restartDue <= _time) {
 		const std::string currentName = getName();
 		info(LOG_MAP, "restarting map " + currentName);
 		load(currentName);
