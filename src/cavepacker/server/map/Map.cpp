@@ -252,6 +252,8 @@ void Map::undoPackage (int col, int row, int targetCol, int targetRow)
 
 void Map::abortAutoSolve ()
 {
+	if (!_autoSolve)
+		return;
 	_autoSolve = false;
 	_serviceProvider->getNetwork().sendToAllClients(AutoSolveAbortedMessage());
 }
@@ -323,7 +325,7 @@ void Map::restart (uint32_t delay)
 
 void Map::resetCurrentMap ()
 {
-	_autoSolve = false;
+	abortAutoSolve();
 	_nextSolveStep = 0;
 	_solution = "";
 	_timeManager.reset();
@@ -792,7 +794,7 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 		return;
 
 	if (_solution.empty()) {
-		_autoSolve = false;
+		abortAutoSolve();
 		error(LOG_SERVER, "no solution");
 		return;
 	}
@@ -804,7 +806,7 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 	_nextSolveStep = Config.getConfigVar("solvestepmillis", "100")->getIntValue();
 
 	if (_solution[0] == '(') {
-		_autoSolve = false;
+		abortAutoSolve();
 		error(LOG_SERVER, "x() repeat syntax is not supported");
 		return;
 	}
@@ -819,7 +821,7 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 	}
 
 	if (_players.empty()) {
-		_autoSolve = false;
+		abortAutoSolve();
 		error(LOG_SERVER, "no player connected");
 		return;
 	}
