@@ -315,7 +315,7 @@ bool CampaignManager::updateMapValues (const std::string& mapname, uint32_t fini
 		return false;
 	}
 
-	const bool alreadyPlayed = map->getTime() > 0;
+	const bool alreadyPlayed = map->getTime() > 0 || map->getFinishPoints() > 0;
 	if (map->getStars() < stars)
 		map->setStars(stars);
 	map->setTime(time);

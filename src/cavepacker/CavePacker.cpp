@@ -70,11 +70,11 @@ void CavePacker::update (uint32_t deltaTime)
 
 	const bool isDone = _map.isDone();
 	if (isDone && !_map.isRestartInitialized()) {
-		const uint32_t finishPoints = _map.isAutoSolve() ? 0 : _map.getMoves();
-		const uint32_t pushes = _map.isAutoSolve() ? 0 : _map.getPushes();
+		const uint32_t moves = _map.getMoves();
+		const uint32_t pushes = _map.getPushes();
 		const uint8_t stars = getStars();
 		_campaignManager->getAutoActiveCampaign();
-		if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, pushes, stars, true))
+		if (!_campaignManager->updateMapValues(_map.getName(), moves, pushes, stars, true))
 			error(LOG_SERVER, "Could not save the values for the map");
 
 		if (_map.getPlayers().size() == 1) {
@@ -90,8 +90,9 @@ void CavePacker::update (uint32_t deltaTime)
 			info(LOG_SERVER, "no solution in multiplayer games");
 		}
 
-		System.track("MapState", String::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), finishPoints, pushes, stars));
-		const FinishedMapMessage msg(_map.getName(), finishPoints, pushes, stars);
+		System.track("MapState", String::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), moves, pushes, stars));
+		_map.abortAutoSolve();
+		const FinishedMapMessage msg(_map.getName(), moves, pushes, stars);
 		_serviceProvider->getNetwork().sendToAllClients(msg);
 	} else if (!isDone && _map.isFailed()) {
 		debug(LOG_SERVER, "map failed");
