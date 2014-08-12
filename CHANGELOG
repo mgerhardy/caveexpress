@@ -70,7 +70,9 @@ We are working hard on improving the game entry for the next version.
 Version 1.7 (2014-05-21)
 * Fixed crashes when the player dies
 
-Version 1.8 (not yet released)
+Version 1.8 (2014-08-12)
 * Google NativeClient port
 * Reduced file sizes
 * Add zooming support
+
+Version 1.9 (not yet released)
