@@ -15,6 +15,6 @@ public:
 	UIMapOptionsWindow (IFrontend *frontend, ServiceProvider& serviceProvider);
 	void update (uint32_t deltaTime) override;
 
-	void onActive () override;
+	virtual void onActive () override;
 	bool onPop () override;
 };

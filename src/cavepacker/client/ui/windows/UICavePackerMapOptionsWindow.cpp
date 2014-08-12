@@ -10,11 +10,19 @@
 UICavePackerMapOptionsWindow::UICavePackerMapOptionsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
 		UIMapOptionsWindow(frontend, serviceProvider)
 {
-	UINodeButtonImage *solve = new UINodeButtonImage(frontend, "icon-solve");
-	solve->putUnder(_restartMap, 0.02f);
-	solve->setOnActivate(CMD_UI_POP ";solve");
+	_solve = new UINodeButtonImage(frontend, "icon-solve");
+	_solve->putUnder(_restartMap, 0.02f);
+	_solve->setOnActivate(CMD_UI_POP ";solve");
 	if (_backButton == nullptr)
-		add(solve);
+		add(_solve);
 	else
-		addBefore(_backButton, solve);
+		addBefore(_backButton, _solve);
+}
+
+void UICavePackerMapOptionsWindow::onActive ()
+{
+	UIMapOptionsWindow::onActive();
+	if (System.supportPayment()) {
+		_solve->setVisible(System.hasItem("autosolve"));
+	}
 }
