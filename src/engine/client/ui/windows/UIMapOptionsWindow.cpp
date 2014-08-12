@@ -27,13 +27,15 @@ UIMapOptionsWindow::UIMapOptionsWindow (IFrontend *frontend, ServiceProvider& se
 	_restartMap->setOnActivate(CMD_UI_POP ";" CMD_MAP_RESTART);
 	add(_restartMap);
 
-	if (!wantBackButton())
+	if (!wantBackButton()) {
+		_backButton = nullptr;
 		return;
+	}
 
-	UINodeBackButton *backButton = new UINodeBackButton(frontend);
+	_backButton = new UINodeBackButton(frontend);
 	const float gapBack = std::max(0.01f, getScreenPadding());
-	backButton->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_LEFT, gapBack);
-	add(backButton);
+	_backButton->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_LEFT, gapBack);
+	add(_backButton);
 }
 
 void UIMapOptionsWindow::update (uint32_t deltaTime)

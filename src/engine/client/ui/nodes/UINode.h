@@ -228,6 +228,8 @@ public:
 	void setFocusAlpha (float focusAlpha);
 
 	void addFront (UINode* node);
+	// inserts a node before another node - can be useful for the focus order
+	void addBefore (UINode* reference, UINode* node);
 	virtual void add (UINode* node);
 
 	bool hasImage () const;

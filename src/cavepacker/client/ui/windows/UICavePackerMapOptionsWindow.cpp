@@ -13,5 +13,8 @@ UICavePackerMapOptionsWindow::UICavePackerMapOptionsWindow (IFrontend *frontend,
 	UINodeButtonImage *solve = new UINodeButtonImage(frontend, "icon-solve");
 	solve->putUnder(_restartMap, 0.02f);
 	solve->setOnActivate(CMD_UI_POP ";solve");
-	add(solve);
+	if (_backButton == nullptr)
+		add(solve);
+	else
+		addBefore(_backButton, solve);
 }

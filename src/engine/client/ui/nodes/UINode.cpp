@@ -968,6 +968,28 @@ bool UINode::checkBounds (int x, int y) const
 	return checkAABB(_x, _y, getX(), getY(), getWidth(), getHeight());
 }
 
+void UINode::addBefore (UINode* reference, UINode* node)
+{
+	UINodeListIter i = std::find(_nodes.begin(), _nodes.end(), reference);
+	if (i == _nodes.end()) {
+		add(node);
+		return;
+	}
+
+	if (i == _nodes.begin()) {
+		addFront(node);
+		return;
+	}
+
+	_nodes.insert(i, node);
+
+	if (_layout)
+		_layout->addNode(node);
+
+	node->setParent(this);
+	node->onAdd();
+}
+
 void UINode::addFront (UINode* node)
 {
 	_nodes.insert(_nodes.begin(), node);
