@@ -11,9 +11,11 @@ public:
 	virtual ~IParticleEnvironment() {
 	}
 
-	// return the pixel water surface screen coordinate (from the top of the screen)
+	virtual int getRenderOffsetX() const = 0;
+	virtual int getRenderOffsetY() const = 0;
+	// return the pixel water surface relative screen coordinate (from the top of the render node)
 	virtual int getWaterSurface() const = 0;
-	// return the pixel ground screen coordinate (from the top of the screen)
+	// return the pixel ground screen relative coordinate (from the top of the render node)
 	virtual int getWaterGround() const = 0;
 	// return the pixel water width
 	virtual int getWaterWidth() const = 0;

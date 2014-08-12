@@ -64,7 +64,7 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 	}
 	}
 
-	setScreenPos(offsetX + posX, offset + posY);
+	setScreenPos(offsetX + posX, offsetY + posY);
 
 	const int ropeX1 = basePosX;
 	const int ropeY1 = (basePosY - _size.y * scale * zoom / 2.0f);

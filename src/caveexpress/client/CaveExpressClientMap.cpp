@@ -45,8 +45,8 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	if (getWaterHeight() <= 0.000001f)
 		return;
 	const int widthWater = getPixelWidth() * _zoom;
-	const int waterSurface = getWaterSurface();
-	const int waterGround = getWaterGround();
+	const int waterSurface = y + getWaterSurface() * _zoom;
+	const int waterGround = y + getWaterGround() * _zoom;
 	const int waterHeight = waterGround - waterSurface;
 	_frontend->renderLine(x, waterSurface - 1, x + widthWater, waterSurface - 1, waterLineColor);
 	_frontend->renderFilledRect(x, waterSurface, widthWater, waterHeight, color);

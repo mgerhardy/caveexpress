@@ -144,6 +144,8 @@ public:
 	int getWaterWidth () const override { return _mapWidth * _scale; }
 	int getPixelWidth () const override { return _mapWidth * _scale; }
 	int getPixelHeight () const override { return _mapHeight * _scale; }
+	int getRenderOffsetX() const override { return _x + _camera.getViewportX(); }
+	int getRenderOffsetY() const override { return _y + _camera.getViewportY(); }
 	TexturePtr loadTexture (const std::string& name) const override;
 
 	// IMap
