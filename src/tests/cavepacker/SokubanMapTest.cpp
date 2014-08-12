@@ -6,7 +6,7 @@ class SokubanMapTest: public MapSuite {
 protected:
 	void testMapRegion (int begin)
 	{
-		for (int i = begin; i <= begin + 10; ++i) {
+		for (int i = begin; i < begin + 10; ++i) {
 			Map map;
 			map.init(&_testFrontend, _serviceProvider);
 			std::string mapName = String::format("%04i", i);
