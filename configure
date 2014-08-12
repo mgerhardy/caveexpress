@@ -11,7 +11,7 @@ caveexpress_VERSION_CODE=25
 cavepacker_APPNAME=cavepacker
 cavepacker_APPNAME_FULL=CavePacker
 cavepacker_JAVA_PACKAGE=org.cavepacker
-cavepacker_VERSION=0.1
+cavepacker_VERSION=1.0
 cavepacker_VERSION_CODE=2
 
 DEFAULT_APP=caveexpress
