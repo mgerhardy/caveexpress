@@ -39,7 +39,7 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 
 	const float height = 0.05f;
 	const float sliderWidth = 0.3f;
-	_autoSolveSlider = new UINodeSlider(frontend, 100.0f, 1000.0f, 100.0f);
+	_autoSolveSlider = new UINodeSlider(frontend, 10.0f, 1000.0f, 10.0f);
 	_autoSolveSlider->setAlignment(NODE_ALIGN_BOTTOM | NODE_ALIGN_CENTER);
 	_autoSolveSlider->setSize(sliderWidth, height);
 	_autoSolveSlider->addListener(UINodeListenerPtr(new SolveListener(_autoSolveSlider, "solvestepmillis")));

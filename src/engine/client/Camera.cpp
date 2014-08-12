@@ -41,7 +41,7 @@ void Camera::update (const vec2& playerPos, Direction direction, float zoom)
 		// if we can show the full width of the map - then center it
 		_viewportX = _mapPixelWidth / 2 - pixelW / 2;
 	} else {
-		// TODO: broken
+		// TODO: broken - doesn't center on the player
 		_viewportX = -clamp(playerPos.x * _scale - _mapPixelWidth / 2.0f, 0.0f, static_cast<float>(_scrollingAreaWidth)) * zoom;
 	}
 	const int pixelH = _mapGridHeight * _scale * zoom;
@@ -50,7 +50,7 @@ void Camera::update (const vec2& playerPos, Direction direction, float zoom)
 		// if we can show the full width of the map - then center it
 		_viewportY = _mapPixelHeight / 2 - pixelH / 2;
 	} else {
-		// TODO: broken
+		// TODO: broken - doesn't center on the player
 		_viewportY = -clamp(playerPos.y * _scale - _mapPixelHeight / 2.0f, 0.0f, static_cast<float>(_scrollingAreaHeight)) * zoom;
 	}
 	debug(LOG_CLIENT, String::format("zoom: %f, viewportX %i, pixelW %i, nodeW: %i", zoom, _viewportX, pixelW, nodeW));
