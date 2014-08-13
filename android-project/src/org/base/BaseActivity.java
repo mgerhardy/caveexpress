@@ -61,10 +61,8 @@ public abstract class BaseActivity extends SDLActivity {
 				Log.v(getName(), "App billing setup OK, querying inventory.");
 
 				moreSkus.clear();
-				if (!isHD()) {
-					moreSkus.add("adfree");
-				}
-				moreSkus.add("unlockall");
+
+				addSkus(moreSkus);
 				// for (int i = 0; i < 20; i++) {
 				// moreSkus.add("campaign" + i);
 				// }
@@ -72,6 +70,13 @@ public abstract class BaseActivity extends SDLActivity {
 				inAppBillingHelper.queryInventoryAsync(true, moreSkus, mGotInventoryListener);
 			}
 		}
+	}
+
+	protected void addSkus(List<String> moreSkus) {
+		if (!isHD()) {
+			moreSkus.add("adfree");
+		}
+		moreSkus.add("unlockall");
 	}
 
 	@Override

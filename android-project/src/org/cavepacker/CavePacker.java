@@ -1,5 +1,7 @@
 package org.cavepacker;
 
+import java.util.List;
+
 import org.base.BaseActivity;
 
 import android.os.Bundle;
@@ -213,6 +215,12 @@ public class CavePacker extends BaseActivity {
 	protected void doHideAds() {
 		Handler mainHandler = new Handler(getContext().getMainLooper());
 		mainHandler.post(new HideAddsRunnable(this, adview, layout));
+	}
+
+	@Override
+	protected void addSkus(List<String> moreSkus) {
+		super.addSkus(moreSkus);
+		moreSkus.add("autosolve");
 	}
 
 	@Override
