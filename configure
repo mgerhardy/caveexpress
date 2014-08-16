@@ -154,6 +154,7 @@ makefile_local() {
 	add_to_makefile_local APPNAME_FULL "Full application name: ${APPNAME_FULL}"
 	add_to_makefile_local JAVA_PACKAGE "Java package: ${JAVA_PACKAGE}"
 	add_to_makefile_local VERSION
+	add_to_makefile_local HD_VERSION
 	add_to_makefile_local VERSION_CODE
 	add_to_makefile_local PROFILING "Enable profiling"
 	add_to_makefile_local NETWORKING "Enable network support" "Disable network support"

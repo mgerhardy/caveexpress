@@ -37,6 +37,17 @@ ifeq ($(DISABLE_DEPENDENCY_TRACKING),)
 endif
 CONFIGURE_PREFIX ?=
 
+CONFIGURE_OPTIONS += --prefix=$(PREFIX) --target-os=$(TARGET_OS) --app=$(APPNAME)
+ifeq ($(MODE),release)
+CONFIGURE_OPTIONS += --enable-release
+endif
+ifeq ($(USE_CCACHE),1)
+CONFIGURE_OPTIONS += --enable-ccache
+endif
+ifeq ($(HD_VERSION),1)
+CONFIGURE_OPTIONS += --enable-hd
+endif
+
 INSTALL         ?= install
 INSTALL_PROGRAM ?= $(INSTALL) -m 755 -s
 INSTALL_SCRIPT  ?= $(INSTALL) -m 755
@@ -69,7 +80,7 @@ endif
 data: textures lang filelist $(SRCDIR)/engine/common/ports/project.rc
 
 Makefile.local: configure
-	./configure --target-os=$(TARGET_OS) --app=$(APPNAME)
+	./configure $(CONFIGURE_OPTIONS)
 
 include build/flags.mk
 include build/modes/$(MODE).mk
