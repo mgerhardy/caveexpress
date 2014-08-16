@@ -40,7 +40,6 @@ void UINodeSpinner::render (int x, int y) const
 {
 	UINode::render(x, y);
 	const std::string valStr = string::toString(_value);
-	const std::string maxValStr = string::toString(_max);
 	const int rx = getRenderX();
 	const int minusButtonX = x + rx;
 	const int plusButtonX = x + getRenderX(false) + getRenderWidth(true) - _font->getCharWidth();
