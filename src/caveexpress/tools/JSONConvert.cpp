@@ -80,7 +80,7 @@ static int convert_number (void * ctx, const char * numberVal, size_t numberLen)
 				std::cout << std::endl << VERTICESINDENT;
 			}
 		}
-		const float origin = ++coordinatesParsed % 2 ? originX : originY;
+		const float origin = (++coordinatesParsed % 2) ? originX : originY;
 		const float f = (atof(str.c_str()) - origin) * scale;
 		vertices++;
 		if (vertices != 1) {
