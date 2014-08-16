@@ -14,6 +14,12 @@ cavepacker_JAVA_PACKAGE=org.cavepacker
 cavepacker_VERSION=1.0
 cavepacker_VERSION_CODE=6
 
+caveanddiamonds_APPNAME=caveanddiamonds
+caveanddiamonds_APPNAME_FULL=CaveAndDiamonds
+caveanddiamonds_JAVA_PACKAGE=org.caveanddiamonds
+caveanddiamonds_VERSION=0.1
+caveanddiamonds_VERSION_CODE=1
+
 DEFAULT_APP=caveexpress
 
 #set -e
