@@ -274,6 +274,7 @@ char* appendMessage(char* buf, const char* end, const char* fmt, ...) {
 	va_start(argList, fmt);
 	const int maxBytes = end - buf;
 	const int num = vsnprintf(buf, maxBytes, fmt, argList);
+	va_end(argList);
 	if (num >= maxBytes)
 		// output would have been truncated
 		return buf;
