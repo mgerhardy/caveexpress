@@ -9,7 +9,6 @@ os:
   - linux
 
 script:
-  - echo "OS: $TRAVIS_OS_NAME"
   - git checkout -f; make clean && ./configure --with-embedded-sqlite3 --app=caveexpress && make -j 2 && ./tests
   - git checkout -f; make clean && ./configure --with-embedded-sqlite3 --app=caveexpress --disable-network && make -j 2 && ./tests
   - git checkout -f; make clean && ./configure --with-embedded-sqlite3 --app=cavepacker && make -j 2 && ./tests
