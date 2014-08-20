@@ -203,12 +203,8 @@ bool Map::isDone () const
 		return true;
 	if (isFailed())
 		return false;
-	for (StateMapConstIter i = _state.begin(); i != _state.end(); ++i) {
-		// if there is an empty target left, we are not yet done
-		if (i->second == Sokuban::TARGET || i->second == Sokuban::PLAYERONTARGET)
-			return false;
-	}
-	return true;
+	// TODO
+	return false;
 }
 
 void Map::increaseMoves ()
@@ -392,8 +388,8 @@ inline const EntityType& getEntityTypeForSpriteType (const SpriteType& spriteTyp
 		return EntityTypes::GROUND;
 	if (SpriteTypes::isSolid(spriteType))
 		return EntityTypes::SOLID;
-	if (SpriteTypes::isPackage(spriteType))
-		return EntityTypes::PACKAGE;
+	if (SpriteTypes::isStone(spriteType))
+		return EntityTypes::STONE;
 	System.exit("unknown sprite type given: " + spriteType.name, 1);
 	return EntityType::NONE;
 }
@@ -521,7 +517,7 @@ MapTile* Map::getPackage (int col, int row)
 	if (i == _field.end()) {
 		return nullptr;
 	}
-	if (EntityTypes::isPackage(i->second->getType())) {
+	if (EntityTypes::isStone(i->second->getType())) {
 		return static_cast<MapTile*>(i->second);
 	}
 	return nullptr;
@@ -547,16 +543,16 @@ bool Map::isTarget (int col, int row)
 	if (i == _state.end())
 		return false;
 	const char c = i->second;
-	return c == Sokuban::PACKAGEONTARGET || c == Sokuban::PLAYERONTARGET || c == Sokuban::TARGET;
+	return c == Sokuban::TARGET;
 }
 
-bool Map::isPackage (int col, int row)
+bool Map::isStone (int col, int row)
 {
 	StateMapConstIter i = _state.find(INDEX(col, row));
 	if (i == _state.end())
 		return false;
 	const char c = i->second;
-	return c == Sokuban::PACKAGE || c == Sokuban::PACKAGEONTARGET;
+	return c == Sokuban::STONE;
 }
 
 bool Map::initPlayer (Player* player)
@@ -627,8 +623,8 @@ char Map::getSokubanFieldId (const IEntity *entity) const
 	// the order matters
 	if (EntityTypes::isSolid(t))
 		return Sokuban::WALL;
-	if (EntityTypes::isPackage(t))
-		return Sokuban::PACKAGE;
+	if (EntityTypes::isStone(t))
+		return Sokuban::STONE;
 	if (EntityTypes::isPlayer(t))
 		return Sokuban::PLAYER;
 	return Sokuban::GROUND;
@@ -653,25 +649,17 @@ bool Map::setField (IEntity *entity, int col, int row)
 	const char c = i->second;
 	char nc = getSokubanFieldId(entity);
 	if (c == Sokuban::PLAYER) {
-		if (nc == Sokuban::TARGET)
-			nc = Sokuban::PLAYERONTARGET;
-		else if (nc == Sokuban::GROUND)
+		if (nc == Sokuban::GROUND)
 			nc = c;
 		else
 			return false;
-	} else if (c == Sokuban::PACKAGE) {
-		if (nc == Sokuban::TARGET)
-			nc = Sokuban::PACKAGEONTARGET;
-		else if (nc == Sokuban::GROUND)
+	} else if (c == Sokuban::STONE) {
+		if (nc == Sokuban::GROUND)
 			nc = c;
 		else
 			return false;
 	} else if (c == Sokuban::TARGET) {
-		if (nc == Sokuban::PACKAGE)
-			nc = Sokuban::PACKAGEONTARGET;
-		else if (nc == Sokuban::PLAYER)
-			nc = Sokuban::PLAYERONTARGET;
-		else if (nc == Sokuban::GROUND)
+		if (nc == Sokuban::GROUND)
 			nc = c;
 		else
 			return false;
@@ -706,7 +694,7 @@ void Map::sendMapToClient (ClientId clientId) const
 	const int clientMask = ClientIdToClientMask(clientId);
 	for (EntityListConstIter i = _entities.begin(); i != _entities.end(); ++i) {
 		const IEntity* e = *i;
-		if (!e->isMapTile() && !e->isPackage())
+		if (!e->isMapTile() && !e->isStone())
 			continue;
 		addEntity(clientMask, *e);
 	}

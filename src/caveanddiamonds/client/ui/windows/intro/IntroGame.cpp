@@ -16,6 +16,6 @@ void IntroGame::addIntroNodes(UINode* parent) {
 	parent->add(new IntroLabel(_frontend, tr("The less moves you do the better")));
 	parent->add(new IntroLabelHeadline(_frontend, tr("Description")));
 	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PLAYER, Animation::NONE, tr("Your player")));
-	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PACKAGE, Animation::NONE, tr("Package")));
+	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::STONE, Animation::NONE, tr("Stone")));
 	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::TARGET, Animation::NONE, tr("Target")));
 }

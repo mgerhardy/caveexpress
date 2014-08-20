@@ -145,9 +145,9 @@ public:
 		return EntityTypes::isTarget(_type);
 	}
 
-	inline bool isPackage () const
+	inline bool isStone () const
 	{
-		return EntityTypes::isPackage(_type);
+		return EntityTypes::isStone(_type);
 	}
 
 	inline bool isGround () const

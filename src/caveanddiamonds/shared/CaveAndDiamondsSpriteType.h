@@ -6,7 +6,7 @@ namespace SpriteTypes {
 extern SpriteType SOLID;
 extern SpriteType GROUND;
 extern SpriteType TARGET;
-extern SpriteType PACKAGE;
+extern SpriteType STONE;
 
 inline bool isSolid (const SpriteType& other)
 {
@@ -18,9 +18,9 @@ inline bool isTarget (const SpriteType& other)
 	return other == TARGET;
 }
 
-inline bool isPackage (const SpriteType& other)
+inline bool isStone (const SpriteType& other)
 {
-	return other == PACKAGE;
+	return other == STONE;
 }
 
 inline bool isGround (const SpriteType& other)

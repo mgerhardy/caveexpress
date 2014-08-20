@@ -196,7 +196,7 @@ public:
 	MapTile* getPackage (int col, int row);
 	bool isFree (int col, int row);
 	bool isTarget (int col, int row);
-	bool isPackage (int col, int row);
+	bool isStone (int col, int row);
 
 	void undoPackage (int col, int row, int targetCol, int targetRow);
 

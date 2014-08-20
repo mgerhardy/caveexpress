@@ -6,7 +6,7 @@ namespace EntityTypes {
 extern EntityType SOLID;
 extern EntityType GROUND;
 extern EntityType PLAYER;
-extern EntityType PACKAGE;
+extern EntityType STONE;
 extern EntityType TARGET;
 
 inline bool isGround (const EntityType& other)
@@ -24,9 +24,9 @@ inline bool isTarget (const EntityType& other)
 	return other == TARGET;
 }
 
-inline bool isPackage (const EntityType& other)
+inline bool isStone (const EntityType& other)
 {
-	return other == PACKAGE;
+	return other == STONE;
 }
 
 inline bool isSolid (const EntityType& other)
@@ -41,7 +41,7 @@ inline bool isMapTile (const EntityType& other)
 
 inline bool isDynamic (const EntityType& other)
 {
-	return isPlayer(other) || isPackage(other);
+	return isPlayer(other) || isStone(other);
 }
 
 }

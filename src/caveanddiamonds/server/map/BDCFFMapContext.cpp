@@ -73,20 +73,12 @@ bool MapContext::load(bool skipErrors) {
 			addGround(col, row);
 			addPlayer(col, row);
 			break;
-		case Sokuban::PACKAGE:
+		case Sokuban::STONE:
 			addGround(col, row);
-			addPackage(col, row);
+			addStone(col, row);
 			break;
 		case Sokuban::TARGET:
 			addTarget(col, row);
-			break;
-		case Sokuban::PACKAGEONTARGET:
-			addTarget(col, row);
-			addPackage(col, row);
-			break;
-		case Sokuban::PLAYERONTARGET:
-			addTarget(col, row);
-			addPlayer(col, row);
 			break;
 		case '\n':
 			col = -1;
@@ -132,8 +124,8 @@ inline void MapContext::addWall(int col, int row) {
 	addTile("tile-rock-" + String::format("%02i", rnd), col, row);
 }
 
-inline void MapContext::addPackage(int col, int row) {
-	addTile("package", col, row);
+inline void MapContext::addStone(int col, int row) {
+	addTile("stone", col, row);
 }
 
 inline void MapContext::addPlayer(int col, int row) {

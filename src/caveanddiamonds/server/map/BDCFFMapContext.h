@@ -8,11 +8,9 @@
 namespace Sokuban {
 const int WALL = '#';
 const int PLAYER = '@';
-const int PACKAGE = '$';
+const int STONE = '$';
 const int TARGET = '.';
 const int GROUND = ' ';
-const int PACKAGEONTARGET = '*';
-const int PLAYERONTARGET = '+';
 }
 
 class MapContext : public IMapContext {
@@ -22,7 +20,7 @@ private:
 	void addPlayer(int col, int row);
 	void addWall(int col, int row);
 	void addGround(int col, int row);
-	void addPackage(int col, int row);
+	void addStone(int col, int row);
 	void addTarget(int col, int row);
 	void addTile(const std::string& tile, int col, int row);
 	bool isEmpty(int col, int row) const;
