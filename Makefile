@@ -80,7 +80,8 @@ endif
 data: textures lang filelist $(SRCDIR)/engine/common/ports/project.rc
 
 Makefile.local: configure
-	./configure $(CONFIGURE_OPTIONS)
+	$(Q)$(CONFIGURE_PREFIX) ./configure $(CONFIGURE_OPTIONS)
+	$(Q)$(MAKE)
 
 include build/flags.mk
 include build/modes/$(MODE).mk
@@ -130,7 +131,7 @@ $(SRCDIR)/engine/common/ports/project.rc: $(SRCDIR)/engine/common/ports/project.
 
 $(CONFIG_H)-config.h: configure
 	@echo "restarting configure for $(CONFIG_H)"
-	$(Q)$(CONFIGURE_PREFIX) ./configure $(CONFIGURE_OPTIONS) --target-os=$(TARGET_OS)
+	$(Q)$(CONFIGURE_PREFIX) ./configure $(CONFIGURE_OPTIONS)
 	$(Q)$(MAKE)
 
 define BUILD_RULE
