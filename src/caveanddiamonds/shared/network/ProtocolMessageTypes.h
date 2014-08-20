@@ -1,6 +1,8 @@
 #pragma once
 
 namespace protocol {
-//enum {
-//};
+enum {
+	PROTO_AUTOSOLVE,
+	PROTO_AUTOSOLVEABORT
+};
 }

@@ -15,6 +15,10 @@ IProtocolMessage *ProtocolMessageFactory::create (ByteStream& stream)
 	if (msg != nullptr)
 		return msg;
 	switch (type) {
+	case protocol::PROTO_AUTOSOLVE:
+		return new AutoSolveStartedMessage();
+	case protocol::PROTO_AUTOSOLVEABORT:
+		return new AutoSolveAbortedMessage();
 	default:
 		error(LOG_NET, String::format("unknown module type given: %i", type));
 		stream.addByte(type, true);
