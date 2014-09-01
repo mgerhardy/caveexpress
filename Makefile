@@ -201,7 +201,7 @@ install-$(1): $($(1)_FILE)
 else
 # if this target is ignored, just do nothing
 $(1):
-	@echo "==> NOP [$$@] is disabled"
+	@echo "===> NOP [$$@] is disabled"
 clean-$(1):
 	@echo "module is disabled"
 strip-$(1):
