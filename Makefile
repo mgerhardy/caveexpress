@@ -27,10 +27,9 @@ PROJECTS    := $(sort $(patsubst $(PROJECTSDIR)/%.mk,%,$(wildcard $(PROJECTSDIR)
 SRCDIR      := src
 BASEROOT    := base
 BASEDIR     := $(BASEROOT)/$(APPNAME)
-TARGETS_TMP := $(sort $(patsubst build/modules/%.mk,%,$(wildcard build/modules/*.mk)))
-TARGETS     := $(filter-out $(foreach TARGET,$(TARGETS_TMP),$(if $($(TARGET)_DISABLE),$(TARGET),)),$(TARGETS_TMP))
+TARGETS     := $(sort $(patsubst build/modules/%.mk,%,$(wildcard build/modules/*.mk)))
 DISABLED    := $(filter-out $(TARGETS),$(TARGETS_TMP))
-STEAM_ROOT  ?= /home/mattn/Downloads/steam-runtime-sdk_2013-09-05
+STEAM_ROOT  ?= /home/$(USER)/Downloads/steam-runtime-sdk_2013-09-05
 
 ifeq ($(DISABLE_DEPENDENCY_TRACKING),)
   DEP_FLAGS := -MP -MD -MT $$@
@@ -101,6 +100,11 @@ endef
 
 define INCLUDE_RULE
 include build/modules/$(1).mk
+ifndef $(1)_DISABLE
+ifndef $(1)_IGNORE
+$(1)_ACTIVE := 1
+endif
+endif
 endef
 $(foreach TARGET,$(TARGETS),$(eval $(call INCLUDE_RULE,$(TARGET))))
 
@@ -135,9 +139,7 @@ $(CONFIG_H)-config.h: configure
 	$(Q)$(MAKE)
 
 define BUILD_RULE
-ifndef $(1)_DISABLE
-ifndef $(1)_IGNORE
-
+ifeq ($($(1)_ACTIVE),1)
 -include $($(1)_OBJS:.o=.d)
 
 # if the target filename differs:
@@ -199,13 +201,13 @@ install-$(1): $($(1)_FILE)
 else
 # if this target is ignored, just do nothing
 $(1):
+	@echo "==> NOP [$$@] is disabled"
 clean-$(1):
 	@echo "module is disabled"
 strip-$(1):
 	@echo "module is disabled"
 install-$(1):
 	@echo "module is disabled"
-endif
 endif
 endef
 $(foreach TARGET,$(TARGETS),$(eval $(call BUILD_RULE,$(TARGET))))
