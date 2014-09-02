@@ -20,6 +20,12 @@ caveanddiamonds_JAVA_PACKAGE=org.caveanddiamonds
 caveanddiamonds_VERSION=0.1
 caveanddiamonds_VERSION_CODE=1
 
+geophoto_APPNAME=geophoto
+geophoto_APPNAME_FULL=GeoPhoto
+geophoto_JAVA_PACKAGE=org.geophoto
+geophoto_VERSION=0.1
+geophoto_VERSION_CODE=1
+
 DEFAULT_APP=caveexpress
 
 #set -e
