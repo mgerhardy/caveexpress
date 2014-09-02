@@ -1,7 +1,7 @@
 #pragma once
 
-#include "UINodeSelector.h"
-#include "client/round/GameRound.h"
+#include "engine/client/ui/nodes/UINodeSelector.h"
+#include "geophoto/client/round/GameRound.h"
 
 class UINodeLocationSelector: public UINodeSelector<Location> {
 private:

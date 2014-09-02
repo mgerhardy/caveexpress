@@ -1,12 +1,12 @@
-#include "UINodeMap.h"
-#include "client/ui/UI.h"
-#include "client/ui/BitmapFont.h"
-#include "client/ui/nodes/UINodeBar.h"
-#include "client/ui/nodes/UINodeLabel.h"
-#include "client/network/SoundHandler.h"
-#include "client/network/InitDoneHandler.h"
-#include "client/round/RoundController.h"
-#include "shared/network/ProtocolHandlerRegistry.h"
+#include "geophoto/client/ui/nodes/UINodeMap.h"
+#include "engine/client/ui/UI.h"
+#include "engine/client/ui/BitmapFont.h"
+#include "engine/client/ui/nodes/UINodeBar.h"
+#include "engine/client/ui/nodes/UINodeLabel.h"
+#include "geophoto/client/network/SoundHandler.h"
+#include "geophoto/client/network/InitDoneHandler.h"
+#include "geophoto/client/round/RoundController.h"
+#include "engine/common/network/ProtocolHandlerRegistry.h"
 
 UINodeMap::UINodeMap (IFrontend *frontend, RoundController& controller) :
 		UINode(frontend), _controller(controller)

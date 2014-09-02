@@ -1,7 +1,7 @@
 #pragma once
 
-#include "UIWindow.h"
-#include "client/round/RoundController.h"
+#include "engine/client/ui/windows/UIWindow.h"
+#include "geophoto/client/round/RoundController.h"
 
 class IGameStatePersister;
 class IProgressCallback;

@@ -2,9 +2,9 @@
 
 #include "GameRoundData.h"
 #include "IGameStatePersister.h"
-#include "shared/IProgressCallback.h"
-#include "shared/Math.h"
-#include "shared/Logger.h"
+#include "engine/common/IProgressCallback.h"
+#include "engine/common/Math.h"
+#include "engine/common/Logger.h"
 
 class GameRound {
 private:

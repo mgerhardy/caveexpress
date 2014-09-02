@@ -1,6 +1,6 @@
 #include "UINodeLocationSelector.h"
-#include "shared/Logger.h"
-#include "common/String.h"
+#include "engine/common/Logger.h"
+#include "engine/common/String.h"
 
 UINodeLocationSelector::UINodeLocationSelector(IFrontend *frontend, const GameRound& gameRound) :
 		UINodeSelector<Location>(frontend, 1, 2, 128, 128), _gameRound(gameRound)

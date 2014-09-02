@@ -1,6 +1,6 @@
 #include "UIViewResultWindow.h"
-#include "client/ui/UI.h"
-#include "client/ui/nodes/UINodeLocationSelector.h"
+#include "engine/client/ui/UI.h"
+#include "geophoto/client/ui/nodes/UINodeLocationSelector.h"
 
 UIViewResultWindow::UIViewResultWindow (IFrontend *frontend, const GameRound& gameRound) :
 		UIWindow(UI_WINDOW_VIEWRESULT, frontend, WINDOW_FLAG_MODAL), _gameRound(gameRound)

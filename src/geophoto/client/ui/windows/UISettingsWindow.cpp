@@ -1,13 +1,12 @@
 #include "UISettingsWindow.h"
-#include "settings/SetDifficultyNodeListener.h"
-#include "client/ui/UI.h"
-#include "client/ui/nodes/UINodeButton.h"
-#include "client/ui/nodes/UINodeBackButton.h"
-#include "client/ui/nodes/UINodePanel.h"
-#include "shared/constants/Commands.h"
-#include "shared/ConfigManager.h"
-#include "shared/Version.h"
-#include "common/String.h"
+#include "geophoto/client/ui/windows/settings/SetDifficultyNodeListener.h"
+#include "engine/client/ui/UI.h"
+#include "engine/client/ui/nodes/UINodeButton.h"
+#include "engine/client/ui/nodes/UINodeBackButton.h"
+#include "engine/common/Commands.h"
+#include "engine/common/ConfigManager.h"
+#include "engine/common/Version.h"
+#include "engine/common/String.h"
 
 UISettingsWindow::UISettingsWindow (IFrontend *frontend) :
 		UIWindow(UI_WINDOW_SETTINGS, frontend, WINDOW_FLAG_MODAL)

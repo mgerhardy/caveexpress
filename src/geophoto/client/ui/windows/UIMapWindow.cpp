@@ -1,10 +1,9 @@
 #include "UIMapWindow.h"
-#include "client/ui/UI.h"
-#include "client/ui/nodes/UINodeButton.h"
-#include "client/ui/nodes/UINodePanel.h"
-#include "client/ui/nodes/UINodeBar.h"
-#include "client/ui/nodes/UINodeLabel.h"
-#include "client/ui/nodes/UINodeMap.h"
+#include "engine/client/ui/UI.h"
+#include "engine/client/ui/nodes/UINodeButton.h"
+#include "engine/client/ui/nodes/UINodeBar.h"
+#include "engine/client/ui/nodes/UINodeLabel.h"
+#include "geophoto/client/ui/nodes/UINodeMap.h"
 
 UIMapWindow::UIMapWindow (IFrontend *frontend, RoundController& controller) :
 		UIWindow(UI_WINDOW_MAP, frontend, WINDOW_FLAG_FULLSCREEN), _controller(controller)

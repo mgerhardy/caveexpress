@@ -1,8 +1,8 @@
 #include "GameStateSQLite.h"
-#include "client/round/GameRound.h"
-#include "common/System.h"
-#include "shared/SQLite.h"
-#include "shared/Logger.h"
+#include "geophoto/client/round/GameRound.h"
+#include "engine/common/System.h"
+#include "engine/common/SQLite.h"
+#include "engine/common/Logger.h"
 #include <sstream>
 
 #define TABLE_GAMESTATE "gamestate"

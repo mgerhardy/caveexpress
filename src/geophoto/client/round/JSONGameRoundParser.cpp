@@ -1,6 +1,6 @@
 #include "JSONGameRoundParser.h"
-#include "shared/Logger.h"
-#include "common/System.h"
+#include "engine/common/Logger.h"
+#include "engine/common/System.h"
 
 JSONGameRoundParser::JSONGameRoundParser (const FilePtr& file, IProgressCallback *callback) :
 		_result(false), _depth(0), _state(STATE_NONE), _callback(callback)

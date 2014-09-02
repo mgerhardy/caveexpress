@@ -1,10 +1,9 @@
 #include "UIRoundResultWindow.h"
-#include "client/ui/UI.h"
-#include "client/ui/windows/OpenWindowListener.h"
-#include "client/ui/nodes/UINodeLocationSelector.h"
-#include "client/ui/nodes/UINodeButton.h"
-#include "client/ui/nodes/UINodeLabel.h"
-#include "client/ui/nodes/UINodePanel.h"
+#include "engine/client/ui/UI.h"
+#include "engine/client/ui/windows/OpenWindowListener.h"
+#include "geophoto/client/ui/nodes/UINodeLocationSelector.h"
+#include "engine/client/ui/nodes/UINodeButton.h"
+#include "engine/client/ui/nodes/UINodeLabel.h"
 
 UIRoundResultWindow::UIRoundResultWindow(IFrontend *frontend,
 		const GameRound& gameRound) :

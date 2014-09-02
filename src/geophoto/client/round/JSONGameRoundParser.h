@@ -1,8 +1,8 @@
 #pragma once
 
-#include "common/File.h"
-#include "client/round/GameRoundData.h"
-#include "shared/IProgressCallback.h"
+#include "engine/common/File.h"
+#include "geophoto/client/round/GameRoundData.h"
+#include "engine/common/IProgressCallback.h"
 #include <yajl/yajl_parse.h>
 
 class JSONGameRoundParser {

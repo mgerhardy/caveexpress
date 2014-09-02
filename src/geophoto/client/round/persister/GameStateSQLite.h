@@ -1,7 +1,7 @@
 #pragma once
 
-#include "client/round/IGameStatePersister.h"
-#include "shared/SQLite.h"
+#include "geophoto/client/round/IGameStatePersister.h"
+#include "engine/common/SQLite.h"
 #include <stdint.h>
 
 class GameStateSQLite: public SQLite, public IGameStatePersister {

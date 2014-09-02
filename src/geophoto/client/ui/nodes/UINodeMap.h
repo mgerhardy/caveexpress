@@ -1,8 +1,8 @@
 #pragma once
 
-#include "UINode.h"
-#include "client/ui/BitmapFont.h"
-#include "client/round/GameRound.h"
+#include "engine/client/ui/nodes/UINode.h"
+#include "engine/client/ui/BitmapFont.h"
+#include "geophoto/client/round/GameRound.h"
 
 class RoundController;
 

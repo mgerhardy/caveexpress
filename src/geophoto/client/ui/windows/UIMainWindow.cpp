@@ -1,12 +1,10 @@
 #include "UIMainWindow.h"
-#include "client/ui/UI.h"
-#include "client/ui/windows/OpenWindowListener.h"
-#include "client/ui/nodes/UINodeButton.h"
-#include "client/ui/nodes/UINodePanel.h"
-#include "client/ui/nodes/UINodeLabel.h"
-#include "shared/constants/Commands.h"
-#include "shared/ConfigManager.h"
-#include "shared/Version.h"
+#include "engine/client/ui/UI.h"
+#include "engine/client/ui/nodes/UINodeButton.h"
+#include "engine/client/ui/nodes/UINodeLabel.h"
+#include "engine/common/Commands.h"
+#include "engine/common/ConfigManager.h"
+#include "engine/common/Version.h"
 
 UIMainWindow::UIMainWindow (IFrontend *frontend) :
 		UIWindow(UI_WINDOW_MAIN, frontend, WINDOW_FLAG_ROOT)

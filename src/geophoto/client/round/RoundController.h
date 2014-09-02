@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/round/GameRound.h"
+#include "geophoto/client/round/GameRound.h"
 
 class UINodeMap;
 class UINodeBar;

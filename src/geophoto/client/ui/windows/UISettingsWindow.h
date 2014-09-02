@@ -1,6 +1,6 @@
 #pragma once
 
-#include "UIWindow.h"
+#include "engine/client/ui/windows/UIWindow.h"
 
 class UISettingsWindow: public UIWindow {
 public:

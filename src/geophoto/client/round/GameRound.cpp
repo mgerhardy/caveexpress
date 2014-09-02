@@ -1,9 +1,9 @@
 #include "GameRound.h"
-#include "client/round/JSONGameRoundParser.h"
-#include "shared/Logger.h"
-#include "shared/ConfigManager.h"
-#include "shared/FileSystem.h"
-#include "common/System.h"
+#include "geophoto/client/round/JSONGameRoundParser.h"
+#include "engine/common/Logger.h"
+#include "engine/common/ConfigManager.h"
+#include "engine/common/FileSystem.h"
+#include "engine/common/System.h"
 
 #define ROUNDLENGTH 10
 

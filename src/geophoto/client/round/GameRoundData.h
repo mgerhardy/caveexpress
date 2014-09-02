@@ -1,7 +1,7 @@
 #pragma once
 
-#include "client/round/Location.h"
-#include "shared/FileSystem.h"
+#include "geophoto/client/round/Location.h"
+#include "engine/common/FileSystem.h"
 #include <vector>
 
 typedef std::vector<Location> Locations;

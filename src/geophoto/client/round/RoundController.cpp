@@ -1,8 +1,8 @@
 #include "RoundController.h"
-#include "client/ui/nodes/UINodeMap.h"
-#include "client/ui/nodes/UINodeLabel.h"
-#include "client/ui/nodes/UINodeBar.h"
-#include "shared/Logger.h"
+#include "geophoto/client/ui/nodes/UINodeMap.h"
+#include "engine/client/ui/nodes/UINodeLabel.h"
+#include "engine/client/ui/nodes/UINodeBar.h"
+#include "engine/common/Logger.h"
 
 #define PICTURE_SHOW_MILLIS 6000
 #define BAR_TURN_RED_MILLIS (PICTURE_SHOW_MILLIS / 2)
