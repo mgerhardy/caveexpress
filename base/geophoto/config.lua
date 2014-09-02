@@ -1,5 +1,5 @@
 function isMobile()
-	return isAndroid() or isIOS();
+	return (isAndroid() or isIOS()) and not isOUYA();
 end
 
 maxwidth = 1024
@@ -7,20 +7,26 @@ maxheight = 768
 
 defaultwidth = -1
 defaultheight = -1
-defaultfullscreen = false
+defaultfullscreen = true
 defaultpersister = "sqlite"
 defaultfrontend = "sdl"
 defaultsoundengine = "sdl"
-defaultnetwork = true
+defaultshowcursor = true
 defaultjoystick = false
+defaulttexturesize = "auto"
+defaultparticles = 100
 
-if isHTML5() then
+if isOUYA() then
+	defaultjoystick = true
+	defaultparticles = 0
+elseif isMobile() then
+	defaultshowcursor = false
+	defaultparticles = 0
+elseif isHTML5() then
 	defaultpersister = "nop"
 	defaultfrontend = "opengl"
-	defaultnetwork = false
-end
-
-if not isMobile() then
+	defaultsoundengine = "dummy"
+else
 	-- workaround for now - remove me later
 	defaultfrontend = "opengl"
 	defaultjoystick = true
@@ -65,6 +71,78 @@ settings = {
 	difficulty = "normal",
 	url = "http://notthisway.com/geophoto/server/app/api/round/$difficulty$/"
 }
+
+controllerbindings = {
+	["ui"] = {
+		--A = "drop",
+		--B = "",
+		X = "ui_execute",
+		Y = "ui_focus_next",
+		BACK = "ui_pop",
+		--GUIDE = "",
+		--START = "",
+		--LEFTSTICK = "",
+		--RIGHTSTICK = "",
+		--LEFTSHOULDER = "",
+		--RIGHTSHOULDER = "",
+		--DPUP = "",
+		--DPDOWN = "",
+		--DPLEFT = "",
+		--DPRIGHT = "",
+	},
+	["map"] = {
+		A = "ui_pop",
+		--B = "",
+		--X = "ui_execute",
+		--Y = "ui_focus_next",
+		--BACK = "ui_pop",
+		--GUIDE = "",
+		--START = "",
+		--LEFTSTICK = "",
+		--RIGHTSTICK = "",
+		--LEFTSHOULDER = "",
+		--RIGHTSHOULDER = "",
+		--DPUP = "",
+		--DPDOWN = "",
+		--DPLEFT = "",
+		--DPRIGHT = "",
+	},
+}
+
+if isOUYA() then
+	joystickbindings = {
+		["ui"] = {
+			JOY0 = "ui_focus_prev",
+			JOY1 = "ui_focus_next",
+			JOY2 = "ui_focus_prev",
+			JOY3 = "ui_focus_next",
+			JOY5 = "ui_execute",
+			JOY6 = "ui_pop",
+			JOY8 = "ui_focus_next",
+		},
+		["map"] = {
+			JOY0 = "+move_up",
+			JOY1 = "+move_down",
+			JOY2 = "+move_left",
+			JOY3 = "+move_right",
+			JOY4 = "ui_pop",
+			JOY5 = "ui_execute",
+			JOY6 = "ui_pop",
+			JOY7 = "ui_pop",
+			JOY8 = "ui_pop",
+			JOY9 = "ui_pop",
+			JOY11 = "ui_pop",
+			JOY12 = "ui_pop",
+			JOY13 = "ui_pop",
+			JOY14 = "ui_pop",
+		},
+	}
+else
+	joystickbindings = {
+		["ui"] = {},
+		["map"] = {},
+	}
+end
 
 if isMobile() or isOUYA() then
 	keybindings = {
