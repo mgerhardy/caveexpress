@@ -66,21 +66,49 @@ settings = {
 	url = "http://notthisway.com/geophoto/server/app/api/round/$difficulty$/"
 }
 
-if isMobile() then
+if isMobile() or isOUYA() then
 	keybindings = {
-		MENU = "ui_push settings",
+		["ui"] = {
+			AC_BACK = "ui_pop",
+		},
+		["map"] = {
+			--MENU = "ui_push settings",
+			AC_BACK = "ui_pop",
+		},
 	}
+
+	if isOUYA() then
+		keybindings["ui"]["PAUSE"] = "ui_pop"
+		keybindings["map"]["PAUSE"] = "ui_pop"
+	end
 else
 	keybindings = {
-		LEFT = "+move_left",
-		RIGHT = "+move_right",
-		UP = "+move_up",
-		DOWN = "+move_down",
-		SPACE = "drop",
-		ESCAPE = "ui_pop",
-		MENU = "ui_push settings",
-		TAB = "ui_focus_next",
-		RETURN = "ui_execute;ui_focus_next",
+		["ui"] = {
+			LEFT = "ui_focus_prev",
+			RIGHT = "ui_focus_next",
+			UP = "ui_focus_prev",
+			DOWN = "ui_focus_next",
+			SPACE = "ui_execute",
+			RETURN = "ui_execute",
+			ESCAPE = "ui_pop",
+			TAB = "ui_focus_next",
+		},
+		["map"] = {
+			LEFT = "+move_left",
+			RIGHT = "+move_right",
+			UP = "+move_up",
+			DOWN = "+move_down",
+			SPACE = "drop",
+			RETURN = "drop",
+			ESCAPE = "ui_pop",
+			TAB = "ui_focus_next",
+			PAGEDOWN = "zoom -0.1",
+			PAGEUP = "zoom 0.1",
+		},
 	}
-end
 
+	if isDebug() then
+		keybindings["ui"]["."] = "screenshot"
+		keybindings["map"]["."] = "screenshot"
+	end
+end
