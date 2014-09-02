@@ -12,6 +12,7 @@ class BitmapFont {
 	FontDefPtr _fontDefPtr;
 	uint32_t _time;
 	int _rand;
+	bool _rotate;
 public:
 	BitmapFont (const FontDefPtr& fontDefPtr, IFrontend *frontend);
 	virtual ~BitmapFont (void);

@@ -1,6 +1,7 @@
 #include "BitmapFont.h"
 #include "engine/common/IFrontend.h"
 #include "engine/client/ui/UI.h"
+#include "engine/common/ConfigManager.h"
 #include "engine/common/Logger.h"
 #include "engine/common/System.h"
 
@@ -8,6 +9,7 @@ BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr, IFrontend *frontend) :
 		_frontend(frontend),_fontDefPtr(fontDefPtr), _time(0U) {
 	_font = UI::get().loadTexture(fontDefPtr->textureName);
 	_rand = randBetween(0, 10000);
+	_rotate = Config.getConfigVar("fontrotate", "true")->getBoolValue();
 	if (!_font || !_font->isValid()) {
 		System.exit("invalid font definition with texture " + fontDefPtr->textureName, 1);
 	}
@@ -101,7 +103,7 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 		if (maxLength <= 0 || x + fontChr->getWidth() - beginX <= maxLength) {
 			_font->setRect(sourceRect.x + fontChr->getX(), sourceRect.y + fontChr->getY(), fontChr->getW(), fontChr->getH());
 			const int letterAngleMod = x + fontChr->getOX() + y + yShift + _fontDefPtr->getHeight() - fontChr->getOY() + fontChr->getW() + fontChr->getH();
-			const int angle = rotate ? RadiansToDegrees(cos(static_cast<double>(letterAngleMod * 100 + _time + _rand) / 100.0) / 6.0) : 0;
+			const int angle = (_rotate && rotate) ? RadiansToDegrees(cos(static_cast<double>(letterAngleMod * 100 + _time + _rand) / 100.0) / 6.0) : 0;
 			_frontend->renderImage(_font.get(), x + fontChr->getOX(), y + yShift + _fontDefPtr->getHeight() - fontChr->getOY(), fontChr->getW(), fontChr->getH(), angle, color[3]);
 		}
 		x += fontChr->getWidth();
