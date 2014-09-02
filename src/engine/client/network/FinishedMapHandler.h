@@ -46,7 +46,7 @@ public:
 
 	void execute (const IProtocolMessage& message) override
 	{
-		_clientMap.resetCurrentMap();
+		_clientMap.close();
 		Commands.executeCommandLine(CMD_CL_DISCONNECT);
 
 		const FinishedMapMessage *msg = static_cast<const FinishedMapMessage*>(&message);

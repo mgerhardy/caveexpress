@@ -20,6 +20,8 @@ void ByteStream::checkSize () const
 }
 
 int32_t ByteStream::peekInt() const {
+	if (_buffer.empty())
+		return -1;
 	uint8_t buf[4];
 	const int l = sizeof(buf);
 	VectorBuffer::const_iterator it = _buffer.begin();
@@ -35,6 +37,8 @@ int32_t ByteStream::peekInt() const {
 }
 
 int16_t ByteStream::peekShort() const {
+	if (_buffer.empty())
+		return -1;
 	uint8_t buf[2];
 	const int l = sizeof(buf);
 	VectorBuffer::const_iterator it = _buffer.begin();

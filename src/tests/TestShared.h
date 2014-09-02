@@ -34,8 +34,3 @@ protected:
 	virtual void SetUp() override;
 	virtual void TearDown() override;
 };
-
-class TestGame : public IGame {
-};
-
-static GameRegisterStatic TESTGAME("test", GamePtr(new TestGame()));

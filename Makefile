@@ -27,10 +27,9 @@ PROJECTS    := $(sort $(patsubst $(PROJECTSDIR)/%.mk,%,$(wildcard $(PROJECTSDIR)
 SRCDIR      := src
 BASEROOT    := base
 BASEDIR     := $(BASEROOT)/$(APPNAME)
-TARGETS_TMP := $(sort $(patsubst build/modules/%.mk,%,$(wildcard build/modules/*.mk)))
-TARGETS     := $(filter-out $(foreach TARGET,$(TARGETS_TMP),$(if $($(TARGET)_DISABLE),$(TARGET),)),$(TARGETS_TMP))
+TARGETS     := $(sort $(patsubst build/modules/%.mk,%,$(wildcard build/modules/*.mk)))
 DISABLED    := $(filter-out $(TARGETS),$(TARGETS_TMP))
-STEAM_ROOT  ?= /home/mattn/Downloads/steam-runtime-sdk_2013-09-05
+STEAM_ROOT  ?= /home/$(USER)/Downloads/steam-runtime-sdk_2013-09-05
 
 ifeq ($(DISABLE_DEPENDENCY_TRACKING),)
   DEP_FLAGS := -MP -MD -MT $$@
@@ -80,7 +79,8 @@ endif
 data: textures lang filelist $(SRCDIR)/engine/common/ports/project.rc
 
 Makefile.local: configure
-	./configure $(CONFIGURE_OPTIONS)
+	$(Q)$(CONFIGURE_PREFIX) ./configure $(CONFIGURE_OPTIONS)
+	$(Q)$(MAKE)
 
 include build/flags.mk
 include build/modes/$(MODE).mk
@@ -100,6 +100,11 @@ endef
 
 define INCLUDE_RULE
 include build/modules/$(1).mk
+ifndef $(1)_DISABLE
+ifndef $(1)_IGNORE
+$(1)_ACTIVE := 1
+endif
+endif
 endef
 $(foreach TARGET,$(TARGETS),$(eval $(call INCLUDE_RULE,$(TARGET))))
 
@@ -130,13 +135,11 @@ $(SRCDIR)/engine/common/ports/project.rc: $(SRCDIR)/engine/common/ports/project.
 
 $(CONFIG_H)-config.h: configure
 	@echo "restarting configure for $(CONFIG_H)"
-	$(Q)$(CONFIGURE_PREFIX) ./configure $(CONFIGURE_OPTIONS) --target-os=$(TARGET_OS)
+	$(Q)$(CONFIGURE_PREFIX) ./configure $(CONFIGURE_OPTIONS)
 	$(Q)$(MAKE)
 
 define BUILD_RULE
-ifndef $(1)_DISABLE
-ifndef $(1)_IGNORE
-
+ifeq ($($(1)_ACTIVE),1)
 -include $($(1)_OBJS:.o=.d)
 
 # if the target filename differs:
@@ -198,13 +201,13 @@ install-$(1): $($(1)_FILE)
 else
 # if this target is ignored, just do nothing
 $(1):
+	@echo "===> NOP [$$@] is disabled"
 clean-$(1):
 	@echo "module is disabled"
 strip-$(1):
 	@echo "module is disabled"
 install-$(1):
 	@echo "module is disabled"
-endif
 endif
 endef
 $(foreach TARGET,$(TARGETS),$(eval $(call BUILD_RULE,$(TARGET))))
@@ -227,14 +230,14 @@ release:
 
 release32:
 	echo "Make sure to execute shell-i386.sh from the steam sdk"
-	./configure --target-arch=i386 --target-os=linux $(CONFIGURE_RELEASE_FLAGS); \
+	./configure --target-arch=i386 --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
 	$(MAKE) Q= clean; \
 	$(MAKE) Q= STEAM_RUNTIME_TARGET_ARCH=i386 STEAM_RUNTIME_HOST_ARCH=$(HOST_ARCH) STEAM_RUNTIME_ROOT=$(STEAM_ROOT)/runtime/i386 PATH=$(STEAM_ROOT)/bin:$(PATH); \
 	$(MAKE) Q= archives; \
 
 release64:
 	echo "Make sure to execute shell-amd64.sh from the steam sdk"
-	./configure --target-arch=x86_64 --target-os=linux $(CONFIGURE_RELEASE_FLAGS); \
+	./configure --target-arch=x86_64 --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
 	$(MAKE) Q= clean; \
 	$(MAKE) Q= STEAM_RUNTIME_TARGET_ARCH=amd64 STEAM_RUNTIME_HOST_ARCH=$(HOST_ARCH) STEAM_RUNTIME_ROOT=$(STEAM_ROOT)/runtime/amd64 PATH=$(STEAM_ROOT)/bin:$(PATH); \
 	$(MAKE) Q= archives; \

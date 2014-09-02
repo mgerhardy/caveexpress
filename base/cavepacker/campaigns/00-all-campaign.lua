@@ -5,5 +5,9 @@ local c = Campaign.new("tutorial")
 -- set the on screen message when this campaign is activated
 c:setSetting("text", "CavePacker")
 -- now add all maps
+c:addMaps("tutorial*")
 c:addMaps("*")
 c:unlock()
+c:unlockMap("tutorial0001")
+c:unlockMap("tutorial0002")
+c:unlockMap("tutorial0003")
