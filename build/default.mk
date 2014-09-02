@@ -133,11 +133,13 @@ ifeq ($(TARGET_OS),nacl)
 endif
 endif
 ifeq ($(HAVE_SDL_RWHTTP_H),1)
-SDL_RWHTTP_LIBS          += $(call PKG_LIBS,SDL_rwhttp)
+SDL_RWHTTP_LIBS          ?= $(call PKG_LIBS,SDL_rwhttp)
 SDL_RWHTTP_CFLAGS        ?= $(call PKG_CFLAGS,SDL_rwhttp)
 else
-SDL_RWHTTP_LIBS          +=
-SDL_RWHTTP_CFLAGS        ?=
+SDL_RWHTTP_LIBS          ?=
+SDL_RWHTTP_CFLAGS        ?= -DHAVE_SDL2_NET -DSKIP_CONFIG_H -DHAVE_SDL_RWHTTP_H -Isrc/libs/SDL_rwhttp
+SDL_RWHTTP_SRCS           = \
+	libs/SDL_rwhttp/SDL_rwhttp.c
 endif
 ifeq ($(HAVE_SDL_IMAGE_H),1)
 SDL_IMAGE_LIBS           += $(call PKG_LIBS,SDL2_image)
