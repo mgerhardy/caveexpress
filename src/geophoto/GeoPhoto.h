@@ -6,6 +6,8 @@
 #include "engine/common/campaign/CampaignManager.h"
 #include "engine/common/campaign/persister/IGameStatePersister.h"
 
+class RoundController;
+
 class GeoPhoto: public IGame, public IEntityVisitor {
 private:
 	IGameStatePersister* _persister;

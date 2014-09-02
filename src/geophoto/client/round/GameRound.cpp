@@ -51,5 +51,5 @@ int GameRound::activateNextLocation ()
 
 void GameRound::save ()
 {
-	_persister.saveRound(*this);
+	//_persister.saveRound(*this);
 }

@@ -1,10 +1,11 @@
 #pragma once
 
 #include "GameRoundData.h"
-#include "IGameStatePersister.h"
 #include "engine/common/IProgressCallback.h"
 #include "engine/common/Math.h"
 #include "engine/common/Logger.h"
+
+class IGameStatePersister;
 
 class GameRound {
 private:
