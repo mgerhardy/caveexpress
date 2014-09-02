@@ -19,8 +19,9 @@ UISettingsWindow::UISettingsWindow (IFrontend *frontend) :
 
 	UINode *panelDifficulty = new UINode(frontend);
 	panelDifficulty->setPos(0.025f, 0.05f);
-	panelDifficulty->setSpacing(0.025f, 0.05f);
-	panelDifficulty->setLayout(LAYOUT_GRID_X);
+	// TODO: use hbox layout
+	//panelDifficulty->setSpacing(0.025f, 0.05f);
+	//panelDifficulty->setLayout(LAYOUT_GRID_X);
 
 	std::vector<UINodeButton*> difficultyButtons;
 

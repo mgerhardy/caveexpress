@@ -12,6 +12,5 @@ public:
 
 	void execute (const IProtocolMessage& message) override
 	{
-		const InitDoneMessage *msg = static_cast<const InitDoneMessage*>(&message);
 	}
 };

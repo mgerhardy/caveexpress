@@ -3,7 +3,7 @@
 #include "engine/client/ui/BitmapFont.h"
 #include "engine/client/ui/nodes/UINodeBar.h"
 #include "engine/client/ui/nodes/UINodeLabel.h"
-#include "geophoto/client/network/SoundHandler.h"
+#include "engine/client/network/SoundHandler.h"
 #include "geophoto/client/network/InitDoneHandler.h"
 #include "geophoto/client/round/RoundController.h"
 #include "engine/common/network/ProtocolHandlerRegistry.h"

@@ -11,21 +11,7 @@ $(TARGET)_FILE     := $(TARGET)$(EXE_EXT)
 $(TARGET)_LDFLAGS  += $(SDL_LIBS) $(SDL_IMAGE_LIBS) $(SDL_MIXER_LIBS) $(OPENGL_LIBS) $(OGG_LIBS) $(VORBIS_LIBS) $(PNG_LIBS) $(NCURSES_LIBS) -lz $(SO_LIBS) $(LUA_LIBS) $(SQLITE3_LIBS) $(TINYXML2_LIBS) $(SDL_NET_LIBS) $(SDL_RWHTTP_LIBS) $(YAJL_LIBS)
 $(TARGET)_CFLAGS   += $(SDL_CFLAGS) $(SDL_IMAGE_CFLAGS) $(SDL_MIXER_CFLAGS) $(OPENGLES_CFLAGS) $(OGG_CFLAGS) $(VORBIS_CFLAGS) $(LUA_CFLAGS) $(PNG_CFLAGS) $(NCURSES_CFLAGS) $(SQLITE3_CFLAGS) $(TINYXML2_CFLAGS) $(SDL_NET_CFLAGS) $(SDL_RWHTTP_CFLAGS) $(YAJL_CFLAGS)
 $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
-	$(wildcard $(SRCDIR)/geophoto/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/common/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/client/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/client/sprites/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/client/textures/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/client/sound/sdl/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/client/sound/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/client/round/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/client/round//persister/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/client/ui/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/client/ui/nodes/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/client/ui/windows/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/shared/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/shared/network/*.cpp) \
-	$(wildcard $(SRCDIR)/geophoto/server/*.cpp) ) \
+	$(wildcard $(SRCDIR)/*.cpp) \
 	\
 	$(wildcard $(SRCDIR)/engine/client/shaders/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/client/sprites/*.cpp) \
@@ -45,9 +31,18 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/engine/common/campaign/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/common/campaign/persister/*.cpp) \
 	$(wildcard $(SRCDIR)/engine/common/network/*.cpp) \
-	$(wildcard $(SRCDIR)/engine/server/*.cpp) \	\
+	$(wildcard $(SRCDIR)/engine/server/*.cpp) \
 	\
-	$(SDL_NET_SRCS) \
+	$(wildcard $(SRCDIR)/geophoto/*.cpp) \
+	$(wildcard $(SRCDIR)/geophoto/client/*.cpp) \
+	$(wildcard $(SRCDIR)/geophoto/client/round/*.cpp) \
+	$(wildcard $(SRCDIR)/geophoto/client/round/persister/*.cpp) \
+	$(wildcard $(SRCDIR)/geophoto/client/ui/*.cpp) \
+	$(wildcard $(SRCDIR)/geophoto/client/ui/nodes/*.cpp) \
+	$(wildcard $(SRCDIR)/geophoto/client/ui/windows/*.cpp) \
+	$(wildcard $(SRCDIR)/geophoto/shared/*.cpp) \
+	$(wildcard $(SRCDIR)/geophoto/shared/network/*.cpp) \
+	) \
 	\
 	$(SQLITE3_SRCS) \
 	\

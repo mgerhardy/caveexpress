@@ -3,7 +3,7 @@
 #include "geophoto/client/ui/nodes/UINodeLocationSelector.h"
 
 UIViewResultWindow::UIViewResultWindow (IFrontend *frontend, const GameRound& gameRound) :
-		UIWindow(UI_WINDOW_VIEWRESULT, frontend, WINDOW_FLAG_MODAL), _gameRound(gameRound)
+		UIWindow("result", frontend, WINDOW_FLAG_MODAL), _gameRound(gameRound)
 {
 	UINode* background = new UINode(frontend);
 	background->setImage("bg");
