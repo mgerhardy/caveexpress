@@ -306,6 +306,7 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 
 void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 {
+	assert(_campaignManager != nullptr);
 	UI& ui = UI::get();
 	CampaignManager& campaignMgr = *_campaignManager;
 	ui.addWindow(new UIMainWindow(frontend, serviceProvider));

@@ -33,12 +33,13 @@ ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, 
 
 ClientMap::~ClientMap ()
 {
-	close();
+	resetCurrentMap();
 }
 
 void ClientMap::close ()
 {
 	resetCurrentMap();
+	SoundControl.haltAll();
 }
 
 void ClientMap::start ()
@@ -75,7 +76,6 @@ void ClientMap::resetCurrentMap ()
 	_screenRumbleStrength = 0.0f;
 	_screenRumbleOffsetX = 0;
 	_screenRumbleOffsetY = 0;
-	SoundControl.haltAll();
 }
 
 void ClientMap::setZoom (const float zoom)
@@ -287,7 +287,7 @@ void ClientMap::update (uint32_t deltaTime)
 bool ClientMap::load (const std::string& name, const std::string& title)
 {
 	info(LOG_CLIENT, "load map " + name);
-	resetCurrentMap();
+	close();
 	_name = name;
 	_title = title;
 
