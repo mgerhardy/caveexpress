@@ -230,14 +230,14 @@ release:
 
 release32:
 	echo "Make sure to execute shell-i386.sh from the steam sdk"
-	./configure --target-arch=i386 --target-os=linux $(CONFIGURE_RELEASE_FLAGS); \
+	./configure --target-arch=i386 --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
 	$(MAKE) Q= clean; \
 	$(MAKE) Q= STEAM_RUNTIME_TARGET_ARCH=i386 STEAM_RUNTIME_HOST_ARCH=$(HOST_ARCH) STEAM_RUNTIME_ROOT=$(STEAM_ROOT)/runtime/i386 PATH=$(STEAM_ROOT)/bin:$(PATH); \
 	$(MAKE) Q= archives; \
 
 release64:
 	echo "Make sure to execute shell-amd64.sh from the steam sdk"
-	./configure --target-arch=x86_64 --target-os=linux $(CONFIGURE_RELEASE_FLAGS); \
+	./configure --target-arch=x86_64 --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
 	$(MAKE) Q= clean; \
 	$(MAKE) Q= STEAM_RUNTIME_TARGET_ARCH=amd64 STEAM_RUNTIME_HOST_ARCH=$(HOST_ARCH) STEAM_RUNTIME_ROOT=$(STEAM_ROOT)/runtime/amd64 PATH=$(STEAM_ROOT)/bin:$(PATH); \
 	$(MAKE) Q= archives; \
