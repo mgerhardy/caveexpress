@@ -20,7 +20,7 @@ void GameRound::init ()
 {
 	if (_callback != nullptr)
 		_callback->progressInit(ROUNDLENGTH + 1, "Generating round");
-	const URI apiUrl(string::replaceAll(Config.getUrl(), "$difficulty$", Config.getDifficulty()));
+	const URI apiUrl(string::replaceAll(Config.getConfigVar("url")->getValue(), "$difficulty$", Config.getConfigVar("difficulty")->getValue()));
 	FilePtr file = FS.get().getFile(apiUrl);
 	if (_callback != nullptr)
 		_callback->progressStep("Loading images");

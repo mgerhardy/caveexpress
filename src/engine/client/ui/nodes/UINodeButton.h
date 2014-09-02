@@ -15,6 +15,7 @@ public:
 
 	void setTitleAlignment (int align);
 	void setTitle (const std::string& title);
+	const std::string& getTitle () const;
 	void setFont (const BitmapFontPtr& font, const Color& color = colorBlack);
 
 	virtual float getAutoWidth () const override;
@@ -42,4 +43,9 @@ inline void UINodeButton::setFont (const BitmapFontPtr& font, const Color& color
 inline bool UINodeButton::isActive () const
 {
 	return isVisible();
+}
+
+inline const std::string& UINodeButton::getTitle () const
+{
+	return _title;
 }

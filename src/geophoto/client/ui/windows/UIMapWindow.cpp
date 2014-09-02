@@ -19,8 +19,8 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, RoundController& controller) :
 	timeNode->setVisible(false);
 
 	UINodeMap *map = new UINodeMap(frontend, _controller);
-	map->setStandardSpacing();
-	map->setSize(1.0f, map->getSpacingIntervalY(16));
+	//map->setStandardSpacing();
+	map->setSize(1.0f, 1.0f);
 	map->setAlignment(NODE_ALIGN_MIDDLE);
 
 	_controller.init(map, timeBar, timeNode);

@@ -1,14 +1,7 @@
-#include "ProtocolMessageFactory.h"
-#include "ProtocolMessageTypes.h"
-#include "IProtocolMessage.h"
-#include "shared/ByteStream.h"
-#include "shared/Logger.h"
-
-#include "messages/PingMessage.h"
-#include "messages/ClientInitMessage.h"
-#include "messages/InitDoneMessage.h"
-#include "messages/SoundMessage.h"
-#include "messages/ProtocolMessages.h"
+#include "engine/common/network/ProtocolMessageFactory.h"
+#include "engine/common/Logger.h"
+#include "cavepacker/shared/network/ProtocolMessageTypes.h"
+#include "cavepacker/shared/network/messages/ProtocolMessages.h"
 
 ProtocolMessageFactory::ProtocolMessageFactory ()
 {
@@ -17,21 +10,13 @@ ProtocolMessageFactory::ProtocolMessageFactory ()
 IProtocolMessage *ProtocolMessageFactory::create (ByteStream& stream)
 {
 	const protocolId type = stream.readByte();
-
-	switch (type) {
-	case protocol::PROTO_PING:
-		return new PingMessage(stream);
-	case protocol::PROTO_CLIENTINIT:
-		return new ClientInitMessage(stream);
-	case protocol::PROTO_DISCONNECT:
-		return new DisconnectMessage(stream);
-	case protocol::PROTO_INITDONE:
-		return new InitDoneMessage(stream);
-	case protocol::PROTO_SOUND:
-		return new SoundMessage(stream);
-	default:
+	debug(LOG_GENERAL, String::format("msg type => %i", (int)type));
+	IProtocolMessage *msg = getForProtocolId(stream, type);
+	if (msg == nullptr) {
+		error(LOG_NET, String::format("unknown module type given: %i", type));
 		stream.addByte(type, true);
-		error(LOG_NETWORK, String::format("unknown module type given: %i", type));
 		return nullptr;
 	}
+	return msg;
 }
+

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "shared/network/IProtocolHandler.h"
-#include "shared/network/messages/InitDoneMessage.h"
-#include "shared/ConfigManager.h"
+#include "engine/common/network/IProtocolHandler.h"
+#include "engine/common/network/messages/InitDoneMessage.h"
+#include "engine/common/ConfigManager.h"
 
 class InitDoneHandler: public IClientProtocolHandler {
 public:

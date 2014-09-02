@@ -150,7 +150,7 @@ void UINodeMap::handleDrop (uint16_t x, uint16_t y)
 
 	if (_controller.getState() == STATE_ROUNDEND) {
 		UI::get().pop();
-		UI::get().push(UI_WINDOW_ROUNDRESULT);
+		UI::get().push("roundresult");
 	}
 }
 

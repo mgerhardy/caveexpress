@@ -45,7 +45,7 @@ public:
 inline void UINodeMap::setEarth ()
 {
 	setImage("earth");
-	setSize(1.0f, getSpacingIntervalY(16));
+	setSize(1.0f, 1.0f);
 	setAlignment(NODE_ALIGN_MIDDLE|NODE_ALIGN_CENTER);
 }
 

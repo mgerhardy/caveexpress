@@ -1,10 +1,10 @@
 #pragma once
 
-#include "client/ui/UI.h"
-#include "client/ui/windows/UIWindow.h"
-#include "client/ui/nodes/UINodeButton.h"
-#include "shared/ConfigManager.h"
-#include "common/String.h"
+#include "engine/client/ui/UI.h"
+#include "engine/client/ui/windows/UIWindow.h"
+#include "engine/client/ui/nodes/UINodeButton.h"
+#include "engine/common/ConfigManager.h"
+#include "engine/common/String.h"
 #include <string>
 #include <vector>
 

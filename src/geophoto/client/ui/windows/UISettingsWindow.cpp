@@ -17,14 +17,14 @@ UISettingsWindow::UISettingsWindow (IFrontend *frontend) :
 	background->setPos(0.0f, 0.0f);
 	add(background);
 
-	UINodePanel *panelDifficulty = new UINodePanel(frontend);
+	UINode *panelDifficulty = new UINode(frontend);
 	panelDifficulty->setPos(0.025f, 0.05f);
 	panelDifficulty->setSpacing(0.025f, 0.05f);
 	panelDifficulty->setLayout(LAYOUT_GRID_X);
 
 	std::vector<UINodeButton*> difficultyButtons;
 
-	const std::string& currentDifficulty = Config.getDifficulty();
+	const std::string& currentDifficulty = Config.getConfigVar("difficulty")->getValue();
 	const char *difficulties[] = {"Easy", "Normal", "Hard"};
 	for (int i = 0; i < lengthof(difficulties); ++i) {
 		UINodeButton* difficultyButton = new UINodeButton(frontend, difficulties[i]);
