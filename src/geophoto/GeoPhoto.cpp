@@ -1,47 +1,19 @@
 #include "GeoPhoto.h"
 #include "engine/client/ui/UI.h"
-#include "cavepacker/client/ui/windows/UIMainWindow.h"
-#include "cavepacker/client/ui/windows/UIMapWindow.h"
-#include "cavepacker/client/ui/windows/intro/IntroGame.h"
-#include "cavepacker/client/GeoPhotoClientMap.h"
-#include "cavepacker/server/network/SpawnHandler.h"
-#include "cavepacker/server/network/DisconnectHandler.h"
-#include "cavepacker/server/network/StartMapHandler.h"
-#include "cavepacker/server/network/MovementHandler.h"
-#include "cavepacker/server/network/StopMovementHandler.h"
-#include "cavepacker/server/network/ClientInitHandler.h"
-#include "cavepacker/server/network/ErrorHandler.h"
-#include "cavepacker/server/network/StopFingerMovementHandler.h"
-#include "cavepacker/server/network/FingerMovementHandler.h"
-#include "cavepacker/shared/GeoPhotoEntityType.h"
-#include "engine/client/entities/ClientEntityFactory.h"
-#include "engine/client/entities/ClientMapTile.h"
-#include "engine/common/network/ProtocolHandlerRegistry.h"
-#include "engine/common/campaign/ICampaignManager.h"
-#include "engine/common/ConfigManager.h"
-#include "engine/common/ServiceProvider.h"
-#include "engine/common/System.h"
-#include "engine/common/ExecutionTime.h"
-#include "engine/common/Commands.h"
-#include "engine/common/CommandSystem.h"
-#include "engine/common/network/INetwork.h"
-#include "engine/common/network/messages/LoadMapMessage.h"
-#include "engine/common/network/messages/FinishedMapMessage.h"
-#include "engine/client/ui/windows/UICampaignMapWindow.h"
-#include "cavepacker/client/ui/windows/UIGeoPhotoMapOptionsWindow.h"
-#include "engine/client/ui/windows/UIPaymentWindow.h"
-#include "engine/client/ui/windows/UISettingsWindow.h"
-#include "engine/client/ui/windows/UIMapFinishedWindow.h"
-#include "engine/client/ui/windows/UIGestureWindow.h"
-#include "engine/common/campaign/persister/SQLitePersister.h"
+#include "geophoto/client/ui/windows/UIMainWindow.h"
+#include "geophoto/client/ui/windows/UIMapWindow.h"
+#include "geophoto/client/ui/windows/UISettingsWindow.h"
+#include "geophoto/client/ui/windows/UIRoundResultWindow.h"
+#include "geophoto/client/ui/windows/UIViewResultWindow.h"
+#include "geophoto/client/round/RoundController.h"
 #include <SDL.h>
 
 GeoPhoto::GeoPhoto ():
-	_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
+	_persister(nullptr), _campaignManager(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
 {
 	delete _persister;
 	delete _campaignManager;
-	delete _clientMap;
+	delete _roundController;
 }
 
 GeoPhoto::~GeoPhoto ()
@@ -169,6 +141,8 @@ void GeoPhoto::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	_frontend = frontend;
 	_serviceProvider = &serviceProvider;
 
+	_roundController = new RoundController(serviceProvider.getGameStatePersister(), &UI::get());
+
 	{
 		ExecutionTime e("loading persister");
 		const ConfigVarPtr& persister = Config.get().getConfigVar("persister", "sqlite", true, CV_READONLY);
@@ -209,19 +183,12 @@ void GeoPhoto::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 void GeoPhoto::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 {
 	UI& ui = UI::get();
-	ui.addWindow(new UIMainWindow(frontend));
-	GeoPhotoClientMap *map = new GeoPhotoClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
-	_clientMap = map;
-	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_clientMap));
-	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));
-	ui.addWindow(new UIPaymentWindow(frontend));
-	UISettingsWindow* settings = new UISettingsWindow(frontend, serviceProvider);
-	settings->init();
-	ui.addWindow(settings);
-	ui.addWindow(new UIGestureWindow(frontend));
-	ui.addWindow(new UIMapFinishedWindow(frontend, *_campaignManager, serviceProvider, SoundType::NONE));
-	ui.addWindow(new IntroGame(frontend));
-	ui.addWindow(new UIGeoPhotoMapOptionsWindow(frontend, serviceProvider));
+
+	ui.addWindow(new UIMainWindow(&frontend));
+	ui.addWindow(new UISettingsWindow(&frontend));
+	ui.addWindow(new UIMapWindow(&frontend, *_roundController));
+	ui.addWindow(new UIRoundResultWindow(&frontend, _roundController->getGameRound()));
+	ui.addWindow(new UIViewResultWindow(&frontend, _roundController->getGameRound()));
 }
 
 bool GeoPhoto::visitEntity (IEntity *entity)

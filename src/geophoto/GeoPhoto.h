@@ -10,10 +10,9 @@ class GeoPhoto: public IGame, public IEntityVisitor {
 private:
 	IGameStatePersister* _persister;
 	CampaignManager *_campaignManager;
-	ClientMap *_clientMap;
-	Map _map;
 	IFrontend *_frontend;
 	ServiceProvider* _serviceProvider;
+	RoundController *_roundController;
 
 	uint8_t getStars () const;
 public:
