@@ -22,7 +22,7 @@
         <key>dataFormat</key>
         <string>GeoPhoto</string>
         <key>textureFileName</key>
-        <filename>../../../base/pics/ui.png</filename>
+        <filename>../../../base/geophoto/pics/ui.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>ditherType</key>
@@ -146,15 +146,15 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/mouse.png</filename>
-            <filename>../png/numbers.png</filename>
-            <filename>../png/font.png</filename>
-            <filename>../png/corner-top-DIR.png</filename>
-            <filename>../png/corner-bottom-DIR.png</filename>
-            <filename>../png/bubble.png</filename>
-            <filename>../png/bubble-full.png</filename>
-            <filename>../png/marker-DIR.png</filename>
-            <filename>../png/result-panel-DIR.png</filename>
+            <filename>../png/geophoto/mouse.png</filename>
+            <filename>../png/geophoto/numbers.png</filename>
+            <filename>../png/geophoto/font.png</filename>
+            <filename>../png/geophoto/corner-top-DIR.png</filename>
+            <filename>../png/geophoto/corner-bottom-DIR.png</filename>
+            <filename>../png/geophoto/bubble.png</filename>
+            <filename>../png/geophoto/bubble-full.png</filename>
+            <filename>../png/geophoto/marker-DIR.png</filename>
+            <filename>../png/geophoto/result-panel-DIR.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
