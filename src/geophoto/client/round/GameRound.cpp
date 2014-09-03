@@ -28,7 +28,8 @@ void GameRound::init ()
 	if (_callback != nullptr)
 		_callback->progressDone();
 	if (!p.wasSuccess()) {
-		System.exit("Failed to parse the json data from " + file->getURI().print(), 1);
+		error(LOG_CLIENT, "Failed to parse the json data from " + file->getURI().print());
+		return;
 	}
 	_allLocations = _locations = p.getLocations();
 	info(LOG_CLIENT, "fetched " + string::toString(_locations.size()) + " locations");
