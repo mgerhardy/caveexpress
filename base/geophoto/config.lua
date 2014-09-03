@@ -69,8 +69,8 @@ settings = {
 	persister = defaultpersister,
 	network = defaultnetwork,
 	difficulty = "normal",
-	fontrotate = false
-	url = "http://notthisway.com/geophoto/server/app/api/round/$difficulty$/"
+	fontrotate = false,
+	url = "http://notthisway.com/geophoto/server/app/api/round/$difficulty$/",
 }
 
 controllerbindings = {
