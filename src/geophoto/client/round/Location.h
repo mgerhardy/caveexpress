@@ -52,7 +52,7 @@ inline void Location::setDistance (double distance)
 
 inline int Location::getPoints () const
 {
-	const int points = std::max(0.0, 100.0 - (_distance * _distance)/100);
+	const int points = std::max(0.0, 100.0 - (_distance * _distance) / 100.0);
 	return points;
 }
 
