@@ -14,8 +14,16 @@
 <link rel="index" href="index.html" title="Homepage" />
 <link rel="stylesheet" type="text/css" href="css/default.css" media="screen, projection, tv" title="Default" />
 <title>CaveProductions - Home of CaveExpress and CavePacker</title>
+<script type="text/javascript">
+	function show(id) {
+		document.getElementById(id).style.display = 'block';
+	}
+	function hide(id){
+		document.getElementById(id).style.display = 'none';
+	}
+</script>
 </head>
-<body>
+<body onLoad="hide('cavepacker'); show('caveexpress')">
 	<div id="content">
 		<a href="https://github.com/mgerhardy/caveexpress"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png"></a>
 		<div id="main">
@@ -42,156 +50,142 @@
 								alt="CavePacker android app on Google Play"
 								src="https://developer.android.com/images/brand/en_app_rgb_wo_60.png" /></a>
 						</li>
-						<li><a href="https://www.ouya.tv/game/CaveExpress/"></a></li>
+<!--						<li><a href="https://www.ouya.tv/game/CaveExpress/"></a></li>-->
+<!--<button onclick='window.open("https://devs.ouya.tv/gamers/queued_downloads/new?uuid=org.caveexpressouya", "OUYA_EMBED_WINDOW", "menubar=0, location=1, resizable=1, scrollbars=1, status=0, width=620, height=376")'>Download Now!</button>-->
 					</ul>
 				</div>
 			</div>
-			<div style="float: right" id="video">
-				<iframe
-					src="http://player.vimeo.com/video/79598975?title=0&amp;byline=0&amp;portrait=0"
-					width="480" height="360" frameborder="0" webkitallowfullscreen
-					mozallowfullscreen allowfullscreen></iframe><br />
-				<a href="https://vimeo.com/user22755230/videos">More videos</a>
-			</div>
-<!--
-			<div style="float: right" id="purchase">
-				<iframe width="550" height="250" frameborder="0" scrolling="no" src="https://secure.desura.com/widget/caveexpress"></iframe>
-			</div>
--->
-			<div id="about">
-				<h1>This is the home of CaveExpress and CavePacker</h1>
-				<h2>CaveExpress is a classic 2D platformer with physics-based
-					gameplay and dozens of levels.</h2>
-				<p>
-					Master your pedal-powered flying machine to pick up packages from
-					your cave-dwelling clients and drop them off at the collection
-					point.<br />But beware! Mighty mastodons, terrifying pterodactyls
-					and others would rather see you extinct.
-				</p>
-				<p>CaveExpress is available for Android, GoogleNativeClient, Linux and Windows. iOS,
-					HTML5 and MacOSX will follow soon.</p>
-				<p>With CaveExpress you are able to build your own campaigns and
-					maps with the built-in mapeditor.</p>
-				<h3>Features</h3>
+			<div id="header" class="menu">
 				<ul>
-					<li><b>Multiplayer mode</b> for solving the maps with up to 4 players</li>
-					<li><b>User made campaigns and maps</b> with the built-in mapeditor</li>
+					<li><a href="#caveexpress" onClick="hide('cavepacker'); show('caveexpress')">CaveExpress</a></li>
+					<li><a href="#cavepacker" onClick="hide('caveexpress'); show('cavepacker')">CavePacker</a></li>
+					<li><a href="http://www.twitter.com/MartinGerhardy" target="_blank">Twitter</a></li>
+					<li><a href="http://www.facebook.com/caveexpress" target="_blank">Facebook</a></li>
+					<li><a href="https://play.google.com/store/apps/developer?id=CaveProductions">Google Play</a></li>
+					<li><a href="impressum.html" rel="nofollow">Impressum</a></li>
 				</ul>
-				<h3>Support</h3>
-				You can use the <a href="http://www.desura.com/games/caveexpress/forum">forum</a> to ask your questions or report your problems. 
-				<h2>CavePacker is a Sokoban game - one of the most popular puzzle and logic games.</h2>
-				<p>
-					Keep your cave tidy. To do this, make sure that all the spreaded packages are put onto their targets. You can only push,
-					pulling is not allowed.
-					<br/>
-					You get higher ratings for lesser moves you need. The first few maps might be easy to solve - but the more you progress
-					in the game, the harder the maps will be. The map set is the XSokoban one.
-				</p>
-				<p>CavePacker is available for Android, GoogleNativeClient, Linux and Windows.</p>
-				<h3>Features</h3>
-				<ul>
-					<li><b>XSokoban map set</b> is the default map set that comes with the game</li>
-					<li><b>User made campaigns and maps</b> can be easily added to the game</li>
-					<li><b>Allows very very big maps</b> that can be zoomed</li>
-				</ul>
+				<div class="spacer"></div>
 			</div>
-			<div class="spacer"></div>
-			<div id="screenshots">
-				<h2>CaveExpress Screenshots</h2>
-				<img class="screenshot" src="images/screenshots/angry-dino.jpg"
-					alt="Angry dinosaur in CaveExpress" /> <img class="screenshot"
-					src="images/screenshots/mainmenu.jpg" alt="The main menu of CaveExpress" /><br /> <img
-					class="screenshot" src="images/screenshots/multi-packages.jpg"
-					alt="Carrying multiple packages in CaveExpress" /> <img class="screenshot"
-					src="images/screenshots/npc-blowing.jpg" alt="Sleeping dinosaur in CaveExpress" /><br />
-				<img class="screenshot" src="images/screenshots/npc-fish.jpg"
-					alt="The prehistoric fish" /> <img class="screenshot"
-					src="images/screenshots/npc-flying.jpg" alt="The pterodactylus" />
+			<div id="caveexpress">
+				<div style="float: right" id="video">
+					<iframe
+						src="http://player.vimeo.com/video/79598975?title=0&amp;byline=0&amp;portrait=0"
+						width="480" height="360" frameborder="0" webkitallowfullscreen
+						mozallowfullscreen allowfullscreen></iframe><br />
+					<a href="https://vimeo.com/user22755230/videos">More videos</a>
+				</div>
+				<div id="about">
+					<h1>This is the home of CaveExpress and CavePacker</h1>
+					<h2>CaveExpress is a classic 2D platformer with physics-based
+						gameplay and dozens of levels.</h2>
+					<p>
+						Master your pedal-powered flying machine to pick up packages from
+						your cave-dwelling clients and drop them off at the collection
+						point.<br />But beware! Mighty mastodons, terrifying pterodactyls
+						and others would rather see you extinct.
+					</p>
+					<p>CaveExpress is available for Android, GoogleNativeClient, Linux and Windows. iOS,
+						HTML5 and MacOSX will follow soon.</p>
+					<p>With CaveExpress you are able to build your own campaigns and
+						maps with the built-in mapeditor.</p>
+					<h3>Features</h3>
+					<ul>
+						<li><b>Multiplayer mode</b> for solving the maps with up to 4 players</li>
+						<li><b>User made campaigns and maps</b> with the built-in mapeditor</li>
+					</ul>
+					<h3>Support</h3>
+					You can use the <a href="http://www.desura.com/games/caveexpress/forum">forum</a> to ask your questions or report your problems.
+				</div>
+				<div class="spacer"></div>
+				<div id="screenshots">
+					<h2>CaveExpress Screenshots</h2>
+					<img class="screenshot" src="images/screenshots/angry-dino.jpg"
+						alt="Angry dinosaur in CaveExpress" /> <img class="screenshot"
+						src="images/screenshots/mainmenu.jpg" alt="The main menu of CaveExpress" /><br /> <img
+						class="screenshot" src="images/screenshots/multi-packages.jpg"
+						alt="Carrying multiple packages in CaveExpress" /> <img class="screenshot"
+						src="images/screenshots/npc-blowing.jpg" alt="Sleeping dinosaur in CaveExpress" /><br />
+					<img class="screenshot" src="images/screenshots/npc-fish.jpg"
+						alt="The prehistoric fish" /> <img class="screenshot"
+						src="images/screenshots/npc-flying.jpg" alt="The pterodactylus" />
+				</div>
+				<div id="how-to-play">
+					<h2>CaveExpress: How to play</h2>
+					<p>The primary goal of CaveExpress is to pick up the packages and drop them off at the
+					collection point.</p>
+					<p>You get more points and stars the faster you manage to do this. There are also ways
+					to get some extra points when you daze a dino or deliver a package very fast.</p>
+					<p>Hitting walls too hard might crash your flying machine and you will have to restart
+					the map.</p>
+					<p>Depending on the difficulty level you have chosen, you might have to restart a campaign
+					if you lose all three lives for a campaign.</p>
+					<p>You can carry multiple packages - but controlling your flying machine might get harder.</p>
+					<p>Placing a stone close to the collection point can help you when trying to throw the package into place.</p>
+					<h3>The package: <img src="images/howto/package.png"/></h3>
+					<p>Pick up packages from your clients and drop them off at the collection point.</p>
+					<h3>The collection point: <img src="images/howto/target.png"/></h3>
+					<p>This is the point where you should drop off your packages.</p>
+					<h3>The tree: <img src="images/howto/tree.png"/></h3>
+					<p>Get items from the tree by throwing the stone onto it. Items can for example regenerate your health.</p>
+					<h3>The stone: <img src="images/howto/stone.png"/></h3>
+					<p>Use the stone to daze dinosaurs or get items from the tree.</p>
+					<h3>The sleeping dinosaur: <img src="images/howto/blowing.png"/></h3>
+					<p>This is a lazy dinosaur - but still don't get too close if you don't have too. His snore can cause trouble.</p>
+					<h3>The mighty fish: <img src="images/howto/fish.png"/></h3>
+					<p>The water is his territory... and he will defeat it against intruders.</p>
+					<h3>The pterodactylus: <img src="images/howto/flying.png"/></h3>
+					<p>You should not get too close to this nasty pterodactylus. He doesn't like other flying things.</p>
+					<h3>The angry dinosaur: <img src="images/howto/walking.png"/></h3>
+					<p>Even hovering over him might make him angry. He will destroy all packages on his way to you if he's enraged.</p>
+					<h3>The mastodon: <img src="images/howto/mammut.png"/></h3>
+					<p>A little bit slower than his friends, but still dangerous. Don't land your flying machine too close too him. He will also destroy packages on his way to you.</p>
+					<h3>Touch devices:</h3>
+					<p>Use a second finger to drop collected goods (stone, package). While the first finger is in touch with your device, tap the second finger on your screen to trigger the drop.</p>
+					<h3>Personal computer:</h3>
+					<p>Use the cursor keys to control your player and the space bar to release the collected goods.</p>
+					<h3>OUYA:</h3>
+					<p>Using the OUYA controller like you are used to in the OUYA menus.</p>
+				</div>
+				<div id="reviews">
+					<h2>Reviews</h2>
+					<ul>
+						<li>
+							<a href="http://www.gamingonlinux.com/articles/caveexpress-2d-platformer-with-physicsbased-gameplay-on-desura-for-linux.2728/">GamingOnLinux.com</a>
+						</li>
+					</ul>
+				</div>
 			</div>
-			<div class="spacer"></div>
-			<div id="screenshots">
-				<h2>CavePacker Screenshots</h2>
-				<img class="screenshot" src="images/screenshots/cavepacker-01.png"
-					alt="CavePacker" /> <img class="screenshot"
-					src="images/screenshots/cavepacker-02.png" alt="CavePacker" /><br />
-			</div>
-			<div id="how-to-play">
-				<h2>CaveExpress: How to play</h2>
-				<p>The primary goal of CaveExpress is to pick up the packages and drop them off at the
-				collection point.</p>
-				<p>You get more points and stars the faster you manage to do this. There are also ways
-				to get some extra points when you daze a dino or deliver a package very fast.</p>
-				<p>Hitting walls too hard might crash your flying machine and you will have to restart
-				the map.</p>
-				<p>Depending on the difficulty level you have chosen, you might have to restart a campaign
-				if you lose all three lives for a campaign.</p>
-				<p>You can carry multiple packages - but controlling your flying machine might get harder.</p>
-				<p>Placing a stone close to the collection point can help you when trying to throw the package into place.</p>
-				<h3>The package: <img src="images/howto/package.png"/></h3>
-				<p>Pick up packages from your clients and drop them off at the collection point.</p>
-				<h3>The collection point: <img src="images/howto/target.png"/></h3>
-				<p>This is the point where you should drop off your packages.</p>
-				<h3>The tree: <img src="images/howto/tree.png"/></h3>
-				<p>Get items from the tree by throwing the stone onto it. Items can for example regenerate your health.</p>
-				<h3>The stone: <img src="images/howto/stone.png"/></h3>
-				<p>Use the stone to daze dinosaurs or get items from the tree.</p>
-				<h3>The sleeping dinosaur: <img src="images/howto/blowing.png"/></h3>
-				<p>This is a lazy dinosaur - but still don't get too close if you don't have too. His snore can cause trouble.</p>
-				<h3>The mighty fish: <img src="images/howto/fish.png"/></h3>
-				<p>The water is his territory... and he will defeat it against intruders.</p>
-				<h3>The pterodactylus: <img src="images/howto/flying.png"/></h3>
-				<p>You should not get too close to this nasty pterodactylus. He doesn't like other flying things.</p>
-				<h3>The angry dinosaur: <img src="images/howto/walking.png"/></h3>
-				<p>Even hovering over him might make him angry. He will destroy all packages on his way to you if he's enraged.</p>
-				<h3>The mastodon: <img src="images/howto/mammut.png"/></h3>
-				<p>A little bit slower than his friends, but still dangerous. Don't land your flying machine too close too him. He will also destroy packages on his way to you.</p>
-				<h3>Touch devices:</h3>
-				<p>Use a second finger to drop collected goods (stone, package). While the first finger is in touch with your device, tap the second finger on your screen to trigger the drop.</p>
-				<h3>Personal computer:</h3>
-				<p>Use the cursor keys to control your player and the space bar to release the collected goods.</p>
-				<h3>OUYA:</h3>
-				<p>Using the OUYA controller like you are used to in the OUYA menus.</p>
-			</div>
-<!--<button onclick='window.open("https://devs.ouya.tv/gamers/queued_downloads/new?uuid=org.caveexpressouya", "OUYA_EMBED_WINDOW", "menubar=0, location=1, resizable=1, scrollbars=1, status=0, width=620, height=376")'>Download Now!</button>-->
-			<div id="reviews">
-				<h2>Reviews</h2>
-				<ul>
-					<li>
-						<a href="http://www.gamingonlinux.com/articles/caveexpress-2d-platformer-with-physicsbased-gameplay-on-desura-for-linux.2728/">GamingOnLinux.com</a>
-					</li>
-				</ul>
-			</div>
-			<div id="sourcecode">
-				<h2>SourceCode</h2>
-				The source code and data files are available on <a href="https://github.com/mgerhardy/caveexpress">github.com</a>. The code is released under the GPL3 and the game data is released under CC BY-NC-SA 3.0.
+			<div id="cavepacker">
+				<div id="about">
+					<h2>CavePacker is a Sokoban game - one of the most popular puzzle and logic games.</h2>
+					<p>
+						Keep your cave tidy. To do this, make sure that all the spreaded packages are put onto their targets. You can only push,
+						pulling is not allowed.
+						<br/>
+						You get higher ratings for lesser moves you need. The first few maps might be easy to solve - but the more you progress
+						in the game, the harder the maps will be. The map set is the XSokoban one.
+					</p>
+					<p>CavePacker is available for Android, GoogleNativeClient, Linux and Windows.</p>
+					<h3>Features</h3>
+					<ul>
+						<li><b>XSokoban map set</b> is the default map set that comes with the game</li>
+						<li><b>User made campaigns and maps</b> can be easily added to the game</li>
+						<li><b>Allows very very big maps</b> that can be zoomed</li>
+					</ul>
+				</div>
+				<div class="spacer"></div>
+				<div id="screenshots">
+					<h2>CavePacker Screenshots</h2>
+					<img class="screenshot" src="images/screenshots/cavepacker-01.png"
+						alt="CavePacker" /> <img class="screenshot"
+						src="images/screenshots/cavepacker-02.png" alt="CavePacker" /><br />
+				</div>
 			</div>
 		</div>
 	</div>
 
 	<div id="footer">
 		<footer>
-		<div class="links">
-			<ul>
-				<li><a href="impressum.html" rel="nofollow">Impressum</a></li>
-				<li><a href="https://www.facebook.com/caveexpress">Facebook</a>
-				</li>
-				<li><a href="https://twitter.com/MartinGerhardy"
-					class="twitter-follow-button" data-show-count="false">Follow
-						@MartinGerhardy</a> <script>
-							!function(d, s, id) {
-								var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/
-										.test(d.location) ? 'http' : 'https';
-								if (!d.getElementById(id)) {
-									js = d.createElement(s);
-									js.id = id;
-									js.src = p
-											+ '://platform.twitter.com/widgets.js';
-									fjs.parentNode.insertBefore(js, fjs);
-								}
-							}(document, 'script', 'twitter-wjs');
-						</script></li>
-			</ul>
-		</div>
 		<div id="copyright">&copy; 2014 CaveProductions</div>
 		</footer>
 	</div>
