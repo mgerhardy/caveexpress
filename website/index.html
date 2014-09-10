@@ -23,13 +23,13 @@
 	}
 </script>
 </head>
-<body onLoad="hide('cavepacker'); show('caveexpress')">
+<body onLoad="hide('cavepacker'); hide('buycavepacker'); show('caveexpress'); show('buycaveexpress');">
 	<div id="content">
 		<a href="https://github.com/mgerhardy/caveexpress"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png"></a>
 		<div id="main">
 			<div class="header">
 				<div style="text-align: right" class="stores">
-					<ul>
+					<ul id="buycaveexpress">
 						<li><a href="http://www.desura.com/games/caveexpress"
 							title="CaveExpress on Desura"><img
 								src="http://button.desura.com/play/medium/games/24670.png"
@@ -45,20 +45,22 @@
 								alt="CaveExpress android app on Google Play"
 								src="https://developer.android.com/images/brand/en_app_rgb_wo_60.png" /></a>
 						</li>
+					</ul>
+					<ul id="buycavepacker">
 						<li><a
 							href="https://play.google.com/store/apps/details?id=org.cavepacker"><img
 								alt="CavePacker android app on Google Play"
 								src="https://developer.android.com/images/brand/en_app_rgb_wo_60.png" /></a>
 						</li>
+					</ul>
 <!--						<li><a href="https://www.ouya.tv/game/CaveExpress/"></a></li>-->
 <!--<button onclick='window.open("https://devs.ouya.tv/gamers/queued_downloads/new?uuid=org.caveexpressouya", "OUYA_EMBED_WINDOW", "menubar=0, location=1, resizable=1, scrollbars=1, status=0, width=620, height=376")'>Download Now!</button>-->
-					</ul>
 				</div>
 			</div>
 			<div id="header" class="menu">
 				<ul>
-					<li><a href="#main" onClick="hide('cavepacker'); show('caveexpress'); return false;">CaveExpress</a></li>
-					<li><a href="#main" onClick="hide('caveexpress'); show('cavepacker'); return false;">CavePacker</a></li>
+					<li><a href="#main" onClick="hide('cavepacker'); hide('buycavepacker'); show('caveexpress'); show('buycaveexpress'); return false;">CaveExpress</a></li>
+					<li><a href="#main" onClick="hide('caveexpress'); hide('buycaveexpress'); show('cavepacker'); show('buycavepacker'); return false;">CavePacker</a></li>
 					<li><a href="http://www.twitter.com/MartinGerhardy" target="_blank">Twitter</a></li>
 					<li><a href="http://www.facebook.com/caveexpress" target="_blank">Facebook</a></li>
 					<li><a href="https://play.google.com/store/apps/developer?id=CaveProductions">Google Play</a></li>
