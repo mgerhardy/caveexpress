@@ -47,8 +47,8 @@ body {
 .menu ul li a, .menu ul li a:visited {
 	text-decoration: none;
 	color: #eeeeee;
-	padding-right: 30px;
-	padding-left: 30px;
+	padding-right: 20px;
+	padding-left: 20px;
 }
 
 .menu ul li a:hover, .menu ul li a:focus {
