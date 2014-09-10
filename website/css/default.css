@@ -44,11 +44,14 @@ body {
 	margin-bottom: 20px;
 }
 
+.menu li {
+	padding-right: 20px;
+	padding-left: 20px;
+}
+
 .menu ul li a, .menu ul li a:visited {
 	text-decoration: none;
 	color: #eeeeee;
-	padding-right: 20px;
-	padding-left: 20px;
 }
 
 .menu ul li a:hover, .menu ul li a:focus {
@@ -59,11 +62,22 @@ body {
 	color:#eeeeee;;
 }
 
+#links .menu {
+	font-size: 14px;
+}
+
 #bottom {
 	margin-top: 3em;
 }
 
-#screenshots {
+#screenshotscaveexpress {
+	margin-bottom: 20px;
+	padding-top: 20px;
+	border-top: 1px dotted white;
+	border-bottom: 1px dotted white;
+}
+
+#screenshotscavepacker {
 	margin-bottom: 20px;
 	padding-top: 20px;
 	border-top: 1px dotted white;
