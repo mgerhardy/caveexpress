@@ -6,7 +6,7 @@ local c = Campaign.new("tutorial")
 c:setSetting("text", "CavePacker")
 -- now add all maps
 c:addMaps("tutorial*")
-c:addMaps("*")
+c:addMaps("0*")
 c:unlock()
 c:unlockMap("tutorial0001")
 c:unlockMap("tutorial0002")
