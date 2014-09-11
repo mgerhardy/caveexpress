@@ -42,6 +42,10 @@ inline void getXY (char step, int& x, int& y)
 		x = 0;
 		y = 1;
 		break;
+	default:
+		x = 0;
+		y = 0;
+		break;
 	}
 }
 

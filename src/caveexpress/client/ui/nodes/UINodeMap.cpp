@@ -2,6 +2,7 @@
 #include "engine/common/network/ProtocolHandlerRegistry.h"
 #include "caveexpress/client/network/SpawnInfoHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
+#include "caveexpress/client/network/UpdatePackageCountHandler.h"
 
 UINodeMap::UINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
 		IUINodeMap(frontend, serviceProvider, campaignManager, x, y, width, height, map)

@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <vector>
+#include <list>
 #include <string>
 #include <stdarg.h>
 #include <SDL_endian.h>
@@ -19,10 +20,7 @@ const int SCALE_FACTOR = 100;
 class ByteStream {
 private:
 	typedef std::vector<uint8_t> VectorBuffer;
-	mutable VectorBuffer _buffer;
-	mutable int _size;
-
-	void checkSize () const;
+	VectorBuffer _buffer;
 
 public:
 	ByteStream ();
@@ -46,7 +44,6 @@ public:
 	std::string readString ();
 	void readFormat (const char *fmt, ...);
 
-	uint8_t peekByte () const;
 	int32_t peekInt () const;
 	int16_t peekShort () const;
 
@@ -116,20 +113,17 @@ inline void ByteStream::append (const uint8_t *buf, size_t size)
 
 inline const uint8_t* ByteStream::getBuffer () const
 {
-	checkSize();
-	return &_buffer[0];
+	return &_buffer.front();
 }
 
 inline void ByteStream::clear ()
 {
 	_buffer.clear();
-	_size = 0;
 }
 
 inline size_t ByteStream::getSize () const
 {
-	checkSize();
-	return _size;
+	return _buffer.size();
 }
 
 inline void ByteStream::addByte (uint8_t byte, bool prepend)
@@ -139,7 +133,6 @@ inline void ByteStream::addByte (uint8_t byte, bool prepend)
 	} else {
 		_buffer.push_back(byte);
 	}
-	_size += 1;
 }
 
 inline void ByteStream::addBool (bool value, bool prepend)
@@ -154,7 +147,6 @@ inline void ByteStream::addString (const std::string& string)
 		_buffer.push_back(uint8_t(string[i]));
 	}
 	_buffer.push_back(uint8_t('\0'));
-	_size += (length + 1);
 }
 
 inline void ByteStream::addShortScaled (float value)
@@ -172,7 +164,6 @@ inline void ByteStream::addShort (int16_t word, bool prepend)
 		_buffer.push_back(uint8_t(swappedWord));
 		_buffer.push_back(uint8_t(swappedWord >> CHAR_BIT));
 	}
-	_size += 2;
 }
 
 inline void ByteStream::addInt (int32_t dword)
@@ -182,7 +173,6 @@ inline void ByteStream::addInt (int32_t dword)
 	_buffer.push_back(uint8_t(swappedDWord >>= CHAR_BIT));
 	_buffer.push_back(uint8_t(swappedDWord >>= CHAR_BIT));
 	_buffer.push_back(uint8_t(swappedDWord >> CHAR_BIT));
-	_size += 4;
 }
 
 inline void ByteStream::addFloat (float value)
@@ -197,17 +187,11 @@ inline void ByteStream::addFloat (float value)
 
 inline uint8_t ByteStream::readByte ()
 {
-	_size -= 1;
-	if (_size < 0)
+	if (_buffer.empty())
 		System.exit("buffer underrun in readByte", 1);
 	const uint8_t byte = _buffer.front();
 	_buffer.erase(_buffer.begin());
 	return byte;
-}
-
-inline uint8_t ByteStream::peekByte () const
-{
-	return _buffer.front();
 }
 
 inline float ByteStream::readShortScaled ()
@@ -222,12 +206,11 @@ inline bool ByteStream::readBool ()
 
 inline int16_t ByteStream::readShort ()
 {
-	_size -= 2;
-	if (_size < 0)
+	if (_buffer.size() < 2)
 		System.exit("buffer underrun in readShort", 1);
-	const int16_t *word = (const int16_t*)(void*)&_buffer[0];
+	const int16_t *word = (const int16_t*)getBuffer();
 	const int16_t val = SDL_SwapLE16(*word);
-	_buffer.erase(_buffer.begin(), _buffer.begin() + 2);
+	_buffer.erase(_buffer.begin(), std::next(_buffer.begin(), 2));
 	return val;
 }
 
@@ -244,11 +227,10 @@ inline float ByteStream::readFloat ()
 
 inline int32_t ByteStream::readInt ()
 {
-	_size -= 4;
-	if (_size < 0)
+	if (_buffer.size() < 4)
 		System.exit("buffer underrun in readInt", 1);
-	const int32_t *word = (const int32_t*)(void*)&_buffer[0];
+	const int32_t *word = (const int32_t*)getBuffer();
 	const int32_t val = SDL_SwapLE32(*word);
-	_buffer.erase(_buffer.begin(), _buffer.begin() + 4);
+	_buffer.erase(_buffer.begin(), std::next(_buffer.begin(), 4));
 	return val;
 }
