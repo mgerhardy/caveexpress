@@ -39,4 +39,3 @@ BEGIN {
 	exit status
 }' > base/${APPNAME}/lang/${LANG}.lang.tmp
 mv base/${APPNAME}/lang/${LANG}.lang.tmp base/${APPNAME}/lang/${LANG}.lang
-

@@ -253,17 +253,7 @@ filelist: $(SRCDIR)/dir.h
 
 $(SRCDIR)/dir.h:
 	@echo "==> Create filelist for base directories"
-	$(Q)FILENAME=$(SRCDIR)/dir.h; \
-	echo "" > $$FILENAME; \
-	for i in $(BASEDIRS); do \
-		echo "==> $${i}"; \
-		echo "if (basedir == \"$${i}/\") {" >> $$FILENAME; \
-		for file in $(BASEDIR)/$${i}/*; do \
-			echo "entriesAll.push_back(\"`basename $${file}`\");" >> $$FILENAME; \
-		done; \
-		echo "return entriesAll;" >> $$FILENAME; \
-		echo "}" >> $$FILENAME; \
-	done
+	$(Q)contrib/scripts/filelist.sh "$@" "$(BAESDIR)" $(BASEDIRS)
 
 lang:
 	$(Q)for i in en_GB de; do contrib/scripts/lang.sh "$$i" "$(APPNAME)"; done
