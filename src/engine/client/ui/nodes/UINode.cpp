@@ -208,7 +208,7 @@ void UINode::displayText (const std::string& text, uint32_t delayMillis, float x
 
 		const std::string& _s;
 	};
-	DelayedTextsConstIter i = std::find_if(_texts.begin(), _texts.end(), isEqual(text));
+	DelayedTextsIter i = std::find_if(_texts.begin(), _texts.end(), isEqual(text));
 	if (i != _texts.end()) {
 		i->delayMillis = delayMillis;
 		return;
