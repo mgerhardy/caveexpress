@@ -23,20 +23,61 @@ body {
 }
 
 #content .header {
-	vertical-align: middle;
+	/*vertical-align: middle;*/
 	text-align: center;
-	background-image: url(../images/caveexpress.jpg);
+	background-image: url(../images/header.jpg);
 	width: 980px;
 	height: 500px;
-	margin-bottom: 20px;
+	margin-bottom: 0px;
 	border-bottom: 1px dotted white;
+}
+
+.menu ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.menu ul li {
+	float: left;
+	font-size: 18px;
+	margin-bottom: 20px;
+}
+
+.menu li {
+	padding-right: 20px;
+	padding-left: 20px;
+}
+
+.menu ul li a, .menu ul li a:visited {
+	text-decoration: none;
+	color: #eeeeee;
+}
+
+.menu ul li a:hover, .menu ul li a:focus {
+	color:#cccccc;;
+}
+
+.menu ul li.active a, .menu ul li.active a:visited {
+	color:#eeeeee;;
+}
+
+#links .menu {
+	font-size: 14px;
 }
 
 #bottom {
 	margin-top: 3em;
 }
 
-#screenshots {
+#screenshotscaveexpress {
+	margin-bottom: 20px;
+	padding-top: 20px;
+	border-top: 1px dotted white;
+	border-bottom: 1px dotted white;
+}
+
+#screenshotscavepacker {
 	margin-bottom: 20px;
 	padding-top: 20px;
 	border-top: 1px dotted white;
@@ -56,6 +97,13 @@ body {
 }
 
 #footer {
+	margin: 30px auto 0;
+	padding: 11px 20px;
+	display: block;
+	clear: both;
+}
+
+#header {
 	margin: 30px auto 0;
 	padding: 11px 20px;
 	display: block;

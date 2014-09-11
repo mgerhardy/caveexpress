@@ -20,6 +20,25 @@ const int16_t SHORT_ADD = SHRT_MAX;
 const int32_t INT_ADD = INT_MAX;
 }
 
+TEST(ByteStreamTest, testCopy) {
+	std::vector<ByteStream> v;
+	for (int j = 0; j < 1000; ++j) {
+		ByteStream byteStream;
+		for (int i = 0; i < 1000; ++i) {
+			byteStream.addInt(i);
+		}
+		byteStream.addByte(1, true);
+		v.push_back(byteStream);
+	}
+
+	for (std::vector<ByteStream>::const_iterator i = v.begin(); i != v.end(); ++i) {
+		ByteStream s = *i;
+		ASSERT_EQ(4001, s.getSize());
+	}
+
+	ASSERT_EQ(1000, v.size());
+}
+
 TEST(ByteStreamTest, testWriteByte) {
 	ByteStream byteStream;
 	const size_t previous = byteStream.getSize();
@@ -34,11 +53,34 @@ TEST(ByteStreamTest, testWriteShort) {
 	ASSERT_EQ(previous + 2, byteStream.getSize());
 }
 
+TEST(ByteStreamTest, testWriteEmptyString) {
+	ByteStream byteStream;
+	byteStream.addString("");
+	ASSERT_EQ(1, byteStream.getSize());
+	const std::string empty = byteStream.readString();
+	ASSERT_EQ("", empty);
+	ASSERT_EQ(0, byteStream.getSize());
+}
+
 TEST(ByteStreamTest, testWriteInt) {
 	ByteStream byteStream;
 	const size_t previous = byteStream.getSize();
 	byteStream.addInt(INT_ADD);
 	ASSERT_EQ(previous + 4, byteStream.getSize());
+}
+
+TEST(ByteStreamTest, testPeekShort) {
+	int16_t peek;
+	ByteStream byteStream;
+	peek = byteStream.peekShort();
+	byteStream.addByte(1);
+	ASSERT_EQ(-1, peek);
+	byteStream.addByte(1);
+	peek = byteStream.peekShort();
+	ASSERT_EQ(257, peek);
+	ASSERT_EQ(257, byteStream.readShort());
+	peek = byteStream.peekShort();
+	ASSERT_EQ(-1, peek);
 }
 
 TEST(ByteStreamTest, testReadByte) {

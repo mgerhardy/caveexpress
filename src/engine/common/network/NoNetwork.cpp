@@ -5,7 +5,7 @@
 void NoNetwork::update (uint32_t deltaTime)
 {
 	if (_clientFunc != nullptr) {
-		for (std::vector<ByteStream>::iterator i = _clientQueue.begin(); i != _clientQueue.end(); ++i) {
+		for (QueueIter i = _clientQueue.begin(); i != _clientQueue.end(); ++i) {
 			_clientFunc->onData(*i);
 			// there might be a drop
 			if (_clientFunc == nullptr)
@@ -16,7 +16,7 @@ void NoNetwork::update (uint32_t deltaTime)
 	}
 
 	if (_serverFunc != nullptr) {
-		for (std::vector<ByteStream>::iterator i = _serverQueue.begin(); i != _serverQueue.end(); ++i) {
+		for (QueueIter i = _serverQueue.begin(); i != _serverQueue.end(); ++i) {
 			_serverFunc->onData(defaultClientId, *i);
 			// there might be a drop
 			if (_serverFunc == nullptr)
@@ -37,6 +37,7 @@ bool NoNetwork::openServer (int port, IServerCallback* func)
 
 int NoNetwork::sendToClients (int clientMask, const IProtocolMessage& msg)
 {
+	debug(LOG_NET, String::format("send to client message type %i", msg.getId()));
 	ByteStream s;
 	msg.serialize(s);
 	s.addShort(s.getSize(), true);
@@ -110,6 +111,7 @@ bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* 
 
 int NoNetwork::sendToServer (const IProtocolMessage& msg)
 {
+	debug(LOG_NET, String::format("send to server message type %i", msg.getId()));
 	ByteStream s;
 	msg.serialize(s);
 	s.addShort(s.getSize(), true);

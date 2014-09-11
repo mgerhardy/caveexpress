@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ./configure --target-os=android --enable-release --enable-hd --enable-ccache
 make clean-android clean
