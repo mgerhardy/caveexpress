@@ -338,6 +338,7 @@ void Map::resetCurrentMap ()
 	_state.clear();
 	_forcedFinish = false;
 	_moves = 0;
+	_pushes = 0;
 	_restartDue = 0;
 	_pause = false;
 	_mapRunning = false;
@@ -352,10 +353,6 @@ void Map::resetCurrentMap ()
 		for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
 			delete *i;
 		}
-		for (EntityListIter i = _entitiesToAdd.begin(); i != _entitiesToAdd.end(); ++i) {
-			delete *i;
-		}
-		_entitiesToAdd.clear();
 		_entities.clear();
 		_entities.reserve(400);
 
@@ -680,12 +677,6 @@ bool Map::setField (IEntity *entity, int col, int row)
 	return true;
 }
 
-void Map::addEntity (IEntity *entity)
-{
-	entity->onSpawn();
-	_entitiesToAdd.push_back(entity);
-}
-
 void Map::addEntity (int clientMask, const IEntity& entity) const
 {
 	const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(entity.getAngle()));
@@ -899,12 +890,6 @@ void Map::visitEntities (IEntityVisitor *visitor, const EntityType& type)
 			++i;
 		}
 	}
-
-	// now we will add the newly added entities to the list to not invalidate the iterators
-	for (Map::EntityListIter i = _entitiesToAdd.begin(); i != _entitiesToAdd.end(); ++i) {
-		_entities.push_back(*i);
-	}
-	_entitiesToAdd.clear();
 }
 
 void Map::init (IFrontend *frontend, ServiceProvider& serviceProvider)

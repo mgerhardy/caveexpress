@@ -7,36 +7,17 @@
 #include "engine/common/EntityAlignment.h"
 #include "engine/common/network/messages/AddEntityMessage.h"
 #include "engine/common/network/ProtocolHandlerRegistry.h"
-
-class NetworkTestServerListener: public IServerCallback {
-public:
-	void onConnection (ClientId clientId) {
-		// debugVA("client connected: %i", clientId);
-	}
-};
+#include "tests/NetworkTestListener.h"
 
 namespace {
 const char *LOCALHOST = "localhost";
 const int PORT = 4567;
 }
 
-static NetworkTestServerListener serverListener;
 
 TEST(NoNetworkTest, testSendToClient)
 {
-	class NetworkTestListener: public IClientCallback {
-	public:
-		NetworkTestListener() : _count(0) {}
-		int _count;
-		void onData (ByteStream& data) {
-			ProtocolMessageFactory& factory = ProtocolMessageFactory::get();
-			++_count;
-			ASSERT_TRUE(factory.isNewMessageAvailable(data));
-			data.readShort();
-			const ScopedPtr<IProtocolMessage> msg(factory.create(data));
-			ASSERT_TRUE(msg);
-		}
-	};
+	NetworkTestServerListener serverListener;
 	NetworkTestListener listener;
 	NoNetwork network;
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << "Failed to open the server";
