@@ -20,7 +20,7 @@
         <key>dpi</key>
         <uint>72</uint>
         <key>dataFormat</key>
-        <string>GeoPhoto</string>
+        <string>CaveExpress</string>
         <key>textureFileName</key>
         <filename>../../../base/geophoto/pics/ui.png</filename>
         <key>flipPVR</key>
