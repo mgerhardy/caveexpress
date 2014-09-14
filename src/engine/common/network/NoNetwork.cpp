@@ -130,7 +130,7 @@ void NoNetwork::closeClient ()
 	sendToServer(msg);
 	_clientFunc = nullptr;
 
-	if (_clientFunc == nullptr && _connected) {
+	if (_connected) {
 		_serverFunc->onDisconnect(defaultClientId);
 		_connected = false;
 	}

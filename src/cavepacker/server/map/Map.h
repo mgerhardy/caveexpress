@@ -101,8 +101,6 @@ protected:
 	PlayerList _players;
 
 	EntityList _entities;
-	// shadow copy of new entities
-	EntityList _entitiesToAdd;
 
 	bool _pause;
 	// sanity check in the world step callbacks
@@ -206,8 +204,6 @@ public:
 
 	void resetCurrentMap ();
 
-	// delay add
-	void addEntity (IEntity *entity);
 	// initial add
 	void loadEntity (IEntity *entity);
 

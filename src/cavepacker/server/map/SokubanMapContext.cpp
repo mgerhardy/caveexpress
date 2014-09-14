@@ -30,6 +30,7 @@ bool SokubanMapContext::isEmpty(int col, int row) const {
 }
 
 bool SokubanMapContext::load(bool skipErrors) {
+	_playerSpawned = false;
 	info(LOG_SERVER, "load the map " + _name);
 	resetTiles();
 
@@ -103,6 +104,9 @@ bool SokubanMapContext::load(bool skipErrors) {
 		++col;
 		maxCol = std::max(maxCol, col);
 	}
+
+	if (buffer[fileLen - 1] != '\n')
+		++row;
 
 	_settings[msn::WIDTH] = string::toString(maxCol);
 	_settings[msn::HEIGHT] = string::toString(row);
