@@ -15,7 +15,7 @@ override_dh_auto_configure:
 		--datadir=/usr/share/games/$(PKG) \
 		--libdir=/usr/lib/games \
 		--enable-release \
-		--app=caveexpress
+		--app=$(PKG)
 	cp contrib/icon.xpm debian/$(PKG).xpm
 
 override_dh_auto_build:
