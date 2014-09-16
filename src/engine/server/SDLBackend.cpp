@@ -299,10 +299,20 @@ void SDLBackend::mainLoop (int argc, char **argv)
 #ifdef EMSCRIPTEN
 	emscripten_set_main_loop(runFrameEmscripten, 0, 1);
 #else
-	while (_running) {
-		runFrame();
 
-		SDL_Delay(1);
+	static const double fpsCap = Config.getConfigVar("fpslimit", "60.0", true)->getFloatValue();
+	info(LOG_BACKEND, String::format("Run the game at %f frames per second", fpsCap));
+	double nextFrame = static_cast<double>(SDL_GetTicks());
+	while (_running) {
+		const double tick = static_cast<double>(SDL_GetTicks());
+		if (nextFrame > tick) {
+			runFrame();
+		}
+		const int32_t delay = static_cast<int32_t>(nextFrame - tick);
+		if (delay > 0) {
+			SDL_Delay(delay);
+		}
+		nextFrame += 1000.0 / fpsCap;
 	}
 
 	Config.shutdown();
