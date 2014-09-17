@@ -79,3 +79,4 @@ Version 1.9 (2014-08-12)
 * Fixed a crash for some android versions
 
 Version 2.0 (not yet released)
+* Limit the frames per second (reduced battery drain on mobile)
