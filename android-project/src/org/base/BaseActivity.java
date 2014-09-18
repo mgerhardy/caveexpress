@@ -17,17 +17,13 @@ import org.libsdl.app.SDLActivity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-// import com.google.analytics.tracking.android.EasyTracker;
-// import com.google.analytics.tracking.android.Fields;
-// import com.google.analytics.tracking.android.Tracker;
 
 /**
- * Base activity class with google play payment support
+ * Activity class without google play support
  */
 public abstract class BaseActivity extends SDLActivity {
 	// (arbitrary) request code for the purchase flow
@@ -45,9 +41,7 @@ public abstract class BaseActivity extends SDLActivity {
 	 * base64-encoded public key in your application's page on Google Play
 	 * Developer Console. Note that this is NOT your "developer public key".
 	 */
-	protected String getPublicKey() {
-		return "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4KxbS8KykHzthKhIkWcfbGeJsUAApOtLH5t4jWxLy2j6ISpL72w66a6cEjB+YC8hJSPQ8TjvAKCHAqSmi23F1f9eUiuJ8WhMysESfJuyOdCXdQ4swVsKDLdwcR7tu69X5yEoJd0eHJ0TaEu5YXd8FPg6VRzxIf9H+NlDyeDGIai332kwlbyaPtyNGym8BnDpKh1TwC1bEwNYbZiL+CBe/1B+ZxxdTkGb/0/Sp4y+TpjD42vhQp9VzeiEeJqYlP6c1A0Dh1guKPEIAiowmyjm2rKCya85EKC4IUl9/QgyO/BGZFG13Em/JIr9rFoGygZ3igYLlWuWeUfJUTmgcBJchwIDAQAB";
-	}
+	protected abstract String getPublicKey();
 
 	public abstract String getName();
 
@@ -77,18 +71,6 @@ public abstract class BaseActivity extends SDLActivity {
 			moreSkus.add("adfree");
 		}
 		moreSkus.add("unlockall");
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		// EasyTracker.getInstance(this).activityStart(this);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		// EasyTracker.getInstance(this).activityStop(this);
 	}
 
 	@Override
@@ -283,13 +265,11 @@ public abstract class BaseActivity extends SDLActivity {
 	}
 
 	static boolean track(String hitType, String screenName) {
-		// final Tracker tracker = EasyTracker.getInstance(mSingleton);
-		// final Map<String, String> hitParameters = new HashMap<String,
-		// String>();
-		// hitParameters.put(Fields.HIT_TYPE, hitType);
-		// hitParameters.put(Fields.SCREEN_NAME, screenName);
-		// tracker.send(hitParameters);
-		return true;
+		return getBaseActivity().doTrack(hitType, screenName);
+	}
+
+	protected boolean doTrack(String hitType, String screenName) {
+		return false;
 	}
 
 	static String getLocale() {

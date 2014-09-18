@@ -1,130 +1,63 @@
 package org.base.game;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.base.BaseActivity;
 
-import android.content.Intent;
-import android.os.Bundle;
+import android.util.Log;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-// import com.google.analytics.tracking.android.EasyTracker;
-// import com.google.analytics.tracking.android.Fields;
-// import com.google.analytics.tracking.android.Tracker;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Logger;
+import com.google.android.gms.analytics.Tracker;
 
 /**
  * Base activity class with google play payment support
  */
-public abstract class BaseGameActivity extends BaseActivity implements GameHelper.GameHelperListener {
-	// The game helper object. This class is mainly a wrapper around this
-	// object.
-	protected GameHelper gameHelper;
-
-	// We expose these constants here because we don't want users of this class
-	// to have to know about GameHelper at all.
-	public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
-	public static final int CLIENT_APPSTATE = GameHelper.CLIENT_APPSTATE;
-	public static final int CLIENT_PLUS = GameHelper.CLIENT_PLUS;
-	public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
-
-	// Requested clients. By default, that's just the games client.
-	protected int requestedClients = CLIENT_GAMES;
-
-	/** Constructs a BaseGameActivity with default client (GamesClient). */
-	protected BaseGameActivity() {
+public abstract class BaseGameActivity extends BaseActivity {
+	public enum TrackerName {
+		APP_TRACKER, GLOBAL_TRACKER
 	}
 
-	/**
-	 * Constructs a BaseGameActivity with the requested clients.
-	 * 
-	 * @param requestedClients
-	 *            The requested clients (a combination of CLIENT_GAMES,
-	 *            CLIENT_PLUS and CLIENT_APPSTATE).
-	 */
-	public BaseGameActivity(int requestedClients) {
-		setRequestedClients(requestedClients);
-	}
+	private final Map<TrackerName, Tracker> trackers = new HashMap<TrackerName, Tracker>();
 
-	protected GoogleApiClient getApiClient() {
-		return gameHelper.getApiClient();
-	}
-
-	/**
-	 * Sets the requested clients. The preferred way to set the requested
-	 * clients is via the constructor, but this method is available if for some
-	 * reason your code cannot do this in the constructor. This must be called
-	 * before onCreate in order to have any effect. If called after onCreate,
-	 * this method is a no-op.
-	 * 
-	 * @param requestedClients
-	 *            A combination of the flags CLIENT_GAMES, CLIENT_PLUS and
-	 *            CLIENT_APPSTATE, or CLIENT_ALL to request all available
-	 *            clients.
-	 * @param additionalScopes
-	 *            . Scopes that should also be requested when the auth request
-	 *            is made.
-	 */
-	protected void setRequestedClients(int requestedClients) {
-		this.requestedClients = requestedClients;
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		gameHelper.onStart(this);
-		// EasyTracker.getInstance(this).activityStart(this);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		gameHelper.onStop();
-		// EasyTracker.getInstance(this).activityStop(this);
-	}
-
-	@Override
-	protected void onActivityResult(int request, int response, Intent data) {
-		super.onActivityResult(request, response, data);
-		gameHelper.onActivityResult(request, response, data);
-	}
-
-	protected boolean isSignedIn() {
-		return gameHelper.isSignedIn();
-	}
-
-	protected void beginUserInitiatedSignIn() {
-		gameHelper.beginUserInitiatedSignIn();
-	}
-
-	protected void signOut() {
-		gameHelper.signOut();
-	}
-
-	protected String getInvitationId() {
-		return gameHelper.getInvitationId();
-	}
-
-	protected boolean hasSignInError() {
-		return gameHelper.hasSignInError();
-	}
-
-	protected GameHelper.SignInFailureReason getSignInError() {
-		return gameHelper.getSignInError();
-	}
-
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		gameHelper = new GameHelper(this, requestedClients);
-		if (isDebug()) {
-			gameHelper.enableDebugLog(true);
+	protected synchronized Tracker getTracker(TrackerName trackerId) {
+		if (!trackers.containsKey(trackerId)) {
+			GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+			Tracker t;
+			switch (trackerId) {
+			case APP_TRACKER:
+				t = analytics.newTracker(getTrackerId());
+				t.setAnonymizeIp(true);
+				t.enableAutoActivityTracking(true);
+				break;
+			case GLOBAL_TRACKER:
+				t = analytics.newTracker("UA-54860800-1");
+				t.setAnonymizeIp(true);
+				t.enableAutoActivityTracking(true);
+				break;
+			default:
+				return null;
+			}
+			if (isDebug()) {
+				analytics.setDryRun(true);
+				analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
+			}
+			trackers.put(trackerId, t);
 		}
-		gameHelper.setup(this);
+		return trackers.get(trackerId);
 	}
 
-	@Override
-	public void onSignInFailed() {
-	}
+	protected abstract String getTrackerId();
 
 	@Override
-	public void onSignInSucceeded() {
+	protected boolean doTrack(String hitType, String screenName) {
+		Log.v(getName(), "Track: " + hitType + "=" + screenName);
+		HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder();
+		Map<String, String> params = eventBuilder.setCategory(hitType).setAction(screenName).build();
+		Tracker tracker = getTracker(TrackerName.APP_TRACKER);
+		tracker.send(params);
+		return true;
 	}
 }
