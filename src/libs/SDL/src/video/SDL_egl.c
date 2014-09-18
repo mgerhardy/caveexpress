@@ -283,264 +283,6 @@ SDL_EGL_LoadLibrary(_THIS, const char *egl_path, NativeDisplayType native_displa
     return 0;
 }
 
-/*
- Activate this define to dump the contents of EGL Configs
- (you can also turn on/off dump_all, in "dump_attribs_response()"
-*/
-#define DEBUG_EGL_CONFIG
-
-
-
-
-#ifdef DEBUG_EGL_CONFIG
-#include "SDL_log.h"
-
-static int tab_key[32] = 
-{
-    EGL_ALPHA_SIZE,
-    EGL_ALPHA_MASK_SIZE,
-    EGL_BIND_TO_TEXTURE_RGB,
-    EGL_BIND_TO_TEXTURE_RGBA,
-    EGL_BLUE_SIZE,
-    EGL_BUFFER_SIZE,
-    EGL_COLOR_BUFFER_TYPE,
-    EGL_CONFIG_CAVEAT,
-    EGL_CONFIG_ID,
-    EGL_CONFORMANT,
-    EGL_DEPTH_SIZE,
-    EGL_GREEN_SIZE,
-    EGL_LEVEL,
-    EGL_LUMINANCE_SIZE,
-    EGL_MAX_PBUFFER_WIDTH,
-    EGL_MAX_PBUFFER_HEIGHT,
-    EGL_MAX_PBUFFER_PIXELS,
-    EGL_MAX_SWAP_INTERVAL,
-    EGL_MIN_SWAP_INTERVAL,
-    EGL_NATIVE_RENDERABLE,
-    EGL_NATIVE_VISUAL_ID,
-    EGL_NATIVE_VISUAL_TYPE,
-    EGL_RED_SIZE,
-    EGL_RENDERABLE_TYPE,
-    EGL_SAMPLE_BUFFERS,
-    EGL_SAMPLES,
-    EGL_STENCIL_SIZE,
-    EGL_SURFACE_TYPE,
-    EGL_TRANSPARENT_TYPE,
-    EGL_TRANSPARENT_RED_VALUE,
-    EGL_TRANSPARENT_GREEN_VALUE,
-    EGL_TRANSPARENT_BLUE_VALUE
-};
-
-static const char *tab_str[32] = 
-{
-    "EGL_ALPHA_SIZE",
-    "EGL_ALPHA_MASK_SIZE",
-    "EGL_BIND_TO_TEXTURE_RGB",
-    "EGL_BIND_TO_TEXTURE_RGBA",
-    "EGL_BLUE_SIZE",
-    "EGL_BUFFER_SIZE",
-    "EGL_COLOR_BUFFER_TYPE",
-    "EGL_CONFIG_CAVEAT",
-    "EGL_CONFIG_ID",
-    "EGL_CONFORMANT",
-    "EGL_DEPTH_SIZE",
-    "EGL_GREEN_SIZE",
-    "EGL_LEVEL",
-    "EGL_LUMINANCE_SIZE",
-    "EGL_MAX_PBUFFER_WIDTH",
-    "EGL_MAX_PBUFFER_HEIGHT",
-    "EGL_MAX_PBUFFER_PIXELS",
-    "EGL_MAX_SWAP_INTERVAL",
-    "EGL_MIN_SWAP_INTERVAL",
-    "EGL_NATIVE_RENDERABLE",
-    "EGL_NATIVE_VISUAL_ID",
-    "EGL_NATIVE_VISUAL_TYPE",
-    "EGL_RED_SIZE",
-    "EGL_RENDERABLE_TYPE",
-    "EGL_SAMPLE_BUFFERS",
-    "EGL_SAMPLES",
-    "EGL_STENCIL_SIZE",
-    "EGL_SURFACE_TYPE",
-    "EGL_TRANSPARENT_TYPE",
-    "EGL_TRANSPARENT_RED_VALUE",
-    "EGL_TRANSPARENT_GREEN_VALUE",
-    "EGL_TRANSPARENT_BLUE_VALUE"
-};
-
-
-/* Convert EGL_* key to its string */
-static const char *
-key2str(int key)
-{
-    const int    nb      = sizeof (tab_key) / sizeof (tab_key[0]);
-    const char  *str     = NULL;
-    static char  buf[64];
-    int          i;
-
-    for (i = 0; i < nb; i++)
-    {
-        if (key == tab_key[i])
-        {
-            str = tab_str[i];
-            break;
-        }
-    }
-
-    if (str == NULL)
-    {
-        str = (const char *)buf;
-        sprintf(buf, "unknown (%d)", key);
-    }
-
-    return str;
-}
-
-
-/* Convert EGL_* value to its string */
-static const char *
-value2str(int key, int value)
-{
-    const char  *str             = NULL;
-    static char  buf[64];
-    char         buf_bitmask[64];
-
-    if (
-               key == EGL_BIND_TO_TEXTURE_RGB 
-            || key == EGL_BIND_TO_TEXTURE_RGBA
-            || key == EGL_NATIVE_RENDERABLE
-       )
-    {
-        if (value == EGL_TRUE)
-            str = "EGL_TRUE";
-        else if (value == EGL_FALSE)
-            str = "EGL_FALSE";
-    }
-    else if (key == EGL_COLOR_BUFFER_TYPE)
-    {
-        if (value == EGL_RGB_BUFFER)
-            str = "EGL_RGB_BUFFER";
-        else if (value == EGL_LUMINANCE_BUFFER)
-            str = "EGL_LUMINANCE_BUFFER";
-    }
-    else if (key == EGL_CONFIG_CAVEAT)
-    {
-        /* If the EGL version is 1.3 or later, caveat EGL_NON_CONFORMANT_CONFIG is obsolete, 
-           since the same information can be specified via the EGL_CONFORMANT attribute
-           on a per-client-API basis, not just for OpenGL ES.  */
-
-        if (value == EGL_NONE)
-            str = "EGL_NONE";
-        else if (value == EGL_SLOW_CONFIG)
-            str = "EGL_SLOW_CONFIG";
-        else if (value == EGL_NON_CONFORMANT_CONFIG)
-            str = "EGL_NON_CONFORMANT_CONFIG";
-    }
-    else if (
-               key == EGL_CONFORMANT
-            || key == EGL_RENDERABLE_TYPE
-            || key == EGL_SURFACE_TYPE
-            )
-    {
-        str = (const char *) buf_bitmask;
-        sprintf(buf_bitmask, "0x%08x", value);
-    }
-    else if (key == EGL_TRANSPARENT_TYPE)
-    {
-        if (value == EGL_NONE)
-            str = "EGL_NONE";      
-        else if (value == EGL_TRANSPARENT_RGB)
-            str = "EGL_TRANSPARENT_RGB";
-    }
-
-    if (str == NULL)
-    {
-        sprintf(buf, "%d", value);
-    }
-    else
-    {
-        sprintf(buf, "%s (%d == 0x%08x)", str, value, value);
-    }
-
-    return buf;
-}
-
-
-/* Dump the attribs request */
-static void
-dump_attribs_request(EGLint *attribs)
-{
-    int i;
-    SDL_Log("{");
-    for (i = 0; i < 64; i++)
-    {
-        if (attribs[i] == EGL_NONE)
-        {
-            break;
-        }
-
-        {
-            const int   key   = attribs[i++];
-            const int   value = attribs[i];
-            SDL_Log("  %s => %s", key2str(key), value2str(key, value));
-        }
-    }
-    SDL_Log("}");
-    return;
-}
-
-/* Dump the config returned as a response from the request */
-static void
-dump_attribs_response(EGLint *attribs, EGLConfig config, _THIS)
-{
-    const int nb = sizeof (tab_key) / sizeof (tab_key[0]);
-    int i;
-    SDL_Log("{");
-
-    /* Set to 1 or 0 to dump all params of config, or only the one requested */
-    const int dump_all = 1;
-
-    for (i = 0; i < nb; i++)
-    {
-        const int key = tab_key[i];
-        EGLint value = 2014;
-        int j;
-        int found = 0;
-
-        /* Get value of the config */
-        _this->egl_data->eglGetConfigAttrib(_this->egl_data->egl_display, config, key, &value);
-
-        /* Only dump when it matches the attribs request */
-        for (j = 0; j < 64; j += 2)
-        {
-            /* End of attribs table */
-            if (attribs[j] == EGL_NONE)
-            {
-                break;
-            }
-
-            /* Match the attribs request */
-            if (attribs[j] == key)
-            {
-                SDL_Log("  %s => %s  ******* (requested=%d, diff=%d)",
-                        key2str(key), value2str(key, value),
-                        attribs[j+1], value-attribs[j+1]);
-                found = 1;
-                break;
-            }
-        }
-
-        /* Dump all */
-        if (dump_all && found == 0)
-        {
-            SDL_Log("  %s => %s", key2str(key), value2str(key, value));
-        }
-    }
-
-    SDL_Log("}");
-    return;
-}
-#endif
-
 int
 SDL_EGL_ChooseConfig(_THIS) 
 {
@@ -608,12 +350,6 @@ SDL_EGL_ChooseConfig(_THIS)
     }
     
     attribs[i++] = EGL_NONE;
-
-#ifdef DEBUG_EGL_CONFIG
-    /* Dump the request */
-    SDL_Log("Request configs (i == %d)", i);
-    dump_attribs_request(attribs);
-#endif
    
     if (_this->egl_data->eglChooseConfig(_this->egl_data->egl_display,
         attribs,
@@ -623,20 +359,10 @@ SDL_EGL_ChooseConfig(_THIS)
         return SDL_SetError("Couldn't find matching EGL config");
     }
     
-#ifdef DEBUG_EGL_CONFIG
-    SDL_Log("==> Found configs: %d", found_configs);
-#endif
-
     /* eglChooseConfig returns a number of configurations that match or exceed the requested attribs. */
     /* From those, we select the one that matches our requirements more closely via a makeshift algorithm */
 
     for ( i=0; i<found_configs; i++ ) {
-
-#ifdef DEBUG_EGL_CONFIG
-        SDL_Log("Dump config %d", i);
-        dump_attribs_response(attribs, configs[i], _this);
-#endif
-
         bitdiff = 0;
         for (j = 0; j < SDL_arraysize(attribs) - 1; j += 2) {
             if (attribs[j] == EGL_NONE) {
@@ -654,26 +380,14 @@ SDL_EGL_ChooseConfig(_THIS)
                 bitdiff += value - attribs[j + 1]; /* value is always >= attrib */
             }
         }
-        
-#ifdef DEBUG_EGL_CONFIG
-        SDL_Log("bitdiff = %d", bitdiff);
-#endif
 
         if (bitdiff < best_bitdiff || best_bitdiff == -1) {
             _this->egl_data->egl_config = configs[i];
             
             best_bitdiff = bitdiff;
-#ifdef DEBUG_EGL_CONFIG
-            SDL_Log("New best bitdiff = %d !", bitdiff);
-#endif
         }
            
-        if (bitdiff == 0) {
-#ifdef DEBUG_EGL_CONFIG
-            SDL_Log("Found an exact match (bitdiff == %d)", bitdiff);
-#endif
-            break; /* we found an exact match! */
-        }
+        if (bitdiff == 0) break; /* we found an exact match! */
     }
     
     return 0;
