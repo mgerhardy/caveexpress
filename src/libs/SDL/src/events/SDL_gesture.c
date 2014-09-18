@@ -24,7 +24,6 @@
 /* General mouse handling code for SDL */
 
 #include "SDL_events.h"
-#include "SDL_endian.h"
 #include "SDL_events_c.h"
 #include "SDL_gesture_c.h"
 
@@ -115,23 +114,13 @@ static unsigned long SDL_HashDollar(SDL_FloatPoint* points)
 
 static int SaveTemplate(SDL_DollarTemplate *templ, SDL_RWops *dst)
 {
-    int i;
-    SDL_DollarTemplate copy;
-
     if (dst == NULL) return 0;
 
     /* No Longer storing the Hash, rehash on load */
     /* if (SDL_RWops.write(dst, &(templ->hash), sizeof(templ->hash), 1) != 1) return 0; */
 
-    copy = *templ;
-    for (i = 0; i < DOLLARNPOINTS; ++i) {
-        SDL_FloatPoint *p = &copy.path[i];
-        p->x = SDL_SwapFloatLE(p->x);
-        p->y = SDL_SwapFloatLE(p->y);
-    }
-
-    if (SDL_RWwrite(dst, copy.path,
-                    sizeof(copy.path[0]),DOLLARNPOINTS) != DOLLARNPOINTS)
+    if (SDL_RWwrite(dst, templ->path,
+                    sizeof(templ->path[0]),DOLLARNPOINTS) != DOLLARNPOINTS)
         return 0;
 
     return 1;
@@ -195,7 +184,7 @@ static int SDL_AddDollarGesture(SDL_GestureTouch* inTouch, SDL_FloatPoint* path)
     int index = -1;
     int i = 0;
     if (inTouch == NULL) {
-        if (SDL_numGestureTouches == 0) return SDL_SetError("no gesture touch devices registered");
+        if (SDL_numGestureTouches == 0) return -1;
         for (i = 0; i < SDL_numGestureTouches; i++) {
             inTouch = &SDL_gestureTouch[i];
             index = SDL_AddDollarGesture_one(inTouch, path);
@@ -212,29 +201,19 @@ int SDL_LoadDollarTemplates(SDL_TouchID touchId, SDL_RWops *src)
 {
     int i,loaded = 0;
     SDL_GestureTouch *touch = NULL;
-    if (src == NULL) return SDL_SetError("a NULL rwops given");
+    if (src == NULL) return 0;
     if (touchId >= 0) {
         for (i = 0; i < SDL_numGestureTouches; i++)
             if (SDL_gestureTouch[i].id == touchId)
                 touch = &SDL_gestureTouch[i];
-        if (touch == NULL) return SDL_SetError("given touch id not found");
+        if (touch == NULL) return -1;
     }
 
     while (1) {
         SDL_DollarTemplate templ;
 
         if (SDL_RWread(src,templ.path,sizeof(templ.path[0]),DOLLARNPOINTS) <
-           DOLLARNPOINTS) {
-            if (loaded == 0)
-                return SDL_SetError("could not read any dollar gesture from rwops");
-            break;
-        }
-
-        for (i = 0; i < DOLLARNPOINTS; ++i) {
-            SDL_FloatPoint *p = &templ.path[i];
-            p->x = SDL_SwapFloatLE(p->x);
-            p->y = SDL_SwapFloatLE(p->y);
-        }
+           DOLLARNPOINTS) break;
 
         if (touchId >= 0) {
             /* printf("Adding loaded gesture to 1 touch\n"); */

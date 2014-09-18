@@ -20,22 +20,10 @@
 */
 #include "../../SDL_internal.h"
 
-/* OpenGL shader implementation */
+#if SDL_VIDEO_DRIVER_ANDROID
 
-typedef enum {
-    SHADER_NONE,
-    SHADER_SOLID,
-    SHADER_RGB,
-    SHADER_YUV,
-    SHADER_NV12,
-    SHADER_NV21,
-    NUM_SHADERS
-} GL_Shader;
+extern int Android_ShowMessageBox(const SDL_MessageBoxData *messageboxdata, int *buttonid);
 
-typedef struct GL_ShaderContext GL_ShaderContext;
-
-extern GL_ShaderContext * GL_CreateShaderContext();
-extern void GL_SelectShader(GL_ShaderContext *ctx, GL_Shader shader);
-extern void GL_DestroyShaderContext(GL_ShaderContext *ctx);
+#endif /* SDL_VIDEO_DRIVER_ANDROID */
 
 /* vi: set ts=4 sw=4 expandtab: */

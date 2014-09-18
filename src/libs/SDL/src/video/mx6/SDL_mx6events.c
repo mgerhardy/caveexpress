@@ -18,24 +18,28 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
+
 #include "../../SDL_internal.h"
 
-/* OpenGL shader implementation */
+#if SDL_VIDEO_DRIVER_MX6
 
-typedef enum {
-    SHADER_NONE,
-    SHADER_SOLID,
-    SHADER_RGB,
-    SHADER_YUV,
-    SHADER_NV12,
-    SHADER_NV21,
-    NUM_SHADERS
-} GL_Shader;
+#include "../../events/SDL_sysevents.h"
+#include "../../events/SDL_events_c.h"
+#include "../../events/SDL_keyboard_c.h"
+#include "SDL_mx6video.h"
+#include "SDL_mx6events_c.h"
 
-typedef struct GL_ShaderContext GL_ShaderContext;
+#ifdef SDL_INPUT_LINUXEV
+#include "../../core/linux/SDL_evdev.h"
+#endif
 
-extern GL_ShaderContext * GL_CreateShaderContext();
-extern void GL_SelectShader(GL_ShaderContext *ctx, GL_Shader shader);
-extern void GL_DestroyShaderContext(GL_ShaderContext *ctx);
+void MX6_PumpEvents(_THIS)
+{
+#ifdef SDL_INPUT_LINUXEV
+    SDL_EVDEV_Poll();
+#endif
+    
+}
 
-/* vi: set ts=4 sw=4 expandtab: */
+#endif /* SDL_VIDEO_DRIVER_MX6 */
+

@@ -18,24 +18,20 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "../../SDL_internal.h"
+#include "SDL_config.h"
 
-/* OpenGL shader implementation */
+#if SDL_VIDEO_DRIVER_ANDROID
 
-typedef enum {
-    SHADER_NONE,
-    SHADER_SOLID,
-    SHADER_RGB,
-    SHADER_YUV,
-    SHADER_NV12,
-    SHADER_NV21,
-    NUM_SHADERS
-} GL_Shader;
+#include "SDL_messagebox.h"
 
-typedef struct GL_ShaderContext GL_ShaderContext;
+int
+Android_ShowMessageBox(const SDL_MessageBoxData *messageboxdata, int *buttonid)
+{
+    int Android_JNI_ShowMessageBox(const SDL_MessageBoxData *messageboxdata, int *buttonid);
 
-extern GL_ShaderContext * GL_CreateShaderContext();
-extern void GL_SelectShader(GL_ShaderContext *ctx, GL_Shader shader);
-extern void GL_DestroyShaderContext(GL_ShaderContext *ctx);
+    return Android_JNI_ShowMessageBox(messageboxdata, buttonid);
+}
+
+#endif /* SDL_VIDEO_DRIVER_ANDROID */
 
 /* vi: set ts=4 sw=4 expandtab: */

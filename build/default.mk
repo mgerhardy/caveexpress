@@ -131,6 +131,18 @@ ifeq ($(TARGET_OS),nacl)
 			$(wildcard src/libs/SDL/src/main/nacl/*.c) \
 		)
 endif
+ifneq ($(findstring $(TARGET_OS), android ouya),)
+	SDL_SRCS += \
+		$(subst src/libs/SDL/,libs/SDL/, \
+			$(wildcard src/libs/SDL/src/filesystem/android/*.c) \
+			$(wildcard src/libs/SDL/src/video/android/*.c) \
+			$(wildcard src/libs/SDL/src/core/android/*.c) \
+			$(wildcard src/libs/SDL/src/main/android/*.c) \
+			$(wildcard src/libs/SDL/src/audio/android/*.c) \
+			$(wildcard src/libs/SDL/src/joystick/android/*.c) \
+			$(wildcard src/libs/SDL/src/power/android/*.c) \
+		)
+endif
 endif
 ifeq ($(HAVE_SDL_RWHTTP_H),1)
 SDL_RWHTTP_LIBS          += $(call PKG_LIBS,SDL_rwhttp)
