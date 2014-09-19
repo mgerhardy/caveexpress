@@ -592,7 +592,7 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isTrackingOptOu
 	info(LOG_SYSTEM, "isTrackingOptOut c side");
 	// TODO:
 	jboolean optout = 0;
-	return output;
+	return optout;
 }
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isHD(JNIEnv* env, jclass jcls)
