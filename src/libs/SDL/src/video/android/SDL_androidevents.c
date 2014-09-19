@@ -29,11 +29,8 @@
 #include "SDL_events.h"
 #include "SDL_androidwindow.h"
 
-
 void android_egl_context_backup();
 void android_egl_context_restore();
-void AndroidAUD_ResumeDevices(void);
-void AndroidAUD_PauseDevices(void);
 
 void 
 android_egl_context_restore() 
@@ -77,14 +74,13 @@ Android_PumpEvents(_THIS)
     if (isPaused && !isPausing) {
         /* Make sure this is the last thing we do before pausing */
         android_egl_context_backup();
-        AndroidAUD_PauseDevices();
         if(SDL_SemWait(Android_ResumeSem) == 0) {
 #else
     if (isPaused) {
         if(SDL_SemTryWait(Android_ResumeSem) == 0) {
 #endif
             isPaused = 0;
-            AndroidAUD_ResumeDevices();
+            
             /* Restore the GL Context from here, as this operation is thread dependent */
             if (!SDL_HasEvent(SDL_QUIT)) {
                 android_egl_context_restore();
@@ -107,7 +103,6 @@ Android_PumpEvents(_THIS)
 #else
         if(SDL_SemTryWait(Android_PauseSem) == 0) {
             android_egl_context_backup();
-            AndroidAUD_PauseDevices();
             isPaused = 1;
         }
 #endif
