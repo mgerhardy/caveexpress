@@ -13,7 +13,7 @@ import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
 
 /**
- * Base activity class with google play payment support
+ * Base activity class with google analytics support
  */
 public abstract class BaseGameActivity extends BaseActivity {
 	public enum TrackerName {
