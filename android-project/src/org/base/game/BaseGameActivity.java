@@ -1,5 +1,6 @@
 package org.base.game;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,21 +30,22 @@ public abstract class BaseGameActivity extends BaseActivity {
 			switch (trackerId) {
 			case APP_TRACKER:
 				t = analytics.newTracker(getTrackerId());
-				t.setAnonymizeIp(true);
-				t.enableAutoActivityTracking(true);
 				break;
 			case GLOBAL_TRACKER:
 				t = analytics.newTracker("UA-54860800-1");
-				t.setAnonymizeIp(true);
-				t.enableAutoActivityTracking(true);
 				break;
 			default:
 				return null;
 			}
 			if (isDebug()) {
+				Log.v(getName(), "Tracker dry run");
 				analytics.setDryRun(true);
 				analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
 			}
+			t.setAnonymizeIp(true);
+			t.enableAutoActivityTracking(true);
+			t.setAppName(getName());
+			t.setSessionTimeout(300L);
 			trackers.put(trackerId, t);
 		}
 		return trackers.get(trackerId);
@@ -54,9 +56,15 @@ public abstract class BaseGameActivity extends BaseActivity {
 	@Override
 	protected boolean doTrack(String hitType, String screenName) {
 		Log.v(getName(), "Track: " + hitType + "=" + screenName);
+		Tracker tracker = getTracker(TrackerName.APP_TRACKER);
+		if ("activewindow".equals(hitType)) {
+			tracker.setScreenName(screenName);
+			HitBuilders.AppViewBuilder appViewBuilder = new HitBuilders.AppViewBuilder();
+			tracker.send(appViewBuilder.build());
+			return true;
+		}
 		HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder();
 		Map<String, String> params = eventBuilder.setCategory(hitType).setAction(screenName).build();
-		Tracker tracker = getTracker(TrackerName.APP_TRACKER);
 		tracker.send(params);
 		return true;
 	}
