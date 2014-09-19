@@ -13,7 +13,7 @@ import com.google.android.gms.games.GamesActivityResultCodes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.cavepacker.R;
+import org.caveexpress.R;
 
 /**
  * Created by btco on 2/10/14.
