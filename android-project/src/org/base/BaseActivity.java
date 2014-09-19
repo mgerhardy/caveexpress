@@ -282,5 +282,7 @@ public abstract class BaseActivity extends SDLActivity {
 
 	public static native boolean isDebug();
 
+	public static native boolean isTrackingOptOut();
+
 	public static native boolean isHD();
 }

@@ -37,6 +37,11 @@ public abstract class BaseGameActivity extends BaseActivity {
 			default:
 				return null;
 			}
+			boolean trackingOptOut = isTrackingOptOut();
+			if (trackingOptOut) {
+				analytics.setAppOptOut(true);
+				Log.v(getName(), "Tracker opt out");
+			}
 			if (isDebug()) {
 				Log.v(getName(), "Tracker dry run");
 				analytics.setDryRun(true);
