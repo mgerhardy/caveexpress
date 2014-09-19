@@ -69,7 +69,11 @@ public abstract class BaseGameActivity extends BaseActivity {
 			return true;
 		}
 		HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder();
-		Map<String, String> params = eventBuilder.setCategory(hitType).setAction(screenName).build();
+		eventBuilder.setCategory(hitType);
+		eventBuilder.setCategory(screenName);
+		eventBuilder.setAction(hitType);
+		eventBuilder.setLabel(hitType);
+		Map<String, String> params = eventBuilder.build();
 		tracker.send(params);
 		return true;
 	}

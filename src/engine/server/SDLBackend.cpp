@@ -32,7 +32,7 @@ static SDLBackend *INSTANCE;
 static void runFrameEmscripten() {
 	if (!INSTANCE->isRunning()) {
 		Config.shutdown();
-		System.track("SDLBackend", "shutdown");
+		System.track("step", "sdl backend shutdown");
 		info(LOG_BACKEND, "shut down the main loop");
 		emscripten_cancel_main_loop();
 		return;
@@ -284,7 +284,7 @@ void SDLBackend::runFrame ()
 
 void SDLBackend::mainLoop (int argc, char **argv)
 {
-	System.track("SDLBackend", "start");
+	System.track("step", "sdl backend start");
 
 	if (init(argc, argv) == -1) {
 		System.exit("Initialization error", 1);
@@ -319,7 +319,7 @@ void SDLBackend::mainLoop (int argc, char **argv)
 	_serviceProvider.getNetwork().shutdown();
 
 #endif
-	System.track("SDLBackend", "shutdown");
+	System.track("step", "sdl backend shutdown");
 }
 
 bool SDLBackend::onKeyRelease (int32_t key)

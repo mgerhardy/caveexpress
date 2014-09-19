@@ -1445,7 +1445,7 @@ void Map::update (uint32_t deltaTime)
 				const Player* p = *i;
 				GameEvent.failedMap(p->getClientId(), currentName, getFailReason(p), getTheme());
 			}
-			System.track("MapState", "failed:" + currentName);
+			System.track("mapstate", "failed:" + currentName);
 		} else {
 			load(currentName);
 		}
