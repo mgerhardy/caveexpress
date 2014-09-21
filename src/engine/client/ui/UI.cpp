@@ -68,6 +68,7 @@ void UI::restart ()
 
 void UI::shutdown ()
 {
+	System.track("step", "shutdownui");
 	for (UIWindowMapIter i = _windows.begin(); i != _windows.end(); ++i) {
 		delete i->second;
 	}
@@ -140,6 +141,7 @@ const std::string UI::translate (const std::string& in) const
 
 void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFrontend &frontend)
 {
+	System.track("step", "initui");
 	const std::string& language = Config.getLanguage();
 	if (!initLanguage(language))
 		initLanguage("en_GB");
@@ -702,6 +704,7 @@ UIWindow* UI::push (const std::string& windowID)
 		return nullptr;
 
 	info(LOG_CLIENT, "push window " + windowID);
+	System.track("pushwindow", window->getId());
 	if (!_stack.empty()) {
 		UIWindow* activeWindow = *_stack.rbegin();
 		activeWindow->onPushedOver();
@@ -750,7 +753,7 @@ void UI::pop ()
 		return;
 
 	info(LOG_CLIENT, "pop window " + window->getId());
-
+	System.track("popwindow", window->getId());
 	_stack.pop_back();
 	_stack.back()->onActive();
 

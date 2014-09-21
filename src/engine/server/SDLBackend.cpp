@@ -32,7 +32,7 @@ static SDLBackend *INSTANCE;
 static void runFrameEmscripten() {
 	if (!INSTANCE->isRunning()) {
 		Config.shutdown();
-		System.track("SDLBackend", "shutdown");
+		System.track("step", "sdl backend shutdown");
 		info(LOG_BACKEND, "shut down the main loop");
 		emscripten_cancel_main_loop();
 		return;
@@ -284,7 +284,7 @@ void SDLBackend::runFrame ()
 
 void SDLBackend::mainLoop (int argc, char **argv)
 {
-	System.track("SDLBackend", "start");
+	System.track("step", "sdl backend start");
 
 	if (init(argc, argv) == -1) {
 		System.exit("Initialization error", 1);
@@ -299,17 +299,27 @@ void SDLBackend::mainLoop (int argc, char **argv)
 #ifdef EMSCRIPTEN
 	emscripten_set_main_loop(runFrameEmscripten, 0, 1);
 #else
-	while (_running) {
-		runFrame();
 
-		SDL_Delay(1);
+	static const double fpsCap = Config.getConfigVar("fpslimit", "60.0", true)->getFloatValue();
+	info(LOG_BACKEND, String::format("Run the game at %f frames per second", fpsCap));
+	double nextFrame = static_cast<double>(SDL_GetTicks());
+	while (_running) {
+		const double tick = static_cast<double>(SDL_GetTicks());
+		if (nextFrame > tick) {
+			runFrame();
+		}
+		const int32_t delay = static_cast<int32_t>(nextFrame - tick);
+		if (delay > 0) {
+			SDL_Delay(delay);
+		}
+		nextFrame += 1000.0 / fpsCap;
 	}
 
 	Config.shutdown();
 	_serviceProvider.getNetwork().shutdown();
 
 #endif
-	System.track("SDLBackend", "shutdown");
+	System.track("step", "sdl backend shutdown");
 }
 
 bool SDLBackend::onKeyRelease (int32_t key)

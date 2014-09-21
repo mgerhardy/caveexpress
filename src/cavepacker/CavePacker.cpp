@@ -84,13 +84,15 @@ void CavePacker::update (uint32_t deltaTime)
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 			SDL_SetClipboardText(solution.c_str());
 #endif
+			const std::string solutionId = "solution" + _map.getName();
+			System.track(solutionId, solution);
 			if (!_campaignManager->addAdditionMapData(_map.getName(), solution))
 				error(LOG_SERVER, "Could not save the solution for the map");
 		} else {
 			info(LOG_SERVER, "no solution in multiplayer games");
 		}
 
-		System.track("MapState", String::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), moves, pushes, stars));
+		System.track("mapstate", String::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), moves, pushes, stars));
 		_map.abortAutoSolve();
 		const FinishedMapMessage msg(_map.getName(), moves, pushes, stars);
 		_serviceProvider->getNetwork().sendToAllClients(msg);

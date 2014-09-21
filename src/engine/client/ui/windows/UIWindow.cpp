@@ -58,6 +58,7 @@ void UIWindow::onPushedOver ()
 
 void UIWindow::onActive ()
 {
+	System.track("activewindow", getId());
 	_pushedTime = _time;
 }
 

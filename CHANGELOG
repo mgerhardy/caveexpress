@@ -78,4 +78,8 @@ Version 1.8 (2014-08-12)
 Version 1.9 (2014-08-12)
 * Fixed a crash for some android versions
 
-Version 2.0 (not yet released)
+Version 2.0 (2014-09-19)
+* Limit the frames per second (reduced battery drain on mobile)
+* Added tracker support
+
+Version 2.1 (not yet released)

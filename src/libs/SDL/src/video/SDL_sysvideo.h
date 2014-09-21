@@ -93,6 +93,7 @@ struct SDL_Window
     SDL_Surface *surface;
     SDL_bool surface_valid;
 
+    SDL_bool is_hiding;
     SDL_bool is_destroying;
 
     SDL_WindowShaper *shaper;
@@ -389,6 +390,9 @@ extern VideoBootStrap Wayland_bootstrap;
 #endif
 #if SDL_VIDEO_DRIVER_NACL
 extern VideoBootStrap NACL_bootstrap;
+#endif
+#if SDL_VIDEO_DRIVER_MX6
+extern VideoBootStrap MX6_bootstrap;
 #endif
 
 extern SDL_VideoDevice *SDL_GetVideoDevice(void);

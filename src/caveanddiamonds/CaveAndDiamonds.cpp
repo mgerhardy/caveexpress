@@ -90,9 +90,8 @@ void CaveAndDiamonds::update (uint32_t deltaTime)
 			info(LOG_SERVER, "no solution in multiplayer games");
 		}
 
-		System.track("MapState", String::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), moves, pushes, stars));
-		_map.abortAutoSolve();
-		const FinishedMapMessage msg(_map.getName(), moves, pushes, stars);
+		System.track("mapstate", String::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), finishPoints, pushes, stars));
+		const FinishedMapMessage msg(_map.getName(), finishPoints, pushes, stars);
 		_serviceProvider->getNetwork().sendToAllClients(msg);
 	} else if (!isDone && _map.isFailed()) {
 		debug(LOG_SERVER, "map failed");
