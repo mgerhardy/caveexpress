@@ -632,6 +632,8 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 		sdlCheckError();
 		return -1;
 	}
+
+	SDL_DisableScreenSaver();
 #endif
 
 	initRenderer();
