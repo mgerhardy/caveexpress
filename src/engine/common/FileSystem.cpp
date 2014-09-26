@@ -122,47 +122,6 @@ SDL_RWops* FileSystem::createRWops (const std::string& path, const std::string& 
 	return rwops;
 }
 
-#ifdef __EMSCRIPTEN__
-struct Emscripten_UserData {
-	void* srcData;
-	int srcDataSize;
-	bool done;
-};
-
-static void Emscripten_OnFailed (void* userData)
-{
-	Emscripten_UserData* u = (Emscripten_UserData*) userData;
-	u->srcDataSize = -1;
-	u->done = true;
-}
-
-static void Emscripten_OnLoaded (void* userData, void* srcData, int srcDataSize)
-{
-	Emscripten_UserData* u = (Emscripten_UserData*) userData;
-	u->srcData = malloc(srcDataSize);
-	u->srcDataSize = srcDataSize;
-	memcpy(u->srcData, srcData, srcDataSize);
-	u->done = true;
-}
-
-static SDL_RWops* Emscripten_RWFromHttp (const URI& uri) {
-	Emscripten_UserData u;
-	u.done = false;
-	u.srcDataSize = -1;
-	emscripten_async_wget_data(uri.print().c_str(), (void*)&u, Emscripten_OnLoaded, Emscripten_OnFailed);
-	while (!u.done) {
-		SDL_Delay(10);
-	}
-	if (u.srcDataSize != -1) {
-		info(LOG_FILE, "downloaded file " + uri.print());
-		return SDL_RWFromMem(u.srcData, u.srcDataSize);
-	}
-
-	error(LOG_FILE, "failed to download file " + uri.print());
-	return nullptr;
-}
-#endif
-
 FilePtr FileSystem::getFile (const std::string& filename) const
 {
 	std::string path;
