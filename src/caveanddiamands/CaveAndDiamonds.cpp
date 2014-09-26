@@ -80,9 +80,7 @@ void CaveAndDiamonds::update (uint32_t deltaTime)
 			const Player* player = _map.getPlayers()[0];
 			const std::string& solution = player->getSolution();
 			info(LOG_SERVER, "solution: " + solution);
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 			SDL_SetClipboardText(solution.c_str());
-#endif
 			if (!_campaignManager->addAdditionMapData(_map.getName(), solution))
 				error(LOG_SERVER, "Could not save the solution for the map");
 		} else {

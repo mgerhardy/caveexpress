@@ -9,19 +9,22 @@
 #if SDL_VIDEO_OPENGL
 #define GL_GLEXT_PROTOTYPES
 #include <SDL_opengl.h>
+#include <SDL_opengl_glext.h>
 #endif
 
 #if SDL_VIDEO_OPENGL_ES
 #include <SDL_opengles.h>
+#include <SDL_opengles_glext.h>
 #endif
 
 #if SDL_VIDEO_OPENGL_ES2 && !SDL_VIDEO_OPENGL
 #include <SDL_opengles2.h>
+#include <SDL_opengles2_gl2ext.h>
 #endif
 
-#ifndef SDL_VIDEO_OPENGL
-#ifndef SDL_VIDEO_OPENGL_ES
-#ifndef SDL_VIDEO_OPENGL_ES2
+#if not SDL_VIDEO_OPENGL
+#if not SDL_VIDEO_OPENGL_ES
+#if not SDL_VIDEO_OPENGL_ES2
 #error "No opengl, opengles or opengles2 found"
 #endif
 #endif

@@ -36,9 +36,7 @@ bool SokubanMapContext::load(bool skipErrors) {
 
 	FilePtr filePtr = FS.getFile(FS.getMapsDir() + _name + ".sok");
 	if (!filePtr->exists()) {
-		error(LOG_SERVER,
-				"sokuban map file " + filePtr->getURI().print()
-						+ " does not exist");
+		error(LOG_SERVER, "sokuban map file " + filePtr->getPath() + " does not exist");
 		return false;
 	}
 
@@ -46,7 +44,7 @@ bool SokubanMapContext::load(bool skipErrors) {
 	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		error(LOG_SERVER, "sokuban map file " + filePtr->getURI().print());
+		error(LOG_SERVER, "sokuban map file " + filePtr->getPath());
 		return false;
 	}
 

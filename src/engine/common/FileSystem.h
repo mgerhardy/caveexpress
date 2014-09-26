@@ -8,10 +8,7 @@ struct SDL_RWops;
 
 class FileSystem: public NonCopyable {
 private:
-	std::string _protocol;
-	std::string _protocolPostfix;
-
-	std::string _dataDir;
+	const std::string _dataDir;
 	const std::string _mapsDir;
 	const std::string _campaignsDir;
 	const std::string _texturesDir;
@@ -26,20 +23,12 @@ private:
 
 	std::string _homeDir;
 
-	bool _initialized;
-
-	std::string replaceSpecialMarkers (const std::string& path, bool systemRoot) const;
 public:
 	virtual ~FileSystem ();
 
 	static FileSystem& get ();
 
-	std::string getPath (const URI& uri, bool systemRoot = false) const;
-	// subdir must have a training slash
-	void cache (FilePtr& file, const std::string& subdir = "") const;
-	SDL_RWops* createRWops (const URI& uri) const;
-	SDL_RWops* createRWops (const URI& uri, std::string& path) const;
-	void init (const std::string& protocol, const std::string& protocolPostfix);
+	SDL_RWops* createRWops (const std::string& file, const std::string& mode = "rb") const;
 	void shutdown ();
 	// writes a file to the users home directory
 	long writeFile (const std::string& filename, const unsigned char *buf, size_t length, bool overwrite = false) const;
@@ -50,8 +39,6 @@ public:
 	bool deleteFile (const std::string& filename) const;
 	bool copy (const std::string& src, const std::string& target) const;
 	FilePtr getFile (const std::string& filename) const;
-	FilePtr getFile (const URI& uri) const;
-	FilePtr getPic (const std::string& filename) const;
 	const std::string& getDataDir () const;
 	const std::string& getMapsDir () const;
 	const std::string& getCampaignsDir () const;
@@ -129,11 +116,6 @@ inline const std::string& FileSystem::getGesturesDir () const
 inline const std::string& FileSystem::getShaderDir () const
 {
 	return _shaderDir;
-}
-
-inline std::string FileSystem::getPath (const URI& uri, bool systemRoot) const
-{
-	return replaceSpecialMarkers(uri.getPath(), systemRoot);
 }
 
 #define FS FileSystem::get()

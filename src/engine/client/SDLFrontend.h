@@ -10,10 +10,6 @@
 #include <map>
 #include <string>
 
-#if not SDL_VERSION_ATLEAST(2, 0, 0)
-#define DISABLE_SDL_RENDERER
-#endif
-
 class SDLFrontend: public IFrontend, public NonCopyable, public IEventObserver {
 private:
 #ifndef DISABLE_SDL_RENDERER
@@ -21,10 +17,8 @@ private:
 #endif
 protected:
 	EventHandler *_eventHandler;
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_Window *_window;
 	SDL_Haptic *_haptic;
-#endif
 	// stores the current rendered frames per second
 	unsigned int _numFrames;
 	// stores the time since frontend start

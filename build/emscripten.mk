@@ -1,12 +1,38 @@
-EMSCRIPTEN_TARGET_ROOT ?= ~
+EMSCRIPTEN_TARGET_ROOT ?= $(HOME)
 
 emscripten-setup:
-	@echo "Setup build environment for emscripten"
-	$(Q)git clone https://github.com/kripken/emscripten $(EMSCRIPTEN_TARGET_ROOT)/emscripten; \
-	git clone https://github.com/kripken/emscripten-fastcomp $(EMSCRIPTEN_TARGET_ROOT)/emscripten-fastcomp; \
-	git clone https://github.com/kripken/emscripten-fastcomp-clang $(EMSCRIPTEN_TARGET_ROOT)/emscripten-fastcomp/tools/clang; \
-	mkdir -p $(EMSCRIPTEN_TARGET_ROOT)/emscripten-fastcomp/build; \
-	cd $(EMSCRIPTEN_TARGET_ROOT)/emscripten-fastcomp/build && ../configure --enable-optimized --disable-assertions --enable-targets=host,js; make -j 2; \
-	echo "Configure paths..."; \
-	echo "export LLVM_ROOT=\"$(EMSCRIPTEN_TARGET_ROOT)/emscripten-fastcom/build/bin/Release\"" >> ~/.bashrc
-	echo "export EMSCRIPTEN=\"$(EMSCRIPTEN_TARGET_ROOT)/emscripten\"" >> ~/.bashrc
+	@echo "Setup build environment for emscripten (install nodejs on your own)"
+	$(Q)cd $(EMSCRIPTEN_TARGET_ROOT) && \
+		wget https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz && \
+		tar -xzf emsdk-portable.tar.gz && \
+		cd emsdk && \
+		./emsdk update && \
+		./emsdk install latest && \
+		./emsdk activate latest && \
+		source ./emsdk_env.sh && \
+		mkdir sdl-source && cd sdl-source && \
+			git clone https://github.com/Daft-Freak/SDL-emscripten.git && \
+			cd SDL-emscripten && \
+				emconfigure ./configure --host=asmjs-unknown-emscripten --disable-assembly --disable-threads --enable-cpuinfo=false CFLAGS="-O2" --prefix=$(EMSCRIPTEN_TARGET_ROO)/emsdk/sdl2 && \
+				emmake make -j 4 && \
+				make install && \
+			cd .. && \
+			git clone https://github.com/gsathya/sdl2-image.git && \
+			cd sdl2-image && \
+				./autogen.sh && \
+				emconfigure ./configure --disable-sdltest --with-sdl-prefix=$(EMSCRIPTEN_TARGET_ROO)/emsdk/sdl2 --prefix=$(EMSCRIPTEN_TARGET_ROO)/emsdk/sdl2 && \
+				emmake make -j 4 && \
+				make install && \
+			cd .. && \
+			hg clone http://hg.libsdl.org/SDL_mixer/ && \
+			cd SDL_mixer && \
+				./autogen.sh && \
+				mkdir build && cd build && \
+					EMCONFIGURE_JS=1 emconfigure ../configure --disable-sdltest --with-sdl-prefix=$(EMSCRIPTEN_TARGET_ROO)/emsdk/sdl2 --prefix=$(EMSCRIPTEN_TARGET_ROO)/emsdk/sdl2 && \
+					emmake make -j 4 && \
+					make install && \
+				cd .. && \
+			cd .. && \
+		cd ..
+	@echo "Add the following line to your ~/.bashrc"
+	@echo "source $(EMSCRIPTEN_TARGET_ROO)/emsdk/emsdk_set_env.sh

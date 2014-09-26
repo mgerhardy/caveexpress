@@ -81,9 +81,7 @@ void CavePacker::update (uint32_t deltaTime)
 			const Player* player = _map.getPlayers()[0];
 			const std::string& solution = player->getSolution();
 			info(LOG_SERVER, "solution: " + solution);
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 			SDL_SetClipboardText(solution.c_str());
-#endif
 			const std::string solutionId = "solution" + _map.getName();
 			System.track(solutionId, solution);
 			if (!_campaignManager->addAdditionMapData(_map.getName(), solution))

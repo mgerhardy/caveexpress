@@ -73,7 +73,6 @@ static void fillSounds ()
 }
 
 extern "C" int main(int argc, char* argv[]) {
-	FS.get().init("file", "");
 	fillSounds();
 
 	std::stringstream s;

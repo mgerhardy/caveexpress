@@ -89,7 +89,7 @@ std::string Map::getSolution() const
 	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		error(LOG_SERVER, "solution file " + filePtr->getURI().print() + " can't get loaded");
+		error(LOG_SERVER, "solution file " + filePtr->getPath() + " can't get loaded");
 		return "";
 	}
 

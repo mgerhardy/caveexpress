@@ -63,11 +63,11 @@ void LUA::reg (const std::string& prefix, luaL_Reg* funcs)
 	lua_setglobal(_state, prefix.c_str());
 }
 
-bool LUA::load (const String &file)
+bool LUA::load (const std::string &file)
 {
 	FilePtr filePtr = FS.getFile(file);
 	if (!filePtr->exists()) {
-		error(LOG_CONFIG, "lua file " + filePtr->getURI().print() + " does not exist");
+		error(LOG_CONFIG, "lua file " + filePtr->getPath() + " does not exist");
 		return false;
 	}
 
@@ -75,7 +75,7 @@ bool LUA::load (const String &file)
 	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		error(LOG_CONFIG, "failed to read lua file " + filePtr->getURI().print());
+		error(LOG_CONFIG, "failed to read lua file " + filePtr->getPath());
 		return false;
 	}
 

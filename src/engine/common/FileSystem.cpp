@@ -3,37 +3,31 @@
 #include "engine/common/System.h"
 #include "engine/common/Version.h"
 #include <SDL.h>
-#ifdef HAVE_SDL_RWHTTP_H
-#include <SDL_rwhttp.h>
-#endif
+#include <SDL_platform.h>
 #include <iostream>
 #include <fstream>
 
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
 
-#if defined(EMSCRIPTEN) or defined (__NACL__)
+#if defined(__EMSCRIPTEN__) or defined (__NACL__)
+// use a pregenerated header with the files
 #define DIRLIST_NOT_SUPPORTED 1
 #endif
 
 namespace {
-const std::string ROOT = "/$root";
 const std::string BASEDIR = "base/" APPNAME;
 }
 
 FileSystem::FileSystem () :
 		_homeDir(System.getHomeDirectory()), _dataDir(BASEDIR + "/"), _mapsDir("maps/"), _campaignsDir("campaigns/"), _texturesDir(
-				"textures/"), _picsDir("pics/"), _soundsDir("sounds/"), _musicDir("music/"), _shaderDir("shaders/"), _languageDir("lang/"), _gesturesDir("gestures/"), _initialized(
-				false)
+				"textures/"), _picsDir("pics/"), _soundsDir("sounds/"), _musicDir("music/"), _shaderDir("shaders/"), _languageDir("lang/"), _gesturesDir("gestures/")
 {
 }
 
 FileSystem::~FileSystem ()
 {
-#ifdef HAVE_SDL_RWHTTP_H
-	SDL_RWHttpShutdown();
-#endif
 }
 
 FileSystem& FileSystem::get ()
@@ -44,31 +38,6 @@ FileSystem& FileSystem::get ()
 
 void FileSystem::shutdown ()
 {
-	_initialized = false;
-	_dataDir = BASEDIR + "/";
-#ifdef HAVE_SDL_RWHTTP_H
-	SDL_RWHttpShutdown();
-	info(LOG_FILE, "shutdown SDL_rwhttp");
-#endif
-}
-
-void FileSystem::init (const std::string& protocol, const std::string& protocolPostfix)
-{
-	if (_initialized) {
-		error(LOG_FILE, "called filesystem init at least twice");
-		return;
-	}
-	_initialized = true;
-	_protocol = protocol;
-	if (_protocol == "file")
-		_dataDir = ROOT + "/" + BASEDIR + "/";
-	_protocolPostfix = protocolPostfix;
-	info(LOG_FILE, "use protocol " + _protocol);
-	info(LOG_FILE, "use datadir " + _dataDir);
-#ifdef HAVE_SDL_RWHTTP_H
-	SDL_RWHttpInit();
-	info(LOG_FILE, "init SDL_rwhttp");
-#endif
 }
 
 bool FileSystem::copy (const std::string& src, const std::string& target) const
@@ -100,15 +69,11 @@ long FileSystem::writeFile (const std::string& filename, const unsigned char *bu
 	if (filename.empty())
 		return -1L;
 
-	if (!_initialized)
-		System.exit("Filesystem is not yet initialized", 1);
-
-	const URI uri("file://" + _homeDir + filename);
-	std::string path;
-	SDL_RWops *rwops = createRWops(uri, path);
-	File file(uri, rwops, path);
+	const std::string path = _homeDir + filename;
+	SDL_RWops *rwops = createRWops(path, "wb");
+	File file(rwops, filename);
 	if (!overwrite && file.exists()) {
-		info(LOG_FILE, "file already exists: " + uri.print());
+		info(LOG_FILE, "file already exists: " + path);
 		return -1L;
 	}
 	if (!System.mkdir(_homeDir)) {
@@ -116,7 +81,7 @@ long FileSystem::writeFile (const std::string& filename, const unsigned char *bu
 		return -1L;
 	}
 	createDir(file);
-	info(LOG_FILE, "writing file " + uri.print());
+	info(LOG_FILE, "writing file " + path);
 	return file.write(buf, length);
 }
 
@@ -125,14 +90,9 @@ long FileSystem::writeSysFile (const std::string& filename, const unsigned char 
 	if (filename.empty())
 		return -1L;
 
-	if (!_initialized)
-		System.exit("Filesystem is not yet initialized", 1);
-
-	const std::string prot = "file://" + _protocolPostfix;
-	const URI uri(prot + replaceSpecialMarkers(getDataDir() + filename, false));
-	const std::string path = getPath(uri, false);
-	SDL_RWops *rwops = SDL_RWFromFile(path.c_str(), "wb");
-	FilePtr file(new File(uri, rwops, path));
+	const std::string path = getAbsoluteWritePath() + filename;
+	SDL_RWops *rwops = createRWops(path, "wb");
+	FilePtr file(new File(rwops, path));
 	if (!overwrite && file->exists())
 		return -1L;
 	const long ret = file->write(buf, length);
@@ -155,42 +115,14 @@ bool FileSystem::exists (const std::string& filename) const
 	return file->exists();
 }
 
-inline std::string FileSystem::replaceSpecialMarkers (const std::string& path, bool systemRoot) const
+SDL_RWops* FileSystem::createRWops (const std::string& path, const std::string& mode) const
 {
-	const size_t l = ROOT.length();
-	if (strncmp(path.c_str(), ROOT.c_str(), l)) {
-		debug(LOG_FILE, "nothing to replace for " + path);
-		return path;
-	}
-
-	if (systemRoot) {
-#ifdef __ANDROID__
-		const std::string root = SDL_AndroidGetInternalStoragePath();
-		return root + path.substr(l);
-#else
-#ifdef PKGDATADIR
-		const std::string root = PKGDATADIR;
-		return root + path.substr(l);
-#else
-#ifndef __NACL__
-		return "";
-#endif
-#endif
-#endif
-	}
-	if (path.length() > l)
-		return System.getCurrentWorkingDir() + path.substr(l + 1);
-	// return a relative path like './foo/bar'
-	return "." + path.substr(l);
+	SDL_RWops *rwops = SDL_RWFromFile(path.c_str(), mode.c_str());
+	SDL_ClearError();
+	return rwops;
 }
 
-SDL_RWops* FileSystem::createRWops (const URI& uri) const
-{
-	std::string path;
-	return createRWops(uri, path);
-}
-
-#if defined(EMSCRIPTEN)
+#ifdef __EMSCRIPTEN__
 struct Emscripten_UserData {
 	void* srcData;
 	int srcDataSize;
@@ -219,6 +151,7 @@ static SDL_RWops* Emscripten_RWFromHttp (const URI& uri) {
 	u.srcDataSize = -1;
 	emscripten_async_wget_data(uri.print().c_str(), (void*)&u, Emscripten_OnLoaded, Emscripten_OnFailed);
 	while (!u.done) {
+		SDL_Delay(10);
 	}
 	if (u.srcDataSize != -1) {
 		info(LOG_FILE, "downloaded file " + uri.print());
@@ -230,118 +163,25 @@ static SDL_RWops* Emscripten_RWFromHttp (const URI& uri) {
 }
 #endif
 
-SDL_RWops* FileSystem::createRWops (const URI& uri, std::string& path) const
-{
-	if (uri.getProtocol() == "file") {
-		path = getPath(uri, false);
-		SDL_RWops *rwops = SDL_RWFromFile(path.c_str(), "rb");
-		if (rwops == nullptr) {
-			debug(LOG_FILE, SDL_GetError());
-			SDL_ClearError();
-			path = getPath(uri, true);
-			rwops = SDL_RWFromFile(path.c_str(), "rb");
-			if (rwops != nullptr) {
-				debug(LOG_FILE, "successfully loaded file " + path);
-			} else {
-				debug(LOG_FILE, SDL_GetError());
-				debug(LOG_FILE, "failed to load file " + path);
-			}
-		} else {
-			debug(LOG_FILE, "successfully loaded file " + path);
-		}
-		return rwops;
-	}
-	if (uri.getProtocol() == "http" || uri.getProtocol() == "https") {
-#if not defined(EMSCRIPTEN)
-		const URI uriCached("file://" + getAbsoluteWritePath() + getPath(uri));
-		SDL_RWops *cached = createRWops(uriCached, path);
-		if (cached != nullptr) {
-			info(LOG_FILE, "used cached version: " + uriCached.print());
-			return cached;
-		}
-		SDL_ClearError();
-#endif
-		info(LOG_FILE, "try to fetch " + uri.print());
-#if defined(EMSCRIPTEN)
-		SDL_RWops *http = Emscripten_RWFromHttp(uri);
-#elif defined(HAVE_SDL_RWHTTP_H)
-		SDL_RWops *http = SDL_RWFromHttpSync(uri.print().c_str());
-#else
-		SDL_RWops *http = nullptr;
-#endif
-		if (http == nullptr) {
-			error(LOG_FILE, "could not download: " + uri.print());
-		}
-		return http;
-	}
-	System.exit("No " + uri.getProtocol() + " implemented yet", 1);
-	return nullptr;
-}
-
-void FileSystem::cache (FilePtr& file, const std::string& subdir) const
-{
-	if (file->getURI().getProtocol() != "http")
-		return;
-
-	const std::string& filename = file->getFileName() + "." + file->getExtension();
-	const URI uri("file://" + getAbsoluteWritePath() + subdir + filename);
-	std::string path;
-	SDL_RWops *rwops = createRWops(uri, path);
-	File target(uri, rwops, path);
-	if (target.exists())
-		return;
-	char *buffer;
-	int fileLen = file->read((void **) &buffer);
-	if (fileLen < 0)
-		return;
-	System.mkdir(getAbsoluteWritePath());
-	createDir(target);
-	target.write(reinterpret_cast<const unsigned char*>(buffer), fileLen);
-	info(LOG_FILE, "cached " + file->getURI().print());
-}
-
 FilePtr FileSystem::getFile (const std::string& filename) const
 {
-	if (!_initialized)
-		System.exit("Filesystem is not yet initialized", 1);
-
-	const std::string prot = _protocol + "://" + _protocolPostfix;
-
 	std::string path;
 	if (!getAbsoluteWritePath().empty()) {
-		const URI uriLocal(prot + getAbsoluteWritePath() + filename);
-		SDL_RWops *rwopsLocal = createRWops(uriLocal, path);
+		path = getAbsoluteWritePath() + getDataDir() + filename;
+		SDL_RWops *rwopsLocal = createRWops(path);
 		if (rwopsLocal != nullptr) {
-			FilePtr ptr(new File(uriLocal, rwopsLocal, path));
+			FilePtr ptr(new File(rwopsLocal, path));
 			return ptr;
 		}
-
-		SDL_ClearError();
 	}
-	const URI uri(prot + getDataDir() + filename);
-	SDL_RWops *rwops = createRWops(uri, path);
-	FilePtr ptr(new File(uri, rwops, path));
+	path = getDataDir() + filename;
+	SDL_RWops *rwops = createRWops(path);
+	FilePtr ptr(new File(rwops, path));
 	return ptr;
-}
-
-FilePtr FileSystem::getFile (const URI& uri) const
-{
-	std::string path;
-	SDL_RWops *rwops = createRWops(uri, path);
-	FilePtr ptr(new File(uri, rwops, path));
-	return ptr;
-}
-
-FilePtr FileSystem::getPic (const std::string& filename) const
-{
-	const FilePtr& f = getFile(getPicsDir() + filename);
-	return f;
 }
 
 const std::string FileSystem::getAbsoluteWritePath () const
 {
-	if (_protocol != "file")
-		return "";
 	if (_homeDir.empty())
 		return "";
 	return _homeDir;
@@ -351,24 +191,15 @@ DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const st
 {
 	DirectoryEntries entriesAll;
 
-	if (!_initialized)
-		System.exit("Filesystem is not yet initialized", 1);
-
 #if DIRLIST_NOT_SUPPORTED
 #include "dir.h"
 #endif
 
-	const std::string sysWritePath = replaceSpecialMarkers(getAbsoluteWritePath() + basedir, false);
+	const std::string sysWritePath = getAbsoluteWritePath() + basedir;
 	if (!sysWritePath.empty())
 		entriesAll = System.listDirectory(sysWritePath, subdir);
 
-	const std::string sysDataPath = replaceSpecialMarkers(getDataDir() + basedir, true);
-	const DirectoryEntries sysDataEntries = System.listDirectory(sysDataPath, subdir);
-	for (DirectoryEntriesIter i = sysDataEntries.begin(); i != sysDataEntries.end(); ++i) {
-		entriesAll.push_back(*i);
-	}
-
-	const std::string dataDir = replaceSpecialMarkers(getDataDir() + basedir, false);
+	const std::string dataDir = getDataDir() + basedir;
 	const DirectoryEntries entries = System.listDirectory(dataDir, subdir);
 	for (DirectoryEntriesIter i = entries.begin(); i != entries.end(); ++i) {
 		entriesAll.push_back(*i);
