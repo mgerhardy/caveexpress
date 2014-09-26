@@ -16,12 +16,8 @@
 #define DIRLIST_NOT_SUPPORTED 1
 #endif
 
-namespace {
-const std::string BASEDIR = "base/" APPNAME;
-}
-
 FileSystem::FileSystem () :
-		_homeDir(System.getHomeDirectory()), _dataDir(BASEDIR + "/"), _mapsDir("maps/"), _campaignsDir("campaigns/"), _texturesDir(
+		_homeDir(System.getHomeDirectory()), _dataDir("base/" APPNAME "/"), _mapsDir("maps/"), _campaignsDir("campaigns/"), _texturesDir(
 				"textures/"), _picsDir("pics/"), _soundsDir("sounds/"), _musicDir("music/"), _shaderDir("shaders/"), _languageDir("lang/"), _gesturesDir("gestures/")
 {
 }
@@ -124,16 +120,15 @@ SDL_RWops* FileSystem::createRWops (const std::string& path, const std::string& 
 
 FilePtr FileSystem::getFile (const std::string& filename) const
 {
-	std::string path;
 	if (!getAbsoluteWritePath().empty()) {
-		path = getAbsoluteWritePath() + getDataDir() + filename;
+		const std::string path = getAbsoluteWritePath() + getDataDir() + filename;
 		SDL_RWops *rwopsLocal = createRWops(path);
 		if (rwopsLocal != nullptr) {
 			FilePtr ptr(new File(rwopsLocal, path));
 			return ptr;
 		}
 	}
-	path = getDataDir() + filename;
+	const std::string path = getDataDir() + filename;
 	SDL_RWops *rwops = createRWops(path);
 	FilePtr ptr(new File(rwops, path));
 	return ptr;
