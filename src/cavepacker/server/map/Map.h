@@ -129,7 +129,7 @@ protected:
 	bool setField (IEntity *entity, int col, int row);
 	void printMap ();
 	std::string getMapString() const;
-	char getSokubanFieldId (const IEntity *entity) const;
+	char getSokobanFieldId (const IEntity *entity) const;
 	void handleAutoSolve (uint32_t deltaTime);
 public:
 	Map ();

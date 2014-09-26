@@ -67,7 +67,7 @@ bool LUA::load (const std::string &file)
 {
 	FilePtr filePtr = FS.getFile(file);
 	if (!filePtr->exists()) {
-		error(LOG_CONFIG, "lua file " + filePtr->getPath() + " does not exist");
+		error(LOG_CONFIG, "lua file " + filePtr->getName() + " does not exist");
 		return false;
 	}
 
@@ -75,7 +75,7 @@ bool LUA::load (const std::string &file)
 	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		error(LOG_CONFIG, "failed to read lua file " + filePtr->getPath());
+		error(LOG_CONFIG, "failed to read lua file " + filePtr->getName());
 		return false;
 	}
 

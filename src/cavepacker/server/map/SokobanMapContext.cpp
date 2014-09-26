@@ -1,20 +1,20 @@
-#include "SokubanMapContext.h"
+#include "SokobanMapContext.h"
 #include "engine/common/FileSystem.h"
 #include "engine/common/Logger.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
 
-SokubanMapContext::SokubanMapContext(const std::string& map) :
+SokobanMapContext::SokobanMapContext(const std::string& map) :
 		IMapContext(map), _playerSpawned(false) {
 	_title = map;
 }
 
-SokubanMapContext::~SokubanMapContext() {
+SokobanMapContext::~SokobanMapContext() {
 }
 
-void SokubanMapContext::onMapLoaded() {
+void SokobanMapContext::onMapLoaded() {
 }
 
-bool SokubanMapContext::isEmpty(int col, int row) const {
+bool SokobanMapContext::isEmpty(int col, int row) const {
 	if (row < 0)
 		return false;
 
@@ -29,14 +29,14 @@ bool SokubanMapContext::isEmpty(int col, int row) const {
 	return true;
 }
 
-bool SokubanMapContext::load(bool skipErrors) {
+bool SokobanMapContext::load(bool skipErrors) {
 	_playerSpawned = false;
 	info(LOG_SERVER, "load the map " + _name);
 	resetTiles();
 
 	FilePtr filePtr = FS.getFile(FS.getMapsDir() + _name + ".sok");
 	if (!filePtr->exists()) {
-		error(LOG_SERVER, "sokuban map file " + filePtr->getPath() + " does not exist");
+		error(LOG_SERVER, "Sokoban map file " + filePtr->getName() + " does not exist");
 		return false;
 	}
 
@@ -44,7 +44,7 @@ bool SokubanMapContext::load(bool skipErrors) {
 	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		error(LOG_SERVER, "sokuban map file " + filePtr->getPath());
+		error(LOG_SERVER, "Sokoban map file " + filePtr->getName());
 		return false;
 	}
 
@@ -60,30 +60,30 @@ bool SokubanMapContext::load(bool skipErrors) {
 				continue;
 		}
 		switch (buffer[i]) {
-		case Sokuban::WALL:
+		case Sokoban::WALL:
 			addWall(col, row);
 			empty = false;
 			break;
-		case Sokuban::GROUND:
+		case Sokoban::GROUND:
 			if (!empty && !isEmpty(col, row - 1))
 				addGround(col, row);
 			break;
-		case Sokuban::PLAYER:
+		case Sokoban::PLAYER:
 			addGround(col, row);
 			addPlayer(col, row);
 			break;
-		case Sokuban::PACKAGE:
+		case Sokoban::PACKAGE:
 			addGround(col, row);
 			addPackage(col, row);
 			break;
-		case Sokuban::TARGET:
+		case Sokoban::TARGET:
 			addTarget(col, row);
 			break;
-		case Sokuban::PACKAGEONTARGET:
+		case Sokoban::PACKAGEONTARGET:
 			addTarget(col, row);
 			addPackage(col, row);
 			break;
-		case Sokuban::PLAYERONTARGET:
+		case Sokoban::PLAYERONTARGET:
 			addTarget(col, row);
 			addPlayer(col, row);
 			break;
@@ -112,7 +112,7 @@ bool SokubanMapContext::load(bool skipErrors) {
 	return _playerSpawned;
 }
 
-void SokubanMapContext::addTile(const std::string& tile, int col, int row) {
+void SokobanMapContext::addTile(const std::string& tile, int col, int row) {
 	const SpriteDefPtr &spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(
 			tile);
 	if (!spriteDefPtr) {
@@ -125,26 +125,26 @@ void SokubanMapContext::addTile(const std::string& tile, int col, int row) {
 	_definitions.push_back(def);
 }
 
-inline void SokubanMapContext::addTarget(int col, int row) {
+inline void SokobanMapContext::addTarget(int col, int row) {
 	addTile("target", col, row);
 }
 
-inline void SokubanMapContext::addWall(int col, int row) {
+inline void SokobanMapContext::addWall(int col, int row) {
 	const int rnd = rand() % 3 + 1;
 	addTile("tile-rock-" + String::format("%02i", rnd), col, row);
 }
 
-inline void SokubanMapContext::addPackage(int col, int row) {
+inline void SokobanMapContext::addPackage(int col, int row) {
 	addTile("package", col, row);
 }
 
-inline void SokubanMapContext::addPlayer(int col, int row) {
+inline void SokobanMapContext::addPlayer(int col, int row) {
 	_settings[msn::PLAYER_X] = string::toString(col);
 	_settings[msn::PLAYER_Y] = string::toString(row);
 	_playerSpawned = true;
 }
 
-inline void SokubanMapContext::addGround(int col, int row) {
+inline void SokobanMapContext::addGround(int col, int row) {
 	const int rnd = rand() % 4 + 1;
 	addTile("tile-background-" + String::format("%02i", rnd), col, row);
 }

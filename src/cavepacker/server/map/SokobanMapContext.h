@@ -3,7 +3,7 @@
 #include "engine/common/IMapContext.h"
 #include <string>
 
-namespace Sokuban {
+namespace Sokoban {
 const int WALL = '#';
 const int PLAYER = '@';
 const int PACKAGE = '$';
@@ -13,7 +13,7 @@ const int PACKAGEONTARGET = '*';
 const int PLAYERONTARGET = '+';
 }
 
-class SokubanMapContext : public IMapContext {
+class SokobanMapContext : public IMapContext {
 private:
 	bool _playerSpawned;
 
@@ -25,8 +25,8 @@ private:
 	void addTile(const std::string& tile, int col, int row);
 	bool isEmpty(int col, int row) const;
 public:
-	SokubanMapContext(const std::string& map);
-	virtual ~SokubanMapContext();
+	SokobanMapContext(const std::string& map);
+	virtual ~SokobanMapContext();
 
 	// IMapContext
 	void onMapLoaded () override;
