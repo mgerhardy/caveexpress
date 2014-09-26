@@ -1,6 +1,7 @@
 #pragma once
 
 #include "engine/common/NonCopyable.h"
+#include "engine/common/ICommand.h"
 #include "engine/common/IFrontend.h"
 #include "engine/common/IEventObserver.h"
 #include "engine/common/ServiceProvider.h"
