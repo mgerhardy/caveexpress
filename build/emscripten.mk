@@ -5,6 +5,7 @@ emscripten-setup:
 	$(Q)cd $(EMSCRIPTEN_TARGET_ROOT) && \
 		wget https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz && \
 		tar -xzf emsdk-portable.tar.gz && \
+		mv emsdk_portable emsdk && \
 		cd emsdk && \
 		./emsdk update && \
 		./emsdk install latest && \
