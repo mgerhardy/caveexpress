@@ -99,7 +99,9 @@ std::string Map::getSolution() const
 			continue;
 		std::string digit;
 		digit += *i;
-		for (++i; isdigit(*i) && i != solution.end(); ++i) {
+		for (++i; i != solution.end(); ++i) {
+			if (!isdigit(*i))
+				break;
 			digit += *i;
 		}
 		const int n = string::toInt(digit);
