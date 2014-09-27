@@ -1,7 +1,3 @@
-* Graphics
-** Jungle theme
-** Liana graphics (we only have one)
-
 * Android
 ** OUYA: game controller support
 ** OUYA: After beating a level in campaign mode, the O button brings up the pause menu.
@@ -18,8 +14,10 @@
 ** Cavebot
 ** like us on facebook => unlock new campaign
 ** follow us on twitter => unlock new campaign
+** rate us on the playstore
 ** don't use scale for the tps - for small everything should be in one texture
 ** Collect stars to unlock campaigns
+** Implementation of the texture definition should be able to work with only one of them being available (big/small stuff)
 
 * Map
 ** indicator for being almost dead (red screen?)
@@ -33,7 +31,9 @@
 ** finish lava
 ** fix zooming for some maps (e.g. last map of first campaign)
 
+* CaveExpress
+** Jungle theme
+** Liana graphics (we only have one)
+
 * Cavepacker
 ** sound if you hit the best points available
-** upload solutions to google play or twitter or ...
-** save the solutions via the persister and maybe allow to replay them
