@@ -83,6 +83,10 @@ void CavePacker::update (uint32_t deltaTime)
 			info(LOG_SERVER, "solution: " + solution);
 			SDL_SetClipboardText(solution.c_str());
 			const std::string solutionId = "solution" + _map.getName();
+			FilePtr solutionFilePtr = FS.getFile(_map.getName() + ".sol");
+			if (!solutionFilePtr->exists()) {
+				FS.writeFile(solutionFilePtr->getName(), reinterpret_cast<const uint8_t*>(solution.c_str()), solution.size(), true);
+			}
 			System.track(solutionId, solution);
 			if (!_campaignManager->addAdditionMapData(_map.getName(), solution))
 				error(LOG_SERVER, "Could not save the solution for the map");
