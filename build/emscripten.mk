@@ -13,7 +13,7 @@ emscripten-setup:
 		./emsdk install latest && \
 		./emsdk activate latest && \
 		./emsdk_env.sh && \
-		./emsdk_set_env.sh && \
+		sh ./emsdk_set_env.sh && \
 		mkdir sdl-source && cd sdl-source && \
 			git clone https://github.com/Daft-Freak/SDL-emscripten.git && \
 			cd SDL-emscripten && \
