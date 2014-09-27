@@ -3,14 +3,17 @@ EMSCRIPTEN_TARGET_ROOT ?= $(HOME)
 emscripten-setup:
 	@echo "Setup build environment for emscripten (install nodejs on your own)"
 	$(Q)cd $(EMSCRIPTEN_TARGET_ROOT) && \
-		wget https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz && \
-		tar -xzf emsdk-portable.tar.gz && \
-		mv emsdk_portable emsdk && \
+		if [ ! -d emsdk ]; then \
+			wget https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz && \
+			tar -xzf emsdk-portable.tar.gz && \
+			mv emsdk_portable emsdk; \
+		fi && \
 		cd emsdk && \
 		./emsdk update && \
 		./emsdk install latest && \
 		./emsdk activate latest && \
-		source ./emsdk_env.sh && \
+		./emsdk_env.sh && \
+		./emsdk_set_env.sh && \
 		mkdir sdl-source && cd sdl-source && \
 			git clone https://github.com/Daft-Freak/SDL-emscripten.git && \
 			cd SDL-emscripten && \
