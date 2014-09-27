@@ -14,7 +14,6 @@
 
 #if SDL_VIDEO_OPENGL_ES
 #include <SDL_opengles.h>
-#include <SDL_opengles_glext.h>
 #endif
 
 #if SDL_VIDEO_OPENGL_ES2 && !SDL_VIDEO_OPENGL
