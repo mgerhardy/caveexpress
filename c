@@ -7,9 +7,13 @@ APP=${1:-caveexpress}
 ulimit -c unlimited
 rm -f core
 set -e
-make ${APP}
+mkdir -p build
+cd build
+cmake ..
+make
+cd ..
 set +e
-./${APP} -set fullscreen false -set width 800 -set height 600 -set debug true -set grabmouse false $*
+./build/${APP} -set grabmouse false $*
 if [ -e core ]; then
-	gdb ./${APP} ./core
+	gdb ./build/${APP} ./core
 fi

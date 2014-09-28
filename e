@@ -5,8 +5,12 @@ set -x
 
 ulimit -c unlimited
 rm -f core
-make caveexpress
-./caveexpress -ui_push editor $*
+mkdir -p build
+cd build
+cmake ..
+make
+cd ..
+./build/caveexpress -ui_push editor -set grabmouse false $*
 if [ -e core ]; then
-	gdb ./caveexpress ./core
+	gdb ./build/caveexpress ./core
 fi
