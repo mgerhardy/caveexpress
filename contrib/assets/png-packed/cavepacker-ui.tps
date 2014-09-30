@@ -204,7 +204,7 @@
             <filename>../png/ui/icon-star-enabled.png</filename>
             <filename>../png/ui/ui-button-start.png</filename>
             <filename>../png/ui/icon-close.png</filename>
-            <filename>../png/tutorial-campaign.png</filename>
+            <filename>../png/icon-campaign.png</filename>
             <filename>../png/xsokoban-campaign.png</filename>
         </array>
         <key>ignoreFileList</key>
