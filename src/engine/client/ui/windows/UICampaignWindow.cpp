@@ -9,7 +9,7 @@
 #include "engine/client/ui/nodes/UINodeBackground.h"
 #include "engine/client/ui/windows/main/ContinuePlayNodeListener.h"
 
-UICampaignWindow::UICampaignWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager) :
+UICampaignWindow::UICampaignWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int cols, int rows) :
 		UIWindow(UI_WINDOW_CAMPAIGN, frontend), _campaignManager(campaignManager)
 {
 	UINodeBackground *background = new UINodeBackground(frontend, tr("Campaigns"));
@@ -19,8 +19,6 @@ UICampaignWindow::UICampaignWindow (IFrontend *frontend, ServiceProvider& servic
 
 	_buttonLeft = new UINodeButtonImage(frontend, "icon-scroll-page-left");
 
-	int cols = 6;
-	int rows = 4;
 	_campaign = new UINodeCampaignSelector(frontend, _campaignManager, cols, rows);
 	add(_campaign);
 
