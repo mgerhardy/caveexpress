@@ -27,25 +27,26 @@
 #include "engine/common/network/INetwork.h"
 #include "engine/common/network/messages/LoadMapMessage.h"
 #include "engine/common/network/messages/FinishedMapMessage.h"
+#include "engine/client/ui/windows/UICampaignWindow.h"
 #include "engine/client/ui/windows/UICampaignMapWindow.h"
 #include "cavepacker/client/ui/windows/UICavePackerMapOptionsWindow.h"
 #include "engine/client/ui/windows/UIPaymentWindow.h"
 #include "engine/client/ui/windows/UISettingsWindow.h"
 #include "engine/client/ui/windows/UIMapFinishedWindow.h"
 #include "engine/client/ui/windows/UIGestureWindow.h"
-#include "engine/common/campaign/persister/SQLitePersister.h"
+#include "cavepacker/shared/CavePackerSQLitePersister.h"
 #include <SDL.h>
 
 CavePacker::CavePacker ():
 	_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
 {
-	delete _persister;
-	delete _campaignManager;
-	delete _clientMap;
 }
 
 CavePacker::~CavePacker ()
 {
+	delete _persister;
+	delete _campaignManager;
+	delete _clientMap;
 }
 
 IMapManager* CavePacker::getMapManager ()
@@ -176,10 +177,11 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	{
 		ExecutionTime e("loading persister");
 		const ConfigVarPtr& persister = Config.get().getConfigVar("persister", "sqlite", true, CV_READONLY);
-		if (persister->getValue() == "nop")
+		if (persister->getValue() == "nop") {
 			_persister = new NOPPersister();
-		else
-			_persister = new SQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
+		} else {
+			_persister = new CavePackerSQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
+		}
 	}
 	{
 		ExecutionTime e("campaign manager");
@@ -222,6 +224,7 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	UISettingsWindow* settings = new UISettingsWindow(frontend, serviceProvider);
 	settings->init();
 	ui.addWindow(settings);
+	ui.addWindow(new UICampaignWindow(frontend, serviceProvider, *_campaignManager));
 	ui.addWindow(new UIGestureWindow(frontend));
 	ui.addWindow(new UIMapFinishedWindow(frontend, *_campaignManager, serviceProvider, SoundType::NONE));
 	ui.addWindow(new IntroGame(frontend));

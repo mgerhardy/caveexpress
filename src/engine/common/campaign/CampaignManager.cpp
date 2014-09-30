@@ -405,7 +405,7 @@ bool CampaignManager::firstMap () const
 		error(LOG_CAMPAIGN, "could not find any active campaign");
 		return false;
 	}
-	return c->firstMap();
+	return c->getId() == "tutorial" && c->firstMap();
 }
 
 void CampaignManager::startMap (const std::string& map)

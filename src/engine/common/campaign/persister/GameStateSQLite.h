@@ -6,6 +6,10 @@
 // forward decl
 class Campaign;
 
+#define TABLE_GAMESTATE "gamestate"
+#define TABLE_GAMEMAPS "maps"
+#define TABLE_LIVES "lives"
+
 class GameStateSQLite: public SQLite {
 private:
 	bool deleteMaps (Campaign* campaign);

@@ -8,10 +8,6 @@
 #include "engine/common/ExecutionTime.h"
 #include <sstream>
 
-#define TABLE_GAMESTATE "gamestate"
-#define TABLE_GAMEMAPS "maps"
-#define TABLE_LIVES "lives"
-
 GameStateSQLite::GameStateSQLite (const std::string& filename) :
 		SQLite(filename)
 {
