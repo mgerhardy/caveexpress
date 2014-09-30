@@ -1,13 +1,13 @@
 Source: caveexpress
 Section: games
 Priority: optional
-Maintainer: Martin Gerhardy <martin.gerhardy@gmail.com>
-Uploaders: Martin Gerhardy <martin.gerhardy@gmail.com>
+Maintainer: Martin Gerhardy <info@caveproductions.org>
+Uploaders: Martin Gerhardy <info@caveproductions.org>
 Build-Depends:
  debhelper (>= 9),
  pkg-config
 Standards-Version: 3.9.4
-Homepage: http://www.desura.com/games/caveexpress
+Homepage: http://www.caveproductions.org
 
 Package: caveexpress
 Architecture: any
