@@ -30,6 +30,7 @@
 #include "engine/common/Commands.h"
 #include "cavepacker/server/map/SokobanMapContext.h"
 #include "cavepacker/shared/CavePackerSpriteType.h"
+#include "cavepacker/shared/EntityStates.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
 #include <SDL.h>
 #include <algorithm>
@@ -284,6 +285,11 @@ bool Map::movePlayer (Player* player, char step)
 		debug(LOG_SERVER, "moved package");
 		increasePushes();
 		rebuildField();
+		if (isTarget(pCol, pRow)) {
+			package->setState(CavePackerEntityStates::DELIVERED);
+		} else {
+			package->setState(CavePackerEntityStates::NONE);
+		}
 		// sokoban standard - if a package was moved, the move char is uppercase
 		step = toupper(step);
 	}
@@ -690,7 +696,7 @@ void Map::addEntity (int clientMask, const IEntity& entity) const
 void Map::updateEntity (int clientMask, const IEntity& entity) const
 {
 	const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(entity.getAngle()));
-	const UpdateEntityMessage msg(entity.getID(), entity.getCol(), entity.getRow(), angle, 0);
+	const UpdateEntityMessage msg(entity.getID(), entity.getCol(), entity.getRow(), angle, entity.getState());
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 

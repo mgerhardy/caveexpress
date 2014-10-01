@@ -11,4 +11,5 @@ public:
 	int getWaterGround() const override { return 0; }
 
 	void start () override;
+	virtual void update (uint32_t deltaTime) override;
 };

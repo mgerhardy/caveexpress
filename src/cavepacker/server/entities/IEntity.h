@@ -47,6 +47,7 @@ protected:
 	int _col;
 	int _row;
 	float _angle;
+	uint8_t _state;
 
 public:
 	IEntity (const EntityType &type, Map& map, int col, int row);
@@ -63,6 +64,9 @@ public:
 
 	// returns the angle of the entity in radians
 	virtual float getAngle () const;
+
+	inline uint8_t getState () const { return _state; }
+	inline uint8_t setState (uint8_t state) { const uint8_t currentState = _state; _state = state; return currentState; }
 
 	// angle in radians
 	inline void setAngle (float angle)

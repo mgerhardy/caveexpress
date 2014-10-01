@@ -149,7 +149,7 @@ public:
 	TexturePtr loadTexture (const std::string& name) const override;
 
 	// IMap
-	void update (uint32_t deltaTime) override;
+	virtual void update (uint32_t deltaTime) override;
 	bool isActive () const override;
 	void restart (uint32_t delay) override;
 	int getMapWidth () const override;

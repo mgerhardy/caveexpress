@@ -2,11 +2,12 @@
 #include "cavepacker/server/map/Map.h"
 #include "engine/common/SpriteDefinition.h"
 #include "engine/common/ConfigManager.h"
+#include "cavepacker/shared/EntityStates.h"
 
 uint32_t IEntity::GLOBAL_ENTITY_NUM = 0;
 
 IEntity::IEntity (const EntityType &type, Map& map, int col, int row) :
-		_id(GLOBAL_ENTITY_NUM++), _type(type), _time(0), _map(map), _col(col), _row(row), _angle(0.0f)
+		_id(GLOBAL_ENTITY_NUM++), _type(type), _time(0), _map(map), _col(col), _row(row), _angle(0.0f), _state(CavePackerEntityStates::NONE)
 {
 	setSpriteID("");
 }
