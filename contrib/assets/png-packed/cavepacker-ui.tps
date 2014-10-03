@@ -206,6 +206,7 @@
             <filename>../png/ui/icon-close.png</filename>
             <filename>../png/icon-campaign.png</filename>
             <filename>../png/xsokoban-campaign.png</filename>
+            <filename>../png/ksokoban-campaign.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
