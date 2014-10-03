@@ -66,7 +66,7 @@ public:
 	virtual float getAngle () const;
 
 	inline uint8_t getState () const { return _state; }
-	inline uint8_t setState (uint8_t state) { const uint8_t currentState = _state; _state = state; return currentState; }
+	uint8_t setState (uint8_t state);
 
 	// angle in radians
 	inline void setAngle (float angle)

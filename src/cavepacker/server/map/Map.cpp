@@ -282,12 +282,14 @@ bool Map::movePlayer (Player* player, char step)
 			debug(LOG_SERVER, "failed to move the package - thus can't move the player");
 			return false;
 		}
-		debug(LOG_SERVER, "moved package");
+		debug(LOG_SERVER, String::format("moved package %i", package->getID()));
 		increasePushes();
 		rebuildField();
 		if (isTarget(pCol, pRow)) {
 			package->setState(CavePackerEntityStates::DELIVERED);
-		} else {
+			debug(LOG_SERVER, String::format("mark package as delivered %i", package->getID()));
+		} else if (package->getState() == CavePackerEntityStates::DELIVERED) {
+			debug(LOG_SERVER, String::format("reset package state %i", package->getID()));
 			package->setState(CavePackerEntityStates::NONE);
 		}
 		// sokoban standard - if a package was moved, the move char is uppercase

@@ -53,6 +53,14 @@ bool IEntity::setPos (int col, int row)
 	return true;
 }
 
+uint8_t IEntity::setState (uint8_t state)
+{
+	const uint8_t currentState = _state;
+	_state = state;
+	_map.updateEntity(0, *this);
+	return currentState;
+}
+
 void IEntity::update (uint32_t deltaTime)
 {
 	_time += deltaTime;
