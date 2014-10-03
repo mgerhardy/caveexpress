@@ -2,6 +2,7 @@
 #include "cavepacker/server/map/Map.h"
 #include "cavepacker/server/entities/Player.h"
 #include "tests/NetworkTestListener.h"
+#include "data.h"
 
 class SokobanMapTest: public MapSuite {
 protected:
@@ -226,4 +227,30 @@ TEST_F(SokobanMapTest, testMaps80)
 TEST_F(SokobanMapTest, testMaps90)
 {
 	testMapRegion(81);
+}
+
+#include <fstream>
+#include <iostream>
+
+TEST_F(SokobanMapTest, convert)
+{
+	const int l= SDL_arraysize(level_data_);
+	int map = 0;
+	std::string m;
+	for (int i = 0; i < l; ++i) {
+		if (level_data_[i] == '\0') {
+			++i;
+			const std::string f = String::format("ksokoban%04i", map++);
+			std::ofstream out(f);
+			out << m;
+			out.close();
+			m = "";
+			continue;
+		}
+		m.push_back(level_data_[i]);
+	}
+	const std::string f = String::format("ksokoban%04i", map++);
+	std::ofstream out(f);
+	out << m;
+	out.close();
 }
