@@ -139,6 +139,15 @@ TEST_F(SokobanMapTest, testKSokobanMaps)
 	testMapRegion(0, "ksokoban", 354);
 }
 
+TEST_F(SokobanMapTest, testGri)
+{
+	testMapRegion(1, "gri", 140);
+	testMapRegion(1, "grigrcomet", 30);
+	testMapRegion(0, "grigrspecial", 40);
+	testMapRegion(0, "grigrstar", 30);
+	testMapRegion(0, "grigrstar", 10);
+}
+
 #include <fstream>
 #include <iostream>
 
