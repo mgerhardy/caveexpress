@@ -282,12 +282,12 @@ check_compiler() {
 	CXX=${CXX:-${DEFAULT_COMPILER_CXX}}
 
 	if [ "${TARGET_OS}" = "mingw32" ] && [ "${HOST_OS}" != "mingw32" ]; then
-		CROSS="i686-pc-mingw32-"
+		CROSS="i686-pc-mingw32.static-"
 		CC=gcc
 	fi
 
 	if [ "${TARGET_OS}" = "mingw64" ] && [ "${HOST_OS}" != "mingw64" ]; then
-		CROSS="i686-w64-mingw32-"
+		CROSS="i686-w64-mingw32.static-"
 		CC=gcc
 	fi
 
