@@ -47,7 +47,7 @@ protected:
 		_serviceProvider.getNetwork().update(1);
 	}
 
-	void testMapRegion (int begin, const std::string& prefix = "xsokoban")
+	void testMapRegion (int begin, const std::string& prefix)
 	{
 		NetworkTestListener listener;
 		NetworkTestServerListener serverListener;
@@ -89,49 +89,49 @@ TEST_F(SokobanMapTest, testTutorials)
 	_serviceProvider.getNetwork().closeServer();
 }
 
-TEST_F(SokobanMapTest, testMaps10)
+TEST_F(SokobanMapTest, testXSokobanMaps10)
 {
-	testMapRegion(1);
+	testMapRegion(1, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testMaps20)
+TEST_F(SokobanMapTest, testXSokobanMaps20)
 {
-	testMapRegion(11);
+	testMapRegion(11, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testMaps30)
+TEST_F(SokobanMapTest, testXSokobanMaps30)
 {
-	testMapRegion(21);
+	testMapRegion(21, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testMaps40)
+TEST_F(SokobanMapTest, testXSokobanMaps40)
 {
-	testMapRegion(31);
+	testMapRegion(31, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testMaps50)
+TEST_F(SokobanMapTest, testXSokobanMaps50)
 {
-	testMapRegion(41);
+	testMapRegion(41, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testMaps60)
+TEST_F(SokobanMapTest, testXSokobanMaps60)
 {
-	testMapRegion(51);
+	testMapRegion(51, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testMaps70)
+TEST_F(SokobanMapTest, testXSokobanMaps70)
 {
-	testMapRegion(61);
+	testMapRegion(61, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testMaps80)
+TEST_F(SokobanMapTest, testXSokobanMaps80)
 {
-	testMapRegion(71);
+	testMapRegion(71, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testMaps90)
+TEST_F(SokobanMapTest, testXSokobanMaps90)
 {
-	testMapRegion(81);
+	testMapRegion(81, "xsokoban");
 }
 
 #include <fstream>
