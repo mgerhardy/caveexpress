@@ -207,6 +207,7 @@
             <filename>../png/icon-campaign.png</filename>
             <filename>../png/xsokoban-campaign.png</filename>
             <filename>../png/ksokoban-campaign.png</filename>
+            <filename>../png/gri-campaign.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
