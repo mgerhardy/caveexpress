@@ -232,7 +232,7 @@ TEST_F(SokobanMapTest, testMaps90)
 #include <fstream>
 #include <iostream>
 
-TEST_F(SokobanMapTest, convert)
+TEST_F(SokobanMapTest, DISABLED_convert)
 {
 	const int l= SDL_arraysize(level_data_);
 	int map = 0;
