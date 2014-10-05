@@ -114,7 +114,11 @@ void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
 	IUIMapWindow::initWaitingForPlayers(adminOptions);
 	ClientMap& map = _nodeMap->getMap();
 	const std::string& name = map.getName();
-	const int ownBest = _campaignManager.getActiveCampaign()->getMapById(name)->getFinishPoints();
+	const CampaignPtr& c = _campaignManager.getActiveCampaign();
+	const CampaignMap* campaignMap = c->getMapById(name);
+	if (campaignMap == nullptr)
+		System.exit("Could not find the map " + name + " in campaign " + c->getId(), 1);
+	const int ownBest = campaignMap->getFinishPoints();
 	const std::string best = map.getSetting("best", "0" /* string::toString(ownBest) */);
 	info(LOG_CLIENT, "got best points from server: " + best);
 	_points->setOwnAndGlobalBest(ownBest, string::toInt(best));
