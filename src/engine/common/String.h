@@ -316,4 +316,24 @@ inline bool contains (const std::string& str, const std::string& search)
 {
 	return str.rfind(search) != std::string::npos;
 }
+
+inline std::string ltrim(const std::string &str) {
+	size_t startpos = str.find_first_not_of(" \t");
+	if (std::string::npos != startpos) {
+		return str.substr(startpos);
+	}
+	return str;
+}
+
+inline std::string rtrim(const std::string &str) {
+	size_t endpos = str.find_last_not_of(" \t");
+	if (std::string::npos != endpos) {
+		return str.substr(0, endpos + 1);
+	}
+	return str;
+}
+
+inline std::string trim(const std::string &str) {
+	return ltrim(rtrim(str));
+}
 }
