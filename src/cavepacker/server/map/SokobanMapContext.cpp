@@ -53,11 +53,30 @@ bool SokobanMapContext::load(bool skipErrors) {
 	int maxCol = 0;
 	bool empty = true;
 	bool inComment = false;
+	bool inText = false;
+	std::string line;
 	for (int i = 0; i < fileLen; ++i) {
+		if (inText) {
+			inText = buffer[i] != '\n';
+			if (inText) {
+				line.push_back(buffer[i]);
+			} else {
+				if (string::startsWith(string::toLower(line), "title:")) {
+					std::vector<std::string> tokens;
+					string::splitString(string::trim(line), tokens, ":");
+					if (tokens.size() == 2) {
+						_title = tokens[1];
+					}
+				}
+				line = "";
+			}
+			continue;
+		}
 		if (inComment) {
-			inComment = buffer[i] == '\n';
+			inComment = buffer[i] != '\n';
 			if (inComment)
-				continue;
+				line.push_back(buffer[i]);
+			continue;
 		}
 		switch (buffer[i]) {
 		case Sokoban::WALL:
@@ -95,8 +114,11 @@ bool SokobanMapContext::load(bool skipErrors) {
 		case '\r':
 			continue;
 		case ';':
-		default:
 			inComment = true;
+			continue;
+		default:
+			inText = true;
+			line.push_back(buffer[i]);
 			continue;
 		}
 		++col;
