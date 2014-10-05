@@ -47,14 +47,14 @@ protected:
 		_serviceProvider.getNetwork().update(1);
 	}
 
-	void testMapRegion (int begin, const std::string& prefix)
+	void testMapRegion (int begin, const std::string& prefix, int amount = 10)
 	{
 		NetworkTestListener listener;
 		NetworkTestServerListener serverListener;
 		ASSERT_TRUE(_serviceProvider.getNetwork().openServer(12345, &serverListener)) << "Failed to open the server";
 		ASSERT_TRUE(_serviceProvider.getNetwork().openClient("localhost", 12345, &listener)) << "Failed to open the client";
 
-		for (int i = begin; i < begin + 10; ++i) {
+		for (int i = begin; i < begin + amount; ++i) {
 			std::string mapName = prefix + String::format("%04i", i);
 			testMap(mapName);
 		}
@@ -132,6 +132,11 @@ TEST_F(SokobanMapTest, testXSokobanMaps80)
 TEST_F(SokobanMapTest, testXSokobanMaps90)
 {
 	testMapRegion(81, "xsokoban");
+}
+
+TEST_F(SokobanMapTest, testKSokobanMaps)
+{
+	testMapRegion(0, "ksokoban", 354);
 }
 
 #include <fstream>
