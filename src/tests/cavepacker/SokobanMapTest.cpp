@@ -89,57 +89,57 @@ TEST_F(SokobanMapTest, testTutorials)
 	_serviceProvider.getNetwork().closeServer();
 }
 
-TEST_F(SokobanMapTest, testXSokobanMaps10)
+TEST_F(SokobanMapTest, DISABLED_testXSokobanMaps10)
 {
 	testMapRegion(1, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testXSokobanMaps20)
+TEST_F(SokobanMapTest, DISABLED_testXSokobanMaps20)
 {
 	testMapRegion(11, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testXSokobanMaps30)
+TEST_F(SokobanMapTest, DISABLED_testXSokobanMaps30)
 {
 	testMapRegion(21, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testXSokobanMaps40)
+TEST_F(SokobanMapTest, DISABLED_testXSokobanMaps40)
 {
 	testMapRegion(31, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testXSokobanMaps50)
+TEST_F(SokobanMapTest, DISABLED_testXSokobanMaps50)
 {
 	testMapRegion(41, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testXSokobanMaps60)
+TEST_F(SokobanMapTest, DISABLED_testXSokobanMaps60)
 {
 	testMapRegion(51, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testXSokobanMaps70)
+TEST_F(SokobanMapTest, DISABLED_testXSokobanMaps70)
 {
 	testMapRegion(61, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testXSokobanMaps80)
+TEST_F(SokobanMapTest, DISABLED_testXSokobanMaps80)
 {
 	testMapRegion(71, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testXSokobanMaps90)
+TEST_F(SokobanMapTest, DISABLED_testXSokobanMaps90)
 {
 	testMapRegion(81, "xsokoban");
 }
 
-TEST_F(SokobanMapTest, testKSokobanMaps)
+TEST_F(SokobanMapTest, DISABLED_testKSokobanMaps)
 {
 	testMapRegion(0, "ksokoban", 354);
 }
 
-TEST_F(SokobanMapTest, testGri)
+TEST_F(SokobanMapTest, DISABLED_testGri)
 {
 	testMapRegion(1, "gri", 140);
 	testMapRegion(1, "grigrcomet", 30);
