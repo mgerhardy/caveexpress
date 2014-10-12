@@ -24,12 +24,19 @@ public:
 
 	virtual ~ProtocolHandlerRegistry ()
 	{
+		shutdown();
+	}
+
+	void shutdown()
+	{
 		for (ClientProtocolHandlers::iterator i = _clientRegistry.begin(); i != _clientRegistry.end(); ++i) {
 			delete i->second;
 		}
+		_clientRegistry.clear();
 		for (ServerProtocolHandlers::iterator i = _serverRegistry.begin(); i != _serverRegistry.end(); ++i) {
 			delete i->second;
 		}
+		_serverRegistry.clear();
 	}
 
 	void registerClientHandler (protocolId type, IClientProtocolHandler* handler)

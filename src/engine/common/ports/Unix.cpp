@@ -196,17 +196,13 @@ void Unix::exit (const std::string& reason, int errorCode)
 	if (errorCode != 0) {
 		logError(reason);
 		backtrace(reason.c_str());
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", reason.c_str(), nullptr);
-#endif
 	} else {
 		logOutput(reason);
 	}
 
 #ifdef DEBUG
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_TriggerBreakpoint();
-#endif
 #endif
 	::exit(errorCode);
 }

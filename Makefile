@@ -253,7 +253,7 @@ filelist: $(SRCDIR)/dir.h
 
 $(SRCDIR)/dir.h:
 	@echo "==> Create filelist for base directories"
-	$(Q)contrib/scripts/filelist.sh "$@" "$(BAESDIR)" $(BASEDIRS)
+	$(Q)contrib/scripts/filelist.sh "$@" "$(BASEDIR)" $(BASEDIRS)
 
 lang:
 	$(Q)for i in en_GB de; do contrib/scripts/lang.sh "$$i" "$(APPNAME)"; done

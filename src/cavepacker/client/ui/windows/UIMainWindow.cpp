@@ -24,7 +24,7 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	panel->setPadding(padding);
 
 	UINodeMainButton *campaign = new UINodeMainButton(_frontend, tr("Start"));
-	campaign->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_CAMPAIGN_MAPS)));
+	campaign->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_CAMPAIGN)));
 	panel->add(campaign);
 
 	UINodeMainButton *settings = new UINodeMainButton(_frontend, tr("Settings"));

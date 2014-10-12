@@ -28,8 +28,9 @@
 #include "engine/common/vec2.h"
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/Commands.h"
-#include "cavepacker/server/map/SokubanMapContext.h"
+#include "cavepacker/server/map/SokobanMapContext.h"
 #include "cavepacker/shared/CavePackerSpriteType.h"
+#include "cavepacker/shared/EntityStates.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
 #include <SDL.h>
 #include <algorithm>
@@ -89,7 +90,7 @@ std::string Map::getSolution() const
 	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		error(LOG_SERVER, "solution file " + filePtr->getURI().print() + " can't get loaded");
+		error(LOG_SERVER, "solution file " + filePtr->getName() + " can't get loaded");
 		return "";
 	}
 
@@ -99,7 +100,9 @@ std::string Map::getSolution() const
 			continue;
 		std::string digit;
 		digit += *i;
-		for (++i; isdigit(*i) && i != solution.end(); ++i) {
+		for (++i; i != solution.end(); ++i) {
+			if (!isdigit(*i))
+				break;
 			digit += *i;
 		}
 		const int n = string::toInt(digit);
@@ -205,7 +208,7 @@ bool Map::isDone () const
 		return false;
 	for (StateMapConstIter i = _state.begin(); i != _state.end(); ++i) {
 		// if there is an empty target left, we are not yet done
-		if (i->second == Sokuban::TARGET || i->second == Sokuban::PLAYERONTARGET)
+		if (i->second == Sokoban::TARGET || i->second == Sokoban::PLAYERONTARGET)
 			return false;
 	}
 	return true;
@@ -279,9 +282,16 @@ bool Map::movePlayer (Player* player, char step)
 			debug(LOG_SERVER, "failed to move the package - thus can't move the player");
 			return false;
 		}
-		debug(LOG_SERVER, "moved package");
+		debug(LOG_SERVER, String::format("moved package %i", package->getID()));
 		increasePushes();
 		rebuildField();
+		if (isTarget(pCol, pRow)) {
+			package->setState(CavePackerEntityStates::DELIVERED);
+			debug(LOG_SERVER, String::format("mark package as delivered %i", package->getID()));
+		} else if (package->getState() == CavePackerEntityStates::DELIVERED) {
+			debug(LOG_SERVER, String::format("reset package state %i", package->getID()));
+			package->setState(CavePackerEntityStates::NONE);
+		}
 		// sokoban standard - if a package was moved, the move char is uppercase
 		step = toupper(step);
 	}
@@ -378,7 +388,7 @@ void Map::resetCurrentMap ()
 
 inline IMapContext* getMapContext (const std::string& name)
 {
-	return new SokubanMapContext(name);
+	return new SokobanMapContext(name);
 }
 
 inline const EntityType& getEntityTypeForSpriteType (const SpriteType& spriteType)
@@ -535,7 +545,7 @@ bool Map::isFree (int col, int row)
 
 	const char c = i->second;
 	debug(LOG_MAP, String::format("col: %i, row: %i is of type '%c'", col, row, c));
-	return c == Sokuban::GROUND || c == Sokuban::TARGET;
+	return c == Sokoban::GROUND || c == Sokoban::TARGET;
 }
 
 bool Map::isTarget (int col, int row)
@@ -544,7 +554,7 @@ bool Map::isTarget (int col, int row)
 	if (i == _state.end())
 		return false;
 	const char c = i->second;
-	return c == Sokuban::PACKAGEONTARGET || c == Sokuban::PLAYERONTARGET || c == Sokuban::TARGET;
+	return c == Sokoban::PACKAGEONTARGET || c == Sokoban::PLAYERONTARGET || c == Sokoban::TARGET;
 }
 
 bool Map::isPackage (int col, int row)
@@ -553,7 +563,7 @@ bool Map::isPackage (int col, int row)
 	if (i == _state.end())
 		return false;
 	const char c = i->second;
-	return c == Sokuban::PACKAGE || c == Sokuban::PACKAGEONTARGET;
+	return c == Sokoban::PACKAGE || c == Sokoban::PACKAGEONTARGET;
 }
 
 bool Map::initPlayer (Player* player)
@@ -614,21 +624,21 @@ void Map::removeEntity (int clientMask, const IEntity& entity) const
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 
-char Map::getSokubanFieldId (const IEntity *entity) const
+char Map::getSokobanFieldId (const IEntity *entity) const
 {
 	const EntityType& t = entity->getType();
 	if (EntityTypes::isGround(t))
-		return Sokuban::GROUND;
+		return Sokoban::GROUND;
 	if (EntityTypes::isTarget(t))
-		return Sokuban::TARGET;
+		return Sokoban::TARGET;
 	// the order matters
 	if (EntityTypes::isSolid(t))
-		return Sokuban::WALL;
+		return Sokoban::WALL;
 	if (EntityTypes::isPackage(t))
-		return Sokuban::PACKAGE;
+		return Sokoban::PACKAGE;
 	if (EntityTypes::isPlayer(t))
-		return Sokuban::PLAYER;
-	return Sokuban::GROUND;
+		return Sokoban::PLAYER;
+	return Sokoban::GROUND;
 }
 
 bool Map::setField (IEntity *entity, int col, int row)
@@ -644,31 +654,31 @@ bool Map::setField (IEntity *entity, int col, int row)
 	}
 	StateMapConstIter i = _state.find(index);
 	if (i == _state.end()) {
-		_state[index] = getSokubanFieldId(entity);
+		_state[index] = getSokobanFieldId(entity);
 		return true;
 	}
 	const char c = i->second;
-	char nc = getSokubanFieldId(entity);
-	if (c == Sokuban::PLAYER) {
-		if (nc == Sokuban::TARGET)
-			nc = Sokuban::PLAYERONTARGET;
-		else if (nc == Sokuban::GROUND)
+	char nc = getSokobanFieldId(entity);
+	if (c == Sokoban::PLAYER) {
+		if (nc == Sokoban::TARGET)
+			nc = Sokoban::PLAYERONTARGET;
+		else if (nc == Sokoban::GROUND)
 			nc = c;
 		else
 			return false;
-	} else if (c == Sokuban::PACKAGE) {
-		if (nc == Sokuban::TARGET)
-			nc = Sokuban::PACKAGEONTARGET;
-		else if (nc == Sokuban::GROUND)
+	} else if (c == Sokoban::PACKAGE) {
+		if (nc == Sokoban::TARGET)
+			nc = Sokoban::PACKAGEONTARGET;
+		else if (nc == Sokoban::GROUND)
 			nc = c;
 		else
 			return false;
-	} else if (c == Sokuban::TARGET) {
-		if (nc == Sokuban::PACKAGE)
-			nc = Sokuban::PACKAGEONTARGET;
-		else if (nc == Sokuban::PLAYER)
-			nc = Sokuban::PLAYERONTARGET;
-		else if (nc == Sokuban::GROUND)
+	} else if (c == Sokoban::TARGET) {
+		if (nc == Sokoban::PACKAGE)
+			nc = Sokoban::PACKAGEONTARGET;
+		else if (nc == Sokoban::PLAYER)
+			nc = Sokoban::PLAYERONTARGET;
+		else if (nc == Sokoban::GROUND)
 			nc = c;
 		else
 			return false;
@@ -688,7 +698,7 @@ void Map::addEntity (int clientMask, const IEntity& entity) const
 void Map::updateEntity (int clientMask, const IEntity& entity) const
 {
 	const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(entity.getAngle()));
-	const UpdateEntityMessage msg(entity.getID(), entity.getCol(), entity.getRow(), angle, 0);
+	const UpdateEntityMessage msg(entity.getID(), entity.getCol(), entity.getRow(), angle, entity.getState());
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 

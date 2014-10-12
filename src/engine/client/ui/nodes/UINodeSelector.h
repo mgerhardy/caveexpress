@@ -105,8 +105,8 @@ public:
 			return;
 		const int rw = getRenderWidth(false);
 		const int rh = getRenderHeight(false);
-		const int cols = rw / refPicForSelector->getWidth();
-		const int rows = rh / refPicForSelector->getHeight();
+		const int cols = std::max(1, rw / refPicForSelector->getWidth());
+		const int rows = std::max(1, rh / refPicForSelector->getHeight());
 		setLayoutData(cols, rows, refPicForSelector->getWidth() / static_cast<float>(_frontend->getWidth()),
 				refPicForSelector->getHeight() / static_cast<float>(_frontend->getHeight()));
 	}
@@ -414,6 +414,25 @@ public:
 		const int yEntry = (relY + rowHeight) / rowHeight;
 
 		_selectedIndex = (yEntry - 1) * _cols + xEntry + _offset;
+	}
+
+	/**
+	 * @brief Select the given entry
+	 *
+	 * @param[in] index The index (starting at 0) of the item in the selector that should get activated
+	 */
+	void selectEntry (int index)
+	{
+		const int amountPerPage = _rows * _cols;
+		if (index <= 0) {
+			_offset = 0;
+			_selectedIndex = 0;
+		} else if (index < _entries.size()) {
+			const int neededPage = (index + 1) / amountPerPage;
+			_offset = neededPage * amountPerPage;
+			debug(LOG_CLIENT, String::format("Scroll to page %i (index was: %i, amountPerPage is: %i)", neededPage, index, amountPerPage));
+			_selectedIndex = index;
+		}
 	}
 
 	void offset (bool increase = true, int value = -1)

@@ -99,7 +99,6 @@ int BotBackend::init (int argc, char **argv)
 	srand(SDL_GetTicks());
 
 	const int frontendInit = _frontend.init(0, 0, true, _eventHandler);
-	FS.get().init("file", "");
 	Config.get().init(nullptr, argc, argv);
 
 	_serviceProvider.init(&_frontend);

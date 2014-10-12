@@ -16,11 +16,7 @@ void Thread::start ()
 {
 	if (!_running) {
 		_running = true;
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 		_thread = SDL_CreateThread(executeThread, _name, _runnable);
-#else
-		_thread = SDL_CreateThread(executeThread, _runnable);
-#endif
 		if (_thread == nullptr) {
 			error(LOG_THREAD, String::format("failed to create thread: %s", SDL_GetError()));
 			_running = false;

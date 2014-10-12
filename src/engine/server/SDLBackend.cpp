@@ -45,9 +45,7 @@ static void runFrameEmscripten() {
 SDLBackend::SDLBackend () :
 		_dedicated(false), _running(true), _frontend(nullptr)
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_SetEventFilter(handleAppEvents, this);
-#endif
 
 	Commands.registerCommand(CMD_SCREENSHOT, bind(SDLBackend, screenShot));
 	Commands.registerCommand(CMD_MAP_START, bind(SDLBackend, loadMap))->setCompleter(loadMapCompleter);
@@ -86,12 +84,6 @@ int SDLBackend::init (int argc, char **argv)
 
 	srand(time(nullptr));
 
-#ifdef EMSCRIPTEN
-	FS.get().init("http", "127.0.0.1/");
-#else
-	FS.get().init("file", "");
-#endif
-
 	Config.get().init(this, argc, argv);
 	Commands.registerCommand(CMD_QUIT, new CmdQuit());
 
@@ -117,12 +109,10 @@ int SDLBackend::init (int argc, char **argv)
 		}
 	}
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 #ifdef DEBUG
 	SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
 #else
 	//SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
-#endif
 #endif
 
 	const int frontendInit = _frontend->init(Config.getWidth(), Config.getHeight(), Config.isFullscreen(), _eventHandler);

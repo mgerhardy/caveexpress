@@ -124,11 +124,7 @@ public:
 
 	virtual bool hasTouch () const
 	{
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 		return SDL_GetNumTouchDevices() > 0;
-#else
-		return false;
-#endif
 	}
 
 	/**

@@ -14,9 +14,12 @@ const char *LOCALHOST = "localhost";
 const int PORT = 4567;
 }
 
+class NoNetworkTest: public MapSuite {
+};
 
-TEST(NoNetworkTest, testSendToClient)
+TEST_F(NoNetworkTest, testSendToClient)
 {
+	ProtocolHandlerRegistry::get().shutdown();
 	NetworkTestServerListener serverListener;
 	NetworkTestListener listener;
 	NoNetwork network;
