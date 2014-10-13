@@ -8,8 +8,8 @@
 #include "engine/client/ui/windows/listener/QuitListener.h"
 #include "engine/client/ui/layouts/UIVBoxLayout.h"
 #include "engine/common/ConfigManager.h"
-#include "engine/common/Version.h"
 #include "engine/common/System.h"
+#include "engine/common/Application.h"
 #include "engine/client/ui/windows/listener/OpenWindowListener.h"
 
 UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
@@ -65,7 +65,7 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 
 #if 0
 	UINodeMainButton *facebook = new UINodeMainButton(_frontend, tr("Facebook"));
-	facebook->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "https://facebook.com/" APPNAME)));
+	facebook->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "https://facebook.com/" + Singleton<Application>::getInstance().getName())));
 	panel->add(facebook);
 #else
 	UINodeMainButton *homepage = new UINodeMainButton(_frontend, tr("Homepage"));
@@ -83,7 +83,7 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 
 	add(panel);
 
-	UINodeLabel *versionLabel = new UINodeLabel(_frontend, VERSION);
+	UINodeLabel *versionLabel = new UINodeLabel(_frontend, Singleton<Application>::getInstance().getVersion());
 	versionLabel->setAlignment(NODE_ALIGN_BOTTOM|NODE_ALIGN_RIGHT);
 	versionLabel->setColor(colorWhite);
 	versionLabel->setPadding(getScreenPadding());

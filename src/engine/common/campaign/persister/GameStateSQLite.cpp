@@ -4,7 +4,7 @@
 #include "engine/common/System.h"
 #include "engine/common/SQLite.h"
 #include "engine/common/Logger.h"
-#include "engine/common/Version.h"
+#include "engine/common/Application.h"
 #include "engine/common/ExecutionTime.h"
 #include <sstream>
 
@@ -74,7 +74,7 @@ bool GameStateSQLite::activateCampaign (const std::string& id)
 	if (!stmt)
 		return false;
 	stmt.bindText(1, id);
-	stmt.bindText(2, FULLVERSION);
+	stmt.bindText(2, Singleton<Application>::getInstance().getVersion());
 	stmt.step();
 	return true;
 }
@@ -93,7 +93,7 @@ bool GameStateSQLite::updateCampaign (Campaign* campaign)
 		return false;
 
 	stmt.bindText(1, campaign->getId());
-	stmt.bindText(7, FULLVERSION);
+	stmt.bindText(7, Singleton<Application>::getInstance().getName());
 	const Campaign::MapList& maps = campaign->getMaps();
 	for (Campaign::MapListConstIter i = maps.begin(); i != maps.end(); ++i) {
 		const CampaignMapPtr& map = *i;
@@ -175,7 +175,7 @@ bool GameStateSQLite::saveLives (uint8_t lives, const std::string& campaignId)
 
 	stmt.bindText(1, campaignId);
 	stmt.bindInt(2, lives);
-	stmt.bindText(3, FULLVERSION);
+	stmt.bindText(3, Singleton<Application>::getInstance().getVersion());
 	stmt.step();
 	info(LOG_CAMPAIGN, "update lives in database " + string::toString(static_cast<int>(lives)));
 	return true;

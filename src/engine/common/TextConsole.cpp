@@ -1,7 +1,7 @@
 #include "TextConsole.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/System.h"
-#include "engine/common/Version.h"
+#include "engine/common/Application.h"
 #include <SDL.h>
 #include <algorithm>
 #include <iostream>
@@ -157,7 +157,7 @@ void TextConsole::render ()
 
 	// Draw the header
 	setColor(COLOR_GREEN);
-	mvaddstr(0, 2, APPFULLNAME);
+	mvaddstr(0, 2, Singleton<Application>::getInstance().getName().c_str());
 
 	const int lines = LINES - 2;
 	const int lastLine = _entries.size();

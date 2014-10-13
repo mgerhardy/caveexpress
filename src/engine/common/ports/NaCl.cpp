@@ -1,5 +1,4 @@
 #include "NaCl.h"
-#include "engine/common/Version.h"
 #include <SDL.h>
 #include "engine/common/Config.h"
 #include "engine/common/ConfigManager.h"

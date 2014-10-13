@@ -2,7 +2,6 @@
 #include "engine/client/ui/UI.h"
 #include "engine/client/ClientConsole.h"
 #include "engine/client/shaders/ShaderManager.h"
-#include "engine/common/Version.h"
 #include "engine/common/String.h"
 #include "engine/common/EventHandler.h"
 #include "engine/common/CommandSystem.h"
@@ -14,6 +13,7 @@
 #include "engine/common/Singleton.h"
 #include "engine/GameRegistry.h"
 #include "engine/common/Commands.h"
+#include "engine/common/Application.h"
 #include <SDL_image.h>
 #include <SDL_platform.h>
 #include <limits.h>
@@ -98,7 +98,7 @@ void SDLFrontend::update (uint32_t deltaTime)
 	if (((_time - _timeBase) > 500 || _numFrames == 0) && Config.showFPS()) {
 		setVSync(ConfigManager::get().isVSync());
 		const double fps = _numFrames * 1000.0f / (_time - _timeBase);
-		setWindowTitle(APPFULLNAME " (" + string::toString((int) fps) + ")");
+		setWindowTitle(Singleton<Application>::getInstance().getName() + " (" + string::toString((int) fps) + ")");
 		_timeBase = _time;
 		_numFrames = 0;
 	}
@@ -558,7 +558,7 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 		info(LOG_CLIENT, String::format("use fake fullscreen for the first display: %i:%i", width, height));
 	}
 
-	_window = SDL_CreateWindow(APPFULLNAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
+	_window = SDL_CreateWindow(Singleton<Application>::getInstance().getName().c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
 	if (!_window) {
 		sdlCheckError();
 		return -1;
