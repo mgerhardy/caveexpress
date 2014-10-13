@@ -1,5 +1,4 @@
-project(libs)
-FILE(GLOB ${PROJECT_NAME}_SRCS
+FILE(GLOB libs_SRCS
 	lua/lapi.cpp
 	lua/lauxlib.cpp
 	lua/lbaselib.cpp
@@ -178,7 +177,7 @@ FILE(GLOB ${PROJECT_NAME}_SRCS
 	)
 	
 if(WIN32)
-FILE(GLOB ${PROJECT_NAME}_PLATFORM_SRCS
+FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/joystick/windows/*.c
 	SDL/src/filesystem/windows/*.c
 	SDL/src/haptic/windows/*.c
@@ -190,8 +189,31 @@ FILE(GLOB ${PROJECT_NAME}_PLATFORM_SRCS
 	SDL/src/power/windows/*.c
 	SDL/src/thread/windows/*.c
 	SDL/src/thread/generic/SDL_syscond.c)
+elseif(APPLE)
+FILE(GLOB libs_PLATFORM_SRCS
+	SDL/src/video/uikit/*.m
+	SDL/src/video/cocoa/*.m
+	SDL/src/file/cocoa/*.m
+	SDL/src/filesystem/cocoa/*.m
+	SDL/src/joystick/iphoneos/*.m
+	SDL/src/power/uikit/*.m
+	SDL/src/audio/coreaudio/*.c
+	SDL/src/filesystem/cocoa/*.c
+	SDL/src/joystick/iphoneos/*.c
+	SDL/src/joystick/darwin/*.c
+	SDL/src/timer/unix/*.c
+	SDL/src/video/uikit/*.c
+	SDL/src/main/dummy/*.c
+	SDL/src/video/cocoa/*.c
+	SDL/src/file/cocoa/*.c
+	SDL/src/haptic/darwin/*.c
+	SDL/src/power/macosx/*.c
+	SDL/src/thread/pthread/*.c)
 elseif(UNIX)
-FILE(GLOB ${PROJECT_NAME}_PLATFORM_SRCS 
+include(FindPkgConfig)
+pkg_search_module(DBUS REQUIRED dbus-1 dbus)
+include_directories(${DBUS_INCLUDE_DIRS})
+FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/thread/pthread/*.c
 	SDL/src/haptic/linux/*.c
 	SDL/src/joystick/linux/*.c
@@ -199,6 +221,25 @@ FILE(GLOB ${PROJECT_NAME}_PLATFORM_SRCS
 	SDL/src/main/dummy/*.c
 	SDL/src/core/linux/*.c
 	SDL/src/power/linux/*.c)
+elseif(ANDROID)
+FILE(GLOB libs_PLATFORM_SRCS
+	SDL/src/filesystem/android/*.c
+	SDL/src/video/android/*.c
+	SDL/src/core/android/*.c
+	SDL/src/main/android/*.c
+	SDL/src/audio/android/*.c
+	SDL/src/joystick/android/*.c
+	SDL/src/power/android/*.c)
+elseif(NACL)
+FILE(GLOB libs_PLATFORM_SRCS
+	SDL/src/audio/nacl/*.c
+	SDL/src/filesystem/nacl/*.c
+	SDL/src/video/nacl/*.c
+	SDL/src/timer/unix/*.c
+	SDL/src/thread/pthread/*.c
+	SDL/src/main/nacl/*.c)
 endif()
-	
-add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SRCS} ${${PROJECT_NAME}_PLATFORM_SRCS})
+
+add_definitions(-DLOAD_PNG -DPNG_NO_CONFIG_H -DHAVE_SDL_IMAGE_H -DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE -DSQLITE_HAVE_ISNAN)
+add_library(libs ${libs_SRCS} ${libs_PLATFORM_SRCS})
+target_link_libraries(libs dl pthread GL)

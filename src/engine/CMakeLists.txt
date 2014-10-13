@@ -1,5 +1,4 @@
-project(engine)
-FILE(GLOB ${PROJECT_NAME}_SRCS
+FILE(GLOB engine_SRCS
 	client/shaders/*.cpp
 	client/sprites/*.cpp
 	client/particles/*.cpp
@@ -14,6 +13,7 @@ FILE(GLOB ${PROJECT_NAME}_SRCS
 	client/ui/windows/intro/*.cpp
 	client/ui/layouts/*.cpp
 	*.cpp
+	../*.cpp
 	common/*.cpp
 	common/campaign/*.cpp
 	common/campaign/persister/*.cpp
@@ -22,12 +22,17 @@ FILE(GLOB ${PROJECT_NAME}_SRCS
 	server/*.cpp)
 
 if(WIN32)
-FILE(GLOB ${PROJECT_NAME}_PLATFORM_SRCS
+FILE(GLOB engine_PLATFORM_SRCS
 	common/ports/Windows.cpp
 	common/ports/project.rc)
+elseif(APPLE)
+FILE(GLOB engine_PLATFORM_SRCS
+	common/ports/Darwin.cpp
+	common/ports/Cocoa.mm)
 elseif(UNIX)
-FILE(GLOB ${PROJECT_NAME}_PLATFORM_SRCS 
-	engine/common/ports/Unix.cpp)
+FILE(GLOB engine_PLATFORM_SRCS
+	common/ports/Unix.cpp)
 endif()
 
-add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SRCS} ${${PROJECT_NAME}_PLATFORM_SRCS})
+add_library(engine ${engine_SRCS} ${engine_PLATFORM_SRCS})
+target_link_libraries(engine libs GL)

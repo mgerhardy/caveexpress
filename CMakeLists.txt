@@ -26,10 +26,7 @@ include_directories("${PROJECT_SOURCE_DIR}/src/libs/SDL_net")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/SDL_image")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/SDL/include")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/SDL/src")
-
-#-DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE -DSQLITE_HAVE_ISNAN
-#-lpthread
-#-DLOAD_PNG -DPNG_NO_CONFIG_H -DHAVE_SDL_IMAGE_H
+include_directories("/usr/include/dbus-1")
 
 if(UNIX)
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/SDL/linux")
