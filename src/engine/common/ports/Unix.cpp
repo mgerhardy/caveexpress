@@ -1,5 +1,4 @@
 #include "Unix.h"
-#include "engine/common/Version.h"
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <dirent.h>
@@ -25,6 +24,7 @@
 #include "engine/common/ConfigManager.h"
 #include "engine/common/String.h"
 #include "engine/common/System.h"
+#include "engine/common/Application.h"
 #ifdef HAVE_EXECINFO_H
 #include <execinfo.h>
 #include <signal.h>
@@ -47,7 +47,7 @@ Unix::Unix() :
 		_user = p->pw_name;
 #ifdef HAVE_SYSLOG_H
 	setlogmask(LOG_UPTO(LOG_INFO));
-	openlog(APPNAME, LOG_NDELAY|LOG_PID, LOG_USER);
+	openlog(Singleton<Application>::getInstance().getName().c_str(), LOG_NDELAY|LOG_PID, LOG_USER);
 #endif
 #ifdef HAVE_EXECINFO_H
 	signal(SIGFPE, globalSignalHandler);
@@ -113,7 +113,7 @@ std::string Unix::getHomeDirectory ()
 		dir = std::string(homeDir);
 	}
 
-	dir += "/" APPNAME "/";
+	dir += "/" + Singleton<Application>::getInstance().getName() + "/";
 	if (!mkdir(dir))
 		return "";
 	return dir;

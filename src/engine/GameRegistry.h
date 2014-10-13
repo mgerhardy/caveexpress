@@ -49,6 +49,7 @@ private:
 	StaticGameFactory _factory;
 public:
 	GameRegisterStatic(const std::string& id, GamePtr game) : _factory(game) {
+		game->setName(id);
 		Singleton<GameRegistry>::getInstance().registerFactory(id, _factory);
 	}
 };

@@ -1,6 +1,6 @@
 #include "Darwin.h"
 #include "Cocoa.h"
-#include "engine/common/Version.h"
+#include "engine/common/Application.h"
 
 Darwin::Darwin () :
 		Unix()
@@ -14,7 +14,7 @@ Darwin::~Darwin ()
 
 std::string Darwin::getHomeDirectory ()
 {
-	char* home = nsGetHomeDirectory(APPNAME);
+	char* home = nsGetHomeDirectory(Singleton<Application>::getInstance().getName().c_str());
 	if (home == nullptr)
 		return "";
 	return home;

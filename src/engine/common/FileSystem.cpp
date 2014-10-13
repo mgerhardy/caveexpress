@@ -1,7 +1,7 @@
 #include "FileSystem.h"
 #include "engine/common/Logger.h"
 #include "engine/common/System.h"
-#include "engine/common/Version.h"
+#include "engine/common/Application.h"
 #include <SDL.h>
 #include <SDL_platform.h>
 #include <iostream>
@@ -17,7 +17,7 @@
 #endif
 
 FileSystem::FileSystem () :
-		_homeDir(System.getHomeDirectory()), _dataDir("base/" APPNAME "/"), _mapsDir("maps/"), _campaignsDir("campaigns/"), _texturesDir(
+		_homeDir(System.getHomeDirectory()), _dataDir("base/" + Singleton<Application>::getInstance().getName() + "/"), _mapsDir("maps/"), _campaignsDir("campaigns/"), _texturesDir(
 				"textures/"), _picsDir("pics/"), _soundsDir("sounds/"), _musicDir("music/"), _shaderDir("shaders/"), _languageDir("lang/"), _gesturesDir("gestures/")
 {
 }
