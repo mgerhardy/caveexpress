@@ -32,6 +32,7 @@ FILE(GLOB engine_PLATFORM_SRCS
 elseif(UNIX)
 FILE(GLOB engine_PLATFORM_SRCS
 	common/ports/Unix.cpp)
+	add_definitions(-D_GNU_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE)
 endif()
 
 add_library(engine ${engine_SRCS} ${engine_PLATFORM_SRCS})
