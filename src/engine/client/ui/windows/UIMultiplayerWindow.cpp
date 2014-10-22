@@ -6,6 +6,7 @@
 #include "engine/client/ui/windows/listener/ConfigVarListener.h"
 #include "engine/client/ui/nodes/UINodeServerSelector.h"
 #include "engine/common/MapManager.h"
+#include "engine/common/CommandSystem.h"
 #include "engine/client/ui/UI.h"
 #include "engine/client/commands/CmdServerPing.h"
 #include "engine/client/ui/windows/listener/OpenWindowListener.h"

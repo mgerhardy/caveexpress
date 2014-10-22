@@ -1,5 +1,6 @@
 #include "IConsole.h"
 #include "engine/common/ConfigManager.h"
+#include "engine/common/CommandSystem.h"
 #include "engine/common/Logger.h"
 
 IConsole::IConsole () :

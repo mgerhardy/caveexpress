@@ -6,7 +6,7 @@
 class GameStateSQLite;
 
 class SQLitePersister: public IGameStatePersister {
-private:
+protected:
 	std::string _filename;
 	GameStateSQLite *_gameState;
 public:

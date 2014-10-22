@@ -7,11 +7,22 @@
 #include "engine/common/ConfigManager.h"
 #include "engine/common/Commands.h"
 #include "engine/common/CommandSystem.h"
+#include <string>
 
 // TODO: rename methods and document stuff
 class IGame {
+protected:
+	std::string _name;
 public:
 	virtual ~IGame() {
+	}
+
+	inline void setName(const std::string& name) {
+		_name = name;
+	}
+
+	inline const std::string& getName() const {
+		return _name;
 	}
 
 	// create the windows

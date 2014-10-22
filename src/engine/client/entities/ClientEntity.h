@@ -32,6 +32,7 @@ public:
 
 	void remove();
 	const SpritePtr& getSprite () const;
+	SpritePtr& getSprite ();
 	const vec2& getPos () const;
 	const vec2& getSize () const;
 	virtual bool update (uint32_t deltaTime, bool lerpPos);
@@ -58,6 +59,11 @@ public:
 		_screenHeight = height;
 	}
 
+	inline void setAlpha (float alpha)
+	{
+		_alpha = alpha;
+	}
+
 	inline void getScreenSize (int& width, int& height) const
 	{
 		width = _screenWidth;
@@ -74,6 +80,11 @@ public:
 	{
 		x = _screenPosX;
 		y = _screenPosY;
+	}
+
+	inline uint8_t getState () const
+	{
+		return _state;
 	}
 
 	inline void setAnimationSound (int animationSound)
@@ -169,6 +180,11 @@ inline void ClientEntity::setAngle (int16_t angle)
 }
 
 inline const SpritePtr& ClientEntity::getSprite () const
+{
+	return _currSprite;
+}
+
+inline SpritePtr& ClientEntity::getSprite ()
 {
 	return _currSprite;
 }

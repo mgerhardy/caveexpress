@@ -66,3 +66,11 @@ TEST_F(FileTest, testCopy) {
 	ASSERT_TRUE(FS.writeFile(filename, buf, length, true) != -1L);
 	ASSERT_TRUE(FS.copy(filename, targetFilename));
 }
+
+TEST_F(FileTest, testName) {
+	std::string filename = "testdir/testname";
+	FilePtr p = FS.getFile(filename);
+	ASSERT_EQ(FS.getDataDir() + "testdir", p->getPath());
+	ASSERT_EQ("testname", p->getFileName());
+	ASSERT_EQ(FS.getDataDir() + filename, p->getName());
+}

@@ -129,7 +129,14 @@ void UINodeMapSelector::reset ()
 	if (!campaignPtr)
 		return;
 	const Campaign::MapList& maps = campaignPtr->getMaps();
-	for (Campaign::MapListConstIter i = maps.begin(); i != maps.end(); ++i) {
-		addData((*i)->getId());
+	int index = -1;
+	int mapIndex = 0;
+	for (Campaign::MapListConstIter i = maps.begin(); i != maps.end(); ++i, ++mapIndex) {
+		const CampaignMapPtr& p = *i;
+		addData(p->getId());
+		if (index == -1 && p->isLocked()) {
+			index = mapIndex - 1;
+		}
 	}
+	selectEntry(index);
 }

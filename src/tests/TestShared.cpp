@@ -1,5 +1,6 @@
 #include "TestShared.h"
 #include "engine/common/SpriteDefinition.h"
+#include "engine/common/network/ProtocolHandlerRegistry.h"
 
 void MapSuite::SetUp() {
 	_serviceProvider.init(&_testFrontend);
@@ -11,4 +12,5 @@ void MapSuite::SetUp() {
 
 void MapSuite::TearDown() {
 	UI::get().shutdown();
+	ProtocolHandlerRegistry::get().shutdown();
 }

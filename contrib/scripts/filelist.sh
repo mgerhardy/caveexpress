@@ -5,18 +5,18 @@ set -e
 
 if [ $# -eq 0 ]; then
 	echo "Usage: $0 filename basedir [basedirs]"
-	exit 1;
+	exit 1
 fi
 
 FILENAME=$1
 shift
-BAESDIR=$1
+BASEDIR=$1
 shift
 while [ $# -gt 0 ]; do
 	i=$1
 	echo "==> ${i}";
 	echo "if (basedir == \"${i}/\") {" >> $FILENAME;
-	for file in ${BAESDIR}/${i}/*; do
+	for file in ${BASEDIR}/${i}/*; do
 		echo "entriesAll.push_back(\"`basename ${file}`\");" >> $FILENAME;
 	done;
 	echo "return entriesAll;" >> $FILENAME;

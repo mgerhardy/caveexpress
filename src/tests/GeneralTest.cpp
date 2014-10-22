@@ -3,12 +3,29 @@
 
 #include "engine/common/ParameterList.h"
 #include "engine/common/URI.h"
+#include "engine/common/String.h"
 #include "engine/common/Logger.h"
 #include "engine/common/KeyValueParser.h"
 #include "engine/common/MapManager.h"
 
 class GeneralTest: public MapSuite {
 };
+
+TEST_F(GeneralTest, testStringTrim)
+{
+	ASSERT_EQ("foo bar", string::trim(" foo bar "));
+	ASSERT_EQ("foo   bar", string::trim("  foo   bar   "));
+}
+
+TEST_F(GeneralTest, testStringLTrim)
+{
+	ASSERT_EQ("foo bar ", string::ltrim(" foo bar "));
+}
+
+TEST_F(GeneralTest, testStringRTrim)
+{
+	ASSERT_EQ(" foo bar", string::rtrim(" foo bar "));
+}
 
 TEST_F(GeneralTest, testParameterList)
 {

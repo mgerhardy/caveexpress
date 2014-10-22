@@ -223,8 +223,8 @@ static void usage ()
 
 extern "C" int main (int argc, char* argv[])
 {
-	const URI uri("file://./contrib/box2deditor/caveexpress.json");
-	File file(uri, SDL_RWFromFile(uri.getPath().c_str(), "rb"), "./contrib/box2deditor/caveexpress.json");
+	const std::string path = "contrib/box2deditor/caveexpress.json";
+	File file(SDL_RWFromFile(path.c_str(), "rb"), path);
 	char *buffer;
 	const int fileLen = file.read((void **) &buffer);
 	const ScopedArrayPtr<char> p(buffer);

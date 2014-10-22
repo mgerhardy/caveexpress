@@ -19,6 +19,11 @@ std::string HTML5::getHomeDirectory ()
 	return "";
 }
 
+std::string HTML5::getCurrentWorkingDir ()
+{
+	return "";
+}
+
 void HTML5::exit (const std::string& reason, int errorCode)
 {
 	if (errorCode != 0) {

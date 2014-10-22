@@ -166,12 +166,12 @@ else
 
 	keybindings["map"]["U"] = "undo"
 	keybindings["map"]["BACKSPACE"] = "undo"
+	keybindings["ui"]["."] = "screenshot"
+	keybindings["map"]["."] = "screenshot"
+	keybindings["map"]["S"] = "solve"
 
 	if isDebug() then
-		keybindings["ui"]["."] = "screenshot"
-		keybindings["map"]["."] = "screenshot"
 		keybindings["map"]["F"] = "finish"
-		keybindings["map"]["S"] = "solve"
 	end
 end
 
