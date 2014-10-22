@@ -11,10 +11,8 @@ struct SDL_RWops;
 
 class File {
 protected:
-	URI _uri;
 	SDL_RWops* _file;
-	FILE* _filePtr;
-	bool _useRaw;
+	const std::string _rawPath;
 
 	void close ();
 	int read (void *buf, size_t size, size_t maxnum);
@@ -22,11 +20,7 @@ protected:
 	long seek (long offset, int seekType) const;
 
 public:
-#ifdef RAWFILE
-	File (const URI& uri, SDL_RWops* file, const std::string& rawPath, bool useRaw = true);
-#else
-	File (const URI& uri, SDL_RWops* file, const std::string& rawPath, bool useRaw = false);
-#endif
+	File (SDL_RWops* file, const std::string& rawPath);
 
 	virtual ~File ();
 
@@ -41,12 +35,6 @@ public:
 	int read (void *buffer, int n);
 	// get the name of the file - with special placeholder (e.g. $root) included.
 	const std::string& getName () const;
-	const URI& getURI () const;
 };
-
-inline const URI& File::getURI () const
-{
-	return _uri;
-}
 
 typedef SharedPtr<File> FilePtr;

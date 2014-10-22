@@ -5,14 +5,14 @@ ARGS=$*
 caveexpress_APPNAME=caveexpress
 caveexpress_APPNAME_FULL=CaveExpress
 caveexpress_JAVA_PACKAGE=org.caveexpress
-caveexpress_VERSION=2.0
-caveexpress_VERSION_CODE=27
+caveexpress_VERSION=2.1
+caveexpress_VERSION_CODE=28
 
 cavepacker_APPNAME=cavepacker
 cavepacker_APPNAME_FULL=CavePacker
 cavepacker_JAVA_PACKAGE=org.cavepacker
-cavepacker_VERSION=1.0
-cavepacker_VERSION_CODE=6
+cavepacker_VERSION=1.2
+cavepacker_VERSION_CODE=8
 
 caveanddiamonds_APPNAME=caveanddiamonds
 caveanddiamonds_APPNAME_FULL=CaveAndDiamonds
@@ -34,9 +34,6 @@ HD_VERSION=
 PROFILING=
 NETWORKING=1
 PREFIX=/usr/local
-PKGDATADIR=
-PKGBINDIR=
-PKGLIBDIR=
 MODE=
 CROSS=
 USE_CCACHE=
@@ -149,9 +146,6 @@ config_h() {
 	add_to_config_h_quote VERSION
 	add_to_config_h_quote HD_VERSION
 	add_to_config_h_quote VERSION_CODE
-	add_to_config_h_quote PKGDATADIR "Setting custom data directory"
-	add_to_config_h_quote PKGLIBDIR "Setting custom library directory"
-	add_to_config_h_quote LOCALEDIR "Setting custom locale directory"
 }
 
 makefile_local() {
@@ -177,9 +171,6 @@ makefile_local() {
 	add_to_makefile_local_quote CC "Found cc ${CC}"
 	add_to_makefile_local_quote CXX "Found cxx ${CXX}"
 	add_to_makefile_local_quote CROSS "Using tools prefix ${CROSS}"
-	add_to_makefile_local_quote PKGBINDIR "Using bindir ${PKGBINDIR}"
-	add_to_makefile_local_quote PKGDATADIR "Using datadir ${PKGDATADIR}"
-	add_to_makefile_local_quote PKGLIBDIR "Using libdir ${PKGLIBDIR}"
 	add_to_makefile_local_quote PREFIX "Using prefix ${PREFIX}"
 	add_to_makefile_local_quote DISABLE_SDL_RENDERER "Disable SDL_Renderer" "Use SDL_Renderer"
 
@@ -297,12 +288,12 @@ check_compiler() {
 	CXX=${CXX:-${DEFAULT_COMPILER_CXX}}
 
 	if [ "${TARGET_OS}" = "mingw32" ] && [ "${HOST_OS}" != "mingw32" ]; then
-		CROSS="i686-pc-mingw32-"
+		CROSS="i686-pc-mingw32.static-"
 		CC=gcc
 	fi
 
 	if [ "${TARGET_OS}" = "mingw64" ] && [ "${HOST_OS}" != "mingw64" ]; then
-		CROSS="i686-w64-mingw32-"
+		CROSS="i686-w64-mingw32.static-"
 		CC=gcc
 	fi
 
@@ -579,15 +570,6 @@ while [ $# -gt 0 ]; do
 	--prefix=*)
 		PREFIX="${1#*=}"
 		;;
-	--datadir=*)
-		PKGDATADIR="${1#*=}"
-		;;
-	--libdir=*)
-		PKGLIBDIR="${1#*=}"
-		;;
-	--bindir=*)
-		PKGBINDIR="${1#*=}"
-		;;
 	--app=*)
 		APPNAME=`get_var "${1#*=}_APPNAME"`
 		APPNAME_FULL=`get_var "${1#*=}_APPNAME_FULL"`
@@ -748,10 +730,6 @@ if diff scale.tmp scale 2>/dev/null >/dev/null; then
 else
 	mv scale.tmp scale
 fi
-
-PKGDATADIR=${PKGDATADIR:-${PREFIX}/games/${APPNAME}/}
-PKGBINDIR=${PKGBINDIR:-${PREFIX}/bin/}
-PKGLIBDIR=${PKGLIBDIR:-${PREFIX}/lib/}
 
 check_compiler
 check_ccache

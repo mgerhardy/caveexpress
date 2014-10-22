@@ -2,7 +2,7 @@
 
 #include "engine/common/ports/Unix.h"
 #include "engine/common/String.h"
-#include "engine/common/Version.h"
+#include "engine/common/Application.h"
 #include <string>
 #include <vector>
 #include <jni.h>
@@ -40,11 +40,11 @@ public:
 	void init() override;
 
 	void logError (const std::string& error) const override {
-		__android_log_write(ANDROID_LOG_ERROR, APPFULLNAME, error.c_str());
+		__android_log_write(ANDROID_LOG_ERROR, Singleton<Application>::getInstance().getName().c_str(), error.c_str());
 	}
 
 	void logOutput (const std::string& string) const override {
-		__android_log_write(ANDROID_LOG_INFO, APPFULLNAME, string.c_str());
+		__android_log_write(ANDROID_LOG_INFO, Singleton<Application>::getInstance().getName().c_str(), string.c_str());
 	}
 
 	void notifyPaymentLoaded ();

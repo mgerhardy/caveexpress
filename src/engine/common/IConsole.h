@@ -1,9 +1,9 @@
 #pragma once
 
 #include "engine/common/Pointers.h"
-#include "engine/common/CommandSystem.h"
 #include "engine/common/IEventObserver.h"
 #include <string>
+#include <vector>
 
 // forward decl
 class IFrontend;

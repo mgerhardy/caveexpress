@@ -42,6 +42,10 @@ inline void getXY (char step, int& x, int& y)
 		x = 0;
 		y = 1;
 		break;
+	default:
+		x = 0;
+		y = 0;
+		break;
 	}
 }
 
@@ -97,8 +101,6 @@ protected:
 	PlayerList _players;
 
 	EntityList _entities;
-	// shadow copy of new entities
-	EntityList _entitiesToAdd;
 
 	bool _pause;
 	// sanity check in the world step callbacks
@@ -127,7 +129,7 @@ protected:
 	bool setField (IEntity *entity, int col, int row);
 	void printMap ();
 	std::string getMapString() const;
-	char getSokubanFieldId (const IEntity *entity) const;
+	char getSokobanFieldId (const IEntity *entity) const;
 	void handleAutoSolve (uint32_t deltaTime);
 public:
 	Map ();
@@ -202,8 +204,6 @@ public:
 
 	void resetCurrentMap ();
 
-	// delay add
-	void addEntity (IEntity *entity);
 	// initial add
 	void loadEntity (IEntity *entity);
 

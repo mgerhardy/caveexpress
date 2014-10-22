@@ -7,6 +7,7 @@
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/campaign/ICampaignManager.h"
 #include "engine/GameRegistry.h"
+#include "engine/common/network/INetwork.h"
 
 class TestCampaignMgr : public ICampaignManager {
 public:
@@ -34,8 +35,3 @@ protected:
 	virtual void SetUp() override;
 	virtual void TearDown() override;
 };
-
-class TestGame : public IGame {
-};
-
-static GameRegisterStatic TESTGAME("test", GamePtr(new TestGame()));

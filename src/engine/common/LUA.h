@@ -81,7 +81,7 @@ public:
 
 	void reg (const std::string& prefix, luaL_Reg* funcs);
 
-	bool load (const String &file);
+	bool load (const std::string &file);
 	/**
 	 * @param[in] function function to be called
 	 */

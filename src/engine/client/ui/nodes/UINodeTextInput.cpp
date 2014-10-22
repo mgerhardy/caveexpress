@@ -28,22 +28,14 @@ bool UINodeTextInput::onTextInput (const std::string& text)
 void UINodeTextInput::setHandleInput (bool handleInput)
 {
 	if (handleInput) {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 		SDL_StartTextInput();
-#endif
 		setBackgroundColor(colorGray);
 	} else {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 		SDL_StopTextInput();
-#endif
 		setBackgroundColor(colorWhite);
 		UINode::removeFocus();
 	}
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	_handleInput = SDL_IsTextInputActive();
-#else
-	_handleInput = handleInput;
-#endif
 }
 
 float UINodeTextInput::getAutoWidth () const
@@ -118,10 +110,7 @@ bool UINodeTextInput::onKeyPress (int32_t key, int16_t modifier)
 	}
 
 	if (key >= ' ' && key <= '~') {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-		if (!SDL_IsTextInputActive())
-#endif
-		{
+		if (!SDL_IsTextInputActive()) {
 			_input.push_back(key);
 			return true;
 		}

@@ -7,8 +7,10 @@ private:
 	bool _connected;
 	bool _server;
 
-	std::vector<ByteStream> _serverQueue;
-	std::vector<ByteStream> _clientQueue;
+	typedef std::vector<ByteStream> Queue;
+	Queue _serverQueue;
+	Queue _clientQueue;
+	typedef Queue::iterator QueueIter;
 
 	inline void enqueueServer (const ByteStream& s)
 	{

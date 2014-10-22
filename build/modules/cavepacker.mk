@@ -81,6 +81,13 @@ ifeq ($(TARGET_OS),nacl)
 	$(TARGET)_LDFLAGS +=
 endif
 
+ifneq ($(findstring $(TARGET_OS), html5),)
+	$(TARGET)_SRCS +=\
+		engine/common/ports/Unix.cpp \
+		engine/common/ports/HTML5.cpp
+	$(TARGET)_LDFLAGS +=
+endif
+
 ifeq ($(TARGET_OS),darwin)
 	$(TARGET)_SRCS +=\
 		$(SDL_NET_SRCS) \

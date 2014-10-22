@@ -12,6 +12,7 @@ defaultshowcursor = true
 defaultjoystick = false
 defaulttexturesize = "auto"
 defaultparticles = 100
+defaultfpslimit = 60
 
 if isOUYA() then
 	defaultjoystick = true
@@ -19,6 +20,7 @@ if isOUYA() then
 elseif isMobile() then
 	defaultshowcursor = false
 	defaultparticles = 0
+	defaultfpslimit = 30
 elseif isHTML5() then
 	defaultpersister = "nop"
 	defaultfrontend = "opengl"
@@ -44,6 +46,7 @@ settings = {
 	soundengine = defaultsoundengine,
 	persister = defaultpersister,
 	network = false,
+	fpslimit = defaultfpslimit,
 	texturesize = defaulttexturesize,
 	particles = defaultparticles,
 }
@@ -163,12 +166,12 @@ else
 
 	keybindings["map"]["U"] = "undo"
 	keybindings["map"]["BACKSPACE"] = "undo"
+	keybindings["ui"]["."] = "screenshot"
+	keybindings["map"]["."] = "screenshot"
+	keybindings["map"]["S"] = "solve"
 
 	if isDebug() then
-		keybindings["ui"]["."] = "screenshot"
-		keybindings["map"]["."] = "screenshot"
 		keybindings["map"]["F"] = "finish"
-		keybindings["map"]["S"] = "solve"
 	end
 end
 

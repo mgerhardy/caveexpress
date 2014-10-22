@@ -27,7 +27,7 @@ public:
 		UI::get().push(UI_WINDOW_MAP);
 
 		const LoadMapMessage *msg = static_cast<const LoadMapMessage*>(&message);
-		System.track("MapName", msg->getName());
+		System.track("mapload", msg->getName());
 		UINodePoint* pointsNode = UI::get().getNode<UINodePoint>(UI_WINDOW_MAP, UINODE_POINTS);
 		if (pointsNode)
 			pointsNode->setPoints(0);

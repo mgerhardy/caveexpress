@@ -1,6 +1,6 @@
 #include "IOS.h"
 #include "Cocoa.h"
-#include "engine/common/Version.h"
+#include "engine/common/Application.h"
 
 IOS::IOS () :
 		Unix()
@@ -14,7 +14,7 @@ IOS::~IOS ()
 
 std::string IOS::getHomeDirectory ()
 {
-	char* home = nsGetHomeDirectory(APPNAME);
+	char* home = nsGetHomeDirectory(Singleton<Application>::getInstance().getName());
 	if (home == nullptr)
 		return "";
 	return home;

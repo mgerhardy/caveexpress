@@ -187,7 +187,7 @@ release-android:
 
 android-setup:
 	$(Q)ARCH=x86_64; \
-	NDK_VERSION=r10; \
+	NDK_VERSION=r10b; \
 	SDK_VERSION=20140702; \
 	[ $(TARGET_ARCH) = "i386" ] && ARCH=x86; \
 	echo "Downloading the ndk..."; \

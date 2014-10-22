@@ -1,6 +1,5 @@
 #include "Android.h"
 #include "engine/common/Logger.h"
-#include "engine/common/Version.h"
 #include "engine/common/Payment.h"
 #include "engine/common/Config.h"
 #include "engine/common/System.h"
@@ -55,7 +54,7 @@ protected:
 };
 int LocalReferenceHolder::s_active;
 
-#define _ANDROID_LOG(prio, fmt, args...) __android_log_print(prio, APPFULLNAME, fmt, ## args)
+#define _ANDROID_LOG(prio, fmt, args...) __android_log_print(prio, Singleton<Application>::getInstance().getName().c_str(), fmt, ## args)
 #define _logDebug(fmt, args...) _ANDROID_LOG(ANDROID_LOG_DEBUG, fmt, ##args)
 #define _logInfo(fmt, args...) _ANDROID_LOG(ANDROID_LOG_INFO, fmt, ##args)
 #define _logWarn(fmt, args...) _ANDROID_LOG(ANDROID_LOG_WARN, fmt, ##args)
@@ -571,7 +570,7 @@ int Android::getAdHeight() const
 
 extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPaymentDone(JNIEnv* env, jclass jcls)
 {
-	info(LOG_SYSTEM, "onPaymentDone CaveExpress side");
+	info(LOG_SYSTEM, "onPaymentDone c side");
 	Android& s = static_cast<Android&>(getSystem());
 	s.notifyPaymentLoaded();
 }
@@ -585,6 +584,14 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isDebug(JNIEnv*
 	debug = 0;
 #endif
 	return debug;
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isTrackingOptOut(JNIEnv* env, jclass jcls)
+{
+	info(LOG_SYSTEM, "isTrackingOptOut c side");
+	// TODO:
+	jboolean optout = 0;
+	return optout;
 }
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isHD(JNIEnv* env, jclass jcls)

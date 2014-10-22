@@ -21,118 +21,6 @@ const char *KEY_CONFIG_CONTROLLERBINDINGS = "controllerbindings";
 const char *KEY_CONFIG_JOYSTICKBINDINGS = "joystickbindings";
 }
 
-#ifdef EMSCRIPTEN
-static inline std::string EMSCRIPTEN_GetNameForKey (SDL_Keycode key)
-{
-	switch (key) {
-	case SDLK_PAGEUP:
-		return "PageUp";
-	case SDLK_PAGEDOWN:
-		return "PageDown";
-	case SDLK_RETURN:
-		return "Return";
-	case SDLK_ESCAPE:
-		return "Esc";
-	case SDLK_AC_BACK:
-		return "AC Back";
-	case SDLK_BACKSPACE:
-		return "Backspace";
-	case SDLK_AC_HOME:
-		return "AC Home";
-	case SDLK_TAB:
-		return "Tab";
-	case SDLK_MENU:
-		return "Menu";
-	case SDLK_PAUSE:
-		return "Pause";
-	case SDLK_SPACE:
-		return "Space";
-	case SDLK_RIGHT:
-		return 	"Right";
-	case SDLK_LEFT:
-		return 	"Left";
-	case SDLK_DOWN:
-		return "Down";
-	case SDLK_UP:
-		return "Up";
-	case SDLK_LCTRL:
-		return "Left Ctrl";
-	case SDLK_LSHIFT:
-		return "Left Shift";
-	case SDLK_LALT:
-		return "Left Alt";
-	case SDLK_RCTRL:
-		return "Right Ctrl";
-	case SDLK_RSHIFT:
-		return "Right Shift";
-	case SDLK_RALT:
-		return "Right Alt";
-	case SDLK_RGUI:
-		return "Right GUI";
-	default:
-		if (key >= SDLK_SPACE && key <= SDLK_z) {
-			const char c = key;
-			return std::string(&c, 1);
-		}
-		return "";
-	}
-}
-
-static inline SDL_Keycode SDL_GetKeyFromName(const char *n)
-{
-	const std::string name = n;
-	if (name == "RETURN") {
-		return SDLK_RETURN;
-	} else if (name == "ESC") {
-		return SDLK_ESCAPE;
-	} else if (name == "PAGEUP") {
-		return SDLK_PAGEUP;
-	} else if (name == "PAGEDOWN") {
-		return SDLK_PAGEDOWN;
-	} else if (name == "AC BACK") {
-		return SDLK_AC_BACK;
-	} else if (name == "BACKSPACE") {
-		return SDLK_BACKSPACE;
-	} else if (name == "AC HOME") {
-		return SDLK_AC_HOME;
-	} else if (name == "TAB") {
-		return SDLK_TAB;
-	} else if (name == "MENU") {
-		return SDLK_MENU;
-	} else if (name == "PAUSE") {
-		return SDLK_PAUSE;
-	} else if (name == "SPACE") {
-		return SDLK_SPACE;
-	} else if (name == "RIGHT") {
-		return SDLK_RIGHT;
-	} else if (name == "LEFT") {
-		return SDLK_LEFT;
-	} else if (name == "DOWN") {
-		return SDLK_DOWN;
-	} else if (name == "UP") {
-		return SDLK_UP;
-	} else if (name == "LCTRL") {
-		return SDLK_LCTRL;
-	} else if (name == "LSHIFT") {
-		return SDLK_LSHIFT;
-	} else if (name == "LALT") {
-		return SDLK_LALT;
-	} else if (name == "RCTRL") {
-		return SDLK_RCTRL;
-	} else if (name == "RSHIFT") {
-		return SDLK_RSHIFT;
-	} else if (name == "RALT") {
-		return SDLK_RALT;
-	} else if (name == "RGUI") {
-		return SDLK_RGUI;
-	} else if (name.length() == 1) {
-		return string::toLower(name)[0];
-	}
-
-	return -1;
-}
-#endif
-
 ConfigManager::ConfigManager() :
 		_persister(nullptr), _bindingSpace(BINDINGS_UI), _bindingSpaceListener(nullptr) {
 	memset(&_backendRenderer, 0, sizeof(_backendRenderer));
@@ -151,7 +39,7 @@ void ConfigManager::setBindingsSpace (BindingSpace bindingSpace)
 
 void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc, char **argv)
 {
-#if defined(EMSCRIPTEN)
+#ifdef __EMSCRIPTEN__
 	_persister = new ConfigPersisterNOP();
 #else
 	_persister = new ConfigPersisterSQL();
@@ -267,12 +155,8 @@ ConfigManager& ConfigManager::get ()
 
 std::string ConfigManager::getNameForKey (int key) const
 {
-#ifdef EMSCRIPTEN
-	return EMSCRIPTEN_GetNameForKey(key);
-#else
 	const SDL_Scancode scanCode = SDL_GetScancodeFromKey(key);
 	return SDL_GetScancodeName(scanCode);
-#endif
 }
 
 std::string ConfigManager::getNameForJoystickButton (int key) const

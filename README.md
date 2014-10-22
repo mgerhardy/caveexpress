@@ -62,4 +62,4 @@ Btw.: Did I mention that this is a sokoban game that could even support network 
 
 ### License
 Code is released under the GPL3 and the game data is released
-under CC BY-NC-SA 3.0
+under CC BY-SA 4.0

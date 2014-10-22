@@ -36,7 +36,7 @@ private:
 			star2->enable(1000);
 		if (msg.getStars() >= 3 && star3)
 			star3->enable(1500);
-		System.track("MapStats", String::format("%i:%i:%i:%s", msg.getTime(), msg.getStars(), msg.getFinishPoints(), msg.getMapName().c_str()));
+		System.track("mapstate", String::format("%i:%i:%i:%s", msg.getTime(), msg.getStars(), msg.getFinishPoints(), msg.getMapName().c_str()));
 	}
 public:
 	FinishedMapHandler (ClientMap& clientMap) :
@@ -46,7 +46,7 @@ public:
 
 	void execute (const IProtocolMessage& message) override
 	{
-		_clientMap.resetCurrentMap();
+		_clientMap.close();
 		Commands.executeCommandLine(CMD_CL_DISCONNECT);
 
 		const FinishedMapMessage *msg = static_cast<const FinishedMapMessage*>(&message);

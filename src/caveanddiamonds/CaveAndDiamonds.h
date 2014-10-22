@@ -38,4 +38,4 @@ private:
 	bool visitEntity (IEntity *entity) override;
 };
 
-static GameRegisterStatic CAVEEXPRESS("cavepacker", GamePtr(new CaveAndDiamonds()));
+static GameRegisterStatic CAVEANDDIAMONDS("caveanddiamonds", GamePtr(new CaveAndDiamonds()));

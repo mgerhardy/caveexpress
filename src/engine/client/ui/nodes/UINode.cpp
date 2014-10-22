@@ -8,6 +8,7 @@
 #include "engine/client/ui/BitmapFont.h"
 #include "engine/client/ui/layouts/IUILayout.h"
 #include <SDL.h>
+#include <algorithm>
 
 int UINode::_counter = 0;
 
@@ -196,6 +197,22 @@ void UINode::onAdd()
 
 void UINode::displayText (const std::string& text, uint32_t delayMillis, float x, float y)
 {
+	struct isEqual {
+		isEqual(const std::string& s) :
+				_s(s) {
+		}
+
+		bool operator()(const UINodeDelayedText& l) {
+			return l.text == _s;
+		}
+
+		const std::string& _s;
+	};
+	DelayedTextsIter i = std::find_if(_texts.begin(), _texts.end(), isEqual(text));
+	if (i != _texts.end()) {
+		i->delayMillis = delayMillis;
+		return;
+	}
 	o("Display text '" + text + "' for " + string::toString(delayMillis) + "ms");
 	const NodeCoord c(x, y);
 	const BitmapFontPtr& font = getFont(HUGE_FONT);

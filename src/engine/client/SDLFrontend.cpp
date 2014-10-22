@@ -2,7 +2,6 @@
 #include "engine/client/ui/UI.h"
 #include "engine/client/ClientConsole.h"
 #include "engine/client/shaders/ShaderManager.h"
-#include "engine/common/Version.h"
 #include "engine/common/String.h"
 #include "engine/common/EventHandler.h"
 #include "engine/common/CommandSystem.h"
@@ -14,6 +13,7 @@
 #include "engine/common/Singleton.h"
 #include "engine/GameRegistry.h"
 #include "engine/common/Commands.h"
+#include "engine/common/Application.h"
 #include <SDL_image.h>
 #include <SDL_platform.h>
 #include <limits.h>
@@ -21,13 +21,9 @@
 SDLFrontend::SDLFrontend (SharedPtr<IConsole> console) :
 		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _softwareRenderer(false)
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	_window = nullptr;
 	_haptic = nullptr;
-#endif
-#ifndef DISABLE_SDL_RENDERER
 	_renderer = nullptr;
-#endif
 
 	_debugSleep = Config.getConfigVar("debugSleep", "0", true);
 	Vector4Set(colorBlack, _color);
@@ -35,21 +31,15 @@ SDLFrontend::SDLFrontend (SharedPtr<IConsole> console) :
 
 SDLFrontend::~SDLFrontend ()
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	if (_haptic)
 		SDL_HapticClose(_haptic);
 
 //	for (int i = 0; i < _numJoysticks; ++i)
 //		SDL_JoystickClose(_joysticks[i]);
-#endif
-#ifndef DISABLE_SDL_RENDERER
 	if (_renderer)
 		SDL_DestroyRenderer(_renderer);
-#endif
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_DestroyWindow(_window);
 	IMG_Quit();
-#endif
 }
 
 void SDLFrontend::onPrepareBackground ()
@@ -76,28 +66,22 @@ void SDLFrontend::onJoystickDeviceAdded (int32_t device)
 
 void SDLFrontend::onWindowResize ()
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	int w, h;
 	SDL_GetWindowSize(_window, &w, &h);
 	_width = w;
 	_height = h;
 
 	updateViewport(0, 0, getWidth(), getHeight());
-#endif
 }
 
 void SDLFrontend::setWindowTitle (const std::string& title)
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_SetWindowTitle(_window, title.c_str());
-#endif
 }
 
 void SDLFrontend::setVSync (bool vsync)
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_GL_SetSwapInterval(ConfigManager::get().isVSync() ? 1 : 0);
-#endif
 }
 
 void SDLFrontend::update (uint32_t deltaTime)
@@ -114,7 +98,7 @@ void SDLFrontend::update (uint32_t deltaTime)
 	if (((_time - _timeBase) > 500 || _numFrames == 0) && Config.showFPS()) {
 		setVSync(ConfigManager::get().isVSync());
 		const double fps = _numFrames * 1000.0f / (_time - _timeBase);
-		setWindowTitle(APPFULLNAME " (" + string::toString((int) fps) + ")");
+		setWindowTitle(Singleton<Application>::getInstance().getName() + " (" + string::toString((int) fps) + ")");
 		_timeBase = _time;
 		_numFrames = 0;
 	}
@@ -199,7 +183,6 @@ void SDLFrontend::getTrimmed (const Texture* texture, int& x, int& y, int& w, in
 
 void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha)
 {
-#ifndef DISABLE_SDL_RENDERER
 	assert(_renderer);
 
 	if (!texture->isValid())
@@ -228,18 +211,16 @@ void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 			texture->setData(nullptr);
 		}
 	}
-#endif
 }
 
 bool SDLFrontend::loadTexture (Texture *texture, const std::string& filename)
 {
-#ifndef DISABLE_SDL_RENDERER
 	assert(_renderer);
 
-	FilePtr file = FS.getPic(filename + ".png");
-	SDL_RWops *src = FS.createRWops(file->getURI());
+	const std::string file = FS.getFile(FS.getPicsDir() + filename + ".png")->getName();
+	SDL_RWops *src = FS.createRWops(file);
 	if (src == nullptr) {
-		error(LOG_CLIENT, "could not load the file: " + file->getName());
+		error(LOG_CLIENT, "could not load the file: " + file);
 		return false;
 	}
 	SDL_Surface *surface = IMG_Load_RW(src, 1);
@@ -252,7 +233,6 @@ bool SDLFrontend::loadTexture (Texture *texture, const std::string& filename)
 	}
 
 	sdlCheckError();
-#endif
 	return false;
 }
 
@@ -268,7 +248,6 @@ void SDLFrontend::setColor (const Color& rgba)
 
 void SDLFrontend::setSDLColor (const Color& rgba)
 {
-#ifndef DISABLE_SDL_RENDERER
 	assert(_renderer);
 
 	const Uint8 r = rgba[0] * 255.0f;
@@ -277,22 +256,18 @@ void SDLFrontend::setSDLColor (const Color& rgba)
 	const Uint8 a = rgba[3] * 255.0f;
 	if (SDL_SetRenderDrawColor(_renderer, r, g, b, a) == -1)
 		sdlCheckError();
-#endif
 }
 
 void SDLFrontend::bindTexture (Texture* texture, int textureUnit)
 {
-#ifndef DISABLE_SDL_RENDERER
 	if (textureUnit != 0)
 		error(LOG_CLIENT, "only one texture unit is supported in the sdl frontend");
 	SDL_Texture *sdltexture = static_cast<SDL_Texture *>(texture->getData());
 	SDL_GL_BindTexture(sdltexture, nullptr, nullptr);
-#endif
 }
 
 void SDLFrontend::renderRect (int x, int y, int w, int h, const Color& color)
 {
-#ifndef DISABLE_SDL_RENDERER
 	assert(_renderer);
 
 	if (w <= 0)
@@ -303,12 +278,10 @@ void SDLFrontend::renderRect (int x, int y, int w, int h, const Color& color)
 	setSDLColor(color);
 	if (SDL_RenderDrawRect(_renderer, &r) == -1)
 		sdlCheckError();
-#endif
 }
 
 void SDLFrontend::renderFilledRect (int x, int y, int w, int h, const Color& fillColor)
 {
-#ifndef DISABLE_SDL_RENDERER
 	assert(_renderer);
 
 	if (w <= 0)
@@ -319,18 +292,15 @@ void SDLFrontend::renderFilledRect (int x, int y, int w, int h, const Color& fil
 	setSDLColor(fillColor);
 	if (SDL_RenderFillRect(_renderer, &r) == -1)
 		sdlCheckError();
-#endif
 }
 
 void SDLFrontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
 {
-#ifndef DISABLE_SDL_RENDERER
 	assert(_renderer);
 
 	setSDLColor(color);
 	if (SDL_RenderDrawLine(_renderer, x1, y1, x2, y2) == -1)
 		sdlCheckError();
-#endif
 }
 
 void SDLFrontend::renderLineWithTexture (int x1, int y1, int x2, int y2, Texture* texture)
@@ -341,50 +311,39 @@ void SDLFrontend::renderLineWithTexture (int x1, int y1, int x2, int y2, Texture
 
 void SDLFrontend::updateViewport (int x, int y, int width, int height)
 {
-#ifndef DISABLE_SDL_RENDERER
 	assert(_renderer);
 
 	SDL_RenderSetLogicalSize(_renderer, getWidth(), getHeight());
 
 	ShaderManager::get().updateProjectionMatrix(width, height);
-#endif
 }
 
 void SDLFrontend::enableScissor (int x, int y, int width, int height)
 {
-#ifndef DISABLE_SDL_RENDERER
 	assert(_renderer);
 	const SDL_Rect rect = {x, y, width, height};
 	SDL_RenderSetClipRect(_renderer, &rect);
-#endif
 }
 
 void SDLFrontend::disableScissor ()
 {
-#ifndef DISABLE_SDL_RENDERER
 	assert(_renderer);
 	SDL_RenderSetClipRect(_renderer, nullptr);
-#endif
 }
 
 void SDLFrontend::minimize ()
 {
-#ifndef DISABLE_SDL_RENDERER
 	SDL_MinimizeWindow(_window);
-#endif
 }
 
 void SDLFrontend::destroyTexture (void *data)
 {
-#ifndef DISABLE_SDL_RENDERER
 	SDL_Texture *t = static_cast<SDL_Texture*>(data);
 	SDL_DestroyTexture(t);
-#endif
 }
 
 uint32_t SDLFrontend::getDisplayFormat () const
 {
-#ifndef DISABLE_SDL_RENDERER
 	assert(_renderer);
 
 	SDL_RendererInfo info;
@@ -397,14 +356,10 @@ uint32_t SDLFrontend::getDisplayFormat () const
 
 	const uint32_t format = info.texture_formats[0];
 	return format;
-#else
-	return 0;
-#endif
 }
 
 void SDLFrontend::renderBegin ()
 {
-#ifndef DISABLE_SDL_RENDERER
 	assert(_renderer);
 
 	resetColor();
@@ -412,15 +367,12 @@ void SDLFrontend::renderBegin ()
 	setSDLColor(colorBlack);
 	if (SDL_RenderClear(_renderer) == -1)
 		sdlCheckError();
-#endif
 }
 
 void SDLFrontend::renderEnd ()
 {
-#ifndef DISABLE_SDL_RENDERER
 	assert(_renderer);
 	SDL_RenderPresent(_renderer);
-#endif
 }
 
 void SDLFrontend::render ()
@@ -433,7 +385,6 @@ void SDLFrontend::render ()
 
 void SDLFrontend::makeScreenshot (const std::string& filename)
 {
-#ifndef DISABLE_SDL_RENDERER
 	assert(_renderer);
 
 	SDL_Rect viewport;
@@ -452,7 +403,6 @@ void SDLFrontend::makeScreenshot (const std::string& filename)
 
 	const std::string fullFilename = FS.getAbsoluteWritePath() + filename + "-" + dateutil::getDateString() + ".png";
 	IMG_SavePNG(surface, fullFilename.c_str());
-#endif
 }
 
 void SDLFrontend::setCursorPosition (int x, int y)
@@ -465,11 +415,9 @@ void SDLFrontend::setCursorPosition (int x, int y)
 	x = clamp(x, 0, _width);
 	y = clamp(y, 0, _height);
 	UI::get().setCursorPosition(x, y);
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	if (!SDL_GetRelativeMouseMode()) {
 		SDL_WarpMouseInWindow(_window, x, y);
 	}
-#endif
 }
 
 void SDLFrontend::showCursor (bool show)
@@ -479,19 +427,13 @@ void SDLFrontend::showCursor (bool show)
 
 bool SDLFrontend::isFullscreen ()
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	return SDL_GetWindowFlags(_window) & SDL_WINDOW_FULLSCREEN;
-#else
-	return true;
-#endif
 }
 
 void SDLFrontend::setFullscreen (bool fullscreen)
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	const SDL_bool b = fullscreen ? SDL_TRUE : SDL_FALSE;
 	SDL_SetWindowFullscreen(_window, b);
-#endif
 }
 
 #define INIT_Subsystem(flags, fatal) if (!SDL_WasInit(flags)) { if (SDL_Init(flags) == -1) { sdlCheckError(); if (fatal) return -1; } }
@@ -509,7 +451,6 @@ void SDLFrontend::initUI (ServiceProvider& serviceProvider)
 
 void SDLFrontend::initJoystickAndHaptic ()
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	if (_haptic != nullptr) {
 		SDL_HapticClose(_haptic);
 		_haptic = nullptr;
@@ -553,7 +494,6 @@ void SDLFrontend::initJoystickAndHaptic ()
 	if (_haptic == nullptr) {
 		info(LOG_CLIENT, "no rumble support");
 	}
-#endif
 }
 
 int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eventHandler)
@@ -566,7 +506,6 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 
 	INIT_Subsystem(SDL_INIT_VIDEO, true);
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	INIT_Subsystem(SDL_INIT_JOYSTICK, false);
 	INIT_Subsystem(SDL_INIT_GAMECONTROLLER, false);
 	INIT_Subsystem(SDL_INIT_HAPTIC, false);
@@ -582,18 +521,10 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 		width = displayMode.w;
 	if (height == -1)
 		height = displayMode.h;
-#else
-	if (width == -1)
-		width = 1024;
-	if (height == -1)
-		height = 768;
-	SDL_SetVideoMode(width, height, 16, SDL_OPENGL);
-#endif
 
 	setGLAttributes();
 	setHints();
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	int doubleBuffered = 0;
 	SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &doubleBuffered);
 
@@ -627,18 +558,18 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 		info(LOG_CLIENT, String::format("use fake fullscreen for the first display: %i:%i", width, height));
 	}
 
-	_window = SDL_CreateWindow(APPFULLNAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
+	_window = SDL_CreateWindow(Singleton<Application>::getInstance().getName().c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
 	if (!_window) {
 		sdlCheckError();
 		return -1;
 	}
-#endif
+
+	SDL_DisableScreenSaver();
 
 	initRenderer();
 	resetColor();
 	GLContext::get().init();
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	if (SDL_SetWindowBrightness(_window, 1.0f) == -1)
 		sdlCheckError();
 
@@ -661,10 +592,7 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	SDL_GetWindowSize(_window, &width, &height);
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) == -1)
 		error(LOG_CLIENT, "no relative mouse mode support");
-#else
-	if (Config.isGrabMouse())
-		SDL_WM_GrabInput(SDL_GRAB_ON);
-#endif
+
 	SDL_ShowCursor(0);
 	info(LOG_CLIENT, String::format("actual resolution: %dx%d", width, height));
 	setVSync(ConfigManager::get().isVSync());
@@ -699,7 +627,6 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 
 void SDLFrontend::initRenderer ()
 {
-#ifndef DISABLE_SDL_RENDERER
 	info(LOG_CLIENT, "init sdl renderer");
 	const int renderers = SDL_GetNumRenderDrivers();
 	SDL_RendererInfo ri;
@@ -738,12 +665,10 @@ void SDLFrontend::initRenderer ()
 	info(LOG_CLIENT, String::format("max texture resolution: %i:%i", ri.max_texture_width, ri.max_texture_height));
 	SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
-#endif
 }
 
 void SDLFrontend::setGLAttributes ()
 {
-#ifndef DISABLE_SDL_RENDERER
 	SDL_ClearError();
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	sdlCheckError();
@@ -772,23 +697,19 @@ void SDLFrontend::setGLAttributes ()
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 	sdlCheckError();
 #endif
-#endif
 }
 
 void SDLFrontend::setHints ()
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 #ifdef __IPHONEOS__
 	SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
 #endif
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 	SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
-#endif
 }
 
 bool SDLFrontend::rumble (float strength, int lengthMillis)
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	if (!_haptic) {
 		return false;
 	}
@@ -798,9 +719,6 @@ bool SDLFrontend::rumble (float strength, int lengthMillis)
 		return false;
 	}
 	return true;
-#else
-	return false;
-#endif
 }
 
 bool SDLFrontend::isConsoleActive () const
@@ -808,19 +726,16 @@ bool SDLFrontend::isConsoleActive () const
 	return _console->isActive();
 }
 
-#ifndef DISABLE_SDL_RENDERER
 static int sortRenderFilledPolygon (const void* a, const void* b)
 {
 	return (*(const int*) a) - (*(const int*) b);
 }
-#endif
 
 int SDLFrontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& color)
 {
 	if (!vx || !vy || n < 3)
 		return -1;
 
-#ifndef DISABLE_SDL_RENDERER
 	ScopedArrayPtr<int> ints(new int[n]);
 	int miny = vy[0];
 	int maxy = vy[0];
@@ -874,9 +789,6 @@ int SDLFrontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& colo
 		}
 	}
 	return result;
-#else
-	return -1;
-#endif
 }
 
 int SDLFrontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
@@ -884,7 +796,6 @@ int SDLFrontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
 	if (n < 3 || vx == nullptr || vy == nullptr)
 		return -1;
 
-#ifndef DISABLE_SDL_RENDERER
 	int result = 0;
 	for (int i = 0; i < n; i++) {
 		if (i == 0) {
@@ -897,7 +808,4 @@ int SDLFrontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
 	}
 
 	return result;
-#else
-	return -1;
-#endif
 }

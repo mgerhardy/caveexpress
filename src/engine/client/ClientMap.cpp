@@ -33,12 +33,13 @@ ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, 
 
 ClientMap::~ClientMap ()
 {
-	close();
+	resetCurrentMap();
 }
 
 void ClientMap::close ()
 {
 	resetCurrentMap();
+	SoundControl.haltAll();
 }
 
 void ClientMap::start ()
@@ -75,7 +76,6 @@ void ClientMap::resetCurrentMap ()
 	_screenRumbleStrength = 0.0f;
 	_screenRumbleOffsetX = 0;
 	_screenRumbleOffsetY = 0;
-	SoundControl.haltAll();
 }
 
 void ClientMap::setZoom (const float zoom)
@@ -287,7 +287,7 @@ void ClientMap::update (uint32_t deltaTime)
 bool ClientMap::load (const std::string& name, const std::string& title)
 {
 	info(LOG_CLIENT, "load map " + name);
-	resetCurrentMap();
+	close();
 	_name = name;
 	_title = title;
 
@@ -358,15 +358,16 @@ void ClientMap::onData (ByteStream &data)
 		data.readShort();
 		const ScopedPtr<IProtocolMessage> msg(factory.create(data));
 		if (!msg) {
-			error(LOG_SERVER, "no message for type " + string::toString(static_cast<int>(data.readByte())));
+			error(LOG_NET, "no message for type " + string::toString(static_cast<int>(data.readByte())));
 			continue;
 		}
 
+		debug(LOG_NET, String::format("received message type %i", msg->getId()));
 		IClientProtocolHandler* handler = ProtocolHandlerRegistry::get().getClientHandler(*msg);
 		if (handler != nullptr)
 			handler->execute(*msg);
 		else
-			error(LOG_SERVER, String::format("no client handler for message type %i", msg->getId()));
+			error(LOG_NET, String::format("no client handler for message type %i", msg->getId()));
 	}
 }
 

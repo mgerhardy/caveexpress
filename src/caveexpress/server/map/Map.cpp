@@ -416,19 +416,24 @@ void Map::resetCurrentMap ()
 	_name.clear();
 }
 
+inline const ThemeType& getTheme (const std::string& name)
+{
+	const std::size_t themeSep = name.find("-");
+	if (themeSep == std::string::npos)
+		return ThemeTypes::ROCK;
+	const ThemeType& t = ThemeType::getByName(name.substr(themeSep + 1, name.size() - (themeSep + 1)));
+	if (!t.isNone())
+		return t;
+	return ThemeTypes::ROCK;
+}
+
 inline IMapContext* getMapContext (const std::string& name)
 {
 	const std::string randomMapBase = "random";
 	if (name.compare(0, randomMapBase.size(), randomMapBase) == 0) {
-		const std::size_t themeSep = name.find("-");
-		const ThemeType* theme = &ThemeTypes::ROCK;
-		if (themeSep != std::string::npos) {
-			const ThemeType& t = ThemeType::getByName(name.substr(themeSep + 1, name.size() - (themeSep + 1)));
-			if (!t.isNone())
-				theme = &t;
-		}
-		info(LOG_MAP, "use theme " + theme->name);
-		RandomMapContext *ctx = new RandomMapContext(name, *theme, 8, 18, 20, 14);
+		const ThemeType& theme = getTheme(name);
+		info(LOG_MAP, "use theme " + theme.name);
+		RandomMapContext *ctx = new RandomMapContext(name, theme, 8, 18, 20, 14);
 		return ctx;
 	}
 	return new LUAMapContext(name);
@@ -1445,7 +1450,7 @@ void Map::update (uint32_t deltaTime)
 				const Player* p = *i;
 				GameEvent.failedMap(p->getClientId(), currentName, getFailReason(p), getTheme());
 			}
-			System.track("MapState", "failed:" + currentName);
+			System.track("mapstate", "failed:" + currentName);
 		} else {
 			load(currentName);
 		}

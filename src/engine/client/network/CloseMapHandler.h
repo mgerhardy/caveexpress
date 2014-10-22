@@ -23,7 +23,7 @@ public:
 			error(LOG_CLIENT, "clientmap is not active");
 			return;
 		}
-		System.track("MapState", "close:" + _map.getName());
+		System.track("mapstate", "close:" + _map.getName());
 		info(LOG_CLIENT, "close the clientmap");
 		ClientPlayer* player = _map.getPlayer();
 		if (player != nullptr)

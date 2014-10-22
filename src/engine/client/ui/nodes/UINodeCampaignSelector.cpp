@@ -7,8 +7,8 @@
 UINodeCampaignSelector::UINodeCampaignSelector (IFrontend *frontend, CampaignManager &campaignManager, int cols, int rows) :
 		UINodeBackgroundSelector<CampaignPtr>(frontend, cols, rows), _campaignManager(campaignManager)
 {
-	setColsRowsFromTexture("icon-campaign");
 	defaults();
+	setColsRowsFromTexture("icon-campaign");
 	reset();
 }
 

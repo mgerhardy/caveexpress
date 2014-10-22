@@ -32,7 +32,7 @@ static SDLBackend *INSTANCE;
 static void runFrameEmscripten() {
 	if (!INSTANCE->isRunning()) {
 		Config.shutdown();
-		System.track("SDLBackend", "shutdown");
+		System.track("step", "sdl backend shutdown");
 		info(LOG_BACKEND, "shut down the main loop");
 		emscripten_cancel_main_loop();
 		return;
@@ -45,9 +45,7 @@ static void runFrameEmscripten() {
 SDLBackend::SDLBackend () :
 		_dedicated(false), _running(true), _frontend(nullptr)
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_SetEventFilter(handleAppEvents, this);
-#endif
 
 	Commands.registerCommand(CMD_SCREENSHOT, bind(SDLBackend, screenShot));
 	Commands.registerCommand(CMD_MAP_START, bind(SDLBackend, loadMap))->setCompleter(loadMapCompleter);
@@ -86,12 +84,6 @@ int SDLBackend::init (int argc, char **argv)
 
 	srand(time(nullptr));
 
-#ifdef EMSCRIPTEN
-	FS.get().init("http", "127.0.0.1/");
-#else
-	FS.get().init("file", "");
-#endif
-
 	Config.get().init(this, argc, argv);
 	Commands.registerCommand(CMD_QUIT, new CmdQuit());
 
@@ -117,12 +109,10 @@ int SDLBackend::init (int argc, char **argv)
 		}
 	}
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 #ifdef DEBUG
 	SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
 #else
 	//SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
-#endif
 #endif
 
 	const int frontendInit = _frontend->init(Config.getWidth(), Config.getHeight(), Config.isFullscreen(), _eventHandler);
@@ -284,7 +274,7 @@ void SDLBackend::runFrame ()
 
 void SDLBackend::mainLoop (int argc, char **argv)
 {
-	System.track("SDLBackend", "start");
+	System.track("step", "sdl backend start");
 
 	if (init(argc, argv) == -1) {
 		System.exit("Initialization error", 1);
@@ -299,17 +289,27 @@ void SDLBackend::mainLoop (int argc, char **argv)
 #ifdef EMSCRIPTEN
 	emscripten_set_main_loop(runFrameEmscripten, 0, 1);
 #else
-	while (_running) {
-		runFrame();
 
-		SDL_Delay(1);
+	static const double fpsCap = Config.getConfigVar("fpslimit", "60.0", true)->getFloatValue();
+	info(LOG_BACKEND, String::format("Run the game at %f frames per second", fpsCap));
+	double nextFrame = static_cast<double>(SDL_GetTicks());
+	while (_running) {
+		const double tick = static_cast<double>(SDL_GetTicks());
+		if (nextFrame > tick) {
+			runFrame();
+		}
+		const int32_t delay = static_cast<int32_t>(nextFrame - tick);
+		if (delay > 0) {
+			SDL_Delay(delay);
+		}
+		nextFrame += 1000.0 / fpsCap;
 	}
 
 	Config.shutdown();
 	_serviceProvider.getNetwork().shutdown();
 
 #endif
-	System.track("SDLBackend", "shutdown");
+	System.track("step", "sdl backend shutdown");
 }
 
 bool SDLBackend::onKeyRelease (int32_t key)

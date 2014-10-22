@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 LANG=C
 TOOL=memcheck

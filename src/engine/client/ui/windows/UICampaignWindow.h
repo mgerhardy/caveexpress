@@ -16,7 +16,7 @@ private:
 	UINodeButton *_buttonRight;
 	UINodeCampaignSelector* _campaign;
 public:
-	UICampaignWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager);
+	UICampaignWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int cols = 6, int rows = 4);
 	virtual ~UICampaignWindow ();
 
 	// UIWindow

@@ -3,7 +3,6 @@
 #include "engine/common/CommandSystem.h"
 #include "engine/common/IFrontend.h"
 #include "engine/common/Logger.h"
-#include "engine/common/Version.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/EventHandler.h"
 #include "engine/common/System.h"

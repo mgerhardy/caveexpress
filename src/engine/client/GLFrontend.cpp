@@ -17,19 +17,15 @@ inline TexNum getTexNum (void *textureData)
 GLFrontend::GLFrontend (SharedPtr<IConsole> console) :
 		SDLFrontend(console), _maxTextureUnits(0), _currentTextureUnit(nullptr), _rx(1.0f), _ry(1.0f)
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	_context = nullptr;
-#endif
 
 	memset(&_viewPort, 0, sizeof(_viewPort));
 }
 
 GLFrontend::~GLFrontend ()
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	if (_context)
 		SDL_GL_DeleteContext(_context);
-#endif
 }
 
 inline bool GLFrontend::invalidTexUnit (int textureUnit) const
@@ -39,9 +35,7 @@ inline bool GLFrontend::invalidTexUnit (int textureUnit) const
 
 void GLFrontend::setGLAttributes ()
 {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-#endif
 }
 
 void GLFrontend::setHints ()
@@ -79,9 +73,7 @@ void GLFrontend::initRenderer ()
 #ifdef SDL_VIDEO_OPENGL
 	info(LOG_CLIENT, "init opengl renderer with shaders: " + ConfigManager::get().getConfigVar("shader")->getValue());
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	_context = SDL_GL_CreateContext(_window);
-#endif
 
 	glGetIntegerv(GL_MAX_TEXTURE_UNITS, &_maxTextureUnits);
 	info(LOG_CLIENT, String::format("max texture units: %i", _maxTextureUnits));
@@ -153,9 +145,9 @@ void GLFrontend::selectTextureUnit (TexUnit &textureUnit)
 		return;
 
 	_currentTextureUnit = &textureUnit;
+#ifdef SDL_VIDEO_OPENGL
 	if (!GLContext::get().isMultiTextureSupported())
 		return;
-#ifdef SDL_VIDEO_OPENGL
 	GLContext::get().ctx_glActiveTexture(textureUnit.textureUnit);
 	GLContext::get().ctx_glClientActiveTexture(textureUnit.textureUnit);
 #endif
@@ -312,16 +304,16 @@ void GLFrontend::destroyTexture (void *data)
 bool GLFrontend::loadTexture (Texture *texture, const std::string& filename)
 {
 #ifdef SDL_VIDEO_OPENGL
-	FilePtr file = FS.getPic(filename + ".png");
-	SDL_RWops *src = FS.createRWops(file->getURI());
+	const std::string file = FS.getFile(FS.getPicsDir() + filename + ".png")->getName();
+	SDL_RWops *src = FS.createRWops(file);
 	if (src == nullptr) {
-		error(LOG_CLIENT, "could not load the file: " + file->getName());
+		error(LOG_CLIENT, "could not load the file: " + file);
 		return false;
 	}
 	SDL_Surface *surface = IMG_Load_RW(src, 1);
 	if (!surface) {
 		sdlCheckError();
-		error(LOG_CLIENT, "could not load the texture: " + file->getName());
+		error(LOG_CLIENT, "could not load the texture: " + file);
 		return false;
 	}
 
@@ -445,9 +437,7 @@ void GLFrontend::updateViewport (int x, int y, int width, int height)
 void GLFrontend::renderBegin ()
 {
 #ifdef SDL_VIDEO_OPENGL
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_GL_MakeCurrent(_window, _context);
-#endif
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 #endif
@@ -456,11 +446,7 @@ void GLFrontend::renderBegin ()
 void GLFrontend::renderEnd ()
 {
 #ifdef SDL_VIDEO_OPENGL
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_GL_SwapWindow(_window);
-#else
-	SDL_GL_SwapBuffers();
-#endif
 	GL_checkError();
 #endif
 }

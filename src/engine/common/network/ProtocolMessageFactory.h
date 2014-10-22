@@ -55,7 +55,7 @@ public:
 	}
 
 protected:
-	virtual IProtocolMessage *getForProtocolId (ByteStream& stream, const protocolId& type) {
+	virtual IProtocolMessage *getForProtocolId (ByteStream& stream, const protocolId& type) const {
 		switch (type) {
 		case protocol::PROTO_PING:
 			return new PingMessage(stream);
@@ -141,5 +141,5 @@ public:
 
 	virtual ~ProtocolMessageFactory() {}
 
-	IProtocolMessage *create (ByteStream& stream);
+	IProtocolMessage *create (ByteStream& stream) const;
 };
