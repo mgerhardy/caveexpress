@@ -62,12 +62,12 @@ typedef ShapeMap::iterator ShapeIter;
 Map::Map () :
 		IMap(), _world(nullptr), _frontend(nullptr), _serviceProvider(nullptr), _theme(&ThemeTypes::ROCK)
 {
-	Commands.registerCommand(CMD_MAP_PAUSE, bind(Map, triggerPause));
-	Commands.registerCommand(CMD_MAP_RESTART, bind(Map, triggerRestart));
-	Commands.registerCommand(CMD_MAP_DEBUG, bind(Map, triggerDebug));
-	Commands.registerCommand(CMD_START, bind(Map, startMap));
-	Commands.registerCommand(CMD_KILL, bind(Map, killPlayers));
-	Commands.registerCommand(CMD_FINISHMAP, bind(Map, finishMap));
+	Commands.registerCommand(CMD_MAP_PAUSE, bindFunction(Map, triggerPause));
+	Commands.registerCommand(CMD_MAP_RESTART, bindFunction(Map, triggerRestart));
+	Commands.registerCommand(CMD_MAP_DEBUG, bindFunction(Map, triggerDebug));
+	Commands.registerCommand(CMD_START, bindFunction(Map, startMap));
+	Commands.registerCommand(CMD_KILL, bindFunction(Map, killPlayers));
+	Commands.registerCommand(CMD_FINISHMAP, bindFunction(Map, finishMap));
 
 	resetCurrentMap();
 }

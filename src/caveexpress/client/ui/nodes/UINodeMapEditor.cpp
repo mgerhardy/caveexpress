@@ -91,7 +91,7 @@ UINodeMapEditor::UINodeMapEditor (IFrontend *frontend, IMapManager& mapManager) 
 
 	doClear();
 
-	Commands.registerCommand(CMD_LOADMAP, bind(UINodeMapEditor, loadMap));
+	Commands.registerCommand(CMD_LOADMAP, bindFunction(UINodeMapEditor, loadMap));
 }
 
 UINodeMapEditor::~UINodeMapEditor ()

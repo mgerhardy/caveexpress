@@ -122,8 +122,8 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	info(LOG_CONFIG, "     sound enabled: " + _soundEnabled->getValue());
 	info(LOG_CONFIG, "     debug enabled: " + _debug->getValue());
 
-	CommandSystem::get().registerCommand(CMD_SETVAR, bind(ConfigManager, setConfig));
-	CommandSystem::get().registerCommand(CMD_LISTVARS, bind(ConfigManager, listConfigVariables));
+	CommandSystem::get().registerCommand(CMD_SETVAR, bindFunction(ConfigManager, setConfig));
+	CommandSystem::get().registerCommand(CMD_LISTVARS, bindFunction(ConfigManager, listConfigVariables));
 
 	for (int i = 0; i < argc; i++) {
 		if (argv[i][0] != '-')

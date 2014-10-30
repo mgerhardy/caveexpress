@@ -31,7 +31,7 @@ void IMapManager::init ()
 {
 	loadMaps();
 
-	Commands.registerCommand(CMD_LIST_MAPS, bind(IMapManager, listMaps));
+	Commands.registerCommand(CMD_LIST_MAPS, bindFunction(IMapManager, listMaps));
 }
 
 void IMapManager::listMaps ()

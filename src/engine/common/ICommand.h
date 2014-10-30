@@ -134,4 +134,4 @@ public:
 
 typedef SharedPtr<ICommand> CommandPtr;
 
-#define bind(className, method) new CommandFunctor<className>(this, &className::method)
+#define bindFunction(className, method) new CommandFunctor<className>(this, &className::method)

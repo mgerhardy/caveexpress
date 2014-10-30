@@ -30,8 +30,8 @@ BotBackend::BotBackend () :
 {
 	_eventHandler.registerObserver(this);
 	Commands.registerCommand(CMD_QUIT, new CmdQuit());
-	Commands.registerCommand("connect", bind(BotBackend, connect));
-	Commands.registerCommand("ping", bind(BotBackend, ping));
+	Commands.registerCommand("connect", bindFunction(BotBackend, connect));
+	Commands.registerCommand("ping", bindFunction(BotBackend, ping));
 }
 
 BotBackend::~BotBackend ()

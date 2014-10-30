@@ -43,13 +43,13 @@
 Map::Map () :
 		IMap(), _frontend(nullptr), _serviceProvider(nullptr), _forcedFinish(false), _autoSolve(false), _nextSolveStep(0)
 {
-	Commands.registerCommand(CMD_MAP_PAUSE, bind(Map, triggerPause));
-	Commands.registerCommand(CMD_MAP_RESTART, bind(Map, triggerRestart));
-	Commands.registerCommand(CMD_START, bind(Map, startMap));
-	Commands.registerCommand(CMD_FINISHMAP, bind(Map, finishMap));
-	Commands.registerCommand("map_print", bind(Map, printMap));
-	Commands.registerCommand("solve", bind(Map, solveMap));
-	Commands.registerCommand("undo", bind(Map, undo));
+	Commands.registerCommand(CMD_MAP_PAUSE, bindFunction(Map, triggerPause));
+	Commands.registerCommand(CMD_MAP_RESTART, bindFunction(Map, triggerRestart));
+	Commands.registerCommand(CMD_START, bindFunction(Map, startMap));
+	Commands.registerCommand(CMD_FINISHMAP, bindFunction(Map, finishMap));
+	Commands.registerCommand("map_print", bindFunction(Map, printMap));
+	Commands.registerCommand("solve", bindFunction(Map, solveMap));
+	Commands.registerCommand("undo", bindFunction(Map, undo));
 
 	resetCurrentMap();
 }
