@@ -354,7 +354,7 @@ else
 SQLITE3_SRCS              = libs/sqlite/sqlite3.c
 SQLITE3_CFLAGS           ?= -Isrc/libs/sqlite -DSQLITE_HAVE_ISNAN
 endif
-SQLITE3_LIBS             += -lpthread
+SQLITE3_LIBS             +=
 endif
 ifeq ($(HAVE_TINYXML2_H),1)
 TINYXML2_SRCS             =
