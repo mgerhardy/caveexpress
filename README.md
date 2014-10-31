@@ -27,6 +27,9 @@ Features:
 
 Cross compile from linux for windows:
 * Set up a cross compile tool chain like MXE
+** git clone https://github.com/mxe/mxe.git
+** cd mxe && make sdl2 sdl2_image sdl2_mixer
+** echo "PATH=path/to/mxe/usr/bin/" ~/.mxe.settings
 * ./configure --target-os=mingw64
 * make
 
