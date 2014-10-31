@@ -1,11 +1,5 @@
 TARGET             := cavepacker
 
-# if the linking should be static
-$(TARGET)_STATIC   ?= $(STATIC)
-ifeq ($($(TARGET)_STATIC),1)
-$(TARGET)_LDFLAGS  += -static
-endif
-
 $(TARGET)_LINKER   := $(CXX)
 $(TARGET)_FILE     := $(TARGET)$(EXE_EXT)
 $(TARGET)_LDFLAGS  += $(SDL_LIBS) $(SDL_IMAGE_LIBS) $(SDL_MIXER_LIBS) $(OPENGL_LIBS) $(OGG_LIBS) $(VORBIS_LIBS) $(PNG_LIBS) -lz $(SO_LIBS) $(LUA_LIBS) $(SQLITE3_LIBS) $(SDL_NET_LIBS) $(SDL_RWHTTP_LIBS)

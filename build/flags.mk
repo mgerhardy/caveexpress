@@ -1,10 +1,5 @@
-ifeq ($(STATIC),1)
-PKG_CONFIG_LIBS_FLAGS := --static --libs
-PKG_CONFIG_CFLAGS_FLAGS := --static --cflags
-else
 PKG_CONFIG_LIBS_FLAGS := --libs
 PKG_CONFIG_CFLAGS_FLAGS := --cflags
-endif
 
 # get only the variables with plain names
 MAKE_ENV := $(shell echo '$(.VARIABLES)' | awk -v RS=' ' '/^[a-zA-Z0-9_]+$$/')

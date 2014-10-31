@@ -1,11 +1,5 @@
 TARGET             := tests
 
-# if the linking should be static
-$(TARGET)_STATIC   ?= $(STATIC)
-ifeq ($($(TARGET)_STATIC),1)
-$(TARGET)_LDFLAGS  += -static
-endif
-
 $(TARGET)_LINKER   := $(CXX)
 $(TARGET)_FILE     := $(TARGET)$(EXE_EXT)
 $(TARGET)_LDFLAGS  += $($(APPNAME)_LDFLAGS) $(GTEST_LIBS)

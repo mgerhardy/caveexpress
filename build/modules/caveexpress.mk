@@ -1,11 +1,5 @@
 TARGET             := caveexpress
 
-# if the linking should be static
-$(TARGET)_STATIC   ?= $(STATIC)
-ifeq ($($(TARGET)_STATIC),1)
-$(TARGET)_LDFLAGS  += -static
-endif
-
 $(TARGET)_LINKER   := $(CXX)
 $(TARGET)_FILE     := $(TARGET)$(EXE_EXT)
 $(TARGET)_LDFLAGS  += $(SDL_LIBS) $(SDL_IMAGE_LIBS) $(SDL_MIXER_LIBS) $(ZLIB_LIBS) $(OPENGL_LIBS) $(OGG_LIBS) $(VORBIS_LIBS) $(PNG_LIBS) $(NCURSES_LIBS) $(SO_LIBS) $(LUA_LIBS) $(SQLITE3_LIBS) $(TINYXML2_LIBS) $(SDL_NET_LIBS) $(SDL_RWHTTP_LIBS)

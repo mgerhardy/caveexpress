@@ -32,9 +32,6 @@ MODE=
 CROSS=
 USE_CCACHE=
 HAVE_NCURSES_H=0
-STATIC=
-STATIC_SDL=
-DISABLE_DEPENDENCY_TRACKING=
 DEFAULT_COMPILER_CC=cc
 DEFAULT_COMPILER_CXX=c++
 
@@ -166,7 +163,6 @@ makefile_local() {
 	add_to_makefile_local_quote CXX "Found cxx ${CXX}"
 	add_to_makefile_local_quote CROSS "Using tools prefix ${CROSS}"
 	add_to_makefile_local_quote PREFIX "Using prefix ${PREFIX}"
-	add_to_makefile_local_quote DISABLE_SDL_RENDERER "Disable SDL_Renderer" "Use SDL_Renderer"
 
 	echo "Build modules:"
 	for i in `get_modules`; do
@@ -336,8 +332,6 @@ usage() {
 	echo " --enable-ccache            use ccache for building"
 	echo " --enable-profiling         activates profiling"
 	echo " --enable-release           build with optimizations"
-	echo " --enable-static            enable static linking"
-	echo " --enable-static-sdl        enable static linking for the sdl libs only"
 	echo " --enable-hd                enable the HD version of the game (e.g. without ads)"
 	echo " --disable-network          disable network support"
 	echo " --enable-network           enable network support"
@@ -366,11 +360,7 @@ usage() {
 	echo " --app=                     the game to compile"
 	echo "  * caveexpress             (the default)"
 	echo "  * cavepacker"
-	echo " --disable-dependency-tracking"
-	echo " --disable-sdl-renderer     disable the SDL renderer frontend"
 	echo " --disable-sdl-rwhttp       disable the SDL_rwhttp use"
-	echo " --clang                    build with clang"
-	echo " --gcc                      build with gcc (default)"
 	exit 1
 }
 
@@ -519,26 +509,9 @@ while [ $# -gt 0 ]; do
 		MODE=debug
 		DEBUG=1
 		;;
-	--enable-static)
-		STATIC=1
-		;;
-	--enable-static-sdl)
-		STATIC_SDL=1
-		;;
 	--enable-hd)
 		HD_VERSION=1
 		JAVA_PACKAGE=${JAVA_PACKAGE}hd
-		;;
-	--disable-static)
-		STATIC=
-		;;
-	--clang)
-		DEFAULT_COMPILER_CC=clang
-		DEFAULT_COMPILER_CXX=clang++
-		;;
-	--gcc)
-		DEFAULT_COMPILER_CC=cc
-		DEFAULT_COMPILER_CXX=c++
 		;;
 	--enable-profiling)
 		PROFILING=1
@@ -551,12 +524,6 @@ while [ $# -gt 0 ]; do
 		;;
 	--enable-network)
 		NETWORKING=1
-		;;
-	--disable-dependency-tracking)
-		DISABLE_DEPENDENCY_TRACKING=1
-		;;
-	--disable-sdl-renderer)
-		set_var "DISABLE_SDL_RENDERER" "1"
 		;;
 	--disable-sdl-rwhttp)
 		set_var "HAVE_SDL_RWHTTP_H" "0"
@@ -627,36 +594,29 @@ caveexpress)
 esac
 
 case ${TARGET_OS} in
+linux32)
+	STEAM_RUNTIME_TARGET_ARCH=i386
+	TARGET_ARCH=i386
+	CONFIG_H_NAME=linux
+	HD_VERSION=1
+	enable_only ${APPNAME}
+	;;
+linux64)
+	STEAM_RUNTIME_TARGET_ARCH=amd64
+	HD_VERSION=1
+	CONFIG_H_NAME=linux
+	TARGET_ARCH=x86_64
+	enable_only ${APPNAME}
+	;;
 android)
 	;;
 ouya)
 	CONFIG_H_NAME="android"
 	HD_VERSION=1
-	;;
-*)
-	HD_VERSION=1
-	;;
-esac
-
-case ${TARGET_OS} in
-linux32)
-	STEAM_RUNTIME_TARGET_ARCH=i386
-	TARGET_ARCH=i386
-	CONFIG_H_NAME=linux
-	enable_only ${APPNAME}
-	;;
-linux64)
-	STEAM_RUNTIME_TARGET_ARCH=amd64
-	CONFIG_H_NAME=linux
-	TARGET_ARCH=x86_64
-	enable_only ${APPNAME}
-	;;
-linux)
-	;;
-ouya)
 	JAVA_PACKAGE=${JAVA_PACKAGE}ouya
 	;;
 *)
+	HD_VERSION=1
 	enable_only ${APPNAME}
 	;;
 esac
@@ -693,7 +653,6 @@ html5)
 	;;
 linux32|linux64)
 	STEAM_RUNTIME_ROOT=${STEAM_ROOT}/runtime/${STEAM_RUNTIME_TARGET_ARCH}
-	STATIC_SDL=1
 	HAVE_NCURSES_H=0
 	HAVE_SDL_IMAGE_H=0
 	HAVE_SDL_MIXER_H=0

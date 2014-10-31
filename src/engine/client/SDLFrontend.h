@@ -12,9 +12,7 @@
 
 class SDLFrontend: public IFrontend, public NonCopyable, public IEventObserver {
 private:
-#ifndef DISABLE_SDL_RENDERER
 	SDL_Renderer *_renderer;
-#endif
 protected:
 	EventHandler *_eventHandler;
 	SDL_Window *_window;

@@ -31,9 +31,7 @@ TARGETS     := $(sort $(patsubst build/modules/%.mk,%,$(wildcard build/modules/*
 DISABLED    := $(filter-out $(TARGETS),$(TARGETS_TMP))
 STEAM_ROOT  ?= /home/$(USER)/Downloads/steam-runtime-sdk_2013-09-05
 
-ifeq ($(DISABLE_DEPENDENCY_TRACKING),)
-  DEP_FLAGS := -MP -MD -MT $$@
-endif
+DEP_FLAGS   := -MP -MD -MT $$@
 CONFIGURE_PREFIX ?=
 
 CONFIGURE_OPTIONS += --prefix=$(PREFIX) --target-os=$(TARGET_OS) --app=$(APPNAME)
