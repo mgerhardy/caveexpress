@@ -155,8 +155,6 @@ ifeq ($(HAVE_SDL_IMAGE_H),1)
 SDL_IMAGE_LIBS           += $(call PKG_LIBS,SDL2_image)
 SDL_IMAGE_CFLAGS         ?= $(call PKG_CFLAGS,SDL2_image)
 SDL_IMAGE_SRCS            =
-PNG_CFLAGS               ?= $(call PKG_CFLAGS,png,png)
-PNG_LIBS                 += $(call PKG_LIBS,png,png)
 else
 SDL_IMAGE_LIBS           +=
 SDL_IMAGE_CFLAGS         ?= -DLOAD_PNG -Isrc/libs/SDL_image -Isrc/libs/libpng-1.6.2 -DPNG_NO_CONFIG_H -DHAVE_SDL_IMAGE_H
