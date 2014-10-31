@@ -14,6 +14,9 @@ extern "C" int main (int argc, char *argv[])
 	const GamePtr& game = Singleton<GameRegistry>::getInstance().getGame();
 	app.setOrganisation("caveproductions");
 	app.setName(game->getName());
+#ifdef VERSION
+	app.setVersion( VERSION );
+#endif
 
 	getSystem().init();
 	const std::string workingDir = getSystem().getCurrentWorkingDir();
