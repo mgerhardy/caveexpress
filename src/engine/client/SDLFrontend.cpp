@@ -600,7 +600,7 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	const int initState = IMG_Init(IMG_INIT_PNG);
 	if (!(initState & IMG_INIT_PNG)) {
 		sdlCheckError();
-		return -1;
+		System.exit("No png support", 1);
 	}
 
 	_width = width;
