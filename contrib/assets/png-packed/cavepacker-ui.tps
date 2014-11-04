@@ -204,10 +204,10 @@
             <filename>../png/cavepacker/ui/icon-star-enabled.png</filename>
             <filename>../png/cavepacker/ui/ui-button-start.png</filename>
             <filename>../png/cavepacker/ui/icon-close.png</filename>
-            <filename>../png/cavepacker/icon-campaign.png</filename>
-            <filename>../png/cavepacker/xsokoban-campaign.png</filename>
-            <filename>../png/cavepacker/ksokoban-campaign.png</filename>
-            <filename>../png/cavepacker/gri-campaign.png</filename>
+            <filename>../png/cavepacker/ui/icon-campaign.png</filename>
+            <filename>../png/cavepacker/ui/xsokoban-campaign.png</filename>
+            <filename>../png/cavepacker/ui/ksokoban-campaign.png</filename>
+            <filename>../png/cavepacker/ui/gri-campaign.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
