@@ -146,27 +146,27 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/npc-blowing-dazed-DIR-middle-01.png</filename>
-            <filename>../png/npc-blowing-dazed-DIR-middle-02.png</filename>
-            <filename>../png/npc-blowing-dazed-DIR-middle-03.png</filename>
-            <filename>../png/npc-blowing-dazed-DIR-middle-04.png</filename>
-            <filename>../png/npc-blowing-dazed-DIR-middle-05.png</filename>
-            <filename>../png/npc-blowing-dazed-DIR-middle-06.png</filename>
-            <filename>../png/npc-blowing-dazed-DIR-middle-07.png</filename>
-            <filename>../png/npc-blowing-dazed-DIR-middle-08.png</filename>
-            <filename>../png/npc-blowing-idle-DIR-middle-01.png</filename>
-            <filename>../png/npc-blowing-idle-DIR-middle-02.png</filename>
-            <filename>../png/npc-blowing-idle-DIR-middle-03.png</filename>
-            <filename>../png/npc-blowing-idle-DIR-middle-04.png</filename>
-            <filename>../png/npc-blowing-knockout-DIR-middle-01.png</filename>
-            <filename>../png/npc-blowing-knockout-DIR-middle-02.png</filename>
-            <filename>../png/npc-blowing-knockout-DIR-middle-03.png</filename>
-            <filename>../png/npc-blowing-wakeup-DIR-middle-01.png</filename>
-            <filename>../png/npc-blowing-wakeup-DIR-middle-02.png</filename>
-            <filename>../png/npc-blowing-wakeup-DIR-middle-03.png</filename>
-            <filename>../png/npc-blowing-wakeup-DIR-middle-04.png</filename>
-            <filename>../png/npc-blowing-wakeup-DIR-middle-05.png</filename>
-            <filename>../png/npc-blowing-wakeup-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-blowing-dazed-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-blowing-dazed-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-blowing-dazed-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-blowing-dazed-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-blowing-dazed-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-blowing-dazed-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-blowing-dazed-DIR-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-blowing-dazed-DIR-middle-08.png</filename>
+            <filename>../png/caveexpress/npc-blowing-idle-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-blowing-idle-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-blowing-idle-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-blowing-idle-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-blowing-knockout-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-blowing-knockout-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-blowing-knockout-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-blowing-wakeup-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-blowing-wakeup-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-blowing-wakeup-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-blowing-wakeup-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-blowing-wakeup-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-blowing-wakeup-DIR-middle-06.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
