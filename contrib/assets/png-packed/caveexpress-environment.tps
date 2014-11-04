@@ -179,7 +179,7 @@
             <filename>../png/caveexpress/tile-geyser-rock-01-active-middle-05.png</filename>
             <filename>../png/caveexpress/tile-geyser-rock-01-active-middle-06.png</filename>
             <filename>../png/caveexpress/tile-geyser-rock-01-idle-middle-01.png</filename>
-            <filename>../png/caveexpress/caveexpress/tile-reference.png</filename>
+            <filename>../png/caveexpress/tile-reference.png</filename>
             <filename>../png/caveexpress/tile-background-04-back-01.png</filename>
             <filename>../png/caveexpress/tile-rock-slope-DIR-01-middle-01.png</filename>
             <filename>../png/caveexpress/tile-ground-ledge-DIR-01-middle-01.png</filename>
