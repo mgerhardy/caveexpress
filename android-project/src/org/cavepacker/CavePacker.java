@@ -15,6 +15,16 @@ public class CavePacker extends BaseGameAdsActivity {
 	}
 
 	@Override
+	protected String getAdUnitId() {
+		return "ca-app-pub-5370378935428600/7187948375";
+	}
+
+	@Override
+	protected String getInterstitialAdUnitId() {
+		return "ca-app-pub-5370378935428600/3242099978";
+	}
+
+	@Override
 	protected void addSkus(List<String> moreSkus) {
 		super.addSkus(moreSkus);
 		moreSkus.add("autosolve");

@@ -106,7 +106,7 @@ public abstract class BaseGameAdsActivity extends BaseGameActivity {
 		super.onCreate(savedInstanceState);
 
 		interstitial = new InterstitialAd(this);
-		interstitial.setAdUnitId("ca-app-pub-5370378935428600/4094881177");
+		interstitial.setAdUnitId(getInterstitialAdUnitId());
 		interstitial.setAdListener(new AdListener() {
 			@Override
 			public void onAdClosed() {
@@ -116,7 +116,7 @@ public abstract class BaseGameAdsActivity extends BaseGameActivity {
 		reloadInterstitial();
 
 		adview = new AdView(mSingleton);
-		adview.setAdUnitId("ca-app-pub-5370378935428600/2618147974");
+		adview.setAdUnitId(getAdUnitId());
 		adview.setAdSize(getAdSize());
 		adview.setId(AdViewID);
 		adview.setAdListener(new AdListener() {
@@ -150,6 +150,10 @@ public abstract class BaseGameAdsActivity extends BaseGameActivity {
 		});
 		reloadAd();
 	}
+
+	protected abstract String getInterstitialAdUnitId();
+
+	protected abstract String getAdUnitId();
 
 	private void reloadAd() {
 		adview.loadAd(new AdRequest.Builder().build());
