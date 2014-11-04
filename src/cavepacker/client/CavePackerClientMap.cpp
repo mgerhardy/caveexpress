@@ -18,6 +18,7 @@
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/DateUtil.h"
 #include "cavepacker/shared/CavePackerAnimation.h"
+#include "cavepacker/shared/CavePackerEntityType.h"
 #include <SDL.h>
 
 CavePackerClientMap::CavePackerClientMap (int x, int y, int width, int height, IFrontend *frontend,
@@ -34,6 +35,8 @@ void CavePackerClientMap::update (uint32_t deltaTime)
 {
 	ClientMap::update(deltaTime);
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
+		if (i->second->getType() != EntityTypes::PACKAGE)
+			continue;
 		const bool delivered = i->second->getState() == CavePackerEntityStates::DELIVERED;
 		if (delivered) {
 			i->second->setAnimationType(Animations::DELIVERED);

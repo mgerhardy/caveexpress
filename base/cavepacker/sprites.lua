@@ -41,7 +41,7 @@ sprites = {
 		frames = {
 			{}, --back
 			{}, --middle
-			{ "item-package-placed-middle-01", }, --front
+			{ "item-package-delivered-middle-01", }, --front
 		}
 	},
 
