@@ -13,11 +13,11 @@ class Texture;
 class BitmapFont;
 typedef SharedPtr<BitmapFont> BitmapFontPtr;
 
-#define TINY_FONT "font-rock8"
-#define SMALL_FONT "font-rock10"
-#define MEDIUM_FONT "font-rock12"
-#define HUGE_FONT "font-rock24"
-#define LARGE_FONT "font-rock48"
+#define TINY_FONT "font-8"
+#define SMALL_FONT "font-10"
+#define MEDIUM_FONT "font-12"
+#define HUGE_FONT "font-24"
+#define LARGE_FONT "font-48"
 
 #define DEFAULT_FONT MEDIUM_FONT
 
