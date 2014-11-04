@@ -173,37 +173,37 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/ui/icon-settings.png</filename>
-            <filename>../png/ui/icon-arrow-left.png</filename>
-            <filename>../png/ui/icon-scroll-page-DIR.png</filename>
-            <filename>../png/ui/mouse.png</filename>
-            <filename>../png/ui/map-icon-unlocked.png</filename>
-            <filename>../png/ui/icon-sound-off.png</filename>
-            <filename>../png/ui/icon-sound-on.png</filename>
-            <filename>../png/ui/icon-back-to-root.png</filename>
-            <filename>../png/ui/ui-scene-caveart-ice.png</filename>
-            <filename>../png/ui/ui-scene-ground1-ice.png</filename>
-            <filename>../png/ui/ui-scene-ground2-ice.png</filename>
-            <filename>../png/ui/ui-scene-tile1-ice.png</filename>
-            <filename>../png/ui/ui-scene-tile2-ice.png</filename>
-            <filename>../png/ui/map-icon-locked.png</filename>
-            <filename>../png/ui/map-icon-unlocked-0.png</filename>
-            <filename>../png/ui/map-icon-unlocked-1.png</filename>
-            <filename>../png/ui/map-icon-unlocked-2.png</filename>
-            <filename>../png/ui/map-icon-unlocked-3.png</filename>
-            <filename>../png/ui/icon-cursor-down.png</filename>
-            <filename>../png/ui/icon-cursor-left.png</filename>
-            <filename>../png/ui/icon-cursor-right.png</filename>
-            <filename>../png/ui/icon-cursor-up.png</filename>
-            <filename>../png/ui/icon-reload.png</filename>
-            <filename>../png/ui/bones.png</filename>
-            <filename>../png/ui/ui-scene-cave-ice.png</filename>
-            <filename>../png/ui/icon-undo.png</filename>
-            <filename>../png/ui/icon-solve.png</filename>
-            <filename>../png/ui/icon-star-disabled.png</filename>
-            <filename>../png/ui/icon-star-enabled.png</filename>
-            <filename>../png/ui/ui-button-start.png</filename>
-            <filename>../png/ui/icon-close.png</filename>
+            <filename>../png/cavepacker/ui/icon-settings.png</filename>
+            <filename>../png/cavepacker/ui/icon-arrow-left.png</filename>
+            <filename>../png/cavepacker/ui/icon-scroll-page-DIR.png</filename>
+            <filename>../png/cavepacker/ui/mouse.png</filename>
+            <filename>../png/cavepacker/ui/map-icon-unlocked.png</filename>
+            <filename>../png/cavepacker/ui/icon-sound-off.png</filename>
+            <filename>../png/cavepacker/ui/icon-sound-on.png</filename>
+            <filename>../png/cavepacker/ui/icon-back-to-root.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-caveart-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-ground1-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-ground2-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-tile1-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-tile2-ice.png</filename>
+            <filename>../png/cavepacker/ui/map-icon-locked.png</filename>
+            <filename>../png/cavepacker/ui/map-icon-unlocked-0.png</filename>
+            <filename>../png/cavepacker/ui/map-icon-unlocked-1.png</filename>
+            <filename>../png/cavepacker/ui/map-icon-unlocked-2.png</filename>
+            <filename>../png/cavepacker/ui/map-icon-unlocked-3.png</filename>
+            <filename>../png/cavepacker/ui/icon-cursor-down.png</filename>
+            <filename>../png/cavepacker/ui/icon-cursor-left.png</filename>
+            <filename>../png/cavepacker/ui/icon-cursor-right.png</filename>
+            <filename>../png/cavepacker/ui/icon-cursor-up.png</filename>
+            <filename>../png/cavepacker/ui/icon-reload.png</filename>
+            <filename>../png/cavepacker/ui/bones.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-cave-ice.png</filename>
+            <filename>../png/cavepacker/ui/icon-undo.png</filename>
+            <filename>../png/cavepacker/ui/icon-solve.png</filename>
+            <filename>../png/cavepacker/ui/icon-star-disabled.png</filename>
+            <filename>../png/cavepacker/ui/icon-star-enabled.png</filename>
+            <filename>../png/cavepacker/ui/ui-button-start.png</filename>
+            <filename>../png/cavepacker/ui/icon-close.png</filename>
             <filename>../png/cavepacker/icon-campaign.png</filename>
             <filename>../png/cavepacker/xsokoban-campaign.png</filename>
             <filename>../png/cavepacker/ksokoban-campaign.png</filename>
