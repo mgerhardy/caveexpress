@@ -487,7 +487,8 @@ bool Map::isReadyToStart () const
 	return _playersWaitingForSpawn.size() > 1;
 }
 
-std::string Map::getMapString() const {
+std::string Map::getMapString() const
+{
 	std::stringstream ss;
 	for (int row = 0; row < _height; ++row) {
 		for (int col = 0; col < _width; ++col) {
