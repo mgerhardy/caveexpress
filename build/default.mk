@@ -350,7 +350,7 @@ SQLITE3_SRCS              =
 SQLITE3_CFLAGS           ?=
 else
 SQLITE3_SRCS              = libs/sqlite/sqlite3.c
-SQLITE3_CFLAGS           ?= -Isrc/libs/sqlite -DSQLITE_HAVE_ISNAN
+SQLITE3_CFLAGS           ?= -Isrc/libs/sqlite -DSQLITE_HAVE_ISNAN -DSQLITE_THREADSAFE=0
 endif
 SQLITE3_LIBS             +=
 endif
