@@ -146,11 +146,11 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/ui/font-12.png</filename>
-            <filename>../png/ui/font-24.png</filename>
-            <filename>../png/ui/font-48.png</filename>
-            <filename>../png/ui/font-8.png</filename>
-            <filename>../png/ui/font-10.png</filename>
+            <filename>../png/cavepacker/ui/font-12.png</filename>
+            <filename>../png/cavepacker/ui/font-24.png</filename>
+            <filename>../png/cavepacker/ui/font-48.png</filename>
+            <filename>../png/cavepacker/ui/font-8.png</filename>
+            <filename>../png/cavepacker/ui/font-10.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
