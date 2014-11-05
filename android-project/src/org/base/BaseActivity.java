@@ -45,6 +45,17 @@ public abstract class BaseActivity extends SDLActivity {
 
 	public abstract String getName();
 
+	@Override
+	protected String[] getLibraries() {
+		return new String[] {
+			"SDL2",
+			"SDL2_image",
+			"SDL2_mixer",
+			"SDL2_net",
+			"main"
+		};
+	}
+
 	private final class InAppBillingSetupFinishedListener implements IabHelper.OnIabSetupFinishedListener {
 		@Override
 		public void onIabSetupFinished(final IabResult result) {

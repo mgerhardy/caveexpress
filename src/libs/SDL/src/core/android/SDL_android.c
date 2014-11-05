@@ -444,7 +444,7 @@ static void LocalReferenceHolder_Cleanup(struct LocalReferenceHolder *refholder)
 
 static SDL_bool LocalReferenceHolder_IsActive()
 {
-    return s_active > 0;    
+    return s_active > 0;
 }
 
 ANativeWindow* Android_JNI_GetNativeWindow(void)
@@ -1302,6 +1302,9 @@ void Android_JNI_PollInputDevices()
     (*env)->CallStaticVoidMethod(env, mActivityClass, midPollInputDevices);    
 }
 
+/* See SDLActivity.java for constants. */
+#define COMMAND_SET_KEEP_SCREEN_ON    5
+
 /* sends message to be handled on the UI event dispatch thread */
 int Android_JNI_SendMessage(int command, int param)
 {
@@ -1315,6 +1318,11 @@ int Android_JNI_SendMessage(int command, int param)
     }
     jboolean success = (*env)->CallStaticBooleanMethod(env, mActivityClass, mid, command, param);
     return success ? 0 : -1;
+}
+
+void Android_JNI_SuspendScreenSaver(SDL_bool suspend)
+{
+    Android_JNI_SendMessage(COMMAND_SET_KEEP_SCREEN_ON, (suspend == SDL_FALSE) ? 0 : 1);
 }
 
 void Android_JNI_ShowTextInput(SDL_Rect *inputRect)
