@@ -13,3 +13,4 @@ DBUS_CFLAGS              := $(call PKG_CFLAGS,dbus-1)
 SDL_CFLAGS               := -Isrc/libs/SDL/linux $(filter-out -Isrc/libs/SDL/general,$(tmp_CFLAGS)) $(DBUS_CFLAGS)
 SDL_LIBS                 += -lpthread -lrt
 endif
+SQLITE3_LIBS             += -lpthread
