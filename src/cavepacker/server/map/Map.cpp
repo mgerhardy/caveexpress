@@ -521,6 +521,19 @@ void Map::startMap ()
 
 	INetwork& network = _serviceProvider->getNetwork();
 	network.sendToAllClients(StartMapMessage());
+
+	for (int row = 0; row < _height; ++row) {
+		for (int col = 0; col < _width; ++col) {
+			StateMapConstIter i = _state.find(INDEX(col, row));
+			if (i == _state.end())
+				continue;
+			const char c = i->second;
+			if (c != Sokoban::PACKAGEONTARGET)
+				continue;
+
+			getPackage(col, row)->setState(CavePackerEntityStates::DELIVERED);
+		}
+	}
 }
 
 MapTile* Map::getPackage (int col, int row)
