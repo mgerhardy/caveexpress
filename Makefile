@@ -29,7 +29,6 @@ BASEROOT    := base
 BASEDIR     := $(BASEROOT)/$(APPNAME)
 TARGETS     := $(sort $(patsubst build/modules/%.mk,%,$(wildcard build/modules/*.mk)))
 DISABLED    := $(filter-out $(TARGETS),$(TARGETS_TMP))
-STEAM_ROOT  ?= /home/$(USER)/Downloads/steam-runtime-sdk_2013-09-05
 
 DEP_FLAGS   := -MP -MD -MT $$@
 CONFIGURE_PREFIX ?=
@@ -227,17 +226,15 @@ release:
 	$(MAKE) Q= archives; \
 
 release32:
-	echo "Make sure to execute shell-i386.sh from the steam sdk"
 	./configure --target-arch=i386 --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
 	$(MAKE) Q= clean; \
-	$(MAKE) Q= STEAM_RUNTIME_TARGET_ARCH=i386 STEAM_RUNTIME_HOST_ARCH=$(HOST_ARCH) STEAM_RUNTIME_ROOT=$(STEAM_ROOT)/runtime/i386 PATH=$(STEAM_ROOT)/bin:$(PATH); \
+	$(MAKE) Q=; \
 	$(MAKE) Q= archives; \
 
 release64:
-	echo "Make sure to execute shell-amd64.sh from the steam sdk"
 	./configure --target-arch=x86_64 --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
 	$(MAKE) Q= clean; \
-	$(MAKE) Q= STEAM_RUNTIME_TARGET_ARCH=amd64 STEAM_RUNTIME_HOST_ARCH=$(HOST_ARCH) STEAM_RUNTIME_ROOT=$(STEAM_ROOT)/runtime/amd64 PATH=$(STEAM_ROOT)/bin:$(PATH); \
+	$(MAKE) Q=; \
 	$(MAKE) Q= archives; \
 
 ifeq ($(TARGET_OS),html5)
