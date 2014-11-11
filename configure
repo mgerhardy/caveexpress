@@ -45,9 +45,6 @@ else
 	TARGET_ARCH=`uname -m | sed -e s/i.86/i386/`
 fi
 
-STEAM_ROOT=/home/mattn/Downloads/steam-runtime-sdk_2013-09-05
-STEAM_RUNTIME_HOST_ARCH=${HOST_ARCH}
-
 add_line_to_makefile_local() {
 	makefile_local_data="${makefile_local_data}"'
 '"$1"
@@ -464,11 +461,6 @@ set_path_env() {
 		add_to_makefile_local ADDITIONAL_PATH "Found mxe additional path settings" "Could not get the mxe path from ${MXE_FILE}"
 		PATH="${ADDITIONAL_PATH}:$PATH"
 		;;
-	linux32|linux64)
-		set_var "ADDITIONAL_PATH" "${STEAM_ROOT}/bin"
-		add_to_makefile_local ADDITIONAL_PATH "" ""
-		PATH="${ADDITIONAL_PATH}:$PATH"
-		;;
 	esac
 }
 
@@ -594,20 +586,6 @@ caveexpress)
 esac
 
 case ${TARGET_OS} in
-linux32)
-	STEAM_RUNTIME_TARGET_ARCH=i386
-	TARGET_ARCH=i386
-	CONFIG_H_NAME=linux
-	HD_VERSION=1
-	enable_only ${APPNAME}
-	;;
-linux64)
-	STEAM_RUNTIME_TARGET_ARCH=amd64
-	HD_VERSION=1
-	CONFIG_H_NAME=linux
-	TARGET_ARCH=x86_64
-	enable_only ${APPNAME}
-	;;
 android)
 	;;
 ouya)
@@ -650,22 +628,6 @@ html5)
 		add_to_makefile_local EMSCRIPTEN_ROOT "Emscripten found at ${EMSCRIPTEN_ROOT}"
 		add_to_makefile_local CONFIGURE_PREFIX "Use ${EMSCRIPTEN_ROOT}/emconfigure"
 	fi
-	;;
-linux32|linux64)
-	STEAM_RUNTIME_ROOT=${STEAM_ROOT}/runtime/${STEAM_RUNTIME_TARGET_ARCH}
-	HAVE_NCURSES_H=0
-	HAVE_SDL_IMAGE_H=0
-	HAVE_SDL_MIXER_H=0
-	HAVE_SDL_NET_H=0
-	HAVE_LUA_H=0
-	HAVE_SQLITE3_H=0
-	HAVE_TINYXML2_H=0
-	export STEAM_RUNTIME_TARGET_ARCH=${STEAM_RUNTIME_TARGET_ARCH}
-	export STEAM_RUNTIME_HOST_ARCH=${STEAM_RUNTIME_HOST_ARCH}
-	export STEAM_RUNTIME_ROOT=${STEAM_RUNTIME_ROOT}
-	add_to_makefile_local_quote STEAM_RUNTIME_ROOT "Steam runtime root at ${STEAM_RUNTIME_ROOT}"
-	add_to_makefile_local STEAM_RUNTIME_TARGET_ARCH "Steam runtime target arch ${STEAM_RUNTIME_TARGET_ARCH}"
-	add_to_makefile_local STEAM_RUNTIME_HOST_ARCH "Steam runtime host arch ${STEAM_RUNTIME_HOST_ARCH}"
 	;;
 esac
 HAVE_SDL_RWHTTP_H=0
