@@ -217,22 +217,22 @@ run-configure:
 
 include build/android.mk
 
-CONFIGURE_RELEASE_FLAGS := --enable-ccache --with-embedded-sqlite3 --with-embedded-tinyxml2 --with-embedded-SDL2_mixer --with-embedded-SDL2_image --with-embedded-SDL2_net --with-embedded-sdl2 --enable-release --enable-only-$(APPNAME)
+CONFIGURE_RELEASE_FLAGS := $(CONFIGURE_FLAGS) --with-embedded-sqlite3 --with-embedded-tinyxml2 --with-embedded-SDL2_mixer --with-embedded-SDL2_image --with-embedded-SDL2_net --with-embedded-sdl2 --enable-release
 
 release:
-	./configure --target-os=mingw64 --enable-ccache --with-embedded-sqlite3 --with-embedded-tinyxml2 --enable-release --enable-only-$(APPNAME); \
+	./configure --target-arch=i386 --enable-ccache --target-os=mingw64 --enable-release --enable-only-$(APPNAME) $(CONFIGURE_FLAGS); \
 	$(MAKE) Q= clean; \
 	$(MAKE) Q=; \
 	$(MAKE) Q= archives; \
 
 release32:
-	./configure --target-arch=i386 --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
+	./configure --target-arch=i386 --enable-ccache --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
 	$(MAKE) Q= clean; \
 	$(MAKE) Q=; \
 	$(MAKE) Q= archives; \
 
 release64:
-	./configure --target-arch=x86_64 --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
+	./configure --target-arch=x86_64 --enable-ccache --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
 	$(MAKE) Q= clean; \
 	$(MAKE) Q=; \
 	$(MAKE) Q= archives; \

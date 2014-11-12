@@ -92,7 +92,7 @@ ifeq ($(TARGET_OS),darwin)
 		$(wildcard src/libs/SDL/src/thread/pthread/*.c) \
 		)
 endif
-ifneq ($(findstring $(TARGET_OS), mingw32 mingw64 mingw64_64),)
+ifneq ($(findstring $(TARGET_OS), mingw32 mingw64),)
 	SDL_SRCS += \
 		$(subst src/libs/SDL/,libs/SDL/, \
 		$(wildcard src/libs/SDL/src/joystick/windows/*.c) \

@@ -27,7 +27,7 @@ $(TARGET)_SRCS      = \
 	\
 	$(LUA_SRCS)
 
-ifneq ($(findstring $(TARGET_OS), mingw32 mingw64 mingw64_64),)
+ifneq ($(findstring $(TARGET_OS), mingw32 mingw64),)
 	$(TARGET)_SRCS +=\
 		engine/common/ports/Windows.cpp \
 		engine/common/ports/project.rc

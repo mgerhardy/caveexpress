@@ -290,11 +290,6 @@ check_compiler() {
 		CXX=clang++
 	fi
 
-	if [ "${TARGET_OS}" = "mingw64_64" ] && [ "${HOST_OS}" != "mingw64_64" ]; then
-		CROSS="x86_64-w64-mingw32-"
-		CC=gcc
-	fi
-
 	if [ -n "${CROSS}" ]; then
 		command -v "${CROSS}${CC}" 2>> config.log >> config.log
 		if [ $? -eq 0 ]; then
@@ -602,9 +597,6 @@ esac
 case ${TARGET_OS} in
 mingw32|mingw64)
 	TARGET_ARCH=i386
-	;;
-mingw64_64)
-	TARGET_ARCH=x86_64
 	;;
 nacl)
 	NETWORKING=
