@@ -1,4 +1,4 @@
 CFLAGS += -D_FORTIFY_SOURCE=2 -DNDEBUG
-CFLAGS += -O2
+CFLAGS += -fexpensive-optimizations -fomit-frame-pointer -O3
 
 LUAC_FLAGS += -s
