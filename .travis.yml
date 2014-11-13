@@ -9,9 +9,9 @@ os:
   - linux
 
 script:
-  - git checkout -f; git clean -fdx && ./configure --app=caveexpress && make -j 2 && ./tests
-  - git checkout -f; git clean -fdx && ./configure --app=caveexpress --disable-network && make -j 2 && ./tests
-  - git checkout -f; git clean -fdx && ./configure --app=cavepacker && make -j 2 && ./tests
+  - git checkout -f; git clean -fdx && ./configure --with-embedded-sqlite3 --app=caveexpress && make -j 2 && ./tests
+  - git checkout -f; git clean -fdx && ./configure --with-embedded-sqlite3 --app=caveexpress --disable-network && make -j 2 && ./tests
+  - git checkout -f; git clean -fdx && ./configure --with-embedded-sqlite3 --app=cavepacker && make -j 2 && ./tests
 
 notifications:
   email: true
