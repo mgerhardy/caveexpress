@@ -310,11 +310,13 @@ TEST_F(SokobanMapTest, testgri0044) { testSingleMap("gri0044"); }
 TEST_F(SokobanMapTest, testgri0045) { testSingleMap("gri0045"); }
 TEST_F(SokobanMapTest, testgri0046) { testSingleMap("gri0046"); }
 TEST_F(SokobanMapTest, testgri0047) { testSingleMap("gri0047"); }
+// TODO: segfault
 TEST_F(SokobanMapTest, testgri0048) { testSingleMap("gri0048"); }
 TEST_F(SokobanMapTest, testgri0049) { testSingleMap("gri0049"); }
 TEST_F(SokobanMapTest, testgri0050) { testSingleMap("gri0050"); }
 TEST_F(SokobanMapTest, testgri0051) { testSingleMap("gri0051"); }
 TEST_F(SokobanMapTest, testgri0052) { testSingleMap("gri0052"); }
+// TODO: segfault
 TEST_F(SokobanMapTest, testgri0053) { testSingleMap("gri0053"); }
 TEST_F(SokobanMapTest, testgri0054) { testSingleMap("gri0054"); }
 TEST_F(SokobanMapTest, testgri0055) { testSingleMap("gri0055"); }

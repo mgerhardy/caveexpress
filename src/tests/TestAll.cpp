@@ -3,6 +3,9 @@
 #include "engine/common/Logger.h"
 #include "engine/common/FileSystem.h"
 #include "engine/common/ConfigManager.h"
+#include "engine/common/Application.h"
+#include "engine/common/System.h"
+#include "engine/GameRegistry.h"
 
 struct TestConfiguration {
 	bool verbose;
@@ -93,6 +96,10 @@ extern "C" int main (int argc, char **argv)
 	parseCommandline(argc, argv);
 
 	try {
+		Application& app = Singleton<Application>::getInstance();
+		const GamePtr& game = Singleton<GameRegistry>::getInstance().getGame();
+		app.setOrganisation("caveproductions");
+		app.setName(game->getName());
 		Logger::get().addConsole(&console);
 		Config.get().init(nullptr, argc, argv);
 		return RUN_ALL_TESTS();
