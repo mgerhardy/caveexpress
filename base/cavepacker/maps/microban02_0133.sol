@@ -1,0 +1,1 @@
+l3u3rddrr5dldld9l4(ul)13u6(ru)17r4(dr)ddl4(lu)15l5(dl)11d3(rd)7rur5udd3l3urruu5rdrdr9d4(ld)13l6(ul)17u4(ru)rrd4(dl)15d5(rd)11r3(ur)7ulu5lrr3d3luull5ururu9r4(dr)13d6(ld)17l4(ul)uur4(rd)15r5(ur)11u3(lu)7ldl5duu3r3dlldd5lulul9u4(ru)13r6(dr)17d4(ld)llu4(ur)15u5(lu)11l3(dl)7drd4r
