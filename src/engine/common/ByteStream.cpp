@@ -34,7 +34,7 @@ int16_t ByteStream::peekShort() const {
 	for (int i = 0; i < l; ++i) {
 		buf[i] = *it++;
 	}
-	const int16_t *word = (const int16_t*) buf;
+	const int16_t *word = reinterpret_cast<const int16_t*>(buf);
 	const int16_t val = SDL_SwapLE16(*word);
 	return val;
 }
