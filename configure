@@ -590,7 +590,6 @@ ouya)
 	;;
 *)
 	HD_VERSION=1
-	enable_only ${APPNAME}
 	;;
 esac
 
