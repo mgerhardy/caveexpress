@@ -5,26 +5,28 @@
 
 // forward decl
 class Campaign;
+class CampaignMap;
 
 #define TABLE_GAMESTATE "gamestate"
 #define TABLE_GAMEMAPS "maps"
 #define TABLE_LIVES "lives"
 
 class GameStateSQLite: public SQLite {
-private:
-	bool deleteMaps (Campaign* campaign);
-	bool activateCampaign (const Campaign* campaign);
-	bool activateCampaign (const std::string& id);
+protected:
+	virtual bool deleteMaps (Campaign* campaign);
+	virtual bool activateCampaign (const Campaign* campaign);
+	virtual bool activateCampaign (const std::string& id);
 
-	bool saveLives (uint8_t lives, const std::string& campaignId);
+	virtual bool saveLives (uint8_t lives, const std::string& campaignId);
+	virtual void loadCampaignMapParameters(CampaignMap* map, SQLiteStatement& stmt);
 public:
 	GameStateSQLite (const std::string& filename);
 
-	bool updateCampaign (Campaign* campaign);
-	std::string getActiveCampaign ();
-	bool loadCampaign (Campaign* campaign);
+	virtual bool updateCampaign (Campaign* campaign);
+	virtual std::string getActiveCampaign ();
+	virtual bool loadCampaign (Campaign* campaign);
 
-	bool resetState (Campaign* campaign);
+	virtual bool resetState (Campaign* campaign);
 
-	uint8_t loadLives (const std::string& campaignId);
+	virtual uint8_t loadLives (const std::string& campaignId);
 };

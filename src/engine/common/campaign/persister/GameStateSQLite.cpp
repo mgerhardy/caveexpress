@@ -142,18 +142,9 @@ bool GameStateSQLite::loadCampaign (Campaign* campaign)
 		const int s = stmt.step();
 		if (s == SQLITE_ROW) {
 			const std::string mapid = stmt.getText(1);
-			const int locked = stmt.getInt(2);
-			const int time = stmt.getInt(3);
-			const int finishPoints = stmt.getInt(4);
-			const int stars = stmt.getInt(5);
 			CampaignMap* map = campaign->getMapById(mapid);
 			if (map) {
-				map->setTime(time);
-				map->setFinishPoints(finishPoints);
-				map->setStars(stars);
-				if (locked == 0)
-					map->unlock();
-				debug(LOG_STORAGE, map->toString());
+				loadCampaignMapParameters(map, stmt);
 			}
 		} else if (s == SQLITE_DONE) {
 			break;
@@ -164,6 +155,20 @@ bool GameStateSQLite::loadCampaign (Campaign* campaign)
 	}
 
 	return campaign->getLives() > 0;
+}
+
+void GameStateSQLite::loadCampaignMapParameters(CampaignMap* map, SQLiteStatement& stmt)
+{
+	const int locked = stmt.getInt(2);
+	const int time = stmt.getInt(3);
+	const int finishPoints = stmt.getInt(4);
+	const int stars = stmt.getInt(5);
+	map->setTime(time);
+	map->setFinishPoints(finishPoints);
+	map->setStars(stars);
+	if (locked == 0)
+		map->unlock();
+	debug(LOG_STORAGE, map->toString());
 }
 
 bool GameStateSQLite::saveLives (uint8_t lives, const std::string& campaignId)
