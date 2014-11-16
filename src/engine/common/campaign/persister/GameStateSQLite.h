@@ -19,6 +19,7 @@ protected:
 
 	virtual bool saveLives (uint8_t lives, const std::string& campaignId);
 	virtual void loadCampaignMapParameters(CampaignMap* map, SQLiteStatement& stmt);
+	virtual void saveCampaignMapParameters (const CampaignMap* map, SQLiteStatement& stmt);
 public:
 	GameStateSQLite (const std::string& filename);
 

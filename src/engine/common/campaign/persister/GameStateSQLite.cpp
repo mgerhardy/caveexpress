@@ -97,17 +97,22 @@ bool GameStateSQLite::updateCampaign (Campaign* campaign)
 	const Campaign::MapList& maps = campaign->getMaps();
 	for (Campaign::MapListConstIter i = maps.begin(); i != maps.end(); ++i) {
 		const CampaignMapPtr& map = *i;
-		stmt.bindText(2, map->getId());
-		stmt.bindInt(3, map->isLocked() ? 1 : 0);
-		stmt.bindInt(4, map->getTime());
-		stmt.bindInt(5, map->getFinishPoints());
-		stmt.bindInt(6, map->getStars());
+		saveCampaignMapParameters(map.get(), stmt);
 		stmt.step(true);
 	}
 	const bool savedLives = saveLives(campaign->getLives(), campaign->getId());
 	if (savedLives)
 		info(LOG_CAMPAIGN, "updated campaign progress in database for " + campaign->getId());
 	return savedLives;
+}
+
+void GameStateSQLite::saveCampaignMapParameters (const CampaignMap* map, SQLiteStatement& stmt)
+{
+	stmt.bindText(2, map->getId());
+	stmt.bindInt(3, map->isLocked() ? 1 : 0);
+	stmt.bindInt(4, map->getTime());
+	stmt.bindInt(5, map->getFinishPoints());
+	stmt.bindInt(6, map->getStars());
 }
 
 bool GameStateSQLite::deleteMaps (Campaign* campaign)
