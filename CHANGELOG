@@ -85,3 +85,4 @@ Version 2.0 (2014-09-19)
 Version 2.1 (not yet released)
 * Disable the screensaver while the game is running
 * Select the last played map in the map selection
+* Added manual scrolling support
