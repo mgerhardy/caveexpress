@@ -5,7 +5,7 @@
 #include "engine/common/IFrontend.h"
 
 Camera::Camera () :
-		_mapPixelWidth(0), _mapPixelHeight(0), _mapGridWidth(0), _mapGridHeight(0), _scrollingAreaWidth(0), _scrollingAreaHeight(0), _scale(0)
+		_mapPixelWidth(0), _mapPixelHeight(0), _mapGridWidth(0), _mapGridHeight(0), _scrollingAreaWidth(0), _scrollingAreaHeight(0), _scale(0), _scrollOffsetX(0), _scrollOffsetY(0)
 {
 	reset();
 }
@@ -30,6 +30,14 @@ void Camera::init (int mapPixelWidth, int mapPixelHeight, int mapGridWidth, int 
 	_mapGridHeight = mapGridHeight;
 	_scrollingAreaWidth = std::max(0, _mapGridWidth * _scale - _mapPixelWidth);
 	_scrollingAreaHeight = std::max(0, _mapGridHeight * _scale - _mapPixelHeight);
+	_scrollOffsetX = 0;
+	_scrollOffsetY = 0;
+}
+
+void Camera::scroll (int offsetX, int offsetY)
+{
+	_scrollOffsetX = offsetX;
+	_scrollOffsetY = offsetY;
 }
 
 void Camera::update (const vec2& playerPos, Direction direction, float zoom)
@@ -53,5 +61,7 @@ void Camera::update (const vec2& playerPos, Direction direction, float zoom)
 		// TODO: broken - doesn't center on the player
 		_viewportY = -clamp(playerPos.y * _scale - _mapPixelHeight / 2.0f, 0.0f, static_cast<float>(_scrollingAreaHeight)) * zoom;
 	}
+	_viewportY += _scrollOffsetX;
+	_viewportY += _scrollOffsetY;
 	debug(LOG_CLIENT, String::format("zoom: %f, viewportX %i, pixelW %i, nodeW: %i", zoom, _viewportX, pixelW, nodeW));
 }
