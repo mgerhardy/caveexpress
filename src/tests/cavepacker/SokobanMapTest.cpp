@@ -1458,6 +1458,7 @@ TEST_F(SokobanMapTest, testsasquatch09_0047) { testSingleMap("sasquatch09_0047")
 TEST_F(SokobanMapTest, testsasquatch09_0048) { testSingleMap("sasquatch09_0048"); }
 TEST_F(SokobanMapTest, testsasquatch09_0049) { testSingleMap("sasquatch09_0049"); }
 TEST_F(SokobanMapTest, testsasquatch09_0050) { testSingleMap("sasquatch09_0050"); }
+#if 0
 TEST_F(SokobanMapTest, testsasquatch10_0001) { testSingleMap("sasquatch10_0001"); }
 TEST_F(SokobanMapTest, testsasquatch10_0002) { testSingleMap("sasquatch10_0002"); }
 TEST_F(SokobanMapTest, testsasquatch10_0003) { testSingleMap("sasquatch10_0003"); }
@@ -1558,3 +1559,4 @@ TEST_F(SokobanMapTest, testsasquatch11_0047) { testSingleMap("sasquatch11_0047")
 TEST_F(SokobanMapTest, testsasquatch11_0048) { testSingleMap("sasquatch11_0048"); }
 TEST_F(SokobanMapTest, testsasquatch11_0049) { testSingleMap("sasquatch11_0049"); }
 TEST_F(SokobanMapTest, testsasquatch11_0050) { testSingleMap("sasquatch11_0050"); }
+#endif
