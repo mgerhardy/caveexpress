@@ -174,4 +174,3 @@ else
 		keybindings["map"]["F"] = "finish"
 	end
 end
-
