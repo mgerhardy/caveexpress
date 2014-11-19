@@ -77,14 +77,16 @@ Android_PumpEvents(_THIS)
     if (isPaused && !isPausing) {
         /* Make sure this is the last thing we do before pausing */
         android_egl_context_backup();
-        AndroidAUD_PauseDevices();
+        SDL_PauseAudio(1);
+        /*AndroidAUD_PauseDevices();*/
         if(SDL_SemWait(Android_ResumeSem) == 0) {
 #else
     if (isPaused) {
         if(SDL_SemTryWait(Android_ResumeSem) == 0) {
 #endif
             isPaused = 0;
-            AndroidAUD_ResumeDevices();
+            SDL_PauseAudio(0);
+            /*AndroidAUD_ResumeDevices();*/
             /* Restore the GL Context from here, as this operation is thread dependent */
             if (!SDL_HasEvent(SDL_QUIT)) {
                 android_egl_context_restore();
@@ -107,7 +109,8 @@ Android_PumpEvents(_THIS)
 #else
         if(SDL_SemTryWait(Android_PauseSem) == 0) {
             android_egl_context_backup();
-            AndroidAUD_PauseDevices();
+            SDL_PauseAudio(1);
+            /*AndroidAUD_PauseDevices();*/
             isPaused = 1;
         }
 #endif
