@@ -310,13 +310,11 @@ TEST_F(SokobanMapTest, testgri0044) { testSingleMap("gri0044"); }
 TEST_F(SokobanMapTest, testgri0045) { testSingleMap("gri0045"); }
 TEST_F(SokobanMapTest, testgri0046) { testSingleMap("gri0046"); }
 TEST_F(SokobanMapTest, testgri0047) { testSingleMap("gri0047"); }
-// TODO: segfault
 TEST_F(SokobanMapTest, testgri0048) { testSingleMap("gri0048"); }
 TEST_F(SokobanMapTest, testgri0049) { testSingleMap("gri0049"); }
 TEST_F(SokobanMapTest, testgri0050) { testSingleMap("gri0050"); }
 TEST_F(SokobanMapTest, testgri0051) { testSingleMap("gri0051"); }
 TEST_F(SokobanMapTest, testgri0052) { testSingleMap("gri0052"); }
-// TODO: segfault
 TEST_F(SokobanMapTest, testgri0053) { testSingleMap("gri0053"); }
 TEST_F(SokobanMapTest, testgri0054) { testSingleMap("gri0054"); }
 TEST_F(SokobanMapTest, testgri0055) { testSingleMap("gri0055"); }
@@ -525,7 +523,6 @@ TEST_F(SokobanMapTest, testmicroban01_0007) { testSingleMap("microban01_0007"); 
 TEST_F(SokobanMapTest, testmicroban01_0008) { testSingleMap("microban01_0008"); }
 TEST_F(SokobanMapTest, testmicroban01_0009) { testSingleMap("microban01_0009"); }
 TEST_F(SokobanMapTest, testmicroban01_0010) { testSingleMap("microban01_0010"); }
-// TODO: segfault
 TEST_F(SokobanMapTest, testmicroban01_0011) { testSingleMap("microban01_0011"); }
 TEST_F(SokobanMapTest, testmicroban01_0012) { testSingleMap("microban01_0012"); }
 TEST_F(SokobanMapTest, testmicroban01_0013) { testSingleMap("microban01_0013"); }
@@ -552,20 +549,17 @@ TEST_F(SokobanMapTest, testmicroban01_0033) { testSingleMap("microban01_0033"); 
 TEST_F(SokobanMapTest, testmicroban01_0034) { testSingleMap("microban01_0034"); }
 TEST_F(SokobanMapTest, testmicroban01_0035) { testSingleMap("microban01_0035"); }
 TEST_F(SokobanMapTest, testmicroban01_0036) { testSingleMap("microban01_0036"); }
-// TODO: segfault
 TEST_F(SokobanMapTest, testmicroban01_0037) { testSingleMap("microban01_0037"); }
 TEST_F(SokobanMapTest, testmicroban01_0038) { testSingleMap("microban01_0038"); }
 TEST_F(SokobanMapTest, testmicroban01_0039) { testSingleMap("microban01_0039"); }
 TEST_F(SokobanMapTest, testmicroban01_0040) { testSingleMap("microban01_0040"); }
 TEST_F(SokobanMapTest, testmicroban01_0041) { testSingleMap("microban01_0041"); }
 TEST_F(SokobanMapTest, testmicroban01_0042) { testSingleMap("microban01_0042"); }
-// TODO: segfault
 TEST_F(SokobanMapTest, testmicroban01_0043) { testSingleMap("microban01_0043"); }
 TEST_F(SokobanMapTest, testmicroban01_0044) { testSingleMap("microban01_0044"); }
 TEST_F(SokobanMapTest, testmicroban01_0045) { testSingleMap("microban01_0045"); }
 TEST_F(SokobanMapTest, testmicroban01_0046) { testSingleMap("microban01_0046"); }
 TEST_F(SokobanMapTest, testmicroban01_0047) { testSingleMap("microban01_0047"); }
-// TODO: segfault
 TEST_F(SokobanMapTest, testmicroban01_0048) { testSingleMap("microban01_0048"); }
 TEST_F(SokobanMapTest, testmicroban01_0049) { testSingleMap("microban01_0049"); }
 TEST_F(SokobanMapTest, testmicroban01_0050) { testSingleMap("microban01_0050"); }
@@ -573,7 +567,6 @@ TEST_F(SokobanMapTest, testmicroban01_0051) { testSingleMap("microban01_0051"); 
 TEST_F(SokobanMapTest, testmicroban01_0052) { testSingleMap("microban01_0052"); }
 TEST_F(SokobanMapTest, testmicroban01_0053) { testSingleMap("microban01_0053"); }
 TEST_F(SokobanMapTest, testmicroban01_0054) { testSingleMap("microban01_0054"); }
-// TODO: segfault
 TEST_F(SokobanMapTest, testmicroban01_0055) { testSingleMap("microban01_0055"); }
 TEST_F(SokobanMapTest, testmicroban01_0056) { testSingleMap("microban01_0056"); }
 TEST_F(SokobanMapTest, testmicroban01_0057) { testSingleMap("microban01_0057"); }
@@ -598,11 +591,9 @@ TEST_F(SokobanMapTest, testmicroban01_0075) { testSingleMap("microban01_0075"); 
 TEST_F(SokobanMapTest, testmicroban01_0076) { testSingleMap("microban01_0076"); }
 TEST_F(SokobanMapTest, testmicroban01_0077) { testSingleMap("microban01_0077"); }
 TEST_F(SokobanMapTest, testmicroban01_0078) { testSingleMap("microban01_0078"); }
-// TODO: segfault
 TEST_F(SokobanMapTest, testmicroban01_0079) { testSingleMap("microban01_0079"); }
 TEST_F(SokobanMapTest, testmicroban01_0080) { testSingleMap("microban01_0080"); }
 TEST_F(SokobanMapTest, testmicroban01_0081) { testSingleMap("microban01_0081"); }
-// TODO: segfault
 TEST_F(SokobanMapTest, testmicroban01_0082) { testSingleMap("microban01_0082"); }
 TEST_F(SokobanMapTest, testmicroban01_0083) { testSingleMap("microban01_0083"); }
 TEST_F(SokobanMapTest, testmicroban01_0084) { testSingleMap("microban01_0084"); }
