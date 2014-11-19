@@ -5,25 +5,29 @@
 void NoNetwork::update (uint32_t deltaTime)
 {
 	if (_clientFunc != nullptr) {
-		for (QueueIter i = _clientQueue.begin(); i != _clientQueue.end(); ++i) {
-			_clientFunc->onData(*i);
+		const Queue q = _clientQueue;
+		_clientQueue.clear();
+		_clientQueue.reserve(64);
+		for (QueueConstIter i = q.begin(); i != q.end(); ++i) {
+			ByteStream b = *i;
+			_clientFunc->onData(b);
 			// there might be a drop
 			if (_clientFunc == nullptr)
 				break;
 		}
-		_clientQueue.clear();
-		_clientQueue.reserve(64);
 	}
 
 	if (_serverFunc != nullptr) {
-		for (QueueIter i = _serverQueue.begin(); i != _serverQueue.end(); ++i) {
-			_serverFunc->onData(defaultClientId, *i);
+		const Queue q = _serverQueue;
+		_serverQueue.clear();
+		_serverQueue.reserve(64);
+		for (QueueConstIter i = q.begin(); i != q.end(); ++i) {
+			ByteStream b = *i;
+			_serverFunc->onData(defaultClientId, b);
 			// there might be a drop
 			if (_serverFunc == nullptr)
 				break;
 		}
-		_serverQueue.clear();
-		_serverQueue.reserve(64);
 	}
 }
 

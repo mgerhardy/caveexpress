@@ -8,9 +8,10 @@ private:
 	bool _server;
 
 	typedef std::vector<ByteStream> Queue;
+	typedef Queue::const_iterator QueueConstIter;
+	typedef Queue::iterator QueueIter;
 	Queue _serverQueue;
 	Queue _clientQueue;
-	typedef Queue::iterator QueueIter;
 
 	inline void enqueueServer (const ByteStream& s)
 	{
