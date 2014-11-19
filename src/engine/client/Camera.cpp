@@ -36,8 +36,13 @@ void Camera::init (int mapPixelWidth, int mapPixelHeight, int mapGridWidth, int 
 
 void Camera::scroll (int offsetX, int offsetY)
 {
-	_scrollOffsetX = offsetX;
-	_scrollOffsetY = offsetY;
+	_scrollOffsetX += offsetX;
+	_scrollOffsetY += offsetY;
+
+	const int w = _mapPixelWidth / 2;
+	const int h = _mapPixelHeight / 2;
+	_scrollOffsetX = clamp(_scrollOffsetX, -w, w);
+	_scrollOffsetY = clamp(_scrollOffsetY, -h, h);
 }
 
 void Camera::update (const vec2& playerPos, Direction direction, float zoom)
@@ -61,7 +66,7 @@ void Camera::update (const vec2& playerPos, Direction direction, float zoom)
 		// TODO: broken - doesn't center on the player
 		_viewportY = -clamp(playerPos.y * _scale - _mapPixelHeight / 2.0f, 0.0f, static_cast<float>(_scrollingAreaHeight)) * zoom;
 	}
-	_viewportY += _scrollOffsetX;
+	_viewportX += _scrollOffsetX;
 	_viewportY += _scrollOffsetY;
 	debug(LOG_CLIENT, String::format("zoom: %f, viewportX %i, pixelW %i, nodeW: %i", zoom, _viewportX, pixelW, nodeW));
 }
