@@ -403,6 +403,7 @@ TEST_F(SokobanMapTest, testgri0137) { testSingleMap("gri0137"); }
 TEST_F(SokobanMapTest, testgri0138) { testSingleMap("gri0138"); }
 TEST_F(SokobanMapTest, testgri0139) { testSingleMap("gri0139"); }
 TEST_F(SokobanMapTest, testgri0140) { testSingleMap("gri0140"); }
+#if 0
 TEST_F(SokobanMapTest, testgrigrcomet0001) { testSingleMap("grigrcomet0001"); }
 TEST_F(SokobanMapTest, testgrigrcomet0002) { testSingleMap("grigrcomet0002"); }
 TEST_F(SokobanMapTest, testgrigrcomet0003) { testSingleMap("grigrcomet0003"); }
@@ -433,6 +434,7 @@ TEST_F(SokobanMapTest, testgrigrcomet0027) { testSingleMap("grigrcomet0027"); }
 TEST_F(SokobanMapTest, testgrigrcomet0028) { testSingleMap("grigrcomet0028"); }
 TEST_F(SokobanMapTest, testgrigrcomet0029) { testSingleMap("grigrcomet0029"); }
 TEST_F(SokobanMapTest, testgrigrcomet0030) { testSingleMap("grigrcomet0030"); }
+#endif
 TEST_F(SokobanMapTest, testgrigrspecial0001) { testSingleMap("grigrspecial0001"); }
 TEST_F(SokobanMapTest, testgrigrspecial0002) { testSingleMap("grigrspecial0002"); }
 TEST_F(SokobanMapTest, testgrigrspecial0003) { testSingleMap("grigrspecial0003"); }
