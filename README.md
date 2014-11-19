@@ -61,6 +61,8 @@ Compile for NaCl
 CavePacker is a sokoban game. It's just a few days old and only the basic things are working. This was meant as an experiment on how
 easy it would be to create a totally different game with the CaveExpress code base.
 
+The maps are taken from XSokoban, KSokoban - the author of sasquatch and microban maps is David W. Skinner and the maps gri* are made by GRIGoRusha.
+
 Btw.: Did I mention that this is a sokoban game that could even support network based multiplayer gaming (well... it already does, just not activated)
 
 ### License
