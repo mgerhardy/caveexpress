@@ -44,12 +44,12 @@ SDLFrontend::~SDLFrontend ()
 
 void SDLFrontend::onPrepareBackground ()
 {
-	SoundControl.pause();
+//	SoundControl.pause();
 }
 
 void SDLFrontend::onForeground ()
 {
-	SoundControl.resume();
+//	SoundControl.resume();
 }
 
 void SDLFrontend::onJoystickDeviceRemoved (int32_t device)
