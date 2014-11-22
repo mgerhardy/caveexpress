@@ -8,5 +8,6 @@ Version 1.1 ()
 Version 1.2 (not yet released)
 * Disable the screensaver while the game is running
 * Select the last played map in the map selection
+* Highlight already delivered packages
 * Added map scrolling support
 * Added new campaign and a lot of other maps (see maps for author information)
