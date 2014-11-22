@@ -6,6 +6,10 @@ GooglePlayPersister::GooglePlayPersister() {
 GooglePlayPersister::~GooglePlayPersister() {
 }
 
+bool GooglePlayPersister::init() {
+	return false;
+}
+
 bool GooglePlayPersister::saveCampaign(Campaign* campaign) {
 	return false;
 }

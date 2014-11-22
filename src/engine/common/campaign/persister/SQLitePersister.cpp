@@ -11,6 +11,13 @@
 SQLitePersister::SQLitePersister (const std::string& filename) :
 		IGameStatePersister(), SQLite(filename)
 {
+}
+
+SQLitePersister::~SQLitePersister ()
+{
+}
+
+bool SQLitePersister::init () {
 	if (!open())
 		System.exit("Could not open gamestate database", 1);
 	else
@@ -44,10 +51,7 @@ SQLitePersister::SQLitePersister (const std::string& filename) :
 		System.exit("Could not create initial gamestate tables", 1);
 
 	_activeCampaign = loadActiveCampaign();
-}
-
-SQLitePersister::~SQLitePersister ()
-{
+	return true;
 }
 
 bool SQLitePersister::saveCampaign (Campaign* campaign)

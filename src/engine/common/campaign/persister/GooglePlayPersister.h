@@ -7,6 +7,7 @@ public:
 	GooglePlayPersister();
 	virtual ~GooglePlayPersister();
 
+	bool init() override;
 	bool saveCampaign (Campaign*) override;
 	bool loadCampaign (Campaign*) override;
 	bool reset () override;

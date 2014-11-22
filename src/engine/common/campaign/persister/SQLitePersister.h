@@ -32,6 +32,7 @@ public:
 	SQLitePersister (const std::string& filename);
 	virtual ~SQLitePersister ();
 
+	virtual bool init () override;
 	virtual bool reset () override;
 	virtual bool saveCampaign (Campaign* campaign) override;
 	virtual bool loadCampaign (Campaign* campaign) override;

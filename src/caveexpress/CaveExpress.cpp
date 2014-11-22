@@ -281,6 +281,9 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 			_persister = new NOPPersister();
 		else
 			_persister = new SQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
+		if (!_persister->init()) {
+			error(LOG_SERVER, "Failed to initialize the persister");
+		}
 	}
 	{
 		ExecutionTime e("campaign manager");
