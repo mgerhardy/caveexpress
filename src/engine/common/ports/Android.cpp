@@ -604,3 +604,11 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isHD(JNIEnv* en
 #endif
 	return hd;
 }
+
+extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterConnectFailed(JNIEnv* env, jclass jcls)
+{
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterConnectSuccess(JNIEnv* env, jclass jcls)
+{
+}

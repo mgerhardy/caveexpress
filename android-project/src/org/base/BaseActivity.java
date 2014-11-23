@@ -22,12 +22,23 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.plus.Plus;
+
 /**
  * Activity class without google play support
  */
-public abstract class BaseActivity extends SDLActivity {
+public abstract class BaseActivity extends SDLActivity implements GoogleApiClient.ConnectionCallbacks,
+		GoogleApiClient.OnConnectionFailedListener {
+	protected GoogleApiClient googleApiClient;
+
 	// (arbitrary) request code for the purchase flow
 	protected static final int RC_REQUEST = 10001;
+	// Request code used to invoke sign in user interactions.
+	protected static final int RC_SIGN_IN = 9001;
 
 	protected Map<String, Purchase> paymentIds = new ConcurrentHashMap<String, Purchase>();
 	protected List<String> moreSkus = new CopyOnWriteArrayList<String>();
@@ -47,13 +58,7 @@ public abstract class BaseActivity extends SDLActivity {
 
 	@Override
 	protected String[] getLibraries() {
-		return new String[] {
-			"SDL2",
-			"SDL2_image",
-			"SDL2_mixer",
-			"SDL2_net",
-			"main"
-		};
+		return new String[] { "SDL2", "SDL2_image", "SDL2_mixer", "SDL2_net", "main" };
 	}
 
 	private final class InAppBillingSetupFinishedListener implements IabHelper.OnIabSetupFinishedListener {
@@ -88,6 +93,10 @@ public abstract class BaseActivity extends SDLActivity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		configureBilling();
+
+		googleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
+				.addOnConnectionFailedListener(this).addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN).addApi(Games.API)
+				.addScope(Drive.SCOPE_FILE).addScope(Games.SCOPE_GAMES).build();
 	}
 
 	protected void configureBilling() {
@@ -288,6 +297,57 @@ public abstract class BaseActivity extends SDLActivity {
 		Log.v(getBaseActivity().getName(), "locale: " + current);
 		return current.getDisplayLanguage();
 	}
+
+	static boolean persisterInit() {
+		return getBaseActivity().doPersisterInit();
+	}
+
+	static boolean persisterConnect() {
+		return getBaseActivity().doPersisterConnect();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		if (googleApiClient.isConnected()) {
+			googleApiClient.disconnect();
+		}
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult result) {
+		onPersisterConnectFailed();
+	}
+
+	@Override
+	public void onConnected(Bundle bundle) {
+		onPersisterConnectSuccess();
+	}
+
+	@Override
+	public void onConnectionSuspended(int arg0) {
+	}
+
+	protected boolean doPersisterConnect() {
+		googleApiClient.connect();
+		return true;
+	}
+
+	protected boolean doPersisterInit() {
+		return true;
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK) {
+			doPersisterConnect();
+		}
+	}
+
+	public static native void onPersisterConnectFailed();
+
+	public static native void onPersisterConnectSuccess();
 
 	public static native void onPaymentDone();
 
