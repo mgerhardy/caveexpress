@@ -208,6 +208,7 @@
             <filename>../png/cavepacker/ui/xsokoban-campaign.png</filename>
             <filename>../png/cavepacker/ui/ksokoban-campaign.png</filename>
             <filename>../png/cavepacker/ui/gri-campaign.png</filename>
+            <filename>../png/cavepacker/ui/icon-google-login.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
