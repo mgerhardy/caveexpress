@@ -57,12 +57,20 @@ GooglePlayPersister::~GooglePlayPersister() {
 
 void GooglePlayPersister::connect() {
 #ifdef GOOGLEPLAY_ACTIVE
+	if (_env == nullptr) {
+		error(LOG_SYSTEM, "GoolePlayPersister::connect() failed for the google play persister - no env pointer");
+		return;
+	}
 	_env->CallStaticVoidMethod(_cls, _persisterConnect);
 #endif
 }
 
 void GooglePlayPersister::disconnect() {
 #ifdef GOOGLEPLAY_ACTIVE
+	if (_env == nullptr) {
+		error(LOG_SYSTEM, "GoolePlayPersister::disconnect() failed for the google play persister - no env pointer");
+		return;
+	}
 	_env->CallStaticVoidMethod(_cls, _persisterDisconnect);
 #endif
 }
@@ -73,10 +81,11 @@ bool GooglePlayPersister::init() {
 
 	JNIEnv *env = static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
 	if (env == nullptr) {
+		error(LOG_SYSTEM, "GoolePlayPersister::init() failed to init the google play persister - no env pointer");
 		return false;
 	}
 	if (!refs.init(env)) {
-		info(LOG_SYSTEM, "could not init the ref holder");
+		error(LOG_SYSTEM, "GoolePlayPersister::init(): could not init the ref holder");
 		return false;
 	}
 
@@ -90,6 +99,7 @@ bool GooglePlayPersister::init() {
 	_persisterConnect = env->GetStaticMethodID(_cls, "persisterConnect", "()Z");
 	_persisterDisconnect = env->GetStaticMethodID(_cls, "persisterDisconnect", "()Z");
 
+#if 0
 	_saveCampaign = _env->GetStaticMethodID(_cls, "saveCampaign", "(Lorg/CampaignStub;)V");
 	if (_saveCampaign == 0) {
 		error(LOG_SYSTEM, "Could not get the jni bindings for saveCampaign");
@@ -103,7 +113,7 @@ bool GooglePlayPersister::init() {
 		_env = nullptr;
 		return false;
 	}
-
+#endif
 	_env->CallStaticVoidMethod(_cls, _persisterInit);
 
 	return true;
