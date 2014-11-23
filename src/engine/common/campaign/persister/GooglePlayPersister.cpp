@@ -76,6 +76,7 @@ void GooglePlayPersister::disconnect() {
 }
 
 bool GooglePlayPersister::init() {
+	info(LOG_SYSTEM, "GoolePlayPersister::init() initializing...");
 #ifdef GOOGLEPLAY_ACTIVE
 	GPLocalReferenceHolder refs;
 
@@ -96,8 +97,23 @@ bool GooglePlayPersister::init() {
 	_cls = reinterpret_cast<jclass>(_env->NewGlobalRef(cls));
 
 	_persisterInit = env->GetStaticMethodID(_cls, "persisterInit", "()Z");
+	if (_persisterInit == 0) {
+		error(LOG_SYSTEM, "Could not get the jni bindings for persisterInit");
+		_env = nullptr;
+		return false;
+	}
 	_persisterConnect = env->GetStaticMethodID(_cls, "persisterConnect", "()Z");
+	if (_persisterConnect == 0) {
+		error(LOG_SYSTEM, "Could not get the jni bindings for persisterConnect");
+		_env = nullptr;
+		return false;
+	}
 	_persisterDisconnect = env->GetStaticMethodID(_cls, "persisterDisconnect", "()Z");
+	if (_persisterDisconnect == 0) {
+		error(LOG_SYSTEM, "Could not get the jni bindings for persisterDisconnect");
+		_env = nullptr;
+		return false;
+	}
 
 #if 0
 	_saveCampaign = _env->GetStaticMethodID(_cls, "saveCampaign", "(Lorg/CampaignStub;)V");
@@ -116,6 +132,7 @@ bool GooglePlayPersister::init() {
 #endif
 	_env->CallStaticVoidMethod(_cls, _persisterInit);
 
+	info(LOG_SYSTEM, "GoolePlayPersister::init() initialized");
 	return true;
 #endif
 	return false;

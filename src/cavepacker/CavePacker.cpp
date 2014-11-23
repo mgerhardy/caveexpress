@@ -185,6 +185,9 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		} else {
 			_persister = new CavePackerSQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
 		}
+		if (!_persister->init()) {
+			error(LOG_SERVER, "Failed to initialize the persister");
+		}
 	}
 	{
 		ExecutionTime e("campaign manager");
