@@ -302,6 +302,10 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		return getBaseActivity().doPersisterInit();
 	}
 
+	static boolean persisterDisconnect() {
+		return getBaseActivity().doPersisterDisconnect();
+	}
+
 	static boolean persisterConnect() {
 		return getBaseActivity().doPersisterConnect();
 	}
@@ -328,13 +332,22 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 	public void onConnectionSuspended(int arg0) {
 	}
 
+	protected boolean doPersisterDisconnect() {
+		if (!googleApiClient.isConnected())
+			return false;
+		googleApiClient.disconnect();
+		return true;
+	}
+
 	protected boolean doPersisterConnect() {
+		if (googleApiClient.isConnected() || googleApiClient.isConnecting())
+			return false;
 		googleApiClient.connect();
 		return true;
 	}
 
 	protected boolean doPersisterInit() {
-		return true;
+		return googleApiClient != null;
 	}
 
 	@Override

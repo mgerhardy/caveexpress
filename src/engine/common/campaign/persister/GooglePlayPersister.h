@@ -18,6 +18,9 @@ private:
 	jclass _cls;
 	jmethodID _loadCampaign;
 	jmethodID _saveCampaign;
+	jmethodID _persisterInit;
+	jmethodID _persisterConnect;
+	jmethodID _persisterDisconnect;
 #endif
 
 	bool testException ();

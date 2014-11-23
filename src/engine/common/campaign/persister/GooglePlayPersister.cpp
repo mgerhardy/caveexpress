@@ -71,6 +71,10 @@ bool GooglePlayPersister::init() {
 	_env = env;
 	_cls = reinterpret_cast<jclass>(_env->NewGlobalRef(cls));
 
+	_persisterInit = env->GetStaticMethodID(_cls, "persisterInit", "()Z");
+	_persisterConnect = env->GetStaticMethodID(_cls, "persisterConnect", "()Z");
+	_persisterDisconnect = env->GetStaticMethodID(_cls, "persisterDisconnect", "()Z");
+
 	_saveCampaign = _env->GetStaticMethodID(_cls, "saveCampaign", "(Lorg/CampaignStub;)V");
 	if (_saveCampaign == 0) {
 		error(LOG_SYSTEM, "Could not get the jni bindings for saveCampaign");
