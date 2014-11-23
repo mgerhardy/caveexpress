@@ -333,7 +333,10 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 	}
 
 	@Override
-	public void onConnectionSuspended(int arg0) {
+	public void onConnectionSuspended(int cause) {
+		if (!googleApiClient.isConnected())
+			return;
+		googleApiClient.disconnect();
 	}
 
 	protected boolean doPersisterDisconnect() {
