@@ -1,4 +1,5 @@
 #include "GooglePlayPersister.h"
+#include "engine/common/CommandSystem.h"
 #include <SDL_system.h>
 
 #ifdef GOOGLEPLAY_ACTIVE
@@ -45,10 +46,24 @@ int GPLocalReferenceHolder::s_active;
 
 GooglePlayPersister::GooglePlayPersister() :
 		IGameStatePersister() {
+	Commands.registerCommand("googleplay-connect", bindFunction(connect));
+	Commands.registerCommand("googleplay-disconnect", bindFunction(disconnect));
 }
 
 GooglePlayPersister::~GooglePlayPersister() {
 #ifdef GOOGLEPLAY_ACTIVE
+#endif
+}
+
+void GooglePlayPersister::connect() {
+#ifdef GOOGLEPLAY_ACTIVE
+	_env->CallStaticVoidMethod(_cls, _persisterConnect);
+#endif
+}
+
+void GooglePlayPersister::disconnect() {
+#ifdef GOOGLEPLAY_ACTIVE
+	_env->CallStaticVoidMethod(_cls, _persisterDisconnect);
 #endif
 }
 
@@ -88,6 +103,8 @@ bool GooglePlayPersister::init() {
 		_env = nullptr;
 		return false;
 	}
+
+	_env->CallStaticVoidMethod(_cls, _persisterInit);
 
 	return true;
 #endif

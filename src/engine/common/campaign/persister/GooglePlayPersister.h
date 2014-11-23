@@ -23,6 +23,9 @@ private:
 	jmethodID _persisterDisconnect;
 #endif
 
+	void connect();
+	void disconnect();
+
 	bool testException ();
 public:
 	GooglePlayPersister();
