@@ -118,6 +118,7 @@ void Android::init() {
 	_buyItem = env->GetStaticMethodID(_cls, "buyItem", "(Ljava/lang/String;)Z");
 	_hasItem = env->GetStaticMethodID(_cls, "hasItem", "(Ljava/lang/String;)Z");
 	_track = env->GetStaticMethodID(_cls, "track", "(Ljava/lang/String;Ljava/lang/String;)Z");
+	_achievementUnlocked = env->GetStaticMethodID(_cls, "achievementUnlocked", "(Ljava/lang/String;)V");
 	_isOUYA = env->GetStaticMethodID(_cls, "isOUYA", "()Z");
 	_isSmallScreen = env->GetStaticMethodID(_cls, "isSmallScreen", "()Z");
 	_minimize = env->GetStaticMethodID(_cls, "minimize", "()V");
@@ -159,6 +160,9 @@ void Android::init() {
 	}
 	if (_getLocale == 0) {
 		error(LOG_SYSTEM, "error getting getLocale()");
+	}
+	if (_achievementUnlocked == 0) {
+		error(LOG_SYSTEM, "error getting achievementUnlocked()");
 	}
 
 	info(LOG_SYSTEM, String::format("Running on: [%s] [%s] [%s] [%s] [%s] SDK:%s ABI:%s",
@@ -341,6 +345,19 @@ void Android::showAds (bool show)
 
 void Android::achievementUnlocked (const std::string& id)
 {
+	LocalReferenceHolder refs;
+
+	if (_env == nullptr || !refs.init(_env)) {
+		error(LOG_SYSTEM, "error while calling achievementUnlocked");
+		return;
+	}
+
+	jstring idJavaStr = _env->NewStringUTF(id.c_str());
+	_env->CallStaticBooleanMethod(_cls, _achievementUnlocked, idJavaStr);
+	_env->DeleteLocalRef(idJavaStr);
+
+	testException();
+
 }
 
 bool Android::hasAchievement (const std::string& id)

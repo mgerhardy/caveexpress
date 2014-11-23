@@ -26,6 +26,7 @@ private:
 	jmethodID _minimize;
 	jmethodID _getPaymentEntries;
 	jmethodID _getLocale;
+	jmethodID _achievementUnlocked;
 
 	int _externalState;
 

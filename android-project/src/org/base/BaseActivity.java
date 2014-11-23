@@ -306,6 +306,10 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		return getBaseActivity().doPersisterDisconnect();
 	}
 
+	static void achievementUnlocked(String id) {
+		getBaseActivity().doAchievementUnlocked(id);
+	}
+
 	static boolean persisterConnect() {
 		return getBaseActivity().doPersisterConnect();
 	}
@@ -348,6 +352,12 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 
 	protected boolean doPersisterInit() {
 		return googleApiClient != null;
+	}
+
+	protected void doAchievementUnlocked(String id) {
+		if (!googleApiClient.isConnected())
+			return;
+		Games.Achievements.unlock(googleApiClient, id);
 	}
 
 	@Override
