@@ -78,4 +78,5 @@ public:
 	bool hasMouseOrFinger () override;
 	bool canDisableJoystick () override { return !isOUYA(); }
 	bool wantBackButton () override { return isOUYA(); }
+	bool supportGooglePlay () { return !isOUYA(); }
 };

@@ -1,11 +1,13 @@
 #include "UIMainWindow.h"
 #include "engine/client/ui/UI.h"
 #include "engine/client/ui/nodes/UINodeButton.h"
+#include "engine/client/ui/nodes/UINodeButtonImage.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
 #include "engine/client/ui/windows/UIWindow.h"
 #include "engine/client/ui/windows/listener/QuitListener.h"
 #include "engine/client/ui/nodes/UINodeMainBackground.h"
 #include "engine/client/ui/layouts/UIVBoxLayout.h"
+#include "engine/client/ui/listener/GooglePlayListener.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/System.h"
 #include "engine/client/ui/windows/listener/OpenWindowListener.h"
@@ -40,6 +42,12 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 		UINodeMainButton *payment = new UINodeMainButton(_frontend, tr("Extras"));
 		payment->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_PAYMENT)));
 		panel->add(payment);
+	}
+
+	if (System.supportGooglePlay()) {
+		UINodeButtonImage *googlePlay = new UINodeButtonImage(_frontend, "icon-google-login");
+		googlePlay->addListener(UINodeListenerPtr(new GooglePlayListener()));
+		panel->add(googlePlay);
 	}
 
 	UINodeMainButton *twitter = new UINodeMainButton(_frontend, tr("Twitter"));

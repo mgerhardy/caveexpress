@@ -120,6 +120,8 @@ public:
 
 	virtual bool canDisableJoystick () { return true; }
 
+	virtual bool supportGooglePlay () { return false; }
+
 	virtual void backtrace (const char *errorMessage) {}
 
 	virtual bool hasTouch () const

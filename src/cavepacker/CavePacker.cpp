@@ -18,6 +18,7 @@
 #include "engine/client/entities/ClientMapTile.h"
 #include "engine/common/network/ProtocolHandlerRegistry.h"
 #include "engine/common/campaign/ICampaignManager.h"
+#include "engine/common/campaign/persister/GooglePlayPersister.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/System.h"
@@ -179,6 +180,8 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		const ConfigVarPtr& persister = Config.get().getConfigVar("persister", "sqlite", true, CV_READONLY);
 		if (persister->getValue() == "nop") {
 			_persister = new NOPPersister();
+		} else if (persister->getValue() == "googleplay" && System.supportGooglePlay()) {
+			_persister = new GooglePlayPersister();
 		} else {
 			_persister = new CavePackerSQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
 		}

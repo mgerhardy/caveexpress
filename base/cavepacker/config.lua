@@ -17,6 +17,11 @@ defaultfpslimit = 60
 if isOUYA() then
 	defaultjoystick = true
 	defaultparticles = 0
+elseif isAndroid() then
+	defaultshowcursor = false
+	defaultparticles = 0
+	defaultfpslimit = 30
+	defaultpersister = "googleplay"
 elseif isMobile() then
 	defaultshowcursor = false
 	defaultparticles = 0
