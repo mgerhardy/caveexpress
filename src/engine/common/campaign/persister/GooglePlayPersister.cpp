@@ -46,8 +46,8 @@ int GPLocalReferenceHolder::s_active;
 
 GooglePlayPersister::GooglePlayPersister() :
 		IGameStatePersister() {
-	Commands.registerCommand("googleplay-connect", bindFunction(connect));
-	Commands.registerCommand("googleplay-disconnect", bindFunction(disconnect));
+	Commands.registerCommand("googleplay-connect", bindFunction(GooglePlayPersister, connect));
+	Commands.registerCommand("googleplay-disconnect", bindFunction(GooglePlayPersister, disconnect));
 }
 
 GooglePlayPersister::~GooglePlayPersister() {
