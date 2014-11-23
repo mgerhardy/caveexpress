@@ -81,6 +81,7 @@ $(ANDROID_PROJECT)/AndroidManifest.xml: $(SRCDIR)/Android.mk.in $(ANDROID_PROJEC
 	$(Q)sed -i 's/@JAVA_PACKAGE@/$(JAVA_PACKAGE)/g' $(ANDROID_PROJECT)/AndroidManifest.xml
 	$(Q)sed -i 's/@MIN_ANDROID_SDK@/$(MIN_ANDROID_SDK)/g' $(ANDROID_PROJECT)/AndroidManifest.xml
 	$(Q)sed -i 's/@TARGET_ANDROID_SDK@/$(TARGET_ANDROID_SDK)/g' $(ANDROID_PROJECT)/AndroidManifest.xml
+	$(Q)git clean -fdx $(ANDROID_PROJECT)
 	$(Q)cp $(ANDROID_PROJECT)/strings.xml.in $(ANDROID_PROJECT)/res/values/strings.xml
 	$(Q)sed -i 's/@APPNAME_FULL@/$(APPNAME_FULL)/g' $(ANDROID_PROJECT)/res/values/strings.xml
 	$(Q)cp $(ANDROID_PROJECT)/jni/Application.mk.in $(ANDROID_PROJECT)/jni/Application.mk
@@ -89,8 +90,7 @@ $(ANDROID_PROJECT)/AndroidManifest.xml: $(SRCDIR)/Android.mk.in $(ANDROID_PROJEC
 	$(Q)sed -i 's/@APPNAME@/$(APPNAME)/g' $(SRCDIR)/Android.mk
 	$(Q)sed -i 's/@NETWORKING@/$(NETWORKING)/g' $(SRCDIR)/Android.mk
 	$(Q)sed -i 's#@OWN_CFLAGS@#$(SDL_NET_CFLAGS)#g' $(SRCDIR)/Android.mk
-	$(Q)sed -i 's/import org.caveexpress.*R;/import $(JAVA_PACKAGE).R;/g' $(ANDROID_PROJECT)/src/org/base/game/GameHelper.java
-	$(Q)sed -i 's/import org.caveexpress.*R;/import $(JAVA_PACKAGE).R;/g' $(ANDROID_PROJECT)/src/org/base/game/GameHelperUtils.java
+	$(Q)cp -rf contrib/installer/android/$(APPNAME)/* $(ANDROID_PROJECT)
 
 android-update-sdk-version:
 	$(Q)cp $(ANDROID_PROJECT)/default.properties.in $(ANDROID_PROJECT)/default.properties
