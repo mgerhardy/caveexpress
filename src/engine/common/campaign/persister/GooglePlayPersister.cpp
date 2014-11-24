@@ -45,7 +45,13 @@ int GPLocalReferenceHolder::s_active;
 
 
 GooglePlayPersister::GooglePlayPersister() :
-		IGameStatePersister() {
+		IGameStatePersister()
+#ifdef GOOGLEPLAY_ACTIVE
+		,
+		_env(nullptr), _cls(nullptr), _loadCampaign(nullptr), _saveCampaign(nullpt),
+		_persisterInit(nullptr), _persisterConnect(nullptr), _persisterDisconnect(nullptr)
+#endif
+{
 	Commands.registerCommand("googleplay-connect", bindFunction(GooglePlayPersister, connect));
 	Commands.registerCommand("googleplay-disconnect", bindFunction(GooglePlayPersister, disconnect));
 }
@@ -57,6 +63,8 @@ GooglePlayPersister::~GooglePlayPersister() {
 			_env->DeleteGlobalRef(_cls);
 		_cls = nullptr;
 	}
+
+	_env = nullptr;
 #endif
 }
 
