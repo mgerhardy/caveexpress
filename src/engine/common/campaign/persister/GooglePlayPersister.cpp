@@ -48,7 +48,7 @@ GooglePlayPersister::GooglePlayPersister() :
 		IGameStatePersister()
 #ifdef GOOGLEPLAY_ACTIVE
 		,
-		_env(nullptr), _cls(nullptr), _loadCampaign(nullptr), _saveCampaign(nullpt),
+		_env(nullptr), _cls(nullptr), _loadCampaign(nullptr), _saveCampaign(nullptr),
 		_persisterInit(nullptr), _persisterConnect(nullptr), _persisterDisconnect(nullptr)
 #endif
 {
