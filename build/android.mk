@@ -24,8 +24,8 @@ META_DATA =
 else
 META_DATA = <meta-data android:value="true" android:name="ADMOB_ALLOW_LOCATION_FOR_ADS" />
 endif
-#META_DATA += <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/app_id" />
-#META_DATA += <meta-data android:name="com.google.android.gms.appstate.APP_ID" android:value="@string/app_id" />
+META_DATA += <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/app_id" />
+META_DATA += <meta-data android:name="com.google.android.gms.appstate.APP_ID" android:value="@string/app_id" />
 META_DATA += <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 ANDROID_REFERENCED_LIBS := android.library.reference.1=google-play-services_lib
 else
