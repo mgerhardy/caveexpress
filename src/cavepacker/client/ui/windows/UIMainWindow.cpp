@@ -47,7 +47,9 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	if (System.supportGooglePlay()) {
 		UINodeButtonImage *googlePlay = new UINodeButtonImage(_frontend, "icon-google-login");
 		googlePlay->addListener(UINodeListenerPtr(new GooglePlayListener()));
-		panel->add(googlePlay);
+		googlePlay->setAlignment(NODE_ALIGN_BOTTOM | NODE_ALIGN_LEFT);
+		googlePlay->setPadding(padding);
+		add(googlePlay);
 	}
 
 	UINodeMainButton *twitter = new UINodeMainButton(_frontend, tr("Twitter"));
