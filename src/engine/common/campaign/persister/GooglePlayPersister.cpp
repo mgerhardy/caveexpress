@@ -52,6 +52,11 @@ GooglePlayPersister::GooglePlayPersister() :
 
 GooglePlayPersister::~GooglePlayPersister() {
 #ifdef GOOGLEPLAY_ACTIVE
+	if (_env) {
+		if (_cls)
+			_env->DeleteGlobalRef(_cls);
+		_cls = nullptr;
+	}
 #endif
 }
 
