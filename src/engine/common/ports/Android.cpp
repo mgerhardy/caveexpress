@@ -624,8 +624,10 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isHD(JNIEnv* en
 
 extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterConnectFailed(JNIEnv* env, jclass jcls)
 {
+	error(LOG_SYSTEM, "google play connection failed");
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterConnectSuccess(JNIEnv* env, jclass jcls)
 {
+	info(LOG_SYSTEM, "google play connection succeeds");
 }
