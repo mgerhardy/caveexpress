@@ -341,7 +341,7 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 
 	@Override
 	public void onConnected(Bundle bundle) {
-		Log.v(getName(), "google play api: connected " + bundle.toString());
+		Log.v(getName(), "google play api: connected");
 		onPersisterConnectSuccess();
 	}
 
