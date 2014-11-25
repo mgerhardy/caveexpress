@@ -68,6 +68,7 @@ clean-android: clean-android-libs
 	$(Q)rm -f $(ANDROID_PROJECT)/res/values/strings.xml
 	$(Q)rm -f $(SRCDIR)/Android.mk
 
+.PHONY: android-update-project
 android-update-project: $(ANDROID_PROJECT)/local.properties $(ANDROID_PROJECT)/build.xml $(ANDROID_PROJECT)/AndroidManifest.xml
 
 $(ANDROID_PROJECT)/AndroidManifest.xml: $(SRCDIR)/Android.mk.in $(ANDROID_PROJECT)/AndroidManifest.xml.in $(ANDROID_PROJECT)/jni/Application.mk.in $(ANDROID_PROJECT)/strings.xml.in $(CONFIG_H)-config.h
@@ -81,7 +82,6 @@ $(ANDROID_PROJECT)/AndroidManifest.xml: $(SRCDIR)/Android.mk.in $(ANDROID_PROJEC
 	$(Q)sed -i 's/@JAVA_PACKAGE@/$(JAVA_PACKAGE)/g' $(ANDROID_PROJECT)/AndroidManifest.xml
 	$(Q)sed -i 's/@MIN_ANDROID_SDK@/$(MIN_ANDROID_SDK)/g' $(ANDROID_PROJECT)/AndroidManifest.xml
 	$(Q)sed -i 's/@TARGET_ANDROID_SDK@/$(TARGET_ANDROID_SDK)/g' $(ANDROID_PROJECT)/AndroidManifest.xml
-	$(Q)git clean -fdx $(ANDROID_PROJECT)
 	$(Q)cp $(ANDROID_PROJECT)/strings.xml.in $(ANDROID_PROJECT)/res/values/strings.xml
 	$(Q)sed -i 's/@APPNAME_FULL@/$(APPNAME_FULL)/g' $(ANDROID_PROJECT)/res/values/strings.xml
 	$(Q)cp $(ANDROID_PROJECT)/jni/Application.mk.in $(ANDROID_PROJECT)/jni/Application.mk
