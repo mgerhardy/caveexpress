@@ -1,5 +1,6 @@
 package org.base;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -18,15 +19,20 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.snapshot.Snapshot;
+import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
+import com.google.android.gms.games.snapshot.Snapshots.OpenSnapshotResult;
 import com.google.android.gms.plus.Plus;
 
 /**
@@ -34,6 +40,8 @@ import com.google.android.gms.plus.Plus;
  */
 public abstract class BaseActivity extends SDLActivity implements GoogleApiClient.ConnectionCallbacks,
 		GoogleApiClient.OnConnectionFailedListener {
+	private static final String GAMESTATE = "gamestate";
+
 	protected GoogleApiClient googleApiClient;
 
 	// (arbitrary) request code for the purchase flow
@@ -348,6 +356,7 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 	public void onConnected(Bundle bundle) {
 		Log.v(getName(), "google play api: connected");
 		onPersisterConnectSuccess();
+		resolvingError = false;
 	}
 
 	@Override
@@ -358,6 +367,7 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 	}
 
 	protected boolean doPersisterDisconnect() {
+		resolvingError = false;
 		if (!googleApiClient.isConnected())
 			return false;
 		googleApiClient.disconnect();
@@ -390,6 +400,57 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK) {
 			doPersisterConnect();
 		}
+	}
+
+	static byte[] loadGameState() {
+		return getBaseActivity().doLoadGameState();
+	}
+
+	public byte[] doLoadGameState() {
+		Snapshot snapshot = getSnapshot();
+		return snapshot.readFully();
+	}
+
+	protected Snapshot getSnapshot() {
+		OpenSnapshotResult result = Games.Snapshots.open(googleApiClient, GAMESTATE, true).await();
+		Snapshot snapshot = result.getSnapshot();
+		return snapshot;
+	}
+
+	/**
+	 * Gets a screenshot to use with snapshots. Note that in practice you
+	 * probably do not want to use this approach because tablet screen sizes can
+	 * become pretty large and because the image will contain any UI and layout
+	 * surrounding the area of interest.
+	 */
+	protected Bitmap getScreenShot() {
+		Bitmap coverImage;
+		View view = mSurface;
+		try {
+			view.setDrawingCacheEnabled(true);
+			Bitmap base = view.getDrawingCache();
+			coverImage = base.copy(base.getConfig(), false /* isMutable */);
+		} catch (Exception ex) {
+			Log.i(getName(), "Failed to create screenshot", ex);
+			coverImage = null;
+		} finally {
+			view.setDrawingCacheEnabled(false);
+		}
+		return coverImage;
+	}
+
+	static void saveGameState(byte[] bytes) {
+		getBaseActivity().doSaveGameState(bytes);
+	}
+
+	public void doSaveGameState(byte[] bytes) {
+		Snapshot snapshot = getSnapshot();
+		snapshot.writeBytes(bytes);
+		SnapshotMetadataChange.Builder builder = new SnapshotMetadataChange.Builder();
+		builder.setCoverImage(getScreenShot());
+		builder.setDescription(getName());
+		SnapshotMetadataChange metadataChange = builder.build();
+		Games.Snapshots.commitAndClose(googleApiClient, snapshot, metadataChange);
 	}
 
 	public static native void onPersisterConnectFailed();
