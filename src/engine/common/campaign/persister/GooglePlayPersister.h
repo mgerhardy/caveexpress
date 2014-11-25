@@ -13,6 +13,8 @@
 
 class GooglePlayPersister: public IGameStatePersister {
 private:
+	IGameStatePersister* _delegate;
+
 #ifdef GOOGLEPLAY_ACTIVE
 	mutable JNIEnv* _env;
 	jclass _cls;
@@ -28,7 +30,7 @@ private:
 
 	bool testException ();
 public:
-	GooglePlayPersister();
+	GooglePlayPersister(IGameStatePersister* delegate);
 	virtual ~GooglePlayPersister();
 
 	bool init() override;

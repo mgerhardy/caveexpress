@@ -181,7 +181,8 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		if (persister->getValue() == "nop") {
 			_persister = new NOPPersister();
 		} else if (persister->getValue() == "googleplay" && System.supportGooglePlay()) {
-			_persister = new GooglePlayPersister();
+			IGameStatePersister *delegate = new CavePackerSQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
+			_persister = new GooglePlayPersister(delegate);
 		} else {
 			_persister = new CavePackerSQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
 		}

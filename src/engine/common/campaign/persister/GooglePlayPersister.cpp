@@ -44,8 +44,8 @@ int GPLocalReferenceHolder::s_active;
 #endif
 
 
-GooglePlayPersister::GooglePlayPersister() :
-		IGameStatePersister()
+GooglePlayPersister::GooglePlayPersister(IGameStatePersister* delegate) :
+		IGameStatePersister(), _delegate(delegate)
 #ifdef GOOGLEPLAY_ACTIVE
 		,
 		_env(nullptr), _cls(nullptr), _loadCampaign(nullptr), _saveCampaign(nullptr),
@@ -66,6 +66,7 @@ GooglePlayPersister::~GooglePlayPersister() {
 
 	_env = nullptr;
 #endif
+	delete _delegate;
 }
 
 void GooglePlayPersister::connect() {
@@ -146,9 +147,9 @@ bool GooglePlayPersister::init() {
 	_env->CallStaticVoidMethod(_cls, _persisterInit);
 
 	info(LOG_SYSTEM, "GoolePlayPersister::init() initialized");
-	return true;
 #endif
-	return false;
+	_delegate->init();
+	return true;
 }
 
 // Test for an exception and call SDL_SetError with its detail if one occurs
@@ -202,23 +203,23 @@ bool GooglePlayPersister::saveCampaign(Campaign* campaign) {
 	}
 
 #endif
-	return false;
+	return _delegate->saveCampaign(campaign);
 }
 
 bool GooglePlayPersister::loadCampaign(Campaign* campaign) {
 #ifdef GOOGLEPLAY_ACTIVE
 #endif
-	return false;
+	return _delegate->loadCampaign(campaign);
 }
 
 bool GooglePlayPersister::reset() {
 #ifdef GOOGLEPLAY_ACTIVE
 #endif
-	return false;
+	return _delegate->reset();
 }
 
 bool GooglePlayPersister::resetCampaign(Campaign* campaign) {
 #ifdef GOOGLEPLAY_ACTIVE
 #endif
-	return false;
+	return _delegate->resetCampaign(campaign);
 }
