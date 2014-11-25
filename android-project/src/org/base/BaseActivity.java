@@ -170,6 +170,8 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		}
 	};
 
+	private boolean resolvingError;
+
 	protected static boolean verifyDeveloperPayload(final Purchase p, String sku) {
 		final String orig = getBaseActivity().getName() + sku;
 		final String payload = p.getDeveloperPayload();
@@ -325,11 +327,14 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
+		if (resolvingError)
+			return;
 		Log.e(getName(), "google play api: connection failed with " + result.toString());
 		if (!result.hasResolution()) {
 			onPersisterConnectFailed();
 		} else {
 			try {
+				resolvingError = true;
 				result.startResolutionForResult(this, RC_SIGN_IN);
 			} catch (SendIntentException e) {
 				// Try connecting again
