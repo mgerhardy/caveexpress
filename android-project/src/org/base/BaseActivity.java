@@ -324,11 +324,13 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
+		Log.e(getName(), "google play api: connection failed with " + result.toString());
 		onPersisterConnectFailed();
 	}
 
 	@Override
 	public void onConnected(Bundle bundle) {
+		Log.v(getName(), "google play api: connected " + bundle.toString());
 		onPersisterConnectSuccess();
 	}
 
@@ -347,8 +349,11 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 	}
 
 	protected boolean doPersisterConnect() {
-		if (googleApiClient.isConnected() || googleApiClient.isConnecting())
+		if (googleApiClient.isConnected() || googleApiClient.isConnecting()) {
+			Log.v(getName(), "google play api: already connected");
 			return false;
+		}
+		Log.v(getName(), "google play api: connect()");
 		googleApiClient.connect();
 		return true;
 	}
