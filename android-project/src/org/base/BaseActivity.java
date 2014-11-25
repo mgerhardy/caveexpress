@@ -16,6 +16,7 @@ import org.libsdl.app.SDLActivity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
@@ -325,7 +326,17 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
 		Log.e(getName(), "google play api: connection failed with " + result.toString());
-		onPersisterConnectFailed();
+		if (!result.hasResolution()) {
+			onPersisterConnectFailed();
+		} else {
+			try {
+				result.startResolutionForResult(this, RC_SIGN_IN);
+			} catch (SendIntentException e) {
+				// Try connecting again
+				Log.d(getName(), "SendIntentException, so connecting again.");
+				doPersisterConnect();
+			}
+		}
 	}
 
 	@Override
