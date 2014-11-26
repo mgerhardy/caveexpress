@@ -18,8 +18,8 @@ private:
 #ifdef GOOGLEPLAY_ACTIVE
 	mutable JNIEnv* _env;
 	jclass _cls;
-	jmethodID _loadCampaign;
-	jmethodID _saveCampaign;
+	jmethodID _loadGameState;
+	jmethodID _saveGameState;
 	jmethodID _persisterInit;
 	jmethodID _persisterConnect;
 	jmethodID _persisterDisconnect;
@@ -27,6 +27,9 @@ private:
 
 	void connect();
 	void disconnect();
+
+	void upload();
+	void download();
 
 	bool testException ();
 public:

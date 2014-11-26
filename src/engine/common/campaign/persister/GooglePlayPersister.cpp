@@ -48,12 +48,14 @@ GooglePlayPersister::GooglePlayPersister(IGameStatePersister* delegate) :
 		IGameStatePersister(), _delegate(delegate)
 #ifdef GOOGLEPLAY_ACTIVE
 		,
-		_env(nullptr), _cls(nullptr), _loadCampaign(nullptr), _saveCampaign(nullptr),
+		_env(nullptr), _cls(nullptr), _loadGameState(nullptr), _saveGameState(nullptr),
 		_persisterInit(nullptr), _persisterConnect(nullptr), _persisterDisconnect(nullptr)
 #endif
 {
 	Commands.registerCommand("googleplay-connect", bindFunction(GooglePlayPersister, connect));
 	Commands.registerCommand("googleplay-disconnect", bindFunction(GooglePlayPersister, disconnect));
+	Commands.registerCommand("googleplay-upload", bindFunction(GooglePlayPersister, upload));
+	Commands.registerCommand("googleplay-download", bindFunction(GooglePlayPersister, download));
 }
 
 GooglePlayPersister::~GooglePlayPersister() {
@@ -67,6 +69,43 @@ GooglePlayPersister::~GooglePlayPersister() {
 	_env = nullptr;
 #endif
 	delete _delegate;
+}
+
+void GooglePlayPersister::upload() {
+#ifdef GOOGLEPLAY_ACTIVE
+	if (_env == nullptr) {
+		error(LOG_SYSTEM, "GoolePlayPersister::upload() failed for the google play persister - no env pointer");
+		return;
+	}
+	GPLocalReferenceHolder refs;
+	if (!refs.init(_env)) {
+		error(LOG_SYSTEM, "GoolePlayPersister::upload(): could not init the ref holder");
+		return;
+	}
+
+#if 0
+	jbyteArray data = _env->NewByteArray(fileSize);
+	_env->SetByteArrayRegion(jBuff, 0, fileSize, (jbyte*) file->getBuffer());
+	_env->CallStaticMethod(_cls, _saveGameState, data);
+#endif
+#endif
+}
+
+void GooglePlayPersister::download() {
+#ifdef GOOGLEPLAY_ACTIVE
+	if (_env == nullptr) {
+		error(LOG_SYSTEM, "GoolePlayPersister::download() failed for the google play persister - no env pointer");
+		return;
+	}
+	GPLocalReferenceHolder refs;
+	if (!refs.init(_env)) {
+		error(LOG_SYSTEM, "GoolePlayPersister::download(): could not init the ref holder");
+		return;
+	}
+#if 0
+	jbyteArray data = reinterpret_cast<jbyteArray>(_env->CallStaticMethod(_cls, _loadGameState));
+#endif
+#endif
 }
 
 void GooglePlayPersister::connect() {
@@ -129,21 +168,20 @@ bool GooglePlayPersister::init() {
 		return false;
 	}
 
-#if 0
-	_saveCampaign = _env->GetStaticMethodID(_cls, "saveCampaign", "(Lorg/CampaignStub;)V");
-	if (_saveCampaign == 0) {
-		error(LOG_SYSTEM, "Could not get the jni bindings for saveCampaign");
+	_saveGameState = _env->GetStaticMethodID(_cls, "saveGameState", "([B;)V");
+	if (_saveGameState == 0) {
+		error(LOG_SYSTEM, "Could not get the jni bindings for saveGameState");
 		_env = nullptr;
 		return false;
 	}
 
-	_loadCampaign = _env->GetStaticMethodID(_cls, "loadCampaign", "(Ljava/lang/String;)Lorg/CampaignStub;");
-	if (_loadCampaign == 0) {
-		error(LOG_SYSTEM, "Could not get the jni bindings for loadCampaign");
+	_loadGameState = _env->GetStaticMethodID(_cls, "loadGameState", "()[B;");
+	if (_loadGameState == 0) {
+		error(LOG_SYSTEM, "Could not get the jni bindings for loadGameState");
 		_env = nullptr;
 		return false;
 	}
-#endif
+
 	_env->CallStaticVoidMethod(_cls, _persisterInit);
 
 	info(LOG_SYSTEM, "GoolePlayPersister::init() initialized");
