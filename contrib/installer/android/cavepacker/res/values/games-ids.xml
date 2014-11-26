@@ -5,7 +5,7 @@ Save this file as res/values/games-ids.xml in your project.
 -->
 <resources>
   <string name="app_id">1046698804387</string>
-  <string name="achievement_3_stars">CgkIo4nxoLseEAIQBA</string>
+  <string name="achievement_3_x_3_stars">CgkIo4nxoLseEAIQBA</string>
   <string name="achievement_10_puzzles">CgkIo4nxoLseEAIQBQ</string>
   <string name="achievement_10_x_3_stars">CgkIo4nxoLseEAIQBg</string>
   <string name="achievement_20_puzzles">CgkIo4nxoLseEAIQBw</string>

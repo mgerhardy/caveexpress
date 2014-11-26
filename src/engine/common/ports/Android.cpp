@@ -118,7 +118,7 @@ void Android::init() {
 	_buyItem = env->GetStaticMethodID(_cls, "buyItem", "(Ljava/lang/String;)Z");
 	_hasItem = env->GetStaticMethodID(_cls, "hasItem", "(Ljava/lang/String;)Z");
 	_track = env->GetStaticMethodID(_cls, "track", "(Ljava/lang/String;Ljava/lang/String;)Z");
-	_achievementUnlocked = env->GetStaticMethodID(_cls, "achievementUnlocked", "(Ljava/lang/String;)V");
+	_achievementUnlocked = env->GetStaticMethodID(_cls, "achievementUnlocked", "(Ljava/lang/String;Ljava/lang/Boolean;)V");
 	_isOUYA = env->GetStaticMethodID(_cls, "isOUYA", "()Z");
 	_isSmallScreen = env->GetStaticMethodID(_cls, "isSmallScreen", "()Z");
 	_minimize = env->GetStaticMethodID(_cls, "minimize", "()V");
@@ -343,7 +343,7 @@ void Android::showAds (bool show)
 	}
 }
 
-void Android::achievementUnlocked (const std::string& id)
+void Android::achievementUnlocked (const std::string& id, bool increment)
 {
 	LocalReferenceHolder refs;
 
@@ -353,7 +353,8 @@ void Android::achievementUnlocked (const std::string& id)
 	}
 
 	jstring idJavaStr = _env->NewStringUTF(id.c_str());
-	_env->CallStaticBooleanMethod(_cls, _achievementUnlocked, idJavaStr);
+	jboolean incrementBool = (jboolean)increment;
+	_env->CallStaticBooleanMethod(_cls, _achievementUnlocked, idJavaStr, incrementBool);
 	_env->DeleteLocalRef(idJavaStr);
 
 	testException();

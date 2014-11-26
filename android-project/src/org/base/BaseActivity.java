@@ -1,5 +1,6 @@
 package org.base;
 
+import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -63,6 +64,10 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 	 */
 	protected abstract String getPublicKey();
 
+	/**
+	 * @return The name of the package of the game. This is also used for
+	 *         reflection calls to not import the auto generated R class.
+	 */
 	public abstract String getName();
 
 	@Override
@@ -317,8 +322,8 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		return getBaseActivity().doPersisterDisconnect();
 	}
 
-	static void achievementUnlocked(String id) {
-		getBaseActivity().doAchievementUnlocked(id);
+	static void achievementUnlocked(String id, Boolean increment) {
+		getBaseActivity().doAchievementUnlocked(id, increment);
 	}
 
 	static boolean persisterConnect() {
@@ -388,10 +393,29 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		return googleApiClient != null;
 	}
 
-	protected void doAchievementUnlocked(String id) {
+	protected String getResourceString(String id) {
+		try {
+			Class<?> resourceIds = Class.forName("org." + getName() + ".R.string");
+			Field resourceIdField = resourceIds.getDeclaredField(id);
+			int resourceId = resourceIdField.getInt(null);
+			return getString(resourceId);
+		} catch (Exception e) {
+			Log.e(getName(), e.getMessage(), e);
+			return null;
+		}
+	}
+
+	protected void doAchievementUnlocked(String id, boolean increment) {
 		if (!googleApiClient.isConnected())
 			return;
-		Games.Achievements.unlock(googleApiClient, id);
+		if (increment) {
+			String resourceString = getResourceString(id);
+			if (resourceString == null)
+				return;
+			Games.Achievements.increment(googleApiClient, resourceString, 1);
+		} else {
+			Games.Achievements.unlock(googleApiClient, id);
+		}
 	}
 
 	@Override

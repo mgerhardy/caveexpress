@@ -88,7 +88,7 @@ public:
 
 	virtual bool buyItem (const std::string& id) { return false; }
 
-	virtual void achievementUnlocked (const std::string& id) { }
+	virtual void achievementUnlocked (const std::string& id, bool increment) { }
 
 	virtual bool hasAchievement (const std::string& id) { return false; }
 
