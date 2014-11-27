@@ -56,7 +56,7 @@ Compile for NaCl
 
 #### CavePacker
 
-![Media](https://github.com/mgerhardy/caveexpress/raw/master/contrib/assets/media/cavepacker/cavepacker-02.png)
+![Media](https://github.com/mgerhardy/caveexpress/raw/master/contrib/assets/media/cavepacker/screenshot-microban3.png)
 
 CavePacker is a sokoban game. It's just a few days old and only the basic things are working. This was meant as an experiment on how
 easy it would be to create a totally different game with the CaveExpress code base.
