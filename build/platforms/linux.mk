@@ -6,7 +6,7 @@ SO_LIBS                  := -ldl
 CFLAGS                   += -D_GNU_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE
 
 LDFLAGS                  +=
-tests_LDFLAGS            += -lrt
+tests_LDFLAGS            += -lrt -lpthread
 ifneq ($(HAVE_SDL_H),1)
 tmp_CFLAGS               := $(SDL_CFLAGS)
 DBUS_CFLAGS              := $(call PKG_CFLAGS,dbus-1)
