@@ -93,6 +93,8 @@ void CavePacker::update (uint32_t deltaTime)
 			if (!_map.isAutoSolve()) {
 				const std::string solutionId = "solution" + _map.getName();
 				System.track(solutionId, solution);
+			} else {
+				System.track("autosolve", _map.getName());
 			}
 			if (!_campaignManager->addAdditionMapData(_map.getName(), solution))
 				error(LOG_SERVER, "Could not save the solution for the map");
