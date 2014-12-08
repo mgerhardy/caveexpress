@@ -354,10 +354,15 @@ bool Player::canCarry (const IEntity* entity) const
 	int free = 0;
 	for (int i = 0; i < MAX_COLLECTED; ++i) {
 		const EntityType *entityType = _collectedEntities[i].entityType;
-		if (entityType == nullptr)
+		if (entityType == nullptr) {
 			++free;
-		else if (!EntityTypes::isPackage(*entityType))
+		} else if (!EntityTypes::isPackage(*entityType)) {
+			if (EntityTypes::isStone(*entityType))
+				_map.sendMessage(_clientId, "Drop the stone before collecting the package");
+			else
+				_map.sendMessage(_clientId, "You currently can't collect the package");
 			return false;
+		}
 	}
 	return free > 0;
 }
