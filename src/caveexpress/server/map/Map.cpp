@@ -683,7 +683,7 @@ bool Map::spawnPlayer (Player* player)
 void Map::sendMessage (ClientId clientId, const std::string& message) const
 {
 	INetwork& network = _serviceProvider->getNetwork();
-	network.sendToAllClients(TextMessage(message));
+	network.sendToClient(clientId, TextMessage(message));
 }
 
 bool Map::isReadyToStart () const
