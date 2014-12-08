@@ -5,8 +5,8 @@ ARGS=$*
 caveexpress_APPNAME=caveexpress
 caveexpress_APPNAME_FULL=CaveExpress
 caveexpress_JAVA_PACKAGE=org.caveexpress
-caveexpress_VERSION=2.1
-caveexpress_VERSION_CODE=28
+caveexpress_VERSION=2.2
+caveexpress_VERSION_CODE=29
 
 cavepacker_APPNAME=cavepacker
 cavepacker_APPNAME_FULL=CavePacker
