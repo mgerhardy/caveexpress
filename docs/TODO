@@ -4,13 +4,10 @@
 ** OUYA: 01-02 18:31:06.682: I/caveexpress 1.4(1582): INFO: joystick button 5 was pressed and not handled
 ** OUYA: Incorporate graphics for the buttons
 ** OUYA: Controls are fishy
-** google play integration
-*** achievements
 ** Failed to query inventory: IabResult: Error refreshing inventory (querying prices of items). (response: 6:Error)
 *** Don't show the empty extra window - but a popup
 
 * Others
-** Windows Installer Bitmap
 ** like us on facebook => unlock new campaign
 ** follow us on twitter => unlock new campaign
 ** rate us on the playstore

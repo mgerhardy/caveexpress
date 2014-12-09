@@ -24,7 +24,7 @@ ShowUninstDetails "nevershow"
 ; MUI Settings
 !define MUI_ICON "..\..\icon.ico"
 !define MUI_UNICON "..\..\icon.ico"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "${APPNAME}.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "${PRODUCT_NAME}.bmp"
 
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT HKCU
 !define MUI_STARTMENUPAGE_REGISTRY_KEY ${PRODUCT_DIR_REGKEY}
