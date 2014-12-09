@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Google Play game services IDs.
+Save this file as res/values/games-ids.xml in your project.
+-->
+<resources>
+  <string name="app_id">251832614580</string>
+  <string name="achievement_daze_pterodactyls">CgkItP2Sk6oHEAIQAg</string>
+  <string name="achievement_pick_up_fruit">CgkItP2Sk6oHEAIQAw</string>
+  <string name="achievement_finish_the_tutorial">CgkItP2Sk6oHEAIQBA</string>
+  <string name="achievement_daze_a_mastodon">CgkItP2Sk6oHEAIQBQ</string>
+  <string name="achievement_daze_a_fish">CgkItP2Sk6oHEAIQBg</string>
+</resources>
