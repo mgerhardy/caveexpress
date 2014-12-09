@@ -191,6 +191,7 @@
             <filename>../png/cavepacker/ui/map-icon-unlocked-1.png</filename>
             <filename>../png/cavepacker/ui/map-icon-unlocked-2.png</filename>
             <filename>../png/cavepacker/ui/map-icon-unlocked-3.png</filename>
+            <filename>../png/cavepacker/ui/icon-google-login.png</filename>
             <filename>../png/cavepacker/ui/icon-cursor-down.png</filename>
             <filename>../png/cavepacker/ui/icon-cursor-left.png</filename>
             <filename>../png/cavepacker/ui/icon-cursor-right.png</filename>
