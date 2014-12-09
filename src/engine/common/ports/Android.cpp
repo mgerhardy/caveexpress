@@ -358,7 +358,6 @@ void Android::achievementUnlocked (const std::string& id, bool increment)
 	_env->DeleteLocalRef(idJavaStr);
 
 	testException();
-
 }
 
 bool Android::hasAchievement (const std::string& id)
