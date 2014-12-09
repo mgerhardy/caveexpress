@@ -6,6 +6,7 @@
 #include "caveexpress/server/entities/Package.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/server/events/GameEventHandler.h"
+#include "caveexpress/shared/CaveExpressAchievement.h"
 #include "engine/common/Logger.h"
 #include "engine/common/network/INetwork.h"
 #include "engine/common/System.h"
@@ -388,6 +389,7 @@ bool Player::collect (CollectableEntity* entity)
 			_fruitsCollectedInARow = 0;
 			_lastFruitCollected = 0;
 		}
+		Achievements::PICK_UP_FRUIT.unlock();
 		_map.sendSound(ClientIdToClientMask(getClientId()), SoundTypes::SOUND_FRUIT_COLLECTED);
 		addHitpoints(Config.getFruitHitpoints());
 		return true;

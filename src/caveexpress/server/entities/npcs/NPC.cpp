@@ -3,6 +3,7 @@
 #include "caveexpress/server/entities/Border.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/server/events/GameEventHandler.h"
+#include "caveexpress/shared/CaveExpressAchievement.h"
 #include "engine/common/Logger.h"
 #include "engine/common/TimeManager.h"
 #include "engine/common/SpriteDefinition.h"
@@ -247,6 +248,9 @@ void NPC::setDying (const IEntity* entity)
 {
 	info(LOG_SERVER, String::format("dying npc %i: %s", getID(), _type.name.c_str()));
 	setState(NPCState::NPC_DYING);
+	if (_type == EntityTypes::NPC_FLYING) {
+		Achievements::DAZE_PTERODACTYLS.unlock();
+	}
 	setAnimationType(getFallingAnimation());
 	_map.addPoints(entity, 15);
 }
@@ -271,7 +275,11 @@ void NPC::setDazed (const IEntity* entity)
 	info(LOG_SERVER, String::format("dazed npc %i: %s", getID(), _type.name.c_str()));
 	setState(NPCState::NPC_DAZED);
 	setLinearVelocity(b2Vec2_zero);
-
+	if (_type == EntityTypes::NPC_MAMMUT) {
+		Achievements::DAZE_A_MASTODON.unlock();
+	} else if (_type == EntityTypes::NPC_FISH) {
+		Achievements::DAZE_A_FISH.unlock();
+	}
 	_map.addPoints(entity, 10);
 
 	if (_lastDirectionRight) {
