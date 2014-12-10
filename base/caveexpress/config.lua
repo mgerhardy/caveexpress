@@ -23,6 +23,14 @@ if isOUYA() then
 	defaultdamagethreshold = 5.0
 	defaultnpcflyingspeed = 3.0
 	defaultparticles = 0
+elseif isAndroid() then
+	defaultpersister = "googleplay"
+	defaultreferencetimefactor = 1.5
+	defaultshowcursor = false
+	defaultnetwork = true
+	defaultdamagethreshold = 5.0
+	defaultnpcflyingspeed = 3.0
+	defaultparticles = 50
 elseif isMobile() then
 	defaultreferencetimefactor = 1.5
 	defaultshowcursor = false

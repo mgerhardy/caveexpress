@@ -86,6 +86,7 @@
 #include "caveexpress/server/network/ClientInitHandler.h"
 #include "caveexpress/server/network/ErrorHandler.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
+#include "engine/common/campaign/persister/GooglePlayPersister.h"
 #include "engine/common/System.h"
 #include "engine/common/network/INetwork.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
@@ -277,10 +278,14 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	{
 		ExecutionTime e("loading persister");
 		const ConfigVarPtr& persister = Config.get().getConfigVar("persister", "sqlite", true, CV_READONLY);
-		if (persister->getValue() == "nop")
+		if (persister->getValue() == "nop") {
 			_persister = new NOPPersister();
-		else
+		} else if (persister->getValue() == "googleplay" && System.supportGooglePlay()) {
+			IGameStatePersister *delegate = new SQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
+			_persister = new GooglePlayPersister(delegate);
+		} else {
 			_persister = new SQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
+		}
 		if (!_persister->init()) {
 			error(LOG_SERVER, "Failed to initialize the persister");
 		}
