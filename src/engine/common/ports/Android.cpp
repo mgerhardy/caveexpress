@@ -118,7 +118,7 @@ void Android::init() {
 	_buyItem = env->GetStaticMethodID(_cls, "buyItem", "(Ljava/lang/String;)Z");
 	_hasItem = env->GetStaticMethodID(_cls, "hasItem", "(Ljava/lang/String;)Z");
 	_track = env->GetStaticMethodID(_cls, "track", "(Ljava/lang/String;Ljava/lang/String;)Z");
-	_achievementUnlocked = env->GetStaticMethodID(_cls, "achievementUnlocked", "(Ljava/lang/String;Ljava/lang/Boolean;)V");
+	_achievementUnlocked = env->GetStaticMethodID(_cls, "achievementUnlocked", "(Ljava/lang/String;Z)V");
 	_isOUYA = env->GetStaticMethodID(_cls, "isOUYA", "()Z");
 	_isSmallScreen = env->GetStaticMethodID(_cls, "isSmallScreen", "()Z");
 	_minimize = env->GetStaticMethodID(_cls, "minimize", "()V");

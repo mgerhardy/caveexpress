@@ -322,7 +322,7 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		return getBaseActivity().doPersisterDisconnect();
 	}
 
-	static void achievementUnlocked(String id, Boolean increment) {
+	static void achievementUnlocked(String id, boolean increment) {
 		getBaseActivity().doAchievementUnlocked(id, increment);
 	}
 
