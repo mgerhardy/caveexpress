@@ -362,7 +362,7 @@ void Android::achievementUnlocked (const std::string& id, bool increment)
 
 bool Android::hasAchievement (const std::string& id)
 {
-	return false;
+	return true;
 }
 
 bool Android::track (const std::string& hitType, const std::string& screenName)
