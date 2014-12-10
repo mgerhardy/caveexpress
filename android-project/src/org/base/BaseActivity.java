@@ -395,9 +395,19 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 
 	protected String getResourceString(String id) {
 		try {
-			Class<?> resourceIds = Class.forName("org." + getName() + ".R.string");
+			String className = "org." + getName() + ".R.string";
+			Class<?> resourceIds = Class.forName(className);
+			if (resourceIds == null) {
+				Log.e(getName(), "Could not get the class for " + className);
+				return null;
+			}
 			Field resourceIdField = resourceIds.getDeclaredField(id);
+			if (resourceIdField == null) {
+				Log.e(getName(), "Could not get the field for " + id + " in " + className);
+				return null;
+			}
 			int resourceId = resourceIdField.getInt(null);
+			Log.v(getName(), "Got value " + resourceId + " for " + id + " in " + className);
 			return getString(resourceId);
 		} catch (Exception e) {
 			Log.e(getName(), e.getMessage(), e);
