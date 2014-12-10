@@ -406,15 +406,22 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 	}
 
 	protected void doAchievementUnlocked(String id, boolean increment) {
-		if (!googleApiClient.isConnected())
+		if (!googleApiClient.isConnected()) {
+			Log.v(getName(), "google play achievement " + id + " can't get unlocked - not connected");
 			return;
+		}
+		String resourceString = getResourceString(id);
+		if (resourceString == null) {
+			Log.v(getName(), "google play achievement " + id + " wasn't found in the resource file");
+			return;
+		}
+		Log.v(getName(), "google play achievement " + id + " resolved to " + resourceString);
 		if (increment) {
-			String resourceString = getResourceString(id);
-			if (resourceString == null)
-				return;
 			Games.Achievements.increment(googleApiClient, resourceString, 1);
+			Log.v(getName(), "google play achievement " + id + " count");
 		} else {
-			Games.Achievements.unlock(googleApiClient, id);
+			Games.Achievements.unlock(googleApiClient, resourceString);
+			Log.v(getName(), "google play achievement " + id + " unlock");
 		}
 	}
 
