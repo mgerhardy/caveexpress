@@ -401,18 +401,23 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 				Log.e(getName(), "Could not get the class for " + className);
 				return null;
 			}
-			Field resourceIdField = resourceIds.getDeclaredField(id);
-			if (resourceIdField == null) {
-				Log.e(getName(), "Could not get the field for " + id + " in " + className);
-				return null;
+			Class<?>[] innerClasses = resourceIds.getDeclaredClasses();
+			for (Class<?> innerClass : innerClasses) {
+				if ("string".equals(innerClass.getSimpleName())) {
+					Field resourceIdField = innerClass.getDeclaredField(id);
+					if (resourceIdField == null) {
+						Log.e(getName(), "Could not get the field for " + id + " in " + className);
+						return null;
+					}
+					int resourceId = resourceIdField.getInt(null);
+					Log.v(getName(), "Got value " + resourceId + " for " + id + " in " + className);
+					return getString(resourceId);
+				}
 			}
-			int resourceId = resourceIdField.getInt(null);
-			Log.v(getName(), "Got value " + resourceId + " for " + id + " in " + className);
-			return getString(resourceId);
 		} catch (Exception e) {
 			Log.e(getName(), e.getMessage(), e);
-			return null;
 		}
+		return null;
 	}
 
 	protected void doAchievementUnlocked(String id, boolean increment) {
