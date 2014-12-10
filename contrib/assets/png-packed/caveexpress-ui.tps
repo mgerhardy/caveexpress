@@ -186,6 +186,7 @@
             <filename>../png/caveexpress/ui/map-icon-unlocked-0.png</filename>
             <filename>../png/caveexpress/ui/map-icon-unlocked-1.png</filename>
             <filename>../png/caveexpress/ui/map-icon-unlocked-2.png</filename>
+            <filename>../png/caveexpress/ui/icon-google-login.png</filename>
             <filename>../png/caveexpress/ui/map-icon-unlocked-3.png</filename>
             <filename>../png/caveexpress/ui/icon-campaign.png</filename>
             <filename>../png/caveexpress/ui/icon-joystick-off.png</filename>
