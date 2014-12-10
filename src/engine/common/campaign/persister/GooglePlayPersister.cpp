@@ -168,14 +168,14 @@ bool GooglePlayPersister::init() {
 		return false;
 	}
 
-	_saveGameState = _env->GetStaticMethodID(_cls, "saveGameState", "([B;)V");
+	_saveGameState = _env->GetStaticMethodID(_cls, "saveGameState", "([B)V");
 	if (_saveGameState == 0) {
 		error(LOG_SYSTEM, "Could not get the jni bindings for saveGameState");
 		_env = nullptr;
 		return false;
 	}
 
-	_loadGameState = _env->GetStaticMethodID(_cls, "loadGameState", "()[B;");
+	_loadGameState = _env->GetStaticMethodID(_cls, "loadGameState", "()[B");
 	if (_loadGameState == 0) {
 		error(LOG_SYSTEM, "Could not get the jni bindings for loadGameState");
 		_env = nullptr;
