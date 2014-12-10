@@ -416,7 +416,7 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 	}
 
 	protected void doAchievementUnlocked(String id, boolean increment) {
-		if (!googleApiClient.isConnected()) {
+		if (googleApiClient == null || !googleApiClient.isConnected()) {
 			Log.v(getName(), "google play achievement " + id + " can't get unlocked - not connected");
 			return;
 		}

@@ -345,6 +345,11 @@ void Android::showAds (bool show)
 
 void Android::achievementUnlocked (const std::string& id, bool increment)
 {
+	if (_achievementUnlocked == 0) {
+		error(LOG_SYSTEM, "failed to unlock achievement");
+		return;
+	}
+
 	LocalReferenceHolder refs;
 
 	if (_env == nullptr || !refs.init(_env)) {
@@ -354,7 +359,7 @@ void Android::achievementUnlocked (const std::string& id, bool increment)
 
 	jstring idJavaStr = _env->NewStringUTF(id.c_str());
 	jboolean incrementBool = (jboolean)increment;
-	_env->CallStaticBooleanMethod(_cls, _achievementUnlocked, idJavaStr, incrementBool);
+	_env->CallStaticVoidMethod(_cls, _achievementUnlocked, idJavaStr, incrementBool);
 	_env->DeleteLocalRef(idJavaStr);
 
 	testException();
