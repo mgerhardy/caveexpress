@@ -5,8 +5,8 @@ SO_LIBS                  := -ldl
 
 SDL_LIBS                 += $(EMSCRIPTEN_TARGET_ROOT)/emsdk/sdl2/lib/libSDL2.a
 SDL_CFLAGS               += -I$(EMSCRIPTEN_TARGET_ROOT)/emsdk/sdl2/include/SDL2
-#SDL_IMAGE_LIBS           += $(EMSCRIPTEN_TARGET_ROOT)/emsdk/sdl2/lib/libSDL2_image.a
-#SDL_IMAGE_CFLAGS         +=
+SDL_IMAGE_LIBS           += $(EMSCRIPTEN_TARGET_ROOT)/emsdk/sdl2/lib/libSDL2_image.a
+SDL_IMAGE_CFLAGS         +=
 SDL_MIXER_LIBS           += $(EMSCRIPTEN_TARGET_ROOT)/emsdk/sdl2/lib/libSDL2_mixer.a
 SDL_MIXER_CFLAGS         +=
 
@@ -20,7 +20,7 @@ HAVE_SDL_IMAGE_H         ?= 1
 HAVE_SDL_MIXER_H         ?= 1
 
 #(APPNAME)_LDFLAGS       += -s DEAD_FUNCTIONS="['_glPushClientAttrib','_glPopClientAttrib','_glPointSize']"
-$(APPNAME)_LDFLAGS       += -s WARN_ON_UNDEFINED_SYMBOLS=1
+$(APPNAME)_LDFLAGS       += -s WARN_ON_UNDEFINED_SYMBOLS=1 -s ALLOW_MEMORY_GROWTH=1
 #$(APPNAME)_LDFLAGS       += -s LEGACY_GL_EMULATION=1
 #$(APPNAME)_LDFLAGS       += -s TOTAL_MEMORY=134217728
 ifdef DEBUG
