@@ -8,8 +8,8 @@ class Achievement: public Enum<Achievement> {
 private:
 	bool _increment;
 public:
-	Achievement(const std::string& id, bool increment = false) :
-			Enum<Achievement>(id), _increment(increment) {
+	Achievement(const std::string& achievementId, bool increment = false) :
+			Enum<Achievement>(achievementId), _increment(increment) {
 	}
 
 	/**

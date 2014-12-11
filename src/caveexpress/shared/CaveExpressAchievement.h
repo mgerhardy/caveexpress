@@ -8,4 +8,9 @@ extern Achievement PICK_UP_FRUIT;
 extern Achievement FINISH_THE_TUTORIAL;
 extern Achievement DAZE_A_MASTODON;
 extern Achievement DAZE_A_FISH;
+extern Achievement DELIVER_A_PACKAGE;
+extern Achievement DELIVER_10_PACKAGES;
+extern Achievement DELIVER_50_PACKAGES;
+extern Achievement DELIVER_100_PACKAGES;
+extern Achievement DELIVER_150_PACKAGES;
 }

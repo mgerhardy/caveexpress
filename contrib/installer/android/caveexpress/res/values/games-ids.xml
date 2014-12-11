@@ -10,4 +10,9 @@ Save this file as res/values/games-ids.xml in your project.
   <string name="achievement_finish_the_tutorial">CgkItP2Sk6oHEAIQBA</string>
   <string name="achievement_daze_a_mastodon">CgkItP2Sk6oHEAIQBQ</string>
   <string name="achievement_daze_a_fish">CgkItP2Sk6oHEAIQBg</string>
+  <string name="achievement_deliver_a_package">CgkItP2Sk6oHEAIQBw</string>
+  <string name="achievement_deliver_10_packages">CgkItP2Sk6oHEAIQCA</string>
+  <string name="achievement_deliver_50_packages">CgkItP2Sk6oHEAIQCQ</string>
+  <string name="achievement_deliver_100_packages">CgkItP2Sk6oHEAIQCg</string>
+  <string name="achievement_deliver_150_packages">CgkItP2Sk6oHEAIQCw</string>
 </resources>

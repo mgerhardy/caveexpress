@@ -34,6 +34,7 @@
 #include "engine/common/network/messages/UpdatePackageCountMessage.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
+#include "caveexpress/shared/CaveExpressAchievement.h"
 #include "engine/common/network/messages/InitDoneMessage.h"
 #include "engine/common/network/messages/SoundMessage.h"
 #include "engine/common/network/messages/MapSettingsMessage.h"
@@ -58,6 +59,17 @@ typedef ShapeMap::iterator ShapeIter;
 #define SPAWN_FRIENDLY_NPC_DELAY 10000
 #define SPAWN_FLYING_NPC_DELAY 5000
 #define SPAWN_FISH_NPC_DELAY 5000
+
+
+namespace {
+Achievement* packageAchievements[] = {
+		&Achievements::DELIVER_A_PACKAGE,
+		&Achievements::DELIVER_10_PACKAGES,
+		&Achievements::DELIVER_50_PACKAGES,
+		&Achievements::DELIVER_100_PACKAGES,
+		&Achievements::DELIVER_150_PACKAGES
+};
+}
 
 Map::Map () :
 		IMap(), _world(nullptr), _frontend(nullptr), _serviceProvider(nullptr), _theme(&ThemeTypes::ROCK)
@@ -206,6 +218,10 @@ inline bool Map::isActive () const
 
 void Map::countTransferedPackage ()
 {
+	const int n = SDL_arraysize(packageAchievements);
+	for (int i = 0; i < n; ++i) {
+		packageAchievements[i]->unlock();
+	}
 	_transferedPackages++;
 	info(LOG_SERVER, String::format("collected %i of %i packages", _transferedPackages, _transferedPackageLimit));
 	const UpdatePackageCountMessage msg(getPackageCount());
