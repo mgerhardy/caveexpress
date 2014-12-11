@@ -44,11 +44,18 @@ Achievement* puzzleAchievements[] = {
 		&Achievements::PUZZLES_10,
 		&Achievements::PUZZLES_20,
 		&Achievements::PUZZLES_30,
-		&Achievements::PUZZLES_40
+		&Achievements::PUZZLES_40,
+		&Achievements::PUZZLES_50,
+		&Achievements::PUZZLES_60,
+		&Achievements::PUZZLES_70,
+		&Achievements::PUZZLES_80,
+		&Achievements::PUZZLES_90,
+		&Achievements::PUZZLES_100
 };
 Achievement* fullStarsAchievements[] = {
 		&Achievements::STARS_3,
-		&Achievements::STARS_10
+		&Achievements::STARS_10,
+		&Achievements::STARS_300
 };
 }
 
