@@ -14,6 +14,7 @@
 #include "cavepacker/server/network/StopFingerMovementHandler.h"
 #include "cavepacker/server/network/FingerMovementHandler.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
+#include "cavepacker/shared/CavePackerAchievement.h"
 #include "engine/client/entities/ClientEntityFactory.h"
 #include "engine/client/entities/ClientMapTile.h"
 #include "engine/common/network/ProtocolHandlerRegistry.h"
@@ -37,6 +38,19 @@
 #include "engine/client/ui/windows/UIGestureWindow.h"
 #include "cavepacker/shared/CavePackerSQLitePersister.h"
 #include <SDL.h>
+
+namespace {
+Achievement* puzzleAchievements[] = {
+		&Achievements::PUZZLES_10,
+		&Achievements::PUZZLES_20,
+		&Achievements::PUZZLES_30,
+		&Achievements::PUZZLES_40
+};
+Achievement* fullStarsAchievements[] = {
+		&Achievements::STARS_3,
+		&Achievements::STARS_10
+};
+}
 
 CavePacker::CavePacker ():
 	_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
@@ -79,6 +93,13 @@ void CavePacker::update (uint32_t deltaTime)
 		if (!_campaignManager->updateMapValues(_map.getName(), moves, pushes, stars, true))
 			error(LOG_SERVER, "Could not save the values for the map");
 
+		if (stars == 3) {
+			const int n = SDL_arraysize(fullStarsAchievements);
+			for (int i = 0; i < n; ++i) {
+				fullStarsAchievements[i]->unlock();
+			}
+		}
+
 		if (_map.getPlayers().size() == 1) {
 			const Player* player = _map.getPlayers()[0];
 			const std::string& solution = player->getSolution();
@@ -93,6 +114,10 @@ void CavePacker::update (uint32_t deltaTime)
 			if (!_map.isAutoSolve()) {
 				const std::string solutionId = "solution" + _map.getName();
 				System.track(solutionId, solution);
+				const int n = SDL_arraysize(puzzleAchievements);
+				for (int i = 0; i < n; ++i) {
+					puzzleAchievements[i]->unlock();
+				}
 			} else {
 				System.track("autosolve", _map.getName());
 			}
