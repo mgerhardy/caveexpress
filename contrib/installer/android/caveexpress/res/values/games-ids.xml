@@ -15,4 +15,10 @@ Save this file as res/values/games-ids.xml in your project.
   <string name="achievement_deliver_50_packages">CgkItP2Sk6oHEAIQCQ</string>
   <string name="achievement_deliver_100_packages">CgkItP2Sk6oHEAIQCg</string>
   <string name="achievement_deliver_150_packages">CgkItP2Sk6oHEAIQCw</string>
+  <string name="achievement_collect_100_fruits">CgkItP2Sk6oHEAIQDQ</string>
+  <string name="achievement_collect_10_stones">CgkItP2Sk6oHEAIQDg</string>
+  <string name="achievement_collect_100_stones">CgkItP2Sk6oHEAIQDw</string>
+  <string name="achievement_daze_a_sleeping_npc">CgkItP2Sk6oHEAIQEA</string>
+  <string name="achievement_daze_a_walking_npc">CgkItP2Sk6oHEAIQEQ</string>
+  <string name="leaderboard_points">CgkItP2Sk6oHEAIQDA</string>
 </resources>
