@@ -90,7 +90,6 @@ $(ANDROID_PROJECT)/AndroidManifest.xml: $(SRCDIR)/Android.mk.in $(ANDROID_PROJEC
 	$(Q)sed -i 's/@APPNAME@/$(APPNAME)/g' $(SRCDIR)/Android.mk
 	$(Q)sed -i 's/@NETWORKING@/$(NETWORKING)/g' $(SRCDIR)/Android.mk
 	$(Q)sed -i 's#@OWN_CFLAGS@#$(SDL_NET_CFLAGS)#g' $(SRCDIR)/Android.mk
-	$(Q)cp -rf contrib/installer/android/$(APPNAME)/* $(ANDROID_PROJECT)
 
 android-update-sdk-version:
 	$(Q)cp $(ANDROID_PROJECT)/default.properties.in $(ANDROID_PROJECT)/default.properties
@@ -138,6 +137,7 @@ android-copy-assets: data
 	$(Q)if [ "$(TARGET_OS)" = "ouya" ]; then mkdir -p $(ANDROID_PROJECT)/res/raw && cp ~/ouyakey.der $(ANDROID_PROJECT)/res/raw/key.der; fi
 	$(Q)if [ "$(TARGET_OS)" = "ouya" ]; then cp contrib/installer/ouya/*.jar $(ANDROID_PROJECT)/libs; fi
 	$(Q)if [ "$(TARGET_OS)" = "android" ]; then mkdir -p $(ANDROID_PROJECT)/libs && cp contrib/installer/android/*.jar $(ANDROID_PROJECT)/libs; fi
+	$(Q)cp -rf contrib/installer/android/$(APPNAME)/* $(ANDROID_PROJECT)
 
 .PHONY: android-build
 android-build: android-update-sdk-version
