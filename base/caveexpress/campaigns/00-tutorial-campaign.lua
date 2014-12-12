@@ -4,6 +4,7 @@ local c = Campaign.new("tutorial")
 --c:setSetting("icon", "tutorial-campaign")
 -- set the on screen message when this campaign is activated
 c:setSetting("text", "Introduction")
+c:setSetting("achievement", "achievement_finish_the_tutorial")
 -- now add all maps
 c:addMaps("introducing-01-package")
 c:addMaps("introducing-02-game")
