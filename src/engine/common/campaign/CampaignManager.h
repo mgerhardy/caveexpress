@@ -15,7 +15,7 @@ class ICampaignManagerListener {
 public:
 	virtual ~ICampaignManagerListener() {}
 
-	virtual void onCampaignUnlock (Campaign* campaign) = 0;
+	virtual void onCampaignUnlock (Campaign* oldCampaign, Campaign* newCampaign) = 0;
 };
 
 class CampaignManager: public ICampaignManager, public NonCopyable {
@@ -44,7 +44,7 @@ private:
 	static Campaign* _luaGetContext (lua_State * l, int n);
 
 	bool activateNextCampaign () const;
-	void notifyCampaignUnlock () const;
+	void notifyCampaignUnlock (const CampaignPtr& oldCampaign) const;
 	CampaignPtr getCampaign (const std::string& campaignId) const;
 
 	// unlock all maps in all campaigns

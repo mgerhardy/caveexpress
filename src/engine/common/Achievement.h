@@ -19,7 +19,7 @@ public:
 		return System.hasAchievement(name);
 	}
 
-	bool unlock() {
+	bool unlock() const {
 		if (!supported()) {
 			error(LOG_GENERAL, "achievement " + name + " is not supported");
 			return false;

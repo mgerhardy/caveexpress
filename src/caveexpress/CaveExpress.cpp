@@ -294,6 +294,7 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		ExecutionTime e("campaign manager");
 		_campaignManager = new CampaignManager(_persister, serviceProvider.getMapManager());
 		_campaignManager->init();
+		_campaignManager->addListener(this);
 	}
 	ProtocolHandlerRegistry& rp = ProtocolHandlerRegistry::get();
 	rp.registerServerHandler(protocol::PROTO_SPAWN, new SpawnHandler(_map, _campaignManager));

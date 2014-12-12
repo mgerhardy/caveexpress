@@ -3,6 +3,7 @@
 #include "engine/common/Payment.h"
 #include "engine/common/Config.h"
 #include "engine/common/System.h"
+#include "engine/common/ConfigManager.h"
 #include <SDL_config.h>
 #include <SDL_assert.h>
 #include <SDL_main.h>
@@ -630,9 +631,11 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isHD(JNIEnv* en
 extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterConnectFailed(JNIEnv* env, jclass jcls)
 {
 	error(LOG_SYSTEM, "google play connection failed");
+	Config.getConfigVar("googleplaystate", "false", true)->setValue("false");
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterConnectSuccess(JNIEnv* env, jclass jcls)
 {
 	info(LOG_SYSTEM, "google play connection succeeds");
+	Config.getConfigVar("googleplaystate", "false", true)->setValue("true");
 }

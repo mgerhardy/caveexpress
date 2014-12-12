@@ -3,9 +3,9 @@
 #include "engine/client/ui/nodes/UINodeButton.h"
 #include "engine/client/ui/nodes/UINodeButtonImage.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
+#include "engine/client/ui/nodes/UINodeGooglePlayButton.h"
 #include "engine/client/ui/windows/UIWindow.h"
 #include "engine/client/ui/windows/listener/QuitListener.h"
-#include "engine/client/ui/windows/listener/GooglePlayListener.h"
 #include "engine/client/ui/nodes/UINodeMainBackground.h"
 #include "engine/client/ui/layouts/UIVBoxLayout.h"
 #include "engine/common/ConfigManager.h"
@@ -45,9 +45,7 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	}
 
 	if (System.supportGooglePlay()) {
-		UINodeButtonImage *googlePlay = new UINodeButtonImage(_frontend, "icon-google-login");
-		googlePlay->addListener(UINodeListenerPtr(new GooglePlayListener()));
-		googlePlay->setAlignment(NODE_ALIGN_BOTTOM | NODE_ALIGN_LEFT);
+		UINodeButtonImage *googlePlay = new UINodeGooglePlayButton(_frontend);
 		googlePlay->setPadding(padding);
 		add(googlePlay);
 	}

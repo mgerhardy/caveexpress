@@ -211,10 +211,10 @@ CampaignPtr CampaignManager::activateCampaign (const std::string& campaignId) co
 	return _activeCampaign;
 }
 
-void CampaignManager::notifyCampaignUnlock () const
+void CampaignManager::notifyCampaignUnlock (const CampaignPtr& oldCampaign) const
 {
 	for (Listeners::const_iterator i = _listeners.begin(); i != _listeners.end(); ++i) {
-		(*i)->onCampaignUnlock(_activeCampaign.get());
+		(*i)->onCampaignUnlock(oldCampaign.get(), _activeCampaign.get());
 	}
 }
 
@@ -274,6 +274,7 @@ CampaignPtr CampaignManager::getActiveCampaign () const
 
 bool CampaignManager::activateNextCampaign () const
 {
+	const CampaignPtr oldCampaign = _activeCampaign;
 	_activeCampaign = CampaignPtr();
 	for (CampaignsMap::const_iterator i = _campaigns.begin(); i != _campaigns.end(); ++i) {
 		CampaignPtr c = *i;
@@ -283,7 +284,7 @@ bool CampaignManager::activateNextCampaign () const
 		}
 		activateCampaign(c->getId());
 		if (_activeCampaign->unlock()) {
-			notifyCampaignUnlock();
+			notifyCampaignUnlock(oldCampaign);
 		}
 		return true;
 	}

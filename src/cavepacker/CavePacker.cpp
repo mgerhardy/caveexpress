@@ -232,6 +232,7 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		ExecutionTime e("campaign manager");
 		_campaignManager = new CampaignManager(_persister, serviceProvider.getMapManager());
 		_campaignManager->init();
+		_campaignManager->addListener(this);
 	}
 
 	_map.init(_frontend, *_serviceProvider);

@@ -160,7 +160,7 @@ bool IUINodeMap::onPop ()
 	return UINode::onPop();
 }
 
-void IUINodeMap::onCampaignUnlock (Campaign* campaign)
+void IUINodeMap::onCampaignUnlock (Campaign* oldCampaign, Campaign* newCampaign)
 {
-	_campaignTextForNextPush = campaign->getText();
+	_campaignTextForNextPush = newCampaign->getText();
 }

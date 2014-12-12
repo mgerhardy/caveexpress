@@ -7,10 +7,11 @@
 #include "engine/common/ConfigManager.h"
 #include "engine/common/Commands.h"
 #include "engine/common/CommandSystem.h"
+#include "engine/common/campaign/CampaignManager.h"
 #include <string>
 
 // TODO: rename methods and document stuff
-class IGame {
+class IGame : public ICampaignManagerListener {
 protected:
 	std::string _name;
 public:
@@ -49,6 +50,9 @@ public:
 	virtual void mapShutdown () {}
 
 	virtual IMapManager* getMapManager () { return nullptr; }
+
+	// ICampaignManagerListener
+	void onCampaignUnlock (Campaign* oldCampaign, Campaign* newCampaign) override;
 };
 
 typedef SharedPtr<IGame> GamePtr;
