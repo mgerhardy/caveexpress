@@ -248,7 +248,7 @@ void NPC::setDying (const IEntity* entity)
 {
 	info(LOG_SERVER, String::format("dying npc %i: %s", getID(), _type.name.c_str()));
 	setState(NPCState::NPC_DYING);
-	if (_type == EntityTypes::NPC_FLYING) {
+	if (EntityTypes::isNpcFlying(_type)) {
 		Achievements::DAZE_PTERODACTYLS.unlock();
 	}
 	setAnimationType(getFallingAnimation());
@@ -275,9 +275,9 @@ void NPC::setDazed (const IEntity* entity)
 	info(LOG_SERVER, String::format("dazed npc %i: %s", getID(), _type.name.c_str()));
 	setState(NPCState::NPC_DAZED);
 	setLinearVelocity(b2Vec2_zero);
-	if (_type == EntityTypes::NPC_MAMMUT) {
+	if (EntityTypes::isNpcMammut(_type)) {
 		Achievements::DAZE_A_MASTODON.unlock();
-	} else if (_type == EntityTypes::NPC_FISH) {
+	} else if (EntityTypes::isNpcFish(_type)) {
 		Achievements::DAZE_A_FISH.unlock();
 	}
 	_map.addPoints(entity, 10);
