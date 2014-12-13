@@ -279,6 +279,10 @@ void NPC::setDazed (const IEntity* entity)
 		Achievements::DAZE_A_MASTODON.unlock();
 	} else if (EntityTypes::isNpcFish(_type)) {
 		Achievements::DAZE_A_FISH.unlock();
+	} else if (EntityTypes::isNpcBlowing(_type)) {
+		Achievements::DAZE_A_SLEEPING.unlock();
+	} else if (EntityTypes::isNpcWalking(_type)) {
+		Achievements::DAZE_A_WALKING.unlock();
 	}
 	_map.addPoints(entity, 10);
 

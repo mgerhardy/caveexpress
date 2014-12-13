@@ -390,6 +390,7 @@ bool Player::collect (CollectableEntity* entity)
 			_lastFruitCollected = 0;
 		}
 		Achievements::PICK_UP_FRUIT.unlock();
+		Achievements::COLLECT_100_FRUITS.unlock();
 		_map.sendSound(ClientIdToClientMask(getClientId()), SoundTypes::SOUND_FRUIT_COLLECTED);
 		addHitpoints(Config.getFruitHitpoints());
 		return true;
@@ -407,6 +408,11 @@ bool Player::collect (CollectableEntity* entity)
 		_collectedEntities[i] = c;
 		break;
 	}
+	if (EntityTypes::isStone(entityType)) {
+		Achievements::COLLECT_10_STONES.unlock();
+		Achievements::COLLECT_100_STONES.unlock();
+	}
+
 	GameEvent.sendCollectState(_clientId, entityType, true);
 	return true;
 }
