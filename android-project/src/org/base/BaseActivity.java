@@ -499,6 +499,14 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		Games.Snapshots.commitAndClose(googleApiClient, snapshot, metadataChange);
 	}
 
+	static void addPointsToLeaderBoard(String leaderBoardId, int points) {
+		getBaseActivity().doAddPointsToLeaderBoards(leaderBoardId, points);
+	}
+
+	protected void doAddPointsToLeaderBoards(String leaderBoardId, int points) {
+		Games.Leaderboards.submitScore(googleApiClient, leaderBoardId, points);
+	}
+
 	static void showAchievements() {
 		getBaseActivity().doShowAchievements();
 	}
