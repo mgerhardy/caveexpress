@@ -499,6 +499,14 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		Games.Snapshots.commitAndClose(googleApiClient, snapshot, metadataChange);
 	}
 
+	static void showAchievements() {
+		getBaseActivity().doShowAchievements();
+	}
+
+	protected void doShowAchievements() {
+		startActivityForResult(Games.Achievements.getAchievementsIntent(googleApiClient), 1337);
+	}
+
 	public static native void onPersisterConnectFailed();
 
 	public static native void onPersisterConnectSuccess();
