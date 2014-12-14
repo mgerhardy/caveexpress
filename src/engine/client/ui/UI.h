@@ -3,6 +3,7 @@
 #include "engine/common/IEventObserver.h"
 #include "engine/common/ConfigVar.h"
 #include "engine/client/ui/windows/UIWindow.h"
+#include "engine/common/CommandSystem.h"
 #include "engine/common/Common.h"
 #include "engine/common/System.h"
 #include "engine/common/Logger.h"
@@ -25,7 +26,17 @@ public:
 	virtual ~UIPopupCallback() {}
 
 	virtual void onOk () {}
-	virtual void onCancel () {}
+	virtual void onCancel ();
+};
+
+class UIPopupOkCommandCallback: public UIPopupCallback {
+protected:
+	const std::string _command;
+public:
+	UIPopupOkCommandCallback(const std::string& command) : _command(command) {}
+	virtual ~UIPopupOkCommandCallback() {}
+
+	virtual void onOk () override { Commands.executeCommandLine(_command); }
 };
 
 #define UIPOPUP_OK			(1 << 0)

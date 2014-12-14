@@ -14,5 +14,8 @@ UINodeGooglePlayButton::UINodeGooglePlayButton(IFrontend* frontend) :
 
 void UINodeGooglePlayButton::update(uint32_t deltaTime) {
 	UINodeButtonImage::update(deltaTime);
-	setVisible(!_googlePlay->getBoolValue());
+	if (_googlePlay->getBoolValue())
+		setImage("icon-google-logout");
+	else
+		setImage("icon-google-login");
 }

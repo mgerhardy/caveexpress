@@ -10,7 +10,6 @@
 #include "engine/common/CommandSystem.h"
 #include "engine/common/Commands.h"
 #include "engine/common/ConfigManager.h"
-#include "engine/client/ui/windows/listener/QuitPopupCallback.h"
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/Singleton.h"
 #include "engine/common/FileSystem.h"
@@ -743,7 +742,7 @@ void UI::pop ()
 		return;
 
 	if (_stack.size() == 1) {
-		UIPopupCallbackPtr c(new QuitPopupCallback());
+		UIPopupCallbackPtr c(new UIPopupOkCommandCallback(CMD_QUIT));
 		UI::get().popup(tr("Quit"), UIPOPUP_OK | UIPOPUP_CANCEL, c);
 		return;
 	}
@@ -829,4 +828,8 @@ UINodeBar* UI::setBarMax (const std::string& window, const std::string& nodeId, 
 	}
 	node->setMax(max);
 	return node;
+}
+
+void UIPopupCallback::onCancel() {
+	UI::get().delayedPop();
 }
