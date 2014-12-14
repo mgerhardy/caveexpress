@@ -507,6 +507,14 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		startActivityForResult(Games.Achievements.getAchievementsIntent(googleApiClient), 1337);
 	}
 
+	static void showLeaderBoard(String leaderBoardId) {
+		getBaseActivity().doShowLeaderBoard(leaderBoardId);
+	}
+
+	protected void doShowLeaderBoard(String leaderBoardId) {
+		startActivityForResult(Games.Leaderboards.getLeaderboardIntent(googleApiClient, leaderBoardId), 42);
+	}
+
 	public static native void onPersisterConnectFailed();
 
 	public static native void onPersisterConnectSuccess();
