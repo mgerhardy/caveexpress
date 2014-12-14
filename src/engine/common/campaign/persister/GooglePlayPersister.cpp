@@ -1,5 +1,6 @@
 #include "GooglePlayPersister.h"
 #include "engine/common/CommandSystem.h"
+#include "engine/common/ConfigManager.h"
 #include <SDL_system.h>
 
 #ifdef GOOGLEPLAY_ACTIVE
@@ -187,6 +188,9 @@ bool GooglePlayPersister::init() {
 	info(LOG_SYSTEM, "GoolePlayPersister::init() initialized");
 #endif
 	_delegate->init();
+	if (Config.getConfigVar("googleplaystate")->getBoolValue()) {
+		connect();
+	}
 	return true;
 }
 
