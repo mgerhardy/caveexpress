@@ -3,7 +3,10 @@
 #include "engine/client/ui/nodes/UINodeBackButton.h"
 #include "engine/client/ui/nodes/UINodeLabel.h"
 #include "engine/client/ui/nodes/UINodeBackground.h"
+#include "engine/client/ui/nodes/UINodeGooglePlayButton.h"
 #include "engine/client/ui/layouts/UIVBoxLayout.h"
+#include "engine/client/ui/nodes/UINodeButtonText.h"
+#include "engine/client/ui/nodes/UINodeButtonImage.h"
 
 UIGooglePlayWindow::UIGooglePlayWindow (IFrontend *frontend) :
 		UIWindow(UI_WINDOW_GOOGLEPLAY, frontend, WINDOW_FLAG_MODAL)
@@ -32,6 +35,12 @@ UIGooglePlayWindow::UIGooglePlayWindow (IFrontend *frontend) :
 	panel->setLayout(layout);
 	add(panel);
 
+	const float padding = 10.0f / static_cast<float>(frontend->getHeight());
+	_login = new UINodeButtonImage(frontend, "icon-google-login");
+	_login->setAlignment(NODE_ALIGN_BOTTOM | NODE_ALIGN_LEFT);
+	_login->setPadding(padding);
+	add(_login);
+
 	if (!wantBackButton())
 		return;
 
@@ -47,4 +56,12 @@ void UIGooglePlayWindow::update (uint32_t deltaTime)
 	_leaderBoards->setVisible(state);
 #endif
 	_disconnect->setVisible(state);
+	_login->setVisible(!state);
+}
+
+bool UIGooglePlayWindow::onPush () {
+	if (!UIWindow::onPush()) {
+		return false;
+	}
+	return System.supportGooglePlay();
 }
