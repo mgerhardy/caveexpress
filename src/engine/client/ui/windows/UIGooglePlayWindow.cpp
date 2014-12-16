@@ -3,9 +3,9 @@
 #include "engine/client/ui/nodes/UINodeBackButton.h"
 #include "engine/client/ui/nodes/UINodeLabel.h"
 #include "engine/client/ui/nodes/UINodeBackground.h"
+#include "engine/client/ui/nodes/UINodeMainButton.h"
 #include "engine/client/ui/nodes/UINodeGooglePlayButton.h"
 #include "engine/client/ui/layouts/UIVBoxLayout.h"
-#include "engine/client/ui/nodes/UINodeButtonText.h"
 #include "engine/client/ui/nodes/UINodeButtonImage.h"
 
 UIGooglePlayWindow::UIGooglePlayWindow (IFrontend *frontend) :
@@ -16,19 +16,20 @@ UIGooglePlayWindow::UIGooglePlayWindow (IFrontend *frontend) :
 	add(background);
 
 	UINode* panel = new UINode(frontend);
-	UIVBoxLayout *layout = new UIVBoxLayout(0.02f);
+	panel->setAlignment(NODE_ALIGN_MIDDLE | NODE_ALIGN_CENTER);
+	UIVBoxLayout *layout = new UIVBoxLayout(0.02f, true);
 
-	_achievements = new UINodeButtonText(frontend, tr("Show achievements"));
+	_achievements = new UINodeMainButton(frontend, tr("Achievements"));
 	_achievements->setOnActivate("googleplay-showachievements");
 	panel->add(_achievements);
 
 #if 0
-	_leaderBoards = new UINodeButtonText(frontend, tr("Show main leaderboard"));
+	_leaderBoards = new UINodeMainButton(frontend, tr("Leaderboard"));
 	_leaderBoards->setOnActivate("googleplay-showleaderboard main");
 	panel->add(_leaderBoards);
 #endif
 
-	_disconnect = new UINodeButtonText(frontend, tr("Disconnect"));
+	_disconnect = new UINodeMainButton(frontend, tr("Disconnect"));
 	_disconnect->setOnActivate("googleplay-disconnect");
 	panel->add(_disconnect);
 

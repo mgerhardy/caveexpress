@@ -4,18 +4,17 @@
 #include "engine/common/ConfigManager.h"
 
 // forward decl
-class UINodeButtonText;
-class UINodeButtonImage;
+class UINodeButton;
 
 class UIGooglePlayWindow: public UIWindow {
 private:
 	ConfigVarPtr _googlePlay;
-	UINodeButtonText* _achievements;
+	UINodeButton* _achievements;
 #if 0
-	UINodeButtonText* _leaderBoards;
+	UINodeButton* _leaderBoards;
 #endif
-	UINodeButtonText* _disconnect;
-	UINodeButtonImage *_login;
+	UINodeButton* _disconnect;
+	UINodeButton* _login;
 public:
 	UIGooglePlayWindow (IFrontend *frontend);
 	void update (uint32_t deltaTime) override;

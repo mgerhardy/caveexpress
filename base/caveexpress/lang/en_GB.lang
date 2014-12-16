@@ -1,6 +1,7 @@
 A mighty fish is after you|A mighty fish is after you
 A player will lose the map if he touches the side borders|A player will lose the map if he touches the side borders
 ALT|ALT
+Achievements|Achievements
 Activate the fish spawn|Activate the fish spawn
 Activate the pterodactyls spawn|Activate the pterodactyls spawn
 Angry dinosaur|Angry dinosaur
@@ -55,6 +56,7 @@ Initial water rising delay in milliseconds|Initial water rising delay in millise
 Joystick|Joystick
 Just stay and watch what happens|Just stay and watch what happens
 LMB|LMB
+Leaderboard|Leaderboard
 Learn to use the stone|Learn to use the stone
 Load|Load
 MMB|MMB
@@ -104,9 +106,7 @@ Settings|Settings
 Shift map (cursor direction)|Shift map (cursor direction)
 Shift tile|Shift tile
 Show Grid|Show Grid
-Show achievements|Show achievements
 Show help messages to the player|Show help messages to the player
-Show main leaderboard|Show main leaderboard
 Shredder|Shredder
 SideScroll|SideScroll
 Small|Small

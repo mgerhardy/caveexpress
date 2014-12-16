@@ -146,6 +146,7 @@ void GooglePlayPersister::connect() {
 		error(LOG_SYSTEM, "GoolePlayPersister::connect() failed for the google play persister - no env pointer");
 		return;
 	}
+	info(LOG_SYSTEM, "GoolePlayPersister::connect()");
 	_env->CallStaticVoidMethod(_cls, _persisterConnect);
 #endif
 }
@@ -156,6 +157,7 @@ void GooglePlayPersister::disconnect() {
 		error(LOG_SYSTEM, "GoolePlayPersister::disconnect() failed for the google play persister - no env pointer");
 		return;
 	}
+	info(LOG_SYSTEM, "GoolePlayPersister::disconnect()");
 	_env->CallStaticVoidMethod(_cls, _persisterDisconnect);
 #endif
 }
