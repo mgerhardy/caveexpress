@@ -15,8 +15,7 @@ public:
 	void onClick() override
 	{
 		if (_googlePlay->getBoolValue()) {
-			UIPopupCallbackPtr c(new UIPopupOkCommandCallback("googleplay-disconnect"));
-			UI::get().popup(tr("Google Play sign-out"), UIPOPUP_OK | UIPOPUP_CANCEL, c);
+			UI::get().push(UI_WINDOW_GOOGLEPLAY);
 		} else {
 			Commands.executeCommandLine("googleplay-connect");
 		}

@@ -9,13 +9,4 @@ UINodeGooglePlayButton::UINodeGooglePlayButton(IFrontend* frontend) :
 	if (Config.getConfigVar("persister")->getValue() != "googleplay") {
 		setVisible(false);
 	}
-	_googlePlay = Config.getConfigVar("googleplaystate");
-}
-
-void UINodeGooglePlayButton::update(uint32_t deltaTime) {
-	UINodeButtonImage::update(deltaTime);
-	if (_googlePlay->getBoolValue())
-		setImage("icon-google-logout");
-	else
-		setImage("icon-google-login");
 }

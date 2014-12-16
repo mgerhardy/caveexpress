@@ -21,6 +21,7 @@ Create server|Create server
 Decrease map size|Decrease map size
 Deliver packages to the shredders|Deliver packages to the shredders
 Description|Description
+Disconnect|Disconnect
 Drop during flight|Drop during flight
 Drop stones onto the tree|Drop stones onto the tree
 Drop the package and the stone|Drop the package and the stone
@@ -37,6 +38,7 @@ Fullscreen|Fullscreen
 Game mode|Game mode
 General|General
 Geyser|Geyser
+Google Play|Google Play
 Google Play sign-out|Google Play sign-out
 Gravity|Gravity
 Hard|Hard
@@ -102,7 +104,9 @@ Settings|Settings
 Shift map (cursor direction)|Shift map (cursor direction)
 Shift tile|Shift tile
 Show Grid|Show Grid
+Show achievements|Show achievements
 Show help messages to the player|Show help messages to the player
+Show main leaderboard|Show main leaderboard
 Shredder|Shredder
 SideScroll|SideScroll
 Small|Small

@@ -42,6 +42,7 @@
 #include "caveexpress/client/ui/windows/UIMapEditorHelpWindow.h"
 #include "caveexpress/client/ui/windows/UIMapEditorOptionsWindow.h"
 #include "caveexpress/client/ui/windows/UIGameFinishedWindow.h"
+#include "engine/client/ui/windows/UIGooglePlayWindow.h"
 #include "engine/client/ui/windows/UIMapFinishedWindow.h"
 #include "caveexpress/client/ui/windows/UICaveExpressSettingsWindow.h"
 #include "engine/client/ui/windows/UIModeSelectionWindow.h"
@@ -344,6 +345,7 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIGameOverWindow(frontend, campaignMgr));
 	ui.addWindow(new UIMapOptionsWindow(frontend, serviceProvider));
 	ui.addWindow(new UIGameFinishedWindow(frontend));
+	ui.addWindow(new UIGooglePlayWindow(frontend));
 	ui.addWindow(new UIMapFinishedWindow(frontend, campaignMgr, serviceProvider, SoundTypes::SOUND_PACKAGE_COLLIDE));
 	ui.addWindow(new UIMapFailedWindow(frontend, campaignMgr));
 	ui.addWindow(new UIMapEditorHelpWindow(frontend));
