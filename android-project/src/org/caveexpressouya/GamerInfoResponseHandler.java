@@ -10,18 +10,23 @@ import android.util.Log;
 final class GamerInfoResponseHandler extends CancelIgnoringOuyaResponseListener<GamerInfo> {
 	private String uuid;
 	private String username;
+	private final BaseActivity baseActivity;
+
+	GamerInfoResponseHandler(BaseActivity baseActivity) {
+		this.baseActivity = baseActivity;
+	}
 
 	@Override
 	public void onSuccess(GamerInfo result) {
 		uuid = result.getUuid();
-		Log.d(BaseActivity.NAME, "UUID is: " + uuid);
+		Log.d(baseActivity.getName(), "UUID is: " + uuid);
 		username = result.getUsername();
-		Log.d(BaseActivity.NAME, "Username is: " + username);
+		Log.d(baseActivity.getName(), "Username is: " + username);
 	}
 
 	@Override
 	public void onFailure(int errorCode, String errorMessage, Bundle errorBundle) {
-		Log.e(BaseActivity.NAME, errorMessage);
+		Log.e(baseActivity.getName(), errorMessage);
 	}
 
 	public String getUsername() {
