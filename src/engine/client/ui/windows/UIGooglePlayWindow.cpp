@@ -19,17 +19,17 @@ UIGooglePlayWindow::UIGooglePlayWindow (IFrontend *frontend) :
 	UIVBoxLayout *layout = new UIVBoxLayout(0.02f);
 
 	_achievements = new UINodeButtonText(frontend, tr("Show achievements"));
-	_achievements->setOnActivate("google-showachievements");
+	_achievements->setOnActivate("googleplay-showachievements");
 	panel->add(_achievements);
 
 #if 0
 	_leaderBoards = new UINodeButtonText(frontend, tr("Show main leaderboard"));
-	_leaderBoards->setOnActivate("google-showleaderboard main");
+	_leaderBoards->setOnActivate("googleplay-showleaderboard main");
 	panel->add(_leaderBoards);
 #endif
 
 	_disconnect = new UINodeButtonText(frontend, tr("Disconnect"));
-	_disconnect->setOnActivate("google-disconnect");
+	_disconnect->setOnActivate("googleplay-disconnect");
 	panel->add(_disconnect);
 
 	panel->setLayout(layout);
@@ -38,6 +38,7 @@ UIGooglePlayWindow::UIGooglePlayWindow (IFrontend *frontend) :
 	const float padding = 10.0f / static_cast<float>(frontend->getHeight());
 	_login = new UINodeButtonImage(frontend, "icon-google-login");
 	_login->setAlignment(NODE_ALIGN_BOTTOM | NODE_ALIGN_LEFT);
+	_login->setOnActivate("googleplay-connect");
 	_login->setPadding(padding);
 	add(_login);
 
