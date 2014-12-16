@@ -375,6 +375,7 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		if (!googleApiClient.isConnected())
 			return false;
 		googleApiClient.disconnect();
+		onPersisterDisconnect();
 		return true;
 	}
 
@@ -525,6 +526,8 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 	public static native void onPersisterConnectFailed();
 
 	public static native void onPersisterConnectSuccess();
+
+	public static native void onPersisterDisconnect();
 
 	public static native void onPaymentDone();
 

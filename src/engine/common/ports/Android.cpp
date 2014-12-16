@@ -639,3 +639,9 @@ extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterConnectS
 	info(LOG_SYSTEM, "google play connection succeeds");
 	Config.getConfigVar("googleplaystate", "false", true)->setValue("true");
 }
+
+extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterDisconnect(JNIEnv* env, jclass jcls)
+{
+	info(LOG_SYSTEM, "google play disconnect");
+	Config.getConfigVar("googleplaystate", "false", true)->setValue("false");
+}
