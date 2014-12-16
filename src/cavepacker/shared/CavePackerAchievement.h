@@ -2,7 +2,7 @@
 
 #include "engine/common/Achievement.h"
 
-namespace Achievments {
+namespace Achievements {
 extern Achievement STARS_3;
 extern Achievement STARS_10;
 extern Achievement STARS_300;
