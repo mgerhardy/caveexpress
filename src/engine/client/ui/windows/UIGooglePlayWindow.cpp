@@ -7,6 +7,7 @@
 #include "engine/client/ui/nodes/UINodeGooglePlayButton.h"
 #include "engine/client/ui/layouts/UIVBoxLayout.h"
 #include "engine/client/ui/nodes/UINodeButtonImage.h"
+#include "engine/client/ui/windows/listener/GooglePlayDisconnectListener.h"
 
 UIGooglePlayWindow::UIGooglePlayWindow (IFrontend *frontend) :
 		UIWindow(UI_WINDOW_GOOGLEPLAY, frontend, WINDOW_FLAG_MODAL)
@@ -30,7 +31,7 @@ UIGooglePlayWindow::UIGooglePlayWindow (IFrontend *frontend) :
 #endif
 
 	_disconnect = new UINodeMainButton(frontend, tr("Disconnect"));
-	_disconnect->setOnActivate("googleplay-disconnect");
+	_disconnect->addListener(UINodeListenerPtr(new GooglePlayDisconnectListener()));
 	panel->add(_disconnect);
 
 	panel->setLayout(layout);
