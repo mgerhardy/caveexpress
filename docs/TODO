@@ -14,6 +14,7 @@
 ** don't use scale for the tps - for small everything should be in one texture
 ** Collect stars to unlock campaigns
 ** Implementation of the texture definition should be able to work with only one of them being available (big/small stuff)
+** GooglePlay automatic reconnect if googlestate config var is set to true
 
 * Map
 ** indicator for being almost dead (red screen?)
