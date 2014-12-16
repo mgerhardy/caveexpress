@@ -2,6 +2,7 @@
 
 #include "IGameStatePersister.h"
 #include <SDL_platform.h>
+#include <string>
 
 #ifdef __ANDROID__
 #define GOOGLEPLAY_ACTIVE
@@ -23,10 +24,15 @@ private:
 	jmethodID _persisterInit;
 	jmethodID _persisterConnect;
 	jmethodID _persisterDisconnect;
+	jmethodID _showLeaderBoard;
+	jmethodID _showAchievements;
+	jmethodID _addPointsToLeaderBoard;
 #endif
 
 	void connect();
 	void disconnect();
+	void showAchievements();
+	void showLeaderBoard(const std::string& boardId);
 
 	void upload();
 	void download();

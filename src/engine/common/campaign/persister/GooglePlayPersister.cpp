@@ -50,13 +50,16 @@ GooglePlayPersister::GooglePlayPersister(IGameStatePersister* delegate) :
 #ifdef GOOGLEPLAY_ACTIVE
 		,
 		_env(nullptr), _cls(nullptr), _loadGameState(nullptr), _saveGameState(nullptr),
-		_persisterInit(nullptr), _persisterConnect(nullptr), _persisterDisconnect(nullptr)
+		_persisterInit(nullptr), _persisterConnect(nullptr), _persisterDisconnect(nullptr),
+		_showLeaderBoard(nullptr), _showAchievements(nullptr), _addPointsToLeaderBoard(nullptr)
 #endif
 {
 	Commands.registerCommand("googleplay-connect", bindFunction(GooglePlayPersister, connect));
 	Commands.registerCommand("googleplay-disconnect", bindFunction(GooglePlayPersister, disconnect));
 	Commands.registerCommand("googleplay-upload", bindFunction(GooglePlayPersister, upload));
 	Commands.registerCommand("googleplay-download", bindFunction(GooglePlayPersister, download));
+	Commands.registerCommand("googleplay-showachievements", bindFunction(GooglePlayPersister, showAchievements));
+	Commands.registerCommand("googleplay-showleaderboard", bindFunction(GooglePlayPersister, showLeaderBoard));
 }
 
 GooglePlayPersister::~GooglePlayPersister() {
@@ -70,6 +73,34 @@ GooglePlayPersister::~GooglePlayPersister() {
 	_env = nullptr;
 #endif
 	delete _delegate;
+}
+
+void GooglePlayPersister::showAchievements() {
+#ifdef GOOGLEPLAY_ACTIVE
+	if (_env == nullptr) {
+		error(LOG_SYSTEM, "GoolePlayPersister::connect() failed for the google play persister - no env pointer");
+		return;
+	}
+	_env->CallStaticVoidMethod(_cls, _showAchievements);
+#endif
+}
+
+void GooglePlayPersister::showLeaderBoard(const std::string& boardId) {
+#ifdef GOOGLEPLAY_ACTIVE
+	if (_env == nullptr) {
+		error(LOG_SYSTEM, "GoolePlayPersister::showLeaderBoard() failed for the google play persister - no env pointer");
+		return;
+	}
+	GPLocalReferenceHolder refs;
+	if (!refs.init(_env)) {
+		error(LOG_SYSTEM, "GoolePlayPersister::showLeaderBoard(): could not init the ref holder");
+		return;
+	}
+
+	jstring str = _env->NewStringUTF(boardId.c_str());
+	_env->CallStaticVoidMethod(_cls, _showLeaderBoard, str);
+	_env->DeleteLocalRef(str);
+#endif
 }
 
 void GooglePlayPersister::upload() {
@@ -179,6 +210,27 @@ bool GooglePlayPersister::init() {
 	_loadGameState = _env->GetStaticMethodID(_cls, "loadGameState", "()[B");
 	if (_loadGameState == 0) {
 		error(LOG_SYSTEM, "Could not get the jni bindings for loadGameState");
+		_env = nullptr;
+		return false;
+	}
+
+	_showLeaderBoard = _env->GetStaticMethodID(_cls, "showLeaderBoard", "(Ljava/lang/String;)V");
+	if (_showLeaderBoard == 0) {
+		error(LOG_SYSTEM, "Could not get the jni bindings for showLeaderBoard");
+		_env = nullptr;
+		return false;
+	}
+
+	_showAchievements = _env->GetStaticMethodID(_cls, "showAchievements", "()V");
+	if (_showAchievements == 0) {
+		error(LOG_SYSTEM, "Could not get the jni bindings for showAchievements");
+		_env = nullptr;
+		return false;
+	}
+
+	_addPointsToLeaderBoard  = _env->GetStaticMethodID(_cls, "addPointsToLeaderBoard", "(Ljava/lang/String;I)V");
+	if (_addPointsToLeaderBoard == 0) {
+		error(LOG_SYSTEM, "Could not get the jni bindings for addPointsToLeaderBoard");
 		_env = nullptr;
 		return false;
 	}
