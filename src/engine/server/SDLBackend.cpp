@@ -156,6 +156,7 @@ void SDLBackend::handleEvent (SDL_Event &event)
 	switch (event.type) {
 	case SDL_QUIT:
 		info(LOG_BACKEND, "received quit event");
+		Config.shutdown();
 		if (!System.quit()) {
 			_running = false;
 		}

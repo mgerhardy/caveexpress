@@ -22,4 +22,5 @@ void ConfigVar::setValue (const std::string& value)
 	_value = value;
 	_intValue = string::toInt(_value);
 	_floatValue = string::toFloat(_value);
+	info(LOG_CONFIG, _name + " => changed value to: " + _value);
 }
