@@ -187,13 +187,14 @@ release-android:
 
 android-setup:
 	$(Q)ARCH=x86_64; \
-	NDK_VERSION=r10c; \
+	NDK_VERSION=r10d; \
 	SDK_VERSION=20140702; \
 	[ $(TARGET_ARCH) = "i386" ] && ARCH=x86; \
 	echo "Downloading the ndk..."; \
-	wget --quiet --continue http://dl.google.com/android/ndk/android-ndk32-$$NDK_VERSION-linux-$$ARCH.tar.bz2; \
+	wget --quiet --continue http://dl.google.com/android/ndk/android-ndk-$$NDK_VERSION-linux-$$ARCH.bin; \
 	echo "Extracting the ndk..."; \
-	tar -xjf android-ndk32-$$NDK_VERSION-linux-$$ARCH.tar.bz2 -C ~/; \
+	chmod +x android-ndk-$$NDK_VERSION-linux-$$ARCH.bin; \
+	./android-ndk-$$NDK_VERSION-linux-$$ARCH.bin -o/home/$$USER/; \
 	echo "Downloading the sdk..."; \
 	wget --quiet --continue http://dl.google.com/android/adt/adt-bundle-linux-$$ARCH-$$SDK_VERSION.zip; \
 	echo "Extracting the sdk..."; \
