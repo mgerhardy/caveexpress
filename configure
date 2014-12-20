@@ -262,7 +262,7 @@ check_header_bundled() {
 }
 
 check_headers() {
-	check_header_bundled "SDL.h" "sdl2"
+	check_header_bundled "SDL_opengl_glext.h" "sdl2"
 	check_header_bundled "SDL_image.h" "SDL2_image"
 	check_header_bundled "SDL_mixer.h" "SDL2_mixer"
 	check_header_bundled "SDL_net.h" "SDL2_net"
