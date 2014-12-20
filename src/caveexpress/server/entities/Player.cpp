@@ -141,40 +141,38 @@ void Player::update (uint32_t deltaTime)
 		drop();
 	}
 
-	if (System.hasTouch()) {
-		if (_fingerAcceleration) {
-			const float mass = getCompleteMass();
-			const b2Vec2& gravity = getGravity();
-			b2Vec2 v = mass * gravity;
-			const int delta = 1;
-			if (_accelerateY <= -delta) {
-				// go upwards
-				v.y *= _accelerateY;
-			} else if (_accelerateY >= delta) {
-				// go downwards
-				v.y *= 0.5f;
-			} else {
-				// stay in the air (see below)
-				v.y *= 0.0f;
-			}
-
-			const float horizontalMoveSpeed = 1.0f;
-			if (std::abs(_accelerateX) >= delta)
-				v.x = horizontalMoveSpeed * _accelerateX;
-
-			const float maxHorizontalVelocity = gravity.y;
-			v.x = clamp(v.x, -maxHorizontalVelocity, maxHorizontalVelocity);
-			v.y = clamp(v.y, -gravity.y * 3.0f, gravity.y);
-
-			debug(LOG_SERVER, "v: " + string::toString(v) + ", x: " + string::toString(_accelerateX) + ", y: " + string::toString(_accelerateY));
-
-			if (fabs(v.y) < 0.0001f) {
-				const b2Vec2 force = -mass * getGravity();
-				debug(LOG_SERVER, "f: " + string::toString(force));
-				applyForce(force);
-			}
-			applyLinearImpulse(v);
+	if (System.hasTouch() && _fingerAcceleration) {
+		const float mass = getCompleteMass();
+		const b2Vec2& gravity = getGravity();
+		b2Vec2 v = mass * gravity;
+		const int delta = 1;
+		if (_accelerateY <= -delta) {
+			// go upwards
+			v.y *= _accelerateY;
+		} else if (_accelerateY >= delta) {
+			// go downwards
+			v.y *= 0.5f;
+		} else {
+			// stay in the air (see below)
+			v.y *= 0.0f;
 		}
+
+		const float horizontalMoveSpeed = 1.0f;
+		if (std::abs(_accelerateX) >= delta)
+			v.x = horizontalMoveSpeed * _accelerateX;
+
+		const float maxHorizontalVelocity = gravity.y;
+		v.x = clamp(v.x, -maxHorizontalVelocity, maxHorizontalVelocity);
+		v.y = clamp(v.y, -gravity.y * 3.0f, gravity.y);
+
+		debug(LOG_SERVER, "v: " + string::toString(v) + ", x: " + string::toString(_accelerateX) + ", y: " + string::toString(_accelerateY));
+
+		if (fabs(v.y) < 0.0001f) {
+			const b2Vec2 force = -mass * getGravity();
+			debug(LOG_SERVER, "f: " + string::toString(force));
+			applyForce(force);
+		}
+		applyLinearImpulse(v);
 	} else {
 		const float maxSpeed = 8.0f;
 		const b2Vec2 force = getMass() * _acceleration;
