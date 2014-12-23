@@ -50,8 +50,6 @@ clean-android-libs:
 	$(Q)rm -rf $(ANDROID_PROJECT)/google-play-services_lib/libs/
 	$(Q)rm -f $(ANDROID_PROJECT)/google-play-services_lib/local.properties
 	$(Q)rm -f $(ANDROID_PROJECT)/google-play-services_lib/proguard-project.txt
-	$(Q)rm -rf $(ANDROID_PROJECT)/google-play-services_lib/res/drawable-ldpi/
-	$(Q)rm -rf $(ANDROID_PROJECT)/google-play-services_lib/res/layout/
 
 .PHONY: clean-android
 clean-android: clean-android-libs
@@ -60,12 +58,19 @@ clean-android: clean-android-libs
 	$(Q)rm -rf $(ANDROID_PROJECT)/bin
 	$(Q)rm -rf $(ANDROID_PROJECT)/obj
 	$(Q)rm -rf $(ANDROID_PROJECT)/gen
+	$(Q)rm -rf $(ANDROID_PROJECT)/libs
 	$(Q)rm -f $(ANDROID_PROJECT)/local.properties
 	$(Q)rm -f $(ANDROID_PROJECT)/default.properties
+	$(Q)rm -f $(ANDROID_PROJECT)/project.properties
 	$(Q)rm -f $(ANDROID_PROJECT)/AndroidManifest.xml
 	$(Q)rm -f $(ANDROID_PROJECT)/build.xml
 	$(Q)rm -f $(ANDROID_PROJECT)/jni/Application.mk
 	$(Q)rm -f $(ANDROID_PROJECT)/res/values/strings.xml
+	$(Q)rm -f $(ANDROID_PROJECT)/res/values/games-ids.xml
+	$(Q)rm -rf $(ANDROID_PROJECT)/res/drawable-hdpi
+	$(Q)rm -rf $(ANDROID_PROJECT)/res/drawable-ldpi
+	$(Q)rm -rf $(ANDROID_PROJECT)/res/drawable-mdpi
+	$(Q)rm -rf $(ANDROID_PROJECT)/res/drawable-xhdpi
 	$(Q)rm -f $(SRCDIR)/Android.mk
 
 .PHONY: android-update-project
@@ -204,3 +209,16 @@ android-setup:
 	echo "export ANDROID_NDK=~/android-ndk-$$NDK_VERSION" >> ~/.bashrc; \
 	echo "export NDK_ROOT=\$$ANDROID_NDK" >> ~/.bashrc; \
 	echo "export PATH=\$$PATH:\$$ANDROID_NDK:\$$ANDROID_SDK/tools:\$$ANDROID_SDK/platform-tools" >> ~/.bashrc;
+
+android-build-all:
+	./configure --app=caveexpress --enable-ccache --target-os=android --enable-release && $(MAKE) clean-android clean && $(MAKE)
+	cp $(ANDROID_PROJECT)/bin/*-release.apk CaveExpress-release.apk
+	./configure --app=caveexpress --enable-ccache --target-os=android --enable-release --enable-hd && $(MAKE) clean-android clean && $(MAKE)
+	cp $(ANDROID_PROJECT)/bin/*-release.apk CaveExpress-hd-release.apk
+	./configure --app=cavepacker --enable-ccache --target-os=android --enable-release && $(MAKE) clean-android clean && $(MAKE)
+	cp $(ANDROID_PROJECT)/bin/*-release.apk CavePacker-release.apk
+
+android-install-all: android-build-all
+	adb install -r CaveExpress-release.apk
+	adb install -r CaveExpress-hd-release.apk
+	adb install -r CavePacker-release.apk
