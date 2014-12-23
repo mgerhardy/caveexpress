@@ -5,14 +5,14 @@ ARGS=$*
 caveexpress_APPNAME=caveexpress
 caveexpress_APPNAME_FULL=CaveExpress
 caveexpress_JAVA_PACKAGE=org.caveexpress
-caveexpress_VERSION=2.2
-caveexpress_VERSION_CODE=29
+caveexpress_VERSION=2.3
+caveexpress_VERSION_CODE=30
 
 cavepacker_APPNAME=cavepacker
 cavepacker_APPNAME_FULL=CavePacker
 cavepacker_JAVA_PACKAGE=org.cavepacker
-cavepacker_VERSION=1.2
-cavepacker_VERSION_CODE=8
+cavepacker_VERSION=1.3
+cavepacker_VERSION_CODE=9
 
 DEFAULT_APP=caveexpress
 
