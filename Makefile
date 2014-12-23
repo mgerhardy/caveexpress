@@ -142,7 +142,7 @@ ifeq ($($(1)_ACTIVE),1)
 # if the target filename differs:
 ifneq ($(1),$($(1)_FILE))
 .PHONY: $(1)
-$(1): $(TARGET_OS)-config.h $($(1)_FILE)
+$(1): $(CONFIG_H)-config.h $($(1)_FILE)
 endif
 
 $($(1)_FILE): build/modules/$(1).mk $(foreach DEP,$($(1)_DEPS),$($(DEP)_FILE)) $($(1)_OBJS)

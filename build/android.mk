@@ -177,12 +177,12 @@ android-uninstall:
 	$(Q)cd $(ANDROID_PROJECT) && ant uninstall
 endif
 
-release-android:
-	./configure --enable-ccache --target-os=android --enable-release && $(MAKE) clean-android clean && $(MAKE)
+release-android: $(CONFIG_H)-config.h
+	./configure --app=$(APPNAME) --enable-ccache --target-os=android --enable-release && $(MAKE) clean-android clean && $(MAKE)
 	cp $(ANDROID_PROJECT)/bin/*-release.apk $(APPNAME_FULL)-release.apk
-	./configure --enable-ccache --target-os=android --enable-release --enable-hd && $(MAKE) clean-android clean && $(MAKE)
+	./configure --app=$(APPNAME) --enable-ccache --target-os=android --enable-release --enable-hd && $(MAKE) clean-android clean && $(MAKE)
 	cp $(ANDROID_PROJECT)/bin/*-release.apk $(APPNAME_FULL)-hd-release.apk
-	./configure --enable-ccache --target-os=ouya --enable-release && $(MAKE) clean-android clean && $(MAKE)
+	./configure --app=$(APPNAME) --enable-ccache --target-os=ouya --enable-release && $(MAKE) clean-android clean && $(MAKE)
 	cp $(ANDROID_PROJECT)/bin/*-release.apk $(APPNAME_FULL)-ouya-release.apk
 
 android-setup:
