@@ -367,6 +367,11 @@ public:
 	virtual bool onMouseButtonRelease (int32_t x, int32_t y, unsigned char button);
 	virtual bool onMouseButtonPress (int32_t x, int32_t y, unsigned char button);
 	virtual bool onGesture (int64_t gestureId, float error, int32_t numFingers);
+	/**
+	 * @param[in] theta the amount that the fingers rotated during this motion
+	 * @param[in] dist the amount that the fingers pinched during this motion
+	 * @param[in] numFingers the number of fingers used in the gesture
+	 */
 	virtual bool onMultiGesture (float theta, float dist, int32_t numFingers);
 	virtual bool onGestureRecord (int64_t gestureId);
 	virtual bool onMouseLeftRelease (int32_t x, int32_t y);
