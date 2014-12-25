@@ -131,6 +131,16 @@ ifeq ($(TARGET_OS),nacl)
 			$(wildcard src/libs/SDL/src/main/nacl/*.c) \
 		)
 endif
+ifeq ($(TARGET_OS),html5)
+	SDL_SRCS += \
+		$(subst src/libs/SDL/,libs/SDL/, \
+			$(wildcard src/libs/SDL/src/audio/emscripten/*.c) \
+			$(wildcard src/libs/SDL/src/filesystem/emscripten/*.c) \
+			$(wildcard src/libs/SDL/src/joystick/emscripten/*.c) \
+			$(wildcard src/libs/SDL/src/power/emscripten/*.c) \
+			$(wildcard src/libs/SDL/src/video/emscripten/*.c) \
+		)
+endif
 ifneq ($(findstring $(TARGET_OS), android ouya),)
 	SDL_SRCS += \
 		$(subst src/libs/SDL/,libs/SDL/, \
