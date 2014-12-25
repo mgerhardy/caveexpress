@@ -1,14 +1,7 @@
 SO_EXT                    = so
-SO_LDFLAGS                = -shared
-SO_CFLAGS                 = -fpic
-SO_LIBS                  := -ldl
-
-SDL_LIBS                 += $(EMSCRIPTEN_TARGET_ROOT)/emsdk/sdl2/lib/libSDL2.a
-SDL_CFLAGS               += -I$(EMSCRIPTEN_TARGET_ROOT)/emsdk/sdl2/include/SDL2
-SDL_IMAGE_LIBS           += $(EMSCRIPTEN_TARGET_ROOT)/emsdk/sdl2/lib/libSDL2_image.a
-SDL_IMAGE_CFLAGS         +=
-SDL_MIXER_LIBS           += $(EMSCRIPTEN_TARGET_ROOT)/emsdk/sdl2/lib/libSDL2_mixer.a
-SDL_MIXER_CFLAGS         +=
+SO_LDFLAGS                =
+SO_CFLAGS                 =
+SO_LIBS                  :=
 
 CFLAGS                   += -D_GNU_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE
 CFLAGS                   += -Wno-c++11-extensions -Wno-shift-op-parentheses -Wno-warn-absolute-paths
