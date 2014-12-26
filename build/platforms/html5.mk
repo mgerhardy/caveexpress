@@ -30,7 +30,7 @@ endif
 $(APPNAME)_LDFLAGS       += --shell-file contrib/installer/html5/shell.html
 $(APPNAME)_LDFLAGS       += --js-library contrib/installer/html5/library.js
 #$(APPNAME)_LDFLAGS       += --js-library contrib/installer/html5/lua.js
-#$(APPNAME)_LDFLAGS       += --memory-init-file 1
+$(APPNAME)_LDFLAGS       += --memory-init-file 0
 $(APPNAME)_LDFLAGS       += --preload-file $(BASEDIR)
 ifeq ($(Q),)
 $(APPNAME)_LDFLAGS       += -s VERBOSE=1
