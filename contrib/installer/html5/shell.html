@@ -52,7 +52,7 @@ canvas.emscripten {
 		<progress value="0" max="100" id="progress" hidden="1"></progress>
 	</div>
 	<div class="emscripten_border">
-		<canvas class="emscripten" id="canvas"
+		<canvas class="emscripten" id="canvas" width="1024" height="768"
 			oncontextmenu="event.preventDefault()"></canvas>
 	</div>
 
@@ -63,6 +63,8 @@ canvas.emscripten {
 
 	<textarea class="emscripten" id="output" rows="8"></textarea>
 	<script type='text/javascript'>
+		var statusElement = document.getElementById('status');
+		var progressElement = document.getElementById('progress');
 		// connect to canvas
 		var Module = {
 			preRun : [],
@@ -136,7 +138,6 @@ canvas.emscripten {
 		Module.setStatus('Downloading...');
 		window.onerror = function() {
 			Module.setStatus('Exception thrown, see JavaScript console');
-			spinnerElement.style.display = 'none';
 			Module.setStatus = function(text) {
 				if (text)
 					Module.printErr('[post-exception status] ' + text);
