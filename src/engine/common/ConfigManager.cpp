@@ -208,11 +208,9 @@ void ConfigManager::getBindingMap (LUA& lua, std::map<std::string, std::string>*
 				const std::string index = i->first.substr(3);
 				map[bindingSpace][index] = i->second;
 			} else if (type == CONTROLLER) {
-#ifndef EMSCRIPTEN
 				const SDL_GameControllerButton button = SDL_GameControllerGetButtonFromString(i->first.c_str());
 				const char *buttonStr = SDL_GameControllerGetStringForButton(button);
 				map[bindingSpace][buttonStr] = i->second;
-#endif
 			}
 		}
 
