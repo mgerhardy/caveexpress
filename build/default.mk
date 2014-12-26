@@ -139,6 +139,7 @@ ifeq ($(TARGET_OS),html5)
 			$(wildcard src/libs/SDL/src/joystick/emscripten/*.c) \
 			$(wildcard src/libs/SDL/src/power/emscripten/*.c) \
 			$(wildcard src/libs/SDL/src/video/emscripten/*.c) \
+			$(wildcard src/libs/SDL/src/timer/unix/*.c) \
 		)
 endif
 ifneq ($(findstring $(TARGET_OS), android ouya),)
