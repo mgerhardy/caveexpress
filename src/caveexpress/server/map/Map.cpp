@@ -412,6 +412,7 @@ void Map::resetCurrentMap ()
 	_spawnFlyingNPCTime = 0;
 	_activateflyingNPC = false;
 	_spawnFishNPCTime = 0;
+	_initialGeyserDelay = 0;
 	_activateFishNPC = false;
 	_mapRunning = false;
 	_wind = 0.0f;
@@ -504,6 +505,7 @@ bool Map::load (const std::string& name)
 
 	_spawnFlyingNPCTime = getSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(4000 + rand() % SPAWN_FLYING_NPC_DELAY)).toInt();
 	_spawnFishNPCTime = getSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(4000 + rand() % SPAWN_FISH_NPC_DELAY)).toInt();
+	_initialGeyserDelay = getSetting(msn::GEYSER_INITIAL_DELAY_TIME, string::toString(3000)).toInt();
 
 	if (_transferedPackageLimit <= 0) {
 		error(LOG_MAP, "there is nothing to do in this map - set the npc or package limits");
@@ -1021,7 +1023,7 @@ MapTile* Map::createMapTileWithoutBody (const SpriteDefPtr& spriteDef, gridCoord
 	} else if (SpriteTypes::isPackageTarget(type)) {
 		mapTile = new PackageTarget(*this, spriteDef->id, gridX, gridY);
 	} else if (SpriteTypes::isGeyser(type)) {
-		mapTile = new Geyser(*this, spriteDef->id, gridX, gridY);
+		mapTile = new Geyser(*this, spriteDef->id, gridX, gridY, _initialGeyserDelay);
 	} else if (SpriteTypes::isAnyGround(type) || SpriteTypes::isBridge(type)) {
 		mapTile = new MapTile(*this, spriteDef->id, gridX, gridY, EntityTypes::GROUND);
 	} else if (SpriteTypes::isSolid(type)) {

@@ -127,6 +127,7 @@ protected:
 
 	uint32_t _spawnFlyingNPCTime;
 	uint32_t _spawnFishNPCTime;
+	uint32_t _initialGeyserDelay;
 
 	// the time that passed since this map was started (milliseconds)
 	uint32_t _time;

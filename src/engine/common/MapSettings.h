@@ -15,6 +15,7 @@ const std::string REFERENCETIME = "referencetime";
 const std::string SIDEBORDERFAIL = "sideborderfail";
 const std::string PACKAGE_TRANSFER_COUNT = "packagetransfercount";
 const std::string NPC_INITIAL_SPAWN_TIME = "initialspawntime";
+const std::string GEYSER_INITIAL_DELAY_TIME = "geyserinitialdelay";
 const std::string FLYING_NPC = "flyingnpc";
 const std::string FISH_NPC = "fishnpc";
 const std::string WIND = "wind";

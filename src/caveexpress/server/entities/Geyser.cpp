@@ -2,14 +2,13 @@
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/server/entities/modificators/WindModificator.h"
 
-#define RANDOM_WAITING_DELAY 10000
-#define MIN_WAITING_DELAY 3000
+#define RANDOM_WAITING_DELAY 1000
 #define MIN_ACTIVE_TIME 3000
 #define RANDOM_ACTIVE_TIME 5000
 
-Geyser::Geyser (Map& map, const std::string& spriteID, gridCoord gridX, gridCoord gridY) :
+Geyser::Geyser (Map& map, const std::string& spriteID, gridCoord gridX, gridCoord gridY, uint32_t initialGeyserDelay) :
 		MapTile(map, spriteID, gridX, gridY, ThemeTypes::isIce(map.getTheme()) ? EntityTypes::GEYSER_ICE : EntityTypes::GEYSER_ROCK), _modificator(
-				nullptr), _lastActivation(0), _activeTime(0)
+				nullptr), _lastActivation(0), _activeTime(0), _initialGeyserDelay(initialGeyserDelay)
 {
 	setAnimationType(Animations::ANIMATION_IDLE);
 	_modificator = new WindModificator(_map, DIRECTION_UP, 11.0f, 2.0f);
@@ -24,7 +23,7 @@ Geyser::~Geyser ()
 
 inline void Geyser::updateLastActivation ()
 {
-	_lastActivation = rand() % RANDOM_WAITING_DELAY + MIN_WAITING_DELAY + _activeTime;
+	_lastActivation = rand() % RANDOM_WAITING_DELAY + _initialGeyserDelay + _activeTime;
 }
 
 void Geyser::update (uint32_t deltaTime)
