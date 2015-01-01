@@ -20,7 +20,7 @@ std::string Darwin::getHomeDirectory ()
 	return home;
 }
 
-int Darwin::openURL (const std::string& url) const
+int Darwin::openURL (const std::string& url, bool) const
 {
 	const std::string cmd = "open \"" + url + "\"";
 	return system(cmd.c_str());

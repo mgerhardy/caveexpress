@@ -145,7 +145,7 @@ void NaCl::exit (const std::string& reason, int errorCode)
 	::exit(errorCode);
 }
 
-int NaCl::openURL (const std::string& url) const
+int NaCl::openURL (const std::string& url, bool newWindow) const
 {
 	return -1;
 }

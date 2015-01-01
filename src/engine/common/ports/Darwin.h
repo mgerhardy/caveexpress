@@ -8,6 +8,6 @@ public:
 	virtual ~Darwin ();
 
 public:
-	int openURL (const std::string& url) const override;
+	int openURL (const std::string& url, bool newWindow) const override;
 	std::string getHomeDirectory () override;
 };

@@ -37,18 +37,30 @@ class OpenURLListener: public UINodeListener {
 protected:
 	const std::string _url;
 	IFrontend *_frontend;
+	bool _newWindow;
 public:
-	OpenURLListener (IFrontend *frontend, const std::string& url) :
-			_url(url), _frontend(frontend)
+	OpenURLListener (IFrontend *frontend, const std::string& url, bool newWindow = true) :
+			_url(url), _frontend(frontend), _newWindow(newWindow)
 	{
 	}
 
 	void onClick ()
 	{
 		_frontend->minimize();
-		System.openURL(_url);
+		System.openURL(_url, _newWindow);
 	}
 };
+
+#ifdef __EMSCRIPTEN__
+	class EmscriptenFullscreenListener: public UINodeListener {
+	public:
+		void onClick () {
+			EM_ASM({
+				Module.requestFullScreen();
+			});
+		}
+	};
+#endif
 
 enum UINodeAlign {
 	// horizontal

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Unix.h"
+#include <emscripten.h>
 
 class HTML5 : public Unix {
 public:
@@ -11,7 +12,7 @@ public:
 	std::string getCurrentWorkingDir () override;
 	void exit (const std::string& reason, int errorCode) override;
 	void showAds (bool show) override;
-	int openURL (const std::string& url) const override;
+	int openURL (const std::string& url, bool newWindow) const override;
 	void backtrace (const char *errorMessage) override;
 };
 

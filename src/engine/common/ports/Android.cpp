@@ -548,7 +548,7 @@ bool Android::isOUYA () const
     return _env->CallStaticBooleanMethod(_cls, _isOUYA);
 }
 
-int Android::openURL (const std::string& url) const
+int Android::openURL (const std::string& url, bool) const
 {
 	if (_openURL == 0)
 		return -1;

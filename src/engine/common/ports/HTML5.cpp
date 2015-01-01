@@ -2,7 +2,7 @@
 
 extern "C" {
 // find these in contrib/installer/html5/library.js
-void _jsOpenURL (const char* url);
+void _jsOpenURL (const char* url, bool newWindow);
 void _jsAlert (const char* reason);
 void _jsBacktrace ();
 }
@@ -44,8 +44,8 @@ void HTML5::showAds (bool show)
 {
 }
 
-int HTML5::openURL (const std::string& url) const
+int HTML5::openURL (const std::string& url, bool newWindow) const
 {
-	_jsOpenURL(url.c_str());
+	_jsOpenURL(url.c_str(), newWindow);
 	return 0;
 }

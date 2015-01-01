@@ -5,6 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
+<link rel="icon" type="image/png" href="favicon.png">
 <title>CaveExpress</title>
 <style>
 * {
@@ -14,8 +15,19 @@
 	font-family: "Courier New", Courier, monospace;
 }
 
-body {
+html, body {
 	background-color: black;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+}
+
+progress {
+	background-color: #f3f3f3;
+	border: 0;
+	height: 18px;
+	border-radius: 9px;
 }
 
 .emscripten {
@@ -41,7 +53,12 @@ div.emscripten_border {
 /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
 canvas.emscripten {
 	border: 0px none;
-	background-color: #cccccc;
+	width: 100%;
+	height: 100%;
+	background-color: black;
+	background-image: url('loading.png');
+	background-repeat: no-repeat;
+	background-position: center center;
 }
 </style>
 </head>
@@ -49,19 +66,13 @@ canvas.emscripten {
 	<hr />
 	<div class="emscripten" id="status">Downloading...</div>
 	<div class="emscripten">
-		<progress value="0" max="100" id="progress" hidden="1"></progress>
+		<progress value="0" max="100" id="progress"></progress>
 	</div>
 	<div class="emscripten_border">
-		<canvas class="emscripten" id="canvas" width="1024" height="768"
-			oncontextmenu="event.preventDefault()"></canvas>
+		<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
 	</div>
 
-	<div class="emscripten">
-		<input type="button" value="Fullscreen"
-			onclick="Module.requestFullScreen(false, true)">
-	</div>
-
-	<textarea class="emscripten" id="output" rows="8"></textarea>
+	<!-- <textarea class="emscripten" id="output" rows="8"></textarea>  -->
 	<script type='text/javascript'>
 		var statusElement = document.getElementById('status');
 		var progressElement = document.getElementById('progress');
@@ -71,11 +82,20 @@ canvas.emscripten {
 			postRun : [],
 			print : (function() {
 				var element = document.getElementById('output');
-				element.value = ''; // clear browser cache
+				if (element)
+					element.value = ''; // clear browser cache
 				return function(text) {
 					text = Array.prototype.slice.call(arguments).join(' ');
-					element.value += text + "\n";
-					element.scrollTop = 99999; // focus on bottom
+					// These replacements are necessary if you render to raw HTML
+					//text = text.replace(/&/g, "&amp;");
+					//text = text.replace(/</g, "&lt;");
+					//text = text.replace(/>/g, "&gt;");
+					//text = text.replace('\n', '<br>', 'g');
+					console.log(text);
+					if (element) {
+						element.value += text + "\n";
+						element.scrollTop = element.scrollHeight; // focus on bottom
+					}
 				};
 			})(),
 			printErr : function(text) {

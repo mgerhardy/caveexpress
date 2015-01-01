@@ -104,7 +104,7 @@ public:
 
 	virtual bool isOUYA () const { return false; }
 
-	virtual int openURL (const std::string& url) const { return 0; }
+	virtual int openURL (const std::string& url, bool newWindow) const { return 0; }
 
 	virtual void getPaymentEntries (std::vector<PaymentEntry>& entries) { }
 

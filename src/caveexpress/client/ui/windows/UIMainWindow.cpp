@@ -85,8 +85,20 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 	help->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_HELP)));
 	panel->add(help);
 
+#if 0
+#ifdef __EMSCRIPTEN__
+	UINodeMainButton *fullscreen = new UINodeMainButton(_frontend, tr("Fullscreen"));
+	fullscreen->addListener(UINodeListenerPtr(new EmscriptenFullscreenListener()));
+	panel->add(fullscreen);
+#endif
+#endif
+
 	UINodeMainButton *quit = new UINodeMainButton(_frontend, tr("Quit"));
+#ifdef __EMSCRIPTEN__
+	quit->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "http://caveproductions.org/", false)));
+#else
 	quit->addListener(UINodeListenerPtr(new QuitListener()));
+#endif
 	panel->add(quit);
 
 	add(panel);
