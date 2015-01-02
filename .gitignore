@@ -23,7 +23,7 @@
 /debug-*/
 /release-*/
 /scale
-/src/dir.h
+/src/*/dir.h
 
 # ---
 /gmon.out

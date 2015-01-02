@@ -244,9 +244,9 @@ emscripten: data
 endif
 
 BASEDIRS := $(patsubst %/,%,$(patsubst $(BASEDIR)/%,%,$(sort $(dir $(wildcard $(BASEDIR)/*/)))))
-filelist: $(SRCDIR)/dir.h
+filelist: $(SRCDIR)/$(APPNAME)/dir.h
 
-$(SRCDIR)/dir.h:
+$(SRCDIR)/$(APPNAME)/dir.h:
 	@echo "==> Create filelist for base directories"
 	$(Q)contrib/scripts/filelist.sh "$@" "$(BASEDIR)" $(BASEDIRS)
 
