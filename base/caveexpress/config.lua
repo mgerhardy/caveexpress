@@ -39,7 +39,6 @@ elseif isMobile() then
 	defaultnpcflyingspeed = 3.0
 	defaultparticles = 0
 elseif isHTML5() then
-	defaultpersister = "nop"
 	defaultfrontend = "opengl"
 	defaultsoundengine = "dummy"
 	defaultnetwork = false

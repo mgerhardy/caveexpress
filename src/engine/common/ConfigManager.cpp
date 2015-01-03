@@ -39,11 +39,7 @@ void ConfigManager::setBindingsSpace (BindingSpace bindingSpace)
 
 void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc, char **argv)
 {
-#ifdef __EMSCRIPTEN__
-	_persister = new ConfigPersisterNOP();
-#else
 	_persister = new ConfigPersisterSQL();
-#endif
 	info(LOG_CONFIG, "init configmanager");
 
 	_persister->init();

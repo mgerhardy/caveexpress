@@ -357,13 +357,8 @@ SQLITE3_SRCS              =
 SQLITE3_CFLAGS           ?= $(call PKG_CFLAGS,sqlite3)
 SQLITE3_LIBS             += $(call PKG_LIBS,sqlite3)
 else
-ifeq ($(TARGET_OS),html5)
-SQLITE3_SRCS              =
-SQLITE3_CFLAGS           ?=
-else
 SQLITE3_SRCS              = libs/sqlite/sqlite3.c
 SQLITE3_CFLAGS           ?= -Isrc/libs/sqlite -DSQLITE_HAVE_ISNAN -DSQLITE_THREADSAFE=0
-endif
 SQLITE3_LIBS             +=
 endif
 ifeq ($(HAVE_TINYXML2_H),1)

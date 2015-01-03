@@ -9,9 +9,6 @@ void _jsBacktrace ();
 
 HTML5::HTML5 () :
 		Unix() {
-	EM_ASM(FS.createFolder('/', 'user_data', true, true););
-	EM_ASM(FS.mount(IDBFS, {}, '/user_data'););
-	EM_ASM(FS.syncfs(true, function(err) { if (err) console.log('ERROR!', err); console.log('finished syncing..'); }););
 }
 
 HTML5::~HTML5 () {

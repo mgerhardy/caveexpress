@@ -27,7 +27,6 @@ elseif isMobile() then
 	defaultparticles = 0
 	defaultfpslimit = 30
 elseif isHTML5() then
-	defaultpersister = "nop"
 	defaultfrontend = "opengl"
 	defaultsoundengine = "dummy"
 else
