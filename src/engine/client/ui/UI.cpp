@@ -245,7 +245,8 @@ void UI::progressInit (int steps, const std::string& text)
 void UI::progressStep (const std::string& text)
 {
 	++_progress.step;
-	_frontend->render();
+	if (_frontend != nullptr)
+		_frontend->render();
 }
 
 void UI::progressDone ()
