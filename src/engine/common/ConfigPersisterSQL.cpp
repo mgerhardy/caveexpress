@@ -76,6 +76,8 @@ void ConfigPersisterSQL::save (const std::map<std::string, ConfigVarPtr>& config
 		info(LOG_STORAGE, "save config var " + name + " with value " + value);
 	}
 	stmt.finish();
+
+	getSystem().syncFiles();
 }
 
 std::string ConfigPersisterSQL::getValue (const std::string& name) const

@@ -48,6 +48,8 @@ public:
 
 	virtual std::string getLanguage () { return ""; }
 
+	virtual void syncFiles() {}
+
 	// return a slash terminates path to the home directory where the game saves its data to
 	virtual std::string getHomeDirectory () = 0;
 

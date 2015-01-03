@@ -9,6 +9,9 @@ void _jsBacktrace ();
 
 HTML5::HTML5 () :
 		Unix() {
+	EM_ASM(FS.createFolder('/', 'user_data', true, true););
+	EM_ASM(FS.mount(IDBFS, {}, '/user_data'););
+	EM_ASM(FS.syncfs(true, function(err) { if (err) console.log('ERROR!', err); console.log('finished syncing..'); }););
 }
 
 HTML5::~HTML5 () {
@@ -16,12 +19,22 @@ HTML5::~HTML5 () {
 
 std::string HTML5::getHomeDirectory ()
 {
-	return "";
+	return "/user_data/";
 }
 
 std::string HTML5::getCurrentWorkingDir ()
 {
 	return "";
+}
+
+void HTML5::syncFiles() {
+	logOutput("sync files");
+	EM_ASM(
+		FS.syncfs(function(error) {
+			if (error) { console.log("Error while syncing", error); }
+			console.log('finished syncing..');
+		});
+	);
 }
 
 void HTML5::exit (const std::string& reason, int errorCode)

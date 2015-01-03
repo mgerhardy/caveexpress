@@ -131,6 +131,9 @@ bool SQLitePersister::updateCampaign (Campaign* campaign)
 	const bool savedLives = saveLives(campaign->getLives(), campaign->getId());
 	if (savedLives)
 		info(LOG_CAMPAIGN, "updated campaign progress in database for " + campaign->getId());
+
+	getSystem().syncFiles();
+
 	return savedLives;
 }
 
@@ -226,6 +229,8 @@ bool SQLitePersister::resetState (Campaign* campaign)
 	const int lives = INITIAL_LIVES;
 	if (saveLives(lives, campaign->getId()) && deleteMaps(campaign) && activateCampaign(campaign)) {
 		campaign->setLives(lives);
+
+		getSystem().syncFiles();
 		return true;
 	}
 	error(LOG_STORAGE, "error reseting the state");

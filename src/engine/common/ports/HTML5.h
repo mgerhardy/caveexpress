@@ -12,6 +12,7 @@ public:
 	std::string getCurrentWorkingDir () override;
 	void exit (const std::string& reason, int errorCode) override;
 	void showAds (bool show) override;
+	void syncFiles() override;
 	int openURL (const std::string& url, bool newWindow) const override;
 	void backtrace (const char *errorMessage) override;
 };
