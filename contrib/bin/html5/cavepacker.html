@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
 <link rel="icon" type="image/png" href="favicon.png">
-<title>CavePacker</title>
+<title>CaveExpress</title>
 <style>
 * {
 	margin: 0px;
@@ -156,6 +156,16 @@ canvas.emscripten {
 						: 'All downloads complete.');
 			}
 		};
+		Module['preRun'].push(function() {
+				FS.createFolder('/', 'user_data', true, true)
+				FS.mount(IDBFS, {}, '/user_data');
+				FS.syncfs(true, function(err) {
+					if (err)
+						console.log('ERROR!', err);
+					console.log('finished syncing..');
+				});
+				}
+			);
 		Module.setStatus('Downloading...');
 		window.onerror = function() {
 			Module.setStatus('Exception thrown, see JavaScript console');
