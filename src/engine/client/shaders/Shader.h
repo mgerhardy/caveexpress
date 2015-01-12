@@ -4,7 +4,7 @@
 #include "engine/common/GLShared.h"
 #include <SDL_platform.h>
 #include <string>
-#include <map>
+#include <unordered_map>
 
 #ifndef __EMSCRIPTEN__
 #define USE_SHADERS
@@ -24,7 +24,7 @@ protected:
 	bool _initialized;
 	mutable bool _active;
 
-	typedef std::map<std::string, int> ShaderVariables;
+	typedef std::unordered_map<std::string, int> ShaderVariables;
 	ShaderVariables _uniforms;
 	ShaderVariables _attributes;
 
