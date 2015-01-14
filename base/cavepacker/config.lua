@@ -9,6 +9,7 @@ defaultpersister = "sqlite"
 defaultfrontend = "sdl"
 defaultsoundengine = "sdl"
 defaultshowcursor = true
+defaultnetwork = true
 defaultjoystick = false
 defaulttexturesize = "auto"
 defaultparticles = 100
@@ -27,8 +28,12 @@ elseif isMobile() then
 	defaultparticles = 0
 	defaultfpslimit = 30
 elseif isHTML5() then
+	defaultnetwork = false
 	defaultfrontend = "opengl"
 	defaultsoundengine = "dummy"
+elseif isNaCl() then
+	defaultpersister = "nop"
+	defaultnetwork = false
 else
 	-- workaround for now - remove me later
 	defaultfrontend = "opengl"
@@ -49,7 +54,7 @@ settings = {
 	sound = true,
 	soundengine = defaultsoundengine,
 	persister = defaultpersister,
-	network = false,
+	network = defaultnetwork,
 	fpslimit = defaultfpslimit,
 	texturesize = defaulttexturesize,
 	particles = defaultparticles,

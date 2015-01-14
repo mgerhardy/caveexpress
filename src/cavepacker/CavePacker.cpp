@@ -37,6 +37,8 @@
 #include "engine/client/ui/windows/UISettingsWindow.h"
 #include "engine/client/ui/windows/UIMapFinishedWindow.h"
 #include "engine/client/ui/windows/UIGestureWindow.h"
+#include "engine/client/ui/windows/UICreateServerWindow.h"
+#include "engine/client/ui/windows/UIMultiplayerWindow.h"
 #include "cavepacker/shared/CavePackerSQLitePersister.h"
 #include <SDL.h>
 
@@ -277,6 +279,8 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapFinishedWindow(frontend, *_campaignManager, serviceProvider, SoundType::NONE));
 	ui.addWindow(new IntroGame(frontend));
 	ui.addWindow(new UICavePackerMapOptionsWindow(frontend, serviceProvider));
+	ui.addWindow(new UIMultiplayerWindow(frontend, serviceProvider.getMapManager(), serviceProvider));
+	ui.addWindow(new UICreateServerWindow(frontend, serviceProvider.getMapManager()));
 }
 
 bool CavePacker::visitEntity (IEntity *entity)
