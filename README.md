@@ -22,6 +22,17 @@ Features:
 * Physics-based gameplay
 
 #### Compilation
+
+Requirements
+* SDL2 >= 2.0.4
+* SDL2_mixer
+* SDL2_net
+* SDL2_image
+* sqlite3
+* tinyxml2
+
+If you want to rebuild the texture atlas, then you also need TexturePacker
+
 * ./configure
 * make
 
