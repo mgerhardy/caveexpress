@@ -67,13 +67,18 @@ protected:
 
 	ParticleSystem _particleSystem;
 
+	// true if this is a tutorial map - might print extra information on player actions
 	bool _tutorial;
+	// the window id that should get pushed to the stack whenever the map is started
 	std::string _introWindow;
 	bool _started;
 	const ThemeType* _theme;
 
 	ConfigVarPtr _minZoom;
 	ConfigVarPtr _maxZoom;
+
+	// how many different start positions are available in this particular map
+	int _startPositions;
 
 	void renderLayer (int x, int y, Layer layer) const;
 	void renderFadeOutOverlay () const;
@@ -99,6 +104,8 @@ public:
 	void disconnect ();
 	virtual void init (uint16_t playerID);
 	bool load (const std::string& name, const std::string& title);
+
+	void setStartPositions(int startPositions);
 
 	void accelerate (Direction dir) const;
 	void resetAcceleration (Direction dir) const;
@@ -256,4 +263,9 @@ inline const ClientMap::ClientEntityMap& ClientMap::getEntities () const
 inline bool ClientMap::isTutorial () const
 {
 	return _tutorial;
+}
+
+inline void ClientMap::setStartPositions (int startPositions)
+{
+	_startPositions = startPositions;
 }

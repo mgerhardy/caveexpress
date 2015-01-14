@@ -475,6 +475,7 @@ bool Map::load (const std::string& name)
 	}
 	ctx->save();
 	_settings = ctx->getSettings();
+	_startPositions = ctx->getStartPositions();
 	_name = ctx->getName();
 	_title = ctx->getTitle();
 	_theme = &ctx->getTheme();
@@ -688,8 +689,13 @@ bool Map::spawnPlayer (Player* player)
 	assert(_entityRemovalAllowed);
 
 	info(LOG_SERVER, "spawn player " + player->toString());
-	const float playerStartX = getSetting(msn::PLAYER_X, msd::PLAYER_X).toFloat();
-	const float playerStartY = getSetting(msn::PLAYER_Y, msd::PLAYER_Y).toFloat();
+	const int startPosIdx = _players.size();
+	float playerStartX, playerStartY;
+	if (!getStartPosition(startPosIdx, playerStartX, playerStartY)) {
+		error(LOG_SERVER, String::format("no player position for index %i", startPosIdx));
+		return false;
+	}
+
 	const b2Vec2& size = player->getSize();
 	const b2Vec2 pos(playerStartX + size.x / 2.0f, playerStartY + size.y / 2.0f);
 	player->createBody(pos);
@@ -736,7 +742,7 @@ bool Map::initPlayer (Player* player)
 	const ClientId clientId = player->getClientId();
 	info(LOG_SERVER, "init player " + player->toString());
 	const int clientMask = ClientIdToClientMask(clientId);
-	const MapSettingsMessage mapSettingsMsg(_settings);
+	const MapSettingsMessage mapSettingsMsg(_settings, _startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);
 	GameEvent.sendWaterUpdate(clientMask, *_water);
 

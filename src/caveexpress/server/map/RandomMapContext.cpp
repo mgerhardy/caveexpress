@@ -649,13 +649,13 @@ void RandomMapContext::findValidPlayerStartingPositionsAndFillBackground ()
 	if (_playerPos.empty())
 		return;
 
-	if (!_settings[msn::PLAYER_X].empty() && !_settings[msn::PLAYER_Y].empty())
+	if (!_startPositions.empty())
 		return;
 
 	const int playerPosIndex = rand() % _playerPos.size();
 	const RandomMapPos& p = _playerPos[playerPosIndex];
-	_settings[msn::PLAYER_X] = string::toString(p.x);
-	_settings[msn::PLAYER_Y] = string::toString(p.y);
+	const IMap::StartPosition startPos{string::toString(p.x), string::toString(p.y)};
+	_startPositions.push_back(startPos);
 }
 
 bool RandomMapContext::load (bool skipErrors)

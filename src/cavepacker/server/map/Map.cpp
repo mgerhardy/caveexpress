@@ -258,7 +258,7 @@ void Map::undoPackage (int col, int row, int targetCol, int targetRow)
 		}
 		--_pushes;
 	} else {
-		info(LOG_SERVER, "dont move package back");
+		info(LOG_SERVER, "don't move package back");
 	}
 }
 
@@ -434,6 +434,7 @@ bool Map::load (const std::string& name)
 
 	ctx->save();
 	_settings = ctx->getSettings();
+	_startPositions = ctx->getStartPositions();
 	_name = ctx->getName();
 	_title = ctx->getTitle();
 	_width = getSetting(msn::WIDTH, "-1").toInt();
@@ -474,10 +475,16 @@ bool Map::spawnPlayer (Player* player)
 {
 	assert(_entityRemovalAllowed);
 
-	const int col = getSetting(msn::PLAYER_X).toInt();
-	const int row = getSetting(msn::PLAYER_Y).toInt();
-	if (!player->setPos(col, row))
+	const int startPosIdx = _players.size();
+	int col, row;
+	if (!getStartPosition(startPosIdx, col, row)) {
+		error(LOG_SERVER, String::format("no player position for index %i", startPosIdx));
+		return false;
+	}
+	if (!player->setPos(col, row)) {
 		error(LOG_SERVER, String::format("failed to set the player position to %i:%i", col, row));
+		return false;
+	}
 	player->onSpawn();
 	addEntity(0, *player);
 	info(LOG_SERVER, "spawned player " + player->toString());
@@ -602,7 +609,7 @@ bool Map::initPlayer (Player* player)
 	INetwork& network = _serviceProvider->getNetwork();
 	const ClientId clientId = player->getClientId();
 	info(LOG_SERVER, "init player " + player->toString());
-	const MapSettingsMessage mapSettingsMsg(_settings);
+	const MapSettingsMessage mapSettingsMsg(_settings, _startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);
 
 	const InitDoneMessage msgInit(player->getID(), 0, 0, 0);

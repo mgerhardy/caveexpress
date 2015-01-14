@@ -19,5 +19,6 @@ public:
 		for (std::map<std::string, std::string>::const_iterator i = settings.begin(); i != settings.end(); ++i) {
 			_map.setSetting(i->first, i->second);
 		}
+		_map.setStartPositions(msg->getStartPositions());
 	}
 };

@@ -17,6 +17,7 @@ LUAMapContext::LUAMapContext (const std::string& name) :
 		{ "addCave", luaAddCave },
 		{ "setSetting", luaSetSetting },
 		{ "addEmitter", luaAddEmitter },
+		{ "addStartPosition", luaAddStartPosition },
 		{ nullptr, nullptr }
 	};
 	_lua.reg("Map", funcs);
@@ -115,6 +116,17 @@ int LUAMapContext::luaAddEmitter (lua_State * l)
 void LUAMapContext::onMapLoaded ()
 {
 	_lua.execute("onMapLoaded");
+}
+
+int LUAMapContext::luaAddStartPosition (lua_State * l) {
+	LUAMapContext *ctx = _luaGetContext(l, 1);
+	const std::string x = luaL_checkstring(l, 2);
+	const std::string y = luaL_checkstring(l, 3);
+
+	const IMap::StartPosition p{x, y};
+	ctx->_startPositions.push_back(p);
+
+	return 0;
 }
 
 int LUAMapContext::luaSetSetting (lua_State * l)

@@ -19,7 +19,7 @@ protected:
 		std::map<std::string, std::string> settings;
 		settings["foo"] = "bar";
 		settings["bar"] = "foo";
-		testMessage(MapSettingsMessage(settings));
+		testMessage(MapSettingsMessage(settings, 1));
 		testMessage(InitDoneMessage(1, 4, 3, 100));
 		testMessage(RemoveEntityMessage(1, false));
 		testMessage(SpawnInfoMessage(0.0f, 0.0f, EntityType::NONE));

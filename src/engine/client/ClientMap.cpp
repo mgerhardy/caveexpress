@@ -25,7 +25,7 @@ ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, 
 				0), _mapHeight(0), _player(nullptr), _time(0), _playerID(0), _frontend(frontend), _pause(false), _serviceProvider(
 						serviceProvider), _screenRumble(false), _screenRumbleStrength(0.0f), _screenRumbleOffsetX(
 						0), _screenRumbleOffsetY(0), _particleSystem(
-				Config.getClientSideParticleMaxAmount()), _tutorial(false), _started(false), _theme(&ThemeTypes::ROCK)
+				Config.getClientSideParticleMaxAmount()), _tutorial(false), _started(false), _theme(&ThemeTypes::ROCK), _startPositions(0)
 {
 	_maxZoom = Config.getConfigVar("maxzoom", "1.2");
 	_minZoom = Config.getConfigVar("minzoom", "0.5");
@@ -54,6 +54,7 @@ bool ClientMap::isStarted () const
 
 void ClientMap::resetCurrentMap ()
 {
+	_startPositions = 0;
 	_zoom = 1.0f;
 	_timeManager.reset();
 	_settings.clear();

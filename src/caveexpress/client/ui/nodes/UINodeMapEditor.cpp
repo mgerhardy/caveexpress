@@ -855,7 +855,7 @@ void UINodeMapEditor::setState (const State& state)
 	_settings = state.settingsMap;
 	setMapName(state.mapName);
 	setMapDimensions(string::toInt(_settings[msn::WIDTH]), string::toInt(_settings[msn::HEIGHT]));
-	setPlayerPosition(string::toFloat(_settings[msn::PLAYER_X]), string::toFloat(_settings[msn::PLAYER_Y]));
+	setPlayerPosition(string::toFloat(_startPositions[0]._x), string::toFloat(_startPositions[0]._y));
 	setWaterHeight(string::toFloat(_settings[msn::WATER_HEIGHT]));
 }
 
@@ -1053,8 +1053,8 @@ void UINodeMapEditor::loadFromContext (IMapContext& ctx)
 		else
 			setSetting(i->first, i->second);
 	}
-	const gridCoord playerX = string::toFloat(_settings[msn::PLAYER_X]);
-	const gridCoord playerY = string::toFloat(_settings[msn::PLAYER_Y]);
+	const gridCoord playerX = string::toFloat(_startPositions[0]._x);
+	const gridCoord playerY = string::toFloat(_startPositions[0]._y);
 	setPlayerPosition(playerX, playerY);
 	const int mapWidth = string::toInt(_settings[msn::WIDTH]);
 	const int mapHeight = string::toInt(_settings[msn::HEIGHT]);

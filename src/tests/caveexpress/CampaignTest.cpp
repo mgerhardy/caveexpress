@@ -91,8 +91,8 @@ TEST(CampaignTest, testMaps) {
 				LUAMapContext ctx(id);
 				EXPECT_TRUE(ctx.load(false)) << "failed to load the map " << id;
 				IMap::SettingsMap settings = ctx.getSettings();
-				const gridCoord x = string::toFloat(settings[msn::PLAYER_X]);
-				const gridCoord y = string::toFloat(settings[msn::PLAYER_Y]);
+				const gridCoord x = string::toFloat(ctx.getStartPositions()[0]._x);
+				const gridCoord y = string::toFloat(ctx.getStartPositions()[0]._y);
 				EXPECT_TRUE(ctx.isLocationValid(x, y)) << "map " << id << " has invalid player start positions: " << x << ":" << y << " (" << settings[msn::WIDTH] << ":" << settings[msn::HEIGHT] << ")";
 				EXPECT_TRUE(ctx.isLocationFree(x, y)) << "map " << id << " has blocked player start positions: " << x << ":" << y;
 			}

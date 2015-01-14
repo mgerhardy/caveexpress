@@ -26,6 +26,8 @@ private:
 
 	static int luaSetSetting (lua_State * l);
 
+	static int luaAddStartPosition (lua_State * l);
+
 	// LUA bindings
 	void addCave (const SpriteDefPtr& spriteDef, gridCoord x, gridCoord y, const EntityType& entityType, int delay);
 	void addTile (const SpriteDefPtr& spriteDef, gridCoord x, gridCoord y, EntityAngle angle);
