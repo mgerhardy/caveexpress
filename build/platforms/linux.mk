@@ -3,7 +3,7 @@ SO_LDFLAGS                = -shared
 SO_CFLAGS                 = -fpic
 SO_LIBS                  := -ldl
 
-CFLAGS                   += -D_GNU_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE
+CFLAGS                   += -D_GNU_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_XOPEN_SOURCE
 
 LDFLAGS                  +=
 tests_LDFLAGS            += -lrt -lpthread
