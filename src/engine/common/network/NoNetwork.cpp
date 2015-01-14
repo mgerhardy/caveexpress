@@ -106,7 +106,8 @@ bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* 
 
 	if (_clientFunc != nullptr && !_connected) {
 		info(LOG_NET, String::format("connect %i", defaultClientId));
-		_serverFunc->onConnection(defaultClientId);
+		if (_serverFunc)
+			_serverFunc->onConnection(defaultClientId);
 		_connected = true;
 	}
 
