@@ -247,6 +247,15 @@ void Map::undoPackage (int col, int row, int targetCol, int targetRow)
 		rebuildField();
 		package->setPos(targetCol, targetRow);
 		rebuildField();
+		const int index = INDEX(targetCol, targetRow);
+		StateMapConstIter i = _state.find(index);
+		if (i != _state.end()) {
+			const char c = i->second;
+			if (c == Sokoban::PACKAGEONTARGET)
+				package->setState(CavePackerEntityStates::DELIVERED);
+			else
+				package->setState(CavePackerEntityStates::NONE);
+		}
 		--_pushes;
 	} else {
 		info(LOG_SERVER, "dont move package back");
