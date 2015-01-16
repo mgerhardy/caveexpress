@@ -529,6 +529,7 @@ void SDLBackend::loadMap (const std::string& mapName)
 			error(LOG_BACKEND, "failed to start the server");
 			return;
 		}
+		info(LOG_BACKEND, "connect to own server");
 		_frontend->connect();
 		return;
 	}
