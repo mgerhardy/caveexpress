@@ -586,16 +586,6 @@ set_path_env
 
 CONFIG_H_NAME=${TARGET_OS}
 
-case ${APPNAME} in
-cavepacker)
-	NETWORKING=
-	;;
-caveexpress)
-	;;
-*)
-	;;
-esac
-
 case ${TARGET_OS} in
 android)
 	;;
