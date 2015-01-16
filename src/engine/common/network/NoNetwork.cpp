@@ -151,5 +151,6 @@ bool NoNetwork::isClientConnected ()
 
 bool NoNetwork::broadcast (IClientCallback* oobCallback, uint8_t* buffer, size_t length, int port)
 {
+	error(LOG_NET, "local network doesn't support broadcasting");
 	return false;
 }
