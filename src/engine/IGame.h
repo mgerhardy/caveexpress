@@ -2,6 +2,7 @@
 
 #include "engine/client/ui/UI.h"
 #include "engine/common/Pointers.h"
+#include "engine/common/network/INetwork.h"
 #include "engine/common/network/IProtocolHandler.h"
 #include "engine/common/MapManager.h"
 #include "engine/common/ConfigManager.h"
@@ -32,6 +33,8 @@ public:
 	virtual void update (uint32_t deltaTime) {}
 
 	virtual std::string getMapName () { return ""; }
+
+	virtual int getMaxClients () { return MAX_CLIENTS; }
 
 	virtual void shutdown () {}
 

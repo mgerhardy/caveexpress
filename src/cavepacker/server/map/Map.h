@@ -144,6 +144,7 @@ public:
 	inline bool isAutoSolve () const { return _autoSolve; }
 	void abortAutoSolve ();
 
+	int getMaxPlayers() const;
 	inline int getMoves() const { return _moves; }
 	inline int getPushes() const { return _pushes; }
 	// return the best known moves from the solution

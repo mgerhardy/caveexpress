@@ -206,6 +206,11 @@ std::string CavePacker::getMapName ()
 	return _map.getName();
 }
 
+int CavePacker::getMaxClients ()
+{
+	return _map.getMaxPlayers();
+}
+
 void CavePacker::shutdown ()
 {
 	mapShutdown();

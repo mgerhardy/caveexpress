@@ -568,7 +568,7 @@ ProtocolMessagePtr SDLBackend::onOOBData (const unsigned char *data)
 	if (mapName.empty())
 		return ProtocolMessagePtr();
 
-	const ProtocolMessagePtr msg(new PingMessage(Config.getServerName(), mapName, Config.getPort(), game->getPlayers(), MAX_CLIENTS));
+	const ProtocolMessagePtr msg(new PingMessage(Config.getServerName(), mapName, Config.getPort(), game->getPlayers(), game->getMaxClients()));
 	return msg;
 }
 

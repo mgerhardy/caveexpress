@@ -938,6 +938,11 @@ void Map::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	_serviceProvider = &serviceProvider;
 }
 
+int Map::getMaxPlayers() const
+{
+	return _startPositions.size();
+}
+
 void Map::triggerPause ()
 {
 	if (!_serviceProvider->getNetwork().isServer())

@@ -23,6 +23,7 @@ public:
 	void initUI (IFrontend* frontend, ServiceProvider& serviceProvider) override;
 	void update (uint32_t deltaTime) override;
 	std::string getMapName () override;
+	int getMaxClients () override;
 	void init (IFrontend *frontend, ServiceProvider& serviceProvider) override;
 	void shutdown () override;
 	int getPlayers () override;
