@@ -81,14 +81,14 @@ bool Shader::loadFromFile (const std::string& filename, ShaderType shaderType)
 {
 	FilePtr filePtr = FS.getFile(FS.getShaderDir() + filename);
 	char *buffer;
-	int fileLen = filePtr->read((void **) &buffer);
+	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
 		error(LOG_CLIENT, "could not load shader " + filename);
 		return false;
 	}
 
-	const std::string src = getSource(shaderType, buffer, fileLen);
+	const std::string& src = getSource(shaderType, buffer, fileLen);
 	return load(filename, src, shaderType);
 }
 
