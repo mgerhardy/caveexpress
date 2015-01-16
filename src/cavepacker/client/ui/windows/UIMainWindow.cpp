@@ -28,11 +28,13 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	campaign->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_CAMPAIGN)));
 	panel->add(campaign);
 
+#ifndef NONETWORK
 	if (Config.isNetwork()) {
 		UINodeMainButton *multiplayer = new UINodeMainButton(_frontend, tr("Multiplayer"));
 		multiplayer->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_MULTIPLAYER)));
 		panel->add(multiplayer);
 	}
+#endif
 
 	UINodeMainButton *settings = new UINodeMainButton(_frontend, tr("Settings"));
 	settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_SETTINGS)));
