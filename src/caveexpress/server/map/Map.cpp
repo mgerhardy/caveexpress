@@ -779,6 +779,10 @@ void Map::printPlayersList () const
 void Map::sendPlayersList () const
 {
 	std::vector<std::string> names;
+	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
+		const std::string& name = (*i)->getName();
+		names.push_back(name);
+	}
 	for (PlayerListConstIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		const std::string& name = (*i)->getName();
 		names.push_back(name);
