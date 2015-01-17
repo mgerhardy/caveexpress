@@ -228,8 +228,6 @@ void Map::undo (Player* player)
 	if (_moves <= 0)
 		return;
 
-	if (_players.empty())
-		return;
 	player->undo();
 
 	--_moves;
