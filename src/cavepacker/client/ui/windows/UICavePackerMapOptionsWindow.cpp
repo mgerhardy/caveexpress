@@ -22,7 +22,9 @@ UICavePackerMapOptionsWindow::UICavePackerMapOptionsWindow (IFrontend *frontend,
 void UICavePackerMapOptionsWindow::onActive ()
 {
 	UIMapOptionsWindow::onActive();
-	if (System.supportPayment()) {
+	if (_serviceProvider.getNetwork().isMultiplayer()) {
+		_solve->setVisible(false);
+	} else if (System.supportPayment()) {
 		_solve->setVisible(System.hasItem("autosolve"));
 	}
 }

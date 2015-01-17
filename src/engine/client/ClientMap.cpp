@@ -44,16 +44,21 @@ void ClientMap::close ()
 
 void ClientMap::start ()
 {
+	info(LOG_CLIENT, "client map start");
 	_started = true;
 }
 
 bool ClientMap::isStarted () const
 {
-	return !_serviceProvider.getNetwork().isMultiplayer() || _started;
+	if (!_serviceProvider.getNetwork().isMultiplayer()) {
+		return true;
+	}
+	return _started;
 }
 
 void ClientMap::resetCurrentMap ()
 {
+	info(LOG_CLIENT, "client map reset");
 	_startPositions = 0;
 	_zoom = 1.0f;
 	_timeManager.reset();
