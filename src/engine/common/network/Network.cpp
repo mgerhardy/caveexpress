@@ -230,7 +230,7 @@ void Network::update (uint32_t deltaTime)
 			_bytesIn += _serverDatagramPacket->len;
 			const unsigned char *data = reinterpret_cast<const unsigned char *>(_serverDatagramPacket->data);
 			const ProtocolMessagePtr p = _serverFunc->onOOBData(data);
-			if (!sendUDP(_serverDatagramSocket, _serverDatagramPacket->address, *p))
+			if (p && !sendUDP(_serverDatagramSocket, _serverDatagramPacket->address, *p))
 				error(LOG_NET, "error sending udp response");
 		}
 	}
