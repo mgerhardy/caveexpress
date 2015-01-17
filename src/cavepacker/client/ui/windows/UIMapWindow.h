@@ -2,6 +2,7 @@
 
 #include "engine/client/ui/windows/IUIMapWindow.h"
 #include "engine/client/ui/nodes/UINodeSlider.h"
+#include "cavepacker/client/CavePackerClientMap.h"
 
 class UICavePackerNodePoint;
 
@@ -16,7 +17,7 @@ protected:
 	CampaignManager& _campaignManager;
 	bool _scrolling;
 public:
-	UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map);
+	UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, CavePackerClientMap& map);
 
 	bool onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy) override;
 	bool onMouseButtonRelease (int32_t x, int32_t y, unsigned char button) override;

@@ -9,12 +9,14 @@
 #include "cavepacker/server/network/StartMapHandler.h"
 #include "cavepacker/server/network/MovementHandler.h"
 #include "cavepacker/server/network/StopMovementHandler.h"
+#include "cavepacker/server/network/UndoHandler.h"
 #include "cavepacker/server/network/ClientInitHandler.h"
 #include "cavepacker/server/network/ErrorHandler.h"
 #include "cavepacker/server/network/StopFingerMovementHandler.h"
 #include "cavepacker/server/network/FingerMovementHandler.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
 #include "cavepacker/shared/CavePackerAchievement.h"
+#include "cavepacker/shared/network/ProtocolMessageTypes.h"
 #include "engine/client/entities/ClientEntityFactory.h"
 #include "engine/client/entities/ClientMapTile.h"
 #include "engine/common/network/ProtocolHandlerRegistry.h"
@@ -263,6 +265,7 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	rp.registerServerHandler(protocol::PROTO_STOPMOVEMENT, new StopMovementHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_ERROR, new ErrorHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_UNDO, new UndoHandler(_map));
 
 	_campaignManager->getAutoActiveCampaign();
 }
@@ -273,7 +276,7 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMainWindow(frontend));
 	CavePackerClientMap *map = new CavePackerClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
 	_clientMap = map;
-	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_clientMap));
+	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *map));
 	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));
 	ui.addWindow(new UIPaymentWindow(frontend));
 	ui.addWindow(new UIGooglePlayWindow(frontend));

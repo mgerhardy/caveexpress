@@ -49,7 +49,6 @@ Map::Map () :
 	Commands.registerCommand(CMD_FINISHMAP, bindFunction(Map, finishMap));
 	Commands.registerCommand("map_print", bindFunction(Map, printMap));
 	Commands.registerCommand("solve", bindFunction(Map, solveMap));
-	Commands.registerCommand("undo", bindFunction(Map, undo));
 
 	resetCurrentMap();
 }
@@ -221,7 +220,7 @@ void Map::increaseMoves ()
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
 }
 
-void Map::undo ()
+void Map::undo (Player* player)
 {
 	if (_autoSolve)
 		return;
@@ -231,7 +230,6 @@ void Map::undo ()
 
 	if (_players.empty())
 		return;
-	Player *player = *_players.begin();
 	player->undo();
 
 	--_moves;

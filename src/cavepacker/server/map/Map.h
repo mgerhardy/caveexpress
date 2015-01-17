@@ -152,7 +152,7 @@ public:
 	inline int getBestMoves () const { return getSetting("best").toInt(); }
 	void increaseMoves ();
 	void increasePushes ();
-	void undo ();
+	void undo (Player* player);
 
 	void autoStart ();
 	void loadDelayed (uint32_t delay, const std::string& name);

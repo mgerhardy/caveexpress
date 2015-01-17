@@ -1,5 +1,6 @@
 #include "cavepacker/client/CavePackerClientMap.h"
 #include "cavepacker/shared/EntityStates.h"
+#include "cavepacker/shared/network/messages/ProtocolMessages.h"
 #include "engine/client/particles/Sparkle.h"
 #include "engine/common/MapSettings.h"
 #include "engine/common/network/messages/StopMovementMessage.h"
@@ -29,6 +30,11 @@ CavePackerClientMap::CavePackerClientMap (int x, int y, int width, int height, I
 
 void CavePackerClientMap::start ()
 {
+}
+
+void CavePackerClientMap::undo ()
+{
+	_serviceProvider.getNetwork().sendToServer(UndoMessage());
 }
 
 void CavePackerClientMap::update (uint32_t deltaTime)
