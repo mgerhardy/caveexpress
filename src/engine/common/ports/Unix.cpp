@@ -38,7 +38,11 @@
 Unix::Unix() :
 		ISystem()
 {
-	signal(SIGPIPE, SIG_IGN);
+	void (*handler)(int);
+	handler = signal(SIGPIPE, SIG_IGN);
+	if (handler != SIG_DFL) {
+		signal(SIGPIPE, handler);
+	}
 	struct passwd *p;
 
 	if ((p = getpwuid(getuid())) == nullptr)
