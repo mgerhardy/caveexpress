@@ -797,6 +797,23 @@ void Map::rebuildField ()
 	}
 }
 
+void Map::autoStart () {
+	// already spawned
+	if (!_players.empty())
+		return;
+	// no players available yet
+	if (_playersWaitingForSpawn.empty())
+		return;
+	// singleplayer already auto starts a map
+	if (!_serviceProvider->getNetwork().isMultiplayer())
+		return;
+	// not enough players connected yet
+	if (_playersWaitingForSpawn.size() < _startPositions.size())
+		return;
+	info(LOG_SERVER, "starting the map");
+	startMap();
+}
+
 void Map::update (uint32_t deltaTime)
 {
 	if (_pause)

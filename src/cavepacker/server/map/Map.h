@@ -153,6 +153,7 @@ public:
 	void increasePushes ();
 	void undo ();
 
+	void autoStart ();
 	void loadDelayed (uint32_t delay, const std::string& name);
 	bool load (const std::string& name);
 

@@ -81,6 +81,7 @@ IMapManager* CavePacker::getMapManager ()
 
 void CavePacker::update (uint32_t deltaTime)
 {
+	_map.autoStart();
 	if (!_map.isActive() || deltaTime == 0)
 		return;
 
