@@ -138,7 +138,7 @@ void IUINodeMap::render (int x, int y) const
 	y += getRenderHeight() / 10;
 	x += getRenderWidth() / 10;
 
-	y += font->print("Players:", colorWhite, x, y) + font->getCharHeight();
+	y += font->print(tr("Players:"), colorWhite, x, y) + font->getCharHeight();
 	for (std::vector<std::string>::const_iterator i = _players.begin(); i != _players.end(); ++i) {
 		y += font->print(*i, colorWhite, x + 10, y) + font->getCharHeight();
 	}

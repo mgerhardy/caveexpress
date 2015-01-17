@@ -17,9 +17,11 @@ Hints|Hints
 Homepage|Homepage
 Joystick|Joystick
 Leaderboard|Leaderboard
+Map|Map
 Maps|Maps
 Move all packages onto their targets|Move all packages onto their targets
 Multiplayer|Multiplayer
+Name|Name
 Normal|Normal
 OK|OK
 Objectives|Objectives
@@ -27,6 +29,8 @@ Off|Off
 On|On
 Open|Open
 Package|Package
+Players|Players
+Players:|Players:
 Quit|Quit
 Refresh|Refresh
 Reset|Reset

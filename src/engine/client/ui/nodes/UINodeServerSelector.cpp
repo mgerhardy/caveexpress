@@ -1,11 +1,12 @@
 #include "UINodeServerSelector.h"
+#include "engine/client/ui/UI.h"
 #include "engine/common/CommandSystem.h"
 #include "engine/common/Logger.h"
 #include "engine/common/Commands.h"
 
-#define MAP_HEADLINE "Map"
-#define NAME_HEADLINE "Name"
-#define PLAYERS_HEADLINE "Players"
+#define MAP_HEADLINE tr("Map")
+#define NAME_HEADLINE tr("Name")
+#define PLAYERS_HEADLINE tr("Players")
 
 UINodeServerSelector::UINodeServerSelector (IFrontend *frontend, int rows) :
 		UINodeSelector<ServerEntry>(frontend, 1, rows)
