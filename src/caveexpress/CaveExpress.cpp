@@ -231,7 +231,7 @@ int CaveExpress::disconnect (ClientId clientId)
 
 int CaveExpress::getPlayers ()
 {
-	return _map.getPlayers().size();
+	return _map.getConnectedPlayers();
 }
 
 std::string CaveExpress::getMapName ()

@@ -136,6 +136,7 @@ public:
 	virtual ~Map ();
 
 	const PlayerList& getPlayers () const;
+	inline int getConnectedPlayers () const { return _playersWaitingForSpawn.size() + _players.size(); }
 	Player* getPlayer (ClientId clientId);
 
 	void rebuildField ();

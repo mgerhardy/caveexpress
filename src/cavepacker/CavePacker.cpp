@@ -199,7 +199,7 @@ int CavePacker::disconnect (ClientId clientId)
 
 int CavePacker::getPlayers ()
 {
-	return _map.getPlayers().size();
+	return _map.getConnectedPlayers();
 }
 
 std::string CavePacker::getMapName ()
