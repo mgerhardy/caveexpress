@@ -228,34 +228,43 @@ void Map::undo (Player* player)
 	if (_moves <= 0)
 		return;
 
-	player->undo();
+	if (!player->undo())
+		return;
 
 	--_moves;
 	debug(LOG_SERVER, String::format("moved fields after undo: %i", _moves));
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
 }
 
-void Map::undoPackage (int col, int row, int targetCol, int targetRow)
+bool Map::undoPackage (int col, int row, int targetCol, int targetRow)
 {
 	MapTile* package = getPackage(col, row);
 	if (package != nullptr) {
 		info(LOG_SERVER, "move package back");
 		rebuildField();
-		package->setPos(targetCol, targetRow);
+		const int origCol = package->getCol();
+		const int origRow = package->getRow();
+		if (!package->setPos(targetCol, targetRow))
+			return false;
 		rebuildField();
 		const int index = INDEX(targetCol, targetRow);
 		StateMapConstIter i = _state.find(index);
-		if (i != _state.end()) {
-			const char c = i->second;
-			if (c == Sokoban::PACKAGEONTARGET)
-				package->setState(CavePackerEntityStates::DELIVERED);
-			else
-				package->setState(CavePackerEntityStates::NONE);
+		if (i == _state.end()) {
+			package->setPos(origCol, origRow);
+			return false;
 		}
+
+		const char c = i->second;
+		if (c == Sokoban::PACKAGEONTARGET)
+			package->setState(CavePackerEntityStates::DELIVERED);
+		else
+			package->setState(CavePackerEntityStates::NONE);
+
 		--_pushes;
-	} else {
-		info(LOG_SERVER, "don't move package back");
+		return true;
 	}
+	info(LOG_SERVER, "don't move package back");
+	return false;
 }
 
 void Map::abortAutoSolve ()

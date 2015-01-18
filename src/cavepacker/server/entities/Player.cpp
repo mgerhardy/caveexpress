@@ -20,8 +20,10 @@ void Player::storeStep (char step)
 	_solutionSave += step;
 }
 
-void Player::undo ()
+bool Player::undo ()
 {
+	if (_solutionSave.empty())
+		return false;
 	std::string::reverse_iterator i = _solutionSave.rbegin();
 	const char s = *i;
 	_solutionSave.erase(_solutionSave.size() - 1);
@@ -35,6 +37,7 @@ void Player::undo ()
 	const int targetRow = origRow + yPlayer;
 	if (!setPos(targetCol, targetRow)) {
 		debug(LOG_SERVER, "failed to undo a move of the player");
+		return false;
 	}
 	if (tolower(s) != s) {
 		int xPackage;
@@ -42,6 +45,10 @@ void Player::undo ()
 		getXY(s, xPackage, yPackage);
 		const int packageCol = origCol + xPackage;
 		const int packageRow = origRow + yPackage;
-		_map.undoPackage(packageCol, packageRow, origCol, origRow);
+		if (!_map.undoPackage(packageCol, packageRow, origCol, origRow)) {
+			setPos(origCol, origRow);
+			return false;
+		}
 	}
+	return true;
 }

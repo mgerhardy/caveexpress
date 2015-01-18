@@ -203,7 +203,7 @@ public:
 	bool isTarget (int col, int row);
 	bool isPackage (int col, int row);
 
-	void undoPackage (int col, int row, int targetCol, int targetRow);
+	bool undoPackage (int col, int row, int targetCol, int targetRow);
 
 	void resetCurrentMap ();
 
