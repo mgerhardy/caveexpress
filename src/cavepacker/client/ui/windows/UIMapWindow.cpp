@@ -10,6 +10,7 @@
 #include "engine/client/ui/UI.h"
 #include "engine/client/Camera.h"
 #include "engine/common/ConfigManager.h"
+#include "engine/common/ServiceProvider.h"
 #include "engine/common/Logger.h"
 #include "engine/common/IFrontend.h"
 
@@ -123,7 +124,7 @@ void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
 	_points->setOwnAndGlobalBest(ownBest, string::toInt(best));
 	_points->setLabel("0");
 
-	if (_campaignManager.firstMap())
+	if (!_serviceProvider.getNetwork().isMultiplayer() && _campaignManager.firstMap())
 		UI::get().push("introgame");
 }
 
