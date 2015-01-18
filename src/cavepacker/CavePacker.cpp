@@ -42,6 +42,7 @@
 #include "engine/client/ui/windows/UICreateServerWindow.h"
 #include "engine/client/ui/windows/UIMultiplayerWindow.h"
 #include "cavepacker/shared/CavePackerSQLitePersister.h"
+#include "cavepacker/shared/CavePackerMapManager.h"
 #include <SDL.h>
 
 namespace {
@@ -78,7 +79,7 @@ CavePacker::~CavePacker ()
 
 IMapManager* CavePacker::getMapManager ()
 {
-	return new FileMapManager("sok");
+	return new CavePackerMapManager();
 }
 
 void CavePacker::update (uint32_t deltaTime)

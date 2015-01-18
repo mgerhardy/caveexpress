@@ -1,6 +1,7 @@
 #pragma once
 
 #include "engine/common/NonCopyable.h"
+#include "engine/common/LUA.h"
 #include <string>
 #include <map>
 
@@ -8,9 +9,10 @@ class MapData {
 protected:
 	std::string _id;
 	std::string _name;
+	int _startPositions;
 public:
-	MapData (const std::string& id, const std::string& name) :
-			_id(id), _name(name)
+	MapData (const std::string& id, const std::string& name, int startPositions) :
+			_id(id), _name(name), _startPositions(startPositions)
 	{
 	}
 
@@ -32,6 +34,11 @@ public:
 	{
 		return _name;
 	}
+
+	inline int getStartPositions () const
+	{
+		return _startPositions;
+	}
 };
 
 class IMapManager: public NonCopyable {
@@ -42,18 +49,31 @@ protected:
 	typedef Maps::const_iterator MapsConstIter;
 	typedef Maps::iterator MapsIter;
 	Maps _maps;
+	std::string _extension;
 
 	void listMaps ();
+
+	virtual std::string getName (const std::string& filename, const std::string& id) {
+		return id;
+	}
+
+	virtual int getStartPositions (const std::string& filename) {
+		// MAX_CLIENTS
+		return 4;
+	}
+
 public:
-	IMapManager ();
+	IMapManager (const std::string& extension);
 	virtual ~IMapManager ();
 
 	void init ();
-	virtual void loadMaps () = 0;
+
+	virtual void loadMaps ();
 
 	Maps getMapsByWildcard (const std::string& wildcard) const;
 
-	const std::string getMapTitle (const std::string& mapId) const;
+	const std::string& getMapTitle (const std::string& mapId) const;
+	int getMapStartPositions (const std::string& mapId) const;
 
 	inline const Maps& getMaps () const
 	{
@@ -62,16 +82,24 @@ public:
 };
 
 class LUAMapManager: public IMapManager {
+protected:
+	LUA _lua;
 public:
-	virtual ~LUAMapManager () {}
-	void loadMaps () override;
+	LUAMapManager() : IMapManager("lua") {}
+	std::string getName (const std::string& filename, const std::string& id) override {
+		_lua.close();
+		_lua.init();
+		if (!_lua.load(filename)) {
+			error(LOG_MAP, "could not load map from " + filename);
+			return id;
+		}
+		_lua.execute("getName", 1);
+		const std::string& name = _lua.getStringFromStack();
+		return name;
+	}
 };
 
 class FileMapManager: public IMapManager {
-private:
-	std::string _extension;
 public:
-	FileMapManager (const std::string& extension);
-	virtual ~FileMapManager () {}
-	void loadMaps () override;
+	FileMapManager (const std::string& extension) : IMapManager(extension) {}
 };

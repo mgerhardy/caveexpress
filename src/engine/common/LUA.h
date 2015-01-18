@@ -35,6 +35,9 @@ public:
 	LUA (bool debug = false);
 	~LUA ();
 
+	void init (bool debug = false);
+	void close ();
+
 	inline lua_State* getState () const;
 
 	template<class T>
