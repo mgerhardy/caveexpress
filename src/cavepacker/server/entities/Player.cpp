@@ -26,7 +26,6 @@ bool Player::undo ()
 		return false;
 	std::string::reverse_iterator i = _solutionSave.rbegin();
 	const char s = *i;
-	_solutionSave.erase(_solutionSave.size() - 1);
 
 	int xPlayer;
 	int yPlayer;
@@ -39,6 +38,7 @@ bool Player::undo ()
 		debug(LOG_SERVER, "failed to undo a move of the player");
 		return false;
 	}
+	// we moved a package with this step
 	if (tolower(s) != s) {
 		int xPackage;
 		int yPackage;
@@ -50,5 +50,6 @@ bool Player::undo ()
 			return false;
 		}
 	}
+	_solutionSave.erase(_solutionSave.size() - 1);
 	return true;
 }
