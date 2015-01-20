@@ -20,6 +20,12 @@ FileSystem::FileSystem () :
 		_homeDir(System.getHomeDirectory()), _dataDir("base/" + Singleton<Application>::getInstance().getName() + "/"), _mapsDir("maps/"), _campaignsDir("campaigns/"), _texturesDir(
 				"textures/"), _picsDir("pics/"), _soundsDir("sounds/"), _musicDir("music/"), _shaderDir("shaders/"), _languageDir("lang/"), _gesturesDir("gestures/")
 {
+#ifdef PKGDATADIR
+	_dataDir = PKGDATADIR;
+	if (!string::endsWith(_dataDir, "/")) {
+		_dataDir += "/";
+	}
+#endif
 }
 
 FileSystem::~FileSystem ()
