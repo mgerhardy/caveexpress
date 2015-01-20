@@ -317,6 +317,11 @@ ifeq ($(HAVE_NCURSES_H),1)
 NCURSES_CFLAGS           ?= $(call PKG_CFLAGS,ncurses)
 NCURSES_LIBS             += $(call PKG_LIBS,ncurses)
 endif
+ifeq ($(HAVE_LUA_H),1)
+LUA_CFLAGS               ?= $(call PKG_CFLAGS,lua5.2) -DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE
+LUA_LIBS                 += $(call PKG_LIBS,lua5.2)
+LUA_SRCS                  =
+else
 LUA_SRCS                  = \
 	libs/lua/lapi.cpp \
 	libs/lua/lauxlib.cpp \
@@ -352,6 +357,7 @@ LUA_SRCS                  = \
 	libs/lua/lzio.cpp
 LUA_CFLAGS               ?= -Isrc/libs/lua -DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE
 LUA_LIBS                 +=
+endif
 ifeq ($(HAVE_SQLITE3_H),1)
 SQLITE3_SRCS              =
 SQLITE3_CFLAGS           ?= $(call PKG_CFLAGS,sqlite3)

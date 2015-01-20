@@ -277,6 +277,7 @@ check_headers() {
 	check_header "ogg/ogg.h" "ogg"
 	check_header_bundled "sqlite3.h" "sqlite3"
 	check_header_bundled "tinyxml2.h" "tinyxml2"
+	check_header_bundled "lua.h" "lua5.2"
 }
 
 check_versions() {
