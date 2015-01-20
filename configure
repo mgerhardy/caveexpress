@@ -345,6 +345,7 @@ usage() {
 	echo
 	echo " --with-ncurses             use ncurses for the server console"
 	echo " --with-embedded-sqlite3    use the copy of sqlite3 bundled with the source"
+	echo " --with-embedded-lua5.2     use the copy of lua bundled with the source"
 	echo " --with-embedded-tinyxml2   use the copy of tinyxml2 bundled with the source"
 	echo " --with-embedded-sdl2       use the copy of SDL bundled with the source"
 	echo " --with-embedded-SDL2_mixer use the copy of SDL_mixer bundled with the source"

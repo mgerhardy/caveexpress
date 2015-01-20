@@ -217,7 +217,7 @@ run-configure:
 
 include build/android.mk
 
-CONFIGURE_RELEASE_FLAGS := $(CONFIGURE_FLAGS) --with-embedded-sqlite3 --with-embedded-tinyxml2 --with-embedded-SDL2_mixer --with-embedded-SDL2_image --with-embedded-SDL2_net --with-embedded-sdl2 --enable-release
+CONFIGURE_RELEASE_FLAGS := $(CONFIGURE_FLAGS) --with-embedded-sqlite3 --with-embedded-lua5.2 --with-embedded-tinyxml2 --with-embedded-SDL2_mixer --with-embedded-SDL2_image --with-embedded-SDL2_net --with-embedded-sdl2 --enable-release
 
 release:
 	./configure --target-arch=i386 --enable-ccache --target-os=mingw64 --enable-release --enable-only-$(APPNAME) $(CONFIGURE_FLAGS); \
