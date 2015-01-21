@@ -2,8 +2,8 @@ TARGET             := caveexpress
 
 $(TARGET)_LINKER   := $(CXX)
 $(TARGET)_FILE     := $(TARGET)$(EXE_EXT)
-$(TARGET)_LDFLAGS  += $(SDL_LIBS) $(SDL_IMAGE_LIBS) $(SDL_MIXER_LIBS) $(ZLIB_LIBS) $(OPENGL_LIBS) $(OGG_LIBS) $(VORBIS_LIBS) $(PNG_LIBS) $(NCURSES_LIBS) $(SO_LIBS) $(LUA_LIBS) $(SQLITE3_LIBS) $(TINYXML2_LIBS) $(SDL_NET_LIBS) $(SDL_RWHTTP_LIBS)
-$(TARGET)_CFLAGS   += -I$(SRCDIR)/$(TARGET) $(SDL_CFLAGS) $(SDL_IMAGE_CFLAGS) $(SDL_MIXER_CFLAGS) $(ZLIB_CFLAGS) $(OPENGL_CFLAGS) $(OGG_CFLAGS) $(VORBIS_CFLAGS) $(LUA_CFLAGS) $(PNG_CFLAGS) $(NCURSES_CFLAGS) $(SQLITE3_CFLAGS) $(TINYXML2_CFLAGS) $(SDL_NET_CFLAGS) $(SDL_RWHTTP_CFLAGS)
+$(TARGET)_LDFLAGS  += $(SDL_LIBS) $(SDL_IMAGE_LIBS) $(SDL_MIXER_LIBS) $(ZLIB_LIBS) $(OPENGL_LIBS) $(OGG_LIBS) $(VORBIS_LIBS) $(PNG_LIBS) $(NCURSES_LIBS) $(SO_LIBS) $(LUA_LIBS) $(SQLITE3_LIBS) $(TINYXML2_LIBS) $(SDL_NET_LIBS) $(SDL_RWHTTP_LIBS) $(BOX2D_LIBS)
+$(TARGET)_CFLAGS   += -I$(SRCDIR)/$(TARGET) $(SDL_CFLAGS) $(SDL_IMAGE_CFLAGS) $(SDL_MIXER_CFLAGS) $(ZLIB_CFLAGS) $(OPENGL_CFLAGS) $(OGG_CFLAGS) $(VORBIS_CFLAGS) $(LUA_CFLAGS) $(PNG_CFLAGS) $(NCURSES_CFLAGS) $(SQLITE3_CFLAGS) $(TINYXML2_CFLAGS) $(SDL_NET_CFLAGS) $(SDL_RWHTTP_CFLAGS) $(BOX2D_CFLAGS)
 $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/*.cpp) \
 	\
@@ -46,15 +46,8 @@ $(TARGET)_SRCS      = $(subst $(SRCDIR)/,, \
 	$(wildcard $(SRCDIR)/caveexpress/server/entities/npcs/*.cpp) \
 	\
 	$(wildcard $(SRCDIR)/libs/micropather/*.cpp) \
-	\
-	$(wildcard $(SRCDIR)/libs/Box2D/Common/*.cpp) \
-	$(wildcard $(SRCDIR)/libs/Box2D/Collision/*.cpp) \
-	$(wildcard $(SRCDIR)/libs/Box2D/Collision/Shapes/*.cpp) \
-	$(wildcard $(SRCDIR)/libs/Box2D/Dynamics/*.cpp) \
-	$(wildcard $(SRCDIR)/libs/Box2D/Dynamics/Contacts/*.cpp) \
-	$(wildcard $(SRCDIR)/libs/Box2D/Dynamics/Joints/*.cpp) \
-	$(wildcard $(SRCDIR)/libs/Box2D/Rope/*.cpp) \
 	) \
+	$(BOX2D_SRCS) \
 	\
 	$(SQLITE3_SRCS) \
 	\

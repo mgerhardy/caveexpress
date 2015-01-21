@@ -14,7 +14,7 @@
 #include "engine/common/ICommand.h"
 #include "engine/common/network/IProtocolHandler.h"
 #include "engine/common/LUA.h"
-#include "Box2D/Box2D.h"
+#include <Box2D.h>
 #include <string>
 #include <vector>
 #include <map>
