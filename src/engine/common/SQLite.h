@@ -3,7 +3,7 @@
 #include "engine/common/Compiler.h"
 GCC_DIAG_OFF(cast-qual)
 GCC_DIAG_OFF(cast-align)
-#include <libs/sqlite/sqlite3.h>
+#include <sqlite3.h>
 GCC_DIAG_ON(cast-align)
 GCC_DIAG_ON(cast-qual)
 #include <string>
