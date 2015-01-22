@@ -7,7 +7,7 @@
 #include <iostream>
 #include <Box2D/Common/b2Math.h>
 #include <SDL.h>
-#include <yajl/yajl_parse.h>
+#include <yajl_parse.h>
 #include "engine/common/Common.h"
 #include "engine/common/File.h"
 
