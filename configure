@@ -267,6 +267,7 @@ check_headers() {
 	check_header_bundled "SDL_mixer.h" "SDL2_mixer"
 	check_header_bundled "SDL_net.h" "SDL2_net"
 	check_header_bundled "Box2D.h" "box2d"
+	check_header_bundled "jayl_parse.h" "yajl"
 	check_header "SDL_rwhttp.h" "SDL_rwhttp"
 	check_header "png.h" "libpng"
 	check_header "zlib.h"

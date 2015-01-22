@@ -450,6 +450,11 @@ SDL_NET_CFLAGS           ?= -Isrc/libs/SDL_net
 SDL_NET_LIBS             +=
 endif
 endif
+ifeq ($(HAVE_YAJL_H),1)
+YAJL_SRCS                 =
+YAJL_CFLAGS              ?= $(call PKG_CFLAGS,yajl)
+YAJL_LIBS                += $(call PKG_LIBS,yajl)
+else
 YAJL_SRCS                 = \
 	libs/yajl/yajl_alloc.c \
 	libs/yajl/yajl_buf.c \
@@ -461,6 +466,7 @@ YAJL_SRCS                 = \
 	libs/yajl/yajl_tree.c
 YAJL_CFLAGS              ?= -Isrc/libs/yajl
 YAJL_LIBS                +=
+endif
 ifeq ($(HAVE_ZLIB_H),1)
 ZLIB_SRCS                 =
 ZLIB_CFLAGS               =
