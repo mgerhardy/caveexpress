@@ -456,7 +456,7 @@ SDL_NET_CFLAGS           ?= -Isrc/libs/SDL_net
 SDL_NET_LIBS             +=
 endif
 endif
-ifeq ($(HAVE_YAJL_H),1)
+ifeq ($(HAVE_YAJL_PARSE_H),1)
 YAJL_SRCS                 =
 YAJL_CFLAGS              ?= $(call PKG_CFLAGS,yajl)
 YAJL_LIBS                += $(call PKG_LIBS,yajl)
