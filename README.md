@@ -31,6 +31,9 @@ Requirements
 * sqlite3
 * tinyxml2
 
+On debian based systems do:
+ sudo apt-get install libsdl2-mixer-dev libsdl2-net-dev libsdl2-image-dev libglm-dev libgtest-dev libbox2d-dev  libsqlite3-dev liblua5.2-dev libyajl-dev libtinyxml2-dev binutils-dev libncurses5-dev pngcrush imagemagick
+
 If you want to rebuild the texture atlas, then you also need TexturePacker
 
 * ./configure
