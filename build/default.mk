@@ -310,9 +310,15 @@ OPENGLES_CFLAGS          ?= $(call PKG_CFLAGS,glesv2) $(call PKG_CFLAGS,egl)
 OPENGLES_LIBS            += $(call PKG_LIBS,glesv2) $(call PKG_LIBS,egl)
 OPENGL_CFLAGS            ?= $(call PKG_CFLAGS,gl,gl)
 OPENGL_LIBS              += $(call PKG_LIBS,gl,gl)
+ifeq ($(HAVE_GTEST_GTEST_H),1)
+GTEST_CFLAGS             ?= $(call PKG_CFLAGS,gtest)
+GTEST_LIBS               += $(call PKG_LIBS,gtest)
+GTEST_SRCS                =
+else
 GTEST_CFLAGS             ?= -Isrc/libs/gtest/include -Isrc/libs/gtest
 GTEST_LIBS               +=
 GTEST_SRCS                = libs/gtest/src/gtest-all.cc
+endif
 ifeq ($(HAVE_NCURSES_H),1)
 NCURSES_CFLAGS           ?= $(call PKG_CFLAGS,ncurses)
 NCURSES_LIBS             += $(call PKG_LIBS,ncurses)
