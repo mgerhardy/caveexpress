@@ -77,7 +77,9 @@ easy it would be to create a totally different game with the CaveExpress code ba
 
 The maps are taken from XSokoban, KSokoban - the author of sasquatch and microban maps is David W. Skinner and the maps gri* are made by GRIGoRusha.
 
-Btw.: Did I mention that this is a sokoban game that could even support network based multiplayer gaming (well... it already does, just not activated)
+Btw.: Did I mention that this is a sokoban game that even supports network based multiplayer gaming. Check it out.
+
+The multiplayer maps were all created by me and are released in the Public Domain.
 
 ### License
 Code is released under the GPL3 and the game data is released
