@@ -14,4 +14,4 @@ archives: strip
 	$(Q)zip -qu9 $(APPNAME)-$(MODE)-$(TARGET_OS)-$(TARGET_ARCH).zip $(APPNAME)$(EXE_EXT) $(BASEDIR)/textures/*.lua
 
 sourcearchive:
-	$(Q)git archive --format=tar --prefix=caveexpress-$(VERSION)-source/ HEAD | bzip2 -9 > caveexpress-$(VERSION)-source.tar.bz2
+	$(Q)git archive --format=tar --prefix=$(APPNAME)-$(VERSION)-source/ HEAD | bzip2 -9 > $(APPNAME)-$(VERSION)-source.tar.bz2
