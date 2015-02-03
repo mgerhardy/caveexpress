@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=CaveExpress (Editor)
+Comment=Map editor for CaveExpress
+Comment[de]=Karteneditor für CaveExpress
+Exec=caveexpress -ui_push editor
+Icon=caveexpress-icon
+Terminal=false
+Type=Application
+Categories=Game;ActionGame;
+Keywords=real-time;platformer;physics;map;editor;

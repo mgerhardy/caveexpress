@@ -2,9 +2,10 @@
 Version=1.0
 Name=CaveExpress
 Comment=CaveExpress is a classic 2D platformer with physics-based gameplay
+Comment[de]=CaveExpress ist ein klassisches, auf physikalischen Gesetzen beruhendes 2D-Plattform-Spiel
 Exec=caveexpress
-Icon=caveexpress
+Icon=caveexpress-icon
 Terminal=false
 Type=Application
-Categories=Application;Game;
+Categories=Game;ActionGame;
 Keywords=real-time;platformer;physics;
