@@ -32,7 +32,15 @@ Requirements
 * tinyxml2
 
 On debian based systems do:
- sudo apt-get install libsdl2-mixer-dev libsdl2-net-dev libsdl2-image-dev libglm-dev libgtest-dev libbox2d-dev  libsqlite3-dev liblua5.2-dev libyajl-dev libtinyxml2-dev binutils-dev libncurses5-dev pngcrush imagemagick
+ sudo apt-get install libsdl2-mixer-dev libsdl2-net-dev libsdl2-image-dev libglm-dev libgtest-dev libbox2d-dev  libsqlite3-dev liblua5.2-dev libyajl-dev libtinyxml2-de
+
+Additionally you could install the following packages:
+ sudo apt-get install binutils-dev libncurses5-dev pngcrush imagemagick
+
+libncurses is only needed if you run caveexpress with -server as argument. Then you would get a headless interface for setting up a server.
+binutils-dev is only needed if you want to support stacktraces on crashes.
+pngcrush is only needed if you plan to add your own images and want to execute the make target to crush all the png files.
+imagemagick is also only needed if you plan to modify and add your own images and use existing makefile targets.
 
 If you want to rebuild the texture atlas, then you also need TexturePacker
 
