@@ -141,7 +141,7 @@ int SDLSoundEngine::playMusic (const std::string& music, bool loop)
 	Mix_FreeMusic(_music);
 	_music = nullptr;
 
-	SDL_RWops *rwops = FS.createRWops(FS.getSoundsDir() + music + SOUNDTYPE);
+	SDL_RWops *rwops = FS.createRWops(FS.getDataDir() + FS.getSoundsDir() + music + SOUNDTYPE);
 	if (rwops == nullptr) {
 		error(LOG_CLIENT, "unable to load music file: " + music);
 		return -1;
@@ -226,7 +226,7 @@ Mix_Chunk* SDLSoundEngine::getChunk (const std::string& filename)
 		return i->second;
 	}
 
-	const std::string& path = FS.getSoundsDir() + filename + SOUNDTYPE;
+	const std::string& path = FS.getDataDir() + FS.getSoundsDir() + filename + SOUNDTYPE;
 	SDL_RWops *rwops = FS.createRWops(path);
 	Mix_Chunk *sound = Mix_LoadWAV_RW(rwops, 1);
 	_map[filename] = sound;

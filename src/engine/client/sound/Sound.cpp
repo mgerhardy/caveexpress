@@ -11,8 +11,11 @@ Sound::Sound () :
 		_soundEngine(&_dummy)
 {
 	const String& engine = Config.getSoundEngine();
+	info(LOG_CLIENT, "soundengine: " + engine);
 	if (engine == "sdl")
 		_soundEngine = new SDLSoundEngine();
+	else
+		info(LOG_CLIENT, "disable sound");
 }
 
 Sound::~Sound ()
