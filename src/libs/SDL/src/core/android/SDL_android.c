@@ -32,6 +32,7 @@
 
 #include "../../events/SDL_events_c.h"
 #include "../../video/android/SDL_androidkeyboard.h"
+#include "../../video/android/SDL_androidmouse.h"
 #include "../../video/android/SDL_androidtouch.h"
 #include "../../video/android/SDL_androidvideo.h"
 #include "../../video/android/SDL_androidwindow.h"
@@ -143,9 +144,9 @@ JNIEXPORT void JNICALL SDL_Android_Init(JNIEnv* mEnv, jclass cls)
 /* Resize */
 JNIEXPORT void JNICALL Java_org_libsdl_app_SDLActivity_onNativeResize(
                                     JNIEnv* env, jclass jcls,
-                                    jint width, jint height, jint format)
+                                    jint width, jint height, jint format, jfloat rate)
 {
-    Android_SetScreenResolution(width, height, format);
+    Android_SetScreenResolution(width, height, format, rate);
 }
 
 /* Paddown */
@@ -291,6 +292,14 @@ JNIEXPORT void JNICALL Java_org_libsdl_app_SDLActivity_onNativeTouch(
                                     jint action, jfloat x, jfloat y, jfloat p)
 {
     Android_OnTouch(touch_device_id_in, pointer_finger_id_in, action, x, y, p);
+}
+
+/* Mouse */
+JNIEXPORT void JNICALL Java_org_libsdl_app_SDLActivity_onNativeMouse(
+                                    JNIEnv* env, jclass jcls,
+                                    jint button, jint action, jfloat x, jfloat y)
+{
+    Android_OnMouse(button, action, x, y);
 }
 
 /* Accelerometer */
@@ -548,12 +557,12 @@ int Android_JNI_SetupThread(void)
  * Audio support
  */
 static jboolean audioBuffer16Bit = JNI_FALSE;
-static jboolean audioBufferStereo = JNI_FALSE;
 static jobject audioBuffer = NULL;
 static void* audioBufferPinned = NULL;
 
 int Android_JNI_OpenAudioDevice(int sampleRate, int is16Bit, int channelCount, int desiredBufferFrames)
 {
+    jboolean audioBufferStereo;
     int audioBufferFrames;
 
     JNIEnv *env = Android_JNI_GetEnv();
@@ -1599,6 +1608,11 @@ const char * SDL_AndroidGetExternalStoragePath()
         LocalReferenceHolder_Cleanup(&refs);
     }
     return s_AndroidExternalFilesPath;
+}
+
+jclass Android_JNI_GetActivityClass(void)
+{
+    return mActivityClass;
 }
 
 #endif /* __ANDROID__ */

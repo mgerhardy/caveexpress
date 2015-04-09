@@ -50,7 +50,12 @@
 #endif
 #define HAVE_GCC_ATOMICS 1
 /* #undef HAVE_GCC_SYNC_LOCK_TEST_AND_SET */
-#define HAVE_PTHREAD_SPINLOCK 1
+
+/* #undef HAVE_DDRAW_H */
+/* #undef HAVE_DINPUT_H */
+/* #undef HAVE_DSOUND_H */
+/* #undef HAVE_DXGI_H */
+/* #undef HAVE_XINPUT_H */
 
 /* Comment this if you want to build without any C library requirements */
 #define HAVE_LIBC 1
@@ -77,6 +82,7 @@
 /* #undef HAVE_PTHREAD_NP_H */
 #define HAVE_LIBUDEV_H 1
 #define HAVE_DBUS_DBUS_H 1
+/* #undef HAVE_IBUS_IBUS_H */
 
 /* C library functions */
 #define HAVE_MALLOC 1
@@ -129,6 +135,7 @@
 /* #undef HAVE__STRNICMP */
 #define HAVE_STRNCASECMP 1
 #define HAVE_SSCANF 1
+#define HAVE_VSSCANF 1
 #define HAVE_SNPRINTF 1
 #define HAVE_VSNPRINTF 1
 #define HAVE_M_PI /**/
@@ -148,6 +155,9 @@
 #define HAVE_SIN 1
 #define HAVE_SINF 1
 #define HAVE_SQRT 1
+#define HAVE_SQRTF 1
+#define HAVE_TAN 1
+#define HAVE_TANF 1
 #define HAVE_FSEEKO 1
 #define HAVE_FSEEKO64 1
 #define HAVE_SIGACTION 1
@@ -196,15 +206,17 @@
 /* #undef SDL_AUDIO_DRIVER_ARTS_DYNAMIC */
 #define SDL_AUDIO_DRIVER_PULSEAUDIO 1
 #define SDL_AUDIO_DRIVER_PULSEAUDIO_DYNAMIC "libpulse-simple.so.0"
-/* #undef SDL_AUDIO_DRIVER_HAIKUAUDIO */
+/* #undef SDL_AUDIO_DRIVER_HAIKU */
 /* #undef SDL_AUDIO_DRIVER_BSD */
 /* #undef SDL_AUDIO_DRIVER_COREAUDIO */
 #define SDL_AUDIO_DRIVER_DISK 1
 #define SDL_AUDIO_DRIVER_DUMMY 1
+/* #undef SDL_AUDIO_DRIVER_ANDROID */
 /* #undef SDL_AUDIO_DRIVER_XAUDIO2 */
 /* #undef SDL_AUDIO_DRIVER_DSOUND */
 /* #undef SDL_AUDIO_DRIVER_ESD */
 /* #undef SDL_AUDIO_DRIVER_ESD_DYNAMIC */
+/* #undef SDL_AUDIO_DRIVER_NACL */
 /* #undef SDL_AUDIO_DRIVER_NAS */
 /* #undef SDL_AUDIO_DRIVER_NAS_DYNAMIC */
 /* #undef SDL_AUDIO_DRIVER_SNDIO */
@@ -224,9 +236,11 @@
 #define SDL_INPUT_TSLIB 1
 /* #undef SDL_JOYSTICK_HAIKU */
 /* #undef SDL_JOYSTICK_DINPUT */
+/* #undef SDL_JOYSTICK_XINPUT */
 /* #undef SDL_JOYSTICK_DUMMY */
 /* #undef SDL_JOYSTICK_IOKIT */
 #define SDL_JOYSTICK_LINUX 1
+/* #undef SDL_JOYSTICK_ANDROID */
 /* #undef SDL_JOYSTICK_WINMM */
 /* #undef SDL_JOYSTICK_USBHID */
 /* #undef SDL_JOYSTICK_USBHID_MACHINE_JOYSTICK_H */
@@ -234,6 +248,7 @@
 #define SDL_HAPTIC_LINUX 1
 /* #undef SDL_HAPTIC_IOKIT */
 /* #undef SDL_HAPTIC_DINPUT */
+/* #undef SDL_HAPTIC_XINPUT */
 
 /* Enable various shared object loading systems */
 /* #undef SDL_LOADSO_HAIKU */
@@ -272,6 +287,7 @@
 /* #undef SDL_VIDEO_DRIVER_MIR_DYNAMIC_XKBCOMMON */
 #define SDL_VIDEO_DRIVER_X11 1
 /* #undef SDL_VIDEO_DRIVER_RPI */
+/* #undef SDL_VIDEO_DRIVER_ANDROID */
 #define SDL_VIDEO_DRIVER_X11_DYNAMIC "libX11.so.6"
 #define SDL_VIDEO_DRIVER_X11_DYNAMIC_XEXT "libXext.so.6"
 #define SDL_VIDEO_DRIVER_X11_DYNAMIC_XCURSOR "libXcursor.so.1"
@@ -292,6 +308,9 @@
 /* #undef SDL_VIDEO_DRIVER_X11_CONST_PARAM_XDATA32 */
 /* #undef SDL_VIDEO_DRIVER_X11_CONST_PARAM_XEXTADDDISPLAY */
 #define SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM 1
+/* #undef SDL_VIDEO_DRIVER_NACL */
+/* #undef SDL_VIDEO_DRIVER_VIVANTE */
+/* #undef SDL_VIDEO_DRIVER_VIVANTE_VDK */
 
 /* #undef SDL_VIDEO_RENDER_D3D */
 /* #undef SDL_VIDEO_RENDER_D3D11 */
@@ -317,6 +336,7 @@
 /* #undef SDL_POWER_WINDOWS */
 /* #undef SDL_POWER_MACOSX */
 /* #undef SDL_POWER_HAIKU */
+/* #undef SDL_POWER_ANDROID */
 /* #undef SDL_POWER_HARDWIRED */
 
 /* Enable system filesystem support */
@@ -325,6 +345,7 @@
 /* #undef SDL_FILESYSTEM_DUMMY */
 #define SDL_FILESYSTEM_UNIX 1
 /* #undef SDL_FILESYSTEM_WINDOWS */
+/* #undef SDL_FILESYSTEM_NACL */
 
 /* Enable assembly routines */
 #define SDL_ASSEMBLY_ROUTINES 1
