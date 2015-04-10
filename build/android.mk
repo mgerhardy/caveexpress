@@ -193,7 +193,7 @@ release-android: $(CONFIG_H)-config.h
 android-setup:
 	$(Q)ARCH=x86_64; \
 	NDK_VERSION=r10d; \
-	SDK_VERSION=r24.0.2; \
+	SDK_VERSION=r24.1.2; \
 	[ $(TARGET_ARCH) = "i386" ] && ARCH=x86; \
 	echo "Downloading the ndk..."; \
 	wget --quiet --continue http://dl.google.com/android/ndk/android-ndk-$$NDK_VERSION-linux-$$ARCH.bin; \
