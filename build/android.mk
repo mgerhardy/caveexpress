@@ -112,9 +112,13 @@ define ANDROID_PACKAGE
 $(Q)cd $(ANDROID_PROJECT); SDK=`android list sdk --all | grep $(1) | awk -F'-' ' { print $$1 }'`; [ -n "$$SDK" ] && (SDK2=`android list sdk --all | grep $(1) | awk -F'-' ' { print $$1 }'`; android update sdk -a -u -s -t $$SDK2) || echo
 endef
 
+define ANDROID_SDK
+$(Q)cd $(ANDROID_PROJECT); SDK=`android list targets | grep $(1)`; [ -n "$$SDK" ] || (SDK2=`android list sdk --all | grep $(2) | awk -F'-' ' { print $$1 }'`; android update sdk -a -u -s -t $$SDK2) || echo
+endef
+
 android-install-dependencies:
-	$(call ANDROID_PACKAGE,"SDK Platform Android 3.2")
-	$(call ANDROID_PACKAGE,"SDK Platform Android 4.1.2")
+	$(call ANDROID_SDK,"android-13","SDK Platform Android 3.2")
+	$(call ANDROID_SDK,"android-16","SDK Platform Android 4.1.2")
 	#$(call ANDROID_PACKAGE,"Google Play Billing Library")
 	$(call ANDROID_PACKAGE,"Google Play services")
 
