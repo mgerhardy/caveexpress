@@ -109,7 +109,7 @@ $(ANDROID_PROJECT)/build.xml: $(ANDROID_PROJECT)/build.xml.in $(CONFIG_H)-config
 	$(Q)sed -i 's:@EXCLUDE_PACKAGE_PATHS@:$(EXCLUDE_JAVA_PACKAGE_PATHS):g' $(ANDROID_PROJECT)/build.xml
 
 define ANDROID_PACKAGE
-$(Q)cd $(ANDROID_PROJECT); SDK=`android list sdk | grep $(1) | awk -F'-' ' { print $$1 }'`; [ -n "$$SDK" ] && (SDK2=`android list sdk --all | grep $(1) | awk -F'-' ' { print $$1 }'`; android update sdk -a -u -s -t $$SDK2) || echo
+$(Q)cd $(ANDROID_PROJECT); SDK=`android list sdk --all | grep $(1) | awk -F'-' ' { print $$1 }'`; [ -n "$$SDK" ] && (SDK2=`android list sdk --all | grep $(1) | awk -F'-' ' { print $$1 }'`; android update sdk -a -u -s -t $$SDK2) || echo
 endef
 
 android-install-dependencies:
