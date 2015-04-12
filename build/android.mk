@@ -42,6 +42,7 @@ endif
 
 .PHONY: clean-android-libs
 clean-android-libs:
+	@echo "===> ANDROID [clean libs]"
 	$(Q)rm -f $(ANDROID_PROJECT)/google-play-services_lib/.project
 	$(Q)rm -rf $(ANDROID_PROJECT)/google-play-services_lib/assets/
 	$(Q)rm -rf $(ANDROID_PROJECT)/google-play-services_lib/bin/
@@ -77,6 +78,7 @@ clean-android: clean-android-libs
 android-update-project: $(ANDROID_PROJECT)/local.properties $(ANDROID_PROJECT)/build.xml $(ANDROID_PROJECT)/AndroidManifest.xml
 
 $(ANDROID_PROJECT)/AndroidManifest.xml: $(SRCDIR)/Android.mk.in $(ANDROID_PROJECT)/AndroidManifest.xml.in $(ANDROID_PROJECT)/jni/Application.mk.in $(ANDROID_PROJECT)/strings.xml.in $(CONFIG_H)-config.h
+	@echo "===> ANDROID [update manifest]"
 	$(Q)cp $(ANDROID_PROJECT)/AndroidManifest.xml.in $(ANDROID_PROJECT)/AndroidManifest.xml
 	$(Q)sed -i 's/@DEBUGGABLE@/$(MANIFEST_DEBUGGABLE)/g' $(ANDROID_PROJECT)/AndroidManifest.xml
 	$(Q)sed -i 's,@PERMISSIONS@,$(PERMISSIONS),g' $(ANDROID_PROJECT)/AndroidManifest.xml
@@ -97,6 +99,7 @@ $(ANDROID_PROJECT)/AndroidManifest.xml: $(SRCDIR)/Android.mk.in $(ANDROID_PROJEC
 	$(Q)sed -i 's#@OWN_CFLAGS@#$(SDL_NET_CFLAGS)#g' $(SRCDIR)/Android.mk
 
 android-update-sdk-version:
+	@echo "===> ANDROID [update sdk]"
 	$(Q)cp $(ANDROID_PROJECT)/default.properties.in $(ANDROID_PROJECT)/default.properties
 	$(Q)sed -i 's/@TARGET_ANDROID_SDK@/$(TARGET_ANDROID_SDK)/g' $(ANDROID_PROJECT)/default.properties
 	$(Q)cp $(ANDROID_PROJECT)/project.properties.in $(ANDROID_PROJECT)/project.properties
@@ -104,6 +107,7 @@ android-update-sdk-version:
 	$(Q)sed -i 's/@ANDROID_REFERENCED_LIBS@/$(ANDROID_REFERENCED_LIBS)/g' $(ANDROID_PROJECT)/project.properties
 
 $(ANDROID_PROJECT)/build.xml: $(ANDROID_PROJECT)/build.xml.in $(CONFIG_H)-config.h
+	@echo "===> ANDROID [build.xml]"
 	$(Q)cp $(ANDROID_PROJECT)/build.xml.in $(ANDROID_PROJECT)/build.xml
 	$(Q)sed -i 's/@APPNAME_FULL@/$(APPNAME_FULL)/g' $(ANDROID_PROJECT)/build.xml
 	$(Q)sed -i 's:@EXCLUDE_PACKAGE_PATHS@:$(EXCLUDE_JAVA_PACKAGE_PATHS):g' $(ANDROID_PROJECT)/build.xml
@@ -117,6 +121,7 @@ $(Q)cd $(ANDROID_PROJECT); SDK=`android list targets | grep $(1)`; [ -z "$$SDK" 
 endef
 
 android-install-dependencies:
+	@echo "===> ANDROID [install dependencies]"
 	$(call ANDROID_SDK,"android-13","SDK Platform Android 3.2")
 	$(call ANDROID_SDK,"android-16","SDK Platform Android 4.1.2")
 	#$(call ANDROID_PACKAGE,"Google Play Billing Library")
