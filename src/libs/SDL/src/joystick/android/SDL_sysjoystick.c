@@ -311,7 +311,9 @@ Android_AddJoystick(int device_id, const char *name, SDL_bool is_accelerometer, 
     }
 #endif /* !SDL_EVENTS_DISABLED */
 
+#ifdef DEBUG_JOYSTICK
     SDL_Log("Added joystick %s with device_id %d", name, device_id);
+#endif
 
     return numjoysticks;
 }
@@ -368,7 +370,9 @@ Android_RemoveJoystick(int device_id)
     }
 #endif /* !SDL_EVENTS_DISABLED */
 
+#ifdef DEBUG_JOYSTICK
     SDL_Log("Removed joystick with device_id %d", device_id);
+#endif
     
     SDL_free(item->name);
     SDL_free(item);
@@ -495,7 +499,7 @@ SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int device_index)
     return (0);
 }
 
-/* Function to determine is this joystick is attached to the system right now */
+/* Function to determine if this joystick is attached to the system right now */
 SDL_bool SDL_SYS_JoystickAttached(SDL_Joystick *joystick)
 {
     return joystick->hwdata != NULL;

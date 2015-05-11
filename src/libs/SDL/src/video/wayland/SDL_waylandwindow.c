@@ -109,6 +109,12 @@ Wayland_GetWindowWMInfo(_THIS, SDL_Window * window, SDL_SysWMinfo * info)
     return SDL_TRUE;
 }
 
+int
+Wayland_SetWindowHitTest(SDL_Window *window, SDL_bool enabled)
+{
+    return 0;  /* just succeed, the real work is done elsewhere. */
+}
+
 void Wayland_ShowWindow(_THIS, SDL_Window *window)
 {
     SDL_WindowData *wind = window->driverdata;
@@ -147,7 +153,7 @@ int Wayland_CreateWindow(_THIS, SDL_Window *window)
 
     data = calloc(1, sizeof *data);
     if (data == NULL)
-        return 0;
+        return SDL_OutOfMemory();
 
     c = _this->driverdata;
     window->driverdata = data;
@@ -186,7 +192,7 @@ int Wayland_CreateWindow(_THIS, SDL_Window *window)
     data->egl_surface = SDL_EGL_CreateSurface(_this, (NativeWindowType) data->egl_window);
     
     if (data->egl_surface == EGL_NO_SURFACE) {
-        return SDL_SetError("failed to create a window surface");;
+        return SDL_SetError("failed to create a window surface");
     }
 
     if (data->shell_surface) {

@@ -448,63 +448,38 @@ static SDL_bool
 ProcessHitTest(_THIS, const SDL_WindowData *data, const XEvent *xev)
 {
     SDL_Window *window = data->window;
-    SDL_bool ret = SDL_FALSE;
 
     if (window->hit_test) {
         const SDL_Point point = { xev->xbutton.x, xev->xbutton.y };
         const SDL_HitTestResult rc = window->hit_test(window, &point, window->hit_test_data);
+        static const int directions[] = {
+            _NET_WM_MOVERESIZE_SIZE_TOPLEFT, _NET_WM_MOVERESIZE_SIZE_TOP,
+            _NET_WM_MOVERESIZE_SIZE_TOPRIGHT, _NET_WM_MOVERESIZE_SIZE_RIGHT,
+            _NET_WM_MOVERESIZE_SIZE_BOTTOMRIGHT, _NET_WM_MOVERESIZE_SIZE_BOTTOM,
+            _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT, _NET_WM_MOVERESIZE_SIZE_LEFT
+        };
+
         switch (rc) {
-            case SDL_HITTEST_DRAGGABLE: {
-                    InitiateWindowMove(_this, data, &point);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_TOPLEFT: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_TOPLEFT);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_TOP: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_TOP);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_TOPRIGHT: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_TOPRIGHT);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_RIGHT: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_RIGHT);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_BOTTOMRIGHT: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_BOTTOMRIGHT);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_BOTTOM: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_BOTTOM);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_BOTTOMLEFT: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_LEFT: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_LEFT);
-                    ret = SDL_TRUE;
-                }
-                break;
-            default:
-                break;
+            case SDL_HITTEST_DRAGGABLE:
+                InitiateWindowMove(_this, data, &point);
+                return SDL_TRUE;
+
+            case SDL_HITTEST_RESIZE_TOPLEFT:
+            case SDL_HITTEST_RESIZE_TOP:
+            case SDL_HITTEST_RESIZE_TOPRIGHT:
+            case SDL_HITTEST_RESIZE_RIGHT:
+            case SDL_HITTEST_RESIZE_BOTTOMRIGHT:
+            case SDL_HITTEST_RESIZE_BOTTOM:
+            case SDL_HITTEST_RESIZE_BOTTOMLEFT:
+            case SDL_HITTEST_RESIZE_LEFT:
+                InitiateWindowResize(_this, data, &point, directions[rc - SDL_HITTEST_RESIZE_TOPLEFT]);
+                return SDL_TRUE;
+
+            default: return SDL_FALSE;
         }
     }
 
-    return ret;
+    return SDL_FALSE;
 }
 
 static void
@@ -780,19 +755,17 @@ X11_DispatchEvent(_THIS)
 #else
             XLookupString(&xevent.xkey, text, sizeof(text), &keysym, NULL);
 #endif
+
 #ifdef SDL_USE_IBUS
             if(SDL_GetEventState(SDL_TEXTINPUT) == SDL_ENABLE){
-                if(!(handled_by_ime = SDL_IBus_ProcessKeyEvent(keysym, keycode))){
-#endif
-                    if(*text){
-                        SDL_SendKeyboardText(text);
-                    }
-#ifdef SDL_USE_IBUS
-                }
+                handled_by_ime = SDL_IBus_ProcessKeyEvent(keysym, keycode);
             }
 #endif
             if (!handled_by_ime) {
                 SDL_SendKeyboardKey(SDL_PRESSED, videodata->key_layout[keycode]);
+                if(*text) {
+                    SDL_SendKeyboardText(text);
+                }
             }
 
         }
@@ -1131,7 +1104,7 @@ X11_DispatchEvent(_THIS)
         }
         break;
 
-    /* Copy the selection from XA_CUT_BUFFER0 to the requested property */
+    /* Copy the selection from our own CUTBUFFER to the requested property */
     case SelectionRequest: {
             XSelectionRequestEvent *req;
             XEvent sevent;
@@ -1154,7 +1127,7 @@ X11_DispatchEvent(_THIS)
             sevent.xselection.requestor = req->requestor;
             sevent.xselection.time = req->time;
             if (X11_XGetWindowProperty(display, DefaultRootWindow(display),
-                    XA_CUT_BUFFER0, 0, INT_MAX/4, False, req->target,
+                    X11_GetSDLCutBufferClipboardType(display), 0, INT_MAX/4, False, req->target,
                     &sevent.xselection.target, &seln_format, &nbytes,
                     &overflow, &seln_data) == Success) {
                 Atom XA_TARGETS = X11_XInternAtom(display, "TARGETS", 0);
