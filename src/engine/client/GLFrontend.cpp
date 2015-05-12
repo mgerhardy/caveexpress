@@ -317,6 +317,22 @@ bool GLFrontend::loadTexture (Texture *texture, const std::string& filename)
 		return false;
 	}
 
+	if (surface->format->format != SDL_PIXELFORMAT_ARGB8888) {
+		SDL_PixelFormat *destFormat = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
+		if (destFormat == nullptr) {
+			SDL_FreeSurface(surface);
+			return false;
+		}
+		SDL_Surface* temp = SDL_ConvertSurface(surface, destFormat, 0);
+		SDL_FreeFormat(destFormat);
+		if (temp == nullptr) {
+			SDL_FreeSurface(surface);
+			return false;
+		}
+		SDL_FreeSurface(surface);
+		surface = temp;
+	}
+
 	GLuint texnum;
 	glGenTextures(1, &texnum);
 	glBindTexture(GL_TEXTURE_2D, texnum);
@@ -325,12 +341,7 @@ bool GLFrontend::loadTexture (Texture *texture, const std::string& filename)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	int format;
-	if (surface->format->BytesPerPixel == 4)
-		format = GL_RGBA;
-	else
-		format = GL_RGB;
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, format, GL_UNSIGNED_BYTE, pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, surface->w, surface->h, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	GL_checkError();
 	texture->setData(reinterpret_cast<void*>(texnum));
