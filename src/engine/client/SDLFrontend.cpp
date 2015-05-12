@@ -664,6 +664,8 @@ void SDLFrontend::initRenderer ()
 
 void SDLFrontend::setGLAttributes ()
 {
+	if (_softwareRenderer)
+		return;
 	SDL_ClearError();
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	sdlCheckError();
