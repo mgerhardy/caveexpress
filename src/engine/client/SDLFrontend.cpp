@@ -199,17 +199,12 @@ void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	if (_softwareRenderer) {
 		// angle is 0 here - because on the fly rotating is really expensive
 		// TODO: create a lockup map here?
-		if (SDL_RenderCopyEx(_renderer, t, &srcRect, &destRect, 0.0, nullptr,
-				texture->isMirror() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) != 0) {
-			error(LOG_CLIENT, "could not render texture " + texture->getName());
-			texture->setData(nullptr);
-		}
-	} else {
-		if (SDL_RenderCopyEx(_renderer, t, &srcRect, &destRect, static_cast<double>(angle), nullptr,
-				texture->isMirror() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) != 0) {
-			error(LOG_CLIENT, "could not render texture " + texture->getName());
-			texture->setData(nullptr);
-		}
+		angle = 0;
+	}
+	if (SDL_RenderCopyEx(_renderer, t, &srcRect, &destRect, static_cast<double>(angle), nullptr,
+			texture->isMirror() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) != 0) {
+		error(LOG_CLIENT, "could not render texture " + texture->getName());
+		texture->setData(nullptr);
 	}
 }
 
