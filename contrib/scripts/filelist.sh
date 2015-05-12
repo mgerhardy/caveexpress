@@ -14,12 +14,15 @@ BASEDIR=$1
 shift
 while [ $# -gt 0 ]; do
 	i=$1
-	echo "==> ${i}";
-	echo "if (basedir == \"${i}/\") {" >> $FILENAME;
+	echo "==> ${i}"
+	echo "if (basedir == \"${i}/\") {" >> $FILENAME
+	echo -n "entriesAll.reserve(" >> $FILENAME
+	echo -n $(ls -1 ${BASEDIR}/${i}/* | wc -l) >> $FILENAME
+	echo ");" >> $FILENAME
 	for file in ${BASEDIR}/${i}/*; do
-		echo "entriesAll.push_back(\"`basename ${file}`\");" >> $FILENAME;
-	done;
-	echo "return entriesAll;" >> $FILENAME;
-	echo "}" >> $FILENAME;
+		echo "entriesAll.push_back(\"`basename ${file}`\");" >> $FILENAME
+	done
+	echo "return entriesAll;" >> $FILENAME
+	echo "}" >> $FILENAME
 	shift
 done
