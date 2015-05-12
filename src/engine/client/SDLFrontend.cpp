@@ -223,12 +223,12 @@ bool SDLFrontend::loadTexture (Texture *texture, const std::string& filename)
 		error(LOG_CLIENT, "could not load the file: " + file);
 		return false;
 	}
-	SDL_Surface *surface = IMG_Load_RW(src, 1);
-	if (surface) {
-		SDL_Texture *sdltexture = SDL_CreateTextureFromSurface(_renderer, surface);
+	SDL_Texture *sdltexture = IMG_LoadTexture_RW(_renderer, src, 1);
+	if (sdltexture) {
+		int w, h;
+		SDL_QueryTexture(sdltexture, nullptr, nullptr, &w, &h);
 		texture->setData(sdltexture);
-		texture->setRect(0, 0, surface->w, surface->h);
-		SDL_FreeSurface(surface);
+		texture->setRect(0, 0, w, h);
 		return texture->isValid();
 	}
 
