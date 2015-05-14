@@ -6,7 +6,7 @@
 #include "engine/common/IBindingSpaceListener.h"
 #include "engine/common/Logger.h"
 #include "engine/common/LUA.h"
-#include "engine/common/GLShared.h"
+#include "engine/client/GLShared.h"
 #include "engine/common/System.h"
 #include <SDL.h>
 #include <SDL_platform.h>

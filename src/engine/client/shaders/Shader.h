@@ -1,7 +1,7 @@
 #pragma once
 
 #include "engine/client/textures/Texture.h"
-#include "engine/common/GLShared.h"
+#include "engine/client/GLShared.h"
 #include <SDL_platform.h>
 #include <string>
 #include <unordered_map>

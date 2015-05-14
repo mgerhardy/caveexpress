@@ -1,7 +1,7 @@
 #include "DebugRenderer.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/EventHandler.h"
-#include "engine/common/GLShared.h"
+#include "engine/client/GLShared.h"
 #include "engine/common/IFrontend.h"
 #include <math.h>
 #include <SDL_platform.h>

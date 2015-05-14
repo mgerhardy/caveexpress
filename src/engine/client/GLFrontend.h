@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SDLFrontend.h"
-#include "engine/common/GLShared.h"
+#include "engine/client/GLShared.h"
 
 typedef unsigned int TexNum;
 
