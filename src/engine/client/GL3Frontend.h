@@ -1,63 +1,33 @@
 #pragma once
 
 #include "SDLFrontend.h"
-#include "engine/client/GLShared.h"
+#include "engine/client/shaders/Shader.h"
 
-typedef unsigned int TexNum;
-
-#define MAX_GL_TEXUNITS 4
-#define MAX_COLOR 4
-
-class GLFrontend: public SDLFrontend {
+class GL3Frontend: public SDLFrontend {
 protected:
 	SDL_GLContext _context;
 
-	struct TexUnit {
-		TexUnit() :
-				active(false), textureUnit(0), currentTexture(0) {
-		}
-		bool active;
-		int textureUnit;
-		TexNum currentTexture;
-
-		inline bool operator< (const TexUnit& other) const
-		{
-			return textureUnit < other.textureUnit;
-		}
-
-		inline bool operator== (const TexUnit& other) const
-		{
-			return textureUnit == other.textureUnit;
-		}
-
-		inline bool operator!= (const TexUnit& other) const
-		{
-			return textureUnit != other.textureUnit;
-		}
-	};
-
-	TexUnit _texUnits[MAX_GL_TEXUNITS];
-	int _maxTextureUnits;
-	TexUnit* _currentTextureUnit;
+	TexNum _currentTexture;
 
 	// aspect ratio
 	float _rx;
 	float _ry;
-
+	glm::mat4 _projectionMatrix;
 	SDL_Rect _viewPort;
+	GLuint _vao;
+	GLuint _vbo;
+	Shader _shader;
+	int _drawCalls;
 
-	GLfloat _colorArray[MAX_COLOR * 4];
-
-	void selectTextureUnit (TexUnit &textureUnit);
-	void enableTextureUnit (TexUnit &texunit, bool enable);
-	bool invalidTexUnit (int textureUnit) const;
 	bool checkExtension (const char *extension) const;
 	uintptr_t getProcAddress (const char *functionName) const;
-	void setColorPointer (const Color& color, int amount);
+
+	void getBatchForType (int type);
+	void startNewBatch ();
 
 public:
-	GLFrontend (SharedPtr<IConsole> console);
-	virtual ~GLFrontend ();
+	GL3Frontend (SharedPtr<IConsole> console);
+	virtual ~GL3Frontend ();
 
 	void renderBegin () override;
 	void renderEnd () override;
@@ -76,6 +46,7 @@ public:
 	void initRenderer () override;
 	void setGLAttributes () override;
 	void setHints () override;
+	void flushBatches () override;
 	float getWidthScale () const override;
 	float getHeightScale () const override;
 	void enableScissor (int x, int y, int width, int height) override;

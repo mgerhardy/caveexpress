@@ -1,7 +1,14 @@
 #include "DebugRenderer.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/EventHandler.h"
+
+#ifdef SDL_VIDEO_OPENGL
+#define GL_GLEXT_PROTOTYPES
+#include <SDL_opengl.h>
+#include <SDL_opengl_glext.h>
 #include "engine/client/GLShared.h"
+#endif
+
 #include "engine/common/IFrontend.h"
 #include <math.h>
 #include <SDL_platform.h>
@@ -11,19 +18,11 @@
 #endif
 
 DebugRenderer::DebugRenderer (int pointCount, const ContactPoint *points, int traceCount, const TraceData *traceData, const std::vector<b2Vec2>& waterIntersectionPoints, const DebugRendererData& data) :
-		b2Draw(), _activeProgram(0), _pointCount(pointCount), _points(points), _traceCount(traceCount), _traceData(
+		b2Draw(), _pointCount(pointCount), _points(points), _traceCount(traceCount), _traceData(
 				traceData), _waterIntersectionPoints(waterIntersectionPoints), _enableTextureArray(false)
 {
 	memset(_colorArray, 0, sizeof(_colorArray));
 #ifndef NO_DEBUG_RENDERER
-	if (GLContext::get().areShadersSupported()) {
-		glGetIntegerv(GL_ACTIVE_PROGRAM, &_activeProgram);
-		const GLenum glError = glGetError();
-		if (glError != GL_INVALID_ENUM)
-			GLContext::get().ctx_glUseProgram(0);
-		else
-			_activeProgram = 0;
-	}
 	SetFlags(b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit
 			| b2Draw::e_centerOfMassBit);
 	GL_checkError();
@@ -97,8 +96,6 @@ DebugRenderer::~DebugRenderer ()
 	glEnable(GL_TEXTURE_2D);
 	glPopMatrix();
 	GL_checkError();
-	if (_activeProgram != 0)
-		GLContext::get().ctx_glUseProgram(_activeProgram);
 #endif
 }
 

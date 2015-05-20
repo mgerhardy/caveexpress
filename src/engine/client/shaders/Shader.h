@@ -1,14 +1,11 @@
 #pragma once
 
 #include "engine/client/textures/Texture.h"
+#include "engine/client/GLFunc.h"
 #include "engine/client/GLShared.h"
 #include <SDL_platform.h>
 #include <string>
 #include <unordered_map>
-
-#ifndef __EMSCRIPTEN__
-#define USE_SHADERS
-#endif
 
 enum ShaderType {
 	SHADER_VERTEX, SHADER_FRAGMENT,
@@ -23,6 +20,7 @@ protected:
 	GLuint _program;
 	bool _initialized;
 	mutable bool _active;
+	std::string _name;
 
 	typedef std::unordered_map<std::string, int> ShaderVariables;
 	ShaderVariables _uniforms;
@@ -37,12 +35,13 @@ protected:
 
 	std::string getSource (ShaderType shaderType, const char *buffer, int len);
 	void createProgramFromShaders ();
+	bool load (const std::string& filename, const std::string& source, ShaderType shaderType);
+	bool loadFromFile (const std::string& filename, ShaderType shaderType);
+
 public:
 	Shader ();
 	virtual ~Shader ();
 
-	bool load (const std::string& filename, const std::string& source, ShaderType shaderType);
-	bool loadFromFile (const std::string& filename, ShaderType shaderType);
 	bool loadProgram (const std::string& filename);
 
 	GLuint getShader (ShaderType shaderType) const;
@@ -96,8 +95,8 @@ public:
 	void setAttributef (const std::string& name, float value1, float value2, float value3, float value4) const;
 	void disableVertexAttribute (const std::string& name) const;
 	void disableVertexAttribute (int location) const;
-	void enableVertexAttribute (const std::string& name) const;
-	void enableVertexAttribute (int location) const;
+	int enableVertexAttributeArray (const std::string& name) const;
+	void enableVertexAttributeArray (int location) const;
 	bool hasAttribute (const std::string& name) const;
 	bool hasUniform (const std::string& name) const;
 };
@@ -115,12 +114,8 @@ inline void Shader::setUniformi (const std::string& name, int value) const
 
 inline void Shader::setUniformi (int location, int value) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniform1i(location, value);
+	glUniform1i(location, value);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniformi (const std::string& name, int value1, int value2) const
@@ -131,12 +126,8 @@ inline void Shader::setUniformi (const std::string& name, int value1, int value2
 
 inline void Shader::setUniformi (int location, int value1, int value2) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniform2i(location, value1, value2);
+	glUniform2i(location, value1, value2);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniformi (const std::string& name, int value1, int value2, int value3) const
@@ -147,12 +138,8 @@ inline void Shader::setUniformi (const std::string& name, int value1, int value2
 
 inline void Shader::setUniformi (int location, int value1, int value2, int value3) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniform3i(location, value1, value2, value3);
+	glUniform3i(location, value1, value2, value3);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniformi (const std::string& name, int value1, int value2, int value3, int value4) const
@@ -163,12 +150,8 @@ inline void Shader::setUniformi (const std::string& name, int value1, int value2
 
 inline void Shader::setUniformi (int location, int value1, int value2, int value3, int value4) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniform4i(location, value1, value2, value3, value4);
+	glUniform4i(location, value1, value2, value3, value4);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniformf (const std::string& name, float value) const
@@ -179,12 +162,8 @@ inline void Shader::setUniformf (const std::string& name, float value) const
 
 inline void Shader::setUniformf (int location, float value) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniform1f(location, value);
+	glUniform1f(location, value);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniformf (const std::string& name, float value1, float value2) const
@@ -195,12 +174,8 @@ inline void Shader::setUniformf (const std::string& name, float value1, float va
 
 inline void Shader::setUniformf (int location, float value1, float value2) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniform2f(location, value1, value2);
+	glUniform2f(location, value1, value2);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniformf (const std::string& name, float value1, float value2, float value3) const
@@ -211,12 +186,8 @@ inline void Shader::setUniformf (const std::string& name, float value1, float va
 
 inline void Shader::setUniformf (int location, float value1, float value2, float value3) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniform3f(location, value1, value2, value3);
+	glUniform3f(location, value1, value2, value3);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniformf (const std::string& name, float value1, float value2, float value3, float value4) const
@@ -227,12 +198,8 @@ inline void Shader::setUniformf (const std::string& name, float value1, float va
 
 inline void Shader::setUniformf (int location, float value1, float value2, float value3, float value4) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniform4f(location, value1, value2, value3, value4);
+	glUniform4f(location, value1, value2, value3, value4);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniform1fv (const std::string& name, float* values, int offset, int length) const
@@ -243,12 +210,8 @@ inline void Shader::setUniform1fv (const std::string& name, float* values, int o
 
 inline void Shader::setUniform1fv (int location, float* values, int offset, int length) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniform1fv(location, length, values);
+	glUniform1fv(location, length, values);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniform2fv (const std::string& name, float* values, int offset, int length) const
@@ -259,12 +222,8 @@ inline void Shader::setUniform2fv (const std::string& name, float* values, int o
 
 inline void Shader::setUniform2fv (int location, float* values, int offset, int length) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniform2fv(location, length / 2, values);
+	glUniform2fv(location, length / 2, values);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniform3fv (const std::string& name, float* values, int offset, int length) const
@@ -275,12 +234,8 @@ inline void Shader::setUniform3fv (const std::string& name, float* values, int o
 
 inline void Shader::setUniform3fv (int location, float* values, int offset, int length) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniform3fv(location, length / 3, values);
+	glUniform3fv(location, length / 3, values);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniform4fv (const std::string& name, float* values, int offset, int length) const
@@ -291,12 +246,8 @@ inline void Shader::setUniform4fv (const std::string& name, float* values, int o
 
 inline void Shader::setUniform4fv (int location, float* values, int offset, int length) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniform4fv(location, length / 4, values);
+	glUniform4fv(location, length / 4, values);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniformMatrix (const std::string& name, glm::mat4& matrix, bool transpose) const
@@ -307,12 +258,8 @@ inline void Shader::setUniformMatrix (const std::string& name, glm::mat4& matrix
 
 inline void Shader::setUniformMatrix (int location, glm::mat4& matrix, bool transpose) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniformMatrix4fv(location, 1, transpose ? GL_TRUE : GL_FALSE, glm::value_ptr(matrix));
+	glUniformMatrix4fv(location, 1, transpose ? GL_TRUE : GL_FALSE, glm::value_ptr(matrix));
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniformMatrix (const std::string& name, glm::mat3& matrix, bool transpose) const
@@ -323,12 +270,8 @@ inline void Shader::setUniformMatrix (const std::string& name, glm::mat3& matrix
 
 inline void Shader::setUniformMatrix (int location, glm::mat3& matrix, bool transpose) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glUniformMatrix3fv(location, 1, transpose ? GL_TRUE : GL_FALSE, glm::value_ptr(matrix));
+	glUniformMatrix3fv(location, 1, transpose ? GL_TRUE : GL_FALSE, glm::value_ptr(matrix));
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setUniformf (const std::string& name, glm::vec2& values) const
@@ -371,23 +314,15 @@ inline void Shader::setVertexAttribute (const std::string& name, int size, int t
 
 inline void Shader::setVertexAttribute (int location, int size, int type, bool normalize, int stride, void* buffer) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glVertexAttribPointer(location, size, type, normalize, stride, buffer);
+	glVertexAttribPointer(location, size, type, normalize ? GL_TRUE : GL_FALSE, stride, buffer);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::setAttributef (const std::string& name, float value1, float value2, float value3, float value4) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
 	const int location = getAttributeLocation(name);
-	GLContext::get().ctx_glVertexAttrib4f(location, value1, value2, value3, value4);
+	glVertexAttrib4f(location, value1, value2, value3, value4);
 	GL_checkError();
-#endif
 }
 
 inline void Shader::disableVertexAttribute (const std::string& name) const
@@ -400,30 +335,23 @@ inline void Shader::disableVertexAttribute (const std::string& name) const
 
 inline void Shader::disableVertexAttribute (int location) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glDisableVertexAttribArray(location);
+	glDisableVertexAttribArray(location);
 	GL_checkError();
-#endif
 }
 
-inline void Shader::enableVertexAttribute (const std::string& name) const
+inline int Shader::enableVertexAttributeArray (const std::string& name) const
 {
 	int location = getAttributeLocation(name);
 	if (location == -1)
-		return;
-	enableVertexAttribute(location);
+		return -1;
+	enableVertexAttributeArray(location);
+	return location;
 }
 
-inline void Shader::enableVertexAttribute (int location) const
+inline void Shader::enableVertexAttributeArray (int location) const
 {
-#ifdef USE_SHADERS
-	if (!GLContext::get().areShadersSupported())
-		return;
-	GLContext::get().ctx_glEnableVertexAttribArray(location);
+	glEnableVertexAttribArray(location);
 	GL_checkError();
-#endif
 }
 
 inline bool Shader::hasAttribute (const std::string& name) const

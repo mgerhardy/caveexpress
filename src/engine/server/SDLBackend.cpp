@@ -4,7 +4,8 @@
 #include "engine/common/String.h"
 #include "engine/client/SDLFrontend.h"
 #ifdef SDL_VIDEO_OPENGL
-#include "engine/client/GLFrontend.h"
+#include "engine/client/GL1Frontend.h"
+#include "engine/client/GL3Frontend.h"
 #endif
 #include "engine/client/ClientConsole.h"
 #include "engine/common/ConfigManager.h"
@@ -194,7 +195,9 @@ bool SDLBackend::handleInit() {
 			SharedPtr<IConsole> clientConsole(new ClientConsole());
 #ifdef SDL_VIDEO_OPENGL
 			if (c->getValue() == "opengl")
-				_frontend = new GLFrontend(clientConsole);
+				_frontend = new GL1Frontend(clientConsole);
+			else if (c->getValue() == "opengl3")
+				_frontend = new GL3Frontend(clientConsole);
 			else
 #endif
 				_frontend = new SDLFrontend(clientConsole);

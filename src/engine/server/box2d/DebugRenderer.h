@@ -27,7 +27,6 @@ struct TraceData {
 #define DEBUG_RENDERER_MAX_COLORS 128
 class DebugRenderer: public b2Draw {
 private:
-	int _activeProgram;
 	bool _enableTextureArray;
 	float _colorArray[DEBUG_RENDERER_MAX_COLORS * 4];
 	int _pointCount;

@@ -20,6 +20,7 @@
 #include "engine/common/EventHandler.h"
 #include "engine/common/Logger.h"
 #include "engine/common/ServiceProvider.h"
+#include "engine/client/GLFunc.h"
 #include "engine/client/GLShared.h"
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/DateUtil.h"

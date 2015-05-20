@@ -8,12 +8,9 @@ ShaderManager::ShaderManager ()
 		GLenum val;
 	} VARS[] = {
 			{ "Maximum number of vertex attributes", GL_MAX_VERTEX_ATTRIBS },
-			{ "Maximum number of uniform vertex vectors", GL_MAX_VERTEX_UNIFORM_VECTORS },
-			{ "Maximum number of uniform fragment vectors", GL_MAX_FRAGMENT_UNIFORM_VECTORS },
 #ifdef GL_MAX_VARYING_FLOATS
 			{ "Maximum number of varying floats", GL_MAX_VARYING_FLOATS },
 #endif
-			{ "Maximum number of varying vectors", GL_MAX_VARYING_VECTORS },
 			{ "Maximum number of texture units usable in a vertex shader", GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS },
 			{ "Maximum number of texture units usable in a fragment shader", GL_MAX_TEXTURE_IMAGE_UNITS },
 			{ nullptr, 0 }
@@ -32,9 +29,6 @@ ShaderManager::~ShaderManager ()
 
 void ShaderManager::updateProjectionMatrix (int w, int h)
 {
-	if (!GLContext::get().areShadersSupported())
-		return;
-
 	const glm::mat4 projectionMatrix = glm::ortho(0.0f, static_cast<float>(w), static_cast<float>(h), 0.0f, -5.0f, 5.0f);
 	_waterShader.setProjectionMatrix(projectionMatrix);
 	_mainShader.setProjectionMatrix(projectionMatrix);
@@ -43,11 +37,6 @@ void ShaderManager::updateProjectionMatrix (int w, int h)
 
 void ShaderManager::init ()
 {
-	if (!GLContext::get().areShadersSupported()) {
-		error(LOG_CLIENT, "shaders are not supported");
-		return;
-	}
-
 	if (!_waterShader.init())
 		error(LOG_CLIENT, "failed to initialize the water shader");
 	else
@@ -64,9 +53,6 @@ void ShaderManager::init ()
 
 void ShaderManager::update (uint32_t deltaTime)
 {
-	if (!GLContext::get().areShadersSupported())
-		return;
-
 	_waterShader.update(deltaTime);
 	_mainShader.update(deltaTime);
 	_solidShader.update(deltaTime);

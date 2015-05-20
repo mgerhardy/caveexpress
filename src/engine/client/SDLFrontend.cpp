@@ -563,7 +563,6 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 
 	initRenderer();
 	resetColor();
-	GLContext::get().init();
 
 	if (SDL_SetWindowBrightness(_window, 1.0f) == -1)
 		sdlCheckError();

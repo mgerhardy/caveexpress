@@ -1,4 +1,4 @@
-#include "GLFrontend.h"
+#include "GL1Frontend.h"
 #include "engine/client/ui/UI.h"
 #include "engine/client/ClientConsole.h"
 #include "engine/client/textures/TextureCoords.h"
@@ -8,13 +8,20 @@
 #include "engine/common/ConfigManager.h"
 #include <SDL_image.h>
 
+#if SDL_VIDEO_OPENGL
+#define GL_GLEXT_PROTOTYPES
+#include <SDL_opengl.h>
+#include <SDL_opengl_glext.h>
+#endif
+#include "engine/client/GLShared.h"
+
 inline TexNum getTexNum (void *textureData)
 {
 	const intptr_t texnum = reinterpret_cast<intptr_t>(textureData);
 	return texnum;
 }
 
-GLFrontend::GLFrontend (SharedPtr<IConsole> console) :
+GL1Frontend::GL1Frontend (SharedPtr<IConsole> console) :
 		SDLFrontend(console), _maxTextureUnits(0), _currentTextureUnit(nullptr), _rx(1.0f), _ry(1.0f)
 {
 	_context = nullptr;
@@ -22,27 +29,27 @@ GLFrontend::GLFrontend (SharedPtr<IConsole> console) :
 	memset(&_viewPort, 0, sizeof(_viewPort));
 }
 
-GLFrontend::~GLFrontend ()
+GL1Frontend::~GL1Frontend ()
 {
 	if (_context)
 		SDL_GL_DeleteContext(_context);
 }
 
-inline bool GLFrontend::invalidTexUnit (int textureUnit) const
+inline bool GL1Frontend::invalidTexUnit (int textureUnit) const
 {
 	return textureUnit < 0 || textureUnit >= _maxTextureUnits || textureUnit >= MAX_GL_TEXUNITS;
 }
 
-void GLFrontend::setGLAttributes ()
+void GL1Frontend::setGLAttributes ()
 {
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 }
 
-void GLFrontend::setHints ()
+void GL1Frontend::setHints ()
 {
 }
 
-void GLFrontend::enableScissor (int x, int y, int width, int height)
+void GL1Frontend::enableScissor (int x, int y, int width, int height)
 {
 #ifdef SDL_VIDEO_OPENGL
 	const int lowerLeft = std::max(0, getHeight() - y - height);
@@ -51,24 +58,24 @@ void GLFrontend::enableScissor (int x, int y, int width, int height)
 #endif
 }
 
-float GLFrontend::getWidthScale () const
+float GL1Frontend::getWidthScale () const
 {
 	return _rx;
 }
 
-float GLFrontend::getHeightScale () const
+float GL1Frontend::getHeightScale () const
 {
 	return _ry;
 }
 
-void GLFrontend::disableScissor ()
+void GL1Frontend::disableScissor ()
 {
 #ifdef SDL_VIDEO_OPENGL
 	glDisable(GL_SCISSOR_TEST);
 #endif
 }
 
-void GLFrontend::initRenderer ()
+void GL1Frontend::initRenderer ()
 {
 #ifdef SDL_VIDEO_OPENGL
 	info(LOG_CLIENT, "init opengl renderer with shaders: " + ConfigManager::get().getConfigVar("shader")->getValue());
@@ -84,7 +91,6 @@ void GLFrontend::initRenderer ()
 	for (int i = 0; i < _maxTextureUnits; ++i) {
 		_texUnits[i].textureUnit = GL_TEXTURE0 + i;
 		enableTextureUnit(_texUnits[i], true);
-		selectTextureUnit(_texUnits[i]);
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		enableTextureUnit(_texUnits[i], false);
 		GL_checkError();
@@ -117,17 +123,17 @@ void GLFrontend::initRenderer ()
 #endif
 }
 
-int GLFrontend::getCoordinateOffsetX () const
+int GL1Frontend::getCoordinateOffsetX () const
 {
 	return -_viewPort.x;
 }
 
-int GLFrontend::getCoordinateOffsetY () const
+int GL1Frontend::getCoordinateOffsetY () const
 {
 	return -_viewPort.y;
 }
 
-void GLFrontend::getViewPort (int* x, int *y, int *w, int *h) const
+void GL1Frontend::getViewPort (int* x, int *y, int *w, int *h) const
 {
 	if (x != nullptr)
 		*x = _viewPort.x;
@@ -139,28 +145,14 @@ void GLFrontend::getViewPort (int* x, int *y, int *w, int *h) const
 		*h = _viewPort.h;
 }
 
-void GLFrontend::selectTextureUnit (TexUnit &textureUnit)
-{
-	if (_currentTextureUnit != nullptr && *_currentTextureUnit == textureUnit)
-		return;
-
-	_currentTextureUnit = &textureUnit;
-#ifdef SDL_VIDEO_OPENGL
-	if (!GLContext::get().isMultiTextureSupported())
-		return;
-	GLContext::get().ctx_glActiveTexture(textureUnit.textureUnit);
-	GLContext::get().ctx_glClientActiveTexture(textureUnit.textureUnit);
-#endif
-}
-
-void GLFrontend::enableTextureUnit (TexUnit &texunit, bool enable)
+void GL1Frontend::enableTextureUnit (TexUnit &texunit, bool enable)
 {
 	if (enable == texunit.active) {
 		return;
 	}
 
 	texunit.active = enable;
-	selectTextureUnit(texunit);
+	_currentTextureUnit = &texunit;
 #ifdef SDL_VIDEO_OPENGL
 	if (enable) {
 		glEnable(GL_TEXTURE_2D);
@@ -170,15 +162,13 @@ void GLFrontend::enableTextureUnit (TexUnit &texunit, bool enable)
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	}
 #endif
-	selectTextureUnit(_texUnits[0]);
 }
 
-void GLFrontend::bindTexture (Texture* texture, int textureUnit)
+void GL1Frontend::bindTexture (Texture* texture, int textureUnit)
 {
 	if (invalidTexUnit(textureUnit))
 		return;
 
-	selectTextureUnit(_texUnits[textureUnit]);
 	const TexNum texnum = getTexNum(texture->getData());
 	if (_currentTextureUnit->currentTexture == texnum)
 		return;
@@ -188,7 +178,7 @@ void GLFrontend::bindTexture (Texture* texture, int textureUnit)
 #endif
 }
 
-void GLFrontend::setColorPointer (const Color& color, int amount)
+void GL1Frontend::setColorPointer (const Color& color, int amount)
 {
 #ifdef SDL_VIDEO_OPENGL
 	if (amount > MAX_COLOR)
@@ -202,7 +192,7 @@ void GLFrontend::setColorPointer (const Color& color, int amount)
 #endif
 }
 
-void GLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha)
+void GL1Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha)
 {
 #ifdef SDL_VIDEO_OPENGL
 	if (!texture->isValid())
@@ -242,7 +232,7 @@ void GLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int1
 #endif
 }
 
-void GLFrontend::renderRect (int x, int y, int w, int h, const Color& color)
+void GL1Frontend::renderRect (int x, int y, int w, int h, const Color& color)
 {
 #ifdef SDL_VIDEO_OPENGL
 	if (w <= 0)
@@ -265,7 +255,7 @@ void GLFrontend::renderRect (int x, int y, int w, int h, const Color& color)
 #endif
 }
 
-void GLFrontend::renderFilledRect (int x, int y, int w, int h, const Color& fillColor)
+void GL1Frontend::renderFilledRect (int x, int y, int w, int h, const Color& fillColor)
 {
 #ifdef SDL_VIDEO_OPENGL
 	if (w <= 0)
@@ -292,7 +282,7 @@ void GLFrontend::renderFilledRect (int x, int y, int w, int h, const Color& fill
 #endif
 }
 
-void GLFrontend::destroyTexture (void *data)
+void GL1Frontend::destroyTexture (void *data)
 {
 #ifdef SDL_VIDEO_OPENGL
 	const TexNum texnum = getTexNum(data);
@@ -301,7 +291,7 @@ void GLFrontend::destroyTexture (void *data)
 #endif
 }
 
-bool GLFrontend::loadTexture (Texture *texture, const std::string& filename)
+bool GL1Frontend::loadTexture (Texture *texture, const std::string& filename)
 {
 #ifdef SDL_VIDEO_OPENGL
 	const std::string file = FS.getFile(FS.getPicsDir() + filename + ".png")->getName();
@@ -353,7 +343,7 @@ bool GLFrontend::loadTexture (Texture *texture, const std::string& filename)
 #endif
 }
 
-void GLFrontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
+void GL1Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
 {
 #ifdef SDL_VIDEO_OPENGL
 	const float nx1 = x1 * _rx;
@@ -373,7 +363,7 @@ void GLFrontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
 #endif
 }
 
-void GLFrontend::makeScreenshot (const std::string& filename)
+void GL1Frontend::makeScreenshot (const std::string& filename)
 {
 #ifndef EMSCRIPTEN
 	const int bytesPerPixel = 3;
@@ -401,7 +391,7 @@ void GLFrontend::makeScreenshot (const std::string& filename)
 #endif
 }
 
-void GLFrontend::updateViewport (int x, int y, int width, int height)
+void GL1Frontend::updateViewport (int x, int y, int width, int height)
 {
 #ifdef SDL_VIDEO_OPENGL
 	const float wantAspect = (float)width / height;
@@ -445,7 +435,7 @@ void GLFrontend::updateViewport (int x, int y, int width, int height)
 #endif
 }
 
-void GLFrontend::renderBegin ()
+void GL1Frontend::renderBegin ()
 {
 #ifdef SDL_VIDEO_OPENGL
 	SDL_GL_MakeCurrent(_window, _context);
@@ -454,7 +444,7 @@ void GLFrontend::renderBegin ()
 #endif
 }
 
-void GLFrontend::renderEnd ()
+void GL1Frontend::renderEnd ()
 {
 #ifdef SDL_VIDEO_OPENGL
 	SDL_GL_SwapWindow(_window);

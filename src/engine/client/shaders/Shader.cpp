@@ -1,7 +1,6 @@
 #include "Shader.h"
 #include "engine/common/Logger.h"
 #include "engine/common/FileSystem.h"
-#include "engine/common/ConfigManager.h"
 
 #define MAX_SHADER_VAR_NAME 128
 
@@ -11,19 +10,17 @@ Shader::Shader () :
 	for (int i = 0; i < SHADER_MAX; ++i) {
 		_shader[i] = 0;
 	}
+	_name = "unknown";
 }
 
 Shader::~Shader ()
 {
-	if (!GLContext::get().areShadersSupported())
+	if (_program == 0)
 		return;
-
-#ifdef USE_SHADERS
 	for (int i = 0; i < SHADER_MAX; ++i) {
-		GLContext::get().ctx_glDeleteShader(_shader[i]);
+		glDeleteShader(_shader[i]);
 	}
-	GLContext::get().ctx_glDeleteProgram(_program);
-#endif
+	glDeleteProgram(_program);
 }
 
 void Shader::update (uint32_t deltaTime)
@@ -33,26 +30,24 @@ void Shader::update (uint32_t deltaTime)
 
 bool Shader::load (const std::string& filename, const std::string& source, ShaderType shaderType)
 {
-	if (!GLContext::get().areShadersSupported())
+	if (glCreateShader == nullptr)
 		return false;
-
-#ifdef USE_SHADERS
 	const GLenum glType = shaderType == SHADER_VERTEX ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER;
 	GL_checkError();
 
-	_shader[shaderType] = GLContext::get().ctx_glCreateShader(glType);
+	_shader[shaderType] = glCreateShader(glType);
 	const char *s = source.c_str();
-	GLContext::get().ctx_glShaderSource(_shader[shaderType], 1, (const GLchar**) &s, nullptr);
-	GLContext::get().ctx_glCompileShader(_shader[shaderType]);
+	glShaderSource(_shader[shaderType], 1, (const GLchar**) &s, nullptr);
+	glCompileShader(_shader[shaderType]);
 
 	GLint status;
-	GLContext::get().ctx_glGetShaderiv(_shader[shaderType], GL_COMPILE_STATUS, &status);
+	glGetShaderiv(_shader[shaderType], GL_COMPILE_STATUS, &status);
 	if (status != GL_TRUE || glGetError() != GL_NO_ERROR) {
 		GLint infoLogLength;
-		GLContext::get().ctx_glGetShaderiv(_shader[shaderType], GL_INFO_LOG_LENGTH, &infoLogLength);
+		glGetShaderiv(_shader[shaderType], GL_INFO_LOG_LENGTH, &infoLogLength);
 
 		ScopedPtr<GLchar> strInfoLog(new GLchar[infoLogLength + 1]);
-		GLContext::get().ctx_glGetShaderInfoLog(_shader[shaderType], infoLogLength, nullptr, strInfoLog);
+		glGetShaderInfoLog(_shader[shaderType], infoLogLength, nullptr, strInfoLog);
 		std::string errorLog(strInfoLog, static_cast<std::size_t>(infoLogLength));
 
 		std::string strShaderType;
@@ -69,12 +64,10 @@ bool Shader::load (const std::string& filename, const std::string& source, Shade
 		}
 
 		error(LOG_CLIENT, "compile failure in " + filename + " (type: " + strShaderType + ") shader:\n" + errorLog);
+		return false;
 	}
 
 	return true;
-#else
-	return false;
-#endif
 }
 
 bool Shader::loadFromFile (const std::string& filename, ShaderType shaderType)
@@ -96,15 +89,9 @@ std::string Shader::getSource (ShaderType shaderType, const char *buffer, int le
 {
 	std::string src;
 #ifdef GL_ES_VERSION_2_0
-	src.append("#version 120\n");
-	if (shaderType == SHADER_FRAGMENT) {
-		src.append("#ifdef GL_ES\n");
-		src.append("precision mediump float;\n");
-		src.append("precision mediump int;\n");
-		src.append("#endif\n");
-	}
+	src.append("#version 300\n");
 #else
-	src.append("#version 120\n#define lowp\n#define mediump\n#define highp\n");
+	src.append("#version 130\n");
 #endif
 
 	std::string append(buffer, len);
@@ -154,14 +141,13 @@ std::string Shader::getSource (ShaderType shaderType, const char *buffer, int le
 
 bool Shader::loadProgram (const std::string& filename)
 {
-	if (!GLContext::get().areShadersSupported())
-		return false;
+	_name = filename;
 
-	const bool vertex = loadFromFile(filename + "_vs.glsl", SHADER_VERTEX);
+	const bool vertex = loadFromFile(filename + ".vert", SHADER_VERTEX);
 	if (!vertex)
 		return false;
 
-	const bool fragment = loadFromFile(filename + "_fs.glsl", SHADER_FRAGMENT);
+	const bool fragment = loadFromFile(filename + ".frag", SHADER_FRAGMENT);
 	if (!fragment)
 		return false;
 
@@ -178,10 +164,9 @@ bool Shader::loadProgram (const std::string& filename)
 
 void Shader::fetchUniforms ()
 {
-#ifdef USE_SHADERS
 	char name[MAX_SHADER_VAR_NAME];
 	int numUniforms = 0;
-	GLContext::get().ctx_glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &numUniforms);
+	glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &numUniforms);
 	GL_checkError();
 
 	_uniforms.clear();
@@ -189,19 +174,18 @@ void Shader::fetchUniforms ()
 		GLsizei length;
 		GLint size;
 		GLenum type;
-		GLContext::get().ctx_glGetActiveUniform(_program, i, MAX_SHADER_VAR_NAME - 1, &length, &size, &type, name);
-		const int location = GLContext::get().ctx_glGetUniformLocation(_program, name);
+		glGetActiveUniform(_program, i, MAX_SHADER_VAR_NAME - 1, &length, &size, &type, name);
+		const int location = glGetUniformLocation(_program, name);
 		_uniforms[name] = location;
+		debug(LOG_CLIENT, String::format("uniform %s found at location %i in shader %s", name, location, _name.c_str()));
 	}
-#endif
 }
 
 void Shader::fetchAttributes ()
 {
-#ifdef USE_SHADERS
 	char name[MAX_SHADER_VAR_NAME];
 	int numAttributes = 0;
-	GLContext::get().ctx_glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTES, &numAttributes);
+	glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTES, &numAttributes);
 	GL_checkError();
 
 	_attributes.clear();
@@ -209,50 +193,48 @@ void Shader::fetchAttributes ()
 		GLsizei length;
 		GLint size;
 		GLenum type;
-		GLContext::get().ctx_glGetActiveAttrib(_program, i, MAX_SHADER_VAR_NAME - 1, &length, &size, &type, name);
-		const int location = GLContext::get().ctx_glGetAttribLocation(_program, name);
+		glGetActiveAttrib(_program, i, MAX_SHADER_VAR_NAME - 1, &length, &size, &type, name);
+		const int location = glGetAttribLocation(_program, name);
 		_attributes[name] = location;
+		debug(LOG_CLIENT, String::format("attribute %s found at location %i in shader %s", name, location, _name.c_str()));
 	}
-#endif
 }
 
 void Shader::createProgramFromShaders ()
 {
-#ifdef USE_SHADERS
 	GL_checkError();
 	GLint status;
-	_program = GLContext::get().ctx_glCreateProgram();
+	_program = glCreateProgram();
 	GL_checkError();
 
 	const GLuint vert = _shader[SHADER_VERTEX];
 	const GLuint frag = _shader[SHADER_FRAGMENT];
 
-	GLContext::get().ctx_glAttachShader(_program, vert);
-	GLContext::get().ctx_glAttachShader(_program, frag);
+	glAttachShader(_program, vert);
+	glAttachShader(_program, frag);
 	GL_checkError();
 
-	GLContext::get().ctx_glLinkProgram(_program);
-	GLContext::get().ctx_glGetProgramiv(_program, GL_LINK_STATUS, &status);
+	glLinkProgram(_program);
+	glGetProgramiv(_program, GL_LINK_STATUS, &status);
 	GL_checkError();
 	if (status != GL_TRUE) {
 		GLint infoLogLength;
-		GLContext::get().ctx_glGetProgramiv(_program, GL_INFO_LOG_LENGTH, &infoLogLength);
+		glGetProgramiv(_program, GL_INFO_LOG_LENGTH, &infoLogLength);
 
 		GLchar* strInfoLog = new GLchar[infoLogLength + 1];
-		GLContext::get().ctx_glGetProgramInfoLog(_program, infoLogLength, nullptr, strInfoLog);
+		glGetProgramInfoLog(_program, infoLogLength, nullptr, strInfoLog);
 		error(LOG_CLIENT, String::format("linker failure: %s", strInfoLog));
-		GLContext::get().ctx_glDeleteProgram(_program);
+		glDeleteProgram(_program);
 		_program = 0;
 		delete[] strInfoLog;
 	}
-#endif
 }
 
 int Shader::getAttributeLocation (const std::string& name) const
 {
 	ShaderVariables::const_iterator i = _attributes.find(name);
 	if (i == _attributes.end()) {
-		error(LOG_CLIENT, "can't find attribute " + name);
+		error(LOG_CLIENT, "can't find attribute " + name + " in shader " + _name);
 		return -1;
 	}
 	return i->second;
@@ -262,7 +244,7 @@ int Shader::getUniformLocation (const std::string& name) const
 {
 	ShaderVariables::const_iterator i = _uniforms.find(name);
 	if (i == _uniforms.end()) {
-		error(LOG_CLIENT, "can't find uniform " + name);
+		error(LOG_CLIENT, "can't find uniform " + name + " in shader " + _name);
 		return -1;
 	}
 	return i->second;
@@ -280,17 +262,12 @@ void Shader::setModelViewMatrix (const glm::mat4& modelViewMatrix)
 
 bool Shader::activate () const
 {
-	if (!GLContext::get().areShadersSupported())
+	if (!_initialized)
 		return false;
-
-	if (!Config.isShader()) {
+	if (_active)
 		return false;
-	}
-
-#ifdef USE_SHADERS
-	GLContext::get().ctx_glUseProgram(_program);
+	glUseProgram(_program);
 	GL_checkError();
-#endif
 	_active = true;
 
 	return true;
@@ -302,10 +279,8 @@ void Shader::deactivate () const
 		return;
 	}
 
-#ifdef USE_SHADERS
-	GLContext::get().ctx_glUseProgram(0);
+	glUseProgram(0);
 	GL_checkError();
-#endif
 	_active = false;
 	_time = 0;
 }
@@ -320,4 +295,3 @@ ShaderScope::~ShaderScope ()
 {
 	_shader.deactivate();
 }
-
