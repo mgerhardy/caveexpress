@@ -236,7 +236,7 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	const float miny = -centery;
 	const float maxy = centery;
 
-	getBatchForType(GL_LINE_LOOP);
+	getBatchForType(GL_TRIANGLE_FAN);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = 0;
 	batch.angle = angle;
