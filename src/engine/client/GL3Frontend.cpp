@@ -110,6 +110,7 @@ void GL3Frontend::startNewBatch ()
 	++_currentBatch;
 	if (_currentBatch >= MAX_BATCHES) {
 		flushBatches();
+		memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
 		return;
 	}
 	memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
