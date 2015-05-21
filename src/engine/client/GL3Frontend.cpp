@@ -68,9 +68,18 @@ void GL3Frontend::setHints ()
 void GL3Frontend::flushBatches ()
 {
 	_shader.activate();
+	_shader.setUniformMatrix("u_projection", _projectionMatrix, false);
 	glBindVertexArray(_vao);
+	bool scissorActive = false;
 	for (int i = 0; i < _currentBatch; ++i) {
 		Batch& b = _batches[i];
+		if (b.scissor) {
+			scissorActive = true;
+			glScissor(b.scissorRect.x * _rx, b.scissorRect.y * _ry, b.scissorRect.w * _rx, b.scissorRect.h * _ry);
+			glEnable(GL_SCISSOR_TEST);
+		} else if (scissorActive) {
+			glDisable(GL_SCISSOR_TEST);
+		}
 		if (_currentTexture != b.texnum) {
 			_currentTexture = b.texnum;
 			glBindTexture(GL_TEXTURE_2D, _currentTexture);
@@ -79,6 +88,8 @@ void GL3Frontend::flushBatches ()
 		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * b.vertexCount, b.vertices, GL_STATIC_DRAW);
 		glDrawArrays(b.type, 0, b.vertexCount);
 	}
+	if (scissorActive)
+		glDisable(GL_SCISSOR_TEST);
 	_drawCalls += _currentBatch;
 	glBindVertexArray(0);
 	_currentBatch = 0;
@@ -500,11 +511,6 @@ void GL3Frontend::updateViewport (int x, int y, int width, int height)
 	const GLdouble _w = static_cast<GLdouble>(_viewPort.w);
 	const GLdouble _h = static_cast<GLdouble>(_viewPort.h);
 	_projectionMatrix = glm::ortho(0.0, _w, _h, 0.0, 0.0, 1.0);
-	const bool activated = _shader.activate();
-	_shader.setUniformMatrix("u_projection", _projectionMatrix, false);
-	if (activated)
-		_shader.deactivate();
-
 	GL_checkError();
 }
 
