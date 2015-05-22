@@ -255,7 +255,7 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	const float miny = -centery;
 	const float maxy = centery;
 
-	getBatchForType(GL_TRIANGLE_FAN);
+	getBatchForType(GL_TRIANGLES);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = getTexNum(texture->getData());
 	batch.angle = DegreesToRadians(angle);
@@ -263,7 +263,7 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	batch.scissorRect = {0, 0, 0, 0};
 	batch.translation.x = x1 + centerx;
 	batch.translation.y = y1 + centery;
-	batch.vertexCount = 4;
+	batch.vertexCount += 6;
 
 	Vertex v;
 	v.c.r = _color[0] * 255.0f;
@@ -289,9 +289,77 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	v.y = maxy;
 	_vertices[_currentVertexIndex++] = v;
 
+	v.u = texCoords.texCoords[0];
+	v.v = texCoords.texCoords[1];
+	v.x = minx;
+	v.y = miny;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.u = texCoords.texCoords[4];
+	v.v = texCoords.texCoords[5];
+	v.x = maxx;
+	v.y = maxy;
+	_vertices[_currentVertexIndex++] = v;
+
 	v.u = texCoords.texCoords[6];
 	v.v = texCoords.texCoords[7];
 	v.x = minx;
+	v.y = maxy;
+	_vertices[_currentVertexIndex++] = v;
+}
+
+void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& color)
+{
+	if (w <= 0)
+		w = getWidth();
+	if (h <= 0)
+		h = getHeight();
+
+	const float nx = x * _rx;
+	const float ny = y * _ry;
+	const float nw = w * _rx;
+	const float nh = h * _ry;
+	const float minx = nx;
+	const float maxx = nx + nw;
+	const float miny = ny;
+	const float maxy = ny + nh;
+
+	getBatchForType(GL_TRIANGLES);
+	Batch& batch = _batches[_currentBatch];
+	batch.texnum = _white;
+	batch.angle = 0.0f;
+	batch.scissor = false;
+	batch.scissorRect = {0, 0, 0, 0};
+	batch.vertexCount += 6;
+
+	Vertex v;
+	v.u = v.v = 0.0f;
+	v.c.r = color[0] * 255.0f;
+	v.c.g = color[1] * 255.0f;
+	v.c.b = color[2] * 255.0f;
+	v.c.a = color[3] * 255.0f;
+
+	v.x = minx;
+	v.y = miny;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.x = maxx;
+	v.y = miny;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.x = minx;
+	v.y = maxy;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.x = maxx;
+	v.y = miny;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.x = minx;
+	v.y = maxy;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.x = maxx;
 	v.y = maxy;
 	_vertices[_currentVertexIndex++] = v;
 }
@@ -314,7 +382,7 @@ void GL3Frontend::renderRect (int x, int y, int w, int h, const Color& color)
 	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
-	batch.vertexCount = 4;
+	batch.vertexCount += 4;
 
 	Vertex v;
 	v.u = v.v = 0.0f;
@@ -340,51 +408,28 @@ void GL3Frontend::renderRect (int x, int y, int w, int h, const Color& color)
 	_vertices[_currentVertexIndex++] = v;
 }
 
-void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& color)
+void GL3Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
 {
-	if (w <= 0)
-		w = getWidth();
-	if (h <= 0)
-		h = getHeight();
-
-	const float nx = x * _rx;
-	const float ny = y * _ry;
-	const float nw = w * _rx;
-	const float nh = h * _ry;
-	const float minx = nx;
-	const float maxx = nx + nw;
-	const float miny = ny;
-	const float maxy = ny + nh;
-
-	getBatchForType(GL_TRIANGLE_STRIP);
+	getBatchForType(GL_LINES);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = _white;
 	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
-	batch.vertexCount = 4;
+	batch.vertexCount += 2;
 
 	Vertex v;
+	v.x = x1 * _rx;
+	v.y = y1 * _ry;
 	v.u = v.v = 0.0f;
 	v.c.r = color[0] * 255.0f;
 	v.c.g = color[1] * 255.0f;
 	v.c.b = color[2] * 255.0f;
 	v.c.a = color[3] * 255.0f;
-
-	v.x = minx;
-	v.y = miny;
 	_vertices[_currentVertexIndex++] = v;
 
-	v.x = maxx;
-	v.y = miny;
-	_vertices[_currentVertexIndex++] = v;
-
-	v.x = minx;
-	v.y = maxy;
-	_vertices[_currentVertexIndex++] = v;
-
-	v.x = maxx;
-	v.y = maxy;
+	v.x = x2 * _rx;
+	v.y = y2 * _ry;
 	_vertices[_currentVertexIndex++] = v;
 }
 
@@ -446,31 +491,6 @@ TexNum GL3Frontend::uploadTexture (const unsigned char* pixels, int w, int h) co
 	glBindTexture(GL_TEXTURE_2D, 0);
 	GL_checkError();
 	return texnum;
-}
-
-void GL3Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
-{
-	getBatchForType(GL_LINES);
-	Batch& batch = _batches[_currentBatch];
-	batch.texnum = _white;
-	batch.angle = 0.0f;
-	batch.scissor = false;
-	batch.scissorRect = {0, 0, 0, 0};
-	batch.vertexCount = 2;
-
-	Vertex v;
-	v.x = x1 * _rx;
-	v.y = y1 * _ry;
-	v.u = v.v = 0.0f;
-	v.c.r = color[0] * 255.0f;
-	v.c.g = color[1] * 255.0f;
-	v.c.b = color[2] * 255.0f;
-	v.c.a = color[3] * 255.0f;
-	_vertices[_currentVertexIndex++] = v;
-
-	v.x = x2 * _rx;
-	v.y = y2 * _ry;
-	_vertices[_currentVertexIndex++] = v;
 }
 
 void GL3Frontend::makeScreenshot (const std::string& filename)
