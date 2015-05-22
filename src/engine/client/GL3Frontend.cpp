@@ -26,6 +26,7 @@ struct Batch {
 	TexNum texnum;
 	Vertex vertices[MAXNUMVERTICES];
 	int type;
+	int vertexIndexStart;
 	int vertexCount;
 	bool scissor;
 	SDL_Rect scissorRect;
@@ -33,6 +34,8 @@ struct Batch {
 	float angle;
 };
 
+static Vertex _vertices[MAXNUMVERTICES];
+static int _currentVertexIndex;
 static Batch _batches[MAX_BATCHES];
 static int _currentBatch;
 
@@ -72,6 +75,7 @@ void GL3Frontend::flushBatches ()
 	_shader.setUniformMatrix("u_projection", _projectionMatrix, false);
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _currentVertexIndex, _vertices, GL_DYNAMIC_DRAW);
 	bool scissorActive = false;
 	for (int i = 0; i < _currentBatch; ++i) {
 		Batch& b = _batches[i];
@@ -90,12 +94,12 @@ void GL3Frontend::flushBatches ()
 		const glm::mat4& model = glm::rotate(translate, b.angle, glm::vec3(0.0, 0.0, 1.0));
 		_shader.setUniformMatrix("u_model", model);
 
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * b.vertexCount, b.vertices, GL_DYNAMIC_DRAW);
-		glDrawArrays(b.type, 0, b.vertexCount);
+		glDrawArrays(b.type, b.vertexIndexStart, b.vertexCount);
 	}
 	if (scissorActive)
 		glDisable(GL_SCISSOR_TEST);
 	_drawCalls += _currentBatch;
+	_currentVertexIndex = 0;
 	glBindVertexArray(0);
 	_currentBatch = 0;
 	_shader.deactivate();
@@ -117,9 +121,11 @@ void GL3Frontend::startNewBatch ()
 	if (_currentBatch >= MAX_BATCHES) {
 		flushBatches();
 		memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
+		_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
 		return;
 	}
 	memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
+	_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
 }
 
 void GL3Frontend::enableScissor (int x, int y, int width, int height)
@@ -180,6 +186,7 @@ void GL3Frontend::initRenderer ()
 	_white = uploadTexture(white, 2, 2);
 
 	memset(_batches, 0, sizeof(_batches));
+	_currentVertexIndex = 0;
 
 	if (!_shader.loadProgram("main"))
 		error(LOG_CLIENT, "Failed to load the main shader");
@@ -256,6 +263,7 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	batch.scissorRect = {0, 0, 0, 0};
 	batch.translation.x = x1 + centerx;
 	batch.translation.y = y1 + centery;
+	batch.vertexCount = 4;
 
 	Vertex v;
 	v.c.r = _color[0] * 255.0f;
@@ -267,25 +275,25 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	v.v = texCoords.texCoords[1];
 	v.x = minx;
 	v.y = miny;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[2];
 	v.v = texCoords.texCoords[3];
 	v.x = maxx;
 	v.y = miny;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[4];
 	v.v = texCoords.texCoords[5];
 	v.x = maxx;
 	v.y = maxy;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[6];
 	v.v = texCoords.texCoords[7];
 	v.x = minx;
 	v.y = maxy;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 }
 
 void GL3Frontend::renderRect (int x, int y, int w, int h, const Color& color)
@@ -306,6 +314,7 @@ void GL3Frontend::renderRect (int x, int y, int w, int h, const Color& color)
 	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
+	batch.vertexCount = 4;
 
 	Vertex v;
 	v.u = v.v = 0.0f;
@@ -316,19 +325,19 @@ void GL3Frontend::renderRect (int x, int y, int w, int h, const Color& color)
 
 	v.x = nx;
 	v.y = ny;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 
 	v.x = nx + nw;
 	v.y = ny;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 
 	v.x = nx + nw;
 	v.y = ny + nh;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 
 	v.x = nx;
 	v.y = ny + nh;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 }
 
 void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& color)
@@ -353,6 +362,7 @@ void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& col
 	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
+	batch.vertexCount = 4;
 
 	Vertex v;
 	v.u = v.v = 0.0f;
@@ -363,19 +373,19 @@ void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& col
 
 	v.x = minx;
 	v.y = miny;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 
 	v.x = maxx;
 	v.y = miny;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 
 	v.x = minx;
 	v.y = maxy;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 
 	v.x = maxx;
 	v.y = maxy;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 }
 
 void GL3Frontend::destroyTexture (void *data)
@@ -446,6 +456,7 @@ void GL3Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color
 	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
+	batch.vertexCount = 2;
 
 	Vertex v;
 	v.x = x1 * _rx;
@@ -455,11 +466,11 @@ void GL3Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color
 	v.c.g = color[1] * 255.0f;
 	v.c.b = color[2] * 255.0f;
 	v.c.a = color[3] * 255.0f;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 
 	v.x = x2 * _rx;
 	v.y = y2 * _ry;
-	batch.vertices[batch.vertexCount++] = v;
+	_vertices[_currentVertexIndex++] = v;
 }
 
 void GL3Frontend::makeScreenshot (const std::string& filename)
