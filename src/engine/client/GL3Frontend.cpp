@@ -255,12 +255,11 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	const float miny = -centery;
 	const float maxy = centery;
 
+	const TexNum texnum = getTexNum(texture->getData());
 	getBatchForType(GL_TRIANGLES);
 	Batch& batch = _batches[_currentBatch];
-	batch.texnum = getTexNum(texture->getData());
+	batch.texnum = texnum;
 	batch.angle = DegreesToRadians(angle);
-	batch.scissor = false;
-	batch.scissorRect = {0, 0, 0, 0};
 	batch.translation.x = x1 + centerx;
 	batch.translation.y = y1 + centery;
 	batch.vertexCount += 6;
