@@ -245,7 +245,7 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	getBatchForType(GL_TRIANGLE_FAN);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = getTexNum(texture->getData());
-	batch.angle = angle;
+	batch.angle = DegreesToRadians(angle);
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
 	batch.translation.x = x1;
