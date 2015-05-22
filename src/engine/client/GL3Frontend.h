@@ -16,12 +16,13 @@ protected:
 	SDL_Rect _viewPort;
 	GLuint _vao;
 	GLuint _vbo;
+	TexNum _white;
 	Shader _shader;
 	int _drawCalls;
 
 	bool checkExtension (const char *extension) const;
 	uintptr_t getProcAddress (const char *functionName) const;
-
+	TexNum uploadTexture(const unsigned char* pixels, int w, int h) const;
 	void getBatchForType (int type);
 	void startNewBatch ();
 

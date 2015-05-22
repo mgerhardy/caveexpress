@@ -43,7 +43,7 @@ inline TexNum getTexNum (void *textureData)
 }
 
 GL3Frontend::GL3Frontend (SharedPtr<IConsole> console) :
-		SDLFrontend(console), _currentTexture(-1), _rx(1.0f), _ry(1.0f), _vao(0u), _vbo(0u), _drawCalls(0)
+		SDLFrontend(console), _currentTexture(-1), _rx(1.0f), _ry(1.0f), _vao(0u), _vbo(0u), _white(0), _drawCalls(0)
 {
 	_context = nullptr;
 	_currentBatch = 0;
@@ -174,6 +174,9 @@ void GL3Frontend::initRenderer ()
 
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	unsigned char white[16];
+	memset(white, 0xff, sizeof(white));
+	_white = uploadTexture(white, 2, 2);
 
 	if (!_shader.loadProgram("main"))
 		error(LOG_CLIENT, "Failed to load the main shader");
@@ -293,14 +296,10 @@ void GL3Frontend::renderRect (int x, int y, int w, int h, const Color& color)
 	const float ny = y * _ry;
 	const float nw = w * _rx;
 	const float nh = h * _ry;
-	const float minx = nx;
-	const float maxx = nx + nw;
-	const float miny = ny;
-	const float maxy = ny + nh;
 
 	getBatchForType(GL_LINE_LOOP);
 	Batch& batch = _batches[_currentBatch];
-	batch.texnum = 0;
+	batch.texnum = _white;
 	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
@@ -312,20 +311,20 @@ void GL3Frontend::renderRect (int x, int y, int w, int h, const Color& color)
 	v.c.b = color[2] * 255.0f;
 	v.c.a = color[3] * 255.0f;
 
-	v.x = minx;
-	v.y = miny;
+	v.x = nx;
+	v.y = ny;
 	batch.vertices[batch.vertexCount++] = v;
 
-	v.x = maxx;
-	v.y = miny;
+	v.x = nx + nw;
+	v.y = ny;
 	batch.vertices[batch.vertexCount++] = v;
 
-	v.x = minx;
-	v.y = maxy;
+	v.x = nx + nw;
+	v.y = ny + nh;
 	batch.vertices[batch.vertexCount++] = v;
 
-	v.x = maxx;
-	v.y = maxy;
+	v.x = nx;
+	v.y = ny + nh;
 	batch.vertices[batch.vertexCount++] = v;
 }
 
@@ -347,7 +346,7 @@ void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& col
 
 	getBatchForType(GL_TRIANGLE_STRIP);
 	Batch& batch = _batches[_currentBatch];
-	batch.texnum = 0;
+	batch.texnum = _white;
 	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
@@ -414,28 +413,33 @@ bool GL3Frontend::loadTexture (Texture *texture, const std::string& filename)
 		surface = temp;
 	}
 
-	GLuint texnum;
-	glGenTextures(1, &texnum);
-	glBindTexture(GL_TEXTURE_2D, texnum);
-	unsigned char* pixels = static_cast<unsigned char*>(surface->pixels);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, surface->w, surface->h, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	GL_checkError();
+	TexNum texnum = uploadTexture(static_cast<unsigned char*>(surface->pixels), surface->w, surface->h);
 	texture->setData(reinterpret_cast<void*>(texnum));
 	texture->setRect(0, 0, surface->w, surface->h);
 	SDL_FreeSurface(surface);
 	return texnum != 0;
 }
 
+TexNum GL3Frontend::uploadTexture (const unsigned char* pixels, int w, int h) const
+{
+	TexNum texnum;
+	glGenTextures(1, &texnum);
+	glBindTexture(GL_TEXTURE_2D, texnum);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	GL_checkError();
+	return texnum;
+}
+
 void GL3Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
 {
 	getBatchForType(GL_LINES);
 	Batch& batch = _batches[_currentBatch];
-	batch.texnum = 0;
+	batch.texnum = _white;
 	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
