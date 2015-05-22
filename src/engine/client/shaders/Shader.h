@@ -80,14 +80,14 @@ public:
 	void setUniform3fv (int location, float* values, int offset, int length) const;
 	void setUniform4fv (const std::string& name, float* values, int offset, int length) const;
 	void setUniform4fv (int location, float* values, int offset, int length) const;
-	void setUniformMatrix (const std::string& name, glm::mat4& matrix, bool transpose = false) const;
-	void setUniformMatrix (int location, glm::mat4& matrix, bool transpose = false) const;
-	void setUniformMatrix (const std::string& name, glm::mat3& matrix, bool transpose = false) const;
-	void setUniformMatrix (int location, glm::mat3& matrix, bool transpose = false) const;
-	void setUniformf (const std::string& name, glm::vec2& values) const;
-	void setUniformf (int location, glm::vec2& values) const;
-	void setUniformf (const std::string& name, glm::vec3& values) const;
-	void setUniformf (int location, glm::vec3& values) const;
+	void setUniformMatrix (const std::string& name, const glm::mat4& matrix, bool transpose = false) const;
+	void setUniformMatrix (int location, const glm::mat4& matrix, bool transpose = false) const;
+	void setUniformMatrix (const std::string& name, const glm::mat3& matrix, bool transpose = false) const;
+	void setUniformMatrix (int location, const glm::mat3& matrix, bool transpose = false) const;
+	void setUniformf (const std::string& name, const glm::vec2& values) const;
+	void setUniformf (int location, const glm::vec2& values) const;
+	void setUniformf (const std::string& name, const glm::vec3& values) const;
+	void setUniformf (int location, const glm::vec3& values) const;
 	void setUniformf (const std::string& name, Color values) const;
 	void setUniformf (int location, Color values) const;
 	void setVertexAttribute (const std::string& name, int size, int type, bool normalize, int stride, void* buffer) const;
@@ -250,46 +250,46 @@ inline void Shader::setUniform4fv (int location, float* values, int offset, int 
 	GL_checkError();
 }
 
-inline void Shader::setUniformMatrix (const std::string& name, glm::mat4& matrix, bool transpose) const
+inline void Shader::setUniformMatrix (const std::string& name, const glm::mat4& matrix, bool transpose) const
 {
 	const int location = getUniformLocation(name);
 	setUniformMatrix(location, matrix, transpose);
 }
 
-inline void Shader::setUniformMatrix (int location, glm::mat4& matrix, bool transpose) const
+inline void Shader::setUniformMatrix (int location, const glm::mat4& matrix, bool transpose) const
 {
 	glUniformMatrix4fv(location, 1, transpose ? GL_TRUE : GL_FALSE, glm::value_ptr(matrix));
 	GL_checkError();
 }
 
-inline void Shader::setUniformMatrix (const std::string& name, glm::mat3& matrix, bool transpose) const
+inline void Shader::setUniformMatrix (const std::string& name, const glm::mat3& matrix, bool transpose) const
 {
 	const int location = getUniformLocation(name);
 	setUniformMatrix(location, matrix, transpose);
 }
 
-inline void Shader::setUniformMatrix (int location, glm::mat3& matrix, bool transpose) const
+inline void Shader::setUniformMatrix (int location, const glm::mat3& matrix, bool transpose) const
 {
 	glUniformMatrix3fv(location, 1, transpose ? GL_TRUE : GL_FALSE, glm::value_ptr(matrix));
 	GL_checkError();
 }
 
-inline void Shader::setUniformf (const std::string& name, glm::vec2& values) const
+inline void Shader::setUniformf (const std::string& name, const glm::vec2& values) const
 {
 	setUniformf(name, values.x, values.y);
 }
 
-inline void Shader::setUniformf (int location, glm::vec2& values) const
+inline void Shader::setUniformf (int location, const glm::vec2& values) const
 {
 	setUniformf(location, values.x, values.y);
 }
 
-inline void Shader::setUniformf (const std::string& name, glm::vec3& values) const
+inline void Shader::setUniformf (const std::string& name, const glm::vec3& values) const
 {
 	setUniformf(name, values.x, values.y, values.z);
 }
 
-inline void Shader::setUniformf (int location, glm::vec3& values) const
+inline void Shader::setUniformf (int location, const glm::vec3& values) const
 {
 	setUniformf(location, values.x, values.y, values.z);
 }

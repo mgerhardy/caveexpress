@@ -29,6 +29,7 @@ struct Batch {
 	int vertexCount;
 	bool scissor;
 	SDL_Rect scissorRect;
+	glm::vec2 translation;
 	float angle;
 };
 
@@ -84,6 +85,10 @@ void GL3Frontend::flushBatches ()
 			_currentTexture = b.texnum;
 			glBindTexture(GL_TEXTURE_2D, _currentTexture);
 		}
+		const glm::mat4& translate = glm::translate(glm::mat4(1.0f), glm::vec3(b.translation, 0.0f));
+		const glm::mat4& model = glm::rotate(translate, b.angle, glm::vec3(0.0, 0.0, 1.0));
+		_shader.setUniformMatrix("u_model", model);
+
 		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * b.vertexCount, b.vertices, GL_STATIC_DRAW);
 		glDrawArrays(b.type, 0, b.vertexCount);
@@ -243,6 +248,8 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	batch.angle = angle;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
+	batch.translation.x = x1;
+	batch.translation.y = y1;
 
 	Vertex v;
 	v.c.r = _color[0] * 255.0f;
