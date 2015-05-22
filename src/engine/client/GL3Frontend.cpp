@@ -20,7 +20,7 @@ struct Vertex {
 };
 
 #define MAXNUMVERTICES 0x10000
-#define MAX_BATCHES 4
+#define MAX_BATCHES 16
 
 struct Batch {
 	TexNum texnum;
@@ -71,6 +71,7 @@ void GL3Frontend::flushBatches ()
 	_shader.activate();
 	_shader.setUniformMatrix("u_projection", _projectionMatrix, false);
 	glBindVertexArray(_vao);
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	bool scissorActive = false;
 	for (int i = 0; i < _currentBatch; ++i) {
 		Batch& b = _batches[i];
@@ -89,8 +90,7 @@ void GL3Frontend::flushBatches ()
 		const glm::mat4& model = glm::rotate(translate, b.angle, glm::vec3(0.0, 0.0, 1.0));
 		_shader.setUniformMatrix("u_model", model);
 
-		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * b.vertexCount, b.vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * b.vertexCount, b.vertices, GL_DYNAMIC_DRAW);
 		glDrawArrays(b.type, 0, b.vertexCount);
 	}
 	if (scissorActive)
@@ -104,7 +104,8 @@ void GL3Frontend::flushBatches ()
 
 void GL3Frontend::getBatchForType (int type)
 {
-//	if (_batches[_currentBatch].type == type)
+//	const Batch& b = _batches[_currentBatch];
+//	if (b.type == type)
 //		return;
 	startNewBatch();
 	_batches[_currentBatch].type = type;
@@ -177,6 +178,8 @@ void GL3Frontend::initRenderer ()
 	unsigned char white[16];
 	memset(white, 0xff, sizeof(white));
 	_white = uploadTexture(white, 2, 2);
+
+	memset(_batches, 0, sizeof(_batches));
 
 	if (!_shader.loadProgram("main"))
 		error(LOG_CLIENT, "Failed to load the main shader");
