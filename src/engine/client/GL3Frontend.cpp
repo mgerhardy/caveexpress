@@ -251,8 +251,8 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	batch.angle = DegreesToRadians(angle);
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
-	batch.translation.x = x1;
-	batch.translation.y = y1;
+	batch.translation.x = x1 + centerx;
+	batch.translation.y = y1 + centery;
 
 	Vertex v;
 	v.c.r = _color[0] * 255.0f;
