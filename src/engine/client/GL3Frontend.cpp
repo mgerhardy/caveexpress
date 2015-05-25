@@ -75,7 +75,9 @@ void GL3Frontend::renderBatches ()
 	if (_shader.hasUniform("u_projection"))
 		_shader.setUniformMatrix("u_projection", _projectionMatrix, false);
 	if (_shader.hasUniform("u_time"))
-		_shader.setUniformi("u_time", SDL_GetTicks());
+		_shader.setUniformi("u_time", _time);
+	if (_shader.hasUniform("u_screenres"))
+		_shader.setUniformi("u_screenres", _width, _height);
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _currentVertexIndex, _vertices, GL_DYNAMIC_DRAW);
