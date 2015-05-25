@@ -1,6 +1,5 @@
 #pragma once
 
-#include "engine/client/shaders/WaterShader.h"
 #include "engine/client/entities/ClientPlayer.h"
 #include "engine/client/particles/IParticleEnvironment.h"
 #include "engine/client/Camera.h"

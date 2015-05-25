@@ -72,7 +72,10 @@ void GL3Frontend::setHints ()
 void GL3Frontend::renderBatches ()
 {
 	_shader.activate();
-	_shader.setUniformMatrix("u_projection", _projectionMatrix, false);
+	if (_shader.hasUniform("u_projection"))
+		_shader.setUniformMatrix("u_projection", _projectionMatrix, false);
+	if (_shader.hasUniform("u_time"))
+		_shader.setUniformi("u_time", SDL_GetTicks());
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _currentVertexIndex, _vertices, GL_DYNAMIC_DRAW);
@@ -195,7 +198,8 @@ void GL3Frontend::initRenderer ()
 	if (!_shader.loadProgram("main"))
 		error(LOG_CLIENT, "Failed to load the main shader");
 	_shader.activate();
-	_shader.setUniformi("u_texture", 0);
+	if (_shader.hasUniform("u_texture"))
+		_shader.setUniformi("u_texture", 0);
 	_shader.setVertexAttribute("a_pos", 2, GL_FLOAT, false, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, x)));
 	_shader.enableVertexAttributeArray("a_pos");
 	_shader.setVertexAttribute("a_texcoord", 2, GL_FLOAT, false, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, u)));
@@ -523,7 +527,7 @@ void GL3Frontend::updateViewport (int x, int y, int width, int height)
 	glViewport(_viewPort.x, _viewPort.y, _viewPort.w, _viewPort.h);
 	const GLdouble _w = static_cast<GLdouble>(_viewPort.w);
 	const GLdouble _h = static_cast<GLdouble>(_viewPort.h);
-	_projectionMatrix = glm::ortho(0.0, _w, _h, 0.0, 0.0, 1.0);
+	_projectionMatrix = glm::ortho(0.0, _w, _h, 0.0, -1.0, 1.0);
 	GL_checkError();
 }
 
@@ -532,7 +536,6 @@ void GL3Frontend::renderBegin ()
 	SDL_GL_MakeCurrent(_window, _context);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	_shader.setProjectionMatrix(_projectionMatrix);
 	_currentBatch = 0;
 	_drawCalls = 0;
 }
