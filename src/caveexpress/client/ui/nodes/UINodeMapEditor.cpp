@@ -170,9 +170,9 @@ void UINodeMapEditor::renderBorder (const TileItem& item, int x, int y, const Co
 
 void UINodeMapEditor::render (int x, int y) const
 {
-	UINode::render(x, y);
-
 	enableScissor(x, y);
+
+	UINode::render(x, y);
 
 	for (TileItemsConstIter pItem = _map.begin(); pItem != _map.end(); ++pItem) {
 		const TileItem& item = *pItem;

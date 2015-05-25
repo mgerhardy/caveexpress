@@ -20,7 +20,7 @@ struct Vertex {
 };
 
 #define MAXNUMVERTICES 0x10000
-#define MAX_BATCHES 16
+#define MAX_BATCHES 128
 
 struct Batch {
 	TexNum texnum;
@@ -69,7 +69,7 @@ void GL3Frontend::setHints ()
 {
 }
 
-void GL3Frontend::flushBatches ()
+void GL3Frontend::renderBatches ()
 {
 	_shader.activate();
 	_shader.setUniformMatrix("u_projection", _projectionMatrix, false);
@@ -106,9 +106,8 @@ void GL3Frontend::flushBatches ()
 	GL_checkError();
 }
 
-void GL3Frontend::getBatchForType (int type)
+void GL3Frontend::flushBatch (int type)
 {
-//	const Batch& b = _batches[_currentBatch];
 //	if (b.type == type)
 //		return;
 	startNewBatch();
@@ -117,9 +116,14 @@ void GL3Frontend::getBatchForType (int type)
 
 void GL3Frontend::startNewBatch ()
 {
+	const Batch& b = _batches[_currentBatch];
+	if (_currentVertexIndex - b.vertexIndexStart == 0)
+		return;
+
 	++_currentBatch;
 	if (_currentBatch >= MAX_BATCHES) {
-		flushBatches();
+		debug(LOG_CLIENT, "render the batches because the max batch count was exceeded");
+		renderBatches();
 		memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
 		_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
 		return;
@@ -256,7 +260,7 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	const float maxy = centery;
 
 	const TexNum texnum = getTexNum(texture->getData());
-	getBatchForType(GL_TRIANGLES);
+	flushBatch(GL_TRIANGLES);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = texnum;
 	batch.angle = DegreesToRadians(angle);
@@ -323,7 +327,7 @@ void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& col
 	const float miny = ny;
 	const float maxy = ny + nh;
 
-	getBatchForType(GL_TRIANGLES);
+	flushBatch(GL_TRIANGLES);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = _white;
 	batch.angle = 0.0f;
@@ -365,51 +369,15 @@ void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& col
 
 void GL3Frontend::renderRect (int x, int y, int w, int h, const Color& color)
 {
-	if (w <= 0)
-		w = getWidth();
-	if (h <= 0)
-		h = getHeight();
-
-	const float nx = x * _rx;
-	const float ny = y * _ry;
-	const float nw = w * _rx;
-	const float nh = h * _ry;
-
-	getBatchForType(GL_LINE_LOOP);
-	Batch& batch = _batches[_currentBatch];
-	batch.texnum = _white;
-	batch.angle = 0.0f;
-	batch.scissor = false;
-	batch.scissorRect = {0, 0, 0, 0};
-	batch.vertexCount += 4;
-
-	Vertex v;
-	v.u = v.v = 0.0f;
-	v.c.r = color[0] * 255.0f;
-	v.c.g = color[1] * 255.0f;
-	v.c.b = color[2] * 255.0f;
-	v.c.a = color[3] * 255.0f;
-
-	v.x = nx;
-	v.y = ny;
-	_vertices[_currentVertexIndex++] = v;
-
-	v.x = nx + nw;
-	v.y = ny;
-	_vertices[_currentVertexIndex++] = v;
-
-	v.x = nx + nw;
-	v.y = ny + nh;
-	_vertices[_currentVertexIndex++] = v;
-
-	v.x = nx;
-	v.y = ny + nh;
-	_vertices[_currentVertexIndex++] = v;
+	renderFilledRect(x, y, w, 1, color);
+	renderFilledRect(x, y + h - 1, w, 1, color);
+	renderFilledRect(x, y + 1, 1, h - 2, color);
+	renderFilledRect(x + w - 1, y + 1, 1, h - 2, color);
 }
 
 void GL3Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
 {
-	getBatchForType(GL_LINES);
+	flushBatch(GL_LINES);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = _white;
 	batch.angle = 0.0f;
@@ -571,7 +539,7 @@ void GL3Frontend::renderBegin ()
 
 void GL3Frontend::renderEnd ()
 {
-	flushBatches();
+	renderBatches();
 #ifdef DEBUG
 	debug(LOG_CLIENT, String::format("%i drawcalls", _drawCalls));
 #endif

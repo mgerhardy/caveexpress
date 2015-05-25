@@ -23,7 +23,7 @@ protected:
 	bool checkExtension (const char *extension) const;
 	uintptr_t getProcAddress (const char *functionName) const;
 	TexNum uploadTexture(const unsigned char* pixels, int w, int h) const;
-	void getBatchForType (int type);
+	void flushBatch (int type);
 	void startNewBatch ();
 
 public:
@@ -47,7 +47,7 @@ public:
 	void initRenderer () override;
 	void setGLAttributes () override;
 	void setHints () override;
-	void flushBatches () override;
+	void renderBatches () override;
 	float getWidthScale () const override;
 	float getHeightScale () const override;
 	void enableScissor (int x, int y, int width, int height) override;
