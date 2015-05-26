@@ -10,6 +10,8 @@ public:
 	FrameBuffer ();
 	~FrameBuffer ();
 
+	void destroy ();
+
 	bool isSuccessful ();
 
 	/**

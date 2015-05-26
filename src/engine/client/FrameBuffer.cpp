@@ -7,8 +7,14 @@ FrameBuffer::FrameBuffer () :
 
 FrameBuffer::~FrameBuffer ()
 {
+	destroy();
+}
+
+void FrameBuffer::destroy ()
+{
 	if (_framebuffer != 0)
 		glDeleteFramebuffers(1, &_framebuffer);
+	_framebuffer = 0;
 }
 
 void FrameBuffer::bind ()

@@ -3,6 +3,7 @@
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
+#include "engine/client/shaders/ShaderManager.h"
 #include "engine/client/particles/Bubble.h"
 #include "engine/client/particles/Snow.h"
 #include "engine/client/particles/Sparkle.h"
@@ -28,7 +29,7 @@
 
 CaveExpressClientMap::CaveExpressClientMap (int x, int y, int width, int height, IFrontend *frontend,
 		ServiceProvider& serviceProvider, int referenceTileWidth) :
-		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth), _waterHeight(0.0)
+		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth), _waterHeight(0.0), _target(nullptr)
 {
 }
 
@@ -121,10 +122,24 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 	}
 }
 
-void CaveExpressClientMap::renderParticles (int x, int y) const
+void CaveExpressClientMap::renderBegin (int x, int y) const
 {
-	ClientMap::renderParticles(x, y);
+	_target = _frontend->renderToTexture(x, y, _width, _height);
+	ClientMap::renderBegin(x, y);
+}
+
+void CaveExpressClientMap::renderEnd (int x, int y) const
+{
+	const bool enablePostProcessing = _target != nullptr;
+	if (!enablePostProcessing) {
+		renderWater(x, y);
+		return;
+	}
+	WaterShader& ws = ShaderManager::get().getWaterShader();
+	ws.activate();
+	_frontend->renderTarget(_target);
 	renderWater(x, y);
+	ws.deactivate();
 }
 
 void CaveExpressClientMap::start () {

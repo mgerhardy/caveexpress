@@ -91,6 +91,9 @@ public:
 	virtual ~ClientMap ();
 
 	virtual void render () const;
+	virtual void renderBegin (int x, int y) const;
+	virtual void renderEnd (int x, int y) const;
+	virtual void renderLayers (int x, int y) const;
 	virtual void renderParticles (int x, int y) const;
 	virtual void setSetting (const std::string& key, const std::string& value);
 

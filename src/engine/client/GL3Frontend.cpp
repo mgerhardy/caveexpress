@@ -19,6 +19,10 @@ struct Vertex {
 	} c;
 };
 
+struct RenderTarget {
+	FrameBuffer* fbo;
+};
+
 #define MAXNUMVERTICES 0x10000
 #define MAX_BATCHES 128
 
@@ -46,7 +50,7 @@ inline TexNum getTexNum (void *textureData)
 }
 
 GL3Frontend::GL3Frontend (SharedPtr<IConsole> console) :
-		SDLFrontend(console), _currentTexture(-1), _rx(1.0f), _ry(1.0f), _vao(0u), _vbo(0u), _white(0), _drawCalls(0)
+		SDLFrontend(console), _currentTexture(-1), _rx(1.0f), _ry(1.0f), _vao(0u), _vbo(0u), _renderTargetTexture(0), _fullScreenQuadVBO(0), _white(0), _drawCalls(0)
 {
 	_context = nullptr;
 	_currentBatch = 0;
@@ -67,6 +71,31 @@ void GL3Frontend::setGLAttributes ()
 
 void GL3Frontend::setHints ()
 {
+}
+
+RenderTarget* GL3Frontend::renderToTexture (int x, int y, int w, int h)
+{
+	static RenderTarget target;
+	target.fbo = &_fbo;
+	_fbo.bind(x, y, w, h);
+	glClear(GL_COLOR_BUFFER_BIT);
+	_renderTargetTexture = _fbo.createTexture(GL_COLOR_ATTACHMENT0, w - x, h - y);
+	_fbo.drawBuffer();
+	SDL_assert_always(_fbo.isSuccessful());
+	return &target;
+}
+
+bool GL3Frontend::renderTarget (RenderTarget* target)
+{
+	_fbo.unbind();
+
+	int loc = 0; // TODO:
+	glEnableVertexAttribArray(loc);
+	glBindBuffer(GL_ARRAY_BUFFER, _fullScreenQuadVBO);
+	glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisableVertexAttribArray(0);
+	return true;
 }
 
 void GL3Frontend::renderBatches ()
@@ -209,6 +238,12 @@ void GL3Frontend::initRenderer ()
 	_shader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, c)));
 	_shader.enableVertexAttributeArray("a_color");
 	glBindVertexArray(0);
+
+	static const GLfloat fullscreenQuad[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, };
+	glGenBuffers(1, &_fullScreenQuadVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, _fullScreenQuadVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(fullscreenQuad), fullscreenQuad, GL_STATIC_DRAW);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	_shader.deactivate();
@@ -525,6 +560,10 @@ void GL3Frontend::updateViewport (int x, int y, int width, int height)
 
 	_rx = scale;
 	_ry = scale;
+
+	_fbo.destroy();
+	_fbo.bind(_viewPort.x, _viewPort.y, _viewPort.w, _viewPort.h);
+	_fbo.unbind();
 
 	glViewport(_viewPort.x, _viewPort.y, _viewPort.w, _viewPort.h);
 	const GLdouble _w = static_cast<GLdouble>(_viewPort.w);

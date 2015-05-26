@@ -2,6 +2,7 @@
 
 #include "SDLFrontend.h"
 #include "engine/client/shaders/Shader.h"
+#include "engine/client/FrameBuffer.h"
 
 class GL3Frontend: public SDLFrontend {
 protected:
@@ -16,6 +17,9 @@ protected:
 	SDL_Rect _viewPort;
 	GLuint _vao;
 	GLuint _vbo;
+	FrameBuffer _fbo;
+	GLuint _renderTargetTexture;
+	GLuint _fullScreenQuadVBO;
 	TexNum _white;
 	Shader _shader;
 	int _drawCalls;
@@ -41,6 +45,8 @@ public:
 	void destroyTexture (void *data) override;
 	void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha = 1.0f) override;
 	void bindTexture (Texture* texture, int textureUnit) override;
+	RenderTarget* renderToTexture (int x, int y, int w, int h) override;
+	bool renderTarget (RenderTarget* target) override;
 	void renderRect (int x, int y, int w, int h, const Color& color) override;
 	void renderFilledRect (int x, int y, int w, int h, const Color& fillColor) override;
 	void renderLine (int x1, int y1, int x2, int y2, const Color& color) override;

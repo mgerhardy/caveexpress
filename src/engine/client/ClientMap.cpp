@@ -155,9 +155,22 @@ void ClientMap::renderLayer (int x, int y, Layer layer) const
 	}
 }
 
+void ClientMap::renderLayers (int x, int y) const {
+	renderLayer(x, y, LAYER_BACK);
+	renderLayer(x, y, LAYER_MIDDLE);
+	renderLayer(x, y, LAYER_FRONT);
+}
+
+void ClientMap::renderBegin (int x, int y) const {
+}
+
+void ClientMap::renderEnd (int x, int y) const {
+}
+
 void ClientMap::render () const
 {
 	ExecutionTime renderTime("ClientMapRender", 2000L);
+
 	const int x = _screenRumbleOffsetX + _x + _camera.getViewportX();
 	const int y = _screenRumbleOffsetY + _y + _camera.getViewportY();
 
@@ -169,9 +182,11 @@ void ClientMap::render () const
 	} else {
 		_frontend->enableScissor(scissorX, scissorY, getPixelWidth() * _zoom, getPixelHeight() * _zoom);
 	}
-	renderLayer(x, y, LAYER_BACK);
-	renderLayer(x, y, LAYER_MIDDLE);
-	renderLayer(x, y, LAYER_FRONT);
+
+	renderBegin(x, y);
+	renderLayers(x, y);
+	renderParticles(x, y);
+	renderEnd(x, y);
 
 	if (_restartDue != 0) {
 		renderFadeOutOverlay();
@@ -179,8 +194,6 @@ void ClientMap::render () const
 
 	Config.setDebugRendererData(x, y, getWidth(), getHeight(), _scale * _zoom);
 	Config.getDebugRenderer().render();
-
-	renderParticles(x, y);
 
 	if (!debug) {
 		_frontend->disableScissor();

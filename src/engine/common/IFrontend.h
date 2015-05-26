@@ -13,6 +13,8 @@ class Texture;
 class BitmapFont;
 typedef SharedPtr<BitmapFont> BitmapFontPtr;
 
+struct RenderTarget;
+
 #define TINY_FONT "font-8"
 #define SMALL_FONT "font-10"
 #define MEDIUM_FONT "font-12"
@@ -90,6 +92,8 @@ public:
 	virtual void showCursor (bool show) = 0;
 	virtual bool loadTexture (Texture *texture, const std::string& filename) = 0;
 	virtual void bindTexture (Texture* texture, int textureUnit) = 0;
+	virtual RenderTarget* renderToTexture (int x, int y, int w, int h) { return nullptr; }
+	virtual bool renderTarget (RenderTarget* target) { return false; }
 	// @param w the width of the rect to fill <= 0 to use the full screen width
 	// @param h the height of the rect to fill <= 0 to use the full screen height
 	virtual void renderRect (int x, int y, int w, int h, const Color& color) = 0;
