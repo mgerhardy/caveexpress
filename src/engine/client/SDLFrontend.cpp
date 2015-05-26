@@ -18,12 +18,17 @@
 #include <SDL_platform.h>
 #include <limits.h>
 
+struct RenderTarget {
+	int i; // unused
+};
+
 SDLFrontend::SDLFrontend (SharedPtr<IConsole> console) :
 		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _softwareRenderer(false)
 {
 	_window = nullptr;
 	_haptic = nullptr;
 	_renderer = nullptr;
+	_renderToTexture = nullptr;
 
 	_debugSleep = Config.getConfigVar("debugSleep", "0", true);
 	Vector4Set(colorBlack, _color);
@@ -36,6 +41,7 @@ SDLFrontend::~SDLFrontend ()
 
 //	for (int i = 0; i < _numJoysticks; ++i)
 //		SDL_JoystickClose(_joysticks[i]);
+	SDL_DestroyTexture(_renderToTexture);
 	if (_renderer)
 		SDL_DestroyRenderer(_renderer);
 	SDL_DestroyWindow(_window);
@@ -309,6 +315,7 @@ void SDLFrontend::updateViewport (int x, int y, int width, int height)
 	assert(_renderer);
 
 	SDL_RenderSetLogicalSize(_renderer, getWidth(), getHeight());
+	_renderToTexture = SDL_CreateTexture(_renderer, getDisplayFormat(), SDL_TEXTUREACCESS_TARGET, getWidth(), getHeight());
 
 	ShaderManager::get().updateProjectionMatrix(width, height);
 }
@@ -368,6 +375,21 @@ void SDLFrontend::renderEnd ()
 {
 	assert(_renderer);
 	SDL_RenderPresent(_renderer);
+}
+
+RenderTarget* SDLFrontend::renderToTexture (int x, int y, int w, int h)
+{
+	static RenderTarget target;
+	SDL_SetRenderTarget(_renderer, _renderToTexture);
+	SDL_RenderClear(_renderer);
+	return &target;
+}
+
+bool SDLFrontend::renderTarget (RenderTarget* target)
+{
+	SDL_SetRenderTarget(_renderer, nullptr);
+	SDL_RenderCopyEx(_renderer, _renderToTexture, nullptr, nullptr, 0, nullptr, SDL_FLIP_NONE);
+	return true;
 }
 
 void SDLFrontend::render ()
