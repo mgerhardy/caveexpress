@@ -124,7 +124,7 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 
 void CaveExpressClientMap::renderBegin (int x, int y) const
 {
-	_target = _frontend->renderToTexture(0, 0, _width, _height);
+	_target = _frontend->renderToTexture(_x, _y, _width, _height);
 	ClientMap::renderBegin(x, y);
 }
 
