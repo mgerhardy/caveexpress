@@ -69,8 +69,7 @@ void FrameBuffer::attachTexture (GLuint texture, GLenum attachmentType)
 		++_attached;
 	else
 		--_attached;
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glFramebufferTexture(GL_FRAMEBUFFER, attachmentType, texture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, GL_TEXTURE_2D, texture, 0);
 }
 
 GLuint FrameBuffer::createTexture (GLenum attachmentType, int width, int height)

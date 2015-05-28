@@ -79,9 +79,7 @@ RenderTarget* GL3Frontend::renderToTexture (int x, int y, int w, int h)
 	target.fbo = &_fbo;
 	_fbo.bind(x, y, w, h);
 	glClear(GL_COLOR_BUFFER_BIT);
-	_renderTargetTexture = _fbo.createTexture(GL_COLOR_ATTACHMENT0, w - x, h - y);
 	_fbo.drawBuffer();
-	SDL_assert_always(_fbo.isSuccessful());
 	return &target;
 }
 
@@ -563,6 +561,9 @@ void GL3Frontend::updateViewport (int x, int y, int width, int height)
 
 	_fbo.destroy();
 	_fbo.bind(_viewPort.x, _viewPort.y, _viewPort.w, _viewPort.h);
+	_renderTargetTexture = _fbo.createTexture(GL_COLOR_ATTACHMENT0, _viewPort.w - _viewPort.x, _viewPort.h - _viewPort.y);
+	_fbo.drawBuffer(GL_COLOR_ATTACHMENT0);
+	SDL_assert_always(_fbo.isSuccessful());
 	_fbo.unbind();
 
 	glViewport(_viewPort.x, _viewPort.y, _viewPort.w, _viewPort.h);
