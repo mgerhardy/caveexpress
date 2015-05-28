@@ -77,15 +77,13 @@ RenderTarget* GL3Frontend::renderToTexture (int x, int y, int w, int h)
 {
 	static RenderTarget target;
 	target.fbo = &_fbo;
-	_fbo.bind(x, y, w, h);
-	glClear(GL_COLOR_BUFFER_BIT);
-	_fbo.drawBuffer();
+	target.fbo->bind(x, y, w, h);
 	return &target;
 }
 
 bool GL3Frontend::renderTarget (RenderTarget* target)
 {
-	_fbo.unbind();
+	target->fbo->unbind();
 
 	int loc = 0; // TODO:
 	glEnableVertexAttribArray(loc);
@@ -560,9 +558,9 @@ void GL3Frontend::updateViewport (int x, int y, int width, int height)
 	_ry = scale;
 
 	_fbo.destroy();
-	_fbo.bind(_viewPort.x, _viewPort.y, _viewPort.w, _viewPort.h);
+	_fbo.bind();
 	_renderTargetTexture = _fbo.createTexture(GL_COLOR_ATTACHMENT0, _viewPort.w - _viewPort.x, _viewPort.h - _viewPort.y);
-	_fbo.drawBuffer(GL_COLOR_ATTACHMENT0);
+	_fbo.drawBuffer();
 	SDL_assert_always(_fbo.isSuccessful());
 	_fbo.unbind();
 

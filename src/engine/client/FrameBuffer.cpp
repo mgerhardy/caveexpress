@@ -1,7 +1,7 @@
 #include "FrameBuffer.h"
 
 FrameBuffer::FrameBuffer () :
-		_framebuffer(0), _attached(0)
+		_framebuffer(0u), _attached(0), _depth(false), _depthRenderBuffer(0u)
 {
 }
 
@@ -12,9 +12,15 @@ FrameBuffer::~FrameBuffer ()
 
 void FrameBuffer::destroy ()
 {
+	if (_depth)
+		glDeleteRenderbuffers(1, &_depthRenderBuffer);
+	glDeleteTextures(_textures.size(), &_textures[0]);
 	if (_framebuffer != 0)
 		glDeleteFramebuffers(1, &_framebuffer);
-	_framebuffer = 0;
+	_textures.clear();
+	_framebuffer = 0u;
+	_depth = false;
+	_depthRenderBuffer = 0u;
 }
 
 void FrameBuffer::bind ()
@@ -32,6 +38,8 @@ void FrameBuffer::bind (int x, int y, int w, int h)
 {
 	bind();
 	glViewport(x, y, w, h);
+	glClear(GL_COLOR_BUFFER_BIT | (_depth ? GL_DEPTH_BUFFER_BIT : 0));
+	drawBuffer();
 }
 
 void FrameBuffer::unbind ()
@@ -45,22 +53,26 @@ bool FrameBuffer::isSuccessful ()
 	return error == GL_FRAMEBUFFER_COMPLETE;
 }
 
-void FrameBuffer::attachDepthBuffer (int width, int height)
+GLuint FrameBuffer::attachDepthBuffer (int width, int height)
 {
 	GLuint depthrenderbuffer;
 	glGenRenderbuffers(1, &depthrenderbuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
+	_depth = true;
+	_depthRenderBuffer = depthrenderbuffer;
+	return depthrenderbuffer;
 }
 
-void FrameBuffer::attachRenderBuffer (GLenum internalformat, GLenum attachment, GLsizei width, GLsizei height)
+GLuint FrameBuffer::attachRenderBuffer (GLenum internalformat, GLenum attachment, GLsizei width, GLsizei height)
 {
 	GLuint depthrenderbuffer;
 	glGenRenderbuffers(1, &depthrenderbuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
 	glRenderbufferStorage(GL_RENDERBUFFER, internalformat, width, height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, depthrenderbuffer);
+	return depthrenderbuffer;
 }
 
 void FrameBuffer::attachTexture (GLuint texture, GLenum attachmentType)
@@ -81,6 +93,7 @@ GLuint FrameBuffer::createTexture (GLenum attachmentType, int width, int height)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	attachTexture(texnum, attachmentType);
+	_textures.push_back(texnum);
 	return texnum;
 }
 

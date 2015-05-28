@@ -140,6 +140,7 @@ void CaveExpressClientMap::renderEnd (int x, int y) const
 	_frontend->renderTarget(_target);
 	renderWater(x, y);
 	ws.deactivate();
+	_target = nullptr;
 }
 
 void CaveExpressClientMap::start () {

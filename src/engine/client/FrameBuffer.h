@@ -1,11 +1,15 @@
 #pragma once
 
 #include "GLFunc.h"
+#include <vector>
 
 class FrameBuffer {
 private:
 	GLuint _framebuffer;
 	int _attached;
+	bool _depth;
+	GLuint _depthRenderBuffer;
+	std::vector<GLuint> _textures;
 public:
 	FrameBuffer ();
 	~FrameBuffer ();
@@ -31,8 +35,8 @@ public:
 	 * @param[in] attachmentType Possible values are @c GL_COLOR_ATTACHMENT0..GL_COLOR_ATTACHMENTn, GL_DEPTH_ATTACHMENT, GL_STENCIL_ATTACHMENT
 	 */
 	GLuint createTexture (GLenum attachmentType, int width, int height);
-	void attachDepthBuffer (int width, int height);
-	void attachRenderBuffer (GLenum internalformat, GLenum attachment, GLsizei width, GLsizei height);
+	GLuint attachDepthBuffer (int width, int height);
+	GLuint attachRenderBuffer (GLenum internalformat, GLenum attachment, GLsizei width, GLsizei height);
 	void drawBuffers (GLsizei n, const GLenum *buffers);
 	void drawBuffer (const GLenum buffer = GL_COLOR_ATTACHMENT0);
 };
