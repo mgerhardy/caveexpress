@@ -559,7 +559,7 @@ void GL3Frontend::updateViewport (int x, int y, int width, int height)
 
 	_fbo.destroy();
 	_fbo.bind();
-	_renderTargetTexture = _fbo.createTexture(GL_COLOR_ATTACHMENT0, _viewPort.w - _viewPort.x, _viewPort.h - _viewPort.y);
+	_renderTargetTexture = _fbo.createTexture(GL_COLOR_ATTACHMENT0, _viewPort.w, _viewPort.h);
 	_fbo.drawBuffer();
 	SDL_assert_always(_fbo.isSuccessful());
 	_fbo.unbind();
