@@ -1,7 +1,6 @@
 #include "SDLFrontend.h"
 #include "engine/client/ui/UI.h"
 #include "engine/client/ClientConsole.h"
-#include "engine/client/shaders/ShaderManager.h"
 #include "engine/common/String.h"
 #include "engine/common/EventHandler.h"
 #include "engine/common/CommandSystem.h"
@@ -112,7 +111,6 @@ void SDLFrontend::update (uint32_t deltaTime)
 	_console->update(deltaTime);
 	UI::get().update(deltaTime);
 	SoundControl.update(deltaTime);
-	ShaderManager::get().update(deltaTime);
 }
 
 bool SDLFrontend::setFrameCallback (int interval, void (*callback) (void*), void *callbackParam)
@@ -191,7 +189,7 @@ void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 {
 	assert(_renderer);
 
-	if (!texture->isValid())
+	if (texture == nullptr || !texture->isValid())
 		return;
 
 	getTrimmed(texture, x, y, w, h);
@@ -316,8 +314,6 @@ void SDLFrontend::updateViewport (int x, int y, int width, int height)
 
 	SDL_RenderSetLogicalSize(_renderer, getWidth(), getHeight());
 	_renderToTexture = SDL_CreateTexture(_renderer, getDisplayFormat(), SDL_TEXTUREACCESS_TARGET, getWidth(), getHeight());
-
-	ShaderManager::get().updateProjectionMatrix(width, height);
 }
 
 void SDLFrontend::enableScissor (int x, int y, int width, int height)
@@ -628,9 +624,6 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	_eventHandler = &eventHandler;
 	_eventHandler->registerObserver(_console.get());
 	_eventHandler->registerObserver(this);
-
-	info(LOG_CLIENT, "init the shader manager");
-	ShaderManager::get().init();
 
 	if (!Config.isSoundEnabled()) {
 		info(LOG_CLIENT, "sound disabled");

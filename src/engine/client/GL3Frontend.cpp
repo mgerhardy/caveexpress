@@ -280,7 +280,7 @@ void GL3Frontend::bindTexture (Texture* texture, int textureUnit)
 
 void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha)
 {
-	if (!texture->isValid())
+	if (texture == nullptr || !texture->isValid())
 		return;
 
 	const TextureCoords texCoords(texture);

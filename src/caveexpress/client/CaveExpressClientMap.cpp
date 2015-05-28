@@ -3,7 +3,6 @@
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
-#include "engine/client/shaders/ShaderManager.h"
 #include "engine/client/particles/Bubble.h"
 #include "engine/client/particles/Snow.h"
 #include "engine/client/particles/Sparkle.h"
@@ -135,12 +134,21 @@ void CaveExpressClientMap::renderEnd (int x, int y) const
 		renderWater(x, y);
 		return;
 	}
-	WaterShader& ws = ShaderManager::get().getWaterShader();
-	ws.activate();
 	_frontend->renderTarget(_target);
-	renderWater(x, y);
-	ws.deactivate();
 	_target = nullptr;
+
+#if 1
+	renderWater(x, y);
+#else
+	if (getWaterHeight() <= 0.000001f)
+		return;
+	const int widthWater = getPixelWidth() * _zoom;
+	const int waterSurface = y + getWaterSurface() * _zoom;
+	const int waterGround = y + getWaterGround() * _zoom;
+	const int waterHeight = waterGround - waterSurface;
+	const TexturePtr& texture = UI::get().loadTexture("water");
+	_frontend->renderImage(texture.get(), x, waterSurface, widthWater, waterHeight, 0, 0.5f);
+#endif
 }
 
 void CaveExpressClientMap::start () {

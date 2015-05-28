@@ -195,7 +195,7 @@ void GL1Frontend::setColorPointer (const Color& color, int amount)
 void GL1Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha)
 {
 #ifdef SDL_VIDEO_OPENGL
-	if (!texture->isValid())
+	if (texture == nullptr || !texture->isValid())
 		return;
 
 	_color[3] = alpha;
