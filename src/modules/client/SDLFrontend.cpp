@@ -384,7 +384,7 @@ RenderTarget* SDLFrontend::renderToTexture (int x, int y, int w, int h)
 bool SDLFrontend::renderTarget (RenderTarget* target)
 {
 	SDL_SetRenderTarget(_renderer, nullptr);
-	SDL_RenderCopyEx(_renderer, _renderToTexture, nullptr, nullptr, 0, nullptr, SDL_FLIP_NONE);
+	SDL_RenderCopy(_renderer, _renderToTexture, nullptr, nullptr);
 	return true;
 }
 
