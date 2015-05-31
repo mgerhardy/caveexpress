@@ -1,8 +1,54 @@
 cmake_minimum_required(VERSION 2.6)
 
+#-------------------------------------------------------------------------------
+# macros
+#-------------------------------------------------------------------------------
+
+macro(texture_file_write TARGET_FILE FILEENTRY)
+	file(READ ${FILEENTRY} CONTENTS)
+	string(REGEX REPLACE ";" "\\\\;" CONTENTS "${CONTENTS}")
+	string(REGEX REPLACE "\n" ";" CONTENTS "${CONTENTS}")
+	list(REMOVE_AT CONTENTS 0 -2)
+	foreach(LINE ${CONTENTS})
+		file(APPEND ${TARGET_FILE} "${LINE}\n")
+	endforeach()
+endmacro()
+
+macro(texture_merge TARGET_FILE FILELIST_BIG FILELIST_SMALL)
+	file(WRITE ${TARGET_FILE} "")
+
+	file(APPEND ${TARGET_FILE} "texturesbig = {\n")
+	foreach(FILEENTRY ${FILELIST_BIG})
+		message(".. ${FILEENTRY}")
+		texture_file_write(${TARGET_FILE} ${FILEENTRY})
+	endforeach()
+	file(APPEND ${TARGET_FILE} "}\n")
+
+	file(APPEND ${TARGET_FILE} "texturessmall = {\n")
+	foreach(FILEENTRY ${FILELIST_SMALL})
+		message(".. ${FILEENTRY}")
+		texture_file_write(${TARGET_FILE} ${FILEENTRY})
+	endforeach()
+	file(APPEND ${TARGET_FILE} "}\n")
+endmacro()
+
+macro(textures PROJECTNAME)
+	file(GLOB FILELIST_BIG ${ROOT_DIR}/contrib/assets/png-packed/${PROJECTNAME}-*-big.lua)
+	file(GLOB FILELIST_SMALL ${ROOT_DIR}/contrib/assets/png-packed/${PROJECTNAME}-*-small.lua)
+	message("build complete.lua: ${ROOT_DIR}/contrib/assets/png-packed/${PROJECTNAME}")
+	texture_merge(${PROJECT_BINARY_DIR}/complete.lua.in "${FILELIST_BIG}" "${FILELIST_SMALL}")
+	configure_file(${PROJECT_BINARY_DIR}/complete.lua.in ${ROOT_DIR}/base/${PROJECTNAME}/textures/complete.lua COPYONLY)
+endmacro()
+
+#-------------------------------------------------------------------------------
+# macros end
+#-------------------------------------------------------------------------------
+
 option(RELEASE "Build a release build" OFF)
 
 set(CMAKE_CXX_FLAGS "-std=c++11") 
+
+set(ROOT_DIR ${PROJECT_SOURCE_DIR})
 
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}/src")
