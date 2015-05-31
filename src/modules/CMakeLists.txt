@@ -1,4 +1,5 @@
 add_subdirectory(game)
+add_subdirectory(common)
 
 FILE(GLOB modules_SRCS
 	client/shaders/*.cpp
@@ -14,27 +15,9 @@ FILE(GLOB modules_SRCS
 	client/ui/windows/*.cpp
 	client/ui/windows/intro/*.cpp
 	client/ui/layouts/*.cpp
-	common/*.cpp
-	common/campaign/*.cpp
-	common/campaign/persister/*.cpp
-	common/network/*.cpp
 	server/box2d/*.cpp
 	server/*.cpp)
 
-if(WIN32)
-FILE(GLOB modules_PLATFORM_SRCS
-	common/ports/Windows.cpp
-	common/ports/project.rc)
-elseif(APPLE)
-FILE(GLOB modules_PLATFORM_SRCS
-	common/ports/Darwin.cpp
-	common/ports/Cocoa.mm)
-elseif(UNIX)
-FILE(GLOB modules_PLATFORM_SRCS
-	common/ports/Unix.cpp)
-	add_definitions(-D_GNU_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE)
-endif()
-
 add_library(modules ${modules_SRCS} ${modules_PLATFORM_SRCS})
 set_target_properties(modules PROPERTIES FOLDER modules)
-target_link_libraries(modules libs game GL)
+target_link_libraries(modules libs game common GL)

@@ -16,7 +16,7 @@ file(GLOB ${PROJECT_NAME}_SRC
 	EnumTest.cpp)
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} engine)
+target_link_libraries(${PROJECT_NAME} modules)
 endif()
 
 if(FALSE)
@@ -33,7 +33,7 @@ SET(${PROJECT_NAME}_SRC
 	caveexpress/RandomMapContextTest.cpp)
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} engine)
+target_link_libraries(${PROJECT_NAME} modules)
 
 project(tests-cavepacker)
 SET(${PROJECT_NAME}_SRC
@@ -47,6 +47,6 @@ SET(${PROJECT_NAME}_SRC
 	cavepacker/SokobanMapTest.cpp)
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} engine)
+target_link_libraries(${PROJECT_NAME} modules)
 endif()
 
