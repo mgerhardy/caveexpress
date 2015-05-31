@@ -17,6 +17,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/lua")
+include_directories("${PROJECT_SOURCE_DIR}/src/libs/Box2D")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/tinyxml2")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/sqlite")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/gtest/include")

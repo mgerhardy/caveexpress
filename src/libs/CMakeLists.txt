@@ -242,4 +242,5 @@ endif()
 
 add_definitions(-DLOAD_PNG -DPNG_NO_CONFIG_H -DHAVE_SDL_IMAGE_H -DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE -DSQLITE_HAVE_ISNAN)
 add_library(libs ${libs_SRCS} ${libs_PLATFORM_SRCS})
-target_link_libraries(libs dl pthread GL)
+set_target_properties(engine PROPERTIES FOLDER engine)
+target_link_libraries(libs dl pthread)

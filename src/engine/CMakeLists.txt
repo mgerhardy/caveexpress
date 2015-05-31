@@ -36,4 +36,5 @@ FILE(GLOB engine_PLATFORM_SRCS
 endif()
 
 add_library(engine ${engine_SRCS} ${engine_PLATFORM_SRCS})
-target_link_libraries(engine libs GL)
+set_target_properties(engine PROPERTIES FOLDER engine)
+target_link_libraries(engine libs)
