@@ -95,5 +95,6 @@ endif()
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/libs)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/engine)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/tests)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/cavepacker)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/caveexpress)
