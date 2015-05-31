@@ -9,7 +9,7 @@ public:
 
 public:
 	void showAds (bool show) override;
-	int openURL (const std::string& url) const override;
+	int openURL (const std::string& url, bool newWindow) const override;
 	bool isFullscreenSupported () override { return false; }
 	std::string getHomeDirectory () override;
 };

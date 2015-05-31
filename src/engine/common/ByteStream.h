@@ -208,7 +208,7 @@ inline int16_t ByteStream::readShort ()
 {
 	if (_buffer.size() < 2)
 		System.exit("buffer underrun in readShort", 1);
-	const int16_t *word = (const int16_t*)getBuffer();
+	const int16_t *word = reinterpret_cast<const int16_t*>(getBuffer());
 	const int16_t val = SDL_SwapLE16(*word);
 	_buffer.erase(_buffer.begin(), std::next(_buffer.begin(), 2));
 	return val;
@@ -229,7 +229,7 @@ inline int32_t ByteStream::readInt ()
 {
 	if (_buffer.size() < 4)
 		System.exit("buffer underrun in readInt", 1);
-	const int32_t *word = (const int32_t*)getBuffer();
+	const int32_t *word = reinterpret_cast<const int32_t*>(getBuffer());
 	const int32_t val = SDL_SwapLE32(*word);
 	_buffer.erase(_buffer.begin(), std::next(_buffer.begin(), 4));
 	return val;

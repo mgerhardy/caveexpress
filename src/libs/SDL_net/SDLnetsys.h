@@ -38,7 +38,12 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #else
+#ifdef __MINGW64_VERSION_MAJOR
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#else
 #include <winsock.h>
+#endif
 /* NOTE: windows socklen_t is signed
  * and is defined only for winsock2. */
 typedef int socklen_t;

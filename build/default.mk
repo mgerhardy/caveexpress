@@ -92,7 +92,7 @@ ifeq ($(TARGET_OS),darwin)
 		$(wildcard src/libs/SDL/src/thread/pthread/*.c) \
 		)
 endif
-ifneq ($(findstring $(TARGET_OS), mingw32 mingw64 mingw64_64),)
+ifneq ($(findstring $(TARGET_OS), mingw32 mingw64),)
 	SDL_SRCS += \
 		$(subst src/libs/SDL/,libs/SDL/, \
 		$(wildcard src/libs/SDL/src/joystick/windows/*.c) \
@@ -131,6 +131,18 @@ ifeq ($(TARGET_OS),nacl)
 			$(wildcard src/libs/SDL/src/main/nacl/*.c) \
 		)
 endif
+ifeq ($(TARGET_OS),html5)
+	SDL_SRCS += \
+		$(subst src/libs/SDL/,libs/SDL/, \
+			$(wildcard src/libs/SDL/src/audio/emscripten/*.c) \
+			$(wildcard src/libs/SDL/src/filesystem/emscripten/*.c) \
+			$(wildcard src/libs/SDL/src/joystick/emscripten/*.c) \
+			$(wildcard src/libs/SDL/src/power/emscripten/*.c) \
+			$(wildcard src/libs/SDL/src/video/emscripten/*.c) \
+			$(wildcard src/libs/SDL/src/thread/generic/*.c) \
+			$(wildcard src/libs/SDL/src/timer/unix/*.c) \
+		)
+endif
 ifneq ($(findstring $(TARGET_OS), android ouya),)
 	SDL_SRCS += \
 		$(subst src/libs/SDL/,libs/SDL/, \
@@ -155,8 +167,6 @@ ifeq ($(HAVE_SDL_IMAGE_H),1)
 SDL_IMAGE_LIBS           += $(call PKG_LIBS,SDL2_image)
 SDL_IMAGE_CFLAGS         ?= $(call PKG_CFLAGS,SDL2_image)
 SDL_IMAGE_SRCS            =
-PNG_CFLAGS               ?= $(call PKG_CFLAGS,png,png)
-PNG_LIBS                 += $(call PKG_LIBS,png,png)
 else
 SDL_IMAGE_LIBS           +=
 SDL_IMAGE_CFLAGS         ?= -DLOAD_PNG -Isrc/libs/SDL_image -Isrc/libs/libpng-1.6.2 -DPNG_NO_CONFIG_H -DHAVE_SDL_IMAGE_H
@@ -300,13 +310,24 @@ OPENGLES_CFLAGS          ?= $(call PKG_CFLAGS,glesv2) $(call PKG_CFLAGS,egl)
 OPENGLES_LIBS            += $(call PKG_LIBS,glesv2) $(call PKG_LIBS,egl)
 OPENGL_CFLAGS            ?= $(call PKG_CFLAGS,gl,gl)
 OPENGL_LIBS              += $(call PKG_LIBS,gl,gl)
+ifeq ($(HAVE_GTEST_GTEST_H),1)
+GTEST_CFLAGS             ?= $(call PKG_CFLAGS,gtest)
+GTEST_LIBS               += $(call PKG_LIBS,gtest)
+GTEST_SRCS                =
+else
 GTEST_CFLAGS             ?= -Isrc/libs/gtest/include -Isrc/libs/gtest
 GTEST_LIBS               +=
 GTEST_SRCS                = libs/gtest/src/gtest-all.cc
+endif
 ifeq ($(HAVE_NCURSES_H),1)
 NCURSES_CFLAGS           ?= $(call PKG_CFLAGS,ncurses)
 NCURSES_LIBS             += $(call PKG_LIBS,ncurses)
 endif
+ifeq ($(HAVE_LUA_H),1)
+LUA_CFLAGS               ?= $(call PKG_CFLAGS,lua5.2) -DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE
+LUA_LIBS                 += $(call PKG_LIBS,lua5.2)
+LUA_SRCS                  =
+else
 LUA_SRCS                  = \
 	libs/lua/lapi.cpp \
 	libs/lua/lauxlib.cpp \
@@ -342,19 +363,15 @@ LUA_SRCS                  = \
 	libs/lua/lzio.cpp
 LUA_CFLAGS               ?= -Isrc/libs/lua -DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE
 LUA_LIBS                 +=
+endif
 ifeq ($(HAVE_SQLITE3_H),1)
 SQLITE3_SRCS              =
 SQLITE3_CFLAGS           ?= $(call PKG_CFLAGS,sqlite3)
 SQLITE3_LIBS             += $(call PKG_LIBS,sqlite3)
 else
-ifeq ($(TARGET_OS),html5)
-SQLITE3_SRCS              =
-SQLITE3_CFLAGS           ?=
-else
 SQLITE3_SRCS              = libs/sqlite/sqlite3.c
-SQLITE3_CFLAGS           ?= -Isrc/libs/sqlite -DSQLITE_HAVE_ISNAN
-endif
-SQLITE3_LIBS             += -lpthread
+SQLITE3_CFLAGS           ?= -Isrc/libs/sqlite -DSQLITE_HAVE_ISNAN -DSQLITE_THREADSAFE=0
+SQLITE3_LIBS             +=
 endif
 ifeq ($(HAVE_TINYXML2_H),1)
 TINYXML2_SRCS             =
@@ -370,6 +387,61 @@ SDL_NET_SRCS              =
 SDL_NET_CFLAGS           ?= -DNONETWORK
 SDL_NET_LIBS             +=
 else
+ifeq ($(HAVE_BOX2D_H),1)
+BOX2D_SRCS              =
+BOX2D_CFLAGS            = $(call PKG_CFLAGS,box2d)
+BOX2D_LIBS              = $(call PKG_LIBS,box2d)
+else
+BOX2D_SRCS              = \
+	libs/Box2D/Common/b2StackAllocator.cpp \
+	libs/Box2D/Common/b2BlockAllocator.cpp \
+	libs/Box2D/Common/b2Draw.cpp \
+	libs/Box2D/Common/b2Timer.cpp \
+	libs/Box2D/Common/b2Settings.cpp \
+	libs/Box2D/Common/b2Math.cpp \
+	libs/Box2D/Collision/b2TimeOfImpact.cpp \
+	libs/Box2D/Collision/b2CollidePolygon.cpp \
+	libs/Box2D/Collision/b2CollideEdge.cpp \
+	libs/Box2D/Collision/b2BroadPhase.cpp \
+	libs/Box2D/Collision/b2CollideCircle.cpp \
+	libs/Box2D/Collision/b2Collision.cpp \
+	libs/Box2D/Collision/b2Distance.cpp \
+	libs/Box2D/Collision/Shapes/b2PolygonShape.cpp \
+	libs/Box2D/Collision/Shapes/b2ChainShape.cpp \
+	libs/Box2D/Collision/Shapes/b2CircleShape.cpp \
+	libs/Box2D/Collision/Shapes/b2EdgeShape.cpp \
+	libs/Box2D/Collision/b2DynamicTree.cpp \
+	libs/Box2D/Dynamics/b2Body.cpp \
+	libs/Box2D/Dynamics/b2World.cpp \
+	libs/Box2D/Dynamics/b2ContactManager.cpp \
+	libs/Box2D/Dynamics/b2Fixture.cpp \
+	libs/Box2D/Dynamics/Contacts/b2Contact.cpp \
+	libs/Box2D/Dynamics/Contacts/b2ChainAndCircleContact.cpp \
+	libs/Box2D/Dynamics/Contacts/b2PolygonAndCircleContact.cpp \
+	libs/Box2D/Dynamics/Contacts/b2CircleContact.cpp \
+	libs/Box2D/Dynamics/Contacts/b2EdgeAndCircleContact.cpp \
+	libs/Box2D/Dynamics/Contacts/b2ContactSolver.cpp \
+	libs/Box2D/Dynamics/Contacts/b2EdgeAndPolygonContact.cpp \
+	libs/Box2D/Dynamics/Contacts/b2PolygonContact.cpp \
+	libs/Box2D/Dynamics/Contacts/b2ChainAndPolygonContact.cpp \
+	libs/Box2D/Dynamics/b2WorldCallbacks.cpp \
+	libs/Box2D/Dynamics/Joints/b2PrismaticJoint.cpp \
+	libs/Box2D/Dynamics/Joints/b2WeldJoint.cpp \
+	libs/Box2D/Dynamics/Joints/b2FrictionJoint.cpp \
+	libs/Box2D/Dynamics/Joints/b2DistanceJoint.cpp \
+	libs/Box2D/Dynamics/Joints/b2GearJoint.cpp \
+	libs/Box2D/Dynamics/Joints/b2MotorJoint.cpp \
+	libs/Box2D/Dynamics/Joints/b2RopeJoint.cpp \
+	libs/Box2D/Dynamics/Joints/b2Joint.cpp \
+	libs/Box2D/Dynamics/Joints/b2RevoluteJoint.cpp \
+	libs/Box2D/Dynamics/Joints/b2WheelJoint.cpp \
+	libs/Box2D/Dynamics/Joints/b2MouseJoint.cpp \
+	libs/Box2D/Dynamics/Joints/b2PulleyJoint.cpp \
+	libs/Box2D/Dynamics/b2Island.cpp \
+	libs/Box2D/Rope/b2Rope.cpp
+BOX2D_CFLAGS            = -Isrc/libs/Box2D
+BOX2D_LIBS              =
+endif
 ifeq ($(HAVE_SDL_NET_H),1)
 SDL_NET_SRCS              =
 SDL_NET_CFLAGS           ?= $(call PKG_CFLAGS,SDL2_net)
@@ -384,6 +456,11 @@ SDL_NET_CFLAGS           ?= -Isrc/libs/SDL_net
 SDL_NET_LIBS             +=
 endif
 endif
+ifeq ($(HAVE_YAJL_PARSE_H),1)
+YAJL_SRCS                 =
+YAJL_CFLAGS              ?= $(call PKG_CFLAGS,yajl)
+YAJL_LIBS                += $(call PKG_LIBS,yajl)
+else
 YAJL_SRCS                 = \
 	libs/yajl/yajl_alloc.c \
 	libs/yajl/yajl_buf.c \
@@ -395,6 +472,7 @@ YAJL_SRCS                 = \
 	libs/yajl/yajl_tree.c
 YAJL_CFLAGS              ?= -Isrc/libs/yajl
 YAJL_LIBS                +=
+endif
 ifeq ($(HAVE_ZLIB_H),1)
 ZLIB_SRCS                 =
 ZLIB_CFLAGS               =

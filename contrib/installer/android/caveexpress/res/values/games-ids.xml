@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Google Play game services IDs.
+Save this file as res/values/games-ids.xml in your project.
+-->
+<resources>
+  <string name="app_id">251832614580</string>
+  <string name="achievement_daze_pterodactyls">CgkItP2Sk6oHEAIQAg</string>
+  <string name="achievement_pick_up_fruit">CgkItP2Sk6oHEAIQAw</string>
+  <string name="achievement_finish_the_tutorial">CgkItP2Sk6oHEAIQBA</string>
+  <string name="achievement_daze_a_mastodon">CgkItP2Sk6oHEAIQBQ</string>
+  <string name="achievement_daze_a_fish">CgkItP2Sk6oHEAIQBg</string>
+  <string name="achievement_deliver_a_package">CgkItP2Sk6oHEAIQBw</string>
+  <string name="achievement_deliver_10_packages">CgkItP2Sk6oHEAIQCA</string>
+  <string name="achievement_deliver_50_packages">CgkItP2Sk6oHEAIQCQ</string>
+  <string name="achievement_deliver_100_packages">CgkItP2Sk6oHEAIQCg</string>
+  <string name="achievement_deliver_150_packages">CgkItP2Sk6oHEAIQCw</string>
+  <string name="achievement_collect_100_fruits">CgkItP2Sk6oHEAIQDQ</string>
+  <string name="achievement_collect_10_stones">CgkItP2Sk6oHEAIQDg</string>
+  <string name="achievement_collect_100_stones">CgkItP2Sk6oHEAIQDw</string>
+  <string name="achievement_daze_a_sleeping_npc">CgkItP2Sk6oHEAIQEA</string>
+  <string name="achievement_daze_a_walking_npc">CgkItP2Sk6oHEAIQEQ</string>
+  <string name="leaderboard_points">CgkItP2Sk6oHEAIQDA</string>
+</resources>

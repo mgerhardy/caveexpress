@@ -16,6 +16,6 @@ public:
 	void exit (const std::string& reason, int errorCode) override;
 	bool mkdir (const std::string& directory) override;
 	DirectoryEntries listDirectory (const std::string& basedir, const std::string& subdir = "") override;
-	int openURL (const std::string& url) const override;
+	int openURL (const std::string& url, bool newWindow) const override;
 	int exec (const std::string& command, std::vector<std::string>& arguments) const override;
 };

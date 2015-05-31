@@ -20,14 +20,15 @@
 #include "engine/common/EventHandler.h"
 #include "engine/common/Logger.h"
 #include "engine/common/ServiceProvider.h"
-#include "engine/common/GLShared.h"
+#include "engine/client/GLFunc.h"
+#include "engine/client/GLShared.h"
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/DateUtil.h"
 #include <SDL.h>
 
 CaveExpressClientMap::CaveExpressClientMap (int x, int y, int width, int height, IFrontend *frontend,
 		ServiceProvider& serviceProvider, int referenceTileWidth) :
-		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth), _waterHeight(0.0)
+		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth), _waterHeight(0.0), _target(nullptr)
 {
 }
 
@@ -120,10 +121,34 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 	}
 }
 
-void CaveExpressClientMap::renderParticles (int x, int y) const
+void CaveExpressClientMap::renderBegin (int x, int y) const
 {
-	ClientMap::renderParticles(x, y);
+	_target = _frontend->renderToTexture(_x, _y, _width, _height);
+	ClientMap::renderBegin(x, y);
+}
+
+void CaveExpressClientMap::renderEnd (int x, int y) const
+{
+	const bool enablePostProcessing = _target != nullptr;
+	if (!enablePostProcessing) {
+		renderWater(x, y);
+		return;
+	}
+	_frontend->renderTarget(_target);
+	_target = nullptr;
+
+#if 1
 	renderWater(x, y);
+#else
+	if (getWaterHeight() <= 0.000001f)
+		return;
+	const int widthWater = getPixelWidth() * _zoom;
+	const int waterSurface = y + getWaterSurface() * _zoom;
+	const int waterGround = y + getWaterGround() * _zoom;
+	const int waterHeight = waterGround - waterSurface;
+	const TexturePtr& texture = UI::get().loadTexture("water");
+	_frontend->renderImage(texture.get(), x, waterSurface, widthWater, waterHeight, 0, 0.5f);
+#endif
 }
 
 void CaveExpressClientMap::start () {

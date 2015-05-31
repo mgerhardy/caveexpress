@@ -5,17 +5,17 @@
 #include "engine/common/Commands.h"
 #include "engine/common/FileSystem.h"
 
-UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, int cols, int rows) :
-		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _campaignManager(nullptr), _mapManager(&mapManager)
+UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, bool multiplayer, int cols, int rows) :
+		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _campaignManager(nullptr), _mapManager(&mapManager), _multiplayer(multiplayer)
 {
 	setColsRowsFromTexture("map-icon-locked");
 	defaults();
 	reset();
 }
 
-UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, CampaignManager &campaignManager, int cols, int rows) :
+UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, CampaignManager &campaignManager, bool multiplayer, int cols, int rows) :
 		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _campaignManager(&campaignManager), _mapManager(
-				nullptr)
+				nullptr), _multiplayer(multiplayer)
 {
 	setColsRowsFromTexture("map-icon-locked");
 	defaults();
@@ -120,7 +120,8 @@ void UINodeMapSelector::reset ()
 	if (_mapManager) {
 		const IMapManager::Maps &maps = _mapManager->getMaps();
 		for (IMapManager::Maps::const_iterator i = maps.begin(); i != maps.end(); ++i) {
-			addData(i->first);
+			if (!_multiplayer || i->second->getStartPositions() > 1)
+				addData(i->first);
 		}
 		return;
 	}

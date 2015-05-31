@@ -30,6 +30,7 @@ protected:
 	bool _cursorActive;
 	ServiceProvider& _serviceProvider;
 	UINode* _panel;
+	uint32_t _lastFingerPressEvent;
 
 	virtual UINode* getFingerControl ();
 	virtual UINode* getControl ();
@@ -54,6 +55,7 @@ public:
 	// all players are connected.
 	virtual void initWaitingForPlayers (bool adminOptions);
 
+	virtual bool onFingerPress (int64_t finger, uint16_t x, uint16_t y) override;
 	virtual bool onMultiGesture (float theta, float dist, int32_t numFingers) override;
 	virtual bool onPop () override;
 	virtual void onPushedOver () override;

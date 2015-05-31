@@ -10,11 +10,16 @@ typedef float gridSize;
 
 class IMap {
 public:
+	struct StartPosition {std::string _x; std::string _y;};
+	typedef std::vector<StartPosition> StartPositions;
+	typedef StartPositions::const_iterator StartPositionsConstIter;
 	typedef std::map<std::string, std::string> SettingsMap;
 	typedef SettingsMap::const_iterator SettingsMapConstIter;
 
 protected:
 	SettingsMap _settings;
+
+	StartPositions _startPositions;
 
 	// the name of the map
 	std::string _name;
@@ -40,6 +45,40 @@ public:
 
 	virtual int getMapWidth () const = 0;
 	virtual int getMapHeight () const = 0;
+
+	inline bool getStartPosition(int index, int&x, int& y) const
+	{
+		const size_t size = _startPositions.size();
+		if (size == 1) {
+			index = 0;
+		}
+		if (index < 0 || index > size) {
+			x = -1;
+			y = -1;
+			return false;
+		}
+		const IMap::StartPosition& pos = _startPositions[index];
+		x = string::toInt(pos._x);
+		y = string::toInt(pos._y);
+		return true;
+	}
+
+	inline bool getStartPosition(int index, float&x, float& y) const
+	{
+		const size_t size = _startPositions.size();
+		if (size == 1) {
+			index = 0;
+		}
+		if (index < 0 || index > size) {
+			x = -1.0f;
+			y = -1.0f;
+			return false;
+		}
+		const IMap::StartPosition& pos = _startPositions[index];
+		x = string::toFloat(pos._x);
+		y = string::toFloat(pos._y);
+		return true;
+	}
 
 	// will return a setting for a map from the map definition.
 	inline String getSetting (const std::string& key, const std::string& defaultValue = "") const

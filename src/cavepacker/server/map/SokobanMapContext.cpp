@@ -131,6 +131,8 @@ bool SokobanMapContext::load(bool skipErrors) {
 	_settings[msn::WIDTH] = string::toString(maxCol);
 	_settings[msn::HEIGHT] = string::toString(row);
 
+	info(LOG_SERVER, "found " + string::toString(_startPositions.size()) + " start positions");
+
 	return _playerSpawned;
 }
 
@@ -161,8 +163,8 @@ inline void SokobanMapContext::addPackage(int col, int row) {
 }
 
 inline void SokobanMapContext::addPlayer(int col, int row) {
-	_settings[msn::PLAYER_X] = string::toString(col);
-	_settings[msn::PLAYER_Y] = string::toString(row);
+	const IMap::StartPosition p{string::toString(col), string::toString(row)};
+	_startPositions.push_back(p);
 	_playerSpawned = true;
 }
 

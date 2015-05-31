@@ -1,9 +1,6 @@
 # binaries
 /cavepacker
 /caveexpress
-/caveanddiamonds
-/duplicatefinder
-/cavebot
 /soundmapper
 /jsonconvert
 /tests
@@ -26,7 +23,7 @@
 /debug-*/
 /release-*/
 /scale
-/src/dir.h
+/src/*/dir.h
 
 # ---
 /gmon.out
@@ -49,3 +46,4 @@
 /nacl_sdk
 /naclgdb.init
 /Debug
+/*-source.tar*

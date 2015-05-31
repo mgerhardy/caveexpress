@@ -33,7 +33,7 @@ public:
 
 	virtual DirectoryEntries listDirectory (const std::string& basedir, const std::string& subdir = "") override;
 
-	virtual int openURL (const std::string& url) const override;
+	virtual int openURL (const std::string& url, bool newWindow) const override;
 
 	virtual int exec (const std::string& command, std::vector<std::string>& arguments) const override;
 };

@@ -2,11 +2,12 @@
 
 #include "engine/common/ICommand.h"
 #include "engine/common/NonCopyable.h"
+#include <unordered_map>
 #include <string>
 #include <vector>
 
 class CmdListCommands;
-typedef std::map<std::string, CommandPtr> CommandList;
+typedef std::unordered_map<std::string, CommandPtr> CommandList;
 
 class CommandSystem: public NonCopyable {
 	friend class CmdListCommands;
@@ -14,7 +15,7 @@ private:
 	CommandSystem ();
 
 	CommandList _commands;
-	std::map<std::string, std::string> _alias;
+	std::unordered_map<std::string, std::string> _alias;
 
 public:
 	virtual ~CommandSystem ();

@@ -9,6 +9,7 @@ defaultpersister = "sqlite"
 defaultfrontend = "sdl"
 defaultsoundengine = "sdl"
 defaultshowcursor = true
+defaultnetwork = true
 defaultjoystick = false
 defaulttexturesize = "auto"
 defaultparticles = 100
@@ -17,14 +18,22 @@ defaultfpslimit = 60
 if isOUYA() then
 	defaultjoystick = true
 	defaultparticles = 0
+elseif isAndroid() then
+	defaultshowcursor = false
+	defaultparticles = 0
+	defaultfpslimit = 30
+	defaultpersister = "googleplay"
 elseif isMobile() then
 	defaultshowcursor = false
 	defaultparticles = 0
 	defaultfpslimit = 30
 elseif isHTML5() then
-	defaultpersister = "nop"
+	defaultnetwork = false
 	defaultfrontend = "opengl"
 	defaultsoundengine = "dummy"
+elseif isNaCl() then
+	defaultpersister = "nop"
+	defaultnetwork = false
 else
 	-- workaround for now - remove me later
 	defaultfrontend = "opengl"
@@ -45,7 +54,7 @@ settings = {
 	sound = true,
 	soundengine = defaultsoundengine,
 	persister = defaultpersister,
-	network = false,
+	network = defaultnetwork,
 	fpslimit = defaultfpslimit,
 	texturesize = defaulttexturesize,
 	particles = defaultparticles,
@@ -145,6 +154,10 @@ else
 			RIGHT = "ui_focus_next",
 			UP = "ui_focus_prev",
 			DOWN = "ui_focus_next",
+			A = "ui_focus_prev",
+			D = "ui_focus_next",
+			W = "ui_focus_prev",
+			S = "ui_focus_next",
 			SPACE = "ui_execute",
 			RETURN = "ui_execute",
 			ESCAPE = "ui_pop",
@@ -155,6 +168,10 @@ else
 			RIGHT = "+move_right",
 			UP = "+move_up",
 			DOWN = "+move_down",
+			A = "+move_left",
+			D = "+move_right",
+			W = "+move_up",
+			S = "+move_down",
 			SPACE = "ui_pop",
 			RETURN = "ui_pop",
 			ESCAPE = "ui_pop",
@@ -174,4 +191,3 @@ else
 		keybindings["map"]["F"] = "finish"
 	end
 end
-

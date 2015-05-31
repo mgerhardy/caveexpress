@@ -146,19 +146,19 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/ui/ui-scene-caveart-ice.png</filename>
-            <filename>../png/ui/ui-scene-cave-ice.png</filename>
-            <filename>../png/ui/ui-scene-ground1-ice.png</filename>
-            <filename>../png/ui/ui-scene-ground2-ice.png</filename>
-            <filename>../png/ui/ui-scene-player.png</filename>
-            <filename>../png/ui/ui-scene-tile1-ice.png</filename>
-            <filename>../png/ui/ui-scene-tile2-ice.png</filename>
-            <filename>../png/ui/ui-scene-caveart-rock.png</filename>
-            <filename>../png/ui/ui-scene-cave-rock.png</filename>
-            <filename>../png/ui/ui-scene-ground1-rock.png</filename>
-            <filename>../png/ui/ui-scene-ground2-rock.png</filename>
-            <filename>../png/ui/ui-scene-tile1-rock.png</filename>
-            <filename>../png/ui/ui-scene-tile2-rock.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-caveart-ice.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-cave-ice.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-ground1-ice.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-ground2-ice.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-player.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-tile1-ice.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-tile2-ice.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-caveart-rock.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-cave-rock.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-ground1-rock.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-ground2-rock.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-tile1-rock.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-tile2-rock.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -44,7 +44,7 @@ CommandPtr CommandSystem::registerCommand (const std::string& id, ICommand* comm
 void CommandSystem::removeCommand (const std::string& id)
 {
 	_commands[id] = CommandPtr();
-	std::map<std::string, std::string>::iterator i = _alias.find(id);
+	auto i = _alias.find(id);
 	if (i != _alias.end())
 		_alias.erase(i);
 }
@@ -53,7 +53,7 @@ ICommand* CommandSystem::getCommand (const std::string& command) const
 {
 	std::string id = command;
 	// check whether it's an alias
-	std::map<std::string, std::string>::const_iterator i = _alias.find(id);
+	auto i = _alias.find(id);
 	if (i != _alias.end())
 		id = i->second;
 	// Look up candidate in the map and return it if found

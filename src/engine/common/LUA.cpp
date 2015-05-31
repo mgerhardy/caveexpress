@@ -27,6 +27,21 @@ public:
 
 LUA::LUA (bool debug)
 {
+	init(debug);
+}
+
+LUA::~LUA ()
+{
+	close();
+}
+
+void LUA::close ()
+{
+	lua_close(_state);
+}
+
+void LUA::init (bool debug)
+{
 	_state = luaL_newstate();
 	luaL_openlibs(_state);
 
@@ -46,11 +61,6 @@ LUA::LUA (bool debug)
 		const int mask = LUA_MASKCALL | LUA_MASKRET | LUA_MASKLINE | LUA_MASKCOUNT;
 		lua_sethook(_state, debugHook, mask, 0);
 	}
-}
-
-LUA::~LUA ()
-{
-	lua_close(_state);
 }
 
 void LUA::reg (const std::string& prefix, luaL_Reg* funcs)

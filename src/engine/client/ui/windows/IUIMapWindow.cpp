@@ -40,7 +40,7 @@ IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 		UIWindow(UI_WINDOW_MAP, frontend,
 				WINDOW_FLAG_MODAL | WINDOW_FLAG_FULLSCREEN), _nodeMap(nodeMap), _cursorActive(
 				false), _serviceProvider(serviceProvider), _startButton(
-				nullptr), _waitLabel(nullptr), _mapControl(nullptr), _panel(nullptr) {
+				nullptr), _waitLabel(nullptr), _mapControl(nullptr), _panel(nullptr), _lastFingerPressEvent(0L) {
 	const float screenPadding = getScreenPadding();
 	setPadding(screenPadding);
 	_playClickSound = false;
@@ -261,10 +261,15 @@ bool IUIMapWindow::isGameActive () const
 	return _nodeMap->getMap().isActive();
 }
 
+bool IUIMapWindow::onFingerPress (int64_t finger, uint16_t x, uint16_t y) {
+	_lastFingerPressEvent = _time;
+	return UIWindow::onFingerPress(finger, x, y);
+}
+
 bool IUIMapWindow::onMultiGesture (float theta, float dist, int32_t numFingers)
 {
 	const bool retVal = UIWindow::onMultiGesture(theta, dist, numFingers);
-	if (numFingers == 2) {
+	if (numFingers == 2 && _time - _lastFingerPressEvent > 500L) {
 		const float currentZoom = _nodeMap->getMap().getZoom();
 		_nodeMap->getMap().setZoom(currentZoom + dist * 4.0f);
 	}

@@ -4,7 +4,8 @@
 #include "engine/common/String.h"
 #include "engine/client/SDLFrontend.h"
 #ifdef SDL_VIDEO_OPENGL
-#include "engine/client/GLFrontend.h"
+#include "engine/client/GL1Frontend.h"
+#include "engine/client/GL3Frontend.h"
 #endif
 #include "engine/client/ClientConsole.h"
 #include "engine/common/ConfigManager.h"
@@ -43,13 +44,13 @@ static void runFrameEmscripten() {
 #endif
 
 SDLBackend::SDLBackend () :
-		_dedicated(false), _running(true), _frontend(nullptr)
+		_dedicated(false), _running(true), _initState(InitState::INITSTATE_CONFIG), _argc(0), _argv(nullptr), _frontend(nullptr)
 {
 	SDL_SetEventFilter(handleAppEvents, this);
 
-	Commands.registerCommand(CMD_SCREENSHOT, bind(SDLBackend, screenShot));
-	Commands.registerCommand(CMD_MAP_START, bind(SDLBackend, loadMap))->setCompleter(loadMapCompleter);
-	Commands.registerCommand(CMD_STATUS, bind(SDLBackend, status));
+	Commands.registerCommand(CMD_SCREENSHOT, bindFunction(SDLBackend, screenShot));
+	Commands.registerCommand(CMD_MAP_START, bindFunction(SDLBackend, loadMap))->setCompleter(loadMapCompleter);
+	Commands.registerCommand(CMD_STATUS, bindFunction(SDLBackend, status));
 	_eventHandler.registerObserver(this);
 	_keys.clear();
 	_joystickButtons.clear();
@@ -73,69 +74,6 @@ SDLBackend::~SDLBackend ()
 	SDL_Quit();
 }
 
-int SDLBackend::init (int argc, char **argv)
-{
-	for (int i = 0; i < argc; i++) {
-		if (!strcmp("-server", argv[i])) {
-			_dedicated = true;
-			break;
-		}
-	}
-
-	srand(time(nullptr));
-
-	Config.get().init(this, argc, argv);
-	Commands.registerCommand(CMD_QUIT, new CmdQuit());
-
-	if (_dedicated) {
-		_frontend = new ConsoleFrontend(_console);
-	} else {
-		const ConfigVarPtr c = Config.getConfigVar("frontend", "sdl", true);
-		info(LOG_CLIENT, "Use frontend " + c->getValue());
-		SharedPtr<IConsole> clientConsole(new ClientConsole());
-#ifdef SDL_VIDEO_OPENGL
-		if (c->getValue() == "opengl")
-			_frontend = new GLFrontend(clientConsole);
-		else
-#endif
-			_frontend = new SDLFrontend(clientConsole);
-	}
-
-	srand(SDL_GetTicks());
-
-	if (!SDL_WasInit(SDL_INIT_TIMER)) {
-		if (SDL_Init(SDL_INIT_TIMER) == -1) {
-			info(LOG_CLIENT, "Failed to initialize the timers: " + std::string(SDL_GetError()));
-		}
-	}
-
-#ifdef DEBUG
-	SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
-#else
-	//SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
-#endif
-
-	const int frontendInit = _frontend->init(Config.getWidth(), Config.getHeight(), Config.isFullscreen(), _eventHandler);
-	_serviceProvider.init(_frontend);
-	_serviceProvider.updateNetwork(_dedicated);
-	SpriteDefinition::get().init(_serviceProvider.getTextureDefinition());
-	info(LOG_BACKEND, "initialize game data");
-	Singleton<GameRegistry>::getInstance().getGame()->init(_frontend, _serviceProvider);
-
-	// precache some stuff here
-	Singleton<ClientEntityRegistry>::getInstance().initSounds();
-
-	info(LOG_BACKEND, "initialize frontend");
-	_frontend->initUI(_serviceProvider);
-
-	handleCommandLineArguments(argc, argv);
-
-	info(LOG_BACKEND, "frontend start");
-	_frontend->onStart();
-
-	return frontendInit;
-}
-
 bool SDLBackend::isRunning () const
 {
 	return _running;
@@ -156,6 +94,7 @@ void SDLBackend::handleEvent (SDL_Event &event)
 	switch (event.type) {
 	case SDL_QUIT:
 		info(LOG_BACKEND, "received quit event");
+		Config.shutdown();
 		if (!System.quit()) {
 			_running = false;
 		}
@@ -238,8 +177,113 @@ void SDLBackend::resetKeyStates ()
 	_controllerButtons.clear();
 }
 
+bool SDLBackend::handleInit() {
+	switch (_initState) {
+	case InitState::INITSTATE_CONFIG:
+		info(LOG_BACKEND, "init config");
+		Config.get().init(this, _argc, _argv);
+		Commands.registerCommand(CMD_QUIT, new CmdQuit());
+		_initState = InitState::INITSTATE_FRONTEND;
+		break;
+	case InitState::INITSTATE_FRONTEND:
+		info(LOG_BACKEND, "init frontend creation");
+		if (_dedicated) {
+			_frontend = new ConsoleFrontend(_console);
+		} else {
+			const ConfigVarPtr c = Config.getConfigVar("frontend", "sdl", true);
+			info(LOG_CLIENT, "Use frontend " + c->getValue());
+			SharedPtr<IConsole> clientConsole(new ClientConsole());
+#ifdef SDL_VIDEO_OPENGL
+			if (c->getValue() == "opengl")
+				_frontend = new GL1Frontend(clientConsole);
+			else if (c->getValue() == "opengl3")
+				_frontend = new GL3Frontend(clientConsole);
+			else
+#endif
+				_frontend = new SDLFrontend(clientConsole);
+		}
+		_initState = InitState::INITSTATE_SDL;
+		break;
+	case InitState::INITSTATE_SDL:
+		info(LOG_BACKEND, "init sdl");
+
+		if (!SDL_WasInit(SDL_INIT_TIMER)) {
+			if (SDL_Init(SDL_INIT_TIMER) == -1) {
+				info(LOG_CLIENT, "Failed to initialize the timers: " + std::string(SDL_GetError()));
+			}
+		}
+
+		srand(SDL_GetTicks());
+
+#ifdef DEBUG
+		//SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
+#else
+		//SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
+#endif
+		_initState = InitState::INITSTATE_FRONTENDINIT;
+		break;
+	case InitState::INITSTATE_FRONTENDINIT: {
+		info(LOG_BACKEND, "init frontend");
+		const int frontendInit = _frontend->init(Config.getWidth(), Config.getHeight(), Config.isFullscreen(), _eventHandler);
+		if (frontendInit == -1) {
+			error(LOG_CLIENT, "Failed to initialize the frontend");
+			_initState = InitState::INITSTATE_ERROR;
+			break;
+		}
+		_initState = InitState::INITSTATE_SERVICEPROVIDER;
+		break;
+	}
+	case InitState::INITSTATE_SERVICEPROVIDER:
+		info(LOG_BACKEND, "init the serviceprovider");
+		_serviceProvider.init(_frontend);
+		_serviceProvider.updateNetwork(_dedicated);
+		_initState = InitState::INITSTATE_SPRITE;
+		break;
+	case InitState::INITSTATE_SPRITE:
+		info(LOG_BACKEND, "init sprites");
+		SpriteDefinition::get().init(_serviceProvider.getTextureDefinition());
+		_initState = InitState::INITSTATE_GAME;
+		break;
+	case InitState::INITSTATE_GAME:
+		info(LOG_BACKEND, "initi game data");
+		Singleton<GameRegistry>::getInstance().getGame()->init(_frontend, _serviceProvider);
+		_initState = InitState::INITSTATE_SOUNDS;
+		break;
+	case InitState::INITSTATE_SOUNDS:
+		info(LOG_BACKEND, "init sounds");
+		// precache some stuff here
+		Singleton<ClientEntityRegistry>::getInstance().initSounds();
+		_initState = InitState::INITSTATE_UI;
+		break;
+	case InitState::INITSTATE_UI:
+		info(LOG_BACKEND, "init ui");
+		_frontend->initUI(_serviceProvider);
+		_initState = InitState::INITSTATE_START;
+		break;
+	case InitState::INITSTATE_START:
+		handleCommandLineArguments(_argc, _argv);
+		info(LOG_BACKEND, "frontend start");
+		_frontend->onStart();
+		_initState = InitState::INITSTATE_DONE;
+
+		info(LOG_BACKEND, "initialization done");
+
+		break;
+	case InitState::INITSTATE_ERROR:
+		_running = false;
+		break;
+	case InitState::INITSTATE_DONE:
+		return false;
+	}
+	info(LOG_BACKEND, "next init state: " + string::toString((int)_initState));
+	return true;
+}
+
 void SDLBackend::runFrame ()
 {
+	if (handleInit())
+		return;
+
 	SDL_Event event;
 	static uint32_t lastFrame = SDL_GetTicks() - 2;
 
@@ -275,20 +319,33 @@ void SDLBackend::runFrame ()
 void SDLBackend::mainLoop (int argc, char **argv)
 {
 	System.track("step", "sdl backend start");
+	_argc = argc;
+	_argv = argv;
 
-	if (init(argc, argv) == -1) {
-		System.exit("Initialization error", 1);
+	for (int i = 0; i < _argc; i++) {
+		if (!strcmp("-server", _argv[i])) {
+			_dedicated = true;
+			break;
+		}
 	}
 
-	info(LOG_BACKEND, "initialization done");
-
-	if (_frontend->setFrameCallback(2, frameCallback, this))
-		return;
+	srand(time(nullptr));
 
 	INSTANCE = this;
 #ifdef EMSCRIPTEN
 	emscripten_set_main_loop(runFrameEmscripten, 0, 1);
-#else
+	return;
+#endif
+
+	while (_running) {
+		if (_initState == InitState::INITSTATE_DONE) {
+			break;
+		}
+		runFrame();
+	}
+
+	if (_frontend != nullptr && _frontend->setFrameCallback(2, frameCallback, this))
+		return;
 
 	static const double fpsCap = Config.getConfigVar("fpslimit", "60.0", true)->getFloatValue();
 	info(LOG_BACKEND, String::format("Run the game at %f frames per second", fpsCap));
@@ -305,10 +362,10 @@ void SDLBackend::mainLoop (int argc, char **argv)
 		nextFrame += 1000.0 / fpsCap;
 	}
 
-	Config.shutdown();
+	_serviceProvider.updateNetwork(false);
 	_serviceProvider.getNetwork().shutdown();
+	Config.shutdown();
 
-#endif
 	System.track("step", "sdl backend shutdown");
 }
 
@@ -475,6 +532,7 @@ void SDLBackend::loadMap (const std::string& mapName)
 			error(LOG_BACKEND, "failed to start the server");
 			return;
 		}
+		info(LOG_BACKEND, "connect to own server");
 		_frontend->connect();
 		return;
 	}
@@ -513,7 +571,7 @@ ProtocolMessagePtr SDLBackend::onOOBData (const unsigned char *data)
 	if (mapName.empty())
 		return ProtocolMessagePtr();
 
-	const ProtocolMessagePtr msg(new PingMessage(Config.getServerName(), mapName, Config.getPort(), game->getPlayers(), MAX_CLIENTS));
+	const ProtocolMessagePtr msg(new PingMessage(Config.getServerName(), mapName, Config.getPort(), game->getPlayers(), game->getMaxClients()));
 	return msg;
 }
 

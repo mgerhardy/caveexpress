@@ -19,6 +19,8 @@ IProtocolMessage *ProtocolMessageFactory::create (ByteStream& stream) const
 		return new AutoSolveStartedMessage();
 	case protocol::PROTO_AUTOSOLVEABORT:
 		return new AutoSolveAbortedMessage();
+	case protocol::PROTO_UNDO:
+		return new UndoMessage();
 	default:
 		error(LOG_NET, String::format("unknown module type given: %i", type));
 		stream.addByte(type, true);

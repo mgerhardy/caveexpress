@@ -18,7 +18,7 @@ protected:
 	std::vector<std::string> _players;
 	std::string _title;
 
-	void onCampaignUnlock (Campaign* campaign) override;
+	void onCampaignUnlock (Campaign* oldCampaign, Campaign* newCampaign) override;
 public:
 	IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map);
 	virtual ~IUINodeMap ();

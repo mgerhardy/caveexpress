@@ -1,5 +1,6 @@
 #include "cavepacker/client/CavePackerClientMap.h"
 #include "cavepacker/shared/EntityStates.h"
+#include "cavepacker/shared/network/messages/ProtocolMessages.h"
 #include "engine/client/particles/Sparkle.h"
 #include "engine/common/MapSettings.h"
 #include "engine/common/network/messages/StopMovementMessage.h"
@@ -14,9 +15,12 @@
 #include "engine/common/ConfigManager.h"
 #include "engine/common/EventHandler.h"
 #include "engine/common/ServiceProvider.h"
-#include "engine/common/GLShared.h"
+#include "engine/client/GLFunc.h"
+#include "engine/client/GLShared.h"
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/DateUtil.h"
+#include "cavepacker/shared/CavePackerAnimation.h"
+#include "cavepacker/shared/CavePackerEntityType.h"
 #include <SDL.h>
 
 CavePackerClientMap::CavePackerClientMap (int x, int y, int width, int height, IFrontend *frontend,
@@ -27,17 +31,25 @@ CavePackerClientMap::CavePackerClientMap (int x, int y, int width, int height, I
 
 void CavePackerClientMap::start ()
 {
+	ClientMap::start();
+}
+
+void CavePackerClientMap::undo ()
+{
+	_serviceProvider.getNetwork().sendToServer(UndoMessage());
 }
 
 void CavePackerClientMap::update (uint32_t deltaTime)
 {
 	ClientMap::update(deltaTime);
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
+		if (i->second->getType() != EntityTypes::PACKAGE)
+			continue;
 		const bool delivered = i->second->getState() == CavePackerEntityStates::DELIVERED;
 		if (delivered) {
-			i->second->setAlpha(0.5f);
+			i->second->setAnimationType(Animations::DELIVERED);
 		} else {
-			i->second->setAlpha(1.0f);
+			i->second->setAnimationType(Animation::NONE);
 		}
 	}
 }

@@ -9,15 +9,19 @@
 #include "cavepacker/server/network/StartMapHandler.h"
 #include "cavepacker/server/network/MovementHandler.h"
 #include "cavepacker/server/network/StopMovementHandler.h"
+#include "cavepacker/server/network/UndoHandler.h"
 #include "cavepacker/server/network/ClientInitHandler.h"
 #include "cavepacker/server/network/ErrorHandler.h"
 #include "cavepacker/server/network/StopFingerMovementHandler.h"
 #include "cavepacker/server/network/FingerMovementHandler.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
+#include "cavepacker/shared/CavePackerAchievement.h"
+#include "cavepacker/shared/network/ProtocolMessageTypes.h"
 #include "engine/client/entities/ClientEntityFactory.h"
 #include "engine/client/entities/ClientMapTile.h"
 #include "engine/common/network/ProtocolHandlerRegistry.h"
 #include "engine/common/campaign/ICampaignManager.h"
+#include "engine/common/campaign/persister/GooglePlayPersister.h"
 #include "engine/common/ConfigManager.h"
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/System.h"
@@ -31,11 +35,35 @@
 #include "engine/client/ui/windows/UICampaignMapWindow.h"
 #include "cavepacker/client/ui/windows/UICavePackerMapOptionsWindow.h"
 #include "engine/client/ui/windows/UIPaymentWindow.h"
+#include "engine/client/ui/windows/UIGooglePlayWindow.h"
 #include "engine/client/ui/windows/UISettingsWindow.h"
 #include "engine/client/ui/windows/UIMapFinishedWindow.h"
 #include "engine/client/ui/windows/UIGestureWindow.h"
+#include "engine/client/ui/windows/UICreateServerWindow.h"
+#include "engine/client/ui/windows/UIMultiplayerWindow.h"
 #include "cavepacker/shared/CavePackerSQLitePersister.h"
+#include "cavepacker/shared/CavePackerMapManager.h"
 #include <SDL.h>
+
+namespace {
+Achievement* puzzleAchievements[] = {
+		&Achievements::PUZZLES_10,
+		&Achievements::PUZZLES_20,
+		&Achievements::PUZZLES_30,
+		&Achievements::PUZZLES_40,
+		&Achievements::PUZZLES_50,
+		&Achievements::PUZZLES_60,
+		&Achievements::PUZZLES_70,
+		&Achievements::PUZZLES_80,
+		&Achievements::PUZZLES_90,
+		&Achievements::PUZZLES_100
+};
+Achievement* fullStarsAchievements[] = {
+		&Achievements::STARS_3,
+		&Achievements::STARS_10,
+		&Achievements::STARS_300
+};
+}
 
 CavePacker::CavePacker ():
 	_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
@@ -51,11 +79,12 @@ CavePacker::~CavePacker ()
 
 IMapManager* CavePacker::getMapManager ()
 {
-	return new FileMapManager("sok");
+	return new CavePackerMapManager();
 }
 
 void CavePacker::update (uint32_t deltaTime)
 {
+	_map.autoStart();
 	if (!_map.isActive() || deltaTime == 0)
 		return;
 
@@ -78,17 +107,34 @@ void CavePacker::update (uint32_t deltaTime)
 		if (!_campaignManager->updateMapValues(_map.getName(), moves, pushes, stars, true))
 			error(LOG_SERVER, "Could not save the values for the map");
 
+		if (stars == 3) {
+			const int n = SDL_arraysize(fullStarsAchievements);
+			for (int i = 0; i < n; ++i) {
+				fullStarsAchievements[i]->unlock();
+			}
+		}
+
 		if (_map.getPlayers().size() == 1) {
 			const Player* player = _map.getPlayers()[0];
 			const std::string& solution = player->getSolution();
 			info(LOG_SERVER, "solution: " + solution);
 			SDL_SetClipboardText(solution.c_str());
-			const std::string solutionId = "solution" + _map.getName();
+#if 0
 			FilePtr solutionFilePtr = FS.getFile(_map.getName() + ".sol");
 			if (!solutionFilePtr->exists()) {
 				FS.writeFile(solutionFilePtr->getName(), reinterpret_cast<const uint8_t*>(solution.c_str()), solution.size(), true);
 			}
-			System.track(solutionId, solution);
+#endif
+			if (!_map.isAutoSolve()) {
+				const std::string solutionId = "solution" + _map.getName();
+				System.track(solutionId, solution);
+				const int n = SDL_arraysize(puzzleAchievements);
+				for (int i = 0; i < n; ++i) {
+					puzzleAchievements[i]->unlock();
+				}
+			} else {
+				System.track("autosolve", _map.getName());
+			}
 			if (!_campaignManager->addAdditionMapData(_map.getName(), solution))
 				error(LOG_SERVER, "Could not save the solution for the map");
 		} else {
@@ -156,12 +202,17 @@ int CavePacker::disconnect (ClientId clientId)
 
 int CavePacker::getPlayers ()
 {
-	return _map.getPlayers().size();
+	return _map.getConnectedPlayers();
 }
 
 std::string CavePacker::getMapName ()
 {
 	return _map.getName();
+}
+
+int CavePacker::getMaxClients ()
+{
+	return _map.getMaxPlayers();
 }
 
 void CavePacker::shutdown ()
@@ -179,14 +230,21 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		const ConfigVarPtr& persister = Config.get().getConfigVar("persister", "sqlite", true, CV_READONLY);
 		if (persister->getValue() == "nop") {
 			_persister = new NOPPersister();
+		} else if (persister->getValue() == "googleplay" && System.supportGooglePlay()) {
+			IGameStatePersister *delegate = new CavePackerSQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
+			_persister = new GooglePlayPersister(delegate);
 		} else {
 			_persister = new CavePackerSQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
+		}
+		if (!_persister->init()) {
+			error(LOG_SERVER, "Failed to initialize the persister");
 		}
 	}
 	{
 		ExecutionTime e("campaign manager");
 		_campaignManager = new CampaignManager(_persister, serviceProvider.getMapManager());
 		_campaignManager->init();
+		_campaignManager->addListener(this);
 	}
 
 	_map.init(_frontend, *_serviceProvider);
@@ -208,6 +266,7 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	rp.registerServerHandler(protocol::PROTO_STOPMOVEMENT, new StopMovementHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_ERROR, new ErrorHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_UNDO, new UndoHandler(_map));
 
 	_campaignManager->getAutoActiveCampaign();
 }
@@ -218,9 +277,10 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMainWindow(frontend));
 	CavePackerClientMap *map = new CavePackerClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
 	_clientMap = map;
-	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *_clientMap));
+	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *map));
 	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));
 	ui.addWindow(new UIPaymentWindow(frontend));
+	ui.addWindow(new UIGooglePlayWindow(frontend));
 	UISettingsWindow* settings = new UISettingsWindow(frontend, serviceProvider);
 	settings->init();
 	ui.addWindow(settings);
@@ -229,6 +289,8 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapFinishedWindow(frontend, *_campaignManager, serviceProvider, SoundType::NONE));
 	ui.addWindow(new IntroGame(frontend));
 	ui.addWindow(new UICavePackerMapOptionsWindow(frontend, serviceProvider));
+	ui.addWindow(new UIMultiplayerWindow(frontend, serviceProvider.getMapManager(), serviceProvider));
+	ui.addWindow(new UICreateServerWindow(frontend, serviceProvider.getMapManager()));
 }
 
 bool CavePacker::visitEntity (IEntity *entity)

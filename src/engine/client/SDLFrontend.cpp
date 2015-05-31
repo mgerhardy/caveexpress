@@ -1,7 +1,6 @@
 #include "SDLFrontend.h"
 #include "engine/client/ui/UI.h"
 #include "engine/client/ClientConsole.h"
-#include "engine/client/shaders/ShaderManager.h"
 #include "engine/common/String.h"
 #include "engine/common/EventHandler.h"
 #include "engine/common/CommandSystem.h"
@@ -18,12 +17,17 @@
 #include <SDL_platform.h>
 #include <limits.h>
 
+struct RenderTarget {
+	int i; // unused
+};
+
 SDLFrontend::SDLFrontend (SharedPtr<IConsole> console) :
 		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _softwareRenderer(false)
 {
 	_window = nullptr;
 	_haptic = nullptr;
 	_renderer = nullptr;
+	_renderToTexture = nullptr;
 
 	_debugSleep = Config.getConfigVar("debugSleep", "0", true);
 	Vector4Set(colorBlack, _color);
@@ -36,6 +40,7 @@ SDLFrontend::~SDLFrontend ()
 
 //	for (int i = 0; i < _numJoysticks; ++i)
 //		SDL_JoystickClose(_joysticks[i]);
+	SDL_DestroyTexture(_renderToTexture);
 	if (_renderer)
 		SDL_DestroyRenderer(_renderer);
 	SDL_DestroyWindow(_window);
@@ -44,12 +49,12 @@ SDLFrontend::~SDLFrontend ()
 
 void SDLFrontend::onPrepareBackground ()
 {
-	SoundControl.pause();
+//	SoundControl.pause();
 }
 
 void SDLFrontend::onForeground ()
 {
-	SoundControl.resume();
+//	SoundControl.resume();
 }
 
 void SDLFrontend::onJoystickDeviceRemoved (int32_t device)
@@ -106,7 +111,6 @@ void SDLFrontend::update (uint32_t deltaTime)
 	_console->update(deltaTime);
 	UI::get().update(deltaTime);
 	SoundControl.update(deltaTime);
-	ShaderManager::get().update(deltaTime);
 }
 
 bool SDLFrontend::setFrameCallback (int interval, void (*callback) (void*), void *callbackParam)
@@ -185,7 +189,7 @@ void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 {
 	assert(_renderer);
 
-	if (!texture->isValid())
+	if (texture == nullptr || !texture->isValid())
 		return;
 
 	getTrimmed(texture, x, y, w, h);
@@ -199,17 +203,12 @@ void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	if (_softwareRenderer) {
 		// angle is 0 here - because on the fly rotating is really expensive
 		// TODO: create a lockup map here?
-		if (SDL_RenderCopyEx(_renderer, t, &srcRect, &destRect, 0.0, nullptr,
-				texture->isMirror() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) != 0) {
-			error(LOG_CLIENT, "could not render texture " + texture->getName());
-			texture->setData(nullptr);
-		}
-	} else {
-		if (SDL_RenderCopyEx(_renderer, t, &srcRect, &destRect, static_cast<double>(angle), nullptr,
-				texture->isMirror() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) != 0) {
-			error(LOG_CLIENT, "could not render texture " + texture->getName());
-			texture->setData(nullptr);
-		}
+		angle = 0;
+	}
+	if (SDL_RenderCopyEx(_renderer, t, &srcRect, &destRect, static_cast<double>(angle), nullptr,
+			texture->isMirror() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) != 0) {
+		error(LOG_CLIENT, "could not render texture " + texture->getName());
+		texture->setData(nullptr);
 	}
 }
 
@@ -223,12 +222,12 @@ bool SDLFrontend::loadTexture (Texture *texture, const std::string& filename)
 		error(LOG_CLIENT, "could not load the file: " + file);
 		return false;
 	}
-	SDL_Surface *surface = IMG_Load_RW(src, 1);
-	if (surface) {
-		SDL_Texture *sdltexture = SDL_CreateTextureFromSurface(_renderer, surface);
+	SDL_Texture *sdltexture = IMG_LoadTexture_RW(_renderer, src, 1);
+	if (sdltexture) {
+		int w, h;
+		SDL_QueryTexture(sdltexture, nullptr, nullptr, &w, &h);
 		texture->setData(sdltexture);
-		texture->setRect(0, 0, surface->w, surface->h);
-		SDL_FreeSurface(surface);
+		texture->setRect(0, 0, w, h);
 		return texture->isValid();
 	}
 
@@ -314,8 +313,7 @@ void SDLFrontend::updateViewport (int x, int y, int width, int height)
 	assert(_renderer);
 
 	SDL_RenderSetLogicalSize(_renderer, getWidth(), getHeight());
-
-	ShaderManager::get().updateProjectionMatrix(width, height);
+	_renderToTexture = SDL_CreateTexture(_renderer, getDisplayFormat(), SDL_TEXTUREACCESS_TARGET, getWidth(), getHeight());
 }
 
 void SDLFrontend::enableScissor (int x, int y, int width, int height)
@@ -373,6 +371,21 @@ void SDLFrontend::renderEnd ()
 {
 	assert(_renderer);
 	SDL_RenderPresent(_renderer);
+}
+
+RenderTarget* SDLFrontend::renderToTexture (int x, int y, int w, int h)
+{
+	static RenderTarget target;
+	SDL_SetRenderTarget(_renderer, _renderToTexture);
+	SDL_RenderClear(_renderer);
+	return &target;
+}
+
+bool SDLFrontend::renderTarget (RenderTarget* target)
+{
+	SDL_SetRenderTarget(_renderer, nullptr);
+	SDL_RenderCopyEx(_renderer, _renderToTexture, nullptr, nullptr, 0, nullptr, SDL_FLIP_NONE);
+	return true;
 }
 
 void SDLFrontend::render ()
@@ -568,7 +581,6 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 
 	initRenderer();
 	resetColor();
-	GLContext::get().init();
 
 	if (SDL_SetWindowBrightness(_window, 1.0f) == -1)
 		sdlCheckError();
@@ -600,7 +612,7 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	const int initState = IMG_Init(IMG_INIT_PNG);
 	if (!(initState & IMG_INIT_PNG)) {
 		sdlCheckError();
-		return -1;
+		System.exit("No png support", 1);
 	}
 
 	_width = width;
@@ -612,9 +624,6 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	_eventHandler = &eventHandler;
 	_eventHandler->registerObserver(_console.get());
 	_eventHandler->registerObserver(this);
-
-	info(LOG_CLIENT, "init the shader manager");
-	ShaderManager::get().init();
 
 	if (!Config.isSoundEnabled()) {
 		info(LOG_CLIENT, "sound disabled");
@@ -669,6 +678,8 @@ void SDLFrontend::initRenderer ()
 
 void SDLFrontend::setGLAttributes ()
 {
+	if (_softwareRenderer)
+		return;
 	SDL_ClearError();
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	sdlCheckError();

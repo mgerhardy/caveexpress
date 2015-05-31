@@ -230,7 +230,7 @@ void Network::update (uint32_t deltaTime)
 			_bytesIn += _serverDatagramPacket->len;
 			const unsigned char *data = reinterpret_cast<const unsigned char *>(_serverDatagramPacket->data);
 			const ProtocolMessagePtr p = _serverFunc->onOOBData(data);
-			if (!sendUDP(_serverDatagramSocket, _serverDatagramPacket->address, *p))
+			if (p && !sendUDP(_serverDatagramSocket, _serverDatagramPacket->address, *p))
 				error(LOG_NET, "error sending udp response");
 		}
 	}
@@ -385,6 +385,7 @@ bool Network::sendUDP (UDPsocket sock, const IPaddress &address, const IProtocol
 	const size_t length = buffer.getSize();
 	ScopedPtr<UDPpacket> p(SDLNet_AllocPacket(length));
 	if (!p) {
+		error(LOG_NET, "failed to allocate packet");
 		error(LOG_NET, getError());
 		return false;
 	}
@@ -395,6 +396,7 @@ bool Network::sendUDP (UDPsocket sock, const IPaddress &address, const IProtocol
 
 	const int numsent = SDLNet_UDP_Send(sock, -1, p);
 	if (numsent <= 0) {
+		error(LOG_NET, "failed to send packet");
 		error(LOG_NET, getError());
 		return false;
 	}
@@ -411,6 +413,7 @@ Network::OOB* Network::openOOB (IClientCallback* oobCallback, int16_t port)
 #ifdef NET_USE_UDP
 	UDPsocket sd = SDLNet_UDP_Open(port);
 	if (sd == nullptr) {
+		error(LOG_NET, "failed to open udp");
 		error(LOG_NET, getError());
 		return nullptr;
 	}
@@ -434,15 +437,20 @@ bool Network::broadcast (IClientCallback* oobCallback, uint8_t* buffer, size_t l
 
 bool Network::broadcast (const OOB* oob, uint8_t* buffer, size_t length, int port)
 {
-	if (!oob)
+	if (!oob) {
+		error(LOG_NET, "could not create oob");
 		return false;
+	}
 
-	if (length == 0)
+	if (length == 0) {
+		error(LOG_NET, "could not broadcast empty message");
 		return false;
+	}
 
 #ifdef NET_USE_UDP
 	UDPpacket* p = SDLNet_AllocPacket(length);
 	if (!p) {
+		error(LOG_NET, "failed to allocate broadcast packet");
 		error(LOG_NET, getError());
 		return false;
 	}
@@ -454,6 +462,7 @@ bool Network::broadcast (const OOB* oob, uint8_t* buffer, size_t length, int por
 
 	const int numsent = oob->send(p);
 	if (numsent <= 0) {
+		error(LOG_NET, "failed to send broadcast packet");
 		error(LOG_NET, getError());
 		SDLNet_FreePacket(p);
 		return false;
@@ -464,6 +473,7 @@ bool Network::broadcast (const OOB* oob, uint8_t* buffer, size_t length, int por
 	SDLNet_FreePacket(p);
 	return true;
 #else
+	error(LOG_NET, "no udp support");
 	return false;
 #endif
 }

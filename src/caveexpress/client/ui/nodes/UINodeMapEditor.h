@@ -222,6 +222,7 @@ private:
 
 	TileItems _map;
 	IMap::SettingsMap _settings;
+	IMap::StartPositions _startPositions;
 
 	mutable std::vector<State> _undoStates;
 	mutable std::vector<State> _redoStates;
@@ -398,8 +399,8 @@ inline void UINodeMapEditor::setPlayerPosition (gridCoord gridX, gridCoord gridY
 {
 	_playerX = gridX;
 	_playerY = gridY;
-	setSetting(msn::PLAYER_X, string::toString(gridX));
-	setSetting(msn::PLAYER_Y, string::toString(gridY));
+	const IMap::StartPosition p{ string::toString(gridX), string::toString(gridY) };
+	_startPositions.push_back(p);
 }
 
 inline void UINodeMapEditor::setWaterParameters (float waterHeight, float waterChangeSpeed,

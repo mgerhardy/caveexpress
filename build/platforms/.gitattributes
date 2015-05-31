@@ -1,0 +1,3 @@
+/ios.mk export-ignore
+/android.mk export-ignore
+/ouya.mk export-ignore

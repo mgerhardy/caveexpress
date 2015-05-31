@@ -1,5 +1,5 @@
 textures = {
-	["font-rock10"] = {
+	["font-10"] = {
 		image = "caveexpress-ui-fonts-big",
 		x0 = 0.689453125,
 		y0 = 0.4423828125,
@@ -12,7 +12,7 @@ textures = {
 		untrimmedwidth = 96,
 		untrimmedheight = 100,
 	},
-	["font-rock12"] = {
+	["font-12"] = {
 		image = "caveexpress-ui-fonts-big",
 		x0 = 0.455078125,
 		y0 = 0.4423828125,
@@ -25,7 +25,7 @@ textures = {
 		untrimmedwidth = 120,
 		untrimmedheight = 124,
 	},
-	["font-rock24"] = {
+	["font-24"] = {
 		image = "caveexpress-ui-fonts-big",
 		x0 = 0,
 		y0 = 0.4423828125,
@@ -38,7 +38,7 @@ textures = {
 		untrimmedwidth = 233,
 		untrimmedheight = 233,
 	},
-	["font-rock48"] = {
+	["font-48"] = {
 		image = "caveexpress-ui-fonts-big",
 		x0 = 0,
 		y0 = 0,
@@ -51,7 +51,7 @@ textures = {
 		untrimmedwidth = 458,
 		untrimmedheight = 453,
 	},
-	["font-rock8"] = {
+	["font-8"] = {
 		image = "caveexpress-ui-fonts-big",
 		x0 = 0.689453125,
 		y0 = 0.5400390625,

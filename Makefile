@@ -29,11 +29,8 @@ BASEROOT    := base
 BASEDIR     := $(BASEROOT)/$(APPNAME)
 TARGETS     := $(sort $(patsubst build/modules/%.mk,%,$(wildcard build/modules/*.mk)))
 DISABLED    := $(filter-out $(TARGETS),$(TARGETS_TMP))
-STEAM_ROOT  ?= /home/$(USER)/Downloads/steam-runtime-sdk_2013-09-05
 
-ifeq ($(DISABLE_DEPENDENCY_TRACKING),)
-  DEP_FLAGS := -MP -MD -MT $$@
-endif
+DEP_FLAGS   := -MP -MD -MT $$@
 CONFIGURE_PREFIX ?=
 
 CONFIGURE_OPTIONS += --prefix=$(PREFIX) --target-os=$(TARGET_OS) --app=$(APPNAME)
@@ -145,7 +142,7 @@ ifeq ($($(1)_ACTIVE),1)
 # if the target filename differs:
 ifneq ($(1),$($(1)_FILE))
 .PHONY: $(1)
-$(1): $(TARGET_OS)-config.h $($(1)_FILE)
+$(1): $(CONFIG_H)-config.h $($(1)_FILE)
 endif
 
 $($(1)_FILE): build/modules/$(1).mk $(foreach DEP,$($(1)_DEPS),$($(DEP)_FILE)) $($(1)_OBJS)
@@ -220,26 +217,24 @@ run-configure:
 
 include build/android.mk
 
-CONFIGURE_RELEASE_FLAGS := --enable-ccache --with-embedded-sqlite3 --with-embedded-tinyxml2 --with-embedded-SDL2_mixer --with-embedded-SDL2_image --with-embedded-SDL2_net --with-embedded-sdl2 --enable-release --enable-only-$(APPNAME)
+CONFIGURE_RELEASE_FLAGS := $(CONFIGURE_FLAGS) --with-embedded-sqlite3 --with-embedded-lua5.2 --with-embedded-tinyxml2 --with-embedded-SDL2_mixer --with-embedded-SDL2_image --with-embedded-SDL2_net --with-embedded-sdl2 --enable-release
 
 release:
-	./configure --target-os=mingw64 --enable-ccache --with-embedded-sqlite3 --with-embedded-tinyxml2 --enable-release --enable-only-$(APPNAME); \
+	./configure --target-arch=i386 --enable-ccache --target-os=mingw64 --enable-release --enable-only-$(APPNAME) $(CONFIGURE_FLAGS); \
 	$(MAKE) Q= clean; \
 	$(MAKE) Q=; \
 	$(MAKE) Q= archives; \
 
 release32:
-	echo "Make sure to execute shell-i386.sh from the steam sdk"
-	./configure --target-arch=i386 --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
+	./configure --target-arch=i386 --enable-ccache --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
 	$(MAKE) Q= clean; \
-	$(MAKE) Q= STEAM_RUNTIME_TARGET_ARCH=i386 STEAM_RUNTIME_HOST_ARCH=$(HOST_ARCH) STEAM_RUNTIME_ROOT=$(STEAM_ROOT)/runtime/i386 PATH=$(STEAM_ROOT)/bin:$(PATH); \
+	$(MAKE) Q=; \
 	$(MAKE) Q= archives; \
 
 release64:
-	echo "Make sure to execute shell-amd64.sh from the steam sdk"
-	./configure --target-arch=x86_64 --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
+	./configure --target-arch=x86_64 --enable-ccache --target-os=linux --enable-only-$(APPNAME) $(CONFIGURE_RELEASE_FLAGS); \
 	$(MAKE) Q= clean; \
-	$(MAKE) Q= STEAM_RUNTIME_TARGET_ARCH=amd64 STEAM_RUNTIME_HOST_ARCH=$(HOST_ARCH) STEAM_RUNTIME_ROOT=$(STEAM_ROOT)/runtime/amd64 PATH=$(STEAM_ROOT)/bin:$(PATH); \
+	$(MAKE) Q=; \
 	$(MAKE) Q= archives; \
 
 ifeq ($(TARGET_OS),html5)
@@ -249,9 +244,9 @@ emscripten: data
 endif
 
 BASEDIRS := $(patsubst %/,%,$(patsubst $(BASEDIR)/%,%,$(sort $(dir $(wildcard $(BASEDIR)/*/)))))
-filelist: $(SRCDIR)/dir.h
+filelist: $(SRCDIR)/$(APPNAME)/dir.h
 
-$(SRCDIR)/dir.h:
+$(SRCDIR)/$(APPNAME)/dir.h:
 	@echo "==> Create filelist for base directories"
 	$(Q)contrib/scripts/filelist.sh "$@" "$(BASEDIR)" $(BASEDIRS)
 

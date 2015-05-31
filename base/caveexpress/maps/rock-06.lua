@@ -190,8 +190,7 @@ function initMap()
 	else
 		map:setSetting("packagetransfercount", "3")
 	end
-	map:setSetting("playerX", "6")
-	map:setSetting("playerY", "5")
+	map:addStartPosition("6", "5")
 	map:setSetting("points", "100")
 	map:setSetting("referencetime", "40")
 	map:setSetting("theme", "rock")

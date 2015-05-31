@@ -25,8 +25,13 @@
 /// This function is used to ensure that a floating point number is not a NaN or infinity.
 inline bool b2IsValid(float32 x)
 {
-	int32 ix = *reinterpret_cast<int32*>(&x);
-	return (ix & 0x7f800000) != 0x7f800000;
+	union {
+		int32 i;
+		float32 f;
+	} conv;
+
+	conv.f = x;
+	return (conv.i & 0x7f800000) != 0x7f800000;
 }
 
 /// This is a approximate yet fast inverse square-root.

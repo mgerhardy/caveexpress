@@ -24,7 +24,7 @@ public:
 	const std::string& getName () const;
 	void setName (const std::string& name);
 	void storeStep (char step);
-	void undo ();
+	bool undo ();
 	const std::string& getSolution () const;
 };
 

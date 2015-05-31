@@ -14,7 +14,7 @@
 #include "engine/common/ICommand.h"
 #include "engine/common/network/IProtocolHandler.h"
 #include "engine/common/LUA.h"
-#include "Box2D/Box2D.h"
+#include <Box2D.h>
 #include <string>
 #include <vector>
 #include <map>
@@ -127,6 +127,7 @@ protected:
 
 	uint32_t _spawnFlyingNPCTime;
 	uint32_t _spawnFishNPCTime;
+	uint32_t _initialGeyserDelay;
 
 	// the time that passed since this map was started (milliseconds)
 	uint32_t _time;
@@ -190,6 +191,7 @@ public:
 	virtual ~Map ();
 
 	const PlayerList& getPlayers () const;
+	inline int getConnectedPlayers () const { return _playersWaitingForSpawn.size() + _players.size(); }
 	Player* getPlayer (ClientId clientId);
 
 	b2World *getWorld () const;

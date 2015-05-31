@@ -1,0 +1,31 @@
+* Client executes the command "map" with the mapname given (SDLBackend::loadMap)
+* IGame::mapLoad
+* INetwork::openServer
+* IFrontend::connect (to your own server) (cl_connect localhost port) (CmdConnect)
+* INetwork::openClient
+* ClientMap::onConnectionSuccess (IClientCallback)
+* Network::update detects new connection on the server side and executes
+  IServerCallback::onConnection (SDLBackend)
+* IGame::connect
+* send LoadMapMessage to new connected client
+* client handles the message with LoadMapHandler implementation by sending a
+  SpawnMessage to the server and loads the given map on the client side
+* server reacts on the SpawnMessage with its SpawnHandler (create new player and
+  initialize it)
+* server sends MapSettingsMessage to the client
+* server sends InitDoneMessage to the client
+* server sends InitWaitingMapMessage to the client
+* put the player into the spawning queue (that is executed once the match started)
+* client stores settings in it's client side map representation
+* client can now fully initialize the client side map
+* client sends ClientInitMessage to the server once it's ready
+* server is now sending the already connected players to the client
+* client executes IUIMapWindow::initWaitingForPlayers
+* start the map by executing "start" command (Map::startMap) if we are in single
+  player mode
+* in multiplayer mode the server admin has to trigger the start by forcing it
+  with the button that is available
+* server reacts with StartMapHandler Map::startMap
+* server spawns all the players in the queue
+* server sends AddEntityMessage for each spawned player
+* server sends StartMapMessage to all connected clients

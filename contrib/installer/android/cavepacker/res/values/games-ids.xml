@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Google Play game services IDs.
+Save this file as res/values/games-ids.xml in your project.
+-->
+<resources>
+  <string name="app_id">1046698804387</string>
+  <string name="achievement_3_x_3_stars">CgkIo4nxoLseEAIQBA</string>
+  <string name="achievement_10_puzzles">CgkIo4nxoLseEAIQBQ</string>
+  <string name="achievement_10_x_3_stars">CgkIo4nxoLseEAIQBg</string>
+  <string name="achievement_20_puzzles">CgkIo4nxoLseEAIQBw</string>
+  <string name="achievement_30_puzzles">CgkIo4nxoLseEAIQCA</string>
+  <string name="achievement_40_puzzles">CgkIo4nxoLseEAIQCQ</string>
+  <string name="achievement_50_puzzles">CgkIo4nxoLseEAIQCg</string>
+  <string name="achievement_60_puzzles">CgkIo4nxoLseEAIQCw</string>
+  <string name="achievement_70_puzzles">CgkIo4nxoLseEAIQDA</string>
+  <string name="achievement_80_puzzles">CgkIo4nxoLseEAIQDQ</string>
+  <string name="achievement_90_puzzles">CgkIo4nxoLseEAIQDg</string>
+  <string name="achievement_100_puzzles">CgkIo4nxoLseEAIQDw</string>
+  <string name="achievement_300_x_3_stars">CgkIo4nxoLseEAIQEA</string>
+  <string name="achievement_finished_tutorials">CgkIo4nxoLseEAIQEQ</string>
+  <string name="achievement_finished_xsokoban">CgkIo4nxoLseEAIQEg</string>
+  <string name="achievement_finished_the_grigorusha_campaign">CgkIo4nxoLseEAIQEw</string>
+  <string name="achievement_finsihed_the_ksokoban_campaign">CgkIo4nxoLseEAIQFA</string>
+  <string name="leaderboard_xsokoban">CgkIo4nxoLseEAIQAQ</string>
+  <string name="leaderboard_gri">CgkIo4nxoLseEAIQAg</string>
+  <string name="leaderboard_ksokoban">CgkIo4nxoLseEAIQAw</string>
+</resources>

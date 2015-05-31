@@ -136,6 +136,7 @@ public:
 	virtual ~Map ();
 
 	const PlayerList& getPlayers () const;
+	inline int getConnectedPlayers () const { return _playersWaitingForSpawn.size() + _players.size(); }
 	Player* getPlayer (ClientId clientId);
 
 	void rebuildField ();
@@ -144,14 +145,16 @@ public:
 	inline bool isAutoSolve () const { return _autoSolve; }
 	void abortAutoSolve ();
 
+	int getMaxPlayers() const;
 	inline int getMoves() const { return _moves; }
 	inline int getPushes() const { return _pushes; }
 	// return the best known moves from the solution
 	inline int getBestMoves () const { return getSetting("best").toInt(); }
 	void increaseMoves ();
 	void increasePushes ();
-	void undo ();
+	void undo (Player* player);
 
+	void autoStart ();
 	void loadDelayed (uint32_t delay, const std::string& name);
 	bool load (const std::string& name);
 
@@ -200,7 +203,7 @@ public:
 	bool isTarget (int col, int row);
 	bool isPackage (int col, int row);
 
-	void undoPackage (int col, int row, int targetCol, int targetRow);
+	bool undoPackage (int col, int row, int targetCol, int targetRow);
 
 	void resetCurrentMap ();
 

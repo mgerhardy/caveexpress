@@ -146,11 +146,11 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/ui/ui-npc-mammut-middle-01.png</filename>
-            <filename>../png/ui/ui-npc-mammut-middle-02.png</filename>
-            <filename>../png/ui/ui-npc-mammut-middle-03.png</filename>
-            <filename>../png/ui/ui-npc-mammut-middle-04.png</filename>
-            <filename>../png/ui/ui-npc-mammut-middle-05.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-01.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-02.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-03.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-04.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-05.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

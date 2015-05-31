@@ -12,6 +12,7 @@
 
 class IMapContext {
 protected:
+	IMap::StartPositions _startPositions;
 	IMap::SettingsMap _settings;
 	std::string _name;
 	std::string _title;
@@ -67,6 +68,11 @@ public:
 	inline const IMap::SettingsMap& getSettings () const
 	{
 		return _settings;
+	}
+
+	inline const IMap::StartPositions& getStartPositions () const
+	{
+		return _startPositions;
 	}
 
 	inline const std::vector<CaveTileDefinition>& getCaveTileDefinitions () const

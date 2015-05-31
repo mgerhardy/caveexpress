@@ -1,20 +1,40 @@
 #pragma once
 
 #include "IGameStatePersister.h"
+#include "engine/common/SQLite.h"
+#include <stdint.h>
 
 // forward decl
-class GameStateSQLite;
+class Campaign;
+class CampaignMap;
 
-class SQLitePersister: public IGameStatePersister {
+#define TABLE_GAMESTATE "gamestate"
+#define TABLE_GAMEMAPS "maps"
+#define TABLE_LIVES "lives"
+
+class SQLitePersister: public IGameStatePersister, public SQLite {
 protected:
-	std::string _filename;
-	GameStateSQLite *_gameState;
+	virtual bool deleteMaps (Campaign* campaign);
+	virtual bool activateCampaign (const Campaign* campaign);
+	virtual bool activateCampaign (const std::string& id);
+
+	virtual bool saveLives (uint8_t lives, const std::string& campaignId);
+	virtual void loadCampaignMapParameters(CampaignMap* map, SQLiteStatement& stmt);
+	virtual void saveCampaignMapParameters (const CampaignMap* map, SQLiteStatement& stmt);
+
+	virtual std::string loadActiveCampaign ();
+	virtual bool updateCampaign (Campaign* campaign);
+
+	virtual bool resetState (Campaign* campaign);
+
+	virtual uint8_t loadLives (const std::string& campaignId);
 public:
 	SQLitePersister (const std::string& filename);
 	virtual ~SQLitePersister ();
 
-	bool reset () override;
-	bool saveCampaign (Campaign* campaign) override;
-	bool loadCampaign (Campaign* campaign) override;
-	bool resetCampaign (Campaign* campaign) override;
+	virtual bool init () override;
+	virtual bool reset () override;
+	virtual bool saveCampaign (Campaign* campaign) override;
+	virtual bool loadCampaign (Campaign* campaign) override;
+	virtual bool resetCampaign (Campaign* campaign) override;
 };

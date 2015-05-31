@@ -13,6 +13,16 @@ public class CaveExpress extends BaseGameAdsActivity {
 	}
 
 	@Override
+	protected String getAdUnitId() {
+		return "ca-app-pub-5370378935428600/2618147974";
+	}
+
+	@Override
+	protected String getInterstitialAdUnitId() {
+		return "ca-app-pub-5370378935428600/4094881177";
+	}
+
+	@Override
 	public String getName() {
 		return "caveexpress";
 	}

@@ -288,8 +288,7 @@ MaybeAddDevice(const char *path)
     }
 
     item->fname = SDL_strdup(path);
-    if ( (item->fname == NULL) ) {
-        SDL_free(item->fname);
+    if (item->fname == NULL) {
         SDL_free(item);
         return -1;
     }
@@ -441,7 +440,7 @@ SDL_SYS_HapticOpenFromFD(SDL_Haptic * haptic, int fd)
   open_err:
     close(fd);
     if (haptic->hwdata != NULL) {
-        free(haptic->hwdata);
+        SDL_free(haptic->hwdata);
         haptic->hwdata = NULL;
     }
     return -1;
@@ -669,6 +668,8 @@ SDL_SYS_ToDirection(Uint16 *dest, SDL_HapticDirection * src)
                         90 deg -> 0x4000 (left)
                         180 deg -> 0x8000 (up)
                         270 deg -> 0xC000 (right)
+                   The force pulls into the direction specified by Linux directions,
+                   i.e. the opposite convention of SDL directions.
                     */
         tmp = ((src->dir[0] % 36000) * 0x8000) / 18000; /* convert to range [0,0xFFFF] */
         *dest = (Uint16) tmp;
@@ -727,7 +728,6 @@ SDL_SYS_ToDirection(Uint16 *dest, SDL_HapticDirection * src)
 static int
 SDL_SYS_ToFFEffect(struct ff_effect *dest, SDL_HapticEffect * src)
 {
-    Uint32 tmp;
     SDL_HapticConstant *constant;
     SDL_HapticPeriodic *periodic;
     SDL_HapticCondition *condition;
@@ -805,9 +805,8 @@ SDL_SYS_ToFFEffect(struct ff_effect *dest, SDL_HapticEffect * src)
         dest->u.periodic.period = CLAMP(periodic->period);
         dest->u.periodic.magnitude = periodic->magnitude;
         dest->u.periodic.offset = periodic->offset;
-        /* Phase is calculated based of offset from period and then clamped. */
-        tmp = ((periodic->phase % 36000) * dest->u.periodic.period) / 36000;
-        dest->u.periodic.phase = CLAMP(tmp);
+        /* Linux phase is defined in interval "[0x0000, 0x10000[", corresponds with "[0deg, 360deg[" phase shift. */
+        dest->u.periodic.phase = ((Uint32)periodic->phase * 0x10000U) / 36000;
 
         /* Envelope */
         dest->u.periodic.envelope.attack_length =
@@ -959,7 +958,7 @@ SDL_SYS_HapticNewEffect(SDL_Haptic * haptic, struct haptic_effect *effect,
     return 0;
 
   new_effect_err:
-    free(effect->hweffect);
+    SDL_free(effect->hweffect);
     effect->hweffect = NULL;
     return -1;
 }

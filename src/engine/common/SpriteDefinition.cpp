@@ -4,7 +4,7 @@
 #include "engine/common/Logger.h"
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/TextureDefinition.h"
-#include "libs/Box2D/Box2D.h"
+#include <Box2D.h>
 
 SpriteDefinition::SpriteDefinition ()
 {

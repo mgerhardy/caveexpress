@@ -13,11 +13,13 @@ class Texture;
 class BitmapFont;
 typedef SharedPtr<BitmapFont> BitmapFontPtr;
 
-#define TINY_FONT "font-rock8"
-#define SMALL_FONT "font-rock10"
-#define MEDIUM_FONT "font-rock12"
-#define HUGE_FONT "font-rock24"
-#define LARGE_FONT "font-rock48"
+struct RenderTarget;
+
+#define TINY_FONT "font-8"
+#define SMALL_FONT "font-10"
+#define MEDIUM_FONT "font-12"
+#define HUGE_FONT "font-24"
+#define LARGE_FONT "font-48"
 
 #define DEFAULT_FONT MEDIUM_FONT
 
@@ -85,10 +87,13 @@ public:
 	virtual void setFullscreen (bool fullscreen) = 0;
 	virtual bool isFullscreen () = 0;
 	virtual void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha) = 0;
+	virtual void renderBatches () {}
 	virtual void setCursorPosition (int x, int y) = 0;
 	virtual void showCursor (bool show) = 0;
 	virtual bool loadTexture (Texture *texture, const std::string& filename) = 0;
 	virtual void bindTexture (Texture* texture, int textureUnit) = 0;
+	virtual RenderTarget* renderToTexture (int x, int y, int w, int h) { return nullptr; }
+	virtual bool renderTarget (RenderTarget* target) { return false; }
 	// @param w the width of the rect to fill <= 0 to use the full screen width
 	// @param h the height of the rect to fill <= 0 to use the full screen height
 	virtual void renderRect (int x, int y, int w, int h, const Color& color) = 0;

@@ -1,6 +1,7 @@
 A mighty fish is after you|Ein maechtiger Fisch ist hinter dir her
 A player will lose the map if he touches the side borders|Der Spieler hat die Map verloren wenn er eines der beiden Seitenraender beruehrt
 ALT|ALT
+Achievements|Achievements
 Activate the fish spawn|Aktiviere den Fisch fuer diese Map
 Activate the pterodactyls spawn|Aktiviere den Pterodactylus fuer diese Map
 Angry dinosaur|Wuetender Dinosaurier
@@ -21,6 +22,7 @@ Create server|Server erstellen
 Decrease map size|Map verkleinern
 Deliver packages to the shredders|Transportiere Pakete zu den Schreddern
 Description|Beschreibung
+Disconnect|Disconnect
 Drop during flight|Waehrend des Fluges abwerfen
 Drop stones onto the tree|Lasse den Stein auf Baeume fallen
 Drop the package and the stone|Den Stein und das Paket fallen lassen
@@ -37,6 +39,8 @@ Fullscreen|Fullscreen
 Game mode|Modus
 General|Allgemein
 Geyser|Geyser
+Google Play|Google Play
+Google Play sign-out|Google Play sign-out
 Gravity|Gravitation
 Hard|Schwer
 Health bar|Lebensenergie
@@ -52,10 +56,12 @@ Initial water rising delay in milliseconds|Initiale Verzoegerung der Wassererhoe
 Joystick|Joystick
 Just stay and watch what happens|Einfach nur abwarten und zuschauen
 LMB|LMB
+Leaderboard|Leaderboard
 Learn to use the stone|Lerne den Stein zu benutzen
 Load|Laden
 MMB|MMB
 MOUSE WHEEL|MAUSRAD
+Map|Map
 Map Options|Optionen
 Maps|Maps
 Mouse movement|Mausbewegung
@@ -73,6 +79,8 @@ Package|Paket
 Packages|Pakete
 Place tile|Teil plazieren
 Player|Spieler
+Players|Players
+Players:|Players:
 Points|Punkte
 Pterodactyls|Pterodactylus
 Pterodactyls is after you|Der Pterodactylus hat es auch dich abgesehen

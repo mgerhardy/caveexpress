@@ -76,8 +76,6 @@ typedef unsigned long uintptr_t;
 #define SDL_VIDEO_DRIVER_DUMMY  1
 
 /* Enable the dummy filesystem driver (src/filesystem/dummy/\*.c) */
-#ifndef __NACL__
 #define SDL_FILESYSTEM_DUMMY  1
-#endif
 
 #endif /* _SDL_config_minimal_h */

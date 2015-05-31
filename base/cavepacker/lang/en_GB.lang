@@ -1,3 +1,4 @@
+Achievements|Achievements
 Are you sure?|Are you sure?
 Big|Big
 Campaigns|Campaigns
@@ -5,16 +6,22 @@ Cancel|Cancel
 Continue|Continue
 Create server|Create server
 Description|Description
+Disconnect|Disconnect
 Extras|Extras
 Fullscreen|Fullscreen
 Gesture|Gesture
+Google Play|Google Play
+Google Play sign-out|Google Play sign-out
 Hard|Hard
 Hints|Hints
 Homepage|Homepage
 Joystick|Joystick
+Leaderboard|Leaderboard
+Map|Map
 Maps|Maps
 Move all packages onto their targets|Move all packages onto their targets
 Multiplayer|Multiplayer
+Name|Name
 Normal|Normal
 OK|OK
 Objectives|Objectives
@@ -22,6 +29,8 @@ Off|Off
 On|On
 Open|Open
 Package|Package
+Players|Players
+Players:|Players:
 Quit|Quit
 Refresh|Refresh
 Reset|Reset

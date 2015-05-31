@@ -1,11 +1,5 @@
 TARGET             := jsonconvert
 
-# if the linking should be static
-$(TARGET)_STATIC   ?= $(STATIC)
-ifeq ($($(TARGET)_STATIC),1)
-$(TARGET)_LDFLAGS  += -static
-endif
-
 $(TARGET)_LINKER   := $(CXX)
 $(TARGET)_FILE     := $(TARGET)$(EXE_EXT)
 $(TARGET)_LDFLAGS  += $(SDL_LIBS) $(YAJL_LIBS) $(SDL_RWHTTP_LIBS) $(SQLITE3_LIBS) $(LUA_LIBS) $(SO_LIBS)
@@ -33,7 +27,7 @@ $(TARGET)_SRCS      = \
 	\
 	$(LUA_SRCS)
 
-ifneq ($(findstring $(TARGET_OS), mingw32 mingw64 mingw64_64),)
+ifneq ($(findstring $(TARGET_OS), mingw32 mingw64),)
 	$(TARGET)_SRCS +=\
 		engine/common/ports/Windows.cpp \
 		engine/common/ports/project.rc

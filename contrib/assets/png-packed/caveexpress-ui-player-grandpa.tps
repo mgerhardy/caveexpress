@@ -146,16 +146,16 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/ui/ui-player-middle-01.png</filename>
-            <filename>../png/ui/ui-player-middle-02.png</filename>
-            <filename>../png/ui/ui-player-middle-03.png</filename>
-            <filename>../png/ui/ui-npc-grandpa-middle-01.png</filename>
-            <filename>../png/ui/ui-npc-grandpa-middle-02.png</filename>
-            <filename>../png/ui/ui-npc-grandpa-middle-03.png</filename>
-            <filename>../png/ui/ui-npc-grandpa-middle-04.png</filename>
-            <filename>../png/ui/ui-npc-grandpa-middle-05.png</filename>
-            <filename>../png/ui/ui-npc-grandpa-middle-06.png</filename>
-            <filename>../png/ui/ui-npc-grandpa-middle-07.png</filename>
+            <filename>../png/caveexpress/ui/ui-player-middle-01.png</filename>
+            <filename>../png/caveexpress/ui/ui-player-middle-02.png</filename>
+            <filename>../png/caveexpress/ui/ui-player-middle-03.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-01.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-02.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-03.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-04.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-05.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-06.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-07.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

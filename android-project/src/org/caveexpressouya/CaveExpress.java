@@ -9,8 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class CaveExpress extends BaseActivity {
-	private final GamerInfoResponseHandler gamerInfoListener = new GamerInfoResponseHandler();
-	private final PurchaseHandler purchaseListener = new PurchaseHandler();
+	private final GamerInfoResponseHandler gamerInfoListener = new GamerInfoResponseHandler(this);
+	private final PurchaseHandler purchaseListener = new PurchaseHandler(this);
 
 	@Override
 	protected String getPublicKey() {

@@ -173,36 +173,37 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/ui/icon-settings.png</filename>
-            <filename>../png/ui/icon-arrow-left.png</filename>
-            <filename>../png/ui/icon-reload.png</filename>
-            <filename>../png/ui/icon-checkbox-off.png</filename>
-            <filename>../png/ui/icon-checkbox-on.png</filename>
-            <filename>../png/ui/icon-scroll-page-DIR.png</filename>
-            <filename>../png/ui/ui-background-title.png</filename>
-            <filename>../png/ui/mouse.png</filename>
-            <filename>../png/ui/map-icon-locked.png</filename>
-            <filename>../png/ui/map-icon-unlocked.png</filename>
-            <filename>../png/ui/map-icon-unlocked-0.png</filename>
-            <filename>../png/ui/map-icon-unlocked-1.png</filename>
-            <filename>../png/ui/map-icon-unlocked-2.png</filename>
-            <filename>../png/ui/map-icon-unlocked-3.png</filename>
-            <filename>../png/ui/icon-campaign.png</filename>
-            <filename>../png/ui/icon-joystick-off.png</filename>
-            <filename>../png/ui/icon-joystick-on.png</filename>
-            <filename>../png/ui/icon-result.png</filename>
-            <filename>../png/ui/icon-sound-off.png</filename>
-            <filename>../png/ui/icon-sound-on.png</filename>
-            <filename>../png/ui/icon-campaign-rock.png</filename>
-            <filename>../png/ui/icon-campaign-ice.png</filename>
-            <filename>../png/ui/icon-back-to-root.png</filename>
-            <filename>../png/ui/icon-plus.png</filename>
-            <filename>../png/ui/icon-heart.png</filename>
-            <filename>../png/ui/icon-star-disabled.png</filename>
-            <filename>../png/ui/icon-star-enabled.png</filename>
-            <filename>../png/ui/ui-background-gameover.png</filename>
-            <filename>../png/ui/ui-button-start.png</filename>
-            <filename>../png/ui/icon-close.png</filename>
+            <filename>../png/caveexpress/ui/icon-settings.png</filename>
+            <filename>../png/caveexpress/ui/icon-arrow-left.png</filename>
+            <filename>../png/caveexpress/ui/icon-reload.png</filename>
+            <filename>../png/caveexpress/ui/icon-checkbox-off.png</filename>
+            <filename>../png/caveexpress/ui/icon-checkbox-on.png</filename>
+            <filename>../png/caveexpress/ui/icon-scroll-page-DIR.png</filename>
+            <filename>../png/caveexpress/ui/ui-background-title.png</filename>
+            <filename>../png/caveexpress/ui/mouse.png</filename>
+            <filename>../png/caveexpress/ui/map-icon-locked.png</filename>
+            <filename>../png/caveexpress/ui/map-icon-unlocked.png</filename>
+            <filename>../png/caveexpress/ui/map-icon-unlocked-0.png</filename>
+            <filename>../png/caveexpress/ui/map-icon-unlocked-1.png</filename>
+            <filename>../png/caveexpress/ui/map-icon-unlocked-2.png</filename>
+            <filename>../png/caveexpress/ui/icon-google-login.png</filename>
+            <filename>../png/caveexpress/ui/map-icon-unlocked-3.png</filename>
+            <filename>../png/caveexpress/ui/icon-campaign.png</filename>
+            <filename>../png/caveexpress/ui/icon-joystick-off.png</filename>
+            <filename>../png/caveexpress/ui/icon-joystick-on.png</filename>
+            <filename>../png/caveexpress/ui/icon-result.png</filename>
+            <filename>../png/caveexpress/ui/icon-sound-off.png</filename>
+            <filename>../png/caveexpress/ui/icon-sound-on.png</filename>
+            <filename>../png/caveexpress/ui/icon-campaign-rock.png</filename>
+            <filename>../png/caveexpress/ui/icon-campaign-ice.png</filename>
+            <filename>../png/caveexpress/ui/icon-back-to-root.png</filename>
+            <filename>../png/caveexpress/ui/icon-plus.png</filename>
+            <filename>../png/caveexpress/ui/icon-heart.png</filename>
+            <filename>../png/caveexpress/ui/icon-star-disabled.png</filename>
+            <filename>../png/caveexpress/ui/icon-star-enabled.png</filename>
+            <filename>../png/caveexpress/ui/ui-background-gameover.png</filename>
+            <filename>../png/caveexpress/ui/ui-button-start.png</filename>
+            <filename>../png/caveexpress/ui/icon-close.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

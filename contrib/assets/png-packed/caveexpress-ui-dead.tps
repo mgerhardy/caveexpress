@@ -146,12 +146,12 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/ui/dead-hitpoints.png</filename>
-            <filename>../png/ui/dead-npc-fish.png</filename>
-            <filename>../png/ui/dead-npc-flying.png</filename>
-            <filename>../png/ui/dead-npc-mammut.png</filename>
-            <filename>../png/ui/dead-npc-walking.png</filename>
-            <filename>../png/ui/dead-waterheight.png</filename>
+            <filename>../png/caveexpress/ui/dead-hitpoints.png</filename>
+            <filename>../png/caveexpress/ui/dead-npc-fish.png</filename>
+            <filename>../png/caveexpress/ui/dead-npc-flying.png</filename>
+            <filename>../png/caveexpress/ui/dead-npc-mammut.png</filename>
+            <filename>../png/caveexpress/ui/dead-npc-walking.png</filename>
+            <filename>../png/caveexpress/ui/dead-waterheight.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

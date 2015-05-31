@@ -33,6 +33,8 @@
 #include "SDL_config_premake.h"
 #elif defined(__WIN32__)
 #include "SDL_config_windows.h"
+#elif defined(__EMSCRIPTEN__)
+#include "SDL_config_emscripten.h"
 #elif defined(__WINRT__)
 #include "SDL_config_winrt.h"
 #elif defined(__MACOSX__)

@@ -448,70 +448,44 @@ static SDL_bool
 ProcessHitTest(_THIS, const SDL_WindowData *data, const XEvent *xev)
 {
     SDL_Window *window = data->window;
-    SDL_bool ret = SDL_FALSE;
 
     if (window->hit_test) {
         const SDL_Point point = { xev->xbutton.x, xev->xbutton.y };
         const SDL_HitTestResult rc = window->hit_test(window, &point, window->hit_test_data);
+        static const int directions[] = {
+            _NET_WM_MOVERESIZE_SIZE_TOPLEFT, _NET_WM_MOVERESIZE_SIZE_TOP,
+            _NET_WM_MOVERESIZE_SIZE_TOPRIGHT, _NET_WM_MOVERESIZE_SIZE_RIGHT,
+            _NET_WM_MOVERESIZE_SIZE_BOTTOMRIGHT, _NET_WM_MOVERESIZE_SIZE_BOTTOM,
+            _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT, _NET_WM_MOVERESIZE_SIZE_LEFT
+        };
+
         switch (rc) {
-            case SDL_HITTEST_DRAGGABLE: {
-                    InitiateWindowMove(_this, data, &point);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_TOPLEFT: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_TOPLEFT);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_TOP: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_TOP);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_TOPRIGHT: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_TOPRIGHT);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_RIGHT: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_RIGHT);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_BOTTOMRIGHT: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_BOTTOMRIGHT);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_BOTTOM: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_BOTTOM);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_BOTTOMLEFT: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT);
-                    ret = SDL_TRUE;
-                }
-                break;
-            case SDL_HITTEST_RESIZE_LEFT: {
-                    InitiateWindowResize(_this, data, &point, _NET_WM_MOVERESIZE_SIZE_LEFT);
-                    ret = SDL_TRUE;
-                }
-                break;
-            default:
-                break;
+            case SDL_HITTEST_DRAGGABLE:
+                InitiateWindowMove(_this, data, &point);
+                return SDL_TRUE;
+
+            case SDL_HITTEST_RESIZE_TOPLEFT:
+            case SDL_HITTEST_RESIZE_TOP:
+            case SDL_HITTEST_RESIZE_TOPRIGHT:
+            case SDL_HITTEST_RESIZE_RIGHT:
+            case SDL_HITTEST_RESIZE_BOTTOMRIGHT:
+            case SDL_HITTEST_RESIZE_BOTTOM:
+            case SDL_HITTEST_RESIZE_BOTTOMLEFT:
+            case SDL_HITTEST_RESIZE_LEFT:
+                InitiateWindowResize(_this, data, &point, directions[rc - SDL_HITTEST_RESIZE_TOPLEFT]);
+                return SDL_TRUE;
+
+            default: return SDL_FALSE;
         }
     }
 
-    return ret;
+    return SDL_FALSE;
 }
 
 static void
 ReconcileKeyboardState(_THIS, const SDL_WindowData *data)
 {
     SDL_VideoData *viddata = (SDL_VideoData *) _this->driverdata;
-    SDL_Window* window = data->window;
     Display *display = viddata->display;
     char keys[32];
     int keycode = 0;
@@ -678,8 +652,17 @@ X11_DispatchEvent(_THIS)
                 data->window == SDL_GetKeyboardFocus()) {
                 ReconcileKeyboardState(_this, data);
             }
-            data->pending_focus = PENDING_FOCUS_IN;
-            data->pending_focus_time = SDL_GetTicks() + PENDING_FOCUS_IN_TIME;
+            if (!videodata->last_mode_change_deadline) /* no recent mode changes */
+            {
+                data->pending_focus = PENDING_FOCUS_NONE;
+                data->pending_focus_time = 0;
+                X11_DispatchFocusIn(data);
+            }
+            else
+            {
+                data->pending_focus = PENDING_FOCUS_IN;
+                data->pending_focus_time = SDL_GetTicks() + PENDING_FOCUS_TIME;
+            }
         }
         break;
 
@@ -702,8 +685,17 @@ X11_DispatchEvent(_THIS)
 #ifdef DEBUG_XEVENTS
             printf("window %p: FocusOut!\n", data);
 #endif
-            data->pending_focus = PENDING_FOCUS_OUT;
-            data->pending_focus_time = SDL_GetTicks() + PENDING_FOCUS_OUT_TIME;
+            if (!videodata->last_mode_change_deadline) /* no recent mode changes */
+            {
+                data->pending_focus = PENDING_FOCUS_NONE;
+                data->pending_focus_time = 0;
+                X11_DispatchFocusOut(data);
+            }
+            else
+            {
+                data->pending_focus = PENDING_FOCUS_OUT;
+                data->pending_focus_time = SDL_GetTicks() + PENDING_FOCUS_TIME;
+            }
         }
         break;
 
@@ -763,19 +755,17 @@ X11_DispatchEvent(_THIS)
 #else
             XLookupString(&xevent.xkey, text, sizeof(text), &keysym, NULL);
 #endif
+
 #ifdef SDL_USE_IBUS
             if(SDL_GetEventState(SDL_TEXTINPUT) == SDL_ENABLE){
-                if(!(handled_by_ime = SDL_IBus_ProcessKeyEvent(keysym, keycode))){
-#endif
-                    if(*text){
-                        SDL_SendKeyboardText(text);
-                    }
-#ifdef SDL_USE_IBUS
-                }
+                handled_by_ime = SDL_IBus_ProcessKeyEvent(keysym, keycode);
             }
 #endif
             if (!handled_by_ime) {
                 SDL_SendKeyboardKey(SDL_PRESSED, videodata->key_layout[keycode]);
+                if(*text) {
+                    SDL_SendKeyboardText(text);
+                }
             }
 
         }
@@ -867,12 +857,19 @@ X11_DispatchEvent(_THIS)
         /* Have we been requested to quit (or another client message?) */
     case ClientMessage:{
 
-            int xdnd_version=0;
+            static int xdnd_version=0;
 
             if (xevent.xclient.message_type == videodata->XdndEnter) {
+
                 SDL_bool use_list = xevent.xclient.data.l[1] & 1;
                 data->xdnd_source = xevent.xclient.data.l[0];
                 xdnd_version = ( xevent.xclient.data.l[1] >> 24);
+#ifdef DEBUG_XEVENTS
+                printf("XID of source window : %ld\n", data->xdnd_source);
+                printf("Protocol version to use : %ld\n", xdnd_version);
+                printf("More then 3 data types : %ld\n", use_list); 
+#endif
+ 
                 if (use_list) {
                     /* fetch conversion targets */
                     SDL_x11Prop p;
@@ -886,6 +883,15 @@ X11_DispatchEvent(_THIS)
                 }
             }
             else if (xevent.xclient.message_type == videodata->XdndPosition) {
+            
+#ifdef DEBUG_XEVENTS
+                Atom act= videodata->XdndActionCopy;
+                if(xdnd_version >= 2) {
+                    act = xevent.xclient.data.l[4];
+                }
+                printf("Action requested by user is : %s\n", X11_XGetAtomName(display , act));
+#endif
+                
 
                 /* reply with status */
                 memset(&m, 0, sizeof(XClientMessageEvent));
@@ -975,7 +981,7 @@ X11_DispatchEvent(_THIS)
     case ButtonPress:{
             int ticks = 0;
             if (X11_IsWheelEvent(display,&xevent,&ticks)) {
-                SDL_SendMouseWheel(data->window, 0, 0, ticks);
+                SDL_SendMouseWheel(data->window, 0, 0, ticks, SDL_MOUSEWHEEL_NORMAL);
             } else {
                 if(xevent.xbutton.button == Button1) {
                     if (ProcessHitTest(_this, data, &xevent)) {
@@ -1075,20 +1081,30 @@ X11_DispatchEvent(_THIS)
                    without ever mapping / unmapping them, so we handle that here,
                    because they use the NETWM protocol to notify us of changes.
                  */
-                Uint32 flags = X11_GetNetWMState(_this, xevent.xproperty.window);
-				if ((flags^data->window->flags) & SDL_WINDOW_HIDDEN ||
-					(flags^data->window->flags) & SDL_WINDOW_FULLSCREEN ) {
-                    if (flags & SDL_WINDOW_HIDDEN) {
-                        X11_DispatchUnmapNotify(data);
-                    } else {
-                        X11_DispatchMapNotify(data);
+                const Uint32 flags = X11_GetNetWMState(_this, xevent.xproperty.window);
+                const Uint32 changed = flags ^ data->window->flags;
+
+                if ((changed & SDL_WINDOW_HIDDEN) || (changed & SDL_WINDOW_FULLSCREEN)) {
+                     if (flags & SDL_WINDOW_HIDDEN) {
+                         X11_DispatchUnmapNotify(data);
+                     } else {
+                         X11_DispatchMapNotify(data);
                     }
                 }
+
+                if (changed & SDL_WINDOW_MAXIMIZED) {
+                    if (flags & SDL_WINDOW_MAXIMIZED) {
+                        SDL_SendWindowEvent(data->window, SDL_WINDOWEVENT_MAXIMIZED, 0, 0);
+                    } else {
+                        SDL_SendWindowEvent(data->window, SDL_WINDOWEVENT_RESTORED, 0, 0);
+                    }
+                 }
+
             }
         }
         break;
 
-    /* Copy the selection from XA_CUT_BUFFER0 to the requested property */
+    /* Copy the selection from our own CUTBUFFER to the requested property */
     case SelectionRequest: {
             XSelectionRequestEvent *req;
             XEvent sevent;
@@ -1111,7 +1127,7 @@ X11_DispatchEvent(_THIS)
             sevent.xselection.requestor = req->requestor;
             sevent.xselection.time = req->time;
             if (X11_XGetWindowProperty(display, DefaultRootWindow(display),
-                    XA_CUT_BUFFER0, 0, INT_MAX/4, False, req->target,
+                    X11_GetSDLCutBufferClipboardType(display), 0, INT_MAX/4, False, req->target,
                     &sevent.xselection.target, &seln_format, &nbytes,
                     &overflow, &seln_data) == Success) {
                 Atom XA_TARGETS = X11_XInternAtom(display, "TARGETS", 0);
@@ -1268,9 +1284,15 @@ X11_PumpEvents(_THIS)
 {
     SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
 
+    if (data->last_mode_change_deadline) {
+        if (SDL_TICKS_PASSED(SDL_GetTicks(), data->last_mode_change_deadline)) {
+            data->last_mode_change_deadline = 0;  /* assume we're done. */
+        }
+    }
+
     /* Update activity every 30 seconds to prevent screensaver */
     if (_this->suspend_screensaver) {
-        Uint32 now = SDL_GetTicks();
+        const Uint32 now = SDL_GetTicks();
         if (!data->screensaver_activity ||
             SDL_TICKS_PASSED(now, data->screensaver_activity + 30000)) {
             X11_XResetScreenSaver(data->display);

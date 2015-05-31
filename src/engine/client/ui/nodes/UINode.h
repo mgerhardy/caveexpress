@@ -37,18 +37,30 @@ class OpenURLListener: public UINodeListener {
 protected:
 	const std::string _url;
 	IFrontend *_frontend;
+	bool _newWindow;
 public:
-	OpenURLListener (IFrontend *frontend, const std::string& url) :
-			_url(url), _frontend(frontend)
+	OpenURLListener (IFrontend *frontend, const std::string& url, bool newWindow = true) :
+			_url(url), _frontend(frontend), _newWindow(newWindow)
 	{
 	}
 
 	void onClick ()
 	{
 		_frontend->minimize();
-		System.openURL(_url);
+		System.openURL(_url, _newWindow);
 	}
 };
+
+#ifdef __EMSCRIPTEN__
+	class EmscriptenFullscreenListener: public UINodeListener {
+	public:
+		void onClick () {
+			EM_ASM({
+				Module.requestFullScreen();
+			});
+		}
+	};
+#endif
 
 enum UINodeAlign {
 	// horizontal
@@ -367,6 +379,11 @@ public:
 	virtual bool onMouseButtonRelease (int32_t x, int32_t y, unsigned char button);
 	virtual bool onMouseButtonPress (int32_t x, int32_t y, unsigned char button);
 	virtual bool onGesture (int64_t gestureId, float error, int32_t numFingers);
+	/**
+	 * @param[in] theta the amount that the fingers rotated during this motion
+	 * @param[in] dist the amount that the fingers pinched during this motion
+	 * @param[in] numFingers the number of fingers used in the gesture
+	 */
 	virtual bool onMultiGesture (float theta, float dist, int32_t numFingers);
 	virtual bool onGestureRecord (int64_t gestureId);
 	virtual bool onMouseLeftRelease (int32_t x, int32_t y);

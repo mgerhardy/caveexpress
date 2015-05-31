@@ -6,6 +6,7 @@
 #include "caveexpress/server/entities/Package.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/server/events/GameEventHandler.h"
+#include "caveexpress/shared/CaveExpressAchievement.h"
 #include "engine/common/Logger.h"
 #include "engine/common/network/INetwork.h"
 #include "engine/common/System.h"
@@ -140,40 +141,38 @@ void Player::update (uint32_t deltaTime)
 		drop();
 	}
 
-	if (System.hasTouch()) {
-		if (_fingerAcceleration) {
-			const float mass = getCompleteMass();
-			const b2Vec2& gravity = getGravity();
-			b2Vec2 v = mass * gravity;
-			const int delta = 1;
-			if (_accelerateY <= -delta) {
-				// go upwards
-				v.y *= _accelerateY;
-			} else if (_accelerateY >= delta) {
-				// go downwards
-				v.y *= 0.5f;
-			} else {
-				// stay in the air (see below)
-				v.y *= 0.0f;
-			}
-
-			const float horizontalMoveSpeed = 1.0f;
-			if (std::abs(_accelerateX) >= delta)
-				v.x = horizontalMoveSpeed * _accelerateX;
-
-			const float maxHorizontalVelocity = gravity.y;
-			v.x = clamp(v.x, -maxHorizontalVelocity, maxHorizontalVelocity);
-			v.y = clamp(v.y, -gravity.y * 3.0f, gravity.y);
-
-			debug(LOG_SERVER, "v: " + string::toString(v) + ", x: " + string::toString(_accelerateX) + ", y: " + string::toString(_accelerateY));
-
-			if (fabs(v.y) < 0.0001f) {
-				const b2Vec2 force = -mass * getGravity();
-				debug(LOG_SERVER, "f: " + string::toString(force));
-				applyForce(force);
-			}
-			applyLinearImpulse(v);
+	if (System.hasTouch() && _fingerAcceleration) {
+		const float mass = getCompleteMass();
+		const b2Vec2& gravity = getGravity();
+		b2Vec2 v = mass * gravity;
+		const int delta = 1;
+		if (_accelerateY <= -delta) {
+			// go upwards
+			v.y *= _accelerateY;
+		} else if (_accelerateY >= delta) {
+			// go downwards
+			v.y *= 0.5f;
+		} else {
+			// stay in the air (see below)
+			v.y *= 0.0f;
 		}
+
+		const float horizontalMoveSpeed = 1.0f;
+		if (std::abs(_accelerateX) >= delta)
+			v.x = horizontalMoveSpeed * _accelerateX;
+
+		const float maxHorizontalVelocity = gravity.y;
+		v.x = clamp(v.x, -maxHorizontalVelocity, maxHorizontalVelocity);
+		v.y = clamp(v.y, -gravity.y * 3.0f, gravity.y);
+
+		debug(LOG_SERVER, "v: " + string::toString(v) + ", x: " + string::toString(_accelerateX) + ", y: " + string::toString(_accelerateY));
+
+		if (fabs(v.y) < 0.0001f) {
+			const b2Vec2 force = -mass * getGravity();
+			debug(LOG_SERVER, "f: " + string::toString(force));
+			applyForce(force);
+		}
+		applyLinearImpulse(v);
 	} else {
 		const float maxSpeed = 8.0f;
 		const b2Vec2 force = getMass() * _acceleration;
@@ -354,10 +353,15 @@ bool Player::canCarry (const IEntity* entity) const
 	int free = 0;
 	for (int i = 0; i < MAX_COLLECTED; ++i) {
 		const EntityType *entityType = _collectedEntities[i].entityType;
-		if (entityType == nullptr)
+		if (entityType == nullptr) {
 			++free;
-		else if (!EntityTypes::isPackage(*entityType))
+		} else if (!EntityTypes::isPackage(*entityType)) {
+			if (EntityTypes::isStone(*entityType))
+				_map.sendMessage(_clientId, "Drop the stone before collecting the package");
+			else
+				_map.sendMessage(_clientId, "You currently can't collect the package");
 			return false;
+		}
 	}
 	return free > 0;
 }
@@ -383,6 +387,8 @@ bool Player::collect (CollectableEntity* entity)
 			_fruitsCollectedInARow = 0;
 			_lastFruitCollected = 0;
 		}
+		Achievements::PICK_UP_FRUIT.unlock();
+		Achievements::COLLECT_100_FRUITS.unlock();
 		_map.sendSound(ClientIdToClientMask(getClientId()), SoundTypes::SOUND_FRUIT_COLLECTED);
 		addHitpoints(Config.getFruitHitpoints());
 		return true;
@@ -400,6 +406,11 @@ bool Player::collect (CollectableEntity* entity)
 		_collectedEntities[i] = c;
 		break;
 	}
+	if (EntityTypes::isStone(entityType)) {
+		Achievements::COLLECT_10_STONES.unlock();
+		Achievements::COLLECT_100_STONES.unlock();
+	}
+
 	GameEvent.sendCollectState(_clientId, entityType, true);
 	return true;
 }

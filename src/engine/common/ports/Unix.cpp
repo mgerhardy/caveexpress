@@ -38,7 +38,11 @@
 Unix::Unix() :
 		ISystem()
 {
-	signal(SIGPIPE, SIG_IGN);
+	void (*handler)(int);
+	handler = signal(SIGPIPE, SIG_IGN);
+	if (handler != SIG_DFL) {
+		signal(SIGPIPE, handler);
+	}
 	struct passwd *p;
 
 	if ((p = getpwuid(getuid())) == nullptr)
@@ -207,7 +211,7 @@ void Unix::exit (const std::string& reason, int errorCode)
 	::exit(errorCode);
 }
 
-int Unix::openURL (const std::string& url) const
+int Unix::openURL (const std::string& url, bool) const
 {
 	const std::string cmd = "xdg-open \"" + url + "\"";
 	return system(cmd.c_str());

@@ -28,6 +28,7 @@
 #define UI_WINDOW_EDITOR "editor"
 #define UI_WINDOW_HELP "help"
 #define UI_WINDOW_MAP_HELP "maphelp"
+#define UI_WINDOW_GOOGLEPLAY "googleplay"
 
 #define WINDOW_FLAG_MODAL			(1 << 0)
 #define WINDOW_FLAG_FULLSCREEN		(1 << 1)

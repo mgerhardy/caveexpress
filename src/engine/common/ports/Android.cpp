@@ -3,6 +3,7 @@
 #include "engine/common/Payment.h"
 #include "engine/common/Config.h"
 #include "engine/common/System.h"
+#include "engine/common/ConfigManager.h"
 #include <SDL_config.h>
 #include <SDL_assert.h>
 #include <SDL_main.h>
@@ -118,6 +119,7 @@ void Android::init() {
 	_buyItem = env->GetStaticMethodID(_cls, "buyItem", "(Ljava/lang/String;)Z");
 	_hasItem = env->GetStaticMethodID(_cls, "hasItem", "(Ljava/lang/String;)Z");
 	_track = env->GetStaticMethodID(_cls, "track", "(Ljava/lang/String;Ljava/lang/String;)Z");
+	_achievementUnlocked = env->GetStaticMethodID(_cls, "achievementUnlocked", "(Ljava/lang/String;Z)V");
 	_isOUYA = env->GetStaticMethodID(_cls, "isOUYA", "()Z");
 	_isSmallScreen = env->GetStaticMethodID(_cls, "isSmallScreen", "()Z");
 	_minimize = env->GetStaticMethodID(_cls, "minimize", "()V");
@@ -159,6 +161,9 @@ void Android::init() {
 	}
 	if (_getLocale == 0) {
 		error(LOG_SYSTEM, "error getting getLocale()");
+	}
+	if (_achievementUnlocked == 0) {
+		error(LOG_SYSTEM, "error getting achievementUnlocked()");
 	}
 
 	info(LOG_SYSTEM, String::format("Running on: [%s] [%s] [%s] [%s] [%s] SDK:%s ABI:%s",
@@ -339,13 +344,31 @@ void Android::showAds (bool show)
 	}
 }
 
-void Android::achievementUnlocked (const std::string& id)
+void Android::achievementUnlocked (const std::string& id, bool increment)
 {
+	if (_achievementUnlocked == 0) {
+		error(LOG_SYSTEM, "failed to unlock achievement");
+		return;
+	}
+
+	LocalReferenceHolder refs;
+
+	if (_env == nullptr || !refs.init(_env)) {
+		error(LOG_SYSTEM, "error while calling achievementUnlocked");
+		return;
+	}
+
+	jstring idJavaStr = _env->NewStringUTF(id.c_str());
+	jboolean incrementBool = (jboolean)increment;
+	_env->CallStaticVoidMethod(_cls, _achievementUnlocked, idJavaStr, incrementBool);
+	_env->DeleteLocalRef(idJavaStr);
+
+	testException();
 }
 
 bool Android::hasAchievement (const std::string& id)
 {
-	return false;
+	return true;
 }
 
 bool Android::track (const std::string& hitType, const std::string& screenName)
@@ -525,7 +548,7 @@ bool Android::isOUYA () const
     return _env->CallStaticBooleanMethod(_cls, _isOUYA);
 }
 
-int Android::openURL (const std::string& url) const
+int Android::openURL (const std::string& url, bool) const
 {
 	if (_openURL == 0)
 		return -1;
@@ -603,4 +626,22 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isHD(JNIEnv* en
 	hd = 0;
 #endif
 	return hd;
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterConnectFailed(JNIEnv* env, jclass jcls)
+{
+	error(LOG_SYSTEM, "google play connection failed");
+	Config.getConfigVar("googleplaystate", "false", true)->setValue("false");
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterConnectSuccess(JNIEnv* env, jclass jcls)
+{
+	info(LOG_SYSTEM, "google play connection succeeds");
+	Config.getConfigVar("googleplaystate", "false", true)->setValue("true");
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterDisconnect(JNIEnv* env, jclass jcls)
+{
+	info(LOG_SYSTEM, "google play disconnect");
+	Config.getConfigVar("googleplaystate", "false", true)->setValue("false");
 }

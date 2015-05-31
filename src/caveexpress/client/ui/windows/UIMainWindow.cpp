@@ -1,10 +1,12 @@
 #include "UIMainWindow.h"
 #include "engine/client/ui/UI.h"
 #include "engine/client/ui/nodes/UINodeButton.h"
+#include "engine/client/ui/nodes/UINodeButtonImage.h"
 #include "engine/client/ui/nodes/UINodeMainButton.h"
 #include "engine/client/ui/nodes/UINodeMainBackground.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
 #include "engine/client/ui/nodes/UINodeLabel.h"
+#include "engine/client/ui/nodes/UINodeGooglePlayButton.h"
 #include "engine/client/ui/windows/listener/QuitListener.h"
 #include "engine/client/ui/layouts/UIVBoxLayout.h"
 #include "engine/common/ConfigManager.h"
@@ -43,11 +45,13 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 	campaign->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_CAMPAIGN)));
 	panel->add(campaign);
 
+#ifndef NONETWORK
 	if (Config.isNetwork()) {
 		UINodeMainButton *multiplayer = new UINodeMainButton(_frontend, tr("Multiplayer"));
 		multiplayer->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_MULTIPLAYER)));
 		panel->add(multiplayer);
 	}
+#endif
 
 	UINodeMainButton *settings = new UINodeMainButton(_frontend, tr("Settings"));
 	settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_SETTINGS)));
@@ -57,6 +61,12 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 		UINodeMainButton *payment = new UINodeMainButton(_frontend, tr("Extras"));
 		payment->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_PAYMENT)));
 		panel->add(payment);
+	}
+
+	if (System.supportGooglePlay()) {
+		UINodeButtonImage *googlePlay = new UINodeGooglePlayButton(_frontend);
+		googlePlay->setPadding(padding);
+		add(googlePlay);
 	}
 
 	UINodeMainButton *twitter = new UINodeMainButton(_frontend, tr("Twitter"));
@@ -77,8 +87,20 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 	help->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_HELP)));
 	panel->add(help);
 
+#if 0
+#ifdef __EMSCRIPTEN__
+	UINodeMainButton *fullscreen = new UINodeMainButton(_frontend, tr("Fullscreen"));
+	fullscreen->addListener(UINodeListenerPtr(new EmscriptenFullscreenListener()));
+	panel->add(fullscreen);
+#endif
+#endif
+
 	UINodeMainButton *quit = new UINodeMainButton(_frontend, tr("Quit"));
+#ifdef __EMSCRIPTEN__
+	quit->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "http://caveproductions.org/", false)));
+#else
 	quit->addListener(UINodeListenerPtr(new QuitListener()));
+#endif
 	panel->add(quit);
 
 	add(panel);

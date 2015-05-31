@@ -146,8 +146,9 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/item-package-idle-middle-01.png</filename>
-            <filename>../png/player.png</filename>
+            <filename>../png/cavepacker/item-package-idle-middle-01.png</filename>
+            <filename>../png/cavepacker/item-package-delivered-middle-01.png</filename>
+            <filename>../png/cavepacker/player.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

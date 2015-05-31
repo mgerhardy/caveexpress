@@ -1,12 +1,16 @@
+
 #include "MapManager.h"
 #include "engine/common/Logger.h"
 #include "engine/common/System.h"
 #include "engine/common/FileSystem.h"
 #include "engine/common/CommandSystem.h"
-#include "engine/common/LUA.h"
 #include "engine/common/Commands.h"
 
-IMapManager::IMapManager ()
+namespace {
+const std::string EMPTY = "";
+}
+
+IMapManager::IMapManager (const std::string& extension) : _extension(extension)
 {
 }
 
@@ -18,20 +22,29 @@ IMapManager::~IMapManager ()
 	Commands.removeCommand(CMD_LIST_MAPS);
 }
 
-const std::string IMapManager::getMapTitle (const std::string& mapId) const
+const std::string& IMapManager::getMapTitle (const std::string& mapId) const
 {
 	MapsConstIter i = _maps.find(mapId);
 	if (i == _maps.end())
-		return "";
+		return EMPTY;
 
 	return i->second->getName();
+}
+
+int IMapManager::getMapStartPositions (const std::string& mapId) const
+{
+	MapsConstIter i = _maps.find(mapId);
+	if (i == _maps.end())
+		return -1;
+
+	return i->second->getStartPositions();
 }
 
 void IMapManager::init ()
 {
 	loadMaps();
 
-	Commands.registerCommand(CMD_LIST_MAPS, bind(IMapManager, listMaps));
+	Commands.registerCommand(CMD_LIST_MAPS, bindFunction(IMapManager, listMaps));
 }
 
 void IMapManager::listMaps ()
@@ -54,39 +67,7 @@ IMapManager::Maps IMapManager::getMapsByWildcard (const std::string& wildcard) c
 	return maps;
 }
 
-void LUAMapManager::loadMaps ()
-{
-	_maps.clear();
-	const std::string& mapsPath = FS.getMapsDir();
-	const DirectoryEntries& maps = FS.listDirectory(mapsPath);
-	LUA lua;
-	for (DirectoryEntries::const_iterator i = maps.begin(); i != maps.end(); ++i) {
-		const std::string filename = mapsPath + *i;
-		if (!FS.hasExtension(filename, "lua"))
-			continue;
-		if (!lua.load(filename)) {
-			error(LOG_MAP, "could not load map from " + filename);
-			continue;
-		}
-		const int baseLength = i->size() - 4;
-		const std::string id = i->substr(0, baseLength);
-		if (_maps.find(id) != _maps.end()) {
-			error(LOG_MAP, "map with id " + id + " already exists");
-			continue;
-		}
-		lua.execute("getName", 1);
-		const std::string name = lua.getStringFromStack();
-		_maps[id] = new MapData(id, name);
-	}
-
-	info(LOG_MAP, String::format("loaded %i maps", static_cast<int>(_maps.size())));
-}
-
-FileMapManager::FileMapManager(const std::string& extension) :
-		_extension(extension) {
-}
-
-void FileMapManager::loadMaps ()
+void IMapManager::loadMaps ()
 {
 	_maps.clear();
 	const std::string& mapsPath = FS.getMapsDir();
@@ -95,14 +76,15 @@ void FileMapManager::loadMaps ()
 		const std::string filename = mapsPath + *i;
 		if (!FS.hasExtension(filename, _extension))
 			continue;
-		const int baseLength = i->size() - (_extension.size() + 1);
-		const std::string id = i->substr(0, baseLength);
+		const int baseLength = i->size() - 4;
+		const std::string& id = i->substr(0, baseLength);
 		if (_maps.find(id) != _maps.end()) {
 			error(LOG_MAP, "map with id " + id + " already exists");
 			continue;
 		}
-		_maps[id] = new MapData(id, id);
+		_maps[id] = new MapData(id, getName(filename, id), getStartPositions(filename));
 	}
 
 	info(LOG_MAP, String::format("loaded %i maps", static_cast<int>(_maps.size())));
 }
+

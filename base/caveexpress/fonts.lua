@@ -1,7 +1,7 @@
 -- data is exported via fontbuilder
 
 fonts = {
-	["font-rock8"] = {
+	["font-8"] = {
 		height=11,
 		description={
 			family="JFRockSolid",
@@ -14,7 +14,7 @@ fonts = {
 			height=11
 		},
 		texture={
-			file="font-rock8",
+			file="font-8",
 			width=94,
 			height=77
 		},
@@ -117,7 +117,7 @@ fonts = {
 			{from="Y",to="A",offset=-1},
 		},
 	},
-	["font-rock10"] = {
+	["font-10"] = {
 		height=14,
 		description={
 			family="JFRockSolid",
@@ -130,7 +130,7 @@ fonts = {
 			height=14
 		},
 		texture={
-			file="font-rock10",
+			file="font-10",
 			width=96,
 			height=100
 		},
@@ -244,7 +244,7 @@ fonts = {
 			{from="Y",to="O",offset=-1},
 		},
 	},
-	["font-rock12"] = {
+	["font-12"] = {
 		height=17,
 		description={
 			family="RockSolid",
@@ -257,7 +257,7 @@ fonts = {
 			height=17
 		},
 		texture={
-			file="font-rock12",
+			file="font-12",
 			width=120,
 			height=124
 		},
@@ -391,7 +391,7 @@ fonts = {
 			{from="Y",to="S",offset=-1},
 		},
 	},
-	["font-rock24"] = {
+	["font-24"] = {
 		height=33,
 		description={
 			family="RockSolid",
@@ -404,7 +404,7 @@ fonts = {
 			height=33
 		},
 		texture={
-			file="font-rock24",
+			file="font-24",
 			width=233,
 			height=233
 		},
@@ -561,7 +561,7 @@ fonts = {
 			{from="Y",to="S",offset=-2},
 		},
 	},
-	["font-rock48"] = {
+	["font-48"] = {
 		height=67,
 		description={
 			family="RockSolid",
@@ -574,7 +574,7 @@ fonts = {
 			height=67
 		},
 		texture={
-			file="font-rock48",
+			file="font-48",
 			width=458,
 			height=453
 		},

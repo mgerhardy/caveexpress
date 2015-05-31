@@ -6,7 +6,8 @@
 #include "engine/common/IBindingSpaceListener.h"
 #include "engine/common/Logger.h"
 #include "engine/common/LUA.h"
-#include "engine/common/GLShared.h"
+#include "engine/client/GLFunc.h"
+#include "engine/client/GLShared.h"
 #include "engine/common/System.h"
 #include <SDL.h>
 #include <SDL_platform.h>
@@ -39,11 +40,7 @@ void ConfigManager::setBindingsSpace (BindingSpace bindingSpace)
 
 void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc, char **argv)
 {
-#ifdef __EMSCRIPTEN__
-	_persister = new ConfigPersisterNOP();
-#else
 	_persister = new ConfigPersisterSQL();
-#endif
 	info(LOG_CONFIG, "init configmanager");
 
 	_persister->init();
@@ -122,8 +119,8 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	info(LOG_CONFIG, "     sound enabled: " + _soundEnabled->getValue());
 	info(LOG_CONFIG, "     debug enabled: " + _debug->getValue());
 
-	CommandSystem::get().registerCommand(CMD_SETVAR, bind(ConfigManager, setConfig));
-	CommandSystem::get().registerCommand(CMD_LISTVARS, bind(ConfigManager, listConfigVariables));
+	CommandSystem::get().registerCommand(CMD_SETVAR, bindFunction(ConfigManager, setConfig));
+	CommandSystem::get().registerCommand(CMD_LISTVARS, bindFunction(ConfigManager, listConfigVariables));
 
 	for (int i = 0; i < argc; i++) {
 		if (argv[i][0] != '-')
@@ -208,11 +205,9 @@ void ConfigManager::getBindingMap (LUA& lua, std::map<std::string, std::string>*
 				const std::string index = i->first.substr(3);
 				map[bindingSpace][index] = i->second;
 			} else if (type == CONTROLLER) {
-#ifndef EMSCRIPTEN
 				const SDL_GameControllerButton button = SDL_GameControllerGetButtonFromString(i->first.c_str());
 				const char *buttonStr = SDL_GameControllerGetStringForButton(button);
 				map[bindingSpace][buttonStr] = i->second;
-#endif
 			}
 		}
 

@@ -1,7 +1,9 @@
 #include "UIMainWindow.h"
 #include "engine/client/ui/UI.h"
 #include "engine/client/ui/nodes/UINodeButton.h"
+#include "engine/client/ui/nodes/UINodeButtonImage.h"
 #include "engine/client/ui/nodes/UINodeSprite.h"
+#include "engine/client/ui/nodes/UINodeGooglePlayButton.h"
 #include "engine/client/ui/windows/UIWindow.h"
 #include "engine/client/ui/windows/listener/QuitListener.h"
 #include "engine/client/ui/nodes/UINodeMainBackground.h"
@@ -26,6 +28,14 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	campaign->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_CAMPAIGN)));
 	panel->add(campaign);
 
+#ifndef NONETWORK
+	if (Config.isNetwork()) {
+		UINodeMainButton *multiplayer = new UINodeMainButton(_frontend, tr("Multiplayer"));
+		multiplayer->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_MULTIPLAYER)));
+		panel->add(multiplayer);
+	}
+#endif
+
 	UINodeMainButton *settings = new UINodeMainButton(_frontend, tr("Settings"));
 	settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_SETTINGS)));
 	panel->add(settings);
@@ -42,6 +52,12 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 		panel->add(payment);
 	}
 
+	if (System.supportGooglePlay()) {
+		UINodeButtonImage *googlePlay = new UINodeGooglePlayButton(_frontend);
+		googlePlay->setPadding(padding);
+		add(googlePlay);
+	}
+
 	UINodeMainButton *twitter = new UINodeMainButton(_frontend, tr("Twitter"));
 	twitter->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "https://twitter.com/MartinGerhardy")));
 	panel->add(twitter);
@@ -50,8 +66,20 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	homepage->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "http://caveproductions.org/")));
 	panel->add(homepage);
 
+#if 0
+#ifdef __EMSCRIPTEN__
+	UINodeMainButton *fullscreen = new UINodeMainButton(_frontend, tr("Fullscreen"));
+	fullscreen->addListener(UINodeListenerPtr(new EmscriptenFullscreenListener()));
+	panel->add(fullscreen);
+#endif
+#endif
+
 	UINodeMainButton *quit = new UINodeMainButton(_frontend, tr("Quit"));
+#ifdef __EMSCRIPTEN__
+	quit->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "http://caveproductions.org/", false)));
+#else
 	quit->addListener(UINodeListenerPtr(new QuitListener()));
+#endif
 	panel->add(quit);
 
 	add(panel);

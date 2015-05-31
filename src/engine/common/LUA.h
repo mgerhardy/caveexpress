@@ -1,10 +1,17 @@
 #pragma once
 #include "engine/common/Compiler.h"
+#include "engine/common/Config.h"
 GCC_DIAG_OFF(cast-qual)
 GCC_DIAG_OFF(cast-align)
+#ifdef HAVE_LUA_H
+extern "C" {
+#endif
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+#ifdef HAVE_LUA_H
+}
+#endif
 GCC_DIAG_ON(cast-align)
 GCC_DIAG_ON(cast-qual)
 #include "engine/common/String.h"
@@ -34,6 +41,9 @@ private:
 public:
 	LUA (bool debug = false);
 	~LUA ();
+
+	void init (bool debug = false);
+	void close ();
 
 	inline lua_State* getState () const;
 

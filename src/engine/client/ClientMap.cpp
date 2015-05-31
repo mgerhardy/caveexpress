@@ -13,7 +13,8 @@
 #include "engine/common/EventHandler.h"
 #include "engine/common/ServiceProvider.h"
 #include "engine/common/CommandSystem.h"
-#include "engine/common/GLShared.h"
+#include "engine/client/GLFunc.h"
+#include "engine/client/GLShared.h"
 #include "engine/common/ExecutionTime.h"
 #include "engine/common/DateUtil.h"
 #include "engine/common/Commands.h"
@@ -25,7 +26,7 @@ ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, 
 				0), _mapHeight(0), _player(nullptr), _time(0), _playerID(0), _frontend(frontend), _pause(false), _serviceProvider(
 						serviceProvider), _screenRumble(false), _screenRumbleStrength(0.0f), _screenRumbleOffsetX(
 						0), _screenRumbleOffsetY(0), _particleSystem(
-				Config.getClientSideParticleMaxAmount()), _tutorial(false), _started(false), _theme(&ThemeTypes::ROCK)
+				Config.getClientSideParticleMaxAmount()), _tutorial(false), _started(false), _theme(&ThemeTypes::ROCK), _startPositions(0)
 {
 	_maxZoom = Config.getConfigVar("maxzoom", "1.2");
 	_minZoom = Config.getConfigVar("minzoom", "0.5");
@@ -44,16 +45,22 @@ void ClientMap::close ()
 
 void ClientMap::start ()
 {
+	info(LOG_CLIENT, "client map start");
 	_started = true;
 }
 
 bool ClientMap::isStarted () const
 {
-	return !_serviceProvider.getNetwork().isMultiplayer() || _started;
+	if (!_serviceProvider.getNetwork().isMultiplayer()) {
+		return true;
+	}
+	return _started;
 }
 
 void ClientMap::resetCurrentMap ()
 {
+	info(LOG_CLIENT, "client map reset");
+	_startPositions = 0;
 	_zoom = 1.0f;
 	_timeManager.reset();
 	_settings.clear();
@@ -148,9 +155,22 @@ void ClientMap::renderLayer (int x, int y, Layer layer) const
 	}
 }
 
+void ClientMap::renderLayers (int x, int y) const {
+	renderLayer(x, y, LAYER_BACK);
+	renderLayer(x, y, LAYER_MIDDLE);
+	renderLayer(x, y, LAYER_FRONT);
+}
+
+void ClientMap::renderBegin (int x, int y) const {
+}
+
+void ClientMap::renderEnd (int x, int y) const {
+}
+
 void ClientMap::render () const
 {
 	ExecutionTime renderTime("ClientMapRender", 2000L);
+
 	const int x = _screenRumbleOffsetX + _x + _camera.getViewportX();
 	const int y = _screenRumbleOffsetY + _y + _camera.getViewportY();
 
@@ -162,9 +182,11 @@ void ClientMap::render () const
 	} else {
 		_frontend->enableScissor(scissorX, scissorY, getPixelWidth() * _zoom, getPixelHeight() * _zoom);
 	}
-	renderLayer(x, y, LAYER_BACK);
-	renderLayer(x, y, LAYER_MIDDLE);
-	renderLayer(x, y, LAYER_FRONT);
+
+	renderBegin(x, y);
+	renderLayers(x, y);
+	renderParticles(x, y);
+	renderEnd(x, y);
 
 	if (_restartDue != 0) {
 		renderFadeOutOverlay();
@@ -172,8 +194,6 @@ void ClientMap::render () const
 
 	Config.setDebugRendererData(x, y, getWidth(), getHeight(), _scale * _zoom);
 	Config.getDebugRenderer().render();
-
-	renderParticles(x, y);
 
 	if (!debug) {
 		_frontend->disableScissor();

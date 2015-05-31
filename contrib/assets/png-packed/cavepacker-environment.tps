@@ -173,14 +173,14 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/tile-rock-01-middle-01.png</filename>
-            <filename>../png/tile-rock-02-middle-01.png</filename>
-            <filename>../png/tile-rock-03-middle-01.png</filename>
-            <filename>../png/tile-background-04-back-01.png</filename>
-            <filename>../png/tile-background-01-back-01.png</filename>
-            <filename>../png/tile-background-02-back-01.png</filename>
-            <filename>../png/tile-background-03-back-01.png</filename>
-            <filename>../png/tile-target-01-middle-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-01-middle-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-02-middle-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-03-middle-01.png</filename>
+            <filename>../png/cavepacker/tile-background-04-back-01.png</filename>
+            <filename>../png/cavepacker/tile-background-01-back-01.png</filename>
+            <filename>../png/cavepacker/tile-background-02-back-01.png</filename>
+            <filename>../png/cavepacker/tile-background-03-back-01.png</filename>
+            <filename>../png/cavepacker/tile-target-01-middle-01.png</filename>
             <filename>../png/cavepacker/tile-reference.png</filename>
         </array>
         <key>ignoreFileList</key>

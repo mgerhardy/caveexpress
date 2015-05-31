@@ -32,6 +32,11 @@ import android.util.Log;
 final class PurchaseHandler extends CancelIgnoringOuyaResponseListener<String> {
 	private PublicKey publicKey;
 	private final Map<String, Product> outstandingPurchaseRequests = new HashMap<String, Product>();
+	private final BaseActivity baseActivity;
+
+	PurchaseHandler(BaseActivity baseActivity) {
+		this.baseActivity = baseActivity;
+	}
 
 	@Override
 	public void onSuccess(String result) {
@@ -50,9 +55,9 @@ final class PurchaseHandler extends CancelIgnoringOuyaResponseListener<String> {
 				return;
 			}
 
-			Log.d(BaseActivity.NAME, "Congrats you bought: " + storedProduct.getName());
+			Log.d(baseActivity.getName(), "Congrats you bought: " + storedProduct.getName());
 		} catch (Exception e) {
-			Log.e(BaseActivity.NAME, "Your purchase failed.", e);
+			Log.e(baseActivity.getName(), "Your purchase failed.", e);
 		}
 	}
 
@@ -119,12 +124,12 @@ final class PurchaseHandler extends CancelIgnoringOuyaResponseListener<String> {
 			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 			publicKey = keyFactory.generatePublic(keySpec);
 		} catch (Exception e) {
-			Log.e(BaseActivity.NAME, "Unable to create encryption key", e);
+			Log.e(baseActivity.getName(), "Unable to create encryption key", e);
 		}
 	}
 
 	@Override
 	public void onFailure(int errorCode, String errorMessage, Bundle errorBundle) {
-		Log.e(BaseActivity.NAME, errorMessage);
+		Log.e(baseActivity.getName(), errorMessage);
 	}
 }

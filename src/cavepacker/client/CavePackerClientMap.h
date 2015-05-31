@@ -10,6 +10,8 @@ public:
 	int getWaterSurface() const override { return 0; }
 	int getWaterGround() const override { return 0; }
 
+	void undo ();
+
 	void start () override;
 	virtual void update (uint32_t deltaTime) override;
 };

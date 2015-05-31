@@ -12,9 +12,8 @@
 
 class SDLFrontend: public IFrontend, public NonCopyable, public IEventObserver {
 private:
-#ifndef DISABLE_SDL_RENDERER
 	SDL_Renderer *_renderer;
-#endif
+	SDL_Texture *_renderToTexture;
 protected:
 	EventHandler *_eventHandler;
 	SDL_Window *_window;
@@ -94,6 +93,8 @@ public:
 	virtual void minimize () override;
 	virtual void disableScissor () override;
 	virtual void render () override;
+	virtual RenderTarget* renderToTexture (int x, int y, int w, int h) override;
+	virtual bool renderTarget (RenderTarget* target) override;
 	virtual void update (uint32_t deltaTime) override;
 	virtual void connect () override;
 	virtual void onMapLoaded () override;

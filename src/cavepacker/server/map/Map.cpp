@@ -43,13 +43,12 @@
 Map::Map () :
 		IMap(), _frontend(nullptr), _serviceProvider(nullptr), _forcedFinish(false), _autoSolve(false), _nextSolveStep(0)
 {
-	Commands.registerCommand(CMD_MAP_PAUSE, bind(Map, triggerPause));
-	Commands.registerCommand(CMD_MAP_RESTART, bind(Map, triggerRestart));
-	Commands.registerCommand(CMD_START, bind(Map, startMap));
-	Commands.registerCommand(CMD_FINISHMAP, bind(Map, finishMap));
-	Commands.registerCommand("map_print", bind(Map, printMap));
-	Commands.registerCommand("solve", bind(Map, solveMap));
-	Commands.registerCommand("undo", bind(Map, undo));
+	Commands.registerCommand(CMD_MAP_PAUSE, bindFunction(Map, triggerPause));
+	Commands.registerCommand(CMD_MAP_RESTART, bindFunction(Map, triggerRestart));
+	Commands.registerCommand(CMD_START, bindFunction(Map, startMap));
+	Commands.registerCommand(CMD_FINISHMAP, bindFunction(Map, finishMap));
+	Commands.registerCommand("map_print", bindFunction(Map, printMap));
+	Commands.registerCommand("solve", bindFunction(Map, solveMap));
 
 	resetCurrentMap();
 }
@@ -221,7 +220,7 @@ void Map::increaseMoves ()
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
 }
 
-void Map::undo ()
+void Map::undo (Player* player)
 {
 	if (_autoSolve)
 		return;
@@ -229,28 +228,43 @@ void Map::undo ()
 	if (_moves <= 0)
 		return;
 
-	if (_players.empty())
+	if (!player->undo())
 		return;
-	Player *player = *_players.begin();
-	player->undo();
 
 	--_moves;
 	debug(LOG_SERVER, String::format("moved fields after undo: %i", _moves));
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
 }
 
-void Map::undoPackage (int col, int row, int targetCol, int targetRow)
+bool Map::undoPackage (int col, int row, int targetCol, int targetRow)
 {
 	MapTile* package = getPackage(col, row);
 	if (package != nullptr) {
 		info(LOG_SERVER, "move package back");
 		rebuildField();
-		package->setPos(targetCol, targetRow);
+		const int origCol = package->getCol();
+		const int origRow = package->getRow();
+		if (!package->setPos(targetCol, targetRow))
+			return false;
 		rebuildField();
+		const int index = INDEX(targetCol, targetRow);
+		StateMapConstIter i = _state.find(index);
+		if (i == _state.end()) {
+			package->setPos(origCol, origRow);
+			return false;
+		}
+
+		const char c = i->second;
+		if (c == Sokoban::PACKAGEONTARGET)
+			package->setState(CavePackerEntityStates::DELIVERED);
+		else
+			package->setState(CavePackerEntityStates::NONE);
+
 		--_pushes;
-	} else {
-		info(LOG_SERVER, "dont move package back");
+		return true;
 	}
+	info(LOG_SERVER, "don't move package back");
+	return false;
 }
 
 void Map::abortAutoSolve ()
@@ -425,6 +439,7 @@ bool Map::load (const std::string& name)
 
 	ctx->save();
 	_settings = ctx->getSettings();
+	_startPositions = ctx->getStartPositions();
 	_name = ctx->getName();
 	_title = ctx->getTitle();
 	_width = getSetting(msn::WIDTH, "-1").toInt();
@@ -465,10 +480,16 @@ bool Map::spawnPlayer (Player* player)
 {
 	assert(_entityRemovalAllowed);
 
-	const int col = getSetting(msn::PLAYER_X).toInt();
-	const int row = getSetting(msn::PLAYER_Y).toInt();
-	if (!player->setPos(col, row))
+	const int startPosIdx = _players.size();
+	int col, row;
+	if (!getStartPosition(startPosIdx, col, row)) {
+		error(LOG_SERVER, String::format("no player position for index %i", startPosIdx));
+		return false;
+	}
+	if (!player->setPos(col, row)) {
 		error(LOG_SERVER, String::format("failed to set the player position to %i:%i", col, row));
+		return false;
+	}
 	player->onSpawn();
 	addEntity(0, *player);
 	info(LOG_SERVER, "spawned player " + player->toString());
@@ -487,7 +508,8 @@ bool Map::isReadyToStart () const
 	return _playersWaitingForSpawn.size() > 1;
 }
 
-std::string Map::getMapString() const {
+std::string Map::getMapString() const
+{
 	std::stringstream ss;
 	for (int row = 0; row < _height; ++row) {
 		for (int col = 0; col < _width; ++col) {
@@ -520,6 +542,19 @@ void Map::startMap ()
 
 	INetwork& network = _serviceProvider->getNetwork();
 	network.sendToAllClients(StartMapMessage());
+
+	for (int row = 0; row < _height; ++row) {
+		for (int col = 0; col < _width; ++col) {
+			StateMapConstIter i = _state.find(INDEX(col, row));
+			if (i == _state.end())
+				continue;
+			const char c = i->second;
+			if (c != Sokoban::PACKAGEONTARGET)
+				continue;
+
+			getPackage(col, row)->setState(CavePackerEntityStates::DELIVERED);
+		}
+	}
 }
 
 MapTile* Map::getPackage (int col, int row)
@@ -579,7 +614,7 @@ bool Map::initPlayer (Player* player)
 	INetwork& network = _serviceProvider->getNetwork();
 	const ClientId clientId = player->getClientId();
 	info(LOG_SERVER, "init player " + player->toString());
-	const MapSettingsMessage mapSettingsMsg(_settings);
+	const MapSettingsMessage mapSettingsMsg(_settings, _startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);
 
 	const InitDoneMessage msgInit(player->getID(), 0, 0, 0);
@@ -610,6 +645,10 @@ void Map::printPlayersList () const
 void Map::sendPlayersList () const
 {
 	std::vector<std::string> names;
+	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
+		const std::string& name = (*i)->getName();
+		names.push_back(name);
+	}
 	for (PlayerListConstIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		const std::string& name = (*i)->getName();
 		names.push_back(name);
@@ -767,6 +806,23 @@ void Map::rebuildField ()
 	}
 }
 
+void Map::autoStart () {
+	// already spawned
+	if (!_players.empty())
+		return;
+	// no players available yet
+	if (_playersWaitingForSpawn.empty())
+		return;
+	// singleplayer already auto starts a map
+	if (!_serviceProvider->getNetwork().isMultiplayer())
+		return;
+	// not enough players connected yet
+	if (_playersWaitingForSpawn.size() < _startPositions.size())
+		return;
+	info(LOG_SERVER, "starting the map");
+	startMap();
+}
+
 void Map::update (uint32_t deltaTime)
 {
 	if (_pause)
@@ -906,6 +962,11 @@ void Map::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 {
 	_frontend = frontend;
 	_serviceProvider = &serviceProvider;
+}
+
+int Map::getMaxPlayers() const
+{
+	return _startPositions.size();
 }
 
 void Map::triggerPause ()

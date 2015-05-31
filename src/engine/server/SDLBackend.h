@@ -11,10 +11,29 @@
 #include <map>
 #include <set>
 
+enum class InitState {
+	INITSTATE_CONFIG,
+	INITSTATE_FRONTEND,
+	INITSTATE_SDL,
+	INITSTATE_FRONTENDINIT,
+	INITSTATE_SERVICEPROVIDER,
+	INITSTATE_SPRITE,
+	INITSTATE_GAME,
+	INITSTATE_SOUNDS,
+	INITSTATE_UI,
+	INITSTATE_START,
+
+	INITSTATE_ERROR,
+	INITSTATE_DONE
+};
+
 class SDLBackend: public NonCopyable, public IEventObserver, public IServerCallback, public IBindingSpaceListener {
 private:
 	bool _dedicated;
 	bool _running;
+	InitState _initState;
+	int _argc;
+	char **_argv;
 	IFrontend *_frontend;
 	EventHandler _eventHandler;
 	typedef std::map<int, int16_t> KeyMap;
@@ -28,11 +47,11 @@ private:
 	ServiceProvider _serviceProvider;
 	TextConsole _console;
 
+	bool handleInit();
 	void handleEvent (SDL_Event &event);
 	void render ();
 	void update (float deltaTime);
 	void handleCommandLineArguments (int argc, char **argv);
-	int init (int argc, char **argv);
 	void screenShot (const std::string& argument);
 	void status ();
 

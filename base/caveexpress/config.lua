@@ -23,6 +23,14 @@ if isOUYA() then
 	defaultdamagethreshold = 5.0
 	defaultnpcflyingspeed = 3.0
 	defaultparticles = 0
+elseif isAndroid() then
+	defaultpersister = "googleplay"
+	defaultreferencetimefactor = 1.5
+	defaultshowcursor = false
+	defaultnetwork = true
+	defaultdamagethreshold = 5.0
+	defaultnpcflyingspeed = 3.0
+	defaultparticles = 50
 elseif isMobile() then
 	defaultreferencetimefactor = 1.5
 	defaultshowcursor = false
@@ -31,7 +39,6 @@ elseif isMobile() then
 	defaultnpcflyingspeed = 3.0
 	defaultparticles = 0
 elseif isHTML5() then
-	defaultpersister = "nop"
 	defaultfrontend = "opengl"
 	defaultsoundengine = "dummy"
 	defaultnetwork = false
@@ -164,6 +171,10 @@ else
 			RIGHT = "ui_focus_next",
 			UP = "ui_focus_prev",
 			DOWN = "ui_focus_next",
+			A = "ui_focus_prev",
+			D = "ui_focus_next",
+			W = "ui_focus_prev",
+			S = "ui_focus_next",
 			SPACE = "ui_execute",
 			RETURN = "ui_execute",
 			ESCAPE = "ui_pop",
@@ -174,6 +185,10 @@ else
 			RIGHT = "+move_right",
 			UP = "+move_up",
 			DOWN = "+move_down",
+			A = "+move_left",
+			D = "+move_right",
+			W = "+move_up",
+			S = "+move_down",
 			SPACE = "drop",
 			RETURN = "drop",
 			ESCAPE = "ui_pop",

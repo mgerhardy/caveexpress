@@ -48,6 +48,8 @@ public:
 
 	virtual std::string getLanguage () { return ""; }
 
+	virtual void syncFiles() {}
+
 	// return a slash terminates path to the home directory where the game saves its data to
 	virtual std::string getHomeDirectory () = 0;
 
@@ -88,7 +90,7 @@ public:
 
 	virtual bool buyItem (const std::string& id) { return false; }
 
-	virtual void achievementUnlocked (const std::string& id) { }
+	virtual void achievementUnlocked (const std::string& id, bool increment) { }
 
 	virtual bool hasAchievement (const std::string& id) { return false; }
 
@@ -104,7 +106,7 @@ public:
 
 	virtual bool isOUYA () const { return false; }
 
-	virtual int openURL (const std::string& url) const { return 0; }
+	virtual int openURL (const std::string& url, bool newWindow) const { return 0; }
 
 	virtual void getPaymentEntries (std::vector<PaymentEntry>& entries) { }
 
@@ -119,6 +121,8 @@ public:
 	virtual bool isFullscreenSupported () { return true; }
 
 	virtual bool canDisableJoystick () { return true; }
+
+	virtual bool supportGooglePlay () { return false; }
 
 	virtual void backtrace (const char *errorMessage) {}
 

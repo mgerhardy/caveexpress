@@ -5,14 +5,14 @@ ARGS=$*
 caveexpress_APPNAME=caveexpress
 caveexpress_APPNAME_FULL=CaveExpress
 caveexpress_JAVA_PACKAGE=org.caveexpress
-caveexpress_VERSION=2.1
-caveexpress_VERSION_CODE=28
+caveexpress_VERSION=2.4
+caveexpress_VERSION_CODE=30
 
 cavepacker_APPNAME=cavepacker
 cavepacker_APPNAME_FULL=CavePacker
 cavepacker_JAVA_PACKAGE=org.cavepacker
-cavepacker_VERSION=1.2
-cavepacker_VERSION_CODE=8
+cavepacker_VERSION=1.4
+cavepacker_VERSION_CODE=9
 
 DEFAULT_APP=caveexpress
 
@@ -27,14 +27,11 @@ DEBUG=1
 HD_VERSION=
 PROFILING=
 NETWORKING=1
-PREFIX=/usr/local
 MODE=
 CROSS=
+PKGDATADIR=
 USE_CCACHE=
 HAVE_NCURSES_H=0
-STATIC=
-STATIC_SDL=
-DISABLE_DEPENDENCY_TRACKING=
 DEFAULT_COMPILER_CC=cc
 DEFAULT_COMPILER_CXX=c++
 
@@ -48,15 +45,14 @@ else
 	TARGET_ARCH=`uname -m | sed -e s/i.86/i386/`
 fi
 
-STEAM_ROOT=/home/mattn/Downloads/steam-runtime-sdk_2013-09-05
-STEAM_RUNTIME_HOST_ARCH=${HOST_ARCH}
-
 add_line_to_makefile_local() {
+	echo "Makefile.local => $1" >> config.log
 	makefile_local_data="${makefile_local_data}"'
 '"$1"
 }
 
 error() {
+	echo "ERROR: $@" >> config.log
 	echo $@
 	exit 1
 }
@@ -66,6 +62,7 @@ error() {
 # @param 3 The text that is written to the console on failure
 # @param 4 If 'yes' is given here, the variable must be set in order to let configure continue
 add_to_makefile_local_quote() {
+	echo "add_to_makefile_local_quote => $@" >> config.log
 	VALUE=`get_var $1`
 	if [ -n "$VALUE" ]; then
 		# these are internal make variables and are already set, so don't use ?= here
@@ -87,6 +84,7 @@ add_to_makefile_local_quote() {
 # @param 3 The text that is written to the console on failure
 # @param 4 If 'yes' is given here, the variable must be set in order to let configure continue
 add_to_makefile_local() {
+	echo "add_to_makefile_local => $@" >> config.log
 	VALUE=`get_var $1`
 	if [ -n "$VALUE" ]; then
 		# these are internal make variables and are already set, so don't use ?= here
@@ -104,11 +102,13 @@ add_to_makefile_local() {
 }
 
 add_line_to_config_h() {
+	echo "config.h => $1" >> config.log
 	config_h_data="${config_h_data}"'
 '"$1"
 }
 
 add_to_config_h_quote() {
+	echo "add_to_config_h_quote => $@" >> config.log
 	VALUE=`get_var $1`
 	if [ -n "$VALUE" ] && [ "$VALUE" != "0" ]; then
 		add_line_to_config_h "#define $1 \"$VALUE\""
@@ -121,6 +121,7 @@ add_to_config_h_quote() {
 }
 
 add_to_config_h() {
+	echo "add_to_config_h => $@" >> config.log
 	VALUE=`get_var $1`
 	if [ -n "$VALUE" ] && [ "$VALUE" != "0" ]; then
 		add_line_to_config_h "#define $1 $VALUE"
@@ -137,6 +138,7 @@ config_h() {
 	add_to_config_h PARANOID "Enable paranoid build"
 	add_to_config_h_quote APPNAME "Application name"
 	add_to_config_h_quote APPNAME_FULL "Full application name"
+	add_to_config_h_quote PKGDATADIR "Setting custom data directory"
 	add_to_config_h_quote VERSION
 	add_to_config_h_quote HD_VERSION
 	add_to_config_h_quote VERSION_CODE
@@ -153,7 +155,6 @@ makefile_local() {
 	add_to_makefile_local PROFILING "Enable profiling"
 	add_to_makefile_local NETWORKING "Enable network support" "Disable network support"
 	add_to_makefile_local STATIC "Enable static linking"
-	add_to_makefile_local STATIC_SDL "Enable static SDL linking"
 	add_to_makefile_local HD_VERSION "Enable HD version"
 	add_to_makefile_local DISABLE_DEPENDENCY_TRACKING "Disable dependency tracking"
 	add_to_makefile_local TARGET_OS "Compile for ${TARGET_OS}"
@@ -162,11 +163,10 @@ makefile_local() {
 	add_to_makefile_local HOST_OS "Compile on ${HOST_OS}"
 	add_to_makefile_local HOST_ARCH "Compile on ${HOST_ARCH}"
 	add_to_makefile_local USE_CCACHE "Use ccache" "Disable ccache"
+	add_to_makefile_local_quote PKGDATADIR "Using datadir ${PKGDATADIR}"
 	add_to_makefile_local_quote CC "Found cc ${CC}"
 	add_to_makefile_local_quote CXX "Found cxx ${CXX}"
 	add_to_makefile_local_quote CROSS "Using tools prefix ${CROSS}"
-	add_to_makefile_local_quote PREFIX "Using prefix ${PREFIX}"
-	add_to_makefile_local_quote DISABLE_SDL_RENDERER "Disable SDL_Renderer" "Use SDL_Renderer"
 
 	echo "Build modules:"
 	for i in `get_modules`; do
@@ -189,6 +189,8 @@ int main (int argc, char *argv[]) {
 	return EXIT_SUCCESS;
 }
 EOF`
+	echo "$SOURCE" >> config.log
+	echo "${CROSS}${CXX} ${3} ${CCFLAGS} ${CXXFLAGS} ${CFLAGS} -o /dev/null -xc++" >> config.log
 	( echo "$SOURCE" | ${CROSS}${CXX} ${3} ${CCFLAGS} ${CXXFLAGS} ${CFLAGS} -o /dev/null -xc++ - 2>> config.log ) && echo "1" || echo ""
 }
 
@@ -210,9 +212,14 @@ check_header_cc() {
 #include <stdio.h>
 #include <${1}>
 EOF`
+	echo "$SOURCE" >> config.log
 	if [ -n "${2}" ]; then
-		( echo "$SOURCE" | ${CROSS}${CXX} ${CCFLAGS} ${CXXFLAGS} ${CFLAGS} $(${CROSS}pkg-config --cflags ${2} 2> /dev/null) -o /dev/null -xc++ -c - 2>> config.log ) && echo "1" || echo ""
+		PKG_FLAGS=$(${CROSS}pkg-config --cflags ${2} 2>> config.log)
+		echo "pkg-config => ${PKG_FLAGS}" >> config.log
+		echo "${CROSS}${CXX} ${CCFLAGS} ${CXXFLAGS} ${CFLAGS} ${PKG_FLAGS} -o /dev/null -xc++" >> config.log
+		( echo "$SOURCE" | ${CROSS}${CXX} ${CCFLAGS} ${CXXFLAGS} ${CFLAGS} ${PKG_FLAGS} -o /dev/null -xc++ -c - 2>> config.log ) && echo "1" || echo ""
 	else
+		echo "${CROSS}${CXX} ${CCFLAGS} ${CXXFLAGS} ${CFLAGS} -o /dev/null -xc++" >> config.log
 		( echo "$SOURCE" | ${CROSS}${CXX} ${CCFLAGS} ${CXXFLAGS} ${CFLAGS} -o /dev/null -xc++ -c - 2>> config.log ) && echo "1" || echo ""
 	fi
 }
@@ -255,10 +262,13 @@ check_header_bundled() {
 }
 
 check_headers() {
-	check_header_bundled "SDL.h" "sdl2"
+	check_header_bundled "SDL_opengl_glext.h" "sdl2"
 	check_header_bundled "SDL_image.h" "SDL2_image"
 	check_header_bundled "SDL_mixer.h" "SDL2_mixer"
 	check_header_bundled "SDL_net.h" "SDL2_net"
+	check_header_bundled "Box2D.h" "box2d"
+#	check_header_bundled "gtest/gtest.h" "gtest"
+	check_header_bundled "yajl_parse.h" "yajl"
 	check_header "SDL_rwhttp.h" "SDL_rwhttp"
 	check_header "png.h" "libpng"
 	check_header "zlib.h"
@@ -270,6 +280,7 @@ check_headers() {
 	check_header "ogg/ogg.h" "ogg"
 	check_header_bundled "sqlite3.h" "sqlite3"
 	check_header_bundled "tinyxml2.h" "tinyxml2"
+	check_header_bundled "lua.h" "lua5.2"
 }
 
 check_versions() {
@@ -295,11 +306,6 @@ check_compiler() {
 		CROSS="pnacl-"
 		CC=clang
 		CXX=clang++
-	fi
-
-	if [ "${TARGET_OS}" = "mingw64_64" ] && [ "${HOST_OS}" != "mingw64_64" ]; then
-		CROSS="x86_64-w64-mingw32-"
-		CC=gcc
 	fi
 
 	if [ -n "${CROSS}" ]; then
@@ -336,14 +342,13 @@ usage() {
 	echo " --enable-ccache            use ccache for building"
 	echo " --enable-profiling         activates profiling"
 	echo " --enable-release           build with optimizations"
-	echo " --enable-static            enable static linking"
-	echo " --enable-static-sdl        enable static linking for the sdl libs only"
 	echo " --enable-hd                enable the HD version of the game (e.g. without ads)"
 	echo " --disable-network          disable network support"
 	echo " --enable-network           enable network support"
 	echo
 	echo " --with-ncurses             use ncurses for the server console"
 	echo " --with-embedded-sqlite3    use the copy of sqlite3 bundled with the source"
+	echo " --with-embedded-lua5.2     use the copy of lua bundled with the source"
 	echo " --with-embedded-tinyxml2   use the copy of tinyxml2 bundled with the source"
 	echo " --with-embedded-sdl2       use the copy of SDL bundled with the source"
 	echo " --with-embedded-SDL2_mixer use the copy of SDL_mixer bundled with the source"
@@ -353,10 +358,7 @@ usage() {
 	echo " --target-os=               specify the target os"
 	(cd build/platforms; for i in *.mk; do echo "  * ${i%.mk}"; done)
 	echo
-	echo " --bindir=                  path for the ufoai binaries"
-	echo " --datadir=                 path for the ufoai game data"
-	echo " --libdir=                  path for the ufoai shared objects"
-	echo " --prefix=                  prefix for directories"
+	echo " --datadir=                 path for the game data"
 	echo
 	echo " --disable-*                specify which target should not get built"
 	echo " --enable-*                 specify which target should get built"
@@ -366,11 +368,7 @@ usage() {
 	echo " --app=                     the game to compile"
 	echo "  * caveexpress             (the default)"
 	echo "  * cavepacker"
-	echo " --disable-dependency-tracking"
-	echo " --disable-sdl-renderer     disable the SDL renderer frontend"
 	echo " --disable-sdl-rwhttp       disable the SDL_rwhttp use"
-	echo " --clang                    build with clang"
-	echo " --gcc                      build with gcc (default)"
 	exit 1
 }
 
@@ -379,10 +377,12 @@ make_var() {
 }
 
 set_var() {
+	echo "set_var $1 = $2" >> config.log
 	eval `make_var "$1"`=\""$2"\"
 }
 
 get_var() {
+	echo "get_var $1 = $(eval echo \${`make_var "$1"`})" >> config.log
 	eval echo \${`make_var "$1"`}
 }
 
@@ -474,11 +474,6 @@ set_path_env() {
 		add_to_makefile_local ADDITIONAL_PATH "Found mxe additional path settings" "Could not get the mxe path from ${MXE_FILE}"
 		PATH="${ADDITIONAL_PATH}:$PATH"
 		;;
-	linux32|linux64)
-		set_var "ADDITIONAL_PATH" "${STEAM_ROOT}/bin"
-		add_to_makefile_local ADDITIONAL_PATH "" ""
-		PATH="${ADDITIONAL_PATH}:$PATH"
-		;;
 	esac
 }
 
@@ -519,26 +514,9 @@ while [ $# -gt 0 ]; do
 		MODE=debug
 		DEBUG=1
 		;;
-	--enable-static)
-		STATIC=1
-		;;
-	--enable-static-sdl)
-		STATIC_SDL=1
-		;;
 	--enable-hd)
 		HD_VERSION=1
 		JAVA_PACKAGE=${JAVA_PACKAGE}hd
-		;;
-	--disable-static)
-		STATIC=
-		;;
-	--clang)
-		DEFAULT_COMPILER_CC=clang
-		DEFAULT_COMPILER_CXX=clang++
-		;;
-	--gcc)
-		DEFAULT_COMPILER_CC=cc
-		DEFAULT_COMPILER_CXX=c++
 		;;
 	--enable-profiling)
 		PROFILING=1
@@ -552,17 +530,11 @@ while [ $# -gt 0 ]; do
 	--enable-network)
 		NETWORKING=1
 		;;
-	--disable-dependency-tracking)
-		DISABLE_DEPENDENCY_TRACKING=1
-		;;
-	--disable-sdl-renderer)
-		set_var "DISABLE_SDL_RENDERER" "1"
-		;;
 	--disable-sdl-rwhttp)
 		set_var "HAVE_SDL_RWHTTP_H" "0"
 		;;
-	--prefix=*)
-		PREFIX="${1#*=}"
+	--datadir=*)
+		PKGDATADIR="${1#*=}"
 		;;
 	--app=*)
 		APPNAME=`get_var "${1#*=}_APPNAME"`
@@ -616,48 +588,16 @@ set_path_env
 
 CONFIG_H_NAME=${TARGET_OS}
 
-case ${APPNAME} in
-cavepacker)
-	NETWORKING=
-	;;
-caveexpress)
-	;;
-*)
-	;;
-esac
-
 case ${TARGET_OS} in
 android)
 	;;
 ouya)
 	CONFIG_H_NAME="android"
 	HD_VERSION=1
-	;;
-*)
-	HD_VERSION=1
-	;;
-esac
-
-case ${TARGET_OS} in
-linux32)
-	STEAM_RUNTIME_TARGET_ARCH=i386
-	TARGET_ARCH=i386
-	CONFIG_H_NAME=linux
-	enable_only ${APPNAME}
-	;;
-linux64)
-	STEAM_RUNTIME_TARGET_ARCH=amd64
-	CONFIG_H_NAME=linux
-	TARGET_ARCH=x86_64
-	enable_only ${APPNAME}
-	;;
-linux)
-	;;
-ouya)
 	JAVA_PACKAGE=${JAVA_PACKAGE}ouya
 	;;
 *)
-	enable_only ${APPNAME}
+	HD_VERSION=1
 	;;
 esac
 
@@ -665,19 +605,15 @@ case ${TARGET_OS} in
 mingw32|mingw64)
 	TARGET_ARCH=i386
 	;;
-mingw64_64)
-	TARGET_ARCH=x86_64
-	;;
 nacl)
 	NETWORKING=
 	;;
 html5)
 	NETWORKING=
 	HAVE_SYSLOG_H=0
-	HAVE_NCURSES_H=0
-	HAVE_SDL_H=1
-	HAVE_SDL_IMAGE_H=1
-	HAVE_SDL_MIXER_H=1
+	WITH_EMBEDDED_SDL_H=1
+	WITH_EMBEDDED_SDL_IMAGE_H=1
+	WITH_EMBEDDED_SDL_MIXER_H=1
 	HAVE_SDL_NET_H=0
 	if [ -z "$EMSCRIPTEN_ROOT" ]; then
 		EMSCRIPTEN_ROOT=`python -c "import os, sys, re, json, shutil; exec(open(os.path.expanduser('~/.emscripten'), 'r').read()); print EMSCRIPTEN_ROOT"`
@@ -690,23 +626,6 @@ html5)
 		add_to_makefile_local EMSCRIPTEN_ROOT "Emscripten found at ${EMSCRIPTEN_ROOT}"
 		add_to_makefile_local CONFIGURE_PREFIX "Use ${EMSCRIPTEN_ROOT}/emconfigure"
 	fi
-	;;
-linux32|linux64)
-	STEAM_RUNTIME_ROOT=${STEAM_ROOT}/runtime/${STEAM_RUNTIME_TARGET_ARCH}
-	STATIC_SDL=1
-	HAVE_NCURSES_H=0
-	HAVE_SDL_IMAGE_H=0
-	HAVE_SDL_MIXER_H=0
-	HAVE_SDL_NET_H=0
-	HAVE_LUA_H=0
-	HAVE_SQLITE3_H=0
-	HAVE_TINYXML2_H=0
-	export STEAM_RUNTIME_TARGET_ARCH=${STEAM_RUNTIME_TARGET_ARCH}
-	export STEAM_RUNTIME_HOST_ARCH=${STEAM_RUNTIME_HOST_ARCH}
-	export STEAM_RUNTIME_ROOT=${STEAM_RUNTIME_ROOT}
-	add_to_makefile_local_quote STEAM_RUNTIME_ROOT "Steam runtime root at ${STEAM_RUNTIME_ROOT}"
-	add_to_makefile_local STEAM_RUNTIME_TARGET_ARCH "Steam runtime target arch ${STEAM_RUNTIME_TARGET_ARCH}"
-	add_to_makefile_local STEAM_RUNTIME_HOST_ARCH "Steam runtime host arch ${STEAM_RUNTIME_HOST_ARCH}"
 	;;
 esac
 HAVE_SDL_RWHTTP_H=0
@@ -724,6 +643,7 @@ if diff scale.tmp scale 2>/dev/null >/dev/null; then
 else
 	mv scale.tmp scale
 fi
+
 
 check_compiler
 check_ccache

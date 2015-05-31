@@ -42,6 +42,7 @@
 #include "caveexpress/client/ui/windows/UIMapEditorHelpWindow.h"
 #include "caveexpress/client/ui/windows/UIMapEditorOptionsWindow.h"
 #include "caveexpress/client/ui/windows/UIGameFinishedWindow.h"
+#include "engine/client/ui/windows/UIGooglePlayWindow.h"
 #include "engine/client/ui/windows/UIMapFinishedWindow.h"
 #include "caveexpress/client/ui/windows/UICaveExpressSettingsWindow.h"
 #include "engine/client/ui/windows/UIModeSelectionWindow.h"
@@ -86,6 +87,7 @@
 #include "caveexpress/server/network/ClientInitHandler.h"
 #include "caveexpress/server/network/ErrorHandler.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
+#include "engine/common/campaign/persister/GooglePlayPersister.h"
 #include "engine/common/System.h"
 #include "engine/common/network/INetwork.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
@@ -229,7 +231,7 @@ int CaveExpress::disconnect (ClientId clientId)
 
 int CaveExpress::getPlayers ()
 {
-	return _map.getPlayers().size();
+	return _map.getConnectedPlayers();
 }
 
 std::string CaveExpress::getMapName ()
@@ -277,15 +279,23 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	{
 		ExecutionTime e("loading persister");
 		const ConfigVarPtr& persister = Config.get().getConfigVar("persister", "sqlite", true, CV_READONLY);
-		if (persister->getValue() == "nop")
+		if (persister->getValue() == "nop") {
 			_persister = new NOPPersister();
-		else
+		} else if (persister->getValue() == "googleplay" && System.supportGooglePlay()) {
+			IGameStatePersister *delegate = new SQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
+			_persister = new GooglePlayPersister(delegate);
+		} else {
 			_persister = new SQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
+		}
+		if (!_persister->init()) {
+			error(LOG_SERVER, "Failed to initialize the persister");
+		}
 	}
 	{
 		ExecutionTime e("campaign manager");
 		_campaignManager = new CampaignManager(_persister, serviceProvider.getMapManager());
 		_campaignManager->init();
+		_campaignManager->addListener(this);
 	}
 	ProtocolHandlerRegistry& rp = ProtocolHandlerRegistry::get();
 	rp.registerServerHandler(protocol::PROTO_SPAWN, new SpawnHandler(_map, _campaignManager));
@@ -335,6 +345,7 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIGameOverWindow(frontend, campaignMgr));
 	ui.addWindow(new UIMapOptionsWindow(frontend, serviceProvider));
 	ui.addWindow(new UIGameFinishedWindow(frontend));
+	ui.addWindow(new UIGooglePlayWindow(frontend));
 	ui.addWindow(new UIMapFinishedWindow(frontend, campaignMgr, serviceProvider, SoundTypes::SOUND_PACKAGE_COLLIDE));
 	ui.addWindow(new UIMapFailedWindow(frontend, campaignMgr));
 	ui.addWindow(new UIMapEditorHelpWindow(frontend));

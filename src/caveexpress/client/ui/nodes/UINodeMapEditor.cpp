@@ -91,7 +91,7 @@ UINodeMapEditor::UINodeMapEditor (IFrontend *frontend, IMapManager& mapManager) 
 
 	doClear();
 
-	Commands.registerCommand(CMD_LOADMAP, bind(UINodeMapEditor, loadMap));
+	Commands.registerCommand(CMD_LOADMAP, bindFunction(UINodeMapEditor, loadMap));
 }
 
 UINodeMapEditor::~UINodeMapEditor ()
@@ -170,9 +170,9 @@ void UINodeMapEditor::renderBorder (const TileItem& item, int x, int y, const Co
 
 void UINodeMapEditor::render (int x, int y) const
 {
-	UINode::render(x, y);
-
 	enableScissor(x, y);
+
+	UINode::render(x, y);
 
 	for (TileItemsConstIter pItem = _map.begin(); pItem != _map.end(); ++pItem) {
 		const TileItem& item = *pItem;
@@ -855,7 +855,7 @@ void UINodeMapEditor::setState (const State& state)
 	_settings = state.settingsMap;
 	setMapName(state.mapName);
 	setMapDimensions(string::toInt(_settings[msn::WIDTH]), string::toInt(_settings[msn::HEIGHT]));
-	setPlayerPosition(string::toFloat(_settings[msn::PLAYER_X]), string::toFloat(_settings[msn::PLAYER_Y]));
+	setPlayerPosition(string::toFloat(_startPositions[0]._x), string::toFloat(_startPositions[0]._y));
 	setWaterHeight(string::toFloat(_settings[msn::WATER_HEIGHT]));
 }
 
@@ -1053,8 +1053,8 @@ void UINodeMapEditor::loadFromContext (IMapContext& ctx)
 		else
 			setSetting(i->first, i->second);
 	}
-	const gridCoord playerX = string::toFloat(_settings[msn::PLAYER_X]);
-	const gridCoord playerY = string::toFloat(_settings[msn::PLAYER_Y]);
+	const gridCoord playerX = string::toFloat(_startPositions[0]._x);
+	const gridCoord playerY = string::toFloat(_startPositions[0]._y);
 	setPlayerPosition(playerX, playerY);
 	const int mapWidth = string::toInt(_settings[msn::WIDTH]);
 	const int mapHeight = string::toInt(_settings[msn::HEIGHT]);

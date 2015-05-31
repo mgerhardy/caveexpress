@@ -183,7 +183,7 @@ void Windows::exit (const std::string& reason, int errorCode)
 	ExitProcess(errorCode);
 }
 
-int Windows::openURL (const std::string& url) const
+int Windows::openURL (const std::string& url, bool) const
 {
 	ShellExecute(NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
 	return 0;

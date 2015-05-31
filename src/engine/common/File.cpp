@@ -43,6 +43,7 @@ long File::write (const unsigned char *buf, size_t len) const
 	}
 
 	SDL_RWclose(rwops);
+	getSystem().syncFiles();
 
 	return len;
 }

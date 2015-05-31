@@ -29,11 +29,15 @@ private:
 	// the pixels of one grid tile
 	int _scale;
 
+	int _scrollOffsetX;
+	int _scrollOffsetY;
+
 	void reset ();
 
 public:
 	void init (int width, int height, int mapGridWidth, int mapGridHeight, int scale);
 	void update (const vec2& playerPos, Direction direction, float zoom);
+	void scroll (int offsetX, int offsetY);
 	int getViewportX () const;
 	int getViewportY () const;
 

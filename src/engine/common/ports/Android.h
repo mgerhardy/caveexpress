@@ -26,6 +26,7 @@ private:
 	jmethodID _minimize;
 	jmethodID _getPaymentEntries;
 	jmethodID _getLocale;
+	jmethodID _achievementUnlocked;
 
 	int _externalState;
 
@@ -57,12 +58,12 @@ public:
 	void showAds (bool show) override;
 	bool showFullscreenAds () override;
 	bool isFullscreenSupported () override { return false; }
-	int openURL (const std::string& url) const override;
+	int openURL (const std::string& url, bool newWindow) const override;
 	void exit (const std::string& reason, int errorCode) override;
 	std::string getHomeDirectory () override;
 	std::string getCurrentWorkingDir () override { return ""; }
 	std::string getDatabaseDirectory () override;
-	void achievementUnlocked (const std::string& id) override;
+	void achievementUnlocked (const std::string& id, bool increment) override;
 	bool hasAchievement (const std::string& id) override;
 	bool hasTouch () const override;
 	bool quit () override;
@@ -77,4 +78,5 @@ public:
 	bool hasMouseOrFinger () override;
 	bool canDisableJoystick () override { return !isOUYA(); }
 	bool wantBackButton () override { return isOUYA(); }
+	bool supportGooglePlay () { return !isOUYA(); }
 };

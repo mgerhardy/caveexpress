@@ -13,9 +13,10 @@ class UINodeMapSelector: public UINodeBackgroundSelector<std::string> {
 private:
 	CampaignManager *_campaignManager;
 	const IMapManager *_mapManager;
+	bool _multiplayer;
 public:
-	UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, int cols = 6, int rows = 4);
-	UINodeMapSelector (IFrontend *frontend, CampaignManager &campaignManager, int cols = 6, int rows = 4);
+	UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, bool multiplayer = false, int cols = 6, int rows = 4);
+	UINodeMapSelector (IFrontend *frontend, CampaignManager &campaignManager, bool multiplayer = false, int cols = 6, int rows = 4);
 	virtual ~UINodeMapSelector ();
 
 	int getLives () const;
