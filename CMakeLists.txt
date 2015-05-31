@@ -86,6 +86,7 @@ include_directories("${PROJECT_SOURCE_DIR}/src/libs/SDL_image")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/SDL/include")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/SDL/src")
 include_directories("${PROJECT_SOURCE_DIR}/src/modules")
+include_directories("${PROJECT_SOURCE_DIR}/src/modules/game")
 
 if(UNIX)
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/SDL/linux")

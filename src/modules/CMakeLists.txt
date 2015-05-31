@@ -1,3 +1,5 @@
+add_subdirectory(game)
+
 FILE(GLOB modules_SRCS
 	client/shaders/*.cpp
 	client/sprites/*.cpp
@@ -12,8 +14,6 @@ FILE(GLOB modules_SRCS
 	client/ui/windows/*.cpp
 	client/ui/windows/intro/*.cpp
 	client/ui/layouts/*.cpp
-	*.cpp
-	../*.cpp
 	common/*.cpp
 	common/campaign/*.cpp
 	common/campaign/persister/*.cpp
@@ -37,4 +37,4 @@ endif()
 
 add_library(modules ${modules_SRCS} ${modules_PLATFORM_SRCS})
 set_target_properties(modules PROPERTIES FOLDER modules)
-target_link_libraries(modules libs GL)
+target_link_libraries(modules libs game GL)
