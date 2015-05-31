@@ -2,8 +2,8 @@
 
 #include "network/IProtocolHandler.h"
 #include "client/ClientMap.h"
-#include "client/ui/UI.h"
-#include "client/ui/nodes/IUINodeMap.h"
+#include "ui/UI.h"
+#include "ui/nodes/IUINodeMap.h"
 
 class PlayerListHandler: public IClientProtocolHandler {
 private:

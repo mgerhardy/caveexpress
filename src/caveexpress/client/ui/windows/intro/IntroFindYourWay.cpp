@@ -1,9 +1,9 @@
 #include "IntroFindYourWay.h"
-#include "client/ui/nodes/UINodeSprite.h"
-#include "client/ui/nodes/UINodeLabel.h"
+#include "ui/nodes/UINodeSprite.h"
+#include "ui/nodes/UINodeLabel.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 
 IntroFindYourWay::IntroFindYourWay(IFrontend* frontend) :
 		Intro("introfindyourway", frontend) {

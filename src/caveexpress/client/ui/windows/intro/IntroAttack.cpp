@@ -1,9 +1,9 @@
 #include "IntroAttack.h"
-#include "client/ui/nodes/UINodeSprite.h"
-#include "client/ui/nodes/UINodeLabel.h"
+#include "ui/nodes/UINodeSprite.h"
+#include "ui/nodes/UINodeLabel.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 
 IntroAttack::IntroAttack(IFrontend* frontend) :
 		Intro("introattack", frontend) {

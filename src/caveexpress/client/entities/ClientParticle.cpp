@@ -2,7 +2,7 @@
 #include "client/sound/Sound.h"
 #include "common/SoundType.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 #include "common/Logger.h"
 #include "common/Shared.h"
 

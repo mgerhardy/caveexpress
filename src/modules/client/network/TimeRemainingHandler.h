@@ -2,8 +2,8 @@
 
 #include "network/IProtocolHandler.h"
 #include "network/messages/TimeRemainingMessage.h"
-#include "client/ui/UI.h"
-#include "client/ui/windows/IUIMapWindow.h"
+#include "ui/UI.h"
+#include "ui/windows/IUIMapWindow.h"
 
 class TimeRemainingHandler: public IClientProtocolHandler {
 public:

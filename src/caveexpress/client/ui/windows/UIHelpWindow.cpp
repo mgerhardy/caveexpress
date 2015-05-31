@@ -1,9 +1,9 @@
 #include "UIHelpWindow.h"
-#include "client/ui/nodes/UINodeSprite.h"
-#include "client/ui/nodes/UINodeKey.h"
-#include "client/ui/nodes/UINodeLabel.h"
-#include "client/ui/nodes/UINodeSprite.h"
-#include "client/ui/UI.h"
+#include "ui/nodes/UINodeSprite.h"
+#include "ui/nodes/UINodeKey.h"
+#include "ui/nodes/UINodeLabel.h"
+#include "ui/nodes/UINodeSprite.h"
+#include "ui/UI.h"
 #include "common/SpriteDefinition.h"
 
 UIHelpWindow::UIHelpWindow (const std::string& name, IFrontend* frontend, int flags) :

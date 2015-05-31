@@ -8,49 +8,6 @@ set(client_SRCS
 	sprites/Sprite.cpp
 	ClientMap.cpp
 	FrameBuffer.cpp
-	ui/windows/UICreateServerWindow.cpp
-	ui/windows/UIPopupWindow.cpp
-	ui/windows/IUIMapWindow.cpp
-	ui/windows/UIModeSelectionWindow.cpp
-	ui/windows/UIMapSelectorWindow.cpp
-	ui/windows/UICampaignMapWindow.cpp
-	ui/windows/UIMapFinishedWindow.cpp
-	ui/windows/UIGooglePlayWindow.cpp
-	ui/windows/UIMapOptionsWindow.cpp
-	ui/windows/UIGestureWindow.cpp
-	ui/windows/UIMultiplayerWindow.cpp
-	ui/windows/UIWindow.cpp
-	ui/windows/intro/Intro.cpp
-	ui/windows/UICampaignWindow.cpp
-	ui/windows/UIPaymentWindow.cpp
-	ui/windows/UISettingsWindow.cpp
-	ui/nodes/UINodeBar.cpp
-	ui/nodes/UINodeTextInput.cpp
-	ui/nodes/UINode.cpp
-	ui/nodes/UINodePaymentSelector.cpp
-	ui/nodes/UINodeServerSelector.cpp
-	ui/nodes/UINodeSpinner.cpp
-	ui/nodes/UINodeSprite.cpp
-	ui/nodes/UINodeMapOnScreenCursorControl.cpp
-	ui/nodes/UINodeMapControl.cpp
-	ui/nodes/UINodeKey.cpp
-	ui/nodes/UINodeMapStringSelector.cpp
-	ui/nodes/UINodeMapSelector.cpp
-	ui/nodes/UINodeButton.cpp
-	ui/nodes/IUINodeMap.cpp
-	ui/nodes/UINodeCampaignSelector.cpp
-	ui/nodes/UINodeBackground.cpp
-	ui/nodes/UINodeLabel.cpp
-	ui/nodes/UINodeMapFingerControl.cpp
-	ui/nodes/UINodeCheckbox.cpp
-	ui/nodes/UINodeGooglePlayButton.cpp
-	ui/nodes/UINodeSlider.cpp
-	ui/layouts/UIFillLayout.cpp
-	ui/layouts/UIHBoxLayout.cpp
-	ui/layouts/UIVBoxLayout.cpp
-	ui/FontDefinition.cpp
-	ui/BitmapFont.cpp
-	ui/UI.cpp
 	shaders/Shader.cpp
 	entities/ClientEntity.cpp
 	entities/ClientPlayer.cpp
@@ -69,4 +26,4 @@ set(client_SRCS
 )
 add_library(client ${client_SRCS})
 set_target_properties(client PROPERTIES FOLDER client)
-target_link_libraries(client libs game common GL)
+target_link_libraries(client libs game common ui GL)

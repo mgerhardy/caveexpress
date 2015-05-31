@@ -4,7 +4,7 @@
 #include "network/messages/SpawnInfoMessage.h"
 #include "client/ClientMap.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 
 class SpawnInfoHandler: public IClientProtocolHandler {
 private:

@@ -1,5 +1,5 @@
 #include "Particle.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 #include <sstream>
 
 Particle::Particle(IParticleEnvironment& env) :

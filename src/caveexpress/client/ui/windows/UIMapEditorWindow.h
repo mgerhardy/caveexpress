@@ -1,7 +1,7 @@
 #pragma once
 
-#include "client/ui/windows/UIWindow.h"
-#include "client/ui/nodes/UINodeSelector.h"
+#include "ui/windows/UIWindow.h"
+#include "ui/nodes/UINodeSelector.h"
 
 // forward decl
 class UINodeMapEditorSelectedItem;

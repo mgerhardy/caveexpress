@@ -2,7 +2,7 @@
 
 #include "common/IConsole.h"
 #include "common/IEventObserver.h"
-#include "client/ui/BitmapFont.h"
+#include "ui/BitmapFont.h"
 #include <string>
 #include <vector>
 #include <inttypes.h>

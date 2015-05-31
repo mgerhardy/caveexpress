@@ -1,7 +1,7 @@
 #include "Sprite.h"
 #include "common/IFrontend.h"
 #include "common/Logger.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 
 Sprite::Sprite (const std::string& name) :
 		_name(name), _currentFrame(-1), _frameCount(0), _fps(20.0f), _frameTimeRemaining(1000.0f / _fps), _loop(

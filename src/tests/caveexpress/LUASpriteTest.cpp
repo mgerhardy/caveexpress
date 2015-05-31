@@ -5,7 +5,7 @@
 #include "common/Logger.h"
 #include "common/SpriteDefinition.h"
 #include "common/TextureDefinition.h"
-#include "client/ui/FontDefinition.h"
+#include "ui/FontDefinition.h"
 #include "common/EntityType.h"
 #include "common/Animation.h"
 

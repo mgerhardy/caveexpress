@@ -2,8 +2,8 @@
 
 #include "network/IProtocolHandler.h"
 #include "network/messages/UpdateLivesMessage.h"
-#include "client/ui/UI.h"
-#include "client/ui/windows/IUIMapWindow.h"
+#include "ui/UI.h"
+#include "ui/windows/IUIMapWindow.h"
 #include "common/campaign/CampaignManager.h"
 
 class UpdateLivesHandler: public IClientProtocolHandler {

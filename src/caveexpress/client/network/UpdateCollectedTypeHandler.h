@@ -5,7 +5,7 @@
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "client/ClientMap.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
 
 class UpdateCollectedTypeHandler: public IClientProtocolHandler {

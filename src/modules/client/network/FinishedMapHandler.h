@@ -4,10 +4,10 @@
 #include "network/messages/FinishedMapMessage.h"
 #include "network/INetwork.h"
 #include "common/Commands.h"
-#include "client/ui/UI.h"
-#include "client/ui/windows/UIMapFinishedWindow.h"
-#include "client/ui/nodes/UINodePoint.h"
-#include "client/ui/nodes/UINodeStar.h"
+#include "ui/UI.h"
+#include "ui/windows/UIMapFinishedWindow.h"
+#include "ui/nodes/UINodePoint.h"
+#include "ui/nodes/UINodeStar.h"
 #include "client/ClientMap.h"
 
 class FinishedMapHandler: public IClientProtocolHandler {

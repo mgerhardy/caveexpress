@@ -1,11 +1,11 @@
 #include "UIMapFailedWindow.h"
-#include "client/ui/UI.h"
-#include "client/ui/nodes/UINodeBackButton.h"
-#include "client/ui/nodes/UINodeButton.h"
-#include "client/ui/layouts/UIHBoxLayout.h"
+#include "ui/UI.h"
+#include "ui/nodes/UINodeBackButton.h"
+#include "ui/nodes/UINodeButton.h"
+#include "ui/layouts/UIHBoxLayout.h"
 #include "caveexpress/client/ui/nodes/UINodeBackgroundScene.h"
-#include "client/ui/nodes/UINodeContinuePlay.h"
-#include "client/ui/windows/main/ReplayNodeListener.h"
+#include "ui/nodes/UINodeContinuePlay.h"
+#include "ui/windows/main/ReplayNodeListener.h"
 #include <string>
 
 UIMapFailedWindow::UIMapFailedWindow (IFrontend *frontend, CampaignManager& campaignManager) :

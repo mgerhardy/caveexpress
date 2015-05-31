@@ -2,9 +2,9 @@
 
 #include "network/IProtocolHandler.h"
 #include "network/messages/UpdatePointsMessage.h"
-#include "client/ui/UI.h"
-#include "client/ui/nodes/UINodePoint.h"
-#include "client/ui/windows/IUIMapWindow.h"
+#include "ui/UI.h"
+#include "ui/nodes/UINodePoint.h"
+#include "ui/windows/IUIMapWindow.h"
 
 class UpdatePointsHandler: public IClientProtocolHandler {
 public:

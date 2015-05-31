@@ -8,7 +8,7 @@
 #include "network/messages/FingerMovementMessage.h"
 #include "network/messages/ClientInitMessage.h"
 #include "client/entities/ClientMapTile.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 #include "common/IFrontend.h"
 #include "network/ProtocolHandlerRegistry.h"
 #include "client/sound/Sound.h"

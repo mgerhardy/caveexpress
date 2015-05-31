@@ -1,7 +1,7 @@
 #include "UIMapEditorHelpWindow.h"
-#include "client/ui/UI.h"
-#include "client/ui/nodes/UINodeBackground.h"
-#include "client/ui/nodes/UINodeBackButton.h"
+#include "ui/UI.h"
+#include "ui/nodes/UINodeBackground.h"
+#include "ui/nodes/UINodeBackButton.h"
 
 UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		UIHelpWindow(UI_WINDOW_MAPEDITOR_HELP, frontend, WINDOW_FLAG_MODAL)

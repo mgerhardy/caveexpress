@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/ui/nodes/UINodeButtonText.h"
+#include "ui/nodes/UINodeButtonText.h"
 #include "common/CommandSystem.h"
 
 // TODO: Undo/Redo does not yet work

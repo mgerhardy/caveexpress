@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/ui/windows/IUIMapWindow.h"
+#include "ui/windows/IUIMapWindow.h"
 
 class UIMapWindow: public IUIMapWindow {
 public:

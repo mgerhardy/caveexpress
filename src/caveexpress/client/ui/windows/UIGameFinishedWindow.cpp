@@ -1,9 +1,9 @@
 #include "UIGameFinishedWindow.h"
-#include "client/ui/UI.h"
-#include "client/ui/nodes/UINodeLabel.h"
-#include "client/ui/nodes/UINodeBackButton.h"
+#include "ui/UI.h"
+#include "ui/nodes/UINodeLabel.h"
+#include "ui/nodes/UINodeBackButton.h"
 #include "common/Commands.h"
-#include "client/ui/nodes/UINodeBackground.h"
+#include "ui/nodes/UINodeBackground.h"
 
 UIGameFinishedWindow::UIGameFinishedWindow (IFrontend *frontend) :
 		UIWindow(UI_WINDOW_GAMEFINISHED, frontend)

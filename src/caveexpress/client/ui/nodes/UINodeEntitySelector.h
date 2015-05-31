@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/EntityType.h"
-#include "client/ui/nodes/UINodeSelector.h"
+#include "ui/nodes/UINodeSelector.h"
 #include "common/ThemeType.h"
 #include "client/sprites/Sprite.h"
 #include "common/SpriteDefinition.h"

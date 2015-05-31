@@ -1,8 +1,8 @@
 #pragma once
 
-#include "client/ui/nodes/UINode.h"
+#include "ui/nodes/UINode.h"
 #include "common/String.h"
-#include "client/ui/BitmapFont.h"
+#include "ui/BitmapFont.h"
 #include "common/Payment.h"
 #include "common/Config.h"
 #include "common/ThemeType.h"

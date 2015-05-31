@@ -1,5 +1,5 @@
 #include "ClientConsole.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 #include "common/CommandSystem.h"
 #include "common/IFrontend.h"
 #include "common/Logger.h"

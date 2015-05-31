@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 #include "network/IProtocolHandler.h"
 #include "network/INetwork.h"
 #include "network/messages/FailedMapMessage.h"

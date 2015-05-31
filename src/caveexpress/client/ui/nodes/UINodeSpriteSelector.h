@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/ui/nodes/UINodeSelector.h"
+#include "ui/nodes/UINodeSelector.h"
 #include "common/SpriteDefinition.h"
 
 class UINodeSpriteSelector: public UINodeSelector<SpriteDefPtr> {

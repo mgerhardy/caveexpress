@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/ui/nodes/IUINodeMap.h"
+#include "ui/nodes/IUINodeMap.h"
 
 class UINodeMap: public IUINodeMap {
 public:

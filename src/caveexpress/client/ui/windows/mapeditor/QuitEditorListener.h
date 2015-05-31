@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 #include "common/Commands.h"
 #include "caveexpress/client/ui/nodes/UINodeMapEditor.h"
 

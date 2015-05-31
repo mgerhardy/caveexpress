@@ -1,5 +1,5 @@
 #include "GL1Frontend.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 #include "client/ClientConsole.h"
 #include "client/textures/TextureCoords.h"
 #include "common/Logger.h"

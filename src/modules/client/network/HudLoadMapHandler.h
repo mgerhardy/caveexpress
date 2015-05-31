@@ -2,13 +2,13 @@
 
 #include "network/IProtocolHandler.h"
 #include "client/network/LoadMapHandler.h"
-#include "client/ui/windows/IUIMapWindow.h"
-#include "client/ui/nodes/IUINodeMap.h"
-#include "client/ui/nodes/UINodeSprite.h"
-#include "client/ui/nodes/UINodePoint.h"
-#include "client/ui/windows/UIWindow.h"
+#include "ui/windows/IUIMapWindow.h"
+#include "ui/nodes/IUINodeMap.h"
+#include "ui/nodes/UINodeSprite.h"
+#include "ui/nodes/UINodePoint.h"
+#include "ui/windows/UIWindow.h"
 #include "client/ClientMap.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 
 class HudLoadMapHandler: public LoadMapHandler {
 public:

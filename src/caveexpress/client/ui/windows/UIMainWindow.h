@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/ui/windows/UIWindow.h"
+#include "ui/windows/UIWindow.h"
 
 // forward decl
 class CampaignManager;

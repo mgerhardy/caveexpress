@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/ui/nodes/UINode.h"
+#include "ui/nodes/UINode.h"
 #include "common/SpriteDefinition.h"
 
 class UINodeMapEditorSelectedItem: public UINode {

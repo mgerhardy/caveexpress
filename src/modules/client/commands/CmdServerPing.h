@@ -5,7 +5,7 @@
 #include "network/INetwork.h"
 #include "common/ConfigManager.h"
 #include "network/messages/PingMessage.h"
-#include "client/ui/nodes/UINodeServerSelector.h"
+#include "ui/nodes/UINodeServerSelector.h"
 
 class CmdServerPing: public ICommand, public IClientCallback {
 private:

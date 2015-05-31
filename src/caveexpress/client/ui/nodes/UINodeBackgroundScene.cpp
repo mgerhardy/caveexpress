@@ -1,5 +1,5 @@
 #include "UINodeBackgroundScene.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 #include "client/ClientMap.h"
 #include "caveexpress/shared/CaveExpressMapFailedReasons.h"
 

@@ -1,8 +1,8 @@
 #include "IntroGame.h"
-#include "client/ui/nodes/UINodeSprite.h"
-#include "client/ui/nodes/UINodeLabel.h"
+#include "ui/nodes/UINodeSprite.h"
+#include "ui/nodes/UINodeLabel.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 
 IntroGame::IntroGame(IFrontend* frontend) :
 		Intro("introgame", frontend) {

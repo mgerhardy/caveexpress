@@ -3,9 +3,9 @@
 #include "network/IProtocolHandler.h"
 #include "common/Logger.h"
 #include "client/ClientMap.h"
-#include "client/ui/UI.h"
-#include "client/ui/nodes/UINodeSprite.h"
-#include "client/ui/nodes/UINodePoint.h"
+#include "ui/UI.h"
+#include "ui/nodes/UINodeSprite.h"
+#include "ui/nodes/UINodePoint.h"
 #include "common/SpriteType.h"
 
 class CloseMapHandler: public IClientProtocolHandler {

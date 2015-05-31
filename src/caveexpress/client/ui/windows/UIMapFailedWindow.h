@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/ui/windows/UIWindow.h"
+#include "ui/windows/UIWindow.h"
 #include "common/MapFailedReason.h"
 #include "common/ThemeType.h"
 

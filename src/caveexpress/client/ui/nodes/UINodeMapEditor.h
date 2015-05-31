@@ -1,8 +1,8 @@
 #pragma once
 
-#include "client/ui/nodes/UINode.h"
+#include "ui/nodes/UINode.h"
 #include "client/sprites/Sprite.h"
-#include "client/ui/BitmapFont.h"
+#include "ui/BitmapFont.h"
 #include "common/SpriteDefinition.h"
 #include "common/MapSettings.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"

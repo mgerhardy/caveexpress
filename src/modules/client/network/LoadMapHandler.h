@@ -2,9 +2,9 @@
 
 #include "network/IProtocolHandler.h"
 #include "network/messages/LoadMapMessage.h"
-#include "client/ui/nodes/UINodePoint.h"
+#include "ui/nodes/UINodePoint.h"
 #include "client/ClientMap.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 
 class LoadMapHandler: public IClientProtocolHandler {
 protected:

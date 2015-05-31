@@ -1,8 +1,8 @@
 #pragma once
 
 #include "network/IProtocolHandler.h"
-#include "client/ui/windows/IUIMapWindow.h"
-#include "client/ui/UI.h"
+#include "ui/windows/IUIMapWindow.h"
+#include "ui/UI.h"
 
 /**
  * @brief Informs the client that the map is now started

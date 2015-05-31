@@ -3,9 +3,9 @@
 #include "common/MapSettings.h"
 #include "client/network/MapSettingsHandler.h"
 #include "client/ClientMap.h"
-#include "client/ui/UI.h"
-#include "client/ui/windows/IUIMapWindow.h"
-#include "client/ui/nodes/IUINodeMap.h"
+#include "ui/UI.h"
+#include "ui/windows/IUIMapWindow.h"
+#include "ui/nodes/IUINodeMap.h"
 
 class HudMapSettingsHandler: public MapSettingsHandler {
 public:

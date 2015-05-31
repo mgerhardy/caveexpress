@@ -1,5 +1,5 @@
 #include "UINodeMapEditor.h"
-#include "client/ui/UI.h"
+#include "ui/UI.h"
 #include "common/ConfigManager.h"
 #include "common/CommandSystem.h"
 #include "common/SpriteDefinition.h"
