@@ -3,7 +3,7 @@
 #include "client/network/AddEntityHandler.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 
 class AddEntityWithSoundHandler: public AddEntityHandler {
 public:

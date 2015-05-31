@@ -1,6 +1,6 @@
 #include "UINodeMapEditorSelectedItem.h"
 #include "ui/UI.h"
-#include "client/sprites/Sprite.h"
+#include "sprites/Sprite.h"
 #include "ui/BitmapFont.h"
 
 UINodeMapEditorSelectedItem::UINodeMapEditorSelectedItem (IFrontend *frontend) :

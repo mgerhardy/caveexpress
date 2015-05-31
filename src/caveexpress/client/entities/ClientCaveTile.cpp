@@ -1,5 +1,5 @@
 #include "ClientCaveTile.h"
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 

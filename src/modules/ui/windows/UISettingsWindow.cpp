@@ -9,7 +9,7 @@
 #include "ui/windows/UIWindow.h"
 #include "ui/nodes/UINodeSettingsBackground.h"
 #include "ui/windows/modeselection/ModeSetListener.h"
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 #include "common/IFrontend.h"
 #include "common/ServiceProvider.h"
 #include "common/System.h"

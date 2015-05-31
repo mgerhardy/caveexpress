@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ui/nodes/UINode.h"
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 #include "common/SoundType.h"
 
 class UINodeStar: public UINode {

@@ -1,5 +1,5 @@
 #include "Sound.h"
-#include "client/sound/sdl/SDLSoundEngine.h"
+#include "sound/sdl/SDLSoundEngine.h"
 #include "common/FileSystem.h"
 #include "common/Logger.h"
 #include "common/ConfigManager.h"

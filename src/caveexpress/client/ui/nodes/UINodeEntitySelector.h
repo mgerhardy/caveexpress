@@ -3,7 +3,7 @@
 #include "common/EntityType.h"
 #include "ui/nodes/UINodeSelector.h"
 #include "common/ThemeType.h"
-#include "client/sprites/Sprite.h"
+#include "sprites/Sprite.h"
 #include "common/SpriteDefinition.h"
 
 struct EntityTypeWrapper {

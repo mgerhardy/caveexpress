@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ui/nodes/UINode.h"
-#include "client/sprites/Sprite.h"
+#include "sprites/Sprite.h"
 #include "ui/BitmapFont.h"
 #include "common/SpriteDefinition.h"
 #include "common/MapSettings.h"

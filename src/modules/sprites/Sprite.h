@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/textures/Texture.h"
+#include "textures/Texture.h"
 #include "common/Layer.h"
 #include "common/Pointers.h"
 #include "common/IFrontend.h"

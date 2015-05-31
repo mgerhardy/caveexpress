@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ui/windows/UIWindow.h"
-#include "client/sprites/Sprite.h"
+#include "sprites/Sprite.h"
 
 // forward decl
 class UINodeMapSelector;

@@ -1,6 +1,6 @@
 #include "UIWindow.h"
 #include "ui/UI.h"
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 #include "common/Logger.h"
 #include "common/EventHandler.h"
 #include "common/CommandSystem.h"

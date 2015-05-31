@@ -9,8 +9,8 @@
 #include "common/Logger.h"
 #include "common/Pointers.h"
 #include "common/IProgressCallback.h"
-#include "client/textures/TextureCache.h"
-#include "client/sprites/SpriteCache.h"
+#include "textures/TextureCache.h"
+#include "sprites/SpriteCache.h"
 
 #include <vector>
 #include <map>

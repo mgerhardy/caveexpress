@@ -1,7 +1,7 @@
 #include "GL1Frontend.h"
 #include "ui/UI.h"
 #include "client/ClientConsole.h"
-#include "client/textures/TextureCoords.h"
+#include "textures/TextureCoords.h"
 #include "common/Logger.h"
 #include "common/DateUtil.h"
 #include "common/FileSystem.h"

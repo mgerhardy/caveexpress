@@ -7,7 +7,7 @@
 #include "common/ExecutionTime.h"
 #include "common/Singleton.h"
 #include "GameRegistry.h"
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 #include <SDL.h>
 #include <SDL_mixer.h>
 #include <assert.h>

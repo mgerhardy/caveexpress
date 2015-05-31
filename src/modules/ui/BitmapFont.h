@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/textures/Texture.h"
+#include "textures/Texture.h"
 #include "ui/FontDefinition.h"
 #include <algorithm>
 

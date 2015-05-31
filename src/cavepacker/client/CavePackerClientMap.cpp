@@ -11,7 +11,7 @@
 #include "ui/UI.h"
 #include "common/IFrontend.h"
 #include "network/ProtocolHandlerRegistry.h"
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 #include "common/ConfigManager.h"
 #include "common/EventHandler.h"
 #include "common/ServiceProvider.h"

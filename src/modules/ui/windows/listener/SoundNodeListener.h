@@ -1,5 +1,5 @@
 #pragma once
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 #include "common/ConfigManager.h"
 
 class SoundNodeListener: public UINodeListener {

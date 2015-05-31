@@ -1,5 +1,5 @@
 #include "CaveExpress.h"
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 #include "common/Singleton.h"
 #include "common/ConfigManager.h"
 #include "common/Commands.h"

@@ -3,7 +3,7 @@
 #include "network/IProtocolHandler.h"
 #include "network/messages/SoundMessage.h"
 #include "client/ClientMap.h"
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 
 class SoundHandler: public IClientProtocolHandler {
 public:

@@ -4,7 +4,7 @@
 #include "common/Animation.h"
 #include "common/Direction.h"
 #include "common/EntityAlignment.h"
-#include "client/sprites/Sprite.h"
+#include "sprites/Sprite.h"
 #include "common/SpriteDefinition.h"
 #include "common/Pointers.h"
 #include <Box2D/Common/b2Math.h>

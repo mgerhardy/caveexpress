@@ -3,7 +3,7 @@
 #include "common/EventHandler.h"
 #include "common/System.h"
 #include "common/IFrontend.h"
-#include "client/textures/Texture.h"
+#include "textures/Texture.h"
 #include <string>
 #include <deque>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/textures/Texture.h"
+#include "textures/Texture.h"
 #include "client/GLFunc.h"
 #include "client/GLShared.h"
 #include <SDL_platform.h>

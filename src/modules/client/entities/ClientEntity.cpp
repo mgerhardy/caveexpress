@@ -1,5 +1,5 @@
 #include "client/entities/ClientEntity.h"
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 #include "common/IFrontend.h"
 #include "ui/UI.h"
 #include "ui/BitmapFont.h"

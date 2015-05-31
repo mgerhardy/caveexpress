@@ -45,4 +45,4 @@ windows/intro/Intro.cpp
 )
 add_library(ui ${ui_SRCS})
 set_target_properties(ui PROPERTIES FOLDER ui)
-target_link_libraries(ui libs)
+target_link_libraries(ui libs texture sprite sound)

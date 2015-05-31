@@ -1,6 +1,6 @@
 #include "client/entities/ClientMapTile.h"
 #include "ui/UI.h"
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 
 ClientMapTile::ClientMapTile (const EntityType& type, uint16_t id, const std::string& sprite,
 		const Animation& animation, float x, float y, float sizeX, float sizeY, EntityAngle angle,

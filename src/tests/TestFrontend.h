@@ -2,7 +2,7 @@
 
 #include "common/IFrontend.h"
 #include "common/TextConsole.h"
-#include "client/textures/Texture.h"
+#include "textures/Texture.h"
 
 // forward decl
 class EventHandler;

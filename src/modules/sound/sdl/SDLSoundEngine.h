@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/sound/ISoundEngine.h"
+#include "sound/ISoundEngine.h"
 #include <map>
 
 struct Mix_Chunk;

@@ -2,7 +2,7 @@
 
 #include "client/particles/IParticleEnvironment.h"
 #include "common/IFrontend.h"
-#include "client/textures/Texture.h"
+#include "textures/Texture.h"
 #include "common/Pointers.h"
 #include <string>
 

@@ -1,5 +1,5 @@
 #include "ClientParticle.h"
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 #include "common/SoundType.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "ui/UI.h"

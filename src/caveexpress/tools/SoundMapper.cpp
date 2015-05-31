@@ -3,7 +3,7 @@
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "common/Singleton.h"
 #include "common/String.h"
-#include "client/sound/Sound.h"
+#include "sound/Sound.h"
 #include "common/FileSystem.h"
 #include "common/Logger.h"
 
