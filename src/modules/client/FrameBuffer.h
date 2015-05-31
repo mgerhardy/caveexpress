@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GLFunc.h"
+#include "textures/Texture.h"
 #include <vector>
 
 class FrameBuffer {
@@ -10,11 +11,16 @@ private:
 	bool _depth;
 	GLuint _depthRenderBuffer;
 	std::vector<GLuint> _textures;
+	TextureRect _rect;
 public:
 	FrameBuffer ();
 	~FrameBuffer ();
 
 	void destroy ();
+
+	inline const TextureRect& rect() const {
+		return _rect;
+	}
 
 	bool isSuccessful ();
 

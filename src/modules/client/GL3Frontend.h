@@ -19,7 +19,6 @@ protected:
 	GLuint _vbo;
 	FrameBuffer _fbo;
 	GLuint _renderTargetTexture;
-	GLuint _fullScreenQuadVBO;
 	TexNum _white;
 	Shader _shader;
 	int _drawCalls;

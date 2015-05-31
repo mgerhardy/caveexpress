@@ -50,7 +50,7 @@ inline TexNum getTexNum (void *textureData)
 }
 
 GL3Frontend::GL3Frontend (SharedPtr<IConsole> console) :
-		SDLFrontend(console), _currentTexture(-1), _rx(1.0f), _ry(1.0f), _vao(0u), _vbo(0u), _renderTargetTexture(0), _fullScreenQuadVBO(0), _white(0), _drawCalls(0)
+		SDLFrontend(console), _currentTexture(-1), _rx(1.0f), _ry(1.0f), _vao(0u), _vbo(0u), _renderTargetTexture(0), _white(0), _drawCalls(0)
 {
 	_context = nullptr;
 	_currentBatch = 0;
@@ -85,12 +85,68 @@ bool GL3Frontend::renderTarget (RenderTarget* target)
 {
 	target->fbo->unbind();
 
-	int loc = 0; // TODO:
-	glEnableVertexAttribArray(loc);
-	glBindBuffer(GL_ARRAY_BUFFER, _fullScreenQuadVBO);
-	glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glDisableVertexAttribArray(0);
+	const TextureRect& r = target->fbo->rect();
+	const TextureCoords texCoords(r, _viewPort.w, _viewPort.h, false);
+	const float x1 = r.x * _rx;
+	const float y1 = r.y * _ry;
+	const float nw = r.w * _rx;
+	const float nh = r.h * _ry;
+	const float centerx = nw / 2.0f;
+	const float centery = nh / 2.0f;
+	const float minx = -centerx;
+	const float maxx = centerx;
+	const float miny = -centery;
+	const float maxy = centery;
+
+	flushBatch(GL_TRIANGLES);
+	Batch& batch = _batches[_currentBatch];
+	batch.texnum = _renderTargetTexture;
+	batch.angle = 0;
+	batch.translation.x = x1 + centerx;
+	batch.translation.y = y1 + centery;
+	batch.vertexCount += 6;
+
+	Vertex v;
+	v.c.r = _color[0] * 255.0f;
+	v.c.g = _color[1] * 255.0f;
+	v.c.b = _color[2] * 255.0f;
+	v.c.a = 255.0f;
+
+	v.u = texCoords.texCoords[0];
+	v.v = texCoords.texCoords[1];
+	v.x = minx;
+	v.y = miny;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.u = texCoords.texCoords[2];
+	v.v = texCoords.texCoords[3];
+	v.x = maxx;
+	v.y = miny;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.u = texCoords.texCoords[4];
+	v.v = texCoords.texCoords[5];
+	v.x = maxx;
+	v.y = maxy;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.u = texCoords.texCoords[0];
+	v.v = texCoords.texCoords[1];
+	v.x = minx;
+	v.y = miny;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.u = texCoords.texCoords[4];
+	v.v = texCoords.texCoords[5];
+	v.x = maxx;
+	v.y = maxy;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.u = texCoords.texCoords[6];
+	v.v = texCoords.texCoords[7];
+	v.x = minx;
+	v.y = maxy;
+	_vertices[_currentVertexIndex++] = v;
 	return true;
 }
 
@@ -235,11 +291,6 @@ void GL3Frontend::initRenderer ()
 	_shader.enableVertexAttributeArray("a_color");
 	glBindVertexArray(0);
 
-	static const GLfloat fullscreenQuad[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, };
-	glGenBuffers(1, &_fullScreenQuadVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, _fullScreenQuadVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(fullscreenQuad), fullscreenQuad, GL_STATIC_DRAW);
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	_shader.deactivate();
@@ -301,6 +352,7 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = texnum;
 	batch.angle = DegreesToRadians(angle);
+	// TODO: remove me - this prevents us from having lesser draw calls (e.g. reusing the same batch if type, angle and texnum is equal
 	batch.translation.x = x1 + centerx;
 	batch.translation.y = y1 + centery;
 	batch.vertexCount += 6;

@@ -3,6 +3,7 @@
 FrameBuffer::FrameBuffer () :
 		_framebuffer(0u), _attached(0), _depth(false), _depthRenderBuffer(0u)
 {
+	_rect.x = _rect.y = _rect.w = _rect.h = 0;
 }
 
 FrameBuffer::~FrameBuffer ()
@@ -36,6 +37,10 @@ void FrameBuffer::bind ()
 
 void FrameBuffer::bind (int x, int y, int w, int h)
 {
+	_rect.x = x;
+	_rect.y = y;
+	_rect.w = w;
+	_rect.h = h;
 	bind();
 	glViewport(x, y, w, h);
 	glClear(GL_COLOR_BUFFER_BIT | (_depth ? GL_DEPTH_BUFFER_BIT : 0));
