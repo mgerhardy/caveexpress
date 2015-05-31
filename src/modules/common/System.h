@@ -1,23 +1,23 @@
 #pragma once
 
 #include "common/Config.h"
-#include "common/ports/ISystem.h"
+#include "ports/ISystem.h"
 #include <SDL_platform.h>
 
 #ifdef __ANDROID__
-#include "common/ports/Android.h"
+#include "ports//Android.h"
 #elif defined __WIN32__
-#include "common/ports/Windows.h"
+#include "ports//Windows.h"
 #elif defined __IPHONEOS__
-#include "common/ports/IOS.h"
+#include "ports//IOS.h"
 #elif defined __MACOSX__
-#include "common/ports/Darwin.h"
+#include "ports//Darwin.h"
 #elif defined __NACL__
-#include "common/ports/NaCl.h"
+#include "ports//NaCl.h"
 #elif defined EMSCRIPTEN
-#include "common/ports/HTML5.h"
+#include "ports//HTML5.h"
 #else
-#include "common/ports/Unix.h"
+#include "ports//Unix.h"
 #endif
 
 inline ISystem& getSystem ()

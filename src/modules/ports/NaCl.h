@@ -2,17 +2,19 @@
 
 #include "common/Config.h"
 #include "common/Common.h"
-#include "common/ports/ISystem.h"
+#include "ports/ISystem.h"
 #include <string>
 #include <set>
 
-class Unix: public ISystem {
+class NaCl: public ISystem {
 protected:
 	std::string _user;
 
+	void mountDir(const std::string& src, const std::string& target, const std::string& filesystem = "httpfs", const std::string& filesystemParams = "");
+
 public:
-	Unix ();
-	virtual ~Unix ();
+	NaCl ();
+	virtual ~NaCl ();
 
 	// ISystem implementation
 	virtual std::string getCurrentWorkingDir () override;
@@ -29,30 +31,9 @@ public:
 
 	virtual bool mkdir (const std::string& directory) override;
 
-	virtual void logError (const std::string& error) const override;
-
-	virtual void logOutput (const std::string& string) const override;
-
 	virtual DirectoryEntries listDirectory (const std::string& basedir, const std::string& subdir = "") override;
 
 	virtual int openURL (const std::string& url, bool newWindow) const override;
 
 	virtual int exec (const std::string& command, std::vector<std::string>& arguments) const override;
-
-	virtual void backtrace (const char *errorMessage) override;
-
-#ifdef DEBUG
-private:
-	std::set<std::string> _testPayment;
-public:
-	virtual bool supportPayment () override;
-
-	virtual void getPaymentEntries (std::vector<PaymentEntry>& entries) override;
-
-	virtual bool buyItem (const std::string& id) override;
-
-	virtual bool hasItem (const std::string& id) override;
-
-	virtual int getScreenPadding () override;
-#endif
 };

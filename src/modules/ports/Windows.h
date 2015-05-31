@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/Common.h"
-#include "common/ports/ISystem.h"
+#include "ports/ISystem.h"
 
 class Windows: public ISystem {
 public:
