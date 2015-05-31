@@ -17,8 +17,6 @@ add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} common client game network ports ui)
 
-
-if(FALSE)
 project(tests-caveexpress)
 SET(${PROJECT_NAME}_SRC
 	TestAll.cpp
@@ -26,14 +24,15 @@ SET(${PROJECT_NAME}_SRC
 	NetworkTest.cpp
 	NoNetworkTest.cpp
 	caveexpress/ProtocolTest.cpp
-	caveexpress/MapTest.cpp
-	caveexpress/CampaignTest.cpp
-	caveexpress/EnumSpriteTypesTest.cpp
-	caveexpress/LUASpriteTest.cpp
-	caveexpress/RandomMapContextTest.cpp)
+)
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} modules)
+target_link_libraries(${PROJECT_NAME} common client game network ports)
+#	caveexpress/EnumSpriteTypesTest.cpp
+#	caveexpress/LUASpriteTest.cpp
+#	caveexpress/RandomMapContextTest.cpp
+#	caveexpress/MapTest.cpp
+#	caveexpress/CampaignTest.cpp
 
 project(tests-cavepacker)
 SET(${PROJECT_NAME}_SRC
@@ -43,11 +42,10 @@ SET(${PROJECT_NAME}_SRC
 	NoNetworkTest.cpp
 	cavepacker/MapManagerTest.cpp
 	cavepacker/ProtocolTest.cpp
-	cavepacker/CampaignTest.cpp
-	cavepacker/SokobanMapContextTest.cpp
-	cavepacker/SokobanMapTest.cpp)
+)
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} modules)
-endif()
-
+target_link_libraries(${PROJECT_NAME} common client game network ports)
+#	cavepacker/SokobanMapContextTest.cpp
+#	cavepacker/SokobanMapTest.cpp
+#	cavepacker/CampaignTest.cpp
