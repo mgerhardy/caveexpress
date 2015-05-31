@@ -51,3 +51,5 @@
 CMakeFiles/
 cmake_install.cmake
 CMakeCache.txt
+Makefile
+complete.lua.in
