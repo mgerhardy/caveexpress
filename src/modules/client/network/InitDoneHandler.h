@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/InitDoneMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/InitDoneMessage.h"
 #include "client/ClientMap.h"
 
 class InitDoneHandler: public IClientProtocolHandler {

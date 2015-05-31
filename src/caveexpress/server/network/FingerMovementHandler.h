@@ -1,8 +1,8 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
+#include "network/IProtocolHandler.h"
 #include "caveexpress/server/map/Map.h"
-#include "common/network/messages/FingerMovementMessage.h"
+#include "network/messages/FingerMovementMessage.h"
 
 class FingerMovementHandler: public IServerProtocolHandler {
 private:

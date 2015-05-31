@@ -17,9 +17,6 @@ set(common_SRCS
 	TimeManager.cpp
 	ExecutionTime.cpp
 	File.cpp
-	network/NoNetwork.cpp
-	network/Network.cpp
-	network/INetwork.cpp
 	ConsoleFrontend.cpp
 	String.cpp
 	ConfigVar.cpp

@@ -2,7 +2,7 @@
 #include "caveexpress/CaveExpress.h"
 #include "caveexpress/shared/CaveExpressMapFailedReasons.h"
 #include "common/ConfigManager.h"
-#include "common/network/INetwork.h"
+#include "network/INetwork.h"
 
 class GroundVisitor: public IEntityVisitor {
 private:

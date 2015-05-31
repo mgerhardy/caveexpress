@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/MapSettingsMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/MapSettingsMessage.h"
 
 class MapSettingsHandler: public IClientProtocolHandler {
 protected:

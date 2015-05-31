@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
+#include "network/IProtocolHandler.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
 #include "cavepacker/client/ui/windows/UIMapWindow.h"
 #include "client/ui/UI.h"

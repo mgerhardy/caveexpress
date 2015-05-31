@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
+#include "network/IProtocolHandler.h"
 #include "caveexpress/server/map/Map.h"
 
 class DropHandler: public IServerProtocolHandler {

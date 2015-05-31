@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/UpdateEntityMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/UpdateEntityMessage.h"
 #include "client/ClientMap.h"
 
 class UpdateEntityHandler: public IClientProtocolHandler {

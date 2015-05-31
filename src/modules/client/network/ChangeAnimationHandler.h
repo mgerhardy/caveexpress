@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/ChangeAnimationMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/ChangeAnimationMessage.h"
 #include "client/ClientMap.h"
 
 class ChangeAnimationHandler: public IClientProtocolHandler {

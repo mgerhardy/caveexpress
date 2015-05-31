@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/PauseMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/PauseMessage.h"
 #include "client/ClientMap.h"
 
 class PauseHandler: public IClientProtocolHandler {

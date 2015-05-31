@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/NonCopyable.h"
-#include "common/network/INetwork.h"
+#include "network/INetwork.h"
 #include "common/Animation.h"
 #include "common/ErrorTypes.h"
 #include "common/SoundType.h"

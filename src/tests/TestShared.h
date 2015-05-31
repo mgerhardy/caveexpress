@@ -7,7 +7,7 @@
 #include "common/ServiceProvider.h"
 #include "common/campaign/ICampaignManager.h"
 #include "GameRegistry.h"
-#include "common/network/INetwork.h"
+#include "network/INetwork.h"
 
 class TestCampaignMgr : public ICampaignManager {
 public:

@@ -1,6 +1,6 @@
 #include "SDLBackend.h"
 #include "common/Logger.h"
-#include "common/network/INetwork.h"
+#include "network/INetwork.h"
 #include "common/String.h"
 #include "client/SDLFrontend.h"
 #ifdef SDL_VIDEO_OPENGL
@@ -18,9 +18,9 @@
 #include "common/Commands.h"
 #include "common/Singleton.h"
 #include "GameRegistry.h"
-#include "common/network/messages/PingMessage.h"
+#include "network/messages/PingMessage.h"
 #include "common/MapManager.h"
-#include "common/network/ProtocolHandlerRegistry.h"
+#include "network/ProtocolHandlerRegistry.h"
 #include "client/entities/ClientEntityFactory.h"
 #include <SDL.h>
 #include <iostream>

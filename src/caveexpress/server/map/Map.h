@@ -12,7 +12,7 @@
 #include "common/MapFailedReason.h"
 #include "common/TimeManager.h"
 #include "common/ICommand.h"
-#include "common/network/IProtocolHandler.h"
+#include "network/IProtocolHandler.h"
 #include "common/LUA.h"
 #include <Box2D.h>
 #include <string>

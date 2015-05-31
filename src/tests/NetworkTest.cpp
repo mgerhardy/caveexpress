@@ -2,7 +2,7 @@
 
 #if NETWORKING == 1
 
-#include "common/network/Network.h"
+#include "network/Network.h"
 #include "common/Logger.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 

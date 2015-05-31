@@ -4,7 +4,7 @@
 #include "client/ui/nodes/UINodeButtonText.h"
 #include "common/ServiceProvider.h"
 #include "common/Commands.h"
-#include "common/network/INetwork.h"
+#include "network/INetwork.h"
 #include "client/ui/nodes/UINodeSettingsBackground.h"
 
 UIMapOptionsWindow::UIMapOptionsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :

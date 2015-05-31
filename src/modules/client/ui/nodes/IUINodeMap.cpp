@@ -18,7 +18,7 @@
 #include "client/network/RumbleHandler.h"
 #include "client/network/PlayerListHandler.h"
 #include "client/network/TextMessageHandler.h"
-#include "common/network/ProtocolHandlerRegistry.h"
+#include "network/ProtocolHandlerRegistry.h"
 #include "common/ServiceProvider.h"
 #include "common/IFrontend.h"
 #include "client/commands/CmdMove.h"

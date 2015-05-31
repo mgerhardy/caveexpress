@@ -1,12 +1,12 @@
 #include "tests/NetworkTest.h"
 
-#include "common/network/NoNetwork.h"
+#include "network/NoNetwork.h"
 #include "common/Logger.h"
 #include "common/EntityType.h"
 #include "common/Animation.h"
 #include "common/EntityAlignment.h"
-#include "common/network/messages/AddEntityMessage.h"
-#include "common/network/ProtocolHandlerRegistry.h"
+#include "network/messages/AddEntityMessage.h"
+#include "network/ProtocolHandlerRegistry.h"
 #include "tests/NetworkTestListener.h"
 
 namespace {

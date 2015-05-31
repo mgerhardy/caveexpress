@@ -2,9 +2,9 @@
 #include "common/MapManager.h"
 #include "common/ConfigManager.h"
 #ifndef NONETWORK
-#include "common/network/Network.h"
+#include "network/Network.h"
 #endif
-#include "common/network/NoNetwork.h"
+#include "network/NoNetwork.h"
 #include "common/TextureDefinition.h"
 #include "common/IFrontend.h"
 #include "GameRegistry.h"

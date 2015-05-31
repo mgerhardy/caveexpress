@@ -4,7 +4,7 @@
 #include "common/IMap.h"
 #include "common/TimeManager.h"
 #include "common/ICommand.h"
-#include "common/network/IProtocolHandler.h"
+#include "network/IProtocolHandler.h"
 #include "cavepacker/server/entities/IEntity.h"
 #include "cavepacker/server/entities/Player.h"
 #include "cavepacker/server/entities/MapTile.h"

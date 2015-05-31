@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/TextMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/TextMessage.h"
 
 class TextMessageHandler: public IClientProtocolHandler {
 private:

@@ -2,8 +2,8 @@
 
 #include "client/ui/UI.h"
 #include "common/Pointers.h"
-#include "common/network/INetwork.h"
-#include "common/network/IProtocolHandler.h"
+#include "network/INetwork.h"
+#include "network/IProtocolHandler.h"
 #include "common/MapManager.h"
 #include "common/ConfigManager.h"
 #include "common/Commands.h"

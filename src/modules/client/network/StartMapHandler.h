@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
+#include "network/IProtocolHandler.h"
 #include "client/ui/windows/IUIMapWindow.h"
 #include "client/ui/UI.h"
 

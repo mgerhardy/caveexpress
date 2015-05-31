@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/ErrorMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/ErrorMessage.h"
 #include "cavepacker/server/map/Map.h"
 
 class ErrorHandler: public IServerProtocolHandler {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/network/IProtocolMessage.h"
+#include "network/IProtocolMessage.h"
 #include "caveexpress/shared/network/ProtocolMessageTypes.h"
 #include <string>
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/UpdatePackageCountMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/UpdatePackageCountMessage.h"
 #include "client/ui/UI.h"
 #include "client/ui/nodes/UINodeSprite.h"
 #include "client/ui/windows/IUIMapWindow.h"

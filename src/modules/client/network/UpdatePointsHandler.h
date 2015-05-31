@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/UpdatePointsMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/UpdatePointsMessage.h"
 #include "client/ui/UI.h"
 #include "client/ui/nodes/UINodePoint.h"
 #include "client/ui/windows/IUIMapWindow.h"

@@ -10,7 +10,7 @@
 #include "common/ExecutionTime.h"
 #include "common/campaign/persister/IGameStatePersister.h"
 #include "common/ServiceProvider.h"
-#include "common/network/INetwork.h"
+#include "network/INetwork.h"
 #include "common/System.h"
 #include "common/Commands.h"
 

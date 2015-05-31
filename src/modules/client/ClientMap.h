@@ -9,7 +9,7 @@
 #include "common/ConfigVar.h"
 #include "common/ThemeType.h"
 #include "common/TimeManager.h"
-#include "common/network/INetwork.h"
+#include "network/INetwork.h"
 #include "common/Direction.h"
 #include "client/particles/ParticleSystem.h"
 #include <map>

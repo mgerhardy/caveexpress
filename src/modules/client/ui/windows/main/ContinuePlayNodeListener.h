@@ -4,7 +4,7 @@
 #include "client/ui/UI.h"
 #include "client/ui/windows/UIWindow.h"
 #include "common/ServiceProvider.h"
-#include "common/network/INetwork.h"
+#include "network/INetwork.h"
 #include "common/Logger.h"
 
 class ContinuePlayNodeListener: public UINodeListener {

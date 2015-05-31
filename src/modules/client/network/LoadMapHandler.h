@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/LoadMapMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/LoadMapMessage.h"
 #include "client/ui/nodes/UINodePoint.h"
 #include "client/ClientMap.h"
 #include "client/ui/UI.h"

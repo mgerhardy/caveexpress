@@ -2,9 +2,9 @@
 
 #include "common/ICommand.h"
 #include "common/ServiceProvider.h"
-#include "common/network/INetwork.h"
+#include "network/INetwork.h"
 #include "common/ConfigManager.h"
-#include "common/network/messages/PingMessage.h"
+#include "network/messages/PingMessage.h"
 #include "client/ui/nodes/UINodeServerSelector.h"
 
 class CmdServerPing: public ICommand, public IClientCallback {

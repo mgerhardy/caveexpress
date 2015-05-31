@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/SpawnInfoMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/SpawnInfoMessage.h"
 #include "client/ClientMap.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "client/ui/UI.h"

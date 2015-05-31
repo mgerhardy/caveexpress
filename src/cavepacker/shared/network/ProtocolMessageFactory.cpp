@@ -1,4 +1,4 @@
-#include "common/network/ProtocolMessageFactory.h"
+#include "network/ProtocolMessageFactory.h"
 #include "common/Logger.h"
 #include "cavepacker/shared/network/ProtocolMessageTypes.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"

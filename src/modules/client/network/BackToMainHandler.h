@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/BackToMainMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/BackToMainMessage.h"
 
 class BackToMainHandler: public IClientProtocolHandler {
 public:

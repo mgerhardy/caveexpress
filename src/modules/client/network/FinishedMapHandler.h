@@ -1,8 +1,8 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/FinishedMapMessage.h"
-#include "common/network/INetwork.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/FinishedMapMessage.h"
+#include "network/INetwork.h"
 #include "common/Commands.h"
 #include "client/ui/UI.h"
 #include "client/ui/windows/UIMapFinishedWindow.h"

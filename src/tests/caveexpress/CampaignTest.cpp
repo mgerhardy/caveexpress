@@ -1,7 +1,7 @@
 #include "CampaignTest.h"
 #include "common/campaign/persister/SQLitePersister.h"
 #include "common/campaign/CampaignManager.h"
-#include "common/network/NoNetwork.h"
+#include "network/NoNetwork.h"
 #include "common/MapManager.h"
 #include "common/TextureDefinition.h"
 #include "caveexpress/server/map/LUAMapContext.h"

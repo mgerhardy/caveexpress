@@ -7,7 +7,7 @@
 #include "common/IBindingSpaceListener.h"
 #include "common/TextConsole.h"
 #include "common/ServiceProvider.h"
-#include "common/network/IServerCallback.h"
+#include "network/IServerCallback.h"
 #include <map>
 #include <set>
 

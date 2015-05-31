@@ -8,11 +8,11 @@
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/shared/CaveExpressAchievement.h"
 #include "common/Logger.h"
-#include "common/network/INetwork.h"
+#include "network/INetwork.h"
 #include "common/System.h"
 #include "caveexpress/shared/constants/Density.h"
 #include "common/ConfigManager.h"
-#include "common/network/IProtocolHandler.h"
+#include "network/IProtocolHandler.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 
 namespace {

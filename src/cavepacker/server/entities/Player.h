@@ -6,7 +6,7 @@
 #include "common/ConfigVar.h"
 #include "common/Logger.h"
 #include "common/Pointers.h"
-#include "common/network/IProtocolHandler.h"
+#include "network/IProtocolHandler.h"
 
 // forward decl
 class Map;

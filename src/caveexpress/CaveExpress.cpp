@@ -9,7 +9,7 @@
 #include "client/entities/ClientEntityFactory.h"
 #include "client/entities/ClientPlayer.h"
 #include "client/entities/ClientMapTile.h"
-#include "common/network/ProtocolHandlerRegistry.h"
+#include "network/ProtocolHandlerRegistry.h"
 #include "client/ui/nodes/IUINodeMap.h"
 #include "client/ui/windows/IUIMapWindow.h"
 #include "client/ui/nodes/UINodeSprite.h"
@@ -22,8 +22,8 @@
 #include "common/Shared.h"
 #include "common/Logger.h"
 #include "common/SQLite.h"
-#include "common/network/messages/LoadMapMessage.h"
-#include "common/network/ProtocolHandlerRegistry.h"
+#include "network/messages/LoadMapMessage.h"
+#include "network/ProtocolHandlerRegistry.h"
 #include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
@@ -89,7 +89,7 @@
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 #include "common/campaign/persister/GooglePlayPersister.h"
 #include "common/System.h"
-#include "common/network/INetwork.h"
+#include "network/INetwork.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 
 CaveExpress::CaveExpress () :

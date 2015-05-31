@@ -1,7 +1,7 @@
 #pragma once
 
 #include "TestShared.h"
-#include "common/network/ProtocolMessageFactory.h"
+#include "network/ProtocolMessageFactory.h"
 
 class AbstractProtocolTest: public MapSuite {
 protected:

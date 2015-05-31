@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/network/IProtocolMessage.h"
+#include "network/IProtocolMessage.h"
 #include <string>
 
 class LightStateMessage: public IProtocolMessage {

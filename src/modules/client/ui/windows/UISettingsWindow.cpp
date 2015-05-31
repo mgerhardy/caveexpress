@@ -13,7 +13,7 @@
 #include "common/IFrontend.h"
 #include "common/ServiceProvider.h"
 #include "common/System.h"
-#include "common/network/INetwork.h"
+#include "network/INetwork.h"
 
 #include "client/ui/windows/listener/TextureModeListener.h"
 #include "client/ui/windows/listener/JoystickNodeListener.h"

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/SoundMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/SoundMessage.h"
 #include "client/ClientMap.h"
 #include "client/sound/Sound.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/MapRestartMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/MapRestartMessage.h"
 #include "client/ClientMap.h"
 
 class MapRestartHandler: public IClientProtocolHandler {

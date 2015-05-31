@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/network/IProtocolHandler.h"
-#include "common/network/messages/AddEntityMessage.h"
+#include "network/IProtocolHandler.h"
+#include "network/messages/AddEntityMessage.h"
 #include "client/ClientMap.h"
 #include "common/System.h"
 

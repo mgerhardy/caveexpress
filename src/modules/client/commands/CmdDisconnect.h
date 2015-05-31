@@ -2,7 +2,7 @@
 
 #include "common/ICommand.h"
 #include "common/Logger.h"
-#include "common/network/INetwork.h"
+#include "network/INetwork.h"
 
 class CmdDisconnect: public ICommand {
 private:
