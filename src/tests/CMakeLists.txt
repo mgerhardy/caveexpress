@@ -1,7 +1,5 @@
-if(FALSE)
 project(tests)
 file(GLOB ${PROJECT_NAME}_SRC
-	UITest.cpp
 	FileTest.cpp
 	ByteStreamTest.cpp
 	ParticleTest.cpp
@@ -16,8 +14,9 @@ file(GLOB ${PROJECT_NAME}_SRC
 	EnumTest.cpp)
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} modules)
-endif()
+target_link_libraries(${PROJECT_NAME} common client game network)
+
+#UITest.cpp
 
 if(FALSE)
 project(tests-caveexpress)

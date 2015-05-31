@@ -14,3 +14,12 @@ void MapSuite::TearDown() {
 	UI::get().shutdown();
 	ProtocolHandlerRegistry::get().shutdown();
 }
+
+ProtocolMessageFactory::ProtocolMessageFactory ()
+{
+}
+
+IProtocolMessage *ProtocolMessageFactory::create (ByteStream& stream) const
+{
+	return nullptr;
+}

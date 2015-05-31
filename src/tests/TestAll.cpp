@@ -22,21 +22,21 @@ class TestConsole: public IConsole {
 	{
 		if (!config.verbose)
 			return;
-		std::cout << string << std::endl;
+		SDL_Log("%s\n", string.c_str());
 	}
 
 	void logError (const std::string& string)
 	{
 		if (!config.verbose)
 			return;
-		std::cerr << string << std::endl;
+		SDL_Log("%s\n", string.c_str());
 	}
 
 	void logDebug (const std::string& string)
 	{
 		if (!config.verbose)
 			return;
-		std::cerr << string << std::endl;
+		SDL_Log("%s\n", string.c_str());
 	}
 
 	void render ()
