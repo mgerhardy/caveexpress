@@ -1,6 +1,6 @@
 #include "NPCBlowing.h"
 #include "caveexpress/shared/constants/Density.h"
-#include "engine/common/Direction.h"
+#include "common/Direction.h"
 #include "caveexpress/server/entities/modificators/WindModificator.h"
 #include "caveexpress/server/map/Map.h"
 

@@ -1,6 +1,6 @@
 #include "tests/SystemTest.h"
-#include "engine/common/Logger.h"
-#include "engine/common/System.h"
+#include "common/Logger.h"
+#include "common/System.h"
 
 #if 0
 TEST(SystemTest, testOpenURL)

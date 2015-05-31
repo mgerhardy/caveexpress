@@ -1,7 +1,7 @@
 #include "IEntity.h"
 #include "cavepacker/server/map/Map.h"
-#include "engine/common/SpriteDefinition.h"
-#include "engine/common/ConfigManager.h"
+#include "common/SpriteDefinition.h"
+#include "common/ConfigManager.h"
 #include "cavepacker/shared/EntityStates.h"
 
 uint32_t IEntity::GLOBAL_ENTITY_NUM = 0;

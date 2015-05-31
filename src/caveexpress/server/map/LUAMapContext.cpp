@@ -1,8 +1,8 @@
 #include "LUAMapContext.h"
-#include "engine/common/MapSettings.h"
+#include "common/MapSettings.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
-#include "engine/common/Pointers.h"
-#include "engine/common/Logger.h"
+#include "common/Pointers.h"
+#include "common/Logger.h"
 #include <string>
 
 LUAMapContext *LUAMapContext::currentCtx;

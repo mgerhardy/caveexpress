@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IWorldModificator.h"
-#include "engine/common/Direction.h"
+#include "common/Direction.h"
 
 class WindModificator: public IWorldModificator {
 private:

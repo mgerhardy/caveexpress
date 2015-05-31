@@ -1,5 +1,5 @@
 #pragma once
 
 #include "TestShared.h"
-#include "engine/common/IEventObserver.h"
-#include "engine/common/network/INetwork.h"
+#include "common/IEventObserver.h"
+#include "common/network/INetwork.h"

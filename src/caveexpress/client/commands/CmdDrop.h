@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/common/ICommand.h"
+#include "common/ICommand.h"
 #include "caveexpress/client/CaveExpressClientMap.h"
 #include <stdint.h>
 

@@ -1,8 +1,8 @@
 #include "WindModificator.h"
 #include "caveexpress/shared/constants/Density.h"
-#include "engine/common/Direction.h"
+#include "common/Direction.h"
 #include "caveexpress/server/map/Map.h"
-#include "engine/common/Shared.h"
+#include "common/Shared.h"
 #include <SDL_stdinc.h>
 
 WindModificator::WindModificator (Map& map, Direction direction, float force, float size, float beginSizeDivisior) :

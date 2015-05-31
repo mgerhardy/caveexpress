@@ -1,12 +1,12 @@
 #pragma once
 
-#include "engine/client/ui/nodes/UINode.h"
-#include "engine/common/String.h"
-#include "engine/client/ui/BitmapFont.h"
-#include "engine/common/Payment.h"
-#include "engine/common/Config.h"
-#include "engine/common/ThemeType.h"
-#include "engine/common/MapFailedReason.h"
+#include "client/ui/nodes/UINode.h"
+#include "common/String.h"
+#include "client/ui/BitmapFont.h"
+#include "common/Payment.h"
+#include "common/Config.h"
+#include "common/ThemeType.h"
+#include "common/MapFailedReason.h"
 #include <map>
 
 class UINodeBackgroundScene: public UINode {

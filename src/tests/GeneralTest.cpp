@@ -1,12 +1,12 @@
 #include "tests/GeneralTest.h"
 #include "tests/TestShared.h"
 
-#include "engine/common/ParameterList.h"
-#include "engine/common/URI.h"
-#include "engine/common/String.h"
-#include "engine/common/Logger.h"
-#include "engine/common/KeyValueParser.h"
-#include "engine/common/MapManager.h"
+#include "common/ParameterList.h"
+#include "common/URI.h"
+#include "common/String.h"
+#include "common/Logger.h"
+#include "common/KeyValueParser.h"
+#include "common/MapManager.h"
 
 class GeneralTest: public MapSuite {
 };

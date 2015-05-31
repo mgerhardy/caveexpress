@@ -1,7 +1,7 @@
 #include "WindowTile.h"
 #include "caveexpress/server/entities/CaveMapTile.h"
 #include "caveexpress/server/events/GameEventHandler.h"
-#include "engine/common/Logger.h"
+#include "common/Logger.h"
 
 WindowTile::WindowTile (Map& map, const std::string& spriteID, gridCoord gridX, gridCoord gridY) :
 		MapTile(map, spriteID, gridX, gridY, EntityTypes::WINDOW), _lightState(DEFAULT_LIGHT_STATE), _cave(nullptr)

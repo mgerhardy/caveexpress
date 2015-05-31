@@ -1,8 +1,8 @@
 #include "UINodeEntitySelector.h"
-#include "engine/common/Logger.h"
-#include "engine/client/ui/UI.h"
+#include "common/Logger.h"
+#include "client/ui/UI.h"
 #include "caveexpress/server/entities/EntityEmitter.h"
-#include "engine/common/SpriteDefinition.h"
+#include "common/SpriteDefinition.h"
 
 UINodeEntitySelector::UINodeEntitySelector (IFrontend *frontend, int cols, int rows) :
 		UINodeSelector<EntityTypeWrapper>(frontend, cols, rows, 40 / static_cast<float>(frontend->getWidth()), 40 / static_cast<float>(frontend->getHeight())), _theme(&ThemeType::NONE)

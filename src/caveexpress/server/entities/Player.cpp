@@ -7,12 +7,12 @@
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/shared/CaveExpressAchievement.h"
-#include "engine/common/Logger.h"
-#include "engine/common/network/INetwork.h"
-#include "engine/common/System.h"
+#include "common/Logger.h"
+#include "common/network/INetwork.h"
+#include "common/System.h"
 #include "caveexpress/shared/constants/Density.h"
-#include "engine/common/ConfigManager.h"
-#include "engine/common/network/IProtocolHandler.h"
+#include "common/ConfigManager.h"
+#include "common/network/IProtocolHandler.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 
 namespace {

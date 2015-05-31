@@ -1,8 +1,8 @@
 #pragma once
 
-#include "engine/common/IFrontend.h"
-#include "engine/common/TextConsole.h"
-#include "engine/client/textures/Texture.h"
+#include "common/IFrontend.h"
+#include "common/TextConsole.h"
+#include "client/textures/Texture.h"
 
 // forward decl
 class EventHandler;

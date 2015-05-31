@@ -1,7 +1,7 @@
 #pragma once
 
-#include "engine/common/network/IProtocolMessage.h"
-#include "engine/common/EntityType.h"
+#include "common/network/IProtocolMessage.h"
+#include "common/EntityType.h"
 
 class UpdateCollectedTypeMessage: public IProtocolMessage {
 private:

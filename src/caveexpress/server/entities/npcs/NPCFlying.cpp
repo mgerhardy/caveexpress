@@ -3,7 +3,7 @@
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
-#include "engine/common/ConfigManager.h"
+#include "common/ConfigManager.h"
 
 NPCFlying::NPCFlying (Map& map) :
 		NPCAggressive(EntityTypes::NPC_FLYING, map)

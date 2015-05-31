@@ -1,17 +1,17 @@
 #pragma once
 
 #include <Box2D.h>
-#include "engine/common/Logger.h"
-#include "engine/common/Timer.h"
-#include "engine/common/IMap.h"
+#include "common/Logger.h"
+#include "common/Timer.h"
+#include "common/IMap.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
-#include "engine/common/Direction.h"
-#include "engine/common/EntityAlignment.h"
-#include "engine/common/EntityState.h"
-#include "engine/common/EntityType.h"
-#include "engine/common/Pointers.h"
-#include "engine/common/Math.h"
+#include "common/Direction.h"
+#include "common/EntityAlignment.h"
+#include "common/EntityState.h"
+#include "common/EntityType.h"
+#include "common/Pointers.h"
+#include "common/Math.h"
 #include <vector>
 #include <list>
 #include <string>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/client/ui/windows/UIWindow.h"
+#include "client/ui/windows/UIWindow.h"
 
 class UIMainWindow: public UIWindow {
 public:

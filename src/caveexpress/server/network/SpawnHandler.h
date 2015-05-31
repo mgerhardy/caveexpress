@@ -1,8 +1,8 @@
 #pragma once
 
-#include "engine/common/network/IProtocolHandler.h"
+#include "common/network/IProtocolHandler.h"
 #include "caveexpress/server/map/Map.h"
-#include "engine/common/campaign/ICampaignManager.h"
+#include "common/campaign/ICampaignManager.h"
 
 class SpawnHandler: public IServerProtocolHandler {
 private:

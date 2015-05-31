@@ -1,8 +1,8 @@
 #pragma once
 
-#include "engine/common/network/IProtocolHandler.h"
-#include "engine/common/network/messages/UpdateParticleMessage.h"
-#include "engine/client/ClientMap.h"
+#include "common/network/IProtocolHandler.h"
+#include "common/network/messages/UpdateParticleMessage.h"
+#include "client/ClientMap.h"
 #include "caveexpress/client/entities/ClientParticle.h"
 
 class UpdateParticleHandler: public IClientProtocolHandler {

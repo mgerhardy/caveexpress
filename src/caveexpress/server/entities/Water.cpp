@@ -2,10 +2,10 @@
 #include "Buoyancy.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/shared/constants/Density.h"
-#include "engine/common/Logger.h"
+#include "common/Logger.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
-#include "engine/common/ConfigManager.h"
+#include "common/ConfigManager.h"
 #include <cassert>
 
 Water::Water (Map& map, float waterChangeSpeed, uint32_t waterRisingDelay, uint32_t waterFallingDelay) :

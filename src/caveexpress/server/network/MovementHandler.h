@@ -1,8 +1,8 @@
 #pragma once
 
-#include "engine/common/network/IProtocolHandler.h"
+#include "common/network/IProtocolHandler.h"
 #include "caveexpress/server/map/Map.h"
-#include "engine/common/network/messages/MovementMessage.h"
+#include "common/network/messages/MovementMessage.h"
 
 class MovementHandler: public IServerProtocolHandler {
 private:

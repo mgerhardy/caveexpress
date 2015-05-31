@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/client/entities/ClientEntity.h"
+#include "client/entities/ClientEntity.h"
 
 class ClientParticle: public ClientEntity {
 private:

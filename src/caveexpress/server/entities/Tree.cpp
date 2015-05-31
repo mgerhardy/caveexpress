@@ -2,7 +2,7 @@
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/shared/constants/Density.h"
 #include "caveexpress/server/entities/Fruit.h"
-#include "engine/common/TimeManager.h"
+#include "common/TimeManager.h"
 #include "caveexpress/shared/constants/TreeState.h"
 
 Tree::Tree (Map& map, gridCoord x, gridCoord y) :

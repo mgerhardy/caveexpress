@@ -1,7 +1,7 @@
 #pragma once
 
-#include "engine/client/ui/windows/IUIMapWindow.h"
-#include "engine/client/ui/nodes/UINodeSlider.h"
+#include "client/ui/windows/IUIMapWindow.h"
+#include "client/ui/nodes/UINodeSlider.h"
 #include "cavepacker/client/CavePackerClientMap.h"
 
 class UICavePackerNodePoint;

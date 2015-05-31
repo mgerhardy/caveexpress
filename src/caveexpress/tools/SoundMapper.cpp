@@ -1,11 +1,11 @@
 #include <stdlib.h>
-#include "engine/client/entities/ClientEntityFactory.h"
+#include "client/entities/ClientEntityFactory.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
-#include "engine/common/Singleton.h"
-#include "engine/common/String.h"
-#include "engine/client/sound/Sound.h"
-#include "engine/common/FileSystem.h"
-#include "engine/common/Logger.h"
+#include "common/Singleton.h"
+#include "common/String.h"
+#include "client/sound/Sound.h"
+#include "common/FileSystem.h"
+#include "common/Logger.h"
 
 static SoundMappingCache soundMappingCache;
 

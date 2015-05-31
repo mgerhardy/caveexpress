@@ -1,12 +1,12 @@
 #pragma once
 
-#include "engine/common/NonCopyable.h"
-#include "engine/common/network/INetwork.h"
-#include "engine/common/Animation.h"
-#include "engine/common/ErrorTypes.h"
-#include "engine/common/SoundType.h"
-#include "engine/common/MapFailedReason.h"
-#include "engine/common/ThemeType.h"
+#include "common/NonCopyable.h"
+#include "common/network/INetwork.h"
+#include "common/Animation.h"
+#include "common/ErrorTypes.h"
+#include "common/SoundType.h"
+#include "common/MapFailedReason.h"
+#include "common/ThemeType.h"
 #include <string>
 
 // forward decl

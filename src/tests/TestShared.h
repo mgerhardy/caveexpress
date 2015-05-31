@@ -4,10 +4,10 @@
 #include <gtest/gtest.h>
 
 #include "TestFrontend.h"
-#include "engine/common/ServiceProvider.h"
-#include "engine/common/campaign/ICampaignManager.h"
-#include "engine/GameRegistry.h"
-#include "engine/common/network/INetwork.h"
+#include "common/ServiceProvider.h"
+#include "common/campaign/ICampaignManager.h"
+#include "GameRegistry.h"
+#include "common/network/INetwork.h"
 
 class TestCampaignMgr : public ICampaignManager {
 public:

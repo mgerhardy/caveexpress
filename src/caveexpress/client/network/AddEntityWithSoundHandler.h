@@ -1,9 +1,9 @@
 #pragma once
 
-#include "engine/client/network/AddEntityHandler.h"
+#include "client/network/AddEntityHandler.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
-#include "engine/client/sound/Sound.h"
+#include "client/sound/Sound.h"
 
 class AddEntityWithSoundHandler: public AddEntityHandler {
 public:

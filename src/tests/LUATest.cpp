@@ -1,10 +1,10 @@
 #include "tests/LUATest.h"
-#include "engine/common/Logger.h"
-#include "engine/common/SpriteDefinition.h"
-#include "engine/common/TextureDefinition.h"
-#include "engine/client/ui/FontDefinition.h"
-#include "engine/common/EntityType.h"
-#include "engine/common/Animation.h"
+#include "common/Logger.h"
+#include "common/SpriteDefinition.h"
+#include "common/TextureDefinition.h"
+#include "client/ui/FontDefinition.h"
+#include "common/EntityType.h"
+#include "common/Animation.h"
 
 class LUATest: public MapSuite {
 };

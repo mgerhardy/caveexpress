@@ -1,11 +1,11 @@
 #include "UICavePackerMapOptionsWindow.h"
-#include "engine/client/ui/nodes/UINodeBackButton.h"
-#include "engine/client/ui/nodes/UINodeBackToRootButton.h"
-#include "engine/client/ui/nodes/UINodeButtonText.h"
-#include "engine/common/ServiceProvider.h"
-#include "engine/common/Commands.h"
-#include "engine/common/network/INetwork.h"
-#include "engine/client/ui/nodes/UINodeSettingsBackground.h"
+#include "client/ui/nodes/UINodeBackButton.h"
+#include "client/ui/nodes/UINodeBackToRootButton.h"
+#include "client/ui/nodes/UINodeButtonText.h"
+#include "common/ServiceProvider.h"
+#include "common/Commands.h"
+#include "common/network/INetwork.h"
+#include "client/ui/nodes/UINodeSettingsBackground.h"
 
 UICavePackerMapOptionsWindow::UICavePackerMapOptionsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
 		UIMapOptionsWindow(frontend, serviceProvider)

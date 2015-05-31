@@ -1,7 +1,7 @@
 #include "IEntity.h"
 #include "caveexpress/server/map/Map.h"
-#include "engine/common/SpriteDefinition.h"
-#include "engine/common/ConfigManager.h"
+#include "common/SpriteDefinition.h"
+#include "common/ConfigManager.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 
 uint32_t IEntity::GLOBAL_ENTITY_NUM = 0;

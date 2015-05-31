@@ -1,8 +1,8 @@
 #pragma once
 
 #include "caveexpress/server/entities/IEntity.h"
-#include "engine/common/IMap.h"
-#include "engine/common/SpriteDefinition.h" /* TODO: just because of: typedef int16_t EntityAngle; ?? */
+#include "common/IMap.h"
+#include "common/SpriteDefinition.h" /* TODO: just because of: typedef int16_t EntityAngle; ?? */
 
 // forward decl
 class Map;

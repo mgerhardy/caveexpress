@@ -1,6 +1,6 @@
 #include "TestShared.h"
-#include "engine/common/SpriteDefinition.h"
-#include "engine/common/network/ProtocolHandlerRegistry.h"
+#include "common/SpriteDefinition.h"
+#include "common/network/ProtocolHandlerRegistry.h"
 
 void MapSuite::SetUp() {
 	_serviceProvider.init(&_testFrontend);

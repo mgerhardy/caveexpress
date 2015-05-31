@@ -1,7 +1,7 @@
 #pragma once
 
-#include "engine/client/ui/UI.h"
-#include "engine/common/Commands.h"
+#include "client/ui/UI.h"
+#include "common/Commands.h"
 #include "caveexpress/client/ui/nodes/UINodeMapEditor.h"
 
 class QuitEditorListener: public UINodeListener {

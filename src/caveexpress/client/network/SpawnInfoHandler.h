@@ -1,10 +1,10 @@
 #pragma once
 
-#include "engine/common/network/IProtocolHandler.h"
-#include "engine/common/network/messages/SpawnInfoMessage.h"
-#include "engine/client/ClientMap.h"
+#include "common/network/IProtocolHandler.h"
+#include "common/network/messages/SpawnInfoMessage.h"
+#include "client/ClientMap.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
-#include "engine/client/ui/UI.h"
+#include "client/ui/UI.h"
 
 class SpawnInfoHandler: public IClientProtocolHandler {
 private:

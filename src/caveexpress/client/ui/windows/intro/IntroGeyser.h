@@ -1,7 +1,7 @@
 #pragma once
 
-#include "engine/common/Compiler.h"
-#include "engine/client/ui/windows/intro/Intro.h"
+#include "common/Compiler.h"
+#include "client/ui/windows/intro/Intro.h"
 
 class IntroGeyser: public Intro {
 public:

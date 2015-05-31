@@ -1,10 +1,10 @@
 #include "ClientParticle.h"
-#include "engine/client/sound/Sound.h"
-#include "engine/common/SoundType.h"
+#include "client/sound/Sound.h"
+#include "common/SoundType.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
-#include "engine/client/ui/UI.h"
-#include "engine/common/Logger.h"
-#include "engine/common/Shared.h"
+#include "client/ui/UI.h"
+#include "common/Logger.h"
+#include "common/Shared.h"
 
 ClientParticle::ClientParticle (uint16_t id, const std::string& sprite, float x, float y) :
 		ClientEntity(EntityTypes::PARTICLE, id, x, y, 0.01f, 0.01f,

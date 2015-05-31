@@ -1,5 +1,5 @@
 #include "tests/SQLiteTest.h"
-#include "engine/common/SQLite.h"
+#include "common/SQLite.h"
 
 class SQLiteTest: public MapSuite {
 };

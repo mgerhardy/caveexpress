@@ -1,10 +1,10 @@
 #pragma once
 
-#include "engine/common/network/IProtocolHandler.h"
-#include "engine/common/network/messages/UpdatePackageCountMessage.h"
-#include "engine/client/ui/UI.h"
-#include "engine/client/ui/nodes/UINodeSprite.h"
-#include "engine/client/ui/windows/IUIMapWindow.h"
+#include "common/network/IProtocolHandler.h"
+#include "common/network/messages/UpdatePackageCountMessage.h"
+#include "client/ui/UI.h"
+#include "client/ui/nodes/UINodeSprite.h"
+#include "client/ui/windows/IUIMapWindow.h"
 
 class UpdatePackageCountHandler: public IClientProtocolHandler {
 public:

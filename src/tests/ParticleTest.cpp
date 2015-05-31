@@ -1,7 +1,7 @@
 #include "ParticleTest.h"
-#include "engine/client/particles/ParticleSystem.h"
-#include "engine/client/particles/Bubble.h"
-#include "engine/client/particles/Snow.h"
+#include "client/particles/ParticleSystem.h"
+#include "client/particles/Bubble.h"
+#include "client/particles/Snow.h"
 
 class ParticleTest: public MapSuite {
 };

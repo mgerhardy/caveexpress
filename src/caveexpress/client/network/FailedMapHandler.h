@@ -1,13 +1,13 @@
 #pragma once
 
-#include "engine/client/ui/UI.h"
-#include "engine/common/network/IProtocolHandler.h"
-#include "engine/common/network/INetwork.h"
-#include "engine/common/network/messages/FailedMapMessage.h"
+#include "client/ui/UI.h"
+#include "common/network/IProtocolHandler.h"
+#include "common/network/INetwork.h"
+#include "common/network/messages/FailedMapMessage.h"
 #include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
-#include "engine/client/ClientMap.h"
-#include "engine/common/Commands.h"
-#include "engine/common/ServiceProvider.h"
+#include "client/ClientMap.h"
+#include "common/Commands.h"
+#include "common/ServiceProvider.h"
 
 class FailedMapHandler: public IClientProtocolHandler {
 private:

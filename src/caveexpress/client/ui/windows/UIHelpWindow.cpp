@@ -1,10 +1,10 @@
 #include "UIHelpWindow.h"
-#include "engine/client/ui/nodes/UINodeSprite.h"
-#include "engine/client/ui/nodes/UINodeKey.h"
-#include "engine/client/ui/nodes/UINodeLabel.h"
-#include "engine/client/ui/nodes/UINodeSprite.h"
-#include "engine/client/ui/UI.h"
-#include "engine/common/SpriteDefinition.h"
+#include "client/ui/nodes/UINodeSprite.h"
+#include "client/ui/nodes/UINodeKey.h"
+#include "client/ui/nodes/UINodeLabel.h"
+#include "client/ui/nodes/UINodeSprite.h"
+#include "client/ui/UI.h"
+#include "common/SpriteDefinition.h"
 
 UIHelpWindow::UIHelpWindow (const std::string& name, IFrontend* frontend, int flags) :
 		UIWindow(name, frontend, flags), _currentX(0.01f), _currentY(0.0f), _internalPadding(0.001f), _iconSize(0.08f), _iconGap(

@@ -1,7 +1,7 @@
 #include "MapTile.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/shared/constants/Density.h"
-#include "engine/common/SpriteDefinition.h"
+#include "common/SpriteDefinition.h"
 
 MapTile::MapTile (Map& map, const std::string& spriteID, gridCoord gridX, gridCoord gridY, const EntityType &type) :
 		IEntity(type, map), _gridX(gridX), _gridY(gridY), _gridWidth(1.0f), _gridHeight(1.0f), _pos(b2Vec2_zero)

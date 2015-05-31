@@ -1,5 +1,5 @@
 #include "tests/MemoryAllocatorTest.h"
-#include "engine/common/Logger.h"
+#include "common/Logger.h"
 #include <stdint.h>
 
 TEST(MemoryAllocatorTest, testAllocateObject)

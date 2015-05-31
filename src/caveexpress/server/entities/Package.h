@@ -1,7 +1,7 @@
 #pragma once
 
-#include "engine/common/Pointers.h"
-#include "engine/common/IMap.h"
+#include "common/Pointers.h"
+#include "common/IMap.h"
 #include "caveexpress/server/entities/CollectableEntity.h"
 
 // forward decl

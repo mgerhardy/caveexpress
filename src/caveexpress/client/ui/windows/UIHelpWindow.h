@@ -1,8 +1,8 @@
 #pragma once
-#include "engine/client/ui/windows/UIWindow.h"
+#include "client/ui/windows/UIWindow.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
-#include "engine/common/EntityType.h"
-#include "engine/common/NonCopyable.h"
+#include "common/EntityType.h"
+#include "common/NonCopyable.h"
 
 class UINodeSprite;
 class UINodeLabel;

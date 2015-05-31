@@ -1,5 +1,5 @@
 #include "UINodeMap.h"
-#include "engine/common/network/ProtocolHandlerRegistry.h"
+#include "common/network/ProtocolHandlerRegistry.h"
 #include "caveexpress/client/network/SpawnInfoHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
 

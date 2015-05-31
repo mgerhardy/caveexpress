@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/common/network/IProtocolHandler.h"
+#include "common/network/IProtocolHandler.h"
 #include "cavepacker/server/map/Map.h"
 
 class StartMapHandler: public IServerProtocolHandler {

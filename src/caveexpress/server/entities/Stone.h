@@ -1,8 +1,8 @@
 #pragma once
 
 #include "caveexpress/server/entities/CollectableEntity.h"
-#include "engine/common/IMap.h"
-#include "engine/common/Pointers.h"
+#include "common/IMap.h"
+#include "common/Pointers.h"
 
 // forward decl
 class Map;

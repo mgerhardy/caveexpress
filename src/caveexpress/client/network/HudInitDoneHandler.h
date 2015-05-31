@@ -1,9 +1,9 @@
 #pragma once
 
-#include "engine/common/network/IProtocolHandler.h"
-#include "engine/client/network/InitDoneHandler.h"
+#include "common/network/IProtocolHandler.h"
+#include "client/network/InitDoneHandler.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
-#include "engine/common/ConfigManager.h"
+#include "common/ConfigManager.h"
 
 class HudInitDoneHandler: public InitDoneHandler {
 public:

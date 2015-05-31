@@ -1,10 +1,10 @@
 #pragma once
 
-#include "engine/common/Pointers.h"
-#include "engine/common/IMap.h"
-#include "engine/common/TimeManager.h"
-#include "engine/common/ICommand.h"
-#include "engine/common/network/IProtocolHandler.h"
+#include "common/Pointers.h"
+#include "common/IMap.h"
+#include "common/TimeManager.h"
+#include "common/ICommand.h"
+#include "common/network/IProtocolHandler.h"
 #include "cavepacker/server/entities/IEntity.h"
 #include "cavepacker/server/entities/Player.h"
 #include "cavepacker/server/entities/MapTile.h"

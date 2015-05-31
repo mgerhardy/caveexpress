@@ -1,7 +1,7 @@
 #include "UINodeMapEditorSelectedItem.h"
-#include "engine/client/ui/UI.h"
-#include "engine/client/sprites/Sprite.h"
-#include "engine/client/ui/BitmapFont.h"
+#include "client/ui/UI.h"
+#include "client/sprites/Sprite.h"
+#include "client/ui/BitmapFont.h"
 
 UINodeMapEditorSelectedItem::UINodeMapEditorSelectedItem (IFrontend *frontend) :
 		UINode(frontend, "selected-item-node")

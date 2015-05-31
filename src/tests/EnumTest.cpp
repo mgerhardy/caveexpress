@@ -1,5 +1,5 @@
 #include "EnumTest.h"
-#include "engine/common/Enum.h"
+#include "common/Enum.h"
 
 class EnumTest: public MapSuite {
 };

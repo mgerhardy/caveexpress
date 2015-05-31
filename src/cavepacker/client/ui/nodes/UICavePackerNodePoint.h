@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/client/ui/nodes/UINodePoint.h"
+#include "client/ui/nodes/UINodePoint.h"
 
 class UICavePackerNodePoint: public UINodePoint {
 private:

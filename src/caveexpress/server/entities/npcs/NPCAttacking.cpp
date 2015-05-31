@@ -1,7 +1,7 @@
 #include "NPCAttacking.h"
 #include "caveexpress/server/entities/Player.h"
 #include "caveexpress/server/map/Map.h"
-#include "engine/common/TimeManager.h"
+#include "common/TimeManager.h"
 
 NPCAttacking::NPCAttacking (const EntityType& entityType, Map& map, bool right) :
 		NPCAggressive(entityType, map), _attackTimer(0), _returnTimer(0), _attackTarget(nullptr), _platformStartPos(

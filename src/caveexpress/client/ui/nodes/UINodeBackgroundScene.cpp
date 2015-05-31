@@ -1,6 +1,6 @@
 #include "UINodeBackgroundScene.h"
-#include "engine/client/ui/UI.h"
-#include "engine/client/ClientMap.h"
+#include "client/ui/UI.h"
+#include "client/ClientMap.h"
 #include "caveexpress/shared/CaveExpressMapFailedReasons.h"
 
 UINodeBackgroundScene::UINodeBackgroundScene (IFrontend *frontend) :

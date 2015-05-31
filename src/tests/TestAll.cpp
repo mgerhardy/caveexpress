@@ -1,11 +1,11 @@
 #include "TestShared.h"
 #include <stdlib.h>
-#include "engine/common/Logger.h"
-#include "engine/common/FileSystem.h"
-#include "engine/common/ConfigManager.h"
-#include "engine/common/Application.h"
-#include "engine/common/System.h"
-#include "engine/GameRegistry.h"
+#include "common/Logger.h"
+#include "common/FileSystem.h"
+#include "common/ConfigManager.h"
+#include "common/Application.h"
+#include "common/System.h"
+#include "GameRegistry.h"
 
 struct TestConfiguration {
 	bool verbose;

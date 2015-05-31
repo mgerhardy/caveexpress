@@ -1,6 +1,6 @@
 #include "SokobanMapContext.h"
-#include "engine/common/FileSystem.h"
-#include "engine/common/Logger.h"
+#include "common/FileSystem.h"
+#include "common/Logger.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
 
 SokobanMapContext::SokobanMapContext(const std::string& map) :

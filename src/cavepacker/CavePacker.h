@@ -1,10 +1,10 @@
 #pragma once
 
-#include "engine/GameRegistry.h"
-#include "engine/client/ClientMap.h"
+#include "GameRegistry.h"
+#include "client/ClientMap.h"
 #include "cavepacker/server/map/Map.h"
-#include "engine/common/campaign/CampaignManager.h"
-#include "engine/common/campaign/persister/IGameStatePersister.h"
+#include "common/campaign/CampaignManager.h"
+#include "common/campaign/persister/IGameStatePersister.h"
 
 class CavePacker: public IGame, public IEntityVisitor {
 private:

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "engine/common/ICommand.h"
-#include "engine/common/CommandSystem.h"
+#include "common/ICommand.h"
+#include "common/CommandSystem.h"
 #include "caveexpress/shared/constants/Commands.h"
-#include "engine/common/IMap.h"
+#include "common/IMap.h"
 #include <stdint.h>
 
 class CmdMapOpenInEditor: public ICommand {

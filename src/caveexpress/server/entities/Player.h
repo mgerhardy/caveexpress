@@ -3,13 +3,13 @@
 #include "caveexpress/server/entities/IEntity.h"
 #include "caveexpress/server/entities/Platform.h"
 #include "caveexpress/server/entities/npcs/NPCPackage.h"
-#include "engine/common/Direction.h"
+#include "common/Direction.h"
 #include "caveexpress/shared/constants/PlayerState.h"
-#include "engine/common/SoundType.h"
-#include "engine/common/ConfigVar.h"
-#include "engine/common/Logger.h"
-#include "engine/common/Pointers.h"
-#include "engine/common/network/IProtocolHandler.h"
+#include "common/SoundType.h"
+#include "common/ConfigVar.h"
+#include "common/Logger.h"
+#include "common/Pointers.h"
+#include "common/network/IProtocolHandler.h"
 
 // forward decl
 class Map;

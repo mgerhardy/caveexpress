@@ -1,11 +1,11 @@
 #pragma once
 
-#include "engine/common/network/IProtocolHandler.h"
+#include "common/network/IProtocolHandler.h"
 #include "caveexpress/shared/network/messages/UpdateCollectedTypeMessage.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
-#include "engine/client/ClientMap.h"
-#include "engine/client/ui/UI.h"
+#include "client/ClientMap.h"
+#include "client/ui/UI.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
 
 class UpdateCollectedTypeHandler: public IClientProtocolHandler {

@@ -1,9 +1,9 @@
-#include "engine/server/SDLBackend.h"
-#include "engine/common/ConfigManager.h"
-#include "engine/common/Logger.h"
-#include "engine/common/Application.h"
-#include "engine/common/System.h"
-#include "engine/GameRegistry.h"
+#include "server/SDLBackend.h"
+#include "common/ConfigManager.h"
+#include "common/Logger.h"
+#include "common/Application.h"
+#include "common/System.h"
+#include "GameRegistry.h"
 #include <SDL.h>
 #include <SDL_main.h>
 

@@ -1,5 +1,5 @@
 #include "tests/ByteStreamTest.h"
-#include "engine/common/Logger.h"
+#include "common/Logger.h"
 #include <cstdlib>
 #include <limits.h>
 #include <math.h>

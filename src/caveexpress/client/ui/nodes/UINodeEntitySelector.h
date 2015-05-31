@@ -1,10 +1,10 @@
 #pragma once
 
-#include "engine/common/EntityType.h"
-#include "engine/client/ui/nodes/UINodeSelector.h"
-#include "engine/common/ThemeType.h"
-#include "engine/client/sprites/Sprite.h"
-#include "engine/common/SpriteDefinition.h"
+#include "common/EntityType.h"
+#include "client/ui/nodes/UINodeSelector.h"
+#include "common/ThemeType.h"
+#include "client/sprites/Sprite.h"
+#include "common/SpriteDefinition.h"
 
 struct EntityTypeWrapper {
 	const EntityType* type;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/common/IMapContext.h"
+#include "common/IMapContext.h"
 #include <string>
 
 namespace Sokoban {

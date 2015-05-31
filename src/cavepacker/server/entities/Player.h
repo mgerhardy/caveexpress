@@ -1,12 +1,12 @@
 #pragma once
 
 #include "cavepacker/server/entities/IEntity.h"
-#include "engine/common/Direction.h"
-#include "engine/common/SoundType.h"
-#include "engine/common/ConfigVar.h"
-#include "engine/common/Logger.h"
-#include "engine/common/Pointers.h"
-#include "engine/common/network/IProtocolHandler.h"
+#include "common/Direction.h"
+#include "common/SoundType.h"
+#include "common/ConfigVar.h"
+#include "common/Logger.h"
+#include "common/Pointers.h"
+#include "common/network/IProtocolHandler.h"
 
 // forward decl
 class Map;

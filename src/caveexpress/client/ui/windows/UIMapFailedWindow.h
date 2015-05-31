@@ -1,8 +1,8 @@
 #pragma once
 
-#include "engine/client/ui/windows/UIWindow.h"
-#include "engine/common/MapFailedReason.h"
-#include "engine/common/ThemeType.h"
+#include "client/ui/windows/UIWindow.h"
+#include "common/MapFailedReason.h"
+#include "common/ThemeType.h"
 
 // forward decl
 class CampaignManager;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/client/entities/ClientMapTile.h"
+#include "client/entities/ClientMapTile.h"
 
 class ClientCaveTile: public ClientMapTile {
 private:

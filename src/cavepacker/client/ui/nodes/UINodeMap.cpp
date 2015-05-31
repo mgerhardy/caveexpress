@@ -1,7 +1,7 @@
 #include "UINodeMap.h"
-#include "engine/common/network/ProtocolHandlerRegistry.h"
-#include "engine/client/network/AddEntityHandler.h"
-#include "engine/client/network/InitDoneHandler.h"
+#include "common/network/ProtocolHandlerRegistry.h"
+#include "client/network/AddEntityHandler.h"
+#include "client/network/InitDoneHandler.h"
 #include "cavepacker/client/network/ClientAutoSolveHandler.h"
 #include "cavepacker/client/commands/CmdUndo.h"
 

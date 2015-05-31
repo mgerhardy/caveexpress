@@ -1,7 +1,7 @@
 #pragma once
 
-#include "engine/client/ui/nodes/UINodeButtonText.h"
-#include "engine/common/CommandSystem.h"
+#include "client/ui/nodes/UINodeButtonText.h"
+#include "common/CommandSystem.h"
 
 // TODO: Undo/Redo does not yet work
 class UINodeSaveButton: public UINodeButtonText {

@@ -1,6 +1,6 @@
 #include "RandomMapContextTest.h"
 #include "caveexpress/server/map/RandomMapContext.h"
-#include "engine/common/ThemeType.h"
+#include "common/ThemeType.h"
 
 TEST(RandomMapContextTest, DISABLED_testMapCreation)
 {

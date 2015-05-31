@@ -1,11 +1,11 @@
 #include "tests/UITest.h"
 #include "tests/TestShared.h"
 
-#include "engine/client/ui/UI.h"
-#include "engine/client/ui/windows/UIWindow.h"
-#include "engine/client/ui/nodes/UINode.h"
-#include "engine/client/ui/layouts/UIHBoxLayout.h"
-#include "engine/client/ui/layouts/UIVBoxLayout.h"
+#include "client/ui/UI.h"
+#include "client/ui/windows/UIWindow.h"
+#include "client/ui/nodes/UINode.h"
+#include "client/ui/layouts/UIHBoxLayout.h"
+#include "client/ui/layouts/UIVBoxLayout.h"
 
 class UITest: public MapSuite {
 };

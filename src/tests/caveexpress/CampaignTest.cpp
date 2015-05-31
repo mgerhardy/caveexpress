@@ -1,11 +1,11 @@
 #include "CampaignTest.h"
-#include "engine/common/campaign/persister/SQLitePersister.h"
-#include "engine/common/campaign/CampaignManager.h"
-#include "engine/common/network/NoNetwork.h"
-#include "engine/common/MapManager.h"
-#include "engine/common/TextureDefinition.h"
+#include "common/campaign/persister/SQLitePersister.h"
+#include "common/campaign/CampaignManager.h"
+#include "common/network/NoNetwork.h"
+#include "common/MapManager.h"
+#include "common/TextureDefinition.h"
 #include "caveexpress/server/map/LUAMapContext.h"
-#include "engine/common/MapSettings.h"
+#include "common/MapSettings.h"
 
 TEST(CampaignTest, testSave) {
 	SCOPED_TRACE("test/new.sqlite");

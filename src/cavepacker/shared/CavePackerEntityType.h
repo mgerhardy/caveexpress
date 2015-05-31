@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/common/EntityType.h"
+#include "common/EntityType.h"
 
 namespace EntityTypes {
 extern EntityType SOLID;

@@ -1,6 +1,6 @@
 #include "tests/FileTest.h"
-#include "engine/common/FileSystem.h"
-#include "engine/common/Pointers.h"
+#include "common/FileSystem.h"
+#include "common/Pointers.h"
 
 class FileTest: public MapSuite {
 };

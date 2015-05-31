@@ -1,10 +1,10 @@
 #include "Player.h"
 #include "cavepacker/server/map/Map.h"
-#include "engine/common/Logger.h"
-#include "engine/common/network/INetwork.h"
-#include "engine/common/System.h"
-#include "engine/common/ConfigManager.h"
-#include "engine/common/network/IProtocolHandler.h"
+#include "common/Logger.h"
+#include "common/network/INetwork.h"
+#include "common/System.h"
+#include "common/ConfigManager.h"
+#include "common/network/IProtocolHandler.h"
 
 Player::Player (Map& map, ClientId clientId) :
 		IEntity(EntityTypes::PLAYER, map, 0, 0), _clientId(clientId) {

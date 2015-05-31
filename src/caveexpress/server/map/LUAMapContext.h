@@ -1,8 +1,8 @@
 #pragma once
 
-#include "engine/common/IMapContext.h"
-#include "engine/common/Compiler.h"
-#include "engine/common/LUA.h"
+#include "common/IMapContext.h"
+#include "common/Compiler.h"
+#include "common/LUA.h"
 #include <string>
 
 struct lua_State;

@@ -1,6 +1,6 @@
 #include "UINodeSpriteSelector.h"
-#include "engine/client/ui/UI.h"
-#include "engine/common/SpriteType.h"
+#include "client/ui/UI.h"
+#include "common/SpriteType.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
 
 UINodeSpriteSelector::UINodeSpriteSelector (IFrontend *frontend, int cols, int rows) :

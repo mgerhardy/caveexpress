@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/client/ui/windows/UIMapOptionsWindow.h"
+#include "client/ui/windows/UIMapOptionsWindow.h"
 
 // forward decl
 class ServiceProvider;

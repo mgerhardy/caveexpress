@@ -1,7 +1,7 @@
 #pragma once
 
-#include "engine/common/network/INetwork.h"
-#include "engine/common/network/ProtocolHandlerRegistry.h"
+#include "common/network/INetwork.h"
+#include "common/network/ProtocolHandlerRegistry.h"
 
 class NetworkTestServerListener: public IServerCallback {
 public:

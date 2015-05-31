@@ -1,6 +1,6 @@
 #include "EntityEmitter.h"
 #include "caveexpress/server/map/Map.h"
-#include "engine/common/KeyValueParser.h"
+#include "common/KeyValueParser.h"
 #include "caveexpress/shared/constants/EmitterSettings.h"
 #include "caveexpress/server/entities/npcs/NPCBlowing.h"
 #include "caveexpress/server/entities/npcs/NPCAttacking.h"

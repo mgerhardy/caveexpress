@@ -1,7 +1,7 @@
 #pragma once
 
-#include "engine/common/network/IProtocolHandler.h"
-#include "engine/common/network/messages/ClientInitMessage.h"
+#include "common/network/IProtocolHandler.h"
+#include "common/network/messages/ClientInitMessage.h"
 #include "cavepacker/server/map/Map.h"
 
 class ClientInitHandler: public IServerProtocolHandler {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/common/network/IProtocolMessage.h"
+#include "common/network/IProtocolMessage.h"
 
 class WaterHeightMessage: public IProtocolMessage {
 private:

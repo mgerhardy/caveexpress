@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/client/ClientMap.h"
+#include "client/ClientMap.h"
 
 class CavePackerClientMap: public ClientMap {
 public:

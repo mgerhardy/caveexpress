@@ -1,7 +1,7 @@
 #pragma once
 
-#include "engine/client/ui/nodes/UINodeSelector.h"
-#include "engine/common/SpriteDefinition.h"
+#include "client/ui/nodes/UINodeSelector.h"
+#include "common/SpriteDefinition.h"
 
 class UINodeSpriteSelector: public UINodeSelector<SpriteDefPtr> {
 private:

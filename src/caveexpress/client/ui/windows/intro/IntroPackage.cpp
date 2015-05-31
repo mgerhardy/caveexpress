@@ -1,10 +1,10 @@
 #include "IntroPackage.h"
-#include "engine/client/ui/nodes/UINodeSprite.h"
-#include "engine/client/ui/nodes/UINodeLabel.h"
+#include "client/ui/nodes/UINodeSprite.h"
+#include "client/ui/nodes/UINodeLabel.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
-#include "engine/client/ui/UI.h"
-#include "engine/client/ui/layouts/UIHBoxLayout.h"
+#include "client/ui/UI.h"
+#include "client/ui/layouts/UIHBoxLayout.h"
 
 IntroPackage::IntroPackage(IFrontend* frontend) :
 		Intro("intropackage", frontend) {

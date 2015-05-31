@@ -8,8 +8,8 @@
 #include <Box2D/Common/b2Math.h>
 #include <SDL.h>
 #include <yajl_parse.h>
-#include "engine/common/Common.h"
-#include "engine/common/File.h"
+#include "common/Common.h"
+#include "common/File.h"
 
 const b2Vec2 Vec2Zero(0.0f, 0.0f);
 #define VERTICESINDENT "\t\t\t\t"

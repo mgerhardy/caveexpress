@@ -1,8 +1,8 @@
 #include "MapTest.h"
 #include "caveexpress/CaveExpress.h"
 #include "caveexpress/shared/CaveExpressMapFailedReasons.h"
-#include "engine/common/ConfigManager.h"
-#include "engine/common/network/INetwork.h"
+#include "common/ConfigManager.h"
+#include "common/network/INetwork.h"
 
 class GroundVisitor: public IEntityVisitor {
 private:

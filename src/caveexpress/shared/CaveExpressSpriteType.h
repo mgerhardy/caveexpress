@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/common/SpriteType.h"
+#include "common/SpriteType.h"
 
 namespace SpriteTypes {
 extern SpriteType WATERFALL;

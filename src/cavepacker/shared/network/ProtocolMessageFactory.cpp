@@ -1,5 +1,5 @@
-#include "engine/common/network/ProtocolMessageFactory.h"
-#include "engine/common/Logger.h"
+#include "common/network/ProtocolMessageFactory.h"
+#include "common/Logger.h"
 #include "cavepacker/shared/network/ProtocolMessageTypes.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
 

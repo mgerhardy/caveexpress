@@ -4,9 +4,9 @@
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/shared/CaveExpressAchievement.h"
-#include "engine/common/Logger.h"
-#include "engine/common/TimeManager.h"
-#include "engine/common/SpriteDefinition.h"
+#include "common/Logger.h"
+#include "common/TimeManager.h"
+#include "common/SpriteDefinition.h"
 #include "caveexpress/shared/constants/Density.h"
 
 NPC::NPC (const EntityType &type, Map& map) :

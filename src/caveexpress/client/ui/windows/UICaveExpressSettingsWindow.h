@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/client/ui/windows/UISettingsWindow.h"
+#include "client/ui/windows/UISettingsWindow.h"
 
 // forward decl
 class ServiceProvider;

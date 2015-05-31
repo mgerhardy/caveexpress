@@ -2,8 +2,8 @@
 
 #if NETWORKING == 1
 
-#include "engine/common/network/Network.h"
-#include "engine/common/Logger.h"
+#include "common/network/Network.h"
+#include "common/Logger.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 
 class NetworkTestListener: public IClientCallback {

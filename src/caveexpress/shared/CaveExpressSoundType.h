@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/common/SoundType.h"
+#include "common/SoundType.h"
 
 namespace SoundTypes {
 extern SoundType SOUND_WATER_IMPACT;

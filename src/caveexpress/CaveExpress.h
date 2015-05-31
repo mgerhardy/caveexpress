@@ -1,8 +1,8 @@
 #pragma once
 
-#include "engine/GameRegistry.h"
-#include "engine/common/campaign/CampaignManager.h"
-#include "engine/common/campaign/persister/SQLitePersister.h"
+#include "GameRegistry.h"
+#include "common/campaign/CampaignManager.h"
+#include "common/campaign/persister/SQLitePersister.h"
 #include "caveexpress/server/map/Map.h"
 
 class ClientMap;

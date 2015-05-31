@@ -1,6 +1,6 @@
 #include "MapTile.h"
 #include "cavepacker/server/map/Map.h"
-#include "engine/common/SpriteDefinition.h"
+#include "common/SpriteDefinition.h"
 
 MapTile::MapTile (Map& map, int col, int row, const EntityType &type) :
 		IEntity(type, map, col, row)

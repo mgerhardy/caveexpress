@@ -1,6 +1,6 @@
-#include "engine/common/network/ProtocolMessageFactory.h"
+#include "common/network/ProtocolMessageFactory.h"
 #include "ProtocolMessageTypes.h"
-#include "engine/common/Logger.h"
+#include "common/Logger.h"
 
 #include "messages/AddCaveMessage.h"
 #include "messages/AddRopeMessage.h"

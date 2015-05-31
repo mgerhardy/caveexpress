@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/common/Achievement.h"
+#include "common/Achievement.h"
 
 namespace Achievements {
 extern Achievement DAZE_PTERODACTYLS;

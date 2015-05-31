@@ -1,9 +1,9 @@
 #pragma once
 
-#include "engine/common/IMapContext.h"
-#include "engine/common/EntityType.h"
-#include "engine/common/ThemeType.h"
-#include "engine/common/Compiler.h"
+#include "common/IMapContext.h"
+#include "common/EntityType.h"
+#include "common/ThemeType.h"
+#include "common/Compiler.h"
 
 #include <micropather/micropather.h>
 
