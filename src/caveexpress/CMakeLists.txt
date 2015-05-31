@@ -1,4 +1,4 @@
-project(cavepacker)
+project(caveexpress)
 
 set(${PROJECT_NAME}_MAJOR_VERSION 0)
 set(${PROJECT_NAME}_MINOR_VERSION 1)
@@ -7,13 +7,17 @@ set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_M
 
 file(GLOB ${PROJECT_NAME}_SRC
 	*.cpp
+	client/entities/*.cpp
 	client/ui/windows/*.cpp
 	client/ui/windows/intro/*.cpp
 	client/ui/nodes/*.cpp
 	client/*.cpp
 	server/*.cpp
 	server/entities/*.cpp
+	server/entities/npcs/*.cpp
+	server/entities/modificators/*.cpp
 	server/map/*.cpp
+	server/events/*.cpp
 	shared/*.cpp
 	shared/network/*.cpp)
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
