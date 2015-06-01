@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 set(ROOT_DIR ${PROJECT_SOURCE_DIR})
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${ROOT_DIR})
 
 option(RELEASE "Build a release build" OFF)
 
