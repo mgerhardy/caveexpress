@@ -95,16 +95,11 @@ extern "C" int main (int argc, char **argv)
 	setDefaultOptions();
 	parseCommandline(argc, argv);
 
-	try {
-		Application& app = Singleton<Application>::getInstance();
-		const GamePtr& game = Singleton<GameRegistry>::getInstance().getGame();
-		app.setOrganisation("caveproductions");
-		app.setName(game->getName());
-		Logger::get().addConsole(&console);
-		Config.get().init(nullptr, argc, argv);
-		return RUN_ALL_TESTS();
-	} catch (const std::exception& e) {
-		std::cerr << e.what() << std::endl;
-		return EXIT_FAILURE;
-	}
+	Application& app = Singleton<Application>::getInstance();
+	const GamePtr& game = Singleton<GameRegistry>::getInstance().getGame();
+	app.setOrganisation("caveproductions");
+	app.setName(game->getName());
+	Logger::get().addConsole(&console);
+	Config.get().init(nullptr, argc, argv);
+	return RUN_ALL_TESTS();
 }
