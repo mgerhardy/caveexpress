@@ -1,7 +1,7 @@
 include(CheckFunctionExists)
 include(CheckLibraryExists)
 
-set(CMAKE_CXX_FLAGS "-std=c++11")
+set(CMAKE_CXX_FLAGS "-std=c++11 -fno-rtti -fno-exceptions")
 
 if (NOT NETWORKING)
 	add_definitions(-DNONETWORK=1)
