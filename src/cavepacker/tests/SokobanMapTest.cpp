@@ -1,4 +1,4 @@
-#include "tests/cavepacker/SokobanMapTest.h"
+#include "SokobanMapTest.h"
 #include "cavepacker/server/map/Map.h"
 #include "cavepacker/server/entities/Player.h"
 #include "tests/NetworkTestListener.h"

@@ -1,4 +1,4 @@
-#include "tests/cavepacker/SokobanMapContextTest.h"
+#include "SokobanMapContextTest.h"
 #include "cavepacker/server/map/SokobanMapContext.h"
 
 TEST(SokobanMapContextTest, testMapCreation)

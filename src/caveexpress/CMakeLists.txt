@@ -1,5 +1,5 @@
 add_subdirectory(tests)
-#add_subdirectory(tools)
+add_subdirectory(tools)
 add_subdirectory(client)
 add_subdirectory(shared)
 add_subdirectory(server)

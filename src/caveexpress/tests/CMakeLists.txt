@@ -5,8 +5,8 @@ SET(${PROJECT_NAME}_SRC
 	LUASpriteTest.cpp
 	RandomMapContextTest.cpp
 	MapTest.cpp
-	../main/CaveExpress.cpp
 	CampaignTest.cpp
+	../main/CaveExpress.cpp
 	../../tests/TestAll.cpp
 	../../tests/TestShared.cpp
 	../../tests/NetworkTest.cpp
