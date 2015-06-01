@@ -1,4 +1,4 @@
-add_subdirectory(tests)
+#add_subdirectory(tests)
 #add_subdirectory(tools)
 
 project(caveexpress)
@@ -27,4 +27,4 @@ file(GLOB ${PROJECT_NAME}_SRC
 	shared/network/*.cpp)
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} libs client server common game network ports)
+target_link_libraries(${PROJECT_NAME} libs client server common game network ports main)
