@@ -1,7 +1,7 @@
 #include "network/ProtocolMessageFactory.h"
 #include "common/Logger.h"
-#include "cavepacker/shared/network/ProtocolMessageTypes.h"
-#include "cavepacker/shared/network/messages/ProtocolMessages.h"
+#include "ProtocolMessageTypes.h"
+#include "messages/ProtocolMessages.h"
 
 ProtocolMessageFactory::ProtocolMessageFactory ()
 {
