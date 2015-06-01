@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 2.6)
 
+set(ROOT_DIR ${PROJECT_SOURCE_DIR})
+
+option(RELEASE "Build a release build" OFF)
+
 #-------------------------------------------------------------------------------
 # macros
 #-------------------------------------------------------------------------------
@@ -44,11 +48,37 @@ endmacro()
 # macros end
 #-------------------------------------------------------------------------------
 
-option(RELEASE "Build a release build" OFF)
+#-------------------------------------------------------------------------------
+# variables
+#-------------------------------------------------------------------------------
 
-set(CMAKE_CXX_FLAGS "-std=c++11")
+set (WINDOWS 0)
+set (DARWIN 0)
+set (LINUX 0)
+if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+    set(WINDOWS 1)
+elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin")
+    set(DARWIN 1)
+elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Linux")
+    set(LINUX 1)
+else()
+    message(WARNING "Unknown host system - default to linux")
+    set(LINUX 1)
+endif()
 
-set(ROOT_DIR ${PROJECT_SOURCE_DIR})
+#-------------------------------------------------------------------------------
+# end variables
+#-------------------------------------------------------------------------------
+
+if (NOT CMAKE_TOOLCHAIN_FILE)
+	if (WINDOWS)
+		include(${ROOT_DIR}/cmake/windows.cmake)
+	elseif (DARWIN)
+		include(${ROOT_DIR}/cmake/darwin.cmake)
+	else()
+		include(${ROOT_DIR}/cmake/linux.cmake)
+	endif()
+endif()
 
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}/src")
