@@ -1,11 +1,11 @@
 #pragma once
 
 #include "common/ByteStream.h"
-#include "network/IProtocolHandler.h"
+#include "IProtocolHandler.h"
 #include "common/Logger.h"
 #include "IClientCallback.h"
 #include "IServerCallback.h"
-#include "network/ProtocolMessageFactory.h"
+#include "ProtocolMessageFactory.h"
 #include <map>
 #include <string>
 

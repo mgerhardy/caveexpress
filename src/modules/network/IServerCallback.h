@@ -1,6 +1,6 @@
 #pragma once
 
-#include "network/IProtocolHandler.h"
+#include "IProtocolHandler.h"
 
 class IServerCallback {
 public:

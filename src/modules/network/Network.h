@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/Pointers.h"
-#include "network/INetwork.h"
+#include "INetwork.h"
 #include <SDL_net.h>
 #include <vector>
 

@@ -1,5 +1,5 @@
 #include "Network.h"
-#include "network/INetwork.h"
+#include "INetwork.h"
 #include "common/Logger.h"
 #include "common/System.h"
 #include <signal.h>
