@@ -1,5 +1,5 @@
 #include "MapTest.h"
-#include "caveexpress/CaveExpress.h"
+#include "caveexpress/main/CaveExpress.h"
 #include "caveexpress/shared/CaveExpressMapFailedReasons.h"
 #include "common/ConfigManager.h"
 #include "network/INetwork.h"
