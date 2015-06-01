@@ -151,6 +151,7 @@ DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const st
 {
 	DirectoryEntries entriesAll;
 
+	// TODO: register this in the app
 #if DIRLIST_NOT_SUPPORTED
 #include "dir.h"
 #endif

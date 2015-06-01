@@ -1,4 +1,5 @@
-set(cavepacker-client_SRCS
+set(NAME cavepacker)
+set(${NAME}-client_SRCS
 	ui/nodes/UICavePackerNodePoint.cpp
 	ui/nodes/UINodeMap.cpp
 	ui/windows/UICavePackerMapOptionsWindow.cpp
@@ -7,6 +8,6 @@ set(cavepacker-client_SRCS
 	ui/windows/UIMapWindow.cpp
 	CavePackerClientMap.cpp
 )
-add_library(cavepacker-client ${cavepacker-client_SRCS})
-set_target_properties(cavepacker-client PROPERTIES FOLDER cavepacker-client)
-target_link_libraries(cavepacker-client cavepacker-shared libs client server common game network ports)
+add_library(${NAME}-client ${${NAME}-client_SRCS})
+set_target_properties(${NAME}-client PROPERTIES FOLDER ${NAME}-client)
+target_link_libraries(${NAME}-client ${NAME}-shared)

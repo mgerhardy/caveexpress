@@ -1,4 +1,5 @@
-set(caveexpress-client_SRCS
+set(NAME caveexpress)
+set(${NAME}-client_SRCS
 	entities/ClientCaveTile.cpp
 	entities/ClientWindowTile.cpp
 	entities/ClientParticle.cpp
@@ -28,6 +29,6 @@ set(caveexpress-client_SRCS
 	ui/windows/UIMapEditorWindow.cpp
 	ui/windows/UIHelpWindow.cpp
 )
-add_library(caveexpress-client ${caveexpress-client_SRCS})
-set_target_properties(caveexpress-client PROPERTIES FOLDER caveexpress-client)
-target_link_libraries(caveexpress-client caveexpress-shared libs client server common game network ports)
+add_library(${NAME}-client ${${NAME}-client_SRCS})
+set_target_properties(${NAME}-client PROPERTIES FOLDER ${NAME}-client)
+target_link_libraries(${NAME}-client ${NAME}-shared)

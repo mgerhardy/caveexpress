@@ -14,4 +14,4 @@ SET(${PROJECT_NAME}_SRC
 )
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} caveexpress-client caveexpress-server caveexpress-shared common client game network ports server)
+target_link_libraries(${PROJECT_NAME} caveexpress-client caveexpress-server caveexpress-shared)
