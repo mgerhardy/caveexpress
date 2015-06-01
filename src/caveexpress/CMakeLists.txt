@@ -1,3 +1,6 @@
+add_subdirectory(tests)
+#add_subdirectory(tools)
+
 project(caveexpress)
 
 set(${PROJECT_NAME}_MAJOR_VERSION 0)

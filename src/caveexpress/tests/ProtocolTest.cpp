@@ -1,4 +1,4 @@
-#include "tests/cavepacker/ProtocolTest.h"
+#include "ProtocolTest.h"
 #include "tests/AbstractProtocolTest.h"
 #include "caveexpress/shared/network/messages/AddCaveMessage.h"
 #include "caveexpress/shared/network/messages/AddRopeMessage.h"
