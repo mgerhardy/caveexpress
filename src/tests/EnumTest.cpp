@@ -1,7 +1,7 @@
 #include "EnumTest.h"
 #include "common/Enum.h"
 
-class EnumTest: public MapSuite {
+class EnumTest: public AbstractTest {
 };
 
 class FooEnum: public Enum<FooEnum> {

@@ -24,14 +24,14 @@ public:
 	}
 };
 
-class MapSuite: public ::testing::Test {
+class AbstractTest: public ::testing::Test {
 protected:
 	TestCampaignMgr _testCampaignMgr;
 	TestFrontend _testFrontend;
 	ServiceProvider _serviceProvider;
 	EventHandler _eventHandler;
 
-	virtual ~MapSuite() {}
+	virtual ~AbstractTest() {}
 	virtual void SetUp() override;
 	virtual void TearDown() override;
 };

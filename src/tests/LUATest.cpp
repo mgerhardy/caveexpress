@@ -6,7 +6,7 @@
 #include "common/EntityType.h"
 #include "common/Animation.h"
 
-class LUATest: public MapSuite {
+class LUATest: public AbstractTest {
 };
 
 TEST_F(LUATest, testFontDefinition)

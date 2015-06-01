@@ -4,7 +4,7 @@
 #include "tests/NetworkTestListener.h"
 #include "data.h"
 
-class SokobanMapTest: public MapSuite {
+class SokobanMapTest: public AbstractTest {
 protected:
 	void testSingleMap(const std::string& mapName, bool solve = true) {
 		NetworkTestListener listener;

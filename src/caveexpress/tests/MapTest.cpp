@@ -39,7 +39,7 @@ public:
 	}
 };
 
-class MapTest: public MapSuite {
+class MapTest: public AbstractTest {
 protected:
 	CaveExpress _game;
 	Map _map;
@@ -90,7 +90,7 @@ protected:
 	}
 
 	virtual void SetUp() override {
-		MapSuite::SetUp();
+		AbstractTest::SetUp();
 		_serviceProvider.getNetwork().openServer(12345, nullptr);
 		_map.init(&_testFrontend, _serviceProvider);
 		_game.init(&_testFrontend, _serviceProvider);

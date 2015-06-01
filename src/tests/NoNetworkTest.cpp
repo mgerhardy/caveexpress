@@ -14,7 +14,7 @@ const char *LOCALHOST = "localhost";
 const int PORT = 4567;
 }
 
-class NoNetworkTest: public MapSuite {
+class NoNetworkTest: public AbstractTest {
 };
 
 TEST_F(NoNetworkTest, testSendToClient)

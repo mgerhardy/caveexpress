@@ -2,7 +2,7 @@
 #include "common/SpriteDefinition.h"
 #include "network/ProtocolHandlerRegistry.h"
 
-void MapSuite::SetUp() {
+void AbstractTest::SetUp() {
 	_serviceProvider.init(&_testFrontend);
 	_serviceProvider.updateNetwork(false);
 	Singleton<GameRegistry>::getInstance().getGame()->init(&_testFrontend, _serviceProvider);
@@ -10,7 +10,7 @@ void MapSuite::SetUp() {
 	UI::get().init(_serviceProvider, _eventHandler, _testFrontend);
 }
 
-void MapSuite::TearDown() {
+void AbstractTest::TearDown() {
 	UI::get().shutdown();
 	ProtocolHandlerRegistry::get().shutdown();
 }

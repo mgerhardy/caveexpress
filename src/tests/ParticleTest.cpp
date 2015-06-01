@@ -3,7 +3,7 @@
 #include "client/particles/Bubble.h"
 #include "client/particles/Snow.h"
 
-class ParticleTest: public MapSuite {
+class ParticleTest: public AbstractTest {
 };
 
 class TestParticleEnv: public IParticleEnvironment {

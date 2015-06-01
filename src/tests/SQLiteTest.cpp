@@ -1,7 +1,7 @@
 #include "tests/SQLiteTest.h"
 #include "common/SQLite.h"
 
-class SQLiteTest: public MapSuite {
+class SQLiteTest: public AbstractTest {
 };
 
 TEST_F(SQLiteTest, testOpen)

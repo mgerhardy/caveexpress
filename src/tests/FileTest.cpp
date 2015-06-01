@@ -2,7 +2,7 @@
 #include "common/FileSystem.h"
 #include "common/Pointers.h"
 
-class FileTest: public MapSuite {
+class FileTest: public AbstractTest {
 };
 
 TEST_F(FileTest, testListDirectory) {

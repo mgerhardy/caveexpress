@@ -3,7 +3,7 @@
 #include "TestShared.h"
 #include "network/ProtocolMessageFactory.h"
 
-class AbstractProtocolTest: public MapSuite {
+class AbstractProtocolTest: public AbstractTest {
 protected:
 	void testSharedMessages() const {
 		testMessage(PingMessage("name", "mapName", 42, 0, 1));

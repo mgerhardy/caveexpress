@@ -7,7 +7,7 @@
 #include "ui/layouts/UIHBoxLayout.h"
 #include "ui/layouts/UIVBoxLayout.h"
 
-class UITest: public MapSuite {
+class UITest: public AbstractTest {
 };
 
 class TestNode : public UINode {

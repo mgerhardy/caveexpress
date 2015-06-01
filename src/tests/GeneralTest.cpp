@@ -8,7 +8,7 @@
 #include "common/KeyValueParser.h"
 #include "common/MapManager.h"
 
-class GeneralTest: public MapSuite {
+class GeneralTest: public AbstractTest {
 };
 
 TEST_F(GeneralTest, testStringTrim)

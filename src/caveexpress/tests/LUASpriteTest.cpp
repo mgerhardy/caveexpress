@@ -9,7 +9,7 @@
 #include "common/EntityType.h"
 #include "common/Animation.h"
 
-class LUASpriteTest: public MapSuite {
+class LUASpriteTest: public AbstractTest {
 };
 
 TEST_F(LUASpriteTest, testSpriteDefinition)
