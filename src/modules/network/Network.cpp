@@ -1,4 +1,6 @@
 #include "Network.h"
+
+#ifndef NONETWORK
 #include "INetwork.h"
 #include "common/Logger.h"
 #include "common/System.h"
@@ -520,3 +522,5 @@ std::string Network::toString (const IPaddress &ipAddress) const
 	const unsigned char* host = (const unsigned char*) &converted;
 	return String::format("%i.%i.%i.%i", host[3], host[2], host[1], host[0]).str();
 }
+
+#endif

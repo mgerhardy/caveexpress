@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef NONETWORK
+
 #include "common/Pointers.h"
 #include "INetwork.h"
 #include <SDL_net.h>
@@ -149,3 +151,5 @@ inline bool Network::isClientConnected ()
 {
 	return _clientSocket != nullptr;
 }
+
+#endif
