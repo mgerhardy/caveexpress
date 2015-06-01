@@ -3,7 +3,7 @@
 /caveexpress
 /soundmapper
 /jsonconvert
-/tests
+/tests*
 
 # also binaries - but more generic
 /*.exe

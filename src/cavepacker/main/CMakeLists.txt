@@ -1,6 +1,5 @@
 project(cavepacker)
 textures(${PROJECT_NAME})
-set(cavepacker_SRCS CavePacker.cpp)
-add_executable(${PROJECT_NAME} ${cavepacker_SRCS})
+add_executable(${PROJECT_NAME} CavePacker.cpp)
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} libs client server common game network ports main ${PROJECT_NAME}-server ${PROJECT_NAME}-client ${PROJECT_NAME}-shared)

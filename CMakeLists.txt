@@ -51,18 +51,18 @@ endmacro()
 # variables
 #-------------------------------------------------------------------------------
 
-set (WINDOWS 0)
-set (DARWIN 0)
-set (LINUX 0)
+set(WINDOWS 0)
+set(DARWIN 0)
+set(LINUX 0)
 if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-    set(WINDOWS 1)
+	set(WINDOWS 1)
 elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin")
-    set(DARWIN 1)
+	set(DARWIN 1)
 elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Linux")
-    set(LINUX 1)
+	set(LINUX 1)
 else()
-    message(WARNING "Unknown host system - default to linux")
-    set(LINUX 1)
+	message(WARNING "Unknown host system - default to linux")
+	set(LINUX 1)
 endif()
 
 #-------------------------------------------------------------------------------
