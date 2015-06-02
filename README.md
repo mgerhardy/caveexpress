@@ -142,5 +142,9 @@ or simply:
 * cmake .. -G "Xcode" -DUNITTESTS=OFF
 * xcodebuild -project Project.xcodeproj
 
+or simply
+
+* ./contrib/scripts/osx.sh
+
 ### License
 Code is released under the GPL3 and the game data is released under CC BY-SA 4.0
