@@ -7,6 +7,8 @@
 #include "common/IBindingSpaceListener.h"
 #include "common/TextConsole.h"
 #include "common/ServiceProvider.h"
+#include "common/Singleton.h"
+#include "GameRegistry.h"
 #include "network/IServerCallback.h"
 #include <map>
 #include <set>
@@ -60,6 +62,9 @@ private:
 
 	static void loadMapCompleter (const std::string& input, std::vector<std::string>& matches);
 
+	inline GamePtr getGame() const {
+		return Singleton<GameRegistry>::getInstance().getGame();
+	}
 public:
 	SDLBackend ();
 	virtual ~SDLBackend ();

@@ -114,7 +114,7 @@ void SDLBackend::handleEvent (SDL_Event &event)
 		info(LOG_BACKEND, "Quitting the game");
 
 		_frontend->shutdown();
-		Singleton<GameRegistry>::getInstance().getGame()->shutdown();
+		getGame()->shutdown();
 	}
 }
 
@@ -246,7 +246,7 @@ bool SDLBackend::handleInit() {
 		break;
 	case InitState::INITSTATE_GAME:
 		info(LOG_BACKEND, "initi game data");
-		Singleton<GameRegistry>::getInstance().getGame()->init(_frontend, _serviceProvider);
+		getGame()->init(_frontend, _serviceProvider);
 		_initState = InitState::INITSTATE_SOUNDS;
 		break;
 	case InitState::INITSTATE_SOUNDS:
@@ -310,7 +310,7 @@ void SDLBackend::runFrame ()
 
 	_serviceProvider.getNetwork().update(deltaTime);
 
-	Singleton<GameRegistry>::getInstance().getGame()->update(deltaTime);
+	getGame()->update(deltaTime);
 	_frontend->update(deltaTime);
 	_frontend->render();
 	System.tick(deltaTime);
@@ -497,7 +497,7 @@ void SDLBackend::screenShot (const std::string& argument)
 {
 	std::string name = argument;
 	if (name.empty()) {
-		name = Singleton<GameRegistry>::getInstance().getGame()->getMapName();
+		name = getGame()->getMapName();
 		if (name.empty())
 			name = "screenshot";
 	}
@@ -506,7 +506,7 @@ void SDLBackend::screenShot (const std::string& argument)
 
 void SDLBackend::status ()
 {
-	const std::string& map = Singleton<GameRegistry>::getInstance().getGame()->getMapName();
+	const std::string& map = getGame()->getMapName();
 
 	if (map.empty()) {
 		info(LOG_SERVER, "no map loaded");
@@ -527,7 +527,7 @@ void SDLBackend::loadMapCompleter (const std::string& input, std::vector<std::st
 void SDLBackend::loadMap (const std::string& mapName)
 {
 	_serviceProvider.getNetwork().closeServer();
-	if (Singleton<GameRegistry>::getInstance().getGame()->mapLoad(mapName)) {
+	if (getGame()->mapLoad(mapName)) {
 		if (!_serviceProvider.getNetwork().openServer(Config.getPort(), this)) {
 			error(LOG_BACKEND, "failed to start the server");
 			return;
@@ -566,7 +566,7 @@ ProtocolMessagePtr SDLBackend::onOOBData (const unsigned char *data)
 		return ProtocolMessagePtr();
 
 	// no map loaded
-	const GamePtr& game = Singleton<GameRegistry>::getInstance().getGame();
+	const GamePtr& game = getGame();
 	const std::string& mapName = game->getMapName();
 	if (mapName.empty())
 		return ProtocolMessagePtr();
@@ -578,13 +578,13 @@ ProtocolMessagePtr SDLBackend::onOOBData (const unsigned char *data)
 void SDLBackend::onConnection (ClientId clientId)
 {
 	info(LOG_SERVER, "connect of client with id " + string::toString(static_cast<int>(clientId)));
-	Singleton<GameRegistry>::getInstance().getGame()->connect(clientId);
+	getGame()->connect(clientId);
 }
 
 void SDLBackend::onDisconnect (ClientId clientId)
 {
 	info(LOG_SERVER, "disconnect of client with id " + string::toString(static_cast<int>(clientId)));
-	const GamePtr& game = Singleton<GameRegistry>::getInstance().getGame();
+	const GamePtr& game = getGame();
 	if (game->disconnect(clientId) == 0) {
 		if (_dedicated)
 			game->mapReload();
