@@ -13,6 +13,10 @@ struct TestConfiguration {
 
 static TestConfiguration config;
 
+class TestGame: public IGame {
+};
+static GameRegisterStatic TESTGAME("test", GamePtr(new TestGame()));
+
 class TestConsole: public IConsole {
 	void init (IFrontend *frontend)
 	{

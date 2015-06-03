@@ -50,18 +50,21 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	LUA lua;
 
 	info(LOG_CONFIG, "load config lua file");
-	if (!lua.load("config.lua")) {
-		System.exit("could not load config", 1);
+	const bool success = lua.load("config.lua");
+	if (!success) {
+		error(LOG_CONFIG, "could not load config");
 	}
 
-	info(LOG_CONFIG, "load config values");
-	getKeyValueMap(lua, _configVarMap, "settings");
-	info(LOG_CONFIG, "load keybindings");
-	getBindingMap(lua, _keybindings, KEY_CONFIG_KEYBINDINGS, KEYBOARD);
-	info(LOG_CONFIG, "load controller bindings");
-	getBindingMap(lua, _controllerBindings, KEY_CONFIG_CONTROLLERBINDINGS, CONTROLLER);
-	info(LOG_CONFIG, "load joystick bindings");
-	getBindingMap(lua, _joystickBindings, KEY_CONFIG_JOYSTICKBINDINGS, JOYSTICK);
+	if (success) {
+		info(LOG_CONFIG, "load config values");
+		getKeyValueMap(lua, _configVarMap, "settings");
+		info(LOG_CONFIG, "load keybindings");
+		getBindingMap(lua, _keybindings, KEY_CONFIG_KEYBINDINGS, KEYBOARD);
+		info(LOG_CONFIG, "load controller bindings");
+		getBindingMap(lua, _controllerBindings, KEY_CONFIG_CONTROLLERBINDINGS, CONTROLLER);
+		info(LOG_CONFIG, "load joystick bindings");
+		getBindingMap(lua, _joystickBindings, KEY_CONFIG_JOYSTICKBINDINGS, JOYSTICK);
+	}
 	_language = getConfigValue(_configVarMap, "language", System.getLanguage());
 	_joystick = getConfigValue(_configVarMap, "joystick");
 	_showFPS = getConfigValue(_configVarMap, "showfps");
