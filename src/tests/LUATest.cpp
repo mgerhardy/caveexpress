@@ -1,4 +1,4 @@
-#include "tests/LUATest.h"
+#include "TestShared.h"
 #include "common/Logger.h"
 #include "common/SpriteDefinition.h"
 #include "common/TextureDefinition.h"

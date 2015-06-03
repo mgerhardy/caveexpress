@@ -8,4 +8,4 @@ set(cavepacker-shared_SRCS
 )
 add_library(cavepacker-shared ${cavepacker-shared_SRCS})
 set_target_properties(cavepacker-shared PROPERTIES FOLDER cavepacker-shared)
-target_link_libraries(cavepacker-shared libs client server common game network ports)
+target_link_libraries(cavepacker-shared common network)

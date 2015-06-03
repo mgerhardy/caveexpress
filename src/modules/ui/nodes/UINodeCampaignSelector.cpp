@@ -1,5 +1,5 @@
 #include "UINodeCampaignSelector.h"
-#include "common/campaign/CampaignManager.h"
+#include "campaign/CampaignManager.h"
 #include "common/CommandSystem.h"
 #include "common/FileSystem.h"
 #include "ui/UI.h"

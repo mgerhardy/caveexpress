@@ -18,7 +18,7 @@
 #include "ui/nodes/IUINodeMap.h"
 #include "ui/nodes/UINodeMapControl.h"
 #include "ui/nodes/UINodeMapFingerControl.h"
-#include "common/campaign/persister/IGameStatePersister.h"
+#include "campaign/persister/IGameStatePersister.h"
 #include <SDL_platform.h>
 
 class UINodeSettingsButton: public UINodeButton {

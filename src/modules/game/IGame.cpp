@@ -1,8 +1,12 @@
 #include "IGame.h"
 #include "common/Achievement.h"
+#include "network/INetwork.h"
 
-void IGame::onCampaignUnlock(Campaign* oldCampaign, Campaign* newCampaign)
-{
+int IGame::getMaxClients() {
+	return MAX_CLIENTS;
+}
+
+void IGame::onCampaignUnlock(Campaign* oldCampaign, Campaign* newCampaign) {
 	if (oldCampaign == nullptr) {
 		debug(LOG_SERVER, "no old campaign available while unlocking " + newCampaign->getId());
 		return;

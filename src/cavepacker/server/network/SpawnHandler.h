@@ -2,7 +2,7 @@
 
 #include "network/IProtocolHandler.h"
 #include "cavepacker/server/map/Map.h"
-#include "common/campaign/ICampaignManager.h"
+#include "campaign/ICampaignManager.h"
 
 class SpawnHandler: public IServerProtocolHandler {
 private:

@@ -1,4 +1,4 @@
-#include "EnumSpriteTypesTest.h"
+#include "tests/TestShared.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
 #include "common/Enum.h"
 

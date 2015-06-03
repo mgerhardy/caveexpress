@@ -1037,7 +1037,7 @@ void UINodeMapEditor::save ()
 	_lastSave = _undoStates.size();
 }
 
-void UINodeMapEditor::loadFromContext (IMapContext& ctx)
+void UINodeMapEditor::loadFromContext (ICaveMapContext& ctx)
 {
 	ctx.load(true);
 	setFileName(ctx.getName());

@@ -5,7 +5,6 @@
 #include "common/MapSettings.h"
 #include "common/MapTileDefinition.h"
 #include "common/EmitterDefinition.h"
-#include "common/CaveTileDefinition.h"
 #include <string>
 #include <vector>
 #include <map>
@@ -18,7 +17,6 @@ protected:
 	std::string _title;
 	const ThemeType* _theme;
 	std::vector<MapTileDefinition> _definitions;
-	std::vector<CaveTileDefinition> _caveDefinitions;
 	std::vector<EmitterDefinition> _emitters;
 
 	inline void resetTiles () {
@@ -73,11 +71,6 @@ public:
 	inline const IMap::StartPositions& getStartPositions () const
 	{
 		return _startPositions;
-	}
-
-	inline const std::vector<CaveTileDefinition>& getCaveTileDefinitions () const
-	{
-		return _caveDefinitions;
 	}
 
 	inline const std::vector<MapTileDefinition>& getMapTileDefinitions () const

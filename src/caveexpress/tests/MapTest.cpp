@@ -1,4 +1,4 @@
-#include "MapTest.h"
+#include "tests/TestShared.h"
 #include "caveexpress/main/CaveExpress.h"
 #include "caveexpress/shared/CaveExpressMapFailedReasons.h"
 #include "common/ConfigManager.h"

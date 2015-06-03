@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ui/nodes/UINodeSelector.h"
-#include "common/campaign/Campaign.h"
+#include "campaign/Campaign.h"
 
 class CampaignManager;
 

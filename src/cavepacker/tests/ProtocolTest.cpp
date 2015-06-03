@@ -1,4 +1,3 @@
-#include "ProtocolTest.h"
 #include "tests/AbstractProtocolTest.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
 

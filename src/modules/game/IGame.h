@@ -2,13 +2,12 @@
 
 #include "ui/UI.h"
 #include "common/Pointers.h"
-#include "network/INetwork.h"
 #include "network/IProtocolHandler.h"
 #include "common/MapManager.h"
 #include "common/ConfigManager.h"
 #include "common/Commands.h"
 #include "common/CommandSystem.h"
-#include "common/campaign/CampaignManager.h"
+#include "campaign/CampaignManager.h"
 #include <string>
 
 // TODO: rename methods and document stuff
@@ -34,7 +33,7 @@ public:
 
 	virtual std::string getMapName () { return ""; }
 
-	virtual int getMaxClients () { return MAX_CLIENTS; }
+	virtual int getMaxClients ();
 
 	virtual void shutdown () {}
 

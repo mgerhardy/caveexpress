@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ui/UI.h"
-#include "common/campaign/CampaignManager.h"
+#include "campaign/CampaignManager.h"
 
 class ResetCampaignPopupCallback: public UIPopupCallback {
 private:

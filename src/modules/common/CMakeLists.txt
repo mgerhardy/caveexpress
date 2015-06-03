@@ -24,14 +24,9 @@ set(common_SRCS
 	ServiceProvider.cpp
 	SpriteDefinition.cpp
 	URI.cpp
-	campaign/CampaignMap.cpp
-	campaign/CampaignManager.cpp
-	campaign/persister/SQLitePersister.cpp
-	campaign/persister/GooglePlayPersister.cpp
-	campaign/Campaign.cpp
 	ByteStream.cpp
 )
 
 add_library(common ${common_SRCS})
 set_target_properties(common PROPERTIES FOLDER common)
-target_link_libraries(common libs)
+target_link_libraries(common libs network ports)

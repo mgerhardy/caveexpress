@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sprites/Sprite.h"
+#include "Sprite.h"
 #include "common/NonCopyable.h"
 #include <map>
 #include <string>

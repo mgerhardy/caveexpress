@@ -1,6 +1,6 @@
 #include "UICaveExpressSettingsWindow.h"
 #include "ui/windows/modeselection/ModeSetListener.h"
-#include "common/campaign/CampaignManager.h"
+#include "campaign/CampaignManager.h"
 
 UICaveExpressSettingsWindow::UICaveExpressSettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager) :
 	UISettingsWindow(frontend, serviceProvider), _campaignManager(campaignManager)

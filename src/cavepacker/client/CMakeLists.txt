@@ -10,4 +10,4 @@ set(${NAME}-client_SRCS
 )
 add_library(${NAME}-client ${${NAME}-client_SRCS})
 set_target_properties(${NAME}-client PROPERTIES FOLDER ${NAME}-client)
-target_link_libraries(${NAME}-client ${NAME}-shared)
+target_link_libraries(${NAME}-client client ${NAME}-shared)

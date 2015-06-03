@@ -1,4 +1,4 @@
-#include "tests/SystemTest.h"
+#include "TestShared.h"
 #include "common/Logger.h"
 #include "common/System.h"
 

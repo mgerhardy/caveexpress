@@ -1,4 +1,4 @@
-#include "RandomMapContextTest.h"
+#include "tests/TestShared.h"
 #include "caveexpress/server/map/RandomMapContext.h"
 #include "common/ThemeType.h"
 

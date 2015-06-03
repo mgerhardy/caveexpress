@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/campaign/CampaignManager.h"
+#include "campaign/CampaignManager.h"
 #include "ui/UI.h"
 #include "ui/windows/UIWindow.h"
 

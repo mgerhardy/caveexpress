@@ -4,7 +4,7 @@
 #include "network/messages/UpdateLivesMessage.h"
 #include "ui/UI.h"
 #include "ui/windows/IUIMapWindow.h"
-#include "common/campaign/CampaignManager.h"
+#include "campaign/CampaignManager.h"
 
 class UpdateLivesHandler: public IClientProtocolHandler {
 private:

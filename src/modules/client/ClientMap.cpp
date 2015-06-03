@@ -13,8 +13,6 @@
 #include "common/EventHandler.h"
 #include "common/ServiceProvider.h"
 #include "common/CommandSystem.h"
-#include "client/GLFunc.h"
-#include "client/GLShared.h"
 #include "common/ExecutionTime.h"
 #include "common/DateUtil.h"
 #include "common/Commands.h"

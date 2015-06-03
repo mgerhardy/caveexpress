@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/IMapContext.h"
+#include "caveexpress/shared/ICaveMapContext.h"
 #include "common/EntityType.h"
 #include "common/ThemeType.h"
 #include "common/Compiler.h"
@@ -21,7 +21,7 @@ struct RandomMapPos {
 // there are some assumptions that you should be aware of:
 // * each solid and background tile must be grid aligned
 // * each solid and background tile can't have a fractional part for their width and height
-class RandomMapContext: public IMapContext, public micropather::Graph {
+class RandomMapContext: public ICaveMapContext, public micropather::Graph {
 private:
 	// the amount of caves
 	unsigned int _caves;
@@ -44,6 +44,7 @@ private:
 	std::vector<SpriteDefPtr> _windowTiles;
 	std::vector<RandomMapPos> _groundPos;
 	std::vector<RandomMapPos> _playerPos;
+	std::vector<CaveTileDefinition> _caveDefinitions;
 
 	bool addTile (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y);
 	bool addCave (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y, const EntityType& type, int delay);
@@ -99,6 +100,11 @@ public:
 	RandomMapContext (const std::string& name, const ThemeType& theme, unsigned int randomRockTiles,
 			unsigned int overallRockAmount, unsigned int width, unsigned int height);
 	virtual ~RandomMapContext ();
+
+	inline const std::vector<CaveTileDefinition>& getCaveTileDefinitions () const
+	{
+		return _caveDefinitions;
+	}
 
 	void setSettings (const IMap::SettingsMap& settings);
 	void setFlyingNPC (bool flyingNPC);

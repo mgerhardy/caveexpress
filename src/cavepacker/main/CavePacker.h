@@ -3,8 +3,8 @@
 #include "GameRegistry.h"
 #include "client/ClientMap.h"
 #include "cavepacker/server/map/Map.h"
-#include "common/campaign/CampaignManager.h"
-#include "common/campaign/persister/IGameStatePersister.h"
+#include "campaign/CampaignManager.h"
+#include "campaign/persister/IGameStatePersister.h"
 
 class CavePacker: public IGame, public IEntityVisitor {
 private:

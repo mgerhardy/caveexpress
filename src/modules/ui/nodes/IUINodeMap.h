@@ -2,7 +2,7 @@
 
 #include "ui/nodes/UINode.h"
 #include "client/ClientMap.h"
-#include "common/campaign/CampaignManager.h"
+#include "campaign/CampaignManager.h"
 #include <string>
 #include <vector>
 

@@ -2,10 +2,10 @@
 #include "common/Logger.h"
 #include "network/INetwork.h"
 #include "common/String.h"
-#include "client/SDLFrontend.h"
+#include "gfx/SDLFrontend.h"
 #ifdef SDL_VIDEO_OPENGL
-#include "client/GL1Frontend.h"
-#include "client/GL3Frontend.h"
+#include "gfx/GL1Frontend.h"
+#include "gfx/GL3Frontend.h"
 #endif
 #include "client/ClientConsole.h"
 #include "common/ConfigManager.h"

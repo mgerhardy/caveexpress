@@ -1,7 +1,7 @@
 #include "UICampaignMapWindow.h"
 #include "ui/nodes/UINodeMapSelector.h"
 #include "ui/nodes/UINodeButton.h"
-#include "common/campaign/CampaignManager.h"
+#include "campaign/CampaignManager.h"
 #include "ui/windows/campaignmapwindow/ResetCampaignListener.h"
 
 UICampaignMapWindow::UICampaignMapWindow (IFrontend *frontend, CampaignManager &campaignManager) :

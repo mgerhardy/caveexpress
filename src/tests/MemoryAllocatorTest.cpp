@@ -1,4 +1,5 @@
-#include "tests/MemoryAllocatorTest.h"
+#include "TestShared.h"
+#include "common/MemoryAllocator.h"
 #include "common/Logger.h"
 #include <stdint.h>
 

@@ -2,7 +2,7 @@
 
 #include "common/IEventObserver.h"
 #include "common/ConfigVar.h"
-#include "ui/windows/UIWindow.h"
+#include "windows/UIWindow.h"
 #include "common/CommandSystem.h"
 #include "common/Common.h"
 #include "common/System.h"

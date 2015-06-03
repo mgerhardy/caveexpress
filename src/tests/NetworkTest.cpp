@@ -1,7 +1,8 @@
-#include "tests/NetworkTest.h"
+#include "TestShared.h"
 
 #if NETWORKING == 1
 
+#include "common/IEventObserver.h"
 #include "network/Network.h"
 #include "common/Logger.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"

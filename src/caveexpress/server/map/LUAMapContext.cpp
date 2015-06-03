@@ -8,7 +8,7 @@
 LUAMapContext *LUAMapContext::currentCtx;
 
 LUAMapContext::LUAMapContext (const std::string& name) :
-		IMapContext(name), _error(false)
+		ICaveMapContext(name), _error(false)
 {
 	currentCtx = this;
 	luaL_Reg funcs[] = {

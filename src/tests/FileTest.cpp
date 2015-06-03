@@ -1,4 +1,4 @@
-#include "tests/FileTest.h"
+#include "TestShared.h"
 #include "common/FileSystem.h"
 #include "common/Pointers.h"
 

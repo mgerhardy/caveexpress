@@ -1,7 +1,7 @@
 #pragma once
 
 #include "textures/Texture.h"
-#include "ui/FontDefinition.h"
+#include "FontDefinition.h"
 #include <algorithm>
 
 class IFrontend;

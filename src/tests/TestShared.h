@@ -5,7 +5,7 @@
 
 #include "TestFrontend.h"
 #include "common/ServiceProvider.h"
-#include "common/campaign/ICampaignManager.h"
+#include "campaign/ICampaignManager.h"
 #include "GameRegistry.h"
 #include "network/INetwork.h"
 

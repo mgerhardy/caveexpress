@@ -1,4 +1,4 @@
-#include "tests/SQLiteTest.h"
+#include "TestShared.h"
 #include "common/SQLite.h"
 
 class SQLiteTest: public AbstractTest {

@@ -1,7 +1,7 @@
 #include "UINodeMapSelector.h"
 #include "common/MapManager.h"
 #include "common/CommandSystem.h"
-#include "common/campaign/CampaignManager.h"
+#include "campaign/CampaignManager.h"
 #include "common/Commands.h"
 #include "common/FileSystem.h"
 

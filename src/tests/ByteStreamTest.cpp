@@ -1,6 +1,8 @@
-#include "tests/ByteStreamTest.h"
+#include "TestShared.h"
+#include "common/ByteStream.h"
 #include "common/Logger.h"
 #include <cstdlib>
+#include <vector>
 #include <limits.h>
 #include <math.h>
 #include <SDL_timer.h>

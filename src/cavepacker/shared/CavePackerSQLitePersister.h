@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/campaign/persister/SQLitePersister.h"
+#include "campaign/persister/SQLitePersister.h"
 
 class CavePackerSQLitePersister: public SQLitePersister {
 public:

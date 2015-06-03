@@ -45,7 +45,7 @@ struct RandomMapPosXSorter {
 
 RandomMapContext::RandomMapContext (const std::string& name, const ThemeType& theme, unsigned int randomRockTiles,
 		unsigned int overallRockAmount, unsigned int width, unsigned int height) :
-		IMapContext(name), _caves(5), _randomRockTiles(randomRockTiles), _overallRockAmount(overallRockAmount), _mapWidth(
+		ICaveMapContext(name), _caves(5), _randomRockTiles(randomRockTiles), _overallRockAmount(overallRockAmount), _mapWidth(
 				width), _mapHeight(height), _map(new SpriteDef*[_mapWidth * _mapHeight])
 {
 	_theme = &theme;

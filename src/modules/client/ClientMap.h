@@ -1,7 +1,7 @@
 #pragma once
 
 #include "client/entities/ClientPlayer.h"
-#include "client/particles/IParticleEnvironment.h"
+#include "particles/IParticleEnvironment.h"
 #include "client/Camera.h"
 #include "common/Animation.h"
 #include "common/IEventObserver.h"
@@ -11,7 +11,7 @@
 #include "common/TimeManager.h"
 #include "network/INetwork.h"
 #include "common/Direction.h"
-#include "client/particles/ParticleSystem.h"
+#include "particles/ParticleSystem.h"
 #include <map>
 
 namespace {

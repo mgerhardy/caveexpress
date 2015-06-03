@@ -1,4 +1,4 @@
-#include "LUASpriteTest.h"
+#include "tests/TestShared.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"

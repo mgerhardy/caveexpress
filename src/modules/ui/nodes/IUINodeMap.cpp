@@ -23,7 +23,7 @@
 #include "common/IFrontend.h"
 #include "client/commands/CmdMove.h"
 #include "client/commands/CmdZoom.h"
-#include "common/campaign/CampaignManager.h"
+#include "campaign/CampaignManager.h"
 #include "client/network/CloseMapHandler.h"
 #include "client/network/HudLoadMapHandler.h"
 #include "client/network/HudMapSettingsHandler.h"

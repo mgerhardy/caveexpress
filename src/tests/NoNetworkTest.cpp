@@ -1,5 +1,5 @@
-#include "tests/NetworkTest.h"
-
+#include "TestShared.h"
+#include "common/IEventObserver.h"
 #include "network/NoNetwork.h"
 #include "common/Logger.h"
 #include "common/EntityType.h"
@@ -14,10 +14,7 @@ const char *LOCALHOST = "localhost";
 const int PORT = 4567;
 }
 
-class NoNetworkTest: public AbstractTest {
-};
-
-TEST_F(NoNetworkTest, testSendToClient)
+TEST(NoNetworkTest, testSendToClient)
 {
 	ProtocolHandlerRegistry::get().shutdown();
 	NetworkTestServerListener serverListener;

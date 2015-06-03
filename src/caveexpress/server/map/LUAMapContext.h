@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/IMapContext.h"
+#include "caveexpress/shared/ICaveMapContext.h"
 #include "common/Compiler.h"
 #include "common/LUA.h"
 #include <string>
@@ -8,7 +8,7 @@
 struct lua_State;
 class SpriteDef;
 
-class LUAMapContext: public IMapContext {
+class LUAMapContext: public ICaveMapContext {
 private:
 	LUA _lua;
 	static LUAMapContext *currentCtx;

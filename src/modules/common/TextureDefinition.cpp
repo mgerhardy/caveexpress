@@ -70,7 +70,7 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 	}
 
 	if (_textureDefs.empty())
-		System.exit("could not load any texture definition", 1);
+		info(LOG_CLIENT, "could not load any texture definition");
 	info(LOG_CLIENT, "loaded " + string::toString(_textureDefs.size()) + " texture definitions");
 }
 

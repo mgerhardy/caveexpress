@@ -1,6 +1,4 @@
-#include "tests/GeneralTest.h"
-#include "tests/TestShared.h"
-
+#include "TestShared.h"
 #include "common/ParameterList.h"
 #include "common/URI.h"
 #include "common/String.h"

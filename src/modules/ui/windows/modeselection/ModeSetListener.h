@@ -4,7 +4,7 @@
 #include "common/ConfigManager.h"
 #include "common/CommandSystem.h"
 #include "common/Commands.h"
-#include "common/campaign/CampaignManager.h"
+#include "campaign/CampaignManager.h"
 
 class ModeSwitchPopupCallback: public UIPopupCallback {
 private:

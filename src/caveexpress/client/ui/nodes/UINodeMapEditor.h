@@ -20,7 +20,7 @@
 #include <map>
 
 // forward decl
-class IMapContext;
+class ICaveMapContext;
 class StateChecker;
 class IMapManager;
 
@@ -305,7 +305,7 @@ private:
 	bool isOverlapping (gridCoord gridX, gridCoord gridY, gridSize width, gridSize height, const TileItem& item) const;
 	// check whether item1 hits item2
 	bool isOverlapping (const TileItem& item1, const TileItem& item2) const;
-	void loadFromContext (IMapContext& ctx);
+	void loadFromContext (ICaveMapContext& ctx);
 	void setMapDimensions (int mapWidth, int mapHeight);
 	void setFlyingNpc (bool flyingNpc);
 	void setFishNpc (bool fishNpc);

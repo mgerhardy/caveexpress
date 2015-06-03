@@ -24,7 +24,7 @@ class NPCFlying;
 class NPCAttacking;
 class NPCFish;
 class NPCBlowing;
-class IMapContext;
+class ICaveMapContext;
 class Water;
 class PackageTarget;
 class SpriteDef;

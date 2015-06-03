@@ -1,5 +1,4 @@
-#include "tests/UITest.h"
-#include "tests/TestShared.h"
+#include "TestShared.h"
 
 #include "ui/UI.h"
 #include "ui/windows/UIWindow.h"

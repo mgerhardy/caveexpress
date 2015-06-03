@@ -6,8 +6,6 @@
 #include "common/IBindingSpaceListener.h"
 #include "common/Logger.h"
 #include "common/LUA.h"
-#include "client/GLFunc.h"
-#include "client/GLShared.h"
 #include "common/System.h"
 #include <SDL.h>
 #include <SDL_platform.h>

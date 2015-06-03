@@ -1,8 +1,5 @@
-#include "EnumTest.h"
+#include "TestShared.h"
 #include "common/Enum.h"
-
-class EnumTest: public AbstractTest {
-};
 
 class FooEnum: public Enum<FooEnum> {
 public:
@@ -19,7 +16,7 @@ public:
 	}
 };
 
-TEST_F(EnumTest, testNew) {
+TEST(EnumTest, testNew) {
 	FooEnum test_1;
 	FooEnum test_2;
 	ASSERT_EQ(1, test_1.id);

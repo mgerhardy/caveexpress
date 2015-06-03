@@ -9,7 +9,7 @@
 #include "common/ConfigManager.h"
 #include "ui/nodes/UINodeBackground.h"
 #include "ui/nodes/UINodeMapSelector.h"
-#include "common/campaign/persister/IGameStatePersister.h"
+#include "campaign/persister/IGameStatePersister.h"
 
 UIMapSelectorWindow::UIMapSelectorWindow (UINodeMapSelector* mapSelector, const std::string& title, const std::string& id, IFrontend *frontend,
 		WindowFlags flags) :

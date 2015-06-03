@@ -3,7 +3,7 @@
 #include "ui/nodes/UINodeBackButton.h"
 #include "common/Logger.h"
 #include "caveexpress/client/ui/nodes/UINodeGameOverBackground.h"
-#include "common/campaign/CampaignManager.h"
+#include "campaign/CampaignManager.h"
 #include <string>
 
 UIGameOverWindow::UIGameOverWindow (IFrontend *frontend, CampaignManager& campaignManager) :

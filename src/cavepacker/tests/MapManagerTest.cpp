@@ -1,4 +1,4 @@
-#include "MapManagerTest.h"
+#include "tests/TestShared.h"
 #include "cavepacker/shared/CavePackerMapManager.h"
 
 TEST(MapManagerTest, testNew) {

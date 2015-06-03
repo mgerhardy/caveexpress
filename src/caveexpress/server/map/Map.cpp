@@ -444,7 +444,7 @@ inline const ThemeType& getTheme (const std::string& name)
 	return ThemeTypes::ROCK;
 }
 
-inline IMapContext* getMapContext (const std::string& name)
+inline ICaveMapContext* getMapContext (const std::string& name)
 {
 	const std::string randomMapBase = "random";
 	if (name.compare(0, randomMapBase.size(), randomMapBase) == 0) {
@@ -458,7 +458,7 @@ inline IMapContext* getMapContext (const std::string& name)
 
 bool Map::load (const std::string& name)
 {
-	ScopedPtr<IMapContext> ctx(getMapContext(name));
+	ScopedPtr<ICaveMapContext> ctx(getMapContext(name));
 
 	resetCurrentMap();
 

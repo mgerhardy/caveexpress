@@ -1,5 +1,5 @@
-#include "CampaignTest.h"
-#include "common/campaign/CampaignManager.h"
+#include "tests/TestShared.h"
+#include "campaign/Campaign.h"
 #include "cavepacker/shared/CavePackerSQLitePersister.h"
 
 TEST(CampaignTest, testNew) {

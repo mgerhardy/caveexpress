@@ -1,5 +1,5 @@
+#include "TestShared.h"
 #include "common/TimeManager.h"
-#include "tests/TimeManagerTest.h"
 
 class TimeManagerTestCallback {
 public:

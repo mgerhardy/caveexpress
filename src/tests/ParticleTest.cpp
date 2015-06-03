@@ -1,7 +1,7 @@
-#include "ParticleTest.h"
-#include "client/particles/ParticleSystem.h"
-#include "client/particles/Bubble.h"
-#include "client/particles/Snow.h"
+#include "TestShared.h"
+#include "particles/ParticleSystem.h"
+#include "particles/Bubble.h"
+#include "particles/Snow.h"
 
 class ParticleTest: public AbstractTest {
 };
