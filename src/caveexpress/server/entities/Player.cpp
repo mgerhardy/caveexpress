@@ -4,6 +4,7 @@
 #include "caveexpress/server/entities/Stone.h"
 #include "caveexpress/server/entities/Bomb.h"
 #include "caveexpress/server/entities/Package.h"
+#include "caveexpress/server/entities/npcs/NPCFriendly.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/shared/CaveExpressAchievement.h"
@@ -21,7 +22,7 @@ const float gravityScale = 0.3f;
 
 Player::Player (Map& map, ClientId clientId) :
 		IEntity(EntityTypes::PLAYER, map), _touching(nullptr), _hitpoints(
-				Config.getMaxHitpoints()), _lives(0), _acceleration(b2Vec2_zero), _fingerAcceleration(
+				Config.getMaxHitpoints()), _lives(0), _collectedNPC(nullptr), _acceleration(b2Vec2_zero), _fingerAcceleration(
 				false), _accelerateX(0), _accelerateY(0), _clientId(clientId), _lastAccelerate(
 				0), _name(""), _lastFruitCollected(0), _fruitsCollectedInARow(
 				0), _revoluteJoint(nullptr), _crashReason(CRASH_NONE) {
@@ -542,6 +543,31 @@ void Player::setPlatform (Platform* entity)
 		return;
 
 	_map.sendSound(getVisMask(), SoundTypes::SOUND_PLAYER_LAND, getPos());
+
+	CaveMapTile *cave = _touching->getCave();
+	if (cave == nullptr)
+		return;
+	INPCCave *npc = cave->getNPC();
+	if (npc == nullptr)
+		return;
+	if (npc->isDeliverPackage())
+		return;
+
+	npc->resetTriggerMovement();
+}
+
+void Player::setCollectedNPC(NPCFriendly *npc) {
+	// we can't collect a npc if we have collected something else
+	if (npc && !isFree())
+		return;
+
+	_collectedNPC = npc;
+	if (npc != nullptr) {
+		npc->setCollected();
+		GameEvent.setTargetCave(ClientIdToClientMask(_clientId), npc->getTargetCaveNumber());
+	} else {
+		GameEvent.setTargetCave(ClientIdToClientMask(_clientId), 0);
+	}
 }
 
 void Player::print (std::ostream &stream, int level) const

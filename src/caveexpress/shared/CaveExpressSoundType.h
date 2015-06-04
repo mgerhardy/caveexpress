@@ -34,4 +34,6 @@ extern SoundType SOUND_AMBIENT_CAVE;
 extern SoundType SOUND_AMBIENT_CAVE1;
 extern SoundType SOUND_AMBIENT_CAVE2;
 extern SoundType SOUND_AMBIENT_WATERFALL;
+extern SoundType SOUND_NPC_CAVE_WATER_RESCUE;
+extern SoundType SOUND_NPC_CAVE_BOARD;
 }

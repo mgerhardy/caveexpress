@@ -26,6 +26,7 @@
 #include "caveexpress/server/entities/npcs/NPCBlowing.h"
 #include "caveexpress/server/entities/npcs/NPCFish.h"
 #include "caveexpress/server/entities/npcs/NPCFlying.h"
+#include "caveexpress/server/entities/npcs/NPCFriendly.h"
 #include "caveexpress/server/entities/npcs/NPCPackage.h"
 #include "caveexpress/server/entities/npcs/NPCAttacking.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
@@ -216,6 +217,12 @@ inline bool Map::isActive () const
 	return true;
 }
 
+void Map::countTransferedNPC()
+{
+	_transferedNPCs++;
+	info(LOG_SERVER, String::format("collected %i of %i npcs", _transferedNPCs, _transferedNPCLimit));
+}
+
 void Map::countTransferedPackage ()
 {
 	const int n = SDL_arraysize(packageAchievements);
@@ -226,6 +233,11 @@ void Map::countTransferedPackage ()
 	info(LOG_SERVER, String::format("collected %i of %i packages", _transferedPackages, _transferedPackageLimit));
 	const UpdatePackageCountMessage msg(getPackageCount());
 	_serviceProvider->getNetwork().sendToAllClients(msg);
+}
+
+int Map::getNpcCount() const
+{
+	return _transferedNPCLimit - _transferedNPCs;
 }
 
 int Map::getPackageCount () const
@@ -271,6 +283,7 @@ void Map::clearPhysics ()
 		_caves.clear();
 		_platforms.clear();
 		_entities.reserve(400);
+		_friendlyNPCs.clear();
 
 		for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
 			delete *i;
@@ -406,11 +419,15 @@ void Map::resetCurrentMap ()
 	_warmupPhase = 0;
 	_restartDue = 0;
 	_pause = false;
+	_transferedNPCs = 0;
+	_transferedNPCLimit = 0;
 	_transferedPackages = 0;
 	_transferedPackageLimit = 0;
 	_nextFriendlyNPCSpawn = 0;
 	_spawnFlyingNPCTime = 0;
 	_activateflyingNPC = false;
+	_friendlyNPCLimit = 0;
+	_caveCounter = 0;
 	_spawnFishNPCTime = 0;
 	_initialGeyserDelay = 0;
 	_activateFishNPC = false;
@@ -489,6 +506,8 @@ bool Map::load (const std::string& name)
 	_waterChangeSpeed = getSetting(msn::WATER_CHANGE, msd::WATER_CHANGE).toFloat();
 	_waterRisingDelay = getSetting(msn::WATER_RISING_DELAY, msd::WATER_RISING_DELAY).toFloat();
 	_waterFallingDelay = getSetting(msn::WATER_FALLING_DELAY, msd::WATER_FALLING_DELAY).toFloat();
+	_transferedNPCLimit = getSetting(msn::NPC_TRANSFER_COUNT, msd::NPC_TRANSFER_COUNT).toInt();
+	_friendlyNPCLimit = getSetting(msn::NPCS, msd::NPCS).toInt();
 	_activateflyingNPC = getSetting(msn::FLYING_NPC, msd::FLYING_NPC).toBool();
 	_activateFishNPC = getSetting(msn::FISH_NPC, msd::FISH_NPC).toBool();
 	_waterHeight = getSetting(msn::WATER_HEIGHT, msd::WATER_HEIGHT).toFloat();
@@ -496,6 +515,7 @@ bool Map::load (const std::string& name)
 	// TODO: properly implement a warmup phase
 	_warmupPhase = 0;
 
+	info(LOG_MAP, String::format("spawn %i npcs", _friendlyNPCLimit));
 	info(LOG_MAP, "theme: " + _theme->name);
 	info(LOG_MAP, "reference time: " + string::toString(_referenceTime));
 
@@ -504,11 +524,16 @@ bool Map::load (const std::string& name)
 		return false;
 	}
 
+	if (_transferedNPCLimit > 0 && _friendlyNPCLimit == 0) {
+		error(LOG_MAP, "there is no npc but a npc transfer count");
+		return false;
+	}
+
 	_spawnFlyingNPCTime = getSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(4000 + rand() % SPAWN_FLYING_NPC_DELAY)).toInt();
 	_spawnFishNPCTime = getSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(4000 + rand() % SPAWN_FISH_NPC_DELAY)).toInt();
 	_initialGeyserDelay = getSetting(msn::GEYSER_INITIAL_DELAY_TIME, string::toString(3000)).toInt();
 
-	if (_transferedPackageLimit <= 0) {
+	if (_transferedNPCLimit <= 0 && _transferedPackageLimit <= 0) {
 		error(LOG_MAP, "there is nothing to do in this map - set the npc or package limits");
 		return false;
 	}
@@ -528,7 +553,7 @@ bool Map::load (const std::string& name)
 
 	const std::vector<CaveTileDefinition>& caveList = ctx->getCaveTileDefinitions();
 	for (std::vector<CaveTileDefinition>::const_iterator i = caveList.begin(); i != caveList.end(); ++i) {
-		MapTile *mapTile = new CaveMapTile(*this, i->spriteDef->id, i->x, i->y, *i->type, i->delay);
+		MapTile *mapTile = new CaveMapTile(*this, ++_caveCounter, i->spriteDef->id, i->x, i->y, *i->type, i->delay);
 		mapTile->setGridDimensions(i->spriteDef->width, i->spriteDef->height, 0);
 		mapTilesWithBody.push_back(mapTile);
 		loadEntity(mapTile);
@@ -556,6 +581,7 @@ bool Map::load (const std::string& name)
 	}
 
 	info(LOG_MAP, "init caves");
+	int friendlyNPCLimit = _friendlyNPCLimit;
 	for (Map::EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
 		IEntity* entity = *i;
 		if (!entity->isCave())
@@ -564,11 +590,22 @@ bool Map::load (const std::string& name)
 		_caves.push_back(cave);
 	}
 
+	const CaveMapTile* highestCave = nullptr;
+	if (isWaterRising())
+		highestCave = getHighestCave();
+
 	// do another loop when we have all caves - we have to know each of the caves in order to initialize them properly
 	for (Map::CaveListIter i = _caves.begin(); i != _caves.end(); ++i) {
 		CaveMapTile* cave = *i;
-		initCave(cave);
+		const bool npcLeft = friendlyNPCLimit > 0;
+		const bool skipCave = highestCave == cave;
+		if (initCave(cave, npcLeft && !skipCave)) {
+			--friendlyNPCLimit;
+			info(LOG_MAP, String::format("spawn npc on cave %i", cave->getCaveNumber()));
+		}
 	}
+	if (friendlyNPCLimit > 0)
+		info(LOG_MAP, String::format("could not spawn %i npcs", friendlyNPCLimit));
 
 	const std::vector<EmitterDefinition>& emitterList = ctx->getEmitterDefinitions();
 	for (std::vector<EmitterDefinition>::const_iterator i = emitterList.begin(); i != emitterList.end(); ++i) {
@@ -579,7 +616,7 @@ bool Map::load (const std::string& name)
 		loadEntity(entity);
 	}
 
-	if (!hasPackageTarget()) {
+	if (_transferedPackageLimit > 0 && !hasPackageTarget()) {
 		error(LOG_MAP, "there is no package target in this map");
 		return false;
 	}
@@ -855,19 +892,20 @@ void Map::initPhysics ()
 	initWater();
 }
 
-void Map::initCave (CaveMapTile* caveTile)
+bool Map::initCave (CaveMapTile* caveTile, bool canSpawn)
 {
 	int start = -1;
 	int end = -1;
 	Platform *platform = getPlatform(caveTile, &start, &end, caveTile->getSize().y);
 	if (platform == nullptr) {
 		error(LOG_MAP, "failed to initialize the cave platform");
-		return;
+		return false;
 	}
 	platform->setCave(caveTile);
 	initWindows(caveTile, start, end);
-	caveTile->setRespawnPossible(true, EntityType::NONE);
+	caveTile->setRespawnPossible(canSpawn, EntityType::NONE);
 	caveTile->setPlatformDimensions(start, end);
+	return canSpawn;
 }
 
 void Map::initWindows (CaveMapTile* caveTile, int start, int end)
@@ -1024,7 +1062,7 @@ MapTile* Map::createMapTileWithoutBody (const SpriteDefPtr& spriteDef, gridCoord
 	MapTile* mapTile;
 	const SpriteType& type = spriteDef->type;
 	if (SpriteTypes::isCave(type)) {
-		mapTile = new CaveMapTile(*this, spriteDef->id, gridX, gridY);
+		mapTile = new CaveMapTile(*this, ++_caveCounter, spriteDef->id, gridX, gridY);
 	} else if (SpriteTypes::isBackground(type)) {
 		mapTile = new MapTile(*this, spriteDef->id, gridX, gridY, EntityTypes::DECORATION);
 	} else if (SpriteTypes::isWindow(type)) {
@@ -1205,6 +1243,40 @@ CaveMapTile *Map::getTargetCave (const CaveMapTile* ignoreCave) const
 	return tmp[randomCave];
 }
 
+bool Map::removeNPCFromWorld(NPCFriendly* npc) {
+	assert(_entityRemovalAllowed);
+	for (Map::NPCListIter i = _friendlyNPCs.begin(); i != _friendlyNPCs.end(); ++i) {
+		if ((*i) != npc)
+			continue;
+
+		debug(LOG_SERVER, String::format("remove npc %i from world: %s", npc->getID(), npc->getType().name.c_str()));
+		GameEvent.removeEntity(npc->getVisMask(), *npc);
+		npc->setVisMask(NOTVISIBLE);
+		npc->remove();
+		return true;
+	}
+	error(LOG_MAP, String::format("could not find the npc with the id %i", npc->getID()));
+	return false;
+}
+
+// TODO: fix me
+#if 0
+void removeEntity() {
+	if (entity->isNpcFriendly()) {
+		for (Map::NPCListIter i = _friendlyNPCs.begin(); i != _friendlyNPCs.end(); ++i) {
+			if (*i != entity)
+				continue;
+
+			info(LOG_SERVER, String::format("remove friendly npc %i: %s", entity->getID(), entity->getType().name.c_str()));
+			_friendlyNPCs.erase(i);
+			_nextFriendlyNPCSpawn = _time + rand() % SPAWN_FRIENDLY_NPC_DELAY;
+			// they are also part of the entities list and are freed there
+			break;
+		}
+	}
+}
+#endif
+
 bool Map::removePlayer (ClientId clientId)
 {
 	assert(_entityRemovalAllowed);
@@ -1296,6 +1368,29 @@ NPCPackage* Map::createPackageNPC (CaveMapTile* cave, const EntityType& type)
 	return npc;
 }
 
+NPCFriendly* Map::createFriendlyNPC(CaveMapTile* cave, const EntityType& type, bool returnToCaveOnIdle) {
+	assert(_entityRemovalAllowed);
+	if (_friendlyNPCs.size() >= _friendlyNPCLimit)
+		return nullptr;
+
+	if (_time < _nextFriendlyNPCSpawn)
+		return nullptr;
+
+	CaveMapTile* targetCave = getTargetCave(cave);
+	if (targetCave == nullptr)
+		return nullptr;
+
+	NPCFriendly* npc = new NPCFriendly(cave, type, returnToCaveOnIdle);
+	npc->setTargetCave(targetCave);
+	_friendlyNPCs.push_back(npc);
+
+	addEntity(npc);
+
+	visitEntity(npc);
+
+	return npc;
+}
+
 inline void Map::calculateVisibility (IEntity *entity) const
 {
 	// static objects are always visible - there is no need to make them
@@ -1351,7 +1446,7 @@ void Map::sendVisibleEntity (int clientMask, const IEntity *entity) const
 	GameEvent.addEntity(clientMask, *entity);
 	if (entity->isCave()) {
 		const CaveMapTile *tile = static_cast<const CaveMapTile *>(entity);
-		GameEvent.addCave(clientMask, entity->getID(), tile->getLightState());
+		GameEvent.addCave(clientMask, entity->getID(), tile->getCaveNumber(), tile->getLightState());
 	} else if (entity->isWindow()) {
 		const WindowTile *tile = static_cast<const WindowTile *>(entity);
 		GameEvent.sendLightState(clientMask, tile->getID(), tile->getLightState());

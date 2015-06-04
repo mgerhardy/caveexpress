@@ -8,12 +8,14 @@ const std::string WIDTH = "width";
 const std::string HEIGHT = "height";
 const std::string POINTS = "points";
 const std::string TUTORIAL = "tutorial";
+const std::string NPCS = "npcs";
 const std::string INTROWINDOW = "introwindow";
 const std::string REFERENCETIME = "referencetime";
 // can be used for those wind levels where you lose if not all packages are
 // delivered when you are touching the side borders
 const std::string SIDEBORDERFAIL = "sideborderfail";
 const std::string PACKAGE_TRANSFER_COUNT = "packagetransfercount";
+const std::string NPC_TRANSFER_COUNT = "npctransfercount";
 const std::string NPC_INITIAL_SPAWN_TIME = "initialspawntime";
 const std::string GEYSER_INITIAL_DELAY_TIME = "geyserinitialdelay";
 const std::string FLYING_NPC = "flyingnpc";
@@ -30,8 +32,10 @@ const std::string THEME = "theme";
 // map setting default
 namespace msd {
 const std::string PACKAGE_TRANSFER_COUNT = "3";
+const std::string NPC_TRANSFER_COUNT = "3";
 const std::string TUTORIAL = "0";
 const std::string WIND = "0.0";
+const std::string NPCS = "3";
 const std::string FLYING_NPC = "false";
 const std::string FISH_NPC = "false";
 const std::string WATER_HEIGHT = "1.0";

@@ -21,6 +21,7 @@
 
 // forward decl
 class NPCFlying;
+class NPCFrienndly;
 class NPCAttacking;
 class NPCFish;
 class NPCBlowing;
@@ -93,6 +94,10 @@ public:
 	typedef CaveList::iterator CaveListIter;
 	typedef CaveList::const_iterator CaveListConstIter;
 
+	typedef std::vector<NPCFriendly*> NPCList;
+	typedef NPCList::iterator NPCListIter;
+	typedef NPCList::const_iterator NPCListConstIter;
+
 	ContactPoint _points[MAXCONTACTPOINTS];
 	int32_t _pointCount;
 
@@ -135,8 +140,15 @@ protected:
 	int32_t _physicsTime;
 	uint32_t _nextFriendlyNPCSpawn;
 
+	int _transferedNPCs;
+	int _transferedNPCLimit;
+	int _friendlyNPCLimit;
+	int _caveCounter;
+
 	int _transferedPackages;
 	int _transferedPackageLimit;
+
+	NPCList _friendlyNPCs;
 
 	// in a multiplayer game this is the spawn queue
 	PlayerList _playersWaitingForSpawn;
@@ -258,6 +270,12 @@ public:
 
 	void disconnect (ClientId clientId);
 
+	// only removed the npc from the world but keep it in the list to let it tick
+	bool removeNPCFromWorld (NPCFriendly* npc);
+
+	// creates a new friendly npc
+	NPCFriendly* createFriendlyNPC (CaveMapTile* cave, const EntityType& type = EntityType::NONE, bool returnToCaveOnIdle = false);
+
 	// creates a new flying npc (aggressive)
 	NPCFlying* createFlyingNPC (const b2Vec2& pos);
 
@@ -270,6 +288,11 @@ public:
 	NPCFish* createFishNPC (const b2Vec2& pos);
 
 	NPCPackage* createPackageNPC (CaveMapTile* cave, const EntityType& type);
+
+	// increases the counter for the successfully performed transfers
+	void countTransferedNPC();
+	// this is the amount of npcs that you still have to transfered to other caves in order to win the game
+	int getNpcCount() const;
 
 	// increases the counter for the successfully performed transfers
 	void countTransferedPackage ();
@@ -352,7 +375,7 @@ private:
 	// init the water body
 	void initWater ();
 
-	void initCave (CaveMapTile* caveTile);
+	bool initCave (CaveMapTile* caveTile, bool canSpawn);
 	// link related windows to the cave
 	void initWindows (CaveMapTile* caveTile, int start, int end);
 	// place a new sensor body into the world that marks the landing platform
@@ -429,6 +452,8 @@ inline b2World *Map::getWorld () const
 inline bool Map::isDone () const
 {
 	if (isFailed())
+		return false;
+	if (_transferedNPCLimit > 0 && _transferedNPCs < _transferedNPCLimit)
 		return false;
 	if (_transferedPackageLimit > 0 && _transferedPackages < _transferedPackageLimit)
 		return false;

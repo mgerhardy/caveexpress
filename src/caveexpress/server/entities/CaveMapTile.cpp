@@ -1,11 +1,12 @@
 #include "CaveMapTile.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/server/entities/npcs/NPCPackage.h"
+#include "common/Logger.h"
 
-CaveMapTile::CaveMapTile (Map& map, const std::string& spriteID, gridCoord gridX, gridCoord gridY, const EntityType& npcType, int delaySpawn) :
+CaveMapTile::CaveMapTile (Map& map, int caveNumber, const std::string& spriteID, gridCoord gridX, gridCoord gridY, const EntityType& npcType, int delaySpawn) :
 		MapTile(map, spriteID, gridX, gridY, EntityTypes::CAVE), _nextSpawn(delaySpawn), _spawned(0), _shouldSpawnNPC(
 				false), _now(0), _npc(nullptr), _lightState(DEFAULT_LIGHT_STATE), _respawn(false), _returnToCaveOnIdle(
-				false), _platformStart(0), _platformEnd(0), _delaySpawn(delaySpawn)
+				false), _platformStart(0), _platformEnd(0), _delaySpawn(delaySpawn), _caveNumber(caveNumber)
 {
 	if (EntityTypes::isNpcCave(npcType))
 		_npcTypes.push_back(&npcType);
@@ -23,7 +24,12 @@ void CaveMapTile::update (uint32_t deltaTime)
 	_now += deltaTime;
 
 	if (_npc != nullptr) {
-		if (_npc->isDying()) {
+		if (_npc->isNpcFriendly() && _npc->isCollected()) {
+			info(LOG_SERVER, String::format("npc %i is collected, remove from world", _npc->getID()));
+			_map.removeNPCFromWorld(static_cast<NPCFriendly*>(_npc));
+			_npc = nullptr;
+			_nextSpawn = _now + _delaySpawn;
+		} else if (_npc->isDying()) {
 			_npc = nullptr;
 			_nextSpawn = _now + _delaySpawn;
 		}
@@ -45,10 +51,10 @@ void CaveMapTile::update (uint32_t deltaTime)
 	}
 
 	if (shouldSpawnNPC()) {
-		const bool spawnPackage = _map.countPackages() < _map.getPackageCount();
-		if (!spawnPackage)
+		const bool spawnPackage = _map.hasPackageTarget() && _map.countPackages() < _map.getPackageCount();
+		if (!spawnPackage && _map.getNpcCount() <= 0)
 			return;
-		spawnNPC();
+		spawnNPC(spawnPackage);
 	}
 }
 
@@ -77,6 +83,14 @@ bool CaveMapTile::moveBackIntoCave ()
 	if (!_npc->isIdle())
 		return false;
 
+	if (!_npc->isDeliverPackage()) {
+		const NPCFriendly* npcFriendly = static_cast<NPCFriendly*>(_npc);
+		const uint32_t waitTime = npcFriendly->getWaitPatience();
+		const uint32_t passedTime = _time - getSpawnTime();
+		if (passedTime < waitTime)
+			return false;
+	}
+
 	if (!_npc->returnToInitialPosition())
 		return false;
 
@@ -86,15 +100,22 @@ bool CaveMapTile::moveBackIntoCave ()
 	return true;
 }
 
-void CaveMapTile::spawnNPC ()
+void CaveMapTile::spawnNPC (bool spawnPackage)
 {
 	const EntityType& type = !_npcTypes.empty() ? *_npcTypes.front() : EntityType::NONE;
-	NPCPackage* npc = _map.createPackageNPC(this, type);
+	INPCCave* npc = nullptr;
+	if (spawnPackage)
+		npc = _map.createPackageNPC(this, type);
+
+	if (npc == nullptr)
+		npc = _map.createFriendlyNPC(this, type, _returnToCaveOnIdle);
+
 	if (npc == nullptr)
 		return;
 
 	if (EntityTypes::isNpcCave(type))
 		_npcTypes.erase(_npcTypes.begin());
+	info(LOG_SERVER, String::format("created new npc %i on cave %i", npc->getID(), _caveNumber));
 	_npc = npc;
 	_spawned = _now;
 	setRespawnPossible(!_npcTypes.empty(), EntityType::NONE);

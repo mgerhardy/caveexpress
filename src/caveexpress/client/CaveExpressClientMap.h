@@ -15,6 +15,7 @@ public:
 	CaveExpressClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider,
 			int referenceTileWidth);
 
+	void setCaveNumber (uint16_t id, uint8_t number);
 	void setCaveState (uint16_t id, bool state);
 	bool drop ();
 	void start () override;

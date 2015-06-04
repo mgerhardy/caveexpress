@@ -315,6 +315,10 @@ public:
 		return EntityTypes::isNpcCave(_type);
 	}
 
+	bool isNpcFriendly () const;
+
+	bool isNpcPackage () const;
+
 	inline bool isNpcFlying () const
 	{
 		return EntityTypes::isNpcFlying(_type);
