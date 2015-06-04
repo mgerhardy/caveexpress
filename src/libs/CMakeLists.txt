@@ -234,6 +234,7 @@ FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/thread/generic/SDL_syscond.c)
 elseif(APPLE)
 FILE(GLOB libs_PLATFORM_SRCS
+	SDL_image/IMG_UIImage.m
 	SDL/src/video/uikit/*.m
 	SDL/src/video/cocoa/*.m
 	SDL/src/file/cocoa/*.m
