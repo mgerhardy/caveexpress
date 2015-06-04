@@ -17,6 +17,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(FinishedMapMessage);
+
 	FinishedMapMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_FINISHEDMAP)
 	{

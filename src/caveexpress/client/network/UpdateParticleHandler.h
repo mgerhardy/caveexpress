@@ -26,7 +26,7 @@ public:
 			_map.addEntity(entity);
 		}
 
-		ClientParticle *particle = static_cast<ClientParticle*>(entity.get());
+		ClientParticle *particle = static_cast<ClientParticle*>(entity);
 		particle->resetParticles(msg->getMaxParticles(), msg->getMaxLifeTime());
 		const std::string& sprite = msg->getSprite();
 		particle->setSprite(sprite);

@@ -13,6 +13,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(BackToMainMessage);
+
 	BackToMainMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_BACKTOMAIN)
 	{

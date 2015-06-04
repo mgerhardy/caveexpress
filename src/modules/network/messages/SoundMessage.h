@@ -14,6 +14,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(SoundMessage);
+
 	SoundMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_SOUND)
 	{

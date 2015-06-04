@@ -12,6 +12,7 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(WaterImpactMessage);
 	WaterImpactMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_WATERIMPACT)
 	{

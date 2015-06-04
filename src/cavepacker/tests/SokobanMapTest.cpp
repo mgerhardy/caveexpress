@@ -6,6 +6,12 @@
 
 class SokobanMapTest: public AbstractTest {
 protected:
+	virtual void SetUp() override {
+		AbstractTest::SetUp();
+		TextureDefinition t("small");
+		SpriteDefinition::get().init(t);
+	}
+
 	void testSingleMap(const std::string& mapName, bool solve = true) {
 		NetworkTestListener listener;
 		NetworkTestServerListener serverListener;

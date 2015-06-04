@@ -28,6 +28,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(AddEntityMessage);
+
 	AddEntityMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_ADDENTITY)
 	{

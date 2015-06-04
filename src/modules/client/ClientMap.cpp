@@ -120,6 +120,7 @@ void ClientMap::removeEntity (uint16_t id, bool fadeOut)
 		const ClientEntityPtr& e = getEntity(id);
 		if (e) {
 			e->remove();
+			delete e;
 			_entities.erase(id);
 		}
 	}
@@ -295,6 +296,7 @@ void ClientMap::update (uint32_t deltaTime)
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end();) {
 		const bool val = i->second->update(deltaTime, lerp);
 		if (!val) {
+			delete i->second;
 			_entities.erase(i++);
 		} else {
 			++i;
@@ -316,7 +318,7 @@ void ClientMap::addEntity (ClientEntityPtr e)
 {
 	_entities[e->getID()] = e;
 	if (e->getID() == _playerID) {
-		_player = static_cast<ClientPlayer*>(e.get());
+		_player = static_cast<ClientPlayer*>(e);
 	}
 
 	debug(LOG_CLIENT, "add entity " + e->getType().name + " - " + string::toString((int)e->getID()));
@@ -374,7 +376,7 @@ void ClientMap::onData (ByteStream &data)
 	while (factory.isNewMessageAvailable(data)) {
 		// remove the size from the stream
 		data.readShort();
-		const ScopedPtr<IProtocolMessage> msg(factory.create(data));
+		const IProtocolMessage* msg(factory.createMsg(data));
 		if (!msg) {
 			error(LOG_NET, "no message for type " + string::toString(static_cast<int>(data.readByte())));
 			continue;

@@ -13,6 +13,7 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(AddRopeMessage);
 	AddRopeMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_ADDROPE)
 	{

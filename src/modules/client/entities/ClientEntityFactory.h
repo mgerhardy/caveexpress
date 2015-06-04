@@ -14,7 +14,7 @@
 #include <string>
 
 class ClientEntity;
-typedef SharedPtr<ClientEntity> ClientEntityPtr;
+typedef ClientEntity* ClientEntityPtr;
 
 typedef std::map<const Animation*, std::string> SoundMapping;
 typedef SoundMapping::const_iterator SoundMappingConstIter;
@@ -52,7 +52,7 @@ public:
 	virtual ClientEntityPtr create (const ClientEntityFactoryContext *ctx) const = 0;
 };
 
-class ClientEntityRegistry: public IFactoryRegistry<EntityType, ClientEntity, ClientEntityFactoryContext> {
+class ClientEntityRegistry: public IFactoryRegistry<const EntityType*, ClientEntity, ClientEntityFactoryContext> {
 private:
 	SoundMappingCache _soundMappingCache;
 	friend class SoundMapper;
@@ -96,6 +96,6 @@ public:
 			float sizeY = 0.0f, EntityAngle angle = 0, EntityAlignment align = ENTITY_ALIGN_LOWER_LEFT)	{
 		ClientEntityRegistry& reg = Singleton<ClientEntityRegistry>::getInstance();
 		const ClientEntityFactoryContext ctx(type, id, sprite, animation, x, y, sizeX, sizeY, angle, reg._soundMappingCache[&type], align);
-		return reg.create(type, &ctx);
+		return reg.create(&type, &ctx);
 	}
 };

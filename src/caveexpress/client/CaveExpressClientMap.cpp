@@ -80,10 +80,10 @@ void CaveExpressClientMap::setCaveState (uint16_t id, bool state)
 	}
 
 	if (EntityTypes::isWindow(e->getType())) {
-		ClientWindowTile *tile = static_cast<ClientWindowTile*>(e.get());
+		ClientWindowTile *tile = static_cast<ClientWindowTile*>(e);
 		tile->setLightState(state);
 	} else if (EntityTypes::isCave(e->getType())) {
-		ClientCaveTile *tile = static_cast<ClientCaveTile*>(e.get());
+		ClientCaveTile *tile = static_cast<ClientCaveTile*>(e);
 		tile->setLightState(state);
 	}
 }

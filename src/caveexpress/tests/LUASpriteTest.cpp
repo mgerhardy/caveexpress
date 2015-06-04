@@ -10,6 +10,12 @@
 #include "common/Animation.h"
 
 class LUASpriteTest: public AbstractTest {
+protected:
+	virtual void SetUp() override {
+		AbstractTest::SetUp();
+		TextureDefinition t("small");
+		SpriteDefinition::get().init(t);
+	}
 };
 
 TEST_F(LUASpriteTest, testSpriteDefinition)

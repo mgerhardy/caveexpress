@@ -13,6 +13,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(ChangeAnimationMessage);
+
 	ChangeAnimationMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_CHANGEANIMATION)
 	{

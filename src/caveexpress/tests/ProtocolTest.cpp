@@ -14,12 +14,12 @@ class ProtocolTest: public AbstractProtocolTest {
 TEST_F(ProtocolTest, testProtocols)
 {
 	testSharedMessages();
-	testMessage(AddCaveMessage(1, false));
-	testMessage(AddRopeMessage(1, 2));
-	testMessage(LightStateMessage(1, false));
-	testMessage(RemoveRopeMessage(1));
-	testMessage(UpdateCollectedTypeMessage(EntityType::NONE, false));
-	testMessage(WaterHeightMessage(1.0f));
-	testMessage(WaterImpactMessage(1.0f, 1.0f));
-	testMessage(DropMessage());
+	testMessage("AddCaveMessage", AddCaveMessage(1, false));
+	testMessage("AddRopeMessage", AddRopeMessage(1, 2));
+	testMessage("LightStateMessage", LightStateMessage(1, false));
+	testMessage("RemoveRopeMessage", RemoveRopeMessage(1));
+	testMessage("UpdateCollectedTypeMessage", UpdateCollectedTypeMessage(EntityType::NONE, false));
+	testMessage("WaterHeightMessage", WaterHeightMessage(1.0f));
+	testMessage("WaterImpactMessage", WaterImpactMessage(1.0f, 1.0f));
+	testMessage("DropMessage", DropMessage());
 }

@@ -13,6 +13,7 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(UpdateCollectedTypeMessage);
 	UpdateCollectedTypeMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_UPDATECOLLECTEDTYPE)
 	{

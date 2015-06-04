@@ -13,6 +13,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(FingerMovementMessage);
+
 	FingerMovementMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_FINGERMOVEMENT)
 	{

@@ -12,6 +12,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(UpdateHitpointsMessage);
+
 	UpdateHitpointsMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_UPDATEHITPOINTS)
 	{

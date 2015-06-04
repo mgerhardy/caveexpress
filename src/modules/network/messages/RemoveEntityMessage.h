@@ -12,6 +12,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(RemoveEntityMessage);
+
 	RemoveEntityMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_REMOVEENTITY)
 	{

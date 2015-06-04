@@ -7,7 +7,7 @@ class ProtocolTest: public AbstractProtocolTest {
 TEST_F(ProtocolTest, testProtocols)
 {
 	testSharedMessages();
-	testMessage(AutoSolveStartedMessage());
-	testMessage(AutoSolveAbortedMessage());
-	testMessage(UndoMessage());
+	testMessage("AutoSolveStartedMessage", AutoSolveStartedMessage());
+	testMessage("AutoSolveAbortedMessage", AutoSolveAbortedMessage());
+	testMessage("UndoMessage", UndoMessage());
 }

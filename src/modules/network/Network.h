@@ -50,7 +50,7 @@ private:
 				return;
 			}
 
-			const ScopedPtr<IProtocolMessage> msg(ProtocolMessageFactory::get().create(stream));
+			const IProtocolMessage* msg(ProtocolMessageFactory::get().createMsg(stream));
 			if (!msg)
 				return;
 

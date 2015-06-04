@@ -13,6 +13,7 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(LightStateMessage);
 	LightStateMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_LIGHTSTATE)
 	{

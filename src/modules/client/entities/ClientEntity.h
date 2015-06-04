@@ -12,7 +12,7 @@
 #include <string>
 
 class ClientEntity;
-typedef SharedPtr<ClientEntity> ClientEntityPtr;
+typedef ClientEntity* ClientEntityPtr;
 
 class ClientEntity {
 protected:
@@ -102,14 +102,14 @@ public:
 
 	void addOverlay (const SpritePtr& sprite);
 
-	void addRope (ClientEntityPtr ropeEntity)
+	void addRope (const ClientEntityPtr& ropeEntity)
 	{
 		_ropeEntity = ropeEntity;
 	}
 
 	void removeRope ()
 	{
-		_ropeEntity = SharedPtr<ClientEntity>();
+		_ropeEntity = nullptr;
 	}
 
 protected:

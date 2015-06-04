@@ -10,12 +10,3 @@ void AbstractTest::SetUp() {
 void AbstractTest::TearDown() {
 	ProtocolHandlerRegistry::get().shutdown();
 }
-
-ProtocolMessageFactory::ProtocolMessageFactory ()
-{
-}
-
-IProtocolMessage *ProtocolMessageFactory::create (ByteStream& stream) const
-{
-	return nullptr;
-}

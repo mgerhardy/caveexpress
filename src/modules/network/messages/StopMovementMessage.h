@@ -14,6 +14,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(StopMovementMessage);
+
 	StopMovementMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_STOPMOVEMENT)
 	{

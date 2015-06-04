@@ -14,6 +14,7 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(AddCaveMessage);
 	AddCaveMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_ADDCAVE)
 	{

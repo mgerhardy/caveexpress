@@ -57,4 +57,4 @@ public:
 	void onCampaignUnlock (Campaign* oldCampaign, Campaign* newCampaign) override;
 };
 
-typedef SharedPtr<IGame> GamePtr;
+typedef IGame* GamePtr;

@@ -12,6 +12,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(RemoveRopeMessage);
+
 	RemoveRopeMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_REMOVEROPE)
 	{

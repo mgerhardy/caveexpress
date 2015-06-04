@@ -65,13 +65,13 @@ void ServiceProvider::init (IFrontend *frontend)
 {
 	{
 		const ExecutionTime e("loading network");
+		_loopback = new NoNetwork();
 #ifndef NONETWORK
 		if (Config.get().isNetwork())
 			_network = new Network();
 		else
 #endif
-			_network = new NoNetwork();
-		_loopback = new NoNetwork();
+			_network = _loopback;
 		updateNetwork(false);
 	}
 	initTextureDefinition(frontend, Config.getTextureSize());

@@ -17,6 +17,7 @@
 #include "cavepacker/shared/CavePackerEntityType.h"
 #include "cavepacker/shared/CavePackerAchievement.h"
 #include "cavepacker/shared/network/ProtocolMessageTypes.h"
+#include "cavepacker/shared/network/messages/ProtocolMessages.h"
 #include "client/entities/ClientEntityFactory.h"
 #include "client/entities/ClientMapTile.h"
 #include "network/ProtocolHandlerRegistry.h"
@@ -44,6 +45,10 @@
 #include "cavepacker/shared/CavePackerSQLitePersister.h"
 #include "cavepacker/shared/CavePackerMapManager.h"
 #include <SDL.h>
+
+PROTOCOL_CLASS_FACTORY_IMPL(AutoSolveStartedMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(AutoSolveAbortedMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(UndoMessage);
 
 namespace {
 Achievement* puzzleAchievements[] = {
@@ -250,11 +255,11 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	_map.init(_frontend, *_serviceProvider);
 
 	ClientEntityRegistry &r = Singleton<ClientEntityRegistry>::getInstance();
-	r.registerFactory(EntityTypes::SOLID, ClientMapTile::FACTORY);
-	r.registerFactory(EntityTypes::GROUND, ClientMapTile::FACTORY);
-	r.registerFactory(EntityTypes::PACKAGE, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::PLAYER, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::TARGET, ClientMapTile::FACTORY);
+	r.registerFactory(&EntityTypes::SOLID, ClientMapTile::FACTORY);
+	r.registerFactory(&EntityTypes::GROUND, ClientMapTile::FACTORY);
+	r.registerFactory(&EntityTypes::PACKAGE, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::PLAYER, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::TARGET, ClientMapTile::FACTORY);
 
 	ProtocolHandlerRegistry& rp = ProtocolHandlerRegistry::get();
 	rp.registerServerHandler(protocol::PROTO_SPAWN, new SpawnHandler(_map));
@@ -267,6 +272,11 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	rp.registerServerHandler(protocol::PROTO_ERROR, new ErrorHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_UNDO, new UndoHandler(_map));
+
+	ProtocolMessageFactory& f = ProtocolMessageFactory::get();
+	f.registerFactory(protocol::PROTO_AUTOSOLVE, AutoSolveStartedMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_AUTOSOLVEABORT, AutoSolveAbortedMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_UNDO, UndoMessage::FACTORY);
 
 	_campaignManager->getAutoActiveCampaign();
 }
@@ -300,3 +310,5 @@ bool CavePacker::visitEntity (IEntity *entity)
 	}
 	return false;
 }
+
+static GameRegisterStatic CAVEPACKER("cavepacker", GamePtr(new CavePacker()));

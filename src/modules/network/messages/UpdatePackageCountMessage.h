@@ -12,6 +12,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(UpdatePackageCountMessage);
+
 	UpdatePackageCountMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_UPDATEPACKAGECOUNT)
 	{

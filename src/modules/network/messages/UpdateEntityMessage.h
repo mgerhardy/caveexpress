@@ -17,6 +17,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(UpdateEntityMessage);
+
 	UpdateEntityMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_UPDATEENTITY)
 	{

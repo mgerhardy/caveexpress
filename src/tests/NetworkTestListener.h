@@ -18,7 +18,7 @@ public:
 			++_count;
 			// remove the size from the stream
 			data.readShort();
-			const ScopedPtr<IProtocolMessage> msg(factory.create(data));
+			IProtocolMessage* msg(factory.createMsg(data));
 			if (!msg) {
 				_errorCount++;
 				_lastError = "no message for type " + string::toString(static_cast<int>(data.readByte()));
@@ -66,7 +66,7 @@ public:
 			++_count;
 			// remove the size from the stream
 			data.readShort();
-			const ScopedPtr<IProtocolMessage> msg(factory.create(data));
+			IProtocolMessage* msg(factory.createMsg(data));
 			if (!msg) {
 				_errorCount++;
 				_lastError = "no message for type " + string::toString(static_cast<int>(data.readByte()));

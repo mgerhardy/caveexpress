@@ -717,9 +717,10 @@ bool Map::isReadyToStart () const
 
 void Map::startMap ()
 {
-	info(LOG_SERVER, "start the map and spawn pending players");
+	info(LOG_SERVER, String::format("start the map and spawn pending players: %i", (int)_playersWaitingForSpawn.size()));
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
-		spawnPlayer(*i);
+		Player* player = *i;
+		spawnPlayer(player);
 	}
 	_playersWaitingForSpawn.clear();
 	updateVisMask();

@@ -16,6 +16,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(FailedMapMessage);
+
 	FailedMapMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_FAILEDMAP)
 	{

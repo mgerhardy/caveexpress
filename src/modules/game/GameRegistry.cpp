@@ -7,6 +7,9 @@ GameRegistry::GameRegistry()
 
 GameRegistry::~GameRegistry()
 {
+	for (auto i = _games.begin(); i != _games.end(); ++i)
+		delete i->second;
+	_games.clear();
 }
 
 GamePtr GameRegistry::getGame (const std::string& id)
@@ -19,7 +22,7 @@ GamePtr GameRegistry::getGame (const std::string& id)
 			const IFactory<IGame, GameFactoryContext> *factory = i->second;
 			game = factory->create(&ctx);
 			if (!game)
-				System.exit("failed to create game factory: " + *(i->first), 1);
+				System.exit("failed to create game factory: " + i->first, 1);
 		} else {
 			System.exit("no game factory registered", 1);
 		}

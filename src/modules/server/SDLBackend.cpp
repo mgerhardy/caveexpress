@@ -245,7 +245,7 @@ bool SDLBackend::handleInit() {
 		_initState = InitState::INITSTATE_GAME;
 		break;
 	case InitState::INITSTATE_GAME:
-		info(LOG_BACKEND, "initi game data");
+		info(LOG_BACKEND, "init game data " + getGame()->getName());
 		getGame()->init(_frontend, _serviceProvider);
 		_initState = InitState::INITSTATE_SOUNDS;
 		break;
@@ -546,7 +546,7 @@ void SDLBackend::onData (ClientId clientId, ByteStream &data)
 	while (factory.isNewMessageAvailable(data)) {
 		// remove the size from the stream
 		data.readShort();
-		const ScopedPtr<IProtocolMessage> msg(factory.create(data));
+		const IProtocolMessage* msg(factory.createMsg(data));
 		if (!msg) {
 			error(LOG_SERVER, "no message for type " + string::toString(static_cast<int>(data.readByte())));
 			continue;

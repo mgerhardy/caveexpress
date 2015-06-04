@@ -11,6 +11,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(MapRestartMessage);
+
 	MapRestartMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_MAPRESTART)
 	{

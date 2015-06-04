@@ -6,22 +6,26 @@ class FileTest: public AbstractTest {
 };
 
 TEST_F(FileTest, testListDirectory) {
-	const std::string& campaignsPath = FS.getCampaignsDir();
-	const DirectoryEntries& campaigns = FS.listDirectory(campaignsPath);
-	ASSERT_TRUE(!campaigns.empty());
+	const std::string path = "dirlisting/";
+	const DirectoryEntries& campaigns = FS.listDirectory(path);
+	ASSERT_TRUE(!campaigns.empty()) << FS.getDataDir() << path << " is empty or not readable";
 }
 
 TEST_F(FileTest, testFileLoad) {
-	const std::string& campaignsPath = FS.getCampaignsDir();
-	const DirectoryEntries& campaigns = FS.listDirectory(campaignsPath);
-	ASSERT_TRUE(!campaigns.empty());
-	FilePtr f = FS.getFile(FS.getCampaignsDir() + *campaigns.begin());
-	ASSERT_TRUE(f);
-	char *buffer;
-	int fileLen = f->read((void **) &buffer);
-	ScopedArrayPtr<char> p(buffer);
-	ASSERT_TRUE(buffer) << "could not read " + *campaigns.begin();
-	ASSERT_TRUE(fileLen > 0) << "could not read " + *campaigns.begin();
+	const std::string path = "dirlisting/";
+	const DirectoryEntries& files = FS.listDirectory(path);
+	ASSERT_TRUE(!files.empty()) << FS.getDataDir() << path << " is empty or not readable";
+	for (const std::string file : files) {
+		const std::string filePath = path + file;
+		FilePtr f = FS.getFile(filePath);
+		ASSERT_NE(-1, f->length()) << "Could not load " << FS.getDataDir() << filePath;
+		char *buffer;
+		int fileLen = f->read((void **) &buffer);
+		ASSERT_NE(-1, fileLen) << "Could not read " << FS.getDataDir() << filePath;
+		ScopedArrayPtr<char> p(buffer);
+		ASSERT_TRUE(fileLen == 0 || buffer) << "could not read " << FS.getDataDir() << filePath;
+		ASSERT_TRUE(fileLen >= 0) << "could not read " << FS.getDataDir() << filePath;
+	}
 }
 
 TEST_F(FileTest, testFileWrite) {
@@ -30,9 +34,9 @@ TEST_F(FileTest, testFileWrite) {
 	const unsigned char *buf =
 			reinterpret_cast<const unsigned char *>(testStr.c_str());
 	const size_t length = testStr.size();
-	ASSERT_TRUE(FS.writeFile(filename, buf, length, true) != -1L);
-	ASSERT_TRUE(FS.writeFile(filename, buf, length, false) == -1L);
-	ASSERT_TRUE(FS.writeFile(filename, buf, length, true) != -1L);
+	ASSERT_TRUE(FS.writeFile(filename, buf, length, true) != -1L) << "Failed to write file " << filename;
+	ASSERT_TRUE(FS.writeFile(filename, buf, length, false) == -1L) << "Failed to not write file " << filename;
+	ASSERT_TRUE(FS.writeFile(filename, buf, length, true) != -1L) << "Failed to write file " << filename;
 }
 
 TEST_F(FileTest, testFileSysWrite) {
@@ -41,9 +45,9 @@ TEST_F(FileTest, testFileSysWrite) {
 	const unsigned char *buf =
 			reinterpret_cast<const unsigned char *>(testStr.c_str());
 	const size_t length = testStr.size();
-	ASSERT_TRUE(FS.writeSysFile(filename, buf, length, true) != -1L);
-	ASSERT_TRUE(FS.writeSysFile(filename, buf, length, false) == -1L);
-	ASSERT_TRUE(FS.writeSysFile(filename, buf, length, true) != -1L);
+	ASSERT_TRUE(FS.writeSysFile(filename, buf, length, true) != -1L) << "Failed to write file " << filename;
+	ASSERT_TRUE(FS.writeSysFile(filename, buf, length, false) == -1L) << "Failed to not write file " << filename;
+	ASSERT_TRUE(FS.writeSysFile(filename, buf, length, true) != -1L) << "Failed to write file " << filename;
 }
 
 TEST_F(FileTest, testDelete) {
@@ -52,24 +56,25 @@ TEST_F(FileTest, testDelete) {
 	const unsigned char *buf =
 			reinterpret_cast<const unsigned char *>(testStr.c_str());
 	const size_t length = testStr.size();
-	ASSERT_TRUE(FS.writeFile(filename, buf, length, true) != -1L);
-	ASSERT_TRUE(FS.deleteFile(filename));
+	ASSERT_TRUE(FS.writeFile(filename, buf, length, true) != -1L) << "Failed to write file " << filename;
+	ASSERT_TRUE(FS.deleteFile(filename)) << "Failed to delete file " << filename;
 }
 
 TEST_F(FileTest, testCopy) {
-	std::string filename = "test/gamestate2.sqlite";
-	std::string targetFilename = "test/testcopy.test.temp";
+	std::string filename = "gamestate2.sqlite";
+	std::string targetFilename = "testcopy.test.temp";
 	const std::string testStr = "testCopy";
 	const unsigned char *buf =
 			reinterpret_cast<const unsigned char *>(testStr.c_str());
 	const size_t length = testStr.size();
-	ASSERT_TRUE(FS.writeFile(filename, buf, length, true) != -1L);
-	ASSERT_TRUE(FS.copy(filename, targetFilename));
+	ASSERT_TRUE(FS.writeFile(filename, buf, length, true) != -1L) << "Failed to write file " << filename;
+	ASSERT_TRUE(FS.copy(filename, targetFilename)) << "Failed to copy file " << filename << " to " << targetFilename;
 }
 
 TEST_F(FileTest, testName) {
 	std::string filename = "testdir/testname";
 	FilePtr p = FS.getFile(filename);
+	ASSERT_TRUE(p) << "Could not load " << filename;
 	ASSERT_EQ(FS.getDataDir() + "testdir", p->getPath());
 	ASSERT_EQ("testname", p->getFileName());
 	ASSERT_EQ(FS.getDataDir() + filename, p->getName());

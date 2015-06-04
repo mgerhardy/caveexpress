@@ -12,7 +12,7 @@
 ClientEntity::ClientEntity (const EntityType& type, uint16_t id, float x, float y, float sizeX, float sizeY,
 		const SoundMapping& soundMapping, EntityAlignment align, EntityAngle angle) :
 		_type(type), _id(id), _angle(angle), _time(0), _currSprite(), _state(0), _animation(&Animation::NONE), _fadeOutTime(
-				0), _alpha(1.0f), _animationSound(-1), _soundMapping(soundMapping), _visible(true), _visChanged(false), _align(
+				0), _alpha(1.0f), _ropeEntity(nullptr), _animationSound(-1), _soundMapping(soundMapping), _visible(true), _visChanged(false), _align(
 				align), _screenPosX(0), _screenPosY(0), _screenWidth(0), _screenHeight(0)
 {
 	const vec2 startPos(x, y);

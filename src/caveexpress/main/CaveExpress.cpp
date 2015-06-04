@@ -90,7 +90,17 @@
 #include "campaign/persister/GooglePlayPersister.h"
 #include "common/System.h"
 #include "network/INetwork.h"
+#include "network/IProtocolMessage.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
+
+PROTOCOL_CLASS_FACTORY_IMPL(DropMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(RemoveRopeMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(AddRopeMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(LightStateMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(AddCaveMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(UpdateCollectedTypeMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(WaterHeightMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(WaterImpactMessage);
 
 CaveExpress::CaveExpress () :
 		_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _updateEntitiesTime(0), _frontend(nullptr), _serviceProvider(nullptr),_connectedClients(
@@ -247,34 +257,44 @@ void CaveExpress::shutdown ()
 void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 {
 	ClientEntityRegistry &r = Singleton<ClientEntityRegistry>::getInstance();
-	r.registerFactory(EntityTypes::DECORATION, ClientMapTile::FACTORY);
-	r.registerFactory(EntityTypes::SOLID, ClientMapTile::FACTORY);
-	r.registerFactory(EntityTypes::LAVA, ClientMapTile::FACTORY);
-	r.registerFactory(EntityTypes::GROUND, ClientMapTile::FACTORY);
-	r.registerFactory(EntityTypes::CAVE, ClientCaveTile::FACTORY);
-	r.registerFactory(EntityTypes::WINDOW, ClientWindowTile::FACTORY);
-	r.registerFactory(EntityTypes::NPC_FRIENDLY_GRANDPA, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::NPC_FRIENDLY_WOMAN, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::NPC_FRIENDLY_MAN, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::NPC_FISH, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::NPC_FLYING, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::NPC_WALKING, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::NPC_MAMMUT, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::NPC_BLOWING, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::PLAYER, ClientPlayer::FACTORY);
-	r.registerFactory(EntityTypes::STONE, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::TREE, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::PACKAGE_ICE, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::PACKAGE_ROCK, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::PACKAGETARGET_ICE, ClientMapTile::FACTORY);
-	r.registerFactory(EntityTypes::PACKAGETARGET_ROCK, ClientMapTile::FACTORY);
-	r.registerFactory(EntityTypes::APPLE, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::BANANA, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::EGG, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::PARTICLE, ClientParticle::FACTORY);
-	r.registerFactory(EntityTypes::GEYSER_ICE, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::GEYSER_ROCK, ClientEntity::FACTORY);
-	r.registerFactory(EntityTypes::BOMB, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::DECORATION, ClientMapTile::FACTORY);
+	r.registerFactory(&EntityTypes::SOLID, ClientMapTile::FACTORY);
+	r.registerFactory(&EntityTypes::LAVA, ClientMapTile::FACTORY);
+	r.registerFactory(&EntityTypes::GROUND, ClientMapTile::FACTORY);
+	r.registerFactory(&EntityTypes::CAVE, ClientCaveTile::FACTORY);
+	r.registerFactory(&EntityTypes::WINDOW, ClientWindowTile::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_FRIENDLY_GRANDPA, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_FRIENDLY_WOMAN, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_FRIENDLY_MAN, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_FISH, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_FLYING, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_WALKING, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_MAMMUT, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_BLOWING, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::PLAYER, ClientPlayer::FACTORY);
+	r.registerFactory(&EntityTypes::STONE, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::TREE, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::PACKAGE_ICE, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::PACKAGE_ROCK, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::PACKAGETARGET_ICE, ClientMapTile::FACTORY);
+	r.registerFactory(&EntityTypes::PACKAGETARGET_ROCK, ClientMapTile::FACTORY);
+	r.registerFactory(&EntityTypes::APPLE, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::BANANA, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::EGG, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::PARTICLE, ClientParticle::FACTORY);
+	r.registerFactory(&EntityTypes::GEYSER_ICE, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::GEYSER_ROCK, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::BOMB, ClientEntity::FACTORY);
+
+	ProtocolMessageFactory& f = ProtocolMessageFactory::get();
+	f.registerFactory(protocol::PROTO_DROP, DropMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_REMOVEROPE, RemoveRopeMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_WATERHEIGHT, WaterHeightMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_WATERIMPACT, WaterImpactMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_ADDCAVE, AddCaveMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_LIGHTSTATE, LightStateMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_UPDATECOLLECTEDTYPE,UpdateCollectedTypeMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_ADDROPE, AddRopeMessage::FACTORY);
 
 	{
 		ExecutionTime e("loading persister");
@@ -395,3 +415,5 @@ bool CaveExpress::visitEntity (IEntity *entity)
 	}
 	return false;
 }
+
+static GameRegisterStatic CAVEEXPRESS("caveexpress", GamePtr(new CaveExpress()));

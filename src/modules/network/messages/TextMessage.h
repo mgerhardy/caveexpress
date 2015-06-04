@@ -12,6 +12,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(TextMessage);
+
 	TextMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_MESSAGE)
 	{

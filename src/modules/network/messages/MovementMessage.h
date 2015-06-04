@@ -14,6 +14,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(MovementMessage);
+
 	MovementMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_MOVEMENT)
 	{

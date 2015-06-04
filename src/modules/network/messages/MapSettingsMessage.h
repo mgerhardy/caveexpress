@@ -16,6 +16,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(MapSettingsMessage);
+
 	MapSettingsMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_MAPSETTINGS), _settingsPtr(nullptr)
 	{

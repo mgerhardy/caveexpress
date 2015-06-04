@@ -1,6 +1,7 @@
 set(network_SRCS
 	NoNetwork.cpp
 	Network.cpp
+	ProtocolMessageFactory.cpp
 	INetwork.cpp
 )
 add_library(network ${network_SRCS})

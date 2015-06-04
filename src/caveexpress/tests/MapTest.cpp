@@ -94,6 +94,8 @@ protected:
 		_serviceProvider.getNetwork().openServer(12345, nullptr);
 		_map.init(&_testFrontend, _serviceProvider);
 		_game.init(&_testFrontend, _serviceProvider);
+		TextureDefinition t("small");
+		SpriteDefinition::get().init(t);
 	}
 };
 

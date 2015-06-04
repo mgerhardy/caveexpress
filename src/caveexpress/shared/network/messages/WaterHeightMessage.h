@@ -11,6 +11,7 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(WaterHeightMessage);
 	WaterHeightMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_WATERHEIGHT)
 	{

@@ -38,5 +38,3 @@ private:
 	// IEntityVisitor
 	bool visitEntity (IEntity *entity) override;
 };
-
-static GameRegisterStatic CAVEPACKER("cavepacker", GamePtr(new CavePacker()));

@@ -84,7 +84,7 @@ int SQLiteStatement::step (bool reset)
 }
 
 SQLite::SQLite (const std::string& fileName) :
-		_fileName(fileName), _db(0)
+		_fileName(fileName), _db(nullptr)
 {
 }
 

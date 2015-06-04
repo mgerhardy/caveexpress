@@ -12,6 +12,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(UpdatePointsMessage);
+
 	UpdatePointsMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_UPDATEPOINTS)
 	{

@@ -12,6 +12,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(ClientInitMessage);
+
 	ClientInitMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_CLIENTINIT)
 	{

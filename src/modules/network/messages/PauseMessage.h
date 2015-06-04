@@ -11,6 +11,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(PauseMessage);
+
 	PauseMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_PAUSE)
 	{

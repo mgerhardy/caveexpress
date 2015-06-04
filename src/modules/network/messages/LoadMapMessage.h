@@ -17,6 +17,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(LoadMapMessage);
+
 	LoadMapMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_LOADMAP)
 	{

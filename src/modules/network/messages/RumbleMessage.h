@@ -13,6 +13,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(RumbleMessage);
+
 	RumbleMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_RUMBLE)
 	{

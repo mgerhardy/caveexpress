@@ -1,5 +1,4 @@
 #include "TestShared.h"
-
 #include "ui/UI.h"
 #include "ui/windows/UIWindow.h"
 #include "ui/nodes/UINode.h"
@@ -7,28 +6,40 @@
 #include "ui/layouts/UIVBoxLayout.h"
 
 class UITest: public AbstractTest {
+protected:
+	virtual void SetUp() override {
+		AbstractTest::SetUp();
+		UI::get().init(_serviceProvider, _eventHandler, _testFrontend);
+	}
+	virtual void TearDown() override {
+		UI::get().shutdown();
+		AbstractTest::TearDown();
+	}
 };
 
-class TestNode : public UINode {
+class TestNode: public UINode {
 protected:
 	bool _active;
 public:
-	TestNode(IFrontend* frontend, bool active) : UINode(frontend, "testnode"), _active(active) {}
+	TestNode(IFrontend* frontend, bool active) :
+			UINode(frontend, "testnode"), _active(active) {
+	}
 
-	bool isActive () const override {
+	bool isActive() const override {
 		if (!_active)
 			return UINode::isActive();
 		return true;
 	}
 };
 
-class TestWindow : public UIWindow {
+class TestWindow: public UIWindow {
 public:
-	TestWindow(IFrontend* frontend) : UIWindow("testwindow", frontend) {}
+	TestWindow(IFrontend* frontend) :
+			UIWindow("testwindow", frontend) {
+	}
 };
 
-TEST_F(UITest, testSimpleFocus)
-{
+TEST_F(UITest, testSimpleFocus) {
 	TestWindow window(&_testFrontend);
 	UINode *node1 = new TestNode(&_testFrontend, true);
 	UINode *node2 = new TestNode(&_testFrontend, true);
@@ -55,8 +66,7 @@ TEST_F(UITest, testSimpleFocus)
 	ASSERT_TRUE(window.hasFocus());
 }
 
-TEST_F(UITest, testPanelFocus)
-{
+TEST_F(UITest, testPanelFocus) {
 	TestWindow window(&_testFrontend);
 	UINode *panel = new UINode(&_testFrontend, "panel");
 	UINode *node1 = new TestNode(&_testFrontend, true);
@@ -86,8 +96,7 @@ TEST_F(UITest, testPanelFocus)
 	ASSERT_TRUE(window.hasFocus());
 }
 
-TEST_F(UITest, testPanelWithOthersFocus)
-{
+TEST_F(UITest, testPanelWithOthersFocus) {
 	TestWindow window(&_testFrontend);
 	UINode *panel = new UINode(&_testFrontend, "panel");
 	UINode *node1 = new TestNode(&_testFrontend, true);
@@ -126,8 +135,7 @@ TEST_F(UITest, testPanelWithOthersFocus)
 	ASSERT_TRUE(window.hasFocus());
 }
 
-TEST_F(UITest, testVisibleFocus)
-{
+TEST_F(UITest, testVisibleFocus) {
 	TestWindow window(&_testFrontend);
 	UINode *node1 = new TestNode(&_testFrontend, true);
 	window.add(node1);
@@ -137,8 +145,7 @@ TEST_F(UITest, testVisibleFocus)
 	ASSERT_FALSE(node1->hasFocus());
 }
 
-TEST_F(UITest, testAlignTo)
-{
+TEST_F(UITest, testAlignTo) {
 	TestWindow window(&_testFrontend);
 	UINode *node1 = new TestNode(&_testFrontend, false);
 	node1->setSize(1.0f, 0.5f);
@@ -158,8 +165,7 @@ TEST_F(UITest, testAlignTo)
 	ASSERT_DOUBLE_EQ(expectedNode2Y, node2->getY());
 }
 
-TEST_F(UITest, testHLayout)
-{
+TEST_F(UITest, testHLayout) {
 	TestWindow window(&_testFrontend);
 	UINode *nodeH = new TestNode(&_testFrontend, false);
 	nodeH->setSize(1.0f, 1.0f);
@@ -177,8 +183,7 @@ TEST_F(UITest, testHLayout)
 	ASSERT_DOUBLE_EQ(0.0f, node2->getY());
 }
 
-TEST_F(UITest, testVLayout)
-{
+TEST_F(UITest, testVLayout) {
 	TestWindow window(&_testFrontend);
 	UINode *nodeV = new TestNode(&_testFrontend, false);
 	nodeV->setSize(1.0f, 1.0f);
@@ -196,8 +201,7 @@ TEST_F(UITest, testVLayout)
 	ASSERT_DOUBLE_EQ(0.1f, node2->getY());
 }
 
-TEST_F(UITest, testRestart)
-{
+TEST_F(UITest, testRestart) {
 	UI::get().initRestart();
 	UI::get().restart();
 }

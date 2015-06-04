@@ -1,4 +1,5 @@
 project(tests)
+textures(${PROJECT_NAME})
 file(GLOB ${PROJECT_NAME}_SRC
 	FileTest.cpp
 	ByteStreamTest.cpp
@@ -10,6 +11,7 @@ file(GLOB ${PROJECT_NAME}_SRC
 	GeneralTest.cpp
 	TestAll.cpp
 	LUATest.cpp
+	TestGame.cpp
 	UITest.cpp
 	MemoryAllocatorTest.cpp
 	EnumTest.cpp)

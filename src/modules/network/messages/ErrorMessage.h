@@ -14,6 +14,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(ErrorMessage);
+
 	ErrorMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_ERROR)
 	{

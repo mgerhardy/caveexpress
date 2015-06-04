@@ -8,8 +8,9 @@
 #include "common/MapSettings.h"
 
 TEST(CampaignTest, testSave) {
-	SCOPED_TRACE("test/new.sqlite");
-	SQLitePersister persister("test/new.temp");
+	SCOPED_TRACE("new.sqlite");
+	SQLitePersister persister(System.getDatabaseDirectory() + "new.temp");
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
 	Campaign campaign("testsave", &persister);
 	campaign.addMap("test1", "test1");
 	campaign.addMap("test2", "test2");
@@ -28,22 +29,25 @@ TEST(CampaignTest, testSave) {
 }
 
 TEST(CampaignTest, testLoad) {
-	SCOPED_TRACE("test/gamestate.sqlite");
-	SQLitePersister persister("test/gamestate.sqlite");
+	SCOPED_TRACE("gamestate.sqlite");
+	SQLitePersister persister(System.getDatabaseDirectory() + "gamestate.sqlite");
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
 	Campaign campaign("tutorial", &persister);
 	ASSERT_TRUE(campaign.loadProgress()) << "failed to load the campaign progress";
 }
 
 TEST(CampaignTest, testLoad2) {
-	SCOPED_TRACE("test/gamestate2.sqlite");
-	SQLitePersister persister("test/gamestate2.sqlite");
+	SCOPED_TRACE("gamestate2.sqlite");
+	SQLitePersister persister(System.getDatabaseDirectory() + "gamestate2.sqlite");
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
 	Campaign campaign("tutorial", &persister);
 	ASSERT_TRUE(campaign.loadProgress()) << "failed to load the campaign progress";
 }
 
 TEST(CampaignTest, testReset) {
-	SCOPED_TRACE("test/reset.temp");
-	SQLitePersister persister("test/reset.temp");
+	SCOPED_TRACE("reset.temp");
+	SQLitePersister persister(System.getDatabaseDirectory() + "reset.temp");
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
 	Campaign campaign("testsave", &persister);
 	campaign.addMap("test1", "test1");
 	campaign.addMap("test2", "test2");
@@ -67,8 +71,9 @@ TEST(CampaignTest, testReset) {
 
 // check that all the specified maps exist and are loadable
 TEST(CampaignTest, testMaps) {
-	SCOPED_TRACE("test/idontcare.temp");
-	SQLitePersister persister("test/idontcare.temp");
+	SCOPED_TRACE("idontcare.temp");
+	SQLitePersister persister(System.getDatabaseDirectory() + "idontcare.temp");
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
 	LUAMapManager mapMgr;
 	mapMgr.loadMaps();
 	TextureDefinition t("small");
@@ -105,8 +110,9 @@ TEST(CampaignTest, testMaps) {
 }
 
 TEST(CampaignTest, testUpdateMapValues) {
-	SCOPED_TRACE("test/updatemapvalues.temp");
-	SQLitePersister persister("test/updatemapvalues.temp");
+	SCOPED_TRACE("updatemapvalues.temp");
+	SQLitePersister persister(System.getDatabaseDirectory() + "updatemapvalues.temp");
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
 	LUAMapManager mapMgr;
 	mapMgr.loadMaps();
 	TextureDefinition t("small");
@@ -136,9 +142,10 @@ TEST(CampaignTest, testUpdateMapValues) {
 }
 
 TEST(CampaignTest, testResetProgress) {
-	SCOPED_TRACE("test/gamestate2.sqlite");
-	FS.copy("test/gamestate2.sqlite", "test/gamestate2.sqlite.temp");
-	SQLitePersister persister("test/gamestate2.sqlite.temp");
+	SCOPED_TRACE("gamestate2.sqlite");
+	FS.copy("gamestate2.sqlite", "gamestate2.sqlite.temp");
+	SQLitePersister persister(System.getDatabaseDirectory() + "gamestate2.sqlite.temp");
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
 	LUAMapManager mapMgr;
 	mapMgr.loadMaps();
 	TextureDefinition t("small");

@@ -12,6 +12,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(TimeRemainingMessage);
+
 	TimeRemainingMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_TIMEREMAINING)
 	{

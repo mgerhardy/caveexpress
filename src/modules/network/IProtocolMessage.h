@@ -3,14 +3,34 @@
 #include "common/ByteStream.h"
 #include "common/Compiler.h"
 #include "common/Pointers.h"
+#include "common/IFactoryRegistry.h"
 #include <vector>
 #include <string>
 
 typedef uint8_t protocolId;
 
+#define PROTOCOL_CLASS_FACTORY(className) \
+	class Factory: public IProtocolMessageFactory { \
+	private: \
+		uint8_t* _memory; \
+		mutable bool _initialized; \
+	public: \
+		Factory() : _memory(new uint8_t[sizeof(className)]), _initialized(false) {} \
+		~Factory() { if (_initialized) { className* obj = reinterpret_cast<className*>(_memory); obj->~className(); } delete[] _memory; } \
+		IProtocolMessage* create (const ByteStream *ctx) const { \
+			_initialized = true; \
+			return new (_memory) className(*const_cast<ByteStream*>(ctx)); \
+		} \
+	}; \
+	static Factory FACTORY
+
+#define PROTOCOL_CLASS_FACTORY_IMPL(className) \
+	className::Factory className::FACTORY
+
 #define PROTOCOL_CLASS_SIMPLE(className, id) \
 	class className : public IProtocolMessage { \
 		public: \
+			PROTOCOL_CLASS_FACTORY(className); \
 			className () : IProtocolMessage(id) {} \
 			className (ByteStream& input) : IProtocolMessage(id) {} \
 			void serialize (ByteStream& out) const override { out.addByte(_id); } \
@@ -18,6 +38,7 @@ typedef uint8_t protocolId;
 #define PROTOCOL_CLASS_SIMPLE_LIST(className, id) \
 	class className : public IProtocolListMessage { \
 		public: \
+			PROTOCOL_CLASS_FACTORY(className); \
 			className (const std::vector<std::string>& list) : IProtocolListMessage(id, list) {} \
 			className (ByteStream& input) : IProtocolListMessage(id, input) {} \
 	}
@@ -79,6 +100,14 @@ public:
 	{
 		return _list;
 	}
+};
+
+class IProtocolMessageFactory: public IFactory<IProtocolMessage, ByteStream> {
+public:
+	virtual ~IProtocolMessageFactory ()
+	{
+	}
+	virtual IProtocolMessage* create (const ByteStream *ctx) const = 0;
 };
 
 namespace protocol

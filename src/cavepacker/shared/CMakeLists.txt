@@ -4,7 +4,6 @@ set(cavepacker-shared_SRCS
 	CavePackerSpriteType.cpp
 	CavePackerAchievement.cpp
 	CavePackerEntityType.cpp
-	network/ProtocolMessageFactory.cpp
 )
 add_library(cavepacker-shared ${cavepacker-shared_SRCS})
 set_target_properties(cavepacker-shared PROPERTIES FOLDER cavepacker-shared)

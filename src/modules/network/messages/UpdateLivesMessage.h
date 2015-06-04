@@ -12,6 +12,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(UpdateLivesMessage);
+
 	UpdateLivesMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_UPDATELIVES)
 	{

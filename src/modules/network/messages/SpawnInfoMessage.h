@@ -14,6 +14,8 @@ public:
 	{
 	}
 
+	PROTOCOL_CLASS_FACTORY(SpawnInfoMessage);
+
 	SpawnInfoMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_SPAWNINFO)
 	{

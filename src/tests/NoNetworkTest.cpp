@@ -14,7 +14,10 @@ const char *LOCALHOST = "localhost";
 const int PORT = 4567;
 }
 
-TEST(NoNetworkTest, testSendToClient)
+class NoNetworkTest: public AbstractTest {
+};
+
+TEST_F(NoNetworkTest, testSendToClient)
 {
 	ProtocolHandlerRegistry::get().shutdown();
 	NetworkTestServerListener serverListener;
