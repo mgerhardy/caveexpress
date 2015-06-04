@@ -145,7 +145,6 @@ FILE(GLOB libs_SRCS
 	SDL/src/audio/sun/*.c
 	SDL/src/audio/qsa/*.c
 	SDL/src/audio/fusionsound/*.c
-	SDL/src/audio/pulseaudio/*.c
 	SDL/src/audio/nas/*.c
 	SDL/src/atomic/*.c
 	SDL/src/thread/*.c
@@ -263,6 +262,7 @@ FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/joystick/linux/*.c
 	SDL/src/audio/alsa/*.c
 	SDL/src/audio/arts/*.c
+	SDL/src/audio/pulseaudio/*.c
 	SDL/src/timer/unix/*.c
 	SDL/src/main/dummy/*.c
 	SDL/src/core/linux/*.c
