@@ -27,6 +27,7 @@ GL1Frontend::GL1Frontend (SharedPtr<IConsole> console) :
 	_context = nullptr;
 
 	memset(&_viewPort, 0, sizeof(_viewPort));
+	memset(_colorArray, 0, sizeof(_colorArray));
 }
 
 GL1Frontend::~GL1Frontend ()
