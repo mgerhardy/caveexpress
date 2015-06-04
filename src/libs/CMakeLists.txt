@@ -108,7 +108,6 @@ FILE(GLOB libs_SRCS
 	SDL/src/render/*.c
 	SDL/src/render/opengl/*.c
 	SDL/src/render/opengles/*.c
-	SDL/src/render/direct3d/*.c
 	SDL/src/render/software/*.c
 	SDL/src/render/opengles2/*.c
 	SDL/src/haptic/*.c
@@ -136,7 +135,6 @@ FILE(GLOB libs_SRCS
 	SDL/src/power/uikit/*.c
 	SDL/src/audio/*.c
 	SDL/src/audio/bsd/*.c
-	SDL/src/audio/arts/*.c
 	SDL/src/audio/esd/*.c
 	SDL/src/audio/dummy/*.c
 	SDL/src/audio/dsp/*.c
@@ -146,12 +144,9 @@ FILE(GLOB libs_SRCS
 	SDL/src/audio/disk/*.c
 	SDL/src/audio/sun/*.c
 	SDL/src/audio/qsa/*.c
-	SDL/src/audio/alsa/*.c
 	SDL/src/audio/fusionsound/*.c
 	SDL/src/audio/pulseaudio/*.c
 	SDL/src/audio/nas/*.c
-	SDL/src/audio/winmm/*.c
-	SDL/src/audio/directsound/*.c
 	SDL/src/atomic/*.c
 	SDL/src/thread/*.c
 	SDL/src/stdlib/*.c
@@ -233,6 +228,9 @@ FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/timer/windows/*.c
 	SDL/src/core/windows/*.c
 	SDL/src/power/windows/*.c
+	SDL/src/audio/winmm/*.c
+	SDL/src/audio/directsound/*.c
+	SDL/src/render/direct3d/*.c
 	SDL/src/thread/windows/*.c
 	SDL/src/thread/generic/SDL_syscond.c)
 elseif(APPLE)
@@ -255,7 +253,7 @@ FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/haptic/darwin/*.c
 	SDL/src/power/macosx/*.c
 	SDL/src/thread/pthread/*.c)
-elseif(UNIX)
+elseif(LINUX)
 include(FindPkgConfig)
 pkg_search_module(DBUS REQUIRED dbus-1 dbus)
 include_directories(${DBUS_INCLUDE_DIRS})
@@ -263,6 +261,8 @@ FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/thread/pthread/*.c
 	SDL/src/haptic/linux/*.c
 	SDL/src/joystick/linux/*.c
+	SDL/src/audio/alsa/*.c
+	SDL/src/audio/arts/*.c
 	SDL/src/timer/unix/*.c
 	SDL/src/main/dummy/*.c
 	SDL/src/core/linux/*.c
