@@ -4,6 +4,6 @@
 
 class UIMapEditorHelpWindow: public UIHelpWindow {
 public:
-	UIMapEditorHelpWindow (IFrontend* frontend);
+	explicit UIMapEditorHelpWindow (IFrontend* frontend);
 	virtual ~UIMapEditorHelpWindow ();
 };

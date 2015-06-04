@@ -18,7 +18,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(MapSettingsMessage);
 
-	MapSettingsMessage (ByteStream& input) :
+	explicit MapSettingsMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_MAPSETTINGS), _settingsPtr(nullptr)
 	{
 		const int16_t size = input.readShort();

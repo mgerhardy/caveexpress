@@ -8,7 +8,7 @@ private:
 	SpriteDefPtr _activeSpriteDefition;
 
 public:
-	UINodeMapEditorSelectedItem (IFrontend *frontend);
+	explicit UINodeMapEditorSelectedItem (IFrontend *frontend);
 	virtual ~UINodeMapEditorSelectedItem ();
 	void setSprite (const SpriteDefPtr& spriteDef);
 

@@ -5,7 +5,7 @@
 
 class IntroFindYourWay: public Intro {
 public:
-	IntroFindYourWay (IFrontend* frontend);
+	explicit IntroFindYourWay (IFrontend* frontend);
 protected:
 	void addIntroNodes(UINode* parent) override;
 };

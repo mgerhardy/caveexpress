@@ -5,7 +5,7 @@
 
 class IntroTree: public Intro {
 public:
-	IntroTree (IFrontend* frontend);
+	explicit IntroTree (IFrontend* frontend);
 protected:
 	void addIntroNodes(UINode* parent) override;
 };

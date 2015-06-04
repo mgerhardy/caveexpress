@@ -4,5 +4,5 @@
 
 class UIGameFinishedWindow: public UIWindow {
 public:
-	UIGameFinishedWindow (IFrontend *frontend);
+	explicit UIGameFinishedWindow (IFrontend *frontend);
 };

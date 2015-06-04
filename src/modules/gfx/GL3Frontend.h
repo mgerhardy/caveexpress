@@ -30,7 +30,7 @@ protected:
 	void startNewBatch ();
 
 public:
-	GL3Frontend (SharedPtr<IConsole> console);
+	explicit GL3Frontend (SharedPtr<IConsole> console);
 	virtual ~GL3Frontend ();
 
 	void renderBegin () override;

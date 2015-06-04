@@ -39,7 +39,7 @@ private:
 	static int isNaCl (lua_State *L);
 
 public:
-	LUA (bool debug = false);
+	explicit LUA (bool debug = false);
 	~LUA ();
 
 	void init (bool debug = false);

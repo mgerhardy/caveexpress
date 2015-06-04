@@ -25,7 +25,7 @@ private:
 	void addTile(const std::string& tile, int col, int row);
 	bool isEmpty(int col, int row) const;
 public:
-	SokobanMapContext(const std::string& map);
+	explicit SokobanMapContext(const std::string& map);
 	virtual ~SokobanMapContext();
 
 	// IMapContext

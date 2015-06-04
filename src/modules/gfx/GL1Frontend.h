@@ -52,7 +52,7 @@ protected:
 	void setColorPointer (const Color& color, int amount);
 
 public:
-	GL1Frontend (SharedPtr<IConsole> console);
+	explicit GL1Frontend (SharedPtr<IConsole> console);
 	virtual ~GL1Frontend ();
 
 	void renderBegin () override;

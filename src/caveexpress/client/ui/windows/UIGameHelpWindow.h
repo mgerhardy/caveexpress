@@ -20,6 +20,6 @@ private:
 	void addOuyaButton (UINode *panel, const std::string& texture, const std::string& title);
 
 public:
-	UIGameHelpWindow (IFrontend* frontend);
+	explicit UIGameHelpWindow (IFrontend* frontend);
 	virtual ~UIGameHelpWindow ();
 };

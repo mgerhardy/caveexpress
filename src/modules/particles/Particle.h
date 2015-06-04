@@ -34,7 +34,7 @@ protected:
 	TexturePtr loadTexture (const std::string& image) const;
 	void advanceVector (const vec2& veca, const float scale, const vec2& vecb, vec2& outVector) const;
 public:
-	Particle(IParticleEnvironment& env);
+	explicit Particle(IParticleEnvironment& env);
 	virtual ~Particle();
 
 	// this is called with each update call

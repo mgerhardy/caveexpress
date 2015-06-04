@@ -63,7 +63,7 @@ protected:
 	}
 
 public:
-	IMapManager (const std::string& extension);
+	explicit IMapManager (const std::string& extension);
 	virtual ~IMapManager ();
 
 	void init ();
@@ -101,5 +101,5 @@ public:
 
 class FileMapManager: public IMapManager {
 public:
-	FileMapManager (const std::string& extension) : IMapManager(extension) {}
+	explicit FileMapManager (const std::string& extension) : IMapManager(extension) {}
 };

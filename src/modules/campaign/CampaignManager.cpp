@@ -18,7 +18,7 @@ CampaignManager *_mgr;
 
 struct isEqual {
 	const std::string& _campaignId;
-	isEqual (const std::string& campaignId) : _campaignId(campaignId) {}
+	explicit isEqual (const std::string& campaignId) : _campaignId(campaignId) {}
 	bool operator() (const CampaignPtr& l) { return l->getId() == _campaignId; }
 };
 

@@ -5,7 +5,7 @@
 
 class IntroTime: public Intro {
 public:
-	IntroTime (IFrontend* frontend);
+	explicit IntroTime (IFrontend* frontend);
 protected:
 	void addIntroNodes(UINode* parent) override;
 };

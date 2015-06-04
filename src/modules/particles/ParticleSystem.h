@@ -13,7 +13,7 @@ private:
 	Particles _particles;
 	int _maxParticles;
 public:
-	ParticleSystem(int maxParticles);
+	explicit ParticleSystem(int maxParticles);
 	virtual ~ParticleSystem();
 
 	void clear ();

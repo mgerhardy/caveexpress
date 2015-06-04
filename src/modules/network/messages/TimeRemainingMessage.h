@@ -7,14 +7,14 @@ class TimeRemainingMessage: public IProtocolMessage {
 private:
 	uint16_t _secondsRemaining;
 public:
-	TimeRemainingMessage (uint16_t secondsRemaining) :
+	explicit TimeRemainingMessage (uint16_t secondsRemaining) :
 			IProtocolMessage(protocol::PROTO_TIMEREMAINING), _secondsRemaining(secondsRemaining)
 	{
 	}
 
 	PROTOCOL_CLASS_FACTORY(TimeRemainingMessage);
 
-	TimeRemainingMessage (ByteStream& input) :
+	explicit TimeRemainingMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_TIMEREMAINING)
 	{
 		_secondsRemaining = input.readShort();

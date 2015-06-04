@@ -16,7 +16,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(SpawnInfoMessage);
 
-	SpawnInfoMessage (ByteStream& input) :
+	explicit SpawnInfoMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_SPAWNINFO)
 	{
 		_xpos = input.readShortScaled();

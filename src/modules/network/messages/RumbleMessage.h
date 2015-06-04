@@ -15,7 +15,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(RumbleMessage);
 
-	RumbleMessage (ByteStream& input) :
+	explicit RumbleMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_RUMBLE)
 	{
 		_strength = input.readFloat();

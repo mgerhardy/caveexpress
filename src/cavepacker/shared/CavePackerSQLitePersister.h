@@ -4,6 +4,6 @@
 
 class CavePackerSQLitePersister: public SQLitePersister {
 public:
-	CavePackerSQLitePersister (const std::string& filename);
+	explicit CavePackerSQLitePersister (const std::string& filename);
 	virtual ~CavePackerSQLitePersister ();
 };

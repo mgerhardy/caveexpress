@@ -7,14 +7,14 @@ class ClientInitMessage: public IProtocolMessage {
 private:
 	std::string _name;
 public:
-	ClientInitMessage (const std::string& name) :
+	explicit ClientInitMessage (const std::string& name) :
 			IProtocolMessage(protocol::PROTO_CLIENTINIT), _name(name)
 	{
 	}
 
 	PROTOCOL_CLASS_FACTORY(ClientInitMessage);
 
-	ClientInitMessage (ByteStream& input) :
+	explicit ClientInitMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_CLIENTINIT)
 	{
 		_name = input.readString();

@@ -198,7 +198,7 @@ void UINode::onAdd()
 void UINode::displayText (const std::string& text, uint32_t delayMillis, float x, float y)
 {
 	struct isEqual {
-		isEqual(const std::string& s) :
+		explicit isEqual(const std::string& s) :
 				_s(s) {
 		}
 

@@ -6,14 +6,14 @@ class MapRestartMessage: public IProtocolMessage {
 private:
 	uint16_t _delay;
 public:
-	MapRestartMessage (uint16_t delay) :
+	explicit MapRestartMessage (uint16_t delay) :
 			IProtocolMessage(protocol::PROTO_MAPRESTART), _delay(delay)
 	{
 	}
 
 	PROTOCOL_CLASS_FACTORY(MapRestartMessage);
 
-	MapRestartMessage (ByteStream& input) :
+	explicit MapRestartMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_MAPRESTART)
 	{
 		_delay = input.readShort();

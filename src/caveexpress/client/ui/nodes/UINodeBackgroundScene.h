@@ -47,7 +47,7 @@ private:
 	void renderWater (int x, int y) const;
 
 public:
-	UINodeBackgroundScene (IFrontend *frontend);
+	explicit UINodeBackgroundScene (IFrontend *frontend);
 	void updateReason (const MapFailedReason& reason, const ThemeType& theme);
 	void render (int x, int y) const override;
 };

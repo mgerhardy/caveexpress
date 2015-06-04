@@ -15,7 +15,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(ChangeAnimationMessage);
 
-	ChangeAnimationMessage (ByteStream& input) :
+	explicit ChangeAnimationMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_CHANGEANIMATION)
 	{
 		_entityId = input.readShort();

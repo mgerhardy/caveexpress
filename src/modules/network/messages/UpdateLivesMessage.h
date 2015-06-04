@@ -7,14 +7,14 @@ private:
 	uint8_t _lives;
 
 public:
-	UpdateLivesMessage (uint8_t lives) :
+	explicit UpdateLivesMessage (uint8_t lives) :
 			IProtocolMessage(protocol::PROTO_UPDATELIVES), _lives(lives)
 	{
 	}
 
 	PROTOCOL_CLASS_FACTORY(UpdateLivesMessage);
 
-	UpdateLivesMessage (ByteStream& input) :
+	explicit UpdateLivesMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_UPDATELIVES)
 	{
 		_lives = input.readByte();

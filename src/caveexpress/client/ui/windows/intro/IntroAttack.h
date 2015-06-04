@@ -5,7 +5,7 @@
 
 class IntroAttack: public Intro {
 public:
-	IntroAttack (IFrontend* frontend);
+	explicit IntroAttack (IFrontend* frontend);
 protected:
 	void addIntroNodes(UINode* parent) override;
 };

@@ -52,7 +52,7 @@ protected:
 	void getTrimmed (const Texture* texture, int& x, int& y, int& w, int& h) const;
 	void initJoystickAndHaptic ();
 public:
-	SDLFrontend (SharedPtr<IConsole> console);
+	explicit SDLFrontend (SharedPtr<IConsole> console);
 	virtual ~SDLFrontend ();
 
 	virtual void initRenderer ();

@@ -4,7 +4,7 @@ class UndoListener: public UINodeListener {
 private:
 	UINodeMapEditor *_mapEditor;
 public:
-	UndoListener (UINodeMapEditor *mapEditor) :
+	explicit UndoListener (UINodeMapEditor *mapEditor) :
 			_mapEditor(mapEditor)
 	{
 	}

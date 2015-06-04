@@ -29,7 +29,7 @@ protected:
 
 	virtual uint8_t loadLives (const std::string& campaignId);
 public:
-	SQLitePersister (const std::string& filename);
+	explicit SQLitePersister (const std::string& filename);
 	virtual ~SQLitePersister ();
 
 	virtual bool init () override;

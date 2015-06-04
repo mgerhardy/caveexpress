@@ -11,7 +11,7 @@ private:
 	TextConsole& _console;
 
 public:
-	ConsoleFrontend (TextConsole& console);
+	explicit ConsoleFrontend (TextConsole& console);
 	virtual ~ConsoleFrontend ();
 
 	// IFrontend

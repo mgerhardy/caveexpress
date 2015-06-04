@@ -16,7 +16,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(ErrorMessage);
 
-	ErrorMessage (ByteStream& input) :
+	explicit ErrorMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_ERROR)
 	{
 		_errorType = static_cast<ErrorTypes>(input.readByte());

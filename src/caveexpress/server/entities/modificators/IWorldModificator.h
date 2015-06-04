@@ -6,7 +6,7 @@ class Map;
 
 class IWorldModificator: public IEntity {
 public:
-	IWorldModificator (Map& map) :
+	explicit IWorldModificator (Map& map) :
 			IEntity(EntityTypes::MODIFICATOR, map)
 	{
 	}

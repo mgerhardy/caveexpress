@@ -8,14 +8,14 @@ private:
 	std::string _window;
 
 public:
-	BackToMainMessage (const std::string& window) :
+	explicit BackToMainMessage (const std::string& window) :
 			IProtocolMessage(protocol::PROTO_BACKTOMAIN), _window(window)
 	{
 	}
 
 	PROTOCOL_CLASS_FACTORY(BackToMainMessage);
 
-	BackToMainMessage (ByteStream& input) :
+	explicit BackToMainMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_BACKTOMAIN)
 	{
 		_window = input.readString();

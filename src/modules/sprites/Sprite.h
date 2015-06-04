@@ -31,7 +31,7 @@ private:
 	int _spriteHeight;
 
 public:
-	Sprite (const std::string& name);
+	explicit Sprite (const std::string& name);
 	virtual ~Sprite ();
 
 	TexturePtr getActiveTexture (Layer layer) const;

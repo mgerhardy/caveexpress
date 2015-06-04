@@ -7,14 +7,14 @@ private:
 	uint8_t _packages;
 
 public:
-	UpdatePackageCountMessage (uint8_t packages) :
+	explicit UpdatePackageCountMessage (uint8_t packages) :
 			IProtocolMessage(protocol::PROTO_UPDATEPACKAGECOUNT), _packages(packages)
 	{
 	}
 
 	PROTOCOL_CLASS_FACTORY(UpdatePackageCountMessage);
 
-	UpdatePackageCountMessage (ByteStream& input) :
+	explicit UpdatePackageCountMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_UPDATEPACKAGECOUNT)
 	{
 		_packages = input.readByte();

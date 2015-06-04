@@ -30,7 +30,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(AddEntityMessage);
 
-	AddEntityMessage (ByteStream& input) :
+	explicit AddEntityMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_ADDENTITY)
 	{
 		_entityId = input.readShort();

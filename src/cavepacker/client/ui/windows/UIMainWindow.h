@@ -4,5 +4,5 @@
 
 class UIMainWindow: public UIWindow {
 public:
-	UIMainWindow (IFrontend *frontend);
+	explicit UIMainWindow (IFrontend *frontend);
 };

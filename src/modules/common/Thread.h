@@ -10,7 +10,7 @@ public:
 		NORM_PRIORITY = 0, MAX_PRIORITY, MIN_PRIORITY
 	} Priority;
 
-	Thread (IRunnable* target);
+	explicit Thread (IRunnable* target);
 	virtual ~Thread ();
 
 	void start ();

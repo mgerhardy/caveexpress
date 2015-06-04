@@ -22,7 +22,7 @@ protected:
 	virtual b2BodyType getBodyType () const;
 
 public:
-	NPC (const EntityType &type, Map& map);
+	explicit NPC (const EntityType &type, Map& map);
 	virtual ~NPC ();
 
 	virtual void setFalling ();
@@ -103,7 +103,7 @@ private:
 	NPC* _npc;
 
 public:
-	SetOnGroundRayCastCallback (NPC* npc) :
+	explicit SetOnGroundRayCastCallback (NPC* npc) :
 			_npc(npc)
 	{
 	}

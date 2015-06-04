@@ -10,7 +10,7 @@ class UIFillLayout: public IUILayout {
 protected:
 	bool _horizontal;
 public:
-	UIFillLayout (bool horizontal = true);
+	explicit UIFillLayout (bool horizontal = true);
 	virtual ~UIFillLayout ();
 
 	void layout (UINode* parent) override;

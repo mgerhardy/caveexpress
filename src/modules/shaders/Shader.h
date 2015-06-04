@@ -368,6 +368,6 @@ class ShaderScope {
 private:
 	const Shader& _shader;
 public:
-	ShaderScope (const Shader& shader);
+	explicit ShaderScope (const Shader& shader);
 	virtual ~ShaderScope ();
 };

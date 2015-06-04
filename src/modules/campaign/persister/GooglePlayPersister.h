@@ -39,7 +39,7 @@ private:
 
 	bool testException ();
 public:
-	GooglePlayPersister(IGameStatePersister* delegate);
+	explicit GooglePlayPersister(IGameStatePersister* delegate);
 	virtual ~GooglePlayPersister();
 
 	bool init() override;

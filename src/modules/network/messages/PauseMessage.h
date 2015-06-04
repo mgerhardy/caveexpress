@@ -6,14 +6,14 @@ class PauseMessage: public IProtocolMessage {
 private:
 	bool _pause;
 public:
-	PauseMessage (bool pause) :
+	explicit PauseMessage (bool pause) :
 			IProtocolMessage(protocol::PROTO_PAUSE), _pause(pause)
 	{
 	}
 
 	PROTOCOL_CLASS_FACTORY(PauseMessage);
 
-	PauseMessage (ByteStream& input) :
+	explicit PauseMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_PAUSE)
 	{
 		_pause = input.readBool();

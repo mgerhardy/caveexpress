@@ -5,7 +5,7 @@
 
 class IntroGeyser: public Intro {
 public:
-	IntroGeyser (IFrontend* frontend);
+	explicit IntroGeyser (IFrontend* frontend);
 protected:
 	void addIntroNodes(UINode* parent) override;
 };

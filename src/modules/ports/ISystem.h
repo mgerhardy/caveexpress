@@ -22,7 +22,7 @@ typedef DirectoryEntries::const_iterator DirectoryEntriesIter;
 
 class ISystem {
 private:
-	ISystem (const ISystem&);
+	explicit ISystem (const ISystem&);
 	ISystem& operator= (const ISystem&);
 
 public:

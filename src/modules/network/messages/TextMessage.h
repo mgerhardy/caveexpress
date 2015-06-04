@@ -7,14 +7,14 @@ private:
 	std::string _message;
 
 public:
-	TextMessage (const std::string& message) :
+	explicit TextMessage (const std::string& message) :
 			IProtocolMessage(protocol::PROTO_MESSAGE), _message(message)
 	{
 	}
 
 	PROTOCOL_CLASS_FACTORY(TextMessage);
 
-	TextMessage (ByteStream& input) :
+	explicit TextMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_MESSAGE)
 	{
 		_message = input.readString();

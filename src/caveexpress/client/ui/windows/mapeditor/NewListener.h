@@ -4,7 +4,7 @@ class NewListener: public UINodeListener {
 private:
 	UINodeMapEditor *_mapEditor;
 public:
-	NewListener (UINodeMapEditor *mapEditor) :
+	explicit NewListener (UINodeMapEditor *mapEditor) :
 			_mapEditor(mapEditor)
 	{
 	}

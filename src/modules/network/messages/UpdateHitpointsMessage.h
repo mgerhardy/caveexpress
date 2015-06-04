@@ -7,14 +7,14 @@ private:
 	uint16_t _points;
 
 public:
-	UpdateHitpointsMessage (uint16_t points) :
+	explicit UpdateHitpointsMessage (uint16_t points) :
 			IProtocolMessage(protocol::PROTO_UPDATEHITPOINTS), _points(points)
 	{
 	}
 
 	PROTOCOL_CLASS_FACTORY(UpdateHitpointsMessage);
 
-	UpdateHitpointsMessage (ByteStream& input) :
+	explicit UpdateHitpointsMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_UPDATEHITPOINTS)
 	{
 		_points = input.readShort();

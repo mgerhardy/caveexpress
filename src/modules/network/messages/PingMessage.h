@@ -20,7 +20,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(PingMessage);
 
-	PingMessage (ByteStream& input) :
+	explicit PingMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_PING)
 	{
 		_name = input.readString();

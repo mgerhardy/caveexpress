@@ -4,7 +4,7 @@
 
 class NPCFlying : public NPCAggressive {
 public:
-	NPCFlying (Map& map);
+	explicit NPCFlying (Map& map);
 	virtual ~NPCFlying ();
 
 	void setRemove ();

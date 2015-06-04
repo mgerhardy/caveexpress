@@ -9,14 +9,14 @@ private:
 	Direction _direction;
 
 public:
-	MovementMessage (Direction direction) :
+	explicit MovementMessage (Direction direction) :
 			IProtocolMessage(protocol::PROTO_MOVEMENT), _direction(direction)
 	{
 	}
 
 	PROTOCOL_CLASS_FACTORY(MovementMessage);
 
-	MovementMessage (ByteStream& input) :
+	explicit MovementMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_MOVEMENT)
 	{
 		_direction = input.readByte();

@@ -5,7 +5,7 @@
 
 class IntroPackage: public Intro {
 public:
-	IntroPackage (IFrontend* frontend);
+	explicit IntroPackage (IFrontend* frontend);
 protected:
 	void addIntroNodes(UINode* parent) override;
 };

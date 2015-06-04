@@ -5,7 +5,7 @@
 
 class IntroFlying: public Intro {
 public:
-	IntroFlying (IFrontend* frontend);
+	explicit IntroFlying (IFrontend* frontend);
 protected:
 	void addIntroNodes(UINode* parent) override;
 };

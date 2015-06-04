@@ -4,7 +4,7 @@
 
 class ThemeType: public Enum<ThemeType> {
 public:
-	ThemeType (const std::string& _name) :
+	explicit ThemeType (const std::string& _name) :
 		Enum<ThemeType>(_name)
 	{
 	}

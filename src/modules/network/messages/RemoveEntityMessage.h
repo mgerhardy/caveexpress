@@ -14,7 +14,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(RemoveEntityMessage);
 
-	RemoveEntityMessage (ByteStream& input) :
+	explicit RemoveEntityMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_REMOVEENTITY)
 	{
 		_entityId = input.readShort();

@@ -34,7 +34,7 @@ private:
 	void addEmitter (const EntityType& type, gridCoord x, gridCoord y, int amount, int delay, const std::string& settings);
 
 public:
-	LUAMapContext (const std::string& name);
+	explicit LUAMapContext (const std::string& name);
 	virtual ~LUAMapContext ();
 
 	bool isLocationFree (gridCoord x, gridCoord y);

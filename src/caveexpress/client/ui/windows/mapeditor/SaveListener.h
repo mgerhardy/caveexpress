@@ -2,11 +2,12 @@
 
 #include "ui/nodes/UINodeButtonText.h"
 #include "common/CommandSystem.h"
+#include "common/Logger.h"
 
 // TODO: Undo/Redo does not yet work
 class UINodeSaveButton: public UINodeButtonText {
 public:
-	UINodeSaveButton (IFrontend *frontend) :
+	explicit UINodeSaveButton (IFrontend *frontend) :
 			UINodeButtonText(frontend, tr("Save & Go"))
 	{
 		disable();

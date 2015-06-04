@@ -17,7 +17,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(InitDoneMessage);
 
-	InitDoneMessage (ByteStream& input) :
+	explicit InitDoneMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_INITDONE)
 	{
 		_playerId = input.readShort();

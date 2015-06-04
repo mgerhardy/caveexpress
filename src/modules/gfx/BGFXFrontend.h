@@ -8,7 +8,7 @@
 
 class BGFXFrontend: public SDLFrontend {
 public:
-	BGFXFrontend (SharedPtr<IConsole> console);
+	explicit BGFXFrontend (SharedPtr<IConsole> console);
 	virtual ~BGFXFrontend ();
 
 	void renderBegin () override;

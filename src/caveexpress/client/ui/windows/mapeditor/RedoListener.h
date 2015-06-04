@@ -4,7 +4,7 @@ class RedoListener: public UINodeListener {
 private:
 	UINodeMapEditor *_mapEditor;
 public:
-	RedoListener (UINodeMapEditor *mapEditor) :
+	explicit RedoListener (UINodeMapEditor *mapEditor) :
 			_mapEditor(mapEditor)
 	{
 	}

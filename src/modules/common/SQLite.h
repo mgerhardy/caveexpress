@@ -52,7 +52,7 @@ protected:
 	std::string _error;
 	sqlite3 *_db;
 public:
-	SQLite (const std::string& fileName = "");
+	explicit SQLite (const std::string& fileName = "");
 	virtual ~SQLite ();
 
 	const std::string& getFilename () const;
@@ -81,7 +81,7 @@ class Transaction {
 private:
 	SQLite& _sqlite;
 public:
-	Transaction(SQLite& sqlite) : _sqlite(sqlite)
+	explicit Transaction(SQLite& sqlite) : _sqlite(sqlite)
 	{
 		_sqlite.exec("BEGIN;");
 	}

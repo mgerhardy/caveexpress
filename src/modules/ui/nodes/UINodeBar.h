@@ -10,7 +10,7 @@ private:
 	Color _colorBar;
 
 public:
-	UINodeBar (IFrontend *frontend);
+	explicit UINodeBar (IFrontend *frontend);
 	virtual ~UINodeBar ();
 
 	void setMax (int max);

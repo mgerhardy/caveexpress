@@ -4,7 +4,7 @@ class ToggleGridListener: public UINodeListener {
 private:
 	UINodeMapEditor *_mapEditor;
 public:
-	ToggleGridListener (UINodeMapEditor *mapEditor) :
+	explicit ToggleGridListener (UINodeMapEditor *mapEditor) :
 			_mapEditor(mapEditor)
 	{
 	}

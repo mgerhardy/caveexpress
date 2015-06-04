@@ -18,7 +18,7 @@ protected:
 	std::string _activeCampaign;
 
 public:
-	IGameStatePersister (const std::string& initialCampaign) :
+	explicit IGameStatePersister (const std::string& initialCampaign) :
 			_activeCampaign(initialCampaign)
 	{
 	}

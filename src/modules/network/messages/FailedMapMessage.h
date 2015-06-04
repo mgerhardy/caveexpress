@@ -18,7 +18,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(FailedMapMessage);
 
-	FailedMapMessage (ByteStream& input) :
+	explicit FailedMapMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_FAILEDMAP)
 	{
 		_mapName = input.readString();

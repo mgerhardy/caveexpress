@@ -10,7 +10,7 @@ private:
 	CaveMapTile* _caveTile;
 
 public:
-	Platform (Map& map);
+	explicit Platform (Map& map);
 	virtual ~Platform ();
 
 	CaveMapTile *getCave () const;

@@ -37,7 +37,7 @@ private:
 	private:
 		GamePtr _game;
 	public:
-		StaticGameFactory(GamePtr& game) :
+		explicit StaticGameFactory(GamePtr& game) :
 				_game(game) {
 		}
 

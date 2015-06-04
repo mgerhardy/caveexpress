@@ -19,7 +19,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(LoadMapMessage);
 
-	LoadMapMessage (ByteStream& input) :
+	explicit LoadMapMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_LOADMAP)
 	{
 		_name = input.readString();

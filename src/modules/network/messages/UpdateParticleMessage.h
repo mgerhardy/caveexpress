@@ -29,7 +29,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(UpdateParticleMessage);
 
-	UpdateParticleMessage (ByteStream& input) :
+	explicit UpdateParticleMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_UPDATEPARTICLE), _bodiesPtr(nullptr)
 	{
 		_entityId = input.readShort();

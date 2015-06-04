@@ -9,14 +9,14 @@ private:
 	Direction _direction;
 
 public:
-	StopMovementMessage (Direction direction) :
+	explicit StopMovementMessage (Direction direction) :
 			IProtocolMessage(protocol::PROTO_STOPMOVEMENT), _direction(direction)
 	{
 	}
 
 	PROTOCOL_CLASS_FACTORY(StopMovementMessage);
 
-	StopMovementMessage (ByteStream& input) :
+	explicit StopMovementMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_STOPMOVEMENT)
 	{
 		_direction = input.readByte();

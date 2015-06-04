@@ -32,22 +32,22 @@ typedef uint8_t protocolId;
 		public: \
 			PROTOCOL_CLASS_FACTORY(className); \
 			className () : IProtocolMessage(id) {} \
-			className (ByteStream& input) : IProtocolMessage(id) {} \
+			explicit className (ByteStream& input) : IProtocolMessage(id) {} \
 			void serialize (ByteStream& out) const override { out.addByte(_id); } \
 	}
 #define PROTOCOL_CLASS_SIMPLE_LIST(className, id) \
 	class className : public IProtocolListMessage { \
 		public: \
 			PROTOCOL_CLASS_FACTORY(className); \
-			className (const std::vector<std::string>& list) : IProtocolListMessage(id, list) {} \
-			className (ByteStream& input) : IProtocolListMessage(id, input) {} \
+			explicit className (const std::vector<std::string>& list) : IProtocolListMessage(id, list) {} \
+			explicit className (ByteStream& input) : IProtocolListMessage(id, input) {} \
 	}
 class IProtocolMessage {
 protected:
 	protocolId _id;
 
 public:
-	IProtocolMessage (protocolId id) :
+	explicit IProtocolMessage (protocolId id) :
 			_id(id)
 	{
 	}

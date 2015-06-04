@@ -16,7 +16,7 @@ private:
 	UINodeButton* _disconnect;
 	UINodeButton* _login;
 public:
-	UIGooglePlayWindow (IFrontend *frontend);
+	explicit UIGooglePlayWindow (IFrontend *frontend);
 	void update (uint32_t deltaTime) override;
 	bool onPush () override;
 };

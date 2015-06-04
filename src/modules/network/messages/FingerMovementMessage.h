@@ -15,7 +15,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(FingerMovementMessage);
 
-	FingerMovementMessage (ByteStream& input) :
+	explicit FingerMovementMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_FINGERMOVEMENT)
 	{
 		_dx = input.readShort();

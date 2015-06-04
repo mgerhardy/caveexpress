@@ -12,7 +12,7 @@ private:
 	int _half;
 	int _height;
 public:
-	Sparkle (IParticleEnvironment& env, int startX, int startY, int sizeW, int sizeH);
+	explicit Sparkle (IParticleEnvironment& env, int startX, int startY, int sizeW, int sizeH);
 	void run () override;
 	void init () override;
 };

@@ -9,7 +9,7 @@ private:
 	int _waterHeight;
 	int _waterWidth;
 public:
-	Bubble (IParticleEnvironment& env);
+	explicit Bubble (IParticleEnvironment& env);
 	void run () override;
 	void init () override;
 };

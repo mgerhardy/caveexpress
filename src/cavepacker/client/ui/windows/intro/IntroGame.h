@@ -5,7 +5,7 @@
 
 class IntroGame: public Intro {
 public:
-	IntroGame (IFrontend* frontend);
+	explicit IntroGame (IFrontend* frontend);
 protected:
 	void addIntroNodes(UINode* parent) override;
 };

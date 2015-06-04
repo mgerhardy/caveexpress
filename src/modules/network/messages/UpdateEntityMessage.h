@@ -19,7 +19,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(UpdateEntityMessage);
 
-	UpdateEntityMessage (ByteStream& input) :
+	explicit UpdateEntityMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_UPDATEENTITY)
 	{
 		_entityId = input.readShort();

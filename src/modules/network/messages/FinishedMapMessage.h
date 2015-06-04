@@ -19,7 +19,7 @@ public:
 
 	PROTOCOL_CLASS_FACTORY(FinishedMapMessage);
 
-	FinishedMapMessage (ByteStream& input) :
+	explicit FinishedMapMessage (ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_FINISHEDMAP)
 	{
 		_mapName = input.readString();

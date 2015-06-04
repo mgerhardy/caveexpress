@@ -33,7 +33,7 @@ class UIPopupOkCommandCallback: public UIPopupCallback {
 protected:
 	const std::string _command;
 public:
-	UIPopupOkCommandCallback(const std::string& command) : _command(command) {}
+	explicit UIPopupOkCommandCallback(const std::string& command) : _command(command) {}
 	virtual ~UIPopupOkCommandCallback() {}
 
 	virtual void onOk () override { Commands.executeCommandLine(_command); }

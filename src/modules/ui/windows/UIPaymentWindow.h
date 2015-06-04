@@ -4,5 +4,5 @@
 
 class UIPaymentWindow: public UIWindow {
 public:
-	UIPaymentWindow (IFrontend *frontend);
+	explicit UIPaymentWindow (IFrontend *frontend);
 };
