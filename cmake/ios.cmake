@@ -1,0 +1,6 @@
+set(CMAKE_OSX_ARCHITECTURES "armv7")
+set(CMAKE_OSX_SYSROOT "iphoneos")
+set(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator")
+set(FIPS_OSX_STANDARD_FRAMEWORKS Foundation OpenGLES CoreGraphics AudioToolbox UIKit GLKit QuartzCore CoreMotion)
+set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
