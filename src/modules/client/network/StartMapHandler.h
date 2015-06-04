@@ -7,7 +7,7 @@
 /**
  * @brief Informs the client that the map is now started
  */
-class StartMapHandler: public IClientProtocolHandler {
+class StartClientMapHandler: public IClientProtocolHandler {
 public:
 	void execute (const IProtocolMessage& message) override
 	{

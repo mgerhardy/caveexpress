@@ -61,7 +61,7 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	r.registerClientHandler(protocol::PROTO_LOADMAP, new HudLoadMapHandler(_map, serviceProvider));
 	r.registerClientHandler(protocol::PROTO_MAPSETTINGS, new HudMapSettingsHandler(_map));
 	r.registerClientHandler(protocol::PROTO_INITWAITING, new InitWaitingMapHandler(serviceProvider));
-	r.registerClientHandler(protocol::PROTO_STARTMAP, new StartMapHandler());
+	r.registerClientHandler(protocol::PROTO_STARTMAP, new StartClientMapHandler());
 	r.registerClientHandler(protocol::PROTO_UPDATEHITPOINTS, new UpdateHitpointsHandler());
 	r.registerClientHandler(protocol::PROTO_UPDATELIVES, new UpdateLivesHandler(campaignManager));
 	r.registerClientHandler(protocol::PROTO_UPDATEPOINTS, new UpdatePointsHandler());
@@ -105,7 +105,7 @@ IUINodeMap::~IUINodeMap ()
 	r.unregisterClientHandler(protocol::PROTO_LOADMAP);
 	r.unregisterClientHandler(protocol::PROTO_MAPSETTINGS);
 	r.unregisterClientHandler(protocol::PROTO_INITWAITING);
-	r.unregisterClientHandler(protocol::PROTO_STARTMAP);
+	r.unregisterClientHandler(protocol::PROTO_PAUSE);
 	r.unregisterClientHandler(protocol::PROTO_UPDATEHITPOINTS);
 	r.unregisterClientHandler(protocol::PROTO_UPDATELIVES);
 	r.unregisterClientHandler(protocol::PROTO_UPDATEPOINTS);
