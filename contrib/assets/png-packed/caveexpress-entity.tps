@@ -11,9 +11,9 @@
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>1</double>
+                <double>0.25</double>
                 <key>extension</key>
-                <string></string>
+                <string>big</string>
                 <key>spriteFilter</key>
                 <string></string>
                 <key>acceptFractionalValues</key>
@@ -21,9 +21,26 @@
                 <key>maxTextureSize</key>
                 <QSize>
                     <key>width</key>
-                    <int>-1</int>
+                    <int>2048</int>
                     <key>height</key>
-                    <int>-1</int>
+                    <int>2048</int>
+                </QSize>
+            </struct>
+            <struct type="AutoSDSettings">
+                <key>scale</key>
+                <double>0.25</double>
+                <key>extension</key>
+                <string>small</string>
+                <key>spriteFilter</key>
+                <string></string>
+                <key>acceptFractionalValues</key>
+                <false/>
+                <key>maxTextureSize</key>
+                <QSize>
+                    <key>width</key>
+                    <int>2048</int>
+                    <key>height</key>
+                    <int>2048</int>
                 </QSize>
             </struct>
         </array>
@@ -175,7 +192,7 @@
         <key>globalSpriteSettings</key>
         <struct type="SpriteSettings">
             <key>scale</key>
-            <double>0.125</double>
+            <double>1</double>
             <key>scaleMode</key>
             <enum type="ScaleMode">Smooth</enum>
             <key>innerPadding</key>
