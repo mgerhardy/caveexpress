@@ -2,16 +2,32 @@
 <data version="1.0">
     <struct type="Settings">
         <key>fileFormatVersion</key>
-        <int>1</int>
-        <key>variation</key>
-        <string>main</string>
-        <key>verbose</key>
-        <false/>
+        <int>3</int>
+        <key>texturePackerVersion</key>
+        <string>3.7.1</string>
+        <key>fileName</key>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-npc_woman.tps</string>
         <key>autoSDSettings</key>
-        <array/>
+        <array>
+            <struct type="AutoSDSettings">
+                <key>scale</key>
+                <double>1</double>
+                <key>extension</key>
+                <string></string>
+                <key>spriteFilter</key>
+                <string></string>
+                <key>acceptFractionalValues</key>
+                <false/>
+                <key>maxTextureSize</key>
+                <QSize>
+                    <key>width</key>
+                    <int>-1</int>
+                    <key>height</key>
+                    <int>-1</int>
+                </QSize>
+            </struct>
+        </array>
         <key>allowRotation</key>
-        <false/>
-        <key>quiet</key>
         <false/>
         <key>premultiplyAlpha</key>
         <false/>
@@ -25,6 +41,20 @@
         <filename>../../../base/pics/npc_woman.png</filename>
         <key>flipPVR</key>
         <false/>
+        <key>pvrCompressionQuality</key>
+        <enum type="SettingsBase::PvrCompressionQuality">PVR_QUALITY_NORMAL</enum>
+        <key>mipMapMinSize</key>
+        <uint>32768</uint>
+        <key>etc1CompressionQuality</key>
+        <enum type="SettingsBase::Etc1CompressionQuality">ETC1_QUALITY_LOW_PERCEPTUAL</enum>
+        <key>dxtCompressionMode</key>
+        <enum type="SettingsBase::DxtCompressionMode">DXT_PERCEPTUAL</enum>
+        <key>jxrColorFormat</key>
+        <enum type="SettingsBase::JpegXrColorMode">JXR_YUV444</enum>
+        <key>jxrTrimFlexBits</key>
+        <uint>0</uint>
+        <key>jxrCompressionLevel</key>
+        <uint>0</uint>
         <key>ditherType</key>
         <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
         <key>backgroundColor</key>
@@ -45,6 +75,8 @@
         <uint>80</uint>
         <key>pngOptimizationLevel</key>
         <uint>0</uint>
+        <key>webpQualityLevel</key>
+        <uint>101</uint>
         <key>textureSubPath</key>
         <string></string>
         <key>textureFormat</key>
@@ -98,8 +130,6 @@
             <enum type="AndEngine::MinFilter">Linear</enum>
             <key>packageName</key>
             <string>Texture</string>
-            <key>javaFileName</key>
-            <filename>npc_flying.java</filename>
             <key>wrap</key>
             <struct type="AndEngineWrap">
                 <key>s</key>
@@ -110,10 +140,21 @@
             <key>magFilter</key>
             <enum type="AndEngine::MagFilter">MagLinear</enum>
         </struct>
-        <key>dataFileName</key>
-        <filename>npc_woman.lua</filename>
-        <key>mainExtension</key>
-        <string></string>
+        <key>dataFileNames</key>
+        <map type="GFileNameMap">
+            <key>java</key>
+            <struct type="DataFile">
+                <key>name</key>
+                <filename>npc_flying.java</filename>
+            </struct>
+            <key>lua</key>
+            <struct type="DataFile">
+                <key>name</key>
+                <filename>npc_woman.lua</filename>
+            </struct>
+        </map>
+        <key>multiPack</key>
+        <false/>
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
@@ -127,6 +168,10 @@
         <true/>
         <key>trimSpriteNames</key>
         <false/>
+        <key>prependSmartFolderName</key>
+        <false/>
+        <key>cleanTransparentPixels</key>
+        <true/>
         <key>globalSpriteSettings</key>
         <struct type="SpriteSettings">
             <key>scale</key>
@@ -143,6 +188,8 @@
             <enum type="SpriteSettings::TrimMode">None</enum>
             <key>heuristicMask</key>
             <false/>
+            <key>pivotPoint</key>
+            <enum type="SpriteSettings::PivotPoint">Center</enum>
         </struct>
         <key>fileList</key>
         <array>
@@ -160,6 +207,24 @@
             <filename>../png/caveexpress/npc-woman-walk-right-middle-04.png</filename>
             <filename>../png/caveexpress/npc-woman-walk-right-middle-05.png</filename>
             <filename>../png/caveexpress/npc-woman-walk-right-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-woman-falling-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-woman-falling-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-woman-falling-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-woman-falling-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-woman-falling-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-woman-falling-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-woman-falling-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-woman-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-woman-idle-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-woman-idle-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-woman-swimming-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-woman-swimming-idle-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-woman-swimming-left-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-woman-swimming-left-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-woman-swimming-left-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-woman-swimming-right-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-woman-swimming-right-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-woman-swimming-right-middle-03.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
@@ -171,5 +236,15 @@
         <uint>1</uint>
         <key>commonDivisorY</key>
         <uint>1</uint>
+        <key>packNormalMaps</key>
+        <false/>
+        <key>autodetectNormalMaps</key>
+        <true/>
+        <key>normalMapFilter</key>
+        <string></string>
+        <key>normalMapSuffix</key>
+        <string></string>
+        <key>normalMapSheetFileName</key>
+        <filename></filename>
     </struct>
 </data>

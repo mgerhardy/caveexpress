@@ -208,6 +208,27 @@
             <filename>../png/caveexpress/npc-grandpa-walk-right-middle-06.png</filename>
             <filename>../png/caveexpress/npc-grandpa-walk-right-middle-07.png</filename>
             <filename>../png/caveexpress/npc-grandpa-walk-left-middle-06_nm.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-idle-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-idle-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-idle-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-left-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-left-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-left-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-right-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-right-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-right-middle-03.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
