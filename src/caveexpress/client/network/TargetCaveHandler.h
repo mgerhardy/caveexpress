@@ -22,8 +22,8 @@ public:
 			return;
 		}
 
-		const std::string caveNumberStr = "cavenumber" + toString((int) caveNumber);
-		const SpritePtr& sprite = SpriteCache::get().load(caveNumberStr);
+		const std::string caveNumberStr = "cavenumber" + std::to_string((int) caveNumber);
+		const SpritePtr& sprite = UI::get().loadSprite(caveNumberStr);
 		node->addSprite(sprite);
 	}
 };

@@ -1,6 +1,7 @@
 #include "CaveMapTile.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/server/entities/npcs/NPCPackage.h"
+#include "caveexpress/server/entities/npcs/NPCFriendly.h"
 #include "common/Logger.h"
 
 CaveMapTile::CaveMapTile (Map& map, int caveNumber, const std::string& spriteID, gridCoord gridX, gridCoord gridY, const EntityType& npcType, int delaySpawn) :
