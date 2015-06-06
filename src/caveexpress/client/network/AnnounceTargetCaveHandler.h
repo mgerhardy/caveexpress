@@ -6,9 +6,9 @@
 
 class AnnounceTargetCaveHandler: public IClientProtocolHandler {
 private:
-	ClientMap& _map;
+	CaveExpressClientMap& _map;
 public:
-	AnnounceTargetCaveHandler(ClientMap& map) :
+	AnnounceTargetCaveHandler(CaveExpressClientMap& map) :
 			_map(map) {
 	}
 
@@ -19,7 +19,7 @@ public:
 		const uint16_t delay = msg->getDelay();
 		const uint8_t caveNumber = msg->getCaveNumber();
 		ClientEntityPtr entity = _map.getEntity(id);
-		if (entity && entity->isNpcCave()) {
+		if (entity && EntityTypes::isNpcCave(entity->getType())) {
 			ClientNPC* npc = static_cast<ClientNPC*>(entity.get());
 			npc->setTargetCave(caveNumber, delay);
 		}

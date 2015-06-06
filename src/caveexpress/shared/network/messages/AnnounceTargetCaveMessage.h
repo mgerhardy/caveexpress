@@ -13,7 +13,8 @@ public:
 			IProtocolMessage(protocol::PROTO_ANNOUNCETARGETCAVE), _npcId(npcId), _delay(delay), _targetCave(targetCave) {
 	}
 
-	AnnounceTargetCaveMessage(ByteStream& input) :
+	PROTOCOL_CLASS_FACTORY(AnnounceTargetCaveMessage);
+	explicit AnnounceTargetCaveMessage(ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_ANNOUNCETARGETCAVE) {
 		_npcId = input.readShort();
 		_delay = input.readShort();

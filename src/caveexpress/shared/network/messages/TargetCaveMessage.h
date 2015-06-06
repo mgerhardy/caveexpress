@@ -11,7 +11,8 @@ public:
 			IProtocolMessage(protocol::PROTO_TARGETCAVE), _targetCave(targetCave) {
 	}
 
-	TargetCaveMessage(ByteStream& input) :
+	PROTOCOL_CLASS_FACTORY(TargetCaveMessage);
+	explicit TargetCaveMessage(ByteStream& input) :
 			IProtocolMessage(protocol::PROTO_TARGETCAVE) {
 		_targetCave = input.readByte();
 	}

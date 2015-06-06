@@ -14,7 +14,7 @@ class ProtocolTest: public AbstractProtocolTest {
 TEST_F(ProtocolTest, testProtocols)
 {
 	testSharedMessages();
-	testMessage("AddCaveMessage", AddCaveMessage(1, false));
+	testMessage("AddCaveMessage", AddCaveMessage(1, 1, false));
 	testMessage("AddRopeMessage", AddRopeMessage(1, 2));
 	testMessage("LightStateMessage", LightStateMessage(1, false));
 	testMessage("RemoveRopeMessage", RemoveRopeMessage(1));
