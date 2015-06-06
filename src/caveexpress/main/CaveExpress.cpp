@@ -334,8 +334,6 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	rp.registerServerHandler(protocol::PROTO_DROP, new DropHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_ERROR, new ErrorHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
-	rp.registerClientHandler(protocol::PROTO_TARGETCAVE, new TargetCaveHandler());
-	rp.registerClientHandler(protocol::PROTO_ANNOUNCETARGETCAVE, new AnnounceTargetCaveHandler(_map));
 
 	_frontend = frontend;
 	_serviceProvider = &serviceProvider;
@@ -406,6 +404,10 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.registerClientHandler(protocol::PROTO_INITDONE, new HudInitDoneHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_FAILEDMAP);
 	r.registerClientHandler(protocol::PROTO_FAILEDMAP, new FailedMapHandler(*map, serviceProvider));
+	r.unregisterClientHandler(protocol::PROTO_TARGETCAVE);
+	r.registerClientHandler(protocol::PROTO_TARGETCAVE, new TargetCaveHandler());
+	r.unregisterClientHandler(protocol::PROTO_ANNOUNCETARGETCAVE);
+	r.registerClientHandler(protocol::PROTO_ANNOUNCETARGETCAVE, new AnnounceTargetCaveHandler(*map));
 }
 
 Map& CaveExpress::getMap ()

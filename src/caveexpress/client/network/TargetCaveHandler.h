@@ -4,6 +4,7 @@
 #include "caveexpress/shared/network/messages/TargetCaveMessage.h"
 #include "client/ClientMap.h"
 #include "ui/UI.h"
+#include "caveexpress/client/entities/ClientNPC.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
 #include "ui/nodes/UINodeSprite.h"
 
