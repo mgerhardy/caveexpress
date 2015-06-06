@@ -27,6 +27,7 @@
 #include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
+#include "caveexpress/client/entities/ClientNPC.h"
 #include "caveexpress/client/entities/ClientParticle.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/client/commands/CmdDrop.h"
@@ -267,9 +268,9 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	r.registerFactory(&EntityTypes::GROUND, ClientMapTile::FACTORY);
 	r.registerFactory(&EntityTypes::CAVE, ClientCaveTile::FACTORY);
 	r.registerFactory(&EntityTypes::WINDOW, ClientWindowTile::FACTORY);
-	r.registerFactory(&EntityTypes::NPC_FRIENDLY_GRANDPA, ClientEntity::FACTORY);
-	r.registerFactory(&EntityTypes::NPC_FRIENDLY_WOMAN, ClientEntity::FACTORY);
-	r.registerFactory(&EntityTypes::NPC_FRIENDLY_MAN, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_FRIENDLY_GRANDPA, ClientNPC::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_FRIENDLY_WOMAN, ClientNPC::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_FRIENDLY_MAN, ClientNPC::FACTORY);
 	r.registerFactory(&EntityTypes::NPC_FISH, ClientEntity::FACTORY);
 	r.registerFactory(&EntityTypes::NPC_FLYING, ClientEntity::FACTORY);
 	r.registerFactory(&EntityTypes::NPC_WALKING, ClientEntity::FACTORY);
