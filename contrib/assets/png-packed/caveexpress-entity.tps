@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.7.1</string>
+        <string>3.8.0</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-entity.tps</string>
+        <string>/home/mattn/dev/caveexpress/contrib/assets/png-packed/caveexpress-entity.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/pics/entity.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-entity-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -167,7 +167,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>entity.lua</filename>
+                <filename>caveexpress-entity-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>

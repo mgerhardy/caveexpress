@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.7.1</string>
+        <string>3.8.0</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-ui-fonts.tps</string>
+        <string>/home/mattn/dev/caveexpress/contrib/assets/png-packed/caveexpress-ui-fonts.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/pics/caveexpress-ui-fonts-{v}.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-ui-fonts-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -167,7 +167,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>caveexpressui-fonts-{v}.lua</filename>
+                <filename>caveexpress-ui-fonts-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
