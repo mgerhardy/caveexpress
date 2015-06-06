@@ -69,6 +69,9 @@ void ClientMap::resetCurrentMap ()
 	_tutorial = false;
 	_mapWidth = 0;
 	_mapHeight = 0;
+	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
+		delete i->second;
+	}
 	_entities.clear();
 	_player = nullptr;
 	_pause = false;
