@@ -6,12 +6,12 @@
         <key>texturePackerVersion</key>
         <string>3.7.1</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/cavepacker-entity.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/cavepacker-ui-scene.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.25</double>
+                <double>1</double>
                 <key>extension</key>
                 <string>big</string>
                 <key>spriteFilter</key>
@@ -28,7 +28,7 @@
             </struct>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.25</double>
+                <double>0.5</double>
                 <key>extension</key>
                 <string>small</string>
                 <key>spriteFilter</key>
@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/cavepacker/pics/cavepacker-environment-{v}.png</filename>
+        <filename>../../../base/cavepacker/pics/cavepacker-ui-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -73,7 +73,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">FloydSteinbergAlpha</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -103,9 +103,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>1024</int>
+            <int>2048</int>
             <key>height</key>
-            <int>1024</int>
+            <int>2048</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -115,7 +115,7 @@
             <int>-1</int>
         </QSize>
         <key>reduceBorderArtifacts</key>
-        <false/>
+        <true/>
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
@@ -162,12 +162,12 @@
             <key>java</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>npc_flying.java</filename>
+                <filename>ui.java</filename>
             </struct>
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>cavepacker-environment-{v}.lua</filename>
+                <filename>cavepacker-ui-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -175,7 +175,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
+        <enum type="SettingsBase::OutputFormat">RGB565</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -200,7 +200,7 @@
             <key>extrude</key>
             <uint>0</uint>
             <key>trimThreshold</key>
-            <uint>8</uint>
+            <uint>1</uint>
             <key>trimMode</key>
             <enum type="SpriteSettings::TrimMode">None</enum>
             <key>heuristicMask</key>
@@ -210,9 +210,16 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/cavepacker/item-package-idle-middle-01.png</filename>
-            <filename>../png/cavepacker/item-package-delivered-middle-01.png</filename>
-            <filename>../png/cavepacker/player.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-caveart-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-ground1-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-ground2-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-tile1-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-tile2-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-cave-ice.png</filename>
+            <filename>../png/cavepacker/ui/icon-campaign.png</filename>
+            <filename>../png/cavepacker/ui/xsokoban-campaign.png</filename>
+            <filename>../png/cavepacker/ui/ksokoban-campaign.png</filename>
+            <filename>../png/cavepacker/ui/gri-campaign.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
