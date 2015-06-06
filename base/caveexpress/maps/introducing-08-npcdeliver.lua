@@ -1,5 +1,5 @@
 function getName()
-	return "Package"
+	return "NPC"
 end
 
 function onMapLoaded()
@@ -170,4 +170,5 @@ function initMap()
 	map:setSetting("waterheight", "5.7")
 	map:setSetting("waterrisingdelay", "0")
 	map:setSetting("wind", "0")
+	map:addStartPosition("6", "3")
 end
