@@ -43,6 +43,16 @@ macro(textures PROJECTNAME)
 	configure_file(${PROJECT_BINARY_DIR}/complete.lua.in ${ROOT_DIR}/base/${PROJECTNAME}/textures/complete.lua COPYONLY)
 endmacro()
 
+macro(texturepacker PROJECTNAME FILE)
+	set(PNG base/${PROJECTNAME}/pics/${FILE}-big.png)
+	set(TPS contrib/assets/png-packed/${FILE}.tps)
+	if (TEXTUREPACKER_BIN)
+		#add_custom_command(OUTPUT ${PNG} COMMAND ${TEXTUREPACKER_BIN} ARGS ${ROOT_DIR}/${TPS} DEPENDS ${ROOT_DIR}/${TPS})
+		add_custom_target(${FILE} ${TEXTUREPACKER_BIN} ${ROOT_DIR}/${TPS} COMMENT "TexturePacker => ${TPS}")
+		add_dependencies(${PROJECTNAME} ${FILE})
+	endif()
+endmacro()
+
 #-------------------------------------------------------------------------------
 # macros end
 #-------------------------------------------------------------------------------
@@ -63,6 +73,12 @@ elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Linux")
 else()
 	message(WARNING "Unknown host system - default to linux")
 	set(LINUX 1)
+endif()
+find_program(TEXTUREPACKER_BIN NAMES TexturePacker)
+if (TEXTUREPACKER_BIN-NOTFOUND)
+	message("Could not find TexturePacker")
+else()
+	message("Found TexturePacker: ${TEXTUREPACKER_BIN}")
 endif()
 
 #-------------------------------------------------------------------------------
