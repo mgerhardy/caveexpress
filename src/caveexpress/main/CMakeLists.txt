@@ -2,23 +2,26 @@ project(caveexpress)
 add_executable(${PROJECT_NAME} CaveExpress.cpp)
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}-server ${PROJECT_NAME}-client ${PROJECT_NAME}-shared main)
-texturepacker(${PROJECT_NAME} caveexpress-entity)
-texturepacker(${PROJECT_NAME} caveexpress-environment-ice)
-texturepacker(${PROJECT_NAME} caveexpress-environment)
-texturepacker(${PROJECT_NAME} caveexpress-npc_blowing)
-texturepacker(${PROJECT_NAME} caveexpress-npc_fish)
-texturepacker(${PROJECT_NAME} caveexpress-npc_flying)
-texturepacker(${PROJECT_NAME} caveexpress-npc_grandpa)
-texturepacker(${PROJECT_NAME} caveexpress-npc_mammut)
-texturepacker(${PROJECT_NAME} caveexpress-npc_man)
-texturepacker(${PROJECT_NAME} caveexpress-npc_walking)
-texturepacker(${PROJECT_NAME} caveexpress-npc_woman)
-texturepacker(${PROJECT_NAME} caveexpress-packagetarget-ice)
-texturepacker(${PROJECT_NAME} caveexpress-packagetarget-rock)
-texturepacker(${PROJECT_NAME} caveexpress-ui-dead)
-texturepacker(${PROJECT_NAME} caveexpress-ui-fonts)
-texturepacker(${PROJECT_NAME} caveexpress-ui-npc-mammut)
-texturepacker(${PROJECT_NAME} caveexpress-ui-player-grandpa)
-texturepacker(${PROJECT_NAME} caveexpress-ui-scene)
-texturepacker(${PROJECT_NAME} caveexpress-ui)
+set(TPS
+	caveexpress-entity
+	caveexpress-environment-ice
+	caveexpress-environment
+	caveexpress-npc_blowing
+	caveexpress-npc_fish
+	caveexpress-npc_flying
+	caveexpress-npc_grandpa
+	caveexpress-npc_mammut
+	caveexpress-npc_man
+	caveexpress-npc_walking
+	caveexpress-npc_woman
+	caveexpress-packagetarget-ice
+	caveexpress-packagetarget-rock
+	caveexpress-ui-dead
+	caveexpress-ui-fonts
+	caveexpress-ui-npc-mammut
+	caveexpress-ui-player-grandpa
+	caveexpress-ui-scene
+	caveexpress-ui
+)
+texturepacker(${PROJECT_NAME} "${TPS}")
 textures(${PROJECT_NAME})
