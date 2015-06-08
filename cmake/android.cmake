@@ -50,7 +50,7 @@ set(APPLICATION_MK)
 endif()
 
 configure_file(${ANDROID_ROOT}/AndroidManifest.xml.in ${ANDROID_ROOT}/AndroidManifest.xml @ONLY)
-configure_file(${ANDROID_ROOT}/strings.xml.in ${ANDROID_ROOT}/strings.xml @ONLY)
+configure_file(${ANDROID_ROOT}/strings.xml.in ${ANDROID_ROOT}/res/values/strings.xml @ONLY)
 configure_file(${ANDROID_ROOT}/default.properties.in ${ANDROID_ROOT}/default.properties @ONLY)
 configure_file(${ANDROID_ROOT}/jni/Application.mk.in ${ANDROID_ROOT}/jni/Application.mk @ONLY)
 configure_file(${ROOT_DIR}/src/Android.mk.in ${ROOT_DIR}/src/Android.mk @ONLY)
