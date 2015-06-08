@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/cavepacker/pics/cavepacker-environment-{v}.png</filename>
+        <filename>../../../base/cavepacker/pics/cavepacker-entity-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -167,7 +167,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>cavepacker-environment-{v}.lua</filename>
+                <filename>cavepacker-entity-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
