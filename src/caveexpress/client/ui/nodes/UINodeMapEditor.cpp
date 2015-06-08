@@ -935,11 +935,11 @@ bool UINodeMapEditor::isDirty () const
 	return _lastSave != _undoStates.size();
 }
 
-void UINodeMapEditor::save ()
+bool UINodeMapEditor::save ()
 {
 	// nothing to save here
 	if (_undoStates.empty())
-		return;
+		return false;
 
 	std::stringstream lua;
 	lua << "function getName()" << std::endl << "\treturn \"" << _mapName << "\"" << std::endl << "end" << std::endl;
@@ -1029,13 +1029,14 @@ void UINodeMapEditor::save ()
 	const size_t length = luaStr.size();
 	if (FS.writeFile(filename, buf, length, true) == -1L) {
 		error(LOG_GENERAL, "failed to write " + filename);
-	} else {
-		info(LOG_GENERAL, "wrote " + filename);
-		_lastMap->setValue(_fileName);
+		return false;
 	}
 
+	info(LOG_GENERAL, "wrote " + filename);
+	_lastMap->setValue(_fileName);
 	_mapManager.loadMaps();
 	_lastSave = _undoStates.size();
+	return true;
 }
 
 void UINodeMapEditor::loadFromContext (ICaveMapContext& ctx)
