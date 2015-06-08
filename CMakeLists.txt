@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 
 set(ROOT_DIR ${PROJECT_SOURCE_DIR})
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${ROOT_DIR})
+SET(DEFAULT_LUAC_EXECUTABLE luac)
 
 option(RELEASE "Build a release build" OFF)
 
@@ -58,6 +59,25 @@ macro(texturepacker PROJECTNAME FILELIST)
 			add_dependencies(${PROJECTNAME} ${PROJECTNAME}_texturepacker)
 		endif()
 		set(DEPENDENCIES)
+	endif()
+endmacro()
+
+macro(check_lua_files TARGET FILES)
+	find_program(LUAC_EXECUTABLE NAMES ${DEFAULT_LUAC_EXECUTABLE})
+	if (LUAC_EXECUTABLE)
+		message("${LUAC_EXECUTABLE} found")
+		foreach(_FILE ${FILES})
+			string(REPLACE "/" "-" TARGETNAME ${_FILE})
+			add_custom_target(
+				${TARGETNAME}
+				COMMENT "checking lua file ${_FILE}"
+				COMMAND ${DEFAULT_LUAC_EXECUTABLE} -p ${_FILE}
+				WORKING_DIRECTORY ${ROOT_DIR}/base/${TARGET}
+			)
+			add_dependencies(${TARGET} ${TARGETNAME})
+		endforeach()
+	else()
+		message(WARNING "No lua compiler (${DEFAULT_LUAC_EXECUTABLE}) found")
 	endif()
 endmacro()
 

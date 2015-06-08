@@ -25,3 +25,5 @@ set(TPS
 )
 texturepacker(${PROJECT_NAME} "${TPS}")
 textures(${PROJECT_NAME})
+set(LUAFILES config.lua entities.lua entitysounds.lua fonts.lua sprites.lua textures/complete.lua)
+check_lua_files(${PROJECT_NAME} "${LUAFILES}")
