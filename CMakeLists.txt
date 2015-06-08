@@ -174,7 +174,7 @@ include_directories("${PROJECT_SOURCE_DIR}/src/libs/SDL/src")
 include_directories("${PROJECT_SOURCE_DIR}/src/modules")
 include_directories("${PROJECT_SOURCE_DIR}/src/modules/game")
 
-if(UNIX)
+if(UNIX AND NOT ANDROID)
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/SDL/linux")
 include_directories("/usr/include/dbus-1")
 else()

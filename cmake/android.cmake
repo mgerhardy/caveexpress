@@ -5,6 +5,7 @@ if (NOT NETWORKING)
 add_definitions(-DNONETWORK=1)
 endif()
 
+set(ANDROID 1)
 set(HD_VERSION 1)
 
 set(PERMISSIONS)
