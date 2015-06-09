@@ -7,4 +7,4 @@ ios
 macos
 windows
 emscripten
-
+travis
