@@ -68,7 +68,7 @@ private:
 	class Client {
 	public:
 		Client (TCPsocket _socket, ClientId _num) :
-				socket(_socket), num(_num), disconnect(false), buf()
+				socket(_socket), num(_num), disconnect(false)
 		{
 		}
 

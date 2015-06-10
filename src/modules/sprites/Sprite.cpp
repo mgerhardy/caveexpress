@@ -12,7 +12,7 @@ Sprite::Sprite (const std::string& name) :
 Sprite::Sprite (const std::string& name, const std::vector<int>& delays, const std::vector<bool>& active,
 		const AnimationFrames* textures, int frameCount, float fps, int32_t frameTimeRemaining, bool loop,
 		int spriteWidth, int spriteHeight) :
-		_name(name), _delays(delays), _active(active), _currentFrame(-1), _frameCount(frameCount), _fps(
+		_delays(delays), _active(active), _name(name), _currentFrame(-1), _frameCount(frameCount), _fps(
 				fps), _frameTimeRemaining(frameTimeRemaining), _loop(loop), _spriteWidth(spriteWidth), _spriteHeight(
 				spriteHeight)
 {

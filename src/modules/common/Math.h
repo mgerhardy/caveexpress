@@ -159,7 +159,7 @@ inline bool isConvex (const b2Vec2 *points, const size_t amount)
 	if (amount < 4)
 		return true;
 	bool isPositive = false;
-	for (int k = 0; k < amount; ++k) {
+	for (size_t k = 0u; k < amount; ++k) {
 		const float dx1 = points[k + 1].x - points[k].x;
 		const float dy1 = points[k + 1].y - points[k].y;
 		const float dx2 = points[k + 2].x - points[k + 1].x;
