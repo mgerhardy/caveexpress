@@ -122,12 +122,6 @@ endmacro()
 # variables
 #-------------------------------------------------------------------------------
 
-set(WINDOWS 0)
-set(DARWIN 0)
-set(LINUX 0)
-set(ANDROID 0)
-set(NACL 0)
-set(EMSCRIPTEN 0)
 if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
 	set(WINDOWS 1)
 elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin")
