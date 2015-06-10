@@ -114,6 +114,13 @@ macro(check_lua_files TARGET FILES)
 	endif()
 endmacro()
 
+macro(prepare_android PROJECTNAME)
+	if (ANDROID)
+		message("prepare java code")
+		file(COPY ${ROOT_DIR}/android-project/ DESTINATION ${CMAKE_BINARY_DIR}/android-${PROJECTNAME})
+	endif()
+endmacro()
+
 #-------------------------------------------------------------------------------
 # macros end
 #-------------------------------------------------------------------------------
