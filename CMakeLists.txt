@@ -135,6 +135,7 @@ macro(prepare_android PROJECTNAME APPNAME VERSION VERSION_CODE)
 		configure_file(${ANDROID_BIN_ROOT}/build.xml.in ${ANDROID_BIN_ROOT}/build.xml @ONLY)
 		#configure_file(${ANDROID_BIN_ROOT}/jni/Application.mk.in ${ANDROID_BIN_ROOT}/jni/Application.mk @ONLY)
 		#configure_file(${ANDROID_BIN_ROOT}/jni/src/Android.mk.in ${ANDROID_BIN_ROOT}/jni/src/Android.mk @ONLY)
+		add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${ANDROID_ANT} ${ANT_TARGET} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 	endif()
 endmacro()
 
