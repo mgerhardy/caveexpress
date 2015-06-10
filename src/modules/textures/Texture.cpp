@@ -25,8 +25,8 @@ Texture::Texture (const std::string &filename, IFrontend *frontend) :
 }
 
 Texture::Texture (const Texture& texture) :
-		_uploadedWidth(texture._uploadedWidth), _uploadedHeight(texture._uploadedHeight), _data(texture._data), _name(
-				texture._name), _mirror(texture._mirror), _frontend(texture._frontend), _copy(true)
+		_uploadedWidth(texture._uploadedWidth), _uploadedHeight(texture._uploadedHeight), _name(
+				texture._name), _mirror(texture._mirror), _copy(true), _data(texture._data), _frontend(texture._frontend)
 {
 	debug(LOG_CLIENT, String::format("copy texture %s (%i:%i)", _name.c_str(), _uploadedWidth, _uploadedHeight));
 	memcpy(&_rect, &texture._rect, sizeof(_rect));
