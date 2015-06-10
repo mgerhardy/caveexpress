@@ -7,6 +7,7 @@
 #include "caveexpress/client/entities/ClientNPC.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
 #include "ui/nodes/UINodeSprite.h"
+#include "common/String.h"
 
 class TargetCaveHandler: public IClientProtocolHandler {
 public:
@@ -23,7 +24,7 @@ public:
 			return;
 		}
 
-		const std::string caveNumberStr = "cavenumber" + std::to_string((int) caveNumber);
+		const std::string caveNumberStr = "cavenumber" + string::toString((int) caveNumber);
 		const SpritePtr& sprite = UI::get().loadSprite(caveNumberStr);
 		node->addSprite(sprite);
 	}
