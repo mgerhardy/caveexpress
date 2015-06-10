@@ -165,7 +165,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		for (int i = 1; i <= actives; ++i) {
 			const bool active = lua.getTableBool(i);
 			for (Layer layer = LAYER_BACK; layer < MAX_LAYERS; layer++) {
-				const size_t textures = def->textures[layer].size();
+				const int textures = def->textures[layer].size();
 				if (textures < i)
 					continue;
 				SpriteDef::SpriteDefFrames& frames = def->textures[layer];
@@ -179,7 +179,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		for (int i = 1; i <= delays; ++i) {
 			const int delay = lua.getTableInteger(i);
 			for (Layer layer = LAYER_BACK; layer < MAX_LAYERS; layer++) {
-				const size_t textures = def->textures[layer].size();
+				const int textures = def->textures[layer].size();
 				if (textures >= i)
 					def->textures[layer][i - 1].delay = delay;
 			}
@@ -286,7 +286,7 @@ bool SpriteDefinition::isFrameActive (uint32_t time, const SpriteDefPtr spriteDe
 	const int animationLength = getAnimationLengthFromDef(spriteDef);
 	if (animationLength <= 0)
 		return false;
-	const uint32 currentFrameTime = time % animationLength;
+	const int currentFrameTime = time % animationLength;
 	const int fps = spriteDef->fps;
 	const int l = 1000 / fps;
 	for (Layer layer = LAYER_BACK; layer < MAX_LAYERS; layer++) {

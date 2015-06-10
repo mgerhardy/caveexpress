@@ -8,7 +8,7 @@
 #define ISPOWEROFTWO(i) ((i) > 0 && !((i) & ((i) - 1)))
 
 Texture::Texture (const std::string &filename, IFrontend *frontend) :
-		_uploadedWidth(-1), _uploadedHeight(-1), _data(nullptr), _name(filename), _copy(false), _mirror(false), _frontend(
+		_uploadedWidth(-1), _uploadedHeight(-1), _name(filename), _mirror(false), _copy(false), _data(nullptr), _frontend(
 				frontend)
 {
 	if (filename[0] == '*') {

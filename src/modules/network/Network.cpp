@@ -342,7 +342,7 @@ int Network::recv (TCPsocket socket, ByteStream &buffer)
 		}
 		buffer.append(buf, read);
 		totalRead += read;
-		if (read < bufSize)
+		if (read < static_cast<int>(bufSize))
 			break;
 	}
 	_bytesIn += totalRead;
@@ -486,7 +486,8 @@ int Network::sendToServer (const ByteStream& buffer)
 		return -1;
 
 	const int n = send(_clientSocket, buffer);
-	if (n == -1 || n != buffer.getSize())
+	const int bufSize = buffer.getSize();
+	if (n == -1 || n != bufSize)
 		closeClient();
 
 	return n;
