@@ -24,10 +24,10 @@ typedef SoundMappingCache::const_iterator SoundMappingCacheConstIter;
 class ClientEntityFactoryContext {
 public:
 	ClientEntityFactoryContext (const EntityType& _type, uint16_t _id, const std::string& _sprite,
-			const Animation& _animation, float _x, float _y, float _width, float _height, EntityAngle _angle,
-			const SoundMapping& _soundMapping, EntityAlignment _align) :
-			type(_type), id(_id), sprite(_sprite), animation(_animation), x(_x), y(_y), width(_width), height(_height), angle(
-					_angle), soundMapping(_soundMapping), align(_align)
+			const Animation& _animation, float _x,
+			float _y, float _width, float _height, EntityAngle _angle, const SoundMapping& _soundMapping, EntityAlignment _align) :
+			soundMapping(_soundMapping), type(_type), id(_id), sprite(_sprite), animation(_animation), x(_x), y(_y), width(_width), height(
+					_height), angle(_angle), align(_align)
 	{
 	}
 

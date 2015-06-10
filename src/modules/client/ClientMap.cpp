@@ -20,8 +20,8 @@
 #include <SDL.h>
 
 ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth) :
-		IMap(), _x(x), _y(y), _width(width), _height(height), _scale(referenceTileWidth), _zoom(1.0f), _restartDue(0), _restartInitialized(0), _mapWidth(
-				0), _mapHeight(0), _player(nullptr), _time(0), _playerID(0), _frontend(frontend), _pause(false), _serviceProvider(
+		IMap(), _x(x), _y(y), _width(width), _height(height), _scale(referenceTileWidth), _zoom(1.0f), _player(nullptr), _restartDue(0), _restartInitialized(0), _mapWidth(
+				0), _mapHeight(0), _time(0), _playerID(0), _frontend(frontend), _pause(false), _serviceProvider(
 						serviceProvider), _screenRumble(false), _screenRumbleStrength(0.0f), _screenRumbleOffsetX(
 						0), _screenRumbleOffsetY(0), _particleSystem(
 				Config.getClientSideParticleMaxAmount()), _tutorial(false), _started(false), _theme(&ThemeTypes::ROCK), _startPositions(0)
