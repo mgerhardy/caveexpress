@@ -12,4 +12,4 @@ set(TPS
 texturepacker(${PROJECT_NAME} "${TPS}")
 textures(${PROJECT_NAME})
 create_dir_header(${PROJECT_NAME})
-prepare_android(${PROJECT_NAME})
+prepare_android(${PROJECT_NAME} "CavePacker" 1.4 9)
