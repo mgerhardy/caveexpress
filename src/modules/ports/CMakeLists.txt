@@ -6,16 +6,15 @@ elseif(APPLE)
 elseif(ANDROID)
 	set(ports_SRCS Unix.cpp Android.cpp)
 elseif(NACL)
-	set(ports_SRCS NaCL.cpp)
+	set(ports_SRCS NaCl.cpp)
+elseif(IOS)
+	set(ports_SRCS IOS.cpp)
+elseif(EMSCRIPTEN)
+	set(ports_SRCS HTML5.cpp)
 elseif(UNIX)
 	set(ports_SRCS Unix.cpp)
 	add_definitions(-D_GNU_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE)
 endif()
-
-#ports/HTML5.cpp
-#ports/IOS.cpp
-#ports/Android.cpp
-#ports/NaCl.cpp
 
 add_library(ports ${ports_SRCS})
 set_target_properties(ports PROPERTIES FOLDER ports)

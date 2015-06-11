@@ -200,6 +200,10 @@ include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs")
 
+if (NOT NETWORKING)
+add_definitions(-DNONETWORK=1)
+endif()
+
 if(CMAKE_BUILD_TYPE STREQUAL "")
 set(CMAKE_BUILD_TYPE Debug)
 endif()

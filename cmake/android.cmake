@@ -3,10 +3,6 @@ set(ANDROID_ROOT ${ROOT_DIR}/android-project/)
 set(MIN_ANDROID_SDK 10)
 set(TARGET_ANDROID_SDK 13)
 
-if (NOT NETWORKING)
-add_definitions(-DNONETWORK=1)
-endif()
-
 set(ANDROID 1)
 set(HD_VERSION 1)
 
@@ -43,12 +39,10 @@ if (DEBUG)
 set(ANT_TARGET debug)
 set(ANT_INSTALL_TARGET installd)
 set(MANIFEST_DEBUGGABLE true)
-set(APPLICATION_MK "APP_OPTIM := debug")
 else()
 set(ANT_TARGET release)
 set(ANT_INSTALL_TARGET installr)
 set(MANIFEST_DEBUGGABLE false)
-set(APPLICATION_MK)
 endif()
 
 set(ANDROID_CPU "arm" CACHE STRING "Android NDK CPU architecture")
