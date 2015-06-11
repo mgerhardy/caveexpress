@@ -133,15 +133,34 @@ macro(prepare_android PROJECTNAME APPNAME VERSION VERSION_CODE)
 		configure_file(${ANDROID_BIN_ROOT}/strings.xml.in ${ANDROID_BIN_ROOT}/res/values/strings.xml @ONLY)
 		configure_file(${ANDROID_BIN_ROOT}/default.properties.in ${ANDROID_BIN_ROOT}/default.properties @ONLY)
 		configure_file(${ANDROID_BIN_ROOT}/build.xml.in ${ANDROID_BIN_ROOT}/build.xml @ONLY)
+		configure_file(${ANDROID_BIN_ROOT}/project.properties.in ${ANDROID_BIN_ROOT}/project.properties @ONLY)
 		#configure_file(${ANDROID_BIN_ROOT}/jni/Application.mk.in ${ANDROID_BIN_ROOT}/jni/Application.mk @ONLY)
 		#configure_file(${ANDROID_BIN_ROOT}/jni/src/Android.mk.in ${ANDROID_BIN_ROOT}/jni/src/Android.mk @ONLY)
 		add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${ANDROID_ANT} ${ANT_TARGET} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
+		#if (NOT EXISTS ${ANDROID_BIN_ROOT})
+		#	message("=> create Android SDK project: ${PROJECTNAME}")
+		#	execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent create project
+		#			--path ${ANDROID_BIN_ROOT}
+		#			--target ${ANDROID_API}
+		#			--name ${PROJECTNAME}
+		#			--package ${JAVA_PACKAGE}
+		#			--activity ${APPNAME}
+		#			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+		#endif()
 	endif()
 endmacro()
 
 #-------------------------------------------------------------------------------
-# macros end
+# functions (incl. overrides)
 #-------------------------------------------------------------------------------
+
+function(add_executable name)
+	if (ANDROID)
+		add_library(${name} SHARED ${ARGN})
+	else()
+		_add_executable(${name} ${ARGN})
+	endif()
+endfunction()
 
 #-------------------------------------------------------------------------------
 # variables
@@ -163,10 +182,6 @@ if (TEXTUREPACKER_BIN-NOTFOUND)
 else()
 	message("Found TexturePacker: ${TEXTUREPACKER_BIN}")
 endif()
-
-#-------------------------------------------------------------------------------
-# end variables
-#-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
 # options
@@ -199,14 +214,6 @@ endif()
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs")
-
-function(add_executable name)
-	if (ANDROID)
-		add_library(${name} SHARED ${ARGN})
-	else()
-		_add_executable(${name} ${ARGN})
-	endif()
-endfunction()
 
 if (NOT NETWORKING)
 add_definitions(-DNONETWORK=1)
