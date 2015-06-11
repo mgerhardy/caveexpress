@@ -121,7 +121,7 @@ CMAKE_FORCE_CXX_COMPILER("${CMAKE_CXX_COMPILER}" GNU)
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
 # standard libraries
-set(CMAKE_C_STANDARD_LIBRARIES "-ldl -lGLESv1_CM -lGLESv2 -landroid -llog -lm -lz -lc -lgcc")
+set(CMAKE_C_STANDARD_LIBRARIES "-ldl -landroid -llog -lm -lz -lc -lgcc")
 set(CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES} ${ANDROID_NDK_STL_LDFLAGS}")
 
 # specify cross-compilers
