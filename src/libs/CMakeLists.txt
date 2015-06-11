@@ -227,6 +227,15 @@ FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/audio/android/*.c
 	SDL/src/joystick/android/*.c
 	SDL/src/power/android/*.c)
+elseif(EMSCRIPTEN)
+FILE(GLOB libs_PLATFORM_SRCS
+	SDL/src/audio/emscripten/*.c
+	SDL/src/filesystem/emscripten/*.c
+	SDL/src/joystick/emscripten/*.c
+	SDL/src/power/emscripten/*.c
+	SDL/src/video/emscripten/*.c
+	SDL/src/thread/generic/*.c
+	SDL/src/timer/unix/*.c)
 elseif(NACL)
 FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/audio/nacl/*.c
@@ -289,7 +298,24 @@ FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/power/linux/*.c)
 endif()
 
-add_definitions(-DLOAD_PNG -DPNG_NO_CONFIG_H -DHAVE_SDL_IMAGE_H -DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE -DSQLITE_HAVE_ISNAN)
+if (ANDROID)
+set(TREMOR
+	libvorbisidec-1.2.1/mdct.c
+	libvorbisidec-1.2.1/block.c
+	libvorbisidec-1.2.1/window.c
+	libvorbisidec-1.2.1/synthesis.c
+	libvorbisidec-1.2.1/info.c
+	libvorbisidec-1.2.1/floor1.c
+	libvorbisidec-1.2.1/floor0.c
+	libvorbisidec-1.2.1/vorbisfile.c
+	libvorbisidec-1.2.1/res012.c
+	libvorbisidec-1.2.1/mapping0.c
+	libvorbisidec-1.2.1/registry.c
+	libvorbisidec-1.2.1/codebook.c
+	libvorbisidec-1.2.1/sharedbook.c)
+endif()
+
+add_definitions(-DLOAD_PNG -DPNG_NO_CONFIG_H -DHAVE_SDL_IMAGE_H -DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE -DSQLITE_HAVE_ISNAN -DSQLITE_THREADSAFE=0 -DOGG_MUSIC -DWAV_MUSIC)
 add_library(libs ${libs_SRCS} ${libs_PLATFORM_SRCS})
 set_target_properties(libs PROPERTIES FOLDER libs)
 set(DEPS dl)
