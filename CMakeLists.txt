@@ -156,16 +156,17 @@ macro(prepare_android PROJECTNAME APPNAME VERSION VERSION_CODE)
 		set_target_properties(${PROJECTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${ANDROID_SO_OUTDIR})
 		set_target_properties(${PROJECTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${ANDROID_SO_OUTDIR})
 		set_target_properties(${PROJECTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG ${ANDROID_SO_OUTDIR})
-		#if (NOT EXISTS ${ANDROID_BIN_ROOT})
-		#	message("=> create Android SDK project: ${PROJECTNAME}")
-		#	execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent create project
-		#			--path ${ANDROID_BIN_ROOT}
-		#			--target ${ANDROID_API}
-		#			--name ${PROJECTNAME}
-		#			--package ${JAVA_PACKAGE}
-		#			--activity ${APPNAME}
-		#			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-		#endif()
+		if (NOT EXISTS ${ANDROID_BIN_ROOT}/local.properties)
+			message("=> create Android SDK project: ${PROJECTNAME}")
+			execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent update project
+					--path .
+					--target ${ANDROID_API}
+					WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
+			execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent update lib-project
+					--path google-play-services_lib
+					--target ${ANDROID_API}
+					WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
+		endif()
 	endif()
 endmacro()
 
