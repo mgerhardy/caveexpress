@@ -221,7 +221,9 @@ FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/filesystem/android/*.c
 	SDL/src/video/android/*.c
 	SDL/src/core/android/*.c
+	SDL/src/timer/unix/*.c
 	SDL/src/main/android/*.c
+	SDL/src/thread/pthread/*.c
 	SDL/src/audio/android/*.c
 	SDL/src/joystick/android/*.c
 	SDL/src/power/android/*.c)
