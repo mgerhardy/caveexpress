@@ -6,5 +6,5 @@ mkdir -p build-android
 cd build-android
 pwd
 cmake -DCMAKE_TOOLCHAIN_FILE=cmake/android.cmake ..
-make VERBOSE=1 -j 4
+make -j 4
 
