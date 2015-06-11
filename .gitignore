@@ -54,3 +54,4 @@ CMakeCache.txt
 Makefile
 complete.lua.in
 build
+/build-android
