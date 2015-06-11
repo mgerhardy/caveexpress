@@ -225,6 +225,10 @@ FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/audio/android/*.c
 	SDL/src/joystick/android/*.c
 	SDL/src/power/android/*.c)
+if (${ANDROID_CPU} STREQUAL "arm")
+FILE(GLOB libs_PLATFORM_SRCS SDL/src/atomic/SDL_spinlock.c.arm)
+endif()
+
 elseif(NACL)
 FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/audio/nacl/*.c
