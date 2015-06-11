@@ -24,7 +24,7 @@ public:
 	float height;
 
 	EntityType (const std::string& _name) :
-			Enum<EntityType>(_name), width(1.0f), height(1.0f), _nameWithoutTheme(""), _hasTheme(false)
+			Enum<EntityType>(_name), _nameWithoutTheme(""), _hasTheme(false), width(1.0f), height(1.0f)
 	{
 	}
 

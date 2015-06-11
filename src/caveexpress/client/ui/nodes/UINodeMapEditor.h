@@ -347,7 +347,7 @@ public:
 	int getMapHeight () const;
 
 	bool isDirty () const;
-	void save ();
+	bool save ();
 	void clear ();
 	void undo ();
 	void redo ();

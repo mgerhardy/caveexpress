@@ -216,22 +216,34 @@ FILE(GLOB libs_SRCS
 	Box2D/Rope/b2Rope.cpp
 	)
 
-if(WIN32)
+if(ANDROID)
 FILE(GLOB libs_PLATFORM_SRCS
-	SDL/src/joystick/windows/*.c
-	SDL/src/filesystem/windows/*.c
-	SDL/src/haptic/windows/*.c
-	SDL/src/video/windows/*.c
-	SDL/src/loadso/windows/*.c
-	SDL/src/main/windows/*.c
-	SDL/src/timer/windows/*.c
-	SDL/src/core/windows/*.c
-	SDL/src/power/windows/*.c
-	SDL/src/audio/winmm/*.c
-	SDL/src/audio/directsound/*.c
-	SDL/src/render/direct3d/*.c
-	SDL/src/thread/windows/*.c
-	SDL/src/thread/generic/SDL_syscond.c)
+	SDL/src/filesystem/android/*.c
+	SDL/src/video/android/*.c
+	SDL/src/core/android/*.c
+	SDL/src/timer/unix/*.c
+	SDL/src/main/android/*.c
+	SDL/src/thread/pthread/*.c
+	SDL/src/audio/android/*.c
+	SDL/src/joystick/android/*.c
+	SDL/src/power/android/*.c)
+elseif(EMSCRIPTEN)
+FILE(GLOB libs_PLATFORM_SRCS
+	SDL/src/audio/emscripten/*.c
+	SDL/src/filesystem/emscripten/*.c
+	SDL/src/joystick/emscripten/*.c
+	SDL/src/power/emscripten/*.c
+	SDL/src/video/emscripten/*.c
+	SDL/src/thread/generic/*.c
+	SDL/src/timer/unix/*.c)
+elseif(NACL)
+FILE(GLOB libs_PLATFORM_SRCS
+	SDL/src/audio/nacl/*.c
+	SDL/src/filesystem/nacl/*.c
+	SDL/src/video/nacl/*.c
+	SDL/src/timer/unix/*.c
+	SDL/src/thread/pthread/*.c
+	SDL/src/main/nacl/*.c)
 elseif(APPLE)
 FILE(GLOB libs_PLATFORM_SRCS
 	SDL_image/IMG_UIImage.m
@@ -253,6 +265,22 @@ FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/haptic/darwin/*.c
 	SDL/src/power/macosx/*.c
 	SDL/src/thread/pthread/*.c)
+elseif(WIN32)
+FILE(GLOB libs_PLATFORM_SRCS
+	SDL/src/joystick/windows/*.c
+	SDL/src/filesystem/windows/*.c
+	SDL/src/haptic/windows/*.c
+	SDL/src/video/windows/*.c
+	SDL/src/loadso/windows/*.c
+	SDL/src/main/windows/*.c
+	SDL/src/timer/windows/*.c
+	SDL/src/core/windows/*.c
+	SDL/src/power/windows/*.c
+	SDL/src/audio/winmm/*.c
+	SDL/src/audio/directsound/*.c
+	SDL/src/render/direct3d/*.c
+	SDL/src/thread/windows/*.c
+	SDL/src/thread/generic/SDL_syscond.c)
 elseif(LINUX)
 include(FindPkgConfig)
 pkg_search_module(DBUS REQUIRED dbus-1 dbus)
@@ -268,26 +296,30 @@ FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/main/dummy/*.c
 	SDL/src/core/linux/*.c
 	SDL/src/power/linux/*.c)
-elseif(ANDROID)
-FILE(GLOB libs_PLATFORM_SRCS
-	SDL/src/filesystem/android/*.c
-	SDL/src/video/android/*.c
-	SDL/src/core/android/*.c
-	SDL/src/main/android/*.c
-	SDL/src/audio/android/*.c
-	SDL/src/joystick/android/*.c
-	SDL/src/power/android/*.c)
-elseif(NACL)
-FILE(GLOB libs_PLATFORM_SRCS
-	SDL/src/audio/nacl/*.c
-	SDL/src/filesystem/nacl/*.c
-	SDL/src/video/nacl/*.c
-	SDL/src/timer/unix/*.c
-	SDL/src/thread/pthread/*.c
-	SDL/src/main/nacl/*.c)
 endif()
 
-add_definitions(-DLOAD_PNG -DPNG_NO_CONFIG_H -DHAVE_SDL_IMAGE_H -DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE -DSQLITE_HAVE_ISNAN)
+if (ANDROID)
+set(TREMOR
+	libvorbisidec-1.2.1/mdct.c
+	libvorbisidec-1.2.1/block.c
+	libvorbisidec-1.2.1/window.c
+	libvorbisidec-1.2.1/synthesis.c
+	libvorbisidec-1.2.1/info.c
+	libvorbisidec-1.2.1/floor1.c
+	libvorbisidec-1.2.1/floor0.c
+	libvorbisidec-1.2.1/vorbisfile.c
+	libvorbisidec-1.2.1/res012.c
+	libvorbisidec-1.2.1/mapping0.c
+	libvorbisidec-1.2.1/registry.c
+	libvorbisidec-1.2.1/codebook.c
+	libvorbisidec-1.2.1/sharedbook.c)
+endif()
+
+add_definitions(-DLOAD_PNG -DPNG_NO_CONFIG_H -DHAVE_SDL_IMAGE_H -DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE -DSQLITE_HAVE_ISNAN -DSQLITE_THREADSAFE=0 -DOGG_MUSIC -DWAV_MUSIC)
 add_library(libs ${libs_SRCS} ${libs_PLATFORM_SRCS})
 set_target_properties(libs PROPERTIES FOLDER libs)
-target_link_libraries(libs dl pthread)
+set(DEPS dl)
+if (NOT ANDROID)
+list(APPEND DEPS pthread)
+endif()
+target_link_libraries(libs ${DEPS})

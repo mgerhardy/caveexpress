@@ -6,12 +6,14 @@ set(caveexpress-server_SRCS
 	entities/CollectableEntity.cpp
 	entities/Stone.cpp
 	entities/Platform.cpp
+	entities/npcs/INPCCave.cpp
 	entities/npcs/NPCBlowing.cpp
 	entities/npcs/NPC.cpp
 	entities/npcs/NPCAttacking.cpp
 	entities/npcs/NPCPackage.cpp
 	entities/npcs/NPCFish.cpp
 	entities/npcs/NPCFlying.cpp
+	entities/npcs/NPCFriendly.cpp
 	entities/npcs/NPCAggressive.cpp
 	entities/Package.cpp
 	entities/Egg.cpp

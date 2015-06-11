@@ -6,7 +6,7 @@
 #include "caveexpress/server/map/Map.h"
 
 // forward decl
-class NPCPackage;
+class INPCCave;
 
 class CaveMapTile: public MapTile {
 private:
@@ -15,7 +15,7 @@ private:
 	bool _shouldSpawnNPC;
 	uint32_t _now;
 
-	NPCPackage* _npc;
+	INPCCave* _npc;
 	typedef std::vector<const EntityType*> NPCTypes;
 	NPCTypes _npcTypes;
 	typedef std::vector<WindowTile*> WindowTiles;
@@ -30,15 +30,18 @@ private:
 	// ms that each (re-)spawn is delayed
 	int _delaySpawn;
 
+	int _caveNumber;
+
 	void setLightStates (bool state);
 
 public:
-	CaveMapTile (Map& map, const std::string& spriteID, gridCoord gridX, gridCoord gridY, const EntityType& npcType = EntityType::NONE, int delaySpawn = 5000);
+	CaveMapTile (Map& map, int caveNumber, const std::string& spriteID, gridCoord gridX, gridCoord gridY, const EntityType& npcType = EntityType::NONE, int delaySpawn = 5000);
 	virtual ~CaveMapTile ();
 
 	bool isUnderWater () const;
 	bool shouldSpawnNPC () const;
-	void spawnNPC ();
+	// if spawnPackage is set to true, the npc is not collectable, but only spawns a package
+	void spawnNPC (bool spawnPackage);
 
 	void setPlatformDimensions (int start, int end);
 	// the grid coordinate of the landing spots left side
@@ -56,9 +59,10 @@ public:
 
 	bool moveBackIntoCave ();
 
+	int getCaveNumber() const;
 	uint32_t getSpawnTime () const;
 
-	NPCPackage* getNPC () const;
+	INPCCave* getNPC () const;
 
 	// IEntity
 	void update (uint32_t deltaTime) override;
@@ -84,7 +88,7 @@ inline bool CaveMapTile::shouldSpawnNPC () const
 	return _shouldSpawnNPC;
 }
 
-inline NPCPackage* CaveMapTile::getNPC () const
+inline INPCCave* CaveMapTile::getNPC () const
 {
 	return _npc;
 }
@@ -107,6 +111,11 @@ inline uint32_t CaveMapTile::getSpawnTime () const
 inline int CaveMapTile::getPlatformStartGridX () const
 {
 	return _platformStart;
+}
+
+inline int CaveMapTile::getCaveNumber() const
+{
+	return _caveNumber;
 }
 
 inline int CaveMapTile::getPlatformEndGridX () const

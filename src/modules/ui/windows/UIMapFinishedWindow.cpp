@@ -61,6 +61,7 @@ UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& 
 bool UIMapFinishedWindow::onPush ()
 {
 	_replayCampaign->setVisible(!_serviceProvider.getNetwork().isMultiplayer());
+	// TODO: don't show the ads from the very first levels
 	showFullscreenAds();
 	return UIWindow::onPush();
 }

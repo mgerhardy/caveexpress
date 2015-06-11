@@ -8,7 +8,7 @@
 #define ISPOWEROFTWO(i) ((i) > 0 && !((i) & ((i) - 1)))
 
 Texture::Texture (const std::string &filename, IFrontend *frontend) :
-		_uploadedWidth(-1), _uploadedHeight(-1), _data(nullptr), _name(filename), _copy(false), _mirror(false), _frontend(
+		_uploadedWidth(-1), _uploadedHeight(-1), _name(filename), _mirror(false), _copy(false), _data(nullptr), _frontend(
 				frontend)
 {
 	if (filename[0] == '*') {
@@ -25,8 +25,8 @@ Texture::Texture (const std::string &filename, IFrontend *frontend) :
 }
 
 Texture::Texture (const Texture& texture) :
-		_uploadedWidth(texture._uploadedWidth), _uploadedHeight(texture._uploadedHeight), _data(texture._data), _name(
-				texture._name), _mirror(texture._mirror), _frontend(texture._frontend), _copy(true)
+		_uploadedWidth(texture._uploadedWidth), _uploadedHeight(texture._uploadedHeight), _name(
+				texture._name), _mirror(texture._mirror), _copy(true), _data(texture._data), _frontend(texture._frontend)
 {
 	debug(LOG_CLIENT, String::format("copy texture %s (%i:%i)", _name.c_str(), _uploadedWidth, _uploadedHeight));
 	memcpy(&_rect, &texture._rect, sizeof(_rect));

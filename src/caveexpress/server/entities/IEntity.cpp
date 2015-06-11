@@ -36,6 +36,20 @@ void IEntity::prepareRemoval ()
 	deleteBodies();
 }
 
+bool IEntity::isNpcFriendly() const {
+	if (!isNpcCave())
+		return false;
+	const INPCCave *npc = static_cast<const INPCCave*>(this);
+	return !npc->isDeliverPackage();
+}
+
+bool IEntity::isNpcPackage() const {
+	if (!isNpcCave())
+		return false;
+	const INPCCave *npc = static_cast<const INPCCave*>(this);
+	return npc->isDeliverPackage();
+}
+
 const b2Vec2& IEntity::getPos () const
 {
 	for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {

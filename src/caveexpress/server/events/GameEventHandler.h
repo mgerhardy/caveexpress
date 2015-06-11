@@ -19,6 +19,7 @@ class EntityType;
 struct b2Vec2;
 class ByteStream;
 class ServiceProvider;
+class NPCFriendly;
 
 class GameEventHandler: public NonCopyable {
 private:
@@ -50,7 +51,7 @@ public:
 	void removeEntity (int clientMask, const IEntity& entity, bool fadeOut = false) const;
 
 	// tell the client that the given entity id is a cave and give it the state
-	void addCave (int clientMask, int id, bool state) const;
+	void addCave (int clientMask, int id, int caveNumber, bool state) const;
 	// send the state of a cave (including the windows) to the client
 	void sendLightState (int clientMask, int id, bool state) const;
 
@@ -59,6 +60,12 @@ public:
 	void updateHitpoints (const Player& player) const;
 
 	void updateLives (const Player& player) const;
+
+	// informs the client about the cave the npc wanna go
+	void announceTargetCave (int clientMask, const NPCFriendly& npc, int16_t delayMillis) const;
+
+	// inform the client about the target cave number the npc wants to get carried to
+	void setTargetCave (int clientMask, uint8_t number) const;
 
 	// inform the clients that the given entity changed its animation
 	// used to e.g. change a npc animation to walking

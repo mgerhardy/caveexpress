@@ -8,6 +8,7 @@
 #define UINODE_MAP "map"
 #define UINODE_HITPOINTS "hitpoints"
 #define UINODE_COLLECTED "collected"
+#define UINODE_TARGETCAVEID "targetcave"
 #define UINODE_POINTS "points"
 
 // forward decl

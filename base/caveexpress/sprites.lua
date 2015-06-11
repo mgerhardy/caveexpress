@@ -23,6 +23,22 @@ sprites = {
 	["npc-woman-walk-left"] = {
 		fps = 12,
 	},
+	["npc-woman-swimming-right"] = {
+		fps = 8,
+	},
+	["npc-woman-swimming-idle"] = {
+		fps = 8,
+	},
+	["npc-woman-swimming-left"] = {
+		fps = 8,
+	},
+	["npc-woman-falling"] = {
+		fps = 8,
+	},
+	["npc-woman-idle"] = {
+		fps = 4,
+		delays = { 0, 2000 },
+	},
 
 -- NPC Grandpa
 
@@ -32,6 +48,22 @@ sprites = {
 	["npc-grandpa-walk-left"] = {
 		fps = 12,
 	},
+	["npc-grandpa-swimming-idle"] = {
+		fps = 8,
+	},
+	["npc-grandpa-swimming-right"] = {
+		fps = 8,
+	},
+	["npc-grandpa-swimming-left"] = {
+		fps = 8,
+	},
+	["npc-grandpa-falling"] = {
+		fps = 8,
+	},
+	["npc-grandpa-idle"] = {
+		fps = 4,
+		delays = { 0, 2000 },
+	},
 
 -- NPC Man
 
@@ -40,6 +72,21 @@ sprites = {
 	},
 	["npc-man-walk-left"] = {
 		fps = 12,
+	},
+	["npc-man-swimming-idle"] = {
+		fps = 8,
+	},
+	["npc-man-swimming-right"] = {
+		fps = 8,
+	},
+	["npc-man-swimming-left"] = {
+		fps = 8,
+	},
+	["npc-man-falling"] = {
+		fps = 8,
+	},
+	["npc-man-idle"] = {
+		fps = 4,
 	},
 
 -- NPC Flying
@@ -993,6 +1040,22 @@ sprites = {
 		width = 0.25,
 		height = 2,
 	},
+	["cave-sign-01"] = { type = "cave-sign", },
+	["cave-sign-02"] = { type = "cave-sign", },
+	["cave-sign-03"] = { type = "cave-sign", },
+	["cave-sign-04"] = { type = "cave-sign", },
+	["cave-sign-05"] = { type = "cave-sign", },
+	["cave-sign-06"] = { type = "cave-sign", },
+	["cave-sign-07"] = { type = "cave-sign", },
+	["cave-sign-08"] = { type = "cave-sign", },
+	["cavenumber1"] = {},
+	["cavenumber2"] = {},
+	["cavenumber3"] = {},
+	["cavenumber4"] = {},
+	["cavenumber5"] = {},
+	["cavenumber6"] = {},
+	["cavenumber7"] = {},
+	["cavenumber8"] = {},
 
 -- UI sprites
 

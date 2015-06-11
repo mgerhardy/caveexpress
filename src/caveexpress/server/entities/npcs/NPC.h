@@ -9,12 +9,18 @@ protected:
 	b2Vec2 _targetPos;
 	b2Vec2 _initialPosition;
 	bool _lastDirectionRight;
+	int _triggerMovement;
 	// the time at which the npc was dazed
 	uint32_t _dazedTime;
 	// the time that a npc is dazed
 	uint32_t _dazedTimeout;
 	TimerID _idleTimer;
 	TimerID _moveTimer;
+	// time at which the npc is going to die
+	uint32_t _swimmingTime;
+	uint16_t _swimmingTimeDelay;
+	float _initialSwimmingSpeed;
+	b2Vec2 _currentSwimmingSpeed;
 
 	int handleTurnAnimation (const b2Vec2& targetPos, const Animation& left, const Animation& right);
 	void move ();
@@ -25,6 +31,8 @@ public:
 	explicit NPC (const EntityType &type, Map& map);
 	virtual ~NPC ();
 
+	virtual void setSwimming (const b2Vec2& pos);
+	virtual void setSwimmingIdle ();
 	virtual void setFalling ();
 	virtual void setMoving (gridCoord x);
 	virtual void setMoving (const b2Vec2& targetPos = b2Vec2_zero);
@@ -38,6 +46,10 @@ public:
 	inline void setDazedTimeout (uint32_t dazedTimeout)
 	{
 		_dazedTimeout = dazedTimeout;
+	}
+
+	inline void resetTriggerMovement() {
+		_triggerMovement = 0;
 	}
 
 	virtual const Animation& getFallingAnimation () const;
@@ -61,10 +73,32 @@ public:
 		return _state == NPCState::NPC_ATTACKING;
 	}
 
+	inline bool isArrived () const
+	{
+		return _state == NPCState::NPC_ARRIVED;
+	}
+
+	// on board of the player's vehicle
+	inline bool isCollected () const
+	{
+		return _state == NPCState::NPC_COLLECTED;
+	}
+
 	// dying in the water (sinking)
 	inline bool isDying () const
 	{
 		return _state == NPCState::NPC_DYING;
+	}
+
+	// swimming in the water and waiting for rescue
+	inline bool isSwimming () const
+	{
+		return _state == NPCState::NPC_SWIMMING;
+	}
+
+	inline bool isStruggle () const
+	{
+		return _state == NPCState::NPC_STRUGGLE;
 	}
 
 	// dying in the water (sinking)

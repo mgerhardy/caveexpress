@@ -22,11 +22,11 @@
         android:label="@string/app_name"
         android:icon="@drawable/icon"
         android:allowBackup="true"
-        android:name="@APPNAME_FULL@App"
+        android:name="@APPNAME@App"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
         android:hardwareAccelerated="true">
         <activity
-            android:name="@APPNAME_FULL@"
+            android:name="@APPNAME@"
             android:label="@string/app_name"
             android:screenOrientation="sensorLandscape"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">

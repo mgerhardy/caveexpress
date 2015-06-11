@@ -11,9 +11,9 @@
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>1</double>
+                <double>0.25</double>
                 <key>extension</key>
-                <string></string>
+                <string>big</string>
                 <key>spriteFilter</key>
                 <string></string>
                 <key>acceptFractionalValues</key>
@@ -21,9 +21,26 @@
                 <key>maxTextureSize</key>
                 <QSize>
                     <key>width</key>
-                    <int>-1</int>
+                    <int>2048</int>
                     <key>height</key>
-                    <int>-1</int>
+                    <int>2048</int>
+                </QSize>
+            </struct>
+            <struct type="AutoSDSettings">
+                <key>scale</key>
+                <double>0.125</double>
+                <key>extension</key>
+                <string>small</string>
+                <key>spriteFilter</key>
+                <string></string>
+                <key>acceptFractionalValues</key>
+                <false/>
+                <key>maxTextureSize</key>
+                <QSize>
+                    <key>width</key>
+                    <int>2048</int>
+                    <key>height</key>
+                    <int>2048</int>
                 </QSize>
             </struct>
         </array>
@@ -38,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/pics/npc_grandpa.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-npc_grandpa-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -150,7 +167,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>npc_grandpa.lua</filename>
+                <filename>caveexpress-npc_grandpa-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -175,7 +192,7 @@
         <key>globalSpriteSettings</key>
         <struct type="SpriteSettings">
             <key>scale</key>
-            <double>0.125</double>
+            <double>1</double>
             <key>scaleMode</key>
             <enum type="ScaleMode">Smooth</enum>
             <key>innerPadding</key>
@@ -208,6 +225,27 @@
             <filename>../png/caveexpress/npc-grandpa-walk-right-middle-06.png</filename>
             <filename>../png/caveexpress/npc-grandpa-walk-right-middle-07.png</filename>
             <filename>../png/caveexpress/npc-grandpa-walk-left-middle-06_nm.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-idle-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-idle-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-idle-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-left-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-left-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-left-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-right-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-right-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-right-middle-03.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

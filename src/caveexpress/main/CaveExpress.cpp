@@ -27,6 +27,7 @@
 #include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
+#include "caveexpress/client/entities/ClientNPC.h"
 #include "caveexpress/client/entities/ClientParticle.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/client/commands/CmdDrop.h"
@@ -68,6 +69,8 @@
 #include "caveexpress/client/network/HudInitDoneHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
 #include "caveexpress/client/network/UpdatePackageCountHandler.h"
+#include "caveexpress/client/network/TargetCaveHandler.h"
+#include "caveexpress/client/network/AnnounceTargetCaveHandler.h"
 #include "caveexpress/client/network/FailedMapHandler.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/server/entities/CaveMapTile.h"
@@ -101,6 +104,8 @@ PROTOCOL_CLASS_FACTORY_IMPL(AddCaveMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(UpdateCollectedTypeMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(WaterHeightMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(WaterImpactMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(TargetCaveMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(AnnounceTargetCaveMessage);
 
 CaveExpress::CaveExpress () :
 		_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _updateEntitiesTime(0), _frontend(nullptr), _serviceProvider(nullptr),_connectedClients(
@@ -263,9 +268,9 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	r.registerFactory(&EntityTypes::GROUND, ClientMapTile::FACTORY);
 	r.registerFactory(&EntityTypes::CAVE, ClientCaveTile::FACTORY);
 	r.registerFactory(&EntityTypes::WINDOW, ClientWindowTile::FACTORY);
-	r.registerFactory(&EntityTypes::NPC_FRIENDLY_GRANDPA, ClientEntity::FACTORY);
-	r.registerFactory(&EntityTypes::NPC_FRIENDLY_WOMAN, ClientEntity::FACTORY);
-	r.registerFactory(&EntityTypes::NPC_FRIENDLY_MAN, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_FRIENDLY_GRANDPA, ClientNPC::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_FRIENDLY_WOMAN, ClientNPC::FACTORY);
+	r.registerFactory(&EntityTypes::NPC_FRIENDLY_MAN, ClientNPC::FACTORY);
 	r.registerFactory(&EntityTypes::NPC_FISH, ClientEntity::FACTORY);
 	r.registerFactory(&EntityTypes::NPC_FLYING, ClientEntity::FACTORY);
 	r.registerFactory(&EntityTypes::NPC_WALKING, ClientEntity::FACTORY);
@@ -293,6 +298,8 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	f.registerFactory(protocol::PROTO_WATERIMPACT, WaterImpactMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_ADDCAVE, AddCaveMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_LIGHTSTATE, LightStateMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_TARGETCAVE, TargetCaveMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_ANNOUNCETARGETCAVE, AnnounceTargetCaveMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_UPDATECOLLECTEDTYPE,UpdateCollectedTypeMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_ADDROPE, AddRopeMessage::FACTORY);
 
@@ -328,6 +335,7 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	rp.registerServerHandler(protocol::PROTO_DROP, new DropHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_ERROR, new ErrorHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
+
 	_frontend = frontend;
 	_serviceProvider = &serviceProvider;
 	_map.init(_frontend, *_serviceProvider);
@@ -397,6 +405,10 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.registerClientHandler(protocol::PROTO_INITDONE, new HudInitDoneHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_FAILEDMAP);
 	r.registerClientHandler(protocol::PROTO_FAILEDMAP, new FailedMapHandler(*map, serviceProvider));
+	r.unregisterClientHandler(protocol::PROTO_TARGETCAVE);
+	r.registerClientHandler(protocol::PROTO_TARGETCAVE, new TargetCaveHandler());
+	r.unregisterClientHandler(protocol::PROTO_ANNOUNCETARGETCAVE);
+	r.registerClientHandler(protocol::PROTO_ANNOUNCETARGETCAVE, new AnnounceTargetCaveHandler(*map));
 }
 
 Map& CaveExpress::getMap ()

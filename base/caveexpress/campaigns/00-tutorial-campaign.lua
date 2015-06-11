@@ -6,6 +6,7 @@ local c = Campaign.new("tutorial")
 c:setSetting("text", "Introduction")
 c:setSetting("achievement", "achievement_finish_the_tutorial")
 -- now add all maps
+c:addMaps("introducing-08-npcdeliver")
 c:addMaps("introducing-01-package")
 c:addMaps("introducing-02-game")
 c:addMaps("introducing-03-tree")

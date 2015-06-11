@@ -89,7 +89,8 @@ void IConsole::cursorDown ()
 
 void IConsole::cursorRight ()
 {
-	if (_cursorPos < _commandLine.size())
+	const int size = _commandLine.size();
+	if (_cursorPos < size)
 		_cursorPos++;
 }
 
@@ -132,7 +133,8 @@ void IConsole::cursorDelete (bool moveCursor)
 {
 	if (_commandLine.empty())
 		return;
-	if (moveCursor || _cursorPos > _commandLine.size() - 1)
+	const int size = _commandLine.size();
+	if (moveCursor || _cursorPos > size - 1)
 		cursorLeft();
 	_commandLine.erase(_cursorPos, 1);
 }

@@ -31,6 +31,9 @@ public:
 		UINodeSprite* collectedNode = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_COLLECTED);
 		if (collectedNode)
 			collectedNode->clearSprites();
+		UINodeSprite* targetCaveNode = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_TARGETCAVEID);
+		if (targetCaveNode)
+			targetCaveNode->clearSprites();
 		UINodePoint* pointsNode = UI::get().getNode<UINodePoint>(UI_WINDOW_MAP, UINODE_POINTS);
 		if (pointsNode)
 			pointsNode->setPoints(0);

@@ -18,6 +18,8 @@
 #include "caveexpress/shared/network/messages/AddCaveMessage.h"
 #include "caveexpress/shared/network/messages/WaterImpactMessage.h"
 #include "caveexpress/shared/network/messages/LightStateMessage.h"
+#include "caveexpress/shared/network/messages/TargetCaveMessage.h"
+#include "caveexpress/shared/network/messages/AnnounceTargetCaveMessage.h"
 #include "network/messages/RumbleMessage.h"
 #include "network/messages/BackToMainMessage.h"
 #include "network/messages/FinishedMapMessage.h"
@@ -26,6 +28,7 @@
 #include "network/INetwork.h"
 
 #include "caveexpress/server/entities/IEntity.h"
+#include "caveexpress/server/entities/npcs/NPCFriendly.h"
 #include "caveexpress/server/entities/Player.h"
 #include "caveexpress/server/entities/Water.h"
 
@@ -105,6 +108,16 @@ void GameEventHandler::updateLives (const Player& player) const
 	_serviceProvider->getNetwork().sendToClient(player.getClientId(), msg);
 }
 
+void GameEventHandler::announceTargetCave(int clientMask, const NPCFriendly& npc, int16_t delayMillis) const {
+	const AnnounceTargetCaveMessage msg(npc.getID(), delayMillis, npc.getTargetCaveNumber());
+	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
+}
+
+void GameEventHandler::setTargetCave(int clientMask, uint8_t number) const {
+	const TargetCaveMessage msg(number);
+	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
+}
+
 void GameEventHandler::notifyPause (bool pause)
 {
 	const PauseMessage msg(pause);
@@ -177,9 +190,9 @@ void GameEventHandler::sendLightState (int clientMask, int id, bool state) const
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 
-void GameEventHandler::addCave (int clientMask, int id, bool state) const
+void GameEventHandler::addCave (int clientMask, int id, int caveNumber, bool state) const
 {
-	const AddCaveMessage msg(id, state);
+	const AddCaveMessage msg(id, caveNumber, state);
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 

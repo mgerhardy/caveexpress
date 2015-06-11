@@ -7,10 +7,11 @@
 class AddCaveMessage: public IProtocolMessage {
 private:
 	uint16_t _entityId;
+	uint8_t _number;
 	bool _state;
 public:
-	AddCaveMessage (uint16_t entityId, bool state) :
-			IProtocolMessage(protocol::PROTO_ADDCAVE), _entityId(entityId), _state(state)
+	AddCaveMessage (uint16_t entityId, uint8_t number, bool state) :
+			IProtocolMessage(protocol::PROTO_ADDCAVE), _entityId(entityId), _number(number), _state(state)
 	{
 	}
 
@@ -19,6 +20,7 @@ public:
 			IProtocolMessage(protocol::PROTO_ADDCAVE)
 	{
 		_entityId = input.readShort();
+		_number = input.readByte();
 		_state = input.readBool();
 	}
 
@@ -26,6 +28,7 @@ public:
 	{
 		out.addByte(_id);
 		out.addShort(_entityId);
+		out.addByte(_number);
 		out.addBool(_state);
 	}
 
@@ -37,5 +40,10 @@ public:
 	inline bool getState () const
 	{
 		return _state;
+	}
+
+	inline uint8_t getCaveNumber () const
+	{
+		return _number;
 	}
 };

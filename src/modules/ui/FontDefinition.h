@@ -88,8 +88,8 @@ private:
 	std::map<std::string, FontChar*> _fontCharMap;
 public:
 	FontDef (const std::string& _id, int _height, int _metricsHeight, int _metricsAscender, int _metricsDescender) :
-			id(_id), height(_height), textureHeight(0), textureWidth(0), textureName(""), metricsAscender(_metricsAscender), metricsDescender(
-					_metricsDescender), metricsHeight(_metricsHeight), _heightFactor(1.0f), _widthFactor(1.0f)
+			id(_id), textureWidth(0), textureHeight(0), textureName(""), height(_height), metricsHeight(_metricsHeight), metricsAscender(
+					_metricsAscender), metricsDescender(_metricsDescender), _heightFactor(1.0f), _widthFactor(1.0f)
 	{
 	}
 

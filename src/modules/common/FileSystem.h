@@ -8,6 +8,7 @@ struct SDL_RWops;
 
 class FileSystem: public NonCopyable {
 private:
+	std::string _homeDir;
 	std::string _dataDir;
 	const std::string _mapsDir;
 	const std::string _campaignsDir;
@@ -20,9 +21,6 @@ private:
 	const std::string _gesturesDir;
 
 	FileSystem ();
-
-	std::string _homeDir;
-
 public:
 	virtual ~FileSystem ();
 

@@ -11,7 +11,7 @@ public:
 	const bool loop;
 
 	Animation (const std::string& _name, bool _loop = true) :
-			Enum<Animation>(_name), loop(_loop), _hasDirection(string::endsWith(_name, "-left") || string::endsWith(_name, "-right"))
+			Enum<Animation>(_name), _hasDirection(string::endsWith(_name, "-left") || string::endsWith(_name, "-right")), loop(_loop)
 	{
 		if (!_hasDirection)
 			_nameWithoutDirection = name;

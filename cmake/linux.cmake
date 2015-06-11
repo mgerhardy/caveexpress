@@ -1,8 +1,6 @@
 include(CheckFunctionExists)
 include(CheckLibraryExists)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -fno-rtti -fno-exceptions")
-
 if (NOT NETWORKING)
 	add_definitions(-DNONETWORK=1)
 endif()
@@ -16,3 +14,11 @@ if (CMAKE_COMPILER_IS_GNUCXX)
         endif()
     endif()
 endif()
+
+set(CMAKE_CXX_FLAGS "-fno-rtti -fno-exceptions -std=c++11 -pthread -Wall -Wextra -Wnon-virtual-dtor -Wno-reorder -pthread -Wcast-qual -Wcast-align -Wpointer-arith -Wno-long-long -Wno-multichar -Wshadow -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wreturn-type -Wwrite-strings -Wno-variadic-macros -Wno-unknown-pragmas")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -ftree-vectorize -msse3 -ffast-math -DNDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -DDEBUG=1 -ggdb")
+
+set(CMAKE_C_FLAGS "-pthread -Wcast-qual -Wcast-align -Wpointer-arith -Wno-long-long -Wno-multichar -Wshadow -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wreturn-type -Wwrite-strings -Wno-variadic-macros -Wno-unknown-pragmas")
+set(CMAKE_C_FLAGS_RELEASE "-O3 -ftree-vectorize -msse3 -ffast-math -DNDEBUG")
+set(CMAKE_C_FLAGS_DEBUG "-O0 -DDEBUG=1 -ggdb")

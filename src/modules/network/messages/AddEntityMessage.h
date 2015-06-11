@@ -22,8 +22,8 @@ public:
 	AddEntityMessage (uint16_t entityId, const EntityType& entityType, const Animation& animation,
 			const std::string& sprite, float xpos, float ypos, float sizeX, float sizeY, EntityAngle angle,
 			EntityAlignment spriteAlign) :
-			IProtocolMessage(protocol::PROTO_ADDENTITY), _entityId(entityId), _entityType(&entityType), _animation(
-					&animation), _sprite(sprite), _xpos(xpos), _ypos(ypos), _sizeX(sizeX), _sizeY(sizeY), _angle(angle), _spriteAlign(
+			IProtocolMessage(protocol::PROTO_ADDENTITY), _entityId(entityId), _animation(&animation), _entityType(
+					&entityType), _sprite(sprite), _xpos(xpos), _ypos(ypos), _sizeX(sizeX), _sizeY(sizeY), _angle(angle), _spriteAlign(
 					spriteAlign)
 	{
 	}

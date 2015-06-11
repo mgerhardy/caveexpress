@@ -79,7 +79,7 @@ inline const std::string& Sprite::getName () const
 inline TexturePtr Sprite::getActiveTexture (Layer layer) const
 {
 	const AnimationFrames& frames = _textures[layer];
-	const size_t size = frames.size();
+	const int size = frames.size();
 	if (size == 0)
 		return TexturePtr();
 	if (size < _currentFrame)
@@ -150,21 +150,21 @@ inline void Sprite::setFPS (float fps)
 
 inline void Sprite::setActive (int frame, bool active)
 {
-	assert(frame <= _active.size());
+	assert(frame <= static_cast<int>(_active.size()));
 	assert(frame > 0);
 	_active[frame - 1] = active;
 }
 
 inline bool Sprite::isActive (int frame) const
 {
-	assert(frame <= _active.size());
+	assert(frame <= static_cast<int>(_active.size()));
 	assert(frame > 0);
 	return _active[frame - 1];
 }
 
 inline void Sprite::setDelay (int frame, int delay)
 {
-	assert(frame <= _delays.size());
+	assert(frame <= static_cast<int>(_delays.size()));
 	assert(frame > 0);
 	_delays[frame - 1] = delay;
 }

@@ -123,6 +123,11 @@ void IUIMapWindow::initHudNodes()
 	}
 	_panel->add(_livesSprite);
 
+	UINodeSprite *targetCave = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
+	targetCave->setId(UINODE_TARGETCAVEID);
+	targetCave->setImage("icon-targetcave");
+	_panel->add(targetCave);
+
 	UINodeSprite *collected = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
 	collected->setId(UINODE_COLLECTED);
 	_panel->add(collected);

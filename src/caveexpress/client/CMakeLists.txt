@@ -1,6 +1,7 @@
 set(NAME caveexpress)
 set(${NAME}-client_SRCS
 	entities/ClientCaveTile.cpp
+	entities/ClientNPC.cpp
 	entities/ClientWindowTile.cpp
 	entities/ClientParticle.cpp
 	CaveExpressClientMap.cpp

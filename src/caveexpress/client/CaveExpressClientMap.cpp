@@ -71,6 +71,23 @@ bool CaveExpressClientMap::drop ()
 	return true;
 }
 
+void CaveExpressClientMap::setCaveNumber (uint16_t id, uint8_t number)
+{
+	debug(LOG_CLIENT, String::format("set cave for %i to %i", id, number));
+	ClientEntityPtr e = getEntity(id);
+	if (!e) {
+		error(LOG_CLIENT, String::format("no cave entity with the id %i found", id));
+		return;
+	}
+	const char first = number / 10 + '0';
+	const char second = number % 10 + '0';
+	std::stringstream s;
+	s << "cave-sign-";
+	s << first;
+	s << second;
+	e->addOverlay(SpritePtr(UI::get().loadSprite(s.str())->copy()));
+}
+
 void CaveExpressClientMap::setCaveState (uint16_t id, bool state)
 {
 	ClientEntityPtr e = getEntity(id);

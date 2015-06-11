@@ -106,7 +106,7 @@ inline void ByteStream::resize (size_t size)
 inline void ByteStream::append (const uint8_t *buf, size_t size)
 {
 	// TODO: optimize
-	for (int i = 0; i < size; ++i) {
+	for (size_t i = 0; i < size; ++i) {
 		addByte(buf[i]);
 	}
 }
@@ -143,7 +143,7 @@ inline void ByteStream::addBool (bool value, bool prepend)
 inline void ByteStream::addString (const std::string& string)
 {
 	const size_t length = string.length();
-	for (int i = 0; i < length; i++) {
+	for (size_t i = 0; i < length; i++) {
 		_buffer.push_back(uint8_t(string[i]));
 	}
 	_buffer.push_back(uint8_t('\0'));

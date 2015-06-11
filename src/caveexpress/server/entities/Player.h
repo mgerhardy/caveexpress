@@ -13,6 +13,7 @@
 
 // forward decl
 class Map;
+class NPCFriendly;
 class CaveMapTile;
 class CollectableEntity;
 
@@ -36,6 +37,8 @@ private:
 
 	uint16_t _hitpoints;
 	uint8_t _lives;
+
+	NPCFriendly* _collectedNPC;
 
 	b2Vec2 _acceleration;
 
@@ -89,6 +92,7 @@ public:
 	const PlayerCrashReason& getCrashReason () const;
 	// returns true if the player does not carry anything
 	bool isFree () const;
+	bool isTransfering(NPCFriendly* npc) const;
 	bool canCarry (const IEntity* entity) const;
 
 	uint16_t getHitpoints () const;
@@ -108,6 +112,7 @@ public:
 
 	void createBody (const b2Vec2 &pos);
 
+	void setCollectedNPC(NPCFriendly *npc);
 	void reset ();
 
 	ClientId getClientId () const;
@@ -181,12 +186,18 @@ inline bool Player::isDead () const
 
 inline bool Player::isFree () const
 {
+	if (_collectedNPC != nullptr)
+		return false;
 	for (int i = 0; i < MAX_COLLECTED; ++i) {
 		const EntityType *entityType = _collectedEntities[i].entityType;
 		if (entityType != nullptr)
 			return false;
 	}
 	return true;
+}
+
+inline bool Player::isTransfering(NPCFriendly *npc) const {
+	return _collectedNPC == npc;
 }
 
 inline bool Player::isLandedOn (const CaveMapTile *cave) const

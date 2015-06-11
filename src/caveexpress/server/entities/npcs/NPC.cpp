@@ -11,7 +11,8 @@
 
 NPC::NPC (const EntityType &type, Map& map) :
 		IEntity(type, map), _initialWalkingSpeed(1.1f), _targetPos(b2Vec2_zero), _initialPosition(b2Vec2_zero), _lastDirectionRight(
-				true), _dazedTime(0), _dazedTimeout(8000), _idleTimer(0), _moveTimer(0)
+				true), _dazedTime(0), _dazedTimeout(8000), _idleTimer(0), _moveTimer(0), _swimmingTime(0), _swimmingTimeDelay(0), _initialSwimmingSpeed(0.0f),
+				_currentSwimmingSpeed(b2Vec2_zero)
 {
 	setState(NPCState::NPC_IDLE);
 }
@@ -114,7 +115,16 @@ void NPC::update (uint32_t deltaTime)
 		_dazedTime = 0;
 	}
 
-	if (isMoving()) {
+	if (isStruggle()) {
+		const int32_t d = _swimmingTime - _time;
+		if (d <= 0) {
+			setDying(nullptr);
+		}
+	} else if (isSwimming()) {
+		setLinearVelocity (_currentSwimmingSpeed);
+	} else if (isTouchingWater()) {
+		setSwimmingIdle();
+	} else if (isMoving()) {
 		const float xPos = getPos().x;
 		static const float gap = 0.1f;
 		if (Between(xPos, _targetPos.x - gap, _targetPos.x + gap)) {
@@ -126,6 +136,31 @@ void NPC::update (uint32_t deltaTime)
 	}
 }
 
+void NPC::setSwimmingIdle() {
+	int deltaTime = _swimmingTimeDelay;
+	// if we go into struggling mode after we start to swim, we don't have the full power again
+	if (isSwimming())
+		deltaTime = _swimmingTimeDelay / 2.0f;
+	_swimmingTime = _time + deltaTime;
+	setState(NPCState::NPC_STRUGGLE);
+	setAnimationType(Animations::ANIMATION_SWIMMING_IDLE);
+	setLinearVelocity(b2Vec2_zero);
+	info(LOG_SERVER, String::format("set struggle for %i", getID()));
+}
+
+void NPC::setSwimming(const b2Vec2& targetPos) {
+	debug(LOG_SERVER, String::format("swimming npc %i: %s", getID(), _type.name.c_str()));
+	setState(NPCState::NPC_SWIMMING);
+
+	if (targetPos.x > getPos().x) {
+		_currentSwimmingSpeed = b2Vec2(_initialSwimmingSpeed, 0);
+		setAnimationType(Animations::ANIMATION_SWIMMING_RIGHT);
+	} else {
+		_currentSwimmingSpeed = b2Vec2(-_initialSwimmingSpeed, 0);
+		setAnimationType(Animations::ANIMATION_SWIMMING_LEFT);
+	}
+}
+
 bool NPC::shouldCollide (const IEntity* entity) const
 {
 	if (isDying()) {
@@ -134,6 +169,10 @@ bool NPC::shouldCollide (const IEntity* entity) const
 
 	if (isDazed()) {
 		return entity->isSolid() || entity->isWater();
+	}
+
+	if (isSwimming() || isStruggle()) {
+		return entity->isWater() || entity->isPlayer();
 	}
 
 	if (entity->isWater()) {
@@ -178,6 +217,7 @@ void NPC::setFalling ()
 	debug(LOG_SERVER, String::format("falling npc %i: %s", getID(), _type.name.c_str()));
 	setState(NPCState::NPC_FALLING);
 	setAnimationType(getFallingAnimation());
+	resetTriggerMovement();
 }
 
 void NPC::setMoving (gridCoord x)
@@ -217,6 +257,7 @@ void NPC::setMoving (const b2Vec2& targetPos)
 		}
 		move();
 	}
+	resetTriggerMovement();
 }
 
 void NPC::setIdle ()
@@ -225,6 +266,7 @@ void NPC::setIdle ()
 	setState(NPCState::NPC_IDLE);
 	setAnimationType(getIdleAnimation());
 	setLinearVelocity(b2Vec2_zero);
+	resetTriggerMovement();
 	_idleTimer = 0;
 }
 
