@@ -10,3 +10,4 @@ set(SRCS
 	)
 add_library(yajl ${SRCS})
 set_target_properties(yajl PROPERTIES FOLDER yajl)
+set_target_properties(yajl PROPERTIES COMPILE_FLAGS "-Wno-cast-qual")

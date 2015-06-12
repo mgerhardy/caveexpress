@@ -139,3 +139,4 @@ endif()
 
 add_library(SDL ${SRCS} ${PLATFORM_SRCS})
 target_link_libraries(SDL dl)
+set_target_properties(SDL PROPERTIES COMPILE_FLAGS "-Wno-cast-qual")

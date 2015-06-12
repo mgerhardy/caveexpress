@@ -16,3 +16,4 @@ set(SRCS
 	zutil.c)
 add_library(zlib ${SRCS})
 set_target_properties(zlib PROPERTIES FOLDER zlib)
+set_target_properties(zlib PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-implicit-function-declaration")

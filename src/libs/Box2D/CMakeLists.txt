@@ -49,3 +49,4 @@ set(SRCS
 
 add_library(Box2D ${SRCS})
 set_target_properties(Box2D PROPERTIES FOLDER Box2D)
+set_target_properties(Box2D PROPERTIES COMPILE_FLAGS "-Wno-shadow")
