@@ -5,6 +5,8 @@
 #include <vector>
 #include <set>
 
+namespace caveexpress {
+
 class WorldParticle: public IEntity {
 protected:
 	struct SimpleParticle {
@@ -85,4 +87,6 @@ inline uint32_t WorldParticle::getRemainingLifetime (int index) const
 inline uint32_t WorldParticle::getLifeTime () const
 {
 	return _lifetime;
+}
+
 }

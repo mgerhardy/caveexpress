@@ -5,6 +5,8 @@
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "ui/UI.h"
 
+namespace caveexpress {
+
 IntroFlying::IntroFlying(IFrontend* frontend) :
 		Intro("introflying", frontend) {
 	init();
@@ -23,4 +25,6 @@ void IntroFlying::addIntroNodes(UINode* parent) {
 	parent->add(new IntroLabelHeadline(_frontend, tr("Description")));
 	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::NPC_FLYING, Animations::ANIMATION_FLYING_RIGHT, tr("Pterodactyls")));
 	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::STONE, Animations::ANIMATION_IDLE, tr("Stone")));
+}
+
 }

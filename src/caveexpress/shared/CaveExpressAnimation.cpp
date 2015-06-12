@@ -1,5 +1,7 @@
 #include "CaveExpressAnimation.h"
 
+namespace caveexpress {
+
 namespace Animations {
 // walking to the left
 Animation ANIMATION_WALK_LEFT("walk-left");
@@ -43,4 +45,6 @@ Animation ANIMATION_WAKEUP_RIGHT("wakeup-right", false);
 Animation ANIMATION_ACTIVE("active");
 Animation ANIMATION_EXPLODE("explode");
 Animation ANIMATION_ROTATE("rotate");
+}
+
 }

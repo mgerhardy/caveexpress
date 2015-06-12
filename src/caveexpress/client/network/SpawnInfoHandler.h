@@ -6,6 +6,8 @@
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "ui/UI.h"
 
+namespace caveexpress {
+
 class SpawnInfoHandler: public IClientProtocolHandler {
 private:
 	ClientMap& _clientMap;
@@ -34,3 +36,5 @@ public:
 		}
 	}
 };
+
+}

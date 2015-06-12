@@ -4,6 +4,8 @@
 
 class CampaignManager;
 
+namespace caveexpress {
+
 class UIGameOverWindow: public UIWindow {
 private:
 	CampaignManager& _campaignManager;
@@ -14,3 +16,5 @@ public:
 	// UIWindows
 	bool onPush () override;
 };
+
+}

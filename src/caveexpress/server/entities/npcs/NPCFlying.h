@@ -2,6 +2,8 @@
 
 #include "caveexpress/server/entities/npcs/NPCAggressive.h"
 
+namespace caveexpress {
+
 class NPCFlying : public NPCAggressive {
 public:
 	explicit NPCFlying (Map& map);
@@ -24,4 +26,6 @@ public:
 inline void NPCFlying::setRemove ()
 {
 	_remove = true;
+}
+
 }

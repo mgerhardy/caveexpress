@@ -2,6 +2,8 @@
 
 #include "common/SoundType.h"
 
+namespace caveexpress {
+
 namespace SoundTypes {
 extern SoundType SOUND_WATER_IMPACT;
 extern SoundType SOUND_PLAYER_SPAWN;
@@ -36,4 +38,6 @@ extern SoundType SOUND_AMBIENT_CAVE2;
 extern SoundType SOUND_AMBIENT_WATERFALL;
 extern SoundType SOUND_NPC_CAVE_WATER_RESCUE;
 extern SoundType SOUND_NPC_CAVE_BOARD;
+}
+
 }

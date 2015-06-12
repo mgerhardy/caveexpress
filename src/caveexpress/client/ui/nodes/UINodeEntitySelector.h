@@ -6,6 +6,8 @@
 #include "sprites/Sprite.h"
 #include "common/SpriteDefinition.h"
 
+namespace caveexpress {
+
 struct EntityTypeWrapper {
 	const EntityType* type;
 	SpritePtr sprite;
@@ -34,3 +36,5 @@ public:
 	// UINodeSelector
 	void renderSelectorEntry (int index, const EntityTypeWrapper& data, int x, int y, int colWidth, int rowHeight, float alpha) const override;
 };
+
+}

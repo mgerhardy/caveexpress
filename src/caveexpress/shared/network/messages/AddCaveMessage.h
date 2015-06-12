@@ -4,6 +4,8 @@
 #include "caveexpress/shared/network/ProtocolMessageTypes.h"
 #include <string>
 
+namespace caveexpress {
+
 class AddCaveMessage: public IProtocolMessage {
 private:
 	uint16_t _entityId;
@@ -47,3 +49,5 @@ public:
 		return _number;
 	}
 };
+
+}

@@ -5,6 +5,8 @@
 #include "common/TimeManager.h"
 #include "caveexpress/shared/constants/TreeState.h"
 
+namespace caveexpress {
+
 Tree::Tree (Map& map, gridCoord x, gridCoord y) :
 		IEntity(EntityTypes::TREE, map), _x(x), _y(y), _dropFruit(false), _droppedFruits(0), _dropFruitCausedBy(nullptr), _idleTimer(0)
 {
@@ -103,4 +105,6 @@ void Tree::endContact (b2Contact* contact, IEntity* entity)
 {
 	if (_dropFruitCausedBy == entity)
 		_dropFruitCausedBy = nullptr;
+}
+
 }

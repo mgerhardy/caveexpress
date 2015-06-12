@@ -2,6 +2,8 @@
 #include "caveexpress/server/map/RandomMapContext.h"
 #include "common/ThemeType.h"
 
+namespace caveexpress {
+
 TEST(RandomMapContextTest, DISABLED_testMapCreation)
 {
 	RandomMapContext ctxIceRandom1("ice-random-1", ThemeTypes::ICE, 4, 10, 32, 24);
@@ -22,4 +24,6 @@ TEST(RandomMapContextTest, DISABLED_testMassMapCreation)
 		RandomMapContext ctxRock(rockFile, ThemeTypes::ROCK, 4, 8, 16, 12);
 		ctxRock.load(false);
 	}
+}
+
 }

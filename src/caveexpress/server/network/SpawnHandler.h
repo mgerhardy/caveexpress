@@ -4,6 +4,8 @@
 #include "caveexpress/server/map/Map.h"
 #include "campaign/ICampaignManager.h"
 
+namespace caveexpress {
+
 class SpawnHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -26,3 +28,5 @@ public:
 			delete player;
 	}
 };
+
+}

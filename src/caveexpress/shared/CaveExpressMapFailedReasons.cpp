@@ -1,5 +1,7 @@
 #include "CaveExpressMapFailedReasons.h"
 
+namespace caveexpress {
+
 namespace MapFailedReasons {
 MapFailedReason FAILED_NO;
 MapFailedReason FAILED_WATER_HEIGHT;
@@ -11,4 +13,6 @@ MapFailedReason FAILED_HITPOINTS;
 MapFailedReason FAILED_NO_MORE_PLAYERS;
 MapFailedReason FAILED_SIDESCROLL;
 MapFailedReason FAILED_MAX;
+}
+
 }

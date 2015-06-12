@@ -20,6 +20,12 @@
 #include <map>
 
 // forward decl
+class SpriteDef;
+class IFrontend;
+class ServiceProvider;
+
+namespace caveexpress {
+
 class NPCFlying;
 class NPCFrienndly;
 class NPCAttacking;
@@ -28,9 +34,6 @@ class NPCBlowing;
 class ICaveMapContext;
 class Water;
 class PackageTarget;
-class SpriteDef;
-class IFrontend;
-class ServiceProvider;
 class Geyser;
 
 const int32 MAXCONTACTPOINTS = 128;
@@ -511,4 +514,6 @@ inline uint16_t Map::getPoints () const
 inline bool Map::isPause () const
 {
 	return _pause;
+}
+
 }

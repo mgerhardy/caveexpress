@@ -1,5 +1,7 @@
 #pragma once
 
+namespace caveexpress {
+
 class NameListener: public UINodeListener, public IMapEditorListener {
 private:
 	UINodeMapEditor *_mapEditor;
@@ -43,3 +45,5 @@ public:
 		_nameNode->setValue(newName);
 	}
 };
+
+}

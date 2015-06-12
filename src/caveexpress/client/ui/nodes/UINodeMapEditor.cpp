@@ -19,6 +19,8 @@
 #include <ctime>
 #include <SDL.h>
 
+namespace caveexpress {
+
 namespace {
 const float SCALE_STEP = 0.05f;
 const uint32_t INITIAL_SCROLL_STEP_DELAY = 500U;
@@ -1216,4 +1218,6 @@ void UINodeMapEditor::setFileName (const std::string& fileName)
 	for (std::vector<IMapEditorListener*>::iterator i = _editorListeners.begin(); i != _editorListeners.end(); ++i) {
 		(*i)->onFileNameChange(old, _fileName);
 	}
+}
+
 }

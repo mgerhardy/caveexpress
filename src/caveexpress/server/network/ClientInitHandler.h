@@ -4,6 +4,8 @@
 #include "network/messages/ClientInitMessage.h"
 #include "caveexpress/server/map/Map.h"
 
+namespace caveexpress {
+
 class ClientInitHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -25,3 +27,5 @@ public:
 		_map.sendPlayersList();
 	}
 };
+
+}

@@ -5,6 +5,8 @@
 #include "caveexpress/server/entities/WindowTile.h"
 #include "caveexpress/server/map/Map.h"
 
+namespace caveexpress {
+
 // forward decl
 class INPCCave;
 
@@ -121,4 +123,6 @@ inline int CaveMapTile::getCaveNumber() const
 inline int CaveMapTile::getPlatformEndGridX () const
 {
 	return _platformEnd;
+}
+
 }

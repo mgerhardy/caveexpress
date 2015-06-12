@@ -4,6 +4,8 @@
 #include "caveexpress/server/map/Map.h"
 #include "network/messages/MovementMessage.h"
 
+namespace caveexpress {
+
 class MovementHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -24,3 +26,5 @@ public:
 		player->accelerate(msg->getDirection());
 	}
 };
+
+}

@@ -4,6 +4,8 @@
 #include "common/IMap.h"
 #include "caveexpress/server/entities/CollectableEntity.h"
 
+namespace caveexpress {
+
 // forward decl
 class Map;
 class PackageTarget;
@@ -101,4 +103,6 @@ inline void Package::setDestroyed (bool destroyed)
 		setState(EntityState::ENTITY_NORMAL);
 		_destroyedTime = 0;
 	}
+}
+
 }

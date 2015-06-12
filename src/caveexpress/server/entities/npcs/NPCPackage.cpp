@@ -2,6 +2,8 @@
 #include "caveexpress/server/entities/Package.h"
 #include "caveexpress/server/entities/CaveMapTile.h"
 
+namespace caveexpress {
+
 NPCPackage::NPCPackage (CaveMapTile *cave, const EntityType& type) :
 		INPCCave(cave, type, true)
 {
@@ -50,4 +52,6 @@ void NPCPackage::leavePackage ()
 	Package* package = new Package(_map, pos.x, pos.y);
 	package->createBody();
 	returnToInitialPosition();
+}
+
 }

@@ -2,6 +2,8 @@
 #include "caveexpress/server/entities/Player.h"
 #include "caveexpress/server/entities/CaveMapTile.h"
 
+namespace caveexpress {
+
 Platform::Platform (Map& map) :
 		IEntity(EntityTypes::PLATFORM, map), _caveTile(nullptr)
 {
@@ -73,4 +75,6 @@ void Platform::endContact (b2Contact* contact, IEntity* entity)
 		player->setPlatform(nullptr);
 		debug(LOG_SERVER, String::format("player %s (%i) is no longer landed on cave %i", player->getName().c_str(), player->getID(), getID()));
 	}
+}
+
 }

@@ -4,6 +4,8 @@
 #include "common/IMapContext.h"
 #include "CaveTileDefinition.h"
 
+namespace caveexpress {
+
 class ICaveMapContext: public IMapContext {
 protected:
 	std::vector<CaveTileDefinition> _caveDefinitions;
@@ -16,3 +18,5 @@ public:
 		return _caveDefinitions;
 	}
 };
+
+}

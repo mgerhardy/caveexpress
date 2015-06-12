@@ -2,6 +2,8 @@
 
 #include "network/IProtocolMessage.h"
 
+namespace caveexpress {
+
 class WaterHeightMessage: public IProtocolMessage {
 private:
 	float _height;
@@ -29,3 +31,5 @@ public:
 		return _height;
 	}
 };
+
+}

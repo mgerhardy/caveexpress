@@ -5,6 +5,8 @@
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "ui/UI.h"
 
+namespace caveexpress {
+
 IntroTree::IntroTree(IFrontend* frontend) :
 		Intro("introtree", frontend) {
 	init();
@@ -23,4 +25,6 @@ void IntroTree::addIntroNodes(UINode* parent) {
 	parent->add(new IntroLabelHeadline(_frontend, tr("Description")));
 	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::TREE, Animations::ANIMATION_IDLE, tr("Tree")));
 	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::STONE, Animations::ANIMATION_IDLE, tr("Stone")));
+}
+
 }

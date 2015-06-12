@@ -2,6 +2,9 @@
 
 #include "caveexpress/server/entities/IEntity.h"
 
+namespace caveexpress {
+
+// forward decl
 class Map;
 
 class IWorldModificator: public IEntity {
@@ -18,3 +21,5 @@ public:
 	virtual void setModificatorState (bool enable) = 0;
 	virtual void setRelativePositionTo (const b2Vec2& pos) = 0;
 };
+
+}

@@ -2,6 +2,8 @@
 
 #include "caveexpress/server/entities/IEntity.h"
 
+namespace caveexpress {
+
 class CollectableEntity: public IEntity {
 protected:
 	bool _collected;
@@ -67,4 +69,6 @@ inline IEntity* CollectableEntity::getLastDropper () const
 inline uint32_t CollectableEntity::getCollectedTime () const
 {
 	return _collectedTime;
+}
+
 }

@@ -5,6 +5,8 @@
 #include "caveexpress/shared/network/messages/RemoveRopeMessage.h"
 #include "client/ClientMap.h"
 
+namespace caveexpress {
+
 class RemoveRopeHandler: public IClientProtocolHandler {
 private:
 	ClientMap& _map;
@@ -25,3 +27,5 @@ public:
 		entity->removeRope();
 	}
 };
+
+}

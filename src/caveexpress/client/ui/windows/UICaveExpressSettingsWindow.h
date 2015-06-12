@@ -6,6 +6,8 @@
 class ServiceProvider;
 class CampaignManager;
 
+namespace caveexpress {
+
 class UICaveExpressSettingsWindow: public UISettingsWindow {
 protected:
 	CampaignManager& _campaignManager;
@@ -13,3 +15,5 @@ protected:
 public:
 	UICaveExpressSettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager);
 };
+
+}

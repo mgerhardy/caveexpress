@@ -3,6 +3,8 @@
 #include "caveexpress/server/entities/CollectableEntity.h"
 #include <vector>
 
+namespace caveexpress {
+
 class Bomb: public CollectableEntity {
 protected:
 	gridCoord _x;
@@ -29,3 +31,5 @@ public:
 	bool shouldApplyWind () const override;
 	bool shouldCollide (const IEntity *entity) const override;
 };
+
+}

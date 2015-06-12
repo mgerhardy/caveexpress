@@ -2,6 +2,8 @@
 #include "caveexpress/server/entities/npcs/NPCAggressive.h"
 #include "caveexpress/server/map/Map.h"
 
+namespace caveexpress {
+
 Border::Border (BorderType::Type borderType, Map& map, bool crashOnTouch) :
 		IEntity(EntityTypes::BORDER, map), _borderType(borderType), _crashOnTouch(crashOnTouch)
 {
@@ -32,4 +34,6 @@ void Border::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* 
 
 	Player* player = static_cast<Player*>(entity);
 	player->setCrashed(CRASH_MAP_FAILED);
+}
+
 }

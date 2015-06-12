@@ -4,6 +4,8 @@
 #include "common/ConfigManager.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 
+namespace caveexpress {
+
 uint32_t IEntity::GLOBAL_ENTITY_NUM = 0;
 
 IEntity::IEntity (const EntityType &type, Map& map) :
@@ -400,4 +402,6 @@ void IEntity::print (std::ostream &stream, int level) const
 	stream << "IEntity[id: " << _id << ", type:" << _type.name;
 	stream << ", time:" << _time << ", state:" << _state << ", vismask:" << _vismask;
 	stream << "]";
+}
+
 }

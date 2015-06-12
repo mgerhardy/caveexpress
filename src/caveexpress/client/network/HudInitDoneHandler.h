@@ -5,6 +5,8 @@
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "common/ConfigManager.h"
 
+namespace caveexpress {
+
 class HudInitDoneHandler: public InitDoneHandler {
 public:
 	HudInitDoneHandler (ClientMap& map) :
@@ -45,3 +47,5 @@ public:
 		}
 	}
 };
+
+}

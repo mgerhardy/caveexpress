@@ -3,6 +3,8 @@
 #include "IWorldModificator.h"
 #include "common/Direction.h"
 
+namespace caveexpress {
+
 class WindModificator: public IWorldModificator {
 private:
 	void getRelativePosition (b2Vec2& out) const;
@@ -32,3 +34,5 @@ public:
 	void update (uint32_t deltaTime) override;
 	void onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold) override;
 };
+
+}

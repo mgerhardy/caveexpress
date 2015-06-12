@@ -32,6 +32,8 @@
 #include "caveexpress/server/entities/Player.h"
 #include "caveexpress/server/entities/Water.h"
 
+namespace caveexpress {
+
 GameEventHandler::GameEventHandler () :
 		_serviceProvider(nullptr)
 {
@@ -218,4 +220,6 @@ void GameEventHandler::sendTimeRemaining (uint16_t seconds) const
 {
 	const TimeRemainingMessage msg(seconds);
 	_serviceProvider->getNetwork().sendToAllClients(msg);
+}
+
 }

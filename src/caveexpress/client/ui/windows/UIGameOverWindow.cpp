@@ -6,6 +6,8 @@
 #include "campaign/CampaignManager.h"
 #include <string>
 
+namespace caveexpress {
+
 UIGameOverWindow::UIGameOverWindow (IFrontend *frontend, CampaignManager& campaignManager) :
 		UIWindow(UI_WINDOW_GAMEOVER, frontend), _campaignManager(campaignManager)
 {
@@ -30,4 +32,6 @@ bool UIGameOverWindow::onPush ()
 	if (!_campaignManager.resetActiveCampaign())
 		error(LOG_CLIENT, "failed to reset the campaign");
 	return retVal;
+}
+
 }

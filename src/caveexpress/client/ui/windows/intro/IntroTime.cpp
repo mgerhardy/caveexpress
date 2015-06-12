@@ -6,6 +6,8 @@
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "ui/UI.h"
 
+namespace caveexpress {
+
 IntroTime::IntroTime(IFrontend* frontend) :
 		Intro("introtime", frontend) {
 	init();
@@ -24,4 +26,6 @@ void IntroTime::addIntroNodes(UINode* parent) {
 	parent->add(new IntroLabelHeadline(_frontend, tr("Description")));
 	const Color timeBarColor = { 1.0f, 1.0f, 1.0f, 0.5f };
 	parent->add(new IntroBarDescription(_frontend, timeBarColor, tr("Time bar")));
+}
+
 }

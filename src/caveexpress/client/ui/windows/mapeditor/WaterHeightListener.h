@@ -1,5 +1,7 @@
 #pragma once
 
+namespace caveexpress {
+
 class WaterHeightListener: public UINodeListener, IMapEditorListener {
 private:
 	UINodeMapEditor *_mapEditor;
@@ -31,3 +33,5 @@ public:
 		_blocked = false;
 	}
 };
+
+}

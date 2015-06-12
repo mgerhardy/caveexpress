@@ -3,6 +3,8 @@
 #include "network/IProtocolHandler.h"
 #include "caveexpress/server/map/Map.h"
 
+namespace caveexpress {
+
 class StartMapHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -21,3 +23,5 @@ public:
 		_map.startMap();
 	}
 };
+
+}

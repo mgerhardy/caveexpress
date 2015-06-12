@@ -2,6 +2,8 @@
 
 #include "network/IProtocolMessage.h"
 
+namespace caveexpress {
+
 class AnnounceTargetCaveMessage: public IProtocolMessage {
 private:
 	uint16_t _npcId;
@@ -41,3 +43,5 @@ public:
 		return _delay;
 	}
 };
+
+}

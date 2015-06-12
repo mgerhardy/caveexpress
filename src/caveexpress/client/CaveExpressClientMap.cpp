@@ -24,6 +24,8 @@
 #include "common/DateUtil.h"
 #include <SDL.h>
 
+namespace caveexpress {
+
 CaveExpressClientMap::CaveExpressClientMap (int x, int y, int width, int height, IFrontend *frontend,
 		ServiceProvider& serviceProvider, int referenceTileWidth) :
 		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth), _waterHeight(0.0), _target(nullptr)
@@ -185,4 +187,6 @@ void CaveExpressClientMap::start () {
 			_particleSystem.spawn(ParticlePtr(new Sparkle(*this, startX, startY, sizeW, sizeH)));
 		}
 	}
+}
+
 }

@@ -2,6 +2,8 @@
 
 #include "common/Animation.h"
 
+namespace caveexpress {
+
 namespace Animations {
 extern Animation ANIMATION_WALK_LEFT;
 extern Animation ANIMATION_WALK_RIGHT;
@@ -36,4 +38,6 @@ extern Animation ANIMATION_WAKEUP_RIGHT;
 extern Animation ANIMATION_ACTIVE;
 extern Animation ANIMATION_EXPLODE;
 extern Animation ANIMATION_ROTATE;
+}
+
 }

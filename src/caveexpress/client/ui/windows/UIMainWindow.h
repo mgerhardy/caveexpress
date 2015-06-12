@@ -9,6 +9,8 @@ class UINodeSprite;
 class UINodeMainButton;
 class ServiceProvider;
 
+namespace caveexpress {
+
 class UIMainWindow: public UIWindow {
 private:
 	UINodeSprite *_player;
@@ -22,3 +24,5 @@ public:
 	// UIWindow
 	void update (uint32_t deltaTime) override;
 };
+
+}

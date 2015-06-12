@@ -1,5 +1,7 @@
 #include "CaveExpressSpriteType.h"
 
+namespace caveexpress {
+
 namespace SpriteTypes {
 SpriteType WATERFALL("waterfall");
 SpriteType ROCK("rock");
@@ -21,4 +23,6 @@ SpriteType GEYSER_ICE("geyser-ice");
 SpriteType GEYSER_ROCK("geyser-rock");
 SpriteType PACKAGETARGET_ICE("packagetarget-ice");
 SpriteType PACKAGETARGET_ROCK("packagetarget-rock");
+}
+
 }

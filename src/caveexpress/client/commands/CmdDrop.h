@@ -4,6 +4,8 @@
 #include "caveexpress/client/CaveExpressClientMap.h"
 #include <stdint.h>
 
+namespace caveexpress {
+
 class CmdDrop: public ICommand {
 private:
 	CaveExpressClientMap& _map;
@@ -19,3 +21,5 @@ public:
 		_map.drop();
 	}
 };
+
+}

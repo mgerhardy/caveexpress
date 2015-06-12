@@ -4,6 +4,8 @@
 #include "caveexpress/shared/network/messages/AddCaveMessage.h"
 #include "caveexpress/client/CaveExpressClientMap.h"
 
+namespace caveexpress {
+
 class AddCaveHandler: public IClientProtocolHandler {
 private:
 	CaveExpressClientMap& _map;
@@ -21,3 +23,5 @@ public:
 		_map.setCaveState(id, state);
 	}
 };
+
+}

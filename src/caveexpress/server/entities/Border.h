@@ -2,6 +2,9 @@
 
 #include "caveexpress/server/entities/IEntity.h"
 
+namespace caveexpress {
+
+// forward decl
 class Map;
 
 namespace BorderType {
@@ -47,4 +50,6 @@ inline bool Border::isRight () const
 inline bool Border::isBottom () const
 {
 	return _borderType == BorderType::BOTTOM;
+}
+
 }

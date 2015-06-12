@@ -47,6 +47,8 @@
 #include "mapeditor/BooleanSettingListener.h"
 #include "mapeditor/LayerListener.h"
 
+namespace caveexpress {
+
 namespace {
 const float height = 0.025f;
 const float spinnerWidth = 0.05f;
@@ -201,4 +203,6 @@ UINode* UIMapEditorOptionsWindow::createGeneralOptions (UINode* vbox)
 	hbox->add(new UINodeSetting(_frontend, tr("Show Grid"), gridCheckBox));
 	vbox->add(hbox);
 	return hbox;
+}
+
 }

@@ -2,6 +2,8 @@
 
 #include "caveexpress/server/entities/IEntity.h"
 
+namespace caveexpress {
+
 class Map;
 
 class Tree: public IEntity {
@@ -32,3 +34,5 @@ public:
 	void endContact (b2Contact* contact, IEntity* entity) override;
 	void update (uint32_t deltaTime) override;
 };
+
+}

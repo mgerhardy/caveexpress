@@ -9,6 +9,8 @@
 #include "ui/nodes/UINodeSprite.h"
 #include "common/String.h"
 
+namespace caveexpress {
+
 class TargetCaveHandler: public IClientProtocolHandler {
 public:
 	TargetCaveHandler() {
@@ -29,3 +31,5 @@ public:
 		node->addSprite(sprite);
 	}
 };
+
+}

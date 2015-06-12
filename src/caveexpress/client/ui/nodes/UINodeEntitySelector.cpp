@@ -4,6 +4,8 @@
 #include "caveexpress/server/entities/EntityEmitter.h"
 #include "common/SpriteDefinition.h"
 
+namespace caveexpress {
+
 UINodeEntitySelector::UINodeEntitySelector (IFrontend *frontend, int cols, int rows) :
 		UINodeSelector<EntityTypeWrapper>(frontend, cols, rows, 40 / static_cast<float>(frontend->getWidth()), 40 / static_cast<float>(frontend->getHeight())), _theme(&ThemeType::NONE)
 {
@@ -66,4 +68,6 @@ void UINodeEntitySelector::addEntities (const ThemeType& theme)
 
 	_selectedIndex = 0;
 	select();
+}
+
 }

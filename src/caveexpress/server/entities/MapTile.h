@@ -4,6 +4,8 @@
 #include "common/IMap.h"
 #include "common/SpriteDefinition.h" /* TODO: just because of: typedef int16_t EntityAngle; ?? */
 
+namespace caveexpress {
+
 // forward decl
 class Map;
 
@@ -73,4 +75,6 @@ inline gridSize MapTile::getGridWidth () const
 inline gridSize MapTile::getGridHeight () const
 {
 	return _gridHeight;
+}
+
 }

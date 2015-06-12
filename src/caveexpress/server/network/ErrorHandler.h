@@ -4,6 +4,8 @@
 #include "network/messages/ErrorMessage.h"
 #include "caveexpress/server/map/Map.h"
 
+namespace caveexpress {
+
 class ErrorHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -33,3 +35,5 @@ public:
 		}
 	}
 };
+
+}

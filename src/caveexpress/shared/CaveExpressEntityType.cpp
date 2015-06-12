@@ -1,5 +1,7 @@
 #include "CaveExpressEntityType.h"
 
+namespace caveexpress {
+
 namespace EntityTypes {
 EntityType DECORATION("decoration");
 EntityType SOLID("solid");
@@ -34,4 +36,6 @@ EntityType GEYSER_ICE("tile-geyser-ice-01");
 EntityType GEYSER_ROCK("tile-geyser-rock-01");
 EntityType BOMB("item-bomb");
 EntityType PARTICLE("particle");
+}
+
 }

@@ -16,6 +16,8 @@
 #include "network/IProtocolHandler.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 
+namespace caveexpress {
+
 namespace {
 const float gravityScale = 0.3f;
 }
@@ -576,4 +578,6 @@ void Player::print (std::ostream &stream, int level) const
 	stream << ", time:" << _time << ", state:" << _state << ", vismask:" << _vismask;
 	stream << ", lives:" << (int)_lives << ", hitpoints:" << _hitpoints;
 	stream << "]";
+}
+
 }

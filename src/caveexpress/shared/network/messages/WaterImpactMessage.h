@@ -2,6 +2,8 @@
 
 #include "network/IProtocolMessage.h"
 
+namespace caveexpress {
+
 class WaterImpactMessage: public IProtocolMessage {
 private:
 	float _x;
@@ -37,3 +39,5 @@ public:
 		return _force;
 	}
 };
+
+}

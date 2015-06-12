@@ -3,6 +3,8 @@
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 
+namespace caveexpress {
+
 ClientCaveTile::ClientCaveTile (uint16_t id, const std::string& sprite, const Animation& animation, float x,
 		float y, float sizeX, float sizeY, const SoundMapping& soundMapping, EntityAlignment align) :
 		ClientMapTile(EntityTypes::CAVE, id, sprite, animation, x, y, sizeX, sizeY, 0, soundMapping, align), _lightState(
@@ -35,3 +37,5 @@ ClientEntityPtr ClientCaveTile::Factory::create (const ClientEntityFactoryContex
 }
 
 ClientCaveTile::Factory ClientCaveTile::FACTORY;
+
+}

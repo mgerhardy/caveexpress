@@ -3,6 +3,8 @@
 #include "caveexpress/server/entities/npcs/NPC.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 
+namespace caveexpress {
+
 // forward decl
 class CaveMapTile;
 class Map;
@@ -53,4 +55,6 @@ inline CaveMapTile *INPCCave::getCave () const
 inline bool INPCCave::isDeliverPackage () const
 {
 	return _deliverPackage;
+}
+
 }

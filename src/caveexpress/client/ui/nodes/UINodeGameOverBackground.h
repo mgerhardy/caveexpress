@@ -3,6 +3,8 @@
 #include "ui/nodes/UINode.h"
 #include "ui/nodes/UINodeBackground.h"
 
+namespace caveexpress {
+
 class UINodeGameOverBackground: public UINodeBackground {
 private:
 	TexturePtr _gameover;
@@ -19,3 +21,5 @@ public:
 		renderImage(_gameover, x + getRenderCenterX() - _gameover->getWidth() / 2, y + getRenderCenterY() - _gameover->getHeight() / 2);
 	}
 };
+
+}

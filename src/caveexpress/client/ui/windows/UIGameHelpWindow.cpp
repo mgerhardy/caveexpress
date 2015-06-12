@@ -11,6 +11,8 @@
 #include "common/SpriteDefinition.h"
 #include "common/Shared.h"
 
+namespace caveexpress {
+
 static const float iconsize = 0.08f;
 static const float hboxspacing = 0.01f;
 static const float vboxspacing = 0.01f;
@@ -154,4 +156,6 @@ void UIGameHelpWindow::addLivesHelp (UINode *panel)
 	hbox->add(createTexture("icon-plus"));
 	hbox->add(createSprite(EntityTypes::PLAYER));
 	panel->add(hbox);
+}
+
 }

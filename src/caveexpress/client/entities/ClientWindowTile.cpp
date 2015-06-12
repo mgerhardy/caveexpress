@@ -1,6 +1,8 @@
 #include "ClientWindowTile.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 
+namespace caveexpress {
+
 ClientWindowTile::ClientWindowTile (uint16_t id, const std::string& sprite, const Animation& animation, float x,
 		float y, float sizeX, float sizeY, const SoundMapping& soundMapping, EntityAlignment align) :
 		ClientMapTile(EntityTypes::WINDOW, id, sprite, animation, x, y, sizeX, sizeY, 0, soundMapping, align), _lightState(
@@ -29,3 +31,5 @@ ClientEntityPtr ClientWindowTile::Factory::create (const ClientEntityFactoryCont
 }
 
 ClientWindowTile::Factory ClientWindowTile::FACTORY;
+
+}

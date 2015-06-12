@@ -1,5 +1,7 @@
 #pragma once
 
+namespace caveexpress {
+
 namespace protocol {
 enum {
 	PROTO_DROP,
@@ -13,4 +15,6 @@ enum {
 	PROTO_TARGETCAVE,
 	PROTO_ANNOUNCETARGETCAVE
 };
+}
+
 }

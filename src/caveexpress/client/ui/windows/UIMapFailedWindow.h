@@ -6,8 +6,11 @@
 
 // forward decl
 class CampaignManager;
-class UINodeBackgroundScene;
 class UINodeButton;
+
+namespace caveexpress {
+
+class UINodeBackgroundScene;
 
 class UIMapFailedWindow: public UIWindow {
 private:
@@ -18,3 +21,5 @@ public:
 	UIMapFailedWindow (IFrontend *frontend, CampaignManager& campaignManager);
 	void updateReason (bool isMultiplayer, const MapFailedReason& reason, const ThemeType& theme);
 };
+
+}

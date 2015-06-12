@@ -3,6 +3,8 @@
 #include "client/ClientMap.h"
 #include "caveexpress/shared/CaveExpressMapFailedReasons.h"
 
+namespace caveexpress {
+
 UINodeBackgroundScene::UINodeBackgroundScene (IFrontend *frontend) :
 		UINode(frontend), _reason(&MapFailedReasons::FAILED_NO), _theme(&ThemeTypes::ROCK)
 {
@@ -178,4 +180,6 @@ void UINodeBackgroundScene::render (int x, int y) const
 		renderFailedNpcFish(x, y);
 	else if (MapFailedReasons::FAILED_HITPOINTS == *_reason || MapFailedReasons::FAILED_SIDESCROLL == *_reason)
 		renderFailedHitpoints(x, y);
+}
+
 }

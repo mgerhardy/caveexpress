@@ -4,8 +4,10 @@
 #include "common/Compiler.h"
 #include "common/LUA.h"
 #include <string>
-
 struct lua_State;
+
+namespace caveexpress {
+
 class SpriteDef;
 
 class LUAMapContext: public ICaveMapContext {
@@ -44,3 +46,5 @@ public:
 	bool load (bool skipErrors) override;
 	bool save () const override { return false; }
 };
+
+}

@@ -6,6 +6,8 @@
 #include "caveexpress/shared/constants/Density.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 
+namespace caveexpress {
+
 #define DELIVERED_REMOVE_TIME 10000
 #define DESTROYED_REMOVE_TIME 5000
 
@@ -161,4 +163,6 @@ bool Package::shouldCollide (const IEntity *entity) const
 	}
 
 	return CollectableEntity::shouldCollide(entity);
+}
+
 }

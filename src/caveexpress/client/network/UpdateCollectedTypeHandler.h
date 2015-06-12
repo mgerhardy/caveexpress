@@ -8,6 +8,8 @@
 #include "ui/UI.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
 
+namespace caveexpress {
+
 class UpdateCollectedTypeHandler: public IClientProtocolHandler {
 private:
 	ClientMap& _map;
@@ -61,3 +63,5 @@ public:
 		}
  	}
 };
+
+}

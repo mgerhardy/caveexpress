@@ -2,6 +2,8 @@
 
 #include "network/IProtocolMessage.h"
 
+namespace caveexpress {
+
 class TargetCaveMessage: public IProtocolMessage {
 private:
 	uint8_t _targetCave;
@@ -27,3 +29,5 @@ public:
 		return _targetCave;
 	}
 };
+
+}

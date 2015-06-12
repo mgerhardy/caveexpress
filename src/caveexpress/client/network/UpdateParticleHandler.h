@@ -5,6 +5,8 @@
 #include "client/ClientMap.h"
 #include "caveexpress/client/entities/ClientParticle.h"
 
+namespace caveexpress {
+
 class UpdateParticleHandler: public IClientProtocolHandler {
 private:
 	ClientMap& _map;
@@ -41,3 +43,5 @@ public:
 		}
 	}
 };
+
+}

@@ -6,6 +6,8 @@
 
 class UINodeSprite;
 
+namespace caveexpress {
+
 class UIGameHelpWindow: public UIWindow {
 private:
 	UINodeSprite* createSprite (const EntityType& type, const Animation& animation = Animations::ANIMATION_IDLE, float w = 0.08f, float h = 0.08f);
@@ -23,3 +25,5 @@ public:
 	explicit UIGameHelpWindow (IFrontend* frontend);
 	virtual ~UIGameHelpWindow ();
 };
+
+}

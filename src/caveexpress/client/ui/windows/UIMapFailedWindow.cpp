@@ -8,6 +8,8 @@
 #include "ui/windows/main/ReplayNodeListener.h"
 #include <string>
 
+namespace caveexpress {
+
 UIMapFailedWindow::UIMapFailedWindow (IFrontend *frontend, CampaignManager& campaignManager) :
 		UIWindow(UI_WINDOW_MAPFAILED, frontend), _campaignManager(campaignManager)
 {
@@ -39,4 +41,6 @@ void UIMapFailedWindow::updateReason (bool isMultiplayer, const MapFailedReason&
 {
 	_replayCampaign->setVisible(!isMultiplayer);
 	_background->updateReason(reason, theme);
+}
+
 }

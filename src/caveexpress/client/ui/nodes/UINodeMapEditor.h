@@ -20,9 +20,12 @@
 #include <map>
 
 // forward decl
+class IMapManager;
+
+namespace caveexpress {
+
 class ICaveMapContext;
 class StateChecker;
-class IMapManager;
 
 namespace {
 const int MIN_WIDTH = 6;
@@ -499,4 +502,6 @@ inline void UINodeMapEditor::setTheme (const ThemeType& theme)
 {
 	_theme = &theme;
 	setSetting(msn::THEME, theme.name);
+}
+
 }

@@ -3,6 +3,8 @@
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "common/Logger.h"
 
+namespace caveexpress {
+
 WindowTile::WindowTile (Map& map, const std::string& spriteID, gridCoord gridX, gridCoord gridY) :
 		MapTile(map, spriteID, gridX, gridY, EntityTypes::WINDOW), _lightState(DEFAULT_LIGHT_STATE), _cave(nullptr)
 {
@@ -20,4 +22,6 @@ void WindowTile::setLightState (bool lightState)
 		return;
 
 	GameEvent.sendLightState(getVisMask(), getID(), _lightState);
+}
+
 }

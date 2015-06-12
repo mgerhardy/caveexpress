@@ -21,10 +21,13 @@
 typedef int32_t VisMask;
 #define NOTVISIBLE 0x80000000
 
-class Map;
-class IEntity;
 class SpriteDef;
 typedef SharedPtr<SpriteDef> SpriteDefPtr;
+
+namespace caveexpress {
+
+class Map;
+class IEntity;
 
 class IEntityObserver {
 public:
@@ -614,4 +617,6 @@ inline std::ostream& operator<< (std::ostream &stream, const IEntity &in)
 {
 	in.print(stream, 0);
 	return stream;
+}
+
 }

@@ -2,6 +2,8 @@
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/shared/constants/Density.h"
 
+namespace caveexpress {
+
 Bomb::Bomb (Map& map, gridCoord x, gridCoord y, const IEntity *creator) :
 		CollectableEntity(EntityTypes::BOMB, map, creator), _x(x), _y(y), _blastPower(1500.0f), _numRays(20), _linearDamping(
 				10.0f), _explodeTimer(0), _destroyTimer(0)
@@ -106,4 +108,6 @@ bool Bomb::shouldCollide (const IEntity *entity) const
 	if (CollectableEntity::shouldCollide(entity))
 		return true;
 	return entity->isCollectable();
+}
+
 }

@@ -4,6 +4,8 @@
 #include "caveexpress/server/map/Map.h"
 #include "network/messages/StopMovementMessage.h"
 
+namespace caveexpress {
+
 class StopMovementHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -24,3 +26,5 @@ public:
 		player->resetAcceleration(msg->getDirection());
 	}
 };
+
+}

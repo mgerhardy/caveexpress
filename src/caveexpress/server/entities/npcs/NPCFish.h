@@ -2,6 +2,8 @@
 
 #include "caveexpress/server/entities/npcs/NPCAggressive.h"
 
+namespace caveexpress {
+
 class NPCFish : public NPCAggressive {
 private:
 	double _magnitude;
@@ -41,4 +43,6 @@ inline void NPCFish::changeSpeed (float factor)
 inline void NPCFish::setRemove ()
 {
 	_remove = true;
+}
+
 }

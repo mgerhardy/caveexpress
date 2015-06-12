@@ -18,6 +18,8 @@
 #include <assert.h>
 #include <math.h>
 
+namespace caveexpress {
+
 namespace {
 const int directions[][2] = { { 0, -1 }, { 0, 1 }, { 1, 0 }, { -1, 0 }, { -1, -1 }, { 1, 1 }, { -1, 1 }, { 1, -1 } };
 const int directionLength = sizeof(directions) / sizeof(directions[0]);
@@ -821,4 +823,6 @@ bool RandomMapContext::save () const
 		return false;
 	}
 	return true;
+}
+
 }

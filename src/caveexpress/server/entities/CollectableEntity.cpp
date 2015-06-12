@@ -1,6 +1,8 @@
 #include "CollectableEntity.h"
 #include "caveexpress/server/entities/Player.h"
 
+namespace caveexpress {
+
 CollectableEntity::CollectableEntity (const EntityType& type, Map& map, const IEntity *creator) :
 		IEntity(type, map), _collected(false), _creator(creator), _collectedTime(0), _collector(nullptr), _lastDropper(nullptr), _collectCount(0)
 {
@@ -43,4 +45,6 @@ bool CollectableEntity::shouldCollide (const IEntity *entity) const
 	}
 
 	return entity->isSolid() || entity->isWater() || entity->isPlayer() || entity->isCollectable();
+}
+
 }

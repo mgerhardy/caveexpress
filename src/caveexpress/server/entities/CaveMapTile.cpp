@@ -4,6 +4,8 @@
 #include "caveexpress/server/entities/npcs/NPCFriendly.h"
 #include "common/Logger.h"
 
+namespace caveexpress {
+
 CaveMapTile::CaveMapTile (Map& map, int caveNumber, const std::string& spriteID, gridCoord gridX, gridCoord gridY, const EntityType& npcType, int delaySpawn) :
 		MapTile(map, spriteID, gridX, gridY, EntityTypes::CAVE), _nextSpawn(delaySpawn), _spawned(0), _shouldSpawnNPC(
 				false), _now(0), _npc(nullptr), _lightState(DEFAULT_LIGHT_STATE), _respawn(false), _returnToCaveOnIdle(
@@ -139,4 +141,6 @@ void CaveMapTile::setLightState (bool lightState)
 		return;
 
 	GameEvent.sendLightState(getVisMask(), getID(), _lightState);
+}
+
 }

@@ -3,6 +3,8 @@
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/server/map/Map.h"
 
+namespace caveexpress {
+
 Egg::Egg (Map& map, gridCoord x, gridCoord y) :
 		CollectableEntity(EntityTypes::EGG, map), _x(x), _y(y)
 {
@@ -36,4 +38,6 @@ void Egg::createBody ()
 
 	_map.addToWorld(fd, bd, this);
 	_map.addEntity(this);
+}
+
 }

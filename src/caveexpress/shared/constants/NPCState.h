@@ -1,5 +1,7 @@
 #pragma once
 
+namespace caveexpress {
+
 namespace NPCState {
 enum {
 	NPC_IDLE,
@@ -15,4 +17,6 @@ enum {
 	NPC_ARRIVED,
 	NPC_STRUGGLE
 };
+}
+
 }

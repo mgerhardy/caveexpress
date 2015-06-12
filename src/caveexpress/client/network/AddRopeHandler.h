@@ -5,6 +5,8 @@
 #include "caveexpress/shared/network/messages/AddRopeMessage.h"
 #include "client/ClientMap.h"
 
+namespace caveexpress {
+
 class AddRopeHandler: public IClientProtocolHandler {
 private:
 	ClientMap& _map;
@@ -25,3 +27,5 @@ public:
 			entity1->addRope(entity2);
 	}
 };
+
+}

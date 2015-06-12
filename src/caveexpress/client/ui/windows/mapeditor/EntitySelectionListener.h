@@ -1,5 +1,7 @@
 #pragma once
 
+namespace caveexpress {
+
 class EntitySelectionListener: public UINodeListener {
 private:
 	UINodeMapEditor *_mapEditor;
@@ -20,3 +22,5 @@ public:
 		_selectedItem->setSprite(spriteDef);
 	}
 };
+
+}

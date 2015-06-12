@@ -1,5 +1,8 @@
 #include "CollectableEntity.h"
 
+namespace caveexpress {
+
+// forward decl
 class Map;
 
 class Egg: public CollectableEntity {
@@ -15,3 +18,5 @@ public:
 
 	void onSpawn () override;
 };
+
+}

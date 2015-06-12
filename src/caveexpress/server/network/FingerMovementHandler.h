@@ -4,6 +4,8 @@
 #include "caveexpress/server/map/Map.h"
 #include "network/messages/FingerMovementMessage.h"
 
+namespace caveexpress {
+
 class FingerMovementHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -24,3 +26,5 @@ public:
 		player->setAcceleration(msg->getDeltaX(), msg->getDeltaY());
 	}
 };
+
+}

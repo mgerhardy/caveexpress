@@ -1,5 +1,7 @@
 #pragma once
 
+namespace caveexpress {
+
 class LoadListener: public UINodeListener {
 private:
 	UINodeButton *_loadNode;
@@ -17,3 +19,5 @@ public:
 		_mapListNode->reset();
 	}
 };
+
+}

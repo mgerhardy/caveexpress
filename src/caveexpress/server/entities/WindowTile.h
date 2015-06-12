@@ -3,6 +3,8 @@
 #include "caveexpress/server/entities/MapTile.h"
 #include <string>
 
+namespace caveexpress {
+
 // forward decl
 class CaveMapTile;
 
@@ -29,4 +31,6 @@ inline bool WindowTile::getLightState () const
 inline CaveMapTile* WindowTile::getCave () const
 {
 	return _cave;
+}
+
 }

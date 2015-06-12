@@ -2,6 +2,8 @@
 
 #include "common/Achievement.h"
 
+namespace caveexpress {
+
 namespace Achievements {
 extern Achievement DAZE_PTERODACTYLS;
 extern Achievement PICK_UP_FRUIT;
@@ -18,4 +20,6 @@ extern Achievement COLLECT_10_STONES;
 extern Achievement COLLECT_100_STONES;
 extern Achievement DAZE_A_SLEEPING;
 extern Achievement DAZE_A_WALKING;
+}
+
 }

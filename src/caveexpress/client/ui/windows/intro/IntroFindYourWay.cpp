@@ -5,6 +5,8 @@
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "ui/UI.h"
 
+namespace caveexpress {
+
 IntroFindYourWay::IntroFindYourWay(IFrontend* frontend) :
 		Intro("introfindyourway", frontend) {
 	init();
@@ -20,4 +22,6 @@ void IntroFindYourWay::addIntroNodes(UINode* parent) {
 	parent->add(new IntroLabelHeadline(_frontend, tr("Description")));
 	parent->add(new IntroBarDescription(_frontend, timeBarColor, tr("Time bar")));
 	parent->add(new IntroBarDescription(_frontend, tr("Health bar")));
+}
+
 }

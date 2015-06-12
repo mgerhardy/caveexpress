@@ -9,6 +9,8 @@
 #include "common/MapFailedReason.h"
 #include <map>
 
+namespace caveexpress {
+
 class UINodeBackgroundScene: public UINode {
 private:
 	int _imageWidth;
@@ -51,3 +53,5 @@ public:
 	void updateReason (const MapFailedReason& reason, const ThemeType& theme);
 	void render (int x, int y) const override;
 };
+
+}

@@ -6,6 +6,8 @@
 #include "common/Logger.h"
 #include "common/Shared.h"
 
+namespace caveexpress {
+
 ClientParticle::ClientParticle (uint16_t id, const std::string& sprite, float x, float y) :
 		ClientEntity(EntityTypes::PARTICLE, id, x, y, 0.01f, 0.01f,
 				SoundMapping(), ENTITY_ALIGN_MIDDLE_CENTER, 0), _particles(
@@ -88,3 +90,5 @@ ClientEntityPtr ClientParticle::Factory::create (const ClientEntityFactoryContex
 }
 
 ClientParticle::Factory ClientParticle::FACTORY;
+
+}

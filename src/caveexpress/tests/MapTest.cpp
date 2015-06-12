@@ -4,6 +4,8 @@
 #include "common/ConfigManager.h"
 #include "network/INetwork.h"
 
+namespace caveexpress {
+
 class GroundVisitor: public IEntityVisitor {
 private:
 	const Map& _map;
@@ -244,4 +246,6 @@ TEST_F(MapTest, testPlayerWinCondition) {
 	};
 	PackageCallback c;
 	testSuccess("test-win-package", c);
+}
+
 }

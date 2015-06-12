@@ -2,6 +2,8 @@
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/server/entities/modificators/WindModificator.h"
 
+namespace caveexpress {
+
 #define RANDOM_WAITING_DELAY 1000
 #define MIN_ACTIVE_TIME 3000
 #define RANDOM_ACTIVE_TIME 5000
@@ -42,4 +44,6 @@ void Geyser::update (uint32_t deltaTime)
 		_modificator->setModificatorState(false);
 		setAnimationType(Animations::ANIMATION_IDLE);
 	}
+}
+
 }

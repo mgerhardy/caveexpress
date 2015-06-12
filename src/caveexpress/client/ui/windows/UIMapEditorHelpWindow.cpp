@@ -3,6 +3,8 @@
 #include "ui/nodes/UINodeBackground.h"
 #include "ui/nodes/UINodeBackButton.h"
 
+namespace caveexpress {
+
 UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		UIHelpWindow(UI_WINDOW_MAPEDITOR_HELP, frontend, WINDOW_FLAG_MODAL)
 {
@@ -148,4 +150,6 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 
 UIMapEditorHelpWindow::~UIMapEditorHelpWindow ()
 {
+}
+
 }

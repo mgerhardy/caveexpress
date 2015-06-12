@@ -1,5 +1,7 @@
 #include "CaveExpressAchievement.h"
 
+namespace caveexpress {
+
 namespace Achievements {
 Achievement DAZE_PTERODACTYLS("achievement_daze_pterodactyls");
 Achievement PICK_UP_FRUIT("achievement_pick_up_fruit");
@@ -16,4 +18,6 @@ Achievement COLLECT_10_STONES("achievement_collect_10_stones", true);
 Achievement COLLECT_100_STONES("achievement_collect_100_stones", true);
 Achievement DAZE_A_SLEEPING("achievement_daze_a_sleeping_npc");
 Achievement DAZE_A_WALKING("achievement_daze_a_walking_npc");
+}
+
 }

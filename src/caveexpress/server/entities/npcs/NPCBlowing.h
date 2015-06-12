@@ -2,6 +2,9 @@
 
 #include "caveexpress/server/entities/npcs/NPC.h"
 
+namespace caveexpress {
+
+// forward decl
 class Map;
 class WindModificator;
 
@@ -25,4 +28,6 @@ inline const Animation& NPCBlowing::getIdleAnimation () const
 	if (_lastDirectionRight)
 		return Animations::ANIMATION_IDLE_RIGHT;
 	return Animations::ANIMATION_IDLE_LEFT;
+}
+
 }

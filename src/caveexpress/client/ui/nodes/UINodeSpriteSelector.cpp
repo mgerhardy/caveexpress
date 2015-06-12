@@ -3,6 +3,8 @@
 #include "common/SpriteType.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
 
+namespace caveexpress {
+
 UINodeSpriteSelector::UINodeSpriteSelector (IFrontend *frontend, int cols, int rows) :
 		UINodeSelector<SpriteDefPtr>(frontend, cols, rows, 40 / static_cast<float>(frontend->getWidth()), 40 / static_cast<float>(frontend->getHeight())), _theme(&ThemeType::NONE)
 {
@@ -59,4 +61,6 @@ void UINodeSpriteSelector::addSprites (const ThemeType& theme)
 
 	_selectedIndex = 0;
 	select();
+}
+
 }

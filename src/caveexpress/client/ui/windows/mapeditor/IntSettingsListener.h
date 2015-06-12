@@ -1,5 +1,7 @@
 #pragma once
 
+namespace caveexpress {
+
 class IntSettingsListener: public UINodeListener, IMapEditorListener {
 private:
 	UINodeMapEditor *_mapEditor;
@@ -33,3 +35,5 @@ public:
 		_blocked = false;
 	}
 };
+
+}

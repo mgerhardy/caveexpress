@@ -3,6 +3,8 @@
 #include "network/IProtocolMessage.h"
 #include <string>
 
+namespace caveexpress {
+
 class LightStateMessage: public IProtocolMessage {
 private:
 	uint16_t _entityId;
@@ -38,3 +40,5 @@ public:
 		return _state;
 	}
 };
+
+}

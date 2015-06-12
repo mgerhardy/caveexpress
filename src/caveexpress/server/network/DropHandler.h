@@ -3,6 +3,8 @@
 #include "network/IProtocolHandler.h"
 #include "caveexpress/server/map/Map.h"
 
+namespace caveexpress {
+
 class DropHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -22,3 +24,5 @@ public:
 		player->drop();
 	}
 };
+
+}

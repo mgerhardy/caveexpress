@@ -3,6 +3,8 @@
 #include "network/IProtocolMessage.h"
 #include "common/EntityType.h"
 
+namespace caveexpress {
+
 class UpdateCollectedTypeMessage: public IProtocolMessage {
 private:
 	const EntityType* _entityType;
@@ -38,3 +40,5 @@ public:
 		return _collected;
 	}
 };
+
+}

@@ -6,6 +6,8 @@
 #include "common/IMap.h"
 #include <stdint.h>
 
+namespace caveexpress {
+
 class CmdMapOpenInEditor: public ICommand {
 private:
 	IMap& _map;
@@ -25,3 +27,5 @@ public:
 		Commands.executeCommandLine(CMD_LOADMAP " " + name);
 	}
 };
+
+}

@@ -4,6 +4,8 @@
 #include "common/IMap.h"
 #include "common/Pointers.h"
 
+namespace caveexpress {
+
 // forward decl
 class Map;
 
@@ -26,3 +28,5 @@ public:
 };
 
 typedef SharedPtr<Stone> StonePtr;
+
+}

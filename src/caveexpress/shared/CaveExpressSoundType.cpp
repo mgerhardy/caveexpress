@@ -1,5 +1,7 @@
 #include "CaveExpressSoundType.h"
 
+namespace caveexpress {
+
 namespace SoundTypes {
 SoundType SOUND_WATER_IMPACT("water-impact");
 SoundType SOUND_PLAYER_SPAWN("player-spawn");
@@ -34,4 +36,6 @@ SoundType SOUND_AMBIENT_CAVE2("cave2", true);
 SoundType SOUND_AMBIENT_WATERFALL("tile-waterfall", true);
 SoundType SOUND_NPC_CAVE_WATER_RESCUE("npc-cave-water-rescue", false, 3);
 SoundType SOUND_NPC_CAVE_BOARD("npc-cave-board", false);
+}
+
 }

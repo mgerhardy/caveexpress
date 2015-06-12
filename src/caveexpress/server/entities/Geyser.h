@@ -2,6 +2,8 @@
 
 #include "caveexpress/server/entities/MapTile.h"
 
+namespace caveexpress {
+
 class WindModificator;
 
 class Geyser: public MapTile {
@@ -18,3 +20,5 @@ public:
 
 	void update (uint32_t deltaTime) override;
 };
+
+}

@@ -3,6 +3,8 @@
 #include "caveexpress/client/network/SpawnInfoHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
 
+namespace caveexpress {
+
 UINodeMap::UINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
 		IUINodeMap(frontend, serviceProvider, campaignManager, x, y, width, height, map)
 {
@@ -16,4 +18,6 @@ UINodeMap::~UINodeMap ()
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
 	r.unregisterClientHandler(protocol::PROTO_SPAWNINFO);
 	r.unregisterClientHandler(protocol::PROTO_UPDATEPARTICLE);
+}
+
 }

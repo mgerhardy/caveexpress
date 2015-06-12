@@ -2,6 +2,8 @@
 
 #include "caveexpress/server/entities/IEntity.h"
 
+namespace caveexpress {
+
 // forward decl
 class CaveMapTile;
 
@@ -33,4 +35,6 @@ inline CaveMapTile *Platform::getCave () const
 inline void Platform::setCave (CaveMapTile* cave)
 {
 	_caveTile = cave;
+}
+
 }

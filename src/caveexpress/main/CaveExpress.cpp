@@ -96,6 +96,8 @@
 #include "network/IProtocolMessage.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 
+namespace caveexpress {
+
 PROTOCOL_CLASS_FACTORY_IMPL(DropMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(RemoveRopeMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(AddRopeMessage);
@@ -428,4 +430,6 @@ bool CaveExpress::visitEntity (IEntity *entity)
 	return false;
 }
 
-static GameRegisterStatic CAVEEXPRESS("caveexpress", GamePtr(new CaveExpress()));
+}
+
+static GameRegisterStatic CAVEEXPRESS("caveexpress", GamePtr(new caveexpress::CaveExpress()));

@@ -4,6 +4,8 @@
 #include "caveexpress/server/entities/modificators/WindModificator.h"
 #include "caveexpress/server/map/Map.h"
 
+namespace caveexpress {
+
 NPCBlowing::NPCBlowing (Map& map, const b2Vec2& pos, bool right, float force, float modificatorSize) :
 		NPC(EntityTypes::NPC_BLOWING, map)
 {
@@ -44,4 +46,6 @@ void NPCBlowing::update (uint32_t deltaTime)
 float NPCBlowing::getDensity () const
 {
 	return DENSITY_NPC_BLOWING;
+}
+
 }

@@ -4,6 +4,8 @@
 #include "caveexpress/shared/network/messages/WaterHeightMessage.h"
 #include "caveexpress/client/CaveExpressClientMap.h"
 
+namespace caveexpress {
+
 class WaterHeightHandler: public IClientProtocolHandler {
 private:
 	CaveExpressClientMap& _map;
@@ -20,3 +22,4 @@ public:
 	}
 };
 
+}

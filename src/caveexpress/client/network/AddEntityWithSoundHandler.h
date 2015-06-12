@@ -5,6 +5,8 @@
 #include "caveexpress/shared/CaveExpressSpriteType.h"
 #include "sound/Sound.h"
 
+namespace caveexpress {
+
 class AddEntityWithSoundHandler: public AddEntityHandler {
 public:
 	AddEntityWithSoundHandler (ClientMap& map) :
@@ -27,3 +29,5 @@ public:
 		}
 	}
 };
+
+}

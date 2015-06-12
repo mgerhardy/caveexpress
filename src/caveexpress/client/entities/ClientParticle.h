@@ -2,6 +2,8 @@
 
 #include "client/entities/ClientEntity.h"
 
+namespace caveexpress {
+
 class ClientParticle: public ClientEntity {
 private:
 	struct ParticleData {
@@ -42,4 +44,6 @@ public:
 inline void ClientParticle::setSprite (const std::string& sprite)
 {
 	_sprite = sprite;
+}
+
 }

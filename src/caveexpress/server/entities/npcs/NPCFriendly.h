@@ -2,6 +2,8 @@
 
 #include "INPCCave.h"
 
+namespace caveexpress {
+
 class NPCFriendly: public INPCCave {
 private:
 	TimerID _fallingTimer;
@@ -70,4 +72,6 @@ inline void NPCFriendly::setTargetPlayer (uint16_t playerId)
 inline uint16_t NPCFriendly::getTargetPlayer () const
 {
 	return _playerId;
+}
+
 }

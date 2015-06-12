@@ -1,5 +1,7 @@
 #pragma once
 
+namespace caveexpress {
+
 class AutoGenerateListener: public UINodeListener {
 private:
 	UINodeMapEditor *_mapEditor;
@@ -15,3 +17,5 @@ public:
 		_mapEditor->autoFill(_spriteSelector->getTheme());
 	}
 };
+
+}

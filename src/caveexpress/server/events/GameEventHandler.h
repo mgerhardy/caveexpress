@@ -9,16 +9,19 @@
 #include "common/ThemeType.h"
 #include <string>
 
+struct b2Vec2;
+class ByteStream;
+class ServiceProvider;
+class EntityType;
+
+namespace caveexpress {
+
 // forward decl
 class NPC;
 class Player;
 class Water;
 class Map;
 class IEntity;
-class EntityType;
-struct b2Vec2;
-class ByteStream;
-class ServiceProvider;
 class NPCFriendly;
 
 class GameEventHandler: public NonCopyable {
@@ -96,3 +99,5 @@ public:
 };
 
 #define GameEvent GameEventHandler::get()
+
+}

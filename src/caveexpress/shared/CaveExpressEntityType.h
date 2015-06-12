@@ -2,6 +2,8 @@
 
 #include "common/EntityType.h"
 
+namespace caveexpress {
+
 namespace EntityTypes {
 extern EntityType DECORATION;
 extern EntityType SOLID;
@@ -231,6 +233,8 @@ inline bool isDynamic (const EntityType& other)
 inline bool hasDirection (const EntityType& other)
 {
 	return isNpcAttacking(other) || isNpcFlying(other) || isNpcBlowing(other) || isNpcFish(other);
+}
+
 }
 
 }

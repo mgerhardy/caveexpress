@@ -8,6 +8,8 @@
 #include "common/ConfigManager.h"
 #include <cassert>
 
+namespace caveexpress {
+
 Water::Water (Map& map, float waterChangeSpeed, uint32_t waterRisingDelay, uint32_t waterFallingDelay) :
 		IEntity(EntityTypes::WATER, map), _waterChangeSpeed(waterChangeSpeed), _waterRisingDelay(waterRisingDelay), _waterFallingDelay(waterFallingDelay), _mapHeight(
 				0.0f), _waterRisingState(WATER_UNINITIALIZED), _currentHeightLevel(0.0f), _waterRisingTime(waterRisingDelay), _waterFallingTime(waterFallingDelay)
@@ -192,4 +194,6 @@ void Water::createBody (float waterHeight)
 bool Water::shouldCollide (const IEntity* entity) const
 {
 	return false;
+}
+
 }

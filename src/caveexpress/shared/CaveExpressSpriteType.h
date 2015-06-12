@@ -2,6 +2,8 @@
 
 #include "common/SpriteType.h"
 
+namespace caveexpress {
+
 namespace SpriteTypes {
 extern SpriteType WATERFALL;
 extern SpriteType ROCK;
@@ -143,6 +145,8 @@ inline bool isSolid (const SpriteType& other)
 inline bool isMapTile (const SpriteType& other)
 {
 	return isSolid(other) || isCave(other) || isBackground(other) || isWindow(other);
+}
+
 }
 
 }

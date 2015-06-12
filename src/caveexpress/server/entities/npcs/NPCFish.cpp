@@ -3,6 +3,8 @@
 #include "caveexpress/shared/constants/Density.h"
 #include "caveexpress/server/map/Map.h"
 
+namespace caveexpress {
+
 NPCFish::NPCFish (Map& map, double magnitude, double amplitude) :
 		NPCAggressive(EntityTypes::NPC_FISH, map), _magnitude(magnitude), _amplitude(amplitude)
 {
@@ -106,4 +108,6 @@ bool NPCFish::shouldCollide (const IEntity* entity) const
 bool NPCFish::isRemove () const
 {
 	return _remove || NPCAggressive::isRemove();
+}
+
 }

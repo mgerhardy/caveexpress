@@ -6,6 +6,8 @@
 #include "ui/UI.h"
 #include "common/SpriteDefinition.h"
 
+namespace caveexpress {
+
 UIHelpWindow::UIHelpWindow (const std::string& name, IFrontend* frontend, int flags) :
 		UIWindow(name, frontend, flags), _currentX(0.01f), _currentY(0.0f), _internalPadding(0.001f), _iconSize(0.08f), _iconGap(
 				0.01f)
@@ -79,4 +81,6 @@ UINodeSprite* UIHelpWindow::addSpriteNode (const EntityType& type, const Animati
 	spriteNode->setSize(w, h);
 	add(spriteNode);
 	return spriteNode;
+}
+
 }

@@ -4,6 +4,8 @@
 #include "common/CommandSystem.h"
 #include "common/Logger.h"
 
+namespace caveexpress {
+
 // TODO: Undo/Redo does not yet work
 class UINodeSaveButton: public UINodeButtonText {
 public:
@@ -124,3 +126,5 @@ public:
 		checkState();
 	}
 };
+
+}

@@ -2,6 +2,8 @@
 
 #include "caveexpress/server/entities/npcs/NPC.h"
 
+namespace caveexpress {
+
 class NPCAggressive: public NPC {
 public:
 	NPCAggressive (const EntityType &type, Map& map);
@@ -25,4 +27,6 @@ inline const Animation& NPCAggressive::getIdleAnimation () const
 	if (_lastDirectionRight)
 		return Animations::ANIMATION_IDLE_RIGHT;
 	return Animations::ANIMATION_IDLE_LEFT;
+}
+
 }

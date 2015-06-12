@@ -7,6 +7,8 @@
 #include "caveexpress/server/map/LUAMapContext.h"
 #include "common/MapSettings.h"
 
+namespace caveexpress {
+
 TEST(CampaignTest, testSave) {
 	SCOPED_TRACE("new.sqlite");
 	SQLitePersister persister(System.getDatabaseDirectory() + "new.temp");
@@ -160,4 +162,6 @@ TEST(CampaignTest, testResetProgress) {
 	ASSERT_FALSE(c->isUnlocked()) << "Campaign ice is still unlocked";
 	CampaignPtr activeCampaign = mgr.getActiveCampaign();
 	ASSERT_EQ("tutorial", activeCampaign->getId());
+}
+
 }

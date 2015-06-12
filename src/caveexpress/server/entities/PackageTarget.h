@@ -3,6 +3,8 @@
 #include "caveexpress/server/entities/MapTile.h"
 #include "common/Pointers.h"
 
+namespace caveexpress {
+
 // forward decl
 class Map;
 class Package;
@@ -40,3 +42,5 @@ inline bool PackageTarget::isValidContact (const b2Contact* contact, const std::
 }
 
 typedef SharedPtr<PackageTarget> PackageTargetPtr;
+
+}

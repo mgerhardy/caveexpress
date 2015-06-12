@@ -6,6 +6,8 @@
 #include "ui/nodes/UINodeSprite.h"
 #include "ui/windows/IUIMapWindow.h"
 
+namespace caveexpress {
+
 class UpdatePackageCountHandler: public IClientProtocolHandler {
 public:
 	void execute (const IProtocolMessage& message) override
@@ -25,3 +27,5 @@ public:
 		node->flash();
 	}
 };
+
+}

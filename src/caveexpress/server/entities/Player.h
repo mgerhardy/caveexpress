@@ -11,6 +11,8 @@
 #include "common/Pointers.h"
 #include "network/IProtocolHandler.h"
 
+namespace caveexpress {
+
 // forward decl
 class Map;
 class NPCFriendly;
@@ -210,4 +212,6 @@ inline bool Player::isLandedOn (const CaveMapTile *cave) const
 inline const PlayerCrashReason& Player::getCrashReason () const
 {
 	return _crashReason;
+}
+
 }

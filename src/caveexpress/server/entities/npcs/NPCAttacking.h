@@ -2,6 +2,8 @@
 
 #include "caveexpress/server/entities/npcs/NPCAggressive.h"
 
+namespace caveexpress {
+
 // forward decl
 class Player;
 class Map;
@@ -40,3 +42,5 @@ public:
 	// IEntity
 	void onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold) override;
 };
+
+}

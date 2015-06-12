@@ -7,6 +7,8 @@
 class UINodeSprite;
 class UINodeLabel;
 
+namespace caveexpress {
+
 class UIHelpWindow: public UIWindow {
 protected:
 	class AutoBorder : public NonCopyable {
@@ -80,3 +82,5 @@ public:
 	UIHelpWindow (const std::string& name, IFrontend* frontend, int flags);
 	virtual ~UIHelpWindow ();
 };
+
+}

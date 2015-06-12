@@ -3,13 +3,16 @@
 #include "ui/windows/UIWindow.h"
 #include "ui/nodes/UINodeSelector.h"
 
+class IMapManager;
+class UINodeMapStringSelector;
+
+namespace caveexpress {
+
 // forward decl
 class UINodeMapEditorSelectedItem;
-class UINodeMapStringSelector;
 class UINodeSpriteSelector;
 class UINodeEntitySelector;
 class UINodeMapEditor;
-class IMapManager;
 
 class UIMapEditorWindow: public UIWindow {
 	friend class AutoGenerateListener;
@@ -46,3 +49,5 @@ public:
 
 	bool onPush () override;
 };
+
+}

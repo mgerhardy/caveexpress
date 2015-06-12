@@ -3,6 +3,8 @@
 #include "caveexpress/server/entities/IEntity.h"
 #include <string>
 
+namespace caveexpress {
+
 // forward decl
 class Map;
 
@@ -38,3 +40,5 @@ public:
 	// IEntity
 	bool isRemove () const override;
 };
+
+}

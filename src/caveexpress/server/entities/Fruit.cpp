@@ -3,6 +3,8 @@
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 
+namespace caveexpress {
+
 Fruit::Fruit (Map& map, const EntityType& type, gridCoord x, gridCoord y) :
 		CollectableEntity(type, map), _x(x), _y(y)
 {
@@ -40,4 +42,6 @@ void Fruit::createBody ()
 
 	_map.addToWorld(fd, bd, this);
 	_map.addEntity(this);
+}
+
 }

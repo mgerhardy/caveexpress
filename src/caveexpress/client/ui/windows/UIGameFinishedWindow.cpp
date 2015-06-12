@@ -5,6 +5,8 @@
 #include "common/Commands.h"
 #include "ui/nodes/UINodeBackground.h"
 
+namespace caveexpress {
+
 UIGameFinishedWindow::UIGameFinishedWindow (IFrontend *frontend) :
 		UIWindow(UI_WINDOW_GAMEFINISHED, frontend)
 {
@@ -28,4 +30,6 @@ UIGameFinishedWindow::UIGameFinishedWindow (IFrontend *frontend) :
 		return;
 
 	add(new UINodeBackButton(frontend, background));
+}
+
 }

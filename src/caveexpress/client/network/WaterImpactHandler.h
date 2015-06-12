@@ -4,6 +4,8 @@
 #include "caveexpress/shared/network/messages/WaterImpactMessage.h"
 #include "caveexpress/client/CaveExpressClientMap.h"
 
+namespace caveexpress {
+
 class WaterImpactHandler: public IClientProtocolHandler {
 private:
 	CaveExpressClientMap& _map;
@@ -22,3 +24,4 @@ public:
 	}
 };
 
+}

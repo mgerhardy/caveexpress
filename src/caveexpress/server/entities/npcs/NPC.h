@@ -3,6 +3,8 @@
 #include "caveexpress/server/entities/IEntity.h"
 #include "caveexpress/shared/constants/NPCState.h"
 
+namespace caveexpress {
+
 class NPC: public IEntity {
 protected:
 	float _initialWalkingSpeed;
@@ -155,3 +157,5 @@ public:
 		return 0;
 	}
 };
+
+}

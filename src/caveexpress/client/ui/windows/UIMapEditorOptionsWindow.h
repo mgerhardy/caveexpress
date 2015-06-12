@@ -2,6 +2,8 @@
 
 #include "ui/windows/UIWindow.h"
 
+namespace caveexpress {
+
 class UINodeMapEditor;
 
 class UIMapEditorOptionsWindow: public UIWindow {
@@ -15,3 +17,5 @@ public:
 	UIMapEditorOptionsWindow (IFrontend* frontend, UINodeMapEditor* mapEditor);
 	virtual ~UIMapEditorOptionsWindow ();
 };
+
+}

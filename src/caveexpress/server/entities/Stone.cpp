@@ -7,6 +7,8 @@
 #include "caveexpress/shared/constants/Density.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 
+namespace caveexpress {
+
 Stone::Stone (Map& map, gridCoord x, gridCoord y, const IEntity *creator) :
 		CollectableEntity(EntityTypes::STONE, map, creator), _x(x), _y(y)
 {
@@ -90,4 +92,6 @@ void Stone::createBody ()
 	_map.addEntity(this);
 	const b2Vec2 v(0.5f, _map.getGravity());
 	body->SetLinearVelocity(v);
+}
+
 }

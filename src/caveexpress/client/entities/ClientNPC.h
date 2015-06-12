@@ -2,6 +2,8 @@
 
 #include "client/entities/ClientEntity.h"
 
+namespace caveexpress {
+
 class ClientNPC: public ClientEntity {
 private:
 	uint32_t _speechBubbleDelay;
@@ -24,3 +26,5 @@ public:
 };
 
 typedef ClientNPC* ClientNPCPtr;
+
+}

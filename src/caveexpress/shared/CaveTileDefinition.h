@@ -3,6 +3,8 @@
 #include "common/MapTileDefinition.h"
 #include "common/EntityType.h"
 
+namespace caveexpress {
+
 class CaveTileDefinition: public MapTileDefinition {
 public:
 	// the type of the npc that this tile will spawn
@@ -15,3 +17,5 @@ public:
 	{
 	}
 };
+
+}

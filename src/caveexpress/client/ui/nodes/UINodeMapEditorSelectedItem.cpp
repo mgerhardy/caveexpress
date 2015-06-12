@@ -3,6 +3,8 @@
 #include "sprites/Sprite.h"
 #include "ui/BitmapFont.h"
 
+namespace caveexpress {
+
 UINodeMapEditorSelectedItem::UINodeMapEditorSelectedItem (IFrontend *frontend) :
 		UINode(frontend, "selected-item-node")
 {
@@ -63,4 +65,6 @@ void UINodeMapEditorSelectedItem::render (int x, int y) const
 	const int fontX = nodeX + nodeW / 2 - textWidth / 2;
 	const int fontY = _y + h + textOffset;
 	font->print(name, colorWhite, fontX, fontY);
+}
+
 }

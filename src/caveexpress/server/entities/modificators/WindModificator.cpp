@@ -5,6 +5,8 @@
 #include "common/Shared.h"
 #include <SDL_stdinc.h>
 
+namespace caveexpress {
+
 WindModificator::WindModificator (Map& map, Direction direction, float force, float size, float beginSizeDivisior) :
 		IWorldModificator(map), _state(false), _direction(direction), _shift(
 				0.0f), _force(force), _modificatorSize(size), _beginSizeDivisor(
@@ -149,4 +151,6 @@ void WindModificator::applyImpulse (b2Body* body, b2Vec2 contactPoint, float for
 	const float distance = 0.1f * b2Distance(body->GetPosition(), getPos());
 	const float impulseMag = std::min(70.0f, force * _modificatorSize / distance);
 	body->ApplyLinearImpulse(impulseMag * direction, contactPoint, true);
+}
+
 }

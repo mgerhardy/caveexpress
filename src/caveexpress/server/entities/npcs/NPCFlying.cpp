@@ -5,6 +5,8 @@
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "common/ConfigManager.h"
 
+namespace caveexpress {
+
 NPCFlying::NPCFlying (Map& map) :
 		NPCAggressive(EntityTypes::NPC_FLYING, map)
 {
@@ -88,4 +90,6 @@ bool NPCFlying::shouldCollide (const IEntity* entity) const
 		return !p->isCrashed();
 	}
 	return false;
+}
+
 }

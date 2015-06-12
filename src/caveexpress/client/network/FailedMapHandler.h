@@ -9,6 +9,8 @@
 #include "common/Commands.h"
 #include "common/ServiceProvider.h"
 
+namespace caveexpress {
+
 class FailedMapHandler: public IClientProtocolHandler {
 private:
 	ClientMap& _clientMap;
@@ -29,3 +31,5 @@ public:
 		window->updateReason(isMultiplayer, msg->getReason(), msg->getTheme());
 	}
 };
+
+}

@@ -57,10 +57,11 @@ typedef SharedPtr<b2Shape> ShapePtr;
 typedef std::multimap<std::string, ShapePtr> ShapeMap;
 typedef ShapeMap::iterator ShapeIter;
 
+namespace caveexpress {
+
 #define SPAWN_FRIENDLY_NPC_DELAY 10000
 #define SPAWN_FLYING_NPC_DELAY 5000
 #define SPAWN_FISH_NPC_DELAY 5000
-
 
 namespace {
 Achievement* packageAchievements[] = {
@@ -1836,4 +1837,6 @@ void Map::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		const float height = lua.getFloatValue(name + ".height", 1.0f);
 		i->second->setSize(width, height);
 	}
+}
+
 }

@@ -6,6 +6,8 @@
 #include "client/ClientMap.h"
 #include "client/ClientMap.h"
 
+namespace caveexpress {
+
 class AnnounceTargetCaveHandler: public IClientProtocolHandler {
 private:
 	CaveExpressClientMap& _map;
@@ -27,3 +29,5 @@ public:
 		}
 	}
 };
+
+}

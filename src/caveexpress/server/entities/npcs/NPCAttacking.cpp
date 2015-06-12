@@ -3,6 +3,8 @@
 #include "caveexpress/server/map/Map.h"
 #include "common/TimeManager.h"
 
+namespace caveexpress {
+
 NPCAttacking::NPCAttacking (const EntityType& entityType, Map& map, bool right) :
 		NPCAggressive(entityType, map), _attackTimer(0), _returnTimer(0), _platformStartPos(
 				-1), _platformEndPos(-1), _attackTarget(nullptr)
@@ -192,4 +194,6 @@ void NPCAttacking::update (uint32_t deltaTime)
 		Player* player = *i;
 		checkAttack(player);
 	}
+}
+
 }

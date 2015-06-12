@@ -1,5 +1,7 @@
 #pragma once
 
+namespace caveexpress {
+
 #define DENSITY_WATER			1000.0f
 #define DENSITY_NPC				900.0f
 #define DENSITY_NPC_BLOWING		10000.0f
@@ -14,3 +16,5 @@
 #define DENSITY_AIR				1.2041f
 #define DENSITY_PACKAGETARGET	450.0f
 #define DENSITY_BRIDGE			1000.0f
+
+}

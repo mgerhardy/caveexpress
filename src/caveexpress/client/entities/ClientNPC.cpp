@@ -3,6 +3,8 @@
 #include "ui/UI.h"
 #include "caveexpress/shared/constants/NPCState.h"
 
+namespace caveexpress {
+
 ClientNPC::ClientNPC(const EntityType& type, uint16_t id, const Animation& animation, float x, float y, float sizeX, float sizeY,
 		const SoundMapping& soundMapping, EntityAlignment align) :
 		ClientEntity(type, id, x, y, sizeX, sizeY, soundMapping, align, 0), _speechBubbleDelay(0) {
@@ -41,3 +43,5 @@ ClientEntityPtr ClientNPC::Factory::create(const ClientEntityFactoryContext *ctx
 }
 
 ClientNPC::Factory ClientNPC::FACTORY;
+
+}

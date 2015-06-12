@@ -2,6 +2,8 @@
 
 #include "caveexpress/server/entities/npcs/INPCCave.h"
 
+namespace caveexpress {
+
 // forward decl
 class CaveMapTile;
 
@@ -18,3 +20,5 @@ public:
 	void update (uint32_t deltaTime) override;
 	bool shouldCollide (const IEntity* entity) const override;
 };
+
+}

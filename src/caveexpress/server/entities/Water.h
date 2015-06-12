@@ -5,6 +5,8 @@
 #include <set>
 #include <vector>
 
+namespace caveexpress {
+
 // forward decl
 class Map;
 
@@ -81,4 +83,6 @@ inline bool Water::isWaterFallingDue () const
 	if (_time < _waterFallingTime)
 		return false;
 	return _waterChangeSpeed > 0.00001f;
+}
+
 }

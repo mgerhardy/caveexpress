@@ -8,6 +8,8 @@
 // forward decl
 class SpriteDef;
 
+namespace caveexpress {
+
 typedef unsigned int randomGridCoord;
 typedef unsigned int randomGridSize;
 
@@ -120,4 +122,6 @@ inline void RandomMapContext::NodeToXY (void* node, randomGridCoord* x, randomGr
 inline void* RandomMapContext::XYToNode (randomGridCoord x, randomGridCoord y) const
 {
 	return reinterpret_cast<void*>(y * _mapWidth + x);
+}
+
 }

@@ -2,6 +2,8 @@
 
 #include "client/entities/ClientMapTile.h"
 
+namespace caveexpress {
+
 class ClientWindowTile: public ClientMapTile {
 private:
 	ClientWindowTile (uint16_t id, const std::string& sprite, const Animation& animation, float x,
@@ -32,4 +34,6 @@ inline bool ClientWindowTile::isLightState () const
 inline void ClientWindowTile::setLightState (bool lightState)
 {
 	_lightState = lightState;
+}
+
 }

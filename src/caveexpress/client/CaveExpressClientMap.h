@@ -2,6 +2,8 @@
 
 #include "client/ClientMap.h"
 
+namespace caveexpress {
+
 class CaveExpressClientMap: public ClientMap {
 private:
 	float _waterHeight;
@@ -46,4 +48,6 @@ inline void CaveExpressClientMap::setWaterHeight (float height)
 inline float CaveExpressClientMap::getWaterHeight () const
 {
 	return _waterHeight;
+}
+
 }

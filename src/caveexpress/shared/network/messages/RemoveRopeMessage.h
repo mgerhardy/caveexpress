@@ -3,6 +3,8 @@
 #include "network/IProtocolMessage.h"
 #include <string>
 
+namespace caveexpress {
+
 class RemoveRopeMessage: public IProtocolMessage {
 private:
 	uint16_t _entityId;
@@ -31,3 +33,5 @@ public:
 		return _entityId;
 	}
 };
+
+}

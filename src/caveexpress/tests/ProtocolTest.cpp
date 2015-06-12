@@ -8,6 +8,8 @@
 #include "caveexpress/shared/network/messages/WaterImpactMessage.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 
+namespace caveexpress {
+
 class ProtocolTest: public AbstractProtocolTest {
 };
 
@@ -22,4 +24,6 @@ TEST_F(ProtocolTest, testProtocols)
 	testMessage("WaterHeightMessage", WaterHeightMessage(1.0f));
 	testMessage("WaterImpactMessage", WaterImpactMessage(1.0f, 1.0f));
 	testMessage("DropMessage", DropMessage());
+}
+
 }

@@ -6,6 +6,8 @@
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "common/TimeManager.h"
 
+namespace caveexpress {
+
 NPCFriendly::NPCFriendly (CaveMapTile *cave, const EntityType& type, bool returnToCaveOnIdle) :
 		INPCCave(cave, type, false), _fallingTimer(-1), _playerId(-1), _returnToCaveOnIdle(returnToCaveOnIdle), _targetCave(nullptr)
 {
@@ -139,6 +141,7 @@ void NPCFriendly::update (uint32_t deltaTime)
 	if (_returnToCaveOnIdle && isIdle()) {
 		returnToInitialPosition();
 	}
+
 	// TODO: fix me
 #if 0
 	if (isDone()) {
@@ -190,4 +193,6 @@ void NPCFriendly::update (uint32_t deltaTime)
 		}
 	}
 #endif
+}
+
 }

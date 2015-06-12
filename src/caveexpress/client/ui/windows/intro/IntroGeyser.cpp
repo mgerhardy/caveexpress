@@ -5,6 +5,8 @@
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "ui/UI.h"
 
+namespace caveexpress {
+
 IntroGeyser::IntroGeyser(IFrontend* frontend) :
 		Intro("introgeyser", frontend) {
 	init();
@@ -17,4 +19,6 @@ void IntroGeyser::addIntroNodes(UINode* parent) {
 	parent->add(new IntroLabel(_frontend, tr("The geyser will do the work for you")));
 	parent->add(new IntroLabelHeadline(_frontend, tr("Description")));
 	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::GEYSER_ROCK, Animations::ANIMATION_ACTIVE, tr("Geyser")));
+}
+
 }

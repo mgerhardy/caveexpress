@@ -5,6 +5,8 @@
 #include "common/Logger.h"
 #include <string>
 
+namespace caveexpress {
+
 LUAMapContext *LUAMapContext::currentCtx;
 
 LUAMapContext::LUAMapContext (const std::string& name) :
@@ -177,4 +179,6 @@ bool LUAMapContext::isLocationFree (gridCoord x, gridCoord y)
 			return false;
 	}
 	return true;
+}
+
 }

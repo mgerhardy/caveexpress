@@ -1,5 +1,7 @@
 #pragma once
 
+namespace caveexpress {
+
 class ChangeThemeListener: public UINodeListener, IMapEditorListener {
 private:
 	UINodeMapEditor *_mapEditor;
@@ -49,3 +51,5 @@ public:
 		_blocked = false;
 	}
 };
+
+}

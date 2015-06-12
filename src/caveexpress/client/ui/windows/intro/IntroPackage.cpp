@@ -6,6 +6,8 @@
 #include "ui/UI.h"
 #include "ui/layouts/UIHBoxLayout.h"
 
+namespace caveexpress {
+
 IntroPackage::IntroPackage(IFrontend* frontend) :
 		Intro("intropackage", frontend) {
 	init();
@@ -29,4 +31,6 @@ void IntroPackage::addIntroNodes(UINode* parent) {
 	panel->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PACKAGE_ROCK, Animations::ANIMATION_IDLE, tr("Package")));
 	parent->add(panel);
 	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PACKAGETARGET_ROCK, Animations::ANIMATION_ROTATE, tr("Shredder")));
+}
+
 }

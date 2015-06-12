@@ -4,6 +4,8 @@
 #include "caveexpress/server/map/Map.h"
 #include "network/messages/FingerMovementMessage.h"
 
+namespace caveexpress {
+
 class StopFingerMovementHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -23,3 +25,5 @@ public:
 		player->resetAcceleration();
 	}
 };
+
+}

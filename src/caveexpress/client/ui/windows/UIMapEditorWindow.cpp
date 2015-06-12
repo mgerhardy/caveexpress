@@ -40,6 +40,8 @@
 #include "mapeditor/BooleanSettingListener.h"
 #include "mapeditor/LayerListener.h"
 
+namespace caveexpress {
+
 class UINodeSetting: public UINode {
 public:
 	UINodeSetting (IFrontend* frontend, const std::string& label, UINode* node, const std::string& tooltip = "") :
@@ -229,4 +231,6 @@ bool UIMapEditorWindow::onPush ()
 	const bool ret = UIWindow::onPush();
 	_mapEditor->loadLast();
 	return ret;
+}
+
 }

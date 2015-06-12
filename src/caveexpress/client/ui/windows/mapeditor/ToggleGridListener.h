@@ -1,5 +1,7 @@
 #pragma once
 
+namespace caveexpress {
+
 class ToggleGridListener: public UINodeListener {
 private:
 	UINodeMapEditor *_mapEditor;
@@ -14,3 +16,5 @@ public:
 		_mapEditor->toggleGrid();
 	}
 };
+
+}

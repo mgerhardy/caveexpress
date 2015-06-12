@@ -2,6 +2,8 @@
 
 #include "caveexpress/server/entities/CollectableEntity.h"
 
+namespace caveexpress {
+
 class Map;
 
 class Fruit: public CollectableEntity {
@@ -17,3 +19,5 @@ public:
 
 	void onSpawn () override;
 };
+
+}

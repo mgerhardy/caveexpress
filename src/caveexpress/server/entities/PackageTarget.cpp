@@ -3,6 +3,8 @@
 #include "caveexpress/server/entities/Package.h"
 #include "caveexpress/shared/constants/Density.h"
 
+namespace caveexpress {
+
 #define LENGTH_UPDATE_DELAY 500
 
 PackageTarget::PackageTarget (Map& map, const std::string& spriteID, gridCoord x, gridCoord y) :
@@ -117,4 +119,6 @@ void PackageTarget::applyJoint (Package *package)
 	if (!bonus)
 		return;
 	_map.addPoints(package->getLastDropper(), 30);
+}
+
 }

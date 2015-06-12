@@ -9,6 +9,8 @@
 #include "common/EntityType.h"
 #include "common/Animation.h"
 
+namespace caveexpress {
+
 class LUASpriteTest: public AbstractTest {
 protected:
 	virtual void SetUp() override {
@@ -24,4 +26,6 @@ TEST_F(LUASpriteTest, testSpriteDefinition)
 			Animations::ANIMATION_IDLE);
 	SpriteDefPtr sprite = SpriteDefinition::get().getSpriteDefinition(spriteId);
 	ASSERT_TRUE(sprite.get()) << "sprite " + spriteId + " wasn't found";
+}
+
 }

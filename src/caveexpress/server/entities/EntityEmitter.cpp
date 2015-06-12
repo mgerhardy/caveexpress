@@ -12,6 +12,8 @@
 #include "caveexpress/server/entities/Package.h"
 #include "caveexpress/server/entities/PackageTarget.h"
 
+namespace caveexpress {
+
 EntityEmitter::EntityEmitter (Map& map, float gridX, float gridY, int amount, int delay, const EntityType& type, const std::string& settings) :
 		IEntity(EntityTypes::EMITTER, map), _x(gridX), _y(gridY), _amount(amount), _delay(delay), _spawnTimer(delay), _type(
 				type), _count(0), _settings(settings)
@@ -108,4 +110,6 @@ const EntityType** EntityEmitter::getSupportedEntityTypes()
 			&EntityTypes::NPC_WALKING, &EntityTypes::NPC_BLOWING, &EntityTypes::BANANA,
 			&EntityTypes::APPLE, &EntityTypes::EGG, &EntityTypes::NPC_MAMMUT, &EntityTypes::TREE, &EntityTypes::BOMB, 0 };
 	return types;
+}
+
 }

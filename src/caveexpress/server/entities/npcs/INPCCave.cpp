@@ -1,6 +1,8 @@
 #include "caveexpress/server/entities/npcs/INPCCave.h"
 #include "caveexpress/server/entities/CaveMapTile.h"
 
+namespace caveexpress {
+
 INPCCave::INPCCave (CaveMapTile *cave, const EntityType& type, bool deliverPackage) :
 		NPC(EntityTypes::isNpcCave(type) ? type : getNpcFriendlyType(), cave->getMap()), _cave(cave), _collectingTime(0), _deliverPackage(
 				deliverPackage)
@@ -59,4 +61,6 @@ gridCoord INPCCave::getMaxWalkingLeft () const
 gridCoord INPCCave::getMaxWalkingRight () const
 {
 	return _cave->getPlatformEndGridX() - 0.2f;
+}
+
 }

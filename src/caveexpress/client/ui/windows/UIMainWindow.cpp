@@ -14,6 +14,8 @@
 #include "common/Application.h"
 #include "ui/windows/listener/OpenWindowListener.h"
 
+namespace caveexpress {
+
 UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
 		UIWindow(UI_WINDOW_MAIN, frontend, WINDOW_FLAG_ROOT)
 {
@@ -147,4 +149,6 @@ void UIMainWindow::flyPlayer ()
 		std::swap(startX, endX);
 	}
 	_player->setMovement(startX, startYRand, endX, endYRand, 0.0004f);
+}
+
 }
