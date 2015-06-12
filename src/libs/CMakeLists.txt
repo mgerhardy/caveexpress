@@ -316,6 +316,9 @@ set(TREMOR
 endif()
 
 add_definitions(-DLOAD_PNG -DPNG_NO_CONFIG_H -DHAVE_SDL_IMAGE_H -DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE -DSQLITE_HAVE_ISNAN -DSQLITE_THREADSAFE=0 -DOGG_MUSIC -DWAV_MUSIC)
+if (ANDROID)
+add_definitions(-DOGG_USE_TREMOR)
+endif()
 add_library(libs ${libs_SRCS} ${libs_PLATFORM_SRCS})
 set_target_properties(libs PROPERTIES FOLDER libs)
 set(DEPS dl)
