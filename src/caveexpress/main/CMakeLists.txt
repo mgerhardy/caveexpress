@@ -1,7 +1,7 @@
 project(caveexpress)
 add_executable(${PROJECT_NAME} CaveExpress.cpp)
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}-server ${PROJECT_NAME}-client ${PROJECT_NAME}-shared main)
+target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}-server ${PROJECT_NAME}-client ${PROJECT_NAME}-shared main Box2D SDL_image tinyxml2 yajl zlib gtest)
 set(TPS
 	caveexpress-entity
 	caveexpress-environment-ice

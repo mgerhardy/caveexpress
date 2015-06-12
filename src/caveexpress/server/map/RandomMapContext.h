@@ -5,8 +5,6 @@
 #include "common/ThemeType.h"
 #include "common/Compiler.h"
 
-#include <micropather/micropather.h>
-
 // forward decl
 class SpriteDef;
 
@@ -21,7 +19,7 @@ struct RandomMapPos {
 // there are some assumptions that you should be aware of:
 // * each solid and background tile must be grid aligned
 // * each solid and background tile can't have a fractional part for their width and height
-class RandomMapContext: public ICaveMapContext, public micropather::Graph {
+class RandomMapContext: public ICaveMapContext {
 private:
 	// the amount of caves
 	unsigned int _caves;
@@ -86,11 +84,6 @@ private:
 	bool placeEmitterGroundTile (const EntityType& entityType);
 	// place emitters that are able to fall down - just place them in a free slot
 	bool placeEmitterTile (const EntityType& entityType);
-
-	// Graph
-	void AdjacentCost (void* node, std::vector<micropather::StateCost> *neighbors) override;
-	float LeastCostEstimate (void* nodeStart, void* nodeEnd) override;
-	void PrintStateInfo (void* node) override;
 
 	void NodeToXY (void* node, randomGridCoord* x, randomGridCoord* y) const;
 	void* XYToNode (randomGridCoord x, randomGridCoord y) const;

@@ -12,7 +12,7 @@ list(APPEND gfx_SRCS
 endif()
 add_library(gfx ${gfx_SRCS})
 set_target_properties(gfx PROPERTIES FOLDER client)
-set(DEPS libs common texture ui client shader game sound)
+set(DEPS common texture ui client shader game sound)
 if (ANDROID)
 list(APPEND DEPS GLESv1_CM GLESv2)
 else()

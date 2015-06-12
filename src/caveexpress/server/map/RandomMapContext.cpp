@@ -132,43 +132,6 @@ bool RandomMapContext::isTileAt (const SpriteType& def, randomGridCoord left, ra
 	return false;
 }
 
-void RandomMapContext::AdjacentCost (void* node, std::vector<micropather::StateCost> *neighbors)
-{
-	randomGridCoord x, y;
-	NodeToXY(node, &x, &y);
-	for (int i = 0; i < directionLength; ++i) {
-		const randomGridCoord nx = x + directions[i][0];
-		const randomGridCoord ny = y + directions[i][1];
-		if (ny >= _mapHeight || nx >= _mapWidth)
-			continue;
-
-		const bool pass = isFree(nx, ny);
-		if (!pass)
-			continue;
-
-		const micropather::StateCost nodeCost = { XYToNode(nx, ny), 1 };
-		neighbors->push_back(nodeCost);
-	}
-}
-
-float RandomMapContext::LeastCostEstimate (void* nodeStart, void* nodeEnd)
-{
-	randomGridCoord xStart, yStart;
-	NodeToXY(nodeStart, &xStart, &yStart);
-	randomGridCoord xEnd, yEnd;
-	NodeToXY(nodeEnd, &xEnd, &yEnd);
-	const int dx = xStart - xEnd;
-	const int dy = yStart - yEnd;
-	return (float) sqrt((double) (dx * dx) + (double) (dy * dy));
-}
-
-void RandomMapContext::PrintStateInfo (void* node)
-{
-	randomGridCoord x, y;
-	NodeToXY(node, &x, &y);
-	debug(LOG_SERVER, String::format("(%2d,%2d)", x, y));
-}
-
 bool RandomMapContext::checkFreeTiles (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y)
 {
 	randomGridCoord startState;
@@ -187,48 +150,7 @@ bool RandomMapContext::checkFreeTiles (const SpriteDefPtr& def, randomGridCoord 
 		return false;
 	}
 
-#if 0
-	for (randomGridSize w = 0; w < width; ++w) {
-		for (randomGridSize h = 0; h < height; ++h) {
-			const int index = (x + w) + ((y + h) * _mapWidth);
-			assert(_map[index] == nullptr);
-			_map[index] = def.get();
-		}
-	}
-
-	randomGridCoord i;
-	for (i = startState + 1; i < _mapWidth * _mapHeight; ++i) {
-		const randomGridCoord startX = startState % _mapWidth;
-		const randomGridCoord startY = startState / _mapWidth;
-		const randomGridCoord endX = i % _mapWidth;
-		const randomGridCoord endY = i / _mapWidth;
-		if (endX >= x && endX < x + width && endY >= y && endY < y + height)
-			continue;
-		if (!isFree(endX, endY, width, height))
-			continue;
-
-		std::vector<void*> path;
-		float costs;
-		micropather::MicroPather p(this);
-		const int ret = p.Solve(gridGetVoid(startState), gridGetVoid(i), &path, &costs);
-		if (ret == micropather::MicroPather::NO_SOLUTION) {
-			debug(LOG_SERVER, String::format("no solution found to move from %i:%i to %i:%i (%i steps)", startX, startY, endX, endY, path.size()));
-			break;
-		}
-	}
-
-	for (randomGridSize w = 0; w < width; ++w) {
-		for (randomGridSize h = 0; h < height; ++h) {
-			const int index = (x + w) + ((y + h) * _mapWidth);
-			assert(_map[index] != nullptr);
-			_map[index] = nullptr;
-		}
-	}
-
-	return i == _mapWidth * _mapHeight;
-#else
 	return true;
-#endif
 }
 
 inline void RandomMapContext::fillMap (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y)

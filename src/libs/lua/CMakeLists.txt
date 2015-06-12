@@ -35,3 +35,4 @@ set(SRCS
 
 add_library(lua ${SRCS})
 set_target_properties(lua PROPERTIES FOLDER lua)
+add_definitions(-DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE)
