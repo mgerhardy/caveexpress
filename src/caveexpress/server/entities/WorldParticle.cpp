@@ -3,7 +3,7 @@
 
 WorldParticle::WorldParticle(Map& map, WorldParticleType type, int maxParticles, float density, const b2Vec2& size, uint32_t lifetime) :
 		IEntity(EntityTypes::PARTICLE, map), _particleType(type), _maxParticles(
-				maxParticles), _nextParticleIndex(0), _density(density), _lifetime(lifetime), _particlesDirty(false), _lastDirtyTime(0)
+				maxParticles), _nextParticleIndex(0), _density(density), _lifetime(lifetime), _lastDirtyTime(0), _particlesDirty(false)
 {
 	_size = size;
 }
@@ -95,7 +95,7 @@ void WorldParticle::spawnParticle (const b2Vec2& pos, const b2Vec2& v)
 {
 	int currentParticleIndex = _nextParticleIndex;
 	SimpleParticle* p;
-	if (_particles.size() < _maxParticles) {
+	if (static_cast<int>(_particles.size()) < _maxParticles) {
 		// add a new one
 		_particles.push_back(createParticleBody());
 		_nextParticleIndex++;

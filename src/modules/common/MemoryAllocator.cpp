@@ -25,7 +25,7 @@ void* MemoryAllocator::allocate (size_t nbytes)
 	for (MemoryIndexMapIter iter = _memIndexMap.begin(); iter != _memIndexMap.end(); ++iter) {
 		char* mem = (char*) iter->first;
 		ptrdiff_t diff = mem - placement;
-		if (diff >= memsize) {
+		if (diff >= static_cast<ptrdiff_t>(memsize)) {
 			_memIndexMap[placement] = memsize;
 			return placement;
 		}

@@ -36,4 +36,4 @@ add_definitions(-DLOAD_PNG -DPNG_NO_CONFIG_H)
 #-lz
 include_directories("libpng-1.6.2")
 target_link_libraries(SDL_image SDL zlib)
-set_target_properties(SDL_image PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-attributes")
+set_target_properties(SDL_image PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-attributes -Wno-unused-parameter -Wno-sign-compare")

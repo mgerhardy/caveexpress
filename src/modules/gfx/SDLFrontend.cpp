@@ -344,7 +344,7 @@ uint32_t SDLFrontend::getDisplayFormat () const
 
 	SDL_RendererInfo info;
 	SDL_GetRendererInfo(_renderer, &info);
-	for (int i = 0; i < info.num_texture_formats; ++i) {
+	for (unsigned int i = 0; i < info.num_texture_formats; ++i) {
 		if (!SDL_ISPIXELFORMAT_FOURCC(info.texture_formats[i]) && SDL_ISPIXELFORMAT_ALPHA(info.texture_formats[i])) {
 			return info.texture_formats[i];
 		}

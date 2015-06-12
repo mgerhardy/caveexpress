@@ -319,7 +319,7 @@ bool CampaignManager::updateMapValues (const std::string& mapname, uint32_t fini
 		map->setStars(stars);
 	map->setTime(time);
 	if (lowerPointsAreBetter) {
-		const int p = map->getFinishPoints();
+		const uint32_t p = map->getFinishPoints();
 		if (p <= 0 || p > finishPoints)
 			map->setFinishPoints(finishPoints);
 	} else {

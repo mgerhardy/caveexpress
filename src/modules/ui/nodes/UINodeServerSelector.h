@@ -6,7 +6,7 @@
 struct ServerEntry {
 	ServerEntry (const std::string& _name, const std::string& _host, int _port, const std::string& _mapName,
 			int _playerCount, int _maxPlayerCount) :
-			name(_name), host(_host), port(_port), mapName(_mapName), playerCount(_playerCount), maxPlayerCount(
+			name(_name), host(_host), mapName(_mapName), port(_port), playerCount(_playerCount), maxPlayerCount(
 					_maxPlayerCount)
 	{
 	}

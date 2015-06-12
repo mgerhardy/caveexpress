@@ -697,7 +697,7 @@ bool Map::trace (const b2Vec2& start, const b2Vec2& end, IEntity **hit) const
 	if (hit)
 		*hit = callback.getEntity();
 
-	int index = _traceCount;
+	uint32_t index = _traceCount;
 	if (index < SDL_arraysize(_traces)) {
 		_traces[index].start = start;
 		_traces[index].end = end;

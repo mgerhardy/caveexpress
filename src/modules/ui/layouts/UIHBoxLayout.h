@@ -4,8 +4,8 @@
 
 class UIHBoxLayout: public IUILayout {
 private:
-	bool _expandChildren;
 	float _spacing;
+	bool _expandChildren;
 	int _align;
 public:
 	UIHBoxLayout (float spacing = 0.0f, bool expandChildren = false, int align = 0);

@@ -16,8 +16,6 @@ typedef ClientEntity* ClientEntityPtr;
 
 class ClientEntity {
 protected:
-	SoundMapping _soundMapping;
-
 	ClientEntity (const EntityType& type, uint16_t id, float x, float y, float sizeX,
 			float sizeY, const SoundMapping& soundMappingClientEntity, EntityAlignment align, EntityAngle angle);
 
@@ -153,6 +151,7 @@ protected:
 	ClientEntityPtr _ropeEntity;
 
 	int _animationSound;
+	SoundMapping _soundMapping;
 	bool _visible;
 	mutable bool _visChanged;
 	EntityAlignment _align;

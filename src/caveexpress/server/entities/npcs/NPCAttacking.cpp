@@ -4,8 +4,8 @@
 #include "common/TimeManager.h"
 
 NPCAttacking::NPCAttacking (const EntityType& entityType, Map& map, bool right) :
-		NPCAggressive(entityType, map), _attackTimer(0), _returnTimer(0), _attackTarget(nullptr), _platformStartPos(
-				-1), _platformEndPos(-1)
+		NPCAggressive(entityType, map), _attackTimer(0), _returnTimer(0), _platformStartPos(
+				-1), _platformEndPos(-1), _attackTarget(nullptr)
 {
 	_initialWalkingSpeed = 1.4f;
 	_lastDirectionRight = right;

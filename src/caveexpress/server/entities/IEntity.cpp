@@ -9,8 +9,8 @@ uint32_t IEntity::GLOBAL_ENTITY_NUM = 0;
 IEntity::IEntity (const EntityType &type, Map& map) :
 		_id(GLOBAL_ENTITY_NUM++), _type(type), _time(0), _vismask(NOTVISIBLE), _animationType(
 				&Animation::NONE), _spriteAlignment(ENTITY_ALIGN_LOWER_LEFT), _state(0), _refilter(false), _touchingWater(
-				false), _animationChangeTimer(0), _ropeJoint(nullptr), _remove(false), _map(map), _oldGravityScale(0.0f), _snapshot(b2Vec2_zero,
-				0.0f, 0)
+				false), _ropeJoint(nullptr), _remove(false), _map(map), _oldGravityScale(0.0f), _animationChangeTimer(0),
+				_snapshot(b2Vec2_zero, 0.0f, 0)
 {
 	setSpriteID("");
 	_size = b2Vec2(_type.width, _type.height);

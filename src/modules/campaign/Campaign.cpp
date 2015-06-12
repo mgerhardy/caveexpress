@@ -16,7 +16,7 @@ Campaign::~Campaign ()
 
 CampaignMapPtr Campaign::getMap (int index) const
 {
-	if (index < 1 || index > _maps.size())
+	if (index < 1 || index > static_cast<int>(_maps.size()))
 		return CampaignMapPtr();
 	return _maps[index - 1];
 }

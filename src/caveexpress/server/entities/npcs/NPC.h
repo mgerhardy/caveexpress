@@ -9,7 +9,7 @@ protected:
 	b2Vec2 _targetPos;
 	b2Vec2 _initialPosition;
 	bool _lastDirectionRight;
-	int _triggerMovement;
+	uint32_t _triggerMovement;
 	// the time at which the npc was dazed
 	uint32_t _dazedTime;
 	// the time that a npc is dazed

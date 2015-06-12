@@ -113,9 +113,9 @@ protected:
 
 	int _height;
 	int _width;
-	int _warmupPhase;
+	uint32_t _warmupPhase;
 
-	int _restartDue;
+	uint32_t _restartDue;
 
 	// this is just a pointer to the shared ptr instance - you don't have to free this
 	Water *_water;
@@ -140,13 +140,13 @@ protected:
 	int32_t _physicsTime;
 	uint32_t _nextFriendlyNPCSpawn;
 
-	int _transferedNPCs;
-	int _transferedNPCLimit;
-	int _friendlyNPCLimit;
-	int _caveCounter;
+	uint32_t _transferedNPCs;
+	uint32_t _transferedNPCLimit;
+	uint32_t _friendlyNPCLimit;
+	uint32_t _caveCounter;
 
-	int _transferedPackages;
-	int _transferedPackageLimit;
+	uint32_t _transferedPackages;
+	uint32_t _transferedPackageLimit;
 
 	NPCList _friendlyNPCs;
 

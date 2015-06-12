@@ -3,8 +3,8 @@
 
 ClientWindowTile::ClientWindowTile (uint16_t id, const std::string& sprite, const Animation& animation, float x,
 		float y, float sizeX, float sizeY, const SoundMapping& soundMapping, EntityAlignment align) :
-		ClientMapTile(EntityTypes::WINDOW, id, sprite, animation, x, y, sizeX, sizeY, 0, soundMapping, align), _sprite(sprite), _lightState(
-				DEFAULT_LIGHT_STATE)
+		ClientMapTile(EntityTypes::WINDOW, id, sprite, animation, x, y, sizeX, sizeY, 0, soundMapping, align), _lightState(
+				DEFAULT_LIGHT_STATE), _sprite(sprite)
 {
 }
 

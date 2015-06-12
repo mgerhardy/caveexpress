@@ -259,7 +259,7 @@ private:
 	// active layers
 	int _layerMask;
 
-	int _lastSave;
+	size_t _lastSave;
 
 	// get the grid index on the x-coord - starting from 0
 	gridCoord getGridX () const;

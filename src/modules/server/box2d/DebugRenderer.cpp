@@ -18,8 +18,8 @@
 #endif
 
 DebugRenderer::DebugRenderer (int pointCount, const ContactPoint *points, int traceCount, const TraceData *traceData, const std::vector<b2Vec2>& waterIntersectionPoints, const DebugRendererData& data) :
-		b2Draw(), _pointCount(pointCount), _points(points), _traceCount(traceCount), _traceData(
-				traceData), _waterIntersectionPoints(waterIntersectionPoints), _enableTextureArray(false)
+		b2Draw(), _enableTextureArray(false), _pointCount(pointCount), _points(points), _waterIntersectionPoints(waterIntersectionPoints), _traceCount(traceCount), _traceData(
+				traceData)
 {
 	memset(_colorArray, 0, sizeof(_colorArray));
 #ifndef NO_DEBUG_RENDERER

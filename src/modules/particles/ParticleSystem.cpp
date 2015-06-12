@@ -37,7 +37,7 @@ void ParticleSystem::update (uint32_t deltaTime)
 
 bool ParticleSystem::spawn (const ParticlePtr& particle)
 {
-	if (_particles.size() >= _maxParticles)
+	if (static_cast<int>(_particles.size()) >= _maxParticles)
 		return false;
 	_particles.push_back(particle);
 	particle->init();

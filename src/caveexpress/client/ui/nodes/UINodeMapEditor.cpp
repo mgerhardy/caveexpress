@@ -79,9 +79,9 @@ public:
 UINodeMapEditor::UINodeMapEditor (IFrontend *frontend, IMapManager& mapManager) :
 		UINode(frontend, "mapeditor"), _activeSpriteAngle(0), _activeEntityType(0), _activeEntityTypeRight(true), _selectedGridX(
 				0.0f), _selectedGridY(0.0f), _gridScrollX(0), _gridScrollY(0), _activeLayer(LAYER_FOREGROUND), _buttonPressed(
-				0), _renderGrid(true), _mapManager(mapManager), _waterHeight(0.0f), _theme(&ThemeTypes::ROCK), _highlightItem(
+				0), _waterHeight(0.0f), _renderGrid(true), _mapManager(mapManager), _theme(&ThemeTypes::ROCK), _highlightItem(
 				nullptr), _moveTileHorizontally(false), _scrollX(0), _scrollY(0), _lastScrollUpdate(0U), _nextScrollDelta(
-						INITIAL_SCROLL_STEP_DELAY), _layerMask(0xFFFFFFFF), _lastSave(0)
+						INITIAL_SCROLL_STEP_DELAY), _layerMask(0xFFFFFFFF), _lastSave(0u)
 {
 	_font = getFont();
 	Vector4Set(colorBlack, _fontColor);

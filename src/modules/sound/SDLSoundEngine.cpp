@@ -42,7 +42,7 @@ SDLSoundEngine::~SDLSoundEngine ()
 void SDLSoundEngine::channelFinished (int channel)
 {
 	assert(channel >= 0);
-	assert(channel < lengthof(_channels));
+	assert(channel < lengthofi(_channels));
 	memset(&_channels[channel], 0, sizeof(_channels[channel]));
 }
 
@@ -196,7 +196,7 @@ int SDLSoundEngine::play (const std::string& filename, const vec2& position, boo
 		error(LOG_CLIENT, String::format("unable to play sound file: %s", Mix_GetError()));
 	} else {
 		assert(channel >= 0);
-		assert(channel < lengthof(_channels));
+		assert(channel < lengthofi(_channels));
 		_channels[channel].channel = channel;
 		_channels[channel].chunk = sound;
 		_channels[channel].pos = position;

@@ -83,7 +83,7 @@ FILE(GLOB PLATFORM_SRCS
 	src/timer/unix/*.c
 	src/thread/pthread/*.c
 	src/main/nacl/*.c)
-elseif(APPLE)
+elseif(DARWIN)
 FILE(GLOB PLATFORM_SRCS
 	SDL_image/IMG_UIImage.m
 	src/video/uikit/*.m
@@ -139,4 +139,4 @@ endif()
 
 add_library(SDL ${SRCS} ${PLATFORM_SRCS})
 target_link_libraries(SDL dl)
-set_target_properties(SDL PROPERTIES COMPILE_FLAGS "-Wno-cast-qual")
+set_target_properties(SDL PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare")

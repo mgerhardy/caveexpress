@@ -82,7 +82,7 @@ protected:
 	int _height;
 	int _width;
 
-	int _restartDue;
+	uint32_t _restartDue;
 	typedef std::map<int, char> StateMap;
 	typedef StateMap::iterator StateMapIter;
 	typedef StateMap::const_iterator StateMapConstIter;

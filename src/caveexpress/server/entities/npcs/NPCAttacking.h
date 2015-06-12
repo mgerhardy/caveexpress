@@ -17,11 +17,10 @@ protected:
 	int _platformStartPos;
 	int _platformEndPos;
 
+	Player *_attackTarget;
+
 	TimerID startTimer (int length, void(NPCAttacking::*callback) (), bool abortAnimationChanges);
 	void walkBack ();
-
-protected:
-	Player *_attackTarget;
 
 public:
 	NPCAttacking (const EntityType& entityType, Map& map, bool right);

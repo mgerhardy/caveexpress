@@ -321,8 +321,8 @@ void RandomMapContext::setWaterParameters (float waterHeight, float waterChangeS
 
 bool RandomMapContext::placeInitialRandomTiles ()
 {
-	int tries = 0;
-	for (int i = 0; i < _randomRockTiles; ++i) {
+	unsigned int tries = 0;
+	for (unsigned int i = 0; i < _randomRockTiles; ++i) {
 		const randomGridCoord x = rand() % _mapWidth;
 		randomGridCoord y = rand() % _mapHeight;
 		if (y < 3)
@@ -348,8 +348,8 @@ bool RandomMapContext::placeInitialRandomTiles ()
 
 void RandomMapContext::placeTilesAroundInitialTiles ()
 {
-	int tries = 0;
-	int overallTilesAmount = _overallRockAmount;
+	unsigned int tries = 0;
+	unsigned int overallTilesAmount = _overallRockAmount;
 
 	assert(!_definitions.empty());
 
@@ -458,8 +458,8 @@ void RandomMapContext::placeBridges ()
 int RandomMapContext::placeCaveTiles ()
 {
 	int caves = 0;
-	int tries = 0;
-	for (int i = 0; i < _caves; ++tries) {
+	unsigned int tries = 0;
+	for (unsigned int i = 0; i < _caves; ++tries) {
 		const int groundPosIndex = rand() % _groundPos.size();
 		const RandomMapPos& p = _groundPos[groundPosIndex];
 		const int index = rand() % _caveTiles.size();
@@ -721,8 +721,10 @@ bool RandomMapContext::isFree (randomGridCoord x, randomGridCoord y, const Sprit
 
 bool RandomMapContext::getGroundDimensions (randomGridCoord x, randomGridCoord y, randomGridCoord& left, randomGridCoord& right) const
 {
-	left = -1;
-	right = -1;
+	left = 0;
+	right = 0;
+	bool leftSet = false;
+	bool rightSet = false;
 
 	std::vector<RandomMapPos> groundPos;
 
@@ -747,7 +749,8 @@ bool RandomMapContext::getGroundDimensions (randomGridCoord x, randomGridCoord y
 		const RandomMapPos& pos = *i;
 		if (pos.x == x + step) {
 			right = pos.x;
-			step++;
+			rightSet = true;
+			++step;
 		}
 	}
 	step = 1;
@@ -755,11 +758,12 @@ bool RandomMapContext::getGroundDimensions (randomGridCoord x, randomGridCoord y
 		const RandomMapPos& pos = *i;
 		if (pos.x == x - step) {
 			left = pos.x;
-			step++;
+			leftSet = true;
+			++step;
 		}
 	}
 
-	if (left == -1 || right == -1)
+	if (!leftSet || !rightSet)
 		return false;
 
 	return true;

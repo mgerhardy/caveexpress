@@ -25,9 +25,9 @@ class IUIMapWindow: public UIWindow {
 protected:
 	friend class UIMapHelpWindow;
 	IUINodeMap *_nodeMap;
+	UINodeLabel *_waitLabel;
 	IMapControl *_mapControl;
 	UINodeButtonText *_startButton;
-	UINodeLabel *_waitLabel;
 	bool _cursorActive;
 	ServiceProvider& _serviceProvider;
 	UINode* _panel;

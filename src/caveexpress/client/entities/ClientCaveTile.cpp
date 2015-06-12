@@ -5,8 +5,8 @@
 
 ClientCaveTile::ClientCaveTile (uint16_t id, const std::string& sprite, const Animation& animation, float x,
 		float y, float sizeX, float sizeY, const SoundMapping& soundMapping, EntityAlignment align) :
-		ClientMapTile(EntityTypes::CAVE, id, sprite, animation, x, y, sizeX, sizeY, 0, soundMapping, align), _sprite(sprite), _lightState(
-				DEFAULT_LIGHT_STATE)
+		ClientMapTile(EntityTypes::CAVE, id, sprite, animation, x, y, sizeX, sizeY, 0, soundMapping, align), _lightState(
+				DEFAULT_LIGHT_STATE), _sprite(sprite)
 {
 	const SoundType& soundType = SoundTypes::SOUND_AMBIENT_CAVE;
 	_animationSound = SoundControl.play(soundType.getSound(), getPos(), soundType.isLoopSound());
