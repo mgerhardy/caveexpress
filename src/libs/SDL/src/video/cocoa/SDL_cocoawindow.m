@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -255,6 +255,7 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
         [center addObserver:self selector:@selector(windowDidDeminiaturize:) name:NSWindowDidDeminiaturizeNotification object:window];
         [center addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:window];
         [center addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidResignKeyNotification object:window];
+        [center addObserver:self selector:@selector(windowDidChangeBackingProperties:) name:NSWindowDidChangeBackingPropertiesNotification object:window];
         [center addObserver:self selector:@selector(windowWillEnterFullScreen:) name:NSWindowWillEnterFullScreenNotification object:window];
         [center addObserver:self selector:@selector(windowDidEnterFullScreen:) name:NSWindowDidEnterFullScreenNotification object:window];
         [center addObserver:self selector:@selector(windowWillExitFullScreen:) name:NSWindowWillExitFullScreenNotification object:window];
@@ -385,6 +386,7 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
         [center removeObserver:self name:NSWindowDidDeminiaturizeNotification object:window];
         [center removeObserver:self name:NSWindowDidBecomeKeyNotification object:window];
         [center removeObserver:self name:NSWindowDidResignKeyNotification object:window];
+        [center removeObserver:self name:NSWindowDidChangeBackingPropertiesNotification object:window];
         [center removeObserver:self name:NSWindowWillEnterFullScreenNotification object:window];
         [center removeObserver:self name:NSWindowDidEnterFullScreenNotification object:window];
         [center removeObserver:self name:NSWindowWillExitFullScreenNotification object:window];
@@ -531,12 +533,14 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
 {
     SDL_Window *window = _data->window;
     SDL_Mouse *mouse = SDL_GetMouse();
+
+    /* We're going to get keyboard events, since we're key. */
+    /* This needs to be done before restoring the relative mouse mode. */
+    SDL_SetKeyboardFocus(window);
+
     if (mouse->relative_mode && !mouse->relative_mode_warp && ![self isMoving]) {
         mouse->SetRelativeMouseMode(SDL_TRUE);
     }
-
-    /* We're going to get keyboard events, since we're key. */
-    SDL_SetKeyboardFocus(window);
 
     /* If we just gained focus we need the updated mouse position */
     if (!mouse->relative_mode) {
@@ -579,6 +583,22 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
 
     if (isFullscreenSpace) {
         [NSMenu setMenuBarVisible:YES];
+    }
+}
+
+- (void)windowDidChangeBackingProperties:(NSNotification *)aNotification
+{
+    NSNumber *oldscale = [[aNotification userInfo] objectForKey:NSBackingPropertyOldScaleFactorKey];
+
+    if (inFullscreenTransition) {
+        return;
+    }
+
+    if ([oldscale doubleValue] != [_data->nswindow backingScaleFactor]) {
+        /* Force a resize event when the backing scale factor changes. */
+        _data->window->w = 0;
+        _data->window->h = 0;
+        [self windowDidResize:aNotification];
     }
 }
 
@@ -730,6 +750,14 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
 - (void)mouseDown:(NSEvent *)theEvent
 {
     int button;
+
+    /* Ignore events that aren't inside the client area (i.e. title bar.) */
+    if ([theEvent window]) {
+        const NSRect windowRect = [[[theEvent window] contentView] frame];
+        if (!NSPointInRect([theEvent locationInWindow], windowRect)) {
+            return;
+        }
+    }
 
     if ([self processHitTest:theEvent]) {
         return;  /* dragging, drop event. */
@@ -931,10 +959,8 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
 
     for (NSTouch *touch in touches) {
         const SDL_TouchID touchId = (SDL_TouchID)(intptr_t)[touch device];
-        if (!SDL_GetTouch(touchId)) {
-            if (SDL_AddTouch(touchId, "") < 0) {
-                return;
-            }
+        if (SDL_AddTouch(touchId, "") < 0) {
+            return;
         }
 
         const SDL_FingerID fingerId = (SDL_FingerID)(intptr_t)[touch identity];
@@ -962,14 +988,29 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
 
 @end
 
-@interface SDLView : NSView
+@interface SDLView : NSView {
+    SDL_Window *_sdlWindow;
+}
+
+- (void)setSDLWindow:(SDL_Window*)window;
 
 /* The default implementation doesn't pass rightMouseDown to responder chain */
 - (void)rightMouseDown:(NSEvent *)theEvent;
 - (BOOL)mouseDownCanMoveWindow;
+- (void)drawRect:(NSRect)dirtyRect;
 @end
 
 @implementation SDLView
+- (void)setSDLWindow:(SDL_Window*)window
+{
+    _sdlWindow = window;
+}
+
+- (void)drawRect:(NSRect)dirtyRect
+{
+    SDL_SendWindowEvent(_sdlWindow, SDL_WINDOWEVENT_EXPOSED, 0, 0);
+}
+
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
     [[self nextResponder] rightMouseDown:theEvent];
@@ -1136,7 +1177,8 @@ Cocoa_CreateWindow(_THIS, SDL_Window * window)
 
     /* Create a default view for this window */
     rect = [nswindow contentRectForFrameRect:[nswindow frame]];
-    NSView *contentView = [[SDLView alloc] initWithFrame:rect];
+    SDLView *contentView = [[SDLView alloc] initWithFrame:rect];
+    [contentView setSDLWindow:window];
 
     if (window->flags & SDL_WINDOW_ALLOW_HIGHDPI) {
         if ([contentView respondsToSelector:@selector(setWantsBestResolutionOpenGLSurface:)]) {
