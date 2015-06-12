@@ -327,16 +327,16 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		_campaignManager->addListener(this);
 	}
 	ProtocolHandlerRegistry& rp = ProtocolHandlerRegistry::get();
-	rp.registerServerHandler(protocol::PROTO_SPAWN, new SpawnHandler(_map, _campaignManager));
-	rp.registerServerHandler(protocol::PROTO_DISCONNECT, new DisconnectHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_STARTMAP, new StartMapHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_MOVEMENT, new MovementHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_FINGERMOVEMENT, new FingerMovementHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_STOPFINGERMOVEMENT, new StopFingerMovementHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_STOPMOVEMENT, new StopMovementHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_SPAWN, new SpawnHandler(_map, _campaignManager));
+	rp.registerServerHandler(::protocol::PROTO_DISCONNECT, new DisconnectHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_STARTMAP, new StartMapHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_MOVEMENT, new MovementHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_FINGERMOVEMENT, new FingerMovementHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_STOPFINGERMOVEMENT, new StopFingerMovementHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_STOPMOVEMENT, new StopMovementHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_DROP, new DropHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_ERROR, new ErrorHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_ERROR, new ErrorHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
 
 	_frontend = frontend;
 	_serviceProvider = &serviceProvider;
@@ -391,8 +391,8 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.registerClientHandler(protocol::PROTO_REMOVEROPE, new RemoveRopeHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_WATERHEIGHT);
 	r.registerClientHandler(protocol::PROTO_WATERHEIGHT, new WaterHeightHandler(*map));
-	r.unregisterClientHandler(protocol::PROTO_UPDATEPACKAGECOUNT);
-	r.registerClientHandler(protocol::PROTO_UPDATEPACKAGECOUNT, new UpdatePackageCountHandler());
+	r.unregisterClientHandler(::protocol::PROTO_UPDATEPACKAGECOUNT);
+	r.registerClientHandler(::protocol::PROTO_UPDATEPACKAGECOUNT, new UpdatePackageCountHandler());
 	r.unregisterClientHandler(protocol::PROTO_UPDATECOLLECTEDTYPE);
 	r.registerClientHandler(protocol::PROTO_UPDATECOLLECTEDTYPE, new UpdateCollectedTypeHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_WATERIMPACT);
@@ -401,12 +401,12 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.registerClientHandler(protocol::PROTO_ADDCAVE, new AddCaveHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_LIGHTSTATE);
 	r.registerClientHandler(protocol::PROTO_LIGHTSTATE, new LightStateHandler(*map));
-	r.unregisterClientHandler(protocol::PROTO_ADDENTITY);
-	r.registerClientHandler(protocol::PROTO_ADDENTITY, new AddEntityWithSoundHandler(*map));
-	r.unregisterClientHandler(protocol::PROTO_INITDONE);
-	r.registerClientHandler(protocol::PROTO_INITDONE, new HudInitDoneHandler(*map));
-	r.unregisterClientHandler(protocol::PROTO_FAILEDMAP);
-	r.registerClientHandler(protocol::PROTO_FAILEDMAP, new FailedMapHandler(*map, serviceProvider));
+	r.unregisterClientHandler(::protocol::PROTO_ADDENTITY);
+	r.registerClientHandler(::protocol::PROTO_ADDENTITY, new AddEntityWithSoundHandler(*map));
+	r.unregisterClientHandler(::protocol::PROTO_INITDONE);
+	r.registerClientHandler(::protocol::PROTO_INITDONE, new HudInitDoneHandler(*map));
+	r.unregisterClientHandler(::protocol::PROTO_FAILEDMAP);
+	r.registerClientHandler(::protocol::PROTO_FAILEDMAP, new FailedMapHandler(*map, serviceProvider));
 	r.unregisterClientHandler(protocol::PROTO_TARGETCAVE);
 	r.registerClientHandler(protocol::PROTO_TARGETCAVE, new TargetCaveHandler());
 	r.unregisterClientHandler(protocol::PROTO_ANNOUNCETARGETCAVE);

@@ -7,6 +7,7 @@
 #include "common/FileSystem.h"
 #include "common/Logger.h"
 
+using namespace caveexpress;
 static SoundMappingCache soundMappingCache;
 
 static inline bool exists (const std::string& sound)

@@ -7,6 +7,8 @@
 
 class ClientMap;
 
+namespace caveexpress {
+
 class CaveExpress: public IGame, public IEntityVisitor {
 private:
 	IGameStatePersister* _persister;
@@ -42,3 +44,5 @@ private:
 	// IEntityVisitor
 	bool visitEntity (IEntity *entity) override;
 };
+
+}
