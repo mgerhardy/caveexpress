@@ -1,58 +1,9 @@
+add_subdirectory(Box2D)
+add_subdirectory(lua)
+add_subdirectory(SDL_mixer)
+add_subdirectory(SDL_image)
+
 FILE(GLOB libs_SRCS
-	lua/lapi.cpp
-	lua/lauxlib.cpp
-	lua/lbaselib.cpp
-	lua/lbitlib.cpp
-	lua/lcode.cpp
-	lua/lcorolib.cpp
-	lua/lctype.cpp
-	lua/ldblib.cpp
-	lua/ldebug.cpp
-	lua/ldo.cpp
-	lua/ldump.cpp
-	lua/lfunc.cpp
-	lua/lgc.cpp
-	lua/linit.cpp
-	lua/liolib.cpp
-	lua/llex.cpp
-	lua/lmathlib.cpp
-	lua/lmem.cpp
-	lua/loadlib.cpp
-	lua/lobject.cpp
-	lua/lopcodes.cpp
-	lua/loslib.cpp
-	lua/lparser.cpp
-	lua/lstate.cpp
-	lua/lstring.cpp
-	lua/lstrlib.cpp
-	lua/ltable.cpp
-	lua/ltablib.cpp
-	lua/ltm.cpp
-	lua/lundump.cpp
-	lua/lvm.cpp
-	lua/lzio.cpp
-	SDL_mixer/dynamic_flac.c
-	SDL_mixer/dynamic_fluidsynth.c
-	SDL_mixer/dynamic_mod.c
-	SDL_mixer/dynamic_mp3.c
-	SDL_mixer/dynamic_ogg.c
-	SDL_mixer/effect_position.c
-	SDL_mixer/effects_internal.c
-	SDL_mixer/effect_stereoreverse.c
-	SDL_mixer/fluidsynth.c
-	SDL_mixer/load_aiff.c
-	SDL_mixer/load_flac.c
-	SDL_mixer/load_ogg.c
-	SDL_mixer/load_voc.c
-	SDL_mixer/mixer.c
-	SDL_mixer/music.c
-	SDL_mixer/music_cmd.c
-	SDL_mixer/music_flac.c
-	SDL_mixer/music_mad.c
-	SDL_mixer/music_mod.c
-	SDL_mixer/music_modplug.c
-	SDL_mixer/music_ogg.c
-	SDL_mixer/wavestream.c
 	SDL_net/SDLnet.c
 	SDL_net/SDLnetselect.c
 	SDL_net/SDLnetTCP.c
@@ -81,21 +32,6 @@ FILE(GLOB libs_SRCS
 	zlib/trees.c
 	zlib/uncompr.c
 	zlib/zutil.c
-	libpng-1.6.2/png.c
-	libpng-1.6.2/pngerror.c
-	libpng-1.6.2/pngget.c
-	libpng-1.6.2/pngmem.c
-	libpng-1.6.2/pngpread.c
-	libpng-1.6.2/pngread.c
-	libpng-1.6.2/pngrio.c
-	libpng-1.6.2/pngrtran.c
-	libpng-1.6.2/pngrutil.c
-	libpng-1.6.2/pngset.c
-	libpng-1.6.2/pngtrans.c
-	libpng-1.6.2/pngwio.c
-	libpng-1.6.2/pngwrite.c
-	libpng-1.6.2/pngwtran.c
-	libpng-1.6.2/pngwutil.c
 	SDL/src/video/*.c
 	SDL/src/video/raspberry/*.c
 	SDL/src/video/dummy/*.c
@@ -150,70 +86,8 @@ FILE(GLOB libs_SRCS
 	SDL/src/thread/*.c
 	SDL/src/stdlib/*.c
 	SDL/src/*.c
-	SDL_image/IMG_bmp.c
-	SDL_image/IMG.c
-	SDL_image/IMG_gif.c
-	SDL_image/IMG_jpg.c
-	SDL_image/IMG_lbm.c
-	SDL_image/IMG_pcx.c
-	SDL_image/IMG_png.c
-	SDL_image/IMG_pnm.c
-	SDL_image/IMG_tga.c
-	SDL_image/IMG_tif.c
-	SDL_image/IMG_webp.c
-	SDL_image/IMG_xcf.c
-	SDL_image/IMG_xpm.c
-	SDL_image/IMG_xv.c
 	sqlite/sqlite3.c
 	gtest/src/gtest-all.cc
-	libogg-1.3.1/src/framing.c
-	libogg-1.3.1/src/bitwise.c
-	Box2D/Common/b2StackAllocator.cpp
-	Box2D/Common/b2BlockAllocator.cpp
-	Box2D/Common/b2Draw.cpp
-	Box2D/Common/b2Timer.cpp
-	Box2D/Common/b2Settings.cpp
-	Box2D/Common/b2Math.cpp
-	Box2D/Collision/b2TimeOfImpact.cpp
-	Box2D/Collision/b2CollidePolygon.cpp
-	Box2D/Collision/b2CollideEdge.cpp
-	Box2D/Collision/b2BroadPhase.cpp
-	Box2D/Collision/b2CollideCircle.cpp
-	Box2D/Collision/b2Collision.cpp
-	Box2D/Collision/b2Distance.cpp
-	Box2D/Collision/Shapes/b2PolygonShape.cpp
-	Box2D/Collision/Shapes/b2ChainShape.cpp
-	Box2D/Collision/Shapes/b2CircleShape.cpp
-	Box2D/Collision/Shapes/b2EdgeShape.cpp
-	Box2D/Collision/b2DynamicTree.cpp
-	Box2D/Dynamics/b2Body.cpp
-	Box2D/Dynamics/b2World.cpp
-	Box2D/Dynamics/b2ContactManager.cpp
-	Box2D/Dynamics/b2Fixture.cpp
-	Box2D/Dynamics/Contacts/b2Contact.cpp
-	Box2D/Dynamics/Contacts/b2ChainAndCircleContact.cpp
-	Box2D/Dynamics/Contacts/b2PolygonAndCircleContact.cpp
-	Box2D/Dynamics/Contacts/b2CircleContact.cpp
-	Box2D/Dynamics/Contacts/b2EdgeAndCircleContact.cpp
-	Box2D/Dynamics/Contacts/b2ContactSolver.cpp
-	Box2D/Dynamics/Contacts/b2EdgeAndPolygonContact.cpp
-	Box2D/Dynamics/Contacts/b2PolygonContact.cpp
-	Box2D/Dynamics/Contacts/b2ChainAndPolygonContact.cpp
-	Box2D/Dynamics/b2WorldCallbacks.cpp
-	Box2D/Dynamics/Joints/b2PrismaticJoint.cpp
-	Box2D/Dynamics/Joints/b2WeldJoint.cpp
-	Box2D/Dynamics/Joints/b2FrictionJoint.cpp
-	Box2D/Dynamics/Joints/b2DistanceJoint.cpp
-	Box2D/Dynamics/Joints/b2GearJoint.cpp
-	Box2D/Dynamics/Joints/b2MotorJoint.cpp
-	Box2D/Dynamics/Joints/b2RopeJoint.cpp
-	Box2D/Dynamics/Joints/b2Joint.cpp
-	Box2D/Dynamics/Joints/b2RevoluteJoint.cpp
-	Box2D/Dynamics/Joints/b2WheelJoint.cpp
-	Box2D/Dynamics/Joints/b2MouseJoint.cpp
-	Box2D/Dynamics/Joints/b2PulleyJoint.cpp
-	Box2D/Dynamics/b2Island.cpp
-	Box2D/Rope/b2Rope.cpp
 	)
 
 if(ANDROID)
@@ -298,31 +172,11 @@ FILE(GLOB libs_PLATFORM_SRCS
 	SDL/src/power/linux/*.c)
 endif()
 
-if (ANDROID)
-set(TREMOR
-	libvorbisidec-1.2.1/mdct.c
-	libvorbisidec-1.2.1/block.c
-	libvorbisidec-1.2.1/window.c
-	libvorbisidec-1.2.1/synthesis.c
-	libvorbisidec-1.2.1/info.c
-	libvorbisidec-1.2.1/floor1.c
-	libvorbisidec-1.2.1/floor0.c
-	libvorbisidec-1.2.1/vorbisfile.c
-	libvorbisidec-1.2.1/res012.c
-	libvorbisidec-1.2.1/mapping0.c
-	libvorbisidec-1.2.1/registry.c
-	libvorbisidec-1.2.1/codebook.c
-	libvorbisidec-1.2.1/sharedbook.c)
-endif()
-
-add_definitions(-DLOAD_PNG -DPNG_NO_CONFIG_H -DHAVE_SDL_IMAGE_H -DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE -DSQLITE_HAVE_ISNAN -DSQLITE_THREADSAFE=0 -DOGG_MUSIC -DWAV_MUSIC)
-if (ANDROID)
-add_definitions(-DOGG_USE_TREMOR)
-endif()
+add_definitions(-DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE -DSQLITE_HAVE_ISNAN -DSQLITE_THREADSAFE=0)
 add_library(libs ${libs_SRCS} ${libs_PLATFORM_SRCS})
 set_target_properties(libs PROPERTIES FOLDER libs)
 set(DEPS dl)
 if (NOT ANDROID)
 list(APPEND DEPS pthread)
 endif()
-target_link_libraries(libs ${DEPS})
+target_link_libraries(libs ${DEPS} Box2D lua SDL_mixer SDL_image)
