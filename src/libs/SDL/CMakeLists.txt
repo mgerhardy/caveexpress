@@ -85,7 +85,6 @@ FILE(GLOB PLATFORM_SRCS
 	src/main/nacl/*.c)
 elseif(DARWIN)
 FILE(GLOB PLATFORM_SRCS
-	SDL_image/IMG_UIImage.m
 	src/video/uikit/*.m
 	src/video/cocoa/*.m
 	src/file/cocoa/*.m
@@ -137,6 +136,6 @@ FILE(GLOB PLATFORM_SRCS
 	src/power/linux/*.c)
 endif()
 
-add_library(SDL ${SRCS} ${PLATFORM_SRCS})
-target_link_libraries(SDL dl)
-set_target_properties(SDL PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare")
+add_library(SDL2 ${SRCS} ${PLATFORM_SRCS})
+target_link_libraries(SDL2 dl)
+set_target_properties(SDL2 PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare")

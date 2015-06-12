@@ -29,11 +29,13 @@ set(SRCS
 	IMG_xpm.c
 	IMG_xv.c
 	)
-add_library(SDL_image ${SRCS})
-set_target_properties(SDL_image PROPERTIES FOLDER SDL_image)
+add_library(SDL2_image ${SRCS})
+set_target_properties(SDL2_image PROPERTIES FOLDER SDL2_image)
 add_definitions(-DLOAD_PNG -DPNG_NO_CONFIG_H)
+#IMG_UIImage.m
+#IMG_ImageIO.m
 #-O3 -fstrict-aliasing -fprefetch-loop-arrays
 #-lz
 include_directories("libpng-1.6.2")
-target_link_libraries(SDL_image SDL zlib)
-set_target_properties(SDL_image PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-attributes -Wno-unused-parameter -Wno-sign-compare")
+target_link_libraries(SDL2_image SDL2 zlib)
+set_target_properties(SDL2_image PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-attributes -Wno-unused-parameter -Wno-sign-compare")
