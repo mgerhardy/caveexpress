@@ -291,7 +291,7 @@ Uint16 SDLNet_Read16(void *areap)
 
 Uint32 SDLNet_Read32(const void *areap)
 {
-    return (SDL_SwapBE32(*(Uint32 *)(areap)));
+    return (SDL_SwapBE32(*(const Uint32 *)(areap)));
 }
 
 #endif /* !defined(WITHOUT_SDL) && !SDL_DATA_ALIGNED */
