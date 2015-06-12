@@ -427,7 +427,7 @@ public:
 		if (index <= 0) {
 			_offset = 0;
 			_selectedIndex = 0;
-		} else if (index < _entries.size()) {
+		} else if (index < static_cast<int>(_entries.size())) {
 			const int neededPage = (index + 1) / amountPerPage;
 			_offset = neededPage * amountPerPage;
 			debug(LOG_CLIENT, String::format("Scroll to page %i (index was: %i, amountPerPage is: %i)", neededPage, index, amountPerPage));
@@ -444,7 +444,7 @@ public:
 			if (_offset + value < 0)
 				return;
 
-			if (_offset + value >= _entries.size())
+			if (_offset + value >= static_cast<int>(_entries.size()))
 				return;
 
 			_offset += value;
@@ -532,7 +532,7 @@ inline bool UINodeSelector<T>::select ()
 	if (_selectedIndex == -1)
 		return false;
 
-	if (_selectedIndex >= _entries.size())
+	if (_selectedIndex >= static_cast<int>(_entries.size()))
 		return false;
 
 	_selection = &_entries[_selectedIndex];
