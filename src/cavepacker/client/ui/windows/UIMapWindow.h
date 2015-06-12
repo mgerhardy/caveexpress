@@ -4,6 +4,8 @@
 #include "ui/nodes/UINodeSlider.h"
 #include "cavepacker/client/CavePackerClientMap.h"
 
+namespace cavepacker {
+
 class UICavePackerNodePoint;
 
 class UIMapWindow: public IUIMapWindow {
@@ -31,3 +33,5 @@ public:
 	void hideAutoSolveSlider();
 	void showCursor (bool show) override;
 };
+
+}

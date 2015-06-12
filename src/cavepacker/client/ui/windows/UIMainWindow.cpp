@@ -13,6 +13,8 @@
 #include "ui/windows/listener/OpenWindowListener.h"
 #include "ui/nodes/UINodeMainButton.h"
 
+namespace cavepacker {
+
 UIMainWindow::UIMainWindow (IFrontend *frontend) :
 		UIWindow(UI_WINDOW_MAIN, frontend, WINDOW_FLAG_ROOT)
 {
@@ -83,4 +85,6 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	panel->add(quit);
 
 	add(panel);
+}
+
 }

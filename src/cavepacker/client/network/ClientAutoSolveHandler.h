@@ -5,6 +5,8 @@
 #include "cavepacker/client/ui/windows/UIMapWindow.h"
 #include "ui/UI.h"
 
+namespace cavepacker {
+
 class ClientAutoSolveHandler: public IClientProtocolHandler {
 private:
 	bool _started;
@@ -24,3 +26,5 @@ public:
 		}
 	}
 };
+
+}

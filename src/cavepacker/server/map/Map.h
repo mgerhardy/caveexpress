@@ -13,10 +13,12 @@
 #include <map>
 
 // forward decl
-class IMapContext;
 class SpriteDef;
 class IFrontend;
 class ServiceProvider;
+class IMapContext;
+
+namespace cavepacker {
 
 #define MOVE_LEFT 'l'
 #define MOVE_RIGHT 'r'
@@ -282,4 +284,6 @@ inline bool Map::isRestartInitialized () const
 inline bool Map::isPause () const
 {
 	return _pause;
+}
+
 }

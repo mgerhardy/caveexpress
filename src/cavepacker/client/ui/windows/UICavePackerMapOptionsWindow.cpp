@@ -7,6 +7,8 @@
 #include "network/INetwork.h"
 #include "ui/nodes/UINodeSettingsBackground.h"
 
+namespace cavepacker {
+
 UICavePackerMapOptionsWindow::UICavePackerMapOptionsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
 		UIMapOptionsWindow(frontend, serviceProvider)
 {
@@ -27,4 +29,6 @@ void UICavePackerMapOptionsWindow::onActive ()
 	} else if (System.supportPayment()) {
 		_solve->setVisible(System.hasItem("autosolve"));
 	}
+}
+
 }

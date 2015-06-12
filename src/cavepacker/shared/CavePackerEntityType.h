@@ -2,6 +2,8 @@
 
 #include "common/EntityType.h"
 
+namespace cavepacker {
+
 namespace EntityTypes {
 extern EntityType SOLID;
 extern EntityType GROUND;
@@ -42,6 +44,8 @@ inline bool isMapTile (const EntityType& other)
 inline bool isDynamic (const EntityType& other)
 {
 	return isPlayer(other) || isPackage(other);
+}
+
 }
 
 }

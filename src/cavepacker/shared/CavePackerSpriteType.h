@@ -2,6 +2,8 @@
 
 #include "common/SpriteType.h"
 
+namespace cavepacker {
+
 namespace SpriteTypes {
 extern SpriteType SOLID;
 extern SpriteType GROUND;
@@ -31,6 +33,8 @@ inline bool isGround (const SpriteType& other)
 inline bool isMapTile (const SpriteType& other)
 {
 	return isSolid(other) || isGround(other) || isTarget(other);
+}
+
 }
 
 }

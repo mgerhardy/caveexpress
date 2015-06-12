@@ -1,5 +1,7 @@
 #include "UICavePackerNodePoint.h"
 
+namespace cavepacker {
+
 UICavePackerNodePoint::UICavePackerNodePoint(IFrontend *frontend,
 		uint32_t updateDelay) : UINodePoint(frontend, updateDelay), _ownBest(0), _globalBest(0) {
 }
@@ -19,4 +21,6 @@ void UICavePackerNodePoint::setLabel (const std::string& label) {
 		changedLabel += ", 0";
 
 	UINodePoint::setLabel(changedLabel);
+}
+
 }

@@ -6,6 +6,8 @@
 class ServiceProvider;
 class UINodeButtonImage;
 
+namespace cavepacker {
+
 class UICavePackerMapOptionsWindow: public UIMapOptionsWindow {
 private:
 	UINodeButtonImage *_solve;
@@ -13,3 +15,5 @@ public:
 	UICavePackerMapOptionsWindow (IFrontend *frontend, ServiceProvider& serviceProvider);
 	void onActive () override;
 };
+
+}

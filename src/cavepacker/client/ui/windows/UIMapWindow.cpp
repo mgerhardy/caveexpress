@@ -14,6 +14,8 @@
 #include "common/Logger.h"
 #include "common/IFrontend.h"
 
+namespace cavepacker {
+
 class SolveListener: public UINodeListener {
 private:
 	UINodeSlider *_sliderNode;
@@ -158,4 +160,6 @@ void UIMapWindow::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t rel
 		camera.scroll(relX, relY);
 	}
 	IUIMapWindow::onMouseMotion(x, y, relX, relY);
+}
+
 }

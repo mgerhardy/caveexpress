@@ -4,6 +4,8 @@
 #include "network/messages/ClientInitMessage.h"
 #include "cavepacker/server/map/Map.h"
 
+namespace cavepacker {
+
 class ClientInitHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -25,3 +27,5 @@ public:
 		_map.sendPlayersList();
 	}
 };
+
+}

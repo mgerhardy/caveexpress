@@ -14,10 +14,14 @@
 #include <sstream>
 #include <stdint.h>
 
-class Map;
-class IEntity;
+// forward decl
 class SpriteDef;
 typedef SharedPtr<SpriteDef> SpriteDefPtr;
+
+namespace cavepacker {
+
+class Map;
+class IEntity;
 
 class IEntityObserver {
 public:
@@ -187,4 +191,6 @@ inline std::ostream& operator<< (std::ostream &stream, const IEntity &in)
 {
 	in.print(stream, 0);
 	return stream;
+}
+
 }

@@ -6,6 +6,8 @@
 #include "campaign/CampaignManager.h"
 #include "campaign/persister/IGameStatePersister.h"
 
+namespace cavepacker {
+
 class CavePacker: public IGame, public IEntityVisitor {
 private:
 	IGameStatePersister* _persister;
@@ -38,3 +40,5 @@ private:
 	// IEntityVisitor
 	bool visitEntity (IEntity *entity) override;
 };
+
+}

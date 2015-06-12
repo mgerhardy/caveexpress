@@ -3,6 +3,8 @@
 #include "network/IProtocolHandler.h"
 #include "cavepacker/server/map/Map.h"
 
+namespace cavepacker {
+
 class DisconnectHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -18,3 +20,5 @@ public:
 		_map.disconnect(clientId);
 	}
 };
+
+}

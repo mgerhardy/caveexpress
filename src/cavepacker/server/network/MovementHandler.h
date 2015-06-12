@@ -4,6 +4,8 @@
 #include "cavepacker/server/map/Map.h"
 #include "network/messages/MovementMessage.h"
 
+namespace cavepacker {
+
 class MovementHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -38,3 +40,5 @@ public:
 		}
 	}
 };
+
+}

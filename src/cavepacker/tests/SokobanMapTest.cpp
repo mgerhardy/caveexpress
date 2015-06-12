@@ -4,6 +4,8 @@
 #include "tests/NetworkTestListener.h"
 #include "data.h"
 
+namespace cavepacker {
+
 class SokobanMapTest: public AbstractTest {
 protected:
 	virtual void SetUp() override {
@@ -149,8 +151,12 @@ TEST_F(SokobanMapTest, DISABLED_testGri)
 	testMapRegion(0, "grigrstar", 10);
 }
 
+}
+
 #include <fstream>
 #include <iostream>
+
+namespace cavepacker {
 
 TEST_F(SokobanMapTest, DISABLED_convert)
 {
@@ -1568,3 +1574,5 @@ TEST_F(SokobanMapTest, testsasquatch11_0048) { testSingleMap("sasquatch11_0048")
 TEST_F(SokobanMapTest, testsasquatch11_0049) { testSingleMap("sasquatch11_0049"); }
 TEST_F(SokobanMapTest, testsasquatch11_0050) { testSingleMap("sasquatch11_0050"); }
 #endif
+
+}

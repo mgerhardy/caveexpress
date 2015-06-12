@@ -2,6 +2,8 @@
 
 #include "client/ClientMap.h"
 
+namespace cavepacker {
+
 class CavePackerClientMap: public ClientMap {
 public:
 	CavePackerClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider,
@@ -15,3 +17,5 @@ public:
 	void start () override;
 	virtual void update (uint32_t deltaTime) override;
 };
+
+}

@@ -4,6 +4,8 @@
 #include "cavepacker/shared/CavePackerEntityType.h"
 #include "ui/UI.h"
 
+namespace cavepacker {
+
 IntroGame::IntroGame(IFrontend* frontend) :
 		Intro("introgame", frontend) {
 	init();
@@ -18,4 +20,6 @@ void IntroGame::addIntroNodes(UINode* parent) {
 	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PLAYER, Animation::NONE, tr("Your player")));
 	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::PACKAGE, Animation::NONE, tr("Package")));
 	parent->add(new IntroTypeDescription(parent, _frontend, EntityTypes::TARGET, Animation::NONE, tr("Target")));
+}
+
 }

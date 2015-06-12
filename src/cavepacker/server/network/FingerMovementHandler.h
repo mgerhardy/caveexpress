@@ -4,6 +4,8 @@
 #include "cavepacker/server/map/Map.h"
 #include "network/messages/FingerMovementMessage.h"
 
+namespace cavepacker {
+
 class FingerMovementHandler: public IServerProtocolHandler {
 private:
 #if 0
@@ -33,3 +35,5 @@ public:
 #endif
 	}
 };
+
+}

@@ -8,6 +8,8 @@
 #include "common/Pointers.h"
 #include "network/IProtocolHandler.h"
 
+namespace cavepacker {
+
 // forward decl
 class Map;
 
@@ -46,4 +48,6 @@ inline void Player::setName (const std::string& name)
 inline const std::string& Player::getSolution () const
 {
 	return _solutionSave;
+}
+
 }

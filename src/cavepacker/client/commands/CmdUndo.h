@@ -4,6 +4,8 @@
 #include "cavepacker/client/CavePackerClientMap.h"
 #include <stdint.h>
 
+namespace cavepacker {
+
 class CmdUndo: public ICommand {
 private:
 	CavePackerClientMap& _map;
@@ -19,3 +21,5 @@ public:
 		_map.undo();
 	}
 };
+
+}

@@ -1,6 +1,8 @@
 #include "tests/TestShared.h"
 #include "cavepacker/server/map/SokobanMapContext.h"
 
+namespace cavepacker {
+
 TEST(SokobanMapContextTest, testMapCreation)
 {
 	for (int i = 1; i <= 90; ++i) {
@@ -8,4 +10,6 @@ TEST(SokobanMapContextTest, testMapCreation)
 		SokobanMapContext ctx(name);
 		ASSERT_TRUE(ctx.load(false));
 	}
+}
+
 }

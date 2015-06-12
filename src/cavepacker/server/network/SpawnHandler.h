@@ -4,6 +4,8 @@
 #include "cavepacker/server/map/Map.h"
 #include "campaign/ICampaignManager.h"
 
+namespace cavepacker {
+
 class SpawnHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -21,3 +23,5 @@ public:
 			delete player;
 	}
 };
+
+}

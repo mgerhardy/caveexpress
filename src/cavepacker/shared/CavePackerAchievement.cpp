@@ -1,5 +1,7 @@
 #include "CavePackerAchievement.h"
 
+namespace cavepacker {
+
 namespace Achievements {
 Achievement STARS_3("achievement_3_x_3_stars", true);
 Achievement STARS_10("achievement_10_x_3_stars", true);
@@ -18,4 +20,6 @@ Achievement FINISHED_TUTORIALS("achievement_finished_tutorials");
 Achievement FINISHED_XSOKOBAN("achievement_finished_xsokoban");
 Achievement FINISHED_GRIGORUSHA("achievement_finished_the_grigorusha_campaign");
 Achievement FINSIHED_KSOKOBAN("achievement_finsihed_the_ksokoban_campaign");
+}
+
 }

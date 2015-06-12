@@ -4,6 +4,8 @@
 #include "cavepacker/server/map/Map.h"
 #include "network/messages/StopMovementMessage.h"
 
+namespace cavepacker {
+
 class StopMovementHandler: public IServerProtocolHandler {
 private:
 public:
@@ -15,3 +17,5 @@ public:
 	{
 	}
 };
+
+}

@@ -21,6 +21,8 @@
 #include "cavepacker/shared/CavePackerEntityType.h"
 #include <SDL.h>
 
+namespace cavepacker {
+
 CavePackerClientMap::CavePackerClientMap (int x, int y, int width, int height, IFrontend *frontend,
 		ServiceProvider& serviceProvider, int referenceTileWidth) :
 		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth)
@@ -50,4 +52,6 @@ void CavePackerClientMap::update (uint32_t deltaTime)
 			i->second->setAnimationType(Animation::NONE);
 		}
 	}
+}
+
 }

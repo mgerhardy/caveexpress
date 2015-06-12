@@ -3,6 +3,8 @@
 #include "common/Logger.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
 
+namespace cavepacker {
+
 SokobanMapContext::SokobanMapContext(const std::string& map) :
 		IMapContext(map), _playerSpawned(false) {
 	_title = map;
@@ -171,4 +173,6 @@ inline void SokobanMapContext::addPlayer(int col, int row) {
 inline void SokobanMapContext::addGround(int col, int row) {
 	const int rnd = rand() % 4 + 1;
 	addTile("tile-background-" + String::format("%02i", rnd), col, row);
+}
+
 }

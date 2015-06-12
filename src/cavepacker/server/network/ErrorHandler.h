@@ -4,6 +4,8 @@
 #include "network/messages/ErrorMessage.h"
 #include "cavepacker/server/map/Map.h"
 
+namespace cavepacker {
+
 class ErrorHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -33,3 +35,5 @@ public:
 		}
 	}
 };
+
+}

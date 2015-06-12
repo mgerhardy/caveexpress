@@ -1,5 +1,7 @@
 #include "CavePackerSQLitePersister.h"
 
+namespace cavepacker {
+
 CavePackerSQLitePersister::CavePackerSQLitePersister (const std::string& filename) :
 		SQLitePersister(filename)
 {
@@ -14,4 +16,6 @@ CavePackerSQLitePersister::CavePackerSQLitePersister (const std::string& filenam
 
 CavePackerSQLitePersister::~CavePackerSQLitePersister ()
 {
+}
+
 }

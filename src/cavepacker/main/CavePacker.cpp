@@ -46,6 +46,8 @@
 #include "cavepacker/shared/CavePackerMapManager.h"
 #include <SDL.h>
 
+namespace cavepacker {
+
 PROTOCOL_CLASS_FACTORY_IMPL(AutoSolveStartedMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(AutoSolveAbortedMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(UndoMessage);
@@ -262,15 +264,15 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	r.registerFactory(&EntityTypes::TARGET, ClientMapTile::FACTORY);
 
 	ProtocolHandlerRegistry& rp = ProtocolHandlerRegistry::get();
-	rp.registerServerHandler(protocol::PROTO_SPAWN, new SpawnHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_DISCONNECT, new DisconnectHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_STARTMAP, new StartMapHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_MOVEMENT, new MovementHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_FINGERMOVEMENT, new FingerMovementHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_STOPFINGERMOVEMENT, new StopFingerMovementHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_STOPMOVEMENT, new StopMovementHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_ERROR, new ErrorHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_SPAWN, new SpawnHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_DISCONNECT, new DisconnectHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_STARTMAP, new StartMapHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_MOVEMENT, new MovementHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_FINGERMOVEMENT, new FingerMovementHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_STOPFINGERMOVEMENT, new StopFingerMovementHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_STOPMOVEMENT, new StopMovementHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_ERROR, new ErrorHandler(_map));
+	rp.registerServerHandler(::protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_UNDO, new UndoHandler(_map));
 
 	ProtocolMessageFactory& f = ProtocolMessageFactory::get();
@@ -311,4 +313,6 @@ bool CavePacker::visitEntity (IEntity *entity)
 	return false;
 }
 
-static GameRegisterStatic CAVEPACKER("cavepacker", GamePtr(new CavePacker()));
+}
+
+static GameRegisterStatic CAVEPACKER("cavepacker", GamePtr(new cavepacker::CavePacker()));

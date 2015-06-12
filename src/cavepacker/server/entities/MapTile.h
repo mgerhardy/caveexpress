@@ -4,6 +4,8 @@
 #include "common/IMap.h"
 #include "common/SpriteDefinition.h" /* TODO: just because of: typedef int16_t EntityAngle; ?? */
 
+namespace cavepacker {
+
 // forward decl
 class Map;
 
@@ -21,3 +23,5 @@ public:
 		return ss.str();
 	}
 };
+
+}

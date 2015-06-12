@@ -2,6 +2,8 @@
 
 #include "common/Achievement.h"
 
+namespace cavepacker {
+
 namespace Achievements {
 extern Achievement STARS_3;
 extern Achievement STARS_10;
@@ -20,4 +22,6 @@ extern Achievement FINISHED_TUTORIALS;
 extern Achievement FINISHED_XSOKOBAN;
 extern Achievement FINISHED_GRIGORUSHA;
 extern Achievement FINSIHED_KSOKOBAN;
+}
+
 }

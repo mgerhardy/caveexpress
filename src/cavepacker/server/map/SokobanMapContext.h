@@ -3,6 +3,8 @@
 #include "common/IMapContext.h"
 #include <string>
 
+namespace cavepacker {
+
 namespace Sokoban {
 const int WALL = '#';
 const int PLAYER = '@';
@@ -33,3 +35,5 @@ public:
 	bool load (bool skipErrors) override;
 	bool save () const override { return false; }
 };
+
+}

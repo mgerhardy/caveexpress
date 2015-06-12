@@ -3,6 +3,8 @@
 #include "network/IProtocolHandler.h"
 #include "cavepacker/server/map/Map.h"
 
+namespace cavepacker {
+
 class StartMapHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -21,3 +23,5 @@ public:
 		_map.startMap();
 	}
 };
+
+}

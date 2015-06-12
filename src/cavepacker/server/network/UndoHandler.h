@@ -3,6 +3,8 @@
 #include "network/IProtocolHandler.h"
 #include "cavepacker/server/map/Map.h"
 
+namespace cavepacker {
+
 class UndoHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -20,3 +22,5 @@ public:
 		_map.undo(player);
 	}
 };
+
+}

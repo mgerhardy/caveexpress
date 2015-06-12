@@ -38,6 +38,8 @@
 #include <cassert>
 #include <climits>
 
+namespace cavepacker {
+
 #define INDEX(col, row) ((col) + _width * (row))
 
 Map::Map () :
@@ -977,4 +979,6 @@ void Map::triggerPause ()
 	const PauseMessage msg(_pause);
 	_serviceProvider->getNetwork().sendToAllClients(msg);
 	info(LOG_MAP, String::format("pause: %s", _pause ? "true" : "false"));
+}
+
 }

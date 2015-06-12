@@ -6,6 +6,8 @@
 #include "common/ConfigManager.h"
 #include "network/IProtocolHandler.h"
 
+namespace cavepacker {
+
 Player::Player (Map& map, ClientId clientId) :
 		IEntity(EntityTypes::PLAYER, map, 0, 0), _clientId(clientId) {
 	_solutionSave.reserve(256);
@@ -52,4 +54,6 @@ bool Player::undo ()
 	}
 	_solutionSave.erase(_solutionSave.size() - 1);
 	return true;
+}
+
 }

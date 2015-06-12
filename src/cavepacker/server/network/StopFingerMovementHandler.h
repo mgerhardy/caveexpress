@@ -4,6 +4,8 @@
 #include "cavepacker/server/map/Map.h"
 #include "network/messages/FingerMovementMessage.h"
 
+namespace cavepacker {
+
 class StopFingerMovementHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
@@ -22,3 +24,5 @@ public:
 		}
 	}
 };
+
+}

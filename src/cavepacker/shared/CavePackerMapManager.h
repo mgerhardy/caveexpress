@@ -2,6 +2,8 @@
 
 #include "cavepacker/server/map/SokobanMapContext.h"
 
+namespace cavepacker {
+
 class CavePackerMapManager: public IMapManager {
 public:
 	CavePackerMapManager() :
@@ -22,3 +24,5 @@ public:
 		return players;
 	}
 };
+
+}
