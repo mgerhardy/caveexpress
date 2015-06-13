@@ -144,7 +144,6 @@ bool Campaign::unlockNextMap (bool shouldSaveProgress)
 			saveProgress();
 		return false;
 	}
-	debug(LOG_CAMPAIGN, "unlock map " + map->getId());
 	map->unlock();
 	if (shouldSaveProgress)
 		saveProgress();

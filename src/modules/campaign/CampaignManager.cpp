@@ -152,7 +152,7 @@ int CampaignManager::luaAddMaps (lua_State *l)
 		const std::string name = _mgr->_mapManager.getMapTitle(i->first);
 		ctx->addMap(i->first, name);
 	}
-	info(LOG_CAMPAIGN, String::format("%i maps added to campaign %s", cnt, ctx->getId().c_str()));
+	trace(LOG_CAMPAIGN, String::format("%i maps added to campaign %s", cnt, ctx->getId().c_str()));
 	return 0;
 }
 
