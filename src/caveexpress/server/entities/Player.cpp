@@ -517,7 +517,7 @@ bool Player::isCloseOverSolid (float distance) const
 	b2Vec2 end = getPos();
 	end.y += distance;
 	IEntity* entity = nullptr;
-	_map.trace(getPos(), end, &entity);
+	_map.rayTrace(getPos(), end, &entity);
 	if (entity != nullptr && entity->isSolid())
 		return true;
 

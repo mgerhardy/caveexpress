@@ -673,7 +673,7 @@ bool Map::isReachableByWalking (const IEntity *start, const IEntity *end, int st
 {
 	// check that there is nothing solid in between
 	IEntity* entity = nullptr;
-	trace(start, end, &entity);
+	rayTrace(start, end, &entity);
 	if (entity != nullptr && entity->isSolid())
 		return false;
 
@@ -691,7 +691,7 @@ bool Map::isReachableByWalking (const IEntity *start, const IEntity *end, int st
 	return startPos <= xEnd;
 }
 
-bool Map::trace (const b2Vec2& start, const b2Vec2& end, IEntity **hit) const
+bool Map::rayTrace (const b2Vec2& start, const b2Vec2& end, IEntity **hit) const
 {
 	TraceCallback callback;
 	_world->RayCast(&callback, start, end);
@@ -709,17 +709,17 @@ bool Map::trace (const b2Vec2& start, const b2Vec2& end, IEntity **hit) const
 	return callback.getFraction() < 1.0f;
 }
 
-bool Map::trace (const IEntity *start, const IEntity *end, IEntity **hit) const
+bool Map::rayTrace (const IEntity *start, const IEntity *end, IEntity **hit) const
 {
-	return trace(start->getPos(), end->getPos(), hit);
+	return rayTrace(start->getPos(), end->getPos(), hit);
 }
 
-bool Map::trace (int startGridX, int startGridY, int endGridX, int endGridY, IEntity **hit) const
+bool Map::rayTrace (int startGridX, int startGridY, int endGridX, int endGridY, IEntity **hit) const
 {
 	// center of the cells
 	const b2Vec2 start(startGridX + 0.5f, startGridY + 0.5f);
 	const b2Vec2 end(endGridX + 0.5f, endGridY + 0.5f);
-	return trace(start, end, hit);
+	return rayTrace(start, end, hit);
 }
 
 bool Map::spawnPlayer (Player* player)
@@ -988,7 +988,7 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 
 	if (gridX > 0) {
 		IEntity *hit = nullptr;
-		trace(gridX, startTraceGridY, 0, startTraceGridY, &hit);
+		rayTrace(gridX, startTraceGridY, 0, startTraceGridY, &hit);
 		int leftGridX = 0;
 		if (hit && hit->isSolid()) {
 			MapTile *mapTile = static_cast<MapTile*>(hit);
@@ -999,7 +999,7 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 		for (int i = 0; i < steps; ++i) {
 			const b2Vec2 startV(startTraceGridX - 0.5f, startTraceGridY + 0.5f);
 			const b2Vec2 endV(startTraceGridX - 0.5f, endTraceGridY + 0.2f);
-			const bool state = trace(startV, endV, &hit);
+			const bool state = rayTrace(startV, endV, &hit);
 			if (state && hit && hit->isSolid()) {
 				--startTraceGridX;
 				continue;
@@ -1011,7 +1011,7 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 		IEntity *hit = nullptr;
 		const b2Vec2 startV(0, startTraceGridY);
 		const b2Vec2 endV(0, startTraceGridY + 0.0001f);
-		const bool state = trace(startV, endV, &hit);
+		const bool state = rayTrace(startV, endV, &hit);
 		if (state && hit && hit->isSolid())
 			return;
 
@@ -1020,7 +1020,7 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 
 	if (gridX < _width - 1) {
 		IEntity *hit = nullptr;
-		trace(gridX, startTraceGridY, _width - 1, startTraceGridY, &hit);
+		rayTrace(gridX, startTraceGridY, _width - 1, startTraceGridY, &hit);
 		int rightGridX = _width - 1;
 		if (hit && hit->isSolid()) {
 			MapTile *mapTile = static_cast<MapTile*>(hit);
@@ -1032,7 +1032,7 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 		for (int i = 0; i < steps; ++i) {
 			const b2Vec2 startV(endTraceGridX + 1.5f, startTraceGridY + 0.5f);
 			const b2Vec2 endV(endTraceGridX + 1.5f, endTraceGridY + 0.2f);
-			const bool state = trace(startV, endV, &hit);
+			const bool state = rayTrace(startV, endV, &hit);
 			if (state && hit && hit->isSolid()) {
 				++endTraceGridX;
 				continue;
@@ -1044,7 +1044,7 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 		IEntity *hit = nullptr;
 		const b2Vec2 startV(_width - 1.0f, startTraceGridY);
 		const b2Vec2 endV(_width - 1.0f, startTraceGridY + 0.0001f);
-		const bool state = trace(startV, endV, &hit);
+		const bool state = rayTrace(startV, endV, &hit);
 		if (state && hit && hit->isSolid())
 			return;
 

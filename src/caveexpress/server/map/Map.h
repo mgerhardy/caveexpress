@@ -227,9 +227,9 @@ public:
 	// param[in] endPos The grid end position of the starting entity. If -1 is given here the platform dimensions are calculated
 	bool isReachableByWalking (const IEntity *start, const IEntity *end, int startPos = -1, int endPos = -1) const;
 	// return true if something was hit
-	bool trace (const b2Vec2& start, const b2Vec2& end, IEntity **hit) const;
-	bool trace (const IEntity *start, const IEntity *end, IEntity **hit = 0) const;
-	bool trace (int startGridX, int startGridY, int endGridX, int endGridY, IEntity **hit) const;
+	bool rayTrace (const b2Vec2& start, const b2Vec2& end, IEntity **hit) const;
+	bool rayTrace (const IEntity *start, const IEntity *end, IEntity **hit = 0) const;
+	bool rayTrace (int startGridX, int startGridY, int endGridX, int endGridY, IEntity **hit) const;
 
 	void reload ();
 	bool isFailed () const;
