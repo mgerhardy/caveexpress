@@ -46,10 +46,11 @@ set(SRCS
 	Dynamics/b2Island.cpp
 	Rope/b2Rope.cpp
 	)
+find_package(Box2D)
 if (NOT BOX2D_FOUND)
+	set(BOX2D_LIBRARIES Box2D)
 	add_library(Box2D ${SRCS})
-	set(BOX2D_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/libs/Box2D" PARENT_SCOPE)
-	set(BOX2D_LIBRARIES Box2D PARENT_SCOPE)
+	set(BOX2D_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/libs/Box2D")
 	set_target_properties(Box2D PROPERTIES FOLDER Box2D)
 	set_target_properties(Box2D PROPERTIES COMPILE_FLAGS "-Wno-shadow")
 endif()
