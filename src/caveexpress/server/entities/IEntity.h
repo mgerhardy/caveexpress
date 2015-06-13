@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Box2D/Box2D.h>
+#include <Box2D.h>
 #include "common/Logger.h"
 #include "common/Timer.h"
 #include "common/IMap.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Box2D/Box2D.h>
+#include <Box2D.h>
 #include "common/Compiler.h"
 #include "common/DebugRendererData.h"
 #include <vector>
