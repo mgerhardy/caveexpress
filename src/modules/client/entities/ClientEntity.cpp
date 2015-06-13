@@ -101,7 +101,7 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 	}
 	for (EntityOverlaysConstIter i = _entityOverlays.begin(); i != _entityOverlays.end(); ++i) {
 		const SpritePtr& overlay = *i;
-		overlay->render(frontend, layer, _align, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha);
+		overlay->render(frontend, layer, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha);
 	}
 
 	const bool debug = Config.getConfigVar("debugentity")->getBoolValue();
