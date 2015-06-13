@@ -47,8 +47,15 @@ void INPCCave::moveAwayFromCave ()
 	} else {
 		start = posX + middle;
 	}
-	const gridCoord moveTargetX = randBetweenf(start, end);
+	gridCoord moveTargetX = randBetweenf(start, end);
 	info(LOG_SERVER, String::format("moveTarget: %f, start: %f, end: %f, posX: %f", moveTargetX, start, end, posX));
+	if (EntityTypes::isNpcGrandpa(_type)) {
+		const gridCoord maxWalkingDistance = 3.0f;
+		if (moveTargetX < posX - maxWalkingDistance)
+			moveTargetX = posX - maxWalkingDistance;
+		else if (moveTargetX > posX + maxWalkingDistance)
+			moveTargetX = posX + maxWalkingDistance;
+	}
 
 	setMoving(moveTargetX);
 }
