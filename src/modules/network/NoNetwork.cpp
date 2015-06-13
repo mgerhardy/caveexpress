@@ -119,7 +119,7 @@ bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* 
 
 int NoNetwork::sendToServer (const IProtocolMessage& msg)
 {
-	debug(LOG_NET, String::format("send to server message type %i", msg.getId()));
+	trace(LOG_NET, String::format("send to server message type %i", msg.getId()));
 	ByteStream s;
 	msg.serialize(s);
 	s.addShort(s.getSize(), true);
