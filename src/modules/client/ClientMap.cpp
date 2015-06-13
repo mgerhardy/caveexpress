@@ -385,7 +385,7 @@ void ClientMap::onData (ByteStream &data)
 			continue;
 		}
 
-		debug(LOG_NET, String::format("received message type %i", msg->getId()));
+		trace(LOG_NET, String::format("received message type %i", msg->getId()));
 		IClientProtocolHandler* handler = ProtocolHandlerRegistry::get().getClientHandler(*msg);
 		if (handler != nullptr)
 			handler->execute(*msg);

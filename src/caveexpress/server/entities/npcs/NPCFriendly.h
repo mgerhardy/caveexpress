@@ -32,9 +32,9 @@ public:
 	bool setArrived (const b2Vec2& targetPos);
 
 	bool updateCollectedState ();
+	void setCollected ();
 
 	// NPC
-	void setCollected ();
 	void onContact (b2Contact* contact, IEntity* entity) override;
 	bool shouldCollide (const IEntity* entity) const override;
 

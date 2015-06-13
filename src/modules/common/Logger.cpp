@@ -93,6 +93,26 @@ void Logger::logError (LogCategory category, const std::string &string) const
 	}
 }
 
+void Logger::logTrace (LogCategory category, const std::string &string) const
+{
+	if (string.empty())
+		return;
+
+	std::stringstream ss;
+	ss << "TRACE: (";
+	ss << loggerTypes[category] << ") ";
+	ss << string;
+	const std::string& message = ss.str();
+
+	for (ConsolesConstIter i = _consoles.begin(); i != _consoles.end(); ++i) {
+		(*i)->logTrace(message);
+	}
+
+	if (_consoles.empty()) {
+		System.logOutput(message);
+	}
+}
+
 void Logger::logDebug (LogCategory category, const std::string &string) const
 {
 	if (string.empty())

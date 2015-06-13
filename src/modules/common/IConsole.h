@@ -40,6 +40,7 @@ public:
 	virtual void logInfo (const std::string& string) = 0;
 	virtual void logError (const std::string& string) = 0;
 	virtual void logDebug (const std::string& string) = 0;
+	virtual void logTrace (const std::string& string) {};
 	virtual void render () = 0;
 	virtual void update (uint32_t deltaTime) = 0;
 	virtual bool onTextInput (const std::string& text) override;

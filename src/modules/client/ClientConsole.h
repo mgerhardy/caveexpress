@@ -33,6 +33,7 @@ public:
 	void init (IFrontend *frontend) override;
 	void render () override;
 	void logInfo (const std::string& string) override;
+	void logTrace (const std::string& string) override;
 	void logError (const std::string& string) override;
 	void logDebug (const std::string& string) override;
 	bool onKeyPress (int32_t key, int16_t modifier) override;

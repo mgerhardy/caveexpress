@@ -45,9 +45,11 @@ public:
 	void logInfo (LogCategory category, const std::string &string) const;
 	void logError (LogCategory category, const std::string &string) const;
 	void logDebug (LogCategory category, const std::string &string) const;
+	void logTrace (LogCategory category, const std::string &string) const;
 };
 
 #define info(category, msg) Logger::get().logInfo(category, msg)
 #define debug(category, msg) Logger::get().logDebug(category, msg)
+#define trace(category, msg) Logger::get().logTrace(category, msg)
 #define error(category, msg) Logger::get().logError(category, msg)
 #define o(msg) Logger::get().logInfo(LOG_GENERAL, msg)

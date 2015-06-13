@@ -81,6 +81,11 @@ void ClientConsole::logInfo (const std::string& string)
 	System.logOutput(string);
 }
 
+void ClientConsole::logTrace (const std::string& string)
+{
+	//logInfo(string);
+}
+
 void ClientConsole::logError (const std::string& string)
 {
 	std::vector<std::string> tokens;

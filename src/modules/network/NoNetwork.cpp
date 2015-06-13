@@ -41,7 +41,7 @@ bool NoNetwork::openServer (int port, IServerCallback* func)
 
 int NoNetwork::sendToClients (int clientMask, const IProtocolMessage& msg)
 {
-	debug(LOG_NET, String::format("send to client message type %i", msg.getId()));
+	trace(LOG_NET, String::format("send to client message type %i", msg.getId()));
 	ByteStream s;
 	msg.serialize(s);
 	s.addShort(s.getSize(), true);
