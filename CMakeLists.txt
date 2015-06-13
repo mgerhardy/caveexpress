@@ -257,6 +257,7 @@ if (UNIX)
 	endif()
 endif()
 
+include_directories(${BOX2D_INCLUDE_DIRS})
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/lua")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/tinyxml2")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/sqlite")
