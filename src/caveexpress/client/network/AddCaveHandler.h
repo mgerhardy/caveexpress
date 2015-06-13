@@ -19,7 +19,9 @@ public:
 	{
 		const AddCaveMessage *msg = static_cast<const AddCaveMessage*>(&message);
 		const uint16_t id = msg->getEntityId();
+		const uint8_t number = msg->getCaveNumber();
 		const bool state = msg->getState();
+		_map.setCaveNumber(id, number);
 		_map.setCaveState(id, state);
 	}
 };
