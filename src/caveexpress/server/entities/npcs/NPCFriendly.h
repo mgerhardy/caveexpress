@@ -6,6 +6,8 @@ namespace caveexpress {
 
 class NPCFriendly: public INPCCave {
 private:
+	// used to measure the needed time to bring the npc to its target cave
+	uint32_t _collectingTime;
 	TimerID _fallingTimer;
 	uint32_t _waitPatience;
 	uint16_t _swimmingDistance;

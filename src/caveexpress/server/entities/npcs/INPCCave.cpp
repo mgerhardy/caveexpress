@@ -4,7 +4,7 @@
 namespace caveexpress {
 
 INPCCave::INPCCave (CaveMapTile *cave, const EntityType& type, bool deliverPackage) :
-		NPC(EntityTypes::isNpcCave(type) ? type : getNpcFriendlyType(), cave->getMap()), _cave(cave), _collectingTime(0), _deliverPackage(
+		NPC(EntityTypes::isNpcCave(type) ? type : getNpcFriendlyType(), cave->getMap()), _cave(cave), _deliverPackage(
 				deliverPackage)
 {
 	const b2Vec2& caveSize = cave->getSize();

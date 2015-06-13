@@ -9,7 +9,7 @@
 namespace caveexpress {
 
 NPCFriendly::NPCFriendly (CaveMapTile *cave, const EntityType& type, bool returnToCaveOnIdle) :
-		INPCCave(cave, type, false), _fallingTimer(-1), _playerId(-1), _returnToCaveOnIdle(returnToCaveOnIdle), _targetCave(nullptr)
+		INPCCave(cave, type, false), _collectingTime(0), _fallingTimer(-1), _playerId(-1), _returnToCaveOnIdle(returnToCaveOnIdle), _targetCave(nullptr)
 {
 	_swimmingTime = 0;
 	_swimmingTimeDelay = 7000;

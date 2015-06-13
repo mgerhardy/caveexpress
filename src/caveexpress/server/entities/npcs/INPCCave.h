@@ -25,9 +25,6 @@ class INPCCave: public NPC {
 protected:
 	CaveMapTile *_cave;
 
-	// used to measure the needed time to bring the npc to its target cave
-	uint32_t _collectingTime;
-
 	bool _deliverPackage;
 
 public:
