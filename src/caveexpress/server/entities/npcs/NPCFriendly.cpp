@@ -63,6 +63,7 @@ void NPCFriendly::onContact (b2Contact* contact, IEntity* entity)
 			else
 				_map.sendSound(player->getVisMask(), SoundTypes::SOUND_NPC_CAVE_BOARD, player->getPos());
 			player->setCollectedNPC(this);
+			setState(NPCState::NPC_COLLECTED);
 		} else if (isStruggle()) {
 			setDying(nullptr);
 		} else if (isIdle()) {
