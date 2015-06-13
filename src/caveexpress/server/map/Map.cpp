@@ -1246,37 +1246,32 @@ CaveMapTile *Map::getTargetCave (const CaveMapTile* ignoreCave) const
 
 bool Map::removeNPCFromWorld(NPCFriendly* npc) {
 	assert(_entityRemovalAllowed);
+	debug(LOG_SERVER, String::format("remove npc %i from world: %s", npc->getID(), npc->getType().name.c_str()));
+	GameEvent.removeEntity(npc->getVisMask(), *npc);
+	npc->setVisMask(NOTVISIBLE);
+	npc->remove();
+	return true;
+
+}
+
+bool Map::removeNPC(NPCFriendly* npc, bool fadeOut) {
+	assert(_entityRemovalAllowed);
 	for (Map::NPCListIter i = _friendlyNPCs.begin(); i != _friendlyNPCs.end(); ++i) {
-		if ((*i) != npc)
+		if (*i != npc)
 			continue;
 
-		debug(LOG_SERVER, String::format("remove npc %i from world: %s", npc->getID(), npc->getType().name.c_str()));
-		GameEvent.removeEntity(npc->getVisMask(), *npc);
+		info(LOG_SERVER, String::format("remove friendly npc %i: %s", npc->getID(), npc->getType().name.c_str()));
+		_friendlyNPCs.erase(i);
+		GameEvent.removeEntity(npc->getVisMask(), *npc, fadeOut);
 		npc->setVisMask(NOTVISIBLE);
 		npc->remove();
+		_nextFriendlyNPCSpawn = _time + rand() % SPAWN_FRIENDLY_NPC_DELAY;
+		// they are also part of the entities list and are freed there
 		return true;
 	}
 	error(LOG_MAP, String::format("could not find the npc with the id %i", npc->getID()));
 	return false;
 }
-
-// TODO: fix me
-#if 0
-void removeEntity() {
-	if (entity->isNpcFriendly()) {
-		for (Map::NPCListIter i = _friendlyNPCs.begin(); i != _friendlyNPCs.end(); ++i) {
-			if (*i != entity)
-				continue;
-
-			info(LOG_SERVER, String::format("remove friendly npc %i: %s", entity->getID(), entity->getType().name.c_str()));
-			_friendlyNPCs.erase(i);
-			_nextFriendlyNPCSpawn = _time + rand() % SPAWN_FRIENDLY_NPC_DELAY;
-			// they are also part of the entities list and are freed there
-			break;
-		}
-	}
-}
-#endif
 
 bool Map::removePlayer (ClientId clientId)
 {

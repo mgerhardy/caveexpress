@@ -35,7 +35,7 @@ void NPCPackage::setIdle ()
 
 void NPCPackage::update (uint32_t deltaTime)
 {
-	NPC::update(deltaTime);
+	INPCCave::update(deltaTime);
 
 	if (isIdle() && !returnToInitialPosition())
 		leavePackage();

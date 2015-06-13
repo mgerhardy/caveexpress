@@ -142,12 +142,10 @@ void NPCFriendly::update (uint32_t deltaTime)
 		returnToInitialPosition();
 	}
 
-	// TODO: fix me
-#if 0
 	if (isDone()) {
-		_map.removeEntity(this, true);
+		_map.removeNPC(this, true);
 		_map.countTransferedNPC();
-		return true;
+		return;
 	}
 
 	const CaveMapTile *targetCave = getTargetCave();
@@ -155,14 +153,14 @@ void NPCFriendly::update (uint32_t deltaTime)
 		CaveMapTile *cave = _map.getTargetCave(getCave());
 		if (cave == nullptr) {
 			_map.restart(2000);
-			return false;
+			return;
 		}
 		setTargetCave(cave);
 	}
 
 	if (isCollected()) {
 		updateCollectedState();
-		return false;
+		return;
 	}
 
 	const Map::PlayerList& players = _map.getPlayers();
@@ -192,7 +190,6 @@ void NPCFriendly::update (uint32_t deltaTime)
 			}
 		}
 	}
-#endif
 }
 
 }

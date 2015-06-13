@@ -276,6 +276,9 @@ public:
 	// only removed the npc from the world but keep it in the list to let it tick
 	bool removeNPCFromWorld (NPCFriendly* npc);
 
+	// delete the entity
+	bool removeNPC(NPCFriendly* npc, bool fadeOut);
+
 	// creates a new friendly npc
 	NPCFriendly* createFriendlyNPC (CaveMapTile* cave, const EntityType& type = EntityType::NONE, bool returnToCaveOnIdle = false);
 
