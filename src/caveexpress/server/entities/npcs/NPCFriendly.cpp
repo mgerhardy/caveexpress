@@ -125,8 +125,8 @@ uint8_t NPCFriendly::getTargetCaveNumber () const
 
 bool NPCFriendly::setArrived (const b2Vec2& targetPos)
 {
-	setState(NPCState::NPC_ARRIVED);
 	setMoving(targetPos);
+	setState(NPCState::NPC_ARRIVED);
 	const uint32_t deltaSeconds = _time - _collectingTime;
 	info(LOG_SERVER, String::format("took %ims to transfer the npc %i to its target cave", deltaSeconds, _id));
 	const int bonus = deltaSeconds < 4000;
