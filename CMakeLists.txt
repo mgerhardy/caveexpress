@@ -230,10 +230,6 @@ if (NOT CMAKE_TOOLCHAIN_FILE)
 	endif()
 endif()
 
-include_directories("${PROJECT_BINARY_DIR}")
-include_directories("${PROJECT_SOURCE_DIR}/src")
-include_directories("${PROJECT_SOURCE_DIR}/src/libs")
-
 if (NOT NETWORKING)
 add_definitions(-DNONETWORK=1)
 endif()
@@ -257,6 +253,10 @@ if (UNIX)
 	endif()
 endif()
 
+find_package(Box2D)
+
+include_directories("${PROJECT_BINARY_DIR}")
+include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/lua")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/tinyxml2")
 include_directories("${PROJECT_SOURCE_DIR}/src/libs/sqlite")
