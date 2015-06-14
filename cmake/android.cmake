@@ -1,4 +1,4 @@
-set(HD_VERSION 1)
+option(HD_VERSION "Build the HD versions of the games" OFF)
 set(PERMISSIONS)
 set(META_DATA)
 set(ANDROID_REFERENCED_LIBS android.library.reference.1=google-play-services_lib)
