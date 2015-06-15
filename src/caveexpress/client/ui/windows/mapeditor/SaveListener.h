@@ -16,12 +16,16 @@ public:
 	}
 
 	void enable () {
+		if (_enabled)
+			return;
 		info(LOG_CLIENT, "Playing the map is now possible");
 		setEnabled(true);
 		setTooltip("");
 	}
 
 	void disable () {
+		if (!_enabled)
+			return;
 		info(LOG_CLIENT, "Playing the map is not possible");
 		setEnabled(false);
 	}
