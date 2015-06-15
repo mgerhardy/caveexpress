@@ -31,21 +31,22 @@ private:
 	UINodeMapEditor *_editor;
 	TileItems _map;
 	IMap::SettingsMap _settings;
+	IMap::StartPositions _startPositions;
 	std::string _mapName;
 	int _mapWidth;
 	int _mapHeight;
 
 public:
-	StateChecker (UINodeMapEditor *editor, const TileItems& map, const IMap::SettingsMap& settings, const std::string& mapName,
-			int mapWidth, int mapHeight) :
-			_editor(editor), _map(map), _settings(settings), _mapName(mapName), _mapWidth(mapWidth), _mapHeight(mapHeight)
+	StateChecker(UINodeMapEditor *editor, const TileItems& map, const IMap::SettingsMap& settings,
+			const IMap::StartPositions& startPositions, const std::string& mapName, int mapWidth, int mapHeight) :
+			_editor(editor), _map(map), _settings(settings), _startPositions(startPositions), _mapName(mapName), _mapWidth(mapWidth), _mapHeight(mapHeight)
 	{
 	}
 
 	inline bool checkAndStoreDirtyState (const std::string& id, bool dirty)
 	{
 		if (dirty) {
-			_editor->_undoStates.push_back(State(_map, _settings, _mapName, _mapWidth, _mapHeight));
+			_editor->_undoStates.push_back(State(_map, _settings, _startPositions, _mapName, _mapWidth, _mapHeight));
 			_editor->_redoStates.clear();
 		}
 		return dirty;
@@ -68,6 +69,9 @@ public:
 		if (checkAndStoreDirtyState("settingssize", _settings.size() != _editor->_settings.size()))
 			return;
 
+		if (checkAndStoreDirtyState("startpositions", _startPositions.size() != _editor->_startPositions.size()))
+			return;
+
 		if (checkAndStoreDirtyState("settings", !std::equal(_settings.begin(), _settings.end(), _editor->_settings.begin())))
 			return;
 
@@ -76,7 +80,7 @@ public:
 	}
 };
 
-#define Undo() StateChecker s(this, _map, _settings, _mapName, _mapWidth, _mapHeight)
+#define Undo() StateChecker s(this, _map, _settings, _startPositions, _mapName, _mapWidth, _mapHeight)
 
 UINodeMapEditor::UINodeMapEditor (IFrontend *frontend, IMapManager& mapManager) :
 		UINode(frontend, "mapeditor"), _activeSpriteAngle(0), _activeEntityType(0), _activeEntityTypeRight(true), _selectedGridX(
@@ -270,12 +274,11 @@ void UINodeMapEditor::renderScrollbars (int x, int y) const
 
 void UINodeMapEditor::renderPlayer (int x, int y) const
 {
-	if (_playerX < 0.0f || _playerY < 0.0f)
-		return;
-
-	const SpriteDefPtr& def = SpriteDefinition::get().getFromEntityType(EntityTypes::PLAYER, Animations::ANIMATION_IDLE);
-	const TileItem item = { def, &EntityTypes::PLAYER, 0, 0, _playerX, _playerY, LAYER_NONE, 0, "" };
-	renderSprite(item, x, y);
+	for (const IMap::StartPosition& position : _startPositions) {
+		const SpriteDefPtr& def = SpriteDefinition::get().getFromEntityType(EntityTypes::PLAYER, Animations::ANIMATION_IDLE);
+		const TileItem item = { def, &EntityTypes::PLAYER, 0, 0, string::toFloat(position._x), string::toFloat(position._y), LAYER_NONE, 0, "" };
+		renderSprite(item, x, y);
+	}
 }
 
 void UINodeMapEditor::renderWater (int x, int y) const
@@ -855,9 +858,9 @@ void UINodeMapEditor::setState (const State& state)
 {
 	_map = state.map;
 	_settings = state.settingsMap;
+	_startPositions = state.startPositions;
 	setMapName(state.mapName);
 	setMapDimensions(string::toInt(_settings[msn::WIDTH]), string::toInt(_settings[msn::HEIGHT]));
-	setPlayerPosition(string::toFloat(_startPositions[0]._x), string::toFloat(_startPositions[0]._y));
 	setWaterHeight(string::toFloat(_settings[msn::WATER_HEIGHT]));
 }
 
@@ -866,7 +869,7 @@ void UINodeMapEditor::undo ()
 	if (_undoStates.empty())
 		return;
 
-	const State currentState(_map, _settings, _mapName, _mapWidth, _mapHeight);
+	const State currentState(_map, _settings, _startPositions, _mapName, _mapWidth, _mapHeight);
 	const State& oldState = _undoStates.back();
 	setState(oldState);
 	_redoStates.push_back(currentState);
@@ -877,7 +880,7 @@ void UINodeMapEditor::redo ()
 {
 	if (_redoStates.empty())
 		return;
-	const State currentState(_map, _settings, _mapName, _mapWidth, _mapHeight);
+	const State currentState(_map, _settings, _startPositions, _mapName, _mapWidth, _mapHeight);
 	const State& state = _redoStates.front();
 	setState(state);
 	_redoStates.erase(_redoStates.begin());
@@ -1020,6 +1023,10 @@ bool UINodeMapEditor::save ()
 		if (i->first == msn::WIDTH || i->first == msn::HEIGHT)
 			continue;
 		lua << "\tmap:setSetting(\"" << i->first << "\", \"" << i->second << "\")" << std::endl;
+	}
+
+	for (const IMap::StartPosition& pos : _startPositions) {
+		lua << "\tmap:addStartPosition(\"" << pos._x << "\", \"" << pos._y << "\")" << std::endl;
 	}
 
 	lua << "end" << std::endl;

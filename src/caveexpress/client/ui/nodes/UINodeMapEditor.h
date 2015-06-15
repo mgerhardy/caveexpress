@@ -161,13 +161,14 @@ typedef TileItems::const_iterator TileItemsConstIter;
 
 class State {
 public:
-	State (const TileItems& _map, const IMap::SettingsMap& _settingsMap, const std::string& _mapName, int _mapWidth,
+	State (const TileItems& _map, const IMap::SettingsMap& _settingsMap, const IMap::StartPositions& _startPositions, const std::string& _mapName, int _mapWidth,
 			int _mapHeight) :
-			map(_map), settingsMap(_settingsMap), mapName(_mapName), mapWidth(_mapWidth), mapHeight(_mapHeight)
+			map(_map), settingsMap(_settingsMap), startPositions(_startPositions), mapName(_mapName), mapWidth(_mapWidth), mapHeight(_mapHeight)
 	{
 	}
 	TileItems map;
 	IMap::SettingsMap settingsMap;
+	IMap::StartPositions startPositions;
 	std::string mapName;
 	int mapWidth;
 	int mapHeight;
@@ -232,9 +233,6 @@ private:
 
 	// the height in grid tiles from the bottom of the map
 	float _waterHeight;
-
-	gridCoord _playerX;
-	gridCoord _playerY;
 
 	bool _renderGrid;
 
@@ -400,8 +398,6 @@ inline void UINodeMapEditor::setWaterHeight (float waterHeight)
 
 inline void UINodeMapEditor::setPlayerPosition (gridCoord gridX, gridCoord gridY)
 {
-	_playerX = gridX;
-	_playerY = gridY;
 	const IMap::StartPosition p{ string::toString(gridX), string::toString(gridY) };
 	_startPositions.push_back(p);
 }

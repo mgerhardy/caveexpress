@@ -145,6 +145,7 @@ void NPCFriendly::update (uint32_t deltaTime)
 
 	if (isDone()) {
 		_map.removeNPC(this, true);
+		_remove = true;
 		_map.countTransferedNPC();
 		return;
 	}

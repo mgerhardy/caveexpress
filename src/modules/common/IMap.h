@@ -69,7 +69,7 @@ public:
 		if (size == 1) {
 			index = 0;
 		}
-		if (index < 0 || index > size) {
+		if (index < 0 || index >= size) {
 			x = -1.0f;
 			y = -1.0f;
 			return false;

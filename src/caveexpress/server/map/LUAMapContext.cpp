@@ -161,6 +161,7 @@ bool LUAMapContext::load (bool skipErrors)
 	if (!_lua.execute("getName", 1))
 		return false;
 	_title = _lua.getStringFromStack();
+	info(LOG_SERVER, "Load map with title " + _title);
 
 	if (!_lua.execute("initMap"))
 		return false;
