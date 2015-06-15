@@ -1057,9 +1057,12 @@ void UINodeMapEditor::loadFromContext (ICaveMapContext& ctx)
 		else
 			setSetting(i->first, i->second);
 	}
-	const gridCoord playerX = string::toFloat(ctx.getStartPositions()[0]._x);
-	const gridCoord playerY = string::toFloat(ctx.getStartPositions()[0]._y);
-	setPlayerPosition(playerX, playerY);
+	const IMap::StartPositions& startPositions = ctx.getStartPositions();
+	if (!startPositions.empty()) {
+		const gridCoord playerX = string::toFloat(startPositions[0]._x);
+		const gridCoord playerY = string::toFloat(startPositions[0]._y);
+		setPlayerPosition(playerX, playerY);
+	}
 	const int mapWidth = string::toInt(_settings[msn::WIDTH]);
 	const int mapHeight = string::toInt(_settings[msn::HEIGHT]);
 	setMapDimensions(mapWidth, mapHeight);
