@@ -139,7 +139,7 @@ bool Sprite::render (IFrontend *frontend, Layer layer, int x, int y, float zoom,
 
 	const TexturePtr t = getActiveTexture(layer);
 	if (!t)
-		return false;
+		return true;
 
 	// the positions are the center of the sprites - so we have to offset them here
 	frontend->renderImage(t.get(), x, y, t->getWidth() * zoom, t->getHeight() * zoom, angle, alpha);
