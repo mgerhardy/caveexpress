@@ -222,7 +222,7 @@ if (NOT CMAKE_TOOLCHAIN_FILE)
 	endif()
 endif()
 
-elseif (ANDROID)
+if (ANDROID)
 	include(${ROOT_DIR}/cmake/android.cmake)
 elseif (IOS)
 	include(${ROOT_DIR}/cmake/ios.cmake)
