@@ -34,13 +34,36 @@ void ClientEntity::onVisibilityChanged ()
 {
 }
 
+void ClientEntity::calcOffset(int scale, float zoom, int posX, int posY, int &offsetPosX, int &offsetPosY) const {
+	offsetPosX = posX;
+	offsetPosY = posY;
+	switch (_align) {
+	case ENTITY_ALIGN_UPPER_LEFT:
+		break;
+	case ENTITY_ALIGN_LOWER_LEFT:
+		offsetPosX += _size.x * scale * zoom;
+		break;
+	case ENTITY_ALIGN_MIDDLE_CENTER:
+		offsetPosX += _size.x / 2.0f * scale * zoom;
+		offsetPosY -= _size.y / 2.0f * scale * zoom;
+		break;
+	}
+}
+
+void ClientEntity::renderOverlays(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int posX, int posY) const {
+	int offsetPosX, offsetPosY;
+	calcOffset(scale, zoom, posX, posY, offsetPosX, offsetPosY);
+	for (EntityOverlaysConstIter i = _entityOverlays.begin(); i != _entityOverlays.end(); ++i) {
+		const SpritePtr& overlay = *i;
+		info(LOG_CLIENT, String::format("render %s, layer %i, x: %i, y: %i, zoom: %f, angle: %i, alpha: %f",
+				overlay->getName().c_str(), layer, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha));
+		overlay->render(frontend, layer, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha);
+	}
+}
+
 void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY) const
 {
 	if (!_currSprite)
-		return;
-
-	const TexturePtr& texture = _currSprite->getActiveTexture(layer);
-	if (!texture || !texture->isValid())
 		return;
 
 	const ClientEntityPtr ropeEntity = _ropeEntity;
@@ -53,13 +76,13 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 	case ENTITY_ALIGN_UPPER_LEFT:
 		break;
 	case ENTITY_ALIGN_LOWER_LEFT:
-		posX -= texture->getWidth() * zoom / 2.0f;
+		posX -= _currSprite->getWidth(layer) * zoom / 2.0f;
 		posY += _size.y * scale * zoom / 2.0f;
-		posY -= texture->getHeight() * zoom;
+		posY -= _currSprite->getHeight(layer) * zoom;
 		break;
 	case ENTITY_ALIGN_MIDDLE_CENTER: {
-		posX -= texture->getWidth() * zoom / 2.0f;
-		posY -= texture->getHeight() * zoom / 2.0f;
+		posX -= _currSprite->getWidth(layer) * zoom / 2.0f;
+		posY -= _currSprite->getHeight(layer) * zoom / 2.0f;
 		break;
 	}
 	}
@@ -82,27 +105,13 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 	const bool visible = _currSprite->render(frontend, layer, _screenPosX, _screenPosY, zoom, _angle, _alpha);
 	_visChanged = visible != _visible;
 
-	if (Config.isDebug()) {
-		frontend->renderFilledRect(_screenPosX, _screenPosY, 4, 4, colorRed);
-	}
+	renderOverlays(frontend, layer, scale, zoom, offsetX, offsetY, posX, posY);
 
-	int offsetPosX = posX;
-	int offsetPosY = posY;
-	switch (_align) {
-	case ENTITY_ALIGN_UPPER_LEFT:
-		break;
-	case ENTITY_ALIGN_LOWER_LEFT:
-		offsetPosX += _size.x * scale * zoom;
-		break;
-	case ENTITY_ALIGN_MIDDLE_CENTER:
-		offsetPosX += _size.x / 2.0f * scale * zoom;
-		offsetPosY -= _size.y / 2.0f * scale * zoom;
-		break;
-	}
-	for (EntityOverlaysConstIter i = _entityOverlays.begin(); i != _entityOverlays.end(); ++i) {
-		const SpritePtr& overlay = *i;
-		overlay->render(frontend, layer, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha);
-	}
+	if (layer != LAYER_FRONT)
+		return;
+
+	if (Config.isDebug())
+		frontend->renderFilledRect(_screenPosX, _screenPosY, 4, 4, colorRed);
 
 	const bool debug = Config.getConfigVar("debugentity")->getBoolValue();
 	if (debug) {
@@ -114,6 +123,8 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 			renderDot(frontend, offsetX + ropeX1, offsetY + ropeY1, colorBlue);
 			renderDot(frontend, offsetX + ropeX2, offsetY + ropeY2, colorBrightBlue);
 		}
+		int offsetPosX, offsetPosY;
+		calcOffset(scale, zoom, posX, posY, offsetPosX, offsetPosY);
 		renderDot(frontend, offsetX + offsetPosX, offsetY + offsetPosY, colorGray);
 
 		int fontY = _screenPosY;

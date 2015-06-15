@@ -21,6 +21,8 @@ protected:
 
 	virtual void onVisibilityChanged ();
 	void renderDot (IFrontend* frontend, int x, int y, const Color& color = colorRed) const;
+	void renderOverlays(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int posX, int posY) const;
+	void calcOffset(int scale, float zoom, int posX, int posY, int &offsetPosX, int &offsetPosY) const;
 public:
 	class Factory: public IClientEntityFactory {
 		ClientEntityPtr create (const ClientEntityFactoryContext *ctx) const;
