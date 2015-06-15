@@ -75,6 +75,8 @@ bool CaveExpressClientMap::drop ()
 
 void CaveExpressClientMap::setCaveNumber (uint16_t id, uint8_t number)
 {
+	if (number == 0)
+		return;
 	debug(LOG_CLIENT, String::format("set cave for %i to %i", id, number));
 	ClientEntityPtr e = getEntity(id);
 	if (!e) {

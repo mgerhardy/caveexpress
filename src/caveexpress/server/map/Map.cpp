@@ -1442,7 +1442,8 @@ void Map::sendVisibleEntity (int clientMask, const IEntity *entity) const
 	GameEvent.addEntity(clientMask, *entity);
 	if (entity->isCave()) {
 		const CaveMapTile *tile = static_cast<const CaveMapTile *>(entity);
-		GameEvent.addCave(clientMask, entity->getID(), tile->getCaveNumber(), tile->getLightState());
+		const int caveNumber = _transferedNPCLimit > 0 ? tile->getCaveNumber() : 0;
+		GameEvent.addCave(clientMask, entity->getID(), caveNumber, tile->getLightState());
 	} else if (entity->isWindow()) {
 		const WindowTile *tile = static_cast<const WindowTile *>(entity);
 		GameEvent.sendLightState(clientMask, tile->getID(), tile->getLightState());
