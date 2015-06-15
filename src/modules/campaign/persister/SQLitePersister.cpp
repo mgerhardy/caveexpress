@@ -205,7 +205,7 @@ void SQLitePersister::loadCampaignMapParameters(CampaignMap* map, SQLiteStatemen
 	map->setStars(stars);
 	if (locked == 0)
 		map->unlock();
-	debug(LOG_STORAGE, map->toString());
+	trace(LOG_STORAGE, map->toString());
 }
 
 bool SQLitePersister::saveLives (uint8_t lives, const std::string& campaignId)
