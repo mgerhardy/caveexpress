@@ -85,6 +85,7 @@ public:
 	virtual void makeScreenshot (const std::string& filename) {}
 	virtual bool isConsoleActive () const { return false; }
 	virtual void setFullscreen (bool fullscreen) = 0;
+	virtual void toggleGrabMouse () {}
 	virtual bool isFullscreen () = 0;
 	virtual void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha) = 0;
 	virtual void renderBatches () {}

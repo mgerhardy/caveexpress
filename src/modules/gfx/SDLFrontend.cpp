@@ -632,6 +632,16 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	return 0;
 }
 
+void SDLFrontend::toggleGrabMouse () {
+	bool grabMouse = SDL_GetGrabbedWindow() == _window;
+	SDL_SetWindowGrab(_window, grabMouse ? SDL_FALSE : SDL_TRUE);
+	if (grabMouse)
+		info(LOG_CLIENT, "Mouse grab is now deactivated");
+	else
+		info(LOG_CLIENT, "Mouse grab is now activated");
+	Config.setGrabMouse(!grabMouse);
+}
+
 void SDLFrontend::initRenderer ()
 {
 	info(LOG_CLIENT, "init sdl renderer");

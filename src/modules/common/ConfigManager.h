@@ -136,6 +136,7 @@ public:
 	bool toggleSound ();
 	bool isJoystick () const;
 	bool toggleJoystick ();
+	void setGrabMouse (bool grabMouse);
 	// the network port the server is listening on
 	int getPort () const;
 	std::string getServerName () const;
@@ -254,6 +255,11 @@ inline bool ConfigManager::isDebug () const
 inline bool ConfigManager::isGrabMouse () const
 {
 	return _grabMouse->getBoolValue();
+}
+
+inline void ConfigManager::setGrabMouse (bool grabMouse)
+{
+	_grabMouse->setValue(grabMouse ? "true" : "false");
 }
 
 inline int ConfigManager::getWidth () const

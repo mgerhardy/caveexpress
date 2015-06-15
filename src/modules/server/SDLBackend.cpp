@@ -81,15 +81,14 @@ bool SDLBackend::isRunning () const
 
 void SDLBackend::handleEvent (SDL_Event &event)
 {
-	// TODO: not working on linux
-#if 0
 	if (event.type == SDL_KEYDOWN) {
 		if (event.key.keysym.sym == SDLK_RETURN && (event.key.keysym.mod & KMOD_ALT)) {
 			const int isFullscreen = _frontend->isFullscreen();
 			_frontend->setFullscreen(!isFullscreen);
+		} else if (event.key.keysym.sym == SDLK_g && (event.key.keysym.mod & KMOD_CTRL)) {
+			_frontend->toggleGrabMouse();
 		}
 	}
-#endif
 
 	switch (event.type) {
 	case SDL_QUIT:

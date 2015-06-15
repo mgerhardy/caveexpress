@@ -73,6 +73,7 @@ public:
 	void onJoystickDeviceAdded (int32_t device);
 
 	// IFrontend implementation
+	virtual void toggleGrabMouse () override;
 	virtual void makeScreenshot (const std::string& filename) override;
 	virtual int renderFilledPolygon (int *vx, int *vy, int n, const Color& color) override;
 	virtual int renderPolygon (int *vx, int *vy, int n, const Color& color) override;
