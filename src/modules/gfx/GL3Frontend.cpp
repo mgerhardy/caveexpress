@@ -71,6 +71,7 @@ void GL3Frontend::setHints ()
 
 RenderTarget* GL3Frontend::renderToTexture (int x, int y, int w, int h)
 {
+	// render the current batches and then start to write to the fbo texture
 	renderBatches();
 	static RenderTarget target;
 	target.fbo = &_fbo;
@@ -80,15 +81,33 @@ RenderTarget* GL3Frontend::renderToTexture (int x, int y, int w, int h)
 
 bool GL3Frontend::renderTarget (RenderTarget* target)
 {
+	// render the current batches to the fbo texture - and unbind the fbo
 	renderBatches();
 	target->fbo->unbind();
 
 	const TextureRect& r = target->fbo->rect();
-	const TextureCoords texCoords(r, _viewPort.w, _viewPort.h, false);
-	const float x1 = r.x * _rx;
-	const float y1 = r.y * _ry;
-	const float nw = r.w * _rx;
-	const float nh = r.h * _ry;
+	const TextureCoords texCoords(r, _viewPort.w, _viewPort.h, false, true);
+	renderTexture(texCoords, r.x, r.y, r.w, r.h, 0, 1.0, _renderTargetTexture);
+	return true;
+}
+
+void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha)
+{
+	if (texture == nullptr || !texture->isValid())
+		return;
+
+	const TextureCoords texCoords(texture);
+	getTrimmed(texture, x, y, w, h);
+	const TexNum texnum = getTexNum(texture->getData());
+	renderTexture(texCoords, x, y, w, h, angle, alpha, texnum);
+}
+
+void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum)
+{
+	const float x1 = x * _rx;
+	const float y1 = y * _ry;
+	const float nw = w * _rx;
+	const float nh = h * _ry;
 	const float centerx = nw / 2.0f;
 	const float centery = nh / 2.0f;
 	const float minx = -centerx;
@@ -98,8 +117,9 @@ bool GL3Frontend::renderTarget (RenderTarget* target)
 
 	flushBatch(GL_TRIANGLES);
 	Batch& batch = _batches[_currentBatch];
-	batch.texnum = _renderTargetTexture;
-	batch.angle = 0;
+	batch.texnum = texnum;
+	batch.angle = DegreesToRadians(angle);
+	// TODO: remove me - this prevents us from having lesser draw calls (e.g. reusing the same batch if type, angle and texnum is equal
 	batch.translation.x = x1 + centerx;
 	batch.translation.y = y1 + centery;
 	batch.vertexCount += 6;
@@ -108,7 +128,7 @@ bool GL3Frontend::renderTarget (RenderTarget* target)
 	v.c.r = _color[0] * 255.0f;
 	v.c.g = _color[1] * 255.0f;
 	v.c.b = _color[2] * 255.0f;
-	v.c.a = 255.0f;
+	v.c.a = alpha * 255.0f;
 
 	v.u = texCoords.texCoords[0];
 	v.v = texCoords.texCoords[1];
@@ -145,7 +165,6 @@ bool GL3Frontend::renderTarget (RenderTarget* target)
 	v.x = minx;
 	v.y = maxy;
 	_vertices[_currentVertexIndex++] = v;
-	return true;
 }
 
 void GL3Frontend::renderBatches ()
@@ -325,77 +344,6 @@ void GL3Frontend::bindTexture (Texture* texture, int textureUnit)
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = texnum;
 	glBindTexture(GL_TEXTURE_2D, _currentTexture);
-}
-
-void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha)
-{
-	if (texture == nullptr || !texture->isValid())
-		return;
-
-	const TextureCoords texCoords(texture);
-	getTrimmed(texture, x, y, w, h);
-	const float x1 = x * _rx;
-	const float y1 = y * _ry;
-	const float nw = w * _rx;
-	const float nh = h * _ry;
-	const float centerx = nw / 2.0f;
-	const float centery = nh / 2.0f;
-	const float minx = -centerx;
-	const float maxx = centerx;
-	const float miny = -centery;
-	const float maxy = centery;
-
-	const TexNum texnum = getTexNum(texture->getData());
-	flushBatch(GL_TRIANGLES);
-	Batch& batch = _batches[_currentBatch];
-	batch.texnum = texnum;
-	batch.angle = DegreesToRadians(angle);
-	// TODO: remove me - this prevents us from having lesser draw calls (e.g. reusing the same batch if type, angle and texnum is equal
-	batch.translation.x = x1 + centerx;
-	batch.translation.y = y1 + centery;
-	batch.vertexCount += 6;
-
-	Vertex v;
-	v.c.r = _color[0] * 255.0f;
-	v.c.g = _color[1] * 255.0f;
-	v.c.b = _color[2] * 255.0f;
-	v.c.a = alpha * 255.0f;
-
-	v.u = texCoords.texCoords[0];
-	v.v = texCoords.texCoords[1];
-	v.x = minx;
-	v.y = miny;
-	_vertices[_currentVertexIndex++] = v;
-
-	v.u = texCoords.texCoords[2];
-	v.v = texCoords.texCoords[3];
-	v.x = maxx;
-	v.y = miny;
-	_vertices[_currentVertexIndex++] = v;
-
-	v.u = texCoords.texCoords[4];
-	v.v = texCoords.texCoords[5];
-	v.x = maxx;
-	v.y = maxy;
-	_vertices[_currentVertexIndex++] = v;
-
-	v.u = texCoords.texCoords[0];
-	v.v = texCoords.texCoords[1];
-	v.x = minx;
-	v.y = miny;
-	_vertices[_currentVertexIndex++] = v;
-
-	v.u = texCoords.texCoords[4];
-	v.v = texCoords.texCoords[5];
-	v.x = maxx;
-	v.y = maxy;
-	_vertices[_currentVertexIndex++] = v;
-
-	v.u = texCoords.texCoords[6];
-	v.v = texCoords.texCoords[7];
-	v.x = minx;
-	v.y = maxy;
-	_vertices[_currentVertexIndex++] = v;
 }
 
 void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& color)

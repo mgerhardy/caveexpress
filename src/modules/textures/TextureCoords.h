@@ -6,11 +6,11 @@
 
 class TextureCoords {
 private:
-	inline void calc(const TextureRect& rect, int width, int height, bool mirror) {
+	inline void calc(const TextureRect& rect, int width, int height, bool mirror, bool flip) {
 		const int x1 = rect.x;
-		const int y1 = rect.y;
+		const int y1 = flip ? rect.y + rect.h : rect.y;
 		const int x2 = rect.x + rect.w;
-		const int y2 = rect.y + rect.h;
+		const int y2 = flip ? rect.y :  rect.y + rect.h;
 
 		texCoords[0] = x1 / (float) width;
 		texCoords[1] = y1 / (float) height;
@@ -32,11 +32,12 @@ public:
 	float texCoords[8];
 
 	TextureCoords(const Texture* texture) {
-		calc(texture->getSourceRect(), texture->getFullWidth(), texture->getFullHeight(), texture->isMirror());
+		// flip is done by ortho projection here
+		calc(texture->getSourceRect(), texture->getFullWidth(), texture->getFullHeight(), texture->isMirror(), false);
 	}
 
-	TextureCoords(const TextureRect& rect, int width, int height, bool mirror = false) {
-		calc(rect, width, height, mirror);
+	TextureCoords(const TextureRect& rect, int width, int height, bool mirror = false, bool flip = false) {
+		calc(rect, width, height, mirror, flip);
 	}
 
 	inline std::string toString() const {

@@ -4,6 +4,8 @@
 #include "shaders/Shader.h"
 #include "FrameBuffer.h"
 
+class TextureCoords;
+
 class GL3Frontend: public SDLFrontend {
 protected:
 	SDL_GLContext _context;
@@ -28,6 +30,7 @@ protected:
 	TexNum uploadTexture(const unsigned char* pixels, int w, int h) const;
 	void flushBatch (int type);
 	void startNewBatch ();
+	void renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum);
 
 public:
 	explicit GL3Frontend (SharedPtr<IConsole> console);
