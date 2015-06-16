@@ -23,7 +23,7 @@ public:
 		if (def && SpriteTypes::isWaterFall(def->type) && !ThemeTypes::isIce(def->theme)) {
 			const uint16_t id = msg->getEntityId();
 			const SoundType& soundType = SoundTypes::SOUND_AMBIENT_WATERFALL;
-			ClientEntityPtr entity = _map.getEntity(id);
+			const ClientEntityPtr& entity = _map.getEntity(id);
 			const int animationSound = SoundControl.play(soundType.getSound(), entity->getPos(), soundType.isLoopSound());
 			entity->setAnimationSound(animationSound);
 		}

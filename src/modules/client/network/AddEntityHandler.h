@@ -27,7 +27,7 @@ public:
 		const float sizeY = msg->getHeight();
 		const EntityAngle angle = msg->getAngle();
 		const EntityAlignment spriteAlign = msg->getSpriteAlignment();
-		ClientEntityPtr entity = ClientEntityRegistry::get(type, id, sprite, animation, xpos, ypos, sizeX, sizeY, angle, spriteAlign);
+		const ClientEntityPtr& entity = ClientEntityRegistry::get(type, id, sprite, animation, xpos, ypos, sizeX, sizeY, angle, spriteAlign);
 		if (!entity)
 			System.exit("no entity type registered for " + type.name, 1);
 		_map.addEntity(entity);
