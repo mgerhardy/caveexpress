@@ -5,6 +5,6 @@ cd $DIR/../..
 mkdir -p build-android
 cd build-android
 pwd
-cmake -DCMAKE_TOOLCHAIN_FILE=cmake/android-toolchain.cmake ..
+cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/android-toolchain.cmake ..
 make -j 4
 
