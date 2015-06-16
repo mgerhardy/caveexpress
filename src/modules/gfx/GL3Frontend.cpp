@@ -71,6 +71,7 @@ void GL3Frontend::setHints ()
 
 RenderTarget* GL3Frontend::renderToTexture (int x, int y, int w, int h)
 {
+	renderBatches();
 	static RenderTarget target;
 	target.fbo = &_fbo;
 	target.fbo->bind(x, y, w, h);
@@ -79,6 +80,7 @@ RenderTarget* GL3Frontend::renderToTexture (int x, int y, int w, int h)
 
 bool GL3Frontend::renderTarget (RenderTarget* target)
 {
+	renderBatches();
 	target->fbo->unbind();
 
 	const TextureRect& r = target->fbo->rect();
