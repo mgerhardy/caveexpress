@@ -7,6 +7,7 @@ namespace caveexpress {
 class ClientNPC: public ClientEntity {
 private:
 	uint32_t _speechBubbleDelay;
+	SpritePtr _targetCaveSprite;
 
 	ClientNPC(const EntityType& type, uint16_t id, const Animation& animation, float x, float y, float sizeX, float sizeY,
 			const SoundMapping& soundMapping, EntityAlignment align);

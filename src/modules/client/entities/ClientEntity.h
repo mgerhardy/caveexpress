@@ -10,6 +10,7 @@
 #include <Box2D/Common/b2Math.h>
 #include <map>
 #include <string>
+#include <algorithm>
 
 class ClientEntity;
 typedef ClientEntity* ClientEntityPtr;
@@ -101,6 +102,7 @@ public:
 	}
 
 	void addOverlay (const SpritePtr& sprite);
+	void removeOverlay (const SpritePtr& sprite);
 
 	void addRope (const ClientEntityPtr& ropeEntity)
 	{
@@ -165,8 +167,17 @@ protected:
 	mutable int _screenHeight;
 };
 
+inline void ClientEntity::removeOverlay (const SpritePtr& sprite)
+{
+	auto i = std::find(_entityOverlays.begin(), _entityOverlays.end(), sprite);
+	if (i != _entityOverlays.end())
+		_entityOverlays.erase(i);
+}
+
 inline void ClientEntity::addOverlay (const SpritePtr& sprite)
 {
+	if (!sprite)
+		return;
 	_entityOverlays.push_back(sprite);
 }
 
