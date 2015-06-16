@@ -23,6 +23,8 @@ void Bubble::init ()
 
 void Bubble::run ()
 {
+	if (_waterHeight <= 0.0)
+		return;
 	// the water height might change, so update this
 	init();
 	const float magnitude = 0.1f;
