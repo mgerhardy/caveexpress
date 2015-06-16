@@ -924,7 +924,7 @@ void UINodeMapEditor::doClear ()
 	setFlyingNpc(string::toBool(msd::FLYING_NPC));
 	setFishNpc(string::toBool(msd::FISH_NPC));
 	setWaterParameters(string::toFloat(msd::WATER_HEIGHT), string::toFloat(msd::WATER_CHANGE), string::toInt(msd::WATER_RISING_DELAY), string::toInt(msd::WATER_FALLING_DELAY));
-	setPlayerPosition(0.0f, 0.0f);
+	_startPositions.clear();
 	setTheme(ThemeTypes::ICE);
 	setSetting(msn::SIDEBORDERFAIL, msd::SIDEBORDERFAIL);
 	setSetting(msn::WIND, msd::WIND);
@@ -1064,12 +1064,7 @@ void UINodeMapEditor::loadFromContext (ICaveMapContext& ctx)
 		else
 			setSetting(i->first, i->second);
 	}
-	const IMap::StartPositions& startPositions = ctx.getStartPositions();
-	if (!startPositions.empty()) {
-		const gridCoord playerX = string::toFloat(startPositions[0]._x);
-		const gridCoord playerY = string::toFloat(startPositions[0]._y);
-		setPlayerPosition(playerX, playerY);
-	}
+	_startPositions = ctx.getStartPositions();
 	const int mapWidth = string::toInt(_settings[msn::WIDTH]);
 	const int mapHeight = string::toInt(_settings[msn::HEIGHT]);
 	setMapDimensions(mapWidth, mapHeight);
