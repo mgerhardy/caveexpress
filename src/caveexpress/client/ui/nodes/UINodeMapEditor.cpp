@@ -1034,7 +1034,7 @@ bool UINodeMapEditor::save ()
 	const std::string luaStr = lua.str();
 	const unsigned char *buf = reinterpret_cast<const unsigned char *>(luaStr.c_str());
 	SDL_SetClipboardText(luaStr.c_str());
-	std::string filename = FS.getMapsDir() + _fileName + ".lua";
+	std::string filename = FS.getDataDir() + FS.getMapsDir() + _fileName + ".lua";
 	const size_t length = luaStr.size();
 	if (FS.writeFile(filename, buf, length, true) == -1L) {
 		error(LOG_GENERAL, "failed to write " + filename);
