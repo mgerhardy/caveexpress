@@ -95,6 +95,8 @@ public:
 	virtual void bindTexture (Texture* texture, int textureUnit) = 0;
 	virtual RenderTarget* renderToTexture (int x, int y, int w, int h) { return nullptr; }
 	virtual bool renderTarget (RenderTarget* target) { return false; }
+	virtual void bindTargetTexture (RenderTarget* target) {}
+	virtual void unbindTargetTexture (RenderTarget* target) {}
 	// @param w the width of the rect to fill <= 0 to use the full screen width
 	// @param h the height of the rect to fill <= 0 to use the full screen height
 	virtual void renderRect (int x, int y, int w, int h, const Color& color) = 0;

@@ -151,10 +151,12 @@ void CaveExpressClientMap::renderEnd (int x, int y) const
 		return;
 	}
 	_frontend->renderTarget(_target);
-	_target = nullptr;
 
 #if 1
+	_frontend->bindTargetTexture(_target);
 	renderWater(x, y);
+	_frontend->unbindTargetTexture(_target);
+	_target = nullptr;
 #else
 	if (getWaterHeight() <= 0.000001f)
 		return;

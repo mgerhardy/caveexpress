@@ -79,6 +79,14 @@ RenderTarget* GL3Frontend::renderToTexture (int x, int y, int w, int h)
 	return &target;
 }
 
+void GL3Frontend::bindTargetTexture(RenderTarget* target)
+{
+}
+
+void GL3Frontend::unbindTargetTexture (RenderTarget* target)
+{
+}
+
 bool GL3Frontend::renderTarget (RenderTarget* target)
 {
 	// render the current batches to the fbo texture - and unbind the fbo
