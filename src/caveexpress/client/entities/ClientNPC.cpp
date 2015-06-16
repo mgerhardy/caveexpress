@@ -33,7 +33,7 @@ void ClientNPC::changeState(uint8_t state) {
 
 void ClientNPC::setTargetCave(uint8_t caveNumber, short delay) {
 	_speechBubbleDelay = _time + delay;
-	const std::string& caveSprite = String::format("cavenumber%i", caveNumber);
+	const std::string caveSprite = String::format("cavenumber%i", caveNumber);
 	_targetCaveSprite = UI::get().loadSprite(caveSprite);
 	addOverlay(_targetCaveSprite);
 }
