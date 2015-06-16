@@ -41,7 +41,6 @@ void ClientEntity::calcOffset(int scale, float zoom, int posX, int posY, int &of
 	case ENTITY_ALIGN_UPPER_LEFT:
 		break;
 	case ENTITY_ALIGN_LOWER_LEFT:
-		offsetPosX -= _size.x * scale * zoom;
 		offsetPosY -= _size.y * scale * zoom;
 		break;
 	case ENTITY_ALIGN_MIDDLE_CENTER:
