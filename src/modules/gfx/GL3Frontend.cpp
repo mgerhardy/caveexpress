@@ -205,6 +205,8 @@ void GL3Frontend::renderBatches ()
 	_currentVertexIndex = 0;
 	glBindVertexArray(0);
 	_currentBatch = 0;
+	memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
+	_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
 	_shader.deactivate();
 	GL_checkError();
 }
@@ -227,8 +229,6 @@ void GL3Frontend::startNewBatch ()
 	if (_currentBatch >= MAX_BATCHES) {
 		debug(LOG_CLIENT, "render the batches because the max batch count was exceeded");
 		renderBatches();
-		memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
-		_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
 		return;
 	}
 	memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
