@@ -178,7 +178,7 @@ void ClientMap::render () const
 
 	const int scissorX = std::max(0, x);
 	const int scissorY = std::max(0, y);
-	const bool debug = Config.isDebug();
+	const bool debug = Config.isDebugUI();
 	if (debug) {
 		_frontend->renderRect(scissorX, scissorY, getPixelWidth() * _zoom, getPixelHeight() * _zoom, colorRed);
 	} else {
