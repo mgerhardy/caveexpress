@@ -1,6 +1,7 @@
 #include "GL3Frontend.h"
 #include "textures/TextureCoords.h"
 #include "common/Logger.h"
+#include "common/System.h"
 #include "common/FileSystem.h"
 #include <SDL_image.h>
 
@@ -15,6 +16,11 @@ struct Vertex {
 	} c;
 };
 
+struct TextureData {
+	GLuint texnum;
+	GLuint normalnum;
+};
+
 struct RenderTarget {
 	FrameBuffer* fbo;
 };
@@ -24,7 +30,7 @@ struct RenderTarget {
 
 struct Batch {
 	TexNum texnum;
-	int texunit;
+	TexNum normaltexnum;
 	Vertex vertices[MAXNUMVERTICES];
 	int type;
 	int vertexIndexStart;
@@ -40,14 +46,13 @@ static int _currentVertexIndex;
 static Batch _batches[MAX_BATCHES];
 static int _currentBatch;
 
-inline TexNum getTexNum (void *textureData)
+inline TexNum GL3getTexNum (TextureData *textureData)
 {
-	const intptr_t texnum = reinterpret_cast<intptr_t>(textureData);
-	return texnum;
+	return textureData->texnum;
 }
 
 GL3Frontend::GL3Frontend (SharedPtr<IConsole> console) :
-		SDLFrontend(console), _currentTexture(-1), _rx(1.0f), _ry(1.0f), _vao(0u), _vbo(0u), _renderTargetTexture(0), _white(0), _drawCalls(0)
+		SDLFrontend(console), _currentTexture(-1), _rx(1.0f), _ry(1.0f), _vao(0u), _vbo(0u), _renderTargetTexture(0), _white(0), _alpha(0), _drawCalls(0)
 {
 	_context = nullptr;
 	_currentBatch = 0;
@@ -96,7 +101,7 @@ bool GL3Frontend::renderTarget (RenderTarget* target)
 
 	const TextureRect& r = target->fbo->rect();
 	const TextureCoords texCoords(r, r.w, r.h, false, true);
-	renderTexture(texCoords, r.x, r.y, r.w, r.h, 0, 1.0, _renderTargetTexture);
+	renderTexture(texCoords, r.x, r.y, r.w, r.h, 0, 1.0, _renderTargetTexture, _alpha);
 	return true;
 }
 
@@ -107,11 +112,10 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 
 	const TextureCoords texCoords(texture);
 	getTrimmed(texture, x, y, w, h);
-	const TexNum texnum = getTexNum(texture->getData());
-	renderTexture(texCoords, x, y, w, h, angle, alpha, texnum);
+	renderTexture(texCoords, x, y, w, h, angle, alpha, texture->getData()->texnum, texture->getData()->normalnum);
 }
 
-void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum)
+void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum)
 {
 	const float x1 = x * _rx;
 	const float y1 = y * _ry;
@@ -127,7 +131,7 @@ void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, in
 	flushBatch(GL_TRIANGLES);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = texnum;
-	batch.texunit = 0;
+	batch.normaltexnum = normaltexnum;
 	batch.angle = DegreesToRadians(angle);
 	// TODO: remove me - this prevents us from having lesser draw calls (e.g. reusing the same batch if type, angle and texnum is equal
 	batch.translation.x = x1 + centerx;
@@ -186,6 +190,11 @@ void GL3Frontend::renderBatches ()
 		_shader.setUniformi("u_time", _time);
 	if (_shader.hasUniform("u_screenres"))
 		_shader.setUniformi("u_screenres", _width, _height);
+	if (_shader.hasUniform("u_mousepos")) {
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+		_shader.setUniformi("u_mousepos", x, y);
+	}
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _currentVertexIndex, _vertices, GL_DYNAMIC_DRAW);
@@ -201,7 +210,10 @@ void GL3Frontend::renderBatches ()
 		}
 		if (_currentTexture != b.texnum) {
 			_currentTexture = b.texnum;
-			glBindTexture(GL_TEXTURE_2D, _currentTexture);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, b.normaltexnum);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, b.texnum);
 		}
 		const glm::mat4& translate = glm::translate(glm::mat4(1.0f), glm::vec3(b.translation, 0.0f));
 		const glm::mat4& model = glm::rotate(translate, b.angle, glm::vec3(0.0, 0.0, 1.0));
@@ -302,18 +314,22 @@ void GL3Frontend::initRenderer ()
 	memset(white, 0xff, sizeof(white));
 	_white = uploadTexture(white, 2, 2);
 
+	unsigned char alpha[16];
+	memset(alpha, 0x00, sizeof(alpha));
+	_alpha = uploadTexture(alpha, 2, 2);
+
 	memset(_batches, 0, sizeof(_batches));
 	_currentVertexIndex = 0;
 
-	if (!_shader.loadProgram("main"))
+	if (!_shader.loadProgram("main")) {
 		error(LOG_CLIENT, "Failed to load the main shader");
+		System.exit("Failed to load the main shader", 1);
+	}
 	_shader.activate();
 	if (_shader.hasUniform("u_texture"))
 		_shader.setUniformi("u_texture", 0);
-	if (_shader.hasUniform("u_texture1"))
-		_shader.setUniformi("u_texture1", 0);
-	if (_shader.hasUniform("u_texture2"))
-		_shader.setUniformi("u_texture2", 1);
+	if (_shader.hasUniform("u_normals"))
+		_shader.setUniformi("u_normals", 1);
 	_shader.setVertexAttribute("a_pos", 2, GL_FLOAT, false, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, x)));
 	_shader.enableVertexAttributeArray("a_pos");
 	_shader.setVertexAttribute("a_texcoord", 2, GL_FLOAT, false, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, u)));
@@ -325,6 +341,12 @@ void GL3Frontend::initRenderer ()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	_shader.deactivate();
+
+	glActiveTexture(GL_TEXTURE1);
+	glEnable(GL_TEXTURE_2D);
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
 }
 
 int GL3Frontend::getCoordinateOffsetX () const
@@ -351,13 +373,13 @@ void GL3Frontend::getViewPort (int* x, int *y, int *w, int *h) const
 
 void GL3Frontend::bindTexture (Texture* texture, int textureUnit)
 {
-	const TexNum texnum = getTexNum(texture->getData());
+	const TexNum texnum = texture->getData()->texnum;
 	if (_currentTexture == texnum)
 		return;
 	_currentTexture = texnum;
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = texnum;
-	batch.texunit = textureUnit;
+	batch.normaltexnum = texture->getData()->normalnum;
 	glBindTexture(GL_TEXTURE_2D, _currentTexture);
 }
 
@@ -380,7 +402,7 @@ void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& col
 	flushBatch(GL_TRIANGLES);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = _white;
-	batch.texunit = 0;
+	batch.normaltexnum = _alpha;
 	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
@@ -431,7 +453,7 @@ void GL3Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color
 	flushBatch(GL_LINES);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = _white;
-	batch.texunit = 0;
+	batch.normaltexnum = _alpha;
 	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
@@ -452,49 +474,68 @@ void GL3Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color
 	_vertices[_currentVertexIndex++] = v;
 }
 
-void GL3Frontend::destroyTexture (void *data)
+void GL3Frontend::destroyTexture (TextureData *data)
 {
-	const TexNum texnum = getTexNum(data);
-	glDeleteTextures(1, &texnum);
-	GL_checkError();
+	if (data->texnum != _white && data->texnum != _alpha && data->normalnum != _white && data->normalnum != _alpha) {
+		glDeleteTextures(1, &data->texnum);
+		glDeleteTextures(1, &data->normalnum);
+		GL_checkError();
+	}
 }
 
-bool GL3Frontend::loadTexture (Texture *texture, const std::string& filename)
-{
+SDL_Surface* GL3Frontend::loadTextureIntoSurface(const std::string& filename) {
 	const std::string file = FS.getFile(FS.getPicsDir() + filename + ".png")->getName();
 	SDL_RWops *src = FS.createRWops(file);
 	if (src == nullptr) {
-		error(LOG_CLIENT, "could not load the file: " + file);
-		return false;
+		return nullptr;
 	}
 	SDL_Surface *surface = IMG_Load_RW(src, 1);
 	if (!surface) {
 		sdlCheckError();
-		error(LOG_CLIENT, "could not load the texture: " + file);
-		return false;
+		return nullptr;
 	}
 
 	if (surface->format->format != SDL_PIXELFORMAT_ARGB8888) {
 		SDL_PixelFormat *destFormat = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
 		if (destFormat == nullptr) {
 			SDL_FreeSurface(surface);
-			return false;
+			return nullptr;
 		}
 		SDL_Surface* temp = SDL_ConvertSurface(surface, destFormat, 0);
 		SDL_FreeFormat(destFormat);
 		if (temp == nullptr) {
 			SDL_FreeSurface(surface);
-			return false;
+			return nullptr;
 		}
 		SDL_FreeSurface(surface);
 		surface = temp;
 	}
 
-	TexNum texnum = uploadTexture(static_cast<unsigned char*>(surface->pixels), surface->w, surface->h);
-	texture->setData(reinterpret_cast<void*>(texnum));
-	texture->setRect(0, 0, surface->w, surface->h);
-	SDL_FreeSurface(surface);
-	return texnum != 0;
+	return surface;
+}
+
+bool GL3Frontend::loadTexture (Texture *texture, const std::string& filename)
+{
+	SDL_Surface* textureSurface = loadTextureIntoSurface(filename);
+	if (textureSurface == nullptr) {
+		error(LOG_CLIENT, "could not load the file: " + filename);
+		return false;
+	}
+	SDL_Surface* normalSurface = loadTextureIntoSurface(filename + "_n");
+	TextureData* data = new TextureData();
+	data->texnum = uploadTexture(static_cast<unsigned char*>(textureSurface->pixels), textureSurface->w, textureSurface->h);
+	if (normalSurface) {
+		data->normalnum = uploadTexture(static_cast<unsigned char*>(normalSurface->pixels), normalSurface->w, normalSurface->h);
+		info(LOG_CLIENT, "load normal map for: " + filename);
+	} else {
+		data->normalnum = _alpha;
+	}
+	texture->setData(data);
+	texture->setRect(0, 0, textureSurface->w, textureSurface->h);
+	SDL_FreeSurface(textureSurface);
+	if (normalSurface)
+		SDL_FreeSurface(normalSurface);
+	return data->texnum != 0;
 }
 
 TexNum GL3Frontend::uploadTexture (const unsigned char* pixels, int w, int h) const

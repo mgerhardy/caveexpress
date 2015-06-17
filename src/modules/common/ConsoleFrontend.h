@@ -30,7 +30,7 @@ public:
 	int renderPolygon (int *vx, int *vy, int n, const Color& color) override { return -1; }
 	void updateViewport (int x, int y, int width, int height) override {}
 	void enableScissor (int x, int y, int width, int height) override {}
-	void destroyTexture (void *data) override {}
+	void destroyTexture (TextureData *data) override {}
 	void disableScissor () override {}
 	void minimize () override {}
 	void render () override;

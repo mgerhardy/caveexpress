@@ -22,6 +22,7 @@ protected:
 	FrameBuffer _fbo;
 	GLuint _renderTargetTexture;
 	TexNum _white;
+	TexNum _alpha;
 	Shader _shader;
 	int _drawCalls;
 
@@ -30,7 +31,8 @@ protected:
 	TexNum uploadTexture(const unsigned char* pixels, int w, int h) const;
 	void flushBatch (int type);
 	void startNewBatch ();
-	void renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum);
+	void renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum);
+	SDL_Surface* loadTextureIntoSurface(const std::string& file);
 
 public:
 	explicit GL3Frontend (SharedPtr<IConsole> console);
@@ -44,7 +46,7 @@ public:
 	int getCoordinateOffsetY () const override;
 	void getViewPort (int* x, int *y, int *w, int *h) const override;
 	bool loadTexture (Texture *texture, const std::string& filename) override;
-	void destroyTexture (void *data) override;
+	void destroyTexture (TextureData *data) override;
 	void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha = 1.0f) override;
 	void bindTexture (Texture* texture, int textureUnit) override;
 	RenderTarget* renderToTexture (int x, int y, int w, int h) override;

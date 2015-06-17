@@ -15,7 +15,11 @@
 #endif
 #include "GLShared.h"
 
-inline TexNum getTexNum (void *textureData)
+struct TextureData {
+	int unused;
+};
+
+inline TexNum GL1getTexNum (TextureData *textureData)
 {
 	const intptr_t texnum = reinterpret_cast<intptr_t>(textureData);
 	return texnum;
@@ -170,7 +174,7 @@ void GL1Frontend::bindTexture (Texture* texture, int textureUnit)
 	if (invalidTexUnit(textureUnit))
 		return;
 
-	const TexNum texnum = getTexNum(texture->getData());
+	const TexNum texnum = GL1getTexNum(texture->getData());
 	if (_currentTextureUnit->currentTexture == texnum)
 		return;
 	_currentTextureUnit->currentTexture = texnum;
@@ -283,10 +287,10 @@ void GL1Frontend::renderFilledRect (int x, int y, int w, int h, const Color& fil
 #endif
 }
 
-void GL1Frontend::destroyTexture (void *data)
+void GL1Frontend::destroyTexture (TextureData *data)
 {
 #ifdef SDL_VIDEO_OPENGL
-	const TexNum texnum = getTexNum(data);
+	const TexNum texnum = GL1getTexNum(data);
 	glDeleteTextures(1, &texnum);
 	GL_checkError();
 #endif
@@ -335,7 +339,7 @@ bool GL1Frontend::loadTexture (Texture *texture, const std::string& filename)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, surface->w, surface->h, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	GL_checkError();
-	texture->setData(reinterpret_cast<void*>(texnum));
+	texture->setData(reinterpret_cast<TextureData*>(texnum));
 	texture->setRect(0, 0, surface->w, surface->h);
 	SDL_FreeSurface(surface);
 	return texnum != 0;

@@ -36,7 +36,7 @@ private:
 	bool _mirror;
 	bool _copy;
 	// renderer representation of the texture
-	void *_data;
+	TextureData *_data;
 	IFrontend *_frontend;
 	TextureDefinitionTrim _trim;
 
@@ -45,8 +45,8 @@ public:
 	Texture (const Texture& texture);
 	virtual ~Texture ();
 
-	void setData (void *texture);
-	void *getData () const;
+	void setData (TextureData *texture);
+	TextureData *getData () const;
 	int getWidth () const;
 	void bindTexture (int textureUnit = 0);
 	int getHeight () const;
@@ -75,7 +75,7 @@ public:
 	const TextureRect& getSourceRect () const;
 };
 
-inline void *Texture::getData () const
+inline TextureData *Texture::getData () const
 {
 	return _data;
 }
@@ -120,7 +120,7 @@ inline int Texture::getFullHeight () const
 	return _uploadedHeight;
 }
 
-inline void Texture::setData (void *texture)
+inline void Texture::setData (TextureData *texture)
 {
 	if (texture == nullptr && _data != nullptr && !_copy)
 		_frontend->destroyTexture(_data);

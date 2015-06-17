@@ -76,7 +76,7 @@ void BGFXFrontend::renderFilledRect (int x, int y, int w, int h, const Color& fi
 {
 }
 
-void BGFXFrontend::destroyTexture (void *data)
+void BGFXFrontend::destroyTexture (TextureData *data)
 {
 }
 

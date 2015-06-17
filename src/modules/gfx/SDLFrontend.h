@@ -90,7 +90,7 @@ public:
 	virtual void renderLineWithTexture (int x1, int y1, int x2, int y2, Texture* texture) override;
 	virtual void updateViewport (int x, int y, int width, int height) override;
 	virtual void enableScissor (int x, int y, int width, int height) override;
-	virtual void destroyTexture (void *data) override;
+	virtual void destroyTexture (TextureData *data) override;
 	virtual void minimize () override;
 	virtual void disableScissor () override;
 	virtual void render () override;

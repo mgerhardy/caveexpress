@@ -15,8 +15,12 @@
 #include <SDL_platform.h>
 #include <limits.h>
 
+struct TextureData {
+	void* unused;
+};
+
 struct RenderTarget {
-	int i; // unused
+	int unused;
 };
 
 SDLFrontend::SDLFrontend (SharedPtr<IConsole> console) :
@@ -195,7 +199,7 @@ void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	const SDL_Rect destRect = { x, y, w, h };
 	const TextureRect& r = texture->getSourceRect();
 	const SDL_Rect srcRect = { r.x, r.y, r.w, r.h };
-	SDL_Texture *t = static_cast<SDL_Texture*>(texture->getData());
+	SDL_Texture *t = reinterpret_cast<SDL_Texture*>(texture->getData());
 	SDL_SetTextureAlphaMod(t, alpha * 255);
 	SDL_SetTextureColorMod(t, _color[0] * 255, _color[1] * 255, _color[2] * 255);
 	if (_softwareRenderer) {
@@ -224,7 +228,7 @@ bool SDLFrontend::loadTexture (Texture *texture, const std::string& filename)
 	if (sdltexture) {
 		int w, h;
 		SDL_QueryTexture(sdltexture, nullptr, nullptr, &w, &h);
-		texture->setData(sdltexture);
+		texture->setData(reinterpret_cast<TextureData*>(sdltexture));
 		texture->setRect(0, 0, w, h);
 		return texture->isValid();
 	}
@@ -259,7 +263,7 @@ void SDLFrontend::bindTexture (Texture* texture, int textureUnit)
 {
 	if (textureUnit != 0)
 		error(LOG_CLIENT, "only one texture unit is supported in the sdl frontend");
-	SDL_Texture *sdltexture = static_cast<SDL_Texture *>(texture->getData());
+	SDL_Texture *sdltexture = reinterpret_cast<SDL_Texture *>(texture->getData());
 	SDL_GL_BindTexture(sdltexture, nullptr, nullptr);
 }
 
@@ -332,9 +336,9 @@ void SDLFrontend::minimize ()
 	SDL_MinimizeWindow(_window);
 }
 
-void SDLFrontend::destroyTexture (void *data)
+void SDLFrontend::destroyTexture (TextureData *data)
 {
-	SDL_Texture *t = static_cast<SDL_Texture*>(data);
+	SDL_Texture *t = reinterpret_cast<SDL_Texture*>(data);
 	SDL_DestroyTexture(t);
 }
 

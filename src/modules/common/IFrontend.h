@@ -14,6 +14,7 @@ class BitmapFont;
 typedef SharedPtr<BitmapFont> BitmapFontPtr;
 
 struct RenderTarget;
+struct TextureData;
 
 #define TINY_FONT "font-8"
 #define SMALL_FONT "font-10"
@@ -110,7 +111,7 @@ public:
 	virtual void updateViewport (int x, int y, int width, int height) = 0;
 	virtual void enableScissor (int x, int y, int width, int height) = 0;
 	virtual void disableScissor () = 0;
-	virtual void destroyTexture (void *data) = 0;
+	virtual void destroyTexture (TextureData *data) = 0;
 	virtual void minimize () = 0;
 	virtual bool rumble (float strength, int lengthMillis) { return false; }
 	virtual bool hasJoystick () const { return false; }

@@ -35,7 +35,7 @@ public:
 	}
 
 	bool loadTexture(Texture* texture, const std::string& filename) override {
-		texture->setData(reinterpret_cast<void*>(1));
+		texture->setData(reinterpret_cast<TextureData*>(1));
 		texture->setRect(0, 0, 100, 100);
 		return true;
 	}
@@ -69,7 +69,7 @@ public:
 	void enableScissor(int x, int y, int width, int height) override {
 	}
 
-	void destroyTexture(void *data) override {
+	void destroyTexture(TextureData *data) override {
 	}
 
 	void disableScissor() override {
