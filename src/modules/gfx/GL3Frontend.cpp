@@ -95,7 +95,7 @@ bool GL3Frontend::renderTarget (RenderTarget* target)
 	target->fbo->unbind();
 
 	const TextureRect& r = target->fbo->rect();
-	const TextureCoords texCoords(r, _viewPort.w, _viewPort.h, false, true);
+	const TextureCoords texCoords(r, r.w, r.h, false, true);
 	renderTexture(texCoords, r.x, r.y, r.w, r.h, 0, 1.0, _renderTargetTexture);
 	return true;
 }
