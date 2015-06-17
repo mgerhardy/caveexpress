@@ -189,11 +189,11 @@ void GL3Frontend::renderBatches ()
 	if (_shader.hasUniform("u_time"))
 		_shader.setUniformi("u_time", _time);
 	if (_shader.hasUniform("u_screenres"))
-		_shader.setUniformi("u_screenres", _width, _height);
+		_shader.setUniformf("u_screenres", _width, _height);
 	if (_shader.hasUniform("u_mousepos")) {
 		int x, y;
 		SDL_GetMouseState(&x, &y);
-		_shader.setUniformi("u_mousepos", x, y);
+		_shader.setUniformf("u_mousepos", x, y);
 	}
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);

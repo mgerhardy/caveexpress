@@ -1,7 +1,7 @@
 uniform sampler2D u_texture;
 uniform sampler2D u_normals;
-uniform ivec2 u_screenres;
-uniform ivec2 u_mousepos;
+uniform vec2 u_screenres;
+uniform vec2 u_mousepos;
 in vec2 v_texcoord;
 in vec4 v_color;
 out vec4 o_color;
@@ -12,7 +12,7 @@ const vec4 AMBIENT_COLOR = vec4(1.0, 1.0, 1.0, 1.0);
 const vec3 FALLOFF = vec3(0.4, 3.0, 20.0);
 
 void main(void) {
-	vec3 lightpos = vec3(u_mousepos.x / u_screenres.x, u_mousepos.y / u_screenres.y, DEFAULT_LIGHT_Z);
+	vec3 lightpos = vec3(u_mousepos.x / u_screenres.x, 1.0 - u_mousepos.y / u_screenres.y, DEFAULT_LIGHT_Z);
 	vec4 color = texture2D(u_texture, v_texcoord).rgba;
 	vec3 normal = texture2D(u_normals, v_texcoord).rgb;
 
