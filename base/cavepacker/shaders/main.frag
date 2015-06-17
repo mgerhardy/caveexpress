@@ -43,6 +43,5 @@ void main(void) {
 	vec3 intensity = ambient + diffuse * attenuation;
 	vec3 finalcolor = color.rgb * intensity;
 
-	vec4 fcolor = v_color / 255.0;
-	o_color = vec4(finalcolor, color.a) * fcolor * 255.0;
+	o_color = vec4(finalcolor, color.a) * v_color;
 }
