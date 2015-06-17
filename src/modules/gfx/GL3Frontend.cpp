@@ -24,6 +24,7 @@ struct RenderTarget {
 
 struct Batch {
 	TexNum texnum;
+	int texunit;
 	Vertex vertices[MAXNUMVERTICES];
 	int type;
 	int vertexIndexStart;
@@ -126,6 +127,7 @@ void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, in
 	flushBatch(GL_TRIANGLES);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = texnum;
+	batch.texunit = 0;
 	batch.angle = DegreesToRadians(angle);
 	// TODO: remove me - this prevents us from having lesser draw calls (e.g. reusing the same batch if type, angle and texnum is equal
 	batch.translation.x = x1 + centerx;
@@ -308,6 +310,10 @@ void GL3Frontend::initRenderer ()
 	_shader.activate();
 	if (_shader.hasUniform("u_texture"))
 		_shader.setUniformi("u_texture", 0);
+	if (_shader.hasUniform("u_texture1"))
+		_shader.setUniformi("u_texture1", 0);
+	if (_shader.hasUniform("u_texture2"))
+		_shader.setUniformi("u_texture2", 1);
 	_shader.setVertexAttribute("a_pos", 2, GL_FLOAT, false, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, x)));
 	_shader.enableVertexAttributeArray("a_pos");
 	_shader.setVertexAttribute("a_texcoord", 2, GL_FLOAT, false, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, u)));
@@ -351,6 +357,7 @@ void GL3Frontend::bindTexture (Texture* texture, int textureUnit)
 	_currentTexture = texnum;
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = texnum;
+	batch.texunit = textureUnit;
 	glBindTexture(GL_TEXTURE_2D, _currentTexture);
 }
 
@@ -373,6 +380,7 @@ void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& col
 	flushBatch(GL_TRIANGLES);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = _white;
+	batch.texunit = 0;
 	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
@@ -423,6 +431,7 @@ void GL3Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color
 	flushBatch(GL_LINES);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = _white;
+	batch.texunit = 0;
 	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
