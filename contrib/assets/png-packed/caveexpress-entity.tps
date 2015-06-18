@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.8.0</string>
         <key>fileName</key>
-        <string>/home/mattn/dev/caveexpress/contrib/assets/png-packed/caveexpress-entity.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-entity.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -272,6 +272,14 @@
             <filename>../png/caveexpress/icon-cavenumber7.png</filename>
             <filename>../png/caveexpress/icon-cavenumber8.png</filename>
             <filename>../png/caveexpress/icon-targetcave.png</filename>
+            <filename>../png/caveexpress/tree-dazed-middle-02_n.png</filename>
+            <filename>../png/caveexpress/tree-idle-middle-01_n.png</filename>
+            <filename>../png/caveexpress/tree-idle-middle-02_n.png</filename>
+            <filename>../png/caveexpress/tree-dazed-middle-01_n.png</filename>
+            <filename>../png/caveexpress/tree-idle-middle-03_n.png</filename>
+            <filename>../png/caveexpress/item-stone-idle-middle-01_n.png</filename>
+            <filename>../png/caveexpress/item-stone-idle-middle-02_n.png</filename>
+            <filename>../png/caveexpress/item-stone-idle-middle-03_n.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
@@ -284,7 +292,7 @@
         <key>commonDivisorY</key>
         <uint>1</uint>
         <key>packNormalMaps</key>
-        <false/>
+        <true/>
         <key>autodetectNormalMaps</key>
         <true/>
         <key>normalMapFilter</key>
