@@ -259,6 +259,7 @@ void GL3Frontend::startNewBatch ()
 
 void GL3Frontend::enableScissor (int x, int y, int width, int height)
 {
+	// TODO: scissor while we are on render to texture stamina doesn't need this conversion
 	const int lowerLeft = std::max(0, getHeight() - y - height);
 	startNewBatch();
 	_batches[_currentBatch].scissorRect.x = x;

@@ -26,6 +26,10 @@
 
 namespace caveexpress {
 
+static const Color waterLineColor = { 0.99f, 0.99f, 1.0f, 1.0f };
+static const Color color = { WATERCOLOR[0] / 255.0f, WATERCOLOR[1] / 255.0f, WATERCOLOR[2] / 255.0f, WATER_ALPHA
+		/ 255.0f };
+
 CaveExpressClientMap::CaveExpressClientMap (int x, int y, int width, int height, IFrontend *frontend,
 		ServiceProvider& serviceProvider, int referenceTileWidth) :
 		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth), _waterHeight(0.0), _target(nullptr)
@@ -40,9 +44,6 @@ void CaveExpressClientMap::resetCurrentMap ()
 
 void CaveExpressClientMap::renderWater (int x, int y) const
 {
-	static const Color waterLineColor = { 0.99f, 0.99f, 1.0f, 1.0f };
-	static const Color color = { WATERCOLOR[0] / 255.0f, WATERCOLOR[1] / 255.0f, WATERCOLOR[2] / 255.0f, WATER_ALPHA
-			/ 255.0f };
 	if (getWaterHeight() <= 0.000001f)
 		return;
 	const int widthWater = getPixelWidth() * _zoom;
