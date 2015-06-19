@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.8.0</string>
+        <string>3.7.1</string>
         <key>fileName</key>
         <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-packagetarget-rock.tps</string>
         <key>autoSDSettings</key>
@@ -202,7 +202,7 @@
             <key>trimThreshold</key>
             <uint>8</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">Trim</enum>
+            <enum type="SpriteSettings::TrimMode">None</enum>
             <key>heuristicMask</key>
             <false/>
             <key>pivotPoint</key>
