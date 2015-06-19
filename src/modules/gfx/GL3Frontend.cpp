@@ -203,6 +203,8 @@ void GL3Frontend::renderBatches ()
 	bool scissorActive = false;
 	for (int i = 0; i < _currentBatch; ++i) {
 		Batch& b = _batches[i];
+		if (b.vertexCount == 0)
+			continue;
 		if (b.scissor) {
 			scissorActive = true;
 			glScissor(b.scissorRect.x * _rx, b.scissorRect.y * _ry, b.scissorRect.w * _rx, b.scissorRect.h * _ry);
