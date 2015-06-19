@@ -265,13 +265,14 @@ void GL3Frontend::startNewBatch ()
 	}
 	memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
 	_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
+	_batches[_currentBatch].scissorRect = _batches[_currentBatch - 1].scissorRect;
 }
 
 void GL3Frontend::enableScissor (int x, int y, int width, int height)
 {
-	// TODO: scissor while we are on render to texture stamina doesn't need this conversion
-	const int lowerLeft = std::max(0, getHeight() - y - height);
+	const int lowerLeft = _fbo.isBound() ? y : std::max(0, getHeight() - y - height);
 	startNewBatch();
+	_batches[_currentBatch].scissor = true;
 	_batches[_currentBatch].scissorRect.x = x;
 	_batches[_currentBatch].scissorRect.y = lowerLeft;
 	_batches[_currentBatch].scissorRect.w = width;
@@ -291,10 +292,7 @@ float GL3Frontend::getHeightScale () const
 void GL3Frontend::disableScissor ()
 {
 	startNewBatch();
-	_batches[_currentBatch].scissorRect.x = -1;
-	_batches[_currentBatch].scissorRect.y = -1;
-	_batches[_currentBatch].scissorRect.w = -1;
-	_batches[_currentBatch].scissorRect.h = -1;
+	_batches[_currentBatch].scissor = false;
 }
 
 void GL3Frontend::initRenderer ()
