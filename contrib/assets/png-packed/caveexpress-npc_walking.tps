@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.8.0</string>
         <key>fileName</key>
-        <string>/home/mattn/dev/caveexpress/contrib/assets/png-packed/caveexpress-npc_walking.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-npc_walking.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -202,7 +202,7 @@
             <key>trimThreshold</key>
             <uint>8</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">None</enum>
+            <enum type="SpriteSettings::TrimMode">Trim</enum>
             <key>heuristicMask</key>
             <true/>
             <key>pivotPoint</key>
