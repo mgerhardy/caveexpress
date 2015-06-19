@@ -92,9 +92,11 @@ bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fil
 {
 	renderBatches();
 	const TextureRect r = {x, y, w, h};
-	const TextureCoords texCoords(r, r.w, r.h, false, false);
+	const TextureCoords texCoords(r, _fbo.rect().w, _fbo.rect().h, false, true);
 	renderTexture(texCoords, r.x, r.y, r.w, r.h, 0, 1.0, _renderTargetTexture, _alpha);
+	//info(LOG_CLIENT, String::format("x: %i, y: %i, w: %i, h: %i", x, y, w, h));
 	renderBatchesWithShader(_waterShader);
+	SDLFrontend::renderWaterPlane(x, y, w, h, fillColor, waterLineColor);
 	return true;
 }
 
@@ -198,7 +200,7 @@ void GL3Frontend::renderBatches()
 
 void GL3Frontend::renderBatchesWithShader (Shader& shader)
 {
-	if (_currentBatch == 0)
+	if (_batches[0].texnum == 0)
 		return;
 	shader.activate();
 	if (shader.hasUniform("u_projection"))
@@ -216,7 +218,7 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _currentVertexIndex, _vertices, GL_DYNAMIC_DRAW);
 	bool scissorActive = false;
-	for (int i = 0; i < _currentBatch; ++i) {
+	for (int i = 0; i <= _currentBatch; ++i) {
 		Batch& b = _batches[i];
 		if (b.vertexCount == 0)
 			continue;
