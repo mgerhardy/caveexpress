@@ -1,7 +1,7 @@
 #include "FrameBuffer.h"
 
 FrameBuffer::FrameBuffer () :
-		_framebuffer(0u), _attached(0), _depth(false), _depthRenderBuffer(0u)
+		_framebuffer(0u), _attached(0), _depth(false), _depthRenderBuffer(0u), _bound(false)
 {
 	_rect.x = _rect.y = _rect.w = _rect.h = 0;
 }
@@ -31,6 +31,8 @@ void FrameBuffer::bind ()
 		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		if (status != GL_FRAMEBUFFER_COMPLETE) {
 			error(LOG_CLIENT, "Failed to bind the framebuffer");
+		} else {
+			_bound = true;
 		}
 		return;
 	}
@@ -40,6 +42,8 @@ void FrameBuffer::bind ()
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
 		error(LOG_CLIENT, "Failed to bind the framebuffer");
+	} else {
+		_bound = true;
 	}
 }
 
@@ -56,6 +60,8 @@ void FrameBuffer::bind (int x, int y, int w, int h)
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
 		error(LOG_CLIENT, "Failed to bind the framebuffer for rendering");
+	} else {
+		_bound = true;
 	}
 }
 

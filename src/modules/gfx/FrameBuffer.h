@@ -12,11 +12,16 @@ private:
 	GLuint _depthRenderBuffer;
 	std::vector<GLuint> _textures;
 	TextureRect _rect;
+	bool _bound;
 public:
 	FrameBuffer ();
 	~FrameBuffer ();
 
 	void destroy ();
+
+	inline bool isBound() const {
+		return _bound;
+	}
 
 	inline const TextureRect& rect() const {
 		return _rect;
