@@ -231,9 +231,11 @@ void GL3Frontend::renderBatches ()
 	_drawCalls += _currentBatch;
 	_currentVertexIndex = 0;
 	glBindVertexArray(0);
+	const SDL_Rect scissorRect = _batches[_currentBatch].scissorRect;
 	_currentBatch = 0;
 	memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
 	_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
+	_batches[_currentBatch].scissorRect = scissorRect;
 	_shader.deactivate();
 	GL_checkError();
 }
