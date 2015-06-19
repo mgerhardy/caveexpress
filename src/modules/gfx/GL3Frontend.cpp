@@ -183,6 +183,8 @@ void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, in
 
 void GL3Frontend::renderBatches ()
 {
+	if (_currentBatch == 0)
+		return;
 	_shader.activate();
 	if (_shader.hasUniform("u_projection"))
 		_shader.setUniformMatrix("u_projection", _projectionMatrix, false);
