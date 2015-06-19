@@ -93,15 +93,25 @@ void GL3Frontend::unbindTargetTexture (RenderTarget* target)
 {
 }
 
+bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fillColor, const Color& waterLineColor)
+{
+	return false;
+}
+
 bool GL3Frontend::renderTarget (RenderTarget* target)
+{
+	disableRenderTarget(target);
+	const TextureRect& r = target->fbo->rect();
+	const TextureCoords texCoords(r, r.w, r.h, false, true);
+	renderTexture(texCoords, r.x, r.y, r.w, r.h, 0, 1.0, _renderTargetTexture, _alpha);
+	return true;
+}
+
+bool GL3Frontend::disableRenderTarget (RenderTarget* target)
 {
 	// render the current batches to the fbo texture - and unbind the fbo
 	renderBatches();
 	target->fbo->unbind();
-
-	const TextureRect& r = target->fbo->rect();
-	const TextureCoords texCoords(r, r.w, r.h, false, true);
-	renderTexture(texCoords, r.x, r.y, r.w, r.h, 0, 1.0, _renderTargetTexture, _alpha);
 	return true;
 }
 
@@ -181,18 +191,23 @@ void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, in
 	_vertices[_currentVertexIndex++] = v;
 }
 
-void GL3Frontend::renderBatches ()
+void GL3Frontend::renderBatches()
+{
+	renderBatchesWithShader(_shader);
+}
+
+void GL3Frontend::renderBatchesWithShader (Shader& shader)
 {
 	if (_currentBatch == 0)
 		return;
-	_shader.activate();
-	if (_shader.hasUniform("u_projection"))
-		_shader.setUniformMatrix("u_projection", _projectionMatrix, false);
-	if (_shader.hasUniform("u_time"))
-		_shader.setUniformi("u_time", _time);
-	if (_shader.hasUniform("u_screenres"))
-		_shader.setUniformf("u_screenres", _width, _height);
-	if (_shader.hasUniform("u_mousepos")) {
+	shader.activate();
+	if (shader.hasUniform("u_projection"))
+		shader.setUniformMatrix("u_projection", _projectionMatrix, false);
+	if (shader.hasUniform("u_time"))
+		shader.setUniformi("u_time", _time);
+	if (shader.hasUniform("u_screenres"))
+		shader.setUniformf("u_screenres", _width, _height);
+	if (shader.hasUniform("u_mousepos")) {
 		int x, y;
 		SDL_GetMouseState(&x, &y);
 		_shader.setUniformf("u_mousepos", x, y);
@@ -222,7 +237,7 @@ void GL3Frontend::renderBatches ()
 		}
 		const glm::mat4& translate = glm::translate(glm::mat4(1.0f), glm::vec3(b.translation, 0.0f));
 		const glm::mat4& model = glm::rotate(translate, b.angle, glm::vec3(0.0, 0.0, 1.0));
-		_shader.setUniformMatrix("u_model", model);
+		shader.setUniformMatrix("u_model", model);
 
 		glDrawArrays(b.type, b.vertexIndexStart, b.vertexCount);
 	}
@@ -236,7 +251,7 @@ void GL3Frontend::renderBatches ()
 	memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
 	_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
 	_batches[_currentBatch].scissorRect = scissorRect;
-	_shader.deactivate();
+	shader.deactivate();
 	GL_checkError();
 }
 
@@ -334,6 +349,22 @@ void GL3Frontend::initRenderer ()
 		error(LOG_CLIENT, "Failed to load the main shader");
 		System.exit("Failed to load the main shader", 1);
 	}
+	if (!_waterShader.loadProgram("water")) {
+		error(LOG_CLIENT, "Failed to load the water shader");
+		System.exit("Failed to load the water shader", 1);
+	}
+	_waterShader.activate();
+	if (_waterShader.hasUniform("u_texture"))
+		_waterShader.setUniformi("u_texture", 0);
+	if (_waterShader.hasUniform("u_normals"))
+		_waterShader.setUniformi("u_normals", 1);
+	_waterShader.setVertexAttribute("a_pos", 2, GL_FLOAT, false, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, x)));
+	_waterShader.enableVertexAttributeArray("a_pos");
+	_waterShader.setVertexAttribute("a_texcoord", 2, GL_FLOAT, false, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, u)));
+	_waterShader.enableVertexAttributeArray("a_texcoord");
+	_waterShader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, c)));
+	_waterShader.enableVertexAttributeArray("a_color");
+
 	_shader.activate();
 	if (_shader.hasUniform("u_texture"))
 		_shader.setUniformi("u_texture", 0);

@@ -50,8 +50,7 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	const int waterSurface = y + getWaterSurface() * _zoom;
 	const int waterGround = y + getWaterGround() * _zoom;
 	const int waterHeight = waterGround - waterSurface;
-	_frontend->renderLine(x, waterSurface - 1, x + widthWater, waterSurface - 1, waterLineColor);
-	_frontend->renderFilledRect(x, waterSurface, widthWater, waterHeight, color);
+	_frontend->renderWaterPlane(x, waterSurface, widthWater, waterHeight, color, waterLineColor);
 	if (Config.isDebug()) {
 		_frontend->renderLine(x, waterSurface, x + widthWater, waterSurface, colorRed);
 		_frontend->renderLine(x, waterGround, x + widthWater, waterGround, colorGreen);
@@ -146,29 +145,10 @@ void CaveExpressClientMap::renderBegin (int x, int y) const
 
 void CaveExpressClientMap::renderEnd (int x, int y) const
 {
-	const bool enablePostProcessing = _target != nullptr;
-	if (!enablePostProcessing) {
-		renderWater(x, y);
-		return;
-	}
-	if (getWaterHeight() > 0.000001f) {
-		const int widthWater = getPixelWidth() * _zoom;
-		const int waterSurface = y + getWaterSurface() * _zoom;
-		const int waterGround = y + getWaterGround() * _zoom;
-
-		_frontend->renderLine(x, waterSurface - 1, x + widthWater, waterSurface - 1, waterLineColor);
-		int scissorHeight = waterSurface - 2;
-		int scissorX = _x;
-		int scissorY = _y;
-		int scissorWidth = _width;
-		//_frontend->renderFilledRect(scissorX, scissorY, scissorWidth, scissorHeight, colorRed);
-		_frontend->enableScissor(scissorX, scissorY, scissorWidth, scissorHeight);
+	ClientMap::renderEnd(x, y);
+	if (_target)
 		_frontend->renderTarget(_target);
-		_frontend->disableScissor();
-		_target = nullptr;
-	} else {
-		_frontend->renderTarget(_target);
-	}
+	renderWater(x, y);
 }
 
 void CaveExpressClientMap::start () {

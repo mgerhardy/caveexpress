@@ -24,6 +24,7 @@ protected:
 	TexNum _white;
 	TexNum _alpha;
 	Shader _shader;
+	Shader _waterShader;
 	int _drawCalls;
 
 	bool checkExtension (const char *extension) const;
@@ -33,6 +34,7 @@ protected:
 	void startNewBatch ();
 	void renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum);
 	SDL_Surface* loadTextureIntoSurface(const std::string& file);
+	void renderBatchesWithShader (Shader& shader);
 
 public:
 	explicit GL3Frontend (SharedPtr<IConsole> console);
@@ -50,7 +52,9 @@ public:
 	void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha = 1.0f) override;
 	void bindTexture (Texture* texture, int textureUnit) override;
 	RenderTarget* renderToTexture (int x, int y, int w, int h) override;
+	bool renderWaterPlane (int x, int y, int w, int h, const Color& fillColor, const Color& waterLineColor) override;
 	bool renderTarget (RenderTarget* target) override;
+	bool disableRenderTarget (RenderTarget* target) override;
 	void bindTargetTexture (RenderTarget* target) override;
 	void unbindTargetTexture (RenderTarget* target) override;
 	void renderRect (int x, int y, int w, int h, const Color& color) override;

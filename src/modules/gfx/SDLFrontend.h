@@ -96,6 +96,7 @@ public:
 	virtual void render () override;
 	virtual RenderTarget* renderToTexture (int x, int y, int w, int h) override;
 	virtual bool renderTarget (RenderTarget* target) override;
+	virtual bool disableRenderTarget (RenderTarget* target) override;
 	virtual void update (uint32_t deltaTime) override;
 	virtual void connect () override;
 	virtual void onMapLoaded () override;

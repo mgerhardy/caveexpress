@@ -383,9 +383,15 @@ RenderTarget* SDLFrontend::renderToTexture (int x, int y, int w, int h)
 	return &target;
 }
 
-bool SDLFrontend::renderTarget (RenderTarget* target)
+bool SDLFrontend::disableRenderTarget (RenderTarget* target)
 {
 	SDL_SetRenderTarget(_renderer, nullptr);
+	return true;
+}
+
+bool SDLFrontend::renderTarget (RenderTarget* target)
+{
+	disableRenderTarget(target);
 	SDL_RenderCopy(_renderer, _renderToTexture, nullptr, nullptr);
 	return true;
 }
