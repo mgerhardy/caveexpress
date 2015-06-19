@@ -155,15 +155,13 @@ void CaveExpressClientMap::renderEnd (int x, int y) const
 		const int widthWater = getPixelWidth() * _zoom;
 		const int waterSurface = y + getWaterSurface() * _zoom;
 		const int waterGround = y + getWaterGround() * _zoom;
-		const int waterHeight = waterGround - waterSurface;
 
 		_frontend->renderLine(x, waterSurface - 1, x + widthWater, waterSurface - 1, waterLineColor);
 		int scissorHeight = waterSurface - 2;
 		int scissorX = _x;
 		int scissorY = _y;
 		int scissorWidth = _width;
-		info(LOG_CLIENT, String::format("x: %i, y: %i, w: %i, h: %i, waterSurface: %i",
-				scissorX, scissorY, scissorWidth, scissorHeight, waterSurface));
+		//_frontend->renderFilledRect(scissorX, scissorY, scissorWidth, scissorHeight, colorRed);
 		_frontend->enableScissor(scissorX, scissorY, scissorWidth, scissorHeight);
 		_frontend->renderTarget(_target);
 		_frontend->disableScissor();
