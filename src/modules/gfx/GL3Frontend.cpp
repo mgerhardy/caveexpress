@@ -90,7 +90,12 @@ void GL3Frontend::unbindTargetTexture (RenderTarget* target)
 
 bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fillColor, const Color& waterLineColor)
 {
-	return false;
+	renderBatches();
+	const TextureRect r = {x, y, w, h};
+	const TextureCoords texCoords(r, r.w, r.h, false, false);
+	renderTexture(texCoords, r.x, r.y, r.w, r.h, 0, 1.0, _renderTargetTexture, _alpha);
+	renderBatchesWithShader(_waterShader);
+	return true;
 }
 
 bool GL3Frontend::renderTarget (RenderTarget* target)
@@ -205,7 +210,7 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 	if (shader.hasUniform("u_mousepos")) {
 		int x, y;
 		SDL_GetMouseState(&x, &y);
-		_shader.setUniformf("u_mousepos", x, y);
+		shader.setUniformf("u_mousepos", x, y);
 	}
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -359,6 +364,9 @@ void GL3Frontend::initRenderer ()
 	_waterShader.enableVertexAttributeArray("a_texcoord");
 	_waterShader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, c)));
 	_waterShader.enableVertexAttributeArray("a_color");
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	_waterShader.deactivate();
 
 	_shader.activate();
 	if (_shader.hasUniform("u_texture"))
@@ -372,9 +380,7 @@ void GL3Frontend::initRenderer ()
 	_shader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, c)));
 	_shader.enableVertexAttributeArray("a_color");
 	glBindVertexArray(0);
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 	_shader.deactivate();
 
 	glActiveTexture(GL_TEXTURE1);
