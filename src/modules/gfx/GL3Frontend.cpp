@@ -46,11 +46,6 @@ static int _currentVertexIndex;
 static Batch _batches[MAX_BATCHES];
 static int _currentBatch;
 
-inline TexNum GL3getTexNum (TextureData *textureData)
-{
-	return textureData->texnum;
-}
-
 GL3Frontend::GL3Frontend (SharedPtr<IConsole> console) :
 		SDLFrontend(console), _currentTexture(-1), _rx(1.0f), _ry(1.0f), _vao(0u), _vbo(0u), _renderTargetTexture(0), _white(0), _alpha(0), _drawCalls(0)
 {
