@@ -206,9 +206,10 @@ void GL3Frontend::renderBatches ()
 		if (b.vertexCount == 0)
 			continue;
 		if (b.scissor) {
+			if (!scissorActive)
+				glEnable(GL_SCISSOR_TEST);
 			scissorActive = true;
 			glScissor(b.scissorRect.x * _rx, b.scissorRect.y * _ry, b.scissorRect.w * _rx, b.scissorRect.h * _ry);
-			glEnable(GL_SCISSOR_TEST);
 		} else if (scissorActive) {
 			glDisable(GL_SCISSOR_TEST);
 		}
