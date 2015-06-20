@@ -31,7 +31,7 @@ public:
 	void renderEnd (int x, int y) const;
 
 	int getWaterSurface () const override { return _waterHeight * _scale; }
-	int getWaterGround () const override { return getWaterSurface() + ((_mapHeight - _waterHeight) * _scale); }
+	int getWaterGround () const override { return getWaterSurface() + ((_mapHeight - (int)(_waterHeight + 0.00001f)) * _scale); }
 
 	bool secondFinger () override { return drop(); }
 };
