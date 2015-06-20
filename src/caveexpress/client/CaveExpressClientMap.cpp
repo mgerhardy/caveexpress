@@ -51,7 +51,7 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	const int waterHeight = std::min(_height - _waterHeight * _zoom * _scale, (static_cast<float>(getMapHeight()) - _waterHeight) * _zoom * _scale) - 1;
 	const int waterSurface = y + getWaterSurface() * _zoom;
 	const int waterGround = waterSurface + waterHeight;
-	info(LOG_CLIENT, String::format("rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
+	trace(LOG_CLIENT, String::format("rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
 									_x, _y, _width, _height, x, y, widthWater, waterHeight, waterSurface, waterGround, _waterHeight, _scale));
 	_frontend->renderWaterPlane(x, waterSurface, widthWater, waterHeight, color, waterLineColor);
 	if (Config.isDebug()) {

@@ -91,10 +91,33 @@ void GL3Frontend::unbindTargetTexture (RenderTarget* target)
 bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fillColor, const Color& waterLineColor)
 {
 	renderBatches();
-	const TextureRect r = {x, y, w, h};
-	const TextureCoords texCoords(r, _fbo.rect().w, _fbo.rect().h, false, true);
-	renderTexture(texCoords, r.x, r.y, r.w, r.h, 0, 1.0, _renderTargetTexture, _alpha);
-	//info(LOG_CLIENT, String::format("x: %i, y: %i, w: %i, h: %i", x, y, w, h));
+	const int width = _fbo.rect().w;
+	const int height = _fbo.rect().h;
+
+	float tex[8];
+
+	x = clamp(x, 0, width);
+	y = clamp(y, 0, height);
+
+	const int x2 = x + w;
+	const int y2 = h;
+	const int y1 = y + h;
+
+	tex[0] = x / (float) width;
+	tex[1] = y1 / (float) height;
+
+	tex[2] = x2 / (float) width;
+	tex[3] = y1 / (float) height;
+
+	tex[4] = x2 / (float) width;
+	tex[5] = y2 / (float) height;
+
+	tex[6] = x / (float) width;
+	tex[7] = y2 / (float) height;
+
+	const TextureCoords texCoords(tex);
+	renderTexture(texCoords, x, y, w, h, 0, 1.0f, _renderTargetTexture, _alpha);
+	trace(LOG_CLIENT, String::format("x: %i, y: %i, w: %i, h: %i", x, y, w, h));
 	renderBatchesWithShader(_waterShader);
 	SDLFrontend::renderWaterPlane(x, y, w, h, fillColor, waterLineColor);
 	return true;
