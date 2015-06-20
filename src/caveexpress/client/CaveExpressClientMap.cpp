@@ -50,11 +50,12 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	const int waterSurface = y + getWaterSurface() * _zoom;
 	const int waterGround = y + getWaterGround() * _zoom;
 	const int waterHeight = waterGround - waterSurface;
-	const int overlap = _height - (y + waterHeight);
-	_frontend->renderWaterPlane(x, waterSurface, widthWater, waterHeight - overlap, color, waterLineColor);
+	const int overlapH = _height * _zoom - (y + waterHeight);
+	const int overlapW = _width * _zoom - widthWater;
+	_frontend->renderWaterPlane(x, waterSurface, widthWater - overlapW, waterHeight - overlapH, color, waterLineColor);
 	if (Config.isDebug()) {
-		_frontend->renderLine(x, waterSurface, x + widthWater, waterSurface, colorRed);
-		_frontend->renderLine(x, waterGround, x + widthWater, waterGround, colorGreen);
+		_frontend->renderLine(x, waterSurface, x + widthWater - overlapW, waterSurface, colorRed);
+		_frontend->renderLine(x, waterGround, x + widthWater - overlapW, waterGround, colorGreen);
 	}
 }
 
