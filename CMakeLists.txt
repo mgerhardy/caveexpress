@@ -7,6 +7,8 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ROOT_DIR}/cmake)
 SET(CMAKE_ECLIPSE_GENERATE_LINKED_RESOURCES OFF)
 
 option(RELEASE "Build a release build" OFF)
+option(UNITTESTS "Builds with unittests" ON)
+option(TOOLS "Builds with tools" ON)
 
 include(${ROOT_DIR}/cmake/macros.cmake)
 
@@ -120,10 +122,13 @@ else()
 include_directories("${ROOT_DIR}/src/libs/SDL/general")
 endif()
 
+if (UNITTESTS)
+	enable_testing()
+endif()
 add_subdirectory(src/libs)
 add_subdirectory(src/modules)
 add_subdirectory(src/cavepacker)
 add_subdirectory(src/caveexpress)
-if (NOT ANDROID)
+if (UNITTESTS)
 	add_subdirectory(src/tests)
 endif()

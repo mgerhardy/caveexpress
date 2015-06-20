@@ -1,4 +1,4 @@
-if (NOT ANDROID)
+if (UNITTESTS)
 	add_subdirectory(tests)
 endif()
 add_subdirectory(client)

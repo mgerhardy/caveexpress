@@ -1,5 +1,7 @@
-if (NOT ANDROID)
+if (UNITTESTS)
 	add_subdirectory(tests)
+endif()
+if (TOOLS)
 	add_subdirectory(tools)
 endif()
 add_subdirectory(client)
