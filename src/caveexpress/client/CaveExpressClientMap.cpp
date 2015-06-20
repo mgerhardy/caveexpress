@@ -47,11 +47,12 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	if (getWaterHeight() <= 0.000001f)
 		return;
 	x = std::max(0, x);
-	y = std::max(0, y);
 	const int widthWater = std::min(_width, static_cast<int>(getPixelWidth() * _zoom)) - 1;
 	const int waterHeight = std::min(_height - _waterHeight * _scale * _zoom, (getMapHeight() - _waterHeight) * _scale * _zoom) - 1;
 	const int waterSurface = y + getWaterSurface() * _zoom;
 	const int waterGround = waterSurface + waterHeight;
+	info(LOG_CLIENT, String::format("rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
+									_x, _y, _width, _height, x, y, widthWater, waterHeight, waterSurface, waterGround, _waterHeight, _scale));
 	_frontend->renderWaterPlane(x, waterSurface, widthWater, waterHeight, color, waterLineColor);
 	if (Config.isDebug()) {
 		_frontend->renderLine(x, waterSurface, x + widthWater, waterSurface, colorRed);

@@ -26,10 +26,13 @@
 *** packages are easier to carry (reduced weight)
 ** finish lava
 ** fix zooming for some maps (e.g. last map of first campaign)
+** water is broken
 
 * CaveExpress
 ** Jungle theme
 ** Liana graphics (we only have one)
+** fish is broken (swimming for friendly npc maybe broke it)
+** check apple weight - doesn't swim on the water - the banana does
 
 * Cavepacker
 ** sound if you hit the best points available
