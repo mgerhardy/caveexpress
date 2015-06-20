@@ -50,7 +50,8 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	const int waterSurface = y + getWaterSurface() * _zoom;
 	const int waterGround = y + getWaterGround() * _zoom;
 	const int waterHeight = waterGround - waterSurface;
-	_frontend->renderWaterPlane(x, waterSurface, widthWater, waterHeight, color, waterLineColor);
+	const int overlap = _height - (y + waterHeight);
+	_frontend->renderWaterPlane(x, waterSurface, widthWater, waterHeight - overlap, color, waterLineColor);
 	if (Config.isDebug()) {
 		_frontend->renderLine(x, waterSurface, x + widthWater, waterSurface, colorRed);
 		_frontend->renderLine(x, waterGround, x + widthWater, waterGround, colorGreen);

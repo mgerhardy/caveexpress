@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Texture.h"
+#include <string.h>
 #include <string>
 #include <sstream>
 
@@ -34,6 +35,10 @@ public:
 	TextureCoords(const Texture* texture) {
 		// flip is done by ortho projection here
 		calc(texture->getSourceRect(), texture->getFullWidth(), texture->getFullHeight(), texture->isMirror(), false);
+	}
+
+	TextureCoords (const float _texCoords[8]) {
+		memcpy(texCoords, _texCoords, sizeof(texCoords));
 	}
 
 	TextureCoords(const TextureRect& rect, int width, int height, bool mirror = false, bool flip = false) {
