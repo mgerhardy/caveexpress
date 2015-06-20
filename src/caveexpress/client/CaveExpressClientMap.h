@@ -30,8 +30,8 @@ public:
 	void renderBegin (int x, int y) const;
 	void renderEnd (int x, int y) const;
 
-	int getWaterSurface () const override { return (int)(_waterHeight + 0.00001f) * _scale; }
-	int getWaterGround () const override { return getWaterSurface() + ((_mapHeight - (int)(_waterHeight + 0.00001f)) * _scale); }
+	int getWaterSurface () const override { return (int)((_waterHeight + 0.00001f) * static_cast<float>(_scale)); }
+	int getWaterGround () const override { return getWaterSurface() + _mapHeight - (int)((_waterHeight + 0.00001f) * static_cast<float>(_scale)); }
 
 	bool secondFinger () override { return drop(); }
 };
