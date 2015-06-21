@@ -46,19 +46,19 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 {
 	if (getWaterHeight() <= 0.000001f)
 		return;
-	x = std::max(0, x);
-	const int widthWater = std::min(_width, static_cast<int>(getPixelWidth() * _zoom)) - 1;
-	const int waterHeight = std::min(_height - _waterHeight * _zoom * _scale, (static_cast<float>(getMapHeight()) - _waterHeight) * _zoom * _scale) - 1;
+	const int waterWidth = std::min(_width, static_cast<int>(getPixelWidth() * _zoom - std::min(x, 0))) - 1;
+	const int waterGround = std::min(_height, y + static_cast<int>(getPixelHeight() * _zoom));
 	const int waterSurface = y + getWaterSurface() * _zoom;
-	const int waterGround = waterSurface + waterHeight;
+	const int waterHeight = waterGround - waterSurface;
 	trace(LOG_CLIENT, String::format("rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
-									_x, _y, _width, _height, x, y, widthWater, waterHeight, waterSurface, waterGround, _waterHeight, _scale));
-	_frontend->renderWaterPlane(x, waterSurface, widthWater, waterHeight, color, waterLineColor);
+									_x, _y, _width, _height, x, y, waterWidth, waterHeight, waterSurface, waterGround, _waterHeight, _scale));
+	x = std::max(0, x);
+	_frontend->renderWaterPlane(x, waterSurface, waterWidth, waterHeight, color, waterLineColor);
 	if (Config.isDebug()) {
-		_frontend->renderLine(x, waterSurface, x + widthWater, waterSurface, colorRed);
-		_frontend->renderLine(x, waterGround, x + widthWater, waterGround, colorGreen);
+		_frontend->renderLine(x, waterSurface, x + waterWidth, waterSurface, colorRed);
+		_frontend->renderLine(x, waterGround - 1, x + waterWidth, waterGround - 1, colorGreen);
 		_frontend->renderLine(x, waterSurface, x, waterGround, colorRed);
-		_frontend->renderLine(x + widthWater - 1, waterSurface, x + widthWater - 1, waterGround, colorGreen);
+		_frontend->renderLine(x + waterWidth - 1, waterSurface, x + waterWidth - 1, waterGround, colorGreen);
 	}
 }
 
