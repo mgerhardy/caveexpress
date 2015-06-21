@@ -72,6 +72,7 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	_soundEnabled = getConfigValue(_configVarMap, "sound");
 	_port = getConfigValue(_configVarMap, "port", "4567");
 	_debug = getConfigValue(_configVarMap, "debug", "false");
+	_trace = getConfigValue(_configVarMap, "trace", "false");
 #ifdef NONETWORK
 	_network = getConfigValue(_configVarMap, "network", "false");
 #else

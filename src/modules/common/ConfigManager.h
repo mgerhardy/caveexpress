@@ -69,6 +69,7 @@ private:
 	ConfigVarPtr _height;
 	ConfigVarPtr _port;
 	ConfigVarPtr _debug;
+	ConfigVarPtr _trace;
 	ConfigVarPtr _network;
 	ConfigVarPtr _grabMouse;
 	ConfigVarPtr _joystick;
@@ -149,6 +150,7 @@ public:
 	bool isShader () const;
 	bool isDebugUI () const;
 	bool isDebug () const;
+	bool isTrace () const;
 	bool isGrabMouse () const;
 	bool isVSync () const;
 	bool isNetwork () const;
@@ -245,6 +247,11 @@ inline bool ConfigManager::isShader () const
 inline bool ConfigManager::isDebugUI () const
 {
 	return _debugui && _debugui->getBoolValue();
+}
+
+inline bool ConfigManager::isTrace () const
+{
+	return _trace && _trace->getBoolValue();
 }
 
 inline bool ConfigManager::isDebug () const
