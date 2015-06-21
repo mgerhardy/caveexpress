@@ -91,33 +91,32 @@ void GL3Frontend::unbindTargetTexture (RenderTarget* target)
 bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fillColor, const Color& waterLineColor)
 {
 	renderBatches();
-	const int width = _fbo.rect().w;
-	const int height = _fbo.rect().h;
+	const float width = _fbo.rect().w;
+	const float height = _fbo.rect().h;
+	const float xf = x;
+	const float yf = y;
+	const float xTexCoord = xf / width;
+	const float xTexCoord2 = xTexCoord + w / width;
+	const float yTexCoord = 1.0 - yf / height;
+	const float yTexCoord2 = 1.0 - (yf + h) / height;
 
 	float tex[8];
 
-	x = clamp(x, 0, width);
-	y = clamp(y, 0, height);
+	tex[0] = xTexCoord;
+	tex[1] = yTexCoord;
 
-	const int x2 = x + w;
-	const int y2 = h;
-	const int y1 = y + h;
+	tex[2] = xTexCoord2;
+	tex[3] = yTexCoord;
 
-	tex[0] = x / (float) width;
-	tex[1] = y1 / (float) height;
+	tex[4] = xTexCoord2;
+	tex[5] = yTexCoord2;
 
-	tex[2] = x2 / (float) width;
-	tex[3] = y1 / (float) height;
-
-	tex[4] = x2 / (float) width;
-	tex[5] = y2 / (float) height;
-
-	tex[6] = x / (float) width;
-	tex[7] = y2 / (float) height;
+	tex[6] = xTexCoord;
+	tex[7] = yTexCoord2;
 
 	const TextureCoords texCoords(tex);
 	renderTexture(texCoords, x, y, w, h, 0, 1.0f, _renderTargetTexture, _alpha);
-	trace(LOG_CLIENT, String::format("x: %i, y: %i, w: %i, h: %i", x, y, w, h));
+	trace(LOG_CLIENT, String::format("x: %i, y: %i, w: %i, h: %i, fbo(%f, %f), tex(%f:%f:%f:%f)", x, y, w, h, width, height, xTexCoord, yTexCoord, xTexCoord2, yTexCoord2));
 	renderBatchesWithShader(_waterShader);
 	SDLFrontend::renderWaterPlane(x, y, w, h, fillColor, waterLineColor);
 	return true;
@@ -150,6 +149,14 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	renderTexture(texCoords, x, y, w, h, angle, alpha, texture->getData()->texnum, texture->getData()->normalnum);
 }
 
+/**
+ * vertices as tris
+ * 1 -- 2
+ * 4 \  |
+ * |  \ |
+ * |    3
+ * 6 -- 5
+ */
 void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum)
 {
 	const float x1 = x * _rx;
