@@ -8,8 +8,6 @@ class NPCFish : public NPCAggressive {
 private:
 	double _magnitude;
 	double _amplitude;
-	float _initialSwimmingSpeed;
-	b2Vec2 _currentSwimmingSpeed;
 
 	void changeSpeed (float factor);
 
