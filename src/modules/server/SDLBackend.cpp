@@ -346,8 +346,8 @@ void SDLBackend::mainLoop (int argc, char **argv)
 	if (_frontend != nullptr && _frontend->setFrameCallback(2, frameCallback, this))
 		return;
 
-	static const double fpsCap = Config.getConfigVar("fpslimit", "60.0", true)->getFloatValue();
-	info(LOG_BACKEND, String::format("Run the game at %f frames per second", fpsCap));
+	const ConfigVarPtr& fpsLimit = Config.getConfigVar("fpslimit", "60.0", true);
+	info(LOG_BACKEND, String::format("Run the game at %f frames per second", fpsLimit->getFloatValue()));
 	double nextFrame = static_cast<double>(SDL_GetTicks());
 	while (_running) {
 		const double tick = static_cast<double>(SDL_GetTicks());
@@ -358,6 +358,7 @@ void SDLBackend::mainLoop (int argc, char **argv)
 		if (delay > 0) {
 			SDL_Delay(delay);
 		}
+		const float fpsCap = fpsLimit->getFloatValue();
 		nextFrame += 1000.0 / fpsCap;
 	}
 
