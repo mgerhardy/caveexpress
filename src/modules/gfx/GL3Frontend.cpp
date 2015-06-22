@@ -6,6 +6,17 @@
 #include <SDL_image.h>
 
 struct Vertex {
+	Vertex() : x(0.0f), y(0.0f), u(0.0f), v(0.0f) {
+		c.c = 1u;
+	}
+
+	Vertex(const Color& color) : x(0.0f), y(0.0f), u(0.0f), v(0.0f) {
+		c.r = color[0] * 255.0f;
+		c.g = color[1] * 255.0f;
+		c.b = color[2] * 255.0f;
+		c.a = color[3] * 255.0f;
+	}
+
 	float x, y;
 	float u, v;
 	union {
@@ -172,10 +183,7 @@ void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, in
 	batch.normaltexnum = normaltexnum;
 	batch.vertexCount += 6;
 
-	Vertex v;
-	v.c.r = _color[0] * 255.0f;
-	v.c.g = _color[1] * 255.0f;
-	v.c.b = _color[2] * 255.0f;
+	Vertex v(_color);
 	v.c.a = alpha * 255.0f;
 
 	v.u = texCoords.texCoords[0];
@@ -469,12 +477,7 @@ void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& col
 	batch.scissorRect = {0, 0, 0, 0};
 	batch.vertexCount += 6;
 
-	Vertex v;
-	v.u = v.v = 0.0f;
-	v.c.r = color[0] * 255.0f;
-	v.c.g = color[1] * 255.0f;
-	v.c.b = color[2] * 255.0f;
-	v.c.a = color[3] * 255.0f;
+	Vertex v(color);
 
 	v.x = pos1.x;
 	v.y = pos1.y;
@@ -519,14 +522,9 @@ void GL3Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color
 	batch.scissorRect = {0, 0, 0, 0};
 	batch.vertexCount += 2;
 
-	Vertex v;
+	Vertex v(color);
 	v.x = x1 * _rx;
 	v.y = y1 * _ry;
-	v.u = v.v = 0.0f;
-	v.c.r = color[0] * 255.0f;
-	v.c.g = color[1] * 255.0f;
-	v.c.b = color[2] * 255.0f;
-	v.c.a = color[3] * 255.0f;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.x = x2 * _rx;
