@@ -30,7 +30,7 @@ protected:
 	bool checkExtension (const char *extension) const;
 	uintptr_t getProcAddress (const char *functionName) const;
 	TexNum uploadTexture(const unsigned char* pixels, int w, int h) const;
-	void flushBatch (int type);
+	void flushBatch (int type, GLuint texnum, int vertexAmount);
 	void startNewBatch ();
 	void renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum);
 	SDL_Surface* loadTextureIntoSurface(const std::string& file);

@@ -37,8 +37,6 @@ struct Batch {
 	int vertexCount;
 	bool scissor;
 	SDL_Rect scissorRect;
-	glm::vec2 translation;
-	float angle;
 };
 
 static Vertex _vertices[MAXNUMVERTICES];
@@ -161,25 +159,17 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
  */
 void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum)
 {
-	const float x1 = x * _rx;
-	const float y1 = y * _ry;
-	const float nw = w * _rx;
-	const float nh = h * _ry;
-	const float centerx = nw / 2.0f;
-	const float centery = nh / 2.0f;
-	const float minx = -centerx;
-	const float maxx = centerx;
-	const float miny = -centery;
-	const float maxy = centery;
+	const glm::vec3 center = glm::vec3(0.5, 0.5, 0.0f);
+	const glm::mat4 trans = glm::translate(glm::mat4(1.0f), center);
+	const glm::mat4 rot = glm::rotate(trans, (float)DegreesToRadians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+	const glm::mat4 mat = glm::scale(glm::translate(rot, -center), glm::vec3(_rx, _ry, 0.0f));
+	const glm::vec4 pos1 = mat * glm::vec4(x, y, 0.0f, 1.0f);
+	const glm::vec4 pos2 = mat * glm::vec4(x + w, y + h, 0.0f, 1.0f);
 
-	flushBatch(GL_TRIANGLES);
+	flushBatch(GL_TRIANGLES, texnum, 6);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = texnum;
 	batch.normaltexnum = normaltexnum;
-	batch.angle = DegreesToRadians(angle);
-	// TODO: remove me - this prevents us from having lesser draw calls (e.g. reusing the same batch if type, angle and texnum is equal
-	batch.translation.x = x1 + centerx;
-	batch.translation.y = y1 + centery;
 	batch.vertexCount += 6;
 
 	Vertex v;
@@ -190,38 +180,38 @@ void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, in
 
 	v.u = texCoords.texCoords[0];
 	v.v = texCoords.texCoords[1];
-	v.x = minx;
-	v.y = miny;
+	v.x = pos1.x;
+	v.y = pos1.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[2];
 	v.v = texCoords.texCoords[3];
-	v.x = maxx;
-	v.y = miny;
+	v.x = pos2.x;
+	v.y = pos1.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[4];
 	v.v = texCoords.texCoords[5];
-	v.x = maxx;
-	v.y = maxy;
+	v.x = pos2.x;
+	v.y = pos2.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[0];
 	v.v = texCoords.texCoords[1];
-	v.x = minx;
-	v.y = miny;
+	v.x = pos1.x;
+	v.y = pos1.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[4];
 	v.v = texCoords.texCoords[5];
-	v.x = maxx;
-	v.y = maxy;
+	v.x = pos2.x;
+	v.y = pos2.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[6];
 	v.v = texCoords.texCoords[7];
-	v.x = minx;
-	v.y = maxy;
+	v.x = pos1.x;
+	v.y = pos2.y;
 	_vertices[_currentVertexIndex++] = v;
 }
 
@@ -269,10 +259,6 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, b.texnum);
 		}
-		const glm::mat4& translate = glm::translate(glm::mat4(1.0f), glm::vec3(b.translation, 0.0f));
-		const glm::mat4& model = glm::rotate(translate, b.angle, glm::vec3(0.0, 0.0, 1.0));
-		shader.setUniformMatrix("u_model", model);
-
 		glDrawArrays(b.type, b.vertexIndexStart, b.vertexCount);
 	}
 	if (scissorActive)
@@ -289,10 +275,13 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 	GL_checkError();
 }
 
-void GL3Frontend::flushBatch (int type)
+void GL3Frontend::flushBatch (int type, GLuint texnum, int vertexAmount)
 {
-//	if (b.type == type)
-//		return;
+	if (_currentVertexIndex + vertexAmount >= MAXNUMVERTICES)
+		renderBatches();
+	const Batch& b = _batches[_currentBatch];
+	if (b.type == type && b.texnum == texnum)
+		return;
 	startNewBatch();
 	_batches[_currentBatch].type = type;
 }
@@ -468,20 +457,14 @@ void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& col
 	if (h <= 0)
 		h = getHeight();
 
-	const float nx = x * _rx;
-	const float ny = y * _ry;
-	const float nw = w * _rx;
-	const float nh = h * _ry;
-	const float minx = nx;
-	const float maxx = nx + nw;
-	const float miny = ny;
-	const float maxy = ny + nh;
+	const glm::mat4 mat = glm::scale(glm::mat4(1.0f), glm::vec3(_rx, _ry, 0.0f));
+	const glm::vec4 pos1 = mat * glm::vec4(x, y, 0.0f, 1.0f);
+	const glm::vec4 pos2 = mat * glm::vec4(x + w, y + h, 0.0f, 1.0f);
 
-	flushBatch(GL_TRIANGLES);
+	flushBatch(GL_TRIANGLES, _white, 6);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = _white;
 	batch.normaltexnum = _alpha;
-	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
 	batch.vertexCount += 6;
@@ -493,28 +476,28 @@ void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& col
 	v.c.b = color[2] * 255.0f;
 	v.c.a = color[3] * 255.0f;
 
-	v.x = minx;
-	v.y = miny;
+	v.x = pos1.x;
+	v.y = pos1.y;
 	_vertices[_currentVertexIndex++] = v;
 
-	v.x = maxx;
-	v.y = miny;
+	v.x = pos2.x;
+	v.y = pos1.y;
 	_vertices[_currentVertexIndex++] = v;
 
-	v.x = minx;
-	v.y = maxy;
+	v.x = pos2.x;
+	v.y = pos2.y;
 	_vertices[_currentVertexIndex++] = v;
 
-	v.x = maxx;
-	v.y = miny;
+	v.x = pos1.x;
+	v.y = pos1.y;
 	_vertices[_currentVertexIndex++] = v;
 
-	v.x = minx;
-	v.y = maxy;
+	v.x = pos2.x;
+	v.y = pos2.y;
 	_vertices[_currentVertexIndex++] = v;
 
-	v.x = maxx;
-	v.y = maxy;
+	v.x = pos1.x;
+	v.y = pos2.y;
 	_vertices[_currentVertexIndex++] = v;
 }
 
@@ -528,11 +511,10 @@ void GL3Frontend::renderRect (int x, int y, int w, int h, const Color& color)
 
 void GL3Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
 {
-	flushBatch(GL_LINES);
+	flushBatch(GL_LINES, _white, 2);
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = _white;
 	batch.normaltexnum = _alpha;
-	batch.angle = 0.0f;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
 	batch.vertexCount += 2;
