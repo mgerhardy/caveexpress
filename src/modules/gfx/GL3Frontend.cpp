@@ -304,6 +304,9 @@ void GL3Frontend::startNewBatch ()
 	if (b.vertexCount == 0)
 		return;
 
+	if (_currentVertexIndex + 6 >= MAXNUMVERTICES)
+		return;
+
 	++_currentBatch;
 	if (_currentBatch >= MAX_BATCHES) {
 		debug(LOG_CLIENT, "render the batches because the max batch count was exceeded");
