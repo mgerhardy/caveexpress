@@ -170,12 +170,19 @@ void GL3Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
  */
 void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum)
 {
-	const glm::vec3 center = glm::vec3(0.5, 0.5, 0.0f);
-	const glm::mat4 trans = glm::translate(glm::mat4(1.0f), center);
-	const glm::mat4 rot = glm::rotate(trans, (float)DegreesToRadians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
-	const glm::mat4 mat = glm::scale(glm::translate(rot, -center), glm::vec3(_rx, _ry, 0.0f));
-	const glm::vec4 pos1 = mat * glm::vec4(x, y, 0.0f, 1.0f);
-	const glm::vec4 pos2 = mat * glm::vec4(x + w, y + h, 0.0f, 1.0f);
+	glm::mat4 transform(1.0f);
+	transform = glm::translate(transform, glm::vec3(x + w / 2, y + h / 2, 0));
+	transform = glm::rotate(transform, (float)DegreesToRadians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+	transform = glm::translate(transform, glm::vec3(-w / 2, -h / 2, 0));
+	transform = glm::scale(transform, glm::vec3(w * _rx, h * _ry, 1.0f));
+	glm::vec4 vertexTL(0.0f, 0.0f, 0.0f, 1.0f);
+	glm::vec4 vertexTR(1.0f, 0.0f, 0.0f, 1.0f);
+	glm::vec4 vertexBR(1.0f, 1.0f, 0.0f, 1.0f);
+	glm::vec4 vertexBL(0.0f, 1.0f, 0.0f, 1.0f);
+	vertexTL = transform * vertexTL;
+	vertexTR = transform * vertexTR;
+	vertexBR = transform * vertexBR;
+	vertexBL = transform * vertexBL;
 
 	flushBatch(GL_TRIANGLES, texnum, 6);
 	Batch& batch = _batches[_currentBatch];
@@ -188,38 +195,38 @@ void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, in
 
 	v.u = texCoords.texCoords[0];
 	v.v = texCoords.texCoords[1];
-	v.x = pos1.x;
-	v.y = pos1.y;
+	v.x = vertexTL.x;
+	v.y = vertexTL.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[2];
 	v.v = texCoords.texCoords[3];
-	v.x = pos2.x;
-	v.y = pos1.y;
+	v.x = vertexTR.x;
+	v.y = vertexTR.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[4];
 	v.v = texCoords.texCoords[5];
-	v.x = pos2.x;
-	v.y = pos2.y;
+	v.x = vertexBR.x;
+	v.y = vertexBR.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[0];
 	v.v = texCoords.texCoords[1];
-	v.x = pos1.x;
-	v.y = pos1.y;
+	v.x = vertexTL.x;
+	v.y = vertexTL.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[4];
 	v.v = texCoords.texCoords[5];
-	v.x = pos2.x;
-	v.y = pos2.y;
+	v.x = vertexBR.x;
+	v.y = vertexBR.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[6];
 	v.v = texCoords.texCoords[7];
-	v.x = pos1.x;
-	v.y = pos2.y;
+	v.x = vertexBL.x;
+	v.y = vertexBL.y;
 	_vertices[_currentVertexIndex++] = v;
 }
 
