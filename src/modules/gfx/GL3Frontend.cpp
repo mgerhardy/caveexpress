@@ -117,8 +117,10 @@ bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fil
 	const TextureCoords texCoords(tex);
 	renderTexture(texCoords, x, y, w, h, 0, 1.0f, _renderTargetTexture, _alpha);
 	trace(LOG_CLIENT, String::format("x: %i, y: %i, w: %i, h: %i, fbo(%f, %f), tex(%f:%f:%f:%f)", x, y, w, h, width, height, xTexCoord, yTexCoord, xTexCoord2, yTexCoord2));
+	_waterShader.activate();
+	if (_waterShader.hasUniform("u_watercolor"))
+		_waterShader.setUniform4fv("u_watercolor", fillColor, 0, 4);
 	renderBatchesWithShader(_waterShader);
-	SDLFrontend::renderWaterPlane(x, y, w, h, fillColor, waterLineColor);
 	return true;
 }
 

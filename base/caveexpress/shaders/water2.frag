@@ -1,6 +1,7 @@
 uniform sampler2D u_texture;
 uniform sampler2D u_normals;
 uniform int u_time;
+uniform vec4 u_watercolor;
 uniform vec2 u_screenres;
 in vec2 v_texcoord;
 in vec4 v_color;
@@ -18,9 +19,10 @@ vec2 shift(vec2 p) {
 
 void main(void) {
 	vec2 r = v_texcoord.xy;
-	vec2 p = shift(r); 
+	vec2 p = shift(r);
 	vec2 q = shift(r + 1.0);
 	float amplitude = 2.0 / u_screenres.x;
-	vec2 s = r + amplitude * (p - q);
-	o_color = texture2D(u_texture, s);
+	vec2 uv = r + amplitude * (p - q);
+	vec4 color = texture2D(u_texture, uv);
+	o_color = vec4(u_watercolor.rgb + color.rgb, u_watercolor.a) * v_color;
 }
