@@ -254,7 +254,7 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _currentVertexIndex, _vertices, GL_DYNAMIC_DRAW);
 	bool scissorActive = false;
 	for (int i = 0; i <= _currentBatch; ++i) {
-		Batch& b = _batches[i];
+		const Batch& b = _batches[i];
 		if (b.vertexCount == 0)
 			continue;
 		if (b.scissor) {
