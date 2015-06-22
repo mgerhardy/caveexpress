@@ -24,5 +24,5 @@ void main(void) {
 	float amplitude = 2.0 / u_screenres.x;
 	vec2 uv = r + amplitude * (p - q);
 	vec4 color = texture2D(u_texture, uv);
-	o_color = vec4(u_watercolor.rgb + color.rgb, u_watercolor.a) * v_color;
+	o_color = vec4(mix(u_watercolor.rgb, color.rgb, u_watercolor.a), 1.0) * v_color;
 }

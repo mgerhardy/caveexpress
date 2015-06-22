@@ -11,5 +11,5 @@ void main(void) {
 	uv.y += offset;
 	uv.x += offset;
 	vec4 color = texture2D(u_texture, uv);
-	o_color = vec4(u_watercolor.rgb + color.rgb, u_watercolor.a) * v_color;
+	o_color = vec4(mix(u_watercolor.rgb, color.rgb, u_watercolor.a), 1.0) * v_color;
 }
