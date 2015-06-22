@@ -72,14 +72,14 @@ public:
 	void setUniformf (int location, float value1, float value2, float value3) const;
 	void setUniformf (const std::string& name, float value1, float value2, float value3, float value4) const;
 	void setUniformf (int location, float value1, float value2, float value3, float value4) const;
-	void setUniform1fv (const std::string& name, float* values, int offset, int length) const;
-	void setUniform1fv (int location, float* values, int offset, int length) const;
-	void setUniform2fv (const std::string& name, float* values, int offset, int length) const;
-	void setUniform2fv (int location, float* values, int offset, int length) const;
-	void setUniform3fv (const std::string& name, float* values, int offset, int length) const;
-	void setUniform3fv (int location, float* values, int offset, int length) const;
-	void setUniform4fv (const std::string& name, float* values, int offset, int length) const;
-	void setUniform4fv (int location, float* values, int offset, int length) const;
+	void setUniform1fv (const std::string& name, const float* values, int offset, int length) const;
+	void setUniform1fv (int location, const float* values, int offset, int length) const;
+	void setUniform2fv (const std::string& name, const float* values, int offset, int length) const;
+	void setUniform2fv (int location, const float* values, int offset, int length) const;
+	void setUniform3fv (const std::string& name, const float* values, int offset, int length) const;
+	void setUniform3fv (int location, const float* values, int offset, int length) const;
+	void setUniform4fv (const std::string& name, const float* values, int offset, int length) const;
+	void setUniform4fv (int location, const float* values, int offset, int length) const;
 	void setUniformMatrix (const std::string& name, const glm::mat4& matrix, bool transpose = false) const;
 	void setUniformMatrix (int location, const glm::mat4& matrix, bool transpose = false) const;
 	void setUniformMatrix (const std::string& name, const glm::mat3& matrix, bool transpose = false) const;
@@ -202,49 +202,49 @@ inline void Shader::setUniformf (int location, float value1, float value2, float
 	GL_checkError();
 }
 
-inline void Shader::setUniform1fv (const std::string& name, float* values, int offset, int length) const
+inline void Shader::setUniform1fv (const std::string& name, const float* values, int offset, int length) const
 {
 	const int location = getUniformLocation(name);
 	setUniform1fv(location, values, offset, length);
 }
 
-inline void Shader::setUniform1fv (int location, float* values, int offset, int length) const
+inline void Shader::setUniform1fv (int location, const float* values, int offset, int length) const
 {
 	glUniform1fv(location, length, values);
 	GL_checkError();
 }
 
-inline void Shader::setUniform2fv (const std::string& name, float* values, int offset, int length) const
+inline void Shader::setUniform2fv (const std::string& name, const float* values, int offset, int length) const
 {
 	const int location = getUniformLocation(name);
 	setUniform2fv(location, values, offset, length);
 }
 
-inline void Shader::setUniform2fv (int location, float* values, int offset, int length) const
+inline void Shader::setUniform2fv (int location, const float* values, int offset, int length) const
 {
 	glUniform2fv(location, length / 2, values);
 	GL_checkError();
 }
 
-inline void Shader::setUniform3fv (const std::string& name, float* values, int offset, int length) const
+inline void Shader::setUniform3fv (const std::string& name, const float* values, int offset, int length) const
 {
 	const int location = getUniformLocation(name);
 	setUniform3fv(location, values, offset, length);
 }
 
-inline void Shader::setUniform3fv (int location, float* values, int offset, int length) const
+inline void Shader::setUniform3fv (int location, const float* values, int offset, int length) const
 {
 	glUniform3fv(location, length / 3, values);
 	GL_checkError();
 }
 
-inline void Shader::setUniform4fv (const std::string& name, float* values, int offset, int length) const
+inline void Shader::setUniform4fv (const std::string& name, const float* values, int offset, int length) const
 {
 	int location = getUniformLocation(name);
 	setUniform4fv(location, values, offset, length);
 }
 
-inline void Shader::setUniform4fv (int location, float* values, int offset, int length) const
+inline void Shader::setUniform4fv (int location, const float* values, int offset, int length) const
 {
 	glUniform4fv(location, length / 4, values);
 	GL_checkError();
