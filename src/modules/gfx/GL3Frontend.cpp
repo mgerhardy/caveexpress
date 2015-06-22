@@ -186,9 +186,7 @@ void GL3Frontend::renderTexture(const TextureCoords& texCoords, int x, int y, in
 
 	flushBatch(GL_TRIANGLES, texnum, 6);
 	Batch& batch = _batches[_currentBatch];
-	batch.texnum = texnum;
 	batch.normaltexnum = normaltexnum;
-	batch.vertexCount += 6;
 
 	Vertex v(_color);
 	v.c.a = alpha * 255.0f;
@@ -299,6 +297,8 @@ void GL3Frontend::flushBatch (int type, GLuint texnum, int vertexAmount)
 		return;
 	startNewBatch();
 	_batches[_currentBatch].type = type;
+	_batches[_currentBatch].texnum = texnum;
+	_batches[_currentBatch].vertexCount += vertexAmount;
 }
 
 void GL3Frontend::startNewBatch ()
@@ -478,11 +478,9 @@ void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& col
 
 	flushBatch(GL_TRIANGLES, _white, 6);
 	Batch& batch = _batches[_currentBatch];
-	batch.texnum = _white;
 	batch.normaltexnum = _alpha;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
-	batch.vertexCount += 6;
 
 	Vertex v(color);
 
@@ -523,11 +521,9 @@ void GL3Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color
 {
 	flushBatch(GL_LINES, _white, 2);
 	Batch& batch = _batches[_currentBatch];
-	batch.texnum = _white;
 	batch.normaltexnum = _alpha;
 	batch.scissor = false;
 	batch.scissorRect = {0, 0, 0, 0};
-	batch.vertexCount += 2;
 
 	Vertex v(color);
 	v.x = x1 * _rx;
