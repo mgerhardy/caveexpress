@@ -10,6 +10,7 @@ private:
 	mutable RenderTarget* _target;
 
 	void renderWater (int x, int y) const;
+	SDL_Rect getWaterRect(int x, int y) const;
 	void couldNotFindEntity (const std::string& prefix, uint16_t id) const override;
 	void resetCurrentMap () override;
 

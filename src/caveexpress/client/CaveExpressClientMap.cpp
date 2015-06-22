@@ -42,23 +42,28 @@ void CaveExpressClientMap::resetCurrentMap ()
 	_waterHeight = 0.0f;
 }
 
-void CaveExpressClientMap::renderWater (int x, int y) const
-{
-	if (getWaterHeight() <= 0.000001f)
-		return;
+SDL_Rect CaveExpressClientMap::getWaterRect(int x, int y) const {
 	const int waterWidth = std::min(_width, static_cast<int>(getPixelWidth() * _zoom - std::min(x, 0))) - 1;
 	const int waterGround = std::min(_height, y + static_cast<int>(getPixelHeight() * _zoom));
 	const int waterSurface = y + getWaterSurface() * _zoom;
 	const int waterHeight = waterGround - waterSurface;
+	return SDL_Rect{std::max(0, x), waterSurface, waterWidth, waterHeight};
+}
+
+void CaveExpressClientMap::renderWater (int x, int y) const
+{
+	if (getWaterHeight() <= 0.000001f)
+		return;
+	const SDL_Rect& rect = getWaterRect(x, y);
 	trace(LOG_CLIENT, String::format("rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
-									_x, _y, _width, _height, x, y, waterWidth, waterHeight, waterSurface, waterGround, _waterHeight, _scale));
-	x = std::max(0, x);
-	_frontend->renderWaterPlane(x, waterSurface, waterWidth, waterHeight, color, waterLineColor);
+									_x, _y, _width, _height, x, y, rect.w, rect.h, rect.y, rect.y + rect.h, _waterHeight, _scale));
+	_frontend->renderWaterPlane(rect.x, rect.y, rect.w, rect.h, color, waterLineColor);
 	if (Config.isDebug()) {
-		_frontend->renderLine(x, waterSurface, x + waterWidth, waterSurface, colorRed);
-		_frontend->renderLine(x, waterGround - 1, x + waterWidth, waterGround - 1, colorGreen);
-		_frontend->renderLine(x, waterSurface, x, waterGround, colorRed);
-		_frontend->renderLine(x + waterWidth - 1, waterSurface, x + waterWidth - 1, waterGround, colorGreen);
+		const int waterGround = rect.y + rect.h;
+		_frontend->renderLine(rect.x, rect.y, rect.x + rect.w, rect.y, colorRed);
+		_frontend->renderLine(rect.x, waterGround - 1, rect.x + rect.w, waterGround - 1, colorGreen);
+		_frontend->renderLine(rect.x, rect.y, rect.x, waterGround, colorRed);
+		_frontend->renderLine(rect.x + rect.w - 1, rect.y, rect.x + rect.w - 1, waterGround, colorGreen);
 	}
 }
 
