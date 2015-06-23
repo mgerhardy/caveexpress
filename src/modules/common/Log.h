@@ -4,6 +4,8 @@
 #include "common/String.h"
 #include "common/Common.h"
 #include <vector>
+#include <cstdio>
+#include <memory>
 
 typedef enum {
 	LOG_BACKEND,
@@ -26,6 +28,15 @@ typedef enum {
 	LOG_MAX
 } LogCategory;
 
+enum class LogLevel {
+	LEVEL_TRACE,
+	LEVEL_DEBUG,
+	LEVEL_INFO,
+	LEVEL_WARN,
+	LEVEL_ERROR,
+	LEVEL_MAX
+};
+
 class Log {
 private:
 	Log ();
@@ -34,6 +45,8 @@ private:
 	typedef Consoles::const_iterator ConsolesConstIter;
 	typedef Consoles::iterator ConsolesIter;
 	Consoles _consoles;
+
+	void vsnprint(LogLevel logLevel, LogCategory category, const char* msg, va_list args);
 public:
 	virtual ~Log ();
 
@@ -42,8 +55,24 @@ public:
 	void addConsole (IConsole* console);
 	void removeConsole (IConsole* console);
 
-	static void info (LogCategory category, const std::string &string);
-	static void error (LogCategory category, const std::string &string);
-	static void debug (LogCategory category, const std::string &string);
-	static void trace (LogCategory category, const std::string &string);
+	static void trace2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
+	static void debug2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
+	static void info2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
+	static void warn2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
+	static void error2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
+	static void trace(LogCategory category, const std::string& msg) {
+		trace2(category, "%s", msg.c_str());
+	}
+	static void debug(LogCategory category, const std::string& msg) {
+		debug2(category, "%s", msg.c_str());
+	}
+	static void info(LogCategory category, const std::string& msg) {
+		info2(category, "%s", msg.c_str());
+	}
+	static void warn(LogCategory category, const std::string& msg) {
+		warn2(category, "%s", msg.c_str());
+	}
+	static void error(LogCategory category, const std::string& msg) {
+		error2(category, "%s", msg.c_str());
+	}
 };

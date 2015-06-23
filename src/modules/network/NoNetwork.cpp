@@ -33,7 +33,7 @@ void NoNetwork::update (uint32_t deltaTime)
 
 bool NoNetwork::openServer (int port, IServerCallback* func)
 {
-	Log::info(LOG_NET, String::format("open server on port %i", port));
+	Log::info2(LOG_NET, "open server on port %i", port);
 	_serverFunc = func;
 	_server = true;
 	return true;
@@ -41,7 +41,7 @@ bool NoNetwork::openServer (int port, IServerCallback* func)
 
 int NoNetwork::sendToClients (int clientMask, const IProtocolMessage& msg)
 {
-	Log::trace(LOG_NET, String::format("send to client message type %i", msg.getId()));
+	Log::trace2(LOG_NET, "send to client message type %i", msg.getId());
 	ByteStream s;
 	msg.serialize(s);
 	s.addShort(s.getSize(), true);
@@ -97,7 +97,7 @@ bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* 
 	if (!isServer())
 		return false;
 
-	Log::info(LOG_NET, String::format("connect to %s:%i", node.c_str(), port));
+	Log::info2(LOG_NET, "connect to %s:%i", node.c_str(), port);
 	closeClient();
 	_clientFunc = func;
 	assert(func);
@@ -108,7 +108,7 @@ bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* 
 	_serverQueue.reserve(64);
 
 	if (_clientFunc != nullptr && !_connected) {
-		Log::info(LOG_NET, String::format("connect %i", defaultClientId));
+		Log::info2(LOG_NET, "connect %i", defaultClientId);
 		if (_serverFunc)
 			_serverFunc->onConnection(defaultClientId);
 		_connected = true;
@@ -119,7 +119,7 @@ bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* 
 
 int NoNetwork::sendToServer (const IProtocolMessage& msg)
 {
-	Log::trace(LOG_NET, String::format("send to server message type %i", msg.getId()));
+	Log::trace2(LOG_NET, "send to server message type %i", msg.getId());
 	ByteStream s;
 	msg.serialize(s);
 	s.addShort(s.getSize(), true);
