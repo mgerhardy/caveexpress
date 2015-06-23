@@ -280,10 +280,12 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 	_currentVertexIndex = 0;
 	glBindVertexArray(0);
 	const SDL_Rect scissorRect = _batches[_currentBatch].scissorRect;
+	const bool scissor = _batches[_currentBatch].scissor;
 	_currentBatch = 0;
 	memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
 	_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
 	_batches[_currentBatch].scissorRect = scissorRect;
+	_batches[_currentBatch].scissor = scissor;
 	shader.deactivate();
 	GL_checkError();
 }
@@ -324,6 +326,7 @@ void GL3Frontend::startNewBatch ()
 	memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
 	_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
 	_batches[_currentBatch].scissorRect = _batches[_currentBatch - 1].scissorRect;
+	_batches[_currentBatch].scissor = _batches[_currentBatch - 1].scissor;
 }
 
 void GL3Frontend::enableScissor (int x, int y, int width, int height)
@@ -481,8 +484,6 @@ void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& col
 	flushBatch(GL_TRIANGLES, _white, 6);
 	Batch& batch = _batches[_currentBatch];
 	batch.normaltexnum = _alpha;
-	batch.scissor = false;
-	batch.scissorRect = {0, 0, 0, 0};
 
 	Vertex v(color);
 
@@ -524,8 +525,6 @@ void GL3Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color
 	flushBatch(GL_LINES, _white, 2);
 	Batch& batch = _batches[_currentBatch];
 	batch.normaltexnum = _alpha;
-	batch.scissor = false;
-	batch.scissorRect = {0, 0, 0, 0};
 
 	Vertex v(color);
 	v.x = x1 * _rx;
