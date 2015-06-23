@@ -113,7 +113,7 @@ void Log::error2 (LogCategory category, const char* msg, ...)
 	va_end(args);
 }
 
-void Log::trace2 (LogCategory category, const char* msg, ...)
+void Log::trace (LogCategory category, const char* msg, ...)
 {
 	if (!Config.isTrace())
 		return;
@@ -133,7 +133,7 @@ void Log::debug2 (LogCategory category, const char* msg, ...)
 	va_end(args);
 }
 
-void Log::warn2 (LogCategory category, const char* msg, ...)
+void Log::warn (LogCategory category, const char* msg, ...)
 {
 	va_list args;
 	va_start(args, msg);

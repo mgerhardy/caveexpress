@@ -55,22 +55,17 @@ public:
 	void addConsole (IConsole* console);
 	void removeConsole (IConsole* console);
 
-	static void trace2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
+	static void trace(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
 	static void debug2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
 	static void info2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
-	static void warn2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
+	static void warn(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
 	static void error2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
-	static void trace(LogCategory category, const std::string& msg) {
-		trace2(category, "%s", msg.c_str());
-	}
+
 	static void debug(LogCategory category, const std::string& msg) {
 		debug2(category, "%s", msg.c_str());
 	}
 	static void info(LogCategory category, const std::string& msg) {
 		info2(category, "%s", msg.c_str());
-	}
-	static void warn(LogCategory category, const std::string& msg) {
-		warn2(category, "%s", msg.c_str());
 	}
 	static void error(LogCategory category, const std::string& msg) {
 		error2(category, "%s", msg.c_str());

@@ -55,8 +55,8 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	if (getWaterHeight() <= 0.000001f)
 		return;
 	const SDL_Rect& rect = getWaterRect(x, y);
-	Log::trace(LOG_CLIENT, String::format("rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
-									_x, _y, _width, _height, x, y, rect.w, rect.h, rect.y, rect.y + rect.h, _waterHeight, _scale));
+	Log::trace(LOG_CLIENT, "rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
+									_x, _y, _width, _height, x, y, rect.w, rect.h, rect.y, rect.y + rect.h, _waterHeight, _scale);
 	_frontend->renderWaterPlane(rect.x, rect.y, rect.w, rect.h, color, waterLineColor);
 	if (Config.isDebug()) {
 		const int waterGround = rect.y + rect.h;

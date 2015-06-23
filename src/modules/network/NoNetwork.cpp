@@ -41,7 +41,7 @@ bool NoNetwork::openServer (int port, IServerCallback* func)
 
 int NoNetwork::sendToClients (int clientMask, const IProtocolMessage& msg)
 {
-	Log::trace2(LOG_NET, "send to client message type %i", msg.getId());
+	Log::trace(LOG_NET, "send to client message type %i", msg.getId());
 	ByteStream s;
 	msg.serialize(s);
 	s.addShort(s.getSize(), true);
@@ -119,7 +119,7 @@ bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* 
 
 int NoNetwork::sendToServer (const IProtocolMessage& msg)
 {
-	Log::trace2(LOG_NET, "send to server message type %i", msg.getId());
+	Log::trace(LOG_NET, "send to server message type %i", msg.getId());
 	ByteStream s;
 	msg.serialize(s);
 	s.addShort(s.getSize(), true);

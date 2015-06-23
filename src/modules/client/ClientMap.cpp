@@ -347,7 +347,7 @@ void ClientMap::setSetting (const std::string& key, const std::string& value)
 
 void ClientMap::couldNotFindEntity (const std::string& prefix, uint16_t id) const
 {
-	Log::info(LOG_CLIENT, String::format("could not find entity with the id %i", (int)id) + " in " + prefix);
+	Log::warn(LOG_CLIENT, "could not find entity with the id %i in %s", (int)id, prefix.c_str());
 }
 
 void ClientMap::changeAnimation (uint16_t id, const Animation& animation)
@@ -381,16 +381,16 @@ void ClientMap::onData (ByteStream &data)
 		data.readShort();
 		const IProtocolMessage* msg(factory.createMsg(data));
 		if (!msg) {
-			Log::error(LOG_NET, "no message for type " + string::toString(static_cast<int>(data.readByte())));
+			Log::error2(LOG_NET, "no message for type %i", static_cast<int>(data.readByte()));
 			continue;
 		}
 
-		Log::trace(LOG_NET, String::format("received message type %i", msg->getId()));
+		Log::trace(LOG_NET, "received message type %i", msg->getId());
 		IClientProtocolHandler* handler = ProtocolHandlerRegistry::get().getClientHandler(*msg);
 		if (handler != nullptr)
 			handler->execute(*msg);
 		else
-			Log::error(LOG_NET, String::format("no client handler for message type %i", msg->getId()));
+			Log::error2(LOG_NET, "no client handler for message type %i", msg->getId());
 	}
 }
 
@@ -405,7 +405,7 @@ void ClientMap::disableScreenRumble ()
 void ClientMap::rumble (float strength, int lengthMillis)
 {
 	_frontend->rumble(strength, lengthMillis);
-	Log::info(LOG_CLIENT, "rumble on the screen: " + string::toString(strength));
+	Log::info2(LOG_CLIENT, "rumble on the screen: %f", strength);
 	_screenRumble = true;
 	_screenRumbleStrength = strength;
 	_timeManager.setTimeout(lengthMillis, this, &ClientMap::disableScreenRumble);

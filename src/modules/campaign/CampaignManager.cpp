@@ -152,7 +152,7 @@ int CampaignManager::luaAddMaps (lua_State *l)
 		const std::string name = _mgr->_mapManager.getMapTitle(i->first);
 		ctx->addMap(i->first, name);
 	}
-	Log::trace(LOG_CAMPAIGN, String::format("%i maps added to campaign %s", cnt, ctx->getId().c_str()));
+	Log::trace(LOG_CAMPAIGN, "%i maps added to campaign %s", cnt, ctx->getId().c_str());
 	return 0;
 }
 
@@ -181,7 +181,7 @@ CampaignPtr CampaignManager::getCampaign (const std::string& campaignId) const
 {
 	CampaignsMap::const_iterator i = std::find_if(_campaigns.begin(), _campaigns.end(), isEqual(campaignId));
 	if (i == _campaigns.end()) {
-		Log::error(LOG_CAMPAIGN, "campaign with id " + campaignId + " was not found");
+		Log::error2(LOG_CAMPAIGN, "campaign with id %s was not found", campaignId.c_str());
 		return CampaignPtr();
 	}
 
@@ -200,11 +200,11 @@ CampaignPtr CampaignManager::activateCampaign (const std::string& campaignId) co
 	_activeCampaign = getCampaign(campaignId);
 	if (_activeCampaign) {
 		if (!_activeCampaign->loadProgress())
-			Log::info(LOG_CAMPAIGN, "Could not load progress for " + campaignId);
+			Log::info2(LOG_CAMPAIGN, "Could not load progress for %s", campaignId.c_str());
 		else
-			Log::info(LOG_CAMPAIGN, "Loaded progress for " + campaignId);
+			Log::info2(LOG_CAMPAIGN, "Loaded progress for %s", campaignId.c_str());
 	} else {
-		Log::error(LOG_CLIENT, "could not get campaign with id " + campaignId);
+		Log::error2(LOG_CLIENT, "could not get campaign with id %s", campaignId.c_str());
 	}
 	return _activeCampaign;
 }
@@ -218,7 +218,7 @@ void CampaignManager::notifyCampaignUnlock (const CampaignPtr& oldCampaign) cons
 
 bool CampaignManager::resetAllSavedData ()
 {
-	Log::info(LOG_CAMPAIGN, "reset campaign progress");
+	Log::info2(LOG_CAMPAIGN, "reset campaign progress");
 	for (CampaignsMap::iterator i = _campaigns.begin(); i != _campaigns.end(); ++i) {
 		const CampaignPtr& c = *i;
 		if (!c->isUnlocked())
@@ -255,7 +255,7 @@ CampaignPtr CampaignManager::getAutoActiveCampaign () const
 {
 	getActiveCampaign();
 	while (_activeCampaign && !_activeCampaign->hasMoreMaps()) {
-		Log::info(LOG_CAMPAIGN, "try to activate the next campaign");
+		Log::info2(LOG_CAMPAIGN, "try to activate the next campaign");
 		activateNextCampaign();
 	}
 	return _activeCampaign;
@@ -286,7 +286,7 @@ bool CampaignManager::activateNextCampaign () const
 		}
 		return true;
 	}
-	Log::info(LOG_CAMPAIGN, "no more campaigns to unlock");
+	Log::info2(LOG_CAMPAIGN, "no more campaigns to unlock");
 	return false;
 }
 

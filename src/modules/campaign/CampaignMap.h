@@ -47,13 +47,13 @@ typedef SharedPtr<CampaignMap> CampaignMapPtr;
 
 inline void CampaignMap::unlock ()
 {
-	Log::trace(LOG_CAMPAIGN, "unlock map " + _id);
+	Log::trace(LOG_CAMPAIGN, "unlock map %s", _id.c_str());
 	_locked = false;
 }
 
 inline void CampaignMap::lock ()
 {
-	Log::trace(LOG_CAMPAIGN, "lock map " + _id);
+	Log::trace(LOG_CAMPAIGN, "lock map %s", _id.c_str());
 	_locked = true;
 }
 
