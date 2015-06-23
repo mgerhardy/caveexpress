@@ -177,7 +177,7 @@ void Shader::fetchUniforms ()
 		glGetActiveUniform(_program, i, MAX_SHADER_VAR_NAME - 1, &length, &size, &type, name);
 		const int location = glGetUniformLocation(_program, name);
 		_uniforms[name] = location;
-		Log::debug(LOG_CLIENT, String::format("uniform %s found at location %i in shader %s", name, location, _name.c_str()));
+		Log::debug2(LOG_CLIENT, "uniform %s found at location %i in shader %s", name, location, _name.c_str());
 	}
 }
 
@@ -196,7 +196,7 @@ void Shader::fetchAttributes ()
 		glGetActiveAttrib(_program, i, MAX_SHADER_VAR_NAME - 1, &length, &size, &type, name);
 		const int location = glGetAttribLocation(_program, name);
 		_attributes[name] = location;
-		Log::debug(LOG_CLIENT, String::format("attribute %s found at location %i in shader %s", name, location, _name.c_str()));
+		Log::debug2(LOG_CLIENT, "attribute %s found at location %i in shader %s", name, location, _name.c_str());
 	}
 }
 

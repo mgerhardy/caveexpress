@@ -23,6 +23,7 @@ protected:
 	GLuint _renderTargetTexture;
 	TexNum _white;
 	TexNum _alpha;
+	TexNum _waterNormal;
 	Shader _shader;
 	Shader _waterShader;
 	int _drawCalls;

@@ -198,12 +198,12 @@ void CaveExpress::update (uint32_t deltaTime)
 			stars = 1;
 		}
 		if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, timeSeconds, stars))
-			Log::error(LOG_SERVER, "Could not save the values for the map");
+			Log::error2(LOG_SERVER, "Could not save the values for the map");
 
 		System.track("mapstate", String::format("finished: %s with %i points in %i seconds and with %i stars", _map.getName().c_str(), finishPoints, timeSeconds, stars));
 		GameEvent.finishedMap(_map.getName(), finishPoints, timeSeconds, stars);
 	} else if (!isDone && _map.isFailed()) {
-		Log::debug(LOG_SERVER, "map failed");
+		Log::debug2(LOG_SERVER, "map failed");
 		const uint32_t delay = 1000;
 		_map.restart(delay);
 	}
@@ -240,7 +240,7 @@ int CaveExpress::disconnect (ClientId clientId)
 	_connectedClients--;
 	if (_connectedClients < 0) {
 		_connectedClients = 0;
-		Log::error(LOG_SERVER, "client counts are out of sync");
+		Log::error2(LOG_SERVER, "client counts are out of sync");
 	}
 
 	return _connectedClients;
@@ -317,7 +317,7 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 			_persister = new SQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
 		}
 		if (!_persister->init()) {
-			Log::error(LOG_SERVER, "Failed to initialize the persister");
+			Log::error2(LOG_SERVER, "Failed to initialize the persister");
 		}
 	}
 	{

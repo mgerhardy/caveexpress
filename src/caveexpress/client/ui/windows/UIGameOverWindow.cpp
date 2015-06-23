@@ -30,7 +30,7 @@ bool UIGameOverWindow::onPush ()
 {
 	const bool retVal = UIWindow::onPush();
 	if (!_campaignManager.resetActiveCampaign())
-		Log::error(LOG_CLIENT, "failed to reset the campaign");
+		Log::error2(LOG_CLIENT, "failed to reset the campaign");
 	return retVal;
 }
 

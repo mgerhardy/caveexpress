@@ -740,7 +740,7 @@ void UINode::addFocus (int32_t x, int32_t y)
 	if (_focus)
 		return;
 	_focus = true;
-	Log::debug(LOG_CLIENT, "focus for " + getId());
+	Log::debug2(LOG_CLIENT, "focus for %s", getId().c_str());
 	for (Listeners::iterator i = _listeners.begin(); i != _listeners.end(); ++i) {
 		(*i)->onAddFocus();
 	}
@@ -752,7 +752,7 @@ void UINode::removeFocus ()
 {
 	if (!_focus)
 		return;
-	Log::debug(LOG_CLIENT, "remove focus for " + getId());
+	Log::debug2(LOG_CLIENT, "remove focus for %s", getId().c_str());
 	_focus = false;
 	_focusMouseX = -1;
 	_focusMouseY = -1;

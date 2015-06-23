@@ -25,7 +25,7 @@ FontDefinition::FontDefinition() {
 
 		FontDefMapConstIter findIter = _fontDefs.find(id);
 		if (findIter != _fontDefs.end()) {
-			Log::error(LOG_GENERAL, "font def already defined: " + id);
+			Log::error2(LOG_GENERAL, "font def already defined: %s", id.c_str());
 			lua.pop();
 			continue;
 		}
@@ -83,10 +83,6 @@ void FontDef::updateChars (int tWidth, int tHeight)
 	_widthFactor = tWidth / (float)textureWidth;
 	_heightFactor = tHeight / (float)textureHeight;
 
-	Log::debug(LOG_CLIENT, string::toString(*this));
-	Log::debug(LOG_CLIENT, "tWidth: " + string::toString(tWidth) + ", tHeight: " + string::toString(tHeight)
-					+ ", widthFactor: " + string::toString(_widthFactor)
-					+ ", heightFactor: " + string::toString(_heightFactor));
 	for (std::vector<FontChar>::iterator i = fontChars.begin(); i != fontChars.end(); ++i) {
 		FontChar& c = *i;
 		c.setWidthFactor(_widthFactor);

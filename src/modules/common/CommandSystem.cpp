@@ -10,7 +10,7 @@ public:
 	{
 		for (CommandList::const_iterator i = CommandSystem::get()._commands.begin();
 				i != CommandSystem::get()._commands.end(); ++i) {
-			Log::info(LOG_COMMANDS, i->first);
+			Log::info2(LOG_COMMANDS, "%s", i->first.c_str());
 		}
 	}
 };
@@ -29,13 +29,13 @@ CommandSystem::~CommandSystem ()
 
 void CommandSystem::registerAlias (const std::string& id, const std::string& command)
 {
-	Log::info(LOG_COMMANDS, "register alias " + id);
+	Log::info2(LOG_COMMANDS, "register alias %s", id.c_str());
 	_alias[id] = command;
 }
 
 CommandPtr CommandSystem::registerCommand (const std::string& id, ICommand* command)
 {
-	Log::info(LOG_COMMANDS, "register command " + id);
+	Log::info2(LOG_COMMANDS, "register command %s", id.c_str());
 	CommandPtr ptr(command);
 	_commands[id] = ptr;
 	return ptr;
@@ -88,7 +88,7 @@ bool CommandSystem::executeCommand (const std::string& command, ICommand::Args a
 	}
 	ICommand* callback = getCommand(command2);
 	if (callback != nullptr) {
-		Log::debug(LOG_COMMANDS, "run command " + command + " with " + string::toString(args.size()) + " parameters");
+		Log::debug2(LOG_COMMANDS, "run command %s with %i parameters", command.c_str(), (int)args.size());
 		callback->run(args);
 		return true;
 	}

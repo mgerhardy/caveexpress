@@ -115,14 +115,14 @@ public:
 	{
 		UIWindowMap::iterator i = _windows.find(window);
 		if (i == _windows.end()) {
-			Log::debug(LOG_CLIENT, "could not find window " + window);
+			Log::debug2(LOG_CLIENT, "could not find window %s", window.c_str());
 			return nullptr;
 		}
 
 		UIWindow* windowPtr = i->second;
 		UINode* node = windowPtr->getNode(nodeId);
 		if (node == nullptr) {
-			Log::debug(LOG_CLIENT, "could not find node " + nodeId);
+			Log::debug2(LOG_CLIENT, "could not find node %s", nodeId.c_str());
 			return nullptr;
 		}
 		return static_cast<UINodeType*>(node);

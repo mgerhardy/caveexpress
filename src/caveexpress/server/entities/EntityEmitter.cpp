@@ -56,7 +56,7 @@ void EntityEmitter::update (uint32_t deltaTime)
 
 	const b2Vec2 realPos = getRealPos(_type);
 
-	Log::debug(LOG_SERVER, _type.name + " spawning");
+	Log::debug2(LOG_SERVER, "%s spawning", _type.name.c_str());
 	if (EntityTypes::isStone(_type)) {
 		Stone* entity = new Stone(_map, realPos.x, realPos.y);
 		entity->createBody();
@@ -90,7 +90,7 @@ void EntityEmitter::update (uint32_t deltaTime)
 		Egg* entity = new Egg(_map, realPos.x, realPos.y);
 		entity->createBody();
 	} else {
-		Log::error(LOG_SERVER, _type.name + " is an unknown type for the emitter");
+		Log::error2(LOG_SERVER, "%s is an unknown type for the emitter", _type.name.c_str());
 		_amount = _count = 1;
 		return;
 	}

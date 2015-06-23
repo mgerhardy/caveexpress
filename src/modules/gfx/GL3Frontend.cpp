@@ -56,7 +56,7 @@ static Batch _batches[MAX_BATCHES];
 static int _currentBatch;
 
 GL3Frontend::GL3Frontend (SharedPtr<IConsole> console) :
-		SDLFrontend(console), _currentTexture(-1), _rx(1.0f), _ry(1.0f), _vao(0u), _vbo(0u), _renderTargetTexture(0), _white(0), _alpha(0), _drawCalls(0)
+		SDLFrontend(console), _currentTexture(-1), _rx(1.0f), _ry(1.0f), _vao(0u), _vbo(0u), _renderTargetTexture(0), _white(0), _alpha(0), _waterNormal(0), _drawCalls(0)
 {
 	_context = nullptr;
 	_currentBatch = 0;
@@ -102,12 +102,10 @@ bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fil
 	renderBatches();
 	const float width = _fbo.rect().w;
 	const float height = _fbo.rect().h;
-	const float xf = x;
-	const float yf = y;
-	const float xTexCoord = xf / width;
+	const float xTexCoord = x / width;
 	const float xTexCoord2 = xTexCoord + w / width;
-	const float yTexCoord = 1.0 - yf / height;
-	const float yTexCoord2 = 1.0 - (yf + h) / height;
+	const float yTexCoord = 1.0 - y / height;
+	const float yTexCoord2 = 1.0 - (y + h) / height;
 
 	float tex[8];
 
@@ -124,12 +122,13 @@ bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fil
 	tex[7] = yTexCoord2;
 
 	const TextureCoords texCoords(tex);
-	renderTexture(texCoords, x, y, w, h, 0, 1.0f, _renderTargetTexture, _alpha);
+	renderTexture(texCoords, x, y, w, h, 0, 1.0f, _renderTargetTexture, _waterNormal);
 	Log::trace(LOG_CLIENT, "x: %i, y: %i, w: %i, h: %i, fbo(%f, %f), tex(%f:%f:%f:%f)", x, y, w, h, width, height, xTexCoord, yTexCoord, xTexCoord2, yTexCoord2);
 	_waterShader.activate();
 	if (_waterShader.hasUniform("u_watercolor"))
 		_waterShader.setUniform4fv("u_watercolor", fillColor, 0, 4);
 	renderBatchesWithShader(_waterShader);
+	renderLine(x, y - 1, x + w, y - 1, waterLineColor);
 	return true;
 }
 
@@ -319,7 +318,7 @@ void GL3Frontend::startNewBatch ()
 
 	++_currentBatch;
 	if (_currentBatch >= MAX_BATCHES) {
-		Log::debug(LOG_CLIENT, "render the batches because the max batch count was exceeded");
+		Log::debug2(LOG_CLIENT, "render the batches because the max batch count was exceeded");
 		renderBatches();
 		return;
 	}
@@ -356,8 +355,7 @@ void GL3Frontend::disableScissor ()
 	_batches[_currentBatch].scissor = false;
 }
 
-void GL3Frontend::initRenderer ()
-{
+void GL3Frontend::initRenderer () {
 	Log::info(LOG_CLIENT, "init opengl renderer");
 	_context = SDL_GL_CreateContext(_window);
 	ExtGLLoadFunctions();
@@ -434,6 +432,16 @@ void GL3Frontend::initRenderer ()
 
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
+
+	SDL_Surface *textureSurface = loadTextureIntoSurface("waternormal");
+	if (textureSurface == nullptr) {
+		System.exit("could not load the water normal", 1);
+	} else {
+		_waterNormal = uploadTexture(static_cast<unsigned char *>(textureSurface->pixels), textureSurface->w, textureSurface->h);
+		SDL_FreeSurface(textureSurface);
+
+			Log::info2(LOG_CLIENT, "Uploaded water normal with texnum %ui", _waterNormal);
+	}
 }
 
 int GL3Frontend::getCoordinateOffsetX () const
@@ -607,8 +615,8 @@ TexNum GL3Frontend::uploadTexture (const unsigned char* pixels, int w, int h) co
 	glBindTexture(GL_TEXTURE_2D, texnum);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	GL_checkError();
@@ -702,7 +710,7 @@ void GL3Frontend::renderEnd ()
 {
 	renderBatches();
 #ifdef DEBUG
-	Log::debug(LOG_CLIENT, String::format("%i drawcalls", _drawCalls));
+	Log::debug2(LOG_CLIENT, "%i drawcalls", _drawCalls);
 #endif
 	SDL_GL_SwapWindow(_window);
 	GL_checkError();

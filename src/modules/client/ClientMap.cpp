@@ -43,7 +43,7 @@ void ClientMap::close ()
 
 void ClientMap::start ()
 {
-	Log::info(LOG_CLIENT, "client map start");
+	Log::info2(LOG_CLIENT, "client map start");
 	_started = true;
 }
 
@@ -57,7 +57,7 @@ bool ClientMap::isStarted () const
 
 void ClientMap::resetCurrentMap ()
 {
-	Log::info(LOG_CLIENT, "client map reset");
+	Log::info2(LOG_CLIENT, "client map reset");
 	_startPositions = 0;
 	_zoom = 1.0f;
 	_timeManager.reset();
@@ -95,7 +95,7 @@ void ClientMap::setZoom (const float zoom)
 
 void ClientMap::disconnect ()
 {
-	Log::info(LOG_CLIENT, "send disconnect to server");
+	Log::info2(LOG_CLIENT, "send disconnect to server");
 	const DisconnectMessage msg;
 	INetwork& network = _serviceProvider.getNetwork();
 	network.sendToServer(msg);
@@ -128,7 +128,7 @@ void ClientMap::removeEntity (uint16_t id, bool fadeOut)
 		}
 	}
 	if (_playerID == id) {
-		Log::info(LOG_CLIENT, String::format("remove client side player with the id %i", id));
+		Log::info2(LOG_CLIENT, "remove client side player with the id %i", id);
 		_player = nullptr;
 		_playerID = 0;
 	}
@@ -309,7 +309,7 @@ void ClientMap::update (uint32_t deltaTime)
 
 bool ClientMap::load (const std::string& name, const std::string& title)
 {
-	Log::info(LOG_CLIENT, "load map " + name);
+	Log::info2(LOG_CLIENT, "load map %s", name.c_str());
 	close();
 	_name = name;
 	_title = title;
@@ -324,12 +324,12 @@ void ClientMap::addEntity (ClientEntityPtr e)
 		_player = static_cast<ClientPlayer*>(e);
 	}
 
-	Log::debug(LOG_CLIENT, "add entity " + e->getType().name + " - " + string::toString((int)e->getID()));
+	Log::debug2(LOG_CLIENT, "add entity %s - %i", e->getType().name.c_str(), (int)e->getID());
 }
 
 void ClientMap::setSetting (const std::string& key, const std::string& value)
 {
-	Log::debug(LOG_CLIENT, "client key: " + key + " = " + value);
+	Log::debug2(LOG_CLIENT, "client key: %s = %s", key.c_str(), value.c_str());
 	_settings[key] = value;
 
 	if (key == msn::WIDTH) {
@@ -396,7 +396,7 @@ void ClientMap::onData (ByteStream &data)
 
 void ClientMap::disableScreenRumble ()
 {
-	Log::info(LOG_CLIENT, "stop rumble on the screen");
+	Log::info2(LOG_CLIENT, "stop rumble on the screen");
 	_screenRumble = false;
 	_screenRumbleStrength = 0.0f;
 	_screenRumbleOffsetX = _screenRumbleOffsetY = 0;

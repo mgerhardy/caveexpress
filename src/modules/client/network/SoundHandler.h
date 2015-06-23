@@ -13,7 +13,7 @@ public:
 		const SoundType& sound = msg->getSoundType();
 		const std::string& snd = sound.getSound();
 		if (snd.empty()) {
-			Log::error(LOG_CLIENT, String::format("no sound found for type %i", static_cast<int>(sound)));
+			Log::error2(LOG_CLIENT, "no sound found for type %i", static_cast<int>(sound));
 			return;
 		}
 
@@ -21,7 +21,7 @@ public:
 		const float ypos = msg->getY();
 		const vec2 position(xpos, ypos);
 		const bool loop = sound.isLoopSound();
-		Log::debug(LOG_CLIENT, "play sound " + snd + (loop ? " as loop sound" : " without looping"));
+		Log::debug2(LOG_CLIENT, "play sound %s %s", snd.c_str(), (loop ? " as loop sound" : " without looping"));
 		SoundControl.play(snd, position, loop);
 	}
 };

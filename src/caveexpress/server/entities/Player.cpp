@@ -168,11 +168,11 @@ void Player::update (uint32_t deltaTime)
 		v.x = clamp(v.x, -maxHorizontalVelocity, maxHorizontalVelocity);
 		v.y = clamp(v.y, -gravity.y * 3.0f, gravity.y);
 
-		Log::debug(LOG_SERVER, "v: " + string::toString(v) + ", x: " + string::toString(_accelerateX) + ", y: " + string::toString(_accelerateY));
+		Log::debug2(LOG_SERVER, "v(%f:%f), accel(%i:%i)", v.x, v.y, _accelerateX, _accelerateY);
 
 		if (fabs(v.y) < 0.0001f) {
 			const b2Vec2 force = -mass * getGravity();
-			Log::debug(LOG_SERVER, "f: " + string::toString(force));
+			Log::debug2(LOG_SERVER, "f: (%f:%f)", force.x, force.y);
 			applyForce(force);
 		}
 		applyLinearImpulse(v);
@@ -332,12 +332,8 @@ void Player::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* 
 	const int maxHitpoints = Config.getMaxHitpoints();
 	const int hitpointReduceAmount = maxHitpoints / 10 * (1.0f + factor);
 	subtractHitpoints(hitpointReduceAmount);
-	Log::debug(LOG_SERVER,
-			"damageThreshold: " + string::toString(damageThreshold)
-					+ ", approachVelocity: " + string::toString(approachVelocity)
-					+ ", factor: " + string::toString(factor)
-					+ ", hitpointReduceAmount: "
-					+ string::toString(hitpointReduceAmount));
+	Log::debug2(LOG_SERVER, "damageThreshold: %f, approachVelocity: %f, factor: %f, hitpointReduceAmount: %i",
+			   damageThreshold, approachVelocity, factor, hitpointReduceAmount);
 	GameEvent.sendRumble(factor, 500);
 }
 
@@ -400,7 +396,7 @@ bool Player::collect (CollectableEntity* entity)
 	if (!canCarry(entity))
 		return false;
 
-	Log::info(LOG_SERVER, "collected entity of type: " + entityType.name);
+	Log::info2(LOG_SERVER, "collected entity of type: %s", entityType.name.c_str());
 	const Collected c = { &entityType, entity };
 	for (int i = 0; i < MAX_COLLECTED; ++i) {
 		if (_collectedEntities[i].entityType != nullptr)
@@ -437,10 +433,10 @@ void Player::drop ()
 			entity->removeRopeJoint();
 			entity->setCollected(false, this);
 		} else {
-			Log::error(LOG_SERVER, "unknown entity type: " + entityType->name);
+			Log::error2(LOG_SERVER, "unknown entity type: %s", entityType->name.c_str());
 			continue;
 		}
-		Log::info(LOG_SERVER, "drop entity of type: " + entityType->name);
+		Log::info2(LOG_SERVER, "drop entity of type: %s", entityType->name.c_str());
 		GameEvent.sendCollectState(_clientId, *entityType, false);
 	}
 

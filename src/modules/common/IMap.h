@@ -91,7 +91,7 @@ public:
 
 		if (val.empty())
 			val = defaultValue;
-		Log::debug(LOG_MAP, "key: " + key + " = " + val);
+		Log::debug2(LOG_MAP, "key: %s = %s", key.c_str(), val.c_str());
 		return val;
 	}
 

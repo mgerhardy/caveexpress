@@ -37,7 +37,7 @@ void ClientParticle::resetParticles (uint8_t maxParticles, uint32_t lifetime)
 void ClientParticle::updateParticle (int index, float x, float y, uint32_t lifetime, EntityAngle angle)
 {
 	if (index >= _maxParticles || index < 0) {
-		Log::error(LOG_CLIENT, "invalid particle index given");
+		Log::error2(LOG_CLIENT, "invalid particle index given");
 		return;
 	}
 	ParticleData& d = _particles[index];

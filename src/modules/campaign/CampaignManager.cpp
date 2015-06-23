@@ -75,12 +75,12 @@ void CampaignManager::init ()
 		if (!FS.hasExtension(filename, "lua"))
 			continue;
 		if (!lua.load(filename)) {
-			Log::error(LOG_CAMPAIGN, "failed to load campaign " + filename);
+			Log::error2(LOG_CAMPAIGN, "failed to load campaign %s", filename.c_str());
 			continue;
 		}
 		++campaignsLoaded;
 	}
-	Log::debug(LOG_CAMPAIGN, String::format("found %i campaign scripts", campaignsLoaded));
+	Log::debug2(LOG_CAMPAIGN, "found %i campaign scripts", campaignsLoaded);
 
 	if (System.hasItem(PAYMENT_UNLOCKALL)) {
 		for (CampaignsMap::iterator i = _campaigns.begin(); i != _campaigns.end(); ++i) {
@@ -92,8 +92,7 @@ void CampaignManager::init ()
 	}
 
 	_completed = isCompleted();
-	const std::string completed = _completed ? "true" : "false";
-	Log::info(LOG_CAMPAIGN, "completed: " + completed);
+	Log::info2(LOG_CAMPAIGN, "completed: %s", (_completed ? "true" : "false"));
 }
 
 int CampaignManager::luaCreateCampaign (lua_State *l)
@@ -106,7 +105,7 @@ int CampaignManager::luaCreateCampaign (lua_State *l)
 	}
 	Campaign ** udata = LUA::newUserdata<Campaign>(l, "Campaign");
 	*udata = new Campaign(id, _mgr->_persister);
-	Log::info(LOG_CAMPAIGN, "create campaign " + id);
+	Log::info2(LOG_CAMPAIGN, "create campaign %s", id.c_str());
 	_mgr->_campaigns.push_back(CampaignPtr(*udata));
 	return 1;
 }
@@ -277,7 +276,7 @@ bool CampaignManager::activateNextCampaign () const
 	for (CampaignsMap::const_iterator i = _campaigns.begin(); i != _campaigns.end(); ++i) {
 		CampaignPtr c = *i;
 		if (!c->hasMoreMaps()) {
-			Log::info(LOG_CLIENT, c->getId() + " has no more maps");
+			Log::info2(LOG_CLIENT, "%s has no more maps", c->getId().c_str());
 			continue;
 		}
 		activateCampaign(c->getId());
@@ -300,17 +299,17 @@ bool CampaignManager::updateMapValues (const std::string& mapname, uint32_t fini
 {
 	_lastPlayedMap = mapname;
 
-	Log::info(LOG_CAMPAIGN, String::format("map values for %s: %u points, time: %us and %i stars",
-			_lastPlayedMap.c_str(), finishPoints, time, (int)stars));
+	Log::info2(LOG_CAMPAIGN, "map values for %s: %u points, time: %us and %i stars",
+			_lastPlayedMap.c_str(), finishPoints, time, (int)stars);
 
 	if (!_activeCampaign) {
-		Log::error(LOG_CAMPAIGN, "no active campaign");
+		Log::error2(LOG_CAMPAIGN, "no active campaign");
 		return false;
 	}
 
 	CampaignMap* map = _activeCampaign->getMapById(mapname);
 	if (map == nullptr) {
-		Log::error(LOG_CAMPAIGN, "no map with the name " + mapname + " in the current active campaign " + _activeCampaign->getId());
+		Log::error2(LOG_CAMPAIGN, "no map with the name %s in the current active campaign %s", mapname.c_str(), _activeCampaign->getId().c_str());
 		return false;
 	}
 
@@ -375,7 +374,7 @@ bool CampaignManager::isCompleted () const
 		const bool completed = nextMap.empty();
 		return completed;
 	}
-	Log::error(LOG_CAMPAIGN, "could not find any active campaign");
+	Log::error2(LOG_CAMPAIGN, "could not find any active campaign");
 	return true;
 }
 
@@ -383,12 +382,12 @@ bool CampaignManager::continuePlay ()
 {
 	const CampaignPtr& c = getAutoActiveCampaign();
 	if (!c) {
-		Log::error(LOG_CAMPAIGN, "could not find any active campaign");
+		Log::error2(LOG_CAMPAIGN, "could not find any active campaign");
 		return false;
 	}
 	const std::string& map = c->getNextMap();
 	if (map.empty()) {
-		Log::error(LOG_CAMPAIGN, "empty map name in campaign " + c->getId());
+		Log::error2(LOG_CAMPAIGN, "empty map name in campaign %s", c->getId().c_str());
 		return false;
 	}
 
@@ -401,7 +400,7 @@ bool CampaignManager::firstMap () const
 {
 	const CampaignPtr& c = getAutoActiveCampaign();
 	if (!c) {
-		Log::error(LOG_CAMPAIGN, "could not find any active campaign");
+		Log::error2(LOG_CAMPAIGN, "could not find any active campaign");
 		return false;
 	}
 	return c->getId() == "tutorial" && c->firstMap();
@@ -409,7 +408,7 @@ bool CampaignManager::firstMap () const
 
 void CampaignManager::startMap (const std::string& map)
 {
-	Log::info(LOG_CAMPAIGN, "start map " + map);
+	Log::info2(LOG_CAMPAIGN, "start map %s", map.c_str());
 	Commands.executeCommandLine(CMD_MAP_START " " + map);
 	_lastPlayedMap = map;
 }
@@ -418,7 +417,7 @@ bool CampaignManager::replay ()
 {
 	if (_lastPlayedMap.empty())
 		return false;
-	Log::info(LOG_CAMPAIGN, "replay map " + _lastPlayedMap);
+	Log::info2(LOG_CAMPAIGN, "replay map %s", _lastPlayedMap.c_str());
 	Commands.executeCommandLine(CMD_MAP_START " " + _lastPlayedMap);
 	return true;
 }

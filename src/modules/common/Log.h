@@ -61,9 +61,6 @@ public:
 	static void warn(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
 	static void error2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
 
-	static void debug(LogCategory category, const std::string& msg) {
-		debug2(category, "%s", msg.c_str());
-	}
 	static void info(LogCategory category, const std::string& msg) {
 		info2(category, "%s", msg.c_str());
 	}
