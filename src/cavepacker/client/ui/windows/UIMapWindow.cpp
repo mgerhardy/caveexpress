@@ -122,7 +122,7 @@ void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
 	const CampaignMap* campaignMap = c->getMapById(name);
 	const int ownBest = campaignMap != nullptr ? campaignMap->getFinishPoints() : 0;
 	const std::string best = map.getSetting("best", "0" /* string::toString(ownBest) */);
-	Log::info(LOG_CLIENT, "got best points from server: " + best);
+	Log::info2(LOG_CLIENT, "got best points from server: %s", best.c_str());
 	_points->setOwnAndGlobalBest(ownBest, string::toInt(best));
 	_points->setLabel("0");
 

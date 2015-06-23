@@ -26,7 +26,7 @@ long File::write (const unsigned char *buf, size_t len) const
 {
 	SDL_RWops *rwops = SDL_RWFromFile(_rawPath.c_str(), "wb");
 	if (!rwops) {
-		Log::info(LOG_SYSTEM, "failed to get stream for " + _rawPath);
+		Log::info2(LOG_SYSTEM, "failed to get stream for %s", _rawPath.c_str());
 		return -1L;
 	}
 
@@ -34,7 +34,7 @@ long File::write (const unsigned char *buf, size_t len) const
 	while (remaining) {
 		const size_t written = SDL_RWwrite(rwops, buf, 1, remaining);
 		if (written == 0) {
-			Log::info(LOG_SYSTEM, "failed to write to stream " + _rawPath);
+			Log::info2(LOG_SYSTEM, "failed to write to stream %s", _rawPath.c_str());
 			return -1L;
 		}
 

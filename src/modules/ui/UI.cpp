@@ -633,7 +633,7 @@ void UI::printStack ()
 {
 	Log::info2(LOG_CLIENT, "UI stack");
 	for (UIStackReverseIter i = _stack.rbegin(); i != _stack.rend(); ++i) {
-		Log::info(LOG_CLIENT, (*i)->getId());
+		Log::info2(LOG_CLIENT, "%s", (*i)->getId().c_str());
 	}
 }
 

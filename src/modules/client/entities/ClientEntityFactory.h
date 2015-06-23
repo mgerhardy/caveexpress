@@ -61,7 +61,7 @@ private:
 		ExecutionTime cache("Initialize entity sounds");
 		LUA lua;
 		if (!lua.load("entitysounds.lua")) {
-			Log::error(LOG_CLIENT, "could not load entitysounds.lua script");
+			Log::error2(LOG_CLIENT, "could not load entitysounds.lua script");
 			return;
 		}
 

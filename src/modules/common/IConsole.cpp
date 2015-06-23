@@ -27,14 +27,14 @@ void IConsole::executeCommandLine ()
 			if (c) {
 				if (tokens.empty()) {
 					if (c->getValue().empty())
-						Log::info(LOG_GENERAL, cmd + ": no value set");
+						Log::info2(LOG_GENERAL, "%s: no value set", cmd.c_str());
 					else
-						Log::info(LOG_GENERAL, cmd + ": " + c->getValue());
+						Log::info2(LOG_GENERAL, "%s: %s", cmd.c_str(), c->getValue().c_str());
 				} else {
 					c->setValue(tokens[0].eraseAllSpaces());
 				}
 			} else {
-				Log::info(LOG_GENERAL, "unknown config variable " + cmd);
+				Log::info2(LOG_GENERAL, "unknown config variable %s", cmd.c_str());
 			}
 		} else {
 			Commands.executeCommand(cmd, tokens);
@@ -124,7 +124,7 @@ void IConsole::autoComplete ()
 		_cursorPos = _commandLine.size();
 	} else {
 		for (std::vector<std::string>::const_iterator i = matches.begin(); i != matches.end(); ++i) {
-			Log::info(LOG_GENERAL, *i);
+			Log::info2(LOG_GENERAL, "%s", (*i).c_str());
 		}
 	}
 }

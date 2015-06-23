@@ -28,7 +28,7 @@ void CaveMapTile::update (uint32_t deltaTime)
 
 	if (_npc != nullptr) {
 		if (_npc->isNpcFriendly() && _npc->isCollected()) {
-			Log::info(LOG_SERVER, String::format("npc %i is collected, remove from world", _npc->getID()));
+			Log::info2(LOG_SERVER, "npc %i is collected, remove from world", _npc->getID());
 			_map.removeNPCFromWorld(static_cast<NPCFriendly*>(_npc));
 			_npc = nullptr;
 			_nextSpawn = _now + _delaySpawn;
@@ -97,7 +97,7 @@ bool CaveMapTile::moveBackIntoCave ()
 	if (!_npc->returnToInitialPosition())
 		return false;
 
-	Log::info(LOG_SERVER, "move npc back into cave");
+	Log::info2(LOG_SERVER, "move npc back into cave");
 	setRespawnPossible(true, _npc->getType());
 	_npc = nullptr;
 	return true;
@@ -118,7 +118,7 @@ void CaveMapTile::spawnNPC (bool spawnPackage)
 
 	if (EntityTypes::isNpcCave(type))
 		_npcTypes.erase(_npcTypes.begin());
-	Log::info(LOG_SERVER, String::format("created new npc %i on cave %i", npc->getID(), _caveNumber));
+	Log::info2(LOG_SERVER, "created new npc %i on cave %i", npc->getID(), _caveNumber);
 	_npc = npc;
 	_spawned = _now;
 	setRespawnPossible(!_npcTypes.empty(), EntityType::NONE);

@@ -51,7 +51,7 @@ RandomMapContext::RandomMapContext (const std::string& name, const ThemeType& th
 				width), _mapHeight(height), _map(new SpriteDef*[_mapWidth * _mapHeight])
 {
 	_theme = &theme;
-	Log::info(LOG_SERVER, String::format("random map size: %i:%i", width, height));
+	Log::info2(LOG_SERVER, "random map size: %i:%i", width, height);
 	_settings[msn::WIDTH] = string::toString(width);
 	_settings[msn::HEIGHT] = string::toString(height);
 
@@ -82,11 +82,11 @@ RandomMapContext::RandomMapContext (const std::string& name, const ThemeType& th
 		else if (SpriteTypes::isWindow(type))
 			_windowTiles.push_back(def);
 	}
-	Log::info(LOG_SERVER, String::format("%i solid tiles", _solidTiles.size()));
-	Log::info(LOG_SERVER, String::format("%i ground tiles", _groundTiles.size()));
-	Log::info(LOG_SERVER, String::format("%i background tiles", _backgroundTiles.size()));
-	Log::info(LOG_SERVER, String::format("%i window tiles", _windowTiles.size()));
-	Log::info(LOG_SERVER, String::format("%i cave tiles", _caveTiles.size()));
+	Log::info2(LOG_SERVER, "%i solid tiles", (int)_solidTiles.size());
+	Log::info2(LOG_SERVER, "%i ground tiles", (int)_groundTiles.size());
+	Log::info2(LOG_SERVER, "%i background tiles", (int)_backgroundTiles.size());
+	Log::info2(LOG_SERVER, "%i window tiles", (int)_windowTiles.size());
+	Log::info2(LOG_SERVER, "%i cave tiles", (int)_caveTiles.size());
 }
 
 RandomMapContext::~RandomMapContext ()
@@ -148,7 +148,7 @@ bool RandomMapContext::checkFreeTiles (const SpriteDefPtr& def, randomGridCoord 
 			break;
 	}
 	if (startState == _mapWidth * _mapHeight) {
-		Log::error(LOG_SERVER, "no free slot found");
+		Log::error2(LOG_SERVER, "no free slot found");
 		return false;
 	}
 
@@ -341,7 +341,7 @@ bool RandomMapContext::placeInitialRandomTiles ()
 				return false;
 			}
 		} else {
-			Log::info(LOG_SERVER, "placed initial tile '" + def->id + "' at " + string::toString(x) + ":" + string::toString(y));
+			Log::info2(LOG_SERVER, "placed initial tile '%s' at %ui:%ui", def->id.c_str(), x, y);
 			tries = 0;
 		}
 	}

@@ -20,11 +20,11 @@ public:
 	void execute (const IProtocolMessage& message) override
 	{
 		if (!_map.isActive()) {
-			Log::error(LOG_CLIENT, "clientmap is not active");
+			Log::error2(LOG_CLIENT, "clientmap is not active");
 			return;
 		}
 		System.track("mapstate", "close:" + _map.getName());
-		Log::info(LOG_CLIENT, "close the clientmap");
+		Log::info2(LOG_CLIENT, "close the clientmap");
 		ClientPlayer* player = _map.getPlayer();
 		if (player != nullptr)
 			player->setCollected(EntityType::NONE);

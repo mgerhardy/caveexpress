@@ -20,15 +20,15 @@ extern "C" int main (int argc, char *argv[])
 
 	getSystem().init();
 	const std::string workingDir = getSystem().getCurrentWorkingDir();
-	Log::info(LOG_MAIN, "current working dir: " + workingDir);
+	Log::info2(LOG_MAIN, "current working dir: %s", workingDir.c_str());
 
 	{
-		Log::info(LOG_MAIN, "Entering mainloop");
+		Log::info2(LOG_MAIN, "Entering mainloop");
 		SDLBackend sdlBackend;
 		sdlBackend.mainLoop(argc, argv);
-		Log::info(LOG_MAIN, "Leaving mainloop");
+		Log::info2(LOG_MAIN, "Leaving mainloop");
 	}
 
-	Log::info(LOG_MAIN, "quit");
+	Log::info2(LOG_MAIN, "quit");
 	return EXIT_SUCCESS;
 }

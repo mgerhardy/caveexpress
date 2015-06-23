@@ -77,7 +77,7 @@ bool LUA::load (const std::string &file)
 {
 	FilePtr filePtr = FS.getFile(file);
 	if (!filePtr->exists()) {
-		Log::error(LOG_CONFIG, "lua file " + filePtr->getName() + " does not exist");
+		Log::error2(LOG_CONFIG, "lua file '%s' does not exist", filePtr->getName().c_str());
 		return false;
 	}
 
@@ -85,12 +85,12 @@ bool LUA::load (const std::string &file)
 	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		Log::error(LOG_CONFIG, "failed to read lua file " + filePtr->getName());
+		Log::error2(LOG_CONFIG, "failed to read lua file %s", filePtr->getName().c_str());
 		return false;
 	}
 
 	if (luaL_loadbufferx(_state, buffer, fileLen, file.c_str(), nullptr) || lua_pcall(_state, 0, 0, 0)) {
-		Log::error(LOG_LUA, file + ": " + lua_tostring(_state, -1));
+		Log::error2(LOG_LUA, "%s: %s", file.c_str(), lua_tostring(_state, -1));
 		pop(1);
 		return false;
 	}
@@ -335,7 +335,7 @@ void LUA::debugHook (lua_State *L, lua_Debug *ar)
 	if (!lua_getinfo(L, "Sn", ar))
 		return;
 
-	Log::info(LOG_LUA, String::format("%s %s: %s %d", ar->namewhat, ar->name, ar->short_src, ar->currentline));
+	Log::info2(LOG_LUA, "%s %s: %s %d", ar->namewhat, ar->name, ar->short_src, ar->currentline);
 }
 
 int LUA::isAndroid (lua_State *L)

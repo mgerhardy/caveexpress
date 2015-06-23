@@ -16,7 +16,7 @@ BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr, IFrontend *frontend) :
 
 BitmapFont::~BitmapFont (void)
 {
-	Log::info(LOG_CLIENT, "free the bitmap font " + _fontDefPtr->id);
+	Log::info2(LOG_CLIENT, "free the bitmap font %s", _fontDefPtr->id.c_str());
 }
 
 int BitmapFont::getMaxCharsForLength (const std::string& string, int pixelWidth) const

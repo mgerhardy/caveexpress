@@ -58,8 +58,8 @@ inline int OpenGLStateHandlerCheckError (const char *file, int line, const char 
 		if (glError == GL_NO_ERROR)
 			break;
 
-		Log::error(LOG_CLIENT, String::format("openGL err: %s (%d): %s %s (0x%X)",
-				file, line, function, translateError(glError), glError));
+		Log::error2(LOG_CLIENT, "openGL err: %s (%d): %s %s (0x%X)",
+				file, line, function, translateError(glError), glError);
 		ret++;
 	}
 	SDL_assert_always(ret == 0);

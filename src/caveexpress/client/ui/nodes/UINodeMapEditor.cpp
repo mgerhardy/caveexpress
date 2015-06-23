@@ -118,7 +118,7 @@ void UINodeMapEditor::loadMap (const ICommand::Args& args)
 	}
 
 	UI::get().pushRoot(UI_WINDOW_EDITOR);
-	Log::error(LOG_CLIENT, "map " + args[0] + " is loading");
+	Log::error2(LOG_CLIENT, "map %s is loading", args[0].c_str());
 	load(args[0]);
 }
 
@@ -560,7 +560,7 @@ bool UINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 		break;
 	case SDLK_SPACE:
 		if (_activeSpriteDefition && _activeSpriteDefition->rotateable) {
-			Log::info(LOG_CLIENT, "rotate " + _activeSpriteDefition->id + " by " + string::toString(_activeSpriteDefition->rotateable));
+			Log::info2(LOG_CLIENT, "rotate %s by %i", _activeSpriteDefition->id.c_str(), _activeSpriteDefition->rotateable);
 			_activeSpriteAngle += _activeSpriteDefition->rotateable;
 			_activeSpriteAngle %= 360;
 		} else if (_activeEntityType != nullptr && EntityTypes::hasDirection(*_activeEntityType)) {
@@ -1078,12 +1078,12 @@ void UINodeMapEditor::loadFromContext (ICaveMapContext& ctx)
 			Log::error2(LOG_CLIENT, "could not place tile %s at %f:%f", i->spriteDef->id.c_str(), i->x, i->y);
 	}
 	const std::vector<CaveTileDefinition>& caves = ctx.getCaveTileDefinitions();
-	Log::info2(LOG_CLIENT, String::format("place %i caves", static_cast<int>(caves.size())));
+	Log::info2(LOG_CLIENT, "place %i caves", static_cast<int>(caves.size()));
 	for (std::vector<CaveTileDefinition>::const_iterator i = caves.begin(); i != caves.end(); ++i) {
 		const SpriteType& type = i->spriteDef->type;
 		const MapEditorLayer layer = getLayer(type);
 		if (!placeCave(i->spriteDef, i->type, i->x, i->y, layer, i->delay, false))
-			Log::error2(LOG_CLIENT, "could not place cave %s at %i:%i", i->spriteDef->id.c_str(), i->x, i->y);
+			Log::error2(LOG_CLIENT, "could not place cave %s at %i:%i", i->spriteDef->id.c_str(), (int)i->x, (int)i->y);
 	}
 	const std::vector<EmitterDefinition>& emitters = ctx.getEmitterDefinitions();
 	Log::info2(LOG_CLIENT, "place %i emitters", static_cast<int>(emitters.size()));

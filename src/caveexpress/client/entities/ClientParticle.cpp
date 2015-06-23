@@ -52,7 +52,7 @@ void ClientParticle::render (IFrontend *frontend, Layer layer, int scale, float 
 {
 	const TexturePtr& texture = UI::get().loadTexture(_sprite);
 	if (!texture || !texture->isValid()) {
-		Log::error(LOG_CLIENT, "client particle texture '" + _sprite + "' not found");
+		Log::error2(LOG_CLIENT, "client particle texture '%s' not found", _sprite.c_str());
 		return;
 	}
 

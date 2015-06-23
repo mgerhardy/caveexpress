@@ -112,7 +112,7 @@ void CavePacker::update (uint32_t deltaTime)
 		const uint8_t stars = getStars();
 		_campaignManager->getAutoActiveCampaign();
 		if (!_campaignManager->updateMapValues(_map.getName(), moves, pushes, stars, true))
-			Log::error(LOG_SERVER, "Could not save the values for the map");
+			Log::error2(LOG_SERVER, "Could not save the values for the map");
 
 		if (stars == 3) {
 			const int n = SDL_arraysize(fullStarsAchievements);
@@ -124,7 +124,7 @@ void CavePacker::update (uint32_t deltaTime)
 		if (_map.getPlayers().size() == 1) {
 			const Player* player = _map.getPlayers()[0];
 			const std::string& solution = player->getSolution();
-			Log::info(LOG_SERVER, "solution: " + solution);
+			Log::info2(LOG_SERVER, "solution: %s", solution.c_str());
 			SDL_SetClipboardText(solution.c_str());
 #if 0
 			FilePtr solutionFilePtr = FS.getFile(_map.getName() + ".sol");
@@ -143,9 +143,9 @@ void CavePacker::update (uint32_t deltaTime)
 				System.track("autosolve", _map.getName());
 			}
 			if (!_campaignManager->addAdditionMapData(_map.getName(), solution))
-				Log::error(LOG_SERVER, "Could not save the solution for the map");
+				Log::error2(LOG_SERVER, "Could not save the solution for the map");
 		} else {
-			Log::info(LOG_SERVER, "no solution in multiplayer games");
+			Log::info2(LOG_SERVER, "no solution in multiplayer games");
 		}
 
 		System.track("mapstate", String::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), moves, pushes, stars));

@@ -83,7 +83,7 @@ std::string Map::getSolution() const
 {
 	const FilePtr& filePtr = FS.getFile(FS.getMapsDir() + _name + ".sol");
 	if (!filePtr) {
-		Log::info(LOG_SERVER, "no solution file found for " + _name);
+		Log::info2(LOG_SERVER, "no solution file found for %s", _name.c_str());
 		return "";
 	}
 
@@ -91,7 +91,7 @@ std::string Map::getSolution() const
 	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		Log::error(LOG_SERVER, "solution file " + filePtr->getName() + " can't get loaded");
+		Log::error2(LOG_SERVER, "solution file '%s' can't get loaded", filePtr->getName().c_str());
 		return "";
 	}
 
@@ -108,7 +108,7 @@ std::string Map::getSolution() const
 		}
 		const int n = string::toInt(digit);
 		if (i == solution.end()) {
-			Log::error(LOG_SERVER, "invalid rle encoded solution found");
+			Log::error2(LOG_SERVER, "invalid rle encoded solution found");
 			break;
 		}
 		if (*i != '(') {
@@ -161,7 +161,7 @@ void Map::triggerRestart ()
 	if (!_serviceProvider->getNetwork().isServer())
 		return;
 
-	Log::info(LOG_MAP, "trigger restart");
+	Log::info2(LOG_MAP, "trigger restart");
 	Commands.executeCommandLine(CMD_MAP_START " " + getName());
 }
 
@@ -197,7 +197,7 @@ Player* Map::getPlayer (ClientId clientId)
 		}
 	}
 
-	Log::error(LOG_MAP, String::format("no player found for the client id %i", clientId));
+	Log::error2(LOG_MAP, "no player found for the client id %i", clientId);
 	return nullptr;
 }
 
@@ -459,14 +459,14 @@ bool Map::load (const std::string& name)
 	const std::vector<MapTileDefinition>& mapTileList = ctx->getMapTileDefinitions();
 	for (std::vector<MapTileDefinition>::const_iterator i = mapTileList.begin(); i != mapTileList.end(); ++i) {
 		const SpriteType& t = i->spriteDef->type;
-		Log::info(LOG_MAP, "sprite type: " + t.name + ", " + i->spriteDef->id);
+		Log::info2(LOG_MAP, "sprite type: %s, %s", t.name.c_str(), i->spriteDef->id.c_str());
 		MapTile *mapTile = new MapTile(*this, i->x, i->y, getEntityTypeForSpriteType(t));
 		mapTile->setSpriteID(i->spriteDef->id);
 		mapTile->setAngle(randBetweenf(-0.1, 0.1f));
 		loadEntity(mapTile);
 	}
 
-	Log::info2(LOG_MAP, "map loading done with %i tiles", mapTileList.size());
+	Log::info2(LOG_MAP, "map loading done with %i tiles", (int)mapTileList.size());
 
 	ctx->onMapLoaded();
 
@@ -531,7 +531,7 @@ std::string Map::getMapString() const
 void Map::printMap ()
 {
 	const std::string& mapString = getMapString();
-	Log::info(LOG_CLIENT, "\n" + mapString);
+	Log::info2(LOG_CLIENT, "\n%s", mapString.c_str());
 }
 
 void Map::startMap ()

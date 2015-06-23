@@ -63,7 +63,7 @@ bool Shader::load (const std::string& filename, const std::string& source, Shade
 			break;
 		}
 
-		Log::error(LOG_CLIENT, "compile failure in " + filename + " (type: " + strShaderType + ") shader:\n" + errorLog);
+		Log::error2(LOG_CLIENT, "compile failure in %s (type: %s) shader:\n%s", filename.c_str(), strShaderType.c_str(), errorLog.c_str());
 		return false;
 	}
 
@@ -77,7 +77,7 @@ bool Shader::loadFromFile (const std::string& filename, ShaderType shaderType)
 	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		Log::error(LOG_CLIENT, "could not load shader " + filename);
+		Log::error2(LOG_CLIENT, "could not load shader %s", filename.c_str());
 		return false;
 	}
 
@@ -126,7 +126,7 @@ std::string Shader::getSource (ShaderType shaderType, const char *buffer, int le
 				const int includeLen = filePtr->read((void **) &includeBuffer);
 				ScopedArrayPtr<char> p(includeBuffer);
 				if (!includeBuffer || includeLen <= 0) {
-					Log::error(LOG_CLIENT, "could not load shader include " + includeFile);
+					Log::error2(LOG_CLIENT, "could not load shader include %s", includeFile.c_str());
 					break;
 				}
 				src.append(includeBuffer, includeLen);
@@ -156,7 +156,7 @@ bool Shader::loadProgram (const std::string& filename)
 	fetchUniforms();
 	const bool success = _program != 0;
 	if (success) {
-		Log::info(LOG_CLIENT, "loaded shader: " + filename);
+		Log::info2(LOG_CLIENT, "loaded shader: %s", filename.c_str());
 	}
 	_initialized = success;
 	return success;
@@ -223,7 +223,7 @@ void Shader::createProgramFromShaders ()
 
 		GLchar* strInfoLog = new GLchar[infoLogLength + 1];
 		glGetProgramInfoLog(_program, infoLogLength, nullptr, strInfoLog);
-		Log::error(LOG_CLIENT, String::format("linker failure: %s", strInfoLog));
+		Log::error2(LOG_CLIENT, "linker failure: %s", strInfoLog);
 		glDeleteProgram(_program);
 		_program = 0;
 		delete[] strInfoLog;
@@ -234,7 +234,7 @@ int Shader::getAttributeLocation (const std::string& name) const
 {
 	ShaderVariables::const_iterator i = _attributes.find(name);
 	if (i == _attributes.end()) {
-		Log::error(LOG_CLIENT, "can't find attribute " + name + " in shader " + _name);
+		Log::error2(LOG_CLIENT, "can't find attribute %s in shader %s", name.c_str(), _name.c_str());
 		return -1;
 	}
 	return i->second;
@@ -244,7 +244,7 @@ int Shader::getUniformLocation (const std::string& name) const
 {
 	ShaderVariables::const_iterator i = _uniforms.find(name);
 	if (i == _uniforms.end()) {
-		Log::error(LOG_CLIENT, "can't find uniform " + name + " in shader " + _name);
+		Log::error2(LOG_CLIENT, "can't find uniform %s in shader %s", name.c_str(), _name.c_str());
 		return -1;
 	}
 	return i->second;

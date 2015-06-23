@@ -54,9 +54,9 @@ public:
 		const int clients = sendToClients(ClientIdToClientMask(clientId), msg);
 		if (clients != 1) {
 			if (clients == 0)
-				Log::error(LOG_NET, "message with the id " + string::toString((int)msg.getId())  + " wasn't sent to the client");
+				Log::error2(LOG_NET, "message with the id %i wasn't sent to the client", (int)msg.getId());
 			else
-				Log::error(LOG_NET, "message with the id " + string::toString((int)msg.getId())  + " was send to multiple clients (" + string::toString(clients) + ")");
+				Log::error2(LOG_NET, "message with the id %i was send to multiple clients (%i)", (int)msg.getId(), clients);
 		}
 		return clients;
 	}

@@ -56,8 +56,9 @@ bool SQLiteStatement::finish ()
 
 	const int retVal = sqlite3_finalize(_statement);
 	if (retVal != SQLITE_OK) {
-		_error = sqlite3_errstr(retVal);
-		Log::error(LOG_STORAGE, _error);
+		const char *errMsg = sqlite3_errstr(retVal);
+		_error = errMsg;
+		Log::error2(LOG_STORAGE, "%s", errMsg);
 	}
 	_statement = nullptr;
 	return true;

@@ -15,12 +15,12 @@ ConfigVar::~ConfigVar ()
 void ConfigVar::setValue (const std::string& value)
 {
 	if (_flags & CV_READONLY) {
-		Log::error(LOG_CONFIG, _name + " is write protected");
+		Log::error2(LOG_CONFIG, "%s is write protected", _name.c_str());
 		return;
 	}
 	_dirty = _value != value;
 	_value = value;
 	_intValue = string::toInt(_value);
 	_floatValue = string::toFloat(_value);
-	Log::info(LOG_CONFIG, _name + " => changed value to: " + _value);
+	Log::info2(LOG_CONFIG, "%s => changed value to: %s", _name.c_str(), _value.c_str());
 }

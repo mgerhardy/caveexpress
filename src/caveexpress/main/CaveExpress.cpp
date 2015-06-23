@@ -168,7 +168,7 @@ void CaveExpress::update (uint32_t deltaTime)
 	}
 
 	if (_map.handleDeadPlayers() > 0 && !_map.isActive()) {
-		Log::info(LOG_SERVER, "reset the game state");
+		Log::info2(LOG_SERVER, "reset the game state");
 		_campaignManager->reset();
 		return;
 	}
@@ -185,9 +185,8 @@ void CaveExpress::update (uint32_t deltaTime)
 		const uint32_t timePoints = pointsRate * _map.getFinishPoints();
 		const uint32_t finishPoints = timePoints + _map.getPoints();
 		const int percent = time * 100.0f / relativeRefTime;
-		Log::info(LOG_SERVER, String::format(
-						"seconds: %.0f, refseconds: %i, rate: %f, refpoints: %i, timePoints: %i, finishPoints: %i, percent: %i",
-						time, _map.getReferenceTime(), pointsRate, _map.getFinishPoints(), timePoints, finishPoints, percent));
+		Log::info2(LOG_SERVER, "seconds: %.0f, refseconds: %i, rate: %f, refpoints: %i, timePoints: %i, finishPoints: %i, percent: %i",
+						time, _map.getReferenceTime(), pointsRate, _map.getFinishPoints(), timePoints, finishPoints, percent);
 		_map.sendSound(0, SoundTypes::SOUND_MUSIC_WIN);
 		uint8_t stars = 0;
 		if (percent <= 70) {

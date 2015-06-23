@@ -176,7 +176,7 @@ void Map::triggerRestart ()
 	if (!_serviceProvider->getNetwork().isServer())
 		return;
 
-	Log::info(LOG_MAP, "trigger restart");
+	Log::info2(LOG_MAP, "trigger restart");
 	Commands.executeCommandLine(CMD_MAP_START " " + getName());
 }
 
@@ -184,7 +184,7 @@ void Map::triggerDebug ()
 {
 	const bool newstate = Config.getDebugRenderer().activate ^ true;
 	Config.setDebugRenderer(newstate, render, this);
-	Log::info(LOG_MAP, String::format("debug rendering: %s", newstate ? "true" : "false"));
+	Log::info2(LOG_MAP, "debug rendering: %s", newstate ? "true" : "false");
 }
 
 void Map::triggerPause ()
@@ -193,7 +193,7 @@ void Map::triggerPause ()
 		return;
 	_pause ^= true;
 	GameEvent.notifyPause(_pause);
-	Log::info(LOG_MAP, String::format("pause: %s", _pause ? "true" : "false"));
+	Log::info2(LOG_MAP, "pause: %s", _pause ? "true" : "false");
 }
 
 void Map::render (void *userdata)
@@ -221,7 +221,7 @@ inline bool Map::isActive () const
 void Map::countTransferedNPC()
 {
 	_transferedNPCs++;
-	Log::info(LOG_SERVER, String::format("collected %i of %i npcs", _transferedNPCs, _transferedNPCLimit));
+	Log::info2(LOG_SERVER, "collected %i of %i npcs", _transferedNPCs, _transferedNPCLimit);
 }
 
 void Map::countTransferedPackage ()
@@ -231,7 +231,7 @@ void Map::countTransferedPackage ()
 		packageAchievements[i]->unlock();
 	}
 	_transferedPackages++;
-	Log::info(LOG_SERVER, String::format("collected %i of %i packages", _transferedPackages, _transferedPackageLimit));
+	Log::info2(LOG_SERVER, "collected %i of %i packages", _transferedPackages, _transferedPackageLimit);
 	const UpdatePackageCountMessage msg(getPackageCount());
 	_serviceProvider->getNetwork().sendToAllClients(msg);
 }
@@ -249,7 +249,7 @@ int Map::getPackageCount () const
 void Map::clearPhysics ()
 {
 	if (!_name.empty())
-		Log::info(LOG_MAP, "* clear physics");
+		Log::info2(LOG_MAP, "* clear physics");
 
 	if (_world)
 		_world->SetContactListener(nullptr);
@@ -264,7 +264,7 @@ void Map::clearPhysics ()
 			(*i)->prepareRemoval();
 		}
 		if (!_name.empty())
-			Log::info(LOG_MAP, "* removed box2d references");
+			Log::info2(LOG_MAP, "* removed box2d references");
 	}
 
 	{ // now free the allocated memory
@@ -292,7 +292,7 @@ void Map::clearPhysics ()
 		_players.clear();
 		_players.reserve(MAX_CLIENTS);
 		if (!_name.empty())
-			Log::info(LOG_MAP, "* removed allocated memory");
+			Log::info2(LOG_MAP, "* removed allocated memory");
 	}
 
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
@@ -304,7 +304,7 @@ void Map::clearPhysics ()
 	if (_world)
 		delete _world;
 	if (!_name.empty())
-		Log::info(LOG_MAP, "* removed box2d world");
+		Log::info2(LOG_MAP, "* removed box2d world");
 	_world = nullptr;
 	_water = nullptr;
 	_flyingNPC = nullptr;
@@ -807,11 +807,11 @@ void Map::printPlayersList () const
 {
 	for (PlayerListConstIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		const std::string& name = (*i)->getName();
-		Log::info(LOG_SERVER, "* " + name + " (waiting)");
+		Log::info2(LOG_SERVER, "* %s (waiting)", name.c_str());
 	}
 	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
 		const std::string& name = (*i)->getName();
-		Log::info(LOG_SERVER, "* " + name + " (spawned)");
+		Log::info2(LOG_SERVER, "* %s (spawned)", name.c_str());
 	}
 }
 
@@ -1108,7 +1108,7 @@ b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *
 	}
 
 	if (!def) {
-		Log::error(LOG_MAP, "no shape given - could not find sprite definition for " + entity->getType().name);
+		Log::error2(LOG_MAP, "no shape given - could not find sprite definition for %s", entity->getType().name.c_str());
 		return nullptr;
 	}
 
@@ -1121,7 +1121,7 @@ b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *
 		b2Vec2 points[b2_maxPolygonVertices];
 		const int size = SDL_arraysize(points);
 		if (cnt > size)
-			Log::error(LOG_MAP, "too many vertices given for sprite " + def->id);
+			Log::error2(LOG_MAP, "too many vertices given for sprite %s", def->id.c_str());
 
 		for (int i = 0; i < cnt; ++i) {
 			const SpriteVertex &v = polygon.vertices[i];

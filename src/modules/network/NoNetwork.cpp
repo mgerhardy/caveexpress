@@ -62,7 +62,7 @@ void NoNetwork::closeServer ()
 	_serverQueue.clear();
 	_serverQueue.reserve(64);
 
-	Log::info(LOG_NET, "close server");
+	Log::info2(LOG_NET, "close server");
 	_server = false;
 	_serverFunc = nullptr;
 }
@@ -71,7 +71,7 @@ void NoNetwork::disconnectClientFromServer (ClientId clientId)
 {
 	if (!isClientConnected())
 		return;
-	Log::info(LOG_NET, "disconnect client");
+	Log::info2(LOG_NET, "disconnect client");
 }
 
 bool NoNetwork::isServer () const
@@ -86,7 +86,7 @@ bool NoNetwork::isClient () const
 
 void NoNetwork::init ()
 {
-	Log::info(LOG_NET, "init the network layer (local)");
+	Log::info2(LOG_NET, "init the network layer (local)");
 }
 
 bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* func)
@@ -133,7 +133,7 @@ void NoNetwork::closeClient ()
 	if (!isClientConnected())
 		return;
 
-	Log::info(LOG_NET, "close client");
+	Log::info2(LOG_NET, "close client");
 	const DisconnectMessage msg;
 	sendToServer(msg);
 	_clientFunc = nullptr;
@@ -156,6 +156,6 @@ bool NoNetwork::isClientConnected ()
 
 bool NoNetwork::broadcast (IClientCallback* oobCallback, uint8_t* buffer, size_t length, int port)
 {
-	Log::error(LOG_NET, "local network doesn't support broadcasting");
+	Log::error2(LOG_NET, "local network doesn't support broadcasting");
 	return false;
 }

@@ -127,6 +127,6 @@ IProtocolMessage *ProtocolMessageFactory::createMsg(ByteStream& stream) const {
 	if (msg != nullptr)
 		return msg;
 	stream.addByte(type, true);
-	Log::error(LOG_NET, String::format("unknown module type given: %i", type));
+	Log::error2(LOG_NET, "unknown module type given: %i", type);
 	return nullptr;
 }

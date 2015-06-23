@@ -59,7 +59,7 @@ public:
 
 	virtual bool saveCampaign (Campaign* campaign) override
 	{
-		Log::info(LOG_CAMPAIGN, "don't persist campaign progress for " + campaign->getId());
+		Log::info2(LOG_CAMPAIGN, "don't persist campaign progress for %s", campaign->getId().c_str());
 		_activeCampaign = campaign->getId();
 		return true;
 	}

@@ -93,7 +93,7 @@ bool CommandSystem::executeCommand (const std::string& command, ICommand::Args a
 		return true;
 	}
 
-	Log::error(LOG_COMMANDS, "unknown command given: " + command2);
+	Log::error2(LOG_COMMANDS, "unknown command given: %s", command2.c_str());
 
 	return false;
 }

@@ -20,7 +20,7 @@ public:
 	void run (const Args& args) override
 	{
 		if (args.size() < 1) {
-			Log::error(LOG_NET, "usage: host <port>");
+			Log::error2(LOG_NET, "usage: host <port>");
 			return;
 		}
 		const String& host = args[0];

@@ -11,11 +11,11 @@ Sound::Sound () :
 		_soundEngine(&_dummy)
 {
 	const String& engine = Config.getSoundEngine();
-	Log::info(LOG_CLIENT, "soundengine: " + engine);
+	Log::info2(LOG_CLIENT, "soundengine: %s", engine.c_str());
 	if (engine == "sdl")
 		_soundEngine = new SDLSoundEngine();
 	else
-		Log::info(LOG_CLIENT, "disable sound");
+		Log::info2(LOG_CLIENT, "disable sound");
 }
 
 Sound::~Sound ()
@@ -31,7 +31,7 @@ Sound& Sound::get ()
 
 void Sound::close ()
 {
-	Log::info(LOG_CLIENT, "shutting down the sound engine");
+	Log::info2(LOG_CLIENT, "shutting down the sound engine");
 	_soundEngine->close();
 	if (_soundEngine != &_dummy) {
 		delete _soundEngine;
