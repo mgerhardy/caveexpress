@@ -1,7 +1,7 @@
 #include "IConsole.h"
 #include "common/ConfigManager.h"
 #include "common/CommandSystem.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 IConsole::IConsole () :
 		_commandLine(""), _overwrite(false), _frame(0), _cursorBlink(false), _cursorPos(0), _historyPos(0), _active(true)
@@ -27,14 +27,14 @@ void IConsole::executeCommandLine ()
 			if (c) {
 				if (tokens.empty()) {
 					if (c->getValue().empty())
-						info(LOG_GENERAL, cmd + ": no value set");
+						Log::info(LOG_GENERAL, cmd + ": no value set");
 					else
-						info(LOG_GENERAL, cmd + ": " + c->getValue());
+						Log::info(LOG_GENERAL, cmd + ": " + c->getValue());
 				} else {
 					c->setValue(tokens[0].eraseAllSpaces());
 				}
 			} else {
-				info(LOG_GENERAL, "unknown config variable " + cmd);
+				Log::info(LOG_GENERAL, "unknown config variable " + cmd);
 			}
 		} else {
 			Commands.executeCommand(cmd, tokens);
@@ -124,7 +124,7 @@ void IConsole::autoComplete ()
 		_cursorPos = _commandLine.size();
 	} else {
 		for (std::vector<std::string>::const_iterator i = matches.begin(); i != matches.end(); ++i) {
-			info(LOG_GENERAL, *i);
+			Log::info(LOG_GENERAL, *i);
 		}
 	}
 }

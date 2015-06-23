@@ -2,7 +2,7 @@
 #include "Buoyancy.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/shared/constants/Density.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "common/ConfigManager.h"

@@ -1,5 +1,5 @@
 #include "UINodeButton.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 namespace {
 const float BUTTON_ALPHA = 0.5f;

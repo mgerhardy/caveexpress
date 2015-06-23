@@ -1,7 +1,7 @@
 #pragma once
 
 #include "network/IProtocolHandler.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "client/ClientMap.h"
 #include "ui/UI.h"
 #include "ui/nodes/UINodeSprite.h"
@@ -20,11 +20,11 @@ public:
 	void execute (const IProtocolMessage& message) override
 	{
 		if (!_map.isActive()) {
-			error(LOG_CLIENT, "clientmap is not active");
+			Log::error(LOG_CLIENT, "clientmap is not active");
 			return;
 		}
 		System.track("mapstate", "close:" + _map.getName());
-		info(LOG_CLIENT, "close the clientmap");
+		Log::info(LOG_CLIENT, "close the clientmap");
 		ClientPlayer* player = _map.getPlayer();
 		if (player != nullptr)
 			player->setCollected(EntityType::NONE);

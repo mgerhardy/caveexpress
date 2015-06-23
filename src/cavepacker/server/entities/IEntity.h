@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/Timer.h"
 #include "common/IMap.h"
 #include "cavepacker/shared/CavePackerEntityType.h"

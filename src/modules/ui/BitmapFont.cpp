@@ -1,7 +1,7 @@
 #include "BitmapFont.h"
 #include "common/IFrontend.h"
 #include "UI.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/System.h"
 
 BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr, IFrontend *frontend) :
@@ -16,7 +16,7 @@ BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr, IFrontend *frontend) :
 
 BitmapFont::~BitmapFont (void)
 {
-	info(LOG_CLIENT, "free the bitmap font " + _fontDefPtr->id);
+	Log::info(LOG_CLIENT, "free the bitmap font " + _fontDefPtr->id);
 }
 
 int BitmapFont::getMaxCharsForLength (const std::string& string, int pixelWidth) const

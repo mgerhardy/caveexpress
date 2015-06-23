@@ -3,7 +3,7 @@
 #include "common/IFrontend.h"
 #include "common/IConsole.h"
 #include "common/ConfigVar.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/NonCopyable.h"
 #include <SDL.h>
 #include <vector>
@@ -39,10 +39,10 @@ protected:
 	{
 		const char *error = SDL_GetError();
 		if (*error != '\0') {
-			error(LOG_CLIENT, String::format("%s (%s:%i => %s)", error, file, line, function));
+			Log::error(LOG_CLIENT, String::format("%s (%s:%i => %s)", error, file, line, function));
 			SDL_ClearError();
 		} else {
-			error(LOG_CLIENT, String::format("unknown error (%s:%i => %s)", file, line, function));
+			Log::error(LOG_CLIENT, String::format("unknown error (%s:%i => %s)", file, line, function));
 		}
 	}
 	#define sdlCheckError() /*OpenGLStateHandlerCheckError(__FILE__, __LINE__, __PRETTY_FUNCTION__);*/checkError(__FILE__, __LINE__, __PRETTY_FUNCTION__)

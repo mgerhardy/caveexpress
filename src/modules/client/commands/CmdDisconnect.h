@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/ICommand.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "network/INetwork.h"
 
 class CmdDisconnect: public ICommand {

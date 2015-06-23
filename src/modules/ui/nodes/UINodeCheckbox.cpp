@@ -1,5 +1,5 @@
 #include "UINodeCheckbox.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 UINodeCheckbox::UINodeCheckbox (IFrontend *frontend, const std::string& id, const std::string& icon) :
 		UINodeButton(frontend), _value(false)

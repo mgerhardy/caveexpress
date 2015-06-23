@@ -1,6 +1,6 @@
 #include "GL3Frontend.h"
 #include "textures/TextureCoords.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/System.h"
 #include "common/FileSystem.h"
 #include <SDL_image.h>
@@ -125,7 +125,7 @@ bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fil
 
 	const TextureCoords texCoords(tex);
 	renderTexture(texCoords, x, y, w, h, 0, 1.0f, _renderTargetTexture, _alpha);
-	trace(LOG_CLIENT, String::format("x: %i, y: %i, w: %i, h: %i, fbo(%f, %f), tex(%f:%f:%f:%f)", x, y, w, h, width, height, xTexCoord, yTexCoord, xTexCoord2, yTexCoord2));
+	Log::trace(LOG_CLIENT, String::format("x: %i, y: %i, w: %i, h: %i, fbo(%f, %f), tex(%f:%f:%f:%f)", x, y, w, h, width, height, xTexCoord, yTexCoord, xTexCoord2, yTexCoord2));
 	_waterShader.activate();
 	if (_waterShader.hasUniform("u_watercolor"))
 		_waterShader.setUniform4fv("u_watercolor", fillColor, 0, 4);
@@ -319,7 +319,7 @@ void GL3Frontend::startNewBatch ()
 
 	++_currentBatch;
 	if (_currentBatch >= MAX_BATCHES) {
-		debug(LOG_CLIENT, "render the batches because the max batch count was exceeded");
+		Log::debug(LOG_CLIENT, "render the batches because the max batch count was exceeded");
 		renderBatches();
 		return;
 	}
@@ -358,7 +358,7 @@ void GL3Frontend::disableScissor ()
 
 void GL3Frontend::initRenderer ()
 {
-	info(LOG_CLIENT, "init opengl renderer");
+	Log::info(LOG_CLIENT, "init opengl renderer");
 	_context = SDL_GL_CreateContext(_window);
 	ExtGLLoadFunctions();
 
@@ -392,11 +392,11 @@ void GL3Frontend::initRenderer ()
 	_currentVertexIndex = 0;
 
 	if (!_shader.loadProgram("main")) {
-		error(LOG_CLIENT, "Failed to load the main shader");
+		Log::error(LOG_CLIENT, "Failed to load the main shader");
 		System.exit("Failed to load the main shader", 1);
 	}
 	if (!_waterShader.loadProgram("water")) {
-		error(LOG_CLIENT, "Failed to load the water shader");
+		Log::error(LOG_CLIENT, "Failed to load the water shader");
 		System.exit("Failed to load the water shader", 1);
 	}
 	_waterShader.activate();
@@ -580,7 +580,7 @@ bool GL3Frontend::loadTexture (Texture *texture, const std::string& filename)
 {
 	SDL_Surface* textureSurface = loadTextureIntoSurface(filename);
 	if (textureSurface == nullptr) {
-		error(LOG_CLIENT, "could not load the file: " + filename);
+		Log::error(LOG_CLIENT, "could not load the file: " + filename);
 		return false;
 	}
 	SDL_Surface* normalSurface = loadTextureIntoSurface(filename + "_n");
@@ -588,7 +588,7 @@ bool GL3Frontend::loadTexture (Texture *texture, const std::string& filename)
 	data->texnum = uploadTexture(static_cast<unsigned char*>(textureSurface->pixels), textureSurface->w, textureSurface->h);
 	if (normalSurface) {
 		data->normalnum = uploadTexture(static_cast<unsigned char*>(normalSurface->pixels), normalSurface->w, normalSurface->h);
-		info(LOG_CLIENT, "load normal map for: " + filename);
+		Log::info(LOG_CLIENT, "load normal map for: " + filename);
 	} else {
 		data->normalnum = _alpha;
 	}
@@ -702,7 +702,7 @@ void GL3Frontend::renderEnd ()
 {
 	renderBatches();
 #ifdef DEBUG
-	debug(LOG_CLIENT, String::format("%i drawcalls", _drawCalls));
+	Log::debug(LOG_CLIENT, String::format("%i drawcalls", _drawCalls));
 #endif
 	SDL_GL_SwapWindow(_window);
 	GL_checkError();

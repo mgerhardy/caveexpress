@@ -1,5 +1,5 @@
 #include "FileSystem.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/System.h"
 #include "common/Application.h"
 #include <SDL.h>
@@ -46,12 +46,12 @@ bool FileSystem::copy (const std::string& src, const std::string& target) const
 {
 	std::ifstream source(src.c_str(), std::fstream::binary);
 	if (source.fail()) {
-		error(LOG_FILE, "Opening source file '" + src + "' failed");
+		Log::error(LOG_FILE, "Opening source file '" + src + "' failed");
 		return false;
 	}
 	std::ofstream dest(target.c_str(), std::fstream::trunc | std::fstream::binary);
 	if (dest.fail()) {
-		error(LOG_FILE, "Opening dest file '" + target + "' failed");
+		Log::error(LOG_FILE, "Opening dest file '" + target + "' failed");
 		return false;
 	}
 	dest << source.rdbuf();
@@ -75,15 +75,15 @@ long FileSystem::writeFile (const std::string& filename, const unsigned char *bu
 	SDL_RWops *rwops = createRWops(path, "wb");
 	File file(rwops, filename);
 	if (!overwrite && file.exists()) {
-		info(LOG_FILE, "file already exists: " + path);
+		Log::info(LOG_FILE, "file already exists: " + path);
 		return -1L;
 	}
 	if (!System.mkdir(_homeDir)) {
-		error(LOG_FILE, "could not create directory: " + _homeDir);
+		Log::error(LOG_FILE, "could not create directory: " + _homeDir);
 		return -1L;
 	}
 	createDir(file);
-	info(LOG_FILE, "writing file " + path);
+	Log::info(LOG_FILE, "writing file " + path);
 	return file.write(buf, length);
 }
 
@@ -99,9 +99,9 @@ long FileSystem::writeSysFile (const std::string& filename, const unsigned char 
 		return -1L;
 	const long ret = file->write(buf, length);
 	if (ret < 0)
-		error(LOG_FILE, "failed to write file " + path);
+		Log::error(LOG_FILE, "failed to write file " + path);
 	else
-		info(LOG_FILE, "wrote file " + path + " of size " + string::toString(ret));
+		Log::info(LOG_FILE, "wrote file " + path + " of size " + string::toString(ret));
 	return ret;
 }
 

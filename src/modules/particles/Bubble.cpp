@@ -1,6 +1,6 @@
 #include "Bubble.h"
 #include "common/String.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 #define BUBBLETYPES 9
 

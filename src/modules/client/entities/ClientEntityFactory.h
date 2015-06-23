@@ -8,7 +8,7 @@
 #include "common/Pointers.h"
 #include "sound/Sound.h"
 #include "common/Singleton.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/LUA.h"
 #include "common/ExecutionTime.h"
 #include <string>
@@ -61,7 +61,7 @@ private:
 		ExecutionTime cache("Initialize entity sounds");
 		LUA lua;
 		if (!lua.load("entitysounds.lua")) {
-			error(LOG_CLIENT, "could not load entitysounds.lua script");
+			Log::error(LOG_CLIENT, "could not load entitysounds.lua script");
 			return;
 		}
 

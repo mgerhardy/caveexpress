@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/String.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include <map>
 #include <cmath>
 
@@ -91,7 +91,7 @@ public:
 
 		if (val.empty())
 			val = defaultValue;
-		debug(LOG_MAP, "key: " + key + " = " + val);
+		Log::debug(LOG_MAP, "key: " + key + " = " + val);
 		return val;
 	}
 

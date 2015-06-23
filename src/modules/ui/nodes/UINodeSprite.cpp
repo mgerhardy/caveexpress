@@ -1,5 +1,5 @@
 #include "UINodeSprite.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/SpriteDefinition.h"
 #include "ui/UI.h"
 #include <cassert>

@@ -1,6 +1,6 @@
 #include "Sprite.h"
 #include "common/IFrontend.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "ui/UI.h"
 
 Sprite::Sprite (const std::string& name) :
@@ -30,14 +30,14 @@ Sprite::~Sprite ()
 
 Sprite* Sprite::copy () const
 {
-	debug(LOG_CLIENT, "copy sprite " + _name);
+	Log::debug(LOG_CLIENT, "copy sprite " + _name);
 	return new Sprite(_name, _delays, _active, _textures, _frameCount, _fps, _frameTimeRemaining, _loop, _spriteWidth, _spriteHeight);
 }
 
 void Sprite::setCurrentFrame (int frame)
 {
 	if (frame < 0 || frame >= _frameCount) {
-		error(LOG_CLIENT, String::format("frame number invalid for %s (%i/%i)", _name.c_str(), frame, _frameCount));
+		Log::error(LOG_CLIENT, String::format("frame number invalid for %s (%i/%i)", _name.c_str(), frame, _frameCount));
 		return;
 	}
 

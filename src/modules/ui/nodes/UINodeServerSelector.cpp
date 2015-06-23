@@ -1,7 +1,7 @@
 #include "UINodeServerSelector.h"
 #include "ui/UI.h"
 #include "common/CommandSystem.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/Commands.h"
 
 #define MAP_HEADLINE tr("Map")
@@ -37,14 +37,14 @@ UINodeServerSelector::~UINodeServerSelector ()
 void UINodeServerSelector::addServer (const std::string &host, const std::string& name, const std::string& mapName,
 		int port, int playerCount, int maxPlayerCount)
 {
-	info(LOG_CLIENT, "add server: " + host);
+	Log::info(LOG_CLIENT, "add server: " + host);
 	addData(ServerEntry(name, host, port, mapName, playerCount, maxPlayerCount));
 }
 
 bool UINodeServerSelector::onSelect (const ServerEntry& data)
 {
 	const std::string connect = CMD_CL_CONNECT " " + data.host + " " + string::toString(data.port);
-	info(LOG_CLIENT, "connect via '" + connect + "'");
+	Log::info(LOG_CLIENT, "connect via '" + connect + "'");
 	Commands.executeCommandLine(connect);
 	return true;
 }

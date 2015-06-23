@@ -2,7 +2,7 @@
 #include "common/ParameterList.h"
 #include "common/URI.h"
 #include "common/String.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/KeyValueParser.h"
 #include "common/MapManager.h"
 

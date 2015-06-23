@@ -3,7 +3,7 @@
 #include "ui/nodes/IUINodeMap.h"
 #include "client/ClientMap.h"
 #include "common/ConfigManager.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/Direction.h"
 
 
@@ -84,9 +84,9 @@ bool UINodeMapControl::onJoystickMotion (bool horizontal, int value)
 	}
 
 	if (horizontal)
-		info(LOG_CLIENT, "h joystick movement: " + string::toString(value));
+		Log::info(LOG_CLIENT, "h joystick movement: " + string::toString(value));
 	else
-		info(LOG_CLIENT, "v joystick movement: " + string::toString(value));
+		Log::info(LOG_CLIENT, "v joystick movement: " + string::toString(value));
 
 	const int delta = 8000;
 	if (horizontal) {

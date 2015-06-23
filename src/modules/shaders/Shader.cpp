@@ -1,5 +1,5 @@
 #include "Shader.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/FileSystem.h"
 
 #define MAX_SHADER_VAR_NAME 128
@@ -63,7 +63,7 @@ bool Shader::load (const std::string& filename, const std::string& source, Shade
 			break;
 		}
 
-		error(LOG_CLIENT, "compile failure in " + filename + " (type: " + strShaderType + ") shader:\n" + errorLog);
+		Log::error(LOG_CLIENT, "compile failure in " + filename + " (type: " + strShaderType + ") shader:\n" + errorLog);
 		return false;
 	}
 
@@ -77,7 +77,7 @@ bool Shader::loadFromFile (const std::string& filename, ShaderType shaderType)
 	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		error(LOG_CLIENT, "could not load shader " + filename);
+		Log::error(LOG_CLIENT, "could not load shader " + filename);
 		return false;
 	}
 
@@ -126,7 +126,7 @@ std::string Shader::getSource (ShaderType shaderType, const char *buffer, int le
 				const int includeLen = filePtr->read((void **) &includeBuffer);
 				ScopedArrayPtr<char> p(includeBuffer);
 				if (!includeBuffer || includeLen <= 0) {
-					error(LOG_CLIENT, "could not load shader include " + includeFile);
+					Log::error(LOG_CLIENT, "could not load shader include " + includeFile);
 					break;
 				}
 				src.append(includeBuffer, includeLen);
@@ -156,7 +156,7 @@ bool Shader::loadProgram (const std::string& filename)
 	fetchUniforms();
 	const bool success = _program != 0;
 	if (success) {
-		info(LOG_CLIENT, "loaded shader: " + filename);
+		Log::info(LOG_CLIENT, "loaded shader: " + filename);
 	}
 	_initialized = success;
 	return success;
@@ -177,7 +177,7 @@ void Shader::fetchUniforms ()
 		glGetActiveUniform(_program, i, MAX_SHADER_VAR_NAME - 1, &length, &size, &type, name);
 		const int location = glGetUniformLocation(_program, name);
 		_uniforms[name] = location;
-		debug(LOG_CLIENT, String::format("uniform %s found at location %i in shader %s", name, location, _name.c_str()));
+		Log::debug(LOG_CLIENT, String::format("uniform %s found at location %i in shader %s", name, location, _name.c_str()));
 	}
 }
 
@@ -196,7 +196,7 @@ void Shader::fetchAttributes ()
 		glGetActiveAttrib(_program, i, MAX_SHADER_VAR_NAME - 1, &length, &size, &type, name);
 		const int location = glGetAttribLocation(_program, name);
 		_attributes[name] = location;
-		debug(LOG_CLIENT, String::format("attribute %s found at location %i in shader %s", name, location, _name.c_str()));
+		Log::debug(LOG_CLIENT, String::format("attribute %s found at location %i in shader %s", name, location, _name.c_str()));
 	}
 }
 
@@ -223,7 +223,7 @@ void Shader::createProgramFromShaders ()
 
 		GLchar* strInfoLog = new GLchar[infoLogLength + 1];
 		glGetProgramInfoLog(_program, infoLogLength, nullptr, strInfoLog);
-		error(LOG_CLIENT, String::format("linker failure: %s", strInfoLog));
+		Log::error(LOG_CLIENT, String::format("linker failure: %s", strInfoLog));
 		glDeleteProgram(_program);
 		_program = 0;
 		delete[] strInfoLog;
@@ -234,7 +234,7 @@ int Shader::getAttributeLocation (const std::string& name) const
 {
 	ShaderVariables::const_iterator i = _attributes.find(name);
 	if (i == _attributes.end()) {
-		error(LOG_CLIENT, "can't find attribute " + name + " in shader " + _name);
+		Log::error(LOG_CLIENT, "can't find attribute " + name + " in shader " + _name);
 		return -1;
 	}
 	return i->second;
@@ -244,7 +244,7 @@ int Shader::getUniformLocation (const std::string& name) const
 {
 	ShaderVariables::const_iterator i = _uniforms.find(name);
 	if (i == _uniforms.end()) {
-		error(LOG_CLIENT, "can't find uniform " + name + " in shader " + _name);
+		Log::error(LOG_CLIENT, "can't find uniform " + name + " in shader " + _name);
 		return -1;
 	}
 	return i->second;

@@ -63,7 +63,7 @@ inline void NPCFriendly::setCollected ()
 {
 	if (_collectingTime == 0)
 		_collectingTime = _time;
-	info(LOG_SERVER, String::format("collected npc %i", _id));
+	Log::info(LOG_SERVER, String::format("collected npc %i", _id));
 }
 
 inline void NPCFriendly::setTargetPlayer (uint16_t playerId)

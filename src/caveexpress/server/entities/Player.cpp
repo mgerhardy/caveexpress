@@ -8,7 +8,7 @@
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/shared/CaveExpressAchievement.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "network/INetwork.h"
 #include "common/System.h"
 #include "caveexpress/shared/constants/Density.h"
@@ -168,11 +168,11 @@ void Player::update (uint32_t deltaTime)
 		v.x = clamp(v.x, -maxHorizontalVelocity, maxHorizontalVelocity);
 		v.y = clamp(v.y, -gravity.y * 3.0f, gravity.y);
 
-		debug(LOG_SERVER, "v: " + string::toString(v) + ", x: " + string::toString(_accelerateX) + ", y: " + string::toString(_accelerateY));
+		Log::debug(LOG_SERVER, "v: " + string::toString(v) + ", x: " + string::toString(_accelerateX) + ", y: " + string::toString(_accelerateY));
 
 		if (fabs(v.y) < 0.0001f) {
 			const b2Vec2 force = -mass * getGravity();
-			debug(LOG_SERVER, "f: " + string::toString(force));
+			Log::debug(LOG_SERVER, "f: " + string::toString(force));
 			applyForce(force);
 		}
 		applyLinearImpulse(v);
@@ -332,7 +332,7 @@ void Player::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* 
 	const int maxHitpoints = Config.getMaxHitpoints();
 	const int hitpointReduceAmount = maxHitpoints / 10 * (1.0f + factor);
 	subtractHitpoints(hitpointReduceAmount);
-	debug(LOG_SERVER,
+	Log::debug(LOG_SERVER,
 			"damageThreshold: " + string::toString(damageThreshold)
 					+ ", approachVelocity: " + string::toString(approachVelocity)
 					+ ", factor: " + string::toString(factor)
@@ -400,7 +400,7 @@ bool Player::collect (CollectableEntity* entity)
 	if (!canCarry(entity))
 		return false;
 
-	info(LOG_SERVER, "collected entity of type: " + entityType.name);
+	Log::info(LOG_SERVER, "collected entity of type: " + entityType.name);
 	const Collected c = { &entityType, entity };
 	for (int i = 0; i < MAX_COLLECTED; ++i) {
 		if (_collectedEntities[i].entityType != nullptr)
@@ -437,10 +437,10 @@ void Player::drop ()
 			entity->removeRopeJoint();
 			entity->setCollected(false, this);
 		} else {
-			error(LOG_SERVER, "unknown entity type: " + entityType->name);
+			Log::error(LOG_SERVER, "unknown entity type: " + entityType->name);
 			continue;
 		}
-		info(LOG_SERVER, "drop entity of type: " + entityType->name);
+		Log::info(LOG_SERVER, "drop entity of type: " + entityType->name);
 		GameEvent.sendCollectState(_clientId, *entityType, false);
 	}
 

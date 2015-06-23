@@ -5,7 +5,7 @@
 #include "ui/layouts/UIHBoxLayout.h"
 #include "client/ClientMap.h"
 #include "common/ConfigManager.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/Commands.h"
 
 UINodeMapOnScreenCursorControl::UINodeMapOnScreenCursorControl (IFrontend *frontend, IUINodeMap *mapNode) :

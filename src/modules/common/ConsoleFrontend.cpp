@@ -1,18 +1,18 @@
 #include "ConsoleFrontend.h"
 #include "common/TextConsole.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/EventHandler.h"
 #include "common/CommandSystem.h"
 
 ConsoleFrontend::ConsoleFrontend (TextConsole& console) :
 		_eventHandler(nullptr), _console(console)
 {
-	Logger::get().addConsole(&_console);
+	Log::get().addConsole(&_console);
 }
 
 ConsoleFrontend::~ConsoleFrontend ()
 {
-	Logger::get().removeConsole(&_console);
+	Log::get().removeConsole(&_console);
 }
 
 void ConsoleFrontend::update (uint32_t deltaTime)

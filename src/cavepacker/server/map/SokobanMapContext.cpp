@@ -1,6 +1,6 @@
 #include "SokobanMapContext.h"
 #include "common/FileSystem.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
 
 namespace cavepacker {
@@ -33,12 +33,12 @@ bool SokobanMapContext::isEmpty(int col, int row) const {
 
 bool SokobanMapContext::load(bool skipErrors) {
 	_playerSpawned = false;
-	info(LOG_SERVER, "load the map " + _name);
+	Log::info(LOG_SERVER, "load the map " + _name);
 	resetTiles();
 
 	FilePtr filePtr = FS.getFile(FS.getMapsDir() + _name + ".sok");
 	if (!filePtr->exists()) {
-		error(LOG_SERVER, "Sokoban map file " + filePtr->getName() + " does not exist");
+		Log::error(LOG_SERVER, "Sokoban map file " + filePtr->getName() + " does not exist");
 		return false;
 	}
 
@@ -46,7 +46,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		error(LOG_SERVER, "Sokoban map file " + filePtr->getName());
+		Log::error(LOG_SERVER, "Sokoban map file " + filePtr->getName());
 		return false;
 	}
 
@@ -133,7 +133,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 	_settings[msn::WIDTH] = string::toString(maxCol);
 	_settings[msn::HEIGHT] = string::toString(row);
 
-	info(LOG_SERVER, "found " + string::toString(_startPositions.size()) + " start positions");
+	Log::info(LOG_SERVER, "found " + string::toString(_startPositions.size()) + " start positions");
 
 	return _playerSpawned;
 }
@@ -142,7 +142,7 @@ void SokobanMapContext::addTile(const std::string& tile, int col, int row) {
 	const SpriteDefPtr &spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(
 			tile);
 	if (!spriteDefPtr) {
-		error(LOG_SERVER, "could not add tile: " + tile);
+		Log::error(LOG_SERVER, "could not add tile: " + tile);
 		return;
 	}
 

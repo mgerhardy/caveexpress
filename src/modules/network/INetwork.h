@@ -2,7 +2,7 @@
 
 #include "common/ByteStream.h"
 #include "IProtocolHandler.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "IClientCallback.h"
 #include "IServerCallback.h"
 #include "ProtocolMessageFactory.h"
@@ -54,9 +54,9 @@ public:
 		const int clients = sendToClients(ClientIdToClientMask(clientId), msg);
 		if (clients != 1) {
 			if (clients == 0)
-				error(LOG_NET, "message with the id " + string::toString((int)msg.getId())  + " wasn't sent to the client");
+				Log::error(LOG_NET, "message with the id " + string::toString((int)msg.getId())  + " wasn't sent to the client");
 			else
-				error(LOG_NET, "message with the id " + string::toString((int)msg.getId())  + " was send to multiple clients (" + string::toString(clients) + ")");
+				Log::error(LOG_NET, "message with the id " + string::toString((int)msg.getId())  + " was send to multiple clients (" + string::toString(clients) + ")");
 		}
 		return clients;
 	}

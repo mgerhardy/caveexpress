@@ -1,6 +1,6 @@
 #include "UIGestureWindow.h"
 #include "common/FileSystem.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "ui/UI.h"
 
 #include <SDL.h>
@@ -29,26 +29,26 @@ void UIGestureWindow::onActive() {
 	_coords.clear();
 
 	if (!SDL_RecordGesture(-1)) {
-		info(LOG_CLIENT, "Could not start gesture recording");
+		Log::info(LOG_CLIENT, "Could not start gesture recording");
 	} else {
-		info(LOG_CLIENT, "Started gesture recording");
+		Log::info(LOG_CLIENT, "Started gesture recording");
 	}
 }
 
 bool UIGestureWindow::onGestureRecord (int64_t gestureId)
 {
-	info(LOG_CLIENT, "Save gestures");
+	Log::info(LOG_CLIENT, "Save gestures");
 	const bool retVal = UIWindow::onGestureRecord(gestureId);
 	const std::string path = FS.getAbsoluteWritePath() + "gesture-" + string::toString(gestureId);
 	SDL_RWops* rwops = SDL_RWFromFile(path.c_str(), "wb");
 	if (rwops) {
-		info(LOG_CLIENT, "Save gestures to " + path);
+		Log::info(LOG_CLIENT, "Save gestures to " + path);
 		if (SDL_SaveDollarTemplate(gestureId, rwops) <= 0) {
-			info(LOG_CLIENT, "Failed to save gestures to " + path);
+			Log::info(LOG_CLIENT, "Failed to save gestures to " + path);
 		}
 		SDL_RWclose(rwops);
 	} else {
-		info(LOG_CLIENT, "Failed to save gestures to " + path);
+		Log::info(LOG_CLIENT, "Failed to save gestures to " + path);
 	}
 	UI::get().pop();
 	return retVal;

@@ -16,7 +16,7 @@
 #include "common/ExecutionTime.h"
 #include "common/DateUtil.h"
 #include "common/Commands.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include <SDL.h>
 
 ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth) :
@@ -43,7 +43,7 @@ void ClientMap::close ()
 
 void ClientMap::start ()
 {
-	info(LOG_CLIENT, "client map start");
+	Log::info(LOG_CLIENT, "client map start");
 	_started = true;
 }
 
@@ -57,7 +57,7 @@ bool ClientMap::isStarted () const
 
 void ClientMap::resetCurrentMap ()
 {
-	info(LOG_CLIENT, "client map reset");
+	Log::info(LOG_CLIENT, "client map reset");
 	_startPositions = 0;
 	_zoom = 1.0f;
 	_timeManager.reset();
@@ -95,7 +95,7 @@ void ClientMap::setZoom (const float zoom)
 
 void ClientMap::disconnect ()
 {
-	info(LOG_CLIENT, "send disconnect to server");
+	Log::info(LOG_CLIENT, "send disconnect to server");
 	const DisconnectMessage msg;
 	INetwork& network = _serviceProvider.getNetwork();
 	network.sendToServer(msg);
@@ -128,7 +128,7 @@ void ClientMap::removeEntity (uint16_t id, bool fadeOut)
 		}
 	}
 	if (_playerID == id) {
-		info(LOG_CLIENT, String::format("remove client side player with the id %i", id));
+		Log::info(LOG_CLIENT, String::format("remove client side player with the id %i", id));
 		_player = nullptr;
 		_playerID = 0;
 	}
@@ -209,7 +209,7 @@ void ClientMap::renderParticles (int x, int y) const
 
 void ClientMap::init (uint16_t playerID)
 {
-	info(LOG_CLIENT, String::format("init client map for player %i", playerID));
+	Log::info(LOG_CLIENT, String::format("init client map for player %i", playerID));
 
 	_camera.init(getWidth(), getHeight(), _mapWidth, _mapHeight, _scale);
 
@@ -309,7 +309,7 @@ void ClientMap::update (uint32_t deltaTime)
 
 bool ClientMap::load (const std::string& name, const std::string& title)
 {
-	info(LOG_CLIENT, "load map " + name);
+	Log::info(LOG_CLIENT, "load map " + name);
 	close();
 	_name = name;
 	_title = title;
@@ -324,12 +324,12 @@ void ClientMap::addEntity (ClientEntityPtr e)
 		_player = static_cast<ClientPlayer*>(e);
 	}
 
-	debug(LOG_CLIENT, "add entity " + e->getType().name + " - " + string::toString((int)e->getID()));
+	Log::debug(LOG_CLIENT, "add entity " + e->getType().name + " - " + string::toString((int)e->getID()));
 }
 
 void ClientMap::setSetting (const std::string& key, const std::string& value)
 {
-	debug(LOG_CLIENT, "client key: " + key + " = " + value);
+	Log::debug(LOG_CLIENT, "client key: " + key + " = " + value);
 	_settings[key] = value;
 
 	if (key == msn::WIDTH) {
@@ -347,7 +347,7 @@ void ClientMap::setSetting (const std::string& key, const std::string& value)
 
 void ClientMap::couldNotFindEntity (const std::string& prefix, uint16_t id) const
 {
-	info(LOG_CLIENT, String::format("could not find entity with the id %i", (int)id) + " in " + prefix);
+	Log::info(LOG_CLIENT, String::format("could not find entity with the id %i", (int)id) + " in " + prefix);
 }
 
 void ClientMap::changeAnimation (uint16_t id, const Animation& animation)
@@ -381,22 +381,22 @@ void ClientMap::onData (ByteStream &data)
 		data.readShort();
 		const IProtocolMessage* msg(factory.createMsg(data));
 		if (!msg) {
-			error(LOG_NET, "no message for type " + string::toString(static_cast<int>(data.readByte())));
+			Log::error(LOG_NET, "no message for type " + string::toString(static_cast<int>(data.readByte())));
 			continue;
 		}
 
-		trace(LOG_NET, String::format("received message type %i", msg->getId()));
+		Log::trace(LOG_NET, String::format("received message type %i", msg->getId()));
 		IClientProtocolHandler* handler = ProtocolHandlerRegistry::get().getClientHandler(*msg);
 		if (handler != nullptr)
 			handler->execute(*msg);
 		else
-			error(LOG_NET, String::format("no client handler for message type %i", msg->getId()));
+			Log::error(LOG_NET, String::format("no client handler for message type %i", msg->getId()));
 	}
 }
 
 void ClientMap::disableScreenRumble ()
 {
-	info(LOG_CLIENT, "stop rumble on the screen");
+	Log::info(LOG_CLIENT, "stop rumble on the screen");
 	_screenRumble = false;
 	_screenRumbleStrength = 0.0f;
 	_screenRumbleOffsetX = _screenRumbleOffsetY = 0;
@@ -405,7 +405,7 @@ void ClientMap::disableScreenRumble ()
 void ClientMap::rumble (float strength, int lengthMillis)
 {
 	_frontend->rumble(strength, lengthMillis);
-	info(LOG_CLIENT, "rumble on the screen: " + string::toString(strength));
+	Log::info(LOG_CLIENT, "rumble on the screen: " + string::toString(strength));
 	_screenRumble = true;
 	_screenRumbleStrength = strength;
 	_timeManager.setTimeout(lengthMillis, this, &ClientMap::disableScreenRumble);

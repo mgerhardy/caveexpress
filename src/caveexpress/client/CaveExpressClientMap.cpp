@@ -18,7 +18,7 @@
 #include "sound/Sound.h"
 #include "common/ConfigManager.h"
 #include "common/EventHandler.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/ServiceProvider.h"
 #include "common/ExecutionTime.h"
 #include "common/DateUtil.h"
@@ -55,7 +55,7 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	if (getWaterHeight() <= 0.000001f)
 		return;
 	const SDL_Rect& rect = getWaterRect(x, y);
-	trace(LOG_CLIENT, String::format("rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
+	Log::trace(LOG_CLIENT, String::format("rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
 									_x, _y, _width, _height, x, y, rect.w, rect.h, rect.y, rect.y + rect.h, _waterHeight, _scale));
 	_frontend->renderWaterPlane(rect.x, rect.y, rect.w, rect.h, color, waterLineColor);
 	if (Config.isDebug()) {
@@ -87,10 +87,10 @@ void CaveExpressClientMap::setCaveNumber (uint16_t id, uint8_t number)
 {
 	if (number == 0)
 		return;
-	debug(LOG_CLIENT, String::format("set cave for %i to %i", id, number));
+	Log::debug(LOG_CLIENT, String::format("set cave for %i to %i", id, number));
 	ClientEntityPtr e = getEntity(id);
 	if (!e) {
-		error(LOG_CLIENT, String::format("no cave entity with the id %i found", id));
+		Log::error(LOG_CLIENT, String::format("no cave entity with the id %i found", id));
 		return;
 	}
 	const char first = number / 10 + '0';
@@ -103,7 +103,7 @@ void CaveExpressClientMap::setCaveState (uint16_t id, bool state)
 {
 	ClientEntityPtr e = getEntity(id);
 	if (!e) {
-		error(LOG_CLIENT, String::format("no entity with the id %i found in setCaveState", id));
+		Log::error(LOG_CLIENT, String::format("no entity with the id %i found in setCaveState", id));
 		return;
 	}
 
@@ -123,7 +123,7 @@ void CaveExpressClientMap::couldNotFindEntity (const std::string& prefix, uint16
 		const ClientEntityPtr e = i->second;
 		if (EntityTypes::isMapTile(e->getType()))
 			continue;
-		info(LOG_CLIENT, String::format("id: %i, type: %s", e->getID(), e->getType().name.c_str()));
+		Log::info(LOG_CLIENT, String::format("id: %i, type: %s", e->getID(), e->getType().name.c_str()));
 	}
 }
 

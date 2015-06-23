@@ -4,7 +4,7 @@
 #include "common/Pointers.h"
 #include "common/Config.h"
 #include "common/Payment.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include <vector>
 #include <string>
 #include <SDL_platform.h>

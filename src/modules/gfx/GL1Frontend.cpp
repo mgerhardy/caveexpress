@@ -2,7 +2,7 @@
 #include "ui/UI.h"
 #include "client/ClientConsole.h"
 #include "textures/TextureCoords.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/DateUtil.h"
 #include "common/FileSystem.h"
 #include "common/ConfigManager.h"
@@ -83,12 +83,12 @@ void GL1Frontend::disableScissor ()
 void GL1Frontend::initRenderer ()
 {
 #ifdef SDL_VIDEO_OPENGL
-	info(LOG_CLIENT, "init opengl renderer with shaders: " + ConfigManager::get().getConfigVar("shader")->getValue());
+	Log::info(LOG_CLIENT, "init opengl renderer with shaders: " + ConfigManager::get().getConfigVar("shader")->getValue());
 
 	_context = SDL_GL_CreateContext(_window);
 
 	glGetIntegerv(GL_MAX_TEXTURE_UNITS, &_maxTextureUnits);
-	info(LOG_CLIENT, String::format("max texture units: %i", _maxTextureUnits));
+	Log::info(LOG_CLIENT, String::format("max texture units: %i", _maxTextureUnits));
 	GL_checkError();
 
 	_maxTextureUnits = clamp(_maxTextureUnits, 1, MAX_GL_TEXUNITS);
@@ -302,13 +302,13 @@ bool GL1Frontend::loadTexture (Texture *texture, const std::string& filename)
 	const std::string file = FS.getFile(FS.getPicsDir() + filename + ".png")->getName();
 	SDL_RWops *src = FS.createRWops(file);
 	if (src == nullptr) {
-		error(LOG_CLIENT, "could not load the file: " + file);
+		Log::error(LOG_CLIENT, "could not load the file: " + file);
 		return false;
 	}
 	SDL_Surface *surface = IMG_Load_RW(src, 1);
 	if (!surface) {
 		sdlCheckError();
-		error(LOG_CLIENT, "could not load the texture: " + file);
+		Log::error(LOG_CLIENT, "could not load the texture: " + file);
 		return false;
 	}
 

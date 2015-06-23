@@ -1,6 +1,6 @@
 #include "client/entities/ClientPlayer.h"
 #include "common/Shared.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 ClientPlayer::ClientPlayer (const EntityType& type, uint16_t id, const Animation& animation, float x, float y,
 		float sizeX, float sizeY, const SoundMapping& soundMapping, EntityAlignment align) :

@@ -1,5 +1,5 @@
 #include "UINodeSpinner.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 namespace {
 const int gap = 20;

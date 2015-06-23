@@ -1,5 +1,5 @@
 #include "EventHandler.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/IEventObserver.h"
 #include "common/ConfigManager.h"
 #include <SDL.h>
@@ -45,11 +45,11 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		textInput(std::string(event.text.text));
 		break;
 	case SDL_KEYUP:
-		//debug(LOG_SYSTEM, String::format("release key: %s", SDL_GetScancodeName(event.key.keysym.scancode)));
+		//Log::debug(LOG_SYSTEM, String::format("release key: %s", SDL_GetScancodeName(event.key.keysym.scancode)));
 		keyRelease((int32_t) event.key.keysym.sym);
 		break;
 	case SDL_KEYDOWN:
-		//debug(LOG_SYSTEM, String::format("press key: %s", SDL_GetScancodeName(event.key.keysym.scancode)));
+		//Log::debug(LOG_SYSTEM, String::format("press key: %s", SDL_GetScancodeName(event.key.keysym.scancode)));
 		// we are handling this on our own
 		if (!event.key.repeat)
 			keyPress((int32_t) event.key.keysym.sym, (int16_t) event.key.keysym.mod);

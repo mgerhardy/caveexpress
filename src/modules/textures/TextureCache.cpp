@@ -1,6 +1,6 @@
 #include "TextureCache.h"
 #include "common/FileSystem.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/LUA.h"
 #include "common/ExecutionTime.h"
 #include "common/TextureDefinition.h"
@@ -19,7 +19,7 @@ void TextureCache::create (const std::string& textureName, const std::string& id
 		const TextureDefinitionTrim& trim, bool mirror)
 {
 	if (_textureDefs.find(id) != _textureDefs.end()) {
-		error(LOG_CLIENT, "texture def with same name found: " + id);
+		Log::error(LOG_CLIENT, "texture def with same name found: " + id);
 		return;
 	}
 
@@ -65,12 +65,12 @@ TexturePtr TextureCache::load (const std::string& textureName)
 
 void TextureCache::dump () const
 {
-	info(LOG_CLIENT, String::format("%i textures:", _textures.size() + _textureDefs.size()));
+	Log::info(LOG_CLIENT, String::format("%i textures:", _textures.size() + _textureDefs.size()));
 	for (TextureMap::const_iterator i = _textures.begin(); i != _textures.end(); ++i) {
-		info(LOG_CLIENT, String::format(" - %s: (%i:%i)", i->first.c_str(), i->second->getWidth(), i->second->getHeight()));
+		Log::info(LOG_CLIENT, String::format(" - %s: (%i:%i)", i->first.c_str(), i->second->getWidth(), i->second->getHeight()));
 	}
 	for (TextureDefinitionMap::const_iterator i = _textureDefs.begin(); i != _textureDefs.end(); ++i) {
-		info(LOG_CLIENT, String::format(" - %s: (%i:%i)", i->first.c_str(), i->second->getWidth(), i->second->getHeight()));
+		Log::info(LOG_CLIENT, String::format(" - %s: (%i:%i)", i->first.c_str(), i->second->getWidth(), i->second->getHeight()));
 	}
 }
 
@@ -78,7 +78,7 @@ void TextureCache::init (IFrontend *frontend, TextureDefinition& textureDefiniti
 {
 	const TextureDefinition::TextureDefMap& map = textureDefinition.getMap();
 	ExecutionTime e("Texture loading");
-	info(LOG_CLIENT, "load " + string::toString(map.size()) + " textures");
+	Log::info(LOG_CLIENT, "load " + string::toString(map.size()) + " textures");
 
 	_frontend = frontend;
 
@@ -90,7 +90,7 @@ void TextureCache::init (IFrontend *frontend, TextureDefinition& textureDefiniti
 
 void TextureCache::shutdown ()
 {
-	info(LOG_CLIENT, "shutting down the texturecache with " + string::toString(_textures.size()) + " textures");
+	Log::info(LOG_CLIENT, "shutting down the texturecache with " + string::toString(_textures.size()) + " textures");
 	for (TextureMap::iterator i = _textures.begin(); i != _textures.end(); ++i) {
 		i->second->deleteTexture();
 	}

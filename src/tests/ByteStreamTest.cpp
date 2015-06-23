@@ -1,6 +1,6 @@
 #include "TestShared.h"
 #include "common/ByteStream.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include <cstdlib>
 #include <vector>
 #include <limits.h>

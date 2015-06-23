@@ -1,6 +1,6 @@
 #include "TestShared.h"
 #include "common/MemoryAllocator.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include <stdint.h>
 
 TEST(MemoryAllocatorTest, testAllocateObject)

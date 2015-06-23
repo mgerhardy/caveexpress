@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/Config.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include <SDL_platform.h>
 #include <SDL_assert.h>
 #include <SDL_config.h>
@@ -58,7 +58,7 @@ inline int OpenGLStateHandlerCheckError (const char *file, int line, const char 
 		if (glError == GL_NO_ERROR)
 			break;
 
-		error(LOG_CLIENT, String::format("openGL err: %s (%d): %s %s (0x%X)",
+		Log::error(LOG_CLIENT, String::format("openGL err: %s (%d): %s %s (0x%X)",
 				file, line, function, translateError(glError), glError));
 		ret++;
 	}

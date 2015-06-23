@@ -5,7 +5,7 @@
 #include "ui/BitmapFont.h"
 #include "common/Shared.h"
 #include "common/Direction.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/FileSystem.h"
 #include "common/ConfigManager.h"
 
@@ -55,7 +55,7 @@ void ClientEntity::renderOverlays(IFrontend *frontend, Layer layer, int scale, f
 	calcOffset(scale, zoom, posX, posY, offsetPosX, offsetPosY);
 	for (EntityOverlaysConstIter i = _entityOverlays.begin(); i != _entityOverlays.end(); ++i) {
 		const SpritePtr& overlay = *i;
-		info(LOG_CLIENT, String::format("render %s, layer %i, x: %i, y: %i, zoom: %f, angle: %i, alpha: %f",
+		Log::info(LOG_CLIENT, String::format("render %s, layer %i, x: %i, y: %i, zoom: %f, angle: %i, alpha: %f",
 				overlay->getName().c_str(), layer, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha));
 		overlay->render(frontend, layer, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha);
 	}

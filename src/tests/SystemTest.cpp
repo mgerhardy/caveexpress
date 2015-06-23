@@ -1,5 +1,5 @@
 #include "TestShared.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/System.h"
 
 #if 0

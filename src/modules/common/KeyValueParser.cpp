@@ -1,5 +1,5 @@
 #include "common/KeyValueParser.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 KeyValueParser::KeyValueParser (const std::string& settings)
 {
@@ -10,7 +10,7 @@ KeyValueParser::KeyValueParser (const std::string& settings)
 		std::vector<std::string> keyValue;
 		string::splitString(str, keyValue, "=");
 		if (keyValue.size() != 2) {
-			error(LOG_GENERAL, "invalid key value setting found: " + str);
+			Log::error(LOG_GENERAL, "invalid key value setting found: " + str);
 			continue;
 		}
 		_settings[keyValue[0]] = keyValue[1];

@@ -1,5 +1,5 @@
 #include "Android.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/Payment.h"
 #include "common/Config.h"
 #include "common/System.h"
@@ -42,7 +42,7 @@ public:
 	bool init (JNIEnv *env, jint capacity = 16)
 	{
 		if (env->PushLocalFrame(capacity) < 0) {
-			error(LOG_SYSTEM, "Failed to allocate enough JVM local references");
+			Log::error(LOG_SYSTEM, "Failed to allocate enough JVM local references");
 			return false;
 		}
 		++s_active;
@@ -72,11 +72,11 @@ void Android::init() {
 
 	JNIEnv *env = static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
 	if (env == nullptr) {
-		info(LOG_SYSTEM, "could not init the jni env");
+		Log::info(LOG_SYSTEM, "could not init the jni env");
 		return;
 	}
 	if (!refs.init(env)) {
-		info(LOG_SYSTEM, "could not init the ref holder");
+		Log::info(LOG_SYSTEM, "could not init the ref holder");
 		return;
 	}
 
@@ -85,13 +85,13 @@ void Android::init() {
 	// context = SDLActivity.getContext();
 	jmethodID mid = env->GetStaticMethodID(cls, "getContext", "()Landroid/content/Context;");
 	if (mid == nullptr) {
-		error(LOG_SYSTEM, "error getting getContext");
+		Log::error(LOG_SYSTEM, "error getting getContext");
 		return;
 	}
 
 	jobject context = env->CallStaticObjectMethod(cls, mid);
 	if (context == nullptr) {
-		error(LOG_SYSTEM, "error calling getContext");
+		Log::error(LOG_SYSTEM, "error calling getContext");
 		return;
 	}
 
@@ -99,12 +99,12 @@ void Android::init() {
 	jclass assetManagerClass = env->GetObjectClass(context);
 	mid = env->GetMethodID(assetManagerClass, "getAssets", "()Landroid/content/res/AssetManager;");
 	if (mid == nullptr) {
-		error(LOG_SYSTEM, "error getting getAssets");
+		Log::error(LOG_SYSTEM, "error getting getAssets");
 		return;
 	}
 	jobject assetManager = env->CallObjectMethod(context, mid);
 	if (assetManager == nullptr) {
-		error(LOG_SYSTEM, "error calling getAssets");
+		Log::error(LOG_SYSTEM, "error calling getAssets");
 		return;
 	}
 
@@ -127,46 +127,46 @@ void Android::init() {
 	_getLocale = env->GetStaticMethodID(_cls, "getLocale", "()Ljava/lang/String;");
 
 	if (_showAds == 0) {
-		error(LOG_SYSTEM, "error getting showAds()");
+		Log::error(LOG_SYSTEM, "error getting showAds()");
 	}
 	if (_hideAds == 0) {
-		error(LOG_SYSTEM, "error getting hideAds()");
+		Log::error(LOG_SYSTEM, "error getting hideAds()");
 	}
 	if (_showFullscreenAds == 0) {
-		error(LOG_SYSTEM, "error getting showFullscreenAds()");
+		Log::error(LOG_SYSTEM, "error getting showFullscreenAds()");
 	}
 	if (_openURL == 0) {
-		error(LOG_SYSTEM, "error getting openURL()");
+		Log::error(LOG_SYSTEM, "error getting openURL()");
 	}
 	if (_buyItem == 0) {
-		error(LOG_SYSTEM, "error getting buyItem()");
+		Log::error(LOG_SYSTEM, "error getting buyItem()");
 	}
 	if (_minimize == 0) {
-		error(LOG_SYSTEM, "error getting minimize()");
+		Log::error(LOG_SYSTEM, "error getting minimize()");
 	}
 	if (_track == 0) {
-		error(LOG_SYSTEM, "error getting track()");
+		Log::error(LOG_SYSTEM, "error getting track()");
 	}
 	if (_hasItem == 0) {
-		error(LOG_SYSTEM, "error getting hasItem()");
+		Log::error(LOG_SYSTEM, "error getting hasItem()");
 	}
 	if (_isOUYA == 0) {
-		error(LOG_SYSTEM, "error getting isOUYA()");
+		Log::error(LOG_SYSTEM, "error getting isOUYA()");
 	}
 	if (_isSmallScreen == 0) {
-		error(LOG_SYSTEM, "error getting isSmallScreen()");
+		Log::error(LOG_SYSTEM, "error getting isSmallScreen()");
 	}
 	if (_getPaymentEntries == 0) {
-		error(LOG_SYSTEM, "error getting getPaymentEntries()");
+		Log::error(LOG_SYSTEM, "error getting getPaymentEntries()");
 	}
 	if (_getLocale == 0) {
-		error(LOG_SYSTEM, "error getting getLocale()");
+		Log::error(LOG_SYSTEM, "error getting getLocale()");
 	}
 	if (_achievementUnlocked == 0) {
-		error(LOG_SYSTEM, "error getting achievementUnlocked()");
+		Log::error(LOG_SYSTEM, "error getting achievementUnlocked()");
 	}
 
-	info(LOG_SYSTEM, String::format("Running on: [%s] [%s] [%s] [%s] [%s] SDK:%s ABI:%s",
+	Log::info(LOG_SYSTEM, String::format("Running on: [%s] [%s] [%s] [%s] [%s] SDK:%s ABI:%s",
 			getSystemProperty("ro.product.manufacturer").c_str(),
 			getSystemProperty("ro.product.model").c_str(),
 			getSystemProperty("ro.product.brand").c_str(),
@@ -175,20 +175,20 @@ void Android::init() {
 			getSystemProperty("ro.build.version.sdk").c_str(),
 			getSystemProperty("ro.product.cpu.abi").c_str()));
 
-	info(LOG_SYSTEM, String::format("internal storage path: %s", SDL_AndroidGetInternalStoragePath()));
+	Log::info(LOG_SYSTEM, String::format("internal storage path: %s", SDL_AndroidGetInternalStoragePath()));
 	_externalState = SDL_AndroidGetExternalStorageState();
 	if (_externalState)
-		info(LOG_SYSTEM, String::format("external storage path: %s", SDL_AndroidGetExternalStoragePath()));
+		Log::info(LOG_SYSTEM, String::format("external storage path: %s", SDL_AndroidGetExternalStoragePath()));
 	else
-		info(LOG_SYSTEM, "no external storage path with write support");
+		Log::info(LOG_SYSTEM, "no external storage path with write support");
 
 	SDL_SetHint(SDL_HINT_ACCELEROMETER_AS_JOYSTICK, "0");
 
 	const bool smallScreen = isSmallScreen(nullptr);
 	if (smallScreen) {
-		info(LOG_SYSTEM, "running on a small screen");
+		Log::info(LOG_SYSTEM, "running on a small screen");
 	} else {
-		info(LOG_SYSTEM, "running on a large screen");
+		Log::info(LOG_SYSTEM, "running on a large screen");
 	}
 }
 
@@ -227,7 +227,7 @@ String Android::getSystemProperty (const char *name) const
 bool Android::testException ()
 {
 	if (!LocalReferenceHolder::IsActive()) {
-		error(LOG_SYSTEM, "failed to test exceptions, the local ref holder is not active");
+		Log::error(LOG_SYSTEM, "failed to test exceptions, the local ref holder is not active");
 	}
 
 	jthrowable exception = _env->ExceptionOccurred();
@@ -249,10 +249,10 @@ bool Android::testException ()
 
 		if (exceptionMessage != nullptr) {
 			const char* exceptionMessageUTF8 = _env->GetStringUTFChars(exceptionMessage, 0);
-			error(LOG_SYSTEM, String::format("%s: %s", exceptionNameUTF8, exceptionMessageUTF8));
+			Log::error(LOG_SYSTEM, String::format("%s: %s", exceptionNameUTF8, exceptionMessageUTF8));
 			_env->ReleaseStringUTFChars(exceptionMessage, exceptionMessageUTF8);
 		} else {
-			error(LOG_SYSTEM, String::format("%s", exceptionNameUTF8));
+			Log::error(LOG_SYSTEM, String::format("%s", exceptionNameUTF8));
 		}
 
 		_env->ReleaseStringUTFChars(exceptionName, exceptionNameUTF8);
@@ -284,7 +284,7 @@ DirectoryEntries Android::listDirectory (const std::string& basedir, const std::
 	LocalReferenceHolder refs;
 
 	if (_env == nullptr || !refs.init(_env)) {
-		error(LOG_SYSTEM, "error while listing directory entries");
+		Log::error(LOG_SYSTEM, "error while listing directory entries");
 		return entries;
 	}
 
@@ -297,18 +297,18 @@ DirectoryEntries Android::listDirectory (const std::string& basedir, const std::
 	jclass assetManagerClass = _env->GetObjectClass(_assetManager);
 	jmethodID mid = _env->GetMethodID(assetManagerClass, "list", "(Ljava/lang/String;)[Ljava/lang/String;");
 	if (testException() || mid == nullptr) {
-		error(LOG_SYSTEM, "error getting list");
+		Log::error(LOG_SYSTEM, "error getting list");
 		return entries;
 	}
 	jobjectArray list = reinterpret_cast<jobjectArray>(_env->CallObjectMethod(_assetManager, mid,
 			_env->NewStringUTF(modified.c_str())));
 	if (testException() || list == nullptr) {
-		error(LOG_SYSTEM, "error calling list");
+		Log::error(LOG_SYSTEM, "error calling list");
 		return entries;
 	}
 	jsize n = _env->GetArrayLength(list);
 
-	debug(LOG_SYSTEM, "list " + modified + " with " + string::toString((int)n) + " elements");
+	Log::debug(LOG_SYSTEM, "list " + modified + " with " + string::toString((int)n) + " elements");
 
 	for (int i = 0; i < n; ++i) {
 		jstring str = reinterpret_cast<jstring>(_env->GetObjectArrayElement(list, i));
@@ -316,7 +316,7 @@ DirectoryEntries Android::listDirectory (const std::string& basedir, const std::
 			break;
 		const char* cstr = _env->GetStringUTFChars(str, 0);
 		entries.push_back(cstr);
-		debug(LOG_SYSTEM, String::format("%s", cstr));
+		Log::debug(LOG_SYSTEM, String::format("%s", cstr));
 		_env->ReleaseStringUTFChars(str, cstr);
 		_env->DeleteLocalRef(str);
 	}
@@ -347,14 +347,14 @@ void Android::showAds (bool show)
 void Android::achievementUnlocked (const std::string& id, bool increment)
 {
 	if (_achievementUnlocked == 0) {
-		error(LOG_SYSTEM, "failed to unlock achievement");
+		Log::error(LOG_SYSTEM, "failed to unlock achievement");
 		return;
 	}
 
 	LocalReferenceHolder refs;
 
 	if (_env == nullptr || !refs.init(_env)) {
-		error(LOG_SYSTEM, "error while calling achievementUnlocked");
+		Log::error(LOG_SYSTEM, "error while calling achievementUnlocked");
 		return;
 	}
 
@@ -376,7 +376,7 @@ bool Android::track (const std::string& hitType, const std::string& screenName)
 	LocalReferenceHolder refs;
 
 	if (_env == nullptr || !refs.init(_env)) {
-		error(LOG_SYSTEM, "error while calling track");
+		Log::error(LOG_SYSTEM, "error while calling track");
 		return false;
 	}
 
@@ -396,13 +396,13 @@ std::string Android::getLanguage ()
 	LocalReferenceHolder refs;
 
 	if (_env == nullptr || !refs.init(_env)) {
-		error(LOG_SYSTEM, "error while getting the payment entries");
+		Log::error(LOG_SYSTEM, "error while getting the payment entries");
 		return "";
 	}
 
 	jstring locale = reinterpret_cast<jstring>(_env->CallObjectMethod(_cls, _getLocale));
 	if (testException() || locale == nullptr) {
-		error(LOG_SYSTEM, "error calling getLocale()");
+		Log::error(LOG_SYSTEM, "error calling getLocale()");
 		return "";
 	}
 	const char *js = _env->GetStringUTFChars(locale, nullptr);
@@ -416,18 +416,18 @@ void Android::getPaymentEntries (std::vector<PaymentEntry>& entries)
 	LocalReferenceHolder refs;
 
 	if (_env == nullptr || !refs.init(_env)) {
-		error(LOG_SYSTEM, "error while getting the payment entries");
+		Log::error(LOG_SYSTEM, "error while getting the payment entries");
 		return;
 	}
 
 	jobjectArray list = reinterpret_cast<jobjectArray>(_env->CallObjectMethod(_cls, _getPaymentEntries));
 	if (testException() || list == nullptr) {
-		error(LOG_SYSTEM, "error calling getPaymentEntries()");
+		Log::error(LOG_SYSTEM, "error calling getPaymentEntries()");
 		return;
 	}
 
 	jsize n = _env->GetArrayLength(list);
-	info(LOG_SYSTEM, "payment items found: " + string::toString((int)n));
+	Log::info(LOG_SYSTEM, "payment items found: " + string::toString((int)n));
 
 	// same order as the paymententry ctor!
 	const char *ids[] = { "name", "id", "price", nullptr };
@@ -439,7 +439,7 @@ void Android::getPaymentEntries (std::vector<PaymentEntry>& entries)
 			break;
 		jclass entryClass = _env->GetObjectClass(entryObj);
 		if (entryClass == nullptr) {
-			error(LOG_SYSTEM, "could not get entry object class");
+			Log::error(LOG_SYSTEM, "could not get entry object class");
 			break;
 		}
 
@@ -450,7 +450,7 @@ void Android::getPaymentEntries (std::vector<PaymentEntry>& entries)
 			const char* cstr = _env->GetStringUTFChars(str, 0);
 			const std::string memberValue = cstr;
 			memberValues.push_back(memberValue);
-			info(LOG_SYSTEM, memberValue);
+			Log::info(LOG_SYSTEM, memberValue);
 			_env->ReleaseStringUTFChars(str, cstr);
 			_env->DeleteLocalRef(str);
 		}
@@ -470,7 +470,7 @@ bool Android::hasItem (const std::string& id)
 	LocalReferenceHolder refs;
 
 	if (_env == nullptr || !refs.init(_env)) {
-		error(LOG_SYSTEM, "error while getting the payment entries");
+		Log::error(LOG_SYSTEM, "error while getting the payment entries");
 		return false;
 	}
 
@@ -488,7 +488,7 @@ bool Android::buyItem (const std::string& id)
 	LocalReferenceHolder refs;
 
 	if (_env == nullptr || !refs.init(_env)) {
-		error(LOG_SYSTEM, "error while getting the payment entries");
+		Log::error(LOG_SYSTEM, "error while getting the payment entries");
 		return false;
 	}
 
@@ -593,7 +593,7 @@ int Android::getAdHeight() const
 
 extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPaymentDone(JNIEnv* env, jclass jcls)
 {
-	info(LOG_SYSTEM, "onPaymentDone c side");
+	Log::info(LOG_SYSTEM, "onPaymentDone c side");
 	Android& s = static_cast<Android&>(getSystem());
 	s.notifyPaymentLoaded();
 }
@@ -611,7 +611,7 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isDebug(JNIEnv*
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isTrackingOptOut(JNIEnv* env, jclass jcls)
 {
-	info(LOG_SYSTEM, "isTrackingOptOut c side");
+	Log::info(LOG_SYSTEM, "isTrackingOptOut c side");
 	// TODO:
 	jboolean optout = 0;
 	return optout;
@@ -630,18 +630,18 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isHD(JNIEnv* en
 
 extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterConnectFailed(JNIEnv* env, jclass jcls)
 {
-	error(LOG_SYSTEM, "google play connection failed");
+	Log::error(LOG_SYSTEM, "google play connection failed");
 	Config.getConfigVar("googleplaystate", "false", true)->setValue("false");
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterConnectSuccess(JNIEnv* env, jclass jcls)
 {
-	info(LOG_SYSTEM, "google play connection succeeds");
+	Log::info(LOG_SYSTEM, "google play connection succeeds");
 	Config.getConfigVar("googleplaystate", "false", true)->setValue("true");
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPersisterDisconnect(JNIEnv* env, jclass jcls)
 {
-	info(LOG_SYSTEM, "google play disconnect");
+	Log::info(LOG_SYSTEM, "google play disconnect");
 	Config.getConfigVar("googleplaystate", "false", true)->setValue("false");
 }

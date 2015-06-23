@@ -1,7 +1,7 @@
 #include "TextureDefinition.h"
 #include "common/FileSystem.h"
 #include "common/ConfigManager.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/LUA.h"
 #include "common/System.h"
 #include "common/FileSystem.h"
@@ -25,7 +25,7 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 		if (!FS.hasExtension(filename, "lua"))
 			continue;
 		if (!lua.load(filename)) {
-			error(LOG_CLIENT, "failed to load textures from " + filename);
+			Log::error(LOG_CLIENT, "failed to load textures from " + filename);
 			continue;
 		}
 		lua.getGlobalKeyValue("textures" + textureSize);
@@ -70,8 +70,8 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 	}
 
 	if (_textureDefs.empty())
-		info(LOG_CLIENT, "could not load any texture definition");
-	info(LOG_CLIENT, "loaded " + string::toString(_textureDefs.size()) + " texture definitions");
+		Log::info(LOG_CLIENT, "could not load any texture definition");
+	Log::info(LOG_CLIENT, "loaded " + string::toString(_textureDefs.size()) + " texture definitions");
 }
 
 TextureDefinition::~TextureDefinition ()
@@ -83,12 +83,12 @@ void TextureDefinition::create (const std::string& textureName, const std::strin
 		const TextureDefinitionTrim& trim, bool mirror)
 {
 	if (_textureDefs.find(id) != _textureDefs.end()) {
-		error(LOG_CLIENT, "texture def with same name found: " + id);
+		Log::error(LOG_CLIENT, "texture def with same name found: " + id);
 		return;
 	}
 
 	if (!texcoords.isValid()) {
-		error(LOG_CLIENT, "texture def has invalid texcoords: " + id);
+		Log::error(LOG_CLIENT, "texture def has invalid texcoords: " + id);
 		return;
 	}
 

@@ -3,7 +3,7 @@
 #include "common/FileSystem.h"
 #include "common/System.h"
 #include "common/SQLite.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/Application.h"
 #include "common/ExecutionTime.h"
 #include <sstream>
@@ -21,7 +21,7 @@ bool SQLitePersister::init () {
 	if (!open())
 		System.exit("Could not open gamestate database", 1);
 	else
-		info(LOG_CAMPAIGN, "loaded gamestate database");
+		Log::info(LOG_CAMPAIGN, "loaded gamestate database");
 
 	std::stringstream ss;
 	ss << "CREATE TABLE IF NOT EXISTS " TABLE_GAMESTATE " (";
@@ -45,7 +45,7 @@ bool SQLitePersister::init () {
 	ss << "PRIMARY KEY(campaignid, mapid)";
 	ss << ");";
 
-	info(LOG_CAMPAIGN, "use " + getFilename() + " as gamestate database file");
+	Log::info(LOG_CAMPAIGN, "use " + getFilename() + " as gamestate database file");
 
 	if (!exec(ss.str()))
 		System.exit("Could not create initial gamestate tables", 1);
@@ -89,7 +89,7 @@ std::string SQLitePersister::loadActiveCampaign ()
 	if (s == SQLITE_ROW) {
 		return stmt.getText(0);
 	} else if (s != SQLITE_DONE) {
-		error(LOG_STORAGE, "error loading activecampaign");
+		Log::error(LOG_STORAGE, "error loading activecampaign");
 	}
 
 	return DEFAULT_CAMPAIGN;
@@ -109,7 +109,7 @@ bool SQLitePersister::activateCampaign (const std::string& id)
 
 bool SQLitePersister::updateCampaign (Campaign* campaign)
 {
-	info(LOG_CAMPAIGN, "update campaign progress in database for " + campaign->getId());
+	Log::info(LOG_CAMPAIGN, "update campaign progress in database for " + campaign->getId());
 	Transaction t(*this);
 	ExecutionTime e("save progress");
 
@@ -130,7 +130,7 @@ bool SQLitePersister::updateCampaign (Campaign* campaign)
 	}
 	const bool savedLives = saveLives(campaign->getLives(), campaign->getId());
 	if (savedLives)
-		info(LOG_CAMPAIGN, "updated campaign progress in database for " + campaign->getId());
+		Log::info(LOG_CAMPAIGN, "updated campaign progress in database for " + campaign->getId());
 
 	getSystem().syncFiles();
 
@@ -162,7 +162,7 @@ bool SQLitePersister::loadCampaign (Campaign* campaign)
 	_activeCampaign = campaign->getId();
 	const uint8_t lives = loadLives(campaign->getId());
 	if (lives == 0) {
-		error(LOG_STORAGE, "no live entry for " + campaign->getId());
+		Log::error(LOG_STORAGE, "no live entry for " + campaign->getId());
 		return false;
 	}
 
@@ -186,7 +186,7 @@ bool SQLitePersister::loadCampaign (Campaign* campaign)
 		} else if (s == SQLITE_DONE) {
 			break;
 		} else {
-			error(LOG_STORAGE, "SQL step error in loadCampaign");
+			Log::error(LOG_STORAGE, "SQL step error in loadCampaign");
 			return false;
 		}
 	}
@@ -205,7 +205,7 @@ void SQLitePersister::loadCampaignMapParameters(CampaignMap* map, SQLiteStatemen
 	map->setStars(stars);
 	if (locked == 0)
 		map->unlock();
-	trace(LOG_STORAGE, map->toString());
+	Log::trace(LOG_STORAGE, map->toString());
 }
 
 bool SQLitePersister::saveLives (uint8_t lives, const std::string& campaignId)
@@ -219,7 +219,7 @@ bool SQLitePersister::saveLives (uint8_t lives, const std::string& campaignId)
 	stmt.bindInt(2, lives);
 	stmt.bindText(3, Singleton<Application>::getInstance().getVersion());
 	stmt.step();
-	info(LOG_CAMPAIGN, "update lives in database " + string::toString(static_cast<int>(lives)));
+	Log::info(LOG_CAMPAIGN, "update lives in database " + string::toString(static_cast<int>(lives)));
 	return true;
 }
 
@@ -233,7 +233,7 @@ bool SQLitePersister::resetState (Campaign* campaign)
 		getSystem().syncFiles();
 		return true;
 	}
-	error(LOG_STORAGE, "error reseting the state");
+	Log::error(LOG_STORAGE, "error reseting the state");
 	return false;
 }
 
@@ -242,7 +242,7 @@ uint8_t SQLitePersister::loadLives (const std::string& campaignId)
 	SQLiteStatement stmt;
 	prepare(stmt, "SELECT lives FROM " TABLE_LIVES " WHERE campaignid = ?;");
 	if (!stmt) {
-		info(LOG_STORAGE, "no lives entry for " + campaignId);
+		Log::info(LOG_STORAGE, "no lives entry for " + campaignId);
 		return 0;
 	}
 
@@ -251,10 +251,10 @@ uint8_t SQLitePersister::loadLives (const std::string& campaignId)
 	const int s = stmt.step();
 	if (s == SQLITE_ROW) {
 		const int lives = stmt.getInt(0);
-		info(LOG_STORAGE, "got " + string::toString(lives) + " lives for campaign " + campaignId);
+		Log::info(LOG_STORAGE, "got " + string::toString(lives) + " lives for campaign " + campaignId);
 		return lives;
 	} else if (s != SQLITE_DONE) {
-		error(LOG_STORAGE, "error loading lives");
+		Log::error(LOG_STORAGE, "error loading lives");
 	}
 
 	return 0;

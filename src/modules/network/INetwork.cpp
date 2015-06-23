@@ -1,5 +1,5 @@
 #include "INetwork.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 INetwork::CountMap INetwork::_count;
 
@@ -24,12 +24,12 @@ void INetwork::count (const IProtocolMessage &msg)
 
 void INetwork::shutdown ()
 {
-	info(LOG_GENERAL, "shutting down the network");
+	Log::info(LOG_GENERAL, "shutting down the network");
 	closeClient();
 	closeServer();
 
 	for (CountMap::iterator i = _count.begin(); i != _count.end(); ++i) {
-		info(LOG_NET, String::format("used protocol id %i %i times", static_cast<int>(i->first), i->second));
+		Log::info(LOG_NET, String::format("used protocol id %i %i times", static_cast<int>(i->first), i->second));
 	}
 	_count.clear();
 }

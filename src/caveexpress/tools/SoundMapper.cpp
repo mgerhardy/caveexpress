@@ -5,7 +5,7 @@
 #include "common/String.h"
 #include "sound/Sound.h"
 #include "common/FileSystem.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 using namespace caveexpress;
 static SoundMappingCache soundMappingCache;
@@ -21,20 +21,20 @@ static bool checkSound (const EntityType* type, const std::string& prefix, const
 		const std::string sound = prefix + animation->name;
 		soundMappingCache[type][animation] = sound;
 		const std::string log = std::string("use sound ") + sound + " for animation " + animation->name;
-		info(LOG_CLIENT, log);
+		Log::info(LOG_CLIENT, log);
 		return true;
 	} else if (animation->hasDirection()) {
 		const std::string& sound = prefix + animation->getNameWithoutDirection();
 		if (exists(sound)) {
 			soundMappingCache[type][animation] = sound;
 			const std::string log = std::string("use sound ") + sound + " for animation " + animation->name;
-			info(LOG_CLIENT, log);
+			Log::info(LOG_CLIENT, log);
 			return true;
 		}
 	} else if (exists(type->name)) {
 		soundMappingCache[type][animation] = type->name;
 		const std::string log = "use sound " + type->name;
-		info(LOG_CLIENT, log);
+		Log::info(LOG_CLIENT, log);
 	}
 
 	// cut of the 'multiple-types-part' - e.g. "-01", "-02" - this is not about the frames!
@@ -99,7 +99,7 @@ extern "C" int main(int argc, char* argv[]) {
 	}
 	const std::string lua = s.str();
 	if (FS.writeSysFile("entitysounds.lua", (const unsigned char*)lua.c_str(), lua.length(), true) == -1) {
-		error(LOG_CLIENT, "failed to write the file");
+		Log::error(LOG_CLIENT, "failed to write the file");
 	}
 
 	return EXIT_SUCCESS;

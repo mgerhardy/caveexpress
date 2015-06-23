@@ -1,7 +1,7 @@
 #include "UIWindow.h"
 #include "ui/UI.h"
 #include "sound/Sound.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/EventHandler.h"
 #include "common/CommandSystem.h"
 #include "common/System.h"
@@ -188,28 +188,28 @@ UINode* UIWindow::addTextureNode (const std::string& texture, float x, float y, 
 void UIWindow::showFullscreenAds ()
 {
 	if (getSystem().hasItem(PAYMENT_ADFREE)) {
-		debug(LOG_CLIENT, "skip ads");
+		Log::debug(LOG_CLIENT, "skip ads");
 		return;
 	}
 
 	if (!getSystem().showFullscreenAds())
-		error(LOG_CLIENT, "failed to show the fullscreen ads");
+		Log::error(LOG_CLIENT, "failed to show the fullscreen ads");
 	else
-		info(LOG_CLIENT, "show fullscreen ads");
+		Log::info(LOG_CLIENT, "show fullscreen ads");
 }
 
 void UIWindow::showAds ()
 {
 	if (getSystem().hasItem(PAYMENT_ADFREE)) {
-		debug(LOG_CLIENT, "skip ads");
+		Log::debug(LOG_CLIENT, "skip ads");
 		return;
 	}
 	getSystem().showAds(true);
-	info(LOG_CLIENT, "show ads");
+	Log::info(LOG_CLIENT, "show ads");
 }
 
 void UIWindow::hideAds ()
 {
 	getSystem().showAds(false);
-	info(LOG_CLIENT, "hide ads");
+	Log::info(LOG_CLIENT, "hide ads");
 }

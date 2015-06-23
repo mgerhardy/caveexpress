@@ -1,7 +1,7 @@
 #include "WindowTile.h"
 #include "caveexpress/server/entities/CaveMapTile.h"
 #include "caveexpress/server/events/GameEventHandler.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 namespace caveexpress {
 

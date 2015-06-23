@@ -2,7 +2,7 @@
 #include "ui/UI.h"
 #include "common/CommandSystem.h"
 #include "common/ConfigManager.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/IFrontend.h"
 #include "common/Payment.h"
 #include "ui/BitmapFont.h"
@@ -213,7 +213,7 @@ void UINode::displayText (const std::string& text, uint32_t delayMillis, float x
 		i->delayMillis = delayMillis;
 		return;
 	}
-	o("Display text '" + text + "' for " + string::toString(delayMillis) + "ms");
+	Log::info(LOG_GENERAL, "Display text '" + text + "' for " + string::toString(delayMillis) + "ms");
 	const NodeCoord c(x, y);
 	const BitmapFontPtr& font = getFont(HUGE_FONT);
 	_texts.push_back(UINodeDelayedText(text, delayMillis, c, font));
@@ -740,7 +740,7 @@ void UINode::addFocus (int32_t x, int32_t y)
 	if (_focus)
 		return;
 	_focus = true;
-	debug(LOG_CLIENT, "focus for " + getId());
+	Log::debug(LOG_CLIENT, "focus for " + getId());
 	for (Listeners::iterator i = _listeners.begin(); i != _listeners.end(); ++i) {
 		(*i)->onAddFocus();
 	}
@@ -752,7 +752,7 @@ void UINode::removeFocus ()
 {
 	if (!_focus)
 		return;
-	debug(LOG_CLIENT, "remove focus for " + getId());
+	Log::debug(LOG_CLIENT, "remove focus for " + getId());
 	_focus = false;
 	_focusMouseX = -1;
 	_focusMouseY = -1;

@@ -1,7 +1,7 @@
 #include "common/SpriteDefinition.h"
 #include "common/LUA.h"
 #include "common/System.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/ExecutionTime.h"
 #include "common/TextureDefinition.h"
 #include <Box2D.h>
@@ -31,7 +31,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		SpriteDefMapConstIter findIter = _spriteDefs.find(id);
 		if (findIter != _spriteDefs.end()) {
-			error(LOG_GENERAL, "sprite def already defined: " + id);
+			Log::error(LOG_GENERAL, "sprite def already defined: " + id);
 			lua.pop();
 			continue;
 		}
@@ -39,7 +39,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		const std::string typeStr = lua.getValueStringFromTable("type").str();
 		const SpriteType& type = SpriteType::getByName(typeStr);
 		if (!type && !typeStr.empty()) {
-			error(LOG_GENERAL, "invalid sprite type given: " + typeStr);
+			Log::error(LOG_GENERAL, "invalid sprite type given: " + typeStr);
 		}
 		const ThemeType& theme = ThemeType::getByName(lua.getValueStringFromTable("theme").str());
 		SpriteDef *def = new SpriteDef(id, type, theme);
@@ -111,7 +111,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 				p.radius = lua.getTableInteger(4) / 100.0f;
 				def->circles.push_back(p);
 			} else {
-				error(LOG_GENERAL, "invalid amount of entries for the circle shape");
+				Log::error(LOG_GENERAL, "invalid amount of entries for the circle shape");
 			}
 			// pop the circle table
 			lua.pop();
@@ -226,9 +226,9 @@ SpriteDefPtr SpriteDefinition::getSpriteDefinition (const std::string& spriteNam
 		return SpriteDefPtr();
 	SpriteDefMapConstIter i = _spriteDefs.find(spriteName);
 	if (i == _spriteDefs.end()) {
-		error(LOG_GENERAL, "could not find sprite definition for " + spriteName);
+		Log::error(LOG_GENERAL, "could not find sprite definition for " + spriteName);
 		for (SpriteDefMapConstIter iter = _spriteDefs.begin(); iter != _spriteDefs.end(); ++iter) {
-			error(LOG_GENERAL, " + found: " + iter->first);
+			Log::error(LOG_GENERAL, " + found: " + iter->first);
 		}
 		return SpriteDefPtr();
 	}
@@ -236,9 +236,9 @@ SpriteDefPtr SpriteDefinition::getSpriteDefinition (const std::string& spriteNam
 	if (!i->second->redirect.empty()) {
 		i = _spriteDefs.find(spriteName);
 		if (i == _spriteDefs.end()) {
-			error(LOG_GENERAL, "could not find sprite redirect definition for " + spriteName);
+			Log::error(LOG_GENERAL, "could not find sprite redirect definition for " + spriteName);
 			for (SpriteDefMapConstIter iter = _spriteDefs.begin(); iter != _spriteDefs.end(); ++iter) {
-				error(LOG_GENERAL, " + found: " + iter->first);
+				Log::error(LOG_GENERAL, " + found: " + iter->first);
 			}
 			return SpriteDefPtr();
 		}

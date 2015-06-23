@@ -2,7 +2,7 @@
 
 #include "common/System.h"
 #include "common/Enum.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 class Achievement: public Enum<Achievement> {
 private:
@@ -21,10 +21,10 @@ public:
 
 	bool unlock() const {
 		if (!supported()) {
-			error(LOG_GENERAL, "achievement " + name + " is not supported");
+			Log::error(LOG_GENERAL, "achievement " + name + " is not supported");
 			return false;
 		}
-		error(LOG_GENERAL, "unlocking achievement " + name);
+		Log::error(LOG_GENERAL, "unlocking achievement " + name);
 		System.achievementUnlocked(name, _increment);
 		return true;
 	}

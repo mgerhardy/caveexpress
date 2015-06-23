@@ -2,7 +2,7 @@
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/SpriteDefinition.h"
 #include "common/TextureDefinition.h"
 #include "ui/FontDefinition.h"

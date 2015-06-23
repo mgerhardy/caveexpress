@@ -21,7 +21,7 @@ public:
 	{
 		const SpawnMessage spawnMsg;
 		if (_serviceProvider.getNetwork().sendToServer(spawnMsg) == -1) {
-			error(LOG_CLIENT, "could not send spawn command to server");
+			Log::error(LOG_CLIENT, "could not send spawn command to server");
 			return;
 		}
 		UI::get().push(UI_WINDOW_MAP);

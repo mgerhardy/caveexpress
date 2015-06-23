@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/ICommand.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/ServiceProvider.h"
 #include "common/ConfigManager.h"
 
@@ -20,7 +20,7 @@ public:
 	void run (const Args& args) override
 	{
 		if (args.size() < 1) {
-			error(LOG_NET, "usage: host <port>");
+			Log::error(LOG_NET, "usage: host <port>");
 			return;
 		}
 		const String& host = args[0];

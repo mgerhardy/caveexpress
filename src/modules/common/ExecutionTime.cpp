@@ -1,6 +1,6 @@
 #include "ExecutionTime.h"
 
-#include "common/Logger.h"
+#include "common/Log.h"
 
 #ifdef _WIN32
 #ifdef USE_EXECTIME
@@ -137,6 +137,6 @@ ExecutionTime::~ExecutionTime ()
 	gettime(end);
 	timespec d = diff(_start, end);
 	if (_microDelay == 0L || d.tv_nsec / 1000 > _microDelay)
-		info(LOG_DEBUG, _id + ": " + format("%i,%09i", d.tv_sec, d.tv_nsec) + "s");
+		Log::info(LOG_DEBUG, _id + ": " + format("%i,%09i", d.tv_sec, d.tv_nsec) + "s");
 #endif
 }

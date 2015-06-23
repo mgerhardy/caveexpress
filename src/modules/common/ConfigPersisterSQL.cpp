@@ -1,5 +1,5 @@
 #include "ConfigPersisterSQL.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/Application.h"
 #include "common/System.h"
 
@@ -10,10 +10,10 @@ ConfigPersisterSQL::ConfigPersisterSQL() :
 {
 	_state = _sqlite.open();
 	if (!_state) {
-		error(LOG_STORAGE, "failed to open the config storage");
+		Log::error(LOG_STORAGE, "failed to open the config storage");
 		return;
 	}
-	info(LOG_STORAGE, "use " + _sqlite.getFilename() + " as config database file");
+	Log::info(LOG_STORAGE, "use " + _sqlite.getFilename() + " as config database file");
 }
 
 void ConfigPersisterSQL::init ()
@@ -23,7 +23,7 @@ void ConfigPersisterSQL::init ()
 	SQLiteStatement stmt;
 	_sqlite.prepare(stmt, "SELECT Name, Value FROM " TABLE_NAME ";");
 	if (!stmt) {
-		error(LOG_STORAGE, "failed to load the config values");
+		Log::error(LOG_STORAGE, "failed to load the config values");
 		return;
 	}
 
@@ -34,10 +34,10 @@ void ConfigPersisterSQL::init ()
 			const std::string& value = stmt.getText(1);
 			_configVarMap[var] = value;
 		} else if (s == SQLITE_DONE) {
-			info(LOG_STORAGE, "loaded all config values: " + string::toString(_configVarMap.size()));
+			Log::info(LOG_STORAGE, "loaded all config values: " + string::toString(_configVarMap.size()));
 			break;
 		} else {
-			error(LOG_STORAGE, "SQL step error in config loading");
+			Log::error(LOG_STORAGE, "SQL step error in config loading");
 			return;
 		}
 	}
@@ -46,12 +46,12 @@ void ConfigPersisterSQL::init ()
 void ConfigPersisterSQL::save (const std::map<std::string, ConfigVarPtr>& configVars)
 {
 	if (!_state) {
-		error(LOG_STORAGE, "no config storage loaded");
+		Log::error(LOG_STORAGE, "no config storage loaded");
 		return;
 	}
 
 	if (configVars.empty()) {
-		error(LOG_STORAGE, "no config variables to save");
+		Log::error(LOG_STORAGE, "no config variables to save");
 		return;
 	}
 
@@ -62,7 +62,7 @@ void ConfigPersisterSQL::save (const std::map<std::string, ConfigVarPtr>& config
 	SQLiteStatement stmt;
 	_sqlite.prepare(stmt, "INSERT INTO " TABLE_NAME " (Name, Value) VALUES (?, ?)");
 	if (!stmt) {
-		error(LOG_STORAGE, "failed to save the config values");
+		Log::error(LOG_STORAGE, "failed to save the config values");
 		return;
 	}
 
@@ -73,7 +73,7 @@ void ConfigPersisterSQL::save (const std::map<std::string, ConfigVarPtr>& config
 		stmt.bindText(1, name);
 		stmt.bindText(2, value);
 		stmt.step(true);
-		info(LOG_STORAGE, "save config var " + name + " with value " + value);
+		Log::info(LOG_STORAGE, "save config var " + name + " with value " + value);
 	}
 	stmt.finish();
 

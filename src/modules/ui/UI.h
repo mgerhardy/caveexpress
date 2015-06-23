@@ -6,7 +6,7 @@
 #include "common/CommandSystem.h"
 #include "common/Common.h"
 #include "common/System.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/Pointers.h"
 #include "common/IProgressCallback.h"
 #include "textures/TextureCache.h"
@@ -115,14 +115,14 @@ public:
 	{
 		UIWindowMap::iterator i = _windows.find(window);
 		if (i == _windows.end()) {
-			debug(LOG_CLIENT, "could not find window " + window);
+			Log::debug(LOG_CLIENT, "could not find window " + window);
 			return nullptr;
 		}
 
 		UIWindow* windowPtr = i->second;
 		UINode* node = windowPtr->getNode(nodeId);
 		if (node == nullptr) {
-			debug(LOG_CLIENT, "could not find node " + nodeId);
+			Log::debug(LOG_CLIENT, "could not find node " + nodeId);
 			return nullptr;
 		}
 		return static_cast<UINodeType*>(node);

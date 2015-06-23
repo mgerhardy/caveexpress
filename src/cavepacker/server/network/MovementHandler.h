@@ -20,7 +20,7 @@ public:
 		_map.abortAutoSolve();
 		Player* player = _map.getPlayer(clientId);
 		if (player == nullptr) {
-			error(LOG_SERVER, "movement for player with clientId " + string::toString((int)clientId) + " failed");
+			Log::error(LOG_SERVER, "movement for player with clientId " + string::toString((int)clientId) + " failed");
 			return;
 		}
 		const MovementMessage* msg = static_cast<const MovementMessage*>(&message);

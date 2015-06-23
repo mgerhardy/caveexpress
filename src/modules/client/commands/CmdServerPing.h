@@ -22,19 +22,19 @@ public:
 	{
 		_serverSelector->reset();
 		if (!_serviceProvider.getNetwork().discover(this, Config.getPort()))  {
-			error(LOG_CLIENT, "could not send the ping broadcast");
+			Log::error(LOG_CLIENT, "could not send the ping broadcast");
 		} else {
-			info(LOG_CLIENT, "sent ping broadcast");
+			Log::info(LOG_CLIENT, "sent ping broadcast");
 		}
 	}
 
 	void onOOBData (const std::string& host, const IProtocolMessage* message) override
 	{
 		if (message->getId() != protocol::PROTO_PING) {
-			error(LOG_CLIENT, "got invalid discover broadcast reply");
+			Log::error(LOG_CLIENT, "got invalid discover broadcast reply");
 			return;
 		}
-		info(LOG_CLIENT, "got ping broadcast reply");
+		Log::info(LOG_CLIENT, "got ping broadcast reply");
 		const PingMessage* p = static_cast<const PingMessage*>(message);
 		_serverSelector->addServer(host, p->getName(), p->getMapName(), p->getPort(), p->getPlayerCount(),
 				p->getMaxPlayerCount());

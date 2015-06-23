@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/Pointers.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include <string>
 #include <inttypes.h>
 
@@ -47,13 +47,13 @@ typedef SharedPtr<CampaignMap> CampaignMapPtr;
 
 inline void CampaignMap::unlock ()
 {
-	trace(LOG_CAMPAIGN, "unlock map " + _id);
+	Log::trace(LOG_CAMPAIGN, "unlock map " + _id);
 	_locked = false;
 }
 
 inline void CampaignMap::lock ()
 {
-	trace(LOG_CAMPAIGN, "lock map " + _id);
+	Log::trace(LOG_CAMPAIGN, "lock map " + _id);
 	_locked = true;
 }
 

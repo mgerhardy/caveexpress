@@ -241,7 +241,7 @@ TEST_F(MapTest, testPlayerWinCondition) {
 	class PackageCallback : public MapTickCallback {
 	public:
 		void exec(Map* map, Player* player) override {
-			info(LOG_CLIENT, player->getName());
+			Log::info(LOG_CLIENT, player->getName());
 		}
 	};
 	PackageCallback c;

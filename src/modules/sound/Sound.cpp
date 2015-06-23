@@ -1,7 +1,7 @@
 #include "Sound.h"
 #include "SDLSoundEngine.h"
 #include "common/FileSystem.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/ConfigManager.h"
 #include "common/ExecutionTime.h"
 #include <stdio.h>
@@ -11,11 +11,11 @@ Sound::Sound () :
 		_soundEngine(&_dummy)
 {
 	const String& engine = Config.getSoundEngine();
-	info(LOG_CLIENT, "soundengine: " + engine);
+	Log::info(LOG_CLIENT, "soundengine: " + engine);
 	if (engine == "sdl")
 		_soundEngine = new SDLSoundEngine();
 	else
-		info(LOG_CLIENT, "disable sound");
+		Log::info(LOG_CLIENT, "disable sound");
 }
 
 Sound::~Sound ()
@@ -31,7 +31,7 @@ Sound& Sound::get ()
 
 void Sound::close ()
 {
-	info(LOG_CLIENT, "shutting down the sound engine");
+	Log::info(LOG_CLIENT, "shutting down the sound engine");
 	_soundEngine->close();
 	if (_soundEngine != &_dummy) {
 		delete _soundEngine;

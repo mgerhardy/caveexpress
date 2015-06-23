@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/Compiler.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "campaign/Campaign.h"
 #include <string>
 #include <stdint.h>
@@ -59,7 +59,7 @@ public:
 
 	virtual bool saveCampaign (Campaign* campaign) override
 	{
-		info(LOG_CAMPAIGN, "don't persist campaign progress for " + campaign->getId());
+		Log::info(LOG_CAMPAIGN, "don't persist campaign progress for " + campaign->getId());
 		_activeCampaign = campaign->getId();
 		return true;
 	}

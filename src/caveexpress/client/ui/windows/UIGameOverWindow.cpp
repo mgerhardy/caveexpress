@@ -1,7 +1,7 @@
 #include "UIGameOverWindow.h"
 #include "ui/UI.h"
 #include "ui/nodes/UINodeBackButton.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "caveexpress/client/ui/nodes/UINodeGameOverBackground.h"
 #include "campaign/CampaignManager.h"
 #include <string>
@@ -30,7 +30,7 @@ bool UIGameOverWindow::onPush ()
 {
 	const bool retVal = UIWindow::onPush();
 	if (!_campaignManager.resetActiveCampaign())
-		error(LOG_CLIENT, "failed to reset the campaign");
+		Log::error(LOG_CLIENT, "failed to reset the campaign");
 	return retVal;
 }
 

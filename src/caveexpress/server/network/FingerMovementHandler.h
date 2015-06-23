@@ -19,7 +19,7 @@ public:
 	{
 		Player* player = _map.getPlayer(clientId);
 		if (player == nullptr) {
-			error(LOG_SERVER, "movement for player with clientId " + string::toString((int)clientId) + " failed");
+			Log::error(LOG_SERVER, "movement for player with clientId " + string::toString((int)clientId) + " failed");
 			return;
 		}
 		const FingerMovementMessage* msg = static_cast<const FingerMovementMessage*>(&message);

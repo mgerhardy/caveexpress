@@ -1,6 +1,6 @@
 #include "Camera.h"
 #include "common/ConfigManager.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/EventHandler.h"
 #include "common/IFrontend.h"
 
@@ -68,5 +68,5 @@ void Camera::update (const vec2& playerPos, Direction direction, float zoom)
 	}
 	_viewportX += _scrollOffsetX;
 	_viewportY += _scrollOffsetY;
-	trace(LOG_CLIENT, String::format("zoom: %f, viewportX %i, pixelW %i, nodeW: %i", zoom, _viewportX, pixelW, nodeW));
+	Log::trace(LOG_CLIENT, String::format("zoom: %f, viewportX %i, pixelW %i, nodeW: %i", zoom, _viewportX, pixelW, nodeW));
 }

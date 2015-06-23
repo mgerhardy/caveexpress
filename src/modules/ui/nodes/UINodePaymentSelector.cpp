@@ -2,7 +2,7 @@
 #include "ui/UI.h"
 #include "common/System.h"
 #include "common/Payment.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 UINodePaymentSelector::UINodePaymentSelector(IFrontend *frontend, int rows) :
 		UINodeBackgroundSelector<PaymentEntry>(frontend, 1, rows)
@@ -60,11 +60,11 @@ void UINodePaymentSelector::reset ()
 bool UINodePaymentSelector::onSelect (const PaymentEntry& data)
 {
 	if (!System.buyItem(data.id)) {
-		error(LOG_CLIENT, "failed to buy item " + data.id);
+		Log::error(LOG_CLIENT, "failed to buy item " + data.id);
 		return true;
 	}
 
 	UI::get().initRestart();
-	info(LOG_CLIENT, "bought item " + data.id);
+	Log::info(LOG_CLIENT, "bought item " + data.id);
 	return true;
 }

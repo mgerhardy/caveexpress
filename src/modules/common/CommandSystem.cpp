@@ -1,6 +1,6 @@
 #include "CommandSystem.h"
 #include "common/ConfigManager.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 #define CMD_LISTCOMMANDS "listcommands"
 
@@ -10,7 +10,7 @@ public:
 	{
 		for (CommandList::const_iterator i = CommandSystem::get()._commands.begin();
 				i != CommandSystem::get()._commands.end(); ++i) {
-			info(LOG_COMMANDS, i->first);
+			Log::info(LOG_COMMANDS, i->first);
 		}
 	}
 };
@@ -29,13 +29,13 @@ CommandSystem::~CommandSystem ()
 
 void CommandSystem::registerAlias (const std::string& id, const std::string& command)
 {
-	info(LOG_COMMANDS, "register alias " + id);
+	Log::info(LOG_COMMANDS, "register alias " + id);
 	_alias[id] = command;
 }
 
 CommandPtr CommandSystem::registerCommand (const std::string& id, ICommand* command)
 {
-	info(LOG_COMMANDS, "register command " + id);
+	Log::info(LOG_COMMANDS, "register command " + id);
 	CommandPtr ptr(command);
 	_commands[id] = ptr;
 	return ptr;
@@ -88,12 +88,12 @@ bool CommandSystem::executeCommand (const std::string& command, ICommand::Args a
 	}
 	ICommand* callback = getCommand(command2);
 	if (callback != nullptr) {
-		debug(LOG_COMMANDS, "run command " + command + " with " + string::toString(args.size()) + " parameters");
+		Log::debug(LOG_COMMANDS, "run command " + command + " with " + string::toString(args.size()) + " parameters");
 		callback->run(args);
 		return true;
 	}
 
-	error(LOG_COMMANDS, "unknown command given: " + command2);
+	Log::error(LOG_COMMANDS, "unknown command given: " + command2);
 
 	return false;
 }

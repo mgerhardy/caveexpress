@@ -112,7 +112,7 @@ void CavePacker::update (uint32_t deltaTime)
 		const uint8_t stars = getStars();
 		_campaignManager->getAutoActiveCampaign();
 		if (!_campaignManager->updateMapValues(_map.getName(), moves, pushes, stars, true))
-			error(LOG_SERVER, "Could not save the values for the map");
+			Log::error(LOG_SERVER, "Could not save the values for the map");
 
 		if (stars == 3) {
 			const int n = SDL_arraysize(fullStarsAchievements);
@@ -124,7 +124,7 @@ void CavePacker::update (uint32_t deltaTime)
 		if (_map.getPlayers().size() == 1) {
 			const Player* player = _map.getPlayers()[0];
 			const std::string& solution = player->getSolution();
-			info(LOG_SERVER, "solution: " + solution);
+			Log::info(LOG_SERVER, "solution: " + solution);
 			SDL_SetClipboardText(solution.c_str());
 #if 0
 			FilePtr solutionFilePtr = FS.getFile(_map.getName() + ".sol");
@@ -143,9 +143,9 @@ void CavePacker::update (uint32_t deltaTime)
 				System.track("autosolve", _map.getName());
 			}
 			if (!_campaignManager->addAdditionMapData(_map.getName(), solution))
-				error(LOG_SERVER, "Could not save the solution for the map");
+				Log::error(LOG_SERVER, "Could not save the solution for the map");
 		} else {
-			info(LOG_SERVER, "no solution in multiplayer games");
+			Log::info(LOG_SERVER, "no solution in multiplayer games");
 		}
 
 		System.track("mapstate", String::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), moves, pushes, stars));
@@ -153,7 +153,7 @@ void CavePacker::update (uint32_t deltaTime)
 		const FinishedMapMessage msg(_map.getName(), moves, pushes, stars);
 		_serviceProvider->getNetwork().sendToAllClients(msg);
 	} else if (!isDone && _map.isFailed()) {
-		debug(LOG_SERVER, "map failed");
+		Log::debug(LOG_SERVER, "map failed");
 		const uint32_t delay = 1000;
 		_map.restart(delay);
 	}
@@ -170,7 +170,7 @@ uint8_t CavePacker::getStars () const {
 	if (finishPoints == 0)
 		return 0;
 	const float p = finishPoints * 100.0f / static_cast<float>(bestMoves);
-	info(LOG_SERVER, String::format("best pushes: %i, your pushes: %i => pushes to best pushes: %f", bestMoves, finishPoints, p));
+	Log::info(LOG_SERVER, String::format("best pushes: %i, your pushes: %i => pushes to best pushes: %f", bestMoves, finishPoints, p));
 	if (p < 120.0f)
 		return 3;
 	if (p < 130.0f)
@@ -244,7 +244,7 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 			_persister = new CavePackerSQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
 		}
 		if (!_persister->init()) {
-			error(LOG_SERVER, "Failed to initialize the persister");
+			Log::error(LOG_SERVER, "Failed to initialize the persister");
 		}
 	}
 	{

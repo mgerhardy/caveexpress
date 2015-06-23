@@ -1,6 +1,6 @@
 #include "MemoryAllocator.h"
 #include "common/String.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/System.h"
 #include <stdint.h>
 #include <stddef.h>

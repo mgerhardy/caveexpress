@@ -4,13 +4,13 @@
 
 #include "common/IEventObserver.h"
 #include "network/Network.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 
 class NetworkTestListener: public IClientCallback {
 public:
 	void onData (ByteStream& data){
-		debug(LOG_NET, String::format("recv: %i", data.getSize()));
+		Log::debug(LOG_NET, String::format("recv: %i", data.getSize()));
 	}
 };
 

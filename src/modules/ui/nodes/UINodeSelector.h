@@ -2,7 +2,7 @@
 
 #include "UINode.h"
 #include "ui/BitmapFont.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/ConfigManager.h"
 
 #include <vector>
@@ -430,7 +430,7 @@ public:
 		} else if (index < static_cast<int>(_entries.size())) {
 			const int neededPage = (index + 1) / amountPerPage;
 			_offset = neededPage * amountPerPage;
-			debug(LOG_CLIENT, String::format("Scroll to page %i (index was: %i, amountPerPage is: %i)", neededPage, index, amountPerPage));
+			Log::debug(LOG_CLIENT, String::format("Scroll to page %i (index was: %i, amountPerPage is: %i)", neededPage, index, amountPerPage));
 			_selectedIndex = index;
 		}
 	}

@@ -30,7 +30,7 @@ void FrameBuffer::bind ()
 		glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
 		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		if (status != GL_FRAMEBUFFER_COMPLETE) {
-			error(LOG_CLIENT, "Failed to bind the framebuffer");
+			Log::error(LOG_CLIENT, "Failed to bind the framebuffer");
 		} else {
 			_bound = true;
 		}
@@ -41,7 +41,7 @@ void FrameBuffer::bind ()
 	glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
-		error(LOG_CLIENT, "Failed to bind the framebuffer");
+		Log::error(LOG_CLIENT, "Failed to bind the framebuffer");
 	} else {
 		_bound = true;
 	}
@@ -59,7 +59,7 @@ void FrameBuffer::bind (int x, int y, int w, int h)
 	drawBuffer();
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
-		error(LOG_CLIENT, "Failed to bind the framebuffer for rendering");
+		Log::error(LOG_CLIENT, "Failed to bind the framebuffer for rendering");
 	} else {
 		_bound = true;
 	}

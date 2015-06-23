@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "cavepacker/server/map/Map.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "network/INetwork.h"
 #include "common/System.h"
 #include "common/ConfigManager.h"
@@ -37,7 +37,7 @@ bool Player::undo ()
 	const int targetCol = origCol + xPlayer;
 	const int targetRow = origRow + yPlayer;
 	if (!setPos(targetCol, targetRow)) {
-		debug(LOG_SERVER, "failed to undo a move of the player");
+		Log::debug(LOG_SERVER, "failed to undo a move of the player");
 		return false;
 	}
 	// we moved a package with this step

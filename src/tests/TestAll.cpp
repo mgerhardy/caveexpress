@@ -1,6 +1,6 @@
 #include "TestShared.h"
 #include <stdlib.h>
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/FileSystem.h"
 #include "common/ConfigManager.h"
 #include "common/Application.h"
@@ -98,7 +98,7 @@ extern "C" int main (int argc, char **argv)
 	const GamePtr& game = Singleton<GameRegistry>::getInstance().getGame();
 	app.setOrganisation("caveproductions");
 	app.setName(game->getName());
-	Logger::get().addConsole(&console);
+	Log::get().addConsole(&console);
 	Config.get().init(nullptr, argc, argv);
 	return RUN_ALL_TESTS();
 }

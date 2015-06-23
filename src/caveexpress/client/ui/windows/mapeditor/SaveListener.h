@@ -2,7 +2,7 @@
 
 #include "ui/nodes/UINodeButtonText.h"
 #include "common/CommandSystem.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 namespace caveexpress {
 
@@ -18,7 +18,7 @@ public:
 	void enable () {
 		if (_enabled)
 			return;
-		info(LOG_CLIENT, "Playing the map is now possible");
+		Log::info(LOG_CLIENT, "Playing the map is now possible");
 		setEnabled(true);
 		setTooltip("");
 	}
@@ -26,7 +26,7 @@ public:
 	void disable () {
 		if (!_enabled)
 			return;
-		info(LOG_CLIENT, "Playing the map is not possible");
+		Log::info(LOG_CLIENT, "Playing the map is not possible");
 		setEnabled(false);
 	}
 };
@@ -51,11 +51,11 @@ public:
 	void onClick () override
 	{
 		if (!_mapEditor->save())
-			error(LOG_CLIENT, "Failed to save the map");
+			Log::error(LOG_CLIENT, "Failed to save the map");
 		else
-			info(LOG_CLIENT, "Saved the map");
+			Log::info(LOG_CLIENT, "Saved the map");
 		if (_startMap) {
-			info(LOG_CLIENT, "Starting the map now: " + _mapEditor->getName());
+			Log::info(LOG_CLIENT, "Starting the map now: " + _mapEditor->getName());
 			Commands.executeCommandLine(CMD_MAP_START " " + _mapEditor->getName());
 		}
 	}

@@ -1,6 +1,6 @@
 #include "Texture.h"
 #include "common/FileSystem.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include <assert.h>
 #include <SDL.h>
 
@@ -17,9 +17,9 @@ Texture::Texture (const std::string &filename, IFrontend *frontend) :
 		_uploadedWidth = _rect.w;
 		_uploadedHeight = _rect.h;
 
-		debug(LOG_CLIENT, String::format("loaded texture: %s (%i:%i)", filename.c_str(), _uploadedWidth, _uploadedHeight));
+		Log::debug(LOG_CLIENT, String::format("loaded texture: %s (%i:%i)", filename.c_str(), _uploadedWidth, _uploadedHeight));
 	} else {
-		error(LOG_CLIENT, "could not load texture " + filename);
+		Log::error(LOG_CLIENT, "could not load texture " + filename);
 		memset(&_rect, 0, sizeof(_rect));
 	}
 }
@@ -28,7 +28,7 @@ Texture::Texture (const Texture& texture) :
 		_uploadedWidth(texture._uploadedWidth), _uploadedHeight(texture._uploadedHeight), _name(
 				texture._name), _mirror(texture._mirror), _copy(true), _data(texture._data), _frontend(texture._frontend)
 {
-	trace(LOG_CLIENT, String::format("copy texture %s (%i:%i)", _name.c_str(), _uploadedWidth, _uploadedHeight));
+	Log::trace(LOG_CLIENT, String::format("copy texture %s (%i:%i)", _name.c_str(), _uploadedWidth, _uploadedHeight));
 	memcpy(&_rect, &texture._rect, sizeof(_rect));
 }
 
@@ -40,7 +40,7 @@ Texture::~Texture ()
 void Texture::deleteTexture ()
 {
 	if (_data && !_copy) {
-		info(LOG_CLIENT, "destroy texture " + getName());
+		Log::info(LOG_CLIENT, "destroy texture " + getName());
 		_frontend->destroyTexture(_data);
 	}
 	_data = nullptr;

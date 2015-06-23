@@ -9,7 +9,7 @@
 #include "common/IFrontend.h"
 #include "GameRegistry.h"
 #include "common/ExecutionTime.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 ServiceProvider::ServiceProvider() :
 		_mapManager(nullptr), _network(nullptr), _loopback(nullptr), _textureDefinition(nullptr), _currentNetwork(nullptr)
@@ -18,7 +18,7 @@ ServiceProvider::ServiceProvider() :
 
 ServiceProvider::~ServiceProvider ()
 {
-	info(LOG_GENERAL, "shutting down the serviceprovider");
+	Log::info(LOG_GENERAL, "shutting down the serviceprovider");
 	if (_mapManager != nullptr)
 		delete _mapManager;
 	if (_network != nullptr)
@@ -36,17 +36,17 @@ void ServiceProvider::updateNetwork (bool network)
 
 	if (network) {
 		_currentNetwork = _network;
-		info(LOG_GENERAL, "switching to network");
+		Log::info(LOG_GENERAL, "switching to network");
 	} else {
 		_currentNetwork = _loopback;
-		info(LOG_GENERAL, "switching to loopback");
+		Log::info(LOG_GENERAL, "switching to loopback");
 	}
 	_currentNetwork->init();
 }
 
 void ServiceProvider::initTextureDefinition (IFrontend *frontend, const std::string& textureSize, IProgressCallback* progress)
 {
-	info(LOG_BACKEND, "initialize the texture definition");
+	Log::info(LOG_BACKEND, "initialize the texture definition");
 	if (_textureDefinition != nullptr)
 		delete _textureDefinition;
 	ExecutionTime e("texture definition");
@@ -81,5 +81,5 @@ void ServiceProvider::init (IFrontend *frontend)
 		if (_mapManager != nullptr)
 			_mapManager->init();
 	}
-	info(LOG_BACKEND, "initialized the serviceprovider");
+	Log::info(LOG_BACKEND, "initialized the serviceprovider");
 }

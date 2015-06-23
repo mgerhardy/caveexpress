@@ -6,7 +6,7 @@ namespace caveexpress {
 NPCAggressive::NPCAggressive (const EntityType &type, Map& map) :
 		NPC(type, map)
 {
-	info(LOG_SERVER, "create new " + type.name);
+	Log::info(LOG_SERVER, "create new " + type.name);
 }
 
 NPCAggressive::~NPCAggressive ()

@@ -2,7 +2,7 @@
 
 #ifndef NONETWORK
 #include "INetwork.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/System.h"
 #include <signal.h>
 #include <SDL_net.h>
@@ -27,7 +27,7 @@ Network::~Network ()
 
 void Network::init ()
 {
-	info(LOG_NET, "init the network layer");
+	Log::info(LOG_NET, "init the network layer");
 	if (SDLNet_Init() < 0)
 		System.exit(getError(), 1);
 
@@ -57,11 +57,11 @@ void Network::closeServer ()
 		return;
 
 	if (_serverSocket)
-		info(LOG_NET, "close server");
+		Log::info(LOG_NET, "close server");
 
 	for (ClientSockets::iterator i = _clients.begin(); i != _clients.end(); ++i) {
 		if (SDLNet_TCP_DelSocket(_socketSet, (*i)->socket) == -1)
-			error(LOG_NET, getError());
+			Log::error(LOG_NET, getError());
 	}
 
 	SDLNet_TCP_DelSocket(_socketSet, _serverSocket);
@@ -88,7 +88,7 @@ void Network::closeClient ()
 
 	_closing = true;
 	if (isClientConnected()) {
-		info(LOG_NET, "close client");
+		Log::info(LOG_NET, "close client");
 		const DisconnectMessage msg;
 		sendToServer(msg);
 	}
@@ -101,23 +101,23 @@ bool Network::openServer (int port, IServerCallback* func)
 {
 	closeServer();
 
-	info(LOG_NET, String::format("try to bind port %i", port));
+	Log::info(LOG_NET, String::format("try to bind port %i", port));
 
 	IPaddress ip;
 	if (SDLNet_ResolveHost(&ip, nullptr, port) < 0) {
-		error(LOG_NET, getError("resolve host"));
+		Log::error(LOG_NET, getError("resolve host"));
 		return false;
 	}
 
 	// open the listen socket
 	if (!(_serverSocket = SDLNet_TCP_Open(&ip))) {
-		error(LOG_NET, getError("tcp open"));
+		Log::error(LOG_NET, getError("tcp open"));
 		return false;
 	}
 
 #ifdef NET_USE_UDP
 	if (!(_serverDatagramSocket = SDLNet_UDP_Open(port))) {
-		error(LOG_NET, getError("udp open"));
+		Log::error(LOG_NET, getError("udp open"));
 		SDLNet_TCP_Close(_serverSocket);
 		_serverSocket = nullptr;
 		return false;
@@ -125,7 +125,7 @@ bool Network::openServer (int port, IServerCallback* func)
 
 	const IPaddress address = { INADDR_BROADCAST, SDL_SwapBE16(port) };
 	if (SDLNet_UDP_Bind(_serverDatagramSocket, -1, &address) < 0) {
-		error(LOG_NET, getError("bind"));
+		Log::error(LOG_NET, getError("bind"));
 		SDLNet_TCP_Close(_serverSocket);
 		SDLNet_UDP_Close(_serverDatagramSocket);
 		_serverSocket = nullptr;
@@ -137,7 +137,7 @@ bool Network::openServer (int port, IServerCallback* func)
 #endif
 
 	if (SDLNet_TCP_AddSocket(_socketSet, _serverSocket) < 0) {
-		error(LOG_NET, getError("add socket"));
+		Log::error(LOG_NET, getError("add socket"));
 	}
 
 	_serverFunc = func;
@@ -161,9 +161,9 @@ void Network::handleDisconnectedClients ()
 		ClientPtr client = *i;
 		if (client->disconnect) {
 			i = _clients.erase(i);
-			info(LOG_NET, String::format("disconnect %i", client->num));
+			Log::info(LOG_NET, String::format("disconnect %i", client->num));
 			if (SDLNet_TCP_DelSocket(_socketSet, client->socket) == -1)
-				error(LOG_NET, getError());
+				Log::error(LOG_NET, getError());
 			_serverFunc->onDisconnect(client->num);
 		} else {
 			++i;
@@ -178,20 +178,20 @@ bool Network::openClient (const std::string& node, int port, IClientCallback* fu
 
 	IPaddress ip;
 	if (SDLNet_ResolveHost(&ip, node.c_str(), port) < 0) {
-		error(LOG_NET, getError());
+		Log::error(LOG_NET, getError());
 		func->onConnectionError();
 		return false;
 	}
 
 	// open the listen socket
 	if (!(_clientSocket = SDLNet_TCP_Open(&ip))) {
-		error(LOG_NET, getError());
+		Log::error(LOG_NET, getError());
 		func->onConnectionError();
 		return false;
 	}
 
 	if (SDLNet_TCP_AddSocket(_socketSet, _clientSocket) < 0) {
-		error(LOG_NET, getError());
+		Log::error(LOG_NET, getError());
 		func->onConnectionError();
 		return false;
 	}
@@ -219,7 +219,7 @@ void Network::shutdown ()
 	_socketSet = nullptr;
 	_bytesIn = 0;
 	_bytesOut = 0;
-	info(LOG_NET, String::format("bytes received: %i, bytes sent: %i", _bytesIn, _bytesOut));
+	Log::info(LOG_NET, String::format("bytes received: %i, bytes sent: %i", _bytesIn, _bytesOut));
 }
 
 void Network::update (uint32_t deltaTime)
@@ -233,7 +233,7 @@ void Network::update (uint32_t deltaTime)
 			const unsigned char *data = reinterpret_cast<const unsigned char *>(_serverDatagramPacket->data);
 			const ProtocolMessagePtr p = _serverFunc->onOOBData(data);
 			if (p && !sendUDP(_serverDatagramSocket, _serverDatagramPacket->address, *p))
-				error(LOG_NET, "error sending udp response");
+				Log::error(LOG_NET, "error sending udp response");
 		}
 	}
 
@@ -257,7 +257,7 @@ void Network::update (uint32_t deltaTime)
 		return;
 
 	if (deltaTime > 0 && (_time % 5000) == 0) {
-		info(LOG_NET, String::format("sent: %i - received: %i", _bytesOut, _bytesIn));
+		Log::info(LOG_NET, String::format("sent: %i - received: %i", _bytesOut, _bytesIn));
 	}
 
 	if (_serverSocket) {
@@ -268,10 +268,10 @@ void Network::update (uint32_t deltaTime)
 				IPaddress *remoteIP = SDLNet_TCP_GetPeerAddress(csd);
 				if (remoteIP) {
 					if (SDLNet_TCP_AddSocket(_socketSet, csd) < 0) {
-						error(LOG_NET, getError());
+						Log::error(LOG_NET, getError());
 						SDLNet_TCP_Close(csd);
 					} else {
-						info(LOG_NET, String::format("connect %i", _clientId));
+						Log::info(LOG_NET, String::format("connect %i", _clientId));
 						_clients.push_back(ClientPtr(new Client(csd, _clientId)));
 						_serverFunc->onConnection(_clientId);
 						_clientId++;
@@ -317,7 +317,7 @@ int Network::send (TCPsocket socket, const ByteStream &buffer)
 	const int size = buffer.getSize();
 	const int written = SDLNet_TCP_Send(socket, buffer.getBuffer(), size);
 	if (written == -1 || written != size) {
-		error(LOG_NET, getError());
+		Log::error(LOG_NET, getError());
 	} else {
 		_bytesOut += written;
 	}
@@ -334,7 +334,7 @@ int Network::recv (TCPsocket socket, ByteStream &buffer)
 	for (;;) {
 		int read = SDLNet_TCP_Recv(socket, (void*) buf, bufSize);
 		if (read <= -1) {
-			error(LOG_NET, getError());
+			Log::error(LOG_NET, getError());
 			return read;
 		}
 		if (read == 0) {
@@ -387,8 +387,8 @@ bool Network::sendUDP (UDPsocket sock, const IPaddress &address, const IProtocol
 	const size_t length = buffer.getSize();
 	ScopedPtr<UDPpacket> p(SDLNet_AllocPacket(length));
 	if (!p) {
-		error(LOG_NET, "failed to allocate packet");
-		error(LOG_NET, getError());
+		Log::error(LOG_NET, "failed to allocate packet");
+		Log::error(LOG_NET, getError());
 		return false;
 	}
 
@@ -398,8 +398,8 @@ bool Network::sendUDP (UDPsocket sock, const IPaddress &address, const IProtocol
 
 	const int numsent = SDLNet_UDP_Send(sock, -1, p);
 	if (numsent <= 0) {
-		error(LOG_NET, "failed to send packet");
-		error(LOG_NET, getError());
+		Log::error(LOG_NET, "failed to send packet");
+		Log::error(LOG_NET, getError());
 		return false;
 	}
 
@@ -415,8 +415,8 @@ Network::OOB* Network::openOOB (IClientCallback* oobCallback, int16_t port)
 #ifdef NET_USE_UDP
 	UDPsocket sd = SDLNet_UDP_Open(port);
 	if (sd == nullptr) {
-		error(LOG_NET, "failed to open udp");
-		error(LOG_NET, getError());
+		Log::error(LOG_NET, "failed to open udp");
+		Log::error(LOG_NET, getError());
 		return nullptr;
 	}
 
@@ -426,7 +426,7 @@ Network::OOB* Network::openOOB (IClientCallback* oobCallback, int16_t port)
 
 	return oob;
 #else
-	error(LOG_NET, "failed to open oob");
+	Log::error(LOG_NET, "failed to open oob");
 	return nullptr;
 #endif
 }
@@ -440,20 +440,20 @@ bool Network::broadcast (IClientCallback* oobCallback, uint8_t* buffer, size_t l
 bool Network::broadcast (const OOB* oob, uint8_t* buffer, size_t length, int port)
 {
 	if (!oob) {
-		error(LOG_NET, "could not create oob");
+		Log::error(LOG_NET, "could not create oob");
 		return false;
 	}
 
 	if (length == 0) {
-		error(LOG_NET, "could not broadcast empty message");
+		Log::error(LOG_NET, "could not broadcast empty message");
 		return false;
 	}
 
 #ifdef NET_USE_UDP
 	UDPpacket* p = SDLNet_AllocPacket(length);
 	if (!p) {
-		error(LOG_NET, "failed to allocate broadcast packet");
-		error(LOG_NET, getError());
+		Log::error(LOG_NET, "failed to allocate broadcast packet");
+		Log::error(LOG_NET, getError());
 		return false;
 	}
 
@@ -464,8 +464,8 @@ bool Network::broadcast (const OOB* oob, uint8_t* buffer, size_t length, int por
 
 	const int numsent = oob->send(p);
 	if (numsent <= 0) {
-		error(LOG_NET, "failed to send broadcast packet");
-		error(LOG_NET, getError());
+		Log::error(LOG_NET, "failed to send broadcast packet");
+		Log::error(LOG_NET, getError());
 		SDLNet_FreePacket(p);
 		return false;
 	}
@@ -475,7 +475,7 @@ bool Network::broadcast (const OOB* oob, uint8_t* buffer, size_t length, int por
 	SDLNet_FreePacket(p);
 	return true;
 #else
-	error(LOG_NET, "no udp support");
+	Log::error(LOG_NET, "no udp support");
 	return false;
 #endif
 }

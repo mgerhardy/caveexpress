@@ -4,7 +4,7 @@
 #include "common/Direction.h"
 #include "common/SoundType.h"
 #include "common/ConfigVar.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/Pointers.h"
 #include "network/IProtocolHandler.h"
 

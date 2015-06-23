@@ -11,7 +11,7 @@
 #include "client/Camera.h"
 #include "common/ConfigManager.h"
 #include "common/ServiceProvider.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/IFrontend.h"
 
 namespace cavepacker {
@@ -122,7 +122,7 @@ void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
 	const CampaignMap* campaignMap = c->getMapById(name);
 	const int ownBest = campaignMap != nullptr ? campaignMap->getFinishPoints() : 0;
 	const std::string best = map.getSetting("best", "0" /* string::toString(ownBest) */);
-	info(LOG_CLIENT, "got best points from server: " + best);
+	Log::info(LOG_CLIENT, "got best points from server: " + best);
 	_points->setOwnAndGlobalBest(ownBest, string::toInt(best));
 	_points->setLabel("0");
 

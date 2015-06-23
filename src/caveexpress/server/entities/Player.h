@@ -7,7 +7,7 @@
 #include "caveexpress/shared/constants/PlayerState.h"
 #include "common/SoundType.h"
 #include "common/ConfigVar.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/Pointers.h"
 #include "network/IProtocolHandler.h"
 

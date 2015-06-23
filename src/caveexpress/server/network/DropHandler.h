@@ -18,7 +18,7 @@ public:
 	{
 		Player* player = _map.getPlayer(clientId);
 		if (player == nullptr) {
-			error(LOG_SERVER, "drop for player with clientId " + string::toString((int)clientId) + " failed");
+			Log::error(LOG_SERVER, "drop for player with clientId " + string::toString((int)clientId) + " failed");
 			return;
 		}
 		player->drop();

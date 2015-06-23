@@ -1,7 +1,7 @@
 #include "File.h"
 #include "common/System.h"
 #include "common/Config.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include <SDL.h>
 #ifdef HAVE_SDL_RWHTTP_H
 #include <SDL_rwhttp.h>
@@ -26,7 +26,7 @@ long File::write (const unsigned char *buf, size_t len) const
 {
 	SDL_RWops *rwops = SDL_RWFromFile(_rawPath.c_str(), "wb");
 	if (!rwops) {
-		info(LOG_SYSTEM, "failed to get stream for " + _rawPath);
+		Log::info(LOG_SYSTEM, "failed to get stream for " + _rawPath);
 		return -1L;
 	}
 
@@ -34,7 +34,7 @@ long File::write (const unsigned char *buf, size_t len) const
 	while (remaining) {
 		const size_t written = SDL_RWwrite(rwops, buf, 1, remaining);
 		if (written == 0) {
-			info(LOG_SYSTEM, "failed to write to stream " + _rawPath);
+			Log::info(LOG_SYSTEM, "failed to write to stream " + _rawPath);
 			return -1L;
 		}
 

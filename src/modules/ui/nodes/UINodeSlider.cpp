@@ -1,5 +1,5 @@
 #include "UINodeSlider.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 UINodeSlider::UINodeSlider (IFrontend *frontend, float min, float max, float stepWidth) :
 		UINode(frontend), _value(0), _min(min), _max(max), _stepWidth(stepWidth)

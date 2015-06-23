@@ -13,7 +13,7 @@ set(common_SRCS
 	MapManager.cpp
 	FileSystem.cpp
 	LUA.cpp
-	Logger.cpp
+	Log.cpp
 	TimeManager.cpp
 	ExecutionTime.cpp
 	File.cpp

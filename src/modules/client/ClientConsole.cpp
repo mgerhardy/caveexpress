@@ -2,7 +2,7 @@
 #include "ui/UI.h"
 #include "common/CommandSystem.h"
 #include "common/IFrontend.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/ConfigManager.h"
 #include "common/EventHandler.h"
 #include "common/System.h"
@@ -15,13 +15,13 @@
 ClientConsole::ClientConsole () :
 		IConsole(), _padding(2), _font(DEFAULT_FONT), _frontend(nullptr)
 {
-	Logger::get().addConsole(this);
+	Log::get().addConsole(this);
 	_active = false;
 }
 
 ClientConsole::~ClientConsole ()
 {
-	Logger::get().removeConsole(this);
+	Log::get().removeConsole(this);
 	Commands.removeCommand(CMD_CL_TOGGLECONSOLE);
 }
 

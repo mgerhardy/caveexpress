@@ -1,7 +1,7 @@
 #include "TestShared.h"
 #include "common/IEventObserver.h"
 #include "network/NoNetwork.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/EntityType.h"
 #include "common/Animation.h"
 #include "common/EntityAlignment.h"

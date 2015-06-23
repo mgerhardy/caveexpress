@@ -1,6 +1,6 @@
 
 #include "MapManager.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/System.h"
 #include "common/FileSystem.h"
 #include "common/CommandSystem.h"
@@ -49,9 +49,9 @@ void IMapManager::init ()
 
 void IMapManager::listMaps ()
 {
-	info(LOG_SERVER, "Map list:");
+	Log::info(LOG_SERVER, "Map list:");
 	for (MapsConstIter i = _maps.begin(); i != _maps.end(); ++i) {
-		info(LOG_SERVER, " * " + i->first);
+		Log::info(LOG_SERVER, " * " + i->first);
 	}
 }
 
@@ -79,12 +79,12 @@ void IMapManager::loadMaps ()
 		const int baseLength = i->size() - 4;
 		const std::string& id = i->substr(0, baseLength);
 		if (_maps.find(id) != _maps.end()) {
-			error(LOG_MAP, "map with id " + id + " already exists");
+			Log::error(LOG_MAP, "map with id " + id + " already exists");
 			continue;
 		}
 		_maps[id] = new MapData(id, getName(filename, id), getStartPositions(filename));
 	}
 
-	info(LOG_MAP, String::format("loaded %i maps", static_cast<int>(_maps.size())));
+	Log::info(LOG_MAP, String::format("loaded %i maps", static_cast<int>(_maps.size())));
 }
 

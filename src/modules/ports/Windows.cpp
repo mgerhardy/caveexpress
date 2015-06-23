@@ -1,5 +1,5 @@
 #include "Windows.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "common/Application.h"
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -104,19 +104,19 @@ std::string Windows::getHomeDirectory ()
 
 	shfolder = LoadLibrary("shfolder.dll");
 	if (shfolder == nullptr) {
-		error(LOG_SYSTEM, "Unable to load SHFolder.dll");
+		Log::error(LOG_SYSTEM, "Unable to load SHFolder.dll");
 		return "";
 	}
 
 	GetFolderPath_t getFolderPath = (GetFolderPath_t) GetProcAddress(shfolder, "SHGetFolderPathA");
 	if (getFolderPath == nullptr) {
-		error(LOG_SYSTEM, "Unable to find SHGetFolderPathA in SHFolder.dll");
+		Log::error(LOG_SYSTEM, "Unable to find SHGetFolderPathA in SHFolder.dll");
 		FreeLibrary(shfolder);
 		return "";
 	}
 
 	if (!SUCCEEDED(getFolderPath(nullptr, CSIDL_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, pathBuf))) {
-		error(LOG_SYSTEM, "Unable to detect CSIDL_APPDATA");
+		Log::error(LOG_SYSTEM, "Unable to detect CSIDL_APPDATA");
 		FreeLibrary(shfolder);
 		return "";
 	}
@@ -125,7 +125,7 @@ std::string Windows::getHomeDirectory ()
 	FreeLibrary(shfolder);
 
 	if (!mkdir(path)) {
-		error(LOG_SYSTEM, String::format("Unable to create directory \"%s\"", path.c_str()));
+		Log::error(LOG_SYSTEM, String::format("Unable to create directory \"%s\"", path.c_str()));
 		return "";
 	}
 	return path;

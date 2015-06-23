@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/Logger.h"
+#include "common/Log.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,5 +1,5 @@
 #include "UINodeEntitySelector.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "ui/UI.h"
 #include "caveexpress/server/entities/EntityEmitter.h"
 #include "common/SpriteDefinition.h"

@@ -3,7 +3,7 @@
 #include "ui/nodes/IUINodeMap.h"
 #include "client/ClientMap.h"
 #include "common/ConfigManager.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 
 UINodeMapFingerControl::UINodeMapFingerControl (IFrontend *frontend, IUINodeMap *mapNode) :
 		UINode(frontend), _map(mapNode->getMap()), _finger(-1), _pressX(0), _pressY(0), _moveX(0), _moveY(0), _lastMoveX(0), _lastMoveY(0)
@@ -61,7 +61,7 @@ bool UINodeMapFingerControl::onFingerPress (int64_t finger, uint16_t x, uint16_t
 		return false;
 
 	if (isPressed()) {
-		debug(LOG_CLIENT, "pressing second finger");
+		Log::debug(LOG_CLIENT, "pressing second finger");
 		return _map.secondFinger();
 	}
 

@@ -1,5 +1,5 @@
 #include "Thread.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include <SDL.h>
 
 Thread::Thread (IRunnable* target) :
@@ -18,7 +18,7 @@ void Thread::start ()
 		_running = true;
 		_thread = SDL_CreateThread(executeThread, _name, _runnable);
 		if (_thread == nullptr) {
-			error(LOG_THREAD, String::format("failed to create thread: %s", SDL_GetError()));
+			Log::error(LOG_THREAD, String::format("failed to create thread: %s", SDL_GetError()));
 			_running = false;
 		}
 	}

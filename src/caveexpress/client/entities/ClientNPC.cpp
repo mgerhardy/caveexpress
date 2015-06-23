@@ -1,5 +1,5 @@
 #include "ClientNPC.h"
-#include "common/Logger.h"
+#include "common/Log.h"
 #include "ui/UI.h"
 #include "caveexpress/shared/constants/NPCState.h"
 
