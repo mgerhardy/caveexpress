@@ -90,7 +90,7 @@ public:
 		_lua.close();
 		_lua.init();
 		if (!_lua.load(filename)) {
-			Log::error2(LOG_MAP, "could not load map from %s", filename.c_str());
+			Log::error(LOG_MAP, "could not load map from %s", filename.c_str());
 			return id;
 		}
 		_lua.execute("getName", 1);

@@ -160,7 +160,7 @@ int IEntity::appendAnimation (const Animation& type)
 
 void IEntity::setState (int state)
 {
-	Log::debug2(LOG_SERVER, "entity state change to %i", state);
+	Log::debug(LOG_SERVER, "entity state change to %i", state);
 	_state = state;
 	_refilter = true;
 }

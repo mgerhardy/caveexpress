@@ -51,7 +51,7 @@ RandomMapContext::RandomMapContext (const std::string& name, const ThemeType& th
 				width), _mapHeight(height), _map(new SpriteDef*[_mapWidth * _mapHeight])
 {
 	_theme = &theme;
-	Log::info2(LOG_SERVER, "random map size: %i:%i", width, height);
+	Log::info(LOG_SERVER, "random map size: %i:%i", width, height);
 	_settings[msn::WIDTH] = string::toString(width);
 	_settings[msn::HEIGHT] = string::toString(height);
 
@@ -82,11 +82,11 @@ RandomMapContext::RandomMapContext (const std::string& name, const ThemeType& th
 		else if (SpriteTypes::isWindow(type))
 			_windowTiles.push_back(def);
 	}
-	Log::info2(LOG_SERVER, "%i solid tiles", (int)_solidTiles.size());
-	Log::info2(LOG_SERVER, "%i ground tiles", (int)_groundTiles.size());
-	Log::info2(LOG_SERVER, "%i background tiles", (int)_backgroundTiles.size());
-	Log::info2(LOG_SERVER, "%i window tiles", (int)_windowTiles.size());
-	Log::info2(LOG_SERVER, "%i cave tiles", (int)_caveTiles.size());
+	Log::info(LOG_SERVER, "%i solid tiles", (int)_solidTiles.size());
+	Log::info(LOG_SERVER, "%i ground tiles", (int)_groundTiles.size());
+	Log::info(LOG_SERVER, "%i background tiles", (int)_backgroundTiles.size());
+	Log::info(LOG_SERVER, "%i window tiles", (int)_windowTiles.size());
+	Log::info(LOG_SERVER, "%i cave tiles", (int)_caveTiles.size());
 }
 
 RandomMapContext::~RandomMapContext ()
@@ -148,7 +148,7 @@ bool RandomMapContext::checkFreeTiles (const SpriteDefPtr& def, randomGridCoord 
 			break;
 	}
 	if (startState == _mapWidth * _mapHeight) {
-		Log::error2(LOG_SERVER, "no free slot found");
+		Log::error(LOG_SERVER, "no free slot found");
 		return false;
 	}
 
@@ -247,7 +247,7 @@ bool RandomMapContext::addTile (const SpriteDefPtr& def, randomGridCoord x, rand
 	_definitions.push_back(mapTileDef);
 	fillMap(def, x, y);
 
-	Log::debug2(LOG_SERVER, "placed tile %s at %i:%i", def->id.c_str(), x, y);
+	Log::debug(LOG_SERVER, "placed tile %s at %i:%i", def->id.c_str(), x, y);
 
 	return true;
 }
@@ -274,7 +274,7 @@ bool RandomMapContext::addCave (const SpriteDefPtr& def, randomGridCoord x, rand
 	const CaveTileDefinition caveTileDef(static_cast<gridCoord>(x), static_cast<gridCoord>(y), def, type, delay);
 	_caveDefinitions.push_back(caveTileDef);
 	fillMap(def, x, y);
-	Log::debug2(LOG_SERVER, "placed cave %s at %i:%i", def->id.c_str(), x, y);
+	Log::debug(LOG_SERVER, "placed cave %s at %i:%i", def->id.c_str(), x, y);
 
 	return true;
 }
@@ -341,7 +341,7 @@ bool RandomMapContext::placeInitialRandomTiles ()
 				return false;
 			}
 		} else {
-			Log::info2(LOG_SERVER, "placed initial tile '%s' at %ui:%ui", def->id.c_str(), x, y);
+			Log::info(LOG_SERVER, "placed initial tile '%s' at %ui:%ui", def->id.c_str(), x, y);
 			tries = 0;
 		}
 	}
@@ -587,29 +587,29 @@ bool RandomMapContext::load (bool skipErrors)
 	resetTiles();
 
 	if (_solidTiles.size() == 0) {
-		Log::error2(LOG_SERVER, "no solid tiles available");
+		Log::error(LOG_SERVER, "no solid tiles available");
 		return false;
 	}
 
 	if (_mapWidth == 0 || _mapHeight == 0) {
-		Log::error2(LOG_SERVER, "no width or height set for the random map");
+		Log::error(LOG_SERVER, "no width or height set for the random map");
 		return false;
 	}
 
 	memset(_map, 0, sizeof(SpriteDef*) * _mapWidth * _mapHeight);
 
 	if (_randomRockTiles == 0) {
-		Log::error2(LOG_SERVER, "no initial random rock tiles");
+		Log::error(LOG_SERVER, "no initial random rock tiles");
 		return false;
 	}
 
 	if (_randomRockTiles >= _mapWidth * _mapHeight) {
-		Log::error2(LOG_SERVER, "map is too small for the initial solid tiles setting");
+		Log::error(LOG_SERVER, "map is too small for the initial solid tiles setting");
 		return false;
 	}
 
 	if (!placeInitialRandomTiles()) {
-		Log::error2(LOG_SERVER, "could not place the initial tiles");
+		Log::error(LOG_SERVER, "could not place the initial tiles");
 		return false;
 	}
 	placeTilesAroundInitialTiles();
@@ -617,14 +617,14 @@ bool RandomMapContext::load (bool skipErrors)
 	placeBridges();
 
 	if (_groundPos.empty()) {
-		Log::error2(LOG_SERVER, "no valid spots to place a cave on were found");
+		Log::error(LOG_SERVER, "no valid spots to place a cave on were found");
 		if (!skipErrors)
 			return false;
 	}
 
 	const int caves = _groundPos.empty() ? 0 : placeCaveTiles();
 	if (caves < 1) {
-		Log::error2(LOG_SERVER, "could not create random map - not enough caves were placed");
+		Log::error(LOG_SERVER, "could not create random map - not enough caves were placed");
 		if (!skipErrors)
 			return false;
 	}
@@ -632,7 +632,7 @@ bool RandomMapContext::load (bool skipErrors)
 	placeEmitterTiles();
 
 	if (_playerPos.empty()) {
-		Log::error2(LOG_SERVER, "no valid player positions found");
+		Log::error(LOG_SERVER, "no valid player positions found");
 		if (!skipErrors)
 			return false;
 	}
@@ -670,7 +670,7 @@ bool RandomMapContext::checkPassage (randomGridCoord x, randomGridCoord y, rando
 	for (int i = 0; i < directionLength; ++i) {
 		const randomGridCoord nx = x + directions[i][0] + ((directions[i][0] > 0) ? 1 - width : 0);
 		const randomGridCoord ny = y + directions[i][1] + ((directions[i][1] > 0) ? 1 - height : 0);
-		Log::debug2(LOG_SERVER, "check %i:%i with size %i:%i with %i:%i", x, y, width, height, nx, ny);
+		Log::debug(LOG_SERVER, "check %i:%i with size %i:%i with %i:%i", x, y, width, height, nx, ny);
 		if (ny >= _mapHeight || nx >= _mapWidth)
 			break;
 		if (!isFree(nx, ny))
@@ -740,7 +740,7 @@ bool RandomMapContext::getGroundDimensions (randomGridCoord x, randomGridCoord y
 	}
 
 	if (groundPos.empty()) {
-		Log::error2(LOG_SERVER, "no valid ground tiles found at %i", y);
+		Log::error(LOG_SERVER, "no valid ground tiles found at %i", y);
 		return false;
 	}
 
@@ -819,7 +819,7 @@ bool RandomMapContext::save () const
 	const unsigned char *buf = reinterpret_cast<const unsigned char *>(luaStr.c_str());
 	const std::string filename = FS.getMapsDir() + _name + ".lua";
 	if (FS.writeFile(filename, buf, luaStr.size(), true) == -1L) {
-		Log::error2(LOG_SERVER, "failed to write %s", filename.c_str());
+		Log::error(LOG_SERVER, "failed to write %s", filename.c_str());
 		return false;
 	}
 	return true;

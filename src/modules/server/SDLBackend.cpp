@@ -59,7 +59,7 @@ SDLBackend::SDLBackend () :
 
 SDLBackend::~SDLBackend ()
 {
-	Log::info2(LOG_BACKEND, "shutdown backend");
+	Log::info(LOG_BACKEND, "shutdown backend");
 	_eventHandler.removeObserver(this);
 
 	Commands.removeCommand(CMD_SCREENSHOT);
@@ -92,7 +92,7 @@ void SDLBackend::handleEvent (SDL_Event &event)
 
 	switch (event.type) {
 	case SDL_QUIT:
-		Log::info2(LOG_BACKEND, "received quit event");
+		Log::info(LOG_BACKEND, "received quit event");
 		Config.shutdown();
 		if (!System.quit()) {
 			_running = false;
@@ -110,7 +110,7 @@ void SDLBackend::handleEvent (SDL_Event &event)
 	}
 
 	if (!_running) {
-		Log::info2(LOG_BACKEND, "Quitting the game");
+		Log::info(LOG_BACKEND, "Quitting the game");
 
 		_frontend->shutdown();
 		getGame()->shutdown();
@@ -119,7 +119,7 @@ void SDLBackend::handleEvent (SDL_Event &event)
 
 void SDLBackend::handleCommandLineArguments (int argc, char **argv)
 {
-	Log::info2(LOG_CLIENT, "execute commandline");
+	Log::info(LOG_CLIENT, "execute commandline");
 	ICommand::Args args;
 	std::string command;
 	for (int i = 0; i < argc; i++) {
@@ -138,7 +138,7 @@ void SDLBackend::handleCommandLineArguments (int argc, char **argv)
 	if (!command.empty()) {
 		Commands.executeCommand(command, args);
 	}
-	Log::info2(LOG_CLIENT, "commandline handled");
+	Log::info(LOG_CLIENT, "commandline handled");
 }
 
 void SDLBackend::frameCallback (void *userdata)
@@ -179,18 +179,18 @@ void SDLBackend::resetKeyStates ()
 bool SDLBackend::handleInit() {
 	switch (_initState) {
 	case InitState::INITSTATE_CONFIG:
-		Log::info2(LOG_BACKEND, "init config");
+		Log::info(LOG_BACKEND, "init config");
 		Config.get().init(this, _argc, _argv);
 		Commands.registerCommand(CMD_QUIT, new CmdQuit());
 		_initState = InitState::INITSTATE_FRONTEND;
 		break;
 	case InitState::INITSTATE_FRONTEND:
-		Log::info2(LOG_BACKEND, "init frontend creation");
+		Log::info(LOG_BACKEND, "init frontend creation");
 		if (_dedicated) {
 			_frontend = new ConsoleFrontend(_console);
 		} else {
 			const ConfigVarPtr c = Config.getConfigVar("frontend", "sdl", true);
-			Log::info2(LOG_CLIENT, "Use frontend %s", c->getValue().c_str());
+			Log::info(LOG_CLIENT, "Use frontend %s", c->getValue().c_str());
 			SharedPtr<IConsole> clientConsole(new ClientConsole());
 #ifdef SDL_VIDEO_OPENGL
 			if (c->getValue() == "opengl")
@@ -204,11 +204,11 @@ bool SDLBackend::handleInit() {
 		_initState = InitState::INITSTATE_SDL;
 		break;
 	case InitState::INITSTATE_SDL:
-		Log::info2(LOG_BACKEND, "init sdl");
+		Log::info(LOG_BACKEND, "init sdl");
 
 		if (!SDL_WasInit(SDL_INIT_TIMER)) {
 			if (SDL_Init(SDL_INIT_TIMER) == -1) {
-				Log::info2(LOG_CLIENT, "Failed to initialize the timers: %s", SDL_GetError());
+				Log::info(LOG_CLIENT, "Failed to initialize the timers: %s", SDL_GetError());
 			}
 		}
 
@@ -222,10 +222,10 @@ bool SDLBackend::handleInit() {
 		_initState = InitState::INITSTATE_FRONTENDINIT;
 		break;
 	case InitState::INITSTATE_FRONTENDINIT: {
-		Log::info2(LOG_BACKEND, "init frontend");
+		Log::info(LOG_BACKEND, "init frontend");
 		const int frontendInit = _frontend->init(Config.getWidth(), Config.getHeight(), Config.isFullscreen(), _eventHandler);
 		if (frontendInit == -1) {
-			Log::error2(LOG_CLIENT, "Failed to initialize the frontend");
+			Log::error(LOG_CLIENT, "Failed to initialize the frontend");
 			_initState = InitState::INITSTATE_ERROR;
 			break;
 		}
@@ -233,39 +233,39 @@ bool SDLBackend::handleInit() {
 		break;
 	}
 	case InitState::INITSTATE_SERVICEPROVIDER:
-		Log::info2(LOG_BACKEND, "init the serviceprovider");
+		Log::info(LOG_BACKEND, "init the serviceprovider");
 		_serviceProvider.init(_frontend);
 		_serviceProvider.updateNetwork(_dedicated);
 		_initState = InitState::INITSTATE_SPRITE;
 		break;
 	case InitState::INITSTATE_SPRITE:
-		Log::info2(LOG_BACKEND, "init sprites");
+		Log::info(LOG_BACKEND, "init sprites");
 		SpriteDefinition::get().init(_serviceProvider.getTextureDefinition());
 		_initState = InitState::INITSTATE_GAME;
 		break;
 	case InitState::INITSTATE_GAME:
-		Log::info2(LOG_BACKEND, "init game data %s", getGame()->getName().c_str());
+		Log::info(LOG_BACKEND, "init game data %s", getGame()->getName().c_str());
 		getGame()->init(_frontend, _serviceProvider);
 		_initState = InitState::INITSTATE_SOUNDS;
 		break;
 	case InitState::INITSTATE_SOUNDS:
-		Log::info2(LOG_BACKEND, "init sounds");
+		Log::info(LOG_BACKEND, "init sounds");
 		// precache some stuff here
 		Singleton<ClientEntityRegistry>::getInstance().initSounds();
 		_initState = InitState::INITSTATE_UI;
 		break;
 	case InitState::INITSTATE_UI:
-		Log::info2(LOG_BACKEND, "init ui");
+		Log::info(LOG_BACKEND, "init ui");
 		_frontend->initUI(_serviceProvider);
 		_initState = InitState::INITSTATE_START;
 		break;
 	case InitState::INITSTATE_START:
 		handleCommandLineArguments(_argc, _argv);
-		Log::info2(LOG_BACKEND, "frontend start");
+		Log::info(LOG_BACKEND, "frontend start");
 		_frontend->onStart();
 		_initState = InitState::INITSTATE_DONE;
 
-		Log::info2(LOG_BACKEND, "initialization done");
+		Log::info(LOG_BACKEND, "initialization done");
 
 		break;
 	case InitState::INITSTATE_ERROR:
@@ -274,7 +274,7 @@ bool SDLBackend::handleInit() {
 	case InitState::INITSTATE_DONE:
 		return false;
 	}
-	Log::info2(LOG_BACKEND, "next init state: %i", (int)_initState);
+	Log::info(LOG_BACKEND, "next init state: %i", (int)_initState);
 	return true;
 }
 
@@ -347,7 +347,7 @@ void SDLBackend::mainLoop (int argc, char **argv)
 		return;
 
 	const ConfigVarPtr& fpsLimit = Config.getConfigVar("fpslimit", "60.0", true);
-	Log::info2(LOG_BACKEND, "Run the game at %f frames per second", fpsLimit->getFloatValue());
+	Log::info(LOG_BACKEND, "Run the game at %f frames per second", fpsLimit->getFloatValue());
 	double nextFrame = static_cast<double>(SDL_GetTicks());
 	while (_running) {
 		const double tick = static_cast<double>(SDL_GetTicks());
@@ -423,7 +423,7 @@ void SDLBackend::onJoystickButtonPress (uint8_t button)
 		return;
 	const std::string command = Config.getJoystickBinding(button);
 	if (command.empty()) {
-		Log::info2(LOG_SERVER, "no binding for joystick button %i", (int)button);
+		Log::info(LOG_SERVER, "no binding for joystick button %i", (int)button);
 		return;
 	}
 
@@ -461,7 +461,7 @@ void SDLBackend::onControllerButtonPress (const std::string& button)
 		return;
 	const std::string command = Config.getControllerBinding(button);
 	if (command.empty()) {
-		Log::info2(LOG_SERVER, "no binding for controller button %s", button.c_str());
+		Log::info(LOG_SERVER, "no binding for controller button %s", button.c_str());
 		return;
 	}
 
@@ -509,11 +509,11 @@ void SDLBackend::status ()
 	const std::string& map = getGame()->getMapName();
 
 	if (map.empty()) {
-		Log::info2(LOG_SERVER, "no map loaded");
+		Log::info(LOG_SERVER, "no map loaded");
 		return;
 	}
 
-	Log::info2(LOG_SERVER, "map running: %s", map.c_str());
+	Log::info(LOG_SERVER, "map running: %s", map.c_str());
 }
 
 void SDLBackend::loadMapCompleter (const std::string& input, std::vector<std::string>& matches)
@@ -529,15 +529,15 @@ void SDLBackend::loadMap (const std::string& mapName)
 	_serviceProvider.getNetwork().closeServer();
 	if (getGame()->mapLoad(mapName)) {
 		if (!_serviceProvider.getNetwork().openServer(Config.getPort(), this)) {
-			Log::error2(LOG_BACKEND, "failed to start the server");
+			Log::error(LOG_BACKEND, "failed to start the server");
 			return;
 		}
-		Log::info2(LOG_BACKEND, "connect to own server");
+		Log::info(LOG_BACKEND, "connect to own server");
 		_frontend->connect();
 		return;
 	}
 
-	Log::info2(LOG_BACKEND, "failed to load map %s", mapName.c_str());
+	Log::info(LOG_BACKEND, "failed to load map %s", mapName.c_str());
 }
 
 void SDLBackend::onData (ClientId clientId, ByteStream &data)
@@ -548,12 +548,12 @@ void SDLBackend::onData (ClientId clientId, ByteStream &data)
 		data.readShort();
 		const IProtocolMessage* msg(factory.createMsg(data));
 		if (!msg) {
-			Log::error2(LOG_SERVER, "no message for type '%i'", static_cast<int>(data.readByte()));
+			Log::error(LOG_SERVER, "no message for type '%i'", static_cast<int>(data.readByte()));
 			continue;
 		}
 		IServerProtocolHandler* handler = ProtocolHandlerRegistry::get().getServerHandler(*msg);
 		if (handler == nullptr) {
-			Log::error2(LOG_SERVER, "no server handler for message type %i", msg->getId());
+			Log::error(LOG_SERVER, "no server handler for message type %i", msg->getId());
 			continue;
 		}
 		handler->execute(clientId, *msg);
@@ -577,13 +577,13 @@ ProtocolMessagePtr SDLBackend::onOOBData (const unsigned char *data)
 
 void SDLBackend::onConnection (ClientId clientId)
 {
-	Log::info2(LOG_SERVER, "connect of client with id %i", static_cast<int>(clientId));
+	Log::info(LOG_SERVER, "connect of client with id %i", static_cast<int>(clientId));
 	getGame()->connect(clientId);
 }
 
 void SDLBackend::onDisconnect (ClientId clientId)
 {
-	Log::info2(LOG_SERVER, "disconnect of client with id %i", static_cast<int>(clientId));
+	Log::info(LOG_SERVER, "disconnect of client with id %i", static_cast<int>(clientId));
 	const GamePtr& game = getGame();
 	if (game->disconnect(clientId) == 0) {
 		if (_dedicated)

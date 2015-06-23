@@ -64,7 +64,7 @@ void Platform::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold
 			return;
 	}
 	player->setPlatform(this);
-	Log::debug2(LOG_SERVER, "player %s (%i) landed on cave %i", player->getName().c_str(), player->getID(), getID());
+	Log::debug(LOG_SERVER, "player %s (%i) landed on cave %i", player->getName().c_str(), player->getID(), getID());
 }
 
 void Platform::endContact (b2Contact* contact, IEntity* entity)
@@ -73,7 +73,7 @@ void Platform::endContact (b2Contact* contact, IEntity* entity)
 	if (entity->isPlayer()) {
 		Player *player = static_cast<Player*>(entity);
 		player->setPlatform(nullptr);
-		Log::debug2(LOG_SERVER, "player %s (%i) is no longer landed on cave %i", player->getName().c_str(), player->getID(), getID());
+		Log::debug(LOG_SERVER, "player %s (%i) is no longer landed on cave %i", player->getName().c_str(), player->getID(), getID());
 	}
 }
 

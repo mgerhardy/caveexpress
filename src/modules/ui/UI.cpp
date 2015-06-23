@@ -112,7 +112,7 @@ bool UI::initLanguage (const std::string& language)
 	int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		Log::error2(LOG_CLIENT, "could not load language %s", language.c_str());
+		Log::error(LOG_CLIENT, "could not load language %s", language.c_str());
 		return false;
 	}
 	String str(buffer, fileLen);
@@ -123,7 +123,7 @@ bool UI::initLanguage (const std::string& language)
 			continue;
 		_languageMap[tuple[0].str()] = tuple[1].str();
 	}
-	Log::info2(LOG_CLIENT, "loaded language '%s' with %i entries", language.c_str(), (int)_languageMap.size());
+	Log::info(LOG_CLIENT, "loaded language '%s' with %i entries", language.c_str(), (int)_languageMap.size());
 	return true;
 }
 
@@ -131,7 +131,7 @@ const std::string UI::translate (const std::string& in) const
 {
 	LanguageMap::const_iterator i = _languageMap.find(in);
 	if (i == _languageMap.end()) {
-		Log::error2(LOG_CLIENT, "Missing translation for: %s", in.c_str());
+		Log::error(LOG_CLIENT, "Missing translation for: %s", in.c_str());
 		return in;
 	}
 
@@ -154,16 +154,16 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 	_showCursor = Config.getConfigVar("showcursor", System.wantCursor() ? "true" : "false", true)->getBoolValue();
 	_cursor = _showCursor;
 	if (_cursor)
-		Log::info2(LOG_CLIENT, "enable cursor");
+		Log::info(LOG_CLIENT, "enable cursor");
 	else
-		Log::info2(LOG_CLIENT, "disable cursor");
+		Log::info(LOG_CLIENT, "disable cursor");
 
 	_serviceProvider = &serviceProvider;
 	_eventHandler = &eventHandler;
 	_frontend = &frontend;
 	eventHandler.registerObserver(this);
 
-	Log::info2(LOG_CLIENT, "init the texture cache with %s", serviceProvider.getTextureDefinition().getTextureSize().c_str());
+	Log::info(LOG_CLIENT, "init the texture cache with %s", serviceProvider.getTextureDefinition().getTextureSize().c_str());
 	_textureCache.init(_frontend, serviceProvider.getTextureDefinition());
 	_spriteCache.init();
 
@@ -187,14 +187,14 @@ bool UI::loadGesture (const unsigned char* data, int length)
 	const int n = SDL_LoadDollarTemplates(-1, rwops);
 	SDL_RWclose(rwops);
 	if (n == -1) {
-		Log::error2(LOG_CLIENT, "Failed to load gesture: %s", SDL_GetError());
+		Log::error(LOG_CLIENT, "Failed to load gesture: %s", SDL_GetError());
 		return false;
 	} else if (n == 0) {
-		Log::info2(LOG_CLIENT, "Could not load gesture");
+		Log::info(LOG_CLIENT, "Could not load gesture");
 		return false;
 	}
 
-	Log::info2(LOG_CLIENT, "Loaded gesture");
+	Log::info(LOG_CLIENT, "Loaded gesture");
 	return true;
 }
 
@@ -218,13 +218,13 @@ void UI::showCursor (bool show)
 {
 	// check if the system wants a cursor
 	if (!_showCursor) {
-		Log::debug2(LOG_CLIENT, "ignore show cursor call because the system does not want a cursor");
+		Log::debug(LOG_CLIENT, "ignore show cursor call because the system does not want a cursor");
 		return;
 	}
 	if (show)
-		Log::debug2(LOG_CLIENT, "show the cursor");
+		Log::debug(LOG_CLIENT, "show the cursor");
 	else
-		Log::debug2(LOG_CLIENT, "hide the cursor");
+		Log::debug(LOG_CLIENT, "hide the cursor");
 	_cursor = show;
 }
 
@@ -557,7 +557,7 @@ void UI::onJoystickButtonPress (uint8_t button)
 		if (window->isModal() || window->isFullscreen())
 			return;
 	}
-	Log::debug2(LOG_CLIENT, "joystick button %i was pressed and not handled", (int)button);
+	Log::debug(LOG_CLIENT, "joystick button %i was pressed and not handled", (int)button);
 }
 
 void UI::onMultiGesture (float theta, float dist, int32_t numFingers)
@@ -573,7 +573,7 @@ void UI::onMultiGesture (float theta, float dist, int32_t numFingers)
 		if (window->isModal() || window->isFullscreen())
 			return;
 	}
-	Log::debug2(LOG_CLIENT, "multi gesture event was not handled");
+	Log::debug(LOG_CLIENT, "multi gesture event was not handled");
 }
 
 void UI::onGesture (int64_t gestureId, float error, int32_t numFingers)
@@ -589,7 +589,7 @@ void UI::onGesture (int64_t gestureId, float error, int32_t numFingers)
 		if (window->isModal() || window->isFullscreen())
 			return;
 	}
-	Log::debug2(LOG_CLIENT, "gesture event was not handled");
+	Log::debug(LOG_CLIENT, "gesture event was not handled");
 }
 
 void UI::onGestureRecord (int64_t gestureId)
@@ -605,7 +605,7 @@ void UI::onGestureRecord (int64_t gestureId)
 		if (window->isModal() || window->isFullscreen())
 			return;
 	}
-	Log::debug2(LOG_CLIENT, "gesture record event was not handled");
+	Log::debug(LOG_CLIENT, "gesture record event was not handled");
 }
 
 void UI::onControllerButtonPress (const std::string& button)
@@ -621,7 +621,7 @@ void UI::onControllerButtonPress (const std::string& button)
 		if (window->isModal() || window->isFullscreen())
 			return;
 	}
-	Log::debug2(LOG_CLIENT, "controller button %s was pressed and not handled", button.c_str());
+	Log::debug(LOG_CLIENT, "controller button %s was pressed and not handled", button.c_str());
 }
 
 UIWindow* UI::getWindow (const std::string& windowID)
@@ -631,9 +631,9 @@ UIWindow* UI::getWindow (const std::string& windowID)
 
 void UI::printStack ()
 {
-	Log::info2(LOG_CLIENT, "UI stack");
+	Log::info(LOG_CLIENT, "UI stack");
 	for (UIStackReverseIter i = _stack.rbegin(); i != _stack.rend(); ++i) {
-		Log::info2(LOG_CLIENT, "%s", (*i)->getId().c_str());
+		Log::info(LOG_CLIENT, "%s", (*i)->getId().c_str());
 	}
 }
 
@@ -692,7 +692,7 @@ UIWindow* UI::push (const std::string& windowID)
 
 	UIWindow* window = getWindow(windowID);
 	if (!window) {
-		Log::error2(LOG_CLIENT, "could not find window '%s'", windowID.c_str());
+		Log::error(LOG_CLIENT, "could not find window '%s'", windowID.c_str());
 		return nullptr;
 	}
 
@@ -702,7 +702,7 @@ UIWindow* UI::push (const std::string& windowID)
 	if (!window->onPush())
 		return nullptr;
 
-	Log::info2(LOG_CLIENT, "push window %s", windowID.c_str());
+	Log::info(LOG_CLIENT, "push window %s", windowID.c_str());
 	System.track("pushwindow", window->getId());
 	if (!_stack.empty()) {
 		UIWindow* activeWindow = *_stack.rbegin();
@@ -751,7 +751,7 @@ void UI::pop ()
 	if (!window->onPop())
 		return;
 
-	Log::info2(LOG_CLIENT, "pop window %s", window->getId().c_str());
+	Log::info(LOG_CLIENT, "pop window %s", window->getId().c_str());
 	System.track("popwindow", window->getId());
 	_stack.pop_back();
 	_stack.back()->onActive();
@@ -774,7 +774,7 @@ void UI::popMain ()
 		UIWindow* window = *_stack.rbegin();
 		if (window->isMain())
 			break;
-		Log::info2(LOG_CLIENT, "pop window %s", window->getId().c_str());
+		Log::info(LOG_CLIENT, "pop window %s", window->getId().c_str());
 		window->onPop();
 		_stack.pop_back();
 		_stack.back()->onActive();
@@ -788,7 +788,7 @@ void UI::popMain ()
 
 void UI::popup (const std::string& text, int flags, UIPopupCallbackPtr callback)
 {
-	Log::info2(LOG_CLIENT, "push popup");
+	Log::info(LOG_CLIENT, "push popup");
 	UIWindow* popupWindow = new UIPopupWindow(_frontend, text, flags, callback);
 	if (popupWindow == nullptr)
 		return;
@@ -812,7 +812,7 @@ UINodeBar* UI::setBarValue (const std::string& window, const std::string& nodeId
 {
 	UINodeBar* node = getNode<UINodeBar>(window, nodeId);
 	if (!node) {
-		Log::error2(LOG_CLIENT, "could not get the node with the id %s from window %s", nodeId.c_str(), window.c_str());
+		Log::error(LOG_CLIENT, "could not get the node with the id %s from window %s", nodeId.c_str(), window.c_str());
 		return nullptr;
 	}
 	node->setCurrent(value);
@@ -823,7 +823,7 @@ UINodeBar* UI::setBarMax (const std::string& window, const std::string& nodeId, 
 {
 	UINodeBar* node = getNode<UINodeBar>(window, nodeId);
 	if (!node) {
-		Log::error2(LOG_CLIENT, "could not get the node with the id %s from window %s", nodeId.c_str(), window.c_str());
+		Log::error(LOG_CLIENT, "could not get the node with the id %s from window %s", nodeId.c_str(), window.c_str());
 		return nullptr;
 	}
 	node->setMax(max);

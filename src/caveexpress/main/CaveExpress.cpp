@@ -168,7 +168,7 @@ void CaveExpress::update (uint32_t deltaTime)
 	}
 
 	if (_map.handleDeadPlayers() > 0 && !_map.isActive()) {
-		Log::info2(LOG_SERVER, "reset the game state");
+		Log::info(LOG_SERVER, "reset the game state");
 		_campaignManager->reset();
 		return;
 	}
@@ -185,7 +185,7 @@ void CaveExpress::update (uint32_t deltaTime)
 		const uint32_t timePoints = pointsRate * _map.getFinishPoints();
 		const uint32_t finishPoints = timePoints + _map.getPoints();
 		const int percent = time * 100.0f / relativeRefTime;
-		Log::info2(LOG_SERVER, "seconds: %.0f, refseconds: %i, rate: %f, refpoints: %i, timePoints: %i, finishPoints: %i, percent: %i",
+		Log::info(LOG_SERVER, "seconds: %.0f, refseconds: %i, rate: %f, refpoints: %i, timePoints: %i, finishPoints: %i, percent: %i",
 						time, _map.getReferenceTime(), pointsRate, _map.getFinishPoints(), timePoints, finishPoints, percent);
 		_map.sendSound(0, SoundTypes::SOUND_MUSIC_WIN);
 		uint8_t stars = 0;
@@ -197,12 +197,12 @@ void CaveExpress::update (uint32_t deltaTime)
 			stars = 1;
 		}
 		if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, timeSeconds, stars))
-			Log::error2(LOG_SERVER, "Could not save the values for the map");
+			Log::error(LOG_SERVER, "Could not save the values for the map");
 
 		System.track("mapstate", String::format("finished: %s with %i points in %i seconds and with %i stars", _map.getName().c_str(), finishPoints, timeSeconds, stars));
 		GameEvent.finishedMap(_map.getName(), finishPoints, timeSeconds, stars);
 	} else if (!isDone && _map.isFailed()) {
-		Log::debug2(LOG_SERVER, "map failed");
+		Log::debug(LOG_SERVER, "map failed");
 		const uint32_t delay = 1000;
 		_map.restart(delay);
 	}
@@ -239,7 +239,7 @@ int CaveExpress::disconnect (ClientId clientId)
 	_connectedClients--;
 	if (_connectedClients < 0) {
 		_connectedClients = 0;
-		Log::error2(LOG_SERVER, "client counts are out of sync");
+		Log::error(LOG_SERVER, "client counts are out of sync");
 	}
 
 	return _connectedClients;
@@ -316,7 +316,7 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 			_persister = new SQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
 		}
 		if (!_persister->init()) {
-			Log::error2(LOG_SERVER, "Failed to initialize the persister");
+			Log::error(LOG_SERVER, "Failed to initialize the persister");
 		}
 	}
 	{

@@ -106,7 +106,7 @@ bool NPCFriendly::updateCollectedState ()
 		player->setCollectedNPC(nullptr);
 		const b2Vec2& targetPos = getTargetCave()->getPos();
 		const bool bonus = setArrived(targetPos);
-		Log::debug2(LOG_SERVER, "landed on target cave and (re-)spawned npc with id %i", getID());
+		Log::debug(LOG_SERVER, "landed on target cave and (re-)spawned npc with id %i", getID());
 		if (bonus) {
 			_map.addPoints(player, 20);
 			Fruit* entity = new Fruit(_map, EntityTypes::APPLE, getPos().x, getPos().y);
@@ -128,7 +128,7 @@ bool NPCFriendly::setArrived (const b2Vec2& targetPos)
 	setMoving(targetPos);
 	setState(NPCState::NPC_ARRIVED);
 	const uint32_t deltaSeconds = _time - _collectingTime;
-	Log::info2(LOG_SERVER, "took %ims to transfer the npc %i to its target cave", deltaSeconds, _id);
+	Log::info(LOG_SERVER, "took %ims to transfer the npc %i to its target cave", deltaSeconds, _id);
 	const int bonus = deltaSeconds < 4000;
 	_collectingTime = 0;
 	return bonus;

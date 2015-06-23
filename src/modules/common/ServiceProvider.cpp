@@ -18,7 +18,7 @@ ServiceProvider::ServiceProvider() :
 
 ServiceProvider::~ServiceProvider ()
 {
-	Log::info2(LOG_GENERAL, "shutting down the serviceprovider");
+	Log::info(LOG_GENERAL, "shutting down the serviceprovider");
 	if (_mapManager != nullptr)
 		delete _mapManager;
 	if (_network != nullptr)
@@ -36,17 +36,17 @@ void ServiceProvider::updateNetwork (bool network)
 
 	if (network) {
 		_currentNetwork = _network;
-		Log::info2(LOG_GENERAL, "switching to network");
+		Log::info(LOG_GENERAL, "switching to network");
 	} else {
 		_currentNetwork = _loopback;
-		Log::info2(LOG_GENERAL, "switching to loopback");
+		Log::info(LOG_GENERAL, "switching to loopback");
 	}
 	_currentNetwork->init();
 }
 
 void ServiceProvider::initTextureDefinition (IFrontend *frontend, const std::string& textureSize, IProgressCallback* progress)
 {
-	Log::info2(LOG_BACKEND, "initialize the texture definition");
+	Log::info(LOG_BACKEND, "initialize the texture definition");
 	if (_textureDefinition != nullptr)
 		delete _textureDefinition;
 	ExecutionTime e("texture definition");
@@ -81,5 +81,5 @@ void ServiceProvider::init (IFrontend *frontend)
 		if (_mapManager != nullptr)
 			_mapManager->init();
 	}
-	Log::info2(LOG_BACKEND, "initialized the serviceprovider");
+	Log::info(LOG_BACKEND, "initialized the serviceprovider");
 }

@@ -37,7 +37,7 @@ void ClientParticle::resetParticles (uint8_t maxParticles, uint32_t lifetime)
 void ClientParticle::updateParticle (int index, float x, float y, uint32_t lifetime, EntityAngle angle)
 {
 	if (index >= _maxParticles || index < 0) {
-		Log::error2(LOG_CLIENT, "invalid particle index given");
+		Log::error(LOG_CLIENT, "invalid particle index given");
 		return;
 	}
 	ParticleData& d = _particles[index];
@@ -52,7 +52,7 @@ void ClientParticle::render (IFrontend *frontend, Layer layer, int scale, float 
 {
 	const TexturePtr& texture = UI::get().loadTexture(_sprite);
 	if (!texture || !texture->isValid()) {
-		Log::error2(LOG_CLIENT, "client particle texture '%s' not found", _sprite.c_str());
+		Log::error(LOG_CLIENT, "client particle texture '%s' not found", _sprite.c_str());
 		return;
 	}
 

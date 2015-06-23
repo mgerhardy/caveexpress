@@ -29,26 +29,26 @@ void UIGestureWindow::onActive() {
 	_coords.clear();
 
 	if (!SDL_RecordGesture(-1)) {
-		Log::info2(LOG_CLIENT, "Could not start gesture recording");
+		Log::info(LOG_CLIENT, "Could not start gesture recording");
 	} else {
-		Log::info2(LOG_CLIENT, "Started gesture recording");
+		Log::info(LOG_CLIENT, "Started gesture recording");
 	}
 }
 
 bool UIGestureWindow::onGestureRecord (int64_t gestureId)
 {
-	Log::info2(LOG_CLIENT, "Save gestures");
+	Log::info(LOG_CLIENT, "Save gestures");
 	const bool retVal = UIWindow::onGestureRecord(gestureId);
 	const std::string path = FS.getAbsoluteWritePath() + "gesture-" + string::toString(gestureId);
 	SDL_RWops* rwops = SDL_RWFromFile(path.c_str(), "wb");
 	if (rwops) {
-		Log::info2(LOG_CLIENT, "Save gestures to %s", path.c_str());
+		Log::info(LOG_CLIENT, "Save gestures to %s", path.c_str());
 		if (SDL_SaveDollarTemplate(gestureId, rwops) <= 0) {
-			Log::info2(LOG_CLIENT, "Failed to save gestures to %s", path.c_str());
+			Log::info(LOG_CLIENT, "Failed to save gestures to %s", path.c_str());
 		}
 		SDL_RWclose(rwops);
 	} else {
-		Log::info2(LOG_CLIENT, "Failed to save gestures to %s", path.c_str());
+		Log::info(LOG_CLIENT, "Failed to save gestures to %s", path.c_str());
 	}
 	UI::get().pop();
 	return retVal;

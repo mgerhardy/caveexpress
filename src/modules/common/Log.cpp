@@ -97,7 +97,7 @@ void Log::vsnprint(LogLevel logLevel, LogCategory category, const char* msg, va_
 	}
 }
 
-void Log::info2 (LogCategory category, const char* msg, ...)
+void Log::info (LogCategory category, const char* msg, ...)
 {
 	va_list args;
 	va_start(args, msg);
@@ -105,7 +105,7 @@ void Log::info2 (LogCategory category, const char* msg, ...)
 	va_end(args);
 }
 
-void Log::error2 (LogCategory category, const char* msg, ...)
+void Log::error (LogCategory category, const char* msg, ...)
 {
 	va_list args;
 	va_start(args, msg);
@@ -123,7 +123,7 @@ void Log::trace (LogCategory category, const char* msg, ...)
 	va_end(args);
 }
 
-void Log::debug2 (LogCategory category, const char* msg, ...)
+void Log::debug (LogCategory category, const char* msg, ...)
 {
 	if (!Config.isDebug())
 		return;

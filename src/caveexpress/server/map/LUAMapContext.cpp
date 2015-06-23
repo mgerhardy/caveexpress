@@ -69,7 +69,7 @@ int LUAMapContext::luaAddTile (lua_State * l)
 
 	SpriteDefPtr spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(tile);
 	if (!spriteDefPtr) {
-		Log::info2(LOG_SERVER, "could not add tile: %s", tile.c_str());
+		Log::info(LOG_SERVER, "could not add tile: %s", tile.c_str());
 		ctx->_error = true;
 		return 0;
 	}
@@ -91,7 +91,7 @@ int LUAMapContext::luaAddCave (lua_State * l)
 
 	SpriteDefPtr spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(caveTile);
 	if (!spriteDefPtr) {
-		Log::info2(LOG_SERVER, "could not add cave: %s", caveTile.c_str());
+		Log::info(LOG_SERVER, "could not add cave: %s", caveTile.c_str());
 		ctx->_error = true;
 		return 0;
 	}
@@ -140,7 +140,7 @@ int LUAMapContext::luaSetSetting (lua_State * l)
 	if (key == msn::THEME) {
 		ctx->_theme = &ThemeType::getByName(value);
 		if (ctx->_theme->isNone()) {
-			Log::error2(LOG_SERVER, "invalid theme given: %s", value.c_str());
+			Log::error(LOG_SERVER, "invalid theme given: %s", value.c_str());
 			ctx->_theme = &ThemeTypes::ROCK;
 		}
 	}
@@ -154,14 +154,14 @@ bool LUAMapContext::load (bool skipErrors)
 {
 	resetTiles();
 	if (!_lua.load(FS.getMapsDir() + _name + ".lua")) {
-		Log::info2(LOG_SERVER, "could not load map lua script");
+		Log::info(LOG_SERVER, "could not load map lua script");
 		return false;
 	}
 
 	if (!_lua.execute("getName", 1))
 		return false;
 	_title = _lua.getStringFromStack();
-	Log::info2(LOG_SERVER, "Load map with title %s", _title.c_str());
+	Log::info(LOG_SERVER, "Load map with title %s", _title.c_str());
 
 	if (!_lua.execute("initMap"))
 		return false;

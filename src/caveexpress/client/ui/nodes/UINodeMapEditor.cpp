@@ -108,17 +108,17 @@ UINodeMapEditor::~UINodeMapEditor ()
 void UINodeMapEditor::loadMap (const ICommand::Args& args)
 {
 	if (args.size() != 1) {
-		Log::error2(LOG_CLIENT, "no map given");
+		Log::error(LOG_CLIENT, "no map given");
 		return;
 	}
 
 	if (args[0].empty()) {
-		Log::error2(LOG_CLIENT, "invalid map given");
+		Log::error(LOG_CLIENT, "invalid map given");
 		return;
 	}
 
 	UI::get().pushRoot(UI_WINDOW_EDITOR);
-	Log::error2(LOG_CLIENT, "map %s is loading", args[0].c_str());
+	Log::error(LOG_CLIENT, "map %s is loading", args[0].c_str());
 	load(args[0]);
 }
 
@@ -560,7 +560,7 @@ bool UINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 		break;
 	case SDLK_SPACE:
 		if (_activeSpriteDefition && _activeSpriteDefition->rotateable) {
-			Log::info2(LOG_CLIENT, "rotate %s by %i", _activeSpriteDefition->id.c_str(), _activeSpriteDefition->rotateable);
+			Log::info(LOG_CLIENT, "rotate %s by %i", _activeSpriteDefition->id.c_str(), _activeSpriteDefition->rotateable);
 			_activeSpriteAngle += _activeSpriteDefition->rotateable;
 			_activeSpriteAngle %= 360;
 		} else if (_activeEntityType != nullptr && EntityTypes::hasDirection(*_activeEntityType)) {
@@ -936,7 +936,7 @@ void UINodeMapEditor::doClear ()
 
 bool UINodeMapEditor::isDirty () const
 {
-	Log::info2(LOG_CLIENT, "%i:%i", (int)_lastSave, (int)_undoStates.size());
+	Log::info(LOG_CLIENT, "%i:%i", (int)_lastSave, (int)_undoStates.size());
 	return _lastSave != _undoStates.size();
 }
 
@@ -1037,11 +1037,11 @@ bool UINodeMapEditor::save ()
 	std::string filename = FS.getDataDir() + FS.getMapsDir() + _fileName + ".lua";
 	const size_t length = luaStr.size();
 	if (FS.writeFile(filename, buf, length, true) == -1L) {
-		Log::error2(LOG_GENERAL, "failed to write %s", filename.c_str());
+		Log::error(LOG_GENERAL, "failed to write %s", filename.c_str());
 		return false;
 	}
 
-	Log::info2(LOG_GENERAL, "wrote %s", filename.c_str());
+	Log::info(LOG_GENERAL, "wrote %s", filename.c_str());
 	_lastMap->setValue(_fileName);
 	_mapManager.loadMaps();
 	_lastSave = _undoStates.size();
@@ -1070,23 +1070,23 @@ void UINodeMapEditor::loadFromContext (ICaveMapContext& ctx)
 	setMapDimensions(mapWidth, mapHeight);
 
 	const std::vector<MapTileDefinition>& mapTiles = ctx.getMapTileDefinitions();
-	Log::info2(LOG_CLIENT, "place %i maptiles", static_cast<int>(mapTiles.size()));
+	Log::info(LOG_CLIENT, "place %i maptiles", static_cast<int>(mapTiles.size()));
 	for (std::vector<MapTileDefinition>::const_iterator i = mapTiles.begin(); i != mapTiles.end(); ++i) {
 		const SpriteType& type = i->spriteDef->type;
 		const MapEditorLayer layer = getLayer(type);
 		if (!placeTileItem(i->spriteDef, nullptr, i->x, i->y, layer, false, i->angle))
-			Log::error2(LOG_CLIENT, "could not place tile %s at %f:%f", i->spriteDef->id.c_str(), i->x, i->y);
+			Log::error(LOG_CLIENT, "could not place tile %s at %f:%f", i->spriteDef->id.c_str(), i->x, i->y);
 	}
 	const std::vector<CaveTileDefinition>& caves = ctx.getCaveTileDefinitions();
-	Log::info2(LOG_CLIENT, "place %i caves", static_cast<int>(caves.size()));
+	Log::info(LOG_CLIENT, "place %i caves", static_cast<int>(caves.size()));
 	for (std::vector<CaveTileDefinition>::const_iterator i = caves.begin(); i != caves.end(); ++i) {
 		const SpriteType& type = i->spriteDef->type;
 		const MapEditorLayer layer = getLayer(type);
 		if (!placeCave(i->spriteDef, i->type, i->x, i->y, layer, i->delay, false))
-			Log::error2(LOG_CLIENT, "could not place cave %s at %i:%i", i->spriteDef->id.c_str(), (int)i->x, (int)i->y);
+			Log::error(LOG_CLIENT, "could not place cave %s at %i:%i", i->spriteDef->id.c_str(), (int)i->x, (int)i->y);
 	}
 	const std::vector<EmitterDefinition>& emitters = ctx.getEmitterDefinitions();
-	Log::info2(LOG_CLIENT, "place %i emitters", static_cast<int>(emitters.size()));
+	Log::info(LOG_CLIENT, "place %i emitters", static_cast<int>(emitters.size()));
 	for (std::vector<EmitterDefinition>::const_iterator i = emitters.begin(); i != emitters.end(); ++i) {
 		const EntityType& entityType = *i->type;
 		const gridCoord x = i->x;
@@ -1101,11 +1101,11 @@ void UINodeMapEditor::loadFromContext (ICaveMapContext& ctx)
 					Animations::ANIMATION_IDLE;
 		const SpriteDefPtr def = SpriteDefinition::get().getFromEntityType(entityType, animation);
 		if (!def) {
-			Log::error2(LOG_CLIENT, "could not get the sprite definition for the entity type: %s", entityType.name.c_str());
+			Log::error(LOG_CLIENT, "could not get the sprite definition for the entity type: %s", entityType.name.c_str());
 			continue;
 		}
 		if (!placeEmitter(def, &entityType, x, y, amount, delay, false, s.getFloat(EMITTER_ANGLE), i->settings))
-			Log::error2(LOG_CLIENT, "could not place emitter %s at %f:%f", i->type->name.c_str(), x, y);
+			Log::error(LOG_CLIENT, "could not place emitter %s at %f:%f", i->type->name.c_str(), x, y);
 	}
 }
 
@@ -1132,7 +1132,7 @@ void UINodeMapEditor::loadLast ()
 
 void UINodeMapEditor::load (const std::string& mapName)
 {
-	Log::info2(LOG_CLIENT, "mapname: %s", mapName.c_str());
+	Log::info(LOG_CLIENT, "mapname: %s", mapName.c_str());
 	{
 		// we need this scoped because of the undo dtor
 		Undo();

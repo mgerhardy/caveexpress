@@ -87,10 +87,10 @@ void CaveExpressClientMap::setCaveNumber (uint16_t id, uint8_t number)
 {
 	if (number == 0)
 		return;
-	Log::debug2(LOG_CLIENT, "set cave for %i to %i", id, number);
+	Log::debug(LOG_CLIENT, "set cave for %i to %i", id, number);
 	ClientEntityPtr e = getEntity(id);
 	if (!e) {
-		Log::error2(LOG_CLIENT, "no cave entity with the id %i found", id);
+		Log::error(LOG_CLIENT, "no cave entity with the id %i found", id);
 		return;
 	}
 	const char first = number / 10 + '0';
@@ -103,7 +103,7 @@ void CaveExpressClientMap::setCaveState (uint16_t id, bool state)
 {
 	ClientEntityPtr e = getEntity(id);
 	if (!e) {
-		Log::error2(LOG_CLIENT, "no entity with the id %i found in setCaveState", id);
+		Log::error(LOG_CLIENT, "no entity with the id %i found in setCaveState", id);
 		return;
 	}
 
@@ -123,7 +123,7 @@ void CaveExpressClientMap::couldNotFindEntity (const std::string& prefix, uint16
 		const ClientEntityPtr e = i->second;
 		if (EntityTypes::isMapTile(e->getType()))
 			continue;
-		Log::info2(LOG_CLIENT, "id: %i, type: %s", e->getID(), e->getType().name.c_str());
+		Log::info(LOG_CLIENT, "id: %i, type: %s", e->getID(), e->getType().name.c_str());
 	}
 }
 

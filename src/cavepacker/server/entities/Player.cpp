@@ -37,7 +37,7 @@ bool Player::undo ()
 	const int targetCol = origCol + xPlayer;
 	const int targetRow = origRow + yPlayer;
 	if (!setPos(targetCol, targetRow)) {
-		Log::debug2(LOG_SERVER, "failed to undo a move of the player");
+		Log::debug(LOG_SERVER, "failed to undo a move of the player");
 		return false;
 	}
 	// we moved a package with this step

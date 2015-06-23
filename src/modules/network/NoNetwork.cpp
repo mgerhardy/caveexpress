@@ -33,7 +33,7 @@ void NoNetwork::update (uint32_t deltaTime)
 
 bool NoNetwork::openServer (int port, IServerCallback* func)
 {
-	Log::info2(LOG_NET, "open server on port %i", port);
+	Log::info(LOG_NET, "open server on port %i", port);
 	_serverFunc = func;
 	_server = true;
 	return true;
@@ -62,7 +62,7 @@ void NoNetwork::closeServer ()
 	_serverQueue.clear();
 	_serverQueue.reserve(64);
 
-	Log::info2(LOG_NET, "close server");
+	Log::info(LOG_NET, "close server");
 	_server = false;
 	_serverFunc = nullptr;
 }
@@ -71,7 +71,7 @@ void NoNetwork::disconnectClientFromServer (ClientId clientId)
 {
 	if (!isClientConnected())
 		return;
-	Log::info2(LOG_NET, "disconnect client");
+	Log::info(LOG_NET, "disconnect client");
 }
 
 bool NoNetwork::isServer () const
@@ -86,7 +86,7 @@ bool NoNetwork::isClient () const
 
 void NoNetwork::init ()
 {
-	Log::info2(LOG_NET, "init the network layer (local)");
+	Log::info(LOG_NET, "init the network layer (local)");
 }
 
 bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* func)
@@ -97,7 +97,7 @@ bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* 
 	if (!isServer())
 		return false;
 
-	Log::info2(LOG_NET, "connect to %s:%i", node.c_str(), port);
+	Log::info(LOG_NET, "connect to %s:%i", node.c_str(), port);
 	closeClient();
 	_clientFunc = func;
 	assert(func);
@@ -108,7 +108,7 @@ bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* 
 	_serverQueue.reserve(64);
 
 	if (_clientFunc != nullptr && !_connected) {
-		Log::info2(LOG_NET, "connect %i", defaultClientId);
+		Log::info(LOG_NET, "connect %i", defaultClientId);
 		if (_serverFunc)
 			_serverFunc->onConnection(defaultClientId);
 		_connected = true;
@@ -133,7 +133,7 @@ void NoNetwork::closeClient ()
 	if (!isClientConnected())
 		return;
 
-	Log::info2(LOG_NET, "close client");
+	Log::info(LOG_NET, "close client");
 	const DisconnectMessage msg;
 	sendToServer(msg);
 	_clientFunc = nullptr;
@@ -156,6 +156,6 @@ bool NoNetwork::isClientConnected ()
 
 bool NoNetwork::broadcast (IClientCallback* oobCallback, uint8_t* buffer, size_t length, int port)
 {
-	Log::error2(LOG_NET, "local network doesn't support broadcasting");
+	Log::error(LOG_NET, "local network doesn't support broadcasting");
 	return false;
 }

@@ -39,7 +39,7 @@ void ConfigManager::setBindingsSpace (BindingSpace bindingSpace)
 void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc, char **argv)
 {
 	_persister = new ConfigPersisterSQL();
-	Log::info2(LOG_CONFIG, "init configmanager");
+	Log::info(LOG_CONFIG, "init configmanager");
 
 	_persister->init();
 
@@ -47,20 +47,20 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 
 	LUA lua;
 
-	Log::info2(LOG_CONFIG, "load config lua file");
+	Log::info(LOG_CONFIG, "load config lua file");
 	const bool success = lua.load("config.lua");
 	if (!success) {
-		Log::error2(LOG_CONFIG, "could not load config");
+		Log::error(LOG_CONFIG, "could not load config");
 	}
 
 	if (success) {
-		Log::info2(LOG_CONFIG, "load config values");
+		Log::info(LOG_CONFIG, "load config values");
 		getKeyValueMap(lua, _configVarMap, "settings");
-		Log::info2(LOG_CONFIG, "load keybindings");
+		Log::info(LOG_CONFIG, "load keybindings");
 		getBindingMap(lua, _keybindings, KEY_CONFIG_KEYBINDINGS, KEYBOARD);
-		Log::info2(LOG_CONFIG, "load controller bindings");
+		Log::info(LOG_CONFIG, "load controller bindings");
 		getBindingMap(lua, _controllerBindings, KEY_CONFIG_CONTROLLERBINDINGS, CONTROLLER);
-		Log::info2(LOG_CONFIG, "load joystick bindings");
+		Log::info(LOG_CONFIG, "load joystick bindings");
 		getBindingMap(lua, _joystickBindings, KEY_CONFIG_JOYSTICKBINDINGS, JOYSTICK);
 	}
 	_language = getConfigValue(_configVarMap, "language", System.getLanguage());
@@ -110,16 +110,16 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 		getConfigVar(*i);
 	}
 	for (ConfigVarsMap::iterator i = _configVars.begin(); i != _configVars.end(); ++i) {
-		Log::info2(LOG_CONFIG, "'%s' with value '%s'", i->first.c_str(), i->second->getValue().c_str());
+		Log::info(LOG_CONFIG, "'%s' with value '%s'", i->first.c_str(), i->second->getValue().c_str());
 	}
 
 	memset(&_debugRendererData, 0, sizeof(_debugRendererData));
 
-	Log::info2(LOG_CONFIG, "mouse grab enabled: %s", _grabMouse->getValue().c_str());
-	Log::info2(LOG_CONFIG, "  joystick enabled: %s", _joystick->getValue().c_str());
-	Log::info2(LOG_CONFIG, "    shader enabled: %s", _shader->getValue().c_str());
-	Log::info2(LOG_CONFIG, "     sound enabled: %s", _soundEnabled->getValue().c_str());
-	Log::info2(LOG_CONFIG, "     debug enabled: %s", _debug->getValue().c_str());
+	Log::info(LOG_CONFIG, "mouse grab enabled: %s", _grabMouse->getValue().c_str());
+	Log::info(LOG_CONFIG, "  joystick enabled: %s", _joystick->getValue().c_str());
+	Log::info(LOG_CONFIG, "    shader enabled: %s", _shader->getValue().c_str());
+	Log::info(LOG_CONFIG, "     sound enabled: %s", _soundEnabled->getValue().c_str());
+	Log::info(LOG_CONFIG, "     debug enabled: %s", _debug->getValue().c_str());
 
 	CommandSystem::get().registerCommand(CMD_SETVAR, bindFunction(ConfigManager, setConfig));
 	CommandSystem::get().registerCommand(CMD_LISTVARS, bindFunction(ConfigManager, listConfigVariables));
@@ -283,12 +283,12 @@ void ConfigManager::listConfigVariables (const ICommand::Args& args)
 			if (!tmp.matches(i->first))
 				continue;
 			const ConfigVarPtr& c = i->second;
-			Log::info2(LOG_CONFIG, "%s %s", c->getName().c_str(), c->getValue().c_str());
+			Log::info(LOG_CONFIG, "%s %s", c->getName().c_str(), c->getValue().c_str());
 		}
 	} else {
 		for (ConfigVarsMapConstIter i = _configVars.begin(); i != _configVars.end(); ++i) {
 			const ConfigVarPtr& c = i->second;
-			Log::info2(LOG_CONFIG, "%s %s", c->getName().c_str(), c->getValue().c_str());
+			Log::info(LOG_CONFIG, "%s %s", c->getName().c_str(), c->getValue().c_str());
 		}
 	}
 }
@@ -296,11 +296,11 @@ void ConfigManager::listConfigVariables (const ICommand::Args& args)
 void ConfigManager::setConfig (const ICommand::Args& args)
 {
 	if (args.size() != 2) {
-		Log::error2(LOG_CONFIG, "parameters: the config key");
+		Log::error(LOG_CONFIG, "parameters: the config key");
 		return;
 	}
 
-	Log::info2(LOG_CONFIG, "set %s to %s", args[0].c_str(), args[1].c_str());
+	Log::info(LOG_CONFIG, "set %s to %s", args[0].c_str(), args[1].c_str());
 
 	ConfigVarPtr p = getConfigVar(args[0]);
 	p->setValue(args[1]);
@@ -331,7 +331,7 @@ int ConfigManager::mapKey (const std::string& name)
 
 void ConfigManager::shutdown ()
 {
-	Log::info2(LOG_CONFIG, "shutdown config manager");
+	Log::info(LOG_CONFIG, "shutdown config manager");
 	_persister->save(_configVars);
 }
 
@@ -366,9 +366,9 @@ ConfigVarPtr ConfigManager::getConfigValue (KeyValueMap &map, const std::string&
 		val = defaultValue;
 
 	if (!savedValue.empty())
-		Log::info2(LOG_CONFIG, "use stored value '%s' for key '%s'", val.c_str(), name.c_str());
+		Log::info(LOG_CONFIG, "use stored value '%s' for key '%s'", val.c_str(), name.c_str());
 	else
-		Log::info2(LOG_CONFIG, "use value '%s' for key '%s'", val.c_str(), name.c_str());
+		Log::info(LOG_CONFIG, "use value '%s' for key '%s'", val.c_str(), name.c_str());
 	const ConfigVarPtr& p = getConfigVar(name, val, true, flags);
 	return p;
 }

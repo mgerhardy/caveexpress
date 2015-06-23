@@ -84,9 +84,9 @@ bool UINodeMapControl::onJoystickMotion (bool horizontal, int value)
 	}
 
 	if (horizontal)
-		Log::info2(LOG_CLIENT, "h joystick movement: %i", value);
+		Log::info(LOG_CLIENT, "h joystick movement: %i", value);
 	else
-		Log::info2(LOG_CLIENT, "v joystick movement: %i", value);
+		Log::info(LOG_CLIENT, "v joystick movement: %i", value);
 
 	const int delta = 8000;
 	if (horizontal) {

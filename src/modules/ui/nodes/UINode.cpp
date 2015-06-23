@@ -213,7 +213,7 @@ void UINode::displayText (const std::string& text, uint32_t delayMillis, float x
 		i->delayMillis = delayMillis;
 		return;
 	}
-	Log::info2(LOG_GENERAL, "Display text '%s' for %ui ms", text.c_str(), delayMillis);
+	Log::info(LOG_GENERAL, "Display text '%s' for %ui ms", text.c_str(), delayMillis);
 	const NodeCoord c(x, y);
 	const BitmapFontPtr& font = getFont(HUGE_FONT);
 	_texts.push_back(UINodeDelayedText(text, delayMillis, c, font));
@@ -740,7 +740,7 @@ void UINode::addFocus (int32_t x, int32_t y)
 	if (_focus)
 		return;
 	_focus = true;
-	Log::debug2(LOG_CLIENT, "focus for %s", getId().c_str());
+	Log::debug(LOG_CLIENT, "focus for %s", getId().c_str());
 	for (Listeners::iterator i = _listeners.begin(); i != _listeners.end(); ++i) {
 		(*i)->onAddFocus();
 	}
@@ -752,7 +752,7 @@ void UINode::removeFocus ()
 {
 	if (!_focus)
 		return;
-	Log::debug2(LOG_CLIENT, "remove focus for %s", getId().c_str());
+	Log::debug(LOG_CLIENT, "remove focus for %s", getId().c_str());
 	_focus = false;
 	_focusMouseX = -1;
 	_focusMouseY = -1;

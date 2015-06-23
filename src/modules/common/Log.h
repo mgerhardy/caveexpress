@@ -56,8 +56,8 @@ public:
 	void removeConsole (IConsole* console);
 
 	static void trace(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
-	static void debug2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
-	static void info2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
+	static void debug(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
+	static void info(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
 	static void warn(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
-	static void error2(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
+	static void error(LogCategory category, const char* msg, ...) __attribute__((format(printf, 2, 3)));
 };

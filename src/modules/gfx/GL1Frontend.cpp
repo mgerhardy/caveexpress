@@ -83,12 +83,12 @@ void GL1Frontend::disableScissor ()
 void GL1Frontend::initRenderer ()
 {
 #ifdef SDL_VIDEO_OPENGL
-	Log::info2(LOG_CLIENT, "init opengl renderer with shaders: %s", ConfigManager::get().getConfigVar("shader")->getValue().c_str());
+	Log::info(LOG_CLIENT, "init opengl renderer with shaders: %s", ConfigManager::get().getConfigVar("shader")->getValue().c_str());
 
 	_context = SDL_GL_CreateContext(_window);
 
 	glGetIntegerv(GL_MAX_TEXTURE_UNITS, &_maxTextureUnits);
-	Log::info2(LOG_CLIENT, "max texture units: %i", _maxTextureUnits);
+	Log::info(LOG_CLIENT, "max texture units: %i", _maxTextureUnits);
 	GL_checkError();
 
 	_maxTextureUnits = clamp(_maxTextureUnits, 1, MAX_GL_TEXUNITS);
@@ -302,13 +302,13 @@ bool GL1Frontend::loadTexture (Texture *texture, const std::string& filename)
 	const std::string file = FS.getFile(FS.getPicsDir() + filename + ".png")->getName();
 	SDL_RWops *src = FS.createRWops(file);
 	if (src == nullptr) {
-		Log::error2(LOG_CLIENT, "could not load the file: %s", file.c_str());
+		Log::error(LOG_CLIENT, "could not load the file: %s", file.c_str());
 		return false;
 	}
 	SDL_Surface *surface = IMG_Load_RW(src, 1);
 	if (!surface) {
 		sdlCheckError();
-		Log::error2(LOG_CLIENT, "could not load the texture: %s", file.c_str());
+		Log::error(LOG_CLIENT, "could not load the texture: %s", file.c_str());
 		return false;
 	}
 

@@ -83,7 +83,7 @@ std::string Map::getSolution() const
 {
 	const FilePtr& filePtr = FS.getFile(FS.getMapsDir() + _name + ".sol");
 	if (!filePtr) {
-		Log::info2(LOG_SERVER, "no solution file found for %s", _name.c_str());
+		Log::info(LOG_SERVER, "no solution file found for %s", _name.c_str());
 		return "";
 	}
 
@@ -91,7 +91,7 @@ std::string Map::getSolution() const
 	const int fileLen = filePtr->read((void **) &buffer);
 	ScopedArrayPtr<char> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		Log::error2(LOG_SERVER, "solution file '%s' can't get loaded", filePtr->getName().c_str());
+		Log::error(LOG_SERVER, "solution file '%s' can't get loaded", filePtr->getName().c_str());
 		return "";
 	}
 
@@ -108,7 +108,7 @@ std::string Map::getSolution() const
 		}
 		const int n = string::toInt(digit);
 		if (i == solution.end()) {
-			Log::error2(LOG_SERVER, "invalid rle encoded solution found");
+			Log::error(LOG_SERVER, "invalid rle encoded solution found");
 			break;
 		}
 		if (*i != '(') {
@@ -161,7 +161,7 @@ void Map::triggerRestart ()
 	if (!_serviceProvider->getNetwork().isServer())
 		return;
 
-	Log::info2(LOG_MAP, "trigger restart");
+	Log::info(LOG_MAP, "trigger restart");
 	Commands.executeCommandLine(CMD_MAP_START " " + getName());
 }
 
@@ -197,7 +197,7 @@ Player* Map::getPlayer (ClientId clientId)
 		}
 	}
 
-	Log::error2(LOG_MAP, "no player found for the client id %i", clientId);
+	Log::error(LOG_MAP, "no player found for the client id %i", clientId);
 	return nullptr;
 }
 
@@ -218,7 +218,7 @@ bool Map::isDone () const
 void Map::increaseMoves ()
 {
 	++_moves;
-	Log::debug2(LOG_SERVER, "moved fields: %i", _moves);
+	Log::debug(LOG_SERVER, "moved fields: %i", _moves);
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
 }
 
@@ -234,7 +234,7 @@ void Map::undo (Player* player)
 		return;
 
 	--_moves;
-	Log::debug2(LOG_SERVER, "moved fields after undo: %i", _moves);
+	Log::debug(LOG_SERVER, "moved fields after undo: %i", _moves);
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
 }
 
@@ -242,7 +242,7 @@ bool Map::undoPackage (int col, int row, int targetCol, int targetRow)
 {
 	MapTile* package = getPackage(col, row);
 	if (package != nullptr) {
-		Log::info2(LOG_SERVER, "move package back");
+		Log::info(LOG_SERVER, "move package back");
 		rebuildField();
 		const int origCol = package->getCol();
 		const int origRow = package->getRow();
@@ -265,7 +265,7 @@ bool Map::undoPackage (int col, int row, int targetCol, int targetRow)
 		--_pushes;
 		return true;
 	}
-	Log::info2(LOG_SERVER, "don't move package back");
+	Log::info(LOG_SERVER, "don't move package back");
 	return false;
 }
 
@@ -282,7 +282,7 @@ bool Map::movePlayer (Player* player, char step)
 	int x;
 	int y;
 	getXY(step, x, y);
-	Log::debug2(LOG_SERVER, "move player %i:%i (current: %i:%i)", x, y, player->getCol(), player->getRow());
+	Log::debug(LOG_SERVER, "move player %i:%i (current: %i:%i)", x, y, player->getCol(), player->getRow());
 	// move player and move touching packages
 	const int targetCol = player->getCol() + x;
 	const int targetRow = player->getRow() + y;
@@ -291,28 +291,28 @@ bool Map::movePlayer (Player* player, char step)
 		const int pCol = targetCol + x;
 		const int pRow = targetRow + y;
 		if (!isFree(pCol, pRow)) {
-			Log::debug2(LOG_SERVER, "can't move here - can't move package. target field is blocked");
+			Log::debug(LOG_SERVER, "can't move here - can't move package. target field is blocked");
 			return false;
 		}
 		if (!package->setPos(pCol, pRow)) {
-			Log::debug2(LOG_SERVER, "failed to move the package - thus can't move the player");
+			Log::debug(LOG_SERVER, "failed to move the package - thus can't move the player");
 			return false;
 		}
-		Log::debug2(LOG_SERVER, "moved package %i", package->getID());
+		Log::debug(LOG_SERVER, "moved package %i", package->getID());
 		increasePushes();
 		rebuildField();
 		if (isTarget(pCol, pRow)) {
 			package->setState(CavePackerEntityStates::DELIVERED);
-			Log::debug2(LOG_SERVER, "mark package as delivered %i", package->getID());
+			Log::debug(LOG_SERVER, "mark package as delivered %i", package->getID());
 		} else if (package->getState() == CavePackerEntityStates::DELIVERED) {
-			Log::debug2(LOG_SERVER, "reset package state %i", package->getID());
+			Log::debug(LOG_SERVER, "reset package state %i", package->getID());
 			package->setState(CavePackerEntityStates::NONE);
 		}
 		// sokoban standard - if a package was moved, the move char is uppercase
 		step = toupper(step);
 	}
 	if (!player->setPos(targetCol, targetRow)) {
-		Log::debug2(LOG_SERVER, "failed to move the player");
+		Log::debug(LOG_SERVER, "failed to move the player");
 		return false;
 	}
 
@@ -343,7 +343,7 @@ void Map::restart (uint32_t delay)
 	if (_restartDue > 0)
 		return;
 
-	Log::info2(LOG_MAP, "trigger map restart");
+	Log::info(LOG_MAP, "trigger map restart");
 	_restartDue = _time + delay;
 	const MapRestartMessage msg(delay);
 	_serviceProvider->getNetwork().sendToAllClients(msg);
@@ -358,7 +358,7 @@ void Map::resetCurrentMap ()
 	if (!_name.empty()) {
 		const CloseMapMessage msg;
 		_serviceProvider->getNetwork().sendToAllClients(msg);
-		Log::info2(LOG_MAP, "reset map: %s", _name.c_str());
+		Log::info(LOG_MAP, "reset map: %s", _name.c_str());
 	}
 	_field.clear();
 	_state.clear();
@@ -373,7 +373,7 @@ void Map::resetCurrentMap ()
 	_time = 0;
 	_entityRemovalAllowed = true;
 	if (!_name.empty())
-		Log::info2(LOG_MAP, "* clear map");
+		Log::info(LOG_MAP, "* clear map");
 
 	{ // now free the allocated memory
 		for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
@@ -388,7 +388,7 @@ void Map::resetCurrentMap ()
 		_players.clear();
 		_players.reserve(MAX_CLIENTS);
 		if (!_name.empty())
-			Log::info2(LOG_MAP, "* removed allocated memory");
+			Log::info(LOG_MAP, "* removed allocated memory");
 	}
 
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
@@ -398,7 +398,7 @@ void Map::resetCurrentMap ()
 	_playersWaitingForSpawn.reserve(MAX_CLIENTS);
 
 	if (!_name.empty())
-		Log::info2(LOG_MAP, "done with resetting: %s", _name.c_str());
+		Log::info(LOG_MAP, "done with resetting: %s", _name.c_str());
 	_name.clear();
 }
 
@@ -428,14 +428,14 @@ bool Map::load (const std::string& name)
 	resetCurrentMap();
 
 	if (name.empty()) {
-		Log::info2(LOG_MAP, "no map name given");
+		Log::info(LOG_MAP, "no map name given");
 		return false;
 	}
 
-	Log::info2(LOG_MAP, "load map %s", name.c_str());
+	Log::info(LOG_MAP, "load map %s", name.c_str());
 
 	if (!ctx->load(false)) {
-		Log::error2(LOG_MAP, "failed to load the map %s", name.c_str());
+		Log::error(LOG_MAP, "failed to load the map %s", name.c_str());
 		return false;
 	}
 
@@ -449,24 +449,24 @@ bool Map::load (const std::string& name)
 	_solution = getSolution();
 	const std::string solutionSteps = string::toString(_solution.length());
 	_settings.insert(std::make_pair("best", solutionSteps));
-	Log::info2(LOG_MAP, "Solution has %s steps", solutionSteps.c_str());
+	Log::info(LOG_MAP, "Solution has %s steps", solutionSteps.c_str());
 
 	if (_width <= 0 || _height <= 0) {
-		Log::error2(LOG_MAP, "invalid map dimensions given");
+		Log::error(LOG_MAP, "invalid map dimensions given");
 		return false;
 	}
 
 	const std::vector<MapTileDefinition>& mapTileList = ctx->getMapTileDefinitions();
 	for (std::vector<MapTileDefinition>::const_iterator i = mapTileList.begin(); i != mapTileList.end(); ++i) {
 		const SpriteType& t = i->spriteDef->type;
-		Log::info2(LOG_MAP, "sprite type: %s, %s", t.name.c_str(), i->spriteDef->id.c_str());
+		Log::info(LOG_MAP, "sprite type: %s, %s", t.name.c_str(), i->spriteDef->id.c_str());
 		MapTile *mapTile = new MapTile(*this, i->x, i->y, getEntityTypeForSpriteType(t));
 		mapTile->setSpriteID(i->spriteDef->id);
 		mapTile->setAngle(randBetweenf(-0.1, 0.1f));
 		loadEntity(mapTile);
 	}
 
-	Log::info2(LOG_MAP, "map loading done with %i tiles", (int)mapTileList.size());
+	Log::info(LOG_MAP, "map loading done with %i tiles", (int)mapTileList.size());
 
 	ctx->onMapLoaded();
 
@@ -485,16 +485,16 @@ bool Map::spawnPlayer (Player* player)
 	const int startPosIdx = _players.size();
 	int col, row;
 	if (!getStartPosition(startPosIdx, col, row)) {
-		Log::error2(LOG_SERVER, "no player position for index %i", startPosIdx);
+		Log::error(LOG_SERVER, "no player position for index %i", startPosIdx);
 		return false;
 	}
 	if (!player->setPos(col, row)) {
-		Log::error2(LOG_SERVER, "failed to set the player position to %i:%i", col, row);
+		Log::error(LOG_SERVER, "failed to set the player position to %i:%i", col, row);
 		return false;
 	}
 	player->onSpawn();
 	addEntity(0, *player);
-	Log::info2(LOG_SERVER, "spawned player %s", player->toString().c_str());
+	Log::info(LOG_SERVER, "spawned player %s", player->toString().c_str());
 	_players.push_back(player);
 	return true;
 }
@@ -531,7 +531,7 @@ std::string Map::getMapString() const
 void Map::printMap ()
 {
 	const std::string& mapString = getMapString();
-	Log::info2(LOG_CLIENT, "\n%s", mapString.c_str());
+	Log::info(LOG_CLIENT, "\n%s", mapString.c_str());
 }
 
 void Map::startMap ()
@@ -576,12 +576,12 @@ bool Map::isFree (int col, int row)
 	StateMapConstIter i = _state.find(INDEX(col, row));
 	// not part of the map - thus, not free
 	if (i == _state.end()) {
-		Log::debug2(LOG_MAP, "col: %i, row: %i is not part of the map", col, row);
+		Log::debug(LOG_MAP, "col: %i, row: %i is not part of the map", col, row);
 		return false;
 	}
 
 	const char c = i->second;
-	Log::debug2(LOG_MAP, "col: %i, row: %i is of type '%c'", col, row, c);
+	Log::debug(LOG_MAP, "col: %i, row: %i is of type '%c'", col, row, c);
 	return c == Sokoban::GROUND || c == Sokoban::TARGET;
 }
 
@@ -615,7 +615,7 @@ bool Map::initPlayer (Player* player)
 
 	INetwork& network = _serviceProvider->getNetwork();
 	const ClientId clientId = player->getClientId();
-	Log::info2(LOG_SERVER, "init player %s", player->toString().c_str());
+	Log::info(LOG_SERVER, "init player %s", player->toString().c_str());
 	const MapSettingsMessage mapSettingsMsg(_settings, _startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);
 
@@ -636,11 +636,11 @@ void Map::printPlayersList () const
 {
 	for (PlayerListConstIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		const std::string& name = (*i)->getName();
-		Log::info2(LOG_SERVER, "* %s (waiting)", name.c_str());
+		Log::info(LOG_SERVER, "* %s (waiting)", name.c_str());
 	}
 	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
 		const std::string& name = (*i)->getName();
-		Log::info2(LOG_SERVER, "* %s (spawned)", name.c_str());
+		Log::info(LOG_SERVER, "* %s (spawned)", name.c_str());
 	}
 }
 
@@ -784,7 +784,7 @@ bool Map::removePlayer (ClientId clientId)
 		_players.erase(i);
 		return true;
 	}
-	Log::error2(LOG_MAP, "could not find the player with the clientId %i", clientId);
+	Log::error(LOG_MAP, "could not find the player with the clientId %i", clientId);
 	return false;
 }
 
@@ -821,7 +821,7 @@ void Map::autoStart () {
 	// not enough players connected yet
 	if (_playersWaitingForSpawn.size() < _startPositions.size())
 		return;
-	Log::info2(LOG_SERVER, "starting the map");
+	Log::info(LOG_SERVER, "starting the map");
 	startMap();
 }
 
@@ -841,7 +841,7 @@ void Map::update (uint32_t deltaTime)
 
 	if (_restartDue > 0 && _restartDue <= _time) {
 		const std::string currentName = getName();
-		Log::info2(LOG_MAP, "restarting map %s", currentName.c_str());
+		Log::info(LOG_MAP, "restarting map %s", currentName.c_str());
 		load(currentName);
 	}
 	handleAutoSolve(deltaTime);
@@ -854,7 +854,7 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 
 	if (_solution.empty()) {
 		abortAutoSolve();
-		Log::error2(LOG_SERVER, "no solution");
+		Log::error(LOG_SERVER, "no solution");
 		return;
 	}
 
@@ -866,7 +866,7 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 
 	if (_solution[0] == '(') {
 		abortAutoSolve();
-		Log::error2(LOG_SERVER, "x() repeat syntax is not supported");
+		Log::error(LOG_SERVER, "x() repeat syntax is not supported");
 		return;
 	}
 
@@ -881,7 +881,7 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 
 	if (_players.empty()) {
 		abortAutoSolve();
-		Log::error2(LOG_SERVER, "no player connected");
+		Log::error(LOG_SERVER, "no player connected");
 		return;
 	}
 	Player *p = *_players.begin();
@@ -923,7 +923,7 @@ void Map::visitEntities (IEntityVisitor *visitor, const EntityType& type)
 		for (PlayerListIter i = _players.begin(); i != _players.end();) {
 			Player* e = *i;
 			if (visitor->visitEntity(e)) {
-				Log::debug2(LOG_SERVER, "remove player by visit %i: %s", e->getID(), e->getType().name.c_str());
+				Log::debug(LOG_SERVER, "remove player by visit %i: %s", e->getID(), e->getType().name.c_str());
 				removeEntity(ClientIdToClientMask(e->getClientId()), *e);
 				delete *i;
 				i = _players.erase(i);
@@ -946,7 +946,7 @@ void Map::visitEntities (IEntityVisitor *visitor, const EntityType& type)
 		IEntity* e = *i;
 		if (type.isNone() || e->getType() == type) {
 			if (visitor->visitEntity(e)) {
-				Log::debug2(LOG_SERVER, "remove entity by visit %i: %s", e->getID(), e->getType().name.c_str());
+				Log::debug(LOG_SERVER, "remove entity by visit %i: %s", e->getID(), e->getType().name.c_str());
 				removeEntity(0, *e);
 				(*i)->remove();
 				delete *i;
@@ -978,7 +978,7 @@ void Map::triggerPause ()
 	_pause ^= true;
 	const PauseMessage msg(_pause);
 	_serviceProvider->getNetwork().sendToAllClients(msg);
-	Log::info2(LOG_MAP, "pause: %s", (_pause ? "true" : "false"));
+	Log::info(LOG_MAP, "pause: %s", (_pause ? "true" : "false"));
 }
 
 }

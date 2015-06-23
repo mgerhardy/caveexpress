@@ -46,12 +46,12 @@ bool FileSystem::copy (const std::string& src, const std::string& target) const
 {
 	std::ifstream source(src.c_str(), std::fstream::binary);
 	if (source.fail()) {
-		Log::error2(LOG_FILE, "Opening source file '%s' failed", src.c_str());
+		Log::error(LOG_FILE, "Opening source file '%s' failed", src.c_str());
 		return false;
 	}
 	std::ofstream dest(target.c_str(), std::fstream::trunc | std::fstream::binary);
 	if (dest.fail()) {
-		Log::error2(LOG_FILE, "Opening dest file '%s' failed", target.c_str());
+		Log::error(LOG_FILE, "Opening dest file '%s' failed", target.c_str());
 		return false;
 	}
 	dest << source.rdbuf();
@@ -75,15 +75,15 @@ long FileSystem::writeFile (const std::string& filename, const unsigned char *bu
 	SDL_RWops *rwops = createRWops(path, "wb");
 	File file(rwops, filename);
 	if (!overwrite && file.exists()) {
-		Log::info2(LOG_FILE, "file already exists: %s", path.c_str());
+		Log::info(LOG_FILE, "file already exists: %s", path.c_str());
 		return -1L;
 	}
 	if (!System.mkdir(_homeDir)) {
-		Log::error2(LOG_FILE, "could not create directory: %s",  _homeDir.c_str());
+		Log::error(LOG_FILE, "could not create directory: %s",  _homeDir.c_str());
 		return -1L;
 	}
 	createDir(file);
-	Log::info2(LOG_FILE, "writing file %s", path.c_str());
+	Log::info(LOG_FILE, "writing file %s", path.c_str());
 	return file.write(buf, length);
 }
 
@@ -99,9 +99,9 @@ long FileSystem::writeSysFile (const std::string& filename, const unsigned char 
 		return -1L;
 	const long ret = file->write(buf, length);
 	if (ret < 0)
-		Log::error2(LOG_FILE, "failed to write file %s", path.c_str());
+		Log::error(LOG_FILE, "failed to write file %s", path.c_str());
 	else
-		Log::info2(LOG_FILE, "wrote file %s of size %li", path.c_str(), ret);
+		Log::info(LOG_FILE, "wrote file %s of size %li", path.c_str(), ret);
 	return ret;
 }
 

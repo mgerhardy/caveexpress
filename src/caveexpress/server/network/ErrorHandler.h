@@ -22,14 +22,14 @@ public:
 		case UNKNOWN_ENTITY: {
 			const IEntity* entity = _map.getEntity(msg->getErrorData());
 			if (entity)
-				Log::error2(LOG_SERVER, "client doesn't know about the entity %i of the type %s", msg->getErrorData(),
+				Log::error(LOG_SERVER, "client doesn't know about the entity %i of the type %s", msg->getErrorData(),
 								entity->getType().name.c_str());
 			else
-				Log::error2(LOG_SERVER, "client owns a reference to an entity that does not exist on the server side");
+				Log::error(LOG_SERVER, "client owns a reference to an entity that does not exist on the server side");
 			break;
 		}
 		default:
-			Log::error2(LOG_SERVER, "unknown error type given");
+			Log::error(LOG_SERVER, "unknown error type given");
 			break;
 		}
 	}

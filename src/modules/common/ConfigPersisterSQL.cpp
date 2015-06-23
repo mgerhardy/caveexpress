@@ -10,10 +10,10 @@ ConfigPersisterSQL::ConfigPersisterSQL() :
 {
 	_state = _sqlite.open();
 	if (!_state) {
-		Log::error2(LOG_STORAGE, "failed to open the config storage");
+		Log::error(LOG_STORAGE, "failed to open the config storage");
 		return;
 	}
-	Log::info2(LOG_STORAGE, "use %s as config database file", _sqlite.getFilename().c_str());
+	Log::info(LOG_STORAGE, "use %s as config database file", _sqlite.getFilename().c_str());
 }
 
 void ConfigPersisterSQL::init ()
@@ -23,7 +23,7 @@ void ConfigPersisterSQL::init ()
 	SQLiteStatement stmt;
 	_sqlite.prepare(stmt, "SELECT Name, Value FROM " TABLE_NAME ";");
 	if (!stmt) {
-		Log::error2(LOG_STORAGE, "failed to load the config values");
+		Log::error(LOG_STORAGE, "failed to load the config values");
 		return;
 	}
 
@@ -34,10 +34,10 @@ void ConfigPersisterSQL::init ()
 			const std::string& value = stmt.getText(1);
 			_configVarMap[var] = value;
 		} else if (s == SQLITE_DONE) {
-			Log::info2(LOG_STORAGE, "loaded all config values: %i", (int)_configVarMap.size());
+			Log::info(LOG_STORAGE, "loaded all config values: %i", (int)_configVarMap.size());
 			break;
 		} else {
-			Log::error2(LOG_STORAGE, "SQL step error in config loading");
+			Log::error(LOG_STORAGE, "SQL step error in config loading");
 			return;
 		}
 	}
@@ -46,12 +46,12 @@ void ConfigPersisterSQL::init ()
 void ConfigPersisterSQL::save (const std::map<std::string, ConfigVarPtr>& configVars)
 {
 	if (!_state) {
-		Log::error2(LOG_STORAGE, "no config storage loaded");
+		Log::error(LOG_STORAGE, "no config storage loaded");
 		return;
 	}
 
 	if (configVars.empty()) {
-		Log::error2(LOG_STORAGE, "no config variables to save");
+		Log::error(LOG_STORAGE, "no config variables to save");
 		return;
 	}
 
@@ -62,7 +62,7 @@ void ConfigPersisterSQL::save (const std::map<std::string, ConfigVarPtr>& config
 	SQLiteStatement stmt;
 	_sqlite.prepare(stmt, "INSERT INTO " TABLE_NAME " (Name, Value) VALUES (?, ?)");
 	if (!stmt) {
-		Log::error2(LOG_STORAGE, "failed to save the config values");
+		Log::error(LOG_STORAGE, "failed to save the config values");
 		return;
 	}
 
@@ -73,7 +73,7 @@ void ConfigPersisterSQL::save (const std::map<std::string, ConfigVarPtr>& config
 		stmt.bindText(1, name);
 		stmt.bindText(2, value);
 		stmt.step(true);
-		Log::info2(LOG_STORAGE, "save config var %s with value %s", name.c_str(), value.c_str());
+		Log::info(LOG_STORAGE, "save config var %s with value %s", name.c_str(), value.c_str());
 	}
 	stmt.finish();
 

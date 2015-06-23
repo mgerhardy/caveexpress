@@ -163,7 +163,7 @@ void GooglePlayPersister::disconnect() {
 }
 
 bool GooglePlayPersister::init() {
-	Log::info2(LOG_SYSTEM, "GoolePlayPersister::init() initializing...");
+	Log::info(LOG_SYSTEM, "GoolePlayPersister::init() initializing...");
 #ifdef GOOGLEPLAY_ACTIVE
 	GPLocalReferenceHolder refs;
 

@@ -18,7 +18,7 @@ void Thread::start ()
 		_running = true;
 		_thread = SDL_CreateThread(executeThread, _name, _runnable);
 		if (_thread == nullptr) {
-			Log::error2(LOG_THREAD, "failed to create thread: %s", SDL_GetError());
+			Log::error(LOG_THREAD, "failed to create thread: %s", SDL_GetError());
 			_running = false;
 		}
 	}

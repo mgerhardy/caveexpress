@@ -44,7 +44,7 @@ bool Campaign::loadProgress ()
 	if (!_persister->loadCampaign(this)) {
 		return false;
 	}
-	Log::info2(LOG_CAMPAIGN, "loaded campaign progress for: %s (lives: %i)", getId().c_str(), static_cast<int>(getLives()));
+	Log::info(LOG_CAMPAIGN, "loaded campaign progress for: %s (lives: %i)", getId().c_str(), static_cast<int>(getLives()));
 	_currentMap = 0;
 	for (Campaign::MapListConstIter i = _maps.begin(); i != _maps.end(); ++i) {
 		if (!(*i)->isLocked())
@@ -60,17 +60,17 @@ bool Campaign::unlock ()
 {
 	// if we already played this campaign, we will not unlock any other map
 	if (isUnlocked()) {
-		Log::info2(LOG_CAMPAIGN, "no unlocking needed for campaign '%s'", getId().c_str());
+		Log::info(LOG_CAMPAIGN, "no unlocking needed for campaign '%s'", getId().c_str());
 		return false;
 	}
 
 	CampaignMapPtr map = getMap(1);
 	if (!map) {
-		Log::info2(LOG_CAMPAIGN, "no map in campaign '%s'", getId().c_str());
+		Log::info(LOG_CAMPAIGN, "no map in campaign '%s'", getId().c_str());
 		return false;
 	}
 
-	Log::info2(LOG_CAMPAIGN, "unlocked campaign '%s'", getId().c_str());
+	Log::info(LOG_CAMPAIGN, "unlocked campaign '%s'", getId().c_str());
 	map->unlock();
 	_currentMap = 1;
 	return true;
@@ -80,12 +80,12 @@ bool Campaign::reset (bool unlockFirstMap)
 {
 	const bool alreadyUnlocked = isUnlocked();
 	if (!alreadyUnlocked) {
-		Log::error2(LOG_CAMPAIGN, "could not reset campaign '%s' - not yet unlocked", getId().c_str());
+		Log::error(LOG_CAMPAIGN, "could not reset campaign '%s' - not yet unlocked", getId().c_str());
 		return false;
 	}
 
 	if (!_persister->resetCampaign(this)) {
-		Log::error2(LOG_CAMPAIGN, "failed to reset the campaign");
+		Log::error(LOG_CAMPAIGN, "failed to reset the campaign");
 		return false;
 	}
 
@@ -98,7 +98,7 @@ bool Campaign::reset (bool unlockFirstMap)
 
 bool Campaign::saveProgress ()
 {
-	Log::info2(LOG_CAMPAIGN, "save campaign progress for: %s", _id.c_str());
+	Log::info(LOG_CAMPAIGN, "save campaign progress for: %s", _id.c_str());
 	return _persister->saveCampaign(this);
 }
 
@@ -114,7 +114,7 @@ bool Campaign::isUnlocked () const
 
 void Campaign::setLives (uint8_t lives)
 {
-	Log::debug2(LOG_CAMPAIGN, "set lives: %i", static_cast<int>(getLives()));
+	Log::debug(LOG_CAMPAIGN, "set lives: %i", static_cast<int>(getLives()));
 	_lives = lives;
 }
 
@@ -139,7 +139,7 @@ bool Campaign::unlockNextMap (bool shouldSaveProgress)
 	CampaignMapPtr map = getMap(++_currentMap);
 	if (!map) {
 		_currentMap = 1;
-		Log::info2(LOG_CAMPAIGN, "no more maps to unlock");
+		Log::info(LOG_CAMPAIGN, "no more maps to unlock");
 		if (shouldSaveProgress)
 			saveProgress();
 		return false;
@@ -157,11 +157,11 @@ std::string Campaign::getNextMap () const
 		return "";
 
 	if (map->isLocked()) {
-		Log::debug2(LOG_CAMPAIGN, "next campaign map is still locked: %s", map->getId().c_str());
+		Log::debug(LOG_CAMPAIGN, "next campaign map is still locked: %s", map->getId().c_str());
 		return "";
 	}
 
-	Log::info2(LOG_CAMPAIGN, "next campaign map %s", map->getId().c_str());
+	Log::info(LOG_CAMPAIGN, "next campaign map %s", map->getId().c_str());
 	return map->getId();
 }
 
@@ -181,7 +181,7 @@ bool Campaign::hasMoreMaps () const
 	if (_maps.empty())
 		return false;
 	const uint32_t time = (*_maps.rbegin())->getTime();
-	Log::info2(LOG_CAMPAIGN, "campaign %s last map time: %ui", getId().c_str(), time);
+	Log::info(LOG_CAMPAIGN, "campaign %s last map time: %ui", getId().c_str(), time);
 	return time == 0;
 }
 

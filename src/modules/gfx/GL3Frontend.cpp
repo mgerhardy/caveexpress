@@ -318,7 +318,7 @@ void GL3Frontend::startNewBatch ()
 
 	++_currentBatch;
 	if (_currentBatch >= MAX_BATCHES) {
-		Log::debug2(LOG_CLIENT, "render the batches because the max batch count was exceeded");
+		Log::debug(LOG_CLIENT, "render the batches because the max batch count was exceeded");
 		renderBatches();
 		return;
 	}
@@ -356,7 +356,7 @@ void GL3Frontend::disableScissor ()
 }
 
 void GL3Frontend::initRenderer () {
-	Log::info2(LOG_CLIENT, "init opengl renderer");
+	Log::info(LOG_CLIENT, "init opengl renderer");
 	_context = SDL_GL_CreateContext(_window);
 	ExtGLLoadFunctions();
 
@@ -390,11 +390,11 @@ void GL3Frontend::initRenderer () {
 	_currentVertexIndex = 0;
 
 	if (!_shader.loadProgram("main")) {
-		Log::error2(LOG_CLIENT, "Failed to load the main shader");
+		Log::error(LOG_CLIENT, "Failed to load the main shader");
 		System.exit("Failed to load the main shader", 1);
 	}
 	if (!_waterShader.loadProgram("water")) {
-		Log::error2(LOG_CLIENT, "Failed to load the water shader");
+		Log::error(LOG_CLIENT, "Failed to load the water shader");
 		System.exit("Failed to load the water shader", 1);
 	}
 	_waterShader.activate();
@@ -440,7 +440,7 @@ void GL3Frontend::initRenderer () {
 		_waterNormal = uploadTexture(static_cast<unsigned char *>(textureSurface->pixels), textureSurface->w, textureSurface->h);
 		SDL_FreeSurface(textureSurface);
 
-			Log::info2(LOG_CLIENT, "Uploaded water normal with texnum %ui", _waterNormal);
+			Log::info(LOG_CLIENT, "Uploaded water normal with texnum %ui", _waterNormal);
 	}
 }
 
@@ -588,7 +588,7 @@ bool GL3Frontend::loadTexture (Texture *texture, const std::string& filename)
 {
 	SDL_Surface* textureSurface = loadTextureIntoSurface(filename);
 	if (textureSurface == nullptr) {
-		Log::error2(LOG_CLIENT, "could not load the file: %s", filename.c_str());
+		Log::error(LOG_CLIENT, "could not load the file: %s", filename.c_str());
 		return false;
 	}
 	SDL_Surface* normalSurface = loadTextureIntoSurface(filename + "_n");
@@ -596,7 +596,7 @@ bool GL3Frontend::loadTexture (Texture *texture, const std::string& filename)
 	data->texnum = uploadTexture(static_cast<unsigned char*>(textureSurface->pixels), textureSurface->w, textureSurface->h);
 	if (normalSurface) {
 		data->normalnum = uploadTexture(static_cast<unsigned char*>(normalSurface->pixels), normalSurface->w, normalSurface->h);
-		Log::info2(LOG_CLIENT, "load normal map for: %s", filename.c_str());
+		Log::info(LOG_CLIENT, "load normal map for: %s", filename.c_str());
 	} else {
 		data->normalnum = _alpha;
 	}
@@ -710,7 +710,7 @@ void GL3Frontend::renderEnd ()
 {
 	renderBatches();
 #ifdef DEBUG
-	Log::debug2(LOG_CLIENT, "%i drawcalls", _drawCalls);
+	Log::debug(LOG_CLIENT, "%i drawcalls", _drawCalls);
 #endif
 	SDL_GL_SwapWindow(_window);
 	GL_checkError();

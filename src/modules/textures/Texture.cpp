@@ -17,9 +17,9 @@ Texture::Texture (const std::string &filename, IFrontend *frontend) :
 		_uploadedWidth = _rect.w;
 		_uploadedHeight = _rect.h;
 
-		Log::debug2(LOG_CLIENT, "loaded texture: %s (%i:%i)", filename.c_str(), _uploadedWidth, _uploadedHeight);
+		Log::debug(LOG_CLIENT, "loaded texture: %s (%i:%i)", filename.c_str(), _uploadedWidth, _uploadedHeight);
 	} else {
-		Log::error2(LOG_CLIENT, "could not load texture %s", filename.c_str());
+		Log::error(LOG_CLIENT, "could not load texture %s", filename.c_str());
 		memset(&_rect, 0, sizeof(_rect));
 	}
 }
@@ -40,7 +40,7 @@ Texture::~Texture ()
 void Texture::deleteTexture ()
 {
 	if (_data && !_copy) {
-		Log::info2(LOG_CLIENT, "destroy texture %s", getName().c_str());
+		Log::info(LOG_CLIENT, "destroy texture %s", getName().c_str());
 		_frontend->destroyTexture(_data);
 	}
 	_data = nullptr;

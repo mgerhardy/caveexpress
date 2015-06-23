@@ -19,7 +19,7 @@ public:
 	{
 		Player* player = _map.getPlayer(clientId);
 		if (player == nullptr) {
-			Log::error2(LOG_SERVER, "movement for player with clientId %i failed", (int)clientId);
+			Log::error(LOG_SERVER, "movement for player with clientId %i failed", (int)clientId);
 			return;
 		}
 		const MovementMessage* msg = static_cast<const MovementMessage*>(&message);

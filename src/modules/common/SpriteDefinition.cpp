@@ -31,7 +31,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		SpriteDefMapConstIter findIter = _spriteDefs.find(id);
 		if (findIter != _spriteDefs.end()) {
-			Log::error2(LOG_GENERAL, "sprite def already defined: %s", id.c_str());
+			Log::error(LOG_GENERAL, "sprite def already defined: %s", id.c_str());
 			lua.pop();
 			continue;
 		}
@@ -39,7 +39,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		const std::string typeStr = lua.getValueStringFromTable("type").str();
 		const SpriteType& type = SpriteType::getByName(typeStr);
 		if (!type && !typeStr.empty()) {
-			Log::error2(LOG_GENERAL, "invalid sprite type given: %s", typeStr.c_str());
+			Log::error(LOG_GENERAL, "invalid sprite type given: %s", typeStr.c_str());
 		}
 		const ThemeType& theme = ThemeType::getByName(lua.getValueStringFromTable("theme").str());
 		SpriteDef *def = new SpriteDef(id, type, theme);
@@ -111,7 +111,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 				p.radius = lua.getTableInteger(4) / 100.0f;
 				def->circles.push_back(p);
 			} else {
-				Log::error2(LOG_GENERAL, "invalid amount of entries for the circle shape");
+				Log::error(LOG_GENERAL, "invalid amount of entries for the circle shape");
 			}
 			// pop the circle table
 			lua.pop();
@@ -226,9 +226,9 @@ SpriteDefPtr SpriteDefinition::getSpriteDefinition (const std::string& spriteNam
 		return SpriteDefPtr();
 	SpriteDefMapConstIter i = _spriteDefs.find(spriteName);
 	if (i == _spriteDefs.end()) {
-		Log::error2(LOG_GENERAL, "could not find sprite definition for %s", spriteName.c_str());
+		Log::error(LOG_GENERAL, "could not find sprite definition for %s", spriteName.c_str());
 		for (SpriteDefMapConstIter iter = _spriteDefs.begin(); iter != _spriteDefs.end(); ++iter) {
-			Log::error2(LOG_GENERAL, " + found: %s", iter->first.c_str());
+			Log::error(LOG_GENERAL, " + found: %s", iter->first.c_str());
 		}
 		return SpriteDefPtr();
 	}
@@ -236,9 +236,9 @@ SpriteDefPtr SpriteDefinition::getSpriteDefinition (const std::string& spriteNam
 	if (!i->second->redirect.empty()) {
 		i = _spriteDefs.find(spriteName);
 		if (i == _spriteDefs.end()) {
-			Log::error2(LOG_GENERAL, "could not find sprite redirect definition for %s", spriteName.c_str());
+			Log::error(LOG_GENERAL, "could not find sprite redirect definition for %s", spriteName.c_str());
 			for (SpriteDefMapConstIter iter = _spriteDefs.begin(); iter != _spriteDefs.end(); ++iter) {
-				Log::error2(LOG_GENERAL, " + found: %s", iter->first.c_str());
+				Log::error(LOG_GENERAL, " + found: %s", iter->first.c_str());
 			}
 			return SpriteDefPtr();
 		}
