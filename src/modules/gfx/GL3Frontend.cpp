@@ -293,8 +293,10 @@ void GL3Frontend::flushBatch (int type, GLuint texnum, int vertexAmount)
 	if (_currentVertexIndex + vertexAmount >= MAXNUMVERTICES)
 		renderBatches();
 	const Batch& b = _batches[_currentBatch];
-	if (b.type == type && b.texnum == texnum)
+	if (b.type == type && b.texnum == texnum) {
+		_batches[_currentBatch].vertexCount += vertexAmount;
 		return;
+	}
 	startNewBatch();
 	_batches[_currentBatch].type = type;
 	_batches[_currentBatch].texnum = texnum;
