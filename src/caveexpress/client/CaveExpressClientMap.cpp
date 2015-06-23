@@ -43,7 +43,7 @@ void CaveExpressClientMap::resetCurrentMap ()
 }
 
 SDL_Rect CaveExpressClientMap::getWaterRect(int x, int y) const {
-	const int waterWidth = std::min(_width, static_cast<int>(getPixelWidth() * _zoom - std::min(x, 0))) - 1;
+	const int waterWidth = std::min(_width, static_cast<int>(getPixelWidth() * _zoom + std::min(x, 0))) - 1;
 	const int waterGround = std::min(_height, y + static_cast<int>(getPixelHeight() * _zoom));
 	const int waterSurface = y + getWaterSurface() * _zoom;
 	const int waterHeight = waterGround - waterSurface;
