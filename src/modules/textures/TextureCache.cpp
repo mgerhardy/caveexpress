@@ -65,7 +65,7 @@ TexturePtr TextureCache::load (const std::string& textureName)
 
 void TextureCache::dump () const
 {
-	Log::info(LOG_CLIENT, "%i textures: %i", (int)(_textures.size() + _textureDefs.size()));
+	Log::info(LOG_CLIENT, "textures: %i", (int)(_textures.size() + _textureDefs.size()));
 	for (TextureMap::const_iterator i = _textures.begin(); i != _textures.end(); ++i) {
 		Log::info(LOG_CLIENT, " - %s: (%i:%i)", i->first.c_str(), i->second->getWidth(), i->second->getHeight());
 	}
