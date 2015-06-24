@@ -75,10 +75,9 @@ void ClientConsole::logInfo (const std::string& string)
 {
 	std::vector<std::string> tokens;
 	string::splitString(string, tokens, "\n");
-	for (std::vector<std::string>::const_iterator i = tokens.begin(); i != tokens.end(); ++i) {
-		_text.push_back(*i);
+	for (const std::string& token : tokens) {
+		_text.push_back(token);
 	}
-	System.logOutput(string);
 }
 
 void ClientConsole::logTrace (const std::string& string)
@@ -93,10 +92,9 @@ void ClientConsole::logError (const std::string& string)
 {
 	std::vector<std::string> tokens;
 	string::splitString(string, tokens, "\n");
-	for (std::vector<std::string>::const_iterator i = tokens.begin(); i != tokens.end(); ++i) {
-		_text.push_back(*i);
+	for (const std::string& token : tokens) {
+		_text.push_back(token);
 	}
-	System.logError(string);
 }
 
 void ClientConsole::logDebug (const std::string& string)
