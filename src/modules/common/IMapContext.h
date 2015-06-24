@@ -95,4 +95,4 @@ public:
 	}
 };
 
-typedef SharedPtr<IMapContext> MapContextPtr;
+typedef std::shared_ptr<IMapContext> MapContextPtr;

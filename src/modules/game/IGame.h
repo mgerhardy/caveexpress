@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ui/UI.h"
-#include "common/Pointers.h"
+#include <memory>
 #include "network/IProtocolHandler.h"
 #include "common/MapManager.h"
 #include "common/ConfigManager.h"

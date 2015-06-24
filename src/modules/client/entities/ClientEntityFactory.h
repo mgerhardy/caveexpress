@@ -5,7 +5,7 @@
 #include "common/EntityAlignment.h"
 #include "common/SpriteDefinition.h"
 #include "common/IFactoryRegistry.h"
-#include "common/Pointers.h"
+#include <memory>
 #include "sound/Sound.h"
 #include "common/Singleton.h"
 #include "common/Log.h"

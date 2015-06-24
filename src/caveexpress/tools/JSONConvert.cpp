@@ -227,7 +227,7 @@ extern "C" int main (int argc, char* argv[])
 	File file(SDL_RWFromFile(path.c_str(), "rb"), path);
 	char *buffer;
 	const int fileLen = file.read((void **) &buffer);
-	const ScopedArrayPtr<char> p(buffer);
+	const std::unique_ptr<char[]> p(buffer);
 	std::cout.precision(3);
 	if (!buffer || fileLen <= 0) {
 		std::cerr << "Could not read the json file" << std::endl;

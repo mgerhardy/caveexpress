@@ -6,7 +6,7 @@
 #include "cavepacker/shared/CavePackerEntityType.h"
 #include "common/Direction.h"
 #include "common/EntityAlignment.h"
-#include "common/Pointers.h"
+#include <memory>
 #include "common/Math.h"
 #include <vector>
 #include <list>
@@ -16,7 +16,7 @@
 
 // forward decl
 class SpriteDef;
-typedef SharedPtr<SpriteDef> SpriteDefPtr;
+typedef std::shared_ptr<SpriteDef> SpriteDefPtr;
 
 namespace cavepacker {
 

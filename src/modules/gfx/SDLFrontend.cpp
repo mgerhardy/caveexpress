@@ -5,7 +5,7 @@
 #include "sound/Sound.h"
 #include "common/ConfigManager.h"
 #include "common/FileSystem.h"
-#include "common/Pointers.h"
+#include <memory>
 #include "common/DateUtil.h"
 #include "common/Singleton.h"
 #include "GameRegistry.h"
@@ -23,7 +23,7 @@ struct RenderTarget {
 	int unused;
 };
 
-SDLFrontend::SDLFrontend (SharedPtr<IConsole> console) :
+SDLFrontend::SDLFrontend (std::shared_ptr<IConsole> console) :
 		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _softwareRenderer(false)
 {
 	_window = nullptr;
@@ -142,10 +142,10 @@ void SDLFrontend::onStart ()
 void SDLFrontend::onInit ()
 {
 	renderBegin();
-	ScopedPtr<Texture> ptr(new Texture("loading", this));
+	std::unique_ptr<Texture> ptr(new Texture("loading", this));
 	const int x = getWidth() / 2 - ptr->getWidth() / 2;
 	const int y = getHeight() / 2 - ptr->getHeight() / 2;
-	renderImage(ptr, x, y, ptr->getWidth(), ptr->getHeight(), 0);
+	renderImage(ptr.get(), x, y, ptr->getWidth(), ptr->getHeight(), 0);
 	renderEnd();
 }
 
@@ -415,7 +415,7 @@ void SDLFrontend::makeScreenshot (const std::string& filename)
 	SDL_RenderGetViewport(_renderer, &viewport);
 
 	SDL_PixelFormatEnumToMasks(SDL_PIXELFORMAT_RGBA8888, &bpp, &rmask, &gmask, &bmask, &amask);
-	ScopedPtr<SDL_Surface> surface(SDL_CreateRGBSurface(0, viewport.w, viewport.h, bpp, rmask, gmask, bmask, amask));
+	std::unique_ptr<SDL_Surface> surface(SDL_CreateRGBSurface(0, viewport.w, viewport.h, bpp, rmask, gmask, bmask, amask));
 	if (!surface)
 		return;
 
@@ -423,7 +423,7 @@ void SDLFrontend::makeScreenshot (const std::string& filename)
 		return;
 
 	const std::string fullFilename = FS.getAbsoluteWritePath() + filename + "-" + dateutil::getDateString() + ".png";
-	IMG_SavePNG(surface, fullFilename.c_str());
+	IMG_SavePNG(surface.get(), fullFilename.c_str());
 }
 
 void SDLFrontend::setCursorPosition (int x, int y)
@@ -763,7 +763,7 @@ int SDLFrontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& colo
 	if (!vx || !vy || n < 3)
 		return -1;
 
-	ScopedArrayPtr<int> ints(new int[n]);
+	std::unique_ptr<int[]> ints(new int[n]);
 	int miny = vy[0];
 	int maxy = vy[0];
 	for (int i = 1; i < n; i++) {
@@ -806,7 +806,7 @@ int SDLFrontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& colo
 			}
 		}
 
-		SDL_qsort(ints, num_ints, sizeof(int), sortRenderFilledPolygon);
+		SDL_qsort(ints.get(), num_ints, sizeof(int), sortRenderFilledPolygon);
 
 		for (int i = 0; i < num_ints; i += 2) {
 			const int start = ints[i];

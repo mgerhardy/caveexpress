@@ -190,7 +190,7 @@ bool SDLBackend::handleInit() {
 		} else {
 			const ConfigVarPtr c = Config.getConfigVar("frontend", "sdl", true);
 			Log::info(LOG_CLIENT, "Use frontend %s", c->getValue().c_str());
-			SharedPtr<IConsole> clientConsole(new ClientConsole());
+			std::shared_ptr<IConsole> clientConsole(new ClientConsole());
 #ifdef SDL_VIDEO_OPENGL
 			if (c->getValue() == "opengl")
 				_frontend = new GL1Frontend(clientConsole);

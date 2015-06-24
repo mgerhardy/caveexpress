@@ -156,7 +156,7 @@ TEST(CampaignTest, testResetProgress) {
 	CampaignManager mgr(&persister, mapMgr);
 	mgr.init();
 	CampaignPtr c = mgr.getAutoActiveCampaign();
-	ASSERT_TRUE(c) << "There is no active campaign";
+	ASSERT_TRUE(c.get()) << "There is no active campaign";
 	ASSERT_EQ("ice", c->getId());
 	ASSERT_TRUE(c->isUnlocked()) << "Campaign ice is not unlocked";
 	ASSERT_TRUE(mgr.resetAllSavedData()) << "Failed to reset the campaign progress";

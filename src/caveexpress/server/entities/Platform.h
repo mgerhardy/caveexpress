@@ -25,7 +25,7 @@ public:
 	void endContact (b2Contact* contact, IEntity* entity) override;
 };
 
-typedef SharedPtr<Platform> PlatformPtr;
+typedef std::shared_ptr<Platform> PlatformPtr;
 
 inline CaveMapTile *Platform::getCave () const
 {

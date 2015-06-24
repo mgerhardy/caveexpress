@@ -46,9 +46,9 @@ bool Shader::load (const std::string& filename, const std::string& source, Shade
 		GLint infoLogLength;
 		glGetShaderiv(_shader[shaderType], GL_INFO_LOG_LENGTH, &infoLogLength);
 
-		ScopedPtr<GLchar> strInfoLog(new GLchar[infoLogLength + 1]);
-		glGetShaderInfoLog(_shader[shaderType], infoLogLength, nullptr, strInfoLog);
-		std::string errorLog(strInfoLog, static_cast<std::size_t>(infoLogLength));
+		std::unique_ptr<GLchar> strInfoLog(new GLchar[infoLogLength + 1]);
+		glGetShaderInfoLog(_shader[shaderType], infoLogLength, nullptr, strInfoLog.get());
+		std::string errorLog(strInfoLog.get(), static_cast<std::size_t>(infoLogLength));
 
 		std::string strShaderType;
 		switch (glType) {
@@ -75,7 +75,7 @@ bool Shader::loadFromFile (const std::string& filename, ShaderType shaderType)
 	FilePtr filePtr = FS.getFile(FS.getShaderDir() + filename);
 	char *buffer;
 	const int fileLen = filePtr->read((void **) &buffer);
-	ScopedArrayPtr<char> p(buffer);
+	std::unique_ptr<char[]> p(buffer);
 	if (!buffer || fileLen <= 0) {
 		Log::error(LOG_CLIENT, "could not load shader %s", filename.c_str());
 		return false;
@@ -124,7 +124,7 @@ std::string Shader::getSource (ShaderType shaderType, const char *buffer, int le
 				FilePtr filePtr = FS.getFile(FS.getShaderDir() + includeFile);
 				char *includeBuffer;
 				const int includeLen = filePtr->read((void **) &includeBuffer);
-				ScopedArrayPtr<char> p(includeBuffer);
+				std::unique_ptr<char[]> p(includeBuffer);
 				if (!includeBuffer || includeLen <= 0) {
 					Log::error(LOG_CLIENT, "could not load shader include %s", includeFile.c_str());
 					break;

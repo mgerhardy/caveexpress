@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/Pointers.h"
+#include <memory>
 #include "common/Log.h"
 #include <string>
 #include <inttypes.h>
@@ -43,7 +43,7 @@ public:
 	std::string toString() const;
 };
 
-typedef SharedPtr<CampaignMap> CampaignMapPtr;
+typedef std::shared_ptr<CampaignMap> CampaignMapPtr;
 
 inline void CampaignMap::unlock ()
 {

@@ -1,6 +1,6 @@
 #include "TestShared.h"
 #include "common/FileSystem.h"
-#include "common/Pointers.h"
+#include <memory>
 
 class FileTest: public AbstractTest {
 };
@@ -22,7 +22,7 @@ TEST_F(FileTest, testFileLoad) {
 		char *buffer;
 		int fileLen = f->read((void **) &buffer);
 		ASSERT_NE(-1, fileLen) << "Could not read " << FS.getDataDir() << filePath;
-		ScopedArrayPtr<char> p(buffer);
+		std::unique_ptr<char[]> p(buffer);
 		ASSERT_TRUE(fileLen == 0 || buffer) << "could not read " << FS.getDataDir() << filePath;
 		ASSERT_TRUE(fileLen >= 0) << "could not read " << FS.getDataDir() << filePath;
 	}
@@ -74,7 +74,7 @@ TEST_F(FileTest, testCopy) {
 TEST_F(FileTest, testName) {
 	std::string filename = "testdir/testname";
 	FilePtr p = FS.getFile(filename);
-	ASSERT_TRUE(p) << "Could not load " << filename;
+	ASSERT_TRUE(p.get()) << "Could not load " << filename;
 	ASSERT_EQ(FS.getDataDir() + "testdir", p->getPath());
 	ASSERT_EQ("testname", p->getFileName());
 	ASSERT_EQ(FS.getDataDir() + filename, p->getName());

@@ -2,7 +2,7 @@
 
 #include "caveexpress/server/entities/CollectableEntity.h"
 #include "common/IMap.h"
-#include "common/Pointers.h"
+#include <memory>
 
 namespace caveexpress {
 
@@ -27,6 +27,6 @@ public:
 	void endContact (b2Contact* contact, IEntity* entity) override;
 };
 
-typedef SharedPtr<Stone> StonePtr;
+typedef std::shared_ptr<Stone> StonePtr;
 
 }

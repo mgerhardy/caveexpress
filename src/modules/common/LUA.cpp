@@ -83,7 +83,7 @@ bool LUA::load (const std::string &file)
 
 	char *buffer;
 	const int fileLen = filePtr->read((void **) &buffer);
-	ScopedArrayPtr<char> p(buffer);
+	std::unique_ptr<char[]> p(buffer);
 	if (!buffer || fileLen <= 0) {
 		Log::error(LOG_CONFIG, "failed to read lua file %s", filePtr->getName().c_str());
 		return false;

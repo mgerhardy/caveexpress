@@ -10,7 +10,7 @@
 #include "common/EntityAlignment.h"
 #include "common/EntityState.h"
 #include "common/EntityType.h"
-#include "common/Pointers.h"
+#include <memory>
 #include "common/Math.h"
 #include <vector>
 #include <list>
@@ -22,7 +22,7 @@ typedef int32_t VisMask;
 #define NOTVISIBLE 0x80000000
 
 class SpriteDef;
-typedef SharedPtr<SpriteDef> SpriteDefPtr;
+typedef std::shared_ptr<SpriteDef> SpriteDefPtr;
 
 namespace caveexpress {
 

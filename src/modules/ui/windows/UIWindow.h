@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ui/nodes/UINode.h"
-#include "common/Pointers.h"
+#include <memory>
 #include "common/Config.h"
 #include "common/Payment.h"
 #include "common/Log.h"

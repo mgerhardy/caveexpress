@@ -6,7 +6,7 @@
 #include "common/ThemeType.h"
 #include "common/Layer.h"
 #include "common/IMap.h"
-#include "common/Pointers.h"
+#include <memory>
 #include "common/NonCopyable.h"
 #include <map>
 #include <string>
@@ -161,7 +161,7 @@ public:
 	int delay;
 };
 
-typedef SharedPtr<SpriteDef> SpriteDefPtr;
+typedef std::shared_ptr<SpriteDef> SpriteDefPtr;
 typedef std::map<std::string, SpriteDefPtr> SpriteDefMap;
 typedef SpriteDefMap::const_iterator SpriteDefMapConstIter;
 

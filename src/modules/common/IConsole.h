@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/Pointers.h"
+#include <memory>
 #include "common/IEventObserver.h"
 #include <string>
 #include <vector>
@@ -59,4 +59,4 @@ public:
 	virtual void cursorDelete (bool moveCursor = true);
 };
 
-typedef SharedPtr<IConsole> ConsolePtr;
+typedef std::shared_ptr<IConsole> ConsolePtr;

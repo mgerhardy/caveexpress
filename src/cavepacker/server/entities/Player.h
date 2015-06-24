@@ -5,7 +5,7 @@
 #include "common/SoundType.h"
 #include "common/ConfigVar.h"
 #include "common/Log.h"
-#include "common/Pointers.h"
+#include <memory>
 #include "network/IProtocolHandler.h"
 
 namespace cavepacker {

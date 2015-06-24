@@ -7,7 +7,7 @@
 #include "common/Common.h"
 #include "common/System.h"
 #include "common/Log.h"
-#include "common/Pointers.h"
+#include <memory>
 #include "common/IProgressCallback.h"
 #include "textures/TextureCache.h"
 #include "sprites/SpriteCache.h"
@@ -42,7 +42,7 @@ public:
 #define UIPOPUP_OK			(1 << 0)
 #define UIPOPUP_CANCEL		(1 << 1)
 
-typedef SharedPtr<UIPopupCallback> UIPopupCallbackPtr;
+typedef std::shared_ptr<UIPopupCallback> UIPopupCallbackPtr;
 
 class UI: public IEventObserver, public IProgressCallback, public NonCopyable {
 private:

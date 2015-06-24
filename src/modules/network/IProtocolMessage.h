@@ -2,7 +2,7 @@
 
 #include "common/ByteStream.h"
 #include "common/Compiler.h"
-#include "common/Pointers.h"
+#include <memory>
 #include "common/IFactoryRegistry.h"
 #include <vector>
 #include <string>
@@ -64,7 +64,7 @@ public:
 	virtual void serialize (ByteStream& out) const = 0;
 };
 
-typedef SharedPtr<IProtocolMessage> ProtocolMessagePtr;
+typedef std::shared_ptr<IProtocolMessage> ProtocolMessagePtr;
 
 class IProtocolListMessage: public IProtocolMessage {
 protected:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/Pointers.h"
+#include <memory>
 #include "common/String.h"
 #include <string>
 
@@ -59,4 +59,4 @@ inline bool ConfigVar::isDirty () const
 	return _dirty;
 }
 
-typedef SharedPtr<ConfigVar> ConfigVarPtr;
+typedef std::shared_ptr<ConfigVar> ConfigVarPtr;

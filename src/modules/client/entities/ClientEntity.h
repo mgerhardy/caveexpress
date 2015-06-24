@@ -6,7 +6,7 @@
 #include "common/EntityAlignment.h"
 #include "sprites/Sprite.h"
 #include "common/SpriteDefinition.h"
-#include "common/Pointers.h"
+#include <memory>
 #include <Box2D/Common/b2Math.h>
 #include <map>
 #include <string>

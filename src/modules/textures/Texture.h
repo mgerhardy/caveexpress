@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/Pointers.h"
+#include <memory>
 #include "common/IFrontend.h"
 #include "common/TextureDefinition.h"
 #include <string>
@@ -145,4 +145,4 @@ inline bool Texture::isValid () const
 	return _data != nullptr;
 }
 
-typedef SharedPtr<Texture> TexturePtr;
+typedef std::shared_ptr<Texture> TexturePtr;

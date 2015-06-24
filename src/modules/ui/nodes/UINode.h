@@ -31,7 +31,7 @@ public:
 	{
 	}
 };
-typedef SharedPtr<UINodeListener> UINodeListenerPtr;
+typedef std::shared_ptr<UINodeListener> UINodeListenerPtr;
 
 class OpenURLListener: public UINodeListener {
 protected:

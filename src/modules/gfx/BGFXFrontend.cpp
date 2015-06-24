@@ -4,7 +4,7 @@
 
 #include <bgfx.h>
 
-BGFXFrontend::BGFXFrontend (SharedPtr<IConsole> console) :
+BGFXFrontend::BGFXFrontend (std::shared_ptr<IConsole> console) :
 		SDLFrontend(console)
 {
 }

@@ -5,13 +5,13 @@
 #include <vector>
 #include "common/Math.h"
 #include "common/EventHandler.h"
-#include "common/Pointers.h"
+#include <memory>
 
 // forward declarations
 class ServiceProvider;
 class Texture;
 class BitmapFont;
-typedef SharedPtr<BitmapFont> BitmapFontPtr;
+typedef std::shared_ptr<BitmapFont> BitmapFontPtr;
 
 struct RenderTarget;
 struct TextureData;

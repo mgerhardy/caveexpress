@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/ByteStream.h"
-#include "common/Pointers.h"
+#include <memory>
 #include "IProtocolMessage.h"
 
 typedef uint8_t ClientId;

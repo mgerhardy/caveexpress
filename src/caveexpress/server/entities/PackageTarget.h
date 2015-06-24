@@ -1,7 +1,7 @@
 #pragma once
 
 #include "caveexpress/server/entities/MapTile.h"
-#include "common/Pointers.h"
+#include <memory>
 
 namespace caveexpress {
 
@@ -41,6 +41,6 @@ inline bool PackageTarget::isValidContact (const b2Contact* contact, const std::
 	return userData == id;
 }
 
-typedef SharedPtr<PackageTarget> PackageTargetPtr;
+typedef std::shared_ptr<PackageTarget> PackageTargetPtr;
 
 }

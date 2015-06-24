@@ -44,7 +44,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 
 	char *buffer;
 	const int fileLen = filePtr->read((void **) &buffer);
-	ScopedArrayPtr<char> p(buffer);
+	std::unique_ptr<char[]> p(buffer);
 	if (!buffer || fileLen <= 0) {
 		Log::error(LOG_SERVER, "Sokoban map file %s", filePtr->getName().c_str());
 		return false;

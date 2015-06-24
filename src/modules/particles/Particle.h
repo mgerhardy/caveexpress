@@ -3,7 +3,7 @@
 #include "IParticleEnvironment.h"
 #include "common/IFrontend.h"
 #include "textures/Texture.h"
-#include "common/Pointers.h"
+#include <memory>
 #include <string>
 
 class Particle {
@@ -51,4 +51,4 @@ public:
 	std::string toString() const;
 };
 
-typedef SharedPtr<Particle> ParticlePtr;
+typedef std::shared_ptr<Particle> ParticlePtr;

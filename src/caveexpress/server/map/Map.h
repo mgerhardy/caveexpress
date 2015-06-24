@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/Pointers.h"
+#include <memory>
 #include "server/box2d/DebugRenderer.h"
 #include "caveexpress/server/entities/npcs/NPC.h"
 #include "caveexpress/server/entities/Border.h"

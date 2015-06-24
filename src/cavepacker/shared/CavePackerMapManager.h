@@ -15,7 +15,7 @@ public:
 		const FilePtr& file = FS.getFile(filename);
 		char *buffer;
 		const int fileLen = file->read((void **) &buffer);
-		const ScopedArrayPtr<char> p(buffer);
+		const std::unique_ptr<char[]> p(buffer);
 		int players = 0;
 		for (int i = 0; i < fileLen; ++i) {
 			if (buffer[i] == Sokoban::PLAYER || buffer[i] == Sokoban::PLAYERONTARGET) {

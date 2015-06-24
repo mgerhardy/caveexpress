@@ -39,7 +39,7 @@ protected:
 	void renderBatchesWithShader (Shader& shader);
 
 public:
-	explicit GL3Frontend (SharedPtr<IConsole> console);
+	explicit GL3Frontend (std::shared_ptr<IConsole> console);
 	virtual ~GL3Frontend ();
 
 	void renderBegin () override;

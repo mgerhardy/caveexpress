@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/Pointers.h"
+#include <memory>
 #include "common/IMap.h"
 #include "caveexpress/server/entities/CollectableEntity.h"
 
@@ -55,7 +55,7 @@ public:
 	bool shouldCollide (const IEntity *entity) const override;
 };
 
-typedef SharedPtr<Package> PackagePtr;
+typedef std::shared_ptr<Package> PackagePtr;
 
 inline bool Package::hasTarget (const PackageTarget *target) const
 {

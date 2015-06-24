@@ -89,7 +89,7 @@ std::string Map::getSolution() const
 
 	char *buffer;
 	const int fileLen = filePtr->read((void **) &buffer);
-	ScopedArrayPtr<char> p(buffer);
+	std::unique_ptr<char[]> p(buffer);
 	if (!buffer || fileLen <= 0) {
 		Log::error(LOG_SERVER, "solution file '%s' can't get loaded", filePtr->getName().c_str());
 		return "";
@@ -423,7 +423,7 @@ inline const EntityType& getEntityTypeForSpriteType (const SpriteType& spriteTyp
 
 bool Map::load (const std::string& name)
 {
-	ScopedPtr<IMapContext> ctx(getMapContext(name));
+	std::unique_ptr<IMapContext> ctx(getMapContext(name));
 
 	resetCurrentMap();
 

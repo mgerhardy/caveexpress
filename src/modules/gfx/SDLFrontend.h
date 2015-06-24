@@ -24,7 +24,7 @@ protected:
 	uint32_t _time;
 	// stores the time base for fps calculation
 	uint32_t _timeBase;
-	SharedPtr<IConsole> _console;
+	std::shared_ptr<IConsole> _console;
 
 	ConfigVarPtr _debugSleep;
 
@@ -52,7 +52,7 @@ protected:
 	void getTrimmed (const Texture* texture, int& x, int& y, int& w, int& h) const;
 	void initJoystickAndHaptic ();
 public:
-	explicit SDLFrontend (SharedPtr<IConsole> console);
+	explicit SDLFrontend (std::shared_ptr<IConsole> console);
 	virtual ~SDLFrontend ();
 
 	virtual void initRenderer ();

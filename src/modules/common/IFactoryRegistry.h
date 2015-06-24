@@ -3,7 +3,7 @@
 #include <map>
 
 #include "common/NonCopyable.h"
-#include "common/Pointers.h"
+#include <memory>
 
 template<class TYPE, class CTX>
 class IFactory {

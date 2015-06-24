@@ -2,7 +2,7 @@
 
 #ifndef NONETWORK
 
-#include "common/Pointers.h"
+#include <memory>
 #include "INetwork.h"
 #include <SDL_net.h>
 #include <vector>
@@ -83,7 +83,7 @@ private:
 		ClientId num;
 		bool disconnect;
 	};
-	typedef SharedPtr<Client> ClientPtr;
+	typedef std::shared_ptr<Client> ClientPtr;
 	TCPsocket _serverSocket;
 	TCPsocket _clientSocket;
 #ifdef NET_USE_UDP

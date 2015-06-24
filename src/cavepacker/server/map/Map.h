@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/Pointers.h"
+#include <memory>
 #include "common/IMap.h"
 #include "common/TimeManager.h"
 #include "common/ICommand.h"

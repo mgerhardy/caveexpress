@@ -1,10 +1,10 @@
 #pragma once
 
-#include "common/Pointers.h"
+#include <memory>
 #include <string>
 
 class Texture;
-typedef SharedPtr<Texture> TexturePtr;
+typedef std::shared_ptr<Texture> TexturePtr;
 
 class IParticleEnvironment {
 public:

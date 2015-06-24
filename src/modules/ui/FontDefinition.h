@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/Pointers.h"
+#include <memory>
 #include "common/NonCopyable.h"
 #include <map>
 #include <string>
@@ -132,7 +132,7 @@ public:
 	void updateChars (int textureWidth, int textureHeight);
 };
 
-typedef SharedPtr<FontDef> FontDefPtr;
+typedef std::shared_ptr<FontDef> FontDefPtr;
 typedef std::map<std::string, FontDefPtr> FontDefMap;
 typedef FontDefMap::const_iterator FontDefMapConstIter;
 

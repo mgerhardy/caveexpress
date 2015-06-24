@@ -25,7 +25,7 @@ inline TexNum GL1getTexNum (TextureData *textureData)
 	return texnum;
 }
 
-GL1Frontend::GL1Frontend (SharedPtr<IConsole> console) :
+GL1Frontend::GL1Frontend (std::shared_ptr<IConsole> console) :
 		SDLFrontend(console), _maxTextureUnits(0), _currentTextureUnit(nullptr), _rx(1.0f), _ry(1.0f)
 {
 	_context = nullptr;
@@ -372,14 +372,14 @@ void GL1Frontend::makeScreenshot (const std::string& filename)
 {
 #ifndef EMSCRIPTEN
 	const int bytesPerPixel = 3;
-	ScopedPtr<GLubyte> pixels(new GLubyte[bytesPerPixel * _width * _height]);
+	std::unique_ptr<GLubyte> pixels(new GLubyte[bytesPerPixel * _width * _height]);
 	int rowPack;
 	glGetIntegerv(GL_PACK_ALIGNMENT, &rowPack);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
-	glReadPixels(0, 0, _width, _height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+	glReadPixels(0, 0, _width, _height, GL_RGB, GL_UNSIGNED_BYTE, pixels.get());
 	glPixelStorei(GL_PACK_ALIGNMENT, rowPack);
 
-	ScopedPtr<SDL_Surface> surface(SDL_CreateRGBSurface(SDL_SWSURFACE, _width, _height, 24,
+	std::unique_ptr<SDL_Surface> surface(SDL_CreateRGBSurface(SDL_SWSURFACE, _width, _height, 24,
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 			0x000000ff, 0x0000ff00, 0x00ff0000
 #else
@@ -390,9 +390,9 @@ void GL1Frontend::makeScreenshot (const std::string& filename)
 		return;
 	const int pitch = _width * bytesPerPixel;
 	for (int y = 0; y < _height; ++y)
-		memcpy((uint8 *) surface->pixels + surface->pitch * y, (uint8 *) pixels + pitch * (_height - y - 1), pitch);
+		memcpy((uint8 *) surface->pixels + surface->pitch * y, (uint8 *) pixels.get() + pitch * (_height - y - 1), pitch);
 	const std::string fullFilename = FS.getAbsoluteWritePath() + filename + "-" + dateutil::getDateString() + ".png";
-	IMG_SavePNG(surface, fullFilename.c_str());
+	IMG_SavePNG(surface.get(), fullFilename.c_str());
 #endif
 }
 

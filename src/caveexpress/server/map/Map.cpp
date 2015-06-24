@@ -53,7 +53,7 @@
 #include <functional>
 #include <cassert>
 
-typedef SharedPtr<b2Shape> ShapePtr;
+typedef std::shared_ptr<b2Shape> ShapePtr;
 typedef std::multimap<std::string, ShapePtr> ShapeMap;
 typedef ShapeMap::iterator ShapeIter;
 
@@ -476,7 +476,7 @@ inline ICaveMapContext* getMapContext (const std::string& name)
 
 bool Map::load (const std::string& name)
 {
-	ScopedPtr<ICaveMapContext> ctx(getMapContext(name));
+	std::unique_ptr<ICaveMapContext> ctx(getMapContext(name));
 
 	resetCurrentMap();
 

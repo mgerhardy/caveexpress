@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/Pointers.h"
+#include <memory>
 #include <vector>
 #include <string>
 #include <map>
@@ -96,7 +96,7 @@ inline std::string Campaign::getText () const
 	return getSetting("text");
 }
 
-typedef SharedPtr<Campaign> CampaignPtr;
+typedef std::shared_ptr<Campaign> CampaignPtr;
 
 class ICampaignVisitor {
 public:

@@ -46,7 +46,7 @@ bool ParticleSystem::spawn (const ParticlePtr& particle)
 
 void ParticleSystem::remove (const ParticlePtr& particle)
 {
-	ParticlesIter i = std::find_if(_particles.begin(), _particles.end(), SharedPtrIf<Particle>(particle));
+	ParticlesIter i = std::find(_particles.begin(), _particles.end(), particle);
 	if (i == _particles.end())
 		return;
 	_particles.erase(i);

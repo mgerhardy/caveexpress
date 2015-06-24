@@ -132,6 +132,6 @@ public:
 	}
 };
 
-typedef SharedPtr<ICommand> CommandPtr;
+typedef std::shared_ptr<ICommand> CommandPtr;
 
 #define bindFunction(className, method) new CommandFunctor<className>(this, &className::method)

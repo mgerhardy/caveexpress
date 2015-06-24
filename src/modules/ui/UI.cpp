@@ -109,7 +109,7 @@ bool UI::initLanguage (const std::string& language)
 	const FilePtr& filePtr = FS.getFile(FS.getLanguageDir() + language + ".lang");
 	char *buffer;
 	int fileLen = filePtr->read((void **) &buffer);
-	ScopedArrayPtr<char> p(buffer);
+	std::unique_ptr<char[]> p(buffer);
 	if (!buffer || fileLen <= 0) {
 		Log::error(LOG_CLIENT, "could not load language %s", language.c_str());
 		return false;

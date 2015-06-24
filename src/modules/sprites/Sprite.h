@@ -2,7 +2,7 @@
 
 #include "textures/Texture.h"
 #include "common/Layer.h"
-#include "common/Pointers.h"
+#include <memory>
 #include "common/IFrontend.h"
 #include <vector>
 #include <string>
@@ -174,4 +174,4 @@ inline int Sprite::getFrameCount () const
 	return _frameCount;
 }
 
-typedef SharedPtr<Sprite> SpritePtr;
+typedef std::shared_ptr<Sprite> SpritePtr;

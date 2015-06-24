@@ -2,7 +2,7 @@
 
 #include "common/URI.h"
 #include "common/Compiler.h"
-#include "common/Pointers.h"
+#include <memory>
 #include <string>
 
 struct SDL_RWops;
@@ -37,4 +37,4 @@ public:
 	const std::string& getName () const;
 };
 
-typedef SharedPtr<File> FilePtr;
+typedef std::shared_ptr<File> FilePtr;
