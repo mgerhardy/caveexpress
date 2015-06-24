@@ -11,6 +11,7 @@ protected:
 	SDL_GLContext _context;
 
 	TexNum _currentTexture;
+	TexNum _currentNormal;
 
 	// aspect ratio
 	float _rx;
@@ -23,7 +24,7 @@ protected:
 	GLuint _renderTargetTexture;
 	TexNum _white;
 	TexNum _alpha;
-	TexNum _waterNormal;
+	TexNum _waterNoise;
 	Shader _shader;
 	Shader _waterShader;
 	int _drawCalls;

@@ -56,7 +56,7 @@ static Batch _batches[MAX_BATCHES];
 static int _currentBatch;
 
 GL3Frontend::GL3Frontend (SharedPtr<IConsole> console) :
-		SDLFrontend(console), _currentTexture(-1), _rx(1.0f), _ry(1.0f), _vao(0u), _vbo(0u), _renderTargetTexture(0), _white(0), _alpha(0), _waterNormal(0), _drawCalls(0)
+		SDLFrontend(console), _currentTexture(-1), _currentNormal(-1), _rx(1.0f), _ry(1.0f), _vao(0u), _vbo(0u), _renderTargetTexture(0), _white(0), _alpha(0), _waterNoise(0), _drawCalls(0)
 {
 	_context = nullptr;
 	_currentBatch = 0;
@@ -122,7 +122,7 @@ bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fil
 	tex[7] = yTexCoord2;
 
 	const TextureCoords texCoords(tex);
-	renderTexture(texCoords, x, y, w, h, 0, 1.0f, _renderTargetTexture, _waterNormal);
+	renderTexture(texCoords, x, y, w, h, 0, 1.0f, _renderTargetTexture, _waterNoise);
 	Log::trace(LOG_CLIENT, "x: %i, y: %i, w: %i, h: %i, fbo(%f, %f), tex(%f:%f:%f:%f)", x, y, w, h, width, height, xTexCoord, yTexCoord, xTexCoord2, yTexCoord2);
 	_waterShader.activate();
 	if (_waterShader.hasUniform("u_watercolor"))
@@ -264,8 +264,9 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 		} else if (scissorActive) {
 			glDisable(GL_SCISSOR_TEST);
 		}
-		if (_currentTexture != b.texnum) {
+		if (_currentTexture != b.texnum || _currentNormal != b.normaltexnum) {
 			_currentTexture = b.texnum;
+			_currentNormal = b.normaltexnum;
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, b.normaltexnum);
 			glActiveTexture(GL_TEXTURE0);
@@ -433,14 +434,13 @@ void GL3Frontend::initRenderer () {
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 
-	SDL_Surface *textureSurface = loadTextureIntoSurface("waternormal");
+	SDL_Surface *textureSurface = loadTextureIntoSurface("waternoise");
 	if (textureSurface == nullptr) {
 		System.exit("could not load the water normal", 1);
 	} else {
-		_waterNormal = uploadTexture(static_cast<unsigned char *>(textureSurface->pixels), textureSurface->w, textureSurface->h);
+		_waterNoise = uploadTexture(static_cast<unsigned char *>(textureSurface->pixels), textureSurface->w, textureSurface->h);
 		SDL_FreeSurface(textureSurface);
-
-			Log::info(LOG_CLIENT, "Uploaded water normal with texnum %ui", _waterNormal);
+		Log::info(LOG_CLIENT, "Uploaded water noise with texnum %ui", _waterNoise);
 	}
 }
 
