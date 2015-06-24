@@ -23,6 +23,7 @@ const char *KEY_CONFIG_JOYSTICKBINDINGS = "joystickbindings";
 ConfigManager::ConfigManager() :
 		_persister(nullptr), _bindingSpace(BINDINGS_UI), _bindingSpaceListener(nullptr) {
 	memset(&_backendRenderer, 0, sizeof(_backendRenderer));
+	_logLevel = LogLevel::LEVEL_INFO;
 }
 
 void ConfigManager::setBindingsSpace (BindingSpace bindingSpace)
@@ -72,7 +73,6 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	_soundEnabled = getConfigValue(_configVarMap, "sound");
 	_port = getConfigValue(_configVarMap, "port", "4567");
 	_debug = getConfigValue(_configVarMap, "debug", "false");
-	_trace = getConfigValue(_configVarMap, "trace", "false");
 #ifdef NONETWORK
 	_network = getConfigValue(_configVarMap, "network", "false");
 #else
@@ -89,7 +89,6 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	_npcFlyingSpeed = getConfigValue(_configVarMap, "npcflyingspeed", "4.0");
 	_mode = getConfigValue(_configVarMap, "mode", "");
 	_waterParticle = getConfigValue(_configVarMap, "waterparticle", "false", CV_READONLY);
-	_shader = getConfigValue(_configVarMap, "shader", "false");
 	_grabMouse = getConfigValue(_configVarMap, "grabmouse", "true");
 	_soundEngine = getConfigValue(_configVarMap, "soundengine", "sdl");
 	_particles = getConfigValue(_configVarMap, "particles", "0");
@@ -117,10 +116,10 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 
 	Log::info(LOG_CONFIG, "mouse grab enabled: %s", _grabMouse->getValue().c_str());
 	Log::info(LOG_CONFIG, "  joystick enabled: %s", _joystick->getValue().c_str());
-	Log::info(LOG_CONFIG, "    shader enabled: %s", _shader->getValue().c_str());
 	Log::info(LOG_CONFIG, "     sound enabled: %s", _soundEnabled->getValue().c_str());
 	Log::info(LOG_CONFIG, "     debug enabled: %s", _debug->getValue().c_str());
 
+	CommandSystem::get().registerCommand("loglevel", bindFunction(ConfigManager, setLogLevel));
 	CommandSystem::get().registerCommand(CMD_SETVAR, bindFunction(ConfigManager, setConfig));
 	CommandSystem::get().registerCommand(CMD_LISTVARS, bindFunction(ConfigManager, listConfigVariables));
 
@@ -291,6 +290,19 @@ void ConfigManager::listConfigVariables (const ICommand::Args& args)
 			Log::info(LOG_CONFIG, "%s %s", c->getName().c_str(), c->getValue().c_str());
 		}
 	}
+}
+
+void ConfigManager::setLogLevel (const ICommand::Args& args)
+{
+	if (args.size() != 1)
+		return;
+	const int max = static_cast<int>(LogLevel::LEVEL_MAX);
+	for (int i = 0; i < max; ++i) {
+		if (args[0] == LogLevels[i].logLevelStr) {
+			_logLevel = LogLevels[i].logLevel;
+		}
+	}
+
 }
 
 void ConfigManager::setConfig (const ICommand::Args& args)

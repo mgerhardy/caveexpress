@@ -3,6 +3,7 @@
 #include "common/NonCopyable.h"
 #include "common/DebugRendererData.h"
 #include "common/ICommand.h"
+#include "common/Log.h"
 #include "common/ConfigVar.h"
 #include "common/IConfigPersister.h"
 #include <string>
@@ -63,13 +64,14 @@ private:
 	KeyModifierMap _keyModifiers;
 
 	ConfigVarsMap _configVars;
-	IConfigPersister *_persister;
 
+	LogLevel _logLevel;
+
+	IConfigPersister *_persister;
 	ConfigVarPtr _width;
 	ConfigVarPtr _height;
 	ConfigVarPtr _port;
 	ConfigVarPtr _debug;
-	ConfigVarPtr _trace;
 	ConfigVarPtr _network;
 	ConfigVarPtr _grabMouse;
 	ConfigVarPtr _joystick;
@@ -78,7 +80,6 @@ private:
 	ConfigVarPtr _soundEnabled;
 	ConfigVarPtr _showFPS;
 	ConfigVarPtr _soundEngine;
-	ConfigVarPtr _shader;
 	ConfigVarPtr _name;
 	ConfigVarPtr _vsync;
 	ConfigVarPtr _textureSize;
@@ -147,10 +148,8 @@ public:
 	void setDebugRendererData (int mapX, int mapY, int width, int height, int scale);
 	const DebugRendererData& getMapDebugRect () const;
 	const std::string& getName () const;
-	bool isShader () const;
 	bool isDebugUI () const;
 	bool isDebug () const;
-	bool isTrace () const;
 	bool isGrabMouse () const;
 	bool isVSync () const;
 	bool isNetwork () const;
@@ -164,6 +163,7 @@ public:
 	float getNpcFlyingSpeed () const;
 	int getFruitCollectDelayForANewLife () const;
 	bool useWaterParticles () const;
+	LogLevel getLogLevel() const;
 
 	bool isModeSelected () const;
 	bool isModeEasy () const;
@@ -222,6 +222,7 @@ public:
 
 	// ICommand binding
 	void setConfig (const ICommand::Args& args);
+	void setLogLevel (const ICommand::Args& args);
 	void listConfigVariables (const ICommand::Args& args);
 
 	void autoComplete (const std::string& input, std::vector<std::string>& matches);
@@ -239,19 +240,9 @@ inline const std::string& ConfigManager::getName () const
 	return _name->getValue();
 }
 
-inline bool ConfigManager::isShader () const
-{
-	return _shader->getBoolValue();
-}
-
 inline bool ConfigManager::isDebugUI () const
 {
 	return _debugui && _debugui->getBoolValue();
-}
-
-inline bool ConfigManager::isTrace () const
-{
-	return _trace && _trace->getBoolValue();
 }
 
 inline bool ConfigManager::isDebug () const
@@ -267,6 +258,11 @@ inline bool ConfigManager::isGrabMouse () const
 inline void ConfigManager::setGrabMouse (bool grabMouse)
 {
 	_grabMouse->setValue(grabMouse ? "true" : "false");
+}
+
+inline LogLevel ConfigManager::getLogLevel() const
+{
+	return _logLevel;
 }
 
 inline int ConfigManager::getWidth () const

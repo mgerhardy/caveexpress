@@ -23,15 +23,6 @@ char const* const LogTypes[] = {
 };
 CASSERT(lengthof(LogTypes) == LOG_MAX);
 
-char const* const LogLevels[] = {
-	"TRACE",
-	"DEBUG",
-	"INFO",
-	"WARN",
-	"ERROR"
-};
-CASSERT(lengthof(LogLevels) == static_cast<int>(LogLevel::LEVEL_MAX));
-
 Log::Log ()
 {
 }
@@ -65,7 +56,7 @@ void Log::addConsole (IConsole* console)
 void Log::vsnprint(LogLevel logLevel, LogCategory category, const char* msg, va_list args) {
 	char buf[1024];
 	const char *categoryStr = LogTypes[static_cast<int>(category)];
-	const char *logLevelStr = LogLevels[static_cast<int>(logLevel)];
+	const char *logLevelStr = LogLevels[static_cast<int>(logLevel)].logLevelStr;
 	SDL_vsnprintf(buf, sizeof(buf), msg, args);
 	buf[sizeof(buf) - 1] = 0;
 	SDL_Log("%s (%s): %s\n", logLevelStr, categoryStr, buf);
@@ -99,6 +90,9 @@ void Log::vsnprint(LogLevel logLevel, LogCategory category, const char* msg, va_
 
 void Log::info (LogCategory category, const char* msg, ...)
 {
+	LogLevel level = Config.getLogLevel();
+	if (level == LogLevel::LEVEL_ERROR || level == LogLevel::LEVEL_WARN)
+		return;
 	va_list args;
 	va_start(args, msg);
 	get().vsnprint(LogLevel::LEVEL_INFO, category, msg, args);
@@ -115,7 +109,7 @@ void Log::error (LogCategory category, const char* msg, ...)
 
 void Log::trace (LogCategory category, const char* msg, ...)
 {
-	if (!Config.isTrace())
+	if (Config.getLogLevel() != LogLevel::LEVEL_TRACE)
 		return;
 	va_list args;
 	va_start(args, msg);
@@ -125,7 +119,8 @@ void Log::trace (LogCategory category, const char* msg, ...)
 
 void Log::debug (LogCategory category, const char* msg, ...)
 {
-	if (!Config.isDebug())
+	LogLevel level = Config.getLogLevel();
+	if (level != LogLevel::LEVEL_TRACE && level != LogLevel::LEVEL_DEBUG)
 		return;
 	va_list args;
 	va_start(args, msg);
@@ -135,6 +130,9 @@ void Log::debug (LogCategory category, const char* msg, ...)
 
 void Log::warn (LogCategory category, const char* msg, ...)
 {
+	LogLevel level = Config.getLogLevel();
+	if (level == LogLevel::LEVEL_ERROR)
+		return;
 	va_list args;
 	va_start(args, msg);
 	get().vsnprint(LogLevel::LEVEL_WARN, category, msg, args);
