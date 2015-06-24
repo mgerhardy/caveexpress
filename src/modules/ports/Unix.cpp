@@ -14,7 +14,6 @@
 #include <locale.h>
 #include <signal.h>
 #include <errno.h>
-#include <fstream>
 #include <algorithm>
 #include <iterator>
 #include <SDL.h>
