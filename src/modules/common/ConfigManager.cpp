@@ -299,10 +299,12 @@ void ConfigManager::setLogLevel (const ICommand::Args& args)
 	const int max = static_cast<int>(LogLevel::LEVEL_MAX);
 	for (int i = 0; i < max; ++i) {
 		if (args[0] == LogLevels[i].logLevelStr) {
+			Log::info(LOG_CONFIG, "Changing log level to %s", args[0].c_str());
 			_logLevel = LogLevels[i].logLevel;
+			return;
 		}
 	}
-
+	Log::error(LOG_CONFIG, "Failed to change the level to %s", args[0].c_str());
 }
 
 void ConfigManager::setConfig (const ICommand::Args& args)
