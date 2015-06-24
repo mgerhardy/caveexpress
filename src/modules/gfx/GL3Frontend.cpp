@@ -396,7 +396,6 @@ void GL3Frontend::initRenderer () {
 	}
 	if (!_waterShader.loadProgram("water")) {
 		Log::error(LOG_CLIENT, "Failed to load the water shader");
-		System.exit("Failed to load the water shader", 1);
 	}
 	_waterShader.activate();
 	if (_waterShader.hasUniform("u_texture"))
@@ -436,7 +435,7 @@ void GL3Frontend::initRenderer () {
 
 	SDL_Surface *textureSurface = loadTextureIntoSurface("waternoise");
 	if (textureSurface == nullptr) {
-		System.exit("could not load the water normal", 1);
+		Log::error(LOG_CLIENT, "Could not load the water noise");
 	} else {
 		_waterNoise = uploadTexture(static_cast<unsigned char *>(textureSurface->pixels), textureSurface->w, textureSurface->h);
 		SDL_FreeSurface(textureSurface);
