@@ -3,6 +3,7 @@
 #include "campaign/CampaignManager.h"
 #include "network/NoNetwork.h"
 #include "common/MapManager.h"
+#include "common/FileSystem.h"
 #include "common/TextureDefinition.h"
 #include "caveexpress/server/map/LUAMapContext.h"
 #include "common/MapSettings.h"

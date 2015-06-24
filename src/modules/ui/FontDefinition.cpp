@@ -1,5 +1,4 @@
 #include "FontDefinition.h"
-#include "common/FileSystem.h"
 #include "common/Log.h"
 #include "common/LUA.h"
 #include "common/ExecutionTime.h"

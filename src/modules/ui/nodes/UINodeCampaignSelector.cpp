@@ -1,7 +1,6 @@
 #include "UINodeCampaignSelector.h"
 #include "campaign/CampaignManager.h"
 #include "common/CommandSystem.h"
-#include "common/FileSystem.h"
 #include "ui/UI.h"
 
 UINodeCampaignSelector::UINodeCampaignSelector (IFrontend *frontend, CampaignManager &campaignManager, int cols, int rows) :

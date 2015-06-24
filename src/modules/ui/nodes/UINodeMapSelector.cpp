@@ -3,7 +3,6 @@
 #include "common/CommandSystem.h"
 #include "campaign/CampaignManager.h"
 #include "common/Commands.h"
-#include "common/FileSystem.h"
 
 UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, bool multiplayer, int cols, int rows) :
 		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _campaignManager(nullptr), _mapManager(&mapManager), _multiplayer(multiplayer)

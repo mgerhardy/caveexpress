@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cavepacker/server/map/SokobanMapContext.h"
+#include "common/FileSystem.h"
 
 namespace cavepacker {
 

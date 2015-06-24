@@ -1,5 +1,4 @@
 #include "TextureDefinition.h"
-#include "common/FileSystem.h"
 #include "common/ConfigManager.h"
 #include "common/Log.h"
 #include "common/LUA.h"

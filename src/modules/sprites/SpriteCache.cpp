@@ -1,5 +1,4 @@
 #include "SpriteCache.h"
-#include "common/FileSystem.h"
 #include "common/SpriteDefinition.h"
 #include "common/Log.h"
 

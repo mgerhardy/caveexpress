@@ -1,7 +1,5 @@
 #include "TextureCache.h"
-#include "common/FileSystem.h"
 #include "common/Log.h"
-#include "common/LUA.h"
 #include "common/ExecutionTime.h"
 #include "common/TextureDefinition.h"
 #include "common/ServiceProvider.h"

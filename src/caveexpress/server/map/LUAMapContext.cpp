@@ -2,6 +2,7 @@
 #include "common/MapSettings.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
 #include "common/Pointers.h"
+#include "common/FileSystem.h"
 #include "common/Log.h"
 #include <string>
 

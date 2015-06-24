@@ -16,7 +16,6 @@ GCC_DIAG_ON(cast-align)
 GCC_DIAG_ON(cast-qual)
 #include "common/String.h"
 #include "common/Log.h"
-#include "common/FileSystem.h"
 #include <map>
 #include <SDL_platform.h>
 

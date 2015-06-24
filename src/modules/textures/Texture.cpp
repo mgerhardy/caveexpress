@@ -1,5 +1,4 @@
 #include "Texture.h"
-#include "common/FileSystem.h"
 #include "common/Log.h"
 #include <assert.h>
 #include <SDL.h>
