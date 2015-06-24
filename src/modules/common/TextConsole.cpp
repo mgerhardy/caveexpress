@@ -4,7 +4,6 @@
 #include "common/Application.h"
 #include <SDL.h>
 #include <algorithm>
-#include <iostream>
 
 namespace {
 #ifdef HAVE_NCURSES_H
@@ -92,8 +91,7 @@ void TextConsole::update (uint32_t deltaTime)
 void TextConsole::cursorDelete (bool moveCursor)
 {
 	IConsole::cursorDelete(moveCursor);
-	std::cout << "\b";
-	std::cout << " ";
+	printf("%c ", '\b');
 }
 
 void TextConsole::logInfo (const std::string& string)

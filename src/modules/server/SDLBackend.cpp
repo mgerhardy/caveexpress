@@ -23,7 +23,6 @@
 #include "network/ProtocolHandlerRegistry.h"
 #include "client/entities/ClientEntityFactory.h"
 #include <SDL.h>
-#include <iostream>
 #include <time.h>
 
 static SDLBackend *INSTANCE;

@@ -1,5 +1,4 @@
 #include "TestShared.h"
-#include "common/ParameterList.h"
 #include "common/URI.h"
 #include "common/String.h"
 #include "common/Log.h"
@@ -23,31 +22,6 @@ TEST_F(GeneralTest, testStringLTrim)
 TEST_F(GeneralTest, testStringRTrim)
 {
 	ASSERT_EQ(" foo bar", string::rtrim(" foo bar "));
-}
-
-TEST_F(GeneralTest, testParameterList)
-{
-	{
-		ParameterList pl;
-		pl.add("foo");
-		ASSERT_EQ(std::string("foo"), pl.str());
-		pl.add("bar");
-		ASSERT_EQ(std::string("foo,bar"), pl.str());
-	}
-
-	{
-		ParameterList pl("/");
-		pl.add("foo");
-		pl.add("bar");
-		ASSERT_EQ(std::string("foo/bar"), pl.str());
-	}
-
-	{
-		ParameterList pl("/", "[", "]");
-		pl.add("foo");
-		pl.add("bar");
-		ASSERT_EQ(std::string("[foo/bar]"), pl.str());
-	}
 }
 
 TEST_F(GeneralTest, testKeyValueParser)

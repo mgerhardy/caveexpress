@@ -8,7 +8,6 @@
 #include "common/System.h"
 #include <SDL.h>
 #include <SDL_platform.h>
-#include <iostream>
 
 #define CMD_CL_TOGGLECONSOLE "cl_toggleconsole"
 

@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-#include <iostream>
 
 class FontChar {
 private:
@@ -75,14 +74,6 @@ public:
 	}
 };
 
-inline std::ostream& operator<< (std::ostream &stream, const FontChar &in)
-{
-	stream << "(character: " << in.getCharacter() << ", width: " << in.getWidth();
-	stream << ", x: " << in.getX() << ", y: " << in.getY() << ", w: " << in.getW() << ", h: ";
-	stream << in.getH() << ", ox: " << in.getOX() << ", oy: " << in.getOY() << ")";
-	return stream;
-}
-
 class FontDef {
 private:
 	std::map<std::string, FontChar*> _fontCharMap;
@@ -140,17 +131,6 @@ public:
 
 	void updateChars (int textureWidth, int textureHeight);
 };
-
-inline std::ostream& operator<< (std::ostream &stream, const FontDef &in)
-{
-	stream << "(id: " << in.id << ", height: " << in.getHeight();
-	stream << ", textureWidth: " << in.textureWidth << ", v: ";
-	stream << in.textureHeight << ", textureName: " << in.textureName;
-	stream << ", metricsHeight: " << in.getMetricsHeight() << ", metricsAscender: ";
-	stream << in.getMetricsAscender() << ", metricsDescender: ";
-	stream << in.getMetricsDescender() << ", chars: " << in.fontChars.size() << ")";
-	return stream;
-}
 
 typedef SharedPtr<FontDef> FontDefPtr;
 typedef std::map<std::string, FontDefPtr> FontDefMap;

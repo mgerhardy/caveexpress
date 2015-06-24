@@ -4,7 +4,6 @@
 #include "common/Application.h"
 #include <SDL.h>
 #include <SDL_platform.h>
-#include <iostream>
 #include <fstream>
 
 #ifdef __EMSCRIPTEN__

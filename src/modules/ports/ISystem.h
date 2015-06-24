@@ -4,7 +4,6 @@
 #include "common/DateUtil.h"
 #include <string>
 #include <vector>
-#include <iostream>
 #include <SDL.h>
 
 struct PaymentEntry {

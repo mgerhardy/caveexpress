@@ -12,7 +12,6 @@
 #include <mmsystem.h>
 #include <SDL_messagebox.h>
 #include <iterator>
-#include <iostream>
 #include <sstream>
 #include <vector>
 #include <algorithm>
