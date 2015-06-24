@@ -40,14 +40,9 @@ enum class LogLevel {
 struct LogLevelList {
 	const char *logLevelStr;
 	LogLevel logLevel;
-} LogLevels[] = {
-	{"TRACE", LogLevel::LEVEL_TRACE},
-	{"DEBUG", LogLevel::LEVEL_DEBUG},
-	{"INFO",  LogLevel::LEVEL_INFO},
-	{"WARN",  LogLevel::LEVEL_WARN},
-	{"ERROR", LogLevel::LEVEL_ERROR},
 };
-CASSERT(lengthof(LogLevels) == static_cast<int>(LogLevel::LEVEL_MAX));
+
+extern LogLevelList LogLevels[];
 
 class Log {
 private:
