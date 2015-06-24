@@ -82,9 +82,6 @@ void ClientConsole::logInfo (const std::string& string)
 
 void ClientConsole::logTrace (const std::string& string)
 {
-	if (!Config.isTrace()) {
-		return;
-	}
 	logInfo(string);
 }
 
@@ -99,9 +96,6 @@ void ClientConsole::logError (const std::string& string)
 
 void ClientConsole::logDebug (const std::string& string)
 {
-	if (!Config.isDebug()) {
-		return;
-	}
 	logInfo(string);
 }
 
