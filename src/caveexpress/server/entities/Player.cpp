@@ -568,12 +568,4 @@ void Player::setCollectedNPC(NPCFriendly *npc) {
 	}
 }
 
-void Player::print (std::ostream &stream, int level) const
-{
-	stream << "Player[id: " << _id << ", clientId: " << (int)_clientId;
-	stream << ", time:" << _time << ", state:" << _state << ", vismask:" << _vismask;
-	stream << ", lives:" << (int)_lives << ", hitpoints:" << _hitpoints;
-	stream << "]";
-}
-
 }

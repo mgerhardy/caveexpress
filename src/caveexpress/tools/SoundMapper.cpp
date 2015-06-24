@@ -73,16 +73,24 @@ static void fillSounds ()
 extern "C" int main(int argc, char* argv[]) {
 	fillSounds();
 
-	std::stringstream s;
+	const std::string path = FS.getAbsoluteWritePath() + "entitysounds.lua";
+	SDL_RWops *rwops = FS.createRWops(path, "wb");
+	FilePtr file(new File(rwops, path));
+
+	bool first = true;
 	for (EntityType::TypeMapConstIter eIter = EntityType::begin(); eIter != EntityType::end(); ++eIter) {
 		SoundMappingCacheConstIter mIter = soundMappingCache.find(eIter->second);
-		if (mIter == soundMappingCache.end())
+		if (mIter == soundMappingCache.end()) {
 			continue;
-		if (!s.str().empty())
-			s << "\n";
+		}
+		if (!first) {
+			file->writeString("\n");
+		}
+		first = false;
 		String name = eIter->second->name;
 		name = name.replaceAll("-", "");
-		s << name << " = {\n";
+		file->writeString(name.c_str());
+		file->writeString(" = {\n");
 		const SoundMapping& soundMapping = mIter->second;
 		for (Animation::TypeMapConstIter aIter = Animation::begin(); aIter != Animation::end(); ++aIter) {
 			SoundMappingConstIter sIter = soundMapping.find(aIter->second);
@@ -90,13 +98,13 @@ extern "C" int main(int argc, char* argv[]) {
 				continue;
 			name = aIter->second->name;
 			name = name.replaceAll("-", "");
-			s << "\t" << name << " = \"" << sIter->second << "\",\n";
+			file->writeString("\t" );
+			file->writeString(name.c_str());
+			file->writeString(" = \"");
+			file->writeString(sIter->second.c_str());
+			file->writeString("\",\n");
 		}
-		s << "}\n";
-	}
-	const std::string lua = s.str();
-	if (FS.writeSysFile("entitysounds.lua", (const unsigned char*)lua.c_str(), lua.length(), true) == -1) {
-		Log::error(LOG_CLIENT, "failed to write the file");
+		file->writeString("}\n");
 	}
 
 	return EXIT_SUCCESS;

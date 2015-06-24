@@ -139,20 +139,6 @@ public:
 
 		return false;
 	}
-
-	inline std::string toString () const
-	{
-		std::stringstream ss;
-		ss << "spritedef: " << def->id << std::endl;
-		ss << "entitytype: " << (entityType != nullptr ? entityType->name : "none") << std::endl;
-		ss << "emitterAmount: " << amount << std::endl;
-		ss << "emitterDelay: " << delay << std::endl;
-		ss << "gridX: " << gridX << std::endl;
-		ss << "gridY: " << gridY << std::endl;
-		ss << "layer: " << layer << std::endl;
-		ss << "settings: " << settings << std::endl;
-		return ss.str();
-	}
 };
 typedef std::list<TileItem> TileItems;
 typedef TileItems::iterator TileItemsIter;

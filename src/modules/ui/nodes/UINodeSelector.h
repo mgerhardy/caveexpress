@@ -472,32 +472,6 @@ public:
 	{
 		_pageVisible = pageVisible;
 	}
-
-	virtual std::string getPrintNodeName () const override
-	{
-		return "UINodeSelector";
-	}
-
-	virtual void printValues (std::ostream &stream) const override
-	{
-		stream << "cols: " << getCols() << ", ";
-		stream << "rows: " << getRows() << ", ";
-		stream << "renderX: " << _renderX << ", ";
-		stream << "renderY: " << _renderY << ", ";
-		stream << "scrollingEnabled: " << _scrollingEnabled << ", ";
-		stream << "scrolling: " << _scrolling << ", ";
-		stream << "offset: " << _offset << ", ";
-		stream << "rowSpacing: " << _rowSpacing << ", ";
-		stream << "colSpacing: " << _colSpacing << ", ";
-		stream << "scrollingEnabled: " << _scrollingEnabled << ", ";
-		stream << "selectedIndex: " << _selectedIndex << ", ";
-		stream << "pageVisible: " << _pageVisible << ", ";
-		stream << "colWidth: " << _colWidth << ", ";
-		stream << "rowHeight: " << _rowHeight << ", ";
-		stream << "autoWidth: " << getAutoWidth() << ", ";
-		stream << "autoHeight: " << getAutoHeight() << ", ";
-		stream << "fontHeight: " << getFontHeight() << ", ";
-	}
 };
 
 template<class T>

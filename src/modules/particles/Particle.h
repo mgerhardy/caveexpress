@@ -47,8 +47,6 @@ public:
 	// returns false if the particle is going to be destroyed
 	bool update (uint32_t deltaTime);
 	virtual void render (IFrontend* frontend, int x = 0, int y = 0, float zoom = 1.0f) const;
-
-	std::string toString() const;
 };
 
 typedef std::shared_ptr<Particle> ParticlePtr;

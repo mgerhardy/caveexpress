@@ -16,12 +16,6 @@ public:
 
 	// IEntity
 	SpriteDefPtr getSpriteDef () const override;
-	inline operator std::string () const override
-	{
-		std::stringstream ss;
-		ss << "MapTile " << getSpriteID() << ", col: " << _col << ", row: " << _row;
-		return ss.str();
-	}
 };
 
 }

@@ -726,7 +726,7 @@ bool Map::spawnPlayer (Player* player)
 {
 	assert(_entityRemovalAllowed);
 
-	Log::info(LOG_SERVER, "spawn player %s", player->toString().c_str());
+	Log::info(LOG_SERVER, "spawn player %i", player->getID());
 	const int startPosIdx = _players.size();
 	float playerStartX, playerStartY;
 	if (!getStartPosition(startPosIdx, playerStartX, playerStartY)) {
@@ -779,7 +779,7 @@ bool Map::initPlayer (Player* player)
 
 	INetwork& network = _serviceProvider->getNetwork();
 	const ClientId clientId = player->getClientId();
-	Log::info(LOG_SERVER, "init player %s", player->toString().c_str());
+	Log::info(LOG_SERVER, "init player %i", player->getID());
 	const int clientMask = ClientIdToClientMask(clientId);
 	const MapSettingsMessage mapSettingsMsg(_settings, _startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);

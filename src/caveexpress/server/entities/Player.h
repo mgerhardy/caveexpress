@@ -122,7 +122,6 @@ public:
 	void setName (const std::string& name);
 
 	// IEntity
-	void print (std::ostream &stream, int level) const override;
 	bool shouldApplyWind () const override;
 	void update (uint32_t deltaTime) override;
 	void onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold) override;

@@ -39,8 +39,6 @@ public:
 
 	void setTime (uint32_t time);
 	uint32_t getTime () const;
-
-	std::string toString() const;
 };
 
 typedef std::shared_ptr<CampaignMap> CampaignMapPtr;

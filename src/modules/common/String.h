@@ -2,7 +2,6 @@
 
 #include <string>
 #include <cstring>
-#include <sstream>
 #include <vector>
 #include <cctype>
 #include <algorithm>
@@ -222,9 +221,7 @@ namespace string {
 template<class T>
 inline std::string toString (const T& t)
 {
-	std::stringstream ss;
-	ss << t;
-	return ss.str();
+	return std::to_string(t);
 }
 
 inline int toInt (const std::string& str)

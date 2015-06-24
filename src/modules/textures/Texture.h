@@ -5,7 +5,6 @@
 #include "common/TextureDefinition.h"
 #include <string>
 #include <stdint.h>
-#include <sstream>
 
 #define TEXTURE_SPECIAL_MARKER "***"
 
@@ -14,17 +13,6 @@ struct TextureRect {
 	int y;
 	int w;
 	int h;
-
-	std::string toString() const {
-		std::stringstream s;
-		s << "TextureRect[";
-		s << "x: '" << x << "', ";
-		s << "y: '" << y << "', ";
-		s << "w: '" << w << "', ";
-		s << "h: '" << h << "'";
-		s << "]";
-		return s.str();
-	}
 };
 
 class Texture {

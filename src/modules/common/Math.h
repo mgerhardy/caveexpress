@@ -132,18 +132,6 @@ inline void Vector4Set (const Color& in, Color& out)
 	out[3] = in[3];
 }
 
-inline std::ostream& operator<< (std::ostream &stream, const uint8_t &in)
-{
-	stream << static_cast<int>(in);
-	return stream;
-}
-
-inline std::ostream& operator<< (std::ostream &stream, const b2Vec2 &in)
-{
-	stream << "(" << in.x << "/" << in.y << ")";
-	return stream;
-}
-
 // returns the angle between the given two points and the horizontal axis in degree
 inline double getAngleBetweenPoints (double x1, double y1, double x2, double y2)
 {

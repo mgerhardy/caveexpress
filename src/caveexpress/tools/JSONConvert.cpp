@@ -4,11 +4,11 @@
 #include <list>
 #include <string>
 #include <string.h>
-#include <iostream>
 #include <Box2D/Common/b2Math.h>
 #include <SDL.h>
 #include <yajl_parse.h>
 #include "common/Common.h"
+#include "common/Log.h"
 #include "common/File.h"
 
 const b2Vec2 Vec2Zero(0.0f, 0.0f);
@@ -38,7 +38,7 @@ static const int SKIP = 1 << 7;
 static void printError (yajl_handle hand, const std::string& str)
 {
 	unsigned char * error = yajl_get_error(hand, 1, reinterpret_cast<const unsigned char*>(str.c_str()), str.length());
-	std::cerr << reinterpret_cast<const char *>(error) << std::endl;
+	Log::error(LOG_GENERAL, "%s", reinterpret_cast<const char *>(error));
 	yajl_free_error(hand, error);
 }
 
@@ -215,10 +215,10 @@ bool readJson (const std::string& str)
 
 static void usage ()
 {
-	std::cerr << "jsonconverter" << std::endl;
-	std::cerr << "  --scale <scale>        - set the vertex scale factor" << std::endl;
-	std::cerr << "  --name <name>          - skip all sprites, but the one given in <name>" << std::endl;
-	std::cerr << "  --help                 - show this help message" << std::endl;
+	Log::error(LOG_GENERAL, "jsonconverter")
+	Log::error(LOG_GENERAL, "  --scale <scale>        - set the vertex scale factor");
+	Log::error(LOG_GENERAL, "  --name <name>          - skip all sprites, but the one given in <name>");
+	Log::error(LOG_GENERAL, "  --help                 - show this help message");
 }
 
 extern "C" int main (int argc, char* argv[])
@@ -230,7 +230,7 @@ extern "C" int main (int argc, char* argv[])
 	const std::unique_ptr<char[]> p(buffer);
 	std::cout.precision(3);
 	if (!buffer || fileLen <= 0) {
-		std::cerr << "Could not read the json file" << std::endl;
+		Log::error(LOG_GENERAL, "Could not read the json file");
 		return EXIT_FAILURE;
 	}
 
@@ -238,14 +238,14 @@ extern "C" int main (int argc, char* argv[])
 		for (int i = 1; i < argc; ++i) {
 			if ((!strcmp(argv[i], "-s") || !strcmp(argv[i], "--scale")) && argc >= i + 1) {
 				scale = atof(argv[++i]);
-				//std::cerr << "use a scale factor of " << scale << std::endl;
+				//Log::error(LOG_GENERAL, "use a scale factor of %f", scale);
 			} else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h")) {
 				usage();
 				return EXIT_FAILURE;
 			} else if ((!strcmp(argv[i], "--name") || !strcmp(argv[i], "-n")) && argc >= i + 1) {
 				onlyName = argv[++i];
 			} else {
-				std::cerr << "unknown command given: " << argv[i] << std::endl;
+				Log::error(LOG_GENERAL, "unknown command given: %s", argv[i]);
 				usage();
 				return EXIT_FAILURE;
 			}

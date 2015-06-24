@@ -154,7 +154,6 @@ TEST_F(SokobanMapTest, DISABLED_testGri)
 }
 
 #include <fstream>
-#include <iostream>
 
 namespace cavepacker {
 

@@ -1047,51 +1047,6 @@ UINode* UINode::getNode (const std::string& nodeId)
 	return nullptr;
 }
 
-std::string UINode::toString () const
-{
-	std::stringstream s;
-	s << *this;
-	return s.str();
-}
-
-void UINode::printValues (std::ostream &stream) const
-{
-}
-
-std::string UINode::getPrintNodeName () const
-{
-	return "UINode";
-}
-
-void UINode::print (std::ostream &stream, int level) const
-{
-	for (int j = 0; j < level; ++j)
-		stream << "\t";
-	stream << getPrintNodeName() << "[";
-	stream << "id: " << getId() << ", ";
-	printValues(stream);
-	stream << "x: " << getX() << ", ";
-	stream << "y: " << getY() << ", ";
-	stream << "w: " << getWidth() << ", ";
-	stream << "h: " << getHeight() << ", ";
-	stream << "marginleft: " << _marginLeft << ", ";
-	stream << "margintop: " << _marginTop << ", ";
-	stream << "padding: " << getPadding();
-	if (!_nodes.empty()) {
-		stream << ", children[\n";
-		for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-			(*i)->print(stream, level + 1);
-			stream << "\n";
-		}
-		for (int i = 0; i < level; ++i)
-			stream << "\t";
-		stream << "]\n";
-		for (int i = 0; i < level; ++i)
-			stream << "\t";
-	}
-	stream << "]";
-}
-
 void UINode::setTooltip (const std::string& tooltip)
 {
 	_tooltip = tooltip;

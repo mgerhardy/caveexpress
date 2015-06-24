@@ -390,18 +390,4 @@ b2Vec2 IEntity::getImpactVelocity (b2Contact *contact) const
 	return impactVelocity;
 }
 
-std::string IEntity::toString () const
-{
-	std::stringstream s;
-	s << *this;
-	return s.str();
-}
-
-void IEntity::print (std::ostream &stream, int level) const
-{
-	stream << "IEntity[id: " << _id << ", type:" << _type.name;
-	stream << ", time:" << _time << ", state:" << _state << ", vismask:" << _vismask;
-	stream << "]";
-}
-
 }

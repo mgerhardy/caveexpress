@@ -2,8 +2,6 @@
 #include "persister/IGameStatePersister.h"
 #include "common/MapManager.h"
 #include "common/Log.h"
-#include <string>
-#include <sstream>
 
 Campaign::Campaign (const std::string& id, IGameStatePersister* persister) :
 		_id(id), _currentMap(0), _persister(persister), _lives(INITIAL_LIVES)
@@ -183,20 +181,4 @@ bool Campaign::hasMoreMaps () const
 	const uint32_t time = (*_maps.rbegin())->getTime();
 	Log::info(LOG_CAMPAIGN, "campaign %s last map time: %ui", getId().c_str(), time);
 	return time == 0;
-}
-
-std::string Campaign::toString() const
-{
-	std::stringstream s;
-	s << "Campaign[";
-	s << "id: " << _id << ", ";
-	s << "maps[\n";
-	for (Campaign::MapListConstIter i = _maps.begin(); i != _maps.end(); ++i) {
-		s << "\t" << (*i)->toString() << "\n";
-	}
-	s << "], ";
-	s << "lives: " << (int)_lives << ", ";
-	s << "currentMap: " << _currentMap;
-	s << "]";
-	return s.str();
 }

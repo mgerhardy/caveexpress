@@ -23,16 +23,4 @@ public:
 			x(_x), y(_y), type(&_type), amount(_amount), delay(_delay), settings(_settings)
 	{
 	}
-
-	inline std::string toString () const
-	{
-		std::stringstream ss;
-		ss << "x: " << x << std::endl;
-		ss << "y: " << y << std::endl;
-		ss << "type: " << type->name << std::endl;
-		ss << "amount: " << amount << std::endl;
-		ss << "delay: " << delay << std::endl;
-		ss << "settings: " << settings << std::endl;
-		return ss.str();
-	}
 };

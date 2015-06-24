@@ -30,6 +30,7 @@ public:
 	std::string getPath () const;
 	std::string getFileName () const;
 
+	long writeString (const char *buf) const;
 	long write (const unsigned char *buf, size_t len) const;
 	int read (void **buffer);
 	int read (void *buffer, int n);

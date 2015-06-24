@@ -1,5 +1,4 @@
 #include "Particle.h"
-#include <sstream>
 
 Particle::Particle(IParticleEnvironment& env) :
 		_env(env), _active(true), _time(0), _deltaTime(0.0f), _alpha(1.0f), _angle(0), _fps(1.0f),
@@ -60,29 +59,4 @@ void Particle::render (IFrontend* frontend, int x, int y, float zoom) const
 	if (!_texture || !_texture->isValid())
 		return;
 	frontend->renderImage(_texture.get(), x + _s.x * zoom, y + _s.y * zoom, _texture->getWidth() * zoom, _texture->getHeight() * zoom, _angle, _alpha);
-}
-
-std::string Particle::toString() const
-{
-	std::stringstream s;
-	s << "Particle[";
-	const std::string textureName = _texture ? _texture->getName() : "none";
-	s << "texture: '" << textureName << "', ";
-	s << "active: '" << _active << "', ";
-	s << "time: '" << _time << "', ";
-	s << "deltaTime: '" << _deltaTime << "', ";
-	s << "alpha: '" << _alpha << "', ";
-	s << "angle: '" << _angle << "', ";
-	s << "fps: '" << _fps << "', ";
-	s << "tps: '" << _tps << "', ";
-	s << "lastFrame: '" << _lastFrame << "', ";
-	s << "lastThink: '" << _lastThink << "', ";
-	s << "t: '" << _t << "', ";
-	s << "life: '" << _life << "', ";
-	s << "s: '" << _s << "', ";
-	s << "v: '" << _v << "', ";
-	s << "a: '" << _a << "', ";
-	s << "omega: '" << _omega << "'";
-	s << "]";
-	return s.str();
 }

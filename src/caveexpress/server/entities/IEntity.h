@@ -15,7 +15,6 @@
 #include <vector>
 #include <list>
 #include <string>
-#include <sstream>
 #include <stdint.h>
 
 typedef int32_t VisMask;
@@ -600,23 +599,6 @@ public:
 		if (_ropeJoint == joint)
 			_ropeJoint = nullptr;
 	}
-
-	virtual inline operator std::string () const
-	{
-		std::stringstream ss;
-		ss << "IEntity " << _id << ", vismask: " << _vismask;
-		return ss.str();
-	}
-
-	virtual void print (std::ostream &stream, int level) const;
-
-	std::string toString () const;
 };
-
-inline std::ostream& operator<< (std::ostream &stream, const IEntity &in)
-{
-	in.print(stream, 0);
-	return stream;
-}
 
 }

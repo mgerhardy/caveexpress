@@ -40,12 +40,6 @@ public:
 	bool shouldCollide (const IEntity* entity) const override;
 	const b2Vec2& getPos () const override;
 	SpriteDefPtr getSpriteDef () const override;
-	inline operator std::string () const override
-	{
-		std::stringstream ss;
-		ss << "MapTile " << getSpriteID() << ", x: " << _gridX << ", y: " << _gridY;
-		return ss.str();
-	}
 };
 
 inline void MapTile::setGridDimensions (float gridWidth, float gridHeight, EntityAngle angle)

@@ -24,6 +24,4 @@ public:
 	float getAutoWidth () const override;
 	float getAutoHeight () const override;
 	void render (int x, int y) const override;
-	void printValues (std::ostream &stream) const override;
-	std::string getPrintNodeName () const override;
 };

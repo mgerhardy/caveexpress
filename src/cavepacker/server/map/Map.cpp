@@ -494,7 +494,7 @@ bool Map::spawnPlayer (Player* player)
 	}
 	player->onSpawn();
 	addEntity(0, *player);
-	Log::info(LOG_SERVER, "spawned player %s", player->toString().c_str());
+	Log::info(LOG_SERVER, "spawned player %i", player->getID());
 	_players.push_back(player);
 	return true;
 }
@@ -512,20 +512,22 @@ bool Map::isReadyToStart () const
 
 std::string Map::getMapString() const
 {
-	std::stringstream ss;
+	std::string mapStr;
+	mapStr.reserve(_height * _width);
 	for (int row = 0; row < _height; ++row) {
 		for (int col = 0; col < _width; ++col) {
 			const StateMapConstIter& i = _state.find(INDEX(col, row));
 			if (i == _state.end()) {
-				ss << '+';
+				mapStr.append("+");
 				continue;
 			}
 			const char c = i->second;
-			ss << c;
+			const char str[2] = { c, '\0' };
+			mapStr.append(str);
 		}
-		ss << '\n';
+		mapStr.append("\n");
 	}
-	return ss.str();
+	return mapStr;
 }
 
 void Map::printMap ()
@@ -615,7 +617,7 @@ bool Map::initPlayer (Player* player)
 
 	INetwork& network = _serviceProvider->getNetwork();
 	const ClientId clientId = player->getClientId();
-	Log::info(LOG_SERVER, "init player %s", player->toString().c_str());
+	Log::info(LOG_SERVER, "init player %i", player->getID());
 	const MapSettingsMessage mapSettingsMsg(_settings, _startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);
 

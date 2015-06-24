@@ -63,16 +63,3 @@ void UINodeLabel::render (int x, int y) const
 	y += getRenderCenterY() - _font->getTextHeight(_label) / 2;
 	_font->print(_label, _fontColor, x, y);
 }
-
-void UINodeLabel::printValues (std::ostream &stream) const
-{
-	stream << "label: " << _label << ", ";
-	stream << "textWidth: " << _textWidth << ", ";
-	stream << "font: " << _font->getId() << ", ";
-	stream << "fontColor: " << _fontColor[0] << ":" << _fontColor[1] << ":" << _fontColor[2] << ":" << _fontColor[3] << ", ";
-}
-
-std::string UINodeLabel::getPrintNodeName () const
-{
-	return "UINodeLabel";
-}

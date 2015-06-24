@@ -79,18 +79,4 @@ void IEntity::onSpawn ()
 {
 }
 
-std::string IEntity::toString () const
-{
-	std::stringstream s;
-	s << *this;
-	return s.str();
-}
-
-void IEntity::print (std::ostream &stream, int level) const
-{
-	stream << "IEntity[id: " << _id << ", type:" << _type.name;
-	stream <<  ", col: " << _col << ", row: " << _row;
-	stream << "]";
-}
-
 }

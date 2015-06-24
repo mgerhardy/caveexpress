@@ -223,8 +223,6 @@ protected:
 	BitmapFontPtr getFont (const std::string& font = "") const;
 	bool isSmallScreen() const;
 
-	virtual void printValues (std::ostream &stream) const;
-	virtual std::string getPrintNodeName () const;
 	virtual bool execute ();
 
 public:
@@ -420,8 +418,6 @@ public:
 	void setMargin (float top, float left);
 	void setEnabled (bool enable);
 
-	virtual std::string toString () const;
-
 	void setBorder (bool border);
 	void setBackgroundColor (const Color color);
 	void setBorderColor (const Color color);
@@ -458,8 +454,6 @@ public:
 	{
 		return _focus;
 	}
-
-	virtual void print (std::ostream &stream, int level) const;
 };
 
 inline void UINode::putAboveRight (UINode *node, float gap)
@@ -636,12 +630,6 @@ inline void UINode::setMargin (float top, float left)
 {
 	_marginTop = top;
 	_marginLeft = left;
-}
-
-inline std::ostream& operator<< (std::ostream &stream, const UINode &in)
-{
-	in.print(stream, 0);
-	return stream;
 }
 
 inline void UINode::setParent (UINode *parent)

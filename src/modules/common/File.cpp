@@ -22,6 +22,11 @@ const std::string& File::getName () const
 	return _rawPath;
 }
 
+long File::writeString (const char *buf) const
+{
+	return write((const unsigned char*)buf, strlen(buf));
+}
+
 long File::write (const unsigned char *buf, size_t len) const
 {
 	SDL_RWops *rwops = SDL_RWFromFile(_rawPath.c_str(), "wb");

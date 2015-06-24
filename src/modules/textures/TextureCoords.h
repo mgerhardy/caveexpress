@@ -1,9 +1,6 @@
 #pragma once
 
 #include "Texture.h"
-#include <string.h>
-#include <string>
-#include <sstream>
 
 class TextureCoords {
 private:
@@ -43,15 +40,5 @@ public:
 
 	TextureCoords(const TextureRect& rect, int width, int height, bool mirror = false, bool flip = false) {
 		calc(rect, width, height, mirror, flip);
-	}
-
-	inline std::string toString() const {
-		std::stringstream s;
-		s << "TextureCoords[";
-		for (int i = 0; i < 8; i += 2) {
-			s << "(" << texCoords[i + 0] << "," << texCoords[i + 1] << ")";
-		}
-		s << "]";
-		return s.str();
 	}
 };

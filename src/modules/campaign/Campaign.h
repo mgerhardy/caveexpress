@@ -70,8 +70,6 @@ public:
 	// will return a setting for a campaign from the map definition.
 	std::string getSetting (const std::string& key) const;
 
-	std::string toString() const;
-
 	bool isUnlocked () const;
 	bool firstMap () const;
 };

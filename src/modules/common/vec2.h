@@ -1,8 +1,5 @@
 #pragma once
 
-#include <sstream>
-#include <string>
-
 #define EPSILON 0.000001f
 inline bool fequals(float v1, float v2, float epsilon = EPSILON) {
 	return fabs(v1 - v2) < epsilon;
@@ -68,11 +65,6 @@ inline vec2 operator -(const vec2& a, const vec2& b) {
 
 inline vec2 operator *(float scalar, const vec2& a) {
 	return vec2(scalar * a.x, scalar * a.y);
-}
-
-inline std::ostream& operator<< (std::ostream &stream, const vec2 &in) {
-	stream << "(" << in.x << "/" << in.y << ")";
-	return stream;
 }
 
 static const vec2 vec2_zero;

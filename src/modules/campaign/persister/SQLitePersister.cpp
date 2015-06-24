@@ -6,7 +6,6 @@
 #include "common/Log.h"
 #include "common/Application.h"
 #include "common/ExecutionTime.h"
-#include <sstream>
 
 SQLitePersister::SQLitePersister (const std::string& filename) :
 		IGameStatePersister(), SQLite(filename)
@@ -23,31 +22,31 @@ bool SQLitePersister::init () {
 	else
 		Log::info(LOG_CAMPAIGN, "loaded gamestate database");
 
-	std::stringstream ss;
-	ss << "CREATE TABLE IF NOT EXISTS " TABLE_GAMESTATE " (";
-	ss << "activecampaign TEXT DEFAULT '" DEFAULT_CAMPAIGN << "', ";
-	ss << "version TEXT";
-	ss << ");";
-	ss << "CREATE TABLE IF NOT EXISTS " TABLE_LIVES " (";
-	ss << "campaignid TEXT DEFAULT '" DEFAULT_CAMPAIGN "', ";
-	ss << "lives INTEGER DEFAULT " << INITIAL_LIVES << " NOT NULL, ";
-	ss << "version TEXT, ";
-	ss << "PRIMARY KEY(campaignid)";
-	ss << ");";
-	ss << "CREATE TABLE IF NOT EXISTS " TABLE_GAMEMAPS " (";
-	ss << "campaignid TEXT, ";
-	ss << "mapid TEXT, ";
-	ss << "locked INTEGER DEFAULT 1 NOT NULL, ";
-	ss << "time INTEGER DEFAULT 0 NOT NULL, ";
-	ss << "finishPoints INTEGER DEFAULT 0 NOT NULL, ";
-	ss << "stars INTEGER DEFAULT 0 NOT NULL, ";
-	ss << "version TEXT, ";
-	ss << "PRIMARY KEY(campaignid, mapid)";
-	ss << ");";
+	const char *sql =
+	"CREATE TABLE IF NOT EXISTS " TABLE_GAMESTATE " ("
+	"activecampaign TEXT DEFAULT '" DEFAULT_CAMPAIGN "', "
+	"version TEXT"
+	");"
+	"CREATE TABLE IF NOT EXISTS " TABLE_LIVES " ("
+	"campaignid TEXT DEFAULT '" DEFAULT_CAMPAIGN "', "
+	"lives INTEGER DEFAULT 3 NOT NULL, "
+	"version TEXT, "
+	"PRIMARY KEY(campaignid)"
+	");"
+	"CREATE TABLE IF NOT EXISTS " TABLE_GAMEMAPS " ("
+	"campaignid TEXT, "
+	"mapid TEXT, "
+	"locked INTEGER DEFAULT 1 NOT NULL, "
+	"time INTEGER DEFAULT 0 NOT NULL, "
+	"finishPoints INTEGER DEFAULT 0 NOT NULL, "
+	"stars INTEGER DEFAULT 0 NOT NULL, "
+	"version TEXT, "
+	"PRIMARY KEY(campaignid, mapid)"
+	");";
 
 	Log::info(LOG_CAMPAIGN, "use %s as gamestate database file", getFilename().c_str());
 
-	if (!exec(ss.str()))
+	if (!exec(sql))
 		System.exit("Could not create initial gamestate tables", 1);
 
 	_activeCampaign = loadActiveCampaign();
@@ -205,7 +204,6 @@ void SQLitePersister::loadCampaignMapParameters(CampaignMap* map, SQLiteStatemen
 	map->setStars(stars);
 	if (locked == 0)
 		map->unlock();
-	Log::trace(LOG_STORAGE, "%s", map->toString().c_str());
 }
 
 bool SQLitePersister::saveLives (uint8_t lives, const std::string& campaignId)
