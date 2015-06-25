@@ -851,6 +851,14 @@ bool RandomMapContext::save () const
 		file->writeString("\")\n");
 	}
 
+	for (const IMap::StartPosition& pos : _startPositions) {
+		file->writeString("\tmap:addStartPosition(\"");
+		file->writeString(pos._x.c_str());
+		file->writeString("\", \"");
+		file->writeString(pos._y.c_str());
+		file->writeString("\")\n");
+	}
+
 	file->writeString("end\n");
 
 	return true;
