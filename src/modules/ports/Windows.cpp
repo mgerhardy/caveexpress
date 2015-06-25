@@ -12,7 +12,6 @@
 #include <mmsystem.h>
 #include <SDL_messagebox.h>
 #include <iterator>
-#include <sstream>
 #include <vector>
 #include <algorithm>
 
@@ -190,14 +189,18 @@ int Windows::openURL (const std::string& url, bool) const
 
 int Windows::exec (const std::string& command, std::vector<std::string>& arguments) const
 {
-	std::stringstream ss;
-	ss << command << " ";
-	std::copy(arguments.begin(), arguments.end(), std::ostream_iterator<std::string>(ss, " "));
+	std::string cmd = command;
+	if (!arguments.empty())
+		cmd.append(" ");
+	for (const std::string& argument : arguments) {
+		cmd.append(argument);
+		cmd.append(" ");
+	}
 
 	STARTUPINFO startupInfo;
 	PROCESS_INFORMATION processInfo;
 
-	if (!CreateProcess(nullptr, (LPSTR) ss.str().c_str(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, NULL, nullptr,
+	if (!CreateProcess(nullptr, (LPSTR) cmd.c_str(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, NULL, nullptr,
 			&startupInfo, &processInfo)) {
 		return -1;
 	}

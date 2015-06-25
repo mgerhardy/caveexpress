@@ -63,7 +63,9 @@ static int convert_string (void * ctx, const unsigned char * stringVal, size_t s
 			state &= ~SKIP;
 		}
 		if (!(state & SKIP)) {
-			std::cout << "\t[\"" << str << "\"] = {" << std::endl;
+			printf("\t[\"");
+			printf("%s", str.c_str());
+			printf("\"] = {\n");
 		}
 		state &= ~PARSENAME;
 	}
@@ -77,7 +79,7 @@ static int convert_number (void * ctx, const char * numberVal, size_t numberLen)
 		if (vertices >= 8) {
 			vertices = 0;
 			if (!(state & SKIP)) {
-				std::cout << std::endl << VERTICESINDENT;
+				printf("\n" VERTICESINDENT);
 			}
 		}
 		const float origin = (++coordinatesParsed % 2) ? originX : originY;
@@ -85,11 +87,11 @@ static int convert_number (void * ctx, const char * numberVal, size_t numberLen)
 		vertices++;
 		if (vertices != 1) {
 			if (!(state & SKIP)) {
-				std::cout << " ";
+				printf(" ");
 			}
 		}
 		if (!(state & SKIP)) {
-			std::cout << f << ",";
+			printf("%.3f, ", f);
 		}
 	} else if (state & PARSEORIGINX) {
 		originX = atof(str.c_str());
@@ -104,7 +106,7 @@ static int convert_map_key (void * ctx, const unsigned char * stringVal, size_t 
 	const std::string str(reinterpret_cast<const char *>(stringVal), stringLen);
 	if (str == "polygons") {
 		if (!(state & SKIP)) {
-			std::cout << "\t\tpolygons = {" << std::endl;
+			printf("\t\tpolygons = {\n");
 		}
 		state |= PARSEVERTICES;
 		vertices = 0;
@@ -143,11 +145,11 @@ static int convert_end_map (void * ctx)
 		vertices = 0;
 		state &= ~PARSEVERTICES;
 		if (!(state & SKIP)) {
-			std::cout << std::endl << "\t\t}," << std::endl;
+			printf("\n\t\t},\n");
 		}
 	} else if (depth == 1) {
 		if (!(state & SKIP)) {
-			std::cout << "\t}," << std::endl;
+			printf("\t},\n");
 		}
 	}
 
@@ -162,7 +164,7 @@ static int convert_start_array (void * ctx)
 	array++;
 	if (state & WRITEPOLYGON) {
 		if (!(state & SKIP)) {
-			std::cout << "\t\t\t{" << std::endl << VERTICESINDENT << "\"\", ";
+			printf("\t\t\t{\n" VERTICESINDENT "\"\", ");
 		}
 	} else if (state & PARSEVERTICES) {
 		state |= WRITEPOLYGON;
@@ -179,11 +181,11 @@ static int convert_end_array (void * ctx)
 			state &= ~PARSEVERTICES;
 			state &= ~WRITEPOLYGON;
 			if (!(state & SKIP)) {
-				std::cout << "\t\t}," << std::endl;
+				printf("\t\t},\n");
 			}
 		} else {
 			if (!(state & SKIP)) {
-				std::cout << std::endl << "\t\t\t}," << std::endl;
+				printf("\n\t\t\t},\n");
 			}
 		}
 	}
@@ -215,7 +217,7 @@ bool readJson (const std::string& str)
 
 static void usage ()
 {
-	Log::error(LOG_GENERAL, "jsonconverter")
+	Log::error(LOG_GENERAL, "jsonconverter");
 	Log::error(LOG_GENERAL, "  --scale <scale>        - set the vertex scale factor");
 	Log::error(LOG_GENERAL, "  --name <name>          - skip all sprites, but the one given in <name>");
 	Log::error(LOG_GENERAL, "  --help                 - show this help message");
@@ -228,7 +230,6 @@ extern "C" int main (int argc, char* argv[])
 	char *buffer;
 	const int fileLen = file.read((void **) &buffer);
 	const std::unique_ptr<char[]> p(buffer);
-	std::cout.precision(3);
 	if (!buffer || fileLen <= 0) {
 		Log::error(LOG_GENERAL, "Could not read the json file");
 		return EXIT_FAILURE;
@@ -253,9 +254,9 @@ extern "C" int main (int argc, char* argv[])
 	}
 
 	const std::string str(buffer, fileLen);
-	std::cout << "sprites = {" << std::endl;
+	printf("sprites = {\n");
 	const bool ret = readJson(str);
-	std::cout << "}" << std::endl;
+	printf("}\n");
 	if (!ret)
 		return EXIT_FAILURE;
 	return EXIT_SUCCESS;

@@ -15,7 +15,6 @@
 #include "common/FileSystem.h"
 #include "common/MapManager.h"
 #include "caveexpress/shared/constants/Commands.h"
-#include <sstream>
 #include <ctime>
 #include <SDL.h>
 
@@ -214,19 +213,20 @@ void UINodeMapEditor::renderHighlightItem (int x, int y) const
 	if (_highlightItem == nullptr)
 		return;
 
-	std::stringstream ss;
 	const SpriteType& type = _highlightItem->def->type;
+	std::string str;
 	if (SpriteTypes::isCave(type)) {
-		ss << _highlightItem->entityType->name;
-		ss << " " << "with delay: " << _highlightItem->delay;
+		str += _highlightItem->entityType->name;
+		str += " with delay: ";
+		str += std::to_string(_highlightItem->delay);
 	} else if (_highlightItem->entityType != nullptr) {
 		if (EntityTypes::isEmitter(*_highlightItem->entityType)) {
-			ss << _highlightItem->entityType->name;
-			ss << " " << "with delay: " << _highlightItem->delay;
+			str += _highlightItem->entityType->name;
+			str += " with delay: ";
+			str += std::to_string(_highlightItem->delay);
 		}
 	}
 
-	const std::string str = ss.str();
 	if (str.empty())
 		return;
 
@@ -715,11 +715,11 @@ bool UINodeMapEditor::placeTileItem (bool overwrite)
 			setPlayerPosition(_selectedGridX, _selectedGridY);
 			return true;
 		}
-		std::stringstream ss;
+		std::string str;
 		if (EntityTypes::hasDirection(*_activeEntityType) && !_activeEntityTypeRight) {
-			ss << EMITTER_RIGHT << "=false";
+			str = EMITTER_RIGHT "=false";
 		}
-		return placeEmitter(_activeSpriteDefition, _activeEntityType, _selectedGridX, _selectedGridY, 1, 0, false, _activeSpriteAngle, ss.str());
+		return placeEmitter(_activeSpriteDefition, _activeEntityType, _selectedGridX, _selectedGridY, 1, 0, false, _activeSpriteAngle, str);
 	}
 	const SpriteType& type = _activeSpriteDefition->type;
 	if (SpriteTypes::isCave(type))
@@ -946,32 +946,43 @@ bool UINodeMapEditor::save ()
 	if (_undoStates.empty())
 		return false;
 
-	std::stringstream lua;
-	lua << "function getName()" << std::endl << "\treturn \"" << _mapName << "\"" << std::endl << "end" << std::endl;
-	lua << std::endl;
-
 	TileItems map = _map;
 	map.sort();
 
-	lua << "function onMapLoaded()" << std::endl;
-	lua << "end" << std::endl;
-	lua << std::endl;
+	const std::string path = FS.getAbsoluteWritePath() + FS.getDataDir() + FS.getMapsDir() + _fileName + ".lua";
+	SDL_RWops *rwops = FS.createRWops(path, "wb");
+	FilePtr file(new File(rwops, path));
 
-	lua << "function initMap()" << std::endl << "\t-- get the current map context" << std::endl
-			<< "\tlocal map = Map.get()" << std::endl;
+	file->writeString("function getName()\n");
+	file->writeString("\treturn \"");
+	file->writeString(_mapName.c_str());
+	file->writeString("\"\n");
+	file->writeString("end\n\n");
+	file->writeString("function onMapLoaded()\n");
+	file->writeString("end\n\n");
+	file->writeString("function initMap()\n");
+	file->writeString("\t-- get the current map context");
+	file->writeString("\tlocal map = Map.get()");
+
 	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
 		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
 			continue;
 		const SpriteType& spriteType = i->def->type;
 		if (i->entityType == nullptr && !SpriteTypes::isCave(spriteType)) {
-			lua << "\tmap:addTile(\"" << i->def->id << "\", " << i->gridX << ", " << i->gridY;
+			file->writeString("\tmap:addTile(\"");
+			file->writeString(i->def->id.c_str());
+			file->writeString("\", ");
+			file->writeString(std::to_string(i->gridX).c_str());
+			file->writeString(", ");
+			file->writeString(std::to_string(i->gridY).c_str());
 			if (i->angle != 0) {
-				lua << ", " << i->angle;
+				file->writeString(", ");
+				file->writeString(std::to_string(i->angle).c_str());
 			}
-			lua << ")" << std::endl;
+			file->writeString(")\n");
 		}
 	}
-	lua << std::endl;
+	file->writeString("\n");
 
 	bool caveAdded = false;
 	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
@@ -979,21 +990,33 @@ bool UINodeMapEditor::save ()
 			continue;
 		const SpriteType& spriteType = i->def->type;
 		if (SpriteTypes::isCave(spriteType)) {
-			lua << "\tmap:addCave(\"" << i->def->id << "\", " << i->gridX << ", " << i->gridY;
-			if (!i->entityType->isNone())
-				lua << ", \"" << i->entityType->name << "\"";
-			if (i->delay > -1) {
-				if (i->entityType->isNone())
-					lua << ", \"" << i->entityType->name << "\"";
-				lua << ", " << i->delay;
+			file->writeString("\tmap:addCave(\"");
+			file->writeString(i->def->id.c_str());
+			file->writeString("\", ");
+			file->writeString(std::to_string(i->gridX).c_str());
+			file->writeString(", ");
+			file->writeString(std::to_string(i->gridY).c_str());
+			if (!i->entityType->isNone()) {
+				file->writeString(", \"");
+				file->writeString(i->entityType->name.c_str());
+				file->writeString("\"");
 			}
-			lua << ")" << std::endl;
+			if (i->delay > -1) {
+				if (i->entityType->isNone()) {
+					file->writeString(", \"");
+					file->writeString(i->entityType->name.c_str());
+					file->writeString("\"");
+				}
+				file->writeString(", ");
+				file->writeString(std::to_string(i->delay).c_str());
+			}
+			file->writeString(")\n");
 			caveAdded = true;
 		}
 	}
 
 	if (caveAdded)
-		lua << std::endl;
+		file->writeString("\n");
 
 	bool emitterAdded = false;
 	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
@@ -1001,47 +1024,59 @@ bool UINodeMapEditor::save ()
 			continue;
 		const SpriteType& spriteType = i->def->type;
 		if (i->entityType != nullptr && !SpriteTypes::isCave(spriteType)) {
-			lua << "\tmap:addEmitter(";
-			lua << "\"" << i->entityType->name << "\", ";
-			lua << i->gridX << ", ";
-			lua << i->gridY << ", ";
-			lua << std::min(50, i->amount) << ", ";
-			lua << i->delay << ", ";
-			lua << "\"" << i->settings << "\"";
-			lua << ")" << std::endl;
+			file->writeString("\tmap:addEmitter(");
+			file->writeString("\"");
+			file->writeString(i->entityType->name.c_str());
+			file->writeString("\", ");
+			file->writeString(std::to_string(i->gridX).c_str());
+			file->writeString(", ");
+			file->writeString(std::to_string(i->gridY).c_str());
+			file->writeString(", ");
+			file->writeString(std::to_string(std::min(50, i->amount)).c_str());
+			file->writeString(", ");
+			file->writeString(std::to_string(i->delay).c_str());
+			file->writeString(", \"");
+			file->writeString(i->settings.c_str());
+			file->writeString("\")\n");
 			emitterAdded = true;
 		}
 	}
 
 	if (emitterAdded)
-		lua << std::endl;
+		file->writeString("\n");
 
 	IMap::SettingsMap& settings = _settings;
-	lua << "\tmap:setSetting(\"" << msn::WIDTH << "\", \"" << settings[msn::WIDTH] << "\")" << std::endl;
-	lua << "\tmap:setSetting(\"" << msn::HEIGHT << "\", \"" << settings[msn::HEIGHT] << "\")" << std::endl;
+	file->writeString("\tmap:setSetting(\"");
+	file->writeString(msn::WIDTH.c_str());
+	file->writeString("\", \"");
+	file->writeString(settings[msn::WIDTH].c_str());
+	file->writeString("\")\n");;
+	file->writeString("\tmap:setSetting(\"");
+	file->writeString(msn::HEIGHT.c_str());
+	file->writeString("\", \"");
+	file->writeString(settings[msn::HEIGHT].c_str());
+	file->writeString("\")\n");
 	for (IMap::SettingsMapConstIter i = settings.begin(); i != settings.end(); ++i) {
 		if (i->first == msn::WIDTH || i->first == msn::HEIGHT)
 			continue;
-		lua << "\tmap:setSetting(\"" << i->first << "\", \"" << i->second << "\")" << std::endl;
+		file->writeString("\tmap:setSetting(\"");
+		file->writeString(i->first.c_str());
+		file->writeString("\", \"");
+		file->writeString(i->second.c_str());
+		file->writeString("\")\n");
 	}
 
 	for (const IMap::StartPosition& pos : _startPositions) {
-		lua << "\tmap:addStartPosition(\"" << pos._x << "\", \"" << pos._y << "\")" << std::endl;
+		file->writeString("\tmap:addStartPosition(\"");
+		file->writeString(pos._x.c_str());
+		file->writeString("\", \"");
+		file->writeString(pos._y.c_str());
+		file->writeString("\")\n");
 	}
 
-	lua << "end" << std::endl;
+	file->writeString("end\n");
 
-	const std::string luaStr = lua.str();
-	const unsigned char *buf = reinterpret_cast<const unsigned char *>(luaStr.c_str());
-	SDL_SetClipboardText(luaStr.c_str());
-	std::string filename = FS.getDataDir() + FS.getMapsDir() + _fileName + ".lua";
-	const size_t length = luaStr.size();
-	if (FS.writeFile(filename, buf, length, true) == -1L) {
-		Log::error(LOG_GENERAL, "failed to write %s", filename.c_str());
-		return false;
-	}
-
-	Log::info(LOG_GENERAL, "wrote %s", filename.c_str());
+	Log::info(LOG_GENERAL, "wrote %s", path.c_str());
 	_lastMap->setValue(_fileName);
 	_mapManager.loadMaps();
 	_lastSave = _undoStates.size();

@@ -793,6 +793,8 @@ bool RandomMapContext::save () const
 	file->writeString(_name.c_str());
 	file->writeString("\"\n");
 	file->writeString("end\n\n");
+	file->writeString("function onMapLoaded()\n");
+	file->writeString("end\n\n");
 	file->writeString("function initMap()\n");
 	file->writeString("\t-- get the current map context");
 	file->writeString("\tlocal map = Map.get()");
@@ -843,7 +845,6 @@ bool RandomMapContext::save () const
 		file->writeString("\n");
 	}
 	for (IMap::SettingsMapConstIter i = map.begin(); i != map.end(); ++i) {
-		const IMap::SettingsMap& map = getSettings();
 		file->writeString("\tmap:setSetting(\"");
 		file->writeString(i->first.c_str());
 		file->writeString("\", \"");
