@@ -14,7 +14,6 @@
 #include "common/TextureDefinition.h"
 
 #include <algorithm>
-#include <sstream>
 #include <assert.h>
 #include <math.h>
 
@@ -785,43 +784,75 @@ bool RandomMapContext::isEnoughGround (randomGridCoord x, randomGridCoord y, ran
 
 bool RandomMapContext::save () const
 {
-	std::stringstream lua;
-	lua << "function getName()" << std::endl << "\treturn \"" << _name << "\"" << std::endl << "end" << std::endl;
-	lua << std::endl;
+	const std::string path = FS.getAbsoluteWritePath() + FS.getDataDir() + FS.getMapsDir() + _name + ".lua";
+	SDL_RWops *rwops = FS.createRWops(path, "wb");
+	FilePtr file(new File(rwops, path));
 
-	lua << "function initMap()" << std::endl << "\t-- get the current map context" << std::endl
-			<< "\tlocal map = Map.get()" << std::endl;
-	for (std::vector<MapTileDefinition>::const_iterator i = _definitions.begin(); i != _definitions.end(); ++i) {
-		lua << "\tmap:addTile(\"" << i->spriteDef->id << "\", " << i->x << ", " << i->y << ")" << std::endl;
+	file->writeString("function getName()\n");
+	file->writeString("\treturn \"");
+	file->writeString(_name.c_str());
+	file->writeString("\"\n");
+	file->writeString("end\n\n");
+	file->writeString("function initMap()\n");
+	file->writeString("\t-- get the current map context");
+	file->writeString("\tlocal map = Map.get()");
+	for (const MapTileDefinition& i : _definitions) {
+		file->writeString("\tmap:addTile(\"");
+		file->writeString(i.spriteDef->id.c_str());
+		file->writeString("\", ");
+		file->writeString(std::to_string(i.x).c_str());
+		file->writeString(", ");
+		file->writeString(std::to_string(i.y).c_str());
+		file->writeString(")\n");
 	}
-	lua << std::endl;
 
-	for (std::vector<CaveTileDefinition>::const_iterator i = _caveDefinitions.begin(); i != _caveDefinitions.end(); ++i) {
-		lua << "\tmap:addCave(\"" << i->spriteDef->id << "\", " << i->x << ", " << i->y << ", " << i->type->name << ", " << i->delay << ")" << std::endl;
+	if (! _caveDefinitions.empty()) {
+		file->writeString("\n");
 	}
-	lua << std::endl;
+	for (const CaveTileDefinition& i : _caveDefinitions) {
+		file->writeString("\tmap:addCave(\"");
+		file->writeString(i.spriteDef->id.c_str());
+		file->writeString("\", ");
+		file->writeString(std::to_string(i.x).c_str());
+		file->writeString(", ");
+		file->writeString(std::to_string(i.y).c_str());
+		file->writeString(", ");
+		file->writeString(i.type->name.c_str());
+		file->writeString(", ");
+		file->writeString(std::to_string(i.delay).c_str());
+		file->writeString(")\n");
+	}
 
-	for (std::vector<EmitterDefinition>::const_iterator i = _emitters.begin(); i != _emitters.end(); ++i) {
-		lua << "\tmap:addEmitter(\"" << i->type->name << "\", " << i->x << ", " << i->y << ", " << i->amount << ", "
-				<< i->delay << ")" << std::endl;
+	if (!_emitters.empty()) {
+		file->writeString("\n");
 	}
-	if (!_emitters.empty())
-		lua << std::endl;
+	for (const EmitterDefinition& i : _emitters) {
+		file->writeString("\tmap:addEmitter(\"");
+		file->writeString(i.type->name.c_str());
+		file->writeString("\", ");
+		file->writeString(std::to_string(i.x).c_str());
+		file->writeString(", ");
+		file->writeString(std::to_string(i.y).c_str());
+		file->writeString(", ");
+		file->writeString(std::to_string(i.amount).c_str());
+		file->writeString(")\n");
+	}
 
 	const IMap::SettingsMap& map = getSettings();
+	if (!map.empty()) {
+		file->writeString("\n");
+	}
 	for (IMap::SettingsMapConstIter i = map.begin(); i != map.end(); ++i) {
-		lua << "\tmap:setSetting(\"" << i->first << "\", \"" << i->second << "\")" << std::endl;
+		const IMap::SettingsMap& map = getSettings();
+		file->writeString("\tmap:setSetting(\"");
+		file->writeString(i->first.c_str());
+		file->writeString("\", \"");
+		file->writeString(i->second.c_str());
+		file->writeString("\")\n");
 	}
 
-	lua << "end" << std::endl;
+	file->writeString("end\n");
 
-	const std::string luaStr = lua.str();
-	const unsigned char *buf = reinterpret_cast<const unsigned char *>(luaStr.c_str());
-	const std::string filename = FS.getMapsDir() + _name + ".lua";
-	if (FS.writeFile(filename, buf, luaStr.size(), true) == -1L) {
-		Log::error(LOG_SERVER, "failed to write %s", filename.c_str());
-		return false;
-	}
 	return true;
 }
 
