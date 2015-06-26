@@ -4,7 +4,6 @@
 #include "common/Application.h"
 #include <SDL.h>
 #include <SDL_platform.h>
-#include <fstream>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -41,21 +40,36 @@ void FileSystem::shutdown ()
 {
 }
 
-bool FileSystem::copy (const std::string& src, const std::string& target) const
-{
-	std::ifstream source(src.c_str(), std::fstream::binary);
-	if (source.fail()) {
+bool FileSystem::copy (const std::string& src, const std::string& target) const {
+	FILE *f = fopen(src.c_str(), "rb");
+	if (!f) {
 		Log::error(LOG_FILE, "Opening source file '%s' failed", src.c_str());
 		return false;
 	}
-	std::ofstream dest(target.c_str(), std::fstream::trunc | std::fstream::binary);
-	if (dest.fail()) {
-		Log::error(LOG_FILE, "Opening dest file '%s' failed", target.c_str());
+
+	FILE* ft = fopen(target.c_str(), "wb");
+	if (!ft) {
 		return false;
 	}
-	dest << source.rdbuf();
-	source.close();
-	dest.close();
+	fseek(f, 0, SEEK_END);
+	long int len = ftell(f);
+	fseek(f, 0, SEEK_SET);
+
+	unsigned char *const buf = (unsigned char *) malloc(len);
+	if (fread(buf, 1, len, f) != len) {
+		free(buf);
+		return false;
+	}
+	fclose(f);
+
+	if (fwrite(buf, 1, len, ft) != len) {
+		Log::error(LOG_FILE, "Opening dest file '%s' failed", target.c_str());
+		free(buf);
+		return false;
+	}
+
+	free(buf);
+	fclose(ft);
 	return true;
 }
 
