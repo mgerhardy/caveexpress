@@ -802,9 +802,9 @@ bool RandomMapContext::save () const
 		file->writeString("\tmap:addTile(\"");
 		file->writeString(i.spriteDef->id.c_str());
 		file->writeString("\", ");
-		file->writeString(std::to_string(i.x).c_str());
+		file->writeString(string::toString(i.x).c_str());
 		file->writeString(", ");
-		file->writeString(std::to_string(i.y).c_str());
+		file->writeString(string::toString(i.y).c_str());
 		file->writeString(")\n");
 	}
 
@@ -815,13 +815,13 @@ bool RandomMapContext::save () const
 		file->writeString("\tmap:addCave(\"");
 		file->writeString(i.spriteDef->id.c_str());
 		file->writeString("\", ");
-		file->writeString(std::to_string(i.x).c_str());
+		file->writeString(string::toString(i.x).c_str());
 		file->writeString(", ");
-		file->writeString(std::to_string(i.y).c_str());
+		file->writeString(string::toString(i.y).c_str());
 		file->writeString(", ");
 		file->writeString(i.type->name.c_str());
 		file->writeString(", ");
-		file->writeString(std::to_string(i.delay).c_str());
+		file->writeString(string::toString(i.delay).c_str());
 		file->writeString(")\n");
 	}
 
@@ -832,11 +832,11 @@ bool RandomMapContext::save () const
 		file->writeString("\tmap:addEmitter(\"");
 		file->writeString(i.type->name.c_str());
 		file->writeString("\", ");
-		file->writeString(std::to_string(i.x).c_str());
+		file->writeString(string::toString(i.x).c_str());
 		file->writeString(", ");
-		file->writeString(std::to_string(i.y).c_str());
+		file->writeString(string::toString(i.y).c_str());
 		file->writeString(", ");
-		file->writeString(std::to_string(i.amount).c_str());
+		file->writeString(string::toString(i.amount).c_str());
 		file->writeString(")\n");
 	}
 

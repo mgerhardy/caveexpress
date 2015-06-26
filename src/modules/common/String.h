@@ -8,7 +8,10 @@
 #include <cstdarg>
 #include <stdio.h>
 #include <cstddef>
+#include <SDL_platform.h>
+#ifdef __ANDROID__
 #include <sstream>
+#endif
 
 #define STRINGIFY_(x) #x
 #define STRINGIFY(x) STRINGIFY_(x)
@@ -222,9 +225,13 @@ namespace string {
 template<class T>
 inline std::string toString (const T& t)
 {
+#ifdef __ANDROID__
 	std::ostringstream os ;
 	os << t ;
 	return os.str() ;
+#else
+	return std::to_string(t);
+#endif
 }
 
 inline int toInt (const std::string& str)

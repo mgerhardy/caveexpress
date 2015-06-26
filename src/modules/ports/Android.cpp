@@ -166,19 +166,19 @@ void Android::init() {
 		Log::error(LOG_SYSTEM, "error getting achievementUnlocked()");
 	}
 
-	Log::info(LOG_SYSTEM, String::format("Running on: [%s] [%s] [%s] [%s] [%s] SDK:%s ABI:%s",
+	Log::info(LOG_SYSTEM, "Running on: [%s] [%s] [%s] [%s] [%s] SDK:%s ABI:%s",
 			getSystemProperty("ro.product.manufacturer").c_str(),
 			getSystemProperty("ro.product.model").c_str(),
 			getSystemProperty("ro.product.brand").c_str(),
 			getSystemProperty("ro.build.fingerprint").c_str(),
 			getSystemProperty("ro.build.display.id").c_str(),
 			getSystemProperty("ro.build.version.sdk").c_str(),
-			getSystemProperty("ro.product.cpu.abi").c_str()));
+			getSystemProperty("ro.product.cpu.abi").c_str());
 
-	Log::info(LOG_SYSTEM, String::format("internal storage path: %s", SDL_AndroidGetInternalStoragePath()));
+	Log::info(LOG_SYSTEM, "internal storage path: %s", SDL_AndroidGetInternalStoragePath());
 	_externalState = SDL_AndroidGetExternalStorageState();
 	if (_externalState)
-		Log::info(LOG_SYSTEM, String::format("external storage path: %s", SDL_AndroidGetExternalStoragePath()));
+		Log::info(LOG_SYSTEM, "external storage path: %s", SDL_AndroidGetExternalStoragePath());
 	else
 		Log::info(LOG_SYSTEM, "no external storage path with write support");
 
@@ -249,10 +249,10 @@ bool Android::testException ()
 
 		if (exceptionMessage != nullptr) {
 			const char* exceptionMessageUTF8 = _env->GetStringUTFChars(exceptionMessage, 0);
-			Log::error(LOG_SYSTEM, String::format("%s: %s", exceptionNameUTF8, exceptionMessageUTF8));
+			Log::error(LOG_SYSTEM, "%s: %s", exceptionNameUTF8, exceptionMessageUTF8);
 			_env->ReleaseStringUTFChars(exceptionMessage, exceptionMessageUTF8);
 		} else {
-			Log::error(LOG_SYSTEM, String::format("%s", exceptionNameUTF8));
+			Log::error(LOG_SYSTEM, "%s", exceptionNameUTF8);
 		}
 
 		_env->ReleaseStringUTFChars(exceptionName, exceptionNameUTF8);
@@ -308,7 +308,7 @@ DirectoryEntries Android::listDirectory (const std::string& basedir, const std::
 	}
 	jsize n = _env->GetArrayLength(list);
 
-	Log::debug(LOG_SYSTEM, "list " + modified + " with " + string::toString((int)n) + " elements");
+	Log::debug(LOG_SYSTEM, "list %s with %i elements", modified.c_str(), (int)n);
 
 	for (int i = 0; i < n; ++i) {
 		jstring str = reinterpret_cast<jstring>(_env->GetObjectArrayElement(list, i));
@@ -316,7 +316,7 @@ DirectoryEntries Android::listDirectory (const std::string& basedir, const std::
 			break;
 		const char* cstr = _env->GetStringUTFChars(str, 0);
 		entries.push_back(cstr);
-		Log::debug(LOG_SYSTEM, String::format("%s", cstr));
+		Log::debug(LOG_SYSTEM, "%s", cstr);
 		_env->ReleaseStringUTFChars(str, cstr);
 		_env->DeleteLocalRef(str);
 	}
@@ -427,7 +427,7 @@ void Android::getPaymentEntries (std::vector<PaymentEntry>& entries)
 	}
 
 	jsize n = _env->GetArrayLength(list);
-	Log::info(LOG_SYSTEM, "payment items found: " + string::toString((int)n));
+	Log::info(LOG_SYSTEM, "payment items found: %i", (int)n);
 
 	// same order as the paymententry ctor!
 	const char *ids[] = { "name", "id", "price", nullptr };
@@ -450,7 +450,7 @@ void Android::getPaymentEntries (std::vector<PaymentEntry>& entries)
 			const char* cstr = _env->GetStringUTFChars(str, 0);
 			const std::string memberValue = cstr;
 			memberValues.push_back(memberValue);
-			Log::info(LOG_SYSTEM, memberValue);
+			Log::info(LOG_SYSTEM, "%s", memberValue.c_str());
 			_env->ReleaseStringUTFChars(str, cstr);
 			_env->DeleteLocalRef(str);
 		}

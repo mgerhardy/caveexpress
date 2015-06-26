@@ -218,12 +218,12 @@ void UINodeMapEditor::renderHighlightItem (int x, int y) const
 	if (SpriteTypes::isCave(type)) {
 		str += _highlightItem->entityType->name;
 		str += " with delay: ";
-		str += std::to_string(_highlightItem->delay);
+		str += string::toString(_highlightItem->delay);
 	} else if (_highlightItem->entityType != nullptr) {
 		if (EntityTypes::isEmitter(*_highlightItem->entityType)) {
 			str += _highlightItem->entityType->name;
 			str += " with delay: ";
-			str += std::to_string(_highlightItem->delay);
+			str += string::toString(_highlightItem->delay);
 		}
 	}
 
@@ -972,12 +972,12 @@ bool UINodeMapEditor::save ()
 			file->writeString("\tmap:addTile(\"");
 			file->writeString(i->def->id.c_str());
 			file->writeString("\", ");
-			file->writeString(std::to_string(i->gridX).c_str());
+			file->writeString(string::toString(i->gridX).c_str());
 			file->writeString(", ");
-			file->writeString(std::to_string(i->gridY).c_str());
+			file->writeString(string::toString(i->gridY).c_str());
 			if (i->angle != 0) {
 				file->writeString(", ");
-				file->writeString(std::to_string(i->angle).c_str());
+				file->writeString(string::toString(i->angle).c_str());
 			}
 			file->writeString(")\n");
 		}
@@ -993,9 +993,9 @@ bool UINodeMapEditor::save ()
 			file->writeString("\tmap:addCave(\"");
 			file->writeString(i->def->id.c_str());
 			file->writeString("\", ");
-			file->writeString(std::to_string(i->gridX).c_str());
+			file->writeString(string::toString(i->gridX).c_str());
 			file->writeString(", ");
-			file->writeString(std::to_string(i->gridY).c_str());
+			file->writeString(string::toString(i->gridY).c_str());
 			if (!i->entityType->isNone()) {
 				file->writeString(", \"");
 				file->writeString(i->entityType->name.c_str());
@@ -1008,7 +1008,7 @@ bool UINodeMapEditor::save ()
 					file->writeString("\"");
 				}
 				file->writeString(", ");
-				file->writeString(std::to_string(i->delay).c_str());
+				file->writeString(string::toString(i->delay).c_str());
 			}
 			file->writeString(")\n");
 			caveAdded = true;
@@ -1028,13 +1028,13 @@ bool UINodeMapEditor::save ()
 			file->writeString("\"");
 			file->writeString(i->entityType->name.c_str());
 			file->writeString("\", ");
-			file->writeString(std::to_string(i->gridX).c_str());
+			file->writeString(string::toString(i->gridX).c_str());
 			file->writeString(", ");
-			file->writeString(std::to_string(i->gridY).c_str());
+			file->writeString(string::toString(i->gridY).c_str());
 			file->writeString(", ");
-			file->writeString(std::to_string(std::min(50, i->amount)).c_str());
+			file->writeString(string::toString(std::min(50, i->amount)).c_str());
 			file->writeString(", ");
-			file->writeString(std::to_string(i->delay).c_str());
+			file->writeString(string::toString(i->delay).c_str());
 			file->writeString(", \"");
 			file->writeString(i->settings.c_str());
 			file->writeString("\")\n");

@@ -275,10 +275,10 @@ bool GooglePlayPersister::testException ()
 
 		if (exceptionMessage != nullptr) {
 			const char* exceptionMessageUTF8 = _env->GetStringUTFChars(exceptionMessage, 0);
-			Log::error(LOG_SYSTEM, String::format("%s: %s", exceptionNameUTF8, exceptionMessageUTF8));
+			Log::error(LOG_SYSTEM, "%s: %s", exceptionNameUTF8, exceptionMessageUTF8);
 			_env->ReleaseStringUTFChars(exceptionMessage, exceptionMessageUTF8);
 		} else {
-			Log::error(LOG_SYSTEM, String::format("%s", exceptionNameUTF8));
+			Log::error(LOG_SYSTEM, "%s", exceptionNameUTF8);
 		}
 
 		_env->ReleaseStringUTFChars(exceptionName, exceptionNameUTF8);
