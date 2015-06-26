@@ -63,7 +63,7 @@ int LocalReferenceHolder::s_active;
 
 Android::Android () :
 		Unix(), _env(nullptr), _cls(nullptr), _assetManager(nullptr), _showAds(nullptr), _hideAds(nullptr),
-		_showFullscreenAds(nullptr), _openURL(nullptr), _buyItem(nullptr), _hasItem(nullptr), _isOUYA(nullptr),
+		_showFullscreenAds(nullptr), _openURL(nullptr), _hasItem(nullptr), _track(nullptr), _buyItem(nullptr), _isOUYA(nullptr),
 		_isSmallScreen(nullptr), _minimize(nullptr), _getPaymentEntries(nullptr), _externalState(0) {
 }
 

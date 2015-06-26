@@ -8,6 +8,7 @@
 #include <cstdarg>
 #include <stdio.h>
 #include <cstddef>
+#include <sstream>
 
 #define STRINGIFY_(x) #x
 #define STRINGIFY(x) STRINGIFY_(x)
@@ -221,7 +222,9 @@ namespace string {
 template<class T>
 inline std::string toString (const T& t)
 {
-	return std::to_string(t);
+	std::ostringstream os ;
+	os << t ;
+	return os.str() ;
 }
 
 inline int toInt (const std::string& str)
