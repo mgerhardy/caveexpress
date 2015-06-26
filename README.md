@@ -44,20 +44,25 @@ imagemagick is also only needed if you plan to modify and add your own images an
 
 If you want to rebuild the texture atlas, then you also need TexturePacker
 
-* ./configure
+* mkdir build
+* cd build
+* cmake ..
 * make
 
 Cross compile from linux for windows:
 * Set up a cross compile tool chain like MXE
 ** git clone https://github.com/mxe/mxe.git
 ** cd mxe && make sdl2 sdl2_image sdl2_mixer
-** echo "PATH=path/to/mxe/usr/bin/" ~/.mxe.settings
-* ./configure --target-os=mingw64
+* mkdir build
+* cd build
+* cmake .. -DCMAKE_TOOLCHAIN_FILE=/path/to/mxe/usr/i686-w64-mingw32.static/share/cmake/mxe-conf.cmake
 * make
 
 Cross compile for android
-* make android-setup
-* ./configure --target-os=android
+* install sdk and ndk
+* mkdir build
+* cd build
+* cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/android-toolchain.cmake
 * make
 
 If you get an aapt - no such file or directory on 64bit debian based
