@@ -29,4 +29,4 @@ set(common_SRCS
 
 add_library(common ${common_SRCS})
 set_target_properties(common PROPERTIES FOLDER common)
-target_link_libraries(common network ports ${LUA_LIBRARIES} ${SDL2_LIBRARY} sqlite)
+target_link_libraries(common network ports ${LUA_LIBRARIES} ${SDL2_LIBRARY} ${SQLITE3_LIBRARIES})
