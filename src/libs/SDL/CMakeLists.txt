@@ -137,5 +137,7 @@ FILE(GLOB PLATFORM_SRCS
 endif()
 
 add_library(SDL2 ${SRCS} ${PLATFORM_SRCS})
+if (NOT WINDOWS)
 target_link_libraries(SDL2 dl)
+endif()
 set_target_properties(SDL2 PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare")
