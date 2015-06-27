@@ -1,3 +1,6 @@
+package_global(SDL2)
+
+if (NOT SDL2_FOUND)
 FILE(GLOB SRCS
 	src/video/*.c
 	src/video/raspberry/*.c
@@ -137,8 +140,19 @@ FILE(GLOB PLATFORM_SRCS
 	src/power/linux/*.c)
 endif()
 
-add_library(SDL2 ${SRCS} ${PLATFORM_SRCS})
-if (NOT WINDOWS)
-target_link_libraries(SDL2 dl)
+add_library(SDL2 ${SRCS} ${PLATFORM_SRCSset})
+target_link_libraries(SDL2 ${CMAKE_DL_LIBS})
+_target_properties(SDL2 PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare")
+set(SDL2_INCLUDE_DIR "")
+list(append SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/include")
+list(append SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/src")
+if (UNIX AND NOT ANDROID)
+list(append SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/linux")
+message("Use preconfigured SDL for linux")
+else()
+list(append SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/general")
 endif()
-set_target_properties(SDL2 PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare")
+var_global(SDL2_LIBRARY)
+var_global(SDL2_INCLUDE_DIR)
+
+endif()
