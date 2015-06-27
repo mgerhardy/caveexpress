@@ -1,3 +1,6 @@
+package_global(Box2D)
+
+if (NOT BOX2D_FOUND)
 set(SRCS
 	Common/b2StackAllocator.cpp
 	Common/b2BlockAllocator.cpp
@@ -50,3 +53,10 @@ set(SRCS
 add_library(Box2D ${SRCS})
 set_target_properties(Box2D PROPERTIES FOLDER Box2D)
 set_target_properties(Box2D PROPERTIES COMPILE_FLAGS "-Wno-shadow")
+
+set(BOX2D_LIBRARIES "Box2D")
+set(BOX2D_INCLUDE_DIRS "${ROOT_DIR}/src/libs")
+var_global(BOX2D_LIBRARIES)
+var_global(BOX2D_INCLUDE_DIRS)
+
+endif()

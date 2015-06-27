@@ -40,7 +40,7 @@ add_definitions(-DLOAD_PNG -DPNG_NO_CONFIG_H)
 #-O3 -fstrict-aliasing -fprefetch-loop-arrays
 #-lz
 include_directories("libpng-1.6.2")
-target_link_libraries(SDL2_image ${SDL2_LIBRARY} ${ZLIB_LIBRARY})
+target_link_libraries(SDL2_image ${SDL2_LIBRARY} ${ZLIB_LIBRARIES})
 include_directories("${SDL2_INCLUDE_DIR}")
 set_target_properties(SDL2_image PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-attributes -Wno-unused-parameter -Wno-sign-compare")
 

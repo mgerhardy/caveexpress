@@ -1,4 +1,4 @@
 set(server_SRCS SDLBackend.cpp box2d/DebugRenderer.cpp)
 add_library(server ${server_SRCS})
 set_target_properties(server PROPERTIES FOLDER server)
-target_link_libraries(server common game network gfx client Box2D)
+target_link_libraries(server common game network gfx client ${BOX2D_LIBRARIES})

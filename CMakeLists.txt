@@ -108,7 +108,7 @@ add_subdirectory(src/libs)
 
 include_directories("${ROOT_DIR}/src/libs")
 include_directories("${LUA_INCLUDE_DIR}")
-include_directories("${ROOT_DIR}/src/libs/Box2D")
+include_directories("${BOX2D_INCLUDE_DIR}")
 include_directories("${ROOT_DIR}/src/libs/tinyxml2")
 include_directories("${SQLITE3_INCLUDE_DIRS}")
 include_directories("${ROOT_DIR}/src/libs/yajl")

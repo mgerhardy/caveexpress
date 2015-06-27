@@ -21,9 +21,9 @@ add_library(zlib ${SRCS})
 set_target_properties(zlib PROPERTIES FOLDER zlib)
 set_target_properties(zlib PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-implicit-function-declaration")
 
-set(ZLIB_LIBRARY "zlib")
-set(ZLIB_INCLUDE_DIR "${ROOT_DIR}/src/libs/zlib")
-var_global(ZLIB_LIBRARY)
-var_global(ZLIB_INCLUDE_DIR)
+set(ZLIB_LIBRARIES "zlib")
+set(ZLIB_INCLUDE_DIRS "${ROOT_DIR}/src/libs/zlib")
+var_global(ZLIB_LIBRARIES)
+var_global(ZLIB_INCLUDE_DIRS)
 
 endif()
