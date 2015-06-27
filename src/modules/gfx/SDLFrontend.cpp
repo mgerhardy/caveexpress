@@ -641,6 +641,7 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 }
 
 void SDLFrontend::toggleGrabMouse () {
+#if SDL_VERSION_ATLEAST(2, 0, 4)
 	bool grabMouse = SDL_GetGrabbedWindow() == _window;
 	SDL_SetWindowGrab(_window, grabMouse ? SDL_FALSE : SDL_TRUE);
 	if (grabMouse)
@@ -648,6 +649,7 @@ void SDLFrontend::toggleGrabMouse () {
 	else
 		Log::info(LOG_CLIENT, "Mouse grab is now activated");
 	Config.setGrabMouse(!grabMouse);
+#endif
 }
 
 void SDLFrontend::initRenderer ()
