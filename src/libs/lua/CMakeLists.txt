@@ -1,4 +1,4 @@
-package_global(lua)
+package_global(Lua)
 
 if (NOT LUA_FOUND)
 set(SRCS
