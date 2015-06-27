@@ -236,12 +236,11 @@ void CaveExpress::connect (ClientId clientId)
 int CaveExpress::disconnect (ClientId clientId)
 {
 	_map.removePlayer(clientId);
-	_connectedClients--;
-	if (_connectedClients < 0) {
-		_connectedClients = 0;
+	if (_connectedClients == 0) {
 		Log::error(LOG_SERVER, "client counts are out of sync");
+	} else {
+		_connectedClients--;
 	}
-
 	return _connectedClients;
 }
 
