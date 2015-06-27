@@ -1,3 +1,6 @@
+package_global(SDL2_mixer)
+
+if (NOT SDL2_MIXER_FOUND)
 set(SRCS
 	dynamic_flac.c
 	dynamic_fluidsynth.c
@@ -81,3 +84,10 @@ endif()
 target_link_libraries(SDL2_mixer ${SDL2_LIBRARY})
 include_directories("${SDL2_INCLUDE_DIR}")
 set_target_properties(SDL2_mixer PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-shadow -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-sign-compare -Wno-unused-variable -Wno-missing-field-initializers -Wno-unused-label -Wno-format-zero-length")
+
+set(SDL2_MIXER_LIBRARY "SDL2_mixer")
+set(SDL2_MIXER_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL_mixer")
+var_global(SDL2_MIXER_LIBRARY)
+var_global(SDL2_MIXER_INCLUDE_DIR)
+
+endif()

@@ -1,3 +1,6 @@
+package_global(lua)
+
+if (NOT LUA_FOUND)
 set(SRCS
 	lapi.cpp
 	lauxlib.cpp
@@ -43,3 +46,10 @@ elseif(DARWIN)
 	add_definitions(-DLUA_USE_MACOSX)
 endif()
 set_target_properties(lua PROPERTIES COMPILE_FLAGS "-Wno-cast-qual")
+
+set(LUA_LIBRARIES "lua")
+set(LUA_INCLUDE_DIR "${ROOT_DIR}/src/libs/lua")
+var_global(LUA_LIBRARIES)
+var_global(LUA_INCLUDE_DIR)
+
+endif()
