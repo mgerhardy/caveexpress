@@ -1,3 +1,6 @@
+package_global(SDL2_image)
+
+if (NOT SDL2_IMAGE_FOUND)
 set(SRCS
 	libpng-1.6.2/png.c
 	libpng-1.6.2/pngerror.c
@@ -40,3 +43,10 @@ include_directories("libpng-1.6.2")
 target_link_libraries(SDL2_image ${SDL2_LIBRARY} zlib)
 include_directories("${SDL2_INCLUDE_DIR}")
 set_target_properties(SDL2_image PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-attributes -Wno-unused-parameter -Wno-sign-compare")
+
+set(SDL2_IMAGE_LIBRARY "SDL2_image")
+set(SDL2_IMAGE_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL_image")
+var_global(SDL2_IMAGE_LIBRARY)
+var_global(SDL2_IMAGE_INCLUDE_DIR)
+
+endif()

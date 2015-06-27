@@ -116,7 +116,7 @@ include_directories("${ROOT_DIR}/src/libs/gtest")
 include_directories("${ROOT_DIR}/src/libs/yajl")
 include_directories("${ROOT_DIR}/src/libs/SDL_mixer")
 include_directories("${ROOT_DIR}/src/libs/SDL_net")
-include_directories("${ROOT_DIR}/src/libs/SDL_image")
+include_directories("${SDL2_IMAGE_INCLUDE_DIR}")
 include_directories("${SDL2_INCLUDE_DIR}")
 
 if (UNITTESTS)
