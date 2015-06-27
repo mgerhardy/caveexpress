@@ -55,6 +55,7 @@ Makefile
 complete.lua.in
 build
 /build-android
+/build-windows
 
 /.idea
 /*.cmake
