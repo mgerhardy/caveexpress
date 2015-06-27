@@ -71,7 +71,7 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 
 	@Override
 	protected String[] getLibraries() {
-		return new String[] { "SDL2", "SDL2_image", "SDL2_mixer", "SDL2_net", getName() };
+		return new String[] { getName() };
 	}
 
 	private final class InAppBillingSetupFinishedListener implements IabHelper.OnIabSetupFinishedListener {
