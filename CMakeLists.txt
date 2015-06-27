@@ -30,11 +30,11 @@ endfunction()
 # variables
 #-------------------------------------------------------------------------------
 
-if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 	set(WINDOWS 1)
-elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin")
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
 	set(DARWIN 1)
-elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Linux")
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 	set(LINUX 1)
 else()
 	message(WARNING "Unknown host system - default to linux")
