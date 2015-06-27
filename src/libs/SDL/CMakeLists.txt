@@ -115,7 +115,7 @@ FILE(GLOB PLATFORM_SRCS
 	src/core/windows/*.c
 	src/power/windows/*.c
 	src/audio/winmm/*.c
-	src/audio/xaudio/*.c
+	src/audio/xaudio2/*.c
 	src/audio/directsound/*.c
 	src/render/direct3d/*.c
 	src/thread/windows/*.c
