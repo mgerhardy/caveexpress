@@ -140,9 +140,10 @@ FILE(GLOB PLATFORM_SRCS
 	src/power/linux/*.c)
 endif()
 
-add_library(SDL2 ${SRCS} ${PLATFORM_SRCSset})
+add_library(SDL2 ${SRCS} ${PLATFORM_SRCS})
 target_link_libraries(SDL2 ${CMAKE_DL_LIBS})
-_target_properties(SDL2 PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare")
+target_properties(SDL2 PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare")
+set(SDL2_LIBRARY "SDL2")
 set(SDL2_INCLUDE_DIR "")
 list(append SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/include")
 list(append SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/src")
