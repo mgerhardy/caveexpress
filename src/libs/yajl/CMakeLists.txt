@@ -1,4 +1,4 @@
-package_global(yajl)
+package_global(YAJL)
 
 if (NOT YAJL_FOUND)
 set(SRCS
