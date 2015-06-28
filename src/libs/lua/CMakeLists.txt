@@ -1,5 +1,6 @@
 package_global(Lua)
 
+add_definitions(-DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE)
 if (NOT LUA_FOUND)
 set(SRCS
 	lapi.cpp
@@ -39,7 +40,6 @@ set(SRCS
 add_library(lua ${SRCS})
 target_link_libraries(lua ${CMAKE_DL_LIBS})
 set_target_properties(lua PROPERTIES FOLDER lua)
-add_definitions(-DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE)
 if (LINUX)
 	add_definitions(-DLUA_USE_LINUX)
 elseif(DARWIN)

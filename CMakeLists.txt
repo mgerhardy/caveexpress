@@ -103,6 +103,8 @@ endif()
 include_directories("${ROOT_DIR}/src")
 include_directories("${ROOT_DIR}/src/modules")
 include_directories("${ROOT_DIR}/src/modules/game")
+include_directories("${ROOT_DIR}/src/libs/gtest")
+include_directories("${ROOT_DIR}/src/libs/gtest/include")
 
 add_subdirectory(src/libs)
 
@@ -116,6 +118,10 @@ include_directories("${SDL2_NET_INCLUDE_DIR}")
 include_directories("${SDL2_MIXER_INCLUDE_DIR}")
 include_directories("${SDL2_IMAGE_INCLUDE_DIR}")
 include_directories("${SDL2_INCLUDE_DIR}")
+
+if (LUA_FOUND)
+add_definitions(-DHAVE_LUA_H)
+endif()
 
 if (UNITTESTS)
 	enable_testing()
