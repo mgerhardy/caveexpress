@@ -19,6 +19,6 @@ set(YAJL_LIBRARY "yajl")
 set(YAJL_INCLUDE_DIR "${ROOT_DIR}/src/libs")
 var_global(YAJL_LIBRARY)
 var_global(YAJL_INCLUDE_DIR)
-include_directories("${BOX2D_INCLUDE_DIR}")
+include_directories("${YAJL_INCLUDE_DIR}")
 
 endif()
