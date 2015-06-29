@@ -55,8 +55,9 @@ set_target_properties(Box2D PROPERTIES FOLDER Box2D)
 set_target_properties(Box2D PROPERTIES COMPILE_FLAGS "-Wno-shadow")
 
 set(BOX2D_LIBRARIES "Box2D")
-set(BOX2D_INCLUDE_DIRS "${ROOT_DIR}/src/libs")
+set(BOX2D_INCLUDE_DIR "${ROOT_DIR}/src/libs" "${ROOT_DIR}/src/libs/Box2D")
 var_global(BOX2D_LIBRARIES)
-var_global(BOX2D_INCLUDE_DIRS)
+var_global(BOX2D_INCLUDE_DIR)
+include_directories("${BOX2D_INCLUDE_DIR}")
 
 endif()

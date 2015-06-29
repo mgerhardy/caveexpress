@@ -108,7 +108,6 @@ include_directories("${ROOT_DIR}/src/libs/gtest/include")
 
 add_subdirectory(src/libs)
 
-include_directories("${ROOT_DIR}/src/libs")
 include_directories("${LUA_INCLUDE_DIR}")
 include_directories("${BOX2D_INCLUDE_DIR}")
 include_directories("${TINYXML2_INCLUDE_DIRS}")
