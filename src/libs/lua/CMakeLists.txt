@@ -33,6 +33,7 @@ set(SRCS
 	ltablib.cpp
 	ltm.cpp
 	lundump.cpp
+	lutf8lib.cpp
 	lvm.cpp
 	lzio.cpp
 	)
