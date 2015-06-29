@@ -57,7 +57,10 @@ void Platform::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold
 	if (absNormalImpulse < EPSILON)
 		return;
 
-	for (int i = 1; i < maniFold->pointCount; i++) {
+	for (int i = 0; i < maniFold->pointCount; i++) {
+		// shut up compiler
+		if (i == 0)
+			continue;
 		// the impulses must match - otherwise we are not in rest
 		const float impulse = fabs(normalImpulse - maniFold->points[i].normalImpulse);
 		if (impulse > 5.0f)
