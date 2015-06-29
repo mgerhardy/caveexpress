@@ -166,7 +166,7 @@ endmacro()
 
 macro(var_global VARIABLES)
 	foreach(VAR ${VARIABLES})
-		message("${VAR} => ${${VAR}}")
+#		message("${VAR} => ${${VAR}}")
 		set(${VAR} ${${VAR}} CACHE STRING "" FORCE)
 	endforeach()
 endmacro()
