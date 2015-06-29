@@ -1,0 +1,2 @@
+set(UNITTESTS OFF)
+set(TOOLS OFF)
