@@ -141,8 +141,10 @@ FILE(GLOB PLATFORM_SRCS
 endif()
 
 add_library(SDL2 ${SRCS} ${PLATFORM_SRCS})
+if (CMAKE_DL_LIBS)
 target_link_libraries(SDL2 ${CMAKE_DL_LIBS})
-target_properties(SDL2 PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare")
+endif()
+set_target_properties(SDL2 PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare")
 set(SDL2_LIBRARY "SDL2")
 set(SDL2_INCLUDE_DIR "")
 list(append SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/include")
