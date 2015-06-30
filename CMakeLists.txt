@@ -103,8 +103,10 @@ endif()
 include_directories("${ROOT_DIR}/src")
 include_directories("${ROOT_DIR}/src/modules")
 include_directories("${ROOT_DIR}/src/modules/game")
+if (UNITTESTS)
 include_directories("${ROOT_DIR}/src/libs/gtest")
 include_directories("${ROOT_DIR}/src/libs/gtest/include")
+endif()
 
 add_subdirectory(src/libs)
 
