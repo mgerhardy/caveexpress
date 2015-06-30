@@ -1,7 +1,3 @@
-package_global(Lua)
-
-add_definitions(-DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE)
-if (NOT LUA_FOUND)
 set(SRCS
 	lapi.cpp
 	lauxlib.cpp
@@ -38,19 +34,9 @@ set(SRCS
 	lzio.cpp
 	)
 
-add_library(lua ${SRCS})
-target_link_libraries(lua ${CMAKE_DL_LIBS})
-set_target_properties(lua PROPERTIES FOLDER lua)
+cp_add_library(lua5.2 ${SRCS} "-Wno-cast-qual -Wno-parentheses-equality" "-DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE")
 if (LINUX)
 	add_definitions(-DLUA_USE_LINUX)
 elseif(DARWIN)
 	add_definitions(-DLUA_USE_MACOSX)
-endif()
-set_target_properties(lua PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-parentheses-equality")
-
-set(LUA_LIBRARIES "lua")
-set(LUA_INCLUDE_DIR "${ROOT_DIR}/src/libs/lua")
-var_global(LUA_LIBRARIES)
-var_global(LUA_INCLUDE_DIR)
-
 endif()

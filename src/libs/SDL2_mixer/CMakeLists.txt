@@ -1,6 +1,3 @@
-package_global(SDL2_mixer)
-
-if (NOT SDL2_MIXER_FOUND)
 set(SRCS
 	dynamic_flac.c
 	dynamic_fluidsynth.c
@@ -68,26 +65,17 @@ list(APPEND SRCS
 	libvorbis-1.3.3/lib/floor0.c
 	libvorbis-1.3.3/lib/floor1.c)
 endif()
-add_library(SDL2_mixer ${SRCS})
-set_target_properties(SDL2_mixer PROPERTIES FOLDER SDL2_mixer)
-add_definitions(-DOGG_MUSIC -DWAV_MUSIC)
-if (ANDROID)
-add_definitions(-DOGG_USE_TREMOR)
-endif()
-include_directories("libogg-1.3.1/include")
-if (ANDROID)
-include_directories("libvorbisidec-1.2.1")
-else()
-include_directories("libvorbis-1.3.3/include")
-include_directories("libvorbis-1.3.3/lib")
-endif()
-target_link_libraries(SDL2_mixer ${SDL2_LIBRARY})
-include_directories(${SDL2_INCLUDE_DIR})
-set_target_properties(SDL2_mixer PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-shadow -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-sign-compare -Wno-unused-variable -Wno-missing-field-initializers -Wno-unused-label -Wno-format-zero-length")
-
-set(SDL2_MIXER_LIBRARY "SDL2_mixer")
-set(SDL2_MIXER_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL_mixer")
-var_global(SDL2_MIXER_LIBRARY)
-var_global(SDL2_MIXER_INCLUDE_DIR)
-
+cp_add_library(SDL2_mixer ${SRCS} "-Wno-cast-qual -Wno-shadow -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-sign-compare -Wno-unused-variable -Wno-missing-field-initializers -Wno-unused-label -Wno-format-zero-length" "-DOGG_MUSIC -DWAV_MUSIC")
+if (NOT SDL2_MIXER_FOUND)
+	if (ANDROID)
+		add_definitions(-DOGG_USE_TREMOR)
+	endif()
+	include_directories("libogg-1.3.1/include")
+	if (ANDROID)
+		include_directories("libvorbisidec-1.2.1")
+	else()
+		include_directories("libvorbis-1.3.3/include")
+		include_directories("libvorbis-1.3.3/lib")
+	endif()
+	include_directories(${SDL2_INCLUDE_DIR})
 endif()

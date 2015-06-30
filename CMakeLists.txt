@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8.3)
 
 include(CPack)
 
@@ -42,9 +42,9 @@ else()
 endif()
 find_program(TEXTUREPACKER_BIN NAMES TexturePacker)
 if (TEXTUREPACKER_BIN-NOTFOUND)
-	message("Could not find TexturePacker")
+	message(WARNING "Could not find TexturePacker")
 else()
-	message("Found TexturePacker: ${TEXTUREPACKER_BIN}")
+	message(STATUS "Found TexturePacker: ${TEXTUREPACKER_BIN}")
 endif()
 
 #-------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 find_program(CCACHE "ccache")
 if (CCACHE)
-	message("Using ccache")
+	message(STATUS "Using ccache")
 	set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ${CCACHE})
 	set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE})
 else()

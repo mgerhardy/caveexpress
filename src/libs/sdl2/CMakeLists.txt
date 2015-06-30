@@ -1,6 +1,3 @@
-package_global(SDL2)
-
-if (NOT SDL2_FOUND)
 FILE(GLOB SRCS
 	src/video/*.c
 	src/video/raspberry/*.c
@@ -124,9 +121,6 @@ FILE(GLOB PLATFORM_SRCS
 	src/thread/windows/*.c
 	src/thread/generic/SDL_syscond.c)
 elseif(LINUX)
-include(FindPkgConfig)
-pkg_search_module(DBUS REQUIRED dbus-1 dbus)
-include_directories(${DBUS_INCLUDE_DIRS})
 FILE(GLOB PLATFORM_SRCS
 	src/thread/pthread/*.c
 	src/haptic/linux/*.c
@@ -140,22 +134,21 @@ FILE(GLOB PLATFORM_SRCS
 	src/power/linux/*.c)
 endif()
 
-add_library(SDL2 ${SRCS} ${PLATFORM_SRCS})
-if (CMAKE_DL_LIBS)
-target_link_libraries(SDL2 ${CMAKE_DL_LIBS})
-endif()
-set_target_properties(SDL2 PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare")
-set(SDL2_LIBRARY "SDL2")
-set(SDL2_INCLUDE_DIR "")
-list(APPEND SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/include")
-list(APPEND SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/src")
-if (UNIX AND NOT ANDROID AND NOT EMSCRIPTEN)
-list(APPEND SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/linux")
-message("Use preconfigured SDL for linux")
-else()
-list(APPEND SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/general")
-endif()
-var_global(SDL2_LIBRARY)
-var_global(SDL2_INCLUDE_DIR)
-
+cp_add_library(sdl2 "${SRCS};${PLATFORM_SRCS}" "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare" "")
+if (NOT SDL2_FOUND)
+	if (CMAKE_DL_LIBS)
+		target_link_libraries(sdl2 ${CMAKE_DL_LIBS})
+	endif()
+	list(APPEND SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/include")
+	list(APPEND SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/src")
+	if (LINUX AND NOT ANDROID AND NOT EMSCRIPTEN)
+		include(FindPkgConfig)
+		pkg_search_module(DBUS REQUIRED dbus-1 dbus)
+		include_directories(${DBUS_INCLUDE_DIRS})
+		list(APPEND SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/linux")
+		message(STATUS "Use preconfigured SDL for linux")
+	else()
+		list(APPEND SDL2_INCLUDE_DIR "${ROOT_DIR}/src/libs/SDL/general")
+	endif()
+	var_global(SDL2_INCLUDE_DIR)
 endif()

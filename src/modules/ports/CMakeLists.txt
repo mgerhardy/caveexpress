@@ -18,4 +18,4 @@ endif()
 
 add_library(ports ${ports_SRCS})
 set_target_properties(ports PROPERTIES FOLDER ports)
-target_link_libraries(ports common)
+cp_target_link_libraries(TARGET ports LIBS common)

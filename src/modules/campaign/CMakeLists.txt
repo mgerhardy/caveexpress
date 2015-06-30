@@ -8,4 +8,4 @@ set(campaign_SRCS
 
 add_library(campaign ${campaign_SRCS})
 set_target_properties(campaign PROPERTIES FOLDER campaign)
-target_link_libraries(campaign common)
+cp_target_link_libraries(TARGET campaign LIBS common)

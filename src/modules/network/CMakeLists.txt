@@ -6,4 +6,4 @@ set(network_SRCS
 )
 add_library(network ${network_SRCS})
 set_target_properties(network PROPERTIES FOLDER network)
-target_link_libraries(network common ${SDL2_NET_LIBRARY})
+cp_target_link_libraries(TARGET network LIBS common SDL2_net)
