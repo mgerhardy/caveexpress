@@ -41,7 +41,7 @@ add_definitions(-DLOAD_PNG -DPNG_NO_CONFIG_H)
 #-lz
 include_directories("libpng-1.6.2")
 target_link_libraries(SDL2_image ${SDL2_LIBRARY} ${ZLIB_LIBRARIES})
-include_directories("${SDL2_INCLUDE_DIR}")
+include_directories(${SDL2_INCLUDE_DIR})
 set_target_properties(SDL2_image PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-attributes -Wno-unused-parameter -Wno-sign-compare")
 
 set(SDL2_IMAGE_LIBRARY "SDL2_image")

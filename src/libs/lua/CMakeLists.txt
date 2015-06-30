@@ -46,7 +46,7 @@ if (LINUX)
 elseif(DARWIN)
 	add_definitions(-DLUA_USE_MACOSX)
 endif()
-set_target_properties(lua PROPERTIES COMPILE_FLAGS "-Wno-cast-qual")
+set_target_properties(lua PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-parentheses-equality")
 
 set(LUA_LIBRARIES "lua")
 set(LUA_INCLUDE_DIR "${ROOT_DIR}/src/libs/lua")

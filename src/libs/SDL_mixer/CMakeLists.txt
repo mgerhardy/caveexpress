@@ -82,7 +82,7 @@ include_directories("libvorbis-1.3.3/include")
 include_directories("libvorbis-1.3.3/lib")
 endif()
 target_link_libraries(SDL2_mixer ${SDL2_LIBRARY})
-include_directories("${SDL2_INCLUDE_DIR}")
+include_directories(${SDL2_INCLUDE_DIR})
 set_target_properties(SDL2_mixer PROPERTIES COMPILE_FLAGS "-Wno-cast-qual -Wno-shadow -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-sign-compare -Wno-unused-variable -Wno-missing-field-initializers -Wno-unused-label -Wno-format-zero-length")
 
 set(SDL2_MIXER_LIBRARY "SDL2_mixer")
