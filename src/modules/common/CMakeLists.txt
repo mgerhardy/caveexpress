@@ -21,7 +21,6 @@ set(common_SRCS
 	String.cpp
 	ConfigVar.cpp
 	CommandSystem.cpp
-	ServiceProvider.cpp
 	SpriteDefinition.cpp
 	URI.cpp
 	ByteStream.cpp
@@ -29,4 +28,4 @@ set(common_SRCS
 
 add_library(common ${common_SRCS})
 set_target_properties(common PROPERTIES FOLDER common)
-cp_target_link_libraries(TARGET common LIBS network ports lua5.2 sdl2 sqlite3)
+cp_target_link_libraries(TARGET common LIBS ports lua5.2 sdl2 sqlite3)

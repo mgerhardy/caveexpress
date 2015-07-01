@@ -1,4 +1,5 @@
 add_subdirectory(common)
+add_subdirectory(service)
 add_subdirectory(network)
 add_subdirectory(game)
 add_subdirectory(campaign)

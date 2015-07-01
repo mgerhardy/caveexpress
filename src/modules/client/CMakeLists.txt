@@ -8,4 +8,4 @@ set(client_SRCS
 )
 add_library(client ${client_SRCS})
 set_target_properties(client PROPERTIES FOLDER client)
-target_link_libraries(client gfx particle)
+target_link_libraries(client gfx particle service)
