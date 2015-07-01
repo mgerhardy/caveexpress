@@ -76,7 +76,7 @@ void UI::shutdown ()
 		_eventHandler->removeObserver(this);
 		_eventHandler = nullptr;
 	}
-	_textureCache.shutdown();
+	Singleton<TextureCache>::getInstance().shutdown();
 	_spriteCache.shutdown();
 
 	_stack.clear();
@@ -163,7 +163,7 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 	eventHandler.registerObserver(this);
 
 	Log::info(LOG_CLIENT, "init the texture cache with %s", serviceProvider.getTextureDefinition().getTextureSize().c_str());
-	_textureCache.init(_frontend, serviceProvider.getTextureDefinition());
+	Singleton<TextureCache>::getInstance().init(_frontend, serviceProvider.getTextureDefinition());
 	_spriteCache.init();
 
 	FontDefinition& fontDef = Singleton<FontDefinition>::getInstance();

@@ -1,7 +1,8 @@
 #include "Sprite.h"
 #include "common/IFrontend.h"
 #include "common/Log.h"
-#include "ui/UI.h"
+#include "textures/TextureCache.h"
+#include "common/Singleton.h"
 
 Sprite::Sprite (const std::string& name) :
 		_name(name), _currentFrame(-1), _frameCount(0), _fps(20.0f), _frameTimeRemaining(1000.0f / _fps), _loop(
@@ -48,7 +49,7 @@ bool Sprite::addFrame (Layer layer, const std::string& name, int delay, bool act
 {
 	if (name.empty())
 		return false;
-	const TexturePtr& t = UI::get().loadTexture(name);
+	const TexturePtr& t = Singleton<TextureCache>::getInstance().load(name);
 	if (!t->isValid()) {
 		return false;
 	}

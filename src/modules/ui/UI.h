@@ -5,6 +5,7 @@
 #include "windows/UIWindow.h"
 #include "common/CommandSystem.h"
 #include "common/Common.h"
+#include "common/Singleton.h"
 #include "common/System.h"
 #include "common/Log.h"
 #include <memory>
@@ -83,7 +84,6 @@ private:
 	typedef std::map<std::string, BitmapFontPtr> Fonts;
 	Fonts _fonts;
 
-	mutable TextureCache _textureCache;
 	mutable SpriteCache _spriteCache;
 
 	bool _restart;
@@ -211,7 +211,7 @@ public:
 
 inline TexturePtr UI::loadTexture (const std::string& name) const
 {
-	return _textureCache.load(name);
+	return Singleton<TextureCache>::getInstance().load(name);
 }
 
 inline SpritePtr UI::loadSprite (const std::string& name) const
