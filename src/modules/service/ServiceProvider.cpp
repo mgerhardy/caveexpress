@@ -7,7 +7,7 @@
 #include "network/NoNetwork.h"
 #include "common/TextureDefinition.h"
 #include "common/IFrontend.h"
-#include "GameRegistry.h"
+#include "game/GameRegistry.h"
 #include "common/ExecutionTime.h"
 #include "common/Log.h"
 
