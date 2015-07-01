@@ -6,7 +6,7 @@
 #include "common/IEventObserver.h"
 #include "common/IBindingSpaceListener.h"
 #include "common/TextConsole.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "common/Singleton.h"
 #include "GameRegistry.h"
 #include "network/IServerCallback.h"

@@ -7,7 +7,7 @@
 #include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
 #include "client/ClientMap.h"
 #include "common/Commands.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 
 namespace caveexpress {
 

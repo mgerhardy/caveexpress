@@ -14,7 +14,7 @@
 #include "sound/Sound.h"
 #include "common/ConfigManager.h"
 #include "common/EventHandler.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "common/ExecutionTime.h"
 #include "common/DateUtil.h"
 #include "cavepacker/shared/CavePackerAnimation.h"

@@ -1,6 +1,6 @@
 #include "GameEventHandler.h"
 #include "network/ProtocolHandlerRegistry.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "network/messages/MapRestartMessage.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 #include "caveexpress/shared/network/messages/RemoveRopeMessage.h"

@@ -11,7 +11,7 @@
 #include "ui/windows/modeselection/ModeSetListener.h"
 #include "sound/Sound.h"
 #include "common/IFrontend.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "common/System.h"
 #include "network/INetwork.h"
 

@@ -19,7 +19,7 @@
 #include "client/network/PlayerListHandler.h"
 #include "client/network/TextMessageHandler.h"
 #include "network/ProtocolHandlerRegistry.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "common/IFrontend.h"
 #include "client/commands/CmdMove.h"
 #include "client/commands/CmdZoom.h"

@@ -24,7 +24,7 @@
 #include "campaign/ICampaignManager.h"
 #include "campaign/persister/GooglePlayPersister.h"
 #include "common/ConfigManager.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "common/System.h"
 #include "common/ExecutionTime.h"
 #include "common/Commands.h"

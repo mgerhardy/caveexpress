@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/ICommand.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "network/INetwork.h"
 #include "common/ConfigManager.h"
 #include "network/messages/PingMessage.h"

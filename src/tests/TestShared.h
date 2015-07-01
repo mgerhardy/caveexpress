@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 
 #include "TestFrontend.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "campaign/ICampaignManager.h"
 #include "GameRegistry.h"
 #include "network/INetwork.h"

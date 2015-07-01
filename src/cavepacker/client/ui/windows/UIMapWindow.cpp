@@ -10,7 +10,7 @@
 #include "ui/UI.h"
 #include "client/Camera.h"
 #include "common/ConfigManager.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "common/Log.h"
 #include "common/IFrontend.h"
 

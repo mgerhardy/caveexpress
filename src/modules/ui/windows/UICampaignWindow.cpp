@@ -4,7 +4,7 @@
 #include "ui/nodes/UINodeButtonImage.h"
 #include "ui/windows/listener/SelectorPageListener.h"
 #include "ui/nodes/UINodeMainButton.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "ui/nodes/UINodeCampaignSelector.h"
 #include "ui/nodes/UINodeBackground.h"
 #include "ui/windows/main/ContinuePlayNodeListener.h"

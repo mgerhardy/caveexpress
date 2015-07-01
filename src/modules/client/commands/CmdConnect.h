@@ -2,7 +2,7 @@
 
 #include "common/ICommand.h"
 #include "common/Log.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "common/ConfigManager.h"
 
 // Connect to a server and trigger the @c LoadMapMessage protocol message

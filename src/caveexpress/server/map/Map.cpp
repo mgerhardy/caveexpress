@@ -5,7 +5,7 @@
 #include "common/Shared.h"
 #include "caveexpress/shared/constants/Commands.h"
 #include "common/Log.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "common/SpriteDefinition.h"
 #include "network/messages/LoadMapMessage.h"
 #include "common/IFrontend.h"

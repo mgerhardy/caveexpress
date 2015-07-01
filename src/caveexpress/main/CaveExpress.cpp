@@ -4,7 +4,7 @@
 #include "common/ConfigManager.h"
 #include "common/Commands.h"
 #include "common/CommandSystem.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "common/ExecutionTime.h"
 #include "client/entities/ClientEntityFactory.h"
 #include "client/entities/ClientPlayer.h"

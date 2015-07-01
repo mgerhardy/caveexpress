@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 
 class TextureModeListener: public UINodeListener {
 private:

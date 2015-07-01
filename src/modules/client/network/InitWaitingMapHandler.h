@@ -3,7 +3,7 @@
 #include "network/IProtocolHandler.h"
 #include "ui/windows/IUIMapWindow.h"
 #include "ui/UI.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 
 /**
  * @brief The server is done loading everything and now waits for the client to start the session.

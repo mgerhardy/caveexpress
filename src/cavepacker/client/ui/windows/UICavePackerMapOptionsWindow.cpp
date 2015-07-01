@@ -2,7 +2,7 @@
 #include "ui/nodes/UINodeBackButton.h"
 #include "ui/nodes/UINodeBackToRootButton.h"
 #include "ui/nodes/UINodeButtonText.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "common/Commands.h"
 #include "network/INetwork.h"
 #include "ui/nodes/UINodeSettingsBackground.h"

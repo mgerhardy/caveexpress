@@ -2,7 +2,7 @@
 #include "common/Log.h"
 #include "common/ExecutionTime.h"
 #include "common/TextureDefinition.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 
 TextureCache::TextureCache () :
 		_frontend(nullptr)

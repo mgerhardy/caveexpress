@@ -3,7 +3,7 @@
 #include "campaign/CampaignManager.h"
 #include "ui/UI.h"
 #include "ui/windows/UIWindow.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "network/INetwork.h"
 #include "common/Log.h"
 

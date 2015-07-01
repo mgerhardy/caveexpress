@@ -10,7 +10,7 @@
 #include "ui/UI.h"
 #include "client/commands/CmdServerPing.h"
 #include "ui/windows/listener/OpenWindowListener.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "common/Commands.h"
 
 UIMultiplayerWindow::UIMultiplayerWindow (IFrontend *frontend, const IMapManager &mapManager, ServiceProvider& serviceProvider) :

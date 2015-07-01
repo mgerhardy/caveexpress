@@ -9,7 +9,7 @@
 #include "common/CommandSystem.h"
 #include "common/Commands.h"
 #include "common/ConfigManager.h"
-#include "common/ServiceProvider.h"
+#include "service/ServiceProvider.h"
 #include "common/Singleton.h"
 #include "common/FileSystem.h"
 #include "GameRegistry.h"
