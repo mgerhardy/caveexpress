@@ -35,4 +35,4 @@ set(caveexpress-server_SRCS
 )
 add_library(caveexpress-server ${caveexpress-server_SRCS})
 set_target_properties(caveexpress-server PROPERTIES FOLDER caveexpress-server)
-target_link_libraries(caveexpress-server server caveexpress-shared)
+cp_target_link_libraries(TARGET caveexpress-server LIBS server caveexpress-shared)

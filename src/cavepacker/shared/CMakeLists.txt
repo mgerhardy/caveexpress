@@ -7,4 +7,4 @@ set(cavepacker-shared_SRCS
 )
 add_library(cavepacker-shared ${cavepacker-shared_SRCS})
 set_target_properties(cavepacker-shared PROPERTIES FOLDER cavepacker-shared)
-target_link_libraries(cavepacker-shared common network)
+cp_target_link_libraries(TARGET cavepacker-shared LIBS common network)
