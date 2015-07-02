@@ -26,7 +26,7 @@ set(common_SRCS
 	ByteStream.cpp
 )
 
-if(WIN32)
+if(WINDOWS)
 	set(ports_SRCS ports/Windows.cpp ports/project.rc)
 	configure_file(ports/project.rc.in ports/project.rc)
 elseif(APPLE)
