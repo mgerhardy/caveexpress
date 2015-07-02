@@ -1,6 +1,7 @@
 set(gfx_SRCS
 	SDLFrontend.cpp
 	FrameBuffer.cpp
+	Shader.cpp
 )
 if (NOT ANDROID)
 list(APPEND gfx_SRCS
@@ -12,7 +13,7 @@ list(APPEND gfx_SRCS
 endif()
 add_library(gfx ${gfx_SRCS})
 set_target_properties(gfx PROPERTIES FOLDER gfx)
-set(DEPS common texture shader ui)
+set(DEPS common texture ui)
 if (ANDROID)
 list(APPEND DEPS GLESv1_CM GLESv2)
 else()

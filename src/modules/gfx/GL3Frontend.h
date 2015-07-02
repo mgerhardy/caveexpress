@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SDLFrontend.h"
-#include "shaders/Shader.h"
+#include "gfx/Shader.h"
 #include "FrameBuffer.h"
 
 class TextureCoords;

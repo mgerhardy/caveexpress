@@ -2,13 +2,11 @@
 
 #include "common/Config.h"
 #include "common/Log.h"
+#include "common/Math.h"
 #include <SDL_platform.h>
 #include <SDL_assert.h>
 #include <SDL_config.h>
 #include <SDL_video.h>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/glm.hpp>
 
 typedef unsigned int TexNum;
 
