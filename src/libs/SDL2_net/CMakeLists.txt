@@ -4,4 +4,4 @@ set(SRCS
 	SDLnetTCP.c
 	SDLnetUDP.c
 	)
-cp_add_library(SDL2_net ${SRCS} "" "")
+cp_add_library(LIB SDL2_net SRCS ${SRCS})

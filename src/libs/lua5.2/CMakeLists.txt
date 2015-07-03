@@ -34,7 +34,11 @@ set(SRCS
 	lzio.cpp
 	)
 
-cp_add_library(lua5.2 ${SRCS} "-Wno-cast-qual -Wno-parentheses-equality" "-DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE")
+cp_add_library(
+	LIB lua5.2
+	SRCS ${SRCS}
+	CFLAGS "-Wno-cast-qual -Wno-parentheses-equality"
+	DEFINES "-DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE")
 if (LINUX)
 	add_definitions(-DLUA_USE_LINUX)
 elseif(DARWIN)

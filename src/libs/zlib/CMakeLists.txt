@@ -14,4 +14,4 @@ set(SRCS
 	trees.c
 	uncompr.c
 	zutil.c)
-cp_add_library(zlib ${SRCS} "-Wno-cast-qual -Wno-implicit-function-declaration" "")
+cp_add_library(LIB zlib SRCS ${SRCS} CFLAGS "-Wno-cast-qual -Wno-implicit-function-declaration")

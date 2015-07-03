@@ -29,7 +29,11 @@ set(SRCS
 	IMG_xpm.c
 	IMG_xv.c
 	)
-cp_add_library(SDL2_image ${SRCS} "-Wno-cast-qual -Wno-attributes -Wno-unused-parameter -Wno-sign-compare" "-DLOAD_PNG -DPNG_NO_CONFIG_H")
+cp_add_library(
+	LIB SDL2_image
+	SRCS ${SRCS}
+	CFLAGS "-Wno-cast-qual -Wno-attributes -Wno-unused-parameter -Wno-sign-compare"
+	DEFINES "-DLOAD_PNG -DPNG_NO_CONFIG_H")
 # TODO
 #IMG_UIImage.m
 #IMG_ImageIO.m

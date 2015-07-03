@@ -46,4 +46,4 @@ set(SRCS
 	Dynamics/b2Island.cpp
 	Rope/b2Rope.cpp
 	)
-cp_add_library(box2d ${SRCS} "-Wno-shadow" "")
+cp_add_library(LIB box2d SRCS ${SRCS} CFLAGS "-Wno-shadow")

@@ -134,7 +134,10 @@ FILE(GLOB PLATFORM_SRCS
 	src/power/linux/*.c)
 endif()
 
-cp_add_library(sdl2 "${SRCS};${PLATFORM_SRCS}" "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare" "")
+cp_add_library(
+	LIB sdl2
+	SRCS ${SRCS} ${PLATFORM_SRCS}
+	CFLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare")
 if (NOT SDL2_FOUND)
 	if (CMAKE_DL_LIBS)
 		target_link_libraries(sdl2 ${CMAKE_DL_LIBS})

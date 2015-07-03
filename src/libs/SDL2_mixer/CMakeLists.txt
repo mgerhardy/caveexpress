@@ -65,7 +65,11 @@ list(APPEND SRCS
 	libvorbis-1.3.3/lib/floor0.c
 	libvorbis-1.3.3/lib/floor1.c)
 endif()
-cp_add_library(SDL2_mixer ${SRCS} "-Wno-cast-qual -Wno-shadow -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-sign-compare -Wno-unused-variable -Wno-missing-field-initializers -Wno-unused-label -Wno-format-zero-length" "-DOGG_MUSIC -DWAV_MUSIC")
+cp_add_library(
+	LIB SDL2_mixer
+	SRCS ${SRCS}
+	CFLAGS "-Wno-cast-qual -Wno-shadow -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-sign-compare -Wno-unused-variable -Wno-missing-field-initializers -Wno-unused-label -Wno-format-zero-length"
+	DEFINES "-DOGG_MUSIC -DWAV_MUSIC")
 if (NOT SDL2_MIXER_FOUND)
 	if (ANDROID)
 		add_definitions(-DOGG_USE_TREMOR)
