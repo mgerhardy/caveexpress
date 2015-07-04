@@ -52,7 +52,7 @@ bool FileSystem::copy (const std::string& src, const std::string& target) const 
 		return false;
 	}
 	fseek(f, 0, SEEK_END);
-	long int len = ftell(f);
+	const size_t len = static_cast<size_t>(ftell(f));
 	fseek(f, 0, SEEK_SET);
 
 	unsigned char *const buf = (unsigned char *) malloc(len);
