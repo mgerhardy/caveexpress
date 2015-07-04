@@ -13,9 +13,9 @@ os:
   - linux
 
 script:
-  - mkdir build-bundled; cd build-bundled; cmake ..; make; cd ..; ./build-bundled/tests
+  - mkdir build-bundled; cd build-bundled; cmake ..; make VERBOSE=1; cd ..; ./build-bundled/tests
   - sudo apt-get install -qq libbox2d-dev libyajl-dev libglm-dev libgtest-dev libsdl2-dev libsdl2-net-dev libsdl2-image-dev libsdl2-mixer-dev libsqlite3-dev liblua5.2-dev zlib1g-dev
-  - mkdir build-systemwide; cd build-systemwide; cmake ..; make; cd ..; ./build-systemwide/tests
+  - mkdir build-systemwide; cd build-systemwide; cmake ..; make VERBOSE=1; cd ..; ./build-systemwide/tests
 
 notifications:
   email: true
