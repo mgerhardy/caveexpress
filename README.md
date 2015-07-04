@@ -32,7 +32,7 @@ Requirements
 * tinyxml2
 
 On debian based systems do:
- sudo apt-get install libbox2d-dev libyajl-dev libglm-dev libgtest-dev libsdl2-dev libsdl2-net-dev libsdl2-image-dev libsdl2-mixer-dev libsqlite3-dev liblua5.2-dev libtinyxml2-dev zlib1g-dev
+ sudo apt-get install libbox2d-dev libyajl-dev libglm-dev libgtest-dev libsdl2-dev libsdl2-net-dev libsdl2-image-dev libsdl2-mixer-dev libsqlite3-dev liblua5.2-dev zlib1g-dev
 
 Additionally you could install the following packages:
  sudo apt-get install binutils-dev libncurses5-dev pngcrush imagemagick

@@ -29,6 +29,6 @@ install:
   - sudo apt-get install -qq g++-4.8
   - sudo apt-get install -qq libc6:i386
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
-  - sudo apt-get install -qq -d libbox2d-dev libyajl-dev libglm-dev libgtest-dev libsdl2-dev libsdl2-net-dev libsdl2-image-dev libsdl2-mixer-dev libsqlite3-dev liblua5.2-dev libtinyxml2-dev zlib1g-dev
+  - sudo apt-get install -qq -d libbox2d-dev libyajl-dev libglm-dev libgtest-dev libsdl2-dev libsdl2-net-dev libsdl2-image-dev libsdl2-mixer-dev libsqlite3-dev liblua5.2-dev zlib1g-dev
 
 cache: apt
