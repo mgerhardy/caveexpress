@@ -292,7 +292,7 @@ macro(cp_find LIB HEADER SUFFIX)
 			cp_message("Could not find ${LIB} via pkg-config")
 		endif()
 	endif()
-	if (NOT _${PREFIX}_FOUND)
+	if (NOT ${PKG_PREFIX}_FOUND)
 		find_path(${PREFIX}_INCLUDE_DIRS ${HEADER}
 			HINTS ENV ${PREFIX}DIR
 			PATH_SUFFIXES include ${SUFFIX}
@@ -311,6 +311,9 @@ macro(cp_find LIB HEADER SUFFIX)
 		include(FindPackageHandleStandardArgs)
 		find_package_handle_standard_args(${LIB} DEFAULT_MSG ${PREFIX}_LIBRARIES ${PREFIX}_INCLUDE_DIRS)
 		mark_as_advanced(${PREFIX}_INCLUDE_DIRS ${PREFIX}_LIBRARIES)
+		var_global(${PREFIX}_INCLUDE_DIRS)
+		var_global(${PREFIX}_LIBRARIES)
+		var_global(${PREFIX}_FOUND)
 	endif()
 endmacro()
 
