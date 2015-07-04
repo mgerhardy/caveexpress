@@ -101,6 +101,7 @@ else()
 endif()
 
 include_directories("${ROOT_DIR}/src")
+include_directories("${ROOT_DIR}/src/libs")
 include_directories("${ROOT_DIR}/src/modules")
 include_directories("${ROOT_DIR}/src/modules/game")
 if (UNITTESTS)
