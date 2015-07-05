@@ -46,8 +46,7 @@ elseif isNaCl() then
 	defaultpersister = "nop"
 	defaultnetwork = false
 else
-	-- workaround for now - remove me later
-	defaultfrontend = "opengl"
+	defaultfrontend = "opengl3"
 	defaultjoystick = true
 end
 
