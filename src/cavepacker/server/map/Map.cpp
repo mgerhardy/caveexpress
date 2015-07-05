@@ -1,5 +1,4 @@
 #include "Map.h"
-#include "server/box2d/DebugRenderer.h"
 #include "common/ConfigManager.h"
 #include "common/MapSettings.h"
 #include "common/Shared.h"
