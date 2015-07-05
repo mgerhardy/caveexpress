@@ -129,7 +129,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(ANDROID_C_FLAGS "${ANDROID_NDK_ARCH_CFLAGS} --sysroot=${ANDROID_NDK_SYSROOT} ${ANDROID_NDK_GLOBAL_CFLAGS} -DANDROID -Wa,--noexecstack -Wformat -Werror=format-security -DGL_GLEXT_PROTOTYPES -DLUA_USE_LONGJMP")
 set(ANDROID_LD_FLAGS "-shared --sysroot=${ANDROID_NDK_SYSROOT} -L${ANDROID_NDK_STL_LIBRARYPATH} -no-canonical-prefixes ${ANDROID_NDK_ARCH_LDFLAGS} -Wl,--no-warn-mismatch -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now")
 
-set(CMAKE_CXX_FLAGS "${ANDROID_C_FLAGS} -std=c++11 ${ANDROID_NDK_STL_CXXFLAGS} ${ANDROID_NDK_INCLUDES} -fno-rtti -fno-exceptions ${ANDROID_NDK_CXX_WARN_FLAGS}")
+set(CMAKE_CXX_FLAGS "${ANDROID_C_FLAGS} -std=c++11 ${ANDROID_NDK_STL_CXXFLAGS} ${ANDROID_NDK_INCLUDES} ${ANDROID_NDK_CXX_WARN_FLAGS}")
 set(CMAKE_CXX_FLAGS_RELEASE "-Os -fomit-frame-pointer -funswitch-loops -finline-limit=300 -DNDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -fno-omit-frame-pointer -g -DDEBUG")
 set(CMAKE_C_FLAGS "${ANDROID_C_FLAGS} ${ANDROID_NDK_C_WARN_FLAGS} ${ANDROID_NDK_INCLUDES}")
