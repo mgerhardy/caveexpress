@@ -5,7 +5,6 @@
 #include "common/Log.h"
 #include "common/System.h"
 #include <signal.h>
-#include <SDL_net.h>
 
 Network::Network () :
 		INetwork(), _serverSocket(nullptr), _clientSocket(nullptr), _socketSet(nullptr), _clientId(0), _bytesIn(0), _bytesOut(
