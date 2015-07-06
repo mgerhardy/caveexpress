@@ -137,7 +137,7 @@ endif()
 cp_add_library(
 	LIB sdl2
 	SRCS ${SRCS} ${PLATFORM_SRCS}
-	CFLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare")
+	CFLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare -Wno-ignored-qualifiers -Wno-discarded-qualifiers -Wno-empty-body -Wno-unused-but-set-variable")
 if (NOT SDL2_FOUND)
 	if (CMAKE_DL_LIBS)
 		target_link_libraries(sdl2 ${CMAKE_DL_LIBS})
