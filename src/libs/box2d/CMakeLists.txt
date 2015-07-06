@@ -46,4 +46,4 @@ set(SRCS
 	Box2D/Dynamics/b2Island.cpp
 	Box2D/Rope/b2Rope.cpp
 	)
-cp_add_library(LIB box2d SRCS ${SRCS} CFLAGS "-Wno-shadow")
+cp_add_library(LIB box2d SRCS ${SRCS} CFLAGS "-Wno-shadow -Wno-unused-but-set-variable -Wno-maybe-uninitialized -Wno-array-bounds")
