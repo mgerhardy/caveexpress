@@ -4,7 +4,8 @@ set(META_DATA)
 set(ANDROID_REFERENCED_LIBS android.library.reference.1=google-play-services_lib)
 set(UNITTESTS OFF)
 set(TOOLS OFF)
-
+set(USE_PKG_CONFIG OFF)
+set(USE_BUILTIN ON)
 list(APPEND PERMISSIONS "<uses-permission android:name=\"com.android.vending.BILLING\" />")
 
 if (NOT HD_VERSION)

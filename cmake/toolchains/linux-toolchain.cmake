@@ -11,6 +11,8 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     endif()
 endif()
 
+set(USE_PKG_CONFIG ON)
+
 set(CMAKE_C_STANDARD_LIBRARIES ${CMAKE_DL_LIBS})
 
 set(CMAKE_C_FLAGS "-pthread -Wcast-qual -Wcast-align -Wpointer-arith -Wshadow -Wall -Wextra -Wreturn-type -Wwrite-strings -Wno-unused-parameter")

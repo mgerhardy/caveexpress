@@ -243,75 +243,79 @@ macro(cp_add_library)
 endmacro()
 
 macro(cp_find LIB HEADER SUFFIX)
-	string(TOUPPER ${LIB} PREFIX)
-	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-		set(_PROCESSOR_ARCH "x64")
-	else()
-		set(_PROCESSOR_ARCH "x86")
-	endif()
-	set(_SEARCH_PATHS
-		~/Library/Frameworks
-		/Library/Frameworks
-		/usr/local
-		/usr
-		/sw # Fink
-		/opt/local # DarwinPorts
-		/opt/csw # Blastwave
-		/opt
-	)
-	find_package(PkgConfig)
-	if (LINK_STATIC_LIBS)
-		set(PKG_PREFIX _${PREFIX}_STATIC)
-	else()
-		set(PKG_PREFIX _${PREFIX})
-	endif()
-	if (PKG_CONFIG_FOUND)
-		message(STATUS "Checking for ${LIB}")
-		pkg_check_modules(_${PREFIX} ${LIB})
-		if (_${PREFIX}_FOUND)
-			cp_message("Found ${LIB} via pkg-config")
-			cp_message("CFLAGS: ${${PKG_PREFIX}_CFLAGS_OTHER}")
-			cp_message("LDFLAGS: ${${PKG_PREFIX}_LDFLAGS_OTHER}")
-			cp_message("LIBS: ${${PKG_PREFIX}_LIBRARIES}")
-			cp_message("INCLUDE: ${${PKG_PREFIX}_INCLUDE_DIRS}")
-			set(${PREFIX}_COMPILERFLAGS ${${PKG_PREFIX}_CFLAGS_OTHER})
-			var_global(${PREFIX}_COMPILERFLAGS)
-			set(${PREFIX}_LINKERFLAGS ${${PKG_PREFIX}_LDFLAGS_OTHER})
-			var_global(${PREFIX}_LINKERFLAGS)
-			set(${PREFIX}_FOUND ${${PKG_PREFIX}_FOUND})
-			var_global(${PREFIX}_FOUND)
-			set(${PREFIX}_INCLUDE_DIRS ${${PKG_PREFIX}_INCLUDE_DIRS})
-			var_global(${PREFIX}_INCLUDE_DIRS)
-			set(${PREFIX}_LIBRARY_DIRS ${${PKG_PREFIX}_LIBRARY_DIRS})
-			var_global(${PREFIX}_LIBRARY_DIRS)
-			set(${PREFIX}_LIBRARIES ${${PKG_PREFIX}_LIBRARIES})
-			var_global(${PREFIX}_LIBRARIES)
+	if (NOT USE_BUILTIN)
+		string(TOUPPER ${LIB} PREFIX)
+		if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+			set(_PROCESSOR_ARCH "x64")
 		else()
-			cp_message("Could not find ${LIB} via pkg-config")
+			set(_PROCESSOR_ARCH "x86")
 		endif()
-	endif()
-	if (NOT ${PKG_PREFIX}_FOUND)
-		find_path(${PREFIX}_INCLUDE_DIRS ${HEADER}
-			HINTS ENV ${PREFIX}DIR
-			PATH_SUFFIXES include ${SUFFIX}
-			PATHS
-				${${PKG_PREFIX}_INCLUDE_DIRS}}
-				${_SEARCH_PATHS}
+		set(_SEARCH_PATHS
+			~/Library/Frameworks
+			/Library/Frameworks
+			/usr/local
+			/usr
+			/sw # Fink
+			/opt/local # DarwinPorts
+			/opt/csw # Blastwave
+			/opt
 		)
-		find_library(${PREFIX}_LIBRARIES
-			${LIB}
-			HINTS ENV ${PREFIX}DIR
-			PATH_SUFFIXES lib64 lib lib/${_PROCESSOR_ARCH}
-			PATHS
-				${${PKG_PREFIX}_LIBRARY_DIRS}}
-				${_SEARCH_PATHS}
-		)
-		include(FindPackageHandleStandardArgs)
-		find_package_handle_standard_args(${LIB} DEFAULT_MSG ${PREFIX}_LIBRARIES ${PREFIX}_INCLUDE_DIRS)
-		mark_as_advanced(${PREFIX}_INCLUDE_DIRS ${PREFIX}_LIBRARIES)
-		var_global(${PREFIX}_INCLUDE_DIRS)
-		var_global(${PREFIX}_LIBRARIES)
-		var_global(${PREFIX}_FOUND)
+		if (USE_PKG_CONFIG)
+			find_package(PkgConfig)
+			if (LINK_STATIC_LIBS)
+				set(PKG_PREFIX _${PREFIX}_STATIC)
+			else()
+				set(PKG_PREFIX _${PREFIX})
+			endif()
+		endif()
+		if (PKG_CONFIG_FOUND)
+			message(STATUS "Checking for ${LIB}")
+			pkg_check_modules(_${PREFIX} ${LIB})
+			if (_${PREFIX}_FOUND)
+				cp_message("Found ${LIB} via pkg-config")
+				cp_message("CFLAGS: ${${PKG_PREFIX}_CFLAGS_OTHER}")
+				cp_message("LDFLAGS: ${${PKG_PREFIX}_LDFLAGS_OTHER}")
+				cp_message("LIBS: ${${PKG_PREFIX}_LIBRARIES}")
+				cp_message("INCLUDE: ${${PKG_PREFIX}_INCLUDE_DIRS}")
+				set(${PREFIX}_COMPILERFLAGS ${${PKG_PREFIX}_CFLAGS_OTHER})
+				var_global(${PREFIX}_COMPILERFLAGS)
+				set(${PREFIX}_LINKERFLAGS ${${PKG_PREFIX}_LDFLAGS_OTHER})
+				var_global(${PREFIX}_LINKERFLAGS)
+				set(${PREFIX}_FOUND ${${PKG_PREFIX}_FOUND})
+				var_global(${PREFIX}_FOUND)
+				set(${PREFIX}_INCLUDE_DIRS ${${PKG_PREFIX}_INCLUDE_DIRS})
+				var_global(${PREFIX}_INCLUDE_DIRS)
+				set(${PREFIX}_LIBRARY_DIRS ${${PKG_PREFIX}_LIBRARY_DIRS})
+				var_global(${PREFIX}_LIBRARY_DIRS)
+				set(${PREFIX}_LIBRARIES ${${PKG_PREFIX}_LIBRARIES})
+				var_global(${PREFIX}_LIBRARIES)
+			else()
+				cp_message("Could not find ${LIB} via pkg-config")
+			endif()
+		endif()
+		if (NOT ${PKG_PREFIX}_FOUND)
+			find_path(${PREFIX}_INCLUDE_DIRS ${HEADER}
+				HINTS ENV ${PREFIX}DIR
+				PATH_SUFFIXES include ${SUFFIX}
+				PATHS
+					${${PKG_PREFIX}_INCLUDE_DIRS}}
+					${_SEARCH_PATHS}
+			)
+			find_library(${PREFIX}_LIBRARIES
+				${LIB}
+				HINTS ENV ${PREFIX}DIR
+				PATH_SUFFIXES lib64 lib lib/${_PROCESSOR_ARCH}
+				PATHS
+					${${PKG_PREFIX}_LIBRARY_DIRS}}
+					${_SEARCH_PATHS}
+			)
+			include(FindPackageHandleStandardArgs)
+			find_package_handle_standard_args(${LIB} DEFAULT_MSG ${PREFIX}_LIBRARIES ${PREFIX}_INCLUDE_DIRS)
+			mark_as_advanced(${PREFIX}_INCLUDE_DIRS ${PREFIX}_LIBRARIES)
+			var_global(${PREFIX}_INCLUDE_DIRS)
+			var_global(${PREFIX}_LIBRARIES)
+			var_global(${PREFIX}_FOUND)
+		endif()
 	endif()
 endmacro()
 
