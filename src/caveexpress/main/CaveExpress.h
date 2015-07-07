@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameRegistry.h"
+#include "game/GameRegistry.h"
 #include "campaign/CampaignManager.h"
 #include "campaign/persister/SQLitePersister.h"
 #include "caveexpress/server/map/Map.h"

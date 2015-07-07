@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameRegistry.h"
+#include "game/GameRegistry.h"
 #include "client/ClientMap.h"
 #include "cavepacker/server/map/Map.h"
 #include "campaign/CampaignManager.h"

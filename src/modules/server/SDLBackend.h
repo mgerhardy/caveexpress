@@ -8,7 +8,7 @@
 #include "common/TextConsole.h"
 #include "service/ServiceProvider.h"
 #include "common/Singleton.h"
-#include "GameRegistry.h"
+#include "game/GameRegistry.h"
 #include "network/IServerCallback.h"
 #include <map>
 #include <set>

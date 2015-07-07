@@ -12,7 +12,7 @@
 #include "service/ServiceProvider.h"
 #include "common/Singleton.h"
 #include "common/FileSystem.h"
-#include "GameRegistry.h"
+#include "game/GameRegistry.h"
 #include "common/gestures/ZoomIn.h"
 #include "common/gestures/ZoomOut.h"
 #include <SDL.h>

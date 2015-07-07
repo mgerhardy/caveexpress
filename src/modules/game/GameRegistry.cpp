@@ -1,4 +1,4 @@
-#include "GameRegistry.h"
+#include "game/GameRegistry.h"
 #include "common/System.h"
 
 GameRegistry::GameRegistry()

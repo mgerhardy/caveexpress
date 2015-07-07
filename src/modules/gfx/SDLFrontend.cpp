@@ -8,7 +8,7 @@
 #include <memory>
 #include "common/DateUtil.h"
 #include "common/Singleton.h"
-#include "GameRegistry.h"
+#include "game/GameRegistry.h"
 #include "common/Commands.h"
 #include "common/Application.h"
 #include <SDL_image.h>

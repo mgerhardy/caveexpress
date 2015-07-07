@@ -1,4 +1,4 @@
-#include "GameRegistry.h"
+#include "game/GameRegistry.h"
 
 class TestGame: public IGame {
 };

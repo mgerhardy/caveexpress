@@ -17,7 +17,7 @@
 #include "common/ConsoleFrontend.h"
 #include "common/Commands.h"
 #include "common/Singleton.h"
-#include "GameRegistry.h"
+#include "game/GameRegistry.h"
 #include "network/messages/PingMessage.h"
 #include "common/MapManager.h"
 #include "network/ProtocolHandlerRegistry.h"

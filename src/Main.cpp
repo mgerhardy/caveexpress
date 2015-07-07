@@ -3,7 +3,7 @@
 #include "common/Log.h"
 #include "common/Application.h"
 #include "common/System.h"
-#include "GameRegistry.h"
+#include "game/GameRegistry.h"
 #include <SDL.h>
 #include <SDL_main.h>
 

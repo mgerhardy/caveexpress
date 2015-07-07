@@ -6,7 +6,7 @@
 #include "TestFrontend.h"
 #include "service/ServiceProvider.h"
 #include "campaign/ICampaignManager.h"
-#include "GameRegistry.h"
+#include "game/GameRegistry.h"
 #include "network/INetwork.h"
 
 class TestCampaignMgr : public ICampaignManager {
