@@ -41,5 +41,5 @@ cp_add_library(
 if (NOT SDL2_IMAGE_FOUND)
 	include_directories("libpng-1.6.2")
 	target_link_libraries(SDL2_image ${SDL2_LIBRARIES} ${ZLIB_LIBRARIES})
-	include_directories(${SDL2_INCLUDE_DIRS})
+	include_directories(${SDL2_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS})
 endif()
