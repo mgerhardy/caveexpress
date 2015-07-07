@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cstdarg>
 #include <stdio.h>
+#include <cstdlib>
 #include <cstddef>
 #include <SDL_platform.h>
 #ifdef __ANDROID__
