@@ -29,7 +29,6 @@ Requirements
 * SDL2_net
 * SDL2_image
 * sqlite3
-* tinyxml2
 
 On debian based systems do:
  sudo apt-get install libbox2d-dev libyajl-dev libglm-dev libgtest-dev libsdl2-dev libsdl2-net-dev libsdl2-image-dev libsdl2-mixer-dev libsqlite3-dev liblua5.2-dev zlib1g-dev
@@ -44,6 +43,7 @@ imagemagick is also only needed if you plan to modify and add your own images an
 
 If you want to rebuild the texture atlas, then you also need TexturePacker
 
+Compile:
 * mkdir build
 * cd build
 * cmake ..
@@ -52,7 +52,7 @@ If you want to rebuild the texture atlas, then you also need TexturePacker
 Cross compile from linux for windows:
 * Set up a cross compile tool chain like MXE
 ** git clone https://github.com/mxe/mxe.git
-** cd mxe && make sdl2 sdl2_image sdl2_mixer
+** cd mxe && make sdl2 sdl2_image sdl2_mixer box2d sdl2_net
 * mkdir build
 * cd build
 * cmake .. -DCMAKE_TOOLCHAIN_FILE=/path/to/mxe/usr/i686-w64-mingw32.static/share/cmake/mxe-conf.cmake
@@ -64,6 +64,8 @@ Cross compile for android
 * cd build
 * cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/android-toolchain.cmake
 * make
+or simply:
+* ./contrib/scripts/android.sh
 
 If you get an aapt - no such file or directory on 64bit debian based
 distributions, do the following:
