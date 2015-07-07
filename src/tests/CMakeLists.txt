@@ -1,6 +1,6 @@
 project(tests)
 textures(${PROJECT_NAME})
-file(GLOB ${PROJECT_NAME}_SRC
+set(${PROJECT_NAME}_SRC
 	FileTest.cpp
 	ByteStreamTest.cpp
 	ParticleTest.cpp
