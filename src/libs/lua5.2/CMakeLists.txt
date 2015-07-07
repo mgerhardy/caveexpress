@@ -1,37 +1,37 @@
 set(SRCS
-	lapi.cpp
-	lauxlib.cpp
-	lbaselib.cpp
-	lbitlib.cpp
-	lcode.cpp
-	lcorolib.cpp
-	lctype.cpp
-	ldblib.cpp
-	ldebug.cpp
-	ldo.cpp
-	ldump.cpp
-	lfunc.cpp
-	lgc.cpp
-	linit.cpp
-	liolib.cpp
-	llex.cpp
-	lmathlib.cpp
-	lmem.cpp
-	loadlib.cpp
-	lobject.cpp
-	lopcodes.cpp
-	loslib.cpp
-	lparser.cpp
-	lstate.cpp
-	lstring.cpp
-	lstrlib.cpp
-	ltable.cpp
-	ltablib.cpp
-	ltm.cpp
-	lundump.cpp
-	lutf8lib.cpp
-	lvm.cpp
-	lzio.cpp
+	lapi.c
+	lauxlib.c
+	lbaselib.c
+	lbitlib.c
+	lcode.c
+	lcorolib.c
+	lctype.c
+	ldblib.c
+	ldebug.c
+	ldo.c
+	ldump.c
+	lfunc.c
+	lgc.c
+	linit.c
+	liolib.c
+	llex.c
+	lmathlib.c
+	lmem.c
+	loadlib.c
+	lobject.c
+	lopcodes.c
+	loslib.c
+	lparser.c
+	lstate.c
+	lstring.c
+	lstrlib.c
+	ltable.c
+	ltablib.c
+	ltm.c
+	lundump.c
+	lutf8lib.c
+	lvm.c
+	lzio.c
 	)
 
 cp_add_library(
@@ -48,8 +48,4 @@ add_definitions(-DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE)
 if (ANDROID)
 	add_definitions(-D\"lua_getlocaledecpoint\(\)='.'\")
 	add_definitions(-DLUA_ANSI -DLUA_USE_C89)
-endif()
-if (LUA5.2_FOUND)
-	set(LUA5.2_COMPILERFLAGS "${LUA5.2_COMPILERFLAGS} -DHAVE_LUA_H")
-	var_global(LUA5.2_COMPILERFLAGS)
 endif()
