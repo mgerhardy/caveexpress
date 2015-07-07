@@ -1,7 +1,7 @@
 project(caveexpress)
-cp_add_executable(TARGET ${PROJECT_NAME} SRCS CaveExpress.cpp WINDOWED)
+cp_add_executable(TARGET ${PROJECT_NAME} SRCS CaveExpress.cpp ../../Main.cpp WINDOWED)
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
-cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS ${PROJECT_NAME}-server ${PROJECT_NAME}-client ${PROJECT_NAME}-shared main)
+cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS ${PROJECT_NAME}-server ${PROJECT_NAME}-client ${PROJECT_NAME}-shared server game common service)
 set(TPS
 	caveexpress-entity
 	caveexpress-environment-ice

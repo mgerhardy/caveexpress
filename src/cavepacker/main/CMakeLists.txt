@@ -1,6 +1,6 @@
 project(cavepacker)
-cp_add_executable(TARGET ${PROJECT_NAME} SRCS CavePacker.cpp WINDOWED)
-cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS ${PROJECT_NAME}-server ${PROJECT_NAME}-client ${PROJECT_NAME}-shared main)
+cp_add_executable(TARGET ${PROJECT_NAME} SRCS CavePacker.cpp ../../Main.cpp WINDOWED)
+cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS ${PROJECT_NAME}-server ${PROJECT_NAME}-client ${PROJECT_NAME}-shared server game common service)
 set(TPS
 	cavepacker-entity
 	cavepacker-environment
