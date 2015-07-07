@@ -30,15 +30,15 @@ BEGIN
 	BEGIN
 		BLOCK "040004b0"
 		BEGIN
-			VALUE "Comments", "%%APPNAME_FULL%%"
+			VALUE "Comments", "@APPNAME_FULL@"
 			VALUE "CompanyName", "CaveProductions"
-			VALUE "FileDescription", "%%APPNAME%%"
+			VALUE "FileDescription", "@APPNAME@"
 			VALUE "FileVersion", VER_FILEVERSION_STR
-			VALUE "InternalName", "%%APPNAME%%"
-			VALUE "LegalCopyright", "Copyright (C) 2013-2014"
-			VALUE "OriginalFilename", "%%APPNAME%%.exe"
-			VALUE "ProductName", "%%APPNAME_FULL%%"
-			VALUE "ProductVersion", "%%VERSION%%"
+			VALUE "InternalName", "@APPNAME@"
+			VALUE "LegalCopyright", "Copyright (C) 2013-2015"
+			VALUE "OriginalFilename", "@APPNAME@.exe"
+			VALUE "ProductName", "@APPNAME@ @VERSION@ @VERSION_CODE@"
+			VALUE "ProductVersion", "@VERSION@"
 			VALUE "SpecialBuild", VER_SPECIAL_STR
 		END
 	END

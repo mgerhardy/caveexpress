@@ -27,8 +27,7 @@ set(common_SRCS
 )
 
 if(WINDOWS)
-	set(ports_SRCS ports/Windows.cpp ports/project.rc)
-	configure_file(ports/project.rc.in ports/project.rc)
+	set(ports_SRCS ports/Windows.cpp)
 elseif(APPLE)
 	set(ports_SRCS ports/Unix.cpp ports/Darwin.cpp ports/Cocoa.mm)
 elseif(ANDROID)
