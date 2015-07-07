@@ -83,7 +83,7 @@ FILE(GLOB PLATFORM_SRCS
 	src/timer/unix/*.c
 	src/thread/pthread/*.c
 	src/main/nacl/*.c)
-elseif(DARWIN)
+elseif(IOS)
 FILE(GLOB PLATFORM_SRCS
 	src/video/uikit/*.m
 	src/video/cocoa/*.m
@@ -93,7 +93,24 @@ FILE(GLOB PLATFORM_SRCS
 	src/power/uikit/*.m
 	src/audio/coreaudio/*.c
 	src/filesystem/cocoa/*.c
-	src/joystick/iphoneos/*.c
+	src/joystick/darwin/*.c
+	src/timer/unix/*.c
+	src/video/uikit/*.c
+	src/main/dummy/*.c
+	src/video/cocoa/*.c
+	src/file/cocoa/*.c
+	src/haptic/darwin/*.c
+	src/power/macosx/*.c
+	src/thread/pthread/*.c)
+elseif(DARWIN)
+FILE(GLOB PLATFORM_SRCS
+	src/video/uikit/*.m
+	src/video/cocoa/*.m
+	src/file/cocoa/*.m
+	src/filesystem/cocoa/*.m
+	src/power/uikit/*.m
+	src/audio/coreaudio/*.c
+	src/filesystem/cocoa/*.c
 	src/joystick/darwin/*.c
 	src/timer/unix/*.c
 	src/video/uikit/*.c
