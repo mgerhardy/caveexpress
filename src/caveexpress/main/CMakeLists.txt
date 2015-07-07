@@ -1,5 +1,5 @@
 project(caveexpress)
-add_executable(${PROJECT_NAME} CaveExpress.cpp)
+cp_add_executable(TARGET ${PROJECT_NAME} SRCS CaveExpress.cpp WINDOWED)
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
 cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS ${PROJECT_NAME}-server ${PROJECT_NAME}-client ${PROJECT_NAME}-shared main)
 set(TPS

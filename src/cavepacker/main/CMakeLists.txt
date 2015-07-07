@@ -1,6 +1,5 @@
 project(cavepacker)
-add_executable(${PROJECT_NAME} CavePacker.cpp)
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
+cp_add_executable(TARGET ${PROJECT_NAME} SRCS CavePacker.cpp WINDOWED)
 cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS ${PROJECT_NAME}-server ${PROJECT_NAME}-client ${PROJECT_NAME}-shared main)
 set(TPS
 	cavepacker-entity

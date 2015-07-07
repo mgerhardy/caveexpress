@@ -36,5 +36,23 @@
     <array>
         <string>@MACOSX_BUNDLE_ICON_FILE@</string>
     </array>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>UIStatusBarHidden</key>
+    <true/>
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <false/>
+    <key>UIInterfaceOrientation</key>
+    <string>UIInterfaceOrientationLandscapeRight</string>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+        <string>opengles-2</string>
+        <string>armv7</string>
+        <string>accelerometer</string>
+    </array>
 </dict>
 </plist>
