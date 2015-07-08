@@ -1,0 +1,7 @@
+#add_subdirectory(shared)
+#add_subdirectory(client)
+#add_subdirectory(server)
+add_subdirectory(main)
+if (UNITTESTS)
+#	add_subdirectory(tests)
+endif()
