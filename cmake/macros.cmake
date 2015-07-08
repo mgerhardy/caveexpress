@@ -474,7 +474,7 @@ macro(cp_add_executable)
 		endif()
 	endif()
 
-	if (PNACL)
+	if (NACL)
 		set_target_properties(${_EXE_TARGET} PROPERTIES PROFILING_POSTFIX .pexe)
 		set_target_properties(${_EXE_TARGET} PROPERTIES RELEASE_POSTFIX .pexe)
 		set_target_properties(${_EXE_TARGET} PROPERTIES DEBUG_POSTFIX .pexe)

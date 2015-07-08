@@ -1,25 +1,27 @@
+# ripped most of it from fips
+
 file(STRINGS "$ENV{HOME}/.emscripten" EMSCRIPTEN_DOT_CONTENT)
 foreach(LINE ${EMSCRIPTEN_DOT_CONTENT})
-string(REPLACE "=" ";" VAR_VALUE ${LINE})
-list(LENGTH VAR_VALUE VAR_VALUE_LENGTH)
-if (VAR_VALUE_LENGTH EQUAL 2)
-list(GET VAR_VALUE 0 VAR)
-list(GET VAR_VALUE 1 VALUE)
-if (VAR STREQUAL "EMSCRIPTEN_ROOT")
-STRING(REGEX REPLACE "'" "" EMSCRIPTEN_ROOT_PATH ${VALUE})
-endif()
-endif()
+	string(REPLACE "=" ";" VAR_VALUE ${LINE})
+	list(LENGTH VAR_VALUE VAR_VALUE_LENGTH)
+	if (VAR_VALUE_LENGTH EQUAL 2)
+		list(GET VAR_VALUE 0 VAR)
+		list(GET VAR_VALUE 1 VALUE)
+		if (VAR STREQUAL "EMSCRIPTEN_ROOT")
+			STRING(REGEX REPLACE "'" "" EMSCRIPTEN_ROOT_PATH ${VALUE})
+		endif()
+	endif()
 endforeach()
 
 set(EMSCRIPTEN 1)
 
 # enable the emscripten tracer if profiling is enabled
 if (PROFILING)
-    set(EMSCRIPTEN_TRACING 1)
-    set(EMSCRIPTEN_TRACING_OPTION "--tracing")
+	set(EMSCRIPTEN_TRACING 1)
+	set(EMSCRIPTEN_TRACING_OPTION "--tracing")
 else()
-    set(EMSCRIPTEN_TRACING 0)
-    set(EMSCRIPTEN_TRACING_OPTION "")
+	set(EMSCRIPTEN_TRACING 0)
+	set(EMSCRIPTEN_TRACING_OPTION "")
 endif()
 
 # total memory is 128MB for main thread, and 16 MB for worker
@@ -50,9 +52,9 @@ set(EMSCRIPTEN_CACHE_OPTION "")
 
 # tool suffic (.bat on windows)
 if (CMAKE_HOST_WIN32)
-    set(EMCC_SUFFIX ".bat")
+	set(EMCC_SUFFIX ".bat")
 else()
-    set(EMCC_SUFFIX "")
+	set(EMCC_SUFFIX "")
 endif()
 
 include(CMakeForceCompiler)
