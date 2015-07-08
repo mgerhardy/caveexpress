@@ -14,7 +14,7 @@ endif()
 set(CMAKE_C_STANDARD_LIBRARIES ${CMAKE_DL_LIBS})
 
 set(CMAKE_C_FLAGS "-pthread -Wcast-qual -Wcast-align -Wpointer-arith -Wshadow -Wall -Wextra -Wreturn-type -Wwrite-strings -Wno-unused-parameter")
-set(CMAKE_C_FLAGS_RELEASE "-O3 -ftree-vectorize -msse3 -ffast-math -DNDEBUG")
+set(CMAKE_C_FLAGS_RELEASE "-O3 -ftree-vectorize -msse3 -ffast-math -DNDEBUG -D_FORTIFY_SOURCE=2")
 set(CMAKE_C_FLAGS_DEBUG "-O0 -DDEBUG=1 -ggdb")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11 -Wnon-virtual-dtor")
