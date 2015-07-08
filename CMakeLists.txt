@@ -40,12 +40,17 @@ else()
 	message(WARNING "Unknown host system - default to linux")
 	set(LINUX 1)
 endif()
-find_program(TEXTUREPACKER_BIN NAMES TexturePacker)
-if (TEXTUREPACKER_BIN-NOTFOUND)
-	message(WARNING "Could not find TexturePacker")
-else()
-	message(STATUS "Found TexturePacker: ${TEXTUREPACKER_BIN}")
+
+# on mac it e.g. finds the gui launcher - this is not what we want - find a proper way to handle this
+if (LINUX)
+	find_program(TEXTUREPACKER_BIN NAMES TexturePacker)
+	if (TEXTUREPACKER_BIN-NOTFOUND)
+		message(WARNING "Could not find TexturePacker")
+	else()
+		message(STATUS "Found TexturePacker: ${TEXTUREPACKER_BIN}")
+	endif()
 endif()
+
 
 #-------------------------------------------------------------------------------
 # options
