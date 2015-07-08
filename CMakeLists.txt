@@ -11,6 +11,7 @@ SET(CMAKE_ECLIPSE_GENERATE_LINKED_RESOURCES OFF)
 option(RELEASE "Build a release build" OFF)
 option(UNITTESTS "Builds with unittests" ON)
 option(TOOLS "Builds with tools" ON)
+option(VERBOSE "Print debug information" OFF)
 
 include(${ROOT_DIR}/cmake/macros.cmake)
 
