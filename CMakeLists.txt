@@ -86,12 +86,13 @@ elseif (EMSCRIPTEN)
 endif()
 
 if (NOT NETWORKING)
-add_definitions(-DNONETWORK=1)
+	add_definitions(-DNONETWORK=1)
 endif()
 
-if(CMAKE_BUILD_TYPE STREQUAL "")
-set(CMAKE_BUILD_TYPE Debug)
+if (NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Compile Type" FORCE)
 endif()
+
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/lib)
@@ -117,9 +118,8 @@ add_subdirectory(src/libs)
 
 # TODO move into lib cmakefiles
 if (LUA5.2_FOUND)
-add_definitions(-DHAVE_LUA_H)
+	add_definitions(-DHAVE_LUA_H)
 endif()
-
 if (UNITTESTS)
 	enable_testing()
 endif()
