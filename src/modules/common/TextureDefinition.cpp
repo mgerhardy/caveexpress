@@ -30,11 +30,13 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 		lua.getGlobalKeyValue("textures" + textureSize);
 
 		while (lua.getNextKeyValue()) {
-			const String id = lua.getKey();
+			String id = lua.getKey();
 			if (id.empty()) {
 				lua.pop();
-				System.exit("Invalid texture entry found", 1);
+				System.exit("Invalid texture entry found - invalid id", 1);
 			}
+
+			id = id.cutBeforeLastMatch("/");
 
 			if (progress != nullptr) {
 				progress->progressStep();

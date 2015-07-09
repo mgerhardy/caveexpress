@@ -2,7 +2,6 @@
 
 fonts = {
 ["font-10"] = {
-	file="font_10.png",
 	height=13,
 	description={
 		family="Ferro Rosso",
@@ -15,7 +14,7 @@ fonts = {
 		height=13
 	},
 	texture={
-		file="font_10.png",
+		file="font-10",
 		width=128,
 		height=128
 	},
@@ -213,9 +212,8 @@ fonts = {
 		{from="w",to=".",offset=-1},
 		{from="w",to="A",offset=-1},
 	}
-}
+},
 ["font-12"] = {
-	file="font_12.png",
 	height=16,
 	description={
 		family="Ferro Rosso",
@@ -228,7 +226,7 @@ fonts = {
 		height=16
 	},
 	texture={
-		file="font_12.png",
+		file="font-12",
 		width=128,
 		height=128
 	},
@@ -563,9 +561,8 @@ fonts = {
 		{from="z",to="Y",offset=-1},
 		{from="{",to="T",offset=-1},
 	}
-}
+},
 ["font-20"] = {
-	file="font_20.png",
 	height=27,
 	description={
 		family="Ferro Rosso",
@@ -578,7 +575,7 @@ fonts = {
 		height=27
 	},
 	texture={
-		file="font_20.png",
+		file="font-20",
 		width=256,
 		height=128
 	},
@@ -1218,9 +1215,8 @@ fonts = {
 		{from="z",to="Y",offset=-1},
 		{from="{",to="T",offset=-1},
 	}
-}
+},
 ["font-24"] = {
-	file="font_24.png",
 	height=32,
 	description={
 		family="Ferro Rosso",
@@ -1233,7 +1229,7 @@ fonts = {
 		height=32
 	},
 	texture={
-		file="font_24.png",
+		file="font-24",
 		width=256,
 		height=256
 	},
@@ -1885,9 +1881,8 @@ fonts = {
 		{from="z",to="Y",offset=-2},
 		{from="{",to="T",offset=-2},
 	}
-}
+},
 ["font-48"] = {
-	file="font_48.png",
 	height=64,
 	description={
 		family="Ferro Rosso",
@@ -1900,7 +1895,7 @@ fonts = {
 		height=64
 	},
 	texture={
-		file="font_48.png",
+		file="font-48",
 		width=512,
 		height=512
 	},
@@ -2622,9 +2617,8 @@ fonts = {
 		{from="z",to="y",offset=-1},
 		{from="{",to="T",offset=-3},
 	}
-}
+},
 ["font-8"] = {
-	file="font_8.png",
 	height=11,
 	description={
 		family="Ferro Rosso",
@@ -2637,7 +2631,7 @@ fonts = {
 		height=11
 	},
 	texture={
-		file="font_8.png",
+		file="font-8",
 		width=128,
 		height=64
 	},

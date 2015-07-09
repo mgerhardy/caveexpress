@@ -4,6 +4,6 @@ cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS server game common service)
 set(TPS
 	miniracer
 )
-#texturepacker(${PROJECT_NAME} "${TPS}")
-#textures(${PROJECT_NAME})
+texturepacker(${PROJECT_NAME} "${TPS}")
+textures(${PROJECT_NAME})
 create_dir_header(${PROJECT_NAME})

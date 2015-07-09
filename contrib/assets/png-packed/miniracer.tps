@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/miniracer/pics/miniracer-{v}-{n}.png</filename>
+        <filename>../../../base/miniracer/pics/miniracer-{n}-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -162,7 +162,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>miniracer-{v}-{n}.lua</filename>
+                <filename>miniracer-{n}-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>

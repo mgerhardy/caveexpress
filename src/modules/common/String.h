@@ -101,6 +101,8 @@ public:
 
 	String cutAfterFirstMatch (const String& pattern, size_t start = 0);
 
+	String cutBeforeLastMatch (const std::string& pattern);
+
 	String removeFromEnd (const String& pattern);
 
 	/**

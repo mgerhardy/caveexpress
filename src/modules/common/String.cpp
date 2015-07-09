@@ -159,7 +159,17 @@ String String::eraseAllSpaces ()
 String String::cutAfterFirstMatch (const String& pattern, size_t start)
 {
 	std::string::size_type pos = _string.find_first_of(pattern._string, 0);
+	if (pos == std::string::npos)
+		return _string;
 	return _string.substr(start, pos);
+}
+
+String String::cutBeforeLastMatch (const std::string& pattern)
+{
+	std::string::size_type pos = _string.rfind(pattern);
+	if (pos == std::string::npos)
+		return _string;
+	return _string.substr(pos + 1);
 }
 
 String String::removeFromEnd (const String& pattern)

@@ -14,6 +14,13 @@ TEST_F(GeneralTest, testStringTrim)
 	ASSERT_EQ("foo   bar", string::trim("  foo   bar   "));
 }
 
+TEST_F(GeneralTest, testStringCutBeforeLastMatch)
+{
+	String test("foo/bar");
+	test = test.cutBeforeLastMatch("/");
+	ASSERT_EQ("bar", test.str());
+}
+
 TEST_F(GeneralTest, testStringLTrim)
 {
 	ASSERT_EQ("foo bar ", string::ltrim(" foo bar "));
