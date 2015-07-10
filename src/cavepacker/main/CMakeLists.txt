@@ -8,6 +8,6 @@ set(TPS
 	cavepacker-ui-scene
 	cavepacker-ui
 )
-texturepacker(${PROJECT_NAME} "${TPS}")
+texturepacker(PROJECTNAME ${PROJECT_NAME} FILELIST ${TPS})
 textures(${PROJECT_NAME})
 create_dir_header(${PROJECT_NAME})

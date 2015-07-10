@@ -210,6 +210,7 @@ void UI::initStack ()
 
 void UI::addWindow (UIWindow *window)
 {
+	Log::info(LOG_CLIENT, "Register window %s", window->getId().c_str());
 	_windows[window->getId()] = window;
 }
 
