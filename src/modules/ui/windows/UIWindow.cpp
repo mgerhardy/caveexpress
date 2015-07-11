@@ -30,8 +30,7 @@ void UIWindow::render (int x, int y) const
 
 	UINode::render(x, y);
 
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		const UINode* nodePtr = *i;
+	for (const UINode* nodePtr : _nodes) {
 		nodePtr->renderOnTop(x, y);
 	}
 }
@@ -39,8 +38,8 @@ void UIWindow::render (int x, int y) const
 bool UIWindow::onPop ()
 {
 	bool pop = true;
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		const bool val = (*i)->onPop();
+	for (UINode* nodePtr : _nodes) {
+		const bool val = nodePtr->onPop();
 		if (!val)
 			pop = false;
 	}
@@ -70,8 +69,8 @@ void UIWindow::onActive ()
 bool UIWindow::onPush ()
 {
 	bool push = true;
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		const bool val = (*i)->onPush();
+	for (UINode* nodePtr : _nodes) {
+		const bool val = nodePtr->onPush();
 		if (!val)
 			push = false;
 	}
