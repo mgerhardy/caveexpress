@@ -1,5 +1,5 @@
 textures = {
-	["arrow_white"] = {
+	["arrow-white"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9140625,
 		y0 = 0.0009765625,
@@ -12,7 +12,7 @@ textures = {
 		untrimmedwidth = 83,
 		untrimmedheight = 50,
 	},
-	["arrow_yellow"] = {
+	["arrow-yellow"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9140625,
 		y0 = 0.0263671875,
@@ -25,20 +25,7 @@ textures = {
 		untrimmedwidth = 83,
 		untrimmedheight = 50,
 	},
-	["barrel_blue"] = {
-		image = "miniracer-0-small",
-		x0 = 0.4755859375,
-		y0 = 0.1943359375,
-		x1 = 0.02734375,
-		y1 = 0.013671875,
-		trimmedoffsetx = 0,
-		trimmedoffsety = 0,
-		trimmedwidth = 28,
-		trimmedheight = 28,
-		untrimmedwidth = 28,
-		untrimmedheight = 28,
-	},
-	["barrel_blue_down"] = {
+	["barrel-blue-down"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.41796875,
@@ -51,10 +38,10 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 24,
 	},
-	["barrel_red"] = {
+	["barrel-blue"] = {
 		image = "miniracer-0-small",
 		x0 = 0.4755859375,
-		y0 = 0.208984375,
+		y0 = 0.1943359375,
 		x1 = 0.02734375,
 		y1 = 0.013671875,
 		trimmedoffsetx = 0,
@@ -64,7 +51,7 @@ textures = {
 		untrimmedwidth = 28,
 		untrimmedheight = 28,
 	},
-	["barrel_red_down"] = {
+	["barrel-red-down"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6318359375,
 		y0 = 0.2822265625,
@@ -77,7 +64,20 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 24,
 	},
-	["barrier_red"] = {
+	["barrel-red"] = {
+		image = "miniracer-0-small",
+		x0 = 0.4755859375,
+		y0 = 0.208984375,
+		x1 = 0.02734375,
+		y1 = 0.013671875,
+		trimmedoffsetx = 0,
+		trimmedoffsety = 0,
+		trimmedwidth = 28,
+		trimmedheight = 28,
+		untrimmedwidth = 28,
+		untrimmedheight = 28,
+	},
+	["barrier-red-race"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6923828125,
 		y0 = 0.0732421875,
@@ -90,7 +90,7 @@ textures = {
 		untrimmedwidth = 105,
 		untrimmedheight = 31,
 	},
-	["barrier_red_race"] = {
+	["barrier-red"] = {
 		image = "miniracer-0-small",
 		x0 = 0.796875,
 		y0 = 0.0732421875,
@@ -103,7 +103,7 @@ textures = {
 		untrimmedwidth = 105,
 		untrimmedheight = 31,
 	},
-	["barrier_white"] = {
+	["barrier-white-race"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5048828125,
 		y0 = 0.08544921875,
@@ -116,7 +116,7 @@ textures = {
 		untrimmedwidth = 105,
 		untrimmedheight = 31,
 	},
-	["barrier_white_race"] = {
+	["barrier-white"] = {
 		image = "miniracer-0-small",
 		x0 = 0.37890625,
 		y0 = 0.09619140625,
@@ -129,7 +129,7 @@ textures = {
 		untrimmedwidth = 105,
 		untrimmedheight = 31,
 	},
-	["car_black_1"] = {
+	["car-black-1"] = {
 		image = "miniracer-0-small",
 		x0 = 0.193359375,
 		y0 = 0.130859375,
@@ -142,7 +142,7 @@ textures = {
 		untrimmedwidth = 36,
 		untrimmedheight = 66,
 	},
-	["car_black_2"] = {
+	["car-black-2"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5693359375,
 		y0 = 0.1904296875,
@@ -155,7 +155,7 @@ textures = {
 		untrimmedwidth = 36,
 		untrimmedheight = 58,
 	},
-	["car_black_3"] = {
+	["car-black-3"] = {
 		image = "miniracer-0-small",
 		x0 = 0.876953125,
 		y0 = 0.12158203125,
@@ -168,7 +168,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 66,
 	},
-	["car_black_4"] = {
+	["car-black-4"] = {
 		image = "miniracer-0-small",
 		x0 = 0.4140625,
 		y0 = 0.27099609375,
@@ -181,7 +181,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 66,
 	},
-	["car_black_5"] = {
+	["car-black-5"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.3564453125,
@@ -194,7 +194,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 61,
 	},
-	["car_black_small_1"] = {
+	["car-black-small-1"] = {
 		image = "miniracer-0-small",
 		x0 = 0.609375,
 		y0 = 0.08544921875,
@@ -207,7 +207,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_black_small_2"] = {
+	["car-black-small-2"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9453125,
 		y0 = 0.39599609375,
@@ -220,7 +220,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 31,
 	},
-	["car_black_small_3"] = {
+	["car-black-small-3"] = {
 		image = "miniracer-0-small",
 		x0 = 0.4833984375,
 		y0 = 0.09619140625,
@@ -233,7 +233,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_black_small_4"] = {
+	["car-black-small-4"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9775390625,
 		y0 = 0.10400390625,
@@ -246,7 +246,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_black_small_5"] = {
+	["car-black-small-5"] = {
 		image = "miniracer-0-small",
 		x0 = 0.509765625,
 		y0 = 0.43896484375,
@@ -259,7 +259,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 33,
 	},
-	["car_blue_1"] = {
+	["car-blue-1"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5693359375,
 		y0 = 0.1240234375,
@@ -272,7 +272,7 @@ textures = {
 		untrimmedwidth = 36,
 		untrimmedheight = 66,
 	},
-	["car_blue_2"] = {
+	["car-blue-2"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1826171875,
 		y0 = 0.2666015625,
@@ -285,7 +285,7 @@ textures = {
 		untrimmedwidth = 36,
 		untrimmedheight = 58,
 	},
-	["car_blue_3"] = {
+	["car-blue-3"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1826171875,
 		y0 = 0.2958984375,
@@ -298,7 +298,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 66,
 	},
-	["car_blue_4"] = {
+	["car-blue-4"] = {
 		image = "miniracer-0-small",
 		x0 = 0.875,
 		y0 = 0.21337890625,
@@ -311,7 +311,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 66,
 	},
-	["car_blue_5"] = {
+	["car-blue-5"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1669921875,
 		y0 = 0.3623046875,
@@ -324,7 +324,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 61,
 	},
-	["car_blue_small_1"] = {
+	["car-blue-small-1"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9775390625,
 		y0 = 0.1220703125,
@@ -337,7 +337,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_blue_small_2"] = {
+	["car-blue-small-2"] = {
 		image = "miniracer-0-small",
 		x0 = 0.966796875,
 		y0 = 0.39599609375,
@@ -350,7 +350,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 31,
 	},
-	["car_blue_small_3"] = {
+	["car-blue-small-3"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9775390625,
 		y0 = 0.14013671875,
@@ -363,7 +363,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_blue_small_4"] = {
+	["car-blue-small-4"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9775390625,
 		y0 = 0.158203125,
@@ -376,7 +376,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_blue_small_5"] = {
+	["car-blue-small-5"] = {
 		image = "miniracer-0-small",
 		x0 = 0.837890625,
 		y0 = 0.3857421875,
@@ -389,7 +389,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 33,
 	},
-	["car_green_1"] = {
+	["car-green-1"] = {
 		image = "miniracer-0-small",
 		x0 = 0.18359375,
 		y0 = 0.2001953125,
@@ -402,7 +402,7 @@ textures = {
 		untrimmedwidth = 36,
 		untrimmedheight = 66,
 	},
-	["car_green_2"] = {
+	["car-green-2"] = {
 		image = "miniracer-0-small",
 		x0 = 0.8759765625,
 		y0 = 0.15478515625,
@@ -415,7 +415,7 @@ textures = {
 		untrimmedwidth = 36,
 		untrimmedheight = 58,
 	},
-	["car_green_3"] = {
+	["car-green-3"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6318359375,
 		y0 = 0.2490234375,
@@ -428,7 +428,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 66,
 	},
-	["car_green_4"] = {
+	["car-green-4"] = {
 		image = "miniracer-0-small",
 		x0 = 0.4501953125,
 		y0 = 0.2880859375,
@@ -441,7 +441,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 66,
 	},
-	["car_green_5"] = {
+	["car-green-5"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.38720703125,
@@ -454,7 +454,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 61,
 	},
-	["car_green_small_1"] = {
+	["car-green-small-1"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9775390625,
 		y0 = 0.17626953125,
@@ -467,7 +467,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_green_small_2"] = {
+	["car-green-small-2"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9453125,
 		y0 = 0.412109375,
@@ -480,7 +480,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 31,
 	},
-	["car_green_small_3"] = {
+	["car-green-small-3"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9775390625,
 		y0 = 0.1943359375,
@@ -493,7 +493,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_green_small_4"] = {
+	["car-green-small-4"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9775390625,
 		y0 = 0.21240234375,
@@ -506,7 +506,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_green_small_5"] = {
+	["car-green-small-5"] = {
 		image = "miniracer-0-small",
 		x0 = 0.859375,
 		y0 = 0.3857421875,
@@ -519,7 +519,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 33,
 	},
-	["car_red_1"] = {
+	["car-red-1"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5693359375,
 		y0 = 0.1572265625,
@@ -532,7 +532,7 @@ textures = {
 		untrimmedwidth = 36,
 		untrimmedheight = 66,
 	},
-	["car_red_2"] = {
+	["car-red-2"] = {
 		image = "miniracer-0-small",
 		x0 = 0.8759765625,
 		y0 = 0.18408203125,
@@ -545,7 +545,7 @@ textures = {
 		untrimmedwidth = 36,
 		untrimmedheight = 58,
 	},
-	["car_red_3"] = {
+	["car-red-3"] = {
 		image = "miniracer-0-small",
 		x0 = 0.4140625,
 		y0 = 0.30419921875,
@@ -558,7 +558,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 66,
 	},
-	["car_red_4"] = {
+	["car-red-4"] = {
 		image = "miniracer-0-small",
 		x0 = 0.4501953125,
 		y0 = 0.3212890625,
@@ -571,7 +571,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 66,
 	},
-	["car_red_5"] = {
+	["car-red-5"] = {
 		image = "miniracer-0-small",
 		x0 = 0.8642578125,
 		y0 = 0.24658203125,
@@ -584,7 +584,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 61,
 	},
-	["car_red_small_1"] = {
+	["car-red-small-1"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9775390625,
 		y0 = 0.23046875,
@@ -597,7 +597,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_red_small_2"] = {
+	["car-red-small-2"] = {
 		image = "miniracer-0-small",
 		x0 = 0.966796875,
 		y0 = 0.412109375,
@@ -610,7 +610,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 31,
 	},
-	["car_red_small_3"] = {
+	["car-red-small-3"] = {
 		image = "miniracer-0-small",
 		x0 = 0.611328125,
 		y0 = 0.4091796875,
@@ -623,7 +623,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_red_small_4"] = {
+	["car-red-small-4"] = {
 		image = "miniracer-0-small",
 		x0 = 0.505859375,
 		y0 = 0.4208984375,
@@ -636,7 +636,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_red_small_5"] = {
+	["car-red-small-5"] = {
 		image = "miniracer-0-small",
 		x0 = 0.837890625,
 		y0 = 0.40283203125,
@@ -649,7 +649,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 33,
 	},
-	["car_yellow_1"] = {
+	["car-yellow-1"] = {
 		image = "miniracer-0-small",
 		x0 = 0.18359375,
 		y0 = 0.2333984375,
@@ -662,7 +662,7 @@ textures = {
 		untrimmedwidth = 36,
 		untrimmedheight = 66,
 	},
-	["car_yellow_2"] = {
+	["car-yellow-2"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5693359375,
 		y0 = 0.2197265625,
@@ -675,7 +675,7 @@ textures = {
 		untrimmedwidth = 36,
 		untrimmedheight = 58,
 	},
-	["car_yellow_3"] = {
+	["car-yellow-3"] = {
 		image = "miniracer-0-small",
 		x0 = 0.4130859375,
 		y0 = 0.33740234375,
@@ -688,7 +688,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 66,
 	},
-	["car_yellow_4"] = {
+	["car-yellow-4"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1787109375,
 		y0 = 0.3291015625,
@@ -701,7 +701,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 66,
 	},
-	["car_yellow_5"] = {
+	["car-yellow-5"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1669921875,
 		y0 = 0.39306640625,
@@ -714,7 +714,7 @@ textures = {
 		untrimmedwidth = 35,
 		untrimmedheight = 61,
 	},
-	["car_yellow_small_1"] = {
+	["car-yellow-small-1"] = {
 		image = "miniracer-0-small",
 		x0 = 0.396484375,
 		y0 = 0.43212890625,
@@ -727,7 +727,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_yellow_small_2"] = {
+	["car-yellow-small-2"] = {
 		image = "miniracer-0-small",
 		x0 = 0.3935546875,
 		y0 = 0.46826171875,
@@ -740,7 +740,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 31,
 	},
-	["car_yellow_small_3"] = {
+	["car-yellow-small-3"] = {
 		image = "miniracer-0-small",
 		x0 = 0.396484375,
 		y0 = 0.4501953125,
@@ -753,7 +753,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_yellow_small_4"] = {
+	["car-yellow-small-4"] = {
 		image = "miniracer-0-small",
 		x0 = 0.48828125,
 		y0 = 0.43896484375,
@@ -766,7 +766,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 35,
 	},
-	["car_yellow_small_5"] = {
+	["car-yellow-small-5"] = {
 		image = "miniracer-0-small",
 		x0 = 0.859375,
 		y0 = 0.40283203125,
@@ -779,7 +779,7 @@ textures = {
 		untrimmedwidth = 20,
 		untrimmedheight = 33,
 	},
-	["character_black_blue"] = {
+	["character-black-blue"] = {
 		image = "miniracer-0-small",
 		x0 = 0.396484375,
 		y0 = 0.40283203125,
@@ -792,7 +792,7 @@ textures = {
 		untrimmedwidth = 26,
 		untrimmedheight = 18,
 	},
-	["character_black_green"] = {
+	["character-black-green"] = {
 		image = "miniracer-0-small",
 		x0 = 0.396484375,
 		y0 = 0.41259765625,
@@ -805,7 +805,7 @@ textures = {
 		untrimmedwidth = 26,
 		untrimmedheight = 18,
 	},
-	["character_black_red"] = {
+	["character-black-red"] = {
 		image = "miniracer-0-small",
 		x0 = 0.396484375,
 		y0 = 0.42236328125,
@@ -818,7 +818,7 @@ textures = {
 		untrimmedwidth = 26,
 		untrimmedheight = 18,
 	},
-	["character_black_white"] = {
+	["character-black-white"] = {
 		image = "miniracer-0-small",
 		x0 = 0.83984375,
 		y0 = 0.3564453125,
@@ -831,7 +831,7 @@ textures = {
 		untrimmedwidth = 26,
 		untrimmedheight = 18,
 	},
-	["character_blonde_blue"] = {
+	["character-blonde-blue"] = {
 		image = "miniracer-0-small",
 		x0 = 0.8671875,
 		y0 = 0.3564453125,
@@ -844,7 +844,7 @@ textures = {
 		untrimmedwidth = 26,
 		untrimmedheight = 18,
 	},
-	["character_blonde_green"] = {
+	["character-blonde-green"] = {
 		image = "miniracer-0-small",
 		x0 = 0.958984375,
 		y0 = 0.38623046875,
@@ -857,7 +857,7 @@ textures = {
 		untrimmedwidth = 26,
 		untrimmedheight = 18,
 	},
-	["character_blonde_red"] = {
+	["character-blonde-red"] = {
 		image = "miniracer-0-small",
 		x0 = 0.83984375,
 		y0 = 0.3662109375,
@@ -870,7 +870,7 @@ textures = {
 		untrimmedwidth = 26,
 		untrimmedheight = 18,
 	},
-	["character_blonde_white"] = {
+	["character-blonde-white"] = {
 		image = "miniracer-0-small",
 		x0 = 0.8671875,
 		y0 = 0.3662109375,
@@ -883,7 +883,7 @@ textures = {
 		untrimmedwidth = 26,
 		untrimmedheight = 18,
 	},
-	["character_brown_blue"] = {
+	["character-brown-blue"] = {
 		image = "miniracer-0-small",
 		x0 = 0.83984375,
 		y0 = 0.3759765625,
@@ -896,7 +896,7 @@ textures = {
 		untrimmedwidth = 26,
 		untrimmedheight = 18,
 	},
-	["character_brown_green"] = {
+	["character-brown-green"] = {
 		image = "miniracer-0-small",
 		x0 = 0.8671875,
 		y0 = 0.3759765625,
@@ -909,7 +909,7 @@ textures = {
 		untrimmedwidth = 26,
 		untrimmedheight = 18,
 	},
-	["character_brown_red"] = {
+	["character-brown-red"] = {
 		image = "miniracer-0-small",
 		x0 = 0.611328125,
 		y0 = 0.3896484375,
@@ -922,7 +922,7 @@ textures = {
 		untrimmedwidth = 26,
 		untrimmedheight = 18,
 	},
-	["character_brown_white"] = {
+	["character-brown-white"] = {
 		image = "miniracer-0-small",
 		x0 = 0.611328125,
 		y0 = 0.3994140625,
@@ -935,7 +935,7 @@ textures = {
 		untrimmedwidth = 26,
 		untrimmedheight = 18,
 	},
-	["cone_down"] = {
+	["cone-down"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6064453125,
 		y0 = 0.142578125,
@@ -948,7 +948,7 @@ textures = {
 		untrimmedwidth = 23,
 		untrimmedheight = 22,
 	},
-	["cone_straight"] = {
+	["cone-straight"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6064453125,
 		y0 = 0.154296875,
@@ -961,7 +961,7 @@ textures = {
 		untrimmedwidth = 23,
 		untrimmedheight = 22,
 	},
-	["land_dirt01"] = {
+	["land-dirt01"] = {
 		image = "miniracer-0-small",
 		x0 = 0.37890625,
 		y0 = 0.1123046875,
@@ -974,7 +974,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_dirt02"] = {
+	["land-dirt02"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5048828125,
 		y0 = 0.1015625,
@@ -987,7 +987,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_dirt03"] = {
+	["land-dirt03"] = {
 		image = "miniracer-0-small",
 		x0 = 0.2353515625,
 		y0 = 0.1201171875,
@@ -1000,7 +1000,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_dirt04"] = {
+	["land-dirt04"] = {
 		image = "miniracer-0-small",
 		x0 = 0.2998046875,
 		y0 = 0.1201171875,
@@ -1013,7 +1013,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_dirt05"] = {
+	["land-dirt05"] = {
 		image = "miniracer-0-small",
 		x0 = 0.3642578125,
 		y0 = 0.14453125,
@@ -1026,7 +1026,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_dirt06"] = {
+	["land-dirt06"] = {
 		image = "miniracer-0-small",
 		x0 = 0.12890625,
 		y0 = 0.130859375,
@@ -1039,7 +1039,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_dirt07"] = {
+	["land-dirt07"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.1416015625,
@@ -1052,7 +1052,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_dirt08"] = {
+	["land-dirt08"] = {
 		image = "miniracer-0-small",
 		x0 = 0.119140625,
 		y0 = 0.1630859375,
@@ -1065,7 +1065,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_dirt09"] = {
+	["land-dirt09"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.173828125,
@@ -1078,7 +1078,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_dirt10"] = {
+	["land-dirt10"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.2060546875,
@@ -1091,7 +1091,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_dirt11"] = {
+	["land-dirt11"] = {
 		image = "miniracer-0-small",
 		x0 = 0.23046875,
 		y0 = 0.15234375,
@@ -1104,7 +1104,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_dirt12"] = {
+	["land-dirt12"] = {
 		image = "miniracer-0-small",
 		x0 = 0.119140625,
 		y0 = 0.1953125,
@@ -1117,7 +1117,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_dirt13"] = {
+	["land-dirt13"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.23828125,
@@ -1130,7 +1130,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_dirt14"] = {
+	["land-dirt14"] = {
 		image = "miniracer-0-small",
 		x0 = 0.294921875,
 		y0 = 0.15234375,
@@ -1143,7 +1143,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass01"] = {
+	["land-grass01"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6865234375,
 		y0 = 0.08935546875,
@@ -1156,7 +1156,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass02"] = {
+	["land-grass02"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5048828125,
 		y0 = 0.1337890625,
@@ -1169,7 +1169,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass03"] = {
+	["land-grass03"] = {
 		image = "miniracer-0-small",
 		x0 = 0.359375,
 		y0 = 0.1767578125,
@@ -1182,7 +1182,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass04"] = {
+	["land-grass04"] = {
 		image = "miniracer-0-small",
 		x0 = 0.228515625,
 		y0 = 0.1845703125,
@@ -1195,7 +1195,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass05"] = {
+	["land-grass05"] = {
 		image = "miniracer-0-small",
 		x0 = 0.29296875,
 		y0 = 0.1845703125,
@@ -1208,7 +1208,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass06"] = {
+	["land-grass06"] = {
 		image = "miniracer-0-small",
 		x0 = 0.119140625,
 		y0 = 0.2275390625,
@@ -1221,7 +1221,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass07"] = {
+	["land-grass07"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.2705078125,
@@ -1234,7 +1234,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass08"] = {
+	["land-grass08"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7509765625,
 		y0 = 0.08935546875,
@@ -1247,7 +1247,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass09"] = {
+	["land-grass09"] = {
 		image = "miniracer-0-small",
 		x0 = 0.8154296875,
 		y0 = 0.08935546875,
@@ -1260,7 +1260,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass10"] = {
+	["land-grass10"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9130859375,
 		y0 = 0.10400390625,
@@ -1273,7 +1273,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass11"] = {
+	["land-grass11"] = {
 		image = "miniracer-0-small",
 		x0 = 0.68359375,
 		y0 = 0.12158203125,
@@ -1286,7 +1286,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass12"] = {
+	["land-grass12"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5048828125,
 		y0 = 0.166015625,
@@ -1299,7 +1299,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass13"] = {
+	["land-grass13"] = {
 		image = "miniracer-0-small",
 		x0 = 0.357421875,
 		y0 = 0.208984375,
@@ -1312,7 +1312,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_grass14"] = {
+	["land-grass14"] = {
 		image = "miniracer-0-small",
 		x0 = 0.220703125,
 		y0 = 0.216796875,
@@ -1325,7 +1325,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand01"] = {
+	["land-sand01"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1181640625,
 		y0 = 0.259765625,
@@ -1338,7 +1338,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand02"] = {
+	["land-sand02"] = {
 		image = "miniracer-0-small",
 		x0 = 0.28515625,
 		y0 = 0.216796875,
@@ -1351,7 +1351,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand03"] = {
+	["land-sand03"] = {
 		image = "miniracer-0-small",
 		x0 = 0.748046875,
 		y0 = 0.12158203125,
@@ -1364,7 +1364,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand04"] = {
+	["land-sand04"] = {
 		image = "miniracer-0-small",
 		x0 = 0.8125,
 		y0 = 0.12158203125,
@@ -1377,7 +1377,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand05"] = {
+	["land-sand05"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9130859375,
 		y0 = 0.13623046875,
@@ -1390,7 +1390,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand06"] = {
+	["land-sand06"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6826171875,
 		y0 = 0.15380859375,
@@ -1403,7 +1403,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand07"] = {
+	["land-sand07"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5048828125,
 		y0 = 0.1982421875,
@@ -1416,7 +1416,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand08"] = {
+	["land-sand08"] = {
 		image = "miniracer-0-small",
 		x0 = 0.349609375,
 		y0 = 0.2412109375,
@@ -1429,7 +1429,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand09"] = {
+	["land-sand09"] = {
 		image = "miniracer-0-small",
 		x0 = 0.220703125,
 		y0 = 0.2490234375,
@@ -1442,7 +1442,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand10"] = {
+	["land-sand10"] = {
 		image = "miniracer-0-small",
 		x0 = 0.28515625,
 		y0 = 0.2490234375,
@@ -1455,7 +1455,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand11"] = {
+	["land-sand11"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1181640625,
 		y0 = 0.2919921875,
@@ -1468,7 +1468,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand12"] = {
+	["land-sand12"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.302734375,
@@ -1481,7 +1481,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand13"] = {
+	["land-sand13"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.3349609375,
@@ -1494,7 +1494,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["land_sand14"] = {
+	["land-sand14"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7470703125,
 		y0 = 0.15380859375,
@@ -1507,7 +1507,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["light_white"] = {
+	["light-white"] = {
 		image = "miniracer-0-small",
 		x0 = 0.421875,
 		y0 = 0.21240234375,
@@ -1520,7 +1520,7 @@ textures = {
 		untrimmedwidth = 49,
 		untrimmedheight = 118,
 	},
-	["light_yellow"] = {
+	["light-yellow"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.2978515625,
@@ -1546,7 +1546,7 @@ textures = {
 		untrimmedwidth = 80,
 		untrimmedheight = 32,
 	},
-	["motorcycle_black"] = {
+	["motorcycle-black"] = {
 		image = "miniracer-0-small",
 		x0 = 0.607421875,
 		y0 = 0.1171875,
@@ -1559,7 +1559,7 @@ textures = {
 		untrimmedwidth = 22,
 		untrimmedheight = 50,
 	},
-	["motorcycle_blue"] = {
+	["motorcycle-blue"] = {
 		image = "miniracer-0-small",
 		x0 = 0.4814453125,
 		y0 = 0.1689453125,
@@ -1572,7 +1572,7 @@ textures = {
 		untrimmedwidth = 22,
 		untrimmedheight = 50,
 	},
-	["motorcycle_green"] = {
+	["motorcycle-green"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6064453125,
 		y0 = 0.166015625,
@@ -1585,7 +1585,7 @@ textures = {
 		untrimmedwidth = 22,
 		untrimmedheight = 50,
 	},
-	["motorcycle_red"] = {
+	["motorcycle-red"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6064453125,
 		y0 = 0.19140625,
@@ -1598,7 +1598,7 @@ textures = {
 		untrimmedwidth = 22,
 		untrimmedheight = 50,
 	},
-	["motorcycle_yellow"] = {
+	["motorcycle-yellow"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9755859375,
 		y0 = 0.24853515625,
@@ -1624,7 +1624,7 @@ textures = {
 		untrimmedwidth = 55,
 		untrimmedheight = 48,
 	},
-	["racer_black"] = {
+	["racer-black"] = {
 		image = "miniracer-0-small",
 		x0 = 0.482421875,
 		y0 = 0.1142578125,
@@ -1637,7 +1637,7 @@ textures = {
 		untrimmedwidth = 21,
 		untrimmedheight = 26,
 	},
-	["racer_blue"] = {
+	["racer-blue"] = {
 		image = "miniracer-0-small",
 		x0 = 0.482421875,
 		y0 = 0.1279296875,
@@ -1650,7 +1650,7 @@ textures = {
 		untrimmedwidth = 21,
 		untrimmedheight = 26,
 	},
-	["racer_green"] = {
+	["racer-green"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6083984375,
 		y0 = 0.103515625,
@@ -1663,7 +1663,7 @@ textures = {
 		untrimmedwidth = 21,
 		untrimmedheight = 26,
 	},
-	["racer_red"] = {
+	["racer-red"] = {
 		image = "miniracer-0-small",
 		x0 = 0.482421875,
 		y0 = 0.1416015625,
@@ -1676,7 +1676,7 @@ textures = {
 		untrimmedwidth = 21,
 		untrimmedheight = 26,
 	},
-	["racer_yellow"] = {
+	["racer-yellow"] = {
 		image = "miniracer-0-small",
 		x0 = 0.482421875,
 		y0 = 0.1552734375,
@@ -1689,7 +1689,7 @@ textures = {
 		untrimmedwidth = 21,
 		untrimmedheight = 26,
 	},
-	["road_asphalt01"] = {
+	["road-asphalt01"] = {
 		image = "miniracer-0-small",
 		x0 = 0.8115234375,
 		y0 = 0.15380859375,
@@ -1702,7 +1702,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt02"] = {
+	["road-asphalt02"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9130859375,
 		y0 = 0.16845703125,
@@ -1715,7 +1715,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt03"] = {
+	["road-asphalt03"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9130859375,
 		y0 = 0.20068359375,
@@ -1728,7 +1728,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt04"] = {
+	["road-asphalt04"] = {
 		image = "miniracer-0-small",
 		x0 = 0.681640625,
 		y0 = 0.18603515625,
@@ -1741,7 +1741,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt05"] = {
+	["road-asphalt05"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6064453125,
 		y0 = 0.216796875,
@@ -1754,7 +1754,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt06"] = {
+	["road-asphalt06"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5029296875,
 		y0 = 0.23046875,
@@ -1767,7 +1767,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt07"] = {
+	["road-asphalt07"] = {
 		image = "miniracer-0-small",
 		x0 = 0.349609375,
 		y0 = 0.2734375,
@@ -1780,7 +1780,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt08"] = {
+	["road-asphalt08"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.1416015625,
@@ -1793,7 +1793,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt09"] = {
+	["road-asphalt09"] = {
 		image = "miniracer-0-small",
 		x0 = 0.2197265625,
 		y0 = 0.28125,
@@ -1806,7 +1806,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt10"] = {
+	["road-asphalt10"] = {
 		image = "miniracer-0-small",
 		x0 = 0.2841796875,
 		y0 = 0.28125,
@@ -1819,7 +1819,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt11"] = {
+	["road-asphalt11"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.2451171875,
@@ -1832,7 +1832,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt12"] = {
+	["road-asphalt12"] = {
 		image = "miniracer-0-small",
 		x0 = 0.8798828125,
 		y0 = 0.08935546875,
@@ -1845,7 +1845,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt13"] = {
+	["road-asphalt13"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1142578125,
 		y0 = 0.32421875,
@@ -1858,7 +1858,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt14"] = {
+	["road-asphalt14"] = {
 		image = "miniracer-0-small",
 		x0 = 0.74609375,
 		y0 = 0.18603515625,
@@ -1871,7 +1871,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt15"] = {
+	["road-asphalt15"] = {
 		image = "miniracer-0-small",
 		x0 = 0.32421875,
 		y0 = 0.8212890625,
@@ -1884,7 +1884,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt16"] = {
+	["road-asphalt16"] = {
 		image = "miniracer-0-small",
 		x0 = 0.810546875,
 		y0 = 0.18603515625,
@@ -1897,7 +1897,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt17"] = {
+	["road-asphalt17"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9111328125,
 		y0 = 0.23291015625,
@@ -1910,7 +1910,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt18"] = {
+	["road-asphalt18"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1953125,
 		y0 = 0.8291015625,
@@ -1923,7 +1923,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt19"] = {
+	["road-asphalt19"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6708984375,
 		y0 = 0.21826171875,
@@ -1936,7 +1936,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt20"] = {
+	["road-asphalt20"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5673828125,
 		y0 = 0.2490234375,
@@ -1949,7 +1949,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt21"] = {
+	["road-asphalt21"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5029296875,
 		y0 = 0.2626953125,
@@ -1962,7 +1962,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt22"] = {
+	["road-asphalt22"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5673828125,
 		y0 = 0.28125,
@@ -1975,7 +1975,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt23"] = {
+	["road-asphalt23"] = {
 		image = "miniracer-0-small",
 		x0 = 0.3486328125,
 		y0 = 0.3056640625,
@@ -1988,7 +1988,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt24"] = {
+	["road-asphalt24"] = {
 		image = "miniracer-0-small",
 		x0 = 0.486328125,
 		y0 = 0.294921875,
@@ -2001,7 +2001,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt25"] = {
+	["road-asphalt25"] = {
 		image = "miniracer-0-small",
 		x0 = 0.21875,
 		y0 = 0.3134765625,
@@ -2014,7 +2014,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt26"] = {
+	["road-asphalt26"] = {
 		image = "miniracer-0-small",
 		x0 = 0.283203125,
 		y0 = 0.3134765625,
@@ -2027,7 +2027,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt27"] = {
+	["road-asphalt27"] = {
 		image = "miniracer-0-small",
 		x0 = 0.34765625,
 		y0 = 0.337890625,
@@ -2040,7 +2040,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt28"] = {
+	["road-asphalt28"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.3564453125,
@@ -2053,7 +2053,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt29"] = {
+	["road-asphalt29"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.3671875,
@@ -2066,7 +2066,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt30"] = {
+	["road-asphalt30"] = {
 		image = "miniracer-0-small",
 		x0 = 0.21484375,
 		y0 = 0.345703125,
@@ -2079,7 +2079,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt31"] = {
+	["road-asphalt31"] = {
 		image = "miniracer-0-small",
 		x0 = 0.279296875,
 		y0 = 0.345703125,
@@ -2092,7 +2092,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt32"] = {
+	["road-asphalt32"] = {
 		image = "miniracer-0-small",
 		x0 = 0.4697265625,
 		y0 = 0.2236328125,
@@ -2105,7 +2105,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt33"] = {
+	["road-asphalt33"] = {
 		image = "miniracer-0-small",
 		x0 = 0.34375,
 		y0 = 0.3701171875,
@@ -2118,7 +2118,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt34"] = {
+	["road-asphalt34"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.388671875,
@@ -2131,7 +2131,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt35"] = {
+	["road-asphalt35"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.3994140625,
@@ -2144,7 +2144,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt36"] = {
+	["road-asphalt36"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7353515625,
 		y0 = 0.21826171875,
@@ -2157,7 +2157,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt37"] = {
+	["road-asphalt37"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7998046875,
 		y0 = 0.21826171875,
@@ -2170,7 +2170,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt38"] = {
+	["road-asphalt38"] = {
 		image = "miniracer-0-small",
 		x0 = 0.900390625,
 		y0 = 0.26513671875,
@@ -2183,7 +2183,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt39"] = {
+	["road-asphalt39"] = {
 		image = "miniracer-0-small",
 		x0 = 0.203125,
 		y0 = 0.3779296875,
@@ -2196,7 +2196,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt40"] = {
+	["road-asphalt40"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.4208984375,
@@ -2209,7 +2209,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt41"] = {
+	["road-asphalt41"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.431640625,
@@ -2222,7 +2222,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt42"] = {
+	["road-asphalt42"] = {
 		image = "miniracer-0-small",
 		x0 = 0.267578125,
 		y0 = 0.3779296875,
@@ -2235,7 +2235,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt43"] = {
+	["road-asphalt43"] = {
 		image = "miniracer-0-small",
 		x0 = 0.66796875,
 		y0 = 0.25048828125,
@@ -2248,7 +2248,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt44"] = {
+	["road-asphalt44"] = {
 		image = "miniracer-0-small",
 		x0 = 0.732421875,
 		y0 = 0.25048828125,
@@ -2261,7 +2261,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt45"] = {
+	["road-asphalt45"] = {
 		image = "miniracer-0-small",
 		x0 = 0.796875,
 		y0 = 0.25048828125,
@@ -2274,7 +2274,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt46"] = {
+	["road-asphalt46"] = {
 		image = "miniracer-0-small",
 		x0 = 0.89453125,
 		y0 = 0.29736328125,
@@ -2287,7 +2287,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt47"] = {
+	["road-asphalt47"] = {
 		image = "miniracer-0-small",
 		x0 = 0.66796875,
 		y0 = 0.28271484375,
@@ -2300,7 +2300,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt48"] = {
+	["road-asphalt48"] = {
 		image = "miniracer-0-small",
 		x0 = 0.55078125,
 		y0 = 0.3134765625,
@@ -2313,7 +2313,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt49"] = {
+	["road-asphalt49"] = {
 		image = "miniracer-0-small",
 		x0 = 0.486328125,
 		y0 = 0.3271484375,
@@ -2326,7 +2326,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt50"] = {
+	["road-asphalt50"] = {
 		image = "miniracer-0-small",
 		x0 = 0.4697265625,
 		y0 = 0.255859375,
@@ -2339,7 +2339,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt51"] = {
+	["road-asphalt51"] = {
 		image = "miniracer-0-small",
 		x0 = 0.33203125,
 		y0 = 0.40234375,
@@ -2352,7 +2352,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt52"] = {
+	["road-asphalt52"] = {
 		image = "miniracer-0-small",
 		x0 = 0.259765625,
 		y0 = 0.8291015625,
@@ -2365,7 +2365,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt53"] = {
+	["road-asphalt53"] = {
 		image = "miniracer-0-small",
 		x0 = 0.32421875,
 		y0 = 0.837890625,
@@ -2378,7 +2378,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt54"] = {
+	["road-asphalt54"] = {
 		image = "miniracer-0-small",
 		x0 = 0.203125,
 		y0 = 0.41015625,
@@ -2391,7 +2391,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt55"] = {
+	["road-asphalt55"] = {
 		image = "miniracer-0-small",
 		x0 = 0.267578125,
 		y0 = 0.41015625,
@@ -2404,7 +2404,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt56"] = {
+	["road-asphalt56"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.453125,
@@ -2417,7 +2417,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt57"] = {
+	["road-asphalt57"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.4638671875,
@@ -2430,7 +2430,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt58"] = {
+	["road-asphalt58"] = {
 		image = "miniracer-0-small",
 		x0 = 0.732421875,
 		y0 = 0.28271484375,
@@ -2443,7 +2443,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt59"] = {
+	["road-asphalt59"] = {
 		image = "miniracer-0-small",
 		x0 = 0.796875,
 		y0 = 0.28271484375,
@@ -2456,7 +2456,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt60"] = {
+	["road-asphalt60"] = {
 		image = "miniracer-0-small",
 		x0 = 0.89453125,
 		y0 = 0.32958984375,
@@ -2469,7 +2469,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt61"] = {
+	["road-asphalt61"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6650390625,
 		y0 = 0.31494140625,
@@ -2482,7 +2482,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt62"] = {
+	["road-asphalt62"] = {
 		image = "miniracer-0-small",
 		x0 = 0.630859375,
 		y0 = 0.13134765625,
@@ -2495,7 +2495,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt63"] = {
+	["road-asphalt63"] = {
 		image = "miniracer-0-small",
 		x0 = 0.55078125,
 		y0 = 0.345703125,
@@ -2508,7 +2508,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt64"] = {
+	["road-asphalt64"] = {
 		image = "miniracer-0-small",
 		x0 = 0.482421875,
 		y0 = 0.359375,
@@ -2521,7 +2521,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt65"] = {
+	["road-asphalt65"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.16748046875,
@@ -2534,7 +2534,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt66"] = {
+	["road-asphalt66"] = {
 		image = "miniracer-0-small",
 		x0 = 0.96484375,
 		y0 = 0.27392578125,
@@ -2547,7 +2547,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt67"] = {
+	["road-asphalt67"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7294921875,
 		y0 = 0.31494140625,
@@ -2560,7 +2560,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt68"] = {
+	["road-asphalt68"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7939453125,
 		y0 = 0.31494140625,
@@ -2573,7 +2573,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt69"] = {
+	["road-asphalt69"] = {
 		image = "miniracer-0-small",
 		x0 = 0.646484375,
 		y0 = 0.34716796875,
@@ -2586,7 +2586,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt70"] = {
+	["road-asphalt70"] = {
 		image = "miniracer-0-small",
 		x0 = 0.546875,
 		y0 = 0.3779296875,
@@ -2599,7 +2599,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt71"] = {
+	["road-asphalt71"] = {
 		image = "miniracer-0-small",
 		x0 = 0.44140625,
 		y0 = 0.3916015625,
@@ -2612,7 +2612,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt72"] = {
+	["road-asphalt72"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7109375,
 		y0 = 0.34716796875,
@@ -2625,7 +2625,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt73"] = {
+	["road-asphalt73"] = {
 		image = "miniracer-0-small",
 		x0 = 0.775390625,
 		y0 = 0.34716796875,
@@ -2638,7 +2638,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt74"] = {
+	["road-asphalt74"] = {
 		image = "miniracer-0-small",
 		x0 = 0.89453125,
 		y0 = 0.36181640625,
@@ -2651,7 +2651,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt75"] = {
+	["road-asphalt75"] = {
 		image = "miniracer-0-small",
 		x0 = 0.64453125,
 		y0 = 0.37939453125,
@@ -2664,7 +2664,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt76"] = {
+	["road-asphalt76"] = {
 		image = "miniracer-0-small",
 		x0 = 0.53515625,
 		y0 = 0.41015625,
@@ -2677,7 +2677,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt77"] = {
+	["road-asphalt77"] = {
 		image = "miniracer-0-small",
 		x0 = 0.423828125,
 		y0 = 0.423828125,
@@ -2690,7 +2690,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt78"] = {
+	["road-asphalt78"] = {
 		image = "miniracer-0-small",
 		x0 = 0.33203125,
 		y0 = 0.4345703125,
@@ -2703,7 +2703,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt79"] = {
+	["road-asphalt79"] = {
 		image = "miniracer-0-small",
 		x0 = 0.41796875,
 		y0 = 0.4560546875,
@@ -2716,7 +2716,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt80"] = {
+	["road-asphalt80"] = {
 		image = "miniracer-0-small",
 		x0 = 0.708984375,
 		y0 = 0.37939453125,
@@ -2729,7 +2729,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt81"] = {
+	["road-asphalt81"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7734375,
 		y0 = 0.37939453125,
@@ -2742,7 +2742,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt82"] = {
+	["road-asphalt82"] = {
 		image = "miniracer-0-small",
 		x0 = 0.880859375,
 		y0 = 0.39404296875,
@@ -2755,7 +2755,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt83"] = {
+	["road-asphalt83"] = {
 		image = "miniracer-0-small",
 		x0 = 0.2001953125,
 		y0 = 0.4423828125,
@@ -2768,7 +2768,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt84"] = {
+	["road-asphalt84"] = {
 		image = "miniracer-0-small",
 		x0 = 0.2646484375,
 		y0 = 0.4423828125,
@@ -2781,7 +2781,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt85"] = {
+	["road-asphalt85"] = {
 		image = "miniracer-0-small",
 		x0 = 0.3291015625,
 		y0 = 0.466796875,
@@ -2794,7 +2794,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt86"] = {
+	["road-asphalt86"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.462890625,
@@ -2807,7 +2807,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt87"] = {
+	["road-asphalt87"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.4853515625,
@@ -2820,7 +2820,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt88"] = {
+	["road-asphalt88"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.49609375,
@@ -2833,7 +2833,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt89"] = {
+	["road-asphalt89"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1953125,
 		y0 = 0.474609375,
@@ -2846,7 +2846,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_asphalt90"] = {
+	["road-asphalt90"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.4951171875,
@@ -2859,7 +2859,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt01"] = {
+	["road-dirt01"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.517578125,
@@ -2872,7 +2872,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt02"] = {
+	["road-dirt02"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.5283203125,
@@ -2885,7 +2885,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt03"] = {
+	["road-dirt03"] = {
 		image = "miniracer-0-small",
 		x0 = 0.259765625,
 		y0 = 0.474609375,
@@ -2898,7 +2898,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt04"] = {
+	["road-dirt04"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6328125,
 		y0 = 0.41162109375,
@@ -2911,7 +2911,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt05"] = {
+	["road-dirt05"] = {
 		image = "miniracer-0-small",
 		x0 = 0.53125,
 		y0 = 0.4423828125,
@@ -2924,7 +2924,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt06"] = {
+	["road-dirt06"] = {
 		image = "miniracer-0-small",
 		x0 = 0.697265625,
 		y0 = 0.41162109375,
@@ -2937,7 +2937,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt07"] = {
+	["road-dirt07"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.193359375,
@@ -2950,7 +2950,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt08"] = {
+	["road-dirt08"] = {
 		image = "miniracer-0-small",
 		x0 = 0.76171875,
 		y0 = 0.41162109375,
@@ -2963,7 +2963,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt09"] = {
+	["road-dirt09"] = {
 		image = "miniracer-0-small",
 		x0 = 0.826171875,
 		y0 = 0.42626953125,
@@ -2976,7 +2976,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt10"] = {
+	["road-dirt10"] = {
 		image = "miniracer-0-small",
 		x0 = 0.423828125,
 		y0 = 0.18603515625,
@@ -2989,7 +2989,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt11"] = {
+	["road-dirt11"] = {
 		image = "miniracer-0-small",
 		x0 = 0.861328125,
 		y0 = 0.27734375,
@@ -3002,7 +3002,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt12"] = {
+	["road-dirt12"] = {
 		image = "miniracer-0-small",
 		x0 = 0.890625,
 		y0 = 0.42822265625,
@@ -3015,7 +3015,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt13"] = {
+	["road-dirt13"] = {
 		image = "miniracer-0-small",
 		x0 = 0.595703125,
 		y0 = 0.44384765625,
@@ -3028,7 +3028,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt14"] = {
+	["road-dirt14"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1953125,
 		y0 = 0.845703125,
@@ -3041,7 +3041,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt15"] = {
+	["road-dirt15"] = {
 		image = "miniracer-0-small",
 		x0 = 0.482421875,
 		y0 = 0.474609375,
@@ -3054,7 +3054,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt16"] = {
+	["road-dirt16"] = {
 		image = "miniracer-0-small",
 		x0 = 0.3935546875,
 		y0 = 0.48828125,
@@ -3067,7 +3067,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt17"] = {
+	["road-dirt17"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.849609375,
@@ -3080,7 +3080,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt18"] = {
+	["road-dirt18"] = {
 		image = "miniracer-0-small",
 		x0 = 0.32421875,
 		y0 = 0.4990234375,
@@ -3093,7 +3093,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt19"] = {
+	["road-dirt19"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1953125,
 		y0 = 0.5068359375,
@@ -3106,7 +3106,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt20"] = {
+	["road-dirt20"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.52734375,
@@ -3119,7 +3119,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt21"] = {
+	["road-dirt21"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.5498046875,
@@ -3132,7 +3132,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt22"] = {
+	["road-dirt22"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.560546875,
@@ -3145,7 +3145,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt23"] = {
+	["road-dirt23"] = {
 		image = "miniracer-0-small",
 		x0 = 0.259765625,
 		y0 = 0.5068359375,
@@ -3158,7 +3158,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt24"] = {
+	["road-dirt24"] = {
 		image = "miniracer-0-small",
 		x0 = 0.66015625,
 		y0 = 0.44384765625,
@@ -3171,7 +3171,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt25"] = {
+	["road-dirt25"] = {
 		image = "miniracer-0-small",
 		x0 = 0.724609375,
 		y0 = 0.44384765625,
@@ -3184,7 +3184,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt26"] = {
+	["road-dirt26"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7890625,
 		y0 = 0.45849609375,
@@ -3197,7 +3197,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt27"] = {
+	["road-dirt27"] = {
 		image = "miniracer-0-small",
 		x0 = 0.853515625,
 		y0 = 0.46044921875,
@@ -3210,7 +3210,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt28"] = {
+	["road-dirt28"] = {
 		image = "miniracer-0-small",
 		x0 = 0.91796875,
 		y0 = 0.46044921875,
@@ -3223,7 +3223,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt29"] = {
+	["road-dirt29"] = {
 		image = "miniracer-0-small",
 		x0 = 0.546875,
 		y0 = 0.47607421875,
@@ -3236,7 +3236,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt30"] = {
+	["road-dirt30"] = {
 		image = "miniracer-0-small",
 		x0 = 0.4580078125,
 		y0 = 0.5068359375,
@@ -3249,7 +3249,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt31"] = {
+	["road-dirt31"] = {
 		image = "miniracer-0-small",
 		x0 = 0.958984375,
 		y0 = 0.30615234375,
@@ -3262,7 +3262,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt32"] = {
+	["road-dirt32"] = {
 		image = "miniracer-0-small",
 		x0 = 0.388671875,
 		y0 = 0.5205078125,
@@ -3275,7 +3275,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt33"] = {
+	["road-dirt33"] = {
 		image = "miniracer-0-small",
 		x0 = 0.32421875,
 		y0 = 0.53125,
@@ -3288,7 +3288,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt34"] = {
+	["road-dirt34"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1953125,
 		y0 = 0.5390625,
@@ -3301,7 +3301,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt35"] = {
+	["road-dirt35"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.5595703125,
@@ -3314,7 +3314,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt36"] = {
+	["road-dirt36"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.58203125,
@@ -3327,7 +3327,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt37"] = {
+	["road-dirt37"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.5927734375,
@@ -3340,7 +3340,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt38"] = {
+	["road-dirt38"] = {
 		image = "miniracer-0-small",
 		x0 = 0.259765625,
 		y0 = 0.5390625,
@@ -3353,7 +3353,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt39"] = {
+	["road-dirt39"] = {
 		image = "miniracer-0-small",
 		x0 = 0.611328125,
 		y0 = 0.47607421875,
@@ -3366,7 +3366,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt40"] = {
+	["road-dirt40"] = {
 		image = "miniracer-0-small",
 		x0 = 0.67578125,
 		y0 = 0.47607421875,
@@ -3379,7 +3379,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt41"] = {
+	["road-dirt41"] = {
 		image = "miniracer-0-small",
 		x0 = 0.740234375,
 		y0 = 0.49072265625,
@@ -3392,7 +3392,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt42"] = {
+	["road-dirt42"] = {
 		image = "miniracer-0-small",
 		x0 = 0.8046875,
 		y0 = 0.49267578125,
@@ -3405,7 +3405,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt43"] = {
+	["road-dirt43"] = {
 		image = "miniracer-0-small",
 		x0 = 0.869140625,
 		y0 = 0.49267578125,
@@ -3418,7 +3418,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt44"] = {
+	["road-dirt44"] = {
 		image = "miniracer-0-small",
 		x0 = 0.93359375,
 		y0 = 0.49267578125,
@@ -3431,7 +3431,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt45"] = {
+	["road-dirt45"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5224609375,
 		y0 = 0.50830078125,
@@ -3444,7 +3444,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt46"] = {
+	["road-dirt46"] = {
 		image = "miniracer-0-small",
 		x0 = 0.453125,
 		y0 = 0.5390625,
@@ -3457,7 +3457,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt47"] = {
+	["road-dirt47"] = {
 		image = "miniracer-0-small",
 		x0 = 0.388671875,
 		y0 = 0.552734375,
@@ -3470,7 +3470,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt48"] = {
+	["road-dirt48"] = {
 		image = "miniracer-0-small",
 		x0 = 0.32421875,
 		y0 = 0.5634765625,
@@ -3483,7 +3483,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt49"] = {
+	["road-dirt49"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6318359375,
 		y0 = 0.294921875,
@@ -3496,7 +3496,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt50"] = {
+	["road-dirt50"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1953125,
 		y0 = 0.5712890625,
@@ -3509,7 +3509,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt51"] = {
+	["road-dirt51"] = {
 		image = "miniracer-0-small",
 		x0 = 0.259765625,
 		y0 = 0.845703125,
@@ -3522,7 +3522,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt52"] = {
+	["road-dirt52"] = {
 		image = "miniracer-0-small",
 		x0 = 0.58203125,
 		y0 = 0.76611328125,
@@ -3535,7 +3535,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt53"] = {
+	["road-dirt53"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.591796875,
@@ -3548,7 +3548,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt54"] = {
+	["road-dirt54"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.6142578125,
@@ -3561,7 +3561,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt55"] = {
+	["road-dirt55"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.625,
@@ -3574,7 +3574,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt56"] = {
+	["road-dirt56"] = {
 		image = "miniracer-0-small",
 		x0 = 0.259765625,
 		y0 = 0.5712890625,
@@ -3587,7 +3587,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt57"] = {
+	["road-dirt57"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5869140625,
 		y0 = 0.50830078125,
@@ -3600,7 +3600,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt58"] = {
+	["road-dirt58"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6513671875,
 		y0 = 0.50830078125,
@@ -3613,7 +3613,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt59"] = {
+	["road-dirt59"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7158203125,
 		y0 = 0.52294921875,
@@ -3626,7 +3626,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt60"] = {
+	["road-dirt60"] = {
 		image = "miniracer-0-small",
 		x0 = 0.517578125,
 		y0 = 0.54052734375,
@@ -3639,7 +3639,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt61"] = {
+	["road-dirt61"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.271484375,
@@ -3652,7 +3652,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt62"] = {
+	["road-dirt62"] = {
 		image = "miniracer-0-small",
 		x0 = 0.453125,
 		y0 = 0.5712890625,
@@ -3665,7 +3665,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt63"] = {
+	["road-dirt63"] = {
 		image = "miniracer-0-small",
 		x0 = 0.388671875,
 		y0 = 0.5849609375,
@@ -3678,7 +3678,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt64"] = {
+	["road-dirt64"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.21923828125,
@@ -3691,7 +3691,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt65"] = {
+	["road-dirt65"] = {
 		image = "miniracer-0-small",
 		x0 = 0.44921875,
 		y0 = 0.3544921875,
@@ -3704,7 +3704,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt66"] = {
+	["road-dirt66"] = {
 		image = "miniracer-0-small",
 		x0 = 0.32421875,
 		y0 = 0.595703125,
@@ -3717,7 +3717,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt67"] = {
+	["road-dirt67"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1953125,
 		y0 = 0.603515625,
@@ -3730,7 +3730,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt68"] = {
+	["road-dirt68"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.6240234375,
@@ -3743,7 +3743,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt69"] = {
+	["road-dirt69"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.646484375,
@@ -3756,7 +3756,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt70"] = {
+	["road-dirt70"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.6572265625,
@@ -3769,7 +3769,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt71"] = {
+	["road-dirt71"] = {
 		image = "miniracer-0-small",
 		x0 = 0.259765625,
 		y0 = 0.603515625,
@@ -3782,7 +3782,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt72"] = {
+	["road-dirt72"] = {
 		image = "miniracer-0-small",
 		x0 = 0.58203125,
 		y0 = 0.54052734375,
@@ -3795,7 +3795,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt73"] = {
+	["road-dirt73"] = {
 		image = "miniracer-0-small",
 		x0 = 0.646484375,
 		y0 = 0.54052734375,
@@ -3808,7 +3808,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt74"] = {
+	["road-dirt74"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7802734375,
 		y0 = 0.52490234375,
@@ -3821,7 +3821,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt75"] = {
+	["road-dirt75"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7109375,
 		y0 = 0.55517578125,
@@ -3834,7 +3834,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt76"] = {
+	["road-dirt76"] = {
 		image = "miniracer-0-small",
 		x0 = 0.8447265625,
 		y0 = 0.52490234375,
@@ -3847,7 +3847,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt77"] = {
+	["road-dirt77"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9091796875,
 		y0 = 0.52490234375,
@@ -3860,7 +3860,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt78"] = {
+	["road-dirt78"] = {
 		image = "miniracer-0-small",
 		x0 = 0.517578125,
 		y0 = 0.57275390625,
@@ -3873,7 +3873,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt79"] = {
+	["road-dirt79"] = {
 		image = "miniracer-0-small",
 		x0 = 0.453125,
 		y0 = 0.603515625,
@@ -3886,7 +3886,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt80"] = {
+	["road-dirt80"] = {
 		image = "miniracer-0-small",
 		x0 = 0.388671875,
 		y0 = 0.6171875,
@@ -3899,7 +3899,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt81"] = {
+	["road-dirt81"] = {
 		image = "miniracer-0-small",
 		x0 = 0.32421875,
 		y0 = 0.6279296875,
@@ -3912,7 +3912,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt82"] = {
+	["road-dirt82"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1953125,
 		y0 = 0.6357421875,
@@ -3925,7 +3925,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt83"] = {
+	["road-dirt83"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.65625,
@@ -3938,7 +3938,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt84"] = {
+	["road-dirt84"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.6787109375,
@@ -3951,7 +3951,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt85"] = {
+	["road-dirt85"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.689453125,
@@ -3964,7 +3964,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt86"] = {
+	["road-dirt86"] = {
 		image = "miniracer-0-small",
 		x0 = 0.259765625,
 		y0 = 0.6357421875,
@@ -3977,7 +3977,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt87"] = {
+	["road-dirt87"] = {
 		image = "miniracer-0-small",
 		x0 = 0.58203125,
 		y0 = 0.57275390625,
@@ -3990,7 +3990,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt88"] = {
+	["road-dirt88"] = {
 		image = "miniracer-0-small",
 		x0 = 0.646484375,
 		y0 = 0.57275390625,
@@ -4003,7 +4003,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt89"] = {
+	["road-dirt89"] = {
 		image = "miniracer-0-small",
 		x0 = 0.775390625,
 		y0 = 0.55712890625,
@@ -4016,7 +4016,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_dirt90"] = {
+	["road-dirt90"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7109375,
 		y0 = 0.58740234375,
@@ -4029,7 +4029,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand01"] = {
+	["road-sand01"] = {
 		image = "miniracer-0-small",
 		x0 = 0.83984375,
 		y0 = 0.55712890625,
@@ -4042,7 +4042,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand02"] = {
+	["road-sand02"] = {
 		image = "miniracer-0-small",
 		x0 = 0.904296875,
 		y0 = 0.55712890625,
@@ -4055,7 +4055,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand03"] = {
+	["road-sand03"] = {
 		image = "miniracer-0-small",
 		x0 = 0.517578125,
 		y0 = 0.60498046875,
@@ -4068,7 +4068,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand04"] = {
+	["road-sand04"] = {
 		image = "miniracer-0-small",
 		x0 = 0.630859375,
 		y0 = 0.10546875,
@@ -4081,7 +4081,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand05"] = {
+	["road-sand05"] = {
 		image = "miniracer-0-small",
 		x0 = 0.453125,
 		y0 = 0.6357421875,
@@ -4094,7 +4094,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand06"] = {
+	["road-sand06"] = {
 		image = "miniracer-0-small",
 		x0 = 0.388671875,
 		y0 = 0.6494140625,
@@ -4107,7 +4107,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand07"] = {
+	["road-sand07"] = {
 		image = "miniracer-0-small",
 		x0 = 0.630859375,
 		y0 = 0.15771484375,
@@ -4120,7 +4120,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand08"] = {
+	["road-sand08"] = {
 		image = "miniracer-0-small",
 		x0 = 0.408203125,
 		y0 = 0.37060546875,
@@ -4133,7 +4133,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand09"] = {
+	["road-sand09"] = {
 		image = "miniracer-0-small",
 		x0 = 0.32421875,
 		y0 = 0.66015625,
@@ -4146,7 +4146,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand10"] = {
+	["road-sand10"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1953125,
 		y0 = 0.66796875,
@@ -4159,7 +4159,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand11"] = {
+	["road-sand11"] = {
 		image = "miniracer-0-small",
 		x0 = 0.646484375,
 		y0 = 0.76611328125,
@@ -4172,7 +4172,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand12"] = {
+	["road-sand12"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.6884765625,
@@ -4185,7 +4185,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand13"] = {
+	["road-sand13"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.7109375,
@@ -4198,7 +4198,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand14"] = {
+	["road-sand14"] = {
 		image = "miniracer-0-small",
 		x0 = 0.775390625,
 		y0 = 0.75048828125,
@@ -4211,7 +4211,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand15"] = {
+	["road-sand15"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.7216796875,
@@ -4224,7 +4224,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand16"] = {
+	["road-sand16"] = {
 		image = "miniracer-0-small",
 		x0 = 0.259765625,
 		y0 = 0.66796875,
@@ -4237,7 +4237,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand17"] = {
+	["road-sand17"] = {
 		image = "miniracer-0-small",
 		x0 = 0.58203125,
 		y0 = 0.60498046875,
@@ -4250,7 +4250,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand18"] = {
+	["road-sand18"] = {
 		image = "miniracer-0-small",
 		x0 = 0.646484375,
 		y0 = 0.60498046875,
@@ -4263,7 +4263,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand19"] = {
+	["road-sand19"] = {
 		image = "miniracer-0-small",
 		x0 = 0.775390625,
 		y0 = 0.58935546875,
@@ -4276,7 +4276,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand20"] = {
+	["road-sand20"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7109375,
 		y0 = 0.61962890625,
@@ -4289,7 +4289,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand21"] = {
+	["road-sand21"] = {
 		image = "miniracer-0-small",
 		x0 = 0.83984375,
 		y0 = 0.58935546875,
@@ -4302,7 +4302,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand22"] = {
+	["road-sand22"] = {
 		image = "miniracer-0-small",
 		x0 = 0.904296875,
 		y0 = 0.58935546875,
@@ -4315,7 +4315,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand23"] = {
+	["road-sand23"] = {
 		image = "miniracer-0-small",
 		x0 = 0.517578125,
 		y0 = 0.63720703125,
@@ -4328,7 +4328,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand24"] = {
+	["road-sand24"] = {
 		image = "miniracer-0-small",
 		x0 = 0.453125,
 		y0 = 0.66796875,
@@ -4341,7 +4341,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand25"] = {
+	["road-sand25"] = {
 		image = "miniracer-0-small",
 		x0 = 0.388671875,
 		y0 = 0.681640625,
@@ -4354,7 +4354,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand26"] = {
+	["road-sand26"] = {
 		image = "miniracer-0-small",
 		x0 = 0.32421875,
 		y0 = 0.6923828125,
@@ -4367,7 +4367,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand27"] = {
+	["road-sand27"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1953125,
 		y0 = 0.7001953125,
@@ -4380,7 +4380,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand28"] = {
+	["road-sand28"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1669921875,
 		y0 = 0.423828125,
@@ -4393,7 +4393,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand29"] = {
+	["road-sand29"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.720703125,
@@ -4406,7 +4406,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand30"] = {
+	["road-sand30"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.7431640625,
@@ -4419,7 +4419,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand31"] = {
+	["road-sand31"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.75390625,
@@ -4432,7 +4432,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand32"] = {
+	["road-sand32"] = {
 		image = "miniracer-0-small",
 		x0 = 0.259765625,
 		y0 = 0.7001953125,
@@ -4445,7 +4445,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand33"] = {
+	["road-sand33"] = {
 		image = "miniracer-0-small",
 		x0 = 0.58203125,
 		y0 = 0.63720703125,
@@ -4458,7 +4458,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand34"] = {
+	["road-sand34"] = {
 		image = "miniracer-0-small",
 		x0 = 0.646484375,
 		y0 = 0.63720703125,
@@ -4471,7 +4471,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand35"] = {
+	["road-sand35"] = {
 		image = "miniracer-0-small",
 		x0 = 0.775390625,
 		y0 = 0.62158203125,
@@ -4484,7 +4484,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand36"] = {
+	["road-sand36"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7109375,
 		y0 = 0.65185546875,
@@ -4497,7 +4497,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand37"] = {
+	["road-sand37"] = {
 		image = "miniracer-0-small",
 		x0 = 0.83984375,
 		y0 = 0.62158203125,
@@ -4510,7 +4510,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand38"] = {
+	["road-sand38"] = {
 		image = "miniracer-0-small",
 		x0 = 0.904296875,
 		y0 = 0.62158203125,
@@ -4523,7 +4523,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand39"] = {
+	["road-sand39"] = {
 		image = "miniracer-0-small",
 		x0 = 0.517578125,
 		y0 = 0.66943359375,
@@ -4536,7 +4536,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand40"] = {
+	["road-sand40"] = {
 		image = "miniracer-0-small",
 		x0 = 0.453125,
 		y0 = 0.7001953125,
@@ -4549,7 +4549,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand41"] = {
+	["road-sand41"] = {
 		image = "miniracer-0-small",
 		x0 = 0.388671875,
 		y0 = 0.7138671875,
@@ -4562,7 +4562,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand42"] = {
+	["road-sand42"] = {
 		image = "miniracer-0-small",
 		x0 = 0.32421875,
 		y0 = 0.724609375,
@@ -4575,7 +4575,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand43"] = {
+	["road-sand43"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1953125,
 		y0 = 0.732421875,
@@ -4588,7 +4588,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand44"] = {
+	["road-sand44"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.7529296875,
@@ -4601,7 +4601,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand45"] = {
+	["road-sand45"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.775390625,
@@ -4614,7 +4614,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand46"] = {
+	["road-sand46"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.4306640625,
@@ -4627,7 +4627,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand47"] = {
+	["road-sand47"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.7861328125,
@@ -4640,7 +4640,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand48"] = {
+	["road-sand48"] = {
 		image = "miniracer-0-small",
 		x0 = 0.83984375,
 		y0 = 0.75048828125,
@@ -4653,7 +4653,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand49"] = {
+	["road-sand49"] = {
 		image = "miniracer-0-small",
 		x0 = 0.904296875,
 		y0 = 0.75048828125,
@@ -4666,7 +4666,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand50"] = {
+	["road-sand50"] = {
 		image = "miniracer-0-small",
 		x0 = 0.259765625,
 		y0 = 0.732421875,
@@ -4679,7 +4679,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand51"] = {
+	["road-sand51"] = {
 		image = "miniracer-0-small",
 		x0 = 0.58203125,
 		y0 = 0.66943359375,
@@ -4692,7 +4692,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand52"] = {
+	["road-sand52"] = {
 		image = "miniracer-0-small",
 		x0 = 0.646484375,
 		y0 = 0.66943359375,
@@ -4705,7 +4705,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand53"] = {
+	["road-sand53"] = {
 		image = "miniracer-0-small",
 		x0 = 0.775390625,
 		y0 = 0.65380859375,
@@ -4718,7 +4718,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand54"] = {
+	["road-sand54"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7109375,
 		y0 = 0.68408203125,
@@ -4731,7 +4731,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand55"] = {
+	["road-sand55"] = {
 		image = "miniracer-0-small",
 		x0 = 0.83984375,
 		y0 = 0.65380859375,
@@ -4744,7 +4744,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand56"] = {
+	["road-sand56"] = {
 		image = "miniracer-0-small",
 		x0 = 0.904296875,
 		y0 = 0.65380859375,
@@ -4757,7 +4757,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand57"] = {
+	["road-sand57"] = {
 		image = "miniracer-0-small",
 		x0 = 0.517578125,
 		y0 = 0.70166015625,
@@ -4770,7 +4770,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand58"] = {
+	["road-sand58"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6298828125,
 		y0 = 0.18408203125,
@@ -4783,7 +4783,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand59"] = {
+	["road-sand59"] = {
 		image = "miniracer-0-small",
 		x0 = 0.453125,
 		y0 = 0.732421875,
@@ -4796,7 +4796,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand60"] = {
+	["road-sand60"] = {
 		image = "miniracer-0-small",
 		x0 = 0.388671875,
 		y0 = 0.74609375,
@@ -4809,7 +4809,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand61"] = {
+	["road-sand61"] = {
 		image = "miniracer-0-small",
 		x0 = 0.4287109375,
 		y0 = 0.16015625,
@@ -4822,7 +4822,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand62"] = {
+	["road-sand62"] = {
 		image = "miniracer-0-small",
 		x0 = 0.861328125,
 		y0 = 0.3095703125,
@@ -4835,7 +4835,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand63"] = {
+	["road-sand63"] = {
 		image = "miniracer-0-small",
 		x0 = 0.32421875,
 		y0 = 0.7568359375,
@@ -4848,7 +4848,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand64"] = {
+	["road-sand64"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1953125,
 		y0 = 0.7646484375,
@@ -4861,7 +4861,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand65"] = {
+	["road-sand65"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.78515625,
@@ -4874,7 +4874,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand66"] = {
+	["road-sand66"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.8076171875,
@@ -4887,7 +4887,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand67"] = {
+	["road-sand67"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.818359375,
@@ -4900,7 +4900,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand68"] = {
+	["road-sand68"] = {
 		image = "miniracer-0-small",
 		x0 = 0.259765625,
 		y0 = 0.7646484375,
@@ -4913,7 +4913,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand69"] = {
+	["road-sand69"] = {
 		image = "miniracer-0-small",
 		x0 = 0.58203125,
 		y0 = 0.70166015625,
@@ -4926,7 +4926,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand70"] = {
+	["road-sand70"] = {
 		image = "miniracer-0-small",
 		x0 = 0.646484375,
 		y0 = 0.70166015625,
@@ -4939,7 +4939,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand71"] = {
+	["road-sand71"] = {
 		image = "miniracer-0-small",
 		x0 = 0.775390625,
 		y0 = 0.68603515625,
@@ -4952,7 +4952,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand72"] = {
+	["road-sand72"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7109375,
 		y0 = 0.71630859375,
@@ -4965,7 +4965,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand73"] = {
+	["road-sand73"] = {
 		image = "miniracer-0-small",
 		x0 = 0.83984375,
 		y0 = 0.68603515625,
@@ -4978,7 +4978,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand74"] = {
+	["road-sand74"] = {
 		image = "miniracer-0-small",
 		x0 = 0.904296875,
 		y0 = 0.68603515625,
@@ -4991,7 +4991,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand75"] = {
+	["road-sand75"] = {
 		image = "miniracer-0-small",
 		x0 = 0.517578125,
 		y0 = 0.73388671875,
@@ -5004,7 +5004,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand76"] = {
+	["road-sand76"] = {
 		image = "miniracer-0-small",
 		x0 = 0.453125,
 		y0 = 0.7646484375,
@@ -5017,7 +5017,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand77"] = {
+	["road-sand77"] = {
 		image = "miniracer-0-small",
 		x0 = 0.388671875,
 		y0 = 0.7783203125,
@@ -5030,7 +5030,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand78"] = {
+	["road-sand78"] = {
 		image = "miniracer-0-small",
 		x0 = 0.32421875,
 		y0 = 0.7890625,
@@ -5043,7 +5043,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand79"] = {
+	["road-sand79"] = {
 		image = "miniracer-0-small",
 		x0 = 0.1953125,
 		y0 = 0.796875,
@@ -5056,7 +5056,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand80"] = {
+	["road-sand80"] = {
 		image = "miniracer-0-small",
 		x0 = 0.130859375,
 		y0 = 0.8173828125,
@@ -5069,7 +5069,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand81"] = {
+	["road-sand81"] = {
 		image = "miniracer-0-small",
 		x0 = 0.06640625,
 		y0 = 0.83984375,
@@ -5082,7 +5082,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand82"] = {
+	["road-sand82"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.8505859375,
@@ -5095,7 +5095,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand83"] = {
+	["road-sand83"] = {
 		image = "miniracer-0-small",
 		x0 = 0.259765625,
 		y0 = 0.796875,
@@ -5108,7 +5108,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand84"] = {
+	["road-sand84"] = {
 		image = "miniracer-0-small",
 		x0 = 0.58203125,
 		y0 = 0.73388671875,
@@ -5121,7 +5121,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand85"] = {
+	["road-sand85"] = {
 		image = "miniracer-0-small",
 		x0 = 0.646484375,
 		y0 = 0.73388671875,
@@ -5134,7 +5134,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand86"] = {
+	["road-sand86"] = {
 		image = "miniracer-0-small",
 		x0 = 0.775390625,
 		y0 = 0.71826171875,
@@ -5147,7 +5147,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand87"] = {
+	["road-sand87"] = {
 		image = "miniracer-0-small",
 		x0 = 0.7109375,
 		y0 = 0.74853515625,
@@ -5160,7 +5160,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand88"] = {
+	["road-sand88"] = {
 		image = "miniracer-0-small",
 		x0 = 0.83984375,
 		y0 = 0.71826171875,
@@ -5173,7 +5173,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand89"] = {
+	["road-sand89"] = {
 		image = "miniracer-0-small",
 		x0 = 0.904296875,
 		y0 = 0.71826171875,
@@ -5186,7 +5186,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["road_sand90"] = {
+	["road-sand90"] = {
 		image = "miniracer-0-small",
 		x0 = 0.517578125,
 		y0 = 0.76611328125,
@@ -5238,7 +5238,7 @@ textures = {
 		untrimmedwidth = 44,
 		untrimmedheight = 34,
 	},
-	["skidmark_long_1"] = {
+	["skidmark-long-1"] = {
 		image = "miniracer-0-small",
 		x0 = 0.958984375,
 		y0 = 0.33837890625,
@@ -5251,7 +5251,7 @@ textures = {
 		untrimmedwidth = 30,
 		untrimmedheight = 96,
 	},
-	["skidmark_long_2"] = {
+	["skidmark-long-2"] = {
 		image = "miniracer-0-small",
 		x0 = 0.615234375,
 		y0 = 0.3271484375,
@@ -5264,7 +5264,7 @@ textures = {
 		untrimmedwidth = 30,
 		untrimmedheight = 96,
 	},
-	["skidmark_long_3"] = {
+	["skidmark-long-3"] = {
 		image = "miniracer-0-small",
 		x0 = 0.443359375,
 		y0 = 0.1123046875,
@@ -5277,7 +5277,7 @@ textures = {
 		untrimmedwidth = 38,
 		untrimmedheight = 96,
 	},
-	["skidmark_short_1"] = {
+	["skidmark-short-1"] = {
 		image = "miniracer-0-small",
 		x0 = 0.6298828125,
 		y0 = 0.21044921875,
@@ -5290,7 +5290,7 @@ textures = {
 		untrimmedwidth = 30,
 		untrimmedheight = 8,
 	},
-	["skidmark_short_2"] = {
+	["skidmark-short-2"] = {
 		image = "miniracer-0-small",
 		x0 = 0.44140625,
 		y0 = 0.38671875,
@@ -5303,7 +5303,7 @@ textures = {
 		untrimmedwidth = 30,
 		untrimmedheight = 8,
 	},
-	["skidmark_short_3"] = {
+	["skidmark-short-3"] = {
 		image = "miniracer-0-small",
 		x0 = 0.5693359375,
 		y0 = 0.1015625,
@@ -5316,20 +5316,7 @@ textures = {
 		untrimmedwidth = 38,
 		untrimmedheight = 8,
 	},
-	["tent_blue"] = {
-		image = "miniracer-0-small",
-		x0 = 0.453125,
-		y0 = 0.796875,
-		x1 = 0.0625,
-		y1 = 0.03125,
-		trimmedoffsetx = 0,
-		trimmedoffsety = 0,
-		trimmedwidth = 64,
-		trimmedheight = 64,
-		untrimmedwidth = 64,
-		untrimmedheight = 64,
-	},
-	["tent_blue_large"] = {
+	["tent-blue-large"] = {
 		image = "miniracer-0-small",
 		x0 = 0.251953125,
 		y0 = 0.056640625,
@@ -5342,10 +5329,10 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tent_red"] = {
+	["tent-blue"] = {
 		image = "miniracer-0-small",
-		x0 = 0.388671875,
-		y0 = 0.810546875,
+		x0 = 0.453125,
+		y0 = 0.796875,
 		x1 = 0.0625,
 		y1 = 0.03125,
 		trimmedoffsetx = 0,
@@ -5355,7 +5342,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tent_red_large"] = {
+	["tent-red-large"] = {
 		image = "miniracer-0-small",
 		x0 = 0.001953125,
 		y0 = 0.078125,
@@ -5368,7 +5355,20 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tires_red"] = {
+	["tent-red"] = {
+		image = "miniracer-0-small",
+		x0 = 0.388671875,
+		y0 = 0.810546875,
+		x1 = 0.0625,
+		y1 = 0.03125,
+		trimmedoffsetx = 0,
+		trimmedoffsety = 0,
+		trimmedwidth = 64,
+		trimmedheight = 64,
+		untrimmedwidth = 64,
+		untrimmedheight = 64,
+	},
+	["tires-red-alt"] = {
 		image = "miniracer-0-small",
 		x0 = 0.8583984375,
 		y0 = 0.341796875,
@@ -5381,7 +5381,7 @@ textures = {
 		untrimmedwidth = 28,
 		untrimmedheight = 28,
 	},
-	["tires_red_alt"] = {
+	["tires-red"] = {
 		image = "miniracer-0-small",
 		x0 = 0.615234375,
 		y0 = 0.375,
@@ -5394,7 +5394,7 @@ textures = {
 		untrimmedwidth = 28,
 		untrimmedheight = 28,
 	},
-	["tires_white"] = {
+	["tires-white-alt"] = {
 		image = "miniracer-0-small",
 		x0 = 0.505859375,
 		y0 = 0.3916015625,
@@ -5407,7 +5407,7 @@ textures = {
 		untrimmedwidth = 28,
 		untrimmedheight = 28,
 	},
-	["tires_white_alt"] = {
+	["tires-white"] = {
 		image = "miniracer-0-small",
 		x0 = 0.505859375,
 		y0 = 0.40625,
@@ -5420,7 +5420,7 @@ textures = {
 		untrimmedwidth = 28,
 		untrimmedheight = 28,
 	},
-	["tree_large"] = {
+	["tree-large"] = {
 		image = "miniracer-0-small",
 		x0 = 0.12890625,
 		y0 = 0.078125,
@@ -5433,7 +5433,7 @@ textures = {
 		untrimmedwidth = 107,
 		untrimmedheight = 106,
 	},
-	["tree_small"] = {
+	["tree-small"] = {
 		image = "miniracer-0-small",
 		x0 = 0.9140625,
 		y0 = 0.068359375,
@@ -5446,7 +5446,7 @@ textures = {
 		untrimmedwidth = 71,
 		untrimmedheight = 71,
 	},
-	["tribune_empty"] = {
+	["tribune-empty"] = {
 		image = "miniracer-0-small",
 		x0 = 0.251953125,
 		y0 = 0.0009765625,
@@ -5459,7 +5459,7 @@ textures = {
 		untrimmedwidth = 224,
 		untrimmedheight = 112,
 	},
-	["tribune_full"] = {
+	["tribune-full"] = {
 		image = "miniracer-0-small",
 		x0 = 0.47265625,
 		y0 = 0.0009765625,
@@ -5472,7 +5472,7 @@ textures = {
 		untrimmedwidth = 224,
 		untrimmedheight = 112,
 	},
-	["tribune_overhang_red"] = {
+	["tribune-overhang-red"] = {
 		image = "miniracer-0-small",
 		x0 = 0.693359375,
 		y0 = 0.0009765625,
@@ -5485,7 +5485,7 @@ textures = {
 		untrimmedwidth = 224,
 		untrimmedheight = 72,
 	},
-	["tribune_overhang_striped"] = {
+	["tribune-overhang-striped"] = {
 		image = "miniracer-0-small",
 		x0 = 0.693359375,
 		y0 = 0.037109375,
