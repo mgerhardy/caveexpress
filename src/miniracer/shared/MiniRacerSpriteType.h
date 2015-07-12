@@ -11,6 +11,8 @@ extern SpriteType ROAD;
 extern SpriteType DECAL;
 extern SpriteType VEHICLE;
 extern SpriteType LAND;
+extern SpriteType LIGHTS;
+extern SpriteType RACER;
 
 inline bool isSolid (const SpriteType& other)
 {
