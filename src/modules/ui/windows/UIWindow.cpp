@@ -71,6 +71,7 @@ bool UIWindow::onPush ()
 			push = false;
 	}
 	if (push) {
+		Log::info(LOG_CLIENT, "pushed window %s onto the stack", _id.c_str());
 		Commands.executeCommandLine(_onPush);
 		startMusic();
 		addFirstFocus();
@@ -81,10 +82,15 @@ bool UIWindow::onPush ()
 
 void UIWindow::startMusic ()
 {
-	if (!_musicFile.empty())
+	if (!_musicFile.empty()) {
+		Log::info(LOG_CLIENT, "attempt to start the music file %s", _musicFile.c_str());
 		_music = SoundControl.playMusic(_musicFile);
-	else
-		stopMusic();
+		if (_music == -1) {
+			Log::error(LOG_CLIENT, "failed to start the music file %s in the context of window %s", _musicFile.c_str(), _id.c_str());
+		}
+		return;
+	}
+	stopMusic();
 }
 
 void UIWindow::stopMusic ()

@@ -36,6 +36,7 @@ SDLSoundEngine::~SDLSoundEngine ()
 	}
 	_map.clear();
 	Mix_CloseAudio();
+	Mix_Quit();
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
 
@@ -63,6 +64,11 @@ bool SDLSoundEngine::init (bool initCache)
 		for (int i = 0; i < n; ++i) {
 			Log::info(LOG_CLIENT, "available audio driver %s", SDL_GetAudioDriver(i));
 		}
+	}
+
+	const int result = Mix_Init(MIX_INIT_OGG);
+	if (!(result &~ MIX_INIT_OGG)) {
+		Log::error(LOG_CLIENT, "Failed to initialize sdl mixer with ogg support");
 	}
 
 	Log::info(LOG_CLIENT, "actual audio driver: %s", SDL_GetCurrentAudioDriver());
