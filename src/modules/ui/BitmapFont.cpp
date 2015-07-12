@@ -11,7 +11,7 @@ BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr, IFrontend *frontend) :
 	if (!_font || !_font->isValid()) {
 		System.exit("invalid font definition with texture " + fontDefPtr->textureName, 1);
 	}
-	_fontDefPtr->updateChars(_font->getWidth(), _font->getHeight());
+	_fontDefPtr->updateChars(_font->getTrim().untrimmedWidth, _font->getTrim().untrimmedHeight);
 }
 
 BitmapFont::~BitmapFont (void)
