@@ -24,7 +24,7 @@
 UI::UI () :
 		_serviceProvider(nullptr), _eventHandler(nullptr), _frontend(nullptr), _cursor(true), _showCursor(false), _cursorX(
 				-1), _cursorY(-1), _restart(false), _delayedPop(false), _noPushAllowed(false), _time(0), _lastJoystickMoveTime(
-				0), _lastJoystickMovementValue(0)
+				0), _lastJoystickMovementValue(0), _rotateFonts(true)
 {
 }
 
@@ -321,6 +321,8 @@ void UI::update (uint32_t deltaTime)
 		window->update(deltaTime);
 	}
 
+	if (!_rotateFonts)
+		return;
 	for (Fonts::iterator i = _fonts.begin(); i != _fonts.end(); ++i) {
 		i->second->update(deltaTime);
 	}

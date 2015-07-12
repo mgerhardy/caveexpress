@@ -310,8 +310,9 @@ void UINode::renderTop (int x, int y) const
 		if (t.pos.y > 0.00001f) {
 			fontY = t.pos.y * _frontend->getHeight();
 		} else {
-			fontY = textYOffset + getRenderCenterY() - t.font->getTextHeight(t.text) / 2.0f;
-			textYOffset += t.font->getTextHeight(t.text);
+			const int textHeight = t.font->getTextHeight(t.text);
+			fontY = textYOffset + getRenderCenterY() - textHeight / 2.0f;
+			textYOffset += textHeight;
 		}
 		t.font->print(t.text, colorWhite, fontX, fontY);
 	}

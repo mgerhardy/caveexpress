@@ -93,6 +93,7 @@ private:
 	uint32_t _time;
 	uint32_t _lastJoystickMoveTime;
 	int _lastJoystickMovementValue;
+	bool _rotateFonts;
 
 	typedef std::map<std::string, std::string> LanguageMap;
 	LanguageMap _languageMap;
@@ -104,6 +105,8 @@ private:
 public:
 	virtual ~UI ();
 	static UI& get ();
+
+	inline void disableRotatingFonts() { _rotateFonts = false; }
 
 	inline IFrontend *getFrontend () const
 	{

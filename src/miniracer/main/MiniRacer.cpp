@@ -189,6 +189,7 @@ void MiniRacer::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 {
 	Log::info(LOG_CLIENT, "Init miniracer ui");
 	UI& ui = UI::get();
+	ui.disableRotatingFonts();
 	ui.addWindow(new UIMainWindow(frontend));
 	MiniRacerClientMap *map = new MiniRacerClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
 	_clientMap = map;
