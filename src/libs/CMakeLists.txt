@@ -1,3 +1,4 @@
+add_subdirectory(glm)
 add_subdirectory(zlib)
 add_subdirectory(box2d)
 add_subdirectory(lua5.2)
