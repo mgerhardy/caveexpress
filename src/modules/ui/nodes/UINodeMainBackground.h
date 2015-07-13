@@ -16,7 +16,7 @@ public:
 	void renderMiddle (int x, int y) const override
 	{
 		UINodeBackground::renderMiddle(x, y);
-		if (!_renderTitle)
+		if (!_renderTitle || !_mainTitle)
 			return;
 		renderImage(_mainTitle, x + getRenderWidth(false) / 2 - _mainTitle->getWidth() / 2, y);
 	}
