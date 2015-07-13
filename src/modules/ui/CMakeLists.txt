@@ -1,6 +1,9 @@
 set(ui_SRCS
 	UI.cpp
 	BitmapFont.cpp
+	nodes/IUINodeMapEditor.cpp
+	nodes/IUINodeEntitySelector.cpp
+	nodes/IUINodeSpriteSelector.cpp
 	nodes/UINodeMapSelector.cpp
 	nodes/UINodeCampaignSelector.cpp
 	nodes/UINodeSlider.cpp
@@ -18,6 +21,7 @@ set(ui_SRCS
 	nodes/UINodeMapStringSelector.cpp
 	nodes/UINodeSpinner.cpp
 	nodes/UINodeTextInput.cpp
+	nodes/UINodeMapEditorSelectedItem.cpp
 	nodes/UINodeMapFingerControl.cpp
 	nodes/UINodeMapOnScreenCursorControl.cpp
 	nodes/IUINodeMap.cpp
@@ -26,6 +30,9 @@ set(ui_SRCS
 	layouts/UIFillLayout.cpp
 	layouts/UIHBoxLayout.cpp
 	layouts/UIVBoxLayout.cpp
+	windows/IUIMapEditorOptionsWindow.cpp
+	windows/UIMapEditorHelpWindow.cpp
+	windows/IUIMapEditorWindow.cpp
 	windows/UIMapSelectorWindow.cpp
 	windows/UICreateServerWindow.cpp
 	windows/UICampaignMapWindow.cpp
@@ -41,6 +48,7 @@ set(ui_SRCS
 	windows/UIMapOptionsWindow.cpp
 	windows/UIGestureWindow.cpp
 	windows/UIMapFinishedWindow.cpp
+	windows/UIHelpWindow.cpp
 	windows/intro/Intro.cpp
 )
 add_library(ui ${ui_SRCS})

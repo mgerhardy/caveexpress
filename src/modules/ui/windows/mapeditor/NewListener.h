@@ -1,12 +1,10 @@
 #pragma once
 
-namespace caveexpress {
-
 class NewListener: public UINodeListener {
 private:
-	UINodeMapEditor *_mapEditor;
+	IUINodeMapEditor *_mapEditor;
 public:
-	explicit NewListener (UINodeMapEditor *mapEditor) :
+	explicit NewListener (IUINodeMapEditor *mapEditor) :
 			_mapEditor(mapEditor)
 	{
 	}
@@ -16,5 +14,3 @@ public:
 		_mapEditor->clear();
 	}
 };
-
-}

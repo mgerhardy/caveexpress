@@ -1,13 +1,11 @@
 #pragma once
 
-namespace caveexpress {
-
 class LayerListener: public UINodeListener {
 private:
-	UINodeMapEditor *_mapEditor;
+	IUINodeMapEditor *_mapEditor;
 	MapEditorLayer _layer;
 public:
-	LayerListener (UINodeMapEditor *mapEditor, MapEditorLayer layer) :
+	LayerListener (IUINodeMapEditor *mapEditor, MapEditorLayer layer) :
 			_mapEditor(mapEditor), _layer(layer)
 	{
 	}
@@ -17,5 +15,3 @@ public:
 		_mapEditor->toggleLayer(_layer);
 	}
 };
-
-}

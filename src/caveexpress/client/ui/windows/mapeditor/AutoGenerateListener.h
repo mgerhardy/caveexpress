@@ -1,20 +1,23 @@
 #pragma once
 
+#include "caveexpress/client/ui/nodes/UINodeSpriteSelector.h"
+#include "caveexpress/client/ui/nodes/UINodeMapEditor.h"
+
 namespace caveexpress {
 
 class AutoGenerateListener: public UINodeListener {
 private:
-	UINodeMapEditor *_mapEditor;
-	UINodeSpriteSelector *_spriteSelector;
+	IUINodeMapEditor *_mapEditor;
+	IUINodeSpriteSelector *_spriteSelector;
 public:
-	AutoGenerateListener (UINodeMapEditor *mapEditor, UINodeSpriteSelector *spriteSelector) :
+	AutoGenerateListener (IUINodeMapEditor *mapEditor, IUINodeSpriteSelector *spriteSelector) :
 			_mapEditor(mapEditor), _spriteSelector(spriteSelector)
 	{
 	}
 
 	void onClick () override
 	{
-		_mapEditor->autoFill(_spriteSelector->getTheme());
+		((UINodeMapEditor*)_mapEditor)->autoFill(_spriteSelector->getTheme());
 	}
 };
 

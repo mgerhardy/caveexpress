@@ -1,12 +1,10 @@
 #pragma once
 
-namespace caveexpress {
-
 class RedoListener: public UINodeListener {
 private:
-	UINodeMapEditor *_mapEditor;
+	IUINodeMapEditor *_mapEditor;
 public:
-	explicit RedoListener (UINodeMapEditor *mapEditor) :
+	explicit RedoListener (IUINodeMapEditor *mapEditor) :
 			_mapEditor(mapEditor)
 	{
 	}
@@ -16,5 +14,3 @@ public:
 		_mapEditor->redo();
 	}
 };
-
-}

@@ -1,14 +1,12 @@
 #pragma once
 
-namespace caveexpress {
-
 class EntitySelectionListener: public UINodeListener {
 private:
-	UINodeMapEditor *_mapEditor;
-	UINodeEntitySelector *_selector;
+	IUINodeMapEditor *_mapEditor;
+	IUINodeEntitySelector *_selector;
 	UINodeMapEditorSelectedItem *_selectedItem;
 public:
-	EntitySelectionListener (UINodeMapEditor *mapEditor, UINodeEntitySelector *selector, UINodeMapEditorSelectedItem *selectedItem) :
+	EntitySelectionListener (IUINodeMapEditor *mapEditor, IUINodeEntitySelector *selector, UINodeMapEditorSelectedItem *selectedItem) :
 			_mapEditor(mapEditor), _selector(selector), _selectedItem(selectedItem)
 	{
 	}
@@ -17,10 +15,8 @@ public:
 	{
 		const EntityTypeWrapper* p = _selector->getSelection();
 		_mapEditor->setEmitterEntity(*p->type);
-		const Animation& animation = EntityTypes::hasDirection(*p->type) ? Animations::ANIMATION_IDLE_RIGHT : Animations::ANIMATION_IDLE;
+		const Animation& animation = Animation::NONE;
 		const SpriteDefPtr& spriteDef = SpriteDefinition::get().getFromEntityType(*p->type, animation);
 		_selectedItem->setSprite(spriteDef);
 	}
 };
-
-}

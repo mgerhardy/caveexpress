@@ -1,12 +1,9 @@
-#include "UINodeEntitySelector.h"
+#include <ui/nodes/IUINodeEntitySelector.h>
 #include "common/Log.h"
 #include "ui/UI.h"
-#include "caveexpress/server/entities/EntityEmitter.h"
 #include "common/SpriteDefinition.h"
 
-namespace caveexpress {
-
-UINodeEntitySelector::UINodeEntitySelector (IFrontend *frontend, int cols, int rows) :
+IUINodeEntitySelector::IUINodeEntitySelector (IFrontend *frontend, int cols, int rows) :
 		UINodeSelector<EntityTypeWrapper>(frontend, cols, rows, 40 / static_cast<float>(frontend->getWidth()), 40 / static_cast<float>(frontend->getHeight())), _theme(&ThemeType::NONE)
 {
 	_renderBorder = true;
@@ -15,11 +12,11 @@ UINodeEntitySelector::UINodeEntitySelector (IFrontend *frontend, int cols, int r
 	setRowSpacing(0);
 }
 
-UINodeEntitySelector::~UINodeEntitySelector ()
+IUINodeEntitySelector::~IUINodeEntitySelector ()
 {
 }
 
-void UINodeEntitySelector::renderSelectorEntry (int index, const EntityTypeWrapper& data, int x, int y, int colWidth, int rowHeight, float alpha) const
+void IUINodeEntitySelector::renderSelectorEntry (int index, const EntityTypeWrapper& data, int x, int y, int colWidth, int rowHeight, float alpha) const
 {
 	for (Layer layer = LAYER_BACK; layer < MAX_LAYERS; ++layer) {
 		data.sprite->render(_frontend, layer, x, y, colWidth, rowHeight, data.angle, alpha);
@@ -29,7 +26,7 @@ void UINodeEntitySelector::renderSelectorEntry (int index, const EntityTypeWrapp
 	}
 }
 
-void UINodeEntitySelector::update (uint32_t deltaTime)
+void IUINodeEntitySelector::update (uint32_t deltaTime)
 {
 	UINodeSelector<EntityTypeWrapper>::update(deltaTime);
 	for (SelectorEntryIter i = _entries.begin(); i != _entries.end(); ++i) {
@@ -37,9 +34,9 @@ void UINodeEntitySelector::update (uint32_t deltaTime)
 	}
 }
 
-void UINodeEntitySelector::addEntity (const EntityType& type, const ThemeType& theme)
+void IUINodeEntitySelector::addEntity (const EntityType& type, const ThemeType& theme)
 {
-	const Animation& animation = EntityTypes::hasDirection(type) ? Animations::ANIMATION_IDLE_RIGHT : Animations::ANIMATION_IDLE;
+	const Animation& animation = getAnimation(type);
 	const SpriteDefPtr& def = SpriteDefinition::get().getFromEntityType(type, animation);
 	if (!def)
 		return;
@@ -50,14 +47,14 @@ void UINodeEntitySelector::addEntity (const EntityType& type, const ThemeType& t
 	addData(w);
 }
 
-void UINodeEntitySelector::addEntities (const ThemeType& theme)
+void IUINodeEntitySelector::addEntities (const ThemeType& theme)
 {
 	_theme = &theme;
 	reset();
-	addEntity(EntityTypes::PLAYER, theme);
-	const EntityType** types = EntityEmitter::getSupportedEntityTypes();
-	for (; *types; ++types) {
-		addEntity(**types, theme);
+	for (auto i = EntityType::begin(); i != EntityType::end(); ++i) {
+		if (!shouldBeShown(*i->second))
+			continue;
+		addEntity(*i->second, theme);
 	}
 
 	if (_entries.empty()) {
@@ -68,6 +65,4 @@ void UINodeEntitySelector::addEntities (const ThemeType& theme)
 
 	_selectedIndex = 0;
 	select();
-}
-
 }

@@ -2,7 +2,12 @@
 #include "ui/UI.h"
 #include "miniracer/client/ui/windows/UIMainWindow.h"
 #include "miniracer/client/ui/windows/UIMapWindow.h"
+#include "ui/windows/IUIMapEditorWindow.h"
+#include "ui/windows/UIMapEditorHelpWindow.h"
 #include "miniracer/client/MiniRacerClientMap.h"
+#include "miniracer/client/ui/nodes/UINodeMapEditor.h"
+#include "miniracer/client/ui/nodes/UINodeSpriteSelector.h"
+#include "miniracer/client/ui/nodes/UINodeEntitySelector.h"
 #include "miniracer/server/network/SpawnHandler.h"
 #include "miniracer/server/network/DisconnectHandler.h"
 #include "miniracer/server/network/StartMapHandler.h"
@@ -16,6 +21,8 @@
 #include "miniracer/shared/MiniRacerAchievement.h"
 #include "miniracer/shared/network/ProtocolMessageTypes.h"
 #include "miniracer/shared/network/messages/ProtocolMessages.h"
+#include "miniracer/shared/constants/Commands.h"
+#include "miniracer/client/commands/CmdMapOpenInEditor.h"
 #include "client/entities/ClientEntityFactory.h"
 #include "client/entities/ClientMapTile.h"
 #include "network/ProtocolHandlerRegistry.h"
@@ -40,6 +47,7 @@
 #include "ui/windows/UIGestureWindow.h"
 #include "ui/windows/UICreateServerWindow.h"
 #include "ui/windows/UIMultiplayerWindow.h"
+#include "ui/windows/IUIMapEditorOptionsWindow.h"
 #include "miniracer/shared/MiniRacerSQLitePersister.h"
 #include "miniracer/shared/MiniRacerMapManager.h"
 #include <SDL.h>
@@ -206,6 +214,16 @@ void MiniRacer::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMiniRacerMapOptionsWindow(frontend, serviceProvider));
 	ui.addWindow(new UIMultiplayerWindow(frontend, serviceProvider.getMapManager(), serviceProvider));
 	ui.addWindow(new UICreateServerWindow(frontend, serviceProvider.getMapManager()));
+
+	UINodeMapEditor* editor = new UINodeMapEditor(frontend, serviceProvider.getMapManager());
+	UINodeSpriteSelector* spriteSelector = new UINodeSpriteSelector(frontend);
+	UINodeEntitySelector* entitySelector = new UINodeEntitySelector(frontend);
+	IUIMapEditorWindow* mapEditorWindow = new IUIMapEditorWindow(frontend, serviceProvider.getMapManager(), editor, spriteSelector, entitySelector);
+	ui.addWindow(mapEditorWindow);
+	ui.addWindow(new UIMapEditorHelpWindow(frontend));
+	ui.addWindow(new IUIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));
+
+	Commands.registerCommand(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
 }
 
 bool MiniRacer::visitEntity (IEntity *entity)

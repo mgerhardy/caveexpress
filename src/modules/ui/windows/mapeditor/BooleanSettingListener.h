@@ -1,15 +1,13 @@
 #pragma once
 
-namespace caveexpress {
-
 class BooleanSettingListener: public UINodeListener, IMapEditorListener {
 private:
-	UINodeMapEditor *_mapEditor;
+	IUINodeMapEditor *_mapEditor;
 	UINodeCheckbox *_checkboxNode;
 	bool _blocked;
 	const std::string _key;
 public:
-	BooleanSettingListener (UINodeMapEditor *mapEditor, UINodeCheckbox *checkboxNode, const std::string& key) :
+	BooleanSettingListener (IUINodeMapEditor *mapEditor, UINodeCheckbox *checkboxNode, const std::string& key) :
 			_mapEditor(mapEditor), _checkboxNode(checkboxNode), _blocked(false), _key(key)
 	{
 		_mapEditor->addEditorListener(this);
@@ -34,5 +32,3 @@ public:
 		_blocked = false;
 	}
 };
-
-}

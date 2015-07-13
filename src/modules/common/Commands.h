@@ -1,3 +1,5 @@
+#pragma once
+
 #define CMD_CL_CONNECT "cl_connect"
 #define CMD_CL_DISCONNECT "cl_disconnect"
 #define CMD_UI_PUSH "ui_push"
@@ -23,3 +25,4 @@
 #define CMD_FINISHMAP "finish"
 #define CMD_MAP_RESTART "map_restart"
 #define CMD_MAP_PAUSE "cl_triggerpause"
+#define CMD_LOADMAP "loadmap"

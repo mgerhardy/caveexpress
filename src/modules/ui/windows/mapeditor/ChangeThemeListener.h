@@ -1,18 +1,21 @@
 #pragma once
 
-namespace caveexpress {
+#include "ui/nodes/IUINodeSpriteSelector.h"
+#include "ui/nodes/IUINodeEntitySelector.h"
+#include "ui/nodes/IUINodeMapEditor.h"
+#include "ui/nodes/UINodeMapEditorSelectedItem.h"
 
 class ChangeThemeListener: public UINodeListener, IMapEditorListener {
 private:
-	UINodeMapEditor *_mapEditor;
-	UINodeSpriteSelector *_spriteSelector;
-	UINodeEntitySelector* _entitySelector;
+	IUINodeMapEditor *_mapEditor;
+	IUINodeSpriteSelector *_spriteSelector;
+	IUINodeEntitySelector* _entitySelector;
 	UINodeMapEditorSelectedItem *_selectedItem;
 	const ThemeType& _theme;
 	bool _blocked;
 public:
-	ChangeThemeListener (UINodeMapEditor *mapEditor, UINodeSpriteSelector *spriteSelector,
-			UINodeEntitySelector* entitySelector, UINodeMapEditorSelectedItem *selectedItem, const ThemeType& theme) :
+	ChangeThemeListener (IUINodeMapEditor *mapEditor, IUINodeSpriteSelector *spriteSelector,
+			IUINodeEntitySelector* entitySelector, UINodeMapEditorSelectedItem *selectedItem, const ThemeType& theme) :
 			_mapEditor(mapEditor), _spriteSelector(spriteSelector), _entitySelector(entitySelector), _selectedItem(
 					selectedItem), _theme(theme), _blocked(false)
 	{
@@ -51,5 +54,3 @@ public:
 		_blocked = false;
 	}
 };
-
-}

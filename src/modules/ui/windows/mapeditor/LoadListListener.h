@@ -1,14 +1,12 @@
 #pragma once
 
-namespace caveexpress {
-
 class LoadListListener: public UINodeListener {
 private:
-	UINodeMapEditor *_mapEditor;
+	IUINodeMapEditor *_mapEditor;
 	UINodeButton *_loadNode;
 	UINodeMapStringSelector *_mapListNode;
 public:
-	LoadListListener (UINodeMapEditor *mapEditor, UINodeButton *loadNode, UINodeMapStringSelector *mapListNode) :
+	LoadListListener (IUINodeMapEditor *mapEditor, UINodeButton *loadNode, UINodeMapStringSelector *mapListNode) :
 			_mapEditor(mapEditor), _loadNode(loadNode), _mapListNode(mapListNode)
 	{
 	}
@@ -28,5 +26,3 @@ public:
 		_mapListNode->setVisible(false);
 	}
 };
-
-}

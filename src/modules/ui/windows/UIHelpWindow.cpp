@@ -6,8 +6,6 @@
 #include "ui/UI.h"
 #include "common/SpriteDefinition.h"
 
-namespace caveexpress {
-
 UIHelpWindow::UIHelpWindow (const std::string& name, IFrontend* frontend, int flags) :
 		UIWindow(name, frontend, flags), _currentX(0.01f), _currentY(0.0f), _internalPadding(0.001f), _iconSize(0.08f), _iconGap(
 				0.01f)
@@ -49,11 +47,6 @@ UINodeLabel* UIHelpWindow::addString (const std::string& string, const std::stri
 	return labelNode;
 }
 
-UINodeSprite* UIHelpWindow::addSprite (const EntityType& type, const Animation& animation)
-{
-	return addSprite(type, animation, _iconSize, _iconSize);
-}
-
 UINodeSprite* UIHelpWindow::addSprite (const EntityType& type, const Animation& animation, float w, float h)
 {
 	const UINode *node = _nodes.empty() ? nullptr : _nodes.back();
@@ -81,6 +74,4 @@ UINodeSprite* UIHelpWindow::addSpriteNode (const EntityType& type, const Animati
 	spriteNode->setSize(w, h);
 	add(spriteNode);
 	return spriteNode;
-}
-
 }

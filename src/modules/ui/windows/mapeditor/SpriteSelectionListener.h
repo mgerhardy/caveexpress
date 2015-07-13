@@ -1,14 +1,12 @@
 #pragma once
 
-namespace caveexpress {
-
 class SpriteSelectionListener: public UINodeListener, IMapEditorListener {
 private:
-	UINodeMapEditor *_mapEditor;
-	UINodeSpriteSelector *_selector;
+	IUINodeMapEditor *_mapEditor;
+	IUINodeSpriteSelector *_selector;
 	UINodeMapEditorSelectedItem *_selectedItem;
 public:
-	SpriteSelectionListener (UINodeMapEditor *mapEditor, UINodeSpriteSelector *selector, UINodeMapEditorSelectedItem *selectedItem) :
+	SpriteSelectionListener (IUINodeMapEditor *mapEditor, IUINodeSpriteSelector *selector, UINodeMapEditorSelectedItem *selectedItem) :
 			_mapEditor(mapEditor), _selector(selector), _selectedItem(selectedItem)
 	{
 		_mapEditor->addEditorListener(this);
@@ -28,5 +26,3 @@ public:
 		_selectedItem->setSprite(def);
 	}
 };
-
-}

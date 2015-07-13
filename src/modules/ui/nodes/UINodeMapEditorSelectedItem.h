@@ -3,8 +3,6 @@
 #include "ui/nodes/UINode.h"
 #include "common/SpriteDefinition.h"
 
-namespace caveexpress {
-
 class UINodeMapEditorSelectedItem: public UINode {
 private:
 	SpriteDefPtr _activeSpriteDefition;
@@ -20,6 +18,4 @@ public:
 inline void UINodeMapEditorSelectedItem::setSprite (const SpriteDefPtr& spriteDef)
 {
 	_activeSpriteDefition = spriteDef;
-}
-
 }

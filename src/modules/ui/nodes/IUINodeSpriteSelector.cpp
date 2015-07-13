@@ -1,21 +1,18 @@
-#include "UINodeSpriteSelector.h"
+#include <ui/nodes/IUINodeSpriteSelector.h>
 #include "ui/UI.h"
 #include "common/SpriteType.h"
-#include "caveexpress/shared/CaveExpressSpriteType.h"
 
-namespace caveexpress {
-
-UINodeSpriteSelector::UINodeSpriteSelector (IFrontend *frontend, int cols, int rows) :
+IUINodeSpriteSelector::IUINodeSpriteSelector (IFrontend *frontend, int cols, int rows) :
 		UINodeSelector<SpriteDefPtr>(frontend, cols, rows, 40 / static_cast<float>(frontend->getWidth()), 40 / static_cast<float>(frontend->getHeight())), _theme(&ThemeType::NONE)
 {
 	setBorder(true);
 }
 
-UINodeSpriteSelector::~UINodeSpriteSelector ()
+IUINodeSpriteSelector::~IUINodeSpriteSelector ()
 {
 }
 
-void UINodeSpriteSelector::renderSelectorEntry (int index, const SpriteDefPtr& data, int x, int y, int colWidth, int rowHeight, float alpha) const
+void IUINodeSpriteSelector::renderSelectorEntry (int index, const SpriteDefPtr& data, int x, int y, int colWidth, int rowHeight, float alpha) const
 {
 	const SpritePtr& sprite = UI::get().loadSprite(data->id);
 	for (Layer layer = LAYER_BACK; layer < MAX_LAYERS; ++layer) {
@@ -26,7 +23,7 @@ void UINodeSpriteSelector::renderSelectorEntry (int index, const SpriteDefPtr& d
 	}
 }
 
-void UINodeSpriteSelector::update (uint32_t deltaTime)
+void IUINodeSpriteSelector::update (uint32_t deltaTime)
 {
 	UINodeSelector<SpriteDefPtr>::update(deltaTime);
 	for (SelectorEntryIter i = _entries.begin(); i != _entries.end(); ++i) {
@@ -35,7 +32,7 @@ void UINodeSpriteSelector::update (uint32_t deltaTime)
 	}
 }
 
-void UINodeSpriteSelector::addSprites (const ThemeType& theme)
+void IUINodeSpriteSelector::addSprites (const ThemeType& theme)
 {
 	_theme = &theme;
 	reset();
@@ -43,12 +40,7 @@ void UINodeSpriteSelector::addSprites (const ThemeType& theme)
 		const SpriteDefPtr& sprite = i->second;
 		if (!sprite->theme.isNone() && sprite->theme != theme)
 			continue;
-		const SpriteType& type = sprite->type;
-		if (!SpriteTypes::isMapTile(type) && !SpriteTypes::isLiane(type))
-			continue;
-		if (SpriteTypes::isGeyser(type) && sprite->isStatic())
-			continue;
-		if (SpriteTypes::isPackageTarget(type) && !sprite->isStatic())
+		if (!shouldBeShown(sprite))
 			continue;
 		addData(sprite);
 	}
@@ -61,6 +53,4 @@ void UINodeSpriteSelector::addSprites (const ThemeType& theme)
 
 	_selectedIndex = 0;
 	select();
-}
-
 }

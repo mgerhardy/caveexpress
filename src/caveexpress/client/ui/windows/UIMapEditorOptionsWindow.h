@@ -1,17 +1,16 @@
 #pragma once
 
-#include "ui/windows/UIWindow.h"
+#include "ui/windows/IUIMapEditorOptionsWindow.h"
 
 namespace caveexpress {
 
 class UINodeMapEditor;
 
-class UIMapEditorOptionsWindow: public UIWindow {
+class UIMapEditorOptionsWindow: public IUIMapEditorOptionsWindow {
 protected:
-	UINodeMapEditor* _mapEditor;
-	UINode* createSection (UINode* parent, const std::string& title);
-	UINode* createGeneralOptions (UINode* vbox);
-	UINode* createWinConditions (UINode* vbox);
+	virtual void fillGeneralOptions (UINode* hbox) override;
+	virtual void fillWinConditions (UINode* hbox) override;
+	virtual UINode* createGeneralOptions (UINode* vbox) override;
 	UINode* createWaterOptions (UINode* vbox);
 public:
 	UIMapEditorOptionsWindow (IFrontend* frontend, UINodeMapEditor* mapEditor);

@@ -2,15 +2,13 @@
 
 #include "ui/UI.h"
 #include "common/Commands.h"
-#include "caveexpress/client/ui/nodes/UINodeMapEditor.h"
-
-namespace caveexpress {
+#include "ui/nodes/IUINodeMapEditor.h"
 
 class QuitEditorListener: public UINodeListener {
 private:
-	UINodeMapEditor *_editor;
+	IUINodeMapEditor *_editor;
 public:
-	QuitEditorListener(UINodeMapEditor *editor) :
+	QuitEditorListener(IUINodeMapEditor *editor) :
 			_editor(editor) {
 	}
 
@@ -23,5 +21,3 @@ public:
 		}
 	}
 };
-
-}

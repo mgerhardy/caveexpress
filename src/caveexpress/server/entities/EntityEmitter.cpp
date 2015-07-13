@@ -108,7 +108,7 @@ const EntityType** EntityEmitter::getSupportedEntityTypes()
 {
 	static const EntityType* types[] = { &EntityTypes::STONE, &EntityTypes::PACKAGE_ROCK, &EntityTypes::PACKAGE_ICE,
 			&EntityTypes::NPC_WALKING, &EntityTypes::NPC_BLOWING, &EntityTypes::BANANA,
-			&EntityTypes::APPLE, &EntityTypes::EGG, &EntityTypes::NPC_MAMMUT, &EntityTypes::TREE, &EntityTypes::BOMB, 0 };
+			&EntityTypes::APPLE, &EntityTypes::EGG, &EntityTypes::NPC_MAMMUT, &EntityTypes::TREE, &EntityTypes::BOMB, nullptr };
 	return types;
 }
 

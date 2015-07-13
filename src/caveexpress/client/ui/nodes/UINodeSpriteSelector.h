@@ -1,29 +1,28 @@
 #pragma once
 
-#include "ui/nodes/UINodeSelector.h"
-#include "common/SpriteDefinition.h"
+#include "ui/nodes/IUINodeSpriteSelector.h"
+#include "caveexpress/shared/CaveExpressSpriteType.h"
 
 namespace caveexpress {
 
-class UINodeSpriteSelector: public UINodeSelector<SpriteDefPtr> {
-private:
-	const ThemeType* _theme;
-public:
-	UINodeSpriteSelector (IFrontend *frontend, int cols, int rows);
-	virtual ~UINodeSpriteSelector ();
+class UINodeSpriteSelector: public IUINodeSpriteSelector {
+protected:
+	bool shouldBeShown(const SpriteDefPtr& sprite) const override {
+		const SpriteType& type = sprite->type;
+		if (!SpriteTypes::isMapTile(type) && !SpriteTypes::isLiane(type))
+			return false;
+		if (SpriteTypes::isGeyser(type) && sprite->isStatic())
+			return false;
+		if (SpriteTypes::isPackageTarget(type) && !sprite->isStatic())
+			return false;
 
-	void addSprites (const ThemeType& theme);
-
-	inline const ThemeType& getTheme () const
-	{
-		return *_theme;
+		return true;
 	}
 
-	// UINode
-	void update (uint32_t deltaTime) override;
-
-	// UINodeSelector
-	void renderSelectorEntry (int index, const SpriteDefPtr& data, int x, int y, int colWidth, int rowHeight, float alpha) const override;
+public:
+	UINodeSpriteSelector(IFrontend *frontend, int cols = -1, int rows = -1) :
+			IUINodeSpriteSelector(frontend, cols, rows) {
+	}
 };
 
 }

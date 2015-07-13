@@ -1,15 +1,13 @@
 #pragma once
 
-namespace caveexpress {
-
 class IntSettingsListener: public UINodeListener, IMapEditorListener {
 private:
-	UINodeMapEditor *_mapEditor;
+	IUINodeMapEditor *_mapEditor;
 	UINodeSpinner *_spinnerNode;
 	bool _blocked;
 	const std::string _key;
 public:
-	IntSettingsListener (UINodeMapEditor *mapEditor, UINodeSpinner *spinnerNode, const std::string& key) :
+	IntSettingsListener (IUINodeMapEditor *mapEditor, UINodeSpinner *spinnerNode, const std::string& key) :
 			_mapEditor(mapEditor), _spinnerNode(spinnerNode), _blocked(false), _key(key)
 	{
 		_mapEditor->addEditorListener(this);
@@ -35,5 +33,3 @@ public:
 		_blocked = false;
 	}
 };
-
-}

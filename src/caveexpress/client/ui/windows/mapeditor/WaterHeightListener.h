@@ -1,14 +1,17 @@
 #pragma once
 
+#include "caveexpress/client/ui/nodes/UINodeMapEditor.h"
+#include "ui/nodes/UINodeSlider.h"
+
 namespace caveexpress {
 
 class WaterHeightListener: public UINodeListener, IMapEditorListener {
 private:
-	UINodeMapEditor *_mapEditor;
+	IUINodeMapEditor *_mapEditor;
 	UINodeSlider *_sliderNode;
 	bool _blocked;
 public:
-	WaterHeightListener (UINodeMapEditor *mapEditor, UINodeSlider *sliderNode) :
+	WaterHeightListener (IUINodeMapEditor *mapEditor, UINodeSlider *sliderNode) :
 			_mapEditor(mapEditor), _sliderNode(sliderNode), _blocked(false)
 	{
 		_mapEditor->addEditorListener(this);
@@ -29,7 +32,7 @@ public:
 	void onValueChanged () override
 	{
 		_blocked = true;
-		_mapEditor->setWaterHeight(_sliderNode->getValue());
+		((UINodeMapEditor*)_mapEditor)->setWaterHeight(_sliderNode->getValue());
 		_blocked = false;
 	}
 };

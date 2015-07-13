@@ -18,6 +18,8 @@
 #include "ui/windows/UICampaignWindow.h"
 #include "ui/windows/UICampaignMapWindow.h"
 #include "ui/windows/UICreateServerWindow.h"
+#include "caveexpress/client/ui/windows/UIMapEditorWindow.h"
+#include "caveexpress/client/ui/nodes/UINodeMapEditor.h"
 #include "campaign/ICampaignManager.h"
 #include "common/Shared.h"
 #include "common/Log.h"
@@ -366,7 +368,8 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIPaymentWindow(frontend));
 	ui.addWindow(new UIMultiplayerWindow(frontend, serviceProvider.getMapManager(), serviceProvider));
 	ui.addWindow(new UICreateServerWindow(frontend, serviceProvider.getMapManager()));
-	UIMapEditorWindow* mapEditorWindow = new UIMapEditorWindow(frontend, serviceProvider.getMapManager());
+	UINodeMapEditor* editor = new UINodeMapEditor(frontend, serviceProvider.getMapManager());
+	UIMapEditorWindow* mapEditorWindow = new UIMapEditorWindow(frontend, serviceProvider.getMapManager(), editor);
 	ui.addWindow(mapEditorWindow);
 	ui.addWindow(new UIGameHelpWindow(frontend));
 	ui.addWindow(new UIGestureWindow(frontend));
@@ -377,7 +380,7 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapFinishedWindow(frontend, campaignMgr, serviceProvider, SoundTypes::SOUND_PACKAGE_COLLIDE));
 	ui.addWindow(new UIMapFailedWindow(frontend, campaignMgr));
 	ui.addWindow(new UIMapEditorHelpWindow(frontend));
-	ui.addWindow(new UIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));
+	ui.addWindow(new UIMapEditorOptionsWindow(frontend, editor));
 
 	Commands.registerCommand(CMD_DROP, new CmdDrop(*map));
 	Commands.registerCommand(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));

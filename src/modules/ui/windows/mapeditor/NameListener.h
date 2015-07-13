@@ -1,15 +1,13 @@
 #pragma once
 
-namespace caveexpress {
-
 class NameListener: public UINodeListener, public IMapEditorListener {
 private:
-	UINodeMapEditor *_mapEditor;
+	IUINodeMapEditor *_mapEditor;
 	UINodeTextInput *_nameNode;
 	bool _fileName;
 	bool _blocked;
 public:
-	NameListener (UINodeMapEditor *mapEditor, UINodeTextInput *nameNode, bool fileName) :
+	NameListener (IUINodeMapEditor *mapEditor, UINodeTextInput *nameNode, bool fileName) :
 			_mapEditor(mapEditor), _nameNode(nameNode), _fileName(fileName), _blocked(false)
 	{
 		_mapEditor->addEditorListener(this);
@@ -45,5 +43,3 @@ public:
 		_nameNode->setValue(newName);
 	}
 };
-
-}

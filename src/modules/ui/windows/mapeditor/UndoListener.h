@@ -1,12 +1,10 @@
 #pragma once
 
-namespace caveexpress {
-
 class UndoListener: public UINodeListener {
 private:
-	UINodeMapEditor *_mapEditor;
+	IUINodeMapEditor *_mapEditor;
 public:
-	explicit UndoListener (UINodeMapEditor *mapEditor) :
+	explicit UndoListener (IUINodeMapEditor *mapEditor) :
 			_mapEditor(mapEditor)
 	{
 	}
@@ -16,5 +14,3 @@ public:
 		_mapEditor->undo();
 	}
 };
-
-}

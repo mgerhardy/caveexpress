@@ -1,13 +1,11 @@
 #pragma once
 #include "ui/windows/UIWindow.h"
-#include "caveexpress/shared/CaveExpressAnimation.h"
+#include "common/Animation.h"
 #include "common/EntityType.h"
 #include "common/NonCopyable.h"
 
 class UINodeSprite;
 class UINodeLabel;
-
-namespace caveexpress {
 
 class UIHelpWindow: public UIWindow {
 protected:
@@ -74,7 +72,6 @@ protected:
 	UINodeLabel* addString (const std::string& string, const std::string& font = "");
 	void addKeys (const std::vector<std::string>& keys);
 	void addKey (const std::string& key);
-	UINodeSprite* addSprite (const EntityType& type, const Animation& animation = Animations::ANIMATION_IDLE);
 	UINodeSprite* addSprite (const EntityType& type, const Animation& animation, float w, float h);
 	UINode* addTexture (const std::string& texture);
 	UINodeSprite* addSpriteNode (const EntityType& type, const Animation& animation, float x, float y, float w, float h);
@@ -82,5 +79,3 @@ public:
 	UIHelpWindow (const std::string& name, IFrontend* frontend, int flags);
 	virtual ~UIHelpWindow ();
 };
-
-}

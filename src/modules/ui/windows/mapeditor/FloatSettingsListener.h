@@ -1,15 +1,13 @@
 #pragma once
 
-namespace caveexpress {
-
 class FloatSettingsListener: public UINodeListener, IMapEditorListener {
 private:
-	UINodeMapEditor *_mapEditor;
+	IUINodeMapEditor *_mapEditor;
 	UINodeSlider *_sliderNode;
 	bool _blocked;
 	const std::string _key;
 public:
-	FloatSettingsListener (UINodeMapEditor *mapEditor, UINodeSlider *sliderNode, const std::string& key) :
+	FloatSettingsListener (IUINodeMapEditor *mapEditor, UINodeSlider *sliderNode, const std::string& key) :
 			_mapEditor(mapEditor), _sliderNode(sliderNode), _blocked(false), _key(key)
 	{
 		_mapEditor->addEditorListener(this);
@@ -35,5 +33,3 @@ public:
 		_blocked = false;
 	}
 };
-
-}
