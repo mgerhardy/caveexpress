@@ -15,8 +15,12 @@ UINodeBackground::UINodeBackground (IFrontend *frontend, const std::string& titl
 	_amountHorizontal = _imageWidth <= 0 ? 1 : getRenderWidth(false) / _imageWidth + 1;
 	_amountVertical = _imageHeight <= 0 ? 1 : getRenderHeight(false) / _imageHeight + 1;
 
-	_tiles.push_back(loadTexture("ui-scene-tile1-ice"));
-	_tiles.push_back(loadTexture("ui-scene-tile2-ice"));
+	const TexturePtr& tile1 = loadTexture("ui-scene-tile1-ice");
+	if (tile1)
+		_tiles.push_back(tile1);
+	const TexturePtr& tile2 = loadTexture("ui-scene-tile2-ice");
+	if (tile2)
+		_tiles.push_back(tile2);
 
 	_font = getFont(LARGE_FONT);
 	Vector4Set(colorWhite, _fontColor);
@@ -31,19 +35,21 @@ void UINodeBackground::renderMiddle(int x, int y) const {
 		renderImage(getCaveArt(), x + getRenderX(false), y + getRenderY(false) + renderHeight - 2 * _imageHeight);
 
 	const int tileCnt = _tiles.size();
-	for (int row = 3; row <= _amountVertical; ++row) {
-		renderImage(_tiles[(row * _amountHorizontal) % tileCnt],
-				x + getRenderX(false), y + getRenderY(false) + renderHeight - row * _imageHeight);
-	}
+	if (tileCnt > 0) {
+		for (int row = 3; row <= _amountVertical; ++row) {
+			renderImage(_tiles[(row * _amountHorizontal) % tileCnt],
+					x + getRenderX(false), y + getRenderY(false) + renderHeight - row * _imageHeight);
+		}
 
-	for (int row = 1; row <= _amountVertical; ++row) {
-		for (int col = 1; col < _amountHorizontal; ++col) {
-			renderImage(_tiles[((row * _amountHorizontal) + col) % tileCnt],
-					x + getRenderX(false) + _imageWidth * col,
-					y + getRenderY(false) + renderHeight - row * _imageHeight);
+		for (int row = 1; row <= _amountVertical; ++row) {
+			for (int col = 1; col < _amountHorizontal; ++col) {
+				renderImage(_tiles[((row * _amountHorizontal) + col) % tileCnt],
+						x + getRenderX(false) + _imageWidth * col,
+						y + getRenderY(false) + renderHeight - row * _imageHeight);
+			}
 		}
 	}
-	if (_showVehicle && _amountHorizontal > 1)
+	if (_showVehicle && _amountHorizontal > 1 && _vehicle)
 		renderImage(_vehicle, x + getRenderX(false) + _imageWidth, y + getRenderY(false) + renderHeight - _vehicle->getHeight());
 
 	if (!_title.empty()) {
