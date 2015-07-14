@@ -81,6 +81,12 @@ public:
 	{
 	}
 
+	inline void setDimensions(int cols, int rows)
+	{
+		_cols = cols;
+		_rows = rows;
+	}
+
 	virtual void onAdd () override
 	{
 		UINode::onAdd();
