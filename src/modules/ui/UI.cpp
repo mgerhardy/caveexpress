@@ -116,8 +116,8 @@ bool UI::initLanguage (const std::string& language)
 	}
 	String str(buffer, fileLen);
 	std::vector<String> lines = str.split("\n");
-	for (std::vector<String>::const_iterator i = lines.begin(); i != lines.end(); ++i) {
-		std::vector<String> tuple = i->split("|");
+	for (const String& line : lines) {
+		std::vector<String> tuple = line.split("|");
 		if (tuple.size() != 2)
 			continue;
 		_languageMap[tuple[0].str()] = tuple[1].str();
