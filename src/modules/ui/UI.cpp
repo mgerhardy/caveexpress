@@ -18,8 +18,8 @@
 #include <SDL.h>
 #include <SDL_stdinc.h>
 
-#define GETSCALE_W(x) (x) = (static_cast<float>(x + _frontend->getCoordinateOffsetX()) / _frontend->getWidthScale())
-#define GETSCALE_H(y) (y) = (static_cast<float>(y + _frontend->getCoordinateOffsetY()) / _frontend->getHeightScale())
+#define GETSCALE_W(x, scale) (x) = (static_cast<float>(x + _frontend->getCoordinateOffsetX()) / _frontend->getWidthScale()) * scale
+#define GETSCALE_H(y, scale) (y) = (static_cast<float>(y + _frontend->getCoordinateOffsetY()) / _frontend->getHeightScale()) * scale
 
 UI::UI () :
 		_serviceProvider(nullptr), _eventHandler(nullptr), _frontend(nullptr), _cursor(true), _showCursor(false), _cursorX(
@@ -150,6 +150,7 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 	Commands.registerCommand(CMD_UI_FOCUS_NEXT, bindFunction(UI, focusNext));
 	Commands.registerCommand(CMD_UI_FOCUS_PREV, bindFunction(UI, focusPrev));
 	Commands.registerCommand(CMD_UI_EXECUTE, bindFunction(UI, runFocusNode));
+	_mouseSpeed = Config.getConfigVar("mousespeed", "1.0");
 	_showCursor = Config.getConfigVar("showcursor", System.wantCursor() ? "true" : "false", true)->getBoolValue();
 	_cursor = _showCursor;
 	if (_cursor)
@@ -439,8 +440,9 @@ void UI::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY)
 	if (_restart)
 		return;
 
-	GETSCALE_W(relX);
-	GETSCALE_H(relY);
+	const float speedScale = _mouseSpeed->getFloatValue();
+	GETSCALE_W(relX, speedScale);
+	GETSCALE_H(relY, speedScale);
 	_frontend->setCursorPosition(_cursorX + relX, _cursorY + relY);
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
@@ -491,8 +493,9 @@ void UI::onMouseWheel (int32_t x, int32_t y)
 	if (_restart)
 		return;
 
-	GETSCALE_W(x);
-	GETSCALE_H(y);
+	const float speedScale = _mouseSpeed->getFloatValue();
+	GETSCALE_W(x, speedScale);
+	GETSCALE_H(y, speedScale);
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;

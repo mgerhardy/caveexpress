@@ -66,6 +66,8 @@ UINode* UISettingsWindow::addSections()
 			tr("Off"), new JoystickNodeListener(false));
 	}
 
+	// TODO: config var mousespeed option
+
 	return last;
 }
 
