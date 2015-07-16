@@ -901,6 +901,64 @@ bool IUINodeMapEditor::isDirty () const
 	return _lastSave != _undoStates.size();
 }
 
+bool IUINodeMapEditor::shouldSaveTile (const TileItem& tile) const
+{
+	return tile.entityType == nullptr;
+}
+
+bool IUINodeMapEditor::shouldSaveEmitter (const TileItem& tile) const
+{
+	return tile.entityType != nullptr;
+}
+
+void IUINodeMapEditor::saveTiles (const FilePtr& file, const TileItems& map) const
+{
+	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
+		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
+			continue;
+		if (shouldSaveTile(*i)) {
+			file->appendString("\tmap:addTile(\"");
+			file->appendString(i->def->id.c_str());
+			file->appendString("\", ");
+			file->appendString(string::toString(i->gridX).c_str());
+			file->appendString(", ");
+			file->appendString(string::toString(i->gridY).c_str());
+			if (i->angle != 0) {
+				file->appendString(", ");
+				file->appendString(string::toString(i->angle).c_str());
+			}
+			file->appendString(")\n");
+		}
+	}
+	file->appendString("\n");
+
+	bool emitterAdded = false;
+	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
+		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
+			continue;
+		if (!shouldSaveEmitter(*i))
+			continue;
+		file->appendString("\tmap:addEmitter(");
+		file->appendString("\"");
+		file->appendString(i->entityType->name.c_str());
+		file->appendString("\", ");
+		file->appendString(string::toString(i->gridX).c_str());
+		file->appendString(", ");
+		file->appendString(string::toString(i->gridY).c_str());
+		file->appendString(", ");
+		file->appendString(string::toString(std::min(50, i->amount)).c_str());
+		file->appendString(", ");
+		file->appendString(string::toString(i->delay).c_str());
+		file->appendString(", \"");
+		file->appendString(i->settings.c_str());
+		file->appendString("\")\n");
+		emitterAdded = true;
+	}
+
+	if (emitterAdded)
+		file->appendString("\n");
+}
+
 bool IUINodeMapEditor::save ()
 {
 	// nothing to save here
@@ -915,93 +973,48 @@ bool IUINodeMapEditor::save ()
 	FilePtr file(new File(rwops, path));
 
 	file->writeString("function getName()\n");
-	file->writeString("\treturn \"");
-	file->writeString(_mapName.c_str());
-	file->writeString("\"\n");
-	file->writeString("end\n\n");
-	file->writeString("function onMapLoaded()\n");
-	file->writeString("end\n\n");
-	file->writeString("function initMap()\n");
-	file->writeString("\t-- get the current map context");
-	file->writeString("\tlocal map = Map.get()");
+	file->appendString("\treturn \"");
+	file->appendString(_mapName.c_str());
+	file->appendString("\"\n");
+	file->appendString("end\n\n");
+	file->appendString("function onMapLoaded()\n");
+	file->appendString("end\n\n");
+	file->appendString("function initMap()\n");
+	file->appendString("\t-- get the current map context");
+	file->appendString("\tlocal map = Map.get()");
 
-	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
-		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
-			continue;
-		const SpriteType& spriteType = i->def->type;
-		if (i->entityType == nullptr) {
-			file->writeString("\tmap:addTile(\"");
-			file->writeString(i->def->id.c_str());
-			file->writeString("\", ");
-			file->writeString(string::toString(i->gridX).c_str());
-			file->writeString(", ");
-			file->writeString(string::toString(i->gridY).c_str());
-			if (i->angle != 0) {
-				file->writeString(", ");
-				file->writeString(string::toString(i->angle).c_str());
-			}
-			file->writeString(")\n");
-		}
-	}
-	file->writeString("\n");
-
-	bool emitterAdded = false;
-	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
-		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
-			continue;
-		const SpriteType& spriteType = i->def->type;
-		if (i->entityType != nullptr) {
-			file->writeString("\tmap:addEmitter(");
-			file->writeString("\"");
-			file->writeString(i->entityType->name.c_str());
-			file->writeString("\", ");
-			file->writeString(string::toString(i->gridX).c_str());
-			file->writeString(", ");
-			file->writeString(string::toString(i->gridY).c_str());
-			file->writeString(", ");
-			file->writeString(string::toString(std::min(50, i->amount)).c_str());
-			file->writeString(", ");
-			file->writeString(string::toString(i->delay).c_str());
-			file->writeString(", \"");
-			file->writeString(i->settings.c_str());
-			file->writeString("\")\n");
-			emitterAdded = true;
-		}
-	}
-
-	if (emitterAdded)
-		file->writeString("\n");
+	saveTiles(file, map);
 
 	IMap::SettingsMap& settings = _settings;
-	file->writeString("\tmap:setSetting(\"");
-	file->writeString(msn::WIDTH.c_str());
-	file->writeString("\", \"");
-	file->writeString(settings[msn::WIDTH].c_str());
-	file->writeString("\")\n");;
-	file->writeString("\tmap:setSetting(\"");
-	file->writeString(msn::HEIGHT.c_str());
-	file->writeString("\", \"");
-	file->writeString(settings[msn::HEIGHT].c_str());
-	file->writeString("\")\n");
+	file->appendString("\tmap:setSetting(\"");
+	file->appendString(msn::WIDTH.c_str());
+	file->appendString("\", \"");
+	file->appendString(settings[msn::WIDTH].c_str());
+	file->appendString("\")\n");;
+	file->appendString("\tmap:setSetting(\"");
+	file->appendString(msn::HEIGHT.c_str());
+	file->appendString("\", \"");
+	file->appendString(settings[msn::HEIGHT].c_str());
+	file->appendString("\")\n");
 	for (IMap::SettingsMapConstIter i = settings.begin(); i != settings.end(); ++i) {
 		if (i->first == msn::WIDTH || i->first == msn::HEIGHT)
 			continue;
-		file->writeString("\tmap:setSetting(\"");
-		file->writeString(i->first.c_str());
-		file->writeString("\", \"");
-		file->writeString(i->second.c_str());
-		file->writeString("\")\n");
+		file->appendString("\tmap:setSetting(\"");
+		file->appendString(i->first.c_str());
+		file->appendString("\", \"");
+		file->appendString(i->second.c_str());
+		file->appendString("\")\n");
 	}
 
 	for (const IMap::StartPosition& pos : _startPositions) {
-		file->writeString("\tmap:addStartPosition(\"");
-		file->writeString(pos._x.c_str());
-		file->writeString("\", \"");
-		file->writeString(pos._y.c_str());
-		file->writeString("\")\n");
+		file->appendString("\tmap:addStartPosition(\"");
+		file->appendString(pos._x.c_str());
+		file->appendString("\", \"");
+		file->appendString(pos._y.c_str());
+		file->appendString("\")\n");
 	}
 
-	file->writeString("end\n");
+	file->appendString("end\n");
 
 	Log::info(LOG_GENERAL, "wrote %s", path.c_str());
 	_lastMap->setValue(_fileName);

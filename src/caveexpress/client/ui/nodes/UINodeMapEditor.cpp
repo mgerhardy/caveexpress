@@ -197,50 +197,21 @@ void UINodeMapEditor::doClear ()
 	setGravity(msdv::GRAVITY);
 }
 
-bool UINodeMapEditor::save ()
+bool UINodeMapEditor::shouldSaveTile (const TileItem& tile) const
 {
-	// nothing to save here
-	if (_undoStates.empty())
-		return false;
+	const SpriteType& spriteType = tile.def->type;
+	return tile.entityType == nullptr && !SpriteTypes::isCave(spriteType);
+}
 
-	TileItems map = _map;
-	map.sort();
+bool UINodeMapEditor::shouldSaveEmitter (const TileItem& tile) const
+{
+	const SpriteType& spriteType = tile.def->type;
+	return tile.entityType != nullptr && !SpriteTypes::isCave(spriteType);
+}
 
-	const std::string path = FS.getAbsoluteWritePath() + FS.getDataDir() + FS.getMapsDir() + _fileName + ".lua";
-	SDL_RWops *rwops = FS.createRWops(path, "wb");
-	FilePtr file(new File(rwops, path));
-
-	file->writeString("function getName()\n");
-	file->writeString("\treturn \"");
-	file->writeString(_mapName.c_str());
-	file->writeString("\"\n");
-	file->writeString("end\n\n");
-	file->writeString("function onMapLoaded()\n");
-	file->writeString("end\n\n");
-	file->writeString("function initMap()\n");
-	file->writeString("\t-- get the current map context");
-	file->writeString("\tlocal map = Map.get()");
-
-	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
-		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
-			continue;
-		const SpriteType& spriteType = i->def->type;
-		if (i->entityType == nullptr && !SpriteTypes::isCave(spriteType)) {
-			file->writeString("\tmap:addTile(\"");
-			file->writeString(i->def->id.c_str());
-			file->writeString("\", ");
-			file->writeString(string::toString(i->gridX).c_str());
-			file->writeString(", ");
-			file->writeString(string::toString(i->gridY).c_str());
-			if (i->angle != 0) {
-				file->writeString(", ");
-				file->writeString(string::toString(i->angle).c_str());
-			}
-			file->writeString(")\n");
-		}
-	}
-	file->writeString("\n");
-
+void UINodeMapEditor::saveTiles (const FilePtr& file, const TileItems& map) const
+{
+	IUINodeMapEditor::saveTiles(file, map);
 	bool caveAdded = false;
 	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
 		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
@@ -274,70 +245,6 @@ bool UINodeMapEditor::save ()
 
 	if (caveAdded)
 		file->writeString("\n");
-
-	bool emitterAdded = false;
-	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
-		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
-			continue;
-		const SpriteType& spriteType = i->def->type;
-		if (i->entityType != nullptr && !SpriteTypes::isCave(spriteType)) {
-			file->writeString("\tmap:addEmitter(");
-			file->writeString("\"");
-			file->writeString(i->entityType->name.c_str());
-			file->writeString("\", ");
-			file->writeString(string::toString(i->gridX).c_str());
-			file->writeString(", ");
-			file->writeString(string::toString(i->gridY).c_str());
-			file->writeString(", ");
-			file->writeString(string::toString(std::min(50, i->amount)).c_str());
-			file->writeString(", ");
-			file->writeString(string::toString(i->delay).c_str());
-			file->writeString(", \"");
-			file->writeString(i->settings.c_str());
-			file->writeString("\")\n");
-			emitterAdded = true;
-		}
-	}
-
-	if (emitterAdded)
-		file->writeString("\n");
-
-	IMap::SettingsMap& settings = _settings;
-	file->writeString("\tmap:setSetting(\"");
-	file->writeString(msn::WIDTH.c_str());
-	file->writeString("\", \"");
-	file->writeString(settings[msn::WIDTH].c_str());
-	file->writeString("\")\n");;
-	file->writeString("\tmap:setSetting(\"");
-	file->writeString(msn::HEIGHT.c_str());
-	file->writeString("\", \"");
-	file->writeString(settings[msn::HEIGHT].c_str());
-	file->writeString("\")\n");
-	for (IMap::SettingsMapConstIter i = settings.begin(); i != settings.end(); ++i) {
-		if (i->first == msn::WIDTH || i->first == msn::HEIGHT)
-			continue;
-		file->writeString("\tmap:setSetting(\"");
-		file->writeString(i->first.c_str());
-		file->writeString("\", \"");
-		file->writeString(i->second.c_str());
-		file->writeString("\")\n");
-	}
-
-	for (const IMap::StartPosition& pos : _startPositions) {
-		file->writeString("\tmap:addStartPosition(\"");
-		file->writeString(pos._x.c_str());
-		file->writeString("\", \"");
-		file->writeString(pos._y.c_str());
-		file->writeString("\")\n");
-	}
-
-	file->writeString("end\n");
-
-	Log::info(LOG_GENERAL, "wrote %s", path.c_str());
-	_lastMap->setValue(_fileName);
-	_mapManager.loadMaps();
-	_lastSave = _undoStates.size();
-	return true;
 }
 
 void UINodeMapEditor::loadFromContext (IMapContext& ctx)

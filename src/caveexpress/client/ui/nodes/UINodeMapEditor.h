@@ -30,7 +30,9 @@ private:
 	virtual void setState (const State& state) override;
 	virtual void loadFromContext (IMapContext& ctx) override;
 	virtual void doClear () override;
-	virtual bool save () override;
+	virtual bool shouldSaveTile (const TileItem& tile) const override;
+	virtual bool shouldSaveEmitter (const TileItem& tile) const override;
+	virtual void saveTiles (const FilePtr& file, const TileItems& map) const override;
 	virtual bool placeTileItem (const SpriteDefPtr& def, const EntityType* entityType, gridCoord gridX, gridCoord gridY,
 			MapEditorLayer layer, bool overwrite, EntityAngle angle) override;
 	virtual bool placeEmitter (const SpriteDefPtr& def, const EntityType* entityType, gridCoord gridX, gridCoord gridY,

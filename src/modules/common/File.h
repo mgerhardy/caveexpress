@@ -31,7 +31,8 @@ public:
 	std::string getFileName () const;
 
 	long writeString (const char *buf) const;
-	long write (const unsigned char *buf, size_t len) const;
+	long appendString (const char *buf) const;
+	long write (const unsigned char *buf, size_t len, const char *mode = "wb") const;
 	int read (void **buffer);
 	int read (void *buffer, int n);
 	// get the name of the file - with special placeholder (e.g. $root) included.

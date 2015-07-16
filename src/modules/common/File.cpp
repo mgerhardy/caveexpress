@@ -27,9 +27,16 @@ long File::writeString (const char *buf) const
 	return write((const unsigned char*)buf, strlen(buf));
 }
 
-long File::write (const unsigned char *buf, size_t len) const
+long File::appendString (const char *buf) const
 {
-	SDL_RWops *rwops = SDL_RWFromFile(_rawPath.c_str(), "wb");
+	return write((const unsigned char*)buf, strlen(buf), "ab");
+}
+
+long File::write (const unsigned char *buf, size_t len, const char *mode) const
+{
+	System.mkdir(getPath());
+
+	SDL_RWops *rwops = SDL_RWFromFile(_rawPath.c_str(), mode);
 	if (!rwops) {
 		Log::info(LOG_SYSTEM, "failed to get stream for %s", _rawPath.c_str());
 		return -1L;

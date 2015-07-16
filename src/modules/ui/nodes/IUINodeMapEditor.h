@@ -11,6 +11,7 @@
 #include "common/Animation.h"
 #include "common/String.h"
 #include "common/ConfigVar.h"
+#include "common/File.h"
 #include "common/ICommand.h"
 #include "common/IMap.h"
 #include <vector>
@@ -249,6 +250,10 @@ protected:
 	virtual void setState (const State& state);
 
 	void updateScrolling ();
+
+	virtual bool shouldSaveTile (const TileItem& tile) const;
+	virtual bool shouldSaveEmitter (const TileItem& tile) const;
+	virtual void saveTiles(const FilePtr& file, const TileItems& map) const;
 
 	virtual void doClear ();
 	void shift (int shiftX, int shiftY);
