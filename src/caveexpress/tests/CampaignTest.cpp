@@ -5,7 +5,7 @@
 #include "common/MapManager.h"
 #include "common/FileSystem.h"
 #include "common/TextureDefinition.h"
-#include "caveexpress/server/map/LUAMapContext.h"
+#include "caveexpress/server/map/CaveExpressMapContext.h"
 #include "common/MapSettings.h"
 
 namespace caveexpress {
@@ -96,7 +96,7 @@ TEST(CampaignTest, testMaps) {
 			for (Campaign::MapListConstIter i = m.begin(); i != m.end(); ++i) {
 				atLeastOnce = true;
 				const std::string& id = (*i)->getId();
-				LUAMapContext ctx(id);
+				CaveExpressMapContext ctx(id);
 				EXPECT_TRUE(ctx.load(false)) << "failed to load the map " << id;
 				IMap::SettingsMap settings = ctx.getSettings();
 				const gridCoord x = string::toFloat(ctx.getStartPositions()[0]._x);

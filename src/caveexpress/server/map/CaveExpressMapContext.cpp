@@ -1,4 +1,4 @@
-#include "LUAMapContext.h"
+#include "CaveExpressMapContext.h"
 #include "common/MapSettings.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
 #include <memory>
@@ -8,9 +8,9 @@
 
 namespace caveexpress {
 
-LUAMapContext *LUAMapContext::currentCtx;
+CaveExpressMapContext *CaveExpressMapContext::currentCtx;
 
-LUAMapContext::LUAMapContext (const std::string& name) :
+CaveExpressMapContext::CaveExpressMapContext (const std::string& name) :
 		ICaveMapContext(name), _error(false)
 {
 	currentCtx = this;
@@ -26,44 +26,44 @@ LUAMapContext::LUAMapContext (const std::string& name) :
 	_lua.reg("Map", funcs);
 }
 
-LUAMapContext::~LUAMapContext ()
+CaveExpressMapContext::~CaveExpressMapContext ()
 {
 	currentCtx = nullptr;
 }
 
-void LUAMapContext::addTile (const SpriteDefPtr& spriteDef, gridCoord x, gridCoord y, EntityAngle angle)
+void CaveExpressMapContext::addTile (const SpriteDefPtr& spriteDef, gridCoord x, gridCoord y, EntityAngle angle)
 {
 	const MapTileDefinition def(x, y, spriteDef, angle);
 	_definitions.push_back(def);
 }
 
-void LUAMapContext::addCave (const SpriteDefPtr& spriteDef, gridCoord x, gridCoord y, const EntityType& entityType, int delay)
+void CaveExpressMapContext::addCave (const SpriteDefPtr& spriteDef, gridCoord x, gridCoord y, const EntityType& entityType, int delay)
 {
 	const CaveTileDefinition def(x, y, spriteDef, entityType, delay);
 	_caveDefinitions.push_back(def);
 }
 
-void LUAMapContext::addEmitter (const EntityType& type, gridCoord x, gridCoord y, int amount, int delay, const std::string& settings)
+void CaveExpressMapContext::addEmitter (const EntityType& type, gridCoord x, gridCoord y, int amount, int delay, const std::string& settings)
 {
 	const EmitterDefinition def(x, y, type, amount, delay, settings);
 	_emitters.push_back(def);
 }
 
-int LUAMapContext::luaGetMapContext (lua_State * l)
+int CaveExpressMapContext::luaGetMapContext (lua_State * l)
 {
-	LUAMapContext ** udata = LUA::newUserdata<LUAMapContext>(l, "Map");
+	CaveExpressMapContext ** udata = LUA::newUserdata<CaveExpressMapContext>(l, "Map");
 	*udata = currentCtx;
 	return 1;
 }
 
-LUAMapContext* LUAMapContext::_luaGetContext (lua_State * l, int n)
+CaveExpressMapContext* CaveExpressMapContext::_luaGetContext (lua_State * l, int n)
 {
-	return LUA::getUserData<LUAMapContext>(l, n, "Map");
+	return LUA::getUserData<CaveExpressMapContext>(l, n, "Map");
 }
 
-int LUAMapContext::luaAddTile (lua_State * l)
+int CaveExpressMapContext::luaAddTile (lua_State * l)
 {
-	LUAMapContext *ctx = _luaGetContext(l, 1);
+	CaveExpressMapContext *ctx = _luaGetContext(l, 1);
 	const std::string tile = luaL_checkstring(l, 2);
 	const gridCoord x = luaL_checknumber(l, 3);
 	const gridCoord y = luaL_checknumber(l, 4);
@@ -81,9 +81,9 @@ int LUAMapContext::luaAddTile (lua_State * l)
 	return 0;
 }
 
-int LUAMapContext::luaAddCave (lua_State * l)
+int CaveExpressMapContext::luaAddCave (lua_State * l)
 {
-	LUAMapContext *ctx = _luaGetContext(l, 1);
+	CaveExpressMapContext *ctx = _luaGetContext(l, 1);
 	const std::string caveTile = luaL_checkstring(l, 2);
 	const gridCoord x = luaL_checknumber(l, 3);
 	const gridCoord y = luaL_checknumber(l, 4);
@@ -102,9 +102,9 @@ int LUAMapContext::luaAddCave (lua_State * l)
 	return 0;
 }
 
-int LUAMapContext::luaAddEmitter (lua_State * l)
+int CaveExpressMapContext::luaAddEmitter (lua_State * l)
 {
-	LUAMapContext *ctx = _luaGetContext(l, 1);
+	CaveExpressMapContext *ctx = _luaGetContext(l, 1);
 	const EntityType& type = EntityType::getByName(luaL_checkstring(l, 2));
 	const gridCoord x = luaL_checknumber(l, 3);
 	const gridCoord y = luaL_checknumber(l, 4);
@@ -116,13 +116,13 @@ int LUAMapContext::luaAddEmitter (lua_State * l)
 	return 0;
 }
 
-void LUAMapContext::onMapLoaded ()
+void CaveExpressMapContext::onMapLoaded ()
 {
 	_lua.execute("onMapLoaded");
 }
 
-int LUAMapContext::luaAddStartPosition (lua_State * l) {
-	LUAMapContext *ctx = _luaGetContext(l, 1);
+int CaveExpressMapContext::luaAddStartPosition (lua_State * l) {
+	CaveExpressMapContext *ctx = _luaGetContext(l, 1);
 	const std::string x = luaL_checkstring(l, 2);
 	const std::string y = luaL_checkstring(l, 3);
 
@@ -132,9 +132,9 @@ int LUAMapContext::luaAddStartPosition (lua_State * l) {
 	return 0;
 }
 
-int LUAMapContext::luaSetSetting (lua_State * l)
+int CaveExpressMapContext::luaSetSetting (lua_State * l)
 {
-	LUAMapContext *ctx = _luaGetContext(l, 1);
+	CaveExpressMapContext *ctx = _luaGetContext(l, 1);
 	const std::string key = luaL_checkstring(l, 2);
 	const std::string value = luaL_checkstring(l, 3);
 
@@ -151,7 +151,7 @@ int LUAMapContext::luaSetSetting (lua_State * l)
 	return 0;
 }
 
-bool LUAMapContext::load (bool skipErrors)
+bool CaveExpressMapContext::load (bool skipErrors)
 {
 	resetTiles();
 	if (!_lua.load(FS.getMapsDir() + _name + ".lua")) {
@@ -170,7 +170,7 @@ bool LUAMapContext::load (bool skipErrors)
 	return !_error;
 }
 
-bool LUAMapContext::isLocationFree (gridCoord x, gridCoord y)
+bool CaveExpressMapContext::isLocationFree (gridCoord x, gridCoord y)
 {
 	for (std::vector<MapTileDefinition>::const_iterator i = _definitions.begin(); i != _definitions.end(); ++i) {
 		const MapTileDefinition& tileDef = *i;

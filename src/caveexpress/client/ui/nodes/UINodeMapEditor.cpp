@@ -6,7 +6,7 @@
 #include "caveexpress/shared/CaveExpressSpriteType.h"
 #include "caveexpress/shared/constants/EmitterSettings.h"
 #include "caveexpress/server/map/RandomMapContext.h"
-#include "caveexpress/server/map/LUAMapContext.h"
+#include "caveexpress/server/map/CaveExpressMapContext.h"
 #include "caveexpress/shared/constants/Commands.h"
 
 namespace caveexpress {
@@ -33,7 +33,7 @@ bool UINodeMapEditor::isPlayer (const EntityType &type) const {
 }
 
 IMapContext* UINodeMapEditor::getContext (const std::string& mapname) {
-	return new LUAMapContext(mapname);
+	return new CaveExpressMapContext(mapname);
 }
 
 MapEditorLayer UINodeMapEditor::getLayer (const SpriteType& type) const

@@ -10,15 +10,15 @@ namespace caveexpress {
 
 class SpriteDef;
 
-class LUAMapContext: public ICaveMapContext {
+class CaveExpressMapContext: public ICaveMapContext {
 private:
 	LUA _lua;
-	static LUAMapContext *currentCtx;
+	static CaveExpressMapContext *currentCtx;
 	bool _error;
 
 	static int luaGetMapContext (lua_State * l);
 
-	static LUAMapContext* _luaGetContext (lua_State * l, int n);
+	static CaveExpressMapContext* _luaGetContext (lua_State * l, int n);
 
 	static int luaAddCave (lua_State * l);
 
@@ -36,8 +36,8 @@ private:
 	void addEmitter (const EntityType& type, gridCoord x, gridCoord y, int amount, int delay, const std::string& settings);
 
 public:
-	explicit LUAMapContext (const std::string& name);
-	virtual ~LUAMapContext ();
+	explicit CaveExpressMapContext (const std::string& name);
+	virtual ~CaveExpressMapContext ();
 
 	bool isLocationFree (gridCoord x, gridCoord y);
 

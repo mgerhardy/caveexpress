@@ -15,7 +15,7 @@
 #include "caveexpress/server/entities/Tree.h"
 #include "caveexpress/server/entities/EntityEmitter.h"
 #include "caveexpress/server/entities/WindowTile.h"
-#include "caveexpress/server/map/LUAMapContext.h"
+#include "caveexpress/server/map/CaveExpressMapContext.h"
 #include "caveexpress/server/map/RandomMapContext.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/server/entities/modificators/WindModificator.h"
@@ -470,7 +470,7 @@ inline ICaveMapContext* getMapContext (const std::string& name)
 		RandomMapContext *ctx = new RandomMapContext(name, theme, 8, 18, 20, 14);
 		return ctx;
 	}
-	return new LUAMapContext(name);
+	return new CaveExpressMapContext(name);
 }
 
 bool Map::load (const std::string& name)
