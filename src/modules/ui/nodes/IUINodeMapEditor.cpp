@@ -980,8 +980,8 @@ bool IUINodeMapEditor::save ()
 	file->appendString("function onMapLoaded()\n");
 	file->appendString("end\n\n");
 	file->appendString("function initMap()\n");
-	file->appendString("\t-- get the current map context");
-	file->appendString("\tlocal map = Map.get()");
+	file->appendString("\t-- get the current map context\n");
+	file->appendString("\tlocal map = Map.get()\n");
 
 	saveTiles(file, map);
 

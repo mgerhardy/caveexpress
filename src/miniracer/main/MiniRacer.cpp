@@ -49,7 +49,6 @@
 #include "ui/windows/UIMultiplayerWindow.h"
 #include "ui/windows/IUIMapEditorOptionsWindow.h"
 #include "miniracer/shared/MiniRacerSQLitePersister.h"
-#include "miniracer/shared/MiniRacerMapManager.h"
 #include <SDL.h>
 
 namespace miniracer {
@@ -67,7 +66,7 @@ MiniRacer::~MiniRacer() {
 
 IMapManager* MiniRacer::getMapManager ()
 {
-	return new MiniRacerMapManager();
+	return new LUAMapManager();
 }
 
 void MiniRacer::update (uint32_t deltaTime)
