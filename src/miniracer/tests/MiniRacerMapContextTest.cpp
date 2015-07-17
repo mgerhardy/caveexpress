@@ -6,8 +6,8 @@ namespace miniracer {
 
 TEST(MiniRacerMapContextTest, testLoad)
 {
-	MiniRacerMapContext ctxIceRandom1("map-0001");
-	ASSERT_TRUE(ctxIceRandom1.load(false));
+	MiniRacerMapContext ctx("map-0001");
+	ASSERT_TRUE(ctx.load(false));
 }
 
 }
