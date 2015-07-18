@@ -48,10 +48,14 @@ public:
 	virtual MapEditorLayer getLayer (const SpriteType& type) const {
 		if (SpriteTypes::isLand(type))
 			return LAYER_BACKGROUND;
+		if (SpriteTypes::isRoad(type))
+			return LAYER_FOREGROUND;
+		if (SpriteTypes::isVehicle(type) || SpriteTypes::isSolid(type) || SpriteTypes::isLights(type))
+			return LAYER_DECORATION;
 		if (SpriteTypes::isDecal(type))
 			return LAYER_DECORATION;
-		if (SpriteTypes::isVehicle(type) || SpriteTypes::isMoveable(type))
-			return LAYER_FOREGROUND;
+		if (SpriteTypes::isMoveable(type))
+			return LAYER_EMITTER;
 		return LAYER_FOREGROUND;
 	}
 

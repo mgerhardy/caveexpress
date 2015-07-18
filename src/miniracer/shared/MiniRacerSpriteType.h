@@ -19,6 +19,11 @@ inline bool isSolid (const SpriteType& other)
 	return other == SOLID;
 }
 
+inline bool isLights (const SpriteType& other)
+{
+	return other == LIGHTS;
+}
+
 inline bool isRoad (const SpriteType& other)
 {
 	return other == ROAD;
