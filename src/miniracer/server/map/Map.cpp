@@ -358,7 +358,7 @@ void Map::addEntity (int clientMask, const IEntity& entity) const
 {
 	const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(entity.getAngle()));
 	const AddEntityMessage msg(entity.getID(), entity.getType(), Animation::NONE,
-			entity.getSpriteID(), 0, 0, 1.0f, 1.0f, angle, ENTITY_ALIGN_UPPER_LEFT);
+			entity.getSpriteID(), entity.x(), entity.y(), entity.width(), entity.height(), angle, ENTITY_ALIGN_UPPER_LEFT);
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 

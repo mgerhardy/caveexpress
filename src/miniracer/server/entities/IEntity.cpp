@@ -8,8 +8,8 @@ namespace miniracer {
 
 uint32_t IEntity::GLOBAL_ENTITY_NUM = 0;
 
-IEntity::IEntity (const EntityType &type, Map& map) :
-		_id(GLOBAL_ENTITY_NUM++), _type(type), _time(0), _map(map), _state(MiniRacerEntityStates::NONE)
+IEntity::IEntity (const EntityType &type, Map& map, float x, float y) :
+		_id(GLOBAL_ENTITY_NUM++), _type(type), _time(0), _map(map), _state(MiniRacerEntityStates::NONE), _x(x), _y(y)
 {
 	setSpriteID("");
 }

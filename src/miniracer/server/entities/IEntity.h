@@ -49,8 +49,11 @@ protected:
 	Map& _map;
 	uint8_t _state;
 
+	float _x;
+	float _y;
+
 public:
-	IEntity (const EntityType &type, Map& map);
+	IEntity (const EntityType &type, Map& map, float x = 0.0f, float y = 0.0f);
 
 	virtual ~IEntity ();
 
@@ -114,6 +117,26 @@ public:
 				++i;
 			}
 		}
+	}
+
+	inline float width() const
+	{
+		return _type.width;
+	}
+
+	inline float height() const
+	{
+		return _type.height;
+	}
+
+	inline float y() const
+	{
+		return _y;
+	}
+
+	inline float x() const
+	{
+		return _x;
 	}
 
 	// returns the type of the entity
