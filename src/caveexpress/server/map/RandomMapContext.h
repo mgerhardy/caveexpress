@@ -87,9 +87,6 @@ private:
 	// place emitters that are able to fall down - just place them in a free slot
 	bool placeEmitterTile (const EntityType& entityType);
 
-	void NodeToXY (void* node, randomGridCoord* x, randomGridCoord* y) const;
-	void* XYToNode (randomGridCoord x, randomGridCoord y) const;
-
 public:
 	// valid themes are currently rock and ice
 	RandomMapContext (const std::string& name, const ThemeType& theme, unsigned int randomRockTiles,
@@ -111,17 +108,5 @@ public:
 	bool load (bool skipErrors) override;
 	bool save () const override;
 };
-
-inline void RandomMapContext::NodeToXY (void* node, randomGridCoord* x, randomGridCoord* y) const
-{
-	const intptr_t index = reinterpret_cast<intptr_t>(node);
-	*y = index / _mapWidth;
-	*x = index - *y * _mapWidth;
-}
-
-inline void* RandomMapContext::XYToNode (randomGridCoord x, randomGridCoord y) const
-{
-	return reinterpret_cast<void*>(y * _mapWidth + x);
-}
 
 }
