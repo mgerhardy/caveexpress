@@ -461,7 +461,6 @@ void IUINodeMapEditor::deleteItem ()
 {
 	if (_highlightItem == nullptr)
 		return;
-	const SpriteType &type = _highlightItem->def->type;
 	notifyTileRemoved(_highlightItem->def);
 	TileItemsIter i = std::find(_map.begin(), _map.end(), *_highlightItem);
 	_map.erase(i);
@@ -712,7 +711,6 @@ bool IUINodeMapEditor::placeTileItem (bool overwrite)
 		}
 		return placeEmitter(_activeSpriteDefition, _activeEntityType, _selectedGridX, _selectedGridY, 1, 0, false, _activeSpriteAngle, "");
 	}
-	const SpriteType& type = _activeSpriteDefition->type;
 	return placeTileItem(_activeSpriteDefition, _activeEntityType, _selectedGridX, _selectedGridY, _activeLayer, overwrite, _activeSpriteAngle);
 }
 

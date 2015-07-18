@@ -79,6 +79,7 @@ UINode *UIMapEditorWindow::createSettings ()
 	settingsNode->setLayout(hlayout);
 
 	UINodeTextInput *fileNode = new UINodeTextInput(_frontend, "", 10);
+	fileNode->setId("filename");
 	fileNode->setBackgroundColor(colorWhite);
 	fileNode->addListener(UINodeListenerPtr(new NameListener(_mapEditor, fileNode, true)));
 	settingsNode->add(new UINodeSetting(_frontend, tr("File"), fileNode));
