@@ -1,6 +1,6 @@
 #pragma once
 
-#include "caveexpress/shared/ICaveMapContext.h"
+#include <caveexpress/shared/CaveExpressMapContext.h>
 #include "common/EntityType.h"
 #include "common/ThemeType.h"
 #include "common/Compiler.h"
@@ -21,7 +21,7 @@ struct RandomMapPos {
 // there are some assumptions that you should be aware of:
 // * each solid and background tile must be grid aligned
 // * each solid and background tile can't have a fractional part for their width and height
-class RandomMapContext: public ICaveMapContext {
+class RandomMapContext: public CaveExpressMapContext {
 private:
 	// the amount of caves
 	unsigned int _caves;
@@ -46,10 +46,10 @@ private:
 	std::vector<RandomMapPos> _playerPos;
 	std::vector<CaveTileDefinition> _caveDefinitions;
 
-	bool addTile (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y);
-	bool addCave (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y, const EntityType& type, int delay);
-	bool addEmitter (randomGridCoord x, randomGridCoord y, const EntityType& entityType, randomGridSize width, randomGridSize height);
-	bool addGroundTile (randomGridCoord x, randomGridCoord y);
+	bool rndAddTile (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y);
+	bool rndAddCave (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y, const EntityType& type, int delay);
+	bool rndAddEmitter (randomGridCoord x, randomGridCoord y, const EntityType& entityType, randomGridSize width, randomGridSize height);
+	bool rndAddGroundTile (randomGridCoord x, randomGridCoord y);
 
 	void fillMap (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y);
 

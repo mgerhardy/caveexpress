@@ -5,7 +5,7 @@
 #include "common/MapManager.h"
 #include "common/FileSystem.h"
 #include "common/TextureDefinition.h"
-#include "caveexpress/server/map/CaveExpressMapContext.h"
+#include "caveexpress/shared/CaveExpressMapContext.h"
 #include "common/MapSettings.h"
 
 namespace caveexpress {

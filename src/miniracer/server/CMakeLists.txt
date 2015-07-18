@@ -1,5 +1,4 @@
 set(miniracer-server_SRCS
-	map/MiniRacerMapContext.cpp
 	map/Map.cpp
 	entities/MapTile.cpp
 	entities/IEntity.cpp

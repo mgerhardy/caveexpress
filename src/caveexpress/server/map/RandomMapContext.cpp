@@ -46,7 +46,7 @@ struct RandomMapPosXSorter {
 
 RandomMapContext::RandomMapContext (const std::string& name, const ThemeType& theme, unsigned int randomRockTiles,
 		unsigned int overallRockAmount, unsigned int width, unsigned int height) :
-		ICaveMapContext(name), _caves(5), _randomRockTiles(randomRockTiles), _overallRockAmount(overallRockAmount), _mapWidth(
+		CaveExpressMapContext(name), _caves(5), _randomRockTiles(randomRockTiles), _overallRockAmount(overallRockAmount), _mapWidth(
 				width), _mapHeight(height), _map(new SpriteDef*[_mapWidth * _mapHeight])
 {
 	_theme = &theme;
@@ -167,7 +167,7 @@ inline void RandomMapContext::fillMap (const SpriteDefPtr& def, randomGridCoord 
 	}
 }
 
-bool RandomMapContext::addTile (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y)
+bool RandomMapContext::rndAddTile (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y)
 {
 	const SpriteType& type = def->type;
 	assert(!SpriteTypes::isCave(type));
@@ -251,7 +251,7 @@ bool RandomMapContext::addTile (const SpriteDefPtr& def, randomGridCoord x, rand
 	return true;
 }
 
-bool RandomMapContext::addCave (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y, const EntityType& type, int delay)
+bool RandomMapContext::rndAddCave (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y, const EntityType& type, int delay)
 {
 	if (x >= _mapWidth || y >= _mapHeight) {
 		return false;
@@ -278,7 +278,7 @@ bool RandomMapContext::addCave (const SpriteDefPtr& def, randomGridCoord x, rand
 	return true;
 }
 
-bool RandomMapContext::addEmitter (randomGridCoord x, randomGridCoord y, const EntityType& entityType, randomGridSize width, randomGridSize height)
+bool RandomMapContext::rndAddEmitter (randomGridCoord x, randomGridCoord y, const EntityType& entityType, randomGridSize width, randomGridSize height)
 {
 	for (std::vector<EmitterDefinition>::const_iterator i = _emitters.begin(); i != _emitters.end(); ++i) {
 		const EmitterDefinition& def = *i;
@@ -332,7 +332,7 @@ bool RandomMapContext::placeInitialRandomTiles ()
 			y = _mapHeight - 2;
 		const int index = rand() % _solidTiles.size();
 		const SpriteDefPtr& def = _solidTiles[index];
-		if (!addTile(def, x, y)) {
+		if (!rndAddTile(def, x, y)) {
 			// could not add the tile
 			--i;
 			++tries;
@@ -368,7 +368,7 @@ void RandomMapContext::placeTilesAroundInitialTiles ()
 				const randomGridCoord y = mapDef.y + directions[randomDir][1] * step;
 				if (y < 3)
 					continue;
-				if (addTile(def, x, y)) {
+				if (rndAddTile(def, x, y)) {
 					--overallTilesAmount;
 					break;
 				}
@@ -380,7 +380,7 @@ void RandomMapContext::placeTilesAroundInitialTiles ()
 	}
 }
 
-bool RandomMapContext::addGroundTile (randomGridCoord x, randomGridCoord y)
+bool RandomMapContext::rndAddGroundTile (randomGridCoord x, randomGridCoord y)
 {
 	if (!isFree(x, y)) {
 		return false;
@@ -392,7 +392,7 @@ bool RandomMapContext::addGroundTile (randomGridCoord x, randomGridCoord y)
 	const std::vector<SpriteDefPtr>::iterator r = i;
 	for (; i != _groundTiles.end(); ++i) {
 		const SpriteDefPtr& def = *i;
-		if (addTile(def, x, y)) {
+		if (rndAddTile(def, x, y)) {
 			const RandomMapPos p = { x, y };
 			_groundPos.push_back(p);
 			return true;
@@ -401,7 +401,7 @@ bool RandomMapContext::addGroundTile (randomGridCoord x, randomGridCoord y)
 	i = _groundTiles.begin();
 	for (; i != r; ++i) {
 		const SpriteDefPtr& def = *i;
-		if (addTile(def, x, y)) {
+		if (rndAddTile(def, x, y)) {
 			const RandomMapPos p = { x, y };
 			_groundPos.push_back(p);
 			return true;
@@ -431,13 +431,13 @@ void RandomMapContext::placeGroundTiles ()
 				continue;
 			if (isFree(x1 + 1, y - 2))
 				continue;
-			addGroundTile(x1, y - 1);
+			rndAddGroundTile(x1, y - 1);
 		}
 		const int r = rand() % 4;
 		if (r & 1)
-			addGroundTile(x - 1, y - 1);
+			rndAddGroundTile(x - 1, y - 1);
 		if (r & 2)
-			addGroundTile(x + width, y - 1);
+			rndAddGroundTile(x + width, y - 1);
 	}
 }
 
@@ -467,11 +467,11 @@ int RandomMapContext::placeCaveTiles ()
 		const SpriteDefPtr& def = _caveTiles[index];
 		const randomGridCoord y = p.y - 1;
 		const int delayMs = 1000;
-		if (addCave(def, p.x, y, EntityType::NONE, delayMs)) {
+		if (rndAddCave(def, p.x, y, EntityType::NONE, delayMs)) {
 			++caves;
 			const int windowIndex = rand() % _windowTiles.size();
 			const SpriteDefPtr& windowDef = _windowTiles[windowIndex];
-			addTile(windowDef, p.x + 1, y) || addTile(windowDef, p.x - 1, y);
+			rndAddTile(windowDef, p.x + 1, y) || rndAddTile(windowDef, p.x - 1, y);
 			++i;
 		}
 
@@ -508,7 +508,7 @@ bool RandomMapContext::placeEmitterTile (const EntityType& entityType)
 		const randomGridCoord _x = (w + startX) % _mapWidth;
 		for (randomGridSize h = 0; h < _mapHeight; ++h) {
 			const randomGridCoord _y = (h + startY) % _mapHeight;
-			if (!isFree(_x, _y, width, height) || !addEmitter(_x, _y, entityType, width, height))
+			if (!isFree(_x, _y, width, height) || !rndAddEmitter(_x, _y, entityType, width, height))
 				continue;
 
 			return true;
@@ -533,7 +533,7 @@ bool RandomMapContext::placeEmitterGroundTile (const EntityType& entityType)
 	for (;;) {
 		const RandomMapPos& p = _groundPos[groundPosIndexInner];
 		if (p.y <= 1 || !isFree(p.x, p.y - 1, width, height) || !isEnoughGround(p.x, p.y, width, height)
-				|| !addEmitter(p.x, p.y - height, entityType, width, height)) {
+				|| !rndAddEmitter(p.x, p.y - height, entityType, width, height)) {
 			++groundPosIndexInner;
 			groundPosIndexInner %= _groundPos.size();
 			// unable to place anything?
@@ -560,7 +560,7 @@ void RandomMapContext::findValidPlayerStartingPositionsAndFillBackground ()
 			do {
 				const int index = rand() % _backgroundTiles.size();
 				const SpriteDefPtr& def = _backgroundTiles[index];
-				success = addTile(def, x, y);
+				success = rndAddTile(def, x, y);
 				if (success && y < _mapHeight - _waterHeight) {
 					const RandomMapPos p = { x, y };
 					_playerPos.push_back(p);

@@ -6,7 +6,7 @@
 #include "caveexpress/shared/CaveExpressSpriteType.h"
 #include "caveexpress/shared/constants/EmitterSettings.h"
 #include "caveexpress/server/map/RandomMapContext.h"
-#include "caveexpress/server/map/CaveExpressMapContext.h"
+#include "caveexpress/shared/CaveExpressMapContext.h"
 #include "caveexpress/shared/constants/Commands.h"
 
 namespace caveexpress {
@@ -276,7 +276,7 @@ void UINodeMapEditor::loadFromContext (IMapContext& ctx)
 		if (!placeTileItem(i->spriteDef, nullptr, i->x, i->y, layer, false, i->angle))
 			Log::error(LOG_CLIENT, "could not place tile %s at %f:%f", i->spriteDef->id.c_str(), i->x, i->y);
 	}
-	const std::vector<CaveTileDefinition>& caves = ((ICaveMapContext*)&ctx)->getCaveTileDefinitions();
+	const std::vector<CaveTileDefinition>& caves = ((CaveExpressMapContext*)&ctx)->getCaveTileDefinitions();
 	Log::info(LOG_CLIENT, "place %i caves", static_cast<int>(caves.size()));
 	for (std::vector<CaveTileDefinition>::const_iterator i = caves.begin(); i != caves.end(); ++i) {
 		const SpriteType& type = i->spriteDef->type;

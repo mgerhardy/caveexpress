@@ -15,7 +15,7 @@
 #include "caveexpress/server/entities/Tree.h"
 #include "caveexpress/server/entities/EntityEmitter.h"
 #include "caveexpress/server/entities/WindowTile.h"
-#include "caveexpress/server/map/CaveExpressMapContext.h"
+#include "caveexpress/shared/CaveExpressMapContext.h"
 #include "caveexpress/server/map/RandomMapContext.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/server/entities/modificators/WindModificator.h"
@@ -461,7 +461,7 @@ inline const ThemeType& getTheme (const std::string& name)
 	return ThemeTypes::ROCK;
 }
 
-inline ICaveMapContext* getMapContext (const std::string& name)
+inline CaveExpressMapContext* getMapContext (const std::string& name)
 {
 	const std::string randomMapBase = "random";
 	if (name.compare(0, randomMapBase.size(), randomMapBase) == 0) {
@@ -475,7 +475,7 @@ inline ICaveMapContext* getMapContext (const std::string& name)
 
 bool Map::load (const std::string& name)
 {
-	std::unique_ptr<ICaveMapContext> ctx(getMapContext(name));
+	std::unique_ptr<CaveExpressMapContext> ctx(getMapContext(name));
 
 	resetCurrentMap();
 

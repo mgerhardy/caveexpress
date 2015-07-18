@@ -1,5 +1,4 @@
 set(caveexpress-server_SRCS
-	map/CaveExpressMapContext.cpp
 	map/RandomMapContext.cpp
 	map/Map.cpp
 	events/GameEventHandler.cpp

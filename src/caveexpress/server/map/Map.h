@@ -30,7 +30,7 @@ class NPCFrienndly;
 class NPCAttacking;
 class NPCFish;
 class NPCBlowing;
-class ICaveMapContext;
+class CaveExpressMapContext;
 class Water;
 class PackageTarget;
 class Geyser;

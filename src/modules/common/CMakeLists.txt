@@ -13,6 +13,7 @@ set(common_SRCS
 	MapManager.cpp
 	FileSystem.cpp
 	LUA.cpp
+	LUAMapContext.cpp
 	Log.cpp
 	TimeManager.cpp
 	ExecutionTime.cpp
