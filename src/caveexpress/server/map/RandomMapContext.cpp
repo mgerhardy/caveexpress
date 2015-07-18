@@ -789,78 +789,78 @@ bool RandomMapContext::save () const
 	FilePtr file(new File(rwops, path));
 
 	file->writeString("function getName()\n");
-	file->writeString("\treturn \"");
-	file->writeString(_name.c_str());
-	file->writeString("\"\n");
-	file->writeString("end\n\n");
-	file->writeString("function onMapLoaded()\n");
-	file->writeString("end\n\n");
-	file->writeString("function initMap()\n");
-	file->writeString("\t-- get the current map context");
-	file->writeString("\tlocal map = Map.get()");
+	file->appendString("\treturn \"");
+	file->appendString(_name.c_str());
+	file->appendString("\"\n");
+	file->appendString("end\n\n");
+	file->appendString("function onMapLoaded()\n");
+	file->appendString("end\n\n");
+	file->appendString("function initMap()\n");
+	file->appendString("\t-- get the current map context");
+	file->appendString("\tlocal map = Map.get()");
 	for (const MapTileDefinition& i : _definitions) {
-		file->writeString("\tmap:addTile(\"");
-		file->writeString(i.spriteDef->id.c_str());
-		file->writeString("\", ");
-		file->writeString(string::toString(i.x).c_str());
-		file->writeString(", ");
-		file->writeString(string::toString(i.y).c_str());
-		file->writeString(")\n");
+		file->appendString("\tmap:addTile(\"");
+		file->appendString(i.spriteDef->id.c_str());
+		file->appendString("\", ");
+		file->appendString(string::toString(i.x).c_str());
+		file->appendString(", ");
+		file->appendString(string::toString(i.y).c_str());
+		file->appendString(")\n");
 	}
 
 	if (! _caveDefinitions.empty()) {
-		file->writeString("\n");
+		file->appendString("\n");
 	}
 	for (const CaveTileDefinition& i : _caveDefinitions) {
-		file->writeString("\tmap:addCave(\"");
-		file->writeString(i.spriteDef->id.c_str());
-		file->writeString("\", ");
-		file->writeString(string::toString(i.x).c_str());
-		file->writeString(", ");
-		file->writeString(string::toString(i.y).c_str());
-		file->writeString(", ");
-		file->writeString(i.type->name.c_str());
-		file->writeString(", ");
-		file->writeString(string::toString(i.delay).c_str());
-		file->writeString(")\n");
+		file->appendString("\tmap:addCave(\"");
+		file->appendString(i.spriteDef->id.c_str());
+		file->appendString("\", ");
+		file->appendString(string::toString(i.x).c_str());
+		file->appendString(", ");
+		file->appendString(string::toString(i.y).c_str());
+		file->appendString(", ");
+		file->appendString(i.type->name.c_str());
+		file->appendString(", ");
+		file->appendString(string::toString(i.delay).c_str());
+		file->appendString(")\n");
 	}
 
 	if (!_emitters.empty()) {
-		file->writeString("\n");
+		file->appendString("\n");
 	}
 	for (const EmitterDefinition& i : _emitters) {
-		file->writeString("\tmap:addEmitter(\"");
-		file->writeString(i.type->name.c_str());
-		file->writeString("\", ");
-		file->writeString(string::toString(i.x).c_str());
-		file->writeString(", ");
-		file->writeString(string::toString(i.y).c_str());
-		file->writeString(", ");
-		file->writeString(string::toString(i.amount).c_str());
-		file->writeString(")\n");
+		file->appendString("\tmap:addEmitter(\"");
+		file->appendString(i.type->name.c_str());
+		file->appendString("\", ");
+		file->appendString(string::toString(i.x).c_str());
+		file->appendString(", ");
+		file->appendString(string::toString(i.y).c_str());
+		file->appendString(", ");
+		file->appendString(string::toString(i.amount).c_str());
+		file->appendString(")\n");
 	}
 
 	const IMap::SettingsMap& map = getSettings();
 	if (!map.empty()) {
-		file->writeString("\n");
+		file->appendString("\n");
 	}
 	for (IMap::SettingsMapConstIter i = map.begin(); i != map.end(); ++i) {
-		file->writeString("\tmap:setSetting(\"");
-		file->writeString(i->first.c_str());
-		file->writeString("\", \"");
-		file->writeString(i->second.c_str());
-		file->writeString("\")\n");
+		file->appendString("\tmap:setSetting(\"");
+		file->appendString(i->first.c_str());
+		file->appendString("\", \"");
+		file->appendString(i->second.c_str());
+		file->appendString("\")\n");
 	}
 
 	for (const IMap::StartPosition& pos : _startPositions) {
-		file->writeString("\tmap:addStartPosition(\"");
-		file->writeString(pos._x.c_str());
-		file->writeString("\", \"");
-		file->writeString(pos._y.c_str());
-		file->writeString("\")\n");
+		file->appendString("\tmap:addStartPosition(\"");
+		file->appendString(pos._x.c_str());
+		file->appendString("\", \"");
+		file->appendString(pos._y.c_str());
+		file->appendString("\")\n");
 	}
 
-	file->writeString("end\n");
+	file->appendString("end\n");
 
 	return true;
 }
