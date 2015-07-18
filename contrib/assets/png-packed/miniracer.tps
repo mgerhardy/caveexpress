@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.8.0</string>
+        <string>3.7.1</string>
         <key>fileName</key>
-        <string>/home/mattn/dev/caveexpress/contrib/assets/png-packed/miniracer.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/miniracer.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
