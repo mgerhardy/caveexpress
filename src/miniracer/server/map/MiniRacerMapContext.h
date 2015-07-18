@@ -13,6 +13,7 @@ protected:
 public:
 	explicit MiniRacerMapContext (const std::string& name) :
 			LUAMapContext(name) {
+		initLUABindings(nullptr);
 	}
 	virtual ~MiniRacerMapContext () {}
 };
