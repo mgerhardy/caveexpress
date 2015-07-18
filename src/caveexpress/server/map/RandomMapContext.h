@@ -93,11 +93,6 @@ public:
 			unsigned int overallRockAmount, unsigned int width, unsigned int height);
 	virtual ~RandomMapContext ();
 
-	inline const std::vector<CaveTileDefinition>& getCaveTileDefinitions () const
-	{
-		return _caveDefinitions;
-	}
-
 	void setSettings (const IMap::SettingsMap& settings);
 	void setFlyingNPC (bool flyingNPC);
 	void setWind (float wind);
