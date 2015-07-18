@@ -3,6 +3,7 @@
 #include "common/IMapContext.h"
 #include "common/Compiler.h"
 #include "common/LUA.h"
+#include "common/FileSystem.h"
 #include <string>
 struct lua_State;
 
@@ -33,6 +34,8 @@ protected:
 	// LUA bindings
 	virtual void addTile (const SpriteDefPtr& spriteDef, gridCoord x, gridCoord y, EntityAngle angle);
 	virtual void addEmitter (const EntityType& type, gridCoord x, gridCoord y, int amount, int delay, const std::string& settings);
+
+	virtual void saveTiles(const FilePtr& file) const;
 
 public:
 	explicit LUAMapContext (const std::string& name);

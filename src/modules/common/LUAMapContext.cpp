@@ -1,7 +1,6 @@
 #include "LUAMapContext.h"
 #include "common/MapSettings.h"
 #include "common/SpriteType.h"
-#include "common/FileSystem.h"
 #include "common/Log.h"
 #include <memory>
 #include <string>
@@ -150,22 +149,7 @@ bool LUAMapContext::load (bool skipErrors)
 	return !_error;
 }
 
-bool LUAMapContext::save() const
-{
-	const std::string path = FS.getAbsoluteWritePath() + FS.getDataDir() + FS.getMapsDir() + _name + ".lua";
-	SDL_RWops *rwops = FS.createRWops(path, "wb");
-	FilePtr file(new File(rwops, path));
-
-	file->writeString("function getName()\n");
-	file->appendString("\treturn \"");
-	file->appendString(_name.c_str());
-	file->appendString("\"\n");
-	file->appendString("end\n\n");
-	file->appendString("function onMapLoaded()\n");
-	file->appendString("end\n\n");
-	file->appendString("function initMap()\n");
-	file->appendString("\t-- get the current map context");
-	file->appendString("\tlocal map = Map.get()");
+void LUAMapContext::saveTiles(const FilePtr& file) const {
 	for (const MapTileDefinition& i : _definitions) {
 		file->appendString("\tmap:addTile(\"");
 		file->appendString(i.spriteDef->id.c_str());
@@ -190,6 +174,26 @@ bool LUAMapContext::save() const
 		file->appendString(string::toString(i.amount).c_str());
 		file->appendString(")\n");
 	}
+}
+
+bool LUAMapContext::save() const
+{
+	const std::string path = FS.getAbsoluteWritePath() + FS.getDataDir() + FS.getMapsDir() + _name + ".lua";
+	SDL_RWops *rwops = FS.createRWops(path, "wb");
+	FilePtr file(new File(rwops, path));
+
+	file->writeString("function getName()\n");
+	file->appendString("\treturn \"");
+	file->appendString(_name.c_str());
+	file->appendString("\"\n");
+	file->appendString("end\n\n");
+	file->appendString("function onMapLoaded()\n");
+	file->appendString("end\n\n");
+	file->appendString("function initMap()\n");
+	file->appendString("\t-- get the current map context");
+	file->appendString("\tlocal map = Map.get()");
+
+	saveTiles(file);
 
 	const IMap::SettingsMap& map = getSettings();
 	if (!map.empty()) {

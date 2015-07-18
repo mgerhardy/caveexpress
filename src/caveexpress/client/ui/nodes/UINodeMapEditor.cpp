@@ -218,33 +218,33 @@ void UINodeMapEditor::saveTiles (const FilePtr& file, const TileItems& map) cons
 			continue;
 		const SpriteType& spriteType = i->def->type;
 		if (SpriteTypes::isCave(spriteType)) {
-			file->writeString("\tmap:addCave(\"");
-			file->writeString(i->def->id.c_str());
-			file->writeString("\", ");
-			file->writeString(string::toString(i->gridX).c_str());
-			file->writeString(", ");
-			file->writeString(string::toString(i->gridY).c_str());
+			file->appendString("\tmap:addCave(\"");
+			file->appendString(i->def->id.c_str());
+			file->appendString("\", ");
+			file->appendString(string::toString(i->gridX).c_str());
+			file->appendString(", ");
+			file->appendString(string::toString(i->gridY).c_str());
 			if (!i->entityType->isNone()) {
-				file->writeString(", \"");
-				file->writeString(i->entityType->name.c_str());
-				file->writeString("\"");
+				file->appendString(", \"");
+				file->appendString(i->entityType->name.c_str());
+				file->appendString("\"");
 			}
 			if (i->delay > -1) {
 				if (i->entityType->isNone()) {
-					file->writeString(", \"");
-					file->writeString(i->entityType->name.c_str());
-					file->writeString("\"");
+					file->appendString(", \"");
+					file->appendString(i->entityType->name.c_str());
+					file->appendString("\"");
 				}
-				file->writeString(", ");
-				file->writeString(string::toString(i->delay).c_str());
+				file->appendString(", ");
+				file->appendString(string::toString(i->delay).c_str());
 			}
-			file->writeString(")\n");
+			file->appendString(")\n");
 			caveAdded = true;
 		}
 	}
 
 	if (caveAdded)
-		file->writeString("\n");
+		file->appendString("\n");
 }
 
 void UINodeMapEditor::loadFromContext (IMapContext& ctx)

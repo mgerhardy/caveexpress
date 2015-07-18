@@ -59,6 +59,26 @@ public:
 		const CaveTileDefinition def(x, y, spriteDef, entityType, delay);
 		_caveDefinitions.push_back(def);
 	}
+
+	virtual void saveTiles(const FilePtr& file) const override {
+		LUAMapContext::saveTiles(file);
+		if (! _caveDefinitions.empty()) {
+			file->appendString("\n");
+		}
+		for (const CaveTileDefinition& i : _caveDefinitions) {
+			file->appendString("\tmap:addCave(\"");
+			file->appendString(i.spriteDef->id.c_str());
+			file->appendString("\", ");
+			file->appendString(string::toString(i.x).c_str());
+			file->appendString(", ");
+			file->appendString(string::toString(i.y).c_str());
+			file->appendString(", ");
+			file->appendString(i.type->name.c_str());
+			file->appendString(", ");
+			file->appendString(string::toString(i.delay).c_str());
+			file->appendString(")\n");
+		}
+	}
 };
 
 }

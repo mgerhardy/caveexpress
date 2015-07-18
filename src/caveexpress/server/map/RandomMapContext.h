@@ -101,7 +101,6 @@ public:
 
 	// IMapContext
 	bool load (bool skipErrors) override;
-	bool save () const override;
 };
 
 }
