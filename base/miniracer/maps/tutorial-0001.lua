@@ -6,7 +6,9 @@ function onMapLoaded()
 end
 
 function initMap()
-	-- get the current map context	local map = Map.get()	map:addTile("road-dirt21", 0.000000, 0.000000)
+	-- get the current map context
+	local map = Map.get()
+	map:addTile("road-dirt21", 0.000000, 0.000000)
 	map:addTile("road-dirt21", 0.000000, 1.000000)
 	map:addTile("road-dirt21", 0.000000, 2.000000)
 	map:addTile("road-dirt21", 0.000000, 3.000000)

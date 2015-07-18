@@ -162,6 +162,11 @@ bool LUA::execute (const String &function, int returnValues)
 	lua_getglobal(_state, function.c_str());
 	const int ret = lua_pcall(_state, 0, returnValues, 0);
 	if (ret != 0) {
+		const char * s = lua_tostring(_state, -1);
+		if (s == nullptr)
+			Log::error(LOG_LUA, "unrecognized Lua error");
+		else
+			Log::error(LOG_LUA, "%s", s);
 		return false;
 	}
 

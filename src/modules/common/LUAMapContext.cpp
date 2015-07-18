@@ -8,7 +8,7 @@
 LUAMapContext *LUAMapContext::currentCtx;
 
 LUAMapContext::LUAMapContext (const std::string& name) :
-		IMapContext(name), _error(false)
+		IMapContext(name), _lua(true), _error(false)
 {
 	currentCtx = this;
 }
