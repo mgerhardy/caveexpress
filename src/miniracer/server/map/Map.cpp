@@ -29,6 +29,7 @@
 #include "common/Commands.h"
 #include "miniracer/server/map/MiniRacerMapContext.h"
 #include "miniracer/shared/MiniRacerSpriteType.h"
+#include "miniracer/shared/MiniRacerEntityType.h"
 #include "miniracer/shared/EntityStates.h"
 #include "miniracer/shared/network/messages/ProtocolMessages.h"
 #include <SDL.h>
@@ -193,7 +194,17 @@ inline IMapContext* getMapContext (const std::string& name)
 
 inline const EntityType& getEntityTypeForSpriteType (const SpriteType& spriteType)
 {
-	return EntityType::NONE;
+	if (SpriteTypes::isDecal(spriteType))
+		return EntityTypes::DECAL;
+	if (SpriteTypes::isLand(spriteType))
+		return EntityTypes::LAND;
+	if (SpriteTypes::isRoad(spriteType))
+		return EntityTypes::ROAD;
+	if (SpriteTypes::isMoveable(spriteType))
+		return EntityTypes::MOVEABLE;
+	if (SpriteTypes::isVehicle(spriteType))
+		return EntityTypes::PLAYER;
+	return EntityTypes::SOLID;
 }
 
 bool Map::load (const std::string& name)

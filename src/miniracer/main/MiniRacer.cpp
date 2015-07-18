@@ -175,6 +175,10 @@ void MiniRacer::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	_map.init(_frontend, *_serviceProvider);
 
 	ClientEntityRegistry &r = Singleton<ClientEntityRegistry>::getInstance();
+	r.registerFactory(&EntityTypes::ROAD, ClientMapTile::FACTORY);
+	r.registerFactory(&EntityTypes::MOVEABLE, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::DECAL, ClientMapTile::FACTORY);
+	r.registerFactory(&EntityTypes::LAND, ClientMapTile::FACTORY);
 	r.registerFactory(&EntityTypes::SOLID, ClientMapTile::FACTORY);
 	r.registerFactory(&EntityTypes::PLAYER, ClientEntity::FACTORY);
 
