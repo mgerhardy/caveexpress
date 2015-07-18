@@ -858,6 +858,10 @@ void IUINodeMapEditor::clear ()
 {
 	Undo();
 	doClear();
+	initNewMap();
+}
+
+void IUINodeMapEditor::initNewMap() {
 }
 
 void IUINodeMapEditor::shift (int shiftX, int shiftY)

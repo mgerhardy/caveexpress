@@ -1,14 +1,12 @@
 function getName()
-	return "newmap"
+	return "tutorial-0001"
 end
 
 function onMapLoaded()
 end
 
 function initMap()
-	-- get the current map context
-	local map = Map.get()
-	map:addTile("road-dirt21", 0.000000, 0.000000)
+	-- get the current map context	local map = Map.get()	map:addTile("road-dirt21", 0.000000, 0.000000)
 	map:addTile("road-dirt21", 0.000000, 1.000000)
 	map:addTile("road-dirt21", 0.000000, 2.000000)
 	map:addTile("road-dirt21", 0.000000, 3.000000)
@@ -202,8 +200,8 @@ function initMap()
 	map:addTile("road-dirt21", 15.000000, 10.000000)
 	map:addTile("road-dirt21", 15.000000, 11.000000)
 
-	map:setSetting("width", "16")
 	map:setSetting("height", "12")
 	map:setSetting("points", "100")
 	map:setSetting("referencetime", "30")
+	map:setSetting("width", "16")
 end

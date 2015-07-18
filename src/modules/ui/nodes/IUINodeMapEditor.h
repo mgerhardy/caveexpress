@@ -264,6 +264,7 @@ protected:
 
 	// command callback
 	void loadMap (const ICommand::Args& args);
+	virtual void initNewMap();
 
 	bool isLayerActive (int layer) const;
 public:

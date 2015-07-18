@@ -18,8 +18,8 @@ public:
 	virtual ~UINodeMapEditor() {
 	}
 
-	void doClear () override {
-		IUINodeMapEditor::doClear();
+	void initNewMap () override {
+		IUINodeMapEditor::initNewMap();
 		SpriteDefPtr def;
 		for (auto i = SpriteDefinition::get().begin(); i != SpriteDefinition::get().end(); ++i) {
 			if (SpriteTypes::isLand(i->second->type))
