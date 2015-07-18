@@ -7,5 +7,5 @@ c:setSetting("text", "Tutorial")
 -- set the achievement id that you unlock once you finished this campaign
 c:setSetting("achievement", "achievement_finished_tutorials")
 -- now add all maps
-c:addMaps("tutorial*")
+c:addMaps("*")
 c:unlock()
