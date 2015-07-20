@@ -556,8 +556,7 @@ bool UINode::addLastFocus ()
 bool UINode::addFirstFocus ()
 {
 	bool focus = false;
-	for (UINodeListIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* nodePtr = *i;
+	for (UINode* nodePtr : _nodes) {
 		nodePtr->removeFocus();
 		if (focus)
 			continue;
@@ -581,8 +580,7 @@ bool UINode::isActive () const
 	if (!isVisible())
 		return false;
 
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		const UINode* nodePtr = *i;
+	for (const UINode* nodePtr : _nodes) {
 		if (nodePtr->isActive()) {
 			return true;
 		}
@@ -731,8 +729,8 @@ bool UINode::onPop ()
 {
 	_texts.clear();
 	bool pop = true;
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		pop |= (*i)->onPop();
+	for (UINode* node : _nodes) {
+		pop |= node->onPop();
 	}
 	return pop;
 }
@@ -741,8 +739,8 @@ bool UINode::onPush ()
 {
 	_texts.clear();
 	bool push = true;
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		push |= (*i)->onPush();
+	for (UINode* node : _nodes) {
+		push |= node->onPush();
 	}
 	return push;
 }
