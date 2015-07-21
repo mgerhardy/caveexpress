@@ -753,8 +753,8 @@ void UINode::addFocus (int32_t x, int32_t y)
 		return;
 	_focus = true;
 	Log::debug(LOG_UI, "focus for %s", getId().c_str());
-	for (Listeners::iterator i = _listeners.begin(); i != _listeners.end(); ++i) {
-		(*i)->onAddFocus();
+	for (const UINodeListenerPtr& listener : _listeners) {
+		listener->onAddFocus();
 	}
 	if (!fequals(_focusAlpha, 0.0f))
 		setAlpha(_focusAlpha);
@@ -768,8 +768,8 @@ void UINode::removeFocus ()
 	_focus = false;
 	_focusMouseX = -1;
 	_focusMouseY = -1;
-	for (Listeners::iterator i = _listeners.begin(); i != _listeners.end(); ++i) {
-		(*i)->onRemoveFocus();
+	for (const UINodeListenerPtr& listener : _listeners) {
+		listener->onRemoveFocus();
 	}
 	if (!fequals(_focusAlpha, 0.0f))
 		restoreAlpha();
@@ -910,8 +910,8 @@ bool UINode::onControllerButtonPress (int x, int y, const std::string& button)
 
 bool UINode::execute ()
 {
-	for (Listeners::iterator i = _listeners.begin(); i != _listeners.end(); ++i) {
-		(*i)->onClick();
+	for (const UINodeListenerPtr& listener : _listeners) {
+		listener->onClick();
 	}
 
 	if (_onActivate.empty()) {
