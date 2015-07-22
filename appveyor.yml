@@ -1,0 +1,7 @@
+branches:
+  only:
+  - master
+clone_depth: 1
+build_script:
+    - cmd: cmake --build
+
