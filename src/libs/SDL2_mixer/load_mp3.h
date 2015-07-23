@@ -17,32 +17,14 @@
   2. Altered source versions must be plainly marked as such, and must not be
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
+
+  This is the source needed to decode an MP3 into a waveform.
 */
 
-#ifdef MODPLUG_MUSIC
+/* $Id$ */
 
-#ifdef MODPLUG_HEADER
-#include MODPLUG_HEADER
-#else
-#include <libmodplug/modplug.h>
+#ifdef MP3_MUSIC
+/* Don't call this directly; use Mix_LoadWAV_RW() for now. */
+SDL_AudioSpec *Mix_LoadMP3_RW (SDL_RWops *src, int freesrc,
+        SDL_AudioSpec *spec, Uint8 **audio_buf, Uint32 *audio_len);
 #endif
-
-typedef struct {
-    int loaded;
-    void *handle;
-
-    ModPlugFile* (*ModPlug_Load)(const void* data, int size);
-    void (*ModPlug_Unload)(ModPlugFile* file);
-    int  (*ModPlug_Read)(ModPlugFile* file, void* buffer, int size);
-    void (*ModPlug_Seek)(ModPlugFile* file, int millisecond);
-    void (*ModPlug_GetSettings)(ModPlug_Settings* settings);
-    void (*ModPlug_SetSettings)(const ModPlug_Settings* settings);
-    void (*ModPlug_SetMasterVolume)(ModPlugFile* file,unsigned int cvol) ;
-} modplug_loader;
-
-extern modplug_loader modplug;
-
-#endif /* MODPLUG_MUSIC */
-
-extern int Mix_InitModPlug();
-extern void Mix_QuitModPlug();
