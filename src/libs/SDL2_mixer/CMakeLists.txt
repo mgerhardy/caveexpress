@@ -72,7 +72,7 @@ cp_add_library(
 	DEFINES "-DOGG_MUSIC -DWAV_MUSIC")
 if (NOT SDL2_MIXER_FOUND)
 	if (ANDROID)
-		add_definitions(-DOGG_USE_TREMOR)
+		add_definitions(-DOGG_USE_TREMOR -DOGG_HEADER=<ivorbisfile.h>)
 	endif()
 	include_directories("libogg-1.3.1/include")
 	if (ANDROID)
