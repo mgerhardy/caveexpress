@@ -70,7 +70,7 @@
 
 /* Check for the older version of libpng */
 #if (PNG_LIBPNG_VER_MAJOR == 1) 
-#if (PNG_LIBPNG_VER_MINOR < 4)
+#if (PNG_LIBPNG_VER_MINOR < 5)
 #define LIBPNG_VERSION_12
 typedef png_bytep png_const_bytep;
 #endif
@@ -497,7 +497,7 @@ SDL_Surface *IMG_LoadPNG_RW(SDL_RWops *src)
 
     /* Create the array of pointers to image data */
     row_pointers = (png_bytep*) SDL_malloc(sizeof(png_bytep)*height);
-    if ( (row_pointers == NULL) ) {
+    if (!row_pointers) {
         error = "Out of memory";
         goto done;
     }
@@ -616,14 +616,14 @@ int IMG_SavePNG_RW(SDL_Surface *surface, SDL_RWops *dst, int freedst)
         static const Uint32 png_format = SDL_PIXELFORMAT_RGBA8888;
 #endif
         size_t size;
-        void *png;
+        void *png = NULL;
 
         if (surface->format->format == png_format) {
-            png = tdefl_write_image_to_png_file_in_memory(surface->pixels, surface->w, surface->h, surface->pitch, surface->format->BytesPerPixel, &size);
+            png = tdefl_write_image_to_png_file_in_memory(surface->pixels, surface->w, surface->h, surface->format->BytesPerPixel, surface->pitch, &size);
         } else {
             SDL_Surface *cvt = SDL_ConvertSurfaceFormat(surface, png_format, 0);
             if (cvt) {
-                png = tdefl_write_image_to_png_file_in_memory(cvt->pixels, cvt->w, cvt->h, cvt->pitch, cvt->format->BytesPerPixel, &size);
+                png = tdefl_write_image_to_png_file_in_memory(cvt->pixels, cvt->w, cvt->h, cvt->format->BytesPerPixel, cvt->pitch, &size);
                 SDL_FreeSurface(cvt);
             }
         }
