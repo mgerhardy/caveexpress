@@ -201,7 +201,6 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 		execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent update project
 				--path .
 				--name ${APPNAME}
-				--package org.${PROJECTNAME}
 				--target ${ANDROID_API}
 				WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 		execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent update lib-project
