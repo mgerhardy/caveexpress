@@ -168,7 +168,6 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 	configure_file(${ANDROID_BIN_ROOT}/strings.xml.in ${ANDROID_BIN_ROOT}/res/values/strings.xml @ONLY)
 	configure_file(${ANDROID_BIN_ROOT}/default.properties.in ${ANDROID_BIN_ROOT}/default.properties @ONLY)
 	configure_file(${ANDROID_BIN_ROOT}/project.properties.in ${ANDROID_BIN_ROOT}/project.properties @ONLY)
-	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${ANDROID_ANT} ${ANT_TARGET} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 	add_custom_target(android-${PROJECTNAME}-backtrace adb logcat | ndk-stack -sym ${ANDROID_BIN_ROOT}/obj/local/${ANDROID_NDK_SYMDIR} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 	add_custom_target(android-${PROJECTNAME}-install ant ${ANT_INSTALL_TARGET} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 	add_custom_target(android-${PROJECTNAME}-uninstall ant uninstall WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
@@ -201,6 +200,8 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 		message("=> create Android SDK project: ${PROJECTNAME}")
 		execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent update project
 				--path .
+				--name ${APPNAME}
+				--package org.${PROJECTNAME}
 				--target ${ANDROID_API}
 				WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 		execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent update lib-project
@@ -208,6 +209,8 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 				--target ${ANDROID_API}
 				WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 	endif()
+	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${ANDROID_ANT} ${ANT_TARGET} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
+	#add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${ANDROID_BIN_ROOT}/bin/${PROJECTNAME}-${ANT_TARGET}.apk ${ROOT_DIR}/)
 endmacro()
 
 macro(var_global VARIABLES)
