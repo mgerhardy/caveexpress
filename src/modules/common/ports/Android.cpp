@@ -594,7 +594,7 @@ int Android::getAdHeight() const
 
 extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPaymentDone(JNIEnv* env, jclass jcls)
 {
-	Log::info(LOG_SYSTEM, "onPaymentDone c side");
+	Log::debug(LOG_SYSTEM, "onPaymentDone c side");
 	Android& s = static_cast<Android&>(getSystem());
 	s.notifyPaymentLoaded();
 }
@@ -612,7 +612,7 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isDebug(JNIEnv*
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isTrackingOptOut(JNIEnv* env, jclass jcls)
 {
-	Log::info(LOG_SYSTEM, "isTrackingOptOut c side");
+	Log::debug(LOG_SYSTEM, "isTrackingOptOut c side");
 	// TODO:
 	jboolean optout = 0;
 	return optout;
