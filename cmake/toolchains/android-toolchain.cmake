@@ -93,7 +93,7 @@ set(CMAKE_CXX_COMPILER_WORKS 1)
 set(CMAKE_SKIP_COMPATIBILITY_TESTS 1)
 
 # find the ant tool
-find_program(ANDROID_ANT "ant")
+find_program(ANDROID_ANT "ant" HINTS ${ANDROID_SDK_ROOT}/tools)
 if (ANDROID_ANT)
 	message("ant tool found")
 else()
