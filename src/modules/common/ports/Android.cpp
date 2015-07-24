@@ -532,6 +532,7 @@ bool Android::supportPayment ()
 
 int Android::getScreenPadding()
 {
+	// TODO: should be done via margins.xml
 	if (isOUYA()) {
 		return 110;
 	}
