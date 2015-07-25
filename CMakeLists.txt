@@ -23,12 +23,18 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CP_CMAKE_DIR})
 set(CMAKE_ECLIPSE_GENERATE_LINKED_RESOURCES OFF)
 set(CMAKE_VERBOSE_MAKEFILE ${VERBOSE})
 
+include(${CP_CMAKE_DIR}/macros.cmake)
+include(CPack)
+
+if (RELEASE)
+	set(DEBUG OFF CACHE STRING "Debug build" FORCE)
+else()
+	set(DEBUG ON CACHE STRING "Debug build" FORCE)
+endif()
+
 cp_message("ROOT_DIR: ${ROOT_DIR}")
 cp_message("CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 cp_message("PROJECT_SOURCE_DIR: ${PROJECT_SOURCE_DIR}")
-
-include(${CP_CMAKE_DIR}/macros.cmake)
-include(CPack)
 
 #-------------------------------------------------------------------------------
 # variables
@@ -81,7 +87,12 @@ if (NOT NETWORKING)
 endif()
 
 if (NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Compile Type" FORCE)
+	if (RELEASE)
+		set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Compile Type" FORCE)
+	else()
+		set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Compile Type" FORCE)
+	endif()
+	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release)
 endif()
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/lib)

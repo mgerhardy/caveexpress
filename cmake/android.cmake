@@ -8,9 +8,12 @@ set(USE_BUILTIN ON)
 list(APPEND PERMISSIONS "<uses-permission android:name=\"com.android.vending.BILLING\" />")
 
 if (NOT HD_VERSION)
-list(APPEND META_DATA "<meta-data android:value=\"true\" android:name=\"ADMOB_ALLOW_LOCATION_FOR_ADS\" />")
+	list(APPEND META_DATA "<meta-data android:value=\"true\" android:name=\"ADMOB_ALLOW_LOCATION_FOR_ADS\" />")
 endif()
 list(APPEND META_DATA "<meta-data android:name=\"com.google.android.gms.games.APP_ID\" android:value=\"@string/app_id\" />")
 list(APPEND META_DATA "<meta-data android:name=\"com.google.android.gms.appstate.APP_ID\" android:value=\"@string/app_id\" />")
 list(APPEND META_DATA "<meta-data android:name=\"com.google.android.gms.version\" android:value=\"@integer/google_play_services_version\" />")
 
+if (VERBOSE)
+	set(ANT_FLAGS -v)
+endif()
