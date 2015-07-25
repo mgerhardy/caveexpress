@@ -1,9 +1,9 @@
 #!/bin/bash
 
 DIR=$(dirname $(readlink -f $0))
-cd $DIR/../..
-mkdir -p build-android
-cd build-android
+cd $DIR/../../..
+mkdir -p cp-build-android
+cd cp-build-android
 pwd
-cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/android-toolchain.cmake ..
+ccmake $DIR/../.. -DCMAKE_TOOLCHAIN_FILE=$DIR/../../cmake/toolchains/android-toolchain.cmake
 make $*
