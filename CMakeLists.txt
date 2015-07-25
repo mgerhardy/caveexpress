@@ -26,12 +26,6 @@ set(CMAKE_VERBOSE_MAKEFILE ${VERBOSE})
 include(${CP_CMAKE_DIR}/macros.cmake)
 include(CPack)
 
-if (RELEASE)
-	set(DEBUG OFF CACHE STRING "Debug build" FORCE)
-else()
-	set(DEBUG ON CACHE STRING "Debug build" FORCE)
-endif()
-
 cp_message("ROOT_DIR: ${ROOT_DIR}")
 cp_message("CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 cp_message("PROJECT_SOURCE_DIR: ${PROJECT_SOURCE_DIR}")
