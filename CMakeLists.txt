@@ -1,32 +1,34 @@
 cmake_minimum_required(VERSION 2.8.7)
-set(CMAKE_USE_RELATIVE_PATHS ON)
 
-include(CPack)
+#-------------------------------------------------------------------------------
+# options
+#-------------------------------------------------------------------------------
 
-set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Root dir")
-SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${ROOT_DIR})
-SET(DEFAULT_LUAC_EXECUTABLE luac)
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
-SET(CMAKE_ECLIPSE_GENERATE_LINKED_RESOURCES OFF)
-
+option(NETWORKING "Enable networking" ON)
 option(RELEASE "Build a release build" OFF)
 option(UNITTESTS "Builds with unittests" ON)
 option(TOOLS "Builds with tools" ON)
 option(VERBOSE "Print debug information" OFF)
 
-include(${ROOT_DIR}/cmake/macros.cmake)
-
 #-------------------------------------------------------------------------------
-# functions (incl. overrides)
+# end options
 #-------------------------------------------------------------------------------
 
-function(add_executable name)
-	if (ANDROID)
-		add_library(${name} SHARED ${ARGN})
-	else()
-		_add_executable(${name} ${ARGN})
-	endif()
-endfunction()
+set(CMAKE_USE_RELATIVE_PATHS ON)
+set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Root dir")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${ROOT_DIR})
+set(DEFAULT_LUAC_EXECUTABLE luac)
+set(CP_CMAKE_DIR ${PROJECT_SOURCE_DIR}/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CP_CMAKE_DIR})
+set(CMAKE_ECLIPSE_GENERATE_LINKED_RESOURCES OFF)
+set(CMAKE_VERBOSE_MAKEFILE ${VERBOSE})
+
+cp_message("ROOT_DIR: ${ROOT_DIR}")
+cp_message("CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+cp_message("PROJECT_SOURCE_DIR: ${PROJECT_SOURCE_DIR}")
+
+include(${CP_CMAKE_DIR}/macros.cmake)
+include(CPack)
 
 #-------------------------------------------------------------------------------
 # variables
@@ -52,38 +54,26 @@ if (LINUX)
 		message(STATUS "Found TexturePacker: ${TEXTUREPACKER_BIN}")
 	endif()
 endif()
-
-
-#-------------------------------------------------------------------------------
-# options
-#-------------------------------------------------------------------------------
-
-option(NETWORKING "Enable networking" ON)
-
-#-------------------------------------------------------------------------------
-# end options
-#-------------------------------------------------------------------------------
-
 if (NOT CMAKE_TOOLCHAIN_FILE)
 	if (WINDOWS)
-		include(${ROOT_DIR}/cmake/toolchains/windows-toolchain.cmake)
+		include(${CP_CMAKE_DIR}/toolchains/windows-toolchain.cmake)
 	elseif (DARWIN)
-		include(${ROOT_DIR}/cmake/toolchains/darwin-toolchain.cmake)
+		include(${CP_CMAKE_DIR}/toolchains/darwin-toolchain.cmake)
 	else()
-		include(${ROOT_DIR}/cmake/toolchains/linux-toolchain.cmake)
+		include(${CP_CMAKE_DIR}/toolchains/linux-toolchain.cmake)
 	endif()
 endif()
 
 if (ANDROID)
-	include(${ROOT_DIR}/cmake/android.cmake)
+	include(${CP_CMAKE_DIR}/android.cmake)
 elseif (IOS)
-	include(${ROOT_DIR}/cmake/ios.cmake)
+	include(${CP_CMAKE_DIR}/ios.cmake)
 elseif (WINDOWS)
-	include(${ROOT_DIR}/cmake/toolchains/windows-toolchain.cmake)
+	include(${CP_CMAKE_DIR}/toolchains/windows-toolchain.cmake)
 elseif (NACL)
-	include(${ROOT_DIR}/cmake/nacl.cmake)
+	include(${CP_CMAKE_DIR}/nacl.cmake)
 elseif (EMSCRIPTEN)
-	include(${ROOT_DIR}/cmake/emscripten.cmake)
+	include(${CP_CMAKE_DIR}/emscripten.cmake)
 endif()
 
 if (NOT NETWORKING)
@@ -94,10 +84,8 @@ if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Compile Type" FORCE)
 endif()
 
-
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/lib)
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 find_program(CCACHE "ccache")
 if (CCACHE)
@@ -111,8 +99,8 @@ endif()
 include_directories(src)
 include_directories(src/modules)
 if (UNITTESTS)
-include_directories(src/libs/gtest)
-include_directories(src/libs/gtest/include)
+	include_directories(src/libs/gtest)
+	include_directories(src/libs/gtest/include)
 endif()
 
 add_subdirectory(src/libs)
