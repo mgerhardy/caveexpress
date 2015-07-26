@@ -672,8 +672,7 @@ bool UINode::onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx,
 
 bool UINode::onTextInput (const std::string& text)
 {
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* nodePtr = *i;
+	for (UINode* nodePtr : _nodes) {
 		if (!nodePtr->hasFocus())
 			continue;
 		if (nodePtr->onTextInput(text))
@@ -701,8 +700,7 @@ bool UINode::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
 
 bool UINode::onKeyPress (int32_t key, int16_t modifier)
 {
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* nodePtr = *i;
+	for (UINode* nodePtr : _nodes) {
 		if (!nodePtr->isVisible())
 			continue;
 		if (nodePtr->onKeyPress(key, modifier))
@@ -714,8 +712,7 @@ bool UINode::onKeyPress (int32_t key, int16_t modifier)
 
 bool UINode::onKeyRelease (int32_t key)
 {
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* nodePtr = *i;
+	for (UINode* nodePtr : _nodes) {
 		if (!nodePtr->isVisible())
 			continue;
 		if (nodePtr->onKeyRelease(key))
@@ -774,8 +771,7 @@ void UINode::removeFocus ()
 	if (!fequals(_focusAlpha, 0.0f))
 		restoreAlpha();
 
-	for (UINodeListIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* node = *i;
+	for (UINode* nodePtr : _nodes) {
 		if (!node->hasFocus())
 			continue;
 		node->removeFocus();
@@ -1048,12 +1044,11 @@ UINode* UINode::getNode (const std::string& nodeId)
 	if (_nodes.empty())
 		return nullptr;
 
-	for (UINodeListIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* node = (*i);
-		if (node->getId() == nodeId)
-			return node;
+	for (UINode* nodePtr : _nodes) {
+		if (nodePtr->getId() == nodeId)
+			return nodePtr;
 
-		UINode* nodeR = node->getNode(nodeId);
+		UINode* nodeR = nodePtr->getNode(nodeId);
 		if (nodeR)
 			return nodeR;
 	}
@@ -1069,8 +1064,7 @@ void UINode::setTooltip (const std::string& tooltip)
 void UINode::setLayout (IUILayout* layout)
 {
 	_layout = layout;
-	for (UINodeListIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* nodePtr = *i;
+	for (UINode* nodePtr : _nodes) {
 		_layout->addNode(nodePtr);
 	}
 }
