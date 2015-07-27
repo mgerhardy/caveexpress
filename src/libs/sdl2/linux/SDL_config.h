@@ -81,7 +81,7 @@
 /* #undef HAVE_ALTIVEC_H */
 /* #undef HAVE_PTHREAD_NP_H */
 #define HAVE_LIBUDEV_H 1
-#define HAVE_DBUS_DBUS_H 1
+/* #define HAVE_DBUS_DBUS_H 1 */
 /* #undef HAVE_IBUS_IBUS_H */
 
 /* C library functions */
