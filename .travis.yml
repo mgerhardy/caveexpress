@@ -65,7 +65,7 @@ addons:
     - zoogie-sdl2-snapshots
 
 script:
-  - mkdir build; cd build; cmake ..; make VERBOSE=1; cd ..; ./tests
+  - mkdir build; cd build; cmake .. -DVERBOSE=ON; make VERBOSE=1; cd ..; ./tests
 
 notifications:
   email: true
