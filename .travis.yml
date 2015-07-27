@@ -12,7 +12,7 @@ compiler:
 os:
   - linux
 
-sudo: required
+sudo: false
 
 addons:
   apt:
@@ -25,6 +25,7 @@ addons:
     - liblua5.2-dev
     - zlib1g-dev
     - g++-5
+    - gcc-5
     - clang
     - libc6:i386
     - lua5.1
@@ -68,5 +69,8 @@ script:
 
 notifications:
   email: true
+
+install:
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 cache: apt
