@@ -25,6 +25,7 @@ addons:
     - liblua5.2-dev
     - zlib1g-dev
     - g++-5
+    - clang
     - libc6:i386
     - lua5.1
     - libdbus-1-dev
@@ -59,8 +60,8 @@ addons:
     - libsdl2-image-dev
     - libsdl2-mixer-dev
     sources:
-    - ppa:ubuntu-toolchain-r-test
-    - ppa:zoogie-sdl2-snapshots
+    - ubuntu-toolchain-r-test
+    - zoogie-sdl2-snapshots
 
 script:
   - mkdir build; cd build; cmake ..; make VERBOSE=1; cd ..; ./tests
