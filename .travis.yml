@@ -12,26 +12,61 @@ compiler:
 os:
   - linux
 
+sudo: false
+
+addons:
+  apt:
+    packages:
+    - libbox2d-dev
+    - libyajl-dev
+    - libglm-dev
+    - libgtest-dev
+    - libsqlite3-dev
+    - liblua5.2-dev
+    - zlib1g-dev
+    - g++-5
+    - libc6:i386
+    - lua5.1
+    - libdbus-1-dev
+    - build-essential
+    - mercurial
+    - make
+    - cmake
+    - autoconf
+    - automake
+    - libtool
+    - libasound2-dev
+    - libpulse-dev
+    - libaudio-dev
+    - libx11-dev
+    - libxext-dev
+    - libxrandr-dev
+    - libxcursor-dev
+    - libxi-dev
+    - libxinerama-dev
+    - libxxf86vm-dev
+    - libxss-dev
+    - libgl1-mesa-dev
+    - libesd0-dev
+    - libdbus-1-dev
+    - libudev-dev
+    - libgles1-mesa-dev
+    - libgles2-mesa-dev
+    - libegl1-mesa-dev
+    - libibus-1.0-dev
+    sources:
+    - ppa:ubuntu-toolchain-r-test
+
+#    - ppa:zoogie-sdl2-snapshots
+#    - libsdl2-dev
+#    - libsdl2-net-dev
+#    - libsdl2-image-dev
+#    - libsdl2-mixer-dev
+
 script:
-  - git clean -fdx
-  - mkdir build-bundled; cd build-bundled; cmake ..; make VERBOSE=1; cd ..; ./build-bundled/tests
-  - sudo apt-get install -qq libbox2d-dev libyajl-dev libglm-dev libgtest-dev libsdl2-dev libsdl2-net-dev libsdl2-image-dev libsdl2-mixer-dev libsqlite3-dev liblua5.2-dev zlib1g-dev
-  - mkdir build-systemwide; cd build-systemwide; cmake ..; make VERBOSE=1; cd ..; ./build-systemwide/tests
+  - mkdir build; cd build; cmake ..; make VERBOSE=1; cd ..; ./tests
 
 notifications:
   email: true
-
-before_install:
-  - sudo add-apt-repository -y ppa:zoogie/sdl2-snapshots
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo apt-get update -qq
-
-install:
-  - sudo apt-get install -qq g++-5
-  - sudo apt-get install -qq libc6:i386
-  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 50
-  - sudo apt-get install -qq lua5.1 libdbus-1-dev
-  - sudo apt-get install -qq -d libbox2d-dev libyajl-dev libglm-dev libgtest-dev libsdl2-dev libsdl2-net-dev libsdl2-image-dev libsdl2-mixer-dev libsqlite3-dev liblua5.2-dev zlib1g-dev
-  - sudo apt-get install build-essential mercurial make cmake autoconf automake libtool libasound2-dev libpulse-dev libaudio-dev libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxi-dev libxinerama-dev libxxf86vm-dev libxss-dev libgl1-mesa-dev libesd0-dev libdbus-1-dev libudev-dev libgles1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev libibus-1.0-dev
 
 cache: apt
