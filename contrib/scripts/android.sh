@@ -5,5 +5,5 @@ cd $DIR/../../..
 mkdir -p cp-build-android
 cd cp-build-android
 pwd
-ccmake $DIR/../.. -DCMAKE_TOOLCHAIN_FILE=$DIR/../../cmake/toolchains/android-toolchain.cmake
+cmake $DIR/../.. -DCMAKE_TOOLCHAIN_FILE=$DIR/../../cmake/toolchains/android-toolchain.cmake
 make $*
