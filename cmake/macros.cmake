@@ -1,5 +1,18 @@
 include(CMakeParseArguments)
 
+if (${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
+	set(CP_GCC 1)
+	message(STATUS "C++ Compiler: GCC")
+elseif (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+	set(CP_CLANG 1)
+	message(STATUS "C++ Compiler: Clang")
+elseif (MSVC)
+	set(CP_MSVC 1)
+	message(STATUS "C++ Compiler: MSVC")
+else()
+	message(WARNING "C++ Compiler: Unknown")
+endif()
+
 #-------------------------------------------------------------------------------
 # macros
 #-------------------------------------------------------------------------------

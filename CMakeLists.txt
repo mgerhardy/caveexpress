@@ -9,6 +9,7 @@ option(RELEASE "Build a release build" OFF)
 option(UNITTESTS "Builds with unittests" ON)
 option(TOOLS "Builds with tools" ON)
 option(VERBOSE "Print debug information" OFF)
+option(COVERAGE "Compile with test coverage" OFF)
 
 #-------------------------------------------------------------------------------
 # end options
@@ -25,6 +26,17 @@ set(CMAKE_VERBOSE_MAKEFILE ${VERBOSE})
 
 include(${CP_CMAKE_DIR}/macros.cmake)
 include(CPack)
+
+if (COVERAGE)
+	if ((CP_GCC OR CP_CLANG) AND NOT RELEASE)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+	elseif (RELEASE)
+		message(WARNING "Skip coverage, you attempt to compile in release mode")
+	else()
+		message(WARNING "Skip coverage, you don't compile with gcc or clang")
+	endif()
+endif()
 
 cp_message("ROOT_DIR: ${ROOT_DIR}")
 cp_message("CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
