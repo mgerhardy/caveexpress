@@ -70,6 +70,8 @@ addons:
     - zoogie-sdl2-snapshots
 
 script:
+  - cmake --version
+  - pkg-config --version
   - mkdir build; cd build; cmake .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN; make VERBOSE=1; cd ..; ./tests
 
 notifications:
