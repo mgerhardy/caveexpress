@@ -9,6 +9,11 @@ compiler:
   - gcc
   - clang
 
+env:
+  matrix:
+    - USE_BUILTIN=ON
+    - USE_BUILTIN=OFF
+
 os:
   - linux
 
@@ -65,8 +70,7 @@ addons:
     - zoogie-sdl2-snapshots
 
 script:
-  - mkdir build-builtin; cd build-builtin; cmake .. -DVERBOSE=ON -DUSE_BUILTIN=ON; make VERBOSE=1; cd ..; ./tests
-  - mkdir build; cd build; cmake .. -DVERBOSE=ON; make VERBOSE=1; cd ..; ./tests
+  - mkdir build; cd build; cmake .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN; make VERBOSE=1; cd ..; ./tests
 
 notifications:
   email: true
