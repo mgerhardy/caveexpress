@@ -460,6 +460,7 @@ macro(cp_target_link_libraries)
 		cp_message("Set include dir for ${_LINKLIBS_TARGET} to ${INCLUDE_DIRS}")
 		var_global(${TARGET}_INCLUDE_DIRS)
 		set_property(TARGET ${_LINKLIBS_TARGET} APPEND PROPERTY INCLUDE_DIRECTORIES ${INCLUDE_DIRS})
+		include_directories(${${TARGET}_INCLUDE_DIRS})
 	endif()
 endmacro()
 
