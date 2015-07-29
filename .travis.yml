@@ -1,3 +1,8 @@
+os:
+  - linux
+
+sudo: false
+
 language:
   - cpp
 
@@ -7,17 +12,18 @@ branches:
 
 compiler:
   - gcc
-  - clang
 
 env:
   matrix:
     - USE_BUILTIN=ON
     - USE_BUILTIN=OFF
+    - TARGET="linux"
 
-os:
-  - linux
-
-sudo: false
+matrix:
+  include:
+    - os: osx
+      compiler: clang
+      env: TARGET="osx"
 
 addons:
   apt:
@@ -74,7 +80,8 @@ script:
   - pkg-config --version
   - g++-5 --version
   - clang++ --version
-  - mkdir build; cd build; cmake .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN; make VERBOSE=1; cd ..; ./tests
+  - if [ "$TARGET" == "linux" ]; then mkdir build-$TARGET && cd build-$TARGET && cmake .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && make VERBOSE=1 && cd .. && ./tests; fi
+  - if [ "$TARGET" == "osx" ]; then mkdir build-$TARGET && cd build-$TARGET && cmake -G Xcode .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && xcodebuild caveexpress.xcodeproj; fi
 
 notifications:
   email: true
