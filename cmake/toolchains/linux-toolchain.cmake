@@ -11,7 +11,12 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     endif()
 endif()
 
-set(CMAKE_C_STANDARD_LIBRARIES ${CMAKE_DL_LIBS})
+check_library_exists(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
+if (HAVE_CLOCK_GETTIME)
+    set(CLOCK_LIBS "rt")
+endif()
+
+set(CMAKE_C_STANDARD_LIBRARIES ${CMAKE_DL_LIBS} ${CLOCK_LIBS})
 
 set(CMAKE_C_FLAGS "-pthread -Wcast-qual -Wcast-align -Wpointer-arith -Wshadow -Wall -Wextra -Wreturn-type -Wwrite-strings -Wno-unused-parameter")
 set(CMAKE_C_FLAGS_RELEASE "-O3 -ftree-vectorize -msse3 -ffast-math -DNDEBUG -D_FORTIFY_SOURCE=2")
