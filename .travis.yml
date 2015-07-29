@@ -1,5 +1,6 @@
 os:
   - linux
+  - osx
 
 sudo: false
 
@@ -12,17 +13,12 @@ branches:
 
 compiler:
   - gcc
+  - clang
 
 env:
   matrix:
-    - USE_BUILTIN=ON TARGET=linux
-    - USE_BUILTIN=OFF TARGET=linux
-
-matrix:
-  include:
-    - os: osx
-      compiler: clang
-      env: USE_BUILTIN=ON TARGET=osx
+    - USE_BUILTIN=ON
+    - USE_BUILTIN=OFF
 
 addons:
   apt:
@@ -79,8 +75,8 @@ script:
   - pkg-config --version
   - g++-5 --version
   - clang++ --version
-  - if [ "$TARGET" == "linux" ]; then mkdir build-$TARGET && cd build-$TARGET && cmake .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && make VERBOSE=1 && cd .. && ./tests; fi
-  - if [ "$TARGET" == "osx" ]; then mkdir build-$TARGET && cd build-$TARGET && cmake -G Xcode .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && xcodebuild caveexpress.xcodeproj; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir build-$TARGET && cd build-$TARGET && cmake .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && make VERBOSE=1 && cd .. && ./tests; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-$TARGET && cd build-$TARGET && cmake -G Xcode .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && xcodebuild caveexpress.xcodeproj; fi
 
 notifications:
   email: true
