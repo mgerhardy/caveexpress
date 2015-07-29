@@ -10,6 +10,7 @@ option(UNITTESTS "Builds with unittests" ON)
 option(TOOLS "Builds with tools" ON)
 option(VERBOSE "Print debug information" OFF)
 option(COVERAGE "Compile with test coverage" OFF)
+option(USE_CACHE "Use ccache" OFF)
 
 #-------------------------------------------------------------------------------
 # end options
@@ -106,9 +107,11 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/lib)
 
 find_program(CCACHE "ccache")
 if (CCACHE)
-	message(STATUS "Using ccache")
-	set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ${CCACHE})
-	set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE})
+	if (USE_CACHE)
+		message(STATUS "Using ccache")
+		set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ${CCACHE})
+		set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE})
+	endif()
 else()
 	message(WARNING "ccache not found")
 endif()
