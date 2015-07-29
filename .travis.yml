@@ -22,7 +22,7 @@ matrix:
   include:
     - os: osx
       compiler: clang
-      env: USE_BUILTIN=OFF TARGET=osx
+      env: USE_BUILTIN=ON TARGET=osx
 
 addons:
   apt:
