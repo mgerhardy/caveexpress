@@ -87,6 +87,7 @@ notifications:
   email: true
 
 install:
+  - if [ "$TARGET" == "osx" ]; then brew install cmake; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 cache: apt
