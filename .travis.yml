@@ -62,13 +62,15 @@ addons:
     - libgles2-mesa-dev
     - libegl1-mesa-dev
     - libibus-1.0-dev
-    - libsdl2-dev
-    - libsdl2-net-dev
-    - libsdl2-image-dev
-    - libsdl2-mixer-dev
     sources:
     - ubuntu-toolchain-r-test
     - zoogie-sdl2-snapshots
+
+# currently disabled, because sdl2 ppa is not yet available
+#    - libsdl2-dev
+#    - libsdl2-net-dev
+#    - libsdl2-image-dev
+#    - libsdl2-mixer-dev
 
 script:
   - cmake --version
