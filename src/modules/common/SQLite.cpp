@@ -2,6 +2,12 @@
 #include "common/Log.h"
 #include <SDL_platform.h>
 
+#if 0 // TODO: only available for newer (something bigger than 3.7.9) versions
+#define GET_ERROR(errorcode, handle) sqlite3_errstr(errorcode)
+#else
+#define GET_ERROR(errorcode, handle) sqlite3_errmsg(handle)
+#endif
+
 SQLiteStatement::SQLiteStatement () :
 		_statement(nullptr)
 {
@@ -12,9 +18,10 @@ SQLiteStatement::~SQLiteStatement ()
 	finish();
 }
 
-void SQLiteStatement::init (sqlite3_stmt *statement)
+void SQLiteStatement::init (sqlite3_stmt *statement, sqlite3 *db)
 {
 	_statement = statement;
+	_db = db;
 }
 
 bool SQLiteStatement::bindText (int index, const std::string& value)
@@ -23,7 +30,7 @@ bool SQLiteStatement::bindText (int index, const std::string& value)
 	if (retVal == SQLITE_OK)
 		return true;
 
-	_error = sqlite3_errstr(retVal);
+	_error = GET_ERROR(retVal, _db);
 	Log::error(LOG_STORAGE, "can't bind text: %s (%s)", value.c_str(), _error.c_str());
 	return false;
 }
@@ -33,7 +40,7 @@ bool SQLiteStatement::bindInt (int index, int value)
 	const int retVal = sqlite3_bind_int(_statement, index, value);
 	if (retVal == SQLITE_OK)
 		return true;
-	_error = sqlite3_errstr(retVal);
+	_error = GET_ERROR(retVal, _db);
 	Log::error(LOG_STORAGE, "can't bind int: %i (%s)", value, _error.c_str());
 	return false;
 }
@@ -56,7 +63,7 @@ bool SQLiteStatement::finish ()
 
 	const int retVal = sqlite3_finalize(_statement);
 	if (retVal != SQLITE_OK) {
-		const char *errMsg = sqlite3_errstr(retVal);
+		const char *errMsg = GET_ERROR(retVal, _db);
 		_error = errMsg;
 		Log::error(LOG_STORAGE, "%s", errMsg);
 	}
@@ -68,7 +75,7 @@ int SQLiteStatement::step (bool reset)
 {
 	const int retVal = sqlite3_step(_statement);
 	if (retVal != SQLITE_DONE && retVal != SQLITE_ROW) {
-		_error = sqlite3_errstr(retVal);
+		_error = GET_ERROR(retVal, _db);
 		Log::error(LOG_STORAGE, "could not step: %s", _error.c_str());
 	}
 
@@ -76,7 +83,7 @@ int SQLiteStatement::step (bool reset)
 	if (reset) {
 		const int resetRetVal = sqlite3_reset(_statement);
 		if (resetRetVal != SQLITE_OK) {
-			_error = sqlite3_errstr(retVal);
+			_error = GET_ERROR(resetRetVal, _db);
 			Log::error(LOG_STORAGE, "could not reset: %s", _error.c_str());
 		}
 	}
@@ -112,7 +119,7 @@ bool SQLite::open ()
 {
 	const int rc = sqlite3_open(_fileName.c_str(), &_db);
 	if (rc != SQLITE_OK) {
-		_error = sqlite3_errmsg(_db);
+		_error = GET_ERROR(rc, _db);
 		Log::error(LOG_STORAGE, "Can't open database '%s': %s", _fileName.c_str(), _error.c_str());
 		sqlite3_close(_db);
 		_db = nullptr;
@@ -131,14 +138,14 @@ bool SQLite::prepare (SQLiteStatement& s, const std::string& statement)
 	Log::debug(LOG_STORAGE, "Statement: %s", statement.c_str());
 	const int rc = sqlite3_prepare_v2(_db, statement.c_str(), statement.size(), &stmt, &pzTest);
 	if (rc != SQLITE_OK) {
-		const char *str = sqlite3_errmsg(_db);
+		const char *str = GET_ERROR(rc, _db);
 		_error = str;
 		Log::error(LOG_STORAGE, "failed to prepare the insert statement: %s", str);
-		s.init(nullptr);
+		s.init(nullptr, nullptr);
 		return false;
 	}
 
-	s.init(stmt);
+	s.init(stmt, _db);
 	return true;
 }
 

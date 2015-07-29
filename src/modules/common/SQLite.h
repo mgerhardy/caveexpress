@@ -12,11 +12,12 @@ class SQLiteStatement {
 protected:
 	std::string _error;
 	sqlite3_stmt *_statement;
+	sqlite3 *_db;
 public:
 	SQLiteStatement ();
 	virtual ~SQLiteStatement ();
 
-	void init (sqlite3_stmt *statement);
+	void init (sqlite3_stmt *statement, sqlite3 *db);
 
 	// the index is starting at 1 here
 	bool bindText (int index, const std::string& value);
