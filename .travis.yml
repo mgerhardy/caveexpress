@@ -15,15 +15,14 @@ compiler:
 
 env:
   matrix:
-    - USE_BUILTIN=ON
-    - USE_BUILTIN=OFF
-    - TARGET="linux"
+    - USE_BUILTIN=ON TARGET=linux
+    - USE_BUILTIN=OFF TARGET=linux
 
 matrix:
   include:
     - os: osx
       compiler: clang
-      env: TARGET="osx"
+      env: USE_BUILTIN=OFF TARGET=osx
 
 addons:
   apt:
