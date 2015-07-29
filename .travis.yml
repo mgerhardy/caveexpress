@@ -76,8 +76,8 @@ script:
   - pkg-config --version
   - g++-5 --version
   - clang++ --version
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir build-$TARGET && cd build-$TARGET && cmake .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && make VERBOSE=1 && cd .. && ./tests; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-$TARGET && cd build-$TARGET && cmake -G Xcode .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && xcodebuild caveexpress.xcodeproj; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && make VERBOSE=1 && cd .. && ./tests; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake -G Xcode .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && ls && xcodebuild --list && xcodebuild caveexpress.xcodeproj; fi
 
 notifications:
   email: true
