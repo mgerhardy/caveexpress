@@ -7,7 +7,6 @@
 #include <Box2D/Common/b2Math.h>
 #include <SDL.h>
 #include <yajl/yajl_parse.h>
-#include <yajl/yajl_version.h>
 #include "common/Common.h"
 #include "common/Log.h"
 #include "common/File.h"
@@ -205,7 +204,7 @@ bool readJson (const std::string& str)
 		return false;
 	}
 
-#if YAJL_MAJOR > 1
+#if 0
 	stat = yajl_complete_parse(hand);
 	if (stat != yajl_status_ok && stat != yajl_status_client_canceled) {
 		printError(hand, str);
