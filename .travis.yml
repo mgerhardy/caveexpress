@@ -23,7 +23,6 @@ addons:
   apt:
     packages:
     - libbox2d-dev
-    - libyajl-dev
     - libglm-dev
     - libgtest-dev
     - libsqlite3-dev
@@ -70,6 +69,8 @@ addons:
 #    - libsdl2-net-dev
 #    - libsdl2-image-dev
 #    - libsdl2-mixer-dev
+# weird, but there is no libyajl2-dev package
+#    - libyajl2-dev
 
 script:
   - cmake --version
