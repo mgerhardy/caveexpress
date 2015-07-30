@@ -14,9 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "yajl_gen.h"
-#include "yajl_buf.h"
-#include "yajl_encode.h"
+#include <yajl/yajl_gen.h>
+#include <yajl/yajl_buf.h>
+#include <yajl/yajl_encode.h>
 
 #include <stdlib.h>
 #include <string.h>

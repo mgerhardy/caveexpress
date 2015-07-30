@@ -14,8 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "yajl_lex.h"
-#include "yajl_buf.h"
+#include <yajl/yajl_lex.h>
+#include <yajl/yajl_buf.h>
 
 #include <stdlib.h>
 #include <stdio.h>

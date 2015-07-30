@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "yajl_encode.h"
+#include <yajl/yajl_encode.h>
 
 #include <assert.h>
 #include <stdlib.h>
