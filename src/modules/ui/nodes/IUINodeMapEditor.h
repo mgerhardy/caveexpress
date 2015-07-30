@@ -126,9 +126,9 @@ protected:
 	}
 
 	struct State {
-		State (const TileItems& _map, const IMap::SettingsMap& _settingsMap, const IMap::StartPositions& _startPositions, const std::string& _mapName, int _mapWidth,
-				int _mapHeight) :
-				map(_map), settingsMap(_settingsMap), startPositions(_startPositions), mapName(_mapName), mapWidth(_mapWidth), mapHeight(_mapHeight)
+		State (const TileItems& _tileitems, const IMap::SettingsMap& _settingsMap, const IMap::StartPositions& _startPos, const std::string& _mapname, int _mapwidth,
+				int _mapheight) :
+				map(_tileitems), settingsMap(_settingsMap), startPositions(_startPos), mapName(_mapname), mapWidth(_mapwidth), mapHeight(_mapheight)
 		{
 		}
 		TileItems map;
