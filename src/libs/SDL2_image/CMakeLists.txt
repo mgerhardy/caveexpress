@@ -31,7 +31,6 @@ set(SRCS
 	)
 if (DARWIN)
 	list(APPEND SRCS
-		IMG_UIImage.m
 		IMG_ImageIO.m
 	)
 endif()
