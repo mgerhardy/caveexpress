@@ -80,7 +80,8 @@ script:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake -G Xcode .. -DVERBOSE=ON -DUNITTESTS=OFF -DUSE_BUILTIN=$USE_BUILTIN && ls && xcodebuild -list -project Project.xcodeproj && xcodebuild -project Project.xcodeproj; fi
 
 notifications:
-  email: true
+  email:
+    - martin.gerhardy@gmail.com
 
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5"; fi
