@@ -1,4 +1,4 @@
-set(FRAMEWORKS Foundation IOKit OpenGL Cocoa CoreVideo)
+set(FRAMEWORKS Foundation IOKit OpenGL Cocoa CoreVideo CoreAudio AudioToolbox AudioUnit Carbon ForceFeedback CoreFoundation)
 foreach(FW ${FRAMEWORKS})
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework ${FW}")
 endforeach()
