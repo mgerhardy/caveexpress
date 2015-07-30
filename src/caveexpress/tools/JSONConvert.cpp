@@ -204,13 +204,11 @@ bool readJson (const std::string& str)
 		return false;
 	}
 
-#if 0
 	stat = yajl_complete_parse(hand);
 	if (stat != yajl_status_ok && stat != yajl_status_client_canceled) {
 		printError(hand, str);
 		return false;
 	}
-#endif
 
 	yajl_free(hand);
 
