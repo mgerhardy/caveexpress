@@ -1,7 +1,10 @@
+os: Windows Server 2012 R2
+configuration: Release
 branches:
   only:
   - master
 clone_depth: 1
-build_script:
-    - cmd: cmake --build .
-
+before_build:
+  - cmake -G "Visual Studio 12"
+build:
+  project: Project.sln
