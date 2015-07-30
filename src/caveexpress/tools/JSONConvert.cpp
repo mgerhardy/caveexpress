@@ -6,8 +6,8 @@
 #include <string.h>
 #include <Box2D/Common/b2Math.h>
 #include <SDL.h>
-#include <yajl_parse.h>
-#include <yajl_version.h>
+#include <yajl/yajl_parse.h>
+#include <yajl/yajl_version.h>
 #include "common/Common.h"
 #include "common/Log.h"
 #include "common/File.h"
