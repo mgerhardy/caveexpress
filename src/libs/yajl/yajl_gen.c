@@ -210,6 +210,8 @@ yajl_gen_integer(yajl_gen g, long long int number)
 
 #ifdef WIN32
 #include <float.h>
+#undef isnan
+#undef isinf
 #define isnan _isnan
 #define isinf !_finite
 #endif
