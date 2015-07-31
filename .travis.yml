@@ -15,11 +15,23 @@ compiler:
   - gcc
 
 env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "G4/gfaLtLwXbfTNcGwQ2UsGs5b/EAIeRKkfNKoznWhBxs69AesV0SWhqb/Tr+/EcKEVV+Anh1Akj6YQYFIl6/4jNP7SrVPShTAB3Fo0lXlDwzzt+xK2em+2WA05kOMRBKPmoriOFUcAy1QZ8iOX2V5NZhSrF5MpnBsoU/vbHpeg="
   matrix:
     - USE_BUILTIN=ON
     - USE_BUILTIN=OFF
 
 addons:
+  coverity_scan:
+    project:
+      name: "mgerhardy/caveexpress"
+      description: "Build submitted via Travis CI"
+    notification_email: martin.gerhardy@gmail.com
+    build_command_prepend: "cmake ."
+    build_command: "make -j 4"
+    branch_pattern: coverity_scan
   apt:
     packages:
     - libbox2d-dev
