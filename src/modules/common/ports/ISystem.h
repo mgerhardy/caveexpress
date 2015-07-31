@@ -54,7 +54,10 @@ public:
 
 	virtual std::string getDatabaseDirectory () = 0;
 
-	[[noreturn]] virtual void exit (const std::string& reason, int errorCode) = 0;
+#ifndef _MSC_VER
+	[[noreturn]]
+#endif
+	virtual void exit (const std::string& reason, int errorCode) = 0;
 
 	virtual void tick (uint32_t deltaTime) {}
 
