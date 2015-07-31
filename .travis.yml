@@ -7,10 +7,6 @@ sudo: false
 language:
   - cpp
 
-branches:
- only:
-   - master
-
 compiler:
   - gcc
 
