@@ -5,6 +5,6 @@ branches:
   - master
 clone_depth: 1
 before_build:
-  - cmake -G "Visual Studio 12"
+  - cmake -DTOOLS=OFF -G "Visual Studio 12"
 build:
   project: Project.sln

@@ -316,8 +316,8 @@ void ConfigManager::setConfig (const ICommand::Args& args)
 
 	Log::info(LOG_CONFIG, "set %s to %s", args[0].c_str(), args[1].c_str());
 
-	ConfigVarPtr p = getConfigVar(args[0]);
-	p->setValue(args[1]);
+	ConfigVarPtr p = getConfigVar(args[0].str());
+	p->setValue(args[1].str());
 }
 
 int ConfigManager::mapModifier (const std::string& name)

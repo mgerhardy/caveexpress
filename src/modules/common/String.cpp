@@ -250,7 +250,7 @@ String String::wrap (int width)
 		if (it != lines.begin())
 			wrapped += lineBreak;
 
-		const std::string &line = *it;
+		const std::string &line = (*it).str();
 		unsigned int index = 0;
 		while (index < line.length()) {
 			std::string lineSlice(line.substr(index, width));
