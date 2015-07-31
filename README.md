@@ -83,6 +83,13 @@ or simply
 or simply
 * ./contrib/scripts/windows.sh
 
+#### Compile for windows
+* Install cmake and Visual Studio (>=12)
+* mkdir build
+* cd build
+* cmake -DTOOLS=OFF -G "Visual Studio 12" ..
+* msbuild.exe Project.sln
+
 #### Cross compile for android
 * install sdk and ndk
 * mkdir build
@@ -121,8 +128,8 @@ or simply:
 #### Compile for MacOSX
 * mkdir build-macosx
 * cd build-macosx
-* cmake ..
-* make
+* cmake .. -G "Xcode" -DUNITTESTS=OFF
+* xcodebuild -project Project.xcodeproj
 
 ### License
 Code is released under the GPL3 and the game data is released under CC BY-SA 4.0
