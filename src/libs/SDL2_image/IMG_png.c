@@ -92,8 +92,8 @@ static struct {
     png_uint_32 (*png_get_tRNS) (png_const_structrp png_ptr, png_inforp info_ptr, png_bytep *trans, int *num_trans, png_color_16p *trans_values);
     png_uint_32 (*png_get_valid) (png_const_structrp png_ptr, png_const_inforp info_ptr, png_uint_32 flag);
     void (*png_read_image) (png_structrp png_ptr, png_bytepp image);
-    void (*png_read_info) (png_structrp png_ptr, png_infop info_ptr);
-    void (*png_read_update_info) (png_structrp png_ptr, png_infop info_ptr);
+    void (*png_read_info) (png_structrp png_ptr, png_inforp info_ptr);
+    void (*png_read_update_info) (png_structrp png_ptr, png_inforp info_ptr);
     void (*png_set_expand) (png_structrp png_ptr);
     void (*png_set_gray_to_rgb) (png_structrp png_ptr);
     void (*png_set_packing) (png_structrp png_ptr);
@@ -184,14 +184,14 @@ int IMG_InitPNG()
             return -1;
         }
         lib.png_read_info =
-            (void (*) (png_structrp, png_infop))
+            (void (*) (png_structrp, png_inforp))
             SDL_LoadFunction(lib.handle, "png_read_info");
         if ( lib.png_read_info == NULL ) {
             SDL_UnloadObject(lib.handle);
             return -1;
         }
         lib.png_read_update_info =
-            (void (*) (png_structrp, png_infop))
+            (void (*) (png_structrp, png_inforp))
             SDL_LoadFunction(lib.handle, "png_read_update_info");
         if ( lib.png_read_update_info == NULL ) {
             SDL_UnloadObject(lib.handle);
