@@ -25,6 +25,7 @@
 
 #if !defined(__APPLE__) || defined(SDL_IMAGE_USE_COMMON_BACKEND)
 
+#undef LOAD_PNG
 #define LOAD_PNG
 #ifdef LOAD_PNG
 
