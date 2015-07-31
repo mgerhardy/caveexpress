@@ -3,7 +3,7 @@ configuration: Release
 branches:
   only:
   - master
-clone_depth: 1
+clone_depth: 10
 before_build:
   - cmake -DTOOLS=OFF -G "Visual Studio 12"
 build:
