@@ -53,11 +53,13 @@ The multiplayer maps were all created by me and are released in the Public Domai
 * yajl (only if you compile tools)
 
 On debian based systems do:
- sudo apt-get install libbox2d-dev libyajl-dev libglm-dev libgtest-dev libsdl2-dev \
- libsdl2-net-dev libsdl2-image-dev libsdl2-mixer-dev libsqlite3-dev liblua5.2-dev zlib1g-dev
+
+    sudo apt-get install libbox2d-dev libyajl-dev libglm-dev libgtest-dev libsdl2-dev \
+       libsdl2-net-dev libsdl2-image-dev libsdl2-mixer-dev libsqlite3-dev liblua5.2-dev zlib1g-dev
 
 Additionally you could install the following packages:
- sudo apt-get install binutils-dev libncurses5-dev
+
+    sudo apt-get install binutils-dev libncurses5-dev
 
 libncurses is only needed if you run caveexpress with -server as argument. Then you would get a headless interface for setting up a server.
 binutils-dev is only needed if you want to support stacktraces on crashes.
@@ -74,8 +76,8 @@ or simply
 
 #### Cross compile from linux for windows:
 * Set up a cross compile tool chain like MXE
-** git clone https://github.com/mxe/mxe.git
-** cd mxe && make sdl2 sdl2_image sdl2_mixer box2d sdl2_net
+  * git clone https://github.com/mxe/mxe.git
+  * cd mxe && make sdl2 sdl2_image sdl2_mixer box2d sdl2_net
 * mkdir build
 * cd build
 * cmake .. -DCMAKE_TOOLCHAIN_FILE=/path/to/mxe/usr/i686-w64-mingw32.static/share/cmake/mxe-conf.cmake
@@ -101,8 +103,9 @@ or simply:
 
 If you get an aapt - no such file or directory on 64bit debian based
 distributions, do the following:
- sudo apt-get install lib32stdc++6
- sudo apt-get install lib32z1
+
+    sudo apt-get install lib32stdc++6
+    sudo apt-get install lib32z1
 
 #### Compile for HTML5 (emscripten)
 * install emsdk
@@ -122,7 +125,7 @@ or simply:
 #### Compile for iOS (TODO)
 * mkdir build-ios
 * cd build-ios
-* cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake
+* cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake -G "Xcode" -sdk iphonesimulator
 * make
 
 #### Compile for MacOSX
