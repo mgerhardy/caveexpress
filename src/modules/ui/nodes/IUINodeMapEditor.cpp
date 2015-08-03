@@ -184,35 +184,35 @@ void IUINodeMapEditor::loadMap (const ICommand::Args& args)
 	load(args[0]);
 }
 
-inline int IUINodeMapEditor::getTileWidth () const
+int IUINodeMapEditor::getTileWidth () const
 {
 	return _tileWidth * _scale;
 }
 
-inline int IUINodeMapEditor::getTileHeight () const
+int IUINodeMapEditor::getTileHeight () const
 {
 	return std::max(1.0f, _tileWidth * _scale + 0.5f);
 }
 
-inline int IUINodeMapEditor::getScreenMapGridMaxWidth () const
+int IUINodeMapEditor::getScreenMapGridMaxWidth () const
 {
 	const int maxVisible = static_cast<int>(ceil(getRenderWidth() / static_cast<double>(getTileWidth())));
 	return maxVisible;
 }
 
-inline int IUINodeMapEditor::getScreenMapGridMaxHeight () const
+int IUINodeMapEditor::getScreenMapGridMaxHeight () const
 {
 	const int maxVisible = static_cast<int>(ceil(getRenderHeight() / static_cast<double>(getTileHeight())));
 	return maxVisible;
 }
 
-inline int IUINodeMapEditor::getScreenMapGridWidth () const
+int IUINodeMapEditor::getScreenMapGridWidth () const
 {
 	const int tiles = std::min(_mapWidth, getScreenMapGridMaxWidth());
 	return tiles;
 }
 
-inline int IUINodeMapEditor::getScreenMapGridHeight () const
+int IUINodeMapEditor::getScreenMapGridHeight () const
 {
 	const int tiles = std::min(_mapHeight, getScreenMapGridMaxHeight());
 	return tiles;
