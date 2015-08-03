@@ -55,7 +55,9 @@ public:
 	virtual std::string getDatabaseDirectory () = 0;
 
 #ifndef _MSC_VER
+#ifndef EMSCRIPTEN
 	[[noreturn]]
+#endif
 #endif
 	virtual void exit (const std::string& reason, int errorCode) = 0;
 
