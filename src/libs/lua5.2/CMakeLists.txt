@@ -39,13 +39,13 @@ cp_add_library(
 	SRCS ${SRCS}
 	CFLAGS "-Wno-cast-qual -Wno-parentheses-equality"
 	DEFINES "-DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE")
-if (LINUX AND NOT ANDROID)
+if (LINUX AND NOT ANDROID AND NOT EMSCRIPTEN)
 	add_definitions(-DLUA_USE_LINUX)
 elseif(DARWIN)
 	add_definitions(-DLUA_USE_MACOSX)
 endif()
 add_definitions(-DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE)
-if (ANDROID)
+if (ANDROID OR EMSCRIPTEN)
 	add_definitions(-D\"lua_getlocaledecpoint\(\)='.'\")
 	add_definitions(-DLUA_ANSI -DLUA_USE_C89)
 endif()
