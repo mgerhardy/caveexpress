@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <stdint.h>
+#include <stdlib.h>
 #include <math.h>
 #include "common/Compiler.h"
 #define GLM_FORCE_RADIANS
