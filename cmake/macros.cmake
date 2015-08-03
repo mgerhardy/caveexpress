@@ -543,6 +543,6 @@ macro(cp_add_executable)
 		set_target_properties(${_EXE_TARGET} PROPERTIES LINK_FLAGS "--preload-file ${ROOT_DIR}/base/${_EXE_TARGET}")
 	endif()
 
-	include_directories(${CMAKE_CURRENT_BINARY_DIR})
+	set_target_properties(${_EXE_TARGET} PROPERTIES INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 	set_target_properties(${_EXE_TARGET} PROPERTIES FOLDER ${_EXE_TARGET})
 endmacro()
