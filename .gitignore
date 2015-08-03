@@ -15,16 +15,8 @@
 /*.js*
 /*.data
 
-# configure created
-/*-config.h
-/config.log
-/Makefile.local
-
 # build created
-/debug-*/
-/release-*/
-/scale
-/src/*/dir.h
+/src/*/main/dir.h
 
 # ---
 /gmon.out

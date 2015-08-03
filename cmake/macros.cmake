@@ -73,7 +73,10 @@ macro(get_subdirs RESULT DIR)
 endmacro()
 
 macro(create_dir_header PROJECTNAME)
-	set(TARGET_FILE ${ROOT_DIR}/src/${PROJECTNAME}/dir.h)
+	set(TARGET_DIR ${CMAKE_CURRENT_BINARY_DIR})
+	file(MAKE_DIRECTORY ${TARGET_DIR})
+	set(TARGET_FILE ${TARGET_DIR}/dir.h)
+	include_directories(${TARGET_DIR})
 	set(BASEDIR ${ROOT_DIR}/base/${PROJECTNAME})
 
 	set(SUBDIRS)
