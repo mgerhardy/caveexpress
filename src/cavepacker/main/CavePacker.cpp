@@ -84,6 +84,12 @@ CavePacker::~CavePacker ()
 	delete _clientMap;
 }
 
+DirectoryEntries CavePacker::listDirectory(const std::string& basedir, const std::string& subdir) {
+	DirectoryEntries entriesAll;
+	#include "dir.h"
+	return entriesAll;
+}
+
 IMapManager* CavePacker::getMapManager ()
 {
 	return new CavePackerMapManager();

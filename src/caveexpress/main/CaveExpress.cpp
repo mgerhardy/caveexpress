@@ -126,6 +126,12 @@ CaveExpress::~CaveExpress ()
 	delete _clientMap;
 }
 
+DirectoryEntries CaveExpress::listDirectory(const std::string& basedir, const std::string& subdir) {
+	DirectoryEntries entriesAll;
+	#include "dir.h"
+	return entriesAll;
+}
+
 IMapManager* CaveExpress::getMapManager ()
 {
 	return new LUAMapManager();
