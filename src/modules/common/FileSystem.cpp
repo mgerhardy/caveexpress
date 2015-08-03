@@ -2,6 +2,7 @@
 #include "common/Log.h"
 #include "common/System.h"
 #include "common/Application.h"
+#include "../game/GameRegistry.h"
 #include <SDL.h>
 #include <SDL_platform.h>
 
@@ -162,13 +163,10 @@ const std::string FileSystem::getAbsoluteWritePath () const
 
 DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const std::string& subdir)
 {
-	DirectoryEntries entriesAll;
-
-	// TODO: register this in the app
 #if DIRLIST_NOT_SUPPORTED
-#include "dir.h"
-#endif
-
+	return Singleton<GameRegistry>::getInstance().getGame()->listDirectory(basedir, subdir);
+#else
+	DirectoryEntries entriesAll;
 	const std::string sysWritePath = getAbsoluteWritePath() + basedir;
 	if (!sysWritePath.empty())
 		entriesAll = System.listDirectory(sysWritePath, subdir);
@@ -181,4 +179,5 @@ DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const st
 	std::sort(entriesAll.begin(), entriesAll.end());
 	entriesAll.erase(std::unique(entriesAll.begin(), entriesAll.end()), entriesAll.end());
 	return entriesAll;
+#endif
 }
