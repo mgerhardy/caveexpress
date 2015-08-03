@@ -15,20 +15,12 @@ FILE(GLOB SRCS
 	src/render/opengles2/*.c
 	src/haptic/*.c
 	src/haptic/dummy/*.c
-	src/loadso/*.c
-	src/loadso/dummy/*.c
-	src/loadso/dlopen/*.c
 	src/dynapi/*.c
 	src/main/*.c
 	src/timer/*.c
-	src/timer/dummy/*.c
 	src/filesystem/*.c
-	src/filesystem/unix/*.c
-	src/filesystem/dummy/*.c
 	src/events/*.c
 	src/joystick/*.c
-	src/joystick/bsd/*.c
-	src/joystick/dummy/*.c
 	src/input/*.c
 	src/input/evdev/*.c
 	src/core/*.c
@@ -57,13 +49,17 @@ FILE(GLOB SRCS
 
 if(ANDROID)
 FILE(GLOB PLATFORM_SRCS
+	src/filesystem/unix/*.c
+	src/filesystem/dummy/*.c
 	src/filesystem/android/*.c
 	src/video/android/*.c
 	src/core/android/*.c
 	src/timer/unix/*.c
+	src/loadso/dlopen/*.c
 	src/main/android/*.c
 	src/thread/pthread/*.c
 	src/audio/android/*.c
+	src/joystick/dummy/*.c
 	src/joystick/android/*.c
 	src/power/android/*.c)
 elseif(EMSCRIPTEN)
@@ -71,6 +67,7 @@ FILE(GLOB PLATFORM_SRCS
 	src/audio/emscripten/*.c
 	src/filesystem/emscripten/*.c
 	src/joystick/emscripten/*.c
+	src/loadso/dlopen/*.c
 	src/power/emscripten/*.c
 	src/video/emscripten/*.c
 	src/thread/generic/*.c
@@ -80,6 +77,9 @@ FILE(GLOB PLATFORM_SRCS
 	src/audio/nacl/*.c
 	src/filesystem/nacl/*.c
 	src/video/nacl/*.c
+	src/joystick/dummy/*.c
+	src/loadso/dummy/*.c
+	src/loadso/dlopen/*.c
 	src/timer/unix/*.c
 	src/thread/pthread/*.c
 	src/main/nacl/*.c)
@@ -88,6 +88,8 @@ FILE(GLOB PLATFORM_SRCS
 	src/video/uikit/*.m
 	src/video/cocoa/*.m
 	src/file/cocoa/*.m
+	src/loadso/dummy/*.c
+	src/loadso/dlopen/*.c
 	src/filesystem/cocoa/*.m
 	src/joystick/iphoneos/*.m
 	src/power/uikit/*.m
@@ -108,6 +110,8 @@ FILE(GLOB PLATFORM_SRCS
 	src/video/cocoa/*.m
 	src/file/cocoa/*.m
 	src/filesystem/cocoa/*.m
+	src/loadso/dummy/*.c
+	src/loadso/dlopen/*.c
 	src/power/uikit/*.m
 	src/audio/coreaudio/*.c
 	src/filesystem/cocoa/*.c
@@ -141,7 +145,12 @@ elseif(LINUX)
 FILE(GLOB PLATFORM_SRCS
 	src/thread/pthread/*.c
 	src/haptic/linux/*.c
+	src/joystick/bsd/*.c
+	src/joystick/dummy/*.c
 	src/joystick/linux/*.c
+	src/filesystem/unix/*.c
+	src/filesystem/dummy/*.c
+	src/loadso/dlopen/*.c
 	src/audio/alsa/*.c
 	src/audio/arts/*.c
 	src/audio/pulseaudio/*.c
