@@ -73,9 +73,9 @@ macro(get_subdirs RESULT DIR)
 endmacro()
 
 macro(create_dir_header PROJECTNAME)
-	set(TARGET_DIR ${CMAKE_CURRENT_BINARY_DIR})
+	set(TARGET_DIR ${CMAKE_BINARY_DIR})
 	file(MAKE_DIRECTORY ${TARGET_DIR})
-	set(TARGET_FILE ${TARGET_DIR}/dir.h)
+	set(TARGET_FILE ${TARGET_DIR}/${PROJECTNAME}-files.h)
 	set(BASEDIR ${ROOT_DIR}/base/${PROJECTNAME})
 
 	set(SUBDIRS)
@@ -506,7 +506,6 @@ macro(cp_add_executable)
 
 	cmake_parse_arguments(_EXE "${_OPTIONS_ARGS}" "${_ONE_VALUE_ARGS}" "${_MULTI_VALUE_ARGS}" ${ARGN} )
 
-	set(GUI_IDENTIFIER org.${_EXE_TARGET})
 	set(APPNAME ${_EXE_APPNAME})
 	set(VERSION ${_EXE_VERSION})
 	set(VERSION_CODE ${_EXE_VERSION_CODE})
@@ -543,6 +542,6 @@ macro(cp_add_executable)
 		set_target_properties(${_EXE_TARGET} PROPERTIES LINK_FLAGS "--preload-file ${ROOT_DIR}/base/${_EXE_TARGET}")
 	endif()
 
-	set_target_properties(${_EXE_TARGET} PROPERTIES INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
+	include_directories(${CMAKE_BINARY_DIR})
 	set_target_properties(${_EXE_TARGET} PROPERTIES FOLDER ${_EXE_TARGET})
 endmacro()

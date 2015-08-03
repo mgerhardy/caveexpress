@@ -12,7 +12,6 @@ SET(${PROJECT_NAME}_SRC
 	../../tests/NetworkTest.cpp
 	../../tests/NoNetworkTest.cpp
 )
-add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
+cp_add_executable(TARGET ${PROJECT_NAME} SRCS ${${PROJECT_NAME}_SRC} APPNAME ${PROJECT_NAME} VERSION 1.0 VERSION_CODE 1)
 cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS ${NAME}-client ${NAME}-server ${NAME}-shared gtest)
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

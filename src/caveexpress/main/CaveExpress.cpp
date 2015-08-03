@@ -128,7 +128,7 @@ CaveExpress::~CaveExpress ()
 
 DirectoryEntries CaveExpress::listDirectory(const std::string& basedir, const std::string& subdir) {
 	DirectoryEntries entriesAll;
-	#include "dir.h"
+	#include "caveexpress-files.h"
 	return entriesAll;
 }
 

@@ -86,7 +86,7 @@ CavePacker::~CavePacker ()
 
 DirectoryEntries CavePacker::listDirectory(const std::string& basedir, const std::string& subdir) {
 	DirectoryEntries entriesAll;
-	#include "dir.h"
+	#include "cavepacker-files.h"
 	return entriesAll;
 }
 

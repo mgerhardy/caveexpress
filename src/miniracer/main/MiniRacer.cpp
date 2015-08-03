@@ -66,7 +66,7 @@ MiniRacer::~MiniRacer() {
 
 DirectoryEntries MiniRacer::listDirectory(const std::string& basedir, const std::string& subdir) {
 	DirectoryEntries entriesAll;
-	#include "dir.h"
+	#include "miniracer-files.h"
 	return entriesAll;
 }
 
