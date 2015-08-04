@@ -29,7 +29,7 @@ elseif isMobile() then
 	defaultfpslimit = 30
 elseif isHTML5() then
 	defaultnetwork = false
-	defaultfrontend = "opengl"
+	defaultfrontend = "opengl3"
 	defaultsoundengine = "dummy"
 elseif isNaCl() then
 	defaultpersister = "nop"
