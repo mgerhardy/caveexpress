@@ -163,7 +163,8 @@ endif()
 cp_add_library(
 	LIB sdl2
 	SRCS ${SRCS} ${PLATFORM_SRCS}
-	CFLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare -Wno-ignored-qualifiers -Wno-discarded-qualifiers -Wno-empty-body -Wno-unused-but-set-variable")
+	CFLAGS "-Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare -Wno-ignored-qualifiers -Wno-discarded-qualifiers -Wno-empty-body -Wno-unused-but-set-variable"
+	LINKERFLAGS "-Wl,--undefined=Java_org_libsdl_app_SDLActivity_nativeInit")
 if (NOT SDL2_FOUND)
 	if (CMAKE_DL_LIBS)
 		target_link_libraries(sdl2 ${CMAKE_DL_LIBS})
