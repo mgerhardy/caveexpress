@@ -5,6 +5,8 @@
 #include "gfx/SDLFrontend.h"
 #ifdef SDL_VIDEO_OPENGL
 #include "gfx/GL1Frontend.h"
+#endif
+#if defined(SDL_VIDEO_OPENGL_ES) || defined(SDL_VIDEO_OPENGL_ES2) || defined(SDL_VIDEO_OPENGL)
 #include "gfx/GL3Frontend.h"
 #endif
 #include "client/ClientConsole.h"
@@ -194,7 +196,10 @@ bool SDLBackend::handleInit() {
 #ifdef SDL_VIDEO_OPENGL
 			if (c->getValue() == "opengl")
 				_frontend = new GL1Frontend(clientConsole);
-			else if (c->getValue() == "opengl3")
+			else
+#endif
+#if defined(SDL_VIDEO_OPENGL_ES) || defined(SDL_VIDEO_OPENGL_ES2) || defined(SDL_VIDEO_OPENGL)
+			if (c->getValue() == "opengl3")
 				_frontend = new GL3Frontend(clientConsole);
 			else
 #endif
