@@ -92,6 +92,10 @@ elseif (EMSCRIPTEN)
 	include(${CP_CMAKE_DIR}/emscripten.cmake)
 endif()
 
+if (PKGDATADIR)
+	add_definitions(-DPKGDATADIR="${PKGDATADIR}")
+endif()
+
 if (NOT NETWORKING)
 	add_definitions(-DNONETWORK=1)
 endif()

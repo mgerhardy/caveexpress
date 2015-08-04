@@ -24,6 +24,8 @@ else()
 	set(EMSCRIPTEN_TRACING_OPTION "")
 endif()
 
+set(PKGDATADIR "/")
+
 # total memory is 128MB for main thread, and 16 MB for worker
 # NOTE: USE_MEMORY_INIT_FILE has/had problems that the script is already starting but the MEM file isn't loaded yet(?)
 # at least I'm having weird startup problems...

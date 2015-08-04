@@ -539,7 +539,7 @@ macro(cp_add_executable)
 		set_target_properties(${_EXE_TARGET} PROPERTIES PROFILING_POSTFIX .html)
 		set_target_properties(${_EXE_TARGET} PROPERTIES RELEASE_POSTFIX .html)
 		set_target_properties(${_EXE_TARGET} PROPERTIES DEBUG_POSTFIX .html)
-		set_target_properties(${_EXE_TARGET} PROPERTIES LINK_FLAGS "--preload-file ${ROOT_DIR}/base/${_EXE_TARGET}")
+		set_target_properties(${_EXE_TARGET} PROPERTIES LINK_FLAGS "--preload-file ${ROOT_DIR}/base/${_EXE_TARGET}@/")
 	endif()
 
 	include_directories(${CMAKE_BINARY_DIR})
