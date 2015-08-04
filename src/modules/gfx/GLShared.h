@@ -10,28 +10,6 @@
 
 typedef unsigned int TexNum;
 
-class GLContext {
-private:
-	bool _shadersSupported;
-	bool _textureRectangleSupported;
-
-public:
-	GLContext() :
-			_shadersSupported(false), _textureRectangleSupported(false) {
-	}
-
-	inline bool areShadersSupported () const {
-		return _shadersSupported;
-	}
-
-	void init() {
-		_shadersSupported = SDL_GL_ExtensionSupported("GL_ARB_shader_objects") &&
-			SDL_GL_ExtensionSupported("GL_ARB_shading_language_100") &&
-			SDL_GL_ExtensionSupported("GL_ARB_vertex_shader") &&
-			SDL_GL_ExtensionSupported("GL_ARB_fragment_shader");
-	}
-};
-
 inline const char* translateError (GLenum glError)
 {
 #define GL_ERROR_TRANSLATE(e) case e: return #e;
