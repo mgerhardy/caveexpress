@@ -16,7 +16,7 @@
 /*.data
 
 # build created
-/src/*/main/dir.h
+/*-files.h
 
 # ---
 /gmon.out
