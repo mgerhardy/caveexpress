@@ -177,28 +177,27 @@ void LUA::stackDump ()
 {
 	checkStack();
 	const int top = lua_gettop(_state);
+	Log::info(LOG_LUA, "stack elements: %i\n", top);
 	for (int i = 1; i <= top; i++) { /* repeat for each level */
 		const int t = lua_type(_state, i);
-		printf("%i: ", i);
 		switch (t) {
 		case LUA_TSTRING:
-			printf("'%s'", lua_tostring(_state, i));
+			Log::info(LOG_LUA, "%i: '%s'", i, lua_tostring(_state, i));
 			break;
 
 		case LUA_TBOOLEAN:
-			printf(lua_toboolean(_state, i) ? "true" : "false");
+			Log::info(LOG_LUA, "%i: %s", i, (lua_toboolean(_state, i) ? "true" : "false"));
 			break;
 
 		case LUA_TNUMBER:
-			printf("%g", lua_tonumber(_state, i));
+			Log::info(LOG_LUA, "%i: %g", i, lua_tonumber(_state, i));
 			break;
 
 		default:
-			printf("%s", lua_typename(_state, t));
+			Log::info(LOG_LUA, "%i: %s", i, lua_typename(_state, t));
 			break;
 
 		}
-		printf("\n");
 	}
 }
 
