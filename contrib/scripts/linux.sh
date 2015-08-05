@@ -5,6 +5,7 @@ cd $DIR/../../..
 mkdir -p cp-build-linux
 cd cp-build-linux
 pwd
-cmake $DIR/../..
+#-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
+cmake -G"Eclipse CDT4 - Unix Makefiles" $DIR/../..
 make $*
 
