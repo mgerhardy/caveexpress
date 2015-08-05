@@ -85,7 +85,7 @@ void GL1Frontend::disableScissor ()
 void GL1Frontend::initRenderer ()
 {
 #ifdef SDL_VIDEO_OPENGL
-	Log::info(LOG_CLIENT, "init opengl renderer with shaders: %s", ConfigManager::get().getConfigVar("shader")->getValue().c_str());
+	Log::info(LOG_CLIENT, "init opengl renderer");
 
 	_context = SDL_GL_CreateContext(_window);
 

@@ -674,7 +674,7 @@ void SDLFrontend::initRenderer ()
 
 	const ConfigVarPtr& renderer = Config.getConfigVar("renderer", rendererStr, true);
 	const std::string& rendererValue = renderer->getValue();
-	Log::info(LOG_CLIENT, "try renderer: %s", rendererValue.c_str());
+	Log::info(LOG_CLIENT, "try sdl renderer: %s", rendererValue.c_str());
 	SDL_SetHint(SDL_HINT_RENDER_DRIVER, rendererValue.c_str());
 	_renderer = SDL_CreateRenderer(_window, -1, 0);
 	SDL_GetRendererInfo(_renderer, &ri);
@@ -684,11 +684,6 @@ void SDLFrontend::initRenderer ()
 	_softwareRenderer = (ri.flags & SDL_RENDERER_SOFTWARE);
 
 	Log::info(LOG_CLIENT, "actual renderer %s", ri.name);
-	if (strcmp(ri.name, "opengles2")) {
-		// disable shaders as they are currently built for glesv2
-		ConfigManager::get().getConfigVar("shader")->setValue("false");
-		Log::info(LOG_CLIENT, "disable shaders for the current renderer");
-	}
 	Log::info(LOG_CLIENT, "max texture resolution: %i:%i", ri.max_texture_width, ri.max_texture_height);
 	SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
