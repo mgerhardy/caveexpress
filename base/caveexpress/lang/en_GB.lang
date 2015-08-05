@@ -13,7 +13,6 @@ CTRL|CTRL
 CURSOR|CURSOR
 Campaign|Campaign
 Campaigns|Campaigns
-Can't start the map without a packagetarget|Can't start the map without a packagetarget
 Cancel|Cancel
 Collect packages by landing on them|Collect packages by landing on them
 Collecting fruits will restore hitpoints|Collecting fruits will restore hitpoints
@@ -70,6 +69,7 @@ Name|Name
 New|New
 Normal|Normal
 Npc delay|Npc delay
+Npcs|Npcs
 OK|OK
 Objectives|Objectives
 Off|Off
@@ -117,11 +117,13 @@ Sound/Music|Sound/Music
 Start|Start
 Stone|Stone
 Textures|Textures
+The amount of npcs to deliver|The amount of npcs to deliver
 The amount of packages to deliver|The amount of packages to deliver
 The geyser will do the work for you|The geyser will do the work for you
 The points you get for finishing the map|The points you get for finishing the map
 The water change speed|The water change speed
 This is the goal in every map|This is the goal in every map
+This is the max amount of npcs that spawn, if you let more than these die, you lose the game|This is the max amount of npcs that spawn, if you let more than these die, you lose the game
 Time|Time
 Time bar|Time bar
 Tree|Tree

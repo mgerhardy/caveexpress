@@ -3,7 +3,7 @@
 LANG=${1}
 APPNAME=${2}
 
-grep -PohR 'tr\("\K[^"]*' src/engine src/${APPNAME} | sort | uniq | awk -v "app=${APPNAME}" -v "lang=${LANG}" '
+grep -PohR 'tr\("\K[^"]*' src/modules src/${APPNAME} | sort | uniq | awk -v "app=${APPNAME}" -v "lang=${LANG}" '
 BEGIN {
 	old_FS = FS
 	FS     = "\\|"
