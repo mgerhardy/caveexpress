@@ -63,6 +63,8 @@ int BitmapFont::getTextWidth (const std::string& string) const
 		const FontChar* fontChr = _fontDefPtr->getFontChar(chr);
 		if (fontChr == nullptr)
 			fontChr = _fontDefPtr->getFontChar(' ');
+		if (fontChr == nullptr)
+			continue;
 		lineWidth += fontChr->getWidth();
 	}
 	return std::max(lineWidth, width);
