@@ -61,7 +61,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			// push the frame table
 			const int framesOnLayer = lua_rawlen(lua.getState(), -1);
 			for (int i = 1; i <= framesOnLayer; ++i) {
-				const std::string texture = lua.getTableString(i);
+				const std::string& texture = lua.getTableString(i);
 				const SpriteDefFrame frame(texture, 0, true);
 				def->textures[layer].push_back(frame);
 			}
@@ -80,7 +80,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 				lua_gettable(lua.getState(), -2);
 				// push the polygon table
 				const int vertices = lua_rawlen(lua.getState(), -1) - 1;
-				const std::string userData = lua.getTableString(1);
+				const std::string& userData = lua.getTableString(1);
 				SpritePolygon p(userData);
 				for (int i = 2; i <= vertices; i += 2) {
 					const float x = lua.getTableInteger(i) / 100.0f;
@@ -103,7 +103,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			// push the circle table
 			const int entries = lua_rawlen(lua.getState(), -1);
 			if (entries == 4) {
-				const std::string userData = lua.getTableString(1);
+				const std::string& userData = lua.getTableString(1);
 				SpriteCircle p(userData);
 				const float x = lua.getTableInteger(2) / 100.0f;
 				const float y = lua.getTableInteger(3) / 100.0f;
