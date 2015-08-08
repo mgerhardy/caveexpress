@@ -133,8 +133,12 @@ or simply:
 #### Compile for iOS (TODO)
 * mkdir build-ios
 * cd build-ios
-* cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake -G "Xcode" -sdk iphonesimulator
+* cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake -G "Xcode"
 * make
+
+or simply
+
+* ./contrib/scripts/ios.sh
 
 #### Compile for MacOSX
 * mkdir build-macosx
