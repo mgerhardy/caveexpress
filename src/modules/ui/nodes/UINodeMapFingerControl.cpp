@@ -8,6 +8,7 @@
 UINodeMapFingerControl::UINodeMapFingerControl (IFrontend *frontend, IUINodeMap *mapNode) :
 		UINode(frontend), _map(mapNode->getMap()), _finger(-1), _pressX(0), _pressY(0), _moveX(0), _moveY(0), _lastMoveX(0), _lastMoveY(0)
 {
+	setId("finger-control");
 	setPos(mapNode->getX(), mapNode->getY());
 	setSize(mapNode->getWidth(), mapNode->getHeight());
 }

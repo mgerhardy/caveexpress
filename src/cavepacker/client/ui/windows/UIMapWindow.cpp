@@ -48,6 +48,7 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 	_autoSolveSlider->setAlignment(NODE_ALIGN_BOTTOM | NODE_ALIGN_CENTER);
 	_autoSolveSlider->setSize(sliderWidth, height);
 	_autoSolveSlider->addListener(UINodeListenerPtr(new SolveListener(_autoSolveSlider, "solvestepmillis")));
+	_autoSolveSlider->setId("autosolveslider");
 	add(_autoSolveSlider);
 	hideAutoSolveSlider();
 }
@@ -83,12 +84,14 @@ void UIMapWindow::showHud()
 void UIMapWindow::initHudNodes ()
 {
 	UINode* panel = new UINode(_frontend);
+	panel->setId("hudpanel_bonus");
 	panel->setImage("bones");
 	panel->setStandardPadding();
 	panel->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_CENTER);
 	add(panel);
 
 	UINode *innerPanel = new UINode(_frontend);
+	innerPanel->setId("hudpanel_inner");
 	innerPanel->setLayout(new UIHBoxLayout(0.01f));
 	innerPanel->setPos(panel->getX() + 0.07f, panel->getY());
 	_points = new UICavePackerNodePoint(_frontend, 30);
@@ -102,6 +105,7 @@ void UIMapWindow::initInputHudNodes ()
 {
 	IUIMapWindow::initInputHudNodes();
 	_undo = new UINodeButton(_frontend);
+	_undo->setId("undo");
 	_undo->setImage("icon-undo");
 	_undo->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_RIGHT);
 	_undo->setOnActivate("undo");

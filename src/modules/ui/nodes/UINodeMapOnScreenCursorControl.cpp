@@ -12,6 +12,7 @@ UINodeMapOnScreenCursorControl::UINodeMapOnScreenCursorControl (IFrontend *front
 		UINode(frontend), _map(mapNode->getMap())
 {
 	setStandardPadding();
+	setId("cursor-control");
 
 	UINodeButton *left = new UINodeButton(frontend);
 	left->setImage("icon-cursor-left");

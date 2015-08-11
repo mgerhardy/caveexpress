@@ -134,6 +134,7 @@ protected:
 	uint32_t _time;
 	uint32_t _flashMillis;
 	float _originalAlpha;
+	bool _autoId;
 
 	struct UINodeDelayedText {
 		std::string text;
@@ -609,6 +610,7 @@ inline void UINode::setOnActivate (const std::string& onActivateCmd)
 inline void UINode::setId (const std::string& id)
 {
 	_id = id;
+	_autoId = false;
 }
 
 inline const std::string& UINode::getId () const
