@@ -607,8 +607,15 @@ bool UINode::runFocusNode ()
 bool UINode::checkFocus (int32_t x, int32_t y)
 {
 	if (x <= -1 || y <= -1 || !isVisible() || !isActive()) {
-		if (hasFocus())
+		if (hasFocus()) {
+			if (x <= -1 || y <= -1)
+				Log::debug(LOG_UI, "remove focus from %s due to invalid coords", getId().c_str());
+			else if (!isVisible())
+				Log::debug(LOG_UI, "remove focus from invisible node %s", getId().c_str());
+			else if (!isActive())
+				Log::debug(LOG_UI, "remove focus from inactive node %s", getId().c_str());
 			removeFocus();
+		}
 		return false;
 	}
 
@@ -639,6 +646,7 @@ bool UINode::checkFocus (int32_t x, int32_t y)
 	}
 
 	if (hasFocus()) {
+		Log::debug(LOG_UI, "nothing left that wants the focus - so remove it from node %s", getId().c_str());
 		removeFocus();
 	}
 	return false;
