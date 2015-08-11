@@ -40,6 +40,7 @@ static void runFrameEmscripten() {
 		return;
 	}
 
+	// TODO: fps limit
 	INSTANCE->runFrame();
 }
 #endif
