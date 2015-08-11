@@ -61,7 +61,7 @@ bool UINodeMapFingerControl::onFingerPress (int64_t finger, uint16_t x, uint16_t
 		return false;
 
 	if (isPressed()) {
-		Log::debug(LOG_CLIENT, "pressing second finger");
+		Log::debug(LOG_UI, "pressing second finger");
 		return _map.secondFinger();
 	}
 

@@ -213,7 +213,7 @@ void UINode::displayText (const std::string& text, uint32_t delayMillis, float x
 		i->delayMillis = delayMillis;
 		return;
 	}
-	Log::info(LOG_GENERAL, "Display text '%s' for %ui ms", text.c_str(), delayMillis);
+	Log::info(LOG_UI, "Display text '%s' for %ui ms", text.c_str(), delayMillis);
 	const NodeCoord c(x, y);
 	const BitmapFontPtr& font = getFont(HUGE_FONT);
 	_texts.push_back(UINodeDelayedText(text, delayMillis, c, font));
@@ -741,7 +741,7 @@ void UINode::addFocus (int32_t x, int32_t y)
 	if (_focus)
 		return;
 	_focus = true;
-	Log::debug(LOG_CLIENT, "focus for %s", getId().c_str());
+	Log::debug(LOG_UI, "focus for %s", getId().c_str());
 	for (Listeners::iterator i = _listeners.begin(); i != _listeners.end(); ++i) {
 		(*i)->onAddFocus();
 	}
@@ -753,7 +753,7 @@ void UINode::removeFocus ()
 {
 	if (!_focus)
 		return;
-	Log::debug(LOG_CLIENT, "remove focus for %s", getId().c_str());
+	Log::debug(LOG_UI, "remove focus for %s", getId().c_str());
 	_focus = false;
 	_focusMouseX = -1;
 	_focusMouseY = -1;
@@ -773,6 +773,7 @@ void UINode::removeFocus ()
 
 bool UINode::onMouseButtonRelease (int32_t x, int32_t y, unsigned char button)
 {
+	Log::debug(LOG_UI, "onMouseButtonRelease: %s (%i:%i, %c), enabled: %s", getId().c_str(), x, y, button, (_enabled ? "true" : "false"));
 	if (!_enabled)
 		return false;
 
@@ -851,6 +852,7 @@ bool UINode::onGestureRecord (int64_t gestureId)
 
 bool UINode::onMouseButtonPress (int32_t x, int32_t y, unsigned char button)
 {
+	Log::debug(LOG_UI, "onMouseButtonPress: %s (%i:%i, %c), enabled: %s", getId().c_str(), x, y, button, (_enabled ? "true" : "false"));
 	if (!_enabled)
 		return false;
 

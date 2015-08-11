@@ -269,23 +269,23 @@ void UINodeMapEditor::loadFromContext (IMapContext& ctx)
 	setMapDimensions(mapWidth, mapHeight);
 
 	const std::vector<MapTileDefinition>& mapTiles = ctx.getMapTileDefinitions();
-	Log::info(LOG_CLIENT, "place %i maptiles", static_cast<int>(mapTiles.size()));
+	Log::info(LOG_UI, "place %i maptiles", static_cast<int>(mapTiles.size()));
 	for (std::vector<MapTileDefinition>::const_iterator i = mapTiles.begin(); i != mapTiles.end(); ++i) {
 		const SpriteType& type = i->spriteDef->type;
 		const MapEditorLayer layer = getLayer(type);
 		if (!placeTileItem(i->spriteDef, nullptr, i->x, i->y, layer, false, i->angle))
-			Log::error(LOG_CLIENT, "could not place tile %s at %f:%f", i->spriteDef->id.c_str(), i->x, i->y);
+			Log::error(LOG_UI, "could not place tile %s at %f:%f", i->spriteDef->id.c_str(), i->x, i->y);
 	}
 	const std::vector<CaveTileDefinition>& caves = ((CaveExpressMapContext*)&ctx)->getCaveTileDefinitions();
-	Log::info(LOG_CLIENT, "place %i caves", static_cast<int>(caves.size()));
+	Log::info(LOG_UI, "place %i caves", static_cast<int>(caves.size()));
 	for (std::vector<CaveTileDefinition>::const_iterator i = caves.begin(); i != caves.end(); ++i) {
 		const SpriteType& type = i->spriteDef->type;
 		const MapEditorLayer layer = getLayer(type);
 		if (!placeCave(i->spriteDef, i->type, i->x, i->y, layer, i->delay, false))
-			Log::error(LOG_CLIENT, "could not place cave %s at %i:%i", i->spriteDef->id.c_str(), (int)i->x, (int)i->y);
+			Log::error(LOG_UI, "could not place cave %s at %i:%i", i->spriteDef->id.c_str(), (int)i->x, (int)i->y);
 	}
 	const std::vector<EmitterDefinition>& emitters = ctx.getEmitterDefinitions();
-	Log::info(LOG_CLIENT, "place %i emitters", static_cast<int>(emitters.size()));
+	Log::info(LOG_UI, "place %i emitters", static_cast<int>(emitters.size()));
 	for (std::vector<EmitterDefinition>::const_iterator i = emitters.begin(); i != emitters.end(); ++i) {
 		const EntityType& entityType = *i->type;
 		const gridCoord x = i->x;
@@ -300,11 +300,11 @@ void UINodeMapEditor::loadFromContext (IMapContext& ctx)
 					Animations::ANIMATION_IDLE;
 		const SpriteDefPtr def = SpriteDefinition::get().getFromEntityType(entityType, animation);
 		if (!def) {
-			Log::error(LOG_CLIENT, "could not get the sprite definition for the entity type: %s", entityType.name.c_str());
+			Log::error(LOG_UI, "could not get the sprite definition for the entity type: %s", entityType.name.c_str());
 			continue;
 		}
 		if (!placeEmitter(def, &entityType, x, y, amount, delay, false, s.getFloat(EMITTER_ANGLE), i->settings))
-			Log::error(LOG_CLIENT, "could not place emitter %s at %f:%f", i->type->name.c_str(), x, y);
+			Log::error(LOG_UI, "could not place emitter %s at %f:%f", i->type->name.c_str(), x, y);
 	}
 }
 

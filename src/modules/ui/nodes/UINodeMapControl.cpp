@@ -20,7 +20,7 @@ UINodeMapControl::~UINodeMapControl ()
 
 bool UINodeMapControl::isActive () const
 {
-	return _map.isStarted() && !_map.isPause() && _joystick;
+	return _joystick && _map.isStarted() && !_map.isPause();
 }
 
 void UINodeMapControl::removeFocus ()
@@ -84,9 +84,9 @@ bool UINodeMapControl::onJoystickMotion (bool horizontal, int value)
 	}
 
 	if (horizontal)
-		Log::info(LOG_CLIENT, "h joystick movement: %i", value);
+		Log::info(LOG_UI, "h joystick movement: %i", value);
 	else
-		Log::info(LOG_CLIENT, "v joystick movement: %i", value);
+		Log::info(LOG_UI, "v joystick movement: %i", value);
 
 	const int delta = 8000;
 	if (horizontal) {

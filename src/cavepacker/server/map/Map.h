@@ -155,6 +155,7 @@ public:
 	void increaseMoves ();
 	void increasePushes ();
 	void undo (Player* player);
+	void walkTo (Player* player, int col, int row);
 
 	void autoStart ();
 	void loadDelayed (uint32_t delay, const std::string& name);

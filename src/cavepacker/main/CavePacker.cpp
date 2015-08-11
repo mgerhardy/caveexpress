@@ -10,6 +10,7 @@
 #include "cavepacker/server/network/MovementHandler.h"
 #include "cavepacker/server/network/StopMovementHandler.h"
 #include "cavepacker/server/network/UndoHandler.h"
+#include "cavepacker/server/network/WalkToHandler.h"
 #include "cavepacker/server/network/ClientInitHandler.h"
 #include "cavepacker/server/network/ErrorHandler.h"
 #include "cavepacker/server/network/StopFingerMovementHandler.h"
@@ -279,6 +280,7 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	rp.registerServerHandler(::protocol::PROTO_STOPMOVEMENT, new StopMovementHandler(_map));
 	rp.registerServerHandler(::protocol::PROTO_ERROR, new ErrorHandler(_map));
 	rp.registerServerHandler(::protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_WALKTO, new WalkToHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_UNDO, new UndoHandler(_map));
 
 	ProtocolMessageFactory& f = ProtocolMessageFactory::get();

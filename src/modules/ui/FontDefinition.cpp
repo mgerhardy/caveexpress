@@ -24,7 +24,7 @@ FontDefinition::FontDefinition() {
 
 		FontDefMapConstIter findIter = _fontDefs.find(id);
 		if (findIter != _fontDefs.end()) {
-			Log::error(LOG_GENERAL, "font def already defined: %s", id.c_str());
+			Log::error(LOG_UI, "font def already defined: %s", id.c_str());
 			lua.pop();
 			continue;
 		}

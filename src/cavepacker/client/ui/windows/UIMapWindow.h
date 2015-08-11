@@ -18,6 +18,11 @@ protected:
 	UICavePackerNodePoint* _points;
 	CampaignManager& _campaignManager;
 	bool _scrolling;
+	int _targetX;
+	int _targetY;
+
+	bool getField (int32_t x, int32_t y, int *tx, int *ty) const;
+	void doMove (int tx, int ty);
 public:
 	UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, CavePackerClientMap& map);
 

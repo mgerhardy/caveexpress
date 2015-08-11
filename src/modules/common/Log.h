@@ -24,6 +24,7 @@ typedef enum {
 	LOG_STORAGE,
 	LOG_SYSTEM,
 	LOG_GENERAL,
+	LOG_UI,
 
 	LOG_MAX
 } LogCategory;

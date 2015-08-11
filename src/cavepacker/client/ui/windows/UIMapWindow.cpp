@@ -1,6 +1,7 @@
 #include "UIMapWindow.h"
 #include "cavepacker/client/ui/nodes/UINodeMap.h"
 #include "cavepacker/client/ui/nodes/UICavePackerNodePoint.h"
+#include "cavepacker/shared/network/messages/WalkToMessage.h"
 #include "ui/nodes/UINodeBar.h"
 #include "ui/nodes/UINodeSprite.h"
 #include "ui/nodes/UINodePoint.h"
@@ -38,7 +39,7 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 		IUIMapWindow(frontend, serviceProvider, campaignManager, map,
 				new UINodeMap(frontend, serviceProvider, campaignManager, 0, 0,
 						frontend->getWidth(), frontend->getHeight(), map)), _undo(
-				nullptr), _points(nullptr), _campaignManager(campaignManager), _scrolling(false) {
+				nullptr), _points(nullptr), _campaignManager(campaignManager), _scrolling(false), _targetX(-1), _targetY(-1) {
 	init();
 
 	const float height = 0.05f;
@@ -122,7 +123,7 @@ void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
 	const CampaignMap* campaignMap = c->getMapById(name);
 	const int ownBest = campaignMap != nullptr ? campaignMap->getFinishPoints() : 0;
 	const std::string best = map.getSetting("best", "0" /* string::toString(ownBest) */);
-	Log::info(LOG_CLIENT, "got best points from server: %s", best.c_str());
+	Log::info(LOG_UI, "got best points from server: %s", best.c_str());
 	_points->setOwnAndGlobalBest(ownBest, string::toInt(best));
 	_points->setLabel("0");
 
@@ -145,12 +146,40 @@ bool UIMapWindow::onMouseButtonRelease (int32_t x, int32_t y, unsigned char butt
 	return true;
 }
 
+bool UIMapWindow::getField (int32_t x, int32_t y, int *tx, int *ty) const
+{
+	_nodeMap->getMap().getMapGridForScreenPixel(x, y, tx, ty);
+	if (*tx == -1 || *ty == -1)
+		return false;
+	return true;
+}
+
+void UIMapWindow::doMove (int tx, int ty)
+{
+	Log::debug(LOG_UI, "send walk message to reach %i:%i", tx, ty);
+	_serviceProvider.getNetwork().sendToServer(WalkToMessage(tx, ty));
+	_targetX = _targetY = -1;
+}
+
 bool UIMapWindow::onMouseButtonPress (int32_t x, int32_t y, unsigned char button)
 {
-	if (!IUIMapWindow::onMouseButtonPress(x, y, button)) {
+	const bool retVal = IUIMapWindow::onMouseButtonPress(x, y, button);
+	if (!retVal) {
 		_scrolling = true;
 	}
-	return true;
+	if (button == SDL_BUTTON_LEFT) {
+		int tx, ty;
+		if (getField(x, y, &tx, &ty)) {
+			// double clicking onto the same field means, that the users wanna walk there
+			Log::debug(LOG_UI, "resolved the grid coordinates for %i:%i to %i:%i", x, y, tx, ty);
+			if (_targetX == tx && _targetY == ty) {
+				doMove(_targetX, _targetY);
+			}
+			return true;
+		}
+		Log::error(LOG_UI, "could not get grid coordinates for %i:%i", x, y);
+	}
+	return retVal;
 }
 
 void UIMapWindow::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY)

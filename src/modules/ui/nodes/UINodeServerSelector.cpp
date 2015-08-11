@@ -37,14 +37,14 @@ UINodeServerSelector::~UINodeServerSelector ()
 void UINodeServerSelector::addServer (const std::string &host, const std::string& name, const std::string& mapName,
 		int port, int playerCount, int maxPlayerCount)
 {
-	Log::info(LOG_CLIENT, "add server: %s", host.c_str());
+	Log::info(LOG_UI, "add server: %s", host.c_str());
 	addData(ServerEntry(name, host, port, mapName, playerCount, maxPlayerCount));
 }
 
 bool UINodeServerSelector::onSelect (const ServerEntry& data)
 {
 	const std::string connect = CMD_CL_CONNECT " " + data.host + " " + string::toString(data.port);
-	Log::info(LOG_CLIENT, "connect via '%s'", connect.c_str());
+	Log::info(LOG_UI, "connect via '%s'", connect.c_str());
 	Commands.executeCommandLine(connect);
 	return true;
 }

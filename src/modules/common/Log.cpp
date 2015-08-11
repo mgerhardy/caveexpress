@@ -19,7 +19,8 @@ char const* const LogTypes[] = {
 	"LOG_LUA",
 	"LOG_STORAGE",
 	"LOG_SYSTEM",
-	"LOG_GENERAL"
+	"LOG_GENERAL",
+	"LOG_UI"
 };
 CASSERT(lengthof(LogTypes) == LOG_MAX);
 

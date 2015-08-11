@@ -237,6 +237,11 @@ void Map::undo (Player* player)
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
 }
 
+void Map::walkTo (Player* player, int col, int row)
+{
+	Log::info(LOG_SERVER, "move player %i from %i:%i to %i:%i", player->getID(), player->getCol(), player->getRow(), col, row);
+}
+
 bool Map::undoPackage (int col, int row, int targetCol, int targetRow)
 {
 	MapTile* package = getPackage(col, row);
