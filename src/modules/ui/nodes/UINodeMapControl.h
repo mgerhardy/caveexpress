@@ -28,7 +28,7 @@ public:
 	// UINode
 	void renderDebug (int x, int y, int textY) const override;
 	void removeFocus () override;
-	bool isActive () const;
+	bool isActive () const override;
 	void update (uint32_t deltaTime) override;
 	bool onJoystickMotion (bool horizontal, int value) override;
 };
