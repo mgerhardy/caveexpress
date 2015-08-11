@@ -25,6 +25,7 @@ bool UINodeMapControl::isActive () const
 
 void UINodeMapControl::removeFocus ()
 {
+	UINode::removeFocus();
 	if (_direction || _oldDirection) {
 		_map.resetAcceleration(0);
 	}
