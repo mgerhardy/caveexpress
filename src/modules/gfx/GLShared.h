@@ -44,11 +44,7 @@ inline int OpenGLStateHandlerCheckError (const char *file, int line, const char 
 
 #if defined(SDL_VIDEO_OPENGL) || defined(SDL_VIDEO_OPENGL_ES)
 #ifdef DEBUG
-#ifdef _MSC_VER
-#define GL_checkError() OpenGLStateHandlerCheckError(__FILE__, __LINE__, __FUNCSIG__)
-#else
 #define GL_checkError() OpenGLStateHandlerCheckError(__FILE__, __LINE__, __PRETTY_FUNCTION__)
-#endif
 #else
 #define GL_checkError()
 #endif
