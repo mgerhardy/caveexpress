@@ -15,9 +15,9 @@ build:
   project: Project.sln
   verbosity: detailed
 test_script:
-  - tests.exe
-  - tests-caveexpress.exe
-  - tests-cavepacker.exe
+#  - tests.exe
+#  - tests-caveexpress.exe
+#  - tests-cavepacker.exe
   - cinst nsis -y -installArgs /D=%NSIS_ROOT%
 #artifacts:
 #  - path: contrib/installer/windows/*.exe
