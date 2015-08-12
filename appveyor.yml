@@ -1,5 +1,9 @@
-os: Windows Server 2012 R2
+os:
+  - Windows Server 2012 R2
+#  - MinGW
 configuration: Release
+environment:
+  NSIS_ROOT: C:\nsis
 branches:
   only:
   - master
@@ -7,4 +11,14 @@ clone_depth: 10
 before_build:
   - cmake -DTOOLS=OFF -G "Visual Studio 12"
 build:
+  parallel: true
   project: Project.sln
+  verbosity: detailed
+test_script:
+  - tests.exe
+  - tests-caveexpress.exe
+  - tests-cavepacker.exe
+  - cinst nsis -y -installArgs /D=%NSIS_ROOT%
+#artifacts:
+#  - path: contrib/installer/windows/*.exe
+#    name: NSIS Installer
