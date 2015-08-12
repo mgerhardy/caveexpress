@@ -772,9 +772,9 @@ void UINode::removeFocus ()
 		restoreAlpha();
 
 	for (UINode* nodePtr : _nodes) {
-		if (!node->hasFocus())
+		if (!nodePtr->hasFocus())
 			continue;
-		node->removeFocus();
+		nodePtr->removeFocus();
 	}
 }
 
