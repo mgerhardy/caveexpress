@@ -71,7 +71,9 @@ If you want to rebuild the texture atlas, then you also need TexturePacker. Ther
 * cd build
 * cmake ..
 * make
+
 or simply
+
 * ./contrib/scripts/linux.sh
 
 #### Cross compile from linux for windows:
@@ -82,7 +84,9 @@ or simply
 * cd build
 * cmake .. -DCMAKE_TOOLCHAIN_FILE=/path/to/mxe/usr/i686-w64-mingw32.static/share/cmake/mxe-conf.cmake
 * make
+
 or simply
+
 * ./contrib/scripts/windows.sh
 
 #### Compile for windows
@@ -98,7 +102,9 @@ or simply
 * cd build
 * cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/android-toolchain.cmake
 * make
+
 or simply:
+
 * ./contrib/scripts/android.sh
 
 If you get an aapt - no such file or directory on 64bit debian based
@@ -113,7 +119,9 @@ distributions, do the following:
 * cd build-emscripten
 * cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/emscripten-toolchain.cmake
 * make
+
 or simply:
+
 * ./contrib/scripts/emscripten.sh
 
 #### Compile for NaCl (outdated)
