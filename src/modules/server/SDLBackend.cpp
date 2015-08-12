@@ -404,6 +404,9 @@ bool SDLBackend::onKeyPress (int32_t key, int16_t modifier)
 	}
 
 	const int mod = Config.getKeyModifier(key);
+	if (mod == KMOD_NONE && modifier != 0) {
+		return false;
+	}
 	if (mod != KMOD_NONE && !(modifier & mod)) {
 		return false;
 	}
