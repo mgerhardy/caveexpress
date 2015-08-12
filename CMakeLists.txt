@@ -58,7 +58,7 @@ elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 	set(LINUX 1)
 else()
-	message(WARNING "Unknown host system - default to linux")
+	message(WARNING "Unknown host system: ${CMAKE_SYSTEM_NAME}. Default to linux")
 	set(LINUX 1)
 endif()
 
