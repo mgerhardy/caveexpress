@@ -181,7 +181,7 @@ void IUINodeMapEditor::loadMap (const ICommand::Args& args)
 
 	UI::get().pushRoot(UI_WINDOW_EDITOR);
 	Log::error(LOG_UI, "map %s is loading", args[0].c_str());
-	load(args[0]);
+	load(args[0].str());
 }
 
 int IUINodeMapEditor::getTileWidth () const
