@@ -58,6 +58,11 @@ void UIWindow::onPushedOver ()
 
 void UIWindow::onActive ()
 {
+	int x, y;
+	UI::get().getCursorPosition(x, y);
+	if (!checkFocus(x, y)) {
+		addFirstFocus();
+	}
 	System.track("activewindow", getId());
 	_pushedTime = _time;
 }
