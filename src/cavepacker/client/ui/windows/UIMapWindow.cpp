@@ -178,6 +178,9 @@ bool UIMapWindow::onMouseButtonPress (int32_t x, int32_t y, unsigned char button
 			Log::debug(LOG_UI, "resolved the grid coordinates for %i:%i to %i:%i", x, y, tx, ty);
 			if (_targetX == tx && _targetY == ty) {
 				doMove(_targetX, _targetY);
+			} else {
+				_targetX = tx;
+				_targetY = ty;
 			}
 			return true;
 		}
