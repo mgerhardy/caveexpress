@@ -41,7 +41,7 @@ The multiplayer maps were all created by me and are released in the Public Domai
 
 #### Requirements
 * cmake >= 2.8.7
-* gcc or clang as compiler (msvc not yet supported/tested)
+* gcc, clang or msvc as compiler
 * SDL2 >= 2.0.3
 * SDL2_mixer
 * SDL2_net
