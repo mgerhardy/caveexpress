@@ -12,6 +12,8 @@ elseif (MSVC)
 else()
 	message(WARNING "C++ Compiler: Unknown")
 endif()
+message(STATUS "Target processor: ${CMAKE_SYSTEM_PROCESSOR}")
+message(STATUS "Host processor: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
 
 #-------------------------------------------------------------------------------
 # macros
