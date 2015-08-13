@@ -23,9 +23,14 @@ if (HAVE_CLOCK_GETTIME)
     set(CMAKE_C_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES} -lrt")
 endif()
 
+if ("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "x86")
+    set(PLATFORM_C_FLAGS "-msse3")
+elseif("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "arm")
+    set(PLATFORM_C_FLAGS "-mfpu=neon")
+endif()
 
-set(CMAKE_C_FLAGS "-pthread -Wcast-qual -Wcast-align -Wpointer-arith -Wshadow -Wall -Wextra -Wreturn-type -Wwrite-strings -Wno-unused-parameter")
-set(CMAKE_C_FLAGS_RELEASE "-O3 -ftree-vectorize -msse3 -ffast-math -DNDEBUG -D_FORTIFY_SOURCE=2")
+set(CMAKE_C_FLAGS "-pthread -Wcast-qual -Wcast-align -Wpointer-arith -Wshadow -Wall -Wextra -Wreturn-type -Wwrite-strings -Wno-unused-parameter ${PLATFORM_C_FLAGS}")
+set(CMAKE_C_FLAGS_RELEASE "-O3 -ftree-vectorize -ffast-math -DNDEBUG -D_FORTIFY_SOURCE=2")
 set(CMAKE_C_FLAGS_DEBUG "-O0 -DDEBUG=1 -ggdb")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11 -Wnon-virtual-dtor -fno-rtti -fno-exceptions")
