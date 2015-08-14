@@ -1,9 +1,12 @@
 include(CheckFunctionExists)
 include(CheckLibraryExists)
 
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+find_package(Threads)
+
 set(CMAKE_EXE_LINKER_FLAGS "")
 set(CMAKE_EXE_LINKER_FLAGS_RELEASE "")
-set(CMAKE_EXE_LINKER_FLAGS_DEBUG "")
+set(CMAKE_EXE_LINKER_FLAGS_DEBUG "-fsanitize=address")
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     check_function_exists(__atomic_fetch_add_4 HAVE___ATOMIC_FETCH_ADD_4)
@@ -23,15 +26,12 @@ if (HAVE_CLOCK_GETTIME)
     set(CMAKE_C_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES} -lrt")
 endif()
 
-if ("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "x86")
-    set(PLATFORM_C_FLAGS "-msse3")
-elseif("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "arm")
-    set(PLATFORM_C_FLAGS "-mfpu=neon")
+set(CMAKE_C_FLAGS "-g -Wcast-qual -Wcast-align -Wpointer-arith -Wno-long-long -Wno-multichar -Wshadow -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wreturn-type -Wwrite-strings -Wno-variadic-macros -Wno-unknown-pragmas")
+if (CMAKE_USE_PTHREADS_INIT)
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
 endif()
-
-set(CMAKE_C_FLAGS "-pthread -Wcast-qual -Wcast-align -Wpointer-arith -Wshadow -Wall -Wextra -Wreturn-type -Wwrite-strings -Wno-unused-parameter ${PLATFORM_C_FLAGS}")
-set(CMAKE_C_FLAGS_RELEASE "-O3 -ftree-vectorize -ffast-math -DNDEBUG -D_FORTIFY_SOURCE=2")
-set(CMAKE_C_FLAGS_DEBUG "-O0 -DDEBUG=1 -ggdb")
+set(CMAKE_C_FLAGS_RELEASE "-D_GNU_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_XOPEN_SOURCE -D_FORTIFY_SOURCE=2 -DNDEBUG -fexpensive-optimizations -fomit-frame-pointer -O3")
+set(CMAKE_C_FLAGS_DEBUG "-DDEBUG -fsanitize=address -fno-omit-frame-pointer")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11 -Wnon-virtual-dtor -fno-rtti -fno-exceptions")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
