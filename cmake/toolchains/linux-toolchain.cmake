@@ -6,7 +6,7 @@ find_package(Threads)
 
 set(CMAKE_EXE_LINKER_FLAGS "")
 set(CMAKE_EXE_LINKER_FLAGS_RELEASE "")
-set(CMAKE_EXE_LINKER_FLAGS_DEBUG "-fsanitize=address")
+set(CMAKE_EXE_LINKER_FLAGS_DEBUG "")
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     check_function_exists(__atomic_fetch_add_4 HAVE___ATOMIC_FETCH_ADD_4)
@@ -31,7 +31,7 @@ if (CMAKE_USE_PTHREADS_INIT)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
 endif()
 set(CMAKE_C_FLAGS_RELEASE "-D_GNU_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_XOPEN_SOURCE -D_FORTIFY_SOURCE=2 -DNDEBUG -fexpensive-optimizations -fomit-frame-pointer -O3")
-set(CMAKE_C_FLAGS_DEBUG "-DDEBUG -fsanitize=address -fno-omit-frame-pointer")
+set(CMAKE_C_FLAGS_DEBUG "-DDEBUG -fno-omit-frame-pointer")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11 -Wnon-virtual-dtor -fno-rtti -fno-exceptions")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
