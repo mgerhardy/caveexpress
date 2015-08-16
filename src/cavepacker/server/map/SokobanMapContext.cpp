@@ -63,7 +63,8 @@ bool SokobanMapContext::load(bool skipErrors) {
 			if (inText) {
 				line.push_back(buffer[i]);
 			} else {
-				if (string::startsWith(string::toLower(line), "title:")) {
+				const std::string& lower = string::toLower(line);
+				if (string::startsWith(lower, "title:") || string::startsWith(lower, "collection:")) {
 					std::vector<std::string> tokens;
 					string::splitString(string::trim(line), tokens, ":");
 					if (tokens.size() == 2) {
@@ -78,6 +79,8 @@ bool SokobanMapContext::load(bool skipErrors) {
 			inComment = buffer[i] != '\n';
 			if (inComment)
 				line.push_back(buffer[i]);
+			else
+				Log::info(LOG_SERVER, "comment: %s", line.c_str());
 			continue;
 		}
 		switch (buffer[i]) {
@@ -116,6 +119,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 		case '\r':
 			continue;
 		case ';':
+		case ':':
 			inComment = true;
 			continue;
 		default:

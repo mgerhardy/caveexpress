@@ -2,18 +2,9 @@
 
 #include "common/IMapContext.h"
 #include <string>
+#include "SokobanTiles.h"
 
 namespace cavepacker {
-
-namespace Sokoban {
-const int WALL = '#';
-const int PLAYER = '@';
-const int PACKAGE = '$';
-const int TARGET = '.';
-const int GROUND = ' ';
-const int PACKAGEONTARGET = '*';
-const int PLAYERONTARGET = '+';
-}
 
 class SokobanMapContext : public IMapContext {
 private:

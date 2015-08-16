@@ -39,8 +39,6 @@
 
 namespace cavepacker {
 
-#define INDEX(col, row) ((col) + _width * (row))
-
 Map::Map () :
 		IMap(), _frontend(nullptr), _serviceProvider(nullptr), _forcedFinish(false), _autoSolve(false), _nextSolveStep(0)
 {
@@ -206,12 +204,7 @@ bool Map::isDone () const
 		return true;
 	if (isFailed())
 		return false;
-	for (StateMapConstIter i = _state.begin(); i != _state.end(); ++i) {
-		// if there is an empty target left, we are not yet done
-		if (i->second == Sokoban::TARGET || i->second == Sokoban::PLAYERONTARGET)
-			return false;
-	}
-	return true;
+	return _state.isDone();
 }
 
 void Map::increaseMoves ()
@@ -253,15 +246,13 @@ bool Map::undoPackage (int col, int row, int targetCol, int targetRow)
 		if (!package->setPos(targetCol, targetRow))
 			return false;
 		rebuildField();
-		const int index = INDEX(targetCol, targetRow);
-		StateMapConstIter i = _state.find(index);
-		if (i == _state.end()) {
+		if (_state.isInvalid(targetCol, targetRow)) {
 			package->setPos(origCol, origRow);
 			return false;
 		}
 
-		const char c = i->second;
-		if (c == Sokoban::PACKAGEONTARGET)
+		const char c = _state.getField(targetCol, targetRow);
+		if (isPackageOnTarget(c))
 			package->setState(CavePackerEntityStates::DELIVERED);
 		else
 			package->setState(CavePackerEntityStates::NONE);
@@ -294,7 +285,7 @@ bool Map::movePlayer (Player* player, char step)
 	if (package != nullptr) {
 		const int pCol = targetCol + x;
 		const int pRow = targetRow + y;
-		if (!isFree(pCol, pRow)) {
+		if (!_state.isFree(pCol, pRow)) {
 			Log::debug(LOG_SERVER, "can't move here - can't move package. target field is blocked");
 			return false;
 		}
@@ -305,7 +296,7 @@ bool Map::movePlayer (Player* player, char step)
 		Log::debug(LOG_SERVER, "moved package %i", package->getID());
 		increasePushes();
 		rebuildField();
-		if (isTarget(pCol, pRow)) {
+		if (_state.isTarget(pCol, pRow)) {
 			package->setState(CavePackerEntityStates::DELIVERED);
 			Log::debug(LOG_SERVER, "mark package as delivered %i", package->getID());
 		} else if (package->getState() == CavePackerEntityStates::DELIVERED) {
@@ -314,12 +305,15 @@ bool Map::movePlayer (Player* player, char step)
 		}
 		// sokoban standard - if a package was moved, the move char is uppercase
 		step = toupper(step);
+
 	}
 	if (!player->setPos(targetCol, targetRow)) {
 		Log::debug(LOG_SERVER, "failed to move the player");
 		return false;
 	}
 
+	if (package != nullptr)
+		_deadLock = _state.hasDeadlock();
 	player->storeStep(step);
 	increaseMoves();
 	return true;
@@ -337,6 +331,9 @@ bool Map::isFailed () const
 
 	const uint16_t limit = USHRT_MAX - 10;
 	if (_moves >= limit || _pushes >= limit)
+		return true;
+
+	if (_deadLock)
 		return true;
 
 	return false;
@@ -358,6 +355,7 @@ void Map::resetCurrentMap ()
 	abortAutoSolve();
 	_nextSolveStep = 0;
 	_solution = "";
+	_deadLock = false;
 	_timeManager.reset();
 	if (!_name.empty()) {
 		const CloseMapMessage msg;
@@ -450,6 +448,7 @@ bool Map::load (const std::string& name)
 	_title = ctx->getTitle();
 	_width = getSetting(msn::WIDTH, "-1").toInt();
 	_height = getSetting(msn::HEIGHT, "-1").toInt();
+	_state.setSize(_width, _height);
 	_solution = getSolution();
 	const std::string solutionSteps = string::toString(_solution.length());
 	_settings.insert(std::make_pair("best", solutionSteps));
@@ -520,12 +519,11 @@ std::string Map::getMapString() const
 	mapStr.reserve(_height * _width);
 	for (int row = 0; row < _height; ++row) {
 		for (int col = 0; col < _width; ++col) {
-			const StateMapConstIter& i = _state.find(INDEX(col, row));
-			if (i == _state.end()) {
+			if (_state.isInvalid(col, row)) {
 				mapStr.append("+");
 				continue;
 			}
-			const char c = i->second;
+			const char c = _state.getField(col, row);
 			const char str[2] = { c, '\0' };
 			mapStr.append(str);
 		}
@@ -553,21 +551,22 @@ void Map::startMap ()
 
 	for (int row = 0; row < _height; ++row) {
 		for (int col = 0; col < _width; ++col) {
-			StateMapConstIter i = _state.find(INDEX(col, row));
-			if (i == _state.end())
+			if (_state.isInvalid(col, row)) {
 				continue;
-			const char c = i->second;
-			if (c != Sokoban::PACKAGEONTARGET)
+			}
+			const char c = _state.getField(col, row);
+			if (!isPackageOnTarget(c)) {
 				continue;
-
-			getPackage(col, row)->setState(CavePackerEntityStates::DELIVERED);
+			}
+			MapTile* package = getPackage(col, row);
+			package->setState(CavePackerEntityStates::DELIVERED);
 		}
 	}
 }
 
 MapTile* Map::getPackage (int col, int row)
 {
-	FieldMapIter i = _field.find(INDEX(col, row));
+	FieldMapIter i = _field.find(_state.getIndex(col, row));
 	if (i == _field.end()) {
 		return nullptr;
 	}
@@ -575,38 +574,6 @@ MapTile* Map::getPackage (int col, int row)
 		return static_cast<MapTile*>(i->second);
 	}
 	return nullptr;
-}
-
-bool Map::isFree (int col, int row)
-{
-	StateMapConstIter i = _state.find(INDEX(col, row));
-	// not part of the map - thus, not free
-	if (i == _state.end()) {
-		Log::debug(LOG_MAP, "col: %i, row: %i is not part of the map", col, row);
-		return false;
-	}
-
-	const char c = i->second;
-	Log::debug(LOG_MAP, "col: %i, row: %i is of type '%c'", col, row, c);
-	return c == Sokoban::GROUND || c == Sokoban::TARGET;
-}
-
-bool Map::isTarget (int col, int row)
-{
-	StateMapConstIter i = _state.find(INDEX(col, row));
-	if (i == _state.end())
-		return false;
-	const char c = i->second;
-	return c == Sokoban::PACKAGEONTARGET || c == Sokoban::PLAYERONTARGET || c == Sokoban::TARGET;
-}
-
-bool Map::isPackage (int col, int row)
-{
-	StateMapConstIter i = _state.find(INDEX(col, row));
-	if (i == _state.end())
-		return false;
-	const char c = i->second;
-	return c == Sokoban::PACKAGE || c == Sokoban::PACKAGEONTARGET;
 }
 
 bool Map::initPlayer (Player* player)
@@ -690,7 +657,7 @@ char Map::getSokobanFieldId (const IEntity *entity) const
 
 bool Map::setField (IEntity *entity, int col, int row)
 {
-	const int index = INDEX(col, row);
+	const int index = _state.getIndex(col, row);
 	FieldMapConstIter fi = _field.find(index);
 	if (fi == _field.end()) {
 		_field[index] = entity;
@@ -699,12 +666,11 @@ bool Map::setField (IEntity *entity, int col, int row)
 		if (fi->second->isGround() || fi->second->isTarget())
 			_field[index] = entity;
 	}
-	StateMapConstIter i = _state.find(index);
-	if (i == _state.end()) {
-		_state[index] = getSokobanFieldId(entity);
+	if (_state.isInvalid(col, row)) {
+		_state.setField(col, row, getSokobanFieldId(entity));
 		return true;
 	}
-	const char c = i->second;
+	const char c = _state.getField(col, row);
 	char nc = getSokobanFieldId(entity);
 	if (c == Sokoban::PLAYER) {
 		if (nc == Sokoban::TARGET)
@@ -730,7 +696,7 @@ bool Map::setField (IEntity *entity, int col, int row)
 		else
 			return false;
 	}
-	_state[index] = nc;
+	_state.setField(col, row, nc);
 	return true;
 }
 
