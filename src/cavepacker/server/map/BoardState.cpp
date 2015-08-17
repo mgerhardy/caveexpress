@@ -1,5 +1,6 @@
 #include "BoardState.h"
 #include "cavepacker/server/map/deadlock/DeadlockDetector.h"
+#include <SDL_assert.h>
 
 namespace cavepacker {
 
@@ -69,24 +70,52 @@ bool BoardState::setField(int col, int row, char field) {
 	return true;
 }
 
-bool BoardState::canMoveLeft(int col, int row) const {
-	// TODO:
+bool BoardState::canMove(int col, int row) const {
+	SDL_assert_always(isPackage(col, row));
+	// we only need to check two directions here
+	const bool left = canMoveLeft(col, row);
+	const bool right = canMoveUp(col, row);
+	const bool moveable = left && right;
+	if (moveable)
+		Log::info(LOG_MAP, "package on %i:%i can be moved", col, row);
+	else
+		Log::info(LOG_MAP, "package on %i:%i can't be moved", col, row);
+	return moveable;
+}
+
+bool BoardState::canMoveDirection(char dir, int col, int row) const {
+	int lx, ly;
+	getXY(dir, lx, ly);
+	int ox, oy;
+	getOppositeXY(dir, ox, oy);
+	if (!isFree(col + lx, row + ly) && !isFree(col + ox, row + oy)) {
+		return false;
+	}
+
+	if (isPackage(col + lx, row + ly)) {
+		return canMove(col + lx, row + ly);
+	}
+	if (isPackage(col + ox, row + oy)) {
+		return canMove(col + ox, row + oy);
+	}
+
 	return true;
+}
+
+bool BoardState::canMoveLeft(int col, int row) const {
+	return canMoveDirection(MOVE_LEFT, col, row);
 }
 
 bool BoardState::canMoveRight(int col, int row) const {
-	// TODO:
-	return true;
+	return canMoveDirection(MOVE_RIGHT, col, row);
 }
 
 bool BoardState::canMoveUp(int col, int row) const {
-	// TODO:
-	return true;
+	return canMoveDirection(MOVE_UP, col, row);
 }
 
 bool BoardState::canMoveDown(int col, int row) const {
-	// TODO:
-	return true;
+	return canMoveDirection(MOVE_DOWN, col, row);
 }
 
 }

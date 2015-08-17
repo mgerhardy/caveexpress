@@ -225,6 +225,10 @@ void Map::undo (Player* player)
 	if (!player->undo())
 		return;
 
+	if (_moves == _deadLock) {
+		_deadLock = 0;
+		_deadLockMessageSent = false;
+	}
 	--_moves;
 	Log::debug(LOG_SERVER, "moved fields after undo: %i", _moves);
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
@@ -312,10 +316,11 @@ bool Map::movePlayer (Player* player, char step)
 		return false;
 	}
 
-	if (package != nullptr)
-		_deadLock = _state.hasDeadlock();
 	player->storeStep(step);
 	increaseMoves();
+	// if there is not already a deadlock and we moved a package, check the state
+	if (_deadLock == 0 && package != nullptr && _state.hasDeadlock())
+		_deadLock = _moves;
 	return true;
 }
 
@@ -331,9 +336,6 @@ bool Map::isFailed () const
 
 	const uint16_t limit = USHRT_MAX - 10;
 	if (_moves >= limit || _pushes >= limit)
-		return true;
-
-	if (_deadLock)
 		return true;
 
 	return false;
@@ -355,7 +357,8 @@ void Map::resetCurrentMap ()
 	abortAutoSolve();
 	_nextSolveStep = 0;
 	_solution = "";
-	_deadLock = false;
+	_deadLock = 0;
+	_deadLockMessageSent = false;
 	_timeManager.reset();
 	if (!_name.empty()) {
 		const CloseMapMessage msg;
@@ -801,6 +804,13 @@ void Map::update (uint32_t deltaTime)
 {
 	if (_pause)
 		return;
+
+	if (_deadLock >= 1 && _deadLock == _moves && !_deadLockMessageSent) {
+		_deadLockMessageSent = true;
+		Log::info(LOG_MAP, "send the deadlock message");
+		const TextMessage msg("Deadlock detected");
+		_serviceProvider->getNetwork().sendToAllClients(msg);
+	}
 
 	_timeManager.update(deltaTime);
 

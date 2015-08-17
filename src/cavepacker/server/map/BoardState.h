@@ -18,6 +18,8 @@ private:
 	StateMap _state;
 	int _width;
 	int _height;
+
+	bool canMoveDirection(char dir, int col, int row) const;
 public:
 	BoardState();
 
@@ -60,6 +62,11 @@ public:
 	 */
 	bool isDone() const;
 
+	/**
+	 * @brief Checks whether the package on the given coordinates can be moved. This is doing a recursive check of packages
+	 * @note It's assumed that the given col and row is occupied by a package.
+	 */
+	bool canMove(int col, int row) const;
 	bool canMoveLeft(int col, int row) const;
 	bool canMoveRight(int col, int row) const;
 	bool canMoveUp(int col, int row) const;
@@ -79,6 +86,10 @@ public:
 		col = index % _width;
 		row = index / _width;
 		return true;
+	}
+
+	inline int size() const {
+		return (int)_state.size();
 	}
 
 	inline int getIndex(int col, int row) const {
