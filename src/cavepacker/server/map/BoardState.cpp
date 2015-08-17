@@ -71,7 +71,6 @@ bool BoardState::setField(int col, int row, char field) {
 }
 
 bool BoardState::canMove(int col, int row) const {
-	SDL_assert_always(isPackage(col, row));
 	// we only need to check two directions here
 	const bool left = canMoveLeft(col, row);
 	const bool right = canMoveUp(col, row);

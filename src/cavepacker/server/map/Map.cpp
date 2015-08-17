@@ -523,10 +523,11 @@ std::string Map::getMapString() const
 	for (int row = 0; row < _height; ++row) {
 		for (int col = 0; col < _width; ++col) {
 			if (_state.isInvalid(col, row)) {
-				mapStr.append("+");
+				mapStr.append(" ");
 				continue;
 			}
-			const char c = _state.getField(col, row);
+			MapTile* package = getPackage(col, row);
+			const char c = package != nullptr ? Sokoban::PACKAGE : _state.getField(col, row);
 			const char str[2] = { c, '\0' };
 			mapStr.append(str);
 		}
@@ -567,9 +568,9 @@ void Map::startMap ()
 	}
 }
 
-MapTile* Map::getPackage (int col, int row)
+MapTile* Map::getPackage (int col, int row) const
 {
-	FieldMapIter i = _field.find(_state.getIndex(col, row));
+	auto i = _field.find(_state.getIndex(col, row));
 	if (i == _field.end()) {
 		return nullptr;
 	}
@@ -669,12 +670,12 @@ bool Map::setField (IEntity *entity, int col, int row)
 		if (fi->second->isGround() || fi->second->isTarget())
 			_field[index] = entity;
 	}
+	char nc = getSokobanFieldId(entity);
 	if (_state.isInvalid(col, row)) {
-		_state.setField(col, row, getSokobanFieldId(entity));
+		_state.setField(col, row, nc);
 		return true;
 	}
 	const char c = _state.getField(col, row);
-	char nc = getSokobanFieldId(entity);
 	if (c == Sokoban::PLAYER) {
 		if (nc == Sokoban::TARGET)
 			nc = Sokoban::PLAYERONTARGET;

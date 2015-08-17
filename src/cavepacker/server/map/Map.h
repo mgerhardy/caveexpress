@@ -169,7 +169,7 @@ public:
 	// returns the time that was needed to finish the map
 	uint32_t getTime () const;
 
-	MapTile* getPackage (int col, int row);
+	MapTile* getPackage (int col, int row) const;
 
 	bool undoPackage (int col, int row, int targetCol, int targetRow);
 
