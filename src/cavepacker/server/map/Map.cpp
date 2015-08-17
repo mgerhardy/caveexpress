@@ -31,6 +31,7 @@
 #include "cavepacker/shared/CavePackerSpriteType.h"
 #include "cavepacker/shared/EntityStates.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
+#include "cavepacker/server/map/deadlock/DeadlockDetector.h"
 #include <SDL.h>
 #include <algorithm>
 #include <functional>
@@ -518,15 +519,38 @@ bool Map::isReadyToStart () const
 
 std::string Map::getMapString() const
 {
+	const StateMap& stateMap = DeadlockDetector::calculateDeadlockFields(_state);
 	std::string mapStr;
 	mapStr.reserve(_height * _width);
 	for (int row = 0; row < _height; ++row) {
 		for (int col = 0; col < _width; ++col) {
+			auto i = stateMap.find(_state.getIndex(col, row));
+			if (i != stateMap.end()) {
+				mapStr.append("!");
+				continue;
+			}
 			if (_state.isInvalid(col, row)) {
 				mapStr.append(" ");
 				continue;
 			}
 			MapTile* package = getPackage(col, row);
+			bool player = false;
+			for (Player* p : getPlayers()) {
+				if (p->getCol() == col && p->getRow() == row) {
+					const int pc = _state.getField(col, row);
+					if (pc == Sokoban::TARGET) {
+						const char str[2] = { Sokoban::PLAYER, '\0' };
+						mapStr.append(str);
+					} else {
+						const char str[2] = { Sokoban::PLAYERONTARGET, '\0' };
+						mapStr.append(str);
+					}
+					player = true;
+					break;
+				}
+			}
+			if (player)
+				continue;
 			const char c = package != nullptr ? Sokoban::PACKAGE : _state.getField(col, row);
 			const char str[2] = { c, '\0' };
 			mapStr.append(str);
@@ -539,7 +563,7 @@ std::string Map::getMapString() const
 void Map::printMap ()
 {
 	const std::string& mapString = getMapString();
-	Log::info(LOG_CLIENT, "\n%s", mapString.c_str());
+	Log::info(LOG_CLIENT, "Map State:\n%s", mapString.c_str());
 }
 
 void Map::startMap ()
