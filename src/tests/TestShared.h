@@ -9,6 +9,10 @@
 #include "game/GameRegistry.h"
 #include "network/INetwork.h"
 
+class NopClientProtocolHandler : public IClientProtocolHandler {
+	void execute (const IProtocolMessage&) override {}
+};
+
 class TestCampaignMgr : public ICampaignManager {
 public:
 	CampaignPtr getActiveCampaign() const override {

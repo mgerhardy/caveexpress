@@ -72,6 +72,9 @@ bool BoardState::isPackage(int col, int row) const {
 }
 
 bool BoardState::isDone() const {
+	const std::string& str = toString();
+	const char* strc = str.c_str();
+	Log::error(LOG_MAP, "%s", strc);
 	for (auto i = _state.begin(); i != _state.end(); ++i) {
 		// if there is an empty target left, we are not yet done
 		if (i->second == Sokoban::TARGET || i->second == Sokoban::PLAYERONTARGET)

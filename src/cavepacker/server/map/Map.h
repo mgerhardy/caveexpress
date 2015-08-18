@@ -93,7 +93,6 @@ protected:
 	bool spawnPlayer (Player* player);
 	bool setField (IEntity *entity, int col, int row);
 	void printMap ();
-	std::string getMapString() const;
 	char getSokobanFieldId (const IEntity *entity) const;
 	void handleAutoSolve (uint32_t deltaTime);
 
@@ -110,6 +109,8 @@ public:
 
 	inline bool isAutoSolve () const { return _autoSolve; }
 	void abortAutoSolve ();
+	std::string getMapString() const;
+	inline std::string getStateString() const { return _state.toString(); }
 
 	int getMaxPlayers() const;
 	inline int getMoves() const { return _moves; }
