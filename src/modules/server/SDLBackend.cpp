@@ -89,6 +89,8 @@ void SDLBackend::handleEvent (SDL_Event &event)
 			_frontend->setFullscreen(!isFullscreen);
 		} else if (event.key.keysym.sym == SDLK_g && (event.key.keysym.mod & KMOD_CTRL)) {
 			_frontend->toggleGrabMouse();
+		} else if (event.key.keysym.sym == SDLK_r && (event.key.keysym.mod & KMOD_CTRL)) {
+			SDL_SetRelativeMouseMode(!SDL_GetRelativeMouseMode() ? SDL_TRUE : SDL_FALSE);
 		}
 	}
 
