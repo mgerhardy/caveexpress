@@ -436,7 +436,7 @@ void SDLFrontend::setCursorPosition (int x, int y)
 	x = clamp(x, 0, _width);
 	y = clamp(y, 0, _height);
 	UI::get().setCursorPosition(x, y);
-	if (!SDL_GetRelativeMouseMode()) {
+	if (!SDL_GetRelativeMouseMode() && Config.isGrabMouse()) {
 		SDL_WarpMouseInWindow(_window, x, y);
 	}
 }
