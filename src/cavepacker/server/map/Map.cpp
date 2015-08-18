@@ -538,10 +538,10 @@ std::string Map::getMapString() const
 				if (p->getCol() == col && p->getRow() == row) {
 					const int pc = _state.getField(col, row);
 					if (pc == Sokoban::TARGET) {
-						const char str[2] = { Sokoban::PLAYER, '\0' };
+						const char str[2] = { Sokoban::PLAYERONTARGET, '\0' };
 						mapStr.append(str);
 					} else {
-						const char str[2] = { Sokoban::PLAYERONTARGET, '\0' };
+						const char str[2] = { Sokoban::PLAYER, '\0' };
 						mapStr.append(str);
 					}
 					player = true;
