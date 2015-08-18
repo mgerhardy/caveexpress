@@ -28,7 +28,7 @@ public:
 			IServerProtocolHandler* handler = ProtocolHandlerRegistry::get().getServerHandler(*msg);
 			if (handler == nullptr) {
 				_errorCount++;
-				_lastError = "no server handler for message";
+				_lastError = "no client handler for message type: " + string::toString(static_cast<int>(msg->getId()));
 				Log::error(LOG_NET, "no server handler for message type %i", msg->getId());
 				continue;
 			}
@@ -77,7 +77,7 @@ public:
 			IClientProtocolHandler* handler = ProtocolHandlerRegistry::get().getClientHandler(*msg);
 			if (handler == nullptr) {
 				_errorCount++;
-				_lastError = "no client handler for message";
+				_lastError = "no client handler for message type: " + string::toString(static_cast<int>(msg->getId()));
 				Log::error(LOG_NET, "no client handler for message type %i", msg->getId());
 				continue;
 			}
