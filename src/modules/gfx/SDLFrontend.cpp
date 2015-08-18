@@ -649,6 +649,8 @@ void SDLFrontend::toggleGrabMouse () {
 	else
 		Log::info(LOG_CLIENT, "Mouse grab is now activated");
 	Config.setGrabMouse(!grabMouse);
+#else
+	Log::warn(LOG_CLIENT, "toggle mouse grab not supported for this SDL2 version");
 #endif
 }
 
