@@ -563,6 +563,7 @@ void Map::printMap ()
 {
 	const std::string& mapString = getMapString();
 	Log::info(LOG_CLIENT, "Map State:\n%s", mapString.c_str());
+	Log::info(LOG_CLIENT, "Board State:\n%s", _state.toString().c_str());
 }
 
 void Map::startMap ()
