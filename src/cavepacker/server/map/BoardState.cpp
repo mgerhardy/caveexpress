@@ -17,6 +17,24 @@ void BoardState::setSize(int width, int height) {
 	_height = height;
 }
 
+std::string BoardState::toString() const {
+	std::string mapStr;
+	mapStr.reserve(_height * _width);
+	for (int row = 0; row < _height; ++row) {
+		for (int col = 0; col < _width; ++col) {
+			auto i = _state.find(getIndex(col, row));
+			if (i == _state.end()) {
+				mapStr.append(" ");
+				continue;
+			}
+			const char str[2] = { i->second, '\0' };
+			mapStr.append(str);
+		}
+		mapStr.append("\n");
+	}
+	return mapStr;
+}
+
 bool BoardState::hasDeadlock() const {
 	return DeadlockDetector::hasDeadlock(*this);
 }

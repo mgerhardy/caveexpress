@@ -72,6 +72,8 @@ public:
 	bool canMoveUp(int col, int row) const;
 	bool canMoveDown(int col, int row) const;
 
+	std::string toString() const;
+
 	inline StateMap::const_iterator begin() const {
 		return _state.begin();
 	}
