@@ -799,12 +799,10 @@ void Map::rebuildField ()
 	_field.clear();
 	_state.clear();
 	for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
-		if (!setField(*i, (*i)->getCol(), (*i)->getRow()))
-			System.exit("invalid map state", 1);
+		SDL_assert_always(setField(*i, (*i)->getCol(), (*i)->getRow()));
 	}
 	for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
-		if (!setField(*i, (*i)->getCol(), (*i)->getRow()))
-			System.exit("invalid map state", 1);
+		SDL_assert_always(setField(*i, (*i)->getCol(), (*i)->getRow()));
 	}
 }
 
