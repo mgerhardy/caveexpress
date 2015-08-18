@@ -1,6 +1,7 @@
 set(NAME cavepacker)
 project(tests-${NAME})
 SET(${PROJECT_NAME}_SRC
+	BoardStateTest.cpp
 	MapManagerTest.cpp
 	ProtocolTest.cpp
 	SokobanMapContextTest.cpp

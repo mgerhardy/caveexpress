@@ -310,7 +310,6 @@ bool Map::movePlayer (Player* player, char step)
 		}
 		// sokoban standard - if a package was moved, the move char is uppercase
 		step = toupper(step);
-
 	}
 	if (!player->setPos(targetCol, targetRow)) {
 		Log::debug(LOG_SERVER, "failed to move the player");

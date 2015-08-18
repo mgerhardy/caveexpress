@@ -96,6 +96,14 @@ public:
 		return col + _width * row;
 	}
 
+	inline int getWidth() const {
+		return _width;
+	}
+
+	inline int getHeight() const {
+		return _height;
+	}
+
 	/**
 	 * @brief Returns the field id for the given col and row. If the col and row is not
 	 * part of the map, a @c \0 is returned.

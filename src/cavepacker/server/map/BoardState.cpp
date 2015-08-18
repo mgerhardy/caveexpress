@@ -73,8 +73,8 @@ bool BoardState::setField(int col, int row, char field) {
 bool BoardState::canMove(int col, int row) const {
 	// we only need to check two directions here
 	const bool left = canMoveLeft(col, row);
-	const bool right = canMoveUp(col, row);
-	const bool moveable = left && right;
+	const bool up = canMoveUp(col, row);
+	const bool moveable = left || up;
 	if (moveable)
 		Log::info(LOG_MAP, "package on %i:%i can be moved", col, row);
 	else
@@ -87,7 +87,7 @@ bool BoardState::canMoveDirection(char dir, int col, int row) const {
 	getXY(dir, lx, ly);
 	int ox, oy;
 	getOppositeXY(dir, ox, oy);
-	if (!isFree(col + lx, row + ly) && !isFree(col + ox, row + oy)) {
+	if (!isFree(col + lx, row + ly) || !isFree(col + ox, row + oy)) {
 		return false;
 	}
 
