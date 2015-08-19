@@ -490,7 +490,7 @@ bool Map::load (const std::string& name)
 		Log::error(LOG_MAP, "failed to load the map %s", name.c_str());
 		return false;
 	}
-	ctx->save();
+	//ctx->save();
 	_settings = ctx->getSettings();
 	_startPositions = ctx->getStartPositions();
 	_name = ctx->getName();
