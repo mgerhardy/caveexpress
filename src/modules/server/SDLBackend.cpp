@@ -380,7 +380,7 @@ bool SDLBackend::onKeyRelease (int32_t key)
 {
 	if (_frontend->handlesInput())
 		return false;
-	const std::string command = Config.getKeyBinding(key);
+	const std::string& command = Config.getKeyBinding(key);
 	if (command.empty()) {
 		return false;
 	}
@@ -400,7 +400,7 @@ bool SDLBackend::onKeyPress (int32_t key, int16_t modifier)
 {
 	if (_frontend->handlesInput())
 		return false;
-	const std::string command = Config.getKeyBinding(key);
+	const std::string& command = Config.getKeyBinding(key);
 	if (command.empty()) {
 		return false;
 	}
