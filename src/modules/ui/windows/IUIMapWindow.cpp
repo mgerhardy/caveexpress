@@ -143,7 +143,7 @@ void IUIMapWindow::initHudNodes()
 void IUIMapWindow::init()
 {
 	initHudNodes();
-	if (System.hasTouch()) {
+	if (Config.getConfigVar("forcefingercontrol", "false", true, CV_READONLY)->getBoolValue() || System.hasTouch()) {
 		UINode* node = getFingerControl();
 		add(node);
 	} else {
