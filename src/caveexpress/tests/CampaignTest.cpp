@@ -146,8 +146,8 @@ TEST(CampaignTest, testUpdateMapValues) {
 
 TEST(CampaignTest, testResetProgress) {
 	SCOPED_TRACE("gamestate2.sqlite");
-	FS.copy("gamestate2.sqlite", "gamestate2.sqlite.temp");
-	SQLitePersister persister(System.getDatabaseDirectory() + "gamestate2.sqlite.temp");
+	ASSERT_TRUE(FS.copy(System.getDatabaseDirectory() + "gamestate2.sqlite", System.getDatabaseDirectory() + "gamestate.sqlite.temp")) << "Failed to copy gamestate";
+	SQLitePersister persister(System.getDatabaseDirectory() + "gamestate.sqlite.temp");
 	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
 	LUAMapManager mapMgr;
 	mapMgr.loadMaps();
