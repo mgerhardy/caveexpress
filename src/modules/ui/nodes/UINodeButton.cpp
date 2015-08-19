@@ -7,7 +7,7 @@ const float BUTTON_FOCUS_ALPHA = 1.0f;
 }
 
 UINodeButton::UINodeButton (IFrontend *frontend, const std::string& title) :
-		UINode(frontend, title), _title(title), _titleAlign(NODE_ALIGN_CENTER | NODE_ALIGN_MIDDLE)
+		UINode(frontend, title), _title(title), _titleAlign(NODE_ALIGN_CENTER | NODE_ALIGN_MIDDLE), _triggerTimeMs(0u), _lastTriggerTimeMs(0u)
 {
 	setAlpha(BUTTON_ALPHA);
 	_font = getFont();
@@ -54,6 +54,20 @@ void UINodeButton::render (int x, int y) const
 	}
 
 	_font->print(_title, _fontColor, x, y);
+}
+
+void UINodeButton::update (uint32_t deltaTime) {
+	UINode::update(deltaTime);
+
+	if (_triggerTimeMs <= 0u)
+		return;
+
+	if (_fingerPressed || _mousePressed) {
+		if (_time - _lastTriggerTimeMs > _triggerTimeMs) {
+			_lastTriggerTimeMs = _time;
+			execute();
+		}
+	}
 }
 
 float UINodeButton::getAutoWidth () const

@@ -15,7 +15,8 @@ int UINode::_counter = 0;
 UINode::UINode (IFrontend *frontend, const std::string& id) :
 		_padding(0.0f), _marginTop(0.0f), _marginLeft(0.0f), _onActivate(""), _focus(false), _focusAlpha(0.0f), _focusMouseX(-1), _focusMouseY(-1), _visible(
 				true), _enabled(true), _dragStartX(-1), _dragStartY(-1), _alpha(1.0f), _previousAlpha(1.0f), _id(id), _renderBorder(
-				false), _frontend(frontend), _align(NODE_ALIGN_LEFT), _time(0), _flashMillis(0), _originalAlpha(-1.0f), _autoId(false), _layout(nullptr), _parent(nullptr)
+				false), _frontend(frontend), _align(NODE_ALIGN_LEFT), _time(0), _flashMillis(0), _originalAlpha(-1.0f), _autoId(false), _layout(nullptr), _parent(nullptr),
+				_fingerPressed(false), _mousePressed(false)
 {
 	setPos(0.0f, 0.0f);
 	setSize(0.0f, 0.0f);
@@ -442,6 +443,7 @@ void UINode::handleDrop (uint16_t x, uint16_t y)
 
 bool UINode::onFingerPress (int64_t finger, uint16_t x, uint16_t y)
 {
+	_fingerPressed = true;
 	initDrag(x, y);
 	for (UINodeListRevIter i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
 		UINode* nodePtr = *i;
@@ -684,6 +686,7 @@ bool UINode::onTextInput (const std::string& text)
 
 bool UINode::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
 {
+	_fingerPressed = false;
 	handleDrop(x, y);
 	execute();
 	for (UINodeListRevIter i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
@@ -888,6 +891,7 @@ bool UINode::onMouseButtonPress (int32_t x, int32_t y, unsigned char button)
 
 bool UINode::onMouseLeftRelease (int32_t x, int32_t y)
 {
+	_mousePressed = false;
 	return execute();
 }
 
@@ -953,6 +957,7 @@ bool UINode::onMouseRightPress (int32_t x, int32_t y)
 
 bool UINode::onMouseLeftPress (int32_t x, int32_t y)
 {
+	_mousePressed = true;
 	return false;
 }
 

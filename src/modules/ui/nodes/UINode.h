@@ -155,6 +155,8 @@ protected:
 	IUILayout* _layout;
 	UINode* _parent;
 	std::string _tooltip;
+	bool _fingerPressed;
+	bool _mousePressed;
 
 	TexturePtr loadTexture (const std::string& name) const;
 	void renderImage (const TexturePtr& texture, int x, int y, int w = -1, int h = -1, float alpha = 1.0f) const;
