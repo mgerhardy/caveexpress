@@ -62,6 +62,9 @@ void UINodeButton::update (uint32_t deltaTime) {
 	if (_triggerTimeMs <= 0u)
 		return;
 
+	if (!_fingerPressed && !_mousePressed)
+		_lastTriggerTimeMs = _time;
+
 	if (_focus && (_fingerPressed || _mousePressed)) {
 		if (_time - _lastTriggerTimeMs > _triggerTimeMs) {
 			_lastTriggerTimeMs = _time;
