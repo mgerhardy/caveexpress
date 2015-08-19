@@ -764,6 +764,8 @@ void UINode::removeFocus ()
 {
 	if (!_focus)
 		return;
+	_mousePressed = false;
+	_fingerPressed = false;
 	Log::debug(LOG_UI, "remove focus for %s", getId().c_str());
 	_focus = false;
 	_focusMouseX = -1;
