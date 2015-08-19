@@ -19,7 +19,6 @@ option(MINIRACER "Build miniracer" OFF)
 # end options
 #-------------------------------------------------------------------------------
 
-set(CMAKE_USE_RELATIVE_PATHS ON)
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Root dir")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${ROOT_DIR})
 set(DEFAULT_LUAC_EXECUTABLE luac)
