@@ -704,14 +704,14 @@ bool Map::setField (IEntity *entity, int col, int row)
 		if (nc == Sokoban::TARGET)
 			nc = Sokoban::PLAYERONTARGET;
 		else if (nc == Sokoban::GROUND)
-			nc = c;
+			return true;
 		else
 			return false;
 	} else if (c == Sokoban::PACKAGE) {
 		if (nc == Sokoban::TARGET)
 			nc = Sokoban::PACKAGEONTARGET;
 		else if (nc == Sokoban::GROUND)
-			nc = c;
+			return true;
 		else
 			return false;
 	} else if (c == Sokoban::TARGET) {
@@ -720,12 +720,14 @@ bool Map::setField (IEntity *entity, int col, int row)
 		else if (nc == Sokoban::PLAYER)
 			nc = Sokoban::PLAYERONTARGET;
 		else if (nc == Sokoban::GROUND)
-			nc = c;
+			return true;
 		else
 			return false;
 	}
-	_state.setField(col, row, nc);
-	return true;
+	// we expect that there is already a value set, so we need to clear it first
+	if (_state.clearField(col, row) == '\0')
+		return false;
+	return _state.setField(col, row, nc);
 }
 
 void Map::addEntity (int clientMask, const IEntity& entity) const

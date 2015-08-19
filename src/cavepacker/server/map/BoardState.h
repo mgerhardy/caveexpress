@@ -42,6 +42,11 @@ public:
 	 */
 	bool setField(int col, int row, char field);
 	/**
+	 * @brief Removed the given field from the board and returns the old value. If there wasn't any
+	 * value on the specified field, @c '\0' is returned.
+	 */
+	char clearField(int col, int row);
+	/**
 	 * @brief Checks whether the given field is free in a sense that the player
 	 * could walk there if no obstacle is in the way
 	 */

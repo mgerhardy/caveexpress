@@ -83,6 +83,16 @@ bool BoardState::isDone() const {
 	return true;
 }
 
+char BoardState::clearField(int col, int row) {
+	const int index = getIndex(col, row);
+	auto i = _state.find(index);
+	if (i == _state.end())
+		return '\0';
+	const char field = i->second;
+	_state.erase(i);
+	return field;
+}
+
 bool BoardState::setField(int col, int row, char field) {
 	const int index = getIndex(col, row);
 	if (_state.find(index) != _state.end())
