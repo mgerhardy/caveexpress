@@ -86,7 +86,7 @@ script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then g++-5 --version; fi
   - clang++ --version
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && make -j 4 VERBOSE=1 && cd .. && ./tests; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake -G Xcode .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && ls && xcodebuild -list -project Project.xcodeproj && xcodebuild -project Project.xcodeproj -target caveexpress && cd .. && ./tests; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake -G Xcode .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && ls && xcodebuild -list -project Project.xcodeproj && xcodebuild -project Project.xcodeproj -target ALL_BUILD && cd .. && ./tests; fi
 
 notifications:
   email:
