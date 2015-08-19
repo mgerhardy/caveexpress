@@ -69,7 +69,7 @@ cp_add_library(
 	LIB SDL2_mixer
 	SRCS ${SRCS}
 	CFLAGS "-Wno-cast-qual -Wno-shadow -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-sign-compare -Wno-unused-variable -Wno-missing-field-initializers -Wno-unused-label -Wno-format-zero-length"
-	DEFINES "-DOGG_MUSIC -DWAV_MUSIC")
+	DEFINES OGG_MUSIC WAV_MUSIC)
 if (NOT SDL2_MIXER_FOUND)
 	if (ANDROID)
 		add_definitions(-DOGG_USE_TREMOR -DOGG_HEADER=<ivorbisfile.h>)

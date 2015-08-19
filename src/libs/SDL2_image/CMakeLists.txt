@@ -38,7 +38,7 @@ cp_add_library(
 	LIB SDL2_image
 	SRCS ${SRCS}
 	CFLAGS "-Wno-cast-qual -Wno-attributes -Wno-unused-parameter -Wno-sign-compare"
-	DEFINES "-DLOAD_PNG -DPNG_NO_CONFIG_H")
+	DEFINES LOAD_PNG PNG_NO_CONFIG_H)
 # TODO
 #-O3 -fstrict-aliasing -fprefetch-loop-arrays
 if (NOT SDL2_IMAGE_FOUND)

@@ -38,7 +38,7 @@ cp_add_library(
 	LIB lua5.2
 	SRCS ${SRCS}
 	CFLAGS "-Wno-cast-qual -Wno-parentheses-equality"
-	DEFINES "-DLUA_USE_LONGJMP -DLUA_COMPAT_MODULE")
+	DEFINES LUA_USE_LONGJMP LUA_COMPAT_MODULE)
 if (LINUX AND NOT ANDROID AND NOT EMSCRIPTEN)
 	add_definitions(-DLUA_USE_LINUX)
 elseif(DARWIN)
