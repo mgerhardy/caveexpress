@@ -76,6 +76,25 @@ TEST_F(BoardStateTest, testFillState) {
 	}
 }
 
+TEST_F(BoardStateTest, testDone) {
+	BoardState s;
+
+	const char* mapStr =
+		"############\n"
+		"#$$@ #     ###\n"
+		"#$$  #       #\n"
+		"#$$  # ####  #\n"
+		"#$$      ##  #\n"
+		"#$$  # #    ##\n"
+		"###### ##    #\n"
+		"#          #\n"
+		"#    #     #\n"
+		"############";
+
+	fillState(s, mapStr);
+	ASSERT_TRUE(s.isDone()) << "Could not detect the done state in the board\n" << mapStr;
+}
+
 TEST_F(BoardStateTest, testDeadlock1) {
 	BoardState s;
 
