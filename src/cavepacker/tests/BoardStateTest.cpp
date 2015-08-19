@@ -92,6 +92,8 @@ TEST_F(BoardStateTest, testDone) {
 		"############";
 
 	fillState(s, mapStr);
+	ASSERT_EQ(14, s.getWidth());
+	ASSERT_EQ(10, s.getHeight());
 	ASSERT_TRUE(s.isDone()) << "Could not detect the done state in the board\n" << mapStr;
 }
 
