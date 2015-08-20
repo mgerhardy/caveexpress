@@ -16,6 +16,7 @@ private:
 	lua_State *_state;
 
 	static void debugHook (lua_State *L, lua_Debug *ar);
+	static int panicHook (lua_State *L);
 
 	static int isAndroid (lua_State *L);
 	static int isWindows (lua_State *L);
@@ -100,6 +101,8 @@ public:
 	std::string getStringFromStack ();
 	String getString (const std::string& expr, const std::string& defaultValue = "");
 
+	std::string getLuaValue (int i);
+	void tableDump ();
 	void stackDump ();
 };
 

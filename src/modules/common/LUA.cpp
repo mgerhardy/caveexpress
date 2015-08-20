@@ -61,6 +61,8 @@ void LUA::init (bool debug)
 		const int mask = LUA_MASKCALL | LUA_MASKRET | LUA_MASKLINE | LUA_MASKCOUNT;
 		lua_sethook(_state, debugHook, mask, 0);
 	}
+
+	lua_atpanic(_state, panicHook);
 }
 
 void LUA::reg (const std::string& prefix, luaL_Reg* funcs)
@@ -193,31 +195,50 @@ bool LUA::execute (const String &function, int returnValues)
 	return true;
 }
 
+std::string LUA::getLuaValue (int stackIndex)
+{
+	const int t = lua_type(_state, stackIndex);
+	switch (t) {
+	case LUA_TNUMBER:
+		lua_pushstring(_state, lua_tostring(_state, stackIndex));
+		break;
+	case LUA_TSTRING:
+		lua_pushfstring(_state, "\"%s\"", lua_tostring(_state, stackIndex));
+		break;
+	case LUA_TBOOLEAN:
+		lua_pushstring(_state, (lua_toboolean(_state, stackIndex) ? "true" : "false"));
+		break;
+	case LUA_TNIL:
+		lua_pushliteral(_state, "nil");
+		break;
+	default:
+		lua_pushfstring(_state, "%s: %p", luaL_typename(_state, stackIndex), lua_topointer(_state, stackIndex));
+		break;
+	}
+
+	std::string result(lua_tostring(_state, -1));
+	lua_pop(_state, 1);
+	return result;
+}
+
+void LUA::tableDump()
+{
+	lua_pushnil(_state);
+	while (lua_next(_state, -2) != 0) {
+		const std::string& key = getLuaValue(-2);
+		const std::string& value = getLuaValue(-1);
+		Log::info(LOG_LUA, "%s : %s", key.c_str(), value.c_str());
+		lua_pop(_state, 1);
+	}
+}
+
 void LUA::stackDump ()
 {
 	checkStack();
 	const int top = lua_gettop(_state);
 	Log::info(LOG_LUA, "stack elements: %i\n", top);
 	for (int i = 1; i <= top; i++) { /* repeat for each level */
-		const int t = lua_type(_state, i);
-		switch (t) {
-		case LUA_TSTRING:
-			Log::info(LOG_LUA, "%i: '%s'", i, lua_tostring(_state, i));
-			break;
-
-		case LUA_TBOOLEAN:
-			Log::info(LOG_LUA, "%i: %s", i, (lua_toboolean(_state, i) ? "true" : "false"));
-			break;
-
-		case LUA_TNUMBER:
-			Log::info(LOG_LUA, "%i: %g", i, lua_tonumber(_state, i));
-			break;
-
-		default:
-			Log::info(LOG_LUA, "%i: %s", i, lua_typename(_state, t));
-			break;
-
-		}
+		Log::info(LOG_LUA, "%s", getLuaValue(i).c_str());
 	}
 }
 
@@ -384,7 +405,13 @@ void LUA::debugHook (lua_State *L, lua_Debug *ar)
 	if (!lua_getinfo(L, "Sn", ar))
 		return;
 
-	Log::info(LOG_LUA, "%s %s: %s %d", ar->namewhat, ar->name, ar->short_src, ar->currentline);
+	Log::debug(LOG_LUA, "%s %s: %s %d", ar->namewhat, ar->name, ar->short_src, ar->currentline);
+}
+
+int LUA::panicHook (lua_State *L)
+{
+	Log::error(LOG_LUA, "Lua panic. Error message: %s", lua_isnil(L, -1) ? "" : lua_tostring(L, -1));
+	return 0;
 }
 
 int LUA::isAndroid (lua_State *L)
