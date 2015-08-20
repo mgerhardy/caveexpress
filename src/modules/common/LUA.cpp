@@ -93,7 +93,7 @@ bool LUA::load (const std::string &file)
 
 	if (luaL_loadbufferx(_state, buffer, fileLen, file.c_str(), nullptr) || lua_pcall(_state, 0, 0, 0)) {
 		Log::error(LOG_LUA, "%s: %s", file.c_str(), lua_tostring(_state, -1));
-		pop(1);
+		pop();
 		return false;
 	}
 
@@ -110,12 +110,12 @@ bool LUA::getValueBoolFromTable (const char * key, bool defaultValue)
 	checkStack();
 	lua_getfield(_state, -1, key);
 	if (lua_isnil(_state, -1)) {
-		lua_pop(_state, 1);
+		pop();
 		return defaultValue;
 	}
 
 	const bool rtn = lua_toboolean(_state, -1);
-	lua_pop(_state, 1);
+	pop();
 	return rtn;
 }
 
@@ -129,7 +129,7 @@ String LUA::getValueStringFromTable (const char * key, const String& defaultValu
 	checkStack();
 	lua_getfield(_state, -1, key);
 	if (lua_isnil(_state, -1)) {
-		lua_pop(_state, 1);
+		pop();
 		return defaultValue;
 	}
 
@@ -148,12 +148,12 @@ float LUA::getValueFloatFromTable (const char * key, float defaultValue)
 	checkStack();
 	lua_getfield(_state, -1, key);
 	if (lua_isnil(_state, -1)) {
-		lua_pop(_state, 1);
+		pop();
 		return defaultValue;
 	}
 
 	const float rtn = static_cast<float>(lua_tonumber(_state,-1));
-	lua_pop(_state, 1);
+	pop();
 	return rtn;
 }
 
@@ -217,7 +217,7 @@ std::string LUA::getLuaValue (int stackIndex)
 	}
 
 	std::string result(lua_tostring(_state, -1));
-	lua_pop(_state, 1);
+	pop();
 	return result;
 }
 
@@ -228,7 +228,7 @@ void LUA::tableDump()
 		const std::string& key = getLuaValue(-2);
 		const std::string& value = getLuaValue(-1);
 		Log::info(LOG_LUA, "%s : %s", key.c_str(), value.c_str());
-		lua_pop(_state, 1);
+		pop();
 	}
 }
 
