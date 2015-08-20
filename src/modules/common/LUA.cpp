@@ -274,8 +274,12 @@ void LUA::getKeyValueMap (std::map<std::string, std::string>& map, const char *k
 {
 	checkStack();
 	lua_getglobal(_state, key);
-	lua_pushnil(_state);
+	if(lua_isnil(_state, -1)) {
+		Log::error(LOG_LUA, "Could not find %s lua global", key);
+		return;
+	}
 
+	lua_pushnil(_state);
 	while (lua_next(_state, -2) != 0) {
 		const char *_key = lua_tostring(_state, -2);
 		assert(_key);
