@@ -167,12 +167,12 @@ int LUA::getValueIntegerFromTable (const char * key, int defaultValue)
 	checkStack();
 	lua_getfield(_state, -1, key);
 	if (lua_isnil(_state, -1)) {
-		lua_pop(_state, 1);
+		pop();
 		return defaultValue;
 	}
 
 	const int rtn = lua_tointeger(_state, -1);
-	lua_pop(_state, 1);
+	pop();
 	return rtn;
 }
 
@@ -265,7 +265,7 @@ String LUA::getString (const std::string& expr, const std::string& defaultValue)
 		else if (lua_isboolean(_state, -1))
 			r = lua_toboolean(_state, -1) ? "true" : "false";
 		/* remove lua_getglobal value */
-		lua_pop(_state, 1);
+		pop();
 	}
 	return r;
 }
@@ -292,10 +292,10 @@ void LUA::getKeyValueMap (std::map<std::string, std::string>& map, const char *k
 			_value = lua_toboolean(_state, -1) ? "true" : "false";
 		}
 		map[_key] = _value;
-		lua_pop(_state, 1);
+		pop();
 	}
 
-	lua_pop(_state, 1);
+	pop();
 }
 
 int LUA::getIntValue (const std::string& path, int defaultValue)
