@@ -152,7 +152,7 @@ float LUA::getValueFloatFromTable (const char * key, float defaultValue)
 		return defaultValue;
 	}
 
-	const float rtn = static_cast<float>(lua_tonumber(_state,-1));
+	const float rtn = static_cast<float>(luaL_checknumber(_state,-1));
 	pop();
 	return rtn;
 }
@@ -171,7 +171,7 @@ int LUA::getValueIntegerFromTable (const char * key, int defaultValue)
 		return defaultValue;
 	}
 
-	const int rtn = lua_tointeger(_state, -1);
+	const int rtn = luaL_checkinteger(_state, -1);
 	pop();
 	return rtn;
 }
@@ -185,7 +185,7 @@ bool LUA::execute (const std::string &function, int returnValues)
 		return false;
 	const int ret = lua_pcall(_state, 0, returnValues, 0);
 	if (ret != 0) {
-		const char * s = lua_tostring(_state, -1);
+		const char * s = luaL_checkstring(_state, -1);
 		if (s == nullptr)
 			Log::error(LOG_LUA, "unrecognized Lua error");
 		else
