@@ -67,7 +67,7 @@ FontDefinition::FontDefinition() {
 		lua.getTable("texture");
 		def->textureHeight = lua.getValueIntegerFromTable("height");
 		def->textureWidth = lua.getValueIntegerFromTable("width");
-		def->textureName = lua.getValueStringFromTable("file").str();
+		def->textureName = lua.getValueStringFromTable("file");
 		// pop the texture table
 		lua.pop();
 

@@ -61,11 +61,11 @@ public:
 		luaL_error(L, "%s", error.c_str());
 	}
 
-	void getGlobal (const std::string& name);
+	bool getGlobal (const std::string& name);
 
 	std::string getKey ();
 
-	void getGlobalKeyValue (const std::string& name);
+	bool getGlobalKeyValue (const std::string& name);
 
 	bool getNextKeyValue ();
 
@@ -87,19 +87,19 @@ public:
 	/**
 	 * @param[in] function function to be called
 	 */
-	bool execute (const String &function, int returnValues = 0);
+	bool execute (const std::string &function, int returnValues = 0);
 
-	String getValueStringFromTable (const char * key, const String& defaultValue = "");
+	std::string getValueStringFromTable (const char * key, const std::string& defaultValue = "");
 	float getValueFloatFromTable (const char * key, float defaultValue = 0.0f);
 	int getValueIntegerFromTable (const char * key, int defaultValue = 0);
 	bool getValueBoolFromTable (const char * key, bool defaultValue = false);
-	void getKeyValueMap (std::map<std::string, std::string>& map, const char *key);
+	void getKeyValueMap (std::map<std::string, std::string>& map, const std::string& key);
 
 	int getIntValue (const std::string& xpath, int defaultValue = 0);
 	float getFloatValue (const std::string& path, float defaultValue = 0.0f);
 	bool getBoolValue (const std::string& xpath);
 	std::string getStringFromStack ();
-	String getString (const std::string& expr, const std::string& defaultValue = "");
+	std::string getString (const std::string& expr, const std::string& defaultValue = "");
 
 	std::string getLuaValue (int i);
 	void tableDump ();

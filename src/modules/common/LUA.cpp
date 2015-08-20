@@ -119,7 +119,7 @@ bool LUA::getValueBoolFromTable (const char * key, bool defaultValue)
 	return rtn;
 }
 
-String LUA::getValueStringFromTable (const char * key, const String& defaultValue)
+std::string LUA::getValueStringFromTable (const char * key, const std::string& defaultValue)
 {
 	if (!lua_istable(_state, -1)) {
 		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
@@ -179,9 +179,10 @@ int LUA::getValueIntegerFromTable (const char * key, int defaultValue)
 /**
  * @param[in] function function to be called
  */
-bool LUA::execute (const String &function, int returnValues)
+bool LUA::execute (const std::string &function, int returnValues)
 {
-	lua_getglobal(_state, function.c_str());
+	if (!getGlobal(function))
+		return false;
 	const int ret = lua_pcall(_state, 0, returnValues, 0);
 	if (ret != 0) {
 		const char * s = lua_tostring(_state, -1);
@@ -251,46 +252,31 @@ std::string LUA::getStringFromStack ()
 	return id;
 }
 
-String LUA::getString (const std::string& expr, const std::string& defaultValue)
+std::string LUA::getString (const std::string& expr, const std::string& defaultValue)
 {
 	checkStack();
-	const char* r = defaultValue.c_str();
+	std::string r = defaultValue;
 	/* Assign the Lua expression to a Lua global variable. */
 	const std::string buf("evalExpr=" + expr);
 	if (!luaL_dostring(_state, buf.c_str())) {
 		/* Get the value of the global variable */
 		lua_getglobal(_state, "evalExpr");
-		if (lua_isstring(_state, -1))
-			r = lua_tostring(_state, -1);
-		else if (lua_isboolean(_state, -1))
-			r = lua_toboolean(_state, -1) ? "true" : "false";
+		r = getLuaValue(-1);
 		/* remove lua_getglobal value */
 		pop();
 	}
 	return r;
 }
 
-void LUA::getKeyValueMap (std::map<std::string, std::string>& map, const char *key)
+void LUA::getKeyValueMap (std::map<std::string, std::string>& map, const std::string& key)
 {
 	checkStack();
-	lua_getglobal(_state, key);
-	if(lua_isnil(_state, -1)) {
-		Log::error(LOG_LUA, "Could not find %s lua global", key);
+	if (!getGlobalKeyValue(key)) {
 		return;
 	}
-
-	lua_pushnil(_state);
 	while (getNextKeyValue()) {
-		const char *_key = lua_tostring(_state, -2);
-		assert(_key);
-		std::string _value;
-		if (lua_isstring(_state, -1)) {
-			_value = lua_tostring(_state, -1);
-		} else if (lua_isnumber(_state, -1)) {
-			_value = string::toString(lua_tonumber(_state, -1));
-		} else if (lua_isboolean(_state, -1)) {
-			_value = lua_toboolean(_state, -1) ? "true" : "false";
-		}
+		const std::string& _key = getLuaValue(-2);
+		const std::string& _value = getLuaValue(-1);
 		map[_key] = _value;
 		pop();
 	}
@@ -313,10 +299,13 @@ bool LUA::getBoolValue (const std::string& path)
 	return string::toBool(getString(path));
 }
 
-void LUA::getGlobalKeyValue (const std::string& name)
+bool LUA::getGlobalKeyValue (const std::string& name)
 {
-	lua_getglobal(_state, name.c_str());
+	if (!getGlobal(name)) {
+		return false;
+	}
 	lua_pushnil(_state);
+	return true;
 }
 
 int LUA::getTable (const std::string& name)
@@ -399,9 +388,14 @@ bool LUA::getNextKeyValue ()
 	return lua_next(_state, -2) != 0;
 }
 
-void LUA::getGlobal (const std::string& name)
+bool LUA::getGlobal (const std::string& name)
 {
 	lua_getglobal(_state, name.c_str());
+	if (lua_isnil(_state, -1)) {
+		Log::error(LOG_LUA, "Could not find %s lua global", name.c_str());
+		return false;
+	}
+	return true;
 }
 
 void LUA::debugHook (lua_State *L, lua_Debug *ar)

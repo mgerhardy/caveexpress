@@ -36,16 +36,16 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			continue;
 		}
 
-		const std::string typeStr = lua.getValueStringFromTable("type").str();
+		const std::string& typeStr = lua.getValueStringFromTable("type");
 		const SpriteType& type = SpriteType::getByName(typeStr);
 		if (!type && !typeStr.empty()) {
 			Log::error(LOG_GENERAL, "invalid sprite type given: %s", typeStr.c_str());
 		}
-		const ThemeType& theme = ThemeType::getByName(lua.getValueStringFromTable("theme").str());
+		const ThemeType& theme = ThemeType::getByName(lua.getValueStringFromTable("theme"));
 		SpriteDef *def = new SpriteDef(id, type, theme);
 
 		def->fps = lua.getValueIntegerFromTable("fps", 20);
-		def->redirect = lua.getValueStringFromTable("redirect").str();
+		def->redirect = lua.getValueStringFromTable("redirect");
 		def->width = lua.getValueFloatFromTable("width", 1.0f);
 		def->height = lua.getValueFloatFromTable("height", 1.0f);
 		def->angle = lua.getValueIntegerFromTable("angle", 0);
