@@ -224,7 +224,7 @@ std::string LUA::getLuaValue (int stackIndex)
 void LUA::tableDump()
 {
 	lua_pushnil(_state);
-	while (lua_next(_state, -2) != 0) {
+	while (getNextKeyValue()) {
 		const std::string& key = getLuaValue(-2);
 		const std::string& value = getLuaValue(-1);
 		Log::info(LOG_LUA, "%s : %s", key.c_str(), value.c_str());
@@ -280,7 +280,7 @@ void LUA::getKeyValueMap (std::map<std::string, std::string>& map, const char *k
 	}
 
 	lua_pushnil(_state);
-	while (lua_next(_state, -2) != 0) {
+	while (getNextKeyValue()) {
 		const char *_key = lua_tostring(_state, -2);
 		assert(_key);
 		std::string _value;
