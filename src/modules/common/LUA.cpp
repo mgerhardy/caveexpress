@@ -133,8 +133,8 @@ String LUA::getValueStringFromTable (const char * key, const String& defaultValu
 		return defaultValue;
 	}
 
-	const String rtn = lua_tostring(_state,-1);
-	lua_pop(_state, 1);
+	const std::string rtn = luaL_checkstring(_state,-1);
+	pop();
 	return rtn;
 }
 
@@ -244,7 +244,7 @@ void LUA::stackDump ()
 
 std::string LUA::getStringFromStack ()
 {
-	const char* id = lua_tostring(_state, -1);
+	const char* id = luaL_checkstring(_state, -1);
 	pop();
 	if (id == nullptr)
 		return "";
@@ -300,17 +300,17 @@ void LUA::getKeyValueMap (std::map<std::string, std::string>& map, const char *k
 
 int LUA::getIntValue (const std::string& path, int defaultValue)
 {
-	return getString(path).toInt(defaultValue);
+	return string::toInt(getString(path), defaultValue);
 }
 
 float LUA::getFloatValue (const std::string& path, float defaultValue)
 {
-	return getString(path).toFloat(defaultValue);
+	return string::toFloat(getString(path), defaultValue);
 }
 
 bool LUA::getBoolValue (const std::string& path)
 {
-	return getString(path).toBool();
+	return string::toBool(getString(path));
 }
 
 void LUA::getGlobalKeyValue (const std::string& name)
@@ -339,7 +339,7 @@ std::string LUA::getTableString (int i)
 	}
 	checkStack();
 	lua_rawgeti(_state, -1, i);
-	const std::string str = lua_tostring(_state, -1);
+	const std::string str = luaL_checkstring(_state, -1);
 	pop();
 	return str;
 }
@@ -366,7 +366,7 @@ int LUA::getTableInteger (int i)
 		return 0;
 	}
 	lua_rawgeti(_state, -1, i);
-	const int val = lua_tointeger(_state, -1);
+	const int val = luaL_checkinteger(_state, -1);
 	pop();
 	return val;
 }
@@ -379,14 +379,14 @@ float LUA::getTableFloat (int i)
 		return 0.0f;
 	}
 	lua_rawgeti(_state, -1, i);
-	const float val = lua_tonumber(_state, -1);
+	const float val = luaL_checknumber(_state, -1);
 	pop();
 	return val;
 }
 
 std::string LUA::getKey ()
 {
-	return lua_tostring(_state, -2);
+	return luaL_checkstring(_state, -2);
 }
 
 void LUA::pop (int amount)
