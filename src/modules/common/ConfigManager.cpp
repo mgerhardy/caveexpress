@@ -181,19 +181,11 @@ void ConfigManager::getBindingMap (LUA& lua, std::map<std::string, std::string>*
 		lua_pushnil(lua.getState());
 
 		std::map<std::string, std::string> strMap;
-		while (lua_next(lua.getState(), -2) != 0) {
-			const char *_key = lua_tostring(lua.getState(), -2);
-			assert(_key);
-			std::string _value;
-			if (lua_isstring(lua.getState(), -1)) {
-				_value = lua_tostring(lua.getState(), -1);
-			} else if (lua_isnumber(lua.getState(), -1)) {
-				_value = string::toString(lua_tonumber(lua.getState(), -1));
-			} else if (lua_isboolean(lua.getState(), -1)) {
-				_value = lua_toboolean(lua.getState(), -1) ? "true" : "false";
-			}
+		while (lua.getNextKeyValue()) {
+			const std::string& _key = lua.getLuaValue(-2);
+			const std::string& _value = lua.getLuaValue(-1);
 			strMap[_key] = _value;
-			lua_pop(lua.getState(), 1);
+			lua.pop();
 		}
 
 		BindingSpace bindingSpace = BINDINGS_UI;
@@ -233,17 +225,9 @@ void ConfigManager::getBindingMap (LUA& lua, std::map<int, std::string>* map, co
 		lua_pushnil(lua.getState());
 
 		std::map<std::string, std::string> strMap;
-		while (lua_next(lua.getState(), -2) != 0) {
-			const char *_key = lua_tostring(lua.getState(), -2);
-			assert(_key);
-			std::string _value;
-			if (lua_isstring(lua.getState(), -1)) {
-				_value = lua_tostring(lua.getState(), -1);
-			} else if (lua_isnumber(lua.getState(), -1)) {
-				_value = string::toString(lua_tonumber(lua.getState(), -1));
-			} else if (lua_isboolean(lua.getState(), -1)) {
-				_value = lua_toboolean(lua.getState(), -1) ? "true" : "false";
-			}
+		while (lua.getNextKeyValue()) {
+			const std::string& _key = lua.getLuaValue(-2);
+			const std::string& _value = lua.getLuaValue(-1);
 			strMap[_key] = _value;
 			lua_pop(lua.getState(), 1);
 		}

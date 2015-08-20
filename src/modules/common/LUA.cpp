@@ -91,8 +91,13 @@ bool LUA::load (const std::string &file)
 		return false;
 	}
 
-	if (luaL_loadbufferx(_state, buffer, fileLen, file.c_str(), nullptr) || lua_pcall(_state, 0, 0, 0)) {
-		Log::error(LOG_LUA, "%s: %s", file.c_str(), lua_tostring(_state, -1));
+	return loadBuffer(std::string(buffer, fileLen), file.c_str());
+}
+
+bool LUA::loadBuffer (const std::string& buffer, const char *ctx)
+{
+	if (luaL_loadbufferx(_state, buffer.c_str(), buffer.size(), ctx, nullptr) || lua_pcall(_state, 0, 0, 0)) {
+		Log::error(LOG_LUA, "%s: %s", ctx, lua_tostring(_state, -1));
 		pop();
 		return false;
 	}
@@ -381,6 +386,11 @@ std::string LUA::getKey ()
 void LUA::pop (int amount)
 {
 	lua_pop(_state, amount);
+}
+
+int LUA::stackCount ()
+{
+	return lua_gettop(_state);
 }
 
 bool LUA::getNextKeyValue ()

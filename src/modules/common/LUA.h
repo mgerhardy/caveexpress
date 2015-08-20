@@ -71,6 +71,8 @@ public:
 
 	void pop (int amount = 1);
 
+	int stackCount ();
+
 	int getTable (const std::string& name);
 
 	std::string getTableString (int i);
@@ -84,6 +86,7 @@ public:
 	void reg (const std::string& prefix, luaL_Reg* funcs);
 
 	bool load (const std::string &file);
+	bool loadBuffer(const std::string& buffer, const char *ctx);
 	/**
 	 * @param[in] function function to be called
 	 */
