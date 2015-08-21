@@ -19,7 +19,7 @@ TEST_F(LUATest, testKeyValueMap)
 	std::map<std::string, std::string> map;
 	lua.getKeyValueMap(map, "settings");
 
-	ASSERT_EQ(3, map.size());
+	ASSERT_EQ(4, map.size());
 	ASSERT_NE(map.find("a"), map.end());
 	ASSERT_NE(map.find("b"), map.end());
 	ASSERT_NE(map.find("c"), map.end());
