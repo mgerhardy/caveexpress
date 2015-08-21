@@ -42,7 +42,6 @@ TEST_F(LUATest, testGlobal)
 	// we expect settings and nil
 	ASSERT_EQ(2, lua.stackCount()) << lua.getStackDump();
 	int i = 0;
-	// TODO: it looks like the order is random in lua
 	while (lua.getNextKeyValue()) {
 		const std::string& id = lua.getLuaValue(-2);
 		const std::string& value = lua.getLuaValue(-1);
@@ -55,7 +54,7 @@ TEST_F(LUATest, testGlobal)
 		} else if (id == "c") {
 			ASSERT_EQ("1", value);
 		} else {
-			EXPECT_TRUE(false) << "id is: " < id;
+			EXPECT_TRUE(false) << "id is: " << id;
 		}
 		++i;
 	}
