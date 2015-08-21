@@ -231,7 +231,7 @@ void ConfigManager::getBindingMap (LUA& lua, std::map<int, std::string>* map, co
 			const std::string& _key = lua.getLuaValue(-2);
 			const std::string& _value = lua.getLuaValue(-1);
 			strMap[_key] = _value;
-			lua_pop(lua.getState(), 1);
+			lua.pop();
 		}
 
 		BindingSpace bindingSpace = BINDINGS_UI;
