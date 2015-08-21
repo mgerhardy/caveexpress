@@ -206,10 +206,8 @@ std::string LUA::getLuaValue (int stackIndex)
 	const int t = lua_type(_state, stackIndex);
 	switch (t) {
 	case LUA_TNUMBER:
-		lua_pushstring(_state, lua_tostring(_state, stackIndex));
-		break;
 	case LUA_TSTRING:
-		lua_pushfstring(_state, "\"%s\"", lua_tostring(_state, stackIndex));
+		lua_pushstring(_state, lua_tostring(_state, stackIndex));
 		break;
 	case LUA_TBOOLEAN:
 		lua_pushstring(_state, (lua_toboolean(_state, stackIndex) ? "true" : "false"));
