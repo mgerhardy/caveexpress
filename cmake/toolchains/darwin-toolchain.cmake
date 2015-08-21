@@ -19,4 +19,3 @@ set(CMAKE_EXE_LINKER_FLAGS_RELEASE "")
 foreach(FW ${FRAMEWORKS})
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework ${FW}")
 endforeach()
-
