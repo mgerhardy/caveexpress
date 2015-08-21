@@ -243,6 +243,7 @@ std::string LUA::getStackDump ()
 	std::string sd = String::format("stack elements: %i\n", top);
 	for (int i = 1; i <= top; i++) { /* repeat for each level */
 		sd += getLuaValue(i);
+		sd += "\n";
 	}
 	return sd;
 }
