@@ -67,6 +67,10 @@ public:
 
 	bool getGlobalKeyValue (const std::string& name);
 
+	/**
+	 * @note This will NOT return the values in order
+	 * @sa http://www.lua.org/manual/5.1/manual.html#lua_next
+	 */
 	bool getNextKeyValue ();
 
 	void pop (int amount = 1);

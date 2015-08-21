@@ -48,15 +48,14 @@ TEST_F(LUATest, testGlobal)
 		const std::string& value = lua.getLuaValue(-1);
 		lua.pop();
 		SCOPED_TRACE(string::toString(i));
-		if (i == 0) {
-			ASSERT_EQ("a", id);
+		if (id == "a") {
 			ASSERT_EQ("false", value);
-		} else if (i == 1) {
-			ASSERT_EQ("b", id);
+		} else if (id == "b") {
 			ASSERT_EQ("true", value);
-		} else if (i == 2) {
-			ASSERT_EQ("c", id);
+		} else if (id == "c") {
 			ASSERT_EQ("1", value);
+		} else {
+			EXPECT_TRUE(false) << "id is: " < id;
 		}
 		++i;
 	}
