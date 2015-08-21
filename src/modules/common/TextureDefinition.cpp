@@ -27,7 +27,8 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 			Log::error(LOG_CLIENT, "failed to load textures from %s", filename.c_str());
 			continue;
 		}
-		lua.getGlobalKeyValue("textures" + textureSize);
+		if (!lua.getGlobalKeyValue("textures" + textureSize))
+			continue;
 
 		while (lua.getNextKeyValue()) {
 			String id = lua.getKey();

@@ -169,7 +169,8 @@ void ConfigManager::getKeyValueMap (LUA& lua, std::map<std::string, std::string>
 
 void ConfigManager::getBindingMap (LUA& lua, std::map<std::string, std::string>* map, const char *key, BindingType type)
 {
-	lua.getGlobalKeyValue(key);
+	if (!lua.getGlobalKeyValue(key))
+		return;
 
 	while (lua.getNextKeyValue()) {
 		const std::string id = lua.getKey();
@@ -213,7 +214,8 @@ void ConfigManager::getBindingMap (LUA& lua, std::map<int, std::string>* map, co
 	if (type == CONTROLLER)
 		return;
 
-	lua.getGlobalKeyValue(key);
+	if (!lua.getGlobalKeyValue(key))
+		return;
 
 	while (lua.getNextKeyValue()) {
 		const std::string id = lua.getKey();

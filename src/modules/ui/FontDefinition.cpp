@@ -13,7 +13,8 @@ FontDefinition::FontDefinition() {
 		return;
 	}
 
-	lua.getGlobalKeyValue("fonts");
+	if (!lua.getGlobalKeyValue("fonts"))
+		return;
 
 	while (lua.getNextKeyValue()) {
 		const std::string id = lua.getKey();

@@ -20,7 +20,8 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		return;
 	}
 
-	lua.getGlobalKeyValue("sprites");
+	if (!lua.getGlobalKeyValue("sprites"))
+		return;
 
 	while (lua.getNextKeyValue()) {
 		const std::string id = lua.getKey();
