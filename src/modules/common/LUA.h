@@ -106,6 +106,7 @@ public:
 
 	std::string getLuaValue (int i);
 	void tableDump ();
+	std::string getStackDump ();
 	void stackDump ();
 };
 

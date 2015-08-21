@@ -238,14 +238,20 @@ void LUA::tableDump()
 	}
 }
 
-void LUA::stackDump ()
+std::string LUA::getStackDump ()
 {
 	checkStack();
 	const int top = lua_gettop(_state);
-	Log::info(LOG_LUA, "stack elements: %i\n", top);
+	std::string sd = String::format("stack elements: %i\n", top);
 	for (int i = 1; i <= top; i++) { /* repeat for each level */
-		Log::info(LOG_LUA, "%s", getLuaValue(i).c_str());
+		sd += getLuaValue(i);
 	}
+	return sd;
+}
+
+void LUA::stackDump ()
+{
+	Log::info(LOG_LUA, "%s", getStackDump().c_str());
 }
 
 std::string LUA::getStringFromStack ()
