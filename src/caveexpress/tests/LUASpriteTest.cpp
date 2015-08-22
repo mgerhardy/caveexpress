@@ -12,11 +12,18 @@
 namespace caveexpress {
 
 class LUASpriteTest: public AbstractTest {
+private:
+	TextureDefinition *_t;
 protected:
 	virtual void SetUp() override {
 		AbstractTest::SetUp();
-		TextureDefinition t("small");
-		SpriteDefinition::get().init(t);
+		_t = new TextureDefinition("small");
+		SpriteDefinition::get().init(*_t);
+	}
+	virtual void TearDown() override {
+		AbstractTest::TearDown();
+		delete _t;
+		_t = nullptr;
 	}
 };
 
