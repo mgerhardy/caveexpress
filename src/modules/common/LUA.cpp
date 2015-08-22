@@ -245,11 +245,12 @@ std::string LUA::getString (const std::string& expr, const std::string& defaultV
 	LUA_checkStack();
 	std::string r = defaultValue;
 	/* Assign the Lua expression to a Lua global variable. */
-	const std::string buf("evalExpr=" + expr);
+	const std::string buf("return " + expr);
+	Log::debug(LOG_LUA, "eval: '%s'", buf.c_str());
 	if (!luaL_dostring(_state, buf.c_str())) {
-		/* Get the value of the global variable */
-		lua_getglobal(_state, "evalExpr");
-		r = getLuaValue(-1);
+		const char *str = lua_tostring(_state, -1);
+		if (str != nullptr)
+			r = str;
 		/* remove lua_getglobal value */
 		pop();
 	}
