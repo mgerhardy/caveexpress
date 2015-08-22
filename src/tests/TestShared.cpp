@@ -3,8 +3,14 @@
 
 void AbstractTest::SetUp() {
 	const bool verbose = Config.getConfigVar("verbose", "false")->getBoolValue();
-	if (!verbose)
+	if (!verbose) {
 		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_CRITICAL);
+	} else {
+		ICommand::Args args;
+		args.push_back("TRACE");
+		Config.setLogLevel(args);
+		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_VERBOSE);
+	}
 	_serviceProvider.init(&_testFrontend);
 	_serviceProvider.updateNetwork(false);
 	Singleton<GameRegistry>::getInstance().getGame()->init(&_testFrontend, _serviceProvider);
