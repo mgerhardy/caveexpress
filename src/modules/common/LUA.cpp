@@ -305,6 +305,10 @@ int LUA::getTable (const std::string& name)
 		return 0;
 	}
 	lua_getfield(_state, -1, name.c_str());
+	if (lua_isnil(_state,-1)) {
+		pop();
+		return -1;
+	}
 	return lua_rawlen(_state, -1);
 }
 
