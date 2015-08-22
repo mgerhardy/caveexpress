@@ -47,8 +47,13 @@ FontDefinition::FontDefinition() {
 		for (int i = 0; i < chars; ++i) {
 			lua_pushinteger(lua.getState(), i + 1);
 			lua_gettable(lua.getState(), -2);
+			if (!lua_istable(lua.getState(), -1)) {
+				Log::error(LOG_UI, "expected chars table on the stack: %s", lua.getStackDump().c_str());
+				lua.pop();
+				continue;
+			}
 			// push the char entry
-			const std::string character = lua.getValueStringFromTable("char");
+			const std::string& character = lua.getValueStringFromTable("char");
 			const int width = lua.getValueIntegerFromTable("width");
 			const int x = lua.getValueIntegerFromTable("x");
 			const int y = lua.getValueIntegerFromTable("y");
@@ -66,6 +71,12 @@ FontDefinition::FontDefinition() {
 
 		// push the texture table
 		lua.getTable("texture");
+		if (!lua_istable(lua.getState(), -1)) {
+			Log::error(LOG_UI, "expected texture table on the stack: %s", lua.getStackDump().c_str());
+			lua.pop();
+			continue;
+		}
+
 		def->textureHeight = lua.getValueIntegerFromTable("height");
 		def->textureWidth = lua.getValueIntegerFromTable("width");
 		def->textureName = lua.getValueStringFromTable("file");
