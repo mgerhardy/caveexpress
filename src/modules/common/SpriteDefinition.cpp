@@ -62,12 +62,6 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		// push the frames table
 		const int layers = lua.getTable("frames");
-		if (!lua_istable(lua.getState(), -1)) {
-			Log::error(LOG_GENERAL, "spritedef: expected frames table on the stack: %s", lua.getStackDump().c_str());
-			lua.pop();
-			continue;
-		}
-
 		for (Layer layer = LAYER_BACK; layer < layers; layer++) {
 			LUA_checkStack2(lua.getState());
 			lua_pushinteger(lua.getState(), layer + 1);
@@ -93,12 +87,6 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		// push the polygons table
 		const int polygons = lua.getTable("polygons");
-		if (!lua_istable(lua.getState(), -1)) {
-			Log::error(LOG_GENERAL, "spritedef: expected polygons table on the stack: %s", lua.getStackDump().c_str());
-			lua.pop();
-			continue;
-		}
-
 		if (polygons > 0) {
 			for (int j = 1; j <= polygons; j++) {
 				LUA_checkStack2(lua.getState());
@@ -129,11 +117,6 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		// push the circles table
 		const int circles = lua.getTable("circles");
-		if (!lua_istable(lua.getState(), -1)) {
-			Log::error(LOG_GENERAL, "spritedef: expected circles table on the stack: %s", lua.getStackDump().c_str());
-			lua.pop();
-			continue;
-		}
 		for (int j = 1; j <= circles; j++) {
 			LUA_checkStack2(lua.getState());
 			lua_pushinteger(lua.getState(), j);
@@ -205,11 +188,6 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		}
 
 		const int actives = lua.getTable("active");
-		if (!lua_istable(lua.getState(), -1)) {
-			Log::error(LOG_GENERAL, "spritedef: expected active table on the stack: %s", lua.getStackDump().c_str());
-			lua.pop();
-			continue;
-		}
 		for (int i = 1; i <= actives; ++i) {
 			LUA_checkStack2(lua.getState());
 			const bool active = lua.getTableBool(i);
@@ -225,11 +203,6 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		lua.pop();
 
 		const int delays = lua.getTable("delays");
-		if (!lua_istable(lua.getState(), -1)) {
-			Log::error(LOG_GENERAL, "spritedef: expected delays table on the stack: %s", lua.getStackDump().c_str());
-			lua.pop();
-			continue;
-		}
 		for (int i = 1; i <= delays; ++i) {
 			LUA_checkStack2(lua.getState());
 			const int delay = lua.getTableInteger(i);

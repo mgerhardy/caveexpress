@@ -38,12 +38,10 @@ FontDefinition::FontDefinition() {
 		const int height = lua.getValueIntegerFromTable("height");
 
 		// push the metrics table
-		lua.getTable("metrics");
-		if (!lua_istable(lua.getState(), -1)) {
-			Log::error(LOG_UI, "expected metrics table on the stack: %s", lua.getStackDump().c_str());
-			lua.pop();
+		if (lua.getTable("metrics") == -1) {
 			continue;
 		}
+
 		const int metricsHeight = lua.getValueIntegerFromTable("height");
 		const int metricsAscender = lua.getValueIntegerFromTable("ascender");
 		const int metricsDescender = lua.getValueIntegerFromTable("descender");
@@ -54,11 +52,6 @@ FontDefinition::FontDefinition() {
 
 		// push the chars table
 		const int chars = lua.getTable("chars");
-		if (!lua_istable(lua.getState(), -1)) {
-			Log::error(LOG_UI, "expected chars table on the stack: %s", lua.getStackDump().c_str());
-			lua.pop();
-			continue;
-		}
 		Log::debug(LOG_UI, "found %i chars entries", chars);
 		for (int i = 0; i < chars; ++i) {
 			lua_pushinteger(lua.getState(), i + 1);
@@ -86,18 +79,13 @@ FontDefinition::FontDefinition() {
 		lua.pop();
 
 		// push the texture table
-		lua.getTable("texture");
-		if (!lua_istable(lua.getState(), -1)) {
-			Log::error(LOG_UI, "expected texture table on the stack: %s", lua.getStackDump().c_str());
+		if (lua.getTable("texture") != -1) {
+			def->textureHeight = lua.getValueIntegerFromTable("height");
+			def->textureWidth = lua.getValueIntegerFromTable("width");
+			def->textureName = lua.getValueStringFromTable("file");
+			// pop the texture table
 			lua.pop();
-			continue;
 		}
-
-		def->textureHeight = lua.getValueIntegerFromTable("height");
-		def->textureWidth = lua.getValueIntegerFromTable("width");
-		def->textureName = lua.getValueStringFromTable("file");
-		// pop the texture table
-		lua.pop();
 
 		lua.pop();
 
