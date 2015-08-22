@@ -64,6 +64,12 @@ TEST_F(LUATest, testGlobal)
 	ASSERT_EQ(3, i);
 }
 
+TEST_F(LUATest, testLoadFile) {
+	LUA lua;
+	ASSERT_TRUE(lua.load("fonts.lua"));
+	ASSERT_TRUE(lua.getGlobalKeyValue("fonts"));
+}
+
 TEST_F(LUATest, testFontDefinition)
 {
 	FontDefinition d;
