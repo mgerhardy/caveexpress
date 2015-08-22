@@ -21,12 +21,14 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		return;
 	}
 
+	LUA_checkStack2(lua.getState());
 	if (!lua.getGlobalKeyValue("sprites")) {
 		Log::error(LOG_GENERAL, "spritedef: Could not find the global sprites map");
 		return;
 	}
 
 	while (lua.getNextKeyValue()) {
+		LUA_checkStack2(lua.getState());
 		const std::string id = lua.getKey();
 		if (id.empty()) {
 			Log::error(LOG_GENERAL, "spritedef: no key found in definition: %s", lua.getStackDump().c_str());
@@ -67,6 +69,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		}
 
 		for (Layer layer = LAYER_BACK; layer < layers; layer++) {
+			LUA_checkStack2(lua.getState());
 			lua_pushinteger(lua.getState(), layer + 1);
 			lua_gettable(lua.getState(), -2);
 			if (!lua_istable(lua.getState(), -1)) {
@@ -98,6 +101,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		if (polygons > 0) {
 			for (int j = 1; j <= polygons; j++) {
+				LUA_checkStack2(lua.getState());
 				lua_pushinteger(lua.getState(), j);
 				lua_gettable(lua.getState(), -2);
 				if (!lua_istable(lua.getState(), -1)) {
@@ -131,6 +135,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			continue;
 		}
 		for (int j = 1; j <= circles; j++) {
+			LUA_checkStack2(lua.getState());
 			lua_pushinteger(lua.getState(), j);
 			lua_gettable(lua.getState(), -2);
 			if (!lua_istable(lua.getState(), -1)) {
@@ -206,6 +211,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			continue;
 		}
 		for (int i = 1; i <= actives; ++i) {
+			LUA_checkStack2(lua.getState());
 			const bool active = lua.getTableBool(i);
 			for (Layer layer = LAYER_BACK; layer < MAX_LAYERS; layer++) {
 				const int textures = def->textures[layer].size();
@@ -225,6 +231,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			continue;
 		}
 		for (int i = 1; i <= delays; ++i) {
+			LUA_checkStack2(lua.getState());
 			const int delay = lua.getTableInteger(i);
 			for (Layer layer = LAYER_BACK; layer < MAX_LAYERS; layer++) {
 				const int textures = def->textures[layer].size();

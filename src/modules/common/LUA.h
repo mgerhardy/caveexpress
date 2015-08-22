@@ -10,6 +10,7 @@ GCC_DIAG_ON(cast-qual)
 #include "common/Log.h"
 #include <map>
 #include <SDL_platform.h>
+#include <SDL_assert.h>
 
 class LUA {
 private:
@@ -118,3 +119,30 @@ inline lua_State* LUA::getState () const
 {
 	return _state;
 }
+
+class LUAStackChecker {
+private:
+	lua_State *_state;
+	const int _startStackDepth;
+public:
+	explicit LUAStackChecker (lua_State *state) :
+			_state(state), _startStackDepth(lua_gettop(_state))
+	{
+	}
+	~LUAStackChecker ()
+	{
+		SDL_assert_always(_startStackDepth == lua_gettop(_state));
+	}
+};
+
+#ifdef DEBUG
+#define LUA_checkStack() LUAStackChecker(this->_state)
+#else
+#define LUA_checkStack() do {} while(0)
+#endif
+
+#ifdef DEBUG
+#define LUA_checkStack2(lua) LUAStackChecker(lua)
+#else
+#define LUA_checkStack2(lua) do {} while(0)
+#endif

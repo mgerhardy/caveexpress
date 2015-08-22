@@ -2,28 +2,6 @@
 #include "common/FileSystem.h"
 #include "common/Config.h"
 #include "common/System.h"
-#include <assert.h>
-
-class StackChecker {
-private:
-	lua_State *_state;
-	const int _startStackDepth;
-public:
-	explicit StackChecker (lua_State *state) :
-			_state(state), _startStackDepth(lua_gettop(_state))
-	{
-	}
-	~StackChecker ()
-	{
-		assert(_startStackDepth == lua_gettop(_state));
-	}
-};
-
-#ifdef DEBUG
-#define checkStack() StackChecker(this->_state)
-#else
-#define checkStack() do {} while(0)
-#endif
 
 LUA::LUA (bool debug)
 {
@@ -112,7 +90,7 @@ bool LUA::getValueBoolFromTable (const char * key, bool defaultValue)
 		stackDump();
 		return defaultValue;
 	}
-	checkStack();
+	LUA_checkStack();
 	lua_getfield(_state, -1, key);
 	if (lua_isnil(_state, -1)) {
 		pop();
@@ -131,7 +109,7 @@ std::string LUA::getValueStringFromTable (const char * key, const std::string& d
 		stackDump();
 		return defaultValue;
 	}
-	checkStack();
+	LUA_checkStack();
 	lua_getfield(_state, -1, key);
 	if (lua_isnil(_state, -1)) {
 		pop();
@@ -150,7 +128,7 @@ float LUA::getValueFloatFromTable (const char * key, float defaultValue)
 		stackDump();
 		return defaultValue;
 	}
-	checkStack();
+	LUA_checkStack();
 	lua_getfield(_state, -1, key);
 	if (lua_isnil(_state, -1)) {
 		pop();
@@ -169,7 +147,7 @@ int LUA::getValueIntegerFromTable (const char * key, int defaultValue)
 		stackDump();
 		return defaultValue;
 	}
-	checkStack();
+	LUA_checkStack();
 	lua_getfield(_state, -1, key);
 	if (lua_isnil(_state, -1)) {
 		pop();
@@ -238,7 +216,7 @@ void LUA::tableDump()
 
 std::string LUA::getStackDump ()
 {
-	checkStack();
+	LUA_checkStack();
 	const int top = lua_gettop(_state);
 	std::string sd = String::format("stack elements: %i\n", top);
 	for (int i = 1; i <= top; i++) { /* repeat for each level */
@@ -264,7 +242,7 @@ std::string LUA::getStringFromStack ()
 
 std::string LUA::getString (const std::string& expr, const std::string& defaultValue)
 {
-	checkStack();
+	LUA_checkStack();
 	std::string r = defaultValue;
 	/* Assign the Lua expression to a Lua global variable. */
 	const std::string buf("evalExpr=" + expr);
@@ -280,7 +258,7 @@ std::string LUA::getString (const std::string& expr, const std::string& defaultV
 
 void LUA::getKeyValueMap (std::map<std::string, std::string>& map, const std::string& key)
 {
-	checkStack();
+	LUA_checkStack();
 	if (!getGlobalKeyValue(key)) {
 		return;
 	}
@@ -336,7 +314,7 @@ std::string LUA::getTableString (int i)
 		stackDump();
 		return "";
 	}
-	checkStack();
+	LUA_checkStack();
 	lua_rawgeti(_state, -1, i);
 	const std::string str = luaL_checkstring(_state, -1);
 	pop();
@@ -350,7 +328,7 @@ bool LUA::getTableBool (int i)
 		stackDump();
 		return false;
 	}
-	checkStack();
+	LUA_checkStack();
 	lua_rawgeti(_state, -1, i);
 	const bool val = lua_toboolean(_state, -1);
 	pop();
