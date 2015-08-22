@@ -13,6 +13,7 @@ SpriteDefinition::SpriteDefinition ()
 void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 {
 	ExecutionTime e("Sprites loading");
+	Log::debug(LOG_GENERAL, "Sprites loading");
 	LUA lua;
 
 	if (!lua.load("sprites.lua")) {
@@ -20,12 +21,15 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		return;
 	}
 
-	if (!lua.getGlobalKeyValue("sprites"))
+	if (!lua.getGlobalKeyValue("sprites")) {
+		Log::error(LOG_GENERAL, "spritedef: Could not find the global sprites map");
 		return;
+	}
 
 	while (lua.getNextKeyValue()) {
 		const std::string id = lua.getKey();
 		if (id.empty()) {
+			Log::error(LOG_GENERAL, "spritedef: no key found in definition: %s", lua.getStackDump().c_str());
 			lua.pop();
 			continue;
 		}
@@ -56,9 +60,20 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		// push the frames table
 		const int layers = lua.getTable("frames");
+		if (!lua_istable(lua.getState(), -1)) {
+			Log::error(LOG_GENERAL, "spritedef: expected frames table on the stack: %s", lua.getStackDump().c_str());
+			lua.pop();
+			continue;
+		}
+
 		for (Layer layer = LAYER_BACK; layer < layers; layer++) {
 			lua_pushinteger(lua.getState(), layer + 1);
 			lua_gettable(lua.getState(), -2);
+			if (!lua_istable(lua.getState(), -1)) {
+				Log::error(LOG_GENERAL, "spritedef: expected frame table on the stack: %s", lua.getStackDump().c_str());
+				lua.pop();
+				continue;
+			}
 			// push the frame table
 			const int framesOnLayer = lua_rawlen(lua.getState(), -1);
 			for (int i = 1; i <= framesOnLayer; ++i) {
@@ -75,10 +90,21 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		// push the polygons table
 		const int polygons = lua.getTable("polygons");
+		if (!lua_istable(lua.getState(), -1)) {
+			Log::error(LOG_GENERAL, "spritedef: expected polygons table on the stack: %s", lua.getStackDump().c_str());
+			lua.pop();
+			continue;
+		}
+
 		if (polygons > 0) {
 			for (int j = 1; j <= polygons; j++) {
 				lua_pushinteger(lua.getState(), j);
 				lua_gettable(lua.getState(), -2);
+				if (!lua_istable(lua.getState(), -1)) {
+					Log::error(LOG_GENERAL, "spritedef: expected polygon table on the stack: %s", lua.getStackDump().c_str());
+					lua.pop();
+					continue;
+				}
 				// push the polygon table
 				const int vertices = lua_rawlen(lua.getState(), -1) - 1;
 				const std::string& userData = lua.getTableString(1);
@@ -93,14 +119,25 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 				def->polygons.push_back(p);
 			}
 		}
+		Log::debug(LOG_GENERAL, "spritedef: %s", lua.getStackDump().c_str());
 		// pop the polygons table
 		lua.pop();
 
 		// push the circles table
 		const int circles = lua.getTable("circles");
+		if (!lua_istable(lua.getState(), -1)) {
+			Log::error(LOG_GENERAL, "spritedef: expected circles table on the stack: %s", lua.getStackDump().c_str());
+			lua.pop();
+			continue;
+		}
 		for (int j = 1; j <= circles; j++) {
 			lua_pushinteger(lua.getState(), j);
 			lua_gettable(lua.getState(), -2);
+			if (!lua_istable(lua.getState(), -1)) {
+				Log::error(LOG_GENERAL, "spritedef: expected circle table on the stack: %s", lua.getStackDump().c_str());
+				lua.pop();
+				continue;
+			}
 			// push the circle table
 			const int entries = lua_rawlen(lua.getState(), -1);
 			if (entries == 4) {
@@ -163,6 +200,11 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		}
 
 		const int actives = lua.getTable("active");
+		if (!lua_istable(lua.getState(), -1)) {
+			Log::error(LOG_GENERAL, "spritedef: expected active table on the stack: %s", lua.getStackDump().c_str());
+			lua.pop();
+			continue;
+		}
 		for (int i = 1; i <= actives; ++i) {
 			const bool active = lua.getTableBool(i);
 			for (Layer layer = LAYER_BACK; layer < MAX_LAYERS; layer++) {
@@ -177,6 +219,11 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		lua.pop();
 
 		const int delays = lua.getTable("delays");
+		if (!lua_istable(lua.getState(), -1)) {
+			Log::error(LOG_GENERAL, "spritedef: expected delays table on the stack: %s", lua.getStackDump().c_str());
+			lua.pop();
+			continue;
+		}
 		for (int i = 1; i <= delays; ++i) {
 			const int delay = lua.getTableInteger(i);
 			for (Layer layer = LAYER_BACK; layer < MAX_LAYERS; layer++) {

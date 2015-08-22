@@ -66,7 +66,6 @@ void Log::addConsole (IConsole* console)
 void Log::vsnprint(LogLevel logLevel, LogCategory category, const char* msg, va_list args) {
 	char buf[1024];
 	const char *categoryStr = LogTypes[static_cast<int>(category)];
-	const char *logLevelStr = LogLevels[static_cast<int>(logLevel)].logLevelStr;
 	SDL_vsnprintf(buf, sizeof(buf), msg, args);
 	buf[sizeof(buf) - 1] = 0;
 
