@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/mgerhardy/caveexpress.svg?branch=master)](https://travis-ci.org/mgerhardy/caveexpress)
 [![Build status](https://ci.appveyor.com/api/projects/status/5milbiquto4e6u2t?svg=true)](https://ci.appveyor.com/project/mgerhardy/caveexpress)
+[![Coverity status](https://scan.coverity.com/projects/5927/badge.svg)](https://scan.coverity.com/projects/mgerhardy-caveexpress)
 
 ### General
 
