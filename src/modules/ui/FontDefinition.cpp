@@ -39,6 +39,7 @@ FontDefinition::FontDefinition() {
 
 		// push the metrics table
 		if (lua.getTable("metrics") == -1) {
+			Log::error(LOG_UI, "font def doesn't have a metrics table");
 			continue;
 		}
 

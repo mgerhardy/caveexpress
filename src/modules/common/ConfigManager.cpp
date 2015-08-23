@@ -127,16 +127,24 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 		if (argv[i][0] != '-')
 			continue;
 		const std::string command = &argv[i][1];
-		if (command != CMD_SETVAR)
-			continue;
-		if (i + 2 >= argc)
-			continue;
-		const std::string var = argv[i + 1];
-		const std::string val = argv[i + 2];
-		ConfigVarPtr p = getConfigVar(var);
-		p->setValue(val);
-		*argv[i] = *argv[i + 1] = *argv[i + 2] = '\0';
-		i += 2;
+		if (command == CMD_SETVAR) {
+			if (i + 2 >= argc)
+				continue;
+			const std::string var = argv[i + 1];
+			const std::string val = argv[i + 2];
+			ConfigVarPtr p = getConfigVar(var);
+			p->setValue(val);
+			*argv[i] = *argv[i + 1] = *argv[i + 2] = '\0';
+			i += 2;
+		} else if (command == "loglevel") {
+			if (i + 1 >= argc)
+				continue;
+			ICommand::Args a;
+			a.push_back(argv[i + 1]);
+			setLogLevel(a);
+			*argv[i] = *argv[i + 1] = '\0';
+			i += 1;
+		}
 	}
 }
 
@@ -285,8 +293,9 @@ void ConfigManager::setLogLevel (const ICommand::Args& args)
 	const int max = static_cast<int>(LogLevel::LEVEL_MAX);
 	for (int i = 0; i < max; ++i) {
 		if (args[0] == LogLevels[i].logLevelStr) {
-			Log::info(LOG_CONFIG, "Changing log level to %s", args[0].c_str());
+			SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, LogLevels[i].sdlLevel);
 			_logLevel = LogLevels[i].logLevel;
+			Log::info(LOG_CONFIG, "Changing log level to %s", args[0].c_str());
 			return;
 		}
 	}

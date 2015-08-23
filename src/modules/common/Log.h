@@ -6,6 +6,7 @@
 #include <vector>
 #include <cstdio>
 #include <memory>
+#include <SDL_log.h>
 
 typedef enum {
 	LOG_BACKEND,
@@ -41,6 +42,7 @@ enum class LogLevel {
 struct LogLevelList {
 	const char *logLevelStr;
 	LogLevel logLevel;
+	SDL_LogPriority sdlLevel;
 };
 
 extern LogLevelList LogLevels[];
