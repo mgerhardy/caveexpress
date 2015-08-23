@@ -1,11 +1,9 @@
 #include "IOS.h"
-#include "Cocoa.h"
 #include "common/Application.h"
 
 IOS::IOS () :
 		Unix()
 {
-	nsinit();
 }
 
 IOS::~IOS ()
@@ -14,12 +12,7 @@ IOS::~IOS ()
 
 std::string IOS::getHomeDirectory ()
 {
-	char* home = nsGetHomeDirectory(Singleton<Application>::getInstance().getName());
-	if (home == nullptr)
-		return "";
-	std::string h(home);
-	SDL_free(home);
-	return h;
+	return "";
 }
 
 void IOS::showAds (bool show)
