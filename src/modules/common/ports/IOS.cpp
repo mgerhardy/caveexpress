@@ -17,7 +17,9 @@ std::string IOS::getHomeDirectory ()
 	char* home = nsGetHomeDirectory(Singleton<Application>::getInstance().getName());
 	if (home == nullptr)
 		return "";
-	return home;
+	std::string h(home);
+	SDL_free(home);
+	return h;
 }
 
 void IOS::showAds (bool show)

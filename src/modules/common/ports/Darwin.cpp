@@ -17,7 +17,9 @@ std::string Darwin::getHomeDirectory ()
 	char* home = nsGetHomeDirectory(Singleton<Application>::getInstance().getName().c_str());
 	if (home == nullptr)
 		return "";
-	return home;
+	std::string h(home);
+	SDL_free(home);
+	return h;
 }
 
 int Darwin::openURL (const std::string& url, bool) const
