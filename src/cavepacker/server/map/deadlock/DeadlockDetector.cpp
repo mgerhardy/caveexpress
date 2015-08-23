@@ -33,7 +33,7 @@ StateMap DeadlockDetector::calculateDeadlockFields(const BoardState& state) {
 }
 
 bool DeadlockDetector::hasDeadlock(const BoardState& state) {
-	Log::info(LOG_MAP, "check whether there is a deadlock");
+	Log::debug(LOG_MAP, "check whether there is a deadlock");
 	const StateMap& deadlockMap = calculateDeadlockFields(state);
 	return !deadlockMap.empty();
 }
