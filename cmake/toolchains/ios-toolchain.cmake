@@ -1,5 +1,6 @@
 set(FRAMEWORKS Foundation OpenGLES CoreGraphics AudioToolbox UIKit GLKit QuartzCore CoreMotion)
 
+set(IOS 1)
 set(CMAKE_OSX_ARCHITECTURES "armv7")
 set(CMAKE_OSX_SYSROOT "iphoneos")
 set(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator")

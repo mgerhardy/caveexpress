@@ -82,9 +82,9 @@ endif()
 
 if (ANDROID)
 	include(${CP_CMAKE_DIR}/android.cmake)
-elseif (IOS)
+#elseif (IOS)
 # TODO: create me, and fix me
-	include(${CP_CMAKE_DIR}/ios.cmake)
+#	include(${CP_CMAKE_DIR}/ios.cmake)
 elseif (WINDOWS)
 	include(${CP_CMAKE_DIR}/toolchains/windows-toolchain.cmake)
 elseif (NACL)
