@@ -124,4 +124,27 @@ TEST_F(BoardStateTest, testDeadlock1) {
 	ASSERT_TRUE(s.hasDeadlock()) << "there is a deadlock that is not detected in 1,3";
 }
 
+TEST_F(BoardStateTest, testNoDeadlockButBlockedPackages) {
+	BoardState s;
+
+	const char* mapStr =
+		"    #####\n"
+		"    #   #\n"
+		"    #$  #\n"
+		"  ###  $##\n"
+		"  #  $$@ #\n"
+		"### # ## #   ######\n"
+		"#   # ## #####  ..#\n"
+		"# $  $          ..#\n"
+		"##### ### # ##  ..#\n"
+		"    #     #########\n"
+		"    #######\n";
+
+	fillState(s, mapStr);
+	ASSERT_TRUE(s.canMove(5, 4)) << "5,4 should be moveable";
+	ASSERT_FALSE(s.canMove(6, 4)) << "6,4 should not be moveable - there is a package on the left";
+
+	ASSERT_FALSE(s.hasDeadlock()) << "there is no deadlock but blocked packages";
+}
+
 }

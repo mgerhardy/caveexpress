@@ -107,9 +107,9 @@ bool BoardState::canMove(int col, int row) const {
 	const bool up = canMoveUp(col, row);
 	const bool moveable = left || up;
 	if (moveable)
-		Log::info(LOG_MAP, "package on %i:%i can be moved", col, row);
+		Log::trace(LOG_MAP, "package on %i:%i can be moved", col, row);
 	else
-		Log::info(LOG_MAP, "package on %i:%i can't be moved", col, row);
+		Log::trace(LOG_MAP, "package on %i:%i can't be moved", col, row);
 	return moveable;
 }
 
