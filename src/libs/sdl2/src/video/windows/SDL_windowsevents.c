@@ -32,6 +32,7 @@
 #include "../../events/SDL_touch_c.h"
 #include "../../events/scancodes_windows.h"
 #include "SDL_assert.h"
+#include "SDL_hints.h"
 
 /* Dropfile support */
 #include <shellapi.h>
@@ -295,7 +296,7 @@ WIN_CheckAsyncMouseRelease(SDL_WindowData *data)
     data->mouse_button_flags = 0;
 }
 
-SDL_FORCE_INLINE BOOL
+BOOL 
 WIN_ConvertUTF32toUTF8(UINT32 codepoint, char * text)
 {
     if (codepoint <= 0x7F) {
@@ -318,6 +319,22 @@ WIN_ConvertUTF32toUTF8(UINT32 codepoint, char * text)
         text[4] = '\0';
     } else {
         return SDL_FALSE;
+    }
+    return SDL_TRUE;
+}
+
+static SDL_bool
+ShouldGenerateWindowCloseOnAltF4(void)
+{
+    const char *hint;
+    
+    hint = SDL_GetHint(SDL_HINT_WINDOWS_NO_CLOSE_ON_ALT_F4);
+    if (hint) {
+        if (*hint == '0') {
+            return SDL_TRUE;
+        } else {
+            return SDL_FALSE;
+        }
     }
     return SDL_TRUE;
 }
@@ -559,7 +576,7 @@ WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             /* Detect relevant keyboard shortcuts */
             if (keyboardState[SDL_SCANCODE_LALT] == SDL_PRESSED || keyboardState[SDL_SCANCODE_RALT] == SDL_PRESSED) {
                 /* ALT+F4: Close window */
-                if (code == SDL_SCANCODE_F4) {
+                if (code == SDL_SCANCODE_F4 && ShouldGenerateWindowCloseOnAltF4()) {
                     SDL_SendWindowEvent(data->window, SDL_WINDOWEVENT_CLOSE, 0, 0);
                 }
             }
@@ -568,21 +585,7 @@ WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 SDL_SendKeyboardKey(SDL_PRESSED, code);
             }
         }
-        if (msg == WM_KEYDOWN) {
-            BYTE keyboardState[256];
-            char text[5];
-            UINT32 utf32 = 0;
-
-            GetKeyboardState(keyboardState);
-            if (ToUnicode(wParam, (lParam >> 16) & 0xff, keyboardState, (LPWSTR)&utf32, 1, 0) > 0) {
-                if (WIN_ConvertUTF32toUTF8(utf32, text)) {
-                    WORD repetition;
-                    for (repetition = lParam & 0xffff; repetition > 0; repetition--) {
-                        SDL_SendKeyboardText(text);
-                    }
-                }
-            }
-        }
+ 
         returnCode = 0;
         break;
 
@@ -604,9 +607,19 @@ WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_UNICHAR:
-    case WM_CHAR:
-        /* Ignore WM_CHAR messages that come from TranslateMessage(), since we handle WM_KEY* messages directly */
-        returnCode = 0;
+		if ( wParam == UNICODE_NOCHAR ) {
+			returnCode = 1;
+			break;
+		}
+		/* otherwise fall through to below */
+	case WM_CHAR:
+		{
+			char text[5];
+			if ( WIN_ConvertUTF32toUTF8( (UINT32)wParam, text ) ) {
+				SDL_SendKeyboardText( text );
+			}
+		}
+		returnCode = 0;
         break;
 
 #ifdef WM_INPUTLANGCHANGE

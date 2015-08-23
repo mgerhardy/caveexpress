@@ -9,14 +9,25 @@ protected:
 	int _titleAlign;
 	BitmapFontPtr _font;
 	Color _fontColor;
+	uint32_t _triggerTimeMs;
+	uint32_t _lastTriggerTimeMs;
 public:
 	UINodeButton (IFrontend *frontend, const std::string& title = "");
 	virtual ~UINodeButton ();
+
+	/**
+	 * @brief Sets a trigger time for reexecuting the attached action if a finger or button is kept pressed.
+	 * By setting this to <= 0 the reactivation is disabled.
+	 */
+	void setTriggerTime(uint32_t ms) {
+		_triggerTimeMs = ms;
+	}
 
 	void setTitleAlignment (int align);
 	void setTitle (const std::string& title);
 	void setFont (const BitmapFontPtr& font, const Color& color = colorBlack);
 
+	virtual void update (uint32_t deltaTime) override;
 	virtual float getAutoWidth () const override;
 	virtual float getAutoHeight () const override;
 	virtual bool isActive () const override;

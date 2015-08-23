@@ -2,28 +2,6 @@
 #include "common/FileSystem.h"
 #include "common/Config.h"
 #include "common/System.h"
-#include <assert.h>
-
-class StackChecker {
-private:
-	lua_State *_state;
-	const int _startStackDepth;
-public:
-	explicit StackChecker (lua_State *state) :
-			_state(state), _startStackDepth(lua_gettop(_state))
-	{
-	}
-	~StackChecker ()
-	{
-		assert(_startStackDepth == lua_gettop(_state));
-	}
-};
-
-#ifdef DEBUG
-#define checkStack() StackChecker(this->_state)
-#else
-#define checkStack() do {} while(0)
-#endif
 
 LUA::LUA (bool debug)
 {
@@ -61,6 +39,8 @@ void LUA::init (bool debug)
 		const int mask = LUA_MASKCALL | LUA_MASKRET | LUA_MASKLINE | LUA_MASKCOUNT;
 		lua_sethook(_state, debugHook, mask, 0);
 	}
+
+	lua_atpanic(_state, panicHook);
 }
 
 void LUA::reg (const std::string& prefix, luaL_Reg* funcs)
@@ -89,9 +69,14 @@ bool LUA::load (const std::string &file)
 		return false;
 	}
 
-	if (luaL_loadbufferx(_state, buffer, fileLen, file.c_str(), nullptr) || lua_pcall(_state, 0, 0, 0)) {
-		Log::error(LOG_LUA, "%s: %s", file.c_str(), lua_tostring(_state, -1));
-		pop(1);
+	return loadBuffer(std::string(buffer, fileLen), file.c_str());
+}
+
+bool LUA::loadBuffer (const std::string& buffer, const char *ctx)
+{
+	if (luaL_loadbufferx(_state, buffer.c_str(), buffer.size(), ctx, nullptr) || lua_pcall(_state, 0, 0, 0)) {
+		Log::error(LOG_LUA, "%s: %s", ctx, lua_tostring(_state, -1));
+		pop();
 		return false;
 	}
 
@@ -100,69 +85,90 @@ bool LUA::load (const std::string &file)
 
 bool LUA::getValueBoolFromTable (const char * key, bool defaultValue)
 {
-	checkStack();
+	if (!lua_istable(_state, -1)) {
+		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		stackDump();
+		return defaultValue;
+	}
+	LUA_checkStack();
 	lua_getfield(_state, -1, key);
 	if (lua_isnil(_state, -1)) {
-		lua_pop(_state, 1);
+		pop();
 		return defaultValue;
 	}
 
 	const bool rtn = lua_toboolean(_state, -1);
-	lua_pop(_state, 1);
+	pop();
 	return rtn;
 }
 
-String LUA::getValueStringFromTable (const char * key, const String& defaultValue)
+std::string LUA::getValueStringFromTable (const char * key, const std::string& defaultValue)
 {
-	checkStack();
+	if (!lua_istable(_state, -1)) {
+		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		stackDump();
+		return defaultValue;
+	}
+	LUA_checkStack();
 	lua_getfield(_state, -1, key);
 	if (lua_isnil(_state, -1)) {
-		lua_pop(_state, 1);
+		pop();
 		return defaultValue;
 	}
 
-	const String rtn = lua_tostring(_state,-1);
-	lua_pop(_state, 1);
+	const std::string rtn = luaL_checkstring(_state,-1);
+	pop();
 	return rtn;
 }
 
 float LUA::getValueFloatFromTable (const char * key, float defaultValue)
 {
-	checkStack();
+	if (!lua_istable(_state, -1)) {
+		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		stackDump();
+		return defaultValue;
+	}
+	LUA_checkStack();
 	lua_getfield(_state, -1, key);
 	if (lua_isnil(_state, -1)) {
-		lua_pop(_state, 1);
+		pop();
 		return defaultValue;
 	}
 
-	const float rtn = static_cast<float>(lua_tonumber(_state,-1));
-	lua_pop(_state, 1);
+	const float rtn = static_cast<float>(luaL_checknumber(_state,-1));
+	pop();
 	return rtn;
 }
 
 int LUA::getValueIntegerFromTable (const char * key, int defaultValue)
 {
-	checkStack();
+	if (!lua_istable(_state, -1)) {
+		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		stackDump();
+		return defaultValue;
+	}
+	LUA_checkStack();
 	lua_getfield(_state, -1, key);
 	if (lua_isnil(_state, -1)) {
-		lua_pop(_state, 1);
+		pop();
 		return defaultValue;
 	}
 
-	const int rtn = lua_tointeger(_state, -1);
-	lua_pop(_state, 1);
+	const int rtn = luaL_checkinteger(_state, -1);
+	pop();
 	return rtn;
 }
 
 /**
  * @param[in] function function to be called
  */
-bool LUA::execute (const String &function, int returnValues)
+bool LUA::execute (const std::string &function, int returnValues)
 {
-	lua_getglobal(_state, function.c_str());
+	if (!getGlobal(function))
+		return false;
 	const int ret = lua_pcall(_state, 0, returnValues, 0);
 	if (ret != 0) {
-		const char * s = lua_tostring(_state, -1);
+		const char * s = luaL_checkstring(_state, -1);
 		if (s == nullptr)
 			Log::error(LOG_LUA, "unrecognized Lua error");
 		else
@@ -173,126 +179,161 @@ bool LUA::execute (const String &function, int returnValues)
 	return true;
 }
 
+std::string LUA::getLuaValue (int stackIndex)
+{
+	const int t = lua_type(_state, stackIndex);
+	switch (t) {
+	case LUA_TNUMBER:
+	case LUA_TSTRING:
+		lua_pushstring(_state, lua_tostring(_state, stackIndex));
+		break;
+	case LUA_TBOOLEAN:
+		lua_pushstring(_state, (lua_toboolean(_state, stackIndex) ? "true" : "false"));
+		break;
+	case LUA_TNIL:
+		lua_pushliteral(_state, "nil");
+		break;
+	default:
+		lua_pushfstring(_state, "%s: %p", luaL_typename(_state, stackIndex), lua_topointer(_state, stackIndex));
+		break;
+	}
+
+	std::string result(lua_tostring(_state, -1));
+	pop();
+	return result;
+}
+
+void LUA::tableDump()
+{
+	lua_pushnil(_state);
+	while (getNextKeyValue()) {
+		const std::string& key = getLuaValue(-2);
+		const std::string& value = getLuaValue(-1);
+		Log::info(LOG_LUA, "%s : %s", key.c_str(), value.c_str());
+		pop();
+	}
+}
+
+std::string LUA::getStackDump ()
+{
+	LUA_checkStack();
+	const int top = lua_gettop(_state);
+	std::string sd = String::format("stack elements: %i\n", top);
+	for (int i = 1; i <= top; i++) { /* repeat for each level */
+		sd += getLuaValue(i);
+		sd += "\n";
+	}
+	return sd;
+}
+
 void LUA::stackDump ()
 {
-	checkStack();
-	const int top = lua_gettop(_state);
-	for (int i = 1; i <= top; i++) { /* repeat for each level */
-		const int t = lua_type(_state, i);
-		printf("%i: ", i);
-		switch (t) {
-		case LUA_TSTRING:
-			printf("'%s'", lua_tostring(_state, i));
-			break;
-
-		case LUA_TBOOLEAN:
-			printf(lua_toboolean(_state, i) ? "true" : "false");
-			break;
-
-		case LUA_TNUMBER:
-			printf("%g", lua_tonumber(_state, i));
-			break;
-
-		default:
-			printf("%s", lua_typename(_state, t));
-			break;
-
-		}
-		printf("\n");
-	}
+	Log::info(LOG_LUA, "%s", getStackDump().c_str());
 }
 
 std::string LUA::getStringFromStack ()
 {
-	const char* id = lua_tostring(_state, -1);
+	const char* id = luaL_checkstring(_state, -1);
 	pop();
 	if (id == nullptr)
 		return "";
 	return id;
 }
 
-String LUA::getString (const std::string& expr, const std::string& defaultValue)
+std::string LUA::getString (const std::string& expr, const std::string& defaultValue)
 {
-	checkStack();
-	const char* r = defaultValue.c_str();
+	LUA_checkStack();
+	std::string r = defaultValue;
 	/* Assign the Lua expression to a Lua global variable. */
-	const std::string buf("evalExpr=" + expr);
+	const std::string buf("return " + expr);
+	Log::debug(LOG_LUA, "eval: '%s'", buf.c_str());
 	if (!luaL_dostring(_state, buf.c_str())) {
-		/* Get the value of the global variable */
-		lua_getglobal(_state, "evalExpr");
-		if (lua_isstring(_state, -1))
-			r = lua_tostring(_state, -1);
-		else if (lua_isboolean(_state, -1))
-			r = lua_toboolean(_state, -1) ? "true" : "false";
+		const char *str = lua_tostring(_state, -1);
+		if (str != nullptr)
+			r = str;
 		/* remove lua_getglobal value */
-		lua_pop(_state, 1);
+		pop();
 	}
 	return r;
 }
 
-void LUA::getKeyValueMap (std::map<std::string, std::string>& map, const char *key)
+void LUA::getKeyValueMap (std::map<std::string, std::string>& map, const std::string& key)
 {
-	checkStack();
-	lua_getglobal(_state, key);
-	lua_pushnil(_state);
-
-	while (lua_next(_state, -2) != 0) {
-		const char *_key = lua_tostring(_state, -2);
-		assert(_key);
-		std::string _value;
-		if (lua_isstring(_state, -1)) {
-			_value = lua_tostring(_state, -1);
-		} else if (lua_isnumber(_state, -1)) {
-			_value = string::toString(lua_tonumber(_state, -1));
-		} else if (lua_isboolean(_state, -1)) {
-			_value = lua_toboolean(_state, -1) ? "true" : "false";
-		}
+	LUA_checkStack();
+	if (!getGlobalKeyValue(key)) {
+		return;
+	}
+	while (getNextKeyValue()) {
+		const std::string& _key = getLuaValue(-2);
+		const std::string& _value = getLuaValue(-1);
 		map[_key] = _value;
-		lua_pop(_state, 1);
+		pop();
 	}
 
-	lua_pop(_state, 1);
+	pop();
 }
 
 int LUA::getIntValue (const std::string& path, int defaultValue)
 {
-	return getString(path).toInt(defaultValue);
+	return string::toInt(getString(path), defaultValue);
 }
 
 float LUA::getFloatValue (const std::string& path, float defaultValue)
 {
-	return getString(path).toFloat(defaultValue);
+	return string::toFloat(getString(path), defaultValue);
 }
 
 bool LUA::getBoolValue (const std::string& path)
 {
-	return getString(path).toBool();
+	return string::toBool(getString(path));
 }
 
-void LUA::getGlobalKeyValue (const std::string& name)
+bool LUA::getGlobalKeyValue (const std::string& name)
 {
-	lua_getglobal(_state, name.c_str());
+	if (!getGlobal(name)) {
+		return false;
+	}
 	lua_pushnil(_state);
+	return true;
 }
 
 int LUA::getTable (const std::string& name)
 {
+	if (!lua_istable(_state, -1)) {
+		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		stackDump();
+		return 0;
+	}
 	lua_getfield(_state, -1, name.c_str());
+	if (lua_isnil(_state,-1)) {
+		pop();
+		return -1;
+	}
 	return lua_rawlen(_state, -1);
 }
 
 std::string LUA::getTableString (int i)
 {
-	checkStack();
+	if (!lua_istable(_state, -1)) {
+		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		stackDump();
+		return "";
+	}
+	LUA_checkStack();
 	lua_rawgeti(_state, -1, i);
-	const std::string str = lua_tostring(_state, -1);
+	const std::string str = luaL_checkstring(_state, -1);
 	pop();
 	return str;
 }
 
 bool LUA::getTableBool (int i)
 {
-	checkStack();
+	if (!lua_istable(_state, -1)) {
+		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		stackDump();
+		return false;
+	}
+	LUA_checkStack();
 	lua_rawgeti(_state, -1, i);
 	const bool val = lua_toboolean(_state, -1);
 	pop();
@@ -301,23 +342,33 @@ bool LUA::getTableBool (int i)
 
 int LUA::getTableInteger (int i)
 {
+	if (!lua_istable(_state, -1)) {
+		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		stackDump();
+		return 0;
+	}
 	lua_rawgeti(_state, -1, i);
-	const int val = lua_tointeger(_state, -1);
+	const int val = luaL_checkinteger(_state, -1);
 	pop();
 	return val;
 }
 
 float LUA::getTableFloat (int i)
 {
+	if (!lua_istable(_state, -1)) {
+		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		stackDump();
+		return 0.0f;
+	}
 	lua_rawgeti(_state, -1, i);
-	const float val = lua_tonumber(_state, -1);
+	const float val = luaL_checknumber(_state, -1);
 	pop();
 	return val;
 }
 
 std::string LUA::getKey ()
 {
-	return lua_tostring(_state, -2);
+	return luaL_checkstring(_state, -2);
 }
 
 void LUA::pop (int amount)
@@ -325,14 +376,24 @@ void LUA::pop (int amount)
 	lua_pop(_state, amount);
 }
 
+int LUA::stackCount ()
+{
+	return lua_gettop(_state);
+}
+
 bool LUA::getNextKeyValue ()
 {
 	return lua_next(_state, -2) != 0;
 }
 
-void LUA::getGlobal (const std::string& name)
+bool LUA::getGlobal (const std::string& name)
 {
 	lua_getglobal(_state, name.c_str());
+	if (lua_isnil(_state, -1)) {
+		Log::error(LOG_LUA, "Could not find %s lua global", name.c_str());
+		return false;
+	}
+	return true;
 }
 
 void LUA::debugHook (lua_State *L, lua_Debug *ar)
@@ -340,7 +401,13 @@ void LUA::debugHook (lua_State *L, lua_Debug *ar)
 	if (!lua_getinfo(L, "Sn", ar))
 		return;
 
-	Log::info(LOG_LUA, "%s %s: %s %d", ar->namewhat, ar->name, ar->short_src, ar->currentline);
+	Log::debug(LOG_LUA, "%s %s: %s %d", ar->namewhat, ar->name, ar->short_src, ar->currentline);
+}
+
+int LUA::panicHook (lua_State *L)
+{
+	Log::error(LOG_LUA, "Lua panic. Error message: %s", lua_isnil(L, -1) ? "" : lua_tostring(L, -1));
+	return 0;
 }
 
 int LUA::isAndroid (lua_State *L)

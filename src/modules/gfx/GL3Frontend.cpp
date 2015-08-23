@@ -362,7 +362,7 @@ void GL3Frontend::initRenderer () {
 	ExtGLLoadFunctions();
 
 	glClearColor(0, 0, 0, 0);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	GL_checkError();

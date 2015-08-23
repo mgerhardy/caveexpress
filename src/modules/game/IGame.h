@@ -26,6 +26,11 @@ public:
 		return _name;
 	}
 
+	virtual DirectoryEntries listDirectory(const std::string& basedir, const std::string& subdir) {
+		DirectoryEntries e;
+		return e;
+	}
+
 	// create the windows
 	virtual void initUI (IFrontend* frontend, ServiceProvider& serviceProvider) {}
 

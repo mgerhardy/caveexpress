@@ -12,15 +12,18 @@ UINodeMapOnScreenCursorControl::UINodeMapOnScreenCursorControl (IFrontend *front
 		UINode(frontend), _map(mapNode->getMap())
 {
 	setStandardPadding();
+	setId("cursor-control");
 
 	UINodeButton *left = new UINodeButton(frontend);
 	left->setImage("icon-cursor-left");
 	left->setOnActivate(CMD_MOVE_LEFT);
+	left->setTriggerTime(500u);
 	left->setAlignment(NODE_ALIGN_LEFT | NODE_ALIGN_BOTTOM);
 	add(left);
 	UINodeButton *right = new UINodeButton(frontend);
 	right->setImage("icon-cursor-right");
 	right->setOnActivate(CMD_MOVE_RIGHT);
+	right->setTriggerTime(500u);
 	right->putRight(left);
 	add(right);
 
@@ -28,10 +31,12 @@ UINodeMapOnScreenCursorControl::UINodeMapOnScreenCursorControl (IFrontend *front
 	down->setImage("icon-cursor-down");
 	down->setOnActivate(CMD_MOVE_DOWN);
 	down->setAlignment(NODE_ALIGN_RIGHT | NODE_ALIGN_BOTTOM);
+	down->setTriggerTime(500u);
 	add(down);
 	UINodeButton *up = new UINodeButton(frontend);
 	up->setImage("icon-cursor-up");
 	up->setOnActivate(CMD_MOVE_UP);
+	up->setTriggerTime(500u);
 	up->putAbove(down);
 	add(up);
 }

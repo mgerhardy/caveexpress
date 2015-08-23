@@ -22,6 +22,7 @@ public:
 	MiniRacer();
 	virtual ~MiniRacer();
 
+	DirectoryEntries listDirectory(const std::string& basedir, const std::string& subdir) override;
 	void initUI (IFrontend* frontend, ServiceProvider& serviceProvider) override;
 	void update (uint32_t deltaTime) override;
 	std::string getMapName () override;

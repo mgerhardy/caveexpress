@@ -3,6 +3,9 @@
 #include <string>
 #include <inttypes.h>
 
+/**
+ * @brief Register implementations at the EventHandler class to get notifications on the events
+ */
 class IEventObserver {
 public:
 	virtual ~IEventObserver ()

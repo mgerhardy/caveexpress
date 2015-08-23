@@ -207,6 +207,29 @@ void ClientMap::renderParticles (int x, int y) const
 	_particleSystem.render(_frontend, x, y, _zoom);
 }
 
+void ClientMap::getMapPixelForScreenPixel (int x, int y, int *outX, int *outY)
+{
+	const int nx = _screenRumbleOffsetX + _x + _camera.getViewportX();
+	const int ny = _screenRumbleOffsetY + _y + _camera.getViewportY();
+	*outX = x - nx;
+	*outY = y - ny;
+}
+
+void ClientMap::getMapGridForScreenPixel (int x, int y, int *outX, int *outY)
+{
+	*outX = -1;
+	*outY = -1;
+	if (x < getX() || y < getY())
+		return;
+	if (x > getWidth() || y > getHeight())
+		return;
+
+	const int nx = _screenRumbleOffsetX + _x + _camera.getViewportX();
+	const int ny = _screenRumbleOffsetY + _y + _camera.getViewportY();
+	*outX = (x - nx) / _scale;
+	*outY = (y - ny) / _scale;
+}
+
 void ClientMap::init (uint16_t playerID)
 {
 	Log::info(LOG_CLIENT, "init client map for player %i", playerID);

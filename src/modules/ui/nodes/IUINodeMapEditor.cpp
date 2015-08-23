@@ -170,49 +170,49 @@ IUINodeMapEditor::~IUINodeMapEditor ()
 void IUINodeMapEditor::loadMap (const ICommand::Args& args)
 {
 	if (args.size() != 1) {
-		Log::error(LOG_CLIENT, "no map given");
+		Log::error(LOG_UI, "no map given");
 		return;
 	}
 
 	if (args[0].empty()) {
-		Log::error(LOG_CLIENT, "invalid map given");
+		Log::error(LOG_UI, "invalid map given");
 		return;
 	}
 
 	UI::get().pushRoot(UI_WINDOW_EDITOR);
-	Log::error(LOG_CLIENT, "map %s is loading", args[0].c_str());
-	load(args[0]);
+	Log::error(LOG_UI, "map %s is loading", args[0].c_str());
+	load(args[0].str());
 }
 
-inline int IUINodeMapEditor::getTileWidth () const
+int IUINodeMapEditor::getTileWidth () const
 {
 	return _tileWidth * _scale;
 }
 
-inline int IUINodeMapEditor::getTileHeight () const
+int IUINodeMapEditor::getTileHeight () const
 {
 	return std::max(1.0f, _tileWidth * _scale + 0.5f);
 }
 
-inline int IUINodeMapEditor::getScreenMapGridMaxWidth () const
+int IUINodeMapEditor::getScreenMapGridMaxWidth () const
 {
 	const int maxVisible = static_cast<int>(ceil(getRenderWidth() / static_cast<double>(getTileWidth())));
 	return maxVisible;
 }
 
-inline int IUINodeMapEditor::getScreenMapGridMaxHeight () const
+int IUINodeMapEditor::getScreenMapGridMaxHeight () const
 {
 	const int maxVisible = static_cast<int>(ceil(getRenderHeight() / static_cast<double>(getTileHeight())));
 	return maxVisible;
 }
 
-inline int IUINodeMapEditor::getScreenMapGridWidth () const
+int IUINodeMapEditor::getScreenMapGridWidth () const
 {
 	const int tiles = std::min(_mapWidth, getScreenMapGridMaxWidth());
 	return tiles;
 }
 
-inline int IUINodeMapEditor::getScreenMapGridHeight () const
+int IUINodeMapEditor::getScreenMapGridHeight () const
 {
 	const int tiles = std::min(_mapHeight, getScreenMapGridMaxHeight());
 	return tiles;
@@ -565,7 +565,7 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 		break;
 	case SDLK_SPACE:
 		if (_activeSpriteDefition && _activeSpriteDefition->rotateable) {
-			Log::info(LOG_CLIENT, "rotate %s by %i", _activeSpriteDefition->id.c_str(), _activeSpriteDefition->rotateable);
+			Log::info(LOG_UI, "rotate %s by %i", _activeSpriteDefition->id.c_str(), _activeSpriteDefition->rotateable);
 			_activeSpriteAngle += _activeSpriteDefition->rotateable;
 			_activeSpriteAngle %= 360;
 		}
@@ -899,7 +899,7 @@ void IUINodeMapEditor::doClear ()
 
 bool IUINodeMapEditor::isDirty () const
 {
-	Log::info(LOG_CLIENT, "%i:%i", (int)_lastSave, (int)_undoStates.size());
+	Log::info(LOG_UI, "%i:%i", (int)_lastSave, (int)_undoStates.size());
 	return _lastSave != _undoStates.size();
 }
 
@@ -1018,7 +1018,7 @@ bool IUINodeMapEditor::save ()
 
 	file->appendString("end\n");
 
-	Log::info(LOG_GENERAL, "wrote %s", path.c_str());
+	Log::info(LOG_UI, "wrote %s", path.c_str());
 	_lastMap->setValue(_fileName);
 	_mapManager.loadMaps();
 	_lastSave = _undoStates.size();
@@ -1042,15 +1042,15 @@ void IUINodeMapEditor::loadFromContext (IMapContext& ctx)
 	setMapDimensions(mapWidth, mapHeight);
 
 	const std::vector<MapTileDefinition>& mapTiles = ctx.getMapTileDefinitions();
-	Log::info(LOG_CLIENT, "place %i maptiles", static_cast<int>(mapTiles.size()));
+	Log::info(LOG_UI, "place %i maptiles", static_cast<int>(mapTiles.size()));
 	for (std::vector<MapTileDefinition>::const_iterator i = mapTiles.begin(); i != mapTiles.end(); ++i) {
 		const SpriteType& type = i->spriteDef->type;
 		const MapEditorLayer layer = getLayer(type);
 		if (!placeTileItem(i->spriteDef, nullptr, i->x, i->y, layer, false, i->angle))
-			Log::error(LOG_CLIENT, "could not place tile %s at %f:%f", i->spriteDef->id.c_str(), i->x, i->y);
+			Log::error(LOG_UI, "could not place tile %s at %f:%f", i->spriteDef->id.c_str(), i->x, i->y);
 	}
 	const std::vector<EmitterDefinition>& emitters = ctx.getEmitterDefinitions();
-	Log::info(LOG_CLIENT, "place %i emitters", static_cast<int>(emitters.size()));
+	Log::info(LOG_UI, "place %i emitters", static_cast<int>(emitters.size()));
 	for (std::vector<EmitterDefinition>::const_iterator i = emitters.begin(); i != emitters.end(); ++i) {
 		const EntityType& entityType = *i->type;
 		const gridCoord x = i->x;
@@ -1061,11 +1061,11 @@ void IUINodeMapEditor::loadFromContext (IMapContext& ctx)
 		const Animation& animation = getEmitterAnimation(entityType);
 		const SpriteDefPtr def = SpriteDefinition::get().getFromEntityType(entityType, animation);
 		if (!def) {
-			Log::error(LOG_CLIENT, "could not get the sprite definition for the entity type: %s", entityType.name.c_str());
+			Log::error(LOG_UI, "could not get the sprite definition for the entity type: %s", entityType.name.c_str());
 			continue;
 		}
 		if (!placeEmitter(def, &entityType, x, y, amount, delay, false, 0.0f, i->settings))
-			Log::error(LOG_CLIENT, "could not place emitter %s at %f:%f", i->type->name.c_str(), x, y);
+			Log::error(LOG_UI, "could not place emitter %s at %f:%f", i->type->name.c_str(), x, y);
 	}
 }
 
@@ -1076,7 +1076,7 @@ void IUINodeMapEditor::loadLast ()
 
 void IUINodeMapEditor::load (const std::string& mapName)
 {
-	Log::info(LOG_CLIENT, "mapname: %s", mapName.c_str());
+	Log::info(LOG_UI, "mapname: %s", mapName.c_str());
 	{
 		// we need this scoped because of the undo dtor
 		Undo();

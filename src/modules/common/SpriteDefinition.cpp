@@ -13,6 +13,7 @@ SpriteDefinition::SpriteDefinition ()
 void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 {
 	ExecutionTime e("Sprites loading");
+	Log::debug(LOG_GENERAL, "Sprites loading");
 	LUA lua;
 
 	if (!lua.load("sprites.lua")) {
@@ -20,14 +21,21 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		return;
 	}
 
-	lua.getGlobalKeyValue("sprites");
+	LUA_checkStack2(lua.getState());
+	if (!lua.getGlobalKeyValue("sprites")) {
+		Log::error(LOG_GENERAL, "spritedef: Could not find the global sprites map");
+		return;
+	}
 
 	while (lua.getNextKeyValue()) {
+		LUA_checkStack2(lua.getState());
 		const std::string id = lua.getKey();
 		if (id.empty()) {
+			Log::error(LOG_GENERAL, "spritedef: no key found in definition: %s", lua.getStackDump().c_str());
 			lua.pop();
 			continue;
 		}
+		Log::debug(LOG_GENERAL, "id: %s", id.c_str());
 
 		SpriteDefMapConstIter findIter = _spriteDefs.find(id);
 		if (findIter != _spriteDefs.end()) {
@@ -36,16 +44,17 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			continue;
 		}
 
-		const std::string typeStr = lua.getValueStringFromTable("type").str();
+		const std::string& typeStr = lua.getValueStringFromTable("type");
+		Log::debug(LOG_GENERAL, "id: %s, type %s", id.c_str(), typeStr.c_str());
 		const SpriteType& type = SpriteType::getByName(typeStr);
 		if (!type && !typeStr.empty()) {
 			Log::error(LOG_GENERAL, "invalid sprite type given: %s", typeStr.c_str());
 		}
-		const ThemeType& theme = ThemeType::getByName(lua.getValueStringFromTable("theme").str());
+		const ThemeType& theme = ThemeType::getByName(lua.getValueStringFromTable("theme"));
 		SpriteDef *def = new SpriteDef(id, type, theme);
 
 		def->fps = lua.getValueIntegerFromTable("fps", 20);
-		def->redirect = lua.getValueStringFromTable("redirect").str();
+		def->redirect = lua.getValueStringFromTable("redirect");
 		def->width = lua.getValueFloatFromTable("width", 1.0f);
 		def->height = lua.getValueFloatFromTable("height", 1.0f);
 		def->angle = lua.getValueIntegerFromTable("angle", 0);
@@ -55,13 +64,21 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		// push the frames table
 		const int layers = lua.getTable("frames");
+		Log::debug(LOG_GENERAL, "id: %s => %i frames", id.c_str(), layers);
 		for (Layer layer = LAYER_BACK; layer < layers; layer++) {
+			LUA_checkStack2(lua.getState());
 			lua_pushinteger(lua.getState(), layer + 1);
 			lua_gettable(lua.getState(), -2);
+			if (!lua_istable(lua.getState(), -1)) {
+				Log::error(LOG_GENERAL, "spritedef: expected frame table on the stack: %s", lua.getStackDump().c_str());
+				lua.pop();
+				continue;
+			}
 			// push the frame table
 			const int framesOnLayer = lua_rawlen(lua.getState(), -1);
+			Log::debug(LOG_GENERAL, "id: %s => %i framesOnLayer", id.c_str(), framesOnLayer);
 			for (int i = 1; i <= framesOnLayer; ++i) {
-				const std::string texture = lua.getTableString(i);
+				const std::string& texture = lua.getTableString(i);
 				const SpriteDefFrame frame(texture, 0, true);
 				def->textures[layer].push_back(frame);
 			}
@@ -70,18 +87,28 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		}
 
 		// pop the frames table
-		lua.pop();
+		if (layers != -1)
+			lua.pop();
 
 		// push the polygons table
 		const int polygons = lua.getTable("polygons");
+		Log::debug(LOG_GENERAL, "id: %s => %i polygons", id.c_str(), polygons);
 		if (polygons > 0) {
 			for (int j = 1; j <= polygons; j++) {
+				LUA_checkStack2(lua.getState());
 				lua_pushinteger(lua.getState(), j);
 				lua_gettable(lua.getState(), -2);
+				if (!lua_istable(lua.getState(), -1)) {
+					Log::error(LOG_GENERAL, "spritedef: expected polygon table on the stack: %s", lua.getStackDump().c_str());
+					lua.pop();
+					continue;
+				}
 				// push the polygon table
 				const int vertices = lua_rawlen(lua.getState(), -1) - 1;
-				const std::string userData = lua.getTableString(1);
+				Log::debug(LOG_GENERAL, "id: %s => %i vertices", id.c_str(), vertices);
+				const std::string& userData = lua.getTableString(1);
 				SpritePolygon p(userData);
+				Log::debug(LOG_GENERAL, "id: %s => %s userdata", id.c_str(), userData.c_str());
 				for (int i = 2; i <= vertices; i += 2) {
 					const float x = lua.getTableInteger(i) / 100.0f;
 					const float y = lua.getTableInteger(i + 1) / 100.0f;
@@ -92,18 +119,26 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 				def->polygons.push_back(p);
 			}
 		}
+		Log::debug(LOG_GENERAL, "spritedef: %s", lua.getStackDump().c_str());
 		// pop the polygons table
-		lua.pop();
+		if (polygons != -1)
+			lua.pop();
 
 		// push the circles table
 		const int circles = lua.getTable("circles");
 		for (int j = 1; j <= circles; j++) {
+			LUA_checkStack2(lua.getState());
 			lua_pushinteger(lua.getState(), j);
 			lua_gettable(lua.getState(), -2);
+			if (!lua_istable(lua.getState(), -1)) {
+				Log::error(LOG_GENERAL, "spritedef: expected circle table on the stack: %s", lua.getStackDump().c_str());
+				lua.pop();
+				continue;
+			}
 			// push the circle table
 			const int entries = lua_rawlen(lua.getState(), -1);
 			if (entries == 4) {
-				const std::string userData = lua.getTableString(1);
+				const std::string& userData = lua.getTableString(1);
 				SpriteCircle p(userData);
 				const float x = lua.getTableInteger(2) / 100.0f;
 				const float y = lua.getTableInteger(3) / 100.0f;
@@ -117,7 +152,8 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			lua.pop();
 		}
 		// pop the circles table
-		lua.pop();
+		if (circles != -1)
+			lua.pop();
 
 		for (Layer layer = LAYER_BACK; layer <= MAX_LAYERS; layer++) {
 			if (layer == MAX_LAYERS || def->textures[layer].empty()) {
@@ -163,6 +199,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		const int actives = lua.getTable("active");
 		for (int i = 1; i <= actives; ++i) {
+			LUA_checkStack2(lua.getState());
 			const bool active = lua.getTableBool(i);
 			for (Layer layer = LAYER_BACK; layer < MAX_LAYERS; layer++) {
 				const int textures = def->textures[layer].size();
@@ -173,10 +210,12 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			}
 		}
 		// pop the active table
-		lua.pop();
+		if (actives != -1)
+			lua.pop();
 
 		const int delays = lua.getTable("delays");
 		for (int i = 1; i <= delays; ++i) {
+			LUA_checkStack2(lua.getState());
 			const int delay = lua.getTableInteger(i);
 			for (Layer layer = LAYER_BACK; layer < MAX_LAYERS; layer++) {
 				const int textures = def->textures[layer].size();
@@ -185,7 +224,8 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			}
 		}
 		// pop the delays table
-		lua.pop();
+		if (delays != -1)
+			lua.pop();
 
 		lua.pop();
 

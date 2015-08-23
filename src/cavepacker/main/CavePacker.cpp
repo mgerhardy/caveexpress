@@ -10,6 +10,7 @@
 #include "cavepacker/server/network/MovementHandler.h"
 #include "cavepacker/server/network/StopMovementHandler.h"
 #include "cavepacker/server/network/UndoHandler.h"
+#include "cavepacker/server/network/WalkToHandler.h"
 #include "cavepacker/server/network/ClientInitHandler.h"
 #include "cavepacker/server/network/ErrorHandler.h"
 #include "cavepacker/server/network/StopFingerMovementHandler.h"
@@ -30,6 +31,7 @@
 #include "common/Commands.h"
 #include "common/CommandSystem.h"
 #include "network/INetwork.h"
+#include "cavepacker/shared/network/messages/WalkToMessage.h"
 #include "network/messages/LoadMapMessage.h"
 #include "network/messages/FinishedMapMessage.h"
 #include "ui/windows/UICampaignWindow.h"
@@ -51,6 +53,7 @@ namespace cavepacker {
 PROTOCOL_CLASS_FACTORY_IMPL(AutoSolveStartedMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(AutoSolveAbortedMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(UndoMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(WalkToMessage);
 
 namespace {
 Achievement* puzzleAchievements[] = {
@@ -82,6 +85,12 @@ CavePacker::~CavePacker ()
 	delete _persister;
 	delete _campaignManager;
 	delete _clientMap;
+}
+
+DirectoryEntries CavePacker::listDirectory(const std::string& basedir, const std::string& subdir) {
+	DirectoryEntries entriesAll;
+	#include "cavepacker-files.h"
+	return entriesAll;
 }
 
 IMapManager* CavePacker::getMapManager ()
@@ -273,10 +282,12 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	rp.registerServerHandler(::protocol::PROTO_STOPMOVEMENT, new StopMovementHandler(_map));
 	rp.registerServerHandler(::protocol::PROTO_ERROR, new ErrorHandler(_map));
 	rp.registerServerHandler(::protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_WALKTO, new WalkToHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_UNDO, new UndoHandler(_map));
 
 	ProtocolMessageFactory& f = ProtocolMessageFactory::get();
 	f.registerFactory(protocol::PROTO_AUTOSOLVE, AutoSolveStartedMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_WALKTO, WalkToMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_AUTOSOLVEABORT, AutoSolveAbortedMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_UNDO, UndoMessage::FACTORY);
 

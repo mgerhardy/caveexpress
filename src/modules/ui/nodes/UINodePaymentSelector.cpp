@@ -60,11 +60,11 @@ void UINodePaymentSelector::reset ()
 bool UINodePaymentSelector::onSelect (const PaymentEntry& data)
 {
 	if (!System.buyItem(data.id)) {
-		Log::error(LOG_CLIENT, "failed to buy item %s", data.id.c_str());
+		Log::error(LOG_UI, "failed to buy item %s", data.id.c_str());
 		return true;
 	}
 
 	UI::get().initRestart();
-	Log::info(LOG_CLIENT, "bought item %s", data.id.c_str());
+	Log::info(LOG_UI, "bought item %s", data.id.c_str());
 	return true;
 }

@@ -5,6 +5,8 @@
 #include "gfx/SDLFrontend.h"
 #ifdef SDL_VIDEO_OPENGL
 #include "gfx/GL1Frontend.h"
+#endif
+#if defined(SDL_VIDEO_OPENGL_ES) || defined(SDL_VIDEO_OPENGL_ES2)
 #include "gfx/GL3Frontend.h"
 #endif
 #include "client/ClientConsole.h"
@@ -38,6 +40,7 @@ static void runFrameEmscripten() {
 		return;
 	}
 
+	// TODO: fps limit
 	INSTANCE->runFrame();
 }
 #endif
@@ -86,6 +89,8 @@ void SDLBackend::handleEvent (SDL_Event &event)
 			_frontend->setFullscreen(!isFullscreen);
 		} else if (event.key.keysym.sym == SDLK_g && (event.key.keysym.mod & KMOD_CTRL)) {
 			_frontend->toggleGrabMouse();
+		} else if (event.key.keysym.sym == SDLK_r && (event.key.keysym.mod & KMOD_CTRL)) {
+			SDL_SetRelativeMouseMode(!SDL_GetRelativeMouseMode() ? SDL_TRUE : SDL_FALSE);
 		}
 	}
 
@@ -194,7 +199,10 @@ bool SDLBackend::handleInit() {
 #ifdef SDL_VIDEO_OPENGL
 			if (c->getValue() == "opengl")
 				_frontend = new GL1Frontend(clientConsole);
-			else if (c->getValue() == "opengl3")
+			else
+#endif
+#if defined(SDL_VIDEO_OPENGL_ES) || defined(SDL_VIDEO_OPENGL_ES2)
+			if (c->getValue() == "opengl3")
 				_frontend = new GL3Frontend(clientConsole);
 			else
 #endif
@@ -372,7 +380,7 @@ bool SDLBackend::onKeyRelease (int32_t key)
 {
 	if (_frontend->handlesInput())
 		return false;
-	const std::string command = Config.getKeyBinding(key);
+	const std::string& command = Config.getKeyBinding(key);
 	if (command.empty()) {
 		return false;
 	}
@@ -392,12 +400,15 @@ bool SDLBackend::onKeyPress (int32_t key, int16_t modifier)
 {
 	if (_frontend->handlesInput())
 		return false;
-	const std::string command = Config.getKeyBinding(key);
+	const std::string& command = Config.getKeyBinding(key);
 	if (command.empty()) {
 		return false;
 	}
 
 	const int mod = Config.getKeyModifier(key);
+	if (mod == KMOD_NONE && modifier != 0) {
+		return false;
+	}
 	if (mod != KMOD_NONE && !(modifier & mod)) {
 		return false;
 	}

@@ -642,11 +642,23 @@ X11_DispatchEvent(_THIS)
         }
     }
     if (!data) {
-        /* The window for KeymapNotify events is 0 */
+        /* The window for KeymapNotify, etc events is 0 */
         if (xevent.type == KeymapNotify) {
             if (SDL_GetKeyboardFocus() != NULL) {
                 X11_ReconcileKeyboardState(_this);
             }
+        } else if (xevent.type == MappingNotify) {
+            /* Has the keyboard layout changed? */
+            const int request = xevent.xmapping.request;
+
+#ifdef DEBUG_XEVENTS
+            printf("window %p: MappingNotify!\n", data);
+#endif
+            if ((request == MappingKeyboard) || (request == MappingModifier)) {
+                X11_XRefreshKeyboardMapping(&xevent.xmapping);
+            }
+
+            X11_UpdateKeymap(_this);
         }
         return;
     }
@@ -762,15 +774,6 @@ X11_DispatchEvent(_THIS)
         }
         break;
 
-        /* Has the keyboard layout changed? */
-    case MappingNotify:{
-#ifdef DEBUG_XEVENTS
-            printf("window %p: MappingNotify!\n", data);
-#endif
-            X11_UpdateKeymap(_this);
-        }
-        break;
-
         /* Key press? */
     case KeyPress:{
             KeyCode keycode = xevent.xkey.keycode;
@@ -789,7 +792,7 @@ X11_DispatchEvent(_THIS)
 #if SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM
                 keysym = X11_XkbKeycodeToKeysym(display, keycode, 0, 0);
 #else
-                keysym = XKeycodeToKeysym(display, keycode, 0);
+                keysym = X11_XKeycodeToKeysym(display, keycode, 0);
 #endif
                 fprintf(stderr,
                         "The key you just pressed is not recognized by SDL. To help get this fixed, please report this to the SDL mailing list <sdl@libsdl.org> X11 KeyCode %d (%d), X11 KeySym 0x%lX (%s).\n",
@@ -805,7 +808,7 @@ X11_DispatchEvent(_THIS)
                                   &keysym, &status);
             }
 #else
-            XLookupString(&xevent.xkey, text, sizeof(text), &keysym, NULL);
+            X11_XLookupString(&xevent.xkey, text, sizeof(text), &keysym, NULL);
 #endif
 
 #ifdef SDL_USE_IBUS

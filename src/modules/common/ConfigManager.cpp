@@ -127,16 +127,24 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 		if (argv[i][0] != '-')
 			continue;
 		const std::string command = &argv[i][1];
-		if (command != CMD_SETVAR)
-			continue;
-		if (i + 2 >= argc)
-			continue;
-		const std::string var = argv[i + 1];
-		const std::string val = argv[i + 2];
-		ConfigVarPtr p = getConfigVar(var);
-		p->setValue(val);
-		*argv[i] = *argv[i + 1] = *argv[i + 2] = '\0';
-		i += 2;
+		if (command == CMD_SETVAR) {
+			if (i + 2 >= argc)
+				continue;
+			const std::string var = argv[i + 1];
+			const std::string val = argv[i + 2];
+			ConfigVarPtr p = getConfigVar(var);
+			p->setValue(val);
+			*argv[i] = *argv[i + 1] = *argv[i + 2] = '\0';
+			i += 2;
+		} else if (command == "loglevel") {
+			if (i + 1 >= argc)
+				continue;
+			ICommand::Args a;
+			a.push_back(argv[i + 1]);
+			setLogLevel(a);
+			*argv[i] = *argv[i + 1] = '\0';
+			i += 1;
+		}
 	}
 }
 
@@ -169,7 +177,8 @@ void ConfigManager::getKeyValueMap (LUA& lua, std::map<std::string, std::string>
 
 void ConfigManager::getBindingMap (LUA& lua, std::map<std::string, std::string>* map, const char *key, BindingType type)
 {
-	lua.getGlobalKeyValue(key);
+	if (!lua.getGlobalKeyValue(key))
+		return;
 
 	while (lua.getNextKeyValue()) {
 		const std::string id = lua.getKey();
@@ -181,19 +190,11 @@ void ConfigManager::getBindingMap (LUA& lua, std::map<std::string, std::string>*
 		lua_pushnil(lua.getState());
 
 		std::map<std::string, std::string> strMap;
-		while (lua_next(lua.getState(), -2) != 0) {
-			const char *_key = lua_tostring(lua.getState(), -2);
-			assert(_key);
-			std::string _value;
-			if (lua_isstring(lua.getState(), -1)) {
-				_value = lua_tostring(lua.getState(), -1);
-			} else if (lua_isnumber(lua.getState(), -1)) {
-				_value = string::toString(lua_tonumber(lua.getState(), -1));
-			} else if (lua_isboolean(lua.getState(), -1)) {
-				_value = lua_toboolean(lua.getState(), -1) ? "true" : "false";
-			}
+		while (lua.getNextKeyValue()) {
+			const std::string& _key = lua.getLuaValue(-2);
+			const std::string& _value = lua.getLuaValue(-1);
 			strMap[_key] = _value;
-			lua_pop(lua.getState(), 1);
+			lua.pop();
 		}
 
 		BindingSpace bindingSpace = BINDINGS_UI;
@@ -221,7 +222,8 @@ void ConfigManager::getBindingMap (LUA& lua, std::map<int, std::string>* map, co
 	if (type == CONTROLLER)
 		return;
 
-	lua.getGlobalKeyValue(key);
+	if (!lua.getGlobalKeyValue(key))
+		return;
 
 	while (lua.getNextKeyValue()) {
 		const std::string id = lua.getKey();
@@ -233,19 +235,11 @@ void ConfigManager::getBindingMap (LUA& lua, std::map<int, std::string>* map, co
 		lua_pushnil(lua.getState());
 
 		std::map<std::string, std::string> strMap;
-		while (lua_next(lua.getState(), -2) != 0) {
-			const char *_key = lua_tostring(lua.getState(), -2);
-			assert(_key);
-			std::string _value;
-			if (lua_isstring(lua.getState(), -1)) {
-				_value = lua_tostring(lua.getState(), -1);
-			} else if (lua_isnumber(lua.getState(), -1)) {
-				_value = string::toString(lua_tonumber(lua.getState(), -1));
-			} else if (lua_isboolean(lua.getState(), -1)) {
-				_value = lua_toboolean(lua.getState(), -1) ? "true" : "false";
-			}
+		while (lua.getNextKeyValue()) {
+			const std::string& _key = lua.getLuaValue(-2);
+			const std::string& _value = lua.getLuaValue(-1);
 			strMap[_key] = _value;
-			lua_pop(lua.getState(), 1);
+			lua.pop();
 		}
 
 		BindingSpace bindingSpace = BINDINGS_UI;
@@ -299,8 +293,9 @@ void ConfigManager::setLogLevel (const ICommand::Args& args)
 	const int max = static_cast<int>(LogLevel::LEVEL_MAX);
 	for (int i = 0; i < max; ++i) {
 		if (args[0] == LogLevels[i].logLevelStr) {
-			Log::info(LOG_CONFIG, "Changing log level to %s", args[0].c_str());
+			SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, LogLevels[i].sdlLevel);
 			_logLevel = LogLevels[i].logLevel;
+			Log::info(LOG_CONFIG, "Changing log level to %s", args[0].c_str());
 			return;
 		}
 	}

@@ -237,8 +237,10 @@ inline std::string toString (const T& t)
 #endif
 }
 
-inline int toInt (const std::string& str)
+inline int toInt (const std::string& str, int defaultValue = 0)
 {
+	if (str.empty())
+		return defaultValue;
 	return atoi(str.c_str());
 }
 
@@ -247,8 +249,10 @@ inline bool toBool (const std::string& str)
 	return str == "1" || str == "true";
 }
 
-inline float toFloat (const std::string& str)
+inline float toFloat (const std::string& str, float defaultValue = 0.0f)
 {
+	if (str.empty())
+		return defaultValue;
 	return atof(str.c_str());
 }
 

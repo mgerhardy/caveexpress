@@ -134,6 +134,7 @@ protected:
 	uint32_t _time;
 	uint32_t _flashMillis;
 	float _originalAlpha;
+	bool _autoId;
 
 	struct UINodeDelayedText {
 		std::string text;
@@ -154,6 +155,8 @@ protected:
 	IUILayout* _layout;
 	UINode* _parent;
 	std::string _tooltip;
+	bool _fingerPressed;
+	bool _mousePressed;
 
 	TexturePtr loadTexture (const std::string& name) const;
 	void renderImage (const TexturePtr& texture, int x, int y, int w = -1, int h = -1, float alpha = 1.0f) const;
@@ -494,6 +497,10 @@ inline void UINode::putLeft (UINode *node, float gap)
 inline void UINode::setEnabled (bool enable)
 {
 	_enabled = enable;
+	if (!_enabled) {
+		_mousePressed = false;
+		_fingerPressed = false;
+	}
 }
 
 inline bool UINode::isVisible () const
@@ -609,6 +616,7 @@ inline void UINode::setOnActivate (const std::string& onActivateCmd)
 inline void UINode::setId (const std::string& id)
 {
 	_id = id;
+	_autoId = false;
 }
 
 inline const std::string& UINode::getId () const

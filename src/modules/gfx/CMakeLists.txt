@@ -1,13 +1,13 @@
 set(gfx_SRCS
 	SDLFrontend.cpp
+	GL3Frontend.cpp
+	GLFunc.cpp
 	FrameBuffer.cpp
 	Shader.cpp
 )
 if (NOT ANDROID)
 list(APPEND gfx_SRCS
-	GL3Frontend.cpp
 	GL1Frontend.cpp
-	GLFunc.cpp
 	BGFXFrontend.cpp
 )
 endif()

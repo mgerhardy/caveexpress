@@ -31,6 +31,7 @@
 #include "cavepacker/shared/CavePackerSpriteType.h"
 #include "cavepacker/shared/EntityStates.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
+#include "cavepacker/server/map/deadlock/DeadlockDetector.h"
 #include <SDL.h>
 #include <algorithm>
 #include <functional>
@@ -38,8 +39,6 @@
 #include <climits>
 
 namespace cavepacker {
-
-#define INDEX(col, row) ((col) + _width * (row))
 
 Map::Map () :
 		IMap(), _frontend(nullptr), _serviceProvider(nullptr), _forcedFinish(false), _autoSolve(false), _nextSolveStep(0)
@@ -206,12 +205,7 @@ bool Map::isDone () const
 		return true;
 	if (isFailed())
 		return false;
-	for (StateMapConstIter i = _state.begin(); i != _state.end(); ++i) {
-		// if there is an empty target left, we are not yet done
-		if (i->second == Sokoban::TARGET || i->second == Sokoban::PLAYERONTARGET)
-			return false;
-	}
-	return true;
+	return _state.isDone();
 }
 
 void Map::increaseMoves ()
@@ -232,9 +226,18 @@ void Map::undo (Player* player)
 	if (!player->undo())
 		return;
 
+	if (_moves == _deadLock) {
+		_deadLock = 0;
+		_deadLockMessageSent = false;
+	}
 	--_moves;
 	Log::debug(LOG_SERVER, "moved fields after undo: %i", _moves);
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
+}
+
+void Map::walkTo (Player* player, int col, int row)
+{
+	Log::info(LOG_SERVER, "move player %i from %i:%i to %i:%i", player->getID(), player->getCol(), player->getRow(), col, row);
 }
 
 bool Map::undoPackage (int col, int row, int targetCol, int targetRow)
@@ -248,15 +251,13 @@ bool Map::undoPackage (int col, int row, int targetCol, int targetRow)
 		if (!package->setPos(targetCol, targetRow))
 			return false;
 		rebuildField();
-		const int index = INDEX(targetCol, targetRow);
-		StateMapConstIter i = _state.find(index);
-		if (i == _state.end()) {
+		if (_state.isInvalid(targetCol, targetRow)) {
 			package->setPos(origCol, origRow);
 			return false;
 		}
 
-		const char c = i->second;
-		if (c == Sokoban::PACKAGEONTARGET)
+		const char c = _state.getField(targetCol, targetRow);
+		if (isPackageOnTarget(c))
 			package->setState(CavePackerEntityStates::DELIVERED);
 		else
 			package->setState(CavePackerEntityStates::NONE);
@@ -289,7 +290,7 @@ bool Map::movePlayer (Player* player, char step)
 	if (package != nullptr) {
 		const int pCol = targetCol + x;
 		const int pRow = targetRow + y;
-		if (!isFree(pCol, pRow)) {
+		if (!_state.isFree(pCol, pRow)) {
 			Log::debug(LOG_SERVER, "can't move here - can't move package. target field is blocked");
 			return false;
 		}
@@ -300,7 +301,7 @@ bool Map::movePlayer (Player* player, char step)
 		Log::debug(LOG_SERVER, "moved package %i", package->getID());
 		increasePushes();
 		rebuildField();
-		if (isTarget(pCol, pRow)) {
+		if (_state.isTarget(pCol, pRow)) {
 			package->setState(CavePackerEntityStates::DELIVERED);
 			Log::debug(LOG_SERVER, "mark package as delivered %i", package->getID());
 		} else if (package->getState() == CavePackerEntityStates::DELIVERED) {
@@ -317,6 +318,9 @@ bool Map::movePlayer (Player* player, char step)
 
 	player->storeStep(step);
 	increaseMoves();
+	// if there is not already a deadlock and we moved a package, check the state
+	if (_deadLock == 0 && package != nullptr && _state.hasDeadlock())
+		_deadLock = _moves;
 	return true;
 }
 
@@ -353,6 +357,8 @@ void Map::resetCurrentMap ()
 	abortAutoSolve();
 	_nextSolveStep = 0;
 	_solution = "";
+	_deadLock = 0;
+	_deadLockMessageSent = false;
 	_timeManager.reset();
 	if (!_name.empty()) {
 		const CloseMapMessage msg;
@@ -445,6 +451,7 @@ bool Map::load (const std::string& name)
 	_title = ctx->getTitle();
 	_width = getSetting(msn::WIDTH, "-1").toInt();
 	_height = getSetting(msn::HEIGHT, "-1").toInt();
+	_state.setSize(_width, _height);
 	_solution = getSolution();
 	const std::string solutionSteps = string::toString(_solution.length());
 	_settings.insert(std::make_pair("best", solutionSteps));
@@ -511,16 +518,39 @@ bool Map::isReadyToStart () const
 
 std::string Map::getMapString() const
 {
+	const StateMap& stateMap = DeadlockDetector::calculateDeadlockFields(_state);
 	std::string mapStr;
 	mapStr.reserve(_height * _width);
 	for (int row = 0; row < _height; ++row) {
 		for (int col = 0; col < _width; ++col) {
-			const StateMapConstIter& i = _state.find(INDEX(col, row));
-			if (i == _state.end()) {
-				mapStr.append("+");
+			auto i = stateMap.find(_state.getIndex(col, row));
+			if (i != stateMap.end()) {
+				mapStr.append("!");
 				continue;
 			}
-			const char c = i->second;
+			if (_state.isInvalid(col, row)) {
+				mapStr.append(" ");
+				continue;
+			}
+			MapTile* package = getPackage(col, row);
+			bool player = false;
+			for (Player* p : getPlayers()) {
+				if (p->getCol() == col && p->getRow() == row) {
+					const int pc = _state.getField(col, row);
+					if (pc == Sokoban::TARGET) {
+						const char str[2] = { Sokoban::PLAYERONTARGET, '\0' };
+						mapStr.append(str);
+					} else {
+						const char str[2] = { Sokoban::PLAYER, '\0' };
+						mapStr.append(str);
+					}
+					player = true;
+					break;
+				}
+			}
+			if (player)
+				continue;
+			const char c = package != nullptr ? Sokoban::PACKAGE : _state.getField(col, row);
 			const char str[2] = { c, '\0' };
 			mapStr.append(str);
 		}
@@ -532,7 +562,8 @@ std::string Map::getMapString() const
 void Map::printMap ()
 {
 	const std::string& mapString = getMapString();
-	Log::info(LOG_CLIENT, "\n%s", mapString.c_str());
+	Log::info(LOG_CLIENT, "Map State:\n%s", mapString.c_str());
+	Log::info(LOG_CLIENT, "Board State:\n%s", _state.toString().c_str());
 }
 
 void Map::startMap ()
@@ -548,21 +579,22 @@ void Map::startMap ()
 
 	for (int row = 0; row < _height; ++row) {
 		for (int col = 0; col < _width; ++col) {
-			StateMapConstIter i = _state.find(INDEX(col, row));
-			if (i == _state.end())
+			if (_state.isInvalid(col, row)) {
 				continue;
-			const char c = i->second;
-			if (c != Sokoban::PACKAGEONTARGET)
+			}
+			const char c = _state.getField(col, row);
+			if (!isPackageOnTarget(c)) {
 				continue;
-
-			getPackage(col, row)->setState(CavePackerEntityStates::DELIVERED);
+			}
+			MapTile* package = getPackage(col, row);
+			package->setState(CavePackerEntityStates::DELIVERED);
 		}
 	}
 }
 
-MapTile* Map::getPackage (int col, int row)
+MapTile* Map::getPackage (int col, int row) const
 {
-	FieldMapIter i = _field.find(INDEX(col, row));
+	auto i = _field.find(_state.getIndex(col, row));
 	if (i == _field.end()) {
 		return nullptr;
 	}
@@ -570,38 +602,6 @@ MapTile* Map::getPackage (int col, int row)
 		return static_cast<MapTile*>(i->second);
 	}
 	return nullptr;
-}
-
-bool Map::isFree (int col, int row)
-{
-	StateMapConstIter i = _state.find(INDEX(col, row));
-	// not part of the map - thus, not free
-	if (i == _state.end()) {
-		Log::debug(LOG_MAP, "col: %i, row: %i is not part of the map", col, row);
-		return false;
-	}
-
-	const char c = i->second;
-	Log::debug(LOG_MAP, "col: %i, row: %i is of type '%c'", col, row, c);
-	return c == Sokoban::GROUND || c == Sokoban::TARGET;
-}
-
-bool Map::isTarget (int col, int row)
-{
-	StateMapConstIter i = _state.find(INDEX(col, row));
-	if (i == _state.end())
-		return false;
-	const char c = i->second;
-	return c == Sokoban::PACKAGEONTARGET || c == Sokoban::PLAYERONTARGET || c == Sokoban::TARGET;
-}
-
-bool Map::isPackage (int col, int row)
-{
-	StateMapConstIter i = _state.find(INDEX(col, row));
-	if (i == _state.end())
-		return false;
-	const char c = i->second;
-	return c == Sokoban::PACKAGE || c == Sokoban::PACKAGEONTARGET;
 }
 
 bool Map::initPlayer (Player* player)
@@ -685,7 +685,7 @@ char Map::getSokobanFieldId (const IEntity *entity) const
 
 bool Map::setField (IEntity *entity, int col, int row)
 {
-	const int index = INDEX(col, row);
+	const int index = _state.getIndex(col, row);
 	FieldMapConstIter fi = _field.find(index);
 	if (fi == _field.end()) {
 		_field[index] = entity;
@@ -694,25 +694,24 @@ bool Map::setField (IEntity *entity, int col, int row)
 		if (fi->second->isGround() || fi->second->isTarget())
 			_field[index] = entity;
 	}
-	StateMapConstIter i = _state.find(index);
-	if (i == _state.end()) {
-		_state[index] = getSokobanFieldId(entity);
+	char nc = getSokobanFieldId(entity);
+	if (_state.isInvalid(col, row)) {
+		_state.setField(col, row, nc);
 		return true;
 	}
-	const char c = i->second;
-	char nc = getSokobanFieldId(entity);
+	const char c = _state.getField(col, row);
 	if (c == Sokoban::PLAYER) {
 		if (nc == Sokoban::TARGET)
 			nc = Sokoban::PLAYERONTARGET;
 		else if (nc == Sokoban::GROUND)
-			nc = c;
+			return true;
 		else
 			return false;
 	} else if (c == Sokoban::PACKAGE) {
 		if (nc == Sokoban::TARGET)
 			nc = Sokoban::PACKAGEONTARGET;
 		else if (nc == Sokoban::GROUND)
-			nc = c;
+			return true;
 		else
 			return false;
 	} else if (c == Sokoban::TARGET) {
@@ -721,12 +720,14 @@ bool Map::setField (IEntity *entity, int col, int row)
 		else if (nc == Sokoban::PLAYER)
 			nc = Sokoban::PLAYERONTARGET;
 		else if (nc == Sokoban::GROUND)
-			nc = c;
+			return true;
 		else
 			return false;
 	}
-	_state[index] = nc;
-	return true;
+	// we expect that there is already a value set, so we need to clear it first
+	if (_state.clearField(col, row) == '\0')
+		return false;
+	return _state.setField(col, row, nc);
 }
 
 void Map::addEntity (int clientMask, const IEntity& entity) const
@@ -800,12 +801,10 @@ void Map::rebuildField ()
 	_field.clear();
 	_state.clear();
 	for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
-		if (!setField(*i, (*i)->getCol(), (*i)->getRow()))
-			System.exit("invalid map state", 1);
+		SDL_assert_always(setField(*i, (*i)->getCol(), (*i)->getRow()));
 	}
 	for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
-		if (!setField(*i, (*i)->getCol(), (*i)->getRow()))
-			System.exit("invalid map state", 1);
+		SDL_assert_always(setField(*i, (*i)->getCol(), (*i)->getRow()));
 	}
 }
 
@@ -830,6 +829,13 @@ void Map::update (uint32_t deltaTime)
 {
 	if (_pause)
 		return;
+
+	if (_deadLock >= 1 && _deadLock == _moves && !_deadLockMessageSent) {
+		_deadLockMessageSent = true;
+		Log::info(LOG_MAP, "send the deadlock message");
+		const TextMessage msg("Deadlock detected");
+		_serviceProvider->getNetwork().sendToAllClients(msg);
+	}
 
 	_timeManager.update(deltaTime);
 

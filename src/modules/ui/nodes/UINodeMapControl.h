@@ -8,7 +8,7 @@ class UIWindow;
 class ClientMap;
 class IUINodeMap;
 
-// UI node that implements player controls via mouse, joystick or touch events
+// UI node that implements player controls via joystick events
 class UINodeMapControl: public UINode, public IMapControl {
 private:
 	ClientMap &_map;
@@ -28,7 +28,7 @@ public:
 	// UINode
 	void renderDebug (int x, int y, int textY) const override;
 	void removeFocus () override;
-	bool isActive () const;
+	bool isActive () const override;
 	void update (uint32_t deltaTime) override;
 	bool onJoystickMotion (bool horizontal, int value) override;
 };

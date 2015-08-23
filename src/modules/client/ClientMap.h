@@ -153,9 +153,11 @@ public:
 	int getWaterWidth () const override { return _mapWidth * _scale; }
 	int getPixelWidth () const override { return _mapWidth * _scale; }
 	int getPixelHeight () const override { return _mapHeight * _scale; }
-	int getRenderOffsetX() const override { return _x + _camera.getViewportX(); }
-	int getRenderOffsetY() const override { return _y + _camera.getViewportY(); }
 	TexturePtr loadTexture (const std::string& name) const override;
+
+	// converts the given x and y screen coordinates into map coordinates that take the scale, shift and so on into account.
+	void getMapPixelForScreenPixel (int x, int y, int *outX, int *outY);
+	void getMapGridForScreenPixel (int x, int y, int *outX, int *outY);
 
 	// IMap
 	virtual void update (uint32_t deltaTime) override;

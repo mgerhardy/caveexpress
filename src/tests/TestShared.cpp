@@ -3,11 +3,36 @@
 
 void AbstractTest::SetUp() {
 	const bool verbose = Config.getConfigVar("verbose", "false")->getBoolValue();
-	if (!verbose)
-		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_CRITICAL);
+	if (verbose) {
+		ICommand::Args args;
+		args.push_back("TRACE");
+		Config.setLogLevel(args);
+	}
 	_serviceProvider.init(&_testFrontend);
 	_serviceProvider.updateNetwork(false);
 	Singleton<GameRegistry>::getInstance().getGame()->init(&_testFrontend, _serviceProvider);
+
+	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
+	r.registerClientHandler(protocol::PROTO_CHANGEANIMATION, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_MAPRESTART, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_PAUSE, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_UPDATEENTITY, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_REMOVEENTITY, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_SOUND, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_BACKTOMAIN, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_RUMBLE, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_PLAYERLIST, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_MESSAGE, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_CLOSEMAP, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_LOADMAP, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_MAPSETTINGS, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_INITWAITING, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_STARTMAP, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_UPDATEHITPOINTS, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_UPDATELIVES, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_UPDATEPOINTS, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_TIMEREMAINING, new NopClientProtocolHandler());
+	r.registerClientHandler(protocol::PROTO_FINISHEDMAP, new NopClientProtocolHandler());
 }
 
 void AbstractTest::TearDown() {

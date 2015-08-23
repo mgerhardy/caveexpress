@@ -1,27 +1,42 @@
+ALT|ALT
 Achievements|Achievements
 Are you sure?|Are you sure?
 Big|Big
+CTRL|CTRL
+CURSOR|CURSOR
 Campaigns|Campaigns
 Cancel|Cancel
 Continue|Continue
 Create server|Create server
+Decrease map size|Decrease map size
 Description|Description
 Disconnect|Disconnect
 Extras|Extras
+File|File
 Fullscreen|Fullscreen
+General|General
 Gesture|Gesture
 Google Play|Google Play
 Google Play sign-out|Google Play sign-out
 Hard|Hard
+Help|Help
 Hints|Hints
 Homepage|Homepage
+Increase map size|Increase map size
 Joystick|Joystick
+LMB|LMB
 Leaderboard|Leaderboard
+Load|Load
+MMB|MMB
+MOUSE WHEEL|MOUSE WHEEL
 Map|Map
+Map Options|Map Options
 Maps|Maps
+Mouse movement|Mouse movement
 Move all packages onto their targets|Move all packages onto their targets
 Multiplayer|Multiplayer
 Name|Name
+New|New
 Normal|Normal
 OK|OK
 Objectives|Objectives
@@ -29,20 +44,43 @@ Off|Off
 On|On
 Open|Open
 Package|Package
+Place tile|Place tile
 Players|Players
 Players:|Players:
 Quit|Quit
+Quit without saving|Quit without saving
+RMB|RMB
+Redo|Redo
+Reference time in seconds|Reference time in seconds
 Refresh|Refresh
+Remove tile|Remove tile
 Reset|Reset
 Reset game progress?|Reset game progress?
+Rotate entity|Rotate entity
+SHIFT|SHIFT
+SPACE|SPACE
+Save|Save
+Save & Go|Save & Go
+Save map|Save map
+Scroll map|Scroll map
 Select game mode|Select game mode
+Select tile|Select tile
 Settings|Settings
+Shift map (cursor direction)|Shift map (cursor direction)
+Shift tile|Shift tile
+Show Grid|Show Grid
+Show help messages to the player|Show help messages to the player
 Small|Small
 Sound/Music|Sound/Music
 Start|Start
 Target|Target
 Textures|Textures
 The less moves you do the better|The less moves you do the better
+Time|Time
+Tutorial|Tutorial
 Twitter|Twitter
+Undo|Undo
 Waiting|Waiting
+Win conditions|Win conditions
 Your player|Your player
+Zoom map|Zoom map

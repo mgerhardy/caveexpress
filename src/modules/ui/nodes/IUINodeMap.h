@@ -9,7 +9,11 @@
 //forward decl
 class ServiceProvider;
 
-// this node renders the map
+/**
+ * this node renders the map. It's overlayed by the IMapControl node and thus doesn't
+ * receive any input until the IMapControl node doesn't have the focus (due to the fact that
+ * the IMapControl node usually is fullscreen).
+ */
 class IUINodeMap: public UINode, public ICampaignManagerListener {
 protected:
 	ClientMap& _map;

@@ -64,6 +64,12 @@ MiniRacer::~MiniRacer() {
 	delete _clientMap;
 }
 
+DirectoryEntries MiniRacer::listDirectory(const std::string& basedir, const std::string& subdir) {
+	DirectoryEntries entriesAll;
+	#include "miniracer-files.h"
+	return entriesAll;
+}
+
 IMapManager* MiniRacer::getMapManager ()
 {
 	return new LUAMapManager();

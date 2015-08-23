@@ -1,6 +1,7 @@
 #include "tests/TestShared.h"
 #include "cavepacker/server/map/Map.h"
 #include "cavepacker/server/entities/Player.h"
+#include "cavepacker/shared/network/ProtocolMessageTypes.h"
 #include "tests/NetworkTestListener.h"
 #include "data.h"
 
@@ -12,6 +13,14 @@ protected:
 		AbstractTest::SetUp();
 		TextureDefinition t("small");
 		SpriteDefinition::get().init(t);
+
+		ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
+		r.registerClientHandler(protocol::PROTO_AUTOSOLVE, new NopClientProtocolHandler());
+		r.registerClientHandler(protocol::PROTO_AUTOSOLVEABORT, new NopClientProtocolHandler());
+		//r.registerClientHandler(protocol::PROTO_UNDO, new NopClientProtocolHandler());
+		//r.registerClientHandler(protocol::PROTO_WALKTO, new NopClientProtocolHandler());
+		r.registerClientHandler(::protocol::PROTO_ADDENTITY, new NopClientProtocolHandler());
+		r.registerClientHandler(::protocol::PROTO_INITDONE, new NopClientProtocolHandler());
 	}
 
 	void testSingleMap(const std::string& mapName, bool solve = true) {
@@ -51,7 +60,7 @@ protected:
 			_serviceProvider.getNetwork().update(1);
 			ASSERT_TRUE(map.isAutoSolve()) << "Map " << mapName << " is no longer in autoSolve mode in step " << s;
 		}
-		EXPECT_TRUE(map.isDone()) << "Autosolve for map " << mapName << " did not lead to a done map";
+		EXPECT_TRUE(map.isDone()) << "Autosolve for map " << mapName << " did not lead to a done map:\n" << map.getMapString() << "\n" << map.getStateString();
 		_serviceProvider.getNetwork().update(1);
 	}
 
@@ -63,7 +72,7 @@ protected:
 		ASSERT_TRUE(_serviceProvider.getNetwork().openClient("localhost", 12345, &listener)) << "Failed to open the client";
 
 		for (int i = begin; i < begin + amount; ++i) {
-			std::string mapName = prefix + String::format("%04i", i);
+			const std::string& mapName = String::format("%s%04i", prefix.c_str(), i).str();
 			testMap(mapName);
 		}
 		ASSERT_EQ(0, listener._errorCount) << listener._lastError;

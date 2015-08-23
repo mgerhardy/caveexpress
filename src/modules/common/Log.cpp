@@ -19,16 +19,17 @@ char const* const LogTypes[] = {
 	"LOG_LUA",
 	"LOG_STORAGE",
 	"LOG_SYSTEM",
-	"LOG_GENERAL"
+	"LOG_GENERAL",
+	"LOG_UI"
 };
 CASSERT(lengthof(LogTypes) == LOG_MAX);
 
 LogLevelList LogLevels[] = {
-	{"TRACE", LogLevel::LEVEL_TRACE},
-	{"DEBUG", LogLevel::LEVEL_DEBUG},
-	{"INFO",  LogLevel::LEVEL_INFO},
-	{"WARN",  LogLevel::LEVEL_WARN},
-	{"ERROR", LogLevel::LEVEL_ERROR},
+	{"TRACE", LogLevel::LEVEL_TRACE, SDL_LOG_PRIORITY_VERBOSE},
+	{"DEBUG", LogLevel::LEVEL_DEBUG, SDL_LOG_PRIORITY_DEBUG},
+	{"INFO",  LogLevel::LEVEL_INFO, SDL_LOG_PRIORITY_INFO},
+	{"WARN",  LogLevel::LEVEL_WARN, SDL_LOG_PRIORITY_WARN},
+	{"ERROR", LogLevel::LEVEL_ERROR, SDL_LOG_PRIORITY_ERROR},
 };
 CASSERT(lengthof(LogLevels) == static_cast<int>(LogLevel::LEVEL_MAX));
 
@@ -65,37 +66,36 @@ void Log::addConsole (IConsole* console)
 void Log::vsnprint(LogLevel logLevel, LogCategory category, const char* msg, va_list args) {
 	char buf[1024];
 	const char *categoryStr = LogTypes[static_cast<int>(category)];
-	const char *logLevelStr = LogLevels[static_cast<int>(logLevel)].logLevelStr;
 	SDL_vsnprintf(buf, sizeof(buf), msg, args);
 	buf[sizeof(buf) - 1] = 0;
 
 	switch (logLevel) {
 		case LogLevel::LEVEL_INFO:
-			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "%s (%s): %s\n", logLevelStr, categoryStr, buf);
+			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "(%s): %s\n", categoryStr, buf);
 			for (ConsolesConstIter i = _consoles.begin(); i != _consoles.end(); ++i) {
 				(*i)->logInfo(buf);
 			}
 			break;
 		case LogLevel::LEVEL_WARN:
-			SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "%s (%s): %s\n", logLevelStr, categoryStr, buf);
+			SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "(%s): %s\n", categoryStr, buf);
 			for (ConsolesConstIter i = _consoles.begin(); i != _consoles.end(); ++i) {
 				(*i)->logInfo(buf);
 			}
 			break;
 		case LogLevel::LEVEL_ERROR:
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s (%s): %s\n", logLevelStr, categoryStr, buf);
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "(%s): %s\n", categoryStr, buf);
 			for (ConsolesConstIter i = _consoles.begin(); i != _consoles.end(); ++i) {
 				(*i)->logError(buf);
 			}
 			break;
 		case LogLevel::LEVEL_DEBUG:
-			SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "%s (%s): %s\n", logLevelStr, categoryStr, buf);
+			SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "(%s): %s\n", categoryStr, buf);
 			for (ConsolesConstIter i = _consoles.begin(); i != _consoles.end(); ++i) {
 				(*i)->logDebug(buf);
 			}
 			break;
 		case LogLevel::LEVEL_TRACE:
-			SDL_LogVerbose(SDL_LOG_CATEGORY_APPLICATION, "%s (%s): %s\n", logLevelStr, categoryStr, buf);
+			SDL_LogVerbose(SDL_LOG_CATEGORY_APPLICATION, "(%s): %s\n", categoryStr, buf);
 			for (ConsolesConstIter i = _consoles.begin(); i != _consoles.end(); ++i) {
 				(*i)->logTrace(buf);
 			}
@@ -126,8 +126,9 @@ void Log::error (LogCategory category, const char* msg, ...)
 
 void Log::trace (LogCategory category, const char* msg, ...)
 {
-	if (Config.getLogLevel() != LogLevel::LEVEL_TRACE)
+	if (Config.getLogLevel() != LogLevel::LEVEL_TRACE) {
 		return;
+	}
 	va_list args;
 	va_start(args, msg);
 	get().vsnprint(LogLevel::LEVEL_TRACE, category, msg, args);
@@ -137,8 +138,9 @@ void Log::trace (LogCategory category, const char* msg, ...)
 void Log::debug (LogCategory category, const char* msg, ...)
 {
 	LogLevel level = Config.getLogLevel();
-	if (level != LogLevel::LEVEL_TRACE && level != LogLevel::LEVEL_DEBUG)
+	if (level != LogLevel::LEVEL_TRACE && level != LogLevel::LEVEL_DEBUG) {
 		return;
+	}
 	va_list args;
 	va_start(args, msg);
 	get().vsnprint(LogLevel::LEVEL_DEBUG, category, msg, args);

@@ -15,15 +15,18 @@ int UINode::_counter = 0;
 UINode::UINode (IFrontend *frontend, const std::string& id) :
 		_padding(0.0f), _marginTop(0.0f), _marginLeft(0.0f), _onActivate(""), _focus(false), _focusAlpha(0.0f), _focusMouseX(-1), _focusMouseY(-1), _visible(
 				true), _enabled(true), _dragStartX(-1), _dragStartY(-1), _alpha(1.0f), _previousAlpha(1.0f), _id(id), _renderBorder(
-				false), _frontend(frontend), _align(NODE_ALIGN_LEFT), _time(0), _flashMillis(0), _originalAlpha(-1.0f), _layout(nullptr), _parent(nullptr)
+				false), _frontend(frontend), _align(NODE_ALIGN_LEFT), _time(0), _flashMillis(0), _originalAlpha(-1.0f), _autoId(false), _layout(nullptr), _parent(nullptr),
+				_fingerPressed(false), _mousePressed(false)
 {
 	setPos(0.0f, 0.0f);
 	setSize(0.0f, 0.0f);
 	Vector4Set(colorWhite, _borderColor);
 	Vector4Set(colorNull, _backgroundColor);
 
-	if (_id.empty())
+	if (_id.empty()) {
 		_id = string::toString(_counter++);
+		_autoId = true;
+	}
 }
 
 UINode::~UINode ()
@@ -78,6 +81,9 @@ bool UINode::hasImage () const
 
 const TexturePtr& UINode::setImage (const std::string& texture)
 {
+	if (_autoId) {
+		_id = texture;
+	}
 	_texture = loadTexture(texture);
 	if (!hasImage())
 		return _texture;
@@ -213,7 +219,7 @@ void UINode::displayText (const std::string& text, uint32_t delayMillis, float x
 		i->delayMillis = delayMillis;
 		return;
 	}
-	Log::info(LOG_GENERAL, "Display text '%s' for %ui ms", text.c_str(), delayMillis);
+	Log::info(LOG_UI, "Display text '%s' for %ui ms", text.c_str(), delayMillis);
 	const NodeCoord c(x, y);
 	const BitmapFontPtr& font = getFont(HUGE_FONT);
 	_texts.push_back(UINodeDelayedText(text, delayMillis, c, font));
@@ -437,6 +443,7 @@ void UINode::handleDrop (uint16_t x, uint16_t y)
 
 bool UINode::onFingerPress (int64_t finger, uint16_t x, uint16_t y)
 {
+	_fingerPressed = true;
 	initDrag(x, y);
 	for (UINodeListRevIter i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
 		UINode* nodePtr = *i;
@@ -551,8 +558,7 @@ bool UINode::addLastFocus ()
 bool UINode::addFirstFocus ()
 {
 	bool focus = false;
-	for (UINodeListIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* nodePtr = *i;
+	for (UINode* nodePtr : _nodes) {
 		nodePtr->removeFocus();
 		if (focus)
 			continue;
@@ -576,8 +582,7 @@ bool UINode::isActive () const
 	if (!isVisible())
 		return false;
 
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		const UINode* nodePtr = *i;
+	for (const UINode* nodePtr : _nodes) {
 		if (nodePtr->isActive()) {
 			return true;
 		}
@@ -607,8 +612,15 @@ bool UINode::runFocusNode ()
 bool UINode::checkFocus (int32_t x, int32_t y)
 {
 	if (x <= -1 || y <= -1 || !isVisible() || !isActive()) {
-		if (hasFocus())
+		if (hasFocus()) {
+			if (x <= -1 || y <= -1)
+				Log::debug(LOG_UI, "remove focus from %s due to invalid coords", getId().c_str());
+			else if (!isVisible())
+				Log::debug(LOG_UI, "remove focus from invisible node %s", getId().c_str());
+			else if (!isActive())
+				Log::debug(LOG_UI, "remove focus from inactive node %s", getId().c_str());
 			removeFocus();
+		}
 		return false;
 	}
 
@@ -639,6 +651,7 @@ bool UINode::checkFocus (int32_t x, int32_t y)
 	}
 
 	if (hasFocus()) {
+		Log::debug(LOG_UI, "nothing left that wants the focus - so remove it from node %s", getId().c_str());
 		removeFocus();
 	}
 	return false;
@@ -661,8 +674,7 @@ bool UINode::onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx,
 
 bool UINode::onTextInput (const std::string& text)
 {
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* nodePtr = *i;
+	for (UINode* nodePtr : _nodes) {
 		if (!nodePtr->hasFocus())
 			continue;
 		if (nodePtr->onTextInput(text))
@@ -674,6 +686,7 @@ bool UINode::onTextInput (const std::string& text)
 
 bool UINode::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
 {
+	_fingerPressed = false;
 	handleDrop(x, y);
 	execute();
 	for (UINodeListRevIter i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
@@ -690,8 +703,7 @@ bool UINode::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
 
 bool UINode::onKeyPress (int32_t key, int16_t modifier)
 {
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* nodePtr = *i;
+	for (UINode* nodePtr : _nodes) {
 		if (!nodePtr->isVisible())
 			continue;
 		if (nodePtr->onKeyPress(key, modifier))
@@ -703,8 +715,7 @@ bool UINode::onKeyPress (int32_t key, int16_t modifier)
 
 bool UINode::onKeyRelease (int32_t key)
 {
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* nodePtr = *i;
+	for (UINode* nodePtr : _nodes) {
 		if (!nodePtr->isVisible())
 			continue;
 		if (nodePtr->onKeyRelease(key))
@@ -718,8 +729,8 @@ bool UINode::onPop ()
 {
 	_texts.clear();
 	bool pop = true;
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		pop |= (*i)->onPop();
+	for (UINode* node : _nodes) {
+		pop |= node->onPop();
 	}
 	return pop;
 }
@@ -728,8 +739,8 @@ bool UINode::onPush ()
 {
 	_texts.clear();
 	bool push = true;
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		push |= (*i)->onPush();
+	for (UINode* node : _nodes) {
+		push |= node->onPush();
 	}
 	return push;
 }
@@ -741,9 +752,9 @@ void UINode::addFocus (int32_t x, int32_t y)
 	if (_focus)
 		return;
 	_focus = true;
-	Log::debug(LOG_CLIENT, "focus for %s", getId().c_str());
-	for (Listeners::iterator i = _listeners.begin(); i != _listeners.end(); ++i) {
-		(*i)->onAddFocus();
+	Log::debug(LOG_UI, "focus for %s", getId().c_str());
+	for (const UINodeListenerPtr& listener : _listeners) {
+		listener->onAddFocus();
 	}
 	if (!fequals(_focusAlpha, 0.0f))
 		setAlpha(_focusAlpha);
@@ -753,26 +764,28 @@ void UINode::removeFocus ()
 {
 	if (!_focus)
 		return;
-	Log::debug(LOG_CLIENT, "remove focus for %s", getId().c_str());
+	_mousePressed = false;
+	_fingerPressed = false;
+	Log::debug(LOG_UI, "remove focus for %s", getId().c_str());
 	_focus = false;
 	_focusMouseX = -1;
 	_focusMouseY = -1;
-	for (Listeners::iterator i = _listeners.begin(); i != _listeners.end(); ++i) {
-		(*i)->onRemoveFocus();
+	for (const UINodeListenerPtr& listener : _listeners) {
+		listener->onRemoveFocus();
 	}
 	if (!fequals(_focusAlpha, 0.0f))
 		restoreAlpha();
 
-	for (UINodeListIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* node = *i;
-		if (!node->hasFocus())
+	for (UINode* nodePtr : _nodes) {
+		if (!nodePtr->hasFocus())
 			continue;
-		node->removeFocus();
+		nodePtr->removeFocus();
 	}
 }
 
 bool UINode::onMouseButtonRelease (int32_t x, int32_t y, unsigned char button)
 {
+	Log::debug(LOG_UI, "onMouseButtonRelease: %s (%i:%i, %c), enabled: %s", getId().c_str(), x, y, button, (_enabled ? "true" : "false"));
 	if (!_enabled)
 		return false;
 
@@ -851,6 +864,7 @@ bool UINode::onGestureRecord (int64_t gestureId)
 
 bool UINode::onMouseButtonPress (int32_t x, int32_t y, unsigned char button)
 {
+	Log::debug(LOG_UI, "onMouseButtonPress: %s (%i:%i, %c), enabled: %s", getId().c_str(), x, y, button, (_enabled ? "true" : "false"));
 	if (!_enabled)
 		return false;
 
@@ -879,6 +893,7 @@ bool UINode::onMouseButtonPress (int32_t x, int32_t y, unsigned char button)
 
 bool UINode::onMouseLeftRelease (int32_t x, int32_t y)
 {
+	_mousePressed = false;
 	return execute();
 }
 
@@ -897,8 +912,8 @@ bool UINode::onControllerButtonPress (int x, int y, const std::string& button)
 
 bool UINode::execute ()
 {
-	for (Listeners::iterator i = _listeners.begin(); i != _listeners.end(); ++i) {
-		(*i)->onClick();
+	for (const UINodeListenerPtr& listener : _listeners) {
+		listener->onClick();
 	}
 
 	if (_onActivate.empty()) {
@@ -944,6 +959,7 @@ bool UINode::onMouseRightPress (int32_t x, int32_t y)
 
 bool UINode::onMouseLeftPress (int32_t x, int32_t y)
 {
+	_mousePressed = true;
 	return false;
 }
 
@@ -1035,12 +1051,11 @@ UINode* UINode::getNode (const std::string& nodeId)
 	if (_nodes.empty())
 		return nullptr;
 
-	for (UINodeListIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* node = (*i);
-		if (node->getId() == nodeId)
-			return node;
+	for (UINode* nodePtr : _nodes) {
+		if (nodePtr->getId() == nodeId)
+			return nodePtr;
 
-		UINode* nodeR = node->getNode(nodeId);
+		UINode* nodeR = nodePtr->getNode(nodeId);
 		if (nodeR)
 			return nodeR;
 	}
@@ -1056,8 +1071,7 @@ void UINode::setTooltip (const std::string& tooltip)
 void UINode::setLayout (IUILayout* layout)
 {
 	_layout = layout;
-	for (UINodeListIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		UINode* nodePtr = *i;
+	for (UINode* nodePtr : _nodes) {
 		_layout->addNode(nodePtr);
 	}
 }

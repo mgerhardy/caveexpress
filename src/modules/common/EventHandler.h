@@ -8,6 +8,9 @@
 class IEventObserver;
 union SDL_Event;
 
+/**
+ * @brief Register IEventObserver implementations to spread the events in the system
+ */
 class EventHandler {
 private:
 	bool _multiGesture;

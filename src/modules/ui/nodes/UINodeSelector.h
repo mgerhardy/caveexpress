@@ -436,7 +436,7 @@ public:
 		} else if (index < static_cast<int>(_entries.size())) {
 			const int neededPage = (index + 1) / amountPerPage;
 			_offset = neededPage * amountPerPage;
-			Log::debug(LOG_CLIENT, "Scroll to page %i (index was: %i, amountPerPage is: %i)", neededPage, index, amountPerPage);
+			Log::debug(LOG_UI, "Scroll to page %i (index was: %i, amountPerPage is: %i)", neededPage, index, amountPerPage);
 			_selectedIndex = index;
 		}
 	}

@@ -8,6 +8,7 @@
 #include "cavepacker/server/entities/IEntity.h"
 #include "cavepacker/server/entities/Player.h"
 #include "cavepacker/server/entities/MapTile.h"
+#include "cavepacker/server/map/BoardState.h"
 #include <string>
 #include <vector>
 #include <map>
@@ -19,44 +20,6 @@ class ServiceProvider;
 class IMapContext;
 
 namespace cavepacker {
-
-#define MOVE_LEFT 'l'
-#define MOVE_RIGHT 'r'
-#define MOVE_UP 'u'
-#define MOVE_DOWN 'd'
-
-inline void getXY (char step, int& x, int& y)
-{
-	switch (tolower(step)) {
-	case MOVE_LEFT:
-		x = -1;
-		y = 0;
-		break;
-	case MOVE_RIGHT:
-		x = 1;
-		y = 0;
-		break;
-	case MOVE_UP:
-		x = 0;
-		y = -1;
-		break;
-	case MOVE_DOWN:
-		x = 0;
-		y = 1;
-		break;
-	default:
-		x = 0;
-		y = 0;
-		break;
-	}
-}
-
-inline void getOppositeXY (char step, int& x, int& y)
-{
-	getXY(step, x, y);
-	x *= -1;
-	y *= -1;
-}
 
 class IEntityVisitor {
 public:
@@ -80,15 +43,13 @@ public:
 	typedef std::vector<IEntity*> EntityList;
 	typedef EntityList::iterator EntityListIter;
 	typedef EntityList::const_iterator EntityListConstIter;
+
 protected:
 	int _height;
 	int _width;
 
 	uint32_t _restartDue;
-	typedef std::map<int, char> StateMap;
-	typedef StateMap::iterator StateMapIter;
-	typedef StateMap::const_iterator StateMapConstIter;
-	StateMap _state;
+	BoardState _state;
 	typedef std::map<int, IEntity*> FieldMap;
 	typedef FieldMap::iterator FieldMapIter;
 	typedef FieldMap::const_iterator FieldMapConstIter;
@@ -123,6 +84,8 @@ protected:
 	bool _autoSolve;
 	int32_t _nextSolveStep;
 	std::string _solution;
+	int _deadLock;
+	bool _deadLockMessageSent;
 
 	bool visitEntity (IEntity *entity) override;
 
@@ -130,9 +93,9 @@ protected:
 	bool spawnPlayer (Player* player);
 	bool setField (IEntity *entity, int col, int row);
 	void printMap ();
-	std::string getMapString() const;
 	char getSokobanFieldId (const IEntity *entity) const;
 	void handleAutoSolve (uint32_t deltaTime);
+
 public:
 	Map ();
 	virtual ~Map ();
@@ -146,6 +109,8 @@ public:
 
 	inline bool isAutoSolve () const { return _autoSolve; }
 	void abortAutoSolve ();
+	std::string getMapString() const;
+	inline std::string getStateString() const { return _state.toString(); }
 
 	int getMaxPlayers() const;
 	inline int getMoves() const { return _moves; }
@@ -155,6 +120,7 @@ public:
 	void increaseMoves ();
 	void increasePushes ();
 	void undo (Player* player);
+	void walkTo (Player* player, int col, int row);
 
 	void autoStart ();
 	void loadDelayed (uint32_t delay, const std::string& name);
@@ -169,6 +135,10 @@ public:
 	void reload ();
 	bool isFailed () const;
 	bool isPause () const;
+
+	inline bool isFree(int col, int row) {
+		return _state.isFree(col, row);
+	}
 
 	// IMap
 	void update (uint32_t deltaTime) override;
@@ -200,10 +170,7 @@ public:
 	// returns the time that was needed to finish the map
 	uint32_t getTime () const;
 
-	MapTile* getPackage (int col, int row);
-	bool isFree (int col, int row);
-	bool isTarget (int col, int row);
-	bool isPackage (int col, int row);
+	MapTile* getPackage (int col, int row) const;
 
 	bool undoPackage (int col, int row, int targetCol, int targetRow);
 

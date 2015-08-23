@@ -10,12 +10,14 @@ GCC_DIAG_ON(cast-qual)
 #include "common/Log.h"
 #include <map>
 #include <SDL_platform.h>
+#include <SDL_assert.h>
 
 class LUA {
 private:
 	lua_State *_state;
 
 	static void debugHook (lua_State *L, lua_Debug *ar);
+	static int panicHook (lua_State *L);
 
 	static int isAndroid (lua_State *L);
 	static int isWindows (lua_State *L);
@@ -60,15 +62,21 @@ public:
 		luaL_error(L, "%s", error.c_str());
 	}
 
-	void getGlobal (const std::string& name);
+	bool getGlobal (const std::string& name);
 
 	std::string getKey ();
 
-	void getGlobalKeyValue (const std::string& name);
+	bool getGlobalKeyValue (const std::string& name);
 
+	/**
+	 * @note This will NOT return the values in order
+	 * @sa http://www.lua.org/manual/5.1/manual.html#lua_next
+	 */
 	bool getNextKeyValue ();
 
 	void pop (int amount = 1);
+
+	int stackCount ();
 
 	int getTable (const std::string& name);
 
@@ -83,23 +91,27 @@ public:
 	void reg (const std::string& prefix, luaL_Reg* funcs);
 
 	bool load (const std::string &file);
+	bool loadBuffer(const std::string& buffer, const char *ctx);
 	/**
 	 * @param[in] function function to be called
 	 */
-	bool execute (const String &function, int returnValues = 0);
+	bool execute (const std::string &function, int returnValues = 0);
 
-	String getValueStringFromTable (const char * key, const String& defaultValue = "");
+	std::string getValueStringFromTable (const char * key, const std::string& defaultValue = "");
 	float getValueFloatFromTable (const char * key, float defaultValue = 0.0f);
 	int getValueIntegerFromTable (const char * key, int defaultValue = 0);
 	bool getValueBoolFromTable (const char * key, bool defaultValue = false);
-	void getKeyValueMap (std::map<std::string, std::string>& map, const char *key);
+	void getKeyValueMap (std::map<std::string, std::string>& map, const std::string& key);
 
 	int getIntValue (const std::string& xpath, int defaultValue = 0);
 	float getFloatValue (const std::string& path, float defaultValue = 0.0f);
 	bool getBoolValue (const std::string& xpath);
 	std::string getStringFromStack ();
-	String getString (const std::string& expr, const std::string& defaultValue = "");
+	std::string getString (const std::string& expr, const std::string& defaultValue = "");
 
+	std::string getLuaValue (int i);
+	void tableDump ();
+	std::string getStackDump ();
 	void stackDump ();
 };
 
@@ -107,3 +119,30 @@ inline lua_State* LUA::getState () const
 {
 	return _state;
 }
+
+class LUAStackChecker {
+private:
+	lua_State *_state;
+	const int _startStackDepth;
+public:
+	explicit LUAStackChecker (lua_State *state) :
+			_state(state), _startStackDepth(lua_gettop(_state))
+	{
+	}
+	~LUAStackChecker ()
+	{
+		SDL_assert_always(_startStackDepth == lua_gettop(_state));
+	}
+};
+
+#ifdef DEBUG
+#define LUA_checkStack() LUAStackChecker(this->_state)
+#else
+#define LUA_checkStack() do {} while(0)
+#endif
+
+#ifdef DEBUG
+#define LUA_checkStack2(lua) LUAStackChecker(lua)
+#else
+#define LUA_checkStack2(lua) do {} while(0)
+#endif

@@ -16,7 +16,7 @@ public:
 	void enable () {
 		if (_enabled)
 			return;
-		Log::info(LOG_CLIENT, "Playing the map is now possible");
+		Log::info(LOG_UI, "Playing the map is now possible");
 		setEnabled(true);
 		setTooltip("");
 	}
@@ -24,7 +24,7 @@ public:
 	void disable () {
 		if (!_enabled)
 			return;
-		Log::info(LOG_CLIENT, "Playing the map is not possible");
+		Log::info(LOG_UI, "Playing the map is not possible");
 		setEnabled(false);
 	}
 };
@@ -44,11 +44,11 @@ public:
 	void onClick () override
 	{
 		if (!_mapEditor->save())
-			Log::error(LOG_CLIENT, "Failed to save the map");
+			Log::error(LOG_UI, "Failed to save the map");
 		else
-			Log::info(LOG_CLIENT, "Saved the map");
+			Log::info(LOG_UI, "Saved the map");
 		if (_startMap) {
-			Log::info(LOG_CLIENT, "Starting the map now: %s", _mapEditor->getName().c_str());
+			Log::info(LOG_UI, "Starting the map now: %s", _mapEditor->getName().c_str());
 			Commands.executeCommandLine(CMD_MAP_START " " + _mapEditor->getName());
 		}
 	}

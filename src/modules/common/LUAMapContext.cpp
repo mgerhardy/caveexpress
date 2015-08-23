@@ -21,18 +21,18 @@ LUAMapContext::~LUAMapContext ()
 void LUAMapContext::initLUABindings (luaL_Reg* additional)
 {
 	std::vector<luaL_Reg> funcs;
-	funcs.push_back({ "get", luaGetMapContext });
-	funcs.push_back({ "addTile", luaAddTile });
-	funcs.push_back({ "setSetting", luaSetSetting });
-	funcs.push_back({ "addEmitter", luaAddEmitter });
-	funcs.push_back({ "addStartPosition", luaAddStartPosition });
+	funcs.push_back(luaL_Reg{ "get", luaGetMapContext });
+	funcs.push_back(luaL_Reg{ "addTile", luaAddTile });
+	funcs.push_back(luaL_Reg{ "setSetting", luaSetSetting });
+	funcs.push_back(luaL_Reg{ "addEmitter", luaAddEmitter });
+	funcs.push_back(luaL_Reg{ "addStartPosition", luaAddStartPosition });
 
 	while (additional && additional->name) {
-		funcs.push_back({ additional->name, additional->func });
+		funcs.push_back(luaL_Reg{ additional->name, additional->func });
 		++additional;
 	}
 
-	funcs.push_back({ nullptr, nullptr });
+	funcs.push_back(luaL_Reg{ nullptr, nullptr });
 
 	_lua.reg("Map", &funcs[0]);
 }

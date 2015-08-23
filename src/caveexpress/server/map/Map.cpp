@@ -490,7 +490,7 @@ bool Map::load (const std::string& name)
 		Log::error(LOG_MAP, "failed to load the map %s", name.c_str());
 		return false;
 	}
-	ctx->save();
+	//ctx->save();
 	_settings = ctx->getSettings();
 	_startPositions = ctx->getStartPositions();
 	_name = ctx->getName();
@@ -1830,8 +1830,10 @@ void Map::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		name = name.replaceAll("-", "");
 		const float width = lua.getFloatValue(name + ".width", 1.0f);
 		const float height = lua.getFloatValue(name + ".height", 1.0f);
+		Log::debug(LOG_SERVER, "entity %s: %f:%f", name.str().c_str(), width, height);
 		i->second->setSize(width, height);
 	}
+	Log::debug(LOG_SERVER, "initialized entity sizes");
 }
 
 }

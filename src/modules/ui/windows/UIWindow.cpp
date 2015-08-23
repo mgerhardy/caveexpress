@@ -30,8 +30,7 @@ void UIWindow::render (int x, int y) const
 
 	UINode::render(x, y);
 
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		const UINode* nodePtr = *i;
+	for (const UINode* nodePtr : _nodes) {
 		nodePtr->renderOnTop(x, y);
 	}
 }
@@ -39,8 +38,8 @@ void UIWindow::render (int x, int y) const
 bool UIWindow::onPop ()
 {
 	bool pop = true;
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		const bool val = (*i)->onPop();
+	for (UINode* nodePtr : _nodes) {
+		const bool val = nodePtr->onPop();
 		if (!val)
 			pop = false;
 	}
@@ -58,6 +57,11 @@ void UIWindow::onPushedOver ()
 
 void UIWindow::onActive ()
 {
+	int x, y;
+	UI::get().getCursorPosition(x, y);
+	if (!checkFocus(x, y)) {
+		addFirstFocus();
+	}
 	System.track("activewindow", getId());
 	_pushedTime = _time;
 }
@@ -65,13 +69,13 @@ void UIWindow::onActive ()
 bool UIWindow::onPush ()
 {
 	bool push = true;
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		const bool val = (*i)->onPush();
+	for (UINode* nodePtr : _nodes) {
+		const bool val = nodePtr->onPush();
 		if (!val)
 			push = false;
 	}
 	if (push) {
-		Log::info(LOG_CLIENT, "pushed window %s onto the stack", _id.c_str());
+		Log::info(LOG_UI, "pushed window %s onto the stack", _id.c_str());
 		Commands.executeCommandLine(_onPush);
 		startMusic();
 		addFirstFocus();
@@ -83,10 +87,10 @@ bool UIWindow::onPush ()
 void UIWindow::startMusic ()
 {
 	if (!_musicFile.empty()) {
-		Log::info(LOG_CLIENT, "attempt to start the music file %s", _musicFile.c_str());
+		Log::info(LOG_UI, "attempt to start the music file %s", _musicFile.c_str());
 		_music = SoundControl.playMusic(_musicFile);
 		if (_music == -1) {
-			Log::error(LOG_CLIENT, "failed to start the music file %s in the context of window %s", _musicFile.c_str(), _id.c_str());
+			Log::error(LOG_UI, "failed to start the music file %s in the context of window %s", _musicFile.c_str(), _id.c_str());
 		}
 		return;
 	}
@@ -153,6 +157,7 @@ bool UIWindow::onMouseButtonRelease (int32_t x, int32_t y, unsigned char button)
 
 bool UIWindow::onMouseButtonPress (int32_t x, int32_t y, unsigned char button)
 {
+	Log::debug(LOG_UI, "onMouseButtonPress: %s (%i:%i, %c)", getId().c_str(), x, y, button);
 	if (!isActiveAfterPush())
 		return false;
 
@@ -161,6 +166,7 @@ bool UIWindow::onMouseButtonPress (int32_t x, int32_t y, unsigned char button)
 
 bool UIWindow::onJoystickButtonPress (int x, int y, uint8_t button)
 {
+	Log::debug(LOG_UI, "onJoystickButtonPress: %s (%i:%i, %c)", getId().c_str(), x, y, button);
 	if (!isActiveAfterPush())
 		return false;
 
@@ -194,28 +200,28 @@ UINode* UIWindow::addTextureNode (const std::string& texture, float x, float y, 
 void UIWindow::showFullscreenAds ()
 {
 	if (getSystem().hasItem(PAYMENT_ADFREE)) {
-		Log::debug(LOG_CLIENT, "skip ads");
+		Log::debug(LOG_UI, "skip ads");
 		return;
 	}
 
 	if (!getSystem().showFullscreenAds())
-		Log::error(LOG_CLIENT, "failed to show the fullscreen ads");
+		Log::error(LOG_UI, "failed to show the fullscreen ads");
 	else
-		Log::info(LOG_CLIENT, "show fullscreen ads");
+		Log::info(LOG_UI, "show fullscreen ads");
 }
 
 void UIWindow::showAds ()
 {
 	if (getSystem().hasItem(PAYMENT_ADFREE)) {
-		Log::debug(LOG_CLIENT, "skip ads");
+		Log::debug(LOG_UI, "skip ads");
 		return;
 	}
 	getSystem().showAds(true);
-	Log::info(LOG_CLIENT, "show ads");
+	Log::info(LOG_UI, "show ads");
 }
 
 void UIWindow::hideAds ()
 {
 	getSystem().showAds(false);
-	Log::info(LOG_CLIENT, "hide ads");
+	Log::info(LOG_UI, "hide ads");
 }

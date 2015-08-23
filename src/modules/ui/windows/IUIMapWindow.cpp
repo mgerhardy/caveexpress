@@ -68,6 +68,7 @@ void IUIMapWindow::initInputHudNodes()
 {
 	UINodeSettingsButton *settings = new UINodeSettingsButton(_frontend, _mapControl);
 	settings->setImage("icon-settings");
+	settings->setId("settings");
 	settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_OPTIONS)));
 	settings->setAlignment(NODE_ALIGN_LEFT | NODE_ALIGN_TOP);
 	add(settings);
@@ -81,6 +82,7 @@ void IUIMapWindow::initHudNodes()
 	const int spriteNodeOffset = 15;
 
 	_panel = new UINode(_frontend);
+	_panel->setId("hudpanel");
 	UIHBoxLayout* layout = new UIHBoxLayout();
 	layout->setSpacing(0.02f);
 	_panel->setLayout(layout);
@@ -141,7 +143,7 @@ void IUIMapWindow::initHudNodes()
 void IUIMapWindow::init()
 {
 	initHudNodes();
-	if (System.hasTouch()) {
+	if (Config.getConfigVar("forcefingercontrol", "false", true, CV_READONLY)->getBoolValue() || System.hasTouch()) {
 		UINode* node = getFingerControl();
 		add(node);
 	} else {
@@ -152,6 +154,7 @@ void IUIMapWindow::init()
 	initInputHudNodes();
 
 	_startButton = new UINodeButtonText(_frontend, tr("Start"), 0.05f);
+	_startButton->setId("startbutton");
 	_startButton->setOnActivate(CMD_START);
 	_startButton->setFont(getFont(LARGE_FONT), colorBlack);
 	_startButton->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_TOP);
@@ -159,6 +162,7 @@ void IUIMapWindow::init()
 	add(_startButton);
 
 	_waitLabel = new UINodeLabel(_frontend, tr("Waiting"), getFont(LARGE_FONT));
+	_waitLabel->setId("waitpanel");
 	_waitLabel->setColor(colorWhite);
 	_waitLabel->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_TOP);
 	_waitLabel->setVisible(false);

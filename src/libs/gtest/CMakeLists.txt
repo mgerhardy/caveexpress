@@ -1,3 +1,7 @@
 set(SRCS src/gtest-all.cc)
-cp_add_library(LIB gtest SRCS ${SRCS} CFLAGS "-Wno-sign-compare" DEFINES "-DGTEST_HAS_EXCEPTIONS=0")
+set(DEFINES GTEST_HAS_EXCEPTIONS=0 GTEST_HAS_RTTI=0)
+if (DARWIN)
+	list(APPEND DEFINES GTEST_USE_OWN_TR1_TUPLE=1)
+endif()
+cp_add_library(LIB gtest SRCS ${SRCS} CFLAGS "-Wno-sign-compare" DEFINES ${DEFINES})
 include_directories("${ROOT_DIR}/src/libs/gtest" "${ROOT_DIR}/src/libs/gtest/include")
