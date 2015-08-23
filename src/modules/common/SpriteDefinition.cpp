@@ -108,6 +108,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 				Log::debug(LOG_GENERAL, "id: %s => %i vertices", id.c_str(), vertices);
 				const std::string& userData = lua.getTableString(1);
 				SpritePolygon p(userData);
+				Log::debug(LOG_GENERAL, "id: %s => %s userdata", id.c_str(), userData.c_str());
 				for (int i = 2; i <= vertices; i += 2) {
 					const float x = lua.getTableInteger(i) / 100.0f;
 					const float y = lua.getTableInteger(i + 1) / 100.0f;
