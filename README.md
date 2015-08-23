@@ -131,7 +131,7 @@ or simply:
 * make nacl-installer
 * make nacl-start
 
-#### Compile for iOS (TODO)
+#### Compile for iOS
 * mkdir build-ios
 * cd build-ios
 * cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake -G "Xcode"
@@ -144,7 +144,7 @@ or simply
 #### Compile for MacOSX
 * mkdir build-macosx
 * cd build-macosx
-* cmake .. -G "Xcode" -DUNITTESTS=OFF
+* cmake .. -G "Xcode"
 * xcodebuild -project Project.xcodeproj
 
 or simply
