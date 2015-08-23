@@ -77,7 +77,8 @@ FontDefinition::FontDefinition() {
 			lua.pop();
 		}
 		// pop the chars table
-		lua.pop();
+		if (chars != -1)
+			lua.pop();
 
 		// push the texture table
 		if (lua.getTable("texture") != -1) {

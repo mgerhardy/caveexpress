@@ -87,7 +87,8 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		}
 
 		// pop the frames table
-		lua.pop();
+		if (layers != -1)
+			lua.pop();
 
 		// push the polygons table
 		const int polygons = lua.getTable("polygons");
@@ -119,7 +120,8 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		}
 		Log::debug(LOG_GENERAL, "spritedef: %s", lua.getStackDump().c_str());
 		// pop the polygons table
-		lua.pop();
+		if (polygons != -1)
+			lua.pop();
 
 		// push the circles table
 		const int circles = lua.getTable("circles");
@@ -149,7 +151,8 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			lua.pop();
 		}
 		// pop the circles table
-		lua.pop();
+		if (circles != -1)
+			lua.pop();
 
 		for (Layer layer = LAYER_BACK; layer <= MAX_LAYERS; layer++) {
 			if (layer == MAX_LAYERS || def->textures[layer].empty()) {
@@ -206,7 +209,8 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			}
 		}
 		// pop the active table
-		lua.pop();
+		if (actives != -1)
+			lua.pop();
 
 		const int delays = lua.getTable("delays");
 		for (int i = 1; i <= delays; ++i) {
@@ -219,7 +223,8 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			}
 		}
 		// pop the delays table
-		lua.pop();
+		if (delays != -1)
+			lua.pop();
 
 		lua.pop();
 
