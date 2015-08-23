@@ -35,6 +35,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			lua.pop();
 			continue;
 		}
+		Log::debug(LOG_GENERAL, "id: %s", id.c_str());
 
 		SpriteDefMapConstIter findIter = _spriteDefs.find(id);
 		if (findIter != _spriteDefs.end()) {
@@ -44,6 +45,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		}
 
 		const std::string& typeStr = lua.getValueStringFromTable("type");
+		Log::debug(LOG_GENERAL, "id: %s, type %s", id.c_str(), typeStr.c_str());
 		const SpriteType& type = SpriteType::getByName(typeStr);
 		if (!type && !typeStr.empty()) {
 			Log::error(LOG_GENERAL, "invalid sprite type given: %s", typeStr.c_str());
@@ -62,6 +64,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		// push the frames table
 		const int layers = lua.getTable("frames");
+		Log::debug(LOG_GENERAL, "id: %s => %i frames", id.c_str(), layers);
 		for (Layer layer = LAYER_BACK; layer < layers; layer++) {
 			LUA_checkStack2(lua.getState());
 			lua_pushinteger(lua.getState(), layer + 1);
@@ -73,6 +76,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			}
 			// push the frame table
 			const int framesOnLayer = lua_rawlen(lua.getState(), -1);
+			Log::debug(LOG_GENERAL, "id: %s => %i framesOnLayer", id.c_str(), framesOnLayer);
 			for (int i = 1; i <= framesOnLayer; ++i) {
 				const std::string& texture = lua.getTableString(i);
 				const SpriteDefFrame frame(texture, 0, true);
@@ -87,6 +91,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		// push the polygons table
 		const int polygons = lua.getTable("polygons");
+		Log::debug(LOG_GENERAL, "id: %s => %i polygons", id.c_str(), polygons);
 		if (polygons > 0) {
 			for (int j = 1; j <= polygons; j++) {
 				LUA_checkStack2(lua.getState());
@@ -99,6 +104,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 				}
 				// push the polygon table
 				const int vertices = lua_rawlen(lua.getState(), -1) - 1;
+				Log::debug(LOG_GENERAL, "id: %s => %i vertices", id.c_str(), vertices);
 				const std::string& userData = lua.getTableString(1);
 				SpritePolygon p(userData);
 				for (int i = 2; i <= vertices; i += 2) {
