@@ -110,8 +110,8 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 				SpritePolygon p(userData);
 				Log::debug(LOG_GENERAL, "id: %s => %s userdata", id.c_str(), userData.c_str());
 				for (int i = 2; i <= vertices; i += 2) {
-					const float x = lua.getTableInteger(i) / 100.0f;
-					const float y = lua.getTableInteger(i + 1) / 100.0f;
+					const float x = lua.getTableFloat(i) / 100.0f;
+					const float y = lua.getTableFloat(i + 1) / 100.0f;
 					p.vertices.push_back(SpriteVertex(x, y));
 				}
 				// pop the polygon table
