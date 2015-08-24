@@ -606,13 +606,13 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	}
 
 	// some platforms may override or hardcode the resolution - so
-	// we have to query it here to get the actual resolution
+	// we have to query it here to get the resolution
 	SDL_GetWindowSize(_window, &width, &height);
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) == -1)
 		Log::error(LOG_CLIENT, "no relative mouse mode support");
 
 	SDL_ShowCursor(0);
-	Log::info(LOG_CLIENT, "actual resolution: %dx%d", width, height);
+	Log::info(LOG_CLIENT, "resolution: %dx%d", width, height);
 	setVSync(ConfigManager::get().isVSync());
 
 	const int initState = IMG_Init(IMG_INIT_PNG);
@@ -686,7 +686,7 @@ void SDLFrontend::initRenderer ()
 
 	_softwareRenderer = (ri.flags & SDL_RENDERER_SOFTWARE);
 
-	Log::info(LOG_CLIENT, "actual renderer %s", ri.name);
+	Log::info(LOG_CLIENT, "renderer %s", ri.name);
 	Log::info(LOG_CLIENT, "max texture resolution: %i:%i", ri.max_texture_width, ri.max_texture_height);
 	SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);

@@ -71,7 +71,7 @@ bool SDLSoundEngine::init (bool initCache)
 		Log::error(LOG_CLIENT, "Failed to initialize sdl mixer with ogg support");
 	}
 
-	Log::info(LOG_CLIENT, "actual audio driver: %s", SDL_GetCurrentAudioDriver());
+	Log::info(LOG_CLIENT, "audio driver: %s", SDL_GetCurrentAudioDriver());
 
 	const int audioRate = 44100;
 	const Uint16 audioFormat = MIX_DEFAULT_FORMAT;
