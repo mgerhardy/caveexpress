@@ -167,4 +167,39 @@ TEST_F(BoardStateTest, testDeadlockByBlockedPackages) {
 	ASSERT_TRUE(s.hasDeadlock()) << "there is a deadlock by blocked packages";
 }
 
+
+TEST_F(BoardStateTest, testDeadlockNoDeadlock) {
+	BoardState s;
+
+	// xsokoban2 state that
+	const char* mapStr =
+		"############\n"
+		"#..  #     ###\n"
+		"#..  #$$  $  #\n"
+		"#..  #@####  #\n"
+		"#..      ##  #\n"
+		"#..  # #  $ ##\n"
+		"###### ##$ $ #\n"
+		"  # $  $ $ $ #\n"
+		"  #    #     #\n"
+		"  ############\n";
+
+	fillState(s, mapStr);
+	DeadlockState state;
+	state.state = s;
+	ASSERT_FALSE(s.isDone());
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 6, 2)) << "6,2 should be moveable";
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 7, 2)) << "7,2 should be moveable";
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 10, 2)) << "10,2 should be moveable";
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 10, 5)) << "10,5 should be moveable";
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 9, 6)) << "9,6 should be moveable";
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 11, 6)) << "11,6 should be moveable";
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 4, 7)) << "4,7 should be moveable";
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 7, 7)) << "7,7 should be moveable";
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 9, 7)) << "9,7 should be moveable";
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 11, 7)) << "11,7 should be moveable";
+
+	ASSERT_FALSE(s.hasDeadlock()) << "there is no deadlock";
+}
+
 }
