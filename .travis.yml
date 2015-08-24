@@ -85,8 +85,8 @@ script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then pkg-config --version; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then g++-5 --version; fi
   - clang++ --version
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && make -j 4 VERBOSE=1 && cd .. && ./tests -set verbose true && ./tests-caveexpress -set verbose true; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake -G Xcode .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && ls && xcodebuild -list -project Project.xcodeproj && xcodebuild -project Project.xcodeproj -target ALL_BUILD && cd .. && ./Debug/tests -set verbose true && ./Debug/tests-caveexpress -set verbose true; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && make -j 4 VERBOSE=1 && cd .. && ./tests -set verbose true && ./tests-caveexpress -set verbose false; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake -G Xcode .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && ls && xcodebuild -list -project Project.xcodeproj && xcodebuild -project Project.xcodeproj -target ALL_BUILD && cd .. && ./Debug/tests -set verbose false && ./Debug/tests-caveexpress -set verbose false; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-ios && cd build-ios && cmake -G Xcode .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && ls && xcodebuild -list -project Project.xcodeproj && xcodebuild -project Project.xcodeproj -target ALL_BUILD; fi
 
 notifications:
