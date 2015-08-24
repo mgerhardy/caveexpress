@@ -19,7 +19,6 @@ private:
 	int _width;
 	int _height;
 
-	bool canMoveDirection(char dir, int col, int row) const;
 public:
 	BoardState();
 
@@ -66,16 +65,6 @@ public:
 	 * on a target.
 	 */
 	bool isDone() const;
-
-	/**
-	 * @brief Checks whether the package on the given coordinates can be moved. This is doing a recursive check of packages
-	 * @note It's assumed that the given col and row is occupied by a package.
-	 */
-	bool canMove(int col, int row) const;
-	bool canMoveLeft(int col, int row) const;
-	bool canMoveRight(int col, int row) const;
-	bool canMoveUp(int col, int row) const;
-	bool canMoveDown(int col, int row) const;
 
 	std::string toString() const;
 

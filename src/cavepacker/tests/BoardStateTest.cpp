@@ -1,5 +1,6 @@
 #include "tests/TestShared.h"
 #include "cavepacker/server/map/BoardState.h"
+#include "cavepacker/server/map/deadlock/DeadlockDetector.h"
 
 namespace cavepacker {
 
@@ -110,16 +111,18 @@ TEST_F(BoardStateTest, testDeadlock1) {
 	fillState(s, mapStr);
 	ASSERT_EQ(5, s.getWidth());
 	ASSERT_EQ(5, s.getHeight());
-	ASSERT_FALSE(s.canMove(1, 1)) << "1,1 should not be moveable";
-	ASSERT_FALSE(s.canMove(1, 2)) << "1,2 should not be moveable - there is a package below";
-	ASSERT_FALSE(s.canMove(1, 3)) << "1,3 should not be moveable";
-	ASSERT_TRUE(s.canMove(2, 1)) << "2,1 should be moveable";
-	ASSERT_TRUE(s.canMove(2, 2)) << "2,2 should be moveable";
-	ASSERT_FALSE(s.canMove(2, 3)) << "2,3 should not be moveable - there is a package on the left";
-	ASSERT_FALSE(s.canMove(3, 1)) << "3,1 should not be moveable";
-	ASSERT_TRUE(s.canMove(3, 2)) << "3,2 should be moveable";
+	DeadlockState state;
+	state.state = s;
+	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 1, 1)) << "1,1 should not be moveable";
+	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 1, 2)) << "1,2 should not be moveable - there is a package below";
+	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 1, 3)) << "1,3 should not be moveable";
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 2, 1)) << "2,1 should be moveable";
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 2, 2)) << "2,2 should be moveable";
+	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 2, 3)) << "2,3 should not be moveable - there is a package on the left";
+	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 3, 1)) << "3,1 should not be moveable";
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 3, 2)) << "3,2 should be moveable";
 	// even though this is a target - we still can't move the package anymore
-	ASSERT_FALSE(s.canMove(3, 3)) << "3,3 should not be moveable - even though this is a target";
+	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 3, 3)) << "3,3 should not be moveable - even though this is a target";
 
 	ASSERT_TRUE(s.hasDeadlock()) << "there is a deadlock that is not detected in 1,3";
 }
@@ -128,23 +131,40 @@ TEST_F(BoardStateTest, testNoDeadlockButBlockedPackages) {
 	BoardState s;
 
 	const char* mapStr =
-		"    #####\n"
-		"    #   #\n"
-		"    #$  #\n"
-		"  ###  $##\n"
-		"  #  $$@ #\n"
-		"### # ## #   ######\n"
-		"#   # ## #####  ..#\n"
-		"# $  $          ..#\n"
-		"##### ### # ##  ..#\n"
-		"    #     #########\n"
-		"    #######\n";
+		"######\n"
+		"#    #\n"
+		"#$$@.#\n"
+		"#.####\n"
+		"###\n";
 
 	fillState(s, mapStr);
-	ASSERT_TRUE(s.canMove(5, 4)) << "5,4 should be moveable";
-	ASSERT_FALSE(s.canMove(6, 4)) << "6,4 should not be moveable - there is a package on the left";
+	DeadlockState state;
+	state.state = s;
+	ASSERT_FALSE(s.isDone());
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 1, 2)) << "1,2 should be moveable";
+	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 2, 2)) << "2,2 should not be moveable";
 
 	ASSERT_FALSE(s.hasDeadlock()) << "there is no deadlock but blocked packages";
+}
+
+
+TEST_F(BoardStateTest, testDeadlockByBlockedPackages) {
+	BoardState s;
+
+	const char* mapStr =
+		"######\n"
+		"#$$@.#\n"
+		"#.####\n"
+		"###\n";
+
+	fillState(s, mapStr);
+	DeadlockState state;
+	state.state = s;
+	ASSERT_FALSE(s.isDone());
+	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 1, 1)) << "1,1 should be moveable";
+	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 2, 1)) << "2,1 should not be moveable";
+
+	ASSERT_TRUE(s.hasDeadlock()) << "there is a deadlock by blocked packages";
 }
 
 }

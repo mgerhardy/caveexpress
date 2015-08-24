@@ -72,9 +72,6 @@ bool BoardState::isPackage(int col, int row) const {
 }
 
 bool BoardState::isDone() const {
-	const std::string& str = toString();
-	const char* strc = str.c_str();
-	Log::error(LOG_MAP, "%s", strc);
 	for (auto i = _state.begin(); i != _state.end(); ++i) {
 		// if there is an empty target left, we are not yet done
 		if (i->second == Sokoban::TARGET || i->second == Sokoban::PLAYERONTARGET)
@@ -99,53 +96,6 @@ bool BoardState::setField(int col, int row, char field) {
 		return false;
 	_state[index] = field;
 	return true;
-}
-
-bool BoardState::canMove(int col, int row) const {
-	// we only need to check two directions here
-	const bool left = canMoveLeft(col, row);
-	const bool up = canMoveUp(col, row);
-	const bool moveable = left || up;
-	if (moveable)
-		Log::trace(LOG_MAP, "package on %i:%i can be moved", col, row);
-	else
-		Log::trace(LOG_MAP, "package on %i:%i can't be moved", col, row);
-	return moveable;
-}
-
-bool BoardState::canMoveDirection(char dir, int col, int row) const {
-	int lx, ly;
-	getXY(dir, lx, ly);
-	int ox, oy;
-	getOppositeXY(dir, ox, oy);
-	if (!isFree(col + lx, row + ly) || !isFree(col + ox, row + oy)) {
-		return false;
-	}
-
-	if (isPackage(col + lx, row + ly)) {
-		return canMove(col + lx, row + ly);
-	}
-	if (isPackage(col + ox, row + oy)) {
-		return canMove(col + ox, row + oy);
-	}
-
-	return true;
-}
-
-bool BoardState::canMoveLeft(int col, int row) const {
-	return canMoveDirection(MOVE_LEFT, col, row);
-}
-
-bool BoardState::canMoveRight(int col, int row) const {
-	return canMoveDirection(MOVE_RIGHT, col, row);
-}
-
-bool BoardState::canMoveUp(int col, int row) const {
-	return canMoveDirection(MOVE_UP, col, row);
-}
-
-bool BoardState::canMoveDown(int col, int row) const {
-	return canMoveDirection(MOVE_DOWN, col, row);
 }
 
 }

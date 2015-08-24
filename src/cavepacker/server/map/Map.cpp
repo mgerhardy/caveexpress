@@ -31,7 +31,6 @@
 #include "cavepacker/shared/CavePackerSpriteType.h"
 #include "cavepacker/shared/EntityStates.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
-#include "cavepacker/server/map/deadlock/DeadlockDetector.h"
 #include <SDL.h>
 #include <algorithm>
 #include <functional>
@@ -518,16 +517,10 @@ bool Map::isReadyToStart () const
 
 std::string Map::getMapString() const
 {
-	const StateMap& stateMap = DeadlockDetector::calculateDeadlockFields(_state);
 	std::string mapStr;
 	mapStr.reserve(_height * _width);
 	for (int row = 0; row < _height; ++row) {
 		for (int col = 0; col < _width; ++col) {
-			auto i = stateMap.find(_state.getIndex(col, row));
-			if (i != stateMap.end()) {
-				mapStr.append("!");
-				continue;
-			}
 			if (_state.isInvalid(col, row)) {
 				mapStr.append(" ");
 				continue;
