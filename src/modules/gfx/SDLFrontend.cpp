@@ -578,7 +578,8 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 		Log::info(LOG_CLIENT, "use fake fullscreen for the first display: %i:%i", width, height);
 	}
 
-	_window = SDL_CreateWindow(Singleton<Application>::getInstance().getName().c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
+	const char *title = Singleton<Application>::getInstance().getName().c_str();
+	_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
 	if (!_window) {
 		sdlCheckError();
 		return -1;
