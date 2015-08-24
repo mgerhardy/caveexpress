@@ -542,6 +542,28 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	if (height == -1)
 		height = displayMode.h;
 
+#ifdef __ANDROID__
+	Config.getConfigVar("red", "6")->setValue("6");
+	Config.getConfigVar("green", "5")->setValue("5");
+	Config.getConfigVar("blue", "6")->setValue("6");
+#else
+	uint32_t r, g, b, a;
+	int bpp;
+	if (SDL_PixelFormatEnumToMasks(displayMode.format, &bpp, &r, &g, &b, &a)) {
+		const std::string& red = std::to_string(r);
+		const std::string& green = std::to_string(g);
+		const std::string& blue = std::to_string(b);
+
+		Config.getConfigVar("red", red)->setValue(red);
+		Config.getConfigVar("green", green)->setValue(green);
+		Config.getConfigVar("blue", blue)->setValue(blue);
+	} else {
+		Config.getConfigVar("red", "8")->setValue("8");
+		Config.getConfigVar("green", "8")->setValue("8");
+		Config.getConfigVar("blue", "8")->setValue("8");
+	}
+#endif
+
 	setGLAttributes();
 	setHints();
 
@@ -704,21 +726,12 @@ void SDLFrontend::setGLAttributes ()
 	sdlCheckError();
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
 	sdlCheckError();
-#ifdef __ANDROID__
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, Config.getConfigVar("red", "6")->getIntValue());
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, Config.getConfigVar("red", "")->getIntValue());
 	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, Config.getConfigVar("green", "5")->getIntValue());
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, Config.getConfigVar("green", "")->getIntValue());
 	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, Config.getConfigVar("blue", "6")->getIntValue());
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, Config.getConfigVar("blue", "")->getIntValue());
 	sdlCheckError();
-#else
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, Config.getConfigVar("red", "8")->getIntValue());
-	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, Config.getConfigVar("green", "8")->getIntValue());
-	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, Config.getConfigVar("blue", "8")->getIntValue());
-	sdlCheckError();
-#endif
 #ifdef __IPHONEOS__
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	sdlCheckError();
