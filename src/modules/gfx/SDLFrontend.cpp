@@ -705,18 +705,18 @@ void SDLFrontend::setGLAttributes ()
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
 	sdlCheckError();
 #ifdef __ANDROID__
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 6);
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, Config.getConfigVar("red", "6")->getIntValue());
 	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, Config.getConfigVar("green", "5")->getIntValue());
 	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 6);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, Config.getConfigVar("blue", "6")->getIntValue());
 	sdlCheckError();
 #else
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, Config.getConfigVar("red", "8")->getIntValue());
 	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, Config.getConfigVar("green", "8")->getIntValue());
 	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, Config.getConfigVar("blue", "8")->getIntValue());
 	sdlCheckError();
 #endif
 #ifdef __IPHONEOS__
