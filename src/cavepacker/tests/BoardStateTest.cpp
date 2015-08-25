@@ -167,7 +167,6 @@ TEST_F(BoardStateTest, testDeadlockByBlockedPackages) {
 	ASSERT_TRUE(s.hasDeadlock()) << "there is a deadlock by blocked packages";
 }
 
-
 TEST_F(BoardStateTest, testDeadlockNoDeadlock) {
 	BoardState s;
 

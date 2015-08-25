@@ -14,15 +14,24 @@ defaultjoystick = false
 defaulttexturesize = "auto"
 defaultparticles = 100
 defaultfpslimit = 60
+defaultred = 8
+defaultgreen = 8
+defaultblue = 8
 
 if isOUYA() then
 	defaultjoystick = true
 	defaultparticles = 0
+	defaultred = 6
+	defaultgreen = 5
+	defaultblue = 6
 elseif isAndroid() then
 	defaultshowcursor = false
 	defaultparticles = 0
 	defaultfpslimit = 30
 	defaultpersister = "googleplay"
+	defaultred = 6
+	defaultgreen = 5
+	defaultblue = 6
 elseif isMobile() then
 	defaultshowcursor = false
 	defaultparticles = 0
@@ -58,6 +67,9 @@ settings = {
 	fpslimit = defaultfpslimit,
 	texturesize = defaulttexturesize,
 	particles = defaultparticles,
+	red = defaultred,
+	green = defaultgreen,
+	blue = defaultblue,
 }
 
 controllerbindings = {

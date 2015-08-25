@@ -92,6 +92,9 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	_grabMouse = getConfigValue(_configVarMap, "grabmouse", "true");
 	_soundEngine = getConfigValue(_configVarMap, "soundengine", "sdl");
 	_particles = getConfigValue(_configVarMap, "particles", "0");
+	getConfigValue(_configVarMap, "red", "8");
+	getConfigValue(_configVarMap, "green", "8");
+	getConfigValue(_configVarMap, "blue", "8");
 	_serverName = getConfigVar("servername", System.getCurrentUser());
 	_name = getConfigVar("name", System.getCurrentUser());
 	_amountOfFruitsForANewLife = getConfigValue(_configVarMap, "amountoffruitsforanewlife", "4");

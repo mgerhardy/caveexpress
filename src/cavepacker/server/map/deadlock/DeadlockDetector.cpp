@@ -65,6 +65,7 @@ bool DeadlockDetector::canMovePackageDirection(DeadlockState& state, char dir, i
 	getOppositeXY(dir, ox, oy);
 	if (!state.state.isFree(col + lx, row + ly)) {
 		if (state.state.isPackage(col + lx, row + ly)) {
+			state.checkedState.insert(std::make_pair(index, false));
 			const bool m = canMovePackage(state, col + lx, row + ly);
 			state.checkedState.insert(std::make_pair(index, m));
 			return m;

@@ -16,6 +16,9 @@ defaultreferencetimefactor = 1.0
 defaultdamagethreshold = 3.0
 defaultnpcflyingspeed = 4.0
 defaultparticles = 100
+defaultred = 8
+defaultgreen = 8
+defaultblue = 8
 
 if isOUYA() then
 	defaultjoystick = true
@@ -23,6 +26,9 @@ if isOUYA() then
 	defaultdamagethreshold = 5.0
 	defaultnpcflyingspeed = 3.0
 	defaultparticles = 0
+	defaultred = 6
+	defaultgreen = 5
+	defaultblue = 6
 elseif isAndroid() then
 	defaultpersister = "googleplay"
 	defaultreferencetimefactor = 1.5
@@ -31,6 +37,9 @@ elseif isAndroid() then
 	defaultdamagethreshold = 5.0
 	defaultnpcflyingspeed = 3.0
 	defaultparticles = 50
+	defaultred = 6
+	defaultgreen = 5
+	defaultblue = 6
 elseif isMobile() then
 	defaultreferencetimefactor = 1.5
 	defaultshowcursor = false
@@ -73,6 +82,9 @@ settings = {
 	waterparticle = false,
 	npcflyingspeed = defaultnpcflyingspeed,
 	particles = defaultparticles,
+	red = defaultred,
+	green = defaultgreen,
+	blue = defaultblue,
 }
 
 controllerbindings = {
