@@ -201,4 +201,120 @@ TEST_F(BoardStateTest, testDeadlockNoDeadlock) {
 	ASSERT_FALSE(s.hasDeadlock()) << "there is no deadlock";
 }
 
+TEST_F(BoardStateTest, testDeadlockDeadlockFound1) {
+	BoardState s;
+
+	const char* mapStr =
+		"    #####\n"
+		"    #@  #\n"
+		"    #   #\n"
+		"  ###   ##\n"
+		"  #      #\n"
+		"### #$## #   ######\n"
+		"#   #$## #####  ..#\n"
+		"#               ..#\n"
+		"##### ### # ##  ..#\n"
+		"    #     #########\n"
+		"    #######\n";
+
+	fillState(s, mapStr);
+	ASSERT_TRUE(s.hasDeadlock()) << "there is deadlock";
+}
+
+TEST_F(BoardStateTest, testDeadlockDeadlockFound2) {
+	BoardState s;
+
+	const char* mapStr =
+		"    #####\n"
+		"    #   #\n"
+		"    #   #\n"
+		"  ###   ##\n"
+		"  #      #\n"
+		"### #$## #   ######\n"
+		"#   # ## #####  ..#\n"
+		"#    $   $      ..#\n"
+		"#####@### # ##  ..#\n"
+		"    #     #########\n"
+		"    ######\n";
+	fillState(s, mapStr);
+	ASSERT_TRUE(s.hasDeadlock()) << "there is deadlock";
+}
+
+TEST_F(BoardStateTest, testDeadlockDeadlockFound3) {
+	BoardState s;
+
+	const char* mapStr =
+		"    #####\n"
+		"    #@  #\n"
+		"    #   #\n"
+		"  ###   ##\n"
+		"  #      #\n"
+		"### #$## #   ######\n"
+		"#   # ## #####  ..#\n"
+		"#    $  $       ..#\n"
+		"##### ### # ##  ..#\n"
+		"    #     #########\n"
+		"    #######\n";
+
+	fillState(s, mapStr);
+	ASSERT_TRUE(s.hasDeadlock()) << "there is deadlock";
+}
+
+TEST_F(BoardStateTest, testDeadlockDeadlockFound4) {
+	BoardState s;
+
+	const char* mapStr =
+		"        ########\n"
+		"        #@     #\n"
+		"        #  #  ##\n"
+		"        #     #\n"
+		"        ##$   #\n"
+		"######### $$# ###\n"
+		"#....  ##  $ $  #\n"
+		"##...        $  #\n"
+		"#....  ##########\n"
+		"########\n";
+
+	fillState(s, mapStr);
+	ASSERT_TRUE(s.hasDeadlock()) << "there is deadlock";
+}
+
+TEST_F(BoardStateTest, testDeadlockDeadlockFound5) {
+	BoardState s;
+
+	const char* mapStr =
+		"        ########\n"
+		"        #@     #\n"
+		"        #  #  ##\n"
+		"        #     #\n"
+		"        ##$   #\n"
+		"######### $$#$###\n"
+		"#....  ##  $ $  #\n"
+		"##...           #\n"
+		"#....  ##########\n"
+		"########\n";
+
+	fillState(s, mapStr);
+	ASSERT_TRUE(s.hasDeadlock()) << "there is deadlock";
+}
+
+TEST_F(BoardStateTest, testDeadlockDeadlockFound6) {
+	BoardState s;
+
+	const char* mapStr =
+			"############\n"
+			"#..@ #     ###\n"
+			"#..  #       #\n"
+			"#..  # ####  #\n"
+			"#..      ##  #\n"
+			"#..  # #  $$##\n"
+			"######$##$ $ #\n"
+			"  #   $  $   #\n"
+			"  #    #     #\n"
+			"  ############\n";
+
+	fillState(s, mapStr);
+	ASSERT_TRUE(s.hasDeadlock()) << "there is deadlock";
+}
+
 }
