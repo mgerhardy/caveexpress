@@ -19,7 +19,23 @@ public:
 	void clear();
 	void init(const BoardState& s);
 	bool hasDeadlock(const BoardState& s) const;
+	bool hasDeadlockAt(int index) const;
 	void fillDeadlocks(DeadlockSet& set);
 };
+
+inline bool SimpleDeadlockDetector::hasDeadlockAt(int index) const {
+	return _deadlocks.find(index) != _deadlocks.end();
+}
+
+inline void SimpleDeadlockDetector::fillDeadlocks(DeadlockSet& set) {
+	for (auto i = _deadlocks.begin(); i != _deadlocks.end(); ++i) {
+		set.insert(*i);
+	}
+}
+
+inline void SimpleDeadlockDetector::clear() {
+	_visited.clear();
+	_deadlocks.clear();
+}
 
 }

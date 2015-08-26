@@ -2,6 +2,7 @@
 
 #include "DeadlockTypes.h"
 #include "SimpleDeadlockDetector.h"
+#include "FrozenDeadlockDetector.h"
 #include <unordered_set>
 
 namespace cavepacker {
@@ -15,6 +16,7 @@ namespace cavepacker {
 class DeadlockDetector {
 private:
 	SimpleDeadlockDetector _simple;
+	FrozenDeadlockDetector _frozen;
 public:
 	/**
 	 * @brief Call this whenever you want to reset the initialized data from previous runs

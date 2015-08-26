@@ -4,11 +4,6 @@
 
 namespace cavepacker {
 
-void SimpleDeadlockDetector::clear() {
-	_visited.clear();
-	_deadlocks.clear();
-}
-
 bool SimpleDeadlockDetector::pull(char direction, BoardState& s, int index) {
 	int col;
 	int row;
@@ -90,12 +85,6 @@ void SimpleDeadlockDetector::init(const BoardState& s) {
 	Log::debug(LOG_SERVER, "Found %i simple deadlocks", (int)_deadlocks.size());
 	Log::debug(LOG_SERVER, "Visited %i fields", (int)_visited.size());
 	_visited.clear();
-}
-
-void SimpleDeadlockDetector::fillDeadlocks(DeadlockSet& set) {
-	for (auto i = _deadlocks.begin(); i != _deadlocks.end(); ++i) {
-		set.insert(*i);
-	}
 }
 
 bool SimpleDeadlockDetector::hasDeadlock(const BoardState& s) const {
