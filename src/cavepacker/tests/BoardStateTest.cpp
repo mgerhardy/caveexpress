@@ -111,14 +111,50 @@ TEST_F(BoardStateTest, testDone) {
 	ASSERT_TRUE(s.isDone()) << "Could not detect the done state in the board\n" << mapStr;
 }
 
-TEST_F(BoardStateTest, testDeadlock1) {
-	const char* mapStr =
+TEST_F(BoardStateTest, testDeadlockSimple1) {
+	testDeadlock(
 		"#####\n"
-		"#@  #\n"
 		"#   #\n"
+		"# @ #\n"
 		"#$ .#\n"
-		"#####";
-	testDeadlock(mapStr);
+		"#####");
+	testDeadlock(
+		"#####\n"
+		"#   #\n"
+		"#$@ #\n"
+		"#  .#\n"
+		"#####");
+	testDeadlock(
+		"#####\n"
+		"#$  #\n"
+		"# @ #\n"
+		"#  .#\n"
+		"#####");
+	testDeadlock(
+		"#####\n"
+		"# $ #\n"
+		"# @ #\n"
+		"#  .#\n"
+		"#####");
+	testDeadlock(
+		"#####\n"
+		"#  $#\n"
+		"# @ #\n"
+		"#  .#\n"
+		"#####");
+	testNoDeadlock(
+		"#####\n"
+		"#***#\n"
+		"#*@ #\n"
+		"#* .#\n"
+		"#####");
+	testNoDeadlock(
+		"#####\n"
+		"#@ .#\n"
+		"#.$$#\n"
+		"# $.#\n"
+		"#   #\n"
+		"#####");
 }
 
 TEST_F(BoardStateTest, testNoDeadlockButBlockedPackages) {
