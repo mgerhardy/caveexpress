@@ -9,7 +9,8 @@ namespace cavepacker {
 /**
  * @brief Checks whether the current board contains a deadlock. There are several deadlock situations.
  *
- * You can find more information at http://sokobano.de/wiki/index.php?title=Deadlocks
+ * You can find more information at http://sokobano.de/wiki/index.php?title=Deadlocks and
+ * http://sokobano.de/wiki/index.php?title=How_to_detect_deadlocks
  */
 class DeadlockDetector {
 private:
