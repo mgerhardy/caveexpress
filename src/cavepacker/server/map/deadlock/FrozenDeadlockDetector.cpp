@@ -22,6 +22,7 @@ bool FrozenDeadlockDetector::hasSimpleDeadlock(const SimpleDeadlockDetector& sim
 }
 
 bool FrozenDeadlockDetector::hasDeadlock(const SimpleDeadlockDetector& simple, const BoardState& s) {
+	clear();
 	for (auto i = s.begin(); i != s.end(); ++i) {
 		if (!isPackage(i->second)) {
 			continue;
