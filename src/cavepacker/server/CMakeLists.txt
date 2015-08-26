@@ -3,6 +3,7 @@ set(cavepacker-server_SRCS
 	map/Map.cpp
 	map/BoardState.cpp
 	map/deadlock/DeadlockDetector.cpp
+	map/deadlock/SimpleDeadlockDetector.cpp
 	entities/MapTile.cpp
 	entities/IEntity.cpp
 	entities/Player.cpp

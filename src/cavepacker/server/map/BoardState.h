@@ -2,6 +2,7 @@
 
 #include <map>
 #include "SokobanTiles.h"
+#include "cavepacker/server/map/deadlock/DeadlockDetector.h"
 #include "common/Log.h"
 
 namespace cavepacker {
@@ -16,6 +17,7 @@ typedef std::map<int, char> StateMap;
 class BoardState {
 private:
 	StateMap _state;
+	DeadlockDetector _deadlock;
 	int _width;
 	int _height;
 
@@ -33,18 +35,26 @@ public:
 	/**
 	 * @brief Checks whether the board is in a deadlock situation
 	 */
-	bool hasDeadlock() const;
+	bool hasDeadlock();
+	/**
+	 * @brief There are some deadlock situations that are more or less fixed and can be
+	 * precalculated at start. To do this, call this method once after everything is loaded.
+	 */
+	void initDeadlock();
 	/**
 	 * @brief Fills the board with fields
 	 * @return @c false if there was already a field set on the given col/row
 	 * @sa @c clear()
 	 */
 	bool setField(int col, int row, char field);
+	bool setFieldForIndex(int index, char field);
+
 	/**
 	 * @brief Removed the given field from the board and returns the old value. If there wasn't any
 	 * value on the specified field, @c '\0' is returned.
 	 */
 	char clearField(int col, int row);
+	char clearFieldForIndex(int index);
 	/**
 	 * @brief Checks whether the given field is free in a sense that the player
 	 * could walk there if no obstacle is in the way

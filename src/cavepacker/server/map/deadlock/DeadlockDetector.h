@@ -1,15 +1,10 @@
 #pragma once
 
-#include "cavepacker/server/map/BoardState.h"
-#include <unordered_map>
+#include "DeadlockTypes.h"
+#include "SimpleDeadlockDetector.h"
+#include <unordered_set>
 
 namespace cavepacker {
-
-struct DeadlockState {
-	BoardState state;
-	// contains indices of packages that are already checked
-	std::unordered_map<int, bool> checkedState;
-};
 
 /**
  * @brief Checks whether the current board contains a deadlock. There are several deadlock situations.
@@ -18,21 +13,15 @@ struct DeadlockState {
  */
 class DeadlockDetector {
 private:
-	static bool canMovePackageLeft(DeadlockState& state, int col, int row);
-	static bool canMovePackageRight(DeadlockState& state, int col, int row);
-	static bool canMovePackageUp(DeadlockState& state, int col, int row);
-	static bool canMovePackageDown(DeadlockState& state, int col, int row);
-
-	static bool canMovePackageDirection(DeadlockState& state, char dir, int col, int row);
-
+	SimpleDeadlockDetector _simple;
 public:
 	/**
-	 * @brief Checks whether the package on the given coordinates can be moved. This is doing a recursive check of packages
-	 * @note It's assumed that the given col and row is occupied by a package.
+	 * @brief Call this whenever you want to reset the initialized data from previous runs
 	 */
-	static bool canMovePackage(DeadlockState& state, int col, int row);
-	static StateMap calculateDeadlockFields(DeadlockState& state);
-	static bool hasDeadlock(const BoardState& state);
+	void clear();
+	void init(const BoardState& state);
+	bool hasDeadlock(const BoardState& state);
+	DeadlockSet getDeadlocks();
 };
 
 }

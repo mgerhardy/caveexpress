@@ -1,5 +1,4 @@
 #include "BoardState.h"
-#include "cavepacker/server/map/deadlock/DeadlockDetector.h"
 #include <SDL_assert.h>
 
 namespace cavepacker {
@@ -10,6 +9,7 @@ BoardState::BoardState() :
 
 void BoardState::clear() {
 	_state.clear();
+	_deadlock.clear();
 }
 
 void BoardState::setSize(int width, int height) {
@@ -35,8 +35,12 @@ std::string BoardState::toString() const {
 	return mapStr;
 }
 
-bool BoardState::hasDeadlock() const {
-	return DeadlockDetector::hasDeadlock(*this);
+void BoardState::initDeadlock() {
+	_deadlock.init(*this);
+}
+
+bool BoardState::hasDeadlock() {
+	return _deadlock.hasDeadlock(*this);
 }
 
 bool BoardState::isFree(int col, int row) const {
@@ -80,8 +84,7 @@ bool BoardState::isDone() const {
 	return true;
 }
 
-char BoardState::clearField(int col, int row) {
-	const int index = getIndex(col, row);
+char BoardState::clearFieldForIndex(int index) {
 	auto i = _state.find(index);
 	if (i == _state.end())
 		return '\0';
@@ -90,8 +93,17 @@ char BoardState::clearField(int col, int row) {
 	return field;
 }
 
+char BoardState::clearField(int col, int row) {
+	const int index = getIndex(col, row);
+	return clearFieldForIndex(index);
+}
+
 bool BoardState::setField(int col, int row, char field) {
 	const int index = getIndex(col, row);
+	return setFieldForIndex(index, field);
+}
+
+bool BoardState::setFieldForIndex(int index, char field) {
 	if (_state.find(index) != _state.end())
 		return false;
 	_state[index] = field;

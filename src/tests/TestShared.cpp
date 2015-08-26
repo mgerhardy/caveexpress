@@ -7,6 +7,8 @@ void AbstractTest::SetUp() {
 		ICommand::Args args;
 		args.push_back("TRACE");
 		Config.setLogLevel(args);
+	} else {
+		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_CRITICAL);
 	}
 	_serviceProvider.init(&_testFrontend);
 	_serviceProvider.updateNetwork(false);

@@ -47,6 +47,19 @@ protected:
 		}
 		// at least 3 rows are needed
 		ASSERT_GE(row, 2) << "could not fill the board state with " << board;
+		s.initDeadlock();
+	}
+
+	void testDeadlock(const char *mapStr) {
+		BoardState s;
+		fillState(s, mapStr);
+		ASSERT_TRUE(s.hasDeadlock());
+	}
+
+	void testNoDeadlock(const char *mapStr) {
+		BoardState s;
+		fillState(s, mapStr);
+		ASSERT_FALSE(s.hasDeadlock());
 	}
 };
 
@@ -99,77 +112,36 @@ TEST_F(BoardStateTest, testDone) {
 }
 
 TEST_F(BoardStateTest, testDeadlock1) {
-	BoardState s;
-
 	const char* mapStr =
 		"#####\n"
 		"#@  #\n"
 		"#   #\n"
 		"#$ .#\n"
 		"#####";
-
-	fillState(s, mapStr);
-	ASSERT_EQ(5, s.getWidth());
-	ASSERT_EQ(5, s.getHeight());
-	DeadlockState state;
-	state.state = s;
-	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 1, 1)) << "1,1 should not be moveable";
-	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 1, 2)) << "1,2 should not be moveable - there is a package below";
-	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 1, 3)) << "1,3 should not be moveable";
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 2, 1)) << "2,1 should be moveable";
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 2, 2)) << "2,2 should be moveable";
-	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 2, 3)) << "2,3 should not be moveable - there is a package on the left";
-	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 3, 1)) << "3,1 should not be moveable";
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 3, 2)) << "3,2 should be moveable";
-	// even though this is a target - we still can't move the package anymore
-	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 3, 3)) << "3,3 should not be moveable - even though this is a target";
-
-	ASSERT_TRUE(s.hasDeadlock()) << "there is a deadlock that is not detected in 1,3";
+	testDeadlock(mapStr);
 }
 
 TEST_F(BoardStateTest, testNoDeadlockButBlockedPackages) {
-	BoardState s;
-
 	const char* mapStr =
 		"######\n"
 		"#    #\n"
 		"#$$@.#\n"
 		"#.####\n"
 		"###\n";
-
-	fillState(s, mapStr);
-	DeadlockState state;
-	state.state = s;
-	ASSERT_FALSE(s.isDone());
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 1, 2)) << "1,2 should be moveable";
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 2, 2)) << "2,2 should not be moveable";
-
-	ASSERT_FALSE(s.hasDeadlock()) << "there is no deadlock but blocked packages";
+	testNoDeadlock(mapStr);
 }
 
 
 TEST_F(BoardStateTest, testDeadlockByBlockedPackages) {
-	BoardState s;
-
 	const char* mapStr =
 		"######\n"
 		"#$$@.#\n"
 		"#.####\n"
 		"###\n";
-
-	fillState(s, mapStr);
-	DeadlockState state;
-	state.state = s;
-	ASSERT_FALSE(s.isDone());
-	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 1, 1)) << "1,1 should be moveable";
-	ASSERT_FALSE(DeadlockDetector::canMovePackage(state, 2, 1)) << "2,1 should not be moveable";
-
-	ASSERT_TRUE(s.hasDeadlock()) << "there is a deadlock by blocked packages";
+	testDeadlock(mapStr);
 }
 
 TEST_F(BoardStateTest, testDeadlockNoDeadlock) {
-	BoardState s;
-
 	// xsokoban2 state that
 	const char* mapStr =
 		"############\n"
@@ -182,28 +154,10 @@ TEST_F(BoardStateTest, testDeadlockNoDeadlock) {
 		"  # $  $ $ $ #\n"
 		"  #    #     #\n"
 		"  ############\n";
-
-	fillState(s, mapStr);
-	DeadlockState state;
-	state.state = s;
-	ASSERT_FALSE(s.isDone());
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 6, 2)) << "6,2 should be moveable";
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 7, 2)) << "7,2 should be moveable";
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 10, 2)) << "10,2 should be moveable";
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 10, 5)) << "10,5 should be moveable";
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 9, 6)) << "9,6 should be moveable";
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 11, 6)) << "11,6 should be moveable";
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 4, 7)) << "4,7 should be moveable";
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 7, 7)) << "7,7 should be moveable";
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 9, 7)) << "9,7 should be moveable";
-	ASSERT_TRUE(DeadlockDetector::canMovePackage(state, 11, 7)) << "11,7 should be moveable";
-
-	ASSERT_FALSE(s.hasDeadlock()) << "there is no deadlock";
+	testNoDeadlock(mapStr);
 }
 
 TEST_F(BoardStateTest, testDeadlockDeadlockFound1) {
-	BoardState s;
-
 	const char* mapStr =
 		"    #####\n"
 		"    #@  #\n"
@@ -216,14 +170,10 @@ TEST_F(BoardStateTest, testDeadlockDeadlockFound1) {
 		"##### ### # ##  ..#\n"
 		"    #     #########\n"
 		"    #######\n";
-
-	fillState(s, mapStr);
-	ASSERT_TRUE(s.hasDeadlock()) << "there is deadlock";
+	testDeadlock(mapStr);
 }
 
 TEST_F(BoardStateTest, testDeadlockDeadlockFound2) {
-	BoardState s;
-
 	const char* mapStr =
 		"    #####\n"
 		"    #   #\n"
@@ -236,13 +186,10 @@ TEST_F(BoardStateTest, testDeadlockDeadlockFound2) {
 		"#####@### # ##  ..#\n"
 		"    #     #########\n"
 		"    ######\n";
-	fillState(s, mapStr);
-	ASSERT_TRUE(s.hasDeadlock()) << "there is deadlock";
+	testDeadlock(mapStr);
 }
 
 TEST_F(BoardStateTest, testDeadlockDeadlockFound3) {
-	BoardState s;
-
 	const char* mapStr =
 		"    #####\n"
 		"    #@  #\n"
@@ -255,14 +202,10 @@ TEST_F(BoardStateTest, testDeadlockDeadlockFound3) {
 		"##### ### # ##  ..#\n"
 		"    #     #########\n"
 		"    #######\n";
-
-	fillState(s, mapStr);
-	ASSERT_TRUE(s.hasDeadlock()) << "there is deadlock";
+	testDeadlock(mapStr);
 }
 
 TEST_F(BoardStateTest, testDeadlockDeadlockFound4) {
-	BoardState s;
-
 	const char* mapStr =
 		"        ########\n"
 		"        #@     #\n"
@@ -274,14 +217,10 @@ TEST_F(BoardStateTest, testDeadlockDeadlockFound4) {
 		"##...        $  #\n"
 		"#....  ##########\n"
 		"########\n";
-
-	fillState(s, mapStr);
-	ASSERT_TRUE(s.hasDeadlock()) << "there is deadlock";
+	testDeadlock(mapStr);
 }
 
 TEST_F(BoardStateTest, testDeadlockDeadlockFound5) {
-	BoardState s;
-
 	const char* mapStr =
 		"        ########\n"
 		"        #@     #\n"
@@ -293,28 +232,22 @@ TEST_F(BoardStateTest, testDeadlockDeadlockFound5) {
 		"##...           #\n"
 		"#....  ##########\n"
 		"########\n";
-
-	fillState(s, mapStr);
-	ASSERT_TRUE(s.hasDeadlock()) << "there is deadlock";
+	testDeadlock(mapStr);
 }
 
 TEST_F(BoardStateTest, testDeadlockDeadlockFound6) {
-	BoardState s;
-
 	const char* mapStr =
-			"############\n"
-			"#..@ #     ###\n"
-			"#..  #       #\n"
-			"#..  # ####  #\n"
-			"#..      ##  #\n"
-			"#..  # #  $$##\n"
-			"######$##$ $ #\n"
-			"  #   $  $   #\n"
-			"  #    #     #\n"
-			"  ############\n";
-
-	fillState(s, mapStr);
-	ASSERT_TRUE(s.hasDeadlock()) << "there is deadlock";
+		"############\n"
+		"#..@ #     ###\n"
+		"#..  #       #\n"
+		"#..  # ####  #\n"
+		"#..      ##  #\n"
+		"#..  # #  $$##\n"
+		"######$##$ $ #\n"
+		"  #   $  $   #\n"
+		"  #    #     #\n"
+		"  ############\n";
+	testDeadlock(mapStr);
 }
 
 }

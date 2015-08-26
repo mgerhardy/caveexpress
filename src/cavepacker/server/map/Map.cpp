@@ -474,6 +474,7 @@ bool Map::load (const std::string& name)
 	Log::info(LOG_MAP, "map loading done with %i tiles", (int)mapTileList.size());
 
 	ctx->onMapLoaded();
+	_state.initDeadlock();
 
 	_frontend->onMapLoaded();
 	const LoadMapMessage msg(_name, _title);
