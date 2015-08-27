@@ -61,6 +61,26 @@ protected:
 		fillState(s, mapStr);
 		ASSERT_FALSE(s.hasDeadlock());
 	}
+
+	void testFrozenDeadlock(const char *mapStr) {
+		BoardState s;
+		fillState(s, mapStr);
+
+		SimpleDeadlockDetector simple;
+		simple.init(s);
+		FrozenDeadlockDetector frozen;
+		ASSERT_TRUE(frozen.hasDeadlock(simple, s));
+	}
+
+	void testNoFrozenDeadlock(const char *mapStr) {
+		BoardState s;
+		fillState(s, mapStr);
+
+		SimpleDeadlockDetector simple;
+		simple.init(s);
+		FrozenDeadlockDetector frozen;
+		ASSERT_FALSE(frozen.hasDeadlock(simple, s));
+	}
 };
 
 
@@ -155,6 +175,29 @@ TEST_F(BoardStateTest, testDeadlockSimple1) {
 		"# $.#\n"
 		"#   #\n"
 		"#####");
+}
+
+TEST_F(BoardStateTest, testNoFrozenDeadlock1) {
+	testNoFrozenDeadlock(
+		"######\n"
+		"#    #\n"
+		"#$$@.#\n"
+		"#.####\n"
+		"###\n");
+}
+
+TEST_F(BoardStateTest, testNoFrozenDeadlock2) {
+	testNoFrozenDeadlock(
+		"############\n"
+		"#..  #     ###\n"
+		"#..  #$$  $  #\n"
+		"#..  #@####  #\n"
+		"#..      ##  #\n"
+		"#..  # #  $ ##\n"
+		"###### ##$ $ #\n"
+		"  # $  $ $ $ #\n"
+		"  #    #     #\n"
+		"  ############\n");
 }
 
 TEST_F(BoardStateTest, testNoDeadlockButBlockedPackages) {

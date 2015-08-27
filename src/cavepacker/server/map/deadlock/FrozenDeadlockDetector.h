@@ -15,10 +15,10 @@ private:
 	 * @brief Returns true if there is a package close to the given position (in the given direction) that
 	 * is blocked
 	 */
-	bool hasAnyBlockedPackageClose(BoardState& s, int col, int row, char dir) const;
+	bool hasAnyBlockedPackageClose(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row, char dir);
 	inline bool hasWallClose(const BoardState& s, int col, int row, char dir) const;
 	inline bool hasSimpleDeadlock(const SimpleDeadlockDetector& simple, const BoardState& s, int col, int row, char dir) const;
-	bool hasDeadlock_(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row) const;
+	bool hasDeadlock_(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row);
 public:
 	void clear();
 	void init(const BoardState& s);

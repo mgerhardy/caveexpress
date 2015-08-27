@@ -13,13 +13,19 @@ bool FrozenDeadlockDetector::hasWallClose(const BoardState& s, int col, int row,
 	return isWall(field);
 }
 
-bool FrozenDeadlockDetector::hasAnyBlockedPackageClose(BoardState& s, int col, int row, char dir) const {
+bool FrozenDeadlockDetector::hasAnyBlockedPackageClose(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row, char dir) {
 	int x;
 	int y;
 	getXY(dir, x, y);
 	const char field = s.getField(col + x, row + y);
-	// TODO: check recursivly whether the package is blocked - and convert the package into a wall
-	return isPackage(field) || isPackageOnTarget(field);
+	// TODO: check recursively whether the package is blocked - and convert the package into a wall
+	if (isPackage(field) || isPackageOnTarget(field)) {
+		BoardState copy = s;
+		copy.clearField(col, row);
+		copy.setField(col, row, Sokoban::WALL);
+		return hasDeadlock(simple, copy);
+	}
+	return false;
 }
 
 bool FrozenDeadlockDetector::hasSimpleDeadlock(const SimpleDeadlockDetector& simple, const BoardState& s, int col, int row, char dir) const {
@@ -30,11 +36,11 @@ bool FrozenDeadlockDetector::hasSimpleDeadlock(const SimpleDeadlockDetector& sim
 	return simple.hasDeadlockAt(index);
 }
 
-#define BLOCKEDPACKAGE(dir) hasAnyBlockedPackageClose(s, col, row, dir)
+#define BLOCKEDPACKAGE(dir) hasAnyBlockedPackageClose(simple, s, col, row, dir)
 #define HASWALL(dir) hasWallClose(s, col, row, dir)
 #define SIMPLEDEADLOCK(dir) hasSimpleDeadlock(simple, s, col, row, dir)
 
-bool FrozenDeadlockDetector::hasDeadlock_(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row) const {
+bool FrozenDeadlockDetector::hasDeadlock_(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row) {
 	// a wall on both sides (left/right and up/down)
 	const bool blockedHorizontally = HASWALL(MOVE_LEFT) || HASWALL(MOVE_RIGHT);
 	const bool blockedVertically = HASWALL(MOVE_UP) || HASWALL(MOVE_DOWN);
