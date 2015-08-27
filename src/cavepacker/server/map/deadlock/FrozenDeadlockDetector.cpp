@@ -13,7 +13,7 @@ bool FrozenDeadlockDetector::hasWallClose(const BoardState& s, int col, int row,
 	return isWall(field);
 }
 
-bool FrozenDeadlockDetector::hasAnyPackageClose(BoardState& s, int col, int row, char dir) const {
+bool FrozenDeadlockDetector::hasAnyBlockedPackageClose(BoardState& s, int col, int row, char dir) const {
 	int x;
 	int y;
 	getXY(dir, x, y);
@@ -30,25 +30,35 @@ bool FrozenDeadlockDetector::hasSimpleDeadlock(const SimpleDeadlockDetector& sim
 	return simple.hasDeadlockAt(index);
 }
 
+#define BLOCKEDPACKAGE(dir) hasAnyBlockedPackageClose(s, col, row, dir)
+#define HASWALL(dir) hasWallClose(s, col, row, dir)
+#define SIMPLEDEADLOCK(dir) hasSimpleDeadlock(simple, s, col, row, dir)
+
 bool FrozenDeadlockDetector::hasDeadlock_(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row) const {
 	// a wall on both sides (left/right and up/down)
-	const bool blockedHorizontally = hasWallClose(s, col, row, MOVE_LEFT) || hasWallClose(s, col, row, MOVE_RIGHT);
-	const bool blockedVertically = hasWallClose(s, col, row, MOVE_UP) || hasWallClose(s, col, row, MOVE_DOWN);
+	const bool blockedHorizontally = HASWALL(MOVE_LEFT) || HASWALL(MOVE_RIGHT);
+	const bool blockedVertically = HASWALL(MOVE_UP) || HASWALL(MOVE_DOWN);
 	if (blockedHorizontally && blockedVertically) {
 		return true;
 	}
 
 	// a simple deadlock square on both sides (left/right and up/down)
-	const bool simpleHorizontally = hasSimpleDeadlock(simple, s, col, row, MOVE_LEFT) || hasSimpleDeadlock(simple, s, col, row, MOVE_RIGHT);
-	const bool simpleVertically = hasSimpleDeadlock(simple, s, col, row, MOVE_UP) || hasSimpleDeadlock(simple, s, col, row, MOVE_DOWN);
+	const bool simpleHorizontally = SIMPLEDEADLOCK(MOVE_LEFT) || SIMPLEDEADLOCK(MOVE_RIGHT);
+	const bool simpleVertically = SIMPLEDEADLOCK(MOVE_UP) || SIMPLEDEADLOCK(MOVE_DOWN);
 	if (simpleHorizontally && simpleVertically) {
 		return true;
 	}
 
 	// a package on the side (left/right and up/down) => blocked if the package on the side is also blocked
-	const bool packageHorizontally = hasAnyPackageClose(s, col, row, MOVE_LEFT) || hasAnyPackageClose(s, col, row, MOVE_RIGHT);
-	const bool packageVertically = hasAnyPackageClose(s, col, row, MOVE_UP) || hasAnyPackageClose(s, col, row, MOVE_DOWN);
+	const bool packageHorizontally = BLOCKEDPACKAGE(MOVE_LEFT) || BLOCKEDPACKAGE(MOVE_RIGHT);
+	const bool packageVertically = BLOCKEDPACKAGE(MOVE_UP) || BLOCKEDPACKAGE(MOVE_DOWN);
 	if (packageHorizontally && packageVertically) {
+		return true;
+	}
+
+	const bool combinedHorizontally = blockedHorizontally | simpleHorizontally | packageHorizontally;
+	const bool combinedVertically = blockedVertically | simpleVertically | packageVertically;
+	if (combinedHorizontally && combinedVertically) {
 		return true;
 	}
 
