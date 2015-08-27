@@ -20,10 +20,12 @@ bool FrozenDeadlockDetector::hasAnyBlockedPackageClose(const SimpleDeadlockDetec
 	const char field = s.getField(col + x, row + y);
 	// TODO: check recursively whether the package is blocked - and convert the package into a wall
 	if (isPackage(field) || isPackageOnTarget(field)) {
-		BoardState copy = s;
-		copy.clearField(col, row);
-		copy.setField(col, row, Sokoban::WALL);
-		return hasDeadlock(simple, copy);
+		s.clearField(col, row);
+		s.setField(col, row, Sokoban::WALL);
+		const bool dl = hasDeadlock(simple, s);
+		s.clearField(col, row);
+		s.setField(col, row, field);
+		return dl;
 	}
 	return false;
 }
@@ -73,6 +75,7 @@ bool FrozenDeadlockDetector::hasDeadlock_(const SimpleDeadlockDetector& simple, 
 
 bool FrozenDeadlockDetector::hasDeadlock(const SimpleDeadlockDetector& simple, const BoardState& s) {
 	clear();
+	BoardState copy = s;
 	for (auto i = s.begin(); i != s.end(); ++i) {
 		if (!isPackage(i->second)) {
 			continue;
@@ -83,7 +86,6 @@ bool FrozenDeadlockDetector::hasDeadlock(const SimpleDeadlockDetector& simple, c
 		if (!s.getColRowFromIndex(i->first, col, row))
 			continue;
 
-		BoardState copy = s;
 		if (hasDeadlock_(simple, copy, col, row)) {
 			_deadlocks.insert(i->first);
 			return true;
