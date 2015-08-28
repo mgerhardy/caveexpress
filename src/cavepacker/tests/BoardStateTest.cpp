@@ -63,7 +63,7 @@ protected:
 		fillState(s, mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
-		ASSERT_FALSE(simple.hasDeadlock(s));
+		ASSERT_FALSE(simple.hasDeadlock(s)) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
 
 	void testNoSimpleDeadlockAt(const char *mapStr, int col, int row) {
@@ -72,7 +72,7 @@ protected:
 		fillState(s, mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
-		ASSERT_FALSE(simple.hasDeadlockAt(s.getIndex(col, row)));
+		ASSERT_FALSE(simple.hasDeadlockAt(s.getIndex(col, row))) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
 
 	void testSimpleDeadlockAt(const char *mapStr, int col, int row) {
@@ -81,7 +81,7 @@ protected:
 		fillState(s, mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
-		ASSERT_TRUE(simple.hasDeadlockAt(s.getIndex(col, row)));
+		ASSERT_TRUE(simple.hasDeadlockAt(s.getIndex(col, row))) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
 
 	void testSimpleDeadlock(const char *mapStr) {
@@ -90,7 +90,7 @@ protected:
 		fillState(s, mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
-		ASSERT_TRUE(simple.hasDeadlock(s));
+		ASSERT_TRUE(simple.hasDeadlock(s)) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
 
 	void testNoDeadlock(const char *mapStr) {
@@ -109,7 +109,7 @@ protected:
 		simple.init(s);
 		FrozenDeadlockDetector frozen;
 		frozen.init(s);
-		ASSERT_TRUE(frozen.hasDeadlock(simple, s));
+		ASSERT_TRUE(frozen.hasDeadlock(simple, s)) << "Blocked fields: " << getDeadlocks(frozen, s);
 	}
 
 	void testNoFrozenDeadlock(const char *mapStr) {
@@ -121,7 +121,20 @@ protected:
 		simple.init(s);
 		FrozenDeadlockDetector frozen;
 		frozen.init(s);
-		ASSERT_FALSE(frozen.hasDeadlock(simple, s));
+		ASSERT_FALSE(frozen.hasDeadlock(simple, s)) << "Blocked fields: " << getDeadlocks(frozen, s);
+	}
+
+	template<class T>
+	std::string getDeadlocks(T& detector, BoardState& state) {
+		std::string blocked;
+		DeadlockSet set;
+		detector.fillDeadlocks(set);
+		for (int index : set) {
+			int col, row;
+			state.getColRowFromIndex(index, col, row);
+			blocked += std::to_string(col) + ":" + std::to_string(row) + " ";
+		}
+		return blocked;
 	}
 };
 
