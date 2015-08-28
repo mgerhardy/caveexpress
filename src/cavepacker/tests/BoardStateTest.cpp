@@ -177,6 +177,12 @@ TEST_F(BoardStateTest, testDeadlockSimple1) {
 		"# $.#\n"
 		"#   #\n"
 		"#####");
+	testNoDeadlock(
+		"######\n"
+		"#    #\n"
+		"#$$@.#\n"
+		"#.####\n"
+		"###\n");
 }
 
 TEST_F(BoardStateTest, testNoFrozenDeadlock1) {
