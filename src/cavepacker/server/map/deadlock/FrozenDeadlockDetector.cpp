@@ -46,7 +46,7 @@ bool FrozenDeadlockDetector::hasDeadlockVertically(const SimpleDeadlockDetector&
 	const bool blockedVertically = HASWALL(MOVE_UP) || HASWALL(MOVE_DOWN);
 	if (blockedVertically)
 		return true;
-	const bool simpleVertically = SIMPLEDEADLOCK(MOVE_UP) || SIMPLEDEADLOCK(MOVE_DOWN);
+	const bool simpleVertically = SIMPLEDEADLOCK(MOVE_UP) && SIMPLEDEADLOCK(MOVE_DOWN);
 	if (simpleVertically)
 		return true;
 	const bool packageVertically = BLOCKEDPACKAGE(MOVE_UP) || BLOCKEDPACKAGE(MOVE_DOWN);
