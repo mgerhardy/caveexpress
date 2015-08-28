@@ -69,6 +69,7 @@ protected:
 		SimpleDeadlockDetector simple;
 		simple.init(s);
 		FrozenDeadlockDetector frozen;
+		frozen.init(s);
 		ASSERT_TRUE(frozen.hasDeadlock(simple, s));
 	}
 
@@ -79,6 +80,7 @@ protected:
 		SimpleDeadlockDetector simple;
 		simple.init(s);
 		FrozenDeadlockDetector frozen;
+		frozen.init(s);
 		ASSERT_FALSE(frozen.hasDeadlock(simple, s));
 	}
 };
