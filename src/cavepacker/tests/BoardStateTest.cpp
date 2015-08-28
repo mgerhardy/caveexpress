@@ -51,18 +51,57 @@ protected:
 	}
 
 	void testDeadlock(const char *mapStr) {
+		SCOPED_TRACE(va("testDeadlock\n%s", mapStr));
 		BoardState s;
 		fillState(s, mapStr);
 		ASSERT_TRUE(s.hasDeadlock());
 	}
 
+	void testNoSimpleDeadlock(const char *mapStr) {
+		SCOPED_TRACE(va("testNoSimpleDeadlock\n%s", mapStr));
+		BoardState s;
+		fillState(s, mapStr);
+		SimpleDeadlockDetector simple;
+		simple.init(s);
+		ASSERT_FALSE(simple.hasDeadlock(s));
+	}
+
+	void testNoSimpleDeadlockAt(const char *mapStr, int col, int row) {
+		SCOPED_TRACE(va("testNoSimpleDeadlockAt\n%s", mapStr));
+		BoardState s;
+		fillState(s, mapStr);
+		SimpleDeadlockDetector simple;
+		simple.init(s);
+		ASSERT_FALSE(simple.hasDeadlockAt(s.getIndex(col, row)));
+	}
+
+	void testSimpleDeadlockAt(const char *mapStr, int col, int row) {
+		SCOPED_TRACE(va("testSimpleDeadlockAt\n%s", mapStr));
+		BoardState s;
+		fillState(s, mapStr);
+		SimpleDeadlockDetector simple;
+		simple.init(s);
+		ASSERT_TRUE(simple.hasDeadlockAt(s.getIndex(col, row)));
+	}
+
+	void testSimpleDeadlock(const char *mapStr) {
+		SCOPED_TRACE(va("testSimpleDeadlock\n%s", mapStr));
+		BoardState s;
+		fillState(s, mapStr);
+		SimpleDeadlockDetector simple;
+		simple.init(s);
+		ASSERT_TRUE(simple.hasDeadlock(s));
+	}
+
 	void testNoDeadlock(const char *mapStr) {
+		SCOPED_TRACE(va("testNoDeadlock\n%s", mapStr));
 		BoardState s;
 		fillState(s, mapStr);
 		ASSERT_FALSE(s.hasDeadlock());
 	}
 
 	void testFrozenDeadlock(const char *mapStr) {
+		SCOPED_TRACE(va("testFrozenDeadlock\n%s", mapStr));
 		BoardState s;
 		fillState(s, mapStr);
 
@@ -74,6 +113,7 @@ protected:
 	}
 
 	void testNoFrozenDeadlock(const char *mapStr) {
+		SCOPED_TRACE(va("testNoFrozenDeadlock\n%s", mapStr));
 		BoardState s;
 		fillState(s, mapStr);
 
@@ -88,17 +128,16 @@ protected:
 
 TEST_F(BoardStateTest, testFillState) {
 	{
-		BoardState s;
 		const char* mapStr =
-				"#####\n"
-				"#@$.#\n"
-				"#####";
+			"#####\n"
+			"#@$.#\n"
+			"#####";
+		BoardState s;
 		fillState(s, mapStr);
 		ASSERT_EQ(5, s.getWidth());
 		ASSERT_EQ(3, s.getHeight());
 	}
 	{
-		BoardState s;
 		const char* mapStr =
 			"#####\n"
 			"#@$.#\n"
@@ -106,6 +145,7 @@ TEST_F(BoardStateTest, testFillState) {
 			"#   ####\n"
 			"#      #\n"
 			"########";
+		BoardState s;
 		fillState(s, mapStr);
 		ASSERT_EQ(8, s.getWidth());
 		ASSERT_EQ(6, s.getHeight());
@@ -113,8 +153,6 @@ TEST_F(BoardStateTest, testFillState) {
 }
 
 TEST_F(BoardStateTest, testDone) {
-	BoardState s;
-
 	const char* mapStr =
 		"############\n"
 		"#$$@ #     ###\n"
@@ -127,13 +165,117 @@ TEST_F(BoardStateTest, testDone) {
 		"#    #     #\n"
 		"############";
 
+	SCOPED_TRACE(va("\n%s", mapStr));
+
+	BoardState s;
 	fillState(s, mapStr);
 	ASSERT_EQ(14, s.getWidth());
 	ASSERT_EQ(10, s.getHeight());
 	ASSERT_TRUE(s.isDone()) << "Could not detect the done state in the board\n" << mapStr;
 }
 
-TEST_F(BoardStateTest, testDeadlockSimple1) {
+TEST_F(BoardStateTest, testSimpleDeadlocks) {
+	testNoSimpleDeadlock(
+		"######\n"
+		"#    #\n"
+		"#$$@.#\n"
+		"#.####\n"
+		"###\n");
+	testNoSimpleDeadlock(
+		"######\n"
+		"#    #\n"
+		"#$$@.#\n"
+		"#.####\n"
+		"###\n");
+	testNoSimpleDeadlockAt(
+		"######\n"
+		"#    #\n"
+		"#$$@.#\n"
+		"#.####\n"
+		"###\n",
+		2, 2);
+	testNoSimpleDeadlockAt(
+		"######\n"
+		"#    #\n"
+		"#$$@.#\n"
+		"#.####\n"
+		"###\n",
+		1, 3);
+	testNoSimpleDeadlockAt(
+		"######\n"
+		"#    #\n"
+		"#$$@.#\n"
+		"#.####\n"
+		"###\n",
+		4, 2);
+	testSimpleDeadlockAt(
+		"######\n"
+		"#    #\n"
+		"#$$@.#\n"
+		"#.####\n"
+		"###\n",
+		1, 1);
+	testSimpleDeadlockAt(
+		"######\n"
+		"#    #\n"
+		"#$$@.#\n"
+		"#.####\n"
+		"###\n",
+		2, 1);
+	testSimpleDeadlockAt(
+		"######\n"
+		"#    #\n"
+		"#$$@.#\n"
+		"#.####\n"
+		"###\n",
+		3, 1);
+	testSimpleDeadlockAt(
+		"######\n"
+		"#    #\n"
+		"#$$@.#\n"
+		"#.####\n"
+		"###\n",
+		4, 1);
+	testNoSimpleDeadlockAt(
+		"######\n"
+		"#  @ #\n"
+		"#$   #\n"
+		"#.####\n"
+		"###\n",
+		1, 2);
+	testNoSimpleDeadlock(
+		"######\n"
+		"#  @ #\n"
+		"#  $ #\n"
+		"#.####\n"
+		"###\n");
+	testNoSimpleDeadlock(
+		"######\n"
+		"#  @ #\n"
+		"#$ $.#\n"
+		"#.####\n"
+		"###\n");
+	testSimpleDeadlock(
+		"######\n"
+		"#$   #\n"
+		"#  @.#\n"
+		"#.####\n"
+		"###\n");
+	testSimpleDeadlock(
+		"######\n"
+		"# $  #\n"
+		"#  @.#\n"
+		"#.####\n"
+		"###\n");
+	testSimpleDeadlock(
+		"######\n"
+		"#   $#\n"
+		"#  @.#\n"
+		"#.####\n"
+		"###\n");
+}
+
+TEST_F(BoardStateTest, testDeadlocks) {
 	testDeadlock(
 		"#####\n"
 		"#   #\n"
@@ -185,16 +327,13 @@ TEST_F(BoardStateTest, testDeadlockSimple1) {
 		"###\n");
 }
 
-TEST_F(BoardStateTest, testNoFrozenDeadlock1) {
+TEST_F(BoardStateTest, testNoFrozenDeadlocks) {
 	testNoFrozenDeadlock(
 		"######\n"
 		"#    #\n"
 		"#$$@.#\n"
 		"#.####\n"
 		"###\n");
-}
-
-TEST_F(BoardStateTest, testNoFrozenDeadlock2) {
 	testNoFrozenDeadlock(
 		"############\n"
 		"#..  #     ###\n"

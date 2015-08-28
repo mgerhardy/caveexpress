@@ -18,6 +18,7 @@ private:
 	bool hasAnyBlockedPackageClose(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row, char dir);
 	inline bool hasWallClose(const BoardState& s, int col, int row, char dir) const;
 	inline bool hasSimpleDeadlock(const SimpleDeadlockDetector& simple, const BoardState& s, int col, int row, char dir) const;
+	bool hasDeadlockVertically(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row);
 	bool hasDeadlock_(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row);
 public:
 	void clear();

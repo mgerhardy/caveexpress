@@ -42,32 +42,35 @@ bool FrozenDeadlockDetector::hasSimpleDeadlock(const SimpleDeadlockDetector& sim
 #define HASWALL(dir) hasWallClose(s, col, row, dir)
 #define SIMPLEDEADLOCK(dir) hasSimpleDeadlock(simple, s, col, row, dir)
 
-bool FrozenDeadlockDetector::hasDeadlock_(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row) {
-	// a wall on both sides (left/right and up/down)
-	const bool blockedHorizontally = HASWALL(MOVE_LEFT) || HASWALL(MOVE_RIGHT);
+bool FrozenDeadlockDetector::hasDeadlockVertically(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row) {
 	const bool blockedVertically = HASWALL(MOVE_UP) || HASWALL(MOVE_DOWN);
-	if (blockedHorizontally && blockedVertically) {
+	if (blockedVertically)
 		return true;
-	}
-
-	// a simple deadlock square on both sides (left/right and up/down)
-	const bool simpleHorizontally = SIMPLEDEADLOCK(MOVE_LEFT) || SIMPLEDEADLOCK(MOVE_RIGHT);
 	const bool simpleVertically = SIMPLEDEADLOCK(MOVE_UP) || SIMPLEDEADLOCK(MOVE_DOWN);
-	if (simpleHorizontally && simpleVertically) {
+	if (simpleVertically)
 		return true;
-	}
-
-	// a package on the side (left/right and up/down) => blocked if the package on the side is also blocked
-	const bool packageHorizontally = BLOCKEDPACKAGE(MOVE_LEFT) || BLOCKEDPACKAGE(MOVE_RIGHT);
 	const bool packageVertically = BLOCKEDPACKAGE(MOVE_UP) || BLOCKEDPACKAGE(MOVE_DOWN);
-	if (packageHorizontally && packageVertically) {
+	if (packageVertically)
 		return true;
-	}
 
-	const bool combinedHorizontally = blockedHorizontally | simpleHorizontally | packageHorizontally;
-	const bool combinedVertically = blockedVertically | simpleVertically | packageVertically;
-	if (combinedHorizontally && combinedVertically) {
-		return true;
+	return false;
+}
+
+bool FrozenDeadlockDetector::hasDeadlock_(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row) {
+	const bool blockedHorizontally = HASWALL(MOVE_LEFT) || HASWALL(MOVE_RIGHT);
+	if (blockedHorizontally) {
+		const bool blockedVertically = hasDeadlockVertically(simple, s, col, row);
+		return blockedVertically;
+	}
+	const bool simpleHorizontally = SIMPLEDEADLOCK(MOVE_LEFT) || SIMPLEDEADLOCK(MOVE_RIGHT);
+	if (simpleHorizontally) {
+		const bool blockedVertically = hasDeadlockVertically(simple, s, col, row);
+		return blockedVertically;
+	}
+	const bool packageHorizontally = BLOCKEDPACKAGE(MOVE_LEFT) || BLOCKEDPACKAGE(MOVE_RIGHT);
+	if (packageHorizontally) {
+		const bool blockedVertically = hasDeadlockVertically(simple, s, col, row);
+		return blockedVertically;
 	}
 
 	return false;

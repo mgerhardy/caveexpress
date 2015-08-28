@@ -40,3 +40,12 @@ void AbstractTest::SetUp() {
 void AbstractTest::TearDown() {
 	ProtocolHandlerRegistry::get().shutdown();
 }
+
+const char* AbstractTest::va(const char* format, ...) {
+	va_list argptr;
+	static char string[4096];
+	va_start(argptr, format);
+	vsnprintf(string, sizeof(string), format, argptr);
+	va_end(argptr);
+	return string;
+}

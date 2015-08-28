@@ -38,4 +38,6 @@ protected:
 	virtual ~AbstractTest() {}
 	virtual void SetUp() override;
 	virtual void TearDown() override;
+	// not thread safe
+	const char* va(const char* format, ...);
 };
