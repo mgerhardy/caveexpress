@@ -1,4 +1,5 @@
 #include "BoardState.h"
+#include "common/Common.h"
 #include <SDL_assert.h>
 
 namespace cavepacker {
@@ -18,10 +19,25 @@ void BoardState::setSize(int width, int height) {
 }
 
 std::string BoardState::toString() const {
-	std::string mapStr;
-	mapStr.reserve(_height * _width);
+	std::string mapStr = "     ";
+	mapStr.reserve((_height + 2) * (_width + 5));
+	for (int col = 0; col < _width; col += 5) {
+		mapStr.append("....+");
+	}
+	mapStr.append("\n");
 	for (int row = 0; row < _height; ++row) {
 		for (int col = 0; col < _width; ++col) {
+			if (col == 0) {
+				char buf[6];
+				char c;
+				if (row % 5 == 4)
+					c = '+';
+				else
+					c = '.';
+				snprintf(buf, sizeof(buf), "%03i %c", row + 1, c);
+				buf[lengthof(buf) - 1] = '\0';
+				mapStr.append(buf);
+			}
 			auto i = _state.find(getIndex(col, row));
 			if (i == _state.end()) {
 				mapStr.append(" ");
@@ -31,6 +47,10 @@ std::string BoardState::toString() const {
 			mapStr.append(str);
 		}
 		mapStr.append("\n");
+	}
+	mapStr.append("     ");
+	for (int col = 0; col < _width; col += 5) {
+		mapStr.append("....+");
 	}
 	return mapStr;
 }
