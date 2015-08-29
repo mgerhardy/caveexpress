@@ -541,4 +541,29 @@ TEST_F(BoardStateTest, testDeadlockDeadlockFound6) {
 	testDeadlock(mapStr);
 }
 
+TEST_F(BoardStateTest, testSpeed) {
+	std::string mapStr;
+	const int maxRow = 512;
+	const int maxCol = 512;
+	mapStr.reserve(maxCol * maxRow);
+	int packages = 0;
+	for (int row = 0; row < maxRow; ++row) {
+		for (int col = 0; col < maxCol; ++col) {
+			// build the outer rectangular wall
+			if (col == 0 || col == maxCol - 1 || row == 0 || row == maxRow - 1) {
+				mapStr.append("#");
+			} else {
+				if (col % 5 == 0 && row % 5 == 0 && col < maxCol - 2 && row < maxRow - 2) {
+					mapStr.append("$");
+					mapStr.append(".");
+					++packages;
+					++col;
+				}
+			}
+		}
+		mapStr.append("\n");
+	}
+	testDeadlock(mapStr.c_str());
+}
+
 }
