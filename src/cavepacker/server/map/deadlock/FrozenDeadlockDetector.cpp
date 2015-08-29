@@ -62,7 +62,7 @@ bool FrozenDeadlockDetector::hasDeadlock_(const SimpleDeadlockDetector& simple, 
 		const bool blockedVertically = hasDeadlockVertically(simple, s, col, row);
 		return blockedVertically;
 	}
-	const bool simpleHorizontally = SIMPLEDEADLOCK(MOVE_LEFT) || SIMPLEDEADLOCK(MOVE_RIGHT);
+	const bool simpleHorizontally = SIMPLEDEADLOCK(MOVE_LEFT) && SIMPLEDEADLOCK(MOVE_RIGHT);
 	if (simpleHorizontally) {
 		const bool blockedVertically = hasDeadlockVertically(simple, s, col, row);
 		return blockedVertically;
