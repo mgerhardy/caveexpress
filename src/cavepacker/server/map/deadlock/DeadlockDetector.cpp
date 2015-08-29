@@ -22,6 +22,7 @@ void DeadlockDetector::init(const BoardState& state) {
 }
 
 bool DeadlockDetector::hasDeadlock(const BoardState& state) {
+	// TODO: limit the time that these tests may consume
 	if (_simple.hasDeadlock(state))
 		return true;
 
