@@ -553,7 +553,7 @@ TEST_F(BoardStateTest, testSpeed) {
 			if (col == 0 || col == maxCol - 1 || row == 0 || row == maxRow - 1) {
 				mapStr.append("#");
 			} else {
-				if (col % 5 == 0 && row % 5 == 0 && col < maxCol - 2 && row < maxRow - 2) {
+				if (col % 5 <= 2 && row % 5 <= 2 && col < maxCol - 2 && row < maxRow - 2) {
 					mapStr.append("$");
 					mapStr.append(".");
 					++packages;
