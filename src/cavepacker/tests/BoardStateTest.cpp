@@ -132,7 +132,7 @@ protected:
 		for (int index : set) {
 			int col, row;
 			state.getColRowFromIndex(index, col, row);
-			blocked += std::to_string(col) + ":" + std::to_string(row) + " ";
+			blocked += std::to_string(col + 1) + ":" + std::to_string(row + 1) + " ";
 		}
 		return blocked;
 	}
@@ -349,6 +349,83 @@ TEST_F(BoardStateTest, testNoFrozenDeadlocks) {
 		"#$$@.#\n"
 		"#.####\n"
 		"###\n");
+	testNoFrozenDeadlock(
+		"############\n"
+		"#    #     ###\n"
+		"#    #       #\n"
+		"#    #@####  #\n"
+		"#.       ##  #\n"
+		"#    # #    ##\n"
+		"###### ##    #\n"
+		"  # $        #\n"
+		"  #    #     #\n"
+		"  ############\n");
+	testNoFrozenDeadlock(
+		"############\n"
+		"#    #     ###\n"
+		"#    #       #\n"
+		"#    #@####  #\n"
+		"#.       ##  #\n"
+		"#    # #    ##\n"
+		"###### ##    #\n"
+		"  #    $     #\n"
+		"  #    #     #\n"
+		"  ############\n");
+	testNoFrozenDeadlock(
+		"############\n"
+		"#    #     ###\n"
+		"#    #       #\n"
+		"#    #@####  #\n"
+		"#.       ##  #\n"
+		"#    # #    ##\n"
+		"###### ##  $ #\n"
+		"  #          #\n"
+		"  #    #     #\n"
+		"  ############\n");
+	testNoFrozenDeadlock(
+		"############\n"
+		"#    #     ###\n"
+		"#    #       #\n"
+		"#.   #@####  #\n"
+		"#.       ##  #\n"
+		"#    # #    ##\n"
+		"###### ##  $ #\n"
+		"  #        $ #\n"
+		"  #    #     #\n"
+		"  ############\n");
+	testNoFrozenDeadlock(
+		"############\n"
+		"#    #     ###\n"
+		"#    #       #\n"
+		"#    #@####  #\n"
+		"#.       ##  #\n"
+		"#    # #    ##\n"
+		"###### ##$   #\n"
+		"  #          #\n"
+		"  #    #     #\n"
+		"  ############\n");
+	testNoFrozenDeadlock(
+		"############\n"
+		"#    #     ###\n"
+		"#    #       #\n"
+		"#.   #@####  #\n"
+		"#.       ##  #\n"
+		"#    # #    ##\n"
+		"###### ##$   #\n"
+		"  #      $   #\n"
+		"  #    #     #\n"
+		"  ############\n");
+	testNoFrozenDeadlock(
+		"############\n"
+		"#    #     ###\n"
+		"#    #$$  $  #\n"
+		"#.   #@####  #\n"
+		"#.       ##  #\n"
+		"#    # #    ##\n"
+		"###### ##    #\n"
+		"  #          #\n"
+		"  #    #     #\n"
+		"  ############\n");
 	testNoFrozenDeadlock(
 		"############\n"
 		"#..  #     ###\n"
