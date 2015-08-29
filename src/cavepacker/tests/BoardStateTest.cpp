@@ -469,8 +469,8 @@ TEST_F(BoardStateTest, testDeadlockDeadlockFound1) {
 	testDeadlock(mapStr);
 }
 
-TEST_F(BoardStateTest, testDeadlockDeadlockFound2) {
-	const char* mapStr =
+TEST_F(BoardStateTest, testDeadlockDeadlockFoundCorral) {
+	testDeadlock(
 		"    #####\n"
 		"    #   #\n"
 		"    #   #\n"
@@ -481,12 +481,8 @@ TEST_F(BoardStateTest, testDeadlockDeadlockFound2) {
 		"#    $   $      ..#\n"
 		"#####@### # ##  ..#\n"
 		"    #     #########\n"
-		"    ######\n";
-	testDeadlock(mapStr);
-}
-
-TEST_F(BoardStateTest, testDeadlockDeadlockFound3) {
-	const char* mapStr =
+		"    ######\n");
+	testDeadlock(
 		"    #####\n"
 		"    #@  #\n"
 		"    #   #\n"
@@ -497,8 +493,7 @@ TEST_F(BoardStateTest, testDeadlockDeadlockFound3) {
 		"#    $  $       ..#\n"
 		"##### ### # ##  ..#\n"
 		"    #     #########\n"
-		"    #######\n";
-	testDeadlock(mapStr);
+		"    #######\n");
 }
 
 TEST_F(BoardStateTest, testDeadlockDeadlockFound4) {
