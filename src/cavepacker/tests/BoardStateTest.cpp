@@ -1,8 +1,11 @@
 #include "tests/TestShared.h"
+#include "common/Common.h"
 #include "cavepacker/server/map/BoardState.h"
 #include "cavepacker/server/map/deadlock/DeadlockDetector.h"
 
 namespace cavepacker {
+
+#define SCOPE(mapStr) BoardState s; fillState(s, (mapStr)); SCOPED_TRACE(va("%s\n%s", __PRETTY_FUNCTION__, s.toString().c_str()))
 
 class BoardStateTest: public AbstractTest {
 protected:
@@ -51,60 +54,45 @@ protected:
 	}
 
 	void testDeadlock(const char *mapStr) {
-		BoardState s;
-		fillState(s, mapStr);
-		SCOPED_TRACE(va("testDeadlock\n%s", s.toString().c_str()));
+		SCOPE(mapStr);
 		ASSERT_TRUE(s.hasDeadlock());
 	}
 
 	void testNoSimpleDeadlock(const char *mapStr) {
-		BoardState s;
-		fillState(s, mapStr);
-		SCOPED_TRACE(va("testNoSimpleDeadlock\n%s", s.toString().c_str()));
+		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
 		ASSERT_FALSE(simple.hasDeadlock(s)) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
 
 	void testNoSimpleDeadlockAt(const char *mapStr, int col, int row) {
-		BoardState s;
-		fillState(s, mapStr);
-		SCOPED_TRACE(va("testNoSimpleDeadlockAt\n%s", s.toString().c_str()));
+		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
 		ASSERT_FALSE(simple.hasDeadlockAt(s.getIndex(col, row))) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
 
 	void testSimpleDeadlockAt(const char *mapStr, int col, int row) {
-		BoardState s;
-		fillState(s, mapStr);
-		SCOPED_TRACE(va("testSimpleDeadlockAt\n%s", s.toString().c_str()));
+		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
 		ASSERT_TRUE(simple.hasDeadlockAt(s.getIndex(col, row))) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
 
 	void testSimpleDeadlock(const char *mapStr) {
-		BoardState s;
-		fillState(s, mapStr);
-		SCOPED_TRACE(va("testSimpleDeadlock\n%s", s.toString().c_str()));
+		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
 		ASSERT_TRUE(simple.hasDeadlock(s)) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
 
 	void testNoDeadlock(const char *mapStr) {
-		BoardState s;
-		fillState(s, mapStr);
-		SCOPED_TRACE(va("testNoDeadlock\n%s", s.toString().c_str()));
+		SCOPE(mapStr);
 		ASSERT_FALSE(s.hasDeadlock());
 	}
 
 	void testFrozenDeadlock(const char *mapStr) {
-		BoardState s;
-		fillState(s, mapStr);
-		SCOPED_TRACE(va("testFrozenDeadlock\n%s", s.toString().c_str()));
-
+		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
 		FrozenDeadlockDetector frozen;
@@ -113,10 +101,7 @@ protected:
 	}
 
 	void testNoFrozenDeadlock(const char *mapStr) {
-		BoardState s;
-		fillState(s, mapStr);
-		SCOPED_TRACE(va("testNoFrozenDeadlock\n%s", s.toString().c_str()));
-
+		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
 		FrozenDeadlockDetector frozen;
@@ -145,9 +130,7 @@ TEST_F(BoardStateTest, testFillState) {
 			"#####\n"
 			"#@$.#\n"
 			"#####";
-		BoardState s;
-		fillState(s, mapStr);
-		SCOPED_TRACE(va("\n%s", s.toString().c_str()));
+		SCOPE(mapStr);
 		ASSERT_EQ(5, s.getWidth());
 		ASSERT_EQ(3, s.getHeight());
 	}
@@ -159,9 +142,7 @@ TEST_F(BoardStateTest, testFillState) {
 			"#   ####\n"
 			"#      #\n"
 			"########";
-		BoardState s;
-		fillState(s, mapStr);
-		SCOPED_TRACE(va("\n%s", s.toString().c_str()));
+		SCOPE(mapStr);
 		ASSERT_EQ(8, s.getWidth());
 		ASSERT_EQ(6, s.getHeight());
 	}
@@ -180,10 +161,7 @@ TEST_F(BoardStateTest, testDone) {
 		"#    #     #\n"
 		"############";
 
-	BoardState s;
-	fillState(s, mapStr);
-	SCOPED_TRACE(va("\n%s", s.toString().c_str()));
-
+	SCOPE(mapStr);
 	ASSERT_EQ(14, s.getWidth());
 	ASSERT_EQ(10, s.getHeight());
 	ASSERT_TRUE(s.isDone()) << "Could not detect the done state in the board\n" << mapStr;
