@@ -34,8 +34,7 @@ std::string BoardState::toString() const {
 					c = '+';
 				else
 					c = '.';
-				snprintf(buf, sizeof(buf), "%03i %c", row + 1, c);
-				buf[lengthof(buf) - 1] = '\0';
+				cp_snprintf(buf, sizeof(buf), "%03i %c", row + 1, c);
 				mapStr.append(buf);
 			}
 			auto i = _state.find(getIndex(col, row));
