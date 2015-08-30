@@ -562,6 +562,8 @@ macro(cp_add_executable)
 	set(VERSION ${_EXE_VERSION})
 	set(VERSION_CODE ${_EXE_VERSION_CODE})
 
+	set(CPACK_COMPONENT_${_EXE_TARGET}_DISPLAY_NAME ${APPNAME})
+
 	if (ANDROID)
 		add_library(${_EXE_TARGET} SHARED ${_EXE_SRCS})
 		cp_android_prepare(${_EXE_TARGET} ${APPNAME} ${VERSION} ${VERSION_CODE})
@@ -596,4 +598,8 @@ macro(cp_add_executable)
 
 	include_directories(${CMAKE_BINARY_DIR})
 	set_target_properties(${_EXE_TARGET} PROPERTIES FOLDER ${_EXE_TARGET})
+	STRING(REGEX REPLACE "tests-" "" BASEDIR ${_EXE_TARGET})
+	# install relative to /usr/<APPNAME>
+	install(DIRECTORY ${ROOT_DIR}/base/${BASEDIR} DESTINATION ${_EXE_TARGET}/base COMPONENT ${_EXE_TARGET})
+	install(TARGETS ${_EXE_TARGET} DESTINATION ${_EXE_TARGET} COMPONENT ${_EXE_TARGET})
 endmacro()
