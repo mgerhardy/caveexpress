@@ -12,7 +12,7 @@ inline void cp_snprintf(char* dest, size_t size, const char* fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
 	_vsnprintf(dest, size, fmt, ap);
-	str[size - 1] = '\0';
+	dest[size - 1] = '\0';
 	va_end(ap);
 }
 #else
