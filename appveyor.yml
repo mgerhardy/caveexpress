@@ -12,7 +12,7 @@ before_build:
   - cmake -DTOOLS=OFF -G "Visual Studio 12"
 build:
   parallel: true
-  project: Project.sln
+  project: caveproductions.sln
 #  verbosity: detailed
 test_script:
 #  - tests.exe
