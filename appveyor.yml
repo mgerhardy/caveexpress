@@ -13,7 +13,7 @@ before_build:
 build:
   parallel: true
   project: Project.sln
-  verbosity: detailed
+#  verbosity: detailed
 test_script:
 #  - tests.exe
 #  - tests-caveexpress.exe
