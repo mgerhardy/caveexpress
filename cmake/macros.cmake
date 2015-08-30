@@ -241,6 +241,9 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 	endif()
 endmacro()
 
+#
+# put a variable into the global namespace
+#
 macro(var_global VARIABLES)
 	foreach(VAR ${VARIABLES})
 		cp_message("${VAR} => ${${VAR}}")
@@ -253,6 +256,17 @@ macro(package_global LIB)
 	find_package(${LIB})
 endmacro()
 
+#
+# Add external dependency. It will trigger a find_package and use the system wide install if found, otherwise the bundled version
+# If you set USE_BUILTIN the system wide is ignored.
+#
+# parameters:
+# LIB:
+# CFLAGS:
+# LINKERFLAGS:
+# SRCS: the list of source files for the bundled lib
+# DEFINES: a list of defines (without -D or /D)
+#
 macro(cp_add_library)
 	set(_OPTIONS_ARGS)
 	set(_ONE_VALUE_ARGS LIB CFLAGS LINKERFLAGS)
@@ -296,6 +310,16 @@ macro(cp_add_library)
 	var_global(${PREFIX}_EXTERNAL)
 endmacro()
 
+#
+# macro for the FindLibName.cmake files. If USE_BUILTIN is set we don't search for system wide installs at all.
+#
+# parameters:
+# LIB: the library we are trying to find
+# HEADER: the header we are trying to find
+# SUFFIX: suffix for the include dir
+#
+# Example: cp_find(SDL2_image SDL_image.h include/SDL2)
+#
 macro(cp_find LIB HEADER SUFFIX)
 	if (NOT USE_BUILTIN)
 		string(TOUPPER ${LIB} PREFIX)
@@ -521,6 +545,11 @@ macro(cp_osx_add_target_properties TARGET)
 	endif()
 endmacro()
 
+#
+# set up the binary for the application. This will also set up platform specific stuff for you
+#
+# Example: cp_add_executable(TARGET SomeTargetName SRCS Source.cpp Main.cpp WINDOWED APPNAME "Some App Name" VERSION 1.0 VERSION_CODE 1)
+#
 macro(cp_add_executable)
 	set(_OPTIONS_ARGS WINDOWED)
 	set(_ONE_VALUE_ARGS TARGET VERSION VERSION_CODE APPNAME)
