@@ -14,31 +14,31 @@ UINodeMapOnScreenCursorControl::UINodeMapOnScreenCursorControl (IFrontend *front
 	setStandardPadding();
 	setId("cursor-control");
 
-	UINodeButton *left = new UINodeButton(frontend);
-	left->setImage("icon-cursor-left");
-	left->setOnActivate(CMD_MOVE_LEFT);
-	left->setTriggerTime(500u);
-	left->setAlignment(NODE_ALIGN_LEFT | NODE_ALIGN_BOTTOM);
-	add(left);
-	UINodeButton *right = new UINodeButton(frontend);
-	right->setImage("icon-cursor-right");
-	right->setOnActivate(CMD_MOVE_RIGHT);
-	right->setTriggerTime(500u);
-	right->putRight(left);
-	add(right);
+	_left = new UINodeButton(frontend);
+	_left->setImage("icon-cursor-left");
+	_left->setOnActivate(CMD_MOVE_LEFT);
+	_left->setTriggerTime(500u);
+	_left->setAlignment(NODE_ALIGN_LEFT | NODE_ALIGN_BOTTOM);
+	add(_left);
+	_right = new UINodeButton(frontend);
+	_right->setImage("icon-cursor-right");
+	_right->setOnActivate(CMD_MOVE_RIGHT);
+	_right->setTriggerTime(500u);
+	_right->putRight(_left);
+	add(_right);
 
-	UINodeButton *down = new UINodeButton(frontend);
-	down->setImage("icon-cursor-down");
-	down->setOnActivate(CMD_MOVE_DOWN);
-	down->setAlignment(NODE_ALIGN_RIGHT | NODE_ALIGN_BOTTOM);
-	down->setTriggerTime(500u);
-	add(down);
-	UINodeButton *up = new UINodeButton(frontend);
-	up->setImage("icon-cursor-up");
-	up->setOnActivate(CMD_MOVE_UP);
-	up->setTriggerTime(500u);
-	up->putAbove(down);
-	add(up);
+	_down = new UINodeButton(frontend);
+	_down->setImage("icon-cursor-down");
+	_down->setOnActivate(CMD_MOVE_DOWN);
+	_down->setAlignment(NODE_ALIGN_RIGHT | NODE_ALIGN_BOTTOM);
+	_down->setTriggerTime(500u);
+	add(_down);
+	_up = new UINodeButton(frontend);
+	_up->setImage("icon-cursor-up");
+	_up->setOnActivate(CMD_MOVE_UP);
+	_up->setTriggerTime(500u);
+	_up->putAbove(_down);
+	add(_up);
 }
 
 UINodeMapOnScreenCursorControl::~UINodeMapOnScreenCursorControl ()

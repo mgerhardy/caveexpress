@@ -12,6 +12,11 @@ class UINodeMapOnScreenCursorControl: public UINode, public IMapControl {
 private:
 	ClientMap &_map;
 
+	UINodeButton *_left;
+	UINodeButton *_right;
+	UINodeButton *_down;
+	UINodeButton *_up;
+
 public:
 	UINodeMapOnScreenCursorControl (IFrontend *frontend, IUINodeMap *mapNode);
 	virtual ~UINodeMapOnScreenCursorControl ();
