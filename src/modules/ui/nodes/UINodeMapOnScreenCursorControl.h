@@ -6,6 +6,7 @@
 
 class ClientMap;
 class IUINodeMap;
+class UINodeButton;
 
 // UI node that implements player controls via on screen hud elements
 class UINodeMapOnScreenCursorControl: public UINode, public IMapControl {
