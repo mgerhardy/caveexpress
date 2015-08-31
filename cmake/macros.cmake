@@ -179,6 +179,21 @@ macro(check_lua_files TARGET FILES)
 	endif()
 endmacro()
 
+#
+# Prepare android workspace with assets and sdk/ndk commands.
+#
+# Also adds some helper targets:
+# * android-APPNAME-uninstall uninstalls the application
+# * android-APPNAME-install installs the application
+# * android-APPNAME-start starts the application
+# * android-APPNAME-backtrace creates a backtrace from a crash
+#
+# parameters:
+# PROJECTNAME:
+# APPNAME:
+# VERSION:
+# VERSION_CODE: the android version code needed for google play store
+#
 macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 	message("prepare java code for ${PROJECTNAME}")
 	file(COPY ${ANDROID_ROOT} DESTINATION ${CMAKE_BINARY_DIR}/android-${PROJECTNAME})
