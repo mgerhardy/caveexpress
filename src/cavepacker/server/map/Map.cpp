@@ -236,7 +236,28 @@ void Map::undo (Player* player)
 
 void Map::moveTo (Player* player, int col, int row)
 {
+	player->setTargetIndex(_state.getIndex(col, row));
 	Log::info(LOG_SERVER, "move player %i from %i:%i to %i:%i", player->getID(), player->getCol(), player->getRow(), col, row);
+}
+
+bool Map::isAt (IEntity* entity, int index) const
+{
+	int col;
+	int row;
+	if (!_state.getColRowFromIndex(index, col, row))
+		return false;
+	return entity->getCol() == col && entity->getRow() == row;
+}
+
+int Map::getPositionIndex (IEntity* entity) const
+{
+	return _state.getIndex(entity->getCol(), entity->getRow());
+}
+
+char Map::getDirectionForMove (int currentIndex, int targetIndex) const
+{
+	// TODO:
+	return MOVE_RIGHT;
 }
 
 bool Map::undoPackage (int col, int row, int targetCol, int targetRow)

@@ -112,6 +112,8 @@ public:
 	std::string getMapString() const;
 	inline std::string getStateString() const { return _state.toString(); }
 
+	bool isAt(IEntity* entity, int index) const;
+
 	int getMaxPlayers() const;
 	inline int getMoves() const { return _moves; }
 	inline int getPushes() const { return _pushes; }
@@ -173,6 +175,8 @@ public:
 	MapTile* getPackage (int col, int row) const;
 
 	bool undoPackage (int col, int row, int targetCol, int targetRow);
+	int getPositionIndex (IEntity* entity) const;
+	char getDirectionForMove (int currentIndex, int targetIndex) const;
 
 	void resetCurrentMap ();
 

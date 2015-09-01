@@ -162,7 +162,7 @@ bool UIMapWindow::getField (int32_t x, int32_t y, int *tx, int *ty) const
 
 void UIMapWindow::doMove (int tx, int ty)
 {
-	Log::debug(LOG_UI, "send walk message to reach %i:%i", tx, ty);
+	Log::debug(LOG_UI, "send move message to reach %i:%i", tx, ty);
 	_serviceProvider.getNetwork().sendToServer(MoveToMessage(tx, ty));
 	_targetX = _targetY = -1;
 }

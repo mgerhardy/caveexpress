@@ -17,6 +17,22 @@ Player::~Player ()
 {
 }
 
+void Player::update (uint32_t deltaTime) {
+	IEntity::update(deltaTime);
+	if (_targetIndex == NO_TARGET_INDEX)
+		return;
+
+	if (_map.isAt(this, _targetIndex)) {
+		_targetIndex = NO_TARGET_INDEX;
+		return;
+	}
+
+	int currentPos = _map.getPositionIndex(this);
+	const char dir = _map.getDirectionForMove(currentPos, _targetIndex);
+	if (!_map.movePlayer(this, dir))
+		_targetIndex = NO_TARGET_INDEX;
+}
+
 void Player::storeStep (char step)
 {
 	_solutionSave += step;
