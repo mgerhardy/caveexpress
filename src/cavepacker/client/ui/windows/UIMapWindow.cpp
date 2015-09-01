@@ -137,9 +137,11 @@ void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
 
 bool UIMapWindow::onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 {
+	if (IUIMapWindow::onFingerMotion(finger, x, y, dx, dy))
+		return true;
 	Camera& camera = _nodeMap->getMap().getCamera();
 	camera.scroll(dx, dy);
-	return IUIMapWindow::onFingerMotion(finger, x, y, dx, dy);
+	return true;
 }
 
 bool UIMapWindow::onMouseButtonRelease (int32_t x, int32_t y, unsigned char button)
