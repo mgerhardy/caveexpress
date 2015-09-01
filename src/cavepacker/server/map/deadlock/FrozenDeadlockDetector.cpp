@@ -18,7 +18,6 @@ bool FrozenDeadlockDetector::hasAnyBlockedPackageClose(const SimpleDeadlockDetec
 	int y;
 	getXY(dir, x, y);
 	const char field = s.getField(col + x, row + y);
-	// TODO: check recursively whether the package is blocked - and convert the package into a wall
 	if (isPackage(field) || isPackageOnTarget(field)) {
 		s.clearField(col, row);
 		s.setField(col, row, Sokoban::WALL);
