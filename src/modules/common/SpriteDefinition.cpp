@@ -67,20 +67,24 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		Log::debug(LOG_GENERAL, "id: %s => %i frames", id.c_str(), layers);
 		for (Layer layer = LAYER_BACK; layer < layers; layer++) {
 			LUA_checkStack2(lua.getState());
-			lua_pushinteger(lua.getState(), layer + 1);
-			lua_gettable(lua.getState(), -2);
-			if (!lua_istable(lua.getState(), -1)) {
-				Log::error(LOG_GENERAL, "spritedef: expected frame table on the stack: %s", lua.getStackDump().c_str());
+			lua_State* L = lua.getState();
+			lua_pushvalue(L, -1);
+			lua_pushnil(L);
+			while (lua_next(L, -2)) {
+				if (!lua_istable(lua.getState(), -1)) {
+					Log::debug(LOG_GENERAL, "spritedef: expected frame table on the stack: %s", lua.getStackDump().c_str());
+					lua.pop();
+					continue;
+				}
+				// push the frame table
+				const int framesOnLayer = lua_rawlen(lua.getState(), -1);
+				Log::debug(LOG_GENERAL, "id: %s => %i framesOnLayer", id.c_str(), framesOnLayer);
+				for (int i = 1; i <= framesOnLayer; ++i) {
+					const std::string& texture = lua.getTableString(i);
+					const SpriteDefFrame frame(texture, 0, true);
+					def->textures[layer].push_back(frame);
+				}
 				lua.pop();
-				continue;
-			}
-			// push the frame table
-			const int framesOnLayer = lua_rawlen(lua.getState(), -1);
-			Log::debug(LOG_GENERAL, "id: %s => %i framesOnLayer", id.c_str(), framesOnLayer);
-			for (int i = 1; i <= framesOnLayer; ++i) {
-				const std::string& texture = lua.getTableString(i);
-				const SpriteDefFrame frame(texture, 0, true);
-				def->textures[layer].push_back(frame);
 			}
 			// pop the frame table
 			lua.pop();
