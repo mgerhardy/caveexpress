@@ -6,25 +6,25 @@
 namespace cavepacker {
 
 /**
- * @brief Message that is sent to the server to let the player walk to the given location.
+ * @brief Message that is sent to the server to let the player move to the given location.
  *
  * The server will answer with single UpdateEntityMessage's
  */
-class WalkToMessage: public IProtocolMessage {
+class MoveToMessage: public IProtocolMessage {
 private:
 	int32_t _col;
 	int32_t _row;
 
 public:
-	explicit WalkToMessage (int32_t col, int32_t row) :
-			IProtocolMessage(protocol::PROTO_WALKTO), _col(col), _row(row)
+	explicit MoveToMessage (int32_t col, int32_t row) :
+			IProtocolMessage(protocol::PROTO_MOVETO), _col(col), _row(row)
 	{
 	}
 
-	PROTOCOL_CLASS_FACTORY(WalkToMessage);
+	PROTOCOL_CLASS_FACTORY(MoveToMessage);
 
-	explicit WalkToMessage (ByteStream& input) :
-			IProtocolMessage(protocol::PROTO_WALKTO)
+	explicit MoveToMessage (ByteStream& input) :
+			IProtocolMessage(protocol::PROTO_MOVETO)
 	{
 		_col = input.readInt();
 		_row = input.readInt();

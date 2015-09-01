@@ -120,7 +120,6 @@ public:
 	void increaseMoves ();
 	void increasePushes ();
 	void undo (Player* player);
-	void walkTo (Player* player, int col, int row);
 
 	void autoStart ();
 	void loadDelayed (uint32_t delay, const std::string& name);
@@ -131,6 +130,7 @@ public:
 
 	// move into directions l,r,d,u (sokoban standard)
 	bool movePlayer (Player* player, char step);
+	void moveTo (Player* player, int col, int row);
 
 	void reload ();
 	bool isFailed () const;

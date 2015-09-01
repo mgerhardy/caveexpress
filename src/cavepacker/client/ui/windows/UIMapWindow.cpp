@@ -1,7 +1,7 @@
 #include "UIMapWindow.h"
 #include "cavepacker/client/ui/nodes/UINodeMap.h"
 #include "cavepacker/client/ui/nodes/UICavePackerNodePoint.h"
-#include "cavepacker/shared/network/messages/WalkToMessage.h"
+#include "cavepacker/shared/network/messages/MoveToMessage.h"
 #include "ui/nodes/UINodeBar.h"
 #include "ui/nodes/UINodeSprite.h"
 #include "ui/nodes/UINodePoint.h"
@@ -163,7 +163,7 @@ bool UIMapWindow::getField (int32_t x, int32_t y, int *tx, int *ty) const
 void UIMapWindow::doMove (int tx, int ty)
 {
 	Log::debug(LOG_UI, "send walk message to reach %i:%i", tx, ty);
-	_serviceProvider.getNetwork().sendToServer(WalkToMessage(tx, ty));
+	_serviceProvider.getNetwork().sendToServer(MoveToMessage(tx, ty));
 	_targetX = _targetY = -1;
 }
 
