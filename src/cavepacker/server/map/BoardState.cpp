@@ -64,13 +64,15 @@ bool BoardState::hasDeadlock() {
 
 bool BoardState::isFree(int col, int row) const {
 	const int index = getIndex(col, row);
+	return isFree(index);
+}
+
+bool BoardState::isFree(int index) const {
 	auto i = _state.find(index);
 	if (i == _state.end()) {
-		Log::debug(LOG_MAP, "col: %i, row: %i is not part of the map", col, row);
 		return false;
 	}
 	const char c = i->second;
-	Log::debug(LOG_MAP, "col: %i, row: %i is of type '%c'", col, row, c);
 	return c == Sokoban::GROUND || c == Sokoban::TARGET;
 }
 
@@ -92,6 +94,20 @@ bool BoardState::isPackage(int col, int row) const {
 	}
 	const char c = i->second;
 	return c == Sokoban::PACKAGE || c == Sokoban::PACKAGEONTARGET;
+}
+
+void BoardState::getReachableIndices(int index, std::vector<int>& successors) const {
+	int col, row;
+	if (!getColRowFromIndex(index, col, row))
+		return;
+	const char dirs[] = { MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN };
+	for (int i = 0; i < lengthof(dirs); ++i) {
+		int x, y;
+		getXY(dirs[i], x, y);
+		if (!isFree(col + x, row + y))
+			continue;
+		successors.push_back(getIndex(col + x, row + y));
+	}
 }
 
 bool BoardState::isDone() const {

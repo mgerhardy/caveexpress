@@ -55,11 +55,15 @@ public:
 	 */
 	char clearField(int col, int row);
 	char clearFieldForIndex(int index);
+
+	void getReachableIndices(int index, std::vector<int>& successors) const;
+
 	/**
 	 * @brief Checks whether the given field is free in a sense that the player
 	 * could walk there if no obstacle is in the way
 	 */
 	bool isFree(int col, int row) const;
+	bool isFree(int index) const;
 	/**
 	 * @brief Checks whether the given field is a target for a package. It checks all
 	 * three available target types: empty target, package on target, player on target
