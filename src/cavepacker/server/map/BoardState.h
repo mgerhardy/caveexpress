@@ -90,6 +90,11 @@ public:
 		return _state.end();
 	}
 
+	/**
+	 * @param[out] col [0, w - 1]
+	 * @param[out] row [0, h - 1]
+	 * @return @c false if the conversion failed because the index isn't part of the board
+	 */
 	inline bool getColRowFromIndex(int index, int& col, int& row) const {
 		if (_state.find(index) == _state.end())
 			return false;
@@ -102,6 +107,10 @@ public:
 		return (int)_state.size();
 	}
 
+	/**
+	 * @param[in] col [0, w - 1]
+	 * @param[in] row [0, h - 1]
+	 */
 	inline int getIndex(int col, int row) const {
 		return col + _width * row;
 	}
