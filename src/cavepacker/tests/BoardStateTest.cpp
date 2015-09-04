@@ -205,13 +205,14 @@ TEST_F(BoardStateTest, testSuccessors) {
 		"# ##########\n"
 		"#          #\n"
 		"#    #     #\n"
+		"#    #     #\n"
 		"############";
 
 	SCOPE(mapStr);
 	std::vector<int> successors;
 	{
 		s.getReachableIndices(s.getIndex(1, 1), successors);
-		ASSERT_EQ(1, successors.size()) << "Expected to find 1 indices - but found (" << indicesToColRowString(s, successors) << ")";
+		ASSERT_EQ(1, successors.size()) << "Expected to find 1 indices for 2, 2 - but found (" << indicesToColRowString(s, successors) << ")";
 		ASSERT_EQ(s.getIndex(1, 2), successors.front());
 		successors.clear();
 	}
@@ -219,7 +220,7 @@ TEST_F(BoardStateTest, testSuccessors) {
 		s.getReachableIndices(s.getIndex(1, 2), successors);
 		const int index1 = s.getIndex(1, 3);
 		const int index2 = s.getIndex(1, 1);
-		ASSERT_EQ(2, successors.size()) << "Expected to find 2 indices - but found (" << indicesToColRowString(s, successors) << ")";
+		ASSERT_EQ(2, successors.size()) << "Expected to find 2 indices for 2, 3 - but found (" << indicesToColRowString(s, successors) << ")";
 		ASSERT_NE(successors[0], successors[1]) << "Duplicated successor found: " << vecToString(successors);
 		ASSERT_TRUE(index1 == successors[0] || index2 == successors[0]) << "Indices don't match any successor (" << index1 << ", " << index2 << ") - successors (" << successors[0] << ")";
 		ASSERT_TRUE(index1 == successors[1] || index2 == successors[1]) << "Indices don't match any successor (" << index1 << ", " << index2 << ") - successors (" << successors[1] << ")";
@@ -230,7 +231,7 @@ TEST_F(BoardStateTest, testSuccessors) {
 		const int index1 = s.getIndex(1, 4);
 		const int index2 = s.getIndex(2, 3);
 		const int index3 = s.getIndex(1, 2);
-		ASSERT_EQ(3, successors.size()) << "Expected to find 3 indices - but found (" << indicesToColRowString(s, successors) << ")";
+		ASSERT_EQ(3, successors.size()) << "Expected to find 3 indices for 2, 4 - but found (" << indicesToColRowString(s, successors) << ")";
 		ASSERT_NE(successors[0], successors[1]) << "Duplicated successor found: " << vecToString(successors);
 		ASSERT_NE(successors[1], successors[2]) << "Duplicated successor found: " << vecToString(successors);
 		ASSERT_NE(successors[0], successors[2]) << "Duplicated successor found: " << vecToString(successors);
@@ -245,7 +246,7 @@ TEST_F(BoardStateTest, testSuccessors) {
 		const int index2 = s.getIndex(3, 4);
 		const int index3 = s.getIndex(2, 3);
 		const int index4 = s.getIndex(2, 5);
-		ASSERT_EQ(4, successors.size()) << "Expected to find 4 indices - but found (" << indicesToColRowString(s, successors) << ")";
+		ASSERT_EQ(4, successors.size()) << "Expected to find 4 indices for 3, 5 - but found (" << indicesToColRowString(s, successors) << ")";
 		ASSERT_NE(successors[0], successors[1]) << "Duplicated successor found: " << vecToString(successors);
 		ASSERT_NE(successors[1], successors[2]) << "Duplicated successor found: " << vecToString(successors);
 		ASSERT_NE(successors[2], successors[3]) << "Duplicated successor found: " << vecToString(successors);
