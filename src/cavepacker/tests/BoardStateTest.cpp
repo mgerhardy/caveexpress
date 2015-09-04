@@ -53,6 +53,37 @@ protected:
 		s.initDeadlock();
 	}
 
+	template<typename T>
+	std::string vecToString(const std::vector<T>& vec) const {
+		std::string str;
+		for (auto & v : vec) {
+			if (!str.empty())
+				str.append(", ");
+			str.append(std::to_string(v));
+		}
+		return str;
+	}
+
+	std::string indicesToColRowString(const BoardState& s, const std::vector<int>& vec) const {
+		std::string str;
+		for (int index : vec) {
+			if (!str.empty())
+				str.append(", ");
+			str.append("[");
+			int col;
+			int row;
+			if (!s.getColRowFromIndex(index, col, row)) {
+				str.append("invalid");
+			} else {
+				str.append(std::to_string(col));
+				str.append(", ");
+				str.append(std::to_string(row));
+			}
+			str.append("]");
+		}
+		return str;
+	}
+
 	void testDeadlock(const char *mapStr) {
 		SCOPE(mapStr);
 		ASSERT_TRUE(s.hasDeadlock());
@@ -164,6 +195,69 @@ TEST_F(BoardStateTest, testDone) {
 	SCOPE(mapStr);
 	ASSERT_EQ(14, s.getWidth());
 	ASSERT_EQ(10, s.getHeight());
+	ASSERT_TRUE(s.isDone()) << "Could not detect the done state in the board\n" << mapStr;
+}
+
+TEST_F(BoardStateTest, testSuccessors) {
+	const char* mapStr =
+		"###\n"
+		"# #\n"
+		"# ##########\n"
+		"#          #\n"
+		"#    #     #\n"
+		"############";
+
+	SCOPE(mapStr);
+	std::vector<int> successors;
+	{
+		s.getReachableIndices(s.getIndex(1, 1), successors);
+		ASSERT_EQ(1, successors.size()) << "Expected to find 1 indices - but found (" << indicesToColRowString(s, successors) << ")";
+		ASSERT_EQ(s.getIndex(1, 2), successors.front());
+		successors.clear();
+	}
+	{
+		s.getReachableIndices(s.getIndex(1, 2), successors);
+		const int index1 = s.getIndex(1, 3);
+		const int index2 = s.getIndex(1, 1);
+		ASSERT_EQ(2, successors.size()) << "Expected to find 2 indices - but found (" << indicesToColRowString(s, successors) << ")";
+		ASSERT_NE(successors[0], successors[1]) << "Duplicated successor found: " << vecToString(successors);
+		ASSERT_TRUE(index1 == successors[0] || index2 == successors[0]) << "Indices don't match any successor (" << index1 << ", " << index2 << ") - successors (" << successors[0] << ")";
+		ASSERT_TRUE(index1 == successors[1] || index2 == successors[1]) << "Indices don't match any successor (" << index1 << ", " << index2 << ") - successors (" << successors[1] << ")";
+		successors.clear();
+	}
+	{
+		s.getReachableIndices(s.getIndex(1, 3), successors);
+		const int index1 = s.getIndex(1, 4);
+		const int index2 = s.getIndex(2, 3);
+		const int index3 = s.getIndex(1, 2);
+		ASSERT_EQ(3, successors.size()) << "Expected to find 3 indices - but found (" << indicesToColRowString(s, successors) << ")";
+		ASSERT_NE(successors[0], successors[1]) << "Duplicated successor found: " << vecToString(successors);
+		ASSERT_NE(successors[1], successors[2]) << "Duplicated successor found: " << vecToString(successors);
+		ASSERT_NE(successors[0], successors[2]) << "Duplicated successor found: " << vecToString(successors);
+		ASSERT_TRUE(index1 == successors[0] || index2 == successors[0] || index3 == successors[0]) << "Indices don't match any successor (" << index1 << ", " << index2 << ", " << index3 << ") - successors (" << successors[0] << ")";
+		ASSERT_TRUE(index1 == successors[1] || index2 == successors[1] || index3 == successors[1]) << "Indices don't match any successor (" << index1 << ", " << index2 << ", " << index3 << ") - successors (" << successors[1] << ")";
+		ASSERT_TRUE(index1 == successors[2] || index2 == successors[2] || index3 == successors[2]) << "Indices don't match any successor (" << index1 << ", " << index2 << ", " << index3 << ") - successors (" << successors[2] << ")";
+		successors.clear();
+	}
+	{
+		s.getReachableIndices(s.getIndex(2, 4), successors);
+		const int index1 = s.getIndex(1, 4);
+		const int index2 = s.getIndex(3, 4);
+		const int index3 = s.getIndex(2, 3);
+		const int index4 = s.getIndex(2, 5);
+		ASSERT_EQ(4, successors.size()) << "Expected to find 4 indices - but found (" << indicesToColRowString(s, successors) << ")";
+		ASSERT_NE(successors[0], successors[1]) << "Duplicated successor found: " << vecToString(successors);
+		ASSERT_NE(successors[1], successors[2]) << "Duplicated successor found: " << vecToString(successors);
+		ASSERT_NE(successors[2], successors[3]) << "Duplicated successor found: " << vecToString(successors);
+		ASSERT_NE(successors[0], successors[2]) << "Duplicated successor found: " << vecToString(successors);
+		ASSERT_NE(successors[0], successors[3]) << "Duplicated successor found: " << vecToString(successors);
+		ASSERT_NE(successors[1], successors[3]) << "Duplicated successor found: " << vecToString(successors);
+		ASSERT_TRUE(index1 == successors[0] || index2 == successors[0] || index3 == successors[0] || index4 == successors[0]) << "Indices don't match any successor (" << index1 << ", " << index2 << ", " << index3 << ", " << index4 << ") - successors (" << successors[0] << ")";
+		ASSERT_TRUE(index1 == successors[1] || index2 == successors[1] || index3 == successors[1] || index4 == successors[1]) << "Indices don't match any successor (" << index1 << ", " << index2 << ", " << index3 << ", " << index4 << ") - successors (" << successors[1] << ")";
+		ASSERT_TRUE(index1 == successors[2] || index2 == successors[2] || index3 == successors[2] || index4 == successors[2]) << "Indices don't match any successor (" << index1 << ", " << index2 << ", " << index3 << ", " << index4 << ") - successors (" << successors[2] << ")";
+		ASSERT_TRUE(index1 == successors[3] || index2 == successors[3] || index3 == successors[3] || index4 == successors[3]) << "Indices don't match any successor (" << index1 << ", " << index2 << ", " << index3 << ", " << index4 << ") - successors (" << successors[3] << ")";
+		successors.clear();
+	}
 	ASSERT_TRUE(s.isDone()) << "Could not detect the done state in the board\n" << mapStr;
 }
 
