@@ -7,6 +7,7 @@ SET(${PROJECT_NAME}_SRC
 	SokobanMapContextTest.cpp
 	SokobanMapTest.cpp
 	CampaignTest.cpp
+	PathfindingTest.cpp
 	../main/CavePacker.cpp
 	../../tests/TestAll.cpp
 	../../tests/TestShared.cpp
