@@ -1,6 +1,7 @@
 #include "tests/TestShared.h"
 #include "common/Common.h"
 #include "cavepacker/server/map/BoardState.h"
+#include "cavepacker/server/map/BoardStateUtil.h"
 #include "cavepacker/server/map/deadlock/DeadlockDetector.h"
 
 namespace cavepacker {
@@ -9,48 +10,8 @@ namespace cavepacker {
 
 class BoardStateTest: public AbstractTest {
 protected:
-	void fillState(BoardState& s, const char* board, bool convertPlayers = true) const {
-		int col = 0;
-		int row = 0;
-		int maxCol = 0;
-		const char *d = board;
-		while (*d != '\0') {
-			if (*d == '\n') {
-				if (*(d + 1) == '\0')
-					break;
-				++row;
-				maxCol = std::max(maxCol, col);
-				col = 0;
-			} else {
-				++col;
-			}
-			++d;
-		}
-		// we need the size for proper index calculations
-		s.setSize(maxCol, row + 1);
-		// after finding out the size - let's fill the board
-		d = board;
-		col = 0;
-		row = 0;
-		while (*d != '\0') {
-			if (*d == '\n') {
-				if (*(d + 1) == '\0')
-					break;
-				++row;
-				col = 0;
-			} else {
-				char c = *d;
-				// usually other players block the movement, but for the test we just ignore this
-				if (convertPlayers && (c == Sokoban::PLAYER || c == Sokoban::PLAYERONTARGET))
-					c = Sokoban::GROUND;
-				ASSERT_TRUE(s.setField(col, row, c)) << "Could not set the field " << c << " at " << col << ":" << row;
-				++col;
-			}
-			++d;
-		}
-		// at least 3 rows are needed
-		ASSERT_GE(row, 2) << "could not fill the board state with " << board;
-		s.initDeadlock();
+	inline void fillState(BoardState& s, const char* board, bool convertPlayers = true) const {
+		ASSERT_TRUE(createBoardStateFromString(s, board, convertPlayers)) << "could not fill the board state with " << board;
 	}
 
 	template<typename T>
