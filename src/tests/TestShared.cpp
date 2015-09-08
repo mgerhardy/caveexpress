@@ -2,10 +2,10 @@
 #include "network/ProtocolHandlerRegistry.h"
 
 void AbstractTest::SetUp() {
-	const bool verbose = Config.getConfigVar("verbose", "false")->getBoolValue();
-	if (verbose) {
+	const std::string& verbose = Config.getConfigVar("verbose", "")->getValue();
+	if (!verbose.empty()) {
 		ICommand::Args args;
-		args.push_back("TRACE");
+		args.push_back(verbose);
 		Config.setLogLevel(args);
 	} else {
 		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_CRITICAL);
