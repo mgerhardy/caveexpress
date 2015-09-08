@@ -159,6 +159,28 @@ TEST_F(BoardStateTest, testDone) {
 	ASSERT_TRUE(s.isDone()) << "Could not detect the done state in the board\n" << mapStr;
 }
 
+TEST_F(BoardStateTest, testSuccessors4) {
+	const char* mapStr =
+		"############\n"
+		"#$$  #     ###\n"
+		"#$$  #       #\n"
+		"#$$  #@####  #\n"
+		"#$$      ##  #\n"
+		"#$$  # #    ##\n"
+		"###### ##    #\n"
+		"#          #\n"
+		"#    #     #\n"
+		"############";
+
+	SCOPE(mapStr);
+	ASSERT_EQ(14, s.getWidth());
+	ASSERT_EQ(10, s.getHeight());
+
+	std::vector<int> successors;
+	s.getReachableIndices(s.getIndex(4, 4), successors);
+	ASSERT_EQ(4, (int)successors.size()) << "Expected to find 4 indices for 4, 4 - but found (" << indicesToColRowString(s, successors) << ")";
+}
+
 TEST_F(BoardStateTest, testSuccessors) {
 	const char* mapStr =
 		"###\n"
