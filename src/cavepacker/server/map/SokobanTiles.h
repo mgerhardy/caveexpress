@@ -11,6 +11,7 @@ const int GROUND = ' ';
 const int PACKAGEONTARGET = '*';
 const int PLAYERONTARGET = '+';
 const int DEADLOCK = '\1';
+const int VISITED = '%';
 }
 
 static inline bool isWall(char c) {
@@ -30,7 +31,7 @@ static inline bool isTarget(char c) {
 }
 
 static inline bool isGround(char c) {
-	return Sokoban::GROUND == c;
+	return Sokoban::GROUND == c || Sokoban::VISITED;
 }
 
 static inline bool isPackageOnTarget(char c) {

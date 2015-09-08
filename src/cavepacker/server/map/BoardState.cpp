@@ -73,7 +73,7 @@ bool BoardState::isFree(int index) const {
 		return false;
 	}
 	const char c = i->second;
-	return c == Sokoban::GROUND || c == Sokoban::TARGET;
+	return c == Sokoban::GROUND || c == Sokoban::TARGET || c == Sokoban::VISITED;
 }
 
 bool BoardState::isTarget(int col, int row) const {
