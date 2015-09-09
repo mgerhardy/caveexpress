@@ -8,6 +8,10 @@ BoardState::BoardState() :
 		_width(0), _height(0) {
 }
 
+BoardState::BoardState(const BoardState& state) :
+		_state(state._state), _width(state._width), _height(state._height) {
+}
+
 void BoardState::clear() {
 	_state.clear();
 	_deadlock.clear();

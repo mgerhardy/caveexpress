@@ -24,6 +24,8 @@ private:
 public:
 	BoardState();
 
+	BoardState(const BoardState& state);
+
 	/**
 	 * @brief Clears the board state - but not the size
 	 */
