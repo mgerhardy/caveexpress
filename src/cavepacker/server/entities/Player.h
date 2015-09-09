@@ -23,6 +23,7 @@ private:
 	std::string _name;
 	std::string _solutionSave;
 	int _targetIndex;
+	uint32_t _lastStep;
 public:
 	Player (Map& map, ClientId clientId);
 	virtual ~Player ();

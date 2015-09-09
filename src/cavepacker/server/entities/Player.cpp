@@ -9,7 +9,7 @@
 namespace cavepacker {
 
 Player::Player (Map& map, ClientId clientId) :
-		IEntity(EntityTypes::PLAYER, map, 0, 0), _clientId(clientId), _targetIndex(NO_TARGET_INDEX) {
+		IEntity(EntityTypes::PLAYER, map, 0, 0), _clientId(clientId), _targetIndex(NO_TARGET_INDEX), _lastStep(0u) {
 	_solutionSave.reserve(256);
 }
 
@@ -27,6 +27,11 @@ void Player::update (uint32_t deltaTime) {
 		_targetIndex = NO_TARGET_INDEX;
 		return;
 	}
+
+	if (_time - _lastStep < 250u) {
+		return;
+	}
+	_lastStep = _time;
 
 	int currentPos = _map.getPositionIndex(this);
 	const char dir = _map.getDirectionForMove(currentPos, _targetIndex);
