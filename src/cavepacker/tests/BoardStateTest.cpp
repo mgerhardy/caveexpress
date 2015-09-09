@@ -547,7 +547,7 @@ TEST_F(BoardStateTest, testDeadlockDeadlockFound1) {
 	testDeadlock(mapStr);
 }
 
-TEST_F(BoardStateTest, testDeadlockDeadlockFoundCorral) {
+TEST_F(BoardStateTest, DISABLED_testDeadlockDeadlockFoundCorral) {
 	testDeadlock(
 		"    #####\n"
 		"    #   #\n"
