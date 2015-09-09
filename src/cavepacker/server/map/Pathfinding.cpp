@@ -3,6 +3,7 @@
 #include <unordered_set>
 #include <algorithm>
 #include <queue>
+#include <functional>
 #include <SDL.h>
 
 namespace cavepacker {
