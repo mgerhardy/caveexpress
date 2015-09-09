@@ -51,16 +51,18 @@ void SimpleDeadlockDetector::init(const BoardState& s) {
 	}
 	Log::debug(LOG_SERVER, "Found %i targets", (int)targets.size());
 
-	BoardState copy = s;
-	for (auto i = copy.begin(); i != copy.end(); ++i) {
-		if (isPackage(i->second)) {
-			copy.clearFieldForIndex(i->first);
-			copy.setFieldForIndex(i->first, Sokoban::GROUND);
-			Log::debug(LOG_SERVER, "replaced package with ground at %i", i->first);
-		} else if (isPackageOnTarget(i->second)) {
-			copy.clearFieldForIndex(i->first);
-			copy.setFieldForIndex(i->first, Sokoban::TARGET);
-			Log::debug(LOG_SERVER, "replaced packageontarget with target at %i", i->first);
+	BoardState copy(s);
+	for (auto i = s.begin(); i != s.end(); ++i) {
+		const int index = i->first;
+		const char field = i->second;
+		if (isPackage(field)) {
+			copy.clearFieldForIndex(index);
+			copy.setFieldForIndex(index, Sokoban::GROUND);
+			Log::debug(LOG_SERVER, "replaced package with ground at %i", index);
+		} else if (isPackageOnTarget(field)) {
+			copy.clearFieldForIndex(index);
+			copy.setFieldForIndex(index, Sokoban::TARGET);
+			Log::debug(LOG_SERVER, "replaced packageontarget with target at %i", index);
 		}
 	}
 	Log::debug(LOG_SERVER, "board state:\n%s", copy.toString().c_str());
