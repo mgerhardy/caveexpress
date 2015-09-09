@@ -9,7 +9,7 @@
 namespace cavepacker {
 
 Player::Player (Map& map, ClientId clientId) :
-		IEntity(EntityTypes::PLAYER, map, 0, 0), _clientId(clientId) {
+		IEntity(EntityTypes::PLAYER, map, 0, 0), _clientId(clientId), _targetIndex(NO_TARGET_INDEX) {
 	_solutionSave.reserve(256);
 }
 
@@ -19,8 +19,9 @@ Player::~Player ()
 
 void Player::update (uint32_t deltaTime) {
 	IEntity::update(deltaTime);
-	if (_targetIndex == NO_TARGET_INDEX)
+	if (_targetIndex == NO_TARGET_INDEX) {
 		return;
+	}
 
 	if (_map.isAt(this, _targetIndex)) {
 		_targetIndex = NO_TARGET_INDEX;
@@ -29,8 +30,13 @@ void Player::update (uint32_t deltaTime) {
 
 	int currentPos = _map.getPositionIndex(this);
 	const char dir = _map.getDirectionForMove(currentPos, _targetIndex);
-	if (!_map.movePlayer(this, dir))
+	if (dir == '\0') {
 		_targetIndex = NO_TARGET_INDEX;
+		return;
+	}
+	if (!_map.movePlayer(this, dir)) {
+		_targetIndex = NO_TARGET_INDEX;
+	}
 }
 
 void Player::storeStep (char step)
@@ -44,6 +50,8 @@ bool Player::undo ()
 		return false;
 	std::string::reverse_iterator i = _solutionSave.rbegin();
 	const char s = *i;
+
+	_targetIndex = NO_TARGET_INDEX;
 
 	int xPlayer;
 	int yPlayer;

@@ -1,6 +1,7 @@
 set(cavepacker-server_SRCS
 	map/SokobanMapContext.cpp
 	map/Map.cpp
+	map/Pathfinding.cpp
 	map/BoardState.cpp
 	map/deadlock/DeadlockDetector.cpp
 	map/deadlock/SimpleDeadlockDetector.cpp

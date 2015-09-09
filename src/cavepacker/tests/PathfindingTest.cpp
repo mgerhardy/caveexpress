@@ -1,6 +1,6 @@
 #include "tests/TestShared.h"
 #include "common/Common.h"
-#include "cavepacker/server/map/Pathfinding.h"
+#include "cavepacker/server/map/Pathfinding.cpp"
 #include "cavepacker/server/map/BoardStateUtil.h"
 
 namespace cavepacker {
@@ -79,7 +79,16 @@ TEST_F(PathfindingTest, testSimpleRoute) {
 	ASSERT_TRUE(s.setField(4, 3, Sokoban::VISITED));
 	ASSERT_TRUE(s.setField(6, 3, Sokoban::VISITED));
 #endif
-	ASSERT_TRUE(astar(s, s.getIndex(4, 3), s.getIndex(6, 1))) << "Could not find the route from 5, 4 to 7, 2";
+	std::vector<int> path;
+	ASSERT_TRUE(astar(s, s.getIndex(4, 3), s.getIndex(6, 1), path)) << "Could not find the route from 5, 4 to 7, 2";
+	ASSERT_EQ(7, path.size());
+	ASSERT_EQ(s.getIndex(4, 3), path[0]);
+	ASSERT_EQ(s.getIndex(4, 4), path[1]);
+	ASSERT_EQ(s.getIndex(5, 4), path[2]);
+	ASSERT_EQ(s.getIndex(6, 4), path[3]);
+	ASSERT_EQ(s.getIndex(6, 3), path[4]);
+	ASSERT_EQ(s.getIndex(6, 2), path[5]);
+	ASSERT_EQ(s.getIndex(6, 1), path[6]);
 }
 
 }

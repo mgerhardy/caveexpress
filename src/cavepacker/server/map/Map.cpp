@@ -28,6 +28,7 @@
 #include "common/ExecutionTime.h"
 #include "common/Commands.h"
 #include "cavepacker/server/map/SokobanMapContext.h"
+#include "cavepacker/server/map/Pathfinding.h"
 #include "cavepacker/shared/CavePackerSpriteType.h"
 #include "cavepacker/shared/EntityStates.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
@@ -256,8 +257,22 @@ int Map::getPositionIndex (IEntity* entity) const
 
 char Map::getDirectionForMove (int currentIndex, int targetIndex) const
 {
-	// TODO:
-	return MOVE_RIGHT;
+	std::vector<int> path;
+	if (!astar(_state, currentIndex, targetIndex, path)) {
+		Log::warn(LOG_MAP, "Could not find path from %i to %i", currentIndex, targetIndex);
+		return '\0';
+	}
+	const int index = path[1];
+	Log::debug(LOG_MAP, "walk to index %i (current: %i)", index, currentIndex);
+	if (index - 1 == currentIndex) {
+		return MOVE_RIGHT;
+	} else if (index + 1 == currentIndex) {
+		return MOVE_LEFT;
+	} else if (index > currentIndex) {
+		return MOVE_DOWN;
+	}
+
+	return MOVE_UP;
 }
 
 bool Map::undoPackage (int col, int row, int targetCol, int targetRow)
