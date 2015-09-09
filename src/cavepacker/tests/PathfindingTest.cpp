@@ -79,7 +79,7 @@ TEST_F(PathfindingTest, testSimpleRoute) {
 	ASSERT_TRUE(s.setField(4, 3, Sokoban::VISITED));
 	ASSERT_TRUE(s.setField(6, 3, Sokoban::VISITED));
 #endif
-	ASSERT_TRUE(astar(s, s.getIndex(4, 3), s.getIndex(6, 1))) << "Could not find the route from 5, 4 to 6, 2";
+	ASSERT_TRUE(astar(s, s.getIndex(4, 3), s.getIndex(6, 1))) << "Could not find the route from 5, 4 to 7, 2";
 }
 
 }
