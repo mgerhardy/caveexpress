@@ -18,6 +18,10 @@ struct Node {
 	int g = { 0 };
 	int f = { 0 };
 	int predecessor = { -1 };
+
+	inline bool operator<(const Node& rhs) const {
+		return f < rhs.f;
+	}
 };
 
 bool operator==(const Node& node1, const Node& node2) {
