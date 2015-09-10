@@ -41,11 +41,11 @@ public:
 	IUIMapEditorWindow (IFrontend *frontend, IMapManager& mapManager, IUINodeMapEditor* editor, IUINodeSpriteSelector* spriteSelector, IUINodeEntitySelector* entitySelector);
 	virtual ~IUIMapEditorWindow ();
 
-	bool nextFocus () override
+	bool nextFocus (bool b) override
 	{
 		return false;
 	}
-	bool prevFocus () override
+	bool prevFocus (bool b) override
 	{
 		return false;
 	}

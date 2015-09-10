@@ -539,10 +539,11 @@ void UI::onJoystickMotion (bool horizontal, int v)
 
 	// now check whether our value is bigger than our movement delta
 	const int delta = 2000;
+	static const ICommand::Args args(0);
 	if (v < -delta) {
-		focusPrev();
+		focusPrev(args);
 	} else if (v > delta) {
-		focusNext();
+		focusNext(args);
 	}
 
 	_lastJoystickMoveTime = _time;
@@ -718,19 +719,19 @@ UIWindow* UI::push (const std::string& windowID)
 	return window;
 }
 
-void UI::focusNext ()
+void UI::focusNext (const ICommand::Args& args)
 {
 	if (_stack.empty())
 		return;
-	if (!_stack.back()->nextFocus())
+	if (!_stack.back()->nextFocus(!args.empty()))
 		_stack.back()->addFirstFocus();
 }
 
-void UI::focusPrev ()
+void UI::focusPrev (const ICommand::Args& args)
 {
 	if (_stack.empty())
 		return;
-	if (!_stack.back()->prevFocus())
+	if (!_stack.back()->prevFocus(!args.empty()))
 		_stack.back()->addLastFocus();
 }
 

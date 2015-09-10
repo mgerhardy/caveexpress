@@ -458,7 +458,7 @@ bool UINode::onFingerPress (int64_t finger, uint16_t x, uint16_t y)
 	return false;
 }
 
-bool UINode::prevFocus ()
+bool UINode::prevFocus (bool cursorup)
 {
 	if (_nodes.empty()) {
 		if (!isActive())
@@ -475,7 +475,7 @@ bool UINode::prevFocus ()
 		if (!nodePtr->hasFocus())
 			continue;
 
-		if (nodePtr->prevFocus()) {
+		if (nodePtr->prevFocus(cursorup)) {
 			addFocus(0, 0);
 			return true;
 		}
@@ -496,7 +496,7 @@ bool UINode::prevFocus ()
 	return false;
 }
 
-bool UINode::nextFocus ()
+bool UINode::nextFocus (bool cursordown)
 {
 	if (_nodes.empty()) {
 		if (!isActive())
@@ -513,7 +513,7 @@ bool UINode::nextFocus ()
 		if (!nodePtr->hasFocus())
 			continue;
 
-		if (nodePtr->nextFocus()) {
+		if (nodePtr->nextFocus(cursordown)) {
 			addFocus(0, 0);
 			return true;
 		}

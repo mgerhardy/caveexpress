@@ -378,25 +378,32 @@ public:
 		_selectedIndex = -1;
 	}
 
-	bool nextFocus () override
+	bool nextFocus (bool cursordown) override
 	{
 		if (_entries.empty())
 			return false;
-		++_selectedIndex;
-		_selectedIndex %= _entries.size();
+		if (cursordown)
+			_selectedIndex += _cols;
+		else
+			++_selectedIndex;
+		const int maxIndex = _offset + _rows * _cols;
+		_selectedIndex %= std::min(maxIndex, (int)_entries.size());
 		if (_selectedIndex == 0)
-			return UINode::nextFocus();
+			return UINode::nextFocus(cursordown);
 		return true;
 	}
 
-	bool prevFocus () override
+	bool prevFocus (bool cursorup) override
 	{
 		if (_entries.empty())
 			return false;
-		--_selectedIndex;
+		if (cursorup)
+			_selectedIndex -= _cols;
+		else
+			--_selectedIndex;
 		if (_selectedIndex < 0) {
 			_selectedIndex = 0;
-			return UINode::prevFocus();
+			return UINode::prevFocus(cursorup);
 		}
 		return true;
 	}

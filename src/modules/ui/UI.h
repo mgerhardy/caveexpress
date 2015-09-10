@@ -69,8 +69,8 @@ private:
 	int32_t _cursorY;
 
 	void printStack ();
-	void focusNext ();
-	void focusPrev ();
+	void focusNext (const ICommand::Args& args);
+	void focusPrev (const ICommand::Args& args);
 	void runFocusNode ();
 
 	struct ProgressBar {
