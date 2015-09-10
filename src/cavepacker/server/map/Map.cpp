@@ -899,7 +899,7 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 	if (_nextSolveStep > 0)
 		return;
 
-	_nextSolveStep = Config.getConfigVar("solvestepmillis", "100")->getIntValue();
+	_nextSolveStep = Config.getConfigVar("solvestepmillis", "250")->getIntValue();
 
 	if (_solution[0] == '(') {
 		abortAutoSolve();
