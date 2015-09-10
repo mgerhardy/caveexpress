@@ -39,25 +39,6 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 						frontend->getWidth(), frontend->getHeight(), map)), _undo(
 				nullptr), _points(nullptr), _campaignManager(campaignManager), _scrolling(false) {
 	init();
-
-	const float height = 0.05f;
-	const float sliderWidth = 0.3f;
-	_autoSolveSlider = new UINodeSlider(frontend, 10.0f, 1000.0f, 10.0f);
-	_autoSolveSlider->setAlignment(NODE_ALIGN_BOTTOM | NODE_ALIGN_CENTER);
-	_autoSolveSlider->setSize(sliderWidth, height);
-	_autoSolveSlider->addListener(UINodeListenerPtr(new SolveListener(_autoSolveSlider, "solvestepmillis")));
-	add(_autoSolveSlider);
-	hideAutoSolveSlider();
-}
-
-void UIMapWindow::showAutoSolveSlider()
-{
-	_autoSolveSlider->setVisible(true);
-}
-
-void UIMapWindow::hideAutoSolveSlider()
-{
-	_autoSolveSlider->setVisible(false);
 }
 
 void UIMapWindow::showCursor (bool /*show*/)
@@ -75,7 +56,6 @@ void UIMapWindow::showHud()
 {
 	IUIMapWindow::showHud();
 	_undo->setVisible(true);
-	hideAutoSolveSlider();
 }
 
 void UIMapWindow::initHudNodes ()

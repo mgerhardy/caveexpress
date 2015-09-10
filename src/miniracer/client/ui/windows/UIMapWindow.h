@@ -13,7 +13,6 @@ protected:
 	void initHudNodes () override;
 	void initInputHudNodes () override;
 	UINode* _undo;
-	UINodeSlider* _autoSolveSlider;
 	UINodePoint* _points;
 	CampaignManager& _campaignManager;
 	bool _scrolling;
@@ -27,8 +26,6 @@ public:
 
 	void hideHud() override;
 	void showHud() override;
-	void showAutoSolveSlider();
-	void hideAutoSolveSlider();
 	void showCursor (bool show) override;
 };
 
