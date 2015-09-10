@@ -9,4 +9,4 @@ mkdir -p cp-build-ios
 cd cp-build-ios
 pwd
 /Applications/CMake.app/Contents/bin/cmake -DRELEASE=ON -DCMAKE_TOOLCHAIN_FILE=$DIR/../../cmake/toolchains/ios-toolchain.cmake -GXcode $DIR/../..
-xcodebuild -project Project.xcodeproj -target ALL_BUILD $*
+xcodebuild -project caveproductions.xcodeproj -target ALL_BUILD $*
