@@ -9,4 +9,4 @@ mkdir -p cp-build-osx
 cd cp-build-osx
 pwd
 /Applications/CMake.app/Contents/bin/cmake -GXcode $DIR/../..
-xcodebuild -project Project.xcodeproj -target ALL_BUILD $*
+xcodebuild -project caveproductions.xcodeproj -target ALL_BUILD $*
