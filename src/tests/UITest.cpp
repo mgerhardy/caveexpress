@@ -54,7 +54,7 @@ TEST_F(UITest, testSimpleFocus) {
 	ASSERT_TRUE(node1->hasFocus());
 	ASSERT_TRUE(window.hasFocus());
 
-	ASSERT_TRUE(window.nextFocus());
+	ASSERT_TRUE(window.nextFocus(false));
 	ASSERT_FALSE(node1->hasFocus());
 	ASSERT_TRUE(node2->hasFocus());
 	ASSERT_TRUE(window.hasFocus());
