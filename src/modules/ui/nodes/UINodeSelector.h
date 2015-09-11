@@ -22,7 +22,9 @@ protected:
 	bool _scrollingEnabled;
 
 	int _mouseWheelScrollAmount;
+	// scrolling pixels
 	int _scrolling;
+	// amount of entries to skip while showing the selector
 	int _offset;
 
 	int _rowSpacing;
@@ -39,6 +41,7 @@ protected:
 	BitmapFontPtr _font;
 	Color _fontColor;
 
+	// show page indicator
 	bool _pageVisible;
 
 	float _colWidth;
@@ -252,8 +255,12 @@ public:
 
 	bool onMouseWheel (int32_t x, int32_t y) override
 	{
-		if (!_scrollingEnabled)
+		if (!_scrollingEnabled) {
+			// TODO: only offset one row
+			offset(true);
+			selectEntry(_offset);
 			return false;
+		}
 		scroll(y > 0, _mouseWheelScrollAmount);
 		return true;
 	}
@@ -352,6 +359,22 @@ public:
 		disableScissor();
 	}
 
+	virtual bool onKeyPress (int32_t key, int16_t modifier) override
+	{
+		if (!UINode::onKeyPress(key, modifier)) {
+			if (key == SDLK_PAGEUP) {
+				offset(false);
+				selectEntry(_offset);
+				return true;
+			} else if (key == SDLK_PAGEDOWN) {
+				offset(true);
+				selectEntry(_offset);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	void onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY) override
 	{
 		UINode::onMouseMotion(x, y, relX, relY);
@@ -386,10 +409,15 @@ public:
 			_selectedIndex += _cols;
 		else
 			++_selectedIndex;
-		const int maxIndex = _offset + _rows * _cols;
-		_selectedIndex %= std::min(maxIndex, (int)_entries.size());
-		if (_selectedIndex == 0)
+		if (_selectedIndex - _offset >= _rows * _cols) {
+			offset(true);
+			_selectedIndex = _offset;
+		}
+		Log::info(LOG_UI, "selected index: %i, offset: %i", _selectedIndex, _offset);
+		_selectedIndex %= (int) _entries.size();
+		if (_selectedIndex == 0) {
 			return UINode::nextFocus(cursordown);
+		}
 		return true;
 	}
 
@@ -401,8 +429,13 @@ public:
 			_selectedIndex -= _cols;
 		else
 			--_selectedIndex;
+		if (_selectedIndex < _offset) {
+			offset(false);
+			_selectedIndex = (_rows * _cols) - 1;
+		}
 		if (_selectedIndex < 0) {
-			_selectedIndex = 0;
+			_selectedIndex = _entries.size() - 1;
+			_offset = _selectedIndex % (_rows * _cols);
 			return UINode::prevFocus(cursorup);
 		}
 		return true;
