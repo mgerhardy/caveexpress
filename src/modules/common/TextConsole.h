@@ -1,9 +1,7 @@
 #pragma once
 
 #include "common/IConsole.h"
-#ifdef HAVE_CONFIG_H
-#include "../config.h"
-#endif
+#include "common/Config.h"
 
 #include <vector>
 
