@@ -289,8 +289,8 @@ void Unix::backtrace (const char *errorMessage)
 	const int frameSize = 20;
 	void *array[frameSize];
 
-	ScopedArrayPtr<char> strBufStart(new char[bufSize]);
-	char* strBuf = strBufStart;
+	std::unique_ptr<char[]> strBufStart(new char[bufSize]);
+	char* strBuf = strBufStart.get();
 	const char* strBufEnd = strBuf + bufSize;
 
 	// get backtrace addresses
@@ -351,8 +351,7 @@ void Unix::backtrace (const char *errorMessage)
 	}
 	free(symbollist);
 	appendMessage(strBuf, strBufEnd, "----END BACKTRACE CALLSTACK----\n");
-	logError(std::string(strBufStart));
-	free(strBufStart);
+	logError(std::string(strBufStart.get()));
 #else
 	logError(std::string(errorMessage));
 #endif
