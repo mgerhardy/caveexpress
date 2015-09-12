@@ -1,0 +1,2 @@
+#cmakedefine HAVE_SYSLOG_H
+#cmakedefine HAVE_EXECINFO_H

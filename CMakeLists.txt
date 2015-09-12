@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8.7)
 project(caveproductions)
+include(CheckIncludeFiles)
 
 #-------------------------------------------------------------------------------
 # options
@@ -129,6 +130,14 @@ if (CCACHE)
 else()
 	message(WARNING "ccache not found")
 endif()
+
+check_include_files(syslog.h HAVE_SYSLOG_H)
+check_include_files(execinfo.h HAVE_EXECINFO_H)
+# TODO: HAVE_CLOCKGETTIME
+# TODO: HAVE_NCURSES_H
+configure_file(${ROOT_DIR}/src/config.h.in ${CMAKE_BINARY_DIR}/cp-config.h)
+add_definitions(-DHAVE_CONFIG_H)
+include_directories(${CMAKE_BINARY_DIR})
 
 include_directories(src)
 include_directories(src/modules)
