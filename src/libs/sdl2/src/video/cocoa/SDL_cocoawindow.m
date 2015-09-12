@@ -1288,11 +1288,23 @@ Cocoa_SetWindowSize(_THIS, SDL_Window * window)
 {
     SDL_WindowData *windata = (SDL_WindowData *) window->driverdata;
     NSWindow *nswindow = windata->nswindow;
-    NSSize size;
+    NSRect rect;
+    Uint32 moveHack;
 
-    size.width = window->w;
-    size.height = window->h;
-    [nswindow setContentSize:size];
+    /* Cocoa will resize the window from the bottom-left rather than the
+     * top-left when -[nswindow setContentSize:] is used, so we must set the
+     * entire frame based on the new size, in order to preserve the position.
+     */
+    rect.origin.x = window->x;
+    rect.origin.y = window->y;
+    rect.size.width = window->w;
+    rect.size.height = window->h;
+    ConvertNSRect([nswindow screen], (window->flags & FULLSCREEN_MASK), &rect);
+
+    moveHack = s_moveHack;
+    s_moveHack = 0;
+    [nswindow setFrame:[nswindow frameRectForContentRect:rect] display:YES];
+    s_moveHack = moveHack;
 
     ScheduleContextUpdates(windata);
 }}

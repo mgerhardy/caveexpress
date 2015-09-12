@@ -54,12 +54,12 @@ static Bool isUnmapNotify(Display *dpy, XEvent *ev, XPointer win)
 {
     return ev->type == UnmapNotify && ev->xunmap.window == *((Window*)win);
 }
+
+/*
 static Bool isConfigureNotify(Display *dpy, XEvent *ev, XPointer win)
 {
     return ev->type == ConfigureNotify && ev->xconfigure.window == *((Window*)win);
 }
-
-/*
 static Bool
 X11_XIfEventTimeout(Display *display, XEvent *event_return, Bool (*predicate)(), XPointer arg, int timeoutMS)
 {
@@ -864,7 +864,6 @@ X11_SetWindowBordered(_THIS, SDL_Window * window, SDL_bool bordered)
 
     SetWindowBordered(display, displaydata->screen, data->xwindow, bordered);
     X11_XFlush(display);
-    X11_XIfEvent(display, &event, &isConfigureNotify, (XPointer)&data->xwindow);
 
     if (visible) {
         XWindowAttributes attr;
