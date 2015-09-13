@@ -133,7 +133,6 @@ endif()
 
 check_include_files(syslog.h HAVE_SYSLOG_H)
 check_include_files(execinfo.h HAVE_EXECINFO_H)
-# TODO: HAVE_CLOCKGETTIME
 # TODO: HAVE_NCURSES_H
 configure_file(${ROOT_DIR}/src/config.h.in ${CMAKE_BINARY_DIR}/cp-config.h)
 add_definitions(-DHAVE_CONFIG_H)

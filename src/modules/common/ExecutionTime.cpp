@@ -137,6 +137,6 @@ ExecutionTime::~ExecutionTime ()
 	gettime(end);
 	timespec d = diff(_start, end);
 	if (_microDelay == 0L || d.tv_nsec / 1000 > _microDelay)
-		Log::info(LOG_DEBUG, _id + ": " + format("%i,%09i", d.tv_sec, d.tv_nsec) + "s");
+		Log::info(LOG_DEBUG, "%s: %i,%09is", _id.c_str(), (int)d.tv_sec, (int)d.tv_nsec);
 #endif
 }
