@@ -219,7 +219,7 @@ void UINode::displayText (const std::string& text, uint32_t delayMillis, float x
 		i->delayMillis = delayMillis;
 		return;
 	}
-	Log::info(LOG_UI, "Display text '%s' for %ui ms", text.c_str(), delayMillis);
+	Log::info(LOG_UI, "Display text '%s' for %u ms", text.c_str(), delayMillis);
 	const NodeCoord c(x, y);
 	const BitmapFontPtr& font = getFont(HUGE_FONT);
 	_texts.push_back(UINodeDelayedText(text, delayMillis, c, font));

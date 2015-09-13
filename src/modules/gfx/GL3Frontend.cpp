@@ -439,7 +439,7 @@ void GL3Frontend::initRenderer () {
 	} else {
 		_waterNoise = uploadTexture(static_cast<unsigned char *>(textureSurface->pixels), textureSurface->w, textureSurface->h);
 		SDL_FreeSurface(textureSurface);
-		Log::info(LOG_CLIENT, "Uploaded water noise with texnum %ui", _waterNoise);
+		Log::info(LOG_CLIENT, "Uploaded water noise with texnum %u", _waterNoise);
 	}
 }
 

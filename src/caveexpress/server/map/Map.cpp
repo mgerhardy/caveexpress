@@ -517,7 +517,7 @@ bool Map::load (const std::string& name)
 
 	Log::info(LOG_MAP, "spawn %i npcs", _friendlyNPCLimit);
 	Log::info(LOG_MAP, "theme: %s", _theme->name.c_str());
-	Log::info(LOG_MAP, "reference time: %ui", _referenceTime);
+	Log::info(LOG_MAP, "reference time: %u", _referenceTime);
 
 	if (_width <= 0 || _height <= 0) {
 		Log::error(LOG_MAP, "invalid map dimensions given");

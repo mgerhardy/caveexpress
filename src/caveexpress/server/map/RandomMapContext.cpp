@@ -340,7 +340,7 @@ bool RandomMapContext::placeInitialRandomTiles ()
 				return false;
 			}
 		} else {
-			Log::info(LOG_SERVER, "placed initial tile '%s' at %ui:%ui", def->id.c_str(), x, y);
+			Log::info(LOG_SERVER, "placed initial tile '%s' at %u:%u", def->id.c_str(), x, y);
 			tries = 0;
 		}
 	}
