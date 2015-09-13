@@ -1,3 +1,4 @@
 #cmakedefine HAVE_SYSLOG_H
 #cmakedefine HAVE_EXECINFO_H
 #cmakedefine HAVE_CLOCKGETTIME
+#cmakedefine HAVE_NCURSES_H

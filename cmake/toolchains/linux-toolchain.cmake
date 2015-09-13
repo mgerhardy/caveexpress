@@ -20,6 +20,16 @@ endif()
 
 set(CMAKE_C_STANDARD_LIBRARIES ${CMAKE_DL_LIBS})
 
+check_include_files(syslog.h HAVE_SYSLOG_H)
+check_include_files(execinfo.h HAVE_EXECINFO_H)
+set(CURSES_NEED_NCURSES TRUE)
+find_package(Curses)
+set(HAVE_NCURSES_H ${CURSES_HAVE_NCURSES_H})
+if (HAVE_NCURSES_H)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+    set(CMAKE_C_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES}")
+endif()
+
 check_library_exists(rt clock_gettime "time.h" HAVE_CLOCKGETTIME)
 if (HAVE_CLOCKGETTIME)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lrt")
