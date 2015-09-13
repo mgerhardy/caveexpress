@@ -1,4 +1,4 @@
-set(FRAMEWORKS Foundation IOKit OpenGL Cocoa CoreVideo CoreAudio AudioToolbox AudioUnit Carbon ForceFeedback CoreFoundation)
+set(FRAMEWORKS Foundation IOKit OpenGL Cocoa CoreVideo CoreAudio CoreServices AudioToolbox AudioUnit Carbon ForceFeedback CoreFoundation)
 
 set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
 set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")

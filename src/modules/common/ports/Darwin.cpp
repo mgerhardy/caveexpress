@@ -1,6 +1,7 @@
 #include "Darwin.h"
 #include "Cocoa.h"
 #include "common/Application.h"
+#include <CoreServices/CoreServices.h>
 
 Darwin::Darwin () :
 		Unix()
@@ -24,6 +25,10 @@ std::string Darwin::getHomeDirectory ()
 
 int Darwin::openURL (const std::string& url, bool) const
 {
-	const std::string cmd = "open \"" + url + "\"";
-	return system(cmd.c_str());
+	CFURLRef cfurl = CFURLCreateWithBytes(nullptr, (const uint8_t *) url.c_str(),
+			url.length(), kCFStringEncodingUTF8, nullptr);
+
+	const bool success = LSOpenCFURLRef(cfurl, nullptr) == noErr;
+	CFRelease(cfurl);
+	return success ? 0 : -1;
 }
