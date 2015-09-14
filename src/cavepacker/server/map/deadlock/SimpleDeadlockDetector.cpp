@@ -73,7 +73,7 @@ void SimpleDeadlockDetector::init(const BoardState& s) {
 		moveBackwards(copy, targetIndex);
 	}
 
-	for (auto i = s.begin(); i != s.end(); ++i) {
+	for (auto i = copy.begin(); i != copy.end(); ++i) {
 		const int index = i->first;
 		const char field = i->second;
 		if (!isGround(field) && !isPackage(field)) {
