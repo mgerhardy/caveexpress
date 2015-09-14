@@ -130,21 +130,4 @@ char BoardState::clearFieldForIndex(int index) {
 	return c;
 }
 
-char BoardState::clearField(int col, int row) {
-	const int index = getIndex(col, row);
-	return clearFieldForIndex(index);
-}
-
-bool BoardState::setField(int col, int row, char field) {
-	const int index = getIndex(col, row);
-	return setFieldForIndex(index, field);
-}
-
-bool BoardState::setFieldForIndex(int index, char field) {
-	if (_state[index] != '\0')
-		return false;
-	_state[index] = field;
-	return true;
-}
-
 }

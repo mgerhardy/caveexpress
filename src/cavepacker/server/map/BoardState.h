@@ -192,4 +192,21 @@ inline void getOppositeXY(char step, int& x, int& y) {
 	y *= -1;
 }
 
+inline char BoardState::clearField(int col, int row) {
+	const int index = getIndex(col, row);
+	return clearFieldForIndex(index);
+}
+
+inline bool BoardState::setField(int col, int row, char field) {
+	const int index = getIndex(col, row);
+	return setFieldForIndex(index, field);
+}
+
+inline bool BoardState::setFieldForIndex(int index, char field) {
+	if (_state[index] != '\0')
+		return false;
+	_state[index] = field;
+	return true;
+}
+
 }
