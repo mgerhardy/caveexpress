@@ -61,14 +61,16 @@ protected:
 		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
-		ASSERT_FALSE(simple.hasDeadlockAt(s.getIndex(col, row))) << "Blocked fields: " << getDeadlocks(simple, s);
+		const int index = s.getIndex(col, row);
+		const bool deadlock = simple.hasDeadlockAt(index);
+		ASSERT_FALSE(deadlock) << "Unexpected deadlock found at " << (col + 1) << ":" << (row + 1) << " index: " << index << ". Blocked fields: " << getDeadlocks(simple, s);
 	}
 
 	void testSimpleDeadlockAt(const char *mapStr, int col, int row) {
 		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
-		ASSERT_TRUE(simple.hasDeadlockAt(s.getIndex(col, row))) << "Blocked fields: " << getDeadlocks(simple, s);
+		ASSERT_TRUE(simple.hasDeadlockAt(s.getIndex(col, row))) << "Expected deadlock not found at " << (col + 1) << ":" << (row + 1) << ". Blocked fields: " << getDeadlocks(simple, s);
 	}
 
 	void testSimpleDeadlock(const char *mapStr) {

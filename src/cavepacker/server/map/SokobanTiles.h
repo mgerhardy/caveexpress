@@ -31,7 +31,7 @@ static inline bool isTarget(char c) {
 }
 
 static inline bool isGround(char c) {
-	return Sokoban::GROUND == c || Sokoban::VISITED;
+	return Sokoban::GROUND == c || Sokoban::VISITED == c;
 }
 
 static inline bool isPackageOnTarget(char c) {
