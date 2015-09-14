@@ -65,24 +65,30 @@ void SimpleDeadlockDetector::init(const BoardState& s) {
 			Log::debug(LOG_SERVER, "replaced packageontarget with target at %i", index);
 		}
 	}
+#ifdef DEBUG
 	Log::debug(LOG_SERVER, "board state:\n%s", copy.toString().c_str());
+#endif
 
 	for (int targetIndex : targets) {
 		moveBackwards(copy, targetIndex);
 	}
 
 	for (auto i = s.begin(); i != s.end(); ++i) {
-		if (!isGround(i->second) && !isPackage(i->second)) {
+		const int index = i->first;
+		const char field = i->second;
+		if (!isGround(field) && !isPackage(field)) {
 			continue;
 		}
-		if (_visited.find(i->first) != _visited.end()) {
+		if (_visited.find(index) != _visited.end()) {
 			continue;
 		}
+#ifdef DEBUG
 		int col;
 		int row;
-		s.getColRowFromIndex(i->first, col, row);
+		s.getColRowFromIndex(index, col, row);
 		Log::debug(LOG_SERVER, "Simple deadlock detected at %i:%i", col, row);
-		_deadlocks.insert(i->first);
+#endif
+		_deadlocks.insert(index);
 	}
 	Log::debug(LOG_SERVER, "Found %i simple deadlocks", (int)_deadlocks.size());
 	Log::debug(LOG_SERVER, "Visited %i fields", (int)_visited.size());
