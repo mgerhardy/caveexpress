@@ -50,7 +50,7 @@ protected:
 
 	uint32_t _restartDue;
 	BoardState _state;
-	typedef std::map<int, IEntity*> FieldMap;
+	typedef std::vector<IEntity*> FieldMap;
 	typedef FieldMap::iterator FieldMapIter;
 	typedef FieldMap::const_iterator FieldMapConstIter;
 	FieldMap _field;

@@ -486,6 +486,7 @@ bool Map::load (const std::string& name)
 	_title = ctx->getTitle();
 	_width = getSetting(msn::WIDTH, "-1").toInt();
 	_height = getSetting(msn::HEIGHT, "-1").toInt();
+	_field.assign(_width * _height, nullptr);
 	_state.setSize(_width, _height);
 	_solution = getSolution();
 	const std::string solutionSteps = string::toString(_solution.length());
@@ -624,12 +625,12 @@ void Map::startMap ()
 
 MapTile* Map::getPackage (int col, int row) const
 {
-	auto i = _field.find(_state.getIndex(col, row));
-	if (i == _field.end()) {
+	auto i = _field[_state.getIndex(col, row)];
+	if (i == nullptr) {
 		return nullptr;
 	}
-	if (EntityTypes::isPackage(i->second->getType())) {
-		return static_cast<MapTile*>(i->second);
+	if (EntityTypes::isPackage(i->getType())) {
+		return static_cast<MapTile*>(i);
 	}
 	return nullptr;
 }
@@ -716,12 +717,12 @@ char Map::getSokobanFieldId (const IEntity *entity) const
 bool Map::setField (IEntity *entity, int col, int row)
 {
 	const int index = _state.getIndex(col, row);
-	FieldMapConstIter fi = _field.find(index);
-	if (fi == _field.end()) {
+	auto fi = _field[index];
+	if (fi == nullptr) {
 		_field[index] = entity;
 	} else {
 		// ground and target have low prio
-		if (fi->second->isGround() || fi->second->isTarget())
+		if (fi->isGround() || fi->isTarget())
 			_field[index] = entity;
 	}
 	char nc = getSokobanFieldId(entity);
@@ -735,15 +736,13 @@ bool Map::setField (IEntity *entity, int col, int row)
 			nc = Sokoban::PLAYERONTARGET;
 		else if (nc == Sokoban::GROUND)
 			return true;
-		else
-			return false;
+		return false;
 	} else if (c == Sokoban::PACKAGE) {
 		if (nc == Sokoban::TARGET)
 			nc = Sokoban::PACKAGEONTARGET;
 		else if (nc == Sokoban::GROUND)
 			return true;
-		else
-			return false;
+		return false;
 	} else if (c == Sokoban::TARGET) {
 		if (nc == Sokoban::PACKAGE)
 			nc = Sokoban::PACKAGEONTARGET;
@@ -751,8 +750,7 @@ bool Map::setField (IEntity *entity, int col, int row)
 			nc = Sokoban::PLAYERONTARGET;
 		else if (nc == Sokoban::GROUND)
 			return true;
-		else
-			return false;
+		return false;
 	}
 	// we expect that there is already a value set, so we need to clear it first
 	if (_state.clearField(col, row) == '\0')
