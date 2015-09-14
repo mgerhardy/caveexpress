@@ -78,18 +78,19 @@ bool FrozenDeadlockDetector::hasDeadlock_(const SimpleDeadlockDetector& simple, 
 bool FrozenDeadlockDetector::hasDeadlock(const SimpleDeadlockDetector& simple, const BoardState& s) {
 	clear();
 	BoardState copy = s;
-	for (auto i = s.begin(); i != s.end(); ++i) {
-		if (!isPackage(i->second)) {
+	int index = 0;
+	for (auto i = s.begin(); i != s.end(); ++i, ++index) {
+		if (!isPackage(*i)) {
 			continue;
 		}
 
 		int col;
 		int row;
-		if (!s.getColRowFromIndex(i->first, col, row))
+		if (!s.getColRowFromIndex(index, col, row))
 			continue;
 
 		if (hasDeadlock_(simple, copy, col, row)) {
-			_deadlocks.insert(i->first);
+			_deadlocks.insert(index);
 			return true;
 		}
 	}

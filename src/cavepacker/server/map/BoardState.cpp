@@ -13,13 +13,14 @@ BoardState::BoardState(const BoardState& state) :
 }
 
 void BoardState::clear() {
-	_state.clear();
+	_state.assign(_width * _height, '\0');
 	_deadlock.clear();
 }
 
 void BoardState::setSize(int width, int height) {
 	_width = width;
 	_height = height;
+	_state.assign(_width * _height, '\0');
 }
 
 std::string BoardState::toString() const {
@@ -41,12 +42,12 @@ std::string BoardState::toString() const {
 				cp_snprintf(buf, sizeof(buf), "%03i %c", row + 1, c);
 				mapStr.append(buf);
 			}
-			auto i = _state.find(getIndex(col, row));
-			if (i == _state.end()) {
+			auto i = _state[getIndex(col, row)];
+			if (i == '\0') {
 				mapStr.append(" ");
 				continue;
 			}
-			const char str[2] = { i->second, '\0' };
+			const char str[2] = { i, '\0' };
 			mapStr.append(str);
 		}
 		mapStr.append("\n");
@@ -72,31 +73,28 @@ bool BoardState::isFree(int col, int row) const {
 }
 
 bool BoardState::isFree(int index) const {
-	auto i = _state.find(index);
-	if (i == _state.end()) {
+	const char c = _state[index];
+	if (c == '\0') {
 		return false;
 	}
-	const char c = i->second;
 	return c == Sokoban::GROUND || c == Sokoban::TARGET || c == Sokoban::VISITED;
 }
 
 bool BoardState::isTarget(int col, int row) const {
 	const int index = getIndex(col, row);
-	auto i = _state.find(index);
-	if (i == _state.end()) {
+	const char c = _state[index];
+	if (c == '\0') {
 		return false;
 	}
-	const char c = i->second;
 	return c == Sokoban::PACKAGEONTARGET || c == Sokoban::PLAYERONTARGET || c == Sokoban::TARGET;
 }
 
 bool BoardState::isPackage(int col, int row) const {
 	const int index = getIndex(col, row);
-	auto i = _state.find(index);
-	if (i == _state.end()) {
+	const char c = _state[index];
+	if (c == '\0') {
 		return false;
 	}
-	const char c = i->second;
 	return c == Sokoban::PACKAGE || c == Sokoban::PACKAGEONTARGET;
 }
 
@@ -117,19 +115,19 @@ void BoardState::getReachableIndices(int index, std::vector<int>& successors) co
 bool BoardState::isDone() const {
 	for (auto i = _state.begin(); i != _state.end(); ++i) {
 		// if there is an empty target left, we are not yet done
-		if (i->second == Sokoban::TARGET || i->second == Sokoban::PLAYERONTARGET)
+		if (*i == Sokoban::TARGET || *i == Sokoban::PLAYERONTARGET)
 			return false;
 	}
 	return true;
 }
 
 char BoardState::clearFieldForIndex(int index) {
-	auto i = _state.find(index);
-	if (i == _state.end())
-		return '\0';
-	const char field = i->second;
-	_state.erase(i);
-	return field;
+	const char c = _state[index];
+	if (c == '\0') {
+		return c;
+	}
+	_state[index] = '\0';
+	return c;
 }
 
 char BoardState::clearField(int col, int row) {
@@ -143,7 +141,7 @@ bool BoardState::setField(int col, int row, char field) {
 }
 
 bool BoardState::setFieldForIndex(int index, char field) {
-	if (_state.find(index) != _state.end())
+	if (_state[index] != '\0')
 		return false;
 	_state[index] = field;
 	return true;

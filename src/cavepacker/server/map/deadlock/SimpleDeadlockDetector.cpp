@@ -43,18 +43,19 @@ bool SimpleDeadlockDetector::moveBackwards(BoardState& s, int index) {
 
 void SimpleDeadlockDetector::init(const BoardState& s) {
 	std::vector<int> targets;
-	for (auto i = s.begin(); i != s.end(); ++i) {
-		if (!isTarget(i->second) && !isPackageOnTarget(i->second)) {
+	int index = 0;
+	for (auto i = s.begin(); i != s.end(); ++i, ++index) {
+		if (!isTarget(*i) && !isPackageOnTarget(*i)) {
 			continue;
 		}
-		targets.push_back(i->first);
+		targets.push_back(index);
 	}
 	Log::debug(LOG_SERVER, "Found %i targets", (int)targets.size());
 
 	BoardState copy(s);
-	for (auto i = s.begin(); i != s.end(); ++i) {
-		const int index = i->first;
-		const char field = i->second;
+	index = 0;
+	for (auto i = s.begin(); i != s.end(); ++i, ++index) {
+		const char field = *i;
 		if (isPackage(field)) {
 			copy.clearFieldForIndex(index);
 			copy.setFieldForIndex(index, Sokoban::GROUND);
@@ -73,9 +74,9 @@ void SimpleDeadlockDetector::init(const BoardState& s) {
 		moveBackwards(copy, targetIndex);
 	}
 
-	for (auto i = copy.begin(); i != copy.end(); ++i) {
-		const int index = i->first;
-		const char field = i->second;
+	index = 0;
+	for (auto i = copy.begin(); i != copy.end(); ++i, ++index) {
+		const char field = *i;
 		if (!isGround(field) && !isPackage(field)) {
 			continue;
 		}
@@ -96,11 +97,12 @@ void SimpleDeadlockDetector::init(const BoardState& s) {
 }
 
 bool SimpleDeadlockDetector::hasDeadlock(const BoardState& s) const {
-	for (auto i = s.begin(); i != s.end(); ++i) {
-		if (!isPackage(i->second)) {
+	int index = 0;
+	for (auto i = s.begin(); i != s.end(); ++i, ++index) {
+		if (!isPackage(*i)) {
 			continue;
 		}
-		if (_deadlocks.find(i->first) != _deadlocks.end()) {
+		if (_deadlocks.find(index) != _deadlocks.end()) {
 			return true;
 		}
 	}

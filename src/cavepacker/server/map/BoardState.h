@@ -12,7 +12,7 @@ namespace cavepacker {
 #define MOVE_UP 'u'
 #define MOVE_DOWN 'd'
 
-typedef std::map<int, char> StateMap;
+typedef std::vector<char> StateMap;
 
 class BoardState {
 private:
@@ -98,7 +98,7 @@ public:
 	 * @return @c false if the conversion failed because the index isn't part of the board
 	 */
 	inline bool getColRowFromIndex(int index, int& col, int& row) const {
-		if (_state.find(index) == _state.end())
+		if (_state[index] == '\0')
 			return false;
 		col = index % _width;
 		row = index / _width;
@@ -131,10 +131,7 @@ public:
 	 */
 	inline char getField(int col, int row) const {
 		const int index = getIndex(col, row);
-		auto i = _state.find(index);
-		if (i == _state.end())
-			return '\0';
-		return i->second;
+		return _state[index];
 	}
 
 	/**
@@ -144,8 +141,7 @@ public:
 	 */
 	inline bool isInvalid(int col, int row) const {
 		const int index = getIndex(col, row);
-		auto i = _state.find(index);
-		return i == _state.end();
+		return _state[index] == '\0';
 	}
 };
 
