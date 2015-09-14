@@ -134,6 +134,10 @@ public:
 		return _state[index];
 	}
 
+	inline char getFieldByIndex(int index) const {
+		return _state[index];
+	}
+
 	/**
 	 * @brief If the given col and row indices are not known to the state object this is returning @c false.
 	 *
