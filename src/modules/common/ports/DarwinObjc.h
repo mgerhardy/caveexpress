@@ -4,3 +4,4 @@
 
 void darwinInit ();
 char* darwinGetHomeDirectory (const std::string& app);
+void darwinRequestUserAttention (bool critical);

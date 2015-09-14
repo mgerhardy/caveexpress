@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <SDL_platform.h>
 #import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 #include <sys/stat.h>
 
 static void uncaughtExceptionHandler (NSException *exception)
@@ -46,4 +47,16 @@ char* darwinGetHomeDirectory (const std::string& app)
 
 	[pool release];
 	return retval;
+}
+
+void darwinRequestUserAttention(bool critical)
+{
+	@autoreleasepool
+	{
+		if (critical) {
+			[NSApp requestUserAttention:NSCriticalRequest];
+			return;
+		}
+		[NSApp requestUserAttention:NSInformationalRequest];
+	}
 }
