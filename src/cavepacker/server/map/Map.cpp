@@ -736,13 +736,15 @@ bool Map::setField (IEntity *entity, int col, int row)
 			nc = Sokoban::PLAYERONTARGET;
 		else if (nc == Sokoban::GROUND)
 			return true;
-		return false;
+		else
+			return false;
 	} else if (c == Sokoban::PACKAGE) {
 		if (nc == Sokoban::TARGET)
 			nc = Sokoban::PACKAGEONTARGET;
 		else if (nc == Sokoban::GROUND)
 			return true;
-		return false;
+		else
+			return false;
 	} else if (c == Sokoban::TARGET) {
 		if (nc == Sokoban::PACKAGE)
 			nc = Sokoban::PACKAGEONTARGET;
@@ -750,7 +752,8 @@ bool Map::setField (IEntity *entity, int col, int row)
 			nc = Sokoban::PLAYERONTARGET;
 		else if (nc == Sokoban::GROUND)
 			return true;
-		return false;
+		else
+			return false;
 	}
 	// we expect that there is already a value set, so we need to clear it first
 	if (_state.clearField(col, row) == '\0')
