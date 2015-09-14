@@ -1,12 +1,12 @@
 #include "Darwin.h"
-#include "Cocoa.h"
+#include "DarwinObjc.h"
 #include "common/Application.h"
 #include <CoreServices/CoreServices.h>
 
 Darwin::Darwin () :
 		Unix()
 {
-	nsinit();
+	darwinInit();
 }
 
 Darwin::~Darwin ()
@@ -15,7 +15,8 @@ Darwin::~Darwin ()
 
 std::string Darwin::getHomeDirectory ()
 {
-	char* home = nsGetHomeDirectory(Singleton<Application>::getInstance().getName().c_str());
+	const std::string& appName = Singleton<Application>::getInstance().getName();
+	char* home = darwinGetHomeDirectory(appName);
 	if (home == nullptr)
 		return "";
 	std::string h(home);
