@@ -826,7 +826,7 @@ bool Map::visitEntity (IEntity *entity)
 
 void Map::rebuildField ()
 {
-	_field.clear();
+	_field.assign(_width * _height, nullptr);
 	_state.clear();
 	for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
 		SDL_assert_always(setField(*i, (*i)->getCol(), (*i)->getRow()));
