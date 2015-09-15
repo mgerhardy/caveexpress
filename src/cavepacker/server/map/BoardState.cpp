@@ -103,7 +103,8 @@ void BoardState::getReachableIndices(int index, std::vector<int>& successors) co
 	if (!getColRowFromIndex(index, col, row))
 		return;
 	const char dirs[] = { MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN };
-	for (int i = 0; i < lengthof(dirs); ++i) {
+	const int dirLength = lengthof(dirs);
+	for (int i = 0; i < dirLength; ++i) {
 		int x, y;
 		getXY(dirs[i], x, y);
 		if (!isFree(col + x, row + y))
