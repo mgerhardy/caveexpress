@@ -54,6 +54,8 @@ protected:
 	int _entryOffsetX;
 	int _entryOffsetY;
 
+	bool _motionHandled;
+
 	bool select ();
 
 	virtual void renderSelectorEntry (int index, const T& data, int x, int y, int colWidth, int rowHeight, float alpha) const
@@ -67,7 +69,7 @@ public:
 	UINodeSelector (IFrontend *frontend, int cols, int rows, float colWidth = 0.2f, float rowHeight = 0.2f) :
 			UINode(frontend), _renderX(0), _renderY(0), _scrollingEnabled(true), _mouseWheelScrollAmount(10), _scrolling(0), _offset(0), _rowSpacing(0), _colSpacing(0), _cols(
 					cols), _rows(rows), _selectedIndex(-1), _selection(nullptr), _pageVisible(false), _colWidth(colWidth), _rowHeight(rowHeight), _cursorX(0), _cursorY(0),
-					_entryOffsetX(0), _entryOffsetY(0)
+					_entryOffsetX(0), _entryOffsetY(0), _motionHandled(false)
 	{
 		_font = getFont();
 		Vector4Set(colorWhite, _fontColor);
@@ -239,6 +241,7 @@ public:
 
 	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion) override
 	{
+		_motionHandled = false;
 		// ignore this if the finger was released after a motion event
 		if (motion)
 			return UINode::onFingerRelease(finger, x, y, motion);
@@ -252,10 +255,12 @@ public:
 	bool onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy) override
 	{
 		const int delta = 30;
-		if (dx > delta) {
+		if (!_motionHandled && dx > delta) {
+			_motionHandled = true;
 			offset(false);
 			return true;
-		} else if (dx < -delta) {
+		} else if (!_motionHandled && dx < -delta) {
+			_motionHandled = true;
 			offset(true);
 			return true;
 		}
