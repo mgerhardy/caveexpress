@@ -94,7 +94,7 @@ public:
 	// returns true if a node handled the key press event
 	virtual bool onKeyPress (int32_t key, int16_t modifier) override;
 	// returns true if a node handled the finger release event
-	virtual bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y) override;
+	virtual bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion) override;
 	// returns true if a node handled the finger press event
 	virtual bool onFingerPress (int64_t finger, uint16_t x, uint16_t y) override;
 	virtual bool onMouseButtonRelease (int32_t x, int32_t y, unsigned char button) override;

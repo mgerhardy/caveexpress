@@ -237,11 +237,15 @@ public:
 		return ret;
 	}
 
-	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y) override
+	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion) override
 	{
+		// ignore this if the finger was released after a motion event
+		if (motion)
+			return UINode::onFingerRelease(finger, x, y, motion);
+
 		addFocus(x, y);
 		const bool ret = select();
-		UINode::onFingerRelease(finger, x, y);
+		UINode::onFingerRelease(finger, x, y, motion);
 		return ret;
 	}
 

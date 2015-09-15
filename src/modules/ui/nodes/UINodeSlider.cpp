@@ -40,10 +40,10 @@ inline float UINodeSlider::calculateValue (int32_t x) const
 	return clamp(value - static_cast<float>(fmod(value, _stepWidth)), _min, _max);
 }
 
-bool UINodeSlider::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
+bool UINodeSlider::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion)
 {
 	setValue(calculateValue(x));
-	return UINode::onFingerRelease(finger, x, y);
+	return UINode::onFingerRelease(finger, x, y, motion);
 }
 
 bool UINodeSlider::onMouseLeftRelease (int32_t x, int32_t y)

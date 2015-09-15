@@ -23,8 +23,8 @@
 
 UI::UI () :
 		_serviceProvider(nullptr), _eventHandler(nullptr), _frontend(nullptr), _cursor(true), _showCursor(false), _cursorX(
-				-1), _cursorY(-1), _restart(false), _delayedPop(false), _noPushAllowed(false), _time(0), _lastJoystickMoveTime(
-				0), _lastJoystickMovementValue(0), _rotateFonts(true)
+				-1), _cursorY(-1), _motionFinger(false), _restart(false), _delayedPop(false), _noPushAllowed(false), _time(0),
+				_lastJoystickMoveTime(0), _lastJoystickMovementValue(0), _rotateFonts(true)
 {
 }
 
@@ -384,13 +384,15 @@ bool UI::onFingerRelease (int64_t finger, float x, float y)
 	if (_restart)
 		return false;
 
+	const bool motionFinger = _motionFinger;
+	_motionFinger = false;
 	const uint16_t _x = _frontend->getCoordinateOffsetX() + x * _frontend->getWidth();
 	const uint16_t _y = _frontend->getCoordinateOffsetY() + y * _frontend->getHeight();
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
 		const bool focus = window->checkFocus(_x, _y);
-		if (focus && window->onFingerRelease(finger, _x, _y))
+		if (focus && window->onFingerRelease(finger, _x, _y, motionFinger))
 			return true;
 		if (window->isModal() || window->isFullscreen())
 			break;
@@ -426,6 +428,11 @@ void UI::onFingerMotion (int64_t finger, float x, float y, float dx, float dy)
 	const int16_t _dx = dx * _frontend->getWidth();
 	const int16_t _dy = dy * _frontend->getHeight();
 	UIStack stack = _stack;
+
+	const int motionDelta = 10;
+	if (_dx > motionDelta || _dy > motionDelta)
+		_motionFinger = true;
+
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
 		if (window->onFingerMotion(finger, _x, _y, _dx, _dy))

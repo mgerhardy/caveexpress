@@ -684,7 +684,7 @@ bool UINode::onTextInput (const std::string& text)
 	return false;
 }
 
-bool UINode::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
+bool UINode::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion)
 {
 	_fingerPressed = false;
 	handleDrop(x, y);
@@ -693,7 +693,7 @@ bool UINode::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
 		UINode* nodePtr = *i;
 		if (!nodePtr->hasFocus())
 			continue;
-		if (nodePtr->onFingerRelease(finger, x - getRenderX(), y - getRenderY())) {
+		if (nodePtr->onFingerRelease(finger, x - getRenderX(), y - getRenderY(), motion)) {
 			return true;
 		}
 	}

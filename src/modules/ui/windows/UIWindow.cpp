@@ -119,12 +119,12 @@ bool UIWindow::onKeyPress (int32_t key, int16_t modifier)
 	return UINode::onKeyPress(key, modifier);
 }
 
-bool UIWindow::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
+bool UIWindow::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion)
 {
 	if (!isActiveAfterPush())
 		return false;
 
-	if (UINode::onFingerRelease(finger, x, y)) {
+	if (UINode::onFingerRelease(finger, x, y, motion)) {
 		if (_playClickSound)
 			SoundControl.play("click");
 		return true;

@@ -372,7 +372,16 @@ public:
 	virtual void displayText (const std::string& text, uint32_t delayMillis = 3000, float x = -1.0f, float y = -1.0f);
 
 	virtual bool onTextInput (const std::string& text);
-	virtual bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y);
+	/**
+	 * @param[in] finger The id of the finger that was released
+	 * @param[in] x The x screen coordinate where the finger was released
+	 * @param[in] y The y screen coordinate where the finger was released
+	 * @param[in] motion This is true if the release was the result of a motion event before.
+	 * A motion event happens if the delta of the x and y coordinates exceeds a special threshold.
+	 * See @c onMouseMotion for more details.
+	 * @return @c true if the event was handled by the node, @c false otherwise
+	 */
+	virtual bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion);
 	virtual bool onFingerPress (int64_t finger, uint16_t x, uint16_t y);
 	virtual bool onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy);
 	virtual bool onKeyPress (int32_t key, int16_t modifier);

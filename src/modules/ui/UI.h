@@ -67,6 +67,7 @@ private:
 
 	int32_t _cursorX;
 	int32_t _cursorY;
+	bool _motionFinger;
 
 	void printStack ();
 	void focusNext (const ICommand::Args& args);

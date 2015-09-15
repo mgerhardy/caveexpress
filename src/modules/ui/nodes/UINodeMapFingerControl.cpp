@@ -75,9 +75,9 @@ bool UINodeMapFingerControl::onFingerPress (int64_t finger, uint16_t x, uint16_t
 	return true;
 }
 
-bool UINodeMapFingerControl::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
+bool UINodeMapFingerControl::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion)
 {
-	const bool val = UINode::onFingerRelease(finger, x, y);
+	const bool val = UINode::onFingerRelease(finger, x, y, motion);
 
 	if (_finger == finger) {
 		_finger = -1;
