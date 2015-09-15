@@ -183,15 +183,15 @@ endmacro()
 # Prepare android workspace with assets and sdk/ndk commands.
 #
 # Also adds some helper targets:
-# * android-APPNAME-uninstall uninstalls the application
-# * android-APPNAME-install installs the application
-# * android-APPNAME-start starts the application
-# * android-APPNAME-backtrace creates a backtrace from a crash
+# * android-PROJECTNAME-uninstall uninstalls the application
+# * android-PROJECTNAME-install installs the application
+# * android-PROJECTNAME-start starts the application
+# * android-PROJECTNAME-backtrace creates a backtrace from a crash
 #
 # parameters:
-# PROJECTNAME:
-# APPNAME:
-# VERSION:
+# PROJECTNAME: the project name in lower case letters - used for e.g. resolving the java classes and icons
+# APPNAME: the normal app name, must not contain whitespaces, but can contain upper case letters.
+# VERSION: the version code, e.g. 1.0
 # VERSION_CODE: the android version code needed for google play store
 #
 macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
