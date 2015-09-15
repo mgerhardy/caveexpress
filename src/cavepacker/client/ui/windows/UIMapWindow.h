@@ -23,6 +23,7 @@ protected:
 
 	bool getField (int32_t x, int32_t y, int *tx, int *ty) const;
 	void doMove (int tx, int ty);
+	bool tryMove (int x, int y, bool doubleTap = true);
 public:
 	UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, CavePackerClientMap& map);
 

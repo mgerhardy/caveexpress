@@ -174,21 +174,33 @@ bool UIMapWindow::onMouseButtonPress (int32_t x, int32_t y, unsigned char button
 		_scrolling = true;
 	}
 	if (button == SDL_BUTTON_LEFT) {
-		int tx, ty;
-		if (getField(x, y, &tx, &ty)) {
-			// double clicking onto the same field means, that the users wanna walk there
-			Log::debug(LOG_UI, "resolved the grid coordinates for %i:%i to %i:%i", x, y, tx, ty);
-			if (_targetX == tx && _targetY == ty) {
-				doMove(_targetX, _targetY);
-			} else {
-				_targetX = tx;
-				_targetY = ty;
-			}
+		// double clicking onto the same field means, that the users wanna walk there
+		if (tryMove(x, y, true))
 			return true;
-		}
-		Log::error(LOG_UI, "could not get grid coordinates for %i:%i", x, y);
 	}
+
 	return retVal;
+}
+
+bool UIMapWindow::tryMove (int x, int y, bool doubleTap)
+{
+	int tx, ty;
+	if (getField(x, y, &tx, &ty)) {
+		Log::debug(LOG_UI, "resolved the grid coordinates for %i:%i to %i:%i", x, y, tx, ty);
+		if (!doubleTap) {
+			_targetX = tx;
+			_targetY = ty;
+		}
+		if (_targetX == tx && _targetY == ty) {
+			doMove(_targetX, _targetY);
+		} else {
+			_targetX = tx;
+			_targetY = ty;
+		}
+		return true;
+	}
+	Log::debug(LOG_UI, "could not get grid coordinates for %i:%i", x, y);
+	return false;
 }
 
 void UIMapWindow::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY)
