@@ -10,6 +10,9 @@ list(APPEND PERMISSIONS "<uses-permission android:name=\"com.android.vending.BIL
 
 if (NOT HD_VERSION)
 	list(APPEND META_DATA "<meta-data android:value=\"true\" android:name=\"ADMOB_ALLOW_LOCATION_FOR_ADS\" />")
+	message(STATUS "Don't build HD version")
+else()
+	message(STATUS "Build HD version")
 endif()
 list(APPEND META_DATA "<meta-data android:name=\"com.google.android.gms.games.APP_ID\" android:value=\"@string/app_id\" />")
 list(APPEND META_DATA "<meta-data android:name=\"com.google.android.gms.appstate.APP_ID\" android:value=\"@string/app_id\" />")
