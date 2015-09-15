@@ -253,17 +253,20 @@ public:
 	{
 		const int delta = 30;
 		if (dx > delta) {
-			offset(true);
+			offset(false);
 			return true;
 		} else if (dx < -delta) {
-			offset(false);
+			offset(true);
 			return true;
 		}
 		if (!_scrollingEnabled) {
 			return false;
 		}
-		scroll(dy > 10, 10);
-		return true;
+		if (dy > 10 || dy < -10) {
+			scroll(dy > 10, 10);
+			return true;
+		}
+		return false;
 	}
 
 	bool onMouseWheel (int32_t x, int32_t y) override
