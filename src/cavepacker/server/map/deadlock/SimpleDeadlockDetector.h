@@ -18,7 +18,7 @@ private:
 public:
 	void clear();
 	void init(const BoardState& s);
-	bool hasDeadlock(const BoardState& s) const;
+	bool hasDeadlock(uint32_t millisStart, uint32_t millisTimeout, const BoardState& s) const;
 	bool hasDeadlockAt(int index) const;
 	void fillDeadlocks(DeadlockSet& set);
 };

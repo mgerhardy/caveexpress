@@ -24,13 +24,15 @@ private:
 	BipartiteDetector _bipartite;
 	ClosedDiagonalDetector _closedDiagonal;
 	CorralDetector _corral;
+
+	uint32_t _start = { 0u };
 public:
 	/**
 	 * @brief Call this whenever you want to reset the initialized data from previous runs
 	 */
 	void clear();
 	void init(const BoardState& state);
-	bool hasDeadlock(const BoardState& state);
+	bool hasDeadlock(const BoardState& state, uint32_t timeout = 50u);
 	DeadlockSet getDeadlocks();
 };
 

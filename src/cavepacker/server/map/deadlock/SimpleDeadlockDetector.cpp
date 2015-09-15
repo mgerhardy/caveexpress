@@ -96,9 +96,10 @@ void SimpleDeadlockDetector::init(const BoardState& s) {
 	_visited.clear();
 }
 
-bool SimpleDeadlockDetector::hasDeadlock(const BoardState& s) const {
+bool SimpleDeadlockDetector::hasDeadlock(uint32_t millisStart, uint32_t millisTimeout, const BoardState& s) const {
 	int index = 0;
 	for (auto i = s.begin(); i != s.end(); ++i, ++index) {
+		TIMEOUTREACHED(millisStart + millisTimeout)
 		if (!isPackage(*i)) {
 			continue;
 		}

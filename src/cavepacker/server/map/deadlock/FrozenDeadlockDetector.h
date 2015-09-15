@@ -15,15 +15,15 @@ private:
 	 * @brief Returns true if there is a package close to the given position (in the given direction) that
 	 * is blocked
 	 */
-	bool hasAnyBlockedPackageClose(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row, char dir);
-	inline bool hasWallClose(const BoardState& s, int col, int row, char dir) const;
-	inline bool hasSimpleDeadlock(const SimpleDeadlockDetector& simple, const BoardState& s, int col, int row, char dir) const;
-	bool hasDeadlockVertically(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row);
-	bool hasDeadlock_(const SimpleDeadlockDetector& simple, BoardState& s, int col, int row);
+	bool hasAnyBlockedPackageClose(uint32_t millisStart, uint32_t millisTimeout, const SimpleDeadlockDetector& simple, BoardState& s, int index, int origIndex);
+	inline bool hasWallClose(const BoardState& s, int index) const;
+	inline bool hasSimpleDeadlock(const SimpleDeadlockDetector& simple, const BoardState& s, int index) const;
+	bool hasDeadlockVertically(uint32_t millisStart, uint32_t millisTimeout, const SimpleDeadlockDetector& simple, BoardState& s, int col, int row);
+	bool hasDeadlock_(uint32_t millisStart, uint32_t millisTimeout, const SimpleDeadlockDetector& simple, BoardState& s, int col, int row);
 public:
 	void clear();
 	void init(const BoardState& s);
-	bool hasDeadlock(const SimpleDeadlockDetector& simple, const BoardState& s);
+	bool hasDeadlock(uint32_t millisStart, uint32_t millisTimeout, const SimpleDeadlockDetector& simple, const BoardState& s);
 
 	/**
 	 * @brief only add the first found deadlock

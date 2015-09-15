@@ -1,4 +1,5 @@
 #include "DeadlockDetector.h"
+#include "DeadlockTypes.h"
 #include "cavepacker/server/map/SokobanMapContext.h"
 #include "cavepacker/server/map/SokobanTiles.h"
 #include "cavepacker/server/map/BoardState.h"
@@ -21,21 +22,34 @@ void DeadlockDetector::init(const BoardState& state) {
 	_corral.init(state);
 }
 
-bool DeadlockDetector::hasDeadlock(const BoardState& state) {
-	// TODO: limit the time that these tests may consume
-	if (_simple.hasDeadlock(state))
+bool DeadlockDetector::hasDeadlock(const BoardState& state, uint32_t timeout) {
+	_start = SDL_GetTicks();
+	uint32_t maxMillis = timeout;
+	const uint32_t timeoutMillis = _start + maxMillis;
+
+	const uint32_t simpleMaxMillis = 5u;
+	if (_simple.hasDeadlock(_start, simpleMaxMillis, state))
 		return true;
 
-	if (_frozen.hasDeadlock(_simple, state))
+	TIMEOUTREACHED(timeoutMillis)
+
+	const uint32_t frozenMaxMillis = 35u;
+	if (_frozen.hasDeadlock(_start, frozenMaxMillis, _simple, state))
 		return true;
 
-	if (_bipartite.hasDeadlock(state))
+	TIMEOUTREACHED(timeoutMillis)
+
+	if (_bipartite.hasDeadlock(_start, state))
 		return true;
 
-	if (_closedDiagonal.hasDeadlock(state))
+	TIMEOUTREACHED(timeoutMillis)
+
+	if (_closedDiagonal.hasDeadlock(_start, state))
 		return true;
 
-	if (_corral.hasDeadlock(state))
+	TIMEOUTREACHED(timeoutMillis)
+
+	if (_corral.hasDeadlock(_start, state))
 		return true;
 
 	return false;

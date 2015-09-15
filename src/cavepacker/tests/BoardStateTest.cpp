@@ -54,7 +54,8 @@ protected:
 		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
-		ASSERT_FALSE(simple.hasDeadlock(s)) << "Blocked fields: " << getDeadlocks(simple, s);
+		const uint32_t start = SDL_GetTicks();
+		ASSERT_FALSE(simple.hasDeadlock(start, 10000000u, s)) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
 
 	void testNoSimpleDeadlockAt(const char *mapStr, int col, int row) {
@@ -77,7 +78,8 @@ protected:
 		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		simple.init(s);
-		ASSERT_TRUE(simple.hasDeadlock(s)) << "Blocked fields: " << getDeadlocks(simple, s);
+		const uint32_t start = SDL_GetTicks();
+		ASSERT_TRUE(simple.hasDeadlock(start, 10000000u, s)) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
 
 	void testNoDeadlock(const char *mapStr) {
@@ -91,7 +93,8 @@ protected:
 		simple.init(s);
 		FrozenDeadlockDetector frozen;
 		frozen.init(s);
-		ASSERT_TRUE(frozen.hasDeadlock(simple, s)) << "Blocked fields: " << getDeadlocks(frozen, s);
+		const uint32_t start = SDL_GetTicks();
+		ASSERT_TRUE(frozen.hasDeadlock(start, 10000000u, simple, s)) << "Blocked fields: " << getDeadlocks(frozen, s);
 	}
 
 	void testNoFrozenDeadlock(const char *mapStr) {
@@ -100,7 +103,8 @@ protected:
 		simple.init(s);
 		FrozenDeadlockDetector frozen;
 		frozen.init(s);
-		ASSERT_FALSE(frozen.hasDeadlock(simple, s)) << "Blocked fields: " << getDeadlocks(frozen, s);
+		const uint32_t start = SDL_GetTicks();
+		ASSERT_FALSE(frozen.hasDeadlock(start, 10000000u, simple, s)) << "Blocked fields: " << getDeadlocks(frozen, s);
 	}
 
 	template<class T>

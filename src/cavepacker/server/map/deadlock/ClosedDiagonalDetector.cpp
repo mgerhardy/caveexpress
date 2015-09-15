@@ -8,7 +8,7 @@ void ClosedDiagonalDetector::clear() {
 void ClosedDiagonalDetector::init(const BoardState& s) {
 }
 
-bool ClosedDiagonalDetector::hasDeadlock(const BoardState& s) {
+bool ClosedDiagonalDetector::hasDeadlock(uint32_t millisStart, const BoardState& s) {
 	return false;
 }
 
