@@ -247,9 +247,18 @@ public:
 
 	bool onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy) override
 	{
-		if (!_scrollingEnabled)
+		const int delta = 30;
+		if (dx > delta) {
+			offset(true);
+			return true;
+		} else if (dx < -delta) {
+			offset(false);
+			return true;
+		}
+		if (!_scrollingEnabled) {
 			return false;
-		scroll(dy > 0, 10);
+		}
+		scroll(dy > 10, 10);
 		return true;
 	}
 
