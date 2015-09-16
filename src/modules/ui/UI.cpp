@@ -410,7 +410,8 @@ bool UI::onFingerPress (int64_t finger, float x, float y)
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		if (window->onFingerPress(finger, _x, _y))
+		const bool focus = window->checkFocus(_x, _y);
+		if (focus && window->onFingerPress(finger, _x, _y))
 			return true;
 		if (window->isModal() || window->isFullscreen())
 			break;
