@@ -38,6 +38,7 @@ public:
 			_map.movePlayer(player, MOVE_RIGHT);
 			break;
 		}
+		player->setTargetIndex(-1);
 	}
 };
 
