@@ -11,6 +11,7 @@
 UIWindow::UIWindow (const std::string& id, IFrontend *frontend, WindowFlags flags) :
 		UINode(frontend, id), _flags(flags), _musicFile("music-1"), _music(-1), _pushedTime(0), _inactiveAfterPush(0), _playClickSound(true)
 {
+	setSize(1.0, 1.0);
 }
 
 UIWindow::~UIWindow ()
