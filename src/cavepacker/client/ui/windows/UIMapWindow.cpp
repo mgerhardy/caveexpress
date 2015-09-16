@@ -6,11 +6,11 @@
 #include "ui/nodes/UINodeSprite.h"
 #include "ui/nodes/UINodePoint.h"
 #include "ui/nodes/UINodeButton.h"
-#include "ui/nodes/UINodeMapOnScreenCursorControl.h"
 #include "ui/layouts/UIHBoxLayout.h"
 #include "ui/UI.h"
 #include "client/Camera.h"
 #include "common/ConfigManager.h"
+#include "common/Commands.h"
 #include "service/ServiceProvider.h"
 #include "common/Log.h"
 #include "common/IFrontend.h"
@@ -110,13 +110,39 @@ void UIMapWindow::initInputHudNodes ()
 	_undo->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_RIGHT);
 	_undo->setOnActivate("undo");
 	add(_undo);
+
+	if (Config.getConfigVar("forcefingercontrol", "false", true, CV_READONLY)->getBoolValue() || System.hasTouch()) {
+		UINodeButton* left = new UINodeButton(_frontend);
+		left->setImage("icon-cursor-left");
+		left->setOnActivate(CMD_MOVE_LEFT);
+		left->setTriggerTime(500u);
+		left->setAlignment(NODE_ALIGN_LEFT | NODE_ALIGN_BOTTOM);
+		add(left);
+		UINodeButton* right = new UINodeButton(_frontend);
+		right->setImage("icon-cursor-right");
+		right->setOnActivate(CMD_MOVE_RIGHT);
+		right->setTriggerTime(500u);
+		right->putRight(left);
+		add(right);
+
+		UINodeButton* down = new UINodeButton(_frontend);
+		down->setImage("icon-cursor-down");
+		down->setOnActivate(CMD_MOVE_DOWN);
+		down->setAlignment(NODE_ALIGN_RIGHT | NODE_ALIGN_BOTTOM);
+		down->setTriggerTime(500u);
+		add(down);
+		UINodeButton* up = new UINodeButton(_frontend);
+		up->setImage("icon-cursor-up");
+		up->setOnActivate(CMD_MOVE_UP);
+		up->setTriggerTime(500u);
+		up->putAbove(down);
+		add(up);
+	}
 }
 
 UINode* UIMapWindow::getFingerControl ()
 {
-	UINodeMapOnScreenCursorControl* node = new UINodeMapOnScreenCursorControl(_frontend, _nodeMap);
-	_mapControl = node;
-	return node;
+	return nullptr;
 }
 
 void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
@@ -158,6 +184,18 @@ bool UIMapWindow::getField (int32_t x, int32_t y, int *tx, int *ty) const
 	if (*tx == -1 || *ty == -1)
 		return false;
 	return true;
+}
+
+bool UIMapWindow::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion)
+{
+	if (IUIMapWindow::onFingerRelease(finger, x, y, motion)) {
+		return true;
+	}
+
+	if (tryMove(x, y, false))
+		return true;
+
+	return false;
 }
 
 void UIMapWindow::doMove (int tx, int ty)

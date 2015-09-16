@@ -32,7 +32,9 @@ public:
 
 	bool isActive () const override
 	{
-		return !_mapControl->isPressed();
+		if (_mapControl != nullptr)
+			return !_mapControl->isPressed();
+		return true;
 	}
 };
 
@@ -145,10 +147,12 @@ void IUIMapWindow::init()
 	initHudNodes();
 	if (Config.getConfigVar("forcefingercontrol", "false", true, CV_READONLY)->getBoolValue() || System.hasTouch()) {
 		UINode* node = getFingerControl();
-		add(node);
+		if (node != nullptr)
+			add(node);
 	} else {
 		UINode* node = getControl();
-		add(node);
+		if (node != nullptr)
+			add(node);
 	}
 
 	initInputHudNodes();
