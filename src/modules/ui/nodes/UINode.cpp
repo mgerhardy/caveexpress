@@ -690,7 +690,7 @@ bool UINode::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motio
 {
 	_fingerPressed = false;
 	handleDrop(x, y);
-	execute();
+	const bool retVal = execute();
 	for (UINodeListRevIter i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
 		UINode* nodePtr = *i;
 		if (!nodePtr->hasFocus())
@@ -700,7 +700,7 @@ bool UINode::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motio
 		}
 	}
 
-	return false;
+	return retVal;
 }
 
 bool UINode::onKeyPress (int32_t key, int16_t modifier)
