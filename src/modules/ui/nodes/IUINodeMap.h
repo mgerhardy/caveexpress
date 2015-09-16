@@ -36,6 +36,7 @@ public:
 	void render (int x, int y) const override;
 	bool onPush () override;
 	bool onPop () override;
+	bool isActive() const override;
 
 	bool initWaitingForPlayer ();
 

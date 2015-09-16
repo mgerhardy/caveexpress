@@ -164,3 +164,10 @@ void IUINodeMap::onCampaignUnlock (Campaign* oldCampaign, Campaign* newCampaign)
 {
 	_campaignTextForNextPush = newCampaign->getText();
 }
+
+bool IUINodeMap::isActive() const
+{
+	if (UINode::isActive())
+		return true;
+	return _map.isActive();
+}
