@@ -645,8 +645,10 @@ bool UINode::checkFocus (int32_t x, int32_t y)
 		}
 
 		if (focusOnChildren) {
-			addFocus(x, y);
-			return true;
+			if (isActive()) {
+				addFocus(x, y);
+				return true;
+			}
 		}
 	}
 
