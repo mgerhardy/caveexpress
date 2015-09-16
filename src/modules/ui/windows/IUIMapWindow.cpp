@@ -267,12 +267,8 @@ void IUIMapWindow::start ()
 	Config.setBindingsSpace(BINDINGS_MAP);
 }
 
-bool IUIMapWindow::isGameActive () const
+bool IUIMapWindow::onFingerPress (int64_t finger, uint16_t x, uint16_t y)
 {
-	return _nodeMap->getMap().isActive();
-}
-
-bool IUIMapWindow::onFingerPress (int64_t finger, uint16_t x, uint16_t y) {
 	_lastFingerPressEvent = _time;
 	return UIWindow::onFingerPress(finger, x, y);
 }

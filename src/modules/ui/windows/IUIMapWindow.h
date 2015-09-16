@@ -45,8 +45,6 @@ public:
 	IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map, IUINodeMap* nodeMap);
 	virtual ~IUIMapWindow() {}
 
-	bool isGameActive () const;
-
 	virtual void hideHud();
 	virtual void showHud();
 
