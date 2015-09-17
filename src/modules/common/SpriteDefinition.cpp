@@ -81,9 +81,10 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 				}
 				// push the frame table
 				const int framesOnLayer = lua_rawlen(lua.getState(), -1);
-				Log::debug(LOG_GENERAL, "id: %s => %i framesOnLayer", id.c_str(), framesOnLayer);
+				Log::debug(LOG_GENERAL, "id: %s => %i frames on layer %i", id.c_str(), framesOnLayer, layer);
 				for (int i = 1; i <= framesOnLayer; ++i) {
 					const std::string& texture = lua.getTableString(i);
+					Log::debug(LOG_GENERAL, "id: %s => texture %s on layer %i", id.c_str(), texture.c_str(), layer);
 					const SpriteDefFrame frame(texture, 0, true);
 					if (layer < MAX_LAYERS)
 						def->textures[layer].push_back(frame);
