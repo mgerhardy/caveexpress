@@ -152,7 +152,7 @@ void ClientMap::renderLayer (int x, int y, Layer layer) const
 	}
 
 	for (ClientEntityMapConstIter iter = _entities.begin(); iter != _entities.end(); ++iter) {
-		const ClientEntityPtr e = iter->second;
+		const ClientEntityPtr& e = iter->second;
 		e->render(_frontend, layer, _scale, _zoom, x, y);
 	}
 }
