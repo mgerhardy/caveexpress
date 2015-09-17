@@ -68,11 +68,13 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		if (layers > MAX_LAYERS) {
 			Log::error(LOG_GENERAL, "invalid sprite layer amount given for %s: %i", id.c_str(), layers);
 		}
-		for (Layer layer = LAYER_BACK; layer < layers; layer++) {
+
+		if (layers > 0) {
 			LUA_checkStack2(lua.getState());
 			lua_State* L = lua.getState();
 			lua_pushvalue(L, -1);
 			lua_pushnil(L);
+			Layer layer = LAYER_BACK;
 			while (lua_next(L, -2)) {
 				if (!lua_istable(lua.getState(), -1)) {
 					Log::error(LOG_GENERAL, "spritedef: expected frame table on the stack: %s", lua.getStackDump().c_str());
@@ -90,6 +92,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 						def->textures[layer].push_back(frame);
 				}
 				lua.pop();
+				++layer;
 			}
 			// pop the frame table
 			lua.pop();

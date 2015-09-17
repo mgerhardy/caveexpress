@@ -22,4 +22,5 @@ sprites = {
 		},
 		maptile = true,
 	},
+	["test2"] = {},
 }
