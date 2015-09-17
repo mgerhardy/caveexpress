@@ -83,3 +83,23 @@ TEST_F(LUATest, testTextureDefinition)
 	TextureDefinition big("big");
 	ASSERT_FALSE(big.getMap().empty()) << "no texture definitions for big found";
 }
+
+TEST_F(LUATest, testSpriteDefinition)
+{
+	TextureDefinition small("small");
+	SpriteDefinition::get().init(small);
+	SpriteDefPtr spriteDef = SpriteDefinition::get().getSpriteDefinition("test");
+	const bool found = !!spriteDef;
+	ASSERT_TRUE(found) << "no sprite definitions found for test";
+	ASSERT_TRUE(spriteDef->hasShape());
+	ASSERT_TRUE(spriteDef->isStatic());
+	ASSERT_FALSE(spriteDef->hasNoTextures());
+	ASSERT_EQ("test", spriteDef->id);
+	ASSERT_DOUBLE_EQ(14, spriteDef->fps);
+	ASSERT_DOUBLE_EQ(1, spriteDef->rotateable);
+	ASSERT_EQ(2u, spriteDef->polygons.size());
+	ASSERT_EQ(1u, spriteDef->circles.size());
+	ASSERT_TRUE(spriteDef->textures[LAYER_BACK].empty());
+	ASSERT_FALSE(spriteDef->textures[LAYER_MIDDLE].empty());
+	ASSERT_TRUE(spriteDef->textures[LAYER_FRONT].empty());
+}

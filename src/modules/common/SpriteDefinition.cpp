@@ -75,7 +75,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			lua_pushnil(L);
 			while (lua_next(L, -2)) {
 				if (!lua_istable(lua.getState(), -1)) {
-					Log::debug(LOG_GENERAL, "spritedef: expected frame table on the stack: %s", lua.getStackDump().c_str());
+					Log::error(LOG_GENERAL, "spritedef: expected frame table on the stack: %s", lua.getStackDump().c_str());
 					lua.pop();
 					continue;
 				}
