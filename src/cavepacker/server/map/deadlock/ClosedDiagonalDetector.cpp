@@ -12,7 +12,7 @@ bool ClosedDiagonalDetector::hasDeadlock(uint32_t millisStart, const BoardState&
 	return false;
 }
 
-void ClosedDiagonalDetector::fillDeadlocks(DeadlockSet& set) {
+void ClosedDiagonalDetector::fillDeadlocks(DeadlockSet& set) const {
 }
 
 }

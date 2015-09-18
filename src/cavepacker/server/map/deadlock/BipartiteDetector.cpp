@@ -12,7 +12,7 @@ bool BipartiteDetector::hasDeadlock(uint32_t millisStart, const BoardState& s) {
 	return false;
 }
 
-void BipartiteDetector::fillDeadlocks(DeadlockSet& set) {
+void BipartiteDetector::fillDeadlocks(DeadlockSet& set) const {
 }
 
 }

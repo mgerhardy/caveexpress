@@ -3,6 +3,7 @@
 #include "client/network/AddEntityHandler.h"
 #include "client/network/InitDoneHandler.h"
 #include "cavepacker/client/network/ClientAutoSolveHandler.h"
+#include "cavepacker/client/network/ClientShowDeadlocksHandler.h"
 #include "cavepacker/client/commands/CmdUndo.h"
 
 namespace cavepacker {
@@ -17,6 +18,7 @@ UINodeMap::UINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, Cam
 	r.registerClientHandler(::protocol::PROTO_INITDONE, new InitDoneHandler(_map));
 	r.registerClientHandler(protocol::PROTO_AUTOSOLVE, new ClientAutoSolveHandler(true));
 	r.registerClientHandler(protocol::PROTO_AUTOSOLVEABORT, new ClientAutoSolveHandler(false));
+	r.registerClientHandler(protocol::PROTO_SHOWDEADLOCKS, new ClientShowDeadlocksHandler(_map));
 }
 
 UINodeMap::~UINodeMap ()
@@ -26,6 +28,7 @@ UINodeMap::~UINodeMap ()
 	r.unregisterClientHandler(::protocol::PROTO_INITDONE);
 	r.unregisterClientHandler(protocol::PROTO_AUTOSOLVE);
 	r.unregisterClientHandler(protocol::PROTO_AUTOSOLVEABORT);
+	r.unregisterClientHandler(protocol::PROTO_SHOWDEADLOCKS);
 }
 
 }

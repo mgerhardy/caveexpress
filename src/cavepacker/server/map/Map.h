@@ -137,10 +137,13 @@ public:
 	void reload ();
 	bool isFailed () const;
 	bool isPause () const;
+	const BoardState& getBoardState() const;
 
 	inline bool isFree(int col, int row) {
 		return _state.isFree(col, row);
 	}
+
+	void sendDeadlocks(ClientId clientId);
 
 	// IMap
 	void update (uint32_t deltaTime) override;
@@ -255,6 +258,11 @@ inline bool Map::isRestartInitialized () const
 inline bool Map::isPause () const
 {
 	return _pause;
+}
+
+inline const BoardState& Map::getBoardState () const
+{
+	return _state;
 }
 
 }

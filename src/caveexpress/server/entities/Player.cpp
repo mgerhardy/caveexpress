@@ -562,9 +562,9 @@ void Player::setCollectedNPC(NPCFriendly *npc) {
 	_collectedNPC = npc;
 	if (npc != nullptr) {
 		npc->setCollected();
-		GameEvent.setTargetCave(ClientIdToClientMask(_clientId), npc->getTargetCaveNumber());
+		GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), npc->getTargetCaveNumber());
 	} else {
-		GameEvent.setTargetCave(ClientIdToClientMask(_clientId), 0);
+		GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), 0);
 	}
 }
 

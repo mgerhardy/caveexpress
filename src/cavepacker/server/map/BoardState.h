@@ -92,6 +92,10 @@ public:
 		return _state.end();
 	}
 
+	inline const DeadlockDetector& getDeadlockDetector () const {
+		return _deadlock;
+	}
+
 	/**
 	 * @param[out] col [0, w - 1]
 	 * @param[out] row [0, h - 1]

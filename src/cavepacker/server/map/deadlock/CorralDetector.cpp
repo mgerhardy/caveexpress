@@ -12,7 +12,7 @@ bool CorralDetector::hasDeadlock(uint32_t millisStart, const BoardState& s) {
 	return false;
 }
 
-void CorralDetector::fillDeadlocks(DeadlockSet& set) {
+void CorralDetector::fillDeadlocks(DeadlockSet& set) const {
 }
 
 }

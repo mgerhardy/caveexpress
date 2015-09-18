@@ -6,6 +6,7 @@
 #include "cavepacker/client/CavePackerClientMap.h"
 #include "cavepacker/server/network/SpawnHandler.h"
 #include "cavepacker/server/network/DisconnectHandler.h"
+#include "cavepacker/server/network/RequestDeadlocksHandler.h"
 #include "cavepacker/server/network/StartMapHandler.h"
 #include "cavepacker/server/network/MovementHandler.h"
 #include "cavepacker/server/network/StopMovementHandler.h"
@@ -18,6 +19,7 @@
 #include "cavepacker/shared/CavePackerEntityType.h"
 #include "cavepacker/shared/CavePackerAchievement.h"
 #include "cavepacker/shared/network/ProtocolMessageTypes.h"
+#include "cavepacker/shared/network/messages/ShowDeadlocksMessage.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
 #include "client/entities/ClientEntityFactory.h"
 #include "client/entities/ClientMapTile.h"
@@ -54,6 +56,8 @@ PROTOCOL_CLASS_FACTORY_IMPL(AutoSolveStartedMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(AutoSolveAbortedMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(UndoMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(MoveToMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(RequestDeadlocksMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(ShowDeadlocksMessage);
 
 namespace {
 Achievement* puzzleAchievements[] = {
@@ -284,10 +288,12 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	rp.registerServerHandler(::protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_MOVETO, new MoveToHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_UNDO, new UndoHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_REQUESTDEADLOCKS, new RequestDeadlocksHandler(_map));
 
 	ProtocolMessageFactory& f = ProtocolMessageFactory::get();
 	f.registerFactory(protocol::PROTO_AUTOSOLVE, AutoSolveStartedMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_MOVETO, MoveToMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_SHOWDEADLOCKS, ShowDeadlocksMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_AUTOSOLVEABORT, AutoSolveAbortedMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_UNDO, UndoMessage::FACTORY);
 

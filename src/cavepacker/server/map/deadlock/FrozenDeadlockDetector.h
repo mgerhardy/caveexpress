@@ -28,7 +28,7 @@ public:
 	/**
 	 * @brief only add the first found deadlock
 	 */
-	void fillDeadlocks(DeadlockSet& set);
+	void fillDeadlocks(DeadlockSet& set) const;
 };
 
 inline void FrozenDeadlockDetector::clear() {
@@ -39,7 +39,7 @@ inline void FrozenDeadlockDetector::init(const BoardState&) {
 	// nothing to do here yet
 }
 
-inline void FrozenDeadlockDetector::fillDeadlocks(DeadlockSet& set) {
+inline void FrozenDeadlockDetector::fillDeadlocks(DeadlockSet& set) const {
 	for (auto i = _deadlocks.begin(); i != _deadlocks.end(); ++i) {
 		set.insert(*i);
 	}

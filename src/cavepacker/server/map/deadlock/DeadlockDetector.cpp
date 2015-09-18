@@ -55,7 +55,7 @@ bool DeadlockDetector::hasDeadlock(const BoardState& state, uint32_t timeout) {
 	return false;
 }
 
-DeadlockSet DeadlockDetector::getDeadlocks() {
+DeadlockSet DeadlockDetector::getDeadlocks() const {
 	DeadlockSet s;
 	_simple.fillDeadlocks(s);
 	_frozen.fillDeadlocks(s);

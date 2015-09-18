@@ -20,14 +20,14 @@ public:
 	void init(const BoardState& s);
 	bool hasDeadlock(uint32_t millisStart, uint32_t millisTimeout, const BoardState& s) const;
 	bool hasDeadlockAt(int index) const;
-	void fillDeadlocks(DeadlockSet& set);
+	void fillDeadlocks(DeadlockSet& set) const;
 };
 
 inline bool SimpleDeadlockDetector::hasDeadlockAt(int index) const {
 	return _deadlocks.find(index) != _deadlocks.end();
 }
 
-inline void SimpleDeadlockDetector::fillDeadlocks(DeadlockSet& set) {
+inline void SimpleDeadlockDetector::fillDeadlocks(DeadlockSet& set) const {
 	for (auto i = _deadlocks.begin(); i != _deadlocks.end(); ++i) {
 		set.insert(*i);
 	}

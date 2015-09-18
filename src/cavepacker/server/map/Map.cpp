@@ -31,6 +31,7 @@
 #include "cavepacker/server/map/Pathfinding.h"
 #include "cavepacker/shared/CavePackerSpriteType.h"
 #include "cavepacker/shared/EntityStates.h"
+#include "cavepacker/shared/network/messages/ShowDeadlocksMessage.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
 #include <SDL.h>
 #include <algorithm>
@@ -856,6 +857,17 @@ void Map::autoStart () {
 	startMap();
 }
 
+void Map::sendDeadlocks(ClientId clientId)
+{
+	const DeadlockSet& deadlocks = _state.getDeadlockDetector().getDeadlocks();
+	std::vector<int> indices;
+	for (int index : deadlocks) {
+		indices.push_back(index);
+	}
+	const ShowDeadlocksMessage deadlocksmsg(_width, _height, indices);
+	_serviceProvider->getNetwork().sendToClient(clientId, deadlocksmsg);
+}
+
 void Map::update (uint32_t deltaTime)
 {
 	if (_pause)
@@ -866,6 +878,13 @@ void Map::update (uint32_t deltaTime)
 		Log::info(LOG_MAP, "send the deadlock message");
 		const TextMessage msg("Deadlock detected");
 		_serviceProvider->getNetwork().sendToAllClients(msg);
+		const DeadlockSet& deadlocks = _state.getDeadlockDetector().getDeadlocks();
+		std::vector<int> indices;
+		for (int index : deadlocks) {
+			indices.push_back(index);
+		}
+		const ShowDeadlocksMessage deadlocksmsg(_width, _height, indices);
+		_serviceProvider->getNetwork().sendToAllClients(deadlocksmsg);
 	}
 
 	_timeManager.update(deltaTime);

@@ -33,7 +33,7 @@ public:
 	void clear();
 	void init(const BoardState& state);
 	bool hasDeadlock(const BoardState& state, uint32_t timeout = 50u);
-	DeadlockSet getDeadlocks();
+	DeadlockSet getDeadlocks() const;
 };
 
 }
