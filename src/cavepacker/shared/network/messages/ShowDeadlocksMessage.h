@@ -6,9 +6,9 @@
 namespace cavepacker {
 
 /**
- * @brief Message that is sent to the server to let the player move to the given location.
+ * @brief Message that is sent to the client if there is a deadlock state on the board
  *
- * The server will answer with single UpdateEntityMessage's
+ * This can also be requested by the client via @c RequestDeadlocksMessage
  */
 class ShowDeadlocksMessage: public IProtocolMessage {
 private:
