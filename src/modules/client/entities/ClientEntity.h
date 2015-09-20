@@ -8,7 +8,7 @@
 #include "common/SpriteDefinition.h"
 #include <memory>
 #include <Box2D/Common/b2Math.h>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <algorithm>
 
@@ -140,7 +140,7 @@ protected:
 	// the lifetime of this entity
 	uint32_t _time;
 	mutable SpritePtr _currSprite;
-	typedef std::map<const Animation*, SpritePtr> SpritesMap;
+	typedef std::unordered_map<const Animation*, SpritePtr> SpritesMap;
 	typedef SpritesMap::const_iterator SpritesMapConstIter;
 	SpritesMap _sprites;
 	uint8_t _state;
