@@ -28,21 +28,17 @@ sprites = {
 		type = "package",
 		rotateable = 1,
 		theme = "rock",
-		frames = {
-			{}, --back
-			{}, --middle
-			{ "item-package-idle-middle-01", }, --front
-		}
 	},
 	["package-delivered"] = {
 		type = "package",
 		rotateable = 1,
 		theme = "rock",
-		frames = {
-			{}, --back
-			{}, --middle
-			{ "item-package-delivered-middle-01", }, --front
-		}
+	},
+
+	["package-deadlock"] = {
+		type = "package",
+		rotateable = 1,
+		theme = "rock",
 	},
 
 -- Rock Tiles

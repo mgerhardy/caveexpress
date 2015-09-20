@@ -5,7 +5,8 @@ namespace cavepacker {
 namespace CavePackerEntityStates {
 enum {
 	NONE,
-	DELIVERED
+	DELIVERED,
+	DEADLOCK
 };
 }
 

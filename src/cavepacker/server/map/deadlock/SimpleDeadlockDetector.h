@@ -28,8 +28,8 @@ inline bool SimpleDeadlockDetector::hasDeadlockAt(int index) const {
 }
 
 inline void SimpleDeadlockDetector::fillDeadlocks(DeadlockSet& set) const {
-	for (auto i = _deadlocks.begin(); i != _deadlocks.end(); ++i) {
-		set.insert(*i);
+	for (int index : _deadlocks) {
+		set.insert(index);
 	}
 }
 

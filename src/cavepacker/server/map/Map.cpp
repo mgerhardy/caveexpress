@@ -355,8 +355,22 @@ bool Map::movePlayer (Player* player, char step)
 	player->storeStep(step);
 	increaseMoves();
 	// if there is not already a deadlock and we moved a package, check the state
-	if (_deadLock == 0 && package != nullptr && _state.hasDeadlock())
+	if (_deadLock == 0 && package != nullptr && _state.hasDeadlock()) {
+		auto deadlocks = _state.getDeadlockDetector().getDeadlocks();
+		for (auto index : deadlocks) {
+			auto i = _field[index];
+			if (i == nullptr) {
+				continue;
+			}
+			if (EntityTypes::isPackage(i->getType())) {
+				MapTile* pkg = static_cast<MapTile*>(i);
+				if (pkg->getState() != CavePackerEntityStates::DELIVERED) {
+					pkg->setState(CavePackerEntityStates::DEADLOCK);
+				}
+			}
+		}
 		_deadLock = _moves;
+	}
 	return true;
 }
 
@@ -878,13 +892,6 @@ void Map::update (uint32_t deltaTime)
 		Log::info(LOG_MAP, "send the deadlock message");
 		const TextMessage msg("Deadlock detected");
 		_serviceProvider->getNetwork().sendToAllClients(msg);
-		const DeadlockSet& deadlocks = _state.getDeadlockDetector().getDeadlocks();
-		std::vector<int> indices;
-		for (int index : deadlocks) {
-			indices.push_back(index);
-		}
-		const ShowDeadlocksMessage deadlocksmsg(_width, _height, indices);
-		_serviceProvider->getNetwork().sendToAllClients(deadlocksmsg);
 	}
 
 	_timeManager.update(deltaTime);

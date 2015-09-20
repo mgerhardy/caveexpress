@@ -39,17 +39,43 @@ void CavePackerClientMap::undo ()
 	_serviceProvider.getNetwork().sendToServer(UndoMessage());
 }
 
+void CavePackerClientMap::clearDeadlocks ()
+{
+	for (int index : _deadlocks) {
+		for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
+			ClientEntityPtr entity = i->second;
+			const vec2& pos = entity->getPos();
+			const int col = pos.x + 0.5f;
+			const int row = pos.y + 0.5f;
+			const int posIndex = col + _width * row;
+		}
+
+	}
+	// TODO: convert the ground floor tile and remove animation
+	_deadlocks.clear();
+}
+
+void CavePackerClientMap::addDeadlock (int index)
+{
+	// TODO: convert the ground floor tile and set animation
+	_deadlocks.push_back(index);
+}
+
 void CavePackerClientMap::update (uint32_t deltaTime)
 {
 	ClientMap::update(deltaTime);
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
-		if (i->second->getType() != EntityTypes::PACKAGE)
+		ClientEntityPtr entity = i->second;
+		const EntityType& type = entity->getType();
+		if (!EntityTypes::isPackage(type) && !EntityTypes::isGround(type))
 			continue;
-		const bool delivered = i->second->getState() == CavePackerEntityStates::DELIVERED;
-		if (delivered) {
-			i->second->setAnimationType(Animations::DELIVERED);
+		auto state = entity->getState();
+		if (state == CavePackerEntityStates::DELIVERED) {
+			entity->setAnimationType(Animations::DELIVERED);
+		} else if (state == CavePackerEntityStates::DEADLOCK) {
+			entity->setAnimationType(Animations::DEADLOCK);
 		} else {
-			i->second->setAnimationType(Animation::NONE);
+			entity->setAnimationType(Animation::NONE);
 		}
 	}
 }

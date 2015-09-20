@@ -9,9 +9,9 @@ namespace cavepacker {
 
 class ClientShowDeadlocksHandler: public IClientProtocolHandler {
 protected:
-	ClientMap& _map;
+	CavePackerClientMap& _map;
 public:
-	ClientShowDeadlocksHandler (ClientMap& map) :
+	ClientShowDeadlocksHandler (CavePackerClientMap& map) :
 			_map(map)
 	{
 	}
@@ -20,11 +20,9 @@ public:
 	{
 		const ShowDeadlocksMessage& msg = static_cast<const ShowDeadlocksMessage&>(message);
 		const std::vector<int>& indices = msg.getDeadlockIndices();
-		const int width = msg.getWidth();
+		_map.clearDeadlocks();
 		for (int index : indices) {
-			const int col = index % width;
-			const int row = index / width;
-			Log::info(LOG_CLIENT, "Deadlock at %i:%i", col, row);
+			_map.addDeadlock(index);
 		}
 	}
 };

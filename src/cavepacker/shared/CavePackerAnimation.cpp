@@ -4,6 +4,7 @@ namespace cavepacker {
 
 namespace Animations {
 Animation DELIVERED("delivered");
+Animation DEADLOCK("deadlock");
 }
 
 }
