@@ -21,6 +21,11 @@ public:
 	 */
 	inline const std::string& getSpriteName () const { return _sprite; }
 
+	/**
+	 * @brief Set a new sprite - but does not change the original sprite name
+	 */
+	void setNewSprite (const std::string& spriteName);
+
 	// ClientEntity
 	bool update (uint32_t deltaTime, bool lerpPos) override;
 };

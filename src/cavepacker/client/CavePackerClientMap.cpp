@@ -23,59 +23,74 @@
 
 namespace cavepacker {
 
-CavePackerClientMap::CavePackerClientMap (int x, int y, int width, int height, IFrontend *frontend,
-		ServiceProvider& serviceProvider, int referenceTileWidth) :
-		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth)
-{
+CavePackerClientMap::CavePackerClientMap(int x, int y, int width, int height,
+		IFrontend *frontend, ServiceProvider& serviceProvider,
+		int referenceTileWidth) :
+		ClientMap(x, y, width, height, frontend, serviceProvider,
+				referenceTileWidth) {
 }
 
-void CavePackerClientMap::start ()
-{
+void CavePackerClientMap::start() {
 	ClientMap::start();
 }
 
-void CavePackerClientMap::undo ()
-{
+void CavePackerClientMap::undo() {
 	_serviceProvider.getNetwork().sendToServer(UndoMessage());
 }
 
-void CavePackerClientMap::clearDeadlocks ()
-{
-	for (int index : _deadlocks) {
-		for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
-			ClientEntityPtr entity = i->second;
-			const vec2& pos = entity->getPos();
-			const int col = pos.x + 0.5f;
-			const int row = pos.y + 0.5f;
-			const int posIndex = col + _width * row;
+void CavePackerClientMap::clearDeadlocks() {
+	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
+		ClientEntityPtr entity = i->second;
+		const EntityType& type = entity->getType();
+		if (!EntityTypes::isGround(type)) {
+			continue;
 		}
-
+		ClientMapTile* tile = static_cast<ClientMapTile*>(entity);
+		const vec2& pos = tile->getPos();
+		const int col = pos.x + 0.5f;
+		const int row = pos.y + 0.5f;
+		const int posIndex = col + _mapWidth * row;
+		if (std::find(_deadlocks.begin(), _deadlocks.end(), posIndex)
+				!= _deadlocks.end()) {
+			tile->setNewSprite(tile->getSpriteName());
+		}
 	}
-	// TODO: convert the ground floor tile and remove animation
 	_deadlocks.clear();
 }
 
-void CavePackerClientMap::addDeadlock (int index)
-{
-	// TODO: convert the ground floor tile and set animation
+void CavePackerClientMap::addDeadlock(int index) {
+	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
+		ClientEntityPtr entity = i->second;
+		const EntityType& type = entity->getType();
+		if (!EntityTypes::isGround(type)) {
+			continue;
+		}
+		if (std::find(_deadlocks.begin(), _deadlocks.end(), index)
+				!= _deadlocks.end()) {
+			ClientMapTile* tile = static_cast<ClientMapTile*>(entity);
+			// TODO: create a new sprite for this
+			//tile->setNewSprite("tile-rock-01");
+			//tile->addOverlay();
+			break;
+		}
+	}
 	_deadlocks.push_back(index);
 }
 
-void CavePackerClientMap::update (uint32_t deltaTime)
-{
+void CavePackerClientMap::update(uint32_t deltaTime) {
 	ClientMap::update(deltaTime);
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
 		ClientEntityPtr entity = i->second;
 		const EntityType& type = entity->getType();
-		if (!EntityTypes::isPackage(type) && !EntityTypes::isGround(type))
-			continue;
 		auto state = entity->getState();
-		if (state == CavePackerEntityStates::DELIVERED) {
-			entity->setAnimationType(Animations::DELIVERED);
-		} else if (state == CavePackerEntityStates::DEADLOCK) {
-			entity->setAnimationType(Animations::DEADLOCK);
-		} else {
-			entity->setAnimationType(Animation::NONE);
+		if (EntityTypes::isPackage(type)) {
+			if (state == CavePackerEntityStates::DELIVERED) {
+				entity->setAnimationType(Animations::DELIVERED);
+			} else if (state == CavePackerEntityStates::DEADLOCK) {
+				entity->setAnimationType(Animations::DEADLOCK);
+			} else {
+				entity->setAnimationType(Animation::NONE);
+			}
 		}
 	}
 }

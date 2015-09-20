@@ -19,6 +19,15 @@ ClientMapTile::~ClientMapTile ()
 {
 }
 
+void ClientMapTile::setNewSprite (const std::string& spriteName)
+{
+	if (_currSprite && _currSprite->getName() == spriteName)
+		return;
+	const SpritePtr& sprite = UI::get().loadSprite(spriteName);
+	if (sprite)
+		_currSprite = sprite;
+}
+
 bool ClientMapTile::update (uint32_t deltaTime, bool lerpPos)
 {
 	ClientEntity::update(deltaTime, lerpPos);
