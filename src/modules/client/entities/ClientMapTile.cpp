@@ -5,12 +5,14 @@
 ClientMapTile::ClientMapTile (const EntityType& type, uint16_t id, const std::string& sprite,
 		const Animation& animation, float x, float y, float sizeX, float sizeY, EntityAngle angle,
 		const SoundMapping& soundMapping, EntityAlignment align) :
-		ClientEntity(type, id, x, y, sizeX, sizeY, soundMapping, align, angle)
+		ClientEntity(type, id, x, y, sizeX, sizeY, soundMapping, align, angle), _sprite(sprite)
 {
-	_currSprite = UI::get().loadSprite(sprite);
-	if (_currSprite->getFrameCount() > 1)
-		_currSprite = SpritePtr(_currSprite->copy());
-	setScreenSize(_currSprite->getMaxWidth(), _currSprite->getMaxHeight());
+	_currSprite = UI::get().loadSprite(_sprite);
+	if (_currSprite) {
+		if (_currSprite->getFrameCount() > 1)
+			_currSprite = SpritePtr(_currSprite->copy());
+		setScreenSize(_currSprite->getMaxWidth(), _currSprite->getMaxHeight());
+	}
 }
 
 ClientMapTile::~ClientMapTile ()
