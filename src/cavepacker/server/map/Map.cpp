@@ -883,6 +883,9 @@ void Map::rebuildField ()
 	for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
 		SDL_assert_always(setField(*i, (*i)->getCol(), (*i)->getRow()));
 	}
+#ifdef DEBUG
+	Log::trace(LOG_MAP, "State:\n%s", _state.toString().c_str());
+#endif
 }
 
 void Map::autoStart () {
