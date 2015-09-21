@@ -84,8 +84,7 @@ protected:
 	bool _autoSolve;
 	int32_t _nextSolveStep;
 	std::string _solution;
-	int _deadLock;
-	bool _deadLockMessageSent;
+	std::vector<int> _deadLocks;
 
 	bool visitEntity (IEntity *entity) override;
 

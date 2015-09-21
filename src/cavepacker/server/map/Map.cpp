@@ -227,10 +227,6 @@ void Map::undo (Player* player)
 	if (!player->undo())
 		return;
 
-	if (_moves == _deadLock) {
-		_deadLock = 0;
-		_deadLockMessageSent = false;
-	}
 	--_moves;
 	Log::debug(LOG_SERVER, "moved fields after undo: %i", _moves);
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
@@ -298,6 +294,11 @@ bool Map::undoPackage (int col, int row, int targetCol, int targetRow)
 		else
 			package->setState(CavePackerEntityStates::NONE);
 
+		auto i = std::find(_deadLocks.begin(), _deadLocks.end(), _state.getIndex(col, row));
+		if (i != _deadLocks.end()) {
+			_deadLocks.erase(i);
+		}
+
 		--_pushes;
 		return true;
 	}
@@ -354,22 +355,31 @@ bool Map::movePlayer (Player* player, char step)
 
 	player->storeStep(step);
 	increaseMoves();
-	// if there is not already a deadlock and we moved a package, check the state
-	if (_deadLock == 0 && package != nullptr && _state.hasDeadlock()) {
+	// if we moved a package, check the state
+	if (package != nullptr && _state.hasDeadlock()) {
 		auto deadlocks = _state.getDeadlockDetector().getDeadlocks();
+		bool newDeadlock = false;
 		for (auto index : deadlocks) {
-			auto i = _field[index];
-			if (i == nullptr) {
+			auto entity = _field[index];
+			if (entity == nullptr) {
 				continue;
 			}
-			if (EntityTypes::isPackage(i->getType())) {
-				MapTile* pkg = static_cast<MapTile*>(i);
+			if (EntityTypes::isPackage(entity->getType())) {
+				MapTile* pkg = static_cast<MapTile*>(entity);
 				if (pkg->getState() != CavePackerEntityStates::DELIVERED) {
 					pkg->setState(CavePackerEntityStates::DEADLOCK);
 				}
 			}
+			auto i = std::find(_deadLocks.begin(), _deadLocks.end(), index);
+			if (i == _deadLocks.end()) {
+				_deadLocks.push_back(index);
+				newDeadlock = true;
+			}
 		}
-		_deadLock = _moves;
+		if (newDeadlock) {
+			static const TextMessage msg("Deadlock detected");
+			_serviceProvider->getNetwork().sendToAllClients(msg);
+		}
 	}
 	return true;
 }
@@ -407,8 +417,7 @@ void Map::resetCurrentMap ()
 	abortAutoSolve();
 	_nextSolveStep = 0;
 	_solution = "";
-	_deadLock = 0;
-	_deadLockMessageSent = false;
+	_deadLocks.clear();
 	_timeManager.reset();
 	if (!_name.empty()) {
 		const CloseMapMessage msg;
@@ -886,13 +895,6 @@ void Map::update (uint32_t deltaTime)
 {
 	if (_pause)
 		return;
-
-	if (_deadLock >= 1 && _deadLock == _moves && !_deadLockMessageSent) {
-		_deadLockMessageSent = true;
-		Log::info(LOG_MAP, "send the deadlock message");
-		const TextMessage msg("Deadlock detected");
-		_serviceProvider->getNetwork().sendToAllClients(msg);
-	}
 
 	_timeManager.update(deltaTime);
 
