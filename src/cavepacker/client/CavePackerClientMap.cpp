@@ -28,6 +28,7 @@ CavePackerClientMap::CavePackerClientMap(int x, int y, int width, int height,
 		int referenceTileWidth) :
 		ClientMap(x, y, width, height, frontend, serviceProvider,
 				referenceTileWidth) {
+	_deadlockOverlay = UI::get().loadSprite("deadlock");
 }
 
 void CavePackerClientMap::start() {
@@ -52,7 +53,7 @@ void CavePackerClientMap::clearDeadlocks() {
 		const int posIndex = col + _mapWidth * row;
 		if (std::find(_deadlocks.begin(), _deadlocks.end(), posIndex)
 				!= _deadlocks.end()) {
-			tile->setNewSprite(tile->getSpriteName());
+			tile->removeOverlay(_deadlockOverlay);
 		}
 	}
 	_deadlocks.clear();
@@ -68,9 +69,7 @@ void CavePackerClientMap::addDeadlock(int index) {
 		if (std::find(_deadlocks.begin(), _deadlocks.end(), index)
 				!= _deadlocks.end()) {
 			ClientMapTile* tile = static_cast<ClientMapTile*>(entity);
-			// TODO: create a new sprite for this
-			//tile->setNewSprite("tile-rock-01");
-			//tile->addOverlay();
+			tile->addOverlay(_deadlockOverlay);
 			break;
 		}
 	}

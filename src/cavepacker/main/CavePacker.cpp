@@ -294,6 +294,7 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	f.registerFactory(protocol::PROTO_AUTOSOLVE, AutoSolveStartedMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_MOVETO, MoveToMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_SHOWDEADLOCKS, ShowDeadlocksMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_REQUESTDEADLOCKS, RequestDeadlocksMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_AUTOSOLVEABORT, AutoSolveAbortedMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_UNDO, UndoMessage::FACTORY);
 

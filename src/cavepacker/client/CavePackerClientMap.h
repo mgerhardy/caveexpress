@@ -8,6 +8,7 @@ namespace cavepacker {
 class CavePackerClientMap: public ClientMap {
 private:
 	std::vector<int> _deadlocks;
+	SpritePtr _deadlockOverlay;
 
 public:
 	CavePackerClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider,

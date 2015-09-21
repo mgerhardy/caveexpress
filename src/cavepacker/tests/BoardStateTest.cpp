@@ -11,7 +11,7 @@ namespace cavepacker {
 class BoardStateTest: public AbstractTest {
 protected:
 	inline void fillState(BoardState& s, const char* board, bool convertPlayers = true) const {
-		ASSERT_TRUE(createBoardStateFromString(s, board, convertPlayers)) << "could not fill the board state with " << board;
+		ASSERT_TRUE(createBoardStateFromString(s, board, convertPlayers)) << "could not fill the board state with\n" << board;
 	}
 
 	template<typename T>
@@ -50,34 +50,49 @@ protected:
 		ASSERT_TRUE(s.hasDeadlock());
 	}
 
-	void testNoSimpleDeadlock(const char *mapStr) {
+	/**
+	 * @brief checks the the current board state doesn't have a package placed on a simple deadlock
+	 */
+	void testNoSimpleDeadlock(const char *mapStr, int expected = -1) {
 		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
-		simple.init(s);
+		const int deadlocks = simple.init(s);
+		if (expected > 0)
+			ASSERT_EQ(expected, deadlocks);
 		const uint32_t start = SDL_GetTicks();
 		ASSERT_FALSE(simple.hasDeadlock(start, 10000000u, s)) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
 
-	void testNoSimpleDeadlockAt(const char *mapStr, int col, int row) {
+	void testNoSimpleDeadlockAt(const char *mapStr, int col, int row, int expected = -1) {
 		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
-		simple.init(s);
+		const int deadlocks = simple.init(s);
+		if (expected > 0)
+			ASSERT_EQ(expected, deadlocks);
 		const int index = s.getIndex(col, row);
 		const bool deadlock = simple.hasDeadlockAt(index);
 		ASSERT_FALSE(deadlock) << "Unexpected deadlock found at " << (col + 1) << ":" << (row + 1) << " index: " << index << ". Blocked fields: " << getDeadlocks(simple, s);
 	}
 
-	void testSimpleDeadlockAt(const char *mapStr, int col, int row) {
+	/**
+	 * @brief checks that some field on the board was detected as a simple deadlock field.
+	 * @note A package placement is not needed here.
+	 */
+	void testSimpleDeadlockAt(const char *mapStr, int col, int row, int expected = -1) {
 		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
-		simple.init(s);
+		const int deadlocks = simple.init(s);
+		if (expected > 0)
+			ASSERT_EQ(expected, deadlocks);
 		ASSERT_TRUE(simple.hasDeadlockAt(s.getIndex(col, row))) << "Expected deadlock not found at " << (col + 1) << ":" << (row + 1) << ". Blocked fields: " << getDeadlocks(simple, s);
 	}
 
-	void testSimpleDeadlock(const char *mapStr) {
+	void testSimpleDeadlock(const char *mapStr, int expected = -1) {
 		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
-		simple.init(s);
+		const int deadlocks = simple.init(s);
+		if (expected > 0)
+			ASSERT_EQ(expected, deadlocks);
 		const uint32_t start = SDL_GetTicks();
 		ASSERT_TRUE(simple.hasDeadlock(start, 10000000u, s)) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
@@ -193,8 +208,8 @@ TEST_F(BoardStateTest, testSuccessors) {
 		"# #\n"
 		"# ##########\n"
 		"#          #\n"
-		"#    #     #\n"
-		"#    #     #\n"
+		"#    #    .#\n"
+		"#    #    $#\n"
 		"############";
 
 	SCOPE(mapStr);
@@ -248,7 +263,6 @@ TEST_F(BoardStateTest, testSuccessors) {
 		ASSERT_TRUE(index1 == successors[3] || index2 == successors[3] || index3 == successors[3] || index4 == successors[3]) << "Indices don't match any successor (" << index1 << ", " << index2 << ", " << index3 << ", " << index4 << ") - successors (" << successors[3] << ")";
 		successors.clear();
 	}
-	ASSERT_TRUE(s.isDone()) << "Could not detect the done state in the board\n" << mapStr;
 }
 
 TEST_F(BoardStateTest, testSimpleDeadlocks) {
@@ -257,87 +271,87 @@ TEST_F(BoardStateTest, testSimpleDeadlocks) {
 		"#    #\n"
 		"#$$@.#\n"
 		"#.####\n"
-		"###\n");
+		"###\n", 4);
 	testNoSimpleDeadlock(
 		"######\n"
 		"#    #\n"
 		"#$$@.#\n"
 		"#.####\n"
-		"###\n");
+		"###\n", 4);
 	testNoSimpleDeadlockAt(
 		"######\n"
 		"#    #\n"
 		"#$$@.#\n"
 		"#.####\n"
 		"###\n",
-		2, 2);
+		2, 2, 4);
 	testNoSimpleDeadlockAt(
 		"######\n"
 		"#    #\n"
 		"#$$@.#\n"
 		"#.####\n"
 		"###\n",
-		1, 3);
+		1, 3, 4);
 	testNoSimpleDeadlockAt(
 		"######\n"
 		"#    #\n"
 		"#$$@.#\n"
 		"#.####\n"
 		"###\n",
-		4, 2);
+		4, 2, 4);
 	testSimpleDeadlockAt(
 		"######\n"
 		"#    #\n"
 		"#$$@.#\n"
 		"#.####\n"
 		"###\n",
-		1, 1);
+		1, 1, 4);
 	testSimpleDeadlockAt(
 		"######\n"
 		"#    #\n"
 		"#$$@.#\n"
 		"#.####\n"
 		"###\n",
-		2, 1);
+		2, 1, 4);
 	testSimpleDeadlockAt(
 		"######\n"
 		"#    #\n"
 		"#$$@.#\n"
 		"#.####\n"
 		"###\n",
-		3, 1);
+		3, 1, 4);
 	testSimpleDeadlockAt(
 		"######\n"
 		"#    #\n"
 		"#$$@.#\n"
 		"#.####\n"
 		"###\n",
-		4, 1);
+		4, 1, 4);
 	testNoSimpleDeadlockAt(
 		"######\n"
 		"#  @ #\n"
 		"#$   #\n"
 		"#.####\n"
 		"###\n",
-		1, 2);
+		1, 2, 5);
 	testNoSimpleDeadlock(
 		"######\n"
 		"#  @ #\n"
 		"#  $ #\n"
 		"#.####\n"
-		"###\n");
+		"###\n", 5);
 	testNoSimpleDeadlock(
 		"######\n"
 		"#  @ #\n"
 		"#$ $.#\n"
 		"#.####\n"
-		"###\n");
+		"###\n", 4);
 	testSimpleDeadlock(
 		"######\n"
 		"#$   #\n"
 		"#  @.#\n"
 		"#.####\n"
-		"###\n");
+		"###\n", 4);
 	testSimpleDeadlock(
 		"######\n"
 		"# $  #\n"
@@ -350,6 +364,20 @@ TEST_F(BoardStateTest, testSimpleDeadlocks) {
 		"#  @.#\n"
 		"#.####\n"
 		"###\n");
+	testNoSimpleDeadlock(
+		"#########\n"
+		"#@      #\n"
+		"#     $ #\n"
+		"####### #\n"
+		"      #.#\n"
+		"      ###\n", 8);
+	testSimpleDeadlockAt(
+		"#########\n"
+		"#@      #\n"
+		"#     $ #\n"
+		"####### #\n"
+		"      #.#\n"
+		"      ###\n", 1, 2, 8);
 }
 
 TEST_F(BoardStateTest, testDeadlocks) {

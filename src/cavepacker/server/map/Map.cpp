@@ -904,8 +904,13 @@ void Map::autoStart () {
 
 void Map::sendDeadlocks(ClientId clientId)
 {
+	Log::info(LOG_SERVER, "Send deadlocks to client %i", (int)clientId);
 	const DeadlockSet& deadlocks = _state.getDeadlockDetector().getDeadlocks();
-	std::vector<int> indices;
+	if (deadlocks.empty()) {
+		Log::info(LOG_SERVER, "No deadlocks found");
+		return;
+	}
+	std::vector<int> indices(deadlocks.size());
 	for (int index : deadlocks) {
 		indices.push_back(index);
 	}

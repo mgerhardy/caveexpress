@@ -41,7 +41,7 @@ bool SimpleDeadlockDetector::moveBackwards(BoardState& s, int index) {
 	return moved;
 }
 
-void SimpleDeadlockDetector::init(const BoardState& s) {
+int SimpleDeadlockDetector::init(const BoardState& s) {
 	std::vector<int> targets;
 	int index = 0;
 	for (auto i = s.begin(); i != s.end(); ++i, ++index) {
@@ -91,9 +91,10 @@ void SimpleDeadlockDetector::init(const BoardState& s) {
 #endif
 		_deadlocks.insert(index);
 	}
-	Log::debug(LOG_SERVER, "Found %i simple deadlocks", (int)_deadlocks.size());
+	Log::info(LOG_SERVER, "Found %i simple deadlocks", (int)_deadlocks.size());
 	Log::debug(LOG_SERVER, "Visited %i fields", (int)_visited.size());
 	_visited.clear();
+	return (int)_deadlocks.size();
 }
 
 bool SimpleDeadlockDetector::hasDeadlock(uint32_t millisStart, uint32_t millisTimeout, const BoardState& s) const {

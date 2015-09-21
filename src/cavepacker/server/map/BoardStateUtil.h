@@ -28,6 +28,7 @@ static bool createBoardStateFromString(BoardState& s, const char* board, bool co
 	d = board;
 	col = 0;
 	row = 0;
+	int packages = 0;
 	while (*d != '\0') {
 		if (*d == '\n') {
 			if (*(d + 1) == '\0')
@@ -41,12 +42,16 @@ static bool createBoardStateFromString(BoardState& s, const char* board, bool co
 				c = Sokoban::GROUND;
 			if (!s.setField(col, row, c))
 				return false;
+			if (isPackage(c) || isPackageOnTarget(c))
+				++packages;
 			++col;
 		}
 		++d;
 	}
 	// at least 3 rows are needed
 	if (row < 2)
+		return false;
+	if (packages <= 0)
 		return false;
 	s.initDeadlock();
 	return true;
