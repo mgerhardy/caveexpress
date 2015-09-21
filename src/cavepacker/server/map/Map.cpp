@@ -368,6 +368,19 @@ void Map::checkDeadlock () {
 	if (!_state.hasDeadlock()) {
 		return;
 	}
+	for (auto index : _deadLocks) {
+		auto entity = _field[index];
+		if (entity == nullptr) {
+			continue;
+		}
+		if (EntityTypes::isPackage(entity->getType())) {
+			MapTile* pkg = static_cast<MapTile*>(entity);
+			if (pkg->getState() != CavePackerEntityStates::DEADLOCK) {
+				pkg->setState(CavePackerEntityStates::NONE);
+			}
+		}
+	}
+
 	auto deadlocks = _state.getDeadlockDetector().getDeadlocks();
 	bool newDeadlock = false;
 	for (auto index : deadlocks) {
