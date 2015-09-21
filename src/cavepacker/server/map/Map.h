@@ -94,7 +94,7 @@ protected:
 	void printMap ();
 	char getSokobanFieldId (const IEntity *entity) const;
 	void handleAutoSolve (uint32_t deltaTime);
-
+	void checkDeadlock ();
 public:
 	Map ();
 	virtual ~Map ();

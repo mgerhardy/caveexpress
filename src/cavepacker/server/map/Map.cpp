@@ -275,35 +275,38 @@ char Map::getDirectionForMove (int currentIndex, int targetIndex) const
 bool Map::undoPackage (int col, int row, int targetCol, int targetRow)
 {
 	MapTile* package = getPackage(col, row);
-	if (package != nullptr) {
-		Log::info(LOG_SERVER, "move package back");
-		rebuildField();
-		const int origCol = package->getCol();
-		const int origRow = package->getRow();
-		if (!package->setPos(targetCol, targetRow))
-			return false;
-		rebuildField();
-		if (_state.isInvalid(targetCol, targetRow)) {
-			package->setPos(origCol, origRow);
-			return false;
-		}
-
-		const char c = _state.getField(targetCol, targetRow);
-		if (isPackageOnTarget(c))
-			package->setState(CavePackerEntityStates::DELIVERED);
-		else
-			package->setState(CavePackerEntityStates::NONE);
-
-		auto i = std::find(_deadLocks.begin(), _deadLocks.end(), _state.getIndex(col, row));
-		if (i != _deadLocks.end()) {
-			_deadLocks.erase(i);
-		}
-
-		--_pushes;
-		return true;
+	if (package == nullptr) {
+		Log::info(LOG_SERVER, "don't move package back");
+		return false;
 	}
-	Log::info(LOG_SERVER, "don't move package back");
-	return false;
+	Log::info(LOG_SERVER, "move package back");
+	rebuildField();
+	const int origCol = package->getCol();
+	const int origRow = package->getRow();
+	if (!package->setPos(targetCol, targetRow))
+		return false;
+	rebuildField();
+	if (_state.isInvalid(targetCol, targetRow)) {
+		package->setPos(origCol, origRow);
+		return false;
+	}
+
+	const char c = _state.getField(targetCol, targetRow);
+	if (isPackageOnTarget(c))
+		package->setState(CavePackerEntityStates::DELIVERED);
+	else
+		package->setState(CavePackerEntityStates::NONE);
+
+	auto i = std::find(_deadLocks.begin(), _deadLocks.end(), _state.getIndex(col, row));
+	if (i != _deadLocks.end()) {
+		_deadLocks.erase(i);
+	}
+
+	--_pushes;
+
+	checkDeadlock();
+
+	return true;
 }
 
 void Map::abortAutoSolve ()
@@ -356,32 +359,38 @@ bool Map::movePlayer (Player* player, char step)
 	player->storeStep(step);
 	increaseMoves();
 	// if we moved a package, check the state
-	if (package != nullptr && _state.hasDeadlock()) {
-		auto deadlocks = _state.getDeadlockDetector().getDeadlocks();
-		bool newDeadlock = false;
-		for (auto index : deadlocks) {
-			auto entity = _field[index];
-			if (entity == nullptr) {
-				continue;
-			}
-			if (EntityTypes::isPackage(entity->getType())) {
-				MapTile* pkg = static_cast<MapTile*>(entity);
-				if (pkg->getState() != CavePackerEntityStates::DELIVERED) {
-					pkg->setState(CavePackerEntityStates::DEADLOCK);
-				}
-			}
-			auto i = std::find(_deadLocks.begin(), _deadLocks.end(), index);
-			if (i == _deadLocks.end()) {
-				_deadLocks.push_back(index);
-				newDeadlock = true;
+	if (package != nullptr)
+		checkDeadlock();
+	return true;
+}
+
+void Map::checkDeadlock () {
+	if (!_state.hasDeadlock()) {
+		return;
+	}
+	auto deadlocks = _state.getDeadlockDetector().getDeadlocks();
+	bool newDeadlock = false;
+	for (auto index : deadlocks) {
+		auto entity = _field[index];
+		if (entity == nullptr) {
+			continue;
+		}
+		if (EntityTypes::isPackage(entity->getType())) {
+			MapTile* pkg = static_cast<MapTile*>(entity);
+			if (pkg->getState() != CavePackerEntityStates::DELIVERED) {
+				pkg->setState(CavePackerEntityStates::DEADLOCK);
 			}
 		}
-		if (newDeadlock) {
-			static const TextMessage msg("Deadlock detected");
-			_serviceProvider->getNetwork().sendToAllClients(msg);
+		auto i = std::find(_deadLocks.begin(), _deadLocks.end(), index);
+		if (i == _deadLocks.end()) {
+			_deadLocks.push_back(index);
+			newDeadlock = true;
 		}
 	}
-	return true;
+	if (newDeadlock) {
+		static const TextMessage msg("Deadlock detected");
+		_serviceProvider->getNetwork().sendToAllClients(msg);
+	}
 }
 
 void Map::increasePushes ()
