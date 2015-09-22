@@ -774,7 +774,8 @@ bool Map::setField (IEntity *entity, int col, int row)
 	}
 	char nc = getSokobanFieldId(entity);
 	if (_state.isInvalid(col, row)) {
-		_state.setField(col, row, nc);
+		_state.clearFieldForIndex(index);
+		_state.setFieldForIndex(index, nc);
 		return true;
 	}
 	const char c = _state.getField(col, row);
@@ -877,7 +878,7 @@ bool Map::visitEntity (IEntity *entity)
 void Map::rebuildField ()
 {
 	_field.assign(_width * _height, nullptr);
-	_state.clear();
+	_state.clearBoard();
 	for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
 		SDL_assert_always(setField(*i, (*i)->getCol(), (*i)->getRow()));
 	}

@@ -27,9 +27,13 @@ public:
 	BoardState(const BoardState& state);
 
 	/**
-	 * @brief Clears the board state - but not the size
+	 * @brief Clears the board state including the deadlocks - but not the size
 	 */
 	void clear();
+	/**
+	 * @brief Clears the board state but keeps the precalculated deadlocks
+	 */
+	void clearBoard();
 	/**
 	 * @brief Configures the size of the board.
 	 */

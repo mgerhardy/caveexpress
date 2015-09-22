@@ -13,8 +13,14 @@ BoardState::BoardState(const BoardState& state) :
 }
 
 void BoardState::clear() {
+	Log::info(LOG_SERVER, "clear deadlock state");
 	_state.assign(_width * _height, '\0');
 	_deadlock.clear();
+}
+
+void BoardState::clearBoard() {
+	Log::info(LOG_SERVER, "clear board state");
+	_state.assign(_width * _height, '\0');
 }
 
 void BoardState::setSize(int width, int height) {
@@ -60,6 +66,7 @@ std::string BoardState::toString() const {
 }
 
 void BoardState::initDeadlock() {
+	Log::info(LOG_SERVER, "init deadlock state");
 	_deadlock.init(*this);
 }
 
