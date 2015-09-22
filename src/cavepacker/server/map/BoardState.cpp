@@ -19,7 +19,7 @@ void BoardState::clear() {
 }
 
 void BoardState::clearBoard() {
-	Log::info(LOG_SERVER, "clear board state");
+	Log::trace(LOG_SERVER, "clear board state");
 	_state.assign(_width * _height, '\0');
 }
 
