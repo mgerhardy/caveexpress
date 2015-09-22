@@ -42,19 +42,7 @@ void CavePackerClientMap::undo() {
 void CavePackerClientMap::clearDeadlocks() {
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
 		ClientEntityPtr entity = i->second;
-		const EntityType& type = entity->getType();
-		if (!EntityTypes::isGround(type)) {
-			continue;
-		}
-		ClientMapTile* tile = static_cast<ClientMapTile*>(entity);
-		const vec2& pos = tile->getPos();
-		const int col = pos.x + 0.5f;
-		const int row = pos.y + 0.5f;
-		const int posIndex = col + _mapWidth * row;
-		if (std::find(_deadlocks.begin(), _deadlocks.end(), posIndex)
-				!= _deadlocks.end()) {
-			tile->removeOverlay(_deadlockOverlay);
-		}
+		entity->removeOverlay(_deadlockOverlay);
 	}
 	_deadlocks.clear();
 }
