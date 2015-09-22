@@ -34,7 +34,6 @@ sprites = {
 		rotateable = 1,
 		theme = "rock",
 	},
-
 	["package-deadlock"] = {
 		type = "package",
 		rotateable = 1,
@@ -42,6 +41,8 @@ sprites = {
 	},
 
 -- Rock Tiles
+
+	["deadlock"] = { type = "ground", theme = "rock", },
 
 	["tile-background-01"] = { type = "ground", theme = "rock", },
 	["tile-background-02"] = { type = "ground", theme = "rock", },
