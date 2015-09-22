@@ -39,29 +39,27 @@ void CavePackerClientMap::undo() {
 	_serviceProvider.getNetwork().sendToServer(UndoMessage());
 }
 
-void CavePackerClientMap::clearDeadlocks() {
-	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
-		ClientEntityPtr entity = i->second;
-		entity->removeOverlay(_deadlockOverlay);
-	}
-	_deadlocks.clear();
-}
-
-void CavePackerClientMap::addDeadlock(int index) {
+void CavePackerClientMap::setDeadlocks(const std::vector<int>& _deadlocks) {
+	std::vector<int> deadlocks(_deadlocks);
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
 		ClientEntityPtr entity = i->second;
 		const EntityType& type = entity->getType();
 		if (!EntityTypes::isGround(type)) {
 			continue;
 		}
-		if (std::find(_deadlocks.begin(), _deadlocks.end(), index)
-				!= _deadlocks.end()) {
-			ClientMapTile* tile = static_cast<ClientMapTile*>(entity);
-			tile->addOverlay(_deadlockOverlay);
-			break;
+		ClientMapTile* tile = static_cast<ClientMapTile*>(entity);
+		const vec2& pos = tile->getPos();
+		const int col = pos.x + 0.5f;
+		const int row = pos.y + 0.5f;
+		const int index = col + _mapWidth * row;
+		auto iter = std::find(deadlocks.begin(), deadlocks.end(), index);
+		if (iter == deadlocks.end()) {
+			tile->removeOverlay(_deadlockOverlay);
+			continue;
 		}
+		deadlocks.erase(iter);
+		tile->addOverlay(_deadlockOverlay);
 	}
-	_deadlocks.push_back(index);
 }
 
 void CavePackerClientMap::update(uint32_t deltaTime) {

@@ -7,7 +7,6 @@ namespace cavepacker {
 
 class CavePackerClientMap: public ClientMap {
 private:
-	std::vector<int> _deadlocks;
 	SpritePtr _deadlockOverlay;
 
 public:
@@ -19,8 +18,7 @@ public:
 
 	void undo ();
 
-	void clearDeadlocks();
-	void addDeadlock(int index);
+	void setDeadlocks(const std::vector<int>& deadlocks);
 
 	void start () override;
 	virtual void update (uint32_t deltaTime) override;

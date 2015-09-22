@@ -20,10 +20,7 @@ public:
 	{
 		const ShowDeadlocksMessage& msg = static_cast<const ShowDeadlocksMessage&>(message);
 		const std::vector<int>& indices = msg.getDeadlockIndices();
-		_map.clearDeadlocks();
-		for (int index : indices) {
-			_map.addDeadlock(index);
-		}
+		_map.setDeadlocks(indices);
 	}
 };
 
