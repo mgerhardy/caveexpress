@@ -1,6 +1,7 @@
 #include "String.h"
 #include <cctype>
 #include <stdio.h>
+#include <SDL.h>
 
 String::String () :
 		_string("")
@@ -234,7 +235,7 @@ String String::format (const char *msg, ...)
 	char text[bufSize];
 
 	va_start(ap, msg);
-	vsnprintf(text, bufSize, msg, ap);
+	SDL_vsnprintf(text, bufSize, msg, ap);
 	va_end(ap);
 
 	return String(text);

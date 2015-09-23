@@ -1,5 +1,6 @@
 #include "ExecutionTime.h"
 
+#include <SDL.h>
 #include "common/Log.h"
 
 #ifdef _WIN32
@@ -78,7 +79,7 @@ inline std::string ExecutionTime::format (const char *msg, ...) const
 	char text[size];
 
 	va_start(ap, msg);
-	vsnprintf(text, size, msg, ap);
+	SDL_vsnprintf(text, size, msg, ap);
 	va_end(ap);
 
 	return std::string(text);
