@@ -785,12 +785,19 @@ fallback:
                 "open", "(Ljava/lang/String;I)Ljava/io/InputStream;");
         inputStream = (*mEnv)->CallObjectMethod(mEnv, assetManager, mid, fileNameJString, 1 /* ACCESS_RANDOM */);
         if (Android_JNI_ExceptionOccurred(SDL_FALSE)) {
-            // Try fallback to APK Extension files
+            /* Try fallback to APK expansion files */
             mid = (*mEnv)->GetMethodID(mEnv, (*mEnv)->GetObjectClass(mEnv, context),
-                "openAPKExtensionInputStream", "(Ljava/lang/String;)Ljava/io/InputStream;");
+                "openAPKExpansionInputStream", "(Ljava/lang/String;)Ljava/io/InputStream;");
+            if (!mid) {
+                SDL_SetError("No openAPKExpansionInputStream() in Java class");
+                goto failure; /* Java class is missing the required method */
+            }
             inputStream = (*mEnv)->CallObjectMethod(mEnv, context, mid, fileNameJString);
 
-            if (Android_JNI_ExceptionOccurred(SDL_FALSE)) {
+            /* Exception is checked first because it always needs to be cleared.
+             * If no exception occurred then the last SDL error message is kept.
+             */
+            if (Android_JNI_ExceptionOccurred(SDL_FALSE) || !inputStream) {
                 goto failure;
             }
         }
