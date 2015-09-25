@@ -360,11 +360,16 @@ public:
 				alpha = 0.5f;
 			}
 
-			renderSelectorEntry(index, *i, _x, _y, colWidth, rowHeight, alpha);
+			const int _innerPadding = 0;
+			const int xEntry = _x + _innerPadding;
+			const int yEntry = _y + _innerPadding;
+			const int wEntry = colWidth - 2 * _innerPadding;
+			const int hEntry = rowHeight - 2 * _innerPadding;
+			renderSelectorEntry(index, *i, xEntry, yEntry, wEntry, hEntry, alpha);
 
 			if (_font) {
 				const std::string& text = getText(*i);
-				_font->print(text, _fontColor, _x, _y);
+				_font->printMax(text, _fontColor, xEntry, yEntry, wEntry);
 			}
 
 			_renderX += colWidth + _colSpacing;
