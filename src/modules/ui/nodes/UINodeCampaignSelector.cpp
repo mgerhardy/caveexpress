@@ -43,8 +43,8 @@ void UINodeCampaignSelector::renderSelectorEntry (int index, const CampaignPtr& 
 		const int textHeight = font->getTextHeight(data->getText());
 		const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(data->getText()) / 2);
 		const int fontY = y + rowHeight - textHeight - 1;
-		_frontend->renderFilledRect(x, fontY - 1, colWidth, textHeight + 2, highlightColor);
-		_frontend->renderRect(x, fontY - 1, colWidth, textHeight + 2, colorWhite);
+		_frontend->renderFilledRect(x, fontY - 1, colWidth, textHeight + 2, colorBlack);
+		//_frontend->renderRect(x, fontY - 1, colWidth, textHeight + 2, colorWhite);
 		renderImage(t, x, y, colWidth, rowHeight - textHeight, alpha);
 		font->printMax(data->getText(), colorWhite, fontX, fontY, colWidth);
 	} else {
