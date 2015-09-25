@@ -360,7 +360,7 @@ public:
 				alpha = 0.5f;
 			}
 
-			const int _innerPadding = 0;
+			const int _innerPadding = _padding;
 			const int xEntry = _x + _innerPadding;
 			const int yEntry = _y + _innerPadding;
 			const int wEntry = colWidth - 2 * _innerPadding;

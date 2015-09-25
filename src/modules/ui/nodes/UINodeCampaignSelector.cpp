@@ -32,25 +32,22 @@ bool UINodeCampaignSelector::onSelect (const CampaignPtr& data)
 
 void UINodeCampaignSelector::renderSelectorEntry (int index, const CampaignPtr& data, int x, int y, int colWidth, int rowHeight, float alpha) const
 {
-	const std::string icon = data->getIcon();
-	if (!icon.empty()) {
-		TexturePtr t = loadTexture(icon);
-		if (t->isValid())
-			renderImage(t, x, y, colWidth, rowHeight, alpha);
-		else
-			renderImage("icon-campaign", x, y, colWidth, rowHeight, alpha);
-	} else {
-		renderImage("icon-campaign", x, y, colWidth, rowHeight, alpha);
-	}
+	const std::string& icon = data->getIcon();
+	TexturePtr t = loadTexture(icon);
+	if (!t || !t->isValid())
+		t = loadTexture("icon-campaign");
 
 	if (!data->getText().empty()) {
 		const BitmapFontPtr& font = getFont(SMALL_FONT);
 		const int textHeight = font->getTextHeight(data->getText());
-		const int fontX = x + colWidth / 2 - font->getTextWidth(data->getText()) / 2;
+		const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(data->getText()) / 2);
 		const int fontY = y + rowHeight - textHeight - 1;
 		_frontend->renderFilledRect(x, fontY - 1, colWidth, textHeight + 2, highlightColor);
 		_frontend->renderRect(x, fontY - 1, colWidth, textHeight + 2, colorWhite);
-		font->print(data->getText(), colorWhite, fontX, fontY);
+		renderImage(t, x, y, colWidth, rowHeight - textHeight, alpha);
+		font->printMax(data->getText(), colorWhite, fontX, fontY, colWidth);
+	} else {
+		renderImage(t, x, y, colWidth, rowHeight, alpha);
 	}
 }
 
