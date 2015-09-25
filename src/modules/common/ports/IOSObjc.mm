@@ -1,7 +1,7 @@
 #include "IOSObjc.h"
 #include <SDL.h>
 
-int iosOpenURL (const std::string& url) const {
+int iosOpenURL (const std::string& url) {
 #if 0
 	@autoreleasepool
 	{
