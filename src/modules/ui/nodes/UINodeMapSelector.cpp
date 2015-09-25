@@ -9,6 +9,7 @@ UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, const IMapManager &ma
 {
 	setColsRowsFromTexture("map-icon-locked");
 	defaults();
+	setPaddingPixel(10);
 	reset();
 }
 
@@ -18,6 +19,7 @@ UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, CampaignManager &camp
 {
 	setColsRowsFromTexture("map-icon-locked");
 	defaults();
+	setPaddingPixel(10);
 	reset();
 }
 

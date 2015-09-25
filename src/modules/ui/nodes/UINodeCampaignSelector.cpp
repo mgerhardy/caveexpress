@@ -7,6 +7,7 @@ UINodeCampaignSelector::UINodeCampaignSelector (IFrontend *frontend, CampaignMan
 		UINodeBackgroundSelector<CampaignPtr>(frontend, cols, rows), _campaignManager(campaignManager)
 {
 	defaults();
+	setPaddingPixel(10);
 	setColsRowsFromTexture("icon-campaign");
 	reset();
 }
