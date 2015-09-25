@@ -265,6 +265,7 @@ public:
 	virtual void setPos (float x = 0.0f, float y = 0.0f);
 	virtual void setSize (float w, float h = 1.0f);
 	virtual void setPadding (float padding);
+	void setPaddingPixel (int pixel);
 	// this command is executed whenever the node is activated.
 	// This is e.g. a left mouse release or a finger release.
 	virtual void setOnActivate (const std::string& onActivateCmd);
@@ -615,6 +616,11 @@ inline void UINode::restoreAlpha ()
 inline void UINode::setPadding (float padding)
 {
 	_padding = padding;
+}
+
+inline void UINode::setPaddingPixel (int pixel)
+{
+	setPadding(10 / static_cast<float>(_frontend->getWidth()));
 }
 
 inline void UINode::setOnActivate (const std::string& onActivateCmd)
