@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.9.4</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/cavepacker-environment.tps</string>
+        <string>/home/mattn/dev/caveexpress/contrib/assets/png-packed/cavepacker-environment.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -212,16 +212,16 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/cavepacker/tile-rock-01-middle-01.png</filename>
-            <filename>../png/cavepacker/tile-rock-02-middle-01.png</filename>
-            <filename>../png/cavepacker/tile-rock-03-middle-01.png</filename>
             <filename>../png/cavepacker/tile-background-04-back-01.png</filename>
             <filename>../png/cavepacker/tile-background-01-back-01.png</filename>
             <filename>../png/cavepacker/tile-background-02-back-01.png</filename>
             <filename>../png/cavepacker/tile-background-03-back-01.png</filename>
-            <filename>../png/cavepacker/tile-target-01-middle-01.png</filename>
             <filename>../png/cavepacker/tile-reference.png</filename>
             <filename>../png/cavepacker/deadlock-middle-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-01-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-02-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-03-back-01.png</filename>
+            <filename>../png/cavepacker/tile-target-01-back-01.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

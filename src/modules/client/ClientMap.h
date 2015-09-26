@@ -79,7 +79,7 @@ protected:
 	// how many different start positions are available in this particular map
 	int _startPositions;
 
-	void renderLayer (int x, int y, Layer layer) const;
+	virtual void renderLayer (int x, int y, Layer layer) const;
 	void renderFadeOutOverlay () const;
 	virtual void couldNotFindEntity (const std::string& prefix, uint16_t id) const;
 	void disableScreenRumble ();

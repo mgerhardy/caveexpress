@@ -8,6 +8,7 @@ namespace cavepacker {
 class CavePackerClientMap: public ClientMap {
 private:
 	SpritePtr _deadlockOverlay;
+	void renderLayer (int x, int y, Layer layer) const override;
 
 public:
 	CavePackerClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider,

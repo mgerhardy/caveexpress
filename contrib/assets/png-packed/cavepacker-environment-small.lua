@@ -77,7 +77,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-rock-01-middle-01"] = {
+	["tile-rock-01-back-01"] = {
 		image = "cavepacker-environment-small",
 		x0 = 0.5,
 		y0 = 0,
@@ -90,7 +90,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-rock-02-middle-01"] = {
+	["tile-rock-02-back-01"] = {
 		image = "cavepacker-environment-small",
 		x0 = 0.75,
 		y0 = 0,
@@ -103,7 +103,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-rock-03-middle-01"] = {
+	["tile-rock-03-back-01"] = {
 		image = "cavepacker-environment-small",
 		x0 = 0.25,
 		y0 = 0.25,
@@ -116,7 +116,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-target-01-middle-01"] = {
+	["tile-target-01-back-01"] = {
 		image = "cavepacker-environment-small",
 		x0 = 0.25,
 		y0 = 0.5,
