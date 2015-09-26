@@ -31,11 +31,13 @@ CavePackerClientMap::CavePackerClientMap(int x, int y, int width, int height,
 	_deadlockOverlay = UI::get().loadSprite("deadlock");
 }
 
-void CavePackerClientMap::renderLayer (int x, int y, Layer layer) const
-{
+void CavePackerClientMap::renderLayer (int x, int y, Layer layer) const {
+#if 0
+	// TODO: render to texture to reduce drawcalls
 	if (layer == LAYER_BACK) {
 		return;
 	}
+#endif
 	ClientMap::renderLayer(x, y, layer);
 }
 
