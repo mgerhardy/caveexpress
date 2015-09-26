@@ -182,6 +182,7 @@ public:
 	void progressDone ();
 
 	// IEventObserver
+	void onWindowResize () override;
 	bool onTextInput (const std::string& text) override;
 	bool onFingerRelease (int64_t finger, float x, float y) override;
 	bool onFingerPress (int64_t finger, float x, float y) override;

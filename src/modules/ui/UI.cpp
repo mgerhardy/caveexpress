@@ -329,6 +329,14 @@ void UI::update (uint32_t deltaTime)
 	}
 }
 
+void UI::onWindowResize ()
+{
+	for (UIStackIter i = _stack.begin(); i != _stack.end(); ++i) {
+		UIWindow* window = *i;
+		window->onWindowResize();
+	}
+}
+
 bool UI::onKeyRelease (int32_t key)
 {
 	if (_restart)

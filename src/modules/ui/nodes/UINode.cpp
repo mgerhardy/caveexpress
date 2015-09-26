@@ -847,6 +847,14 @@ bool UINode::onGesture (int64_t gestureId, float error, int32_t numFingers)
 	return false;
 }
 
+void UINode::onWindowResize ()
+{
+	for (UINodeListIter i = _nodes.begin(); i != _nodes.end(); ++i) {
+		UINode* nodePtr = *i;
+		nodePtr->onWindowResize();
+	}
+}
+
 bool UINode::onGestureRecord (int64_t gestureId)
 {
 	if (!_enabled)
