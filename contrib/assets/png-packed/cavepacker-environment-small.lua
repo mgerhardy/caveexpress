@@ -12,7 +12,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-background-01-back-01"] = {
+	["target-back-01"] = {
 		image = "cavepacker-environment-small",
 		x0 = 0,
 		y0 = 0.25,
@@ -25,7 +25,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-background-02-back-01"] = {
+	["tile-background-01-back-01"] = {
 		image = "cavepacker-environment-small",
 		x0 = 0,
 		y0 = 0.5,
@@ -38,7 +38,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-background-03-back-01"] = {
+	["tile-background-02-back-01"] = {
 		image = "cavepacker-environment-small",
 		x0 = 0,
 		y0 = 0.75,
@@ -51,9 +51,22 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-background-04-back-01"] = {
+	["tile-background-03-back-01"] = {
 		image = "cavepacker-environment-small",
 		x0 = 0.25,
+		y0 = 0,
+		x1 = 0.25,
+		y1 = 0.25,
+		trimmedoffsetx = 0,
+		trimmedoffsety = 0,
+		trimmedwidth = 64,
+		trimmedheight = 64,
+		untrimmedwidth = 64,
+		untrimmedheight = 64,
+	},
+	["tile-background-04-back-01"] = {
+		image = "cavepacker-environment-small",
+		x0 = 0.5,
 		y0 = 0,
 		x1 = 0.25,
 		y1 = 0.25,
@@ -66,7 +79,7 @@ textures = {
 	},
 	["tile-reference"] = {
 		image = "cavepacker-environment-small",
-		x0 = 0.5,
+		x0 = 0.75,
 		y0 = 0,
 		x1 = 0.25,
 		y1 = 0.25,
@@ -79,7 +92,7 @@ textures = {
 	},
 	["tile-rock-01-back-01"] = {
 		image = "cavepacker-environment-small",
-		x0 = 0.5,
+		x0 = 0.75,
 		y0 = 0,
 		x1 = 0.25,
 		y1 = 0.25,
@@ -92,19 +105,6 @@ textures = {
 	},
 	["tile-rock-02-back-01"] = {
 		image = "cavepacker-environment-small",
-		x0 = 0.75,
-		y0 = 0,
-		x1 = 0.25,
-		y1 = 0.25,
-		trimmedoffsetx = 0,
-		trimmedoffsety = 0,
-		trimmedwidth = 64,
-		trimmedheight = 64,
-		untrimmedwidth = 64,
-		untrimmedheight = 64,
-	},
-	["tile-rock-03-back-01"] = {
-		image = "cavepacker-environment-small",
 		x0 = 0.25,
 		y0 = 0.25,
 		x1 = 0.25,
@@ -116,7 +116,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-target-01-back-01"] = {
+	["tile-rock-03-back-01"] = {
 		image = "cavepacker-environment-small",
 		x0 = 0.25,
 		y0 = 0.5,

@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.9.4</string>
         <key>fileName</key>
-        <string>/home/mattn/dev/caveexpress/contrib/assets/png-packed/cavepacker-environment.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/cavepacker-environment.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -221,7 +221,7 @@
             <filename>../png/cavepacker/tile-rock-01-back-01.png</filename>
             <filename>../png/cavepacker/tile-rock-02-back-01.png</filename>
             <filename>../png/cavepacker/tile-rock-03-back-01.png</filename>
-            <filename>../png/cavepacker/tile-target-01-back-01.png</filename>
+            <filename>../png/cavepacker/target-back-01.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
