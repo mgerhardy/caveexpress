@@ -57,7 +57,7 @@ bool Player::undo ()
 	std::string::reverse_iterator i = _solutionSave.rbegin();
 	const char s = *i;
 
-	_targetIndex = NO_TARGET_INDEX;
+	setTargetIndex(NO_TARGET_INDEX);
 
 	int xPlayer;
 	int yPlayer;
