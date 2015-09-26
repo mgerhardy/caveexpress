@@ -16,7 +16,7 @@ sprites = {
 		theme = "rock",
 		fps = 1,
 		frames = {
-			{ "tile-target-01-middle-01", }, --back
+			{ "tile-target-01-back-01", }, --back
 			{}, --middle
 			{}, --front
 		}
