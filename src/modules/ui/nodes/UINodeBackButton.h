@@ -1,12 +1,13 @@
 #pragma once
 
-#include "ui/nodes/UINodeButtonImage.h"
+#include "ui/nodes/UINodeMainButton.h"
+#include "ui/UI.h"
 #include "common/Commands.h"
 
-class UINodeBackButton: public UINodeButtonImage {
+class UINodeBackButton: public UINodeMainButton {
 public:
 	UINodeBackButton (IFrontend *frontend, UINode* alignToNode = nullptr) :
-		UINodeButtonImage(frontend, "icon-arrow-left")
+		UINodeMainButton(frontend, tr("Back"))
 	{
 		setId("back-button");
 		setOnActivate(CMD_UI_POP);

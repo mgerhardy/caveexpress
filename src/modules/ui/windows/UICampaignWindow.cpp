@@ -33,7 +33,7 @@ UICampaignWindow::UICampaignWindow (IFrontend *frontend, ServiceProvider& servic
 
 	_continuePlay = new UINodeMainButton(_frontend, tr("Continue"));
 	_continuePlay->addListener(UINodeListenerPtr(new ContinuePlayNodeListener(_campaignManager, serviceProvider)));
-	_continuePlay->putUnderRight(_campaign);
+	_continuePlay->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_RIGHT);
 	add(_continuePlay);
 
 	if (!wantBackButton())
