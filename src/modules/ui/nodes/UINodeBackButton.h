@@ -14,7 +14,8 @@ public:
 		if (alignToNode == nullptr)
 			return;
 
-		alignTo(alignToNode, NODE_ALIGN_BOTTOM | NODE_ALIGN_LEFT);
+		const float gapBack = std::max(0.01f, getScreenPadding());
+		alignTo(alignToNode, NODE_ALIGN_BOTTOM | NODE_ALIGN_LEFT, gapBack);
 	}
 
 	virtual ~UINodeBackButton ()
