@@ -36,7 +36,7 @@ public:
 };
 
 UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, CavePackerClientMap& map) :
-		IUIMapWindow(frontend, serviceProvider, campaignManager, map,
+		IUIMapWindow(frontend, serviceProvider, campaignManager,
 				new UINodeMap(frontend, serviceProvider, campaignManager, 0, 0,
 						frontend->getWidth(), frontend->getHeight(), map)), _undo(
 				nullptr), _points(nullptr), _campaignManager(campaignManager), _scrolling(false), _targetX(-1), _targetY(-1) {

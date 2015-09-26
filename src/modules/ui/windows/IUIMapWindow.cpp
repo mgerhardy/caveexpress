@@ -38,7 +38,7 @@ public:
 	}
 };
 
-IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map, IUINodeMap* nodeMap) :
+IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, IUINodeMap* nodeMap) :
 		UIWindow(UI_WINDOW_MAP, frontend, WINDOW_FLAG_MODAL | WINDOW_FLAG_FULLSCREEN), _nodeMap(nodeMap), _waitLabel(nullptr), _mapControl(nullptr),
 		_startButton(nullptr), _cursorActive(false), _serviceProvider(serviceProvider), _panel(nullptr), _lastFingerPressEvent(0L) {
 	const float screenPadding = getScreenPadding();
