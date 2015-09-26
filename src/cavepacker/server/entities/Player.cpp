@@ -5,6 +5,7 @@
 #include "common/System.h"
 #include "common/ConfigManager.h"
 #include "network/IProtocolHandler.h"
+#include <SDL.h>
 
 namespace cavepacker {
 
@@ -83,6 +84,13 @@ bool Player::undo ()
 	}
 	_solutionSave.erase(_solutionSave.size() - 1);
 	return true;
+}
+
+void Player::setTargetIndex(int index)
+{
+	SDL_assert_always(_targetIndex < _map.getMapWidth() * _map.getMapHeight());
+	SDL_assert_always(_targetIndex >= -1);
+	_targetIndex = index;
 }
 
 }

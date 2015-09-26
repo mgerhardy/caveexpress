@@ -31,7 +31,6 @@ public:
 	void update (uint32_t deltaTime) override;
 
 	void setTargetIndex(int targetIndex = NO_TARGET_INDEX);
-	int getTargetIndex() const;
 	ClientId getClientId () const;
 	const std::string& getName () const;
 	void setName (const std::string& name);
@@ -58,16 +57,6 @@ inline void Player::setName (const std::string& name)
 inline const std::string& Player::getSolution () const
 {
 	return _solutionSave;
-}
-
-inline void Player::setTargetIndex(int index)
-{
-	_targetIndex = index;
-}
-
-inline int Player::getTargetIndex() const
-{
-	return _targetIndex;
 }
 
 }
