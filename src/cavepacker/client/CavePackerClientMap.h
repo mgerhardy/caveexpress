@@ -8,6 +8,8 @@ namespace cavepacker {
 class CavePackerClientMap: public ClientMap {
 private:
 	SpritePtr _deadlockOverlay;
+	mutable RenderTarget* _target;
+	mutable std::size_t _targetEnts;
 	void renderLayer (int x, int y, Layer layer) const override;
 
 public:

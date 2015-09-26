@@ -315,6 +315,7 @@ void SDLFrontend::updateViewport (int x, int y, int width, int height)
 	assert(_renderer);
 
 	SDL_RenderSetLogicalSize(_renderer, getWidth(), getHeight());
+	SDL_DestroyTexture(_renderToTexture);
 	_renderToTexture = SDL_CreateTexture(_renderer, getDisplayFormat(), SDL_TEXTUREACCESS_TARGET, getWidth(), getHeight());
 }
 

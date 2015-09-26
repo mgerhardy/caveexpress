@@ -24,21 +24,25 @@
 namespace cavepacker {
 
 CavePackerClientMap::CavePackerClientMap(int x, int y, int width, int height,
-		IFrontend *frontend, ServiceProvider& serviceProvider,
-		int referenceTileWidth) :
-		ClientMap(x, y, width, height, frontend, serviceProvider,
-				referenceTileWidth) {
+		IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth) :
+		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth), _target(nullptr), _targetEnts(0u) {
 	_deadlockOverlay = UI::get().loadSprite("deadlock");
 }
 
 void CavePackerClientMap::renderLayer (int x, int y, Layer layer) const {
-#if 0
-	// TODO: render to texture to reduce drawcalls
+	bool renderToTexture = false;
 	if (layer == LAYER_BACK) {
-		return;
+		if (_target == nullptr || _targetEnts != _entities.size()) {
+			_targetEnts = _entities.size();
+			_target = _frontend->renderToTexture(x, y, getWidth(), getHeight());
+			renderToTexture = true;
+		}
+	} else if (layer == LAYER_MIDDLE && _target) {
+		_frontend->renderTarget(_target);
 	}
-#endif
 	ClientMap::renderLayer(x, y, layer);
+	if (renderToTexture)
+		_frontend->disableRenderTarget(_target);
 }
 
 void CavePackerClientMap::start() {
