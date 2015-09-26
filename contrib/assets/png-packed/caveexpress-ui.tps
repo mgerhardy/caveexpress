@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.7.1</string>
+        <string>3.9.4</string>
         <key>fileName</key>
         <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-ui.tps</string>
         <key>autoSDSettings</key>
@@ -60,6 +60,8 @@
         <false/>
         <key>pvrCompressionQuality</key>
         <enum type="SettingsBase::PvrCompressionQuality">PVR_QUALITY_NORMAL</enum>
+        <key>atfCompressData</key>
+        <false/>
         <key>mipMapMinSize</key>
         <uint>32768</uint>
         <key>etc1CompressionQuality</key>
@@ -73,7 +75,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">PngQuantMedium</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -175,7 +177,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
+        <enum type="SettingsBase::OutputFormat">INDEXED</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -211,7 +213,6 @@
         <key>fileList</key>
         <array>
             <filename>../png/caveexpress/ui/icon-settings.png</filename>
-            <filename>../png/caveexpress/ui/icon-arrow-left.png</filename>
             <filename>../png/caveexpress/ui/icon-reload.png</filename>
             <filename>../png/caveexpress/ui/icon-checkbox-off.png</filename>
             <filename>../png/caveexpress/ui/icon-checkbox-on.png</filename>
@@ -226,14 +227,9 @@
             <filename>../png/caveexpress/ui/icon-google-login.png</filename>
             <filename>../png/caveexpress/ui/map-icon-unlocked-3.png</filename>
             <filename>../png/caveexpress/ui/icon-campaign.png</filename>
-            <filename>../png/caveexpress/ui/icon-joystick-off.png</filename>
-            <filename>../png/caveexpress/ui/icon-joystick-on.png</filename>
             <filename>../png/caveexpress/ui/icon-result.png</filename>
-            <filename>../png/caveexpress/ui/icon-sound-off.png</filename>
-            <filename>../png/caveexpress/ui/icon-sound-on.png</filename>
             <filename>../png/caveexpress/ui/icon-campaign-rock.png</filename>
             <filename>../png/caveexpress/ui/icon-campaign-ice.png</filename>
-            <filename>../png/caveexpress/ui/icon-back-to-root.png</filename>
             <filename>../png/caveexpress/ui/icon-plus.png</filename>
             <filename>../png/caveexpress/ui/icon-heart.png</filename>
             <filename>../png/caveexpress/ui/icon-star-disabled.png</filename>
