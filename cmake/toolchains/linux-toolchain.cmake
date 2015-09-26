@@ -1,10 +1,23 @@
 include(CheckFunctionExists)
 include(CheckLibraryExists)
+include(CheckCCompilerFlag)
 
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 find_package(Threads)
 
-set(SANITIZE_FLAGS "-fsanitize=undefined -fsanitize=address")
+set(CMAKE_REQUIRED_FLAGS "-Werror -fsanitize=undefined")
+check_c_compiler_flag("-faddress-sanitizer" HAVE_FLAG_SANITIZE_UNDEFINED)
+set(CMAKE_REQUIRED_FLAGS "-Werror -fsanitize=address")
+check_c_compiler_flag("-fsanitize=address" HAVE_FLAG_SANITIZE_ADDRESS)
+unset(CMAKE_REQUIRED_FLAGS)
+
+if (HAVE_FLAG_SANITIZE_UNDEFINED)
+set(SANITIZE_FLAGS "${SANITIZE_FLAGS} -fsanitize=undefined")
+endif()
+
+if (HAVE_FLAG_SANITIZE_ADDRESS)
+set(SANITIZE_FLAGS "${SANITIZE_FLAGS} -fsanitize=address")
+endif()
 
 set(CMAKE_EXE_LINKER_FLAGS "")
 set(CMAKE_EXE_LINKER_FLAGS_RELEASE "")
