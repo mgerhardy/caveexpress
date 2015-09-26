@@ -16,6 +16,8 @@ public:
 	CavePackerClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider,
 			int referenceTileWidth);
 
+	virtual void onWindowResize () override;
+
 	int getWaterSurface() const override { return 0; }
 	int getWaterGround() const override { return 0; }
 

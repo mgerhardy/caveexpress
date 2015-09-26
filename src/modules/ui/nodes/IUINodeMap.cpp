@@ -125,6 +125,12 @@ void IUINodeMap::update (uint32_t deltaTime)
 	_map.update(deltaTime);
 }
 
+void IUINodeMap::onWindowResize ()
+{
+	UINode::onWindowResize();
+	_map.onWindowResize();
+}
+
 void IUINodeMap::render (int x, int y) const
 {
 	renderFilledRect(getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight(), colorBlack);

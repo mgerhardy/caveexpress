@@ -29,6 +29,10 @@ CavePackerClientMap::CavePackerClientMap(int x, int y, int width, int height,
 	_deadlockOverlay = UI::get().loadSprite("deadlock");
 }
 
+void CavePackerClientMap::onWindowResize () {
+	_target = nullptr;
+}
+
 void CavePackerClientMap::renderLayer (int x, int y, Layer layer) const {
 	bool renderToTexture = false;
 	if (layer == LAYER_BACK) {

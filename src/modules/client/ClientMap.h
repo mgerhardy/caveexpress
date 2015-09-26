@@ -159,6 +159,8 @@ public:
 	void getMapPixelForScreenPixel (int x, int y, int *outX, int *outY);
 	void getMapGridForScreenPixel (int x, int y, int *outX, int *outY);
 
+	virtual void onWindowResize () {}
+
 	// IMap
 	virtual void update (uint32_t deltaTime) override;
 	bool isActive () const override;
