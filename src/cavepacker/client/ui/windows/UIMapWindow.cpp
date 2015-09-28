@@ -2,6 +2,7 @@
 #include "cavepacker/client/ui/nodes/UINodeMap.h"
 #include "cavepacker/client/ui/nodes/UICavePackerNodePoint.h"
 #include "cavepacker/shared/network/messages/MoveToMessage.h"
+#include "listener/SolveListener.h"
 #include "ui/nodes/UINodeBar.h"
 #include "ui/nodes/UINodeSprite.h"
 #include "ui/nodes/UINodePoint.h"
@@ -16,24 +17,6 @@
 #include "common/IFrontend.h"
 
 namespace cavepacker {
-
-class SolveListener: public UINodeListener {
-private:
-	UINodeSlider *_sliderNode;
-	std::string _configVar;
-public:
-	SolveListener (UINodeSlider *sliderNode, const std::string& configVar) :
-			_sliderNode(sliderNode), _configVar(configVar)
-	{
-		_sliderNode->setValue(Config.getConfigVar(_configVar)->getFloatValue());
-	}
-
-	void onValueChanged () override
-	{
-		const float val = _sliderNode->getValue();
-		Config.getConfigVar(_configVar)->setValue(string::toString(val));
-	}
-};
 
 UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, CavePackerClientMap& map) :
 		IUIMapWindow(frontend, serviceProvider, campaignManager,
