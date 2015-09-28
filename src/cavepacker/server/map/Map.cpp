@@ -1076,6 +1076,10 @@ void Map::triggerPause ()
 	_pause ^= true;
 	const PauseMessage msg(_pause);
 	_serviceProvider->getNetwork().sendToAllClients(msg);
+	if (_autoSolve && !_pause) {
+		static const AutoSolveStartedMessage msgAutoSolveContinue;
+		_serviceProvider->getNetwork().sendToAllClients(msgAutoSolveContinue);
+	}
 	Log::info(LOG_MAP, "pause: %s", (_pause ? "true" : "false"));
 }
 
