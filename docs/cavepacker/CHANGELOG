@@ -22,3 +22,5 @@ Version 1.4 (not yet released)
 * Deadlock detection
 * Fixed issue on android with scaling whenever you clicked a move button
 * Improved movement by introducing pathfinding
+* Improved input handling
+* Improved ui
