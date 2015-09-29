@@ -23,15 +23,18 @@ TextConsole::TextConsole () :
 	_stdwin = nullptr;
 	_createWidth = _createHeight = 0;
 #endif
+	_ncurses = false;
 }
 
 TextConsole::~TextConsole ()
 {
+	if (_ncurses) {
 #ifdef HAVE_NCURSES_H
-	clrtoeol();
-	refresh();
-	endwin();
+		clrtoeol();
+		refresh();
+		endwin();
 #endif
+	}
 	for (EntriesIter i = _entries.begin(); i != _entries.end(); ++i) {
 		delete *i;
 	}
@@ -40,6 +43,8 @@ TextConsole::~TextConsole ()
 void TextConsole::update (uint32_t deltaTime)
 {
 	_lastUpdate += deltaTime;
+	if (!_ncurses)
+		return;
 
 #ifdef HAVE_NCURSES_H
 	int key = wgetch(_stdwin);
@@ -115,10 +120,10 @@ void TextConsole::logDebug (const std::string& string)
 
 bool TextConsole::onKeyPress (int32_t key, int16_t modifier)
 {
-#ifdef HAVE_NCURSES_H
-	// curses is handling our key presses in console mode
-	return false;
-#else
+	if (_ncurses) {
+		// curses is handling our key presses in console mode
+		return false;
+	}
 	if (key == SDLK_RETURN) {
 		executeCommandLine();
 	} else if (key == SDLK_TAB) {
@@ -128,7 +133,6 @@ bool TextConsole::onKeyPress (int32_t key, int16_t modifier)
 		_commandLine += chr;
 	}
 	return true;
-#endif
 }
 
 void TextConsole::render ()
@@ -140,83 +144,85 @@ void TextConsole::render ()
 
 	_lastUpdate = 0;
 
+	if (_ncurses) {
 #ifdef HAVE_NCURSES_H
-	bkgdset(' ');
-	wclear(_stdwin);
+		bkgdset(' ');
+		wclear(_stdwin);
 
-	const int w = COLS - 1;
-	const int h = LINES - 1;
+		const int w = COLS - 1;
+		const int h = LINES - 1;
 
-	if (w < 3 && h < 3) {
-		return;
-	}
-
-	box(_stdwin, ACS_VLINE , ACS_HLINE);
-
-	// Draw the header
-	setColor(COLOR_GREEN);
-	mvaddstr(0, 2, Singleton<Application>::getInstance().getName().c_str());
-
-	const int lines = LINES - 2;
-	const int lastLine = _entries.size();
-	const int startLine = std::max(0, (int) _entries.size() - _scrollPos - lines);
-	int y = 1;
-	for (EntriesIter i = _entries.begin() + startLine; i != _entries.end() && i != _entries.begin() + lines; ++i) {
-		const ConsoleEntry &e = *(*i);
-		int x = 1;
-		// color of the first character of the line
-		setColor(e.color);
-		if (e.bold)
-			wattron(_stdwin, A_BOLD);
-
-		for (const char *pos = e.text.c_str(); pos[0] != '\0'; ++pos) {
-			if (pos[0] == '\n' || pos[0] == '\r') {
-				x++;
-			} else if (x < w) {
-				mvaddnstr(y, x, pos, 1);
-				x++;
-			} else {
-				y++;
-				x = 1;
-				mvaddnstr(y, x, "> ", 2);
-				x += 2;
-				mvaddnstr(y, x, pos, 1);
-			}
+		if (w < 3 && h < 3) {
+			return;
 		}
 
-		if (e.bold)
-			wattroff(_stdwin, A_BOLD);
-		y++;
-	}
+		box(_stdwin, ACS_VLINE , ACS_HLINE);
 
-	// draw a scroll indicator
-	if (_scrollPos != 0) {
+		// Draw the header
 		setColor(COLOR_GREEN);
-		mvaddnstr(1 + ((lastLine - _scrollPos) * lines / lastLine), w, "O", 1);
-	}
+		mvaddstr(0, 2, Singleton<Application>::getInstance().getName().c_str());
 
-	// reset drawing colors
-	resetColor();
-	const int32_t xPos = COLS - 5;
+		const int lines = LINES - 2;
+		const int lastLine = _entries.size();
+		const int startLine = std::max(0, (int) _entries.size() - _scrollPos - lines);
+		int y = 1;
+		for (EntriesIter i = _entries.begin() + startLine; i != _entries.end() && i != _entries.begin() + lines; ++i) {
+			const ConsoleEntry &e = *(*i);
+			int x = 1;
+			// color of the first character of the line
+			setColor(e.color);
+			if (e.bold)
+				wattron(_stdwin, A_BOLD);
 
-	for (int x = 2; x < COLS - 1; x++) {
-		mvaddstr(LINES - 1, x, " ");
-	}
+			for (const char *pos = e.text.c_str(); pos[0] != '\0'; ++pos) {
+				if (pos[0] == '\n' || pos[0] == '\r') {
+					x++;
+				} else if (x < w) {
+					mvaddnstr(y, x, pos, 1);
+					x++;
+				} else {
+					y++;
+					x = 1;
+					mvaddnstr(y, x, "> ", 2);
+					x += 2;
+					mvaddnstr(y, x, pos, 1);
+				}
+			}
 
-	// TODO: fix rendering for too long strings
-	mvaddnstr(LINES - 1, 3, _commandLine.c_str(), xPos);
+			if (e.bold)
+				wattroff(_stdwin, A_BOLD);
+			y++;
+		}
 
-	wrefresh(_stdwin);
+		// draw a scroll indicator
+		if (_scrollPos != 0) {
+			setColor(COLOR_GREEN);
+			mvaddnstr(1 + ((lastLine - _scrollPos) * lines / lastLine), w, "O", 1);
+		}
 
-	renderHook();
+		// reset drawing colors
+		resetColor();
+		const int32_t xPos = COLS - 5;
 
-	// move the cursor to input position
-	wmove(_stdwin, LINES - 1, 3 + _cursorPos);
-	waddch(_stdwin, '_');
+		for (int x = 2; x < COLS - 1; x++) {
+			mvaddstr(LINES - 1, x, " ");
+		}
 
-	// Print it on to the real screen
-	refresh();
+		// TODO: fix rendering for too long strings
+		mvaddnstr(LINES - 1, 3, _commandLine.c_str(), xPos);
+
+		wrefresh(_stdwin);
+
+		renderHook();
+
+		// move the cursor to input position
+		wmove(_stdwin, LINES - 1, 3 + _cursorPos);
+		waddch(_stdwin, '_');
+
+		// Print it on to the real screen
+		refresh();
 #endif
+	}
 }
 
 void TextConsole::renderHook()
@@ -225,6 +231,10 @@ void TextConsole::renderHook()
 
 void TextConsole::init (IFrontend *frontend)
 {
+	_ncurses = Config.getConfigVar("ncurses", "true")->getBoolValue();
+	if (!_ncurses) {
+		return;
+	}
 #ifdef HAVE_NCURSES_H
 	// Start curses mode
 	_stdwin = initscr();
@@ -257,6 +267,9 @@ void TextConsole::init (IFrontend *frontend)
 
 inline void TextConsole::setColor (int color) const
 {
+	if (!_ncurses) {
+		return;
+	}
 #ifdef HAVE_NCURSES_H
 	if (!has_colors()) {
 		return;

@@ -27,6 +27,7 @@ protected:
 	int _createWidth, _createHeight; // the dimensions that the window was created with
 	int _scrollPos;
 #endif
+	bool _ncurses;
 
 	int _lastUpdate;
 	typedef std::vector<ConsoleEntry*> Entries;
