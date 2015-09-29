@@ -403,8 +403,8 @@ bool Network::sendUDP (UDPsocket sock, const IPaddress &address, const IProtocol
 		return false;
 	}
 
-	SDL_free(p);
 	_bytesOut += p->len;
+	SDL_free(p);
 	return true;
 #else
 	return false;
