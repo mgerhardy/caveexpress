@@ -384,8 +384,8 @@ bool Network::sendUDP (UDPsocket sock, const IPaddress &address, const IProtocol
 	msg.serialize(buffer);
 	count(msg);
 	const size_t length = buffer.getSize();
-	std::unique_ptr<UDPpacket> p(SDLNet_AllocPacket(length));
-	if (!p) {
+	UDPpacket* p = SDLNet_AllocPacket(length);
+	if (p == nullptr) {
 		Log::error(LOG_NET, "failed to allocate packet");
 		Log::error(LOG_NET, "%s", getError().c_str());
 		return false;
@@ -395,13 +395,15 @@ bool Network::sendUDP (UDPsocket sock, const IPaddress &address, const IProtocol
 	p->data = const_cast<uint8_t *>(buffer.getBuffer());
 	p->len = length;
 
-	const int numsent = SDLNet_UDP_Send(sock, -1, p.get());
+	const int numsent = SDLNet_UDP_Send(sock, -1, p);
 	if (numsent <= 0) {
 		Log::error(LOG_NET, "failed to send packet");
 		Log::error(LOG_NET, "%s", getError().c_str());
+		SDL_free(p);
 		return false;
 	}
 
+	SDL_free(p);
 	_bytesOut += p->len;
 	return true;
 #else
