@@ -154,6 +154,35 @@ FilePtr FileSystem::getFile (const std::string& filename) const
 	return ptr;
 }
 
+std::string FileSystem::getDirForURLType (const std::string& type) const
+{
+	auto i = _schemes.find(type);
+	if (i == _schemes.end())
+		return "";
+	return i->second;
+}
+
+void FileSystem::registerURL(const std::string& type, const std::string& dir)
+{
+	_schemes[type] = dir;
+}
+
+FilePtr FileSystem::getFileFromURL (const std::string& filename) const
+{
+	std::string::size_type pos = filename.find_first_of("://", 0);
+	if (pos == std::string::npos) {
+		System.exit("Not a valid url: " + filename, 1);
+	}
+
+	const std::string& type = filename.substr(0, pos);
+	const std::string& dir = getDirForURLType(type);
+	if (dir.empty()) {
+		System.exit("No type registered for " + type, 1);
+	}
+	const std::string& name = filename.substr(pos + 3, filename.length());
+	return getFile(dir + "/" + name);
+}
+
 const std::string FileSystem::getAbsoluteWritePath () const
 {
 	if (_homeDir.empty())

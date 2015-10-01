@@ -3,11 +3,13 @@
 #include "common/File.h"
 #include "common/ports/ISystem.h"
 #include "common/NonCopyable.h"
+#include <unordered_map>
 
 struct SDL_RWops;
 
 class FileSystem: public NonCopyable {
 private:
+	std::unordered_map<std::string, std::string> _schemes;
 	std::string _homeDir;
 	std::string _dataDir;
 	const std::string _mapsDir;
@@ -20,6 +22,8 @@ private:
 	const std::string _languageDir;
 	const std::string _gesturesDir;
 
+	std::string getDirForURLType (const std::string& type) const;
+
 	FileSystem ();
 public:
 	virtual ~FileSystem ();
@@ -28,6 +32,7 @@ public:
 
 	SDL_RWops* createRWops (const std::string& file, const std::string& mode = "rb") const;
 	void shutdown ();
+	void registerURL(const std::string& type, const std::string& dir);
 	// writes a file to the users home directory
 	long writeFile (const std::string& filename, const unsigned char *buf, size_t length, bool overwrite = false) const;
 	// writes a file into the game system wide data directory
@@ -37,6 +42,7 @@ public:
 	bool deleteFile (const std::string& filename) const;
 	bool copy (const std::string& src, const std::string& target) const;
 	FilePtr getFile (const std::string& filename) const;
+	FilePtr getFileFromURL (const std::string& filename) const;
 	const std::string& getDataDir () const;
 	const std::string& getMapsDir () const;
 	const std::string& getCampaignsDir () const;
