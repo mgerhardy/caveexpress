@@ -80,7 +80,7 @@ int Map::solve ()
 
 std::string Map::getSolution() const
 {
-	const FilePtr& filePtr = FS.getFile(FS.getMapsDir() + _name + ".sol");
+	const FilePtr& filePtr = FS.getFileFromURL("maps://" + _name + ".sol");
 	if (!filePtr) {
 		Log::info(LOG_SERVER, "no solution file found for %s", _name.c_str());
 		return "";

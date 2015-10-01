@@ -25,6 +25,16 @@ FileSystem::FileSystem () :
 		_dataDir += "/";
 	}
 #endif
+	registerURL("maps", getMapsDir());
+	registerURL("textures", getTexturesDir());
+	registerURL("pics", getPicsDir());
+	registerURL("music", getMusicDir());
+	registerURL("shaders", getShaderDir());
+	registerURL("languages", getLanguageDir());
+	registerURL("sounds", getSoundsDir());
+	registerURL("campaigns", getCampaignsDir());
+	registerURL("gestures", getGesturesDir());
+	registerURL("home", _home);
 }
 
 FileSystem::~FileSystem ()

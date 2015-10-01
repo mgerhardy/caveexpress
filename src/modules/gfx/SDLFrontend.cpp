@@ -218,7 +218,7 @@ bool SDLFrontend::loadTexture (Texture *texture, const std::string& filename)
 {
 	assert(_renderer);
 
-	const std::string file = FS.getFile(FS.getPicsDir() + filename + ".png")->getName();
+	const std::string file = FS.getFileFromURL("pics://" + filename + ".png")->getName();
 	SDL_RWops *src = FS.createRWops(file);
 	if (src == nullptr) {
 		Log::error(LOG_CLIENT, "could not load the file: %s", file.c_str());

@@ -106,7 +106,7 @@ bool UI::initLanguage (const std::string& language)
 	_languageMap.clear();
 	if (language.empty())
 		return false;
-	const FilePtr& filePtr = FS.getFile(FS.getLanguageDir() + language + ".lang");
+	const FilePtr& filePtr = FS.getFileFromURL("languages://" + language + ".lang");
 	char *buffer;
 	int fileLen = filePtr->read((void **) &buffer);
 	std::unique_ptr<char[]> p(buffer);

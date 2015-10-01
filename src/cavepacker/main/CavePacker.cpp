@@ -140,7 +140,7 @@ void CavePacker::update (uint32_t deltaTime)
 			Log::info(LOG_SERVER, "solution: %s", solution.c_str());
 			SDL_SetClipboardText(solution.c_str());
 #if 0
-			FilePtr solutionFilePtr = FS.getFile(_map.getName() + ".sol");
+			FilePtr solutionFilePtr = FS.getFileFromURL("maps://" + _map.getName() + ".sol");
 			if (!solutionFilePtr->exists()) {
 				FS.writeFile(solutionFilePtr->getName(), reinterpret_cast<const uint8_t*>(solution.c_str()), solution.size(), true);
 			}

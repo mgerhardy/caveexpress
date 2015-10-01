@@ -72,7 +72,7 @@ bool Shader::load (const std::string& filename, const std::string& source, Shade
 
 bool Shader::loadFromFile (const std::string& filename, ShaderType shaderType)
 {
-	FilePtr filePtr = FS.getFile(FS.getShaderDir() + filename);
+	FilePtr filePtr = FS.getFileFromURL("shaders://" + filename);
 	char *buffer;
 	const int fileLen = filePtr->read((void **) &buffer);
 	std::unique_ptr<char[]> p(buffer);
@@ -121,7 +121,7 @@ std::string Shader::getSource (ShaderType shaderType, const char *buffer, int le
 					continue;
 
 				const std::string includeFile(cStart + 1, cEnd);
-				FilePtr filePtr = FS.getFile(FS.getShaderDir() + includeFile);
+				FilePtr filePtr = FS.getFileFromURL("shaders://" + includeFile);
 				char *includeBuffer;
 				const int includeLen = filePtr->read((void **) &includeBuffer);
 				std::unique_ptr<char[]> p(includeBuffer);

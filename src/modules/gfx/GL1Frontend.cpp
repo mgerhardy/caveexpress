@@ -301,7 +301,7 @@ void GL1Frontend::destroyTexture (TextureData *data)
 bool GL1Frontend::loadTexture (Texture *texture, const std::string& filename)
 {
 #ifdef SDL_VIDEO_OPENGL
-	const std::string file = FS.getFile(FS.getPicsDir() + filename + ".png")->getName();
+	const std::string file = FS.getFileFromURL("pics://" + filename + ".png")->getName();
 	SDL_RWops *src = FS.createRWops(file);
 	if (src == nullptr) {
 		Log::error(LOG_CLIENT, "could not load the file: %s", file.c_str());

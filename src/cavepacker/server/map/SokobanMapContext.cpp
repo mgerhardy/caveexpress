@@ -36,7 +36,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 	Log::info(LOG_SERVER, "load the map %s", _name.c_str());
 	resetTiles();
 
-	FilePtr filePtr = FS.getFile(FS.getMapsDir() + _name + ".sok");
+	FilePtr filePtr = FS.getFileFromURL("maps://" + _name + ".sok");
 	if (!filePtr->exists()) {
 		Log::error(LOG_SERVER, "Sokoban map file '%s' does not exist", filePtr->getName().c_str());
 		return false;

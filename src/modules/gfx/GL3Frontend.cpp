@@ -553,7 +553,7 @@ void GL3Frontend::destroyTexture (TextureData *data)
 }
 
 SDL_Surface* GL3Frontend::loadTextureIntoSurface(const std::string& filename) {
-	const std::string file = FS.getFile(FS.getPicsDir() + filename + ".png")->getName();
+	const std::string file = FS.getFileFromURL("pics://" + filename + ".png")->getName();
 	SDL_RWops *src = FS.createRWops(file);
 	if (src == nullptr) {
 		return nullptr;
