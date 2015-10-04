@@ -37,6 +37,7 @@ UI::UI () :
 				-1), _cursorY(-1), _motionFinger(false), _restart(false), _delayedPop(false), _noPushAllowed(false), _time(0),
 				_lastJoystickMoveTime(0), _lastJoystickMovementValue(0), _rotateFonts(true)
 {
+	_threadId = SDL_ThreadID();
 }
 
 UI::~UI ()
@@ -47,6 +48,7 @@ UI::~UI ()
 UI& UI::get ()
 {
 	static UI ui;
+	SDL_assert_always(ui._threadId == SDL_ThreadID());
 	return ui;
 }
 

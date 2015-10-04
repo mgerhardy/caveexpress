@@ -100,6 +100,8 @@ private:
 	typedef std::map<std::string, std::string> LanguageMap;
 	LanguageMap _languageMap;
 
+	SDL_threadID _threadId;
+
 	UI ();
 	void pushCmd (const std::string& windowID);
 	bool loadGesture (const unsigned char* data, int length);
