@@ -15,5 +15,6 @@ public:
 	void syncFiles() override;
 	int openURL (const std::string& url, bool newWindow) const override;
 	void backtrace (const char *errorMessage) override;
+	bool supportsUserContent () const override { return false; }
 };
 

@@ -98,6 +98,8 @@ public:
 
 	virtual bool hasAchievement (const std::string& id) { return false; }
 
+	virtual bool supportsUserContent () const { return true; }
+
 	virtual bool track (const std::string& hitType, const std::string& screenName) { logOutput(hitType + " => " + screenName); return true; }
 
 	virtual int getScreenPadding () { return 0; }

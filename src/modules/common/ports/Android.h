@@ -48,6 +48,7 @@ public:
 		__android_log_write(ANDROID_LOG_INFO, Singleton<Application>::getInstance().getName().c_str(), string.c_str());
 	}
 
+	bool supportsUserContent () const override { return false; }
 	void notifyPaymentLoaded ();
 	bool isOUYA () const override;
 	void tick (uint32_t deltaTime) override;
