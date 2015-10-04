@@ -18,8 +18,19 @@
 #include <SDL.h>
 #include <SDL_stdinc.h>
 
-#define GETSCALE_W(x, scale) (x) = (static_cast<float>(x + _frontend->getCoordinateOffsetX()) / _frontend->getWidthScale()) * scale
-#define GETSCALE_H(y, scale) (y) = (static_cast<float>(y + _frontend->getCoordinateOffsetY()) / _frontend->getHeightScale()) * scale
+static inline int coordinateScaleX(int x, float scale, IFrontend* frontend) {
+	const float offset = (float)(x + frontend->getCoordinateOffsetX());
+	const float offsetScaled = offset / frontend->getWidthScale();
+	const int scaledCoord = offsetScaled * scale;
+	return scaledCoord;
+}
+
+static inline int coordinateScaleY(int y, float scale, IFrontend* frontend) {
+	const float offset = (float)(y + frontend->getCoordinateOffsetY());
+	const float offsetScaled = offset / frontend->getHeightScale();
+	const int scaledCoord = offsetScaled * scale;
+	return scaledCoord;
+}
 
 UI::UI () :
 		_serviceProvider(nullptr), _eventHandler(nullptr), _frontend(nullptr), _cursor(true), _showCursor(false), _cursorX(
@@ -457,8 +468,8 @@ void UI::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY)
 		return;
 
 	const float speedScale = _mouseSpeed->getFloatValue();
-	GETSCALE_W(relX, speedScale);
-	GETSCALE_H(relY, speedScale);
+	relX = coordinateScaleX(relX, speedScale, _frontend);
+	relY = coordinateScaleY(relY, speedScale, _frontend);
 	_frontend->setCursorPosition(_cursorX + relX, _cursorY + relY);
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
@@ -509,9 +520,6 @@ void UI::onMouseWheel (int32_t x, int32_t y)
 	if (_restart)
 		return;
 
-	const float speedScale = _mouseSpeed->getFloatValue();
-	GETSCALE_W(x, speedScale);
-	GETSCALE_H(y, speedScale);
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;

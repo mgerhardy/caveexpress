@@ -677,6 +677,7 @@ void IUINodeMapEditor::scale (float scaleFactor)
 
 bool IUINodeMapEditor::onMouseWheel (int32_t x, int32_t y)
 {
+	Log::debug(LOG_UI, "map editor mouse wheel: %i:%i", x, y);
 	scale(y * SCALE_STEP);
 	updateScrolling();
 	return true;
