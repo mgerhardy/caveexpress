@@ -34,7 +34,7 @@ FileSystem::FileSystem () :
 	registerURL("sounds", getSoundsDir());
 	registerURL("campaigns", getCampaignsDir());
 	registerURL("gestures", getGesturesDir());
-	registerURL("home", _home);
+	registerURL("home", _homeDir);
 }
 
 FileSystem::~FileSystem ()
