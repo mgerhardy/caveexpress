@@ -86,6 +86,7 @@ protected:
 	LUA _lua;
 public:
 	LUAMapManager() : IMapManager("lua") {}
+
 	std::string getName (const std::string& filename, const std::string& id) override {
 		_lua.close();
 		_lua.init();
