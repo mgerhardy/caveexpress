@@ -14,8 +14,6 @@ NPCFriendly::NPCFriendly (CaveMapTile *cave, const EntityType& type, bool return
 	_swimmingTime = 0;
 	_swimmingTimeDelay = 7000;
 	_initialSwimmingSpeed = 0.8f;
-	_swimmingDistance = 200;
-	_waitPatience = 8000;
 	if (EntityTypes::isNpcGrandpa(_type)) {
 		_swimmingTimeDelay = 5000;
 		_initialSwimmingSpeed = 0.6f;
