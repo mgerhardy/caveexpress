@@ -34,6 +34,7 @@ private:
 	const std::vector<b2Vec2>& _waterIntersectionPoints;
 	int _traceCount;
 	const TraceData *_traceData;
+	bool _activate;
 
 	void DrawPoint(const b2Vec2& p, float32 size, const b2Color& color);
 	void DrawSegmentWithAlpha (const b2Vec2& p1, const b2Vec2& p2, const b2Color& color, float alpha);

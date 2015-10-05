@@ -11,6 +11,7 @@
 #endif
 
 #include "common/IFrontend.h"
+#include "common/ConfigManager.h"
 #include <math.h>
 #include <SDL_platform.h>
 
@@ -23,6 +24,9 @@ DebugRenderer::DebugRenderer (int pointCount, const ContactPoint *points, int tr
 				traceData)
 {
 	memset(_colorArray, 0, sizeof(_colorArray));
+	_activate = Config.getConfigVar("frontend")->getValue() == "opengl";
+	if (!_activate)
+		return;
 #ifndef NO_DEBUG_RENDERER
 	SetFlags(b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit
 			| b2Draw::e_centerOfMassBit);
@@ -46,7 +50,10 @@ DebugRenderer::DebugRenderer (int pointCount, const ContactPoint *points, int tr
 
 DebugRenderer::~DebugRenderer ()
 {
+	if (!_activate)
+		return;
 #ifndef NO_DEBUG_RENDERER
+
 	const float32 k_impulseScale = 0.1f;
 	const float32 k_axisScale = 0.3f;
 
@@ -102,6 +109,8 @@ DebugRenderer::~DebugRenderer ()
 
 void DebugRenderer::setColorPointer (const b2Color& color, float alpha, int amount)
 {
+	if (!_activate)
+		return;
 #ifndef NO_DEBUG_RENDERER
 	if (amount > DEBUG_RENDERER_MAX_COLORS)
 		amount = DEBUG_RENDERER_MAX_COLORS;
@@ -117,6 +126,8 @@ void DebugRenderer::setColorPointer (const b2Color& color, float alpha, int amou
 
 void DebugRenderer::DrawPolygon (const b2Vec2* vertices, int vertexCount, const b2Color& color)
 {
+	if (!_activate)
+		return;
 #ifndef NO_DEBUG_RENDERER
 	setColorPointer(color, 1.0f, vertexCount);
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
@@ -127,6 +138,8 @@ void DebugRenderer::DrawPolygon (const b2Vec2* vertices, int vertexCount, const 
 
 void DebugRenderer::DrawSolidPolygon (const b2Vec2* vertices, int vertexCount, const b2Color& color)
 {
+	if (!_activate)
+		return;
 #ifndef NO_DEBUG_RENDERER
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
 
@@ -141,6 +154,8 @@ void DebugRenderer::DrawSolidPolygon (const b2Vec2* vertices, int vertexCount, c
 
 void DebugRenderer::DrawCircle (const b2Vec2& center, float32 radius, const b2Color& color)
 {
+	if (!_activate)
+		return;
 #ifndef NO_DEBUG_RENDERER
 	const float32 k_segments = 16.0f;
 	const int vertexCount = 16;
@@ -164,6 +179,8 @@ void DebugRenderer::DrawCircle (const b2Vec2& center, float32 radius, const b2Co
 
 void DebugRenderer::DrawSolidCircle (const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color)
 {
+	if (!_activate)
+		return;
 #ifndef NO_DEBUG_RENDERER
 	const float32 k_segments = 16.0f;
 	const int vertexCount = 16;
@@ -192,6 +209,8 @@ void DebugRenderer::DrawSolidCircle (const b2Vec2& center, float32 radius, const
 
 void DebugRenderer::DrawPoint (const b2Vec2& p, float32 size, const b2Color& color)
 {
+	if (!_activate)
+		return;
 #ifndef NO_DEBUG_RENDERER
 	setColorPointer(color, 1.0f, 4);
 	const float minx = p.x - size / 2.0f;
@@ -212,6 +231,8 @@ void DebugRenderer::DrawSegment (const b2Vec2& p1, const b2Vec2& p2, const b2Col
 
 void DebugRenderer::DrawSegmentWithAlpha (const b2Vec2& p1, const b2Vec2& p2, const b2Color& color, float alpha)
 {
+	if (!_activate)
+		return;
 #ifndef NO_DEBUG_RENDERER
 	setColorPointer(color, alpha, 2);
 	const GLfloat glVertices[] = { p1.x, p1.y, p2.x, p2.y };
