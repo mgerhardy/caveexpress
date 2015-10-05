@@ -1,5 +1,5 @@
 function getName()
-	return "NPC"
+	return "Cave taxi"
 end
 
 function onMapLoaded()
