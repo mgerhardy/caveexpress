@@ -3,6 +3,7 @@
 #include "common/CommandSystem.h"
 #include "campaign/CampaignManager.h"
 #include "common/Commands.h"
+#include <SDL_assert.h>
 
 UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, bool multiplayer, int cols, int rows) :
 		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _campaignManager(nullptr), _mapManager(&mapManager), _multiplayer(multiplayer)
@@ -53,6 +54,7 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 	if (_mapManager != nullptr) {
 		title = _mapManager->getMapTitle(data);
 	} else {
+		SDL_assert_always(_campaignManager != nullptr);
 		const CampaignPtr& campaignPtr = _campaignManager->getActiveCampaign();
 		const CampaignMap *map = campaignPtr->getMapById(data);
 		if (map == nullptr)
@@ -131,6 +133,7 @@ void UINodeMapSelector::reset ()
 		return;
 	}
 
+	SDL_assert_always(_campaignManager != nullptr);
 	const CampaignPtr& campaignPtr = _campaignManager->getActiveCampaign();
 	if (!campaignPtr)
 		return;
