@@ -126,7 +126,7 @@ void DebugRenderer::DrawPoint (const b2Vec2& p, float32 size, const b2Color& col
 	const float maxx = VX(p.x + size / 2.0f);
 	const float miny = VY(p.y - size / 2.0f);
 	const float maxy = VY(p.y + size / 2.0f);
-	_frontend->renderFilledRect(minx, miny, maxx, maxy, rgba);
+	_frontend->renderFilledRect(minx, miny, maxx - minx, maxy - miny, rgba);
 }
 
 void DebugRenderer::DrawSegment (const b2Vec2& p1, const b2Vec2& p2, const b2Color& color)
