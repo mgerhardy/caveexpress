@@ -294,6 +294,7 @@ void GL3Frontend::flushBatch (int type, GLuint texnum, int vertexAmount)
 {
 	if (_currentVertexIndex + vertexAmount >= MAXNUMVERTICES)
 		renderBatches();
+	SDL_assert_always(vertexAmount < MAXNUMVERTICES);
 	const Batch& b = _batches[_currentBatch];
 	if (b.type == type && b.texnum == texnum) {
 		_batches[_currentBatch].vertexCount += vertexAmount;
@@ -481,7 +482,7 @@ int GL3Frontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& colo
 {
 	const glm::mat4 mat = glm::scale(glm::mat4(1.0f), glm::vec3(_rx, _ry, 0.0f));
 
-	flushBatch(GL_TRIANGLES, _white, 6);
+	flushBatch(GL_TRIANGLES, _white, n);
 	Batch& batch = _batches[_currentBatch];
 	batch.normaltexnum = _alpha;
 
@@ -498,7 +499,32 @@ int GL3Frontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& colo
 
 int GL3Frontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
 {
-	return -1;
+	const glm::mat4 mat = glm::scale(glm::mat4(1.0f), glm::vec3(_rx, _ry, 0.0f));
+
+	flushBatch(GL_LINES, _white, n);
+	Batch& batch = _batches[_currentBatch];
+	batch.normaltexnum = _alpha;
+
+	Vertex v(color);
+
+	for (int i = 0; i < n; i += 2) {
+		const glm::vec4 pos1 = mat * glm::vec4(vx[i] * _rx, vy[i] * _ry, 0.0f, 1.0f);
+		v.x = pos1.x;
+		v.y = pos1.y;
+		_vertices[_currentVertexIndex++] = v;
+
+		const glm::vec4 pos2 = mat * glm::vec4(vx[i + 1] * _rx, vy[i + 1] * _ry, 0.0f, 1.0f);
+		v.x = pos2.x;
+		_vertices[_currentVertexIndex++] = v;
+		v.y = pos2.y;
+	}
+
+	const glm::vec4 start = mat * glm::vec4(vx[0] * _rx, vy[0] * _ry, 0.0f, 1.0f);
+	v.x = start.x;
+	v.y = start.y;
+	_vertices[_currentVertexIndex++] = v;
+
+	return 0;
 }
 
 void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& color)
