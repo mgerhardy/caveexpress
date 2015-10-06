@@ -61,6 +61,8 @@ public:
 	void unbindTargetTexture (RenderTarget* target) override;
 	void renderRect (int x, int y, int w, int h, const Color& color) override;
 	void renderFilledRect (int x, int y, int w, int h, const Color& fillColor) override;
+	int renderFilledPolygon (int *vx, int *vy, int n, const Color& color) override;
+	int renderPolygon (int *vx, int *vy, int n, const Color& color) override;
 	void renderLine (int x1, int y1, int x2, int y2, const Color& color) override;
 	void initRenderer () override;
 	void setGLAttributes () override;

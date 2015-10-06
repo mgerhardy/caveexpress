@@ -477,6 +477,30 @@ void GL3Frontend::bindTexture (Texture* texture, int textureUnit)
 	glBindTexture(GL_TEXTURE_2D, _currentTexture);
 }
 
+int GL3Frontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& color)
+{
+	const glm::mat4 mat = glm::scale(glm::mat4(1.0f), glm::vec3(_rx, _ry, 0.0f));
+
+	flushBatch(GL_TRIANGLES, _white, 6);
+	Batch& batch = _batches[_currentBatch];
+	batch.normaltexnum = _alpha;
+
+	Vertex v(color);
+
+	for (int i = 0; i < n; ++i) {
+		v.x = vx[i];
+		v.y = vy[i];
+		_vertices[_currentVertexIndex++] = v;
+	}
+
+	return 0;
+}
+
+int GL3Frontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
+{
+	return -1;
+}
+
 void GL3Frontend::renderFilledRect (int x, int y, int w, int h, const Color& color)
 {
 	if (w <= 0)

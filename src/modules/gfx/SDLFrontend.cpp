@@ -760,6 +760,39 @@ int SDLFrontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& colo
 	if (!vx || !vy || n < 3)
 		return -1;
 
+	if (n == 4) {
+		int xEqual = 0;
+		int yEqual = 0;
+		int minx = 10000000;
+		int miny = 10000000;
+		int maxx = 0;
+		int maxy = 0;
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				if (i == j)
+					continue;
+				if (vx[i] == vx[j]) {
+					++xEqual;
+				}
+				if (vy[i] == vy[j]) {
+					++yEqual;
+				}
+				minx = std::min(minx, vx[i]);
+				maxx = std::max(maxx, vx[i]);
+				miny = std::min(miny, vy[i]);
+				maxy = std::max(maxy, vy[i]);
+			}
+		}
+		if (xEqual == 2 && yEqual == 2) {
+			const int w = maxx - minx;
+			const int h = maxy - miny;
+			renderFilledRect(minx, miny, w, h, color);
+			return 0;
+		}
+	}
+
+	setSDLColor(color);
+
 	std::unique_ptr<int[]> ints(new int[n]);
 	int miny = vy[0];
 	int maxy = vy[0];
@@ -819,6 +852,8 @@ int SDLFrontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
 {
 	if (n < 3 || vx == nullptr || vy == nullptr)
 		return -1;
+
+	setSDLColor(color);
 
 	int result = 0;
 	for (int i = 0; i < n; i++) {

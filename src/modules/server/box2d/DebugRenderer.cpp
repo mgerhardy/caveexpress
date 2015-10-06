@@ -1,65 +1,29 @@
 #include "DebugRenderer.h"
 #include "common/ConfigManager.h"
 #include "common/EventHandler.h"
-
-#include <SDL.h>
-#ifdef SDL_VIDEO_OPENGL
-#define GL_GLEXT_PROTOTYPES
-#include <SDL_opengl.h>
-//#include <SDL_opengl_glext.h>
-#include "gfx/GLShared.h"
-#endif
-
 #include "common/IFrontend.h"
 #include "common/ConfigManager.h"
 #include <math.h>
-#include <SDL_platform.h>
 
-#ifndef SDL_VIDEO_OPENGL
-#define NO_DEBUG_RENDERER
-#endif
+#define VX(val) (((val)) * _data.scale + _data.x)
+#define VY(val) (((val)) * _data.scale + _data.y)
 
-DebugRenderer::DebugRenderer (int pointCount, const ContactPoint *points, int traceCount, const TraceData *traceData, const std::vector<b2Vec2>& waterIntersectionPoints, const DebugRendererData& data) :
-		b2Draw(), _enableTextureArray(false), _pointCount(pointCount), _points(points), _waterIntersectionPoints(waterIntersectionPoints), _traceCount(traceCount), _traceData(
-				traceData)
+DebugRenderer::DebugRenderer (int pointCount, const ContactPoint *points, int traceCount, const TraceData *traceData, const std::vector<b2Vec2>& waterIntersectionPoints, const DebugRendererData& data, IFrontend *frontend) :
+		b2Draw(), _pointCount(pointCount), _points(points), _waterIntersectionPoints(waterIntersectionPoints), _traceCount(traceCount), _traceData(
+				traceData), _data(data), _frontend(frontend)
 {
-	memset(_colorArray, 0, sizeof(_colorArray));
-	_activate = Config.getConfigVar("frontend")->getValue() == "opengl";
-	if (!_activate)
-		return;
-#ifndef NO_DEBUG_RENDERER
 	SetFlags(b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit
 			| b2Draw::e_centerOfMassBit);
-	GL_checkError();
-	glPushMatrix();
-	const float scale = static_cast<float>(data.scale);
-	const float x = static_cast<float>(data.x / scale);
-	const float y = static_cast<float>(data.y / scale);
-
-	glScalef(scale, scale, 1.0f);
-	glTranslatef(x, y, 0.0f);
-	glDisable(GL_TEXTURE_2D);
-
-	_enableTextureArray = glIsEnabled(GL_TEXTURE_COORD_ARRAY);
-	if (_enableTextureArray)
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	GL_checkError();
-#endif
 }
 
 DebugRenderer::~DebugRenderer ()
 {
-	if (!_activate)
-		return;
-#ifndef NO_DEBUG_RENDERER
-
 	const float32 k_impulseScale = 0.1f;
 	const float32 k_axisScale = 0.3f;
 
-	const bool drawFrictionImpulse = true;
-	const bool drawContactNormals = true;
-	const bool drawContactImpulse = true;
+	const bool drawFrictionImpulse = Config.getConfigVar("box2d_frictionnormals", "true")->getBoolValue();
+	const bool drawContactNormals = Config.getConfigVar("box2d_contactnormals", "true")->getBoolValue();
+	const bool drawContactImpulse = Config.getConfigVar("box2d_contactimpulse", "true")->getBoolValue();
 
 	for (int i = 0; i < _pointCount; ++i) {
 		const ContactPoint* point = &_points[i];
@@ -98,130 +62,71 @@ DebugRenderer::~DebugRenderer ()
 
 	if (!_waterIntersectionPoints.empty())
 		DrawPolygon(&_waterIntersectionPoints[0], _waterIntersectionPoints.size(), b2Color(0.0f, 1.0f, 1.0f));
-
-	if (_enableTextureArray)
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnable(GL_TEXTURE_2D);
-	glPopMatrix();
-	GL_checkError();
-#endif
-}
-
-void DebugRenderer::setColorPointer (const b2Color& color, float alpha, int amount)
-{
-	if (!_activate)
-		return;
-#ifndef NO_DEBUG_RENDERER
-	if (amount > DEBUG_RENDERER_MAX_COLORS)
-		amount = DEBUG_RENDERER_MAX_COLORS;
-	for (int i = 0; i < amount; ++i) {
-		_colorArray[i * 4 + 0] = color.r;
-		_colorArray[i * 4 + 1] = color.g;
-		_colorArray[i * 4 + 2] = color.b;
-		_colorArray[i * 4 + 3] = alpha;
-	}
-	glColorPointer(4, GL_FLOAT, 0, _colorArray);
-#endif
 }
 
 void DebugRenderer::DrawPolygon (const b2Vec2* vertices, int vertexCount, const b2Color& color)
 {
-	if (!_activate)
-		return;
-#ifndef NO_DEBUG_RENDERER
-	setColorPointer(color, 1.0f, vertexCount);
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
-	glDrawArrays(GL_LINE_LOOP, 0, vertexCount);
-	GL_checkError();
-#endif
+	for (int i = 0; i < vertexCount; i += 2) {
+		DrawSegment(vertices[i], vertices[i + 1], color);
+	}
 }
 
 void DebugRenderer::DrawSolidPolygon (const b2Vec2* vertices, int vertexCount, const b2Color& color)
 {
-	if (!_activate)
-		return;
-#ifndef NO_DEBUG_RENDERER
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
-
-	setColorPointer(color, 0.5f, vertexCount);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, vertexCount);
-
-	setColorPointer(color, 1.0f, vertexCount);
-	glDrawArrays(GL_LINE_LOOP, 0, vertexCount);
-	GL_checkError();
-#endif
+	const Color rgba = { color.r, color.g, color.b, 0.5f };
+	int vx[vertexCount];
+	int vy[vertexCount];
+	for (int i = 0; i < vertexCount; ++i) {
+		vx[i] = VX(vertices[i].x);
+		vy[i] = VY(vertices[i].y);
+	}
+	_frontend->renderFilledPolygon(vx, vy, vertexCount, rgba);
+	DrawPolygon(vertices, vertexCount, color);
 }
 
 void DebugRenderer::DrawCircle (const b2Vec2& center, float32 radius, const b2Color& color)
 {
-	if (!_activate)
-		return;
-#ifndef NO_DEBUG_RENDERER
 	const float32 k_segments = 16.0f;
-	const int vertexCount = 16;
 	const float32 k_increment = 2.0f * b2_pi / k_segments;
 	float32 theta = 0.0f;
 
-	GLfloat glVertices[vertexCount * 2];
-	for (int i = 0; i < k_segments; ++i) {
-		const b2Vec2 v = center + radius * b2Vec2(cosf(theta), sinf(theta));
-		glVertices[i * 2] = v.x;
-		glVertices[i * 2 + 1] = v.y;
+	for (int i = 0; i < k_segments; i += 2) {
+		const b2Vec2 p1 = center + radius * b2Vec2(cosf(theta), sinf(theta));
 		theta += k_increment;
+		const b2Vec2 p2 = center + radius * b2Vec2(cosf(theta), sinf(theta));
+		theta += k_increment;
+		DrawSegment(p1, p2, color);
 	}
-
-	setColorPointer(color, 1.0f, vertexCount);
-	glVertexPointer(2, GL_FLOAT, 0, glVertices);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, vertexCount);
-	GL_checkError();
-#endif
 }
 
 void DebugRenderer::DrawSolidCircle (const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color)
 {
-	if (!_activate)
-		return;
-#ifndef NO_DEBUG_RENDERER
 	const float32 k_segments = 16.0f;
 	const int vertexCount = 16;
 	const float32 k_increment = 2.0f * b2_pi / k_segments;
 	float32 theta = 0.0f;
 
-	GLfloat glVertices[vertexCount * 2];
+	b2Vec2 vertices[vertexCount];
 	for (int i = 0; i < k_segments; ++i) {
 		const b2Vec2 v = center + radius * b2Vec2(cosf(theta), sinf(theta));
-		glVertices[i * 2] = v.x;
-		glVertices[i * 2 + 1] = v.y;
+		vertices[i] = v;
 		theta += k_increment;
 	}
 
-	setColorPointer(color, 0.5f, vertexCount);
-	glVertexPointer(2, GL_FLOAT, 0, glVertices);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, vertexCount);
-	setColorPointer(color, 1.0f, vertexCount);
-	glDrawArrays(GL_LINE_LOOP, 0, vertexCount);
-	GL_checkError();
+	DrawSolidPolygon(vertices, vertexCount, color);
 
 	// Draw the axis line
 	DrawSegment(center, center + radius * axis, color);
-#endif
 }
 
 void DebugRenderer::DrawPoint (const b2Vec2& p, float32 size, const b2Color& color)
 {
-	if (!_activate)
-		return;
-#ifndef NO_DEBUG_RENDERER
-	setColorPointer(color, 1.0f, 4);
-	const float minx = p.x - size / 2.0f;
-	const float maxx = p.x + size / 2.0f;
-	const float miny = p.y - size / 2.0f;
-	const float maxy = p.y + size / 2.0f;
-	const float vertices[] = { minx, miny, maxx, miny, minx, maxy, maxx, maxy };
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	GL_checkError();
-#endif
+	const Color rgba = { color.r, color.g, color.b, 0.5f };
+	const float minx = VX(p.x - size / 2.0f);
+	const float maxx = VX(p.x + size / 2.0f);
+	const float miny = VY(p.y - size / 2.0f);
+	const float maxy = VY(p.y + size / 2.0f);
+	_frontend->renderFilledRect(minx, miny, maxx, maxy, rgba);
 }
 
 void DebugRenderer::DrawSegment (const b2Vec2& p1, const b2Vec2& p2, const b2Color& color)
@@ -231,15 +136,12 @@ void DebugRenderer::DrawSegment (const b2Vec2& p1, const b2Vec2& p2, const b2Col
 
 void DebugRenderer::DrawSegmentWithAlpha (const b2Vec2& p1, const b2Vec2& p2, const b2Color& color, float alpha)
 {
-	if (!_activate)
-		return;
-#ifndef NO_DEBUG_RENDERER
-	setColorPointer(color, alpha, 2);
-	const GLfloat glVertices[] = { p1.x, p1.y, p2.x, p2.y };
-	glVertexPointer(2, GL_FLOAT, 0, glVertices);
-	glDrawArrays(GL_LINES, 0, 2);
-	GL_checkError();
-#endif
+	const Color rgba = { color.r, color.g, color.b, alpha };
+	const int p1x = VX(p1.x);
+	const int p1y = VY(p1.y);
+	const int p2x = VX(p2.x);
+	const int p2y = VY(p2.y);
+	_frontend->renderLine(p1x, p1y, p2x, p2y, rgba);
 }
 
 void DebugRenderer::DrawTransform (const b2Transform& xf)

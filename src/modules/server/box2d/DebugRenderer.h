@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Box2D/Box2D.h>
+#include "common/IFrontend.h"
 #include "common/Compiler.h"
 #include "common/DebugRendererData.h"
 #include <vector>
@@ -27,20 +28,18 @@ struct TraceData {
 #define DEBUG_RENDERER_MAX_COLORS 128
 class DebugRenderer: public b2Draw {
 private:
-	bool _enableTextureArray;
-	float _colorArray[DEBUG_RENDERER_MAX_COLORS * 4];
 	int _pointCount;
 	const ContactPoint *_points;
 	const std::vector<b2Vec2>& _waterIntersectionPoints;
 	int _traceCount;
 	const TraceData *_traceData;
-	bool _activate;
+	const DebugRendererData _data;
+	IFrontend* _frontend;
 
 	void DrawPoint(const b2Vec2& p, float32 size, const b2Color& color);
 	void DrawSegmentWithAlpha (const b2Vec2& p1, const b2Vec2& p2, const b2Color& color, float alpha);
-	void setColorPointer (const b2Color& color, float alpha, int amount);
 public:
-	DebugRenderer (int pointCount, const ContactPoint *points, int traceCount, const TraceData *traceData, const std::vector<b2Vec2>& waterIntersectionPoints, const DebugRendererData& rect);
+	DebugRenderer (int pointCount, const ContactPoint *points, int traceCount, const TraceData *traceData, const std::vector<b2Vec2>& waterIntersectionPoints, const DebugRendererData& rect, IFrontend* frontend);
 	virtual ~DebugRenderer ();
 
 	// b2Draw

@@ -262,6 +262,48 @@ void GL1Frontend::renderRect (int x, int y, int w, int h, const Color& color)
 #endif
 }
 
+int GL1Frontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& color)
+{
+#ifdef SDL_VIDEO_OPENGL
+	setColorPointer(color, 4);
+	enableTextureUnit(*_currentTextureUnit, false);
+	float vertices[2 * n];
+	int index = 0;
+	for (int i = 0; i < n; ++i) {
+		vertices[index++] = vx[i] * _rx;
+		vertices[index++] = vy[i] * _ry;
+	}
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, n);
+	GL_checkError();
+	enableTextureUnit(*_currentTextureUnit, true);
+	return 0;
+#else
+	return -1;
+#endif
+}
+
+int GL1Frontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
+{
+#ifdef SDL_VIDEO_OPENGL
+	setColorPointer(color, 4);
+	enableTextureUnit(*_currentTextureUnit, false);
+	float vertices[2 * n];
+	int index = 0;
+	for (int i = 0; i < n; ++i) {
+		vertices[index++] = vx[i] * _rx;
+		vertices[index++] = vy[i] * _ry;
+	}
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glDrawArrays(GL_LINE_LOOP, 0, n);
+	GL_checkError();
+	enableTextureUnit(*_currentTextureUnit, true);
+	return 0;
+#else
+	return -1;
+#endif
+}
+
 void GL1Frontend::renderFilledRect (int x, int y, int w, int h, const Color& fillColor)
 {
 #ifdef SDL_VIDEO_OPENGL

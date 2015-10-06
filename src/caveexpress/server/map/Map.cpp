@@ -199,7 +199,7 @@ void Map::render (void *userdata)
 {
 	Map* map = static_cast<Map*>(userdata);
 	if (map->_world) {
-		DebugRenderer renderer(map->_pointCount, map->_points, map->_traceCount, map->_traces,  map->_waterIntersectionPoints, Config.getMapDebugRect());
+		DebugRenderer renderer(map->_pointCount, map->_points, map->_traceCount, map->_traces,  map->_waterIntersectionPoints, Config.getMapDebugRect(), map->_frontend);
 		map->_world->SetDebugDraw(&renderer);
 		map->_world->DrawDebugData();
 		map->_world->SetDebugDraw(nullptr);
