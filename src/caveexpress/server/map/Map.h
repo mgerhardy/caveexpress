@@ -26,7 +26,7 @@ class ServiceProvider;
 namespace caveexpress {
 
 class NPCFlying;
-class NPCFrienndly;
+class NPCFriendly;
 class NPCAttacking;
 class NPCFish;
 class NPCBlowing;
