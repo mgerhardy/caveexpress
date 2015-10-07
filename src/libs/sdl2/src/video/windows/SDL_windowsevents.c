@@ -607,19 +607,19 @@ WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_UNICHAR:
-		if ( wParam == UNICODE_NOCHAR ) {
-			returnCode = 1;
-			break;
-		}
-		/* otherwise fall through to below */
-	case WM_CHAR:
-		{
-			char text[5];
-			if ( WIN_ConvertUTF32toUTF8( (UINT32)wParam, text ) ) {
-				SDL_SendKeyboardText( text );
-			}
-		}
-		returnCode = 0;
+        if ( wParam == UNICODE_NOCHAR ) {
+            returnCode = 1;
+            break;
+        }
+        /* otherwise fall through to below */
+    case WM_CHAR:
+        {
+            char text[5];
+            if ( WIN_ConvertUTF32toUTF8( (UINT32)wParam, text ) ) {
+                SDL_SendKeyboardText( text );
+            }
+        }
+        returnCode = 0;
         break;
 
 #ifdef WM_INPUTLANGCHANGE
@@ -735,7 +735,7 @@ WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             int x, y;
             int w, h;
             
-            if (data->in_border_change) {
+            if (data->initializing || data->in_border_change) {
                 break;
             }
 
@@ -813,9 +813,9 @@ WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
     case WM_SYSCOMMAND:
         {
-			if ((wParam & 0xFFF0) == SC_KEYMENU) {
-				return (0);
-			}
+            if ((wParam & 0xFFF0) == SC_KEYMENU) {
+                return (0);
+            }
 
 #if defined(SC_SCREENSAVE) || defined(SC_MONITORPOWER)
             /* Don't start the screensaver or blank the monitor in fullscreen apps */
