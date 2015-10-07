@@ -234,8 +234,7 @@ void GL3Frontend::renderBatches()
 
 void GL3Frontend::renderBatchesWithShader (Shader& shader)
 {
-	if (_batches[0].texnum == 0)
-		return;
+	SDL_assert_always(_batches[0].texnum != 0);
 	shader.activate();
 	if (shader.hasUniform("u_projection"))
 		shader.setUniformMatrix("u_projection", _projectionMatrix, false);
@@ -294,6 +293,8 @@ void GL3Frontend::flushBatch (int type, GLuint texnum, int vertexAmount)
 {
 	if (_currentVertexIndex + vertexAmount >= MAXNUMVERTICES)
 		renderBatches();
+	else if (_currentBatch >= MAX_BATCHES)
+		renderBatches();
 	SDL_assert_always(vertexAmount < MAXNUMVERTICES);
 	const Batch& b = _batches[_currentBatch];
 	if (b.type == type && b.texnum == texnum) {
@@ -308,6 +309,7 @@ void GL3Frontend::flushBatch (int type, GLuint texnum, int vertexAmount)
 
 void GL3Frontend::startNewBatch ()
 {
+	SDL_assert_always(_currentBatch < MAX_BATCHES);
 	const Batch& b = _batches[_currentBatch];
 	if (_currentVertexIndex - b.vertexIndexStart == 0)
 		return;
@@ -321,7 +323,9 @@ void GL3Frontend::startNewBatch ()
 	++_currentBatch;
 	if (_currentBatch >= MAX_BATCHES) {
 		Log::debug(LOG_CLIENT, "render the batches because the max batch count was exceeded");
+		--_currentBatch;
 		renderBatches();
+		SDL_assert_always(_currentBatch == 0);
 		return;
 	}
 	memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
@@ -480,9 +484,11 @@ void GL3Frontend::bindTexture (Texture* texture, int textureUnit)
 
 int GL3Frontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& color)
 {
-	const glm::mat4 mat = glm::scale(glm::mat4(1.0f), glm::vec3(_rx, _ry, 0.0f));
+	if (n < 3 || vx == nullptr || vy == nullptr)
+		return -1;
+	static const glm::mat4 mat = glm::scale(glm::mat4(1.0f), glm::vec3(_rx, _ry, 0.0f));
 
-	flushBatch(GL_TRIANGLES, _white, n);
+	flushBatch(GL_TRIANGLE_FAN, _white, n);
 	Batch& batch = _batches[_currentBatch];
 	batch.normaltexnum = _alpha;
 
@@ -499,9 +505,11 @@ int GL3Frontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& colo
 
 int GL3Frontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
 {
-	const glm::mat4 mat = glm::scale(glm::mat4(1.0f), glm::vec3(_rx, _ry, 0.0f));
+	if (n < 3 || vx == nullptr || vy == nullptr)
+		return -1;
+	static const glm::mat4 mat = glm::scale(glm::mat4(1.0f), glm::vec3(_rx, _ry, 0.0f));
 
-	flushBatch(GL_LINES, _white, n);
+	flushBatch(GL_LINES, _white, n + 1);
 	Batch& batch = _batches[_currentBatch];
 	batch.normaltexnum = _alpha;
 

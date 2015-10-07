@@ -265,6 +265,8 @@ void GL1Frontend::renderRect (int x, int y, int w, int h, const Color& color)
 int GL1Frontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& color)
 {
 #ifdef SDL_VIDEO_OPENGL
+	if (n < 3 || vx == nullptr || vy == nullptr)
+		return -1;
 	setColorPointer(color, 4);
 	enableTextureUnit(*_currentTextureUnit, false);
 	float vertices[2 * n];
@@ -286,6 +288,8 @@ int GL1Frontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& colo
 int GL1Frontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
 {
 #ifdef SDL_VIDEO_OPENGL
+	if (n < 3 || vx == nullptr || vy == nullptr)
+		return -1;
 	setColorPointer(color, 4);
 	enableTextureUnit(*_currentTextureUnit, false);
 	float vertices[2 * n];
