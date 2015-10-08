@@ -187,7 +187,11 @@ endmacro()
 #
 macro(cp_android_package PACKAGE)
 	message("install android sdk package ${PACKAGE}")
-	execute_process(COMMAND echo y | ${ANDROID_SDK_TOOL} update sdk -a -u -s -t ${PACKAGE})
+	file(WRITE ${CMAKE_BINARY_DIR}/yes.txt "y")
+	execute_process(
+		COMMAND ${ANDROID_SDK_TOOL} update sdk -a -u -s -t ${PACKAGE}
+		INPUT_FILE ${CMAKE_BINARY_DIR}/yes.txt
+	)
 endmacro()
 
 #
