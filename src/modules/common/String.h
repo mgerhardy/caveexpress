@@ -244,6 +244,26 @@ inline int toInt (const std::string& str, int defaultValue = 0)
 	return atoi(str.c_str());
 }
 
+template<class T>
+inline std::string toBitString (T type)
+{
+	const size_t size = sizeof(T);
+	std::string bits;
+	bits.reserve(size * 4);
+	const uint8_t* raw = (const uint8_t*)&type;
+	for (size_t i = 0; i < size; ++i) {
+		const uint8_t byte = raw[i];
+		for (int b = 0; b < sizeof(uint8_t); ++b) {
+			const int bit = 1 << b;
+			if (byte & bit)
+				bits.append("1");
+			else
+				bits.append("0");
+		}
+	}
+	return bits;
+}
+
 inline bool toBool (const std::string& str)
 {
 	return str == "1" || str == "true";
