@@ -29,10 +29,6 @@ public:
 
 	virtual bool mkdir (const std::string& directory) override;
 
-	virtual void logError (const std::string& error) const override;
-
-	virtual void logOutput (const std::string& string) const override;
-
 	virtual DirectoryEntries listDirectory (const std::string& basedir, const std::string& subdir = "") override;
 
 	virtual int openURL (const std::string& url, bool newWindow) const override;

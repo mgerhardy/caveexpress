@@ -25,7 +25,7 @@ std::string HTML5::getCurrentWorkingDir ()
 }
 
 void HTML5::syncFiles() {
-	logOutput("sync files");
+	Log::info(LOG_SYSTEM, "sync files");
 	EM_ASM(
 		FS.syncfs(function(error) {
 			if (error) { console.log("Error while syncing", error); }
@@ -37,10 +37,10 @@ void HTML5::syncFiles() {
 void HTML5::exit (const std::string& reason, int errorCode)
 {
 	if (errorCode != 0) {
-		logError(reason);
+		Log::error(LOG_SYSTEM, "%s", reason.c_str());
 		_jsAlert(reason.c_str());
 	} else {
-		logOutput(reason);
+		Log::info(LOG_SYSTEM, "%s", reason.c_str());
 	}
 	::exit(errorCode);
 }

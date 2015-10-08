@@ -173,10 +173,10 @@ DirectoryEntries Windows::listDirectory (const std::string& basedir, const std::
 void Windows::exit (const std::string& reason, int errorCode)
 {
 	if (errorCode != 0) {
-		logError(reason);
+		Log::error(LOG_SYSTEM, "%s", reason.c_str());
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", reason.c_str(), nullptr);
 	} else {
-		logOutput(reason);
+		Log::info(LOG_SYSTEM, "%s", reason.c_str());
 	}
 	ExitProcess(errorCode);
 }

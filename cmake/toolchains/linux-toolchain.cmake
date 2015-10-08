@@ -35,7 +35,6 @@ endif()
 
 set(CMAKE_C_STANDARD_LIBRARIES ${CMAKE_DL_LIBS})
 
-check_include_files(syslog.h HAVE_SYSLOG_H)
 check_include_files(execinfo.h HAVE_EXECINFO_H)
 set(CURSES_NEED_NCURSES TRUE)
 find_package(Curses)

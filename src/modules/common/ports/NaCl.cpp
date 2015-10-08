@@ -30,7 +30,7 @@ NaCl::~NaCl ()
 void NaCl::mountDir(const std::string& src, const std::string& target, const std::string& filesystem, const std::string& filesystemParams)
 {
 	const int retVal = mount(src.c_str(), target.c_str(), filesystem.c_str(), 0, filesystemParams.c_str());
-	logOutput("mounting dir: '" + src + "' as target '" + target + "' with return value: " + string::toString(retVal) + "\n");
+	Log::info(LOG_SYSTEM, "mounting dir: '%s' as target '%s' with return value %i", src.c_str(), target.c_str(), retVal);
 	if (retVal == -1)
 		perror("mountDir failed");
 }
@@ -53,7 +53,7 @@ std::string NaCl::getDatabaseDirectory ()
 std::string NaCl::getHomeDirectory ()
 {
 	if (!mkdir(HOMEDIR))
-		logError("Failed to create the homedir at " + HOMEDIR);
+		Log::error(LOG_SYSTEM, "Failed to create the homedir at %s", HOMEDIR.c_str());
 	return HOMEDIR;
 }
 
@@ -132,11 +132,11 @@ DirectoryEntries NaCl::listDirectory (const std::string& basedir, const std::str
 void NaCl::exit (const std::string& reason, int errorCode)
 {
 	if (errorCode != 0) {
-		logError(reason);
+		Log::error(LOG_SYSTEM, "%s", reason.c_str());
 		backtrace(reason.c_str());
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", reason.c_str(), nullptr);
 	} else {
-		logOutput(reason);
+		Log::info(LOG_SYSTEM, "%s", reason.c_str());
 	}
 
 #ifdef DEBUG

@@ -27,9 +27,6 @@
 #include <signal.h>
 #include <cxxabi.h>
 #endif
-#ifdef HAVE_SYSLOG_H
-#include <syslog.h>
-#endif
 #include <signal.h>
 
 Unix::Unix() :
@@ -46,10 +43,6 @@ Unix::Unix() :
 		_user = "";
 	else
 		_user = p->pw_name;
-#ifdef HAVE_SYSLOG_H
-	setlogmask(LOG_UPTO(LOG_INFO));
-	openlog(Singleton<Application>::getInstance().getName().c_str(), LOG_NDELAY|LOG_PID, LOG_USER);
-#endif
 #ifdef HAVE_EXECINFO_H
 	signal(SIGFPE, globalSignalHandler);
 	signal(SIGSEGV, globalSignalHandler);
@@ -58,26 +51,6 @@ Unix::Unix() :
 
 Unix::~Unix ()
 {
-#ifdef HAVE_SYSLOG_H
-	closelog();
-#endif
-}
-
-void Unix::logError (const std::string& error) const
-{
-#ifdef HAVE_SYSLOG_H
-	syslog(LOG_ERR, "%s", error.c_str());
-#endif
-	ISystem::logError(error);
-}
-
-void Unix::logOutput (const std::string& string) const
-{
-#ifdef HAVE_SYSLOG_H
-	syslog(LOG_INFO, "%s", string.c_str());
-#endif
-
-	ISystem::logOutput(string);
 }
 
 std::string Unix::getCurrentWorkingDir ()
@@ -195,11 +168,11 @@ DirectoryEntries Unix::listDirectory (const std::string& basedir, const std::str
 void Unix::exit (const std::string& reason, int errorCode)
 {
 	if (errorCode != 0) {
-		logError(reason);
+		Log::error(LOG_SYSTEM, "%s", reason.c_str());
 		backtrace(reason.c_str());
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", reason.c_str(), nullptr);
 	} else {
-		logOutput(reason);
+		Log::info(LOG_SYSTEM, "%s", reason.c_str());
 	}
 
 #ifdef DEBUG
@@ -218,7 +191,7 @@ int Unix::exec (const std::string& command, std::vector<std::string>& arguments)
 {
 	const pid_t childPid = ::fork();
 	if (childPid < 0) {
-		logError(String::format("fork failed: %s", strerror(errno)));
+		Log::error(LOG_SYSTEM, "fork failed: %s", strerror(errno));
 		return -1;
 	}
 
@@ -234,7 +207,7 @@ int Unix::exec (const std::string& command, std::vector<std::string>& arguments)
 		::execv(command.c_str(), const_cast<char* const*>(argv));
 
 		// this should never get called
-		logError(String::format("failed to run '%s' with %i parameters: %s (%i)", command.c_str(), arguments.size(), strerror(errno), errno));
+		Log::error(LOG_SYSTEM, "failed to run '%s' with %i parameters: %s (%i)", command.c_str(), arguments.size(), strerror(errno), errno);
 		::exit(10);
 	}
 
@@ -249,11 +222,11 @@ int Unix::exec (const std::string& command, std::vector<std::string>& arguments)
 
 	// check for success
 	if (!WIFEXITED(status)) {
-		logError("child process exists with error");
+		Log::info(LOG_SYSTEM, "child process exists with error");
 		return -1;
 	}
 
-	logOutput(String::format("child process returned with code %d", WEXITSTATUS(status)));
+	Log::info(LOG_SYSTEM, "child process returned with code %d", WEXITSTATUS(status));
 	if (WEXITSTATUS(status) >= 5)
 		return -1;
 
@@ -351,9 +324,9 @@ void Unix::backtrace (const char *errorMessage)
 	}
 	free(symbollist);
 	appendMessage(strBuf, strBufEnd, "----END BACKTRACE CALLSTACK----\n");
-	logError(std::string(strBufStart.get()));
+	Log::error(LOG_SYSTEM, "fork failed: %s", strBufStart.get());
 #else
-	logError(std::string(errorMessage));
+	Log::error(LOG_SYSTEM, "%s", errorMessage);
 #endif
 }
 

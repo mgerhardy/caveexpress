@@ -55,12 +55,6 @@ protected:
 };
 int LocalReferenceHolder::s_active;
 
-#define _ANDROID_LOG(prio, fmt, args...) __android_log_print(prio, Singleton<Application>::getInstance().getName().c_str(), fmt, ## args)
-#define _logDebug(fmt, args...) _ANDROID_LOG(ANDROID_LOG_DEBUG, fmt, ##args)
-#define _logInfo(fmt, args...) _ANDROID_LOG(ANDROID_LOG_INFO, fmt, ##args)
-#define _logWarn(fmt, args...) _ANDROID_LOG(ANDROID_LOG_WARN, fmt, ##args)
-#define _logError(fmt, args...) _ANDROID_LOG(ANDROID_LOG_ERROR, fmt, ##args)
-
 Android::Android () :
 		Unix(), _env(nullptr), _cls(nullptr), _assetManager(nullptr), _showAds(nullptr), _hideAds(nullptr),
 		_showFullscreenAds(nullptr), _openURL(nullptr), _hasItem(nullptr), _track(nullptr), _buyItem(nullptr), _isOUYA(nullptr),
@@ -568,9 +562,9 @@ bool Android::hasTouch () const
 void Android::exit (const std::string& reason, int errorCode)
 {
 	if (errorCode != 0) {
-		logError(reason);
+		Log::error(LOG_SYSTEM, "%s", reason.c_str());
 	} else {
-		logOutput(reason);
+		Log::info(LOG_SYSTEM, "%s", reason.c_str());
 	}
 
 	if (_env) {

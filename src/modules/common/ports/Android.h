@@ -40,14 +40,6 @@ public:
 
 	void init() override;
 
-	void logError (const std::string& error) const override {
-		__android_log_write(ANDROID_LOG_ERROR, Singleton<Application>::getInstance().getName().c_str(), error.c_str());
-	}
-
-	void logOutput (const std::string& string) const override {
-		__android_log_write(ANDROID_LOG_INFO, Singleton<Application>::getInstance().getName().c_str(), string.c_str());
-	}
-
 	bool supportsUserContent () const override { return false; }
 	void notifyPaymentLoaded ();
 	bool isOUYA () const override;
