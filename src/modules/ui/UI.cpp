@@ -372,6 +372,7 @@ bool UI::onKeyPress (int32_t key, int16_t modifier)
 	if (_restart)
 		return false;
 
+	Log::debug(LOG_UI, "UI received key press event for key %i with modifier %i", key, modifier);
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
@@ -381,6 +382,7 @@ bool UI::onKeyPress (int32_t key, int16_t modifier)
 			break;
 	}
 
+	Log::debug(LOG_UI, "UI didn't handle key press event for key %i with modifier %i", key, modifier);
 	return false;
 }
 

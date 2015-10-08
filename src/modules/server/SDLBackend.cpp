@@ -105,6 +105,7 @@ void SDLBackend::handleEvent (SDL_Event &event)
 	default: {
 		if (!_running)
 			return;
+		Log::trace(LOG_BACKEND, "received event of type %i", event.type);
 		const bool running = _eventHandler.handleEvent(event);
 		// don't overwrite a SDL_QUIT event
 		if (!running)
@@ -400,16 +401,22 @@ bool SDLBackend::onKeyPress (int32_t key, int16_t modifier)
 {
 	if (_frontend->handlesInput())
 		return false;
+	Log::debug(LOG_UI, "Backend received key press event for key %i with modifier %i", key, modifier);
 	const std::string& command = Config.getKeyBinding(key);
 	if (command.empty()) {
+		Log::debug(LOG_UI, "No command found that is bound to key %i", key);
 		return false;
 	}
 
 	const int mod = Config.getKeyModifier(key);
-	if (mod == KMOD_NONE && modifier != 0) {
+	if (mod == KMOD_NONE && modifier != 0 && modifier != KMOD_NUM) {
+		Log::debug(LOG_UI, "Modifiers for binding doesn't match for key %i and command %s (bound: none, pressed: %i)",
+				key, command.c_str(), modifier);
 		return false;
 	}
 	if (mod != KMOD_NONE && !(modifier & mod)) {
+		Log::debug(LOG_UI, "Modifiers for binding doesn't match for key %i and command %s (bound: %i, pressed: %i)",
+				key, command.c_str(), mod, modifier);
 		return false;
 	}
 
@@ -424,6 +431,7 @@ bool SDLBackend::onKeyPress (int32_t key, int16_t modifier)
 		return true;
 	}
 
+	Log::debug(LOG_UI, "Could not execute any key bindings for key %i with modifier %i", key, modifier);
 	return false;
 }
 
