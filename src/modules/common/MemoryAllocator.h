@@ -2,6 +2,7 @@
 
 #include "common/NonCopyable.h"
 #include <stddef.h>
+#include <stdint.h>
 #include <map>
 
 namespace {
