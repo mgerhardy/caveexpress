@@ -5,6 +5,9 @@
 #include "common/ConfigManager.h"
 #include <math.h>
 
+static int vx[2048];
+static int vy[2048];
+
 #define VX(val) (((val)) * _data.scale + _data.x)
 #define VY(val) (((val)) * _data.scale + _data.y)
 
@@ -74,8 +77,6 @@ void DebugRenderer::DrawPolygon (const b2Vec2* vertices, int vertexCount, const 
 void DebugRenderer::DrawSolidPolygon (const b2Vec2* vertices, int vertexCount, const b2Color& color)
 {
 	const Color rgba = { color.r, color.g, color.b, 0.5f };
-	int vx[vertexCount];
-	int vy[vertexCount];
 	for (int i = 0; i < vertexCount; ++i) {
 		vx[i] = VX(vertices[i].x);
 		vy[i] = VY(vertices[i].y);
