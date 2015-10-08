@@ -180,6 +180,17 @@ macro(check_lua_files TARGET FILES)
 endmacro()
 
 #
+# Install android packages
+#
+# parameters:
+# PACKAGE The package id that you need to install
+#
+macro(cp_android_package PACKAGE)
+	message("install android sdk package ${PACKAGE}")
+	execute_process(COMMAND ${ANDROID_SDK_TOOL} update sdk -a -u -s -t ${PACKAGE})
+endmacro()
+
+#
 # Prepare android workspace with assets and sdk/ndk commands.
 #
 # Also adds some helper targets:
@@ -195,6 +206,9 @@ endmacro()
 # VERSION_CODE: the android version code needed for google play store
 #
 macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
+	cp_android_package("android-13")
+	cp_android_package("android-16")
+	cp_android_package("extra-google-google_play_services")
 	message("prepare java code for ${PROJECTNAME}")
 	file(COPY ${ANDROID_ROOT} DESTINATION ${CMAKE_BINARY_DIR}/android-${PROJECTNAME})
 	if (HD_VERSION)
