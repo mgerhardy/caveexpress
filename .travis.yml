@@ -31,10 +31,6 @@ env:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
    - secure: "G4/gfaLtLwXbfTNcGwQ2UsGs5b/EAIeRKkfNKoznWhBxs69AesV0SWhqb/Tr+/EcKEVV+Anh1Akj6YQYFIl6/4jNP7SrVPShTAB3Fo0lXlDwzzt+xK2em+2WA05kOMRBKPmoriOFUcAy1QZ8iOX2V5NZhSrF5MpnBsoU/vbHpeg="
-   - ANDROID_NDK=`pwd`/android-ndk-r10b
-   - NDK_ROOT=`pwd`/android-ndk-r10b
-   - ANDROID_SDK=${ANDROID_HOME}
-   - PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_NDK}
   matrix:
     - USE_BUILTIN=ON
     - USE_BUILTIN=OFF
@@ -108,7 +104,7 @@ script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then pkg-config --version; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then g++-5 --version; fi
   - clang++ --version
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then ./contrib/scripts/android.sh; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then ANDROID_NDK=`pwd`/android-ndk-r10b NDK_ROOT=`pwd`/android-ndk-r10b ANDROID_SDK=${ANDROID_HOME} PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_NDK} ./contrib/scripts/android.sh; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake .. -DUSE_BUILTIN=$USE_BUILTIN && make -j 4 && cd .. && ./tests && ./tests-caveexpress; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake -G Xcode .. -DUSE_BUILTIN=$USE_BUILTIN && ls && xcodebuild -list -project caveproductions.xcodeproj && xcodebuild -project caveproductions.xcodeproj -target ALL_BUILD | xcpretty -f `xcpretty-travis-formatter` && cd .. && ./Debug/tests && ./Debug/tests-caveexpress; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-ios && cd build-ios && cmake -G Xcode .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake -DUSE_BUILTIN=$USE_BUILTIN && ls && xcodebuild -list -project caveproductions.xcodeproj && xcodebuild -project caveproductions.xcodeproj -target ALL_BUILD | xcpretty -f `xcpretty-travis-formatter`; fi
