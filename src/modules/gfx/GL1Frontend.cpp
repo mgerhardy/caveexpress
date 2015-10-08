@@ -127,6 +127,8 @@ void GL1Frontend::initRenderer ()
 	glLoadIdentity();
 
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
+
 	glEnableClientState(GL_COLOR_ARRAY);
 
 	GL_checkError();
@@ -238,7 +240,6 @@ void GL1Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	glLoadIdentity();
 	glTranslatef((GLfloat) (x1 + centerx), (GLfloat) (y1 + centery), (GLfloat) 0.0f);
 	glRotated(angle, (GLdouble) 0.0, (GLdouble) 0.0, (GLdouble) 1.0);
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, 0, texCoords.texCoords);
 	bindTexture(texture, 0);
@@ -272,7 +273,6 @@ void GL1Frontend::renderRect (int x, int y, int w, int h, const Color& color)
 
 	setColorPointer(color, 4);
 	enableTextureUnit(*_currentTextureUnit, false);
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glDrawArrays(GL_LINE_LOOP, 0, 4);
 	GL_checkError();
 	enableTextureUnit(*_currentTextureUnit, true);
@@ -293,7 +293,6 @@ int GL1Frontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& colo
 		vertices[index++] = vx[i] * _rx;
 		vertices[index++] = vy[i] * _ry;
 	}
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, n);
 	GL_checkError();
 	enableTextureUnit(*_currentTextureUnit, true);
@@ -317,7 +316,6 @@ int GL1Frontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
 		vertices[index++] = vx[i] * _rx;
 		vertices[index++] = vy[i] * _ry;
 	}
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glDrawArrays(GL_LINE_LOOP, 0, n);
 	GL_checkError();
 	enableTextureUnit(*_currentTextureUnit, true);
@@ -354,7 +352,6 @@ void GL1Frontend::renderFilledRect (int x, int y, int w, int h, const Color& fil
 	vertices[5] = maxy;
 	vertices[6] = minx;
 	vertices[7] = maxy;
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	GL_checkError();
 	enableTextureUnit(*_currentTextureUnit, true);
@@ -437,7 +434,6 @@ void GL1Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color
 	glEnable(GL_LINE_SMOOTH);
 	setColorPointer(color, 4);
 	enableTextureUnit(*_currentTextureUnit, false);
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glDrawArrays(GL_LINES, 0, 2);
 	glDisable(GL_LINE_SMOOTH);
 	GL_checkError();
