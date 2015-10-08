@@ -409,14 +409,15 @@ bool SDLBackend::onKeyPress (int32_t key, int16_t modifier)
 	}
 
 	const int mod = Config.getKeyModifier(key);
-	if (mod == KMOD_NONE && modifier != 0 && modifier != KMOD_NUM) {
+	const int whiteListModifier = modifier & (KMOD_CTRL | KMOD_SHIFT | KMOD_ALT | KMOD_GUI);
+	if (mod == KMOD_NONE && whiteListModifier != 0) {
 		Log::debug(LOG_UI, "Modifiers for binding doesn't match for key %i and command %s (bound: none, pressed: %i)",
-				key, command.c_str(), modifier);
+				key, command.c_str(), whiteListModifier);
 		return false;
 	}
-	if (mod != KMOD_NONE && !(modifier & mod)) {
+	if (mod != KMOD_NONE && !(whiteListModifier & mod)) {
 		Log::debug(LOG_UI, "Modifiers for binding doesn't match for key %i and command %s (bound: %i, pressed: %i)",
-				key, command.c_str(), mod, modifier);
+				key, command.c_str(), mod, whiteListModifier);
 		return false;
 	}
 
