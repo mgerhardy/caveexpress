@@ -29,15 +29,6 @@ public:
 		(_object->*_pFunc)();
 	}
 
-	~TimeoutCallbackNoParamFunc ()
-	{
-	}
-
-	size_t size () const
-	{
-		return sizeof(*this);
-	}
-
 private:
 	Class* _object;
 	void (Class::*_pFunc) ();
@@ -54,15 +45,6 @@ public:
 	void operator() ()
 	{
 		(_object->*_pFunc)(_param);
-	}
-
-	~TimeoutCallbackFunc ()
-	{
-	}
-
-	size_t size () const
-	{
-		return sizeof(*this);
 	}
 
 private:

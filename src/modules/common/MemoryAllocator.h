@@ -13,7 +13,6 @@ public:
 	virtual ~IMemoryAllocationObject ()
 	{
 	}
-	virtual size_t size () const = 0;
 };
 
 class MemoryAllocator : public NonCopyable {
@@ -25,7 +24,7 @@ private:
 	typedef MemoryIndexMap::iterator MemoryIndexMapIter;
 
 	MemoryIndexMap _memIndexMap;
-	char* _memHeap;
+	uint8_t* _memHeap;
 	size_t _size;
 	size_t _sizeLeft;
 
