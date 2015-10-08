@@ -21,6 +21,9 @@ struct TextureData {
 	int unused;
 };
 
+// TODO: use for batching
+static float vertices[2048];
+
 inline TexNum GL1getTexNum (TextureData *textureData)
 {
 	const intptr_t texnum = reinterpret_cast<intptr_t>(textureData);
@@ -222,13 +225,20 @@ void GL1Frontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	const float maxx = centerx;
 	const float miny = -centery;
 	const float maxy = centery;
-	const float imageVerts[] = { minx, miny, maxx, miny, maxx, maxy, minx, maxy };
+	vertices[0] = minx;
+	vertices[1] = miny;
+	vertices[2] = maxx;
+	vertices[3] = miny;
+	vertices[4] = maxx;
+	vertices[5] = maxy;
+	vertices[6] = minx;
+	vertices[7] = maxy;
 
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslatef((GLfloat) (x1 + centerx), (GLfloat) (y1 + centery), (GLfloat) 0.0f);
 	glRotated(angle, (GLdouble) 0.0, (GLdouble) 0.0, (GLdouble) 1.0);
-	glVertexPointer(2, GL_FLOAT, 0, imageVerts);
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, 0, texCoords.texCoords);
 	bindTexture(texture, 0);
@@ -251,11 +261,18 @@ void GL1Frontend::renderRect (int x, int y, int w, int h, const Color& color)
 	const float ny = y * _ry;
 	const float nw = w * _rx;
 	const float nh = h * _ry;
-	const float points[] = { nx, ny, nx + nw, ny, nx + nw, ny + nh, nx, ny + nh };
+	vertices[0] = nx;
+	vertices[1] = ny;
+	vertices[2] = nx + nw;
+	vertices[3] = ny;
+	vertices[4] = nx + nw;
+	vertices[5] = ny + nh;
+	vertices[6] = nx;
+	vertices[7] = ny + nh;
 
 	setColorPointer(color, 4);
 	enableTextureUnit(*_currentTextureUnit, false);
-	glVertexPointer(2, GL_FLOAT, 0, points);
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glDrawArrays(GL_LINE_LOOP, 0, 4);
 	GL_checkError();
 	enableTextureUnit(*_currentTextureUnit, true);
@@ -267,9 +284,10 @@ int GL1Frontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& colo
 #ifdef SDL_VIDEO_OPENGL
 	if (n < 3 || vx == nullptr || vy == nullptr)
 		return -1;
+	if (n >= sizeof(vertices))
+		return -1;
 	setColorPointer(color, 4);
 	enableTextureUnit(*_currentTextureUnit, false);
-	float vertices[2 * n];
 	int index = 0;
 	for (int i = 0; i < n; ++i) {
 		vertices[index++] = vx[i] * _rx;
@@ -290,9 +308,10 @@ int GL1Frontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
 #ifdef SDL_VIDEO_OPENGL
 	if (n < 3 || vx == nullptr || vy == nullptr)
 		return -1;
+	if (n >= sizeof(vertices))
+		return -1;
 	setColorPointer(color, 4);
 	enableTextureUnit(*_currentTextureUnit, false);
-	float vertices[2 * n];
 	int index = 0;
 	for (int i = 0; i < n; ++i) {
 		vertices[index++] = vx[i] * _rx;
@@ -327,7 +346,14 @@ void GL1Frontend::renderFilledRect (int x, int y, int w, int h, const Color& fil
 	const float maxx = nx + nw;
 	const float miny = ny;
 	const float maxy = ny + nh;
-	const float vertices[] = { minx, miny, maxx, miny, minx, maxy, maxx, maxy };
+	vertices[0] = minx;
+	vertices[1] = miny;
+	vertices[2] = maxx;
+	vertices[3] = miny;
+	vertices[4] = maxx;
+	vertices[5] = maxy;
+	vertices[6] = minx;
+	vertices[7] = maxy;
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	GL_checkError();
@@ -403,12 +429,15 @@ void GL1Frontend::renderLine (int x1, int y1, int x2, int y2, const Color& color
 	const float ny1 = y1 * _ry;
 	const float nx2 = x2 * _rx;
 	const float ny2 = y2 * _ry;
-	const float verts[] = { nx1, ny1, nx2, ny2 };
+	vertices[0] = nx1;
+	vertices[1] = ny1;
+	vertices[2] = nx2;
+	vertices[3] = ny2;
 
 	glEnable(GL_LINE_SMOOTH);
 	setColorPointer(color, 4);
 	enableTextureUnit(*_currentTextureUnit, false);
-	glVertexPointer(2, GL_FLOAT, 0, verts);
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glDrawArrays(GL_LINES, 0, 2);
 	glDisable(GL_LINE_SMOOTH);
 	GL_checkError();
