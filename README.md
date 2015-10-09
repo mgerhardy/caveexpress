@@ -137,7 +137,7 @@ or simply:
 * mkdir build-ios
 * cd build-ios
 * cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake -G "Xcode"
-* make
+* xcodebuild -project caveproductions.xcodeproj
 
 or simply
 
@@ -147,7 +147,7 @@ or simply
 * mkdir build-macosx
 * cd build-macosx
 * cmake .. -G "Xcode"
-* xcodebuild -project Project.xcodeproj
+* xcodebuild -project caveproductions.xcodeproj
 
 or simply
 
