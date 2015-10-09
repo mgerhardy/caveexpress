@@ -24,3 +24,6 @@ Version 1.4 (not yet released)
 * Improved movement by introducing pathfinding
 * Improved input handling
 * Improved ui
+* Fixed key bindings if some unhandled modifiers (like the numpad) are active
+* Fixed mouse speed
+* Improved render speed
