@@ -80,6 +80,7 @@ protected:
 	void startNewBatch ();
 	void renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum);
 	SDL_Surface* loadTextureIntoSurface(const std::string& file);
+	void renderBatchBuffers();
 
 public:
 	explicit AbstractGLFrontend (std::shared_ptr<IConsole> console);

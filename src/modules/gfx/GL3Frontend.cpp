@@ -56,7 +56,6 @@ void GL3Frontend::renderBatches()
 
 void GL3Frontend::renderBatchesWithShader (Shader& shader)
 {
-	SDL_assert_always(_batches[0].texnum != 0);
 	shader.activate();
 	if (shader.hasUniform("u_projection"))
 		shader.setUniformMatrix("u_projection", _projectionMatrix, false);
@@ -72,43 +71,11 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _currentVertexIndex, _vertices, GL_DYNAMIC_DRAW);
-	bool scissorActive = false;
-	for (int i = 0; i <= _currentBatch; ++i) {
-		const Batch& b = _batches[i];
-		if (b.vertexCount == 0)
-			continue;
-		if (b.scissor) {
-			if (!scissorActive)
-				glEnable(GL_SCISSOR_TEST);
-			scissorActive = true;
-			glScissor(b.scissorRect.x * _rx, b.scissorRect.y * _ry, b.scissorRect.w * _rx, b.scissorRect.h * _ry);
-		} else if (scissorActive) {
-			glDisable(GL_SCISSOR_TEST);
-		}
-		if (_currentTexture != b.texnum || _currentNormal != b.normaltexnum) {
-			_currentTexture = b.texnum;
-			_currentNormal = b.normaltexnum;
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, b.normaltexnum);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, b.texnum);
-		}
-		glDrawArrays(b.type, b.vertexIndexStart, b.vertexCount);
-	}
-	if (scissorActive)
-		glDisable(GL_SCISSOR_TEST);
-	_drawCalls += _currentBatch;
-	_currentVertexIndex = 0;
+
+	renderBatchBuffers();
+
 	glBindVertexArray(0);
-	const SDL_Rect scissorRect = _batches[_currentBatch].scissorRect;
-	const bool scissor = _batches[_currentBatch].scissor;
-	_currentBatch = 0;
-	memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
-	_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
-	_batches[_currentBatch].scissorRect = scissorRect;
-	_batches[_currentBatch].scissor = scissor;
 	shader.deactivate();
-	GL_checkError();
 }
 
 void GL3Frontend::initRenderer () {
