@@ -1,4 +1,5 @@
 set(gfx_SRCS
+	AbstractGLFrontend.cpp
 	SDLFrontend.cpp
 	GL3Frontend.cpp
 	GLFunc.cpp
