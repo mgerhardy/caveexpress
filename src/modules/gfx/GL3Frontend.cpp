@@ -157,11 +157,11 @@ void GL3Frontend::initRenderer () {
 		_waterShader.setUniformi("u_texture", 0);
 	if (_waterShader.hasUniform("u_normals"))
 		_waterShader.setUniformi("u_normals", 1);
-	_waterShader.setVertexAttribute("a_pos", 2, GL_FLOAT, false, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, x)));
+	_waterShader.setVertexAttribute("a_pos", 2, GL_FLOAT, false, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, x)));
 	_waterShader.enableVertexAttributeArray("a_pos");
-	_waterShader.setVertexAttribute("a_texcoord", 2, GL_FLOAT, false, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, u)));
+	_waterShader.setVertexAttribute("a_texcoord", 2, GL_FLOAT, false, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, u)));
 	_waterShader.enableVertexAttributeArray("a_texcoord");
-	_waterShader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, c)));
+	_waterShader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, c)));
 	_waterShader.enableVertexAttributeArray("a_color");
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -172,11 +172,11 @@ void GL3Frontend::initRenderer () {
 		_shader.setUniformi("u_texture", 0);
 	if (_shader.hasUniform("u_normals"))
 		_shader.setUniformi("u_normals", 1);
-	_shader.setVertexAttribute("a_pos", 2, GL_FLOAT, false, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, x)));
+	_shader.setVertexAttribute("a_pos", 2, GL_FLOAT, false, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, x)));
 	_shader.enableVertexAttributeArray("a_pos");
-	_shader.setVertexAttribute("a_texcoord", 2, GL_FLOAT, false, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, u)));
+	_shader.setVertexAttribute("a_texcoord", 2, GL_FLOAT, false, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, u)));
 	_shader.enableVertexAttributeArray("a_texcoord");
-	_shader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_OFFSET(offsetof(Vertex, c)));
+	_shader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, c)));
 	_shader.enableVertexAttributeArray("a_color");
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

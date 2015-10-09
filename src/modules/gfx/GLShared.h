@@ -42,6 +42,10 @@ inline int OpenGLStateHandlerCheckError (const char *file, int line, const char 
 	return ret;
 }
 
+#ifndef GL_CALC_OFFSET
+#define GL_CALC_OFFSET(i) ((void*)(i))
+#endif
+
 #if defined(SDL_VIDEO_OPENGL) || defined(SDL_VIDEO_OPENGL_ES)
 #ifdef DEBUG
 #define GL_checkError() OpenGLStateHandlerCheckError(__FILE__, __LINE__, __PRETTY_FUNCTION__)

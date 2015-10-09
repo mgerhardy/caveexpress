@@ -112,5 +112,5 @@ public:
 	float getHeightScale () const override;
 	void enableScissor (int x, int y, int width, int height) override;
 	void disableScissor () override;
-	void updateViewport (int x, int y, int width, int height) override;
+	virtual void updateViewport (int x, int y, int width, int height) override;
 };

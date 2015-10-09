@@ -26,10 +26,6 @@ extern "C" {
 #define GLAPI extern
 #endif
 
-#ifndef GL_OFFSET
-#define GL_OFFSET(i) ((void*)(i))
-#endif
-
 /* -------------------------------- DATA TYPES ------------------------------- */
 
 #include <stddef.h>
