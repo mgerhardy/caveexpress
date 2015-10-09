@@ -97,7 +97,7 @@ or simply
 * mkdir build
 * cd build
 * cmake -DTOOLS=OFF -G "Visual Studio 12" ..
-* msbuild.exe Project.sln
+* msbuild.exe caveproductions.sln
 
 #### Cross compile for android
 * install sdk and ndk
