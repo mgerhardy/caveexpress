@@ -114,4 +114,5 @@ public:
 	void enableScissor (int x, int y, int width, int height) override;
 	void disableScissor () override;
 	virtual void updateViewport (int x, int y, int width, int height) override;
+	virtual void initRenderer();
 };

@@ -80,21 +80,7 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 
 void GL3Frontend::initRenderer () {
 	Log::info(LOG_CLIENT, "init opengl renderer");
-	_context = SDL_GL_CreateContext(_window);
-	ExtGLLoadFunctions();
-
-	glClearColor(0, 0, 0, 0);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-	GL_checkError();
-	glDepthMask(GL_FALSE);
-	glEnable(GL_BLEND);
-	GL_checkError();
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	GL_checkError();
-	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-	GL_checkError();
+	AbstractGLFrontend::initRenderer();
 
 	glGenVertexArrays(1, &_vao);
 	glGenBuffers(1, &_vbo);

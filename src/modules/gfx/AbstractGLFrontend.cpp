@@ -580,3 +580,22 @@ void AbstractGLFrontend::renderBatchBuffers()
 	_batches[_currentBatch].scissor = scissor;
 	GL_checkError();
 }
+
+void AbstractGLFrontend::initRenderer()
+{
+	_context = SDL_GL_CreateContext(_window);
+	ExtGLLoadFunctions();
+	GL_checkError();
+
+	glClearColor(0, 0, 0, 0);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	GL_checkError();
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	GL_checkError();
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	GL_checkError();
+}

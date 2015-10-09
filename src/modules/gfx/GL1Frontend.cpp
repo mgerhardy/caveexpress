@@ -19,13 +19,9 @@ GL1Frontend::~GL1Frontend ()
 
 void GL1Frontend::initRenderer ()
 {
+	AbstractGLFrontend::initRenderer();
 #ifdef SDL_VIDEO_OPENGL
 	Log::info(LOG_CLIENT, "init opengl renderer");
-
-	_context = SDL_GL_CreateContext(_window);
-	ExtGLLoadFunctions();
-
-	GL_checkError();
 
 	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);
@@ -40,20 +36,9 @@ void GL1Frontend::initRenderer ()
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 
-	glClearColor(0, 0, 0, 0);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-	GL_checkError();
-	glDepthMask(GL_FALSE);
-	glEnable(GL_BLEND);
 	glEnable(GL_ALPHA_TEST);
-	GL_checkError();
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	GL_checkError();
 	glAlphaFunc(GL_GREATER, 0.1f);
-	GL_checkError();
-	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	GL_checkError();
 
 	glMatrixMode(GL_MODELVIEW);
