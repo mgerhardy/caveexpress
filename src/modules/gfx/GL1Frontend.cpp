@@ -68,6 +68,10 @@ void GL1Frontend::renderBatches ()
 #ifdef SDL_VIDEO_OPENGL
 	SDL_assert_always(_batches[0].texnum != 0);
 	bool scissorActive = false;
+	uint8_t *start = (uint8_t*)_vertices;
+	glVertexPointer(2, GL_FLOAT, sizeof(Vertex), GL_CALC_OFFSET(start + offsetof(Vertex, x)));
+	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), GL_CALC_OFFSET(start + offsetof(Vertex, c)));
+	glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), GL_CALC_OFFSET(start + offsetof(Vertex, u)));
 	for (int i = 0; i <= _currentBatch; ++i) {
 		const Batch& b = _batches[i];
 		if (b.vertexCount == 0)
@@ -89,12 +93,8 @@ void GL1Frontend::renderBatches ()
 			glBindTexture(GL_TEXTURE_2D, b.texnum);
 			GL_checkError();
 		}
-		uint8_t *start = (uint8_t*)(&(_vertices[b.vertexIndexStart]));
-		glVertexPointer(2, GL_FLOAT, sizeof(Vertex), GL_CALC_OFFSET(start + offsetof(Vertex, x)));
-		glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), GL_CALC_OFFSET(start + offsetof(Vertex, c)));
-		glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), GL_CALC_OFFSET(start + offsetof(Vertex, u)));
 		GL_checkError();
-		glDrawArrays(b.type, 0, b.vertexCount);
+		glDrawArrays(b.type, b.vertexIndexStart, b.vertexCount);
 		GL_checkError();
 	}
 	if (scissorActive)
