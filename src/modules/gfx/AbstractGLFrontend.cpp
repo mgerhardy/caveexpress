@@ -598,4 +598,15 @@ void AbstractGLFrontend::initRenderer()
 	GL_checkError();
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	GL_checkError();
+
+	unsigned char white[16];
+	memset(white, 0xff, sizeof(white));
+	_white = uploadTexture(white, 2, 2);
+
+	unsigned char alpha[16];
+	memset(alpha, 0x00, sizeof(alpha));
+	_alpha = uploadTexture(alpha, 2, 2);
+
+	memset(_batches, 0, sizeof(_batches));
+	_currentVertexIndex = 0;
 }

@@ -39,7 +39,6 @@ void GL1Frontend::initRenderer ()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.1f);
-	GL_checkError();
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
