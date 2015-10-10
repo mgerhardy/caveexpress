@@ -16,7 +16,7 @@ bool SimpleDeadlockDetector::pull(char direction, BoardState& s, int index) {
 	// we need two fields to be free in the back of the package - one for the player to stand on
 	// and one for the field where the player would move to
 	if (s.isFree(col + x, row + y) && s.isFree(col + x + x, row + y + y)) {
-		Log::debug(LOG_SERVER, "col: %i, row: %i now has a package", col + x, row + y);
+		Log::debug(LOG_GAMEIMPL, "col: %i, row: %i now has a package", col + x, row + y);
 		const int newIndex = s.getIndex(col + x, row + y);
 		if (_visited.find(newIndex) != _visited.end()) {
 			return true;
@@ -50,7 +50,7 @@ int SimpleDeadlockDetector::init(const BoardState& s) {
 		}
 		targets.push_back(index);
 	}
-	Log::debug(LOG_SERVER, "Found %i targets", (int)targets.size());
+	Log::debug(LOG_GAMEIMPL, "Found %i targets", (int)targets.size());
 
 	BoardState copy(s);
 	index = 0;
@@ -59,15 +59,15 @@ int SimpleDeadlockDetector::init(const BoardState& s) {
 		if (isPackage(field)) {
 			copy.clearFieldForIndex(index);
 			copy.setFieldForIndex(index, Sokoban::GROUND);
-			Log::debug(LOG_SERVER, "replaced package with ground at %i", index);
+			Log::debug(LOG_GAMEIMPL, "replaced package with ground at %i", index);
 		} else if (isPackageOnTarget(field)) {
 			copy.clearFieldForIndex(index);
 			copy.setFieldForIndex(index, Sokoban::TARGET);
-			Log::debug(LOG_SERVER, "replaced packageontarget with target at %i", index);
+			Log::debug(LOG_GAMEIMPL, "replaced packageontarget with target at %i", index);
 		}
 	}
 #ifdef DEBUG
-	Log::debug(LOG_SERVER, "board state:\n%s", copy.toString().c_str());
+	Log::debug(LOG_GAMEIMPL, "board state:\n%s", copy.toString().c_str());
 #endif
 
 	for (int targetIndex : targets) {
@@ -87,12 +87,12 @@ int SimpleDeadlockDetector::init(const BoardState& s) {
 		int col;
 		int row;
 		s.getColRowFromIndex(index, col, row);
-		Log::debug(LOG_SERVER, "Simple deadlock detected at %i:%i", col, row);
+		Log::debug(LOG_GAMEIMPL, "Simple deadlock detected at %i:%i", col, row);
 #endif
 		_deadlocks.insert(index);
 	}
-	Log::info(LOG_SERVER, "Found %i simple deadlocks", (int)_deadlocks.size());
-	Log::debug(LOG_SERVER, "Visited %i fields", (int)_visited.size());
+	Log::info(LOG_GAMEIMPL, "Found %i simple deadlocks", (int)_deadlocks.size());
+	Log::debug(LOG_GAMEIMPL, "Visited %i fields", (int)_visited.size());
 	_visited.clear();
 	return (int)_deadlocks.size();
 }

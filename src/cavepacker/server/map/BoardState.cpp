@@ -13,13 +13,13 @@ BoardState::BoardState(const BoardState& state) :
 }
 
 void BoardState::clear() {
-	Log::info(LOG_SERVER, "clear deadlock state");
+	Log::info(LOG_GAMEIMPL, "clear deadlock state");
 	_state.assign(_width * _height, '\0');
 	_deadlock.clear();
 }
 
 void BoardState::clearBoard() {
-	Log::trace(LOG_SERVER, "clear board state");
+	Log::trace(LOG_GAMEIMPL, "clear board state");
 	_state.assign(_width * _height, '\0');
 }
 
@@ -66,7 +66,7 @@ std::string BoardState::toString() const {
 }
 
 void BoardState::initDeadlock() {
-	Log::info(LOG_SERVER, "init deadlock state");
+	Log::info(LOG_GAMEIMPL, "init deadlock state");
 	_deadlock.init(*this);
 }
 

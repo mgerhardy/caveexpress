@@ -16,7 +16,7 @@ public:
 
 	void execute (const ClientId& clientId, const IProtocolMessage& message) override
 	{
-		Log::info(LOG_SERVER, "got disconnect from clientId %i", clientId);
+		Log::info(LOG_GAMEIMPL, "got disconnect from clientId %i", clientId);
 		_map.disconnect(clientId);
 	}
 };

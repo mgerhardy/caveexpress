@@ -33,12 +33,12 @@ bool SokobanMapContext::isEmpty(int col, int row) const {
 
 bool SokobanMapContext::load(bool skipErrors) {
 	_playerSpawned = false;
-	Log::info(LOG_SERVER, "load the map %s", _name.c_str());
+	Log::info(LOG_GAMEIMPL, "load the map %s", _name.c_str());
 	resetTiles();
 
 	FilePtr filePtr = FS.getFileFromURL("maps://" + _name + ".sok");
 	if (!filePtr->exists()) {
-		Log::error(LOG_SERVER, "Sokoban map file '%s' does not exist", filePtr->getName().c_str());
+		Log::error(LOG_GAMEIMPL, "Sokoban map file '%s' does not exist", filePtr->getName().c_str());
 		return false;
 	}
 
@@ -46,7 +46,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 	const int fileLen = filePtr->read((void **) &buffer);
 	std::unique_ptr<char[]> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		Log::error(LOG_SERVER, "Sokoban map file %s", filePtr->getName().c_str());
+		Log::error(LOG_GAMEIMPL, "Sokoban map file %s", filePtr->getName().c_str());
 		return false;
 	}
 
@@ -80,7 +80,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 			if (inComment)
 				line.push_back(buffer[i]);
 			else
-				Log::info(LOG_SERVER, "comment: %s", line.c_str());
+				Log::info(LOG_GAMEIMPL, "comment: %s", line.c_str());
 			continue;
 		}
 		switch (buffer[i]) {
@@ -137,7 +137,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 	_settings[msn::WIDTH] = string::toString(maxCol);
 	_settings[msn::HEIGHT] = string::toString(row);
 
-	Log::info(LOG_SERVER, "found %i start positions", (int)_startPositions.size());
+	Log::info(LOG_GAMEIMPL, "found %i start positions", (int)_startPositions.size());
 
 	return _playerSpawned;
 }
@@ -146,7 +146,7 @@ void SokobanMapContext::addTile(const std::string& tile, int col, int row) {
 	const SpriteDefPtr &spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(
 			tile);
 	if (!spriteDefPtr) {
-		Log::error(LOG_SERVER, "could not add tile: %s", tile.c_str());
+		Log::error(LOG_GAMEIMPL, "could not add tile: %s", tile.c_str());
 		return;
 	}
 

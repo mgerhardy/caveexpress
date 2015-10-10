@@ -136,7 +136,7 @@ void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
 	const CampaignMap* campaignMap = c->getMapById(name);
 	const int ownBest = campaignMap != nullptr ? campaignMap->getFinishPoints() : 0;
 	const std::string best = map.getSetting("best", "0" /* string::toString(ownBest) */);
-	Log::info(LOG_UI, "got best points from server: %s", best.c_str());
+	Log::info(LOG_GAMEIMPL, "got best points from server: %s", best.c_str());
 	_points->setOwnAndGlobalBest(ownBest, string::toInt(best));
 	_points->setLabel("0");
 
@@ -179,7 +179,7 @@ bool UIMapWindow::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool 
 
 void UIMapWindow::doMove (int tx, int ty)
 {
-	Log::debug(LOG_UI, "send move message to reach %i:%i", tx, ty);
+	Log::debug(LOG_GAMEIMPL, "send move message to reach %i:%i", tx, ty);
 	_serviceProvider.getNetwork().sendToServer(MoveToMessage(tx, ty));
 	_targetX = _targetY = -1;
 }
@@ -203,7 +203,7 @@ bool UIMapWindow::tryMove (int x, int y, bool doubleTap)
 {
 	int tx, ty;
 	if (getField(x, y, &tx, &ty)) {
-		Log::debug(LOG_UI, "resolved the grid coordinates for %i:%i to %i:%i", x, y, tx, ty);
+		Log::debug(LOG_GAMEIMPL, "resolved the grid coordinates for %i:%i to %i:%i", x, y, tx, ty);
 		if (!doubleTap) {
 			_targetX = tx;
 			_targetY = ty;
@@ -216,7 +216,7 @@ bool UIMapWindow::tryMove (int x, int y, bool doubleTap)
 		}
 		return true;
 	}
-	Log::debug(LOG_UI, "could not get grid coordinates for %i:%i", x, y);
+	Log::debug(LOG_GAMEIMPL, "could not get grid coordinates for %i:%i", x, y);
 	return false;
 }
 
