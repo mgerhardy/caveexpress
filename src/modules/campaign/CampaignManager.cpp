@@ -203,7 +203,7 @@ CampaignPtr CampaignManager::activateCampaign (const std::string& campaignId) co
 		else
 			Log::info(LOG_CAMPAIGN, "Loaded progress for %s", campaignId.c_str());
 	} else {
-		Log::error(LOG_CLIENT, "could not get campaign with id %s", campaignId.c_str());
+		Log::error(LOG_CAMPAIGN, "could not get campaign with id %s", campaignId.c_str());
 	}
 	return _activeCampaign;
 }
@@ -276,7 +276,7 @@ bool CampaignManager::activateNextCampaign () const
 	for (CampaignsMap::const_iterator i = _campaigns.begin(); i != _campaigns.end(); ++i) {
 		CampaignPtr c = *i;
 		if (!c->hasMoreMaps()) {
-			Log::info(LOG_CLIENT, "%s has no more maps", c->getId().c_str());
+			Log::info(LOG_CAMPAIGN, "%s has no more maps", c->getId().c_str());
 			continue;
 		}
 		activateCampaign(c->getId());

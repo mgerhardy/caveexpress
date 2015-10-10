@@ -30,7 +30,7 @@ public:
 	bool init (JNIEnv *env, jint capacity = 16)
 	{
 		if (env->PushLocalFrame(capacity) < 0) {
-			Log::error(LOG_SYSTEM, "Failed to allocate enough JVM local references");
+			Log::error(LOG_CAMPAIGN, "Failed to allocate enough JVM local references");
 			return false;
 		}
 		++s_active;
@@ -78,7 +78,7 @@ GooglePlayPersister::~GooglePlayPersister() {
 void GooglePlayPersister::showAchievements() {
 #ifdef GOOGLEPLAY_ACTIVE
 	if (_env == nullptr) {
-		Log::error(LOG_SYSTEM, "GoolePlayPersister::connect() failed for the google play persister - no env pointer");
+		Log::error(LOG_CAMPAIGN, "GoolePlayPersister::connect() failed for the google play persister - no env pointer");
 		return;
 	}
 	_env->CallStaticVoidMethod(_cls, _showAchievements);
@@ -88,12 +88,12 @@ void GooglePlayPersister::showAchievements() {
 void GooglePlayPersister::showLeaderBoard(const std::string& boardId) {
 #ifdef GOOGLEPLAY_ACTIVE
 	if (_env == nullptr) {
-		Log::error(LOG_SYSTEM, "GoolePlayPersister::showLeaderBoard() failed for the google play persister - no env pointer");
+		Log::error(LOG_CAMPAIGN, "GoolePlayPersister::showLeaderBoard() failed for the google play persister - no env pointer");
 		return;
 	}
 	GPLocalReferenceHolder refs;
 	if (!refs.init(_env)) {
-		Log::error(LOG_SYSTEM, "GoolePlayPersister::showLeaderBoard(): could not init the ref holder");
+		Log::error(LOG_CAMPAIGN, "GoolePlayPersister::showLeaderBoard(): could not init the ref holder");
 		return;
 	}
 
@@ -106,12 +106,12 @@ void GooglePlayPersister::showLeaderBoard(const std::string& boardId) {
 void GooglePlayPersister::upload() {
 #ifdef GOOGLEPLAY_ACTIVE
 	if (_env == nullptr) {
-		Log::error(LOG_SYSTEM, "GoolePlayPersister::upload() failed for the google play persister - no env pointer");
+		Log::error(LOG_CAMPAIGN, "GoolePlayPersister::upload() failed for the google play persister - no env pointer");
 		return;
 	}
 	GPLocalReferenceHolder refs;
 	if (!refs.init(_env)) {
-		Log::error(LOG_SYSTEM, "GoolePlayPersister::upload(): could not init the ref holder");
+		Log::error(LOG_CAMPAIGN, "GoolePlayPersister::upload(): could not init the ref holder");
 		return;
 	}
 
@@ -126,12 +126,12 @@ void GooglePlayPersister::upload() {
 void GooglePlayPersister::download() {
 #ifdef GOOGLEPLAY_ACTIVE
 	if (_env == nullptr) {
-		Log::error(LOG_SYSTEM, "GoolePlayPersister::download() failed for the google play persister - no env pointer");
+		Log::error(LOG_CAMPAIGN, "GoolePlayPersister::download() failed for the google play persister - no env pointer");
 		return;
 	}
 	GPLocalReferenceHolder refs;
 	if (!refs.init(_env)) {
-		Log::error(LOG_SYSTEM, "GoolePlayPersister::download(): could not init the ref holder");
+		Log::error(LOG_CAMPAIGN, "GoolePlayPersister::download(): could not init the ref holder");
 		return;
 	}
 #if 0
@@ -143,10 +143,10 @@ void GooglePlayPersister::download() {
 void GooglePlayPersister::connect() {
 #ifdef GOOGLEPLAY_ACTIVE
 	if (_env == nullptr) {
-		Log::error(LOG_SYSTEM, "GoolePlayPersister::connect() failed for the google play persister - no env pointer");
+		Log::error(LOG_CAMPAIGN, "GoolePlayPersister::connect() failed for the google play persister - no env pointer");
 		return;
 	}
-	Log::info(LOG_SYSTEM, "GoolePlayPersister::connect()");
+	Log::info(LOG_CAMPAIGN, "GoolePlayPersister::connect()");
 	_env->CallStaticVoidMethod(_cls, _persisterConnect);
 #endif
 }
@@ -154,26 +154,26 @@ void GooglePlayPersister::connect() {
 void GooglePlayPersister::disconnect() {
 #ifdef GOOGLEPLAY_ACTIVE
 	if (_env == nullptr) {
-		Log::error(LOG_SYSTEM, "GoolePlayPersister::disconnect() failed for the google play persister - no env pointer");
+		Log::error(LOG_CAMPAIGN, "GoolePlayPersister::disconnect() failed for the google play persister - no env pointer");
 		return;
 	}
-	Log::info(LOG_SYSTEM, "GoolePlayPersister::disconnect()");
+	Log::info(LOG_CAMPAIGN, "GoolePlayPersister::disconnect()");
 	_env->CallStaticVoidMethod(_cls, _persisterDisconnect);
 #endif
 }
 
 bool GooglePlayPersister::init() {
-	Log::info(LOG_SYSTEM, "GoolePlayPersister::init() initializing...");
+	Log::info(LOG_CAMPAIGN, "GoolePlayPersister::init() initializing...");
 #ifdef GOOGLEPLAY_ACTIVE
 	GPLocalReferenceHolder refs;
 
 	JNIEnv *env = static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
 	if (env == nullptr) {
-		Log::error(LOG_SYSTEM, "GoolePlayPersister::init() failed to init the google play persister - no env pointer");
+		Log::error(LOG_CAMPAIGN, "GoolePlayPersister::init() failed to init the google play persister - no env pointer");
 		return false;
 	}
 	if (!refs.init(env)) {
-		Log::error(LOG_SYSTEM, "GoolePlayPersister::init(): could not init the ref holder");
+		Log::error(LOG_CAMPAIGN, "GoolePlayPersister::init(): could not init the ref holder");
 		return false;
 	}
 
@@ -185,61 +185,61 @@ bool GooglePlayPersister::init() {
 
 	_persisterInit = env->GetStaticMethodID(_cls, "persisterInit", "()Z");
 	if (_persisterInit == 0) {
-		Log::error(LOG_SYSTEM, "Could not get the jni bindings for persisterInit");
+		Log::error(LOG_CAMPAIGN, "Could not get the jni bindings for persisterInit");
 		_env = nullptr;
 		return false;
 	}
 	_persisterConnect = env->GetStaticMethodID(_cls, "persisterConnect", "()Z");
 	if (_persisterConnect == 0) {
-		Log::error(LOG_SYSTEM, "Could not get the jni bindings for persisterConnect");
+		Log::error(LOG_CAMPAIGN, "Could not get the jni bindings for persisterConnect");
 		_env = nullptr;
 		return false;
 	}
 	_persisterDisconnect = env->GetStaticMethodID(_cls, "persisterDisconnect", "()Z");
 	if (_persisterDisconnect == 0) {
-		Log::error(LOG_SYSTEM, "Could not get the jni bindings for persisterDisconnect");
+		Log::error(LOG_CAMPAIGN, "Could not get the jni bindings for persisterDisconnect");
 		_env = nullptr;
 		return false;
 	}
 
 	_saveGameState = _env->GetStaticMethodID(_cls, "saveGameState", "([B)V");
 	if (_saveGameState == 0) {
-		Log::error(LOG_SYSTEM, "Could not get the jni bindings for saveGameState");
+		Log::error(LOG_CAMPAIGN, "Could not get the jni bindings for saveGameState");
 		_env = nullptr;
 		return false;
 	}
 
 	_loadGameState = _env->GetStaticMethodID(_cls, "loadGameState", "()[B");
 	if (_loadGameState == 0) {
-		Log::error(LOG_SYSTEM, "Could not get the jni bindings for loadGameState");
+		Log::error(LOG_CAMPAIGN, "Could not get the jni bindings for loadGameState");
 		_env = nullptr;
 		return false;
 	}
 
 	_showLeaderBoard = _env->GetStaticMethodID(_cls, "showLeaderBoard", "(Ljava/lang/String;)V");
 	if (_showLeaderBoard == 0) {
-		Log::error(LOG_SYSTEM, "Could not get the jni bindings for showLeaderBoard");
+		Log::error(LOG_CAMPAIGN, "Could not get the jni bindings for showLeaderBoard");
 		_env = nullptr;
 		return false;
 	}
 
 	_showAchievements = _env->GetStaticMethodID(_cls, "showAchievements", "()V");
 	if (_showAchievements == 0) {
-		Log::error(LOG_SYSTEM, "Could not get the jni bindings for showAchievements");
+		Log::error(LOG_CAMPAIGN, "Could not get the jni bindings for showAchievements");
 		_env = nullptr;
 		return false;
 	}
 
 	_addPointsToLeaderBoard  = _env->GetStaticMethodID(_cls, "addPointsToLeaderBoard", "(Ljava/lang/String;I)V");
 	if (_addPointsToLeaderBoard == 0) {
-		Log::error(LOG_SYSTEM, "Could not get the jni bindings for addPointsToLeaderBoard");
+		Log::error(LOG_CAMPAIGN, "Could not get the jni bindings for addPointsToLeaderBoard");
 		_env = nullptr;
 		return false;
 	}
 
 	_env->CallStaticVoidMethod(_cls, _persisterInit);
 
-	Log::info(LOG_SYSTEM, "GoolePlayPersister::init() initialized");
+	Log::info(LOG_CAMPAIGN, "GoolePlayPersister::init() initialized");
 #endif
 	_delegate->init();
 	if (Config.getConfigVar("googleplaystate")->getBoolValue()) {
@@ -253,7 +253,7 @@ bool GooglePlayPersister::testException ()
 {
 #ifdef GOOGLEPLAY_ACTIVE
 	if (!GPLocalReferenceHolder::IsActive()) {
-		Log::error(LOG_SYSTEM, "failed to test exceptions, the local ref holder is not active");
+		Log::error(LOG_CAMPAIGN, "failed to test exceptions, the local ref holder is not active");
 	}
 
 	jthrowable exception = _env->ExceptionOccurred();
@@ -275,10 +275,10 @@ bool GooglePlayPersister::testException ()
 
 		if (exceptionMessage != nullptr) {
 			const char* exceptionMessageUTF8 = _env->GetStringUTFChars(exceptionMessage, 0);
-			Log::error(LOG_SYSTEM, "%s: %s", exceptionNameUTF8, exceptionMessageUTF8);
+			Log::error(LOG_CAMPAIGN, "%s: %s", exceptionNameUTF8, exceptionMessageUTF8);
 			_env->ReleaseStringUTFChars(exceptionMessage, exceptionMessageUTF8);
 		} else {
-			Log::error(LOG_SYSTEM, "%s", exceptionNameUTF8);
+			Log::error(LOG_CAMPAIGN, "%s", exceptionNameUTF8);
 		}
 
 		_env->ReleaseStringUTFChars(exceptionName, exceptionNameUTF8);
@@ -294,7 +294,7 @@ bool GooglePlayPersister::saveCampaign(Campaign* campaign) {
 	GPLocalReferenceHolder refs;
 
 	if (_env == nullptr || !refs.init(_env)) {
-		Log::error(LOG_SYSTEM, "error while saving the campaign");
+		Log::error(LOG_CAMPAIGN, "error while saving the campaign");
 		return false;
 	}
 

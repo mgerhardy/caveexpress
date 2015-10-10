@@ -88,7 +88,7 @@ std::string SQLitePersister::loadActiveCampaign ()
 	if (s == SQLITE_ROW) {
 		return stmt.getText(0);
 	} else if (s != SQLITE_DONE) {
-		Log::error(LOG_STORAGE, "error loading activecampaign");
+		Log::error(LOG_CAMPAIGN, "error loading activecampaign");
 	}
 
 	return DEFAULT_CAMPAIGN;
@@ -161,7 +161,7 @@ bool SQLitePersister::loadCampaign (Campaign* campaign)
 	_activeCampaign = campaign->getId();
 	const uint8_t lives = loadLives(campaign->getId());
 	if (lives == 0) {
-		Log::error(LOG_STORAGE, "no live entry for %s", campaign->getId().c_str());
+		Log::error(LOG_CAMPAIGN, "no live entry for %s", campaign->getId().c_str());
 		return false;
 	}
 
@@ -185,7 +185,7 @@ bool SQLitePersister::loadCampaign (Campaign* campaign)
 		} else if (s == SQLITE_DONE) {
 			break;
 		} else {
-			Log::error(LOG_STORAGE, "SQL step error in loadCampaign");
+			Log::error(LOG_CAMPAIGN, "SQL step error in loadCampaign");
 			return false;
 		}
 	}
@@ -231,7 +231,7 @@ bool SQLitePersister::resetState (Campaign* campaign)
 		getSystem().syncFiles();
 		return true;
 	}
-	Log::error(LOG_STORAGE, "error reseting the state");
+	Log::error(LOG_CAMPAIGN, "error reseting the state");
 	return false;
 }
 
@@ -240,7 +240,7 @@ uint8_t SQLitePersister::loadLives (const std::string& campaignId)
 	SQLiteStatement stmt;
 	prepare(stmt, "SELECT lives FROM " TABLE_LIVES " WHERE campaignid = ?;");
 	if (!stmt) {
-		Log::info(LOG_STORAGE, "no lives entry for %s", campaignId.c_str());
+		Log::info(LOG_CAMPAIGN, "no lives entry for %s", campaignId.c_str());
 		return 0;
 	}
 
@@ -249,10 +249,10 @@ uint8_t SQLitePersister::loadLives (const std::string& campaignId)
 	const int s = stmt.step();
 	if (s == SQLITE_ROW) {
 		const int lives = stmt.getInt(0);
-		Log::info(LOG_STORAGE, "got %i lives for campaign %s", lives, campaignId.c_str());
+		Log::info(LOG_CAMPAIGN, "got %i lives for campaign %s", lives, campaignId.c_str());
 		return lives;
 	} else if (s != SQLITE_DONE) {
-		Log::error(LOG_STORAGE, "error loading lives");
+		Log::error(LOG_CAMPAIGN, "error loading lives");
 	}
 
 	return 0;
