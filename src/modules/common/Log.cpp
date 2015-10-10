@@ -17,7 +17,8 @@ char const* const LogTypes[] = {
 	"LOG_SOUND",
 	"LOG_SPRITES",
 	"LOG_TEXTURES",
-	"LOG_UI"
+	"LOG_UI",
+	"LOG_GAMEIMPL"
 };
 CASSERT(lengthof(LogTypes) == LOG_MAX);
 
