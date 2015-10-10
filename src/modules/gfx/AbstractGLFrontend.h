@@ -63,6 +63,7 @@ protected:
 	float _rx;
 	float _ry;
 	glm::mat4 _projectionMatrix;
+	glm::mat4 _identity;
 	SDL_Rect _viewPort;
 	FrameBuffer _fbo;
 	TexNum _renderTargetTexture;

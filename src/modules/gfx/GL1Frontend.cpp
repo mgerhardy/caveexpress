@@ -41,7 +41,7 @@ void GL1Frontend::initRenderer ()
 	glAlphaFunc(GL_GREATER, 0.1f);
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	glLoadMatrixf(glm::value_ptr(_identity));
 
 	GL_checkError();
 #endif
@@ -65,7 +65,7 @@ void GL1Frontend::updateViewport (int x, int y, int width, int height)
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(glm::value_ptr(_projectionMatrix));
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	glLoadMatrixf(glm::value_ptr(_identity));
 	GL_checkError();
 #endif
 }
