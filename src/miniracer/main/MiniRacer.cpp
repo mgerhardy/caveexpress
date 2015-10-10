@@ -98,7 +98,7 @@ void MiniRacer::update (uint32_t deltaTime)
 		const FinishedMapMessage msg(_map.getName(), 0, 0, 0);
 		_serviceProvider->getNetwork().sendToAllClients(msg);
 	} else if (!isDone && _map.isFailed()) {
-		Log::debug(LOG_SERVER, "map failed");
+		Log::debug(LOG_GAMEIMPL, "map failed");
 		const uint32_t delay = 1000;
 		_map.restart(delay);
 	}
@@ -168,7 +168,7 @@ void MiniRacer::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 			_persister = new MiniRacerSQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
 		}
 		if (!_persister->init()) {
-			Log::error(LOG_SERVER, "Failed to initialize the persister");
+			Log::error(LOG_GAMEIMPL, "Failed to initialize the persister");
 		}
 	}
 	{
@@ -204,7 +204,7 @@ void MiniRacer::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 
 void MiniRacer::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 {
-	Log::info(LOG_CLIENT, "Init miniracer ui");
+	Log::info(LOG_GAMEIMPL, "Init miniracer ui");
 	UI& ui = UI::get();
 	ui.disableRotatingFonts();
 	ui.addWindow(new UIMainWindow(frontend));
