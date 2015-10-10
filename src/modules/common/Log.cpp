@@ -5,14 +5,14 @@
 
 char const* const LogTypes[] = {
 	"LOG_CAMPAIGN",
-	"LOG_COMMON",
+	"LOG_CLIENT",
 	"LOG_COMMON",
 	"LOG_GAME",
 	"LOG_GFX",
 	"LOG_MAIN",
 	"LOG_NETWORK",
 	"LOG_PARTICLES",
-	"LOG_COMMON",
+	"LOG_SERVER",
 	"LOG_SERVICE",
 	"LOG_SOUND",
 	"LOG_SPRITES",
