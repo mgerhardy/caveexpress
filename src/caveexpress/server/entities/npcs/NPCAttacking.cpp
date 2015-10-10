@@ -122,7 +122,7 @@ void NPCAttacking::stopAttack (const Player *player)
 		return;
 	if (_attackTarget != player)
 		return;
-	Log::info(LOG_SERVER, "stop attacking the player");
+	Log::info(LOG_GAMEIMPL, "stop attacking the player");
 	_attackTarget = nullptr;
 	_returnTimer = startTimer(1500, &NPCAttacking::walkBack, true);
 }
@@ -133,7 +133,7 @@ void NPCAttacking::attack (Player* player)
 	if (_attackTarget == player)
 		return;
 
-	Log::info(LOG_SERVER, "set attacking for %s", _type.name.c_str());
+	Log::info(LOG_GAMEIMPL, "set attacking for %s", _type.name.c_str());
 	const int length = handleTurnAnimation(player->getPos(), Animations::ANIMATION_ATTACK_INIT_LEFT, Animations::ANIMATION_ATTACK_INIT_RIGHT);
 	const int initLength = SpriteDefinition::get().getAnimationLength(_type, Animations::ANIMATION_ATTACK_INIT_LEFT);
 	const int attackingDelay = length + initLength;
@@ -146,9 +146,9 @@ TimerID NPCAttacking::startTimer (int length, void(NPCAttacking::*callback) (), 
 {
 	TimeManager& t = _map.getTimeManager();
 	if (t.clearTimeout(_attackTimer))
-		Log::debug(LOG_GENERAL, "abort attack timer");
+		Log::debug(LOG_GAMEIMPL, "abort attack timer");
 	if (t.clearTimeout(_returnTimer))
-		Log::debug(LOG_GENERAL, "abort return timer");
+		Log::debug(LOG_GAMEIMPL, "abort return timer");
 	//if (abortAnimationChanges)
 	//	resetAnimationChange();
 	_attackTimer = _returnTimer = _moveTimer = 0;

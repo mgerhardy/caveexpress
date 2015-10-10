@@ -27,7 +27,7 @@ protected:
 
 		SpriteDefPtr spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(caveTile);
 		if (!spriteDefPtr) {
-			Log::info(LOG_SERVER, "could not add cave: %s", caveTile.c_str());
+			Log::info(LOG_GAMEIMPL, "could not add cave: %s", caveTile.c_str());
 			ctx->_error = true;
 			return 0;
 		}

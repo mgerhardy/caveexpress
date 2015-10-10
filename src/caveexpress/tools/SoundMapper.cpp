@@ -20,18 +20,18 @@ static bool checkSound (const EntityType* type, const std::string& prefix, const
 	if (exists(prefix + animation->name)) {
 		const std::string sound = prefix + animation->name;
 		soundMappingCache[type][animation] = sound;
-		Log::info(LOG_CLIENT, "use sound %s for animation %s", sound.c_str(), animation->name.c_str());
+		Log::info(LOG_GAMEIMPL, "use sound %s for animation %s", sound.c_str(), animation->name.c_str());
 		return true;
 	} else if (animation->hasDirection()) {
 		const std::string& sound = prefix + animation->getNameWithoutDirection();
 		if (exists(sound)) {
 			soundMappingCache[type][animation] = sound;
-			Log::info(LOG_CLIENT, "use sound %s for animation %s", sound.c_str(), animation->name.c_str());
+			Log::info(LOG_GAMEIMPL, "use sound %s for animation %s", sound.c_str(), animation->name.c_str());
 			return true;
 		}
 	} else if (exists(type->name)) {
 		soundMappingCache[type][animation] = type->name;
-		Log::info(LOG_CLIENT, "use sound %s", type->name.c_str());
+		Log::info(LOG_GAMEIMPL, "use sound %s", type->name.c_str());
 	}
 
 	// cut of the 'multiple-types-part' - e.g. "-01", "-02" - this is not about the frames!
