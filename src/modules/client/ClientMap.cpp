@@ -404,16 +404,16 @@ void ClientMap::onData (ByteStream &data)
 		data.readShort();
 		const IProtocolMessage* msg(factory.createMsg(data));
 		if (!msg) {
-			Log::error(LOG_NET, "no message for type %i", static_cast<int>(data.readByte()));
+			Log::error(LOG_CLIENT, "no message for type %i", static_cast<int>(data.readByte()));
 			continue;
 		}
 
-		Log::trace(LOG_NET, "received message type %i", msg->getId());
+		Log::trace(LOG_CLIENT, "received message type %i", msg->getId());
 		IClientProtocolHandler* handler = ProtocolHandlerRegistry::get().getClientHandler(*msg);
 		if (handler != nullptr)
 			handler->execute(*msg);
 		else
-			Log::error(LOG_NET, "no client handler for message type %i", msg->getId());
+			Log::error(LOG_CLIENT, "no client handler for message type %i", msg->getId());
 	}
 }
 
