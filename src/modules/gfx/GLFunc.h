@@ -1053,7 +1053,7 @@ typedef void (APIENTRY *GLDEBUGPROCARB)(GLenum source,GLenum type,GLuint id,GLen
 
 /* GL_VERSION_1_0 */
 GLAPI void APIENTRY glMatrixMode (GLenum mode);
-GLAPI void APIENTRY glOrtho (GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near_val, GLdouble far_val);
+GLAPI void APIENTRY glLoadMatrixf (const GLfloat *m);
 GLAPI void APIENTRY glFrustum (GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near_val, GLdouble far_val);
 GLAPI void APIENTRY glViewport (GLint x, GLint y, GLsizei width, GLsizei height);
 GLAPI void APIENTRY glPushMatrix (void);
@@ -1106,7 +1106,6 @@ GLAPI void APIENTRY glGetTexLevelParameterfv (GLenum target, GLint level, GLenum
 GLAPI void APIENTRY glGetTexLevelParameteriv (GLenum target, GLint level, GLenum pname, GLint * params);
 GLAPI GLboolean APIENTRY glIsEnabled (GLenum cap);
 GLAPI void APIENTRY glDepthRange (GLdouble near, GLdouble far);
-GLAPI void APIENTRY glViewport (GLint x, GLint y, GLsizei width, GLsizei height);
 
 
 /* GL_VERSION_1_1 */

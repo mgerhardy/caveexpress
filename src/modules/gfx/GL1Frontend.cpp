@@ -63,10 +63,7 @@ void GL1Frontend::updateViewport (int x, int y, int width, int height)
 #ifdef SDL_VIDEO_OPENGL
 	AbstractGLFrontend::updateViewport(x, y, width, height);
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	const GLdouble _w = static_cast<GLdouble>(_viewPort.w);
-	const GLdouble _h = static_cast<GLdouble>(_viewPort.h);
-	glOrtho(0.0, _w, _h, 0.0, 0.0, 1.0);
+	glLoadMatrixf(glm::value_ptr(_projectionMatrix));
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	GL_checkError();
