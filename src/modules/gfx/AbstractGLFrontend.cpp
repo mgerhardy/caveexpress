@@ -605,7 +605,7 @@ void AbstractGLFrontend::initRenderer()
 	_white = uploadTexture(white, 2, 2);
 
 	unsigned char alpha[16];
-	memset(alpha, 0x00, sizeof(alpha));
+	memset(alpha, 0xff, sizeof(alpha));
 	_alpha = uploadTexture(alpha, 2, 2);
 
 	memset(_batches, 0, sizeof(_batches));
