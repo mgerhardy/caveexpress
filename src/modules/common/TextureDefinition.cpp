@@ -24,7 +24,7 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 		if (!FS.hasExtension(filename, "lua"))
 			continue;
 		if (!lua.load(filename)) {
-			Log::error(LOG_CLIENT, "failed to load textures from %s", filename.c_str());
+			Log::error(LOG_COMMON, "failed to load textures from %s", filename.c_str());
 			continue;
 		}
 		LUA_checkStack2(lua.getState());
@@ -74,8 +74,8 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 	}
 
 	if (_textureDefs.empty())
-		Log::info(LOG_CLIENT, "could not load any texture definition");
-	Log::info(LOG_CLIENT, "loaded %i texture definitions", (int)_textureDefs.size());
+		Log::info(LOG_COMMON, "could not load any texture definition");
+	Log::info(LOG_COMMON, "loaded %i texture definitions", (int)_textureDefs.size());
 }
 
 TextureDefinition::~TextureDefinition ()
@@ -87,12 +87,12 @@ void TextureDefinition::create (const std::string& textureName, const std::strin
 		const TextureDefinitionTrim& trim, bool mirror)
 {
 	if (_textureDefs.find(id) != _textureDefs.end()) {
-		Log::error(LOG_CLIENT, "texture def with same name found: %s", id.c_str());
+		Log::error(LOG_COMMON, "texture def with same name found: %s", id.c_str());
 		return;
 	}
 
 	if (!texcoords.isValid()) {
-		Log::error(LOG_CLIENT, "texture def has invalid texcoords: %s", id.c_str());
+		Log::error(LOG_COMMON, "texture def has invalid texcoords: %s", id.c_str());
 		return;
 	}
 

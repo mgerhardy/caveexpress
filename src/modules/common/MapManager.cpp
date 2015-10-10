@@ -49,9 +49,9 @@ void IMapManager::init ()
 
 void IMapManager::listMaps ()
 {
-	Log::info(LOG_SERVER, "Map list:");
+	Log::info(LOG_COMMON, "Map list:");
 	for (MapsConstIter i = _maps.begin(); i != _maps.end(); ++i) {
-		Log::info(LOG_SERVER, " * %s", i->first.c_str());
+		Log::info(LOG_COMMON, " * %s", i->first.c_str());
 	}
 }
 
@@ -79,12 +79,12 @@ void IMapManager::loadMaps ()
 		const int baseLength = i->size() - 4;
 		const std::string& id = i->substr(0, baseLength);
 		if (_maps.find(id) != _maps.end()) {
-			Log::error(LOG_MAP, "map with id %s already exists", id.c_str());
+			Log::error(LOG_COMMON, "map with id %s already exists", id.c_str());
 			continue;
 		}
 		_maps[id] = new MapData(id, getName(filename, id), getStartPositions(filename));
 	}
 
-	Log::info(LOG_MAP, "loaded %i maps", static_cast<int>(_maps.size()));
+	Log::info(LOG_COMMON, "loaded %i maps", static_cast<int>(_maps.size()));
 }
 

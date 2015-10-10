@@ -91,7 +91,7 @@ public:
 
 	virtual bool supportsUserContent () const { return true; }
 
-	virtual bool track (const std::string& hitType, const std::string& screenName) { Log::info(LOG_GENERAL, "%s => %s", hitType.c_str(), screenName.c_str()); return true; }
+	virtual bool track (const std::string& hitType, const std::string& screenName) { Log::info(LOG_COMMON, "%s => %s", hitType.c_str(), screenName.c_str()); return true; }
 
 	virtual int getScreenPadding () { return 0; }
 

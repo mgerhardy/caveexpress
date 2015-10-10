@@ -102,19 +102,19 @@ std::string Windows::getHomeDirectory ()
 
 	shfolder = LoadLibrary("shfolder.dll");
 	if (shfolder == nullptr) {
-		Log::error(LOG_SYSTEM, "Unable to load SHFolder.dll");
+		Log::error(LOG_COMMON, "Unable to load SHFolder.dll");
 		return "";
 	}
 
 	GetFolderPath_t getFolderPath = (GetFolderPath_t) GetProcAddress(shfolder, "SHGetFolderPathA");
 	if (getFolderPath == nullptr) {
-		Log::error(LOG_SYSTEM, "Unable to find SHGetFolderPathA in SHFolder.dll");
+		Log::error(LOG_COMMON, "Unable to find SHGetFolderPathA in SHFolder.dll");
 		FreeLibrary(shfolder);
 		return "";
 	}
 
 	if (!SUCCEEDED(getFolderPath(nullptr, CSIDL_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, pathBuf))) {
-		Log::error(LOG_SYSTEM, "Unable to detect CSIDL_APPDATA");
+		Log::error(LOG_COMMON, "Unable to detect CSIDL_APPDATA");
 		FreeLibrary(shfolder);
 		return "";
 	}
@@ -123,7 +123,7 @@ std::string Windows::getHomeDirectory ()
 	FreeLibrary(shfolder);
 
 	if (!mkdir(path)) {
-		Log::error(LOG_SYSTEM, String::format("Unable to create directory \"%s\"", path.c_str()));
+		Log::error(LOG_COMMON, String::format("Unable to create directory \"%s\"", path.c_str()));
 		return "";
 	}
 	return path;
@@ -173,10 +173,10 @@ DirectoryEntries Windows::listDirectory (const std::string& basedir, const std::
 void Windows::exit (const std::string& reason, int errorCode)
 {
 	if (errorCode != 0) {
-		Log::error(LOG_SYSTEM, "%s", reason.c_str());
+		Log::error(LOG_COMMON, "%s", reason.c_str());
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", reason.c_str(), nullptr);
 	} else {
-		Log::info(LOG_SYSTEM, "%s", reason.c_str());
+		Log::info(LOG_COMMON, "%s", reason.c_str());
 	}
 	ExitProcess(errorCode);
 }

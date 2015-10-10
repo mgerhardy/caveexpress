@@ -4,23 +4,19 @@
 #include <SDL.h>
 
 char const* const LogTypes[] = {
-	"LOG_BACKEND",
-	"LOG_CLIENT",
-	"LOG_GFX",
-	"LOG_SERVER",
-	"LOG_MAIN",
-	"LOG_NET",
-	"LOG_MAP",
-	"LOG_THREAD",
 	"LOG_CAMPAIGN",
-	"LOG_COMMANDS",
-	"LOG_CONFIG",
-	"LOG_DEBUG",
-	"LOG_FILE",
-	"LOG_LUA",
-	"LOG_STORAGE",
-	"LOG_SYSTEM",
-	"LOG_GENERAL",
+	"LOG_COMMON",
+	"LOG_COMMON",
+	"LOG_GAME",
+	"LOG_GFX",
+	"LOG_MAIN",
+	"LOG_NETWORK",
+	"LOG_PARTICLES",
+	"LOG_COMMON",
+	"LOG_SERVICE",
+	"LOG_SOUND",
+	"LOG_SPRITES",
+	"LOG_TEXTURES",
 	"LOG_UI"
 };
 CASSERT(lengthof(LogTypes) == LOG_MAX);
