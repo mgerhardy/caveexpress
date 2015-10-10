@@ -17,7 +17,7 @@ void TextureCache::create (const std::string& textureName, const std::string& id
 		const TextureDefinitionTrim& trim, bool mirror)
 {
 	if (_textureDefs.find(id) != _textureDefs.end()) {
-		Log::error(LOG_CLIENT, "texture def with same name found: %s", id.c_str());
+		Log::error(LOG_TEXTURES, "texture def with same name found: %s", id.c_str());
 		return;
 	}
 
@@ -63,12 +63,12 @@ TexturePtr TextureCache::load (const std::string& textureName)
 
 void TextureCache::dump () const
 {
-	Log::info(LOG_CLIENT, "textures: %i", (int)(_textures.size() + _textureDefs.size()));
+	Log::info(LOG_TEXTURES, "textures: %i", (int)(_textures.size() + _textureDefs.size()));
 	for (TextureMap::const_iterator i = _textures.begin(); i != _textures.end(); ++i) {
-		Log::info(LOG_CLIENT, " - %s: (%i:%i)", i->first.c_str(), i->second->getWidth(), i->second->getHeight());
+		Log::info(LOG_TEXTURES, " - %s: (%i:%i)", i->first.c_str(), i->second->getWidth(), i->second->getHeight());
 	}
 	for (TextureDefinitionMap::const_iterator i = _textureDefs.begin(); i != _textureDefs.end(); ++i) {
-		Log::info(LOG_CLIENT, " - %s: (%i:%i)", i->first.c_str(), i->second->getWidth(), i->second->getHeight());
+		Log::info(LOG_TEXTURES, " - %s: (%i:%i)", i->first.c_str(), i->second->getWidth(), i->second->getHeight());
 	}
 }
 
@@ -76,7 +76,7 @@ void TextureCache::init (IFrontend *frontend, TextureDefinition& textureDefiniti
 {
 	const TextureDefinition::TextureDefMap& map = textureDefinition.getMap();
 	ExecutionTime e("Texture loading");
-	Log::info(LOG_CLIENT, "load %i textures", (int)map.size());
+	Log::info(LOG_TEXTURES, "load %i textures", (int)map.size());
 
 	_frontend = frontend;
 
@@ -88,7 +88,7 @@ void TextureCache::init (IFrontend *frontend, TextureDefinition& textureDefiniti
 
 void TextureCache::shutdown ()
 {
-	Log::info(LOG_CLIENT, "shutting down the texturecache with %i textures", (int)_textures.size());
+	Log::info(LOG_TEXTURES, "shutting down the texturecache with %i textures", (int)_textures.size());
 	for (TextureMap::iterator i = _textures.begin(); i != _textures.end(); ++i) {
 		i->second->deleteTexture();
 	}
