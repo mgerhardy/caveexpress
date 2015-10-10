@@ -11,6 +11,7 @@
 typedef enum {
 	LOG_BACKEND,
 	LOG_CLIENT,
+	LOG_GFX,
 	LOG_SERVER,
 	LOG_MAIN,
 	LOG_NET,

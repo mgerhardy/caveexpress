@@ -39,10 +39,10 @@ protected:
 	{
 		const char *error = SDL_GetError();
 		if (*error != '\0') {
-			Log::error(LOG_CLIENT, "%s (%s:%i => %s)", error, file, line, function);
+			Log::error(LOG_GFX, "%s (%s:%i => %s)", error, file, line, function);
 			SDL_ClearError();
 		} else {
-			Log::error(LOG_CLIENT, "unknown error (%s:%i => %s)", file, line, function);
+			Log::error(LOG_GFX, "unknown error (%s:%i => %s)", file, line, function);
 		}
 	}
 	#define sdlCheckError() /*OpenGLStateHandlerCheckError(__FILE__, __LINE__, __PRETTY_FUNCTION__);*/checkError(__FILE__, __LINE__, __PRETTY_FUNCTION__)

@@ -40,7 +40,7 @@ bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fil
 
 	const TextureCoords texCoords(tex);
 	renderTexture(texCoords, x, y, w, h, 0, 1.0f, _renderTargetTexture, _waterNoise);
-	Log::trace(LOG_CLIENT, "x: %i, y: %i, w: %i, h: %i, fbo(%f, %f), tex(%f:%f:%f:%f)", x, y, w, h, width, height, xTexCoord, yTexCoord, xTexCoord2, yTexCoord2);
+	Log::trace(LOG_GFX, "x: %i, y: %i, w: %i, h: %i, fbo(%f, %f), tex(%f:%f:%f:%f)", x, y, w, h, width, height, xTexCoord, yTexCoord, xTexCoord2, yTexCoord2);
 	_waterShader.activate();
 	if (_waterShader.hasUniform("u_watercolor"))
 		_waterShader.setUniform4fv("u_watercolor", fillColor, 0, 4);
@@ -79,7 +79,7 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 }
 
 void GL3Frontend::initRenderer () {
-	Log::info(LOG_CLIENT, "init opengl renderer");
+	Log::info(LOG_GFX, "init opengl renderer");
 	AbstractGLFrontend::initRenderer();
 
 	glGenVertexArrays(1, &_vao);
@@ -89,11 +89,11 @@ void GL3Frontend::initRenderer () {
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
 	if (!_shader.loadProgram("main")) {
-		Log::error(LOG_CLIENT, "Failed to load the main shader");
+		Log::error(LOG_GFX, "Failed to load the main shader");
 		System.exit("Failed to load the main shader", 1);
 	}
 	if (!_waterShader.loadProgram("water")) {
-		Log::error(LOG_CLIENT, "Failed to load the water shader");
+		Log::error(LOG_GFX, "Failed to load the water shader");
 	}
 	_waterShader.activate();
 	if (_waterShader.hasUniform("u_texture"))
@@ -133,10 +133,10 @@ void GL3Frontend::initRenderer () {
 
 	SDL_Surface *textureSurface = loadTextureIntoSurface("waternoise");
 	if (textureSurface == nullptr) {
-		Log::error(LOG_CLIENT, "Could not load the water noise");
+		Log::error(LOG_GFX, "Could not load the water noise");
 	} else {
 		_waterNoise = uploadTexture(static_cast<unsigned char *>(textureSurface->pixels), textureSurface->w, textureSurface->h);
 		SDL_FreeSurface(textureSurface);
-		Log::info(LOG_CLIENT, "Uploaded water noise with texnum %u", _waterNoise);
+		Log::info(LOG_GFX, "Uploaded water noise with texnum %u", _waterNoise);
 	}
 }

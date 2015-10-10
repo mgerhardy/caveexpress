@@ -7,7 +7,7 @@
 #include <SDL_image.h>
 
 AbstractGLFrontend::AbstractGLFrontend (std::shared_ptr<IConsole> console) :
-		SDLFrontend(console), _currentTexture(-1), _currentNormal(-1), _rx(1.0f), _ry(1.0f), _renderTargetTexture(0), _alpha(0), _drawCalls(0)
+		SDLFrontend(console), _currentTexture(-1), _currentNormal(-1), _rx(1.0f), _ry(1.0f), _renderTargetTexture(0), _white(0), _alpha(0), _drawCalls(0)
 {
 	_context = nullptr;
 	_currentBatch = 0;
@@ -176,7 +176,7 @@ void AbstractGLFrontend::startNewBatch ()
 
 	++_currentBatch;
 	if (_currentBatch >= MAX_BATCHES) {
-		Log::debug(LOG_CLIENT, "render the batches because the max batch count was exceeded");
+		Log::debug(LOG_GFX, "render the batches because the max batch count was exceeded");
 		--_currentBatch;
 		renderBatches();
 		SDL_assert_always(_currentBatch == 0);
@@ -377,7 +377,8 @@ void AbstractGLFrontend::destroyTexture (TextureData *data)
 	}
 }
 
-SDL_Surface* AbstractGLFrontend::loadTextureIntoSurface(const std::string& filename) {
+SDL_Surface* AbstractGLFrontend::loadTextureIntoSurface(const std::string& filename)
+{
 	const std::string file = FS.getFileFromURL("pics://" + filename + ".png")->getName();
 	SDL_RWops *src = FS.createRWops(file);
 	if (src == nullptr) {
@@ -412,7 +413,7 @@ bool AbstractGLFrontend::loadTexture (Texture *texture, const std::string& filen
 {
 	SDL_Surface* textureSurface = loadTextureIntoSurface(filename);
 	if (textureSurface == nullptr) {
-		Log::error(LOG_CLIENT, "could not load the file: %s", filename.c_str());
+		Log::error(LOG_GFX, "could not load the file: %s", filename.c_str());
 		return false;
 	}
 	SDL_Surface* normalSurface = loadTextureIntoSurface(filename + "_n");
@@ -420,7 +421,7 @@ bool AbstractGLFrontend::loadTexture (Texture *texture, const std::string& filen
 	data->texnum = uploadTexture(static_cast<unsigned char*>(textureSurface->pixels), textureSurface->w, textureSurface->h);
 	if (normalSurface) {
 		data->normalnum = uploadTexture(static_cast<unsigned char*>(normalSurface->pixels), normalSurface->w, normalSurface->h);
-		Log::info(LOG_CLIENT, "load normal map for: %s", filename.c_str());
+		Log::info(LOG_GFX, "load normal map for: %s", filename.c_str());
 	} else {
 		data->normalnum = _alpha;
 	}
@@ -534,7 +535,7 @@ void AbstractGLFrontend::renderEnd ()
 {
 	renderBatches();
 #ifdef DEBUG
-	Log::debug(LOG_CLIENT, "%i drawcalls", _drawCalls);
+	Log::debug(LOG_GFX, "%i drawcalls", _drawCalls);
 #endif
 	SDL_GL_SwapWindow(_window);
 	GL_checkError();

@@ -21,7 +21,7 @@ void GL1Frontend::initRenderer ()
 {
 	AbstractGLFrontend::initRenderer();
 #ifdef SDL_VIDEO_OPENGL
-	Log::info(LOG_CLIENT, "init opengl renderer");
+	Log::info(LOG_GFX, "init opengl renderer");
 
 	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);

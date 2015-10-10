@@ -34,7 +34,7 @@ inline int OpenGLStateHandlerCheckError (const char *file, int line, const char 
 		if (glError == GL_NO_ERROR)
 			break;
 
-		Log::error(LOG_CLIENT, "openGL err: %s (%d): %s %s (0x%X)",
+		Log::error(LOG_GFX, "openGL err: %s (%d): %s %s (0x%X)",
 				file, line, function, translateError(glError), glError);
 		ret++;
 	}

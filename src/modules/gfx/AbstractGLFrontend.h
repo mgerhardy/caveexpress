@@ -65,7 +65,7 @@ protected:
 	glm::mat4 _projectionMatrix;
 	SDL_Rect _viewPort;
 	FrameBuffer _fbo;
-	GLuint _renderTargetTexture;
+	TexNum _renderTargetTexture;
 	TexNum _white;
 	TexNum _alpha;
 	int _drawCalls;
