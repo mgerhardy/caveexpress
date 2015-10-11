@@ -3,3 +3,4 @@
 #cmakedefine HAVE_CLOCKGETTIME
 #cmakedefine HAVE_NCURSES_H
 #cmakedefine HD_VERSION
+#cmakedefine APP_PACKAGENAME
