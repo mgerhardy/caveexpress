@@ -101,6 +101,11 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	_debugui = getConfigVar("debugui", "false");
 	getConfigVar("debugentity", "false", true);
 	getConfigVar("debugui", "false", true);
+	getConfigVar("alreadyrated", "false", true);
+	const ConfigVarPtr& launchCount = getConfigVar("launchcount", "0", true);
+	const int newCount = launchCount->getIntValue() + 1;
+	launchCount->setValue(string::toString(newCount));
+	Log::info(LOG_COMMON, "Started the game already %i times", newCount);
 
 	for (KeyValueMap::iterator i = _configVarMap.begin(); i != _configVarMap.end(); ++i) {
 		getConfigVar(i->first, i->second, true);
