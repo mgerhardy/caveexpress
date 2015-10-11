@@ -69,6 +69,16 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 		UINodeButtonImage *googlePlay = new UINodeGooglePlayButton(_frontend);
 		googlePlay->setPadding(padding);
 		add(googlePlay);
+
+#ifdef APP_PACKAGENAME
+		const bool alreadyRated = Config.getConfigVar("alreadyrated")->getBoolValue();
+		const int launchCount = Config.getConfigVar("launchcount")->getIntValue();
+		if (!alreadyRated && launchCount > 3) {
+			UINodeMainButton *rateButton = new UINodeMainButton(_frontend, tr("Please rate the app"));
+			rateButton->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "market://details?id=" APP_PACKAGENAME)));
+			panel->add(rateButton);
+		}
+#endif
 	}
 
 	if (System.supportsUserContent()) {
