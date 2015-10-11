@@ -220,7 +220,7 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		return getBaseActivity().doShowFullscreenAds();
 	}
 
-	public static boolean openPlayStore(String appName) {
+	public static void openPlayStore(String appName) {
 		openURL("market://details?id=" + appName);
 	}
 
