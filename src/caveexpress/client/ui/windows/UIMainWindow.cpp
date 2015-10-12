@@ -126,7 +126,8 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 
 	add(panel);
 
-	UINodeLabel *versionLabel = new UINodeLabel(_frontend, Singleton<Application>::getInstance().getVersion());
+	Application& app = Singleton<Application>::getInstance();
+	UINodeLabel *versionLabel = new UINodeLabel(_frontend, app.getPackageName() + " " + app.getVersion());
 	versionLabel->setAlignment(NODE_ALIGN_BOTTOM|NODE_ALIGN_RIGHT);
 	versionLabel->setColor(colorWhite);
 	versionLabel->setPadding(getScreenPadding());
