@@ -37,6 +37,8 @@ public:
 
 	virtual void backtrace (const char *errorMessage) override;
 
+	virtual std::string getRateURL (const std::string& packageName) const override;
+
 #ifdef DEBUG
 private:
 	std::set<std::string> _testPayment;

@@ -359,3 +359,8 @@ int Unix::getScreenPadding ()
 	return Config.getConfigVar("testscreenpadding", "0", true)->getIntValue();
 }
 #endif
+
+std::string Unix::getRateURL (const std::string& packageName) const
+{
+	return "http://www.desura.com/games/" + Singleton<Application>::getInstance().getName();
+}
