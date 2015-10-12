@@ -8,7 +8,7 @@
 #include "ui/nodes/UINodeContinuePlay.h"
 #include "ui/nodes/UINodeStar.h"
 #include "ui/windows/main/ReplayNodeListener.h"
-#include "common/Config.h"
+#include "common/ConfigManager.h"
 #include <string>
 
 UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& campaignManager, ServiceProvider& serviceProvider, const SoundType& soundType) :
