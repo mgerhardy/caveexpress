@@ -13,7 +13,7 @@ extern "C" int main (int argc, char *argv[])
 	Application& app = Singleton<Application>::getInstance();
 	const GamePtr& game = Singleton<GameRegistry>::getInstance().getGame();
 	app.setOrganisation("caveproductions");
-#if defined(__IPHONEOS__) or defined(__ANDROID__)
+#if defined(__IPHONEOS__) || defined(__ANDROID__)
 	app.setPackageName(GUI_IDENTIFIER);
 #else
 	app.setPackageName(APPNAME);
