@@ -7,8 +7,6 @@ class Application {
 protected:
 	std::string _organisation;
 	std::string _name;
-	// stuff like org.cavepacker
-	std::string _id;
 	std::string _version;
 public:
 	Application() :
@@ -17,10 +15,6 @@ public:
 
 	inline void setOrganisation(const std::string& organisation) {
 		_organisation = organisation;
-	}
-
-	inline void setId(const std::string& id) {
-		_id = id;
 	}
 
 	inline void setName(const std::string& name) {
@@ -41,9 +35,5 @@ public:
 
 	inline const std::string& getOrganisation() {
 		return _organisation;
-	}
-
-	inline const std::string& getId() {
-		return _id;
 	}
 };
