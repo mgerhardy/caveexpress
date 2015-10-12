@@ -35,17 +35,30 @@ UIPopupWindow::UIPopupWindow (IFrontend* frontend, const std::string& text, int 
 	UINodePopupBackground *background = new UINodePopupBackground(frontend, text);
 	add(background);
 
-	UINodeButton* close = new UINodeButton(_frontend);
-	close->setImage("icon-close");
-	close->setOnActivate(CMD_UI_POP);
-	close->alignTo(background, NODE_ALIGN_RIGHT | NODE_ALIGN_TOP, 0.01f);
-	add(close);
+	if (!(flags & UIPOPUP_NOCLOSE)) {
+		UINodeButton* close = new UINodeButton(_frontend);
+		close->setImage("icon-close");
+		close->setOnActivate(CMD_UI_POP);
+		close->alignTo(background, NODE_ALIGN_RIGHT | NODE_ALIGN_TOP, 0.01f);
+		add(close);
+	}
 
 	if (flags & UIPOPUP_OK) {
 		UINodePopupButton *ok = new UINodePopupButton(frontend, tr("OK"));
 		ok->addListener(UINodeListenerPtr(new UINodePopupListener(callback, UIPOPUP_OK)));
 		ok->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_LEFT, 0.01f);
 		add(ok);
+	}
+
+	if (flags & UIPOPUP_LATER) {
+		UINodePopupButton *later = new UINodePopupButton(frontend, tr("Later"));
+		later->addListener(UINodeListenerPtr(new UINodePopupListener(callback, UIPOPUP_LATER)));
+		if (flags & UIPOPUP_CANCEL) {
+			later->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_CENTER, 0.01f);
+		} else {
+			later->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_RIGHT, 0.01f);
+		}
+		add(later);
 	}
 
 	if (flags & UIPOPUP_CANCEL) {

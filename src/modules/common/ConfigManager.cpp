@@ -150,6 +150,8 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 			i += 1;
 		}
 	}
+	increaseCounter("launchcount");
+	_persister->save(_configVars);
 }
 
 ConfigManager::~ConfigManager ()

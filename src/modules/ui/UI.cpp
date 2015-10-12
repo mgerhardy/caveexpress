@@ -863,7 +863,3 @@ UINodeBar* UI::setBarMax (const std::string& window, const std::string& nodeId, 
 	node->setMax(max);
 	return node;
 }
-
-void UIPopupCallback::onCancel() {
-	UI::get().delayedPop();
-}

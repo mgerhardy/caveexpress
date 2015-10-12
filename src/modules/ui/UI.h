@@ -26,22 +26,29 @@ class UIPopupCallback {
 public:
 	virtual ~UIPopupCallback() {}
 
+	virtual void onLater () {}
 	virtual void onOk () {}
-	virtual void onCancel ();
+	virtual void onCancel () {}
 };
 
 class UIPopupOkCommandCallback: public UIPopupCallback {
 protected:
 	const std::string _command;
 public:
-	explicit UIPopupOkCommandCallback(const std::string& command) : _command(command) {}
-	virtual ~UIPopupOkCommandCallback() {}
+	explicit UIPopupOkCommandCallback(const std::string& command) :
+		_command(command) {
+	}
 
-	virtual void onOk () override { Commands.executeCommandLine(_command); }
+	virtual void onOk () override {
+		Commands.executeCommandLine(_command);
+		UIPopupCallback::onOk();
+	}
 };
 
 #define UIPOPUP_OK			(1 << 0)
 #define UIPOPUP_CANCEL		(1 << 1)
+#define UIPOPUP_LATER		(1 << 2)
+#define UIPOPUP_NOCLOSE		(1 << 3)
 
 typedef std::shared_ptr<UIPopupCallback> UIPopupCallbackPtr;
 
@@ -246,6 +253,9 @@ public:
 			break;
 		case UIPOPUP_CANCEL:
 			_callback->onCancel();
+			break;
+		case UIPOPUP_LATER:
+			_callback->onLater();
 			break;
 		default:
 			break;

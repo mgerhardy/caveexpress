@@ -13,7 +13,6 @@
 #include "common/System.h"
 #include "common/Application.h"
 #include "ui/windows/listener/OpenWindowListener.h"
-#include "ui/windows/listener/RateButtonListener.h"
 
 namespace caveexpress {
 
@@ -70,18 +69,6 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 		UINodeButtonImage *googlePlay = new UINodeGooglePlayButton(_frontend);
 		googlePlay->setPadding(padding);
 		add(googlePlay);
-	}
-
-	const bool alreadyRated = Config.getConfigVar("alreadyrated")->getBoolValue();
-	const int launchCount = Config.increaseCounter("launchcount");
-	if (!alreadyRated && launchCount > 3) {
-		const std::string& packageName = Singleton<Application>::getInstance().getPackageName();
-		UINodeMainButton *rateButton = new UINodeMainButton(_frontend, tr("Please rate the app"));
-		const std::string url = System.getRateURL(packageName);
-		if (!url.empty()) {
-			rateButton->addListener(UINodeListenerPtr(new RateButtonListener(_frontend, url)));
-			panel->add(rateButton);
-		}
 	}
 
 	if (System.supportsUserContent()) {

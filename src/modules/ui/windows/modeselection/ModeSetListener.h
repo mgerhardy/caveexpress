@@ -22,11 +22,7 @@ public:
 			Commands.executeCommand(CMD_CL_DISCONNECT);
 			_campaignManager.resetAllSavedData();
 		}
-		UI::get().delayedPop();
-	}
-
-	void onCancel() override {
-		UI::get().delayedPop();
+		UIPopupCallback::onOk();
 	}
 };
 
