@@ -10,6 +10,7 @@
 #include "ui/layouts/UIVBoxLayout.h"
 #include "common/ConfigManager.h"
 #include "common/System.h"
+#include "common/Application.h"
 #include "ui/windows/listener/OpenWindowListener.h"
 #include "ui/nodes/UINodeMainButton.h"
 
@@ -58,16 +59,18 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 		UINodeButtonImage *googlePlay = new UINodeGooglePlayButton(_frontend);
 		googlePlay->setPadding(padding);
 		add(googlePlay);
+	}
 
-#ifdef APP_PACKAGENAME
-		const bool alreadyRated = Config.getConfigVar("alreadyrated")->getBoolValue();
-		const int launchCount = Config.getConfigVar("launchcount")->getIntValue();
-		if (!alreadyRated && launchCount > 3) {
-			UINodeMainButton *rateButton = new UINodeMainButton(_frontend, tr("Please rate the app"));
-			rateButton->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "market://details?id=" APP_PACKAGENAME)));
+	const bool alreadyRated = Config.getConfigVar("alreadyrated")->getBoolValue();
+	const int launchCount = Config.getConfigVar("launchcount")->getIntValue();
+	if (!alreadyRated && launchCount > 3) {
+		const std::string& packageName = Singleton<Application>::getInstance().getPackageName();
+		UINodeMainButton *rateButton = new UINodeMainButton(_frontend, tr("Please rate the app"));
+		const std::string url = System.getRateURL(packageName);
+		if (!url.empty()) {
+			rateButton->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, url)));
 			panel->add(rateButton);
 		}
-#endif
 	}
 
 	UINodeMainButton *twitter = new UINodeMainButton(_frontend, tr("Twitter"));

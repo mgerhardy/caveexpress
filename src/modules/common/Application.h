@@ -8,9 +8,18 @@ protected:
 	std::string _organisation;
 	std::string _name;
 	std::string _version;
+	std::string _packageName;
 public:
 	Application() :
-			_organisation("caveproductions"), _version("0.0") {
+			_organisation("caveproductions") {
+	}
+
+	inline void setPackageName(const std::string& packageName) {
+		_packageName = packageName;
+	}
+
+	inline const std::string& getPackageName() const {
+		return _packageName;
 	}
 
 	inline void setOrganisation(const std::string& organisation) {

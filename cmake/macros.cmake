@@ -658,4 +658,6 @@ macro(cp_add_executable)
 	# install relative to /usr/<APPNAME>
 	install(DIRECTORY ${ROOT_DIR}/base/${BASEDIR} DESTINATION ${_EXE_TARGET}/base COMPONENT ${_EXE_TARGET})
 	install(TARGETS ${_EXE_TARGET} DESTINATION ${_EXE_TARGET} COMPONENT ${_EXE_TARGET})
+	configure_file(${ROOT_DIR}/src/game.h.in ${PROJECT_BINARY_DIR}/game.h)
+	include_directories(${PROJECT_BINARY_DIR})
 endmacro()

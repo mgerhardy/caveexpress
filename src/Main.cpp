@@ -6,17 +6,16 @@
 #include "game/GameRegistry.h"
 #include <SDL.h>
 #include <SDL_main.h>
-
+#include "game.h"
 
 extern "C" int main (int argc, char *argv[])
 {
 	Application& app = Singleton<Application>::getInstance();
 	const GamePtr& game = Singleton<GameRegistry>::getInstance().getGame();
 	app.setOrganisation("caveproductions");
+	app.setPackageName(GUI_IDENTIFIER);
 	app.setName(game->getName());
-#ifdef VERSION
-	app.setVersion( VERSION );
-#endif
+	app.setVersion(VERSION);
 
 	getSystem().init();
 	const std::string workingDir = getSystem().getCurrentWorkingDir();
