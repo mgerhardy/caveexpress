@@ -62,7 +62,7 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	}
 
 	const bool alreadyRated = Config.getConfigVar("alreadyrated")->getBoolValue();
-	const int launchCount = Config.getConfigVar("launchcount")->getIntValue();
+	const int launchCount = Config.increaseCounter("launchcount");
 	if (!alreadyRated && launchCount > 3) {
 		const std::string& packageName = Singleton<Application>::getInstance().getPackageName();
 		UINodeMainButton *rateButton = new UINodeMainButton(_frontend, tr("Please rate the app"));

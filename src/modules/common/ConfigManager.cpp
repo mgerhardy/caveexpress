@@ -102,10 +102,6 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	getConfigVar("debugentity", "false", true);
 	getConfigVar("debugui", "false", true);
 	getConfigVar("alreadyrated", "false", true);
-	const ConfigVarPtr& launchCount = getConfigVar("launchcount", "0", true);
-	const int newCount = launchCount->getIntValue() + 1;
-	launchCount->setValue(string::toString(newCount));
-	Log::info(LOG_COMMON, "Started the game already %i times", newCount);
 
 	for (KeyValueMap::iterator i = _configVarMap.begin(); i != _configVarMap.end(); ++i) {
 		getConfigVar(i->first, i->second, true);
@@ -388,4 +384,13 @@ ConfigVarPtr ConfigManager::getConfigValue (KeyValueMap &map, const std::string&
 		Log::info(LOG_COMMON, "use value '%s' for key '%s'", val.c_str(), name.c_str());
 	const ConfigVarPtr& p = getConfigVar(name, val, true, flags);
 	return p;
+}
+
+int ConfigManager::increaseCounter (const std::string& counterId)
+{
+	const ConfigVarPtr& var = getConfigVar(counterId, "0", true);
+	int current = var->getIntValue();
+	++current;
+	var->setValue(string::toString(current));
+	return current;
 }

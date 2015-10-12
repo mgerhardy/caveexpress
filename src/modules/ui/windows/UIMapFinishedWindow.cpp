@@ -8,6 +8,7 @@
 #include "ui/nodes/UINodeContinuePlay.h"
 #include "ui/nodes/UINodeStar.h"
 #include "ui/windows/main/ReplayNodeListener.h"
+#include "common/Config.h"
 #include <string>
 
 UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& campaignManager, ServiceProvider& serviceProvider, const SoundType& soundType) :
@@ -61,7 +62,10 @@ UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& 
 bool UIMapFinishedWindow::onPush ()
 {
 	_replayCampaign->setVisible(!_serviceProvider.getNetwork().isMultiplayer());
-	// TODO: don't show the ads from the very first levels
-	showFullscreenAds();
+	const int launchCount = Config.increaseCounter("mapfinishedcounter");
+	const int fullscreenAds = launchCount % 3;
+	if (fullscreenAds == 2) {
+		showFullscreenAds();
+	}
 	return UIWindow::onPush();
 }

@@ -165,6 +165,8 @@ public:
 	bool useWaterParticles () const;
 	LogLevel getLogLevel() const;
 
+	int increaseCounter(const std::string& counterId);
+
 	bool isModeSelected () const;
 	bool isModeEasy () const;
 	bool isModeHard () const;
