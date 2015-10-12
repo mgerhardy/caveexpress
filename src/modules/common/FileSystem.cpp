@@ -190,7 +190,7 @@ FilePtr FileSystem::getFileFromURL (const std::string& filename) const
 		System.exit("No type registered for " + type, 1);
 	}
 	const std::string& name = filename.substr(pos + 3, filename.length());
-	return getFile(dir + "/" + name);
+	return getFile(dir + name);
 }
 
 const std::string FileSystem::getAbsoluteWritePath () const
