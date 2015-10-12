@@ -25,3 +25,8 @@ int IOS::openURL (const std::string& url, bool) const
 {
 	return iosOpenURL(url);
 }
+
+std::string IOS::getRateURL (const std::string& packageName) const
+{
+	return "http://itunes.com/apps/" + packageName;
+}

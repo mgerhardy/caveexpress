@@ -13,5 +13,6 @@ public:
 	bool isFullscreenSupported () override { return false; }
 	std::string getHomeDirectory () override;
 	bool supportsUserContent () const override { return false; }
+	std::string getRateURL (const std::string& packageName) const override;
 };
 
