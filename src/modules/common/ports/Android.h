@@ -50,6 +50,7 @@ public:
 	DirectoryEntries listDirectory (const std::string& basedir, const std::string& subdir = "") override;
 	void showAds (bool show) override;
 	bool showFullscreenAds () override;
+	std::string getRateURL (const std::string& packageName) const override { return "market://details?id=" + packageName; }
 	bool isFullscreenSupported () override { return false; }
 	int openURL (const std::string& url, bool newWindow) const override;
 	void exit (const std::string& reason, int errorCode) override;

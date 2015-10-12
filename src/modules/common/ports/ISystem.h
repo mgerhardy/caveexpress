@@ -76,6 +76,8 @@ public:
 
 	virtual bool supportPayment () { return false; }
 
+	virtual std::string getRateURL (const std::string& packageName) const { return ""; }
+
 	/**
 	 * @brief Handle quit in a system specific manner. The default is to not handle it differently.
 	 *
