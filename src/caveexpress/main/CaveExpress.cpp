@@ -204,6 +204,7 @@ void CaveExpress::update (uint32_t deltaTime)
 		} else if (percent <= 100) {
 			stars = 1;
 		}
+		Config.increaseCounter("mapfinishedcounter");
 		if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, timeSeconds, stars))
 			Log::error(LOG_GAMEIMPL, "Could not save the values for the map");
 
