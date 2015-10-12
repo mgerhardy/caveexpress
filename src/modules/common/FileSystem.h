@@ -55,7 +55,7 @@ public:
 	const std::string& getShaderDir () const;
 	const std::string getAbsoluteWritePath () const;
 
-	DirectoryEntries listDirectory (const std::string& basedir, const std::string& subdir = "");
+	DirectoryEntries listDirectory (const std::string& basedir, const std::string& subdir = "") const;
 
 	bool hasExtension (const std::string& filename, const std::string& extension) const;
 };

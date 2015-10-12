@@ -200,7 +200,7 @@ const std::string FileSystem::getAbsoluteWritePath () const
 	return _homeDir;
 }
 
-DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const std::string& subdir)
+DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const std::string& subdir) const
 {
 #if DIRLIST_NOT_SUPPORTED
 	return Singleton<GameRegistry>::getInstance().getGame()->listDirectory(basedir, subdir);
