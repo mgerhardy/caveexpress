@@ -207,7 +207,7 @@ int Unix::exec (const std::string& command, std::vector<std::string>& arguments)
 		::execv(command.c_str(), const_cast<char* const*>(argv));
 
 		// this should never get called
-		Log::error(LOG_COMMON, "failed to run '%s' with %i parameters: %s (%i)", command.c_str(), arguments.size(), strerror(errno), errno);
+		Log::error(LOG_COMMON, "failed to run '%s' with %i parameters: %s (%i)", command.c_str(), (int)arguments.size(), strerror(errno), errno);
 		::exit(10);
 	}
 
