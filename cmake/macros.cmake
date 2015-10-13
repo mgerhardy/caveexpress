@@ -619,6 +619,13 @@ macro(cp_add_executable)
 	set(APPNAME ${_EXE_APPNAME})
 	set(VERSION ${_EXE_VERSION})
 	set(VERSION_CODE ${_EXE_VERSION_CODE})
+	if (VERBOSE)
+		message(STATUS "Prepare android build with settings:")
+		message(STATUS "- APPNAME:        '${APPNAME}'")
+		message(STATUS "- VERSION:        '${VERSION}'")
+		message(STATUS "- VERSION_CODE:   '${VERSION_CODE}'")
+		message(STATUS "- GUI_IDENTIFIER: '${GUI_IDENTIFIER}'")
+	endif()
 
 	set(CPACK_COMPONENT_${_EXE_TARGET}_DISPLAY_NAME ${APPNAME})
 
