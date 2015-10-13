@@ -213,6 +213,8 @@ endmacro()
 #
 # parameters:
 # PROJECTNAME: the project name in lower case letters - used for e.g. resolving the java classes and icons
+#              if this is a test project for a specific game, it should start with 'tests-' - as we then just
+#              reuse some of the game settings and assets for the tests.
 # APPNAME: the normal app name, must not contain whitespaces, but can contain upper case letters.
 # VERSION: the version code, e.g. 1.0
 # VERSION_CODE: the android version code needed for google play store
@@ -246,19 +248,19 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 	add_custom_target(android-${PROJECTNAME}-uninstall ${ANDROID_ANT} uninstall WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 	set(APP_PACKAGENAME "org.${PROJECTNAME}")
 	add_custom_target(android-${PROJECTNAME}-start ${ANDROID_ADB} shell am start -n org.${PACKAGENAME}/org.${PACKAGENAME}.${APPNAME} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
-	if (EXISTS ${ROOT_DIR}/contrib/installer/android/${PROJECTNAME}/)
-		file(COPY ${ROOT_DIR}/contrib/installer/android/${PROJECTNAME}/ DESTINATION ${ANDROID_BIN_ROOT})
+	string(REGEX REPLACE "tests-" "" CLEAN_PROJECTNAME ${PROJECTNAME})
+	if (EXISTS ${ROOT_DIR}/contrib/installer/android/${CLEAN_PROJECTNAME}/)
+		file(COPY ${ROOT_DIR}/contrib/installer/android/${CLEAN_PROJECTNAME}/ DESTINATION ${ANDROID_BIN_ROOT})
 	endif()
-	string(REGEX REPLACE "tests-" "" BASEDIR ${PROJECTNAME})
-	install(DIRECTORY ${ROOT_DIR}/base/${BASEDIR} DESTINATION ${ANDROID_BIN_ROOT}/assets/base COMPONENT ${PROJECTNAME})
+	install(DIRECTORY ${ROOT_DIR}/base/${CLEAN_PROJECTNAME} DESTINATION ${ANDROID_BIN_ROOT}/assets/base COMPONENT ${PROJECTNAME})
 	set(RESOLUTIONS hdpi ldpi mdpi xhdpi)
 	if (HD_VERSION)
-		set(ICON "hd${PROJECTNAME}-icon.png")
+		set(ICON "hd${CLEAN_PROJECTNAME}-icon.png")
 		if (NOT EXISTS ${ROOT_DIR}/contrib/${ICON})
-			set(ICON "${PROJECTNAME}-icon.png")
+			set(ICON "${CLEAN_PROJECTNAME}-icon.png")
 		endif()
 	else()
-		set(ICON "${PROJECTNAME}-icon.png")
+		set(ICON "${CLEAN_PROJECTNAME}-icon.png")
 	endif()
 	if (EXISTS ${ROOT_DIR}/contrib/${ICON})
 		foreach(RES ${RESOLUTIONS})

@@ -20,7 +20,7 @@ protected:
 		for (auto & v : vec) {
 			if (!str.empty())
 				str.append(", ");
-			str.append(std::to_string(v));
+			str.append(string::toString(v));
 		}
 		return str;
 	}
@@ -36,9 +36,9 @@ protected:
 			if (!s.getColRowFromIndex(index, col, row)) {
 				str.append("invalid");
 			} else {
-				str.append(std::to_string(col));
+				str.append(string::toString(col));
 				str.append(", ");
-				str.append(std::to_string(row));
+				str.append(string::toString(row));
 			}
 			str.append("]");
 		}
@@ -129,8 +129,9 @@ protected:
 		detector.fillDeadlocks(set);
 		for (int index : set) {
 			int col, row;
-			state.getColRowFromIndex(index, col, row);
-			blocked += std::to_string(col + 1) + ":" + std::to_string(row + 1) + " ";
+			if (!state.getColRowFromIndex(index, col, row))
+				continue;
+			blocked += string::toString(col + 1) + ":" + string::toString(row + 1) + " ";
 		}
 		return blocked;
 	}

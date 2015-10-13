@@ -195,8 +195,6 @@ FilePtr FileSystem::getFileFromURL (const std::string& filename) const
 
 const std::string FileSystem::getAbsoluteWritePath () const
 {
-	if (_homeDir.empty())
-		return "";
 	return _homeDir;
 }
 
