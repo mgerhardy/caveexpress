@@ -213,18 +213,21 @@ endmacro()
 #
 # parameters:
 # PROJECTNAME: the project name in lower case letters - used for e.g. resolving the java classes and icons
-#              if this is a test project for a specific game, it should start with 'tests-' - as we then just
+#              if this is a test project for a specific game, it should start with 'tests_' - as we then just
 #              reuse some of the game settings and assets for the tests.
 # APPNAME: the normal app name, must not contain whitespaces, but can contain upper case letters.
 # VERSION: the version code, e.g. 1.0
 # VERSION_CODE: the android version code needed for google play store
 #
 macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
-	cp_android_package("android-13")
-	cp_android_package("android-16")
-	#cp_android_package("extra-google-google_play_services")
-	#cp_android_package("platform-tools")
-	#cp_android_package("build-tools-${ANDROID_SDK_BUILD_TOOLS_VERSION}")
+	if (ANDROID_INSTALL_PACKAGES)
+		cp_android_package("android-13")
+		cp_android_package("android-16")
+		cp_android_package("extra-google-google_play_services")
+		cp_android_package("platform-tools")
+		cp_android_package("build-tools-${ANDROID_SDK_BUILD_TOOLS_VERSION}")
+		set(ANDROID_INSTALL_PACKAGES OFF)
+	endif()
 	message("prepare java code for ${PROJECTNAME}")
 	file(COPY ${ANDROID_ROOT} DESTINATION ${CMAKE_BINARY_DIR}/android-${PROJECTNAME})
 	if (HD_VERSION)
@@ -248,7 +251,7 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 	add_custom_target(android-${PROJECTNAME}-uninstall ${ANDROID_ANT} uninstall WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 	set(APP_PACKAGENAME "org.${PROJECTNAME}")
 	add_custom_target(android-${PROJECTNAME}-start ${ANDROID_ADB} shell am start -n org.${PACKAGENAME}/org.${PACKAGENAME}.${APPNAME} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
-	string(REGEX REPLACE "tests-" "" CLEAN_PROJECTNAME ${PROJECTNAME})
+	string(REPLACE "tests_" "" CLEAN_PROJECTNAME "${PROJECTNAME}")
 	if (EXISTS ${ROOT_DIR}/contrib/installer/android/${CLEAN_PROJECTNAME}/)
 		file(COPY ${ROOT_DIR}/contrib/installer/android/${CLEAN_PROJECTNAME}/ DESTINATION ${ANDROID_BIN_ROOT})
 	endif()
@@ -664,7 +667,7 @@ macro(cp_add_executable)
 	endif()
 
 	set_target_properties(${_EXE_TARGET} PROPERTIES FOLDER ${_EXE_TARGET})
-	string(REGEX REPLACE "tests-" "" BASEDIR ${_EXE_TARGET})
+	string(REGEX REPLACE "tests_" "" BASEDIR ${_EXE_TARGET})
 	# install relative to /usr/<APPNAME>
 	install(DIRECTORY ${ROOT_DIR}/base/${BASEDIR} DESTINATION ${_EXE_TARGET}/base COMPONENT ${_EXE_TARGET})
 	install(TARGETS ${_EXE_TARGET} DESTINATION ${_EXE_TARGET} COMPONENT ${_EXE_TARGET})

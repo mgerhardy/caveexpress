@@ -1,6 +1,6 @@
 set(NAME miniracer)
-project(tests-${NAME})
-SET(${PROJECT_NAME}_SRC
+project(tests_${NAME})
+set(${PROJECT_NAME}_SRC
 	ProtocolTest.cpp
 	LUASpriteTest.cpp
 	MiniRacerMapContextTest.cpp

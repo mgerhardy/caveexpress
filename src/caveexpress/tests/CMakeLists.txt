@@ -1,5 +1,5 @@
 set(NAME caveexpress)
-project(tests-${NAME})
+project(tests_${NAME})
 SET(${PROJECT_NAME}_SRC
 	ProtocolTest.cpp
 	EnumSpriteTypesTest.cpp

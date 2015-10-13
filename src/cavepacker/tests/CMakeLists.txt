@@ -1,5 +1,5 @@
 set(NAME cavepacker)
-project(tests-${NAME})
+project(tests_${NAME})
 SET(${PROJECT_NAME}_SRC
 	BoardStateTest.cpp
 	MapManagerTest.cpp
