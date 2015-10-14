@@ -411,7 +411,7 @@ void SDLFrontend::render ()
 		const bool vsync = ConfigManager::get().isVSync();
 		const double fps = _numFrames * 1000.0f / lastFpsTime;
 		static ConfigVar* fpsLimit = Config.getConfigVar("fpslimit").get();
-		fpsStr = string::format("%f (vsync: %s, fpscap %i)", fps, vsync ? "true" : "false", fpsLimit->getIntValue());
+		fpsStr = string::format("%f (vsync: %s, %s %i)", fps, vsync ? "true" : "false", fpsLimit->getName().c_str(), fpsLimit->getIntValue());
 		_timeBase = _time;
 		_numFrames = 0;
 	}
