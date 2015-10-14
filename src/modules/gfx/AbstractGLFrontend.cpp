@@ -543,6 +543,8 @@ void AbstractGLFrontend::renderEnd ()
 
 void AbstractGLFrontend::renderBatchBuffers()
 {
+	if (_currentBatch == 0)
+		return;
 	SDL_assert_always(_batches[0].texnum != 0);
 
 	bool scissorActive = false;
