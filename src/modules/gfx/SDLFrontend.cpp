@@ -9,6 +9,7 @@
 #include "common/DateUtil.h"
 #include "common/Singleton.h"
 #include "game/GameRegistry.h"
+#include "ui/BitmapFont.h"
 #include "common/Commands.h"
 #include "common/Application.h"
 #include <SDL_image.h>
@@ -103,17 +104,12 @@ void SDLFrontend::update (uint32_t deltaTime)
 	++_numFrames;
 	_time += deltaTime;
 
-	if (((_time - _timeBase) > 500 || _numFrames == 0) && Config.showFPS()) {
-		setVSync(ConfigManager::get().isVSync());
-		const double fps = _numFrames * 1000.0f / (_time - _timeBase);
-		setWindowTitle(Singleton<Application>::getInstance().getName() + " (" + string::toString((int) fps) + ")");
-		_timeBase = _time;
-		_numFrames = 0;
-	}
-
 	_console->update(deltaTime);
 	UI::get().update(deltaTime);
 	SoundControl.update(deltaTime);
+
+	const bool vsync = ConfigManager::get().isVSync();
+	setVSync(vsync);
 }
 
 bool SDLFrontend::setFrameCallback (int interval, void (*callback) (void*), void *callbackParam)
@@ -403,6 +399,22 @@ void SDLFrontend::render ()
 	renderBegin();
 	UI::get().render();
 	_console->render();
+
+	static std::string fpsStr;
+	const bool showFps = Config.showFPS();
+	const uint32_t lastFpsTime = _time - _timeBase;
+	if (lastFpsTime > 1000 && showFps) {
+		const bool vsync = ConfigManager::get().isVSync();
+		const double fps = _numFrames * 1000.0f / lastFpsTime;
+		static ConfigVar* fpsLimit = Config.getConfigVar("fpslimit").get();
+		fpsStr = string::format("%f (vsync: %s, fpscap %i)", fps, vsync ? "true" : "false", fpsLimit->getIntValue());
+		_timeBase = _time;
+		_numFrames = 0;
+	}
+	if (showFps) {
+		UI::get().getFont()->print(fpsStr, colorWhite, 0, 0);
+	}
+
 	renderEnd();
 }
 
