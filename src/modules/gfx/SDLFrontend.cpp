@@ -89,6 +89,10 @@ void SDLFrontend::setWindowTitle (const std::string& title)
 
 void SDLFrontend::setVSync (bool vsync)
 {
+	static bool lastState = !vsync;
+	if (lastState == vsync)
+		return;
+	lastState = vsync;
 	if (SDL_GL_SetSwapInterval(vsync ? 1 : 0) == -1)
 		SDL_ClearError();
 }
