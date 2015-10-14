@@ -88,7 +88,8 @@ void SDLFrontend::setWindowTitle (const std::string& title)
 
 void SDLFrontend::setVSync (bool vsync)
 {
-	SDL_GL_SetSwapInterval(ConfigManager::get().isVSync() ? 1 : 0);
+	if (SDL_GL_SetSwapInterval(vsync ? 1 : 0) == -1)
+		SDL_ClearError();
 }
 
 void SDLFrontend::update (uint32_t deltaTime)
