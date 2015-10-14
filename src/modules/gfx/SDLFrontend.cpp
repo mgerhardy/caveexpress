@@ -414,7 +414,7 @@ void SDLFrontend::render ()
 		static ConfigVar* frontend = Config.getConfigVar("frontend").get();
 		fpsStr = string::format("%.2f (vsync: %s, %s %i, frontend: %s)", fps, vsync ? "true" : "false",
 				fpsLimit->getName().c_str(), fpsLimit->getIntValue(), frontend->getValue().c_str());
-		_timeBase = _time;
+		_timeBase = _time - (lastFpsTime - 1000);
 		_numFrames = 0;
 	}
 	if (showFps) {
