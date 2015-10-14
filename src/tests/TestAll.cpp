@@ -5,6 +5,8 @@
 #include "common/ConfigManager.h"
 #include "common/Application.h"
 #include "common/System.h"
+#include <SDL.h>
+#include <SDL_main.h>
 
 struct TestConfiguration {
 	bool verbose;
