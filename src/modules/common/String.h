@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <cstdlib>
 #include <cstddef>
-#include <SDL_platform.h>
+#include <SDL.h>
 #ifdef __ANDROID__
 #include <sstream>
 #endif
@@ -158,7 +158,7 @@ public:
 		return _string;
 	}
 
-	static String format (const char *msg, ...);
+	static String format (SDL_PRINTF_FORMAT_STRING const char *msg, ...) SDL_PRINTF_VARARG_FUNC(1);
 
 	/**
 	 * @brief Is this the second or later byte of a multibyte UTF-8 character?
@@ -316,6 +316,21 @@ inline bool endsWith (const std::string& string, const std::string& end)
 	}
 	return false;
 }
+
+std::string format (SDL_PRINTF_FORMAT_STRING const char *msg, ...) SDL_PRINTF_VARARG_FUNC(1);
+inline std::string format (const char *msg, ...)
+{
+	va_list ap;
+	const std::size_t bufSize = 1024;
+	char text[bufSize];
+
+	va_start(ap, msg);
+	SDL_vsnprintf(text, bufSize, msg, ap);
+	va_end(ap);
+
+	return std::string(text);
+}
+
 
 inline std::string replaceAll (const std::string& str, const std::string& searchStr, const std::string& replaceStr)
 {
