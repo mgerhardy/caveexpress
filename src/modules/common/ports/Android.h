@@ -32,7 +32,7 @@ private:
 
 	bool testException ();
 
-	String getSystemProperty (const char *name) const;
+	std::string getSystemProperty (const char *name) const;
 
 public:
 	Android ();

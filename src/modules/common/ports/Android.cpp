@@ -210,11 +210,11 @@ std::string Android::getHomeDirectory ()
 	return path + "/";
 }
 
-String Android::getSystemProperty (const char *name) const
+std::string Android::getSystemProperty (const char *name) const
 {
 	char value[PROP_VALUE_MAX];
 	const int len = __system_property_get(name, value);
-	return String(value, len);
+	return std::string(value, len);
 }
 
 // Test for an exception and call SDL_SetError with its detail if one occurs
