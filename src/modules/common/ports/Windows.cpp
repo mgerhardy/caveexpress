@@ -83,8 +83,7 @@ std::string Windows::getCurrentWorkingDir ()
 
 std::string Windows::normalizePath (const std::string& path)
 {
-	String tmp = path;
-	return tmp.toLower().replaceAll("\\", "/");
+	return string::replaceAll(string::toLower(path), "\\", "/");
 }
 
 std::string Windows::getDatabaseDirectory ()

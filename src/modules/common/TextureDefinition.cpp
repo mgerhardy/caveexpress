@@ -60,10 +60,10 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 			const TextureDefinitionCoords r = { x0, y0, x1, y1 };
 
 			if (id.contains(TEXTURE_DIRECTION)) {
-				const String rightID = id.replaceAll(TEXTURE_DIRECTION, TEXTURE_DIRECTION_RIGHT);
-				create(name, rightID.str(), r, trim, false);
-				const String leftID = id.replaceAll(TEXTURE_DIRECTION, TEXTURE_DIRECTION_LEFT);
-				create(name, leftID.str(), r, trim, true);
+				const std::string rightID = string::replaceAll(id, TEXTURE_DIRECTION, TEXTURE_DIRECTION_RIGHT);
+				create(name, rightID, r, trim, false);
+				const std::string leftID = string::replaceAll(id, TEXTURE_DIRECTION, TEXTURE_DIRECTION_LEFT);
+				create(name, leftID, r, trim, true);
 			} else {
 				const bool mirror = lua.getValueBoolFromTable("mirror");
 				create(name, id, r, trim, mirror);

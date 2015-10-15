@@ -259,8 +259,8 @@ SpriteDefinition& SpriteDefinition::get ()
 
 SpriteDefPtr SpriteDefinition::getFromEntityType (const EntityType& entityType, const Animation& animation) const
 {
-	const String baseName = getSpriteName(entityType, animation);
-	const std::string name = baseName.replaceAll(TEXTURE_DIRECTION, TEXTURE_DIRECTION_RIGHT);
+	const std::string baseName = getSpriteName(entityType, animation);
+	const std::string name = string::replaceAll(baseName, TEXTURE_DIRECTION, TEXTURE_DIRECTION_RIGHT);
 	const SpriteDefPtr& def = getSpriteDefinition(name);
 	if (!def) {
 		for (SpriteDefMapConstIter i = _spriteDefs.begin(); i != _spriteDefs.end(); ++i) {

@@ -87,8 +87,7 @@ extern "C" int main(int argc, char* argv[]) {
 			file->writeString("\n");
 		}
 		first = false;
-		String name = eIter->second->name;
-		name = name.replaceAll("-", "");
+		std::string name = string::replaceAll(eIter->second->name, "-", "");
 		file->writeString(name.c_str());
 		file->writeString(" = {\n");
 		const SoundMapping& soundMapping = mIter->second;
@@ -96,8 +95,7 @@ extern "C" int main(int argc, char* argv[]) {
 			SoundMappingConstIter sIter = soundMapping.find(aIter->second);
 			if (sIter == soundMapping.end())
 				continue;
-			name = aIter->second->name;
-			name = name.replaceAll("-", "");
+			name = string::replaceAll(aIter->second->name, "-", "");
 			file->writeString("\t" );
 			file->writeString(name.c_str());
 			file->writeString(" = \"");

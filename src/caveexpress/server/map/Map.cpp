@@ -1826,8 +1826,8 @@ void Map::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 
 	EntityType::TypeMapConstIter i = EntityType::begin();
 	for (; i != EntityType::end(); ++i) {
-		String name = i->second->name;
-		name = name.replaceAll("-", "");
+		std::string name = i->second->name;
+		name = string::replaceAll(name, "-", "");
 		const float width = lua.getFloatValue(name + ".width", 1.0f);
 		const float height = lua.getFloatValue(name + ".height", 1.0f);
 		Log::debug(LOG_GAMEIMPL, "entity %s: %f:%f", name.str().c_str(), width, height);
