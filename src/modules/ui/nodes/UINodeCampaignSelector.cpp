@@ -4,7 +4,7 @@
 #include "ui/UI.h"
 
 UINodeCampaignSelector::UINodeCampaignSelector (IFrontend *frontend, CampaignManager &campaignManager, int cols, int rows) :
-		UINodeBackgroundSelector<CampaignPtr>(frontend, cols, rows), _campaignManager(campaignManager)
+		Super(frontend, cols, rows), _campaignManager(campaignManager)
 {
 	defaults();
 	setPaddingPixel(10);
@@ -54,6 +54,6 @@ void UINodeCampaignSelector::renderSelectorEntry (int index, const CampaignPtr& 
 
 void UINodeCampaignSelector::reset ()
 {
-	UINodeBackgroundSelector<CampaignPtr>::reset();
+	Super::reset();
 	_campaignManager.visitCampaigns(this);
 }

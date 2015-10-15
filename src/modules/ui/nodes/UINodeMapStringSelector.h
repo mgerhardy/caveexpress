@@ -10,6 +10,7 @@ class IMapManager;
 
 class UINodeMapStringSelector: public UINodeSelector<std::string> {
 private:
+	typedef UINodeSelector<std::string> Super;
 	const IMapManager &_mapManager;
 public:
 	UINodeMapStringSelector (IFrontend *frontend, const IMapManager &mapManager, int rows);

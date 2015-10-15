@@ -2,7 +2,7 @@
 #include "common/MapManager.h"
 
 UINodeMapStringSelector::UINodeMapStringSelector (IFrontend *frontend, const IMapManager &mapManager, int rows) :
-		UINodeSelector<std::string>(frontend, 1, rows), _mapManager(mapManager)
+		Super(frontend, 1, rows), _mapManager(mapManager)
 {
 	_rows = rows;
 	setId("map-string-selector");
@@ -53,7 +53,7 @@ std::string UINodeMapStringSelector::getText (const std::string& data) const
 
 void UINodeMapStringSelector::reset ()
 {
-	UINodeSelector<std::string>::reset();
+	Super::reset();
 	const IMapManager::Maps &maps = _mapManager.getMaps();
 	for (IMapManager::Maps::const_iterator i = maps.begin(); i != maps.end(); ++i) {
 		addData(i->first);

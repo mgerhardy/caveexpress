@@ -3,6 +3,8 @@
 #include "UINodeSelector.h"
 
 class UINodePaymentSelector: public UINodeBackgroundSelector<PaymentEntry> {
+private:
+	typedef UINodeBackgroundSelector<PaymentEntry> Super;
 public:
 	UINodePaymentSelector(IFrontend *frontend, int rows);
 	virtual ~UINodePaymentSelector();

@@ -21,6 +21,7 @@ struct ServerEntry {
 // this node search for servers and presents then in a list to connect to them
 class UINodeServerSelector: public UINodeSelector<ServerEntry> {
 private:
+	typedef UINodeSelector<ServerEntry> Super;
 	inline int getNameX () const;
 	inline int getMapX () const;
 	inline int getPlayersX () const;

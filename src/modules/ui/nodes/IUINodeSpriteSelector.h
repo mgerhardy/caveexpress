@@ -5,6 +5,7 @@
 
 class IUINodeSpriteSelector: public UINodeSelector<SpriteDefPtr> {
 private:
+	typedef UINodeSelector<SpriteDefPtr> Super;
 	const ThemeType* _theme;
 protected:
 	// can be used to filter out some sprites

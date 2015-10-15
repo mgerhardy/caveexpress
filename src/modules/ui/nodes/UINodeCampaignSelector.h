@@ -7,6 +7,7 @@ class CampaignManager;
 
 class UINodeCampaignSelector: public UINodeBackgroundSelector<CampaignPtr>, public ICampaignVisitor {
 private:
+	typedef UINodeBackgroundSelector<CampaignPtr> Super;
 	CampaignManager &_campaignManager;
 
 	// ICampaignVisitor

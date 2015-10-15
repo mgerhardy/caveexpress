@@ -6,6 +6,8 @@
 namespace caveexpress {
 
 class UINodeEntitySelector: public IUINodeEntitySelector {
+private:
+	typedef IUINodeEntitySelector Super;
 protected:
 	bool shouldBeShown(const EntityType& type) const override {
 		if (EntityTypes::isPlayer(type))
@@ -28,7 +30,7 @@ protected:
 
 public:
 	UINodeEntitySelector(IFrontend *frontend, int cols = -1, int rows = -1) :
-			IUINodeEntitySelector(frontend, cols, rows) {
+			Super(frontend, cols, rows) {
 	}
 };
 
