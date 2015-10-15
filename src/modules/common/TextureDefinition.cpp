@@ -33,13 +33,13 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 
 		while (lua.getNextKeyValue()) {
 			LUA_checkStack2(lua.getState());
-			String id = lua.getKey();
+			std::string id = lua.getKey();
 			if (id.empty()) {
 				lua.pop();
 				System.exit("Invalid texture entry found - invalid id", 1);
 			}
 
-			id = id.cutBeforeLastMatch("/");
+			id = string::cutBeforeLastMatch(id, "/");
 
 			if (progress != nullptr) {
 				progress->progressStep();
@@ -59,7 +59,7 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 					untrimmedWidth, untrimmedHeight, trimmedOffsetX, trimmedOffsetY);
 			const TextureDefinitionCoords r = { x0, y0, x1, y1 };
 
-			if (id.contains(TEXTURE_DIRECTION)) {
+			if (string::contains(id, TEXTURE_DIRECTION)) {
 				const std::string rightID = string::replaceAll(id, TEXTURE_DIRECTION, TEXTURE_DIRECTION_RIGHT);
 				create(name, rightID, r, trim, false);
 				const std::string leftID = string::replaceAll(id, TEXTURE_DIRECTION, TEXTURE_DIRECTION_LEFT);

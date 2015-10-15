@@ -10,7 +10,7 @@
 Sound::Sound () :
 		_soundEngine(&_dummy)
 {
-	const String& engine = Config.getSoundEngine();
+	const std::string& engine = Config.getSoundEngine();
 	Log::info(LOG_SOUND, "soundengine: %s", engine.c_str());
 	if (engine == "sdl")
 		_soundEngine = new SDLSoundEngine();

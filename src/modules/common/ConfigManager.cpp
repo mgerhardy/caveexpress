@@ -266,9 +266,9 @@ void ConfigManager::getBindingMap (LUA& lua, std::map<int, std::string>* map, co
 
 void ConfigManager::autoComplete (const std::string& input, std::vector<std::string>& matches)
 {
-	const String tmp(input + "*");
+	const std::string tmp(input + "*");
 	for (ConfigVarsMapConstIter i = _configVars.begin(); i != _configVars.end(); ++i) {
-		if (!tmp.matches(i->first))
+		if (!string::matches(tmp, i->first))
 			continue;
 		matches.push_back(i->first);
 	}
@@ -277,9 +277,9 @@ void ConfigManager::autoComplete (const std::string& input, std::vector<std::str
 void ConfigManager::listConfigVariables (const ICommand::Args& args)
 {
 	if (!args.empty()) {
-		const String tmp(args[0] + "*");
+		const std::string tmp(args[0] + "*");
 		for (ConfigVarsMapConstIter i = _configVars.begin(); i != _configVars.end(); ++i) {
-			if (!tmp.matches(i->first))
+			if (!string::matches(tmp, i->first))
 				continue;
 			const ConfigVarPtr& c = i->second;
 			Log::info(LOG_COMMON, "%s %s", c->getName().c_str(), c->getValue().c_str());
@@ -317,8 +317,8 @@ void ConfigManager::setConfig (const ICommand::Args& args)
 
 	Log::info(LOG_COMMON, "set %s to %s", args[0].c_str(), args[1].c_str());
 
-	ConfigVarPtr p = getConfigVar(args[0].str());
-	p->setValue(args[1].str());
+	ConfigVarPtr p = getConfigVar(args[0]);
+	p->setValue(args[1]);
 }
 
 int ConfigManager::mapModifier (const std::string& name)

@@ -16,9 +16,9 @@ TEST_F(GeneralTest, testStringTrim)
 
 TEST_F(GeneralTest, testStringCutBeforeLastMatch)
 {
-	String test("foo/bar");
-	test = test.cutBeforeLastMatch("/");
-	ASSERT_EQ("bar", test.str());
+	std::string test("foo/bar");
+	test = string::cutBeforeLastMatch(test, "/");
+	ASSERT_EQ("bar", test);
 }
 
 TEST_F(GeneralTest, testStringLTrim)

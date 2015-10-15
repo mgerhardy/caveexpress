@@ -100,7 +100,7 @@ std::string ByteStream::readString ()
 		const char chr = *std::next(_buffer.begin(), size);
 		++size;
 		if (size > _buffer.size())
-			System.exit(String::format("invalid string in readString - size (%i) is bigger than the buffer size (%i)", size, _buffer.size()), 1);
+			System.exit(string::format("invalid string in readString - size (%i) is bigger than the buffer size (%i)", size, (int)_buffer.size()), 1);
 		if (chr == '\0')
 			break;
 		strbuff += chr;

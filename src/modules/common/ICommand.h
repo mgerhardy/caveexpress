@@ -18,7 +18,7 @@ public:
 	{
 	}
 
-	typedef std::vector<String> Args;
+	typedef std::vector<std::string> Args;
 
 	virtual void run (const Args& args) = 0;
 
@@ -123,7 +123,7 @@ public:
 			if (args.empty())
 				(*_object.*_functionPtrStr)("");
 			else
-				(*_object.*_functionPtrStr)((*args.begin()).str());
+				(*_object.*_functionPtrStr)((*args.begin()));
 		} else if (_functionPtrNoParam) {
 			(*_object.*_functionPtrNoParam)();
 		} else {

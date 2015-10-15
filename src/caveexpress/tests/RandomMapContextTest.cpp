@@ -16,11 +16,11 @@ TEST(RandomMapContextTest, DISABLED_testMapCreation)
 TEST(RandomMapContextTest, DISABLED_testMassMapCreation)
 {
 	for (int i = 0; i < 100; ++i) {
-		const std::string iceFile = String::format("test-random-ice-%i", i);
+		const std::string iceFile = string::format("test-random-ice-%i", i);
 		RandomMapContext ctxIce(iceFile, ThemeTypes::ICE, 4, 8, 16, 12);
 		ctxIce.load(false);
 
-		const std::string rockFile = String::format("test-random-rock-%i", i);
+		const std::string rockFile = string::format("test-random-rock-%i", i);
 		RandomMapContext ctxRock(rockFile, ThemeTypes::ROCK, 4, 8, 16, 12);
 		ctxRock.load(false);
 	}

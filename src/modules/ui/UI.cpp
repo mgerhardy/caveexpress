@@ -127,13 +127,15 @@ bool UI::initLanguage (const std::string& language)
 		Log::error(LOG_UI, "could not load language %s", language.c_str());
 		return false;
 	}
-	String str(buffer, fileLen);
-	std::vector<String> lines = str.split("\n");
-	for (const String& line : lines) {
-		std::vector<String> tuple = line.split("|");
+	std::string str(buffer, fileLen);
+	std::vector<std::string> lines;
+	string::splitString(str, lines, "\n");
+	for (const auto& line : lines) {
+		std::vector<std::string> tuple;
+		string::splitString(line, tuple, "|");
 		if (tuple.size() != 2)
 			continue;
-		_languageMap[tuple[0].str()] = tuple[1].str();
+		_languageMap[tuple[0]] = tuple[1];
 	}
 	Log::info(LOG_UI, "loaded language '%s' with %i entries", language.c_str(), (int)_languageMap.size());
 	return true;
@@ -314,7 +316,7 @@ void UI::render ()
 	const bool debug = Config.getConfigVar("debugui")->getBoolValue();
 	if (debug) {
 		const BitmapFontPtr& font = getFont();
-		const std::string s = String::format("%i:%i", _cursorX, _cursorY);
+		const std::string s = string::format("%i:%i", _cursorX, _cursorY);
 		font->print(s, colorWhite, 0, 0);
 	}
 }

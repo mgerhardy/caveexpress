@@ -497,21 +497,21 @@ bool Map::load (const std::string& name)
 	_title = ctx->getTitle();
 	_theme = &ctx->getTheme();
 	_settings.insert(std::make_pair(msn::THEME, _theme->name));
-	_wind = getSetting(msn::WIND, msd::WIND).toFloat();
-	_gravity = getSetting(msn::GRAVITY, string::toString(msdv::GRAVITY)).toFloat();
-	_width = getSetting(msn::WIDTH, "-1").toInt();
-	_height = getSetting(msn::HEIGHT, "-1").toInt();
-	_finishPoints = getSetting(msn::POINTS, string::toString(msdv::POINTS)).toInt();
-	_referenceTime = getSetting(msn::REFERENCETIME, string::toString(msdv::REFERENCETIME)).toInt();
-	_waterChangeSpeed = getSetting(msn::WATER_CHANGE, msd::WATER_CHANGE).toFloat();
-	_waterRisingDelay = getSetting(msn::WATER_RISING_DELAY, msd::WATER_RISING_DELAY).toFloat();
-	_waterFallingDelay = getSetting(msn::WATER_FALLING_DELAY, msd::WATER_FALLING_DELAY).toFloat();
-	_transferedNPCLimit = getSetting(msn::NPC_TRANSFER_COUNT, msd::NPC_TRANSFER_COUNT).toInt();
-	_friendlyNPCLimit = getSetting(msn::NPCS, msd::NPCS).toInt();
-	_activateflyingNPC = getSetting(msn::FLYING_NPC, msd::FLYING_NPC).toBool();
-	_activateFishNPC = getSetting(msn::FISH_NPC, msd::FISH_NPC).toBool();
-	_waterHeight = getSetting(msn::WATER_HEIGHT, msd::WATER_HEIGHT).toFloat();
-	_transferedPackageLimit = getSetting(msn::PACKAGE_TRANSFER_COUNT, msd::PACKAGE_TRANSFER_COUNT).toInt();
+	_wind = string::toFloat(getSetting(msn::WIND, msd::WIND));
+	_gravity = string::toFloat(getSetting(msn::GRAVITY, string::toString(msdv::GRAVITY)));
+	_width = string::toInt(getSetting(msn::WIDTH, "-1"));
+	_height = string::toInt(getSetting(msn::HEIGHT, "-1"));
+	_finishPoints = string::toInt(getSetting(msn::POINTS, string::toString(msdv::POINTS)));
+	_referenceTime = string::toInt(getSetting(msn::REFERENCETIME, string::toString(msdv::REFERENCETIME)));
+	_waterChangeSpeed = string::toFloat(getSetting(msn::WATER_CHANGE, msd::WATER_CHANGE));
+	_waterRisingDelay = string::toFloat(getSetting(msn::WATER_RISING_DELAY, msd::WATER_RISING_DELAY));
+	_waterFallingDelay = string::toFloat(getSetting(msn::WATER_FALLING_DELAY, msd::WATER_FALLING_DELAY));
+	_transferedNPCLimit = string::toInt(getSetting(msn::NPC_TRANSFER_COUNT, msd::NPC_TRANSFER_COUNT));
+	_friendlyNPCLimit = string::toInt(getSetting(msn::NPCS, msd::NPCS));
+	_activateflyingNPC = string::toBool(getSetting(msn::FLYING_NPC, msd::FLYING_NPC));
+	_activateFishNPC = string::toBool(getSetting(msn::FISH_NPC, msd::FISH_NPC));
+	_waterHeight = string::toFloat(getSetting(msn::WATER_HEIGHT, msd::WATER_HEIGHT));
+	_transferedPackageLimit = string::toInt(getSetting(msn::PACKAGE_TRANSFER_COUNT, msd::PACKAGE_TRANSFER_COUNT));
 	// TODO: properly implement a warmup phase
 	_warmupPhase = 0;
 
@@ -529,9 +529,9 @@ bool Map::load (const std::string& name)
 		return false;
 	}
 
-	_spawnFlyingNPCTime = getSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(4000 + rand() % SPAWN_FLYING_NPC_DELAY)).toInt();
-	_spawnFishNPCTime = getSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(4000 + rand() % SPAWN_FISH_NPC_DELAY)).toInt();
-	_initialGeyserDelay = getSetting(msn::GEYSER_INITIAL_DELAY_TIME, string::toString(3000)).toInt();
+	_spawnFlyingNPCTime = string::toInt(getSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(4000 + rand() % SPAWN_FLYING_NPC_DELAY)));
+	_spawnFishNPCTime = string::toInt(getSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(4000 + rand() % SPAWN_FISH_NPC_DELAY)));
+	_initialGeyserDelay = string::toInt(getSetting(msn::GEYSER_INITIAL_DELAY_TIME, string::toString(3000)));
 
 	if (_transferedNPCLimit <= 0 && _transferedPackageLimit <= 0) {
 		Log::error(LOG_GAMEIMPL, "there is nothing to do in this map - set the npc or package limits");
@@ -862,7 +862,7 @@ void Map::initPhysics ()
 	fd.shape = &edge;
 
 	_borders.resize(BORDER_MAX);
-	const bool isSideBorderFail = getSetting(msn::SIDEBORDERFAIL).toBool();
+	const bool isSideBorderFail = string::toBool(getSetting(msn::SIDEBORDERFAIL));
 	_borders[BORDER_TOP] = new Border(BorderType::TOP, *this);
 	_borders[BORDER_LEFT] = new Border(BorderType::LEFT, *this, isSideBorderFail);
 	_borders[BORDER_RIGHT] = new Border(BorderType::RIGHT, *this, isSideBorderFail);
@@ -1243,7 +1243,8 @@ CaveMapTile *Map::getTargetCave (const CaveMapTile* ignoreCave) const
 	return tmp[randomCave];
 }
 
-bool Map::removeNPCFromWorld(NPCFriendly* npc) {
+bool Map::removeNPCFromWorld(NPCFriendly* npc)
+{
 	assert(_entityRemovalAllowed);
 	Log::debug(LOG_GAMEIMPL, "remove npc %i from world: %s", npc->getID(), npc->getType().name.c_str());
 	GameEvent.removeEntity(npc->getVisMask(), *npc);
@@ -1253,7 +1254,8 @@ bool Map::removeNPCFromWorld(NPCFriendly* npc) {
 
 }
 
-bool Map::removeNPC(NPCFriendly* npc, bool fadeOut) {
+bool Map::removeNPC(NPCFriendly* npc, bool fadeOut)
+{
 	assert(_entityRemovalAllowed);
 	for (Map::NPCListIter i = _friendlyNPCs.begin(); i != _friendlyNPCs.end(); ++i) {
 		if (*i != npc)
@@ -1363,7 +1365,8 @@ NPCPackage* Map::createPackageNPC (CaveMapTile* cave, const EntityType& type)
 	return npc;
 }
 
-NPCFriendly* Map::createFriendlyNPC(CaveMapTile* cave, const EntityType& type, bool returnToCaveOnIdle) {
+NPCFriendly* Map::createFriendlyNPC(CaveMapTile* cave, const EntityType& type, bool returnToCaveOnIdle)
+{
 	assert(_entityRemovalAllowed);
 	if (_friendlyNPCs.size() >= _friendlyNPCLimit)
 		return nullptr;
@@ -1426,7 +1429,7 @@ void Map::handleVisibility (IEntity *entity, const VisMask vismask) const
 	}
 
 	if (removeMask != 0) {
-		//Log::info(LOG_GAMEIMPL, String::format("server: remove entity %i type: %s", entity->getID(), entity->getType().name.c_str()));
+		//Log::info(LOG_GAMEIMPL, string::format("server: remove entity %i type: %s", entity->getID(), entity->getType().name.c_str()));
 		GameEvent.removeEntity(removeMask, *entity);
 	}
 
@@ -1437,7 +1440,7 @@ void Map::handleVisibility (IEntity *entity, const VisMask vismask) const
 
 void Map::sendVisibleEntity (int clientMask, const IEntity *entity) const
 {
-	//Log::debug(LOG_GAMEIMPL, String::format("server: add entity %i type: %s", entity->getID(), entity->getType().name.c_str()));
+	//Log::debug(LOG_GAMEIMPL, string::format("server: add entity %i type: %s", entity->getID(), entity->getType().name.c_str()));
 	GameEvent.addEntity(clientMask, *entity);
 	if (entity->isCave()) {
 		const CaveMapTile *tile = static_cast<const CaveMapTile *>(entity);
@@ -1826,11 +1829,10 @@ void Map::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 
 	EntityType::TypeMapConstIter i = EntityType::begin();
 	for (; i != EntityType::end(); ++i) {
-		std::string name = i->second->name;
-		name = string::replaceAll(name, "-", "");
+		const std::string& name = string::replaceAll(i->second->name, "-", "");
 		const float width = lua.getFloatValue(name + ".width", 1.0f);
 		const float height = lua.getFloatValue(name + ".height", 1.0f);
-		Log::debug(LOG_GAMEIMPL, "entity %s: %f:%f", name.str().c_str(), width, height);
+		Log::debug(LOG_GAMEIMPL, "entity %s: %f:%f", name.c_str(), width, height);
 		i->second->setSize(width, height);
 	}
 	Log::debug(LOG_GAMEIMPL, "initialized entity sizes");

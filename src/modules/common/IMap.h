@@ -81,7 +81,7 @@ public:
 	}
 
 	// will return a setting for a map from the map definition.
-	inline String getSetting (const std::string& key, const std::string& defaultValue = "") const
+	inline std::string getSetting (const std::string& key, const std::string& defaultValue = "") const
 	{
 		std::string val;
 		SettingsMapConstIter iter = _settings.find(key);

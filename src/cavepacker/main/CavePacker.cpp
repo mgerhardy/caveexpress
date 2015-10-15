@@ -164,7 +164,7 @@ void CavePacker::update (uint32_t deltaTime)
 			Log::info(LOG_GAMEIMPL, "no solution in multiplayer games");
 		}
 
-		System.track("mapstate", String::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), moves, pushes, stars));
+		System.track("mapstate", string::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), moves, pushes, stars));
 		_map.abortAutoSolve();
 		const FinishedMapMessage msg(_map.getName(), moves, pushes, stars);
 		_serviceProvider->getNetwork().sendToAllClients(msg);

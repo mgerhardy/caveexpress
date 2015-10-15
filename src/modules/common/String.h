@@ -22,199 +22,6 @@
 #define SDL_PRINTF_VARARG_FUNC(...)
 #endif
 
-class String {
-private:
-
-	std::string _string;
-
-public:
-
-	/**
-	 * @brief Construct a new empty string.
-	 */
-	String ();
-
-	virtual ~String ();
-
-	String (const char *string, size_t size);
-
-	/**
-	 * @brief Construct a new string from the given nullptr-terminated C string.
-	 */
-	String (const char *str);
-
-	/**
-	 * @brief Construct a new string.
-	 */
-	String (const std::string &str);
-
-	/**
-	 * @brief Construct a copy of the given string.
-	 */
-	String (const String &str);
-
-	bool startsWith (const std::string& contains) const;
-
-	bool contains (const std::string& contains) const;
-
-	int toInt (int defaultValue = 0) const;
-
-	float toFloat (float defaultValue = 0.0f) const;
-
-	bool toBool (bool defaultValue = false) const;
-
-	void set (const std::string& string);
-
-	const char *c_str () const;
-
-	bool empty () const;
-
-	std::vector<String> split (const String& delimiters = " \t\r\n\f\v") const;
-
-	inline std::size_t size () const
-	{
-		return _string.size();
-	}
-
-	String substr (std::size_t pos, std::size_t n = std::string::npos) const;
-
-	std::size_t rfind (String string) const;
-
-	bool endsWith (const String& end) const;
-
-	String wrap (int width);
-
-	bool matches (const std::string& wildcard) const;
-
-	/**
-	 * Returns a new string that has all the spaces from the given string removed.
-	 */
-	String eraseAllSpaces ();
-
-	String cutAfterFirstMatch (const String& pattern, size_t start = 0);
-
-	String cutBeforeLastMatch (const std::string& pattern);
-
-	String removeFromEnd (const String& pattern);
-
-	/**
-	 * @brief Count the number of character (not the number of bytes) of a zero termination string
-	 * @note the \\0 termination character is not counted
-	 * @note to count the number of bytes, use strlen
-	 */
-	size_t getUTF8Length () const;
-
-	inline operator const char * () const
-	{
-		return _string.c_str();
-	}
-
-	inline operator const std::string& () const
-	{
-		return _string;
-	}
-
-	inline operator std::string& ()
-	{
-		return _string;
-	}
-
-	inline String & operator+= (const String& string)
-	{
-		return append(string);
-	}
-
-	inline String operator+ (const std::string& string) const
-	{
-		return String(*this).append(string);
-	}
-
-	inline String operator+ (const std::string& string)
-	{
-		return String(*this).append(string);
-	}
-
-	inline String & append (const String& string)
-	{
-		_string.append(string._string);
-		return *this;
-	}
-
-	inline operator std::string () const
-	{
-		return _string;
-	}
-
-	const std::string& str () const
-	{
-		return _string;
-	}
-
-	static String format (SDL_PRINTF_FORMAT_STRING const char *msg, ...) SDL_PRINTF_VARARG_FUNC(1);
-
-	/**
-	 * @brief Is this the second or later byte of a multibyte UTF-8 character?
-	 * The definition of UTF-8 guarantees that the second and later
-	 * bytes of a multibyte character have high bits 10, and that
-	 * singlebyte characters and the start of multibyte characters
-	 * never do.
-	 */
-	static bool isUTF8Multibyte (char c);
-
-	/**
-	 * @brief length of UTF-8 character starting with this byte.
-	 * @return length of character encoding, or 0 if not start of a UTF-8 sequence
-	 */
-	static size_t getUTF8LengthForCharacter (unsigned char c);
-
-	/**
-	 * Calculate how long a Unicode code point would be in UTF-8 encoding.
-	 */
-	static size_t getUTF8LengthForInt (int c);
-};
-
-inline bool operator== (const String& lstr, const String& rstr)
-{
-	return lstr.str() == rstr.str();
-}
-
-inline bool operator== (const String& lstr, const std::string& rstr)
-{
-	return lstr.str() == rstr;
-}
-
-inline bool operator== (const String& lstr, const char* rstr)
-{
-	return lstr.str() == rstr;
-}
-
-inline bool operator!= (const String& lstr, const String& rstr)
-{
-	return !(lstr == rstr);
-}
-
-inline bool operator!= (const String& lstr, const std::string& rstr)
-{
-	return !(lstr == rstr);
-}
-
-inline bool operator!= (const String& lstr, const char* rstr)
-{
-	return !(lstr == rstr);
-}
-
-inline std::string operator+= (const std::string& lstr, const String& rstr)
-{
-	return lstr + rstr.str();
-}
-
-inline std::string operator+ (const std::string& lstr, const String& rstr)
-{
-	std::string __str(lstr);
-	__str.append(rstr.str());
-	return __str;
-}
-
 namespace string {
 
 template<class T>
@@ -266,6 +73,40 @@ inline float toFloat (const std::string& str, float defaultValue = 0.0f)
 	if (str.empty())
 		return defaultValue;
 	return atof(str.c_str());
+}
+
+inline std::string cutBeforeLastMatch (const std::string& _string, const std::string& pattern)
+{
+	std::string::size_type pos = _string.rfind(pattern);
+	if (pos == std::string::npos)
+		return _string;
+	return _string.substr(pos + 1);
+}
+
+inline bool matches (const std::string& _string, const std::string& text)
+{
+	std::string::const_iterator p = _string.begin();
+	std::string::const_iterator t = text.begin();
+	char c;
+
+	while ((c = *p++) != '\0') {
+		switch (c) {
+			case '*':
+			return true;
+
+			case '?':
+			if (*t == '\0')
+			return false;
+			else
+			++t;
+			break;
+
+			default:
+			if (c != *t++)
+			return false;
+		}
+	}
+	return *t == '\0';
 }
 
 inline void splitString (const std::string& string, std::vector<std::string>& tokens, const std::string& delimiters = " \t\r\n\f\v")

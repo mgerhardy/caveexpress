@@ -530,8 +530,8 @@ bool Map::load (const std::string& name)
 	_startPositions = ctx->getStartPositions();
 	_name = ctx->getName();
 	_title = ctx->getTitle();
-	_width = getSetting(msn::WIDTH, "-1").toInt();
-	_height = getSetting(msn::HEIGHT, "-1").toInt();
+	_width = string::toInt(getSetting(msn::WIDTH, "-1"));
+	_height = string::toInt(getSetting(msn::HEIGHT, "-1"));
 	_field.assign(_width * _height, nullptr);
 	_state.setSize(_width, _height);
 	_solution = getSolution();

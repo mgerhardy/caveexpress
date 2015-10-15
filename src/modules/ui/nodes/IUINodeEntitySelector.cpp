@@ -4,7 +4,7 @@
 #include "common/SpriteDefinition.h"
 
 IUINodeEntitySelector::IUINodeEntitySelector (IFrontend *frontend, int cols, int rows) :
-		UINodeSelector<EntityTypeWrapper>(frontend, cols, rows, 40 / static_cast<float>(frontend->getWidth()), 40 / static_cast<float>(frontend->getHeight())), _theme(&ThemeType::NONE)
+		Super(frontend, cols, rows, 40 / static_cast<float>(frontend->getWidth()), 40 / static_cast<float>(frontend->getHeight())), _theme(&ThemeType::NONE)
 {
 	_renderBorder = true;
 	setPadding(0.0f);
@@ -28,7 +28,7 @@ void IUINodeEntitySelector::renderSelectorEntry (int index, const EntityTypeWrap
 
 void IUINodeEntitySelector::update (uint32_t deltaTime)
 {
-	UINodeSelector<EntityTypeWrapper>::update(deltaTime);
+	Super::update(deltaTime);
 	for (SelectorEntryIter i = _entries.begin(); i != _entries.end(); ++i) {
 		i->sprite->update(deltaTime);
 	}

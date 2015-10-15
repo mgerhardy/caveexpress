@@ -117,7 +117,7 @@ public:
 	inline int getMoves() const { return _moves; }
 	inline int getPushes() const { return _pushes; }
 	// return the best known moves from the solution
-	inline int getBestMoves () const { return getSetting("best").toInt(); }
+	inline int getBestMoves () const { return string::toInt(getSetting("best")); }
 	void increaseMoves ();
 	void increasePushes ();
 	void undo (Player* player);

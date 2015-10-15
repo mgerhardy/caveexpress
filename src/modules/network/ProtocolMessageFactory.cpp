@@ -122,7 +122,7 @@ ProtocolMessageFactory::~ProtocolMessageFactory() {
 
 IProtocolMessage *ProtocolMessageFactory::createMsg(ByteStream& stream) const {
 	const protocolId type = stream.readByte();
-	//Log::debug(LOG_NETWORK, String::format("msg type => %i", (int)type));
+	//Log::debug(LOG_NETWORK, string::format("msg type => %i", (int)type));
 	IProtocolMessage *msg = create(type, &stream);
 	if (msg != nullptr)
 		return msg;

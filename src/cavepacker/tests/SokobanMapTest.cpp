@@ -73,7 +73,7 @@ protected:
 		ASSERT_TRUE(_serviceProvider.getNetwork().openClient("localhost", 12345, &listener)) << "Failed to open the client";
 
 		for (int i = begin; i < begin + amount; ++i) {
-			const std::string& mapName = String::format("%s%04i", prefix.c_str(), i).str();
+			const std::string& mapName = string::format("%s%04i", prefix.c_str(), i);
 			testMap(mapName);
 		}
 		ASSERT_EQ(0, listener._errorCount) << listener._lastError;
@@ -178,7 +178,7 @@ TEST_F(SokobanMapTest, DISABLED_convert)
 	for (int i = 0; i < l; ++i) {
 		if (level_data_[i] == '\0') {
 			++i;
-			const std::string f = String::format("ksokoban%04i", map++);
+			const std::string f = string::format("ksokoban%04i", map++);
 			std::ofstream out(f);
 			out << m;
 			out.close();
@@ -187,7 +187,7 @@ TEST_F(SokobanMapTest, DISABLED_convert)
 		}
 		m.push_back(level_data_[i]);
 	}
-	const std::string f = String::format("ksokoban%04i", map++);
+	const std::string f = string::format("ksokoban%04i", map++);
 	std::ofstream out(f);
 	out << m;
 	out.close();

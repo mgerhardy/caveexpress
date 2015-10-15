@@ -218,7 +218,7 @@ std::string LUA::getStackDump ()
 {
 	LUA_checkStack();
 	const int top = lua_gettop(_state);
-	std::string sd = String::format("stack elements: %i\n", top);
+	std::string sd = string::format("stack elements: %i\n", top);
 	for (int i = 1; i <= top; i++) { /* repeat for each level */
 		sd += getLuaValue(i);
 		sd += "\n";

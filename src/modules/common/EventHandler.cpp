@@ -45,7 +45,7 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		textInput(std::string(event.text.text));
 		break;
 	case SDL_KEYUP:
-		//Log::debug(LOG_COMMON, String::format("release key: %s", SDL_GetScancodeName(event.key.keysym.scancode)));
+		//Log::debug(LOG_COMMON, string::format("release key: %s", SDL_GetScancodeName(event.key.keysym.scancode)));
 		keyRelease((int32_t) event.key.keysym.sym);
 		break;
 	case SDL_KEYDOWN:

@@ -58,9 +58,9 @@ void IMapManager::listMaps ()
 IMapManager::Maps IMapManager::getMapsByWildcard (const std::string& wildcard) const
 {
 	Maps maps;
-	const String tmp(wildcard);
+	const std::string tmp(wildcard);
 	for (MapsConstIter i = _maps.begin(); i != _maps.end(); ++i) {
-		if (!tmp.matches(i->first))
+		if (!string::matches(tmp, i->first))
 			continue;
 		maps[i->first] = i->second;
 	}

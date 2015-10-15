@@ -19,7 +19,6 @@ set(common_SRCS
 	ExecutionTime.cpp
 	File.cpp
 	ConsoleFrontend.cpp
-	String.cpp
 	ConfigVar.cpp
 	CommandSystem.cpp
 	SpriteDefinition.cpp

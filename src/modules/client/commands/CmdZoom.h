@@ -19,8 +19,8 @@ public:
 			return;
 		}
 
-		const String& arg = *args.begin();
-		const float zoom = arg.toFloat();
+		const std::string& arg = *args.begin();
+		const float zoom = string::toFloat(arg);
 		_map.setZoom(_map.getZoom() + zoom);
 	}
 };

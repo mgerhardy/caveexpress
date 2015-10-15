@@ -413,7 +413,7 @@ public:
 	{
 		UINode::renderDebug(x, y, textY);
 		const BitmapFontPtr& font = getFont(MEDIUM_FONT);
-		font->print(String::format("x: %i, y: %i, index: %i", _cursorX, _cursorY, _selectedIndex), colorWhite, x, textY);
+		font->print(string::format("x: %i, y: %i, index: %i", _cursorX, _cursorY, _selectedIndex), colorWhite, x, textY);
 	}
 
 	bool runFocusNode () override

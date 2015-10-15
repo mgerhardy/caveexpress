@@ -16,11 +16,13 @@ void IConsole::executeCommandLine ()
 	_history.push_back(_commandLine);
 	_historyPos = _history.size();
 
-	std::vector<String> commands = String(_commandLine).split(";");
+	std::vector<std::string> commands;
+	string::splitString(_commandLine, commands, ";");
 
-	for (std::vector<String>::iterator i = commands.begin(); i != commands.end(); ++i) {
-		std::vector<String> tokens = i->split();
-		String cmd = tokens[0].eraseAllSpaces();
+	for (const std::string& command : commands) {
+		std::vector<std::string> tokens;
+		string::splitString(command, tokens);
+		std::string cmd = string::eraseAllSpaces(tokens[0]);
 		tokens.erase(tokens.begin());
 		if (!Commands.commandExists(cmd)) {
 			ConfigVarPtr c = Config.getConfigVar(cmd, "", false);
@@ -31,7 +33,7 @@ void IConsole::executeCommandLine ()
 					else
 						Log::info(LOG_COMMON, "%s: %s", cmd.c_str(), c->getValue().c_str());
 				} else {
-					c->setValue(tokens[0].eraseAllSpaces());
+					c->setValue(string::eraseAllSpaces(tokens[0]));
 				}
 			} else {
 				Log::info(LOG_COMMON, "unknown config variable %s", cmd.c_str());

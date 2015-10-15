@@ -14,7 +14,7 @@ inline bool isXmas() {
 inline std::string getDateString() {
 	const time_t t = time(0);
 	struct tm *now = localtime(&t);
-	return String::format("%i/%02i/%02i-%02i:%02i:%02i", now->tm_year + 1900,
-			now->tm_mon + 1, now->tm_mday, now->tm_hour, now->tm_min, now->tm_sec).str();
+	return string::format("%i/%02i/%02i-%02i:%02i:%02i", now->tm_year + 1900,
+			now->tm_mon + 1, now->tm_mday, now->tm_hour, now->tm_min, now->tm_sec);
 }
 }

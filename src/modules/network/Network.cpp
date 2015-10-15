@@ -522,7 +522,7 @@ std::string Network::toString (const IPaddress &ipAddress) const
 	Uint32 hostMask = ipAddress.host;
 	const Uint32 converted = SDLNet_Read32(&hostMask);
 	const unsigned char* host = (const unsigned char*) &converted;
-	return String::format("%i.%i.%i.%i", host[3], host[2], host[1], host[0]).str();
+	return string::format("%i.%i.%i.%i", host[3], host[2], host[1], host[0]);
 }
 
 #endif

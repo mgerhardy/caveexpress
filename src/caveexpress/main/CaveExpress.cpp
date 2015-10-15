@@ -210,7 +210,7 @@ void CaveExpress::update (uint32_t deltaTime)
 		if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, timeSeconds, stars))
 			Log::error(LOG_GAMEIMPL, "Could not save the values for the map");
 
-		System.track("mapstate", String::format("finished: %s with %i points in %i seconds and with %i stars", _map.getName().c_str(), finishPoints, timeSeconds, stars));
+		System.track("mapstate", string::format("finished: %s with %i points in %i seconds and with %i stars", _map.getName().c_str(), finishPoints, timeSeconds, stars));
 		GameEvent.finishedMap(_map.getName(), finishPoints, timeSeconds, stars);
 	} else if (!isDone && _map.isFailed()) {
 		Log::debug(LOG_GAMEIMPL, "map failed");

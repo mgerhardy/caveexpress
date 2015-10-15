@@ -23,8 +23,8 @@ public:
 			Log::error(LOG_CLIENT, "usage: host <port>");
 			return;
 		}
-		const String& host = args[0];
-		const int port = args.size() == 2 ? args[1].toInt() : Config.getConfigVar("port")->getIntValue();
+		const std::string& host = args[0];
+		const int port = args.size() == 2 ? string::toInt(args[1]) : Config.getConfigVar("port")->getIntValue();
 		_serviceProvider.getNetwork().openClient(host.c_str(), port, _callback);
 	}
 };

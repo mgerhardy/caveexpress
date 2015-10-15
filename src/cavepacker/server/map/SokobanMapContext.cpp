@@ -161,7 +161,7 @@ inline void SokobanMapContext::addTarget(int col, int row) {
 
 inline void SokobanMapContext::addWall(int col, int row) {
 	const int rnd = rand() % 3 + 1;
-	addTile("tile-rock-" + String::format("%02i", rnd), col, row);
+	addTile("tile-rock-" + string::format("%02i", rnd), col, row);
 }
 
 inline void SokobanMapContext::addPackage(int col, int row) {
@@ -176,7 +176,7 @@ inline void SokobanMapContext::addPlayer(int col, int row) {
 
 inline void SokobanMapContext::addGround(int col, int row) {
 	const int rnd = rand() % 4 + 1;
-	addTile("tile-background-" + String::format("%02i", rnd), col, row);
+	addTile("tile-background-" + string::format("%02i", rnd), col, row);
 }
 
 }

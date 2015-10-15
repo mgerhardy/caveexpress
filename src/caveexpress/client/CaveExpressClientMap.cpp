@@ -95,7 +95,7 @@ void CaveExpressClientMap::setCaveNumber (uint16_t id, uint8_t number)
 	}
 	const char first = number / 10 + '0';
 	const char second = number % 10 + '0';
-	const std::string caveSprite = String::format("cave-sign-%c%c", first, second);
+	const std::string caveSprite = string::format("cave-sign-%c%c", first, second);
 	e->addOverlay(UI::get().loadSprite(caveSprite));
 }
 

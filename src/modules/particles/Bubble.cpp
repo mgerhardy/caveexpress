@@ -8,7 +8,7 @@ Bubble::Bubble (IParticleEnvironment& env) :
 	Particle(env), _waterSurface(0), _waterGround(0), _waterHeight(0), _waterWidth(0)
 {
 	const int i = rand() % BUBBLETYPES;
-	_texture = loadTexture(String::format("bubble-%02i", i + 1));
+	_texture = loadTexture(string::format("bubble-%02i", i + 1));
 	_v = vec2(0.0f, -0.04f);
 	_omega = 0.2f;
 }

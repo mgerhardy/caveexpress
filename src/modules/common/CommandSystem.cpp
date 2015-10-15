@@ -69,10 +69,12 @@ void CommandSystem::executeCommandLine (const std::string& command) const
 {
 	if (command.empty())
 		return;
-	std::vector<String> commands = String(command).split(";");
-	for (std::vector<String>::iterator i = commands.begin(); i != commands.end(); ++i) {
-		std::vector<String> tokens = i->split();
-		String cmd = tokens[0].eraseAllSpaces();
+	std::vector<std::string> commands;
+	string::splitString(command, commands, ";");
+	for (const std::string& _cmd : commands) {
+		std::vector<std::string> tokens;
+		string::splitString(_cmd, tokens);
+		const std::string& cmd = string::eraseAllSpaces(tokens[0]);
 		tokens.erase(tokens.begin());
 		executeCommand(cmd, tokens);
 	}
@@ -100,7 +102,7 @@ bool CommandSystem::executeCommand (const std::string& command, ICommand::Args a
 
 void CommandSystem::getCommandNameList (std::vector<std::string> &commands) const
 {
-	for (CommandList::const_iterator i = _commands.begin(); i != _commands.end(); ++i) {
-		commands.push_back(i->first);
+	for (const auto& entry : _commands) {
+		commands.push_back(entry.first);
 	}
 }
