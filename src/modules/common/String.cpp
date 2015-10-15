@@ -73,22 +73,6 @@ std::size_t String::rfind (String string) const
 	return _string.rfind(string._string);
 }
 
-String String::toLower () const
-{
-	String convert = *this;
-	std::transform(convert._string.begin(), convert._string.end(), convert._string.begin(),
-			(int(*) (int)) std::tolower);
-	return convert;
-}
-
-String String::toUpper () const
-{
-	String convert = *this;
-	std::transform(convert._string.begin(), convert._string.end(), convert._string.begin(),
-			(int(*) (int)) std::toupper);
-	return convert;
-}
-
 void String::set (const std::string& string)
 {
 	_string = string;
@@ -121,22 +105,6 @@ std::vector<String> String::split (const String& delimiters) const
 		pos = _string.find_first_of(delimiters._string, lastPos);
 	}
 	return tokens;
-}
-
-String String::replaceAll (const String& searchStr, const String& replaceStr) const
-{
-	if (_string.empty())
-		return *this;
-	String sNew = *this;
-	std::string::size_type loc;
-	const std::string::size_type replaceLength = replaceStr._string.length();
-	const std::string::size_type searchLength = searchStr._string.length();
-	std::string::size_type lastPosition = 0;
-	while (std::string::npos != (loc = sNew._string.find(searchStr._string, lastPosition))) {
-		sNew._string.replace(loc, searchLength, replaceStr._string);
-		lastPosition = loc + replaceLength;
-	}
-	return sNew;
 }
 
 bool String::endsWith (const String& end) const

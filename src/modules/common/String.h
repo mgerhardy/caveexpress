@@ -63,10 +63,6 @@ public:
 
 	bool toBool (bool defaultValue = false) const;
 
-	String toLower () const;
-
-	String toUpper () const;
-
 	void set (const std::string& string);
 
 	const char *c_str () const;
@@ -83,15 +79,6 @@ public:
 	String substr (std::size_t pos, std::size_t n = std::string::npos) const;
 
 	std::size_t rfind (String string) const;
-
-	/**
-	 * Replace all occurrences of @c searchStr with @c replaceStr
-	 * @param str source where all occurrences should be replaced
-	 * @param searchStr search for this string
-	 * @param replaceStr replace with that string
-	 * @return string with all occurrences replaced
-	 */
-	String replaceAll (const String& searchStr, const String& replaceStr) const;
 
 	bool endsWith (const String& end) const;
 
