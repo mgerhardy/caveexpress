@@ -17,6 +17,11 @@
 #define STRINGIFY_(x) #x
 #define STRINGIFY(x) STRINGIFY_(x)
 
+#if SDL_COMPILEDVERSION <= SDL_VERSIONNUM(2, 0, 3)
+#define SDL_PRINTF_FORMAT_STRING
+#define SDL_PRINTF_VARARG_FUNC
+#endif
+
 class String {
 private:
 
