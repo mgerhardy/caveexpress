@@ -253,7 +253,6 @@ int AbstractGLFrontend::renderFilledPolygon (int *vx, int *vy, int n, const Colo
 {
 	if (n < 3 || vx == nullptr || vy == nullptr)
 		return -1;
-	static const glm::mat4 mat = glm::scale(glm::mat4(1.0f), glm::vec3(_rx, _ry, 0.0f));
 
 	flushBatch(GL_TRIANGLE_FAN, _white, n);
 	Batch& batch = _batches[_currentBatch];
@@ -262,8 +261,8 @@ int AbstractGLFrontend::renderFilledPolygon (int *vx, int *vy, int n, const Colo
 	Vertex v(color);
 
 	for (int i = 0; i < n; ++i) {
-		v.x = vx[i];
-		v.y = vy[i];
+		v.x = vx[i] * _rx;
+		v.y = vy[i] * _ry;
 		_vertices[_currentVertexIndex++] = v;
 	}
 
@@ -274,7 +273,6 @@ int AbstractGLFrontend::renderPolygon (int *vx, int *vy, int n, const Color& col
 {
 	if (n < 3 || vx == nullptr || vy == nullptr)
 		return -1;
-	static const glm::mat4 mat = glm::scale(glm::mat4(1.0f), glm::vec3(_rx, _ry, 0.0f));
 
 	flushBatch(GL_LINES, _white, n + 1);
 	Batch& batch = _batches[_currentBatch];
@@ -283,18 +281,18 @@ int AbstractGLFrontend::renderPolygon (int *vx, int *vy, int n, const Color& col
 	Vertex v(color);
 
 	for (int i = 0; i < n; i += 2) {
-		const glm::vec4 pos1 = mat * glm::vec4(vx[i] * _rx, vy[i] * _ry, 0.0f, 1.0f);
+		const glm::vec4 pos1 = glm::vec4(vx[i] * _rx, vy[i] * _ry, 0.0f, 1.0f);
 		v.x = pos1.x;
 		v.y = pos1.y;
 		_vertices[_currentVertexIndex++] = v;
 
-		const glm::vec4 pos2 = mat * glm::vec4(vx[i + 1] * _rx, vy[i + 1] * _ry, 0.0f, 1.0f);
+		const glm::vec4 pos2 = glm::vec4(vx[i + 1] * _rx, vy[i + 1] * _ry, 0.0f, 1.0f);
 		v.x = pos2.x;
 		_vertices[_currentVertexIndex++] = v;
 		v.y = pos2.y;
 	}
 
-	const glm::vec4 start = mat * glm::vec4(vx[0] * _rx, vy[0] * _ry, 0.0f, 1.0f);
+	const glm::vec4 start = glm::vec4(vx[0] * _rx, vy[0] * _ry, 0.0f, 1.0f);
 	v.x = start.x;
 	v.y = start.y;
 	_vertices[_currentVertexIndex++] = v;
