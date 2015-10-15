@@ -20,9 +20,9 @@ GL1Frontend::~GL1Frontend ()
 void GL1Frontend::initRenderer ()
 {
 	AbstractGLFrontend::initRenderer();
-#ifdef SDL_VIDEO_OPENGL
 	Log::info(LOG_GFX, "init opengl renderer");
 
+#ifdef SDL_VIDEO_OPENGL
 	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -54,14 +54,14 @@ void GL1Frontend::renderBatches ()
 	glVertexPointer(2, GL_FLOAT, sizeof(Vertex), GL_CALC_OFFSET(start + offsetof(Vertex, x)));
 	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), GL_CALC_OFFSET(start + offsetof(Vertex, c)));
 	glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), GL_CALC_OFFSET(start + offsetof(Vertex, u)));
-	renderBatchBuffers();
 #endif
+	renderBatchBuffers();
 }
 
 void GL1Frontend::updateViewport (int x, int y, int width, int height)
 {
-#ifdef SDL_VIDEO_OPENGL
 	AbstractGLFrontend::updateViewport(x, y, width, height);
+#ifdef SDL_VIDEO_OPENGL
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(glm::value_ptr(_projectionMatrix));
 	glMatrixMode(GL_MODELVIEW);
