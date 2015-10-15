@@ -46,7 +46,6 @@ public:
 	void tick (uint32_t deltaTime) override;
 	int getAdHeight() const override;
 	bool track (const std::string& hitType, const std::string& screenName) override;
-	int getScreenPadding() override;
 	DirectoryEntries listDirectory (const std::string& basedir, const std::string& subdir = "") override;
 	void showAds (bool show) override;
 	bool showFullscreenAds () override;
