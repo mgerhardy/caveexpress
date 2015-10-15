@@ -147,15 +147,13 @@ void Map::updateVisMask ()
 {
 	_allPlayers = 0;
 
-	for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
-		const Player* e = *i;
-		const ClientId id = e->getClientId();
+	for (const Player* player : _players) {
+		const ClientId id = player->getClientId();
 		_allPlayers |= ClientIdToClientMask(id);
 	}
 
-	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
-		const Player* e = *i;
-		const ClientId id = e->getClientId();
+	for (const Player* player : _playersWaitingForSpawn) {
+		const ClientId id = player->getClientId();
 		_allPlayers |= ClientIdToClientMask(id);
 	}
 }
@@ -253,30 +251,30 @@ void Map::clearPhysics ()
 	if (_world)
 		_world->SetContactListener(nullptr);
 	{ // delete the box2d stuff
-		for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
-			(*i)->prepareRemoval();
+		for (IEntity* entity : _entities) {
+			entity->prepareRemoval();
 		}
-		for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
-			(*i)->prepareRemoval();
+		for (Player* player : _players) {
+			player->prepareRemoval();
 		}
-		for (EntityListIter i = _entitiesToAdd.begin(); i != _entitiesToAdd.end(); ++i) {
-			(*i)->prepareRemoval();
+		for (IEntity* entity : _entitiesToAdd) {
+			entity->prepareRemoval();
 		}
 		if (!_name.empty())
 			Log::info(LOG_GAMEIMPL, "* removed box2d references");
 	}
 
 	{ // now free the allocated memory
-		for (BorderList::iterator i = _borders.begin(); i != _borders.end(); ++i) {
-			delete *i;
+		for (Border* border : _borders) {
+			delete border;
 		}
 		_borders.clear();
 
-		for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
-			delete *i;
+		for (IEntity* entity : _entities) {
+			delete entity;
 		}
-		for (EntityListIter i = _entitiesToAdd.begin(); i != _entitiesToAdd.end(); ++i) {
-			delete *i;
+		for (IEntity* entity : _entitiesToAdd) {
+			delete entity;
 		}
 		_entitiesToAdd.clear();
 		_entities.clear();
@@ -285,8 +283,8 @@ void Map::clearPhysics ()
 		_entities.reserve(400);
 		_friendlyNPCs.clear();
 
-		for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
-			delete *i;
+		for (Player* player : _players) {
+			delete player;
 		}
 		_players.clear();
 		_players.reserve(MAX_CLIENTS);
@@ -312,15 +310,15 @@ void Map::clearPhysics ()
 
 Player* Map::getPlayer (ClientId clientId)
 {
-	for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
-		if ((*i)->getClientId() == clientId) {
-			return *i;
+	for (Player* player : _players) {
+		if (player->getClientId() == clientId) {
+			return player;
 		}
 	}
 
-	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
-		if ((*i)->getClientId() == clientId) {
-			return *i;
+	for (Player* player : _playersWaitingForSpawn) {
+		if (player->getClientId() == clientId) {
+			return player;
 		}
 	}
 
