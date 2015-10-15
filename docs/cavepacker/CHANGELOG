@@ -27,3 +27,5 @@ Version 1.4 (not yet released)
 * Fixed key bindings if some unhandled modifiers (like the numpad) are active
 * Fixed mouse speed
 * Improved render speed
+* Reduced ad frequency
+* Rate me popup

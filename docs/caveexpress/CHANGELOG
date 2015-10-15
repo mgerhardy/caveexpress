@@ -103,3 +103,5 @@ Version 2.4 (not yet released)
 * Water refractions with GL3 renderer
 * Fixed key bindings if some unhandled modifiers (like the numpad) are active
 * Fixed mouse speed
+* Reduced ad frequency
+* Rate me popup
