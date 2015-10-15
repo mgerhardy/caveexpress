@@ -101,7 +101,7 @@ public:
 
 	virtual void resetCurrentMap ();
 	void close ();
-	void setZoom (const float zoom);
+	virtual void setZoom (const float zoom);
 	inline float getZoom () const { return _zoom; }
 	void disconnect ();
 	virtual void init (uint16_t playerID);

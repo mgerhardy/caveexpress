@@ -33,12 +33,17 @@ void CavePackerClientMap::onWindowResize () {
 	_target = nullptr;
 }
 
+void CavePackerClientMap::setZoom (const float zoom) {
+	ClientMap::setZoom(zoom);
+	_target = nullptr;
+}
+
 void CavePackerClientMap::renderLayer (int x, int y, Layer layer) const {
 	bool renderToTexture = false;
 	if (layer == LAYER_BACK) {
 		if (_target == nullptr || _targetEnts != _entities.size()) {
 			_targetEnts = _entities.size();
-			_target = _frontend->renderToTexture(x, y, getWidth(), getHeight());
+			_target = _frontend->renderToTexture(x, y, getWidth() * _zoom, getHeight() * _zoom);
 			renderToTexture = true;
 		}
 	} else if (layer == LAYER_MIDDLE && _target) {

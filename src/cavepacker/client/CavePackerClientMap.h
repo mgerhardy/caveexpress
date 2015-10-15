@@ -18,6 +18,7 @@ public:
 
 	virtual void onWindowResize () override;
 
+	void setZoom (const float zoom) override;
 	int getWaterSurface() const override { return 0; }
 	int getWaterGround() const override { return 0; }
 
