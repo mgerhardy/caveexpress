@@ -17,6 +17,16 @@ list(APPEND META_DATA "<meta-data android:name=\"com.google.android.gms.games.AP
 list(APPEND META_DATA "<meta-data android:name=\"com.google.android.gms.appstate.APP_ID\" android:value=\"@string/app_id\" />")
 list(APPEND META_DATA "<meta-data android:name=\"com.google.android.gms.version\" android:value=\"@integer/google_play_services_version\" />")
 
+set(DEBUG_KEYSTORES "$ENV{HOME}/.android/debug.keystore" "$ENV{HOMEPATH}/.android/debug.keystore")
+foreach(DEBUG_KEYSTORE ${DEBUG_KEYSTORES})
+	if (EXISTS ${DEBUG_KEYSTORE})
+		set(ANDROID_DEBUG_KEYSTORE ${DEBUG_KEYSTORE})
+	endif()
+endif()
+set(ANDROID_DEBUG_ALIAS androiddebugkey)
+set(ANDROID_DEBUG_STOREPASS android)
+set(ANDROID_DEBUG_KEYPASS android)
+
 if (VERBOSE)
 	set(ANT_FLAGS -v)
 endif()
