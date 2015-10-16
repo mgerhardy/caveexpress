@@ -131,7 +131,6 @@ else()
 endif()
 
 configure_file(${ROOT_DIR}/src/config.h.in ${CMAKE_BINARY_DIR}/cp-config.h)
-add_definitions(-DHAVE_CONFIG_H)
 include_directories(${CMAKE_BINARY_DIR})
 
 include_directories(src)

@@ -1,4 +1,5 @@
 #include "TestShared.h"
+#include "common/Config.h"
 
 #if NETWORKING == 1
 
