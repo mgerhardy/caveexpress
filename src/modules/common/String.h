@@ -91,19 +91,18 @@ inline bool matches (const std::string& _string, const std::string& text)
 
 	while ((c = *p++) != '\0') {
 		switch (c) {
-			case '*':
+		case '*':
 			return true;
-
-			case '?':
+		case '?':
 			if (*t == '\0')
-			return false;
+				return false;
 			else
-			++t;
+				++t;
 			break;
-
-			default:
+		default:
 			if (c != *t++)
-			return false;
+				return false;
+			break;
 		}
 	}
 	return *t == '\0';
