@@ -100,6 +100,8 @@ else()
 	message(FATAL_ERROR "ant tool NOT FOUND (must be in path)!")
 endif()
 
+find_program(JARSIGNER "jarsigner")
+
 find_program(ANDROID_ZIPALIGN "zipalign" HINTS ${ANDROID_SDK_ROOT}/tools)
 if (ANDROID_ZIPALIGN)
 	message("zipalign tool found")

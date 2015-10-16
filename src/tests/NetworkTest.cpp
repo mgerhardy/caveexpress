@@ -11,7 +11,7 @@
 class NetworkTestListener: public IClientCallback {
 public:
 	void onData (ByteStream& data){
-		Log::debug(LOG_NETWORK, string::format("recv: %i", data.getSize()));
+		Log::debug(LOG_NETWORK, "recv: %i", data.getSize());
 	}
 };
 
