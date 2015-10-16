@@ -122,7 +122,7 @@ std::string Windows::getHomeDirectory ()
 	FreeLibrary(shfolder);
 
 	if (!mkdir(path)) {
-		Log::error(LOG_COMMON, string::format("Unable to create directory \"%s\"", path.c_str()));
+		Log::error(LOG_COMMON, "Unable to create directory \"%s\"", path.c_str());
 		return "";
 	}
 	return path;
