@@ -201,7 +201,9 @@ public:
 
 	void shutdown ();
 	int solve ();
-	std::string getSolution() const;
+	static std::string getSolution(const std::string& name);
+	// transforms rle encoded solution
+	static std::string convertSolution(const std::string& solution);
 private:
 	void solveMap () { solve(); }
 	void finishMap ();

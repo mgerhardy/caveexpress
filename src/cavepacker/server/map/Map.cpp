@@ -78,11 +78,11 @@ int Map::solve ()
 	return _solution.size();
 }
 
-std::string Map::getSolution() const
+std::string Map::getSolution (const std::string& name)
 {
-	const FilePtr& filePtr = FS.getFileFromURL("maps://" + _name + ".sol");
+	const FilePtr& filePtr = FS.getFileFromURL("maps://" + name + ".sol");
 	if (!filePtr) {
-		Log::info(LOG_GAMEIMPL, "no solution file found for %s", _name.c_str());
+		Log::info(LOG_GAMEIMPL, "no solution file found for %s", name.c_str());
 		return "";
 	}
 
@@ -94,15 +94,24 @@ std::string Map::getSolution() const
 		return "";
 	}
 
-	std::string solution = string::toLower(std::string(buffer, fileLen));
-	for (std::string::iterator i = solution.begin(); i != solution.end(); ++i) {
-		if (!isdigit(*i))
+	return convertSolution(std::string(buffer, fileLen));
+}
+
+std::string Map::convertSolution (const std::string& buffer)
+{
+	std::string solution = buffer;
+	for (std::string::const_iterator i = solution.begin(); i != solution.end(); ++i) {
+		if (!isdigit(*i)) {
+			Log::debug(LOG_GAMEIMPL, "Skip '%c'", *i);
 			continue;
+		}
 		std::string digit;
 		digit += *i;
 		for (++i; i != solution.end(); ++i) {
-			if (!isdigit(*i))
+			if (!isdigit(*i)) {
+				Log::debug(LOG_GAMEIMPL, "Found '%s'", digit.c_str());
 				break;
+			}
 			digit += *i;
 		}
 		const int n = string::toInt(digit);
@@ -110,6 +119,11 @@ std::string Map::getSolution() const
 			Log::error(LOG_GAMEIMPL, "invalid rle encoded solution found");
 			break;
 		}
+		if (n <= 0) {
+			Log::error(LOG_GAMEIMPL, "invalid rle encoded solution found: %s", digit.c_str());
+			break;
+		}
+		// single char repeat
 		if (*i != '(') {
 			std::string repeat;
 			repeat += *i;
@@ -124,6 +138,7 @@ std::string Map::getSolution() const
 		std::string repeat;
 		for (++i; i != solution.end(); ++i) {
 			if (*i == ')') {
+				Log::debug(LOG_GAMEIMPL, "End of repeat (digit: %s) '%s'", digit.c_str(), repeat.c_str());
 				++i;
 				break;
 			}
@@ -133,10 +148,11 @@ std::string Map::getSolution() const
 		for (int k = 1; k < n; ++k) {
 			repeat += r;
 		}
+		Log::debug(LOG_GAMEIMPL, "Replace rle for '%s' times '%s'", digit.c_str(), repeat.c_str());
 		solution = string::replaceAll(solution, digit + "(" + r + ")", repeat);
 		i = solution.begin();
 	}
-	return solution;
+	return string::toLower(solution);
 }
 
 void Map::sendSound (int clientMask, const SoundType& type, const b2Vec2& pos) const
@@ -534,7 +550,7 @@ bool Map::load (const std::string& name)
 	_height = string::toInt(getSetting(msn::HEIGHT, "-1"));
 	_field.assign(_width * _height, nullptr);
 	_state.setSize(_width, _height);
-	_solution = getSolution();
+	_solution = getSolution(_name);
 	const std::string solutionSteps = string::toString(_solution.length());
 	_settings.insert(std::make_pair("best", solutionSteps));
 	Log::info(LOG_GAMEIMPL, "Solution has %s steps", solutionSteps.c_str());
