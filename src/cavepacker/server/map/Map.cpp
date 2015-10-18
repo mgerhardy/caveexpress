@@ -136,11 +136,17 @@ std::string Map::convertSolution (const std::string& buffer)
 			continue;
 		}
 		std::string repeat;
+		int depth = 0;
 		for (++i; i != solution.end(); ++i) {
-			if (*i == ')') {
-				Log::debug(LOG_GAMEIMPL, "End of repeat (digit: %s) '%s'", digit.c_str(), repeat.c_str());
-				++i;
-				break;
+			if (*i == '(') {
+				++depth;
+			} else if (*i == ')') {
+				if (depth == 0) {
+					++i;
+					Log::debug(LOG_GAMEIMPL, "End of repeat (digit: %s) '%s'", digit.c_str(), repeat.c_str());
+					break;
+				}
+				--depth;
 			}
 			repeat += *i;
 		}

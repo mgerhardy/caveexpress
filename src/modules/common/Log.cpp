@@ -81,7 +81,7 @@ void Log::vsnprint(LogLevel logLevel, LogCategory category, const char* msg, va_
 	char buf[1024];
 	const char *categoryStr = LogTypes[static_cast<int>(category)];
 	SDL_vsnprintf(buf, sizeof(buf), msg, args);
-	buf[sizeof(buf) - 1] = 0;
+	buf[sizeof(buf) - 1] = '\0';
 
 	switch (logLevel) {
 		case LogLevel::LEVEL_INFO:
@@ -97,7 +97,7 @@ void Log::vsnprint(LogLevel logLevel, LogCategory category, const char* msg, va_
 			}
 			break;
 		case LogLevel::LEVEL_ERROR:
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, ANSI_COLOR_RED "(%s): %s" ANSI_COLOR_RESET "\n", categoryStr, buf);
+			SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, ANSI_COLOR_RED "(%s): %s" ANSI_COLOR_RESET "\n", categoryStr, buf);
 			for (ConsolesConstIter i = _consoles.begin(); i != _consoles.end(); ++i) {
 				(*i)->logError(buf);
 			}
