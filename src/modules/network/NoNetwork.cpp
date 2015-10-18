@@ -1,13 +1,15 @@
 #include "NoNetwork.h"
 #include "common/Log.h"
-#include <assert.h>
+#include <SDL.h>
+
+#define QUEUE_SIZE 64
 
 void NoNetwork::update (uint32_t deltaTime)
 {
 	if (_clientFunc != nullptr) {
 		const Queue q = _clientQueue;
 		_clientQueue.clear();
-		_clientQueue.reserve(64);
+		_clientQueue.reserve(QUEUE_SIZE);
 		for (QueueConstIter i = q.begin(); i != q.end(); ++i) {
 			ByteStream b = *i;
 			_clientFunc->onData(b);
@@ -20,7 +22,7 @@ void NoNetwork::update (uint32_t deltaTime)
 	if (_serverFunc != nullptr) {
 		const Queue q = _serverQueue;
 		_serverQueue.clear();
-		_serverQueue.reserve(64);
+		_serverQueue.reserve(QUEUE_SIZE);
 		for (QueueConstIter i = q.begin(); i != q.end(); ++i) {
 			ByteStream b = *i;
 			_serverFunc->onData(defaultClientId, b);
@@ -58,9 +60,9 @@ void NoNetwork::closeServer ()
 	closeClient();
 
 	_clientQueue.clear();
-	_clientQueue.reserve(64);
+	_clientQueue.reserve(QUEUE_SIZE);
 	_serverQueue.clear();
-	_serverQueue.reserve(64);
+	_serverQueue.reserve(QUEUE_SIZE);
 
 	Log::info(LOG_NETWORK, "close server");
 	_server = false;
@@ -100,12 +102,12 @@ bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* 
 	Log::info(LOG_NETWORK, "connect to %s:%i", node.c_str(), port);
 	closeClient();
 	_clientFunc = func;
-	assert(func);
+	SDL_assert_always(func);
 	_clientQueue.clear();
 	_serverQueue.clear();
 
-	_clientQueue.reserve(64);
-	_serverQueue.reserve(64);
+	_clientQueue.reserve(QUEUE_SIZE);
+	_serverQueue.reserve(QUEUE_SIZE);
 
 	if (_clientFunc != nullptr && !_connected) {
 		Log::info(LOG_NETWORK, "connect %i", defaultClientId);

@@ -20,8 +20,8 @@ class NoNetworkTest: public AbstractTest {
 TEST_F(NoNetworkTest, testSendToClient)
 {
 	ProtocolHandlerRegistry::get().shutdown();
-	NetworkTestServerListener serverListener;
-	NetworkTestListener listener;
+	NoNetworkTestServerListener serverListener;
+	NoNetworkTestListener listener;
 	NoNetwork network;
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << "Failed to open the server";
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << "Failed to open the client";
@@ -29,7 +29,7 @@ TEST_F(NoNetworkTest, testSendToClient)
 	network.update(0);
 	int n = 1000;
 	for (int i = 0; i < n; ++i) {
-		network.sendToClients(0, msg);
+		ASSERT_EQ(1, network.sendToClients(0, msg));
 	}
 	network.update(0);
 	network.closeClient();

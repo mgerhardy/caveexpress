@@ -89,6 +89,8 @@ TEST(NetworkTest, testSendStringList)
 		int count;
 		void onData(ByteStream &data) override
 		{
+			const int size = data.readShort();
+			ASSERT_TRUE(size > 0);
 			ASSERT_EQ(protocol::PROTO_PLAYERLIST, data.readByte());
 			PlayerListMessage msg(data);
 			ASSERT_EQ("Test1", msg.getList()[0]);
@@ -117,7 +119,8 @@ TEST(NetworkTest, testSendToServer)
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << network.getError();
 	network.update(0);
 	const DisconnectMessage msg;
-	ASSERT_EQ(1, network.sendToServer(msg));
+	const int expectedSize = sizeof(uint16_t) + sizeof(protocolId);
+	ASSERT_EQ(expectedSize, network.sendToServer(msg));
 	ASSERT_EQ(1, network.sendToClients(0, msg));
 	network.update(0);
 	network.closeClient();

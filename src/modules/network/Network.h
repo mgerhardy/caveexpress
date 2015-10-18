@@ -135,12 +135,14 @@ public:
 	void shutdown () override;
 	void update (uint32_t deltaTime) override;
 	bool openServer (int port, IServerCallback* func) override;
+	// the amount of clients that received the message
 	int sendToClients (int clientMask, const IProtocolMessage& msg) override;
 	void closeServer () override;
 	void disconnectClientFromServer (ClientId clientId) override;
 	bool isServer () const override;
 	bool isClient () const override;
 	bool openClient (const std::string& node, int port, IClientCallback* func) override;
+	// return the amount of bytes transfered to the server
 	int sendToServer (const IProtocolMessage& msg) override;
 	void closeClient () override;
 	bool isClientConnected () override;

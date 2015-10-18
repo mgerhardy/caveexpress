@@ -3,6 +3,24 @@
 #include "network/INetwork.h"
 #include "network/ProtocolHandlerRegistry.h"
 
+class NoNetworkTestServerListener: public IServerCallback {
+public:
+	NoNetworkTestServerListener() : _count(0) {}
+	int _count;
+	void onData (ClientId clientId, ByteStream &data) override {
+		++_count;
+	}
+};
+
+class NoNetworkTestListener: public IClientCallback {
+public:
+	NoNetworkTestListener() : _count(0) {}
+	int _count;
+	void onData (ByteStream& data) override {
+		++_count;
+	}
+};
+
 class NetworkTestServerListener: public IServerCallback {
 public:
 	NetworkTestServerListener() :
