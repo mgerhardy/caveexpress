@@ -27,6 +27,7 @@ public:
 
 	void initTextureDefinition (IFrontend *frontend, const std::string& textureSize, IProgressCallback* progress = nullptr);
 	void init (IFrontend *frontend);
+	void shutdown();
 
 	// switches the network to either loopback or to real network
 	void updateNetwork (bool network);

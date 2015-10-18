@@ -370,8 +370,8 @@ void SDLBackend::mainLoop (int argc, char **argv)
 		nextFrame += 1000.0 / fpsCap;
 	}
 
-	_serviceProvider.updateNetwork(false);
-	_serviceProvider.getNetwork().shutdown();
+	_frontend->shutdown();
+	_serviceProvider.shutdown();
 	Config.shutdown();
 
 	System.track("step", "sdl backend shutdown");

@@ -19,14 +19,7 @@ ServiceProvider::ServiceProvider() :
 ServiceProvider::~ServiceProvider ()
 {
 	Log::info(LOG_SERVICE, "shutting down the serviceprovider");
-	if (_mapManager != nullptr)
-		delete _mapManager;
-	if (_network != nullptr)
-		delete _network;
-	if (_loopback != nullptr)
-		delete _loopback;
-	if (_textureDefinition != nullptr)
-		delete _textureDefinition;
+	shutdown();
 }
 
 void ServiceProvider::updateNetwork (bool network)
@@ -59,6 +52,24 @@ void ServiceProvider::initTextureDefinition (IFrontend *frontend, const std::str
 	} else {
 		_textureDefinition = new TextureDefinition(textureSize, progress);
 	}
+}
+
+void ServiceProvider::shutdown()
+{
+	if (_currentNetwork)
+		_currentNetwork->shutdown();
+
+	delete _mapManager;
+	delete _network;
+	delete _loopback;
+	delete _textureDefinition;
+
+	_mapManager = nullptr;
+	_network = nullptr;
+	_loopback = nullptr;
+	_textureDefinition = nullptr;
+
+	_currentNetwork = nullptr;
 }
 
 void ServiceProvider::init (IFrontend *frontend)
