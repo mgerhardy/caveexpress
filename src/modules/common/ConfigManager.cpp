@@ -348,6 +348,8 @@ void ConfigManager::shutdown ()
 {
 	Log::info(LOG_COMMON, "shutdown config manager");
 	_persister->save(_configVars);
+	_configVars.clear();
+	_bindingSpaceListener = nullptr;
 }
 
 ConfigVarPtr ConfigManager::getConfigVar (const std::string& name, const std::string& value, bool create, unsigned int flags)
