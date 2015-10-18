@@ -1,7 +1,7 @@
 #include "TestShared.h"
 #include "common/Config.h"
 
-#if NETWORKING == 1
+#ifndef NONETWORK
 
 #include "common/IEventObserver.h"
 #include "network/Network.h"
@@ -11,7 +11,7 @@
 class NetworkTestListener: public IClientCallback {
 public:
 	void onData (ByteStream& data){
-		Log::debug(LOG_NETWORK, "recv: %i", data.getSize());
+		Log::debug(LOG_NETWORK, "recv: %i", (int)data.getSize());
 	}
 };
 

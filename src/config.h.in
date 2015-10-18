@@ -4,4 +4,3 @@
 #cmakedefine HAVE_NCURSES_H
 #cmakedefine HD_VERSION
 #cmakedefine APP_PACKAGENAME
-#cmakedefine NETWORKING 1
