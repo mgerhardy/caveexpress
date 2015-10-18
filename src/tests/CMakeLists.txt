@@ -4,6 +4,8 @@ set(${PROJECT_NAME}_SRC
 	FileTest.cpp
 	ByteStreamTest.cpp
 	ParticleTest.cpp
+	NetworkTest.cpp
+	NoNetworkTest.cpp
 	TimeManagerTest.cpp
 	TestShared.cpp
 	SystemTest.cpp
