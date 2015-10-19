@@ -109,9 +109,11 @@ TEST_F(SokobanMapTest, testRLE)
 TEST_F(SokobanMapTest, testRLESimple)
 {
 	ASSERT_EQ("lulu", Map::convertSolution("2(lu)"));
+	ASSERT_EQ("lulurrrurururur", Map::convertSolution("2(lu)3r4(ur)"));
 	ASSERT_EQ("uu", Map::convertSolution("2u"));
+	ASSERT_EQ("uurrddlll", Map::convertSolution("2u2r2d3l"));
 	ASSERT_EQ("uuddrrruuddrrr", Map::convertSolution("2(2u2d3r)"));
-	ASSERT_EQ("uuddrrruuddrrrlulu", Map::convertSolution("2(2u2d3r2(lu))"));
+	ASSERT_EQ("uuddrrrluluuuddrrrlulu", Map::convertSolution("2(2u2d3r2(lu))"));
 	// nobody would... hopefully - but anyway
 	ASSERT_EQ("uuuu", Map::convertSolution("2(2u)"));
 }
