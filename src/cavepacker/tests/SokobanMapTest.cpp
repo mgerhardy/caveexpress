@@ -52,7 +52,7 @@ protected:
 		_serviceProvider.getNetwork().update(1);
 		if (!solve)
 			return;
-		Config.getConfigVar("solvestepmillis")->setValue("10");
+		Config.getConfigVar("solvestepmillis")->setValue("0");
 		const int steps = map.solve();
 		ASSERT_TRUE(map.isAutoSolve()) << "Map " << mapName << " is not in autoSolve mode";
 		ASSERT_TRUE(steps >= 1) << "No step in solution for map " << mapName;
