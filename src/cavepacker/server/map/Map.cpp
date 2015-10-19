@@ -989,17 +989,8 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 
 	if (_solution[0] == '(') {
 		abortAutoSolve();
-		Log::error(LOG_GAMEIMPL, "x() repeat syntax is not supported");
+		Log::error(LOG_GAMEIMPL, "rle should have been converted into single steps at this point");
 		return;
-	}
-
-	int l = 0;
-	for (std::string::iterator i = _solution.begin(); i != _solution.end(); ++i) {
-		if (*i >= '0' && *i <= '9') {
-			++l;
-		} else {
-			break;
-		}
 	}
 
 	if (_players.empty()) {
@@ -1008,23 +999,9 @@ void Map::handleAutoSolve (uint32_t deltaTime)
 		return;
 	}
 	Player *p = *_players.begin();
-	if (l == 0) {
-		const char step = _solution[0];
-		movePlayer(p, step);
-		_solution = _solution.substr(1);
-		return;
-	}
-
-	const std::string& rle = _solution.substr(0, l);
-	const int n = string::toInt(rle);
-	if (n <= 1) {
-		_solution = _solution.substr(l);
-		movePlayer(p, _solution[0]);
-		_solution = _solution.substr(1);
-	} else {
-		movePlayer(p, _solution[l]);
-		_solution = string::toString(n - 1) + _solution.substr(l);
-	}
+	const char step = _solution[0];
+	movePlayer(p, step);
+	_solution = _solution.substr(1);
 }
 
 const IEntity* Map::getEntity (int16_t id) const
