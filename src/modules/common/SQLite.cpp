@@ -153,7 +153,7 @@ bool SQLite::exec (const std::string& statement)
 {
 	char *zErrMsg = nullptr;
 	Log::debug(LOG_COMMON, "Statement: %s", statement.c_str());
-	const int rc = sqlite3_exec(_db, statement.c_str(), 0, 0, &zErrMsg);
+	const int rc = sqlite3_exec(_db, statement.c_str(), nullptr, nullptr, &zErrMsg);
 	if (rc != SQLITE_OK) {
 		if (zErrMsg != nullptr) {
 			_error = std::string(zErrMsg);

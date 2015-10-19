@@ -19,7 +19,7 @@ public:
 		setBackgroundColor(colorGrayAlpha);
 	}
 
-	void removeFocus ()
+	void removeFocus () override
 	{
 		UINodeButton::removeFocus();
 		setBackgroundColor(colorNull);

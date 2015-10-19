@@ -37,7 +37,7 @@ public:
 
 	// UINodeSelector
 	bool onSelect (const ServerEntry& data) override;
-	void render (int x, int y) const;
+	void render (int x, int y) const override;
 	void renderSelectorEntry (int index, const ServerEntry& data, int x, int y, int colWidth, int rowHeight, float alpha) const override;
 
 	// UINode

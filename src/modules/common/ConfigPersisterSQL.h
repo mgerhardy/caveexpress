@@ -12,7 +12,7 @@ private:
 public:
 	ConfigPersisterSQL ();
 
-	void init ();
+	void init () override;
 
 	void save (const std::map<std::string, ConfigVarPtr>& configVars) override;
 	std::string getValue (const std::string& name) const override;

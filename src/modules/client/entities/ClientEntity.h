@@ -26,7 +26,7 @@ protected:
 	void calcOffset(int scale, float zoom, int posX, int posY, int &offsetPosX, int &offsetPosY) const;
 public:
 	class Factory: public IClientEntityFactory {
-		ClientEntityPtr create (const ClientEntityFactoryContext *ctx) const;
+		ClientEntityPtr create (const ClientEntityFactoryContext *ctx) const override;
 	};
 	static Factory FACTORY;
 	virtual ~ClientEntity ();

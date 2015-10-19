@@ -6,7 +6,7 @@
 
 class CmdListCommands: public ICommand {
 public:
-	void run (const Args& args)
+	void run (const Args& args) override
 	{
 		for (CommandList::const_iterator i = CommandSystem::get()._commands.begin();
 				i != CommandSystem::get()._commands.end(); ++i) {

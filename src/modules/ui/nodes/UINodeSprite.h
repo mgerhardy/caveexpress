@@ -33,7 +33,7 @@ public:
 	bool isMovementActive () const;
 
 	// UINode
-	void setPos (float x, float y);
+	void setPos (float x, float y) override;
 	float getAutoWidth () const override;
 	float getAutoHeight () const override;
 	void render (int x, int y) const override;

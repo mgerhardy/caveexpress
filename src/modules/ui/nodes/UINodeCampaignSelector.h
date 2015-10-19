@@ -11,7 +11,7 @@ private:
 	CampaignManager &_campaignManager;
 
 	// ICampaignVisitor
-	void visitCampaign (CampaignPtr& campaign);
+	void visitCampaign (CampaignPtr& campaign) override;
 public:
 	UINodeCampaignSelector (IFrontend *frontend, CampaignManager &campaignManager, int cols, int rows);
 	virtual ~UINodeCampaignSelector ();

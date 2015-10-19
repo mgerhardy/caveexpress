@@ -342,7 +342,7 @@ inline void IUINodeMapEditor::setEmitterEntity (const EntityType& type)
 inline void IUINodeMapEditor::setSprite (const SpriteDefPtr& spriteDef)
 {
 	_activeSpriteDefition = spriteDef;
-	_activeEntityType = 0;
+	_activeEntityType = nullptr;
 	_activeSpriteAngle = spriteDef->angle;
 	_activeEntityTypeRight = true;
 	_activeLayer = getLayer(_activeSpriteDefition->type);

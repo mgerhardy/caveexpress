@@ -245,7 +245,7 @@ public:
 	{
 	}
 
-	void onClick()
+	void onClick() override
 	{
 		switch (_flags) {
 		case UIPOPUP_OK:

@@ -26,7 +26,7 @@ private:
 	ClientParticle (uint16_t id, const std::string& sprite, float x, float y);
 public:
 	class Factory: public IClientEntityFactory {
-		ClientEntityPtr create (const ClientEntityFactoryContext *ctx) const;
+		ClientEntityPtr create (const ClientEntityFactoryContext *ctx) const override;
 	};
 	static Factory FACTORY;
 
@@ -37,7 +37,7 @@ public:
 	void setSprite (const std::string& sprite);
 
 	// ClientEntity
-	bool update (uint32_t deltaTime, bool lerpPos);
+	bool update (uint32_t deltaTime, bool lerpPos) override;
 	void render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY) const override;
 };
 

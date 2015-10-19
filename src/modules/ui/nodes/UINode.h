@@ -44,7 +44,7 @@ public:
 	{
 	}
 
-	void onClick ()
+	void onClick () override
 	{
 		_frontend->minimize();
 		System.openURL(_url, _newWindow);

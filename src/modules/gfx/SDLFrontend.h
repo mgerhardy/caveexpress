@@ -59,8 +59,8 @@ public:
 	virtual void setHints ();
 	virtual void setGLAttributes ();
 
-	virtual void resetColor ();
-	virtual void setColor (const Color& rgba);
+	virtual void resetColor () override;
+	virtual void setColor (const Color& rgba) override;
 
 	virtual void renderBegin ();
 	virtual void renderEnd ();
@@ -69,8 +69,8 @@ public:
 	virtual void onWindowResize () override;
 	virtual void onPrepareBackground () override;
 	virtual void onForeground () override;
-	void onJoystickDeviceRemoved (int32_t device);
-	void onJoystickDeviceAdded (int32_t device);
+	void onJoystickDeviceRemoved (int32_t device) override;
+	void onJoystickDeviceAdded (int32_t device) override;
 
 	// IFrontend implementation
 	virtual void toggleGrabMouse () override;

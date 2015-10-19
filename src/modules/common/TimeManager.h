@@ -24,7 +24,7 @@ public:
 	{
 	}
 
-	void operator() ()
+	void operator() () override
 	{
 		(_object->*_pFunc)();
 	}
@@ -42,7 +42,7 @@ public:
 	{
 	}
 
-	void operator() ()
+	void operator() () override
 	{
 		(_object->*_pFunc)(_param);
 	}

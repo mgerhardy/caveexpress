@@ -306,7 +306,7 @@ void Unix::backtrace (const char *errorMessage)
 			// __cxa_demangle():
 
 			int status;
-			char* funcname = abi::__cxa_demangle(beginName, NULL, 0, &status);
+			char* funcname = abi::__cxa_demangle(beginName, nullptr, nullptr, &status);
 			if (status == 0) {
 				strBuf = appendMessage(strBuf, strBufEnd, "  %s : %s +%s\n",
 						symbollist[i], funcname, beginOffset);

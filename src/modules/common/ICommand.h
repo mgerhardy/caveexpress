@@ -69,7 +69,7 @@ public:
 		_functionPtrNoParam = functionPtrNoParam;
 	}
 
-	void run (const Args& args)
+	void run (const Args& args) override
 	{
 		if (_functionPtrStr) {
 			(_object->*_functionPtrStr)(args.empty() ? "" : *args.begin());
@@ -117,7 +117,7 @@ public:
 		(*_object.*_functionPtrStr)(argument);
 	}
 
-	virtual void run (const Args& args)
+	virtual void run (const Args& args) override
 	{
 		if (_functionPtrStr) {
 			if (args.empty())

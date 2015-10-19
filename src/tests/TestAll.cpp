@@ -15,36 +15,36 @@ struct TestConfiguration {
 static TestConfiguration config;
 
 class TestConsole: public IConsole {
-	void init (IFrontend *frontend)
+	void init (IFrontend *frontend) override
 	{
 	}
 
-	void logInfo (const std::string& string)
-	{
-		if (!config.verbose)
-			return;
-		SDL_Log("%s\n", string.c_str());
-	}
-
-	void logError (const std::string& string)
+	void logInfo (const std::string& string) override
 	{
 		if (!config.verbose)
 			return;
 		SDL_Log("%s\n", string.c_str());
 	}
 
-	void logDebug (const std::string& string)
+	void logError (const std::string& string) override
 	{
 		if (!config.verbose)
 			return;
 		SDL_Log("%s\n", string.c_str());
 	}
 
-	void render ()
+	void logDebug (const std::string& string) override
+	{
+		if (!config.verbose)
+			return;
+		SDL_Log("%s\n", string.c_str());
+	}
+
+	void render () override
 	{
 	}
 
-	void update (uint32_t deltaTime)
+	void update (uint32_t deltaTime) override
 	{
 	}
 };

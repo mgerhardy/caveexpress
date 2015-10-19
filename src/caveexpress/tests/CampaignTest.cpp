@@ -92,7 +92,7 @@ TEST(CampaignTest, testMaps) {
 		Visitor() :
 				atLeastOnce(false) {
 		}
-		void visitCampaign(CampaignPtr& campaign) {
+		void visitCampaign(CampaignPtr& campaign) override {
 			const Campaign::MapList& m = campaign->getMaps();
 			ASSERT_FALSE(m.empty()) << "failed to get the maps for campaign " << campaign->getId();
 			for (Campaign::MapListConstIter i = m.begin(); i != m.end(); ++i) {

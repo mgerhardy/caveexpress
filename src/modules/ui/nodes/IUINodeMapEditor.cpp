@@ -145,7 +145,7 @@ StateChecker::~StateChecker ()
 }
 
 IUINodeMapEditor::IUINodeMapEditor (IFrontend *frontend, IMapManager& mapManager) :
-		UINode(frontend, "mapeditor"), _activeSpriteAngle(0), _activeEntityType(0), _activeEntityTypeRight(true), _selectedGridX(
+		UINode(frontend, "mapeditor"), _activeSpriteAngle(0), _activeEntityType(nullptr), _activeEntityTypeRight(true), _selectedGridX(
 				0.0f), _selectedGridY(0.0f), _gridScrollX(0), _gridScrollY(0), _activeLayer(LAYER_FOREGROUND), _buttonPressed(
 				0), _renderGrid(true), _mapManager(mapManager), _theme(&ThemeTypes::ROCK), _highlightItem(
 				nullptr), _moveTileHorizontally(false), _scrollX(0), _scrollY(0), _lastScrollUpdate(0U), _nextScrollDelta(
