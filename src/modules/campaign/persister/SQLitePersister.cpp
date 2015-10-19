@@ -18,9 +18,8 @@ SQLitePersister::~SQLitePersister ()
 
 bool SQLitePersister::init () {
 	if (!open())
-		System.exit("Could not open gamestate database", 1);
-	else
-		Log::info(LOG_CAMPAIGN, "loaded gamestate database");
+		return false;
+	Log::info(LOG_CAMPAIGN, "loaded gamestate database");
 
 	const char *sql =
 	"CREATE TABLE IF NOT EXISTS " TABLE_GAMESTATE " ("
@@ -46,8 +45,10 @@ bool SQLitePersister::init () {
 
 	Log::info(LOG_CAMPAIGN, "use %s as gamestate database file", getFilename().c_str());
 
-	if (!exec(sql))
-		System.exit("Could not create initial gamestate tables", 1);
+	if (!exec(sql)) {
+		Log::error(LOG_CAMPAIGN, "%s", getError().c_str());
+		return false;
+	}
 
 	_activeCampaign = loadActiveCampaign();
 	return true;
