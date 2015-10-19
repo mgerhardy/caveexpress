@@ -52,7 +52,7 @@ inline std::string toBitString (T type)
 	const uint8_t* raw = (const uint8_t*)&type;
 	for (size_t i = 0; i < size; ++i) {
 		const uint8_t byte = raw[i];
-		for (int b = 0; b < sizeof(uint8_t); ++b) {
+		for (int b = 0; b < (int)sizeof(uint8_t); ++b) {
 			const int bit = 1 << b;
 			if (byte & bit)
 				bits.append("1");

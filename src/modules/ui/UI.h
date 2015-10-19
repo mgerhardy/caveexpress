@@ -186,9 +186,9 @@ public:
 	void popup (const std::string& text, int flags, UIPopupCallbackPtr callback);
 
 	// IProgressCallback
-	void progressInit (int steps, const std::string& text);
-	void progressStep (const std::string& text);
-	void progressDone ();
+	void progressInit (int steps, const std::string& text) override;
+	void progressStep (const std::string& text) override;
+	void progressDone () override;
 
 	// IEventObserver
 	void onWindowResize () override;

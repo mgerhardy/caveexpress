@@ -254,7 +254,7 @@ public:
 	virtual void addFocus (int32_t x, int32_t y);
 	virtual void removeFocus ();
 	virtual void update (uint32_t deltaTime);
-	virtual void render (int x, int y) const;
+	virtual void render (int x, int y) const override;
 	virtual void renderBack (int x, int y) const;
 	virtual void renderMiddle (int x, int y) const;
 	virtual void renderTop (int x, int y) const;

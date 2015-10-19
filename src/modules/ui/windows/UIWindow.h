@@ -63,7 +63,7 @@ protected:
 public:
 	virtual ~UIWindow ();
 
-	virtual void render (int x, int y) const;
+	virtual void render (int x, int y) const override;
 
 	bool isModal () const;
 	bool isRoot () const;
