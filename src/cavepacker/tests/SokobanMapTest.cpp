@@ -106,6 +106,16 @@ TEST_F(SokobanMapTest, testRLE)
 			"r4dlrddr6(ruul)"));
 }
 
+TEST_F(SokobanMapTest, testRLESimple)
+{
+	ASSERT_EQ("lulu", Map::convertSolution("2(lu)"));
+	ASSERT_EQ("uu", Map::convertSolution("2u"));
+	ASSERT_EQ("uuddrrruuddrrr", Map::convertSolution("2(2u2d3r)"));
+	ASSERT_EQ("uuddrrruuddrrrlulu", Map::convertSolution("2(2u2d3r2(lu))"));
+	// nobody would... hopefully - but anyway
+	ASSERT_EQ("uuuu", Map::convertSolution("2(2u)"));
+}
+
 // we don't have solutions here
 TEST_F(SokobanMapTest, testTutorials)
 {
