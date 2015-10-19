@@ -31,11 +31,9 @@ const char *LOCALHOST = "localhost";
 const int PORT = 4567;
 }
 
-static NetworkTestListener listener;
-static NetworkTestServerListener serverListener;
-
 TEST(NetworkTest, testOpenServer)
 {
+	NetworkTestServerListener serverListener;
 	Network network;
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	network.closeServer();
@@ -43,6 +41,8 @@ TEST(NetworkTest, testOpenServer)
 
 TEST(NetworkTest, testOpenClient)
 {
+	NetworkTestListener listener;
+	NetworkTestServerListener serverListener;
 	Network network;
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << network.getError();
@@ -52,6 +52,8 @@ TEST(NetworkTest, testOpenClient)
 
 TEST(NetworkTest, testUpdate)
 {
+	NetworkTestListener listener;
+	NetworkTestServerListener serverListener;
 	Network network;
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << network.getError();
@@ -62,6 +64,8 @@ TEST(NetworkTest, testUpdate)
 
 TEST(NetworkTest, testSendToClient)
 {
+	NetworkTestListener listener;
+	NetworkTestServerListener serverListener;
 	Network network;
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << network.getError();
@@ -75,6 +79,7 @@ TEST(NetworkTest, testSendToClient)
 
 TEST(NetworkTest, testSendStringList)
 {
+	NetworkTestServerListener serverListener;
 	std::vector<std::string> names;
 	names.push_back("Test1");
 	names.push_back("Test2");
@@ -114,6 +119,8 @@ TEST(NetworkTest, testSendStringList)
 
 TEST(NetworkTest, testSendToServer)
 {
+	NetworkTestListener listener;
+	NetworkTestServerListener serverListener;
 	Network network;
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << network.getError();
