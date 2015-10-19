@@ -60,7 +60,9 @@ void ServiceProvider::shutdown()
 		_currentNetwork->shutdown();
 
 	delete _mapManager;
+#ifndef NONETWORK
 	delete _network;
+#endif
 	delete _loopback;
 	delete _textureDefinition;
 
