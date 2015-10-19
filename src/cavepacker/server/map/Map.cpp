@@ -344,10 +344,12 @@ bool Map::movePlayer (Player* player, char step)
 	int x;
 	int y;
 	getXY(step, x, y);
-	Log::debug(LOG_GAMEIMPL, "move player %i:%i (current: %i:%i)", x, y, player->getCol(), player->getRow());
+	const int col = player->getCol();
+	const int row = player->getRow();
+	Log::debug(LOG_GAMEIMPL, "move player %i:%i (current: %i:%i)", x, y, col, row);
 	// move player and move touching packages
-	const int targetCol = player->getCol() + x;
-	const int targetRow = player->getRow() + y;
+	const int targetCol = col + x;
+	const int targetRow = row + y;
 	MapTile* package = getPackage(targetCol, targetRow);
 	if (package != nullptr) {
 		const int pCol = targetCol + x;
@@ -360,14 +362,15 @@ bool Map::movePlayer (Player* player, char step)
 			Log::debug(LOG_GAMEIMPL, "failed to move the package - thus can't move the player");
 			return false;
 		}
-		Log::debug(LOG_GAMEIMPL, "moved package %i", package->getID());
+		const int packageId = package->getID();
+		Log::debug(LOG_GAMEIMPL, "moved package %i", packageId);
 		increasePushes();
 		rebuildField();
 		if (_state.isTarget(pCol, pRow)) {
 			package->setState(CavePackerEntityStates::DELIVERED);
-			Log::debug(LOG_GAMEIMPL, "mark package as delivered %i", package->getID());
+			Log::debug(LOG_GAMEIMPL, "mark package as delivered %i", packageId);
 		} else if (package->getState() == CavePackerEntityStates::DELIVERED) {
-			Log::debug(LOG_GAMEIMPL, "reset package state %i", package->getID());
+			Log::debug(LOG_GAMEIMPL, "reset package state %i", packageId);
 			package->setState(CavePackerEntityStates::NONE);
 		}
 		// sokoban standard - if a package was moved, the move char is uppercase
