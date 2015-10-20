@@ -365,6 +365,9 @@ TEST_F(BoardStateTest, testSimpleDeadlocks) {
 		"#  @.#\n"
 		"#.####\n"
 		"###\n");
+}
+
+TEST_F(BoardStateTest, testNoDeadlocksTutorialMap) {
 	testNoSimpleDeadlock(
 		"#########\n"
 		"#@      #\n"
