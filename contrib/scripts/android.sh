@@ -12,5 +12,5 @@ make $*
 cd ..
 mkdir -p cp-build-android-hd
 cd cp-build-android-hd
-cmake $DIR/../.. -DRELEASE=${RELEASE} -DMINIRACER=OFF -DCAVEPACKER=OFF -DHD_VERSION=ON -DCMAKE_TOOLCHAIN_FILE=$DIR/../../cmake/toolchains/android-toolchain.cmake
+cmake $DIR/../.. -DANDROID_INSTALL_PACKAGES=${INSTALL_PACKAGES} -DRELEASE=${RELEASE} -DCMAKE_TOOLCHAIN_FILE=$DIR/../../cmake/toolchains/android-toolchain.cmake -DMINIRACER=OFF -DCAVEPACKER=OFF -DHD_VERSION=ON
 make $*
