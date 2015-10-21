@@ -1066,7 +1066,7 @@ sprites = {
 		fps = 5,
 	},
 	["ui-npc-mammut"] = {
-		fps = 8,
+		fps = 11,
 	},
 	["icon-heart"] = {},
 }
