@@ -24,7 +24,7 @@ public:
 	// IMapContext
 	void onMapLoaded () override;
 	bool load (bool skipErrors) override;
-	bool save () const override { return false; }
+	bool save () const override;
 };
 
 }

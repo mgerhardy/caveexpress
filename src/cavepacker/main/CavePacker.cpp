@@ -1,8 +1,12 @@
 #include "CavePacker.h"
 #include "ui/UI.h"
+#include "cavepacker/client/commands/CmdMapOpenInEditor.h"
 #include "cavepacker/client/ui/windows/UIMainWindow.h"
 #include "cavepacker/client/ui/windows/UIMapWindow.h"
 #include "cavepacker/client/ui/windows/intro/IntroGame.h"
+#include "cavepacker/client/ui/nodes/UINodeMapEditor.h"
+#include "cavepacker/client/ui/nodes/UINodeSpriteSelector.h"
+#include "cavepacker/client/ui/nodes/UINodeEntitySelector.h"
 #include "cavepacker/client/CavePackerClientMap.h"
 #include "cavepacker/server/network/SpawnHandler.h"
 #include "cavepacker/server/network/DisconnectHandler.h"
@@ -21,6 +25,7 @@
 #include "cavepacker/shared/network/ProtocolMessageTypes.h"
 #include "cavepacker/shared/network/messages/ShowDeadlocksMessage.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
+#include "cavepacker/shared/constants/Commands.h"
 #include "client/entities/ClientEntityFactory.h"
 #include "client/entities/ClientMapTile.h"
 #include "network/ProtocolHandlerRegistry.h"
@@ -46,6 +51,9 @@
 #include "ui/windows/UIGestureWindow.h"
 #include "ui/windows/UICreateServerWindow.h"
 #include "ui/windows/UIMultiplayerWindow.h"
+#include "ui/windows/IUIMapEditorWindow.h"
+#include "ui/windows/UIMapEditorHelpWindow.h"
+#include "ui/windows/IUIMapEditorOptionsWindow.h"
 #include "cavepacker/shared/CavePackerSQLitePersister.h"
 #include "cavepacker/shared/CavePackerMapManager.h"
 #include <SDL.h>
@@ -91,7 +99,8 @@ CavePacker::~CavePacker ()
 	delete _clientMap;
 }
 
-DirectoryEntries CavePacker::listDirectory(const std::string& basedir, const std::string& subdir) {
+DirectoryEntries CavePacker::listDirectory(const std::string& basedir, const std::string& subdir)
+{
 	DirectoryEntries entriesAll;
 	#include "cavepacker-files.h"
 	return entriesAll;
@@ -324,6 +333,16 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UICavePackerMapOptionsWindow(frontend, serviceProvider));
 	ui.addWindow(new UIMultiplayerWindow(frontend, serviceProvider.getMapManager(), serviceProvider));
 	ui.addWindow(new UICreateServerWindow(frontend, serviceProvider.getMapManager()));
+
+	UINodeMapEditor* editor = new UINodeMapEditor(frontend, serviceProvider.getMapManager());
+	UINodeSpriteSelector* spriteSelector = new UINodeSpriteSelector(frontend);
+	UINodeEntitySelector* entitySelector = new UINodeEntitySelector(frontend);
+	IUIMapEditorWindow* mapEditorWindow = new IUIMapEditorWindow(frontend, serviceProvider.getMapManager(), editor, spriteSelector, entitySelector);
+	ui.addWindow(mapEditorWindow);
+	ui.addWindow(new UIMapEditorHelpWindow(frontend));
+	ui.addWindow(new IUIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));
+
+	Commands.registerCommand(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
 }
 
 bool CavePacker::visitEntity (IEntity *entity)

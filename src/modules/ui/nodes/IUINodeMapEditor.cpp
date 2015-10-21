@@ -914,116 +914,50 @@ bool IUINodeMapEditor::shouldSaveEmitter (const TileItem& tile) const
 	return tile.entityType != nullptr;
 }
 
-void IUINodeMapEditor::saveTiles (const FilePtr& file, const TileItems& map) const
-{
-	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
-		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
-			continue;
-		if (shouldSaveTile(*i)) {
-			file->appendString("\tmap:addTile(\"");
-			file->appendString(i->def->id.c_str());
-			file->appendString("\", ");
-			file->appendString(string::toString(i->gridX).c_str());
-			file->appendString(", ");
-			file->appendString(string::toString(i->gridY).c_str());
-			if (i->angle != 0) {
-				file->appendString(", ");
-				file->appendString(string::toString(i->angle).c_str());
-			}
-			file->appendString(")\n");
-		}
-	}
-	file->appendString("\n");
-
-	bool emitterAdded = false;
-	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
-		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
-			continue;
-		if (!shouldSaveEmitter(*i))
-			continue;
-		file->appendString("\tmap:addEmitter(");
-		file->appendString("\"");
-		file->appendString(i->entityType->name.c_str());
-		file->appendString("\", ");
-		file->appendString(string::toString(i->gridX).c_str());
-		file->appendString(", ");
-		file->appendString(string::toString(i->gridY).c_str());
-		file->appendString(", ");
-		file->appendString(string::toString(std::min(50, i->amount)).c_str());
-		file->appendString(", ");
-		file->appendString(string::toString(i->delay).c_str());
-		file->appendString(", \"");
-		file->appendString(i->settings.c_str());
-		file->appendString("\")\n");
-		emitterAdded = true;
-	}
-
-	if (emitterAdded)
-		file->appendString("\n");
-}
-
 bool IUINodeMapEditor::save ()
 {
 	// nothing to save here
 	if (_undoStates.empty())
 		return false;
 
+	// put into the settings map
+	setMapDimensions(_mapWidth, _mapHeight);
+
 	TileItems map = _map;
 	map.sort();
 
-	const std::string path = FS.getAbsoluteWritePath() + FS.getDataDir() + FS.getMapsDir() + _fileName + ".lua";
-	SDL_RWops *rwops = FS.createRWops(path, "wb");
-	FilePtr file(new File(rwops, path));
+	std::unique_ptr<IMapContext> ctx(getContext(_fileName));
+	ctx->setSettings(_settings);
+	ctx->setStartPositions(_startPositions);
+	ctx->setTitle(_mapName);
 
-	file->writeString("function getName()\n");
-	file->appendString("\treturn \"");
-	file->appendString(_mapName.c_str());
-	file->appendString("\"\n");
-	file->appendString("end\n\n");
-	file->appendString("function onMapLoaded()\n");
-	file->appendString("end\n\n");
-	file->appendString("function initMap()\n");
-	file->appendString("\t-- get the current map context\n");
-	file->appendString("\tlocal map = Map.get()\n");
-
-	saveTiles(file, map);
-
-	IMap::SettingsMap& settings = _settings;
-	file->appendString("\tmap:setSetting(\"");
-	file->appendString(msn::WIDTH.c_str());
-	file->appendString("\", \"");
-	file->appendString(settings[msn::WIDTH].c_str());
-	file->appendString("\")\n");;
-	file->appendString("\tmap:setSetting(\"");
-	file->appendString(msn::HEIGHT.c_str());
-	file->appendString("\", \"");
-	file->appendString(settings[msn::HEIGHT].c_str());
-	file->appendString("\")\n");
-	for (IMap::SettingsMapConstIter i = settings.begin(); i != settings.end(); ++i) {
-		if (i->first == msn::WIDTH || i->first == msn::HEIGHT)
+	std::vector<MapTileDefinition> definitions;
+	std::vector<EmitterDefinition> emitters;
+	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
+		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
 			continue;
-		file->appendString("\tmap:setSetting(\"");
-		file->appendString(i->first.c_str());
-		file->appendString("\", \"");
-		file->appendString(i->second.c_str());
-		file->appendString("\")\n");
+		if (shouldSaveTile(*i)) {
+			const MapTileDefinition d(i->gridX, i->gridY, i->def, i->angle);
+			definitions.push_back(d);
+		}
 	}
 
-	for (const IMap::StartPosition& pos : _startPositions) {
-		file->appendString("\tmap:addStartPosition(\"");
-		file->appendString(pos._x.c_str());
-		file->appendString("\", \"");
-		file->appendString(pos._y.c_str());
-		file->appendString("\")\n");
+	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
+		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
+			continue;
+		if (shouldSaveEmitter(*i)) {
+			const EmitterDefinition e(i->gridX, i->gridY, *i->entityType, i->amount, i->delay, i->settings);
+			emitters.push_back(e);
+		}
 	}
 
-	file->appendString("end\n");
+	ctx->setMapTileDefinitions(definitions);
+	ctx->setEmitterDefinitions(emitters);
 
-	Log::info(LOG_UI, "wrote %s", path.c_str());
 	_lastMap->setValue(_fileName);
 	_mapManager.loadMaps();
 	_lastSave = _undoStates.size();
-	return true;
+	return ctx->save();
 }
 
 void IUINodeMapEditor::loadFromContext (IMapContext& ctx)

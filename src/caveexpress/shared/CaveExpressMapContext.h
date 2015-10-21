@@ -72,10 +72,20 @@ public:
 			file->appendString(string::toString(i.x).c_str());
 			file->appendString(", ");
 			file->appendString(string::toString(i.y).c_str());
-			file->appendString(", \"");
-			file->appendString(i.type->name.c_str());
-			file->appendString("\", ");
-			file->appendString(string::toString(i.delay).c_str());
+			if (!i.type->isNone()) {
+				file->appendString(", \"");
+				file->appendString(i.type->name.c_str());
+				file->appendString("\"");
+			}
+			if (i.delay > -1) {
+				if (!i.type->isNone()) {
+					file->appendString(", \"");
+					file->appendString(i.type->name.c_str());
+					file->appendString("\"");
+				}
+				file->appendString(", ");
+				file->appendString(string::toString(i.delay).c_str());
+			}
 			file->appendString(")\n");
 		}
 	}

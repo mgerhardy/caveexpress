@@ -157,12 +157,16 @@ void LUAMapContext::saveTiles(const FilePtr& file) const {
 		file->appendString(string::toString(i.x).c_str());
 		file->appendString(", ");
 		file->appendString(string::toString(i.y).c_str());
+		if (i.angle != 0) {
+			file->appendString(", ");
+			file->appendString(string::toString(i.angle).c_str());
+		}
 		file->appendString(")\n");
 	}
 
-	if (!_emitters.empty()) {
-		file->appendString("\n");
-	}
+	file->appendString("\n");
+
+	bool emitterAdded = false;
 	for (const EmitterDefinition& i : _emitters) {
 		file->appendString("\tmap:addEmitter(\"");
 		file->appendString(i.type->name.c_str());
@@ -172,8 +176,15 @@ void LUAMapContext::saveTiles(const FilePtr& file) const {
 		file->appendString(string::toString(i.y).c_str());
 		file->appendString(", ");
 		file->appendString(string::toString(i.amount).c_str());
-		file->appendString(")\n");
+		file->appendString(", ");
+		file->appendString(string::toString(i.delay).c_str());
+		file->appendString(", \"");
+		file->appendString(i.settings.c_str());
+		file->appendString("\")\n");
+		emitterAdded = true;
 	}
+	if (emitterAdded)
+		file->appendString("\n");
 }
 
 bool LUAMapContext::save() const
@@ -195,11 +206,26 @@ bool LUAMapContext::save() const
 
 	saveTiles(file);
 
-	const IMap::SettingsMap& map = getSettings();
-	if (!map.empty()) {
-		file->appendString("\n");
+	const IMap::SettingsMap& settings = _settings;
+	const auto width = settings.find(msn::WIDTH);
+	if (width != settings.end()) {
+		file->appendString("\tmap:setSetting(\"");
+		file->appendString(msn::WIDTH.c_str());
+		file->appendString("\", \"");
+		file->appendString(width->second.c_str());
+		file->appendString("\")\n");;
 	}
-	for (IMap::SettingsMapConstIter i = map.begin(); i != map.end(); ++i) {
+	const auto height = settings.find(msn::HEIGHT);
+	if (height != settings.end()) {
+		file->appendString("\tmap:setSetting(\"");
+		file->appendString(msn::HEIGHT.c_str());
+		file->appendString("\", \"");
+		file->appendString(height->second.c_str());
+		file->appendString("\")\n");
+	}
+	for (IMap::SettingsMapConstIter i = settings.begin(); i != settings.end(); ++i) {
+		if (i->first == msn::WIDTH || i->first == msn::HEIGHT)
+			continue;
 		file->appendString("\tmap:setSetting(\"");
 		file->appendString(i->first.c_str());
 		file->appendString("\", \"");
@@ -216,6 +242,8 @@ bool LUAMapContext::save() const
 	}
 
 	file->appendString("end\n");
+
+	Log::info(LOG_UI, "wrote %s", path.c_str());
 
 	return true;
 }

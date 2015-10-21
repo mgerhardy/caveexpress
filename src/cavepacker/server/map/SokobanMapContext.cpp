@@ -2,6 +2,7 @@
 #include "common/FileSystem.h"
 #include "common/Log.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
+#include "cavepacker/shared/CavePackerSpriteType.h"
 
 namespace cavepacker {
 
@@ -28,6 +29,88 @@ bool SokobanMapContext::isEmpty(int col, int row) const {
 			continue;
 		return false;
 	}
+	return true;
+}
+
+static inline int getIndex(int col, int row, int width) {
+	return col + width * row;
+}
+
+bool SokobanMapContext::save () const {
+	const IMap::SettingsMap& settings = _settings;
+	const auto widthIter = settings.find(msn::WIDTH);
+	if (widthIter == settings.end()) {
+		return false;
+	}
+	const auto heightIter = settings.find(msn::HEIGHT);
+	if (heightIter == settings.end()) {
+		return false;
+	}
+
+	const std::string path = FS.getAbsoluteWritePath() + FS.getDataDir() + FS.getMapsDir() + _name + ".sok";
+	SDL_RWops *rwops = FS.createRWops(path, "wb");
+	FilePtr file(new File(rwops, path));
+
+	const int width = string::toInt(widthIter->second);
+	const int height = string::toInt(heightIter->second);
+
+	file->writeString(";");
+	file->appendString(_name.c_str());
+	file->appendString("\n");
+
+	std::vector<char> board;
+	board.resize(width * height, Sokoban::GROUND);
+
+	for (const MapTileDefinition& i : _definitions) {
+		const int index = getIndex(i.x, i.y, width);
+		char field = Sokoban::GROUND;
+		if (SpriteTypes::SOLID == i.spriteDef->type) {
+			field = Sokoban::WALL;
+		}
+		Log::error(LOG_GAMEIMPL, "field: %c at index %i", field, index);
+		board[index] = field;
+	}
+	for (const EmitterDefinition& i : _emitters) {
+		const int index = getIndex(i.x, i.y, width);
+		char field = Sokoban::GROUND;
+		if (EntityTypes::isGround(*i.type)) {
+			field = Sokoban::GROUND;
+		} else if (EntityTypes::isSolid(*i.type)) {
+			field = Sokoban::WALL;
+		} else if (EntityTypes::isPackage(*i.type)) {
+			field = Sokoban::PACKAGE;
+		} else if (EntityTypes::isTarget(*i.type)) {
+			field = Sokoban::TARGET;
+		}
+		if (isTarget(board[index] && isPackage(field))) {
+			field = Sokoban::PACKAGEONTARGET;
+		}
+		board[index] = field;
+	}
+
+	for (const IMap::StartPosition& pos : _startPositions) {
+		const int x = string::toInt(pos._x);
+		const int y = string::toInt(pos._y);
+		const int index = getIndex(x, y, width);
+		if (isTarget(board[index])) {
+			board[index] = Sokoban::PLAYERONTARGET;
+		} else {
+			board[index] = Sokoban::PLAYER;
+		}
+	}
+
+	int col = 0;
+	for (int i = 0; i < width * height; ++i) {
+		const char field = board[i];
+		char str[2] = { field, '\0' };
+		file->appendString(str);
+		++col;
+		if (col >= width) {
+			file->appendString("\n");
+			col = 0;
+		}
+	}
+
 	return true;
 }
 

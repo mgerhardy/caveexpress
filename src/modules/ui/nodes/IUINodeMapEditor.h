@@ -253,7 +253,6 @@ protected:
 
 	virtual bool shouldSaveTile (const TileItem& tile) const;
 	virtual bool shouldSaveEmitter (const TileItem& tile) const;
-	virtual void saveTiles(const FilePtr& file, const TileItems& map) const;
 
 	virtual void doClear ();
 	void shift (int shiftX, int shiftY);

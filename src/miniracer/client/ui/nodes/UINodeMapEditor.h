@@ -29,7 +29,7 @@ public:
 			return;
 		for (int w = 0; w < _mapWidth; ++w) {
 			for (int h = 0; h < _mapHeight; ++h) {
-				placeTileItem (def, nullptr, w, h, getLayer(SpriteTypes::LAND), false, 0.0f);
+				placeTileItem(def, nullptr, w, h, getLayer(SpriteTypes::LAND), false, 0.0f);
 			}
 		}
 	}
