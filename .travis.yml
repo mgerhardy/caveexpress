@@ -114,8 +114,8 @@ notifications:
 
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5"; fi
-  - gem install xcpretty
-  - gem install xcpretty-travis-formatter
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then gem install xcpretty; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then gem install xcpretty-travis-formatter; fi
 
 before_install:
   - export TERM=dumb
