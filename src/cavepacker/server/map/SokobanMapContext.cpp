@@ -84,13 +84,14 @@ bool SokobanMapContext::save () const {
 	for (const EmitterDefinition& i : _emitters) {
 		const int index = getIndex(i.x, i.y, width);
 		char field = Sokoban::GROUND;
-		if (EntityTypes::isGround(*i.type)) {
+		const EntityType& type = *i.type;
+		if (EntityTypes::isGround(type)) {
 			field = Sokoban::GROUND;
-		} else if (EntityTypes::isSolid(*i.type)) {
+		} else if (EntityTypes::isSolid(type)) {
 			field = Sokoban::WALL;
-		} else if (EntityTypes::isPackage(*i.type)) {
+		} else if (EntityTypes::isPackage(type)) {
 			field = Sokoban::PACKAGE;
-		} else if (EntityTypes::isTarget(*i.type)) {
+		} else if (EntityTypes::isTarget(type)) {
 			field = Sokoban::TARGET;
 		}
 		if (isTarget(board[index] && isPackage(field))) {
