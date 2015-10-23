@@ -64,8 +64,19 @@ bool SokobanMapContext::save () const {
 	for (const MapTileDefinition& i : _definitions) {
 		const int index = getIndex(i.x, i.y, width);
 		char field = Sokoban::GROUND;
-		if (SpriteTypes::SOLID == i.spriteDef->type) {
+		const SpriteType& spriteType = i.spriteDef->type;
+		if (SpriteTypes::isSolid(spriteType)) {
 			field = Sokoban::WALL;
+		} else if (SpriteTypes::isTarget(spriteType)) {
+			field = Sokoban::TARGET;
+		} else if (SpriteTypes::isPackage(spriteType)) {
+			field = Sokoban::PACKAGE;
+		}
+		if (board[index] == Sokoban::TARGET) {
+			if (field == Sokoban::PLAYER)
+				field = Sokoban::PLAYERONTARGET;
+			else if (field == Sokoban::PACKAGE)
+				field = Sokoban::PACKAGEONTARGET;
 		}
 		Log::error(LOG_GAMEIMPL, "field: %c at index %i", field, index);
 		board[index] = field;
