@@ -78,7 +78,7 @@ bool SokobanMapContext::save () const {
 			else if (field == Sokoban::PACKAGE)
 				field = Sokoban::PACKAGEONTARGET;
 		}
-		Log::error(LOG_GAMEIMPL, "field: %c at index %i", field, index);
+		Log::debug(LOG_GAMEIMPL, "field: %c at index %i", field, index);
 		board[index] = field;
 	}
 	for (const EmitterDefinition& i : _emitters) {
