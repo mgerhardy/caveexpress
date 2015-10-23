@@ -10,7 +10,7 @@ class UINodeEntitySelector: public IUINodeEntitySelector {
 protected:
 	// can be used to filter out some sprites
 	virtual bool shouldBeShown(const EntityType& type) const override {
-		return true;
+		return EntityTypes::isDynamic(type);
 	}
 
 	virtual const Animation& getAnimation(const EntityType& type) const override {

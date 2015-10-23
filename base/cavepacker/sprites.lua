@@ -4,7 +4,7 @@ sprites = {
 	["package"] = { type = "package", },
 	["package-delivered"] = { type = "package", },
 	["package-deadlock"] = { type = "package", },
-	["deadlock"] = { type = "ground", },
+	["deadlock"] = {},
 	["tile-background-01"] = { type = "ground", },
 	["tile-background-02"] = { type = "ground", },
 	["tile-background-03"] = { type = "ground", },
