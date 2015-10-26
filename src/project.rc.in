@@ -10,7 +10,7 @@
 1 ICON DISCARDABLE "contrib/icon.ico"
 
 #define ID_GDF_XML __GDF_XML
-ID_GDF_XML DATA "contrib/installer/windows/gameexplorer.xml"
+ID_GDF_XML DATA @GAMEEXPLORER_XML@
 
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION 1,6,0,0
