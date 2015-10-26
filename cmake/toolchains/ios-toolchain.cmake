@@ -5,7 +5,8 @@ set(CMAKE_OSX_ARCHITECTURES "armv7")
 set(CMAKE_OSX_SYSROOT "iphoneos")
 set(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator")
 set(CMAKE_MACOSX_BUNDLE YES)
-set(CMAKE_XCODE_ATTRIBUTE_PRODUCT_TYPE "com.apple.product-type.tool")
+# should be done by MACOSX_BUNDLE property
+#set(CMAKE_XCODE_ATTRIBUTE_PRODUCT_TYPE "com.apple.product-type.tool")
 
 include(CMakeForceCompiler)
 CMAKE_FORCE_C_COMPILER(clang Clang)
