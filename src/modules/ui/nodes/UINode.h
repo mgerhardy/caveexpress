@@ -182,7 +182,11 @@ protected:
 
 	inline void enableScissor (int x, int y) const
 	{
-		enableScissor(x + getRenderX(), y + getRenderY(), getRenderWidth(), getRenderHeight());
+		const int nx = x + getRenderX();
+		const int ny = y + getRenderY();
+		const int nw = getRenderWidth();
+		const int nh = getRenderHeight();
+		enableScissor(nx, ny, nw, nh);
 	}
 
 	inline void enableScissor (int x, int y, int w, int h) const
