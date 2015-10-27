@@ -1,3 +1,5 @@
+version: 0.1-{build}
+
 os:
   - Windows Server 2012 R2
 
@@ -19,8 +21,8 @@ before_build:
   - cmake -DTOOLS=OFF -G "Visual Studio 12"
 
 after_build:
-  - '"%NSIS_ROOT%\makensis" -DPRODUCT_NAME=cavepacker -DPRODUCT_VERSION=0.1 contrib/installer/windows/setup.nsi'
-  - '"%NSIS_ROOT%\makensis" -DPRODUCT_NAME=caveexpress -DPRODUCT_VERSION=0.1 contrib/installer/windows/setup.nsi'
+  - '"%NSIS_ROOT%\makensis" -DPRODUCT_NAME=cavepacker -DPRODUCT_VERSION=%APPVEYOR_BUILD_VERSION% contrib/installer/windows/setup.nsi'
+  - '"%NSIS_ROOT%\makensis" -DPRODUCT_NAME=caveexpress -DPRODUCT_VERSION=%APPVEYOR_BUILD_VERSION% contrib/installer/windows/setup.nsi'
 
 build:
   parallel: true
