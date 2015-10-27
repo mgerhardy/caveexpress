@@ -21,7 +21,7 @@ public:
 		return new SokobanMapContext(mapname);
 	}
 
-	virtual const Animation& getEmitterAnimation(const EntityType& type) const {
+	virtual const Animation& getEmitterAnimation(const EntityType& type) const override {
 		return Animation::NONE;
 	}
 
@@ -33,7 +33,7 @@ public:
 		}
 	}
 
-	virtual MapEditorLayer getLayer (const SpriteType& type) const {
+	virtual MapEditorLayer getLayer (const SpriteType& type) const override {
 		if (SpriteTypes::isMapTile(type))
 			return LAYER_BACKGROUND;
 		if (SpriteTypes::isPackage(type))
