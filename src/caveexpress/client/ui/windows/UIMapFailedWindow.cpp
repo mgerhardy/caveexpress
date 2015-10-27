@@ -1,7 +1,7 @@
 #include "UIMapFailedWindow.h"
 #include "ui/UI.h"
 #include "ui/nodes/UINodeBackButton.h"
-#include "ui/nodes/UINodeButton.h"
+#include "ui/nodes/UINodeMainButton.h"
 #include "ui/layouts/UIHBoxLayout.h"
 #include "caveexpress/client/ui/nodes/UINodeBackgroundScene.h"
 #include "ui/nodes/UINodeContinuePlay.h"
@@ -20,16 +20,12 @@ UIMapFailedWindow::UIMapFailedWindow (IFrontend *frontend, CampaignManager& camp
 		_background->setOnActivate(CMD_UI_POP);
 	add(_background);
 
-	UINode *buttons = new UINode(frontend);
-	buttons->setLayout(new UIHBoxLayout());
-	buttons->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_BOTTOM);
-
-	_replayCampaign = new UINodeButton(frontend);
-	_replayCampaign->setImage("icon-reload");
+	_replayCampaign = new UINodeMainButton(frontend, tr("Retry"));
+	const float gapBack = std::max(0.01f, getScreenPadding());
+	_replayCampaign->alignTo(_background, NODE_ALIGN_BOTTOM | NODE_ALIGN_RIGHT, gapBack);
 	_replayCampaign->addListener(UINodeListenerPtr(new ReplayNodeListener(_campaignManager)));
-	buttons->add(_replayCampaign);
+	add(_replayCampaign);
 
-	add(buttons);
 	if (!wantBackButton()) {
 		return;
 	}
