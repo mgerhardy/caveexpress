@@ -16,6 +16,7 @@
 #include "common/LUA.h"
 #include <string>
 #include <vector>
+#include <list>
 #include <unordered_map>
 
 // forward decl
@@ -96,7 +97,7 @@ public:
 	typedef CaveList::iterator CaveListIter;
 	typedef CaveList::const_iterator CaveListConstIter;
 
-	typedef std::vector<NPCFriendly*> NPCList;
+	typedef std::list<NPCFriendly*> NPCList;
 	typedef NPCList::iterator NPCListIter;
 	typedef NPCList::const_iterator NPCListConstIter;
 
@@ -142,8 +143,13 @@ protected:
 	int32_t _physicsTime;
 	uint32_t _nextFriendlyNPCSpawn;
 
+	// the already transfered friendly npcs
 	uint32_t _transferedNPCs;
+	// the amount of friendly npc that must be transfered before a map counts as won
 	uint32_t _transferedNPCLimit;
+	// the already spawned friendly npcs
+	uint32_t _friendlyNPCCount;
+	// the max amount to spawn (they can die)
 	uint32_t _friendlyNPCLimit;
 	uint32_t _caveCounter;
 

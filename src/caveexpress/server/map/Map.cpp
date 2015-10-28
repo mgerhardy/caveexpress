@@ -336,6 +336,15 @@ bool Map::isFailed () const
 	if (_players.empty())
 		return true;
 
+	if (_friendlyNPCLimit > 0) {
+		// if we support friendly npcs in this map, and all of them are (or were) already spawned,
+		// but none is available anymore, this map is lost
+		if (_friendlyNPCCount >= _friendlyNPCLimit) {
+			if (_friendlyNPCs.empty())
+				return true;
+		}
+	}
+
 	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
 		const Player* player = *i;
 		if (!player->isCrashed()) {
@@ -429,6 +438,7 @@ void Map::resetCurrentMap ()
 	_spawnFlyingNPCTime = 0;
 	_activateflyingNPC = false;
 	_friendlyNPCLimit = 0;
+	_friendlyNPCCount = 0;
 	_caveCounter = 0;
 	_spawnFishNPCTime = 0;
 	_initialGeyserDelay = 0;
@@ -1383,6 +1393,7 @@ NPCFriendly* Map::createFriendlyNPC(CaveMapTile* cave, const EntityType& type, b
 	NPCFriendly* npc = new NPCFriendly(cave, type, returnToCaveOnIdle);
 	npc->setTargetCave(targetCave);
 	_friendlyNPCs.push_back(npc);
+	++_friendlyNPCCount;
 
 	addEntity(npc);
 
@@ -1796,10 +1807,11 @@ void Map::visitEntities (IEntityVisitor *visitor, const EntityType& type)
 		IEntity* e = *i;
 		if (type.isNone() || e->getType() == type) {
 			if (visitor->visitEntity(e)) {
+				_friendlyNPCs.remove((NPCFriendly*)e);
 				Log::debug(LOG_GAMEIMPL, "remove entity by visit %i: %s", e->getID(), e->getType().name.c_str());
 				GameEvent.removeEntity(e->getVisMask(), *e, EntityTypes::isNpcCave(e->getType()));
-				(*i)->prepareRemoval();
-				delete *i;
+				e->prepareRemoval();
+				delete e;
 				i = _entities.erase(i);
 			} else {
 				++i;
