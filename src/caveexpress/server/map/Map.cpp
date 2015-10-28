@@ -370,6 +370,10 @@ const MapFailedReason& Map::getFailReason (const Player* player) const
 		return MapFailedReasons::FAILED_WATER_HEIGHT;
 	}
 
+	if (_transferedNPCLimit > 0 && _friendlyNPCLimit <= 0) {
+		return MapFailedReasons::FAILED_ALL_NPCS_DIED;
+	}
+
 	return MapFailedReasons::FAILED_NO_MORE_PLAYERS;
 }
 
