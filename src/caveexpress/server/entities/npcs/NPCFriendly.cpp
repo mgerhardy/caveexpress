@@ -78,9 +78,8 @@ bool NPCFriendly::triggerTargetCaveAnnouncement (const b2Vec2& playerPos)
 	if (distance > _swimmingDistance)
 		return false;
 	if (_triggerMovement == 0) {
-		const int delayMilliSeconds = 2000;
-		_triggerMovement = _time + delayMilliSeconds;
-		GameEvent.announceTargetCave(getVisMask(), *this, delayMilliSeconds);
+		_triggerMovement = _time + 400;
+		GameEvent.announceTargetCave(getVisMask(), *this, 2000);
 		return false;
 	}
 	return _time > _triggerMovement;
