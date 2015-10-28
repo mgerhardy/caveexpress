@@ -1,13 +1,14 @@
 #include "UIMapFinishedWindow.h"
 #include "ui/UI.h"
 #include "ui/nodes/UINodeBackButton.h"
+#include "ui/nodes/UINodeMainButton.h"
 #include "ui/nodes/UINodePoint.h"
 #include "ui/nodes/UINodeButton.h"
 #include "ui/layouts/UIHBoxLayout.h"
 #include "ui/nodes/UINodeBackground.h"
-#include "ui/nodes/UINodeContinuePlay.h"
 #include "ui/nodes/UINodeStar.h"
 #include "ui/windows/main/ReplayNodeListener.h"
+#include "ui/windows/main/ContinuePlayNodeListener.h"
 #include "common/ConfigManager.h"
 #include <string>
 
@@ -31,20 +32,20 @@ UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& 
 	}
 	add(stars);
 
+	const float gapBack = std::max(0.01f, getScreenPadding());
 	UINode *bigButtons = new UINode(frontend);
 	bigButtons->setLayout(new UIHBoxLayout());
 	bigButtons->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_MIDDLE);
 
-	UINodeContinuePlay *continueCampaign = new UINodeContinuePlay(frontend, campaignManager, serviceProvider);
-	bigButtons->add(continueCampaign);
+	UINodeMainButton *continueCampaign = new UINodeMainButton(frontend, tr("Continue"));
+	continueCampaign->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_RIGHT, gapBack);
+	continueCampaign->addListener(UINodeListenerPtr(new ContinuePlayNodeListener(campaignManager, serviceProvider)));
+	add(continueCampaign);
 
-	_replayCampaign = new UINodeButton(frontend);
-	_replayCampaign->setImage("icon-reload");
-	_replayCampaign->setSize(continueCampaign->getWidth(), continueCampaign->getHeight());
+	_replayCampaign = new UINodeMainButton(frontend, tr("Retry"));
+	_replayCampaign->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_CENTER, gapBack);
 	_replayCampaign->addListener(UINodeListenerPtr(new ReplayNodeListener(campaignManager)));
-	bigButtons->add(_replayCampaign);
-
-	add(bigButtons);
+	add(_replayCampaign);
 
 	UINodePoint *points = new UINodePoint(frontend);
 	points->setFont(LARGE_FONT);

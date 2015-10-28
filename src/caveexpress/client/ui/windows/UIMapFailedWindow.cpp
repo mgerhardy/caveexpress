@@ -4,7 +4,6 @@
 #include "ui/nodes/UINodeMainButton.h"
 #include "ui/layouts/UIHBoxLayout.h"
 #include "caveexpress/client/ui/nodes/UINodeBackgroundScene.h"
-#include "ui/nodes/UINodeContinuePlay.h"
 #include "ui/windows/main/ReplayNodeListener.h"
 #include <string>
 
