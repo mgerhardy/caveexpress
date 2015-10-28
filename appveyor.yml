@@ -30,6 +30,6 @@ build:
 
 artifacts:
   - name: Installer CaveExpress
-    path: 'contrib/installer/windows/caveexpress-%APPVEYOR_BUILD_VERSION%.exe'
+    path: caveexpress/contrib/installer/windows/caveexpress-$(APPVEYOR_BUILD_VERSION).exe
   - name: Installer CavePacker
-    path: 'contrib/installer/windows/cavepacker-%APPVEYOR_BUILD_VERSION%.exe'
+    path: contrib/installer/windows/cavepacker-$(APPVEYOR_BUILD_VERSION).exe
