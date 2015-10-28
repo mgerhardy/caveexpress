@@ -296,7 +296,10 @@ void NPC::setDying (const IEntity* entity)
 		Achievements::DAZE_PTERODACTYLS.unlock();
 	}
 	setAnimationType(getFallingAnimation());
-	_map.addPoints(entity, 15);
+
+	if (EntityTypes::isNpcAggressive(_type)) {
+		_map.addPoints(entity, 15);
+	}
 }
 
 void NPC::setState (int state)
