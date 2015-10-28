@@ -16,7 +16,7 @@
 #include "common/LUA.h"
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 // forward decl
 class SpriteDef;
@@ -186,9 +186,9 @@ protected:
 
 	uint16_t _gamePoints;
 
-	typedef std::map<int, Platform*> PlatformXMap;
+	typedef std::unordered_map<int, Platform*> PlatformXMap;
 	typedef PlatformXMap::const_iterator PlatformXMapConstIter;
-	typedef std::map<int, PlatformXMap> PlatformYMap;
+	typedef std::unordered_map<int, PlatformXMap> PlatformYMap;
 	typedef PlatformYMap::const_iterator PlatformYMapConstIter;
 	PlatformYMap _platforms;
 	const ThemeType* _theme;
