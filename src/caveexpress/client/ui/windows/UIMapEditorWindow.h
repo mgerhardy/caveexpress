@@ -8,7 +8,6 @@ class UIMapEditorWindow: public IUIMapEditorWindow {
 	friend class AutoGenerateListener;
 protected:
 	virtual UINode *createSettings () override;
-	virtual UINode *createLayers () override;
 	virtual UINode *createButtons (IMapManager& mapManager, UINodeMapStringSelector *mapListNode) override;
 
 public:

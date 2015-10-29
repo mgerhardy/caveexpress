@@ -55,40 +55,9 @@ UIMapEditorWindow::~UIMapEditorWindow ()
 {
 }
 
-UINode *UIMapEditorWindow::createLayers ()
-{
-	const float checkBoxWidth = 36.0f / _frontend->getWidth();
-	const float checkBoxHeight = 36.0f / _frontend->getHeight();
-	UINode *layers = new UINode(_frontend, "layers");
-	layers->setLayout(new UIVBoxLayout());
-	for (int layer = LAYER_EMITTER; layer != LAYER_NONE; --layer) {
-		UINodeCheckbox *layerCheckbox = new UINodeCheckbox(_frontend, "layer" + string::toString(layer));
-		layerCheckbox->setSelected(true);
-		layerCheckbox->setSize(checkBoxWidth, checkBoxHeight);
-		layerCheckbox->setLabel(MapEditorLayerNames[layer]);
-		layerCheckbox->setFont(getFont(), colorWhite);
-		layerCheckbox->addListener(UINodeListenerPtr(new LayerListener(_mapEditor, static_cast<MapEditorLayer>(layer))));
-		layers->add(layerCheckbox);
-	}
-	return layers;
-}
-
 UINode *UIMapEditorWindow::createSettings ()
 {
-	UINode *settingsNode = new UINode(_frontend, "settings-node");
-	UIHBoxLayout *hlayout = new UIHBoxLayout(6 / static_cast<float>(_frontend->getHeight()));
-	settingsNode->setLayout(hlayout);
-
-	UINodeTextInput *fileNode = new UINodeTextInput(_frontend, "", 10);
-	fileNode->setId("filename");
-	fileNode->setBackgroundColor(colorWhite);
-	fileNode->addListener(UINodeListenerPtr(new NameListener(_mapEditor, fileNode, true)));
-	settingsNode->add(new UINodeSetting(_frontend, tr("File"), fileNode));
-
-	UINodeTextInput *nameNode = new UINodeTextInput(_frontend, "", 14);
-	nameNode->setBackgroundColor(colorWhite);
-	nameNode->addListener(UINodeListenerPtr(new NameListener(_mapEditor, nameNode, false)));
-	settingsNode->add(new UINodeSetting(_frontend, tr("Name"), nameNode));
+	UINode *settingsNode = IUIMapEditorWindow::createSettings();
 
 	const float height = 0.025f;
 	const float sliderWidth = 0.1f;
@@ -104,64 +73,21 @@ UINode *UIMapEditorWindow::createSettings ()
 UINode *UIMapEditorWindow::createButtons (IMapManager& mapManager,
 		UINodeMapStringSelector *mapListNode)
 {
-	UINode *buttonsNode = new UINode(_frontend, "buttons-panel");
-	buttonsNode->setLayout(new UIHBoxLayout());
+	UINode *buttonsNode = IUIMapEditorWindow::createButtons(mapManager, mapListNode);
 
-	UINodeButton *iceNode = new UINodeButtonText(_frontend, tr("Ice"));
-	iceNode->addListener(UINodeListenerPtr(new ChangeThemeListener(_mapEditor, _spritesNode, _emitterNode, _selectedItemNode,
-							ThemeTypes::ICE)));
-	buttonsNode->add(iceNode);
+	UINodeButton *autogenerateNode = new UINodeButtonText(_frontend, tr("Auto"));
+	autogenerateNode->addListener(UINodeListenerPtr(new AutoGenerateListener(_mapEditor, _spritesNode)));
+	buttonsNode->addFront(autogenerateNode);
 
 	UINodeButton *rockNode = new UINodeButtonText(_frontend, tr("Rock"));
 	rockNode->addListener(UINodeListenerPtr(new ChangeThemeListener(_mapEditor, _spritesNode, _emitterNode, _selectedItemNode,
 							ThemeTypes::ROCK)));
-	buttonsNode->add(rockNode);
+	buttonsNode->addFront(rockNode);
 
-	UINodeButton *newNode = new UINodeButtonText(_frontend, tr("New"));
-	newNode->addListener(UINodeListenerPtr(new NewListener(_mapEditor)));
-	buttonsNode->add(newNode);
-
-	UINodeButton *loadNode = new UINodeButtonText(_frontend, tr("Load"));
-	loadNode->addListener(UINodeListenerPtr(new LoadListener(loadNode, mapListNode)));
-	buttonsNode->add(loadNode);
-	mapListNode->setPos(loadNode->getLeft(), loadNode->getTop());
-	mapListNode->addListener(UINodeListenerPtr(new LoadListListener(_mapEditor, loadNode, mapListNode)));
-
-	UINodeButton *saveNode = new UINodeButtonText(_frontend, tr("Save"));
-	saveNode->addListener(UINodeListenerPtr(new SaveListener(_mapEditor)));
-	buttonsNode->add(saveNode);
-
-	UINodeButton *autogenerateNode = new UINodeButtonText(_frontend, tr("Auto"));
-	autogenerateNode->addListener(UINodeListenerPtr(new AutoGenerateListener(_mapEditor, _spritesNode)));
-	buttonsNode->add(autogenerateNode);
-
-	UINodeSaveButton *saveAndGoNode = new UINodeSaveButton(_frontend);
-	saveAndGoNode->addListener(UINodeListenerPtr(new SaveListener(_mapEditor, saveAndGoNode, true)));
-	buttonsNode->add(saveAndGoNode);
-
-	UINodeButton *undoNode = new UINodeButtonText(_frontend, tr("Undo"));
-	undoNode->addListener(UINodeListenerPtr(new UndoListener(_mapEditor)));
-	buttonsNode->add(undoNode);
-
-	UINodeButton *redoNode = new UINodeButtonText(_frontend, tr("Redo"));
-	redoNode->addListener(UINodeListenerPtr(new RedoListener(_mapEditor)));
-	buttonsNode->add(redoNode);
-
-	UINodeButton *mapOptionsButton = new UINodeButtonText(_frontend, tr("Map Options"));
-	mapOptionsButton->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_MAPEDITOR_OPTIONS)));
-	buttonsNode->add(mapOptionsButton);
-
-	UINodeButton *helpNode = new UINodeButtonText(_frontend, tr("Help"));
-	helpNode->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_MAPEDITOR_HELP)));
-	buttonsNode->add(helpNode);
-
-	UINodeButton *settingsNode = new UINodeButtonText(_frontend, tr("Settings"));
-	settingsNode->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_SETTINGS)));
-	buttonsNode->add(settingsNode);
-
-	UINodeButton *quitNode = new UINodeButtonText(_frontend, tr("Quit"));
-	quitNode->addListener(UINodeListenerPtr(new QuitEditorListener(_mapEditor)));
-	buttonsNode->add(quitNode);
+	UINodeButton *iceNode = new UINodeButtonText(_frontend, tr("Ice"));
+	iceNode->addListener(UINodeListenerPtr(new ChangeThemeListener(_mapEditor, _spritesNode, _emitterNode, _selectedItemNode,
+							ThemeTypes::ICE)));
+	buttonsNode->addFront(iceNode);
 
 	return buttonsNode;
 }
