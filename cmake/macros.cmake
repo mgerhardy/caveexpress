@@ -585,7 +585,7 @@ macro(cp_osx_prepare_content TARGET BUNDLED)
 	endif()
 	set(ABOUT_FILE ${ROOT_DIR}/docs/${TARGET}/ABOUT.en)
 	if (EXISTS ${ABOUT_FILE})
-		add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND cp ${ROOT_DIR}/docs/${TARGET}/ABOUT.en ${XCODE_OUTPUT_DIR})
+		add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND cp ${ABOUT_FILE} ${XCODE_OUTPUT_DIR})
 	endif()
 endmacro()
 
