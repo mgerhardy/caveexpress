@@ -46,7 +46,7 @@
 namespace caveexpress {
 
 UIMapEditorWindow::UIMapEditorWindow (IFrontend *frontend, IMapManager& mapManager, IUINodeMapEditor* editor) :
-		IUIMapEditorWindow(frontend, editor, new UINodeSpriteSelector(frontend), new UINodeEntitySelector(frontend))
+		Super(frontend, editor, new UINodeSpriteSelector(frontend), new UINodeEntitySelector(frontend))
 {
 	init(mapManager);
 }
@@ -57,7 +57,7 @@ UIMapEditorWindow::~UIMapEditorWindow ()
 
 UINode *UIMapEditorWindow::createSettings ()
 {
-	UINode *settingsNode = IUIMapEditorWindow::createSettings();
+	UINode *settingsNode = Super::createSettings();
 
 	const float height = 0.025f;
 	const float sliderWidth = 0.1f;
@@ -73,7 +73,7 @@ UINode *UIMapEditorWindow::createSettings ()
 UINode *UIMapEditorWindow::createButtons (IMapManager& mapManager,
 		UINodeMapStringSelector *mapListNode)
 {
-	UINode *buttonsNode = IUIMapEditorWindow::createButtons(mapManager, mapListNode);
+	UINode *buttonsNode = Super::createButtons(mapManager, mapListNode);
 
 	UINodeButton *autogenerateNode = new UINodeButtonText(_frontend, tr("Auto"));
 	autogenerateNode->addListener(UINodeListenerPtr(new AutoGenerateListener(_mapEditor, _spritesNode)));
