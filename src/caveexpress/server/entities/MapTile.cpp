@@ -19,6 +19,11 @@ MapTile::~MapTile ()
 {
 }
 
+bool MapTile::isUnderWater () const
+{
+	return _map.getWaterHeight() < getPos().y;
+}
+
 bool MapTile::shouldCollide (const IEntity* entity) const
 {
 	return entity->isSolid();

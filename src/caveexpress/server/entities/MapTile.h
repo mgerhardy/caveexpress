@@ -29,10 +29,7 @@ public:
 	gridSize getGridWidth () const;
 	gridSize getGridHeight () const;
 
-	inline bool isUnderWater () const
-	{
-		return _map.getWaterHeight() < getPos().y;
-	}
+	bool isUnderWater () const;
 
 	void setGridDimensions (gridSize gridWidth, gridSize gridHeight, EntityAngle angle);
 
