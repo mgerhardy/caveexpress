@@ -70,8 +70,7 @@ UINode *UIMapEditorWindow::createSettings ()
 	return settingsNode;
 }
 
-UINode *UIMapEditorWindow::createButtons (IMapManager& mapManager,
-		UINodeMapStringSelector *mapListNode)
+UINode *UIMapEditorWindow::createButtons (IMapManager& mapManager, UINodeMapStringSelector *mapListNode)
 {
 	UINode *buttonsNode = Super::createButtons(mapManager, mapListNode);
 
@@ -80,13 +79,11 @@ UINode *UIMapEditorWindow::createButtons (IMapManager& mapManager,
 	buttonsNode->addFront(autogenerateNode);
 
 	UINodeButton *rockNode = new UINodeButtonText(_frontend, tr("Rock"));
-	rockNode->addListener(UINodeListenerPtr(new ChangeThemeListener(_mapEditor, _spritesNode, _emitterNode, _selectedItemNode,
-							ThemeTypes::ROCK)));
+	rockNode->addListener(UINodeListenerPtr(new ChangeThemeListener(_mapEditor, _spritesNode, _emitterNode, _selectedItemNode, ThemeTypes::ROCK)));
 	buttonsNode->addFront(rockNode);
 
 	UINodeButton *iceNode = new UINodeButtonText(_frontend, tr("Ice"));
-	iceNode->addListener(UINodeListenerPtr(new ChangeThemeListener(_mapEditor, _spritesNode, _emitterNode, _selectedItemNode,
-							ThemeTypes::ICE)));
+	iceNode->addListener(UINodeListenerPtr(new ChangeThemeListener(_mapEditor, _spritesNode, _emitterNode, _selectedItemNode, ThemeTypes::ICE)));
 	buttonsNode->addFront(iceNode);
 
 	return buttonsNode;
