@@ -54,6 +54,10 @@ public:
 		return _caveDefinitions;
 	}
 
+	inline void setCaveTileDefinitions (const std::vector<CaveTileDefinition>& caveDefinitions) {
+		_caveDefinitions = caveDefinitions;
+	}
+
 	void addCave(const SpriteDefPtr& spriteDef, gridCoord x, gridCoord y,
 			const EntityType& entityType, int delay) {
 		const CaveTileDefinition def(x, y, spriteDef, entityType, delay);

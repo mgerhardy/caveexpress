@@ -279,6 +279,7 @@ public:
 
 	bool isDirty () const;
 	virtual bool save ();
+	virtual void prepareContextForSaving(IMapContext* ctx);
 	void clear ();
 	void undo ();
 	void redo ();

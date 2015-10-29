@@ -9,6 +9,7 @@ namespace caveexpress {
 
 class UINodeMapEditor: public IUINodeMapEditor {
 private:
+	typedef IUINodeMapEditor Super;
 	// the height in grid tiles from the bottom of the map
 	float _waterHeight;
 	void renderWater (int x, int y) const;
@@ -30,6 +31,7 @@ private:
 	virtual void setState (const State& state) override;
 	virtual void loadFromContext (IMapContext& ctx) override;
 	virtual void doClear () override;
+	virtual void prepareContextForSaving(IMapContext* ctx) override;
 	virtual bool shouldSaveTile (const TileItem& tile) const override;
 	virtual bool shouldSaveEmitter (const TileItem& tile) const override;
 	virtual bool placeTileItem (const SpriteDefPtr& def, const EntityType* entityType, gridCoord gridX, gridCoord gridY,

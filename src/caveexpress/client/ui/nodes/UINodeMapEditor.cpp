@@ -12,7 +12,7 @@
 namespace caveexpress {
 
 UINodeMapEditor::UINodeMapEditor (IFrontend *frontend, IMapManager& mapManager) :
-		IUINodeMapEditor(frontend, mapManager), _waterHeight(0.0f) {
+		Super(frontend, mapManager), _waterHeight(0.0f) {
 }
 
 UINodeMapEditor::~UINodeMapEditor ()
@@ -115,7 +115,7 @@ bool UINodeMapEditor::placeTileItem (const SpriteDefPtr& def, const EntityType* 
 	if (SpriteTypes::isCave(type))
 		return placeCave(def, &EntityType::NONE, gridX, gridY, layer, -1, overwrite);
 	const TileItem item = { this, def, entityType, 0, 0, gridX, gridY, layer, angle, "" };
-	return IUINodeMapEditor::placeTileItem(item, overwrite);
+	return Super::placeTileItem(item, overwrite);
 }
 
 bool UINodeMapEditor::placeEmitter (const SpriteDefPtr& def, const EntityType* entityType, gridCoord gridX, gridCoord gridY,
@@ -128,14 +128,14 @@ bool UINodeMapEditor::placeEmitter (const SpriteDefPtr& def, const EntityType* e
 	if (_activeEntityType != nullptr && EntityTypes::hasDirection(*_activeEntityType) && !_activeEntityTypeRight) {
 		str = EMITTER_RIGHT "=false";
 	}
-	return IUINodeMapEditor::placeEmitter(def, entityType, gridX, gridY, emitterAmount, emitterDelay, overwrite, angle, str);
+	return Super::placeEmitter(def, entityType, gridX, gridY, emitterAmount, emitterDelay, overwrite, angle, str);
 }
 
 bool UINodeMapEditor::placeCave (const SpriteDefPtr& def, const EntityType* entityType, gridCoord gridX,
 		gridCoord gridY, MapEditorLayer layer, int delay, bool overwrite)
 {
 	const TileItem item = { this, def, entityType, 0, delay, gridX, gridY, layer, 0, "" };
-	const bool ret = IUINodeMapEditor::placeTileItem(item, overwrite);
+	const bool ret = Super::placeTileItem(item, overwrite);
 	if (ret) {
 		notifyTilePlaced(def);
 	}
@@ -174,18 +174,18 @@ bool UINodeMapEditor::isOverlapping (const TileItem& item1, const TileItem& item
 	const gridCoord y = item1.gridY + item1.getY(useShape) + EPSILON;
 	const gridSize w = size.x - 2.0f * EPSILON;
 	const gridSize h = size.y - 2.0f * EPSILON;
-	return IUINodeMapEditor::isOverlapping(x, y, w, h, item2);
+	return Super::isOverlapping(x, y, w, h, item2);
 }
 
 void UINodeMapEditor::setState (const State& state)
 {
-	IUINodeMapEditor::setState(state);
+	Super::setState(state);
 	setWaterHeight(string::toFloat(_settings[msn::WATER_HEIGHT]));
 }
 
 void UINodeMapEditor::doClear ()
 {
-	IUINodeMapEditor::doClear();
+	Super::doClear();
 	setPackageTransferCount(string::toInt(msd::PACKAGE_TRANSFER_COUNT));
 	setFlyingNpc(string::toBool(msd::FLYING_NPC));
 	setFishNpc(string::toBool(msd::FISH_NPC));
@@ -195,6 +195,29 @@ void UINodeMapEditor::doClear ()
 	setSetting(msn::POINTS, string::toString(msdv::POINTS));
 	setSetting(msn::REFERENCETIME, string::toString(msdv::REFERENCETIME));
 	setGravity(msdv::GRAVITY);
+}
+
+void UINodeMapEditor::prepareContextForSaving(IMapContext* ctx)
+{
+	Super::prepareContextForSaving(ctx);
+
+	TileItems map = _map;
+	map.sort();
+
+	std::vector<CaveTileDefinition> cavetiles;
+
+	for (TileItemsConstIter i = map.begin(); i != map.end(); ++i) {
+		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
+			continue;
+		const SpriteType& spriteType = i->def->type;
+		if (!SpriteTypes::isCave(spriteType))
+			continue;
+		const CaveTileDefinition e(i->gridX, i->gridY, i->def, *i->entityType, i->delay);
+		cavetiles.push_back(e);
+	}
+
+	CaveExpressMapContext* c = (CaveExpressMapContext*)ctx;
+	c->setCaveTileDefinitions(cavetiles);
 }
 
 bool UINodeMapEditor::shouldSaveTile (const TileItem& tile) const

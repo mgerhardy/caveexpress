@@ -914,19 +914,11 @@ bool IUINodeMapEditor::shouldSaveEmitter (const TileItem& tile) const
 	return tile.entityType != nullptr;
 }
 
-bool IUINodeMapEditor::save ()
+void IUINodeMapEditor::prepareContextForSaving(IMapContext* ctx)
 {
-	// nothing to save here
-	if (_undoStates.empty())
-		return false;
-
-	// put into the settings map
-	setMapDimensions(_mapWidth, _mapHeight);
-
 	TileItems map = _map;
 	map.sort();
 
-	std::unique_ptr<IMapContext> ctx(getContext(_fileName));
 	ctx->setSettings(_settings);
 	ctx->setStartPositions(_startPositions);
 	ctx->setTitle(_mapName);
@@ -953,6 +945,19 @@ bool IUINodeMapEditor::save ()
 
 	ctx->setMapTileDefinitions(definitions);
 	ctx->setEmitterDefinitions(emitters);
+}
+
+bool IUINodeMapEditor::save ()
+{
+	// nothing to save here
+	if (_undoStates.empty())
+		return false;
+
+	// put into the settings map
+	setMapDimensions(_mapWidth, _mapHeight);
+
+	std::unique_ptr<IMapContext> ctx(getContext(_fileName));
+	prepareContextForSaving(ctx.get());
 
 	_lastMap->setValue(_fileName);
 	_mapManager.loadMaps();
