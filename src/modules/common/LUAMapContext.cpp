@@ -195,7 +195,7 @@ bool LUAMapContext::save() const
 
 	file->writeString("function getName()\n");
 	file->appendString("\treturn \"");
-	file->appendString(_name.c_str());
+	file->appendString(_title.c_str());
 	file->appendString("\"\n");
 	file->appendString("end\n\n");
 	file->appendString("function onMapLoaded()\n");
