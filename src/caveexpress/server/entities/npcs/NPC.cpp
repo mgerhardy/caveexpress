@@ -13,7 +13,7 @@ namespace caveexpress {
 
 NPC::NPC (const EntityType &type, Map& map) :
 		IEntity(type, map), _initialWalkingSpeed(1.1f), _targetPos(b2Vec2_zero), _initialPosition(b2Vec2_zero), _lastDirectionRight(
-				true), _dazedTime(0), _dazedTimeout(8000), _idleTimer(0), _moveTimer(0), _swimmingTime(0), _swimmingTimeDelay(0), _initialSwimmingSpeed(0.0f),
+				true), _triggerMovement(0), _dazedTime(0), _dazedTimeout(8000), _idleTimer(0), _moveTimer(0), _swimmingTime(0), _swimmingTimeDelay(0), _initialSwimmingSpeed(0.0f),
 				_currentSwimmingSpeed(b2Vec2_zero)
 {
 	setState(NPCState::NPC_IDLE);
