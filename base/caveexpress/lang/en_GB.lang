@@ -14,6 +14,7 @@ CURSOR|CURSOR
 Campaign|Campaign
 Campaigns|Campaigns
 Cancel|Cancel
+Close|Close
 Collect packages by landing on them|Collect packages by landing on them
 Collecting fruits will restore hitpoints|Collecting fruits will restore hitpoints
 Continue|Continue
@@ -29,6 +30,7 @@ Drop the stone to collect packages again|Drop the stone to collect packages agai
 Drop them by hitting SPACE bar|Drop them by hitting SPACE bar
 Drop them with the second finger|Drop them with the second finger
 Dropping stones onto dinos stuns them|Dropping stones onto dinos stuns them
+Editor|Editor
 Extras|Extras
 Facebook|Facebook
 Fall delay|Fall delay
@@ -55,6 +57,7 @@ Initial water rising delay in milliseconds|Initial water rising delay in millise
 Joystick|Joystick
 Just stay and watch what happens|Just stay and watch what happens
 LMB|LMB
+Later|Later
 Leaderboard|Leaderboard
 Learn to use the stone|Learn to use the stone
 Load|Load
@@ -81,6 +84,7 @@ Place tile|Place tile
 Player|Player
 Players|Players
 Players:|Players:
+Please rate the app|Please rate the app
 Points|Points
 Pterodactyls|Pterodactyls
 Pterodactyls is after you|Pterodactyls is after you
@@ -93,6 +97,8 @@ Refresh|Refresh
 Remove tile|Remove tile
 Reset|Reset
 Reset game progress?|Reset game progress?
+Restart|Restart
+Retry|Retry
 Rising delay|Rising delay
 Rock|Rock
 Rotate entity|Rotate entity

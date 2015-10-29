@@ -13,8 +13,8 @@ CTRL|STRG
 CURSOR|CURSOR
 Campaign|Kampagne
 Campaigns|Kampagnen
-Can't start the map without a packagetarget|Map kann ohne Paketstation nicht gestartet werden
 Cancel|Abbrechen
+Close|Schliessen
 Collect packages by landing on them|Sammele Paket in dem du auf ihnen landest
 Collecting fruits will restore hitpoints|Fruechte regenerieren Lebensenergie
 Continue|Weiter
@@ -30,12 +30,13 @@ Drop the stone to collect packages again|Lasse den Stein fallen um wieder Kisten
 Drop them by hitting SPACE bar|Abwerfen durch LEERTASTE
 Drop them with the second finger|Abwerfen durch zweiten Finger
 Dropping stones onto dinos stuns them|Steine betaeuben Dinosaurier
+Editor|Editor
 Extras|Extras
 Facebook|Facebook
 Fall delay|Fallverzoegerung
 File|Datei
 Fish|Fisch
-Fullscreen|Fullscreen
+Fullscreen|Vollbild
 Game mode|Modus
 General|Allgemein
 Geyser|Geyser
@@ -56,6 +57,7 @@ Initial water rising delay in milliseconds|Initiale Verzoegerung der Wassererhoe
 Joystick|Joystick
 Just stay and watch what happens|Einfach nur abwarten und zuschauen
 LMB|LMB
+Later|Spaeter
 Leaderboard|Leaderboard
 Learn to use the stone|Lerne den Stein zu benutzen
 Load|Laden
@@ -70,6 +72,7 @@ Name|Name
 New|Neu
 Normal|Normal
 Npc delay|Npc delay
+Npcs|Npcs
 OK|OK
 Objectives|Ziele
 Off|Aus
@@ -81,6 +84,7 @@ Place tile|Teil plazieren
 Player|Spieler
 Players|Players
 Players:|Players:
+Please rate the app|Bitte bewerte die App
 Points|Punkte
 Pterodactyls|Pterodactylus
 Pterodactyls is after you|Der Pterodactylus hat es auch dich abgesehen
@@ -93,6 +97,8 @@ Refresh|Erneuern
 Remove tile|Teil entfernen
 Reset|Reset
 Reset game progress?|Resetten des Spielfortschritts?
+Restart|Restart
+Retry|Retry
 Rising delay|Rising delay
 Rock|Felsen
 Rotate entity|Drehe Objekt
@@ -117,11 +123,13 @@ Sound/Music|Sound/Music
 Start|Start
 Stone|Stone
 Textures|Texturen
+The amount of npcs to deliver|The amount of npcs to deliver
 The amount of packages to deliver|Anzahl der zu liefernden Pakete
 The geyser will do the work for you|Der Geisir erledigt die Arbeit
 The points you get for finishing the map|Punktzahl beim Absolvieren der Map
 The water change speed|Die Wasser Steig- und Fallgeschwindigkeit
 This is the goal in every map|Dies ist das Ziel jedes Levels
+This is the max amount of npcs that spawn, if you let more than these die, you lose the game|This is the max amount of npcs that spawn, if you let more than these die, you lose the game
 Time|Zeit
 Time bar|Zeitanzeige
 Tree|Tree
