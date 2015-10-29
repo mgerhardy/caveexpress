@@ -227,7 +227,8 @@ void MiniRacer::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	UINodeMapEditor* editor = new UINodeMapEditor(frontend, serviceProvider.getMapManager());
 	UINodeSpriteSelector* spriteSelector = new UINodeSpriteSelector(frontend);
 	UINodeEntitySelector* entitySelector = new UINodeEntitySelector(frontend);
-	IUIMapEditorWindow* mapEditorWindow = new IUIMapEditorWindow(frontend, serviceProvider.getMapManager(), editor, spriteSelector, entitySelector);
+	IUIMapEditorWindow* mapEditorWindow = new IUIMapEditorWindow(frontend, editor, spriteSelector, entitySelector);
+	mapEditorWindow->init(serviceProvider.getMapManager());
 	ui.addWindow(mapEditorWindow);
 	ui.addWindow(new UIMapEditorHelpWindow(frontend));
 	ui.addWindow(new IUIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));

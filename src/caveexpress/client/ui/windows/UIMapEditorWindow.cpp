@@ -46,8 +46,9 @@
 namespace caveexpress {
 
 UIMapEditorWindow::UIMapEditorWindow (IFrontend *frontend, IMapManager& mapManager, IUINodeMapEditor* editor) :
-		IUIMapEditorWindow(frontend, mapManager, editor, new UINodeSpriteSelector(frontend), new UINodeEntitySelector(frontend))
+		IUIMapEditorWindow(frontend, editor, new UINodeSpriteSelector(frontend), new UINodeEntitySelector(frontend))
 {
+	init(mapManager);
 }
 
 UIMapEditorWindow::~UIMapEditorWindow ()

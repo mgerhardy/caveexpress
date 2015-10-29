@@ -37,9 +37,12 @@
 #include "mapeditor/BooleanSettingListener.h"
 #include "mapeditor/LayerListener.h"
 
-IUIMapEditorWindow::IUIMapEditorWindow (IFrontend *frontend, IMapManager& mapManager, IUINodeMapEditor* editor, IUINodeSpriteSelector* spriteSelector, IUINodeEntitySelector* entitySelector) :
-		UIWindow(UI_WINDOW_EDITOR, frontend, WINDOW_FLAG_ROOT), _spritesNode(spriteSelector), _emitterNode(entitySelector), _mapEditor(editor)
+IUIMapEditorWindow::IUIMapEditorWindow (IFrontend *frontend, IUINodeMapEditor* editor, IUINodeSpriteSelector* spriteSelector, IUINodeEntitySelector* entitySelector) :
+		UIWindow(UI_WINDOW_EDITOR, frontend, WINDOW_FLAG_ROOT), _spritesNode(spriteSelector), _emitterNode(entitySelector), _selectedItemNode(nullptr), _mapEditor(editor)
 {
+}
+
+void IUIMapEditorWindow::init(IMapManager& mapManager) {
 	setBackgroundColor(colorDark);
 
 	int cols = 6;

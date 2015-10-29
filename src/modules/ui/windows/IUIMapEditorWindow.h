@@ -38,8 +38,10 @@ protected:
 	virtual UINode *createLayers ();
 	virtual UINode *createButtons (IMapManager& mapManager, UINodeMapStringSelector *mapListNode);
 public:
-	IUIMapEditorWindow (IFrontend *frontend, IMapManager& mapManager, IUINodeMapEditor* editor, IUINodeSpriteSelector* spriteSelector, IUINodeEntitySelector* entitySelector);
+	IUIMapEditorWindow (IFrontend *frontend, IUINodeMapEditor* editor, IUINodeSpriteSelector* spriteSelector, IUINodeEntitySelector* entitySelector);
 	virtual ~IUIMapEditorWindow ();
+
+	void init(IMapManager& mapManager);
 
 	bool nextFocus (bool b) override
 	{
