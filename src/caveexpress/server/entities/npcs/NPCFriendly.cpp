@@ -75,8 +75,9 @@ void NPCFriendly::onContact (b2Contact* contact, IEntity* entity)
 bool NPCFriendly::triggerTargetCaveAnnouncement (const b2Vec2& playerPos)
 {
 	const float distance = b2Distance(playerPos, getPos());
-	if (distance > _swimmingDistance)
+	if (isSwimming() && distance > _swimmingDistance) {
 		return false;
+	}
 	if (_triggerMovement == 0) {
 		_triggerMovement = _time + 400;
 		GameEvent.announceTargetCave(getVisMask(), *this, 2000);
