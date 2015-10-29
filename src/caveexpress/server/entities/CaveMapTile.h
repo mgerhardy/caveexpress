@@ -40,7 +40,6 @@ public:
 	CaveMapTile (Map& map, int caveNumber, const std::string& spriteID, gridCoord gridX, gridCoord gridY, const EntityType& npcType = EntityType::NONE, int delaySpawn = 5000);
 	virtual ~CaveMapTile ();
 
-	bool isUnderWater () const;
 	bool shouldSpawnNPC () const;
 	// if spawnPackage is set to true, the npc is not collectable, but only spawns a package
 	void spawnNPC (bool spawnPackage);
@@ -78,11 +77,6 @@ inline void CaveMapTile::setReturnToCaveOnIdle (bool returnToCaveOnIdle)
 inline void CaveMapTile::setNextSpawn (uint32_t time)
 {
 	_nextSpawn = time;
-}
-
-inline bool CaveMapTile::isUnderWater () const
-{
-	return _map.getWaterHeight() < getPos().y;
 }
 
 inline bool CaveMapTile::shouldSpawnNPC () const
