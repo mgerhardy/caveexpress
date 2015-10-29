@@ -64,9 +64,9 @@ public:
 		_caveDefinitions.push_back(def);
 	}
 
-	virtual void saveTiles(const FilePtr& file) const override {
-		LUAMapContext::saveTiles(file);
-		if (! _caveDefinitions.empty()) {
+	virtual bool saveTiles(const FilePtr& file) const override {
+		const bool added = LUAMapContext::saveTiles(file);
+		if (added && !_caveDefinitions.empty()) {
 			file->appendString("\n");
 		}
 		for (const CaveTileDefinition& i : _caveDefinitions) {
@@ -82,7 +82,7 @@ public:
 				file->appendString("\"");
 			}
 			if (i.delay > -1) {
-				if (!i.type->isNone()) {
+				if (i.type->isNone()) {
 					file->appendString(", \"");
 					file->appendString(i.type->name.c_str());
 					file->appendString("\"");
@@ -92,6 +92,7 @@ public:
 			}
 			file->appendString(")\n");
 		}
+		return added || !_caveDefinitions.empty();
 	}
 };
 

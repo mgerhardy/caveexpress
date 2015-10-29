@@ -35,7 +35,7 @@ protected:
 	virtual void addTile (const SpriteDefPtr& spriteDef, gridCoord x, gridCoord y, EntityAngle angle);
 	virtual void addEmitter (const EntityType& type, gridCoord x, gridCoord y, int amount, int delay, const std::string& settings);
 
-	virtual void saveTiles(const FilePtr& file) const;
+	virtual bool saveTiles(const FilePtr& file) const;
 
 public:
 	explicit LUAMapContext (const std::string& name);
