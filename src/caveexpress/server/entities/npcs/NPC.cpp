@@ -169,20 +169,20 @@ bool NPC::shouldCollide (const IEntity* entity) const
 		return false;
 	}
 
-	if (isDazed()) {
-		return entity->isSolid() || entity->isWater();
-	}
-
-	if (isSwimming() || isStruggle()) {
-		return entity->isWater() || entity->isPlayer();
-	}
-
 	if (entity->isWater()) {
 		return true;
 	}
 
-	if (isFalling()) {
-		return entity->isWater();
+	if (isDazed()) {
+		return entity->isSolid();
+	}
+
+	if (isSwimming()) {
+		return entity->isPlayer() || entity->isPlatform();
+	}
+
+	if (isStruggle()) {
+		return entity->isPlayer();
 	}
 
 	if (entity->isPlayer()) {
