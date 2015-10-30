@@ -35,5 +35,6 @@ artifacts:
     path: contrib/installer/windows/cavepacker-$(APPVEYOR_BUILD_VERSION).exe
 
 test_script:
-  - cmd: tests_caveexpress.exe
-  - cmd: tests_cavepacker.exe
+  - cmd: tests.exe --gtest_filter=-Network* --gtest_output=xml:tests.xml
+  - cmd: tests_caveexpress.exe --gtest_output=xml:tests_caveexpress.xml
+  - cmd: tests_cavepacker.exe --gtest_output=xml:tests_cavepacker.xml
