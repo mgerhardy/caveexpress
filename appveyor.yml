@@ -33,3 +33,7 @@ artifacts:
     path: contrib/installer/windows/caveexpress-$(APPVEYOR_BUILD_VERSION).exe
   - name: Installer CavePacker
     path: contrib/installer/windows/cavepacker-$(APPVEYOR_BUILD_VERSION).exe
+
+test_script:
+  - cmd: tests_caveexpress.exe
+  - cmd: tests_cavepacker.exe
