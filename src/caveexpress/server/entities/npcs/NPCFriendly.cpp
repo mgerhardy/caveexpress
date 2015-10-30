@@ -49,8 +49,6 @@ void NPCFriendly::onContact (b2Contact* contact, IEntity* entity)
 {
 	INPCCave::onContact(contact, entity);
 
-	// TODO: if you touch a platform because the water is going down again - switch from swimming to idle
-
 	if (entity->isCave()) {
 		setDone();
 		CaveMapTile *cave = static_cast<CaveMapTile*>(entity);
@@ -147,6 +145,11 @@ void NPCFriendly::update (uint32_t deltaTime)
 		_map.removeNPC(this, true);
 		_remove = true;
 		_map.countTransferedNPC();
+		return;
+	}
+
+	if ((isSwimming() || isStruggle()) && !isTouchingWater()) {
+		setIdle();
 		return;
 	}
 

@@ -2,14 +2,14 @@
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/shared/constants/Density.h"
 #include "common/SpriteDefinition.h"
+#include <SDL_assert.h>
 
 namespace caveexpress {
 
 MapTile::MapTile (Map& map, const std::string& spriteID, gridCoord gridX, gridCoord gridY, const EntityType &type) :
 		IEntity(type, map), _gridX(gridX), _gridY(gridY), _gridWidth(1.0f), _gridHeight(1.0f), _pos(b2Vec2_zero)
 {
-	if (!EntityTypes::isMapTile(_type))
-		System.exit(_type.name + " is no maptile", 1);
+	SDL_assert_always(EntityTypes::isMapTile(_type));
 	setSpriteID(spriteID);
 
 	setGridDimensions(1, 1, 0);
