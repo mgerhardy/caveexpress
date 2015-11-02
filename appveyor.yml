@@ -33,9 +33,19 @@ artifacts:
     path: contrib/installer/windows/caveexpress-$(APPVEYOR_BUILD_VERSION).exe
   - name: Installer CavePacker
     path: contrib/installer/windows/cavepacker-$(APPVEYOR_BUILD_VERSION).exe
+  - name: Tests
+    path: tests.exe
+  - name: CavePacker
+    path: cavepacker.exe
+  - name: CavePacker Tests
+    path: tests_cavepacker.exe
+  - name: CaveExpress
+    path: caveexpress.exe
+  - name: CaveExpress Tests
+    path: tests_caveexpress.exe
 
 test_script:
-  - cmd: tests.exe --gtest_filter=-Network* --gtest_output=xml:tests.xml
+  - cmd: tests.exe --gtest_filter=-Network.testOpen*;-FileTest.testFileSysWrite --gtest_output=xml:tests.xml
   - cmd: tests_caveexpress.exe --gtest_output=xml:tests_caveexpress.xml
   - cmd: tests_cavepacker.exe --gtest_output=xml:tests_cavepacker.xml
 
