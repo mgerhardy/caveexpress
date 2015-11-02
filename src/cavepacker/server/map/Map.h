@@ -8,7 +8,7 @@
 #include "cavepacker/server/entities/IEntity.h"
 #include "cavepacker/server/entities/Player.h"
 #include "cavepacker/server/entities/MapTile.h"
-#include "cavepacker/server/map/BoardState.h"
+#include "cavepacker/shared/BoardState.h"
 #include <string>
 #include <vector>
 #include <map>

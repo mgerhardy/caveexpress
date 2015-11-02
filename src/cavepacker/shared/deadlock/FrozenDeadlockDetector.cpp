@@ -1,6 +1,6 @@
 #include "FrozenDeadlockDetector.h"
 #include "SimpleDeadlockDetector.h"
-#include "cavepacker/server/map/BoardState.h"
+#include "cavepacker/shared/BoardState.h"
 #include <SDL_assert.h>
 
 namespace cavepacker {

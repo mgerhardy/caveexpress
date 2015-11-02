@@ -1,6 +1,6 @@
 #include "SimpleDeadlockDetector.h"
-#include "cavepacker/server/map/SokobanTiles.h"
-#include "cavepacker/server/map/BoardState.h"
+#include "cavepacker/shared/SokobanTiles.h"
+#include "cavepacker/shared/BoardState.h"
 
 namespace cavepacker {
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "cavepacker/server/map/BoardState.h"
-#include "cavepacker/server/map/SokobanTiles.h"
+#include "BoardState.h"
+#include "SokobanTiles.h"
 
 namespace cavepacker {
 

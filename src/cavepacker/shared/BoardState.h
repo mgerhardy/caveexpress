@@ -2,7 +2,7 @@
 
 #include <map>
 #include "SokobanTiles.h"
-#include "cavepacker/server/map/deadlock/DeadlockDetector.h"
+#include "deadlock/DeadlockDetector.h"
 #include "common/Log.h"
 
 namespace cavepacker {

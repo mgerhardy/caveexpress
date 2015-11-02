@@ -1,7 +1,7 @@
 #include "tests/TestShared.h"
 #include "common/Common.h"
-#include "cavepacker/server/map/Pathfinding.cpp"
-#include "cavepacker/server/map/BoardStateUtil.h"
+#include "cavepacker/shared/Pathfinding.cpp"
+#include "cavepacker/shared/BoardStateUtil.h"
 
 namespace cavepacker {
 

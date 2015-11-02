@@ -1,14 +1,6 @@
 set(cavepacker-server_SRCS
 	map/SokobanMapContext.cpp
 	map/Map.cpp
-	map/Pathfinding.cpp
-	map/BoardState.cpp
-	map/deadlock/DeadlockDetector.cpp
-	map/deadlock/SimpleDeadlockDetector.cpp
-	map/deadlock/FrozenDeadlockDetector.cpp
-	map/deadlock/CorralDetector.cpp
-	map/deadlock/ClosedDiagonalDetector.cpp
-	map/deadlock/BipartiteDetector.cpp
 	entities/MapTile.cpp
 	entities/IEntity.cpp
 	entities/Player.cpp

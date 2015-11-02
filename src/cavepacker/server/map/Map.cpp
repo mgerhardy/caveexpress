@@ -29,7 +29,7 @@
 #include "common/ExecutionTime.h"
 #include "common/Commands.h"
 #include "cavepacker/server/map/SokobanMapContext.h"
-#include "cavepacker/server/map/Pathfinding.h"
+#include "cavepacker/shared/Pathfinding.h"
 #include "cavepacker/shared/CavePackerSpriteType.h"
 #include "cavepacker/shared/EntityStates.h"
 #include "cavepacker/shared/network/messages/ShowDeadlocksMessage.h"

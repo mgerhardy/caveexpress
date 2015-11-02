@@ -1,8 +1,8 @@
 #include "tests/TestShared.h"
 #include "common/Common.h"
-#include "cavepacker/server/map/BoardState.h"
-#include "cavepacker/server/map/BoardStateUtil.h"
-#include "cavepacker/server/map/deadlock/DeadlockDetector.h"
+#include "cavepacker/shared/BoardState.h"
+#include "cavepacker/shared/BoardStateUtil.h"
+#include "cavepacker/shared/deadlock/DeadlockDetector.h"
 
 namespace cavepacker {
 

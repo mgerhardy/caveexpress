@@ -2,7 +2,7 @@
 
 #include "common/IMapContext.h"
 #include <string>
-#include "SokobanTiles.h"
+#include "cavepacker/shared/SokobanTiles.h"
 
 namespace cavepacker {
 
