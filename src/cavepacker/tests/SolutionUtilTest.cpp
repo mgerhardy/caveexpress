@@ -37,4 +37,21 @@ TEST(SolutionUtilTest, testCompressUncompress) {
 	ASSERT_EQ(solution, SolutionUtil::decompress(rle));
 }
 
+TEST(SolutionUtilTest, testCompress1) {
+	const std::string solution = "luuurrrddrrdddddldldlllllllllululululuuuuuuuuuuuuurururururururrrrrrrrrrrrrrrrrdrdrd"
+	"rdrddllulululullllllllllllllldldldldldldddddddddddrdrdrdrrrrrrruruuuuuddllluuurruurrrrrdrdrdddddddddldldldldlllll"
+	"llllllllululululululuuuuuuuuuuuuuuuuurururururrddldldldldddddddddddddddrdrdrdrdrdrrrrrrrrrrrurururuuuuuuululllllr"
+	"rdddllluulluuuuurururrrrrrrrrdrdrdrdrdddddddddddddldldldldldldlllllllllllllllllululululuurrdrdrdrdrrrrrrrrrrrrrrr"
+	"urururururuuuuuuuuuuulululullllllldlddddduurrrdddllddlllllululuuuuuuuuurururururrrrrrrrrrrrrdrdrdrdrdrdrddddddddd"
+	"ddddddddldldldldlluururururuuuuuuuuuuuuuuulululululullllllllllldldldldddddddrdrrrr";
+
+	const std::string rle = SolutionUtil::compress(solution);
+	const std::string expectedRLE = "l3u3r2d2r5dldld9lulululul13ururururururu17rdrdrdrdr2d2lulululu15ldldldldldl11drdrd"
+			"rd7rur5u2d3l3u2r2u5rdrdr9dldldldld13lulululululul17ururururu2r2dldldldl15drdrdrdrdrd11rururur7ulu5l2r3d3l2"
+			"u2l5ururu9rdrdrdrdr13dldldldldldld17lulululul2u2rdrdrdrd15rururururur11ulululu7ldl5d2u3r3d2l2d5lulul9ururu"
+			"ruru13rdrdrdrdrdrdr17dldldldld2l2urururur15ulululululu11ldldldl7drd4r";
+	ASSERT_EQ(expectedRLE, rle);
+	ASSERT_EQ(solution, SolutionUtil::decompress(rle));
+}
+
 }
