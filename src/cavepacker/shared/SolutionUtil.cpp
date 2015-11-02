@@ -37,22 +37,24 @@ std::string SolutionUtil::compress(const std::string& buffer) {
 
 std::string SolutionUtil::decompress(const std::string& buffer) {
 	std::string solution = buffer;
-	for (std::string::const_iterator i = solution.begin(); i != solution.end(); ++i) {
-		if (!isdigit(*i)) {
-			Log::debug(LOG_GAMEIMPL, "Skip '%c'", *i);
+	for (std::size_t i = 0u; i < solution.length(); ++i) {
+		char c = solution[i];
+		if (!isdigit(c)) {
+			Log::debug(LOG_GAMEIMPL, "Skip '%c'", c);
 			continue;
 		}
 		std::string digit;
-		digit += *i;
-		for (++i; i != solution.end(); ++i) {
-			if (!isdigit(*i)) {
+		digit += c;
+		for (++i; i != solution.length(); ++i) {
+			c = solution[i];
+			if (!isdigit(c)) {
 				Log::debug(LOG_GAMEIMPL, "Found '%s'", digit.c_str());
 				break;
 			}
-			digit += *i;
+			digit += c;
 		}
 		const int n = string::toInt(digit);
-		if (i == solution.end()) {
+		if (i >= solution.length()) {
 			Log::error(LOG_GAMEIMPL, "invalid rle encoded solution found");
 			break;
 		}
@@ -61,23 +63,25 @@ std::string SolutionUtil::decompress(const std::string& buffer) {
 			break;
 		}
 		// single char repeat
-		if (*i != '(') {
+		c = solution[i];
+		if (c != '(') {
 			std::string repeat;
-			repeat += *i;
-			const std::string r = repeat;
-			for (int k = 1; k < n; ++k) {
-				repeat += r;
+			for (int k = 0; k < n; ++k) {
+				repeat.push_back(c);
 			}
-			solution = string::replaceAll(solution, digit + r, repeat);
-			i = solution.begin();
+			const std::string replace = digit + c;
+			i -= replace.length() - 1;
+			solution.replace(i, replace.length(), repeat);
+			i += repeat.length() - 1;
 			continue;
 		}
 		std::string repeat;
 		int depth = 0;
-		for (++i; i != solution.end(); ++i) {
-			if (*i == '(') {
+		for (++i; i != solution.length(); ++i) {
+			c = solution[i];
+			if (c == '(') {
 				++depth;
-			} else if (*i == ')') {
+			} else if (c == ')') {
 				if (depth == 0) {
 					++i;
 					Log::debug(LOG_GAMEIMPL, "End of repeat (digit: %s) '%s'", digit.c_str(), repeat.c_str());
@@ -85,15 +89,17 @@ std::string SolutionUtil::decompress(const std::string& buffer) {
 				}
 				--depth;
 			}
-			repeat += *i;
+			repeat.push_back(c);
 		}
 		const std::string r = repeat;
 		for (int k = 1; k < n; ++k) {
 			repeat += r;
 		}
 		Log::debug(LOG_GAMEIMPL, "Replace rle for '%s' times '%s'", digit.c_str(), repeat.c_str());
-		solution = string::replaceAll(solution, digit + "(" + r + ")", repeat);
-		i = solution.begin();
+		const std::string replaceMulti = digit + "(" + r + ")";
+		i -= replaceMulti.length();
+		solution.replace(i, replaceMulti.length(), repeat);
+		--i;
 	}
 	return string::toLower(solution);
 }
