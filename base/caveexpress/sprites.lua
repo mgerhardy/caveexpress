@@ -1063,7 +1063,7 @@ sprites = {
 		fps = 10,
 	},
 	["ui-npc-grandpa"] = {
-		fps = 5,
+		fps = 8,
 	},
 	["ui-npc-mammut"] = {
 		fps = 11,
