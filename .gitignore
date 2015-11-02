@@ -5,6 +5,7 @@
 /miniracer
 /jsonconvert
 /tests*
+/solutiontool
 
 # also binaries - but more generic
 /*.exe
