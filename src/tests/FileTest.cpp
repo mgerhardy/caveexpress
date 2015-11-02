@@ -45,9 +45,9 @@ TEST_F(FileTest, DISABLED_testFileSysWrite) {
 	const unsigned char *buf =
 			reinterpret_cast<const unsigned char *>(testStr.c_str());
 	const size_t length = testStr.size();
-	ASSERT_TRUE(FS.writeSysFile(filename, buf, length, true) != -1L) << "Failed to write file " << filename;
-	ASSERT_TRUE(FS.writeSysFile(filename, buf, length, false) == -1L) << "Failed to not write file " << filename;
-	ASSERT_TRUE(FS.writeSysFile(filename, buf, length, true) != -1L) << "Failed to write file " << filename;
+	ASSERT_TRUE(FS.writeSysFile(filename, buf, length, true) != -1L) << "Failed to write file " << FS.getAbsoluteWritePath() << filename;
+	ASSERT_TRUE(FS.writeSysFile(filename, buf, length, false) == -1L) << "Failed to not write file " << FS.getAbsoluteWritePath() << filename;
+	ASSERT_TRUE(FS.writeSysFile(filename, buf, length, true) != -1L) << "Failed to write file " << FS.getAbsoluteWritePath() << filename;
 }
 
 TEST_F(FileTest, testDelete) {
