@@ -15,13 +15,28 @@ extern "C" int main(int argc, char* argv[]) {
 	app.setOrganisation("caveproductions");
 	app.setName("cavepacker");
 
-	if (argc != 2) {
-		Log::error(LOG_GAMEIMPL, "Usage: %s <sokobansolution>", argv[0]);
+	if (argc < 2) {
+		Log::error(LOG_GAMEIMPL, "Usage: %s <options> <sokobansolution>", argv[0]);
+		Log::info(LOG_GAMEIMPL, " -o --overwrite     - overwrite the original solution file");
+		Log::info(LOG_GAMEIMPL, " -v --verbose       - be verbose");
 		return EXIT_FAILURE;
 	}
 
-	const std::string file = argv[1];
-	Log::info(LOG_GAMEIMPL, "Convert %s to rle encoded solution", file.c_str());
+	bool overwriteSolution = false;
+	bool verbose = false;
+
+	for (int i = 1; i < argc - 1; ++i) {
+		const std::string arg = argv[i];
+		if (arg == "-o" || arg == "--overwrite")
+			overwriteSolution = true;
+		else if (arg == "-v" || arg == "--verbose")
+			verbose = true;
+	}
+
+	const std::string file = argv[argc - 1];
+	if (verbose) {
+		Log::info(LOG_GAMEIMPL, "Convert %s to rle encoded solution", file.c_str());
+	}
 
 	const FilePtr handle = FS.getFile(file);
 	if (!handle) {
@@ -39,10 +54,25 @@ extern "C" int main(int argc, char* argv[]) {
 
 	std::string orig(buffer, fileLen);
 	const std::string& rle = SolutionUtil::compress(orig);
-	Log::info(LOG_GAMEIMPL, "original solution: %s", orig.c_str());
-	Log::info(LOG_GAMEIMPL, "rle compressed solution: %s", rle.c_str());
+	const std::string& decompress = SolutionUtil::decompress(rle);
+	if (orig != decompress) {
+		Log::error(LOG_GAMEIMPL, "Failed to compress the solution:");
+		Log::error(LOG_GAMEIMPL, "orig: %s", orig.c_str());
+		Log::error(LOG_GAMEIMPL, "rle: %s", rle.c_str());
+		Log::error(LOG_GAMEIMPL, "back:  %s", decompress.c_str());
+		overwriteSolution = false;
+	}
+	if (verbose) {
+		Log::info(LOG_GAMEIMPL, "original solution: %s", orig.c_str());
+		Log::info(LOG_GAMEIMPL, "rle compressed solution: %s", rle.c_str());
+	}
 
-	handle->write((const unsigned char*)rle.c_str(), rle.length(), "wb");
+	if (overwriteSolution) {
+		if (verbose) {
+			Log::info(LOG_GAMEIMPL, "overwrite solution");
+		}
+		handle->write((const unsigned char*)rle.c_str(), rle.length(), "wb");
+	}
 
 	return EXIT_SUCCESS;
 }

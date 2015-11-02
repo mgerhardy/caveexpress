@@ -12,25 +12,25 @@ std::string SolutionUtil::compress(const std::string& buffer) {
 	int cnt = 1;
 	for (int i = 0; i < bufLen; ++i) {
 		const char c = buffer[i];
-		if (c == '\n')
-			continue;
 		if (c == lastC) {
 			++cnt;
 		} else {
-			const char b[] = { lastC, '\0' };
-			if (cnt > 1) {
-				rle.append(string::toString(cnt));
+			if (lastC != '\0') {
+				if (cnt > 1) {
+					rle.append(string::toString(cnt));
+				}
+				rle.push_back(lastC);
 			}
-			rle.append(b);
 			lastC = c;
 			cnt = 1;
 		}
 	}
-	if (cnt > 1) {
-		rle.append(string::toString(cnt));
+	if (lastC != '\0') {
+		if (cnt > 1) {
+			rle.append(string::toString(cnt));
+		}
+		rle.push_back(lastC);
 	}
-	const char b[] = { lastC, '\0' };
-	rle.append(b);
 
 	return rle;
 }
