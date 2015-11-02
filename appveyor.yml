@@ -20,7 +20,7 @@ clone_depth: 10
 before_build:
   - cmake -DTOOLS=OFF -G "Visual Studio 12"
 
-after_build:
+on_finish:
   - '"%NSIS_ROOT%\makensis" -DPRODUCT_NAME=cavepacker -DPRODUCT_VERSION=%APPVEYOR_BUILD_VERSION% contrib/installer/windows/setup.nsi'
   - '"%NSIS_ROOT%\makensis" -DPRODUCT_NAME=caveexpress -DPRODUCT_VERSION=%APPVEYOR_BUILD_VERSION% contrib/installer/windows/setup.nsi'
 
