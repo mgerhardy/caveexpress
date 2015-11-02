@@ -15,10 +15,13 @@ extern "C" int main(int argc, char* argv[]) {
 	app.setOrganisation("caveproductions");
 	app.setName("cavepacker");
 
-	if (argc < 2) {
+	Config.init(nullptr, argc, argv);
+
+	if (argc < 2 || (argc >= 2 && argv[argc - 1][0] == '-')) {
 		Log::error(LOG_GAMEIMPL, "Usage: %s <options> <sokobansolution>", argv[0]);
 		Log::info(LOG_GAMEIMPL, " -o --overwrite     - overwrite the original solution file");
 		Log::info(LOG_GAMEIMPL, " -v --verbose       - be verbose");
+		Log::info(LOG_GAMEIMPL, " -loglevel          - set the log level to TRACE, DEBUG, INFO, WARN or ERROR");
 		return EXIT_FAILURE;
 	}
 
