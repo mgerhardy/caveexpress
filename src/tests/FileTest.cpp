@@ -39,7 +39,7 @@ TEST_F(FileTest, testFileWrite) {
 	ASSERT_TRUE(FS.writeFile(filename, buf, length, true) != -1L) << "Failed to write file " << filename;
 }
 
-TEST_F(FileTest, testFileSysWrite) {
+TEST_F(FileTest, DISABLED_testFileSysWrite) {
 	std::string filename = "temp.test";
 	const std::string testStr = "testFileSysWrite";
 	const unsigned char *buf =
