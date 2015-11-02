@@ -45,7 +45,7 @@ artifacts:
     path: tests_caveexpress.exe
 
 test_script:
-  - cmd: tests.exe --gtest_filter=-Network.testOpen*;-FileTest.testFileSysWrite --gtest_output=xml:tests.xml
+  - cmd: tests.exe --gtest_filter=-Network.testOpen*:-Network.testSendStringList:-Network.testSendToServer:-FileTest.testFileSysWrite:-FileTest.testFileSysWrite --gtest_output=xml:tests.xml
   - cmd: tests_caveexpress.exe --gtest_output=xml:tests_caveexpress.xml
   - cmd: tests_cavepacker.exe --gtest_output=xml:tests_cavepacker.xml
 
