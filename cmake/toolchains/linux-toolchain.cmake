@@ -50,7 +50,7 @@ if (HAVE_CLOCKGETTIME)
 	set(CMAKE_C_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES} -lrt")
 else()
 	# might also be in libc
-	check_library_exists(c clock_gettime "" HAVE_CLOCKGETTIME)
+	check_library_exists(c clock_gettime "time.h" HAVE_CLOCKGETTIME)
 endif()
 
 set(CMAKE_C_FLAGS "-g -Wcast-qual -Wcast-align -Wpointer-arith -Wno-long-long -Wno-multichar -Wshadow -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wreturn-type -Wwrite-strings -Wno-variadic-macros -Wno-unknown-pragmas")
