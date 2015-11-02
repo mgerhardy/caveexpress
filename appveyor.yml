@@ -20,7 +20,7 @@ clone_depth: 10
 before_build:
   - cmake -DTOOLS=OFF -G "Visual Studio 12"
 
-on_finish:
+after_build:
   - '"%NSIS_ROOT%\makensis" -DPRODUCT_NAME=cavepacker -DPRODUCT_VERSION=%APPVEYOR_BUILD_VERSION% contrib/installer/windows/setup.nsi'
   - '"%NSIS_ROOT%\makensis" -DPRODUCT_NAME=caveexpress -DPRODUCT_VERSION=%APPVEYOR_BUILD_VERSION% contrib/installer/windows/setup.nsi'
 
@@ -39,7 +39,7 @@ test_script:
   - cmd: tests_caveexpress.exe --gtest_output=xml:tests_caveexpress.xml
   - cmd: tests_cavepacker.exe --gtest_output=xml:tests_cavepacker.xml
 
-after_test:
+on_finish:
   - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests.xml))
   - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests_cavepacker.xml))
   - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests_caveexpress.xml))
