@@ -106,11 +106,11 @@ TEST(NetworkTest, testSendStringList)
 	NetworkNameListTestListener nameListener;
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &nameListener)) << network.getError();
 	network.update(0);
-	network.sendToAllClients(msgNames);
+	ASSERT_EQ(1, network.sendToAllClients(msgNames));
 	network.update(5000);
-	network.sendToAllClients(msgNames);
+	ASSERT_EQ(1, network.sendToAllClients(msgNames));
 	network.update(5000);
-	network.sendToAllClients(msgNames);
+	ASSERT_EQ(1, network.sendToAllClients(msgNames));
 	network.update(5000);
 	ASSERT_EQ(3, nameListener.count);
 	network.closeClient();
