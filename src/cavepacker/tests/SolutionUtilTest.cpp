@@ -37,6 +37,38 @@ TEST(SolutionUtilTest, testCompressUncompress) {
 	ASSERT_EQ(solution, SolutionUtil::decompress(rle));
 }
 
+TEST(SolutionUtilTest, testCompressMultiNumber) {
+	const std::string solution = "lllllllllllllll";
+	const std::string rle = SolutionUtil::compress(solution);
+	const std::string expectedRLE = "15l";
+	ASSERT_EQ(expectedRLE, rle);
+	ASSERT_EQ(solution, SolutionUtil::decompress(rle));
+}
+
+TEST(SolutionUtilTest, testCompressMultiNumbers) {
+	const std::string solution = "lllllllllllllllrrrrrlllllllllllllll";
+	const std::string rle = SolutionUtil::compress(solution);
+	const std::string expectedRLE = "15l5r15l";
+	ASSERT_EQ(expectedRLE, rle);
+	ASSERT_EQ(solution, SolutionUtil::decompress(rle));
+}
+
+TEST(SolutionUtilTest, testCompressMultiNumbers2) {
+	const std::string solution = "luuuluuuuuuuuuuuuu";
+	const std::string rle = SolutionUtil::compress(solution);
+	const std::string expectedRLE = "l3ul13u";
+	ASSERT_EQ(expectedRLE, rle);
+	ASSERT_EQ(solution, SolutionUtil::decompress(rle));
+}
+
+TEST(SolutionUtilTest, testCompressMultiNumbers3) {
+	const std::string solution = "luuurrrddrrdddddldldlllllllllululululuuuuuuuuuuuuurururururururrrrrrrrrrrrrrrrr";
+	const std::string rle = SolutionUtil::compress(solution);
+	const std::string expectedRLE = "l3u3r2d2r5dldld9lulululul13ururururururu17r";
+	ASSERT_EQ(expectedRLE, rle);
+	ASSERT_EQ(solution, SolutionUtil::decompress(rle));
+}
+
 TEST(SolutionUtilTest, testCompress1) {
 	const std::string solution = "luuurrrddrrdddddldldlllllllllululululuuuuuuuuuuuuurururururururrrrrrrrrrrrrrrrrdrdrd"
 	"rdrddllulululullllllllllllllldldldldldldddddddddddrdrdrdrrrrrrruruuuuuddllluuurruurrrrrdrdrdddddddddldldldldlllll"
