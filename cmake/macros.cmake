@@ -734,6 +734,12 @@ macro(cp_add_executable)
 		else()
 			message(STATUS "Found provisioning profile hash ${RESULTS}")
 		endif()
+		add_custom_command(
+			TARGET ${_EXE_TARGET}
+			POST_BUILD
+			COMMAND
+				xcodebuild -exportArchive -exportFormat IPA -archivePath "${_EXE_TARGET}.xcarchive" -exportPath "." -exportProvisioningProfile "${RESULTS}"
+			WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 	elseif (NACL)
 		set_target_properties(${_EXE_TARGET} PROPERTIES PROFILING_POSTFIX .pexe)
 		set_target_properties(${_EXE_TARGET} PROPERTIES RELEASE_POSTFIX .pexe)

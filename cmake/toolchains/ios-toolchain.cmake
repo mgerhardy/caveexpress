@@ -1,4 +1,4 @@
-set(FRAMEWORKS Foundation OpenGLES CoreGraphics AudioToolbox UIKit GLKit QuartzCore CoreMotion)
+set(FRAMEWORKS Foundation OpenGLES CoreGraphics AudioToolbox UIKit GLKit QuartzCore CoreMotion GameController)
 
 set(IOS 1)
 set(CMAKE_OSX_ARCHITECTURES "armv7")
