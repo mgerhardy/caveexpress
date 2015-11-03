@@ -586,7 +586,7 @@ macro(cp_osx_prepare_content TARGET BUNDLED)
 	set(ABOUT_FILE ${ROOT_DIR}/docs/${TARGET}/ABOUT.en)
 	configure_file(${ROOT_DIR}/cmake/project.xcscheme.in ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}.xcodeproj/xcshareddata/xcschemes/${TARGET}.xcscheme)
 	if (EXISTS ${ABOUT_FILE})
-		add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND cp ${ABOUT_FILE} ${XCODE_OUTPUT_DIR})
+		add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ABOUT_FILE} ${XCODE_OUTPUT_DIR})
 	endif()
 endmacro()
 
