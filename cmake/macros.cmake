@@ -664,6 +664,10 @@ macro(cp_add_executable)
 
 	cmake_parse_arguments(_EXE "${_OPTIONS_ARGS}" "${_ONE_VALUE_ARGS}" "${_MULTI_VALUE_ARGS}" ${ARGN} )
 
+	file(GLOB_RECURSE TARGET_ASSETS ${ROOT_DIR}/base/${_EXE_TARGET})
+	list(APPEND ASSETS ${TARGET_ASSETS})
+	list(REMOVE_DUPLICATES ASSETS)
+
 	set(ABOUT_FILE ${ROOT_DIR}/docs/${_EXE_TARGET}/ABOUT.en)
 	if (EXISTS ${ABOUT_FILE})
 		file(READ ${ABOUT_FILE} DESCRIPTION_RAW)
