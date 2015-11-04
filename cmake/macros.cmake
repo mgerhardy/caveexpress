@@ -738,8 +738,8 @@ macro(cp_add_executable)
 			TARGET ${_EXE_TARGET}
 			POST_BUILD
 			COMMAND
-				xcodebuild -exportArchive -exportFormat IPA -archivePath "${_EXE_TARGET}.xcarchive" -exportPath "." -exportProvisioningProfile "${RESULTS}"
-			WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
+				xcodebuild -exportArchive -exportFormat IPA -archivePath "${_EXE_TARGET}.xcarchive" -exportPath "${_EXE_TARGET}" -exportProvisioningProfile "${RESULTS}"
+		)
 	elseif (NACL)
 		set_target_properties(${_EXE_TARGET} PROPERTIES PROFILING_POSTFIX .pexe)
 		set_target_properties(${_EXE_TARGET} PROPERTIES RELEASE_POSTFIX .pexe)

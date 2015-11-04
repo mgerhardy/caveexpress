@@ -9,4 +9,6 @@ mkdir -p cp-build-ios
 cd cp-build-ios
 pwd
 /Applications/CMake.app/Contents/bin/cmake -DRELEASE=ON -DCMAKE_TOOLCHAIN_FILE=$DIR/../../cmake/toolchains/ios-toolchain.cmake -GXcode $DIR/../..
-xcodebuild build archive -sdk iphoneos -project caveproductions.xcodeproj -configuration Release -target ALL_BUILD $*
+${DIR}/xcode_schemes.rb
+xcodebuild archive -sdk iphoneos -project caveproductions.xcodeproj -configuration Release -archivePath caveexpress.xcarchive -scheme caveexpress $*
+xcodebuild archive -sdk iphoneos -project caveproductions.xcodeproj -configuration Release -archivePath caveexpress.xcarchive -scheme caveexpress $*
