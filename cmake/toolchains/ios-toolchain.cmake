@@ -1,5 +1,3 @@
-set(FRAMEWORKS Foundation OpenGLES CoreGraphics AudioToolbox UIKit GLKit QuartzCore CoreMotion GameController)
-
 set(IOS 1)
 set(CMAKE_OSX_ARCHITECTURES "armv7")
 set(CMAKE_OSX_SYSROOT "iphoneos")
@@ -31,6 +29,3 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
 set(CMAKE_EXE_LINKER_FLAGS "-ObjC -dead_strip -lpthread")
 set(CMAKE_EXE_LINKER_FLAGS_DEBUG "")
 set(CMAKE_EXE_LINKER_FLAGS_RELEASE "")
-foreach(FW ${FRAMEWORKS})
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework ${FW}")
-endforeach()
