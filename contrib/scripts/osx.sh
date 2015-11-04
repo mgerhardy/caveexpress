@@ -9,4 +9,4 @@ mkdir -p cp-build-osx
 cd cp-build-osx
 pwd
 /Applications/CMake.app/Contents/bin/cmake -DCMAKE_BUILD_TYPE=Release -GXcode $DIR/../..
-xcodebuild build -project caveproductions.xcodeproj $* | xcpretty
+xcodebuild build -project caveproductions.xcodeproj -configuration Release $* | xcpretty
