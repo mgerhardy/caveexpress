@@ -8,6 +8,5 @@ cd $DIR/../../..
 mkdir -p cp-build-osx
 cd cp-build-osx
 pwd
-/Applications/CMake.app/Contents/bin/cmake -DRELEASE=ON -GXcode $DIR/../..
-xcodebuild archive -project caveproductions.xcodeproj -configuration Release -archivePath caveexpress.xcarchive -scheme caveexpress $*
-xcodebuild archive -project caveproductions.xcodeproj -configuration Release -archivePath caveexpress.xcarchive -scheme caveexpress $*
+/Applications/CMake.app/Contents/bin/cmake -DCMAKE_BUILD_TYPE=Release -GXcode $DIR/../..
+xcodebuild build -project caveproductions.xcodeproj $* | xcpretty

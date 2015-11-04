@@ -6,7 +6,6 @@ project(caveproductions)
 #-------------------------------------------------------------------------------
 
 option(NETWORKING "Enable networking" ON)
-option(RELEASE "Build a release build" OFF)
 option(UNITTESTS "Builds with unittests" ON)
 option(TOOLS "Builds with tools" ON)
 option(VERBOSE "Print debug information" OFF)
@@ -20,6 +19,13 @@ option(MINIRACER "Build miniracer" OFF)
 # end options
 #-------------------------------------------------------------------------------
 
+if (NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE Debug)
+	message(STATUS "No build type is set - use ${CMAKE_BUILD_TYPE}")
+endif()
+if (${CMAKE_BUILD_TYPE} Matches "Release")
+	set(RELEASE TRUE)
+endif()
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Root dir")
 message(STATUS "Place binaries in ${ROOT_DIR}")
 # First for the generic no-config case (e.g. with mingw)
