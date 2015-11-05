@@ -742,10 +742,6 @@ macro(cp_add_executable)
 		else()
 			message(STATUS "Found provisioning profile hash ${RESULTS}")
 		endif()
-		add_custom_command(TARGET ${_EXE_TARGET} POST_BUILD COMMAND
-				xcodebuild archive -sdk iphoneos -project "${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}.xcodeproj" -configuration ${CMAKE_BUILD_TYPE} -archivePath "${CMAKE_BINARY_DIR}/${_EXE_TARGET}.xcarchive" -scheme ${_EXE_TARGET})
-		add_custom_command(TARGET ${_EXE_TARGET} POST_BUILD COMMAND
-				xcodebuild -exportArchive -exportFormat ipa -archivePath "${CMAKE_BINARY_DIR}/${_EXE_TARGET}.xcarchive" -exportPath "${APPNAME}.ipa" -exportProvisioningProfile "${RESULTS}")
 	elseif (NACL)
 		set_target_properties(${_EXE_TARGET} PROPERTIES PROFILING_POSTFIX .pexe)
 		set_target_properties(${_EXE_TARGET} PROPERTIES RELEASE_POSTFIX .pexe)
