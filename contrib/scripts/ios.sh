@@ -11,7 +11,7 @@ pwd
 
 IOS_PROVISIONG_PROFILES_DIR="${HOME}/Library/MobileDevice/Provisioning Profiles/"
 
-RESULTS=$(grep -l "Martin Gerhardy" ${PROVISIONG_PROFILES_DIR}/*.mobileprovision)
+RESULTS=$(grep -l "Martin Gerhardy" "${IOS_PROVISIONG_PROFILES_DIR}"/*.mobileprovision)
 
 /Applications/CMake.app/Contents/bin/cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$DIR/../../cmake/toolchains/ios-toolchain.cmake -GXcode $DIR/../..
 
