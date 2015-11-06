@@ -46,8 +46,8 @@ artifacts:
 
 test_script:
   - cmd: tests.exe --gtest_filter=-NetworkTest.testSendStringList:NetworkTest.testSendToServer --gtest_output=xml:tests.xml
-  - cmd: tests_caveexpress.exe --gtest_output=xml:tests_caveexpress.xml
-  - cmd: tests_cavepacker.exe --gtest_output=xml:tests_cavepacker.xml
+  - cmd: tests_caveexpress.exe --gtest_filter=-NetworkTest.* --gtest_output=xml:tests_caveexpress.xml
+  - cmd: tests_cavepacker.exe --gtest_filter=-NetworkTest.*:CampaignTest.testLoad --gtest_output=xml:tests_cavepacker.xml
 
 on_finish:
   - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests.xml))
