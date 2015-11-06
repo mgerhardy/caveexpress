@@ -664,11 +664,12 @@ macro(cp_add_executable)
 
 	cmake_parse_arguments(_EXE "${_OPTIONS_ARGS}" "${_ONE_VALUE_ARGS}" "${_MULTI_VALUE_ARGS}" ${ARGN} )
 
-	file(GLOB_RECURSE TARGET_ASSETS ${ROOT_DIR}/base/${_EXE_TARGET})
-	if (ASSETS)
+	file(GLOB_RECURSE TARGET_ASSETS RELATIVE ${ROOT_DIR} ${ROOT_DIR}/base/${_EXE_TARGET}/*)
+	if (_EXE_ASSETS)
 		list(APPEND TARGET_ASSETS ${_EXE_ASSETS})
 		list(REMOVE_DUPLICATES TARGET_ASSETS)
 	endif()
+	cp_message("ASSETS: ${ROOT_DIR}/base/${_EXE_TARGET} => ${TARGET_ASSETS}")
 
 	set(ABOUT_FILE ${ROOT_DIR}/docs/${_EXE_TARGET}/ABOUT.en)
 	if (EXISTS ${ABOUT_FILE})
