@@ -1,20 +1,5 @@
 include(CMakeParseArguments)
 
-if (${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
-	set(CP_GCC 1)
-	message(STATUS "C++ Compiler: GCC")
-elseif (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
-	set(CP_CLANG 1)
-	message(STATUS "C++ Compiler: Clang")
-elseif (MSVC)
-	set(CP_MSVC 1)
-	message(STATUS "C++ Compiler: MSVC")
-else()
-	message(WARNING "C++ Compiler: Unknown")
-endif()
-message(STATUS "Target processor: ${CMAKE_SYSTEM_PROCESSOR}")
-message(STATUS "Host processor: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
-
 #-------------------------------------------------------------------------------
 # macros
 #-------------------------------------------------------------------------------
@@ -49,6 +34,21 @@ macro(cp_message MSG)
 		message("${ColorBlue}${MSG}${ColorReset}")
 	endif()
 endmacro()
+
+if (${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
+	set(CP_GCC 1)
+	cp_message("C++ Compiler: GCC")
+elseif (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+	set(CP_CLANG 1)
+	cp_message("C++ Compiler: Clang")
+elseif (MSVC)
+	set(CP_MSVC 1)
+	cp_message("C++ Compiler: MSVC")
+else()
+	message(WARNING "C++ Compiler: Unknown")
+endif()
+cp_message("Target processor: ${CMAKE_SYSTEM_PROCESSOR}")
+cp_message("Host processor: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
 
 macro(texture_file_write TARGET_FILE FILEENTRY)
 	file(READ ${FILEENTRY} CONTENTS)
