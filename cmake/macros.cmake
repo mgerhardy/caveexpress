@@ -186,14 +186,14 @@ endmacro()
 # PACKAGE The package id that you need to install
 #
 macro(cp_android_package PACKAGE)
-	message("install android sdk package ${PACKAGE}")
+	message(STATUS "install android sdk package ${PACKAGE}")
 	file(WRITE ${CMAKE_BINARY_DIR}/yes.txt "y")
 	execute_process(
 		COMMAND ${ANDROID_SDK_TOOL} list target -c
 		OUTPUT_VARIABLE TARGETS_LIST
 	)
 	if (${TARGETS_LIST} MATCHES ${PACKAGE})
-		message("${PACKAGE} is already installed")
+		message(STATUS "${PACKAGE} is already installed")
 	else()
 		execute_process(
 			COMMAND ${ANDROID_SDK_TOOL} update sdk -a -u -s -t ${PACKAGE}
@@ -229,7 +229,7 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 		set(ANDROID_INSTALL_PACKAGES OFF)
 	endif()
 	# TODO: add java app and activity classes to dependencies to recompile target on java class changes
-	message("prepare java code for ${PROJECTNAME}")
+	message(STATUS "prepare java code for ${PROJECTNAME}")
 	file(COPY ${ANDROID_ROOT} DESTINATION ${CMAKE_BINARY_DIR}/android-${PROJECTNAME})
 	if (HD_VERSION)
 		set(PACKAGENAME ${PROJECTNAME}hd)
@@ -280,7 +280,7 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 	set_target_properties(${PROJECTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${ANDROID_SO_OUTDIR})
 	set_target_properties(${PROJECTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG ${ANDROID_SO_OUTDIR})
 	if (NOT EXISTS ${ANDROID_BIN_ROOT}/local.properties)
-		message("=> create Android SDK project: ${PROJECTNAME}")
+		message(STATUS "=> create Android SDK project: ${PROJECTNAME}")
 		execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent update project
 				--path .
 				--name ${APPNAME}
