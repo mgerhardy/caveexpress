@@ -72,7 +72,7 @@ int BitmapFont::getTextWidth (const std::string& string) const
 
 int BitmapFont::printMax (const std::string& text, const Color& color, int x, int y, int maxLength, bool rotate) const
 {
-	if (_fontDefPtr->getHeight() < 8)
+	if (_fontDefPtr->getHeight() < 5)
 		return 0;
 
 	if (text.empty())
