@@ -84,6 +84,8 @@ protected:
 	virtual void couldNotFindEntity (const std::string& prefix, uint16_t id) const;
 	void disableScreenRumble ();
 
+	virtual bool updateCameraPosition ();
+
 	virtual bool wantLerp () { return _restartDue == 0; }
 
 public:

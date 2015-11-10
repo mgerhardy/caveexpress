@@ -38,6 +38,14 @@ void CavePackerClientMap::scroll (int relX, int relY) {
 	_target = nullptr;
 }
 
+bool CavePackerClientMap::updateCameraPosition () {
+	if (ClientMap::updateCameraPosition()) {
+		_target = nullptr;
+		return true;
+	}
+	return false;
+}
+
 void CavePackerClientMap::setZoom (const float zoom) {
 	ClientMap::setZoom(zoom);
 	_target = nullptr;

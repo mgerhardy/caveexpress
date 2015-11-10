@@ -45,11 +45,13 @@ void Camera::scroll (int offsetX, int offsetY)
 	_scrollOffsetY = clamp(_scrollOffsetY, -h, h);
 }
 
-void Camera::update (const vec2& playerPos, Direction direction, float zoom)
+bool Camera::update (const vec2& playerPos, Direction direction, float zoom)
 {
 	// after zooming center the map
 	const int pixelW = _mapGridWidth * _scale * zoom;
 	const int nodeW = _mapPixelWidth;
+	const int oldViewX = _viewportX;
+	const int oldViewY = _viewportY;
 	if (pixelW < nodeW) {
 		// if we can show the full width of the map - then center it
 		_viewportX = _mapPixelWidth / 2 - pixelW / 2;
@@ -69,4 +71,5 @@ void Camera::update (const vec2& playerPos, Direction direction, float zoom)
 	_viewportX += _scrollOffsetX;
 	_viewportY += _scrollOffsetY;
 	Log::trace(LOG_CLIENT, "zoom: %f, viewportX %i, pixelW %i, nodeW: %i", zoom, _viewportX, pixelW, nodeW);
+	return oldViewX != _viewportX || oldViewY != _viewportY;
 }

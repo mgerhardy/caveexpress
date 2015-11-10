@@ -303,6 +303,11 @@ bool ClientMap::initWaitingForPlayer () {
 	return true;
 }
 
+bool ClientMap::updateCameraPosition ()
+{
+	return _camera.update(_player->getPos(), _player->getMoveDirection(), _zoom);
+}
+
 void ClientMap::update (uint32_t deltaTime)
 {
 	if (isPause())
@@ -319,7 +324,7 @@ void ClientMap::update (uint32_t deltaTime)
 
 	_time += deltaTime;
 	if (_player) {
-		_camera.update(_player->getPos(), _player->getMoveDirection(), _zoom);
+		updateCameraPosition();
 		SoundControl.setListenerPosition(_player->getPos());
 	}
 	const ExecutionTime updateTime("ClientMap", 2000L);
