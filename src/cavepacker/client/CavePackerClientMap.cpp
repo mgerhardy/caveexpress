@@ -51,7 +51,7 @@ void CavePackerClientMap::setZoom (const float zoom) {
 	_target = nullptr;
 }
 
-#define RENDER_TO_TEXTURE 0
+#define RENDER_TO_TEXTURE 1
 void CavePackerClientMap::renderLayer (int x, int y, Layer layer) const {
 #if RENDER_TO_TEXTURE
 	bool renderToTexture = false;
