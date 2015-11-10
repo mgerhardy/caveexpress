@@ -148,8 +148,7 @@ bool UIMapWindow::onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_
 {
 	if (IUIMapWindow::onFingerMotion(finger, x, y, dx, dy))
 		return true;
-	Camera& camera = _nodeMap->getMap().getCamera();
-	camera.scroll(dx, dy);
+	_nodeMap->getMap().scroll(dx, dy);
 	return true;
 }
 
@@ -223,8 +222,7 @@ bool UIMapWindow::tryMove (int x, int y, bool doubleTap)
 void UIMapWindow::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY)
 {
 	if (_scrolling) {
-		Camera& camera = _nodeMap->getMap().getCamera();
-		camera.scroll(relX, relY);
+		_nodeMap->getMap().scroll(relX, relY);
 	}
 	IUIMapWindow::onMouseMotion(x, y, relX, relY);
 }

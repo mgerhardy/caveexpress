@@ -86,6 +86,11 @@ void ClientMap::resetCurrentMap ()
 	_screenRumbleOffsetY = 0;
 }
 
+void ClientMap::scroll(int relX, int relY)
+{
+	getCamera().scroll(relX, relY);
+}
+
 void ClientMap::setZoom (const float zoom)
 {
 	const float minZoom = _minZoom->getFloatValue();

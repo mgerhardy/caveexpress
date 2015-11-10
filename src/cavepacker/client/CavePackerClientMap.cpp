@@ -33,6 +33,11 @@ void CavePackerClientMap::onWindowResize () {
 	_target = nullptr;
 }
 
+void CavePackerClientMap::scroll (int relX, int relY) {
+	ClientMap::scroll(relX, relY);
+	_target = nullptr;
+}
+
 void CavePackerClientMap::setZoom (const float zoom) {
 	ClientMap::setZoom(zoom);
 	_target = nullptr;

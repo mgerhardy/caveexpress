@@ -101,6 +101,7 @@ public:
 
 	virtual void resetCurrentMap ();
 	void close ();
+	virtual void scroll (int relX, int relY);
 	virtual void setZoom (const float zoom);
 	inline float getZoom () const { return _zoom; }
 	void disconnect ();
