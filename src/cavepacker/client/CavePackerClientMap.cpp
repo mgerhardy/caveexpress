@@ -38,8 +38,9 @@ void CavePackerClientMap::setZoom (const float zoom) {
 	_target = nullptr;
 }
 
+#define RENDER_TO_TEXTURE 0
 void CavePackerClientMap::renderLayer (int x, int y, Layer layer) const {
-#if 0
+#if RENDER_TO_TEXTURE
 	bool renderToTexture = false;
 	if (layer == LAYER_BACK) {
 		if (_target == nullptr || _targetEnts != _entities.size()) {
@@ -52,7 +53,7 @@ void CavePackerClientMap::renderLayer (int x, int y, Layer layer) const {
 	}
 #endif
 	ClientMap::renderLayer(x, y, layer);
-#if 0
+#if RENDER_TO_TEXTURE
 	if (renderToTexture)
 		_frontend->disableRenderTarget(_target);
 #endif
