@@ -175,7 +175,7 @@ macro(check_lua_files TARGET FILES)
 			add_dependencies(${TARGET} ${TARGETNAME})
 		endforeach()
 	else()
-		message(WARNING "No lua compiler (${DEFAULT_LUAC_EXECUTABLE}) found")
+		message(STATUS "No lua compiler (${DEFAULT_LUAC_EXECUTABLE}) found")
 	endif()
 endmacro()
 
