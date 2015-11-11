@@ -192,7 +192,8 @@ void Map::undo (Player* player)
 
 void Map::moveTo (Player* player, int col, int row)
 {
-	player->setTargetIndex(_state.getIndex(col, row));
+	const int targetIndex = _state.getIndex(col, row);
+	player->setTargetIndex(targetIndex);
 	Log::info(LOG_GAMEIMPL, "move player %i from %i:%i to %i:%i", player->getID(), player->getCol(), player->getRow(), col, row);
 }
 

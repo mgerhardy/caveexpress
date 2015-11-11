@@ -4,6 +4,7 @@
 #include "SokobanTiles.h"
 #include "deadlock/DeadlockDetector.h"
 #include "common/Log.h"
+#include <SDL_assert.h>
 
 namespace cavepacker {
 
@@ -122,6 +123,8 @@ public:
 	 * @param[in] row [0, h - 1]
 	 */
 	inline int getIndex(int col, int row) const {
+		SDL_assert_always(row < _height);
+		SDL_assert_always(col < _width);
 		return col + _width * row;
 	}
 
