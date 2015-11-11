@@ -3,7 +3,7 @@
 #include <sys/wait.h>
 #include <dirent.h>
 #include <fcntl.h>
-#include <assert.h>
+#include <SDL_assert.h>
 #include <unistd.h>
 #include <sys/time.h>
 #include <stdlib.h>
@@ -215,7 +215,7 @@ int Unix::exec (const std::string& command, std::vector<std::string>& arguments)
 	int status;
 	const pid_t pid = ::wait(&status);
 #ifdef DEBUG
-	assert(pid == childPid);
+	SDL_assert(pid == childPid);
 #else
 	(void)pid;
 #endif

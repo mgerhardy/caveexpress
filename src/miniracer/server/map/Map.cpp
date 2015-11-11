@@ -35,7 +35,6 @@
 #include <SDL.h>
 #include <algorithm>
 #include <functional>
-#include <cassert>
 #include <climits>
 
 namespace miniracer {
@@ -261,7 +260,7 @@ bool Map::load (const std::string& name)
 
 bool Map::spawnPlayer (Player* player)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	player->onSpawn();
 	addEntity(0, *player);
@@ -300,7 +299,7 @@ bool Map::initPlayer (Player* player)
 	if (getPlayer(player->getClientId()) != nullptr)
 		return false;
 
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	INetwork& network = _serviceProvider->getNetwork();
 	const ClientId clientId = player->getClientId();
@@ -380,13 +379,13 @@ void Map::sendMapToClient (ClientId clientId) const
 
 void Map::loadEntity (IEntity *entity)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 	_entities.push_back(entity);
 }
 
 bool Map::removePlayer (ClientId clientId)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		if ((*i)->getClientId() != clientId)

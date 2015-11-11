@@ -10,7 +10,6 @@
 #include <SDL.h>
 #include <SDL_platform.h>
 #include <map>
-#include <cassert>
 
 namespace {
 #define CMD_LISTVARS "listvars"

@@ -1,6 +1,5 @@
 #include "Texture.h"
 #include "common/Log.h"
-#include <assert.h>
 #include <SDL.h>
 
 #define MAX_TEXTURE_SIZE 2048

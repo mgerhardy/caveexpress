@@ -6,7 +6,7 @@
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "common/ConfigManager.h"
-#include <cassert>
+#include <SDL_assert.h>
 
 namespace caveexpress {
 
@@ -77,7 +77,7 @@ void Water::updateFixtures ()
 {
 	for (FixturePairIter it = _fixturePairs.begin(); it != _fixturePairs.end(); ++it) {
 		const b2Fixture* waterFixture = it->first;
-		assert(waterFixture->GetBody()->GetUserData() == this);
+		SDL_assert(waterFixture->GetBody()->GetUserData() == this);
 		b2Fixture* entityFixture = it->second;
 		const float density = waterFixture->GetDensity();
 		const b2Body *waterBody = waterFixture->GetBody();

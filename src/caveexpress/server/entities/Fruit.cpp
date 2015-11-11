@@ -2,13 +2,14 @@
 #include "caveexpress/shared/constants/Density.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
+#include <SDL_assert.h>
 
 namespace caveexpress {
 
 Fruit::Fruit (Map& map, const EntityType& type, gridCoord x, gridCoord y) :
 		CollectableEntity(type, map), _x(x), _y(y)
 {
-	assert(EntityTypes::isFruit(type));
+	SDL_assert(EntityTypes::isFruit(type));
 	if (EntityTypes::isApple(type))
 		_spriteAlignment = ENTITY_ALIGN_MIDDLE_CENTER;
 }

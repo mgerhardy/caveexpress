@@ -97,6 +97,7 @@
 #include "network/INetwork.h"
 #include "network/IProtocolMessage.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
+#include <SDL_assert.h>
 
 namespace caveexpress {
 
@@ -355,7 +356,7 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 
 void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 {
-	assert(_campaignManager != nullptr);
+	SDL_assert(_campaignManager != nullptr);
 	UI& ui = UI::get();
 	CampaignManager& campaignMgr = *_campaignManager;
 	ui.addWindow(new UIMainWindow(frontend, serviceProvider));

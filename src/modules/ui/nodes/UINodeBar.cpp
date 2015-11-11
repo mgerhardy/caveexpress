@@ -1,5 +1,5 @@
 #include "UINodeBar.h"
-#include <assert.h>
+#include <SDL_assert.h>
 
 UINodeBar::UINodeBar (IFrontend *frontend) :
 		UINode(frontend), _max(0), _current(0)
@@ -41,7 +41,7 @@ void UINodeBar::render (int x, int y) const
 
 	if (_max > 0 && _current > 0) {
 		const float factor = static_cast<float>(_current) / static_cast<float>(_max);
-		assert(factor <= 1.0f + EPSILON);
+		SDL_assert(factor <= 1.0f + EPSILON);
 		const int width = w * factor;
 		if (width > 0) {
 			renderFilledRect(x, y, width, h, _colorBar);

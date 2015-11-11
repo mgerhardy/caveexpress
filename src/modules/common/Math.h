@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Box2D/Common/b2Math.h>
+#include <SDL_assert.h>
 #include <algorithm>
 #include <cmath>
 #include <stdint.h>
@@ -32,7 +33,7 @@ GCC_DIAG_ON(shadow)
 static const double DEG2RAD = M_PI / 180.0;
 static const double RAD2DEG = 180.0 / M_PI;
 
-#define FLOAT_CHECK(p) assert(!isinf(p));assert(!isnan(p))
+#define FLOAT_CHECK(p) SDL_assert(!isinf(p));SDL_assert(!isnan(p))
 
 inline bool b2Vec2Equals (const b2Vec2& one, const b2Vec2& two, float epsilon = EPSILON)
 {

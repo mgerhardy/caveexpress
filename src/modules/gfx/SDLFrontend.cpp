@@ -14,6 +14,7 @@
 #include "common/Application.h"
 #include <SDL_image.h>
 #include <SDL_platform.h>
+#include <SDL_assert.h>
 #include <limits.h>
 
 struct TextureData {
@@ -190,7 +191,7 @@ void SDLFrontend::getTrimmed (const Texture* texture, int& x, int& y, int& w, in
 
 void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	if (texture == nullptr || !texture->isValid())
 		return;
@@ -217,7 +218,7 @@ void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 
 bool SDLFrontend::loadTexture (Texture *texture, const std::string& filename)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	const std::string file = FS.getFileFromURL("pics://" + filename + ".png")->getName();
 	SDL_RWops *src = FS.createRWops(file);
@@ -250,7 +251,7 @@ void SDLFrontend::setColor (const Color& rgba)
 
 void SDLFrontend::setSDLColor (const Color& rgba)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	const Uint8 r = rgba[0] * 255.0f;
 	const Uint8 g = rgba[1] * 255.0f;
@@ -270,7 +271,7 @@ void SDLFrontend::bindTexture (Texture* texture, int textureUnit)
 
 void SDLFrontend::renderRect (int x, int y, int w, int h, const Color& color)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	if (w <= 0)
 		w = getWidth();
@@ -284,7 +285,7 @@ void SDLFrontend::renderRect (int x, int y, int w, int h, const Color& color)
 
 void SDLFrontend::renderFilledRect (int x, int y, int w, int h, const Color& fillColor)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	if (w <= 0)
 		w = getWidth();
@@ -298,7 +299,7 @@ void SDLFrontend::renderFilledRect (int x, int y, int w, int h, const Color& fil
 
 void SDLFrontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	setSDLColor(color);
 	if (SDL_RenderDrawLine(_renderer, x1, y1, x2, y2) == -1)
@@ -313,7 +314,7 @@ void SDLFrontend::renderLineWithTexture (int x1, int y1, int x2, int y2, Texture
 
 void SDLFrontend::updateViewport (int x, int y, int width, int height)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	SDL_RenderSetLogicalSize(_renderer, getWidth(), getHeight());
 	SDL_DestroyTexture(_renderToTexture);
@@ -322,14 +323,14 @@ void SDLFrontend::updateViewport (int x, int y, int width, int height)
 
 void SDLFrontend::enableScissor (int x, int y, int width, int height)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 	const SDL_Rect rect = {x, y, width, height};
 	SDL_RenderSetClipRect(_renderer, &rect);
 }
 
 void SDLFrontend::disableScissor ()
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 	SDL_RenderSetClipRect(_renderer, nullptr);
 }
 
@@ -346,7 +347,7 @@ void SDLFrontend::destroyTexture (TextureData *data)
 
 uint32_t SDLFrontend::getDisplayFormat () const
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	SDL_RendererInfo info;
 	SDL_GetRendererInfo(_renderer, &info);
@@ -362,7 +363,7 @@ uint32_t SDLFrontend::getDisplayFormat () const
 
 void SDLFrontend::renderBegin ()
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	resetColor();
 	SDL_ClearError();
@@ -373,7 +374,7 @@ void SDLFrontend::renderBegin ()
 
 void SDLFrontend::renderEnd ()
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 	SDL_RenderPresent(_renderer);
 }
 
@@ -426,7 +427,7 @@ void SDLFrontend::render ()
 
 void SDLFrontend::makeScreenshot (const std::string& filename)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	SDL_Rect viewport;
 	int bpp;

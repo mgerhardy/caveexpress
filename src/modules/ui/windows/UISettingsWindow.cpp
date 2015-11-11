@@ -21,6 +21,7 @@
 #include "ui/windows/listener/FullscreenListener.h"
 
 #include <SDL_platform.h>
+#include <SDL_assert.h>
 
 UISettingsWindow::UISettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
 		UIWindow(UI_WINDOW_SETTINGS, frontend, WINDOW_FLAG_MODAL), _background(nullptr), _serviceProvider(serviceProvider)
@@ -79,7 +80,7 @@ UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* backgroun
 	if (background != nullptr) {
 		label->alignTo(background, NODE_ALIGN_CENTER | NODE_ALIGN_TOP, 0.2f);
 	} else {
-		assert(centerUnderNode);
+		SDL_assert(centerUnderNode);
 		label->centerUnder(centerUnderNode, 0.03f);
 	}
 	add(label);

@@ -7,8 +7,8 @@
 #include "common/ExecutionTime.h"
 #include "common/Singleton.h"
 #include <SDL.h>
+#include <SDL_assert.h>
 #include <SDL_mixer.h>
-#include <assert.h>
 
 namespace {
 const int SOUND_CLOSED = 1 << 0;
@@ -42,8 +42,8 @@ SDLSoundEngine::~SDLSoundEngine ()
 
 void SDLSoundEngine::channelFinished (int channel)
 {
-	assert(channel >= 0);
-	assert(channel < lengthofi(_channels));
+	SDL_assert(channel >= 0);
+	SDL_assert(channel < lengthofi(_channels));
 	memset(&_channels[channel], 0, sizeof(_channels[channel]));
 }
 
@@ -201,8 +201,8 @@ int SDLSoundEngine::play (const std::string& filename, const vec2& position, boo
 	if (channel == -1) {
 		Log::error(LOG_SOUND, "unable to play sound file: %s", Mix_GetError());
 	} else {
-		assert(channel >= 0);
-		assert(channel < lengthofi(_channels));
+		SDL_assert(channel >= 0);
+		SDL_assert(channel < lengthofi(_channels));
 		_channels[channel].channel = channel;
 		_channels[channel].chunk = sound;
 		_channels[channel].pos = position;

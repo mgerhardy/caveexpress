@@ -14,7 +14,7 @@
 #include "common/TextureDefinition.h"
 
 #include <algorithm>
-#include <assert.h>
+#include <SDL_assert.h>
 #include <math.h>
 
 namespace caveexpress {
@@ -161,7 +161,7 @@ inline void RandomMapContext::fillMap (const SpriteDefPtr& def, randomGridCoord 
 	for (randomGridSize w = 0; w < width; ++w) {
 		for (randomGridSize h = 0; h < height; ++h) {
 			const int index = (x + w) + ((y + h) * _mapWidth);
-			assert(_map[index] == nullptr);
+			SDL_assert(_map[index] == nullptr);
 			_map[index] = def.get();
 		}
 	}
@@ -170,7 +170,7 @@ inline void RandomMapContext::fillMap (const SpriteDefPtr& def, randomGridCoord 
 bool RandomMapContext::rndAddTile (const SpriteDefPtr& def, randomGridCoord x, randomGridCoord y)
 {
 	const SpriteType& type = def->type;
-	assert(!SpriteTypes::isCave(type));
+	SDL_assert(!SpriteTypes::isCave(type));
 	if (x >= _mapWidth || y >= _mapHeight) {
 		return false;
 	}
@@ -352,7 +352,7 @@ void RandomMapContext::placeTilesAroundInitialTiles ()
 	unsigned int tries = 0;
 	unsigned int overallTilesAmount = _overallRockAmount;
 
-	assert(!_definitions.empty());
+	SDL_assert(!_definitions.empty());
 
 	std::vector<MapTileDefinition> definitions = _definitions;
 	while (overallTilesAmount > 0) {
@@ -696,8 +696,8 @@ bool RandomMapContext::checkPassage (randomGridCoord x, randomGridCoord y, rando
 
 bool RandomMapContext::isFree (randomGridCoord x, randomGridCoord y, randomGridSize width, randomGridSize height) const
 {
-	assert(width > 0);
-	assert(height > 0);
+	SDL_assert(width > 0);
+	SDL_assert(height > 0);
 	for (randomGridSize w = 0; w < width; ++w) {
 		if (x + w >= _mapWidth)
 			return false;

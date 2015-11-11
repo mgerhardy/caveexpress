@@ -3,6 +3,7 @@
 #include "common/SpriteDefinition.h"
 #include "common/ConfigManager.h"
 #include "caveexpress/server/events/GameEventHandler.h"
+#include <SDL_assert.h>
 
 namespace caveexpress {
 
@@ -149,7 +150,7 @@ int IEntity::appendAnimation (const Animation& type)
 {
 	if (type.isNone())
 		return 0;
-	assert(_animationChangeTimer == 0);
+	SDL_assert(_animationChangeTimer == 0);
 	const int length = SpriteDefinition::get().getAnimationLength(_type, getAnimationType());
 	if (length > 0)
 		_animationChangeTimer = _map.getTimeManager().setTimeout(length, this, &IEntity::changeAnimation, &type);

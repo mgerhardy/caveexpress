@@ -50,7 +50,7 @@
 #include <SDL_stdinc.h>
 #include <algorithm>
 #include <functional>
-#include <cassert>
+#include <SDL_assert.h>
 
 typedef std::shared_ptr<b2Shape> ShapePtr;
 typedef std::multimap<std::string, ShapePtr> ShapeMap;
@@ -735,7 +735,7 @@ bool Map::rayTrace (int startGridX, int startGridY, int endGridX, int endGridY, 
 
 bool Map::spawnPlayer (Player* player)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	Log::info(LOG_GAMEIMPL, "spawn player %i", player->getID());
 	const int startPosIdx = _players.size();
@@ -786,7 +786,7 @@ bool Map::initPlayer (Player* player)
 	if (getPlayer(player->getClientId()) != nullptr)
 		return false;
 
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	INetwork& network = _serviceProvider->getNetwork();
 	const ClientId clientId = player->getClientId();
@@ -985,9 +985,9 @@ Platform *Map::getPlatform (MapTile *mapTile, int *start, int *end, gridSize off
 
 #ifdef DEBUG
 	PlatformYMapConstIter iy2 = _platforms.find(mapY);
-	assert(iy2 != _platforms.end());
+	SDL_assert(iy2 != _platforms.end());
 	PlatformXMapConstIter ix2 = iy2->second.find(*start);
-	assert(ix2 != iy->second.end());
+	SDL_assert(ix2 != iy->second.end());
 #endif
 
 	return platform;
@@ -1098,7 +1098,7 @@ MapTile* Map::createMapTileWithoutBody (const SpriteDefPtr& spriteDef, gridCoord
 
 b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *entity)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	SpriteDefPtr def = entity->getSpriteDef();
 	if (def) {
@@ -1190,7 +1190,7 @@ void Map::sendMapToClient (ClientId clientId) const
 
 void Map::loadEntity (IEntity *entity)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 	//entity->onSpawn();
 	_entities.push_back(entity);
 }
@@ -1257,7 +1257,7 @@ CaveMapTile *Map::getTargetCave (const CaveMapTile* ignoreCave) const
 
 bool Map::removeNPCFromWorld(NPCFriendly* npc)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 	Log::debug(LOG_GAMEIMPL, "remove npc %i from world: %s", npc->getID(), npc->getType().name.c_str());
 	GameEvent.removeEntity(npc->getVisMask(), *npc);
 	npc->setVisMask(NOTVISIBLE);
@@ -1268,7 +1268,7 @@ bool Map::removeNPCFromWorld(NPCFriendly* npc)
 
 bool Map::removeNPC(NPCFriendly* npc, bool fadeOut)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 	for (Map::NPCListIter i = _friendlyNPCs.begin(); i != _friendlyNPCs.end(); ++i) {
 		if (*i != npc)
 			continue;
@@ -1288,7 +1288,7 @@ bool Map::removeNPC(NPCFriendly* npc, bool fadeOut)
 
 bool Map::removePlayer (ClientId clientId)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		if ((*i)->getClientId() != clientId)
@@ -1325,7 +1325,7 @@ bool Map::removePlayer (ClientId clientId)
 
 NPCBlowing* Map::createBlowingNPC (const b2Vec2& pos, bool right, float force, float modificatorSize)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	NPCBlowing *npc = new NPCBlowing(*this, pos, right, force, modificatorSize);
 	addEntity(npc);
@@ -1335,8 +1335,8 @@ NPCBlowing* Map::createBlowingNPC (const b2Vec2& pos, bool right, float force, f
 
 NPCAttacking* Map::createAttackingNPC (const b2Vec2& pos, const EntityType& entityType, bool right)
 {
-	assert(EntityTypes::isNpcAttacking(entityType));
-	assert(_entityRemovalAllowed);
+	SDL_assert(EntityTypes::isNpcAttacking(entityType));
+	SDL_assert(_entityRemovalAllowed);
 	NPCAttacking *npc = new NPCAttacking(entityType, *this, right);
 	npc->createBody(pos, _world);
 	npc->calculatePlatformDimensions();
@@ -1346,7 +1346,7 @@ NPCAttacking* Map::createAttackingNPC (const b2Vec2& pos, const EntityType& enti
 
 NPCFish* Map::createFishNPC (const b2Vec2& pos)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 	NPCFish *npc = new NPCFish(*this);
 	npc->createBody(pos, false, true);
 	addEntity(npc);
@@ -1355,7 +1355,7 @@ NPCFish* Map::createFishNPC (const b2Vec2& pos)
 
 NPCFlying* Map::createFlyingNPC (const b2Vec2& pos)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 	NPCFlying *npc = new NPCFlying(*this);
 	npc->createBody(pos);
 	addEntity(npc);
@@ -1364,7 +1364,7 @@ NPCFlying* Map::createFlyingNPC (const b2Vec2& pos)
 
 NPCPackage* Map::createPackageNPC (CaveMapTile* cave, const EntityType& type)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	if (getPackageTarget() == nullptr)
 		return nullptr;
@@ -1379,7 +1379,7 @@ NPCPackage* Map::createPackageNPC (CaveMapTile* cave, const EntityType& type)
 
 NPCFriendly* Map::createFriendlyNPC(CaveMapTile* cave, const EntityType& type, bool returnToCaveOnIdle)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 	if (_friendlyNPCs.size() >= _friendlyNPCLimit)
 		return nullptr;
 
