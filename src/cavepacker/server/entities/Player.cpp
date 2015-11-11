@@ -88,6 +88,8 @@ bool Player::undo ()
 
 void Player::setTargetIndex(int index)
 {
+	SDL_assert_always(_map.getMapWidth() > 0);
+	SDL_assert_always(_map.getMapHeight() > 0);
 	SDL_assert_always(_targetIndex < _map.getMapWidth() * _map.getMapHeight());
 	SDL_assert_always(_targetIndex >= -1);
 	_targetIndex = index;
