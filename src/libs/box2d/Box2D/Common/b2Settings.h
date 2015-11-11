@@ -24,7 +24,9 @@
 #include <float.h>
 
 #define B2_NOT_USED(x) ((void)(x))
+#ifndef b2Assert
 #define b2Assert(A) assert(A)
+#endif
 
 typedef signed char	int8;
 typedef signed short int16;

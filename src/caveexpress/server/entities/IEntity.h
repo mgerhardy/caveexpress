@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL_assert.h>
+#define b2Assert SDL_assert
 #include <Box2D/Box2D.h>
 #include "common/Log.h"
 #include "common/Timer.h"
