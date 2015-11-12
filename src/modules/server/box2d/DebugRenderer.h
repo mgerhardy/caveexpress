@@ -1,7 +1,9 @@
 #pragma once
 
 #include <SDL_assert.h>
+#ifndef b2Assert
 #define b2Assert SDL_assert
+#endif
 #include <Box2D/Box2D.h>
 #include "common/IFrontend.h"
 #include "common/Compiler.h"
