@@ -706,6 +706,7 @@ macro(cp_add_executable)
 	else()
 		if (LINUX)
 			configure_file(${ROOT_DIR}/contrib/installer/linux/desktop.in ${PROJECT_BINARY_DIR}/${_EXE_TARGET}.desktop)
+			configure_file(${ROOT_DIR}/contrib/installer/linux/appdata.xml.in ${PROJECT_BINARY_DIR}/${_EXE_TARGET}.appdata.xml)
 		endif()
 
 		if (WINDOWED)

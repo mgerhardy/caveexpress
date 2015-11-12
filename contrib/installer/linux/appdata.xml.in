@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2014 CaveProductions <info@caveproductions.org> -->
 <application>
-	<id type="desktop">caveexpress.desktop</id>
+	<id type="desktop">@APP@.desktop</id>
 	<licence></licence>
-	<name>CaveExpress</name>
-	<summary>CaveExpress is a classic 2D platformer with physics-based gameplay and dozens of levels</summary>
+	<name>@APPNAME@</name>
+	<summary>@DESCRIPTION@</summary>
 	<description>
 		<p>
 			Master your pedal-powered flying machine to pick up packages from
