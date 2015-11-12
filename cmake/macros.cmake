@@ -666,6 +666,12 @@ macro(cp_add_executable)
 
 	cmake_parse_arguments(_EXE "${_OPTIONS_ARGS}" "${_ONE_VALUE_ARGS}" "${_MULTI_VALUE_ARGS}" ${ARGN} )
 
+	# tests have different install behaviour
+	if (${_EXE_TARGET} MATCHES "tests")
+		set(TESTS TRUE)
+	else()
+		set(TESTS FALSE)
+	endif()
 	string(REGEX REPLACE "tests_" "" BASEDIR ${_EXE_TARGET})
 	set(TARGET_ASSETS "")
 	set(RESOURCE_DIR ${ROOT_DIR}/base/${BASEDIR})
@@ -700,13 +706,27 @@ macro(cp_add_executable)
 
 	set(CPACK_COMPONENT_${_EXE_TARGET}_DISPLAY_NAME ${APPNAME})
 
+	# by default, put system related files into the current binary dir on install
+	set(SHARE_DIR ".")
+	# by default, put data files into the current binary dir on install
+	set(GAMES_DIR ".")
+	# by default, put the binary into a subdir with the target name
+	set(BIN_DIR "${_EXE_TARGET}")
+
 	if (ANDROID)
 		add_library(${_EXE_TARGET} SHARED ${_EXE_SRCS} ${TARGET_ASSETS})
 		cp_android_prepare(${_EXE_TARGET} ${APPNAME} ${VERSION} ${VERSION_CODE})
 	else()
-		if (LINUX)
-			configure_file(${ROOT_DIR}/contrib/installer/linux/desktop.in ${PROJECT_BINARY_DIR}/${_EXE_TARGET}.desktop)
-			configure_file(${ROOT_DIR}/contrib/installer/linux/appdata.xml.in ${PROJECT_BINARY_DIR}/${_EXE_TARGET}.appdata.xml)
+		if (LINUX AND NOT TESTS)
+			set(SHARE_DIR "share")
+			set(GAMES_DIR "${SHARE_DIR}")
+			set(BIN_DIR "games")
+			configure_file(${ROOT_DIR}/contrib/installer/linux/desktop.in ${SHARE_DIR}/application/${_EXE_TARGET}.desktop)
+			configure_file(${ROOT_DIR}/contrib/installer/linux/appdata.xml.in ${SHARE_DIR}/application/${_EXE_TARGET}.appdata.xml)
+			set(MAN_PAGE ${ROOT_DIR}/contrib/installer/linux/${_EXE_TARGET}.6)
+			if (EXISTS ${MAN_PAGE})
+				install(FILES ${MAN_PAGE} DESTINATION ${SHARE_DIR}/man/en_GB/man6)
+			endif()
 		endif()
 
 		if (WINDOWED)
@@ -768,8 +788,10 @@ macro(cp_add_executable)
 
 	set_target_properties(${_EXE_TARGET} PROPERTIES FOLDER ${_EXE_TARGET})
 	# install relative to /usr/<APPNAME>
-	install(DIRECTORY ${ROOT_DIR}/base/${BASEDIR} DESTINATION ${_EXE_TARGET}/base COMPONENT ${_EXE_TARGET})
-	install(TARGETS ${_EXE_TARGET} DESTINATION ${_EXE_TARGET} COMPONENT ${_EXE_TARGET})
+	if (NOT TESTS)
+		install(DIRECTORY ${ROOT_DIR}/base/${BASEDIR} DESTINATION ${GAMES_DIR}/${_EXE_TARGET}/base COMPONENT ${_EXE_TARGET})
+		install(TARGETS ${_EXE_TARGET} DESTINATION ${BIN_DIR} COMPONENT ${_EXE_TARGET})
+	endif()
 	configure_file(${ROOT_DIR}/src/game.h.in ${PROJECT_BINARY_DIR}/game.h)
 	include_directories(${PROJECT_BINARY_DIR})
 endmacro()
