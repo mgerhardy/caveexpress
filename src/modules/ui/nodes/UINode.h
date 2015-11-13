@@ -107,7 +107,6 @@ protected:
 	typedef UINodeList::const_reverse_iterator UINodeListConstRevIter;
 	UINodeList _nodes;
 
-	friend class UINodePanel;
 	TexturePtr _texture;
 	std::string _onActivate;
 	bool _focus;
