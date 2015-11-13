@@ -9,7 +9,7 @@ set(CMAKE_C_FLAGS_DEBUG "-O0 -DDEBUG -g")
 set(CMAKE_CXX_STANDARD_LIBRARIES "-lppapi_gles2 -lppapi_cpp -lppapi -lpthread")
 set(CMAKE_C_STANDARD_LIBRARIES "lppapi_gles2 -lppapi -lpthread")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11 -Wnon-virtual-dtor -fno-rtti -fno-exceptions")
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wnon-virtual-dtor")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
 

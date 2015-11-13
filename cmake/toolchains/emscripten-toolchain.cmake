@@ -101,7 +101,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(CMAKE_SYSTEM_INCLUDE_PATH "${EMSCRIPTEN_ROOT_PATH}/system/include")
 
 # c++ compiler flags
-set(CMAKE_CXX_FLAGS "${EMSCRIPTEN_CONFIG_OPTION} ${EMSCRIPTEN_CACHE_OPTION} ${EMSCRIPTEN_TRACING_OPTION} -std=c++11 -fno-rtti -fno-exceptions -stdlib=libc++ -fstrict-aliasing -Wall -Wno-warn-absolute-paths -Wno-multichar -Wextra -Wno-unused-parameter -Wno-unknown-pragmas -Wno-ignored-qualifiers -Wno-long-long -Wno-overloaded-virtual -Wno-deprecated-writable-strings -Wno-unused-volatile-lvalue -Wno-inconsistent-missing-override -Wno-c++11-extensions -Wno-shift-op-parentheses -Wno-warn-absolute-paths -Wno-unknown-warning-option")
+set(CMAKE_CXX_FLAGS "${EMSCRIPTEN_CONFIG_OPTION} ${EMSCRIPTEN_CACHE_OPTION} ${EMSCRIPTEN_TRACING_OPTION} -stdlib=libc++ -fstrict-aliasing -Wall -Wno-warn-absolute-paths -Wno-multichar -Wextra -Wno-unused-parameter -Wno-unknown-pragmas -Wno-ignored-qualifiers -Wno-long-long -Wno-overloaded-virtual -Wno-deprecated-writable-strings -Wno-unused-volatile-lvalue -Wno-inconsistent-missing-override -Wno-c++11-extensions -Wno-shift-op-parentheses -Wno-warn-absolute-paths -Wno-unknown-warning-option")
 set(CMAKE_CXX_FLAGS_RELEASE "${EMSCRIPTEN_OPT} -DNDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${EMSCRIPTEN_OPT} -g -D_DEBUG_ -D_DEBUG -DDEBUG=1")
 set(CMAKE_CXX_FLAGS_PROFILING "${EMSCRIPTEN_OPT} --profiling")

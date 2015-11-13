@@ -61,7 +61,7 @@ endif()
 set(CMAKE_C_FLAGS_RELEASE "-D_GNU_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_XOPEN_SOURCE -D_FORTIFY_SOURCE=2 -DNDEBUG -fexpensive-optimizations -fomit-frame-pointer -O3")
 set(CMAKE_C_FLAGS_DEBUG "-DDEBUG -fno-omit-frame-pointer ${SANITIZE_FLAGS}")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11 -Wnon-virtual-dtor -fno-rtti -fno-exceptions")
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wnon-virtual-dtor")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
 
