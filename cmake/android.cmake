@@ -116,3 +116,6 @@ if (VERBOSE)
 endif()
 
 add_definitions(-DGL_GLEXT_PROTOTYPES)
+
+set(CMAKE_C_STANDARD_LIBRARIES "-ldl -landroid -llog -lm -lz -lc -lgcc")
+set(CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES}")
