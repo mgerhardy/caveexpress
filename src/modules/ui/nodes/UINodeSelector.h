@@ -10,6 +10,7 @@
 template<class T>
 class UINodeSelector: public UINode {
 protected:
+	typedef UINode Super;
 	typedef std::vector<T> SelectorEntries;
 	typedef typename SelectorEntries::const_iterator SelectorEntryConstIter;
 	typedef typename SelectorEntries::iterator SelectorEntryIter;
@@ -94,7 +95,7 @@ public:
 
 	virtual void onAdd () override
 	{
-		UINode::onAdd();
+		Super::onAdd();
 		autoSize();
 		updateAlignment();
 	}
@@ -235,7 +236,7 @@ public:
 	bool onMouseLeftRelease (int32_t x, int32_t y) override
 	{
 		const bool ret = select();
-		UINode::onMouseLeftRelease(x, y);
+		Super::onMouseLeftRelease(x, y);
 		return ret;
 	}
 
@@ -244,11 +245,11 @@ public:
 		_motionHandled = false;
 		// ignore this if the finger was released after a motion event
 		if (motion)
-			return UINode::onFingerRelease(finger, x, y, motion);
+			return Super::onFingerRelease(finger, x, y, motion);
 
 		addFocus(x, y);
 		const bool ret = select();
-		UINode::onFingerRelease(finger, x, y, motion);
+		Super::onFingerRelease(finger, x, y, motion);
 		return ret;
 	}
 
@@ -317,7 +318,7 @@ public:
 
 	virtual void render (int x, int y) const override
 	{
-		UINode::render(x, y);
+		Super::render(x, y);
 
 		_renderX = _entryOffsetX;
 		_renderY = _entryOffsetY;
@@ -387,7 +388,7 @@ public:
 
 	virtual bool onKeyPress (int32_t key, int16_t modifier) override
 	{
-		if (!UINode::onKeyPress(key, modifier)) {
+		if (!Super::onKeyPress(key, modifier)) {
 			if (key == SDLK_PAGEUP) {
 				offset(false);
 				selectEntry(_offset);
@@ -403,7 +404,7 @@ public:
 
 	void onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY) override
 	{
-		UINode::onMouseMotion(x, y, relX, relY);
+		Super::onMouseMotion(x, y, relX, relY);
 		addFocus(x, y);
 		_cursorX = x;
 		_cursorY = y;
@@ -411,7 +412,7 @@ public:
 
 	void renderDebug (int x, int y, int textY) const override
 	{
-		UINode::renderDebug(x, y, textY);
+		Super::renderDebug(x, y, textY);
 		const BitmapFontPtr& font = getFont(MEDIUM_FONT);
 		font->print(string::format("x: %i, y: %i, index: %i", _cursorX, _cursorY, _selectedIndex), colorWhite, x, textY);
 	}
@@ -423,7 +424,7 @@ public:
 
 	void removeFocus () override
 	{
-		UINode::removeFocus();
+		Super::removeFocus();
 		_selectedIndex = -1;
 	}
 
@@ -442,7 +443,7 @@ public:
 		Log::info(LOG_UI, "selected index: %i, offset: %i", _selectedIndex, _offset);
 		_selectedIndex %= (int) _entries.size();
 		if (_selectedIndex == 0) {
-			return UINode::nextFocus(cursordown);
+			return Super::nextFocus(cursordown);
 		}
 		return true;
 	}
@@ -462,14 +463,14 @@ public:
 		if (_selectedIndex < 0) {
 			_selectedIndex = _entries.size() - 1;
 			_offset = _selectedIndex % (_rows * _cols);
-			return UINode::prevFocus(cursorup);
+			return Super::prevFocus(cursorup);
 		}
 		return true;
 	}
 
 	void addFocus (int32_t x, int32_t y) override
 	{
-		UINode::addFocus(x, y);
+		Super::addFocus(x, y);
 		if (_entries.empty()) {
 			_selectedIndex = -1;
 			return;
