@@ -293,7 +293,11 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 				--target ${ANDROID_API}
 				WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 	endif()
-	set(APK_NAME ${APPNAME}-${ANT_TARGET}-unsigned.apk)
+	if (RELEASE)
+		set(APK_NAME ${APPNAME}-${ANT_TARGET}-unsigned.apk)
+	else()
+		set(APK_NAME ${APPNAME}-${ANT_TARGET}.apk)
+	endif()
 	set(FINAL_APK_NAME ${APPNAME}-${ANT_TARGET}.apk)
 
 	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E rename ${ANDROID_SO_OUTDIR}/lib${PROJECTNAME}.so ${ANDROID_SO_OUTDIR}/lib${PACKAGENAME}.so)
