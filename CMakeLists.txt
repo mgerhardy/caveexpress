@@ -24,6 +24,12 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release)
 
+if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
+	set(RELEASE False)
+else()
+	set(RELEASE True)
+endif()
+
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Root dir")
 message(STATUS "Place binaries in ${ROOT_DIR}")
 # First for the generic no-config case (e.g. with mingw)
