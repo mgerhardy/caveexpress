@@ -74,6 +74,8 @@ public:
 	}
 };
 
+typedef std::map<std::string, FontChar*> FontCharMap;
+
 class FontDef {
 public:
 	// the id if the fontdef
@@ -82,7 +84,8 @@ public:
 	int textureHeight;
 	std::string textureName;
 
-	std::vector<FontChar> fontChars;
+	typedef std::vector<FontChar> FontChars;
+	FontChars fontChars;
 
 	FontDef (const std::string& _id, int height, int metricsHeight, int metricsAscender, int metricsDescender) :
 			id(_id), textureWidth(0), textureHeight(0), textureName(""), _height(height), _metricsHeight(metricsHeight), _metricsAscender(
@@ -121,7 +124,7 @@ public:
 	void updateChars (int textureWidth, int textureHeight);
 
 private:
-	std::map<std::string, FontChar*> _fontCharMap;
+	FontCharMap _fontCharMap;
 	int _height;
 	int _metricsHeight;
 	int _metricsAscender;

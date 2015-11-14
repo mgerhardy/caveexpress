@@ -110,13 +110,13 @@ void FontDef::updateChars (int tWidth, int tHeight)
 const FontChar* FontDef::getFontChar (char character)
 {
 	if (_fontCharMap.empty()) {
-		for (std::vector<FontChar>::iterator i = fontChars.begin(); i != fontChars.end(); ++i) {
+		for (FontChars::iterator i = fontChars.begin(); i != fontChars.end(); ++i) {
 			_fontCharMap[i->getCharacter()] = &(*i);
 		}
 	}
 
 	const std::string c(&character, 1);
-	std::map<std::string, FontChar*>::iterator iter = _fontCharMap.find(c);
+	FontCharMap::iterator iter = _fontCharMap.find(c);
 	if (iter == _fontCharMap.end())
 		return nullptr;
 
