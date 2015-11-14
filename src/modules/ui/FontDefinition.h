@@ -75,12 +75,18 @@ public:
 };
 
 class FontDef {
-private:
-	std::map<std::string, FontChar*> _fontCharMap;
 public:
-	FontDef (const std::string& _id, int _height, int _metricsHeight, int _metricsAscender, int _metricsDescender) :
-			id(_id), textureWidth(0), textureHeight(0), textureName(""), height(_height), metricsHeight(_metricsHeight), metricsAscender(
-					_metricsAscender), metricsDescender(_metricsDescender), _heightFactor(1.0f), _widthFactor(1.0f)
+	// the id if the fontdef
+	const std::string id;
+	int textureWidth;
+	int textureHeight;
+	std::string textureName;
+
+	std::vector<FontChar> fontChars;
+
+	FontDef (const std::string& _id, int height, int metricsHeight, int metricsAscender, int metricsDescender) :
+			id(_id), textureWidth(0), textureHeight(0), textureName(""), _height(height), _metricsHeight(metricsHeight), _metricsAscender(
+					metricsAscender), _metricsDescender(metricsDescender), _heightFactor(1.0f), _widthFactor(1.0f)
 	{
 	}
 
@@ -89,47 +95,40 @@ public:
 		return *this;
 	}
 
-	// the id if the fontdef
-	const std::string id;
-	int textureWidth;
-	int textureHeight;
-	std::string textureName;
-
-private:
-	int height;
-	int metricsHeight;
-	int metricsAscender;
-	int metricsDescender;
-
-	float _heightFactor;
-	float _widthFactor;
-
-public:
-
 	inline int getHeight () const
 	{
-		const float newHeight = this->height * _heightFactor;
+		const float newHeight = _height * _heightFactor;
 		return newHeight + 0.5f;
 	}
 
 	inline int getMetricsHeight () const
 	{
-		return metricsHeight * _heightFactor;
-	}
-	inline int getMetricsAscender () const
-	{
-		return metricsAscender * _heightFactor;
-	}
-	inline int getMetricsDescender () const
-	{
-		return metricsDescender * _heightFactor;
+		return _metricsHeight * _heightFactor;
 	}
 
-	std::vector<FontChar> fontChars;
+	inline int getMetricsAscender () const
+	{
+		return _metricsAscender * _heightFactor;
+	}
+
+	inline int getMetricsDescender () const
+	{
+		return _metricsDescender * _heightFactor;
+	}
 
 	const FontChar* getFontChar (char character);
 
 	void updateChars (int textureWidth, int textureHeight);
+
+private:
+	std::map<std::string, FontChar*> _fontCharMap;
+	int _height;
+	int _metricsHeight;
+	int _metricsAscender;
+	int _metricsDescender;
+
+	float _heightFactor;
+	float _widthFactor;
 };
 
 typedef std::shared_ptr<FontDef> FontDefPtr;

@@ -101,8 +101,7 @@ void FontDef::updateChars (int tWidth, int tHeight)
 	_widthFactor = tWidth / (float)textureWidth;
 	_heightFactor = tHeight / (float)textureHeight;
 
-	for (std::vector<FontChar>::iterator i = fontChars.begin(); i != fontChars.end(); ++i) {
-		FontChar& c = *i;
+	for (FontChar& c : fontChars) {
 		c.setWidthFactor(_widthFactor);
 		c.setHeightFactor(_heightFactor);
 	}
