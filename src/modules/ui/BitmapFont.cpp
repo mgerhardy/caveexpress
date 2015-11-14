@@ -8,8 +8,9 @@ BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr, IFrontend *frontend) :
 		_frontend(frontend),_fontDefPtr(fontDefPtr), _time(0U) {
 	_font = UI::get().loadTexture(_fontDefPtr->textureName);
 	_rand = randBetween(0, 10000);
-	if (!_font || !_font->isValid()) {
-		System.exit("invalid font definition with texture " + _fontDefPtr->textureName, 1);
+	if (!_font->isValid()) {
+		Log::error(LOG_UI, "invalid font definition with texture %s", _fontDefPtr->textureName.c_str());
+		SDL_assert_always(_font->isValid());
 	}
 	_fontDefPtr->updateChars(_font->getTrim().untrimmedWidth, _font->getTrim().untrimmedHeight);
 }
@@ -74,7 +75,7 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 {
 	SDL_assert_always(_fontDefPtr);
 	SDL_assert_always(_frontend);
-	SDL_assert_always(_font);
+	SDL_assert_always(_font->isValid());
 
 	if (_fontDefPtr->getHeight() < 5)
 		return 0;
@@ -91,6 +92,7 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 	const int fontHeight = _fontDefPtr->getHeight();
 	const TextureRect sourceRect = _font->getSourceRect();
 	const FontChar* space = _fontDefPtr->getFontChar(' ');
+	SDL_assert_always(space);
 	for (std::string::const_iterator i = text.begin(); i != text.end(); ++i) {
 		const unsigned char chr = *i;
 		if (chr == '\n') {
@@ -107,10 +109,19 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 			continue;
 		}
 		if (maxLength <= 0 || x + fontChr->getWidth() - beginX <= maxLength) {
-			_font->setRect(sourceRect.x + fontChr->getX(), sourceRect.y + fontChr->getY(), fontChr->getW(), fontChr->getH());
-			const int letterAngleMod = x + fontChr->getOX() + y + yShift + fontHeight - fontChr->getOY() + fontChr->getW() + fontChr->getH();
-			const int angle = rotate && _time > 0u ? RadiansToDegrees(cos(static_cast<double>(letterAngleMod * 100 + _time + _rand) / 100.0) / 6.0) : 0;
-			_frontend->renderImage(_font.get(), x + fontChr->getOX(), y + yShift + fontHeight - fontChr->getOY(), fontChr->getW(), fontChr->getH(), angle, color[3]);
+			const int fcx = fontChr->getX();
+			const int fcy = fontChr->getY();
+			const int fcw = fontChr->getW();
+			const int fch = fontChr->getH();
+			_font->setRect(sourceRect.x + fcx, sourceRect.y + fcy, fcw, fch);
+			int angle;
+			if (rotate && _time > 0u) {
+				const int letterAngleMod = x + fontChr->getOX() + y + yShift + fontHeight - fontChr->getOY() + fcw + fch;
+				angle = RadiansToDegrees(cos(static_cast<double>(letterAngleMod * 100 + _time + _rand) / 100.0) / 6.0);
+			} else {
+				angle = 0;
+			}
+			_frontend->renderImage(_font.get(), x + fontChr->getOX(), y + yShift + fontHeight - fontChr->getOY(), fcw, fch, angle, color[3]);
 		}
 		x += fontChr->getWidth();
 	}
