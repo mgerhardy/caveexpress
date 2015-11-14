@@ -109,6 +109,7 @@ void FontDef::updateChars (int tWidth, int tHeight)
 
 const FontChar* FontDef::getFontChar (char character)
 {
+	SDL_assert_always(!fontChars.empty());
 	if (_fontCharMap.empty()) {
 		for (FontChars::iterator i = fontChars.begin(); i != fontChars.end(); ++i) {
 			_fontCharMap[i->getCharacter()] = &(*i);
