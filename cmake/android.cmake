@@ -106,6 +106,7 @@ endif()
 
 if (VERBOSE)
 	set(ANT_FLAGS -v)
+	set(ZIPALIGN_FLAGS -v)
 endif()
 
 add_definitions(-DGL_GLEXT_PROTOTYPES)
