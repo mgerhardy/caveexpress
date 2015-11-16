@@ -254,6 +254,7 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 	configure_file(${ANDROID_BIN_ROOT}/strings.xml.in ${ANDROID_BIN_ROOT}/res/values/strings.xml @ONLY)
 	configure_file(${ANDROID_BIN_ROOT}/default.properties.in ${ANDROID_BIN_ROOT}/default.properties @ONLY)
 	configure_file(${ANDROID_BIN_ROOT}/project.properties.in ${ANDROID_BIN_ROOT}/project.properties @ONLY)
+	configure_file(${ANDROID_BIN_ROOT}/build.gradle.in ${ANDROID_BIN_ROOT}/build.gradle @ONLY)
 	add_custom_target(android-${PROJECTNAME}-backtrace ${ANDROID_ADB} logcat | ndk-stack -sym ${ANDROID_BIN_ROOT}/obj/local/${ANDROID_NDK_ABI_NAME} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 	add_custom_target(android-${PROJECTNAME}-install ${ANDROID_ANT} ${ANT_INSTALL_TARGET} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 	add_custom_target(android-${PROJECTNAME}-uninstall ${ANDROID_ANT} uninstall WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
@@ -285,10 +286,12 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 		message(STATUS "=> create Android SDK project: ${PROJECTNAME}")
 		execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent update project
 				--path .
+				${ANDROID_TOOL_FLAGS}
 				--name ${APPNAME}
 				--target ${ANDROID_API}
 				WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 		execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent update lib-project
+				${ANDROID_TOOL_FLAGS}
 				--path google-play-services_lib
 				--target ${ANDROID_API}
 				WORKING_DIRECTORY ${ANDROID_BIN_ROOT})

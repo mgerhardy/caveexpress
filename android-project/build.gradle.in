@@ -1,0 +1,68 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.0.0'
+    }
+}
+
+apply plugin: 'android'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "@ANDROID_SDK_BUILD_TOOLS_VERSION@"
+
+    defaultConfig {
+        applicationId "org.@PACKAGENAME@"
+        minSdkVersion @MIN_ANDROID_SDK@
+        targetSdkVersion @TARGET_ANDROID_SDK@
+        versionCode @VERSION_CODE@
+        versionName "@VERSION@"
+        ndk {
+            moduleName '@PACKAGENAME@'
+            cFlags "-std=c++11"
+            stl "gnustl_static"
+        }
+    }
+    buildTypes {
+        release {
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable @MANIFEST_DEBUGGABLE@
+        }
+    }
+    sourceSets.@PACKAGENAME@ {
+        jni.srcDirs = []
+        jniLibs.srcDir 'src/@PACKAGENAME@/libs'
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+
+        // Move the build types to build-types/<type>
+        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
+        // This moves them out of them default location under src/<type>/... which would
+        // conflict with src/ being used by the main source set.
+        // Adding new build types or product flavors should be accompanied
+        // by a similar customization.
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+}
+
+dependencies {
+    compile project(":lib")
+    compile 'com.android.support:appcompat-v7:19.0.1'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}

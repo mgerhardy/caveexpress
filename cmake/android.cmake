@@ -37,9 +37,16 @@ endif()
 # find the ant tool
 find_host_program(ANDROID_ANT ant)
 if (ANDROID_ANT)
-	message(STATUS "ant tool found")
+	message(STATUS "ant found")
 else()
-	message(FATAL_ERROR "ant tool not found in path!")
+	message(FATAL_ERROR "ant not found in path!")
+endif()
+
+find_host_program(ANDROID_GRADLE gradle)
+if (ANDROID_GRADLE)
+	message(STATUS "gradle found")
+else()
+	message(FATAL_ERROR "gradle not found in path!")
 endif()
 
 find_host_program(JARSIGNER "jarsigner")
@@ -114,7 +121,12 @@ endif()
 if (VERBOSE)
 	set(ANT_FLAGS -v)
 	set(ZIPALIGN_FLAGS -v)
+	set(ANDROID_TOOL_FLAGS "${ANDROID_TOOL_FLAGS} -v")
 endif()
+if (GRADLE)
+	set(ANDROID_TOOL_FLAGS "${ANDROID_TOOL_FLAGS} -g")
+endif()
+
 
 add_definitions(-DGL_GLEXT_PROTOTYPES)
 
