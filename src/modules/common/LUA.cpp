@@ -136,7 +136,7 @@ std::string LUA::getValueStringFromTable (const char * key, const std::string& d
 		return defaultValue;
 	}
 
-	const std::string rtn = luaL_checkstring(_state,-1);
+	const std::string rtn = luaL_checkstring(_state, -1);
 	pop();
 	return rtn;
 }
