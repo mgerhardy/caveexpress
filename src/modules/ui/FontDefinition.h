@@ -75,6 +75,7 @@ public:
 };
 
 typedef std::map<std::string, FontChar*> FontCharMap;
+typedef std::vector<FontChar> FontChars;
 
 class FontDef {
 public:
@@ -84,7 +85,6 @@ public:
 	int textureHeight;
 	std::string textureName;
 
-	typedef std::vector<FontChar> FontChars;
 	FontChars fontChars;
 
 	FontDef (const std::string& _id, int height, int metricsHeight, int metricsAscender, int metricsDescender) :
@@ -122,6 +122,7 @@ public:
 	const FontChar* getFontChar (char character);
 
 	void updateChars (int textureWidth, int textureHeight);
+	void init();
 
 private:
 	FontCharMap _fontCharMap;

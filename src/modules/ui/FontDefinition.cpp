@@ -91,9 +91,18 @@ FontDefinition::FontDefinition() {
 
 		lua.pop();
 
+		def->init();
+
 		_fontDefs[id] = FontDefPtr(def);
 	}
 	Log::debug(LOG_UI, "Loaded %i font definitions", (int)_fontDefs.size());
+}
+
+void FontDef::init() {
+	SDL_assert_always(!fontChars.empty());
+	for (FontChars::iterator i = fontChars.begin(); i != fontChars.end(); ++i) {
+		_fontCharMap[i->getCharacter()] = &(*i);
+	}
 }
 
 void FontDef::updateChars (int tWidth, int tHeight)
@@ -109,13 +118,6 @@ void FontDef::updateChars (int tWidth, int tHeight)
 
 const FontChar* FontDef::getFontChar (char character)
 {
-	SDL_assert_always(!fontChars.empty());
-	if (_fontCharMap.empty()) {
-		for (FontChars::iterator i = fontChars.begin(); i != fontChars.end(); ++i) {
-			_fontCharMap[i->getCharacter()] = &(*i);
-		}
-	}
-
 	const std::string c(&character, 1);
 	FontCharMap::iterator iter = _fontCharMap.find(c);
 	if (iter == _fontCharMap.end())
