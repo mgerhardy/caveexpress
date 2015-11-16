@@ -102,6 +102,26 @@ bool LUA::getValueBoolFromTable (const char * key, bool defaultValue)
 	return rtn;
 }
 
+char LUA::getValueCharFromTable (const char * key, const char defaultValue)
+{
+	if (!lua_istable(_state, -1)) {
+		Log::error(LOG_COMMON, "expected a lua table at the top of the stack");
+		stackDump();
+		return defaultValue;
+	}
+	LUA_checkStack();
+	lua_getfield(_state, -1, key);
+	if (lua_isnil(_state, -1)) {
+		pop();
+		return defaultValue;
+	}
+
+	const char *str = luaL_checkstring(_state, -1);
+	pop();
+	SDL_assert_always(SDL_strlen(str) == 1);
+	return str[0];
+}
+
 std::string LUA::getValueStringFromTable (const char * key, const std::string& defaultValue)
 {
 	if (!lua_istable(_state, -1)) {

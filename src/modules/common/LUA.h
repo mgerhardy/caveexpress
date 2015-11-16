@@ -97,6 +97,7 @@ public:
 	 */
 	bool execute (const std::string &function, int returnValues = 0);
 
+	char getValueCharFromTable (const char * key, const char defaultValue = '\0');
 	std::string getValueStringFromTable (const char * key, const std::string& defaultValue = "");
 	float getValueFloatFromTable (const char * key, float defaultValue = 0.0f);
 	int getValueIntegerFromTable (const char * key, int defaultValue = 0);
