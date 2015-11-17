@@ -39,7 +39,7 @@ FontDefinition::FontDefinition() {
 
 		// push the metrics table
 		if (lua.getTable("metrics") == -1) {
-			Log::error(LOG_UI, "font def doesn't have a metrics table");
+			Log::error(LOG_UI, "font def %s doesn't have a metrics table", id.c_str());
 			continue;
 		}
 
@@ -59,7 +59,7 @@ FontDefinition::FontDefinition() {
 			lua_pushinteger(lua.getState(), i + 1);
 			lua_gettable(lua.getState(), -2);
 			if (!lua_istable(lua.getState(), -1)) {
-				Log::error(LOG_UI, "expected char table on the stack: %s", lua.getStackDump().c_str());
+				Log::error(LOG_UI, "expected char table on the stack for %s: %s", id.c_str(), lua.getStackDump().c_str());
 				lua.pop();
 				continue;
 			}
