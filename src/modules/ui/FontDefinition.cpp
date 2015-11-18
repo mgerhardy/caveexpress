@@ -21,6 +21,7 @@ FontDefinition::FontDefinition() {
 	}
 
 	while (lua.getNextKeyValue()) {
+		LUA_checkStack2(lua.getState());
 		const std::string id = lua.getKey();
 		if (id.empty()) {
 			Log::error(LOG_UI, "font def: no key found in font definition: %s", lua.getStackDump().c_str());
