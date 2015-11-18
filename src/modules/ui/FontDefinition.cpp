@@ -52,6 +52,9 @@ FontDefinition::FontDefinition() {
 		FontDef *def = new FontDef(id, height, metricsHeight, metricsAscender, metricsDescender);
 		FontChars fontChars(128);
 
+		const char *dump = lua.getStackDump().c_str();
+		Log::debug(LOG_UI, "%s", dump);
+
 		// push the chars table
 		const int chars = lua.getTable("chars");
 		Log::debug(LOG_UI, "found %i chars entries", chars);

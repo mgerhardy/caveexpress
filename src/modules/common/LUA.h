@@ -110,7 +110,7 @@ public:
 	std::string getStringFromStack ();
 	std::string getString (const std::string& expr, const std::string& defaultValue = "");
 
-	std::string getLuaValue (int i);
+	std::string getLuaValue (int i, int depth = 0);
 	void tableDump ();
 	std::string getStackDump ();
 	void stackDump ();

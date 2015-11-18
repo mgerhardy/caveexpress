@@ -199,7 +199,7 @@ bool LUA::execute (const std::string &function, int returnValues)
 	return true;
 }
 
-std::string LUA::getLuaValue (int stackIndex)
+std::string LUA::getLuaValue (int stackIndex, int depth)
 {
 	const int t = lua_type(_state, stackIndex);
 	switch (t) {
@@ -221,15 +221,21 @@ std::string LUA::getLuaValue (int stackIndex)
 		lua_pushvalue(_state, stackIndex);
 		// stack now contains: -1 => table
 		lua_pushnil(_state);
+
 		// stack now contains: -1 => nil; -2 => table
 		std::string table;
+		if (depth > 0)
+			table.append("\n");
 		while (lua_next(_state, -2)) {
 			// stack now contains: -1 => value; -2 => key; -3 => table
 			// copy the key so that lua_tostring does not modify the original
 			lua_pushvalue(_state, -2);
 			// stack now contains: -1 => key; -2 => value; -3 => key; -4 => table
-			const std::string& key = getLuaValue(-1);
-			const std::string& value = getLuaValue(-2);
+			const std::string& key = getLuaValue(-1, depth + 1);
+			const std::string& value = getLuaValue(-2, depth + 1);
+			for (int i = 0; i < depth; ++i) {
+				table.append("  ");
+			}
 			table.append(" - ").append(key).append(" = ").append(value).append("\n");
 			// pop value + copy of key, leaving original key
 			lua_pop(_state, 2);
