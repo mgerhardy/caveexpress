@@ -213,6 +213,31 @@ std::string LUA::getLuaValue (int stackIndex)
 	case LUA_TNIL:
 		lua_pushliteral(_state, "nil");
 		break;
+	case LUA_TTABLE: {
+		lua_pushvalue(_state, stackIndex);
+		// stack now contains: -1 => table
+		lua_pushnil(_state);
+		// stack now contains: -1 => nil; -2 => table
+		std::string table;
+		while (lua_next(_state, -2)) {
+			// stack now contains: -1 => value; -2 => key; -3 => table
+			// copy the key so that lua_tostring does not modify the original
+			lua_pushvalue(_state, -2);
+			// stack now contains: -1 => key; -2 => value; -3 => key; -4 => table
+			const char *key = lua_tostring(_state, -1);
+			const char *value = lua_tostring(_state, -2);
+			table.append(key).append("=").append(value).append("\n");
+			// pop value + copy of key, leaving original key
+			lua_pop(_state, 2);
+			// stack now contains: -1 => key; -2 => table
+		}
+		// stack now contains: -1 => table (when lua_next returns 0 it pops the key
+		// but does not push anything.)
+		// Pop table
+		lua_pop(_state, 1);
+		// Stack is now the same as it was on entry to this function
+		return table;
+	}
 	default:
 		lua_pushfstring(_state, "%s: %p", luaL_typename(_state, stackIndex), lua_topointer(_state, stackIndex));
 		break;
@@ -325,7 +350,7 @@ int LUA::getTable (const std::string& name)
 		return 0;
 	}
 	lua_getfield(_state, -1, name.c_str());
-	if (lua_isnil(_state,-1)) {
+	if (lua_isnil(_state, -1)) {
 		pop();
 		return -1;
 	}
