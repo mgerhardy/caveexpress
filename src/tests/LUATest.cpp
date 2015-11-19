@@ -74,6 +74,22 @@ TEST_F(LUATest, testFontDefinition)
 {
 	FontDefinition d;
 	ASSERT_FALSE(d.begin() == d.end()) << "no fonts found";
+	// 5 font definitions
+	ASSERT_EQ((int)std::distance(d.begin(), d.end()), 5);
+	for (auto i = d.begin(); i != d.end(); ++i) {
+		const FontDefPtr& def = i->second;
+		ASSERT_EQ(def->getFontChar('%'), nullptr);
+		ASSERT_EQ(def->getFontChar('a')->getCharacter(), 'a');
+		ASSERT_EQ(def->getFontChar('A')->getCharacter(), 'A');
+		ASSERT_EQ(def->getFontChar(' ')->getCharacter(), ' ');
+		ASSERT_EQ(def->getFontChar('1')->getCharacter(), '1');
+		ASSERT_NE(def->getFontChar('a')->getH(), 0);
+		ASSERT_NE(def->getFontChar('a')->getW(), 0);
+		ASSERT_NE(def->textureHeight, 0);
+		ASSERT_NE(def->textureWidth, 0);
+		ASSERT_NE(def->textureName, "");
+		ASSERT_NE(def->id, "");
+	}
 }
 
 TEST_F(LUATest, testTextureDefinition)
