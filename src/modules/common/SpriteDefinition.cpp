@@ -130,7 +130,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 				def->polygons.push_back(p);
 			}
 		}
-		Log::debug(LOG_COMMON, "spritedef: %s", lua.getStackDump().c_str());
+
 		// pop the polygons table
 		if (polygons != -1)
 			lua.pop();
