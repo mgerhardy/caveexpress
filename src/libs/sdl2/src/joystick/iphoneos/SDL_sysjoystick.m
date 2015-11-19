@@ -361,6 +361,25 @@ SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int device_index)
         } else {
 #ifdef SDL_JOYSTICK_MFI
             GCController *controller = device->controller;
+            BOOL usedPlayerIndexSlots[4] = {NO, NO, NO, NO};
+
+            /* Find the player index of all other connected controllers. */
+            for (GCController *c in [GCController controllers]) {
+                if (c != controller && c.playerIndex >= 0) {
+                    usedPlayerIndexSlots[c.playerIndex] = YES;
+                }
+            }
+
+            /* Set this controller's player index to the first unused index.
+             * FIXME: This logic isn't great... but SDL doesn't expose this
+             * concept in its external API, so we don't have much to go on. */
+            for (int i = 0; i < 4; i++) {
+                if (!usedPlayerIndexSlots[i]) {
+                    controller.playerIndex = i;
+                    break;
+                }
+            }
+
             controller.controllerPausedHandler = ^(GCController *controller) {
                 if (joystick->hwdata) {
                     ++joystick->hwdata->num_pause_presses;
@@ -462,11 +481,11 @@ SDL_SYS_MFIJoystickUpdate(SDL_Joystick * joystick)
 
             /* Axis order matches the XInput Windows mappings. */
             SDL_PrivateJoystickAxis(joystick, 0, (Sint16) (gamepad.leftThumbstick.xAxis.value * 32767));
-            SDL_PrivateJoystickAxis(joystick, 1, (Sint16) (gamepad.leftThumbstick.yAxis.value * 32767));
-            SDL_PrivateJoystickAxis(joystick, 2, (Sint16) (gamepad.leftTrigger.value * 32767));
+            SDL_PrivateJoystickAxis(joystick, 1, (Sint16) (gamepad.leftThumbstick.yAxis.value * -32767));
+            SDL_PrivateJoystickAxis(joystick, 2, (Sint16) ((gamepad.leftTrigger.value * 65535) - 32768));
             SDL_PrivateJoystickAxis(joystick, 3, (Sint16) (gamepad.rightThumbstick.xAxis.value * 32767));
-            SDL_PrivateJoystickAxis(joystick, 4, (Sint16) (gamepad.rightThumbstick.yAxis.value * 32767));
-            SDL_PrivateJoystickAxis(joystick, 5, (Sint16) (gamepad.rightTrigger.value * 32767));
+            SDL_PrivateJoystickAxis(joystick, 4, (Sint16) (gamepad.rightThumbstick.yAxis.value * -32767));
+            SDL_PrivateJoystickAxis(joystick, 5, (Sint16) ((gamepad.rightTrigger.value * 65535) - 32768));
 
             hatstate = SDL_SYS_MFIJoystickHatStateForDPad(gamepad.dpad);
 
