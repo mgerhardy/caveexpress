@@ -56,31 +56,35 @@ FontDefinition::FontDefinition() {
 		// push the chars table
 		const int chars = lua.getTable("chars");
 		Log::debug(LOG_UI, "found %i chars entries", chars);
-		for (int i = 0; i < chars; ++i) {
-			lua_pushinteger(lua.getState(), i + 1);
-			lua_gettable(lua.getState(), -2);
-			if (!lua_istable(lua.getState(), -1)) {
-				Log::error(LOG_UI, "expected char table on the stack for %s: %s", id.c_str(), lua.getStackDump().c_str());
+
+		if (chars > 0) {
+			lua_State* L = lua.getState();
+			lua_pushvalue(L, -1);
+			lua_pushnil(L);
+			while (lua_next(L, -2)) {
+				if (!lua_istable(L, -1)) {
+					Log::error(LOG_UI, "expected char table on the stack for %s: %s", id.c_str(), lua.getStackDump().c_str());
+					lua.pop();
+					continue;
+				}
+				// push the char entry
+				const char character = lua.getValueCharFromTable("char");
+				const int width = lua.getValueIntegerFromTable("width");
+				const int x = lua.getValueIntegerFromTable("x");
+				const int y = lua.getValueIntegerFromTable("y");
+				const int w = lua.getValueIntegerFromTable("w");
+				const int h = lua.getValueIntegerFromTable("h");
+				const int ox = lua.getValueIntegerFromTable("ox");
+				const int oy = lua.getValueIntegerFromTable("oy");
+				const FontChar c(character, width, x, y, w, h, ox, oy);
+				fontChars.push_back(c);
+				// pop the char entry
 				lua.pop();
-				continue;
 			}
-			// push the char entry
-			const char character = lua.getValueCharFromTable("char");
-			const int width = lua.getValueIntegerFromTable("width");
-			const int x = lua.getValueIntegerFromTable("x");
-			const int y = lua.getValueIntegerFromTable("y");
-			const int w = lua.getValueIntegerFromTable("w");
-			const int h = lua.getValueIntegerFromTable("h");
-			const int ox = lua.getValueIntegerFromTable("ox");
-			const int oy = lua.getValueIntegerFromTable("oy");
-			const FontChar c(character, width, x, y, w, h, ox, oy);
-			fontChars.push_back(c);
-			// pop the char entry
+			lua.pop();
+			// pop the chars table
 			lua.pop();
 		}
-		// pop the chars table
-		if (chars != -1)
-			lua.pop();
 
 		// push the texture table
 		if (lua.getTable("texture") != -1) {
