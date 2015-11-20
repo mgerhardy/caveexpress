@@ -612,7 +612,7 @@ macro(cp_osx_generate_plist_file TARGET)
 	else()
 		configure_file(${ROOT_DIR}/cmake/MacOSXBundleInfo.plist.template ${PLIST_PATH} @ONLY)
 	endif()
-	set_source_files_properties(${PLIST_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+	#set_source_files_properties(${PLIST_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 endmacro()
 
 macro(cp_set_properties TARGET VARNAME VALUE)
