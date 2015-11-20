@@ -19,7 +19,10 @@ cd cp-build-android-hd
 cmake $DIR/../.. -DTOOLS=OFF -DUNITTESTS=OFF -DANDROID_INSTALL_PACKAGES=${INSTALL_PACKAGES} -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_TOOLCHAIN_FILE=$DIR/../../cmake/toolchains/android-toolchain.cmake -DMINIRACER=OFF -DCAVEPACKER=OFF -DHD_VERSION=ON
 make $*
 
-cd ../cp-build-android-hd
-make android-caveexpress-install
-cd ../cp-build-android
-make android-caveexpress-install android-cavepacker-install
+STATE=$(adb get-state)
+if [ "$STATE" == "device" ]; then
+	cd ../cp-build-android-hd
+	make android-caveexpress-install
+	cd ../cp-build-android
+	make android-caveexpress-install android-cavepacker-install
+fi
