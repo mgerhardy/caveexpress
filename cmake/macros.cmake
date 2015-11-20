@@ -377,6 +377,7 @@ macro(cp_add_library)
 		var_global(${PREFIX}_INCLUDE_DIRS)
 		var_global(${PREFIX}_DEFINITIONS)
 	endif()
+	# mark this library as an external dependency.
 	set(${PREFIX}_EXTERNAL ON)
 	var_global(${PREFIX}_EXTERNAL)
 endmacro()
