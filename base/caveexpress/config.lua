@@ -217,3 +217,7 @@ if isDebug() then
 	keybindings["map"]["X"] = "kill"
 	keybindings["map"]["F"] = "finish"
 end
+
+if isMobile() and isDebug() then
+	keybindings["map"]["VOLUMEUP"] = "map_debug"
+end
