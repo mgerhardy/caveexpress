@@ -105,17 +105,18 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		const int polygons = lua.getTable("polygons");
 		Log::debug(LOG_COMMON, "id: %s => %i polygons", id.c_str(), polygons);
 		if (polygons > 0) {
-			for (int j = 1; j <= polygons; j++) {
-				LUA_checkStack2(lua.getState());
-				lua_pushinteger(lua.getState(), j);
-				lua_gettable(lua.getState(), -2);
-				if (!lua_istable(lua.getState(), -1)) {
+			LUA_checkStack2(lua.getState());
+			lua_State* L = lua.getState();
+			lua_pushvalue(L, -1);
+			lua_pushnil(L);
+			while (lua_next(L, -2)) {
+				if (!lua_istable(L, -1)) {
 					Log::error(LOG_COMMON, "spritedef: expected polygon table on the stack: %s", lua.getStackDump().c_str());
 					lua.pop();
 					continue;
 				}
 				// push the polygon table
-				const int vertices = lua_rawlen(lua.getState(), -1) - 1;
+				const int vertices = lua_rawlen(L, -1) - 1;
 				Log::debug(LOG_COMMON, "id: %s => %i vertices", id.c_str(), vertices);
 				const std::string& userData = lua.getTableString(1);
 				SpritePolygon p(userData);
@@ -129,6 +130,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 				lua.pop();
 				def->polygons.push_back(p);
 			}
+			lua.pop();
 		}
 
 		// pop the polygons table
@@ -137,29 +139,34 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		// push the circles table
 		const int circles = lua.getTable("circles");
-		for (int j = 1; j <= circles; j++) {
+		Log::debug(LOG_COMMON, "id: %s => %i circles", id.c_str(), circles);
+		if (circles > 0) {
 			LUA_checkStack2(lua.getState());
-			lua_pushinteger(lua.getState(), j);
-			lua_gettable(lua.getState(), -2);
-			if (!lua_istable(lua.getState(), -1)) {
-				Log::error(LOG_COMMON, "spritedef: expected circle table on the stack: %s", lua.getStackDump().c_str());
+			lua_State* L = lua.getState();
+			lua_pushvalue(L, -1);
+			lua_pushnil(L);
+			while (lua_next(L, -2)) {
+				if (!lua_istable(L, -1)) {
+					Log::error(LOG_COMMON, "spritedef: expected circle table on the stack: %s", lua.getStackDump().c_str());
+					lua.pop();
+					continue;
+				}
+				// push the circle table
+				const int entries = lua_rawlen(lua.getState(), -1);
+				if (entries == 4) {
+					const std::string& userData = lua.getTableString(1);
+					SpriteCircle p(userData);
+					const float x = lua.getTableInteger(2) / 100.0f;
+					const float y = lua.getTableInteger(3) / 100.0f;
+					p.center = SpriteVertex(x, y);
+					p.radius = lua.getTableInteger(4) / 100.0f;
+					def->circles.push_back(p);
+				} else {
+					Log::error(LOG_COMMON, "invalid amount of entries for the circle shape");
+				}
+				// pop the circle table
 				lua.pop();
-				continue;
 			}
-			// push the circle table
-			const int entries = lua_rawlen(lua.getState(), -1);
-			if (entries == 4) {
-				const std::string& userData = lua.getTableString(1);
-				SpriteCircle p(userData);
-				const float x = lua.getTableInteger(2) / 100.0f;
-				const float y = lua.getTableInteger(3) / 100.0f;
-				p.center = SpriteVertex(x, y);
-				p.radius = lua.getTableInteger(4) / 100.0f;
-				def->circles.push_back(p);
-			} else {
-				Log::error(LOG_COMMON, "invalid amount of entries for the circle shape");
-			}
-			// pop the circle table
 			lua.pop();
 		}
 		// pop the circles table
