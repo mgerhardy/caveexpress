@@ -7,7 +7,7 @@
 #endif
 
 1 RT_MANIFEST DISCARDABLE "@ROOT_DIR@/contrib/installer/windows/exe.manifest"
-1 ICON DISCARDABLE "@ROOT_DIR@/contrib/icon.ico"
+1 ICON DISCARDABLE "@ROOT_DIR@/contrib/@APPNAME@-icon.ico"
 
 #define ID_GDF_XML __GDF_XML
 ID_GDF_XML DATA "@GAMEEXPLORER_XML@"
