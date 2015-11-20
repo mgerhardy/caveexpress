@@ -51,7 +51,7 @@ protected:
 	Maps _maps;
 	std::string _extension;
 
-	void listMaps ();
+	void listMaps (const std::string& argument);
 
 	virtual std::string getName (const std::string& filename, const std::string& id) {
 		return id;

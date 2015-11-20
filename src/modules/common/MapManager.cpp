@@ -47,11 +47,12 @@ void IMapManager::init ()
 	Commands.registerCommand(CMD_LIST_MAPS, bindFunction(IMapManager, listMaps));
 }
 
-void IMapManager::listMaps ()
+void IMapManager::listMaps (const std::string& argument)
 {
 	Log::info(LOG_COMMON, "Map list:");
 	for (MapsConstIter i = _maps.begin(); i != _maps.end(); ++i) {
-		Log::info(LOG_COMMON, " * %s", i->first.c_str());
+		if (argument.empty() || string::contains(argument, i->first))
+			Log::info(LOG_COMMON, " * %s", i->first.c_str());
 	}
 }
 
