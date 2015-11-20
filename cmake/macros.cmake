@@ -412,7 +412,7 @@ macro(cp_find LIB HEADER SUFFIX)
 			/opt/csw # Blastwave
 			/opt
 		)
-		find_package(PkgConfig)
+		find_package(PkgConfig QUIET)
 		if (LINK_STATIC_LIBS)
 			set(PKG_PREFIX _${PREFIX}_STATIC)
 		else()
