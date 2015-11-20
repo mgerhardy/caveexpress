@@ -6,11 +6,11 @@
 # define VER_FILEVERSION_STR ""
 #endif
 
-1 RT_MANIFEST DISCARDABLE "contrib/installer/windows/exe.manifest"
-1 ICON DISCARDABLE "contrib/icon.ico"
+1 RT_MANIFEST DISCARDABLE "@ROOT_DIR@/contrib/installer/windows/exe.manifest"
+1 ICON DISCARDABLE "@ROOT_DIR@/contrib/icon.ico"
 
 #define ID_GDF_XML __GDF_XML
-ID_GDF_XML DATA @GAMEEXPLORER_XML@
+ID_GDF_XML DATA "@GAMEEXPLORER_XML@"
 
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION 1,6,0,0
