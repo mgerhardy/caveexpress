@@ -740,7 +740,7 @@ macro(cp_add_executable)
 			endif()
 		endif()
 
-		if (WINDOWED)
+		if (_EXE_WINDOWED)
 			if (WINDOWS)
 				set(GAMEEXPLORER_XML ${PROJECT_BINARY_DIR}/gameexplorer.xml)
 				configure_file(${ROOT_DIR}/contrib/installer/windows/gameexplorer.xml.in ${GAMEEXPLORER_XML})
