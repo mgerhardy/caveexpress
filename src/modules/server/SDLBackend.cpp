@@ -168,14 +168,14 @@ void SDLBackend::resetKeyStates ()
 	JoystickSet joystickSet = _joystickButtons;
 	ControllerSet controllerSet = _controllerButtons;
 
-	for (KeyMapConstIter it = keyMap.begin(); it != keyMap.end(); ++it) {
-		onKeyRelease(it->first);
+	for (auto it : keyMap) {
+		onKeyRelease(it.first);
 	}
-	for (JoystickSet::const_iterator it = joystickSet.begin(); it != joystickSet.end(); ++it) {
-		onJoystickButtonRelease(*it);
+	for (uint8_t button : joystickSet) {
+		onJoystickButtonRelease(button);
 	}
-	for (ControllerSet::const_iterator it = controllerSet.begin(); it != controllerSet.end(); ++it) {
-		onControllerButtonRelease(*it);
+	for (const std::string& button : controllerSet) {
+		onControllerButtonRelease(button);
 	}
 
 	_keys.clear();
@@ -307,14 +307,14 @@ void SDLBackend::runFrame ()
 	}
 
 	// fake a key press event for held down keys
-	for (KeyMapConstIter it = _keys.begin(); it != _keys.end(); ++it) {
-		onKeyPress(it->first, it->second);
+	for (auto it : _keys) {
+		onKeyPress(it.first, it.second);
 	}
-	for (JoystickSet::const_iterator it = _joystickButtons.begin(); it != _joystickButtons.end(); ++it) {
-		onJoystickButtonPress(*it);
+	for (uint8_t button : _joystickButtons) {
+		onJoystickButtonPress(button);
 	}
-	for (ControllerSet::const_iterator it = _controllerButtons.begin(); it != _controllerButtons.end(); ++it) {
-		onControllerButtonPress(*it);
+	for (const std::string &button : _controllerButtons) {
+		onControllerButtonPress(button);
 	}
 
 	_serviceProvider.getNetwork().update(deltaTime);
