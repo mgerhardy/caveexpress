@@ -5,12 +5,11 @@
 #include <map>
 #include <vector>
 
-typedef void (*CompleterFunc) (const std::string&, std::vector<std::string>&);
 class ICommand {
 protected:
-	CompleterFunc _completerFunc;
+	std::function<void(const std::string&, std::vector<std::string>&)> _completerFunc;
 public:
-	ICommand() : _completerFunc(nullptr)
+	ICommand()
 	{
 	}
 
@@ -22,12 +21,13 @@ public:
 
 	virtual void run (const Args& args) = 0;
 
-	void setCompleter(CompleterFunc func) {
+	template<typename Completer>
+	void setCompleter(Completer func) {
 		_completerFunc = func;
 	}
 
 	void complete(const std::string& input, std::vector<std::string>& matches) const {
-		if (_completerFunc == nullptr)
+		if (!_completerFunc)
 			return;
 		_completerFunc(input, matches);
 	}
