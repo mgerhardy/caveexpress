@@ -84,12 +84,14 @@ bool SDLBackend::isRunning () const
 void SDLBackend::handleEvent (SDL_Event &event)
 {
 	if (event.type == SDL_KEYDOWN) {
-		if (event.key.keysym.sym == SDLK_RETURN && (event.key.keysym.mod & KMOD_ALT)) {
+		const SDL_Keycode sym = event.key.keysym.sym;
+		const uint16_t mod = event.key.keysym.mod;
+		if (sym == SDLK_RETURN && (mod & KMOD_ALT)) {
 			const int isFullscreen = _frontend->isFullscreen();
 			_frontend->setFullscreen(!isFullscreen);
-		} else if (event.key.keysym.sym == SDLK_g && (event.key.keysym.mod & KMOD_CTRL)) {
+		} else if (sym == SDLK_g && (mod & KMOD_CTRL)) {
 			_frontend->toggleGrabMouse();
-		} else if (event.key.keysym.sym == SDLK_r && (event.key.keysym.mod & KMOD_CTRL)) {
+		} else if (sym == SDLK_r && (mod & KMOD_CTRL)) {
 			SDL_SetRelativeMouseMode(!SDL_GetRelativeMouseMode() ? SDL_TRUE : SDL_FALSE);
 		}
 	}
