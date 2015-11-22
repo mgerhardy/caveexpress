@@ -100,29 +100,34 @@ void IConsole::autoComplete ()
 {
 	std::vector<std::string> matches;
 	std::vector<std::string> strings;
+	std::string match = "";
 	string::splitString(_commandLine, strings);
 	if (!strings.empty()) {
 		ICommand* command = Commands.getCommand(strings[0]);
 		if (command != nullptr) {
-			if (strings.size() == 2)
-				command->complete(strings[1], matches);
-			else
-				command->complete("", matches);
+			if (strings.size() > 1)
+				match = strings.back();
+			command->complete(match, matches);
 		}
 	}
 	if (matches.empty()) {
 		std::vector<std::string> commands;
 		Commands.getCommandNameList(commands);
-		for (std::vector<std::string>::const_iterator i = commands.begin(); i != commands.end(); ++i) {
-			if (_commandLine.empty() || i->substr(0, _commandLine.size()) == _commandLine) {
-				matches.push_back(*i);
+		for (const std::string& name : commands) {
+			if (_commandLine.empty() || name.substr(0, _commandLine.size()) == _commandLine) {
+				matches.push_back(name);
 			}
 		}
 		Config.autoComplete(_commandLine, matches);
 	}
 
-	if (matches.size() == 1 && strings.size() == 1) {
-		_commandLine = *matches.begin();
+	if (matches.size() == 1) {
+		if (strings.size() == 1) {
+			_commandLine = matches.front();
+		} else {
+			const int start = _commandLine.size() - match.size();
+			_commandLine.replace(start, _commandLine.size() - 1, matches.front());
+		}
 		_cursorPos = _commandLine.size();
 	} else {
 		for (std::vector<std::string>::const_iterator i = matches.begin(); i != matches.end(); ++i) {
