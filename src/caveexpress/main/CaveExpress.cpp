@@ -393,7 +393,12 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapEditorOptionsWindow(frontend, editor));
 
 	Commands.registerCommand(CMD_DROP, new CmdDrop(*map));
-	Commands.registerCommand(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
+	CommandPtr cmd = Commands.registerCommand(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
+	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
+		for (auto entry : _serviceProvider->getMapManager().getMapsByWildcard(input + "*")) {
+			matches.push_back(entry.first);
+		}
+	});
 
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
 	r.unregisterClientHandler(protocol::PROTO_ADDROPE);

@@ -159,7 +159,12 @@ IUINodeMapEditor::IUINodeMapEditor (IFrontend *frontend, IMapManager& mapManager
 
 	doClear();
 
-	Commands.registerCommand(CMD_LOADMAP, bindFunction(IUINodeMapEditor, loadMap));
+	CommandPtr cmd = Commands.registerCommand(CMD_LOADMAP, bindFunction(IUINodeMapEditor, loadMap));
+	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
+		for (auto entry : _mapManager.getMapsByWildcard(input + "*")) {
+			matches.push_back(entry.first);
+		}
+	});
 }
 
 IUINodeMapEditor::~IUINodeMapEditor ()

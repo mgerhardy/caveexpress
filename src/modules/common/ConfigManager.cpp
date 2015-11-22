@@ -111,8 +111,8 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	for (std::vector<std::string>::const_iterator i = vars.begin(); i != vars.end(); ++i) {
 		getConfigVar(*i);
 	}
-	for (ConfigVarsMap::iterator i = _configVars.begin(); i != _configVars.end(); ++i) {
-		Log::info(LOG_COMMON, "'%s' with value '%s'", i->first.c_str(), i->second->getValue().c_str());
+	for (auto entry : _configVars) {
+		Log::info(LOG_COMMON, "'%s' with value '%s'", entry.first.c_str(), entry.second->getValue().c_str());
 	}
 
 	memset(&_debugRendererData, 0, sizeof(_debugRendererData));
@@ -123,7 +123,15 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	Log::info(LOG_COMMON, "     debug enabled: %s", _debug->getValue().c_str());
 
 	CommandSystem::get().registerCommand("loglevel", bindFunction(ConfigManager, setLogLevel));
-	CommandSystem::get().registerCommand(CMD_SETVAR, bindFunction(ConfigManager, setConfig));
+	CommandPtr cmd = CommandSystem::get().registerCommand(CMD_SETVAR, bindFunction(ConfigManager, setConfig));
+	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
+		for (auto entry : _configVars) {
+			if (!string::startsWith(entry.first, input))
+				continue;
+			matches.push_back(entry.first);
+		}
+	});;
+
 	CommandSystem::get().registerCommand(CMD_LISTVARS, bindFunction(ConfigManager, listConfigVariables));
 
 	for (int i = 0; i < argc; i++) {
