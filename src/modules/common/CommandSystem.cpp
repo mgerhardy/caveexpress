@@ -8,9 +8,10 @@ class CmdListCommands: public ICommand {
 public:
 	void run (const Args& args) override
 	{
-		for (CommandList::const_iterator i = CommandSystem::get()._commands.begin();
-				i != CommandSystem::get()._commands.end(); ++i) {
-			Log::info(LOG_COMMON, "%s", i->first.c_str());
+		std::vector<std::string> list;
+		CommandSystem::get().getCommandNameList(list);
+		for (auto entry : list) {
+			Log::info(LOG_COMMON, "%s", entry.c_str());
 		}
 	}
 };

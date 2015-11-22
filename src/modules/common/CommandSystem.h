@@ -6,11 +6,9 @@
 #include <string>
 #include <vector>
 
-class CmdListCommands;
 typedef std::unordered_map<std::string, CommandPtr> CommandList;
 
 class CommandSystem: public NonCopyable {
-	friend class CmdListCommands;
 private:
 	CommandSystem ();
 
