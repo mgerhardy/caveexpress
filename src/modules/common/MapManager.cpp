@@ -44,7 +44,12 @@ void IMapManager::init ()
 {
 	loadMaps();
 
-	Commands.registerCommand(CMD_LIST_MAPS, bindFunction(IMapManager, listMaps));
+	CommandPtr cmd = Commands.registerCommand(CMD_LIST_MAPS, bindFunction(IMapManager, listMaps));
+	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
+		for (auto entry : getMapsByWildcard(input + "*")) {
+			matches.push_back(entry.first);
+		}
+	});
 }
 
 void IMapManager::listMaps (const std::string& argument)
