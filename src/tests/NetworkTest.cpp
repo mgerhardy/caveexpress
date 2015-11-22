@@ -10,14 +10,14 @@
 
 class NetworkTestListener: public IClientCallback {
 public:
-	void onData (ByteStream& data){
+	void onData (ByteStream& data) override {
 		Log::debug(LOG_NETWORK, "recv: %i", (int)data.getSize());
 	}
 };
 
 class NetworkTestServerListener: public IServerCallback {
 public:
-	void onConnection (ClientId clientId){
+	void onConnection (ClientId clientId) override {
 		// debugVA("client connected: %i", clientId);
 	}
 };

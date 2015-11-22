@@ -8,7 +8,7 @@ namespace cavepacker {
 class UINodeSpriteSelector: public IUINodeSpriteSelector {
 protected:
 	// can be used to filter out some sprites
-	virtual bool shouldBeShown(const SpriteDefPtr& sprite) const {
+	virtual bool shouldBeShown(const SpriteDefPtr& sprite) const override {
 		const SpriteType& type = sprite->type;
 		return SpriteTypes::isMapTile(type);
 	}

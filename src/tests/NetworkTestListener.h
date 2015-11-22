@@ -78,7 +78,7 @@ public:
 	int _count;
 	int _errorCount;
 	std::string _lastError;
-	void onData (ByteStream& data) {
+	void onData (ByteStream& data) override {
 		ProtocolMessageFactory& factory = ProtocolMessageFactory::get();
 		while (factory.isNewMessageAvailable(data)) {
 			++_count;
