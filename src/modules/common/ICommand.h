@@ -21,6 +21,10 @@ public:
 
 	virtual void run (const Args& args) = 0;
 
+	virtual void operator() (const Args& args) {
+		run(args);
+	}
+
 	template<typename Completer>
 	void setCompleter(Completer func) {
 		_completerFunc = func;
@@ -33,22 +37,8 @@ public:
 	}
 };
 
-class ICommandFunctor: public ICommand {
-public:
-	virtual ~ICommandFunctor ()
-	{
-	}
-
-	virtual void operator() (const Args& args)
-	{
-		run(args);
-	}
-
-	virtual void run (const Args& args) = 0;
-};
-
 template<class Class>
-class ConstCommandFunctor: public ICommandFunctor {
+class ConstCommandFunctor: public ICommand {
 private:
 	void (Class::*_functionPtrStr) (const std::string& argument) const;
 	void (Class::*_functionPtrNoParam) () const;
@@ -80,7 +70,7 @@ public:
 };
 
 template<class Class>
-class CommandFunctor: public ICommandFunctor {
+class CommandFunctor: public ICommand {
 private:
 	void (Class::*_functionPtr) (const Args& args);
 	void (Class::*_functionPtrStr) (const std::string& argument);
