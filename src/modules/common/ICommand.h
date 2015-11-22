@@ -4,6 +4,7 @@
 #include "common/String.h"
 #include <map>
 #include <vector>
+#include <functional>
 
 class ICommand {
 protected:
