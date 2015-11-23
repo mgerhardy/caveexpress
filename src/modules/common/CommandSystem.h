@@ -28,35 +28,21 @@ public:
 	ICommand* getCommand (const std::string& command) const;
 	bool commandExists (const std::string& command) const;
 
+	CommandPtr registerCommandRaw (const std::string& id, ICommand* cmd);
+
 	template<typename Func>
 	CommandPtr registerCommand (const std::string& id, Func func) {
-		Log::info(LOG_COMMON, "register command %s", id.c_str());
-		auto ptr = CommandPtr(new CommandBindArgs(func));
-		_commands[id] = ptr;
-		return ptr;
-	}
-
-	CommandPtr registerCommandRaw (const std::string& id, ICommand* cmd) {
-		Log::info(LOG_COMMON, "register command %s", id.c_str());
-		auto ptr = CommandPtr(cmd);
-		_commands[id] = ptr;
-		return ptr;
+		return registerCommandRaw(id, new CommandBindArgs(func));
 	}
 
 	template<typename Func>
 	CommandPtr registerCommandString (const std::string& id, Func func) {
-		Log::info(LOG_COMMON, "register command %s", id.c_str());
-		auto ptr = CommandPtr(new CommandBindString(func));
-		_commands[id] = ptr;
-		return ptr;
+		return registerCommandRaw(id, new CommandBindString(func));
 	}
 
 	template<typename Func>
 	CommandPtr registerCommandVoid (const std::string& id, Func func) {
-		Log::info(LOG_COMMON, "register command %s", id.c_str());
-		auto ptr = CommandPtr(new CommandBindVoid(func));
-		_commands[id] = ptr;
-		return ptr;
+		return registerCommandRaw(id, new CommandBindVoid(func));
 	}
 
 	void registerAlias (const std::string& id, const std::string& command);

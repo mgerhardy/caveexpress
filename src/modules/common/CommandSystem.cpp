@@ -42,6 +42,13 @@ void CommandSystem::removeCommand (const std::string& id)
 		_alias.erase(i);
 }
 
+CommandPtr CommandSystem::registerCommandRaw (const std::string& id, ICommand* cmd) {
+	Log::info(LOG_COMMON, "register command %s", id.c_str());
+	auto ptr = CommandPtr(cmd);
+	_commands[id] = ptr;
+	return ptr;
+}
+
 ICommand* CommandSystem::getCommand (const std::string& command) const
 {
 	std::string id = command;
