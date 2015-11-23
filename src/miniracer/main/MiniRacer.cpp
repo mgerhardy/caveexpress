@@ -234,7 +234,18 @@ void MiniRacer::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapEditorHelpWindow(frontend));
 	ui.addWindow(new IUIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));
 
-	Commands.registerCommandRaw(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
+	CommandPtr cmd = Commands.registerCommandVoid(CMD_MAP_OPEN_IN_EDITOR, [] () {
+		if (!map->isActive())
+			return;
+
+		const std::string& name = map->getName();
+		Commands.executeCommandLine(CMD_LOADMAP " " + name);
+	});
+	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
+		for (auto entry : _serviceProvider->getMapManager().getMapsByWildcard(input + "*")) {
+			matches.push_back(entry.first);
+		}
+	});
 }
 
 bool MiniRacer::visitEntity (IEntity *entity)

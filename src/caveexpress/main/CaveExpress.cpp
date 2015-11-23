@@ -32,7 +32,6 @@
 #include "caveexpress/client/entities/ClientNPC.h"
 #include "caveexpress/client/entities/ClientParticle.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
-#include "caveexpress/client/commands/CmdDrop.h"
 #include "caveexpress/shared/constants/Commands.h"
 #include "caveexpress/client/ui/windows/UIMainWindow.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
@@ -58,7 +57,6 @@
 #include "caveexpress/client/ui/windows/intro/IntroFindYourWay.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/client/CaveExpressClientMap.h"
-#include "caveexpress/client/commands/CmdMapOpenInEditor.h"
 #include "caveexpress/client/network/AddRopeHandler.h"
 #include "caveexpress/client/network/RemoveRopeHandler.h"
 #include "caveexpress/client/network/AddEntityWithSoundHandler.h"
@@ -394,8 +392,14 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapEditorHelpWindow(frontend));
 	ui.addWindow(new UIMapEditorOptionsWindow(frontend, editor));
 
-	Commands.registerCommandRaw(CMD_DROP, new CmdDrop(*map));
-	CommandPtr cmd = Commands.registerCommandRaw(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
+	Commands.registerCommandVoid(CMD_DROP, [&] () { map->drop(); });
+	CommandPtr cmd = Commands.registerCommandVoid(CMD_MAP_OPEN_IN_EDITOR, [&] () {
+		if (!map->isActive())
+			return;
+
+		const std::string& name = map->getName();
+		Commands.executeCommandLine(CMD_LOADMAP " " + name);
+	});
 	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
 		for (auto entry : _serviceProvider->getMapManager().getMapsByWildcard(input + "*")) {
 			matches.push_back(entry.first);

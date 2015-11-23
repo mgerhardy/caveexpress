@@ -2,9 +2,8 @@
 #include "common/CommandSystem.h"
 #include "common/Commands.h"
 #include "common/EventHandler.h"
+#include "common/ConfigManager.h"
 #include "common/Direction.h"
-#include "client/commands/CmdConnect.h"
-#include "client/commands/CmdDisconnect.h"
 #include "ui/UI.h"
 #include "ui/BitmapFont.h"
 #include "ui/windows/IUIMapWindow.h"
@@ -22,7 +21,6 @@
 #include "service/ServiceProvider.h"
 #include "common/IFrontend.h"
 #include "client/commands/CmdMove.h"
-#include "client/commands/CmdZoom.h"
 #include "campaign/CampaignManager.h"
 #include "client/network/CloseMapHandler.h"
 #include "client/network/HudLoadMapHandler.h"
@@ -38,11 +36,33 @@
 IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
 		UINode(frontend), _map(map), _campaignManager(campaignManager)
 {
-	Commands.registerCommandRaw(CMD_CL_CONNECT, new CmdConnect(&_map, serviceProvider));
-	Commands.registerCommandRaw(CMD_CL_DISCONNECT, new CmdDisconnect(serviceProvider));
+	Commands.registerCommand(CMD_CL_CONNECT, [&] (const ICommand::Args& args) {
+		if (args.size() < 1) {
+			Log::error(LOG_CLIENT, "usage: host <port>");
+			return;
+		}
+		const std::string& host = args.front();
+		const int port = args.size() == 2 ? string::toInt(args[1]) : Config.getConfigVar("port")->getIntValue();
+		INetwork& network = serviceProvider.getNetwork();
+		network.openClient(host.c_str(), port, &_map);
+	});
+	Commands.registerCommand(CMD_CL_DISCONNECT, [&] (const ICommand::Args& args) {
+		INetwork& network = serviceProvider.getNetwork();
+		network.closeClient();
+		if (network.isServer()) {
+			// TODO: the map (server side) is still running
+			network.closeServer();
+		}
+	});
+	Commands.registerCommand(CMD_ZOOM, [&] (const ICommand::Args& args) {
+		if (args.empty())
+			return;
+		const std::string& arg = *args.begin();
+		const float zoom = string::toFloat(arg);
+		_map.setZoom(_map.getZoom() + zoom);
+	});
 	Commands.registerCommandRaw(CMD_MOVE_UP, new CmdMove(_map, DIRECTION_UP));
 	Commands.registerCommandRaw(CMD_MOVE_DOWN, new CmdMove(_map, DIRECTION_DOWN));
-	Commands.registerCommandRaw(CMD_ZOOM, new CmdZoom(_map));
 	Commands.registerCommandRaw(CMD_MOVE_LEFT, new CmdMove(_map, DIRECTION_LEFT));
 	Commands.registerCommandRaw(CMD_MOVE_RIGHT, new CmdMove(_map, DIRECTION_RIGHT));
 

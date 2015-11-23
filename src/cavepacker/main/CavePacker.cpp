@@ -1,6 +1,5 @@
 #include "CavePacker.h"
 #include "ui/UI.h"
-#include "cavepacker/client/commands/CmdMapOpenInEditor.h"
 #include "cavepacker/client/ui/windows/UIMainWindow.h"
 #include "cavepacker/client/ui/windows/UIMapWindow.h"
 #include "cavepacker/client/ui/windows/intro/IntroGame.h"
@@ -344,7 +343,13 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapEditorHelpWindow(frontend));
 	ui.addWindow(new IUIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));
 
-	CommandPtr cmd = Commands.registerCommandRaw(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
+	CommandPtr cmd = Commands.registerCommandVoid(CMD_MAP_OPEN_IN_EDITOR, [&] () {
+		if (!map->isActive())
+			return;
+
+		const std::string& name = map->getName();
+		Commands.executeCommandLine(CMD_LOADMAP " " + name);
+	});
 	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
 		for (auto entry : _serviceProvider->getMapManager().getMapsByWildcard(input + "*")) {
 			matches.push_back(entry.first);

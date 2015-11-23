@@ -5,14 +5,13 @@
 #include "client/network/InitDoneHandler.h"
 #include "cavepacker/client/network/ClientAutoSolveHandler.h"
 #include "cavepacker/client/network/ClientShowDeadlocksHandler.h"
-#include "cavepacker/client/commands/CmdUndo.h"
 
 namespace cavepacker {
 
 UINodeMap::UINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, CavePackerClientMap& map) :
 		IUINodeMap(frontend, serviceProvider, campaignManager, x, y, width, height, map), _serviceProvider(serviceProvider)
 {
-	Commands.registerCommandRaw("undo", new CmdUndo(map));
+	Commands.registerCommandVoid("undo", [&] () { map.undo(); });
 	Commands.registerCommandVoid("deadlocks", bindFunctionVoid(UINodeMap::requestDeadlocks));
 
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();

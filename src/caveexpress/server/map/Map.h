@@ -11,7 +11,6 @@
 #include "common/ThemeType.h"
 #include "common/MapFailedReason.h"
 #include "common/TimeManager.h"
-#include "common/ICommand.h"
 #include "network/IProtocolHandler.h"
 #include "common/LUA.h"
 #include <string>

@@ -3,7 +3,6 @@
 #include <memory>
 #include "common/IMap.h"
 #include "common/TimeManager.h"
-#include "common/ICommand.h"
 #include "network/IProtocolHandler.h"
 #include "cavepacker/server/entities/IEntity.h"
 #include "cavepacker/server/entities/Player.h"

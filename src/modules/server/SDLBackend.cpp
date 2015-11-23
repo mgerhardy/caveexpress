@@ -15,7 +15,6 @@
 #include "common/SpriteDefinition.h"
 #include "common/CommandSystem.h"
 #include "common/FileSystem.h"
-#include "server/commands/CmdQuit.h"
 #include "common/ConsoleFrontend.h"
 #include "common/Commands.h"
 #include "common/Singleton.h"
@@ -189,7 +188,11 @@ bool SDLBackend::handleInit() {
 	case InitState::INITSTATE_CONFIG:
 		Log::info(LOG_SERVER, "init config");
 		Config.get().init(this, _argc, _argv);
-		Commands.registerCommandRaw(CMD_QUIT, new CmdQuit());
+		Commands.registerCommandVoid(CMD_QUIT, [] () {
+			SDL_Event event;
+			event.type = SDL_QUIT;
+			SDL_PushEvent(&event);
+		});
 		_initState = InitState::INITSTATE_FRONTEND;
 		break;
 	case InitState::INITSTATE_FRONTEND:
