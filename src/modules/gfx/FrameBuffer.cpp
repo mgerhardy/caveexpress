@@ -15,7 +15,8 @@ void FrameBuffer::destroy ()
 {
 	if (_depth)
 		glDeleteRenderbuffers(1, &_depthRenderBuffer);
-	glDeleteTextures(_textures.size(), &_textures[0]);
+	if (!_textures.empty())
+		glDeleteTextures(_textures.size(), &_textures[0]);
 	if (_framebuffer != 0)
 		glDeleteFramebuffers(1, &_framebuffer);
 	_textures.clear();
