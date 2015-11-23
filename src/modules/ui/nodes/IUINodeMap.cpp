@@ -20,7 +20,6 @@
 #include "network/ProtocolHandlerRegistry.h"
 #include "service/ServiceProvider.h"
 #include "common/IFrontend.h"
-#include "client/commands/CmdMove.h"
 #include "campaign/CampaignManager.h"
 #include "client/network/CloseMapHandler.h"
 #include "client/network/HudLoadMapHandler.h"
@@ -61,10 +60,10 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 		const float zoom = string::toFloat(arg);
 		_map.setZoom(_map.getZoom() + zoom);
 	});
-	Commands.registerCommandRaw(CMD_MOVE_UP, new CmdMove(_map, DIRECTION_UP));
-	Commands.registerCommandRaw(CMD_MOVE_DOWN, new CmdMove(_map, DIRECTION_DOWN));
-	Commands.registerCommandRaw(CMD_MOVE_LEFT, new CmdMove(_map, DIRECTION_LEFT));
-	Commands.registerCommandRaw(CMD_MOVE_RIGHT, new CmdMove(_map, DIRECTION_RIGHT));
+	Commands.registerCommand(CMD_MOVE_UP, std::bind(&IUINodeMap::move, this, std::placeholders::_1, DIRECTION_UP));
+	Commands.registerCommand(CMD_MOVE_DOWN, std::bind(&IUINodeMap::move, this, std::placeholders::_1, DIRECTION_DOWN));
+	Commands.registerCommand(CMD_MOVE_LEFT, std::bind(&IUINodeMap::move, this, std::placeholders::_1, DIRECTION_LEFT));
+	Commands.registerCommand(CMD_MOVE_RIGHT, std::bind(&IUINodeMap::move, this, std::placeholders::_1, DIRECTION_RIGHT));
 
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
 	r.registerClientHandler(protocol::PROTO_CHANGEANIMATION, new ChangeAnimationHandler(_map));
@@ -96,6 +95,18 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	const float h = static_cast<float>(_frontend->getHeight());
 	setPos(_map.getX() / w, _map.getY() / h);
 	setSize(_map.getWidth() / w, _map.getHeight() / h);
+}
+
+void IUINodeMap::move(const ICommand::Args& args, Direction dir) {
+	if (!args.empty()) {
+		_map.resetAcceleration(dir);
+		return;
+	}
+
+	if (!_map.isActive() || _map.isPause())
+		return;
+
+	_map.accelerate(dir);
 }
 
 IUINodeMap::~IUINodeMap ()

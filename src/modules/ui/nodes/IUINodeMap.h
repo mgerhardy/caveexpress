@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ui/nodes/UINode.h"
+#include "common/ICommand.h"
 #include "client/ClientMap.h"
 #include "campaign/CampaignManager.h"
 #include <string>
@@ -21,6 +22,8 @@ protected:
 	std::string _campaignTextForNextPush;
 	std::vector<std::string> _players;
 	std::string _title;
+
+	void move(const ICommand::Args& args, Direction dir);
 
 	void onCampaignUnlock (Campaign* oldCampaign, Campaign* newCampaign) override;
 public:
