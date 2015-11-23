@@ -76,7 +76,7 @@ bool CaveExpressClientMap::drop ()
 		return false;
 
 	// If the player has collected something, this will inform the server that he now wants to drop it
-	const DropMessage msg;
+	static const DropMessage msg;
 	INetwork& network = _serviceProvider.getNetwork();
 	network.sendToServer(msg);
 
