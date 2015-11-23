@@ -94,6 +94,7 @@ CavePacker::CavePacker ():
 
 CavePacker::~CavePacker ()
 {
+	Commands.removeCommand(CMD_MAP_OPEN_IN_EDITOR);
 	delete _persister;
 	delete _campaignManager;
 	delete _clientMap;

@@ -62,7 +62,6 @@ Map::~Map ()
 	Commands.removeCommand(CMD_FINISHMAP);
 	Commands.removeCommand("map_print");
 	Commands.removeCommand("solve");
-	Commands.removeCommand("undo");
 }
 
 void Map::shutdown ()

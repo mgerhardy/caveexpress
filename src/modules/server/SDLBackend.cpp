@@ -67,6 +67,7 @@ SDLBackend::~SDLBackend ()
 	Commands.removeCommand(CMD_SCREENSHOT);
 	Commands.removeCommand(CMD_MAP_START);
 	Commands.removeCommand(CMD_QUIT);
+	Commands.removeCommand(CMD_STATUS);
 
 	if (_frontend) {
 		delete _frontend;

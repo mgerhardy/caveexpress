@@ -25,6 +25,9 @@ UINodeMap::UINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, Cam
 
 UINodeMap::~UINodeMap ()
 {
+	Commands.removeCommand("undo");
+	Commands.removeCommand("deadlocks");
+
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
 	r.unregisterClientHandler(::protocol::PROTO_ADDENTITY);
 	r.unregisterClientHandler(::protocol::PROTO_INITDONE);

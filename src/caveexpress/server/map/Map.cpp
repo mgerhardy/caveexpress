@@ -87,9 +87,10 @@ Map::Map () :
 
 Map::~Map ()
 {
-	Commands.removeCommand(CMD_MAP_DEBUG);
 	Commands.removeCommand(CMD_MAP_PAUSE);
 	Commands.removeCommand(CMD_MAP_RESTART);
+	Commands.removeCommand(CMD_MAP_DEBUG);
+	Commands.removeCommand(CMD_START);
 	Commands.removeCommand(CMD_KILL);
 	Commands.removeCommand(CMD_FINISHMAP);
 	clearPhysics();
