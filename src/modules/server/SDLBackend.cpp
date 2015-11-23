@@ -52,7 +52,7 @@ SDLBackend::SDLBackend () :
 
 	Commands.registerCommandString(CMD_SCREENSHOT, bindFunction(SDLBackend, screenShot));
 	Commands.registerCommandString(CMD_MAP_START, bindFunction(SDLBackend, loadMap))->setCompleter(loadMapCompleter);
-	Commands.registerCommandVoid(CMD_STATUS, bindFunction2(SDLBackend, status));
+	Commands.registerCommandVoid(CMD_STATUS, bindFunctionVoid(SDLBackend, status));
 	_eventHandler.registerObserver(this);
 	_keys.clear();
 	_joystickButtons.clear();

@@ -82,4 +82,4 @@ private:
 typedef std::shared_ptr<ICommand> CommandPtr;
 
 #define bindFunction(clazz, method) std::bind(&clazz::method, this, std::placeholders::_1)
-#define bindFunction2(clazz, method) std::bind(&clazz::method, this)
+#define bindFunctionVoid(clazz, method) std::bind(&clazz::method, this)
