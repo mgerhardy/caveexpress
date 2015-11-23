@@ -28,7 +28,7 @@ void ClientConsole::init (IFrontend *frontend)
 {
 	_frontend = frontend;
 	Vector4Set(colorBlack, _fontColor);
-	Commands.registerCommandVoid(CMD_CL_TOGGLECONSOLE, bindFunctionVoid(ClientConsole, toggleConsole));
+	Commands.registerCommandVoid(CMD_CL_TOGGLECONSOLE, bindFunctionVoid(ClientConsole::toggleConsole));
 }
 
 void ClientConsole::render ()

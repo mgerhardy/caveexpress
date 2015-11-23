@@ -50,9 +50,9 @@ SDLBackend::SDLBackend () :
 {
 	SDL_SetEventFilter(handleAppEvents, this);
 
-	Commands.registerCommandString(CMD_SCREENSHOT, bindFunction(SDLBackend, screenShot));
-	Commands.registerCommandString(CMD_MAP_START, bindFunction(SDLBackend, loadMap))->setCompleter(loadMapCompleter);
-	Commands.registerCommandVoid(CMD_STATUS, bindFunctionVoid(SDLBackend, status));
+	Commands.registerCommandString(CMD_SCREENSHOT, bindFunction(SDLBackend::screenShot));
+	Commands.registerCommandString(CMD_MAP_START, bindFunction(SDLBackend::loadMap))->setCompleter(loadMapCompleter);
+	Commands.registerCommandVoid(CMD_STATUS, bindFunctionVoid(SDLBackend::status));
 	_eventHandler.registerObserver(this);
 	_keys.clear();
 	_joystickButtons.clear();

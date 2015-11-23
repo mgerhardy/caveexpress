@@ -54,12 +54,12 @@ GooglePlayPersister::GooglePlayPersister(IGameStatePersister* delegate) :
 		_showLeaderBoard(nullptr), _showAchievements(nullptr), _addPointsToLeaderBoard(nullptr)
 #endif
 {
-	Commands.registerCommand("googleplay-connect", bindFunctionVoid(GooglePlayPersister, connect));
-	Commands.registerCommand("googleplay-disconnect", bindFunctionVoid(GooglePlayPersister, disconnect));
-	Commands.registerCommand("googleplay-upload", bindFunctionVoid(GooglePlayPersister, upload));
-	Commands.registerCommand("googleplay-download", bindFunctionVoid(GooglePlayPersister, download));
-	Commands.registerCommand("googleplay-showachievements", bindFunctionVoid(GooglePlayPersister, showAchievements));
-	Commands.registerCommandString("googleplay-showleaderboard", bindFunction(GooglePlayPersister, showLeaderBoard));
+	Commands.registerCommand("googleplay-connect", bindFunctionVoid(GooglePlayPersister::connect));
+	Commands.registerCommand("googleplay-disconnect", bindFunctionVoid(GooglePlayPersister::disconnect));
+	Commands.registerCommand("googleplay-upload", bindFunctionVoid(GooglePlayPersister::upload));
+	Commands.registerCommand("googleplay-download", bindFunctionVoid(GooglePlayPersister::download));
+	Commands.registerCommand("googleplay-showachievements", bindFunctionVoid(GooglePlayPersister::showAchievements));
+	Commands.registerCommandString("googleplay-showleaderboard", bindFunction(GooglePlayPersister::showLeaderBoard));
 }
 
 GooglePlayPersister::~GooglePlayPersister() {

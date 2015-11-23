@@ -75,12 +75,12 @@ Achievement* packageAchievements[] = {
 Map::Map () :
 		IMap(), _world(nullptr), _frontend(nullptr), _serviceProvider(nullptr), _theme(&ThemeTypes::ROCK)
 {
-	Commands.registerCommandVoid(CMD_MAP_PAUSE, bindFunctionVoid(Map, triggerPause));
-	Commands.registerCommandVoid(CMD_MAP_RESTART, bindFunctionVoid(Map, triggerRestart));
-	Commands.registerCommandVoid(CMD_MAP_DEBUG, bindFunctionVoid(Map, triggerDebug));
-	Commands.registerCommandVoid(CMD_START, bindFunctionVoid(Map, startMap));
-	Commands.registerCommandVoid(CMD_KILL, bindFunctionVoid(Map, killPlayers));
-	Commands.registerCommandVoid(CMD_FINISHMAP, bindFunctionVoid(Map, finishMap));
+	Commands.registerCommandVoid(CMD_MAP_PAUSE, bindFunctionVoid(Map::triggerPause));
+	Commands.registerCommandVoid(CMD_MAP_RESTART, bindFunctionVoid(Map::triggerRestart));
+	Commands.registerCommandVoid(CMD_MAP_DEBUG, bindFunctionVoid(Map::triggerDebug));
+	Commands.registerCommandVoid(CMD_START, bindFunctionVoid(Map::startMap));
+	Commands.registerCommandVoid(CMD_KILL, bindFunctionVoid(Map::killPlayers));
+	Commands.registerCommandVoid(CMD_FINISHMAP, bindFunctionVoid(Map::finishMap));
 
 	resetCurrentMap();
 }

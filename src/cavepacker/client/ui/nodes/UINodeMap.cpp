@@ -13,7 +13,7 @@ UINodeMap::UINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, Cam
 		IUINodeMap(frontend, serviceProvider, campaignManager, x, y, width, height, map), _serviceProvider(serviceProvider)
 {
 	Commands.registerCommandRaw("undo", new CmdUndo(map));
-	Commands.registerCommandVoid("deadlocks", bindFunctionVoid(UINodeMap, requestDeadlocks));
+	Commands.registerCommandVoid("deadlocks", bindFunctionVoid(UINodeMap::requestDeadlocks));
 
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
 	r.registerClientHandler(::protocol::PROTO_ADDENTITY, new AddEntityHandler(_map));

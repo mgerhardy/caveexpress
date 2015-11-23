@@ -41,7 +41,7 @@ public:
 			_func(func) {
 	}
 
-	void run(const Args& args) override {
+	void run(const Args&) override {
 		_func();
 	}
 
@@ -81,5 +81,5 @@ private:
 
 typedef std::shared_ptr<ICommand> CommandPtr;
 
-#define bindFunction(clazz, method) std::bind(&clazz::method, this, std::placeholders::_1)
-#define bindFunctionVoid(clazz, method) std::bind(&clazz::method, this)
+#define bindFunction(method) std::bind(&method, this, std::placeholders::_1)
+#define bindFunctionVoid(method) std::bind(&method, this)

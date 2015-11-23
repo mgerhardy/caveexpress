@@ -122,8 +122,8 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	Log::info(LOG_COMMON, "     sound enabled: %s", _soundEnabled->getValue().c_str());
 	Log::info(LOG_COMMON, "     debug enabled: %s", _debug->getValue().c_str());
 
-	CommandSystem::get().registerCommand("loglevel", bindFunction(ConfigManager, setLogLevel));
-	CommandPtr cmd = CommandSystem::get().registerCommand(CMD_SETVAR, bindFunction(ConfigManager, setConfig));
+	CommandSystem::get().registerCommand("loglevel", bindFunction(ConfigManager::setLogLevel));
+	CommandPtr cmd = CommandSystem::get().registerCommand(CMD_SETVAR, bindFunction(ConfigManager::setConfig));
 	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
 		for (auto entry : _configVars) {
 			if (!string::startsWith(entry.first, input))
@@ -132,7 +132,7 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 		}
 	});;
 
-	CommandSystem::get().registerCommand(CMD_LISTVARS, bindFunction(ConfigManager, listConfigVariables));
+	CommandSystem::get().registerCommand(CMD_LISTVARS, bindFunction(ConfigManager::listConfigVariables));
 
 	for (int i = 0; i < argc; i++) {
 		if (argv[i][0] != '-')

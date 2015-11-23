@@ -44,9 +44,9 @@ namespace miniracer {
 Map::Map () :
 		IMap(), _frontend(nullptr), _serviceProvider(nullptr)
 {
-	Commands.registerCommand(CMD_MAP_PAUSE, bindFunction(Map, triggerPause));
-	Commands.registerCommand(CMD_MAP_RESTART, bindFunction(Map, triggerRestart));
-	Commands.registerCommand(CMD_START, bindFunction(Map, startMap));
+	Commands.registerCommand(CMD_MAP_PAUSE, bindFunction(Map::triggerPause));
+	Commands.registerCommand(CMD_MAP_RESTART, bindFunction(Map::triggerRestart));
+	Commands.registerCommand(CMD_START, bindFunction(Map::startMap));
 
 	resetCurrentMap();
 }
