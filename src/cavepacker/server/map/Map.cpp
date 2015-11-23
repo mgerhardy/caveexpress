@@ -44,12 +44,12 @@ namespace cavepacker {
 Map::Map () :
 		IMap(), _frontend(nullptr), _serviceProvider(nullptr), _forcedFinish(false), _autoSolve(false), _nextSolveStep(0)
 {
-	Commands.registerCommand(CMD_MAP_PAUSE, bindFunction(Map, triggerPause));
-	Commands.registerCommand(CMD_MAP_RESTART, bindFunction(Map, triggerRestart));
-	Commands.registerCommand(CMD_START, bindFunction(Map, startMap));
-	Commands.registerCommand(CMD_FINISHMAP, bindFunction(Map, finishMap));
-	Commands.registerCommand("map_print", bindFunction(Map, printMap));
-	Commands.registerCommand("solve", bindFunction(Map, solveMap));
+	Commands.registerCommandVoid(CMD_MAP_PAUSE, bindFunction2(Map, triggerPause));
+	Commands.registerCommandVoid(CMD_MAP_RESTART, bindFunction2(Map, triggerRestart));
+	Commands.registerCommandVoid(CMD_START, bindFunction2(Map, startMap));
+	Commands.registerCommandVoid(CMD_FINISHMAP, bindFunction2(Map, finishMap));
+	Commands.registerCommandVoid("map_print", bindFunction2(Map, printMap));
+	Commands.registerCommandVoid("solve", bindFunction2(Map, solveMap));
 
 	resetCurrentMap();
 }

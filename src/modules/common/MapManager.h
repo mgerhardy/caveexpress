@@ -2,6 +2,7 @@
 
 #include "common/NonCopyable.h"
 #include "common/LUA.h"
+#include "common/ICommand.h"
 #include <string>
 #include <map>
 
@@ -51,7 +52,7 @@ protected:
 	Maps _maps;
 	std::string _extension;
 
-	void listMaps (const std::string& argument);
+	void listMaps (const ICommand::Args& arguments);
 
 	virtual std::string getName (const std::string& filename, const std::string& id) {
 		return id;

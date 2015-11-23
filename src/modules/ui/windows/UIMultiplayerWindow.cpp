@@ -39,7 +39,7 @@ UIMultiplayerWindow::UIMultiplayerWindow (IFrontend *frontend, const IMapManager
 	userName->addListener(UINodeListenerPtr(new ConfigVarListener("name", userName)));
 	userName->putLeft(server, 0.03f);
 	add(userName);
-	Commands.registerCommand(CMD_CL_PINGSERVERS, new CmdServerPing(serverlist, serviceProvider));
+	Commands.registerCommandRaw(CMD_CL_PINGSERVERS, new CmdServerPing(serverlist, serviceProvider));
 
 	if (!wantBackButton())
 		return;

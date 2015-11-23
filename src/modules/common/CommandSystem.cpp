@@ -18,7 +18,7 @@ public:
 
 CommandSystem::CommandSystem ()
 {
-	registerCommand(CMD_LISTCOMMANDS, new CmdListCommands());
+	registerCommand(CMD_LISTCOMMANDS, [&] (const ICommand::Args& args) {} );
 	registerAlias("?", CMD_LISTCOMMANDS);
 	registerAlias("help", CMD_LISTCOMMANDS);
 }
@@ -32,14 +32,6 @@ void CommandSystem::registerAlias (const std::string& id, const std::string& com
 {
 	Log::info(LOG_COMMON, "register alias %s", id.c_str());
 	_alias[id] = command;
-}
-
-CommandPtr CommandSystem::registerCommand (const std::string& id, ICommand* command)
-{
-	Log::info(LOG_COMMON, "register command %s", id.c_str());
-	CommandPtr ptr(command);
-	_commands[id] = ptr;
-	return ptr;
 }
 
 void CommandSystem::removeCommand (const std::string& id)

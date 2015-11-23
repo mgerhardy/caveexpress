@@ -234,7 +234,7 @@ void MiniRacer::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapEditorHelpWindow(frontend));
 	ui.addWindow(new IUIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));
 
-	Commands.registerCommand(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
+	Commands.registerCommandRaw(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
 }
 
 bool MiniRacer::visitEntity (IEntity *entity)

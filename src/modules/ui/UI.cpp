@@ -158,13 +158,13 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 	const std::string& language = Config.getLanguage();
 	if (!initLanguage(language))
 		initLanguage("en_GB");
-	Commands.registerCommand(CMD_UI_PRINTSTACK, bindFunction(UI, printStack));
-	Commands.registerCommand(CMD_UI_PUSH, bindFunction(UI, pushCmd));
-	Commands.registerCommand(CMD_UI_RESTART, bindFunction(UI, initRestart));
-	Commands.registerCommand(CMD_UI_POP, bindFunction(UI, pop));
+	Commands.registerCommandVoid(CMD_UI_PRINTSTACK, bindFunction2(UI, printStack));
+	Commands.registerCommandString(CMD_UI_PUSH, bindFunction(UI, pushCmd));
+	Commands.registerCommandVoid(CMD_UI_RESTART, bindFunction2(UI, initRestart));
+	Commands.registerCommandVoid(CMD_UI_POP, bindFunction2(UI, pop));
 	Commands.registerCommand(CMD_UI_FOCUS_NEXT, bindFunction(UI, focusNext));
 	Commands.registerCommand(CMD_UI_FOCUS_PREV, bindFunction(UI, focusPrev));
-	Commands.registerCommand(CMD_UI_EXECUTE, bindFunction(UI, runFocusNode));
+	Commands.registerCommandVoid(CMD_UI_EXECUTE, bindFunction2(UI, runFocusNode));
 	_mouseSpeed = Config.getConfigVar("mousespeed", "0.2");
 	_showCursor = Config.getConfigVar("showcursor", System.wantCursor() ? "true" : "false", true)->getBoolValue();
 	_cursor = _showCursor;

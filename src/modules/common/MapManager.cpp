@@ -52,8 +52,9 @@ void IMapManager::init ()
 	});
 }
 
-void IMapManager::listMaps (const std::string& argument)
+void IMapManager::listMaps (const ICommand::Args& arguments)
 {
+	const std::string argument = arguments.empty() ? "" : arguments.front();
 	Log::info(LOG_COMMON, "Map list:");
 	for (MapsConstIter i = _maps.begin(); i != _maps.end(); ++i) {
 		if (argument.empty() || string::contains(argument, i->first))

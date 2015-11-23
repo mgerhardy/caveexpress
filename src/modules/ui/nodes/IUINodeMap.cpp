@@ -38,13 +38,13 @@
 IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
 		UINode(frontend), _map(map), _campaignManager(campaignManager)
 {
-	Commands.registerCommand(CMD_CL_CONNECT, new CmdConnect(&_map, serviceProvider));
-	Commands.registerCommand(CMD_CL_DISCONNECT, new CmdDisconnect(serviceProvider));
-	Commands.registerCommand(CMD_MOVE_UP, new CmdMove(_map, DIRECTION_UP));
-	Commands.registerCommand(CMD_MOVE_DOWN, new CmdMove(_map, DIRECTION_DOWN));
-	Commands.registerCommand(CMD_ZOOM, new CmdZoom(_map));
-	Commands.registerCommand(CMD_MOVE_LEFT, new CmdMove(_map, DIRECTION_LEFT));
-	Commands.registerCommand(CMD_MOVE_RIGHT, new CmdMove(_map, DIRECTION_RIGHT));
+	Commands.registerCommandRaw(CMD_CL_CONNECT, new CmdConnect(&_map, serviceProvider));
+	Commands.registerCommandRaw(CMD_CL_DISCONNECT, new CmdDisconnect(serviceProvider));
+	Commands.registerCommandRaw(CMD_MOVE_UP, new CmdMove(_map, DIRECTION_UP));
+	Commands.registerCommandRaw(CMD_MOVE_DOWN, new CmdMove(_map, DIRECTION_DOWN));
+	Commands.registerCommandRaw(CMD_ZOOM, new CmdZoom(_map));
+	Commands.registerCommandRaw(CMD_MOVE_LEFT, new CmdMove(_map, DIRECTION_LEFT));
+	Commands.registerCommandRaw(CMD_MOVE_RIGHT, new CmdMove(_map, DIRECTION_RIGHT));
 
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
 	r.registerClientHandler(protocol::PROTO_CHANGEANIMATION, new ChangeAnimationHandler(_map));

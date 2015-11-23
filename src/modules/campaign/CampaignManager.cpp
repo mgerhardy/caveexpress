@@ -25,7 +25,7 @@ struct isEqual {
 CampaignManager::CampaignManager (IGameStatePersister *persister, const IMapManager& mapManager) :
 		_activeCampaign(), _persister(persister), _mapManager(mapManager), _completed(false)
 {
-	Commands.registerCommand(CMD_UNLOCK, bindFunction(CampaignManager, unlock));
+	Commands.registerCommand(CMD_UNLOCK, bindFunction2(CampaignManager, unlock));
 }
 
 CampaignManager::~CampaignManager ()

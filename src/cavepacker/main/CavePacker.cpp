@@ -344,7 +344,7 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapEditorHelpWindow(frontend));
 	ui.addWindow(new IUIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));
 
-	CommandPtr cmd = Commands.registerCommand(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
+	CommandPtr cmd = Commands.registerCommandRaw(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
 	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
 		for (auto entry : _serviceProvider->getMapManager().getMapsByWildcard(input + "*")) {
 			matches.push_back(entry.first);

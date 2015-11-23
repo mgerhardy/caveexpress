@@ -2,6 +2,7 @@
 
 #include "common/ICommand.h"
 #include "common/NonCopyable.h"
+#include "common/Log.h"
 #include <unordered_map>
 #include <string>
 #include <vector>
@@ -27,7 +28,37 @@ public:
 	ICommand* getCommand (const std::string& command) const;
 	bool commandExists (const std::string& command) const;
 
-	CommandPtr registerCommand (const std::string& id, ICommand* command);
+	template<typename Func>
+	CommandPtr registerCommand (const std::string& id, Func func) {
+		Log::info(LOG_COMMON, "register command %s", id.c_str());
+		auto ptr = CommandPtr(new CommandBindArgs(func));
+		_commands[id] = ptr;
+		return ptr;
+	}
+
+	CommandPtr registerCommandRaw (const std::string& id, ICommand* cmd) {
+		Log::info(LOG_COMMON, "register command %s", id.c_str());
+		auto ptr = CommandPtr(cmd);
+		_commands[id] = ptr;
+		return ptr;
+	}
+
+	template<typename Func>
+	CommandPtr registerCommandString (const std::string& id, Func func) {
+		Log::info(LOG_COMMON, "register command %s", id.c_str());
+		auto ptr = CommandPtr(new CommandBindString(func));
+		_commands[id] = ptr;
+		return ptr;
+	}
+
+	template<typename Func>
+	CommandPtr registerCommandVoid (const std::string& id, Func func) {
+		Log::info(LOG_COMMON, "register command %s", id.c_str());
+		auto ptr = CommandPtr(new CommandBindVoid(func));
+		_commands[id] = ptr;
+		return ptr;
+	}
+
 	void registerAlias (const std::string& id, const std::string& command);
 	void removeCommand (const std::string& id);
 

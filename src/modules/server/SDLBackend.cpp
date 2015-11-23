@@ -50,9 +50,9 @@ SDLBackend::SDLBackend () :
 {
 	SDL_SetEventFilter(handleAppEvents, this);
 
-	Commands.registerCommand(CMD_SCREENSHOT, bindFunction(SDLBackend, screenShot));
-	Commands.registerCommand(CMD_MAP_START, bindFunction(SDLBackend, loadMap))->setCompleter(loadMapCompleter);
-	Commands.registerCommand(CMD_STATUS, bindFunction(SDLBackend, status));
+	Commands.registerCommandString(CMD_SCREENSHOT, bindFunction(SDLBackend, screenShot));
+	Commands.registerCommandString(CMD_MAP_START, bindFunction(SDLBackend, loadMap))->setCompleter(loadMapCompleter);
+	Commands.registerCommandVoid(CMD_STATUS, bindFunction2(SDLBackend, status));
 	_eventHandler.registerObserver(this);
 	_keys.clear();
 	_joystickButtons.clear();
@@ -189,7 +189,7 @@ bool SDLBackend::handleInit() {
 	case InitState::INITSTATE_CONFIG:
 		Log::info(LOG_SERVER, "init config");
 		Config.get().init(this, _argc, _argv);
-		Commands.registerCommand(CMD_QUIT, new CmdQuit());
+		Commands.registerCommandRaw(CMD_QUIT, new CmdQuit());
 		_initState = InitState::INITSTATE_FRONTEND;
 		break;
 	case InitState::INITSTATE_FRONTEND:
