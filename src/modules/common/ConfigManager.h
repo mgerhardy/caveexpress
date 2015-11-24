@@ -97,6 +97,7 @@ private:
 	ConfigVarPtr _waterParticle;
 	// client side particle amount
 	ConfigVarPtr _particles;
+	ConfigVarPtr _renderToTexture;
 
 	BindingSpace _bindingSpace;
 
@@ -128,6 +129,7 @@ public:
 	void init (IBindingSpaceListener *bindingSpaceListener, int argc, char **argv);
 	void shutdown ();
 
+	bool renderToTexture() const;
 	int getClientSideParticleMaxAmount () const;
 	// get the width of the screen in pixels
 	int getWidth () const;
@@ -435,6 +437,11 @@ inline bool ConfigManager::useWaterParticles () const
 inline int ConfigManager::getClientSideParticleMaxAmount () const
 {
 	return _particles->getIntValue();
+}
+
+inline bool ConfigManager::renderToTexture() const
+{
+	return _renderToTexture->getBoolValue();
 }
 
 #define Config ConfigManager::get()

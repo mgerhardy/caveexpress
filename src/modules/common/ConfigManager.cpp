@@ -91,6 +91,7 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	_grabMouse = getConfigValue(_configVarMap, "grabmouse", "true");
 	_soundEngine = getConfigValue(_configVarMap, "soundengine", "sdl");
 	_particles = getConfigValue(_configVarMap, "particles", "0");
+	_renderToTexture = getConfigValue(_configVarMap, "rendertotexture", "1");
 	getConfigValue(_configVarMap, "red", "8");
 	getConfigValue(_configVarMap, "green", "8");
 	getConfigValue(_configVarMap, "blue", "8");
