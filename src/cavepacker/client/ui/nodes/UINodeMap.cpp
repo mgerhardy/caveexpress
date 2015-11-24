@@ -11,7 +11,7 @@ namespace cavepacker {
 UINodeMap::UINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, CavePackerClientMap& map) :
 		IUINodeMap(frontend, serviceProvider, campaignManager, x, y, width, height, map), _serviceProvider(serviceProvider)
 {
-	Commands.registerCommandVoid("undo", [&] () { map.undo(); });
+	Commands.registerCommandVoid("undo", [=] () { map.undo(); });
 	Commands.registerCommandVoid("deadlocks", bindFunctionVoid(UINodeMap::requestDeadlocks));
 
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
