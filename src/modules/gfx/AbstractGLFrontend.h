@@ -69,7 +69,6 @@ protected:
 	TexNum _renderTargetTexture;
 	TexNum _white;
 	TexNum _alpha;
-	int _drawCalls;
 
 	Vertex _vertices[MAXNUMVERTICES];
 	int _currentVertexIndex;

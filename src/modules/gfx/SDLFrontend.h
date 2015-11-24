@@ -29,6 +29,7 @@ protected:
 	ConfigVarPtr _debugSleep;
 
 	bool _softwareRenderer;
+	int _drawCalls;
 
 	Color _color;
 

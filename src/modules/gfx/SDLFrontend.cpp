@@ -26,7 +26,7 @@ struct RenderTarget {
 };
 
 SDLFrontend::SDLFrontend (std::shared_ptr<IConsole> console) :
-		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _softwareRenderer(false)
+		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _softwareRenderer(false), _drawCalls(0)
 {
 	_window = nullptr;
 	_haptic = nullptr;
@@ -214,6 +214,7 @@ void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 		Log::error(LOG_GFX, "could not render texture %s", texture->getName().c_str());
 		texture->setData(nullptr);
 	}
+	++_drawCalls;
 }
 
 bool SDLFrontend::loadTexture (Texture *texture, const std::string& filename)
@@ -281,6 +282,7 @@ void SDLFrontend::renderRect (int x, int y, int w, int h, const Color& color)
 	setSDLColor(color);
 	if (SDL_RenderDrawRect(_renderer, &r) == -1)
 		sdlCheckError();
+	++_drawCalls;
 }
 
 void SDLFrontend::renderFilledRect (int x, int y, int w, int h, const Color& fillColor)
@@ -295,6 +297,7 @@ void SDLFrontend::renderFilledRect (int x, int y, int w, int h, const Color& fil
 	setSDLColor(fillColor);
 	if (SDL_RenderFillRect(_renderer, &r) == -1)
 		sdlCheckError();
+	++_drawCalls;
 }
 
 void SDLFrontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
@@ -304,6 +307,7 @@ void SDLFrontend::renderLine (int x1, int y1, int x2, int y2, const Color& color
 	setSDLColor(color);
 	if (SDL_RenderDrawLine(_renderer, x1, y1, x2, y2) == -1)
 		sdlCheckError();
+	++_drawCalls;
 }
 
 void SDLFrontend::renderLineWithTexture (int x1, int y1, int x2, int y2, Texture* texture)
@@ -363,6 +367,7 @@ uint32_t SDLFrontend::getDisplayFormat () const
 
 void SDLFrontend::renderBegin ()
 {
+	_drawCalls = 0;
 	SDL_assert(_renderer);
 
 	resetColor();
@@ -396,6 +401,7 @@ bool SDLFrontend::renderTarget (RenderTarget* target)
 {
 	disableRenderTarget(target);
 	SDL_RenderCopy(_renderer, _renderToTexture, nullptr, nullptr);
+	++_drawCalls;
 	return true;
 }
 
@@ -407,14 +413,15 @@ void SDLFrontend::render ()
 
 	static std::string fpsStr;
 	const bool showFps = Config.showFPS();
+	static int lastDrawCalls = _drawCalls;
 	const uint32_t lastFpsTime = _time - _timeBase;
 	if (lastFpsTime > 1000 && showFps) {
 		const bool vsync = ConfigManager::get().isVSync();
 		const double fps = _numFrames * 1000.0f / lastFpsTime;
 		static ConfigVar* fpsLimit = Config.getConfigVar("fpslimit").get();
 		static ConfigVar* frontend = Config.getConfigVar("frontend").get();
-		fpsStr = string::format("%.2f (vsync: %s, %s %i, frontend: %s)", fps, vsync ? "true" : "false",
-				fpsLimit->getName().c_str(), fpsLimit->getIntValue(), frontend->getValue().c_str());
+		fpsStr = string::format("%.2f (vsync: %s, %s %i, frontend: %s, drawcalls: %i)", fps, vsync ? "true" : "false",
+				fpsLimit->getName().c_str(), fpsLimit->getIntValue(), frontend->getValue().c_str(), lastDrawCalls);
 		_timeBase = _time - (lastFpsTime - 1000);
 		_numFrames = 0;
 	}
@@ -423,6 +430,7 @@ void SDLFrontend::render ()
 	}
 
 	renderEnd();
+	lastDrawCalls = _drawCalls;
 }
 
 void SDLFrontend::makeScreenshot (const std::string& filename)
@@ -863,6 +871,7 @@ int SDLFrontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& colo
 			const int end = ints[i + 1];
 
 			result |= SDL_RenderDrawLine(_renderer, start, y, end, y);
+			++_drawCalls;
 		}
 	}
 	return result;
@@ -884,6 +893,7 @@ int SDLFrontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
 			result |= SDL_RenderDrawLine(_renderer, vx[i], vy[i], vx[i - 1],
 					vy[i - 1]);
 		}
+		++_drawCalls;
 	}
 
 	return result;
