@@ -392,8 +392,8 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapEditorHelpWindow(frontend));
 	ui.addWindow(new UIMapEditorOptionsWindow(frontend, editor));
 
-	Commands.registerCommandVoid(CMD_DROP, [&] () { map->drop(); });
-	CommandPtr cmd = Commands.registerCommandVoid(CMD_MAP_OPEN_IN_EDITOR, [&] () {
+	Commands.registerCommandVoid(CMD_DROP, [=] () { Log::info(LOG_GAMEIMPL, "foobar"); map->drop(); });
+	CommandPtr cmd = Commands.registerCommandVoid(CMD_MAP_OPEN_IN_EDITOR, [=] () {
 		if (!map->isActive())
 			return;
 
