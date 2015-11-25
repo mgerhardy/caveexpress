@@ -24,10 +24,10 @@ TEST_F(GeneralTest, testStringCutBeforeLastMatch)
 TEST_F(GeneralTest, testStringWhitespaceMatches)
 {
 	std::string test("foo/bar.txt");
-	ASSERT_TRUE(string::matches(test, "foo*"));
-	ASSERT_TRUE(string::matches(test, "*bar*"));
-	ASSERT_FALSE(string::matches(test, "*foobar*"));
-	ASSERT_TRUE(string::matches(test, "fo?/bar.txt"));
+	ASSERT_TRUE(string::matches("foo*", test));
+	ASSERT_TRUE(string::matches("*bar*", test));
+	ASSERT_TRUE(string::matches("fo?/bar.txt", test));
+	ASSERT_FALSE(string::matches("*foobar*", test));
 }
 
 TEST_F(GeneralTest, testStringLTrim)
