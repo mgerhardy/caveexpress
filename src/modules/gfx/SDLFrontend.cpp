@@ -528,11 +528,7 @@ void SDLFrontend::initJoystickAndHaptic ()
 		Log::info(LOG_GFX, "no joysticks found");
 	}
 
-	const int touchDevices = SDL_GetNumTouchDevices();
-	Log::info(LOG_GFX, "found %i touch device(s)", touchDevices);
-	for (int i = 0; i < touchDevices; ++i) {
-		Log::info(LOG_GFX, "%02i: %s", i, SDL_GetTouchName(i));
-	}
+	Log::info(LOG_GFX, "found %i touch device(s)", SDL_GetNumTouchDevices());
 
 	Log::info(LOG_GFX, "%i haptic devices", SDL_NumHaptics());
 	if (haptic == nullptr && SDL_MouseIsHaptic()) {
