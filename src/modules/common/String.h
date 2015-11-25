@@ -76,7 +76,7 @@ inline float toFloat (const std::string& str, float defaultValue = 0.0f)
 }
 
 extern std::string cutBeforeLastMatch (const std::string& _string, const std::string& pattern);
-extern bool matches (const std::string& _string, const std::string& text);
+extern bool matches (const std::string& string, const std::string& match);
 extern void splitString (const std::string& string, std::vector<std::string>& tokens, const std::string& delimiters = " \t\r\n\f\v");
 
 inline std::string toLower (const std::string& string)

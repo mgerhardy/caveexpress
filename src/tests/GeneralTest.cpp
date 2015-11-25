@@ -21,6 +21,15 @@ TEST_F(GeneralTest, testStringCutBeforeLastMatch)
 	ASSERT_EQ("bar", test);
 }
 
+TEST_F(GeneralTest, testStringWhitespaceMatches)
+{
+	std::string test("foo/bar.txt");
+	ASSERT_TRUE(string::matches(test, "foo*"));
+	ASSERT_TRUE(string::matches(test, "*bar*"));
+	ASSERT_FALSE(string::matches(test, "*foobar*"));
+	ASSERT_TRUE(string::matches(test, "fo?/bar.txt"));
+}
+
 TEST_F(GeneralTest, testStringLTrim)
 {
 	ASSERT_EQ("foo bar ", string::ltrim(" foo bar "));
