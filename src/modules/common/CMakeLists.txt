@@ -4,6 +4,7 @@ set(common_SRCS
 	KeyValueParser.cpp
 	TextureDefinition.cpp
 	IConsole.cpp
+	String.cpp
 	SQLite.cpp
 	Thread.cpp
 	ConfigManager.cpp
