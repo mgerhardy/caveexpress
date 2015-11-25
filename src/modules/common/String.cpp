@@ -10,21 +10,46 @@ std::string cutBeforeLastMatch (const std::string& _string, const std::string& p
 	return _string.substr(pos + 1);
 }
 
-bool matches (const std::string& _string, const std::string& text)
-{
-	std::string::const_iterator p = _string.begin();
-	std::string::const_iterator t = text.begin();
+static bool patternMatch(const char *pattern, const char *text);
+static bool patternMatchMulti (const char* pattern, const char* text) {
+	const char *p = pattern;
+	const char *t = text;
+	char c;
+
+	for (;;) {
+		c = *p++;
+		if (c != '?' && c != '*')
+			break;
+		if (*t++ == '\0' && c == '?')
+			return false;
+	}
+
+	if (c == '\0')
+		return true;
+
+	const int l = strlen(t);
+	for (int i = 0; i < l; ++i) {
+		if (*t == c && patternMatch(p - 1, t))
+			return true;
+		if (*t++ == '\0')
+			return false;
+	}
+	return false;
+}
+
+static bool patternMatch(const char *pattern, const char *text) {
+	const char *p = pattern;
+	const char *t = text;
 	char c;
 
 	while ((c = *p++) != '\0') {
 		switch (c) {
 		case '*':
-			return true;
+			return patternMatchMulti(p, t);
 		case '?':
 			if (*t == '\0')
 				return false;
-			else
-				++t;
+			++t;
 			break;
 		default:
 			if (c != *t++)
@@ -33,6 +58,11 @@ bool matches (const std::string& _string, const std::string& text)
 		}
 	}
 	return *t == '\0';
+}
+
+bool matches (const std::string& pattern, const std::string& text)
+{
+	return patternMatch(pattern.c_str(), text.c_str());
 }
 
 void splitString (const std::string& string, std::vector<std::string>& tokens, const std::string& delimiters)
