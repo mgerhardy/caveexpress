@@ -987,8 +987,10 @@ Platform *Map::getPlatform (MapTile *mapTile, int *start, int *end, gridSize off
 #ifdef DEBUG
 	PlatformYMapConstIter iy2 = _platforms.find(mapY);
 	SDL_assert(iy2 != _platforms.end());
-	PlatformXMapConstIter ix2 = iy2->second.find(*start);
-	SDL_assert(ix2 != iy->second.end());
+	if (iy != _platforms.end()) {
+		PlatformXMapConstIter ix2 = iy2->second.find(*start);
+		SDL_assert(ix2 != iy->second.end());
+	}
 #endif
 
 	return platform;
