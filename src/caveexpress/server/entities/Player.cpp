@@ -332,7 +332,7 @@ void Player::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* 
 	const int maxHitpoints = Config.getMaxHitpoints();
 	const int hitpointReduceAmount = maxHitpoints / 10 * (1.0f + factor);
 	subtractHitpoints(hitpointReduceAmount);
-	Log::debug(LOG_GAMEIMPL, "damageThreshold: %f, approachVelocity: %f, factor: %f, hitpointReduceAmount: %i",
+	Log::info(LOG_GAMEIMPL, "damageThreshold: %f, approachVelocity: %f, factor: %f, hitpointReduceAmount: %i",
 			   damageThreshold, approachVelocity, factor, hitpointReduceAmount);
 	GameEvent.sendRumble(factor, 500);
 }
