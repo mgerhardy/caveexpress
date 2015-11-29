@@ -1,6 +1,6 @@
 set(CMAKE_SYSTEM_NAME Windows)
 
-if (MSYS or MINGW)
+if (MSYS OR MINGW)
 	set(CMAKE_CROSSCOMPILING TRUE)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wcast-qual -Wcast-align -Wpointer-arith -Wshadow -Wall -Wextra -Wreturn-type -Wwrite-strings -Wno-unused-parameter -DWINVER=0x501")
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -ftree-vectorize -msse3 -ffast-math -DNDEBUG -D_FORTIFY_SOURCE=2")
