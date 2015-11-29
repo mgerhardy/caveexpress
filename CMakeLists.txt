@@ -92,7 +92,7 @@ else()
 	set(LINUX 1)
 endif()
 
-set(CPACK_PROPERTIES_FILE "${CP_CMAKE_DIR}/pack.cmake")
+include(${CP_CMAKE_DIR}/pack.cmake)
 include(CPack)
 
 # on mac it e.g. finds the gui launcher - this is not what we want - find a proper way to handle this
