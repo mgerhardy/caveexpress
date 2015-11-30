@@ -22,7 +22,7 @@ option(MINIRACER "Build miniracer" OFF)
 if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Compile Type" FORCE)
 endif()
-set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release)
+set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release MinSizeRel RelWithDebInfo)
 
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
 	set(RELEASE False)
