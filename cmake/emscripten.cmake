@@ -2,7 +2,10 @@ set(UNITTESTS OFF)
 set(TOOLS OFF)
 set(USE_BUILTIN ON)
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --js-library ${ROOT_DIR}/contrib/installer/html5/library.js")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-warning-option -Wno-warn-absolute-paths")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unknown-warning-option -Wno-warn-absolute-paths")
+# -s ALLOW_MEMORY_GROWTH=1 -s ASSERTIONS=1 --memory-init-file 0
+
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s WARN_ON_UNDEFINED_SYMBOLS=1")
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s ALLOW_MEMORY_GROWTH=0")
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s TOTAL_MEMORY=134217728")
