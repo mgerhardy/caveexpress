@@ -492,7 +492,6 @@
 #define SDL_RemoveTimer SDL_RemoveTimer_REAL
 #define SDL_GetNumTouchDevices SDL_GetNumTouchDevices_REAL
 #define SDL_GetTouchDevice SDL_GetTouchDevice_REAL
-#define SDL_GetTouchName SDL_GetTouchName_REAL
 #define SDL_GetNumTouchFingers SDL_GetNumTouchFingers_REAL
 #define SDL_GetTouchFinger SDL_GetTouchFinger_REAL
 #define SDL_GetVersion SDL_GetVersion_REAL
@@ -598,4 +597,3 @@
 #define SDL_JoystickCurrentPowerLevel SDL_JoystickCurrentPowerLevel_REAL
 #define SDL_GameControllerFromInstanceID SDL_GameControllerFromInstanceID_REAL
 #define SDL_JoystickFromInstanceID SDL_JoystickFromInstanceID_REAL
-#define SDL_GetTouchName SDL_GetTouchName_REAL

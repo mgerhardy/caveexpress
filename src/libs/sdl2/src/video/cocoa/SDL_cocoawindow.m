@@ -682,7 +682,10 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
 {
     SDL_Window *window = _data->window;
 
-    SetWindowStyle(window, GetWindowStyle(window));
+    /* As of OS X 10.11, the window seems to need to be resizable when exiting
+       a Space, in order for it to resize back to its windowed-mode size.
+     */
+    SetWindowStyle(window, GetWindowStyle(window) | NSResizableWindowMask);
 
     isFullscreenSpace = NO;
     inFullscreenTransition = YES;
@@ -710,6 +713,8 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
     NSWindow *nswindow = _data->nswindow;
 
     inFullscreenTransition = NO;
+
+    SetWindowStyle(window, GetWindowStyle(window));
 
     [nswindow setLevel:kCGNormalWindowLevel];
 

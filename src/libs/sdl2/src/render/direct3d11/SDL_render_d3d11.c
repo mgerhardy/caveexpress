@@ -760,8 +760,8 @@ SDL_RenderDriver D3D11_RenderDriver = {
 };
 
 
-static Uint32
-DXGIFormatToSDLPixelFormat(DXGI_FORMAT dxgiFormat) {
+Uint32
+D3D11_DXGIFormatToSDLPixelFormat(DXGI_FORMAT dxgiFormat) {
     switch (dxgiFormat) {
         case DXGI_FORMAT_B8G8R8A8_UNORM:
             return SDL_PIXELFORMAT_ARGB8888;
@@ -2367,7 +2367,7 @@ D3D11_UpdateVertexBuffer(SDL_Renderer *renderer,
     } else {
         SAFE_RELEASE(rendererData->vertexBuffer);
 
-        vertexBufferDesc.ByteWidth = dataSizeInBytes;
+        vertexBufferDesc.ByteWidth = (UINT) dataSizeInBytes;
         vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
         vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
         vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -2911,7 +2911,7 @@ D3D11_RenderReadPixels(SDL_Renderer * renderer, const SDL_Rect * rect,
      */
     if (SDL_ConvertPixels(
         rect->w, rect->h,
-        DXGIFormatToSDLPixelFormat(stagingTextureDesc.Format),
+        D3D11_DXGIFormatToSDLPixelFormat(stagingTextureDesc.Format),
         textureMemory.pData,
         textureMemory.RowPitch,
         format,
