@@ -695,7 +695,11 @@ void SDLFrontend::initRenderer ()
 		Log::info(LOG_GFX, "available renderer %s", ri.name);
 	}
 
-#if defined(SDL_VIDEO_OPENGL_ES2)
+#if defined(SDL_VIDEO_RENDER_D3D)
+	const std::string rendererStr = "direct3d";
+#elif defined(SDL_VIDEO_RENDER_D3D11)
+	const std::string rendererStr = "direct3d11";
+#elif defined(SDL_VIDEO_OPENGL_ES2)
 	const std::string rendererStr = "opengles2";
 #elif defined(SDL_VIDEO_OPENGL_ES)
 	const std::string rendererStr = "opengles";
