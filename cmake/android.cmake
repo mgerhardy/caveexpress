@@ -66,7 +66,7 @@ set(ANDROID_REFERENCED_LIBS android.library.reference.1=google-play-services_lib
 set(TOOLS OFF)
 set(USE_BUILTIN ON)
 
-find_host_program(ANDROID_ADB adb HINTS ${ANDROID_SDK_ROOT}/platform-tools/)
+find_host_program(ANDROID_ADB adb PATHS ${ANDROID_SDK_ROOT}/platform-tools/)
 if (ANDROID_ADB)
 	message(STATUS "adb tool found")
 else()
