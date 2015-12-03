@@ -99,7 +99,7 @@ include(CPack)
 
 # on mac it e.g. finds the gui launcher - this is not what we want - find a proper way to handle this
 if (LINUX)
-	find_program(TEXTUREPACKER_BIN NAMES TexturePacker)
+	find_host_program(TEXTUREPACKER_BIN NAMES TexturePacker)
 	if (${TEXTUREPACKER_BIN})
 		message(STATUS "Found TexturePacker: ${TEXTUREPACKER_BIN}")
 	else()
@@ -147,7 +147,7 @@ if (NOT CMAKE_BUILD_TYPE)
 	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release)
 endif()
 
-find_program(CCACHE "ccache")
+find_host_program(CCACHE "ccache")
 if (CCACHE)
 	if (USE_CCACHE)
 		message(STATUS "Using ccache")
