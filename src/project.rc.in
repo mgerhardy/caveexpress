@@ -7,7 +7,7 @@
 #endif
 
 1 RT_MANIFEST DISCARDABLE "@ROOT_DIR@/contrib/installer/windows/exe.manifest"
-1 ICON DISCARDABLE "@ROOT_DIR@/contrib/@APPNAME@-icon.ico"
+1 ICON DISCARDABLE "@ROOT_DIR@/contrib/@APP@-icon.ico"
 
 #define ID_GDF_XML __GDF_XML
 ID_GDF_XML DATA "@GAMEEXPLORER_XML@"
@@ -36,7 +36,7 @@ BEGIN
 			VALUE "FileVersion", VER_FILEVERSION_STR
 			VALUE "InternalName", "@APPNAME@"
 			VALUE "LegalCopyright", "Copyright (C) 2013-2015"
-			VALUE "OriginalFilename", "@APPNAME@.exe"
+			VALUE "OriginalFilename", "@APP@.exe"
 			VALUE "ProductName", "@APPNAME@ @VERSION@ @VERSION_CODE@"
 			VALUE "ProductVersion", "@VERSION@"
 			VALUE "SpecialBuild", VER_SPECIAL_STR
