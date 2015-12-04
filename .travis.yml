@@ -121,8 +121,7 @@ before_install:
   - export TERM=dumb
   - if [ `uname -m` = x86_64 ]; then wget --quiet --continue http://dl.google.com/android/ndk/android-ndk32-r10b-linux-x86_64.tar.bz2 -O ndk.tgz; else wget --quiet --continue http://dl.google.com/android/ndk/android-ndk32-r10b-linux-x86.tar.bz2 -O ndk.tgz; fi
   - tar -xf ndk.tgz
-  - wget --quiet --continue http://dl.google.com/android/android-sdk_r24.1.2-linux.tgz
-  - tar -xzvf android-sdk_r24.1.2-linux.tgz
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then wget --quiet --continue http://dl.google.com/android/android-sdk_r24.1.2-linux.tgz; tar -xzvf android-sdk_r24.1.2-linux.tgz; fi
   - ls
 
 cache: apt
