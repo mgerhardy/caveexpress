@@ -44,9 +44,9 @@ namespace miniracer {
 Map::Map () :
 		IMap(), _frontend(nullptr), _serviceProvider(nullptr)
 {
-	Commands.registerCommand(CMD_MAP_PAUSE, bindFunction(Map::triggerPause));
-	Commands.registerCommand(CMD_MAP_RESTART, bindFunction(Map::triggerRestart));
-	Commands.registerCommand(CMD_START, bindFunction(Map::startMap));
+	Commands.registerCommand(CMD_MAP_PAUSE, bindFunctionVoid(Map::triggerPause));
+	Commands.registerCommand(CMD_MAP_RESTART, bindFunctionVoid(Map::triggerRestart));
+	Commands.registerCommand(CMD_START, bindFunctionVoid(Map::startMap));
 
 	resetCurrentMap();
 }
@@ -229,8 +229,8 @@ bool Map::load (const std::string& name)
 	_startPositions = ctx->getStartPositions();
 	_name = ctx->getName();
 	_title = ctx->getTitle();
-	_width = getSetting(msn::WIDTH, "-1").toInt();
-	_height = getSetting(msn::HEIGHT, "-1").toInt();
+	_width = string::toInt(getSetting(msn::WIDTH, "-1"));
+	_height = string::toInt(getSetting(msn::HEIGHT, "-1"));
 
 	if (_width <= 0 || _height <= 0) {
 		Log::error(LOG_GAMEIMPL, "invalid map dimensions given");

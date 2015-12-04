@@ -4,8 +4,8 @@
 
 namespace miniracer {
 
-MapTile::MapTile (Map& map, int x, int y, const EntityType &type) :
-		IEntity(type, map, x, y)
+MapTile::MapTile (Map& map, int col, int row, const EntityType &type) :
+		IEntity(type, map, col, row)
 {
 	setSpriteID(_type.name);
 }

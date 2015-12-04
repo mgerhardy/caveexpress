@@ -4,7 +4,6 @@
 #include "ui/nodes/UINodeSprite.h"
 #include "ui/nodes/UINodePoint.h"
 #include "ui/nodes/UINodeButton.h"
-#include "ui/nodes/UINodeMapOnScreenCursorControl.h"
 #include "ui/layouts/UIHBoxLayout.h"
 #include "ui/UI.h"
 #include "client/Camera.h"
@@ -34,8 +33,7 @@ public:
 };
 
 UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, MiniRacerClientMap& map) :
-		IUIMapWindow(frontend, serviceProvider, campaignManager, map,
-				new UINodeMap(frontend, serviceProvider, campaignManager, 0, 0,
+		IUIMapWindow(frontend, serviceProvider, campaignManager, new UINodeMap(frontend, serviceProvider, campaignManager, 0, 0,
 						frontend->getWidth(), frontend->getHeight(), map)), _undo(
 				nullptr), _points(nullptr), _campaignManager(campaignManager), _scrolling(false) {
 	init();
@@ -84,13 +82,6 @@ void UIMapWindow::initInputHudNodes ()
 	_undo->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_RIGHT);
 	_undo->setOnActivate("undo");
 	add(_undo);
-}
-
-UINode* UIMapWindow::getFingerControl ()
-{
-	UINodeMapOnScreenCursorControl* node = new UINodeMapOnScreenCursorControl(_frontend, _nodeMap);
-	_mapControl = node;
-	return node;
 }
 
 bool UIMapWindow::onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy)

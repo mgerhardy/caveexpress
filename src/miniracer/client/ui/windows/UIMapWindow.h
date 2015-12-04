@@ -9,7 +9,6 @@ namespace miniracer {
 
 class UIMapWindow: public IUIMapWindow {
 protected:
-	UINode* getFingerControl () override;
 	void initHudNodes () override;
 	void initInputHudNodes () override;
 	UINode* _undo;
