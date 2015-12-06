@@ -113,7 +113,7 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 	if (Config.isDebug())
 		frontend->renderFilledRect(_screenPosX, _screenPosY, 4, 4, colorRed);
 
-	const bool debug = Config.getConfigVar("debugentity")->getBoolValue();
+	const bool debug = Config.isDebugEntity();
 	if (debug) {
 		const BitmapFontPtr& font = UI::get().getFont();
 

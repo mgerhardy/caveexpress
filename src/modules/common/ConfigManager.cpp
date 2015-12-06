@@ -99,7 +99,7 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	_name = getConfigVar("name", System.getCurrentUser());
 	_amountOfFruitsForANewLife = getConfigValue(_configVarMap, "amountoffruitsforanewlife", "4");
 	_debugui = getConfigVar("debugui", "false");
-	getConfigVar("debugentity", "false", true);
+	_debugEntity = getConfigVar("debugentity", "false", true);
 	getConfigVar("debugui", "false", true);
 	getConfigVar("alreadyrated", "false", true);
 

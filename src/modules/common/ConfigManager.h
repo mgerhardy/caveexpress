@@ -72,6 +72,7 @@ private:
 	ConfigVarPtr _height;
 	ConfigVarPtr _port;
 	ConfigVarPtr _debug;
+	ConfigVarPtr _debugEntity;
 	ConfigVarPtr _network;
 	ConfigVarPtr _grabMouse;
 	ConfigVarPtr _joystick;
@@ -152,6 +153,7 @@ public:
 	const std::string& getName () const;
 	bool isDebugUI () const;
 	bool isDebug () const;
+	bool isDebugEntity () const;
 	bool isGrabMouse () const;
 	bool isVSync () const;
 	bool isNetwork () const;
@@ -252,6 +254,11 @@ inline bool ConfigManager::isDebugUI () const
 inline bool ConfigManager::isDebug () const
 {
 	return _debug && _debug->getBoolValue();
+}
+
+inline bool ConfigManager::isDebugEntity () const
+{
+	return _debugEntity && _debugEntity->getBoolValue();
 }
 
 inline bool ConfigManager::isGrabMouse () const
