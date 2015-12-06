@@ -1166,7 +1166,9 @@ endforeach()
 remove_definitions( -DANDROID )
 add_definitions( -DANDROID )
 
-if( ANDROID_SYSROOT MATCHES "[ ;\"]" )
+if( CMAKE_VERSION VERSION_GREATER "3.0.0" )
+  set( CMAKE_SYSROOT ${ANDROID_SYSROOT} )
+elseif( ANDROID_SYSROOT MATCHES "[ ;\"]" )
  if( CMAKE_HOST_WIN32 )
   # try to convert path to 8.3 form
   file( WRITE "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cvt83.cmd" "@echo %~s1" )
@@ -1189,7 +1191,6 @@ if( ANDROID_SYSROOT MATCHES "[ ;\"]" )
 else()
  set( ANDROID_CXX_FLAGS "--sysroot=${ANDROID_SYSROOT}" )
 endif()
-set(CMAKE_REQUIRED_FLAGS "${ANDROID_CXX_FLAGS}")
 
 # NDK flags
 if (ARM64_V8A )
