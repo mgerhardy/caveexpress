@@ -1413,7 +1413,7 @@ endif()
 cp_add_library(
 	LIB sdl2
 	SRCS ${SOURCE_FILES} ${SDLMAIN_SOURCES} ${PLATFORM_SRCS}
-	CFLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS} -Wno-deprecated-declarations -Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare -Wno-ignored-qualifiers -Wno-discarded-qualifiers -Wno-empty-body -Wno-unused-but-set-variable"
+	CFLAGS "${CMAKE_C_FLAGS} ${SDL_CFLAGS} ${EXTRA_CFLAGS} -Wno-deprecated-declarations -Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare -Wno-ignored-qualifiers -Wno-discarded-qualifiers -Wno-empty-body -Wno-unused-but-set-variable"
 	DEFINES USING_GENERATED_CONFIG_H
 	LINKERFLAGS ${ANDROID_LDFLAGS})
 if (NOT SDL2_FOUND)
