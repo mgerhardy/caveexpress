@@ -199,10 +199,13 @@ int Windows::exec (const std::string& command, std::vector<std::string>& argumen
 	STARTUPINFO startupInfo;
 	PROCESS_INFORMATION processInfo;
 
-	if (!CreateProcess(nullptr, (LPSTR) cmd.c_str(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, NULL, nullptr,
+	char* commandPtr = SDL_strdup(cmd.c_str());
+	if (!CreateProcess(nullptr, (LPSTR) commandPtr, nullptr, nullptr, FALSE, CREATE_NO_WINDOW, NULL, nullptr,
 			&startupInfo, &processInfo)) {
+		SDL_free(commandPtr);
 		return -1;
 	}
+	SDL_free(commandPtr);
 
 	WaitForSingleObject(processInfo.hProcess, INFINITE);
 
