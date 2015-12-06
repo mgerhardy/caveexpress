@@ -527,6 +527,7 @@ endif()
 # TODO: Can't deactivate on FreeBSD? w/o LIBC, SDL_stdinc.h can't define
 # anything.
 if(LIBC)
+  set(STDC_HEADERS 1)
   if(WINDOWS AND NOT MINGW)
     set(HAVE_LIBC TRUE)
     foreach(_HEADER stdio.h string.h ctype.h math.h)
@@ -549,7 +550,6 @@ if(LIBC)
     endif()
     set(HAVE_M_PI 1)
     add_definitions(-D_USE_MATH_DEFINES) # needed for M_PI
-    set(STDC_HEADERS 1)
   else()
     set(HAVE_LIBC TRUE)
     check_include_file(sys/types.h HAVE_SYS_TYPES_H)
