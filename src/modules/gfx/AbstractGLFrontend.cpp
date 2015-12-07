@@ -415,13 +415,16 @@ bool AbstractGLFrontend::loadTexture (Texture *texture, const std::string& filen
 		Log::error(LOG_GFX, "could not load the file: %s", filename.c_str());
 		return false;
 	}
-	SDL_Surface* normalSurface = loadTextureIntoSurface(filename + "_n");
 	TextureData* data = new TextureData();
 	data->texnum = uploadTexture(static_cast<unsigned char*>(textureSurface->pixels), textureSurface->w, textureSurface->h);
+#if 0
+	SDL_Surface* normalSurface = loadTextureIntoSurface(filename + "_n");
 	if (normalSurface) {
 		data->normalnum = uploadTexture(static_cast<unsigned char*>(normalSurface->pixels), normalSurface->w, normalSurface->h);
 		Log::info(LOG_GFX, "load normal map for: %s", filename.c_str());
-	} else {
+	} else
+#endif
+	{
 		data->normalnum = _alpha;
 	}
 	texture->setData(data);
