@@ -247,7 +247,6 @@ void AbstractGLFrontend::bindTexture (Texture* texture, int textureUnit)
 	Batch& batch = _batches[_currentBatch];
 	batch.texnum = texnum;
 	batch.normaltexnum = texture->getData()->normalnum;
-	glBindTexture(GL_TEXTURE_2D, _currentTexture);
 }
 
 int AbstractGLFrontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& color)
