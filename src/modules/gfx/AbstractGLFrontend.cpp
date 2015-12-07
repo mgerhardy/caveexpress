@@ -422,6 +422,7 @@ bool AbstractGLFrontend::loadTexture (Texture *texture, const std::string& filen
 	if (normalSurface) {
 		data->normalnum = uploadTexture(static_cast<unsigned char*>(normalSurface->pixels), normalSurface->w, normalSurface->h);
 		Log::info(LOG_GFX, "load normal map for: %s", filename.c_str());
+		SDL_FreeSurface(normalSurface);
 	} else
 #endif
 	{
@@ -430,8 +431,6 @@ bool AbstractGLFrontend::loadTexture (Texture *texture, const std::string& filen
 	texture->setData(data);
 	texture->setRect(0, 0, textureSurface->w, textureSurface->h);
 	SDL_FreeSurface(textureSurface);
-	if (normalSurface)
-		SDL_FreeSurface(normalSurface);
 	return data->texnum != 0;
 }
 
