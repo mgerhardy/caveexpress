@@ -168,7 +168,7 @@ endif()
 
 # Those are used for pkg-config and friends, so that the SDL2.pc, sdl2-config,
 # etc. are created correctly.
-set(SDL_LIBS "-lSDL2")
+set(SDL_LIBS "")
 set(SDL_CFLAGS "")
 
 # Emscripten toolchain has a nonempty default value for this, and the checks 
@@ -1119,8 +1119,7 @@ elseif(WINDOWS)
   if(MINGW OR CYGWIN)
     list(APPEND EXTRA_LIBS mingw32)
     list(APPEND EXTRA_LDFLAGS "-mwindows")
-    set(SDL_CFLAGS "${SDL_CFLAGS} -Dmain=SDL_main")
-    list(APPEND SDL_LIBS "-lmingw32" "-lSDL2main" "-mwindows")
+    list(APPEND SDL_LIBS "-lmingw32" "-mwindows")
   endif()
 elseif(APPLE)
   # TODO: rework this for proper MacOS X, iOS and Darwin support
@@ -1415,9 +1414,12 @@ cp_add_library(
 	SRCS ${SOURCE_FILES} ${SDLMAIN_SOURCES} ${PLATFORM_SRCS}
 	CFLAGS "${CMAKE_C_FLAGS} ${SDL_CFLAGS} ${EXTRA_CFLAGS} -Wno-deprecated-declarations -Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare -Wno-ignored-qualifiers -Wno-discarded-qualifiers -Wno-empty-body -Wno-unused-but-set-variable"
 	DEFINES USING_GENERATED_CONFIG_H
-	LINKERFLAGS ${ANDROID_LDFLAGS})
+	LINKERFLAGS ${ANDROID_LDFLAGS} ${EXTRA_LDFLAGS})
 if (NOT SDL2_FOUND)
-	target_link_libraries(sdl2 ${LIBS})
+	if (CMAKE_DL_LIBS)
+		list(APPEND EXTRA_LIBS ${CMAKE_DL_LIBS})
+	endif()
+	target_link_libraries(sdl2 ${EXTRA_LIBS})
 	list(APPEND SDL2_INCLUDE_DIRS "${ROOT_DIR}/src/libs/sdl2/include")
 	list(APPEND SDL2_INCLUDE_DIRS "${ROOT_DIR}/src/libs/sdl2/src")
 	list(APPEND SDL2_INCLUDE_DIRS "${ROOT_DIR}/src/libs/sdl2/config")
