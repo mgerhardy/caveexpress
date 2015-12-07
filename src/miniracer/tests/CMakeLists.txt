@@ -4,7 +4,6 @@ set(${PROJECT_NAME}_SRC
 	ProtocolTest.cpp
 	LUASpriteTest.cpp
 	MiniRacerMapContextTest.cpp
-	MapTest.cpp
 	MapManagerTest.cpp
 	../main/MiniRacer.cpp
 	../../tests/TestAll.cpp
