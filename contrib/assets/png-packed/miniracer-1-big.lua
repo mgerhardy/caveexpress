@@ -1,5 +1,5 @@
 textures = {
-	["car-black-2"] = {
+	["car-black-02-front-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.953125,
 		y0 = 0.1279296875,
@@ -12,7 +12,7 @@ textures = {
 		untrimmedwidth = 71,
 		untrimmedheight = 116,
 	},
-	["car-black-5"] = {
+	["car-black-05-front-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.96484375,
 		y0 = 0.3701171875,
@@ -25,7 +25,7 @@ textures = {
 		untrimmedwidth = 70,
 		untrimmedheight = 121,
 	},
-	["car-blue-2"] = {
+	["car-blue-02-front-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.953125,
 		y0 = 0.185546875,
@@ -38,7 +38,7 @@ textures = {
 		untrimmedwidth = 71,
 		untrimmedheight = 116,
 	},
-	["car-blue-5"] = {
+	["car-blue-05-front-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.96484375,
 		y0 = 0.43017578125,
@@ -51,7 +51,7 @@ textures = {
 		untrimmedwidth = 70,
 		untrimmedheight = 121,
 	},
-	["car-green-2"] = {
+	["car-green-02-front-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.2548828125,
 		y0 = 0.2431640625,
@@ -64,7 +64,7 @@ textures = {
 		untrimmedwidth = 71,
 		untrimmedheight = 116,
 	},
-	["car-green-5"] = {
+	["car-green-05-front-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.4853515625,
 		y0 = 0.4296875,
@@ -77,7 +77,7 @@ textures = {
 		untrimmedwidth = 70,
 		untrimmedheight = 121,
 	},
-	["car-red-2"] = {
+	["car-red-02-front-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.2548828125,
 		y0 = 0.30078125,
@@ -90,7 +90,7 @@ textures = {
 		untrimmedwidth = 71,
 		untrimmedheight = 116,
 	},
-	["car-red-5"] = {
+	["car-red-05-front-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.4453125,
 		y0 = 0.48486328125,
@@ -103,7 +103,7 @@ textures = {
 		untrimmedwidth = 70,
 		untrimmedheight = 121,
 	},
-	["car-yellow-2"] = {
+	["car-yellow-02-front-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.19140625,
 		y0 = 0.94140625,
@@ -116,7 +116,7 @@ textures = {
 		untrimmedwidth = 71,
 		untrimmedheight = 116,
 	},
-	["car-yellow-5"] = {
+	["car-yellow-05-front-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.8486328125,
 		y0 = 0.3818359375,
@@ -129,7 +129,7 @@ textures = {
 		untrimmedwidth = 70,
 		untrimmedheight = 121,
 	},
-	["oil"] = {
+	["oil-01-middle-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.8984375,
 		y0 = 0.4970703125,
@@ -2183,7 +2183,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["rock06"] = {
+	["rock-06-middle-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.05126953125,
 		y0 = 0.953125,
@@ -2196,7 +2196,7 @@ textures = {
 		untrimmedwidth = 89,
 		untrimmedheight = 82,
 	},
-	["rock07"] = {
+	["rock-07-middle-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.43359375,
 		y0 = 0.3818359375,
@@ -2209,7 +2209,7 @@ textures = {
 		untrimmedwidth = 98,
 		untrimmedheight = 96,
 	},
-	["rock15"] = {
+	["rock-15-middle-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.0009765625,
 		y0 = 0.953125,
@@ -2222,7 +2222,7 @@ textures = {
 		untrimmedwidth = 101,
 		untrimmedheight = 84,
 	},
-	["rock17"] = {
+	["rock-17-middle-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.095703125,
 		y0 = 0.953125,
@@ -2235,7 +2235,7 @@ textures = {
 		untrimmedwidth = 89,
 		untrimmedheight = 82,
 	},
-	["rock18"] = {
+	["rock-18-middle-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.482421875,
 		y0 = 0.3818359375,
@@ -2248,7 +2248,7 @@ textures = {
 		untrimmedwidth = 98,
 		untrimmedheight = 96,
 	},
-	["tent-blue"] = {
+	["tent-blue-front-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.78515625,
 		y0 = 0.3818359375,
@@ -2261,7 +2261,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tent-red"] = {
+	["tent-red-front-01"] = {
 		image = "miniracer-1-big",
 		x0 = 0.8837890625,
 		y0 = 0.43359375,
