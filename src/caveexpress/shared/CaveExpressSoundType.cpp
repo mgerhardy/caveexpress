@@ -19,7 +19,7 @@ SoundType SOUND_PACKAGE_COLLIDE2("crate-hit2");
 SoundType SOUND_PACKAGE_COLLIDE3("crate-hit3");
 SoundType SOUND_PACKAGE_COLLIDE4("crate-hit4");
 SoundType SOUND_PACKAGE_COLLIDE5("crate-hit5");
-SoundType SOUND_PACKAGE_COLLIDE("create-hit", false, 5);
+SoundType SOUND_PACKAGE_COLLIDE("crate-hit", false, 5);
 SoundType SOUND_STONE_COLLIDE("stone-hit");
 SoundType SOUND_FRUIT_SPAWN("fruit-spawn");
 SoundType SOUND_FRUIT_COLLECTED("fruit-eat");
