@@ -44,7 +44,7 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 			if (progress != nullptr) {
 				progress->progressStep();
 			}
-			const std::string name = lua.getValueStringFromTable("image");
+			const std::string& name = lua.getValueStringFromTable("image");
 			const float x0 = lua.getValueFloatFromTable("x0");
 			const float y0 = lua.getValueFloatFromTable("y0");
 			const float x1 = lua.getValueFloatFromTable("x1");

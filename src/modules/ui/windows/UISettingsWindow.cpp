@@ -20,8 +20,7 @@
 #include "ui/windows/listener/SoundNodeListener.h"
 #include "ui/windows/listener/FullscreenListener.h"
 
-#include <SDL_platform.h>
-#include <SDL_assert.h>
+#include <SDL.h>
 
 UISettingsWindow::UISettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
 		UIWindow(UI_WINDOW_SETTINGS, frontend, WINDOW_FLAG_MODAL), _background(nullptr), _serviceProvider(serviceProvider)
@@ -51,9 +50,12 @@ UINode* UISettingsWindow::addSections()
 			tr("Big"), new TextureModeListener("big", _frontend, _serviceProvider),
 			tr("Small"), new TextureModeListener("small", _frontend, _serviceProvider));
 
-	last = addSection(last, nullptr, tr("Sound/Music"),
-			tr("On"), new SoundNodeListener(this, true),
-			tr("Off"), new SoundNodeListener(this, false));
+	const int numDevices = SDL_GetNumAudioDevices(SDL_FALSE);
+	if (numDevices == -1 || numDevices > 0) {
+		last = addSection(last, nullptr, tr("Sound/Music"),
+				tr("On"), new SoundNodeListener(this, true),
+				tr("Off"), new SoundNodeListener(this, false));
+	}
 
 	if (System.isFullscreenSupported()) {
 		last = addSection(last, nullptr, tr("Fullscreen"),

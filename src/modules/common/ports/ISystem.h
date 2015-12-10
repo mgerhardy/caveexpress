@@ -18,7 +18,6 @@ struct PaymentEntry {
 };
 
 typedef std::vector<std::string> DirectoryEntries;
-typedef DirectoryEntries::const_iterator DirectoryEntriesIter;
 
 class ISystem {
 private:
