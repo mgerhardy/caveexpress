@@ -6,6 +6,7 @@
 #include "common/Math.h"
 #include "common/EventHandler.h"
 #include <memory>
+#include <SDL_platform.h>
 
 // forward declarations
 class ServiceProvider;
@@ -121,6 +122,13 @@ public:
 	virtual void minimize () = 0;
 	virtual bool rumble (float strength, int lengthMillis) { return false; }
 	virtual bool hasJoystick () const { return false; }
+	virtual bool hasMouse () const {
+#if defined(__WINDOWS__) or defined(__LINUX__) or defined(__MACOSX__) or defined(__PNACL__) or defined(__EMSCRIPTEN__)
+		return true;
+#else
+		return false;
+#endif
+	}
 
 	virtual bool setFrameCallback (int interval, void (*callback)(void*), void *callbackParam) { return false; }
 

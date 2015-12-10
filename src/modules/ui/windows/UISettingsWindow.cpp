@@ -3,10 +3,12 @@
 #include "ui/nodes/UINodeBackToRootButton.h"
 #include "ui/nodes/UINodeCheckbox.h"
 #include "ui/nodes/UINodeLabel.h"
+#include "ui/nodes/UINodeSlider.h"
 #include "ui/nodes/UINodeButtonImage.h"
 #include "ui/nodes/UINodeButtonText.h"
 #include "ui/layouts/UIHBoxLayout.h"
 #include "ui/windows/UIWindow.h"
+#include "ui/windows/listener/ConfigVarListener.h"
 #include "ui/nodes/UINodeSettingsBackground.h"
 #include "ui/windows/modeselection/ModeSetListener.h"
 #include "sound/Sound.h"
@@ -69,7 +71,9 @@ UINode* UISettingsWindow::addSections()
 			tr("Off"), new JoystickNodeListener(false));
 	}
 
-	// TODO: config var mousespeed option
+	if (_frontend->hasMouse()) {
+		last = addSection(last, nullptr, tr("Mouse speed"), "mousespeed");
+	}
 
 	return last;
 }
@@ -91,18 +95,42 @@ UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* backgroun
 		UIHBoxLayout *hlayout = new UIHBoxLayout(0.02f);
 		optionsPanel->setLayout(hlayout);
 		{
+			const BitmapFontPtr& fontPtr = getFont(HUGE_FONT);
 			UINodeButtonText *option1Text = new UINodeButtonText(_frontend, option1);
 			option1Text->addListener(UINodeListenerPtr(option1Listener));
-			option1Text->setFont(getFont(HUGE_FONT));
+			option1Text->setFont(fontPtr);
 			optionsPanel->add(option1Text);
 
 			UINodeButtonText *option2Text = new UINodeButtonText(_frontend, option2);
 			option2Text->addListener(UINodeListenerPtr(option2Listener));
-			option2Text->setFont(getFont(HUGE_FONT));
+			option2Text->setFont(fontPtr);
 			optionsPanel->add(option2Text);
 		}
 	}
 	add(optionsPanel);
 	optionsPanel->centerUnder(label);
 	return optionsPanel;
+}
+
+UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& configVar)
+{
+	UINodeLabel *label = new UINodeLabel(_frontend, title);
+	label->setFont(HUGE_FONT);
+	label->setColor(colorWhite);
+	if (background != nullptr) {
+		label->alignTo(background, NODE_ALIGN_CENTER | NODE_ALIGN_TOP, 0.2f);
+	} else {
+		SDL_assert(centerUnderNode);
+		label->centerUnder(centerUnderNode, 0.03f);
+	}
+	add(label);
+	UINodeSlider *sliderPanel = new UINodeSlider(_frontend, 0.1f, 3.0f, 0.1f);
+	const float height = 0.06f;
+	const float sliderWidth = 0.1f;
+	sliderPanel->setSize(sliderWidth, height);
+	ConfigVarListener* listener = new ConfigVarListener(configVar, sliderPanel);
+	sliderPanel->addListener(UINodeListenerPtr(listener));
+	add(sliderPanel);
+	sliderPanel->centerUnder(label);
+	return sliderPanel;
 }
