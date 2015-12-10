@@ -19,8 +19,8 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 	const std::string& path = FS.getTexturesDir();
 	const DirectoryEntries& entries = FS.listDirectory(path);
 	LUA lua;
-	for (DirectoryEntries::const_iterator i = entries.begin(); i != entries.end(); ++i) {
-		const std::string filename = path + *i;
+	for (const std::string& entry : entries) {
+		const std::string filename = path + entry;
 		if (!FS.hasExtension(filename, "lua"))
 			continue;
 		if (!lua.load(filename)) {

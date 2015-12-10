@@ -210,8 +210,8 @@ DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const st
 
 	const std::string dataDir = getDataDir() + basedir;
 	const DirectoryEntries entries = System.listDirectory(dataDir, subdir);
-	for (DirectoryEntriesIter i = entries.begin(); i != entries.end(); ++i) {
-		entriesAll.push_back(*i);
+	for (const std::string& entry : entries) {
+		entriesAll.push_back(entry);
 	}
 	std::sort(entriesAll.begin(), entriesAll.end());
 	entriesAll.erase(std::unique(entriesAll.begin(), entriesAll.end()), entriesAll.end());
