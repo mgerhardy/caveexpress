@@ -8,7 +8,7 @@ void BipartiteDetector::clear() {
 void BipartiteDetector::init(const BoardState& s) {
 }
 
-bool BipartiteDetector::hasDeadlock(uint32_t millisStart, const BoardState& s) {
+bool BipartiteDetector::hasDeadlock(uint32_t millisStart, uint32_t millisTimeout, const BoardState& s) {
 	return false;
 }
 

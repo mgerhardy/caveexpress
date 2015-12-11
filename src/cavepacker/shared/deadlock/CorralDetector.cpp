@@ -8,7 +8,7 @@ void CorralDetector::clear() {
 void CorralDetector::init(const BoardState& s) {
 }
 
-bool CorralDetector::hasDeadlock(uint32_t millisStart, const BoardState& s) {
+bool CorralDetector::hasDeadlock(uint32_t millisStart, uint32_t timeout, const BoardState& s) {
 	return false;
 }
 
