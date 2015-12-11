@@ -437,6 +437,36 @@ TEST_F(BoardStateTest, testDeadlocks) {
 		"###\n");
 }
 
+TEST_F(BoardStateTest, testFrozenDeadlocks) {
+	testFrozenDeadlock(
+		"######\n"
+		"#.   #\n"
+		"#$#  #\n"
+		"#$   #\n"
+		"#. @ #\n"
+		"######\n");
+	testFrozenDeadlock(
+		"   #####\n"
+		" ###   ##\n"
+		"## . $$ #\n"
+		"#  #$## #\n"
+		"#  #$## #\n"
+		"#  @    #\n"
+		"#########\n");
+	testFrozenDeadlock(
+		"    #####\n"
+		"    #   #\n"
+		"    #$ $#\n"
+		"  ###   ##\n"
+		"  #   $$ #\n"
+		"### # ## #   ######\n"
+		"#   # ## #####  ..#\n"
+		"# $  $          ..#\n"
+		"##### ### #@##  ..#\n"
+		"    #     #########\n"
+		"    #######\n");
+}
+
 TEST_F(BoardStateTest, testNoFrozenDeadlocks) {
 	testNoFrozenDeadlock(
 		"######\n"
