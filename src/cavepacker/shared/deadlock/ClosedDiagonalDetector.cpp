@@ -1,5 +1,4 @@
 #include "ClosedDiagonalDetector.h"
-#include "BoardState.h"
 
 namespace cavepacker {
 

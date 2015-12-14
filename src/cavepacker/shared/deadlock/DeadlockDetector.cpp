@@ -38,7 +38,8 @@ bool DeadlockDetector::hasDeadlock(const BoardState& state, uint32_t timeout) {
 
 	TIMEOUTREACHED(timeoutMillis)
 
-	if (_bipartite.hasDeadlock(_start, state))
+	const uint32_t bipartiteMaxMillis = 35u;
+	if (_bipartite.hasDeadlock(_start, bipartiteMaxMillis, state))
 		return true;
 
 	TIMEOUTREACHED(timeoutMillis)
@@ -48,7 +49,8 @@ bool DeadlockDetector::hasDeadlock(const BoardState& state, uint32_t timeout) {
 
 	TIMEOUTREACHED(timeoutMillis)
 
-	if (_corral.hasDeadlock(_start, state))
+	const uint32_t corralMaxMillis = 35u;
+	if (_corral.hasDeadlock(_start, corralMaxMillis, state))
 		return true;
 
 	return false;
