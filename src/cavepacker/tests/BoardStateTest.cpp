@@ -97,22 +97,18 @@ protected:
 		ASSERT_TRUE(simple.hasDeadlock(start, 10000000u, s)) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
 
-	void testCorralDeadlock(const char *mapStr, int expected = -1) {
+	void testCorralDeadlock(const char *mapStr) {
 		SCOPE(mapStr);
 		CorralDetector corral;
-		const int deadlocks = corral.init(s);
-		if (expected > 0)
-			ASSERT_EQ(expected, deadlocks);
+		corral.init(s);
 		const uint32_t start = SDL_GetTicks();
 		ASSERT_TRUE(corral.hasDeadlock(start, 10000000u, s)) << "Blocked fields: " << getDeadlocks(corral, s);
 	}
 
-	void testBipartiteDeadlock(const char *mapStr, int expected = -1) {
+	void testBipartiteDeadlock(const char *mapStr) {
 		SCOPE(mapStr);
 		BipartiteDetector bipartite;
-		const int deadlocks = bipartite.init(s);
-		if (expected > 0)
-			ASSERT_EQ(expected, deadlocks);
+		bipartite.init(s);
 		const uint32_t start = SDL_GetTicks();
 		ASSERT_TRUE(bipartite.hasDeadlock(start, 10000000u, s)) << "Blocked fields: " << getDeadlocks(bipartite, s);
 	}
