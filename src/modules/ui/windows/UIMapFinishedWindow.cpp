@@ -33,9 +33,6 @@ UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& 
 	add(stars);
 
 	const float gapBack = std::max(0.01f, getScreenPadding());
-	UINode *bigButtons = new UINode(frontend);
-	bigButtons->setLayout(new UIHBoxLayout());
-	bigButtons->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_MIDDLE);
 
 	UINodeMainButton *continueCampaign = new UINodeMainButton(frontend, tr("Continue"));
 	continueCampaign->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_RIGHT, gapBack);
@@ -50,8 +47,7 @@ UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& 
 	UINodePoint *points = new UINodePoint(frontend);
 	points->setFont(LARGE_FONT);
 	points->setId(UINODE_FINISHEDPOINTS);
-	points->alignTo(bigButtons, NODE_ALIGN_CENTER, 0.1f);
-	points->setPos(points->getX(), bigButtons->getBottom());
+	points->alignTo(background, NODE_ALIGN_CENTER, 0.1f);
 	add(points);
 
 	if (!wantBackButton())
