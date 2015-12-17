@@ -27,6 +27,9 @@ Sprite::~Sprite ()
 {
 	for (int i = 0; i < MAX_LAYERS; ++i)
 		_textures[i].clear();
+
+	_delays.clear();
+	_active.clear();
 }
 
 Sprite* Sprite::copy () const
