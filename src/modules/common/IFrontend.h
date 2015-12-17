@@ -123,7 +123,7 @@ public:
 	virtual bool rumble (float strength, int lengthMillis) { return false; }
 	virtual bool hasJoystick () const { return false; }
 	virtual bool hasMouse () const {
-#if defined(__WINDOWS__) or defined(__LINUX__) or defined(__MACOSX__) or defined(__PNACL__) or defined(__EMSCRIPTEN__)
+#if defined(__WINDOWS__) || defined(__LINUX__) || defined(__MACOSX__) || defined(__PNACL__) || defined(__EMSCRIPTEN__)
 		return true;
 #else
 		return false;
