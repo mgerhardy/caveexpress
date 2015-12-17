@@ -9,7 +9,7 @@
 #include <list>
 #include <string>
 #include <string.h>
-#include <Box2D/Common/b2Math.h>
+#include <Common/b2Math.h>
 #include <SDL.h>
 #include <yajl/yajl_parse.h>
 #include "common/Common.h"
