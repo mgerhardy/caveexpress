@@ -706,6 +706,7 @@ void SDLFrontend::initRenderer ()
 #elif defined(SDL_VIDEO_OPENGL)
 	const std::string rendererStr = "opengl";
 #else
+	Log::info(LOG_GFX, "compiled without hardware accelerated renderers");
 	const std::string rendererStr = "software";
 #endif
 
@@ -720,7 +721,7 @@ void SDLFrontend::initRenderer ()
 
 	_softwareRenderer = (ri.flags & SDL_RENDERER_SOFTWARE);
 
-	Log::info(LOG_GFX, "renderer %s", ri.name);
+	Log::info(LOG_GFX, "got renderer: %s", ri.name);
 	Log::info(LOG_GFX, "max texture resolution: %i:%i", ri.max_texture_width, ri.max_texture_height);
 	SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
