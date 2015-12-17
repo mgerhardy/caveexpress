@@ -706,7 +706,7 @@ void SDLFrontend::initRenderer ()
 #elif defined(SDL_VIDEO_OPENGL)
 	const std::string rendererStr = "opengl";
 #else
-#error "No supported renderer found"
+	const std::string rendererStr = "software";
 #endif
 
 	const ConfigVarPtr& renderer = Config.getConfigVar("renderer", rendererStr, true);
