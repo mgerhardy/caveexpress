@@ -324,7 +324,7 @@ void Unix::backtrace (const char *errorMessage)
 	}
 	free(symbollist);
 	appendMessage(strBuf, strBufEnd, "----END BACKTRACE CALLSTACK----\n");
-	Log::error(LOG_COMMON, "fork failed: %s", strBufStart.get());
+	Log::error(LOG_COMMON, "%s", strBufStart.get());
 #else
 	Log::error(LOG_COMMON, "%s", errorMessage);
 #endif
