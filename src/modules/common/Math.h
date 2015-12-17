@@ -4,7 +4,7 @@
 #ifndef b2Assert
 #define b2Assert SDL_assert
 #endif
-#include <Box2D/Common/b2Math.h>
+#include <Common/b2Math.h>
 #include <algorithm>
 #include <cmath>
 #include <stdint.h>
