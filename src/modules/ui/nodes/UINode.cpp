@@ -1081,6 +1081,7 @@ void UINode::setTooltip (const std::string& tooltip)
 
 void UINode::setLayout (IUILayout* layout)
 {
+	delete _layout;
 	_layout = layout;
 	for (UINode* nodePtr : _nodes) {
 		_layout->addNode(nodePtr);
