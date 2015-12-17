@@ -35,6 +35,7 @@ UINode::~UINode ()
 		delete *i;
 	}
 	_nodes.clear();
+	_listeners.clear();
 	delete _layout;
 	_texture = TexturePtr();
 }
