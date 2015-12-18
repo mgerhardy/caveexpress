@@ -1,6 +1,7 @@
 include(CheckFunctionExists)
 include(CheckLibraryExists)
 include(CheckCCompilerFlag)
+include(CheckIncludeFiles)
 
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 find_package(Threads)
