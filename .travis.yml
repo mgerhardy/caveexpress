@@ -46,7 +46,6 @@ addons:
     branch_pattern: coverity_scan
   apt:
     packages:
-    - libbox2d-dev
     - libglm-dev
     - libgtest-dev
     - libsqlite3-dev
@@ -92,6 +91,7 @@ addons:
     - zoogie-sdl2-snapshots
 
 # currently disabled, because sdl2 ppa is not yet available
+#    - libbox2d-dev (2.0.1 is not supported - we need 2.3.0)
 #    - libsdl2-dev
 #    - libsdl2-net-dev
 #    - libsdl2-image-dev
