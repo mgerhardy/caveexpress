@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "server/box2d/DebugRenderer.h"
+#include "physics/DebugRenderer.h"
 #include "caveexpress/server/entities/npcs/NPC.h"
 #include "caveexpress/server/entities/Border.h"
 #include "caveexpress/server/entities/MapTile.h"

@@ -4,6 +4,7 @@
 #define b2Assert SDL_assert
 #endif
 #include <Common/b2Math.h>
+#include "common/Math.h"
 
 inline bool b2Vec2Equals (const b2Vec2& one, const b2Vec2& two, float epsilon = EPSILON)
 {
