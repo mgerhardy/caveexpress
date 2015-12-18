@@ -5,6 +5,7 @@
 #define b2Assert SDL_assert
 #endif
 #include <Box2D.h>
+#include "common/Box2DMath.h"
 #include "common/Log.h"
 #include "common/Timer.h"
 #include "common/IMap.h"
