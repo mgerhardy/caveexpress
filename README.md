@@ -52,7 +52,7 @@ The multiplayer maps were all created by me and are released in the Public Domai
 * sqlite3
 * glm
 * lua >= 5.2
-* Box2D
+* Box2D >= 2.3.0
 * yajl (only if you compile tools)
 
 On debian based systems do:
