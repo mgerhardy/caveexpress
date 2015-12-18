@@ -96,12 +96,6 @@ std::string Map::getSolution (const std::string& name)
 	return SolutionUtil::decompress(std::string(buffer, fileLen));
 }
 
-void Map::sendSound (int clientMask, const SoundType& type, const b2Vec2& pos) const
-{
-	const SoundMessage msg(pos.x, pos.y, type);
-	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
-}
-
 void Map::disconnect (ClientId clientId)
 {
 	removePlayer(clientId);

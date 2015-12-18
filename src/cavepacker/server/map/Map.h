@@ -192,8 +192,6 @@ public:
 
 	bool removePlayer (ClientId clientId);
 
-	void sendSound (int clientMask, const SoundType& type, const b2Vec2& pos = b2Vec2_zero) const;
-
 	IFrontend *getFrontend () const;
 
 	void init (IFrontend *frontend, ServiceProvider& serviceProvider);
