@@ -470,7 +470,7 @@ void AbstractGLFrontend::makeScreenshot (const std::string& filename)
 		return;
 	const int pitch = _width * bytesPerPixel;
 	for (int y = 0; y < _height; ++y)
-		memcpy((uint8 *) surface->pixels + surface->pitch * y, (uint8 *) pixels.get() + pitch * (_height - y - 1), pitch);
+		memcpy((uint8_t *) surface->pixels + surface->pitch * y, (uint8_t *) pixels.get() + pitch * (_height - y - 1), pitch);
 	const std::string fullFilename = FS.getAbsoluteWritePath() + filename + "-" + dateutil::getDateString() + ".png";
 	IMG_SavePNG(surface.get(), fullFilename.c_str());
 #endif
