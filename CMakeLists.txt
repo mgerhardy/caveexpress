@@ -132,6 +132,9 @@ endif()
 
 if (PKGDATADIR)
 	add_definitions(-DPKGDATADIR="${PKGDATADIR}")
+	message(STATUS "You specified a package data dir - but this means, you have to rebuild for each game.")
+	message(STATUS "If you don't do this, you get all the data of all the games in the same directory.")
+	message(STATUS "See the available options and disable all but one game for each build.")
 endif()
 
 if (NOT NETWORKING)
