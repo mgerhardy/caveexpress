@@ -404,10 +404,11 @@ endmacro()
 # LIB: the library we are trying to find
 # HEADER: the header we are trying to find
 # SUFFIX: suffix for the include dir
+# HEADERONLY: lib is a header only dependency
 #
-# Example: cp_find(SDL2_image SDL_image.h include/SDL2)
+# Example: cp_find(SDL2_image SDL_image.h SDL2 FALSE)
 #
-macro(cp_find LIB HEADER SUFFIX)
+macro(cp_find LIB HEADER SUFFIX HEADERONLY)
 	string(TOUPPER ${LIB} PREFIX)
 	if (NOT USE_BUILTIN AND NOT USE_BUILTIN_${PREFIX})
 		unset(${PREFIX}_FOUND CACHE)
@@ -460,23 +461,33 @@ macro(cp_find LIB HEADER SUFFIX)
 			endif()
 		endif()
 		if (NOT ${PKG_PREFIX}_FOUND)
-			find_path(${PREFIX}_INCLUDE_DIRS ${HEADER}
+			find_path(${PREFIX}_INCLUDE_DIRS
+				NAMES ${HEADER}
 				HINTS ENV ${PREFIX}DIR
-				PATH_SUFFIXES include ${SUFFIX}
+				PATH_SUFFIXES include include/${SUFFIX} ${SUFFIX}
 				PATHS
 					${${PKG_PREFIX}_INCLUDE_DIRS}}
 					${_SEARCH_PATHS}
 			)
-			find_library(${PREFIX}_LIBRARIES
-				${LIB}
-				HINTS ENV ${PREFIX}DIR
-				PATH_SUFFIXES lib64 lib lib/${_PROCESSOR_ARCH}
-				PATHS
-					${${PKG_PREFIX}_LIBRARY_DIRS}}
-					${_SEARCH_PATHS}
-			)
+			if (NOT HEADERONLY)
+				find_library(${PREFIX}_LIBRARIES
+					NAMES ${LIB}
+					HINTS ENV ${PREFIX}DIR
+					PATH_SUFFIXES lib64 lib lib/${_PROCESSOR_ARCH}
+					PATHS
+						${${PKG_PREFIX}_LIBRARY_DIRS}}
+						${_SEARCH_PATHS}
+				)
+			endif()
 			include(FindPackageHandleStandardArgs)
-			find_package_handle_standard_args(${LIB} DEFAULT_MSG ${PREFIX}_LIBRARIES ${PREFIX}_INCLUDE_DIRS)
+			if (HEADERONLY)
+				message(STATUS "Header only lib ${LIB}")
+				set(${PREFIX}_LIBRARIES "")
+				find_package_handle_standard_args(${LIB} DEFAULT_MSG ${PREFIX}_INCLUDE_DIRS)
+			else()
+				find_package_handle_standard_args(${LIB} DEFAULT_MSG ${PREFIX}_INCLUDE_DIRS ${PREFIX}_LIBRARIES)
+			endif()
+
 			var_global(${PREFIX}_INCLUDE_DIRS)
 			var_global(${PREFIX}_LIBRARIES)
 			var_global(${PREFIX}_FOUND)
