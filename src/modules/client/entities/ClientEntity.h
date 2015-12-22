@@ -7,7 +7,6 @@
 #include "sprites/Sprite.h"
 #include "common/SpriteDefinition.h"
 #include <memory>
-#include <Common/b2Math.h>
 #include <unordered_map>
 #include <string>
 #include <algorithm>
