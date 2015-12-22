@@ -47,7 +47,7 @@ UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& 
 	UINodePoint *points = new UINodePoint(frontend);
 	points->setFont(LARGE_FONT);
 	points->setId(UINODE_FINISHEDPOINTS);
-	points->alignTo(background, NODE_ALIGN_CENTER, 0.1f);
+	points->alignTo(background, NODE_ALIGN_CENTER | NODE_ALIGN_MIDDLE, 0.1f);
 	add(points);
 
 	if (!wantBackButton())
