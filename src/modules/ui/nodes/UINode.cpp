@@ -38,6 +38,7 @@ UINode::~UINode ()
 	_listeners.clear();
 	delete _layout;
 	_texture = TexturePtr();
+	_texts.clear();
 }
 
 TexturePtr UINode::loadTexture (const std::string& name) const

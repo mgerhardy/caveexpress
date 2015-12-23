@@ -245,6 +245,10 @@ public:
 	{
 	}
 
+	~UINodePopupListener() {
+		_callback = UIPopupCallbackPtr();
+	}
+
 	void onClick() override
 	{
 		switch (_flags) {
