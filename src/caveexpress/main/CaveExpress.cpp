@@ -129,10 +129,8 @@ CaveExpress::~CaveExpress ()
 {
 	Commands.removeCommand(CMD_MAP_OPEN_IN_EDITOR);
 	Commands.removeCommand(CMD_DROP);
-	if (_persister != nullptr)
-		delete _persister;
-	if (_campaignManager != nullptr)
-		delete _campaignManager;
+	delete _persister;
+	delete _campaignManager;
 	delete _clientMap;
 }
 
