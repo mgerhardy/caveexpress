@@ -213,30 +213,32 @@ TEST(ByteStreamTest, testRandomReadWrite) {
 		typeValue.type = dataType;
 		switch (dataType) {
 		case e_byte: {
-			uint8_t* byte = new uint8_t(random() % BYTE_ADD);
+			uint8_t* byte = new uint8_t;
+			*byte = random() % BYTE_ADD;
 			byteStream.addByte(*byte);
 			typeValue.pValue = byte;
 			size += 1;
 			break;
 		}
 		case e_short: {
-			int16_t* word = new int16_t(random() % SHORT_ADD);
+			int16_t* word = new int16_t;
+			*word = random() % SHORT_ADD;
 			byteStream.addShort(*word);
 			typeValue.pValue = word;
 			size += 2;
 			break;
 		}
 		case e_int: {
-			int32_t* dword = new int32_t(random() % INT_ADD);
+			int32_t* dword = new int32_t;
+			*dword = random() % INT_ADD;
 			byteStream.addInt(*dword);
 			typeValue.pValue = dword;
 			size += 4;
 			break;
 		}
 		case e_float: {
-			float* dword = new float(
-					floorf((random() % INT_ADD) / float(INT_ADD) * 100.0)
-							/ 100.0);
+			float* dword = new float;
+			*dword = floorf((random() % INT_ADD) / float(INT_ADD) * 100.0) / 100.0;
 			byteStream.addFloat(*dword);
 			typeValue.pValue = dword;
 			size += 4;

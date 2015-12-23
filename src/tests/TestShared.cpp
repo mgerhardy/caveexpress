@@ -1,5 +1,6 @@
 #include "TestShared.h"
 #include "network/ProtocolHandlerRegistry.h"
+#include <SDL.h>
 
 void AbstractTest::SetUp() {
 	const std::string& verbose = Config.getConfigVar("verbose", "")->getValue();
@@ -45,7 +46,7 @@ const char* AbstractTest::va(const char* format, ...) {
 	va_list argptr;
 	static char string[4096];
 	va_start(argptr, format);
-	vsnprintf(string, sizeof(string), format, argptr);
+	SDL_vsnprintf(string, sizeof(string), format, argptr);
 	va_end(argptr);
 	return string;
 }
