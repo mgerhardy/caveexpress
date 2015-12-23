@@ -22,6 +22,7 @@ ClientEntity::ClientEntity (const EntityType& type, uint16_t id, float x, float 
 
 ClientEntity::~ClientEntity ()
 {
+	_currSprite = SpritePtr();
 	_entityOverlays.clear();
 	_sprites.clear();
 }

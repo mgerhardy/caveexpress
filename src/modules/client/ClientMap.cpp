@@ -352,6 +352,10 @@ bool ClientMap::load (const std::string& name, const std::string& title)
 
 void ClientMap::addEntity (ClientEntityPtr e)
 {
+	auto iter = _entities.find(e->getID());
+	if (iter != _entities.end()) {
+		delete iter->second;
+	}
 	_entities[e->getID()] = e;
 	if (e->getID() == _playerID) {
 		_player = static_cast<ClientPlayer*>(e);
