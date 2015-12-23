@@ -22,7 +22,7 @@ void TextureCache::create (const std::string& textureName, const std::string& id
 		return;
 	}
 
-	TexturePtr base(load(textureName));
+	const TexturePtr& base = load(textureName);
 	Texture *t = new Texture(*base.get());
 	const int x = round(texcoords.x0 * t->getFullWidth());
 	const int y = round(texcoords.y0 * t->getFullHeight());
@@ -31,8 +31,7 @@ void TextureCache::create (const std::string& textureName, const std::string& id
 	t->setRect(x, y, w, h);
 	t->setMirror(mirror);
 	t->setTrim(trim);
-	TexturePtr p(t);
-	_textureDefs[id] = p;
+	_textureDefs[id] = TexturePtr(t);
 }
 
 TexturePtr TextureCache::load (const std::string& textureName)
