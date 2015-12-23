@@ -1,12 +1,5 @@
 #include "GL1Frontend.h"
-#include "ui/UI.h"
-#include "client/ClientConsole.h"
-#include "textures/TextureCoords.h"
 #include "common/Log.h"
-#include "common/DateUtil.h"
-#include "common/FileSystem.h"
-#include "common/ConfigManager.h"
-#include <SDL.h>
 
 GL1Frontend::GL1Frontend (std::shared_ptr<IConsole> console) :
 		AbstractGLFrontend(console)
