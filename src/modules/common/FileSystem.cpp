@@ -60,6 +60,7 @@ bool FileSystem::copy (const std::string& src, const std::string& target) const 
 
 	FILE* ft = fopen(target.c_str(), "wb");
 	if (!ft) {
+		fclose(f);
 		return false;
 	}
 	fseek(f, 0, SEEK_END);
@@ -68,6 +69,8 @@ bool FileSystem::copy (const std::string& src, const std::string& target) const 
 
 	unsigned char *const buf = (unsigned char *) malloc(len);
 	if (fread(buf, 1, len, f) != len) {
+		fclose(f);
+		fclose(ft);
 		free(buf);
 		return false;
 	}
@@ -76,6 +79,7 @@ bool FileSystem::copy (const std::string& src, const std::string& target) const 
 	if (fwrite(buf, 1, len, ft) != len) {
 		Log::error(LOG_COMMON, "Opening dest file '%s' failed", target.c_str());
 		free(buf);
+		fclose(ft);
 		return false;
 	}
 
