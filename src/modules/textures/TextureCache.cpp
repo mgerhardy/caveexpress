@@ -11,6 +11,7 @@ TextureCache::TextureCache () :
 
 TextureCache::~TextureCache ()
 {
+	_textureDefs.clear();
 }
 
 void TextureCache::create (const std::string& textureName, const std::string& id, const TextureDefinitionCoords& texcoords,
