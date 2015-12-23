@@ -373,6 +373,7 @@ void AbstractGLFrontend::destroyTexture (TextureData *data)
 		glDeleteTextures(1, &data->normalnum);
 		GL_checkError();
 	}
+	delete data;
 }
 
 SDL_Surface* AbstractGLFrontend::loadTextureIntoSurface(const std::string& filename)
