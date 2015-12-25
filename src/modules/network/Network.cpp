@@ -16,8 +16,6 @@ Network::Network () :
 #endif
 
 	_oobSockets.clear();
-
-	init();
 }
 
 Network::~Network ()
