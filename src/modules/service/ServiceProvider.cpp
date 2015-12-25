@@ -24,16 +24,27 @@ ServiceProvider::~ServiceProvider ()
 
 void ServiceProvider::updateNetwork (bool network)
 {
-	if (_currentNetwork)
-		_currentNetwork->shutdown();
+	INetwork* newNetwork;
+	if (network) {
+		newNetwork = _network;
+	} else {
+		newNetwork = _loopback;
+	}
+
+	// no need to switch
+	if (newNetwork == _currentNetwork)
+		return;
 
 	if (network) {
-		_currentNetwork = _network;
 		Log::info(LOG_SERVICE, "switching to network");
 	} else {
-		_currentNetwork = _loopback;
 		Log::info(LOG_SERVICE, "switching to loopback");
 	}
+
+	if (_currentNetwork) {
+		_currentNetwork->shutdown();
+	}
+	_currentNetwork = newNetwork;
 	_currentNetwork->init();
 }
 
