@@ -24,7 +24,6 @@ void INetwork::count (const IProtocolMessage &msg)
 
 void INetwork::shutdown ()
 {
-	Log::info(LOG_NETWORK, "shutting down the network");
 	closeClient();
 	closeServer();
 

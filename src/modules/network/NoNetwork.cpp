@@ -91,6 +91,12 @@ void NoNetwork::init ()
 	Log::info(LOG_NETWORK, "init the network layer (local)");
 }
 
+void NoNetwork::shutdown ()
+{
+	Log::info(LOG_NETWORK, "shutting down loopback-network");
+	INetwork::shutdown();
+}
+
 bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* func)
 {
 	if (isClientConnected())

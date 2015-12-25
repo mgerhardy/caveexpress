@@ -204,6 +204,7 @@ bool Network::openClient (const std::string& node, int port, IClientCallback* fu
 
 void Network::shutdown ()
 {
+	Log::info(LOG_NETWORK, "shutting down the-network");
 	INetwork::shutdown();
 	for (OOBSockets::iterator i = _oobSockets.begin(); i != _oobSockets.end(); ) {
 		OOB* oob = *i;
