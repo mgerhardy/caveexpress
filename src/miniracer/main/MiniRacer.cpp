@@ -210,6 +210,8 @@ void MiniRacer::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.disableRotatingFonts();
 	ui.addWindow(new UIMainWindow(frontend));
 	MiniRacerClientMap *map = new MiniRacerClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
+	// if we reinit the ui - we have to destroy previously allocated memory
+	delete _clientMap;
 	_clientMap = map;
 	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *map));
 	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));

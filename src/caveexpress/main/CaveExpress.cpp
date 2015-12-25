@@ -370,6 +370,8 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UICampaignWindow(frontend, serviceProvider, campaignMgr));
 	ui.addWindow(new UICampaignMapWindow(frontend, campaignMgr));
 	CaveExpressClientMap *map = new CaveExpressClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
+	// if we reinit the ui - we have to destroy previously allocated memory
+	delete _clientMap;
 	_clientMap = map;
 	UIMapWindow *mapWindow = new UIMapWindow(frontend, serviceProvider, campaignMgr, *_clientMap);
 	ui.addWindow(mapWindow);

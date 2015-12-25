@@ -318,6 +318,8 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	UI& ui = UI::get();
 	ui.addWindow(new UIMainWindow(frontend));
 	CavePackerClientMap *map = new CavePackerClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
+	// if we reinit the ui - we have to destroy previously allocated memory
+	delete _clientMap;
 	_clientMap = map;
 	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *map));
 	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));

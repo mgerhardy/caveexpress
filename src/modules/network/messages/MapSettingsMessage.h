@@ -30,6 +30,10 @@ public:
 		_startPositions = input.readByte();
 	}
 
+	~MapSettingsMessage() {
+		_settings.clear();
+	}
+
 	void serialize (ByteStream& out) const override
 	{
 		out.addByte(_id);

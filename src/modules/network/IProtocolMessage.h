@@ -77,6 +77,11 @@ public:
 	{
 	}
 
+	virtual ~IProtocolListMessage()
+	{
+		_list.clear();
+	}
+
 	IProtocolListMessage (protocolId id, ByteStream& input) :
 			IProtocolMessage(id), _listPtr(nullptr)
 	{
