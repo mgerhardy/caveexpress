@@ -1,4 +1,6 @@
 include(CMakeParseArguments)
+include(CheckCXXSourceCompiles)
+include(CheckCSourceCompiles)
 
 #-------------------------------------------------------------------------------
 # macros
@@ -841,4 +843,45 @@ macro(cp_add_executable)
 	endif()
 	configure_file(${ROOT_DIR}/src/game.h.in ${PROJECT_BINARY_DIR}/game.h)
 	include_directories(${PROJECT_BINARY_DIR})
+endmacro()
+
+#
+# parameters:
+# The code to check must be the first argument
+# CXX|C: Defines which compiler should be used
+# FLAGS: The compiler flags to use
+# VAR: The cmake variable the result is exported into
+# INCLUDE_DIRS: a list of include dirs that should be used
+#
+# Example: cp_check_source_compiles(CXX FLAGS "--some-compiler-flag --yet-another-one" VAR HAVE_COMPILE_FLAGS "int main(int argc, char *argv[]) {return 0;}")
+#
+macro(cp_check_source_compiles CODE)
+	set(_OPTIONS_ARGS CXX C)
+	set(_ONE_VALUE_ARGS FLAGS VAR)
+	set(_MULTI_VALUE_ARGS INCLUDE_DIRS)
+
+	cmake_parse_arguments(_COMPILE "${_OPTIONS_ARGS}" "${_ONE_VALUE_ARGS}" "${_MULTI_VALUE_ARGS}" ${ARGN})
+
+	if (NOT _COMPILE_VAR)
+		message(FATAL_ERROR "cp_check_source_compiles requires the VAR argument")
+	endif()
+	if (NOT _COMPILE_C AND NOT _COMPILE_CXX)
+		message(FATAL_ERROR "cp_check_source_compiles requires either CXX or C to be specified")
+	endif()
+
+	set(_TMP_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES})
+	set(_TMP_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
+
+	if (_COMPILE_INCLUDE_DIRS)
+		set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES};${_COMPILE_INCLUDE_DIRS}")
+	endif()
+	set(CMAKE_REQUIRED_FLAGS ${_COMPILE_FLAGS})
+	cp_message("Check that this code compiles and links:\n${CODE}")
+	if (_COMPILE_C)
+		check_c_source_compiles("${CODE}" "${_COMPILE_VAR}")
+	elseif (_COMPILE_CXX)
+		check_cxx_source_compiles("${CODE}" "${_COMPILE_VAR}")
+	endif()
+	set(CMAKE_REQUIRED_FLAGS ${_TMP_REQUIRED_FLAGS})
+	set(CMAKE_REQUIRED_INCLUDES ${_TMP_REQUIRED_INCLUDES})
 endmacro()
