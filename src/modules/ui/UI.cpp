@@ -80,6 +80,8 @@ void UI::restart ()
 void UI::shutdown ()
 {
 	System.track("step", "shutdownui");
+	// we might have temp windows on the stack
+	popMain();
 	for (UIWindowMapIter i = _windows.begin(); i != _windows.end(); ++i) {
 		delete i->second;
 	}
