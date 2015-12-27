@@ -48,7 +48,7 @@ set(SRCS
 	)
 cp_add_library(LIB box2d SRCS ${SRCS} CFLAGS "-Wno-shadow -Wno-unused-but-set-variable -Wno-maybe-uninitialized -Wno-array-bounds")
 # system wide lib must be checked for compatibility if not found via pkg-config
-if (BOX2D_FOUND AND ${BOX2D_VERSION} STREQUAL "")
+if (BOX2D_FOUND AND "${BOX2D_VERSION}" STREQUAL "")
 	cp_check_source_compiles("
 		#include <Box2D.h>
 		int main (int argc, char *argv[]) {
