@@ -99,6 +99,10 @@ or simply
 * cmake -DTOOLS=OFF -G "Visual Studio 12" ..
 * msbuild.exe caveproductions.sln
 
+or use the cmake gui - select the source dir of your git clone and a different
+directory for your binary outputs. Then click "Generate" and open the project
+map in Visual Studio.
+
 #### Cross compile for android
 * install sdk and ndk
 * mkdir build
