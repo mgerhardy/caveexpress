@@ -10,3 +10,4 @@
 .gitignore export-ignore
 /website export-ignore
 /android-project export-ignore
+/*.yml export-ignore
