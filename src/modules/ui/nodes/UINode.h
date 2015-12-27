@@ -304,32 +304,32 @@ public:
 
 	inline int getRenderX (bool includePadding = true) const
 	{
-		return getRenderXf(includePadding) * _frontend->getWidth();
+		return static_cast<int>(getRenderXf(includePadding) * _frontend->getWidth());
 	}
 
 	inline int getRenderY (bool includePadding = true) const
 	{
-		return getRenderYf(includePadding) * _frontend->getHeight();
+		return static_cast<int>(getRenderYf(includePadding) * _frontend->getHeight());
 	}
 
 	inline int getRenderCenterX () const
 	{
-		return getRenderCenterXf() * _frontend->getWidth();
+		return static_cast<int>(getRenderCenterXf() * _frontend->getWidth());
 	}
 
 	inline int getRenderCenterY () const
 	{
-		return getRenderCenterYf() * _frontend->getHeight();
+		return static_cast<int>(getRenderCenterYf() * _frontend->getHeight());
 	}
 
 	inline int getRenderWidth (bool includePadding = true) const
 	{
-		return getRenderWidthf(includePadding) * _frontend->getWidth();
+		return static_cast<int>(getRenderWidthf(includePadding) * _frontend->getWidth());
 	}
 
 	inline int getRenderHeight (bool includePadding = true) const
 	{
-		return getRenderHeightf(includePadding) * _frontend->getHeight();
+		return static_cast<int>(getRenderHeightf(includePadding) * _frontend->getHeight());
 	}
 
 	inline float getRenderXf (bool includePadding = true) const
