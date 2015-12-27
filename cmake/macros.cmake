@@ -63,7 +63,7 @@ else()
 	message(WARNING "C++ Compiler: Unknown")
 endif()
 
-if (CP_GCC OR CP_CLANG)
+if (NOT ANDROID AND (CP_GCC OR CP_CLANG))
 	check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORTS_CXX11)
 	check_cxx_compiler_flag("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
 	if (COMPILER_SUPPORTS_CXX11)
