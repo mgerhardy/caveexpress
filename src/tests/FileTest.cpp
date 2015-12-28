@@ -79,3 +79,24 @@ TEST_F(FileTest, testName) {
 	ASSERT_EQ("testname", p->getFileName());
 	ASSERT_EQ(FS.getDataDir() + filename, p->getName());
 }
+
+TEST_F(FileTest, testSaveAndLoadHomeDir) {
+	const std::string path = FS.getAbsoluteWritePath() + FS.getDataDir() + "testSaveAndLoadHomeDir.tmp";
+	{
+		SDL_RWops *rwops = FS.createRWops(path, "wb");
+		FilePtr file(new File(rwops, path));
+		file->writeString("test\n");
+	}
+
+	{
+		SDL_RWops *rwops = FS.createRWops(path, "rb");
+		FilePtr file(new File(rwops, path));
+		char *buffer;
+		const int fileLen = file->read((void **) &buffer);
+		const std::unique_ptr<char[]> p(buffer);
+		ASSERT_TRUE(buffer) << "Could not read file " << path;
+		ASSERT_EQ(5, fileLen) << "File " << path << " has unexpected size";
+		const std::string str(buffer, fileLen);
+		ASSERT_EQ(str, "test\n");
+	}
+}
