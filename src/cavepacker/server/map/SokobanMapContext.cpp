@@ -123,6 +123,11 @@ bool SokobanMapContext::save () const {
 		}
 	}
 
+	if (file->length() <= 0L) {
+		FS.deleteFile(path);
+		return false;
+	}
+
 	return true;
 }
 
