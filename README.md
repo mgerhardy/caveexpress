@@ -55,6 +55,14 @@ The multiplayer maps were all created by me and are released in the Public Domai
 * Box2D >= 2.3.0
 * yajl (only if you compile tools)
 
+All external dependencies are also bundled. On systems like windows, you don't have to install any of the
+dependencies. If not configured otherwise, the system wide installed libs takes precedence. If you want
+to change this behaviour for one lib, you can e.g. call cmake like this:
+
+    cmake -DUSE_BUILTIN_SQLITE=TRUE
+
+this will skip the system wide installed sqlite detection and use the bundled one.
+
 On debian based systems do:
 
     sudo apt-get install libbox2d-dev libyajl-dev libglm-dev libgtest-dev libsdl2-dev \
