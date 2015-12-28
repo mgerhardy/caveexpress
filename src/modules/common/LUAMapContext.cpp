@@ -256,6 +256,11 @@ bool LUAMapContext::save() const
 
 	file->appendString("end\n");
 
+	if (file->length() <= 0L) {
+		FS.deleteFile(path);
+		return false;
+	}
+
 	Log::info(LOG_UI, "wrote %s", path.c_str());
 
 	return true;
