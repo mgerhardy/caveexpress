@@ -35,8 +35,10 @@ TEST(NetworkTest, testOpenServer)
 {
 	NetworkTestServerListener serverListener;
 	Network network;
+	network.init();
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	network.closeServer();
+	network.shutdown();
 }
 
 TEST(NetworkTest, testOpenClient)
@@ -44,10 +46,12 @@ TEST(NetworkTest, testOpenClient)
 	NetworkTestListener listener;
 	NetworkTestServerListener serverListener;
 	Network network;
+	network.init();
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << network.getError();
 	network.closeClient();
 	network.closeServer();
+	network.shutdown();
 }
 
 TEST(NetworkTest, testUpdate)
@@ -55,11 +59,13 @@ TEST(NetworkTest, testUpdate)
 	NetworkTestListener listener;
 	NetworkTestServerListener serverListener;
 	Network network;
+	network.init();
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << network.getError();
 	network.update(0);
 	network.closeClient();
 	network.closeServer();
+	network.shutdown();
 }
 
 TEST(NetworkTest, testSendToClient)
@@ -67,6 +73,7 @@ TEST(NetworkTest, testSendToClient)
 	NetworkTestListener listener;
 	NetworkTestServerListener serverListener;
 	Network network;
+	network.init();
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << network.getError();
 	const DisconnectMessage msg;
@@ -75,6 +82,7 @@ TEST(NetworkTest, testSendToClient)
 	network.update(0);
 	network.closeClient();
 	network.closeServer();
+	network.shutdown();
 }
 
 TEST(NetworkTest, testSendStringList)
@@ -85,6 +93,7 @@ TEST(NetworkTest, testSendStringList)
 	names.push_back("Test2");
 	PlayerListMessage msgNames(names);
 	Network network;
+	network.init();
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	class NetworkNameListTestListener: public IClientCallback {
 	public:
@@ -115,6 +124,7 @@ TEST(NetworkTest, testSendStringList)
 	ASSERT_EQ(3, nameListener.count);
 	network.closeClient();
 	network.closeServer();
+	network.shutdown();
 }
 
 TEST(NetworkTest, testSendToServer)
@@ -122,6 +132,7 @@ TEST(NetworkTest, testSendToServer)
 	NetworkTestListener listener;
 	NetworkTestServerListener serverListener;
 	Network network;
+	network.init();
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << network.getError();
 	network.update(0);
@@ -132,6 +143,7 @@ TEST(NetworkTest, testSendToServer)
 	network.update(0);
 	network.closeClient();
 	network.closeServer();
+	network.shutdown();
 }
 
 #endif

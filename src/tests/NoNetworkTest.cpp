@@ -23,6 +23,7 @@ TEST_F(NoNetworkTest, testSendToClient)
 	NoNetworkTestServerListener serverListener;
 	NoNetworkTestListener listener;
 	NoNetwork network;
+	network.init();
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << "Failed to open the server";
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << "Failed to open the client";
 	const AddEntityMessage msg(1, EntityType::NONE, Animation::NONE, "spriteId", 0.0f, 0.0f, 0.0f, 0.0f, 0, ENTITY_ALIGN_MIDDLE_CENTER);
@@ -35,4 +36,5 @@ TEST_F(NoNetworkTest, testSendToClient)
 	network.closeClient();
 	network.closeServer();
 	ASSERT_EQ(n, listener._count);
+	network.shutdown();
 }
