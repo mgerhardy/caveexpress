@@ -140,8 +140,12 @@ bool SokobanMapContext::load(bool skipErrors) {
 	char *buffer;
 	const int fileLen = filePtr->read((void **) &buffer);
 	std::unique_ptr<char[]> p(buffer);
-	if (!buffer || fileLen <= 0) {
-		Log::error(LOG_GAMEIMPL, "Sokoban map file %s", filePtr->getName().c_str());
+	if (!buffer) {
+		Log::error(LOG_GAMEIMPL, "Sokoban map file %s can't get opened", filePtr->getName().c_str());
+		return false;
+	}
+	if (fileLen <= 0) {
+		Log::error(LOG_GAMEIMPL, "Sokoban map file %s is empty", filePtr->getName().c_str());
 		return false;
 	}
 
