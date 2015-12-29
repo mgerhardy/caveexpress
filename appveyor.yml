@@ -9,7 +9,7 @@ environment:
 configuration: Release
 
 install:
-  - cinst -y -installArgs /D=%NSIS_ROOT% nsis
+  - cinst -y -installArgs /D=%NSIS_ROOT% nsis.install
 
 branches:
   only:
