@@ -6,5 +6,4 @@ States for building on Windows, Linux, Mac, iOS and Android:
 
 **[Homepage](http://www.caveproductions.org/)**
 
-**[Wiki](https://github.com/mgerhardy/caveexpress/wiki/)**
-Find information about compilation and other information here
+Find information about compilation and other stuff in the **[Wiki](https://github.com/mgerhardy/caveexpress/wiki/)**
