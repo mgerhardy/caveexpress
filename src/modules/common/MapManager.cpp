@@ -76,6 +76,9 @@ IMapManager::Maps IMapManager::getMapsByWildcard (const std::string& wildcard) c
 
 void IMapManager::loadMaps ()
 {
+	for (MapsIter i = _maps.begin(); i != _maps.end(); ++i) {
+		delete i->second;
+	}
 	_maps.clear();
 	const std::string& mapsPath = FS.getMapsDir();
 	const DirectoryEntries& maps = FS.listDirectory(mapsPath);
