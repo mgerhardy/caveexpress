@@ -6,7 +6,7 @@
 
 namespace cavepacker {
 
-#define SCOPE(mapStr) BoardState s; fillState(s, (mapStr)); SCOPED_TRACE(va("%s\n%s", __PRETTY_FUNCTION__, s.toString().c_str()))
+#define SCOPE(mapStr) BoardState s; fillState(s, (mapStr)); std::string scopedStr; scopedStr.append(__PRETTY_FUNCTION__).append("\n").append(s.toString()); SCOPED_TRACE(scopedStr)
 
 class BoardStateTest: public AbstractTest {
 protected:
