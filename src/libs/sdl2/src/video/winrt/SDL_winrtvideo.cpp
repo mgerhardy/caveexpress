@@ -315,6 +315,61 @@ WINRT_AddDisplaysForAdapter (_THIS, IDXGIFactory2 * dxgiFactory2, int adapterInd
 
     for (int outputIndex = 0; ; ++outputIndex) {
         if (WINRT_AddDisplaysForOutput(_this, dxgiAdapter1, outputIndex) < 0) {
+            /* HACK: The Windows App Certification Kit 10.0 can fail, when
+               running the Store Apps' test, "Direct3D Feature Test".  The
+               certification kit's error is:
+
+               "Application App was not running at the end of the test. It likely crashed or was terminated for having become unresponsive."
+
+               This was caused by SDL/WinRT's DXGI failing to report any
+               outputs.  Attempts to get the 1st display-output from the
+               1st display-adapter can fail, with IDXGIAdapter::EnumOutputs
+               returning DXGI_ERROR_NOT_FOUND.  This could be a bug in Windows,
+               the Windows App Certification Kit, or possibly in SDL/WinRT's
+               display detection code.  Either way, try to detect when this
+               happens, and use a hackish means to create a reasonable-as-possible
+               'display mode'.  -- DavidL
+            */
+            if (adapterIndex == 0 && outputIndex == 0) {
+                SDL_VideoDisplay display;
+                SDL_DisplayMode mode;
+#if SDL_WINRT_USE_APPLICATIONVIEW
+                ApplicationView ^ appView = ApplicationView::GetForCurrentView();
+#endif
+                CoreWindow ^ coreWin = CoreWindow::GetForCurrentThread();
+                SDL_zero(display);
+                SDL_zero(mode);
+                display.name = "DXGI Display-detection Workaround";
+
+                /* HACK: ApplicationView's VisibleBounds property, appeared, via testing, to
+                   give a better approximation of display-size, than did CoreWindow's
+                   Bounds property, insofar that ApplicationView::VisibleBounds seems like
+                   it will, at least some of the time, give the full display size (during the
+                   failing test), whereas CoreWindow might not.  -- DavidL
+                */
+
+#if (NTDDI_VERSION >= NTDDI_WIN10) || (SDL_WINRT_USE_APPLICATIONVIEW && WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
+                mode.w = WINRT_DIPS_TO_PHYSICAL_PIXELS(appView->VisibleBounds.Width);
+                mode.h = WINRT_DIPS_TO_PHYSICAL_PIXELS(appView->VisibleBounds.Height);
+#else
+                /* On platform(s) that do not support VisibleBounds, such as Windows 8.1,
+                   fall back to CoreWindow's Bounds property.
+                */
+                mode.w = WINRT_DIPS_TO_PHYSICAL_PIXELS(coreWin->Bounds.Width);
+                mode.h = WINRT_DIPS_TO_PHYSICAL_PIXELS(coreWin->Bounds.Height);
+#endif
+
+                mode.format = DXGI_FORMAT_B8G8R8A8_UNORM;
+                mode.refresh_rate = 0;  /* Display mode is unknown, so just fill in zero, as specified by SDL's header files */
+                display.desktop_mode = mode;
+                display.current_mode = mode;
+                if ((SDL_AddDisplayMode(&display, &mode) < 0) ||
+                    (SDL_AddVideoDisplay(&display) < 0))
+                {
+                    return SDL_SetError("Failed to apply DXGI Display-detection workaround");
+                }
+            }
+
             break;
         }
     }
@@ -341,7 +396,6 @@ WINRT_InitModes(_THIS)
         return -1;
     }
 
-    int adapterIndex = 0;
     for (int adapterIndex = 0; ; ++adapterIndex) {
         if (WINRT_AddDisplaysForAdapter(_this, dxgiFactory2, adapterIndex) < 0) {
             break;
@@ -449,6 +503,32 @@ WINRT_UpdateWindowFlags(SDL_Window * window, Uint32 mask)
         }
         window->flags = (window->flags & ~mask) | (apply & mask);
     }
+}
+
+static bool
+WINRT_IsCoreWindowActive(CoreWindow ^ coreWindow)
+{
+    /* WinRT does not appear to offer API(s) to determine window-activation state,
+       at least not that I am aware of in Win8 - Win10.  As such, SDL tracks this
+       itself, via window-activation events.
+       
+       If there *is* an API to track this, it should probably get used instead
+       of the following hack (that uses "SDLHelperWindowActivationState").
+         -- DavidL.
+    */
+    if (coreWindow->CustomProperties->HasKey("SDLHelperWindowActivationState")) {
+        CoreWindowActivationState activationState = \
+            safe_cast<CoreWindowActivationState>(coreWindow->CustomProperties->Lookup("SDLHelperWindowActivationState"));
+        return (activationState != CoreWindowActivationState::Deactivated);
+    }
+
+    /* Assume that non-SDL tracked windows are active, although this should
+       probably be avoided, if possible.
+       
+       This might not even be possible, in normal SDL use, at least as of
+       this writing (Dec 22, 2015; via latest hg.libsdl.org/SDL clone)  -- DavidL
+    */
+    return true;
 }
 
 int
@@ -591,12 +671,7 @@ WINRT_CreateWindow(_THIS, SDL_Window * window)
         );
 
         /* Try detecting if the window is active */
-        bool isWindowActive = true;     /* Presume the window is active, unless we've been told otherwise */
-        if (data->coreWindow->CustomProperties->HasKey("SDLHelperWindowActivationState")) {
-            CoreWindowActivationState activationState = \
-                safe_cast<CoreWindowActivationState>(data->coreWindow->CustomProperties->Lookup("SDLHelperWindowActivationState"));
-            isWindowActive = (activationState != CoreWindowActivationState::Deactivated);
-        }
+        bool isWindowActive = WINRT_IsCoreWindowActive(data->coreWindow.Get());
         if (isWindowActive) {
             SDL_SetKeyboardFocus(window);
         }
@@ -627,13 +702,16 @@ WINRT_SetWindowFullscreen(_THIS, SDL_Window * window, SDL_VideoDisplay * display
 {
 #if NTDDI_VERSION >= NTDDI_WIN10
     SDL_WindowData * data = (SDL_WindowData *)window->driverdata;
-    if (fullscreen) {
-        if (!data->appView->IsFullScreenMode) {
-            data->appView->TryEnterFullScreenMode();    // TODO, WinRT: return failure (to caller?) from TryEnterFullScreenMode()
-        }
-    } else {
-        if (data->appView->IsFullScreenMode) {
-            data->appView->ExitFullScreenMode();
+    bool isWindowActive = WINRT_IsCoreWindowActive(data->coreWindow.Get());
+    if (isWindowActive) {
+        if (fullscreen) {
+            if (!data->appView->IsFullScreenMode) {
+                data->appView->TryEnterFullScreenMode();    // TODO, WinRT: return failure (to caller?) from TryEnterFullScreenMode()
+            }
+        } else {
+            if (data->appView->IsFullScreenMode) {
+                data->appView->ExitFullScreenMode();
+            }
         }
     }
 #endif

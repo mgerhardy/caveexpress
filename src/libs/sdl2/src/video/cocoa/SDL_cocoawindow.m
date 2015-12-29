@@ -588,6 +588,13 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
     if ((isFullscreenSpace) && ((window->flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP)) {
         [NSMenu setMenuBarVisible:NO];
     }
+
+    /* On pre-10.6, you might have the capslock key state wrong now because we can't check here. */
+    if (floor(NSAppKitVersionNumber) >= NSAppKitVersionNumber10_6) {
+        const unsigned int newflags = [NSEvent modifierFlags] & NSAlphaShiftKeyMask;
+        _data->videodata->modifierFlags = (_data->videodata->modifierFlags & ~NSAlphaShiftKeyMask) | newflags;
+        SDL_ToggleModState(KMOD_CAPS, newflags != 0);
+    }
 }
 
 - (void)windowDidResignKey:(NSNotification *)aNotification
@@ -816,7 +823,14 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
 
     /* Ignore events that aren't inside the client area (i.e. title bar.) */
     if ([theEvent window]) {
-        const NSRect windowRect = [[[theEvent window] contentView] frame];
+        NSRect windowRect = [[[theEvent window] contentView] frame];
+
+        /* add one to size, since NSPointInRect is exclusive of the bottom
+           edges, which mean it misses the top of the window by one pixel
+           (as the origin is the bottom left). */
+        windowRect.size.width += 1;
+        windowRect.size.height += 1;
+
         if (!NSPointInRect([theEvent locationInWindow], windowRect)) {
             return;
         }
