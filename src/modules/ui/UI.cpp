@@ -828,8 +828,6 @@ void UI::popup (const std::string& text, int flags, UIPopupCallbackPtr callback)
 {
 	Log::info(LOG_UI, "push popup");
 	UIWindow* popupWindow = new UIPopupWindow(_frontend, text, flags, callback);
-	if (popupWindow == nullptr)
-		return;
 	_stack.push_back(popupWindow);
 	_stack.back()->onActive();
 }
