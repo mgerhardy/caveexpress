@@ -35,8 +35,10 @@ UINode::~UINode ()
 		delete *i;
 	}
 	_nodes.clear();
+	_listeners.clear();
 	delete _layout;
 	_texture = TexturePtr();
+	_texts.clear();
 }
 
 TexturePtr UINode::loadTexture (const std::string& name) const
@@ -219,7 +221,7 @@ void UINode::displayText (const std::string& text, uint32_t delayMillis, float x
 		i->delayMillis = delayMillis;
 		return;
 	}
-	Log::info(LOG_UI, "Display text '%s' for %ui ms", text.c_str(), delayMillis);
+	Log::info(LOG_UI, "Display text '%s' for %u ms", text.c_str(), delayMillis);
 	const NodeCoord c(x, y);
 	const BitmapFontPtr& font = getFont(HUGE_FONT);
 	_texts.push_back(UINodeDelayedText(text, delayMillis, c, font));
@@ -458,7 +460,7 @@ bool UINode::onFingerPress (int64_t finger, uint16_t x, uint16_t y)
 	return false;
 }
 
-bool UINode::prevFocus ()
+bool UINode::prevFocus (bool cursorup)
 {
 	if (_nodes.empty()) {
 		if (!isActive())
@@ -475,7 +477,7 @@ bool UINode::prevFocus ()
 		if (!nodePtr->hasFocus())
 			continue;
 
-		if (nodePtr->prevFocus()) {
+		if (nodePtr->prevFocus(cursorup)) {
 			addFocus(0, 0);
 			return true;
 		}
@@ -496,7 +498,7 @@ bool UINode::prevFocus ()
 	return false;
 }
 
-bool UINode::nextFocus ()
+bool UINode::nextFocus (bool cursordown)
 {
 	if (_nodes.empty()) {
 		if (!isActive())
@@ -513,7 +515,7 @@ bool UINode::nextFocus ()
 		if (!nodePtr->hasFocus())
 			continue;
 
-		if (nodePtr->nextFocus()) {
+		if (nodePtr->nextFocus(cursordown)) {
 			addFocus(0, 0);
 			return true;
 		}
@@ -645,8 +647,10 @@ bool UINode::checkFocus (int32_t x, int32_t y)
 		}
 
 		if (focusOnChildren) {
-			addFocus(x, y);
-			return true;
+			if (isActive()) {
+				addFocus(x, y);
+				return true;
+			}
 		}
 	}
 
@@ -684,21 +688,21 @@ bool UINode::onTextInput (const std::string& text)
 	return false;
 }
 
-bool UINode::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
+bool UINode::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion)
 {
 	_fingerPressed = false;
 	handleDrop(x, y);
-	execute();
+	const bool retVal = execute();
 	for (UINodeListRevIter i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
 		UINode* nodePtr = *i;
 		if (!nodePtr->hasFocus())
 			continue;
-		if (nodePtr->onFingerRelease(finger, x - getRenderX(), y - getRenderY())) {
+		if (nodePtr->onFingerRelease(finger, x - getRenderX(), y - getRenderY(), motion)) {
 			return true;
 		}
 	}
 
-	return false;
+	return retVal;
 }
 
 bool UINode::onKeyPress (int32_t key, int16_t modifier)
@@ -843,6 +847,14 @@ bool UINode::onGesture (int64_t gestureId, float error, int32_t numFingers)
 	}
 
 	return false;
+}
+
+void UINode::onWindowResize ()
+{
+	for (UINodeListIter i = _nodes.begin(); i != _nodes.end(); ++i) {
+		UINode* nodePtr = *i;
+		nodePtr->onWindowResize();
+	}
 }
 
 bool UINode::onGestureRecord (int64_t gestureId)
@@ -1070,6 +1082,7 @@ void UINode::setTooltip (const std::string& tooltip)
 
 void UINode::setLayout (IUILayout* layout)
 {
+	delete _layout;
 	_layout = layout;
 	for (UINode* nodePtr : _nodes) {
 		_layout->addNode(nodePtr);

@@ -16,6 +16,9 @@ defaultreferencetimefactor = 1.0
 defaultdamagethreshold = 3.0
 defaultnpcflyingspeed = 4.0
 defaultparticles = 100
+defaultred = 8
+defaultgreen = 8
+defaultblue = 8
 
 if isOUYA() then
 	defaultjoystick = true
@@ -23,6 +26,9 @@ if isOUYA() then
 	defaultdamagethreshold = 5.0
 	defaultnpcflyingspeed = 3.0
 	defaultparticles = 0
+	defaultred = 6
+	defaultgreen = 5
+	defaultblue = 6
 elseif isAndroid() then
 	defaultpersister = "googleplay"
 	defaultreferencetimefactor = 1.5
@@ -31,6 +37,9 @@ elseif isAndroid() then
 	defaultdamagethreshold = 5.0
 	defaultnpcflyingspeed = 3.0
 	defaultparticles = 50
+	defaultred = 6
+	defaultgreen = 5
+	defaultblue = 6
 elseif isMobile() then
 	defaultreferencetimefactor = 1.5
 	defaultshowcursor = false
@@ -73,6 +82,9 @@ settings = {
 	waterparticle = false,
 	npcflyingspeed = defaultnpcflyingspeed,
 	particles = defaultparticles,
+	red = defaultred,
+	green = defaultgreen,
+	blue = defaultblue,
 }
 
 controllerbindings = {
@@ -167,12 +179,12 @@ else
 		["ui"] = {
 			LEFT = "ui_focus_prev",
 			RIGHT = "ui_focus_next",
-			UP = "ui_focus_prev",
-			DOWN = "ui_focus_next",
+			UP = "ui_focus_prev +",
+			DOWN = "ui_focus_next -",
 			A = "ui_focus_prev",
 			D = "ui_focus_next",
-			W = "ui_focus_prev",
-			S = "ui_focus_next",
+			W = "ui_focus_prev +",
+			S = "ui_focus_next -",
 			SPACE = "ui_execute",
 			RETURN = "ui_execute",
 			ESCAPE = "ui_pop",
@@ -195,13 +207,17 @@ else
 			PAGEUP = "zoom 0.1",
 		},
 	}
+end
 
-	if isDebug() then
-		keybindings["ui"]["."] = "screenshot"
-		keybindings["map"]["."] = "screenshot"
-		keybindings["map"]["BACKSPACE"] = "map_debug"
-		keybindings["map"]["E"] = "map_open_in_editor"
-		keybindings["map"]["X"] = "kill"
-		keybindings["map"]["F"] = "finish"
-	end
+if isDebug() then
+	keybindings["ui"]["."] = "screenshot"
+	keybindings["map"]["."] = "screenshot"
+	keybindings["map"]["BACKSPACE"] = "map_debug"
+	keybindings["map"]["E"] = "map_open_in_editor"
+	keybindings["map"]["X"] = "kill"
+	keybindings["map"]["F"] = "finish"
+end
+
+if isMobile() and isDebug() then
+	keybindings["map"]["VOLUMEUP"] = "map_debug"
 end

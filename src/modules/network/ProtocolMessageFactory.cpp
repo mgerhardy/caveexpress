@@ -122,11 +122,11 @@ ProtocolMessageFactory::~ProtocolMessageFactory() {
 
 IProtocolMessage *ProtocolMessageFactory::createMsg(ByteStream& stream) const {
 	const protocolId type = stream.readByte();
-	//Log::debug(LOG_GENERAL, String::format("msg type => %i", (int)type));
+	//Log::debug(LOG_NETWORK, string::format("msg type => %i", (int)type));
 	IProtocolMessage *msg = create(type, &stream);
 	if (msg != nullptr)
 		return msg;
 	stream.addByte(type, true);
-	Log::error(LOG_NET, "unknown module type given: %i", type);
+	Log::error(LOG_NETWORK, "unknown module type given: %i", type);
 	return nullptr;
 }

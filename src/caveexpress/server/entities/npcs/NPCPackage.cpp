@@ -27,7 +27,7 @@ bool NPCPackage::shouldCollide (const IEntity* entity) const
 
 void NPCPackage::setIdle ()
 {
-	Log::debug(LOG_SERVER, "idle npc %i: %s", getID(), _type.name.c_str());
+	Log::debug(LOG_GAMEIMPL, "idle npc %i: %s", getID(), _type.name.c_str());
 	setState(NPCState::NPC_IDLE);
 	setLinearVelocity(b2Vec2_zero);
 	_idleTimer = 0;
@@ -41,7 +41,7 @@ void NPCPackage::update (uint32_t deltaTime)
 		leavePackage();
 
 	if (getCave()->moveBackIntoCave()) {
-		Log::info(LOG_SERVER, "npc %i moved back into cave, remove from world", getID());
+		Log::info(LOG_GAMEIMPL, "npc %i moved back into cave, remove from world", getID());
 		_remove = true;
 	}
 }

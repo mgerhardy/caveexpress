@@ -19,12 +19,12 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 	const std::string& path = FS.getTexturesDir();
 	const DirectoryEntries& entries = FS.listDirectory(path);
 	LUA lua;
-	for (DirectoryEntries::const_iterator i = entries.begin(); i != entries.end(); ++i) {
-		const std::string filename = path + *i;
+	for (const std::string& entry : entries) {
+		const std::string filename = path + entry;
 		if (!FS.hasExtension(filename, "lua"))
 			continue;
 		if (!lua.load(filename)) {
-			Log::error(LOG_CLIENT, "failed to load textures from %s", filename.c_str());
+			Log::error(LOG_COMMON, "failed to load textures from %s", filename.c_str());
 			continue;
 		}
 		LUA_checkStack2(lua.getState());
@@ -33,18 +33,18 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 
 		while (lua.getNextKeyValue()) {
 			LUA_checkStack2(lua.getState());
-			String id = lua.getKey();
+			std::string id = lua.getKey();
 			if (id.empty()) {
 				lua.pop();
 				System.exit("Invalid texture entry found - invalid id", 1);
 			}
 
-			id = id.cutBeforeLastMatch("/");
+			id = string::cutBeforeLastMatch(id, "/");
 
 			if (progress != nullptr) {
 				progress->progressStep();
 			}
-			const std::string name = lua.getValueStringFromTable("image");
+			const std::string& name = lua.getValueStringFromTable("image");
 			const float x0 = lua.getValueFloatFromTable("x0");
 			const float y0 = lua.getValueFloatFromTable("y0");
 			const float x1 = lua.getValueFloatFromTable("x1");
@@ -59,11 +59,11 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 					untrimmedWidth, untrimmedHeight, trimmedOffsetX, trimmedOffsetY);
 			const TextureDefinitionCoords r = { x0, y0, x1, y1 };
 
-			if (id.contains(TEXTURE_DIRECTION)) {
-				const String rightID = id.replaceAll(TEXTURE_DIRECTION, TEXTURE_DIRECTION_RIGHT);
-				create(name, rightID.str(), r, trim, false);
-				const String leftID = id.replaceAll(TEXTURE_DIRECTION, TEXTURE_DIRECTION_LEFT);
-				create(name, leftID.str(), r, trim, true);
+			if (string::contains(id, TEXTURE_DIRECTION)) {
+				const std::string rightID = string::replaceAll(id, TEXTURE_DIRECTION, TEXTURE_DIRECTION_RIGHT);
+				create(name, rightID, r, trim, false);
+				const std::string leftID = string::replaceAll(id, TEXTURE_DIRECTION, TEXTURE_DIRECTION_LEFT);
+				create(name, leftID, r, trim, true);
 			} else {
 				const bool mirror = lua.getValueBoolFromTable("mirror");
 				create(name, id, r, trim, mirror);
@@ -74,8 +74,8 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 	}
 
 	if (_textureDefs.empty())
-		Log::info(LOG_CLIENT, "could not load any texture definition");
-	Log::info(LOG_CLIENT, "loaded %i texture definitions", (int)_textureDefs.size());
+		Log::info(LOG_COMMON, "could not load any texture definition");
+	Log::info(LOG_COMMON, "loaded %i texture definitions", (int)_textureDefs.size());
 }
 
 TextureDefinition::~TextureDefinition ()
@@ -87,12 +87,12 @@ void TextureDefinition::create (const std::string& textureName, const std::strin
 		const TextureDefinitionTrim& trim, bool mirror)
 {
 	if (_textureDefs.find(id) != _textureDefs.end()) {
-		Log::error(LOG_CLIENT, "texture def with same name found: %s", id.c_str());
+		Log::error(LOG_COMMON, "texture def with same name found: %s", id.c_str());
 		return;
 	}
 
 	if (!texcoords.isValid()) {
-		Log::error(LOG_CLIENT, "texture def has invalid texcoords: %s", id.c_str());
+		Log::error(LOG_COMMON, "texture def has invalid texcoords: %s", id.c_str());
 		return;
 	}
 

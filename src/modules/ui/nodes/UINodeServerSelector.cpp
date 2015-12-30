@@ -9,7 +9,7 @@
 #define PLAYERS_HEADLINE tr("Players")
 
 UINodeServerSelector::UINodeServerSelector (IFrontend *frontend, int rows) :
-		UINodeSelector<ServerEntry>(frontend, 1, rows)
+		Super(frontend, 1, rows)
 {
 	_headlineFont = getFont(HUGE_FONT);
 	_headlineHeight = _headlineFont->getCharHeight();
@@ -51,7 +51,7 @@ bool UINodeServerSelector::onSelect (const ServerEntry& data)
 
 void UINodeServerSelector::render (int x, int y) const
 {
-	UINodeSelector<ServerEntry>::render(x, y);
+	Super::render(x, y);
 	x += getRenderX();
 	y += getRenderY();
 	_frontend->renderFilledRect(x, y, _colWidth * _frontend->getWidth(), _headlineHeight, colorGray);

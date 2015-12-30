@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.7.1</string>
+        <string>3.9.4</string>
         <key>fileName</key>
         <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/cavepacker-ui.tps</string>
         <key>autoSDSettings</key>
@@ -60,6 +60,8 @@
         <false/>
         <key>pvrCompressionQuality</key>
         <enum type="SettingsBase::PvrCompressionQuality">PVR_QUALITY_NORMAL</enum>
+        <key>atfCompressData</key>
+        <false/>
         <key>mipMapMinSize</key>
         <uint>32768</uint>
         <key>etc1CompressionQuality</key>
@@ -73,7 +75,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">PngQuantMedium</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -175,7 +177,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
+        <enum type="SettingsBase::OutputFormat">INDEXED</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -211,13 +213,9 @@
         <key>fileList</key>
         <array>
             <filename>../png/cavepacker/ui/icon-settings.png</filename>
-            <filename>../png/cavepacker/ui/icon-arrow-left.png</filename>
             <filename>../png/cavepacker/ui/icon-scroll-page-DIR.png</filename>
             <filename>../png/cavepacker/ui/mouse.png</filename>
             <filename>../png/cavepacker/ui/map-icon-unlocked.png</filename>
-            <filename>../png/cavepacker/ui/icon-sound-off.png</filename>
-            <filename>../png/cavepacker/ui/icon-sound-on.png</filename>
-            <filename>../png/cavepacker/ui/icon-back-to-root.png</filename>
             <filename>../png/cavepacker/ui/map-icon-locked.png</filename>
             <filename>../png/cavepacker/ui/map-icon-unlocked-0.png</filename>
             <filename>../png/cavepacker/ui/map-icon-unlocked-1.png</filename>
@@ -227,15 +225,14 @@
             <filename>../png/cavepacker/ui/icon-cursor-left.png</filename>
             <filename>../png/cavepacker/ui/icon-cursor-right.png</filename>
             <filename>../png/cavepacker/ui/icon-cursor-up.png</filename>
-            <filename>../png/cavepacker/ui/icon-reload.png</filename>
             <filename>../png/cavepacker/ui/bones.png</filename>
             <filename>../png/cavepacker/ui/icon-undo.png</filename>
-            <filename>../png/cavepacker/ui/icon-solve.png</filename>
             <filename>../png/cavepacker/ui/icon-star-disabled.png</filename>
             <filename>../png/cavepacker/ui/icon-star-enabled.png</filename>
             <filename>../png/cavepacker/ui/ui-button-start.png</filename>
             <filename>../png/cavepacker/ui/icon-close.png</filename>
             <filename>../png/cavepacker/ui/icon-google-login.png</filename>
+            <filename>../png/cavepacker/ui/icon-reload.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

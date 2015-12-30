@@ -25,6 +25,16 @@ FileSystem::FileSystem () :
 		_dataDir += "/";
 	}
 #endif
+	registerURL("maps", getMapsDir());
+	registerURL("textures", getTexturesDir());
+	registerURL("pics", getPicsDir());
+	registerURL("music", getMusicDir());
+	registerURL("shaders", getShaderDir());
+	registerURL("languages", getLanguageDir());
+	registerURL("sounds", getSoundsDir());
+	registerURL("campaigns", getCampaignsDir());
+	registerURL("gestures", getGesturesDir());
+	registerURL("home", _homeDir);
 }
 
 FileSystem::~FileSystem ()
@@ -44,12 +54,13 @@ void FileSystem::shutdown ()
 bool FileSystem::copy (const std::string& src, const std::string& target) const {
 	FILE *f = fopen(src.c_str(), "rb");
 	if (!f) {
-		Log::error(LOG_FILE, "Opening source file '%s' failed", src.c_str());
+		Log::error(LOG_COMMON, "Opening source file '%s' failed", src.c_str());
 		return false;
 	}
 
 	FILE* ft = fopen(target.c_str(), "wb");
 	if (!ft) {
+		fclose(f);
 		return false;
 	}
 	fseek(f, 0, SEEK_END);
@@ -58,14 +69,17 @@ bool FileSystem::copy (const std::string& src, const std::string& target) const 
 
 	unsigned char *const buf = (unsigned char *) malloc(len);
 	if (fread(buf, 1, len, f) != len) {
+		fclose(f);
+		fclose(ft);
 		free(buf);
 		return false;
 	}
 	fclose(f);
 
 	if (fwrite(buf, 1, len, ft) != len) {
-		Log::error(LOG_FILE, "Opening dest file '%s' failed", target.c_str());
+		Log::error(LOG_COMMON, "Opening dest file '%s' failed", target.c_str());
 		free(buf);
+		fclose(ft);
 		return false;
 	}
 
@@ -89,15 +103,15 @@ long FileSystem::writeFile (const std::string& filename, const unsigned char *bu
 	SDL_RWops *rwops = createRWops(path, "wb");
 	File file(rwops, filename);
 	if (!overwrite && file.exists()) {
-		Log::info(LOG_FILE, "file already exists: %s", path.c_str());
+		Log::info(LOG_COMMON, "file already exists: %s", path.c_str());
 		return -1L;
 	}
 	if (!System.mkdir(_homeDir)) {
-		Log::error(LOG_FILE, "could not create directory: %s",  _homeDir.c_str());
+		Log::error(LOG_COMMON, "could not create directory: %s",  _homeDir.c_str());
 		return -1L;
 	}
 	createDir(file);
-	Log::info(LOG_FILE, "writing file %s", path.c_str());
+	Log::info(LOG_COMMON, "writing file %s", path.c_str());
 	return file.write(buf, length);
 }
 
@@ -113,9 +127,9 @@ long FileSystem::writeSysFile (const std::string& filename, const unsigned char 
 		return -1L;
 	const long ret = file->write(buf, length);
 	if (ret < 0)
-		Log::error(LOG_FILE, "failed to write file %s", path.c_str());
+		Log::error(LOG_COMMON, "failed to write file %s", path.c_str());
 	else
-		Log::info(LOG_FILE, "wrote file %s of size %li", path.c_str(), ret);
+		Log::info(LOG_COMMON, "wrote file %s of size %li", path.c_str(), ret);
 	return ret;
 }
 
@@ -154,14 +168,41 @@ FilePtr FileSystem::getFile (const std::string& filename) const
 	return ptr;
 }
 
+std::string FileSystem::getDirForURLType (const std::string& type) const
+{
+	auto i = _schemes.find(type);
+	if (i == _schemes.end())
+		return "";
+	return i->second;
+}
+
+void FileSystem::registerURL(const std::string& type, const std::string& dir)
+{
+	_schemes[type] = dir;
+}
+
+FilePtr FileSystem::getFileFromURL (const std::string& filename) const
+{
+	std::string::size_type pos = filename.find_first_of("://", 0);
+	if (pos == std::string::npos) {
+		System.exit("Not a valid url: " + filename, 1);
+	}
+
+	const std::string& type = filename.substr(0, pos);
+	const std::string& dir = getDirForURLType(type);
+	if (dir.empty()) {
+		System.exit("No type registered for " + type, 1);
+	}
+	const std::string& name = filename.substr(pos + 3, filename.length());
+	return getFile(dir + name);
+}
+
 const std::string FileSystem::getAbsoluteWritePath () const
 {
-	if (_homeDir.empty())
-		return "";
 	return _homeDir;
 }
 
-DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const std::string& subdir)
+DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const std::string& subdir) const
 {
 #if DIRLIST_NOT_SUPPORTED
 	return Singleton<GameRegistry>::getInstance().getGame()->listDirectory(basedir, subdir);
@@ -173,8 +214,8 @@ DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const st
 
 	const std::string dataDir = getDataDir() + basedir;
 	const DirectoryEntries entries = System.listDirectory(dataDir, subdir);
-	for (DirectoryEntriesIter i = entries.begin(); i != entries.end(); ++i) {
-		entriesAll.push_back(*i);
+	for (const std::string& entry : entries) {
+		entriesAll.push_back(entry);
 	}
 	std::sort(entriesAll.begin(), entriesAll.end());
 	entriesAll.erase(std::unique(entriesAll.begin(), entriesAll.end()), entriesAll.end());

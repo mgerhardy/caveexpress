@@ -4,13 +4,13 @@
 
 // forward decl
 class ServiceProvider;
-class UINodeButtonImage;
+class UINode;
 
 namespace cavepacker {
 
 class UICavePackerMapOptionsWindow: public UIMapOptionsWindow {
 private:
-	UINodeButtonImage *_solve;
+	UINode *_solve;
 public:
 	UICavePackerMapOptionsWindow (IFrontend *frontend, ServiceProvider& serviceProvider);
 	void onActive () override;

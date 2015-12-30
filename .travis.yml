@@ -6,6 +6,22 @@ sudo: false
 
 language:
   - cpp
+  - android
+
+jdk:
+  - oraclejdk8
+
+android:
+  components:
+  - build-tools-20.0.0
+  - android-20
+  - sysimg-20
+  - add-on
+  - extra
+  licenses:
+  - android-sdk-preview-license-52d11cd2
+  - android-sdk-license-.+
+  - google-gdk-license-.+
 
 compiler:
   - gcc
@@ -30,7 +46,6 @@ addons:
     branch_pattern: coverity_scan
   apt:
     packages:
-    - libbox2d-dev
     - libglm-dev
     - libgtest-dev
     - libsqlite3-dev
@@ -68,11 +83,15 @@ addons:
     - libgles2-mesa-dev
     - libegl1-mesa-dev
     - libibus-1.0-dev
+    - libgd2-xpm
+    - ia32-libs
+    - ia32-libs-multiarch
     sources:
     - ubuntu-toolchain-r-test
     - zoogie-sdl2-snapshots
 
 # currently disabled, because sdl2 ppa is not yet available
+#    - libbox2d-dev (2.0.1 is not supported - we need 2.3.0)
 #    - libsdl2-dev
 #    - libsdl2-net-dev
 #    - libsdl2-image-dev
@@ -84,10 +103,10 @@ script:
   - cmake --version
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then pkg-config --version; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then g++-5 --version; fi
-  - clang++ --version
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && make -j 4 VERBOSE=1 && cd .. && ./tests -set verbose true && ./tests-caveexpress -set verbose true; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake -G Xcode .. -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && ls && xcodebuild -list -project Project.xcodeproj && xcodebuild -project Project.xcodeproj -target ALL_BUILD && cd .. && ./Debug/tests -set verbose true && ./Debug/tests-caveexpress -set verbose true; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-ios && cd build-ios && cmake -G Xcode .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake -DVERBOSE=ON -DUSE_BUILTIN=$USE_BUILTIN && ls && xcodebuild -list -project Project.xcodeproj && xcodebuild -project Project.xcodeproj -target ALL_BUILD; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then ANDROID_INSTALL_PACKAGES=ON ANDROID_RELEASE=OFF ANDROID_NDK=`pwd`/android-ndk-r10b NDK_ROOT=`pwd`/android-ndk-r10b ANDROID_SDK=`pwd`/android-sdk-linux PATH=${PATH}:${ANDROID_SDK}/tools:${ANDROID_SDK}/platform-tools:${ANDROID_NDK} ./contrib/scripts/android.sh; ls ../cp-build-android-hd/android-caveexpress/bin; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake .. -DUSE_BUILTIN=$USE_BUILTIN && make -j 4 VERBOSE=1 && cd .. && ./tests --gtest-filter=-Network* && ./tests_caveexpress --gtest-filter=-Network*; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-$TRAVIS_OS_NAME && cd build-$TRAVIS_OS_NAME && cmake -G Xcode .. -DUSE_BUILTIN=$USE_BUILTIN && ls && xcodebuild -list -project caveproductions.xcodeproj && xcodebuild -project caveproductions.xcodeproj -target ALL_BUILD | xcpretty -f `xcpretty-travis-formatter` && cd .. && ./tests --gtest-filter=-Network* && ./tests_caveexpress --gtest-filter=-Network*; fi
+#  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir build-ios && cd build-ios && cmake -G Xcode .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake -DUSE_BUILTIN=$USE_BUILTIN && ls && xcodebuild -list -project caveproductions.xcodeproj && xcodebuild -project caveproductions.xcodeproj -target ALL_BUILD | xcpretty -f `xcpretty-travis-formatter`; fi
 
 notifications:
   email:
@@ -95,5 +114,13 @@ notifications:
 
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5"; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then gem install xcpretty; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then gem install xcpretty-travis-formatter; fi
+
+before_install:
+  - export TERM=dumb
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then if [ `uname -m` = x86_64 ]; then wget --quiet --continue http://dl.google.com/android/ndk/android-ndk32-r10b-linux-x86_64.tar.bz2 -O ndk.tgz; else wget --quiet --continue http://dl.google.com/android/ndk/android-ndk32-r10b-linux-x86.tar.bz2 -O ndk.tgz; fi; tar -xf ndk.tgz; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then wget --quiet --continue http://dl.google.com/android/android-sdk_r24.1.2-linux.tgz; tar -xzf android-sdk_r24.1.2-linux.tgz; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then echo "y" | ./android-sdk-linux/tools/android update sdk -a -u -s -t platform-tools; fi
 
 cache: apt

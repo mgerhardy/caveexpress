@@ -18,14 +18,26 @@
 #include <SDL.h>
 #include <SDL_stdinc.h>
 
-#define GETSCALE_W(x, scale) (x) = (static_cast<float>(x + _frontend->getCoordinateOffsetX()) / _frontend->getWidthScale()) * scale
-#define GETSCALE_H(y, scale) (y) = (static_cast<float>(y + _frontend->getCoordinateOffsetY()) / _frontend->getHeightScale()) * scale
+static inline int coordinateScaleX(int x, float scale, IFrontend* frontend) {
+	const float offset = (float)(x + frontend->getCoordinateOffsetX());
+	const float offsetScaled = offset / frontend->getWidthScale();
+	const int scaledCoord = offsetScaled * scale;
+	return scaledCoord;
+}
+
+static inline int coordinateScaleY(int y, float scale, IFrontend* frontend) {
+	const float offset = (float)(y + frontend->getCoordinateOffsetY());
+	const float offsetScaled = offset / frontend->getHeightScale();
+	const int scaledCoord = offsetScaled * scale;
+	return scaledCoord;
+}
 
 UI::UI () :
 		_serviceProvider(nullptr), _eventHandler(nullptr), _frontend(nullptr), _cursor(true), _showCursor(false), _cursorX(
-				-1), _cursorY(-1), _restart(false), _delayedPop(false), _noPushAllowed(false), _time(0), _lastJoystickMoveTime(
-				0), _lastJoystickMovementValue(0), _rotateFonts(true)
+				-1), _cursorY(-1), _motionFinger(false), _restart(false), _delayedPop(false), _noPushAllowed(false), _time(0),
+				_lastJoystickMoveTime(0), _lastJoystickMovementValue(0), _rotateFonts(true)
 {
+	_threadId = SDL_ThreadID();
 }
 
 UI::~UI ()
@@ -36,6 +48,7 @@ UI::~UI ()
 UI& UI::get ()
 {
 	static UI ui;
+	SDL_assert_always(ui._threadId == SDL_ThreadID());
 	return ui;
 }
 
@@ -67,6 +80,8 @@ void UI::restart ()
 void UI::shutdown ()
 {
 	System.track("step", "shutdownui");
+	// we might have temp windows on the stack
+	popMain();
 	for (UIWindowMapIter i = _windows.begin(); i != _windows.end(); ++i) {
 		delete i->second;
 	}
@@ -106,7 +121,7 @@ bool UI::initLanguage (const std::string& language)
 	_languageMap.clear();
 	if (language.empty())
 		return false;
-	const FilePtr& filePtr = FS.getFile(FS.getLanguageDir() + language + ".lang");
+	const FilePtr& filePtr = FS.getFileFromURL("languages://" + language + ".lang");
 	char *buffer;
 	int fileLen = filePtr->read((void **) &buffer);
 	std::unique_ptr<char[]> p(buffer);
@@ -114,13 +129,15 @@ bool UI::initLanguage (const std::string& language)
 		Log::error(LOG_UI, "could not load language %s", language.c_str());
 		return false;
 	}
-	String str(buffer, fileLen);
-	std::vector<String> lines = str.split("\n");
-	for (const String& line : lines) {
-		std::vector<String> tuple = line.split("|");
+	std::string str(buffer, fileLen);
+	std::vector<std::string> lines;
+	string::splitString(str, lines, "\n");
+	for (const auto& line : lines) {
+		std::vector<std::string> tuple;
+		string::splitString(line, tuple, "|");
 		if (tuple.size() != 2)
 			continue;
-		_languageMap[tuple[0].str()] = tuple[1].str();
+		_languageMap[tuple[0]] = tuple[1];
 	}
 	Log::info(LOG_UI, "loaded language '%s' with %i entries", language.c_str(), (int)_languageMap.size());
 	return true;
@@ -143,14 +160,14 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 	const std::string& language = Config.getLanguage();
 	if (!initLanguage(language))
 		initLanguage("en_GB");
-	Commands.registerCommand(CMD_UI_PRINTSTACK, bindFunction(UI, printStack));
-	Commands.registerCommand(CMD_UI_PUSH, bindFunction(UI, pushCmd));
-	Commands.registerCommand(CMD_UI_RESTART, bindFunction(UI, initRestart));
-	Commands.registerCommand(CMD_UI_POP, bindFunction(UI, pop));
-	Commands.registerCommand(CMD_UI_FOCUS_NEXT, bindFunction(UI, focusNext));
-	Commands.registerCommand(CMD_UI_FOCUS_PREV, bindFunction(UI, focusPrev));
-	Commands.registerCommand(CMD_UI_EXECUTE, bindFunction(UI, runFocusNode));
-	_mouseSpeed = Config.getConfigVar("mousespeed", "1.0");
+	Commands.registerCommandVoid(CMD_UI_PRINTSTACK, bindFunctionVoid(UI::printStack));
+	Commands.registerCommandString(CMD_UI_PUSH, bindFunction(UI::pushCmd));
+	Commands.registerCommandVoid(CMD_UI_RESTART, bindFunctionVoid(UI::initRestart));
+	Commands.registerCommandVoid(CMD_UI_POP, bindFunctionVoid(UI::pop));
+	Commands.registerCommand(CMD_UI_FOCUS_NEXT, bindFunction(UI::focusNext));
+	Commands.registerCommand(CMD_UI_FOCUS_PREV, bindFunction(UI::focusPrev));
+	Commands.registerCommandVoid(CMD_UI_EXECUTE, bindFunctionVoid(UI::runFocusNode));
+	_mouseSpeed = Config.getConfigVar("mousespeed", "0.2");
 	_showCursor = Config.getConfigVar("showcursor", System.wantCursor() ? "true" : "false", true)->getBoolValue();
 	_cursor = _showCursor;
 	if (_cursor)
@@ -301,7 +318,7 @@ void UI::render ()
 	const bool debug = Config.getConfigVar("debugui")->getBoolValue();
 	if (debug) {
 		const BitmapFontPtr& font = getFont();
-		const std::string s = String::format("%i:%i", _cursorX, _cursorY);
+		const std::string s = string::format("%i:%i", _cursorX, _cursorY);
 		font->print(s, colorWhite, 0, 0);
 	}
 }
@@ -329,6 +346,14 @@ void UI::update (uint32_t deltaTime)
 	}
 }
 
+void UI::onWindowResize ()
+{
+	for (UIStackIter i = _stack.begin(); i != _stack.end(); ++i) {
+		UIWindow* window = *i;
+		window->onWindowResize();
+	}
+}
+
 bool UI::onKeyRelease (int32_t key)
 {
 	if (_restart)
@@ -351,6 +376,7 @@ bool UI::onKeyPress (int32_t key, int16_t modifier)
 	if (_restart)
 		return false;
 
+	Log::debug(LOG_UI, "UI received key press event for key %i with modifier %i", key, modifier);
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
@@ -360,6 +386,7 @@ bool UI::onKeyPress (int32_t key, int16_t modifier)
 			break;
 	}
 
+	Log::debug(LOG_UI, "UI didn't handle key press event for key %i with modifier %i", key, modifier);
 	return false;
 }
 
@@ -384,13 +411,15 @@ bool UI::onFingerRelease (int64_t finger, float x, float y)
 	if (_restart)
 		return false;
 
+	const bool motionFinger = _motionFinger;
+	_motionFinger = false;
 	const uint16_t _x = _frontend->getCoordinateOffsetX() + x * _frontend->getWidth();
 	const uint16_t _y = _frontend->getCoordinateOffsetY() + y * _frontend->getHeight();
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
 		const bool focus = window->checkFocus(_x, _y);
-		if (focus && window->onFingerRelease(finger, _x, _y))
+		if (focus && window->onFingerRelease(finger, _x, _y, motionFinger))
 			return true;
 		if (window->isModal() || window->isFullscreen())
 			break;
@@ -408,7 +437,8 @@ bool UI::onFingerPress (int64_t finger, float x, float y)
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		if (window->onFingerPress(finger, _x, _y))
+		const bool focus = window->checkFocus(_x, _y);
+		if (focus && window->onFingerPress(finger, _x, _y))
 			return true;
 		if (window->isModal() || window->isFullscreen())
 			break;
@@ -426,6 +456,11 @@ void UI::onFingerMotion (int64_t finger, float x, float y, float dx, float dy)
 	const int16_t _dx = dx * _frontend->getWidth();
 	const int16_t _dy = dy * _frontend->getHeight();
 	UIStack stack = _stack;
+
+	const int motionDelta = 10;
+	if (_dx > motionDelta || _dy > motionDelta)
+		_motionFinger = true;
+
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
 		if (window->onFingerMotion(finger, _x, _y, _dx, _dy))
@@ -441,8 +476,8 @@ void UI::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY)
 		return;
 
 	const float speedScale = _mouseSpeed->getFloatValue();
-	GETSCALE_W(relX, speedScale);
-	GETSCALE_H(relY, speedScale);
+	relX = coordinateScaleX(relX, speedScale, _frontend);
+	relY = coordinateScaleY(relY, speedScale, _frontend);
 	_frontend->setCursorPosition(_cursorX + relX, _cursorY + relY);
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
@@ -493,9 +528,6 @@ void UI::onMouseWheel (int32_t x, int32_t y)
 	if (_restart)
 		return;
 
-	const float speedScale = _mouseSpeed->getFloatValue();
-	GETSCALE_W(x, speedScale);
-	GETSCALE_H(y, speedScale);
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
@@ -539,10 +571,11 @@ void UI::onJoystickMotion (bool horizontal, int v)
 
 	// now check whether our value is bigger than our movement delta
 	const int delta = 2000;
+	static const ICommand::Args args(0);
 	if (v < -delta) {
-		focusPrev();
+		focusPrev(args);
 	} else if (v > delta) {
-		focusNext();
+		focusNext(args);
 	}
 
 	_lastJoystickMoveTime = _time;
@@ -718,19 +751,19 @@ UIWindow* UI::push (const std::string& windowID)
 	return window;
 }
 
-void UI::focusNext ()
+void UI::focusNext (const ICommand::Args& args)
 {
 	if (_stack.empty())
 		return;
-	if (!_stack.back()->nextFocus())
+	if (!_stack.back()->nextFocus(!args.empty()))
 		_stack.back()->addFirstFocus();
 }
 
-void UI::focusPrev ()
+void UI::focusPrev (const ICommand::Args& args)
 {
 	if (_stack.empty())
 		return;
-	if (!_stack.back()->prevFocus())
+	if (!_stack.back()->prevFocus(!args.empty()))
 		_stack.back()->addLastFocus();
 }
 
@@ -833,8 +866,4 @@ UINodeBar* UI::setBarMax (const std::string& window, const std::string& nodeId, 
 	}
 	node->setMax(max);
 	return node;
-}
-
-void UIPopupCallback::onCancel() {
-	UI::get().delayedPop();
 }

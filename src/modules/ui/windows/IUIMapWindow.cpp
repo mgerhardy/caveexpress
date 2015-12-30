@@ -32,11 +32,13 @@ public:
 
 	bool isActive () const override
 	{
-		return !_mapControl->isPressed();
+		if (_mapControl != nullptr)
+			return !_mapControl->isPressed();
+		return true;
 	}
 };
 
-IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map, IUINodeMap* nodeMap) :
+IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, IUINodeMap* nodeMap) :
 		UIWindow(UI_WINDOW_MAP, frontend, WINDOW_FLAG_MODAL | WINDOW_FLAG_FULLSCREEN), _nodeMap(nodeMap), _waitLabel(nullptr), _mapControl(nullptr),
 		_startButton(nullptr), _cursorActive(false), _serviceProvider(serviceProvider), _panel(nullptr), _lastFingerPressEvent(0L) {
 	const float screenPadding = getScreenPadding();
@@ -145,10 +147,12 @@ void IUIMapWindow::init()
 	initHudNodes();
 	if (Config.getConfigVar("forcefingercontrol", "false", true, CV_READONLY)->getBoolValue() || System.hasTouch()) {
 		UINode* node = getFingerControl();
-		add(node);
+		if (node != nullptr)
+			add(node);
 	} else {
 		UINode* node = getControl();
-		add(node);
+		if (node != nullptr)
+			add(node);
 	}
 
 	initInputHudNodes();
@@ -263,12 +267,8 @@ void IUIMapWindow::start ()
 	Config.setBindingsSpace(BINDINGS_MAP);
 }
 
-bool IUIMapWindow::isGameActive () const
+bool IUIMapWindow::onFingerPress (int64_t finger, uint16_t x, uint16_t y)
 {
-	return _nodeMap->getMap().isActive();
-}
-
-bool IUIMapWindow::onFingerPress (int64_t finger, uint16_t x, uint16_t y) {
 	_lastFingerPressEvent = _time;
 	return UIWindow::onFingerPress(finger, x, y);
 }

@@ -23,7 +23,6 @@ set(ui_SRCS
 	nodes/UINodeTextInput.cpp
 	nodes/UINodeMapEditorSelectedItem.cpp
 	nodes/UINodeMapFingerControl.cpp
-	nodes/UINodeMapOnScreenCursorControl.cpp
 	nodes/IUINodeMap.cpp
 	nodes/UINodeServerSelector.cpp
 	FontDefinition.cpp

@@ -2,15 +2,14 @@
 
 #include "common/ICommand.h"
 #include "common/NonCopyable.h"
+#include "common/Log.h"
 #include <unordered_map>
 #include <string>
 #include <vector>
 
-class CmdListCommands;
 typedef std::unordered_map<std::string, CommandPtr> CommandList;
 
 class CommandSystem: public NonCopyable {
-	friend class CmdListCommands;
 private:
 	CommandSystem ();
 
@@ -29,7 +28,23 @@ public:
 	ICommand* getCommand (const std::string& command) const;
 	bool commandExists (const std::string& command) const;
 
-	CommandPtr registerCommand (const std::string& id, ICommand* command);
+	CommandPtr registerCommandRaw (const std::string& id, ICommand* cmd);
+
+	template<typename Func>
+	CommandPtr registerCommand (const std::string& id, Func func) {
+		return registerCommandRaw(id, new CommandBindArgs(func));
+	}
+
+	template<typename Func>
+	CommandPtr registerCommandString (const std::string& id, Func func) {
+		return registerCommandRaw(id, new CommandBindString(func));
+	}
+
+	template<typename Func>
+	CommandPtr registerCommandVoid (const std::string& id, Func func) {
+		return registerCommandRaw(id, new CommandBindVoid(func));
+	}
+
 	void registerAlias (const std::string& id, const std::string& command);
 	void removeCommand (const std::string& id);
 

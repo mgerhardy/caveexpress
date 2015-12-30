@@ -3,14 +3,18 @@
 #include "cavepacker/client/ui/windows/UIMainWindow.h"
 #include "cavepacker/client/ui/windows/UIMapWindow.h"
 #include "cavepacker/client/ui/windows/intro/IntroGame.h"
+#include "cavepacker/client/ui/nodes/UINodeMapEditor.h"
+#include "cavepacker/client/ui/nodes/UINodeSpriteSelector.h"
+#include "cavepacker/client/ui/nodes/UINodeEntitySelector.h"
 #include "cavepacker/client/CavePackerClientMap.h"
 #include "cavepacker/server/network/SpawnHandler.h"
 #include "cavepacker/server/network/DisconnectHandler.h"
+#include "cavepacker/server/network/RequestDeadlocksHandler.h"
 #include "cavepacker/server/network/StartMapHandler.h"
 #include "cavepacker/server/network/MovementHandler.h"
 #include "cavepacker/server/network/StopMovementHandler.h"
 #include "cavepacker/server/network/UndoHandler.h"
-#include "cavepacker/server/network/WalkToHandler.h"
+#include "cavepacker/server/network/MoveToHandler.h"
 #include "cavepacker/server/network/ClientInitHandler.h"
 #include "cavepacker/server/network/ErrorHandler.h"
 #include "cavepacker/server/network/StopFingerMovementHandler.h"
@@ -18,7 +22,9 @@
 #include "cavepacker/shared/CavePackerEntityType.h"
 #include "cavepacker/shared/CavePackerAchievement.h"
 #include "cavepacker/shared/network/ProtocolMessageTypes.h"
+#include "cavepacker/shared/network/messages/ShowDeadlocksMessage.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
+#include "cavepacker/shared/constants/Commands.h"
 #include "client/entities/ClientEntityFactory.h"
 #include "client/entities/ClientMapTile.h"
 #include "network/ProtocolHandlerRegistry.h"
@@ -31,7 +37,7 @@
 #include "common/Commands.h"
 #include "common/CommandSystem.h"
 #include "network/INetwork.h"
-#include "cavepacker/shared/network/messages/WalkToMessage.h"
+#include "cavepacker/shared/network/messages/MoveToMessage.h"
 #include "network/messages/LoadMapMessage.h"
 #include "network/messages/FinishedMapMessage.h"
 #include "ui/windows/UICampaignWindow.h"
@@ -44,6 +50,9 @@
 #include "ui/windows/UIGestureWindow.h"
 #include "ui/windows/UICreateServerWindow.h"
 #include "ui/windows/UIMultiplayerWindow.h"
+#include "ui/windows/IUIMapEditorWindow.h"
+#include "ui/windows/UIMapEditorHelpWindow.h"
+#include "ui/windows/IUIMapEditorOptionsWindow.h"
 #include "cavepacker/shared/CavePackerSQLitePersister.h"
 #include "cavepacker/shared/CavePackerMapManager.h"
 #include <SDL.h>
@@ -53,7 +62,9 @@ namespace cavepacker {
 PROTOCOL_CLASS_FACTORY_IMPL(AutoSolveStartedMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(AutoSolveAbortedMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(UndoMessage);
-PROTOCOL_CLASS_FACTORY_IMPL(WalkToMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(MoveToMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(RequestDeadlocksMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(ShowDeadlocksMessage);
 
 namespace {
 Achievement* puzzleAchievements[] = {
@@ -82,12 +93,14 @@ CavePacker::CavePacker ():
 
 CavePacker::~CavePacker ()
 {
+	Commands.removeCommand(CMD_MAP_OPEN_IN_EDITOR);
 	delete _persister;
 	delete _campaignManager;
 	delete _clientMap;
 }
 
-DirectoryEntries CavePacker::listDirectory(const std::string& basedir, const std::string& subdir) {
+DirectoryEntries CavePacker::listDirectory(const std::string& basedir, const std::string& subdir)
+{
 	DirectoryEntries entriesAll;
 	#include "cavepacker-files.h"
 	return entriesAll;
@@ -120,8 +133,11 @@ void CavePacker::update (uint32_t deltaTime)
 		const uint32_t pushes = _map.getPushes();
 		const uint8_t stars = getStars();
 		_campaignManager->getAutoActiveCampaign();
+		const bool tutorial = string::toBool(_map.getSetting(msn::TUTORIAL));
+		if (tutorial)
+			Config.increaseCounter("mapfinishedcounter");
 		if (!_campaignManager->updateMapValues(_map.getName(), moves, pushes, stars, true))
-			Log::error(LOG_SERVER, "Could not save the values for the map");
+			Log::error(LOG_GAMEIMPL, "Could not save the values for the map");
 
 		if (stars == 3) {
 			const int n = SDL_arraysize(fullStarsAchievements);
@@ -133,10 +149,10 @@ void CavePacker::update (uint32_t deltaTime)
 		if (_map.getPlayers().size() == 1) {
 			const Player* player = _map.getPlayers()[0];
 			const std::string& solution = player->getSolution();
-			Log::info(LOG_SERVER, "solution: %s", solution.c_str());
+			Log::info(LOG_GAMEIMPL, "solution: %s", solution.c_str());
 			SDL_SetClipboardText(solution.c_str());
 #if 0
-			FilePtr solutionFilePtr = FS.getFile(_map.getName() + ".sol");
+			FilePtr solutionFilePtr = FS.getFileFromURL("maps://" + _map.getName() + ".sol");
 			if (!solutionFilePtr->exists()) {
 				FS.writeFile(solutionFilePtr->getName(), reinterpret_cast<const uint8_t*>(solution.c_str()), solution.size(), true);
 			}
@@ -152,17 +168,17 @@ void CavePacker::update (uint32_t deltaTime)
 				System.track("autosolve", _map.getName());
 			}
 			if (!_campaignManager->addAdditionMapData(_map.getName(), solution))
-				Log::error(LOG_SERVER, "Could not save the solution for the map");
+				Log::error(LOG_GAMEIMPL, "Could not save the solution for the map");
 		} else {
-			Log::info(LOG_SERVER, "no solution in multiplayer games");
+			Log::info(LOG_GAMEIMPL, "no solution in multiplayer games");
 		}
 
-		System.track("mapstate", String::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), moves, pushes, stars));
+		System.track("mapstate", string::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), moves, pushes, stars));
 		_map.abortAutoSolve();
 		const FinishedMapMessage msg(_map.getName(), moves, pushes, stars);
 		_serviceProvider->getNetwork().sendToAllClients(msg);
 	} else if (!isDone && _map.isFailed()) {
-		Log::debug(LOG_SERVER, "map failed");
+		Log::debug(LOG_GAMEIMPL, "map failed");
 		const uint32_t delay = 1000;
 		_map.restart(delay);
 	}
@@ -179,7 +195,7 @@ uint8_t CavePacker::getStars () const {
 	if (finishPoints == 0)
 		return 0;
 	const float p = finishPoints * 100.0f / static_cast<float>(bestMoves);
-	Log::info(LOG_SERVER, "best pushes: %i, your pushes: %i => pushes to best pushes: %f", bestMoves, finishPoints, p);
+	Log::info(LOG_GAMEIMPL, "best pushes: %i, your pushes: %i => pushes to best pushes: %f", bestMoves, finishPoints, p);
 	if (p < 120.0f)
 		return 3;
 	if (p < 130.0f)
@@ -253,7 +269,7 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 			_persister = new CavePackerSQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
 		}
 		if (!_persister->init()) {
-			Log::error(LOG_SERVER, "Failed to initialize the persister");
+			Log::error(LOG_GAMEIMPL, "Failed to initialize the persister");
 		}
 	}
 	{
@@ -282,12 +298,15 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	rp.registerServerHandler(::protocol::PROTO_STOPMOVEMENT, new StopMovementHandler(_map));
 	rp.registerServerHandler(::protocol::PROTO_ERROR, new ErrorHandler(_map));
 	rp.registerServerHandler(::protocol::PROTO_CLIENTINIT, new ClientInitHandler(_map));
-	rp.registerServerHandler(protocol::PROTO_WALKTO, new WalkToHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_MOVETO, new MoveToHandler(_map));
 	rp.registerServerHandler(protocol::PROTO_UNDO, new UndoHandler(_map));
+	rp.registerServerHandler(protocol::PROTO_REQUESTDEADLOCKS, new RequestDeadlocksHandler(_map));
 
 	ProtocolMessageFactory& f = ProtocolMessageFactory::get();
 	f.registerFactory(protocol::PROTO_AUTOSOLVE, AutoSolveStartedMessage::FACTORY);
-	f.registerFactory(protocol::PROTO_WALKTO, WalkToMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_MOVETO, MoveToMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_SHOWDEADLOCKS, ShowDeadlocksMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_REQUESTDEADLOCKS, RequestDeadlocksMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_AUTOSOLVEABORT, AutoSolveAbortedMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_UNDO, UndoMessage::FACTORY);
 
@@ -299,6 +318,8 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	UI& ui = UI::get();
 	ui.addWindow(new UIMainWindow(frontend));
 	CavePackerClientMap *map = new CavePackerClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
+	// if we reinit the ui - we have to destroy previously allocated memory
+	delete _clientMap;
 	_clientMap = map;
 	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *map));
 	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));
@@ -314,6 +335,28 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UICavePackerMapOptionsWindow(frontend, serviceProvider));
 	ui.addWindow(new UIMultiplayerWindow(frontend, serviceProvider.getMapManager(), serviceProvider));
 	ui.addWindow(new UICreateServerWindow(frontend, serviceProvider.getMapManager()));
+
+	UINodeMapEditor* editor = new UINodeMapEditor(frontend, serviceProvider.getMapManager());
+	UINodeSpriteSelector* spriteSelector = new UINodeSpriteSelector(frontend);
+	UINodeEntitySelector* entitySelector = new UINodeEntitySelector(frontend);
+	IUIMapEditorWindow* mapEditorWindow = new IUIMapEditorWindow(frontend, editor, spriteSelector, entitySelector);
+	mapEditorWindow->init(serviceProvider.getMapManager());
+	ui.addWindow(mapEditorWindow);
+	ui.addWindow(new UIMapEditorHelpWindow(frontend));
+	ui.addWindow(new IUIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));
+
+	CommandPtr cmd = Commands.registerCommandVoid(CMD_MAP_OPEN_IN_EDITOR, [=] () {
+		if (!map->isActive())
+			return;
+
+		const std::string& name = map->getName();
+		Commands.executeCommandLine(CMD_LOADMAP " " + name);
+	});
+	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
+		for (auto entry : _serviceProvider->getMapManager().getMapsByWildcard(input + "*")) {
+			matches.push_back(entry.first);
+		}
+	});
 }
 
 bool CavePacker::visitEntity (IEntity *entity)

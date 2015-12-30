@@ -1,9 +1,7 @@
 #pragma once
 
 #include "common/IConsole.h"
-#ifdef HAVE_CONFIG_H
-#include "../config.h"
-#endif
+#include "common/Config.h"
 
 #include <vector>
 
@@ -29,6 +27,7 @@ protected:
 	int _createWidth, _createHeight; // the dimensions that the window was created with
 	int _scrollPos;
 #endif
+	bool _ncurses;
 
 	int _lastUpdate;
 	typedef std::vector<ConsoleEntry*> Entries;

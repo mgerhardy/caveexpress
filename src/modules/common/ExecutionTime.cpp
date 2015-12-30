@@ -1,5 +1,6 @@
 #include "ExecutionTime.h"
 
+#include <SDL.h>
 #include "common/Log.h"
 
 #ifdef _WIN32
@@ -78,7 +79,7 @@ inline std::string ExecutionTime::format (const char *msg, ...) const
 	char text[size];
 
 	va_start(ap, msg);
-	vsnprintf(text, size, msg, ap);
+	SDL_vsnprintf(text, size, msg, ap);
 	va_end(ap);
 
 	return std::string(text);
@@ -137,6 +138,6 @@ ExecutionTime::~ExecutionTime ()
 	gettime(end);
 	timespec d = diff(_start, end);
 	if (_microDelay == 0L || d.tv_nsec / 1000 > _microDelay)
-		Log::info(LOG_DEBUG, _id + ": " + format("%i,%09i", d.tv_sec, d.tv_nsec) + "s");
+		Log::debug(LOG_COMMON, "%s: %i,%09is", _id.c_str(), (int)d.tv_sec, (int)d.tv_nsec);
 #endif
 }

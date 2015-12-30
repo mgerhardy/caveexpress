@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 
 import android.app.*;
 import android.content.*;
+import android.text.InputType;
 import android.view.*;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
@@ -300,7 +301,7 @@ public class SDLActivity extends Activity {
         if (!SDLActivity.mIsPaused && SDLActivity.mIsSurfaceReady) {
             SDLActivity.mIsPaused = true;
             SDLActivity.nativePause();
-            mSurface.enableSensor(Sensor.TYPE_ACCELEROMETER, false);
+            mSurface.handlePause();
         }
     }
 
@@ -427,19 +428,11 @@ public class SDLActivity extends Activity {
     public static native void onNativeAccel(float x, float y, float z);
     public static native void onNativeSurfaceChanged();
     public static native void onNativeSurfaceDestroyed();
-    public static native void nativeFlipBuffers();
     public static native int nativeAddJoystick(int device_id, String name,
                                                int is_accelerometer, int nbuttons,
                                                int naxes, int nhats, int nballs);
     public static native int nativeRemoveJoystick(int device_id);
     public static native String nativeGetHint(String name);
-
-    /**
-     * This method is called by SDL using JNI.
-     */
-    public static void flipBuffers() {
-        SDLActivity.nativeFlipBuffers();
-    }
 
     /**
      * This method is called by SDL using JNI.
@@ -669,7 +662,7 @@ public class SDLActivity extends Activity {
         }
     }
 
-    // APK extension files support
+    // APK expansion files support
 
     /** com.android.vending.expansion.zipfile.ZipResourceFile object or null. */
     private Object expansionFile;
@@ -678,16 +671,43 @@ public class SDLActivity extends Activity {
     private Method expansionFileMethod;
 
     /**
-     * This method is called by SDL using JNI.
+     * This method was called by SDL using JNI.
+     * @deprecated because of an incorrect name
      */
+    @Deprecated
     public InputStream openAPKExtensionInputStream(String fileName) throws IOException {
+        return openAPKExpansionInputStream(fileName);
+    }
+
+    /**
+     * This method is called by SDL using JNI.
+     * @return an InputStream on success or null if no expansion file was used.
+     * @throws IOException on errors. Message is set for the SDL error message.
+     */
+    public InputStream openAPKExpansionInputStream(String fileName) throws IOException {
         // Get a ZipResourceFile representing a merger of both the main and patch files
         if (expansionFile == null) {
-            Integer mainVersion = Integer.valueOf(nativeGetHint("SDL_ANDROID_APK_EXPANSION_MAIN_FILE_VERSION"));
-            Integer patchVersion = Integer.valueOf(nativeGetHint("SDL_ANDROID_APK_EXPANSION_PATCH_FILE_VERSION"));
+            String mainHint = nativeGetHint("SDL_ANDROID_APK_EXPANSION_MAIN_FILE_VERSION");
+            if (mainHint == null) {
+                return null; // no expansion use if no main version was set
+            }
+            String patchHint = nativeGetHint("SDL_ANDROID_APK_EXPANSION_PATCH_FILE_VERSION");
+            if (patchHint == null) {
+                return null; // no expansion use if no patch version was set
+            }
+
+            Integer mainVersion;
+            Integer patchVersion;
+            try {
+                mainVersion = Integer.valueOf(mainHint);
+                patchVersion = Integer.valueOf(patchHint);
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace();
+                throw new IOException("No valid file versions set for APK expansion files", ex);
+            }
 
             try {
-                // To avoid direct dependency on Google APK extension library that is
+                // To avoid direct dependency on Google APK expansion library that is
                 // not a part of Android SDK we access it using reflection
                 expansionFile = Class.forName("com.android.vending.expansion.zipfile.APKExpansionSupport")
                     .getMethod("getAPKExpansionZipFile", Context.class, int.class, int.class)
@@ -699,6 +719,7 @@ public class SDLActivity extends Activity {
                 ex.printStackTrace();
                 expansionFile = null;
                 expansionFileMethod = null;
+                throw new IOException("Could not access APK expansion support library", ex);
             }
         }
 
@@ -707,12 +728,14 @@ public class SDLActivity extends Activity {
         try {
             fileStream = (InputStream)expansionFileMethod.invoke(expansionFile, fileName);
         } catch (Exception ex) {
+            // calling "getInputStream" failed
             ex.printStackTrace();
-            fileStream = null;
+            throw new IOException("Could not open stream from APK expansion file", ex);
         }
 
         if (fileStream == null) {
-            throw new IOException();
+            // calling "getInputStream" was successful but null was returned
+            throw new IOException("Could not find path in APK expansion file");
         }
 
         return fileStream;
@@ -977,6 +1000,10 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         mHeight = 1.0f;
     }
 
+    public void handlePause() {
+        enableSensor(Sensor.TYPE_ACCELEROMETER, false);
+    }
+
     public void handleResume() {
         setFocusable(true);
         setFocusableInTouchMode(true);
@@ -1135,11 +1162,6 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             SDLActivity.handleResume();
         }
     }
-
-    // unused
-    @Override
-    public void onDraw(Canvas canvas) {}
-
 
     // Key events
     @Override
@@ -1372,6 +1394,7 @@ class DummyEdit extends View implements View.OnKeyListener {
     public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
         ic = new SDLInputConnection(this, true);
 
+        outAttrs.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
         outAttrs.imeOptions = EditorInfo.IME_FLAG_NO_EXTRACT_UI
                 | 33554432 /* API 11: EditorInfo.IME_FLAG_NO_FULLSCREEN */;
 
@@ -1598,7 +1621,6 @@ class SDLGenericMotionListener_API12 implements View.OnGenericMotionListener {
     @Override
     public boolean onGenericMotion(View v, MotionEvent event) {
         float x, y;
-        int mouseButton;
         int action;
 
         switch ( event.getSource() ) {
@@ -1627,6 +1649,7 @@ class SDLGenericMotionListener_API12 implements View.OnGenericMotionListener {
                     default:
                         break;
                 }
+                break;
 
             default:
                 break;

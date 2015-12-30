@@ -3,12 +3,11 @@
 #include <memory>
 #include "common/IMap.h"
 #include "common/TimeManager.h"
-#include "common/ICommand.h"
 #include "network/IProtocolHandler.h"
 #include "cavepacker/server/entities/IEntity.h"
 #include "cavepacker/server/entities/Player.h"
 #include "cavepacker/server/entities/MapTile.h"
-#include "cavepacker/server/map/BoardState.h"
+#include "cavepacker/shared/BoardState.h"
 #include <string>
 #include <vector>
 #include <map>
@@ -50,7 +49,7 @@ protected:
 
 	uint32_t _restartDue;
 	BoardState _state;
-	typedef std::map<int, IEntity*> FieldMap;
+	typedef std::vector<IEntity*> FieldMap;
 	typedef FieldMap::iterator FieldMapIter;
 	typedef FieldMap::const_iterator FieldMapConstIter;
 	FieldMap _field;
@@ -84,8 +83,7 @@ protected:
 	bool _autoSolve;
 	int32_t _nextSolveStep;
 	std::string _solution;
-	int _deadLock;
-	bool _deadLockMessageSent;
+	std::vector<int> _deadLocks;
 
 	bool visitEntity (IEntity *entity) override;
 
@@ -95,7 +93,7 @@ protected:
 	void printMap ();
 	char getSokobanFieldId (const IEntity *entity) const;
 	void handleAutoSolve (uint32_t deltaTime);
-
+	void checkDeadlock ();
 public:
 	Map ();
 	virtual ~Map ();
@@ -112,15 +110,16 @@ public:
 	std::string getMapString() const;
 	inline std::string getStateString() const { return _state.toString(); }
 
+	bool isAt(IEntity* entity, int index) const;
+
 	int getMaxPlayers() const;
 	inline int getMoves() const { return _moves; }
 	inline int getPushes() const { return _pushes; }
 	// return the best known moves from the solution
-	inline int getBestMoves () const { return getSetting("best").toInt(); }
+	inline int getBestMoves () const { return string::toInt(getSetting("best")); }
 	void increaseMoves ();
 	void increasePushes ();
 	void undo (Player* player);
-	void walkTo (Player* player, int col, int row);
 
 	void autoStart ();
 	void loadDelayed (uint32_t delay, const std::string& name);
@@ -131,14 +130,18 @@ public:
 
 	// move into directions l,r,d,u (sokoban standard)
 	bool movePlayer (Player* player, char step);
+	void moveTo (Player* player, int col, int row);
 
 	void reload ();
 	bool isFailed () const;
 	bool isPause () const;
+	const BoardState& getBoardState() const;
 
 	inline bool isFree(int col, int row) {
 		return _state.isFree(col, row);
 	}
+
+	void sendDeadlocks(ClientId clientId);
 
 	// IMap
 	void update (uint32_t deltaTime) override;
@@ -173,6 +176,8 @@ public:
 	MapTile* getPackage (int col, int row) const;
 
 	bool undoPackage (int col, int row, int targetCol, int targetRow);
+	int getPositionIndex (IEntity* entity) const;
+	char getDirectionForMove (int currentIndex, int targetIndex) const;
 
 	void resetCurrentMap ();
 
@@ -187,15 +192,13 @@ public:
 
 	bool removePlayer (ClientId clientId);
 
-	void sendSound (int clientMask, const SoundType& type, const b2Vec2& pos = b2Vec2_zero) const;
-
 	IFrontend *getFrontend () const;
 
 	void init (IFrontend *frontend, ServiceProvider& serviceProvider);
 
 	void shutdown ();
 	int solve ();
-	std::string getSolution() const;
+	static std::string getSolution(const std::string& name);
 private:
 	void solveMap () { solve(); }
 	void finishMap ();
@@ -251,6 +254,11 @@ inline bool Map::isRestartInitialized () const
 inline bool Map::isPause () const
 {
 	return _pause;
+}
+
+inline const BoardState& Map::getBoardState () const
+{
+	return _state;
 }
 
 }

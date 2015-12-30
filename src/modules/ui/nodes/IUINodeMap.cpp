@@ -2,9 +2,8 @@
 #include "common/CommandSystem.h"
 #include "common/Commands.h"
 #include "common/EventHandler.h"
+#include "common/ConfigManager.h"
 #include "common/Direction.h"
-#include "client/commands/CmdConnect.h"
-#include "client/commands/CmdDisconnect.h"
 #include "ui/UI.h"
 #include "ui/BitmapFont.h"
 #include "ui/windows/IUIMapWindow.h"
@@ -21,8 +20,6 @@
 #include "network/ProtocolHandlerRegistry.h"
 #include "service/ServiceProvider.h"
 #include "common/IFrontend.h"
-#include "client/commands/CmdMove.h"
-#include "client/commands/CmdZoom.h"
 #include "campaign/CampaignManager.h"
 #include "client/network/CloseMapHandler.h"
 #include "client/network/HudLoadMapHandler.h"
@@ -38,13 +35,35 @@
 IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
 		UINode(frontend), _map(map), _campaignManager(campaignManager)
 {
-	Commands.registerCommand(CMD_CL_CONNECT, new CmdConnect(&_map, serviceProvider));
-	Commands.registerCommand(CMD_CL_DISCONNECT, new CmdDisconnect(serviceProvider));
-	Commands.registerCommand(CMD_MOVE_UP, new CmdMove(_map, DIRECTION_UP));
-	Commands.registerCommand(CMD_MOVE_DOWN, new CmdMove(_map, DIRECTION_DOWN));
-	Commands.registerCommand(CMD_ZOOM, new CmdZoom(_map));
-	Commands.registerCommand(CMD_MOVE_LEFT, new CmdMove(_map, DIRECTION_LEFT));
-	Commands.registerCommand(CMD_MOVE_RIGHT, new CmdMove(_map, DIRECTION_RIGHT));
+	Commands.registerCommand(CMD_CL_CONNECT, [&] (const ICommand::Args& args) {
+		if (args.size() < 1) {
+			Log::error(LOG_CLIENT, "usage: host <port>");
+			return;
+		}
+		const std::string& host = args.front();
+		const int port = args.size() == 2 ? string::toInt(args[1]) : Config.getConfigVar("port")->getIntValue();
+		INetwork& network = serviceProvider.getNetwork();
+		network.openClient(host.c_str(), port, &_map);
+	});
+	Commands.registerCommand(CMD_CL_DISCONNECT, [&] (const ICommand::Args& args) {
+		INetwork& network = serviceProvider.getNetwork();
+		network.closeClient();
+		if (network.isServer()) {
+			// TODO: the map (server side) is still running
+			network.closeServer();
+		}
+	});
+	Commands.registerCommand(CMD_ZOOM, [&] (const ICommand::Args& args) {
+		if (args.empty())
+			return;
+		const std::string& arg = *args.begin();
+		const float zoom = string::toFloat(arg);
+		_map.setZoom(_map.getZoom() + zoom);
+	});
+	Commands.registerCommand(CMD_MOVE_UP, std::bind(&IUINodeMap::move, this, std::placeholders::_1, DIRECTION_UP));
+	Commands.registerCommand(CMD_MOVE_DOWN, std::bind(&IUINodeMap::move, this, std::placeholders::_1, DIRECTION_DOWN));
+	Commands.registerCommand(CMD_MOVE_LEFT, std::bind(&IUINodeMap::move, this, std::placeholders::_1, DIRECTION_LEFT));
+	Commands.registerCommand(CMD_MOVE_RIGHT, std::bind(&IUINodeMap::move, this, std::placeholders::_1, DIRECTION_RIGHT));
 
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
 	r.registerClientHandler(protocol::PROTO_CHANGEANIMATION, new ChangeAnimationHandler(_map));
@@ -76,6 +95,18 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	const float h = static_cast<float>(_frontend->getHeight());
 	setPos(_map.getX() / w, _map.getY() / h);
 	setSize(_map.getWidth() / w, _map.getHeight() / h);
+}
+
+void IUINodeMap::move(const ICommand::Args& args, Direction dir) {
+	if (!args.empty()) {
+		_map.resetAcceleration(dir);
+		return;
+	}
+
+	if (!_map.isActive() || _map.isPause())
+		return;
+
+	_map.accelerate(dir);
 }
 
 IUINodeMap::~IUINodeMap ()
@@ -125,6 +156,12 @@ void IUINodeMap::update (uint32_t deltaTime)
 	_map.update(deltaTime);
 }
 
+void IUINodeMap::onWindowResize ()
+{
+	UINode::onWindowResize();
+	_map.onWindowResize();
+}
+
 void IUINodeMap::render (int x, int y) const
 {
 	renderFilledRect(getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight(), colorBlack);
@@ -163,4 +200,11 @@ bool IUINodeMap::onPop ()
 void IUINodeMap::onCampaignUnlock (Campaign* oldCampaign, Campaign* newCampaign)
 {
 	_campaignTextForNextPush = newCampaign->getText();
+}
+
+bool IUINodeMap::isActive() const
+{
+	if (UINode::isActive())
+		return true;
+	return _map.isActive();
 }

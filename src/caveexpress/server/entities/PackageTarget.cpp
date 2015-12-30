@@ -2,6 +2,7 @@
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/server/entities/Package.h"
 #include "caveexpress/shared/constants/Density.h"
+#include <SDL_assert.h>
 
 namespace caveexpress {
 
@@ -83,7 +84,7 @@ void PackageTarget::clearJoint (b2Joint *joint)
 
 void PackageTarget::updateJoint (uint32_t deltaTime)
 {
-	assert(_joint != nullptr);
+	SDL_assert(_joint != nullptr);
 	const float currentLength = _joint->GetLength();
 	if (currentLength < 0.05f) {
 		removeJoint();
@@ -108,7 +109,7 @@ void PackageTarget::removeJoint ()
 
 void PackageTarget::applyJoint (Package *package)
 {
-	assert(_joint == nullptr);
+	SDL_assert(_joint == nullptr);
 	const b2Vec2 shift(0.0f, -0.1f);
 	b2DistanceJointDef def;
 	def.Initialize(getBodies()[0], package->getBodies()[0], getBodies()[0]->GetWorldPoint(shift), package->getBodies()[0]->GetPosition());

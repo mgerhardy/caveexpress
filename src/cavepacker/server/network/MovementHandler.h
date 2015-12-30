@@ -20,7 +20,7 @@ public:
 		_map.abortAutoSolve();
 		Player* player = _map.getPlayer(clientId);
 		if (player == nullptr) {
-			Log::error(LOG_SERVER, "movement for player with clientId %i failed", (int)clientId);
+			Log::error(LOG_GAMEIMPL, "movement for player with clientId %i failed", (int)clientId);
 			return;
 		}
 		const MovementMessage* msg = static_cast<const MovementMessage*>(&message);
@@ -38,6 +38,7 @@ public:
 			_map.movePlayer(player, MOVE_RIGHT);
 			break;
 		}
+		player->setTargetIndex(NO_TARGET_INDEX);
 	}
 };
 

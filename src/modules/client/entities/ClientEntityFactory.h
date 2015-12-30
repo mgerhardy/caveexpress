@@ -66,12 +66,11 @@ private:
 		}
 
 		for (EntityType::TypeMapConstIter eIter = EntityType::begin(); eIter != EntityType::end(); ++eIter) {
-			String typeName = eIter->second->name;
-			typeName = typeName.replaceAll("-", "");
+			std::string typeName = eIter->second->name;
+			typeName = string::replaceAll(typeName, "-", "");
 			for (Animation::TypeMapConstIter aIter = Animation::begin(); aIter != Animation::end(); ++aIter) {
-				String animationName = aIter->second->name;
-				animationName = animationName.replaceAll("-", "");
-				const std::string id = typeName.str() + "." + animationName.str();
+				const std::string animationName = string::replaceAll(aIter->second->name, "-", "");
+				const std::string id = typeName + "." + animationName;
 				const std::string sound = lua.getString(id, "");
 				if (sound.empty())
 					continue;

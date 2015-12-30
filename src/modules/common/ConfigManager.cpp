@@ -10,7 +10,6 @@
 #include <SDL.h>
 #include <SDL_platform.h>
 #include <map>
-#include <cassert>
 
 namespace {
 #define CMD_LISTVARS "listvars"
@@ -40,7 +39,7 @@ void ConfigManager::setBindingsSpace (BindingSpace bindingSpace)
 void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc, char **argv)
 {
 	_persister = new ConfigPersisterSQL();
-	Log::info(LOG_CONFIG, "init configmanager");
+	Log::info(LOG_COMMON, "init configmanager");
 
 	_persister->init();
 
@@ -48,20 +47,20 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 
 	LUA lua;
 
-	Log::info(LOG_CONFIG, "load config lua file");
+	Log::info(LOG_COMMON, "load config lua file");
 	const bool success = lua.load("config.lua");
 	if (!success) {
-		Log::error(LOG_CONFIG, "could not load config");
+		Log::error(LOG_COMMON, "could not load config");
 	}
 
 	if (success) {
-		Log::info(LOG_CONFIG, "load config values");
+		Log::info(LOG_COMMON, "load config values");
 		getKeyValueMap(lua, _configVarMap, "settings");
-		Log::info(LOG_CONFIG, "load keybindings");
+		Log::info(LOG_COMMON, "load keybindings");
 		getBindingMap(lua, _keybindings, KEY_CONFIG_KEYBINDINGS, KEYBOARD);
-		Log::info(LOG_CONFIG, "load controller bindings");
+		Log::info(LOG_COMMON, "load controller bindings");
 		getBindingMap(lua, _controllerBindings, KEY_CONFIG_CONTROLLERBINDINGS, CONTROLLER);
-		Log::info(LOG_CONFIG, "load joystick bindings");
+		Log::info(LOG_COMMON, "load joystick bindings");
 		getBindingMap(lua, _joystickBindings, KEY_CONFIG_JOYSTICKBINDINGS, JOYSTICK);
 	}
 	_language = getConfigValue(_configVarMap, "language", System.getLanguage());
@@ -92,12 +91,17 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	_grabMouse = getConfigValue(_configVarMap, "grabmouse", "true");
 	_soundEngine = getConfigValue(_configVarMap, "soundengine", "sdl");
 	_particles = getConfigValue(_configVarMap, "particles", "0");
+	_renderToTexture = getConfigValue(_configVarMap, "rendertotexture", "1");
+	getConfigValue(_configVarMap, "red", "8");
+	getConfigValue(_configVarMap, "green", "8");
+	getConfigValue(_configVarMap, "blue", "8");
 	_serverName = getConfigVar("servername", System.getCurrentUser());
 	_name = getConfigVar("name", System.getCurrentUser());
 	_amountOfFruitsForANewLife = getConfigValue(_configVarMap, "amountoffruitsforanewlife", "4");
 	_debugui = getConfigVar("debugui", "false");
-	getConfigVar("debugentity", "false", true);
+	_debugEntity = getConfigVar("debugentity", "false", true);
 	getConfigVar("debugui", "false", true);
+	getConfigVar("alreadyrated", "false", true);
 
 	for (KeyValueMap::iterator i = _configVarMap.begin(); i != _configVarMap.end(); ++i) {
 		getConfigVar(i->first, i->second, true);
@@ -108,20 +112,28 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	for (std::vector<std::string>::const_iterator i = vars.begin(); i != vars.end(); ++i) {
 		getConfigVar(*i);
 	}
-	for (ConfigVarsMap::iterator i = _configVars.begin(); i != _configVars.end(); ++i) {
-		Log::info(LOG_CONFIG, "'%s' with value '%s'", i->first.c_str(), i->second->getValue().c_str());
+	for (auto entry : _configVars) {
+		Log::info(LOG_COMMON, "'%s' with value '%s'", entry.first.c_str(), entry.second->getValue().c_str());
 	}
 
 	memset(&_debugRendererData, 0, sizeof(_debugRendererData));
 
-	Log::info(LOG_CONFIG, "mouse grab enabled: %s", _grabMouse->getValue().c_str());
-	Log::info(LOG_CONFIG, "  joystick enabled: %s", _joystick->getValue().c_str());
-	Log::info(LOG_CONFIG, "     sound enabled: %s", _soundEnabled->getValue().c_str());
-	Log::info(LOG_CONFIG, "     debug enabled: %s", _debug->getValue().c_str());
+	Log::info(LOG_COMMON, "mouse grab enabled: %s", _grabMouse->getValue().c_str());
+	Log::info(LOG_COMMON, "  joystick enabled: %s", _joystick->getValue().c_str());
+	Log::info(LOG_COMMON, "     sound enabled: %s", _soundEnabled->getValue().c_str());
+	Log::info(LOG_COMMON, "     debug enabled: %s", _debug->getValue().c_str());
 
-	CommandSystem::get().registerCommand("loglevel", bindFunction(ConfigManager, setLogLevel));
-	CommandSystem::get().registerCommand(CMD_SETVAR, bindFunction(ConfigManager, setConfig));
-	CommandSystem::get().registerCommand(CMD_LISTVARS, bindFunction(ConfigManager, listConfigVariables));
+	CommandSystem::get().registerCommand("loglevel", bindFunction(ConfigManager::setLogLevel));
+	CommandPtr cmd = CommandSystem::get().registerCommand(CMD_SETVAR, bindFunction(ConfigManager::setConfig));
+	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
+		for (auto entry : _configVars) {
+			if (!string::startsWith(entry.first, input))
+				continue;
+			matches.push_back(entry.first);
+		}
+	});;
+
+	CommandSystem::get().registerCommand(CMD_LISTVARS, bindFunction(ConfigManager::listConfigVariables));
 
 	for (int i = 0; i < argc; i++) {
 		if (argv[i][0] != '-')
@@ -146,6 +158,8 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 			i += 1;
 		}
 	}
+	increaseCounter("launchcount");
+	_persister->save(_configVars);
 }
 
 ConfigManager::~ConfigManager ()
@@ -260,9 +274,9 @@ void ConfigManager::getBindingMap (LUA& lua, std::map<int, std::string>* map, co
 
 void ConfigManager::autoComplete (const std::string& input, std::vector<std::string>& matches)
 {
-	const String tmp(input + "*");
+	const std::string tmp(input + "*");
 	for (ConfigVarsMapConstIter i = _configVars.begin(); i != _configVars.end(); ++i) {
-		if (!tmp.matches(i->first))
+		if (!string::matches(tmp, i->first))
 			continue;
 		matches.push_back(i->first);
 	}
@@ -271,17 +285,17 @@ void ConfigManager::autoComplete (const std::string& input, std::vector<std::str
 void ConfigManager::listConfigVariables (const ICommand::Args& args)
 {
 	if (!args.empty()) {
-		const String tmp(args[0] + "*");
+		const std::string tmp(args[0] + "*");
 		for (ConfigVarsMapConstIter i = _configVars.begin(); i != _configVars.end(); ++i) {
-			if (!tmp.matches(i->first))
+			if (!string::matches(tmp, i->first))
 				continue;
 			const ConfigVarPtr& c = i->second;
-			Log::info(LOG_CONFIG, "%s %s", c->getName().c_str(), c->getValue().c_str());
+			Log::info(LOG_COMMON, "%s %s", c->getName().c_str(), c->getValue().c_str());
 		}
 	} else {
 		for (ConfigVarsMapConstIter i = _configVars.begin(); i != _configVars.end(); ++i) {
 			const ConfigVarPtr& c = i->second;
-			Log::info(LOG_CONFIG, "%s %s", c->getName().c_str(), c->getValue().c_str());
+			Log::info(LOG_COMMON, "%s %s", c->getName().c_str(), c->getValue().c_str());
 		}
 	}
 }
@@ -295,24 +309,24 @@ void ConfigManager::setLogLevel (const ICommand::Args& args)
 		if (args[0] == LogLevels[i].logLevelStr) {
 			SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, LogLevels[i].sdlLevel);
 			_logLevel = LogLevels[i].logLevel;
-			Log::info(LOG_CONFIG, "Changing log level to %s", args[0].c_str());
+			Log::info(LOG_COMMON, "Changing log level to %s", args[0].c_str());
 			return;
 		}
 	}
-	Log::error(LOG_CONFIG, "Failed to change the level to %s", args[0].c_str());
+	Log::error(LOG_COMMON, "Failed to change the level to %s", args[0].c_str());
 }
 
 void ConfigManager::setConfig (const ICommand::Args& args)
 {
 	if (args.size() != 2) {
-		Log::error(LOG_CONFIG, "parameters: the config key");
+		Log::error(LOG_COMMON, "parameters: the config key");
 		return;
 	}
 
-	Log::info(LOG_CONFIG, "set %s to %s", args[0].c_str(), args[1].c_str());
+	Log::info(LOG_COMMON, "set %s to %s", args[0].c_str(), args[1].c_str());
 
-	ConfigVarPtr p = getConfigVar(args[0].str());
-	p->setValue(args[1].str());
+	ConfigVarPtr p = getConfigVar(args[0]);
+	p->setValue(args[1]);
 }
 
 int ConfigManager::mapModifier (const std::string& name)
@@ -340,8 +354,10 @@ int ConfigManager::mapKey (const std::string& name)
 
 void ConfigManager::shutdown ()
 {
-	Log::info(LOG_CONFIG, "shutdown config manager");
+	Log::info(LOG_COMMON, "shutdown config manager");
 	_persister->save(_configVars);
+	_configVars.clear();
+	_bindingSpaceListener = nullptr;
 }
 
 ConfigVarPtr ConfigManager::getConfigVar (const std::string& name, const std::string& value, bool create, unsigned int flags)
@@ -375,9 +391,18 @@ ConfigVarPtr ConfigManager::getConfigValue (KeyValueMap &map, const std::string&
 		val = defaultValue;
 
 	if (!savedValue.empty())
-		Log::info(LOG_CONFIG, "use stored value '%s' for key '%s'", val.c_str(), name.c_str());
+		Log::info(LOG_COMMON, "use stored value '%s' for key '%s'", val.c_str(), name.c_str());
 	else
-		Log::info(LOG_CONFIG, "use value '%s' for key '%s'", val.c_str(), name.c_str());
+		Log::info(LOG_COMMON, "use value '%s' for key '%s'", val.c_str(), name.c_str());
 	const ConfigVarPtr& p = getConfigVar(name, val, true, flags);
 	return p;
+}
+
+int ConfigManager::increaseCounter (const std::string& counterId)
+{
+	const ConfigVarPtr& var = getConfigVar(counterId, "0", true);
+	int current = var->getIntValue();
+	++current;
+	var->setValue(string::toString(current));
+	return current;
 }

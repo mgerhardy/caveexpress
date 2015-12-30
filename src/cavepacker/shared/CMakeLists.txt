@@ -4,6 +4,15 @@ set(cavepacker-shared_SRCS
 	CavePackerSpriteType.cpp
 	CavePackerAchievement.cpp
 	CavePackerEntityType.cpp
+	SolutionUtil.cpp
+	Pathfinding.cpp
+	BoardState.cpp
+	deadlock/DeadlockDetector.cpp
+	deadlock/SimpleDeadlockDetector.cpp
+	deadlock/FrozenDeadlockDetector.cpp
+	deadlock/CorralDetector.cpp
+	deadlock/ClosedDiagonalDetector.cpp
+	deadlock/BipartiteDetector.cpp
 )
 add_library(cavepacker-shared ${cavepacker-shared_SRCS})
 set_target_properties(cavepacker-shared PROPERTIES FOLDER cavepacker-shared)

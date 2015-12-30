@@ -71,6 +71,12 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 		add(googlePlay);
 	}
 
+	if (System.supportsUserContent()) {
+		UINodeMainButton *editor = new UINodeMainButton(_frontend, tr("Editor"));
+		editor->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_EDITOR)));
+		panel->add(editor);
+	}
+
 	UINodeMainButton *twitter = new UINodeMainButton(_frontend, tr("Twitter"));
 	twitter->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "https://twitter.com/MartinGerhardy")));
 	panel->add(twitter);
@@ -107,7 +113,8 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 
 	add(panel);
 
-	UINodeLabel *versionLabel = new UINodeLabel(_frontend, Singleton<Application>::getInstance().getVersion());
+	Application& app = Singleton<Application>::getInstance();
+	UINodeLabel *versionLabel = new UINodeLabel(_frontend, app.getPackageName() + " " + app.getVersion());
 	versionLabel->setAlignment(NODE_ALIGN_BOTTOM|NODE_ALIGN_RIGHT);
 	versionLabel->setColor(colorWhite);
 	versionLabel->setPadding(getScreenPadding());

@@ -79,10 +79,12 @@ protected:
 	// how many different start positions are available in this particular map
 	int _startPositions;
 
-	void renderLayer (int x, int y, Layer layer) const;
+	virtual void renderLayer (int x, int y, Layer layer) const;
 	void renderFadeOutOverlay () const;
 	virtual void couldNotFindEntity (const std::string& prefix, uint16_t id) const;
 	void disableScreenRumble ();
+
+	virtual bool updateCameraPosition ();
 
 	virtual bool wantLerp () { return _restartDue == 0; }
 
@@ -101,7 +103,8 @@ public:
 
 	virtual void resetCurrentMap ();
 	void close ();
-	void setZoom (const float zoom);
+	virtual void scroll (int relX, int relY);
+	virtual void setZoom (const float zoom);
 	inline float getZoom () const { return _zoom; }
 	void disconnect ();
 	virtual void init (uint16_t playerID);
@@ -158,6 +161,8 @@ public:
 	// converts the given x and y screen coordinates into map coordinates that take the scale, shift and so on into account.
 	void getMapPixelForScreenPixel (int x, int y, int *outX, int *outY);
 	void getMapGridForScreenPixel (int x, int y, int *outX, int *outY);
+
+	virtual void onWindowResize () override {}
 
 	// IMap
 	virtual void update (uint32_t deltaTime) override;

@@ -54,7 +54,7 @@ TEST_F(UITest, testSimpleFocus) {
 	ASSERT_TRUE(node1->hasFocus());
 	ASSERT_TRUE(window.hasFocus());
 
-	ASSERT_TRUE(window.nextFocus());
+	ASSERT_TRUE(window.nextFocus(false));
 	ASSERT_FALSE(node1->hasFocus());
 	ASSERT_TRUE(node2->hasFocus());
 	ASSERT_TRUE(window.hasFocus());
@@ -84,7 +84,7 @@ TEST_F(UITest, testPanelFocus) {
 	ASSERT_TRUE(node1->hasFocus());
 	ASSERT_TRUE(window.hasFocus());
 
-	ASSERT_TRUE(window.nextFocus());
+	ASSERT_TRUE(window.nextFocus(false));
 	ASSERT_FALSE(node1->hasFocus());
 	ASSERT_TRUE(node2->hasFocus());
 	ASSERT_TRUE(window.hasFocus());
@@ -121,7 +121,7 @@ TEST_F(UITest, testPanelWithOthersFocus) {
 	ASSERT_FALSE(panel->hasFocus());
 	ASSERT_TRUE(window.hasFocus());
 
-	ASSERT_TRUE(window.nextFocus());
+	ASSERT_TRUE(window.nextFocus(false));
 	ASSERT_TRUE(panel->hasFocus());
 	ASSERT_FALSE(noPanelNode1->hasFocus());
 	ASSERT_FALSE(noPanelNode2->hasFocus());

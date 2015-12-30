@@ -44,23 +44,30 @@ void IMapManager::init ()
 {
 	loadMaps();
 
-	Commands.registerCommand(CMD_LIST_MAPS, bindFunction(IMapManager, listMaps));
+	CommandPtr cmd = Commands.registerCommand(CMD_LIST_MAPS, bindFunction(IMapManager::listMaps));
+	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
+		for (auto entry : getMapsByWildcard(input + "*")) {
+			matches.push_back(entry.first);
+		}
+	});
 }
 
-void IMapManager::listMaps ()
+void IMapManager::listMaps (const ICommand::Args& arguments)
 {
-	Log::info(LOG_SERVER, "Map list:");
+	const std::string argument = arguments.empty() ? "" : arguments.front();
+	Log::info(LOG_COMMON, "Map list:");
 	for (MapsConstIter i = _maps.begin(); i != _maps.end(); ++i) {
-		Log::info(LOG_SERVER, " * %s", i->first.c_str());
+		if (argument.empty() || string::contains(argument, i->first))
+			Log::info(LOG_COMMON, " * %s", i->first.c_str());
 	}
 }
 
 IMapManager::Maps IMapManager::getMapsByWildcard (const std::string& wildcard) const
 {
 	Maps maps;
-	const String tmp(wildcard);
+	const std::string tmp(wildcard);
 	for (MapsConstIter i = _maps.begin(); i != _maps.end(); ++i) {
-		if (!tmp.matches(i->first))
+		if (!string::matches(tmp, i->first))
 			continue;
 		maps[i->first] = i->second;
 	}
@@ -69,6 +76,9 @@ IMapManager::Maps IMapManager::getMapsByWildcard (const std::string& wildcard) c
 
 void IMapManager::loadMaps ()
 {
+	for (MapsIter i = _maps.begin(); i != _maps.end(); ++i) {
+		delete i->second;
+	}
 	_maps.clear();
 	const std::string& mapsPath = FS.getMapsDir();
 	const DirectoryEntries& maps = FS.listDirectory(mapsPath);
@@ -79,12 +89,12 @@ void IMapManager::loadMaps ()
 		const int baseLength = i->size() - 4;
 		const std::string& id = i->substr(0, baseLength);
 		if (_maps.find(id) != _maps.end()) {
-			Log::error(LOG_MAP, "map with id %s already exists", id.c_str());
+			Log::error(LOG_COMMON, "map with id %s already exists", id.c_str());
 			continue;
 		}
 		_maps[id] = new MapData(id, getName(filename, id), getStartPositions(filename));
 	}
 
-	Log::info(LOG_MAP, "loaded %i maps", static_cast<int>(_maps.size()));
+	Log::info(LOG_COMMON, "loaded %i maps", static_cast<int>(_maps.size()));
 }
 

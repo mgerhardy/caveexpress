@@ -31,10 +31,6 @@ Files: src/caveexpress/server/entities/Buoyancy.h
 Copyright: 2006-2011, Erin Catto http://www.box2d.org
 License: zlib
 
-Files: src/libs/micropather/*
-Copyright: 2000-2009, Lee Thomason (www.grinninglizard.com)
-License: zlib
-
 Please also add the full license text of the GPL-3 and CC-BY-SA-4.0 license to
 the repository and the release tarball.
 

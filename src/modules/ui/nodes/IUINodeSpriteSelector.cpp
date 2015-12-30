@@ -3,7 +3,7 @@
 #include "common/SpriteType.h"
 
 IUINodeSpriteSelector::IUINodeSpriteSelector (IFrontend *frontend, int cols, int rows) :
-		UINodeSelector<SpriteDefPtr>(frontend, cols, rows, 40 / static_cast<float>(frontend->getWidth()), 40 / static_cast<float>(frontend->getHeight())), _theme(&ThemeType::NONE)
+		Super(frontend, cols, rows, 40 / static_cast<float>(frontend->getWidth()), 40 / static_cast<float>(frontend->getHeight())), _theme(&ThemeType::NONE)
 {
 	setBorder(true);
 }
@@ -25,7 +25,7 @@ void IUINodeSpriteSelector::renderSelectorEntry (int index, const SpriteDefPtr& 
 
 void IUINodeSpriteSelector::update (uint32_t deltaTime)
 {
-	UINodeSelector<SpriteDefPtr>::update(deltaTime);
+	Super::update(deltaTime);
 	for (SelectorEntryIter i = _entries.begin(); i != _entries.end(); ++i) {
 		const SpritePtr& sprite = UI::get().loadSprite((*i)->id);
 		sprite->update(deltaTime);

@@ -1,6 +1,7 @@
 #include "TestShared.h"
+#include "common/Config.h"
 
-#if NETWORKING == 1
+#ifndef NONETWORK
 
 #include "common/IEventObserver.h"
 #include "network/Network.h"
@@ -9,14 +10,14 @@
 
 class NetworkTestListener: public IClientCallback {
 public:
-	void onData (ByteStream& data){
-		Log::debug(LOG_NET, String::format("recv: %i", data.getSize()));
+	void onData (ByteStream& data) override {
+		Log::debug(LOG_NETWORK, "recv: %i", (int)data.getSize());
 	}
 };
 
 class NetworkTestServerListener: public IServerCallback {
 public:
-	void onConnection (ClientId clientId){
+	void onConnection (ClientId clientId) override {
 		// debugVA("client connected: %i", clientId);
 	}
 };
@@ -30,38 +31,49 @@ const char *LOCALHOST = "localhost";
 const int PORT = 4567;
 }
 
-static NetworkTestListener listener;
-static NetworkTestServerListener serverListener;
-
 TEST(NetworkTest, testOpenServer)
 {
+	NetworkTestServerListener serverListener;
 	Network network;
+	network.init();
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	network.closeServer();
+	network.shutdown();
 }
 
 TEST(NetworkTest, testOpenClient)
 {
+	NetworkTestListener listener;
+	NetworkTestServerListener serverListener;
 	Network network;
+	network.init();
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << network.getError();
 	network.closeClient();
 	network.closeServer();
+	network.shutdown();
 }
 
 TEST(NetworkTest, testUpdate)
 {
+	NetworkTestListener listener;
+	NetworkTestServerListener serverListener;
 	Network network;
+	network.init();
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << network.getError();
 	network.update(0);
 	network.closeClient();
 	network.closeServer();
+	network.shutdown();
 }
 
 TEST(NetworkTest, testSendToClient)
 {
+	NetworkTestListener listener;
+	NetworkTestServerListener serverListener;
 	Network network;
+	network.init();
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << network.getError();
 	const DisconnectMessage msg;
@@ -70,15 +82,18 @@ TEST(NetworkTest, testSendToClient)
 	network.update(0);
 	network.closeClient();
 	network.closeServer();
+	network.shutdown();
 }
 
 TEST(NetworkTest, testSendStringList)
 {
+	NetworkTestServerListener serverListener;
 	std::vector<std::string> names;
 	names.push_back("Test1");
 	names.push_back("Test2");
 	PlayerListMessage msgNames(names);
 	Network network;
+	network.init();
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	class NetworkNameListTestListener: public IClientCallback {
 	public:
@@ -88,6 +103,8 @@ TEST(NetworkTest, testSendStringList)
 		int count;
 		void onData(ByteStream &data) override
 		{
+			const int size = data.readShort();
+			ASSERT_TRUE(size > 0);
 			ASSERT_EQ(protocol::PROTO_PLAYERLIST, data.readByte());
 			PlayerListMessage msg(data);
 			ASSERT_EQ("Test1", msg.getList()[0]);
@@ -98,29 +115,35 @@ TEST(NetworkTest, testSendStringList)
 	NetworkNameListTestListener nameListener;
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &nameListener)) << network.getError();
 	network.update(0);
-	network.sendToAllClients(msgNames);
+	ASSERT_EQ(1, network.sendToAllClients(msgNames));
 	network.update(5000);
-	network.sendToAllClients(msgNames);
+	ASSERT_EQ(1, network.sendToAllClients(msgNames));
 	network.update(5000);
-	network.sendToAllClients(msgNames);
+	ASSERT_EQ(1, network.sendToAllClients(msgNames));
 	network.update(5000);
 	ASSERT_EQ(3, nameListener.count);
 	network.closeClient();
 	network.closeServer();
+	network.shutdown();
 }
 
 TEST(NetworkTest, testSendToServer)
 {
+	NetworkTestListener listener;
+	NetworkTestServerListener serverListener;
 	Network network;
+	network.init();
 	ASSERT_TRUE(network.openServer(PORT, &serverListener)) << network.getError();
 	ASSERT_TRUE(network.openClient(LOCALHOST, PORT, &listener)) << network.getError();
 	network.update(0);
 	const DisconnectMessage msg;
-	ASSERT_EQ(1, network.sendToServer(msg));
+	const int expectedSize = sizeof(uint16_t) + sizeof(protocolId);
+	ASSERT_EQ(expectedSize, network.sendToServer(msg));
 	ASSERT_EQ(1, network.sendToClients(0, msg));
 	network.update(0);
 	network.closeClient();
 	network.closeServer();
+	network.shutdown();
 }
 
 #endif

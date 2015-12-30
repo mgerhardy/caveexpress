@@ -15,7 +15,8 @@ void FrameBuffer::destroy ()
 {
 	if (_depth)
 		glDeleteRenderbuffers(1, &_depthRenderBuffer);
-	glDeleteTextures(_textures.size(), &_textures[0]);
+	if (!_textures.empty())
+		glDeleteTextures(_textures.size(), &_textures[0]);
 	if (_framebuffer != 0)
 		glDeleteFramebuffers(1, &_framebuffer);
 	_textures.clear();
@@ -30,7 +31,7 @@ void FrameBuffer::bind ()
 		glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
 		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		if (status != GL_FRAMEBUFFER_COMPLETE) {
-			Log::error(LOG_CLIENT, "Failed to bind the framebuffer");
+			Log::error(LOG_GFX, "Failed to bind the framebuffer");
 		} else {
 			_bound = true;
 		}
@@ -41,7 +42,7 @@ void FrameBuffer::bind ()
 	glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
-		Log::error(LOG_CLIENT, "Failed to bind the framebuffer");
+		Log::error(LOG_GFX, "Failed to bind the framebuffer");
 	} else {
 		_bound = true;
 	}
@@ -59,7 +60,7 @@ void FrameBuffer::bind (int x, int y, int w, int h)
 	drawBuffer();
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
-		Log::error(LOG_CLIENT, "Failed to bind the framebuffer for rendering");
+		Log::error(LOG_GFX, "Failed to bind the framebuffer for rendering");
 	} else {
 		_bound = true;
 	}

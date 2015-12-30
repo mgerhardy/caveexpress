@@ -28,7 +28,7 @@ void ClientConsole::init (IFrontend *frontend)
 {
 	_frontend = frontend;
 	Vector4Set(colorBlack, _fontColor);
-	Commands.registerCommand(CMD_CL_TOGGLECONSOLE, bindFunction(ClientConsole, toggleConsole));
+	Commands.registerCommandVoid(CMD_CL_TOGGLECONSOLE, bindFunctionVoid(ClientConsole::toggleConsole));
 }
 
 void ClientConsole::render ()
@@ -40,7 +40,7 @@ void ClientConsole::render ()
 	if ((_frame % 10) == 0)
 		_cursorBlink ^= true;
 
-	const Color color = { 1.0, 1.0, 1.0, 0.6 };
+	const Color color = { 1.0f, 1.0f, 1.0f, 0.6f };
 	_frontend->renderFilledRect(0, 0, 0, 0, color);
 
 	const BitmapFontPtr& font = UI::get().getFont(_font);

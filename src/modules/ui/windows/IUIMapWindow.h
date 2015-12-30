@@ -42,10 +42,8 @@ protected:
 	virtual void initInputHudNodes();
 	virtual void showCursor (bool show);
 public:
-	IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, ClientMap& map, IUINodeMap* nodeMap);
+	IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, IUINodeMap* nodeMap);
 	virtual ~IUIMapWindow() {}
-
-	bool isGameActive () const;
 
 	virtual void hideHud();
 	virtual void showHud();

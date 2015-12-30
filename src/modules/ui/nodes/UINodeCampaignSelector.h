@@ -7,10 +7,11 @@ class CampaignManager;
 
 class UINodeCampaignSelector: public UINodeBackgroundSelector<CampaignPtr>, public ICampaignVisitor {
 private:
+	typedef UINodeBackgroundSelector<CampaignPtr> Super;
 	CampaignManager &_campaignManager;
 
 	// ICampaignVisitor
-	void visitCampaign (CampaignPtr& campaign);
+	void visitCampaign (CampaignPtr& campaign) override;
 public:
 	UINodeCampaignSelector (IFrontend *frontend, CampaignManager &campaignManager, int cols, int rows);
 	virtual ~UINodeCampaignSelector ();

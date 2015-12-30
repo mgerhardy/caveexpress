@@ -4,7 +4,6 @@
 
 // forward decl
 class CampaignManager;
-class UINodePanel;
 class UINodeSprite;
 class UINodeMainButton;
 class ServiceProvider;

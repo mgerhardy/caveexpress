@@ -5,12 +5,15 @@
 #include "common/EventHandler.h"
 #include "common/CommandSystem.h"
 #include "common/System.h"
+#include "common/Application.h"
 #include "common/ConfigManager.h"
 #include "ui/BitmapFont.h"
+#include "ui/windows/listener/RatePopupCallback.h"
 
 UIWindow::UIWindow (const std::string& id, IFrontend *frontend, WindowFlags flags) :
 		UINode(frontend, id), _flags(flags), _musicFile("music-1"), _music(-1), _pushedTime(0), _inactiveAfterPush(0), _playClickSound(true)
 {
+	setSize(1.0, 1.0);
 }
 
 UIWindow::~UIWindow ()
@@ -64,6 +67,16 @@ void UIWindow::onActive ()
 	}
 	System.track("activewindow", getId());
 	_pushedTime = _time;
+
+	if (getId() == UI_WINDOW_MAIN && !System.getRateURL("").empty()) {
+		const bool alreadyRated = Config.getConfigVar("alreadyrated")->getBoolValue();
+		const int launchCount = Config.getConfigVar("launchcount")->getIntValue();
+		if (!alreadyRated && (launchCount % 3) == 0) {
+			Log::error(LOG_UI, "please rate the app popup (launches: %i)", launchCount);
+			UIPopupCallbackPtr c(new RatePopupCallback(_frontend));
+			UI::get().popup(tr("Please rate the app"), UIPOPUP_OK | UIPOPUP_CANCEL | UIPOPUP_LATER | UIPOPUP_NOCLOSE, c);
+		}
+	}
 }
 
 bool UIWindow::onPush ()
@@ -119,12 +132,12 @@ bool UIWindow::onKeyPress (int32_t key, int16_t modifier)
 	return UINode::onKeyPress(key, modifier);
 }
 
-bool UIWindow::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
+bool UIWindow::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion)
 {
 	if (!isActiveAfterPush())
 		return false;
 
-	if (UINode::onFingerRelease(finger, x, y)) {
+	if (UINode::onFingerRelease(finger, x, y, motion)) {
 		if (_playClickSound)
 			SoundControl.play("click");
 		return true;

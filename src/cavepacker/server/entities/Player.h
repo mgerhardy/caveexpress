@@ -10,6 +10,10 @@
 
 namespace cavepacker {
 
+namespace {
+const int NO_TARGET_INDEX = -1;
+}
+
 // forward decl
 class Map;
 
@@ -18,10 +22,15 @@ private:
 	ClientId _clientId;
 	std::string _name;
 	std::string _solutionSave;
+	int _targetIndex;
+	uint32_t _lastStep;
 public:
 	Player (Map& map, ClientId clientId);
 	virtual ~Player ();
 
+	void update (uint32_t deltaTime) override;
+
+	void setTargetIndex(int targetIndex = NO_TARGET_INDEX);
 	ClientId getClientId () const;
 	const std::string& getName () const;
 	void setName (const std::string& name);

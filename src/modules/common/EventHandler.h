@@ -56,5 +56,10 @@ public:
 	void fingerMotion (int64_t finger, float x, float y, float dx, float dy);
 	void gestureRecord (int64_t gestureId);
 	void gesture (int64_t gestureId, float error, int32_t numFingers);
+	/**
+	 * @param[in] theta the amount that the fingers rotated during this motion.
+	 * @param[in] dist the amount that the fingers pinched during this motion.
+	 * @param[in] numFingers the number of fingers used in the gesture.
+	 */
 	void multiGesture (float theta, float dist, int32_t numFingers);
 };

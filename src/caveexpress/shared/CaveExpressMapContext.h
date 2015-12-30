@@ -27,7 +27,7 @@ protected:
 
 		SpriteDefPtr spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(caveTile);
 		if (!spriteDefPtr) {
-			Log::info(LOG_SERVER, "could not add cave: %s", caveTile.c_str());
+			Log::info(LOG_GAMEIMPL, "could not add cave: %s", caveTile.c_str());
 			ctx->_error = true;
 			return 0;
 		}
@@ -54,15 +54,19 @@ public:
 		return _caveDefinitions;
 	}
 
+	inline void setCaveTileDefinitions (const std::vector<CaveTileDefinition>& caveDefinitions) {
+		_caveDefinitions = caveDefinitions;
+	}
+
 	void addCave(const SpriteDefPtr& spriteDef, gridCoord x, gridCoord y,
 			const EntityType& entityType, int delay) {
 		const CaveTileDefinition def(x, y, spriteDef, entityType, delay);
 		_caveDefinitions.push_back(def);
 	}
 
-	virtual void saveTiles(const FilePtr& file) const override {
-		LUAMapContext::saveTiles(file);
-		if (! _caveDefinitions.empty()) {
+	virtual bool saveTiles(const FilePtr& file) const override {
+		const bool added = LUAMapContext::saveTiles(file);
+		if (added && !_caveDefinitions.empty()) {
 			file->appendString("\n");
 		}
 		for (const CaveTileDefinition& i : _caveDefinitions) {
@@ -72,12 +76,23 @@ public:
 			file->appendString(string::toString(i.x).c_str());
 			file->appendString(", ");
 			file->appendString(string::toString(i.y).c_str());
-			file->appendString(", \"");
-			file->appendString(i.type->name.c_str());
-			file->appendString("\", ");
-			file->appendString(string::toString(i.delay).c_str());
+			if (!i.type->isNone()) {
+				file->appendString(", \"");
+				file->appendString(i.type->name.c_str());
+				file->appendString("\"");
+			}
+			if (i.delay > -1) {
+				if (i.type->isNone()) {
+					file->appendString(", \"");
+					file->appendString(i.type->name.c_str());
+					file->appendString("\"");
+				}
+				file->appendString(", ");
+				file->appendString(string::toString(i.delay).c_str());
+			}
 			file->appendString(")\n");
 		}
+		return added || !_caveDefinitions.empty();
 	}
 };
 

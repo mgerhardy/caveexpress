@@ -2,7 +2,7 @@
 
 #include "common/IMapContext.h"
 #include <string>
-#include "SokobanTiles.h"
+#include "cavepacker/shared/SokobanTiles.h"
 
 namespace cavepacker {
 
@@ -24,7 +24,7 @@ public:
 	// IMapContext
 	void onMapLoaded () override;
 	bool load (bool skipErrors) override;
-	bool save () const override { return false; }
+	bool save () const override;
 };
 
 }

@@ -11,6 +11,7 @@ MapFailedReason FAILED_NPC_MAMMUT;
 MapFailedReason FAILED_NPC_FISH;
 MapFailedReason FAILED_HITPOINTS;
 MapFailedReason FAILED_NO_MORE_PLAYERS;
+MapFailedReason FAILED_ALL_NPCS_DIED;
 MapFailedReason FAILED_SIDESCROLL;
 MapFailedReason FAILED_MAX;
 }

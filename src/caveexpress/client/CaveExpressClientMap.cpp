@@ -55,7 +55,7 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	if (getWaterHeight() <= 0.000001f)
 		return;
 	const SDL_Rect& rect = getWaterRect(x, y);
-	Log::trace(LOG_CLIENT, "rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
+	Log::trace(LOG_GAMEIMPL, "rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
 									_x, _y, _width, _height, x, y, rect.w, rect.h, rect.y, rect.y + rect.h, _waterHeight, _scale);
 	_frontend->renderWaterPlane(rect.x, rect.y, rect.w, rect.h, color, waterLineColor);
 	if (Config.isDebug()) {
@@ -76,7 +76,7 @@ bool CaveExpressClientMap::drop ()
 		return false;
 
 	// If the player has collected something, this will inform the server that he now wants to drop it
-	const DropMessage msg;
+	static const DropMessage msg;
 	INetwork& network = _serviceProvider.getNetwork();
 	network.sendToServer(msg);
 
@@ -87,15 +87,15 @@ void CaveExpressClientMap::setCaveNumber (uint16_t id, uint8_t number)
 {
 	if (number == 0)
 		return;
-	Log::debug(LOG_CLIENT, "set cave for %i to %i", id, number);
+	Log::debug(LOG_GAMEIMPL, "set cave for %i to %i", id, number);
 	ClientEntityPtr e = getEntity(id);
 	if (!e) {
-		Log::error(LOG_CLIENT, "no cave entity with the id %i found", id);
+		Log::error(LOG_GAMEIMPL, "no cave entity with the id %i found", id);
 		return;
 	}
 	const char first = number / 10 + '0';
 	const char second = number % 10 + '0';
-	const std::string caveSprite = String::format("cave-sign-%c%c", first, second);
+	const std::string caveSprite = string::format("cave-sign-%c%c", first, second);
 	e->addOverlay(UI::get().loadSprite(caveSprite));
 }
 
@@ -103,7 +103,7 @@ void CaveExpressClientMap::setCaveState (uint16_t id, bool state)
 {
 	ClientEntityPtr e = getEntity(id);
 	if (!e) {
-		Log::error(LOG_CLIENT, "no entity with the id %i found in setCaveState", id);
+		Log::error(LOG_GAMEIMPL, "no entity with the id %i found in setCaveState", id);
 		return;
 	}
 
@@ -123,7 +123,7 @@ void CaveExpressClientMap::couldNotFindEntity (const std::string& prefix, uint16
 		const ClientEntityPtr e = i->second;
 		if (EntityTypes::isMapTile(e->getType()))
 			continue;
-		Log::info(LOG_CLIENT, "id: %i, type: %s", e->getID(), e->getType().name.c_str());
+		Log::info(LOG_GAMEIMPL, "id: %i, type: %s", e->getID(), e->getType().name.c_str());
 	}
 }
 

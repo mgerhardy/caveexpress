@@ -21,6 +21,7 @@ struct ServerEntry {
 // this node search for servers and presents then in a list to connect to them
 class UINodeServerSelector: public UINodeSelector<ServerEntry> {
 private:
+	typedef UINodeSelector<ServerEntry> Super;
 	inline int getNameX () const;
 	inline int getMapX () const;
 	inline int getPlayersX () const;
@@ -36,7 +37,7 @@ public:
 
 	// UINodeSelector
 	bool onSelect (const ServerEntry& data) override;
-	void render (int x, int y) const;
+	void render (int x, int y) const override;
 	void renderSelectorEntry (int index, const ServerEntry& data, int x, int y, int colWidth, int rowHeight, float alpha) const override;
 
 	// UINode

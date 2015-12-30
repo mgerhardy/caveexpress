@@ -1,0 +1,5 @@
+project(solutiontool)
+SET(${PROJECT_NAME}_SRC SolutionTool.cpp)
+add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
+cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS cavepacker-shared common)

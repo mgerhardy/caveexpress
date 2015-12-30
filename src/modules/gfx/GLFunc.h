@@ -26,10 +26,6 @@ extern "C" {
 #define GLAPI extern
 #endif
 
-#ifndef GL_OFFSET
-#define GL_OFFSET(i) ((void*)(i))
-#endif
-
 /* -------------------------------- DATA TYPES ------------------------------- */
 
 #include <stddef.h>
@@ -299,6 +295,62 @@ typedef void (APIENTRY *GLDEBUGPROCARB)(GLenum source,GLenum type,GLuint id,GLen
 #define GL_RGBA12 0x805A
 #define GL_RGBA16 0x805B
 
+/* Matrix Mode */
+#define GL_MATRIX_MODE				0x0BA0
+#define GL_MODELVIEW				0x1700
+#define GL_PROJECTION				0x1701
+#define GL_TEXTURE				0x1702
+
+/* Alpha testing */
+#define GL_ALPHA_TEST				0x0BC0
+#define GL_ALPHA_TEST_REF			0x0BC2
+#define GL_ALPHA_TEST_FUNC			0x0BC1
+
+/* Texture mapping */
+#define GL_TEXTURE_ENV				0x2300
+#define GL_TEXTURE_ENV_MODE			0x2200
+#define GL_TEXTURE_1D				0x0DE0
+#define GL_TEXTURE_2D				0x0DE1
+#define GL_TEXTURE_WRAP_S			0x2802
+#define GL_TEXTURE_WRAP_T			0x2803
+#define GL_TEXTURE_MAG_FILTER			0x2800
+#define GL_TEXTURE_MIN_FILTER			0x2801
+#define GL_TEXTURE_ENV_COLOR			0x2201
+#define GL_TEXTURE_GEN_S			0x0C60
+#define GL_TEXTURE_GEN_T			0x0C61
+#define GL_TEXTURE_GEN_R			0x0C62
+#define GL_TEXTURE_GEN_Q			0x0C63
+#define GL_TEXTURE_GEN_MODE			0x2500
+#define GL_TEXTURE_BORDER_COLOR			0x1004
+#define GL_TEXTURE_WIDTH			0x1000
+#define GL_TEXTURE_HEIGHT			0x1001
+#define GL_TEXTURE_BORDER			0x1005
+#define GL_TEXTURE_COMPONENTS			0x1003
+#define GL_TEXTURE_RED_SIZE			0x805C
+#define GL_TEXTURE_GREEN_SIZE			0x805D
+#define GL_TEXTURE_BLUE_SIZE			0x805E
+#define GL_TEXTURE_ALPHA_SIZE			0x805F
+#define GL_TEXTURE_LUMINANCE_SIZE		0x8060
+#define GL_TEXTURE_INTENSITY_SIZE		0x8061
+#define GL_NEAREST_MIPMAP_NEAREST		0x2700
+#define GL_NEAREST_MIPMAP_LINEAR		0x2702
+#define GL_LINEAR_MIPMAP_NEAREST		0x2701
+#define GL_LINEAR_MIPMAP_LINEAR			0x2703
+#define GL_OBJECT_LINEAR			0x2401
+#define GL_OBJECT_PLANE				0x2501
+#define GL_EYE_LINEAR				0x2400
+#define GL_EYE_PLANE				0x2502
+#define GL_SPHERE_MAP				0x2402
+#define GL_DECAL				0x2101
+#define GL_MODULATE				0x2100
+#define GL_NEAREST				0x2600
+#define GL_REPEAT				0x2901
+#define GL_CLAMP				0x2900
+#define GL_S					0x2000
+#define GL_T					0x2001
+#define GL_R					0x2002
+#define GL_Q					0x2003
+
 /* GL_VERSION_1_2 */
 
 #define GL_UNSIGNED_BYTE_3_3_2 0x8032
@@ -337,6 +389,48 @@ typedef void (APIENTRY *GLDEBUGPROCARB)(GLenum source,GLenum type,GLuint id,GLen
 #define GL_SMOOTH_LINE_WIDTH_RANGE 0x0B22
 #define GL_SMOOTH_LINE_WIDTH_GRANULARITY 0x0B23
 #define GL_ALIASED_LINE_WIDTH_RANGE 0x846E
+/* Vertex Arrays */
+#define GL_VERTEX_ARRAY				0x8074
+#define GL_NORMAL_ARRAY				0x8075
+#define GL_COLOR_ARRAY				0x8076
+#define GL_INDEX_ARRAY				0x8077
+#define GL_TEXTURE_COORD_ARRAY			0x8078
+#define GL_EDGE_FLAG_ARRAY			0x8079
+
+#define GL_VERTEX_ARRAY_SIZE			0x807A
+#define GL_VERTEX_ARRAY_TYPE			0x807B
+#define GL_VERTEX_ARRAY_STRIDE			0x807C
+#define GL_NORMAL_ARRAY_TYPE			0x807E
+#define GL_NORMAL_ARRAY_STRIDE			0x807F
+#define GL_COLOR_ARRAY_SIZE			0x8081
+#define GL_COLOR_ARRAY_TYPE			0x8082
+#define GL_COLOR_ARRAY_STRIDE			0x8083
+#define GL_INDEX_ARRAY_TYPE			0x8085
+#define GL_INDEX_ARRAY_STRIDE			0x8086
+#define GL_TEXTURE_COORD_ARRAY_SIZE		0x8088
+#define GL_TEXTURE_COORD_ARRAY_TYPE		0x8089
+#define GL_TEXTURE_COORD_ARRAY_STRIDE		0x808A
+#define GL_EDGE_FLAG_ARRAY_STRIDE		0x808C
+#define GL_VERTEX_ARRAY_POINTER			0x808E
+#define GL_NORMAL_ARRAY_POINTER			0x808F
+#define GL_COLOR_ARRAY_POINTER			0x8090
+#define GL_INDEX_ARRAY_POINTER			0x8091
+#define GL_TEXTURE_COORD_ARRAY_POINTER		0x8092
+#define GL_EDGE_FLAG_ARRAY_POINTER		0x8093
+#define GL_V2F					0x2A20
+#define GL_V3F					0x2A21
+#define GL_C4UB_V2F				0x2A22
+#define GL_C4UB_V3F				0x2A23
+#define GL_C3F_V3F				0x2A24
+#define GL_N3F_V3F				0x2A25
+#define GL_C4F_N3F_V3F				0x2A26
+#define GL_T2F_V3F				0x2A27
+#define GL_T4F_V4F				0x2A28
+#define GL_T2F_C4UB_V3F				0x2A29
+#define GL_T2F_C3F_V3F				0x2A2A
+#define GL_T2F_N3F_V3F				0x2A2B
+#define GL_T2F_C4F_N3F_V3F			0x2A2C
+#define GL_T4F_C4F_N3F_V4F			0x2A2D
 
 /* GL_VERSION_1_3 */
 
@@ -958,7 +1052,9 @@ typedef void (APIENTRY *GLDEBUGPROCARB)(GLenum source,GLenum type,GLuint id,GLen
 
 
 /* GL_VERSION_1_0 */
-
+GLAPI void APIENTRY glMatrixMode (GLenum mode);
+GLAPI void APIENTRY glLoadMatrixf (const GLfloat *m);
+GLAPI void APIENTRY glViewport (GLint x, GLint y, GLsizei width, GLsizei height);
 GLAPI void APIENTRY glCullFace (GLenum mode);
 GLAPI void APIENTRY glFrontFace (GLenum mode);
 GLAPI void APIENTRY glHint (GLenum target, GLenum mode);
@@ -1006,7 +1102,6 @@ GLAPI void APIENTRY glGetTexLevelParameterfv (GLenum target, GLint level, GLenum
 GLAPI void APIENTRY glGetTexLevelParameteriv (GLenum target, GLint level, GLenum pname, GLint * params);
 GLAPI GLboolean APIENTRY glIsEnabled (GLenum cap);
 GLAPI void APIENTRY glDepthRange (GLdouble near, GLdouble far);
-GLAPI void APIENTRY glViewport (GLint x, GLint y, GLsizei width, GLsizei height);
 
 
 /* GL_VERSION_1_1 */
@@ -1024,7 +1119,19 @@ GLAPI void APIENTRY glBindTexture (GLenum target, GLuint texture);
 GLAPI void APIENTRY glDeleteTextures (GLsizei n, const GLuint * textures);
 GLAPI void APIENTRY glGenTextures (GLsizei n, GLuint * textures);
 GLAPI GLboolean APIENTRY glIsTexture (GLuint texture);
-
+GLAPI void APIENTRY glEnableClientState (GLenum cap);
+GLAPI void APIENTRY glDisableClientState (GLenum cap);
+GLAPI void APIENTRY glVertexPointer (GLint size, GLenum type, GLsizei stride, const GLvoid *ptr);
+GLAPI void APIENTRY glNormalPointer (GLenum type, GLsizei stride, const GLvoid *ptr);
+GLAPI void APIENTRY glColorPointer (GLint size, GLenum type, GLsizei stride, const GLvoid *ptr);
+GLAPI void APIENTRY glIndexPointer (GLenum type, GLsizei stride, const GLvoid *ptr);
+GLAPI void APIENTRY glTexCoordPointer (GLint size, GLenum type, GLsizei stride, const GLvoid *ptr);
+GLAPI void APIENTRY glEdgeFlagPointer (GLsizei stride, const GLvoid *ptr);
+GLAPI void APIENTRY glGetPointerv (GLenum pname, GLvoid **params);
+GLAPI void APIENTRY glArrayElement (GLint i);
+GLAPI void APIENTRY glInterleavedArrays (GLenum format, GLsizei stride, const GLvoid *pointer);
+GLAPI void APIENTRY glTexEnvi (GLenum target, GLenum pname, GLint param);
+GLAPI void APIENTRY glAlphaFunc (GLenum func, GLclampf ref);
 
 /* GL_VERSION_1_2 */
 
@@ -1032,17 +1139,100 @@ typedef void (APIENTRY PFNGLDRAWRANGEELEMENTS_PROC (GLenum mode, GLuint start, G
 typedef void (APIENTRY PFNGLTEXIMAGE3D_PROC (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const void * pixels));
 typedef void (APIENTRY PFNGLTEXSUBIMAGE3D_PROC (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void * pixels));
 typedef void (APIENTRY PFNGLCOPYTEXSUBIMAGE3D_PROC (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height));
+typedef void (APIENTRY PFNGLDELETETEXTURES_PROC (GLsizei n, const GLuint * textures));
+typedef void (APIENTRY PFNGLGENTEXTURES_PROC (GLsizei n, GLuint * textures));
+typedef void (APIENTRY PFNGLBINDTEXTURE_PROC (GLenum target, GLuint texture));
+typedef void (APIENTRY PFNGLTEXPARAMETERI_PROC (GLenum target, GLenum pname, GLint param));
+typedef void (APIENTRY PFNGLTEXIMAGE2D_PROC (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void * pixels));
+typedef void (APIENTRY PFNGLGETINTEGERV_PROC (GLenum pname, GLint * data));
+typedef void (APIENTRY PFNGLPIXELSTOREI_PROC (GLenum pname, GLint param));
+typedef void (APIENTRY PFNGLREADPIXELS_PROC (GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void * pixels));
+typedef void (APIENTRY PFNGLVIEWPORT_PROC (GLint x, GLint y, GLsizei width, GLsizei height));
+typedef void (APIENTRY PFNGLCLEARCOLOR_PROC (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha));
+typedef void (APIENTRY PFNGLCLEAR_PROC (GLbitfield mask));
+typedef void (APIENTRY PFNGLSCISSOR_PROC (GLint x, GLint y, GLsizei width, GLsizei height));
+typedef void (APIENTRY PFNGLDRAWARRAYS_PROC (GLenum mode, GLint first, GLsizei count));
+typedef GLenum (APIENTRY PFNGLGETERROR_PROC (void));
+typedef void (APIENTRY PFNGLDEPTHMASK_PROC (GLboolean flag));
+typedef void (APIENTRY PFNGLBLENDFUNC_PROC (GLenum sfactor, GLenum dfactor));
+typedef void (APIENTRY PFNGLHINT_PROC (GLenum target, GLenum mode));
+typedef void (APIENTRY PFNGLENABLE_PROC (GLenum target));
+typedef void (APIENTRY PFNGLDISABLE_PROC (GLenum target));
+typedef void (APIENTRY PFNGLENABLECLIENTSTATE_PROC (GLenum cap));
+typedef void (APIENTRY PFNGLTEXENVI_PROC (GLenum target, GLenum pname, GLint param));
+typedef void (APIENTRY PFNGLPOLYGONMODE_PROC (GLenum face, GLenum mode));
+typedef void (APIENTRY PFNGLALPHAFUNC_PROC (GLenum func, GLclampf ref));
+typedef void (APIENTRY PFNGLVERTEXPOINTER_PROC (GLint size, GLenum type, GLsizei stride, const GLvoid *ptr));
+typedef void (APIENTRY PFNGLCOLORPOINTER_PROC (GLint size, GLenum type, GLsizei stride, const GLvoid *ptr));
+typedef void (APIENTRY PFNGLTEXCOORDPOINTER_PROC (GLint size, GLenum type, GLsizei stride, const GLvoid *ptr));
+typedef void (APIENTRY PFNGLMATRIXMODE_PROC (GLenum mode));
+typedef void (APIENTRY PFNGLLOADMATRIXF_PROC (const GLfloat *m));
 
 GLAPI PFNGLDRAWRANGEELEMENTS_PROC* glpfDrawRangeElements;
 GLAPI PFNGLTEXIMAGE3D_PROC* glpfTexImage3D;
 GLAPI PFNGLTEXSUBIMAGE3D_PROC* glpfTexSubImage3D;
 GLAPI PFNGLCOPYTEXSUBIMAGE3D_PROC* glpfCopyTexSubImage3D;
+GLAPI PFNGLDELETETEXTURES_PROC* glpfDeleteTextures;
+GLAPI PFNGLGENTEXTURES_PROC* glpfGenTextures;
+GLAPI PFNGLBINDTEXTURE_PROC* glpfBindTexture;
+GLAPI PFNGLTEXPARAMETERI_PROC* glpfTexParameteri;
+GLAPI PFNGLTEXIMAGE2D_PROC* glpfTexImage2D;
+GLAPI PFNGLGETINTEGERV_PROC* glpfGetIntegerv;
+GLAPI PFNGLPIXELSTOREI_PROC* glpfPixelStorei;
+GLAPI PFNGLREADPIXELS_PROC* glpfReadPixels;
+GLAPI PFNGLVIEWPORT_PROC* glpfViewport;
+GLAPI PFNGLCLEARCOLOR_PROC* glpfClearColor;
+GLAPI PFNGLCLEAR_PROC* glpfClear;
+GLAPI PFNGLSCISSOR_PROC* glpfScissor;
+GLAPI PFNGLDRAWARRAYS_PROC* glpfDrawArrays;
+GLAPI PFNGLDEPTHMASK_PROC* glpfDepthMask;
+GLAPI PFNGLBLENDFUNC_PROC* glpfBlendFunc;
+GLAPI PFNGLHINT_PROC* glpfHint;
+GLAPI PFNGLGETERROR_PROC* glpfGetError;
+GLAPI PFNGLENABLE_PROC* glpfEnable;
+GLAPI PFNGLDISABLE_PROC* glpfDisable;
+GLAPI PFNGLENABLECLIENTSTATE_PROC* glpfEnableClientState;
+GLAPI PFNGLTEXENVI_PROC* glpfTexEnvi;
+GLAPI PFNGLPOLYGONMODE_PROC* glpfPolygonMode;
+GLAPI PFNGLALPHAFUNC_PROC* glpfAlphaFunc;
+GLAPI PFNGLVERTEXPOINTER_PROC* glpfVertexPointer;
+GLAPI PFNGLCOLORPOINTER_PROC* glpfColorPointer;
+GLAPI PFNGLTEXCOORDPOINTER_PROC* glpfTexCoordPointer;
+GLAPI PFNGLMATRIXMODE_PROC* glpfMatrixMode;
+GLAPI PFNGLLOADMATRIXF_PROC* glpfLoadMatrixf;
 
 #define glDrawRangeElements glpfDrawRangeElements
 #define glTexImage3D glpfTexImage3D
 #define glTexSubImage3D glpfTexSubImage3D
 #define glCopyTexSubImage3D glpfCopyTexSubImage3D
-
+#define glDeleteTextures glpfDeleteTextures
+#define glGenTextures glpfGenTextures
+#define glBindTexture glpfBindTexture
+#define glTexParameteri glpfTexParameteri
+#define glTexImage2D glpfTexImage2D
+#define glGetIntegerv glpfGetIntegerv
+#define glPixelStorei glpfPixelStorei
+#define glReadPixels glpfReadPixels
+#define glViewport glpfViewport
+#define glClearColor glpfClearColor
+#define glClear glpfClear
+#define glScissor glpfScissor
+#define glDrawArrays glpfDrawArrays
+#define glDepthMask glpfDepthMask
+#define glBlendFunc glpfBlendFunc
+#define glHint glpfHint
+#define glGetError glpfGetError
+#define glEnable glpfEnable
+#define glDisable glpfDisable
+#define glEnableClientState glpfEnableClientState
+#define glTexEnvi glpfTexEnvi
+#define glPolygonMode glpfPolygonMode
+#define glAlphaFunc glpfAlphaFunc
+#define glVertexPointer glpfVertexPointer
+#define glColorPointer glpfColorPointer
+#define glTexCoordPointer glpfTexCoordPointer
+#define glMatrixMode glpfMatrixMode
+#define glLoadMatrixf glpfLoadMatrixf
 
 /* GL_VERSION_1_3 */
 

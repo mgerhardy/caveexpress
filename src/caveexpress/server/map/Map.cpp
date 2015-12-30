@@ -45,12 +45,12 @@
 #include "common/vec2.h"
 #include "common/ExecutionTime.h"
 #include "common/Commands.h"
-#include <Box2D/Common/b2Settings.h>
+#include <Common/b2Settings.h>
 #include <SDL.h>
 #include <SDL_stdinc.h>
 #include <algorithm>
 #include <functional>
-#include <cassert>
+#include <SDL_assert.h>
 
 typedef std::shared_ptr<b2Shape> ShapePtr;
 typedef std::multimap<std::string, ShapePtr> ShapeMap;
@@ -75,21 +75,22 @@ Achievement* packageAchievements[] = {
 Map::Map () :
 		IMap(), _world(nullptr), _frontend(nullptr), _serviceProvider(nullptr), _theme(&ThemeTypes::ROCK)
 {
-	Commands.registerCommand(CMD_MAP_PAUSE, bindFunction(Map, triggerPause));
-	Commands.registerCommand(CMD_MAP_RESTART, bindFunction(Map, triggerRestart));
-	Commands.registerCommand(CMD_MAP_DEBUG, bindFunction(Map, triggerDebug));
-	Commands.registerCommand(CMD_START, bindFunction(Map, startMap));
-	Commands.registerCommand(CMD_KILL, bindFunction(Map, killPlayers));
-	Commands.registerCommand(CMD_FINISHMAP, bindFunction(Map, finishMap));
+	Commands.registerCommandVoid(CMD_MAP_PAUSE, bindFunctionVoid(Map::triggerPause));
+	Commands.registerCommandVoid(CMD_MAP_RESTART, bindFunctionVoid(Map::triggerRestart));
+	Commands.registerCommandVoid(CMD_MAP_DEBUG, bindFunctionVoid(Map::triggerDebug));
+	Commands.registerCommandVoid(CMD_START, bindFunctionVoid(Map::startMap));
+	Commands.registerCommandVoid(CMD_KILL, bindFunctionVoid(Map::killPlayers));
+	Commands.registerCommandVoid(CMD_FINISHMAP, bindFunctionVoid(Map::finishMap));
 
 	resetCurrentMap();
 }
 
 Map::~Map ()
 {
-	Commands.removeCommand(CMD_MAP_DEBUG);
 	Commands.removeCommand(CMD_MAP_PAUSE);
 	Commands.removeCommand(CMD_MAP_RESTART);
+	Commands.removeCommand(CMD_MAP_DEBUG);
+	Commands.removeCommand(CMD_START);
 	Commands.removeCommand(CMD_KILL);
 	Commands.removeCommand(CMD_FINISHMAP);
 	clearPhysics();
@@ -147,15 +148,13 @@ void Map::updateVisMask ()
 {
 	_allPlayers = 0;
 
-	for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
-		const Player* e = *i;
-		const ClientId id = e->getClientId();
+	for (const Player* player : _players) {
+		const ClientId id = player->getClientId();
 		_allPlayers |= ClientIdToClientMask(id);
 	}
 
-	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
-		const Player* e = *i;
-		const ClientId id = e->getClientId();
+	for (const Player* player : _playersWaitingForSpawn) {
+		const ClientId id = player->getClientId();
 		_allPlayers |= ClientIdToClientMask(id);
 	}
 }
@@ -175,7 +174,7 @@ void Map::triggerRestart ()
 	if (!_serviceProvider->getNetwork().isServer())
 		return;
 
-	Log::info(LOG_MAP, "trigger restart");
+	Log::info(LOG_GAMEIMPL, "trigger restart");
 	Commands.executeCommandLine(CMD_MAP_START " " + getName());
 }
 
@@ -183,7 +182,7 @@ void Map::triggerDebug ()
 {
 	const bool newstate = Config.getDebugRenderer().activate ^ true;
 	Config.setDebugRenderer(newstate, render, this);
-	Log::info(LOG_MAP, "debug rendering: %s", newstate ? "true" : "false");
+	Log::info(LOG_GAMEIMPL, "debug rendering: %s", newstate ? "true" : "false");
 }
 
 void Map::triggerPause ()
@@ -192,14 +191,14 @@ void Map::triggerPause ()
 		return;
 	_pause ^= true;
 	GameEvent.notifyPause(_pause);
-	Log::info(LOG_MAP, "pause: %s", _pause ? "true" : "false");
+	Log::info(LOG_GAMEIMPL, "pause: %s", _pause ? "true" : "false");
 }
 
 void Map::render (void *userdata)
 {
 	Map* map = static_cast<Map*>(userdata);
 	if (map->_world) {
-		DebugRenderer renderer(map->_pointCount, map->_points, map->_traceCount, map->_traces,  map->_waterIntersectionPoints, Config.getMapDebugRect());
+		DebugRenderer renderer(map->_pointCount, map->_points, map->_traceCount, map->_traces,  map->_waterIntersectionPoints, Config.getMapDebugRect(), map->_frontend);
 		map->_world->SetDebugDraw(&renderer);
 		map->_world->DrawDebugData();
 		map->_world->SetDebugDraw(nullptr);
@@ -220,7 +219,7 @@ inline bool Map::isActive () const
 void Map::countTransferedNPC()
 {
 	_transferedNPCs++;
-	Log::info(LOG_SERVER, "collected %i of %i npcs", _transferedNPCs, _transferedNPCLimit);
+	Log::info(LOG_GAMEIMPL, "collected %i of %i npcs", _transferedNPCs, _transferedNPCLimit);
 }
 
 void Map::countTransferedPackage ()
@@ -230,7 +229,7 @@ void Map::countTransferedPackage ()
 		packageAchievements[i]->unlock();
 	}
 	_transferedPackages++;
-	Log::info(LOG_SERVER, "collected %i of %i packages", _transferedPackages, _transferedPackageLimit);
+	Log::info(LOG_GAMEIMPL, "collected %i of %i packages", _transferedPackages, _transferedPackageLimit);
 	const UpdatePackageCountMessage msg(getPackageCount());
 	_serviceProvider->getNetwork().sendToAllClients(msg);
 }
@@ -248,35 +247,35 @@ int Map::getPackageCount () const
 void Map::clearPhysics ()
 {
 	if (!_name.empty())
-		Log::info(LOG_MAP, "* clear physics");
+		Log::info(LOG_GAMEIMPL, "* clear physics");
 
 	if (_world)
 		_world->SetContactListener(nullptr);
 	{ // delete the box2d stuff
-		for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
-			(*i)->prepareRemoval();
+		for (IEntity* entity : _entities) {
+			entity->prepareRemoval();
 		}
-		for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
-			(*i)->prepareRemoval();
+		for (Player* player : _players) {
+			player->prepareRemoval();
 		}
-		for (EntityListIter i = _entitiesToAdd.begin(); i != _entitiesToAdd.end(); ++i) {
-			(*i)->prepareRemoval();
+		for (IEntity* entity : _entitiesToAdd) {
+			entity->prepareRemoval();
 		}
 		if (!_name.empty())
-			Log::info(LOG_MAP, "* removed box2d references");
+			Log::info(LOG_GAMEIMPL, "* removed box2d references");
 	}
 
 	{ // now free the allocated memory
-		for (BorderList::iterator i = _borders.begin(); i != _borders.end(); ++i) {
-			delete *i;
+		for (Border* border : _borders) {
+			delete border;
 		}
 		_borders.clear();
 
-		for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
-			delete *i;
+		for (IEntity* entity : _entities) {
+			delete entity;
 		}
-		for (EntityListIter i = _entitiesToAdd.begin(); i != _entitiesToAdd.end(); ++i) {
-			delete *i;
+		for (IEntity* entity : _entitiesToAdd) {
+			delete entity;
 		}
 		_entitiesToAdd.clear();
 		_entities.clear();
@@ -285,13 +284,13 @@ void Map::clearPhysics ()
 		_entities.reserve(400);
 		_friendlyNPCs.clear();
 
-		for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
-			delete *i;
+		for (Player* player : _players) {
+			delete player;
 		}
 		_players.clear();
 		_players.reserve(MAX_CLIENTS);
 		if (!_name.empty())
-			Log::info(LOG_MAP, "* removed allocated memory");
+			Log::info(LOG_GAMEIMPL, "* removed allocated memory");
 	}
 
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
@@ -303,7 +302,7 @@ void Map::clearPhysics ()
 	if (_world)
 		delete _world;
 	if (!_name.empty())
-		Log::info(LOG_MAP, "* removed box2d world");
+		Log::info(LOG_GAMEIMPL, "* removed box2d world");
 	_world = nullptr;
 	_water = nullptr;
 	_flyingNPC = nullptr;
@@ -312,31 +311,40 @@ void Map::clearPhysics ()
 
 Player* Map::getPlayer (ClientId clientId)
 {
-	for (PlayerListIter i = _players.begin(); i != _players.end(); ++i) {
-		if ((*i)->getClientId() == clientId) {
-			return *i;
+	for (Player* player : _players) {
+		if (player->getClientId() == clientId) {
+			return player;
 		}
 	}
 
-	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
-		if ((*i)->getClientId() == clientId) {
-			return *i;
+	for (Player* player : _playersWaitingForSpawn) {
+		if (player->getClientId() == clientId) {
+			return player;
 		}
 	}
 
-	Log::error(LOG_MAP, "no player found for the client id %i", clientId);
+	Log::error(LOG_GAMEIMPL, "no player found for the client id %i", clientId);
 	return nullptr;
 }
 
 bool Map::isFailed () const
 {
 	if (getWaterHeight() <= 0) {
-		Log::debug(LOG_MAP, "failed because water hit the top");
+		Log::debug(LOG_GAMEIMPL, "failed because water hit the top");
 		return true;
 	}
 
 	if (_players.empty())
 		return true;
+
+	if (_friendlyNPCLimit > 0) {
+		// if we support friendly npcs in this map, and all of them are (or were) already spawned,
+		// but none is available anymore, this map is lost
+		if (_friendlyNPCCount >= _friendlyNPCLimit) {
+			if (_friendlyNPCs.empty())
+				return true;
+		}
+	}
 
 	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
 		const Player* player = *i;
@@ -345,7 +353,7 @@ bool Map::isFailed () const
 		}
 	}
 
-	Log::debug(LOG_MAP, "failed because all %i players crashed", (int)_players.size());
+	Log::debug(LOG_GAMEIMPL, "failed because all %i players crashed", (int)_players.size());
 	return true;
 }
 
@@ -372,6 +380,10 @@ const MapFailedReason& Map::getFailReason (const Player* player) const
 		return MapFailedReasons::FAILED_WATER_HEIGHT;
 	}
 
+	if (_transferedNPCLimit > 0 && _friendlyNPCLimit <= 0) {
+		return MapFailedReasons::FAILED_ALL_NPCS_DIED;
+	}
+
 	return MapFailedReasons::FAILED_NO_MORE_PLAYERS;
 }
 
@@ -386,7 +398,7 @@ int Map::handleDeadPlayers ()
 		}
 
 		const ClientId clientId = p->getClientId();
-		Log::info(LOG_MAP, "player %s is dead", p->getName().c_str());
+		Log::info(LOG_GAMEIMPL, "player %s is dead", p->getName().c_str());
 		p->onDeath();
 		disconnect(clientId);
 		++deadPlayers;
@@ -399,7 +411,7 @@ void Map::restart (uint32_t delay)
 	if (_restartDue > 0)
 		return;
 
-	Log::info(LOG_MAP, "trigger map restart");
+	Log::info(LOG_GAMEIMPL, "trigger map restart");
 	_restartDue = _time + delay;
 	GameEvent.restartMap(delay);
 }
@@ -409,7 +421,7 @@ void Map::resetCurrentMap ()
 	_timeManager.reset();
 	if (!_name.empty()) {
 		GameEvent.closeMap();
-		Log::info(LOG_MAP, "reset map: %s", _name.c_str());
+		Log::info(LOG_GAMEIMPL, "reset map: %s", _name.c_str());
 	}
 	_pointCount = 0;
 	_traceCount = 0;
@@ -427,6 +439,7 @@ void Map::resetCurrentMap ()
 	_spawnFlyingNPCTime = 0;
 	_activateflyingNPC = false;
 	_friendlyNPCLimit = 0;
+	_friendlyNPCCount = 0;
 	_caveCounter = 0;
 	_spawnFishNPCTime = 0;
 	_initialGeyserDelay = 0;
@@ -446,7 +459,7 @@ void Map::resetCurrentMap ()
 	_entityRemovalAllowed = true;
 	clearPhysics();
 	if (!_name.empty())
-		Log::info(LOG_MAP, "done with resetting: %s", _name.c_str());
+		Log::info(LOG_GAMEIMPL, "done with resetting: %s", _name.c_str());
 	_name.clear();
 }
 
@@ -466,7 +479,7 @@ inline CaveExpressMapContext* getMapContext (const std::string& name)
 	const std::string randomMapBase = "random";
 	if (name.compare(0, randomMapBase.size(), randomMapBase) == 0) {
 		const ThemeType& theme = getTheme(name);
-		Log::info(LOG_MAP, "use theme %s", theme.name.c_str());
+		Log::info(LOG_GAMEIMPL, "use theme %s", theme.name.c_str());
 		RandomMapContext *ctx = new RandomMapContext(name, theme, 8, 18, 20, 14);
 		return ctx;
 	}
@@ -480,14 +493,14 @@ bool Map::load (const std::string& name)
 	resetCurrentMap();
 
 	if (name.empty()) {
-		Log::info(LOG_MAP, "no map name given");
+		Log::info(LOG_GAMEIMPL, "no map name given");
 		return false;
 	}
 
-	Log::info(LOG_MAP, "load map %s", name.c_str());
+	Log::info(LOG_GAMEIMPL, "load map %s", name.c_str());
 
 	if (!ctx->load(false)) {
-		Log::error(LOG_MAP, "failed to load the map %s", name.c_str());
+		Log::error(LOG_GAMEIMPL, "failed to load the map %s", name.c_str());
 		return false;
 	}
 	//ctx->save();
@@ -497,49 +510,49 @@ bool Map::load (const std::string& name)
 	_title = ctx->getTitle();
 	_theme = &ctx->getTheme();
 	_settings.insert(std::make_pair(msn::THEME, _theme->name));
-	_wind = getSetting(msn::WIND, msd::WIND).toFloat();
-	_gravity = getSetting(msn::GRAVITY, string::toString(msdv::GRAVITY)).toFloat();
-	_width = getSetting(msn::WIDTH, "-1").toInt();
-	_height = getSetting(msn::HEIGHT, "-1").toInt();
-	_finishPoints = getSetting(msn::POINTS, string::toString(msdv::POINTS)).toInt();
-	_referenceTime = getSetting(msn::REFERENCETIME, string::toString(msdv::REFERENCETIME)).toInt();
-	_waterChangeSpeed = getSetting(msn::WATER_CHANGE, msd::WATER_CHANGE).toFloat();
-	_waterRisingDelay = getSetting(msn::WATER_RISING_DELAY, msd::WATER_RISING_DELAY).toFloat();
-	_waterFallingDelay = getSetting(msn::WATER_FALLING_DELAY, msd::WATER_FALLING_DELAY).toFloat();
-	_transferedNPCLimit = getSetting(msn::NPC_TRANSFER_COUNT, msd::NPC_TRANSFER_COUNT).toInt();
-	_friendlyNPCLimit = getSetting(msn::NPCS, msd::NPCS).toInt();
-	_activateflyingNPC = getSetting(msn::FLYING_NPC, msd::FLYING_NPC).toBool();
-	_activateFishNPC = getSetting(msn::FISH_NPC, msd::FISH_NPC).toBool();
-	_waterHeight = getSetting(msn::WATER_HEIGHT, msd::WATER_HEIGHT).toFloat();
-	_transferedPackageLimit = getSetting(msn::PACKAGE_TRANSFER_COUNT, msd::PACKAGE_TRANSFER_COUNT).toInt();
+	_wind = string::toFloat(getSetting(msn::WIND, msd::WIND));
+	_gravity = string::toFloat(getSetting(msn::GRAVITY, string::toString(msdv::GRAVITY)));
+	_width = string::toInt(getSetting(msn::WIDTH, "-1"));
+	_height = string::toInt(getSetting(msn::HEIGHT, "-1"));
+	_finishPoints = string::toInt(getSetting(msn::POINTS, string::toString(msdv::POINTS)));
+	_referenceTime = string::toInt(getSetting(msn::REFERENCETIME, string::toString(msdv::REFERENCETIME)));
+	_waterChangeSpeed = string::toFloat(getSetting(msn::WATER_CHANGE, msd::WATER_CHANGE));
+	_waterRisingDelay = string::toFloat(getSetting(msn::WATER_RISING_DELAY, msd::WATER_RISING_DELAY));
+	_waterFallingDelay = string::toFloat(getSetting(msn::WATER_FALLING_DELAY, msd::WATER_FALLING_DELAY));
+	_transferedNPCLimit = string::toInt(getSetting(msn::NPC_TRANSFER_COUNT, msd::NPC_TRANSFER_COUNT));
+	_friendlyNPCLimit = string::toInt(getSetting(msn::NPCS, msd::NPCS));
+	_activateflyingNPC = string::toBool(getSetting(msn::FLYING_NPC, msd::FLYING_NPC));
+	_activateFishNPC = string::toBool(getSetting(msn::FISH_NPC, msd::FISH_NPC));
+	_waterHeight = string::toFloat(getSetting(msn::WATER_HEIGHT, msd::WATER_HEIGHT));
+	_transferedPackageLimit = string::toInt(getSetting(msn::PACKAGE_TRANSFER_COUNT, msd::PACKAGE_TRANSFER_COUNT));
 	// TODO: properly implement a warmup phase
 	_warmupPhase = 0;
 
-	Log::info(LOG_MAP, "spawn %i npcs", _friendlyNPCLimit);
-	Log::info(LOG_MAP, "theme: %s", _theme->name.c_str());
-	Log::info(LOG_MAP, "reference time: %ui", _referenceTime);
+	Log::info(LOG_GAMEIMPL, "spawn %i npcs", _friendlyNPCLimit);
+	Log::info(LOG_GAMEIMPL, "theme: %s", _theme->name.c_str());
+	Log::info(LOG_GAMEIMPL, "reference time: %u", _referenceTime);
 
 	if (_width <= 0 || _height <= 0) {
-		Log::error(LOG_MAP, "invalid map dimensions given");
+		Log::error(LOG_GAMEIMPL, "invalid map dimensions given");
 		return false;
 	}
 
 	if (_transferedNPCLimit > 0 && _friendlyNPCLimit == 0) {
-		Log::error(LOG_MAP, "there is no npc but a npc transfer count");
+		Log::error(LOG_GAMEIMPL, "there is no npc but a npc transfer count");
 		return false;
 	}
 
-	_spawnFlyingNPCTime = getSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(4000 + rand() % SPAWN_FLYING_NPC_DELAY)).toInt();
-	_spawnFishNPCTime = getSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(4000 + rand() % SPAWN_FISH_NPC_DELAY)).toInt();
-	_initialGeyserDelay = getSetting(msn::GEYSER_INITIAL_DELAY_TIME, string::toString(3000)).toInt();
+	_spawnFlyingNPCTime = string::toInt(getSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(4000 + rand() % SPAWN_FLYING_NPC_DELAY)));
+	_spawnFishNPCTime = string::toInt(getSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(4000 + rand() % SPAWN_FISH_NPC_DELAY)));
+	_initialGeyserDelay = string::toInt(getSetting(msn::GEYSER_INITIAL_DELAY_TIME, string::toString(3000)));
 
 	if (_transferedNPCLimit <= 0 && _transferedPackageLimit <= 0) {
-		Log::error(LOG_MAP, "there is nothing to do in this map - set the npc or package limits");
+		Log::error(LOG_GAMEIMPL, "there is nothing to do in this map - set the npc or package limits");
 		return false;
 	}
 
 	initPhysics();
-	Log::info(LOG_MAP, "physics initialized");
+	Log::info(LOG_GAMEIMPL, "physics initialized");
 
 	std::vector<MapTile*> mapTilesWithBody;
 
@@ -564,7 +577,7 @@ bool Map::load (const std::string& name)
 		mapTile->createBody();
 	}
 
-	Log::info(LOG_MAP, "init platforms");
+	Log::info(LOG_GAMEIMPL, "init platforms");
 	for (Map::EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
 		IEntity* entity = *i;
 		if (!entity->isGround())
@@ -580,7 +593,7 @@ bool Map::load (const std::string& name)
 		getPlatform(mapTile, &start, &end);
 	}
 
-	Log::info(LOG_MAP, "init caves");
+	Log::info(LOG_GAMEIMPL, "init caves");
 	int friendlyNPCLimit = _friendlyNPCLimit;
 	for (Map::EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
 		IEntity* entity = *i;
@@ -601,11 +614,11 @@ bool Map::load (const std::string& name)
 		const bool skipCave = highestCave == cave;
 		if (initCave(cave, npcLeft && !skipCave)) {
 			--friendlyNPCLimit;
-			Log::info(LOG_MAP, "spawn npc on cave %i", cave->getCaveNumber());
+			Log::info(LOG_GAMEIMPL, "spawn npc on cave %i", cave->getCaveNumber());
 		}
 	}
 	if (friendlyNPCLimit > 0)
-		Log::info(LOG_MAP, "could not spawn %i npcs", friendlyNPCLimit);
+		Log::info(LOG_GAMEIMPL, "could not spawn %i npcs", friendlyNPCLimit);
 
 	const std::vector<EmitterDefinition>& emitterList = ctx->getEmitterDefinitions();
 	for (std::vector<EmitterDefinition>::const_iterator i = emitterList.begin(); i != emitterList.end(); ++i) {
@@ -617,11 +630,11 @@ bool Map::load (const std::string& name)
 	}
 
 	if (_transferedPackageLimit > 0 && !hasPackageTarget()) {
-		Log::error(LOG_MAP, "there is no package target in this map");
+		Log::error(LOG_GAMEIMPL, "there is no package target in this map");
 		return false;
 	}
 
-	Log::info(LOG_MAP, "map loading done");
+	Log::info(LOG_GAMEIMPL, "map loading done");
 
 	ctx->onMapLoaded();
 
@@ -644,7 +657,7 @@ public:
 	{
 	}
 
-	float32 ReportFixture (b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction)
+	float32 ReportFixture (b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction) override
 	{
 		IEntity *e = static_cast<IEntity *>(fixture->GetBody()->GetUserData());
 		if (e && (e->isSolid() || e->isBorder())) {
@@ -723,13 +736,13 @@ bool Map::rayTrace (int startGridX, int startGridY, int endGridX, int endGridY, 
 
 bool Map::spawnPlayer (Player* player)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
-	Log::info(LOG_SERVER, "spawn player %i", player->getID());
+	Log::info(LOG_GAMEIMPL, "spawn player %i", player->getID());
 	const int startPosIdx = _players.size();
 	float playerStartX, playerStartY;
 	if (!getStartPosition(startPosIdx, playerStartX, playerStartY)) {
-		Log::error(LOG_SERVER, "no player position for index %i", startPosIdx);
+		Log::error(LOG_GAMEIMPL, "no player position for index %i", startPosIdx);
 		return false;
 	}
 
@@ -754,7 +767,7 @@ bool Map::isReadyToStart () const
 
 void Map::startMap ()
 {
-	Log::info(LOG_SERVER, "start the map and spawn pending players: %i", (int)_playersWaitingForSpawn.size());
+	Log::info(LOG_GAMEIMPL, "start the map and spawn pending players: %i", (int)_playersWaitingForSpawn.size());
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		Player* player = *i;
 		spawnPlayer(player);
@@ -774,11 +787,11 @@ bool Map::initPlayer (Player* player)
 	if (getPlayer(player->getClientId()) != nullptr)
 		return false;
 
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	INetwork& network = _serviceProvider->getNetwork();
 	const ClientId clientId = player->getClientId();
-	Log::info(LOG_SERVER, "init player %i", player->getID());
+	Log::info(LOG_GAMEIMPL, "init player %i", player->getID());
 	const int clientMask = ClientIdToClientMask(clientId);
 	const MapSettingsMessage mapSettingsMsg(_settings, _startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);
@@ -797,7 +810,7 @@ bool Map::initPlayer (Player* player)
 		updateVisMask();
 		return spawned;
 	}
-	Log::info(LOG_SERVER, "delay spawn of player");
+	Log::info(LOG_GAMEIMPL, "delay spawn of player");
 	_playersWaitingForSpawn.push_back(player);
 	return true;
 }
@@ -806,11 +819,11 @@ void Map::printPlayersList () const
 {
 	for (PlayerListConstIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		const std::string& name = (*i)->getName();
-		Log::info(LOG_SERVER, "* %s (waiting)", name.c_str());
+		Log::info(LOG_GAMEIMPL, "* %s (waiting)", name.c_str());
 	}
 	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
 		const std::string& name = (*i)->getName();
-		Log::info(LOG_SERVER, "* %s (spawned)", name.c_str());
+		Log::info(LOG_GAMEIMPL, "* %s (spawned)", name.c_str());
 	}
 }
 
@@ -862,7 +875,7 @@ void Map::initPhysics ()
 	fd.shape = &edge;
 
 	_borders.resize(BORDER_MAX);
-	const bool isSideBorderFail = getSetting(msn::SIDEBORDERFAIL).toBool();
+	const bool isSideBorderFail = string::toBool(getSetting(msn::SIDEBORDERFAIL));
 	_borders[BORDER_TOP] = new Border(BorderType::TOP, *this);
 	_borders[BORDER_LEFT] = new Border(BorderType::LEFT, *this, isSideBorderFail);
 	_borders[BORDER_RIGHT] = new Border(BorderType::RIGHT, *this, isSideBorderFail);
@@ -898,7 +911,7 @@ bool Map::initCave (CaveMapTile* caveTile, bool canSpawn)
 	int end = -1;
 	Platform *platform = getPlatform(caveTile, &start, &end, caveTile->getSize().y);
 	if (platform == nullptr) {
-		Log::error(LOG_MAP, "failed to initialize the cave platform");
+		Log::error(LOG_GAMEIMPL, "failed to initialize the cave platform");
 		return false;
 	}
 	platform->setCave(caveTile);
@@ -945,7 +958,7 @@ Platform *Map::getPlatform (MapTile *mapTile, int *start, int *end, gridSize off
 		}
 	}
 
-	Log::info(LOG_MAP, "create a new platform at %i:%i to %i:%i", *start, mapY, *end, mapY);
+	Log::info(LOG_GAMEIMPL, "create a new platform at %i:%i to %i:%i", *start, mapY, *end, mapY);
 	const int width = *end - *start + 1;
 	const gridSize height = 0.015f;
 	const gridCoord x = *start + width / 2.0f;
@@ -973,9 +986,11 @@ Platform *Map::getPlatform (MapTile *mapTile, int *start, int *end, gridSize off
 
 #ifdef DEBUG
 	PlatformYMapConstIter iy2 = _platforms.find(mapY);
-	assert(iy2 != _platforms.end());
-	PlatformXMapConstIter ix2 = iy2->second.find(*start);
-	assert(ix2 != iy->second.end());
+	SDL_assert(iy2 != _platforms.end());
+	if (iy != _platforms.end()) {
+		PlatformXMapConstIter ix2 = iy2->second.find(*start);
+		SDL_assert(ix2 != iy->second.end());
+	}
 #endif
 
 	return platform;
@@ -1086,7 +1101,7 @@ MapTile* Map::createMapTileWithoutBody (const SpriteDefPtr& spriteDef, gridCoord
 
 b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *entity)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	SpriteDefPtr def = entity->getSpriteDef();
 	if (def) {
@@ -1107,7 +1122,7 @@ b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *
 	}
 
 	if (!def) {
-		Log::error(LOG_MAP, "no shape given - could not find sprite definition for %s", entity->getType().name.c_str());
+		Log::error(LOG_GAMEIMPL, "no shape given - could not find sprite definition for %s", entity->getType().name.c_str());
 		return nullptr;
 	}
 
@@ -1120,7 +1135,7 @@ b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *
 		b2Vec2 points[b2_maxPolygonVertices];
 		const int size = SDL_arraysize(points);
 		if (cnt > size)
-			Log::error(LOG_MAP, "too many vertices given for sprite %s", def->id.c_str());
+			Log::error(LOG_GAMEIMPL, "too many vertices given for sprite %s", def->id.c_str());
 
 		for (int i = 0; i < cnt; ++i) {
 			const SpriteVertex &v = polygon.vertices[i];
@@ -1178,7 +1193,7 @@ void Map::sendMapToClient (ClientId clientId) const
 
 void Map::loadEntity (IEntity *entity)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 	//entity->onSpawn();
 	_entities.push_back(entity);
 }
@@ -1194,7 +1209,7 @@ PackageTarget *Map::getPackageTarget () const
 	}
 	const int packageTargetCount = packageTargets.size();
 	if (packageTargetCount == 0) {
-		Log::info(LOG_MAP, "no package target found");
+		Log::info(LOG_GAMEIMPL, "no package target found");
 		return nullptr;
 	}
 
@@ -1235,7 +1250,7 @@ CaveMapTile *Map::getTargetCave (const CaveMapTile* ignoreCave) const
 	}
 
 	if (tmp.empty()) {
-		Log::debug(LOG_MAP, "no usable cave found");
+		Log::debug(LOG_GAMEIMPL, "no usable cave found");
 		return nullptr;
 	}
 
@@ -1243,9 +1258,10 @@ CaveMapTile *Map::getTargetCave (const CaveMapTile* ignoreCave) const
 	return tmp[randomCave];
 }
 
-bool Map::removeNPCFromWorld(NPCFriendly* npc) {
-	assert(_entityRemovalAllowed);
-	Log::debug(LOG_SERVER, "remove npc %i from world: %s", npc->getID(), npc->getType().name.c_str());
+bool Map::removeNPCFromWorld(NPCFriendly* npc)
+{
+	SDL_assert(_entityRemovalAllowed);
+	Log::debug(LOG_GAMEIMPL, "remove npc %i from world: %s", npc->getID(), npc->getType().name.c_str());
 	GameEvent.removeEntity(npc->getVisMask(), *npc);
 	npc->setVisMask(NOTVISIBLE);
 	npc->remove();
@@ -1253,13 +1269,14 @@ bool Map::removeNPCFromWorld(NPCFriendly* npc) {
 
 }
 
-bool Map::removeNPC(NPCFriendly* npc, bool fadeOut) {
-	assert(_entityRemovalAllowed);
+bool Map::removeNPC(NPCFriendly* npc, bool fadeOut)
+{
+	SDL_assert(_entityRemovalAllowed);
 	for (Map::NPCListIter i = _friendlyNPCs.begin(); i != _friendlyNPCs.end(); ++i) {
 		if (*i != npc)
 			continue;
 
-		Log::info(LOG_SERVER, "remove friendly npc %i: %s", npc->getID(), npc->getType().name.c_str());
+		Log::info(LOG_GAMEIMPL, "remove friendly npc %i: %s", npc->getID(), npc->getType().name.c_str());
 		_friendlyNPCs.erase(i);
 		GameEvent.removeEntity(npc->getVisMask(), *npc, fadeOut);
 		npc->setVisMask(NOTVISIBLE);
@@ -1268,13 +1285,13 @@ bool Map::removeNPC(NPCFriendly* npc, bool fadeOut) {
 		// they are also part of the entities list and are freed there
 		return true;
 	}
-	Log::error(LOG_MAP, "could not find the npc with the id %i", npc->getID());
+	Log::error(LOG_GAMEIMPL, "could not find the npc with the id %i", npc->getID());
 	return false;
 }
 
 bool Map::removePlayer (ClientId clientId)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		if ((*i)->getClientId() != clientId)
@@ -1305,13 +1322,13 @@ bool Map::removePlayer (ClientId clientId)
 		updateVisMask();
 		return true;
 	}
-	Log::error(LOG_MAP, "could not find the player with the clientId %i", clientId);
+	Log::error(LOG_GAMEIMPL, "could not find the player with the clientId %i", clientId);
 	return false;
 }
 
 NPCBlowing* Map::createBlowingNPC (const b2Vec2& pos, bool right, float force, float modificatorSize)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	NPCBlowing *npc = new NPCBlowing(*this, pos, right, force, modificatorSize);
 	addEntity(npc);
@@ -1321,8 +1338,8 @@ NPCBlowing* Map::createBlowingNPC (const b2Vec2& pos, bool right, float force, f
 
 NPCAttacking* Map::createAttackingNPC (const b2Vec2& pos, const EntityType& entityType, bool right)
 {
-	assert(EntityTypes::isNpcAttacking(entityType));
-	assert(_entityRemovalAllowed);
+	SDL_assert(EntityTypes::isNpcAttacking(entityType));
+	SDL_assert(_entityRemovalAllowed);
 	NPCAttacking *npc = new NPCAttacking(entityType, *this, right);
 	npc->createBody(pos, _world);
 	npc->calculatePlatformDimensions();
@@ -1332,7 +1349,7 @@ NPCAttacking* Map::createAttackingNPC (const b2Vec2& pos, const EntityType& enti
 
 NPCFish* Map::createFishNPC (const b2Vec2& pos)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 	NPCFish *npc = new NPCFish(*this);
 	npc->createBody(pos, false, true);
 	addEntity(npc);
@@ -1341,7 +1358,7 @@ NPCFish* Map::createFishNPC (const b2Vec2& pos)
 
 NPCFlying* Map::createFlyingNPC (const b2Vec2& pos)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 	NPCFlying *npc = new NPCFlying(*this);
 	npc->createBody(pos);
 	addEntity(npc);
@@ -1350,7 +1367,7 @@ NPCFlying* Map::createFlyingNPC (const b2Vec2& pos)
 
 NPCPackage* Map::createPackageNPC (CaveMapTile* cave, const EntityType& type)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	if (getPackageTarget() == nullptr)
 		return nullptr;
@@ -1363,8 +1380,9 @@ NPCPackage* Map::createPackageNPC (CaveMapTile* cave, const EntityType& type)
 	return npc;
 }
 
-NPCFriendly* Map::createFriendlyNPC(CaveMapTile* cave, const EntityType& type, bool returnToCaveOnIdle) {
-	assert(_entityRemovalAllowed);
+NPCFriendly* Map::createFriendlyNPC(CaveMapTile* cave, const EntityType& type, bool returnToCaveOnIdle)
+{
+	SDL_assert(_entityRemovalAllowed);
 	if (_friendlyNPCs.size() >= _friendlyNPCLimit)
 		return nullptr;
 
@@ -1378,6 +1396,7 @@ NPCFriendly* Map::createFriendlyNPC(CaveMapTile* cave, const EntityType& type, b
 	NPCFriendly* npc = new NPCFriendly(cave, type, returnToCaveOnIdle);
 	npc->setTargetCave(targetCave);
 	_friendlyNPCs.push_back(npc);
+	++_friendlyNPCCount;
 
 	addEntity(npc);
 
@@ -1426,7 +1445,7 @@ void Map::handleVisibility (IEntity *entity, const VisMask vismask) const
 	}
 
 	if (removeMask != 0) {
-		//Log::info(LOG_MAP, String::format("server: remove entity %i type: %s", entity->getID(), entity->getType().name.c_str()));
+		//Log::info(LOG_GAMEIMPL, string::format("server: remove entity %i type: %s", entity->getID(), entity->getType().name.c_str()));
 		GameEvent.removeEntity(removeMask, *entity);
 	}
 
@@ -1437,7 +1456,7 @@ void Map::handleVisibility (IEntity *entity, const VisMask vismask) const
 
 void Map::sendVisibleEntity (int clientMask, const IEntity *entity) const
 {
-	//Log::debug(LOG_MAP, String::format("server: add entity %i type: %s", entity->getID(), entity->getType().name.c_str()));
+	//Log::debug(LOG_GAMEIMPL, string::format("server: add entity %i type: %s", entity->getID(), entity->getType().name.c_str()));
 	GameEvent.addEntity(clientMask, *entity);
 	if (entity->isCave()) {
 		const CaveMapTile *tile = static_cast<const CaveMapTile *>(entity);
@@ -1563,7 +1582,7 @@ void Map::update (uint32_t deltaTime)
 
 	if (_restartDue > 0 && _restartDue <= _time) {
 		const std::string currentName = getName();
-		Log::info(LOG_MAP, "restarting map %s", currentName.c_str());
+		Log::info(LOG_GAMEIMPL, "restarting map %s", currentName.c_str());
 		if (isFailed()) {
 			const Map::PlayerList& players = getPlayers();
 			for (Map::PlayerListConstIter i = players.begin(); i != players.end(); ++i) {
@@ -1767,7 +1786,7 @@ void Map::visitEntities (IEntityVisitor *visitor, const EntityType& type)
 		for (PlayerListIter i = _players.begin(); i != _players.end();) {
 			Player* e = *i;
 			if (visitor->visitEntity(e)) {
-				Log::debug(LOG_SERVER, "remove player by visit %i: %s", e->getID(), e->getType().name.c_str());
+				Log::debug(LOG_GAMEIMPL, "remove player by visit %i: %s", e->getID(), e->getType().name.c_str());
 				GameEvent.removeEntity(e->getVisMask(), *e);
 				delete *i;
 				i = _players.erase(i);
@@ -1791,10 +1810,11 @@ void Map::visitEntities (IEntityVisitor *visitor, const EntityType& type)
 		IEntity* e = *i;
 		if (type.isNone() || e->getType() == type) {
 			if (visitor->visitEntity(e)) {
-				Log::debug(LOG_SERVER, "remove entity by visit %i: %s", e->getID(), e->getType().name.c_str());
+				_friendlyNPCs.remove((NPCFriendly*)e);
+				Log::debug(LOG_GAMEIMPL, "remove entity by visit %i: %s", e->getID(), e->getType().name.c_str());
 				GameEvent.removeEntity(e->getVisMask(), *e, EntityTypes::isNpcCave(e->getType()));
-				(*i)->prepareRemoval();
-				delete *i;
+				e->prepareRemoval();
+				delete e;
 				i = _entities.erase(i);
 			} else {
 				++i;
@@ -1822,18 +1842,17 @@ void Map::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		System.exit("could not load entities.lua script", 1);
 	}
 
-	Log::info(LOG_SERVER, "initialize entity sizes");
+	Log::info(LOG_GAMEIMPL, "initialize entity sizes");
 
 	EntityType::TypeMapConstIter i = EntityType::begin();
 	for (; i != EntityType::end(); ++i) {
-		String name = i->second->name;
-		name = name.replaceAll("-", "");
+		const std::string& name = string::replaceAll(i->second->name, "-", "");
 		const float width = lua.getFloatValue(name + ".width", 1.0f);
 		const float height = lua.getFloatValue(name + ".height", 1.0f);
-		Log::debug(LOG_SERVER, "entity %s: %f:%f", name.str().c_str(), width, height);
+		Log::debug(LOG_GAMEIMPL, "entity %s: %f:%f", name.c_str(), width, height);
 		i->second->setSize(width, height);
 	}
-	Log::debug(LOG_SERVER, "initialized entity sizes");
+	Log::debug(LOG_GAMEIMPL, "initialized entity sizes");
 }
 
 }

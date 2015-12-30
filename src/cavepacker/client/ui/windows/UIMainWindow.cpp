@@ -1,5 +1,6 @@
 #include "UIMainWindow.h"
 #include "ui/UI.h"
+#include "ui/nodes/UINodeLabel.h"
 #include "ui/nodes/UINodeButton.h"
 #include "ui/nodes/UINodeButtonImage.h"
 #include "ui/nodes/UINodeSprite.h"
@@ -10,6 +11,7 @@
 #include "ui/layouts/UIVBoxLayout.h"
 #include "common/ConfigManager.h"
 #include "common/System.h"
+#include "common/Application.h"
 #include "ui/windows/listener/OpenWindowListener.h"
 #include "ui/nodes/UINodeMainButton.h"
 
@@ -85,6 +87,13 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	panel->add(quit);
 
 	add(panel);
+
+	Application& app = Singleton<Application>::getInstance();
+	UINodeLabel *versionLabel = new UINodeLabel(_frontend, app.getPackageName() + " " + app.getVersion());
+	versionLabel->setAlignment(NODE_ALIGN_BOTTOM|NODE_ALIGN_RIGHT);
+	versionLabel->setColor(colorWhite);
+	versionLabel->setPadding(getScreenPadding());
+	add(versionLabel);
 }
 
 }

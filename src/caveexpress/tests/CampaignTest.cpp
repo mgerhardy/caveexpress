@@ -13,7 +13,7 @@ namespace caveexpress {
 TEST(CampaignTest, testSave) {
 	SCOPED_TRACE("new.sqlite");
 	SQLitePersister persister(System.getDatabaseDirectory() + "new.temp");
-	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister. " << persister.getError();
 	Campaign campaign("testsave", &persister);
 	campaign.addMap("test1", "test1");
 	campaign.addMap("test2", "test2");
@@ -31,20 +31,22 @@ TEST(CampaignTest, testSave) {
 	ASSERT_EQ(expectedLives, (int )campaign.getLives()) << "Failed to save/load lives";
 }
 
-// TODO: fix this
-TEST(CampaignTest, DISABLED_testLoad) {
+TEST(CampaignTest, testLoad) {
 	SCOPED_TRACE("gamestate.sqlite");
-	SQLitePersister persister(System.getDatabaseDirectory() + "gamestate.sqlite");
-	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
+	const std::string target = System.getDatabaseDirectory() + "gamestatetestload.sqlite";
+	ASSERT_TRUE(FS.copy("base/tests/gamestate.sqlite", target));
+	SQLitePersister persister(target);
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister for " << target << ". " << persister.getError();
 	Campaign campaign("tutorial", &persister);
 	ASSERT_TRUE(campaign.loadProgress()) << "failed to load the campaign progress";
 }
 
-// TODO: fix this
 TEST(CampaignTest, DISABLED_testLoad2) {
 	SCOPED_TRACE("gamestate2.sqlite");
-	SQLitePersister persister(System.getDatabaseDirectory() + "gamestate2.sqlite");
-	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
+	const std::string target = System.getDatabaseDirectory() + "gamestatetestload2.sqlite";
+	ASSERT_TRUE(FS.copy("base/tests/gamestate2.sqlite", target));
+	SQLitePersister persister(target);
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister for " << target << ". " << persister.getError();
 	Campaign campaign("tutorial", &persister);
 	ASSERT_TRUE(campaign.loadProgress()) << "failed to load the campaign progress";
 }
@@ -52,7 +54,7 @@ TEST(CampaignTest, DISABLED_testLoad2) {
 TEST(CampaignTest, testReset) {
 	SCOPED_TRACE("reset.temp");
 	SQLitePersister persister(System.getDatabaseDirectory() + "reset.temp");
-	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister. " << persister.getError();
 	Campaign campaign("testsave", &persister);
 	campaign.addMap("test1", "test1");
 	campaign.addMap("test2", "test2");
@@ -78,7 +80,7 @@ TEST(CampaignTest, testReset) {
 TEST(CampaignTest, testMaps) {
 	SCOPED_TRACE("idontcare.temp");
 	SQLitePersister persister(System.getDatabaseDirectory() + "idontcare.temp");
-	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister. " << persister.getError();
 	LUAMapManager mapMgr;
 	mapMgr.loadMaps();
 	TextureDefinition t("small");
@@ -92,7 +94,7 @@ TEST(CampaignTest, testMaps) {
 		Visitor() :
 				atLeastOnce(false) {
 		}
-		void visitCampaign(CampaignPtr& campaign) {
+		void visitCampaign(CampaignPtr& campaign) override {
 			const Campaign::MapList& m = campaign->getMaps();
 			ASSERT_FALSE(m.empty()) << "failed to get the maps for campaign " << campaign->getId();
 			for (Campaign::MapListConstIter i = m.begin(); i != m.end(); ++i) {
@@ -117,7 +119,7 @@ TEST(CampaignTest, testMaps) {
 TEST(CampaignTest, testUpdateMapValues) {
 	SCOPED_TRACE("updatemapvalues.temp");
 	SQLitePersister persister(System.getDatabaseDirectory() + "updatemapvalues.temp");
-	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister. " << persister.getError();
 	LUAMapManager mapMgr;
 	mapMgr.loadMaps();
 	TextureDefinition t("small");
@@ -146,12 +148,12 @@ TEST(CampaignTest, testUpdateMapValues) {
 	ASSERT_EQ(150, campaignMap->getFinishPoints()) << "points don't match after loading";
 }
 
-// TODO: fix this
 TEST(CampaignTest, DISABLED_testResetProgress) {
 	SCOPED_TRACE("gamestate2.sqlite");
-	ASSERT_TRUE(FS.copy(System.getDatabaseDirectory() + "gamestate2.sqlite", System.getDatabaseDirectory() + "gamestate.sqlite.temp")) << "Failed to copy gamestate";
-	SQLitePersister persister(System.getDatabaseDirectory() + "gamestate.sqlite.temp");
-	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister";
+	const std::string target = System.getDatabaseDirectory() + "gamestatetestresetprogress.sqlite";
+	ASSERT_TRUE(FS.copy("base/tests/gamestate2.sqlite", target));
+	SQLitePersister persister(target);
+	ASSERT_TRUE(persister.init()) << "Failed to initialize the persister for " << target << ". " << persister.getError();
 	LUAMapManager mapMgr;
 	mapMgr.loadMaps();
 	TextureDefinition t("small");

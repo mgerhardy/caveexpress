@@ -16,9 +16,18 @@ TEST_F(GeneralTest, testStringTrim)
 
 TEST_F(GeneralTest, testStringCutBeforeLastMatch)
 {
-	String test("foo/bar");
-	test = test.cutBeforeLastMatch("/");
-	ASSERT_EQ("bar", test.str());
+	std::string test("foo/bar");
+	test = string::cutBeforeLastMatch(test, "/");
+	ASSERT_EQ("bar", test);
+}
+
+TEST_F(GeneralTest, testStringWhitespaceMatches)
+{
+	std::string test("foo/bar.txt");
+	ASSERT_TRUE(string::matches("foo*", test));
+	ASSERT_TRUE(string::matches("*bar*", test));
+	ASSERT_TRUE(string::matches("fo?/bar.txt", test));
+	ASSERT_FALSE(string::matches("*foobar*", test));
 }
 
 TEST_F(GeneralTest, testStringLTrim)

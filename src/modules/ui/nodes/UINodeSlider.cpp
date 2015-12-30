@@ -27,8 +27,9 @@ void UINodeSlider::render (int x, int y) const
 	const int h = getRenderHeight();
 	const int deltaHeight = h / 2;
 	const float steps = _max - _min + 1.0f;
-	const float stepDelta = w / steps * (_stepWidth < 1.0f ? 1.0f : _stepWidth);
+	const float stepDelta = std::max(5.0f, w / steps * (_stepWidth < 1.0f ? 1.0f : _stepWidth));
 	const int sliderX = x + (_value - _min) / steps * w;
+	Log::trace(LOG_UI, "x: %i, y: %i, w: %i, h: %i, stepDelta: %f, sliderX: %i", x, y, w, h, stepDelta, sliderX);
 	renderLine(x, y + deltaHeight, x + w, y + deltaHeight, _lineColor);
 	renderFilledRect(sliderX, y, stepDelta, h, _sliderColor);
 }
@@ -40,10 +41,10 @@ inline float UINodeSlider::calculateValue (int32_t x) const
 	return clamp(value - static_cast<float>(fmod(value, _stepWidth)), _min, _max);
 }
 
-bool UINodeSlider::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
+bool UINodeSlider::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion)
 {
 	setValue(calculateValue(x));
-	return UINode::onFingerRelease(finger, x, y);
+	return UINode::onFingerRelease(finger, x, y, motion);
 }
 
 bool UINodeSlider::onMouseLeftRelease (int32_t x, int32_t y)

@@ -1,11 +1,12 @@
 set(NAME caveexpress)
-project(tests-${NAME})
+project(tests_${NAME})
 SET(${PROJECT_NAME}_SRC
 	ProtocolTest.cpp
 	EnumSpriteTypesTest.cpp
 	LUASpriteTest.cpp
 	RandomMapContextTest.cpp
 	MapTest.cpp
+	MapManagerTest.cpp
 	CampaignTest.cpp
 	../main/CaveExpress.cpp
 	../../tests/TestAll.cpp

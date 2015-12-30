@@ -59,6 +59,7 @@ MiniRacer::MiniRacer() :
 }
 
 MiniRacer::~MiniRacer() {
+	Commands.removeCommand(CMD_MAP_OPEN_IN_EDITOR);
 	delete _persister;
 	delete _campaignManager;
 	delete _clientMap;
@@ -98,7 +99,7 @@ void MiniRacer::update (uint32_t deltaTime)
 		const FinishedMapMessage msg(_map.getName(), 0, 0, 0);
 		_serviceProvider->getNetwork().sendToAllClients(msg);
 	} else if (!isDone && _map.isFailed()) {
-		Log::debug(LOG_SERVER, "map failed");
+		Log::debug(LOG_GAMEIMPL, "map failed");
 		const uint32_t delay = 1000;
 		_map.restart(delay);
 	}
@@ -168,7 +169,7 @@ void MiniRacer::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 			_persister = new MiniRacerSQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
 		}
 		if (!_persister->init()) {
-			Log::error(LOG_SERVER, "Failed to initialize the persister");
+			Log::error(LOG_GAMEIMPL, "Failed to initialize the persister");
 		}
 	}
 	{
@@ -204,11 +205,13 @@ void MiniRacer::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 
 void MiniRacer::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 {
-	Log::info(LOG_CLIENT, "Init miniracer ui");
+	Log::info(LOG_GAMEIMPL, "Init miniracer ui");
 	UI& ui = UI::get();
 	ui.disableRotatingFonts();
 	ui.addWindow(new UIMainWindow(frontend));
 	MiniRacerClientMap *map = new MiniRacerClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
+	// if we reinit the ui - we have to destroy previously allocated memory
+	delete _clientMap;
 	_clientMap = map;
 	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *map));
 	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));
@@ -227,12 +230,24 @@ void MiniRacer::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	UINodeMapEditor* editor = new UINodeMapEditor(frontend, serviceProvider.getMapManager());
 	UINodeSpriteSelector* spriteSelector = new UINodeSpriteSelector(frontend);
 	UINodeEntitySelector* entitySelector = new UINodeEntitySelector(frontend);
-	IUIMapEditorWindow* mapEditorWindow = new IUIMapEditorWindow(frontend, serviceProvider.getMapManager(), editor, spriteSelector, entitySelector);
+	IUIMapEditorWindow* mapEditorWindow = new IUIMapEditorWindow(frontend, editor, spriteSelector, entitySelector);
+	mapEditorWindow->init(serviceProvider.getMapManager());
 	ui.addWindow(mapEditorWindow);
 	ui.addWindow(new UIMapEditorHelpWindow(frontend));
 	ui.addWindow(new IUIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));
 
-	Commands.registerCommand(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
+	CommandPtr cmd = Commands.registerCommandVoid(CMD_MAP_OPEN_IN_EDITOR, [=] () {
+		if (!map->isActive())
+			return;
+
+		const std::string& name = map->getName();
+		Commands.executeCommandLine(CMD_LOADMAP " " + name);
+	});
+	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
+		for (auto entry : _serviceProvider->getMapManager().getMapsByWildcard(input + "*")) {
+			matches.push_back(entry.first);
+		}
+	});
 }
 
 bool MiniRacer::visitEntity (IEntity *entity)

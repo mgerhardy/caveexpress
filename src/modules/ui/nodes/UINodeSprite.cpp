@@ -2,7 +2,7 @@
 #include "common/Log.h"
 #include "common/SpriteDefinition.h"
 #include "ui/UI.h"
-#include <cassert>
+#include <SDL_assert.h>
 
 UINodeSprite::UINodeSprite (IFrontend *frontend, int spriteWidth, int spriteHeight) :
 		UINode(frontend), _offset(0), _borderWidth(-1.0f), _borderHeight(-1.0f), _spriteWidth(
@@ -45,8 +45,8 @@ bool UINodeSprite::isMovementActive () const
 
 void UINodeSprite::render (int x, int y) const
 {
-	assert(_spriteWidth != -1);
-	assert(_spriteHeight != -1);
+	SDL_assert(_spriteWidth != -1);
+	SDL_assert(_spriteHeight != -1);
 	UINode::render(x, y);
 	int n = 0;
 	const int baseSpriteX = x + getRenderX(true);

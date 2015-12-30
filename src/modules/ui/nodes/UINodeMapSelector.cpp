@@ -3,12 +3,14 @@
 #include "common/CommandSystem.h"
 #include "campaign/CampaignManager.h"
 #include "common/Commands.h"
+#include <SDL_assert.h>
 
 UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, bool multiplayer, int cols, int rows) :
 		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _campaignManager(nullptr), _mapManager(&mapManager), _multiplayer(multiplayer)
 {
 	setColsRowsFromTexture("map-icon-locked");
 	defaults();
+	setPaddingPixel(10);
 	reset();
 }
 
@@ -18,6 +20,7 @@ UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, CampaignManager &camp
 {
 	setColsRowsFromTexture("map-icon-locked");
 	defaults();
+	setPaddingPixel(10);
 	reset();
 }
 
@@ -47,29 +50,11 @@ bool UINodeMapSelector::onSelect (const std::string& data)
 void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data, int x, int y, int colWidth,
 		int rowHeight, float alpha) const
 {
-	const TexturePtr t = getIcon(data);
-	if (t)
-		renderImage(t, x, y, colWidth, rowHeight, alpha);
-
-	if (_campaignManager != nullptr) {
-		const CampaignPtr& campaignPtr = _campaignManager->getActiveCampaign();
-		const CampaignMap *map = campaignPtr->getMapById(data);
-		if (map != nullptr && !map->isLocked()) {
-			const BitmapFontPtr& font = getFont(MEDIUM_FONT);
-			const std::string points = string::toString(map->getFinishPoints());
-			const int fontX = x + colWidth / 2 - font->getTextWidth(points) / 2;
-			const int fontY = y + font->getTextHeight(points);
-			font->print(points, colorWhite, fontX, fontY);
-		}
-	}
-
-	if (_selectedIndex != index)
-		return;
-
 	std::string title;
 	if (_mapManager != nullptr) {
 		title = _mapManager->getMapTitle(data);
 	} else {
+		SDL_assert_always(_campaignManager != nullptr);
 		const CampaignPtr& campaignPtr = _campaignManager->getActiveCampaign();
 		const CampaignMap *map = campaignPtr->getMapById(data);
 		if (map == nullptr)
@@ -77,14 +62,37 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 		title = map->getName();
 	}
 
+	const TexturePtr t = getIcon(data);
+	if (_campaignManager != nullptr) {
+		const CampaignPtr& campaignPtr = _campaignManager->getActiveCampaign();
+		const CampaignMap *map = campaignPtr->getMapById(data);
+		if (map != nullptr && !map->isLocked()) {
+			const BitmapFontPtr& font = getFont(MEDIUM_FONT);
+			const std::string points = string::toString(map->getFinishPoints());
+			const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(points) / 2);
+			const int fontHeight = font->getTextHeight(points);
+			const int fontY = y + fontHeight;
+			if (t)
+				renderImage(t, x, y, colWidth, rowHeight - fontHeight, alpha);
+			font->printMax(points, colorWhite, fontX, fontY, colWidth);
+		} else if (t) {
+			renderImage(t, x, y, colWidth, rowHeight, alpha);
+		}
+	} else if (t) {
+		renderImage(t, x, y, colWidth, rowHeight, alpha);
+	}
+
+/*	if (_selectedIndex != index)
+		return;*/
+
 	if (!title.empty()) {
 		const BitmapFontPtr& font = getFont(SMALL_FONT);
 		const int textHeight = font->getTextHeight(title);
-		const int fontX = x + colWidth / 2 - font->getTextWidth(title) / 2;
+		const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(title) / 2);
 		const int fontY = y + rowHeight - textHeight - 1;
-		_frontend->renderFilledRect(x, fontY - 1, colWidth, textHeight + 2, highlightColor);
-		_frontend->renderRect(x, fontY - 1, colWidth, textHeight + 2, colorWhite);
-		font->print(title, colorWhite, fontX, fontY);
+		_frontend->renderFilledRect(x, fontY - 1, colWidth, textHeight + 2, colorBlack);
+		//_frontend->renderRect(x, fontY - 1, colWidth, textHeight + 2, colorWhite);
+		font->printMax(title, colorWhite, fontX, fontY, colWidth);
 	}
 }
 
@@ -125,6 +133,7 @@ void UINodeMapSelector::reset ()
 		return;
 	}
 
+	SDL_assert_always(_campaignManager != nullptr);
 	const CampaignPtr& campaignPtr = _campaignManager->getActiveCampaign();
 	if (!campaignPtr)
 		return;

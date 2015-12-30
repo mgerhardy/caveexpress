@@ -1,42 +1,25 @@
 #include "UIMapWindow.h"
 #include "cavepacker/client/ui/nodes/UINodeMap.h"
 #include "cavepacker/client/ui/nodes/UICavePackerNodePoint.h"
-#include "cavepacker/shared/network/messages/WalkToMessage.h"
+#include "cavepacker/shared/network/messages/MoveToMessage.h"
+#include "listener/SolveListener.h"
 #include "ui/nodes/UINodeBar.h"
 #include "ui/nodes/UINodeSprite.h"
 #include "ui/nodes/UINodePoint.h"
 #include "ui/nodes/UINodeButton.h"
-#include "ui/nodes/UINodeMapOnScreenCursorControl.h"
 #include "ui/layouts/UIHBoxLayout.h"
 #include "ui/UI.h"
 #include "client/Camera.h"
 #include "common/ConfigManager.h"
+#include "common/Commands.h"
 #include "service/ServiceProvider.h"
 #include "common/Log.h"
 #include "common/IFrontend.h"
 
 namespace cavepacker {
 
-class SolveListener: public UINodeListener {
-private:
-	UINodeSlider *_sliderNode;
-	std::string _configVar;
-public:
-	SolveListener (UINodeSlider *sliderNode, const std::string& configVar) :
-			_sliderNode(sliderNode), _configVar(configVar)
-	{
-		_sliderNode->setValue(Config.getConfigVar(_configVar)->getFloatValue());
-	}
-
-	void onValueChanged () override
-	{
-		const float val = _sliderNode->getValue();
-		Config.getConfigVar(_configVar)->setValue(string::toString(val));
-	}
-};
-
 UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, CavePackerClientMap& map) :
-		IUIMapWindow(frontend, serviceProvider, campaignManager, map,
+		IUIMapWindow(frontend, serviceProvider, campaignManager,
 				new UINodeMap(frontend, serviceProvider, campaignManager, 0, 0,
 						frontend->getWidth(), frontend->getHeight(), map)), _undo(
 				nullptr), _points(nullptr), _campaignManager(campaignManager), _scrolling(false), _targetX(-1), _targetY(-1) {
@@ -110,13 +93,39 @@ void UIMapWindow::initInputHudNodes ()
 	_undo->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_RIGHT);
 	_undo->setOnActivate("undo");
 	add(_undo);
+
+	if (Config.getConfigVar("forcefingercontrol", "false", true, CV_READONLY)->getBoolValue() || System.hasTouch()) {
+		UINodeButton* left = new UINodeButton(_frontend);
+		left->setImage("icon-cursor-left");
+		left->setOnActivate(CMD_MOVE_LEFT);
+		left->setTriggerTime(500u);
+		left->setAlignment(NODE_ALIGN_LEFT | NODE_ALIGN_BOTTOM);
+		add(left);
+		UINodeButton* right = new UINodeButton(_frontend);
+		right->setImage("icon-cursor-right");
+		right->setOnActivate(CMD_MOVE_RIGHT);
+		right->setTriggerTime(500u);
+		right->putRight(left);
+		add(right);
+
+		UINodeButton* down = new UINodeButton(_frontend);
+		down->setImage("icon-cursor-down");
+		down->setOnActivate(CMD_MOVE_DOWN);
+		down->setAlignment(NODE_ALIGN_RIGHT | NODE_ALIGN_BOTTOM);
+		down->setTriggerTime(500u);
+		add(down);
+		UINodeButton* up = new UINodeButton(_frontend);
+		up->setImage("icon-cursor-up");
+		up->setOnActivate(CMD_MOVE_UP);
+		up->setTriggerTime(500u);
+		up->putAbove(down);
+		add(up);
+	}
 }
 
 UINode* UIMapWindow::getFingerControl ()
 {
-	UINodeMapOnScreenCursorControl* node = new UINodeMapOnScreenCursorControl(_frontend, _nodeMap);
-	_mapControl = node;
-	return node;
+	return nullptr;
 }
 
 void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
@@ -127,7 +136,7 @@ void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
 	const CampaignMap* campaignMap = c->getMapById(name);
 	const int ownBest = campaignMap != nullptr ? campaignMap->getFinishPoints() : 0;
 	const std::string best = map.getSetting("best", "0" /* string::toString(ownBest) */);
-	Log::info(LOG_UI, "got best points from server: %s", best.c_str());
+	Log::info(LOG_GAMEIMPL, "got best points from server: %s", best.c_str());
 	_points->setOwnAndGlobalBest(ownBest, string::toInt(best));
 	_points->setLabel("0");
 
@@ -137,9 +146,10 @@ void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
 
 bool UIMapWindow::onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 {
-	Camera& camera = _nodeMap->getMap().getCamera();
-	camera.scroll(dx, dy);
-	return IUIMapWindow::onFingerMotion(finger, x, y, dx, dy);
+	if (IUIMapWindow::onFingerMotion(finger, x, y, dx, dy))
+		return true;
+	_nodeMap->getMap().scroll(dx, dy);
+	return true;
 }
 
 bool UIMapWindow::onMouseButtonRelease (int32_t x, int32_t y, unsigned char button)
@@ -158,10 +168,18 @@ bool UIMapWindow::getField (int32_t x, int32_t y, int *tx, int *ty) const
 	return true;
 }
 
+bool UIMapWindow::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion)
+{
+	const bool retVal = IUIMapWindow::onFingerRelease(finger, x, y, motion);
+	if (!retVal)
+		tryMove(x, y, false);
+	return retVal;
+}
+
 void UIMapWindow::doMove (int tx, int ty)
 {
-	Log::debug(LOG_UI, "send walk message to reach %i:%i", tx, ty);
-	_serviceProvider.getNetwork().sendToServer(WalkToMessage(tx, ty));
+	Log::debug(LOG_GAMEIMPL, "send move message to reach %i:%i", tx, ty);
+	_serviceProvider.getNetwork().sendToServer(MoveToMessage(tx, ty));
 	_targetX = _targetY = -1;
 }
 
@@ -172,28 +190,39 @@ bool UIMapWindow::onMouseButtonPress (int32_t x, int32_t y, unsigned char button
 		_scrolling = true;
 	}
 	if (button == SDL_BUTTON_LEFT) {
-		int tx, ty;
-		if (getField(x, y, &tx, &ty)) {
-			// double clicking onto the same field means, that the users wanna walk there
-			Log::debug(LOG_UI, "resolved the grid coordinates for %i:%i to %i:%i", x, y, tx, ty);
-			if (_targetX == tx && _targetY == ty) {
-				doMove(_targetX, _targetY);
-			} else {
-				_targetX = tx;
-				_targetY = ty;
-			}
+		// double clicking onto the same field means, that the users wanna walk there
+		if (tryMove(x, y, true))
 			return true;
-		}
-		Log::error(LOG_UI, "could not get grid coordinates for %i:%i", x, y);
 	}
+
 	return retVal;
+}
+
+bool UIMapWindow::tryMove (int x, int y, bool doubleTap)
+{
+	int tx, ty;
+	if (getField(x, y, &tx, &ty)) {
+		Log::debug(LOG_GAMEIMPL, "resolved the grid coordinates for %i:%i to %i:%i", x, y, tx, ty);
+		if (!doubleTap) {
+			_targetX = tx;
+			_targetY = ty;
+		}
+		if (_targetX == tx && _targetY == ty) {
+			doMove(_targetX, _targetY);
+		} else {
+			_targetX = tx;
+			_targetY = ty;
+		}
+		return true;
+	}
+	Log::debug(LOG_GAMEIMPL, "could not get grid coordinates for %i:%i", x, y);
+	return false;
 }
 
 void UIMapWindow::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY)
 {
 	if (_scrolling) {
-		Camera& camera = _nodeMap->getMap().getCamera();
-		camera.scroll(relX, relY);
+		_nodeMap->getMap().scroll(relX, relY);
 	}
 	IUIMapWindow::onMouseMotion(x, y, relX, relY);
 }

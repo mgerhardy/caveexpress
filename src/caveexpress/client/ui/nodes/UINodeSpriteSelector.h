@@ -6,6 +6,8 @@
 namespace caveexpress {
 
 class UINodeSpriteSelector: public IUINodeSpriteSelector {
+private:
+	typedef IUINodeSpriteSelector Super;
 protected:
 	bool shouldBeShown(const SpriteDefPtr& sprite) const override {
 		const SpriteType& type = sprite->type;
@@ -21,7 +23,7 @@ protected:
 
 public:
 	UINodeSpriteSelector(IFrontend *frontend, int cols = -1, int rows = -1) :
-			IUINodeSpriteSelector(frontend, cols, rows) {
+			Super(frontend, cols, rows) {
 	}
 };
 

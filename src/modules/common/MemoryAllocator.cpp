@@ -5,25 +5,26 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <SDL.h>
 
 MemoryAllocator::MemoryAllocator (size_t nbytes) :
 	_memIndexMap(), _memHeap(nullptr), _size(nbytes), _sizeLeft(nbytes)
 {
-	_memHeap = (char*) malloc(_size);
+	_memHeap = (uint8_t*) SDL_malloc(_size);
 }
 
 MemoryAllocator::~MemoryAllocator ()
 {
-	free(_memHeap);
+	SDL_free(_memHeap);
 }
 
 void* MemoryAllocator::allocate (size_t nbytes)
 {
 	const size_t memsize = calculateMemorySpace(nbytes);
-	char* placement = _memHeap;
+	uint8_t* placement = _memHeap;
 	_sizeLeft -= memsize;
 	for (MemoryIndexMapIter iter = _memIndexMap.begin(); iter != _memIndexMap.end(); ++iter) {
-		char* mem = (char*) iter->first;
+		uint8_t* mem = (uint8_t*) iter->first;
 		ptrdiff_t diff = mem - placement;
 		if (diff >= static_cast<ptrdiff_t>(memsize)) {
 			_memIndexMap[placement] = memsize;
@@ -41,11 +42,7 @@ void* MemoryAllocator::allocate (size_t nbytes)
 
 void MemoryAllocator::deallocate (void* ptr)
 {
-	IMemoryAllocationObject* object = reinterpret_cast<IMemoryAllocationObject*> (ptr);
-	const size_t size = object->size();
-	if (size == 0) {
-		System.exit("object must extend IMemoryAllocationObject", EXIT_FAILURE);
-	}
+	IMemoryAllocationObject* object = reinterpret_cast<IMemoryAllocationObject*>(ptr);
 	object->~IMemoryAllocationObject();
 	MemoryIndexMapIter iter = _memIndexMap.find(ptr);
 	_sizeLeft += calculateMemorySpace(iter->second);

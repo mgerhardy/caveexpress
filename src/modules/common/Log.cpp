@@ -4,25 +4,39 @@
 #include <SDL.h>
 
 char const* const LogTypes[] = {
-	"LOG_BACKEND",
-	"LOG_CLIENT",
-	"LOG_SERVER",
-	"LOG_MAIN",
-	"LOG_NET",
-	"LOG_MAP",
-	"LOG_THREAD",
 	"LOG_CAMPAIGN",
-	"LOG_COMMANDS",
-	"LOG_CONFIG",
-	"LOG_DEBUG",
-	"LOG_FILE",
-	"LOG_LUA",
-	"LOG_STORAGE",
-	"LOG_SYSTEM",
-	"LOG_GENERAL",
-	"LOG_UI"
+	"LOG_CLIENT",
+	"LOG_COMMON",
+	"LOG_GAME",
+	"LOG_GFX",
+	"LOG_MAIN",
+	"LOG_NETWORK",
+	"LOG_PARTICLES",
+	"LOG_SERVER",
+	"LOG_SERVICE",
+	"LOG_SOUND",
+	"LOG_SPRITES",
+	"LOG_TEXTURES",
+	"LOG_UI",
+	"LOG_GAMEIMPL"
 };
 CASSERT(lengthof(LogTypes) == LOG_MAX);
+
+#ifdef __LINUX__
+#define ANSI_COLOR_RESET "\033[0m"
+#define ANSI_COLOR_RED "\033[31m"
+#define ANSI_COLOR_GREEN "\033[32m"
+#define ANSI_COLOR_YELLOW "\033[33m"
+#define ANSI_COLOR_BLUE "\033[34m"
+#define ANSI_COLOR_CYAN "\033[36m"
+#else
+#define ANSI_COLOR_RESET ""
+#define ANSI_COLOR_RED ""
+#define ANSI_COLOR_GREEN ""
+#define ANSI_COLOR_YELLOW ""
+#define ANSI_COLOR_BLUE ""
+#define ANSI_COLOR_CYAN ""
+#endif
 
 LogLevelList LogLevels[] = {
 	{"TRACE", LogLevel::LEVEL_TRACE, SDL_LOG_PRIORITY_VERBOSE},
@@ -67,35 +81,35 @@ void Log::vsnprint(LogLevel logLevel, LogCategory category, const char* msg, va_
 	char buf[1024];
 	const char *categoryStr = LogTypes[static_cast<int>(category)];
 	SDL_vsnprintf(buf, sizeof(buf), msg, args);
-	buf[sizeof(buf) - 1] = 0;
+	buf[sizeof(buf) - 1] = '\0';
 
 	switch (logLevel) {
 		case LogLevel::LEVEL_INFO:
-			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "(%s): %s\n", categoryStr, buf);
+			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, ANSI_COLOR_GREEN "(%s): %s" ANSI_COLOR_RESET "\n", categoryStr, buf);
 			for (ConsolesConstIter i = _consoles.begin(); i != _consoles.end(); ++i) {
 				(*i)->logInfo(buf);
 			}
 			break;
 		case LogLevel::LEVEL_WARN:
-			SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "(%s): %s\n", categoryStr, buf);
+			SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, ANSI_COLOR_YELLOW "(%s): %s" ANSI_COLOR_RESET "\n", categoryStr, buf);
 			for (ConsolesConstIter i = _consoles.begin(); i != _consoles.end(); ++i) {
 				(*i)->logInfo(buf);
 			}
 			break;
 		case LogLevel::LEVEL_ERROR:
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "(%s): %s\n", categoryStr, buf);
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, ANSI_COLOR_RED "(%s): %s" ANSI_COLOR_RESET "\n", categoryStr, buf);
 			for (ConsolesConstIter i = _consoles.begin(); i != _consoles.end(); ++i) {
 				(*i)->logError(buf);
 			}
 			break;
 		case LogLevel::LEVEL_DEBUG:
-			SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "(%s): %s\n", categoryStr, buf);
+			SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, ANSI_COLOR_BLUE "(%s): %s" ANSI_COLOR_RESET "\n", categoryStr, buf);
 			for (ConsolesConstIter i = _consoles.begin(); i != _consoles.end(); ++i) {
 				(*i)->logDebug(buf);
 			}
 			break;
 		case LogLevel::LEVEL_TRACE:
-			SDL_LogVerbose(SDL_LOG_CATEGORY_APPLICATION, "(%s): %s\n", categoryStr, buf);
+			SDL_LogVerbose(SDL_LOG_CATEGORY_APPLICATION, ANSI_COLOR_CYAN "(%s): %s" ANSI_COLOR_RESET "\n", categoryStr, buf);
 			for (ConsolesConstIter i = _consoles.begin(); i != _consoles.end(); ++i) {
 				(*i)->logTrace(buf);
 			}

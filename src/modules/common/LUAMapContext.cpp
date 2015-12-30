@@ -70,7 +70,7 @@ int LUAMapContext::luaAddTile (lua_State * l)
 
 	SpriteDefPtr spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(tile);
 	if (!spriteDefPtr) {
-		Log::info(LOG_SERVER, "could not add tile: %s", tile.c_str());
+		Log::info(LOG_COMMON, "could not add tile: %s", tile.c_str());
 		ctx->_error = true;
 		return 0;
 	}
@@ -120,7 +120,7 @@ int LUAMapContext::luaSetSetting (lua_State * l)
 	if (key == msn::THEME) {
 		ctx->_theme = &ThemeType::getByName(value);
 		if (ctx->_theme->isNone()) {
-			Log::error(LOG_SERVER, "invalid theme given: %s", value.c_str());
+			Log::error(LOG_COMMON, "invalid theme given: %s", value.c_str());
 			ctx->_theme = &ThemeTypes::ROCK;
 		}
 	}
@@ -134,14 +134,14 @@ bool LUAMapContext::load (bool skipErrors)
 {
 	resetTiles();
 	if (!_lua.load(FS.getMapsDir() + _name + ".lua")) {
-		Log::info(LOG_SERVER, "could not load map lua script");
+		Log::info(LOG_COMMON, "could not load map lua script");
 		return false;
 	}
 
 	if (!_lua.execute("getName", 1))
 		return false;
 	_title = _lua.getStringFromStack();
-	Log::info(LOG_SERVER, "Load map with title %s", _title.c_str());
+	Log::info(LOG_COMMON, "Load map with title %s", _title.c_str());
 
 	if (!_lua.execute("initMap"))
 		return false;
@@ -149,7 +149,8 @@ bool LUAMapContext::load (bool skipErrors)
 	return !_error;
 }
 
-void LUAMapContext::saveTiles(const FilePtr& file) const {
+bool LUAMapContext::saveTiles(const FilePtr& file) const {
+	bool definitionsAdded = false;
 	for (const MapTileDefinition& i : _definitions) {
 		file->appendString("\tmap:addTile(\"");
 		file->appendString(i.spriteDef->id.c_str());
@@ -157,12 +158,18 @@ void LUAMapContext::saveTiles(const FilePtr& file) const {
 		file->appendString(string::toString(i.x).c_str());
 		file->appendString(", ");
 		file->appendString(string::toString(i.y).c_str());
+		if (i.angle != 0) {
+			file->appendString(", ");
+			file->appendString(string::toString(i.angle).c_str());
+		}
 		file->appendString(")\n");
+		definitionsAdded = true;
 	}
 
-	if (!_emitters.empty()) {
+	if (definitionsAdded || !_emitters.empty())
 		file->appendString("\n");
-	}
+
+	bool emittersAdded = false;
 	for (const EmitterDefinition& i : _emitters) {
 		file->appendString("\tmap:addEmitter(\"");
 		file->appendString(i.type->name.c_str());
@@ -172,8 +179,15 @@ void LUAMapContext::saveTiles(const FilePtr& file) const {
 		file->appendString(string::toString(i.y).c_str());
 		file->appendString(", ");
 		file->appendString(string::toString(i.amount).c_str());
-		file->appendString(")\n");
+		file->appendString(", ");
+		file->appendString(string::toString(i.delay).c_str());
+		file->appendString(", \"");
+		file->appendString(i.settings.c_str());
+		file->appendString("\")\n");
+		emittersAdded = true;
 	}
+
+	return definitionsAdded || emittersAdded;
 }
 
 bool LUAMapContext::save() const
@@ -184,7 +198,7 @@ bool LUAMapContext::save() const
 
 	file->writeString("function getName()\n");
 	file->appendString("\treturn \"");
-	file->appendString(_name.c_str());
+	file->appendString(_title.c_str());
 	file->appendString("\"\n");
 	file->appendString("end\n\n");
 	file->appendString("function onMapLoaded()\n");
@@ -193,18 +207,43 @@ bool LUAMapContext::save() const
 	file->appendString("\t-- get the current map context\n");
 	file->appendString("\tlocal map = Map.get()\n");
 
-	saveTiles(file);
-
-	const IMap::SettingsMap& map = getSettings();
-	if (!map.empty()) {
+	if (saveTiles(file)) {
 		file->appendString("\n");
 	}
-	for (IMap::SettingsMapConstIter i = map.begin(); i != map.end(); ++i) {
+
+	bool settingsAdded = false;
+	const IMap::SettingsMap& settings = _settings;
+	const auto width = settings.find(msn::WIDTH);
+	if (width != settings.end()) {
+		file->appendString("\tmap:setSetting(\"");
+		file->appendString(msn::WIDTH.c_str());
+		file->appendString("\", \"");
+		file->appendString(width->second.c_str());
+		file->appendString("\")\n");;
+		settingsAdded = true;
+	}
+	const auto height = settings.find(msn::HEIGHT);
+	if (height != settings.end()) {
+		file->appendString("\tmap:setSetting(\"");
+		file->appendString(msn::HEIGHT.c_str());
+		file->appendString("\", \"");
+		file->appendString(height->second.c_str());
+		file->appendString("\")\n");
+		settingsAdded = true;
+	}
+	for (IMap::SettingsMapConstIter i = settings.begin(); i != settings.end(); ++i) {
+		if (i->first == msn::WIDTH || i->first == msn::HEIGHT)
+			continue;
 		file->appendString("\tmap:setSetting(\"");
 		file->appendString(i->first.c_str());
 		file->appendString("\", \"");
 		file->appendString(i->second.c_str());
 		file->appendString("\")\n");
+		settingsAdded = true;
+	}
+
+	if (settingsAdded) {
+		file->appendString("\n");
 	}
 
 	for (const IMap::StartPosition& pos : _startPositions) {
@@ -216,6 +255,13 @@ bool LUAMapContext::save() const
 	}
 
 	file->appendString("end\n");
+
+	if (file->length() <= 0L) {
+		FS.deleteFile(path);
+		return false;
+	}
+
+	Log::info(LOG_UI, "wrote %s", path.c_str());
 
 	return true;
 }

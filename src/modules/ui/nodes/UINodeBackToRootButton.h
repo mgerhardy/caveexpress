@@ -1,10 +1,10 @@
 #pragma once
 
-#include "ui/nodes/UINodeButtonImage.h"
+#include "ui/nodes/UINodeMainButton.h"
 #include "ui/UI.h"
 #include "common/CommandSystem.h"
 
-class UINodeBackToRootButton: public UINodeButtonImage {
+class UINodeBackToRootButton: public UINodeMainButton {
 protected:
 	bool execute () override
 	{
@@ -14,7 +14,7 @@ protected:
 	}
 public:
 	UINodeBackToRootButton (IFrontend *frontend) :
-		UINodeButtonImage(frontend, "icon-back-to-root")
+		UINodeMainButton(frontend, tr("Close"))
 	{
 		setId("back-to-root");
 	}

@@ -6,17 +6,20 @@
 #include "game/GameRegistry.h"
 #include <SDL.h>
 #include <SDL_main.h>
-
+#include "game.h"
 
 extern "C" int main (int argc, char *argv[])
 {
 	Application& app = Singleton<Application>::getInstance();
 	const GamePtr& game = Singleton<GameRegistry>::getInstance().getGame();
 	app.setOrganisation("caveproductions");
-	app.setName(game->getName());
-#ifdef VERSION
-	app.setVersion( VERSION );
+#if defined(__IPHONEOS__) || defined(__ANDROID__)
+	app.setPackageName(GUI_IDENTIFIER);
+#else
+	app.setPackageName(APPNAME);
 #endif
+	app.setName(game->getName());
+	app.setVersion(VERSION);
 
 	getSystem().init();
 	const std::string workingDir = getSystem().getCurrentWorkingDir();

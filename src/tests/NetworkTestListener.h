@@ -3,6 +3,24 @@
 #include "network/INetwork.h"
 #include "network/ProtocolHandlerRegistry.h"
 
+class NoNetworkTestServerListener: public IServerCallback {
+public:
+	NoNetworkTestServerListener() : _count(0) {}
+	int _count;
+	void onData (ClientId clientId, ByteStream &data) override {
+		++_count;
+	}
+};
+
+class NoNetworkTestListener: public IClientCallback {
+public:
+	NoNetworkTestListener() : _count(0) {}
+	int _count;
+	void onData (ByteStream& data) override {
+		++_count;
+	}
+};
+
 class NetworkTestServerListener: public IServerCallback {
 public:
 	NetworkTestServerListener() :
@@ -22,14 +40,14 @@ public:
 			if (!msg) {
 				_errorCount++;
 				_lastError = "no message for type " + string::toString(static_cast<int>(data.readByte()));
-				Log::error(LOG_NET, "%s", _lastError.c_str());
+				Log::error(LOG_NETWORK, "%s", _lastError.c_str());
 				continue;
 			}
 			IServerProtocolHandler* handler = ProtocolHandlerRegistry::get().getServerHandler(*msg);
 			if (handler == nullptr) {
 				_errorCount++;
 				_lastError = "no client handler for message type: " + string::toString(static_cast<int>(msg->getId()));
-				Log::error(LOG_NET, "no server handler for message type %i", msg->getId());
+				Log::error(LOG_NETWORK, "no server handler for message type %i", msg->getId());
 				continue;
 			}
 			handler->execute(clientId, *msg);
@@ -60,7 +78,7 @@ public:
 	int _count;
 	int _errorCount;
 	std::string _lastError;
-	void onData (ByteStream& data) {
+	void onData (ByteStream& data) override {
 		ProtocolMessageFactory& factory = ProtocolMessageFactory::get();
 		while (factory.isNewMessageAvailable(data)) {
 			++_count;
@@ -73,12 +91,12 @@ public:
 				continue;
 			}
 
-			Log::debug(LOG_NET, "received message type %i", msg->getId());
+			Log::debug(LOG_NETWORK, "received message type %i", msg->getId());
 			IClientProtocolHandler* handler = ProtocolHandlerRegistry::get().getClientHandler(*msg);
 			if (handler == nullptr) {
 				_errorCount++;
 				_lastError = "no client handler for message type: " + string::toString(static_cast<int>(msg->getId()));
-				Log::error(LOG_NET, "no client handler for message type %i", msg->getId());
+				Log::error(LOG_NETWORK, "no client handler for message type %i", msg->getId());
 				continue;
 			}
 			handler->execute(*msg);

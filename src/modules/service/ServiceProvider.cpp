@@ -18,35 +18,39 @@ ServiceProvider::ServiceProvider() :
 
 ServiceProvider::~ServiceProvider ()
 {
-	Log::info(LOG_GENERAL, "shutting down the serviceprovider");
-	if (_mapManager != nullptr)
-		delete _mapManager;
-	if (_network != nullptr)
-		delete _network;
-	if (_loopback != nullptr)
-		delete _loopback;
-	if (_textureDefinition != nullptr)
-		delete _textureDefinition;
+	Log::info(LOG_SERVICE, "shutting down the serviceprovider");
+	shutdown();
 }
 
 void ServiceProvider::updateNetwork (bool network)
 {
-	if (_currentNetwork)
-		_currentNetwork->shutdown();
+	INetwork* newNetwork;
+	if (network) {
+		newNetwork = _network;
+	} else {
+		newNetwork = _loopback;
+	}
+
+	// no need to switch
+	if (newNetwork == _currentNetwork)
+		return;
 
 	if (network) {
-		_currentNetwork = _network;
-		Log::info(LOG_GENERAL, "switching to network");
+		Log::info(LOG_SERVICE, "switching to network");
 	} else {
-		_currentNetwork = _loopback;
-		Log::info(LOG_GENERAL, "switching to loopback");
+		Log::info(LOG_SERVICE, "switching to loopback");
 	}
+
+	if (_currentNetwork) {
+		_currentNetwork->shutdown();
+	}
+	_currentNetwork = newNetwork;
 	_currentNetwork->init();
 }
 
 void ServiceProvider::initTextureDefinition (IFrontend *frontend, const std::string& textureSize, IProgressCallback* progress)
 {
-	Log::info(LOG_BACKEND, "initialize the texture definition");
+	Log::info(LOG_SERVICE, "initialize the texture definition");
 	if (_textureDefinition != nullptr)
 		delete _textureDefinition;
 	ExecutionTime e("texture definition");
@@ -59,6 +63,26 @@ void ServiceProvider::initTextureDefinition (IFrontend *frontend, const std::str
 	} else {
 		_textureDefinition = new TextureDefinition(textureSize, progress);
 	}
+}
+
+void ServiceProvider::shutdown()
+{
+	if (_currentNetwork)
+		_currentNetwork->shutdown();
+
+	delete _mapManager;
+#ifndef NONETWORK
+	delete _network;
+#endif
+	delete _loopback;
+	delete _textureDefinition;
+
+	_mapManager = nullptr;
+	_network = nullptr;
+	_loopback = nullptr;
+	_textureDefinition = nullptr;
+
+	_currentNetwork = nullptr;
 }
 
 void ServiceProvider::init (IFrontend *frontend)
@@ -81,5 +105,5 @@ void ServiceProvider::init (IFrontend *frontend)
 		if (_mapManager != nullptr)
 			_mapManager->init();
 	}
-	Log::info(LOG_BACKEND, "initialized the serviceprovider");
+	Log::info(LOG_SERVICE, "initialized the serviceprovider");
 }

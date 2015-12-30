@@ -1,11 +1,13 @@
 ALT|ALT
 Achievements|Achievements
 Are you sure?|Are you sure?
+Back|Back
 Big|Big
 CTRL|CTRL
 CURSOR|CURSOR
 Campaigns|Campaigns
 Cancel|Cancel
+Close|Close
 Continue|Continue
 Create server|Create server
 Decrease map size|Decrease map size
@@ -25,6 +27,7 @@ Homepage|Homepage
 Increase map size|Increase map size
 Joystick|Joystick
 LMB|LMB
+Later|Later
 Leaderboard|Leaderboard
 Load|Load
 MMB|MMB
@@ -47,6 +50,7 @@ Package|Package
 Place tile|Place tile
 Players|Players
 Players:|Players:
+Please rate the app|Please rate the app
 Quit|Quit
 Quit without saving|Quit without saving
 RMB|RMB
@@ -56,6 +60,8 @@ Refresh|Refresh
 Remove tile|Remove tile
 Reset|Reset
 Reset game progress?|Reset game progress?
+Restart|Restart
+Retry|Retry
 Rotate entity|Rotate entity
 SHIFT|SHIFT
 SPACE|SPACE
@@ -71,6 +77,7 @@ Shift tile|Shift tile
 Show Grid|Show Grid
 Show help messages to the player|Show help messages to the player
 Small|Small
+Solve|Solve
 Sound/Music|Sound/Music
 Start|Start
 Target|Target

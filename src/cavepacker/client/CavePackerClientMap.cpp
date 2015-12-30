@@ -23,33 +23,96 @@
 
 namespace cavepacker {
 
-CavePackerClientMap::CavePackerClientMap (int x, int y, int width, int height, IFrontend *frontend,
-		ServiceProvider& serviceProvider, int referenceTileWidth) :
-		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth)
-{
+CavePackerClientMap::CavePackerClientMap(int x, int y, int width, int height,
+		IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth) :
+		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth), _target(nullptr), _targetEnts(0u) {
+	_deadlockOverlay = UI::get().loadSprite("deadlock");
 }
 
-void CavePackerClientMap::start ()
-{
+void CavePackerClientMap::onWindowResize () {
+	_target = nullptr;
+}
+
+void CavePackerClientMap::scroll (int relX, int relY) {
+	ClientMap::scroll(relX, relY);
+	_target = nullptr;
+}
+
+bool CavePackerClientMap::updateCameraPosition () {
+	if (ClientMap::updateCameraPosition()) {
+		_target = nullptr;
+		return true;
+	}
+	return false;
+}
+
+void CavePackerClientMap::setZoom (const float zoom) {
+	ClientMap::setZoom(zoom);
+	_target = nullptr;
+}
+
+void CavePackerClientMap::renderLayer (int x, int y, Layer layer) const {
+	if (Config.renderToTexture()) {
+		if (layer == LAYER_BACK) {
+			if (_target == nullptr || _targetEnts != _entities.size()) {
+				_targetEnts = _entities.size();
+				_target = _frontend->renderToTexture(x, y, getWidth() * _zoom, getHeight() * _zoom);
+				ClientMap::renderLayer(x, y, layer);
+				_frontend->disableRenderTarget(_target);
+			}
+			return;
+		} else if (layer == LAYER_MIDDLE && _target) {
+			_frontend->renderTarget(_target);
+		}
+	}
+	ClientMap::renderLayer(x, y, layer);
+}
+
+void CavePackerClientMap::start() {
 	ClientMap::start();
 }
 
-void CavePackerClientMap::undo ()
-{
+void CavePackerClientMap::undo() {
 	_serviceProvider.getNetwork().sendToServer(UndoMessage());
 }
 
-void CavePackerClientMap::update (uint32_t deltaTime)
-{
+void CavePackerClientMap::setDeadlocks(const std::vector<int>& _deadlocks) {
+	std::vector<int> deadlocks(_deadlocks);
+	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
+		ClientEntityPtr entity = i->second;
+		const EntityType& type = entity->getType();
+		if (!EntityTypes::isGround(type)) {
+			continue;
+		}
+		ClientMapTile* tile = static_cast<ClientMapTile*>(entity);
+		const vec2& pos = tile->getPos();
+		const int col = pos.x + 0.5f;
+		const int row = pos.y + 0.5f;
+		const int index = col + _mapWidth * row;
+		auto iter = std::find(deadlocks.begin(), deadlocks.end(), index);
+		if (iter == deadlocks.end()) {
+			tile->removeOverlay(_deadlockOverlay);
+			continue;
+		}
+		deadlocks.erase(iter);
+		tile->addOverlay(_deadlockOverlay);
+	}
+}
+
+void CavePackerClientMap::update(uint32_t deltaTime) {
 	ClientMap::update(deltaTime);
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
-		if (i->second->getType() != EntityTypes::PACKAGE)
-			continue;
-		const bool delivered = i->second->getState() == CavePackerEntityStates::DELIVERED;
-		if (delivered) {
-			i->second->setAnimationType(Animations::DELIVERED);
-		} else {
-			i->second->setAnimationType(Animation::NONE);
+		ClientEntityPtr entity = i->second;
+		const EntityType& type = entity->getType();
+		auto state = entity->getState();
+		if (EntityTypes::isPackage(type)) {
+			if (state == CavePackerEntityStates::DELIVERED) {
+				entity->setAnimationType(Animations::DELIVERED);
+			} else if (state == CavePackerEntityStates::DEADLOCK) {
+				entity->setAnimationType(Animations::DEADLOCK);
+			} else {
+				entity->setAnimationType(Animation::NONE);
+			}
 		}
 	}
 }

@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <stdint.h>
+#include <SDL_assert.h>
 
 class Sprite {
 private:
@@ -150,22 +151,22 @@ inline void Sprite::setFPS (float fps)
 
 inline void Sprite::setActive (int frame, bool active)
 {
-	assert(frame <= static_cast<int>(_active.size()));
-	assert(frame > 0);
+	SDL_assert(frame <= static_cast<int>(_active.size()));
+	SDL_assert(frame > 0);
 	_active[frame - 1] = active;
 }
 
 inline bool Sprite::isActive (int frame) const
 {
-	assert(frame <= static_cast<int>(_active.size()));
-	assert(frame > 0);
+	SDL_assert(frame <= static_cast<int>(_active.size()));
+	SDL_assert(frame > 0);
 	return _active[frame - 1];
 }
 
 inline void Sprite::setDelay (int frame, int delay)
 {
-	assert(frame <= static_cast<int>(_delays.size()));
-	assert(frame > 0);
+	SDL_assert(frame <= static_cast<int>(_delays.size()));
+	SDL_assert(frame > 0);
 	_delays[frame - 1] = delay;
 }
 

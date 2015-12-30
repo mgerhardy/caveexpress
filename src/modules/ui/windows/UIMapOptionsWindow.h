@@ -4,13 +4,13 @@
 
 // forward decl
 class ServiceProvider;
-class UINodeBackButton;
 
 class UIMapOptionsWindow: public UIWindow {
 protected:
 	UINode *_restartMap;
 	ServiceProvider& _serviceProvider;
-	UINodeBackButton *_backButton;
+	UINode *_backButton;
+	UINode *_panel;
 public:
 	UIMapOptionsWindow (IFrontend *frontend, ServiceProvider& serviceProvider);
 	void update (uint32_t deltaTime) override;

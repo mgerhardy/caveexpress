@@ -34,13 +34,17 @@ inline int OpenGLStateHandlerCheckError (const char *file, int line, const char 
 		if (glError == GL_NO_ERROR)
 			break;
 
-		Log::error(LOG_CLIENT, "openGL err: %s (%d): %s %s (0x%X)",
+		Log::error(LOG_GFX, "openGL err: %s (%d): %s %s (0x%X)",
 				file, line, function, translateError(glError), glError);
 		ret++;
 	}
 	SDL_assert_always(ret == 0);
 	return ret;
 }
+
+#ifndef GL_CALC_OFFSET
+#define GL_CALC_OFFSET(i) ((void*)(i))
+#endif
 
 #if defined(SDL_VIDEO_OPENGL) || defined(SDL_VIDEO_OPENGL_ES)
 #ifdef DEBUG

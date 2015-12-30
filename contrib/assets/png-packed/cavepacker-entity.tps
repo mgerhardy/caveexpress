@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.7.1</string>
+        <string>3.9.4</string>
         <key>fileName</key>
         <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/cavepacker-entity.tps</string>
         <key>autoSDSettings</key>
@@ -60,6 +60,8 @@
         <false/>
         <key>pvrCompressionQuality</key>
         <enum type="SettingsBase::PvrCompressionQuality">PVR_QUALITY_NORMAL</enum>
+        <key>atfCompressData</key>
+        <false/>
         <key>mipMapMinSize</key>
         <uint>32768</uint>
         <key>etc1CompressionQuality</key>
@@ -73,7 +75,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">PngQuantLow</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -175,7 +177,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
+        <enum type="SettingsBase::OutputFormat">INDEXED</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -210,9 +212,10 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/cavepacker/item-package-idle-middle-01.png</filename>
-            <filename>../png/cavepacker/item-package-delivered-middle-01.png</filename>
-            <filename>../png/cavepacker/player.png</filename>
+            <filename>../png/cavepacker/package-deadlock-front-01.png</filename>
+            <filename>../png/cavepacker/package-delivered-front-01.png</filename>
+            <filename>../png/cavepacker/package-front-01.png</filename>
+            <filename>../png/cavepacker/player-middle-01.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

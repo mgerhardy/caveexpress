@@ -24,12 +24,12 @@ UIMultiplayerWindow::UIMultiplayerWindow (IFrontend *frontend, const IMapManager
 	add(serverlist);
 
 	UINodeMainButton *refresh = new UINodeMainButton(frontend, tr("Refresh"));
-	refresh->putUnderRight(serverlist);
+	refresh->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_RIGHT);
 	refresh->setOnActivate(CMD_CL_PINGSERVERS);
 	add(refresh);
 
 	UINodeMainButton *server = new UINodeMainButton(frontend, tr("Open"));
-	server->putLeft(refresh);
+	server->putLeft(refresh, 0.03f);
 	server->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_CREATE_SERVER)));
 	add(server);
 
@@ -37,9 +37,9 @@ UIMultiplayerWindow::UIMultiplayerWindow (IFrontend *frontend, const IMapManager
 	userName->setBackgroundColor(colorWhite);
 	userName->setValue(Config.getName());
 	userName->addListener(UINodeListenerPtr(new ConfigVarListener("name", userName)));
-	userName->putLeft(server);
+	userName->putLeft(server, 0.03f);
 	add(userName);
-	Commands.registerCommand(CMD_CL_PINGSERVERS, new CmdServerPing(serverlist, serviceProvider));
+	Commands.registerCommandRaw(CMD_CL_PINGSERVERS, new CmdServerPing(serverlist, serviceProvider));
 
 	if (!wantBackButton())
 		return;

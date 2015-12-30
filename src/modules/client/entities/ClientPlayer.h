@@ -11,7 +11,7 @@ protected:
 			float sizeY, const SoundMapping& soundMapping, EntityAlignment align);
 public:
 	class Factory: public IClientEntityFactory {
-		ClientEntityPtr create (const ClientEntityFactoryContext *ctx) const;
+		ClientEntityPtr create (const ClientEntityFactoryContext *ctx) const override;
 	};
 	static Factory FACTORY;
 	virtual ~ClientPlayer ();

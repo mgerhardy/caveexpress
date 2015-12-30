@@ -68,7 +68,7 @@ public:
 	void announceTargetCave (int clientMask, const NPCFriendly& npc, int16_t delayMillis) const;
 
 	// inform the client about the target cave number the npc wants to get carried to
-	void setTargetCave (int clientMask, uint8_t number) const;
+	void sendTargetCave (int clientMask, uint8_t number) const;
 
 	// inform the clients that the given entity changed its animation
 	// used to e.g. change a npc animation to walking

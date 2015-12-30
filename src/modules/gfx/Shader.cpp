@@ -63,7 +63,7 @@ bool Shader::load (const std::string& filename, const std::string& source, Shade
 			break;
 		}
 
-		Log::error(LOG_CLIENT, "compile failure in %s (type: %s) shader:\n%s", filename.c_str(), strShaderType.c_str(), errorLog.c_str());
+		Log::error(LOG_GFX, "compile failure in %s (type: %s) shader:\n%s", filename.c_str(), strShaderType.c_str(), errorLog.c_str());
 		return false;
 	}
 
@@ -72,12 +72,12 @@ bool Shader::load (const std::string& filename, const std::string& source, Shade
 
 bool Shader::loadFromFile (const std::string& filename, ShaderType shaderType)
 {
-	FilePtr filePtr = FS.getFile(FS.getShaderDir() + filename);
+	FilePtr filePtr = FS.getFileFromURL("shaders://" + filename);
 	char *buffer;
 	const int fileLen = filePtr->read((void **) &buffer);
 	std::unique_ptr<char[]> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		Log::error(LOG_CLIENT, "could not load shader %s", filename.c_str());
+		Log::error(LOG_GFX, "could not load shader %s", filename.c_str());
 		return false;
 	}
 
@@ -121,12 +121,12 @@ std::string Shader::getSource (ShaderType shaderType, const char *buffer, int le
 					continue;
 
 				const std::string includeFile(cStart + 1, cEnd);
-				FilePtr filePtr = FS.getFile(FS.getShaderDir() + includeFile);
+				FilePtr filePtr = FS.getFileFromURL("shaders://" + includeFile);
 				char *includeBuffer;
 				const int includeLen = filePtr->read((void **) &includeBuffer);
 				std::unique_ptr<char[]> p(includeBuffer);
 				if (!includeBuffer || includeLen <= 0) {
-					Log::error(LOG_CLIENT, "could not load shader include %s", includeFile.c_str());
+					Log::error(LOG_GFX, "could not load shader include %s", includeFile.c_str());
 					break;
 				}
 				src.append(includeBuffer, includeLen);
@@ -156,7 +156,7 @@ bool Shader::loadProgram (const std::string& filename)
 	fetchUniforms();
 	const bool success = _program != 0;
 	if (success) {
-		Log::info(LOG_CLIENT, "loaded shader: %s", filename.c_str());
+		Log::info(LOG_GFX, "loaded shader: %s", filename.c_str());
 	}
 	_initialized = success;
 	return success;
@@ -177,7 +177,7 @@ void Shader::fetchUniforms ()
 		glGetActiveUniform(_program, i, MAX_SHADER_VAR_NAME - 1, &length, &size, &type, name);
 		const int location = glGetUniformLocation(_program, name);
 		_uniforms[name] = location;
-		Log::debug(LOG_CLIENT, "uniform %s found at location %i in shader %s", name, location, _name.c_str());
+		Log::debug(LOG_GFX, "uniform %s found at location %i in shader %s", name, location, _name.c_str());
 	}
 }
 
@@ -196,7 +196,7 @@ void Shader::fetchAttributes ()
 		glGetActiveAttrib(_program, i, MAX_SHADER_VAR_NAME - 1, &length, &size, &type, name);
 		const int location = glGetAttribLocation(_program, name);
 		_attributes[name] = location;
-		Log::debug(LOG_CLIENT, "attribute %s found at location %i in shader %s", name, location, _name.c_str());
+		Log::debug(LOG_GFX, "attribute %s found at location %i in shader %s", name, location, _name.c_str());
 	}
 }
 
@@ -223,7 +223,7 @@ void Shader::createProgramFromShaders ()
 
 		GLchar* strInfoLog = new GLchar[infoLogLength + 1];
 		glGetProgramInfoLog(_program, infoLogLength, nullptr, strInfoLog);
-		Log::error(LOG_CLIENT, "linker failure: %s", strInfoLog);
+		Log::error(LOG_GFX, "linker failure: %s", strInfoLog);
 		glDeleteProgram(_program);
 		_program = 0;
 		delete[] strInfoLog;
@@ -234,7 +234,7 @@ int Shader::getAttributeLocation (const std::string& name) const
 {
 	ShaderVariables::const_iterator i = _attributes.find(name);
 	if (i == _attributes.end()) {
-		Log::error(LOG_CLIENT, "can't find attribute %s in shader %s", name.c_str(), _name.c_str());
+		Log::error(LOG_GFX, "can't find attribute %s in shader %s", name.c_str(), _name.c_str());
 		return -1;
 	}
 	return i->second;
@@ -244,7 +244,7 @@ int Shader::getUniformLocation (const std::string& name) const
 {
 	ShaderVariables::const_iterator i = _uniforms.find(name);
 	if (i == _uniforms.end()) {
-		Log::error(LOG_CLIENT, "can't find uniform %s in shader %s", name.c_str(), _name.c_str());
+		Log::error(LOG_GFX, "can't find uniform %s in shader %s", name.c_str(), _name.c_str());
 		return -1;
 	}
 	return i->second;

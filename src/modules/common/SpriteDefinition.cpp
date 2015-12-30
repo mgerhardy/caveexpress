@@ -4,7 +4,6 @@
 #include "common/Log.h"
 #include "common/ExecutionTime.h"
 #include "common/TextureDefinition.h"
-#include <Box2D/Box2D.h>
 
 SpriteDefinition::SpriteDefinition ()
 {
@@ -13,7 +12,7 @@ SpriteDefinition::SpriteDefinition ()
 void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 {
 	ExecutionTime e("Sprites loading");
-	Log::debug(LOG_GENERAL, "Sprites loading");
+	Log::debug(LOG_COMMON, "Sprites loading");
 	LUA lua;
 
 	if (!lua.load("sprites.lua")) {
@@ -23,7 +22,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 	LUA_checkStack2(lua.getState());
 	if (!lua.getGlobalKeyValue("sprites")) {
-		Log::error(LOG_GENERAL, "spritedef: Could not find the global sprites map");
+		Log::error(LOG_COMMON, "spritedef: Could not find the global sprites map");
 		return;
 	}
 
@@ -31,24 +30,24 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		LUA_checkStack2(lua.getState());
 		const std::string id = lua.getKey();
 		if (id.empty()) {
-			Log::error(LOG_GENERAL, "spritedef: no key found in definition: %s", lua.getStackDump().c_str());
+			Log::error(LOG_COMMON, "spritedef: no key found in definition: %s", lua.getStackDump().c_str());
 			lua.pop();
 			continue;
 		}
-		Log::debug(LOG_GENERAL, "id: %s", id.c_str());
+		Log::debug(LOG_COMMON, "id: %s", id.c_str());
 
 		SpriteDefMapConstIter findIter = _spriteDefs.find(id);
 		if (findIter != _spriteDefs.end()) {
-			Log::error(LOG_GENERAL, "sprite def already defined: %s", id.c_str());
+			Log::error(LOG_COMMON, "sprite def already defined: %s", id.c_str());
 			lua.pop();
 			continue;
 		}
 
 		const std::string& typeStr = lua.getValueStringFromTable("type");
-		Log::debug(LOG_GENERAL, "id: %s, type %s", id.c_str(), typeStr.c_str());
+		Log::debug(LOG_COMMON, "id: %s, type %s", id.c_str(), typeStr.c_str());
 		const SpriteType& type = SpriteType::getByName(typeStr);
 		if (!type && !typeStr.empty()) {
-			Log::error(LOG_GENERAL, "invalid sprite type given: %s", typeStr.c_str());
+			Log::error(LOG_COMMON, "invalid sprite type given: %s", typeStr.c_str());
 		}
 		const ThemeType& theme = ThemeType::getByName(lua.getValueStringFromTable("theme"));
 		SpriteDef *def = new SpriteDef(id, type, theme);
@@ -64,23 +63,35 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		// push the frames table
 		const int layers = lua.getTable("frames");
-		Log::debug(LOG_GENERAL, "id: %s => %i frames", id.c_str(), layers);
-		for (Layer layer = LAYER_BACK; layer < layers; layer++) {
+		Log::debug(LOG_COMMON, "id: %s => %i frames", id.c_str(), layers);
+		if (layers > MAX_LAYERS) {
+			Log::error(LOG_COMMON, "invalid sprite layer amount given for %s: %i", id.c_str(), layers);
+		}
+
+		if (layers > 0) {
 			LUA_checkStack2(lua.getState());
-			lua_pushinteger(lua.getState(), layer + 1);
-			lua_gettable(lua.getState(), -2);
-			if (!lua_istable(lua.getState(), -1)) {
-				Log::error(LOG_GENERAL, "spritedef: expected frame table on the stack: %s", lua.getStackDump().c_str());
+			lua_State* L = lua.getState();
+			lua_pushvalue(L, -1);
+			lua_pushnil(L);
+			Layer layer = LAYER_BACK;
+			while (lua_next(L, -2)) {
+				if (!lua_istable(lua.getState(), -1)) {
+					Log::error(LOG_COMMON, "spritedef: expected frame table on the stack: %s", lua.getStackDump().c_str());
+					lua.pop();
+					continue;
+				}
+				// push the frame table
+				const int framesOnLayer = lua_rawlen(lua.getState(), -1);
+				Log::debug(LOG_COMMON, "id: %s => %i frames on layer %i", id.c_str(), framesOnLayer, layer);
+				for (int i = 1; i <= framesOnLayer; ++i) {
+					const std::string& texture = lua.getTableString(i);
+					Log::debug(LOG_COMMON, "id: %s => texture %s on layer %i", id.c_str(), texture.c_str(), layer);
+					const SpriteDefFrame frame(texture, 0, true);
+					if (layer < MAX_LAYERS)
+						def->textures[layer].push_back(frame);
+				}
 				lua.pop();
-				continue;
-			}
-			// push the frame table
-			const int framesOnLayer = lua_rawlen(lua.getState(), -1);
-			Log::debug(LOG_GENERAL, "id: %s => %i framesOnLayer", id.c_str(), framesOnLayer);
-			for (int i = 1; i <= framesOnLayer; ++i) {
-				const std::string& texture = lua.getTableString(i);
-				const SpriteDefFrame frame(texture, 0, true);
-				def->textures[layer].push_back(frame);
+				++layer;
 			}
 			// pop the frame table
 			lua.pop();
@@ -92,63 +103,70 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		// push the polygons table
 		const int polygons = lua.getTable("polygons");
-		Log::debug(LOG_GENERAL, "id: %s => %i polygons", id.c_str(), polygons);
+		Log::debug(LOG_COMMON, "id: %s => %i polygons", id.c_str(), polygons);
 		if (polygons > 0) {
-			for (int j = 1; j <= polygons; j++) {
-				LUA_checkStack2(lua.getState());
-				lua_pushinteger(lua.getState(), j);
-				lua_gettable(lua.getState(), -2);
-				if (!lua_istable(lua.getState(), -1)) {
-					Log::error(LOG_GENERAL, "spritedef: expected polygon table on the stack: %s", lua.getStackDump().c_str());
+			LUA_checkStack2(lua.getState());
+			lua_State* L = lua.getState();
+			lua_pushvalue(L, -1);
+			lua_pushnil(L);
+			while (lua_next(L, -2)) {
+				if (!lua_istable(L, -1)) {
+					Log::error(LOG_COMMON, "spritedef: expected polygon table on the stack: %s", lua.getStackDump().c_str());
 					lua.pop();
 					continue;
 				}
 				// push the polygon table
-				const int vertices = lua_rawlen(lua.getState(), -1) - 1;
-				Log::debug(LOG_GENERAL, "id: %s => %i vertices", id.c_str(), vertices);
+				const int vertices = lua_rawlen(L, -1) - 1;
+				Log::debug(LOG_COMMON, "id: %s => %i vertices", id.c_str(), vertices);
 				const std::string& userData = lua.getTableString(1);
 				SpritePolygon p(userData);
-				Log::debug(LOG_GENERAL, "id: %s => %s userdata", id.c_str(), userData.c_str());
+				Log::debug(LOG_COMMON, "id: %s => %s userdata", id.c_str(), userData.c_str());
 				for (int i = 2; i <= vertices; i += 2) {
-					const float x = lua.getTableInteger(i) / 100.0f;
-					const float y = lua.getTableInteger(i + 1) / 100.0f;
+					const float x = lua.getTableFloat(i) / 100.0f;
+					const float y = lua.getTableFloat(i + 1) / 100.0f;
 					p.vertices.push_back(SpriteVertex(x, y));
 				}
 				// pop the polygon table
 				lua.pop();
 				def->polygons.push_back(p);
 			}
+			lua.pop();
 		}
-		Log::debug(LOG_GENERAL, "spritedef: %s", lua.getStackDump().c_str());
+
 		// pop the polygons table
 		if (polygons != -1)
 			lua.pop();
 
 		// push the circles table
 		const int circles = lua.getTable("circles");
-		for (int j = 1; j <= circles; j++) {
+		Log::debug(LOG_COMMON, "id: %s => %i circles", id.c_str(), circles);
+		if (circles > 0) {
 			LUA_checkStack2(lua.getState());
-			lua_pushinteger(lua.getState(), j);
-			lua_gettable(lua.getState(), -2);
-			if (!lua_istable(lua.getState(), -1)) {
-				Log::error(LOG_GENERAL, "spritedef: expected circle table on the stack: %s", lua.getStackDump().c_str());
+			lua_State* L = lua.getState();
+			lua_pushvalue(L, -1);
+			lua_pushnil(L);
+			while (lua_next(L, -2)) {
+				if (!lua_istable(L, -1)) {
+					Log::error(LOG_COMMON, "spritedef: expected circle table on the stack: %s", lua.getStackDump().c_str());
+					lua.pop();
+					continue;
+				}
+				// push the circle table
+				const int entries = lua_rawlen(lua.getState(), -1);
+				if (entries == 4) {
+					const std::string& userData = lua.getTableString(1);
+					SpriteCircle p(userData);
+					const float x = lua.getTableInteger(2) / 100.0f;
+					const float y = lua.getTableInteger(3) / 100.0f;
+					p.center = SpriteVertex(x, y);
+					p.radius = lua.getTableInteger(4) / 100.0f;
+					def->circles.push_back(p);
+				} else {
+					Log::error(LOG_COMMON, "invalid amount of entries for the circle shape");
+				}
+				// pop the circle table
 				lua.pop();
-				continue;
 			}
-			// push the circle table
-			const int entries = lua_rawlen(lua.getState(), -1);
-			if (entries == 4) {
-				const std::string& userData = lua.getTableString(1);
-				SpriteCircle p(userData);
-				const float x = lua.getTableInteger(2) / 100.0f;
-				const float y = lua.getTableInteger(3) / 100.0f;
-				p.center = SpriteVertex(x, y);
-				p.radius = lua.getTableInteger(4) / 100.0f;
-				def->circles.push_back(p);
-			} else {
-				Log::error(LOG_GENERAL, "invalid amount of entries for the circle shape");
-			}
-			// pop the circle table
 			lua.pop();
 		}
 		// pop the circles table
@@ -247,8 +265,8 @@ SpriteDefinition& SpriteDefinition::get ()
 
 SpriteDefPtr SpriteDefinition::getFromEntityType (const EntityType& entityType, const Animation& animation) const
 {
-	const String baseName = getSpriteName(entityType, animation);
-	const std::string name = baseName.replaceAll(TEXTURE_DIRECTION, TEXTURE_DIRECTION_RIGHT);
+	const std::string baseName = getSpriteName(entityType, animation);
+	const std::string name = string::replaceAll(baseName, TEXTURE_DIRECTION, TEXTURE_DIRECTION_RIGHT);
 	const SpriteDefPtr& def = getSpriteDefinition(name);
 	if (!def) {
 		for (SpriteDefMapConstIter i = _spriteDefs.begin(); i != _spriteDefs.end(); ++i) {
@@ -266,9 +284,9 @@ SpriteDefPtr SpriteDefinition::getSpriteDefinition (const std::string& spriteNam
 		return SpriteDefPtr();
 	SpriteDefMapConstIter i = _spriteDefs.find(spriteName);
 	if (i == _spriteDefs.end()) {
-		Log::error(LOG_GENERAL, "could not find sprite definition for %s", spriteName.c_str());
+		Log::error(LOG_COMMON, "could not find sprite definition for %s", spriteName.c_str());
 		for (SpriteDefMapConstIter iter = _spriteDefs.begin(); iter != _spriteDefs.end(); ++iter) {
-			Log::error(LOG_GENERAL, " + found: %s", iter->first.c_str());
+			Log::error(LOG_COMMON, " + found: %s", iter->first.c_str());
 		}
 		return SpriteDefPtr();
 	}
@@ -276,9 +294,9 @@ SpriteDefPtr SpriteDefinition::getSpriteDefinition (const std::string& spriteNam
 	if (!i->second->redirect.empty()) {
 		i = _spriteDefs.find(spriteName);
 		if (i == _spriteDefs.end()) {
-			Log::error(LOG_GENERAL, "could not find sprite redirect definition for %s", spriteName.c_str());
+			Log::error(LOG_COMMON, "could not find sprite redirect definition for %s", spriteName.c_str());
 			for (SpriteDefMapConstIter iter = _spriteDefs.begin(); iter != _spriteDefs.end(); ++iter) {
-				Log::error(LOG_GENERAL, " + found: %s", iter->first.c_str());
+				Log::error(LOG_COMMON, " + found: %s", iter->first.c_str());
 			}
 			return SpriteDefPtr();
 		}

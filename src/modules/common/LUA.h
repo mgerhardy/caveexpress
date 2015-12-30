@@ -97,6 +97,7 @@ public:
 	 */
 	bool execute (const std::string &function, int returnValues = 0);
 
+	char getValueCharFromTable (const char * key, const char defaultValue = '\0');
 	std::string getValueStringFromTable (const char * key, const std::string& defaultValue = "");
 	float getValueFloatFromTable (const char * key, float defaultValue = 0.0f);
 	int getValueIntegerFromTable (const char * key, int defaultValue = 0);
@@ -109,7 +110,7 @@ public:
 	std::string getStringFromStack ();
 	std::string getString (const std::string& expr, const std::string& defaultValue = "");
 
-	std::string getLuaValue (int i);
+	std::string getLuaValue (int i, int depth = 0);
 	void tableDump ();
 	std::string getStackDump ();
 	void stackDump ();

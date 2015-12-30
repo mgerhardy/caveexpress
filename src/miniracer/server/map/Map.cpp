@@ -35,7 +35,6 @@
 #include <SDL.h>
 #include <algorithm>
 #include <functional>
-#include <cassert>
 #include <climits>
 
 namespace miniracer {
@@ -45,9 +44,9 @@ namespace miniracer {
 Map::Map () :
 		IMap(), _frontend(nullptr), _serviceProvider(nullptr)
 {
-	Commands.registerCommand(CMD_MAP_PAUSE, bindFunction(Map, triggerPause));
-	Commands.registerCommand(CMD_MAP_RESTART, bindFunction(Map, triggerRestart));
-	Commands.registerCommand(CMD_START, bindFunction(Map, startMap));
+	Commands.registerCommand(CMD_MAP_PAUSE, bindFunctionVoid(Map::triggerPause));
+	Commands.registerCommand(CMD_MAP_RESTART, bindFunctionVoid(Map::triggerRestart));
+	Commands.registerCommand(CMD_START, bindFunctionVoid(Map::startMap));
 
 	resetCurrentMap();
 }
@@ -85,7 +84,7 @@ void Map::triggerRestart ()
 	if (!_serviceProvider->getNetwork().isServer())
 		return;
 
-	Log::info(LOG_MAP, "trigger restart");
+	Log::info(LOG_GAMEIMPL, "trigger restart");
 	Commands.executeCommandLine(CMD_MAP_START " " + getName());
 }
 
@@ -114,7 +113,7 @@ Player* Map::getPlayer (ClientId clientId)
 		}
 	}
 
-	Log::error(LOG_MAP, "no player found for the client id %i", clientId);
+	Log::error(LOG_GAMEIMPL, "no player found for the client id %i", clientId);
 	return nullptr;
 }
 
@@ -136,7 +135,7 @@ void Map::restart (uint32_t delay)
 	if (_restartDue > 0)
 		return;
 
-	Log::info(LOG_MAP, "trigger map restart");
+	Log::info(LOG_GAMEIMPL, "trigger map restart");
 	_restartDue = _time + delay;
 	const MapRestartMessage msg(delay);
 	_serviceProvider->getNetwork().sendToAllClients(msg);
@@ -148,7 +147,7 @@ void Map::resetCurrentMap ()
 	if (!_name.empty()) {
 		const CloseMapMessage msg;
 		_serviceProvider->getNetwork().sendToAllClients(msg);
-		Log::info(LOG_MAP, "reset map: %s", _name.c_str());
+		Log::info(LOG_GAMEIMPL, "reset map: %s", _name.c_str());
 	}
 	_restartDue = 0;
 	_pause = false;
@@ -158,7 +157,7 @@ void Map::resetCurrentMap ()
 	_time = 0;
 	_entityRemovalAllowed = true;
 	if (!_name.empty())
-		Log::info(LOG_MAP, "* clear map");
+		Log::info(LOG_GAMEIMPL, "* clear map");
 
 	{ // now free the allocated memory
 		for (EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
@@ -173,7 +172,7 @@ void Map::resetCurrentMap ()
 		_players.clear();
 		_players.reserve(MAX_CLIENTS);
 		if (!_name.empty())
-			Log::info(LOG_MAP, "* removed allocated memory");
+			Log::info(LOG_GAMEIMPL, "* removed allocated memory");
 	}
 
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
@@ -183,7 +182,7 @@ void Map::resetCurrentMap ()
 	_playersWaitingForSpawn.reserve(MAX_CLIENTS);
 
 	if (!_name.empty())
-		Log::info(LOG_MAP, "done with resetting: %s", _name.c_str());
+		Log::info(LOG_GAMEIMPL, "done with resetting: %s", _name.c_str());
 	_name.clear();
 }
 
@@ -214,14 +213,14 @@ bool Map::load (const std::string& name)
 	resetCurrentMap();
 
 	if (name.empty()) {
-		Log::info(LOG_MAP, "no map name given");
+		Log::info(LOG_GAMEIMPL, "no map name given");
 		return false;
 	}
 
-	Log::info(LOG_MAP, "load map %s", name.c_str());
+	Log::info(LOG_GAMEIMPL, "load map %s", name.c_str());
 
 	if (!ctx->load(false)) {
-		Log::error(LOG_MAP, "failed to load the map %s", name.c_str());
+		Log::error(LOG_GAMEIMPL, "failed to load the map %s", name.c_str());
 		return false;
 	}
 
@@ -230,24 +229,24 @@ bool Map::load (const std::string& name)
 	_startPositions = ctx->getStartPositions();
 	_name = ctx->getName();
 	_title = ctx->getTitle();
-	_width = getSetting(msn::WIDTH, "-1").toInt();
-	_height = getSetting(msn::HEIGHT, "-1").toInt();
+	_width = string::toInt(getSetting(msn::WIDTH, "-1"));
+	_height = string::toInt(getSetting(msn::HEIGHT, "-1"));
 
 	if (_width <= 0 || _height <= 0) {
-		Log::error(LOG_MAP, "invalid map dimensions given");
+		Log::error(LOG_GAMEIMPL, "invalid map dimensions given");
 		return false;
 	}
 
 	const std::vector<MapTileDefinition>& mapTileList = ctx->getMapTileDefinitions();
 	for (std::vector<MapTileDefinition>::const_iterator i = mapTileList.begin(); i != mapTileList.end(); ++i) {
 		const SpriteType& t = i->spriteDef->type;
-		Log::info(LOG_MAP, "sprite type: %s, %s", t.name.c_str(), i->spriteDef->id.c_str());
+		Log::info(LOG_GAMEIMPL, "sprite type: %s, %s", t.name.c_str(), i->spriteDef->id.c_str());
 		MapTile *mapTile = new MapTile(*this, i->x, i->y, getEntityTypeForSpriteType(t));
 		mapTile->setSpriteID(i->spriteDef->id);
 		loadEntity(mapTile);
 	}
 
-	Log::info(LOG_MAP, "map loading done with %i tiles", (int)mapTileList.size());
+	Log::info(LOG_GAMEIMPL, "map loading done with %i tiles", (int)mapTileList.size());
 
 	ctx->onMapLoaded();
 
@@ -261,11 +260,11 @@ bool Map::load (const std::string& name)
 
 bool Map::spawnPlayer (Player* player)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	player->onSpawn();
 	addEntity(0, *player);
-	Log::info(LOG_SERVER, "spawned player %i", player->getID());
+	Log::info(LOG_GAMEIMPL, "spawned player %i", player->getID());
 	_players.push_back(player);
 	return true;
 }
@@ -300,11 +299,11 @@ bool Map::initPlayer (Player* player)
 	if (getPlayer(player->getClientId()) != nullptr)
 		return false;
 
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	INetwork& network = _serviceProvider->getNetwork();
 	const ClientId clientId = player->getClientId();
-	Log::info(LOG_SERVER, "init player %i", player->getID());
+	Log::info(LOG_GAMEIMPL, "init player %i", player->getID());
 	const MapSettingsMessage mapSettingsMsg(_settings, _startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);
 
@@ -325,11 +324,11 @@ void Map::printPlayersList () const
 {
 	for (PlayerListConstIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		const std::string& name = (*i)->getName();
-		Log::info(LOG_SERVER, "* %s (waiting)", name.c_str());
+		Log::info(LOG_GAMEIMPL, "* %s (waiting)", name.c_str());
 	}
 	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
 		const std::string& name = (*i)->getName();
-		Log::info(LOG_SERVER, "* %s (spawned)", name.c_str());
+		Log::info(LOG_GAMEIMPL, "* %s (spawned)", name.c_str());
 	}
 }
 
@@ -380,13 +379,13 @@ void Map::sendMapToClient (ClientId clientId) const
 
 void Map::loadEntity (IEntity *entity)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 	_entities.push_back(entity);
 }
 
 bool Map::removePlayer (ClientId clientId)
 {
-	assert(_entityRemovalAllowed);
+	SDL_assert(_entityRemovalAllowed);
 
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
 		if ((*i)->getClientId() != clientId)
@@ -408,7 +407,7 @@ bool Map::removePlayer (ClientId clientId)
 		_players.erase(i);
 		return true;
 	}
-	Log::error(LOG_MAP, "could not find the player with the clientId %i", clientId);
+	Log::error(LOG_GAMEIMPL, "could not find the player with the clientId %i", clientId);
 	return false;
 }
 
@@ -431,7 +430,7 @@ void Map::autoStart () {
 	// not enough players connected yet
 	if (_playersWaitingForSpawn.size() < _startPositions.size())
 		return;
-	Log::info(LOG_SERVER, "starting the map");
+	Log::info(LOG_GAMEIMPL, "starting the map");
 	startMap();
 }
 
@@ -449,7 +448,7 @@ void Map::update (uint32_t deltaTime)
 
 	if (_restartDue > 0 && _restartDue <= _time) {
 		const std::string currentName = getName();
-		Log::info(LOG_MAP, "restarting map %s", currentName.c_str());
+		Log::info(LOG_GAMEIMPL, "restarting map %s", currentName.c_str());
 		load(currentName);
 	}
 }
@@ -473,7 +472,7 @@ void Map::visitEntities (IEntityVisitor *visitor, const EntityType& type)
 		for (PlayerListIter i = _players.begin(); i != _players.end();) {
 			Player* e = *i;
 			if (visitor->visitEntity(e)) {
-				Log::debug(LOG_SERVER, "remove player by visit %i: %s", e->getID(), e->getType().name.c_str());
+				Log::debug(LOG_GAMEIMPL, "remove player by visit %i: %s", e->getID(), e->getType().name.c_str());
 				removeEntity(ClientIdToClientMask(e->getClientId()), *e);
 				delete *i;
 				i = _players.erase(i);
@@ -496,7 +495,7 @@ void Map::visitEntities (IEntityVisitor *visitor, const EntityType& type)
 		IEntity* e = *i;
 		if (type.isNone() || e->getType() == type) {
 			if (visitor->visitEntity(e)) {
-				Log::debug(LOG_SERVER, "remove entity by visit %i: %s", e->getID(), e->getType().name.c_str());
+				Log::debug(LOG_GAMEIMPL, "remove entity by visit %i: %s", e->getID(), e->getType().name.c_str());
 				removeEntity(0, *e);
 				(*i)->remove();
 				delete *i;
@@ -528,7 +527,7 @@ void Map::triggerPause ()
 	_pause ^= true;
 	const PauseMessage msg(_pause);
 	_serviceProvider->getNetwork().sendToAllClients(msg);
-	Log::info(LOG_MAP, "pause: %s", (_pause ? "true" : "false"));
+	Log::info(LOG_GAMEIMPL, "pause: %s", (_pause ? "true" : "false"));
 }
 
 }

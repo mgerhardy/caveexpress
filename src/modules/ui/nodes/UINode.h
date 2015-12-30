@@ -44,7 +44,7 @@ public:
 	{
 	}
 
-	void onClick ()
+	void onClick () override
 	{
 		_frontend->minimize();
 		System.openURL(_url, _newWindow);
@@ -107,7 +107,6 @@ protected:
 	typedef UINodeList::const_reverse_iterator UINodeListConstRevIter;
 	UINodeList _nodes;
 
-	friend class UINodePanel;
 	TexturePtr _texture;
 	std::string _onActivate;
 	bool _focus;
@@ -182,7 +181,11 @@ protected:
 
 	inline void enableScissor (int x, int y) const
 	{
-		enableScissor(x + getRenderX(), y + getRenderY(), getRenderWidth(), getRenderHeight());
+		const int nx = x + getRenderX();
+		const int ny = y + getRenderY();
+		const int nw = getRenderWidth();
+		const int nh = getRenderHeight();
+		enableScissor(nx, ny, nw, nh);
 	}
 
 	inline void enableScissor (int x, int y, int w, int h) const
@@ -265,6 +268,7 @@ public:
 	virtual void setPos (float x = 0.0f, float y = 0.0f);
 	virtual void setSize (float w, float h = 1.0f);
 	virtual void setPadding (float padding);
+	void setPaddingPixel (int pixel);
 	// this command is executed whenever the node is activated.
 	// This is e.g. a left mouse release or a finger release.
 	virtual void setOnActivate (const std::string& onActivateCmd);
@@ -291,8 +295,8 @@ public:
 	bool checkFocus (int32_t x, int32_t y);
 	virtual bool isActive () const;
 	UINode* getNode (const std::string& nodeId);
-	virtual bool nextFocus ();
-	virtual bool prevFocus ();
+	virtual bool nextFocus (bool cursordown);
+	virtual bool prevFocus (bool cursorup);
 	virtual bool addLastFocus ();
 	virtual bool addFirstFocus ();
 
@@ -300,32 +304,32 @@ public:
 
 	inline int getRenderX (bool includePadding = true) const
 	{
-		return getRenderXf(includePadding) * _frontend->getWidth();
+		return static_cast<int>(getRenderXf(includePadding) * _frontend->getWidth());
 	}
 
 	inline int getRenderY (bool includePadding = true) const
 	{
-		return getRenderYf(includePadding) * _frontend->getHeight();
+		return static_cast<int>(getRenderYf(includePadding) * _frontend->getHeight());
 	}
 
 	inline int getRenderCenterX () const
 	{
-		return getRenderCenterXf() * _frontend->getWidth();
+		return static_cast<int>(getRenderCenterXf() * _frontend->getWidth());
 	}
 
 	inline int getRenderCenterY () const
 	{
-		return getRenderCenterYf() * _frontend->getHeight();
+		return static_cast<int>(getRenderCenterYf() * _frontend->getHeight());
 	}
 
 	inline int getRenderWidth (bool includePadding = true) const
 	{
-		return getRenderWidthf(includePadding) * _frontend->getWidth();
+		return static_cast<int>(getRenderWidthf(includePadding) * _frontend->getWidth());
 	}
 
 	inline int getRenderHeight (bool includePadding = true) const
 	{
-		return getRenderHeightf(includePadding) * _frontend->getHeight();
+		return static_cast<int>(getRenderHeightf(includePadding) * _frontend->getHeight());
 	}
 
 	inline float getRenderXf (bool includePadding = true) const
@@ -372,7 +376,16 @@ public:
 	virtual void displayText (const std::string& text, uint32_t delayMillis = 3000, float x = -1.0f, float y = -1.0f);
 
 	virtual bool onTextInput (const std::string& text);
-	virtual bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y);
+	/**
+	 * @param[in] finger The id of the finger that was released
+	 * @param[in] x The x screen coordinate where the finger was released
+	 * @param[in] y The y screen coordinate where the finger was released
+	 * @param[in] motion This is true if the release was the result of a motion event before.
+	 * A motion event happens if the delta of the x and y coordinates exceeds a special threshold.
+	 * See @c onMouseMotion for more details.
+	 * @return @c true if the event was handled by the node, @c false otherwise
+	 */
+	virtual bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion);
 	virtual bool onFingerPress (int64_t finger, uint16_t x, uint16_t y);
 	virtual bool onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy);
 	virtual bool onKeyPress (int32_t key, int16_t modifier);
@@ -380,6 +393,7 @@ public:
 	virtual bool onMouseButtonRelease (int32_t x, int32_t y, unsigned char button);
 	virtual bool onMouseButtonPress (int32_t x, int32_t y, unsigned char button);
 	virtual bool onGesture (int64_t gestureId, float error, int32_t numFingers);
+	virtual void onWindowResize ();
 	/**
 	 * @param[in] theta the amount that the fingers rotated during this motion
 	 * @param[in] dist the amount that the fingers pinched during this motion
@@ -606,6 +620,11 @@ inline void UINode::restoreAlpha ()
 inline void UINode::setPadding (float padding)
 {
 	_padding = padding;
+}
+
+inline void UINode::setPaddingPixel (int pixel)
+{
+	setPadding(10 / static_cast<float>(_frontend->getWidth()));
 }
 
 inline void UINode::setOnActivate (const std::string& onActivateCmd)

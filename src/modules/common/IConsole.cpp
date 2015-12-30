@@ -16,25 +16,27 @@ void IConsole::executeCommandLine ()
 	_history.push_back(_commandLine);
 	_historyPos = _history.size();
 
-	std::vector<String> commands = String(_commandLine).split(";");
+	std::vector<std::string> commands;
+	string::splitString(_commandLine, commands, ";");
 
-	for (std::vector<String>::iterator i = commands.begin(); i != commands.end(); ++i) {
-		std::vector<String> tokens = i->split();
-		String cmd = tokens[0].eraseAllSpaces();
+	for (const std::string& command : commands) {
+		std::vector<std::string> tokens;
+		string::splitString(command, tokens);
+		std::string cmd = string::eraseAllSpaces(tokens[0]);
 		tokens.erase(tokens.begin());
 		if (!Commands.commandExists(cmd)) {
 			ConfigVarPtr c = Config.getConfigVar(cmd, "", false);
 			if (c) {
 				if (tokens.empty()) {
 					if (c->getValue().empty())
-						Log::info(LOG_GENERAL, "%s: no value set", cmd.c_str());
+						Log::info(LOG_COMMON, "%s: no value set", cmd.c_str());
 					else
-						Log::info(LOG_GENERAL, "%s: %s", cmd.c_str(), c->getValue().c_str());
+						Log::info(LOG_COMMON, "%s: %s", cmd.c_str(), c->getValue().c_str());
 				} else {
-					c->setValue(tokens[0].eraseAllSpaces());
+					c->setValue(string::eraseAllSpaces(tokens[0]));
 				}
 			} else {
-				Log::info(LOG_GENERAL, "unknown config variable %s", cmd.c_str());
+				Log::info(LOG_COMMON, "unknown config variable %s", cmd.c_str());
 			}
 		} else {
 			Commands.executeCommand(cmd, tokens);
@@ -98,33 +100,38 @@ void IConsole::autoComplete ()
 {
 	std::vector<std::string> matches;
 	std::vector<std::string> strings;
+	std::string match = "";
 	string::splitString(_commandLine, strings);
 	if (!strings.empty()) {
 		ICommand* command = Commands.getCommand(strings[0]);
 		if (command != nullptr) {
-			if (strings.size() == 2)
-				command->complete(strings[1], matches);
-			else
-				command->complete("", matches);
+			if (strings.size() > 1)
+				match = strings.back();
+			command->complete(match, matches);
 		}
 	}
 	if (matches.empty()) {
 		std::vector<std::string> commands;
 		Commands.getCommandNameList(commands);
-		for (std::vector<std::string>::const_iterator i = commands.begin(); i != commands.end(); ++i) {
-			if (_commandLine.empty() || i->substr(0, _commandLine.size()) == _commandLine) {
-				matches.push_back(*i);
+		for (const std::string& name : commands) {
+			if (_commandLine.empty() || name.substr(0, _commandLine.size()) == _commandLine) {
+				matches.push_back(name);
 			}
 		}
 		Config.autoComplete(_commandLine, matches);
 	}
 
-	if (matches.size() == 1 && strings.size() == 1) {
-		_commandLine = *matches.begin();
+	if (matches.size() == 1) {
+		if (strings.size() == 1) {
+			_commandLine = matches.front();
+		} else {
+			const int start = _commandLine.size() - match.size();
+			_commandLine.replace(start, _commandLine.size() - 1, matches.front());
+		}
 		_cursorPos = _commandLine.size();
 	} else {
 		for (std::vector<std::string>::const_iterator i = matches.begin(); i != matches.end(); ++i) {
-			Log::info(LOG_GENERAL, "%s", (*i).c_str());
+			Log::info(LOG_COMMON, "%s", (*i).c_str());
 		}
 	}
 }

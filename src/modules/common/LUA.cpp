@@ -57,7 +57,7 @@ bool LUA::load (const std::string &file)
 {
 	FilePtr filePtr = FS.getFile(file);
 	if (!filePtr->exists()) {
-		Log::error(LOG_CONFIG, "lua file '%s' does not exist", filePtr->getName().c_str());
+		Log::error(LOG_COMMON, "lua file '%s' does not exist", filePtr->getName().c_str());
 		return false;
 	}
 
@@ -65,7 +65,7 @@ bool LUA::load (const std::string &file)
 	const int fileLen = filePtr->read((void **) &buffer);
 	std::unique_ptr<char[]> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		Log::error(LOG_CONFIG, "failed to read lua file %s", filePtr->getName().c_str());
+		Log::error(LOG_COMMON, "failed to read lua file %s", filePtr->getName().c_str());
 		return false;
 	}
 
@@ -75,7 +75,7 @@ bool LUA::load (const std::string &file)
 bool LUA::loadBuffer (const std::string& buffer, const char *ctx)
 {
 	if (luaL_loadbufferx(_state, buffer.c_str(), buffer.size(), ctx, nullptr) || lua_pcall(_state, 0, 0, 0)) {
-		Log::error(LOG_LUA, "%s: %s", ctx, lua_tostring(_state, -1));
+		Log::error(LOG_COMMON, "%s: %s", ctx, lua_tostring(_state, -1));
 		pop();
 		return false;
 	}
@@ -86,7 +86,7 @@ bool LUA::loadBuffer (const std::string& buffer, const char *ctx)
 bool LUA::getValueBoolFromTable (const char * key, bool defaultValue)
 {
 	if (!lua_istable(_state, -1)) {
-		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		Log::error(LOG_COMMON, "expected a lua table at the top of the stack");
 		stackDump();
 		return defaultValue;
 	}
@@ -102,10 +102,10 @@ bool LUA::getValueBoolFromTable (const char * key, bool defaultValue)
 	return rtn;
 }
 
-std::string LUA::getValueStringFromTable (const char * key, const std::string& defaultValue)
+char LUA::getValueCharFromTable (const char * key, const char defaultValue)
 {
 	if (!lua_istable(_state, -1)) {
-		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		Log::error(LOG_COMMON, "expected a lua table at the top of the stack");
 		stackDump();
 		return defaultValue;
 	}
@@ -116,7 +116,27 @@ std::string LUA::getValueStringFromTable (const char * key, const std::string& d
 		return defaultValue;
 	}
 
-	const std::string rtn = luaL_checkstring(_state,-1);
+	const char *str = luaL_checkstring(_state, -1);
+	pop();
+	SDL_assert_always(SDL_strlen(str) == 1);
+	return str[0];
+}
+
+std::string LUA::getValueStringFromTable (const char * key, const std::string& defaultValue)
+{
+	if (!lua_istable(_state, -1)) {
+		Log::error(LOG_COMMON, "expected a lua table at the top of the stack");
+		stackDump();
+		return defaultValue;
+	}
+	LUA_checkStack();
+	lua_getfield(_state, -1, key);
+	if (lua_isnil(_state, -1)) {
+		pop();
+		return defaultValue;
+	}
+
+	const std::string rtn = luaL_checkstring(_state, -1);
 	pop();
 	return rtn;
 }
@@ -124,7 +144,7 @@ std::string LUA::getValueStringFromTable (const char * key, const std::string& d
 float LUA::getValueFloatFromTable (const char * key, float defaultValue)
 {
 	if (!lua_istable(_state, -1)) {
-		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		Log::error(LOG_COMMON, "expected a lua table at the top of the stack");
 		stackDump();
 		return defaultValue;
 	}
@@ -143,7 +163,7 @@ float LUA::getValueFloatFromTable (const char * key, float defaultValue)
 int LUA::getValueIntegerFromTable (const char * key, int defaultValue)
 {
 	if (!lua_istable(_state, -1)) {
-		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		Log::error(LOG_COMMON, "expected a lua table at the top of the stack");
 		stackDump();
 		return defaultValue;
 	}
@@ -170,16 +190,16 @@ bool LUA::execute (const std::string &function, int returnValues)
 	if (ret != 0) {
 		const char * s = luaL_checkstring(_state, -1);
 		if (s == nullptr)
-			Log::error(LOG_LUA, "unrecognized Lua error");
+			Log::error(LOG_COMMON, "unrecognized Lua error");
 		else
-			Log::error(LOG_LUA, "%s", s);
+			Log::error(LOG_COMMON, "%s", s);
 		return false;
 	}
 
 	return true;
 }
 
-std::string LUA::getLuaValue (int stackIndex)
+std::string LUA::getLuaValue (int stackIndex, int depth)
 {
 	const int t = lua_type(_state, stackIndex);
 	switch (t) {
@@ -193,6 +213,41 @@ std::string LUA::getLuaValue (int stackIndex)
 	case LUA_TNIL:
 		lua_pushliteral(_state, "nil");
 		break;
+	case LUA_TTABLE: {
+		lua_pushfstring(_state, "%s: %p", luaL_typename(_state, stackIndex), lua_topointer(_state, stackIndex));
+		std::string result(lua_tostring(_state, -1));
+		lua_pop(_state, 1);
+		// push the table onto the stack so we know where it is
+		lua_pushvalue(_state, stackIndex);
+		// stack now contains: -1 => table
+		lua_pushnil(_state);
+
+		// stack now contains: -1 => nil; -2 => table
+		std::string table;
+		if (depth > 0)
+			table.append("\n");
+		while (lua_next(_state, -2)) {
+			// stack now contains: -1 => value; -2 => key; -3 => table
+			// copy the key so that lua_tostring does not modify the original
+			lua_pushvalue(_state, -2);
+			// stack now contains: -1 => key; -2 => value; -3 => key; -4 => table
+			const std::string& key = getLuaValue(-1, depth + 1);
+			const std::string& value = getLuaValue(-2, depth + 1);
+			for (int i = 0; i < depth; ++i) {
+				table.append("  ");
+			}
+			table.append(" - ").append(key).append(" = ").append(value).append("\n");
+			// pop value + copy of key, leaving original key
+			lua_pop(_state, 2);
+			// stack now contains: -1 => key; -2 => table
+		}
+		// stack now contains: -1 => table (when lua_next returns 0 it pops the key
+		// but does not push anything.)
+		// Pop table
+		lua_pop(_state, 1);
+		// Stack is now the same as it was on entry to this function
+		return table;
+	}
 	default:
 		lua_pushfstring(_state, "%s: %p", luaL_typename(_state, stackIndex), lua_topointer(_state, stackIndex));
 		break;
@@ -209,7 +264,7 @@ void LUA::tableDump()
 	while (getNextKeyValue()) {
 		const std::string& key = getLuaValue(-2);
 		const std::string& value = getLuaValue(-1);
-		Log::info(LOG_LUA, "%s : %s", key.c_str(), value.c_str());
+		Log::info(LOG_COMMON, "%s : %s", key.c_str(), value.c_str());
 		pop();
 	}
 }
@@ -218,7 +273,7 @@ std::string LUA::getStackDump ()
 {
 	LUA_checkStack();
 	const int top = lua_gettop(_state);
-	std::string sd = String::format("stack elements: %i\n", top);
+	std::string sd = string::format("stack elements: %i\n", top);
 	for (int i = 1; i <= top; i++) { /* repeat for each level */
 		sd += getLuaValue(i);
 		sd += "\n";
@@ -228,7 +283,7 @@ std::string LUA::getStackDump ()
 
 void LUA::stackDump ()
 {
-	Log::info(LOG_LUA, "%s", getStackDump().c_str());
+	Log::info(LOG_COMMON, "%s", getStackDump().c_str());
 }
 
 std::string LUA::getStringFromStack ()
@@ -246,7 +301,7 @@ std::string LUA::getString (const std::string& expr, const std::string& defaultV
 	std::string r = defaultValue;
 	/* Assign the Lua expression to a Lua global variable. */
 	const std::string buf("return " + expr);
-	Log::debug(LOG_LUA, "eval: '%s'", buf.c_str());
+	Log::debug(LOG_COMMON, "eval: '%s'", buf.c_str());
 	if (!luaL_dostring(_state, buf.c_str())) {
 		const char *str = lua_tostring(_state, -1);
 		if (str != nullptr)
@@ -300,12 +355,12 @@ bool LUA::getGlobalKeyValue (const std::string& name)
 int LUA::getTable (const std::string& name)
 {
 	if (!lua_istable(_state, -1)) {
-		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		Log::error(LOG_COMMON, "expected a lua table at the top of the stack");
 		stackDump();
 		return 0;
 	}
 	lua_getfield(_state, -1, name.c_str());
-	if (lua_isnil(_state,-1)) {
+	if (lua_isnil(_state, -1)) {
 		pop();
 		return -1;
 	}
@@ -315,7 +370,7 @@ int LUA::getTable (const std::string& name)
 std::string LUA::getTableString (int i)
 {
 	if (!lua_istable(_state, -1)) {
-		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		Log::error(LOG_COMMON, "expected a lua table at the top of the stack");
 		stackDump();
 		return "";
 	}
@@ -329,7 +384,7 @@ std::string LUA::getTableString (int i)
 bool LUA::getTableBool (int i)
 {
 	if (!lua_istable(_state, -1)) {
-		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		Log::error(LOG_COMMON, "expected a lua table at the top of the stack");
 		stackDump();
 		return false;
 	}
@@ -343,7 +398,7 @@ bool LUA::getTableBool (int i)
 int LUA::getTableInteger (int i)
 {
 	if (!lua_istable(_state, -1)) {
-		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		Log::error(LOG_COMMON, "expected a lua table at the top of the stack");
 		stackDump();
 		return 0;
 	}
@@ -356,7 +411,7 @@ int LUA::getTableInteger (int i)
 float LUA::getTableFloat (int i)
 {
 	if (!lua_istable(_state, -1)) {
-		Log::error(LOG_LUA, "expected a lua table at the top of the stack");
+		Log::error(LOG_COMMON, "expected a lua table at the top of the stack");
 		stackDump();
 		return 0.0f;
 	}
@@ -390,7 +445,7 @@ bool LUA::getGlobal (const std::string& name)
 {
 	lua_getglobal(_state, name.c_str());
 	if (lua_isnil(_state, -1)) {
-		Log::error(LOG_LUA, "Could not find %s lua global", name.c_str());
+		Log::error(LOG_COMMON, "Could not find %s lua global", name.c_str());
 		return false;
 	}
 	return true;
@@ -401,12 +456,12 @@ void LUA::debugHook (lua_State *L, lua_Debug *ar)
 	if (!lua_getinfo(L, "Sn", ar))
 		return;
 
-	Log::debug(LOG_LUA, "%s %s: %s %d", ar->namewhat, ar->name, ar->short_src, ar->currentline);
+	Log::debug(LOG_COMMON, "%s %s: %s %d", ar->namewhat, ar->name, ar->short_src, ar->currentline);
 }
 
 int LUA::panicHook (lua_State *L)
 {
-	Log::error(LOG_LUA, "Lua panic. Error message: %s", lua_isnil(L, -1) ? "" : lua_tostring(L, -1));
+	Log::error(LOG_COMMON, "Lua panic. Error message: %s", lua_isnil(L, -1) ? "" : lua_tostring(L, -1));
 	return 0;
 }
 

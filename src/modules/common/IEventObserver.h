@@ -128,10 +128,22 @@ public:
 	{
 	}
 
+	/**
+	 * @param[in] theta the amount that the fingers rotated during this motion.
+	 * @param[in] dist the amount that the fingers pinched during this motion.
+	 * @param[in] numFingers the number of fingers used in the gesture.
+	 */
 	virtual void onMultiGesture (float theta, float dist, int32_t numFingers)
 	{
 	}
 
+	/**
+	 * @brief Callback for dollar gestures
+	 * @note Can be recorded by pushing the record window onto the ui stack
+	 * @param[in] gestureId the unique id of the closest gesture to the performed stroke.
+	 * @param[in] error the difference between the gesture template and the actual performed gesture. Lower error is a better match.
+	 * @param[in] numFingers the number of fingers used to draw the stroke.
+	 */
 	virtual void onGesture (int64_t gestureId, float error, int32_t numFingers)
 	{
 	}

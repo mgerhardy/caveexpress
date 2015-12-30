@@ -1,5 +1,6 @@
 #include "WorldParticle.h"
 #include "caveexpress/server/map/Map.h"
+#include <SDL_assert.h>
 
 namespace caveexpress {
 
@@ -88,7 +89,7 @@ void WorldParticle::onPreSolve (b2Contact* contact, IEntity* entity, const b2Man
 	const bool useBodyA = fixture->GetBody()->GetUserData() == this || fixture->GetUserData() == this;
 	const b2Body *body = useBodyA ? fixture->GetBody() : contact->GetFixtureB()->GetBody();
 	const SimpleParticle* p = _particleReverseMap[body];
-	assert(p);
+	SDL_assert(p);
 	const bool enabled = p->life > 0;
 	contact->SetEnabled(enabled);
 }

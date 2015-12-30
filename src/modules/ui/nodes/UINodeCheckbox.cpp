@@ -50,13 +50,13 @@ void UINodeCheckbox::setBackground (const std::string& background)
 	setSize(w, h);
 }
 
-bool UINodeCheckbox::onFingerRelease (int64_t finger, uint16_t x, uint16_t y)
+bool UINodeCheckbox::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion)
 {
 	if (!_enabled)
 		return false;
 
 	setSelected(_value ^ true);
-	return UINodeButton::onFingerRelease(finger, x, y);
+	return UINodeButton::onFingerRelease(finger, x, y, motion);
 }
 
 bool UINodeCheckbox::onMouseButtonRelease (int32_t x, int32_t y, unsigned char button)

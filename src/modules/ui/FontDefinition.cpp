@@ -21,6 +21,7 @@ FontDefinition::FontDefinition() {
 	}
 
 	while (lua.getNextKeyValue()) {
+		LUA_checkStack2(lua.getState());
 		const std::string id = lua.getKey();
 		if (id.empty()) {
 			Log::error(LOG_UI, "font def: no key found in font definition: %s", lua.getStackDump().c_str());
@@ -39,7 +40,7 @@ FontDefinition::FontDefinition() {
 
 		// push the metrics table
 		if (lua.getTable("metrics") == -1) {
-			Log::error(LOG_UI, "font def doesn't have a metrics table");
+			Log::error(LOG_UI, "font def %s doesn't have a metrics table", id.c_str());
 			continue;
 		}
 
@@ -50,35 +51,40 @@ FontDefinition::FontDefinition() {
 		lua.pop();
 
 		FontDef *def = new FontDef(id, height, metricsHeight, metricsAscender, metricsDescender);
+		FontChars fontChars(128);
 
 		// push the chars table
 		const int chars = lua.getTable("chars");
 		Log::debug(LOG_UI, "found %i chars entries", chars);
-		for (int i = 0; i < chars; ++i) {
-			lua_pushinteger(lua.getState(), i + 1);
-			lua_gettable(lua.getState(), -2);
-			if (!lua_istable(lua.getState(), -1)) {
-				Log::error(LOG_UI, "expected char table on the stack: %s", lua.getStackDump().c_str());
+
+		if (chars > 0) {
+			lua_State* L = lua.getState();
+			lua_pushvalue(L, -1);
+			lua_pushnil(L);
+			while (lua_next(L, -2)) {
+				if (!lua_istable(L, -1)) {
+					Log::error(LOG_UI, "expected char table on the stack for %s: %s", id.c_str(), lua.getStackDump().c_str());
+					lua.pop();
+					continue;
+				}
+				// push the char entry
+				const char character = lua.getValueCharFromTable("char");
+				const int width = lua.getValueIntegerFromTable("width");
+				const int x = lua.getValueIntegerFromTable("x");
+				const int y = lua.getValueIntegerFromTable("y");
+				const int w = lua.getValueIntegerFromTable("w");
+				const int h = lua.getValueIntegerFromTable("h");
+				const int ox = lua.getValueIntegerFromTable("ox");
+				const int oy = lua.getValueIntegerFromTable("oy");
+				const FontChar c(character, width, x, y, w, h, ox, oy);
+				fontChars.push_back(c);
+				// pop the char entry
 				lua.pop();
-				continue;
 			}
-			// push the char entry
-			const std::string& character = lua.getValueStringFromTable("char");
-			const int width = lua.getValueIntegerFromTable("width");
-			const int x = lua.getValueIntegerFromTable("x");
-			const int y = lua.getValueIntegerFromTable("y");
-			const int w = lua.getValueIntegerFromTable("w");
-			const int h = lua.getValueIntegerFromTable("h");
-			const int ox = lua.getValueIntegerFromTable("ox");
-			const int oy = lua.getValueIntegerFromTable("oy");
-			const FontChar c(character, width, x, y, w, h, ox, oy);
-			def->fontChars.push_back(c);
-			// pop the char entry
+			lua.pop();
+			// pop the chars table
 			lua.pop();
 		}
-		// pop the chars table
-		if (chars != -1)
-			lua.pop();
 
 		// push the texture table
 		if (lua.getTable("texture") != -1) {
@@ -91,9 +97,19 @@ FontDefinition::FontDefinition() {
 
 		lua.pop();
 
+		def->init(fontChars);
+
 		_fontDefs[id] = FontDefPtr(def);
 	}
 	Log::debug(LOG_UI, "Loaded %i font definitions", (int)_fontDefs.size());
+}
+
+void FontDef::init (const FontChars& fontChars)
+{
+	SDL_assert(!fontChars.empty());
+	for (const FontChar& c : fontChars) {
+		_fontCharMap[(int)c.getCharacter()] = c;
+	}
 }
 
 void FontDef::updateChars (int tWidth, int tHeight)
@@ -101,8 +117,9 @@ void FontDef::updateChars (int tWidth, int tHeight)
 	_widthFactor = tWidth / (float)textureWidth;
 	_heightFactor = tHeight / (float)textureHeight;
 
-	for (std::vector<FontChar>::iterator i = fontChars.begin(); i != fontChars.end(); ++i) {
-		FontChar& c = *i;
+	const int len = SDL_arraysize(_fontCharMap);
+	for (int i = 0; i < len; ++i) {
+		FontChar& c = _fontCharMap[i];
 		c.setWidthFactor(_widthFactor);
 		c.setHeightFactor(_heightFactor);
 	}
@@ -110,16 +127,11 @@ void FontDef::updateChars (int tWidth, int tHeight)
 
 const FontChar* FontDef::getFontChar (char character)
 {
-	if (_fontCharMap.empty()) {
-		for (std::vector<FontChar>::iterator i = fontChars.begin(); i != fontChars.end(); ++i) {
-			_fontCharMap[i->getCharacter()] = &(*i);
-		}
-	}
+	SDL_assert_always(character >= 0);
+	SDL_assert_always(character <= (int)SDL_arraysize(_fontCharMap));
+	const FontChar& fc = _fontCharMap[(int)character];
+	if (fc.getCharacter() != '\0')
+		return &fc;
 
-	const std::string c(&character, 1);
-	std::map<std::string, FontChar*>::iterator iter = _fontCharMap.find(c);
-	if (iter == _fontCharMap.end())
-		return nullptr;
-
-	return iter->second;
+	return nullptr;
 }

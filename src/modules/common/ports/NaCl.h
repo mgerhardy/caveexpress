@@ -27,6 +27,8 @@ public:
 
 	virtual std::string normalizePath (const std::string& path) override;
 
+	virtual bool supportsUserContent () const override { return false; }
+
 	virtual void exit (const std::string& reason, int errorCode) override;
 
 	virtual bool mkdir (const std::string& directory) override;

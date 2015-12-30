@@ -1,24 +1,55 @@
+version: 0.1-{build}
+
 os:
   - Windows Server 2012 R2
-#  - MinGW
-configuration: Release
+
 environment:
   NSIS_ROOT: C:\nsis
+
+configuration: Release
+
+install:
+  - cinst -y -installArgs /D=%NSIS_ROOT% nsis.install
+
 branches:
   only:
   - master
+
 clone_depth: 10
+
 before_build:
   - cmake -DTOOLS=OFF -G "Visual Studio 12"
+
+after_build:
+  - '"%NSIS_ROOT%\makensis" -DPRODUCT_NAME=cavepacker -DPRODUCT_VERSION=%APPVEYOR_BUILD_VERSION% contrib/installer/windows/setup.nsi'
+  - '"%NSIS_ROOT%\makensis" -DPRODUCT_NAME=caveexpress -DPRODUCT_VERSION=%APPVEYOR_BUILD_VERSION% contrib/installer/windows/setup.nsi'
+
 build:
   parallel: true
-  project: Project.sln
-  verbosity: detailed
+  project: caveproductions.sln
+
+artifacts:
+  - name: Installer CaveExpress
+    path: contrib/installer/windows/caveexpress-$(APPVEYOR_BUILD_VERSION).exe
+  - name: Installer CavePacker
+    path: contrib/installer/windows/cavepacker-$(APPVEYOR_BUILD_VERSION).exe
+  - name: Tests
+    path: tests.exe
+  - name: CavePacker
+    path: cavepacker.exe
+  - name: CavePacker Tests
+    path: tests_cavepacker.exe
+  - name: CaveExpress
+    path: caveexpress.exe
+  - name: CaveExpress Tests
+    path: tests_caveexpress.exe
+
 test_script:
-#  - tests.exe
-#  - tests-caveexpress.exe
-#  - tests-cavepacker.exe
-  - cinst nsis -y -installArgs /D=%NSIS_ROOT%
-#artifacts:
-#  - path: contrib/installer/windows/*.exe
-#    name: NSIS Installer
+  - cmd: tests.exe --gtest_filter=-NetworkTest.testSendStringList:NetworkTest.testSendToServer --gtest_output=xml:tests.xml
+  - cmd: tests_caveexpress.exe --gtest_filter=-NetworkTest.* --gtest_output=xml:tests_caveexpress.xml
+  - cmd: tests_cavepacker.exe --gtest_filter=-NetworkTest.*:CampaignTest.testLoad --gtest_output=xml:tests_cavepacker.xml
+
+on_finish:
+  - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests.xml))
+  - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests_cavepacker.xml))
+  - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests_caveexpress.xml))

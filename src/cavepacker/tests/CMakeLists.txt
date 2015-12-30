@@ -1,5 +1,5 @@
 set(NAME cavepacker)
-project(tests-${NAME})
+project(tests_${NAME})
 SET(${PROJECT_NAME}_SRC
 	BoardStateTest.cpp
 	MapManagerTest.cpp
@@ -7,6 +7,8 @@ SET(${PROJECT_NAME}_SRC
 	SokobanMapContextTest.cpp
 	SokobanMapTest.cpp
 	CampaignTest.cpp
+	PathfindingTest.cpp
+	SolutionUtilTest.cpp
 	../main/CavePacker.cpp
 	../../tests/TestAll.cpp
 	../../tests/TestShared.cpp

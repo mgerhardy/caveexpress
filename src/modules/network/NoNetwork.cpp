@@ -1,13 +1,15 @@
 #include "NoNetwork.h"
 #include "common/Log.h"
-#include <assert.h>
+#include <SDL.h>
+
+#define QUEUE_SIZE 64
 
 void NoNetwork::update (uint32_t deltaTime)
 {
 	if (_clientFunc != nullptr) {
 		const Queue q = _clientQueue;
 		_clientQueue.clear();
-		_clientQueue.reserve(64);
+		_clientQueue.reserve(QUEUE_SIZE);
 		for (QueueConstIter i = q.begin(); i != q.end(); ++i) {
 			ByteStream b = *i;
 			_clientFunc->onData(b);
@@ -20,7 +22,7 @@ void NoNetwork::update (uint32_t deltaTime)
 	if (_serverFunc != nullptr) {
 		const Queue q = _serverQueue;
 		_serverQueue.clear();
-		_serverQueue.reserve(64);
+		_serverQueue.reserve(QUEUE_SIZE);
 		for (QueueConstIter i = q.begin(); i != q.end(); ++i) {
 			ByteStream b = *i;
 			_serverFunc->onData(defaultClientId, b);
@@ -33,7 +35,7 @@ void NoNetwork::update (uint32_t deltaTime)
 
 bool NoNetwork::openServer (int port, IServerCallback* func)
 {
-	Log::info(LOG_NET, "open server on port %i", port);
+	Log::info(LOG_NETWORK, "open server on port %i", port);
 	_serverFunc = func;
 	_server = true;
 	return true;
@@ -41,7 +43,7 @@ bool NoNetwork::openServer (int port, IServerCallback* func)
 
 int NoNetwork::sendToClients (int clientMask, const IProtocolMessage& msg)
 {
-	Log::debug(LOG_NET, "send to client message type %i", msg.getId());
+	Log::trace(LOG_NETWORK, "send to client message type %i", msg.getId());
 	ByteStream s;
 	msg.serialize(s);
 	s.addShort(s.getSize(), true);
@@ -58,11 +60,11 @@ void NoNetwork::closeServer ()
 	closeClient();
 
 	_clientQueue.clear();
-	_clientQueue.reserve(64);
+	_clientQueue.reserve(QUEUE_SIZE);
 	_serverQueue.clear();
-	_serverQueue.reserve(64);
+	_serverQueue.reserve(QUEUE_SIZE);
 
-	Log::info(LOG_NET, "close server");
+	Log::info(LOG_NETWORK, "close server");
 	_server = false;
 	_serverFunc = nullptr;
 }
@@ -71,7 +73,7 @@ void NoNetwork::disconnectClientFromServer (ClientId clientId)
 {
 	if (!isClientConnected())
 		return;
-	Log::info(LOG_NET, "disconnect client");
+	Log::info(LOG_NETWORK, "disconnect client");
 }
 
 bool NoNetwork::isServer () const
@@ -86,7 +88,13 @@ bool NoNetwork::isClient () const
 
 void NoNetwork::init ()
 {
-	Log::info(LOG_NET, "init the network layer (local)");
+	Log::info(LOG_NETWORK, "init the network layer (local)");
+}
+
+void NoNetwork::shutdown ()
+{
+	Log::info(LOG_NETWORK, "shutting down loopback-network");
+	INetwork::shutdown();
 }
 
 bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* func)
@@ -97,18 +105,18 @@ bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* 
 	if (!isServer())
 		return false;
 
-	Log::info(LOG_NET, "connect to %s:%i", node.c_str(), port);
+	Log::info(LOG_NETWORK, "connect to %s:%i", node.c_str(), port);
 	closeClient();
 	_clientFunc = func;
-	assert(func);
+	SDL_assert_always(func);
 	_clientQueue.clear();
 	_serverQueue.clear();
 
-	_clientQueue.reserve(64);
-	_serverQueue.reserve(64);
+	_clientQueue.reserve(QUEUE_SIZE);
+	_serverQueue.reserve(QUEUE_SIZE);
 
 	if (_clientFunc != nullptr && !_connected) {
-		Log::info(LOG_NET, "connect %i", defaultClientId);
+		Log::info(LOG_NETWORK, "connect %i", defaultClientId);
 		if (_serverFunc)
 			_serverFunc->onConnection(defaultClientId);
 		_connected = true;
@@ -119,7 +127,7 @@ bool NoNetwork::openClient (const std::string& node, int port, IClientCallback* 
 
 int NoNetwork::sendToServer (const IProtocolMessage& msg)
 {
-	Log::debug(LOG_NET, "send to server message type %i", msg.getId());
+	Log::trace(LOG_NETWORK, "send to server message type %i", msg.getId());
 	ByteStream s;
 	msg.serialize(s);
 	s.addShort(s.getSize(), true);
@@ -133,7 +141,7 @@ void NoNetwork::closeClient ()
 	if (!isClientConnected())
 		return;
 
-	Log::info(LOG_NET, "close client");
+	Log::info(LOG_NETWORK, "close client");
 	const DisconnectMessage msg;
 	sendToServer(msg);
 	_clientFunc = nullptr;
@@ -156,6 +164,6 @@ bool NoNetwork::isClientConnected ()
 
 bool NoNetwork::broadcast (IClientCallback* oobCallback, uint8_t* buffer, size_t length, int port)
 {
-	Log::error(LOG_NET, "local network doesn't support broadcasting");
+	Log::error(LOG_NETWORK, "local network doesn't support broadcasting");
 	return false;
 }

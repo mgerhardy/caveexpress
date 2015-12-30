@@ -1,4 +1,0 @@
-#!/bin/bash
-
-./caveexpress -ui_push editor $*
-exit $?

@@ -23,7 +23,7 @@ public:
 		const CampaignPtr& activeCampaign = _campaignManager->getActiveCampaign();
 		const uint8_t lives = activeCampaign->getLives();
 		player->setLives(lives);
-		Log::info(LOG_SERVER, "spawn client %i with %i lives", clientId, player->getLives());
+		Log::info(LOG_GAMEIMPL, "spawn client %i with %i lives", clientId, player->getLives());
 		if (!_map.initPlayer(player))
 			delete player;
 	}

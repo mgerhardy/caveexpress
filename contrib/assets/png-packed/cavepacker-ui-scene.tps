@@ -220,6 +220,7 @@
             <filename>../png/cavepacker/ui/xsokoban-campaign.png</filename>
             <filename>../png/cavepacker/ui/ksokoban-campaign.png</filename>
             <filename>../png/cavepacker/ui/gri-campaign.png</filename>
+            <filename>../png/cavepacker/ui/mgerhardy-campaign.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -1,19 +1,7 @@
 include(CMakeParseArguments)
-
-if (${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
-	set(CP_GCC 1)
-	message(STATUS "C++ Compiler: GCC")
-elseif (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
-	set(CP_CLANG 1)
-	message(STATUS "C++ Compiler: Clang")
-elseif (MSVC)
-	set(CP_MSVC 1)
-	message(STATUS "C++ Compiler: MSVC")
-else()
-	message(WARNING "C++ Compiler: Unknown")
-endif()
-message(STATUS "Target processor: ${CMAKE_SYSTEM_PROCESSOR}")
-message(STATUS "Host processor: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
+include(CheckCXXCompilerFlag)
+include(CheckCXXSourceCompiles)
+include(CheckCSourceCompiles)
 
 #-------------------------------------------------------------------------------
 # macros
@@ -26,6 +14,18 @@ if (NOT WIN32)
 	set(ColorGreen  "${Esc}[32m")
 	set(ColorYellow "${Esc}[33m")
 	set(ColorBlue   "${Esc}[34m")
+endif()
+
+if(NOT COMMAND find_host_package)
+	macro(find_host_package)
+		find_package(${ARGN})
+	endmacro()
+endif()
+
+if(NOT COMMAND find_host_program)
+	macro(find_host_program)
+		find_program(${ARGN})
+	endmacro()
 endif()
 
 #function(message)
@@ -49,6 +49,36 @@ macro(cp_message MSG)
 		message("${ColorBlue}${MSG}${ColorReset}")
 	endif()
 endmacro()
+
+if (${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
+	set(CP_GCC 1)
+	cp_message("C++ Compiler: GCC")
+elseif (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+	set(CP_CLANG 1)
+	cp_message("C++ Compiler: Clang")
+elseif (MSVC)
+	set(CP_MSVC 1)
+	cp_message("C++ Compiler: MSVC")
+else()
+	message(WARNING "C++ Compiler: Unknown")
+endif()
+
+if (CP_GCC OR CP_CLANG)
+	check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORTS_CXX11)
+	check_cxx_compiler_flag("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+	if (COMPILER_SUPPORTS_CXX11)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	elseif (COMPILER_SUPPORTS_CXX0X)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+	else()
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+		cp_message(STATUS "Assume that -std=c++11 works")
+	endif()
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions")
+endif()
+
+cp_message("Target processor: ${CMAKE_SYSTEM_PROCESSOR}")
+cp_message("Host processor: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
 
 macro(texture_file_write TARGET_FILE FILEENTRY)
 	file(READ ${FILEENTRY} CONTENTS)
@@ -100,7 +130,7 @@ macro(create_dir_header PROJECTNAME)
 		file(APPEND ${TARGET_FILE} "\treturn entriesAll;\n}\n")
 	endforeach()
 	configure_file(${TARGET_FILE} ${FINAL_TARGET_FILE})
-	message("wrote ${TARGET_FILE}")
+	message(STATUS "wrote ${TARGET_FILE}")
 endmacro()
 
 macro(texture_merge TARGET_FILE FILELIST_BIG FILELIST_SMALL)
@@ -122,7 +152,7 @@ endmacro()
 macro(textures PROJECTNAME)
 	file(GLOB FILELIST_BIG ${ROOT_DIR}/contrib/assets/png-packed/${PROJECTNAME}-*big.lua)
 	file(GLOB FILELIST_SMALL ${ROOT_DIR}/contrib/assets/png-packed/${PROJECTNAME}-*small.lua)
-	message("build complete.lua: ${ROOT_DIR}/contrib/assets/png-packed/${PROJECTNAME}")
+	message(STATUS "build complete.lua: ${ROOT_DIR}/contrib/assets/png-packed/${PROJECTNAME}")
 	texture_merge(${PROJECT_BINARY_DIR}/complete.lua.in "${FILELIST_BIG}" "${FILELIST_SMALL}")
 	configure_file(${PROJECT_BINARY_DIR}/complete.lua.in ${ROOT_DIR}/base/${PROJECTNAME}/textures/complete.lua COPYONLY)
 endmacro()
@@ -161,9 +191,9 @@ macro(texturepacker)
 endmacro()
 
 macro(check_lua_files TARGET FILES)
-	find_program(LUAC_EXECUTABLE NAMES ${DEFAULT_LUAC_EXECUTABLE})
+	find_host_program(LUAC_EXECUTABLE NAMES ${DEFAULT_LUAC_EXECUTABLE})
 	if (LUAC_EXECUTABLE)
-		message("${LUAC_EXECUTABLE} found")
+		message(STATUS "${LUAC_EXECUTABLE} found")
 		foreach(_FILE ${FILES})
 			string(REPLACE "/" "-" TARGETNAME ${_FILE})
 			add_custom_target(
@@ -175,14 +205,73 @@ macro(check_lua_files TARGET FILES)
 			add_dependencies(${TARGET} ${TARGETNAME})
 		endforeach()
 	else()
-		message(WARNING "No lua compiler (${DEFAULT_LUAC_EXECUTABLE}) found")
+		message(STATUS "No lua compiler (${DEFAULT_LUAC_EXECUTABLE}) found")
 	endif()
 endmacro()
 
+#
+# Install android packages
+#
+# parameters:
+# PACKAGE The package id that you need to install
+#
+macro(cp_android_package PACKAGE)
+	message(STATUS "install android sdk package ${PACKAGE}")
+	file(WRITE ${CMAKE_BINARY_DIR}/yes.txt "y")
+	execute_process(
+		COMMAND ${ANDROID_SDK_TOOL} list target -c
+		OUTPUT_VARIABLE TARGETS_LIST
+	)
+	if (${TARGETS_LIST} MATCHES ${PACKAGE})
+		message(STATUS "${PACKAGE} is already installed")
+	else()
+		execute_process(
+			COMMAND ${ANDROID_SDK_TOOL} update sdk -a -u -s -t ${PACKAGE}
+			INPUT_FILE ${CMAKE_BINARY_DIR}/yes.txt
+		)
+	endif()
+endmacro()
+
+#
+# Prepare android workspace with assets and sdk/ndk commands.
+#
+# Also adds some helper targets:
+# * android-PROJECTNAME-uninstall uninstalls the application
+# * android-PROJECTNAME-install installs the application
+# * android-PROJECTNAME-start starts the application
+# * android-PROJECTNAME-backtrace creates a backtrace from a crash
+#
+# parameters:
+# PROJECTNAME: the project name in lower case letters - used for e.g. resolving the java classes and icons
+#              if this is a test project for a specific game, it should start with 'tests_' - as we then just
+#              reuse some of the game settings and assets for the tests.
+# APPNAME: the normal app name, must not contain whitespaces, but can contain upper case letters.
+# VERSION: the version code, e.g. 1.0
+# VERSION_CODE: the android version code needed for google play store
+#
 macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
-	message("prepare java code for ${PROJECTNAME}")
+	if (ANDROID_INSTALL_PACKAGES)
+		cp_android_package("android-13")
+		cp_android_package("android-16")
+		cp_android_package("extra-google-google_play_services")
+		cp_android_package("platform-tools")
+		cp_android_package("build-tools-${ANDROID_SDK_BUILD_TOOLS_VERSION}")
+		set(ANDROID_INSTALL_PACKAGES OFF)
+	endif()
+	# TODO: add java app and activity classes to dependencies to recompile target on java class changes
+	message(STATUS "prepare java code for ${PROJECTNAME}")
 	file(COPY ${ANDROID_ROOT} DESTINATION ${CMAKE_BINARY_DIR}/android-${PROJECTNAME})
-	set(WHITELIST base libsdl ${PROJECTNAME})
+	if (HD_VERSION)
+		set(PACKAGENAME ${PROJECTNAME}hd)
+	else()
+		set(PACKAGENAME ${PROJECTNAME})
+	endif()
+	set(APPCLASS ${APPNAME})
+	if (${PACKAGENAME} MATCHES "tests")
+		set(PACKAGENAME "tests")
+		set(APPCLASS "TestsApp")
+	endif()
+	set(WHITELIST base libsdl ${PACKAGENAME})
 	set(ANDROID_BIN_ROOT ${CMAKE_BINARY_DIR}/android-${PROJECTNAME})
 	get_subdirs(SUBDIRS ${ANDROID_BIN_ROOT}/src/org)
 	list(REMOVE_ITEM SUBDIRS ${WHITELIST})
@@ -193,22 +282,23 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 	configure_file(${ANDROID_BIN_ROOT}/strings.xml.in ${ANDROID_BIN_ROOT}/res/values/strings.xml @ONLY)
 	configure_file(${ANDROID_BIN_ROOT}/default.properties.in ${ANDROID_BIN_ROOT}/default.properties @ONLY)
 	configure_file(${ANDROID_BIN_ROOT}/project.properties.in ${ANDROID_BIN_ROOT}/project.properties @ONLY)
-	add_custom_target(android-${PROJECTNAME}-backtrace adb logcat | ndk-stack -sym ${ANDROID_BIN_ROOT}/obj/local/${ANDROID_NDK_SYMDIR} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
-	add_custom_target(android-${PROJECTNAME}-install ant ${ANT_INSTALL_TARGET} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
-	add_custom_target(android-${PROJECTNAME}-uninstall ant uninstall WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
-	add_custom_target(android-${PROJECTNAME}-start adb shell am start -n org.${PROJECTNAME}/org.${PROJECTNAME}.${APPNAME} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
-	if (EXISTS ${ROOT_DIR}/contrib/installer/android/${PROJECTNAME}/)
-		file(COPY ${ROOT_DIR}/contrib/installer/android/${PROJECTNAME}/ DESTINATION ${ANDROID_BIN_ROOT})
+	configure_file(${ANDROID_BIN_ROOT}/build.gradle.in ${ANDROID_BIN_ROOT}/build.gradle @ONLY)
+	add_custom_target(android-${PROJECTNAME}-backtrace ${ANDROID_ADB} logcat | ndk-stack -sym ${ANDROID_BIN_ROOT}/obj/local/${ANDROID_NDK_ABI_NAME} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
+	add_custom_target(android-${PROJECTNAME}-install ${ANDROID_ANT} ${ANT_INSTALL_TARGET} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
+	add_custom_target(android-${PROJECTNAME}-uninstall ${ANDROID_ANT} uninstall WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
+	set(APP_PACKAGENAME "org.${PACKAGENAME}")
+	add_custom_target(android-${PROJECTNAME}-start ${ANDROID_ADB} shell am start -n ${APP_PACKAGENAME}/${APP_PACKAGENAME}.${APPCLASS} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
+	string(REPLACE "tests_" "" CLEAN_PROJECTNAME "${PROJECTNAME}")
+	if (EXISTS ${ROOT_DIR}/contrib/installer/android/${CLEAN_PROJECTNAME}/)
+		file(COPY ${ROOT_DIR}/contrib/installer/android/${CLEAN_PROJECTNAME}/ DESTINATION ${ANDROID_BIN_ROOT})
 	endif()
-	file(COPY ${ROOT_DIR}/base/${PROJECTNAME} DESTINATION ${ANDROID_BIN_ROOT}/assets/base)
-	file(REMOVE ${ANDROID_BIN_ROOT}/assets/base/${PROJECTNAME}/maps PATTERN test*)
-	file(REMOVE ${ANDROID_BIN_ROOT}/assets/base/${PROJECTNAME}/maps PATTERN empty*)
+	message(STATUS "copy files from ${ROOT_DIR}/base/${CLEAN_PROJECTNAME} to ${ANDROID_BIN_ROOT}/assets/base/${CLEAN_PROJECTNAME}")
+	file(COPY ${ROOT_DIR}/base/${CLEAN_PROJECTNAME} DESTINATION ${ANDROID_BIN_ROOT}/assets/base)
+	#install(DIRECTORY ${ROOT_DIR}/base/${CLEAN_PROJECTNAME} DESTINATION ${ANDROID_BIN_ROOT}/assets/base)
 	set(RESOLUTIONS hdpi ldpi mdpi xhdpi)
-	if (HD_VERSION)
-		set(ICON "hd${PROJECTNAME}-icon.png")
-	endif()
-	if (NOT EXISTS ${ROOT_DIR}/contrib/${ICON} OR NOT HD_VERSION)
-		set(ICON "${PROJECTNAME}-icon.png")
+	set(ICON "${PACKAGENAME}-icon.png")
+	if (NOT EXISTS ${ROOT_DIR}/contrib/${ICON})
+		set(ICON "${CLEAN_PROJECTNAME}-icon.png")
 	endif()
 	if (EXISTS ${ROOT_DIR}/contrib/${ICON})
 		foreach(RES ${RESOLUTIONS})
@@ -216,31 +306,46 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 			configure_file(${ROOT_DIR}/contrib/${ICON} ${ANDROID_BIN_ROOT}/res/drawable-${RES}/icon.png COPYONLY)
 		endforeach()
 	endif()
-	set(ANDROID_SO_OUTDIR ${ANDROID_BIN_ROOT}/libs/${ANDROID_NDK_SYMDIR})
+	set(ANDROID_SO_OUTDIR ${ANDROID_BIN_ROOT}/libs/${ANDROID_NDK_ABI_NAME})
 	set_target_properties(${PROJECTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${ANDROID_SO_OUTDIR})
 	set_target_properties(${PROJECTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${ANDROID_SO_OUTDIR})
 	set_target_properties(${PROJECTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG ${ANDROID_SO_OUTDIR})
 	if (NOT EXISTS ${ANDROID_BIN_ROOT}/local.properties)
-		message("=> create Android SDK project: ${PROJECTNAME}")
+		message(STATUS "=> create Android SDK project: ${PROJECTNAME}")
 		execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent update project
 				--path .
+				${ANDROID_TOOL_FLAGS}
 				--name ${APPNAME}
 				--target ${ANDROID_API}
 				WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 		execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent update lib-project
+				${ANDROID_TOOL_FLAGS}
 				--path google-play-services_lib
 				--target ${ANDROID_API}
 				WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 	endif()
-	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${ANDROID_ANT} ${ANT_FLAGS} ${ANT_TARGET} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
-	#add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${ANDROID_BIN_ROOT}/bin/${PROJECTNAME}-${ANT_TARGET}.apk ${ROOT_DIR}/)
 	if (RELEASE)
-		add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND jarsigner -sigalg SHA1withRSA -digestalg SHA1 -keypass $ENV{CAVEPRODUCTIONS_ALIAS_PASSWD} -storepass $ENV{CAVEPRODUCTIONS_KEYSTORE_PASSWD} -keystore $ENV{CAVEPRODUCTIONS_KEYSTORE_PATH} ${APPNAME}-${ANT_TARGET}-unsigned.apk CaveProductions WORKING_DIRECTORY ${ANDROID_BIN_ROOT}/bin/)
-		add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND jarsigner -verify -certs ${APPNAME}-${ANT_TARGET}-unsigned.apk WORKING_DIRECTORY ${ANDROID_BIN_ROOT}/bin/)
-		add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${ANDROID_ZIPALIGN} -f -v 4 ${APPNAME}-${ANT_TARGET}-unsigned.apk ${APPNAME}-${ANT_TARGET}.apk WORKING_DIRECTORY ${ANDROID_BIN_ROOT}/bin/)
+		set(APK_NAME ${APPNAME}-${ANT_TARGET}-unsigned.apk)
+	else()
+		set(APK_NAME ${APPNAME}-${ANT_TARGET}.apk)
 	endif()
+	set(TMP_APK_NAME ${APPNAME}-${ANT_TARGET}-tmp.apk)
+	set(FINAL_APK_NAME ${APPNAME}-${ANT_TARGET}.apk)
+
+	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E rename ${ANDROID_SO_OUTDIR}/lib${PROJECTNAME}.so ${ANDROID_SO_OUTDIR}/lib${PACKAGENAME}.so)
+	message(STATUS "Android settings: keystore=${ANDROID_KEYSTORE} apkname=${APK_NAME} alias=${ANDROID_ALIAS}")
+	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${ANDROID_ANT} ${ANT_FLAGS} ${ANT_TARGET} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
+	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E rename ${ANDROID_BIN_ROOT}/bin/${APK_NAME} ${ANDROID_BIN_ROOT}/bin/${TMP_APK_NAME})
+	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${JARSIGNER} -sigalg SHA1withRSA -digestalg SHA1 -keypass ${ANDROID_KEYPASS} -storepass ${ANDROID_STOREPASS} -keystore ${ANDROID_KEYSTORE} ${TMP_APK_NAME} ${ANDROID_ALIAS} WORKING_DIRECTORY ${ANDROID_BIN_ROOT}/bin/)
+	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${JARSIGNER} -verify -certs ${TMP_APK_NAME} WORKING_DIRECTORY ${ANDROID_BIN_ROOT}/bin/)
+	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${ANDROID_ZIPALIGN} -f ${ZIPALIGN_FLAGS} 4 ${TMP_APK_NAME} ${FINAL_APK_NAME} WORKING_DIRECTORY ${ANDROID_BIN_ROOT}/bin/)
+	#add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${ANDROID_ANT} uninstall ${ANT_INSTALL_TARGET} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
+	#add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${ANDROID_ADB} shell am start -n org.${PROJECTNAME}/org.${PROJECTNAME}.${APPNAME} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 endmacro()
 
+#
+# put a variable into the global namespace
+#
 macro(var_global VARIABLES)
 	foreach(VAR ${VARIABLES})
 		cp_message("${VAR} => ${${VAR}}")
@@ -253,6 +358,17 @@ macro(package_global LIB)
 	find_package(${LIB})
 endmacro()
 
+#
+# Add external dependency. It will trigger a find_package and use the system wide install if found, otherwise the bundled version
+# If you set USE_BUILTIN the system wide is ignored.
+#
+# parameters:
+# LIB:
+# CFLAGS:
+# LINKERFLAGS:
+# SRCS: the list of source files for the bundled lib
+# DEFINES: a list of defines (without -D or /D)
+#
 macro(cp_add_library)
 	set(_OPTIONS_ARGS)
 	set(_ONE_VALUE_ARGS LIB CFLAGS LINKERFLAGS)
@@ -292,13 +408,29 @@ macro(cp_add_library)
 		var_global(${PREFIX}_INCLUDE_DIRS)
 		var_global(${PREFIX}_DEFINITIONS)
 	endif()
+	# mark this library as an external dependency.
 	set(${PREFIX}_EXTERNAL ON)
 	var_global(${PREFIX}_EXTERNAL)
 endmacro()
 
-macro(cp_find LIB HEADER SUFFIX)
-	if (NOT USE_BUILTIN)
-		string(TOUPPER ${LIB} PREFIX)
+#
+# macro for the FindLibName.cmake files. If USE_BUILTIN is set we don't search for system wide installs at all.
+#
+# parameters:
+# LIB: the library we are trying to find
+# HEADER: the header we are trying to find
+# SUFFIX: suffix for the include dir
+# HEADERONLY: lib is a header only dependency
+# VERSION: the operator and version that is given to the pkg-config call (e.g. ">=1.0")
+#
+# Example: cp_find(SDL2_image SDL_image.h SDL2 FALSE)
+#
+macro(cp_find LIB HEADER SUFFIX HEADERONLY VERSION)
+	string(TOUPPER ${LIB} PREFIX)
+	if (NOT USE_BUILTIN AND NOT USE_BUILTIN_${PREFIX})
+		unset(${PREFIX}_FOUND CACHE)
+		unset(${PREFIX}_LIBRARIES CACHE)
+		unset(${PREFIX}_INCLUDE_DIRS CACHE)
 		if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 			set(_PROCESSOR_ARCH "x64")
 		else()
@@ -314,7 +446,7 @@ macro(cp_find LIB HEADER SUFFIX)
 			/opt/csw # Blastwave
 			/opt
 		)
-		find_package(PkgConfig)
+		find_package(PkgConfig QUIET)
 		if (LINK_STATIC_LIBS)
 			set(PKG_PREFIX _${PREFIX}_STATIC)
 		else()
@@ -322,7 +454,7 @@ macro(cp_find LIB HEADER SUFFIX)
 		endif()
 		if (PKG_CONFIG_FOUND)
 			message(STATUS "Checking for ${LIB}")
-			pkg_check_modules(_${PREFIX} ${LIB})
+			pkg_check_modules(_${PREFIX} ${LIB}${VERSION})
 			if (_${PREFIX}_FOUND)
 				cp_message("Found ${LIB} via pkg-config")
 				cp_message("CFLAGS: ${${PKG_PREFIX}_CFLAGS_OTHER}")
@@ -341,31 +473,44 @@ macro(cp_find LIB HEADER SUFFIX)
 				var_global(${PREFIX}_LIBRARY_DIRS)
 				set(${PREFIX}_LIBRARIES ${${PKG_PREFIX}_LIBRARIES})
 				var_global(${PREFIX}_LIBRARIES)
+				set(${PREFIX}_VERSION ${${PKG_PREFIX}_VERSION})
+				var_global(${PREFIX}_VERSION)
 			else()
 				cp_message("Could not find ${LIB} via pkg-config")
 			endif()
 		endif()
 		if (NOT ${PKG_PREFIX}_FOUND)
-			find_path(${PREFIX}_INCLUDE_DIRS ${HEADER}
+			find_path(${PREFIX}_INCLUDE_DIRS
+				NAMES ${HEADER}
 				HINTS ENV ${PREFIX}DIR
-				PATH_SUFFIXES include ${SUFFIX}
+				PATH_SUFFIXES include include/${SUFFIX} ${SUFFIX}
 				PATHS
 					${${PKG_PREFIX}_INCLUDE_DIRS}}
 					${_SEARCH_PATHS}
 			)
-			find_library(${PREFIX}_LIBRARIES
-				${LIB}
-				HINTS ENV ${PREFIX}DIR
-				PATH_SUFFIXES lib64 lib lib/${_PROCESSOR_ARCH}
-				PATHS
-					${${PKG_PREFIX}_LIBRARY_DIRS}}
-					${_SEARCH_PATHS}
-			)
+			if (NOT HEADERONLY)
+				find_library(${PREFIX}_LIBRARIES
+					NAMES ${LIB}
+					HINTS ENV ${PREFIX}DIR
+					PATH_SUFFIXES lib64 lib lib/${_PROCESSOR_ARCH}
+					PATHS
+						${${PKG_PREFIX}_LIBRARY_DIRS}}
+						${_SEARCH_PATHS}
+				)
+			endif()
 			include(FindPackageHandleStandardArgs)
-			find_package_handle_standard_args(${LIB} DEFAULT_MSG ${PREFIX}_LIBRARIES ${PREFIX}_INCLUDE_DIRS)
+			if (HEADERONLY)
+				message(STATUS "Header only lib ${LIB}")
+				set(${PREFIX}_LIBRARIES "")
+				find_package_handle_standard_args(${LIB} DEFAULT_MSG ${PREFIX}_INCLUDE_DIRS)
+			else()
+				find_package_handle_standard_args(${LIB} DEFAULT_MSG ${PREFIX}_INCLUDE_DIRS ${PREFIX}_LIBRARIES)
+			endif()
+
 			var_global(${PREFIX}_INCLUDE_DIRS)
 			var_global(${PREFIX}_LIBRARIES)
 			var_global(${PREFIX}_FOUND)
+			var_global(${PREFIX}_VERSION)
 		endif()
 	endif()
 endmacro()
@@ -492,35 +637,87 @@ macro(cp_target_link_libraries)
 	endif()
 endmacro()
 
+macro(cp_osx_prepare_content TARGET BUNDLED)
+	if (${BUNDLED})
+		set(XCODE_OUTPUT_DIR \${TARGET_BUILD_DIR}/\${FULL_PRODUCT_NAME}/Contents/MacOS)
+	else()
+		set(XCODE_OUTPUT_DIR \${TARGET_BUILD_DIR})
+	endif()
+	set(ABOUT_FILE ${ROOT_DIR}/docs/${TARGET}/ABOUT.en)
+	configure_file(${ROOT_DIR}/cmake/project.xcscheme.in ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}.xcodeproj/xcshareddata/xcschemes/${TARGET}.xcscheme)
+	if (EXISTS ${ABOUT_FILE})
+		add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ABOUT_FILE} ${XCODE_OUTPUT_DIR})
+	endif()
+endmacro()
+
 macro(cp_osx_generate_plist_file TARGET)
-	set(PLIST_PATH ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
+	set(PLIST_PATH ${PROJECT_BINARY_DIR}/Info.plist)
 	set_target_properties(${TARGET} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PLIST_PATH})
 	if (IOS)
 		configure_file(${ROOT_DIR}/cmake/iOSBundleInfo.plist.template ${PLIST_PATH} @ONLY)
 	else()
 		configure_file(${ROOT_DIR}/cmake/MacOSXBundleInfo.plist.template ${PLIST_PATH} @ONLY)
 	endif()
+	#set_source_files_properties(${PLIST_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 endmacro()
 
-macro(cp_osx_add_target_properties TARGET)
-	cp_osx_generate_plist_file(${TARGET})
+macro(cp_set_properties TARGET VARNAME VALUE)
+	set(${VARNAME} "${VALUE}")
+	var_global(${VARNAME})
+	set_target_properties(${TARGET} PROPERTIES ${VARNAME} "${VALUE}")
+endmacro()
+
+macro(cp_ios_get_provisioning_profiles PROFILE_NAME PROVISIONG_PROFILES_DIR RESULT)
+	file(GLOB FILES ${PROVISIONG_PROFILES_DIR}/*.mobileprovision)
+	set(LIST "")
+	foreach(FILE ${FILES})
+		cp_message("Looking in ${FILE} for the provisioning profile")
+		file(STRINGS "${FILE}" NAME REGEX "${PROFILE_NAME}")
+		if (NAME)
+			list(APPEND LIST ${FILE})
+		endif()
+	endforeach()
+	if (LIST)
+		list(APPEND ${RESULT} ${LIST})
+	endif()
+endmacro()
+
+macro(cp_osx_add_target_properties TARGET VERSION VERSION_CODE)
+	cp_set_properties(${TARGET} MACOSX_BUNDLE_LONG_VERSION_STRING "${VERSION}")
+	cp_set_properties(${TARGET} MACOSX_BUNDLE_SHORT_VERSION_STRING "${VERSION_CODE}")
+	cp_set_properties(${TARGET} MACOSX_BUNDLE_BUNDLE_VERSION "${VERSION_CODE}")
+	cp_set_properties(${TARGET} MACOSX_BUNDLE_COPYRIGHT "CaveProductions")
+	cp_set_properties(${TARGET} MACOSX_BUNDLE_INFO_STRING "")
+	cp_set_properties(${TARGET} MACOSX_BUNDLE_GUI_IDENTIFIER "org.${TARGET}")
+	cp_set_properties(${TARGET} MACOSX_BUNDLE_ICON_FILE "Icon.png")
+	cp_set_properties(${TARGET} PROPERTIES XCODE_ATTRIBUTE_INSTALL_PATH "/Applications")
 	if (IOS)
-		set_target_properties(${TARGET} PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer")
-		set_target_properties(${TARGET} PROPERTIES XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
+		if (RELEASE)
+			cp_set_properties(${TARGET} XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer: Martin Gerhardy")
+		else()
+			cp_set_properties(${TARGET} XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer")
+		endif()
+		cp_set_properties(${TARGET} XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
+		cp_message("Set ios parameters")
 	endif()
-	set_target_properties(${TARGET} PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "org.${TARGET}")
-	set_target_properties(${TARGET} PROPERTIES MACOSX_BUNDLE_ICON_FILE "Icon.png")
 	if (${CMAKE_GENERATOR} STREQUAL "Xcode")
-		set_target_properties(${TARGET} PROPERTIES MACOSX_BUNDLE_EXECUTABLE_NAME \${EXECUTABLE_NAME})
-		set_target_properties(${TARGET} PROPERTIES MACOSX_BUNDLE_PRODUCT_NAME \${PRODUCT_NAME})
-		set_target_properties(${TARGET} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME \${PRODUCT_NAME})
+		cp_set_properties(${TARGET} MACOSX_BUNDLE_EXECUTABLE_NAME \${EXECUTABLE_NAME})
+		cp_set_properties(${TARGET} MACOSX_BUNDLE_PRODUCT_NAME \${PRODUCT_NAME})
+		cp_set_properties(${TARGET} MACOSX_BUNDLE_BUNDLE_NAME \${PRODUCT_NAME})
 	else()
-		set_target_properties(${TARGET} PROPERTIES MACOSX_BUNDLE_EXECUTABLE_NAME "${TARGET}")
-		set_target_properties(${TARGET} PROPERTIES MACOSX_BUNDLE_PRODUCT_NAME "${TARGET}")
-		set_target_properties(${TARGET} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "${TARGET}")
+		cp_set_properties(${TARGET} MACOSX_BUNDLE_EXECUTABLE_NAME "${TARGET}")
+		cp_set_properties(${TARGET} MACOSX_BUNDLE_PRODUCT_NAME "${TARGET}")
+		cp_set_properties(${TARGET} MACOSX_BUNDLE_BUNDLE_NAME "${TARGET}")
 	endif()
+	#cp_set_properties(${TARGET} MACOSX_BUNDLE TRUE)
+	cp_osx_generate_plist_file(${TARGET})
 endmacro()
 
+#
+# set up the binary for the application. This will also set up platform specific stuff for you
+#
+# Example: cp_add_executable(TARGET SomeTargetName SRCS Source.cpp Main.cpp WINDOWED APPNAME "Some App Name" VERSION 1.0 VERSION_CODE 1)
+#
 macro(cp_add_executable)
 	set(_OPTIONS_ARGS WINDOWED)
 	set(_ONE_VALUE_ARGS TARGET VERSION VERSION_CODE APPNAME)
@@ -528,37 +725,123 @@ macro(cp_add_executable)
 
 	cmake_parse_arguments(_EXE "${_OPTIONS_ARGS}" "${_ONE_VALUE_ARGS}" "${_MULTI_VALUE_ARGS}" ${ARGN} )
 
+	# tests have different install behaviour
+	if (${_EXE_TARGET} MATCHES "tests")
+		set(TESTS TRUE)
+	else()
+		set(TESTS FALSE)
+	endif()
+	string(REGEX REPLACE "tests_" "" BASEDIR ${_EXE_TARGET})
+	set(TARGET_ASSETS "")
+	set(RESOURCE_DIR ${ROOT_DIR}/base/${BASEDIR})
+	file(GLOB CHILDREN RELATIVE ${ROOT_DIR}/base/ ${ROOT_DIR}/base/${BASEDIR}/*)
+	foreach (CHILD ${CHILDREN})
+		if (IS_DIRECTORY "${ROOT_DIR}/base/${CHILD}")
+			cp_message("Asset dir: ${ROOT_DIR}/base/${CHILD}")
+			file(GLOB RESOURCE_DIR_FILES RELATIVE "${ROOT_DIR}" "${RESOURCE_DIR}/${CHILD}/[A-Za-z]*.*")
+			set_source_files_properties(${RESOURCE_DIR_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/${RESOURCE_DIR_NAME}/${CHILD})
+			list(APPEND TARGET_ASSETS ${RESOURCE_DIR_FILES})
+		endif()
+	endforeach()
+
+	set(ABOUT_FILE ${ROOT_DIR}/docs/${_EXE_TARGET}/ABOUT.en)
+	if (EXISTS ${ABOUT_FILE})
+		file(READ ${ABOUT_FILE} DESCRIPTION_RAW)
+		string(REPLACE "\n" "\\n" DESCRIPTION ${DESCRIPTION_RAW})
+	endif()
+
 	set(GUI_IDENTIFIER org.${_EXE_TARGET})
 	set(APPNAME ${_EXE_APPNAME})
+	set(APP ${_EXE_TARGET})
 	set(VERSION ${_EXE_VERSION})
 	set(VERSION_CODE ${_EXE_VERSION_CODE})
+	if (VERBOSE)
+		message(STATUS "Prepare android build with settings:")
+		message(STATUS "- APPNAME:        '${APPNAME}'")
+		message(STATUS "- VERSION:        '${VERSION}'")
+		message(STATUS "- VERSION_CODE:   '${VERSION_CODE}'")
+		message(STATUS "- GUI_IDENTIFIER: '${GUI_IDENTIFIER}'")
+	endif()
+
+	set(CPACK_COMPONENT_${_EXE_TARGET}_DISPLAY_NAME ${APPNAME})
+
+	# by default, put system related files into the current binary dir on install
+	set(SHARE_DIR ".")
+	# by default, put data files into the current binary dir on install
+	set(GAMES_DIR ".")
+	# by default, put the binary into a subdir with the target name
+	set(BIN_DIR "${_EXE_TARGET}")
 
 	if (ANDROID)
-		add_library(${_EXE_TARGET} SHARED ${_EXE_SRCS})
+		add_library(${_EXE_TARGET} SHARED ${_EXE_SRCS} ${TARGET_ASSETS})
 		cp_android_prepare(${_EXE_TARGET} ${APPNAME} ${VERSION} ${VERSION_CODE})
 	else()
-		if (WINDOWED)
+		if (LINUX AND NOT TESTS)
+			set(SHARE_DIR "share")
+			set(GAMES_DIR "${SHARE_DIR}")
+			set(BIN_DIR "games")
+			configure_file(${ROOT_DIR}/contrib/installer/linux/editor.in ${BIN_DIR}/${_EXE_TARGET}-editor)
+			configure_file(${ROOT_DIR}/contrib/installer/linux/desktop.in ${PROJECT_BINARY_DIR}/${_EXE_TARGET}.desktop)
+			configure_file(${ROOT_DIR}/contrib/installer/linux/appdata.xml.in ${PROJECT_BINARY_DIR}/${_EXE_TARGET}.appdata.xml)
+			install(FILES ${PROJECT_BINARY_DIR}/${_EXE_TARGET}.desktop DESTINATION ${SHARE_DIR}/applications)
+			install(FILES ${PROJECT_BINARY_DIR}/${_EXE_TARGET}.appdata.xml DESTINATION ${SHARE_DIR}/appdata)
+			set(MAN_PAGE ${ROOT_DIR}/contrib/installer/linux/${_EXE_TARGET}.6)
+			if (EXISTS ${MAN_PAGE})
+				install(FILES ${MAN_PAGE} DESTINATION ${SHARE_DIR}/man/en_GB/man6)
+			endif()
+		endif()
+
+		if (_EXE_WINDOWED)
 			if (WINDOWS)
+				set(GAMEEXPLORER_XML ${PROJECT_BINARY_DIR}/gameexplorer.xml)
+				configure_file(${ROOT_DIR}/contrib/installer/windows/gameexplorer.xml.in ${GAMEEXPLORER_XML})
 				configure_file(${ROOT_DIR}/src/project.rc.in ${PROJECT_BINARY_DIR}/project.rc)
 				list(APPEND _EXE_SRCS ${PROJECT_BINARY_DIR}/project.rc)
-				add_executable(${_EXE_TARGET} WIN32 ${_EXE_SRCS})
+				add_executable(${_EXE_TARGET} WIN32 ${_EXE_SRCS} ${TARGET_ASSETS})
+				if (MSVC)
+					set_target_properties(${_EXE_TARGET} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+				endif()
 			elseif (DARWIN OR IOS)
-				add_executable(${_EXE_TARGET} MACOSX_BUNDLE ${_EXE_SRCS})
-				cp_osx_add_target_properties(${_EXE_TARGET})
-				cp_osx_generate_plist_file(${_EXE_TARGET})
+				list(APPEND _EXE_SRCS ${PROJECT_BINARY_DIR}/Info.plist)
+				#set(BUNDLE_LOADER "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/MacOS/${_EXE_TARGET}")
+				#set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -bundle_loader \"${BUNDLE_LOADER}\"")
+				add_executable(${_EXE_TARGET} MACOSX_BUNDLE ${_EXE_SRCS} ${TARGET_ASSETS})
+				cp_osx_add_target_properties(${_EXE_TARGET} ${VERSION} ${VERSION_CODE})
+				cp_osx_prepare_content(${_EXE_TARGET} ON)
 			else()
-				add_executable(${_EXE_TARGET} ${_EXE_SRCS})
+				add_executable(${_EXE_TARGET} ${_EXE_SRCS} ${TARGET_ASSETS})
 			endif()
 		else()
-			add_executable(${_EXE_TARGET} ${_EXE_SRCS})
+			add_executable(${_EXE_TARGET} ${_EXE_SRCS} ${TARGET_ASSETS})
+			if (DARWIN OR IOS)
+				cp_osx_add_target_properties(${_EXE_TARGET} ${VERSION} ${VERSION_CODE})
+				cp_osx_prepare_content(${_EXE_TARGET} OFF)
+			elseif (WINDOWS)
+				if (MSVC)
+					set_target_properties(${_EXE_TARGET} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+				endif()
+			endif()
 		endif()
 	endif()
 
-	if (NACL)
+	if (IOS AND RELEASE)
+		set(RESULTS "")
+		cp_ios_get_provisioning_profiles("Martin Gerhardy" "${IOS_PROVISIONG_PROFILES_DIR}" RESULTS)
+		if (NOT RESULTS)
+			if (RELEASE)
+				cp_message("Could not find matching provisioning profile in ${IOS_PROVISIONG_PROFILES_DIR}")
+			else()
+				cp_message("Could not find matching provisioning profile in ${IOS_PROVISIONG_PROFILES_DIR}")
+			endif()
+		else()
+			message(STATUS "Found provisioning profile hash ${RESULTS}")
+		endif()
+	elseif (NACL)
 		set_target_properties(${_EXE_TARGET} PROPERTIES PROFILING_POSTFIX .pexe)
 		set_target_properties(${_EXE_TARGET} PROPERTIES RELEASE_POSTFIX .pexe)
 		set_target_properties(${_EXE_TARGET} PROPERTIES DEBUG_POSTFIX .pexe)
 	elseif (EMSCRIPTEN)
+		em_link_js_library(${_EXE_TARGET} ${ROOT_DIR}/contrib/installer/html5/library.js)
 		set_target_properties(${_EXE_TARGET} PROPERTIES PROFILING_POSTFIX .html)
 		set_target_properties(${_EXE_TARGET} PROPERTIES RELEASE_POSTFIX .html)
 		set_target_properties(${_EXE_TARGET} PROPERTIES DEBUG_POSTFIX .html)
@@ -566,6 +849,57 @@ macro(cp_add_executable)
 		set_target_properties(${_EXE_TARGET} PROPERTIES LINK_FLAGS "--preload-file ${ROOT_DIR}/base/${_EXE_TARGET}@/ --shell-file ${CMAKE_CURRENT_BINARY_DIR}/shell.html")
 	endif()
 
-	include_directories(${CMAKE_BINARY_DIR})
 	set_target_properties(${_EXE_TARGET} PROPERTIES FOLDER ${_EXE_TARGET})
+	# install relative to /usr/<APPNAME>
+	if (NOT TESTS)
+		if (PKGDATADIR)
+			install(DIRECTORY ${ROOT_DIR}/base/${BASEDIR} DESTINATION ${PKGDATADIR} COMPONENT ${_EXE_TARGET})
+		else()
+			install(DIRECTORY ${ROOT_DIR}/base/${BASEDIR} DESTINATION ${GAMES_DIR}/${_EXE_TARGET}/base COMPONENT ${_EXE_TARGET})
+		endif()
+		install(TARGETS ${_EXE_TARGET} DESTINATION ${BIN_DIR} COMPONENT ${_EXE_TARGET})
+	endif()
+	configure_file(${ROOT_DIR}/src/game.h.in ${PROJECT_BINARY_DIR}/game.h)
+	include_directories(${PROJECT_BINARY_DIR})
+endmacro()
+
+#
+# parameters:
+# The code to check must be the first argument
+# CXX|C: Defines which compiler should be used
+# FLAGS: The compiler flags to use
+# VAR: The cmake variable the result is exported into
+# INCLUDE_DIRS: a list of include dirs that should be used
+#
+# Example: cp_check_source_compiles(CXX FLAGS "--some-compiler-flag --yet-another-one" VAR HAVE_COMPILE_FLAGS "int main(int argc, char *argv[]) {return 0;}")
+#
+macro(cp_check_source_compiles CODE)
+	set(_OPTIONS_ARGS CXX C)
+	set(_ONE_VALUE_ARGS FLAGS VAR)
+	set(_MULTI_VALUE_ARGS INCLUDE_DIRS)
+
+	cmake_parse_arguments(_COMPILE "${_OPTIONS_ARGS}" "${_ONE_VALUE_ARGS}" "${_MULTI_VALUE_ARGS}" ${ARGN})
+
+	if (NOT _COMPILE_VAR)
+		message(FATAL_ERROR "cp_check_source_compiles requires the VAR argument")
+	endif()
+	if (NOT _COMPILE_C AND NOT _COMPILE_CXX)
+		message(FATAL_ERROR "cp_check_source_compiles requires either CXX or C to be specified")
+	endif()
+
+	set(_TMP_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES})
+	set(_TMP_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
+
+	if (_COMPILE_INCLUDE_DIRS)
+		set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES};${_COMPILE_INCLUDE_DIRS}")
+	endif()
+	set(CMAKE_REQUIRED_FLAGS ${_COMPILE_FLAGS})
+	cp_message("Check that this code compiles and links:\n${CODE}")
+	if (_COMPILE_C)
+		check_c_source_compiles("${CODE}" "${_COMPILE_VAR}")
+	elseif (_COMPILE_CXX)
+		check_cxx_source_compiles("${CODE}" "${_COMPILE_VAR}")
+	endif()
+	set(CMAKE_REQUIRED_FLAGS ${_TMP_REQUIRED_FLAGS})
+	set(CMAKE_REQUIRED_INCLUDES ${_TMP_REQUIRED_INCLUDES})
 endmacro()

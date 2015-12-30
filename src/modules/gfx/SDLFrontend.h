@@ -29,6 +29,7 @@ protected:
 	ConfigVarPtr _debugSleep;
 
 	bool _softwareRenderer;
+	int _drawCalls;
 
 	Color _color;
 
@@ -39,10 +40,10 @@ protected:
 	{
 		const char *error = SDL_GetError();
 		if (*error != '\0') {
-			Log::error(LOG_CLIENT, "%s (%s:%i => %s)", error, file, line, function);
+			Log::error(LOG_GFX, "%s (%s:%i => %s)", error, file, line, function);
 			SDL_ClearError();
 		} else {
-			Log::error(LOG_CLIENT, "unknown error (%s:%i => %s)", file, line, function);
+			Log::error(LOG_GFX, "unknown error (%s:%i => %s)", file, line, function);
 		}
 	}
 	#define sdlCheckError() /*OpenGLStateHandlerCheckError(__FILE__, __LINE__, __PRETTY_FUNCTION__);*/checkError(__FILE__, __LINE__, __PRETTY_FUNCTION__)
@@ -59,8 +60,8 @@ public:
 	virtual void setHints ();
 	virtual void setGLAttributes ();
 
-	virtual void resetColor ();
-	virtual void setColor (const Color& rgba);
+	virtual void resetColor () override;
+	virtual void setColor (const Color& rgba) override;
 
 	virtual void renderBegin ();
 	virtual void renderEnd ();
@@ -69,8 +70,8 @@ public:
 	virtual void onWindowResize () override;
 	virtual void onPrepareBackground () override;
 	virtual void onForeground () override;
-	void onJoystickDeviceRemoved (int32_t device);
-	void onJoystickDeviceAdded (int32_t device);
+	void onJoystickDeviceRemoved (int32_t device) override;
+	void onJoystickDeviceAdded (int32_t device) override;
 
 	// IFrontend implementation
 	virtual void toggleGrabMouse () override;

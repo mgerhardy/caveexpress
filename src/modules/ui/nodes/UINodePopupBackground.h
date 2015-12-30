@@ -13,7 +13,7 @@ public:
 		setBorderColor(colorWhite);
 	}
 
-	virtual TexturePtr getCave () const
+	virtual TexturePtr getCave () const override
 	{
 		return _tiles[0];
 	}

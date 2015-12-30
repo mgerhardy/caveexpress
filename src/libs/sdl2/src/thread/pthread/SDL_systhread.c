@@ -87,7 +87,6 @@ int
 SDL_SYS_CreateThread(SDL_Thread * thread, void *args)
 {
     pthread_attr_t type;
-    size_t ss;
     const char *hint = SDL_GetHint(SDL_HINT_THREAD_STACK_SIZE);
 
     /* do this here before any threads exist, so there's no race condition. */
@@ -116,8 +115,6 @@ SDL_SYS_CreateThread(SDL_Thread * thread, void *args)
             pthread_attr_setstacksize(&type, stacksize);
         }
     }
-    
-    pthread_attr_getstacksize(&type, &ss);
 
     /* Create the thread and go! */
     if (pthread_create(&thread->handle, &type, RunThread, args) != 0) {
@@ -146,7 +143,11 @@ SDL_SYS_SetupThread(const char *name)
             #endif
         }
         #elif HAVE_PTHREAD_SETNAME_NP
+            #if defined(__NETBSD__)
+            pthread_setname_np(pthread_self(), "%s", name);
+            #else
             pthread_setname_np(pthread_self(), name);
+            #endif
         #elif HAVE_PTHREAD_SET_NAME_NP
             pthread_set_name_np(pthread_self(), name);
         #elif defined(__HAIKU__)

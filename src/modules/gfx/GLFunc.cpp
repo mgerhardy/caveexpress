@@ -14,6 +14,34 @@ void ExtGLLoadFunctions(void) {
 	glpfTexImage3D = (PFNGLTEXIMAGE3D_PROC*) SDL_GL_GetProcAddress("glTexImage3D");
 	glpfTexSubImage3D = (PFNGLTEXSUBIMAGE3D_PROC*) SDL_GL_GetProcAddress("glTexSubImage3D");
 	glpfCopyTexSubImage3D = (PFNGLCOPYTEXSUBIMAGE3D_PROC*) SDL_GL_GetProcAddress("glCopyTexSubImage3D");
+	glpfDeleteTextures = (PFNGLDELETETEXTURES_PROC*) SDL_GL_GetProcAddress("glDeleteTextures");
+	glpfGenTextures = (PFNGLGENTEXTURES_PROC*) SDL_GL_GetProcAddress("glGenTextures");
+	glpfBindTexture = (PFNGLBINDTEXTURE_PROC*) SDL_GL_GetProcAddress("glBindTexture");
+	glpfTexParameteri = (PFNGLTEXPARAMETERI_PROC*) SDL_GL_GetProcAddress("glTexParameteri");
+	glpfTexImage2D = (PFNGLTEXIMAGE2D_PROC*) SDL_GL_GetProcAddress("glTexImage2D");
+	glpfGetIntegerv = (PFNGLGETINTEGERV_PROC*) SDL_GL_GetProcAddress("glGetIntegerv");
+	glpfPixelStorei = (PFNGLPIXELSTOREI_PROC*) SDL_GL_GetProcAddress("glPixelStorei");
+	glpfReadPixels = (PFNGLREADPIXELS_PROC*) SDL_GL_GetProcAddress("glReadPixels");
+	glpfViewport = (PFNGLVIEWPORT_PROC*) SDL_GL_GetProcAddress("glViewport");
+	glpfClearColor = (PFNGLCLEARCOLOR_PROC*) SDL_GL_GetProcAddress("glClearColor");
+	glpfClear = (PFNGLCLEAR_PROC*) SDL_GL_GetProcAddress("glClear");
+	glpfScissor = (PFNGLSCISSOR_PROC*) SDL_GL_GetProcAddress("glScissor");
+	glpfDrawArrays = (PFNGLDRAWARRAYS_PROC*) SDL_GL_GetProcAddress("glDrawArrays");
+	glpfDepthMask = (PFNGLDEPTHMASK_PROC*) SDL_GL_GetProcAddress("glDepthMask");
+	glpfBlendFunc = (PFNGLBLENDFUNC_PROC*) SDL_GL_GetProcAddress("glBlendFunc");
+	glpfHint = (PFNGLHINT_PROC*) SDL_GL_GetProcAddress("glHint");
+	glpfGetError = (PFNGLGETERROR_PROC*) SDL_GL_GetProcAddress("glGetError");
+	glpfEnable = (PFNGLENABLE_PROC*) SDL_GL_GetProcAddress("glEnable");
+	glpfDisable = (PFNGLDISABLE_PROC*) SDL_GL_GetProcAddress("glDisable");
+	glpfEnableClientState = (PFNGLENABLECLIENTSTATE_PROC*) SDL_GL_GetProcAddress("glEnableClientState");
+	glpfTexEnvi = (PFNGLTEXENVI_PROC*) SDL_GL_GetProcAddress("glTexEnvi");
+	glpfPolygonMode = (PFNGLPOLYGONMODE_PROC*) SDL_GL_GetProcAddress("glPolygonMode");
+	glpfAlphaFunc = (PFNGLALPHAFUNC_PROC*) SDL_GL_GetProcAddress("glAlphaFunc");
+	glpfVertexPointer = (PFNGLVERTEXPOINTER_PROC*) SDL_GL_GetProcAddress("glVertexPointer");
+	glpfColorPointer = (PFNGLCOLORPOINTER_PROC*) SDL_GL_GetProcAddress("glColorPointer");
+	glpfTexCoordPointer = (PFNGLTEXCOORDPOINTER_PROC*) SDL_GL_GetProcAddress("glTexCoordPointer");
+	glpfMatrixMode = (PFNGLMATRIXMODE_PROC*) SDL_GL_GetProcAddress("glMatrixMode");
+	glpfLoadMatrixf = (PFNGLLOADMATRIXF_PROC*) SDL_GL_GetProcAddress("glLoadMatrixf");
 
 	/* GL_VERSION_1_3 */
 
@@ -336,6 +364,34 @@ PFNGLDRAWRANGEELEMENTS_PROC* glpfDrawRangeElements = NULL;
 PFNGLTEXIMAGE3D_PROC* glpfTexImage3D = NULL;
 PFNGLTEXSUBIMAGE3D_PROC* glpfTexSubImage3D = NULL;
 PFNGLCOPYTEXSUBIMAGE3D_PROC* glpfCopyTexSubImage3D = NULL;
+PFNGLDELETETEXTURES_PROC* glpfDeleteTextures = NULL;
+PFNGLGENTEXTURES_PROC* glpfGenTextures = NULL;
+PFNGLBINDTEXTURE_PROC* glpfBindTexture = NULL;
+PFNGLTEXPARAMETERI_PROC* glpfTexParameteri = NULL;
+PFNGLTEXIMAGE2D_PROC* glpfTexImage2D = NULL;
+PFNGLGETINTEGERV_PROC* glpfGetIntegerv = NULL;
+PFNGLPIXELSTOREI_PROC* glpfPixelStorei = NULL;
+PFNGLREADPIXELS_PROC* glpfReadPixels = NULL;
+PFNGLVIEWPORT_PROC* glpfViewport = NULL;
+PFNGLCLEARCOLOR_PROC* glpfClearColor = NULL;
+PFNGLCLEAR_PROC* glpfClear = NULL;
+PFNGLSCISSOR_PROC* glpfScissor = NULL;
+PFNGLDRAWARRAYS_PROC* glpfDrawArrays = NULL;
+PFNGLDEPTHMASK_PROC* glpfDepthMask = NULL;
+PFNGLBLENDFUNC_PROC* glpfBlendFunc = NULL;
+PFNGLHINT_PROC* glpfHint = NULL;
+PFNGLGETERROR_PROC* glpfGetError = NULL;
+PFNGLENABLE_PROC* glpfEnable = NULL;
+PFNGLDISABLE_PROC* glpfDisable = NULL;
+PFNGLENABLECLIENTSTATE_PROC* glpfEnableClientState = NULL;
+PFNGLTEXENVI_PROC* glpfTexEnvi = NULL;
+PFNGLPOLYGONMODE_PROC* glpfPolygonMode = NULL;
+PFNGLALPHAFUNC_PROC* glpfAlphaFunc = NULL;
+PFNGLVERTEXPOINTER_PROC* glpfVertexPointer = NULL;
+PFNGLCOLORPOINTER_PROC* glpfColorPointer = NULL;
+PFNGLTEXCOORDPOINTER_PROC* glpfTexCoordPointer = NULL;
+PFNGLMATRIXMODE_PROC* glpfMatrixMode = NULL;
+PFNGLLOADMATRIXF_PROC* glpfLoadMatrixf = NULL;
 
 /* GL_VERSION_1_3 */
 

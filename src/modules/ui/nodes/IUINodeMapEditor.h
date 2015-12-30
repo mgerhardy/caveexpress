@@ -253,7 +253,6 @@ protected:
 
 	virtual bool shouldSaveTile (const TileItem& tile) const;
 	virtual bool shouldSaveEmitter (const TileItem& tile) const;
-	virtual void saveTiles(const FilePtr& file, const TileItems& map) const;
 
 	virtual void doClear ();
 	void shift (int shiftX, int shiftY);
@@ -280,6 +279,7 @@ public:
 
 	bool isDirty () const;
 	virtual bool save ();
+	virtual void prepareContextForSaving(IMapContext* ctx);
 	void clear ();
 	void undo ();
 	void redo ();
@@ -342,7 +342,7 @@ inline void IUINodeMapEditor::setEmitterEntity (const EntityType& type)
 inline void IUINodeMapEditor::setSprite (const SpriteDefPtr& spriteDef)
 {
 	_activeSpriteDefition = spriteDef;
-	_activeEntityType = 0;
+	_activeEntityType = nullptr;
 	_activeSpriteAngle = spriteDef->angle;
 	_activeEntityTypeRight = true;
 	_activeLayer = getLayer(_activeSpriteDefition->type);

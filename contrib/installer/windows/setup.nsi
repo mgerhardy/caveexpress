@@ -68,8 +68,8 @@ InstallDirRegKey HKCU "${PRODUCT_DIR_REGKEY}" "InstallPath"
 Section "${PRODUCT_NAME}" SecMain
 	SetOverwrite on
 
-	SetOutPath "$INSTDIR\base\${APPNAME}"
-		File /r "..\..\..\base\${APPNAME}\"
+	SetOutPath "$INSTDIR\base\${PRODUCT_NAME}"
+		File /r "..\..\..\base\${PRODUCT_NAME}\"
 
 	SetOutPath "$INSTDIR"
 		File "..\..\..\${PRODUCT_NAME}.exe"

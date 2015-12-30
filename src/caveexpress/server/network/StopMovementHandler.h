@@ -19,7 +19,7 @@ public:
 	{
 		Player* player = _map.getPlayer(clientId);
 		if (player == nullptr) {
-			Log::error(LOG_SERVER, "stop movement for player with clientId %i failed", (int)clientId);
+			Log::error(LOG_GAMEIMPL, "stop movement for player with clientId %i failed", (int)clientId);
 			return;
 		}
 		const StopMovementMessage* msg = static_cast<const StopMovementMessage*>(&message);

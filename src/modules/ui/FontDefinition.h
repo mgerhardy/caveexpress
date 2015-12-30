@@ -9,7 +9,7 @@
 
 class FontChar {
 private:
-	std::string character;
+	char character;
 	int width;
 	int x;
 	int y;
@@ -20,11 +20,17 @@ private:
 	float widthFactor;
 	float heightFactor;
 public:
-	FontChar (const std::string& _character, int _width, int _x, int _y, int _w, int _h, int _ox, int _oy) :
+	FontChar (const char _character, int _width, int _x, int _y, int _w, int _h, int _ox, int _oy) :
 			character(_character), width(_width), x(_x), y(_y), w(_w), h(_h), ox(_ox), oy(_oy), widthFactor(1.0f), heightFactor(
 					1.0f)
 	{
 	}
+
+	FontChar () :
+			character('\0'), width(-1), x(-1), y(-1), w(-1), h(-1), ox(-1), oy(-1), widthFactor(1.0f), heightFactor(1.0f)
+	{
+	}
+
 	inline void setWidthFactor (float _widthFactor)
 	{
 		widthFactor = _widthFactor;
@@ -33,9 +39,13 @@ public:
 	{
 		heightFactor = _heightFactor;
 	}
-	inline const std::string& getCharacter () const
+	inline char getCharacter () const
 	{
 		return character;
+	}
+	inline bool operator()() const
+	{
+		return character != '\0';
 	}
 	inline int getWidth () const
 	{
@@ -74,13 +84,19 @@ public:
 	}
 };
 
+typedef std::vector<FontChar> FontChars;
+
 class FontDef {
-private:
-	std::map<std::string, FontChar*> _fontCharMap;
 public:
-	FontDef (const std::string& _id, int _height, int _metricsHeight, int _metricsAscender, int _metricsDescender) :
-			id(_id), textureWidth(0), textureHeight(0), textureName(""), height(_height), metricsHeight(_metricsHeight), metricsAscender(
-					_metricsAscender), metricsDescender(_metricsDescender), _heightFactor(1.0f), _widthFactor(1.0f)
+	// the id if the fontdef
+	const std::string id;
+	int textureWidth;
+	int textureHeight;
+	std::string textureName;
+
+	FontDef (const std::string& _id, int height, int metricsHeight, int metricsAscender, int metricsDescender) :
+			id(_id), textureWidth(0), textureHeight(0), textureName(""), _height(height), _metricsHeight(metricsHeight), _metricsAscender(
+					metricsAscender), _metricsDescender(metricsDescender), _heightFactor(1.0f), _widthFactor(1.0f)
 	{
 	}
 
@@ -89,47 +105,41 @@ public:
 		return *this;
 	}
 
-	// the id if the fontdef
-	const std::string id;
-	int textureWidth;
-	int textureHeight;
-	std::string textureName;
-
-private:
-	int height;
-	int metricsHeight;
-	int metricsAscender;
-	int metricsDescender;
-
-	float _heightFactor;
-	float _widthFactor;
-
-public:
-
 	inline int getHeight () const
 	{
-		const float newHeight = this->height * _heightFactor;
+		const float newHeight = _height * _heightFactor;
 		return newHeight + 0.5f;
 	}
 
 	inline int getMetricsHeight () const
 	{
-		return metricsHeight * _heightFactor;
-	}
-	inline int getMetricsAscender () const
-	{
-		return metricsAscender * _heightFactor;
-	}
-	inline int getMetricsDescender () const
-	{
-		return metricsDescender * _heightFactor;
+		return _metricsHeight * _heightFactor;
 	}
 
-	std::vector<FontChar> fontChars;
+	inline int getMetricsAscender () const
+	{
+		return _metricsAscender * _heightFactor;
+	}
+
+	inline int getMetricsDescender () const
+	{
+		return _metricsDescender * _heightFactor;
+	}
 
 	const FontChar* getFontChar (char character);
 
 	void updateChars (int textureWidth, int textureHeight);
+	void init (const FontChars& fontChars);
+
+private:
+	FontChar _fontCharMap[128];
+	int _height;
+	int _metricsHeight;
+	int _metricsAscender;
+	int _metricsDescender;
+
+	float _heightFactor;
+	float _widthFactor;
 };
 
 typedef std::shared_ptr<FontDef> FontDefPtr;

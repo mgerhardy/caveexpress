@@ -8,7 +8,7 @@ Sparkle::Sparkle (IParticleEnvironment& env, int startX, int startY, int sizeW, 
 	Particle(env), _waterSurface(0), _startX(startX), _startY(startY), _sizeW(sizeW), _sizeH(sizeH)
 {
 	const int i = rand() % SPARKLETYPES;
-	_texture = loadTexture(String::format("sparkle-%02i", i + 1));
+	_texture = loadTexture(string::format("sparkle-%02i", i + 1));
 	_v = vec2(0.0f, randBetweenf(-0.1f, -0.2f));
 	_omega = 0.4f;
 	_half = _sizeH / 2.0f;

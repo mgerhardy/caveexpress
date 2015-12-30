@@ -179,6 +179,6 @@ bool Campaign::hasMoreMaps () const
 	if (_maps.empty())
 		return false;
 	const uint32_t time = (*_maps.rbegin())->getTime();
-	Log::info(LOG_CAMPAIGN, "campaign %s last map time: %ui", getId().c_str(), time);
+	Log::info(LOG_CAMPAIGN, "campaign %s last map time: %u", getId().c_str(), time);
 	return time == 0;
 }

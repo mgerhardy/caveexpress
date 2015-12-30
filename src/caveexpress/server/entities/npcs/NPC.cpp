@@ -13,7 +13,7 @@ namespace caveexpress {
 
 NPC::NPC (const EntityType &type, Map& map) :
 		IEntity(type, map), _initialWalkingSpeed(1.1f), _targetPos(b2Vec2_zero), _initialPosition(b2Vec2_zero), _lastDirectionRight(
-				true), _dazedTime(0), _dazedTimeout(8000), _idleTimer(0), _moveTimer(0), _swimmingTime(0), _swimmingTimeDelay(0), _initialSwimmingSpeed(0.0f),
+				true), _triggerMovement(0), _dazedTime(0), _dazedTimeout(8000), _idleTimer(0), _moveTimer(0), _swimmingTime(0), _swimmingTimeDelay(0), _initialSwimmingSpeed(0.0f),
 				_currentSwimmingSpeed(b2Vec2_zero)
 {
 	setState(NPCState::NPC_IDLE);
@@ -63,7 +63,7 @@ b2BodyType NPC::getBodyType () const
 b2Body* NPC::createBody (const b2Vec2 &pos, bool setOnGround, bool fixedRotation)
 {
 	if (!_bodies.empty()) {
-		Log::error(LOG_SERVER, "there are already bodies defined for this npc");
+		Log::error(LOG_GAMEIMPL, "there are already bodies defined for this npc");
 		return nullptr;
 	}
 
@@ -147,11 +147,11 @@ void NPC::setSwimmingIdle() {
 	setState(NPCState::NPC_STRUGGLE);
 	setAnimationType(Animations::ANIMATION_SWIMMING_IDLE);
 	setLinearVelocity(b2Vec2_zero);
-	Log::info(LOG_SERVER, "set struggle for %i", getID());
+	Log::info(LOG_GAMEIMPL, "set struggle for %i", getID());
 }
 
 void NPC::setSwimming(const b2Vec2& targetPos) {
-	Log::debug(LOG_SERVER, "swimming npc %i: %s", getID(), _type.name.c_str());
+	Log::debug(LOG_GAMEIMPL, "swimming npc %i: %s", getID(), _type.name.c_str());
 	setState(NPCState::NPC_SWIMMING);
 
 	if (targetPos.x > getPos().x) {
@@ -169,20 +169,20 @@ bool NPC::shouldCollide (const IEntity* entity) const
 		return false;
 	}
 
-	if (isDazed()) {
-		return entity->isSolid() || entity->isWater();
-	}
-
-	if (isSwimming() || isStruggle()) {
-		return entity->isWater() || entity->isPlayer();
-	}
-
 	if (entity->isWater()) {
 		return true;
 	}
 
-	if (isFalling()) {
-		return entity->isWater();
+	if (isDazed()) {
+		return entity->isSolid();
+	}
+
+	if (isSwimming()) {
+		return entity->isPlayer() || entity->isPlatform();
+	}
+
+	if (isStruggle()) {
+		return entity->isPlayer();
 	}
 
 	if (entity->isPlayer()) {
@@ -216,7 +216,7 @@ int NPC::handleTurnAnimation (const b2Vec2& targetPos, const Animation& left, co
 
 void NPC::setFalling ()
 {
-	Log::debug(LOG_SERVER, "falling npc %i: %s", getID(), _type.name.c_str());
+	Log::debug(LOG_GAMEIMPL, "falling npc %i: %s", getID(), _type.name.c_str());
 	setState(NPCState::NPC_FALLING);
 	setAnimationType(getFallingAnimation());
 	resetTriggerMovement();
@@ -239,7 +239,7 @@ void NPC::move ()
 
 void NPC::setMoving (const b2Vec2& targetPos)
 {
-	Log::debug(LOG_SERVER, "moving npc %i: %s", getID(), _type.name.c_str());
+	Log::debug(LOG_GAMEIMPL, "moving npc %i: %s", getID(), _type.name.c_str());
 	_targetPos = targetPos;
 	if (EntityTypes::hasDirection(_type)) {
 		const int length = handleTurnAnimation(targetPos, Animations::ANIMATION_WALK_LEFT, Animations::ANIMATION_WALK_RIGHT);
@@ -264,7 +264,7 @@ void NPC::setMoving (const b2Vec2& targetPos)
 
 void NPC::setIdle ()
 {
-	Log::debug(LOG_SERVER, "idle npc %i: %s", getID(), _type.name.c_str());
+	Log::debug(LOG_GAMEIMPL, "idle npc %i: %s", getID(), _type.name.c_str());
 	setState(NPCState::NPC_IDLE);
 	setAnimationType(getIdleAnimation());
 	setLinearVelocity(b2Vec2_zero);
@@ -274,7 +274,7 @@ void NPC::setIdle ()
 
 void NPC::setDone ()
 {
-	Log::debug(LOG_SERVER, "done npc %i: %s", getID(), _type.name.c_str());
+	Log::debug(LOG_GAMEIMPL, "done npc %i: %s", getID(), _type.name.c_str());
 	setState(NPCState::NPC_DONE);
 }
 
@@ -290,20 +290,23 @@ const Animation& NPC::getFallingAnimation () const
 
 void NPC::setDying (const IEntity* entity)
 {
-	Log::info(LOG_SERVER, "dying npc %i: %s", getID(), _type.name.c_str());
+	Log::info(LOG_GAMEIMPL, "dying npc %i: %s", getID(), _type.name.c_str());
 	setState(NPCState::NPC_DYING);
 	if (EntityTypes::isNpcFlying(_type)) {
 		Achievements::DAZE_PTERODACTYLS.unlock();
 	}
 	setAnimationType(getFallingAnimation());
-	_map.addPoints(entity, 15);
+
+	if (EntityTypes::isNpcAggressive(_type)) {
+		_map.addPoints(entity, 15);
+	}
 }
 
 void NPC::setState (int state)
 {
 	// don't allow any state change if we are dying
 	if (_state == NPCState::NPC_DYING) {
-		Log::error(LOG_SERVER, "unallowed npc state change to %i for %i (%s)", state, _id, _type.name.c_str());
+		Log::error(LOG_GAMEIMPL, "unallowed npc state change to %i for %i (%s)", state, _id, _type.name.c_str());
 		return;
 	}
 
@@ -316,7 +319,7 @@ void NPC::setDazed (const IEntity* entity)
 		return;
 	}
 
-	Log::info(LOG_SERVER, "dazed npc %i: %s", getID(), _type.name.c_str());
+	Log::info(LOG_GAMEIMPL, "dazed npc %i: %s", getID(), _type.name.c_str());
 	setState(NPCState::NPC_DAZED);
 	setLinearVelocity(b2Vec2_zero);
 	if (EntityTypes::isNpcMammut(_type)) {

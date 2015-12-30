@@ -97,7 +97,7 @@ bool NPCFish::shouldCollide (const IEntity* entity) const
 	if (!NPCAggressive::shouldCollide(entity))
 		return false;
 
-	// flying npcs do only collide with players
+	// fish npcs only collide with players
 	if (entity->isPlayer()) {
 		const Player *p = static_cast<const Player*>(entity);
 		return !p->isCrashed();

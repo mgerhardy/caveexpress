@@ -86,6 +86,11 @@ void ClientMap::resetCurrentMap ()
 	_screenRumbleOffsetY = 0;
 }
 
+void ClientMap::scroll(int relX, int relY)
+{
+	getCamera().scroll(relX, relY);
+}
+
 void ClientMap::setZoom (const float zoom)
 {
 	const float minZoom = _minZoom->getFloatValue();
@@ -152,7 +157,7 @@ void ClientMap::renderLayer (int x, int y, Layer layer) const
 	}
 
 	for (ClientEntityMapConstIter iter = _entities.begin(); iter != _entities.end(); ++iter) {
-		const ClientEntityPtr e = iter->second;
+		const ClientEntityPtr& e = iter->second;
 		e->render(_frontend, layer, _scale, _zoom, x, y);
 	}
 }
@@ -298,6 +303,11 @@ bool ClientMap::initWaitingForPlayer () {
 	return true;
 }
 
+bool ClientMap::updateCameraPosition ()
+{
+	return _camera.update(_player->getPos(), _player->getMoveDirection(), _zoom);
+}
+
 void ClientMap::update (uint32_t deltaTime)
 {
 	if (isPause())
@@ -314,7 +324,7 @@ void ClientMap::update (uint32_t deltaTime)
 
 	_time += deltaTime;
 	if (_player) {
-		_camera.update(_player->getPos(), _player->getMoveDirection(), _zoom);
+		updateCameraPosition();
 		SoundControl.setListenerPosition(_player->getPos());
 	}
 	const ExecutionTime updateTime("ClientMap", 2000L);
@@ -342,6 +352,10 @@ bool ClientMap::load (const std::string& name, const std::string& title)
 
 void ClientMap::addEntity (ClientEntityPtr e)
 {
+	auto iter = _entities.find(e->getID());
+	if (iter != _entities.end()) {
+		delete iter->second;
+	}
 	_entities[e->getID()] = e;
 	if (e->getID() == _playerID) {
 		_player = static_cast<ClientPlayer*>(e);
@@ -404,16 +418,16 @@ void ClientMap::onData (ByteStream &data)
 		data.readShort();
 		const IProtocolMessage* msg(factory.createMsg(data));
 		if (!msg) {
-			Log::error(LOG_NET, "no message for type %i", static_cast<int>(data.readByte()));
+			Log::error(LOG_CLIENT, "no message for type %i", static_cast<int>(data.readByte()));
 			continue;
 		}
 
-		Log::trace(LOG_NET, "received message type %i", msg->getId());
+		Log::trace(LOG_CLIENT, "received message type %i", msg->getId());
 		IClientProtocolHandler* handler = ProtocolHandlerRegistry::get().getClientHandler(*msg);
 		if (handler != nullptr)
 			handler->execute(*msg);
 		else
-			Log::error(LOG_NET, "no client handler for message type %i", msg->getId());
+			Log::error(LOG_CLIENT, "no client handler for message type %i", msg->getId());
 	}
 }
 

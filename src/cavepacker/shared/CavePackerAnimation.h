@@ -6,6 +6,7 @@ namespace cavepacker {
 
 namespace Animations {
 extern Animation DELIVERED;
+extern Animation DEADLOCK;
 }
 
 }

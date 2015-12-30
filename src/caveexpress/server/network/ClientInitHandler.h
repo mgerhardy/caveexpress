@@ -19,7 +19,7 @@ public:
 	{
 		Player *player = _map.getPlayer(clientId);
 		if (player == nullptr) {
-			Log::error(LOG_SERVER, "init for player with clientId %i failed", (int)clientId);
+			Log::error(LOG_GAMEIMPL, "init for player with clientId %i failed", (int)clientId);
 			return;
 		}
 		const ClientInitMessage* msg = static_cast<const ClientInitMessage*>(&message);

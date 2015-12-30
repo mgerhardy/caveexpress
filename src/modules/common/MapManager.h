@@ -2,6 +2,7 @@
 
 #include "common/NonCopyable.h"
 #include "common/LUA.h"
+#include "common/ICommand.h"
 #include <string>
 #include <map>
 
@@ -51,7 +52,7 @@ protected:
 	Maps _maps;
 	std::string _extension;
 
-	void listMaps ();
+	void listMaps (const ICommand::Args& arguments);
 
 	virtual std::string getName (const std::string& filename, const std::string& id) {
 		return id;
@@ -86,11 +87,12 @@ protected:
 	LUA _lua;
 public:
 	LUAMapManager() : IMapManager("lua") {}
+
 	std::string getName (const std::string& filename, const std::string& id) override {
 		_lua.close();
 		_lua.init();
 		if (!_lua.load(filename)) {
-			Log::error(LOG_MAP, "could not load map from %s", filename.c_str());
+			Log::error(LOG_COMMON, "could not load map from %s", filename.c_str());
 			return id;
 		}
 		_lua.execute("getName", 1);

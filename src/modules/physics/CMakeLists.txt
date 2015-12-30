@@ -1,0 +1,4 @@
+set(physics_SRCS DebugRenderer.cpp)
+add_library(physics ${physics_SRCS})
+set_target_properties(physics PROPERTIES FOLDER physics)
+cp_target_link_libraries(TARGET physics LIBS common ${BOX2D_LIBRARIES} ${SDL2_LIBRARIES})

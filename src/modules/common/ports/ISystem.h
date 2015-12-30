@@ -2,6 +2,7 @@
 
 #include "common/IFrontend.h"
 #include "common/DateUtil.h"
+#include "common/Log.h"
 #include <string>
 #include <vector>
 #include <SDL.h>
@@ -17,7 +18,6 @@ struct PaymentEntry {
 };
 
 typedef std::vector<std::string> DirectoryEntries;
-typedef DirectoryEntries::const_iterator DirectoryEntriesIter;
 
 class ISystem {
 private:
@@ -63,16 +63,6 @@ public:
 
 	virtual void tick (uint32_t deltaTime) {}
 
-	virtual void logError (const std::string& error) const {
-		const std::string str = dateutil::getDateString() + " " + error;
-		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s\n", str.c_str());
-	}
-
-	virtual void logOutput (const std::string& string) const {
-		const std::string str = dateutil::getDateString() + " " + string;
-		SDL_Log("%s\n", str.c_str());
-	}
-
 	virtual std::string normalizePath (const std::string& path) = 0;
 
 	virtual bool mkdir (const std::string& directory) = 0;
@@ -84,6 +74,8 @@ public:
 	virtual bool showFullscreenAds () { return false; }
 
 	virtual bool supportPayment () { return false; }
+
+	virtual std::string getRateURL (const std::string& packageName) const { return ""; }
 
 	/**
 	 * @brief Handle quit in a system specific manner. The default is to not handle it differently.
@@ -98,7 +90,9 @@ public:
 
 	virtual bool hasAchievement (const std::string& id) { return false; }
 
-	virtual bool track (const std::string& hitType, const std::string& screenName) { logOutput(hitType + " => " + screenName); return true; }
+	virtual bool supportsUserContent () const { return true; }
+
+	virtual bool track (const std::string& hitType, const std::string& screenName) { Log::info(LOG_COMMON, "%s => %s", hitType.c_str(), screenName.c_str()); return true; }
 
 	virtual int getScreenPadding () { return 0; }
 

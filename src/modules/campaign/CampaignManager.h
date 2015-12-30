@@ -59,7 +59,7 @@ public:
 	void visitCampaigns (ICampaignVisitor* visitor);
 
 	CampaignPtr activateCampaign (const std::string& campaignId) const;
-	CampaignPtr getActiveCampaign () const;
+	CampaignPtr getActiveCampaign () const override;
 	// get the last active campaign or the next campaign if the current campaign
 	// is done (no more maps are left to play)
 	CampaignPtr getAutoActiveCampaign () const;
@@ -81,8 +81,8 @@ public:
 	// replays the just played map
 	bool replay ();
 
-	void reset ();
+	void reset () override;
 
 	bool addAdditionMapData (const std::string& mapname, const std::string& additionData);
-	bool updateMapValues (const std::string& mapname, uint32_t finishPoints, uint32_t time, uint8_t stars, bool lowerPointsAreBetter = false);
+	bool updateMapValues (const std::string& mapname, uint32_t finishPoints, uint32_t time, uint8_t stars, bool lowerPointsAreBetter = false) override;
 };

@@ -45,14 +45,13 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		textInput(std::string(event.text.text));
 		break;
 	case SDL_KEYUP:
-		//Log::debug(LOG_SYSTEM, String::format("release key: %s", SDL_GetScancodeName(event.key.keysym.scancode)));
+		Log::debug(LOG_COMMON, "release key: %s", SDL_GetScancodeName(event.key.keysym.scancode));
 		keyRelease((int32_t) event.key.keysym.sym);
 		break;
 	case SDL_KEYDOWN:
-		//Log::debug(LOG_SYSTEM, String::format("press key: %s", SDL_GetScancodeName(event.key.keysym.scancode)));
-		// we are handling this on our own
-		if (!event.key.repeat)
-			keyPress((int32_t) event.key.keysym.sym, (int16_t) event.key.keysym.mod);
+		Log::debug(LOG_COMMON, "press key: %s (Key: %i, Mod: %i)",
+				SDL_GetScancodeName(event.key.keysym.scancode), event.key.keysym.sym, event.key.keysym.mod);
+		keyPress((int32_t) event.key.keysym.sym, (int16_t) event.key.keysym.mod);
 		break;
 	case SDL_MOUSEMOTION: {
 		if (event.motion.which == SDL_TOUCH_MOUSEID)

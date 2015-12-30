@@ -14,8 +14,6 @@ NPCFriendly::NPCFriendly (CaveMapTile *cave, const EntityType& type, bool return
 	_swimmingTime = 0;
 	_swimmingTimeDelay = 7000;
 	_initialSwimmingSpeed = 0.8f;
-	_swimmingDistance = 200;
-	_waitPatience = 8000;
 	if (EntityTypes::isNpcGrandpa(_type)) {
 		_swimmingTimeDelay = 5000;
 		_initialSwimmingSpeed = 0.6f;
@@ -77,12 +75,12 @@ void NPCFriendly::onContact (b2Contact* contact, IEntity* entity)
 bool NPCFriendly::triggerTargetCaveAnnouncement (const b2Vec2& playerPos)
 {
 	const float distance = b2Distance(playerPos, getPos());
-	if (distance > _swimmingDistance)
+	if (isSwimming() && distance > _swimmingDistance) {
 		return false;
+	}
 	if (_triggerMovement == 0) {
-		const int delayMilliSeconds = 2000;
-		_triggerMovement = _time + delayMilliSeconds;
-		GameEvent.announceTargetCave(getVisMask(), *this, delayMilliSeconds);
+		_triggerMovement = _time + 400;
+		GameEvent.announceTargetCave(getVisMask(), *this, 2000);
 		return false;
 	}
 	return _time > _triggerMovement;
@@ -106,7 +104,7 @@ bool NPCFriendly::updateCollectedState ()
 		player->setCollectedNPC(nullptr);
 		const b2Vec2& targetPos = getTargetCave()->getPos();
 		const bool bonus = setArrived(targetPos);
-		Log::debug(LOG_SERVER, "landed on target cave and (re-)spawned npc with id %i", getID());
+		Log::debug(LOG_GAMEIMPL, "landed on target cave and (re-)spawned npc with id %i", getID());
 		if (bonus) {
 			_map.addPoints(player, 20);
 			Fruit* entity = new Fruit(_map, EntityTypes::APPLE, getPos().x, getPos().y);
@@ -128,7 +126,7 @@ bool NPCFriendly::setArrived (const b2Vec2& targetPos)
 	setMoving(targetPos);
 	setState(NPCState::NPC_ARRIVED);
 	const uint32_t deltaSeconds = _time - _collectingTime;
-	Log::info(LOG_SERVER, "took %ims to transfer the npc %i to its target cave", deltaSeconds, _id);
+	Log::info(LOG_GAMEIMPL, "took %ims to transfer the npc %i to its target cave", deltaSeconds, _id);
 	const int bonus = deltaSeconds < 4000;
 	_collectingTime = 0;
 	return bonus;
@@ -147,6 +145,11 @@ void NPCFriendly::update (uint32_t deltaTime)
 		_map.removeNPC(this, true);
 		_remove = true;
 		_map.countTransferedNPC();
+		return;
+	}
+
+	if ((isSwimming() || isStruggle()) && !isTouchingWater()) {
+		setIdle();
 		return;
 	}
 

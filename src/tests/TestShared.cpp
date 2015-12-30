@@ -1,12 +1,15 @@
 #include "TestShared.h"
 #include "network/ProtocolHandlerRegistry.h"
+#include <SDL.h>
 
 void AbstractTest::SetUp() {
-	const bool verbose = Config.getConfigVar("verbose", "false")->getBoolValue();
-	if (verbose) {
+	const std::string& verbose = Config.getConfigVar("verbose", "")->getValue();
+	if (!verbose.empty()) {
 		ICommand::Args args;
-		args.push_back("TRACE");
+		args.push_back(verbose);
 		Config.setLogLevel(args);
+	} else {
+		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_CRITICAL);
 	}
 	_serviceProvider.init(&_testFrontend);
 	_serviceProvider.updateNetwork(false);
@@ -37,4 +40,13 @@ void AbstractTest::SetUp() {
 
 void AbstractTest::TearDown() {
 	ProtocolHandlerRegistry::get().shutdown();
+}
+
+const char* AbstractTest::va(const char* format, ...) {
+	va_list argptr;
+	static char string[4096];
+	va_start(argptr, format);
+	SDL_vsnprintf(string, sizeof(string), format, argptr);
+	va_end(argptr);
+	return string;
 }

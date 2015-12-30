@@ -5,7 +5,7 @@
 #include "common/Log.h"
 
 UINodePaymentSelector::UINodePaymentSelector(IFrontend *frontend, int rows) :
-		UINodeBackgroundSelector<PaymentEntry>(frontend, 1, rows)
+		Super(frontend, 1, rows)
 {
 	_colWidth = _size.x;
 	setScrollingEnabled(true);
@@ -37,7 +37,7 @@ void UINodePaymentSelector::renderSelectorEntry (int index, const PaymentEntry& 
 		color[3] = 0.3f;
 	}
 	_frontend->renderFilledRect(x, y, colWidth, rowHeight, color);
-	UINodeBackgroundSelector<PaymentEntry>::renderSelectorEntry(index, data, x, y, colWidth, rowHeight, alpha);
+	Super::renderSelectorEntry(index, data, x, y, colWidth, rowHeight, alpha);
 }
 
 bool UINodePaymentSelector::onPush ()
@@ -48,7 +48,7 @@ bool UINodePaymentSelector::onPush ()
 
 void UINodePaymentSelector::reset ()
 {
-	UINodeBackgroundSelector<PaymentEntry>::reset();
+	Super::reset();
 	std::vector<PaymentEntry> e;
 	System.getPaymentEntries(e);
 	for (std::vector<PaymentEntry>::const_iterator i = e.begin(); i != e.end(); ++i) {

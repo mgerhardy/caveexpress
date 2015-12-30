@@ -1,54 +1,70 @@
 #include "CaveExpress.h"
-#include "sound/Sound.h"
+
 #include "common/Singleton.h"
 #include "common/ConfigManager.h"
 #include "common/Commands.h"
 #include "common/CommandSystem.h"
-#include "service/ServiceProvider.h"
 #include "common/ExecutionTime.h"
+#include "common/Shared.h"
+#include "common/Log.h"
+#include "common/SQLite.h"
+#include "common/System.h"
+
+#include "sound/Sound.h"
+
+#include "service/ServiceProvider.h"
+
 #include "client/entities/ClientEntityFactory.h"
 #include "client/entities/ClientPlayer.h"
 #include "client/entities/ClientMapTile.h"
+
+#include "network/INetwork.h"
+#include "network/IProtocolMessage.h"
 #include "network/ProtocolHandlerRegistry.h"
+#include "network/messages/LoadMapMessage.h"
+#include "network/ProtocolHandlerRegistry.h"
+
 #include "ui/nodes/IUINodeMap.h"
-#include "ui/windows/IUIMapWindow.h"
 #include "ui/nodes/UINodeSprite.h"
+#include "ui/windows/IUIMapWindow.h"
 #include "ui/windows/UIPaymentWindow.h"
 #include "ui/windows/UIMultiplayerWindow.h"
 #include "ui/windows/UICampaignWindow.h"
 #include "ui/windows/UICampaignMapWindow.h"
 #include "ui/windows/UICreateServerWindow.h"
-#include "caveexpress/client/ui/windows/UIMapEditorWindow.h"
-#include "caveexpress/client/ui/nodes/UINodeMapEditor.h"
+#include "ui/windows/UIMapOptionsWindow.h"
+#include "ui/windows/UISettingsWindow.h"
+#include "ui/windows/UIGestureWindow.h"
+#include "ui/windows/UIGooglePlayWindow.h"
+#include "ui/windows/UIMapFinishedWindow.h"
+#include "ui/windows/UIModeSelectionWindow.h"
+
 #include "campaign/ICampaignManager.h"
-#include "common/Shared.h"
-#include "common/Log.h"
-#include "common/SQLite.h"
-#include "network/messages/LoadMapMessage.h"
-#include "network/ProtocolHandlerRegistry.h"
-#include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
+#include "campaign/persister/GooglePlayPersister.h"
+
+#include "caveexpress/shared/constants/Commands.h"
+#include "caveexpress/shared/constants/Commands.h"
+#include "caveexpress/shared/CaveExpressEntityType.h"
+#include "caveexpress/shared/CaveExpressSoundType.h"
+#include "caveexpress/shared/CaveExpressSoundType.h"
+#include "caveexpress/shared/CaveExpressSoundType.h"
+#include "caveexpress/shared/network/messages/ProtocolMessages.h"
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
 #include "caveexpress/client/entities/ClientNPC.h"
 #include "caveexpress/client/entities/ClientParticle.h"
-#include "caveexpress/shared/CaveExpressEntityType.h"
-#include "caveexpress/client/commands/CmdDrop.h"
-#include "caveexpress/shared/constants/Commands.h"
+#include "caveexpress/client/ui/windows/UIMapEditorWindow.h"
+#include "caveexpress/client/ui/nodes/UINodeMapEditor.h"
+#include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
 #include "caveexpress/client/ui/windows/UIMainWindow.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
-#include "ui/windows/UIMapOptionsWindow.h"
-#include "ui/windows/UISettingsWindow.h"
-#include "ui/windows/UIGestureWindow.h"
 #include "caveexpress/client/ui/windows/UIMapEditorWindow.h"
 #include "caveexpress/client/ui/windows/UIGameHelpWindow.h"
 #include "caveexpress/client/ui/windows/UIGameOverWindow.h"
 #include "caveexpress/client/ui/windows/UIMapEditorHelpWindow.h"
 #include "caveexpress/client/ui/windows/UIMapEditorOptionsWindow.h"
 #include "caveexpress/client/ui/windows/UIGameFinishedWindow.h"
-#include "ui/windows/UIGooglePlayWindow.h"
-#include "ui/windows/UIMapFinishedWindow.h"
 #include "caveexpress/client/ui/windows/UICaveExpressSettingsWindow.h"
-#include "ui/windows/UIModeSelectionWindow.h"
 #include "caveexpress/client/ui/windows/intro/IntroPackage.h"
 #include "caveexpress/client/ui/windows/intro/IntroTime.h"
 #include "caveexpress/client/ui/windows/intro/IntroTree.h"
@@ -56,9 +72,7 @@
 #include "caveexpress/client/ui/windows/intro/IntroAttack.h"
 #include "caveexpress/client/ui/windows/intro/IntroFlying.h"
 #include "caveexpress/client/ui/windows/intro/IntroFindYourWay.h"
-#include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/client/CaveExpressClientMap.h"
-#include "caveexpress/client/commands/CmdMapOpenInEditor.h"
 #include "caveexpress/client/network/AddRopeHandler.h"
 #include "caveexpress/client/network/RemoveRopeHandler.h"
 #include "caveexpress/client/network/AddEntityWithSoundHandler.h"
@@ -79,8 +93,6 @@
 #include "caveexpress/server/entities/Package.h"
 #include "caveexpress/server/entities/npcs/NPCAttacking.h"
 #include "caveexpress/server/entities/Fruit.h"
-#include "caveexpress/shared/constants/Commands.h"
-#include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/server/network/SpawnHandler.h"
 #include "caveexpress/server/network/DisconnectHandler.h"
 #include "caveexpress/server/network/DropHandler.h"
@@ -91,12 +103,8 @@
 #include "caveexpress/server/network/StopMovementHandler.h"
 #include "caveexpress/server/network/ClientInitHandler.h"
 #include "caveexpress/server/network/ErrorHandler.h"
-#include "caveexpress/shared/network/messages/ProtocolMessages.h"
-#include "campaign/persister/GooglePlayPersister.h"
-#include "common/System.h"
-#include "network/INetwork.h"
-#include "network/IProtocolMessage.h"
-#include "caveexpress/shared/CaveExpressSoundType.h"
+
+#include <SDL_assert.h>
 
 namespace caveexpress {
 
@@ -119,10 +127,10 @@ CaveExpress::CaveExpress () :
 
 CaveExpress::~CaveExpress ()
 {
-	if (_persister != nullptr)
-		delete _persister;
-	if (_campaignManager != nullptr)
-		delete _campaignManager;
+	Commands.removeCommand(CMD_MAP_OPEN_IN_EDITOR);
+	Commands.removeCommand(CMD_DROP);
+	delete _persister;
+	delete _campaignManager;
 	delete _clientMap;
 }
 
@@ -176,7 +184,7 @@ void CaveExpress::update (uint32_t deltaTime)
 	}
 
 	if (_map.handleDeadPlayers() > 0 && !_map.isActive()) {
-		Log::info(LOG_SERVER, "reset the game state");
+		Log::info(LOG_GAMEIMPL, "reset the game state");
 		_campaignManager->reset();
 		return;
 	}
@@ -193,7 +201,7 @@ void CaveExpress::update (uint32_t deltaTime)
 		const uint32_t timePoints = pointsRate * _map.getFinishPoints();
 		const uint32_t finishPoints = timePoints + _map.getPoints();
 		const int percent = time * 100.0f / relativeRefTime;
-		Log::info(LOG_SERVER, "seconds: %.0f, refseconds: %i, rate: %f, refpoints: %i, timePoints: %i, finishPoints: %i, percent: %i",
+		Log::info(LOG_GAMEIMPL, "seconds: %.0f, refseconds: %i, rate: %f, refpoints: %i, timePoints: %i, finishPoints: %i, percent: %i",
 						time, _map.getReferenceTime(), pointsRate, _map.getFinishPoints(), timePoints, finishPoints, percent);
 		_map.sendSound(0, SoundTypes::SOUND_MUSIC_WIN);
 		uint8_t stars = 0;
@@ -204,13 +212,16 @@ void CaveExpress::update (uint32_t deltaTime)
 		} else if (percent <= 100) {
 			stars = 1;
 		}
+		const bool tutorial = string::toBool(_map.getSetting(msn::TUTORIAL));
+		if (tutorial)
+			Config.increaseCounter("mapfinishedcounter");
 		if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, timeSeconds, stars))
-			Log::error(LOG_SERVER, "Could not save the values for the map");
+			Log::error(LOG_GAMEIMPL, "Could not save the values for the map");
 
-		System.track("mapstate", String::format("finished: %s with %i points in %i seconds and with %i stars", _map.getName().c_str(), finishPoints, timeSeconds, stars));
+		System.track("mapstate", string::format("finished: %s with %i points in %i seconds and with %i stars", _map.getName().c_str(), finishPoints, timeSeconds, stars));
 		GameEvent.finishedMap(_map.getName(), finishPoints, timeSeconds, stars);
 	} else if (!isDone && _map.isFailed()) {
-		Log::debug(LOG_SERVER, "map failed");
+		Log::debug(LOG_GAMEIMPL, "map failed");
 		const uint32_t delay = 1000;
 		_map.restart(delay);
 	}
@@ -245,7 +256,7 @@ int CaveExpress::disconnect (ClientId clientId)
 {
 	_map.removePlayer(clientId);
 	if (_connectedClients == 0) {
-		Log::error(LOG_SERVER, "client counts are out of sync");
+		Log::error(LOG_GAMEIMPL, "client counts are out of sync");
 	} else {
 		_connectedClients--;
 	}
@@ -323,7 +334,7 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 			_persister = new SQLitePersister(System.getDatabaseDirectory() + "gamestate.sqlite");
 		}
 		if (!_persister->init()) {
-			Log::error(LOG_SERVER, "Failed to initialize the persister");
+			Log::error(LOG_GAMEIMPL, "Failed to initialize the persister");
 		}
 	}
 	{
@@ -352,13 +363,15 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 
 void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 {
-	assert(_campaignManager != nullptr);
+	SDL_assert(_campaignManager != nullptr);
 	UI& ui = UI::get();
 	CampaignManager& campaignMgr = *_campaignManager;
 	ui.addWindow(new UIMainWindow(frontend, serviceProvider));
 	ui.addWindow(new UICampaignWindow(frontend, serviceProvider, campaignMgr));
 	ui.addWindow(new UICampaignMapWindow(frontend, campaignMgr));
 	CaveExpressClientMap *map = new CaveExpressClientMap(0, 0, frontend->getWidth(), frontend->getHeight(), frontend, serviceProvider, UI::get().loadTexture("tile-reference")->getWidth());
+	// if we reinit the ui - we have to destroy previously allocated memory
+	delete _clientMap;
 	_clientMap = map;
 	UIMapWindow *mapWindow = new UIMapWindow(frontend, serviceProvider, campaignMgr, *_clientMap);
 	ui.addWindow(mapWindow);
@@ -388,8 +401,19 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIMapEditorHelpWindow(frontend));
 	ui.addWindow(new UIMapEditorOptionsWindow(frontend, editor));
 
-	Commands.registerCommand(CMD_DROP, new CmdDrop(*map));
-	Commands.registerCommand(CMD_MAP_OPEN_IN_EDITOR, new CmdMapOpenInEditor(*map));
+	Commands.registerCommandVoid(CMD_DROP, [=] () { map->drop(); });
+	CommandPtr cmd = Commands.registerCommandVoid(CMD_MAP_OPEN_IN_EDITOR, [=] () {
+		if (!map->isActive())
+			return;
+
+		const std::string& name = map->getName();
+		Commands.executeCommandLine(CMD_LOADMAP " " + name);
+	});
+	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
+		for (auto entry : _serviceProvider->getMapManager().getMapsByWildcard(input + "*")) {
+			matches.push_back(entry.first);
+		}
+	});
 
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
 	r.unregisterClientHandler(protocol::PROTO_ADDROPE);

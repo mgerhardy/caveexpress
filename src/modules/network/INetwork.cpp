@@ -24,12 +24,11 @@ void INetwork::count (const IProtocolMessage &msg)
 
 void INetwork::shutdown ()
 {
-	Log::info(LOG_GENERAL, "shutting down the network");
 	closeClient();
 	closeServer();
 
 	for (CountMap::iterator i = _count.begin(); i != _count.end(); ++i) {
-		Log::info(LOG_NET, "used protocol id %i %i times", static_cast<int>(i->first), i->second);
+		Log::info(LOG_NETWORK, "used protocol id %i %i times", static_cast<int>(i->first), i->second);
 	}
 	_count.clear();
 }

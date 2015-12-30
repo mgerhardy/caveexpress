@@ -83,6 +83,38 @@ public:
 		return _emitters;
 	}
 
+	inline void setSettings (const IMap::SettingsMap& settings)
+	{
+		_settings = settings;
+	}
+
+	inline void setStartPositions (const IMap::StartPositions& startPositions)
+	{
+		_startPositions = startPositions;
+	}
+
+	inline void setMapTileDefinitions (const std::vector<MapTileDefinition>& definitions)
+	{
+		_definitions = definitions;
+	}
+
+	inline void setEmitterDefinitions (const std::vector<EmitterDefinition>& emitters)
+	{
+		_emitters = emitters;
+	}
+
+	// shown in the game
+	inline void setTitle (const std::string& title)
+	{
+		_title = title;
+	}
+
+	// e.g. the name or id of the map - can be used e.g. as a filename
+	inline void setName (const std::string& name)
+	{
+		_name = name;
+	}
+
 	bool isLocationValid (gridCoord x, gridCoord y)
 	{
 		if (x + 0.000001f < 0.0f || y + 0.000001f < 0.0f)

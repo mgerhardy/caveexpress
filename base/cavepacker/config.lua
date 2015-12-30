@@ -14,15 +14,24 @@ defaultjoystick = false
 defaulttexturesize = "auto"
 defaultparticles = 100
 defaultfpslimit = 60
+defaultred = 8
+defaultgreen = 8
+defaultblue = 8
 
 if isOUYA() then
 	defaultjoystick = true
 	defaultparticles = 0
+	defaultred = 6
+	defaultgreen = 5
+	defaultblue = 6
 elseif isAndroid() then
 	defaultshowcursor = false
 	defaultparticles = 0
 	defaultfpslimit = 30
 	defaultpersister = "googleplay"
+	defaultred = 6
+	defaultgreen = 5
+	defaultblue = 6
 elseif isMobile() then
 	defaultshowcursor = false
 	defaultparticles = 0
@@ -35,8 +44,6 @@ elseif isNaCl() then
 	defaultpersister = "nop"
 	defaultnetwork = false
 else
-	-- workaround for now - remove me later
-	defaultfrontend = "opengl"
 	defaultjoystick = true
 end
 
@@ -58,6 +65,9 @@ settings = {
 	fpslimit = defaultfpslimit,
 	texturesize = defaulttexturesize,
 	particles = defaultparticles,
+	red = defaultred,
+	green = defaultgreen,
+	blue = defaultblue,
 }
 
 controllerbindings = {
@@ -152,12 +162,12 @@ else
 		["ui"] = {
 			LEFT = "ui_focus_prev",
 			RIGHT = "ui_focus_next",
-			UP = "ui_focus_prev",
-			DOWN = "ui_focus_next",
+			UP = "ui_focus_prev +",
+			DOWN = "ui_focus_next -",
 			A = "ui_focus_prev",
 			D = "ui_focus_next",
-			W = "ui_focus_prev",
-			S = "ui_focus_next",
+			W = "ui_focus_prev +",
+			S = "ui_focus_next -",
 			SPACE = "ui_execute",
 			RETURN = "ui_execute",
 			ESCAPE = "ui_pop",

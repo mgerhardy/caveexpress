@@ -34,5 +34,3 @@
 
 * Cavepacker
 ** sound if you hit the best points available
-
-* remove std::iostream stuff and use SDL_Log and raw char pointers to reduce binary size for emscripten

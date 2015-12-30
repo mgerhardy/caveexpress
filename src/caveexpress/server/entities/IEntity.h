@@ -1,6 +1,11 @@
 #pragma once
 
-#include <Box2D/Box2D.h>
+#include <SDL_assert.h>
+#ifndef b2Assert
+#define b2Assert SDL_assert
+#endif
+#include <Box2D.h>
+#include "physics/Box2DMath.h"
 #include "common/Log.h"
 #include "common/Timer.h"
 #include "common/IMap.h"
@@ -469,7 +474,7 @@ public:
 		computeAABB();
 
 		_size = _b2AABB.upperBound - _b2AABB.lowerBound;
-		Log::debug(LOG_SERVER, "size: %f:%f, Type: %s", _size.x, _size.y, _type.name.c_str());
+		Log::debug(LOG_GAMEIMPL, "size: %f:%f, Type: %s", _size.x, _size.y, _type.name.c_str());
 	}
 
 	// returns the physics bodies of the entity

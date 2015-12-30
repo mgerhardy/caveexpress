@@ -5,6 +5,7 @@
 /miniracer
 /jsonconvert
 /tests*
+/solutiontool
 
 # also binaries - but more generic
 /*.exe
@@ -24,32 +25,16 @@
 *.patch
 *.layout
 *.depends
-*.ipa
 /*.tga
 /*.cbp
 /*.project
 /*.workspace*
 /*.tags
 /core
-/android-ndk-*
-/adt-bundle-*
-/*.apk
 /.cproject
 /.project
 /nacl_sdk
 /naclgdb.init
-/Debug
 /*-source.tar*
 
-CMakeFiles/
-cmake_install.cmake
-CMakeCache.txt
-Makefile
-complete.lua.in
-build
-/build-android
-/build-windows
-/build-emscripten
-
 /.idea
-/*.cmake

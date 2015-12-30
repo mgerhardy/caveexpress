@@ -1,10 +1,15 @@
+/**
+ * @file
+ * @brief Converts the box2deditor json output into CaveExpress readable format.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <map>
 #include <list>
 #include <string>
 #include <string.h>
-#include <Box2D/Common/b2Math.h>
+#include <Common/b2Math.h>
 #include <SDL.h>
 #include <yajl/yajl_parse.h>
 #include "common/Common.h"
@@ -38,7 +43,7 @@ static const int SKIP = 1 << 7;
 static void printError (yajl_handle hand, const std::string& str)
 {
 	unsigned char * error = yajl_get_error(hand, 1, reinterpret_cast<const unsigned char*>(str.c_str()), str.length());
-	Log::error(LOG_GENERAL, "%s", reinterpret_cast<const char *>(error));
+	Log::error(LOG_GAMEIMPL, "%s", reinterpret_cast<const char *>(error));
 	yajl_free_error(hand, error);
 }
 
@@ -217,10 +222,10 @@ bool readJson (const std::string& str)
 
 static void usage ()
 {
-	Log::error(LOG_GENERAL, "jsonconverter");
-	Log::error(LOG_GENERAL, "  --scale <scale>        - set the vertex scale factor");
-	Log::error(LOG_GENERAL, "  --name <name>          - skip all sprites, but the one given in <name>");
-	Log::error(LOG_GENERAL, "  --help                 - show this help message");
+	Log::error(LOG_GAMEIMPL, "jsonconverter");
+	Log::error(LOG_GAMEIMPL, "  --scale <scale>        - set the vertex scale factor");
+	Log::error(LOG_GAMEIMPL, "  --name <name>          - skip all sprites, but the one given in <name>");
+	Log::error(LOG_GAMEIMPL, "  --help                 - show this help message");
 }
 
 extern "C" int main (int argc, char* argv[])
@@ -231,7 +236,7 @@ extern "C" int main (int argc, char* argv[])
 	const int fileLen = file.read((void **) &buffer);
 	const std::unique_ptr<char[]> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		Log::error(LOG_GENERAL, "Could not read the json file");
+		Log::error(LOG_GAMEIMPL, "Could not read the json file");
 		return EXIT_FAILURE;
 	}
 
@@ -239,14 +244,14 @@ extern "C" int main (int argc, char* argv[])
 		for (int i = 1; i < argc; ++i) {
 			if ((!strcmp(argv[i], "-s") || !strcmp(argv[i], "--scale")) && argc >= i + 1) {
 				scale = atof(argv[++i]);
-				//Log::error(LOG_GENERAL, "use a scale factor of %f", scale);
+				//Log::error(LOG_GAMEIMPL, "use a scale factor of %f", scale);
 			} else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h")) {
 				usage();
 				return EXIT_FAILURE;
 			} else if ((!strcmp(argv[i], "--name") || !strcmp(argv[i], "-n")) && argc >= i + 1) {
 				onlyName = argv[++i];
 			} else {
-				Log::error(LOG_GENERAL, "unknown command given: %s", argv[i]);
+				Log::error(LOG_GAMEIMPL, "unknown command given: %s", argv[i]);
 				usage();
 				return EXIT_FAILURE;
 			}

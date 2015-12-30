@@ -6,18 +6,19 @@
 
 class CmdListCommands: public ICommand {
 public:
-	void run (const Args& args)
+	void run (const Args& args) override
 	{
-		for (CommandList::const_iterator i = CommandSystem::get()._commands.begin();
-				i != CommandSystem::get()._commands.end(); ++i) {
-			Log::info(LOG_COMMANDS, "%s", i->first.c_str());
+		std::vector<std::string> list;
+		CommandSystem::get().getCommandNameList(list);
+		for (auto entry : list) {
+			Log::info(LOG_COMMON, "%s", entry.c_str());
 		}
 	}
 };
 
 CommandSystem::CommandSystem ()
 {
-	registerCommand(CMD_LISTCOMMANDS, new CmdListCommands());
+	registerCommand(CMD_LISTCOMMANDS, [&] (const ICommand::Args& args) {} );
 	registerAlias("?", CMD_LISTCOMMANDS);
 	registerAlias("help", CMD_LISTCOMMANDS);
 }
@@ -29,16 +30,8 @@ CommandSystem::~CommandSystem ()
 
 void CommandSystem::registerAlias (const std::string& id, const std::string& command)
 {
-	Log::info(LOG_COMMANDS, "register alias %s", id.c_str());
+	Log::info(LOG_COMMON, "register alias %s", id.c_str());
 	_alias[id] = command;
-}
-
-CommandPtr CommandSystem::registerCommand (const std::string& id, ICommand* command)
-{
-	Log::info(LOG_COMMANDS, "register command %s", id.c_str());
-	CommandPtr ptr(command);
-	_commands[id] = ptr;
-	return ptr;
 }
 
 void CommandSystem::removeCommand (const std::string& id)
@@ -47,6 +40,13 @@ void CommandSystem::removeCommand (const std::string& id)
 	auto i = _alias.find(id);
 	if (i != _alias.end())
 		_alias.erase(i);
+}
+
+CommandPtr CommandSystem::registerCommandRaw (const std::string& id, ICommand* cmd) {
+	Log::info(LOG_COMMON, "register command %s", id.c_str());
+	auto ptr = CommandPtr(cmd);
+	_commands[id] = ptr;
+	return ptr;
 }
 
 ICommand* CommandSystem::getCommand (const std::string& command) const
@@ -69,10 +69,12 @@ void CommandSystem::executeCommandLine (const std::string& command) const
 {
 	if (command.empty())
 		return;
-	std::vector<String> commands = String(command).split(";");
-	for (std::vector<String>::iterator i = commands.begin(); i != commands.end(); ++i) {
-		std::vector<String> tokens = i->split();
-		String cmd = tokens[0].eraseAllSpaces();
+	std::vector<std::string> commands;
+	string::splitString(command, commands, ";");
+	for (const std::string& _cmd : commands) {
+		std::vector<std::string> tokens;
+		string::splitString(_cmd, tokens);
+		const std::string& cmd = string::eraseAllSpaces(tokens[0]);
 		tokens.erase(tokens.begin());
 		executeCommand(cmd, tokens);
 	}
@@ -88,19 +90,19 @@ bool CommandSystem::executeCommand (const std::string& command, ICommand::Args a
 	}
 	ICommand* callback = getCommand(command2);
 	if (callback != nullptr) {
-		Log::debug(LOG_COMMANDS, "run command %s with %i parameters", command.c_str(), (int)args.size());
+		Log::debug(LOG_COMMON, "run command %s with %i parameters", command.c_str(), (int)args.size());
 		callback->run(args);
 		return true;
 	}
 
-	Log::error(LOG_COMMANDS, "unknown command given: %s", command2.c_str());
+	Log::error(LOG_COMMON, "unknown command given: %s", command2.c_str());
 
 	return false;
 }
 
 void CommandSystem::getCommandNameList (std::vector<std::string> &commands) const
 {
-	for (CommandList::const_iterator i = _commands.begin(); i != _commands.end(); ++i) {
-		commands.push_back(i->first);
+	for (const auto& entry : _commands) {
+		commands.push_back(entry.first);
 	}
 }

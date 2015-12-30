@@ -4,134 +4,82 @@
 #include "common/String.h"
 #include <map>
 #include <vector>
+#include <functional>
 
-typedef void (*CompleterFunc) (const std::string&, std::vector<std::string>&);
 class ICommand {
-protected:
-	CompleterFunc _completerFunc;
 public:
-	ICommand() : _completerFunc(nullptr)
-	{
+	typedef std::vector<std::string> Args;
+
+	virtual ~ICommand() {
 	}
 
-	virtual ~ICommand ()
-	{
+	virtual void run(const Args& args) = 0;
+
+	virtual void operator()(const Args& args) {
+		run(args);
 	}
 
-	typedef std::vector<String> Args;
-
-	virtual void run (const Args& args) = 0;
-
-	void setCompleter(CompleterFunc func) {
+	template<typename Completer>
+	void setCompleter(Completer func) {
 		_completerFunc = func;
 	}
 
 	void complete(const std::string& input, std::vector<std::string>& matches) const {
-		if (_completerFunc == nullptr)
+		if (!_completerFunc)
 			return;
 		_completerFunc(input, matches);
 	}
-};
 
-class ICommandFunctor: public ICommand {
-public:
-	virtual ~ICommandFunctor ()
-	{
-	}
-
-	virtual void operator() (const Args& args)
-	{
-		run(args);
-	}
-
-	virtual void run (const Args& args) = 0;
-};
-
-template<class Class>
-class ConstCommandFunctor: public ICommandFunctor {
 private:
-	void (Class::*_functionPtrStr) (const std::string& argument) const;
-	void (Class::*_functionPtrNoParam) () const;
-	Class* _object;
-
-public:
-	ConstCommandFunctor (Class* object, void(Class::*functionPtrStr) (const std::string& argument) const)
-	{
-		_object = object;
-		_functionPtrStr = functionPtrStr;
-		_functionPtrNoParam = nullptr;
-	}
-
-	ConstCommandFunctor (Class* object, void(Class::*functionPtrNoParam) () const)
-	{
-		_object = object;
-		_functionPtrStr = nullptr;
-		_functionPtrNoParam = functionPtrNoParam;
-	}
-
-	void run (const Args& args)
-	{
-		if (_functionPtrStr) {
-			(_object->*_functionPtrStr)(args.empty() ? "" : *args.begin());
-		} else if (_functionPtrNoParam) {
-			(_object->*_functionPtrNoParam)();
-		}
-	}
+	std::function<void(const std::string&, std::vector<std::string>&)> _completerFunc;
 };
 
-template<class Class>
-class CommandFunctor: public ICommandFunctor {
-private:
-	void (Class::*_functionPtr) (const Args& args);
-	void (Class::*_functionPtrStr) (const std::string& argument);
-	void (Class::*_functionPtrNoParam) ();
-	Class* _object;
-
+class CommandBindVoid : public ICommand {
 public:
-	CommandFunctor (Class* object, void(Class::*functionPtr) (const Args& args))
-	{
-		_object = object;
-		_functionPtr = functionPtr;
-		_functionPtrStr = nullptr;
-		_functionPtrNoParam = nullptr;
+	template<typename Func>
+	CommandBindVoid(Func func) :
+			_func(func) {
 	}
 
-	CommandFunctor (Class* object, void(Class::*functionPtrStr) (const std::string& argument))
-	{
-		_object = object;
-		_functionPtr = nullptr;
-		_functionPtrStr = functionPtrStr;
-		_functionPtrNoParam = nullptr;
+	void run(const Args&) override {
+		_func();
 	}
 
-	CommandFunctor (Class* object, void(Class::*functionPtrNoParam) ())
-	{
-		_object = object;
-		_functionPtrStr = nullptr;
-		_functionPtr = nullptr;
-		_functionPtrNoParam = functionPtrNoParam;
+private:
+	std::function<void()> _func;
+};
+
+class CommandBindString : public ICommand {
+public:
+	template<typename Func>
+	CommandBindString(Func func) :
+			_func(func) {
 	}
 
-	virtual void operator() (const std::string& argument)
-	{
-		(*_object.*_functionPtrStr)(argument);
+	void run(const Args& args) override {
+		_func(args.front());
 	}
 
-	virtual void run (const Args& args)
-	{
-		if (_functionPtrStr) {
-			if (args.empty())
-				(*_object.*_functionPtrStr)("");
-			else
-				(*_object.*_functionPtrStr)((*args.begin()).str());
-		} else if (_functionPtrNoParam) {
-			(*_object.*_functionPtrNoParam)();
-		} else {
-			(*_object.*_functionPtr)(args);
-		}
+private:
+	std::function<void(const std::string&)> _func;
+};
+
+class CommandBindArgs : public ICommand {
+public:
+	template<typename Func>
+	CommandBindArgs(Func func) :
+			_func(func) {
 	}
+
+	void run(const Args& args) override {
+		_func(args);
+	}
+
+private:
+	std::function<void(const Args&)> _func;
 };
 
 typedef std::shared_ptr<ICommand> CommandPtr;
 
-#define bindFunction(className, method) new CommandFunctor<className>(this, &className::method)
+#define bindFunction(method) std::bind(&method, this, std::placeholders::_1)
+#define bindFunctionVoid(method) std::bind(&method, this)

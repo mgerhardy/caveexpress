@@ -220,6 +220,10 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		return getBaseActivity().doShowFullscreenAds();
 	}
 
+	public static void openPlayStore(String appName) {
+		openURL("market://details?id=" + appName);
+	}
+
 	protected abstract boolean doShowFullscreenAds();
 
 	public static void hideAds() {
@@ -273,13 +277,21 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		return paymentIds.containsKey(id);
 	}
 
-	static boolean isOUYA() {
+	private static boolean isPackageInstalled(String packageName) {
 		try {
-			mSingleton.getPackageManager().getPackageInfo("tv.ouya", 0);
+			mSingleton.getPackageManager().getPackageInfo(packageName, 0);
 			return true;
 		} catch (NameNotFoundException ignore) {
 		}
 		return false;
+	}
+
+	static boolean isPlayStoreInstalled() {
+		return isPackageInstalled("com.android.vending");
+	}
+
+	static boolean isOUYA() {
+		return isPackageInstalled("tv.ouya");
 	}
 
 	static PaymentEntry[] getPaymentEntries() {

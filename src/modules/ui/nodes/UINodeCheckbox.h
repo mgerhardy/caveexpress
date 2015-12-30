@@ -24,7 +24,7 @@ public:
 
 	// UINode
 	void render (int x, int y) const override;
-	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y) override;
+	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion) override;
 	bool onMouseButtonRelease (int32_t x, int32_t y, unsigned char button) override;
 };
 

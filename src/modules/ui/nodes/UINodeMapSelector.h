@@ -15,8 +15,8 @@ private:
 	const IMapManager *_mapManager;
 	bool _multiplayer;
 public:
-	UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, bool multiplayer = false, int cols = 6, int rows = 4);
-	UINodeMapSelector (IFrontend *frontend, CampaignManager &campaignManager, bool multiplayer = false, int cols = 6, int rows = 4);
+	UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, bool multiplayer = false, int cols = 4, int rows = 2);
+	UINodeMapSelector (IFrontend *frontend, CampaignManager &campaignManager, bool multiplayer = false, int cols = 4, int rows = 2);
 	virtual ~UINodeMapSelector ();
 
 	int getLives () const;

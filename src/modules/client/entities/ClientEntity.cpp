@@ -22,6 +22,7 @@ ClientEntity::ClientEntity (const EntityType& type, uint16_t id, float x, float 
 
 ClientEntity::~ClientEntity ()
 {
+	_currSprite = SpritePtr();
 	_entityOverlays.clear();
 	_sprites.clear();
 }
@@ -55,7 +56,7 @@ void ClientEntity::renderOverlays(IFrontend *frontend, Layer layer, int scale, f
 	calcOffset(scale, zoom, posX, posY, offsetPosX, offsetPosY);
 	for (EntityOverlaysConstIter i = _entityOverlays.begin(); i != _entityOverlays.end(); ++i) {
 		const SpritePtr& overlay = *i;
-		Log::info(LOG_CLIENT, "render %s, layer %i, x: %i, y: %i, zoom: %f, angle: %i, alpha: %f",
+		Log::trace(LOG_CLIENT, "render %s, layer %i, x: %i, y: %i, zoom: %f, angle: %i, alpha: %f",
 				overlay->getName().c_str(), layer, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha);
 		overlay->render(frontend, layer, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha);
 	}
@@ -113,7 +114,7 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 	if (Config.isDebug())
 		frontend->renderFilledRect(_screenPosX, _screenPosY, 4, 4, colorRed);
 
-	const bool debug = Config.getConfigVar("debugentity")->getBoolValue();
+	const bool debug = Config.isDebugEntity();
 	if (debug) {
 		const BitmapFontPtr& font = UI::get().getFont();
 

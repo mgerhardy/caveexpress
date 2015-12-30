@@ -7,8 +7,8 @@
 #include "common/ExecutionTime.h"
 #include "common/Singleton.h"
 #include <SDL.h>
+#include <SDL_assert.h>
 #include <SDL_mixer.h>
-#include <assert.h>
 
 namespace {
 const int SOUND_CLOSED = 1 << 0;
@@ -42,36 +42,36 @@ SDLSoundEngine::~SDLSoundEngine ()
 
 void SDLSoundEngine::channelFinished (int channel)
 {
-	assert(channel >= 0);
-	assert(channel < lengthofi(_channels));
+	SDL_assert(channel >= 0);
+	SDL_assert(channel < lengthofi(_channels));
 	memset(&_channels[channel], 0, sizeof(_channels[channel]));
 }
 
 bool SDLSoundEngine::init (bool initCache)
 {
 	if (SDL_InitSubSystem(SDL_INIT_AUDIO) == -1) {
-		Log::error(LOG_CLIENT, "unable to initialize audio: %s", SDL_GetError());
+		Log::error(LOG_SOUND, "unable to initialize audio: %s", SDL_GetError());
 		_state = SOUND_CLOSED;
 		return false;
 	}
 	const int n = SDL_GetNumAudioDrivers();
 	if (n == 0) {
-		Log::error(LOG_CLIENT, " no built-in audio drivers");
+		Log::error(LOG_SOUND, " no built-in audio drivers");
 		_state = SOUND_CLOSED;
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 		return false;
 	} else {
 		for (int i = 0; i < n; ++i) {
-			Log::info(LOG_CLIENT, "available audio driver %s", SDL_GetAudioDriver(i));
+			Log::info(LOG_SOUND, "available audio driver %s", SDL_GetAudioDriver(i));
 		}
 	}
 
 	const int result = Mix_Init(MIX_INIT_OGG);
 	if (!(result &~ MIX_INIT_OGG)) {
-		Log::error(LOG_CLIENT, "Failed to initialize sdl mixer with ogg support");
+		Log::error(LOG_SOUND, "Failed to initialize sdl mixer with ogg support");
 	}
 
-	Log::info(LOG_CLIENT, "actual audio driver: %s", SDL_GetCurrentAudioDriver());
+	Log::info(LOG_SOUND, "audio driver: %s", SDL_GetCurrentAudioDriver());
 
 	const int audioRate = 44100;
 	const Uint16 audioFormat = MIX_DEFAULT_FORMAT;
@@ -79,7 +79,7 @@ bool SDLSoundEngine::init (bool initCache)
 	const int audioBuffers = 4096;
 
 	if (Mix_OpenAudio(audioRate, audioFormat, audioChannels, audioBuffers) != 0) {
-		Log::error(LOG_CLIENT, "unable to initialize mixer: %s", Mix_GetError());
+		Log::error(LOG_SOUND, "unable to initialize mixer: %s", Mix_GetError());
 		_state = false;
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 		return false;
@@ -88,7 +88,7 @@ bool SDLSoundEngine::init (bool initCache)
 	Mix_AllocateChannels(MAX_CHANNELS);
 	Mix_ChannelFinished(channelFinished);
 
-	Log::info(LOG_CLIENT, "sound initialized");
+	Log::info(LOG_SOUND, "sound initialized");
 
 	if (initCache) {
 		ExecutionTime timeCache("Sound cache");
@@ -107,7 +107,7 @@ bool SDLSoundEngine::exists (const std::string& sound) const
 
 void SDLSoundEngine::close ()
 {
-	Log::info(LOG_CLIENT, "closing the sound system");
+	Log::info(LOG_SOUND, "closing the sound system");
 	Mix_HaltMusic();
 	Mix_FreeMusic(_music);
 	_music = nullptr;
@@ -135,7 +135,7 @@ int SDLSoundEngine::playMusic (const std::string& music, bool loop)
 		return -1;
 	}
 	if (music.empty()) {
-		Log::error(LOG_CLIENT, "no music file to play was provided");
+		Log::error(LOG_SOUND, "no music file to play was provided");
 		return -1;
 	}
 	if (_musicPlaying == music)
@@ -147,7 +147,7 @@ int SDLSoundEngine::playMusic (const std::string& music, bool loop)
 
 	SDL_RWops *rwops = FS.createRWops(FS.getDataDir() + FS.getSoundsDir() + music + SOUNDTYPE);
 	if (rwops == nullptr) {
-		Log::error(LOG_CLIENT, "unable to load music file: %s", music.c_str());
+		Log::error(LOG_SOUND, "unable to load music file: %s", music.c_str());
 		return -1;
 	}
 #if SDL_MIXER_MAJOR_VERSION >= 2
@@ -156,13 +156,13 @@ int SDLSoundEngine::playMusic (const std::string& music, bool loop)
 	_music = Mix_LoadMUS_RW(rwops);
 #endif
 	if (_music == nullptr) {
-		Log::error(LOG_CLIENT, "unable to load music file: %s", Mix_GetError());
+		Log::error(LOG_SOUND, "unable to load music file: %s", Mix_GetError());
 		return -1;
 	}
 
 	const int ret = Mix_PlayMusic(_music, loop ? -1 : 1);
 	if (ret == -1)
-		Log::error(LOG_CLIENT, "unable to play music file: %s", Mix_GetError());
+		Log::error(LOG_SOUND, "unable to play music file: %s", Mix_GetError());
 	else
 		_musicPlaying = music;
 	return ret;
@@ -189,7 +189,7 @@ int SDLSoundEngine::play (const std::string& filename, const vec2& position, boo
 		return -1;
 	}
 	if (filename.empty()) {
-		Log::error(LOG_CLIENT, "no sound file to play was provided");
+		Log::error(LOG_SOUND, "no sound file to play was provided");
 		return -1;
 	}
 	Mix_Chunk *sound = getChunk(filename);
@@ -199,10 +199,10 @@ int SDLSoundEngine::play (const std::string& filename, const vec2& position, boo
 	_currentChannel = (_currentChannel + 1) % MAX_CHANNELS;
 	const int channel = Mix_PlayChannel(_currentChannel, sound, loop ? -1 : 0);
 	if (channel == -1) {
-		Log::error(LOG_CLIENT, "unable to play sound file: %s", Mix_GetError());
+		Log::error(LOG_SOUND, "unable to play sound file: %s", Mix_GetError());
 	} else {
-		assert(channel >= 0);
-		assert(channel < lengthofi(_channels));
+		SDL_assert(channel >= 0);
+		SDL_assert(channel < lengthofi(_channels));
 		_channels[channel].channel = channel;
 		_channels[channel].chunk = sound;
 		_channels[channel].pos = position;
@@ -215,14 +215,14 @@ bool SDLSoundEngine::cache (const std::string& sound)
 	if (!isActive()) {
 		return false;
 	}
-	Log::debug(LOG_CLIENT, "cache sound %s", sound.c_str());
+	Log::debug(LOG_SOUND, "cache sound %s", sound.c_str());
 	return getChunk(sound) != nullptr;
 }
 
 Mix_Chunk* SDLSoundEngine::getChunk (const std::string& filename)
 {
 	if (filename.empty()) {
-		Log::error(LOG_CLIENT, "no sound file to get the chunk for was provided");
+		Log::error(LOG_SOUND, "no sound file to get the chunk for was provided");
 		return nullptr;
 	}
 	ChunkMapIter i = _map.find(filename);
@@ -235,7 +235,7 @@ Mix_Chunk* SDLSoundEngine::getChunk (const std::string& filename)
 	Mix_Chunk *sound = Mix_LoadWAV_RW(rwops, 1);
 	_map[filename] = sound;
 	if (sound == nullptr) {
-		Log::error(LOG_CLIENT, "unable to load sound file %s: %s", filename.c_str(), Mix_GetError());
+		Log::error(LOG_SOUND, "unable to load sound file %s: %s", filename.c_str(), Mix_GetError());
 	}
 
 	return sound;
@@ -271,10 +271,10 @@ void SDLSoundEngine::setListenerPosition (const vec2& position, const vec2& velo
 void SDLSoundEngine::pause ()
 {
 	if (!isActive()) {
-		Log::info(LOG_CLIENT, "sound is already paused");
+		Log::info(LOG_SOUND, "sound is already paused");
 		return;
 	}
-	Log::info(LOG_CLIENT, "sound is now paused");
+	Log::info(LOG_SOUND, "sound is now paused");
 	_state |= SOUND_PAUSE;
 	Mix_PauseMusic();
 	Mix_Pause(-1);
@@ -283,10 +283,10 @@ void SDLSoundEngine::pause ()
 void SDLSoundEngine::resume ()
 {
 	if (isActive()) {
-		Log::info(LOG_CLIENT, "sound is already active");
+		Log::info(LOG_SOUND, "sound is already active");
 		return;
 	}
-	Log::info(LOG_CLIENT, "sound is active again");
+	Log::info(LOG_SOUND, "sound is active again");
 	_state &= ~SOUND_PAUSE;
 	Mix_ResumeMusic();
 	Mix_Resume(-1);

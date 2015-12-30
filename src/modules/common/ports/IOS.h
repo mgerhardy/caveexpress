@@ -12,5 +12,7 @@ public:
 	int openURL (const std::string& url, bool newWindow) const override;
 	bool isFullscreenSupported () override { return false; }
 	std::string getHomeDirectory () override;
+	bool supportsUserContent () const override { return false; }
+	std::string getRateURL (const std::string& packageName) const override;
 };
 

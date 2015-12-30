@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=@APPNAME@ @VERSION@
+GenericName=@APPNAME@
+Comment=@DESCRIPTION@
+Exec=@APP@
+Icon=@APP@
+Terminal=false
+Type=Application
+Categories=Game;
+StartupNotify=true

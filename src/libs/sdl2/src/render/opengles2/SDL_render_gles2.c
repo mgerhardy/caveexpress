@@ -418,7 +418,7 @@ GLES2_UpdateClipRect(SDL_Renderer * renderer)
             int w, h;
 
             SDL_GetRendererOutputSize(renderer, &w, &h);
-            data->glScissor(renderer->viewport.x + rect->x, (h - renderer->viewport.y - renderer->viewport.h) + rect->y, rect->w, rect->h);
+            data->glScissor(renderer->viewport.x + rect->x, h - renderer->viewport.y - rect->y - rect->h, rect->w, rect->h);
         }
     } else {
         data->glDisable(GL_SCISSOR_TEST);
@@ -1956,7 +1956,7 @@ GLES2_CreateRenderer(SDL_Window *window, Uint32 flags)
     Uint32 window_flags;
     GLint window_framebuffer;
     GLint value;
-    int profile_mask, major, minor;
+    int profile_mask = 0, major = 0, minor = 0;
     SDL_bool changed_window = SDL_FALSE;
 
     SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &profile_mask);

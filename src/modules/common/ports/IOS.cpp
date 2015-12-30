@@ -1,11 +1,10 @@
 #include "IOS.h"
-#include "Cocoa.h"
 #include "common/Application.h"
+#include "IOSObjc.h"
 
 IOS::IOS () :
 		Unix()
 {
-	nsinit();
 }
 
 IOS::~IOS ()
@@ -14,10 +13,7 @@ IOS::~IOS ()
 
 std::string IOS::getHomeDirectory ()
 {
-	char* home = nsGetHomeDirectory(Singleton<Application>::getInstance().getName());
-	if (home == nullptr)
-		return "";
-	return home;
+	return iosGetHomeDirectory();
 }
 
 void IOS::showAds (bool show)
@@ -27,7 +23,10 @@ void IOS::showAds (bool show)
 
 int IOS::openURL (const std::string& url, bool) const
 {
-	const std::string cmd = "open " + url;
-	system(cmd.c_str());
-	return 0;
+	return iosOpenURL(url);
+}
+
+std::string IOS::getRateURL (const std::string& packageName) const
+{
+	return "http://itunes.com/apps/" + packageName;
 }

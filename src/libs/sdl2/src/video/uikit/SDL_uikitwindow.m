@@ -316,6 +316,13 @@ UIKit_DestroyWindow(_THIS, SDL_Window * window)
             for (SDL_uikitview *view in views) {
                 [view setSDLWindow:NULL];
             }
+
+            /* iOS may still hold a reference to the window after we release it.
+             * We want to make sure the SDL view controller isn't accessed in
+             * that case, because it would contain an invalid pointer to the old
+             * SDL window. */
+            data.uiwindow.rootViewController = nil;
+            data.uiwindow.hidden = YES;
         }
     }
     window->driverdata = NULL;

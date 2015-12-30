@@ -13,6 +13,7 @@ extern MapFailedReason FAILED_NPC_MAMMUT;
 extern MapFailedReason FAILED_NPC_FISH;
 extern MapFailedReason FAILED_HITPOINTS;
 extern MapFailedReason FAILED_NO_MORE_PLAYERS;
+extern MapFailedReason FAILED_ALL_NPCS_DIED;
 extern MapFailedReason FAILED_SIDESCROLL;
 extern MapFailedReason FAILED_MAX;
 }

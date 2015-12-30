@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "server/box2d/DebugRenderer.h"
+#include "physics/DebugRenderer.h"
 #include "caveexpress/server/entities/npcs/NPC.h"
 #include "caveexpress/server/entities/Border.h"
 #include "caveexpress/server/entities/MapTile.h"
@@ -11,12 +11,12 @@
 #include "common/ThemeType.h"
 #include "common/MapFailedReason.h"
 #include "common/TimeManager.h"
-#include "common/ICommand.h"
 #include "network/IProtocolHandler.h"
 #include "common/LUA.h"
 #include <string>
 #include <vector>
-#include <map>
+#include <list>
+#include <unordered_map>
 
 // forward decl
 class SpriteDef;
@@ -26,7 +26,7 @@ class ServiceProvider;
 namespace caveexpress {
 
 class NPCFlying;
-class NPCFrienndly;
+class NPCFriendly;
 class NPCAttacking;
 class NPCFish;
 class NPCBlowing;
@@ -96,7 +96,7 @@ public:
 	typedef CaveList::iterator CaveListIter;
 	typedef CaveList::const_iterator CaveListConstIter;
 
-	typedef std::vector<NPCFriendly*> NPCList;
+	typedef std::list<NPCFriendly*> NPCList;
 	typedef NPCList::iterator NPCListIter;
 	typedef NPCList::const_iterator NPCListConstIter;
 
@@ -142,8 +142,13 @@ protected:
 	int32_t _physicsTime;
 	uint32_t _nextFriendlyNPCSpawn;
 
+	// the already transfered friendly npcs
 	uint32_t _transferedNPCs;
+	// the amount of friendly npc that must be transfered before a map counts as won
 	uint32_t _transferedNPCLimit;
+	// the already spawned friendly npcs
+	uint32_t _friendlyNPCCount;
+	// the max amount to spawn (they can die)
 	uint32_t _friendlyNPCLimit;
 	uint32_t _caveCounter;
 
@@ -186,9 +191,9 @@ protected:
 
 	uint16_t _gamePoints;
 
-	typedef std::map<int, Platform*> PlatformXMap;
+	typedef std::unordered_map<int, Platform*> PlatformXMap;
 	typedef PlatformXMap::const_iterator PlatformXMapConstIter;
-	typedef std::map<int, PlatformXMap> PlatformYMap;
+	typedef std::unordered_map<int, PlatformXMap> PlatformYMap;
 	typedef PlatformYMap::const_iterator PlatformYMapConstIter;
 	PlatformYMap _platforms;
 	const ThemeType* _theme;
@@ -227,7 +232,7 @@ public:
 	bool isReachableByWalking (const IEntity *start, const IEntity *end, int startPos = -1, int endPos = -1) const;
 	// return true if something was hit
 	bool rayTrace (const b2Vec2& start, const b2Vec2& end, IEntity **hit) const;
-	bool rayTrace (const IEntity *start, const IEntity *end, IEntity **hit = 0) const;
+	bool rayTrace (const IEntity *start, const IEntity *end, IEntity **hit = nullptr) const;
 	bool rayTrace (int startGridX, int startGridY, int endGridX, int endGridY, IEntity **hit) const;
 
 	void reload ();

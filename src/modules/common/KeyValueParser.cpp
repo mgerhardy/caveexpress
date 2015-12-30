@@ -10,7 +10,7 @@ KeyValueParser::KeyValueParser (const std::string& settings)
 		std::vector<std::string> keyValue;
 		string::splitString(str, keyValue, "=");
 		if (keyValue.size() != 2) {
-			Log::error(LOG_GENERAL, "invalid key value setting found: %s", str.c_str());
+			Log::error(LOG_COMMON, "invalid key value setting found: %s", str.c_str());
 			continue;
 		}
 		_settings[keyValue[0]] = keyValue[1];

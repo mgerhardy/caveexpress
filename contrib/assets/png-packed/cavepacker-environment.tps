@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.7.1</string>
+        <string>3.9.4</string>
         <key>fileName</key>
         <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/cavepacker-environment.tps</string>
         <key>autoSDSettings</key>
@@ -60,6 +60,8 @@
         <false/>
         <key>pvrCompressionQuality</key>
         <enum type="SettingsBase::PvrCompressionQuality">PVR_QUALITY_NORMAL</enum>
+        <key>atfCompressData</key>
+        <false/>
         <key>mipMapMinSize</key>
         <uint>32768</uint>
         <key>etc1CompressionQuality</key>
@@ -73,7 +75,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">PngQuantHigh</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -175,7 +177,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGB565</enum>
+        <enum type="SettingsBase::OutputFormat">INDEXED</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -210,15 +212,16 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/cavepacker/tile-rock-01-middle-01.png</filename>
-            <filename>../png/cavepacker/tile-rock-02-middle-01.png</filename>
-            <filename>../png/cavepacker/tile-rock-03-middle-01.png</filename>
             <filename>../png/cavepacker/tile-background-04-back-01.png</filename>
             <filename>../png/cavepacker/tile-background-01-back-01.png</filename>
             <filename>../png/cavepacker/tile-background-02-back-01.png</filename>
             <filename>../png/cavepacker/tile-background-03-back-01.png</filename>
-            <filename>../png/cavepacker/tile-target-01-middle-01.png</filename>
             <filename>../png/cavepacker/tile-reference.png</filename>
+            <filename>../png/cavepacker/deadlock-middle-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-01-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-02-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-03-back-01.png</filename>
+            <filename>../png/cavepacker/target-back-01.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

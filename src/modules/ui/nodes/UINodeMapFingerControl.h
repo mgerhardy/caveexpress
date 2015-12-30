@@ -38,6 +38,6 @@ public:
 	void update (uint32_t deltaTime) override;
 	bool onPush () override;
 	bool onFingerPress (int64_t finger, uint16_t x, uint16_t y) override;
-	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y) override;
+	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion) override;
 	bool onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy) override;
 };

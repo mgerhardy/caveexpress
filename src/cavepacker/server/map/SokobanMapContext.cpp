@@ -2,6 +2,7 @@
 #include "common/FileSystem.h"
 #include "common/Log.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
+#include "cavepacker/shared/CavePackerSpriteType.h"
 
 namespace cavepacker {
 
@@ -31,22 +32,125 @@ bool SokobanMapContext::isEmpty(int col, int row) const {
 	return true;
 }
 
+static inline int getIndex(int col, int row, int width) {
+	return col + width * row;
+}
+
+bool SokobanMapContext::save () const {
+	const IMap::SettingsMap& settings = _settings;
+	const auto widthIter = settings.find(msn::WIDTH);
+	if (widthIter == settings.end()) {
+		return false;
+	}
+	const auto heightIter = settings.find(msn::HEIGHT);
+	if (heightIter == settings.end()) {
+		return false;
+	}
+
+	const std::string path = FS.getAbsoluteWritePath() + FS.getDataDir() + FS.getMapsDir() + _name + ".sok";
+	SDL_RWops *rwops = FS.createRWops(path, "wb");
+	FilePtr file(new File(rwops, path));
+
+	const int width = string::toInt(widthIter->second);
+	const int height = string::toInt(heightIter->second);
+
+	file->writeString(";");
+	file->appendString(_name.c_str());
+	file->appendString("\n");
+
+	std::vector<char> board;
+	board.resize(width * height, Sokoban::GROUND);
+
+	for (const MapTileDefinition& i : _definitions) {
+		const int index = getIndex(i.x, i.y, width);
+		char field = Sokoban::GROUND;
+		const SpriteType& spriteType = i.spriteDef->type;
+		if (SpriteTypes::isSolid(spriteType)) {
+			field = Sokoban::WALL;
+		} else if (SpriteTypes::isTarget(spriteType)) {
+			field = Sokoban::TARGET;
+		} else if (SpriteTypes::isPackage(spriteType)) {
+			field = Sokoban::PACKAGE;
+		}
+		if (board[index] == Sokoban::TARGET) {
+			if (field == Sokoban::PLAYER)
+				field = Sokoban::PLAYERONTARGET;
+			else if (field == Sokoban::PACKAGE)
+				field = Sokoban::PACKAGEONTARGET;
+		}
+		Log::debug(LOG_GAMEIMPL, "field: %c at index %i", field, index);
+		board[index] = field;
+	}
+	for (const EmitterDefinition& i : _emitters) {
+		const int index = getIndex(i.x, i.y, width);
+		char field = Sokoban::GROUND;
+		const EntityType& type = *i.type;
+		if (EntityTypes::isGround(type)) {
+			field = Sokoban::GROUND;
+		} else if (EntityTypes::isSolid(type)) {
+			field = Sokoban::WALL;
+		} else if (EntityTypes::isPackage(type)) {
+			field = Sokoban::PACKAGE;
+		} else if (EntityTypes::isTarget(type)) {
+			field = Sokoban::TARGET;
+		}
+		if (isTarget(board[index] && isPackage(field))) {
+			field = Sokoban::PACKAGEONTARGET;
+		}
+		board[index] = field;
+	}
+
+	for (const IMap::StartPosition& pos : _startPositions) {
+		const int x = string::toInt(pos._x);
+		const int y = string::toInt(pos._y);
+		const int index = getIndex(x, y, width);
+		if (isTarget(board[index])) {
+			board[index] = Sokoban::PLAYERONTARGET;
+		} else {
+			board[index] = Sokoban::PLAYER;
+		}
+	}
+
+	int col = 0;
+	for (int i = 0; i < width * height; ++i) {
+		const char field = board[i];
+		char str[2] = { field, '\0' };
+		file->appendString(str);
+		++col;
+		if (col >= width) {
+			file->appendString("\n");
+			col = 0;
+		}
+	}
+
+	if (file->length() <= 0L) {
+		FS.deleteFile(path);
+		return false;
+	}
+
+	return true;
+}
+
 bool SokobanMapContext::load(bool skipErrors) {
 	_playerSpawned = false;
-	Log::info(LOG_SERVER, "load the map %s", _name.c_str());
+	Log::info(LOG_GAMEIMPL, "load the map %s", _name.c_str());
 	resetTiles();
 
-	FilePtr filePtr = FS.getFile(FS.getMapsDir() + _name + ".sok");
+	FilePtr filePtr = FS.getFileFromURL("maps://" + _name + ".sok");
 	if (!filePtr->exists()) {
-		Log::error(LOG_SERVER, "Sokoban map file '%s' does not exist", filePtr->getName().c_str());
+		Log::error(LOG_GAMEIMPL, "Sokoban map file '%s' does not exist", filePtr->getName().c_str());
 		return false;
 	}
 
 	char *buffer;
 	const int fileLen = filePtr->read((void **) &buffer);
 	std::unique_ptr<char[]> p(buffer);
-	if (!buffer || fileLen <= 0) {
-		Log::error(LOG_SERVER, "Sokoban map file %s", filePtr->getName().c_str());
+	if (!buffer) {
+		Log::error(LOG_GAMEIMPL, "Sokoban map file %s can't get opened", filePtr->getName().c_str());
+		return false;
+	}
+	if (fileLen <= 0) {
+		Log::error(LOG_GAMEIMPL, "Sokoban map file %s is empty", filePtr->getName().c_str());
 		return false;
 	}
 
@@ -80,7 +184,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 			if (inComment)
 				line.push_back(buffer[i]);
 			else
-				Log::info(LOG_SERVER, "comment: %s", line.c_str());
+				Log::info(LOG_GAMEIMPL, "comment: %s", line.c_str());
 			continue;
 		}
 		switch (buffer[i]) {
@@ -137,7 +241,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 	_settings[msn::WIDTH] = string::toString(maxCol);
 	_settings[msn::HEIGHT] = string::toString(row);
 
-	Log::info(LOG_SERVER, "found %i start positions", (int)_startPositions.size());
+	Log::info(LOG_GAMEIMPL, "found %i start positions", (int)_startPositions.size());
 
 	return _playerSpawned;
 }
@@ -146,7 +250,7 @@ void SokobanMapContext::addTile(const std::string& tile, int col, int row) {
 	const SpriteDefPtr &spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(
 			tile);
 	if (!spriteDefPtr) {
-		Log::error(LOG_SERVER, "could not add tile: %s", tile.c_str());
+		Log::error(LOG_GAMEIMPL, "could not add tile: %s", tile.c_str());
 		return;
 	}
 
@@ -161,7 +265,7 @@ inline void SokobanMapContext::addTarget(int col, int row) {
 
 inline void SokobanMapContext::addWall(int col, int row) {
 	const int rnd = rand() % 3 + 1;
-	addTile("tile-rock-" + String::format("%02i", rnd), col, row);
+	addTile("tile-rock-" + string::format("%02i", rnd), col, row);
 }
 
 inline void SokobanMapContext::addPackage(int col, int row) {
@@ -176,7 +280,7 @@ inline void SokobanMapContext::addPlayer(int col, int row) {
 
 inline void SokobanMapContext::addGround(int col, int row) {
 	const int rnd = rand() % 4 + 1;
-	addTile("tile-background-" + String::format("%02i", rnd), col, row);
+	addTile("tile-background-" + string::format("%02i", rnd), col, row);
 }
 
 }

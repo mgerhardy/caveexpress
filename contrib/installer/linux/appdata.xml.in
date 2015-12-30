@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014 CaveProductions <info@caveproductions.org> -->
+<application>
+	<id type="desktop">@APP@.desktop</id>
+	<licence></licence>
+	<name>@APPNAME@</name>
+	<summary>@DESCRIPTION@</summary>
+	<description>
+		<p>
+			Master your pedal-powered flying machine to pick up packages from
+			your cave-dwelling clients and drop them off at the collection
+			point.
+			<br />
+			But beware! Mighty mastodons, terrifying pterodactyls
+			and others would rather see you extinct.
+		</p>
+		<p>CaveExpress is available for Android, Linux and Windows. iOS,
+			HTML5 and MacOSX will follow soon.
+		</p>
+		<p>With CaveExpress you are able to build your own campaigns and
+			maps with the built-in mapeditor.
+		</p>
+		<h2>Features</h2>
+		<ul>
+			<li>
+				<b>Multiplayer mode</b>
+				for solving the maps with up to 4 players
+			</li>
+			<li>
+				<b>User made campaigns and maps</b>
+				with the built-in mapeditor
+			</li>
+		</ul>
+		<h2>How to play</h2>
+		<p>The primary goal of CaveExpress is to pick up the packages and drop them off at the
+			collection point.
+		</p>
+		<p>You get more points and stars the faster you manage to do this. There are also ways
+			to get some extra points when you daze a dino or deliver a
+			package very fast.
+		</p>
+		<p>Hitting walls too hard might crash your flying machine and you will have to restart
+			the map.
+		</p>
+		<p>Depending on the difficulty level you have chosen, you might have to restart a campaign
+			if you lose all three lives for a campaign.
+		</p>
+		<p>You can carry multiple packages - but controlling your flying machine might get harder.</p>
+		<p>Placing a stone close to the collection point can help you when trying to throw the package into place.</p>
+		<h3>
+			The package:
+		</h3>
+		<p>Pick up packages from your clients and drop them off at the collection point.</p>
+		<h3>
+			The collection point:
+		</h3>
+		<p>This is the point where you should drop off your packages.</p>
+		<h3>
+			The tree:
+		</h3>
+		<p>Get items from the tree by throwing the stone onto it. Items can for example regenerate your health.</p>
+		<h3>
+			The stone:
+		</h3>
+		<p>Use the stone to daze dinosaurs or get items from the tree.</p>
+		<h3>
+			The sleeping dinosaur:
+		</h3>
+		<p>This is a lazy dinosaur - but still don't get too close if you don't have too. His snore can cause trouble.</p>
+		<h3>
+			The mighty fish:
+		</h3>
+		<p>The water is his territory... and he will defeat it against intruders.</p>
+		<h3>
+			The pterodactylus:
+		</h3>
+		<p>You should not get too close to this nasty pterodactylus. He doesn't like other flying things.</p>
+		<h3>
+			The angry dinosaur:
+		</h3>
+		<p>Even hovering over him might make him angry. He will destroy all packages on his way to you if he's enraged.</p>
+		<h3>
+			The mastodon:
+		</h3>
+		<p>A little bit slower than his friends, but still dangerous. Don't land your flying machine too close too him. He will also destroy packages on his
+			way to you.
+		</p>
+		<h3>Touch devices:</h3>
+		<p>Use a second finger to drop collected goods (stone, package). While the first finger is in touch with your device, tap the second finger on your
+			screen to trigger the drop. You can also tap onto your player to trigger it.
+		</p>
+		<h3>Personal computer:</h3>
+		<p>Use the cursor keys to control your player and the space bar to release the collected goods.</p>
+		<h3>OUYA:</h3>
+		<p>Using the OUYA controller like you are used to in the OUYA menus.</p>
+	</description>
+	<screenshots>
+		<screenshot type="default" width="800" height="600">...</screenshot>
+		<screenshot width="800" height="600">...</screenshot>
+	</screenshots>
+	<url type="homepage">http://www.caveproductions.org</url>
+	<updatecontact>info@caveproductions.org</updatecontact>
+	<project_group>CAVEPRODUCTIONS</project_group>
+</application>

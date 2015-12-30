@@ -10,6 +10,7 @@
 template<class T>
 class UINodeSelector: public UINode {
 protected:
+	typedef UINode Super;
 	typedef std::vector<T> SelectorEntries;
 	typedef typename SelectorEntries::const_iterator SelectorEntryConstIter;
 	typedef typename SelectorEntries::iterator SelectorEntryIter;
@@ -22,7 +23,9 @@ protected:
 	bool _scrollingEnabled;
 
 	int _mouseWheelScrollAmount;
+	// scrolling pixels
 	int _scrolling;
+	// amount of entries to skip while showing the selector
 	int _offset;
 
 	int _rowSpacing;
@@ -39,6 +42,7 @@ protected:
 	BitmapFontPtr _font;
 	Color _fontColor;
 
+	// show page indicator
 	bool _pageVisible;
 
 	float _colWidth;
@@ -50,6 +54,8 @@ protected:
 	// initial offset for the first entry in the selector
 	int _entryOffsetX;
 	int _entryOffsetY;
+
+	bool _motionHandled;
 
 	bool select ();
 
@@ -64,7 +70,7 @@ public:
 	UINodeSelector (IFrontend *frontend, int cols, int rows, float colWidth = 0.2f, float rowHeight = 0.2f) :
 			UINode(frontend), _renderX(0), _renderY(0), _scrollingEnabled(true), _mouseWheelScrollAmount(10), _scrolling(0), _offset(0), _rowSpacing(0), _colSpacing(0), _cols(
 					cols), _rows(rows), _selectedIndex(-1), _selection(nullptr), _pageVisible(false), _colWidth(colWidth), _rowHeight(rowHeight), _cursorX(0), _cursorY(0),
-					_entryOffsetX(0), _entryOffsetY(0)
+					_entryOffsetX(0), _entryOffsetY(0), _motionHandled(false)
 	{
 		_font = getFont();
 		Vector4Set(colorWhite, _fontColor);
@@ -89,7 +95,7 @@ public:
 
 	virtual void onAdd () override
 	{
-		UINode::onAdd();
+		Super::onAdd();
 		autoSize();
 		updateAlignment();
 	}
@@ -230,30 +236,53 @@ public:
 	bool onMouseLeftRelease (int32_t x, int32_t y) override
 	{
 		const bool ret = select();
-		UINode::onMouseLeftRelease(x, y);
+		Super::onMouseLeftRelease(x, y);
 		return ret;
 	}
 
-	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y) override
+	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion) override
 	{
+		_motionHandled = false;
+		// ignore this if the finger was released after a motion event
+		if (motion)
+			return Super::onFingerRelease(finger, x, y, motion);
+
 		addFocus(x, y);
 		const bool ret = select();
-		UINode::onFingerRelease(finger, x, y);
+		Super::onFingerRelease(finger, x, y, motion);
 		return ret;
 	}
 
 	bool onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy) override
 	{
-		if (!_scrollingEnabled)
+		const int delta = 30;
+		if (!_motionHandled && dx > delta) {
+			_motionHandled = true;
+			offset(false);
+			return true;
+		} else if (!_motionHandled && dx < -delta) {
+			_motionHandled = true;
+			offset(true);
+			return true;
+		}
+		if (!_scrollingEnabled) {
 			return false;
-		scroll(dy > 0, 10);
-		return true;
+		}
+		if (dy > 10 || dy < -10) {
+			scroll(dy > 10, 10);
+			return true;
+		}
+		return false;
 	}
 
 	bool onMouseWheel (int32_t x, int32_t y) override
 	{
-		if (!_scrollingEnabled)
+		if (!_scrollingEnabled) {
+			// TODO: only offset one row
+			offset(true);
+			selectEntry(_offset);
 			return false;
+		}
 		scroll(y > 0, _mouseWheelScrollAmount);
 		return true;
 	}
@@ -289,7 +318,7 @@ public:
 
 	virtual void render (int x, int y) const override
 	{
-		UINode::render(x, y);
+		Super::render(x, y);
 
 		_renderX = _entryOffsetX;
 		_renderY = _entryOffsetY;
@@ -332,11 +361,16 @@ public:
 				alpha = 0.5f;
 			}
 
-			renderSelectorEntry(index, *i, _x, _y, colWidth, rowHeight, alpha);
+			const int _innerPadding = _padding;
+			const int xEntry = _x + _innerPadding;
+			const int yEntry = _y + _innerPadding;
+			const int wEntry = colWidth - 2 * _innerPadding;
+			const int hEntry = rowHeight - 2 * _innerPadding;
+			renderSelectorEntry(index, *i, xEntry, yEntry, wEntry, hEntry, alpha);
 
 			if (_font) {
 				const std::string& text = getText(*i);
-				_font->print(text, _fontColor, _x, _y);
+				_font->printMax(text, _fontColor, xEntry, yEntry, wEntry);
 			}
 
 			_renderX += colWidth + _colSpacing;
@@ -352,9 +386,25 @@ public:
 		disableScissor();
 	}
 
+	virtual bool onKeyPress (int32_t key, int16_t modifier) override
+	{
+		if (!Super::onKeyPress(key, modifier)) {
+			if (key == SDLK_PAGEUP) {
+				offset(false);
+				selectEntry(_offset);
+				return true;
+			} else if (key == SDLK_PAGEDOWN) {
+				offset(true);
+				selectEntry(_offset);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	void onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY) override
 	{
-		UINode::onMouseMotion(x, y, relX, relY);
+		Super::onMouseMotion(x, y, relX, relY);
 		addFocus(x, y);
 		_cursorX = x;
 		_cursorY = y;
@@ -362,9 +412,9 @@ public:
 
 	void renderDebug (int x, int y, int textY) const override
 	{
-		UINode::renderDebug(x, y, textY);
+		Super::renderDebug(x, y, textY);
 		const BitmapFontPtr& font = getFont(MEDIUM_FONT);
-		font->print(String::format("x: %i, y: %i, index: %i", _cursorX, _cursorY, _selectedIndex), colorWhite, x, textY);
+		font->print(string::format("x: %i, y: %i, index: %i", _cursorX, _cursorY, _selectedIndex), colorWhite, x, textY);
 	}
 
 	bool runFocusNode () override
@@ -374,36 +424,53 @@ public:
 
 	void removeFocus () override
 	{
-		UINode::removeFocus();
+		Super::removeFocus();
 		_selectedIndex = -1;
 	}
 
-	bool nextFocus () override
+	bool nextFocus (bool cursordown) override
 	{
 		if (_entries.empty())
 			return false;
-		++_selectedIndex;
-		_selectedIndex %= _entries.size();
-		if (_selectedIndex == 0)
-			return UINode::nextFocus();
+		if (cursordown)
+			_selectedIndex += _cols;
+		else
+			++_selectedIndex;
+		if (_selectedIndex - _offset >= _rows * _cols) {
+			offset(true);
+			_selectedIndex = _offset;
+		}
+		Log::info(LOG_UI, "selected index: %i, offset: %i", _selectedIndex, _offset);
+		_selectedIndex %= (int) _entries.size();
+		if (_selectedIndex == 0) {
+			return Super::nextFocus(cursordown);
+		}
 		return true;
 	}
 
-	bool prevFocus () override
+	bool prevFocus (bool cursorup) override
 	{
 		if (_entries.empty())
 			return false;
-		--_selectedIndex;
+		if (cursorup)
+			_selectedIndex -= _cols;
+		else
+			--_selectedIndex;
+		if (_selectedIndex < _offset) {
+			offset(false);
+			_selectedIndex = (_rows * _cols) - 1;
+		}
 		if (_selectedIndex < 0) {
-			_selectedIndex = 0;
-			return UINode::prevFocus();
+			_selectedIndex = _entries.size() - 1;
+			_offset = _selectedIndex % (_rows * _cols);
+			return Super::prevFocus(cursorup);
 		}
 		return true;
 	}
 
 	void addFocus (int32_t x, int32_t y) override
 	{
-		UINode::addFocus(x, y);
+		Super::addFocus(x, y);
 		if (_entries.empty()) {
 			_selectedIndex = -1;
 			return;

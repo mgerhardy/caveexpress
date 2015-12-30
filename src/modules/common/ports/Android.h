@@ -32,7 +32,7 @@ private:
 
 	bool testException ();
 
-	String getSystemProperty (const char *name) const;
+	std::string getSystemProperty (const char *name) const;
 
 public:
 	Android ();
@@ -40,23 +40,16 @@ public:
 
 	void init() override;
 
-	void logError (const std::string& error) const override {
-		__android_log_write(ANDROID_LOG_ERROR, Singleton<Application>::getInstance().getName().c_str(), error.c_str());
-	}
-
-	void logOutput (const std::string& string) const override {
-		__android_log_write(ANDROID_LOG_INFO, Singleton<Application>::getInstance().getName().c_str(), string.c_str());
-	}
-
+	bool supportsUserContent () const override { return false; }
 	void notifyPaymentLoaded ();
 	bool isOUYA () const override;
 	void tick (uint32_t deltaTime) override;
 	int getAdHeight() const override;
 	bool track (const std::string& hitType, const std::string& screenName) override;
-	int getScreenPadding() override;
 	DirectoryEntries listDirectory (const std::string& basedir, const std::string& subdir = "") override;
 	void showAds (bool show) override;
 	bool showFullscreenAds () override;
+	std::string getRateURL (const std::string& packageName) const override { return "market://details?id=" + packageName; }
 	bool isFullscreenSupported () override { return false; }
 	int openURL (const std::string& url, bool newWindow) const override;
 	void exit (const std::string& reason, int errorCode) override;
@@ -77,6 +70,6 @@ public:
 	bool buyItem (const std::string& id) override;
 	bool hasMouseOrFinger () override;
 	bool canDisableJoystick () override { return !isOUYA(); }
-	bool wantBackButton () override { return isOUYA(); }
+	//bool wantBackButton () override { return isOUYA(); }
 	bool supportGooglePlay () { return !isOUYA(); }
 };

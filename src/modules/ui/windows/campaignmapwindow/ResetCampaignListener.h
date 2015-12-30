@@ -15,6 +15,7 @@ public:
 	void onOk() override {
 		_campaignManager.resetActiveCampaign();
 		_mapSelector->reset();
+		UIPopupCallback::onOk();
 	}
 };
 
@@ -30,6 +31,6 @@ public:
 
 	void onClick() override {
 		UIPopupCallbackPtr c(new ResetCampaignPopupCallback(_mapSelector, _campaignManager));
-		UI::get().popup(tr("Reset"), UIPOPUP_OK | UIPOPUP_CANCEL, UIPopupCallbackPtr(c));
+		UI::get().popup(tr("Reset"), UIPOPUP_OK | UIPOPUP_CANCEL, c);
 	}
 };

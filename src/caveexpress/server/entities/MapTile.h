@@ -29,6 +29,8 @@ public:
 	gridSize getGridWidth () const;
 	gridSize getGridHeight () const;
 
+	bool isUnderWater () const;
+
 	void setGridDimensions (gridSize gridWidth, gridSize gridHeight, EntityAngle angle);
 
 	virtual void createBody ();

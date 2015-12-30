@@ -9,10 +9,12 @@
 #include "common/DateUtil.h"
 #include "common/Singleton.h"
 #include "game/GameRegistry.h"
+#include "ui/BitmapFont.h"
 #include "common/Commands.h"
 #include "common/Application.h"
 #include <SDL_image.h>
 #include <SDL_platform.h>
+#include <SDL_assert.h>
 #include <limits.h>
 
 struct TextureData {
@@ -24,7 +26,7 @@ struct RenderTarget {
 };
 
 SDLFrontend::SDLFrontend (std::shared_ptr<IConsole> console) :
-		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _softwareRenderer(false)
+		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _softwareRenderer(false), _drawCalls(0)
 {
 	_window = nullptr;
 	_haptic = nullptr;
@@ -61,13 +63,13 @@ void SDLFrontend::onForeground ()
 
 void SDLFrontend::onJoystickDeviceRemoved (int32_t device)
 {
-	Log::info(LOG_CLIENT, "joystick removed");
+	Log::info(LOG_GFX, "joystick removed");
 	initJoystickAndHaptic();
 }
 
 void SDLFrontend::onJoystickDeviceAdded (int32_t device)
 {
-	Log::info(LOG_CLIENT, "joystick added");
+	Log::info(LOG_GFX, "joystick added");
 	initJoystickAndHaptic();
 }
 
@@ -88,7 +90,12 @@ void SDLFrontend::setWindowTitle (const std::string& title)
 
 void SDLFrontend::setVSync (bool vsync)
 {
-	SDL_GL_SetSwapInterval(ConfigManager::get().isVSync() ? 1 : 0);
+	static bool lastState = !vsync;
+	if (lastState == vsync)
+		return;
+	lastState = vsync;
+	if (SDL_GL_SetSwapInterval(vsync ? 1 : 0) == -1)
+		SDL_ClearError();
 }
 
 void SDLFrontend::update (uint32_t deltaTime)
@@ -102,17 +109,12 @@ void SDLFrontend::update (uint32_t deltaTime)
 	++_numFrames;
 	_time += deltaTime;
 
-	if (((_time - _timeBase) > 500 || _numFrames == 0) && Config.showFPS()) {
-		setVSync(ConfigManager::get().isVSync());
-		const double fps = _numFrames * 1000.0f / (_time - _timeBase);
-		setWindowTitle(Singleton<Application>::getInstance().getName() + " (" + string::toString((int) fps) + ")");
-		_timeBase = _time;
-		_numFrames = 0;
-	}
-
 	_console->update(deltaTime);
 	UI::get().update(deltaTime);
 	SoundControl.update(deltaTime);
+
+	const bool vsync = ConfigManager::get().isVSync();
+	setVSync(vsync);
 }
 
 bool SDLFrontend::setFrameCallback (int interval, void (*callback) (void*), void *callbackParam)
@@ -135,7 +137,7 @@ void SDLFrontend::onMapLoaded ()
 
 void SDLFrontend::onStart ()
 {
-	Log::info(LOG_CLIENT, "sdl frontend is starting");
+	Log::info(LOG_GFX, "sdl frontend is starting");
 	UI::get().initStack();
 }
 
@@ -189,7 +191,7 @@ void SDLFrontend::getTrimmed (const Texture* texture, int& x, int& y, int& w, in
 
 void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	if (texture == nullptr || !texture->isValid())
 		return;
@@ -209,19 +211,20 @@ void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	}
 	if (SDL_RenderCopyEx(_renderer, t, &srcRect, &destRect, static_cast<double>(angle), nullptr,
 			texture->isMirror() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) != 0) {
-		Log::error(LOG_CLIENT, "could not render texture %s", texture->getName().c_str());
+		Log::error(LOG_GFX, "could not render texture %s", texture->getName().c_str());
 		texture->setData(nullptr);
 	}
+	++_drawCalls;
 }
 
 bool SDLFrontend::loadTexture (Texture *texture, const std::string& filename)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
-	const std::string file = FS.getFile(FS.getPicsDir() + filename + ".png")->getName();
+	const std::string file = FS.getFileFromURL("pics://" + filename + ".png")->getName();
 	SDL_RWops *src = FS.createRWops(file);
 	if (src == nullptr) {
-		Log::error(LOG_CLIENT, "could not load the file: %s", file.c_str());
+		Log::error(LOG_GFX, "could not load the file: %s", file.c_str());
 		return false;
 	}
 	SDL_Texture *sdltexture = IMG_LoadTexture_RW(_renderer, src, 1);
@@ -249,7 +252,7 @@ void SDLFrontend::setColor (const Color& rgba)
 
 void SDLFrontend::setSDLColor (const Color& rgba)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	const Uint8 r = rgba[0] * 255.0f;
 	const Uint8 g = rgba[1] * 255.0f;
@@ -262,14 +265,14 @@ void SDLFrontend::setSDLColor (const Color& rgba)
 void SDLFrontend::bindTexture (Texture* texture, int textureUnit)
 {
 	if (textureUnit != 0)
-		Log::error(LOG_CLIENT, "only one texture unit is supported in the sdl frontend");
+		Log::error(LOG_GFX, "only one texture unit is supported in the sdl frontend");
 	SDL_Texture *sdltexture = reinterpret_cast<SDL_Texture *>(texture->getData());
 	SDL_GL_BindTexture(sdltexture, nullptr, nullptr);
 }
 
 void SDLFrontend::renderRect (int x, int y, int w, int h, const Color& color)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	if (w <= 0)
 		w = getWidth();
@@ -279,11 +282,12 @@ void SDLFrontend::renderRect (int x, int y, int w, int h, const Color& color)
 	setSDLColor(color);
 	if (SDL_RenderDrawRect(_renderer, &r) == -1)
 		sdlCheckError();
+	++_drawCalls;
 }
 
 void SDLFrontend::renderFilledRect (int x, int y, int w, int h, const Color& fillColor)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	if (w <= 0)
 		w = getWidth();
@@ -293,15 +297,17 @@ void SDLFrontend::renderFilledRect (int x, int y, int w, int h, const Color& fil
 	setSDLColor(fillColor);
 	if (SDL_RenderFillRect(_renderer, &r) == -1)
 		sdlCheckError();
+	++_drawCalls;
 }
 
 void SDLFrontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	setSDLColor(color);
 	if (SDL_RenderDrawLine(_renderer, x1, y1, x2, y2) == -1)
 		sdlCheckError();
+	++_drawCalls;
 }
 
 void SDLFrontend::renderLineWithTexture (int x1, int y1, int x2, int y2, Texture* texture)
@@ -312,22 +318,23 @@ void SDLFrontend::renderLineWithTexture (int x1, int y1, int x2, int y2, Texture
 
 void SDLFrontend::updateViewport (int x, int y, int width, int height)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	SDL_RenderSetLogicalSize(_renderer, getWidth(), getHeight());
+	SDL_DestroyTexture(_renderToTexture);
 	_renderToTexture = SDL_CreateTexture(_renderer, getDisplayFormat(), SDL_TEXTUREACCESS_TARGET, getWidth(), getHeight());
 }
 
 void SDLFrontend::enableScissor (int x, int y, int width, int height)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 	const SDL_Rect rect = {x, y, width, height};
 	SDL_RenderSetClipRect(_renderer, &rect);
 }
 
 void SDLFrontend::disableScissor ()
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 	SDL_RenderSetClipRect(_renderer, nullptr);
 }
 
@@ -344,7 +351,7 @@ void SDLFrontend::destroyTexture (TextureData *data)
 
 uint32_t SDLFrontend::getDisplayFormat () const
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	SDL_RendererInfo info;
 	SDL_GetRendererInfo(_renderer, &info);
@@ -360,7 +367,8 @@ uint32_t SDLFrontend::getDisplayFormat () const
 
 void SDLFrontend::renderBegin ()
 {
-	assert(_renderer);
+	_drawCalls = 0;
+	SDL_assert(_renderer);
 
 	resetColor();
 	SDL_ClearError();
@@ -371,7 +379,7 @@ void SDLFrontend::renderBegin ()
 
 void SDLFrontend::renderEnd ()
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 	SDL_RenderPresent(_renderer);
 }
 
@@ -393,6 +401,7 @@ bool SDLFrontend::renderTarget (RenderTarget* target)
 {
 	disableRenderTarget(target);
 	SDL_RenderCopy(_renderer, _renderToTexture, nullptr, nullptr);
+	++_drawCalls;
 	return true;
 }
 
@@ -401,12 +410,32 @@ void SDLFrontend::render ()
 	renderBegin();
 	UI::get().render();
 	_console->render();
+
+	static std::string fpsStr;
+	const bool showFps = Config.showFPS();
+	static int lastDrawCalls = _drawCalls;
+	const uint32_t lastFpsTime = _time - _timeBase;
+	if (lastFpsTime > 1000 && showFps) {
+		const bool vsync = ConfigManager::get().isVSync();
+		const double fps = _numFrames * 1000.0f / lastFpsTime;
+		static ConfigVar* fpsLimit = Config.getConfigVar("fpslimit").get();
+		static ConfigVar* frontend = Config.getConfigVar("frontend").get();
+		fpsStr = string::format("%.2f (vsync: %s, %s %i, frontend: %s, drawcalls: %i)", fps, vsync ? "true" : "false",
+				fpsLimit->getName().c_str(), fpsLimit->getIntValue(), frontend->getValue().c_str(), lastDrawCalls);
+		_timeBase = _time - (lastFpsTime - 1000);
+		_numFrames = 0;
+	}
+	if (showFps) {
+		UI::get().getFont()->print(fpsStr, colorWhite, 0, 0);
+	}
+
 	renderEnd();
+	lastDrawCalls = _drawCalls;
 }
 
 void SDLFrontend::makeScreenshot (const std::string& filename)
 {
-	assert(_renderer);
+	SDL_assert(_renderer);
 
 	SDL_Rect viewport;
 	int bpp;
@@ -461,12 +490,12 @@ void SDLFrontend::setFullscreen (bool fullscreen)
 
 void SDLFrontend::initUI (ServiceProvider& serviceProvider)
 {
-	Log::info(LOG_CLIENT, "init the ui");
+	Log::info(LOG_GFX, "init the ui");
 	if (_eventHandler == nullptr)
 		System.exit("No event handler given", 1);
 	UI::get().init(serviceProvider, *_eventHandler, *this);
 
-	Log::info(LOG_CLIENT, "init the console");
+	Log::info(LOG_GFX, "init the console");
 	_console->init(this);
 }
 
@@ -487,33 +516,33 @@ void SDLFrontend::initJoystickAndHaptic ()
 			name = SDL_JoystickNameForIndex(i);
 		}
 		SDL_Joystick *joystick = SDL_JoystickOpen(i);
-		Log::info(LOG_CLIENT, "found joystick %s", name ? name : "Unknown Joystick");
-		Log::info(LOG_CLIENT, "joystick axes: %i", SDL_JoystickNumAxes(joystick));
-		Log::info(LOG_CLIENT, "joystick hats: %i", SDL_JoystickNumHats(joystick));
-		Log::info(LOG_CLIENT, "joystick balls: %i", SDL_JoystickNumBalls(joystick));
-		Log::info(LOG_CLIENT, "joystick buttons: %i", SDL_JoystickNumButtons(joystick));
+		Log::info(LOG_GFX, "found joystick %s", name ? name : "Unknown Joystick");
+		Log::info(LOG_GFX, "joystick axes: %i", SDL_JoystickNumAxes(joystick));
+		Log::info(LOG_GFX, "joystick hats: %i", SDL_JoystickNumHats(joystick));
+		Log::info(LOG_GFX, "joystick balls: %i", SDL_JoystickNumBalls(joystick));
+		Log::info(LOG_GFX, "joystick buttons: %i", SDL_JoystickNumButtons(joystick));
 		if (haptic == nullptr)
 			haptic = SDL_HapticOpenFromJoystick(joystick);
 	}
 	if (!joysticks) {
-		Log::info(LOG_CLIENT, "no joysticks found");
+		Log::info(LOG_GFX, "no joysticks found");
 	}
 
-	Log::info(LOG_CLIENT, "found %i touch device(s)", SDL_GetNumTouchDevices());
+	Log::info(LOG_GFX, "found %i touch device(s)", SDL_GetNumTouchDevices());
 
-	Log::info(LOG_CLIENT, "%i haptic devices", SDL_NumHaptics());
+	Log::info(LOG_GFX, "%i haptic devices", SDL_NumHaptics());
 	if (haptic == nullptr && SDL_MouseIsHaptic()) {
 		haptic = SDL_HapticOpenFromMouse();
 	}
 	if (haptic != nullptr) {
 		const bool rumbleSupported = SDL_HapticRumbleSupported(haptic) && SDL_HapticRumbleInit(haptic) == 0;
 		if (rumbleSupported) {
-			Log::info(LOG_CLIENT, "rumble support");
+			Log::info(LOG_GFX, "rumble support");
 			_haptic = haptic;
 		}
 	}
 	if (_haptic == nullptr) {
-		Log::info(LOG_CLIENT, "no rumble support");
+		Log::info(LOG_GFX, "no rumble support");
 	}
 }
 
@@ -522,7 +551,7 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	if (width == -1 && height == -1)
 		fullscreen = true;
 
-	Log::info(LOG_CLIENT, "initializing: %i:%i - fullscreen: %s", width, height, fullscreen ? "true" : "false");
+	Log::info(LOG_GFX, "initializing: %i:%i - fullscreen: %s", width, height, fullscreen ? "true" : "false");
 
 	INIT_Subsystem(SDL_INIT_VIDEO, true);
 
@@ -535,7 +564,7 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	SDL_DisplayMode displayMode;
 	SDL_GetDesktopDisplayMode(0, &displayMode);
 	const char *name = SDL_GetPixelFormatName(displayMode.format);
-	Log::info(LOG_CLIENT, "current desktop mode: %dx%d@%dHz (%s)",
+	Log::info(LOG_GFX, "current desktop mode: %dx%d@%dHz (%s)",
 			displayMode.w, displayMode.h, displayMode.refresh_rate, name);
 	if (width == -1)
 		width = displayMode.w;
@@ -548,7 +577,7 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	int doubleBuffered = 0;
 	SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &doubleBuffered);
 
-	Log::info(LOG_CLIENT, "doublebuffer: %s", doubleBuffered ? "activated" : "disabled");
+	Log::info(LOG_GFX, "doublebuffer: %s", doubleBuffered ? "activated" : "disabled");
 
 	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 #ifdef __IPHONEOS__
@@ -566,19 +595,20 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 
 	const int videoDrivers = SDL_GetNumVideoDrivers();
 	for (int i = 0; i < videoDrivers; ++i) {
-		Log::info(LOG_CLIENT, "available driver: %s", SDL_GetVideoDriver(i));
+		Log::info(LOG_GFX, "available driver: %s", SDL_GetVideoDriver(i));
 	}
 
-	Log::info(LOG_CLIENT, "driver: %s", SDL_GetCurrentVideoDriver());
+	Log::info(LOG_GFX, "driver: %s", SDL_GetCurrentVideoDriver());
 	const int displays = SDL_GetNumVideoDisplays();
-	Log::info(LOG_CLIENT, "found %i display(s)", displays);
+	Log::info(LOG_GFX, "found %i display(s)", displays);
 	if (fullscreen && displays > 1) {
 		width = displayMode.w;
 		height = displayMode.h;
-		Log::info(LOG_CLIENT, "use fake fullscreen for the first display: %i:%i", width, height);
+		Log::info(LOG_GFX, "use fake fullscreen for the first display: %i:%i", width, height);
 	}
 
-	_window = SDL_CreateWindow(Singleton<Application>::getInstance().getName().c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
+	const char *title = Singleton<Application>::getInstance().getName().c_str();
+	_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
 	if (!_window) {
 		sdlCheckError();
 		return -1;
@@ -598,21 +628,21 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 
 	int screen = 0;
 	int modes = SDL_GetNumDisplayModes(screen);
-	Log::info(LOG_CLIENT, "possible display modes:");
+	Log::info(LOG_GFX, "possible display modes:");
 	for (int i = 0; i < modes; i++) {
 		SDL_GetDisplayMode(screen, i, &displayMode);
 		name = SDL_GetPixelFormatName(displayMode.format);
-		Log::info(LOG_CLIENT, "%dx%d@%dHz %s", displayMode.w, displayMode.h, displayMode.refresh_rate, name);
+		Log::info(LOG_GFX, "%dx%d@%dHz %s", displayMode.w, displayMode.h, displayMode.refresh_rate, name);
 	}
 
 	// some platforms may override or hardcode the resolution - so
-	// we have to query it here to get the actual resolution
+	// we have to query it here to get the resolution
 	SDL_GetWindowSize(_window, &width, &height);
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) == -1)
-		Log::error(LOG_CLIENT, "no relative mouse mode support");
+		Log::error(LOG_GFX, "no relative mouse mode support");
 
 	SDL_ShowCursor(0);
-	Log::info(LOG_CLIENT, "actual resolution: %dx%d", width, height);
+	Log::info(LOG_GFX, "resolution: %dx%d", width, height);
 	setVSync(ConfigManager::get().isVSync());
 
 	const int initState = IMG_Init(IMG_INIT_PNG);
@@ -632,9 +662,9 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	_eventHandler->registerObserver(this);
 
 	if (!Config.isSoundEnabled()) {
-		Log::info(LOG_CLIENT, "sound disabled");
+		Log::info(LOG_GFX, "sound disabled");
 	} else if (!SoundControl.init(true)) {
-		Log::error(LOG_CLIENT, "sound initialization failed");
+		Log::error(LOG_GFX, "sound initialization failed");
 	}
 
 	return 0;
@@ -649,35 +679,40 @@ void SDLFrontend::toggleGrabMouse () {
 #endif
 	SDL_SetWindowGrab(_window, grabMouse ? SDL_FALSE : SDL_TRUE);
 	if (grabMouse)
-		Log::info(LOG_CLIENT, "Mouse grab is now deactivated");
+		Log::info(LOG_GFX, "Mouse grab is now deactivated");
 	else
-		Log::info(LOG_CLIENT, "Mouse grab is now activated");
+		Log::info(LOG_GFX, "Mouse grab is now activated");
 	Config.setGrabMouse(!grabMouse);
 }
 
 void SDLFrontend::initRenderer ()
 {
-	Log::info(LOG_CLIENT, "init sdl renderer");
+	Log::info(LOG_GFX, "init sdl renderer");
 	const int renderers = SDL_GetNumRenderDrivers();
 	SDL_RendererInfo ri;
 	for (int i = 0; i < renderers; i++) {
 		SDL_GetRenderDriverInfo(i, &ri);
-		Log::info(LOG_CLIENT, "available renderer %s", ri.name);
+		Log::info(LOG_GFX, "available renderer %s", ri.name);
 	}
 
-#if defined(SDL_VIDEO_OPENGL_ES2)
+#if defined(SDL_VIDEO_RENDER_D3D)
+	const std::string rendererStr = "direct3d";
+#elif defined(SDL_VIDEO_RENDER_D3D11)
+	const std::string rendererStr = "direct3d11";
+#elif defined(SDL_VIDEO_OPENGL_ES2)
 	const std::string rendererStr = "opengles2";
 #elif defined(SDL_VIDEO_OPENGL_ES)
 	const std::string rendererStr = "opengles";
 #elif defined(SDL_VIDEO_OPENGL)
 	const std::string rendererStr = "opengl";
 #else
-#error "No supported renderer found"
+	Log::info(LOG_GFX, "compiled without hardware accelerated renderers");
+	const std::string rendererStr = "software";
 #endif
 
 	const ConfigVarPtr& renderer = Config.getConfigVar("renderer", rendererStr, true);
 	const std::string& rendererValue = renderer->getValue();
-	Log::info(LOG_CLIENT, "try sdl renderer: %s", rendererValue.c_str());
+	Log::info(LOG_GFX, "try sdl renderer: %s", rendererValue.c_str());
 	SDL_SetHint(SDL_HINT_RENDER_DRIVER, rendererValue.c_str());
 	_renderer = SDL_CreateRenderer(_window, -1, 0);
 	SDL_GetRendererInfo(_renderer, &ri);
@@ -686,8 +721,8 @@ void SDLFrontend::initRenderer ()
 
 	_softwareRenderer = (ri.flags & SDL_RENDERER_SOFTWARE);
 
-	Log::info(LOG_CLIENT, "actual renderer %s", ri.name);
-	Log::info(LOG_CLIENT, "max texture resolution: %i:%i", ri.max_texture_width, ri.max_texture_height);
+	Log::info(LOG_GFX, "got renderer: %s", ri.name);
+	Log::info(LOG_GFX, "max texture resolution: %i:%i", ri.max_texture_width, ri.max_texture_height);
 	SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
 }
@@ -703,21 +738,16 @@ void SDLFrontend::setGLAttributes ()
 	sdlCheckError();
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
 	sdlCheckError();
-#ifdef __ANDROID__
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 6);
+	const int r = Config.getConfigVar("red")->getIntValue();
+	const int g = Config.getConfigVar("green")->getIntValue();
+	const int b = Config.getConfigVar("blue")->getIntValue();
+	Log::info(LOG_GFX, "r: %i, g: %i, b: %i", r, g, b);
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, r);
 	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, g);
 	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 6);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, b);
 	sdlCheckError();
-#else
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-	sdlCheckError();
-#endif
 #ifdef __IPHONEOS__
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	sdlCheckError();
@@ -762,6 +792,39 @@ int SDLFrontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& colo
 {
 	if (!vx || !vy || n < 3)
 		return -1;
+
+	if (n == 4) {
+		int xEqual = 0;
+		int yEqual = 0;
+		int minx = 10000000;
+		int miny = 10000000;
+		int maxx = 0;
+		int maxy = 0;
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				if (i == j)
+					continue;
+				if (vx[i] == vx[j]) {
+					++xEqual;
+				}
+				if (vy[i] == vy[j]) {
+					++yEqual;
+				}
+				minx = std::min(minx, vx[i]);
+				maxx = std::max(maxx, vx[i]);
+				miny = std::min(miny, vy[i]);
+				maxy = std::max(maxy, vy[i]);
+			}
+		}
+		if (xEqual == 2 && yEqual == 2) {
+			const int w = maxx - minx;
+			const int h = maxy - miny;
+			renderFilledRect(minx, miny, w, h, color);
+			return 0;
+		}
+	}
+
+	setSDLColor(color);
 
 	std::unique_ptr<int[]> ints(new int[n]);
 	int miny = vy[0];
@@ -813,6 +876,7 @@ int SDLFrontend::renderFilledPolygon (int *vx, int *vy, int n, const Color& colo
 			const int end = ints[i + 1];
 
 			result |= SDL_RenderDrawLine(_renderer, start, y, end, y);
+			++_drawCalls;
 		}
 	}
 	return result;
@@ -823,6 +887,8 @@ int SDLFrontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
 	if (n < 3 || vx == nullptr || vy == nullptr)
 		return -1;
 
+	setSDLColor(color);
+
 	int result = 0;
 	for (int i = 0; i < n; i++) {
 		if (i == 0) {
@@ -832,6 +898,7 @@ int SDLFrontend::renderPolygon (int *vx, int *vy, int n, const Color& color)
 			result |= SDL_RenderDrawLine(_renderer, vx[i], vy[i], vx[i - 1],
 					vy[i - 1]);
 		}
+		++_drawCalls;
 	}
 
 	return result;

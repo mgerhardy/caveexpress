@@ -14,6 +14,7 @@ struct EntityTypeWrapper {
 
 class IUINodeEntitySelector: public UINodeSelector<EntityTypeWrapper> {
 private:
+	typedef UINodeSelector<EntityTypeWrapper> Super;
 	const ThemeType* _theme;
 
 	void addEntity (const EntityType& type, const ThemeType& theme);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ui/nodes/UINode.h"
+#include "common/ICommand.h"
 #include "client/ClientMap.h"
 #include "campaign/CampaignManager.h"
 #include <string>
@@ -22,6 +23,8 @@ protected:
 	std::vector<std::string> _players;
 	std::string _title;
 
+	void move(const ICommand::Args& args, Direction dir);
+
 	void onCampaignUnlock (Campaign* oldCampaign, Campaign* newCampaign) override;
 public:
 	IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map);
@@ -36,6 +39,8 @@ public:
 	void render (int x, int y) const override;
 	bool onPush () override;
 	bool onPop () override;
+	virtual void onWindowResize () override;
+	bool isActive() const override;
 
 	bool initWaitingForPlayer ();
 

@@ -6,11 +6,11 @@
 # define VER_FILEVERSION_STR ""
 #endif
 
-1 RT_MANIFEST DISCARDABLE "contrib/installer/windows/exe.manifest"
-1 ICON DISCARDABLE "contrib/icon.ico"
+1 RT_MANIFEST DISCARDABLE "@ROOT_DIR@/contrib/installer/windows/exe.manifest"
+1 ICON DISCARDABLE "@ROOT_DIR@/contrib/@APP@-icon.ico"
 
 #define ID_GDF_XML __GDF_XML
-ID_GDF_XML DATA "contrib/installer/windows/gameexplorer.xml"
+ID_GDF_XML DATA "@GAMEEXPLORER_XML@"
 
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION 1,6,0,0
@@ -36,7 +36,7 @@ BEGIN
 			VALUE "FileVersion", VER_FILEVERSION_STR
 			VALUE "InternalName", "@APPNAME@"
 			VALUE "LegalCopyright", "Copyright (C) 2013-2015"
-			VALUE "OriginalFilename", "@APPNAME@.exe"
+			VALUE "OriginalFilename", "@APP@.exe"
 			VALUE "ProductName", "@APPNAME@ @VERSION@ @VERSION_CODE@"
 			VALUE "ProductVersion", "@VERSION@"
 			VALUE "SpecialBuild", VER_SPECIAL_STR

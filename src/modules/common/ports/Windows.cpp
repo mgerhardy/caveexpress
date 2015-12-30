@@ -83,8 +83,7 @@ std::string Windows::getCurrentWorkingDir ()
 
 std::string Windows::normalizePath (const std::string& path)
 {
-	String tmp = path;
-	return tmp.toLower().replaceAll("\\", "/");
+	return string::replaceAll(string::toLower(path), "\\", "/");
 }
 
 std::string Windows::getDatabaseDirectory ()
@@ -102,19 +101,19 @@ std::string Windows::getHomeDirectory ()
 
 	shfolder = LoadLibrary("shfolder.dll");
 	if (shfolder == nullptr) {
-		Log::error(LOG_SYSTEM, "Unable to load SHFolder.dll");
+		Log::error(LOG_COMMON, "Unable to load SHFolder.dll");
 		return "";
 	}
 
 	GetFolderPath_t getFolderPath = (GetFolderPath_t) GetProcAddress(shfolder, "SHGetFolderPathA");
 	if (getFolderPath == nullptr) {
-		Log::error(LOG_SYSTEM, "Unable to find SHGetFolderPathA in SHFolder.dll");
+		Log::error(LOG_COMMON, "Unable to find SHGetFolderPathA in SHFolder.dll");
 		FreeLibrary(shfolder);
 		return "";
 	}
 
 	if (!SUCCEEDED(getFolderPath(nullptr, CSIDL_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, pathBuf))) {
-		Log::error(LOG_SYSTEM, "Unable to detect CSIDL_APPDATA");
+		Log::error(LOG_COMMON, "Unable to detect CSIDL_APPDATA");
 		FreeLibrary(shfolder);
 		return "";
 	}
@@ -123,7 +122,7 @@ std::string Windows::getHomeDirectory ()
 	FreeLibrary(shfolder);
 
 	if (!mkdir(path)) {
-		Log::error(LOG_SYSTEM, String::format("Unable to create directory \"%s\"", path.c_str()));
+		Log::error(LOG_COMMON, "Unable to create directory \"%s\"", path.c_str());
 		return "";
 	}
 	return path;
@@ -173,10 +172,10 @@ DirectoryEntries Windows::listDirectory (const std::string& basedir, const std::
 void Windows::exit (const std::string& reason, int errorCode)
 {
 	if (errorCode != 0) {
-		logError(reason);
+		Log::error(LOG_COMMON, "%s", reason.c_str());
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", reason.c_str(), nullptr);
 	} else {
-		logOutput(reason);
+		Log::info(LOG_COMMON, "%s", reason.c_str());
 	}
 	ExitProcess(errorCode);
 }
@@ -200,10 +199,13 @@ int Windows::exec (const std::string& command, std::vector<std::string>& argumen
 	STARTUPINFO startupInfo;
 	PROCESS_INFORMATION processInfo;
 
-	if (!CreateProcess(nullptr, (LPSTR) cmd.c_str(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, NULL, nullptr,
+	char* commandPtr = SDL_strdup(cmd.c_str());
+	if (!CreateProcess(nullptr, (LPSTR) commandPtr, nullptr, nullptr, FALSE, CREATE_NO_WINDOW, NULL, nullptr,
 			&startupInfo, &processInfo)) {
+		SDL_free(commandPtr);
 		return -1;
 	}
+	SDL_free(commandPtr);
 
 	WaitForSingleObject(processInfo.hProcess, INFINITE);
 
@@ -211,4 +213,9 @@ int Windows::exec (const std::string& command, std::vector<std::string>& argumen
 	CloseHandle(processInfo.hThread);
 
 	return 0;
+}
+
+std::string Windows::getRateURL (const std::string& packageName) const
+{
+	return "http://www.desura.com/games/" + Singleton<Application>::getInstance().getName();
 }
