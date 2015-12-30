@@ -699,11 +699,11 @@ void SDLFrontend::initRenderer ()
 	const std::string rendererStr = "direct3d";
 #elif defined(SDL_VIDEO_RENDER_D3D11)
 	const std::string rendererStr = "direct3d11";
-#elif defined(SDL_VIDEO_OPENGL)
+#elif defined(SDL_VIDEO_RENDER_OGL)
 	const std::string rendererStr = "opengl";
-#elif defined(SDL_VIDEO_OPENGL_ES2)
+#elif defined(SDL_VIDEO_RENDER_OGL_ES2)
 	const std::string rendererStr = "opengles2";
-#elif defined(SDL_VIDEO_OPENGL_ES)
+#elif defined(SDL_VIDEO_RENDER_OGL_ES)
 	const std::string rendererStr = "opengles";
 #else
 	Log::info(LOG_GFX, "compiled without hardware accelerated renderers");
