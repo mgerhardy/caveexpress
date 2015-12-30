@@ -72,7 +72,7 @@ void UIWindow::onActive ()
 		const bool alreadyRated = Config.getConfigVar("alreadyrated")->getBoolValue();
 		const int launchCount = Config.getConfigVar("launchcount")->getIntValue();
 		if (!alreadyRated && (launchCount % 3) == 0) {
-			Log::error(LOG_UI, "please rate the app popup (launches: %i)", launchCount);
+			Log::info(LOG_UI, "please rate the app popup (launches: %i)", launchCount);
 			UIPopupCallbackPtr c(new RatePopupCallback(_frontend));
 			UI::get().popup(tr("Please rate the app"), UIPOPUP_OK | UIPOPUP_CANCEL | UIPOPUP_LATER | UIPOPUP_NOCLOSE, c);
 		}
