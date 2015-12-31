@@ -109,6 +109,8 @@ private:
 
 	SDL_threadID _threadId;
 
+	bool _shutdown;
+
 	UI ();
 	void pushCmd (const std::string& windowID);
 	bool loadGesture (const unsigned char* data, int length);

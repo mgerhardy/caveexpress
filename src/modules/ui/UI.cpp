@@ -35,7 +35,7 @@ static inline int coordinateScaleY(int y, float scale, IFrontend* frontend) {
 UI::UI () :
 		_serviceProvider(nullptr), _eventHandler(nullptr), _frontend(nullptr), _cursor(true), _showCursor(false), _cursorX(
 				-1), _cursorY(-1), _motionFinger(false), _restart(false), _delayedPop(false), _noPushAllowed(false), _time(0),
-				_lastJoystickMoveTime(0), _lastJoystickMovementValue(0), _rotateFonts(true)
+				_lastJoystickMoveTime(0), _lastJoystickMovementValue(0), _rotateFonts(true), _shutdown(false)
 {
 	_threadId = SDL_ThreadID();
 }
@@ -79,6 +79,7 @@ void UI::restart ()
 
 void UI::shutdown ()
 {
+	_shutdown = true;
 	System.track("step", "shutdownui");
 	// we might have temp windows on the stack
 	popMain();
@@ -104,6 +105,7 @@ void UI::shutdown ()
 	Commands.removeCommand(CMD_UI_FOCUS_PREV);
 	Commands.removeCommand(CMD_UI_EXECUTE);
 	Commands.removeCommand(CMD_UI_RESTART);
+	_shutdown = false;
 }
 
 BitmapFontPtr UI::getFont (const std::string& font) const
@@ -815,7 +817,8 @@ void UI::popMain ()
 		Log::info(LOG_UI, "pop window %s", window->getId().c_str());
 		window->onPop();
 		_stack.pop_back();
-		_stack.back()->onActive();
+		if (!_shutdown)
+			_stack.back()->onActive();
 
 		if (window->shouldDelete()) {
 			delete window;
