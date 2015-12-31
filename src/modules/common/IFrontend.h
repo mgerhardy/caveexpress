@@ -92,6 +92,7 @@ public:
 	virtual void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha) = 0;
 	virtual void renderBatches () {}
 	virtual void setCursorPosition (int x, int y) = 0;
+	virtual bool isSoftwareRenderer () const { return false; }
 	virtual void showCursor (bool show) = 0;
 	virtual bool loadTexture (Texture *texture, const std::string& filename) = 0;
 	virtual void bindTexture (Texture* texture, int textureUnit) = 0;

@@ -88,6 +88,11 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 	const int beginX = x;
 	int yShift = 0;
 
+	// would be too expensive
+	if (_frontend->isSoftwareRenderer()) {
+		rotate = false;
+	}
+
 	_frontend->setColor(color);
 	const int fontHeight = _fontDefPtr->getHeight();
 	const TextureRect sourceRect = _font->getSourceRect();

@@ -84,6 +84,7 @@ public:
 	virtual void showCursor (bool show) override;
 	virtual void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha = 1.0f) override;
 	virtual bool loadTexture (Texture *texture, const std::string& filename) override;
+	virtual bool isSoftwareRenderer () const override { return _softwareRenderer; }
 	virtual void bindTexture (Texture* texture, int textureUnit) override;
 	virtual void renderRect (int x, int y, int w, int h, const Color& color) override;
 	virtual void renderFilledRect (int x, int y, int w, int h, const Color& fillColor) override;
