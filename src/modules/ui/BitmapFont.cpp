@@ -13,6 +13,7 @@ BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr, IFrontend *frontend) :
 		SDL_assert_always(_font->isValid());
 	}
 	_fontDefPtr->updateChars(_font->getTrim().untrimmedWidth, _font->getTrim().untrimmedHeight);
+	_softwareRendering = _frontend->isSoftwareRenderer();
 }
 
 BitmapFont::~BitmapFont (void)
@@ -89,7 +90,7 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 	int yShift = 0;
 
 	// would be too expensive
-	if (_frontend->isSoftwareRenderer()) {
+	if (_softwareRendering) {
 		rotate = false;
 	}
 
