@@ -164,6 +164,13 @@ if(MSVC)
       endif()
     endforeach()
   endif()
+
+  # Make sure /RTC1 is disabled, otherwise it will use functions from the CRT
+  foreach(flag_var
+      CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
+      CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO)
+    string(REGEX REPLACE "/RTC(su|[1su])" "" ${flag_var} "${${flag_var}}")
+  endforeach(flag_var)
 endif()
 
 # Those are used for pkg-config and friends, so that the SDL2.pc, sdl2-config,
@@ -527,7 +534,6 @@ endif()
 # TODO: Can't deactivate on FreeBSD? w/o LIBC, SDL_stdinc.h can't define
 # anything.
 if(LIBC)
-  set(STDC_HEADERS 1)
   if(WINDOWS AND NOT MINGW)
     set(HAVE_LIBC TRUE)
     foreach(_HEADER stdio.h string.h ctype.h math.h)
@@ -550,6 +556,7 @@ if(LIBC)
     endif()
     set(HAVE_M_PI 1)
     add_definitions(-D_USE_MATH_DEFINES) # needed for M_PI
+    set(STDC_HEADERS 1)
   else()
     set(HAVE_LIBC TRUE)
     check_include_file(sys/types.h HAVE_SYS_TYPES_H)
@@ -937,6 +944,14 @@ elseif(WINDOWS)
 
   file(GLOB CORE_SOURCES ${SDL2_SOURCE_DIR}/src/core/windows/*.c)
   set(SOURCE_FILES ${SOURCE_FILES} ${CORE_SOURCES})
+
+  if(MSVC)
+    # Prevent codegen that would use the VC runtime libraries.
+    add_definitions(/GS-)
+    if(NOT ARCH_64)
+      add_definitions(/arch:SSE)
+    endif()
+  endif()
 
   # Check for DirectX
   if(DIRECTX)

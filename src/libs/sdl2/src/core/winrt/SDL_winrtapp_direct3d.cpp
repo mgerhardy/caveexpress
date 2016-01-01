@@ -220,12 +220,9 @@ WINRT_ProcessWindowSizeChange() // TODO: Pass an SDL_Window-identifying thing in
 
             const Uint32 latestFlags = WINRT_DetectWindowFlags(window);
             if (latestFlags & SDL_WINDOW_MAXIMIZED) {
-                /* SDL_SendWindowEvent, as of this writing (2015-Dec-27), *won't* actually
-                   send events if the associated flag is already set.  This is taken
-                   advantage of here.  The below call is only meant to send a
-                   window event, if and when it is needed!
-                */
                 SDL_SendWindowEvent(window, SDL_WINDOWEVENT_MAXIMIZED, 0, 0);
+            } else {
+                SDL_SendWindowEvent(window, SDL_WINDOWEVENT_RESTORED, 0, 0);
             }
 
             WINRT_UpdateWindowFlags(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -631,6 +628,15 @@ void SDL_WinRTApp::OnWindowActivated(CoreWindow^ sender, WindowActivatedEventArg
             // * FIXME: Update keyboard state
             // */
             //WIN_CheckClipboardUpdate(data->videodata);
+
+            // HACK: Resetting the mouse-cursor here seems to fix
+            // https://bugzilla.libsdl.org/show_bug.cgi?id=3217, whereby a
+            // WinRT app's mouse cursor may switch to Windows' 'wait' cursor,
+            // after a user alt-tabs back into a full-screened SDL app.
+            // This bug does not appear to reproduce 100% of the time.
+            // It may be a bug in Windows itself (v.10.0.586.36, as tested,
+            // and the most-recent as of this writing).
+            SDL_SetCursor(NULL);
         } else {
             if (SDL_GetKeyboardFocus() == window) {
                 SDL_SetKeyboardFocus(NULL);
