@@ -48,8 +48,13 @@ public:
 		else
 			Log::info(LOG_UI, "Saved the map");
 		if (_startMap) {
-			Log::info(LOG_UI, "Starting the map now: %s", _mapEditor->getName().c_str());
-			Commands.executeCommandLine(CMD_MAP_START " " + _mapEditor->getName());
+			const std::string& name = _mapEditor->getName();
+			if (name.empty()) {
+				Log::error(LOG_UI, "Failed to start a map - no name is provided");
+				return;
+			}
+			Log::info(LOG_UI, "Starting the map now: %s", name.c_str());
+			Commands.executeCommandLine(CMD_MAP_START " " + name);
 		}
 	}
 
