@@ -958,6 +958,9 @@ bool IUINodeMapEditor::save ()
 	if (_undoStates.empty())
 		return false;
 
+	if (_fileName.empty())
+		return false;
+
 	// put into the settings map
 	setMapDimensions(_mapWidth, _mapHeight);
 
