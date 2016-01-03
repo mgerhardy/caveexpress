@@ -43,10 +43,12 @@ public:
 
 	void onClick () override
 	{
-		if (!_mapEditor->save())
+		if (!_mapEditor->save()) {
 			Log::error(LOG_UI, "Failed to save the map");
-		else
-			Log::info(LOG_UI, "Saved the map");
+			return;
+		}
+
+		Log::info(LOG_UI, "Saved the map");
 		if (_startMap) {
 			const std::string& name = _mapEditor->getName();
 			if (name.empty()) {
