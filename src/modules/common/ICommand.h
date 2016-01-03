@@ -57,7 +57,10 @@ public:
 	}
 
 	void run(const Args& args) override {
-		_func(args.front());
+		std::string argument = "";
+		if (!args.empty())
+			argument = args.front();
+		_func(argument);
 	}
 
 private:
