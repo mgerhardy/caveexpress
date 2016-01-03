@@ -510,10 +510,12 @@ sprites = {
 				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
 			},
 			{
-				"smallleft", -50, 40, -30, 40, -30, 49, -50, 49,
+				-- winding order: lower left, lower right, upper left
+				"smallleft", -50, 40, -30, 40, -50, 50,
 			},
 			{
-				"smallright", 30, 40, 50, 40, 50, 49, 30, 49,
+				-- winding order: lower left, lower right, upper left
+				"smallright", 30, 40, 50, 40, 50, 50
 			},
 		},
 	},
@@ -530,10 +532,12 @@ sprites = {
 				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
 			},
 			{
-				"smallleft", -50, 40, -30, 40, -30, 50, -50, 50,
+				-- winding order: lower left, lower right, upper left
+				"smallleft", -50, 40, -30, 40, -50, 50,
 			},
 			{
-				"smallright", 30, 40, 50, 40, 50, 50, 30, 50,
+				-- winding order: lower left, lower right, upper left
+				"smallright", 30, 40, 50, 40, 50, 50
 			},
 		},
 	},
@@ -550,10 +554,12 @@ sprites = {
 				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
 			},
 			{
-				"smallleft", -50, 40, -30, 40, -30, 50, -50, 50,
+				-- winding order: lower left, lower right, upper left
+				"smallleft", -50, 40, -30, 40, -50, 50,
 			},
 			{
-				"smallright", 30, 40, 50, 40, 50, 50, 30, 50,
+				-- winding order: lower left, lower right, upper left
+				"smallright", 30, 40, 50, 40, 50, 50
 			},
 		},
 	},
@@ -929,10 +935,12 @@ sprites = {
 				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
 			},
 			{
-				"smallleft", -50, 40, -30, 40, -30, 50, -50, 50,
+				-- winding order: lower left, lower right, upper left
+				"smallleft", -50, 40, -30, 40, -50, 50,
 			},
 			{
-				"smallright", 30, 40, 50, 40, 50, 50, 30, 50,
+				-- winding order: lower left, lower right, upper left
+				"smallright", 30, 40, 50, 40, 50, 50
 			},
 		},
 	},
@@ -949,10 +957,12 @@ sprites = {
 				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
 			},
 			{
-				"smallleft", -50, 40, -30, 40, -30, 50, -50, 50,
+				-- winding order: lower left, lower right, upper left
+				"smallleft", -50, 40, -30, 40, -50, 50,
 			},
 			{
-				"smallright", 30, 40, 50, 40, 50, 50, 30, 50,
+				-- winding order: lower left, lower right, upper left
+				"smallright", 30, 40, 50, 40, 50, 50
 			},
 		},
 	},
@@ -969,10 +979,12 @@ sprites = {
 				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
 			},
 			{
-				"smallleft", -50, 40, -30, 40, -30, 50, -50, 50,
+				-- winding order: lower left, lower right, upper left
+				"smallleft", -50, 40, -30, 40, -50, 50,
 			},
 			{
-				"smallright", 30, 40, 50, 40, 50, 50, 30, 50,
+				-- winding order: lower left, lower right, upper left
+				"smallright", 30, 40, 50, 40, 50, 50
 			},
 		},
 	},
