@@ -26,4 +26,5 @@ set(CMAKE_C_FLAGS_INIT "--sysroot=${CMAKE_SYSROOT} -marm -mfloat-abi=hard")
 set(CMAKE_CXX_FLAGS_INIT "--sysroot=${CMAKE_SYSROOT} -marm -mfloat-abi=hard")
 set(ENV{PKG_CONFIG_PATH} "")
 set(ENV{PKG_CONFIG_LIBDIR} "${CMAKE_SYSROOT}/usr/lib/pkgconfig")
+add_definitions(-DSTEAMLINK)
 

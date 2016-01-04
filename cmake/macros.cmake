@@ -779,7 +779,7 @@ macro(cp_add_executable)
 	# by default, put system related files into the current binary dir on install
 	set(SHARE_DIR ".")
 	# by default, put data files into the current binary dir on install
-	set(GAMES_DIR ".")
+	set(GAMES_DIR "${_EXE_TARGET}")
 	# by default, put the binary into a subdir with the target name
 	set(BIN_DIR "${_EXE_TARGET}")
 
@@ -789,7 +789,7 @@ macro(cp_add_executable)
 	else()
 		if (LINUX AND NOT TESTS)
 			set(SHARE_DIR "share")
-			set(GAMES_DIR "${SHARE_DIR}")
+			set(GAMES_DIR "${SHARE_DIR}/${_EXE_TARGET}")
 			set(BIN_DIR "games")
 			configure_file(${ROOT_DIR}/contrib/installer/linux/editor.in ${BIN_DIR}/${_EXE_TARGET}-editor)
 			configure_file(${ROOT_DIR}/contrib/installer/linux/desktop.in ${PROJECT_BINARY_DIR}/${_EXE_TARGET}.desktop)
@@ -860,13 +860,19 @@ macro(cp_add_executable)
 		set_target_properties(${_EXE_TARGET} PROPERTIES LINK_FLAGS "--preload-file ${ROOT_DIR}/base/${_EXE_TARGET}@/ --shell-file ${CMAKE_CURRENT_BINARY_DIR}/shell.html")
 	endif()
 
+	if (STEAMLINK)
+		set(SHARE_DIR ".")
+		set(GAMES_DIR ".")
+		set(BIN_DIR ".")
+	endif()
+
 	set_target_properties(${_EXE_TARGET} PROPERTIES FOLDER ${_EXE_TARGET})
 	# install relative to /usr/<APPNAME>
 	if (NOT TESTS)
 		if (PKGDATADIR)
 			install(DIRECTORY ${ROOT_DIR}/base/${BASEDIR} DESTINATION ${PKGDATADIR} COMPONENT ${_EXE_TARGET})
 		else()
-			install(DIRECTORY ${ROOT_DIR}/base/${BASEDIR} DESTINATION ${GAMES_DIR}/${_EXE_TARGET}/base COMPONENT ${_EXE_TARGET})
+			install(DIRECTORY ${ROOT_DIR}/base/${BASEDIR} DESTINATION ${GAMES_DIR}/base COMPONENT ${_EXE_TARGET})
 		endif()
 		install(TARGETS ${_EXE_TARGET} DESTINATION ${BIN_DIR} COMPONENT ${_EXE_TARGET})
 	endif()
