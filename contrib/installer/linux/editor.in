@@ -1,3 +1,6 @@
 #!/bin/bash
-@APP@ -ui_push editor $*
+
+DIR=$(dirname $(readlink -f $0))
+cd $DIR
+./@APP@ -ui_push editor $*
 exit $?
