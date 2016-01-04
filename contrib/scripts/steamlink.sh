@@ -24,8 +24,7 @@ if [ -n "$STEAMLINK_IP" ]; then
 	echo "Copying the game over to the device"
 	echo "You might need to copy the libSDL* and libpng* stuff manually over to /home/steam/caveexpress"
 	echo "They are not on the device right now"
-	ssh root@$STEAMLINK_IP "mkdir -p /home/steam/caveexpress"
-	scp -r steamlink/* root@$STEAMLINK_IP:/home/steam/caveexpress
+	scp -r steamlink/* root@$STEAMLINK_IP:/home/steam
 	cd $DIR/../..
 	$MARVELL_SDK_PATH/scripts/create_gdbinit.sh caveexpress $STEAMLINK_IP:8080
 	armv7a-cros-linux-gnueabi-gdb
