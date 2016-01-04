@@ -1,0 +1,3 @@
+name=@APPNAME@
+icon=@APP@-icon.png
+run=@APP@
