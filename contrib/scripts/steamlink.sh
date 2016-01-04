@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -f ~/steamlink-sdk/setenv.sh ]; then
+	. ~/steamlink-sdk/setenv.sh
+fi
+
 # Sanity checks
 if [ -z "$MARVELL_SDK_PATH" ]; then
 	echo "MARVELL_SDK_PATH is not set - import setenv_external.sh of the steamlink sdk"
