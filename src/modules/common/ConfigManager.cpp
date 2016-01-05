@@ -90,7 +90,6 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	_name = getConfigVar("name", System.getCurrentUser());
 	_debugui = getConfigVar("debugui", "false");
 	_debugEntity = getConfigVar("debugentity", "false", true);
-	getConfigVar("debugui", "false", true);
 	getConfigVar("alreadyrated", "false", true);
 
 	// TODO: game specific - create in IGame
