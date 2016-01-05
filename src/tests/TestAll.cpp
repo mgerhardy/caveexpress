@@ -101,6 +101,6 @@ extern "C" int main (int argc, char **argv)
 	app.setOrganisation("caveproductions");
 	app.setName(game->getName());
 	Log::get().addConsole(&console);
-	Config.get().init(nullptr, argc, argv);
+	Config.init(nullptr, argc, argv);
 	return RUN_ALL_TESTS();
 }

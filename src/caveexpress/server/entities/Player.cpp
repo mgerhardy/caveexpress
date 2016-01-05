@@ -24,11 +24,17 @@ const float gravityScale = 0.3f;
 
 Player::Player (Map& map, ClientId clientId) :
 		IEntity(EntityTypes::PLAYER, map), _touching(nullptr), _hitpoints(
-				Config.getMaxHitpoints()), _lives(0), _collectedNPC(nullptr), _acceleration(b2Vec2_zero), _fingerAcceleration(
+				0), _lives(0), _collectedNPC(nullptr), _acceleration(b2Vec2_zero), _fingerAcceleration(
 				false), _accelerateX(0), _accelerateY(0), _clientId(clientId), _lastAccelerate(
 				0), _name(""), _lastFruitCollected(0), _fruitsCollectedInARow(
 				0), _revoluteJoint(nullptr), _crashReason(CRASH_NONE) {
 	_godMode = Config.getConfigVar("godmode");
+	_maxHitPoints = Config.getConfigVar("maxhitpoints");
+	_hitpoints = _maxHitPoints->getIntValue();
+	_fruitHitPoints = Config.getConfigVar("fruithitpoints");
+	_damageThreshold = Config.getConfigVar("damagethreshold");
+	_amountOfFruitsForANewLife = Config.getConfigVar("amountoffruitsforanewlife");
+	_fruitCollectDelayForANewLife = Config.getConfigVar("fruitcollectdelayforanewlife");
 	setAnimationType(Animations::ANIMATION_IDLE);
 	setState(PlayerState::PLAYER_IDLE);
 	memset(_collectedEntities, 0, sizeof(_collectedEntities));
@@ -98,7 +104,7 @@ void Player::setAcceleration (int dx, int dy)
 void Player::subtractHitpoints (uint16_t hitpoints)
 {
 	const int oldHitpoints = _hitpoints;
-	const int maxHitpoints = Config.getMaxHitpoints();
+	const int maxHitpoints = _maxHitPoints->getIntValue();
 	_hitpoints = clamp(_hitpoints - hitpoints, 0, maxHitpoints);
 	if (oldHitpoints != _hitpoints) {
 		GameEvent.updateHitpoints(*this);
@@ -109,7 +115,7 @@ void Player::subtractHitpoints (uint16_t hitpoints)
 void Player::addHitpoints (uint16_t hitpoints)
 {
 	const int oldHitpoints = _hitpoints;
-	const int maxHitpoints = Config.getMaxHitpoints();
+	const int maxHitpoints = _maxHitPoints->getIntValue();
 	_hitpoints = clamp(oldHitpoints + hitpoints, 0, maxHitpoints);
 	if (oldHitpoints != _hitpoints) {
 		GameEvent.updateHitpoints(*this);
@@ -324,12 +330,12 @@ void Player::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* 
 	const b2Vec2& vA = bodyA->GetLinearVelocityFromWorldPoint(point);
 	const b2Vec2& vB = bodyB->GetLinearVelocityFromWorldPoint(point);
 	const float approachVelocity = fabs(b2Dot(vB - vA, worldManifold.normal));
-	const float damageThreshold = Config.getDamageThreshold();
+	const float damageThreshold = _damageThreshold->getFloatValue();
 	if (approachVelocity <= damageThreshold)
 		return;
 
 	const float factor = approachVelocity - damageThreshold;
-	const int maxHitpoints = Config.getMaxHitpoints();
+	const int maxHitpoints = _maxHitPoints->getIntValue();
 	const int hitpointReduceAmount = maxHitpoints / 10 * (1.0f + factor);
 	subtractHitpoints(hitpointReduceAmount);
 	Log::info(LOG_GAMEIMPL, "damageThreshold: %f, approachVelocity: %f, factor: %f, hitpointReduceAmount: %i",
@@ -372,11 +378,11 @@ bool Player::collect (CollectableEntity* entity)
 
 	const EntityType & entityType = entity->getType();
 	if (EntityTypes::isFruit(entityType) || EntityTypes::isEgg(entityType)) {
-		const uint32_t fruitCollectDelayMillis = Config.getFruitCollectDelayForANewLife();
+		const uint32_t fruitCollectDelayMillis = _fruitCollectDelayForANewLife->getIntValue();
 		if (_lastFruitCollected == 0 || _time - _lastFruitCollected < fruitCollectDelayMillis) {
 			_lastFruitCollected = _time;
 			++_fruitsCollectedInARow;
-			if (++_fruitsCollectedInARow == Config.getAmountOfFruitsForANewLife()) {
+			if (++_fruitsCollectedInARow == _amountOfFruitsForANewLife->getIntValue()) {
 				_fruitsCollectedInARow = 0;
 				_lastFruitCollected = 0;
 				if (Config.isModeEasy())
@@ -389,7 +395,7 @@ bool Player::collect (CollectableEntity* entity)
 		Achievements::PICK_UP_FRUIT.unlock();
 		Achievements::COLLECT_100_FRUITS.unlock();
 		_map.sendSound(ClientIdToClientMask(getClientId()), SoundTypes::SOUND_FRUIT_COLLECTED);
-		addHitpoints(Config.getFruitHitpoints());
+		addHitpoints(_fruitHitPoints->getIntValue());
 		return true;
 	}
 

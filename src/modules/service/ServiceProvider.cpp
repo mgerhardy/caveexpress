@@ -91,7 +91,7 @@ void ServiceProvider::init (IFrontend *frontend)
 		const ExecutionTime e("loading network");
 		_loopback = new NoNetwork();
 #ifndef NONETWORK
-		if (Config.get().isNetwork())
+		if (Config.isNetwork())
 			_network = new Network();
 		else
 #endif

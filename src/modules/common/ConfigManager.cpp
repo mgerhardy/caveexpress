@@ -91,18 +91,7 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	_debugui = getConfigVar("debugui", "false");
 	_debugEntity = getConfigVar("debugentity", "false", true);
 	getConfigVar("alreadyrated", "false", true);
-
-	// TODO: game specific - create in IGame
-	_maxHitpoints = getConfigValue(_configVarMap, "maxhitpoints", "100");
-	_damageThreshold = getConfigValue(_configVarMap, "damagethreshold", "0.3");
-	_referenceTimeFactor = getConfigValue(_configVarMap, "referencetimefactor", "1.0");
-	_fruitCollectDelayForANewLife = getConfigValue(_configVarMap, "fruitcollectdelayforanewlife", "15000");
-	_amountOfFruitsForANewLife = getConfigValue(_configVarMap, "amountoffruitsforanewlife", "4");
-	_fruitHitpoints = getConfigValue(_configVarMap, "fruithitpoints", "10");
-	_npcFlyingSpeed = getConfigValue(_configVarMap, "npcflyingspeed", "4.0");
-	_waterParticle = getConfigValue(_configVarMap, "waterparticle", "false", CV_READONLY);
-	_mode = getConfigValue(_configVarMap, "mode", "");
-	// end TODO
+	_mode = getConfigValue(_configVarMap, "mode", "0");
 
 	for (KeyValueMap::iterator i = _configVarMap.begin(); i != _configVarMap.end(); ++i) {
 		getConfigVar(i->first, i->second, true);

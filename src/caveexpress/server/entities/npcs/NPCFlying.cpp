@@ -53,7 +53,7 @@ void NPCFlying::onSpawn ()
 	if (getAnimationType() != Animation::NONE)
 		return;
 
-	const float speed = Config.getNpcFlyingSpeed();
+	const float speed = Config.getConfigVar("npcflyingspeed")->getFloatValue();
 	if (getPos().x <= 0.1) {
 		_lastDirectionRight = true;
 		setFlying(Animations::ANIMATION_FLYING_RIGHT, speed);

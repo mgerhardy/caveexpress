@@ -77,69 +77,7 @@ void IUIMapWindow::initInputHudNodes()
 }
 
 void IUIMapWindow::initHudNodes()
-{
-	const float barHeight = 12.0f / _frontend->getHeight();
-	const int spriteHeight = 30;
-	const float barWidth = 102.0f / _frontend->getWidth();
-	const int spriteNodeOffset = 15;
-
-	_panel = new UINode(_frontend);
-	_panel->setId("hudpanel");
-	UIHBoxLayout* layout = new UIHBoxLayout();
-	layout->setSpacing(0.02f);
-	_panel->setLayout(layout);
-	_panel->setStandardPadding();
-	_panel->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_CENTER);
-
-	UINodePoint* _points = new UINodePoint(_frontend, 150);
-	_points->setLabel("00000");
-	_points->setId(UINODE_POINTS);
-	_panel->add(_points);
-
-	UINodeBar* _timeBar = new UINodeBar(_frontend);
-	_timeBar->setId(UINODE_SECONDS_REMAINING);
-	const Color timeBarColor = { 1.0f, 1.0f, 1.0f, 0.5f };
-	_timeBar->setSize(barWidth, barHeight);
-	_timeBar->setBarColor(timeBarColor);
-	_timeBar->setBorder(true);
-	_timeBar->setBorderColor(colorWhite);
-	_panel->add(_timeBar);
-
-	UINodeBar* _hitpointsBar = new UINodeBar(_frontend);
-	_hitpointsBar->setId(UINODE_HITPOINTS);
-	const int maxHitpoints = Config.getMaxHitpoints();
-	_hitpointsBar->setMax(maxHitpoints);
-	_hitpointsBar->setSize(barWidth, barHeight);
-	_hitpointsBar->setBorder(true);
-	_hitpointsBar->setBorderColor(colorWhite);
-	// TODO: wind indicator
-
-	_panel->add(_hitpointsBar);
-
-	UINodeSprite* _livesSprite = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
-	_livesSprite->setId(UINODE_LIVES);
-	_livesSprite->setSpriteOffset(spriteHeight);
-	const SpritePtr sprite = UI::get().loadSprite("icon-heart");
-	for (uint8_t i = 0; i < INITIAL_LIVES; ++i) {
-		_livesSprite->addSprite(sprite);
-	}
-	_panel->add(_livesSprite);
-
-	UINodeSprite *targetCave = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
-	targetCave->setId(UINODE_TARGETCAVEID);
-	targetCave->setImage("icon-targetcave");
-	_panel->add(targetCave);
-
-	UINodeSprite *collected = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
-	collected->setId(UINODE_COLLECTED);
-	_panel->add(collected);
-
-	UINodeSprite* _packagesSprite = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
-	_packagesSprite->setId(UINODE_PACKAGES);
-	_packagesSprite->setSpriteOffset(spriteNodeOffset);
-	_panel->add(_packagesSprite);
-
-	add(_panel);
+	{
 }
 
 void IUIMapWindow::init()

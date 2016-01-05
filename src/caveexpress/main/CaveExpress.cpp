@@ -193,7 +193,7 @@ void CaveExpress::update (uint32_t deltaTime)
 	if (isDone && !_map.isRestartInitialized()) {
 		const uint32_t playTime = _map.getTime();
 		const uint32_t referenceTime = _map.getReferenceTime();
-		const float relativeRefTime = ConfigManager::get().getReferenceTimeFactor() * referenceTime;
+		const float relativeRefTime = Config.getConfigVar("referencetimefactor")->getFloatValue() * referenceTime;
 		// this max is needed for debug reasons (if you force a map win)
 		const float time = std::max(1.0f, playTime / 1000.0f);
 		const uint32_t timeSeconds = std::max(1U, playTime / 1000U);
@@ -280,6 +280,16 @@ void CaveExpress::shutdown ()
 
 void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 {
+	// TODO: move into constants
+	Config.initOrGetConfigVar("maxhitpoints", "100");
+	Config.initOrGetConfigVar("damagethreshold", "0.3");
+	Config.initOrGetConfigVar("referencetimefactor", "1.0");
+	Config.initOrGetConfigVar("fruitcollectdelayforanewlife", "15000");
+	Config.initOrGetConfigVar("amountoffruitsforanewlife", "4");
+	Config.initOrGetConfigVar("fruithitpoints", "10");
+	Config.initOrGetConfigVar("npcflyingspeed", "4.0");
+	Config.initOrGetConfigVar("waterparticle", "false", CV_READONLY);
+
 	ClientEntityRegistry &r = Singleton<ClientEntityRegistry>::getInstance();
 	r.registerFactory(&EntityTypes::DECORATION, ClientMapTile::FACTORY);
 	r.registerFactory(&EntityTypes::SOLID, ClientMapTile::FACTORY);
@@ -324,7 +334,7 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 
 	{
 		ExecutionTime e("loading persister");
-		const ConfigVarPtr& persister = Config.get().getConfigVar("persister", "sqlite", true, CV_READONLY);
+		const ConfigVarPtr& persister = Config.getConfigVar("persister", "sqlite", true, CV_READONLY);
 		if (persister->getValue() == "nop") {
 			_persister = new NOPPersister();
 		} else if (persister->getValue() == "googleplay" && System.supportGooglePlay()) {

@@ -84,21 +84,13 @@ private:
 	ConfigVarPtr _name;
 	ConfigVarPtr _vsync;
 	ConfigVarPtr _textureSize;
-	ConfigVarPtr _referenceTimeFactor;
-	ConfigVarPtr _maxHitpoints;
-	ConfigVarPtr _damageThreshold;
-	ConfigVarPtr _fruitCollectDelayForANewLife;
-	ConfigVarPtr _amountOfFruitsForANewLife;
-	ConfigVarPtr _fruitHitpoints;
-	ConfigVarPtr _npcFlyingSpeed;
+
 	ConfigVarPtr _debugui;
-	ConfigVarPtr _mode;
 	ConfigVarPtr _serverName;
-	// server side water particles
-	ConfigVarPtr _waterParticle;
 	// client side particle amount
 	ConfigVarPtr _particles;
 	ConfigVarPtr _renderToTexture;
+	ConfigVarPtr _mode;
 
 	BindingSpace _bindingSpace;
 
@@ -159,24 +151,33 @@ public:
 	bool isNetwork () const;
 	const std::string& getTextureSize () const;
 	void setTextureSize (const std::string& textureSize) const;
-	float getReferenceTimeFactor () const;
-	int getMaxHitpoints () const;
-	float getDamageThreshold () const;
-	int getAmountOfFruitsForANewLife () const;
-	int getFruitHitpoints () const;
-	float getNpcFlyingSpeed () const;
-	int getFruitCollectDelayForANewLife () const;
-	bool useWaterParticles () const;
 	LogLevel getLogLevel() const;
+
+	inline bool isModeSelected () const {
+		return !_mode->getValue().empty();
+	}
+
+	inline bool isModeHard () const {
+		return _mode->getValue() == "hard";
+	}
+
+	inline bool isModeEasy () const {
+		return _mode->getValue() == "easy";
+	}
+
+	inline void setMode (const std::string& mode) {
+		_mode->setValue(mode);
+		_persister->save(_configVars);
+	}
 
 	int increaseCounter(const std::string& counterId);
 
-	bool isModeSelected () const;
-	bool isModeEasy () const;
-	bool isModeHard () const;
-	void setMode (const std::string& mode);
 	void setBindingsSpace (BindingSpace bindingSpace);
 	BindingSpace getBindingsSpace () const;
+
+	inline ConfigVarPtr initOrGetConfigVar (const std::string& name, const std::string& defaultValue = "", unsigned int flags = 0U) {
+		return getConfigValue(_configVarMap, name, defaultValue, flags);
+	}
 
 	inline BackendRendererData getDebugRenderer ()
 	{
@@ -375,70 +376,9 @@ inline void ConfigManager::setTextureSize (const std::string& textureSize) const
 	return _textureSize->setValue(textureSize);
 }
 
-inline float ConfigManager::getReferenceTimeFactor () const
-{
-	return _referenceTimeFactor->getFloatValue();
-}
-
-inline int ConfigManager::getMaxHitpoints () const
-{
-	return _maxHitpoints->getIntValue();
-}
-
-inline float ConfigManager::getDamageThreshold () const
-{
-	return _damageThreshold->getFloatValue();
-}
-
-inline int ConfigManager::getFruitCollectDelayForANewLife () const
-{
-	return _fruitCollectDelayForANewLife->getIntValue();
-}
-
-inline int ConfigManager::getAmountOfFruitsForANewLife () const
-{
-	return _amountOfFruitsForANewLife->getIntValue();
-}
-
-inline int ConfigManager::getFruitHitpoints () const
-{
-	return _fruitHitpoints->getIntValue();
-}
-
-inline float ConfigManager::getNpcFlyingSpeed () const
-{
-	return _npcFlyingSpeed->getFloatValue();
-}
-
-inline bool ConfigManager::isModeSelected () const
-{
-	return !_mode->getValue().empty();
-}
-
-inline bool ConfigManager::isModeHard () const
-{
-	return _mode->getValue() == "hard";
-}
-
-inline bool ConfigManager::isModeEasy () const
-{
-	return _mode->getValue() == "easy";
-}
-
-inline void ConfigManager::setMode (const std::string& mode)
-{
-	_mode->setValue(mode);
-	_persister->save(_configVars);
-}
-
 inline BindingSpace ConfigManager::getBindingsSpace () const
 {
 	return _bindingSpace;
-}
-
-inline bool ConfigManager::useWaterParticles () const
-{
-	return _waterParticle->getBoolValue();
 }
 
 inline int ConfigManager::getClientSideParticleMaxAmount () const

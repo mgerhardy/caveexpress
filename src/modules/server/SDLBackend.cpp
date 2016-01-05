@@ -187,7 +187,7 @@ bool SDLBackend::handleInit() {
 	switch (_initState) {
 	case InitState::INITSTATE_CONFIG:
 		Log::info(LOG_SERVER, "init config");
-		Config.get().init(this, _argc, _argv);
+		Config.init(this, _argc, _argv);
 		Commands.registerCommandVoid(CMD_QUIT, [] () {
 			SDL_Event event;
 			event.type = SDL_QUIT;

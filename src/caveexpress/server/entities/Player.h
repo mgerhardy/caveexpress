@@ -64,6 +64,11 @@ private:
 	std::string _name;
 
 	ConfigVarPtr _godMode;
+	ConfigVarPtr _maxHitPoints;
+	ConfigVarPtr _fruitHitPoints;
+	ConfigVarPtr _damageThreshold;
+	ConfigVarPtr _amountOfFruitsForANewLife;
+	ConfigVarPtr _fruitCollectDelayForANewLife;
 
 	uint32_t _lastFruitCollected;
 	int8_t _fruitsCollectedInARow;

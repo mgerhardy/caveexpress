@@ -15,7 +15,7 @@ Water::Water (Map& map, float waterChangeSpeed, uint32_t waterRisingDelay, uint3
 				0.0f), _waterRisingState(WATER_UNINITIALIZED), _currentHeightLevel(0.0f), _waterRisingTime(waterRisingDelay), _waterFallingTime(waterFallingDelay)
 {
 	const b2Vec2 size(0.06f, 0.06f);
-	if (Config.useWaterParticles())
+	if (Config.getConfigVar("waterparticle")->getBoolValue())
 		_waterParticle = new WorldParticle(map, WATER, 40, DENSITY_WATER / 1.05f, size, 1000);
 	else
 		_waterParticle = nullptr;

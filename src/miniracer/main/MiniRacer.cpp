@@ -159,7 +159,7 @@ void MiniRacer::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 
 	{
 		ExecutionTime e("loading persister");
-		const ConfigVarPtr& persister = Config.get().getConfigVar("persister", "sqlite", true, CV_READONLY);
+		const ConfigVarPtr& persister = Config.getConfigVar("persister", "sqlite", true, CV_READONLY);
 		if (persister->getValue() == "nop") {
 			_persister = new NOPPersister();
 		} else if (persister->getValue() == "googleplay" && System.supportGooglePlay()) {

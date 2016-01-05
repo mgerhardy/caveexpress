@@ -30,6 +30,7 @@ protected:
 	UINodeButtonText *_startButton;
 	bool _cursorActive;
 	ServiceProvider& _serviceProvider;
+	// the hud panel
 	UINode* _panel;
 	uint32_t _lastFingerPressEvent;
 

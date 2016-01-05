@@ -32,7 +32,7 @@ UIGameHelpWindow::UIGameHelpWindow (IFrontend* frontend) :
 	addStoneFlyingHelp(panel);
 	addTreeHelp(panel);
 	// TODO: invisible and update on onActive
-	if (Config.isModeEasy() && Config.getAmountOfFruitsForANewLife() > 0) {
+	if (Config.isModeEasy() && Config.getConfigVar("amountoffruitsforanewlife")->getIntValue() > 0) {
 		addLivesHelp(panel);
 	}
 
@@ -147,7 +147,7 @@ void UIGameHelpWindow::addStoneFlyingHelp (UINode *panel)
 void UIGameHelpWindow::addLivesHelp (UINode *panel)
 {
 	UINode* hbox = createHPanel();
-	const int n = Config.getAmountOfFruitsForANewLife();
+	const int n = Config.getConfigVar("amountoffruitsforanewlife")->getIntValue();
 	for (int i = 0; i < n - 1; ++i) {
 		hbox->add(createSprite(EntityTypes::APPLE));
 	}
