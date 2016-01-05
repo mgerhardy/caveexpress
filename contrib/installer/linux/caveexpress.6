@@ -19,3 +19,16 @@ rather see you extinct.
 \fB\-server\fR
 Start the server for the game (headless mode).
 
+.TP
+\fB\-set <varname> <value>\fR
+Change the value of a config variable.
+
+.SH CONFIG VARIABLES
+These variables can be modified by using the \fB\-set\fR command - or by providing default values for some of them in the config.lua file in the asset directory.
+.TP
+\fBfrontend\fR
+Change the rendering frontend that is used by the game. Possible values are: sdl, opengl and opengles2
+.TP
+\fBrenderer\fR
+If you have \fBfrontend\fR set to sdl, you can change the renderer that sdl is using. Refer to the SDL documentation for a list of valid options here.
+
