@@ -79,15 +79,6 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 #endif
 	_vsync = getConfigValue(_configVarMap, "vsync", "true");
 	_textureSize = getConfigValue(_configVarMap, "texturesize", "auto");
-	_maxHitpoints = getConfigValue(_configVarMap, "maxhitpoints", "100");
-	_damageThreshold = getConfigValue(_configVarMap, "damagethreshold", "0.3");
-	_referenceTimeFactor = getConfigValue(_configVarMap, "referencetimefactor", "1.0");
-	_fruitCollectDelayForANewLife = getConfigValue(_configVarMap, "fruitcollectdelayforanewlife", "15000");
-	_amountOfFruitsForANewLife = getConfigValue(_configVarMap, "amountoffruitsforanewlife", "4");
-	_fruitHitpoints = getConfigValue(_configVarMap, "fruithitpoints", "10");
-	_npcFlyingSpeed = getConfigValue(_configVarMap, "npcflyingspeed", "4.0");
-	_mode = getConfigValue(_configVarMap, "mode", "");
-	_waterParticle = getConfigValue(_configVarMap, "waterparticle", "false", CV_READONLY);
 	_grabMouse = getConfigValue(_configVarMap, "grabmouse", "true");
 	_soundEngine = getConfigValue(_configVarMap, "soundengine", "sdl");
 	_particles = getConfigValue(_configVarMap, "particles", "0");
@@ -97,11 +88,22 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	getConfigValue(_configVarMap, "blue", "8");
 	_serverName = getConfigVar("servername", System.getCurrentUser());
 	_name = getConfigVar("name", System.getCurrentUser());
-	_amountOfFruitsForANewLife = getConfigValue(_configVarMap, "amountoffruitsforanewlife", "4");
 	_debugui = getConfigVar("debugui", "false");
 	_debugEntity = getConfigVar("debugentity", "false", true);
 	getConfigVar("debugui", "false", true);
 	getConfigVar("alreadyrated", "false", true);
+
+	// TODO: game specific - create in IGame
+	_maxHitpoints = getConfigValue(_configVarMap, "maxhitpoints", "100");
+	_damageThreshold = getConfigValue(_configVarMap, "damagethreshold", "0.3");
+	_referenceTimeFactor = getConfigValue(_configVarMap, "referencetimefactor", "1.0");
+	_fruitCollectDelayForANewLife = getConfigValue(_configVarMap, "fruitcollectdelayforanewlife", "15000");
+	_amountOfFruitsForANewLife = getConfigValue(_configVarMap, "amountoffruitsforanewlife", "4");
+	_fruitHitpoints = getConfigValue(_configVarMap, "fruithitpoints", "10");
+	_npcFlyingSpeed = getConfigValue(_configVarMap, "npcflyingspeed", "4.0");
+	_waterParticle = getConfigValue(_configVarMap, "waterparticle", "false", CV_READONLY);
+	_mode = getConfigValue(_configVarMap, "mode", "");
+	// end TODO
 
 	for (KeyValueMap::iterator i = _configVarMap.begin(); i != _configVarMap.end(); ++i) {
 		getConfigVar(i->first, i->second, true);
