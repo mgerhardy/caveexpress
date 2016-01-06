@@ -23,12 +23,174 @@ Start the server for the game (headless mode).
 \fB\-set <varname> <value>\fR
 Change the value of a config variable.
 
+.SH CONSOLE COMMANDS
+Open the in-game console with SHIFT+ESC. Just type a config variable name there to get the current value. The console commands can also be triggered from the commandline by just putting a \fB\-\fR in front of it.
+.TP
+\fB\-loglevel <LEVEL>\fR
+Possible level values are: TRACE, DEBUG, INFO, WARN, ERROR
+
 .SH CONFIG VARIABLES
-These variables can be modified by using the \fB\-set\fR command - or by providing default values for some of them in the config.lua file in the asset directory.
+These variables can be modified by using the \fB\-set\fR command - or by providing default values for some of them in the config.lua file in the asset directory. You can override any file by putting it into the same subdir as in your installation folder into ~/.local/share/caveexpress
+.TP
+\fBalreadyrated\fR
+
+.TP
+\fBamountoffruitsforanewlife\fR
+
+.TP
+\fBblue\fR
+
+.TP
+\fBbox2d_contactimpulse\fR
+If physics debug rendering is activated, this can add more details to it
+.TP
+\fBbox2d_contactnormals\fR
+If physics debug rendering is activated, this can add more details to it
+.TP
+\fBbox2d_frictionnormals\fR
+If physics debug rendering is activated, this can add more details to it
+.TP
+\fBdamagethreshold\fR
+
+.TP
+\fBdebug\fR
+
+.TP
+\fBdebugSleep\fR
+
+.TP
+\fBdebugentity\fR
+
+.TP
+\fBdebugui\fR
+
+.TP
+\fBeditor-lastmap\fR
+
+.TP
+\fBforcefingercontrol\fR
+
+.TP
+\fBfpslimit\fR
+
 .TP
 \fBfrontend\fR
 Change the rendering frontend that is used by the game. Possible values are: sdl, opengl and opengles2
 .TP
+\fBfruitcollectdelayforanewlife\fR
+
+.TP
+\fBfruithitpoints\fR
+
+.TP
+\fBfullscreen\fR
+Set to false to start in windowed mode - also see \fBwidth\fR and \fBheight\fR vars.
+.TP
+\fBgodmode\fR
+
+.TP
+\fBgoogleplaystate\fR
+
+.TP
+\fBgrabmouse\fR
+
+.TP
+\fBgreen\fR
+
+.TP
+\fBheight\fR
+-1 will pick the desktop height
+.TP
+\fBjoystick\fR
+
+.TP
+\fBlanguage\fR
+
+.TP
+\fBlaunchcount\fR
+
+.TP
+\fBmapfinishedcounter\fR
+
+.TP
+\fBmaxhitpoints\fR
+
+.TP
+\fBmaxzoom\fR
+
+.TP
+\fBminzoom\fR
+
+.TP
+\fBmode\fR
+
+.TP
+\fBmousespeed\fR
+
+.TP
+\fBname\fR
+The user name that is used in multiplayer games
+.TP
+\fBncurses\fR
+If you start in headless mode via \fB\-server\fR you can disable the ncurses interface by setting this to false
+.TP
+\fBnetwork\fR
+
+.TP
+\fBnpcflyingspeed\fR
+
+.TP
+\fBparticles\fR
+
+.TP
+\fBpersister\fR
+
+.TP
+\fBport\fR
+
+.TP
+\fBred\fR
+
+.TP
+\fBreferencetimefactor\fR
+
+.TP
 \fBrenderer\fR
 If you have \fBfrontend\fR set to sdl, you can change the renderer that sdl is using. Refer to the SDL documentation for a list of valid options here.
+.TP
+\fBrendertotexture\fR
+
+.TP
+\fBservername\fR
+
+.TP
+\fBshowcursor\fR
+
+.TP
+\fBshowfps\fR
+
+.TP
+\fBsound\fR
+
+.TP
+\fBsoundengine\fR
+
+.TP
+\fBtestpayment\fR
+
+.TP
+\fBtestscreenpadding\fR
+
+.TP
+\fBtexturesize\fR
+
+.TP
+\fBvsync\fR
+
+.TP
+\fBwaterparticle\fR
+
+.TP
+\fBwidth\fR
+-1 will pick the desktop width
 
