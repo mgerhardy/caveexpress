@@ -121,7 +121,7 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 				continue;
 			matches.push_back(entry.first);
 		}
-	});;
+	});
 
 	CommandSystem::get().registerCommand(CMD_LISTVARS, bindFunction(ConfigManager::listConfigVariables));
 
