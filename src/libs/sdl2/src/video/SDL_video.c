@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -684,7 +684,26 @@ SDL_GetDisplayBounds(int displayIndex, SDL_Rect * rect)
         rect->w = display->current_mode.w;
         rect->h = display->current_mode.h;
     }
-    return 0;
+    return 0;  /* !!! FIXME: should this be an error if (rect==NULL) ? */
+}
+
+int SDL_GetDisplayUsableBounds(int displayIndex, SDL_Rect * rect)
+{
+    CHECK_DISPLAY_INDEX(displayIndex, -1);
+
+    if (rect) {
+        SDL_VideoDisplay *display = &_this->displays[displayIndex];
+
+        if (_this->GetDisplayUsableBounds) {
+            if (_this->GetDisplayUsableBounds(_this, display, rect) == 0) {
+                return 0;
+            }
+        }
+
+        /* Oh well, just give the entire display bounds. */
+        return SDL_GetDisplayBounds(displayIndex, rect);
+    }
+    return 0;  /* !!! FIXME: should this be an error if (rect==NULL) ? */
 }
 
 int
@@ -1285,7 +1304,7 @@ SDL_UpdateFullscreenMode(SDL_Window * window, SDL_bool fullscreen)
 }
 
 #define CREATE_FLAGS \
-    (SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI)
+    (SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_ALWAYS_ON_TOP | SDL_WINDOW_SKIP_TASKBAR | SDL_WINDOW_POPUP_MENU | SDL_WINDOW_UTILITY | SDL_WINDOW_TOOLTIP)
 
 static void
 SDL_FinishWindowCreation(SDL_Window *window, Uint32 flags)
@@ -1323,6 +1342,11 @@ SDL_CreateWindow(const char *title, int x, int y, int w, int h, Uint32 flags)
         if (SDL_VideoInit(NULL) < 0) {
             return NULL;
         }
+    }
+
+    if ( (((flags & SDL_WINDOW_UTILITY) != 0) + ((flags & SDL_WINDOW_TOOLTIP) != 0) + ((flags & SDL_WINDOW_POPUP_MENU) != 0)) > 1 ) {
+        SDL_SetError("Conflicting window flags specified");
+        return NULL;
     }
 
     /* Some platforms can't create zero-sized windows */
@@ -1391,6 +1415,7 @@ SDL_CreateWindow(const char *title, int x, int y, int w, int h, Uint32 flags)
     }
     window->flags = ((flags & CREATE_FLAGS) | SDL_WINDOW_HIDDEN);
     window->last_fullscreen_flags = window->flags;
+    window->opacity = 1.0f;
     window->brightness = 1.0f;
     window->next = _this->windows;
     window->is_destroying = SDL_FALSE;
@@ -1451,6 +1476,7 @@ SDL_CreateWindowFrom(const void *data)
     window->flags = SDL_WINDOW_FOREIGN;
     window->last_fullscreen_flags = window->flags;
     window->is_destroying = SDL_FALSE;
+    window->opacity = 1.0f;
     window->brightness = 1.0f;
     window->next = _this->windows;
     if (_this->windows) {
@@ -1883,6 +1909,28 @@ SDL_SetWindowMinimumSize(SDL_Window * window, int min_w, int min_h)
     }
 }
 
+int
+SDL_GetWindowBordersSize(SDL_Window * window, int *top, int *left, int *bottom, int *right)
+{
+    int dummy = 0;
+
+    if (!top) { top = &dummy; }
+    if (!left) { left = &dummy; }
+    if (!right) { right = &dummy; }
+    if (!bottom) { bottom = &dummy; }
+
+    /* Always initialize, so applications don't have to care */
+    *top = *left = *bottom = *right = 0;
+
+    CHECK_WINDOW_MAGIC(window, -1);
+
+    if (!_this->GetWindowBordersSize) {
+        return SDL_Unsupported();
+    }
+
+    return _this->GetWindowBordersSize(_this, window, top, left, bottom, right);
+}
+
 void
 SDL_GetWindowMinimumSize(SDL_Window * window, int *min_w, int *min_h)
 {
@@ -2143,6 +2191,68 @@ SDL_GetWindowBrightness(SDL_Window * window)
 
     return window->brightness;
 }
+
+int
+SDL_SetWindowOpacity(SDL_Window * window, float opacity)
+{
+    int retval;
+    CHECK_WINDOW_MAGIC(window, -1);
+
+    if (!_this->SetWindowOpacity) {
+        return SDL_Unsupported();
+    }
+
+    if (opacity < 0.0f) {
+        opacity = 0.0f;
+    } else if (opacity > 1.0f) {
+        opacity = 1.0f;
+    }
+
+    retval = _this->SetWindowOpacity(_this, window, opacity);
+    if (retval == 0) {
+        window->opacity = opacity;
+    }
+
+    return retval;
+}
+
+int
+SDL_GetWindowOpacity(SDL_Window * window, float * out_opacity)
+{
+    CHECK_WINDOW_MAGIC(window, -1);
+
+    if (out_opacity) {
+        *out_opacity = window->opacity;
+    }
+
+    return 0;
+}
+
+int
+SDL_SetWindowModalFor(SDL_Window * modal_window, SDL_Window * parent_window)
+{
+    CHECK_WINDOW_MAGIC(modal_window, -1);
+    CHECK_WINDOW_MAGIC(parent_window, -1);
+
+    if (!_this->SetWindowModalFor) {
+        return SDL_Unsupported();
+    }
+    
+    return _this->SetWindowModalFor(_this, modal_window, parent_window);
+}
+
+int 
+SDL_SetWindowInputFocus(SDL_Window * window)
+{
+    CHECK_WINDOW_MAGIC(window, -1);
+
+    if (!_this->SetWindowInputFocus) {
+        return SDL_Unsupported();
+    }
+    
+    return _this->SetWindowInputFocus(_this, window);
+}
+
 
 int
 SDL_SetWindowGammaRamp(SDL_Window * window, const Uint16 * red,

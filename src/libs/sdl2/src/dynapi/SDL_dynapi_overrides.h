@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -597,3 +597,11 @@
 #define SDL_JoystickCurrentPowerLevel SDL_JoystickCurrentPowerLevel_REAL
 #define SDL_GameControllerFromInstanceID SDL_GameControllerFromInstanceID_REAL
 #define SDL_JoystickFromInstanceID SDL_JoystickFromInstanceID_REAL
+#define SDL_GetDisplayUsableBounds SDL_GetDisplayUsableBounds_REAL
+#define SDL_GetWindowBordersSize SDL_GetWindowBordersSize_REAL
+#define SDL_SetWindowOpacity SDL_SetWindowOpacity_REAL
+#define SDL_GetWindowOpacity SDL_GetWindowOpacity_REAL
+#define SDL_SetWindowInputFocus SDL_SetWindowInputFocus_REAL
+#define SDL_SetWindowModalFor SDL_SetWindowModalFor_REAL
+#define SDL_RenderSetIntegerScale SDL_RenderSetIntegerScale_REAL
+#define SDL_RenderGetIntegerScale SDL_RenderGetIntegerScale_REAL

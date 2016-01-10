@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -116,9 +116,12 @@
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 { @autoreleasepool
 {
+    SDL_VideoDevice *_this = SDL_GetVideoDevice();
     NSPasteboard *pasteboard = [sender draggingPasteboard];
     NSArray *types = [NSArray arrayWithObject:NSFilenamesPboardType];
     NSString *desiredType = [pasteboard availableTypeFromArray:types];
+    SDL_Window *sdlwindow = nil;
+
     if (desiredType == nil) {
         return NO;  /* can't accept anything that's being dropped here. */
     }
@@ -157,11 +160,22 @@
             }
         }
 
-        if (!SDL_SendDropFile([[fileURL path] UTF8String])) {
+        /* !!! FIXME: is there a better way to do this? */
+        if (_this) {
+            for (sdlwindow = _this->windows; sdlwindow; sdlwindow = sdlwindow->next) {
+                NSWindow *nswindow = ((SDL_WindowData *) sdlwindow->driverdata)->nswindow;
+                if (nswindow == self) {
+                    break;
+                }
+            }
+        }
+
+        if (!SDL_SendDropFile(sdlwindow, [[fileURL path] UTF8String])) {
             return NO;
         }
     }
 
+    SDL_SendDropComplete(sdlwindow);
     return YES;
 }}
 
@@ -196,6 +210,7 @@ ScheduleContextUpdates(SDL_WindowData *data)
     }
 }
 
+/* !!! FIXME: this should use a hint callback. */
 static int
 GetHintCtrlClickEmulateRightClick()
 {
@@ -837,6 +852,7 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
     }
 
     if ([self processHitTest:theEvent]) {
+        SDL_SendWindowEvent(_data->window, SDL_WINDOWEVENT_HIT_TEST, 0, 0);
         return;  /* dragging, drop event. */
     }
 
@@ -879,6 +895,7 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
     int button;
 
     if ([self processHitTest:theEvent]) {
+        SDL_SendWindowEvent(_data->window, SDL_WINDOWEVENT_HIT_TEST, 0, 0);
         return;  /* stopped dragging, drop event. */
     }
 
@@ -922,6 +939,7 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
     int x, y;
 
     if ([self processHitTest:theEvent]) {
+        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_HIT_TEST, 0, 0);
         return;  /* dragging, drop event. */
     }
 
@@ -1765,6 +1783,14 @@ int
 Cocoa_SetWindowHitTest(SDL_Window * window, SDL_bool enabled)
 {
     return 0;  /* just succeed, the real work is done elsewhere. */
+}
+
+int
+Cocoa_SetWindowOpacity(_THIS, SDL_Window * window, float opacity)
+{
+    SDL_WindowData *data = (SDL_WindowData *) window->driverdata;
+    [data->nswindow setAlphaValue:opacity];
+    return 0;
 }
 
 #endif /* SDL_VIDEO_DRIVER_COCOA */

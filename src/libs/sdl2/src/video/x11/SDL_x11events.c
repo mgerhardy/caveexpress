@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -117,7 +117,9 @@ static Atom X11_PickTarget(Display *disp, Atom list[], int list_count)
     int i;
     for (i=0; i < list_count && request == None; i++) {
         name = X11_XGetAtomName(disp, list[i]);
-        if (strcmp("text/uri-list", name)==0) request = list[i];
+        if ((SDL_strcmp("text/uri-list", name) == 0) || (SDL_strcmp("text/plain", name) == 0)) {
+             request = list[i];
+        }
         X11_XFree(name);
     }
     return request;
@@ -513,6 +515,23 @@ ProcessHitTest(_THIS, const SDL_WindowData *data, const XEvent *xev)
 }
 
 static void
+X11_UpdateUserTime(SDL_WindowData *data, const unsigned long latest)
+{
+    if (latest && (latest != data->user_time)) {
+        SDL_VideoData *videodata = data->videodata;
+        Display *display = videodata->display;
+        X11_XChangeProperty(display, data->xwindow, videodata->_NET_WM_USER_TIME,
+                            XA_CARDINAL, 32, PropModeReplace,
+                            (const unsigned char *) &latest, 1);
+        #if DEBUG_XEVENTS
+        printf("window %p: updating _NET_WM_USER_TIME to %lu\n", data, latest);
+        #endif
+        data->user_time = latest;
+    }
+}
+
+
+static void
 X11_DispatchEvent(_THIS)
 {
     SDL_VideoData *videodata = (SDL_VideoData *) _this->driverdata;
@@ -617,6 +636,7 @@ X11_DispatchEvent(_THIS)
 
         /* Gaining mouse coverage? */
     case EnterNotify:{
+            SDL_Mouse *mouse = SDL_GetMouse();
 #ifdef DEBUG_XEVENTS
             printf("window %p: EnterNotify! (%d,%d,%d)\n", data,
                    xevent.xcrossing.x,
@@ -629,7 +649,10 @@ X11_DispatchEvent(_THIS)
 #endif
             SDL_SetMouseFocus(data->window);
 
-            if (!SDL_GetMouse()->relative_mode) {
+            mouse->last_x = xevent.xcrossing.x;
+            mouse->last_y = xevent.xcrossing.y;
+
+            if (!mouse->relative_mode) {
                 SDL_SendMouseMotion(data->window, 0, 0, xevent.xcrossing.x, xevent.xcrossing.y);
             }
         }
@@ -773,6 +796,7 @@ X11_DispatchEvent(_THIS)
                 }
             }
 
+            X11_UpdateUserTime(data, xevent.xkey.time);
         }
         break;
 
@@ -959,6 +983,16 @@ X11_DispatchEvent(_THIS)
                 SDL_SendWindowEvent(data->window, SDL_WINDOWEVENT_CLOSE, 0, 0);
                 break;
             }
+            else if ((xevent.xclient.message_type == videodata->WM_PROTOCOLS) &&
+                (xevent.xclient.format == 32) &&
+                (xevent.xclient.data.l[0] == videodata->WM_TAKE_FOCUS)) {
+
+#ifdef DEBUG_XEVENTS
+                printf("window %p: WM_TAKE_FOCUS\n", data);
+#endif
+                SDL_SendWindowEvent(data->window, SDL_WINDOWEVENT_TAKE_FOCUS, 0, 0);
+                break;
+            }
         }
         break;
 
@@ -991,6 +1025,7 @@ X11_DispatchEvent(_THIS)
                 int button = xevent.xbutton.button;
                 if(button == Button1) {
                     if (ProcessHitTest(_this, data, &xevent)) {
+                        SDL_SendWindowEvent(data->window, SDL_WINDOWEVENT_HIT_TEST, 0, 0);
                         break;  /* don't pass this event on to app. */
                     }
                 }
@@ -1001,6 +1036,7 @@ X11_DispatchEvent(_THIS)
                 }
                 SDL_SendMouseButton(data->window, 0, SDL_PRESSED, button);
             }
+            X11_UpdateUserTime(data, xevent.xbutton.time);
         }
         break;
 
@@ -1027,7 +1063,7 @@ X11_DispatchEvent(_THIS)
 
             char *name = X11_XGetAtomName(display, xevent.xproperty.atom);
             if (name) {
-                printf("window %p: PropertyNotify: %s %s\n", data, name, (xevent.xproperty.state == PropertyDelete) ? "deleted" : "changed");
+                printf("window %p: PropertyNotify: %s %s time=%lu\n", data, name, (xevent.xproperty.state == PropertyDelete) ? "deleted" : "changed", xevent.xproperty.time);
                 X11_XFree(name);
             }
 
@@ -1094,6 +1130,17 @@ X11_DispatchEvent(_THIS)
                 X11_XFree(propdata);
             }
 #endif /* DEBUG_XEVENTS */
+
+            /* Take advantage of this moment to make sure user_time has a
+                valid timestamp from the X server, so if we later try to
+                raise/restore this window, _NET_ACTIVE_WINDOW can have a
+                non-zero timestamp, even if there's never been a mouse or
+                key press to this window so far. Note that we don't try to
+                set _NET_WM_USER_TIME here, though. That's only for legit
+                user interaction with the window. */
+            if (!data->user_time) {
+                data->user_time = xevent.xproperty.time;
+            }
 
             if (xevent.xproperty.atom == data->videodata->_NET_WM_STATE) {
                 /* Get the new state from the window manager.
@@ -1193,40 +1240,22 @@ X11_DispatchEvent(_THIS)
                 X11_ReadProperty(&p, display, data->xwindow, videodata->PRIMARY);
 
                 if (p.format == 8) {
-                    SDL_bool expect_lf = SDL_FALSE;
-                    char *start = NULL;
-                    char *scan = (char*)p.data;
-                    char *fn;
-                    char *uri;
-                    int length = 0;
-                    while (p.count--) {
-                        if (!expect_lf) {
-                            if (*scan == 0x0D) {
-                                expect_lf = SDL_TRUE;
+                    /* !!! FIXME: don't use strtok here. It's not reentrant and not in SDL_stdinc. */
+                    char* name = X11_XGetAtomName(display, target);
+                    char *token = strtok((char *) p.data, "\r\n");
+                    while (token != NULL) {
+                        if (SDL_strcmp("text/plain", name)==0) {
+                            SDL_SendDropText(data->window, token);
+                        } else if (SDL_strcmp("text/uri-list", name)==0) {
+                            char *fn = X11_URIToLocal(token);
+                            if (fn) {
+                                SDL_SendDropFile(data->window, fn);
                             }
-                            if (start == NULL) {
-                                start = scan;
-                                length = 0;
-                            }
-                            length++;
-                        } else {
-                            if (*scan == 0x0A && length > 0) {
-                                uri = SDL_malloc(length--);
-                                SDL_memcpy(uri, start, length);
-                                uri[length] = '\0';
-                                fn = X11_URIToLocal(uri);
-                                if (fn) {
-                                    SDL_SendDropFile(fn);
-                                }
-                                SDL_free(uri);
-                            }
-                            expect_lf = SDL_FALSE;
-                            start = NULL;
                         }
-                        scan++;
+                        token = strtok(NULL, "\r\n");
                     }
+                    SDL_SendDropComplete(data->window);
                 }
-
                 X11_XFree(p.data);
 
                 /* send reply */

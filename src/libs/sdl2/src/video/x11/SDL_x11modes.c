@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -342,7 +342,7 @@ SetXRandRDisplayName(Display *dpy, Atom EDID, char *name, const size_t namelen, 
         X11_XFree(props);
     }
 
-    inches = (int)((SDL_sqrt(widthmm * widthmm + heightmm * heightmm) / 25.4f) + 0.5f);
+    inches = (int)((SDL_sqrtf(widthmm * widthmm + heightmm * heightmm) / 25.4f) + 0.5f);
     if (*name && inches) {
         const size_t len = SDL_strlen(name);
         SDL_snprintf(&name[len], namelen-len, " %d\"", inches);
@@ -617,6 +617,20 @@ X11_InitModes(_THIS)
 #endif /* SDL_VIDEO_DRIVER_X11_XRANDR */
 
 /* !!! FIXME: eventually remove support for Xinerama and XVidMode (everything below here). */
+
+    /* This is a workaround for some apps (UnrealEngine4, for example) until
+       we sort out the ramifications of removing XVidMode support outright.
+       This block should be removed with the XVidMode support. */
+    {
+        const char *env = SDL_GetHint("SDL_VIDEO_X11_REQUIRE_XRANDR");
+        if (env && SDL_atoi(env)) {
+            #if SDL_VIDEO_DRIVER_X11_XRANDR
+            return SDL_SetError("XRandR support is required but not available");
+            #else
+            return SDL_SetError("XRandR support is required but not built into SDL!");
+            #endif
+        }
+    }
 
 #if SDL_VIDEO_DRIVER_X11_XINERAMA
     /* Query Xinerama extention
@@ -1057,6 +1071,43 @@ X11_GetDisplayDPI(_THIS, SDL_VideoDisplay * sdl_display, float * ddpi, float * h
     }
 
     return data->ddpi != 0.0f ? 0 : -1;
+}
+
+int
+X11_GetDisplayUsableBounds(_THIS, SDL_VideoDisplay * sdl_display, SDL_Rect * rect)
+{
+    SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
+    Display *display = data->display;
+    Atom _NET_WORKAREA;
+    int status, real_format;
+    int retval = -1;
+    Atom real_type;
+    unsigned long items_read = 0, items_left = 0;
+    unsigned char *propdata = NULL;
+
+    if (X11_GetDisplayBounds(_this, sdl_display, rect) < 0) {
+        return -1;
+    }
+
+    _NET_WORKAREA = X11_XInternAtom(display, "_NET_WORKAREA", False);
+    status = X11_XGetWindowProperty(display, DefaultRootWindow(display),
+                                    _NET_WORKAREA, 0L, 4L, False, XA_CARDINAL,
+                                    &real_type, &real_format, &items_read,
+                                    &items_left, &propdata);
+    if ((status == Success) && (items_read >= 4)) {
+        const long *p = (long*) propdata;
+        const SDL_Rect usable = { (int)p[0], (int)p[1], (int)p[2], (int)p[3] };
+        retval = 0;
+        if (!SDL_IntersectRect(rect, &usable, rect)) {
+            SDL_zerop(rect);
+        }
+    }
+
+    if (propdata) {
+        X11_XFree(propdata);
+    }
+
+    return retval;
 }
 
 #endif /* SDL_VIDEO_DRIVER_X11 */

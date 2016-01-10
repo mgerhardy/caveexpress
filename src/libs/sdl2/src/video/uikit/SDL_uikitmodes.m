@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -239,6 +239,26 @@ UIKit_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mode)
         }
     }
 
+    return 0;
+}
+
+int
+UIKit_GetDisplayUsableBounds(_THIS, SDL_VideoDisplay * display, SDL_Rect * rect)
+{
+    /* the default function iterates displays to make a fake offset,
+       as if all the displays were side-by-side, which is fine for iOS. */
+    const int displayIndex = (int) (display - _this->displays);
+    if (SDL_GetDisplayBounds(displayIndex, rect) < 0) {
+        return -1;
+    }
+
+    SDL_DisplayData *data = (__bridge SDL_DisplayData *) display->driverdata;
+    const CGRect frame = [data.uiscreen applicationFrame];
+    const float scale = (float) data.uiscreen.scale;
+    rect->x += (int) (frame.origin.x * scale);
+    rect->y += (int) (frame.origin.y * scale);
+    rect->w = (int) (frame.size.width * scale);
+    rect->h = (int) (frame.size.height * scale);
     return 0;
 }
 

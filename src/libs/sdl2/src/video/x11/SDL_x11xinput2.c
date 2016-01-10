@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -118,6 +118,8 @@ X11_InitXinput2(_THIS)
     eventmask.mask = mask;
 
     XISetMask(mask, XI_RawMotion);
+    XISetMask(mask, XI_RawButtonPress);
+    XISetMask(mask, XI_RawButtonRelease);
 
     if (X11_XISelectEvents(data->display,DefaultRootWindow(data->display),&eventmask,1) != Success) {
         return;
@@ -140,6 +142,8 @@ X11_HandleXinput2Event(SDL_VideoData *videodata,XGenericEventCookie *cookie)
             static Time prev_time = 0;
             static double prev_rel_coords[2];
 
+            videodata->global_mouse_changed = SDL_TRUE;
+
             if (!mouse->relative_mode || mouse->relative_mode_warp) {
                 return 0;
             }
@@ -158,6 +162,12 @@ X11_HandleXinput2Event(SDL_VideoData *videodata,XGenericEventCookie *cookie)
             return 1;
             }
             break;
+
+        case XI_RawButtonPress:
+        case XI_RawButtonRelease:
+            videodata->global_mouse_changed = SDL_TRUE;
+            break;
+
 #if SDL_VIDEO_DRIVER_X11_XINPUT2_SUPPORTS_MULTITOUCH
         case XI_TouchBegin: {
             const XIDeviceEvent *xev = (const XIDeviceEvent *) cookie->data;

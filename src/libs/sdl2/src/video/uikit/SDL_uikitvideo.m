@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -85,6 +85,7 @@ UIKit_CreateDevice(int devindex)
     device->SetWindowFullscreen = UIKit_SetWindowFullscreen;
     device->DestroyWindow = UIKit_DestroyWindow;
     device->GetWindowWMInfo = UIKit_GetWindowWMInfo;
+    device->GetDisplayUsableBounds = UIKit_GetDisplayUsableBounds;
 
 #if SDL_IPHONE_KEYBOARD
     device->HasScreenKeyboardSupport = UIKit_HasScreenKeyboardSupport;

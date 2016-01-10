@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -23,6 +23,7 @@
 #if SDL_VIDEO_DRIVER_WINDOWS
 
 #include "SDL_windowsvideo.h"
+#include "../../../include/SDL_assert.h"
 
 /* Windows CE compatibility */
 #ifndef CDS_FULLSCREEN
@@ -330,6 +331,43 @@ WIN_GetDisplayDPI(_THIS, SDL_VideoDisplay * display, float * ddpi, float * hdpi,
     }
 
     return data->DiagDPI != 0.0f ? 0 : -1;
+}
+
+int
+WIN_GetDisplayUsableBounds(_THIS, SDL_VideoDisplay * display, SDL_Rect * rect)
+{
+    const SDL_DisplayModeData *data = (const SDL_DisplayModeData *) display->current_mode.driverdata;
+    const DEVMODE *pDevMode = &data->DeviceMode;
+    POINT pt = {
+        /* !!! FIXME: no scale, right? */
+        (LONG) (pDevMode->dmPosition.x + (pDevMode->dmPelsWidth / 2)),
+        (LONG) (pDevMode->dmPosition.y + (pDevMode->dmPelsHeight / 2))
+    };
+    HMONITOR hmon = MonitorFromPoint(pt, MONITOR_DEFAULTTONULL);
+    MONITORINFO minfo;
+    const RECT *work;
+    BOOL rc = FALSE;
+
+    SDL_assert(hmon != NULL);
+
+    if (hmon != NULL) {
+        SDL_zero(minfo);
+        minfo.cbSize = sizeof (MONITORINFO);
+        rc = GetMonitorInfo(hmon, &minfo);
+        SDL_assert(rc);
+    }
+
+    if (!rc) {
+        return SDL_SetError("Couldn't find monitor data");
+    }
+
+    work = &minfo.rcWork;
+    rect->x = (int)SDL_ceil(work->left * data->ScaleX);
+    rect->y = (int)SDL_ceil(work->top * data->ScaleY);
+    rect->w = (int)SDL_ceil((work->right - work->left) * data->ScaleX);
+    rect->h = (int)SDL_ceil((work->bottom - work->top) * data->ScaleY);
+
+    return 0;
 }
 
 void

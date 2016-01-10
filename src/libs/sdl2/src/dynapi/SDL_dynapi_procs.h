@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -631,3 +631,11 @@ SDL_DYNAPI_PROC(int,SDL_GetDisplayDPI,(int a, float *b, float *c, float *d),(a,b
 SDL_DYNAPI_PROC(SDL_JoystickPowerLevel,SDL_JoystickCurrentPowerLevel,(SDL_Joystick *a),(a),return)
 SDL_DYNAPI_PROC(SDL_GameController*,SDL_GameControllerFromInstanceID,(SDL_JoystickID a),(a),return)
 SDL_DYNAPI_PROC(SDL_Joystick*,SDL_JoystickFromInstanceID,(SDL_JoystickID a),(a),return)
+SDL_DYNAPI_PROC(int,SDL_GetDisplayUsableBounds,(int a, SDL_Rect *b),(a,b),return)
+SDL_DYNAPI_PROC(int,SDL_GetWindowBordersSize,(SDL_Window *a, int *b, int *c, int *d, int *e),(a,b,c,d,e),return)
+SDL_DYNAPI_PROC(int,SDL_SetWindowOpacity,(SDL_Window *a, float b),(a,b),return)
+SDL_DYNAPI_PROC(int,SDL_GetWindowOpacity,(SDL_Window *a, float *b),(a,b),return)
+SDL_DYNAPI_PROC(int,SDL_SetWindowInputFocus,(SDL_Window *a),(a),return)
+SDL_DYNAPI_PROC(int,SDL_SetWindowModalFor,(SDL_Window *a, SDL_Window *b),(a,b),return)
+SDL_DYNAPI_PROC(int,SDL_RenderSetIntegerScale,(SDL_Renderer *a, SDL_bool b),(a,b),return)
+SDL_DYNAPI_PROC(SDL_bool,SDL_RenderGetIntegerScale,(SDL_Renderer *a),(a),return)
