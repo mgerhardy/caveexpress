@@ -35,7 +35,7 @@ BEGIN
 			VALUE "FileDescription", "@APPNAME@"
 			VALUE "FileVersion", VER_FILEVERSION_STR
 			VALUE "InternalName", "@APPNAME@"
-			VALUE "LegalCopyright", "Copyright (C) 2013-2015"
+			VALUE "LegalCopyright", "Copyright (C) 2013-2016"
 			VALUE "OriginalFilename", "@APP@.exe"
 			VALUE "ProductName", "@APPNAME@ @VERSION@ @VERSION_CODE@"
 			VALUE "ProductVersion", "@VERSION@"
