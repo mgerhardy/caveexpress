@@ -7,6 +7,10 @@ recordmydesktop
 * disable window decoration
 * fast subsampling
 
+Open Broadcaster Software
+============================
+* https://obsproject.com/
+
 oggcut
 ===================
 * Use oggcut (package oggvideotools on debian based systems) to cut
