@@ -545,6 +545,14 @@ void SDLFrontend::initJoystickAndHaptic ()
 	if (_haptic == nullptr) {
 		Log::info(LOG_GFX, "no rumble support");
 	}
+
+	const FilePtr& file = FS.getFile("gamecontrollerdb.txt");
+	SDL_RWops* controllerDb = FS.createRWops(file->getName());
+	if (controllerDb) {
+		SDL_GameControllerAddMappingsFromRW(controllerDb, 1);
+	} else {
+		Log::info(LOG_GAMEIMPL, "Could not update gamecontroller database. gamecontrollerdb.txt not found.");
+	}
 }
 
 int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eventHandler)
