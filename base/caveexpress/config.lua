@@ -89,10 +89,10 @@ settings = {
 
 controllerbindings = {
 	["ui"] = {
-		--A = "drop",
+		A = "ui_execute",
 		--B = "",
-		X = "ui_execute",
-		Y = "ui_focus_next",
+		--X = "",
+		Y = "ui_pop",
 		BACK = "ui_pop",
 		--GUIDE = "",
 		--START = "",
@@ -100,8 +100,8 @@ controllerbindings = {
 		--RIGHTSTICK = "",
 		--LEFTSHOULDER = "",
 		--RIGHTSHOULDER = "",
-		--DPUP = "",
-		--DPDOWN = "",
+		DPUP = "ui_focus_next",
+		DPDOWN = "ui_focus_prev",
 		--DPLEFT = "",
 		--DPRIGHT = "",
 	},

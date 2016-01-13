@@ -87,6 +87,14 @@ inline std::string toLower (const std::string& string)
 	return convert;
 }
 
+inline std::string toUpper (const std::string& string)
+{
+	std::string convert = string;
+	std::transform(convert.begin(), convert.end(), convert.begin(),
+			(int(*) (int)) std::toupper);
+	return convert;
+}
+
 inline bool startsWith (const std::string& string, const std::string& token)
 {
 	return !string.compare(0, token.size(), token);
