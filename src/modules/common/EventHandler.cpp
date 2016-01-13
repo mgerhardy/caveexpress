@@ -98,12 +98,6 @@ bool EventHandler::handleEvent (SDL_Event &event)
 	case SDL_CONTROLLERDEVICEREMOVED:
 		joystickDeviceRemoved(event.cdevice.which);
 		break;
-	case SDL_JOYDEVICEADDED:
-		joystickDeviceAdded(event.jdevice.which);
-		break;
-	case SDL_JOYDEVICEREMOVED:
-		joystickDeviceRemoved(event.jdevice.which);
-		break;
 	case SDL_DOLLARRECORD:
 		gestureRecord(event.dgesture.gestureId);
 		break;
@@ -113,8 +107,26 @@ bool EventHandler::handleEvent (SDL_Event &event)
 	case SDL_MULTIGESTURE:
 		multiGesture(event.mgesture.dTheta, event.mgesture.dDist, event.mgesture.numFingers);
 		break;
-	case SDL_JOYHATMOTION:
+	case SDL_JOYDEVICEADDED:
+		joystickDeviceAdded(event.jdevice.which);
 		break;
+	case SDL_JOYDEVICEREMOVED:
+		joystickDeviceRemoved(event.jdevice.which);
+		break;
+	case SDL_JOYHATMOTION: {
+		static const int horizontalMask = SDL_HAT_CENTERED | SDL_HAT_RIGHT | SDL_HAT_LEFT;
+		static const int negative = SDL_HAT_UP | SDL_HAT_LEFT;
+		static const int positive = SDL_HAT_DOWN | SDL_HAT_RIGHT;
+		const int hat = event.jhat.hat;
+		const bool horizontal = (hat & horizontalMask);
+		int value = 0;
+		if (hat & negative)
+			value = -1000;
+		else if (hat & positive)
+			value = 1000;
+		joystickMotion(horizontal, value);
+		break;
+	}
 	case SDL_JOYBUTTONDOWN:
 		joystickButtonPress(event.jbutton.button);
 		break;
