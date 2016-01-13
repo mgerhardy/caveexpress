@@ -551,7 +551,7 @@ void SDLFrontend::initJoystickAndHaptic ()
 	if (controllerDb) {
 		SDL_GameControllerAddMappingsFromRW(controllerDb, 1);
 	} else {
-		Log::info(LOG_GAMEIMPL, "Could not update gamecontroller database. gamecontrollerdb.txt not found.");
+		Log::info(LOG_GFX, "Could not update gamecontroller database. gamecontrollerdb.txt not found.");
 	}
 }
 
