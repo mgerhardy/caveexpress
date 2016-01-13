@@ -511,25 +511,26 @@ void SDLFrontend::initJoystickAndHaptic ()
 	SDL_Haptic *haptic = nullptr;
 	for (int i = 0; i < joysticks; i++) {
 		const char *name;
+		SDL_Joystick *joystick;
 		if (SDL_IsGameController(i)) {
 			name = SDL_GameControllerNameForIndex(i);
+			SDL_GameController* controller = SDL_GameControllerOpen(i);
+			joystick = SDL_GameControllerGetJoystick(controller);
 		} else {
 			name = SDL_JoystickNameForIndex(i);
+			joystick = SDL_JoystickOpen(i);
 		}
-		SDL_Joystick *joystick = SDL_JoystickOpen(i);
 		Log::info(LOG_GFX, "found joystick %s", name ? name : "Unknown Joystick");
-		Log::info(LOG_GFX, "joystick axes: %i", SDL_JoystickNumAxes(joystick));
-		Log::info(LOG_GFX, "joystick hats: %i", SDL_JoystickNumHats(joystick));
-		Log::info(LOG_GFX, "joystick balls: %i", SDL_JoystickNumBalls(joystick));
-		Log::info(LOG_GFX, "joystick buttons: %i", SDL_JoystickNumButtons(joystick));
+		Log::debug(LOG_GFX, "joystick axes: %i", SDL_JoystickNumAxes(joystick));
+		Log::debug(LOG_GFX, "joystick hats: %i", SDL_JoystickNumHats(joystick));
+		Log::debug(LOG_GFX, "joystick balls: %i", SDL_JoystickNumBalls(joystick));
+		Log::debug(LOG_GFX, "joystick buttons: %i", SDL_JoystickNumButtons(joystick));
 		if (haptic == nullptr)
 			haptic = SDL_HapticOpenFromJoystick(joystick);
 	}
 	if (!joysticks) {
 		Log::info(LOG_GFX, "no joysticks found");
 	}
-
-	Log::info(LOG_GFX, "found %i touch device(s)", SDL_GetNumTouchDevices());
 
 	Log::info(LOG_GFX, "%i haptic devices", SDL_NumHaptics());
 	if (haptic == nullptr && SDL_MouseIsHaptic()) {
@@ -568,7 +569,7 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 		Log::info(LOG_GFX, "Could not update gamecontroller database. gamecontrollerdb.txt not found.");
 	}
 
-	initJoystickAndHaptic();
+	Log::info(LOG_GFX, "found %i touch device(s)", SDL_GetNumTouchDevices());
 
 	SDL_DisplayMode displayMode;
 	SDL_GetDesktopDisplayMode(0, &displayMode);
