@@ -103,15 +103,8 @@ function initMap()
 	map:addTile("tile-rock-02", 12, 6)
 	map:addTile("tile-rock-02", 12, 7)
 	map:addTile("tile-rock-01", 12, 8)
-
-	local delay = 2000
-	-- the time when the flying npc is exactly hit by the falling stone
-	if isAndroid() or isIOS() or isOUYA() then
-		delay = 2700
-	end
-
-	map:addEmitter("item-stone", 5, 1, 1, delay, "")
-	map:addEmitter("item-package", 8.2, 1, 1, 2500, "")
+	map:addEmitter("item-stone", 5, 1, 1, 4100, "")
+	map:addEmitter("item-package", 8.2, 1, 1, 5000, "")
 
 	map:setSetting("width", "13")
 	map:setSetting("height", "9")

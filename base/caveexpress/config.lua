@@ -14,7 +14,7 @@ defaultjoystick = true
 defaulttexturesize = "auto"
 defaultreferencetimefactor = 1.0
 defaultdamagethreshold = 3.0
-defaultnpcflyingspeed = 4.0
+defaultnpcflyingspeed = 2.0
 defaultparticles = 100
 defaultred = 8
 defaultgreen = 8
@@ -24,7 +24,6 @@ if isOUYA() then
 	defaultjoystick = true
 	defaultreferencetimefactor = 1.3
 	defaultdamagethreshold = 5.0
-	defaultnpcflyingspeed = 3.0
 	defaultparticles = 0
 	defaultred = 6
 	defaultgreen = 5
@@ -42,7 +41,6 @@ elseif isAndroid() then
 	defaultshowcursor = false
 	defaultnetwork = true
 	defaultdamagethreshold = 5.0
-	defaultnpcflyingspeed = 3.0
 	defaultparticles = 50
 	defaultred = 6
 	defaultgreen = 5
@@ -52,7 +50,6 @@ elseif isMobile() then
 	defaultshowcursor = false
 	defaultnetwork = true
 	defaultdamagethreshold = 5.0
-	defaultnpcflyingspeed = 3.0
 	defaultparticles = 0
 elseif isHTML5() then
 	defaultfrontend = "opengl"
