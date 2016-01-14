@@ -54,6 +54,7 @@ void UIMapOptionsWindow::onActive ()
 {
 	showAds();
 	UIWindow::onActive();
+	addLastFocus();
 }
 
 bool UIMapOptionsWindow::onPop ()
