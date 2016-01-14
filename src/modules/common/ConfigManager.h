@@ -153,9 +153,7 @@ public:
 	void setTextureSize (const std::string& textureSize) const;
 	LogLevel getLogLevel() const;
 
-	inline bool isModeSelected () const {
-		return !_mode->getValue().empty();
-	}
+	bool isModeSelected () const;
 
 	inline bool isModeHard () const {
 		return _mode->getValue() == "hard";

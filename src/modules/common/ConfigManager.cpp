@@ -91,7 +91,7 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	_debugui = getConfigVar("debugui", "false");
 	_debugEntity = getConfigVar("debugentity", "false", true);
 	getConfigVar("alreadyrated", "false", true);
-	_mode = getConfigValue(_configVarMap, "mode", "0");
+	_mode = getConfigValue(_configVarMap, "mode", "");
 
 	for (KeyValueMap::iterator i = _configVarMap.begin(); i != _configVarMap.end(); ++i) {
 		getConfigVar(i->first, i->second, true);
@@ -395,4 +395,10 @@ int ConfigManager::increaseCounter (const std::string& counterId)
 	++current;
 	var->setValue(string::toString(current));
 	return current;
+}
+
+bool ConfigManager::isModeSelected () const
+{
+	const std::string& mode = _mode->getValue();
+	return mode == "hard" || mode == "easy";
 }
