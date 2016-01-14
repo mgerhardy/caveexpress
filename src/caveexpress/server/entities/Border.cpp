@@ -23,16 +23,22 @@ bool Border::shouldCollide (const IEntity *entity) const
 void Border::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold)
 {
 	IEntity::onPreSolve(contact, entity, oldManifold);
-	if (!_crashOnTouch)
-		return;
-
 	if (!entity->isPlayer())
 		return;
 
+	Player* player = static_cast<Player*>(entity);
+	if (_borderType == BorderType::TOP) {
+		b2Vec2 v = player->getLinearVelocity();
+		v.y = 0.4f;
+		player->setLinearVelocity(v);
+		contact->SetEnabled(false);
+	}
+
+	if (!_crashOnTouch)
+		return;
 	if (_map.isDone())
 		return;
 
-	Player* player = static_cast<Player*>(entity);
 	player->setCrashed(CRASH_MAP_FAILED);
 }
 
