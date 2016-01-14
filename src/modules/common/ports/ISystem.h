@@ -126,7 +126,8 @@ public:
 
 	virtual bool hasTouch () const
 	{
-		return SDL_GetNumTouchDevices() > 0;
+		// TODO: I don't my mouse to be reported as touch device
+		return false; // SDL_GetNumTouchDevices() > 0;
 	}
 
 	/**
