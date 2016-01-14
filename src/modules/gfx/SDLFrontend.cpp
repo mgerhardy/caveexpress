@@ -26,7 +26,7 @@ struct RenderTarget {
 };
 
 SDLFrontend::SDLFrontend (std::shared_ptr<IConsole> console) :
-		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _softwareRenderer(false), _drawCalls(0)
+		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _softwareRenderer(false), _drawCalls(0), _updateJoysticks(false)
 {
 	_window = nullptr;
 	_haptic = nullptr;
@@ -63,14 +63,14 @@ void SDLFrontend::onForeground ()
 
 void SDLFrontend::onJoystickDeviceRemoved (int32_t device)
 {
-	Log::info(LOG_GFX, "joystick removed");
-	initJoystickAndHaptic();
+	Log::info(LOG_GFX, "joystick %i removed", device);
+	_updateJoysticks = true;
 }
 
 void SDLFrontend::onJoystickDeviceAdded (int32_t device)
 {
-	Log::info(LOG_GFX, "joystick added");
-	initJoystickAndHaptic();
+	Log::info(LOG_GFX, "joystick %i added", device);
+	_updateJoysticks = true;
 }
 
 void SDLFrontend::onWindowResize ()
@@ -108,6 +108,11 @@ void SDLFrontend::update (uint32_t deltaTime)
 #endif
 	++_numFrames;
 	_time += deltaTime;
+
+	if (_updateJoysticks) {
+		initJoystickAndHaptic();
+		_updateJoysticks = false;
+	}
 
 	_console->update(deltaTime);
 	UI::get().update(deltaTime);

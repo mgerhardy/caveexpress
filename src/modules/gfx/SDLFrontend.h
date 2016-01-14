@@ -33,6 +33,8 @@ protected:
 
 	Color _color;
 
+	bool _updateJoysticks;
+
 	void setWindowTitle (const std::string& title);
 	inline uint32_t getDisplayFormat () const;
 

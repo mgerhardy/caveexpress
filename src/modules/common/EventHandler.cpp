@@ -108,10 +108,12 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		multiGesture(event.mgesture.dTheta, event.mgesture.dDist, event.mgesture.numFingers);
 		break;
 	case SDL_JOYDEVICEADDED:
-		joystickDeviceAdded(event.jdevice.which);
+		if (!SDL_IsGameController(event.jdevice.which))
+			joystickDeviceAdded(event.jdevice.which);
 		break;
 	case SDL_JOYDEVICEREMOVED:
-		joystickDeviceRemoved(event.jdevice.which);
+		if (!SDL_IsGameController(event.jdevice.which))
+			joystickDeviceRemoved(event.jdevice.which);
 		break;
 	case SDL_JOYHATMOTION: {
 		static const int horizontalMask = SDL_HAT_CENTERED | SDL_HAT_RIGHT | SDL_HAT_LEFT;
@@ -128,13 +130,16 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		break;
 	}
 	case SDL_JOYBUTTONDOWN:
-		joystickButtonPress(event.jbutton.button);
+		if (!SDL_IsGameController(event.jbutton.which))
+			joystickButtonPress(event.jbutton.button);
 		break;
 	case SDL_JOYBUTTONUP:
-		joystickButtonRelease(event.jbutton.button);
+		if (!SDL_IsGameController(event.jbutton.which))
+			joystickButtonRelease(event.jbutton.button);
 		break;
 	case SDL_JOYAXISMOTION:
-		joystickMotion(event.jaxis.axis == 0, event.jaxis.value);
+		if (!SDL_IsGameController(event.jaxis.which))
+			joystickMotion(event.jaxis.axis == 0, event.jaxis.value);
 		break;
 	case SDL_FINGERDOWN:
 		fingerPress(event.tfinger.fingerId, event.tfinger.x, event.tfinger.y);
