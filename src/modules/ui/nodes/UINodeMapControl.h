@@ -31,4 +31,5 @@ public:
 	bool isActive () const override;
 	void update (uint32_t deltaTime) override;
 	bool onJoystickMotion (bool horizontal, int value) override;
+	void onJoystickDeviceRemoved () override;
 };

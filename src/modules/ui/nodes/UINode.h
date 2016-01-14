@@ -412,6 +412,7 @@ public:
 	/**
 	 * @param[in] value The relative value that the joystick was moved, [-32768,32767]
 	 */
+	virtual void onJoystickDeviceRemoved () {}
 	virtual bool onJoystickMotion (bool horizontal, int value);
 	virtual bool onJoystickButtonPress (int x, int y, uint8_t button);
 	virtual bool onControllerButtonPress (int x, int y, const std::string& button);

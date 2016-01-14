@@ -540,6 +540,15 @@ void UI::onMouseWheel (int32_t x, int32_t y)
 	}
 }
 
+void UI::onJoystickDeviceRemoved (int32_t device)
+{
+	UIStack stack = _stack;
+	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
+		UIWindow* window = *i;
+		window->onJoystickDeviceRemoved();
+	}
+}
+
 void UI::onJoystickMotion (bool horizontal, int v)
 {
 	if (_restart)
