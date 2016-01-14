@@ -19,7 +19,7 @@
 namespace caveexpress {
 
 namespace {
-const float gravityScale = 0.3f;
+const float gravityScale = 0.2f;
 }
 
 Player::Player (Map& map, ClientId clientId) :
@@ -75,7 +75,7 @@ void Player::accelerate (Direction dir)
 	setAnimationType(Animations::ANIMATION_FLYING);
 	_acceleration += v;
 
-	const float maxHorizontalVelocity = 2.0f;
+	const float maxHorizontalVelocity = 1.7f;
 	_acceleration.x = clamp(_acceleration.x, -maxHorizontalVelocity, maxHorizontalVelocity);
 	const float maxVerticalVelocity = gravity;
 	_acceleration.y = clamp(_acceleration.y, -maxVerticalVelocity, maxVerticalVelocity);
