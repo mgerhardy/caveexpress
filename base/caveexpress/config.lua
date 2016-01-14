@@ -29,6 +29,13 @@ if isOUYA() then
 	defaultred = 6
 	defaultgreen = 5
 	defaultblue = 6
+elseif isSteamLink() then
+	defaultWidth = 800
+	defaultHeight = 600
+	defaultjoystick = true
+	defaultparticles = 0
+	defaultnetwork = true
+	defaultshowcursor = false
 elseif isAndroid() then
 	defaultpersister = "googleplay"
 	defaultreferencetimefactor = 1.5
