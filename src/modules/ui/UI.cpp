@@ -566,22 +566,12 @@ void UI::onJoystickMotion (bool horizontal, int v)
 	if (Config.getBindingsSpace() != BINDINGS_UI)
 		return;
 
-	if (_time - _lastJoystickMoveTime < 350 || horizontal) {
-		_lastJoystickMovementValue = v;
-		return;
-	}
-
-	// skip focus change if we go back to initial position
-	if (v > 0 && v < _lastJoystickMovementValue) {
-		_lastJoystickMovementValue = v;
-		return;
-	} else if (v < 0 && v > _lastJoystickMovementValue) {
-		_lastJoystickMovementValue = v;
+	if (_time - _lastJoystickMoveTime < 150) {
 		return;
 	}
 
 	// now check whether our value is bigger than our movement delta
-	const int delta = 5000;
+	const int delta = 10000;
 	static const ICommand::Args args(0);
 	if (v < -delta) {
 		focusPrev(args);
