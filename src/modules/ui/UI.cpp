@@ -581,7 +581,7 @@ void UI::onJoystickMotion (bool horizontal, int v)
 	}
 
 	// now check whether our value is bigger than our movement delta
-	const int delta = 2000;
+	const int delta = 5000;
 	static const ICommand::Args args(0);
 	if (v < -delta) {
 		focusPrev(args);

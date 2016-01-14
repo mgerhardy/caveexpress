@@ -63,6 +63,22 @@ bool UINodeSlider::onMouseWheel (int32_t x, int32_t y)
 	return retVal;
 }
 
+bool UINodeSlider::onJoystickMotion (bool horizontal, int value)
+{
+	if (!hasFocus())
+		return false;
+
+	if (!horizontal)
+		return false;
+
+	if (value > 0)
+		setValue(_value + _stepWidth);
+	else
+		setValue(_value - _stepWidth);
+
+	return true;
+}
+
 void UINodeSlider::setValue (float value)
 {
 	if (value > _max)
