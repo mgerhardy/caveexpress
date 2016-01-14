@@ -34,26 +34,24 @@ UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& 
 
 	const float gapBack = std::max(0.01f, getScreenPadding());
 
-	UINodeMainButton *continueCampaign = new UINodeMainButton(frontend, tr("Continue"));
-	continueCampaign->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_RIGHT, gapBack);
-	continueCampaign->addListener(UINodeListenerPtr(new ContinuePlayNodeListener(campaignManager, serviceProvider)));
-	add(continueCampaign);
-
-	_replayCampaign = new UINodeMainButton(frontend, tr("Retry"));
-	_replayCampaign->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_CENTER, gapBack);
-	_replayCampaign->addListener(UINodeListenerPtr(new ReplayNodeListener(campaignManager)));
-	add(_replayCampaign);
-
 	UINodePoint *points = new UINodePoint(frontend);
 	points->setFont(LARGE_FONT);
 	points->setId(UINODE_FINISHEDPOINTS);
 	points->alignTo(background, NODE_ALIGN_CENTER | NODE_ALIGN_MIDDLE, 0.1f);
 	add(points);
 
-	if (!wantBackButton())
-		return;
+	if (wantBackButton())
+		add(new UINodeBackButton(frontend, background));
 
-	add(new UINodeBackButton(frontend, background));
+	_replayCampaign = new UINodeMainButton(frontend, tr("Retry"));
+	_replayCampaign->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_CENTER, gapBack);
+	_replayCampaign->addListener(UINodeListenerPtr(new ReplayNodeListener(campaignManager)));
+	add(_replayCampaign);
+
+	UINodeMainButton *continueCampaign = new UINodeMainButton(frontend, tr("Continue"));
+	continueCampaign->alignTo(background, NODE_ALIGN_BOTTOM | NODE_ALIGN_RIGHT, gapBack);
+	continueCampaign->addListener(UINodeListenerPtr(new ContinuePlayNodeListener(campaignManager, serviceProvider)));
+	add(continueCampaign);
 }
 
 bool UIMapFinishedWindow::onPush ()
@@ -65,4 +63,10 @@ bool UIMapFinishedWindow::onPush ()
 		showFullscreenAds();
 	}
 	return UIWindow::onPush();
+}
+
+void UIMapFinishedWindow::onActive ()
+{
+	UIWindow::onActive();
+	addLastFocus();
 }

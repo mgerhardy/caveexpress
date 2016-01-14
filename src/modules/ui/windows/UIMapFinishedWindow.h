@@ -17,4 +17,5 @@ private:
 public:
 	UIMapFinishedWindow (IFrontend *frontend, CampaignManager& campaignManager, ServiceProvider& serviceProvider, const SoundType& soundType);
 	bool onPush () override;
+	void onActive () override;
 };
