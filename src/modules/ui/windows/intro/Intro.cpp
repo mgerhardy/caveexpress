@@ -1,5 +1,6 @@
 #include "Intro.h"
 #include "common/Commands.h"
+#include "common/ConfigManager.h"
 #include "common/String.h"
 #include "ui/nodes/UINodeBackButton.h"
 #include "ui/nodes/UINodeSprite.h"
@@ -84,6 +85,28 @@ Intro::Intro(const std::string& name, IFrontend* frontend) :
 	UIVBoxLayout *layout = new UIVBoxLayout(0.01f, true, NODE_ALIGN_CENTER);
 	_panel->setLayout(layout);
 	setInactiveAfterPush(1000L);
+
+	if (wantBackButton()) {
+		UINodeMainButton *continueButton = new UINodeMainButton(frontend, tr("Continue"), LARGE_FONT, colorBlack);
+		const float gapBack = std::max(0.01f, getScreenPadding());
+		continueButton->alignTo(_background, NODE_ALIGN_BOTTOM | NODE_ALIGN_RIGHT, gapBack);
+		continueButton->setOnActivate(CMD_UI_POP);
+		add(continueButton);
+	}
+}
+
+bool Intro::onPop ()
+{
+	const bool retVal = UIWindow::onPop();
+	Config.setBindingsSpace(BINDINGS_MAP);
+	return retVal;
+}
+
+void Intro::onActive ()
+{
+	UIWindow::onActive();
+	addLastFocus();
+	Config.setBindingsSpace(BINDINGS_UI);
 }
 
 bool Intro::onKeyPress (int32_t key, int16_t modifier)
@@ -91,7 +114,8 @@ bool Intro::onKeyPress (int32_t key, int16_t modifier)
 	if (!isActiveAfterPush())
 		return false;
 
-	UI::get().delayedPop();
+	if (!wantBackButton())
+		UI::get().delayedPop();
 	return UIWindow::onKeyPress(key, modifier);
 }
 
@@ -109,7 +133,4 @@ void Intro::init ()
 	addIntroNodes(_panel);
 
 	add(_panel);
-
-	// TODO: a back button to start the map isn't that good ;)
-	//add(new UINodeBackButton(_frontend, _background));
 }

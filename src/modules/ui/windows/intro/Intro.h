@@ -25,6 +25,9 @@ public:
 	// this ensures, that the vtable of Intro is set up already
 	void init ();
 
+	void onActive () override;
+	bool onPop () override;
+
 	bool onKeyPress (int32_t key, int16_t modifier) override;
 	bool onFingerPress (int64_t finger, uint16_t x, uint16_t y) override;
 protected:
