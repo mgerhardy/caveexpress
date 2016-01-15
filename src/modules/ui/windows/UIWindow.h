@@ -54,7 +54,6 @@ protected:
 
 	bool wantBackButton () const;
 	UINode* addTextureNode (const std::string& texture, float x, float y, float w, float h);
-	bool isActiveAfterPush () const;
 
 	void setInactiveAfterPush (uint32_t millis = 250)
 	{
@@ -63,6 +62,7 @@ protected:
 public:
 	virtual ~UIWindow ();
 
+	bool isActiveAfterPush () const;
 	virtual void render (int x, int y) const override;
 
 	bool isModal () const;

@@ -570,6 +570,10 @@ void UI::onJoystickMotion (bool horizontal, int v)
 		return;
 	}
 
+	if (!(*stack.rbegin())->isActiveAfterPush()) {
+		return;
+	}
+
 	// now check whether our value is bigger than our movement delta
 	const int delta = 10000;
 	static const ICommand::Args args(0);
