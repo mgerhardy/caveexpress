@@ -287,7 +287,7 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	Config.initOrGetConfigVar("fruitcollectdelayforanewlife", "15000");
 	Config.initOrGetConfigVar("amountoffruitsforanewlife", "4");
 	Config.initOrGetConfigVar("fruithitpoints", "10");
-	Config.initOrGetConfigVar("npcflyingspeed", "4.0");
+	Config.initOrGetConfigVar("npcflyingspeed", "2.0");
 	Config.initOrGetConfigVar("waterparticle", "false", CV_READONLY);
 
 	ClientEntityRegistry &r = Singleton<ClientEntityRegistry>::getInstance();
