@@ -58,6 +58,7 @@ protected:
 	};
 
 	void testCrash (const std::string& mapName, const MapFailedReason& crashReason, int ticksLeft = 10000) {
+		Config.getConfigVar("godmode")->setValue("false");
 		ASSERT_TRUE(_game.mapLoad(mapName)) << "Could not load the map " << mapName;
 		Map* map = &_game.getMap();
 		Player* player = new Player(*map, 1);
@@ -68,9 +69,9 @@ protected:
 		const int expectedTicks = ticksLeft;
 		while (!player->isCrashed() && !map->isFailed()) {
 			_game.update(1);
-			ASSERT_TRUE(--ticksLeft > 0) << mapName << " needs more ticks than the expected " << expectedTicks;
+			ASSERT_TRUE(--ticksLeft > 0) << mapName << " needs more ticks than the expected " << expectedTicks << " - player still has " << player->getHitpoints() << " hitpoints left";;
 		}
-		ASSERT_EQ(crashReason, map->getFailReason(player)) << mapName << ": unexpected crash reason";
+		ASSERT_EQ(crashReason, map->getFailReason(player)) << mapName << ": unexpected crash reason - player still has " << player->getHitpoints() << " hitpoints left";
 		_game.shutdown();
 	}
 
