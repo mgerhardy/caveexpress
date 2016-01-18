@@ -62,14 +62,15 @@ protected:
 		Map* map = &_game.getMap();
 		Player* player = new Player(*map, 1);
 		player->setLives(3);
-		ASSERT_TRUE(map->initPlayer(player));
+		ASSERT_TRUE(map->initPlayer(player)) << mapName << ": could not init player";
 		map->startMap();
-		ASSERT_TRUE(map->isActive());
+		ASSERT_TRUE(map->isActive()) << mapName << " is not active";
+		const int expectedTicks = ticksLeft;
 		while (!player->isCrashed() && !map->isFailed()) {
 			_game.update(1);
-			ASSERT_TRUE(--ticksLeft > 0);
+			ASSERT_TRUE(--ticksLeft > 0) << mapName << " needs more ticks than the expected " << expectedTicks;
 		}
-		ASSERT_EQ(crashReason, map->getFailReason(player));
+		ASSERT_EQ(crashReason, map->getFailReason(player)) << mapName << ": unexpected crash reason";
 		_game.shutdown();
 	}
 
@@ -78,16 +79,17 @@ protected:
 		Map* map = &_game.getMap();
 		Player* player = new Player(*map, 1);
 		player->setLives(3);
-		ASSERT_TRUE(map->initPlayer(player));
+		ASSERT_TRUE(map->initPlayer(player)) << mapName << ": could not init player";
 		map->startMap();
-		ASSERT_TRUE(map->isActive());
+		ASSERT_TRUE(map->isActive()) << mapName << " is not active";
+		const int expectedTicks = ticksLeft;
 		while (!map->isFailed() && !map->isDone()) {
 			_game.update(1);
 			callback(map, player);
-			ASSERT_TRUE(--ticksLeft > 0);
+			ASSERT_TRUE(--ticksLeft > 0) << mapName << " needs more ticks than the expected " << expectedTicks;
 		}
-		ASSERT_FALSE(map->isFailed());
-		ASSERT_TRUE(map->isDone());
+		ASSERT_FALSE(map->isFailed()) << mapName << ": failed - but we didn't expect that";
+		ASSERT_TRUE(map->isDone()) << mapName << ": should have been done";
 		_game.shutdown();
 	}
 
