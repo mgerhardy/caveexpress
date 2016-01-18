@@ -76,6 +76,8 @@ protected:
 	}
 
 	void testSuccess (const std::string& mapName, MapTickCallback& callback, int ticksLeft = 10000) {
+		Config.getConfigVar("maxhitpoints")->setValue("100");
+		Config.getConfigVar("godmode")->setValue("false");
 		ASSERT_TRUE(_game.mapLoad(mapName)) << "Could not load the map " << mapName;
 		Map* map = &_game.getMap();
 		Player* player = new Player(*map, 1);
@@ -237,6 +239,7 @@ TEST_F(MapTest, testPlayerCrashSideScroll) {
 TEST_F(MapTest, testPlayerCrashHitpoints) {
 	ConfigVarPtr v = Config.getConfigVar("damagethreshold");
 	v->setValue("1.0");
+	Config.getConfigVar("maxhitpoints")->setValue("1");
 	testCrash("test-crash-hitpoints", MapFailedReasons::FAILED_HITPOINTS, 100000);
 }
 
