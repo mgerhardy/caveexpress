@@ -76,15 +76,15 @@ void UINodeMapControl::renderDebug (int x, int y, int textY) const
 	}
 }
 
-void UINodeMapControl::onJoystickDeviceRemoved ()
+void UINodeMapControl::onJoystickDeviceRemoved (uint32_t id)
 {
 	_direction = 0;
 	_oldDirection = 0;
 }
 
-bool UINodeMapControl::onJoystickMotion (bool horizontal, int value)
+bool UINodeMapControl::onJoystickMotion (bool horizontal, int value, uint32_t id)
 {
-	UINode::onJoystickMotion(horizontal, value);
+	UINode::onJoystickMotion(horizontal, value, id);
 	if (_map.isPause() || !_joystick) {
 		_direction = 0;
 		return false;

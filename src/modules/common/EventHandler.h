@@ -39,11 +39,11 @@ public:
 	void prepareForeground ();
 	void background ();
 	void foreground ();
-	void controllerButtonPress (const std::string& button);
-	void controllerButtonRelease (const std::string& button);
-	void joystickButtonPress (uint8_t button);
-	void joystickButtonRelease (uint8_t button);
-	void joystickMotion (bool horizontal, int value);
+	void controllerButtonPress (const std::string& button, uint32_t id);
+	void controllerButtonRelease (const std::string& button, uint32_t id);
+	void joystickButtonPress (uint8_t button, uint32_t id);
+	void joystickButtonRelease (uint8_t button, uint32_t id);
+	void joystickMotion (bool horizontal, int value, uint32_t id);
 	void mouseWheel (int32_t x, int32_t y);
 	void mouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY);
 	void mouseButtonPress (int32_t x, int32_t y, uint8_t button);

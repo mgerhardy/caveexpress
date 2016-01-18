@@ -99,8 +99,8 @@ public:
 	virtual bool onFingerPress (int64_t finger, uint16_t x, uint16_t y) override;
 	virtual bool onMouseButtonRelease (int32_t x, int32_t y, unsigned char button) override;
 	virtual bool onMouseButtonPress (int32_t x, int32_t y, unsigned char button) override;
-	virtual bool onJoystickButtonPress (int x, int y, uint8_t button) override;
-	virtual bool onControllerButtonPress (int x, int y, const std::string& button) override;
+	virtual bool onJoystickButtonPress (int x, int y, uint8_t button, uint32_t id) override;
+	virtual bool onControllerButtonPress (int x, int y, const std::string& button, uint32_t id) override;
 };
 
 inline bool UIWindow::isActiveAfterPush () const

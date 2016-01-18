@@ -49,7 +49,7 @@ public:
 	 * @param[in] horizontal
 	 * @param[in] value The relative value that the joystick was moved, [-32768,32767]
 	 */
-	virtual void onJoystickMotion (bool horizontal, int value)
+	virtual void onJoystickMotion (bool horizontal, int value, uint32_t id)
 	{
 	}
 
@@ -77,19 +77,19 @@ public:
 	{
 	}
 
-	virtual void onControllerButtonPress (const std::string& button)
+	virtual void onControllerButtonPress (const std::string& button, uint32_t id)
 	{
 	}
 
-	virtual void onControllerButtonRelease (const std::string& button)
+	virtual void onControllerButtonRelease (const std::string& button, uint32_t id)
 	{
 	}
 
-	virtual void onJoystickButtonPress (uint8_t button)
+	virtual void onJoystickButtonPress (uint8_t button, uint32_t id)
 	{
 	}
 
-	virtual void onJoystickButtonRelease (uint8_t button)
+	virtual void onJoystickButtonRelease (uint8_t button, uint32_t id)
 	{
 	}
 

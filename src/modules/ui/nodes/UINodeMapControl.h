@@ -30,6 +30,6 @@ public:
 	void removeFocus () override;
 	bool isActive () const override;
 	void update (uint32_t deltaTime) override;
-	bool onJoystickMotion (bool horizontal, int value) override;
-	void onJoystickDeviceRemoved () override;
+	bool onJoystickMotion (bool horizontal, int value, uint32_t id) override;
+	void onJoystickDeviceRemoved (uint32_t id) override;
 };

@@ -80,10 +80,10 @@ public:
 	// IEventObserver
 	bool onKeyRelease (int32_t key) override;
 	bool onKeyPress (int32_t key, int16_t modifier) override;
-	void onJoystickButtonPress (uint8_t button) override;
-	void onJoystickButtonRelease (uint8_t button) override;
-	void onControllerButtonPress (const std::string& button) override;
-	void onControllerButtonRelease (const std::string& button) override;
+	void onJoystickButtonPress (uint8_t button, uint32_t id) override;
+	void onJoystickButtonRelease (uint8_t button, uint32_t id) override;
+	void onControllerButtonPress (const std::string& button, uint32_t id) override;
+	void onControllerButtonRelease (const std::string& button, uint32_t id) override;
 
 	// IServerCallback
 	void onData (ClientId clientId, ByteStream &data) override;

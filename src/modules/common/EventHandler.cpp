@@ -83,14 +83,14 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		 && axis != SDL_CONTROLLER_AXIS_RIGHTX && axis != SDL_CONTROLLER_AXIS_RIGHTY)
 			break;
 		const bool horizontal = (axis == SDL_CONTROLLER_AXIS_LEFTX || axis == SDL_CONTROLLER_AXIS_RIGHTX);
-		joystickMotion(horizontal, event.caxis.value);
+		joystickMotion(horizontal, event.caxis.value, event.caxis.which);
 		break;
 	}
 	case SDL_CONTROLLERBUTTONDOWN:
-		controllerButtonPress(getControllerButtonName(event.cbutton.button));
+		controllerButtonPress(getControllerButtonName(event.cbutton.button), event.cbutton.which);
 		break;
 	case SDL_CONTROLLERBUTTONUP:
-		controllerButtonRelease(getControllerButtonName(event.cbutton.button));
+		controllerButtonRelease(getControllerButtonName(event.cbutton.button), event.cbutton.which);
 		break;
 	case SDL_CONTROLLERDEVICEADDED:
 		joystickDeviceAdded(event.cdevice.which);
@@ -126,20 +126,20 @@ bool EventHandler::handleEvent (SDL_Event &event)
 			value = -1000;
 		else if (hat & positive)
 			value = 1000;
-		joystickMotion(horizontal, value);
+		joystickMotion(horizontal, value, event.jhat.which);
 		break;
 	}
 	case SDL_JOYBUTTONDOWN:
 		if (!SDL_IsGameController(event.jbutton.which))
-			joystickButtonPress(event.jbutton.button);
+			joystickButtonPress(event.jbutton.button, event.jbutton.which);
 		break;
 	case SDL_JOYBUTTONUP:
 		if (!SDL_IsGameController(event.jbutton.which))
-			joystickButtonRelease(event.jbutton.button);
+			joystickButtonRelease(event.jbutton.button, event.jbutton.which);
 		break;
 	case SDL_JOYAXISMOTION:
 		if (!SDL_IsGameController(event.jaxis.which))
-			joystickMotion(event.jaxis.axis == 0, event.jaxis.value);
+			joystickMotion(event.jaxis.axis == 0, event.jaxis.value, event.jaxis.which);
 		break;
 	case SDL_FINGERDOWN:
 		fingerPress(event.tfinger.fingerId, event.tfinger.x, event.tfinger.y);
@@ -245,10 +245,10 @@ void EventHandler::foreground ()
 	}
 }
 
-void EventHandler::joystickMotion (bool horizontal, int value)
+void EventHandler::joystickMotion (bool horizontal, int value, uint32_t id)
 {
 	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onJoystickMotion(horizontal, value);
+		(*i)->onJoystickMotion(horizontal, value, id);
 	}
 }
 
@@ -266,43 +266,43 @@ void EventHandler::mouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY
 	}
 }
 
-void EventHandler::controllerButtonPress (const std::string& button)
+void EventHandler::controllerButtonPress (const std::string& button, uint32_t id)
 {
 	if (!Config.isJoystick())
 		return;
 
 	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onControllerButtonPress(button);
+		(*i)->onControllerButtonPress(button, id);
 	}
 }
 
-void EventHandler::controllerButtonRelease (const std::string& button)
+void EventHandler::controllerButtonRelease (const std::string& button, uint32_t id)
 {
 	if (!Config.isJoystick())
 		return;
 
 	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onControllerButtonRelease(button);
+		(*i)->onControllerButtonRelease(button, id);
 	}
 }
 
-void EventHandler::joystickButtonPress (uint8_t button)
+void EventHandler::joystickButtonPress (uint8_t button, uint32_t id)
 {
 	if (!Config.isJoystick())
 		return;
 
 	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onJoystickButtonPress(button);
+		(*i)->onJoystickButtonPress(button, id);
 	}
 }
 
-void EventHandler::joystickButtonRelease (uint8_t button)
+void EventHandler::joystickButtonRelease (uint8_t button, uint32_t id)
 {
 	if (!Config.isJoystick())
 		return;
 
 	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onJoystickButtonRelease(button);
+		(*i)->onJoystickButtonRelease(button, id);
 	}
 }
 

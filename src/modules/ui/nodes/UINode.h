@@ -409,13 +409,14 @@ public:
 	virtual bool onMouseRightPress (int32_t x, int32_t y);
 	virtual bool onMouseWheel (int32_t x, int32_t y);
 	virtual void onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY);
+	virtual void onJoystickDeviceRemoved (uint32_t id) {}
+	virtual void onJoystickDeviceAdded (uint32_t id) {}
 	/**
 	 * @param[in] value The relative value that the joystick was moved, [-32768,32767]
 	 */
-	virtual void onJoystickDeviceRemoved () {}
-	virtual bool onJoystickMotion (bool horizontal, int value);
-	virtual bool onJoystickButtonPress (int x, int y, uint8_t button);
-	virtual bool onControllerButtonPress (int x, int y, const std::string& button);
+	virtual bool onJoystickMotion (bool horizontal, int value, uint32_t id);
+	virtual bool onJoystickButtonPress (int x, int y, uint8_t button, uint32_t id);
+	virtual bool onControllerButtonPress (int x, int y, const std::string& button, uint32_t id);
 
 	virtual void onAdd ();
 

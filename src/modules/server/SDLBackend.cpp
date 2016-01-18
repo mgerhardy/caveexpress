@@ -172,10 +172,10 @@ void SDLBackend::resetKeyStates ()
 		onKeyRelease(it.first);
 	}
 	for (uint8_t button : joystickSet) {
-		onJoystickButtonRelease(button);
+		onJoystickButtonRelease(button, 0); // TODO: device id
 	}
 	for (const std::string& button : controllerSet) {
-		onControllerButtonRelease(button);
+		onControllerButtonRelease(button, 0); // TODO: device id
 	}
 
 	_keys.clear();
@@ -315,10 +315,10 @@ void SDLBackend::runFrame ()
 		onKeyPress(it.first, it.second);
 	}
 	for (uint8_t button : _joystickButtons) {
-		onJoystickButtonPress(button);
+		onJoystickButtonPress(button, 0); // TODO: proper id
 	}
 	for (const std::string &button : _controllerButtons) {
-		onControllerButtonPress(button);
+		onControllerButtonPress(button, 0); // TODO: proper id
 	}
 
 	_serviceProvider.getNetwork().update(deltaTime);
@@ -442,7 +442,7 @@ bool SDLBackend::onKeyPress (int32_t key, int16_t modifier)
 	return false;
 }
 
-void SDLBackend::onJoystickButtonPress (uint8_t button)
+void SDLBackend::onJoystickButtonPress (uint8_t button, uint32_t id)
 {
 	if (_frontend->handlesInput())
 		return;
@@ -462,7 +462,7 @@ void SDLBackend::onJoystickButtonPress (uint8_t button)
 	}
 }
 
-void SDLBackend::onJoystickButtonRelease (uint8_t button)
+void SDLBackend::onJoystickButtonRelease (uint8_t button, uint32_t id)
 {
 	if (_frontend->handlesInput())
 		return;
@@ -480,7 +480,7 @@ void SDLBackend::onJoystickButtonRelease (uint8_t button)
 	}
 }
 
-void SDLBackend::onControllerButtonPress (const std::string& button)
+void SDLBackend::onControllerButtonPress (const std::string& button, uint32_t id)
 {
 	if (_frontend->handlesInput())
 		return;
@@ -500,7 +500,7 @@ void SDLBackend::onControllerButtonPress (const std::string& button)
 	}
 }
 
-void SDLBackend::onControllerButtonRelease (const std::string& button)
+void SDLBackend::onControllerButtonRelease (const std::string& button, uint32_t id)
 {
 	if (_frontend->handlesInput())
 		return;

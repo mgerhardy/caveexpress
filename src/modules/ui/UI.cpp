@@ -545,11 +545,20 @@ void UI::onJoystickDeviceRemoved (int32_t device)
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		window->onJoystickDeviceRemoved();
+		window->onJoystickDeviceRemoved(device);
 	}
 }
 
-void UI::onJoystickMotion (bool horizontal, int v)
+void UI::onJoystickDeviceAdded (int32_t device)
+{
+	UIStack stack = _stack;
+	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
+		UIWindow* window = *i;
+		window->onJoystickDeviceAdded(device);
+	}
+}
+
+void UI::onJoystickMotion (bool horizontal, int v, uint32_t id)
 {
 	if (_restart)
 		return;
@@ -557,7 +566,7 @@ void UI::onJoystickMotion (bool horizontal, int v)
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		if (window->onJoystickMotion(horizontal, v))
+		if (window->onJoystickMotion(horizontal, v, id))
 			return;
 		if (window->isModal() || window->isFullscreen())
 			break;
@@ -587,7 +596,7 @@ void UI::onJoystickMotion (bool horizontal, int v)
 	_lastJoystickMovementValue = v;
 }
 
-void UI::onJoystickButtonPress (uint8_t button)
+void UI::onJoystickButtonPress (uint8_t button, uint32_t id)
 {
 	if (_restart)
 		return;
@@ -595,7 +604,7 @@ void UI::onJoystickButtonPress (uint8_t button)
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		if (window->onJoystickButtonPress(_cursorX, _cursorY, button))
+		if (window->onJoystickButtonPress(_cursorX, _cursorY, button, id))
 			return;
 		if (window->isModal() || window->isFullscreen())
 			return;
@@ -651,7 +660,7 @@ void UI::onGestureRecord (int64_t gestureId)
 	Log::debug(LOG_UI, "gesture record event was not handled");
 }
 
-void UI::onControllerButtonPress (const std::string& button)
+void UI::onControllerButtonPress (const std::string& button, uint32_t id)
 {
 	if (_restart)
 		return;
@@ -659,7 +668,7 @@ void UI::onControllerButtonPress (const std::string& button)
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		if (window->onControllerButtonPress(_cursorX, _cursorY, button))
+		if (window->onControllerButtonPress(_cursorX, _cursorY, button, id))
 			return;
 		if (window->isModal() || window->isFullscreen())
 			return;
