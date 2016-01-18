@@ -24,8 +24,6 @@ function initMap()
 	map:addTile("tile-background-ice-cave-art-02", 5, 0)
 	map:addTile("tile-packagetarget-ice-01-idle", 5, 1)
 
-	map:addEmitter("item-package-ice", -0.4, 1, 1, 0, "")
-	map:addEmitter("item-package-ice", 0.7, 1, 1, 0, "")
 	map:addEmitter("item-package-ice", 1.5, 0, 1, 0, "")
 	map:addEmitter("item-package-ice", 1.9, 1, 1, 0, "")
 	map:addEmitter("npc-walking", 3, 1, 1, 0, "right=false")
