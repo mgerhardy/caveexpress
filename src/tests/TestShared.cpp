@@ -40,6 +40,10 @@ void AbstractTest::SetUp() {
 
 void AbstractTest::TearDown() {
 	ProtocolHandlerRegistry::get().shutdown();
+	Singleton<GameRegistry>::getInstance().getGame()->shutdown();
+	_testFrontend.shutdown();
+	_serviceProvider.shutdown();
+	Config.shutdown();
 }
 
 const char* AbstractTest::va(const char* format, ...) {
