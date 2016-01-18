@@ -110,22 +110,22 @@ inline bool UIWindow::isActiveAfterPush () const
 
 inline bool UIWindow::isModal () const
 {
-	return _flags & WINDOW_FLAG_MODAL;
+	return (_flags & WINDOW_FLAG_MODAL) == WINDOW_FLAG_MODAL;
 }
 
 inline bool UIWindow::isMain () const
 {
-	return _flags & WINDOW_FLAG_MAIN;
+	return (_flags & WINDOW_FLAG_MAIN) == WINDOW_FLAG_MAIN;
 }
 
 inline bool UIWindow::isRoot () const
 {
-	return _flags & WINDOW_FLAG_ROOT;
+	return (_flags & WINDOW_FLAG_ROOT) == WINDOW_FLAG_ROOT;
 }
 
 inline bool UIWindow::isFullscreen () const
 {
-	return _flags & WINDOW_FLAG_FULLSCREEN;
+	return (_flags & WINDOW_FLAG_FULLSCREEN) == WINDOW_FLAG_FULLSCREEN;
 }
 
 inline bool UIWindow::wantBackButton () const
