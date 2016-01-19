@@ -29,8 +29,8 @@ if isOUYA() then
 	defaultgreen = 5
 	defaultblue = 6
 elseif isSteamLink() then
-	defaultwidth = 1024
-	defaultheight = 768
+	defaultwidth = 1280
+	defaultheight = 720
 	defaultjoystick = true
 	defaultparticles = 0
 	defaultnetwork = true
