@@ -112,9 +112,10 @@ public:
 
 	void setStartPositions(int startPositions);
 
-	void accelerate (Direction dir) const;
-	void resetAcceleration (Direction dir) const;
+	void accelerate (Direction dir, uint8_t id) const;
+	void resetAcceleration (Direction dir, uint8_t id) const;
 
+	// finger based movement
 	void setAcceleration (int dx, int dy) const;
 	void resetAcceleration () const;
 

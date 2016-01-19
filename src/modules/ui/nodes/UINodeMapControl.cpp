@@ -35,7 +35,7 @@ void UINodeMapControl::removeFocus ()
 	for (int i = 0; i < SDL_arraysize(_d); ++i) {
 		DirectionValues& dv = _d[i];
 		if (dv.direction || dv.oldDirection) {
-			_map.resetAcceleration(0);
+			_map.resetAcceleration(0, i);
 		}
 		dv.oldDirection = dv.direction = 0;
 	}
@@ -57,12 +57,12 @@ void UINodeMapControl::update (uint32_t deltaTime)
 	for (int i = 0; i < SDL_arraysize(_d); ++i) {
 		DirectionValues& dv = _d[i];
 		if (dv.direction != 0) {
-			_map.accelerate(dv.direction);
+			_map.accelerate(dv.direction, i);
 		}
 
 		const Direction resetDirections = ~dv.direction & dv.oldDirection;
 		if (resetDirections != 0) {
-			_map.resetAcceleration(resetDirections);
+			_map.resetAcceleration(resetDirections, i);
 		}
 
 		dv.oldDirection = dv.direction;

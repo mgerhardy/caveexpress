@@ -55,8 +55,8 @@ protected:
 		testMessage("RumbleMessage", RumbleMessage(1.0f, 1000));
 		testMessage("BackToMainMessage", BackToMainMessage("window"));
 		testMessage("FinishedMapMessage", FinishedMapMessage("mapName", 0, 1, 2));
-		testMessage("StopMovementMessage", StopMovementMessage(DIRECTION_UP));
-		testMessage("MovementMessage", MovementMessage(DIRECTION_UP));
+		testMessage("StopMovementMessage", StopMovementMessage(DIRECTION_UP, 0));
+		testMessage("MovementMessage", MovementMessage(DIRECTION_UP, 0));
 		testMessage("FingerMovementMessage", FingerMovementMessage(1, 2));
 		testMessage("FailedMapMessage", FailedMapMessage("mapName", MapFailedReason::NONE, ThemeType::NONE));
 		std::vector<UpdateParticleEntity> bodies;

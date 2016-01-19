@@ -261,9 +261,9 @@ bool ClientMap::wantInformation (const EntityType& type) const
 	return isTutorial();
 }
 
-void ClientMap::accelerate (Direction dir) const
+void ClientMap::accelerate (Direction dir, uint8_t id) const
 {
-	const MovementMessage msg(dir);
+	const MovementMessage msg(dir, id);
 	INetwork& network = _serviceProvider.getNetwork();
 	network.sendToServer(msg);
 }
@@ -282,9 +282,9 @@ void ClientMap::setAcceleration (int dx, int dy) const
 	network.sendToServer(msg);
 }
 
-void ClientMap::resetAcceleration (Direction dir) const
+void ClientMap::resetAcceleration (Direction dir, uint8_t id) const
 {
-	const StopMovementMessage msg(dir);
+	const StopMovementMessage msg(dir, id);
 	INetwork& network = _serviceProvider.getNetwork();
 	network.sendToServer(msg);
 }

@@ -99,14 +99,14 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 
 void IUINodeMap::move(const ICommand::Args& args, Direction dir) {
 	if (!args.empty()) {
-		_map.resetAcceleration(dir);
+		_map.resetAcceleration(dir, 0);
 		return;
 	}
 
 	if (!_map.isActive() || _map.isPause())
 		return;
 
-	_map.accelerate(dir);
+	_map.accelerate(dir, 0);
 }
 
 IUINodeMap::~IUINodeMap ()
