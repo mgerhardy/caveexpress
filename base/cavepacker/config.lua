@@ -24,6 +24,13 @@ if isOUYA() then
 	defaultred = 6
 	defaultgreen = 5
 	defaultblue = 6
+elseif isSteamLink() then
+	defaultwidth = 1280
+	defaultheight = 720
+	defaultjoystick = true
+	defaultparticles = 0
+	defaultnetwork = true
+	defaultshowcursor = false
 elseif isAndroid() then
 	defaultshowcursor = false
 	defaultparticles = 0
