@@ -32,34 +32,41 @@ bool UINodeMapControl::isActive () const
 void UINodeMapControl::removeFocus ()
 {
 	UINode::removeFocus();
-	DirectionValues& dv = _d[DEVICE_TO_ID(id)];
-	if (dv.direction || dv.oldDirection) {
-		_map.resetAcceleration(0);
+	for (int i = 0; i < SDL_arraysize(_d); ++i) {
+		DirectionValues& dv = _d[i];
+		if (dv.direction || dv.oldDirection) {
+			_map.resetAcceleration(0);
+		}
+		dv.oldDirection = dv.direction = 0;
 	}
-	dv.oldDirection = dv.direction = 0;
 }
 
 void UINodeMapControl::update (uint32_t deltaTime)
 {
 	_joystick = Config.isJoystick();
-	DirectionValues& dv = _d[DEVICE_TO_ID(id)];
 	if (_map.isPause() || !_joystick) {
-		dv.direction = 0;
+		for (int i = 0; i < SDL_arraysize(_d); ++i) {
+			DirectionValues& dv = _d[i];
+			dv.direction = 0;
+		}
 		return;
 	}
 
 	UINode::update(deltaTime);
 
-	if (dv.direction != 0) {
-		_map.accelerate(dv.direction);
-	}
+	for (int i = 0; i < SDL_arraysize(_d); ++i) {
+		DirectionValues& dv = _d[i];
+		if (dv.direction != 0) {
+			_map.accelerate(dv.direction);
+		}
 
-	const Direction resetDirections = ~dv.direction & dv.oldDirection;
-	if (resetDirections != 0) {
-		_map.resetAcceleration(resetDirections);
-	}
+		const Direction resetDirections = ~dv.direction & dv.oldDirection;
+		if (resetDirections != 0) {
+			_map.resetAcceleration(resetDirections);
+		}
 
-	dv.oldDirection = dv.direction;
+		dv.oldDirection = dv.direction;
+	}
 }
 
 void UINodeMapControl::renderDebug (int x, int y, int textY) const
@@ -70,18 +77,20 @@ void UINodeMapControl::renderDebug (int x, int y, int textY) const
 	const int cy = getRenderCenterY();
 
 	const int width = 80;
-	const DirectionValues& dv = _d[DEVICE_TO_ID(id)];
-	if (dv.direction & DIRECTION_LEFT) {
-		renderLine(cx, cy, cx - width, cy, colorGreen);
-	}
-	if (dv.direction & DIRECTION_RIGHT) {
-		renderLine(cx, cy, cx + width, cy, colorBrightGreen);
-	}
-	if (dv.direction & DIRECTION_UP) {
-		renderLine(cx, cy, cx, cy - width, colorBlue);
-	}
-	if (dv.direction & DIRECTION_DOWN) {
-		renderLine(cx, cy, cx, cy + width, colorBrightBlue);
+	for (int i = 0; i < SDL_arraysize(_d); ++i) {
+		const DirectionValues& dv = _d[i];
+		if (dv.direction & DIRECTION_LEFT) {
+			renderLine(cx, cy, cx - width, cy, colorGreen);
+		}
+		if (dv.direction & DIRECTION_RIGHT) {
+			renderLine(cx, cy, cx + width, cy, colorBrightGreen);
+		}
+		if (dv.direction & DIRECTION_UP) {
+			renderLine(cx, cy, cx, cy - width, colorBlue);
+		}
+		if (dv.direction & DIRECTION_DOWN) {
+			renderLine(cx, cy, cx, cy + width, colorBrightBlue);
+		}
 	}
 }
 
@@ -100,10 +109,12 @@ void UINodeMapControl::onJoystickDeviceRemoved (uint32_t id)
 
 bool UINodeMapControl::onJoystickMotion (bool horizontal, int value, uint32_t id)
 {
-	DirectionValues& dv = _d[DEVICE_TO_ID(id)];
 	UINode::onJoystickMotion(horizontal, value, id);
 	if (_map.isPause() || !_joystick) {
-		dv.direction = 0;
+		for (int i = 0; i < SDL_arraysize(_d); ++i) {
+			DirectionValues& dv = _d[i];
+			dv.direction = 0;
+		}
 		return false;
 	}
 
@@ -113,6 +124,7 @@ bool UINodeMapControl::onJoystickMotion (bool horizontal, int value, uint32_t id
 		Log::trace(LOG_UI, "v joystick movement: %i (device %i)", value, id);
 
 	const int delta = 8000;
+	DirectionValues& dv = _d[DEVICE_TO_ID(id)];
 	if (horizontal) {
 		if (value < -delta) {
 			dv.direction |= DIRECTION_LEFT;
