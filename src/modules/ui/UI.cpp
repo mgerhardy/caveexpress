@@ -35,7 +35,7 @@ static inline int coordinateScaleY(int y, float scale, IFrontend* frontend) {
 UI::UI () :
 		_serviceProvider(nullptr), _eventHandler(nullptr), _frontend(nullptr), _cursor(true), _showCursor(false), _cursorX(
 				-1), _cursorY(-1), _motionFinger(false), _restart(false), _delayedPop(false), _noPushAllowed(false), _time(0),
-				_lastJoystickMoveTime(0), _lastJoystickMovementValue(0), _rotateFonts(true), _shutdown(false)
+				_lastJoystickMoveTime(0), _lastJoystickMovementValue(0), _joystickFocusChange(true), _rotateFonts(true), _shutdown(false)
 {
 	_threadId = SDL_ThreadID();
 }
@@ -575,25 +575,36 @@ void UI::onJoystickMotion (bool horizontal, int v, uint32_t id)
 	if (Config.getBindingsSpace() != BINDINGS_UI)
 		return;
 
+	// skip focus change if we go back to initial position
+	if (v > 0 && v < _lastJoystickMovementValue) {
+		_joystickFocusChange = false;
+	} else if (v < 0 && v > _lastJoystickMovementValue) {
+		_joystickFocusChange = false;
+	} else {
+		_joystickFocusChange = true;
+	}
+
 	if (_time - _lastJoystickMoveTime < 150) {
 		return;
 	}
+
+	_lastJoystickMoveTime = _time;
+	_lastJoystickMovementValue = v;
 
 	if (!(*stack.rbegin())->isActiveAfterPush()) {
 		return;
 	}
 
-	// now check whether our value is bigger than our movement delta
-	const int delta = 10000;
-	static const ICommand::Args args(0);
-	if (v < -delta) {
-		focusPrev(args);
-	} else if (v > delta) {
-		focusNext(args);
+	if (_joystickFocusChange) {
+		// now check whether our value is bigger than our movement delta
+		const int delta = 10000;
+		static const ICommand::Args args(0);
+		if (v < -delta) {
+			focusPrev(args);
+		} else if (v > delta) {
+			focusNext(args);
+		}
 	}
-
-	_lastJoystickMoveTime = _time;
-	_lastJoystickMovementValue = v;
 }
 
 void UI::onJoystickButtonPress (uint8_t button, uint32_t id)
