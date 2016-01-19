@@ -12,8 +12,11 @@ class IUINodeMap;
 class UINodeMapControl: public UINode, public IMapControl {
 private:
 	ClientMap &_map;
-	Direction _direction;
-	Direction _oldDirection;
+	struct DirectionValues {
+		Direction direction;
+		Direction oldDirection;
+	};
+	DirectionValues _d[4];
 	bool _joystick;
 
 public:
@@ -32,4 +35,5 @@ public:
 	void update (uint32_t deltaTime) override;
 	bool onJoystickMotion (bool horizontal, int value, uint32_t id) override;
 	void onJoystickDeviceRemoved (uint32_t id) override;
+	void onJoystickDeviceAdded (uint32_t id) override;
 };

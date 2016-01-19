@@ -6,10 +6,16 @@
 #include "common/Log.h"
 #include "common/Direction.h"
 
+// TODO:
+#define DEVICE_TO_ID(id) (0)
 
 UINodeMapControl::UINodeMapControl (IFrontend *frontend, IUINodeMap *mapNode) :
-		UINode(frontend), _map(mapNode->getMap()), _direction(0), _oldDirection(0), _joystick(Config.isJoystick())
+		UINode(frontend), _map(mapNode->getMap()), _joystick(Config.isJoystick())
 {
+	for (int i = 0; i < SDL_arraysize(_d); ++i) {
+		_d[i].direction = 0;
+		_d[i].oldDirection = 0;
+	}
 	setPos(mapNode->getX(), mapNode->getY());
 	setSize(mapNode->getWidth(), mapNode->getHeight());
 }
@@ -26,32 +32,34 @@ bool UINodeMapControl::isActive () const
 void UINodeMapControl::removeFocus ()
 {
 	UINode::removeFocus();
-	if (_direction || _oldDirection) {
+	DirectionValues& dv = _d[DEVICE_TO_ID(id)];
+	if (dv.direction || dv.oldDirection) {
 		_map.resetAcceleration(0);
 	}
-	_oldDirection = _direction = 0;
+	dv.oldDirection = dv.direction = 0;
 }
 
 void UINodeMapControl::update (uint32_t deltaTime)
 {
 	_joystick = Config.isJoystick();
+	DirectionValues& dv = _d[DEVICE_TO_ID(id)];
 	if (_map.isPause() || !_joystick) {
-		_direction = 0;
+		dv.direction = 0;
 		return;
 	}
 
 	UINode::update(deltaTime);
 
-	if (_direction != 0) {
-		_map.accelerate(_direction);
+	if (dv.direction != 0) {
+		_map.accelerate(dv.direction);
 	}
 
-	const Direction resetDirections = ~_direction & _oldDirection;
+	const Direction resetDirections = ~dv.direction & dv.oldDirection;
 	if (resetDirections != 0) {
 		_map.resetAcceleration(resetDirections);
 	}
 
-	_oldDirection = _direction;
+	dv.oldDirection = dv.direction;
 }
 
 void UINodeMapControl::renderDebug (int x, int y, int textY) const
@@ -62,59 +70,68 @@ void UINodeMapControl::renderDebug (int x, int y, int textY) const
 	const int cy = getRenderCenterY();
 
 	const int width = 80;
-	if (_direction & DIRECTION_LEFT) {
+	const DirectionValues& dv = _d[DEVICE_TO_ID(id)];
+	if (dv.direction & DIRECTION_LEFT) {
 		renderLine(cx, cy, cx - width, cy, colorGreen);
 	}
-	if (_direction & DIRECTION_RIGHT) {
+	if (dv.direction & DIRECTION_RIGHT) {
 		renderLine(cx, cy, cx + width, cy, colorBrightGreen);
 	}
-	if (_direction & DIRECTION_UP) {
+	if (dv.direction & DIRECTION_UP) {
 		renderLine(cx, cy, cx, cy - width, colorBlue);
 	}
-	if (_direction & DIRECTION_DOWN) {
+	if (dv.direction & DIRECTION_DOWN) {
 		renderLine(cx, cy, cx, cy + width, colorBrightBlue);
 	}
 }
 
+void UINodeMapControl::onJoystickDeviceAdded (uint32_t id)
+{
+	Log::info(LOG_UI, "Connect local player with device id %i", id);
+}
+
 void UINodeMapControl::onJoystickDeviceRemoved (uint32_t id)
 {
-	_direction = 0;
-	_oldDirection = 0;
+	Log::info(LOG_UI, "Disonnect local player with device id %i", id);
+	DirectionValues& dv = _d[DEVICE_TO_ID(id)];
+	dv.direction = 0;
+	dv.oldDirection = 0;
 }
 
 bool UINodeMapControl::onJoystickMotion (bool horizontal, int value, uint32_t id)
 {
+	DirectionValues& dv = _d[DEVICE_TO_ID(id)];
 	UINode::onJoystickMotion(horizontal, value, id);
 	if (_map.isPause() || !_joystick) {
-		_direction = 0;
+		dv.direction = 0;
 		return false;
 	}
 
 	if (horizontal)
-		Log::trace(LOG_UI, "h joystick movement: %i", value);
+		Log::trace(LOG_UI, "h joystick movement: %i (device %i)", value, id);
 	else
-		Log::trace(LOG_UI, "v joystick movement: %i", value);
+		Log::trace(LOG_UI, "v joystick movement: %i (device %i)", value, id);
 
 	const int delta = 8000;
 	if (horizontal) {
 		if (value < -delta) {
-			_direction |= DIRECTION_LEFT;
-			_direction &= ~DIRECTION_RIGHT;
+			dv.direction |= DIRECTION_LEFT;
+			dv.direction &= ~DIRECTION_RIGHT;
 		} else if (value > delta) {
-			_direction |= DIRECTION_RIGHT;
-			_direction &= ~DIRECTION_LEFT;
+			dv.direction |= DIRECTION_RIGHT;
+			dv.direction &= ~DIRECTION_LEFT;
 		} else {
-			_direction &= ~DIRECTION_HORIZONTAL;
+			dv.direction &= ~DIRECTION_HORIZONTAL;
 		}
 	} else {
 		if (value < -delta) {
-			_direction |= DIRECTION_UP;
-			_direction &= ~DIRECTION_DOWN;
+			dv.direction |= DIRECTION_UP;
+			dv.direction &= ~DIRECTION_DOWN;
 		} else if (value > delta) {
-			_direction |= DIRECTION_DOWN;
-			_direction &= ~DIRECTION_UP;
+			dv.direction |= DIRECTION_DOWN;
+			dv.direction &= ~DIRECTION_UP;
 		} else {
-			_direction &= ~DIRECTION_VERTICAL;
+			dv.direction &= ~DIRECTION_VERTICAL;
 		}
 	}
 

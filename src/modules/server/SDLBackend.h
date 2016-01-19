@@ -42,9 +42,27 @@ private:
 	typedef KeyMap::const_iterator KeyMapConstIter;
 	typedef KeyMap::iterator KeyMapIter;
 	KeyMap _keys;
-	typedef std::set<uint8_t> JoystickSet;
+	struct JoystickButton {
+		inline bool operator< (const JoystickButton& other) const
+		{
+			return id < other.id && button < other.button;
+		}
+		uint32_t id;
+		uint8_t button;
+	};
+
+	struct ControllerButton {
+		inline bool operator< (const ControllerButton& other) const
+		{
+			return id < other.id && button < other.button;
+		}
+		uint32_t id;
+		std::string button;
+	};
+
+	typedef std::set<JoystickButton> JoystickSet;
 	JoystickSet _joystickButtons;
-	typedef std::set<std::string> ControllerSet;
+	typedef std::set<ControllerButton> ControllerSet;
 	ControllerSet _controllerButtons;
 	ServiceProvider _serviceProvider;
 	TextConsole _console;

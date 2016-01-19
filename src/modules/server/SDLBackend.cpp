@@ -171,11 +171,11 @@ void SDLBackend::resetKeyStates ()
 	for (auto it : keyMap) {
 		onKeyRelease(it.first);
 	}
-	for (uint8_t button : joystickSet) {
-		onJoystickButtonRelease(button, 0); // TODO: device id
+	for (const JoystickButton& button : joystickSet) {
+		onJoystickButtonRelease(button.button, button.id);
 	}
-	for (const std::string& button : controllerSet) {
-		onControllerButtonRelease(button, 0); // TODO: device id
+	for (const ControllerButton& button : controllerSet) {
+		onControllerButtonRelease(button.button, button.id);
 	}
 
 	_keys.clear();
@@ -314,11 +314,11 @@ void SDLBackend::runFrame ()
 	for (auto it : _keys) {
 		onKeyPress(it.first, it.second);
 	}
-	for (uint8_t button : _joystickButtons) {
-		onJoystickButtonPress(button, 0); // TODO: proper id
+	for (const JoystickButton& button : _joystickButtons) {
+		onJoystickButtonPress(button.button, button.id);
 	}
-	for (const std::string &button : _controllerButtons) {
-		onControllerButtonPress(button, 0); // TODO: proper id
+	for (const ControllerButton& button : _controllerButtons) {
+		onControllerButtonPress(button.button, button.id);
 	}
 
 	_serviceProvider.getNetwork().update(deltaTime);
@@ -453,8 +453,9 @@ void SDLBackend::onJoystickButtonPress (uint8_t button, uint32_t id)
 	}
 
 	if (command[0] == '+') {
-		if (_joystickButtons.find(button) == _joystickButtons.end()) {
-			_joystickButtons.insert(button);
+		const JoystickButton b = { id, button };
+		if (_joystickButtons.find(b) == _joystickButtons.end()) {
+			_joystickButtons.insert(b);
 			Commands.executeCommandLine(command);
 		}
 	} else {
@@ -475,7 +476,8 @@ void SDLBackend::onJoystickButtonRelease (uint8_t button, uint32_t id)
 		return;
 	}
 
-	if (_joystickButtons.erase(button) > 0) {
+	const JoystickButton b = { id, button };
+	if (_joystickButtons.erase(b) > 0) {
 		Commands.executeCommandLine(command + " -");
 	}
 }
@@ -491,9 +493,10 @@ void SDLBackend::onControllerButtonPress (const std::string& button, uint32_t id
 	}
 
 	if (command[0] == '+') {
-		if (_controllerButtons.find(button) == _controllerButtons.end()) {
+		const ControllerButton b = { id, button };
+		if (_controllerButtons.find(b) == _controllerButtons.end()) {
 			Commands.executeCommandLine(command);
-			_controllerButtons.insert(button);
+			_controllerButtons.insert(b);
 		}
 	} else {
 		Commands.executeCommandLine(command);
@@ -513,7 +516,8 @@ void SDLBackend::onControllerButtonRelease (const std::string& button, uint32_t 
 		return;
 	}
 
-	if (_controllerButtons.erase(button) > 0) {
+	const ControllerButton b = { id, button };
+	if (_controllerButtons.erase(b) > 0) {
 		Commands.executeCommandLine(command + " -");
 	}
 }
