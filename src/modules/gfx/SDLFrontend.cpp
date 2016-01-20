@@ -546,6 +546,9 @@ void SDLFrontend::initJoystickAndHaptic ()
 		if (rumbleSupported) {
 			Log::info(LOG_GFX, "rumble support");
 			_haptic = haptic;
+		} else {
+			SDL_HapticClose(haptic);
+			haptic = nullptr;
 		}
 	}
 	if (_haptic == nullptr) {
