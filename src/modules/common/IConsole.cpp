@@ -1,6 +1,7 @@
 #include "IConsole.h"
 #include "common/ConfigManager.h"
 #include "common/CommandSystem.h"
+#include "common/FileSystem.h"
 #include "common/Log.h"
 
 IConsole::IConsole () :
@@ -144,4 +145,23 @@ void IConsole::cursorDelete (bool moveCursor)
 	if (moveCursor || _cursorPos > size - 1)
 		cursorLeft();
 	_commandLine.erase(_cursorPos, 1);
+}
+
+FileConsole::FileConsole() {
+	const std::string path = FS.getAbsoluteWritePath() + "logfile.txt";
+	SDL_RWops *rwops = FS.createRWops(path, "w");
+	_filePtr = FilePtr(new File(rwops, path));
+	_filePtr->writeString("LOGFILE");
+}
+
+void FileConsole::logInfo(const std::string& string) {
+	_filePtr->appendString(string.c_str());
+}
+
+void FileConsole::logError(const std::string& string) {
+	logInfo(string);
+}
+
+void FileConsole::logDebug(const std::string& string) {
+	logInfo(string);
 }

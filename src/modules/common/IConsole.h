@@ -7,6 +7,8 @@
 
 // forward decl
 class IFrontend;
+class File;
+typedef std::shared_ptr<File> FilePtr;
 
 class IConsole: public IEventObserver {
 protected:
@@ -60,3 +62,25 @@ public:
 };
 
 typedef std::shared_ptr<IConsole> ConsolePtr;
+
+class FileConsole: public IConsole {
+private:
+	FilePtr _filePtr;
+public:
+	FileConsole();
+	void init (IFrontend *frontend) override
+	{
+	}
+
+	void logInfo (const std::string& string) override;
+	void logError (const std::string& string) override;
+	void logDebug (const std::string& string) override;
+
+	void render () override
+	{
+	}
+
+	void update (uint32_t deltaTime) override
+	{
+	}
+};
