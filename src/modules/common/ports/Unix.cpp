@@ -362,5 +362,9 @@ int Unix::getScreenPadding ()
 
 std::string Unix::getRateURL (const std::string& packageName) const
 {
+#ifdef STEAMLINK
+	return "";
+#else
 	return "http://www.desura.com/games/" + Singleton<Application>::getInstance().getName();
+#endif
 }
