@@ -62,6 +62,7 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 		add(googlePlay);
 	}
 
+#ifndef STEAMLINK
 	UINodeMainButton *twitter = new UINodeMainButton(_frontend, tr("Twitter"));
 	twitter->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "https://twitter.com/MartinGerhardy")));
 	panel->add(twitter);
@@ -69,6 +70,7 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	UINodeMainButton *homepage = new UINodeMainButton(_frontend, tr("Homepage"));
 	homepage->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "http://caveproductions.org/")));
 	panel->add(homepage);
+#endif
 
 #if 0
 #ifdef __EMSCRIPTEN__

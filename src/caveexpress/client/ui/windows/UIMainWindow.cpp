@@ -77,15 +77,11 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 		panel->add(editor);
 	}
 
+#ifndef STEAMLINK
 	UINodeMainButton *twitter = new UINodeMainButton(_frontend, tr("Twitter"));
 	twitter->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "https://twitter.com/MartinGerhardy")));
 	panel->add(twitter);
 
-#if 0
-	UINodeMainButton *facebook = new UINodeMainButton(_frontend, tr("Facebook"));
-	facebook->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "https://facebook.com/" + Singleton<Application>::getInstance().getName())));
-	panel->add(facebook);
-#else
 	UINodeMainButton *homepage = new UINodeMainButton(_frontend, tr("Homepage"));
 	homepage->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "http://caveproductions.org/")));
 	panel->add(homepage);
