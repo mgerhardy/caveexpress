@@ -105,3 +105,5 @@ Version 2.4 (not yet released)
 * Fixed mouse speed
 * Reduced ad frequency
 * Rate me popup
+* Improved game controller support
+* Ported to steamlink device

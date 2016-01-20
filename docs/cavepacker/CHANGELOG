@@ -30,3 +30,5 @@ Version 1.4 (not yet released)
 * Reduced ad frequency
 * Rate me popup
 * Map editor support
+* Improved game controller support
+* Ported to steamlink device
