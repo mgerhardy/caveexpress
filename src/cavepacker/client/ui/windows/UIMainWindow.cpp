@@ -63,6 +63,12 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	}
 
 #ifndef STEAMLINK
+	if (System.supportsUserContent()) {
+		UINodeMainButton *editor = new UINodeMainButton(_frontend, tr("Editor"));
+		editor->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_EDITOR)));
+		panel->add(editor);
+	}
+
 	UINodeMainButton *twitter = new UINodeMainButton(_frontend, tr("Twitter"));
 	twitter->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "https://twitter.com/MartinGerhardy")));
 	panel->add(twitter);
