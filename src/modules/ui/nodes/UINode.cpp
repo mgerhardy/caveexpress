@@ -13,11 +13,10 @@
 int UINode::_counter = 0;
 
 UINode::UINode (IFrontend *frontend, const std::string& id) :
-		_padding(0.0f), _marginTop(0.0f), _marginLeft(0.0f), _onActivate(""), _focus(false), _focusAlpha(0.0f), _focusMouseX(-1), _focusMouseY(-1), _visible(
-				true), _enabled(true), _dragStartX(-1), _dragStartY(-1), _alpha(1.0f), _previousAlpha(1.0f), _id(id), _renderBorder(
-				false), _frontend(frontend), _align(NODE_ALIGN_LEFT), _time(0), _flashMillis(0), _originalAlpha(-1.0f), _autoId(false), _layout(nullptr), _parent(nullptr),
-				_fingerPressed(false), _mousePressed(false)
-{
+		_padding(0.0f), _marginTop(0.0f), _marginLeft(0.0f), _onActivate(""), _focusAlpha(0.0f), _focusMouseX(-1), _focusMouseY(-1), _focus(
+				false), _visible(true), _enabled(true), _renderBorder(false), _dragStartX(-1), _dragStartY(-1), _alpha(1.0f), _previousAlpha(
+				1.0f), _id(id), _frontend(frontend), _align(NODE_ALIGN_LEFT), _time(0), _flashMillis(0), _originalAlpha(-1.0f), _layout(
+				nullptr), _parent(nullptr), _fingerPressed(false), _mousePressed(false), _autoId(false) {
 	setPos(0.0f, 0.0f);
 	setSize(0.0f, 0.0f);
 	Vector4Set(colorWhite, _borderColor);

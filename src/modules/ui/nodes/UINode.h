@@ -109,14 +109,15 @@ protected:
 
 	TexturePtr _texture;
 	std::string _onActivate;
-	bool _focus;
 	float _focusAlpha;
 	// the focus mouse x coordinate
 	int _focusMouseX;
 	// the focus mouse y coordinate
 	int _focusMouseY;
+	bool _focus;
 	bool _visible;
 	bool _enabled;
+	bool _renderBorder;
 	// start positions of a drag
 	int _dragStartX;
 	int _dragStartY;
@@ -125,7 +126,6 @@ protected:
 	float _alpha;
 	float _previousAlpha;
 	std::string _id;
-	bool _renderBorder;
 	Color _borderColor;
 	Color _backgroundColor;
 	IFrontend *_frontend;
@@ -133,7 +133,6 @@ protected:
 	uint32_t _time;
 	uint32_t _flashMillis;
 	float _originalAlpha;
-	bool _autoId;
 
 	struct UINodeDelayedText {
 		std::string text;
@@ -154,8 +153,10 @@ protected:
 	IUILayout* _layout;
 	UINode* _parent;
 	std::string _tooltip;
+
 	bool _fingerPressed;
 	bool _mousePressed;
+	bool _autoId;
 
 	TexturePtr loadTexture (const std::string& name) const;
 	void renderImage (const TexturePtr& texture, int x, int y, int w = -1, int h = -1, float alpha = 1.0f) const;
