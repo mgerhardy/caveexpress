@@ -587,11 +587,11 @@ void UI::onJoystickMotion (bool horizontal, int v, uint32_t id)
 	const int index = horizontal ? 0 : 1;
 	SDL_assert(SDL_arraysize(_joystickFocusChange) == 2);
 	if (v < -delta) {
-		if (!_joystickFocusChange[0] && !_joystickFocusChange[1])
+		if (!_joystickFocusChange[index])
 			focusPrev(args);
 		_joystickFocusChange[index] = true;
 	} else if (v > delta) {
-		if (!_joystickFocusChange[0] && !_joystickFocusChange[1])
+		if (!_joystickFocusChange[index])
 			focusNext(args);
 		_joystickFocusChange[index] = true;
 	} else {
