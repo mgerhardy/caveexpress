@@ -58,8 +58,6 @@ private:
 	EventHandler *_eventHandler;
 	IFrontend *_frontend;
 	TexturePtr _mouseCursor;
-	bool _cursor;
-	bool _showCursor;
 	ConfigVarPtr _mouseSpeed;
 
 	typedef std::map<std::string, UIWindow*> UIWindowMap;
@@ -74,7 +72,6 @@ private:
 
 	int32_t _cursorX;
 	int32_t _cursorY;
-	bool _motionFinger;
 
 	void printStack ();
 	void focusNext (const ICommand::Args& args);
@@ -95,21 +92,24 @@ private:
 
 	mutable SpriteCache _spriteCache;
 
-	bool _restart;
-	bool _delayedPop;
-	bool _noPushAllowed;
-
-	uint32_t _time;
-	uint32_t _lastJoystickMoveTime;
 	bool _joystickFocusChange[2];
 	bool _rotateFonts;
+	bool _restart;
+
+	bool _delayedPop;
+	bool _noPushAllowed;
+	bool _shutdown;
+	bool _motionFinger;
+
+	bool _cursor;
+	bool _showCursor;
+
+	uint32_t _time;
 
 	typedef std::map<std::string, std::string> LanguageMap;
 	LanguageMap _languageMap;
 
 	SDL_threadID _threadId;
-
-	bool _shutdown;
 
 	UI ();
 	void pushCmd (const std::string& windowID);

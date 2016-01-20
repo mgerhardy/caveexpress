@@ -33,10 +33,9 @@ static inline int coordinateScaleY(int y, float scale, IFrontend* frontend) {
 }
 
 UI::UI () :
-		_serviceProvider(nullptr), _eventHandler(nullptr), _frontend(nullptr), _cursor(true), _showCursor(false), _cursorX(
-				-1), _cursorY(-1), _motionFinger(false), _restart(false), _delayedPop(false), _noPushAllowed(false), _time(0),
-				_lastJoystickMoveTime(0), _rotateFonts(true), _shutdown(false)
-{
+		_serviceProvider(nullptr), _eventHandler(nullptr), _frontend(nullptr), _cursorX(-1), _cursorY(-1), _rotateFonts(true), _restart(
+				false), _delayedPop(false), _noPushAllowed(false), _shutdown(false), _motionFinger(false), _cursor(true), _showCursor(
+				false), _time(0) {
 	for (int i = 0; i < SDL_arraysize(_joystickFocusChange); ++i) {
 		_joystickFocusChange[i] = false;
 	}
@@ -577,12 +576,6 @@ void UI::onJoystickMotion (bool horizontal, int v, uint32_t id)
 
 	if (Config.getBindingsSpace() != BINDINGS_UI)
 		return;
-
-	if (_time - _lastJoystickMoveTime < 150) {
-		return;
-	}
-
-	_lastJoystickMoveTime = _time;
 
 	if (!(*stack.rbegin())->isActiveAfterPush()) {
 		return;
