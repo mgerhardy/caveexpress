@@ -19,7 +19,7 @@
 namespace caveexpress {
 
 namespace {
-const float gravityScale = 0.2f;
+const float gravityScale = 0.3f;
 }
 
 Player::Player (Map& map, ClientId clientId) :
