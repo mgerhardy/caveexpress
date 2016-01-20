@@ -35,8 +35,11 @@ static inline int coordinateScaleY(int y, float scale, IFrontend* frontend) {
 UI::UI () :
 		_serviceProvider(nullptr), _eventHandler(nullptr), _frontend(nullptr), _cursor(true), _showCursor(false), _cursorX(
 				-1), _cursorY(-1), _motionFinger(false), _restart(false), _delayedPop(false), _noPushAllowed(false), _time(0),
-				_lastJoystickMoveTime(0), _lastJoystickMovementValue(0), _joystickFocusChange(true), _rotateFonts(true), _shutdown(false)
+				_lastJoystickMoveTime(0), _rotateFonts(true), _shutdown(false)
 {
+	for (int i = 0; i < SDL_arraysize(_joystickFocusChange); ++i) {
+		_joystickFocusChange[i] = false;
+	}
 	_threadId = SDL_ThreadID();
 }
 
@@ -575,35 +578,31 @@ void UI::onJoystickMotion (bool horizontal, int v, uint32_t id)
 	if (Config.getBindingsSpace() != BINDINGS_UI)
 		return;
 
-	// skip focus change if we go back to initial position
-	if (v > 0 && v < _lastJoystickMovementValue) {
-		_joystickFocusChange = false;
-	} else if (v < 0 && v > _lastJoystickMovementValue) {
-		_joystickFocusChange = false;
-	} else {
-		_joystickFocusChange = true;
-	}
-
 	if (_time - _lastJoystickMoveTime < 150) {
 		return;
 	}
 
 	_lastJoystickMoveTime = _time;
-	_lastJoystickMovementValue = v;
 
 	if (!(*stack.rbegin())->isActiveAfterPush()) {
 		return;
 	}
 
-	if (_joystickFocusChange) {
-		// now check whether our value is bigger than our movement delta
-		const int delta = 10000;
-		static const ICommand::Args args(0);
-		if (v < -delta) {
+	// now check whether our value is bigger than our movement delta
+	const int delta = 10000;
+	static const ICommand::Args args(0);
+	const int index = horizontal ? 0 : 1;
+	SDL_assert(SDL_arraysize(_joystickFocusChange) == 2);
+	if (v < -delta) {
+		if (!_joystickFocusChange[0] && !_joystickFocusChange[1])
 			focusPrev(args);
-		} else if (v > delta) {
+		_joystickFocusChange[index] = true;
+	} else if (v > delta) {
+		if (!_joystickFocusChange[0] && !_joystickFocusChange[1])
 			focusNext(args);
-		}
+		_joystickFocusChange[index] = true;
+	} else {
+		_joystickFocusChange[index] = false;
 	}
 }
 

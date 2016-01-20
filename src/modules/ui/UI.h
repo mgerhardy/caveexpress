@@ -101,8 +101,7 @@ private:
 
 	uint32_t _time;
 	uint32_t _lastJoystickMoveTime;
-	int _lastJoystickMovementValue;
-	bool _joystickFocusChange;
+	bool _joystickFocusChange[2];
 	bool _rotateFonts;
 
 	typedef std::map<std::string, std::string> LanguageMap;
