@@ -23,7 +23,7 @@ public:
 			return;
 		}
 		const FingerMovementMessage* msg = static_cast<const FingerMovementMessage*>(&message);
-		player->setAcceleration(msg->getDeltaX(), msg->getDeltaY());
+		player->setFingerAcceleration(msg->getDeltaX(), msg->getDeltaY());
 	}
 };
 

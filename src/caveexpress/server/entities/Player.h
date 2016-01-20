@@ -85,8 +85,8 @@ public:
 
 	void resetAcceleration (Direction dir);
 	void accelerate (Direction dir);
-	void setAcceleration (int dx, int dy);
-	void resetAcceleration ();
+	void setFingerAcceleration (int dx, int dy);
+	void resetFingerAcceleration ();
 	void applyForce (const b2Vec2& v);
 
 	// sets the landing spot the player is currently landed on

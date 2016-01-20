@@ -81,7 +81,7 @@ void Player::accelerate (Direction dir)
 	_acceleration.y = clamp(_acceleration.y, -maxVerticalVelocity, maxVerticalVelocity);
 }
 
-void Player::resetAcceleration ()
+void Player::resetFingerAcceleration ()
 {
 	if (isCrashed())
 		return;
@@ -90,7 +90,7 @@ void Player::resetAcceleration ()
 	setAnimationType(Animations::ANIMATION_IDLE);
 }
 
-void Player::setAcceleration (int dx, int dy)
+void Player::setFingerAcceleration (int dx, int dy)
 {
 	if (isCrashed())
 		return;

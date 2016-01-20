@@ -22,7 +22,7 @@ public:
 			Log::error(LOG_GAMEIMPL, "movement for player with clientId %i failed", (int)clientId);
 			return;
 		}
-		player->resetAcceleration();
+		player->resetFingerAcceleration();
 	}
 };
 
