@@ -107,3 +107,6 @@ Version 2.4 (not yet released)
 * Rate me popup
 * Improved game controller support
 * Ported to steamlink device
+* Updated tutorial maps to be a little bit easier
+* Changed focus order of some of the buttons
+* Reduced npc flying speed
