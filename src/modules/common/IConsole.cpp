@@ -152,6 +152,11 @@ FileConsole::FileConsole() {
 	SDL_RWops *rwops = FS.createRWops(path, "w");
 	_filePtr = FilePtr(new File(rwops, path));
 	_filePtr->writeString("LOGFILE");
+	Log::get().addConsole(this);
+}
+
+FileConsole::~FileConsole() {
+	Log::get().removeConsole(this);
 }
 
 void FileConsole::logInfo(const std::string& string) {

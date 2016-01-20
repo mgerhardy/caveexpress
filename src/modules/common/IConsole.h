@@ -68,6 +68,8 @@ private:
 	FilePtr _filePtr;
 public:
 	FileConsole();
+	~FileConsole();
+
 	void init (IFrontend *frontend) override
 	{
 	}
