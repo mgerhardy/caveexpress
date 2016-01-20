@@ -160,7 +160,8 @@ FileConsole::~FileConsole() {
 }
 
 void FileConsole::logInfo(const std::string& string) {
-	_filePtr->appendString(string.c_str());
+	const std::string final = string + "\n";
+	_filePtr->appendString(final.c_str());
 }
 
 void FileConsole::logError(const std::string& string) {
