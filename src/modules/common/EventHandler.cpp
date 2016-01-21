@@ -77,10 +77,9 @@ bool EventHandler::handleEvent (SDL_Event &event)
 			break;
 		mouseWheel(event.wheel.x, event.wheel.y);
 		break;
-	case SDL_CONTROLLERAXISMOTION: {
+	case SDL_CONTROLLERAXISMOTION:
 		joystickMotion(event.caxis.axis, event.caxis.value, event.caxis.which);
 		break;
-	}
 	case SDL_CONTROLLERBUTTONDOWN:
 		controllerButtonPress(getControllerButtonName(event.cbutton.button), event.cbutton.which);
 		break;
@@ -115,13 +114,12 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		static const int negative = SDL_HAT_UP | SDL_HAT_LEFT;
 		static const int positive = SDL_HAT_DOWN | SDL_HAT_RIGHT;
 		const int hat = event.jhat.hat;
-		const bool horizontal = (hat & horizontalMask);
 		int value = 0;
 		if (hat & negative)
 			value = -1000;
 		else if (hat & positive)
 			value = 1000;
-		joystickMotion(horizontal, value, event.jhat.which);
+		joystickMotion(SDL_CONTROLLER_AXIS_MAX, value, event.jhat.which);
 		break;
 	}
 	case SDL_JOYBUTTONDOWN:
@@ -134,7 +132,7 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		break;
 	case SDL_JOYAXISMOTION:
 		if (!SDL_IsGameController(event.jaxis.which))
-			joystickMotion(event.jaxis.axis == 0, event.jaxis.value, event.jaxis.which);
+			joystickMotion(SDL_CONTROLLER_AXIS_MAX, event.jaxis.value, event.jaxis.which);
 		break;
 	case SDL_FINGERDOWN:
 		fingerPress(event.tfinger.fingerId, event.tfinger.x, event.tfinger.y);
