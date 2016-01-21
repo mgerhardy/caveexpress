@@ -63,11 +63,12 @@ bool UINodeSlider::onMouseWheel (int32_t x, int32_t y)
 	return retVal;
 }
 
-bool UINodeSlider::onJoystickMotion (bool horizontal, int value, uint32_t id)
+bool UINodeSlider::onJoystickMotion (uint8_t axis, int value, uint32_t id)
 {
 	if (!hasFocus())
 		return false;
 
+	const bool horizontal = axis == SDL_CONTROLLER_AXIS_LEFTX || axis == SDL_CONTROLLER_AXIS_RIGHTY;
 	if (!horizontal)
 		return false;
 
@@ -76,7 +77,7 @@ bool UINodeSlider::onJoystickMotion (bool horizontal, int value, uint32_t id)
 	else
 		setValue(_value - _stepWidth);
 
-	UINode::onJoystickMotion(horizontal, value, id);
+	UINode::onJoystickMotion(axis, value, id);
 	return true;
 }
 

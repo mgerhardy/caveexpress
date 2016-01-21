@@ -107,9 +107,9 @@ void UINodeMapControl::onJoystickDeviceRemoved (uint32_t id)
 	dv.oldDirection = 0;
 }
 
-bool UINodeMapControl::onJoystickMotion (bool horizontal, int value, uint32_t id)
+bool UINodeMapControl::onJoystickMotion (uint8_t axis, int value, uint32_t id)
 {
-	UINode::onJoystickMotion(horizontal, value, id);
+	UINode::onJoystickMotion(axis, value, id);
 	if (_map.isPause() || !_joystick) {
 		for (int i = 0; i < SDL_arraysize(_d); ++i) {
 			DirectionValues& dv = _d[i];
@@ -118,6 +118,7 @@ bool UINodeMapControl::onJoystickMotion (bool horizontal, int value, uint32_t id
 		return false;
 	}
 
+	const bool horizontal = axis == SDL_CONTROLLER_AXIS_LEFTX || axis == SDL_CONTROLLER_AXIS_RIGHTY;
 	if (horizontal)
 		Log::trace(LOG_UI, "h joystick movement: %i (device %i)", value, id);
 	else

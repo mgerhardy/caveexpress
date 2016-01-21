@@ -204,7 +204,7 @@ public:
 	void onMouseButtonRelease (int32_t x, int32_t y, uint8_t button) override;
 	void onMouseButtonPress (int32_t x, int32_t y, uint8_t button) override;
 	void onMouseWheel (int32_t x, int32_t y) override;
-	void onJoystickMotion (bool horizontal, int value, uint32_t id) override;
+	void onJoystickMotion (uint8_t axis, int value, uint32_t id) override;
 	void onJoystickDeviceRemoved (int32_t device) override;
 	void onJoystickDeviceAdded (int32_t device) override;
 	void onJoystickButtonPress (uint8_t button, uint32_t id) override;

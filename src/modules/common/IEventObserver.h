@@ -46,10 +46,11 @@ public:
 	}
 
 	/**
-	 * @param[in] horizontal
-	 * @param[in] value The relative value that the joystick was moved, [-32768,32767]
+	 * @param[in] axis SDL_GameControllerAxis
+	 * @param[in] value -32768 to 32767
+	 * @param[in] id game controller id
 	 */
-	virtual void onJoystickMotion (bool horizontal, int value, uint32_t id)
+	virtual void onJoystickMotion (uint8_t axis, int value, uint32_t id)
 	{
 	}
 

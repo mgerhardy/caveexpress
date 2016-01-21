@@ -78,12 +78,7 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		mouseWheel(event.wheel.x, event.wheel.y);
 		break;
 	case SDL_CONTROLLERAXISMOTION: {
-		const uint8_t axis = event.caxis.axis;
-		if (axis != SDL_CONTROLLER_AXIS_LEFTX && axis != SDL_CONTROLLER_AXIS_LEFTY
-		 && axis != SDL_CONTROLLER_AXIS_RIGHTX && axis != SDL_CONTROLLER_AXIS_RIGHTY)
-			break;
-		const bool horizontal = (axis == SDL_CONTROLLER_AXIS_LEFTX || axis == SDL_CONTROLLER_AXIS_RIGHTX);
-		joystickMotion(horizontal, event.caxis.value, event.caxis.which);
+		joystickMotion(event.caxis.axis, event.caxis.value, event.caxis.which);
 		break;
 	}
 	case SDL_CONTROLLERBUTTONDOWN:
@@ -245,10 +240,10 @@ void EventHandler::foreground ()
 	}
 }
 
-void EventHandler::joystickMotion (bool horizontal, int value, uint32_t id)
+void EventHandler::joystickMotion (uint8_t axis, int value, uint32_t id)
 {
 	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onJoystickMotion(horizontal, value, id);
+		(*i)->onJoystickMotion(axis, value, id);
 	}
 }
 

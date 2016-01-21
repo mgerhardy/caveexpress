@@ -560,7 +560,7 @@ void UI::onJoystickDeviceAdded (int32_t device)
 	}
 }
 
-void UI::onJoystickMotion (bool horizontal, int v, uint32_t id)
+void UI::onJoystickMotion (uint8_t axis, int v, uint32_t id)
 {
 	if (_restart)
 		return;
@@ -568,7 +568,7 @@ void UI::onJoystickMotion (bool horizontal, int v, uint32_t id)
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		if (window->onJoystickMotion(horizontal, v, id))
+		if (window->onJoystickMotion(axis, v, id))
 			return;
 		if (window->isModal() || window->isFullscreen())
 			break;

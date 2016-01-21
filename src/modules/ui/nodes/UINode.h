@@ -413,9 +413,11 @@ public:
 	virtual void onJoystickDeviceRemoved (uint32_t id) {}
 	virtual void onJoystickDeviceAdded (uint32_t id) {}
 	/**
-	 * @param[in] value The relative value that the joystick was moved, [-32768,32767]
+	 * @param[in] axis SDL_GameControllerAxis
+	 * @param[in] value -32768 to 32767
+	 * @param[in] id game controller id
 	 */
-	virtual bool onJoystickMotion (bool horizontal, int value, uint32_t id);
+	virtual bool onJoystickMotion (uint8_t axis, int value, uint32_t id);
 	virtual bool onJoystickButtonPress (int x, int y, uint8_t button, uint32_t id);
 	virtual bool onControllerButtonPress (int x, int y, const std::string& button, uint32_t id);
 
