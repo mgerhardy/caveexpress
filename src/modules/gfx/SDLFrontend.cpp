@@ -26,7 +26,7 @@ struct RenderTarget {
 };
 
 SDLFrontend::SDLFrontend (std::shared_ptr<IConsole> console) :
-		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _softwareRenderer(false), _drawCalls(0), _updateJoysticks(false)
+		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _updateJoysticks(false), _softwareRenderer(false), _drawCalls(0)
 {
 	_window = nullptr;
 	_haptic = nullptr;

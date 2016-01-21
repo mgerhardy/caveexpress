@@ -28,12 +28,11 @@ protected:
 
 	ConfigVarPtr _debugSleep;
 
+	bool _updateJoysticks;
 	bool _softwareRenderer;
 	int _drawCalls;
 
 	Color _color;
-
-	bool _updateJoysticks;
 
 	void setWindowTitle (const std::string& title);
 	inline uint32_t getDisplayFormat () const;
