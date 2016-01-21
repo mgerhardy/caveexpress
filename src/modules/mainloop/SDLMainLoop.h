@@ -29,7 +29,7 @@ enum class InitState {
 	INITSTATE_DONE
 };
 
-class SDLBackend: public NonCopyable, public IEventObserver, public IServerCallback, public IBindingSpaceListener {
+class SDLMainLoop: public NonCopyable, public IEventObserver, public IServerCallback, public IBindingSpaceListener {
 private:
 	bool _dedicated;
 	bool _running;
@@ -84,8 +84,8 @@ private:
 		return Singleton<GameRegistry>::getInstance().getGame();
 	}
 public:
-	SDLBackend ();
-	virtual ~SDLBackend ();
+	SDLMainLoop ();
+	virtual ~SDLMainLoop ();
 
 	bool isRunning () const;
 	void mainLoop (int argc, char **argv);

@@ -1,4 +1,4 @@
-#include "server/SDLBackend.h"
+#include "mainloop/SDLMainLoop.h"
 #include "common/ConfigManager.h"
 #include "common/Log.h"
 #include "common/Application.h"
@@ -27,7 +27,7 @@ extern "C" int main (int argc, char *argv[])
 
 	{
 		Log::info(LOG_MAIN, "Entering mainloop");
-		SDLBackend sdlBackend;
+		SDLMainLoop sdlBackend;
 		sdlBackend.mainLoop(argc, argv);
 		Log::info(LOG_MAIN, "Leaving mainloop");
 	}

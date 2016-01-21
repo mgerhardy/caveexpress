@@ -7,4 +7,4 @@ set(cavepacker-server_SRCS
 )
 add_library(cavepacker-server ${cavepacker-server_SRCS})
 set_target_properties(cavepacker-server PROPERTIES FOLDER cavepacker-server)
-cp_target_link_libraries(TARGET cavepacker-server LIBS server cavepacker-shared)
+cp_target_link_libraries(TARGET cavepacker-server LIBS mainloop cavepacker-shared)

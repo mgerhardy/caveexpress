@@ -1,4 +1,4 @@
-#include "SDLBackend.h"
+#include <mainloop/SDLMainLoop.h>
 #include "common/Log.h"
 #include "network/INetwork.h"
 #include "common/String.h"
@@ -26,7 +26,7 @@
 #include <SDL.h>
 #include <time.h>
 
-static SDLBackend *INSTANCE;
+static SDLMainLoop *INSTANCE;
 #ifdef EMSCRIPTEN
 #include <emscripten.h>
 
@@ -44,21 +44,21 @@ static void runFrameEmscripten() {
 }
 #endif
 
-SDLBackend::SDLBackend () :
+SDLMainLoop::SDLMainLoop () :
 		_dedicated(false), _running(true), _initState(InitState::INITSTATE_CONFIG), _argc(0), _argv(nullptr), _frontend(nullptr)
 {
 	SDL_SetEventFilter(handleAppEvents, this);
 
-	Commands.registerCommandString(CMD_SCREENSHOT, bindFunction(SDLBackend::screenShot));
-	Commands.registerCommandString(CMD_MAP_START, bindFunction(SDLBackend::loadMap))->setCompleter(loadMapCompleter);
-	Commands.registerCommandVoid(CMD_STATUS, bindFunctionVoid(SDLBackend::status));
+	Commands.registerCommandString(CMD_SCREENSHOT, bindFunction(SDLMainLoop::screenShot));
+	Commands.registerCommandString(CMD_MAP_START, bindFunction(SDLMainLoop::loadMap))->setCompleter(loadMapCompleter);
+	Commands.registerCommandVoid(CMD_STATUS, bindFunctionVoid(SDLMainLoop::status));
 	_eventHandler.registerObserver(this);
 	_keys.clear();
 	_joystickButtons.clear();
 	_controllerButtons.clear();
 }
 
-SDLBackend::~SDLBackend ()
+SDLMainLoop::~SDLMainLoop ()
 {
 	Log::info(LOG_SERVER, "shutdown backend");
 	_eventHandler.removeObserver(this);
@@ -76,12 +76,12 @@ SDLBackend::~SDLBackend ()
 	SDL_Quit();
 }
 
-bool SDLBackend::isRunning () const
+bool SDLMainLoop::isRunning () const
 {
 	return _running;
 }
 
-void SDLBackend::handleEvent (SDL_Event &event)
+void SDLMainLoop::handleEvent (SDL_Event &event)
 {
 	if (event.type == SDL_KEYDOWN) {
 		const SDL_Keycode sym = event.key.keysym.sym;
@@ -124,7 +124,7 @@ void SDLBackend::handleEvent (SDL_Event &event)
 	}
 }
 
-void SDLBackend::handleCommandLineArguments (int argc, char **argv)
+void SDLMainLoop::handleCommandLineArguments (int argc, char **argv)
 {
 	Log::info(LOG_SERVER, "execute commandline");
 	ICommand::Args args;
@@ -148,21 +148,21 @@ void SDLBackend::handleCommandLineArguments (int argc, char **argv)
 	Log::info(LOG_SERVER, "commandline handled");
 }
 
-void SDLBackend::frameCallback (void *userdata)
+void SDLMainLoop::frameCallback (void *userdata)
 {
-	SDLBackend *backend = static_cast<SDLBackend*>(userdata);
+	SDLMainLoop *backend = static_cast<SDLMainLoop*>(userdata);
 	backend->runFrame();
 }
 
-int SDLBackend::handleAppEvents (void *userdata, SDL_Event *event)
+int SDLMainLoop::handleAppEvents (void *userdata, SDL_Event *event)
 {
-	SDLBackend* backend = static_cast<SDLBackend*>(userdata);
+	SDLMainLoop* backend = static_cast<SDLMainLoop*>(userdata);
 	if (backend->_eventHandler.handleAppEvent(*event))
 		return 0;
 	return 1;
 }
 
-void SDLBackend::resetKeyStates ()
+void SDLMainLoop::resetKeyStates ()
 {
 	KeyMap keyMap = _keys;
 	JoystickSet joystickSet = _joystickButtons;
@@ -183,7 +183,7 @@ void SDLBackend::resetKeyStates ()
 	_controllerButtons.clear();
 }
 
-bool SDLBackend::handleInit() {
+bool SDLMainLoop::handleInit() {
 	switch (_initState) {
 	case InitState::INITSTATE_CONFIG:
 		Log::info(LOG_SERVER, "init config");
@@ -292,7 +292,7 @@ bool SDLBackend::handleInit() {
 	return true;
 }
 
-void SDLBackend::runFrame ()
+void SDLMainLoop::runFrame ()
 {
 	if (handleInit())
 		return;
@@ -329,7 +329,7 @@ void SDLBackend::runFrame ()
 	System.tick(deltaTime);
 }
 
-void SDLBackend::mainLoop (int argc, char **argv)
+void SDLMainLoop::mainLoop (int argc, char **argv)
 {
 	System.track("step", "sdl backend start");
 	_argc = argc;
@@ -383,7 +383,7 @@ void SDLBackend::mainLoop (int argc, char **argv)
 	System.track("step", "sdl backend shutdown");
 }
 
-bool SDLBackend::onKeyRelease (int32_t key)
+bool SDLMainLoop::onKeyRelease (int32_t key)
 {
 	if (_frontend->handlesInput())
 		return false;
@@ -403,7 +403,7 @@ bool SDLBackend::onKeyRelease (int32_t key)
 	return true;
 }
 
-bool SDLBackend::onKeyPress (int32_t key, int16_t modifier)
+bool SDLMainLoop::onKeyPress (int32_t key, int16_t modifier)
 {
 	if (_frontend->handlesInput())
 		return false;
@@ -442,7 +442,7 @@ bool SDLBackend::onKeyPress (int32_t key, int16_t modifier)
 	return false;
 }
 
-void SDLBackend::onJoystickButtonPress (uint8_t button, uint32_t id)
+void SDLMainLoop::onJoystickButtonPress (uint8_t button, uint32_t id)
 {
 	if (_frontend->handlesInput())
 		return;
@@ -463,7 +463,7 @@ void SDLBackend::onJoystickButtonPress (uint8_t button, uint32_t id)
 	}
 }
 
-void SDLBackend::onJoystickButtonRelease (uint8_t button, uint32_t id)
+void SDLMainLoop::onJoystickButtonRelease (uint8_t button, uint32_t id)
 {
 	if (_frontend->handlesInput())
 		return;
@@ -482,7 +482,7 @@ void SDLBackend::onJoystickButtonRelease (uint8_t button, uint32_t id)
 	}
 }
 
-void SDLBackend::onControllerButtonPress (const std::string& button, uint32_t id)
+void SDLMainLoop::onControllerButtonPress (const std::string& button, uint32_t id)
 {
 	if (_frontend->handlesInput())
 		return;
@@ -503,7 +503,7 @@ void SDLBackend::onControllerButtonPress (const std::string& button, uint32_t id
 	}
 }
 
-void SDLBackend::onControllerButtonRelease (const std::string& button, uint32_t id)
+void SDLMainLoop::onControllerButtonRelease (const std::string& button, uint32_t id)
 {
 	if (_frontend->handlesInput())
 		return;
@@ -522,7 +522,7 @@ void SDLBackend::onControllerButtonRelease (const std::string& button, uint32_t 
 	}
 }
 
-void SDLBackend::screenShot (const std::string& argument)
+void SDLMainLoop::screenShot (const std::string& argument)
 {
 	std::string name = argument;
 	if (name.empty()) {
@@ -533,7 +533,7 @@ void SDLBackend::screenShot (const std::string& argument)
 	_frontend->makeScreenshot(name);
 }
 
-void SDLBackend::status ()
+void SDLMainLoop::status ()
 {
 	const std::string& map = getGame()->getMapName();
 
@@ -545,7 +545,7 @@ void SDLBackend::status ()
 	Log::info(LOG_SERVER, "map running: %s", map.c_str());
 }
 
-void SDLBackend::loadMapCompleter (const std::string& input, std::vector<std::string>& matches)
+void SDLMainLoop::loadMapCompleter (const std::string& input, std::vector<std::string>& matches)
 {
 	const IMapManager::Maps& maps = INSTANCE->_serviceProvider.getMapManager().getMapsByWildcard(input + "*");
 	for (IMapManager::Maps::const_iterator i = maps.begin(); i != maps.end(); ++i) {
@@ -553,7 +553,7 @@ void SDLBackend::loadMapCompleter (const std::string& input, std::vector<std::st
 	}
 }
 
-void SDLBackend::loadMap (const std::string& mapName)
+void SDLMainLoop::loadMap (const std::string& mapName)
 {
 	_serviceProvider.getNetwork().closeServer();
 	if (getGame()->mapLoad(mapName)) {
@@ -569,7 +569,7 @@ void SDLBackend::loadMap (const std::string& mapName)
 	Log::info(LOG_SERVER, "failed to load map %s", mapName.c_str());
 }
 
-void SDLBackend::onData (ClientId clientId, ByteStream &data)
+void SDLMainLoop::onData (ClientId clientId, ByteStream &data)
 {
 	ProtocolMessageFactory& factory = ProtocolMessageFactory::get();
 	while (factory.isNewMessageAvailable(data)) {
@@ -589,7 +589,7 @@ void SDLBackend::onData (ClientId clientId, ByteStream &data)
 	}
 }
 
-ProtocolMessagePtr SDLBackend::onOOBData (const unsigned char *data)
+ProtocolMessagePtr SDLMainLoop::onOOBData (const unsigned char *data)
 {
 	if (strcmp("discover", reinterpret_cast<const char*>(data)))
 		return ProtocolMessagePtr();
@@ -604,13 +604,13 @@ ProtocolMessagePtr SDLBackend::onOOBData (const unsigned char *data)
 	return msg;
 }
 
-void SDLBackend::onConnection (ClientId clientId)
+void SDLMainLoop::onConnection (ClientId clientId)
 {
 	Log::info(LOG_SERVER, "connect of client with id %i", static_cast<int>(clientId));
 	getGame()->connect(clientId);
 }
 
-void SDLBackend::onDisconnect (ClientId clientId)
+void SDLMainLoop::onDisconnect (ClientId clientId)
 {
 	Log::info(LOG_SERVER, "disconnect of client with id %i", static_cast<int>(clientId));
 	const GamePtr& game = getGame();

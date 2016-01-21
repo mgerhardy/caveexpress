@@ -6,4 +6,4 @@ set(miniracer-server_SRCS
 )
 add_library(miniracer-server ${miniracer-server_SRCS})
 set_target_properties(miniracer-server PROPERTIES FOLDER miniracer-server)
-cp_target_link_libraries(TARGET miniracer-server LIBS server miniracer-shared)
+cp_target_link_libraries(TARGET miniracer-server LIBS mainloop miniracer-shared)
