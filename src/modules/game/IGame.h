@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ui/UI.h"
 #include <memory>
 #include "network/IProtocolHandler.h"
 #include "common/MapManager.h"

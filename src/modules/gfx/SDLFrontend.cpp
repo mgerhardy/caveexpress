@@ -9,6 +9,7 @@
 #include "common/DateUtil.h"
 #include "common/Singleton.h"
 #include "game/GameRegistry.h"
+#include "ui/UI.h"
 #include "ui/BitmapFont.h"
 #include "common/Commands.h"
 #include "common/Application.h"

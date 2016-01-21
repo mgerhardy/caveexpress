@@ -2,10 +2,14 @@
 
 #include "common/IConsole.h"
 #include "common/IEventObserver.h"
-#include "ui/BitmapFont.h"
+#include "common/Math.h"
 #include <string>
 #include <vector>
+#include <memory>
 #include <inttypes.h>
+
+class BitmapFont;
+typedef std::shared_ptr<BitmapFont> BitmapFontPtr;
 
 class ClientConsole: public IConsole {
 private:

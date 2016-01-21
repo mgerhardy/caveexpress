@@ -1,5 +1,6 @@
 #include "ClientConsole.h"
 #include "ui/UI.h"
+#include "ui/BitmapFont.h"
 #include "common/CommandSystem.h"
 #include "common/IFrontend.h"
 #include "common/Log.h"
