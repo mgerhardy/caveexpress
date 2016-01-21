@@ -582,16 +582,17 @@ void UI::onJoystickMotion (uint8_t axis, int v, uint32_t id)
 	}
 
 	// now check whether our value is bigger than our movement delta
-	const int delta = 10000;
+	const int delta = 12000;
 	static const ICommand::Args args(0);
+	const bool horizontal = axis == SDL_CONTROLLER_AXIS_LEFTX || axis == SDL_CONTROLLER_AXIS_RIGHTY;
 	const int index = horizontal ? 0 : 1;
 	SDL_assert(SDL_arraysize(_joystickFocusChange) == 2);
 	if (v < -delta) {
-		if (!_joystickFocusChange[index])
+		if (!_joystickFocusChange[0] && !_joystickFocusChange[1])
 			focusPrev(args);
 		_joystickFocusChange[index] = true;
 	} else if (v > delta) {
-		if (!_joystickFocusChange[index])
+		if (!_joystickFocusChange[0] && !_joystickFocusChange[1])
 			focusNext(args);
 		_joystickFocusChange[index] = true;
 	} else {
