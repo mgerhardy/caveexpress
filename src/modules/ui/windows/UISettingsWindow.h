@@ -9,10 +9,10 @@ class UINodeButton;
 
 #define UIWINDOW_SETTINGS_COLOR(state, one, two) \
 	if (state) { \
-		one->setColor(colorGreen); \
+		one->setColor(colorGray); \
 		two->setColor(colorBlack); \
 	} else { \
-		two->setColor(colorGreen); \
+		two->setColor(colorGray); \
 		one->setColor(colorBlack); \
 	}
 
