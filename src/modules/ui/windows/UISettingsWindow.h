@@ -12,6 +12,19 @@ protected:
 	ServiceProvider& _serviceProvider;
 	UINode* _controllerNode;
 	UINodeLabel* _noController;
+
+	UINodeLabel* _texturesBig;
+	UINodeLabel* _texturesSmall;
+
+	UINodeLabel* _soundOn;
+	UINodeLabel* _soundOff;
+
+	UINodeLabel* _fullscreenOn;
+	UINodeLabel* _fullscreenOff;
+
+	UINodeLabel* _triggeraxisOn;
+	UINodeLabel* _triggeraxisOff;
+
 	UINode* addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& option1,
 			UINodeListener* option1Listener, const std::string& option2, UINodeListener* option2Listener);
 	UINode* addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& configVar);

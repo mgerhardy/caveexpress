@@ -14,5 +14,10 @@ public:
 	void onClick () override
 	{
 		_frontend->setFullscreen(_on);
+		const ConfigVarPtr& var = Config.getConfigVar("fullscreen");
+		if (_on)
+			var->setValue("true");
+		else
+			var->setValue("false");
 	}
 };

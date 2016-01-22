@@ -22,11 +22,21 @@
 #include "ui/windows/listener/SoundNodeListener.h"
 #include "ui/windows/listener/FullscreenListener.h"
 
+#define COLOR(state, one, two) \
+	if (state) { \
+		one->setColor(colorGreen); \
+		two->setColor(colorWhite); \
+	} else { \
+		two->setColor(colorGreen); \
+		one->setColor(colorWhite); \
+	}
+
 #include <SDL.h>
 
 UISettingsWindow::UISettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
-		UIWindow(UI_WINDOW_SETTINGS, frontend, WINDOW_FLAG_MODAL), _background(nullptr), _serviceProvider(serviceProvider), _controllerNode(nullptr), _noController(nullptr)
-{
+		UIWindow(UI_WINDOW_SETTINGS, frontend, WINDOW_FLAG_MODAL), _background(nullptr), _serviceProvider(serviceProvider), _controllerNode(
+				nullptr), _noController(nullptr), _texturesBig(nullptr), _texturesSmall(nullptr), _soundOn(nullptr), _soundOff(nullptr), _fullscreenOn(
+				nullptr), _fullscreenOff(nullptr), _triggeraxisOn(nullptr), _triggeraxisOff(nullptr) {
 }
 
 void UISettingsWindow::init()
@@ -70,15 +80,28 @@ UINode* UISettingsWindow::addSections()
 	}
 
 	UINode* center = last;
-	last = addSection(center, nullptr, tr("Controller trigger axis"), "trigger-axis",
+	last = addSection(center, nullptr, tr("Controller trigger axis"), "triggeraxis",
 		tr("On"), new GameControllerTriggerNodeListener(true),
 		tr("Off"), new GameControllerTriggerNodeListener(false));
 	_controllerNode = last;
-	_noController = new UINodeLabel(_frontend, tr("No gamecontroller attached"));
+	_noController = new UINodeLabel(_frontend, tr("No game controller attached"));
 	_noController->setColor(colorGray);
-	_noController->setFont(MEDIUM_FONT);
+	_noController->setFont(HUGE_FONT);
 	_noController->setVisible(false);
-	_noController->centerUnder(center, 0.03f);
+	_noController->centerUnder(getNode("triggeraxis"), 0.03f);
+	add(_noController);
+
+	_texturesBig = (UINodeLabel*)getNode("textures_1");
+	_texturesSmall = (UINodeLabel*)getNode("textures_2");
+
+	_soundOn = (UINodeLabel*)getNode("soundmusic_1");
+	_soundOff = (UINodeLabel*)getNode("soundmusic_2");
+
+	_fullscreenOn = (UINodeLabel*)getNode("fullscreen_1");
+	_fullscreenOff = (UINodeLabel*)getNode("fullscreen_2");
+
+	_triggeraxisOn = (UINodeLabel*)getNode("triggeraxis_1");
+	_triggeraxisOff = (UINodeLabel*)getNode("triggeraxis_2");
 
 	return last;
 }
@@ -89,6 +112,11 @@ void UISettingsWindow::update (uint32_t time)
 	const bool visible = UI::get().hasController();
 	_controllerNode->setVisible(visible);
 	_noController->setVisible(!visible);
+
+	COLOR(_serviceProvider.getTextureDefinition().getTextureSize() == "big", _texturesBig, _texturesSmall)
+	COLOR(Config.isSoundEnabled(), _soundOn, _soundOff)
+	COLOR(Config.isFullscreen(), _fullscreenOn, _fullscreenOff)
+	COLOR(Config.isGameControllerTriggerActive(), _triggeraxisOn, _triggeraxisOff)
 }
 
 UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& option1, UINodeListener* option1Listener, const std::string& option2, UINodeListener* option2Listener)
@@ -98,7 +126,7 @@ UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* backgroun
 	label->setFont(HUGE_FONT);
 	label->setColor(colorWhite);
 	if (background != nullptr) {
-		label->alignTo(background, NODE_ALIGN_CENTER | NODE_ALIGN_TOP, 0.2f);
+		label->alignTo(background, NODE_ALIGN_CENTER | NODE_ALIGN_TOP, 0.15f);
 	} else {
 		SDL_assert(centerUnderNode);
 		label->centerUnder(centerUnderNode, 0.03f);
