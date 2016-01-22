@@ -1,10 +1,11 @@
 #pragma once
 
 #include "ui/windows/UIWindow.h"
-#include "ui/nodes/UINodeLabel.h"
 
 // forward decl
 class ServiceProvider;
+class UINodeLabel;
+class UINodeButton;
 
 class UISettingsWindow: public UIWindow {
 protected:
@@ -13,17 +14,17 @@ protected:
 	UINode* _controllerNode;
 	UINodeLabel* _noController;
 
-	UINodeLabel* _texturesBig;
-	UINodeLabel* _texturesSmall;
+	UINodeButton* _texturesBig;
+	UINodeButton* _texturesSmall;
 
-	UINodeLabel* _soundOn;
-	UINodeLabel* _soundOff;
+	UINodeButton* _soundOn;
+	UINodeButton* _soundOff;
 
-	UINodeLabel* _fullscreenOn;
-	UINodeLabel* _fullscreenOff;
+	UINodeButton* _fullscreenOn;
+	UINodeButton* _fullscreenOff;
 
-	UINodeLabel* _triggeraxisOn;
-	UINodeLabel* _triggeraxisOff;
+	UINodeButton* _triggeraxisOn;
+	UINodeButton* _triggeraxisOff;
 
 	UINode* addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& option1,
 			UINodeListener* option1Listener, const std::string& option2, UINodeListener* option2Listener);

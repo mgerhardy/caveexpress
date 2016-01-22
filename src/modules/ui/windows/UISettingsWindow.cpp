@@ -25,10 +25,10 @@
 #define COLOR(state, one, two) \
 	if (state) { \
 		one->setColor(colorGreen); \
-		two->setColor(colorWhite); \
+		two->setColor(colorBlack); \
 	} else { \
 		two->setColor(colorGreen); \
-		one->setColor(colorWhite); \
+		one->setColor(colorBlack); \
 	}
 
 #include <SDL.h>
@@ -91,17 +91,17 @@ UINode* UISettingsWindow::addSections()
 	_noController->centerUnder(getNode("triggeraxis"), 0.03f);
 	add(_noController);
 
-	_texturesBig = (UINodeLabel*)getNode("textures_1");
-	_texturesSmall = (UINodeLabel*)getNode("textures_2");
+	_texturesBig = (UINodeButton*)getNode("textures_1");
+	_texturesSmall = (UINodeButton*)getNode("textures_2");
 
-	_soundOn = (UINodeLabel*)getNode("soundmusic_1");
-	_soundOff = (UINodeLabel*)getNode("soundmusic_2");
+	_soundOn = (UINodeButton*)getNode("soundmusic_1");
+	_soundOff = (UINodeButton*)getNode("soundmusic_2");
 
-	_fullscreenOn = (UINodeLabel*)getNode("fullscreen_1");
-	_fullscreenOff = (UINodeLabel*)getNode("fullscreen_2");
+	_fullscreenOn = (UINodeButton*)getNode("fullscreen_1");
+	_fullscreenOff = (UINodeButton*)getNode("fullscreen_2");
 
-	_triggeraxisOn = (UINodeLabel*)getNode("triggeraxis_1");
-	_triggeraxisOff = (UINodeLabel*)getNode("triggeraxis_2");
+	_triggeraxisOn = (UINodeButton*)getNode("triggeraxis_1");
+	_triggeraxisOff = (UINodeButton*)getNode("triggeraxis_2");
 
 	return last;
 }

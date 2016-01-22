@@ -26,6 +26,7 @@ public:
 	void setTitleAlignment (int align);
 	void setTitle (const std::string& title);
 	void setFont (const BitmapFontPtr& font, const Color& color = colorBlack);
+	inline void setColor (const Color& color = colorBlack) { Vector4Set(color, _fontColor); }
 
 	virtual void update (uint32_t deltaTime) override;
 	virtual float getAutoWidth () const override;
