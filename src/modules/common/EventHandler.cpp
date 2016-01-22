@@ -110,7 +110,6 @@ bool EventHandler::handleEvent (SDL_Event &event)
 			joystickDeviceRemoved(event.jdevice.which);
 		break;
 	case SDL_JOYHATMOTION: {
-		static const int horizontalMask = SDL_HAT_CENTERED | SDL_HAT_RIGHT | SDL_HAT_LEFT;
 		static const int negative = SDL_HAT_UP | SDL_HAT_LEFT;
 		static const int positive = SDL_HAT_DOWN | SDL_HAT_RIGHT;
 		const int hat = event.jhat.hat;
