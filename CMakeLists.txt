@@ -14,6 +14,7 @@ option(USE_CCACHE "Use ccache" ON)
 option(CAVEEXPRESS "Build caveexpress" ON)
 option(CAVEPACKER "Build cavepacker" ON)
 option(MINIRACER "Build miniracer" OFF)
+option(SANITIZER "Build with sanitizer support if available" ON)
 
 #-------------------------------------------------------------------------------
 # end options
