@@ -318,7 +318,7 @@ void UINode::renderTop (int x, int y) const
 			fontY = t.pos.y * _frontend->getHeight();
 		} else {
 			const int textHeight = t.font->getTextHeight(t.text);
-			fontY = textYOffset + getRenderCenterY() - textHeight / 2.0f;
+			fontY = textYOffset + getRenderY() + textHeight;
 			textYOffset += textHeight;
 		}
 		t.font->print(t.text, colorWhite, fontX, fontY);
