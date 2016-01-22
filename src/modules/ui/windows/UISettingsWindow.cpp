@@ -22,15 +22,6 @@
 #include "ui/windows/listener/SoundNodeListener.h"
 #include "ui/windows/listener/FullscreenListener.h"
 
-#define COLOR(state, one, two) \
-	if (state) { \
-		one->setColor(colorGreen); \
-		two->setColor(colorBlack); \
-	} else { \
-		two->setColor(colorGreen); \
-		one->setColor(colorBlack); \
-	}
-
 #include <SDL.h>
 
 UISettingsWindow::UISettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
@@ -113,10 +104,10 @@ void UISettingsWindow::update (uint32_t time)
 	_controllerNode->setVisible(visible);
 	_noController->setVisible(!visible);
 
-	COLOR(_serviceProvider.getTextureDefinition().getTextureSize() == "big", _texturesBig, _texturesSmall)
-	COLOR(Config.isSoundEnabled(), _soundOn, _soundOff)
-	COLOR(Config.isFullscreen(), _fullscreenOn, _fullscreenOff)
-	COLOR(Config.isGameControllerTriggerActive(), _triggeraxisOn, _triggeraxisOff)
+	UIWINDOW_SETTINGS_COLOR(_serviceProvider.getTextureDefinition().getTextureSize() == "big", _texturesBig, _texturesSmall)
+	UIWINDOW_SETTINGS_COLOR(Config.isSoundEnabled(), _soundOn, _soundOff)
+	UIWINDOW_SETTINGS_COLOR(Config.isFullscreen(), _fullscreenOn, _fullscreenOff)
+	UIWINDOW_SETTINGS_COLOR(Config.isGameControllerTriggerActive(), _triggeraxisOn, _triggeraxisOff)
 }
 
 UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& option1, UINodeListener* option1Listener, const std::string& option2, UINodeListener* option2Listener)

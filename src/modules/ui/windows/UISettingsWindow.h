@@ -7,6 +7,15 @@ class ServiceProvider;
 class UINodeLabel;
 class UINodeButton;
 
+#define UIWINDOW_SETTINGS_COLOR(state, one, two) \
+	if (state) { \
+		one->setColor(colorGreen); \
+		two->setColor(colorBlack); \
+	} else { \
+		two->setColor(colorGreen); \
+		one->setColor(colorBlack); \
+	}
+
 class UISettingsWindow: public UIWindow {
 protected:
 	UINode* _background;
@@ -34,5 +43,5 @@ public:
 	UISettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider);
 	void init();
 
-	void update(uint32_t time) override;
+	virtual void update(uint32_t time) override;
 };
