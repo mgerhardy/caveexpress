@@ -14,5 +14,6 @@ public:
 	std::string getHomeDirectory () override;
 	bool supportsUserContent () const override { return false; }
 	std::string getRateURL (const std::string& packageName) const override;
+	virtual bool hasTouch () const override { return true; }
 };
 

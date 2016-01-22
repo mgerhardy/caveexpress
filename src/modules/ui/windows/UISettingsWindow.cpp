@@ -18,14 +18,14 @@
 #include "network/INetwork.h"
 
 #include "ui/windows/listener/TextureModeListener.h"
-#include "ui/windows/listener/JoystickNodeListener.h"
+#include "ui/windows/listener/GameControllerTriggerNodeListener.h"
 #include "ui/windows/listener/SoundNodeListener.h"
 #include "ui/windows/listener/FullscreenListener.h"
 
 #include <SDL.h>
 
 UISettingsWindow::UISettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
-		UIWindow(UI_WINDOW_SETTINGS, frontend, WINDOW_FLAG_MODAL), _background(nullptr), _serviceProvider(serviceProvider)
+		UIWindow(UI_WINDOW_SETTINGS, frontend, WINDOW_FLAG_MODAL), _background(nullptr), _serviceProvider(serviceProvider), _controllerNode(nullptr), _noController(nullptr)
 {
 }
 
@@ -48,39 +48,53 @@ void UISettingsWindow::init()
 UINode* UISettingsWindow::addSections()
 {
 	UINode* last = nullptr;
-	last = addSection(last, _background, tr("Textures"),
+	last = addSection(last, _background, tr("Textures"), "textures",
 			tr("Big"), new TextureModeListener("big", _frontend, _serviceProvider),
 			tr("Small"), new TextureModeListener("small", _frontend, _serviceProvider));
 
 	const int numDevices = SDL_GetNumAudioDevices(SDL_FALSE);
 	if (numDevices == -1 || numDevices > 0) {
-		last = addSection(last, nullptr, tr("Sound/Music"),
+		last = addSection(last, nullptr, tr("Sound/Music"), "soundmusic",
 				tr("On"), new SoundNodeListener(this, true),
 				tr("Off"), new SoundNodeListener(this, false));
 	}
 
 	if (System.isFullscreenSupported()) {
-		last = addSection(last, nullptr, tr("Fullscreen"),
+		last = addSection(last, nullptr, tr("Fullscreen"), "fullscreen",
 				tr("On"), new FullscreenListener(_frontend, true),
 				tr("Off"), new FullscreenListener(_frontend, false));
 	}
 
-	if (System.canDisableJoystick() && _frontend->hasJoystick()) {
-		last = addSection(last, nullptr, tr("Joystick"),
-			tr("On"), new JoystickNodeListener(true),
-			tr("Off"), new JoystickNodeListener(false));
+	if (_frontend->hasMouse()) {
+		last = addSection(last, nullptr, tr("Mouse speed"), "mousespeed", "mousespeed");
 	}
 
-	if (_frontend->hasMouse()) {
-		last = addSection(last, nullptr, tr("Mouse speed"), "mousespeed");
-	}
+	UINode* center = last;
+	last = addSection(center, nullptr, tr("Controller trigger axis"), "trigger-axis",
+		tr("On"), new GameControllerTriggerNodeListener(true),
+		tr("Off"), new GameControllerTriggerNodeListener(false));
+	_controllerNode = last;
+	_noController = new UINodeLabel(_frontend, tr("No gamecontroller attached"));
+	_noController->setColor(colorGray);
+	_noController->setFont(MEDIUM_FONT);
+	_noController->setVisible(false);
+	_noController->centerUnder(center, 0.03f);
 
 	return last;
 }
 
-UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& option1, UINodeListener* option1Listener, const std::string& option2, UINodeListener* option2Listener)
+void UISettingsWindow::update (uint32_t time)
+{
+	UIWindow::update(time);
+	const bool visible = UI::get().hasController();
+	_controllerNode->setVisible(visible);
+	_noController->setVisible(!visible);
+}
+
+UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& option1, UINodeListener* option1Listener, const std::string& option2, UINodeListener* option2Listener)
 {
 	UINodeLabel *label = new UINodeLabel(_frontend, title);
+	label->setId(labelId);
 	label->setFont(HUGE_FONT);
 	label->setColor(colorWhite);
 	if (background != nullptr) {
@@ -98,11 +112,13 @@ UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* backgroun
 			const BitmapFontPtr& fontPtr = getFont(HUGE_FONT);
 			UINodeButtonText *option1Text = new UINodeButtonText(_frontend, option1);
 			option1Text->addListener(UINodeListenerPtr(option1Listener));
+			option1Text->setId(labelId + "_1");
 			option1Text->setFont(fontPtr);
 			optionsPanel->add(option1Text);
 
 			UINodeButtonText *option2Text = new UINodeButtonText(_frontend, option2);
 			option2Text->addListener(UINodeListenerPtr(option2Listener));
+			option2Text->setId(labelId + "_2");
 			option2Text->setFont(fontPtr);
 			optionsPanel->add(option2Text);
 		}
@@ -112,9 +128,10 @@ UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* backgroun
 	return optionsPanel;
 }
 
-UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& configVar)
+UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& configVar)
 {
 	UINodeLabel *label = new UINodeLabel(_frontend, title);
+	label->setId(labelId);
 	label->setFont(HUGE_FONT);
 	label->setColor(colorWhite);
 	if (background != nullptr) {

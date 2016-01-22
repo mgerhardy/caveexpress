@@ -10,7 +10,7 @@
 #define DEVICE_TO_ID(id) (0)
 
 UINodeMapControl::UINodeMapControl (IFrontend *frontend, IUINodeMap *mapNode) :
-		UINode(frontend), _map(mapNode->getMap()), _joystick(Config.isJoystick())
+		UINode(frontend), _map(mapNode->getMap()), _useTriggers(Config.isGameControllerTriggerActive())
 {
 	for (int i = 0; i < SDL_arraysize(_d); ++i) {
 		_d[i].direction = 0;
@@ -26,7 +26,7 @@ UINodeMapControl::~UINodeMapControl ()
 
 bool UINodeMapControl::isActive () const
 {
-	return _joystick && _map.isStarted() && !_map.isPause();
+	return _map.isStarted() && !_map.isPause();
 }
 
 void UINodeMapControl::removeFocus ()
@@ -43,8 +43,8 @@ void UINodeMapControl::removeFocus ()
 
 void UINodeMapControl::update (uint32_t deltaTime)
 {
-	_joystick = Config.isJoystick();
-	if (_map.isPause() || !_joystick) {
+	_useTriggers = Config.isGameControllerTriggerActive();
+	if (_map.isPause()) {
 		for (int i = 0; i < SDL_arraysize(_d); ++i) {
 			DirectionValues& dv = _d[i];
 			dv.direction = 0;
@@ -94,12 +94,12 @@ void UINodeMapControl::renderDebug (int x, int y, int textY) const
 	}
 }
 
-void UINodeMapControl::onJoystickDeviceAdded (uint32_t id)
+void UINodeMapControl::onControllerDeviceAdded (uint32_t id)
 {
 	Log::info(LOG_UI, "Connect local player with device id %i", id);
 }
 
-void UINodeMapControl::onJoystickDeviceRemoved (uint32_t id)
+void UINodeMapControl::onControllerDeviceRemoved (uint32_t id)
 {
 	Log::info(LOG_UI, "Disonnect local player with device id %i", id);
 	DirectionValues& dv = _d[DEVICE_TO_ID(id)];
@@ -107,10 +107,10 @@ void UINodeMapControl::onJoystickDeviceRemoved (uint32_t id)
 	dv.oldDirection = 0;
 }
 
-bool UINodeMapControl::onJoystickMotion (uint8_t axis, int value, uint32_t id)
+bool UINodeMapControl::onControllerMotion (uint8_t axis, int value, uint32_t id)
 {
-	UINode::onJoystickMotion(axis, value, id);
-	if (_map.isPause() || !_joystick) {
+	UINode::onControllerMotion(axis, value, id);
+	if (_map.isPause()) {
 		for (int i = 0; i < SDL_arraysize(_d); ++i) {
 			DirectionValues& dv = _d[i];
 			dv.direction = 0;
@@ -120,9 +120,9 @@ bool UINodeMapControl::onJoystickMotion (uint8_t axis, int value, uint32_t id)
 
 	const bool horizontal = axis == SDL_CONTROLLER_AXIS_LEFTX || axis == SDL_CONTROLLER_AXIS_RIGHTY;
 	if (horizontal)
-		Log::trace(LOG_UI, "h joystick movement: %i (device %i)", value, id);
+		Log::trace(LOG_UI, "h controller movement: %i (device %i)", value, id);
 	else
-		Log::trace(LOG_UI, "v joystick movement: %i (device %i)", value, id);
+		Log::trace(LOG_UI, "v controller movement: %i (device %i)", value, id);
 
 	const int delta = 8000;
 	DirectionValues& dv = _d[DEVICE_TO_ID(id)];

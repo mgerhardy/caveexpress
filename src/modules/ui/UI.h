@@ -92,7 +92,7 @@ private:
 
 	mutable SpriteCache _spriteCache;
 
-	bool _joystickFocusChange[2];
+	bool _controllerFocusChange[2];
 	bool _rotateFonts;
 	bool _restart;
 
@@ -105,6 +105,8 @@ private:
 	bool _showCursor;
 
 	uint32_t _time;
+
+	int _connectedControllers;
 
 	typedef std::map<std::string, std::string> LanguageMap;
 	LanguageMap _languageMap;
@@ -177,6 +179,8 @@ public:
 
 	const std::string translate (const std::string& in) const;
 
+	bool hasController() const;
+
 	// pops until important window appears
 	void popMain ();
 
@@ -204,10 +208,9 @@ public:
 	void onMouseButtonRelease (int32_t x, int32_t y, uint8_t button) override;
 	void onMouseButtonPress (int32_t x, int32_t y, uint8_t button) override;
 	void onMouseWheel (int32_t x, int32_t y) override;
-	void onJoystickMotion (uint8_t axis, int value, uint32_t id) override;
-	void onJoystickDeviceRemoved (int32_t device) override;
-	void onJoystickDeviceAdded (int32_t device) override;
-	void onJoystickButtonPress (uint8_t button, uint32_t id) override;
+	void onControllerMotion (uint8_t axis, int value, uint32_t id) override;
+	void onControllerDeviceRemoved (int32_t device) override;
+	void onControllerDeviceAdded (int32_t device) override;
 	void onControllerButtonPress (const std::string& button, uint32_t id) override;
 	/**
 	 * @brief pinch/rotate/swipe gestures
@@ -227,6 +230,11 @@ public:
 	void onGesture (int64_t gestureId, float error, int32_t numFingers) override;
 	void onGestureRecord (int64_t gestureId) override;
 };
+
+inline bool UI::hasController() const
+{
+	return _connectedControllers > 0;
+}
 
 inline TexturePtr UI::loadTexture (const std::string& name) const
 {

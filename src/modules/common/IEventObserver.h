@@ -45,15 +45,6 @@ public:
 	{
 	}
 
-	/**
-	 * @param[in] axis SDL_GameControllerAxis
-	 * @param[in] value -32768 to 32767
-	 * @param[in] id game controller id
-	 */
-	virtual void onJoystickMotion (uint8_t axis, int value, uint32_t id)
-	{
-	}
-
 	virtual void onMouseWheel (int32_t x, int32_t y)
 	{
 	}
@@ -70,11 +61,20 @@ public:
 	{
 	}
 
-	virtual void onJoystickDeviceRemoved (int32_t device)
+	/**
+	 * @param[in] axis SDL_GameControllerAxis
+	 * @param[in] value -32768 to 32767
+	 * @param[in] id game controller id
+	 */
+	virtual void onControllerMotion (uint8_t axis, int value, uint32_t id)
 	{
 	}
 
-	virtual void onJoystickDeviceAdded (int32_t device)
+	virtual void onControllerDeviceRemoved (int32_t device)
+	{
+	}
+
+	virtual void onControllerDeviceAdded (int32_t device)
 	{
 	}
 
@@ -83,14 +83,6 @@ public:
 	}
 
 	virtual void onControllerButtonRelease (const std::string& button, uint32_t id)
-	{
-	}
-
-	virtual void onJoystickButtonPress (uint8_t button, uint32_t id)
-	{
-	}
-
-	virtual void onJoystickButtonRelease (uint8_t button, uint32_t id)
 	{
 	}
 

@@ -40,7 +40,6 @@ typedef enum {
 
 typedef enum {
 	KEYBOARD,
-	JOYSTICK,
 	CONTROLLER
 } BindingType;
 
@@ -50,9 +49,6 @@ private:
 
 	typedef std::map<int, std::string> KeyBindingMap;
 	KeyBindingMap _keybindings[BINDINGS_MAX];
-
-	typedef std::map<int, std::string> JoystickBindingMap;
-	JoystickBindingMap _joystickBindings[BINDINGS_MAX];
 
 	typedef std::map<std::string, std::string> ControllerBindingMap;
 	ControllerBindingMap _controllerBindings[BINDINGS_MAX];
@@ -75,7 +71,8 @@ private:
 	ConfigVarPtr _debugEntity;
 	ConfigVarPtr _network;
 	ConfigVarPtr _grabMouse;
-	ConfigVarPtr _joystick;
+	ConfigVarPtr _gameController;
+	ConfigVarPtr _gameControllerTriggerAxis;
 	ConfigVarPtr _language;
 	ConfigVarPtr _fullscreen;
 	ConfigVarPtr _soundEnabled;
@@ -109,7 +106,6 @@ private:
 	int mapKey (const std::string& name);
 
 	std::string getNameForKey (int key) const;
-	std::string getNameForJoystickButton (int key) const;
 	std::string getNameForControllerButton (int key) const;
 
 	ConfigVarPtr getConfigValue (KeyValueMap &map, const std::string& name, const std::string& defaultValue = "", unsigned int flags = 0U);
@@ -131,8 +127,9 @@ public:
 	bool isFullscreen () const;
 	bool isSoundEnabled () const;
 	bool toggleSound ();
-	bool isJoystick () const;
-	bool toggleJoystick ();
+	bool isGameController () const;
+	bool isGameControllerTriggerActive() const;
+	bool toggleGameControllerTrigger ();
 	void setGrabMouse (bool grabMouse);
 	// the network port the server is listening on
 	int getPort () const;
@@ -202,15 +199,6 @@ public:
 	{
 		KeyBindingMap::const_iterator iter = _keybindings[_bindingSpace].find(key);
 		if (iter == _keybindings[_bindingSpace].end()) {
-			return "";
-		}
-		return iter->second;
-	}
-
-	inline std::string getJoystickBinding (int key) const
-	{
-		JoystickBindingMap::const_iterator iter = _joystickBindings[_bindingSpace].find(key);
-		if (iter == _joystickBindings[_bindingSpace].end()) {
 			return "";
 		}
 		return iter->second;
@@ -305,19 +293,24 @@ inline bool ConfigManager::toggleSound ()
 	return _soundEnabled->getBoolValue();
 }
 
-inline bool ConfigManager::isJoystick () const
+inline bool ConfigManager::isGameControllerTriggerActive() const
 {
-	return _joystick->getBoolValue();
+	return _gameControllerTriggerAxis->getBoolValue();
 }
 
-inline bool ConfigManager::toggleJoystick ()
+inline bool ConfigManager::isGameController () const
 {
-	if (isJoystick())
-		_joystick->setValue("false");
-	else
-		_joystick->setValue("true");
+	return _gameController->getBoolValue();
+}
 
-	return _joystick->getBoolValue();
+inline bool ConfigManager::toggleGameControllerTrigger ()
+{
+	if (isGameControllerTriggerActive())
+		_gameControllerTriggerAxis->setValue("false");
+	else
+		_gameControllerTriggerAxis->setValue("true");
+
+	return _gameControllerTriggerAxis->getBoolValue();
 }
 
 inline int ConfigManager::getPort () const

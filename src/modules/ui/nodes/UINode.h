@@ -410,15 +410,14 @@ public:
 	virtual bool onMouseRightPress (int32_t x, int32_t y);
 	virtual bool onMouseWheel (int32_t x, int32_t y);
 	virtual void onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY);
-	virtual void onJoystickDeviceRemoved (uint32_t id) {}
-	virtual void onJoystickDeviceAdded (uint32_t id) {}
+	virtual void onControllerDeviceRemoved (uint32_t id) {}
+	virtual void onControllerDeviceAdded (uint32_t id) {}
 	/**
 	 * @param[in] axis SDL_GameControllerAxis
 	 * @param[in] value -32768 to 32767
 	 * @param[in] id game controller id
 	 */
-	virtual bool onJoystickMotion (uint8_t axis, int value, uint32_t id);
-	virtual bool onJoystickButtonPress (int x, int y, uint8_t button, uint32_t id);
+	virtual bool onControllerMotion (uint8_t axis, int value, uint32_t id);
 	virtual bool onControllerButtonPress (int x, int y, const std::string& button, uint32_t id);
 
 	virtual void onAdd ();

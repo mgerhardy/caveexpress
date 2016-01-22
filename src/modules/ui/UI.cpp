@@ -36,8 +36,8 @@ UI::UI () :
 		_serviceProvider(nullptr), _eventHandler(nullptr), _frontend(nullptr), _cursorX(-1), _cursorY(-1), _rotateFonts(true), _restart(
 				false), _delayedPop(false), _noPushAllowed(false), _shutdown(false), _motionFinger(false), _cursor(true), _showCursor(
 				false), _time(0) {
-	for (int i = 0; i < SDL_arraysize(_joystickFocusChange); ++i) {
-		_joystickFocusChange[i] = false;
+	for (int i = 0; i < SDL_arraysize(_controllerFocusChange); ++i) {
+		_controllerFocusChange[i] = false;
 	}
 	_threadId = SDL_ThreadID();
 }
@@ -542,25 +542,27 @@ void UI::onMouseWheel (int32_t x, int32_t y)
 	}
 }
 
-void UI::onJoystickDeviceRemoved (int32_t device)
+void UI::onControllerDeviceRemoved (int32_t device)
 {
+	--_connectedControllers;
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		window->onJoystickDeviceRemoved(device);
+		window->onControllerDeviceRemoved(device);
 	}
 }
 
-void UI::onJoystickDeviceAdded (int32_t device)
+void UI::onControllerDeviceAdded (int32_t device)
 {
+	++_connectedControllers;
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		window->onJoystickDeviceAdded(device);
+		window->onControllerDeviceAdded(device);
 	}
 }
 
-void UI::onJoystickMotion (uint8_t axis, int v, uint32_t id)
+void UI::onControllerMotion (uint8_t axis, int v, uint32_t id)
 {
 	if (_restart)
 		return;
@@ -568,7 +570,7 @@ void UI::onJoystickMotion (uint8_t axis, int v, uint32_t id)
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		if (window->onJoystickMotion(axis, v, id))
+		if (window->onControllerMotion(axis, v, id))
 			return;
 		if (window->isModal() || window->isFullscreen())
 			break;
@@ -586,34 +588,18 @@ void UI::onJoystickMotion (uint8_t axis, int v, uint32_t id)
 	static const ICommand::Args args(0);
 	const bool horizontal = axis == SDL_CONTROLLER_AXIS_LEFTX || axis == SDL_CONTROLLER_AXIS_RIGHTY;
 	const int index = horizontal ? 0 : 1;
-	SDL_assert(SDL_arraysize(_joystickFocusChange) == 2);
+	SDL_assert(SDL_arraysize(_controllerFocusChange) == 2);
 	if (v < -delta) {
-		if (!_joystickFocusChange[0] && !_joystickFocusChange[1])
+		if (!_controllerFocusChange[0] && !_controllerFocusChange[1])
 			focusPrev(args);
-		_joystickFocusChange[index] = true;
+		_controllerFocusChange[index] = true;
 	} else if (v > delta) {
-		if (!_joystickFocusChange[0] && !_joystickFocusChange[1])
+		if (!_controllerFocusChange[0] && !_controllerFocusChange[1])
 			focusNext(args);
-		_joystickFocusChange[index] = true;
+		_controllerFocusChange[index] = true;
 	} else {
-		_joystickFocusChange[index] = false;
+		_controllerFocusChange[index] = false;
 	}
-}
-
-void UI::onJoystickButtonPress (uint8_t button, uint32_t id)
-{
-	if (_restart)
-		return;
-
-	UIStack stack = _stack;
-	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
-		UIWindow* window = *i;
-		if (window->onJoystickButtonPress(_cursorX, _cursorY, button, id))
-			return;
-		if (window->isModal() || window->isFullscreen())
-			return;
-	}
-	Log::debug(LOG_UI, "joystick button %i was pressed and not handled", (int)button);
 }
 
 void UI::onMultiGesture (float theta, float dist, int32_t numFingers)

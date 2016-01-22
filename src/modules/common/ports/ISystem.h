@@ -118,7 +118,7 @@ public:
 
 	virtual bool isFullscreenSupported () { return true; }
 
-	virtual bool canDisableJoystick () { return true; }
+	virtual bool canDisableGameController () { return true; }
 
 	virtual bool supportGooglePlay () { return false; }
 

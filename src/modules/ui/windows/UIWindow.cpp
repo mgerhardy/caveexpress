@@ -177,21 +177,6 @@ bool UIWindow::onMouseButtonPress (int32_t x, int32_t y, unsigned char button)
 	return UINode::onMouseButtonPress(x, y, button);
 }
 
-bool UIWindow::onJoystickButtonPress (int x, int y, uint8_t button, uint32_t id)
-{
-	Log::debug(LOG_UI, "onJoystickButtonPress: %s (%i:%i, %c)", getId().c_str(), x, y, button);
-	if (!isActiveAfterPush())
-		return false;
-
-	if (UINode::onJoystickButtonPress(x, y, button, id)) {
-		if (_playClickSound)
-			SoundControl.play("click");
-		return true;
-	}
-
-	return false;
-}
-
 bool UIWindow::onControllerButtonPress (int x, int y, const std::string& button, uint32_t id)
 {
 	if (!isActiveAfterPush())

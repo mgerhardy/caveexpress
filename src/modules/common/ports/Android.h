@@ -69,7 +69,7 @@ public:
 	bool hasItem (const std::string& id) override;
 	bool buyItem (const std::string& id) override;
 	bool hasMouseOrFinger () override;
-	bool canDisableJoystick () override { return !isOUYA(); }
+	bool canDisableGameController () override { return !isOUYA(); }
 	//bool wantBackButton () override { return isOUYA(); }
 	bool supportGooglePlay () { return !isOUYA(); }
 };

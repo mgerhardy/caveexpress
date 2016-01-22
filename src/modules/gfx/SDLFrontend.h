@@ -28,7 +28,7 @@ protected:
 
 	ConfigVarPtr _debugSleep;
 
-	bool _updateJoysticks;
+	bool _updateControllers;
 	bool _softwareRenderer;
 	int _drawCalls;
 
@@ -52,7 +52,7 @@ protected:
 	void setVSync (bool vsync);
 	void setSDLColor (const Color& rgba);
 	void getTrimmed (const Texture* texture, int& x, int& y, int& w, int& h) const;
-	void initJoystickAndHaptic ();
+	void initControllerAndHaptic ();
 public:
 	explicit SDLFrontend (std::shared_ptr<IConsole> console);
 	virtual ~SDLFrontend ();
@@ -71,8 +71,8 @@ public:
 	virtual void onWindowResize () override;
 	virtual void onPrepareBackground () override;
 	virtual void onForeground () override;
-	void onJoystickDeviceRemoved (int32_t device) override;
-	void onJoystickDeviceAdded (int32_t device) override;
+	void onControllerDeviceRemoved (int32_t device) override;
+	void onControllerDeviceAdded (int32_t device) override;
 
 	// IFrontend implementation
 	virtual void toggleGrabMouse () override;
@@ -111,6 +111,5 @@ public:
 	virtual int init (int width, int height, bool fullscreen, EventHandler &eventHandler) override;
 	virtual void initUI (ServiceProvider& serviceProvider) override;
 	virtual bool rumble (float strength, int lengthMillis) override;
-	virtual bool hasJoystick () const override { return SDL_NumJoysticks() > 0; }
 	virtual bool isConsoleActive () const override;
 };

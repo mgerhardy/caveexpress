@@ -16,7 +16,6 @@ namespace {
 #define CMD_SETVAR "set"
 const char *KEY_CONFIG_KEYBINDINGS = "keybindings";
 const char *KEY_CONFIG_CONTROLLERBINDINGS = "controllerbindings";
-const char *KEY_CONFIG_JOYSTICKBINDINGS = "joystickbindings";
 }
 
 ConfigManager::ConfigManager() :
@@ -60,11 +59,10 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 		getBindingMap(lua, _keybindings, KEY_CONFIG_KEYBINDINGS, KEYBOARD);
 		Log::info(LOG_COMMON, "load controller bindings");
 		getBindingMap(lua, _controllerBindings, KEY_CONFIG_CONTROLLERBINDINGS, CONTROLLER);
-		Log::info(LOG_COMMON, "load joystick bindings");
-		getBindingMap(lua, _joystickBindings, KEY_CONFIG_JOYSTICKBINDINGS, JOYSTICK);
 	}
 	_language = getConfigValue(_configVarMap, "language", System.getLanguage());
-	_joystick = getConfigValue(_configVarMap, "joystick");
+	_gameController = getConfigValue(_configVarMap, "gamecontroller");
+	_gameControllerTriggerAxis = getConfigValue(_configVarMap, "gamecontrollertriggeraxis");
 	_showFPS = getConfigValue(_configVarMap, "showfps");
 	_width = getConfigValue(_configVarMap, "width", "-1");
 	_height = getConfigValue(_configVarMap, "height", "-1");
@@ -109,7 +107,7 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	memset(&_debugRendererData, 0, sizeof(_debugRendererData));
 
 	Log::info(LOG_COMMON, "mouse grab enabled: %s", _grabMouse->getValue().c_str());
-	Log::info(LOG_COMMON, "  joystick enabled: %s", _joystick->getValue().c_str());
+	Log::info(LOG_COMMON, "controller enabled: %s", _gameController->getValue().c_str());
 	Log::info(LOG_COMMON, "     sound enabled: %s", _soundEnabled->getValue().c_str());
 	Log::info(LOG_COMMON, "     debug enabled: %s", _debug->getValue().c_str());
 
@@ -169,11 +167,6 @@ std::string ConfigManager::getNameForKey (int key) const
 	return SDL_GetScancodeName(scanCode);
 }
 
-std::string ConfigManager::getNameForJoystickButton (int key) const
-{
-	return "JOY" + string::toString(key);
-}
-
 void ConfigManager::getKeyValueMap (LUA& lua, std::map<std::string, std::string>& map, const char *key)
 {
 	lua.getKeyValueMap(map, key);
@@ -207,9 +200,6 @@ void ConfigManager::getBindingMap (LUA& lua, std::map<std::string, std::string>*
 		for (std::map<std::string, std::string>::const_iterator i = strMap.begin(); i != strMap.end(); ++i) {
 			if (type == KEYBOARD) {
 				map[bindingSpace][i->first] = i->second;
-			} else if (type == JOYSTICK) {
-				const std::string index = i->first.substr(3);
-				map[bindingSpace][index] = i->second;
 			} else if (type == CONTROLLER) {
 				const SDL_GameControllerButton button = SDL_GameControllerGetButtonFromString(i->first.c_str());
 				const char *buttonStr = SDL_GameControllerGetStringForButton(button);
@@ -252,9 +242,6 @@ void ConfigManager::getBindingMap (LUA& lua, std::map<int, std::string>* map, co
 		for (std::map<std::string, std::string>::const_iterator i = strMap.begin(); i != strMap.end(); ++i) {
 			if (type == KEYBOARD) {
 				map[bindingSpace][mapKey(i->first)] = i->second;
-			} else if (type == JOYSTICK) {
-				const std::string index = i->first.substr(3);
-				map[bindingSpace][string::toInt(index)] = i->second;
 			}
 		}
 

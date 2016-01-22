@@ -54,7 +54,6 @@ SDLMainLoop::SDLMainLoop () :
 	Commands.registerCommandVoid(CMD_STATUS, bindFunctionVoid(SDLMainLoop::status));
 	_eventHandler.registerObserver(this);
 	_keys.clear();
-	_joystickButtons.clear();
 	_controllerButtons.clear();
 }
 
@@ -165,21 +164,16 @@ int SDLMainLoop::handleAppEvents (void *userdata, SDL_Event *event)
 void SDLMainLoop::resetKeyStates ()
 {
 	KeyMap keyMap = _keys;
-	JoystickSet joystickSet = _joystickButtons;
 	ControllerSet controllerSet = _controllerButtons;
 
 	for (auto it : keyMap) {
 		onKeyRelease(it.first);
-	}
-	for (const JoystickButton& button : joystickSet) {
-		onJoystickButtonRelease(button.button, button.id);
 	}
 	for (const ControllerButton& button : controllerSet) {
 		onControllerButtonRelease(button.button, button.id);
 	}
 
 	_keys.clear();
-	_joystickButtons.clear();
 	_controllerButtons.clear();
 }
 
@@ -314,9 +308,6 @@ void SDLMainLoop::runFrame ()
 	for (auto it : _keys) {
 		onKeyPress(it.first, it.second);
 	}
-	for (const JoystickButton& button : _joystickButtons) {
-		onJoystickButtonPress(button.button, button.id);
-	}
 	for (const ControllerButton& button : _controllerButtons) {
 		onControllerButtonPress(button.button, button.id);
 	}
@@ -440,46 +431,6 @@ bool SDLMainLoop::onKeyPress (int32_t key, int16_t modifier)
 
 	Log::debug(LOG_SERVER, "Could not execute any key bindings for key %i with modifier %i", key, modifier);
 	return false;
-}
-
-void SDLMainLoop::onJoystickButtonPress (uint8_t button, uint32_t id)
-{
-	if (_frontend->handlesInput())
-		return;
-	const std::string command = Config.getJoystickBinding(button);
-	if (command.empty()) {
-		Log::info(LOG_SERVER, "no binding for joystick button %i", (int)button);
-		return;
-	}
-
-	if (command[0] == '+') {
-		const JoystickButton b = { id, button };
-		if (_joystickButtons.find(b) == _joystickButtons.end()) {
-			_joystickButtons.insert(b);
-			Commands.executeCommandLine(command);
-		}
-	} else {
-		Commands.executeCommandLine(command);
-	}
-}
-
-void SDLMainLoop::onJoystickButtonRelease (uint8_t button, uint32_t id)
-{
-	if (_frontend->handlesInput())
-		return;
-	const std::string command = Config.getJoystickBinding(button);
-	if (command.empty()) {
-		return;
-	}
-
-	if (command[0] != '+') {
-		return;
-	}
-
-	const JoystickButton b = { id, button };
-	if (_joystickButtons.erase(b) > 0) {
-		Commands.executeCommandLine(command + " -");
-	}
 }
 
 void SDLMainLoop::onControllerButtonPress (const std::string& button, uint32_t id)

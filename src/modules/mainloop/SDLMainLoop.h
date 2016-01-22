@@ -42,14 +42,6 @@ private:
 	typedef KeyMap::const_iterator KeyMapConstIter;
 	typedef KeyMap::iterator KeyMapIter;
 	KeyMap _keys;
-	struct JoystickButton {
-		inline bool operator< (const JoystickButton& other) const
-		{
-			return id < other.id && button < other.button;
-		}
-		uint32_t id;
-		uint8_t button;
-	};
 
 	struct ControllerButton {
 		inline bool operator< (const ControllerButton& other) const
@@ -60,8 +52,6 @@ private:
 		std::string button;
 	};
 
-	typedef std::set<JoystickButton> JoystickSet;
-	JoystickSet _joystickButtons;
 	typedef std::set<ControllerButton> ControllerSet;
 	ControllerSet _controllerButtons;
 	ServiceProvider _serviceProvider;
@@ -98,8 +88,6 @@ public:
 	// IEventObserver
 	bool onKeyRelease (int32_t key) override;
 	bool onKeyPress (int32_t key, int16_t modifier) override;
-	void onJoystickButtonPress (uint8_t button, uint32_t id) override;
-	void onJoystickButtonRelease (uint8_t button, uint32_t id) override;
 	void onControllerButtonPress (const std::string& button, uint32_t id) override;
 	void onControllerButtonRelease (const std::string& button, uint32_t id) override;
 

@@ -31,8 +31,8 @@ public:
 
 	void registerObserver (IEventObserver* observer);
 	void removeObserver (IEventObserver* observer);
-	void joystickDeviceAdded (int32_t device);
-	void joystickDeviceRemoved (int32_t device);
+	void controllerDeviceAdded (int32_t device);
+	void controllerDeviceRemoved (int32_t device);
 	void lowMemory ();
 	void prepareShutdown ();
 	void prepareBackground ();
@@ -41,14 +41,12 @@ public:
 	void foreground ();
 	void controllerButtonPress (const std::string& button, uint32_t id);
 	void controllerButtonRelease (const std::string& button, uint32_t id);
-	void joystickButtonPress (uint8_t button, uint32_t id);
-	void joystickButtonRelease (uint8_t button, uint32_t id);
 	/**
 	 * @param[in] axis SDL_GameControllerAxis
 	 * @param[in] value -32768 to 32767
 	 * @param[in] id game controller id
 	 */
-	void joystickMotion (uint8_t axis, int value, uint32_t id);
+	void controllerMotion (uint8_t axis, int value, uint32_t id);
 	void mouseWheel (int32_t x, int32_t y);
 	void mouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY);
 	void mouseButtonPress (int32_t x, int32_t y, uint8_t button);

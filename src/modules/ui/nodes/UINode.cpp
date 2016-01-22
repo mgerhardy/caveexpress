@@ -935,19 +935,6 @@ bool UINode::execute ()
 	return true;
 }
 
-bool UINode::onJoystickButtonPress (int x, int y, uint8_t button, uint32_t id)
-{
-	for (UINodeListRevIter i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
-		UINode* nodePtr = *i;
-		if (!nodePtr->hasFocus())
-			continue;
-		if ((*i)->onJoystickButtonPress(x - getRenderX(), y - getRenderY(), button, id)) {
-			return true;
-		}
-	}
-	return false;
-}
-
 bool UINode::onMouseMiddleRelease (int32_t x, int32_t y)
 {
 	return false;
@@ -996,11 +983,11 @@ void UINode::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY)
 	}
 }
 
-bool UINode::onJoystickMotion (uint8_t axis, int value, uint32_t id)
+bool UINode::onControllerMotion (uint8_t axis, int value, uint32_t id)
 {
 	for (UINodeListRevIter i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
 		UINode* nodePtr = *i;
-		if (nodePtr->onJoystickMotion(axis, value, id))
+		if (nodePtr->onControllerMotion(axis, value, id))
 			return true;
 	}
 	return false;

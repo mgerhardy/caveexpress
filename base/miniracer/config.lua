@@ -10,7 +10,7 @@ defaultfrontend = "sdl"
 defaultsoundengine = "sdl"
 defaultshowcursor = true
 defaultnetwork = true
-defaultjoystick = false
+defaultgamecontroller = false
 defaulttexturesize = "auto"
 defaultparticles = 100
 defaultfpslimit = 60
@@ -19,7 +19,7 @@ defaultgreen = 8
 defaultblue = 8
 
 if isOUYA() then
-	defaultjoystick = true
+	defaultgamecontroller = true
 	defaultparticles = 0
 	defaultred = 6
 	defaultgreen = 5
@@ -46,7 +46,7 @@ elseif isNaCl() then
 else
 	-- workaround for now - remove me later
 	defaultfrontend = "opengl"
-	defaultjoystick = true
+	defaultgamecontroller = true
 end
 
 settings = {
@@ -59,7 +59,8 @@ settings = {
 	showcursor = defaultshowcursor,
 	debug = false,
 	showfps = not isMobile(),
-	joystick = defaultjoystick,
+	gamecontroller = defaultgamecontroller,
+	gamecontrollertriggeraxis = false,
 	sound = true,
 	soundengine = defaultsoundengine,
 	persister = defaultpersister,
@@ -108,41 +109,6 @@ controllerbindings = {
 		--DPRIGHT = "",
 	},
 }
-
-if isOUYA() then
-	joystickbindings = {
-		["ui"] = {
-			JOY0 = "ui_focus_prev",
-			JOY1 = "ui_focus_next",
-			JOY2 = "ui_focus_prev",
-			JOY3 = "ui_focus_next",
-			JOY5 = "ui_execute",
-			JOY6 = "ui_pop",
-			JOY8 = "ui_focus_next",
-		},
-		["map"] = {
-			JOY0 = "+move_up",
-			JOY1 = "+move_down",
-			JOY2 = "+move_left",
-			JOY3 = "+move_right",
-			JOY4 = "ui_pop",
-			JOY5 = "ui_execute",
-			JOY6 = "ui_pop",
-			JOY7 = "ui_pop",
-			JOY8 = "ui_pop",
-			JOY9 = "ui_pop",
-			JOY11 = "ui_pop",
-			JOY12 = "ui_pop",
-			JOY13 = "ui_pop",
-			JOY14 = "ui_pop",
-		},
-	}
-else
-	joystickbindings = {
-		["ui"] = {},
-		["map"] = {},
-	}
-end
 
 if isMobile() or isOUYA() then
 	keybindings = {

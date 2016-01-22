@@ -10,7 +10,7 @@ defaultfrontend = "sdl"
 defaultsoundengine = "sdl"
 defaultnetwork = true
 defaultshowcursor = true
-defaultjoystick = true
+defaultgamecontroller = true
 defaulttexturesize = "auto"
 defaultreferencetimefactor = 1.0
 defaultdamagethreshold = 3.0
@@ -21,7 +21,7 @@ defaultgreen = 8
 defaultblue = 8
 
 if isOUYA() then
-	defaultjoystick = true
+	defaultgamecontroller = true
 	defaultreferencetimefactor = 1.3
 	defaultdamagethreshold = 5.0
 	defaultparticles = 0
@@ -31,7 +31,7 @@ if isOUYA() then
 elseif isSteamLink() then
 	defaultwidth = 1280
 	defaultheight = 720
-	defaultjoystick = true
+	defaultgamecontroller = true
 	defaultparticles = 0
 	defaultnetwork = true
 	defaultshowcursor = false
@@ -59,7 +59,7 @@ elseif isNaCl() then
 	defaultpersister = "nop"
 	defaultnetwork = false
 else
-	defaultjoystick = true
+	defaultgamecontroller = true
 end
 
 settings = {
@@ -72,7 +72,8 @@ settings = {
 	showcursor = defaultshowcursor,
 	debug = false,
 	showfps = false,
-	joystick = defaultjoystick,
+	gamecontroller = defaultgamecontroller,
+	gamecontrollertriggeraxis = false,
 	sound = true,
 	soundengine = defaultsoundengine,
 	persister = defaultpersister,
@@ -127,41 +128,6 @@ controllerbindings = {
 		DPRIGHT = "+move_right",
 	},
 }
-
-if isOUYA() then
-	joystickbindings = {
-		["ui"] = {
-			JOY0 = "ui_focus_prev",
-			JOY1 = "ui_focus_next",
-			JOY2 = "ui_focus_prev",
-			JOY3 = "ui_focus_next",
-			JOY5 = "ui_execute",
-			JOY6 = "ui_pop",
-			JOY8 = "ui_focus_next",
-		},
-		["map"] = {
-			JOY0 = "+move_up",
-			JOY1 = "+move_down",
-			JOY2 = "+move_left",
-			JOY3 = "+move_right",
-			JOY4 = "drop",
-			JOY5 = "ui_execute",
-			JOY6 = "ui_pop",
-			JOY7 = "drop",
-			JOY8 = "drop",
-			JOY9 = "drop",
-			JOY11 = "drop",
-			JOY12 = "drop",
-			JOY13 = "drop",
-			JOY14 = "drop",
-		},
-	}
-else
-	joystickbindings = {
-		["ui"] = {},
-		["map"] = {},
-	}
-end
 
 if isMobile() or isOUYA() then
 	keybindings = {

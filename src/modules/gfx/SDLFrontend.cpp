@@ -27,7 +27,7 @@ struct RenderTarget {
 };
 
 SDLFrontend::SDLFrontend (std::shared_ptr<IConsole> console) :
-		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _updateJoysticks(false), _softwareRenderer(false), _drawCalls(0)
+		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _updateControllers(false), _softwareRenderer(false), _drawCalls(0)
 {
 	_window = nullptr;
 	_haptic = nullptr;
@@ -43,8 +43,6 @@ SDLFrontend::~SDLFrontend ()
 	if (_haptic)
 		SDL_HapticClose(_haptic);
 
-//	for (int i = 0; i < _numJoysticks; ++i)
-//		SDL_JoystickClose(_joysticks[i]);
 	SDL_DestroyTexture(_renderToTexture);
 	if (_renderer)
 		SDL_DestroyRenderer(_renderer);
@@ -62,16 +60,16 @@ void SDLFrontend::onForeground ()
 //	SoundControl.resume();
 }
 
-void SDLFrontend::onJoystickDeviceRemoved (int32_t device)
+void SDLFrontend::onControllerDeviceRemoved (int32_t device)
 {
-	Log::info(LOG_GFX, "joystick %i removed", device);
-	_updateJoysticks = true;
+	Log::info(LOG_GFX, "controller %i removed", device);
+	_updateControllers = true;
 }
 
-void SDLFrontend::onJoystickDeviceAdded (int32_t device)
+void SDLFrontend::onControllerDeviceAdded (int32_t device)
 {
-	Log::info(LOG_GFX, "joystick %i added", device);
-	_updateJoysticks = true;
+	Log::info(LOG_GFX, "controller %i added", device);
+	_updateControllers = true;
 }
 
 void SDLFrontend::onWindowResize ()
@@ -110,9 +108,9 @@ void SDLFrontend::update (uint32_t deltaTime)
 	++_numFrames;
 	_time += deltaTime;
 
-	if (_updateJoysticks) {
-		initJoystickAndHaptic();
-		_updateJoysticks = false;
+	if (_updateControllers) {
+		initControllerAndHaptic();
+		_updateControllers = false;
 	}
 
 	_console->update(deltaTime);
@@ -506,7 +504,7 @@ void SDLFrontend::initUI (ServiceProvider& serviceProvider)
 	_console->init(this);
 }
 
-void SDLFrontend::initJoystickAndHaptic ()
+void SDLFrontend::initControllerAndHaptic ()
 {
 	if (_haptic != nullptr) {
 		SDL_HapticClose(_haptic);
@@ -516,26 +514,17 @@ void SDLFrontend::initJoystickAndHaptic ()
 	const int joysticks = SDL_NumJoysticks();
 	SDL_Haptic *haptic = nullptr;
 	for (int i = 0; i < joysticks; i++) {
-		const char *name;
-		SDL_Joystick *joystick;
-		if (SDL_IsGameController(i)) {
-			name = SDL_GameControllerNameForIndex(i);
-			SDL_GameController* controller = SDL_GameControllerOpen(i);
-			joystick = SDL_GameControllerGetJoystick(controller);
-		} else {
-			name = SDL_JoystickNameForIndex(i);
-			joystick = SDL_JoystickOpen(i);
-		}
-		Log::info(LOG_GFX, "found joystick %s", name ? name : "Unknown Joystick");
-		Log::debug(LOG_GFX, "joystick axes: %i", SDL_JoystickNumAxes(joystick));
-		Log::debug(LOG_GFX, "joystick hats: %i", SDL_JoystickNumHats(joystick));
-		Log::debug(LOG_GFX, "joystick balls: %i", SDL_JoystickNumBalls(joystick));
-		Log::debug(LOG_GFX, "joystick buttons: %i", SDL_JoystickNumButtons(joystick));
+		if (!SDL_IsGameController(i))
+			continue;
+		const char *name = SDL_GameControllerNameForIndex(i);
+		SDL_GameController* controller = SDL_GameControllerOpen(i);
+		SDL_Joystick *joystick = SDL_GameControllerGetJoystick(controller);
+		Log::info(LOG_GFX, "found controller %s", name ? name : "Unknown controller");
 		if (haptic == nullptr)
 			haptic = SDL_HapticOpenFromJoystick(joystick);
 	}
 	if (!joysticks) {
-		Log::info(LOG_GFX, "no joysticks found");
+		Log::info(LOG_GFX, "no controllers found");
 	}
 
 	Log::info(LOG_GFX, "%i haptic devices", SDL_NumHaptics());
