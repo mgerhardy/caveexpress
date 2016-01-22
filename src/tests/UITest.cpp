@@ -18,17 +18,11 @@ protected:
 };
 
 class TestNode: public UINode {
-protected:
-	bool _active;
 public:
 	TestNode(IFrontend* frontend, bool active) :
-			UINode(frontend, "testnode"), _active(active) {
-	}
-
-	bool isActive() const override {
-		if (!_active)
-			return UINode::isActive();
-		return true;
+			UINode(frontend, "testnode") {
+		if (active)
+			setOnActivate("fakecommand");
 	}
 };
 
@@ -138,11 +132,42 @@ TEST_F(UITest, testPanelWithOthersFocus) {
 TEST_F(UITest, testVisibleFocus) {
 	TestWindow window(&_testFrontend);
 	UINode *node1 = new TestNode(&_testFrontend, true);
+	node1->setId("node1");
+	UINode *node2 = new TestNode(&_testFrontend, true);
+	node2->setId("node2");
+	UINode *node3 = new TestNode(&_testFrontend, true);
+	node3->setId("node3");
+	UINode *node4 = new TestNode(&_testFrontend, true);
+	node4->setId("node4");
 	window.add(node1);
+	window.add(node2);
+	window.add(node3);
+	window.add(node4);
+
 	ASSERT_TRUE(window.addFirstFocus());
 	ASSERT_TRUE(node1->hasFocus());
+	ASSERT_TRUE(window.hasFocus());
+
 	node1->setVisible(false);
 	ASSERT_FALSE(node1->hasFocus());
+	ASSERT_TRUE(window.hasFocus());
+	ASSERT_TRUE(node2->hasFocus());
+	ASSERT_FALSE(node3->hasFocus());
+	ASSERT_FALSE(node4->hasFocus());
+
+	ASSERT_FALSE(window.prevFocus(false));
+	ASSERT_TRUE(window.addLastFocus());
+	ASSERT_TRUE(window.hasFocus());
+	ASSERT_FALSE(node2->hasFocus());
+	ASSERT_FALSE(node3->hasFocus());
+	ASSERT_FALSE(node1->hasFocus());
+	ASSERT_TRUE(node4->hasFocus());
+
+	ASSERT_FALSE(window.nextFocus(false));
+	ASSERT_TRUE(window.addFirstFocus());
+	ASSERT_TRUE(node2->hasFocus());
+	ASSERT_TRUE(window.hasFocus());
+	ASSERT_FALSE(node4->hasFocus());
 }
 
 TEST_F(UITest, testAlignTo) {

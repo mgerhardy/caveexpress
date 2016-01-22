@@ -1077,7 +1077,15 @@ void UINode::setLayout (IUILayout* layout)
 
 void UINode::setVisible (bool visible)
 {
-	if (!visible)
-		removeFocus();
+	if (!visible && hasFocus()) {
+		UINode* parent = getParent();
+		if (parent != nullptr) {
+			if (!parent->nextFocus(false)) {
+				parent->addFirstFocus();
+			}
+		} else {
+			removeFocus();
+		}
+	}
 	_visible = visible;
 }
