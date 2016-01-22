@@ -137,20 +137,22 @@ bool UINodeMapControl::onControllerMotion (uint8_t axis, int value, uint32_t id)
 			dv.direction &= ~DIRECTION_HORIZONTAL;
 		}
 	} else {
-		const int absValue = std::abs(value);
-		if (axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT) {
-			if (absValue > delta) {
-				dv.direction |= DIRECTION_DOWN;
-				dv.direction &= ~DIRECTION_UP;
-			} else {
-				dv.direction &= ~DIRECTION_VERTICAL;
-			}
-		} else if (axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT) {
-			if (absValue > delta) {
-				dv.direction |= DIRECTION_UP;
-				dv.direction &= ~DIRECTION_DOWN;
-			} else {
-				dv.direction &= ~DIRECTION_VERTICAL;
+		if (_useTriggers) {
+			const int absValue = std::abs(value);
+			if (axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT) {
+				if (absValue > delta) {
+					dv.direction |= DIRECTION_DOWN;
+					dv.direction &= ~DIRECTION_UP;
+				} else {
+					dv.direction &= ~DIRECTION_VERTICAL;
+				}
+			} else if (axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT) {
+				if (absValue > delta) {
+					dv.direction |= DIRECTION_UP;
+					dv.direction &= ~DIRECTION_DOWN;
+				} else {
+					dv.direction &= ~DIRECTION_VERTICAL;
+				}
 			}
 		} else if (value < -delta) {
 			dv.direction |= DIRECTION_UP;
