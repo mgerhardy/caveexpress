@@ -3,7 +3,10 @@
 #ifndef b2Assert
 #define b2Assert SDL_assert
 #endif
+#include "common/Compiler.h"
+GCC_DIAG_OFF(shadow)
 #include <Common/b2Math.h>
+GCC_DIAG_ON(shadow)
 #include "common/Math.h"
 
 inline bool b2Vec2Equals (const b2Vec2& one, const b2Vec2& two, float epsilon = EPSILON)

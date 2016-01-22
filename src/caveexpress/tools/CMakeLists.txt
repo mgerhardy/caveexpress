@@ -2,7 +2,7 @@ project(jsonconvert)
 SET(${PROJECT_NAME}_SRC JSONConvert.cpp)
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${PROJECT_NAME})
-cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS caveexpress-shared common yajl)
+cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS caveexpress-shared common yajl physics)
 
 project(soundmapper)
 SET(${PROJECT_NAME}_SRC SoundMapper.cpp)
