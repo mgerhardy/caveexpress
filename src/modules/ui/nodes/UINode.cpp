@@ -282,11 +282,11 @@ void UINode::renderOnTop (int x, int y) const
 
 void UINode::renderBack (int x, int y) const
 {
+	if (_backgroundColor[3] <= 0.001f)
+		return;
 	const int w = getRenderWidth(false);
 	const int h = getRenderHeight(false);
-	if (_backgroundColor[3] > 0.001f) {
-		renderFilledRect(x + getRenderX(false), y + getRenderY(false), w, h, _backgroundColor);
-	}
+	renderFilledRect(x + getRenderX(false), y + getRenderY(false), w, h, _backgroundColor);
 }
 
 void UINode::renderMiddle (int x, int y) const
