@@ -476,12 +476,15 @@ bool UINode::prevFocus (bool cursorup)
 		if (!nodePtr->hasFocus())
 			continue;
 
+		// try to change the focus in the node itself (if it has children that want focus)
 		if (nodePtr->prevFocus(cursorup)) {
 			addFocus(0, 0);
 			return true;
 		}
 
+		// nothing in the node wanted the focus - so remove it
 		nodePtr->removeFocus();
+		// and now try the remaining nodes
 		for (++i; i != _nodes.rend(); ++i) {
 			UINode* focusNodePtr = *i;
 			if (focusNodePtr->addLastFocus()) {
@@ -537,6 +540,9 @@ bool UINode::nextFocus (bool cursordown)
 
 bool UINode::addLastFocus ()
 {
+	if (!isVisible())
+		return false;
+
 	bool focus = false;
 	for (UINodeListRevIter i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
 		UINode* nodePtr = *i;
@@ -558,6 +564,9 @@ bool UINode::addLastFocus ()
 
 bool UINode::addFirstFocus ()
 {
+	if (!isVisible())
+		return false;
+
 	bool focus = false;
 	for (UINode* nodePtr : _nodes) {
 		nodePtr->removeFocus();
