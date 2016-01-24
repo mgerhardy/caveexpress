@@ -31,7 +31,8 @@ void UINodeSlider::render (int x, int y) const
 	const int sliderX = x + (_value - _min) / steps * w;
 	Log::trace(LOG_UI, "x: %i, y: %i, w: %i, h: %i, stepDelta: %f, sliderX: %i", x, y, w, h, stepDelta, sliderX);
 	renderLine(x, y + deltaHeight, x + w, y + deltaHeight, _lineColor);
-	renderFilledRect(sliderX, y, stepDelta, h, _sliderColor);
+	if (_enabled)
+		renderFilledRect(sliderX, y, stepDelta, h, _sliderColor);
 }
 
 inline float UINodeSlider::calculateValue (int32_t x) const
