@@ -24,6 +24,8 @@ SDLSoundEngine::SDLSoundEngine () :
 		_music(nullptr), _currentChannel(0), _state(SOUND_CLOSED), _time(0)
 {
 	_listenerPosition = vec2_zero;
+	_volume = Config.getConfigVar("volume", string::toString(MIX_MAX_VOLUME));
+	_musicVolume = Config.getConfigVar("musicvolume", string::toString(MIX_MAX_VOLUME));
 }
 
 SDLSoundEngine::~SDLSoundEngine ()
@@ -97,6 +99,8 @@ bool SDLSoundEngine::init (bool initCache)
 		}
 	}
 	_state = SOUND_INITIALIZED;
+	Mix_Volume(-1, _volume->getIntValue());
+	Mix_VolumeMusic(_musicVolume->getIntValue());
 	return true;
 }
 
@@ -244,6 +248,17 @@ Mix_Chunk* SDLSoundEngine::getChunk (const std::string& filename)
 void SDLSoundEngine::update (uint32_t deltaTime)
 {
 	_time += deltaTime;
+
+	if (_volume->isDirty()) {
+		_volume->resetDirtyState();
+		volume(_volume->getIntValue());
+	}
+
+	if (_musicVolume->isDirty()) {
+		_musicVolume->resetDirtyState();
+		musicVolume(_musicVolume->getIntValue());
+	}
+
 #ifndef EMSCRIPTEN
 	if (!isActive()) {
 		return;
@@ -301,4 +316,14 @@ bool SDLSoundEngine::isActive () const
 		return false;
 	}
 	return true;
+}
+
+int SDLSoundEngine::volume (int newVolume)
+{
+	return Mix_Volume(-1, newVolume);
+}
+
+int SDLSoundEngine::musicVolume (int newVolume)
+{
+	return Mix_VolumeMusic(newVolume);
 }

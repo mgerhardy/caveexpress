@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/ConfigManager.h"
 #include "ISoundEngine.h"
 #include <map>
 
@@ -19,6 +20,8 @@ private:
 	int _currentChannel;
 	int _state;
 	uint32_t _time;
+	ConfigVarPtr _volume;
+	ConfigVarPtr _musicVolume;
 
 	Mix_Chunk* getChunk (const std::string& filename);
 
@@ -51,4 +54,6 @@ public:
 	int play (const std::string& filename, const vec2& position, bool loop) override;
 	void update (uint32_t deltaTime) override;
 	void setListenerPosition (const vec2& position, const vec2& velocity) override;
+	int volume (int newVolume) override;
+	int musicVolume (int newVolume) override;
 };

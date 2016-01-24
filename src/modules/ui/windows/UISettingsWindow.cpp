@@ -27,7 +27,7 @@
 UISettingsWindow::UISettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider) :
 		UIWindow(UI_WINDOW_SETTINGS, frontend, WINDOW_FLAG_MODAL), _background(nullptr), _serviceProvider(serviceProvider), _controllerNode(
 				nullptr), _noController(nullptr), _texturesBig(nullptr), _texturesSmall(nullptr), _soundOn(nullptr), _soundOff(nullptr), _fullscreenOn(
-				nullptr), _fullscreenOff(nullptr), _triggeraxisOn(nullptr), _triggeraxisOff(nullptr) {
+				nullptr), _fullscreenOff(nullptr), _triggeraxisOn(nullptr), _triggeraxisOff(nullptr), _volume(nullptr), _musicVolume(nullptr) {
 }
 
 void UISettingsWindow::init()
@@ -58,6 +58,8 @@ UINode* UISettingsWindow::addSections()
 		last = addSection(last, nullptr, tr("Sound/Music"), "soundmusic",
 				tr("On"), new SoundNodeListener(this, true),
 				tr("Off"), new SoundNodeListener(this, false));
+		last = addSection(last, nullptr, tr("Volume"), "volume", "volume", 0, 128, 1);
+		last = addSection(last, nullptr, tr("Music volume"), "musicvolume", "musicvolume", 0, 128, 1);
 	}
 
 	if (System.isFullscreenSupported()) {
@@ -87,6 +89,8 @@ UINode* UISettingsWindow::addSections()
 
 	_soundOn = (UINodeButton*)getNode("soundmusic_1");
 	_soundOff = (UINodeButton*)getNode("soundmusic_2");
+	_volume = (UINodeSlider*)getNode("volume_1");
+	_musicVolume = (UINodeSlider*)getNode("musicvolume_1");
 
 	_fullscreenOn = (UINodeButton*)getNode("fullscreen_1");
 	_fullscreenOff = (UINodeButton*)getNode("fullscreen_2");
@@ -104,8 +108,11 @@ void UISettingsWindow::update (uint32_t time)
 	_controllerNode->setVisible(visible);
 	_noController->setVisible(!visible);
 
+	const bool sound = Config.isSoundEnabled();
+	_volume->setEnabled(sound);
+	_musicVolume->setEnabled(sound);
 	UIWINDOW_SETTINGS_COLOR(_serviceProvider.getTextureDefinition().getTextureSize() == "big", _texturesBig, _texturesSmall)
-	UIWINDOW_SETTINGS_COLOR(Config.isSoundEnabled(), _soundOn, _soundOff)
+	UIWINDOW_SETTINGS_COLOR(sound, _soundOn, _soundOff)
 	UIWINDOW_SETTINGS_COLOR(Config.isFullscreen(), _fullscreenOn, _fullscreenOff)
 	UIWINDOW_SETTINGS_COLOR(Config.isGameControllerTriggerActive(), _triggeraxisOn, _triggeraxisOff)
 }
