@@ -1084,6 +1084,26 @@ void UINode::setLayout (IUILayout* layout)
 	}
 }
 
+void UINode::setEnabled (bool enable)
+{
+	if (!enable && hasFocus()) {
+		UINode* parent = getParent();
+		if (parent != nullptr) {
+			if (!parent->nextFocus(false)) {
+				parent->addFirstFocus();
+			}
+		} else {
+			removeFocus();
+		}
+	}
+
+	_enabled = enable;
+	if (!_enabled) {
+		_mousePressed = false;
+		_fingerPressed = false;
+	}
+}
+
 void UINode::setVisible (bool visible)
 {
 	if (!visible && hasFocus()) {

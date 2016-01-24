@@ -512,15 +512,6 @@ inline void UINode::putLeft (UINode *node, float gap)
 	setPos(node->getLeft() - gap - getWidth(), node->getTop());
 }
 
-inline void UINode::setEnabled (bool enable)
-{
-	_enabled = enable;
-	if (!_enabled) {
-		_mousePressed = false;
-		_fingerPressed = false;
-	}
-}
-
 inline bool UINode::isVisible () const
 {
 	return _visible;
