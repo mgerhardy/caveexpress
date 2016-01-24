@@ -108,8 +108,9 @@ UINode* UISettingsWindow::configureSection(const std::string& id, const std::str
 {
 	UINode* panel = new UINode(_frontend, "settings-sound");
 	panel->setVisible(visible);
-	panel->setPos(0.4, 0.0f);
-	panel->setSize(1.0f - panel->getWidth(), 1.0f - panel->getHeight());
+	panel->setPos(0.4, 0.1f);
+	panel->setPadding(0.1f);
+	panel->setSize(1.0f - panel->getX(), 1.0f - panel->getY());
 	panel->setLayout(new UIVBoxLayout(10.0f / static_cast<float>(_frontend->getHeight()), false, NODE_ALIGN_CENTER));
 
 	UINodeMainButton *button = new UINodeMainButton(_frontend, title);
@@ -144,14 +145,13 @@ void UISettingsWindow::addSections()
 		addSection(_settingsInput, tr("Mouse speed"), "mousespeed", "mousespeed", 0.1f, 3.0f, 0.1f);
 	}
 
-	addSection(_settingsInput, tr("Controller trigger axis"), "triggeraxis",
+	addSection(_settingsInput, tr("Controller trigger"), "triggeraxis",
 		tr("On"), new GameControllerTriggerNodeListener(true),
 		tr("Off"), new GameControllerTriggerNodeListener(false));
-	_noController = new UINodeLabel(_frontend, tr("No game controller attached"));
+	_noController = new UINodeLabel(_frontend, tr("No controller found"));
 	_noController->setColor(colorGray);
 	_noController->setFont(HUGE_FONT);
 	_noController->setVisible(false);
-//	_noController->centerUnder(getNode("triggeraxis"), 0.03f);
 	_settingsInput->add(_noController);
 }
 
