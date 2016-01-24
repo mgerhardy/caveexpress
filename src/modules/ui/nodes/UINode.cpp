@@ -1053,10 +1053,14 @@ void UINode::add (UINode* node)
 	node->onAdd();
 }
 
-UINode* UINode::getNode (const std::string& nodeId)
+UINode* UINode::getNode (const std::string& nodeId, bool check)
 {
-	if (_nodes.empty())
+	if (_nodes.empty()) {
+		if (check) {
+			SDL_assert_always("node doesn't have children to look for");
+		}
 		return nullptr;
+	}
 
 	for (UINode* nodePtr : _nodes) {
 		if (nodePtr->getId() == nodeId)
@@ -1067,6 +1071,9 @@ UINode* UINode::getNode (const std::string& nodeId)
 			return nodeR;
 	}
 
+	if (check) {
+		SDL_assert_always("node doesn't exist");
+	}
 	return nullptr;
 }
 

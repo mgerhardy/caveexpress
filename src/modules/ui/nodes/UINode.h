@@ -295,7 +295,7 @@ public:
 	virtual bool runFocusNode ();
 	bool checkFocus (int32_t x, int32_t y);
 	virtual bool isActive () const;
-	UINode* getNode (const std::string& nodeId);
+	UINode* getNode (const std::string& nodeId, bool check = false);
 	virtual bool nextFocus (bool cursordown);
 	virtual bool prevFocus (bool cursorup);
 	virtual bool addLastFocus ();

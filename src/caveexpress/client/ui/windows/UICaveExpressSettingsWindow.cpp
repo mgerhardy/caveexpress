@@ -11,22 +11,22 @@ UICaveExpressSettingsWindow::UICaveExpressSettingsWindow (IFrontend *frontend, S
 	init();
 }
 
-UINode* UICaveExpressSettingsWindow::addSections()
+void UICaveExpressSettingsWindow::addSections()
 {
-	UINode* last = UISettingsWindow::addSections();
+	UISettingsWindow::addSections();
 
-	last = addSection(last, nullptr, tr("Game mode"), "gamemode",
+	addSection(_settingsGame, tr("Game mode"), "gamemode",
 			tr("Normal"), new ModeSetListener("easy", _campaignManager),
 			tr("Hard"), new ModeSetListener("hard", _campaignManager));
-
-	_gameModeNormal = (UINodeButton*)getNode("gamemode_1");
-	_gameModeHard = (UINodeButton*)getNode("gamemode_2");
-
-	return last;
 }
 
 void UICaveExpressSettingsWindow::update (uint32_t time)
 {
+	if (!_gameModeNormal) {
+		_gameModeNormal = (UINodeButton*)getNode("gamemode_1");
+		_gameModeHard = (UINodeButton*)getNode("gamemode_2");
+	}
+
 	UISettingsWindow::update(time);
 	UIWINDOW_SETTINGS_COLOR(Config.isModeEasy(), _gameModeNormal, _gameModeHard)
 }

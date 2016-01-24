@@ -15,7 +15,7 @@ protected:
 	UINodeButton* _gameModeNormal;
 	UINodeButton* _gameModeHard;
 
-	UINode* addSections() override;
+	void addSections() override;
 public:
 	UICaveExpressSettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager);
 

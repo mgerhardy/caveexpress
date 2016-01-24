@@ -19,7 +19,12 @@ class UINodeSlider;
 
 class UISettingsWindow: public UIWindow {
 protected:
-	UINode* _background;
+	friend class UISettingsSectionListener;
+	UINode* _sectionPanel;
+	UINode* _settingsGfx;
+	UINode* _settingsSound;
+	UINode* _settingsGame;
+	UINode* _settingsInput;
 	ServiceProvider& _serviceProvider;
 	UINode* _controllerNode;
 	UINodeLabel* _noController;
@@ -39,10 +44,11 @@ protected:
 	UINodeSlider* _volume;
 	UINodeSlider* _musicVolume;
 
-	UINode* addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& option1,
+	UINode* configureSection (const std::string& id, const std::string& title, bool visible = false);
+	void addSection (UINode* parent, const std::string& title, const std::string& labelId, const std::string& option1,
 			UINodeListener* option1Listener, const std::string& option2, UINodeListener* option2Listener);
-	UINode* addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& configVar, float min, float max, float stepWidth);
-	virtual UINode* addSections();
+	void addSection (UINode* parent, const std::string& title, const std::string& labelId, const std::string& configVar, float min, float max, float stepWidth);
+	virtual void addSections();
 public:
 	UISettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider);
 	void init();
