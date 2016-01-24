@@ -28,11 +28,12 @@ protected:
 	UINodeLabel *_waitLabel;
 	IMapControl *_mapControl;
 	UINodeButtonText *_startButton;
-	bool _cursorActive;
 	ServiceProvider& _serviceProvider;
 	// the hud panel
 	UINode* _panel;
 	uint32_t _lastFingerPressEvent;
+	bool _cursorActive;
+	bool _continuousMovement;
 
 	virtual UINode* getFingerControl ();
 	virtual UINode* getControl ();
@@ -43,7 +44,7 @@ protected:
 	virtual void initInputHudNodes();
 	virtual void showCursor (bool show);
 public:
-	IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, IUINodeMap* nodeMap);
+	IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, IUINodeMap* nodeMap, bool continuousMovement);
 	virtual ~IUIMapWindow() {}
 
 	virtual void hideHud();

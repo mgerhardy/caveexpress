@@ -38,9 +38,9 @@ public:
 	}
 };
 
-IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, IUINodeMap* nodeMap) :
+IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, IUINodeMap* nodeMap, bool continuousMovement) :
 		UIWindow(UI_WINDOW_MAP, frontend, WINDOW_FLAG_MODAL | WINDOW_FLAG_FULLSCREEN), _nodeMap(nodeMap), _waitLabel(nullptr), _mapControl(nullptr),
-		_startButton(nullptr), _cursorActive(false), _serviceProvider(serviceProvider), _panel(nullptr), _lastFingerPressEvent(0L) {
+		_startButton(nullptr), _serviceProvider(serviceProvider), _panel(nullptr), _lastFingerPressEvent(0L), _cursorActive(false), _continuousMovement(continuousMovement) {
 	const float screenPadding = getScreenPadding();
 	setPadding(screenPadding);
 	_playClickSound = false;
@@ -113,7 +113,7 @@ void IUIMapWindow::init()
 
 UINode* IUIMapWindow::getControl ()
 {
-	UINodeMapControl* node = new UINodeMapControl(_frontend, _nodeMap);
+	UINodeMapControl* node = new UINodeMapControl(_frontend, _nodeMap, _continuousMovement);
 	_mapControl = node;
 	return node;
 }

@@ -13,14 +13,17 @@ class UINodeMapControl: public UINode, public IMapControl {
 private:
 	ClientMap &_map;
 	struct DirectionValues {
+		// true if this is a repeated event
+		bool repeated;
 		Direction direction;
 		Direction oldDirection;
 	};
 	DirectionValues _d[4];
 	bool _useTriggers;
+	bool _continuousMovement;
 
 public:
-	UINodeMapControl (IFrontend *frontend, IUINodeMap *mapNode);
+	UINodeMapControl (IFrontend *frontend, IUINodeMap *mapNode, bool continuousMovement);
 	virtual ~UINodeMapControl ();
 
 	// IMapControl

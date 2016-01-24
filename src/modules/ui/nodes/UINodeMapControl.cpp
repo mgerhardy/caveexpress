@@ -9,12 +9,13 @@
 // TODO:
 #define DEVICE_TO_ID(id) (0)
 
-UINodeMapControl::UINodeMapControl (IFrontend *frontend, IUINodeMap *mapNode) :
-		UINode(frontend), _map(mapNode->getMap()), _useTriggers(Config.isGameControllerTriggerActive())
+UINodeMapControl::UINodeMapControl (IFrontend *frontend, IUINodeMap *mapNode, bool continuousMovement) :
+		UINode(frontend), _map(mapNode->getMap()), _useTriggers(Config.isGameControllerTriggerActive()), _continuousMovement(continuousMovement)
 {
 	for (int i = 0; i < SDL_arraysize(_d); ++i) {
 		_d[i].direction = 0;
 		_d[i].oldDirection = 0;
+		_d[i].repeated = false;
 	}
 	setPos(mapNode->getX(), mapNode->getY());
 	setSize(mapNode->getWidth(), mapNode->getHeight());
@@ -38,6 +39,7 @@ void UINodeMapControl::removeFocus ()
 			_map.resetAcceleration(0, i);
 		}
 		dv.oldDirection = dv.direction = 0;
+		dv.repeated = false;
 	}
 }
 
@@ -48,6 +50,7 @@ void UINodeMapControl::update (uint32_t deltaTime)
 		for (int i = 0; i < SDL_arraysize(_d); ++i) {
 			DirectionValues& dv = _d[i];
 			dv.direction = 0;
+			dv.repeated = false;
 		}
 		return;
 	}
@@ -57,13 +60,19 @@ void UINodeMapControl::update (uint32_t deltaTime)
 	for (int i = 0; i < SDL_arraysize(_d); ++i) {
 		DirectionValues& dv = _d[i];
 		if (dv.direction != 0) {
-			_map.accelerate(dv.direction, i);
+			if (!dv.repeated || _continuousMovement) {
+				_map.accelerate(dv.direction, i);
+				dv.repeated = true;
+			}
 		}
 
 		const Direction resetDirections = ~dv.direction & dv.oldDirection;
 		if (resetDirections != 0) {
 			_map.resetAcceleration(resetDirections, i);
 		}
+
+		if (dv.direction == 0)
+			dv.repeated = false;
 
 		dv.oldDirection = dv.direction;
 	}
@@ -114,6 +123,7 @@ bool UINodeMapControl::onControllerMotion (uint8_t axis, int value, uint32_t id)
 		for (int i = 0; i < SDL_arraysize(_d); ++i) {
 			DirectionValues& dv = _d[i];
 			dv.direction = 0;
+			dv.repeated = false;
 		}
 		return false;
 	}
