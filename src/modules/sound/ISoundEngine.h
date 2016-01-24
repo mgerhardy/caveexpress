@@ -18,6 +18,8 @@ public:
 	virtual void halt (int sound) {}
 	virtual bool cache (const std::string& sound) { return false; }
 	virtual void haltAll () {}
+	virtual int volume (int newVolume) { return newVolume; }
+	virtual int musicVolume (int newVolume) { return newVolume; }
 	virtual void pause () {}
 	virtual void resume () {}
 	virtual int playMusic (const std::string& music, bool loop) { return -1; }
