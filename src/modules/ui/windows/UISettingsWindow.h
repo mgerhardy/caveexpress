@@ -6,14 +6,15 @@
 class ServiceProvider;
 class UINodeLabel;
 class UINodeButton;
+class UINodeSlider;
 
 #define UIWINDOW_SETTINGS_COLOR(state, one, two) \
 	if (state) { \
-		one->setColor(colorGray); \
-		two->setColor(colorBlack); \
-	} else { \
-		two->setColor(colorGray); \
 		one->setColor(colorBlack); \
+		two->setColor(colorGray); \
+	} else { \
+		two->setColor(colorBlack); \
+		one->setColor(colorGray); \
 	}
 
 class UISettingsWindow: public UIWindow {
@@ -35,9 +36,12 @@ protected:
 	UINodeButton* _triggeraxisOn;
 	UINodeButton* _triggeraxisOff;
 
+	UINodeSlider* _volume;
+	UINodeSlider* _musicVolume;
+
 	UINode* addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& option1,
 			UINodeListener* option1Listener, const std::string& option2, UINodeListener* option2Listener);
-	UINode* addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& configVar);
+	UINode* addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& configVar, float min, float max, float stepWidth);
 	virtual UINode* addSections();
 public:
 	UISettingsWindow (IFrontend *frontend, ServiceProvider& serviceProvider);

@@ -67,7 +67,7 @@ UINode* UISettingsWindow::addSections()
 	}
 
 	if (_frontend->hasMouse()) {
-		last = addSection(last, nullptr, tr("Mouse speed"), "mousespeed", "mousespeed");
+		last = addSection(last, nullptr, tr("Mouse speed"), "mousespeed", "mousespeed", 0.1f, 3.0f, 0.1f);
 	}
 
 	UINode* center = last;
@@ -147,7 +147,7 @@ UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* backgroun
 	return optionsPanel;
 }
 
-UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& configVar)
+UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* background, const std::string& title, const std::string& labelId, const std::string& configVar, float min, float max, float stepWidth)
 {
 	UINodeLabel *label = new UINodeLabel(_frontend, title);
 	label->setId(labelId);
@@ -160,12 +160,13 @@ UINode* UISettingsWindow::addSection (UINode* centerUnderNode, UINode* backgroun
 		label->centerUnder(centerUnderNode, 0.03f);
 	}
 	add(label);
-	UINodeSlider *sliderPanel = new UINodeSlider(_frontend, 0.1f, 3.0f, 0.1f);
+	UINodeSlider *sliderPanel = new UINodeSlider(_frontend, min, max, stepWidth);
 	const float height = 0.06f;
 	const float sliderWidth = 0.1f;
 	sliderPanel->setSize(sliderWidth, height);
 	ConfigVarListener* listener = new ConfigVarListener(configVar, sliderPanel);
 	sliderPanel->addListener(UINodeListenerPtr(listener));
+	sliderPanel->setId(labelId + "_1");
 	add(sliderPanel);
 	sliderPanel->centerUnder(label);
 	return sliderPanel;
