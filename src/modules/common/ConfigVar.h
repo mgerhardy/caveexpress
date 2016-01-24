@@ -27,6 +27,7 @@ public:
 	const std::string& getValue () const;
 	const std::string& getName () const;
 	bool isDirty () const;
+	void resetDirtyState ();
 };
 
 inline float ConfigVar::getFloatValue () const
@@ -52,6 +53,11 @@ inline const std::string& ConfigVar::getValue () const
 inline const std::string& ConfigVar::getName () const
 {
 	return _name;
+}
+
+inline void ConfigVar::resetDirtyState ()
+{
+	_dirty = false;
 }
 
 inline bool ConfigVar::isDirty () const
