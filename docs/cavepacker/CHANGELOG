@@ -32,3 +32,4 @@ Version 1.4 (not yet released)
 * Map editor support
 * Improved game controller support
 * Ported to steamlink device
+* Allow to modify the music and sound volume
