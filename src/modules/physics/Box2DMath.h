@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDL_assert.h>
 #ifndef b2Assert
 #define b2Assert SDL_assert
 #endif
