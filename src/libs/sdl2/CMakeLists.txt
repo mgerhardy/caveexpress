@@ -295,6 +295,8 @@ set_option(VIDEO_VIVANTE       "Use Vivante EGL video driver" ${UNIX_SYS})
 # The options below are for compatibility to configure's default behaviour.
 set(SDL_STATIC ON CACHE BOOL "Build a static version of the library")
 
+dep_option(SDL_STATIC_PIC      "Static version of the library should be built with Position Independent Code" OFF "SDL_STATIC" OFF)
+
 # General source files
 file(GLOB SOURCE_FILES
   ${SDL2_SOURCE_DIR}/src/*.c
