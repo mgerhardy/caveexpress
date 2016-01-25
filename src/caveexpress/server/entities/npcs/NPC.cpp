@@ -311,6 +311,8 @@ void NPC::setState (int state)
 	}
 
 	IEntity::setState(state);
+	const std::string& stateStr = getStateStr();
+	Log::trace(LOG_GAMEIMPL, "npc %s: state %s", getType().name.c_str(), stateStr.c_str());
 }
 
 void NPC::setDazed (const IEntity* entity)
