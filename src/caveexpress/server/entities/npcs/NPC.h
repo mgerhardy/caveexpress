@@ -59,6 +59,8 @@ public:
 
 	virtual b2Body* createBody (const b2Vec2 &pos, bool setOnGround = true, bool fixedRotation = true);
 
+	std::string getStateStr () const;
+
 	inline bool isIdle () const
 	{
 		return _state == NPCState::NPC_IDLE;

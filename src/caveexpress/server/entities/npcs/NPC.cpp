@@ -358,4 +358,35 @@ bool NPC::returnToInitialPosition ()
 	return true;
 }
 
+std::string NPC::getStateStr () const
+{
+	switch (_state) {
+	case NPCState::NPC_IDLE:
+		return "idle";
+	case NPCState::NPC_FALLING:
+		return "falling";
+	case NPCState::NPC_SWIMMING:
+		return "swimming";
+	case NPCState::NPC_DYING:
+		return "dying";
+	case NPCState::NPC_MOVING:
+		return "moving";
+	case NPCState::NPC_FLYING:
+		return "flying";
+	case NPCState::NPC_DAZED:
+		return "dazed";
+	case NPCState::NPC_DONE:
+		return "done";
+	case NPCState::NPC_COLLECTED:
+		return "collected";
+	case NPCState::NPC_ATTACKING:
+		return "attacking";
+	case NPCState::NPC_ARRIVED:
+		return "arrived";
+	case NPCState::NPC_STRUGGLE:
+		return "struggle";
+	}
+	return "ERROR";
+}
+
 }
