@@ -77,7 +77,7 @@ void IUIMapWindow::initInputHudNodes()
 }
 
 void IUIMapWindow::initHudNodes()
-	{
+{
 }
 
 void IUIMapWindow::init()

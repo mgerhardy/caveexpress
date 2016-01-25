@@ -164,7 +164,11 @@ bool UINodeMapControl::onControllerMotion (uint8_t axis, int value, uint32_t id)
 					dv.direction &= ~DIRECTION_VERTICAL;
 				}
 			}
-		} else if (value < -delta) {
+		} else if (axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT || axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT) {
+			// ignore trigger axis if not explicity enabled in the options
+			return false;
+		}
+		if (value < -delta) {
 			dv.direction |= DIRECTION_UP;
 			dv.direction &= ~DIRECTION_DOWN;
 		} else if (value > delta) {
