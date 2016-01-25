@@ -73,28 +73,30 @@ bool UINodeSlider::onControllerMotion (uint8_t axis, int value, uint32_t id)
 	if (!horizontal)
 		return false;
 
+	bool change;
 	if (value > 0)
-		setValue(_value + _stepWidth);
+		change = setValue(_value + _stepWidth);
 	else
-		setValue(_value - _stepWidth);
+		change = setValue(_value - _stepWidth);
 
 	UINode::onControllerMotion(axis, value, id);
-	return true;
+	return change;
 }
 
-void UINodeSlider::setValue (float value)
+bool UINodeSlider::setValue (float value)
 {
 	if (value > _max)
-		return;
+		return false;
 	if (value < _min)
-		return;
+		return false;
 
 	if (fequals(value, _value))
-		return;
+		return false;
 
 	_value = value;
 
 	for (Listeners::iterator i = _listeners.begin(); i != _listeners.end(); ++i) {
 		(*i)->onValueChanged();
 	}
+	return true;
 }

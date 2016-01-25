@@ -18,7 +18,7 @@ public:
 	virtual ~UINodeSlider ();
 
 	void setColors (const Color& lineColor, const Color& sliderColor);
-	void setValue (float value);
+	bool setValue (float value);
 	float getValue () const;
 
 	void setMax (float max);
