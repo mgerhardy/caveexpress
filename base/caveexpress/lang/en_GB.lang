@@ -18,6 +18,7 @@ Close|Close
 Collect packages by landing on them|Collect packages by landing on them
 Collecting fruits will restore hitpoints|Collecting fruits will restore hitpoints
 Continue|Continue
+Controller trigger|Controller trigger
 Create server|Create server
 Decrease map size|Decrease map size
 Deliver packages to the shredders|Deliver packages to the shredders
@@ -32,16 +33,17 @@ Drop them with the second finger|Drop them with the second finger
 Dropping stones onto dinos stuns them|Dropping stones onto dinos stuns them
 Editor|Editor
 Extras|Extras
-Facebook|Facebook
 Fall delay|Fall delay
 File|File
 Fish|Fish
 Fullscreen|Fullscreen
+Game|Game
 Game mode|Game mode
 General|General
 Geyser|Geyser
 Google Play|Google Play
 Google Play sign-out|Google Play sign-out
+Graphics|Graphics
 Gravity|Gravity
 Hard|Hard
 Health bar|Health bar
@@ -54,7 +56,7 @@ Ice|Ice
 Increase map size|Increase map size
 Initial npc spawn delay for the pterodactyls and the fish|Initial npc spawn delay for the pterodactyls and the fish
 Initial water rising delay in milliseconds|Initial water rising delay in milliseconds
-Joystick|Joystick
+Input|Input
 Just stay and watch what happens|Just stay and watch what happens
 LMB|LMB
 Later|Later
@@ -67,9 +69,12 @@ Map|Map
 Map Options|Map Options
 Maps|Maps
 Mouse movement|Mouse movement
+Mouse speed|Mouse speed
 Multiplayer|Multiplayer
+Music volume|Music volume
 Name|Name
 New|New
+No controller found|No controller found
 Normal|Normal
 Npc delay|Npc delay
 Npcs|Npcs
@@ -90,6 +95,7 @@ Pterodactyls|Pterodactyls
 Pterodactyls is after you|Pterodactyls is after you
 Quit|Quit
 Quit without saving|Quit without saving
+Quit?|Quit?
 RMB|RMB
 Redo|Redo
 Reference time in seconds|Reference time in seconds
@@ -119,6 +125,7 @@ Show help messages to the player|Show help messages to the player
 Shredder|Shredder
 SideScroll|SideScroll
 Small|Small
+Sound|Sound
 Sound/Music|Sound/Music
 Start|Start
 Stone|Stone
@@ -140,6 +147,7 @@ Undo|Undo
 Use the second finger to drop the package|Use the second finger to drop the package
 Use the second finger to drop the stone|Use the second finger to drop the stone
 Use the swing of the package|Use the swing of the package
+Volume|Volume
 Waiting|Waiting
 Watch the geyser|Watch the geyser
 Water|Water

@@ -9,23 +9,27 @@ Campaigns|Kampagnen
 Cancel|Abbrechen
 Close|Close
 Continue|Fortfahren
+Controller trigger|Controller trigger
 Create server|Erstellen
 Decrease map size|Decrease map size
 Description|Beschreibung
 Disconnect|Trennen
+Editor|Editor
 Extras|Extras
 File|File
 Fullscreen|Vollbild
+Game|Game
 General|General
 Gesture|Geste
 Google Play|Google Play
 Google Play sign-out|Google Play trennen
+Graphics|Graphics
 Hard|Schwer
 Help|Help
 Hints|Hinweise
 Homepage|Homepage
 Increase map size|Increase map size
-Joystick|Joystick
+Input|Input
 LMB|LMB
 Later|Spaeter
 Leaderboard|Leaderboard
@@ -36,10 +40,13 @@ Map|Map
 Map Options|Map Options
 Maps|Maps
 Mouse movement|Mouse movement
+Mouse speed|Mouse speed
 Move all packages onto their targets|Schiebe alle Pakete auf die Paletten
 Multiplayer|Multiplayer
+Music volume|Music volume
 Name|Name
 New|New
+No controller found|No controller found
 Normal|Normal
 OK|OK
 Objectives|Ziele
@@ -53,6 +60,7 @@ Players:|Spieler:
 Please rate the app|Bitte bewerte die App
 Quit|Beenden
 Quit without saving|Quit without saving
+Quit?|Quit?
 RMB|RMB
 Redo|Redo
 Reference time in seconds|Reference time in seconds
@@ -78,6 +86,7 @@ Show Grid|Show Grid
 Show help messages to the player|Show help messages to the player
 Small|Klein
 Solve|Solve
+Sound|Sound
 Sound/Music|Sound/Musik
 Start|Start
 Target|Palette
@@ -87,6 +96,7 @@ Time|Time
 Tutorial|Tutorial
 Twitter|Twitter
 Undo|Undo
+Volume|Volume
 Waiting|Warten
 Win conditions|Win conditions
 Your player|Dein Spieler
