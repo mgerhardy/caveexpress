@@ -15,7 +15,7 @@ void UICaveExpressSettingsWindow::addSections()
 {
 	UISettingsWindow::addSections();
 
-	addSection(_settingsGame, tr("Game mode"), "gamemode",
+	addToggleEntry(_settingsGame, tr("Game mode"), "gamemode",
 			tr("Normal"), new ModeSetListener("easy", _campaignManager),
 			tr("Hard"), new ModeSetListener("hard", _campaignManager));
 }

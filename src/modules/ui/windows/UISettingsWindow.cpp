@@ -122,30 +122,32 @@ UINode* UISettingsWindow::configureSection(const std::string& id, const std::str
 
 void UISettingsWindow::addSections()
 {
-	addSection(_settingsGfx, tr("Textures"), "textures",
+	addToggleEntry(_settingsGfx, tr("Textures"), "textures",
 			tr("Big"), new TextureModeListener("big", _frontend, _serviceProvider),
 			tr("Small"), new TextureModeListener("small", _frontend, _serviceProvider));
 
 	if (System.isFullscreenSupported()) {
-		addSection(_settingsGfx, tr("Fullscreen"), "fullscreen",
+		addToggleEntry(_settingsGfx, tr("Fullscreen"), "fullscreen",
 				tr("On"), new FullscreenListener(_frontend, true),
 				tr("Off"), new FullscreenListener(_frontend, false));
 	}
 
 	const int numDevices = SDL_GetNumAudioDevices(SDL_FALSE);
 	if (numDevices == -1 || numDevices > 0) {
-		addSection(_settingsSound, tr("Sound/Music"), "soundmusic",
+		addToggleEntry(_settingsSound, tr("Sound/Music"), "soundmusic",
 				tr("On"), new SoundNodeListener(this, true),
 				tr("Off"), new SoundNodeListener(this, false));
-		addSection(_settingsSound, tr("Volume"), "volume", "volume", 0, 128, 1);
-		addSection(_settingsSound, tr("Music volume"), "musicvolume", "musicvolume", 0, 128, 1);
+		addSliderEntry(_settingsSound, tr("Volume"), "volume", 0, 128, 1);
+		addSliderEntry(_settingsSound, tr("Music volume"), "musicvolume", 0, 128, 1);
 	}
 
 	if (_frontend->hasMouse()) {
-		addSection(_settingsInput, tr("Mouse speed"), "mousespeed", "mousespeed", 0.1f, 3.0f, 0.1f);
+		addSliderEntry(_settingsInput, tr("Mouse speed"), "mousespeed", 0.1f, 3.0f, 0.1f);
 	}
 
-	addSection(_settingsInput, tr("Controller trigger"), "triggeraxis",
+	addTextInputEntry(_settingsGame, tr("Username"), "name");
+
+	addToggleEntry(_settingsInput, tr("Controller trigger"), "triggeraxis",
 		tr("On"), new GameControllerTriggerNodeListener(true),
 		tr("Off"), new GameControllerTriggerNodeListener(false));
 	_noController = new UINodeLabel(_frontend, tr("No controller found"));
@@ -173,12 +175,9 @@ void UISettingsWindow::update (uint32_t time)
 	UIWINDOW_SETTINGS_COLOR(Config.isGameControllerTriggerActive(), _triggeraxisOn, _triggeraxisOff)
 }
 
-void UISettingsWindow::addSection (UINode* parent, const std::string& title, const std::string& labelId, const std::string& option1, UINodeListener* option1Listener, const std::string& option2, UINodeListener* option2Listener)
+void UISettingsWindow::addToggleEntry (UINode* parent, const std::string& title, const std::string& labelId, const std::string& option1, UINodeListener* option1Listener, const std::string& option2, UINodeListener* option2Listener)
 {
-	UINodeLabel *label = new UINodeLabel(_frontend, title);
-	label->setId(labelId);
-	label->setFont(HUGE_FONT);
-	label->setColor(colorWhite);
+	addLabelEntry(parent, title, labelId);
 
 	UINode *optionsPanel = new UINode(_frontend, labelId + "_panel");
 	optionsPanel->setLayout(new UIHBoxLayout(0.02f));
@@ -196,22 +195,39 @@ void UISettingsWindow::addSection (UINode* parent, const std::string& title, con
 	option2Text->setFont(fontPtr);
 	optionsPanel->add(option2Text);
 
-	parent->add(label);
 	parent->add(optionsPanel);
 }
 
-void UISettingsWindow::addSection (UINode* parent, const std::string& title, const std::string& labelId, const std::string& configVar, float min, float max, float stepWidth)
+void UISettingsWindow::addSliderEntry (UINode* parent, const std::string& title, const std::string& configVar, float min, float max, float stepWidth)
 {
-	UINodeLabel *label = new UINodeLabel(_frontend, title);
-	label->setId(labelId);
-	label->setFont(HUGE_FONT);
-	label->setColor(colorWhite);
+	addLabelEntry(parent, title, configVar);
 
 	UINodeSlider *sliderPanel = new UINodeSlider(_frontend, min, max, stepWidth);
 	sliderPanel->setSize(0.1f, 0.06f);
 	sliderPanel->addListener(UINodeListenerPtr(new ConfigVarListener(configVar, sliderPanel)));
-	sliderPanel->setId(labelId + "_1");
+	sliderPanel->setId(configVar + "_1");
 
-	parent->add(label);
 	parent->add(sliderPanel);
+}
+
+void UISettingsWindow::addTextInputEntry (UINode* parent, const std::string& title, const std::string& configVar)
+{
+	addLabelEntry(parent, title, configVar);
+
+	UINodeTextInput *textInput = new UINodeTextInput(_frontend, HUGE_FONT, 15);
+	textInput->setBackgroundColor(colorWhite);
+	textInput->setValue(Config.getConfigVar(configVar)->getValue());
+	textInput->addListener(UINodeListenerPtr(new ConfigVarListener(configVar, textInput)));
+	textInput->setId(configVar + "_1");
+
+	parent->add(textInput);
+}
+
+void UISettingsWindow::addLabelEntry (UINode* parent, const std::string& title, const std::string& id)
+{
+	UINodeLabel *label = new UINodeLabel(_frontend, title);
+	label->setId(id);
+	label->setFont(HUGE_FONT);
+	label->setColor(colorWhite);
+	parent->add(label);
 }
