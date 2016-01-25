@@ -111,3 +111,4 @@ Version 2.4 (not yet released)
 * Changed focus order of some of the buttons
 * Reduced npc flying speed
 * Allow to modify the music and sound volume
+* Transfering npcs is now implemented
