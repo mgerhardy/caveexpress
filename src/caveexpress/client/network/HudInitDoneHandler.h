@@ -31,6 +31,12 @@ public:
 				}
 			}
 		}
+		{
+			UINodeSprite* node = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_TARGETCAVEID);
+			if (node) {
+				node->clearSprites();
+			}
+		}
 
 		UI::get().setBarValue(UI_WINDOW_MAP, UINODE_HITPOINTS, msg->getHitpoints());
 

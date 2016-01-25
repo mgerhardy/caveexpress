@@ -22,10 +22,10 @@ UIMapWindow::UIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider,
 
 void UIMapWindow::initHudNodes()
 {
-	const float barHeight = 12.0f / _frontend->getHeight();
-	const int spriteHeight = 30;
-	const float barWidth = 102.0f / _frontend->getWidth();
-	const int spriteNodeOffset = 15;
+	const float barHeight = 20.0f / _frontend->getHeight();
+	const int spriteHeight = 50;
+	const float barWidth = 200.0f / _frontend->getWidth();
+	const int spriteNodeOffset = 40;
 
 	_panel = new UINode(_frontend);
 	_panel->setId("hudpanel");
