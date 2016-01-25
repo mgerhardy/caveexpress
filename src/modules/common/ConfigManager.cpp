@@ -111,8 +111,8 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	Log::info(LOG_COMMON, "     sound enabled: %s", _soundEnabled->getValue().c_str());
 	Log::info(LOG_COMMON, "     debug enabled: %s", _debug->getValue().c_str());
 
-	CommandSystem::get().registerCommand("loglevel", bindFunction(ConfigManager::setLogLevel));
-	CommandPtr cmd = CommandSystem::get().registerCommand(CMD_SETVAR, bindFunction(ConfigManager::setConfig));
+	Commands.registerCommand("loglevel", bindFunction(ConfigManager::setLogLevel));
+	CommandPtr cmd = Commands.registerCommand(CMD_SETVAR, bindFunction(ConfigManager::setConfig));
 	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
 		for (auto entry : _configVars) {
 			if (!string::startsWith(entry.first, input))
@@ -121,7 +121,7 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 		}
 	});
 
-	CommandSystem::get().registerCommand(CMD_LISTVARS, bindFunction(ConfigManager::listConfigVariables));
+	Commands.registerCommand(CMD_LISTVARS, bindFunction(ConfigManager::listConfigVariables));
 
 	for (int i = 0; i < argc; i++) {
 		if (argv[i][0] != '-')
@@ -159,12 +159,6 @@ ConfigManager& ConfigManager::get ()
 {
 	static ConfigManager _mgr;
 	return _mgr;
-}
-
-std::string ConfigManager::getNameForKey (int key) const
-{
-	const SDL_Scancode scanCode = SDL_GetScancodeFromKey(key);
-	return SDL_GetScancodeName(scanCode);
 }
 
 void ConfigManager::getKeyValueMap (LUA& lua, std::map<std::string, std::string>& map, const char *key)

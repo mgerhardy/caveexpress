@@ -105,7 +105,6 @@ private:
 	int mapModifier (const std::string& name);
 	int mapKey (const std::string& name);
 
-	std::string getNameForKey (int key) const;
 	std::string getNameForControllerButton (int key) const;
 
 	ConfigVarPtr getConfigValue (KeyValueMap &map, const std::string& name, const std::string& defaultValue = "", unsigned int flags = 0U);
