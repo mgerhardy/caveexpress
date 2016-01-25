@@ -82,8 +82,8 @@ bool NPCFriendly::triggerTargetCaveAnnouncement (const b2Vec2& playerPos)
 		return false;
 	}
 	if (_triggerMovement == 0) {
-		_triggerMovement = _time + 400;
-		GameEvent.announceTargetCave(getVisMask(), *this, 2000);
+		_triggerMovement = _time + 600;
+		GameEvent.announceTargetCave(getVisMask(), *this, 1200);
 		return false;
 	}
 	return _time > _triggerMovement;

@@ -25,8 +25,8 @@ bool ClientNPC::update(uint32_t deltaTime, bool lerpPos) {
 
 void ClientNPC::changeState(uint8_t state) {
 	if (_state != state) {
-		_speechBubbleDelay = 0;
-		removeOverlay(_targetCaveSprite);
+		//_speechBubbleDelay = 0;
+		//removeOverlay(_targetCaveSprite);
 	}
 	ClientEntity::changeState(state);
 }
