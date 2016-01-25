@@ -69,7 +69,7 @@ void UIMapWindow::initHudNodes()
 	}
 	_panel->add(livesSprite);
 
-	UINodeSprite *targetCave = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
+	UINodeSprite *targetCave = new UINodeSprite(_frontend, spriteHeight * 2, spriteHeight);
 	targetCave->setId(UINODE_TARGETCAVEID);
 	targetCave->setImage("icon-targetcave");
 	_panel->add(targetCave);
