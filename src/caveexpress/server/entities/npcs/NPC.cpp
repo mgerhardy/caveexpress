@@ -123,7 +123,9 @@ void NPC::update (uint32_t deltaTime)
 			setDying(nullptr);
 		}
 	} else if (isSwimming()) {
-		setLinearVelocity (_currentSwimmingSpeed);
+		b2Vec2 v = getLinearVelocity();
+		v.x = _currentSwimmingSpeed.x;
+		setLinearVelocity(v);
 	} else if (isTouchingWater()) {
 		setSwimmingIdle();
 	} else if (isMoving()) {
