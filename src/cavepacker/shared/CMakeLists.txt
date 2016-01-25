@@ -2,6 +2,7 @@ set(cavepacker-shared_SRCS
 	CavePackerAnimation.cpp
 	CavePackerSQLitePersister.cpp
 	CavePackerSpriteType.cpp
+	CavePackerSoundType.cpp
 	CavePackerAchievement.cpp
 	CavePackerEntityType.cpp
 	SolutionUtil.cpp

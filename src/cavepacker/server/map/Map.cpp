@@ -31,6 +31,7 @@
 #include "cavepacker/server/map/SokobanMapContext.h"
 #include "cavepacker/shared/Pathfinding.h"
 #include "cavepacker/shared/CavePackerSpriteType.h"
+#include "cavepacker/shared/CavePackerSoundType.h"
 #include "cavepacker/shared/EntityStates.h"
 #include "cavepacker/shared/network/messages/ShowDeadlocksMessage.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
@@ -40,6 +41,8 @@
 #include <climits>
 
 namespace cavepacker {
+
+static const SoundMessage STEPSOUND(0.0f, 0.0f, SoundTypes::STEP);
 
 Map::Map () :
 		IMap(), _frontend(nullptr), _serviceProvider(nullptr), _forcedFinish(false), _autoSolve(false), _nextSolveStep(0)
@@ -178,6 +181,7 @@ void Map::undo (Player* player)
 	if (!player->undo())
 		return;
 
+	_serviceProvider->getNetwork().sendToClients(0, STEPSOUND);
 	--_moves;
 	Log::debug(LOG_GAMEIMPL, "moved fields after undo: %i", _moves);
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
@@ -310,6 +314,8 @@ bool Map::movePlayer (Player* player, char step)
 		Log::debug(LOG_GAMEIMPL, "failed to move the player");
 		return false;
 	}
+
+	_serviceProvider->getNetwork().sendToClients(0, STEPSOUND);
 
 	player->storeStep(step);
 	increaseMoves();
