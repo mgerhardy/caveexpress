@@ -73,10 +73,11 @@ bool UINodeSlider::onControllerMotion (uint8_t axis, int value, uint32_t id)
 	if (!horizontal)
 		return false;
 
-	bool change;
-	if (value > 0)
+	const int delta = 10000;
+	bool change = false;
+	if (value > delta)
 		change = setValue(_value + _stepWidth);
-	else
+	else if (value < -delta)
 		change = setValue(_value - _stepWidth);
 
 	UINode::onControllerMotion(axis, value, id);
