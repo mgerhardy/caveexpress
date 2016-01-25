@@ -43,6 +43,7 @@
 namespace cavepacker {
 
 static const SoundMessage STEPSOUND(0.0f, 0.0f, SoundTypes::STEP);
+static const SoundMessage TARGETSOUND(0.0f, 0.0f, SoundTypes::TARGET);
 
 Map::Map () :
 		IMap(), _frontend(nullptr), _serviceProvider(nullptr), _forcedFinish(false), _autoSolve(false), _nextSolveStep(0)
@@ -301,6 +302,7 @@ bool Map::movePlayer (Player* player, char step)
 		increasePushes();
 		rebuildField();
 		if (_state.isTarget(pCol, pRow)) {
+			_serviceProvider->getNetwork().sendToClients(0, TARGETSOUND);
 			package->setState(CavePackerEntityStates::DELIVERED);
 			Log::debug(LOG_GAMEIMPL, "mark package as delivered %i", packageId);
 		} else if (package->getState() == CavePackerEntityStates::DELIVERED) {

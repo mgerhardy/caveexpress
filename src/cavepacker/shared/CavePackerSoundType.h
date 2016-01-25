@@ -6,6 +6,7 @@ namespace cavepacker {
 
 namespace SoundTypes {
 extern SoundType STEP;
+extern SoundType TARGET;
 }
 
 }

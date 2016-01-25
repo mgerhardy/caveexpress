@@ -4,6 +4,7 @@ namespace cavepacker {
 
 namespace SoundTypes {
 SoundType STEP("step");
+SoundType TARGET("target");
 }
 
 }
