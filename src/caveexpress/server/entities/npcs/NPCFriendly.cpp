@@ -42,6 +42,9 @@ bool NPCFriendly::shouldCollide (const IEntity* entity) const
 		return entity->isSolid();
 	}
 
+	if (isFalling())
+		return entity->isWater();
+
 	return INPCCave::shouldCollide(entity);
 }
 
