@@ -57,9 +57,15 @@ public:
 			if (System.hasTouch() && !System.isOUYA())
 				mapNode->displayText(tr("Use the second finger to drop the stone"));
 		} else if (EntityTypes::isPackage(type)) {
-			mapNode->displayText("Drop off at the shredder");
+			mapNode->displayText(tr("Drop off at the shredder"));
 			if (System.hasTouch() && !System.isOUYA())
 				mapNode->displayText(tr("Use the second finger to drop the package"));
+		} else if (EntityTypes::isNpcGrandpa(type)) {
+			mapNode->displayText(tr("Transfer the grandpa to the desired cave"));
+		} else if (EntityTypes::isNpcMan(type)) {
+			mapNode->displayText(tr("Transfer the man to the desired cave"));
+		} else if (EntityTypes::isNpcWoman(type)) {
+			mapNode->displayText(tr("Transfer the woman to the desired cave"));
 		}
  	}
 };
