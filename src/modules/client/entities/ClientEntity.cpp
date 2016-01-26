@@ -27,7 +27,8 @@ ClientEntity::~ClientEntity ()
 	_sprites.clear();
 }
 
-void ClientEntity::remove() {
+void ClientEntity::remove ()
+{
 	SoundControl.halt(_animationSound);
 }
 
@@ -35,7 +36,8 @@ void ClientEntity::onVisibilityChanged ()
 {
 }
 
-void ClientEntity::calcOffset(int scale, float zoom, int posX, int posY, int &offsetPosX, int &offsetPosY) const {
+void ClientEntity::calcOffset (int scale, float zoom, int posX, int posY, int &offsetPosX, int &offsetPosY) const
+{
 	offsetPosX = posX;
 	offsetPosY = posY;
 	switch (_align) {
@@ -51,7 +53,8 @@ void ClientEntity::calcOffset(int scale, float zoom, int posX, int posY, int &of
 	}
 }
 
-void ClientEntity::renderOverlays(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int posX, int posY) const {
+void ClientEntity::renderOverlays (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int posX, int posY) const
+{
 	int offsetPosX, offsetPosY;
 	calcOffset(scale, zoom, posX, posY, offsetPosX, offsetPosY);
 	for (EntityOverlaysConstIter i = _entityOverlays.begin(); i != _entityOverlays.end(); ++i) {
