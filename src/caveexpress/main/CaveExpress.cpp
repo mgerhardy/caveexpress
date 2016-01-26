@@ -287,7 +287,8 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	Config.initOrGetConfigVar("fruitcollectdelayforanewlife", "15000");
 	Config.initOrGetConfigVar("amountoffruitsforanewlife", "4");
 	Config.initOrGetConfigVar("fruithitpoints", "10");
-	Config.initOrGetConfigVar("npcflyingspeed", "2.0");
+	// we have to override this - otherwise the old value from the config is used... which would be bad
+	Config.initOrGetConfigVar("npcflyingspeed", "2.0")->setValue("2.0");
 	Config.initOrGetConfigVar("waterparticle", "false", CV_READONLY);
 
 	ClientEntityRegistry &r = Singleton<ClientEntityRegistry>::getInstance();
