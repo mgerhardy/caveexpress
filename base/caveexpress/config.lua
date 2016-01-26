@@ -60,6 +60,7 @@ elseif isNaCl() then
 	defaultnetwork = false
 else
 	defaultgamecontroller = true
+	defaultfrontend = "opengl3"
 end
 
 settings = {
