@@ -164,6 +164,8 @@ protected:
 
 	mutable int _screenWidth;
 	mutable int _screenHeight;
+
+	TexturePtr _ropeTexture;
 };
 
 inline void ClientEntity::removeOverlay (const SpritePtr& sprite)

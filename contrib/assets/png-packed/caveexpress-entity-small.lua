@@ -701,9 +701,22 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 57,
 	},
-	["snow-01"] = {
+	["rope"] = {
 		image = "caveexpress-entity-small",
 		x0 = 0.84765625,
+		y0 = 0.3125,
+		x1 = 0.0625,
+		y1 = 0.0078125,
+		trimmedoffsetx = 0,
+		trimmedoffsety = 0,
+		trimmedwidth = 32,
+		trimmedheight = 4,
+		untrimmedwidth = 32,
+		untrimmedheight = 4,
+	},
+	["snow-01"] = {
+		image = "caveexpress-entity-small",
+		x0 = 0.91015625,
 		y0 = 0.3125,
 		x1 = 0.01171875,
 		y1 = 0.01171875,
@@ -716,7 +729,7 @@ textures = {
 	},
 	["sparkle-01"] = {
 		image = "caveexpress-entity-small",
-		x0 = 0.859375,
+		x0 = 0.921875,
 		y0 = 0.3125,
 		x1 = 0.00390625,
 		y1 = 0.00390625,
@@ -729,7 +742,7 @@ textures = {
 	},
 	["sparkle-02"] = {
 		image = "caveexpress-entity-small",
-		x0 = 0.86328125,
+		x0 = 0.92578125,
 		y0 = 0.3125,
 		x1 = 0.001953125,
 		y1 = 0.001953125,
@@ -742,7 +755,7 @@ textures = {
 	},
 	["sparkle-03"] = {
 		image = "caveexpress-entity-small",
-		x0 = 0.865234375,
+		x0 = 0.927734375,
 		y0 = 0.3125,
 		x1 = 0.00390625,
 		y1 = 0.00390625,

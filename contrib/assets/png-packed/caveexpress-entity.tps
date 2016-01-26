@@ -280,6 +280,7 @@
             <filename>../png/caveexpress/item-stone-idle-middle-01_n.png</filename>
             <filename>../png/caveexpress/item-stone-idle-middle-02_n.png</filename>
             <filename>../png/caveexpress/item-stone-idle-middle-03_n.png</filename>
+            <filename>../png/caveexpress/rope.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

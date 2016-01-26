@@ -366,6 +366,81 @@ void AbstractGLFrontend::renderLine (int x1, int y1, int x2, int y2, const Color
 	_vertices[_currentVertexIndex++] = v;
 }
 
+void AbstractGLFrontend::renderLineWithTexture (int x, int y, int x2, int y2, Texture* texture)
+{
+	if (texture == nullptr || !texture->isValid()) {
+		return;
+	}
+
+	float alpha = 1.0f;
+	const TextureCoords texCoords(texture);
+	glm::vec2 v1(x, y);
+	glm::vec2 v2(x2, y2);
+	int w1 = glm::distance(v1, v2);
+	int w = texture->getWidth();
+	int h = texture->getHeight();
+	getTrimmed(texture, x, y, w, h);
+	const double angle = getAngleBetweenPoints(x, y, x2, y2);
+
+	Log::info(LOG_GFX, "x: %i, y: %i, w: %i, h: %i, angle: %f, tw: %i, th: %i", x, y, w, h, (float)angle, texture->getWidth(), texture->getHeight());
+
+	glm::mat4 transform(1.0f);
+	transform = glm::translate(transform, glm::vec3(x, y, 0));
+	transform = glm::rotate(transform, (float)DegreesToRadians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+	transform = glm::scale(transform, glm::vec3(w1 * _rx, h * _ry, 1.0f));
+	glm::vec4 vertexTL(0.0f, 0.0f, 0.0f, 1.0f);
+	glm::vec4 vertexTR(1.0f, 0.0f, 0.0f, 1.0f);
+	glm::vec4 vertexBR(1.0f, 1.0f, 0.0f, 1.0f);
+	glm::vec4 vertexBL(0.0f, 1.0f, 0.0f, 1.0f);
+	vertexTL = transform * vertexTL;
+	vertexTR = transform * vertexTR;
+	vertexBR = transform * vertexBR;
+	vertexBL = transform * vertexBL;
+
+	flushBatch(GL_TRIANGLES, texture->getData()->texnum, 6);
+	Batch& batch = _batches[_currentBatch];
+	batch.normaltexnum = texture->getData()->normalnum;
+
+	Vertex v(_color);
+	v.c.a = alpha * 255.0f;
+
+	v.u = texCoords.texCoords[0];
+	v.v = texCoords.texCoords[1];
+	v.x = vertexTL.x;
+	v.y = vertexTL.y;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.u = texCoords.texCoords[2];
+	v.v = texCoords.texCoords[3];
+	v.x = vertexTR.x;
+	v.y = vertexTR.y;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.u = texCoords.texCoords[4];
+	v.v = texCoords.texCoords[5];
+	v.x = vertexBR.x;
+	v.y = vertexBR.y;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.u = texCoords.texCoords[0];
+	v.v = texCoords.texCoords[1];
+	v.x = vertexTL.x;
+	v.y = vertexTL.y;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.u = texCoords.texCoords[4];
+	v.v = texCoords.texCoords[5];
+	v.x = vertexBR.x;
+	v.y = vertexBR.y;
+	_vertices[_currentVertexIndex++] = v;
+
+	v.u = texCoords.texCoords[6];
+	v.v = texCoords.texCoords[7];
+	v.x = vertexBL.x;
+	v.y = vertexBL.y;
+	_vertices[_currentVertexIndex++] = v;
+}
+
 void AbstractGLFrontend::destroyTexture (TextureData *data)
 {
 	if (data->texnum != _white && data->texnum != _alpha && data->normalnum != _white && data->normalnum != _alpha) {

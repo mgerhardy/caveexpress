@@ -317,8 +317,9 @@ void SDLFrontend::renderLine (int x1, int y1, int x2, int y2, const Color& color
 
 void SDLFrontend::renderLineWithTexture (int x1, int y1, int x2, int y2, Texture* texture)
 {
-	const double angleInDegrees = getAngleBetweenPoints(x1, y1, x2, y2);
-	renderImage(texture, x1, x2, texture->getWidth(), texture->getHeight(), angleInDegrees);
+	// this is a hack but... fuck it.
+	static const Color color = { 0.5f, 0.3f, 0.3f, 1.0f };
+	renderLine(x1, y1, x2, y2, color);
 }
 
 void SDLFrontend::updateViewport (int x, int y, int width, int height)

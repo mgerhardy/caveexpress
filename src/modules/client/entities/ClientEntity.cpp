@@ -18,6 +18,7 @@ ClientEntity::ClientEntity (const EntityType& type, uint16_t id, float x, float 
 	const vec2 startPos(x, y);
 	_prevPos = _nextPos = _pos = startPos;
 	_size = vec2(sizeX, sizeY);
+	_ropeTexture = UI::get().loadTexture("rope");
 }
 
 ClientEntity::~ClientEntity ()
@@ -93,7 +94,7 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 
 	setScreenPos(offsetX + posX, offsetY + posY);
 
-	const int ropeX1 = basePosX;
+	int ropeX1 = basePosX;
 	const int ropeY1 = (basePosY - _size.y * scale * zoom / 2.0f);
 	int ropeX2 = 0;
 	int ropeY2 = 0;
@@ -102,8 +103,8 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 		const vec2& size = ropeEntity->getSize();
 		ropeX2 = pos.x * scale * zoom;
 		ropeY2 = pos.y * scale * zoom + size.y * scale * zoom / 2.0f;
-		static const Color color = { 0.5f, 0.3f, 0.3f, 1.0f };
-		frontend->renderLine(offsetX + ropeX1, offsetY + ropeY1, offsetX + ropeX2, offsetY + ropeY2, color);
+		Texture* ropeTexture = _ropeTexture.get();
+		frontend->renderLineWithTexture(offsetX + ropeX1, offsetY + ropeY1, offsetX + ropeX2, offsetY + ropeY2, ropeTexture);
 	}
 
 	const bool visible = _currSprite->render(frontend, layer, _screenPosX, _screenPosY, zoom, _angle, _alpha);

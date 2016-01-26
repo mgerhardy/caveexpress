@@ -107,6 +107,7 @@ public:
 	int renderFilledPolygon (int *vx, int *vy, int n, const Color& color) override;
 	int renderPolygon (int *vx, int *vy, int n, const Color& color) override;
 	void renderLine (int x1, int y1, int x2, int y2, const Color& color) override;
+	void renderLineWithTexture (int x1, int y1, int x2, int y2, Texture* texture) override;
 	void setGLAttributes () override;
 	void setHints () override;
 	float getWidthScale () const override;
