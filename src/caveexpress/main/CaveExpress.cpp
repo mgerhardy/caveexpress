@@ -9,6 +9,7 @@
 #include "common/Log.h"
 #include "common/SQLite.h"
 #include "common/System.h"
+#include "caveexpress/shared/constants/ConfigVars.h"
 
 #include "sound/Sound.h"
 
@@ -193,7 +194,7 @@ void CaveExpress::update (uint32_t deltaTime)
 	if (isDone && !_map.isRestartInitialized()) {
 		const uint32_t playTime = _map.getTime();
 		const uint32_t referenceTime = _map.getReferenceTime();
-		const float relativeRefTime = Config.getConfigVar("referencetimefactor")->getFloatValue() * referenceTime;
+		const float relativeRefTime = Config.getConfigVar(REFERENCE_TIME_FACTOR)->getFloatValue() * referenceTime;
 		// this max is needed for debug reasons (if you force a map win)
 		const float time = std::max(1.0f, playTime / 1000.0f);
 		const uint32_t timeSeconds = std::max(1U, playTime / 1000U);
@@ -280,16 +281,28 @@ void CaveExpress::shutdown ()
 
 void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 {
-	// TODO: move into constants
-	Config.initOrGetConfigVar("maxhitpoints", "100");
-	Config.initOrGetConfigVar("damagethreshold", "0.3");
-	Config.initOrGetConfigVar("referencetimefactor", "1.0");
-	Config.initOrGetConfigVar("fruitcollectdelayforanewlife", "15000");
-	Config.initOrGetConfigVar("amountoffruitsforanewlife", "4");
-	Config.initOrGetConfigVar("fruithitpoints", "10");
+	struct {
+		const char *configVar;
+		const char *value;
+		int flags;
+	} gameConfigVars[] = {
+		{MAX_HITPOINTS, "100", 0},
+		{DAMAGE_THRESHOLD, "0.3", 0},
+		{REFERENCE_TIME_FACTOR, "1.0", 0},
+		{FRUIT_COLLECT_DELAY_FOR_A_NEW_LIFE, "15000", 0},
+		{AMOUNT_OF_FRUITS_FOR_A_NEW_LIFE, "4", 0},
+		{FRUIT_HITPOINTS, "10", 0},
+		{WATER_PARTICLE, "false", CV_READONLY},
+		{NPC_FLYING_SPEED, "2.0", 0}
+	};
+
+	const int n = SDL_arraysize(gameConfigVars);
+	for (int i = 0; i < n; ++i) {
+		Config.initOrGetConfigVar(gameConfigVars[i].configVar, gameConfigVars[i].value, gameConfigVars[i].flags);
+	}
+
 	// we have to override this - otherwise the old value from the config is used... which would be bad
-	Config.initOrGetConfigVar("npcflyingspeed", "2.0")->setValue("2.0");
-	Config.initOrGetConfigVar("waterparticle", "false", CV_READONLY);
+	Config.getConfigVar(NPC_FLYING_SPEED)->setValue("2.0");
 
 	ClientEntityRegistry &r = Singleton<ClientEntityRegistry>::getInstance();
 	r.registerFactory(&EntityTypes::DECORATION, ClientMapTile::FACTORY);

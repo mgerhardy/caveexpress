@@ -15,6 +15,7 @@
 #include "common/ConfigManager.h"
 #include "network/IProtocolHandler.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
+#include "caveexpress/shared/constants/ConfigVars.h"
 
 namespace caveexpress {
 
@@ -28,13 +29,13 @@ Player::Player (Map& map, ClientId clientId) :
 				false), _accelerateX(0), _accelerateY(0), _clientId(clientId), _lastAccelerate(
 				0), _name(""), _lastFruitCollected(0), _fruitsCollectedInARow(
 				0), _revoluteJoint(nullptr), _crashReason(CRASH_NONE) {
-	_godMode = Config.getConfigVar("godmode");
-	_maxHitPoints = Config.getConfigVar("maxhitpoints");
+	_godMode = Config.getConfigVar(GOD_MODE);
+	_maxHitPoints = Config.getConfigVar(MAX_HITPOINTS);
 	_hitpoints = _maxHitPoints->getIntValue();
-	_fruitHitPoints = Config.getConfigVar("fruithitpoints");
-	_damageThreshold = Config.getConfigVar("damagethreshold");
-	_amountOfFruitsForANewLife = Config.getConfigVar("amountoffruitsforanewlife");
-	_fruitCollectDelayForANewLife = Config.getConfigVar("fruitcollectdelayforanewlife");
+	_fruitHitPoints = Config.getConfigVar(FRUIT_HITPOINTS);
+	_damageThreshold = Config.getConfigVar(DAMAGE_THRESHOLD);
+	_amountOfFruitsForANewLife = Config.getConfigVar(AMOUNT_OF_FRUITS_FOR_A_NEW_LIFE);
+	_fruitCollectDelayForANewLife = Config.getConfigVar(FRUIT_COLLECT_DELAY_FOR_A_NEW_LIFE);
 	setAnimationType(Animations::ANIMATION_IDLE);
 	setState(PlayerState::PLAYER_IDLE);
 	memset(_collectedEntities, 0, sizeof(_collectedEntities));

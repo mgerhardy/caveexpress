@@ -1,5 +1,6 @@
 #include "UIMapWindow.h"
 #include "caveexpress/client/ui/nodes/UINodeMap.h"
+#include "caveexpress/shared/constants/ConfigVars.h"
 #include "client/IMapControl.h"
 #include "ui/UI.h"
 #include "ui/nodes/UINodeButton.h"
@@ -51,7 +52,7 @@ void UIMapWindow::initHudNodes()
 
 	UINodeBar* hitpointsBar = new UINodeBar(_frontend);
 	hitpointsBar->setId(UINODE_HITPOINTS);
-	const int maxHitpoints = Config.getConfigVar("maxhitpoints")->getIntValue();
+	const int maxHitpoints = Config.getConfigVar(MAX_HITPOINTS)->getIntValue();
 	hitpointsBar->setMax(maxHitpoints);
 	hitpointsBar->setSize(barWidth, barHeight);
 	hitpointsBar->setBorder(true);

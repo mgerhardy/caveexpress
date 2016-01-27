@@ -10,6 +10,7 @@
 #include "ui/UI.h"
 #include "common/SpriteDefinition.h"
 #include "common/Shared.h"
+#include "caveexpress/shared/constants/ConfigVars.h"
 
 namespace caveexpress {
 
@@ -32,7 +33,7 @@ UIGameHelpWindow::UIGameHelpWindow (IFrontend* frontend) :
 	addStoneFlyingHelp(panel);
 	addTreeHelp(panel);
 	// TODO: invisible and update on onActive
-	if (Config.isModeEasy() && Config.getConfigVar("amountoffruitsforanewlife")->getIntValue() > 0) {
+	if (Config.isModeEasy() && Config.getConfigVar(AMOUNT_OF_FRUITS_FOR_A_NEW_LIFE)->getIntValue() > 0) {
 		addLivesHelp(panel);
 	}
 
@@ -147,7 +148,7 @@ void UIGameHelpWindow::addStoneFlyingHelp (UINode *panel)
 void UIGameHelpWindow::addLivesHelp (UINode *panel)
 {
 	UINode* hbox = createHPanel();
-	const int n = Config.getConfigVar("amountoffruitsforanewlife")->getIntValue();
+	const int n = Config.getConfigVar(AMOUNT_OF_FRUITS_FOR_A_NEW_LIFE)->getIntValue();
 	for (int i = 0; i < n - 1; ++i) {
 		hbox->add(createSprite(EntityTypes::APPLE));
 	}

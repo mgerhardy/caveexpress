@@ -3,6 +3,7 @@
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
+#include "caveexpress/shared/constants/ConfigVars.h"
 #include "common/ConfigManager.h"
 
 namespace caveexpress {
@@ -53,7 +54,7 @@ void NPCFlying::onSpawn ()
 	if (getAnimationType() != Animation::NONE)
 		return;
 
-	const float speed = Config.getConfigVar("npcflyingspeed")->getFloatValue();
+	const float speed = Config.getConfigVar(NPC_FLYING_SPEED)->getFloatValue();
 	if (getPos().x <= 0.1) {
 		_lastDirectionRight = true;
 		setFlying(Animations::ANIMATION_FLYING_RIGHT, speed);

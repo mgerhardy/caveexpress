@@ -6,6 +6,7 @@
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "common/ConfigManager.h"
+#include "caveexpress/shared/constants/ConfigVars.h"
 #include <SDL_assert.h>
 
 namespace caveexpress {
@@ -15,7 +16,7 @@ Water::Water (Map& map, float waterChangeSpeed, uint32_t waterRisingDelay, uint3
 				0.0f), _waterRisingState(WATER_UNINITIALIZED), _currentHeightLevel(0.0f), _waterRisingTime(waterRisingDelay), _waterFallingTime(waterFallingDelay)
 {
 	const b2Vec2 size(0.06f, 0.06f);
-	if (Config.getConfigVar("waterparticle")->getBoolValue())
+	if (Config.getConfigVar(WATER_PARTICLE)->getBoolValue())
 		_waterParticle = new WorldParticle(map, WATER, 40, DENSITY_WATER / 1.05f, size, 1000);
 	else
 		_waterParticle = nullptr;
