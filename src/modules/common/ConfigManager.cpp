@@ -375,7 +375,7 @@ int ConfigManager::increaseCounter (const std::string& counterId)
 	const ConfigVarPtr& var = getConfigVar(counterId, "0", true);
 	int current = var->getIntValue();
 	++current;
-	var->setValue(string::toString(current));
+	var->setValue(current);
 	return current;
 }
 
