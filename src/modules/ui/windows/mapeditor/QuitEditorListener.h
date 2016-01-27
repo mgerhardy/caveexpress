@@ -15,9 +15,9 @@ public:
 	void onClick() override {
 		UIPopupCallbackPtr c(new UIPopupOkCommandCallback(CMD_QUIT));
 		if (_editor->isDirty()) {
-			UI::get().popup(tr("Quit without saving"), UIPOPUP_OK | UIPOPUP_CANCEL, c);
+			UI::get().popup(tr("Quit without saving"), UIPOPUP_OK | UIPOPUP_CANCEL | UIPOPUP_NOCLOSE, c);
 		} else {
-			UI::get().popup(tr("Quit"), UIPOPUP_OK | UIPOPUP_CANCEL, c);
+			UI::get().popup(tr("Quit"), UIPOPUP_OK | UIPOPUP_CANCEL | UIPOPUP_NOCLOSE, c);
 		}
 	}
 };

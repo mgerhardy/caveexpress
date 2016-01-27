@@ -785,7 +785,7 @@ void UI::pop ()
 
 	if (_stack.size() == 1) {
 		UIPopupCallbackPtr c(new UIPopupOkCommandCallback(CMD_QUIT));
-		UI::get().popup(tr("Quit"), UIPOPUP_OK | UIPOPUP_CANCEL, c);
+		UI::get().popup(tr("Quit"), UIPOPUP_OK | UIPOPUP_CANCEL | UIPOPUP_NOCLOSE, c);
 		return;
 	}
 
