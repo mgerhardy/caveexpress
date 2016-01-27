@@ -70,7 +70,7 @@ void ConfigPersisterSQL::save (const std::map<std::string, ConfigVarPtr>& config
 		const ConfigVarPtr &configVar = i->second;
 		const std::string& name = configVar->getName();
 		const std::string& value = configVar->getValue();
-		if ((configVar->getFlags() & (CV_NOPERSIST | CV_READONLY)) != 0) {
+		if ((configVar->getFlags() & CV_NOPERSIST) != 0) {
 			Log::info(LOG_COMMON, "don't save config var %s with value %s", name.c_str(), value.c_str());
 			continue;
 		}

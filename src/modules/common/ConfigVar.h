@@ -24,7 +24,7 @@ public:
 	int getIntValue () const;
 	float getFloatValue () const;
 	bool getBoolValue () const;
-	int getFlags () const;
+	unsigned int getFlags () const;
 	void setValue (int value) { setValue(string::toString(value)); }
 	void setValue (float value) { setValue(string::toString(value)); }
 	void setValue (const std::string& value);
@@ -69,7 +69,7 @@ inline bool ConfigVar::isDirty () const
 	return _dirty;
 }
 
-inline int ConfigVar::getFlags () const
+inline unsigned int ConfigVar::getFlags () const
 {
 	return _flags;
 }

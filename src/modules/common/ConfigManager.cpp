@@ -91,9 +91,12 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	getConfigVar("alreadyrated", "false", true);
 	_mode = getConfigValue(_configVarMap, "mode", "");
 
+#if 0
+	// disabled because the vars must be created on access - to set the flags properly
 	for (KeyValueMap::iterator i = _configVarMap.begin(); i != _configVarMap.end(); ++i) {
 		getConfigVar(i->first, i->second, true);
 	}
+#endif
 
 	std::vector<std::string> vars;
 	_persister->getVars(vars);
