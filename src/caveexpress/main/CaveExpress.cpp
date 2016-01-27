@@ -286,14 +286,14 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		const char *value;
 		int flags;
 	} gameConfigVars[] = {
-		{MAX_HITPOINTS, "100", 0},
-		{DAMAGE_THRESHOLD, "0.3", 0},
-		{REFERENCE_TIME_FACTOR, "1.0", 0},
-		{FRUIT_COLLECT_DELAY_FOR_A_NEW_LIFE, "15000", 0},
-		{AMOUNT_OF_FRUITS_FOR_A_NEW_LIFE, "4", 0},
-		{FRUIT_HITPOINTS, "10", 0},
-		{WATER_PARTICLE, "false", CV_READONLY},
-		{NPC_FLYING_SPEED, "2.0", 0}
+		{MAX_HITPOINTS, "100", CV_NOPERSIST},
+		{DAMAGE_THRESHOLD, "0.3", CV_NOPERSIST},
+		{REFERENCE_TIME_FACTOR, "1.0", CV_NOPERSIST},
+		{FRUIT_COLLECT_DELAY_FOR_A_NEW_LIFE, "15000", CV_NOPERSIST},
+		{AMOUNT_OF_FRUITS_FOR_A_NEW_LIFE, "4", CV_NOPERSIST},
+		{FRUIT_HITPOINTS, "10", CV_NOPERSIST},
+		{WATER_PARTICLE, "false", CV_READONLY | CV_NOPERSIST},
+		{NPC_FLYING_SPEED, "2.0", CV_NOPERSIST}
 	};
 
 	const int n = SDL_arraysize(gameConfigVars);
