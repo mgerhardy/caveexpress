@@ -19,6 +19,6 @@ public:
 	void onValueChanged () override
 	{
 		const float val = _sliderNode->getValue();
-		Config.getConfigVar(_configVar)->setValue(string::toString(val));
+		Config.getConfigVar(_configVar)->setValue(val);
 	}
 };

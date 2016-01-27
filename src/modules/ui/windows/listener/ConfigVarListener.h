@@ -27,6 +27,6 @@ public:
 		if (_textInput != nullptr)
 			var->setValue(_textInput->getValue());
 		else if (_slider != nullptr)
-			var->setValue(string::toString(_slider->getValue()));
+			var->setValue(_slider->getValue());
 	}
 };
