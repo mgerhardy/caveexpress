@@ -349,7 +349,7 @@ ConfigVarPtr ConfigManager::getConfigVar (const std::string& name, const std::st
 
 ConfigVarPtr ConfigManager::getConfigValue (KeyValueMap &map, const std::string& name, const std::string& defaultValue, unsigned int flags)
 {
-	const std::string& savedValue = _persister->getValue(name);
+	const std::string savedValue = (flags & CV_NOPERSIST) != 0 ? "" : _persister->getValue(name);
 	std::string val = savedValue;
 	if (val.empty()) {
 		KeyValueMap::iterator i = map.find(name);
