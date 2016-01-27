@@ -23,6 +23,7 @@ public:
 	int getIntValue () const;
 	float getFloatValue () const;
 	bool getBoolValue () const;
+	int getFlags () const;
 	void setValue (const std::string& value);
 	const std::string& getValue () const;
 	const std::string& getName () const;
@@ -63,6 +64,11 @@ inline void ConfigVar::resetDirtyState ()
 inline bool ConfigVar::isDirty () const
 {
 	return _dirty;
+}
+
+inline int ConfigVar::getFlags () const
+{
+	return _flags;
 }
 
 typedef std::shared_ptr<ConfigVar> ConfigVarPtr;
