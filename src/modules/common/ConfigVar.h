@@ -25,6 +25,8 @@ public:
 	float getFloatValue () const;
 	bool getBoolValue () const;
 	int getFlags () const;
+	void setValue (int value) { setValue(string::toString(value)); }
+	void setValue (float value) { setValue(string::toString(value)); }
 	void setValue (const std::string& value);
 	const std::string& getValue () const;
 	const std::string& getName () const;
