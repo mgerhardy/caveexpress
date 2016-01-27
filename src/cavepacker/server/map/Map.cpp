@@ -44,6 +44,7 @@ namespace cavepacker {
 
 static const SoundMessage STEPSOUND(0.0f, 0.0f, SoundTypes::STEP);
 static const SoundMessage TARGETSOUND(0.0f, 0.0f, SoundTypes::TARGET);
+static const SoundMessage DEADLOCKSOUND(0.0f, 0.0f, SoundTypes::DEADLOCK);
 
 Map::Map () :
 		IMap(), _frontend(nullptr), _serviceProvider(nullptr), _forcedFinish(false), _autoSolve(false), _nextSolveStep(0)
@@ -182,7 +183,7 @@ void Map::undo (Player* player)
 	if (!player->undo())
 		return;
 
-	_serviceProvider->getNetwork().sendToClients(0, STEPSOUND);
+	_serviceProvider->getNetwork().sendToAllClients(STEPSOUND);
 	--_moves;
 	Log::debug(LOG_GAMEIMPL, "moved fields after undo: %i", _moves);
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_moves));
@@ -302,7 +303,7 @@ bool Map::movePlayer (Player* player, char step)
 		increasePushes();
 		rebuildField();
 		if (_state.isTarget(pCol, pRow)) {
-			_serviceProvider->getNetwork().sendToClients(0, TARGETSOUND);
+			_serviceProvider->getNetwork().sendToAllClients(TARGETSOUND);
 			package->setState(CavePackerEntityStates::DELIVERED);
 			Log::debug(LOG_GAMEIMPL, "mark package as delivered %i", packageId);
 		} else if (package->getState() == CavePackerEntityStates::DELIVERED) {
@@ -317,7 +318,7 @@ bool Map::movePlayer (Player* player, char step)
 		return false;
 	}
 
-	_serviceProvider->getNetwork().sendToClients(0, STEPSOUND);
+	_serviceProvider->getNetwork().sendToAllClients(STEPSOUND);
 
 	player->storeStep(step);
 	increaseMoves();
@@ -366,6 +367,7 @@ void Map::checkDeadlock () {
 	if (newDeadlock) {
 		static const TextMessage msg("Deadlock detected");
 		_serviceProvider->getNetwork().sendToAllClients(msg);
+		_serviceProvider->getNetwork().sendToAllClients(DEADLOCKSOUND);
 	}
 }
 
