@@ -66,8 +66,8 @@ void UIMapEditorOptionsWindow::fillWinConditions (UINode* hbox)
 {
 	IUIMapEditorOptionsWindow::fillWinConditions(hbox);
 	new UINodeSettingsSpinner(hbox, 10, 500, 1, _mapEditor, tr("Points"), msn::POINTS, tr("The points you get for finishing the map"));
-	new UINodeSettingsSpinner(hbox, 1, 100, 1, _mapEditor, tr("Npcs"), msn::NPC_TRANSFER_COUNT, tr("The amount of npcs to deliver"));
-	new UINodeSettingsSpinner(hbox, 1, 100, 1, _mapEditor, tr("Packages"), msn::PACKAGE_TRANSFER_COUNT, tr("The amount of packages to deliver"));
+	new UINodeSettingsSpinner(hbox, 0, 100, 1, _mapEditor, tr("Npcs"), msn::NPC_TRANSFER_COUNT, tr("The amount of npcs to deliver"));
+	new UINodeSettingsSpinner(hbox, 0, 100, 1, _mapEditor, tr("Packages"), msn::PACKAGE_TRANSFER_COUNT, tr("The amount of packages to deliver"));
 	new UINodeSettingsCheckbox(hbox, _mapEditor, tr("SideScroll"), msn::SIDEBORDERFAIL, tr("A player will lose the map if he touches the side borders"));
 }
 
