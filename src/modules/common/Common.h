@@ -23,6 +23,8 @@ inline void cp_snprintf(char* dest, size_t size, const char* fmt, ...) {
 
 template<class T, class S>
 inline T assert_cast(const S object) {
+#ifdef __cpp_rtti
 	SDL_assert(dynamic_cast<T>(object) == static_cast<T>(object));
+#endif
 	return static_cast<T>(object);
 }
