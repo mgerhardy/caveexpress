@@ -22,7 +22,7 @@ public:
 			Log::error(LOG_GAMEIMPL, "movement for player with clientId %i failed", (int)clientId);
 			return;
 		}
-		const FingerMovementMessage* msg = static_cast<const FingerMovementMessage*>(&message);
+		const FingerMovementMessage* msg = assert_cast<const FingerMovementMessage*, const IProtocolMessage*>(&message);
 		player->setFingerAcceleration(msg->getDeltaX(), msg->getDeltaY());
 	}
 };

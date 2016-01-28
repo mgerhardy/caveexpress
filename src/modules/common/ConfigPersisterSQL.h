@@ -2,6 +2,7 @@
 
 #include "common/SQLite.h"
 #include "common/IConfigPersister.h"
+#include <map>
 
 class ConfigPersisterSQL: public IConfigPersister {
 private:
@@ -10,7 +11,7 @@ private:
 	typedef std::map<std::string, std::string> KeyValueMap;
 	KeyValueMap _configVarMap;
 public:
-	ConfigPersisterSQL ();
+	ConfigPersisterSQL (const std::string& file);
 
 	void init () override;
 

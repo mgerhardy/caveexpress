@@ -16,7 +16,7 @@ void CollectableEntity::onContact (b2Contact* contact, IEntity* entity)
 	if (isDestroyed() || isCollected() || isRemove())
 		return;
 	if (entity->isPlayer()) {
-		Player *player = static_cast<Player*>(entity);
+		Player *player = assert_cast<Player*, IEntity*>(entity);
 		if (player->collect(this)) {
 			setCollected(true, player);
 		}

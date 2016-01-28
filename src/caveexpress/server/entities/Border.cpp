@@ -26,7 +26,7 @@ void Border::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* 
 	if (!entity->isPlayer())
 		return;
 
-	Player* player = static_cast<Player*>(entity);
+	Player* player = assert_cast<Player*, IEntity*>(entity);
 	if (_borderType == BorderType::TOP) {
 		b2Vec2 v = player->getLinearVelocity();
 		v.y = 0.4f;

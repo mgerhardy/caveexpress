@@ -582,7 +582,7 @@ bool Map::load (const std::string& name)
 		IEntity* entity = *i;
 		if (!entity->isGround())
 			continue;
-		MapTile *mapTile = static_cast<MapTile*>(entity);
+		MapTile *mapTile = assert_cast<MapTile*, IEntity*>(entity);
 		int start = -1;
 		int end = -1;
 		const int y = mapTile->getGridY() - 1.0f + EPSILON;
@@ -599,7 +599,7 @@ bool Map::load (const std::string& name)
 		IEntity* entity = *i;
 		if (!entity->isCave())
 			continue;
-		CaveMapTile *cave = static_cast<CaveMapTile*>(entity);
+		CaveMapTile *cave = assert_cast<CaveMapTile*, IEntity*>(entity);
 		_caves.push_back(cave);
 	}
 
@@ -931,7 +931,7 @@ void Map::initWindows (CaveMapTile* caveTile, int start, int end)
 		IEntity* e = *i;
 		if (!e->isWindow())
 			continue;
-		WindowTile* window = static_cast<WindowTile*>(e);
+		WindowTile* window = assert_cast<WindowTile*, IEntity*>(e);
 		if (window->getGridY() != caveY)
 			continue;
 		for (int gridX = left; gridX < right; ++gridX) {
@@ -1005,7 +1005,7 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 		rayTrace(gridX, startTraceGridY, 0, startTraceGridY, &hit);
 		int leftGridX = 0;
 		if (hit && hit->isSolid()) {
-			MapTile *mapTile = static_cast<MapTile*>(hit);
+			MapTile *mapTile = assert_cast<MapTile*, IEntity*>(hit);
 			leftGridX = mapTile->getGridX() + mapTile->getGridWidth();
 		}
 		int startTraceGridX = gridX;
@@ -1037,7 +1037,7 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 		rayTrace(gridX, startTraceGridY, _width - 1, startTraceGridY, &hit);
 		int rightGridX = _width - 1;
 		if (hit && hit->isSolid()) {
-			MapTile *mapTile = static_cast<MapTile*>(hit);
+			MapTile *mapTile = assert_cast<MapTile*, IEntity*>(hit);
 			// we always subtract 1 here - not the width - it's the left side
 			rightGridX = mapTile->getGridX() - 1;
 		}
@@ -1204,7 +1204,7 @@ PackageTarget *Map::getPackageTarget () const
 	for (EntityListConstIter i = _entities.begin(); i != _entities.end(); ++i) {
 		if (!(*i)->isPackageTarget())
 			continue;
-		const PackageTarget *packageTarget = static_cast<const PackageTarget*>(*i);
+		const PackageTarget *packageTarget = assert_cast<const PackageTarget*, const IEntity*>(*i);
 		packageTargets.push_back(packageTarget);
 	}
 	const int packageTargetCount = packageTargets.size();
@@ -1311,7 +1311,7 @@ bool Map::removePlayer (ClientId clientId)
 		for (EntityListIter refIter = _entities.begin(); refIter != _entities.end(); ++refIter) {
 			if (!(*refIter)->isNpcAttacking())
 				continue;
-			NPCAttacking *npcAttacking = static_cast<NPCAttacking*>(*refIter);
+			NPCAttacking *npcAttacking = assert_cast<NPCAttacking*, IEntity*>(*refIter);
 			npcAttacking->stopAttack(*i);
 		}
 
@@ -1459,11 +1459,11 @@ void Map::sendVisibleEntity (int clientMask, const IEntity *entity) const
 	//Log::debug(LOG_GAMEIMPL, string::format("server: add entity %i type: %s", entity->getID(), entity->getType().name.c_str()));
 	GameEvent.addEntity(clientMask, *entity);
 	if (entity->isCave()) {
-		const CaveMapTile *tile = static_cast<const CaveMapTile *>(entity);
+		const CaveMapTile *tile = assert_cast<const CaveMapTile *, const IEntity*>(entity);
 		const int caveNumber = _transferedNPCLimit > 0 ? tile->getCaveNumber() : 0;
 		GameEvent.addCave(clientMask, entity->getID(), caveNumber, tile->getLightState());
 	} else if (entity->isWindow()) {
-		const WindowTile *tile = static_cast<const WindowTile *>(entity);
+		const WindowTile *tile = assert_cast<const WindowTile *, const IEntity*>(entity);
 		GameEvent.sendLightState(clientMask, tile->getID(), tile->getLightState());
 	}
 }
@@ -1771,7 +1771,7 @@ int Map::countPackages () const
 	for (Map::EntityListConstIter i = _entities.begin(); i != _entities.end(); ++i) {
 		if (!(*i)->isPackage())
 			continue;
-		const Package *package = static_cast<Package*>(*i);
+		const Package *package = assert_cast<Package*, IEntity*>(*i);
 		if (package->isCounted())
 			continue;
 		++packages;

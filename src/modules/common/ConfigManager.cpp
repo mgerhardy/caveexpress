@@ -5,6 +5,8 @@
 #include "common/ConfigPersisterNOP.h"
 #include "common/IBindingSpaceListener.h"
 #include "common/Log.h"
+#include "common/Singleton.h"
+#include "common/Application.h"
 #include "common/LUA.h"
 #include "common/System.h"
 #include <SDL.h>
@@ -37,7 +39,7 @@ void ConfigManager::setBindingsSpace (BindingSpace bindingSpace)
 
 void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc, char **argv)
 {
-	_persister = new ConfigPersisterSQL();
+	_persister = new ConfigPersisterSQL(System.getDatabaseDirectory() + Singleton<Application>::getInstance().getName() + ".sqlite");
 	Log::info(LOG_COMMON, "init configmanager");
 
 	_persister->init();

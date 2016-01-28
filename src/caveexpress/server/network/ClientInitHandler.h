@@ -22,7 +22,7 @@ public:
 			Log::error(LOG_GAMEIMPL, "init for player with clientId %i failed", (int)clientId);
 			return;
 		}
-		const ClientInitMessage* msg = static_cast<const ClientInitMessage*>(&message);
+		const ClientInitMessage* msg = assert_cast<const ClientInitMessage*, const IProtocolMessage*>(&message);
 		player->setName(msg->getName());
 		_map.sendPlayersList();
 	}

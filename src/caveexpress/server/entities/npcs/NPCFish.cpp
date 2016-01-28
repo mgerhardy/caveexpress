@@ -22,7 +22,7 @@ void NPCFish::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold*
 	NPCAggressive::onPreSolve(contact, entity, oldManifold);
 	// we hit a player - so the player is crashing
 	if (!isDying() && entity->isPlayer()) {
-		Player* player = static_cast<Player*>(entity);
+		Player* player = assert_cast<Player*, IEntity*>(entity);
 		player->setCrashed(CRASH_NPC_FISH);
 	}
 	contact->SetEnabled(false);
@@ -99,7 +99,7 @@ bool NPCFish::shouldCollide (const IEntity* entity) const
 
 	// fish npcs only collide with players
 	if (entity->isPlayer()) {
-		const Player *p = static_cast<const Player*>(entity);
+		const Player *p = assert_cast<const Player*, const IEntity*>(entity);
 		return !p->isCrashed();
 	}
 	return false;

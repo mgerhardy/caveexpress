@@ -54,11 +54,11 @@ void NPCFriendly::onContact (b2Contact* contact, IEntity* entity)
 
 	if (entity->isCave()) {
 		setDone();
-		CaveMapTile *cave = static_cast<CaveMapTile*>(entity);
+		CaveMapTile *cave = assert_cast<CaveMapTile*, IEntity*>(entity);
 		cave->setRespawnPossible(true, getType());
 	} else if (entity->isPlayer()) {
 		if (isMoving() || isSwimming()) {
-			Player *player = static_cast<Player*>(entity);
+			Player *player = assert_cast<Player*, IEntity*>(entity);
 			if (isSwimming())
 				_map.sendSound(player->getVisMask(), SoundTypes::SOUND_NPC_CAVE_WATER_RESCUE, player->getPos());
 			else
@@ -70,7 +70,7 @@ void NPCFriendly::onContact (b2Contact* contact, IEntity* entity)
 		} else if (isIdle()) {
 			// hit by a player - so we will fall into the water
 			setAnimationType(getFallingAnimation());
-			_fallingTimer = _map.getTimeManager().setTimeout(500, static_cast<NPC*>(this), &NPC::setFalling);
+			_fallingTimer = _map.getTimeManager().setTimeout(500, assert_cast<NPC*, NPCFriendly*>(this), &NPC::setFalling);
 		}
 	}
 }

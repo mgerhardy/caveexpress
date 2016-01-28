@@ -22,7 +22,7 @@ public:
 			Log::error(LOG_GAMEIMPL, "stop movement for player with clientId %i failed", (int)clientId);
 			return;
 		}
-		const StopMovementMessage* msg = static_cast<const StopMovementMessage*>(&message);
+		const StopMovementMessage* msg = assert_cast<const StopMovementMessage*, const IProtocolMessage*>(&message);
 		player->resetAcceleration(msg->getDirection());
 	}
 };

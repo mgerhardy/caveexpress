@@ -16,7 +16,7 @@ Platform::~Platform ()
 bool Platform::shouldCollide (const IEntity* entity) const
 {
 	if (entity->isNpc()) {
-		const NPC *npc = static_cast<const NPC*>(entity);
+		const NPC *npc = assert_cast<const NPC*, const IEntity*>(entity);
 		return !npc->isFalling() && !npc->isDying();
 	}
 	return entity->isPlayer();
@@ -33,7 +33,7 @@ void Platform::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold
 	if (!entity->isPlayer())
 		return;
 
-	Player *player = static_cast<Player*>(entity);
+	Player *player = assert_cast<Player*, IEntity*>(entity);
 	if (_caveTile == nullptr)
 		return;
 
@@ -74,7 +74,7 @@ void Platform::endContact (b2Contact* contact, IEntity* entity)
 {
 	IEntity::endContact(contact, entity);
 	if (entity->isPlayer()) {
-		Player *player = static_cast<Player*>(entity);
+		Player *player = assert_cast<Player*, IEntity*>(entity);
 		player->setPlatform(nullptr);
 		Log::debug(LOG_GAMEIMPL, "player %s (%i) is no longer landed on cave %i", player->getName().c_str(), player->getID(), getID());
 	}

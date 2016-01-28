@@ -136,7 +136,7 @@ inline float Player::getCompleteMass () const
 		const EntityType *entityType = c.entityType;
 		if (entityType == nullptr || !EntityTypes::isPackage(*entityType))
 			continue;
-		const Package *package = static_cast<const Package*>(c.entity);
+		const Package *package = assert_cast<const Package*, const CollectableEntity*>(c.entity);
 		mass += package->getMass() * package->getGravityScale();
 	}
 	return mass;
@@ -205,7 +205,7 @@ void Player::update (uint32_t deltaTime)
 		const EntityType *entityType = c.entityType;
 		if (entityType == nullptr || !EntityTypes::isPackage(*entityType))
 			continue;
-		const Package *package = static_cast<const Package*>(c.entity);
+		const Package *package = assert_cast<const Package*, const CollectableEntity*>(c.entity);
 		if (package->isArrived() || package->isDestroyed() || package->isDelivered()) {
 			// 'drop' it
 			memset(&c, 0, sizeof(c));
@@ -305,7 +305,7 @@ bool Player::shouldCollide (const IEntity* entity) const
 	if (entity->isPackage() && getPos().y < entity->getPos().y)
 		return false;
 	if (entity->isPlayer()) {
-		const Player* player = static_cast<const Player*>(entity);
+		const Player* player = assert_cast<const Player*, const IEntity*>(entity);
 		return !player->isCrashed();
 	}
 	return entity->isSolid() || entity->isWater();
@@ -436,7 +436,7 @@ void Player::drop ()
 			entity->createBody();
 			entity->initiateDetonation();
 		} else if (EntityTypes::isPackage(*entityType)) {
-			Package *entity = static_cast<Package*>(c.entity);
+			Package *entity = assert_cast<Package*, CollectableEntity*>(c.entity);
 			entity->removeRopeJoint();
 			entity->setCollected(false, this);
 		} else {
@@ -512,7 +512,7 @@ void Player::createBody (const b2Vec2 &pos)
 	revoluteJointDef.maxMotorTorque = 20;
 	revoluteJointDef.motorSpeed = 0.0f;
 	revoluteJointDef.maxMotorTorque = 100.0f;
-	_revoluteJoint = static_cast<b2RevoluteJoint*>(world->CreateJoint(&revoluteJointDef));
+	_revoluteJoint = assert_cast<b2RevoluteJoint*, b2Joint*>(world->CreateJoint(&revoluteJointDef));
 }
 
 bool Player::isCloseOverSolid (float distance) const

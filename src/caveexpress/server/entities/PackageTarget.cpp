@@ -25,7 +25,7 @@ bool PackageTarget::shouldCollide (const IEntity* entity) const
 	if (!entity->isPackage())
 		return false;
 
-	const Package *package = static_cast<const Package*>(entity);
+	const Package *package = assert_cast<const Package*, const IEntity*>(entity);
 	return package->hasTarget(this);
 }
 
@@ -42,7 +42,7 @@ void PackageTarget::onPreSolve (b2Contact* contact, IEntity* entity, const b2Man
 	contact->SetEnabled(false);
 
 	if (entity->isPackage()) {
-		Package *package = static_cast<Package*>(entity);
+		Package *package = assert_cast<Package*, IEntity*>(entity);
 		package->setLinearVelocity(b2Vec2_zero);
 		package->setAngularVelocity(0.0f);
 		setAnimationType(Animations::ANIMATION_ACTIVE);
@@ -113,7 +113,7 @@ void PackageTarget::applyJoint (Package *package)
 	const b2Vec2 shift(0.0f, -0.1f);
 	b2DistanceJointDef def;
 	def.Initialize(getBodies()[0], package->getBodies()[0], getBodies()[0]->GetWorldPoint(shift), package->getBodies()[0]->GetPosition());
-	_joint = static_cast<b2DistanceJoint*>(_map.getWorld()->CreateJoint(&def));
+	_joint = assert_cast<b2DistanceJoint*, b2Joint*>(_map.getWorld()->CreateJoint(&def));
 	_lengthUpdate = LENGTH_UPDATE_DELAY;
 	package->setGravityScale(0.0f);
 	const bool bonus = package->setArrived();

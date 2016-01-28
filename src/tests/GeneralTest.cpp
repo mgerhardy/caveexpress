@@ -4,6 +4,8 @@
 #include "common/Log.h"
 #include "common/KeyValueParser.h"
 #include "common/MapManager.h"
+#include "common/FileSystem.h"
+#include "common/ConfigPersisterSQL.h"
 
 class GeneralTest: public AbstractTest {
 };
@@ -107,4 +109,20 @@ TEST_F(GeneralTest, testURI)
 		ASSERT_EQ(std::string("?query"), uri.getQuery());
 		ASSERT_EQ(std::string("file:///with/path?query"), uri.print());
 	}
+}
+
+TEST_F(GeneralTest, testConfigPersister)
+{
+	const std::string path = FS.getAbsoluteWritePath() + "testconfigcp.sqlite";
+	FS.deleteFile(path);
+	ConfigPersisterSQL persister(path);
+	persister.init();
+	std::map<std::string, ConfigVarPtr> configVars;
+	configVars["test"] = ConfigVarPtr(new ConfigVar("test", "testvalue"));
+	configVars["testnosave"] = ConfigVarPtr(new ConfigVar("testnosave", "testvalue", CV_NOPERSIST));
+	persister.save(configVars);
+
+	persister.init();
+	ASSERT_EQ("testvalue", persister.getValue("test"));
+	ASSERT_EQ("", persister.getValue("testnosave"));
 }

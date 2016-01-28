@@ -358,7 +358,7 @@ void ClientMap::addEntity (ClientEntityPtr e)
 	}
 	_entities[e->getID()] = e;
 	if (e->getID() == _playerID) {
-		_player = static_cast<ClientPlayer*>(e);
+		_player = assert_cast<ClientPlayer*, ClientEntity*>(e);
 	}
 
 	Log::debug(LOG_CLIENT, "add entity %s - %i", e->getType().name.c_str(), (int)e->getID());

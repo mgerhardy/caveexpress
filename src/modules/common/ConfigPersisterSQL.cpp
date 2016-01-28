@@ -5,8 +5,8 @@
 
 #define TABLE_NAME "config"
 
-ConfigPersisterSQL::ConfigPersisterSQL() :
-		_sqlite(System.getDatabaseDirectory() + Singleton<Application>::getInstance().getName() + ".sqlite")
+ConfigPersisterSQL::ConfigPersisterSQL(const std::string& file) :
+		_sqlite(file)
 {
 	_state = _sqlite.open();
 	if (!_state) {
@@ -66,8 +66,8 @@ void ConfigPersisterSQL::save (const std::map<std::string, ConfigVarPtr>& config
 		return;
 	}
 
-	for (std::map<std::string, ConfigVarPtr>::const_iterator i = configVars.begin(); i != configVars.end(); ++i) {
-		const ConfigVarPtr &configVar = i->second;
+	for (auto i : configVars) {
+		const ConfigVarPtr &configVar = i.second;
 		const std::string& name = configVar->getName();
 		const std::string& value = configVar->getValue();
 		if ((configVar->getFlags() & CV_NOPERSIST) != 0) {
@@ -94,7 +94,7 @@ std::string ConfigPersisterSQL::getValue (const std::string& name) const
 
 void ConfigPersisterSQL::getVars (std::vector<std::string>& vars) const
 {
-	for (std::map<std::string, std::string>::const_iterator i = _configVarMap.begin(); i != _configVarMap.end(); ++i) {
-		vars.push_back(i->first);
+	for (auto i : _configVarMap) {
+		vars.push_back(i.first);
 	}
 }

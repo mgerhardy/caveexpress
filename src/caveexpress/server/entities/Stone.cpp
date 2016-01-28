@@ -38,7 +38,7 @@ void Stone::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* o
 	} else if (entity->isNpc()) {
 		// if the stone is in rest, it does not have any impact on the npcs
 		const Direction direction = getVelocityDirection(this, 3.0f);
-		NPC *npc = static_cast<NPC*>(entity);
+		NPC *npc = assert_cast<NPC*, IEntity*>(entity);
 		if (direction & DIRECTION_DOWN) {
 			if (npc->isNpcBlowing() || npc->isNpcAttacking()) {
 				npc->setDazed(_creator);
@@ -53,7 +53,7 @@ void Stone::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* o
 		// if the stone is in rest, it does not have any impact on the packages
 		const Direction direction = getVelocityDirection(this, 3.0f);
 		if (direction & DIRECTION_DOWN) {
-			Package *package = static_cast<Package*>(entity);
+			Package *package = assert_cast<Package*, IEntity*>(entity);
 			package->setDestroyed(true);
 		}
 	}

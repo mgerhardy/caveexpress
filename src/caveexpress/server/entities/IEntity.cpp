@@ -42,14 +42,14 @@ void IEntity::prepareRemoval ()
 bool IEntity::isNpcFriendly() const {
 	if (!isNpcCave())
 		return false;
-	const INPCCave *npc = static_cast<const INPCCave*>(this);
+	const INPCCave *npc = assert_cast<const INPCCave*, const IEntity*>(this);
 	return !npc->isDeliverPackage();
 }
 
 bool IEntity::isNpcPackage() const {
 	if (!isNpcCave())
 		return false;
-	const INPCCave *npc = static_cast<const INPCCave*>(this);
+	const INPCCave *npc = assert_cast<const INPCCave*, const IEntity*>(this);
 	return npc->isDeliverPackage();
 }
 
@@ -95,7 +95,7 @@ void IEntity::addRopeJoint (IEntity *entity)
 	rDef.localAnchorB.y = entity->getSize().y / 2.0f;
 	rDef.bodyA = bodyA;
 	rDef.bodyB = bodyB;
-	_ropeJoint = static_cast<b2RopeJoint*>(bodyA->GetWorld()->CreateJoint(&rDef));
+	_ropeJoint = assert_cast<b2RopeJoint*, b2Joint*>(bodyA->GetWorld()->CreateJoint(&rDef));
 	_ropeJoint->SetUserData(entity);
 	GameEvent.sendRope(getVisMask() | entity->getVisMask(), getID(), entity->getID());
 }

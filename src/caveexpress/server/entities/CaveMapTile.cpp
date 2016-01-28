@@ -29,7 +29,7 @@ void CaveMapTile::update (uint32_t deltaTime)
 	if (_npc != nullptr) {
 		if (_npc->isNpcFriendly() && _npc->isCollected()) {
 			Log::info(LOG_GAMEIMPL, "npc %i is collected, remove from world", _npc->getID());
-			_map.removeNPCFromWorld(static_cast<NPCFriendly*>(_npc));
+			_map.removeNPCFromWorld(assert_cast<NPCFriendly*, INPCCave*>(_npc));
 			_npc = nullptr;
 			_nextSpawn = _now + _delaySpawn;
 		} else if (_npc->isDying()) {
@@ -87,7 +87,7 @@ bool CaveMapTile::moveBackIntoCave ()
 		return false;
 
 	if (!_npc->isDeliverPackage()) {
-		const NPCFriendly* npcFriendly = static_cast<NPCFriendly*>(_npc);
+		const NPCFriendly* npcFriendly = assert_cast<NPCFriendly*, INPCCave*>(_npc);
 		const uint32_t waitTime = npcFriendly->getWaitPatience();
 		const uint32_t passedTime = _time - getSpawnTime();
 		if (passedTime < waitTime)

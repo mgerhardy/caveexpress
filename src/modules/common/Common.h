@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL.h>
+#include <SDL_assert.h>
 #include "Compiler.h"
 #include <memory>
 #include <stdarg.h>
@@ -19,3 +20,9 @@ inline void cp_snprintf(char* dest, size_t size, const char* fmt, ...) {
 
 #define lengthof(x) (sizeof(x) / sizeof(*(x)))
 #define CASSERT(x) extern int ASSERT_COMPILE[((x) != 0) * 2 - 1]
+
+template<class T, class S>
+inline T assert_cast(const S object) {
+	SDL_assert(dynamic_cast<T>(object) == static_cast<T>(object));
+	return static_cast<T>(object);
+}

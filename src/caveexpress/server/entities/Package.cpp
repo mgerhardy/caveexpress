@@ -99,7 +99,7 @@ void Package::onContact (b2Contact* contact, IEntity* entity)
 			if (isImpactVelocityMoreThan(contact, 1.5f))
 				_map.sendSound(getVisMask(), SoundTypes::SOUND_PACKAGE_COLLIDE, getPos());
 		} else if (entity->isBorder()) {
-			Border *b = static_cast<Border*>(entity);
+			const Border *b = assert_cast<const Border*, const IEntity*>(entity);
 			if (!b->isTop()) {
 				setLinearDamping(4.0f);
 				setAngularDamping(1.0);
@@ -141,7 +141,7 @@ bool Package::shouldCollide (const IEntity *entity) const
 		return false;
 
 	if (entity->isPlayer()) {
-		const Player* player = static_cast<const Player*>(entity);
+		const Player* player = assert_cast<const Player*, const IEntity*>(entity);
 		return !player->isCrashed() && !isArrived() && !isDelivered() && entity->getPos().y < getPos().y;
 	}
 
@@ -150,7 +150,7 @@ bool Package::shouldCollide (const IEntity *entity) const
 	}
 
 	if (entity->isNpcAttacking()) {
-		const NPCAttacking *npc = static_cast<const NPCAttacking*>(entity);
+		const NPCAttacking *npc = assert_cast<const NPCAttacking*, const IEntity*>(entity);
 		return npc->isAttacking();
 	}
 
@@ -158,7 +158,7 @@ bool Package::shouldCollide (const IEntity *entity) const
 		return true;
 
 	if (entity->isPackage()) {
-		const Package* package = static_cast<const Package*>(entity);
+		const Package* package = assert_cast<const Package*, const IEntity*>(entity);
 		return !package->isDestroyed();
 	}
 

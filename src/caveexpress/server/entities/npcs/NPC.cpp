@@ -48,7 +48,7 @@ void NPC::onContact (b2Contact* contact, IEntity* entity)
 	if (!entity->isBorder())
 		return;
 
-	Border *b = static_cast<Border*>(entity);
+	Border *b = assert_cast<Border*, IEntity*>(entity);
 	const float y = getPos().y;
 	if (b->isBottom() || y > b->getPos().y) {
 		_remove = true;
@@ -188,7 +188,7 @@ bool NPC::shouldCollide (const IEntity* entity) const
 	}
 
 	if (entity->isPlayer()) {
-		const Player* player = static_cast<const Player*>(entity);
+		const Player* player = assert_cast<const Player*, const IEntity*>(entity);
 		return !player->isCrashed();
 	}
 

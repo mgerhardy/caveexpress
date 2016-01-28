@@ -46,7 +46,7 @@ void NPCAttacking::onPreSolve (b2Contact* contact, IEntity* entity, const b2Mani
 	}
 
 	// we hit a player - so the player is crashing
-	Player* player = static_cast<Player*>(entity);
+	Player* player = assert_cast<Player*, IEntity*>(entity);
 	if (!player->isCrashed()) {
 		if (EntityTypes::isNpcMammut(_type))
 			player->setCrashed(CRASH_NPC_MAMMUT);
