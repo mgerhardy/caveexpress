@@ -5,7 +5,7 @@
 #include <string>
 
 const unsigned int CV_NOPERSIST = 1 << 0;
-const unsigned int CV_READONLY = (1 << 1) | CV_NOPERSIST;
+const unsigned int CV_READONLY = 1 << 1;
 
 class ConfigVar {
 private:
