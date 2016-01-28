@@ -632,6 +632,9 @@ bool Map::load (const std::string& name)
 	if (_transferedPackageLimit > 0 && !hasPackageTarget()) {
 		Log::error(LOG_GAMEIMPL, "there is no package target in this map");
 		return false;
+	} else if (_transferedPackageLimit <= 0 && hasPackageTarget()) {
+		Log::error(LOG_GAMEIMPL, "transferpackagecount is not set, but there are package targets");
+		return false;
 	}
 
 	Log::info(LOG_GAMEIMPL, "map loading done");
