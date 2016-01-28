@@ -94,15 +94,17 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 
 	setScreenPos(offsetX + posX, offsetY + posY);
 
-	int ropeX1 = basePosX;
-	const int ropeY1 = (basePosY - _size.y * scale * zoom / 2.0f);
+	// package upper side
+	const int ropeX1 = basePosX;
+	const int ropeY1 = (basePosY - _size.y * scale * zoom / 4.0f);
 	int ropeX2 = 0;
 	int ropeY2 = 0;
 	if (ropeEntity && layer == LAYER_MIDDLE) {
 		const vec2& pos = ropeEntity->getPos();
 		const vec2& size = ropeEntity->getSize();
+		// player bottom
 		ropeX2 = pos.x * scale * zoom;
-		ropeY2 = pos.y * scale * zoom + size.y * scale * zoom / 2.0f;
+		ropeY2 = pos.y * scale * zoom + size.y * scale * zoom / 4.0f;
 		Texture* ropeTexture = _ropeTexture.get();
 		frontend->renderLineWithTexture(offsetX + ropeX1, offsetY + ropeY1, offsetX + ropeX2, offsetY + ropeY2, ropeTexture);
 	}
