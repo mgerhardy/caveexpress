@@ -24,6 +24,7 @@ typedef enum {
 	LOG_TEXTURES,
 	LOG_UI,
 	LOG_GAMEIMPL,
+	LOG_TEST,
 
 	LOG_MAX
 } LogCategory;
