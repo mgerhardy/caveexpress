@@ -127,8 +127,8 @@ void FontDef::updateChars (int tWidth, int tHeight)
 
 const FontChar* FontDef::getFontChar (char character)
 {
-	SDL_assert_always(character >= 0);
-	SDL_assert_always(character <= (int)SDL_arraysize(_fontCharMap));
+	if (character < 0 || character > (int)SDL_arraysize(_fontCharMap))
+		return nullptr;
 	const FontChar& fc = _fontCharMap[(int)character];
 	if (fc.getCharacter() != '\0')
 		return &fc;
