@@ -42,6 +42,7 @@ public:
 
 	// ICaveNPC
 	void update (uint32_t deltaTime) override;
+	bool isDirty() const;
 };
 
 inline uint32_t NPCFriendly::getWaitPatience () const

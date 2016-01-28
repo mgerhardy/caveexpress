@@ -135,6 +135,14 @@ bool NPCFriendly::setArrived (const b2Vec2& targetPos)
 	return bonus;
 }
 
+bool NPCFriendly::isDirty() const
+{
+	if (!INPCCave::isDirty())
+		return false;
+
+	return !isCollected();
+}
+
 void NPCFriendly::update (uint32_t deltaTime)
 {
 	INPCCave::update(deltaTime);
