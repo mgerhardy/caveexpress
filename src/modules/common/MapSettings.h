@@ -31,7 +31,7 @@ const std::string THEME = "theme";
 
 // map setting default
 namespace msd {
-const std::string PACKAGE_TRANSFER_COUNT = "3";
+const std::string PACKAGE_TRANSFER_COUNT = "0";
 const std::string NPC_TRANSFER_COUNT = "0";
 const std::string TUTORIAL = "0";
 const std::string WIND = "0.0";
