@@ -311,6 +311,10 @@ public:
 inline void IUINodeMapEditor::setPlayerPosition (gridCoord gridX, gridCoord gridY)
 {
 	const IMap::StartPosition p{ string::toString(gridX), string::toString(gridY) };
+	for (const IMap::StartPosition& position : _startPositions) {
+		if (position._x == p._x && position._y == p._y)
+			return;
+	}
 	_startPositions.push_back(p);
 }
 
