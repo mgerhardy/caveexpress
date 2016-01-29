@@ -8,7 +8,6 @@ char const* const LogTypes[] = {
 	"LOG_CLIENT",
 	"LOG_COMMON",
 	"LOG_GAME",
-	"LOG_COOLDOWN",
 	"LOG_GFX",
 	"LOG_MAIN",
 	"LOG_NETWORK",
