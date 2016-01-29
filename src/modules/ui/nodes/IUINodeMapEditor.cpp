@@ -464,6 +464,14 @@ void IUINodeMapEditor::moveTile (bool right)
 
 void IUINodeMapEditor::deleteItem ()
 {
+	const std::string xStr = string::toString(_selectedGridX);
+	const std::string yStr = string::toString(_selectedGridY);
+	for (auto i = _startPositions.begin(); i != _startPositions.end(); ++i) {
+		if (i->_x == xStr && i->_y == yStr) {
+			_startPositions.erase(i);
+			return;
+		}
+	}
 	if (_highlightItem == nullptr)
 		return;
 	notifyTileRemoved(_highlightItem->def);
