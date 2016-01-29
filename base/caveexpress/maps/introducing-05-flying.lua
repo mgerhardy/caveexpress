@@ -108,6 +108,7 @@ function initMap()
 	map:addTile("tile-rock-01", 12.000000, 8.000000)
 
 	map:addEmitter("item-stone", 5.000000, 1.000000, 1, 4100, "")
+	map:addEmitter("item-egg", 5.000000, 1.000000, 1, 0, "")
 	map:addEmitter("item-package", 8.200000, 1.000000, 1, 5000, "")
 
 	map:setSetting("width", "13")
