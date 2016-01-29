@@ -1,4 +1,5 @@
 add_subdirectory(common)
+add_subdirectory(cooldown)
 add_subdirectory(network)
 add_subdirectory(service)
 add_subdirectory(game)
