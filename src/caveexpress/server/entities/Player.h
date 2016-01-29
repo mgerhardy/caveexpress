@@ -36,9 +36,8 @@ class Player: public IEntity {
 private:
 	// the entity the player is current touching
 	Platform* _touching;
-
-	uint16_t _hitpoints;
-	uint8_t _lives;
+	// time until the player is invulnerable (millis)
+	uint32_t _invulnerableTime;
 
 	NPCFriendly* _collectedNPC;
 
@@ -71,6 +70,8 @@ private:
 	ConfigVarPtr _fruitCollectDelayForANewLife;
 
 	uint32_t _lastFruitCollected;
+	uint16_t _hitpoints;
+	uint8_t _lives;
 	int8_t _fruitsCollectedInARow;
 
 	b2RevoluteJoint *_revoluteJoint;

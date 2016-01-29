@@ -24,11 +24,9 @@ const float gravityScale = 0.3f;
 }
 
 Player::Player (Map& map, ClientId clientId) :
-		IEntity(EntityTypes::PLAYER, map), _touching(nullptr), _hitpoints(
-				0), _lives(0), _collectedNPC(nullptr), _acceleration(b2Vec2_zero), _fingerAcceleration(
-				false), _accelerateX(0), _accelerateY(0), _clientId(clientId), _lastAccelerate(
-				0), _name(""), _lastFruitCollected(0), _fruitsCollectedInARow(
-				0), _revoluteJoint(nullptr), _crashReason(CRASH_NONE) {
+		IEntity(EntityTypes::PLAYER, map), _touching(nullptr), _invulnerableTime(0u), _collectedNPC(nullptr), _acceleration(b2Vec2_zero), _fingerAcceleration(
+				false), _accelerateX(0), _accelerateY(0), _clientId(clientId), _lastAccelerate(0), _name(""), _lastFruitCollected(0), _hitpoints(
+				0), _lives(0), _fruitsCollectedInARow(0), _revoluteJoint(nullptr), _crashReason(CRASH_NONE) {
 	_godMode = Config.getConfigVar(GOD_MODE);
 	_maxHitPoints = Config.getConfigVar(MAX_HITPOINTS);
 	_hitpoints = _maxHitPoints->getIntValue();
@@ -104,6 +102,13 @@ void Player::setFingerAcceleration (int dx, int dy)
 
 void Player::subtractHitpoints (uint16_t hitpoints)
 {
+#ifdef DEBUG
+	if (_godMode->getBoolValue())
+		return;
+#endif
+	if (_time <= _invulnerableTime)
+		return;
+
 	const int oldHitpoints = _hitpoints;
 	const int maxHitpoints = _maxHitPoints->getIntValue();
 	_hitpoints = clamp(_hitpoints - hitpoints, 0, maxHitpoints);
@@ -235,6 +240,9 @@ void Player::setCrashed (const PlayerCrashReason& reason)
 	if (_godMode->getBoolValue())
 		return;
 #endif
+	if (_time <= _invulnerableTime)
+		return;
+
 	if (_map.isDone())
 		return;
 
@@ -377,8 +385,8 @@ bool Player::collect (CollectableEntity* entity)
 	if (isCrashed())
 		return false;
 
-	const EntityType & entityType = entity->getType();
-	if (EntityTypes::isFruit(entityType) || EntityTypes::isEgg(entityType)) {
+	const EntityType &entityType = entity->getType();
+	if (EntityTypes::isFruit(entityType)) {
 		const uint32_t fruitCollectDelayMillis = _fruitCollectDelayForANewLife->getIntValue();
 		if (_lastFruitCollected == 0 || _time - _lastFruitCollected < fruitCollectDelayMillis) {
 			_lastFruitCollected = _time;
@@ -397,6 +405,9 @@ bool Player::collect (CollectableEntity* entity)
 		Achievements::COLLECT_100_FRUITS.unlock();
 		_map.sendSound(ClientIdToClientMask(getClientId()), SoundTypes::SOUND_FRUIT_COLLECTED);
 		addHitpoints(_fruitHitPoints->getIntValue());
+		return true;
+	} else if (EntityTypes::isEgg(entityType)) {
+		_invulnerableTime = _time + 15000;
 		return true;
 	}
 
