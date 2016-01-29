@@ -386,7 +386,7 @@ bool Player::collect (CollectableEntity* entity)
 			if (++_fruitsCollectedInARow == _amountOfFruitsForANewLife->getIntValue()) {
 				_fruitsCollectedInARow = 0;
 				_lastFruitCollected = 0;
-				if (Config.isModeEasy())
+				if (Config.isModeHard())
 					addLife();
 			}
 		} else {
