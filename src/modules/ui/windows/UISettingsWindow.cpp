@@ -81,19 +81,19 @@ void UISettingsWindow::init()
 	add(_settingsInput);
 
 	_controllerNode = getNode("triggeraxis_panel", true);
-	_texturesBig = (UINodeButton*)getNode("textures_1", true);
-	_texturesSmall = (UINodeButton*)getNode("textures_2", true);
+	_texturesBig = assert_cast<UINodeButton*, UINode*>(getNode("textures_1", true));
+	_texturesSmall = assert_cast<UINodeButton*, UINode*>(getNode("textures_2", true));
 
-	_soundOn = (UINodeButton*)getNode("soundmusic_1", true);
-	_soundOff = (UINodeButton*)getNode("soundmusic_2", true);
-	_volume = (UINodeSlider*)getNode("volume_1", true);
-	_musicVolume = (UINodeSlider*)getNode("musicvolume_1", true);
+	_soundOn = assert_cast<UINodeButton*, UINode*>(getNode("soundmusic_1", true));
+	_soundOff = assert_cast<UINodeButton*, UINode*>(getNode("soundmusic_2", true));
+	_volume = assert_cast<UINodeSlider*, UINode*>(getNode("volume_1", true));
+	_musicVolume = assert_cast<UINodeSlider*, UINode*>(getNode("musicvolume_1", true));
 
-	_fullscreenOn = (UINodeButton*)getNode("fullscreen_1", true);
-	_fullscreenOff = (UINodeButton*)getNode("fullscreen_2", true);
+	_fullscreenOn = assert_cast<UINodeButton*, UINode*>(getNode("fullscreen_1", true));
+	_fullscreenOff = assert_cast<UINodeButton*, UINode*>(getNode("fullscreen_2", true));
 
-	_triggeraxisOn = (UINodeButton*)getNode("triggeraxis_1", true);
-	_triggeraxisOff = (UINodeButton*)getNode("triggeraxis_2", true);
+	_triggeraxisOn = assert_cast<UINodeButton*, UINode*>(getNode("triggeraxis_1", true));
+	_triggeraxisOff = assert_cast<UINodeButton*, UINode*>(getNode("triggeraxis_2", true));
 
 	if (!wantBackButton())
 		return;
