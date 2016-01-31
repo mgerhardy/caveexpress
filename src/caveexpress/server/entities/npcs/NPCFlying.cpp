@@ -1,5 +1,6 @@
 #include "NPCFlying.h"
 #include "caveexpress/server/entities/Player.h"
+#include "caveexpress/server/entities/Egg.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
@@ -9,13 +10,21 @@
 namespace caveexpress {
 
 NPCFlying::NPCFlying (Map& map) :
-		NPCAggressive(EntityTypes::NPC_FLYING, map)
+		NPCAggressive(EntityTypes::NPC_FLYING, map), _spawnEgg(false)
 {
 	_spriteAlignment = ENTITY_ALIGN_MIDDLE_CENTER;
 }
 
 NPCFlying::~NPCFlying ()
 {
+}
+
+void NPCFlying::setDying (const IEntity* entity)
+{
+	if (!isDying()) {
+		_spawnEgg = rand() % 2 == 0;
+	}
+	NPCAggressive::setDying(entity);
 }
 
 void NPCFlying::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold)
@@ -36,6 +45,12 @@ void NPCFlying::update (uint32_t deltaTime)
 	NPCAggressive::update(deltaTime);
 	if (!isDying())
 		return;
+	if (_spawnEgg) {
+		_spawnEgg = false;
+		const b2Vec2& pos = getPos();
+		Egg* egg = new Egg(_map, pos.x, pos.y);
+		egg->createBody();
+	}
 
 	b2Vec2 v = getLinearVelocity();
 	v.y = _map.getGravity() / 2.0f;

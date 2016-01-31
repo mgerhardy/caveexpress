@@ -5,6 +5,8 @@
 namespace caveexpress {
 
 class NPCFlying : public NPCAggressive {
+private:
+	bool _spawnEgg;
 public:
 	explicit NPCFlying (Map& map);
 	virtual ~NPCFlying ();
@@ -17,6 +19,7 @@ public:
 	void update (uint32_t deltaTime) override;
 	const Animation& getFallingAnimation () const override;
 	b2BodyType getBodyType () const override { return b2_kinematicBody; }
+	void setDying (const IEntity* entity) override;
 
 	// NPCAggressive
 	bool shouldCollide (const IEntity* entity) const override;
