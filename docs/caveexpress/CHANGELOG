@@ -113,3 +113,5 @@ Version 2.4 (not yet released)
 * Allow to modify the music and sound volume
 * Transfering npcs is now implemented
 * New campaign
+* The egg makes you invulnerable for some time
+* Flying npc drops egg on death
