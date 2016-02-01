@@ -10,6 +10,7 @@
 #include "common/SQLite.h"
 #include "common/System.h"
 #include "caveexpress/shared/constants/ConfigVars.h"
+#include "caveexpress/shared/CaveExpressCooldown.h"
 
 #include "sound/Sound.h"
 
@@ -300,6 +301,8 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	for (int i = 0; i < n; ++i) {
 		Config.initOrGetConfigVar(gameConfigVars[i].configVar, gameConfigVars[i].value, gameConfigVars[i].flags);
 	}
+
+	Cooldowns::INVULVERABLE.setRuntime(15000L);
 
 	ClientEntityRegistry &r = Singleton<ClientEntityRegistry>::getInstance();
 	r.registerFactory(&EntityTypes::DECORATION, ClientMapTile::FACTORY);

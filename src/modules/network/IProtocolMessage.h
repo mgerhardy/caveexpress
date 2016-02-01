@@ -117,6 +117,7 @@ public:
 
 namespace protocol
 {
+const uint8_t PROTO_COOLDOWN = 220;
 const uint8_t PROTO_UPDATEHITPOINTS = 221;
 const uint8_t PROTO_UPDATELIVES = 222;
 const uint8_t PROTO_TIMEREMAINING = 223;

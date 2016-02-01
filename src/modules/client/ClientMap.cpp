@@ -28,6 +28,7 @@ ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, 
 {
 	_maxZoom = Config.getConfigVar("maxzoom", "1.2");
 	_minZoom = Config.getConfigVar("minzoom", "0.5");
+	_cooldowns.resize(8);
 }
 
 ClientMap::~ClientMap ()
@@ -193,6 +194,7 @@ void ClientMap::render () const
 	renderBegin(x, y);
 	renderLayers(x, y);
 	renderParticles(x, y);
+	renderCooldowns(x, y);
 	renderEnd(x, y);
 
 	if (_restartDue != 0) {
@@ -204,6 +206,21 @@ void ClientMap::render () const
 
 	if (!debug) {
 		_frontend->disableScissor();
+	}
+}
+
+void ClientMap::renderCooldowns (int x, int y) const
+{
+	for (const CooldownData& cooldownData : _cooldowns) {
+		if (cooldownData.start == 0)
+			continue;
+		const uint32_t endTime = cooldownData.start + cooldownData.duration;
+		const int32_t delta = endTime - _time;
+		if (delta <= 0) {
+			continue;
+		}
+		// TODO: wip
+		_frontend->renderFilledRect(x, y, delta / 10, 20, colorBlue);
 	}
 }
 
@@ -317,6 +334,16 @@ void ClientMap::update (uint32_t deltaTime)
 		_screenRumbleOffsetX = _screenRumbleOffsetY = 0;
 		_screenRumbleOffsetX = rand() % std::max(2, static_cast<int>(_screenRumbleStrength * 10.0f));
 		_screenRumbleOffsetY = rand() % std::max(2, static_cast<int>(_screenRumbleStrength * 10.0f));
+	}
+
+	for (CooldownData& cooldownData : _cooldowns) {
+		if (cooldownData.start == 0)
+			continue;
+		const uint32_t endTime = cooldownData.start + cooldownData.duration;
+		const int32_t delta = endTime - _time;
+		if (delta <= 0) {
+			cooldownData.start = cooldownData.duration = 0;
+		}
 	}
 
 	_timeManager.update(deltaTime);
@@ -450,5 +477,17 @@ void ClientMap::rumble (float strength, int lengthMillis)
 
 void ClientMap::spawnInfo (const vec2& position, const EntityType& type)
 {
+	Log::debug(LOG_CLIENT, "spawn info for '%s' at %f:%f", type.name.c_str(), position.x, position.y);
 	// TODO:
+}
+
+void ClientMap::cooldown (const Cooldown& cooldown)
+{
+	Log::debug(LOG_CLIENT, "trigger cooldown %i", cooldown.id);
+	if (cooldown.id >= _cooldowns.size()) {
+		const CooldownData d{0, 0};
+		_cooldowns.resize(cooldown.id, d);
+	}
+	const CooldownData cooldownData{_time, cooldown.getRuntime()};
+	_cooldowns[cooldown.id] = cooldownData;
 }

@@ -8,10 +8,12 @@
 #include "common/IMap.h"
 #include "common/ConfigVar.h"
 #include "common/ThemeType.h"
+#include "common/Cooldown.h"
 #include "common/TimeManager.h"
 #include "network/INetwork.h"
 #include "common/Direction.h"
 #include "particles/ParticleSystem.h"
+#include <vector>
 #include <map>
 
 namespace {
@@ -25,6 +27,12 @@ public:
 	typedef ClientEntityMap::iterator ClientEntityMapIter;
 	typedef ClientEntityMap::const_iterator ClientEntityMapConstIter;
 protected:
+	struct CooldownData {
+		uint32_t start;
+		uint32_t duration;
+	};
+	typedef std::vector<CooldownData> CooldownVector;
+	CooldownVector _cooldowns;
 	// node dimensions
 	int _x;
 	int _y;
@@ -92,11 +100,15 @@ public:
 	ClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth);
 	virtual ~ClientMap ();
 
+	// indicates that a particular cooldown was triggered
+	virtual void cooldown (const Cooldown& cooldown);
+
 	virtual void render () const;
 	virtual void renderBegin (int x, int y) const;
 	virtual void renderEnd (int x, int y) const;
 	virtual void renderLayers (int x, int y) const;
 	virtual void renderParticles (int x, int y) const;
+	virtual void renderCooldowns (int x, int y) const;
 	virtual void setSetting (const std::string& key, const std::string& value);
 
 	virtual bool secondFinger () { return false; }
@@ -152,7 +164,7 @@ public:
 	Camera& getCamera ();
 
 	void rumble (float strength, int lengthMillis);
-	void spawnInfo (const vec2& position, const EntityType& type);
+	virtual void spawnInfo (const vec2& position, const EntityType& type);
 
 	int getWaterWidth () const override { return _mapWidth * _scale; }
 	int getPixelWidth () const override { return _mapWidth * _scale; }

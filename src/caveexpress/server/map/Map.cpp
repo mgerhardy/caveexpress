@@ -35,6 +35,7 @@
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
 #include "caveexpress/shared/CaveExpressAchievement.h"
+#include "network/messages/CooldownMessage.h"
 #include "network/messages/InitDoneMessage.h"
 #include "network/messages/SoundMessage.h"
 #include "network/messages/MapSettingsMessage.h"
@@ -130,6 +131,11 @@ void Map::addPoints (const IEntity* entity, uint16_t points)
 		return;
 	_gamePoints += points;
 	_serviceProvider->getNetwork().sendToAllClients(UpdatePointsMessage(_gamePoints));
+}
+
+void Map::sendCooldown (int clientMask, const Cooldown& cooldown) const
+{
+	_serviceProvider->getNetwork().sendToClients(clientMask, CooldownMessage(cooldown));
 }
 
 void Map::sendSound (int clientMask, const SoundType& type, const b2Vec2& pos) const

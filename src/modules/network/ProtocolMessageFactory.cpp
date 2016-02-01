@@ -5,6 +5,7 @@
 #include "messages/ClientInitMessage.h"
 #include "messages/ErrorMessage.h"
 #include "messages/ChangeAnimationMessage.h"
+#include "messages/CooldownMessage.h"
 #include "messages/MapRestartMessage.h"
 #include "messages/TextMessage.h"
 #include "messages/PauseMessage.h"
@@ -41,6 +42,7 @@ PROTOCOL_CLASS_FACTORY_IMPL(MovementMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(FingerMovementMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(StopFingerMovementMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(ClientInitMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(CooldownMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(ErrorMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(ChangeAnimationMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(MapRestartMessage);
@@ -78,6 +80,7 @@ ProtocolMessageFactory::ProtocolMessageFactory() {
 	registerFactory(protocol::PROTO_FINGERMOVEMENT, FingerMovementMessage::FACTORY);
 	registerFactory(protocol::PROTO_STOPFINGERMOVEMENT, StopFingerMovementMessage::FACTORY);
 	registerFactory(protocol::PROTO_CLIENTINIT, ClientInitMessage::FACTORY);
+	registerFactory(protocol::PROTO_COOLDOWN, CooldownMessage::FACTORY);
 	registerFactory(protocol::PROTO_ERROR, ErrorMessage::FACTORY);
 	registerFactory(protocol::PROTO_CHANGEANIMATION, ChangeAnimationMessage::FACTORY);
 	registerFactory(protocol::PROTO_MAPRESTART, MapRestartMessage::FACTORY);

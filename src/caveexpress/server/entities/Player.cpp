@@ -14,6 +14,7 @@
 #include "caveexpress/shared/constants/Density.h"
 #include "common/ConfigManager.h"
 #include "network/IProtocolHandler.h"
+#include "caveexpress/shared/CaveExpressCooldown.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/shared/constants/ConfigVars.h"
 
@@ -407,7 +408,8 @@ bool Player::collect (CollectableEntity* entity)
 		addHitpoints(_fruitHitPoints->getIntValue());
 		return true;
 	} else if (EntityTypes::isEgg(entityType)) {
-		_invulnerableTime = _time + 15000;
+		_invulnerableTime = _time + Cooldowns::INVULVERABLE.getRuntime();
+		_map.sendCooldown(_clientId, Cooldowns::INVULVERABLE);
 		return true;
 	}
 

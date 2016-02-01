@@ -9,6 +9,7 @@
 #include "caveexpress/server/entities/Water.h"
 #include "common/IMap.h"
 #include "common/ThemeType.h"
+#include "common/Cooldown.h"
 #include "common/MapFailedReason.h"
 #include "common/TimeManager.h"
 #include "network/IProtocolHandler.h"
@@ -337,6 +338,8 @@ public:
 	const b2Vec2& getPlayerPos () const;
 
 	bool removePlayer (ClientId clientId);
+
+	void sendCooldown (int clientMask, const Cooldown& cooldown) const;
 
 	void sendSound (int clientMask, const SoundType& type, const b2Vec2& pos = b2Vec2_zero) const;
 

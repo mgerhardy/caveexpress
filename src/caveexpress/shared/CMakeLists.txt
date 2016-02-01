@@ -1,6 +1,7 @@
 set(caveexpress-shared_SRCS
 	CaveExpressAchievement.cpp
 	CaveExpressSoundType.cpp
+	CaveExpressCooldown.cpp
 	CaveExpressAnimation.cpp
 	CaveExpressSpriteType.cpp
 	CaveExpressEntityType.cpp

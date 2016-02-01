@@ -17,6 +17,7 @@
 #include "client/network/RumbleHandler.h"
 #include "client/network/PlayerListHandler.h"
 #include "client/network/TextMessageHandler.h"
+#include "client/network/CooldownHandler.h"
 #include "network/ProtocolHandlerRegistry.h"
 #include "service/ServiceProvider.h"
 #include "common/IFrontend.h"
@@ -77,6 +78,7 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	r.registerClientHandler(protocol::PROTO_PLAYERLIST, new PlayerListHandler(this));
 	r.registerClientHandler(protocol::PROTO_MESSAGE, new TextMessageHandler(this));
 	r.registerClientHandler(protocol::PROTO_CLOSEMAP, new CloseMapHandler(_map));
+	r.registerClientHandler(protocol::PROTO_COOLDOWN, new CooldownHandler(_map));
 	r.registerClientHandler(protocol::PROTO_LOADMAP, new HudLoadMapHandler(_map, serviceProvider));
 	r.registerClientHandler(protocol::PROTO_MAPSETTINGS, new HudMapSettingsHandler(_map));
 	r.registerClientHandler(protocol::PROTO_INITWAITING, new InitWaitingMapHandler(serviceProvider));
@@ -133,6 +135,7 @@ IUINodeMap::~IUINodeMap ()
 	r.unregisterClientHandler(protocol::PROTO_PLAYERLIST);
 	r.unregisterClientHandler(protocol::PROTO_MESSAGE);
 	r.unregisterClientHandler(protocol::PROTO_CLOSEMAP);
+	r.unregisterClientHandler(protocol::PROTO_COOLDOWN);
 	r.unregisterClientHandler(protocol::PROTO_LOADMAP);
 	r.unregisterClientHandler(protocol::PROTO_MAPSETTINGS);
 	r.unregisterClientHandler(protocol::PROTO_INITWAITING);
