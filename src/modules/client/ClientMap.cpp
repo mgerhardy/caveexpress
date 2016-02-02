@@ -60,6 +60,9 @@ bool ClientMap::isStarted () const
 void ClientMap::resetCurrentMap ()
 {
 	Log::info(LOG_CLIENT, "client map reset");
+	for (CooldownData& cooldownData : _cooldowns) {
+		cooldownData.duration = cooldownData.start = 0;
+	}
 	_startPositions = 0;
 	_zoom = 1.0f;
 	_timeManager.reset();
