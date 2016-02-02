@@ -211,16 +211,44 @@ void ClientMap::render () const
 
 void ClientMap::renderCooldowns (int x, int y) const
 {
-	for (const CooldownData& cooldownData : _cooldowns) {
-		if (cooldownData.start == 0)
+	const int padding = 0.006f * _frontend->getHeight();
+	const int marginTop = 0.1 * _frontend->getHeight();
+	const int screenX = std::max(0, x) + padding;
+	const int screenY = std::max(0, y) + padding + marginTop;
+	int cooldownScreenY = screenY;
+	int cooldownScreenX = screenX;
+	const int cooldowns = _cooldowns.size();
+	for (int cooldownId = 0; cooldownId < cooldowns; ++cooldownId) {
+		const CooldownData& cooldownData = _cooldowns[cooldownId];
+		if (cooldownData.start == 0) {
 			continue;
+		}
 		const uint32_t endTime = cooldownData.start + cooldownData.duration;
 		const int32_t delta = endTime - _time;
 		if (delta <= 0) {
 			continue;
 		}
-		// TODO: wip
-		_frontend->renderFilledRect(x, y, delta / 10, 20, colorBlue);
+
+		const TexturePtr& texture = UI::get().loadTexture("cooldown-" + string::toString(cooldownId));
+		if (!texture->isValid()) {
+			continue;
+		}
+		const int cooldownWidth = texture->getWidth();
+		const int cooldownHeight = texture->getHeight();
+		const float ratio = delta / (float)cooldownData.duration;
+		const int realWidth = cooldownWidth * ratio;
+		if (realWidth <= 0) {
+			continue;
+		}
+
+		Texture* tex = texture.get();
+		_frontend->renderImage(tex, cooldownScreenX, cooldownScreenY, cooldownWidth, cooldownHeight, 0, 1.0f);
+		_frontend->renderFilledRect(cooldownScreenX, cooldownScreenY, realWidth, cooldownHeight, colorGrayAlpha40);
+		cooldownScreenX += cooldownWidth + padding;
+		if (cooldownScreenX >= getWidth() + x) {
+			cooldownScreenX = screenX;
+			cooldownScreenY += cooldownHeight + padding;
+		}
 	}
 }
 
