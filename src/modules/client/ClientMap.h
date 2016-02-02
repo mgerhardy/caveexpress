@@ -12,6 +12,7 @@
 #include "common/TimeManager.h"
 #include "network/INetwork.h"
 #include "common/Direction.h"
+#include "ui/BitmapFont.h"
 #include "particles/ParticleSystem.h"
 #include <vector>
 #include <map>
@@ -33,6 +34,7 @@ protected:
 	};
 	typedef std::vector<CooldownData> CooldownVector;
 	CooldownVector _cooldowns;
+	BitmapFontPtr _font;
 	// node dimensions
 	int _x;
 	int _y;
@@ -108,6 +110,7 @@ public:
 	virtual void renderEnd (int x, int y) const;
 	virtual void renderLayers (int x, int y) const;
 	virtual void renderParticles (int x, int y) const;
+	virtual void renderCooldownDescription (int cooldownIndex, int x, int y) const;
 	virtual void renderCooldowns (int x, int y) const;
 	virtual void setSetting (const std::string& key, const std::string& value);
 

@@ -29,6 +29,7 @@ ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, 
 	_maxZoom = Config.getConfigVar("maxzoom", "1.2");
 	_minZoom = Config.getConfigVar("minzoom", "0.5");
 	_cooldowns.resize(8);
+	_font = UI::get().getFont();
 }
 
 ClientMap::~ClientMap ()
@@ -244,12 +245,17 @@ void ClientMap::renderCooldowns (int x, int y) const
 		Texture* tex = texture.get();
 		_frontend->renderImage(tex, cooldownScreenX, cooldownScreenY, cooldownWidth, cooldownHeight, 0, 1.0f);
 		_frontend->renderFilledRect(cooldownScreenX, cooldownScreenY, realWidth, cooldownHeight, colorGrayAlpha40);
+		renderCooldownDescription(cooldownId, cooldownScreenX + cooldownWidth + 5, cooldownScreenY);
 		cooldownScreenX += cooldownWidth + padding;
 		if (cooldownScreenX >= getWidth() + x) {
 			cooldownScreenX = screenX;
 			cooldownScreenY += cooldownHeight + padding;
 		}
 	}
+}
+
+void ClientMap::renderCooldownDescription (int cooldownIndex, int x, int y) const
+{
 }
 
 void ClientMap::renderParticles (int x, int y) const

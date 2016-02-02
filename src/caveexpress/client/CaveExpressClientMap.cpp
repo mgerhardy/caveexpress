@@ -1,5 +1,6 @@
 #include "caveexpress/client/CaveExpressClientMap.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
+#include "caveexpress/shared/CaveExpressCooldown.h"
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
@@ -159,6 +160,14 @@ void CaveExpressClientMap::renderEnd (int x, int y) const
 	if (_target)
 		_frontend->renderTarget(_target);
 	renderWater(x, y);
+}
+
+void CaveExpressClientMap::renderCooldownDescription (int cooldownIndex, int x, int y) const
+{
+	ClientMap::renderCooldownDescription(cooldownIndex, x, y);
+	if (Cooldowns::INVULVERABLE.id == cooldownIndex) {
+		_font->print(tr("Invulverable"), colorWhite, x, y);
+	}
 }
 
 void CaveExpressClientMap::start () {

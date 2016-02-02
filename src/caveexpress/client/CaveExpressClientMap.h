@@ -30,6 +30,7 @@ public:
 
 	void renderBegin (int x, int y) const override;
 	void renderEnd (int x, int y) const override;
+	void renderCooldownDescription (int cooldownIndex, int x, int y) const override;
 
 	int getWaterSurface () const override { return (int)((_waterHeight + 0.00001f) * static_cast<float>(_scale)); }
 	int getWaterGround () const override { return getWaterSurface() + _mapHeight - (int)((_waterHeight + 0.00001f) * static_cast<float>(_scale)); }
