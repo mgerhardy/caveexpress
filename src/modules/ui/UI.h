@@ -61,7 +61,7 @@ private:
 	TexturePtr _mouseCursor;
 	ConfigVarPtr _mouseSpeed;
 
-	typedef std::map<std::string, UIWindow*> UIWindowMap;
+	typedef std::unordered_map<std::string, UIWindow*> UIWindowMap;
 	typedef UIWindowMap::const_iterator UIWindowMapConstIter;
 	typedef UIWindowMap::iterator UIWindowMapIter;
 	UIWindowMap _windows;
