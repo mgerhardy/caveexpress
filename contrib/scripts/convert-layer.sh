@@ -65,7 +65,7 @@ rename "s/${SRC}/${TARGET}/" ${SPRITE}*${SRC}*.png
 cd ../..
 cd png-packed
 
-for i in ${APPNAME}*.lua ${APPNAME}*.tps; do
+for i in $(grep -R -l "${SPRITE}.*${SRC}" ${APPNAME}*); do
 	echo "replace in $i"
 	sed -i "s/\(.*${SPRITE}.*\)${SRC}-\([0123456789][0123456789].*\)/\1${TARGET}-\2/g" $i
 done
