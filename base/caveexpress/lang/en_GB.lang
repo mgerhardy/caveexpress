@@ -25,6 +25,7 @@ Deliver packages to the shredders|Deliver packages to the shredders
 Description|Description
 Disconnect|Disconnect
 Drop during flight|Drop during flight
+Drop off at the shredder|Drop off at the shredder
 Drop stones onto the tree|Drop stones onto the tree
 Drop the package and the stone|Drop the package and the stone
 Drop the stone to collect packages again|Drop the stone to collect packages again
@@ -32,6 +33,7 @@ Drop them by hitting SPACE bar|Drop them by hitting SPACE bar
 Drop them with the second finger|Drop them with the second finger
 Dropping stones onto dinos stuns them|Dropping stones onto dinos stuns them
 Editor|Editor
+Egg|Egg
 Extras|Extras
 Fall delay|Fall delay
 File|File
@@ -57,6 +59,7 @@ Increase map size|Increase map size
 Initial npc spawn delay for the pterodactyls and the fish|Initial npc spawn delay for the pterodactyls and the fish
 Initial water rising delay in milliseconds|Initial water rising delay in milliseconds
 Input|Input
+Invulverable|Invulverable
 Just stay and watch what happens|Just stay and watch what happens
 LMB|LMB
 Later|Later
@@ -88,14 +91,12 @@ Packages|Packages
 Place tile|Place tile
 Player|Player
 Players|Players
-Players:|Players:
 Please rate the app|Please rate the app
 Points|Points
 Pterodactyls|Pterodactyls
 Pterodactyls is after you|Pterodactyls is after you
 Quit|Quit
 Quit without saving|Quit without saving
-Quit?|Quit?
 RMB|RMB
 Redo|Redo
 Reference time in seconds|Reference time in seconds
@@ -132,6 +133,7 @@ Stone|Stone
 Textures|Textures
 The amount of npcs to deliver|The amount of npcs to deliver
 The amount of packages to deliver|The amount of packages to deliver
+The egg makes you invulverable|The egg makes you invulverable
 The geyser will do the work for you|The geyser will do the work for you
 The points you get for finishing the map|The points you get for finishing the map
 The water change speed|The water change speed
@@ -139,6 +141,9 @@ This is the goal in every map|This is the goal in every map
 This is the max amount of npcs that spawn, if you let more than these die, you lose the game|This is the max amount of npcs that spawn, if you let more than these die, you lose the game
 Time|Time
 Time bar|Time bar
+Transfer the grandpa to the desired cave|Transfer the grandpa to the desired cave
+Transfer the man to the desired cave|Transfer the man to the desired cave
+Transfer the woman to the desired cave|Transfer the woman to the desired cave
 Tree|Tree
 Try to avoid crashes but still be fast|Try to avoid crashes but still be fast
 Tutorial|Tutorial
@@ -147,6 +152,7 @@ Undo|Undo
 Use the second finger to drop the package|Use the second finger to drop the package
 Use the second finger to drop the stone|Use the second finger to drop the stone
 Use the swing of the package|Use the swing of the package
+Username|Username
 Volume|Volume
 Waiting|Waiting
 Watch the geyser|Watch the geyser
@@ -158,3 +164,4 @@ Win conditions|Win conditions
 Wind|Wind
 You won!|You won!
 Zoom map|Zoom map
+or A on your controller|or A on your controller
