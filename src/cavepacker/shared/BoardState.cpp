@@ -110,7 +110,7 @@ void BoardState::getReachableIndices(int index, std::vector<int>& successors) co
 	if (!getColRowFromIndex(index, col, row))
 		return;
 	const char dirs[] = { MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN };
-	const int dirLength = lengthof(dirs);
+	const int dirLength = SDL_arraysize(dirs);
 	for (int i = 0; i < dirLength; ++i) {
 		int x, y;
 		getXY(dirs[i], x, y);

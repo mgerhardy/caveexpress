@@ -21,7 +21,7 @@ char const* const LogTypes[] = {
 	"LOG_GAMEIMPL",
 	"LOG_TEST"
 };
-CASSERT(lengthof(LogTypes) == LOG_MAX);
+static_assert(SDL_arraysize(LogTypes) == LOG_MAX, "LogTypes incomplete");
 
 #ifdef __LINUX__
 #define ANSI_COLOR_RESET "\033[0m"
@@ -46,7 +46,7 @@ LogLevelList LogLevels[] = {
 	{"WARN",  LogLevel::LEVEL_WARN, SDL_LOG_PRIORITY_WARN},
 	{"ERROR", LogLevel::LEVEL_ERROR, SDL_LOG_PRIORITY_ERROR},
 };
-CASSERT(lengthof(LogLevels) == static_cast<int>(LogLevel::LEVEL_MAX));
+static_assert(SDL_arraysize(LogLevels) == static_cast<int>(LogLevel::LEVEL_MAX), "LogLevels imcomplete");
 
 Log::Log ()
 {

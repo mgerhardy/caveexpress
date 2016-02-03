@@ -18,9 +18,6 @@ inline void cp_snprintf(char* dest, size_t size, const char* fmt, ...) {
 	va_end(ap);
 }
 
-#define lengthof(x) (sizeof(x) / sizeof(*(x)))
-#define CASSERT(x) extern int ASSERT_COMPILE[((x) != 0) * 2 - 1]
-
 template<class T, class S>
 inline T assert_cast(const S object) {
 #ifdef __cpp_rtti
