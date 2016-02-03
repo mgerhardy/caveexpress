@@ -160,7 +160,7 @@ void Player::update (uint32_t deltaTime)
 		drop();
 	}
 
-	if (System.hasTouch() && _fingerAcceleration) {
+	if (_fingerAcceleration) {
 		const float mass = getCompleteMass();
 		const b2Vec2& gravity = getGravity();
 		b2Vec2 v = mass * gravity;
