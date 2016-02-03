@@ -4,8 +4,6 @@
 #include "common/Log.h"
 #include "campaign/Campaign.h"
 #include <string>
-#include <stdint.h>
-#include <map>
 
 #define DEFAULT_CAMPAIGN "tutorial"
 

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <map>
 #include "SokobanTiles.h"
 #include "deadlock/DeadlockDetector.h"
 #include "common/Log.h"
 #include <SDL_assert.h>
+#include <vector>
 
 namespace cavepacker {
 

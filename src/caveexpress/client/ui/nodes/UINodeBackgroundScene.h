@@ -7,7 +7,6 @@
 #include "common/Config.h"
 #include "common/ThemeType.h"
 #include "common/MapFailedReason.h"
-#include <map>
 
 namespace caveexpress {
 

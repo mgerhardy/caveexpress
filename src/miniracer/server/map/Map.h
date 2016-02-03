@@ -10,7 +10,6 @@
 #include "miniracer/server/entities/MapTile.h"
 #include <string>
 #include <vector>
-#include <map>
 
 // forward decl
 class SpriteDef;

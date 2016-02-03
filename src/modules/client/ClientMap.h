@@ -15,7 +15,6 @@
 #include "ui/BitmapFont.h"
 #include "particles/ParticleSystem.h"
 #include <vector>
-#include <map>
 #include <unordered_map>
 
 namespace {

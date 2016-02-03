@@ -10,7 +10,6 @@
 #include "cavepacker/shared/BoardState.h"
 #include <string>
 #include <vector>
-#include <map>
 
 // forward decl
 class SpriteDef;

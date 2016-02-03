@@ -5,8 +5,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <map>
-#include <list>
 #include <string>
 #include <string.h>
 #include "physics/Box2DMath.h"

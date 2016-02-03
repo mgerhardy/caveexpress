@@ -4,7 +4,6 @@
 #include "ICampaignManager.h"
 #include "common/NonCopyable.h"
 #include <string>
-#include <map>
 #include <vector>
 
 struct lua_State;
