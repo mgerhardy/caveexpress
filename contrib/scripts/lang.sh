@@ -1,7 +1,7 @@
 #!/bin/bash
 
-LANG=${1}
-APPNAME=${2}
+LANG=${1:-de}
+APPNAME=${2:-caveexpress}
 
 grep -PohR 'tr\("\K[^"]*' src/modules src/${APPNAME} | sort | uniq | awk -v "app=${APPNAME}" -v "lang=${LANG}" '
 BEGIN {

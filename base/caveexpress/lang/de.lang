@@ -25,13 +25,15 @@ Deliver packages to the shredders|Transportiere Pakete zu den Schreddern
 Description|Beschreibung
 Disconnect|Disconnect
 Drop during flight|Waehrend des Fluges abwerfen
+Drop off at the shredder|Drop off at the shredder
 Drop stones onto the tree|Lasse den Stein auf Baeume fallen
 Drop the package and the stone|Den Stein und das Paket fallen lassen
 Drop the stone to collect packages again|Lasse den Stein fallen um wieder Kisten heben zu koennen
 Drop them by hitting SPACE bar|Abwerfen durch LEERTASTE
 Drop them with the second finger|Abwerfen durch zweiten Finger
-Dropping stones onto dinos stuns them|Steine betaeuben Dinosaurier
+Dropping stones onto dinos stun them|Dropping stones onto dinos stun them
 Editor|Editor
+Egg|Egg
 Extras|Extras
 Fall delay|Fallverzoegerung
 File|Datei
@@ -57,6 +59,7 @@ Increase map size|Map vergroessern
 Initial npc spawn delay for the pterodactyls and the fish|Initial npc spawn delay for the pterodactyls and the fish
 Initial water rising delay in milliseconds|Initiale Verzoegerung der Wassererhoehung in Millisekunden
 Input|Input
+Invulverable|Invulverable
 Just stay and watch what happens|Einfach nur abwarten und zuschauen
 LMB|LMB
 Later|Spaeter
@@ -95,7 +98,6 @@ Pterodactyls|Pterodactylus
 Pterodactyls is after you|Der Pterodactylus hat es auch dich abgesehen
 Quit|Beenden
 Quit without saving|Beenden ohne Speichern
-Quit?|Quit?
 RMB|RMB
 Redo|Redo
 Reference time in seconds|Referenzzeit in Sekunden
@@ -132,6 +134,7 @@ Stone|Stone
 Textures|Texturen
 The amount of npcs to deliver|The amount of npcs to deliver
 The amount of packages to deliver|Anzahl der zu liefernden Pakete
+The egg makes you invulverable|The egg makes you invulverable
 The geyser will do the work for you|Der Geisir erledigt die Arbeit
 The points you get for finishing the map|Punktzahl beim Absolvieren der Map
 The water change speed|Die Wasser Steig- und Fallgeschwindigkeit
@@ -139,6 +142,9 @@ This is the goal in every map|Dies ist das Ziel jedes Levels
 This is the max amount of npcs that spawn, if you let more than these die, you lose the game|This is the max amount of npcs that spawn, if you let more than these die, you lose the game
 Time|Zeit
 Time bar|Zeitanzeige
+Transfer the grandpa to the desired cave|Transfer the grandpa to the desired cave
+Transfer the man to the desired cave|Transfer the man to the desired cave
+Transfer the woman to the desired cave|Transfer the woman to the desired cave
 Tree|Tree
 Try to avoid crashes but still be fast|Harte Treffer vermeiden und schnell sein
 Tutorial|Tutorial
@@ -147,6 +153,7 @@ Undo|Undo
 Use the second finger to drop the package|Benutze den zweiten Finger um das Paket abzuwerfen
 Use the second finger to drop the stone|Benutze den zweiten Finger um den Stein abzuwerfen
 Use the swing of the package|Benutze den Schwung des Paketes
+Username|Username
 Volume|Volume
 Waiting|Warte
 Watch the geyser|Beobachte den Geisir
@@ -158,3 +165,4 @@ Win conditions|Gewinnkonditionen
 Wind|Wind
 You won!|Gewonnen
 Zoom map|Zoom map
+or A on your controller|or A on your controller
