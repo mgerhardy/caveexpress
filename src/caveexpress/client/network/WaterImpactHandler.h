@@ -6,7 +6,7 @@
 
 namespace caveexpress {
 
-class WaterImpactHandler: public IClientProtocolHandler {
+class WaterImpactHandler: public ClientProtocolHandler<WaterImpactMessage> {
 private:
 	CaveExpressClientMap& _map;
 public:
@@ -15,9 +15,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const WaterImpactMessage* msg) override
 	{
-		const WaterImpactMessage *msg = static_cast<const WaterImpactMessage*>(&message);
 		const float x = msg->getImpactX();
 		const float force = msg->getImpactForce();
 		_map.handleWaterImpact(x, force);

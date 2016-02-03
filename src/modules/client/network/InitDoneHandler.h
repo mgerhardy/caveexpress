@@ -4,7 +4,7 @@
 #include "network/messages/InitDoneMessage.h"
 #include "client/ClientMap.h"
 
-class InitDoneHandler: public IClientProtocolHandler {
+class InitDoneHandler: public ClientProtocolHandler<InitDoneMessage> {
 protected:
 	ClientMap& _map;
 public:
@@ -13,9 +13,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const InitDoneMessage* msg) override
 	{
-		const InitDoneMessage *msg = static_cast<const InitDoneMessage*>(&message);
 		// TODO: close console?
 		const uint16_t id = msg->getPlayerId();
 		_map.init(id);

@@ -14,10 +14,9 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const InitDoneMessage* msg) override
 	{
-		InitDoneHandler::execute(message);
-		const InitDoneMessage *msg = static_cast<const InitDoneMessage*>(&message);
+		InitDoneHandler::execute(msg);
 		const uint8_t packages = msg->getPackages();
 		{
 			UINodeSprite* node = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_PACKAGES);

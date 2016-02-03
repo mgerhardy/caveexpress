@@ -5,11 +5,10 @@
 #include "ui/UI.h"
 #include "ui/windows/IUIMapWindow.h"
 
-class TimeRemainingHandler: public IClientProtocolHandler {
+class TimeRemainingHandler: public ClientProtocolHandler<TimeRemainingMessage> {
 public:
-	void execute (const IProtocolMessage& message) override
+	void execute (const TimeRemainingMessage* msg) override
 	{
-		const TimeRemainingMessage *msg = static_cast<const TimeRemainingMessage*>(&message);
 		const uint16_t secondsRemaining = msg->getSecondsRemaining();
 		UI::get().setBarValue(UI_WINDOW_MAP, UINODE_SECONDS_REMAINING, secondsRemaining);
 	}

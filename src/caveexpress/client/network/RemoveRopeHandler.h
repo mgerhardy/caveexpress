@@ -7,7 +7,7 @@
 
 namespace caveexpress {
 
-class RemoveRopeHandler: public IClientProtocolHandler {
+class RemoveRopeHandler: public ClientProtocolHandler<RemoveRopeMessage> {
 private:
 	ClientMap& _map;
 public:
@@ -16,9 +16,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const RemoveRopeMessage* msg) override
 	{
-		const RemoveRopeMessage *msg = static_cast<const RemoveRopeMessage*>(&message);
 		const uint16_t id1 = msg->getEntityId();
 		ClientEntityPtr entity = _map.getEntity(id1);
 		if (!entity)

@@ -4,7 +4,7 @@
 #include "network/messages/UpdateEntityMessage.h"
 #include "client/ClientMap.h"
 
-class UpdateEntityHandler: public IClientProtocolHandler {
+class UpdateEntityHandler: public ClientProtocolHandler<UpdateEntityMessage> {
 private:
 	ClientMap& _map;
 public:
@@ -13,9 +13,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const UpdateEntityMessage* msg) override
 	{
-		const UpdateEntityMessage *msg = static_cast<const UpdateEntityMessage*>(&message);
 		_map.updateEntity(msg->getEntityId(), msg->getX(), msg->getY(), msg->getAngle(), msg->getState());
 	}
 };

@@ -17,7 +17,5 @@ public:
 		return _instance;
 	}
 
-	virtual ~ProtocolMessageFactory();
-
 	IProtocolMessage *createMsg(ByteStream& stream) const;
 };

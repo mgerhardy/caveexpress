@@ -5,7 +5,7 @@
 #include "client/ClientMap.h"
 #include "common/System.h"
 
-class AddEntityHandler: public IClientProtocolHandler {
+class AddEntityHandler: public ClientProtocolHandler<AddEntityMessage> {
 protected:
 	ClientMap& _map;
 public:
@@ -14,9 +14,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const AddEntityMessage* msg) override
 	{
-		const AddEntityMessage *msg = static_cast<const AddEntityMessage*>(&message);
 		const uint16_t id = msg->getEntityId();
 		const Animation& animation = msg->getAnimation();
 		const EntityType& type = msg->getEntityType();

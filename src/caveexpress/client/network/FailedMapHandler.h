@@ -11,7 +11,7 @@
 
 namespace caveexpress {
 
-class FailedMapHandler: public IClientProtocolHandler {
+class FailedMapHandler: public ClientProtocolHandler<FailedMapMessage> {
 private:
 	ClientMap& _clientMap;
 	ServiceProvider& _serviceProvider;
@@ -20,12 +20,11 @@ public:
 			_clientMap(clientMap), _serviceProvider(serviceProvider) {
 	}
 
-	void execute(const IProtocolMessage& message) override
+	void execute(const FailedMapMessage* msg) override
 	{
 		const bool isMultiplayer = _serviceProvider.getNetwork().isMultiplayer();
 		_clientMap.close();
 		Commands.executeCommandLine(CMD_CL_DISCONNECT);
-		const FailedMapMessage *msg = static_cast<const FailedMapMessage*>(&message);
 		UI::get().popMain();
 		UIMapFailedWindow* window = static_cast<UIMapFailedWindow*>(UI::get().push(UI_WINDOW_MAPFAILED));
 		window->updateReason(isMultiplayer, msg->getReason(), msg->getTheme());

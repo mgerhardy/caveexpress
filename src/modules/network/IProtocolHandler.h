@@ -15,6 +15,21 @@ public:
 	virtual void execute (const IProtocolMessage& message) = 0;
 };
 
+template<class T>
+class ClientProtocolHandler : public IClientProtocolHandler {
+public:
+	virtual ~ClientProtocolHandler ()
+	{
+	}
+
+	void execute (const IProtocolMessage& message) override {
+		const T *msg = assert_cast<const T*>(&message);
+		execute(msg);
+	}
+
+	virtual void execute (const T* message) = 0;
+};
+
 class IServerProtocolHandler {
 public:
 	virtual ~IServerProtocolHandler ()

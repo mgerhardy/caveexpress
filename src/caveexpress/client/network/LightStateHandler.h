@@ -6,7 +6,7 @@
 
 namespace caveexpress {
 
-class LightStateHandler: public IClientProtocolHandler {
+class LightStateHandler: public ClientProtocolHandler<LightStateMessage> {
 private:
 	CaveExpressClientMap& _map;
 public:
@@ -15,9 +15,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const LightStateMessage* msg) override
 	{
-		const LightStateMessage *msg = static_cast<const LightStateMessage*>(&message);
 		const uint16_t id = msg->getEntityId();
 		const bool state = msg->getState();
 		_map.setCaveState(id, state);

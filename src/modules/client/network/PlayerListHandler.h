@@ -5,7 +5,7 @@
 #include "ui/UI.h"
 #include "ui/nodes/IUINodeMap.h"
 
-class PlayerListHandler: public IClientProtocolHandler {
+class PlayerListHandler: public ClientProtocolHandler<PlayerListMessage> {
 private:
 	IUINodeMap* _mapNode;
 public:
@@ -13,9 +13,8 @@ public:
 			_mapNode(mapNode)
 	{
 	}
-	void execute (const IProtocolMessage& message) override
+	void execute (const PlayerListMessage* msg) override
 	{
-		const PlayerListMessage *msg = static_cast<const PlayerListMessage*>(&message);
 		const std::vector<std::string>& list = msg->getList();
 		_mapNode->setPlayerList(list);
 	}

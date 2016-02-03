@@ -4,7 +4,7 @@
 #include "network/messages/ChangeAnimationMessage.h"
 #include "client/ClientMap.h"
 
-class ChangeAnimationHandler: public IClientProtocolHandler {
+class ChangeAnimationHandler: public ClientProtocolHandler<ChangeAnimationMessage> {
 private:
 	ClientMap& _map;
 public:
@@ -13,9 +13,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const ChangeAnimationMessage* msg) override
 	{
-		const ChangeAnimationMessage *msg = static_cast<const ChangeAnimationMessage*>(&message);
 		const uint16_t id = msg->getEntityId();
 		const Animation& animation = msg->getAnimation();
 		_map.changeAnimation(id, animation);

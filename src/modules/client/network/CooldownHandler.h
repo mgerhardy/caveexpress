@@ -4,7 +4,7 @@
 #include "network/messages/CooldownMessage.h"
 #include "client/ClientMap.h"
 
-class CooldownHandler: public IClientProtocolHandler {
+class CooldownHandler: public ClientProtocolHandler<CooldownMessage> {
 private:
 	ClientMap& _map;
 public:
@@ -13,9 +13,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const CooldownMessage* msg) override
 	{
-		const CooldownMessage *msg = static_cast<const CooldownMessage*>(&message);
 		const Cooldown& cooldown = msg->getCooldown();
 		_map.cooldown(cooldown);
 	}

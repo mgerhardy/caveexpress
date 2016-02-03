@@ -7,7 +7,7 @@
 
 namespace caveexpress {
 
-class UpdateParticleHandler: public IClientProtocolHandler {
+class UpdateParticleHandler: public ClientProtocolHandler<UpdateParticleMessage> {
 private:
 	ClientMap& _map;
 public:
@@ -16,9 +16,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const UpdateParticleMessage* msg) override
 	{
-		const UpdateParticleMessage *msg = static_cast<const UpdateParticleMessage*>(&message);
 		const uint16_t id = msg->getEntityId();
 		ClientEntityPtr entity = _map.getEntity(id);
 		if (!entity) {

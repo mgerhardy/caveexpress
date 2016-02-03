@@ -8,7 +8,7 @@
 /**
  * @brief The server is done loading everything and now waits for the client to start the session.
  */
-class InitWaitingMapHandler: public IClientProtocolHandler {
+class InitWaitingMapHandler: public ClientProtocolHandler<InitWaitingMapMessage> {
 private:
 	ServiceProvider& _serviceProvider;
 public:
@@ -17,7 +17,7 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const InitWaitingMapMessage* msg) override
 	{
 		IUIMapWindow* window = static_cast<IUIMapWindow*>(UI::get().getWindow(UI_WINDOW_MAP));
 		window->initWaitingForPlayers(_serviceProvider.getNetwork().isServer());

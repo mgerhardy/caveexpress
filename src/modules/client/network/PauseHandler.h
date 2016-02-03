@@ -4,7 +4,7 @@
 #include "network/messages/PauseMessage.h"
 #include "client/ClientMap.h"
 
-class PauseHandler: public IClientProtocolHandler {
+class PauseHandler: public ClientProtocolHandler<PauseMessage> {
 private:
 	ClientMap& _map;
 public:
@@ -13,9 +13,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const PauseMessage* msg) override
 	{
-		const PauseMessage *msg = static_cast<const PauseMessage*>(&message);
 		const bool pause = msg->isPause();
 		_map.setPause(pause);
 	}

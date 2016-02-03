@@ -3,7 +3,7 @@
 #include "network/IProtocolHandler.h"
 #include "network/messages/MapSettingsMessage.h"
 
-class MapSettingsHandler: public IClientProtocolHandler {
+class MapSettingsHandler: public ClientProtocolHandler<MapSettingsMessage> {
 protected:
 	ClientMap& _map;
 public:
@@ -12,9 +12,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const MapSettingsMessage* msg) override
 	{
-		const MapSettingsMessage *msg = static_cast<const MapSettingsMessage*>(&message);
 		const std::map<std::string, std::string>& settings = msg->getSettings();
 		for (std::map<std::string, std::string>::const_iterator i = settings.begin(); i != settings.end(); ++i) {
 			_map.setSetting(i->first, i->second);

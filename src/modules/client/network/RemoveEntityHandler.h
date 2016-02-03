@@ -4,7 +4,7 @@
 #include "network/messages/RemoveEntityMessage.h"
 #include "client/ClientMap.h"
 
-class RemoveEntityHandler: public IClientProtocolHandler {
+class RemoveEntityHandler: public ClientProtocolHandler<RemoveEntityMessage> {
 private:
 	ClientMap& _map;
 public:
@@ -13,9 +13,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const RemoveEntityMessage* msg) override
 	{
-		const RemoveEntityMessage *msg = static_cast<const RemoveEntityMessage*>(&message);
 		const uint16_t id = msg->getEntityId();
 		const bool fadeOut = msg->isFadeOut();
 		_map.removeEntity(id, fadeOut);

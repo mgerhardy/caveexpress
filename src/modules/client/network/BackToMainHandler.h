@@ -3,11 +3,10 @@
 #include "network/IProtocolHandler.h"
 #include "network/messages/BackToMainMessage.h"
 
-class BackToMainHandler: public IClientProtocolHandler {
+class BackToMainHandler: public ClientProtocolHandler<BackToMainMessage> {
 public:
-	void execute (const IProtocolMessage& message) override
+	void execute (const BackToMainMessage* msg) override
 	{
-		const BackToMainMessage *msg = static_cast<const BackToMainMessage*>(&message);
 		Commands.executeCommandLine(CMD_CL_DISCONNECT);
 		UI::get().popMain();
 		const std::string& window = msg->getWindow();

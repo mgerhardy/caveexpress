@@ -8,11 +8,10 @@
 
 namespace caveexpress {
 
-class UpdatePackageCountHandler: public IClientProtocolHandler {
+class UpdatePackageCountHandler: public ClientProtocolHandler<UpdatePackageCountMessage> {
 public:
-	void execute (const IProtocolMessage& message) override
+	void execute (const UpdatePackageCountMessage* msg) override
 	{
-		const UpdatePackageCountMessage *msg = static_cast<const UpdatePackageCountMessage*>(&message);
 		const uint8_t packages = msg->getPackages();
 		UINodeSprite* node = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_PACKAGES);
 		if (!node)

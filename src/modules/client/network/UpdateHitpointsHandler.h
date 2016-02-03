@@ -6,11 +6,10 @@
 #include "ui/nodes/UINodeBar.h"
 #include "ui/windows/IUIMapWindow.h"
 
-class UpdateHitpointsHandler: public IClientProtocolHandler {
+class UpdateHitpointsHandler: public ClientProtocolHandler<UpdateHitpointsMessage> {
 public:
-	void execute (const IProtocolMessage& message) override
+	void execute (const UpdateHitpointsMessage* msg) override
 	{
-		const UpdateHitpointsMessage *msg = static_cast<const UpdateHitpointsMessage*>(&message);
 		UINodeBar* bar = UI::get().setBarValue(UI_WINDOW_MAP, UINODE_HITPOINTS, msg->getHitpoints());
 		bar->flash();
 	}

@@ -7,7 +7,7 @@
 
 namespace caveexpress {
 
-class AddRopeHandler: public IClientProtocolHandler {
+class AddRopeHandler: public ClientProtocolHandler<AddRopeMessage> {
 private:
 	ClientMap& _map;
 public:
@@ -16,9 +16,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const AddRopeMessage* msg) override
 	{
-		const AddRopeMessage *msg = static_cast<const AddRopeMessage*>(&message);
 		const uint16_t id1 = msg->getEntityId1();
 		const uint16_t id2 = msg->getEntityId2();
 		ClientEntityPtr entity1 = _map.getEntity(id1);

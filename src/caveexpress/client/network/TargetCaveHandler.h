@@ -11,14 +11,13 @@
 
 namespace caveexpress {
 
-class TargetCaveHandler: public IClientProtocolHandler {
+class TargetCaveHandler: public ClientProtocolHandler<TargetCaveMessage> {
 public:
 	TargetCaveHandler() {
 	}
 
-	void execute(const IProtocolMessage& message) override
+	void execute(const TargetCaveMessage* msg) override
 	{
-		const TargetCaveMessage *msg = static_cast<const TargetCaveMessage*>(&message);
 		const uint8_t caveNumber = msg->getCaveNumber();
 		UINodeSprite* node = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_TARGETCAVEID);
 		if (caveNumber == 0) {

@@ -6,7 +6,7 @@
 #include "ui/windows/IUIMapWindow.h"
 #include "campaign/CampaignManager.h"
 
-class UpdateLivesHandler: public IClientProtocolHandler {
+class UpdateLivesHandler: public ClientProtocolHandler<UpdateLivesMessage> {
 private:
 	CampaignManager& _campaignManager;
 public:
@@ -15,9 +15,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const UpdateLivesMessage* msg) override
 	{
-		const UpdateLivesMessage *msg = static_cast<const UpdateLivesMessage*>(&message);
 		const uint8_t lives = msg->getLives();
 		CampaignPtr campaign = _campaignManager.getActiveCampaign();
 		if (campaign) {

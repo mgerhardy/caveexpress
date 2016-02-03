@@ -7,7 +7,7 @@
 /**
  * @brief Informs the client that it could play a rumble effect on the map because the player hit something
  */
-class RumbleHandler: public IClientProtocolHandler {
+class RumbleHandler: public ClientProtocolHandler<RumbleMessage> {
 private:
 	ClientMap& _map;
 public:
@@ -16,9 +16,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const RumbleMessage* msg) override
 	{
-		const RumbleMessage *msg = static_cast<const RumbleMessage*>(&message);
 		_map.rumble(msg->getStrength(), msg->getLengthMillis());
 	}
 };

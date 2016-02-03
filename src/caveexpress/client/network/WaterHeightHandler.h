@@ -6,7 +6,7 @@
 
 namespace caveexpress {
 
-class WaterHeightHandler: public IClientProtocolHandler {
+class WaterHeightHandler: public ClientProtocolHandler<WaterHeightMessage> {
 private:
 	CaveExpressClientMap& _map;
 public:
@@ -15,9 +15,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const WaterHeightMessage* msg) override
 	{
-		const WaterHeightMessage *msg = static_cast<const WaterHeightMessage*>(&message);
 		_map.setWaterHeight(msg->getHeight());
 	}
 };

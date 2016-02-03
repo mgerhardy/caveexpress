@@ -3,7 +3,7 @@
 #include "network/IProtocolHandler.h"
 #include "network/messages/TextMessage.h"
 
-class TextMessageHandler: public IClientProtocolHandler {
+class TextMessageHandler: public ClientProtocolHandler<TextMessage> {
 private:
 	IUINodeMap *_mapNode;
 public:
@@ -12,9 +12,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const TextMessage* msg) override
 	{
-		const TextMessage *msg = static_cast<const TextMessage*>(&message);
 		_mapNode->displayText(msg->getMessage());
 	}
 };

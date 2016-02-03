@@ -16,8 +16,8 @@ typedef uint8_t protocolId;
 		mutable bool _initialized; \
 	public: \
 		Factory() : _memory(new uint8_t[sizeof(className)]), _initialized(false) {} \
-		~Factory() { if (_initialized) { className* obj = reinterpret_cast<className*>(_memory); obj->~className(); } delete[] _memory; } \
-		IProtocolMessage* create (const ByteStream *ctx) const { \
+		virtual ~Factory() { if (_initialized) { className* obj = reinterpret_cast<className*>(_memory); obj->~className(); } delete[] _memory; } \
+		IProtocolMessage* create (const ByteStream *ctx) const override { \
 			_initialized = true; \
 			return new (_memory) className(*const_cast<ByteStream*>(ctx)); \
 		} \
@@ -41,6 +41,7 @@ typedef uint8_t protocolId;
 			PROTOCOL_CLASS_FACTORY(className); \
 			explicit className (const std::vector<std::string>& list) : IProtocolListMessage(id, list) {} \
 			explicit className (ByteStream& input) : IProtocolListMessage(id, input) {} \
+			virtual ~className() {} \
 	}
 class IProtocolMessage {
 protected:

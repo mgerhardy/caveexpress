@@ -10,7 +10,7 @@
 #include "ui/nodes/UINodeStar.h"
 #include "client/ClientMap.h"
 
-class FinishedMapHandler: public IClientProtocolHandler {
+class FinishedMapHandler: public ClientProtocolHandler<FinishedMapMessage> {
 private:
 	ClientMap& _clientMap;
 
@@ -44,12 +44,10 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const FinishedMapMessage* msg) override
 	{
 		_clientMap.close();
 		Commands.executeCommandLine(CMD_CL_DISCONNECT);
-
-		const FinishedMapMessage *msg = static_cast<const FinishedMapMessage*>(&message);
 		showFinishedWindow(*msg);
 	}
 };

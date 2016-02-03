@@ -4,7 +4,7 @@
 #include "network/messages/MapRestartMessage.h"
 #include "client/ClientMap.h"
 
-class MapRestartHandler: public IClientProtocolHandler {
+class MapRestartHandler: public ClientProtocolHandler<MapRestartMessage> {
 private:
 	ClientMap& _map;
 public:
@@ -13,9 +13,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const MapRestartMessage* msg) override
 	{
-		const MapRestartMessage *msg = static_cast<const MapRestartMessage*>(&message);
 		_map.restart(msg->getDelay());
 	}
 };

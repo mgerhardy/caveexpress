@@ -5,11 +5,10 @@
 #include "client/ClientMap.h"
 #include "sound/Sound.h"
 
-class SoundHandler: public IClientProtocolHandler {
+class SoundHandler: public ClientProtocolHandler<SoundMessage> {
 public:
-	void execute (const IProtocolMessage& message) override
+	void execute (const SoundMessage* msg) override
 	{
-		const SoundMessage *msg = static_cast<const SoundMessage*>(&message);
 		const SoundType& sound = msg->getSoundType();
 		const std::string& snd = sound.getSound();
 		if (snd.empty()) {

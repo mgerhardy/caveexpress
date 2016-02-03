@@ -10,7 +10,7 @@
 
 namespace caveexpress {
 
-class UpdateCollectedTypeHandler: public IClientProtocolHandler {
+class UpdateCollectedTypeHandler: public ClientProtocolHandler<UpdateCollectedTypeMessage> {
 private:
 	ClientMap& _map;
 public:
@@ -19,9 +19,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const UpdateCollectedTypeMessage* msg) override
 	{
-		const UpdateCollectedTypeMessage *msg = static_cast<const UpdateCollectedTypeMessage*>(&message);
 		const EntityType& type = msg->getEntityType();
 		const bool collected = msg->isCollected();
 		ClientPlayer* player = _map.getPlayer();

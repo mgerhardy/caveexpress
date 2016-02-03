@@ -8,7 +8,7 @@
 
 namespace caveexpress {
 
-class AnnounceTargetCaveHandler: public IClientProtocolHandler {
+class AnnounceTargetCaveHandler: public ClientProtocolHandler<AnnounceTargetCaveMessage> {
 private:
 	CaveExpressClientMap& _map;
 public:
@@ -16,9 +16,8 @@ public:
 			_map(map) {
 	}
 
-	void execute(const IProtocolMessage& message) override
+	void execute(const AnnounceTargetCaveMessage* msg) override
 	{
-		const AnnounceTargetCaveMessage *msg = static_cast<const AnnounceTargetCaveMessage*>(&message);
 		const uint16_t id = msg->getNpcId();
 		const uint16_t delay = msg->getDelay();
 		const uint8_t caveNumber = msg->getCaveNumber();

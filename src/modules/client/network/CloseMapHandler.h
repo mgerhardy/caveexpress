@@ -8,7 +8,7 @@
 #include "ui/nodes/UINodePoint.h"
 #include "common/SpriteType.h"
 
-class CloseMapHandler: public IClientProtocolHandler {
+class CloseMapHandler: public ClientProtocolHandler<CloseMapMessage> {
 private:
 	ClientMap& _map;
 public:
@@ -17,7 +17,7 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const CloseMapMessage* msg) override
 	{
 		if (!_map.isActive()) {
 			Log::error(LOG_CLIENT, "clientmap is not active");

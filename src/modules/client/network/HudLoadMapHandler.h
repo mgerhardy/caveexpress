@@ -17,10 +17,9 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const LoadMapMessage* msg) override
 	{
-		LoadMapHandler::execute(message);
-		const LoadMapMessage *msg = static_cast<const LoadMapMessage*>(&message);
+		LoadMapHandler::execute(msg);
 		UINodeSprite* collectedNode = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_COLLECTED);
 		if (collectedNode)
 			collectedNode->clearSprites();

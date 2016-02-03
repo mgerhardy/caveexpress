@@ -120,9 +120,6 @@ bool ProtocolMessageFactory::isNewMessageAvailable(const ByteStream& in) const {
 	return true;
 }
 
-ProtocolMessageFactory::~ProtocolMessageFactory() {
-}
-
 IProtocolMessage *ProtocolMessageFactory::createMsg(ByteStream& stream) const {
 	const protocolId type = stream.readByte();
 	//Log::debug(LOG_NETWORK, string::format("msg type => %i", (int)type));

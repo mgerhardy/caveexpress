@@ -14,10 +14,9 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const MapSettingsMessage* msg) override
 	{
-		MapSettingsHandler::execute(message);
-		const MapSettingsMessage *msg = static_cast<const MapSettingsMessage*>(&message);
+		MapSettingsHandler::execute(msg);
 		const std::map<std::string, std::string>& settings = msg->getSettings();
 		std::map<std::string, std::string>::const_iterator i = settings.find(msn::REFERENCETIME);
 		uint16_t seconds;

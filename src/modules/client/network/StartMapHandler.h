@@ -7,9 +7,9 @@
 /**
  * @brief Informs the client that the map is now started
  */
-class StartClientMapHandler: public IClientProtocolHandler {
+class StartClientMapHandler: public ClientProtocolHandler<StartMapMessage> {
 public:
-	void execute (const IProtocolMessage& message) override
+	void execute (const StartMapMessage* msg) override
 	{
 		IUIMapWindow* window = static_cast<IUIMapWindow*>(UI::get().getWindow(UI_WINDOW_MAP));
 		window->start();

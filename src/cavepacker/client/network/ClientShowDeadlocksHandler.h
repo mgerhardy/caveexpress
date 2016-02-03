@@ -7,7 +7,7 @@
 
 namespace cavepacker {
 
-class ClientShowDeadlocksHandler: public IClientProtocolHandler {
+class ClientShowDeadlocksHandler: public ClientProtocolHandler<ShowDeadlocksMessage> {
 protected:
 	CavePackerClientMap& _map;
 public:
@@ -16,10 +16,9 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const ShowDeadlocksMessage* msg) override
 	{
-		const ShowDeadlocksMessage& msg = static_cast<const ShowDeadlocksMessage&>(message);
-		const std::vector<int>& indices = msg.getDeadlockIndices();
+		const std::vector<int>& indices = msg->getDeadlockIndices();
 		_map.setDeadlocks(indices);
 	}
 };

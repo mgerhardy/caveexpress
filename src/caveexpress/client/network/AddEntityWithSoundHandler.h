@@ -14,10 +14,9 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const AddEntityMessage* msg) override
 	{
-		AddEntityHandler::execute(message);
-		const AddEntityMessage *msg = static_cast<const AddEntityMessage*>(&message);
+		AddEntityHandler::execute(msg);
 		const std::string& sprite = msg->getSprite();
 		const SpriteDefPtr& def = SpriteDefinition::get().getSpriteDefinition(sprite);
 		if (def && SpriteTypes::isWaterFall(def->type) && !ThemeTypes::isIce(def->theme)) {

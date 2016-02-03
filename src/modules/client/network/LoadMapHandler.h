@@ -6,7 +6,7 @@
 #include "client/ClientMap.h"
 #include "ui/UI.h"
 
-class LoadMapHandler: public IClientProtocolHandler {
+class LoadMapHandler: public ClientProtocolHandler<LoadMapMessage> {
 protected:
 	ClientMap& _map;
 	ServiceProvider& _serviceProvider;
@@ -17,7 +17,7 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	virtual void execute (const LoadMapMessage* msg) override
 	{
 		const SpawnMessage spawnMsg;
 		if (_serviceProvider.getNetwork().sendToServer(spawnMsg) == -1) {
@@ -26,7 +26,6 @@ public:
 		}
 		UI::get().push(UI_WINDOW_MAP);
 
-		const LoadMapMessage *msg = static_cast<const LoadMapMessage*>(&message);
 		System.track("mapload", msg->getName());
 		UINodePoint* pointsNode = UI::get().getNode<UINodePoint>(UI_WINDOW_MAP, UINODE_POINTS);
 		if (pointsNode)

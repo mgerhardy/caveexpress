@@ -8,7 +8,7 @@
 
 namespace caveexpress {
 
-class SpawnInfoHandler: public IClientProtocolHandler {
+class SpawnInfoHandler: public ClientProtocolHandler<SpawnInfoMessage> {
 private:
 	ClientMap& _clientMap;
 	IUINodeMap *_mapNode;
@@ -17,9 +17,8 @@ public:
 			_clientMap(clientMap), _mapNode(mapNode) {
 	}
 
-	void execute(const IProtocolMessage& message) override
+	void execute(const SpawnInfoMessage* msg) override
 	{
-		const SpawnInfoMessage *msg = static_cast<const SpawnInfoMessage*>(&message);
 		const EntityType& entityType = msg->getEntityType();
 		const float xpos = msg->getX();
 		const float ypos = msg->getY();

@@ -6,7 +6,7 @@
 
 namespace caveexpress {
 
-class AddCaveHandler: public IClientProtocolHandler {
+class AddCaveHandler: public ClientProtocolHandler<AddCaveMessage> {
 private:
 	CaveExpressClientMap& _map;
 public:
@@ -15,9 +15,8 @@ public:
 	{
 	}
 
-	void execute (const IProtocolMessage& message) override
+	void execute (const AddCaveMessage* msg) override
 	{
-		const AddCaveMessage *msg = static_cast<const AddCaveMessage*>(&message);
 		const uint16_t id = msg->getEntityId();
 		const uint8_t number = msg->getCaveNumber();
 		const bool state = msg->getState();
