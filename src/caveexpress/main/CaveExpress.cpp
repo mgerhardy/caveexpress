@@ -303,6 +303,7 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	}
 
 	Cooldowns::INVULVERABLE.setRuntime(15000L);
+	Cooldowns::POWERUP.setRuntime(8000L);
 
 	ClientEntityRegistry &r = Singleton<ClientEntityRegistry>::getInstance();
 	r.registerFactory(&EntityTypes::DECORATION, ClientMapTile::FACTORY);

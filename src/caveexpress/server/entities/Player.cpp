@@ -25,7 +25,7 @@ const float gravityScale = 0.3f;
 }
 
 Player::Player (Map& map, ClientId clientId) :
-		IEntity(EntityTypes::PLAYER, map), _touching(nullptr), _invulnerableTime(0u), _collectedNPC(nullptr), _acceleration(b2Vec2_zero), _fingerAcceleration(
+		IEntity(EntityTypes::PLAYER, map), _touching(nullptr), _invulnerableTime(0u), _powerUpTime(0u), _collectedNPC(nullptr), _acceleration(b2Vec2_zero), _fingerAcceleration(
 				false), _accelerateX(0), _accelerateY(0), _clientId(clientId), _lastAccelerate(0), _name(""), _lastFruitCollected(0), _hitpoints(
 				0), _lives(0), _fruitsCollectedInARow(0), _revoluteJoint(nullptr), _crashReason(CRASH_NONE) {
 	_godMode = Config.getConfigVar(GOD_MODE);
@@ -137,13 +137,16 @@ bool Player::shouldApplyWind () const
 inline float Player::getCompleteMass () const
 {
 	float mass = getMass() * getGravityScale();
-	for (int i = 0; i < MAX_COLLECTED; ++i) {
-		const Collected &c = _collectedEntities[i];
-		const EntityType *entityType = c.entityType;
-		if (entityType == nullptr || !EntityTypes::isPackage(*entityType))
-			continue;
-		const Package *package = assert_cast<const Package*, const CollectableEntity*>(c.entity);
-		mass += package->getMass() * package->getGravityScale();
+	// in power up mode the carried masses are not taken into account.
+	if (_time >= _powerUpTime) {
+		for (int i = 0; i < MAX_COLLECTED; ++i) {
+			const Collected &c = _collectedEntities[i];
+			const EntityType *entityType = c.entityType;
+			if (entityType == nullptr || !EntityTypes::isPackage(*entityType))
+				continue;
+			const Package *package = assert_cast<const Package*, const CollectableEntity*>(c.entity);
+			mass += package->getMass() * package->getGravityScale();
+		}
 	}
 	return mass;
 }
@@ -388,6 +391,10 @@ bool Player::collect (CollectableEntity* entity)
 
 	const EntityType &entityType = entity->getType();
 	if (EntityTypes::isFruit(entityType)) {
+		if (EntityTypes::isBanana(entityType)) {
+			_powerUpTime = _time + Cooldowns::POWERUP.getRuntime();
+			_map.sendCooldown(_clientId, Cooldowns::POWERUP);
+		}
 		const uint32_t fruitCollectDelayMillis = _fruitCollectDelayForANewLife->getIntValue();
 		if (_lastFruitCollected == 0 || _time - _lastFruitCollected < fruitCollectDelayMillis) {
 			_lastFruitCollected = _time;

@@ -6,6 +6,7 @@ namespace caveexpress {
 
 namespace Cooldowns {
 extern Cooldown INVULVERABLE;
+extern Cooldown POWERUP;
 }
 
 }

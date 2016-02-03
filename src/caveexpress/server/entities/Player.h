@@ -38,6 +38,8 @@ private:
 	Platform* _touching;
 	// time until the player is invulnerable (millis)
 	uint32_t _invulnerableTime;
+	// time until the powerup runs out (millis)
+	uint32_t _powerUpTime;
 
 	NPCFriendly* _collectedNPC;
 
