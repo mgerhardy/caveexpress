@@ -2,7 +2,7 @@
 
 #include "common/ConfigManager.h"
 #include "ISoundEngine.h"
-#include <map>
+#include <unordered_map>
 
 struct Mix_Chunk;
 struct _Mix_Music;
@@ -11,7 +11,7 @@ struct _Mix_Music;
 
 class SDLSoundEngine: public ISoundEngine {
 private:
-	typedef std::map<std::string, Mix_Chunk*> ChunkMap;
+	typedef std::unordered_map<std::string, Mix_Chunk*> ChunkMap;
 	typedef ChunkMap::iterator ChunkMapIter;
 	ChunkMap _map;
 	vec2 _listenerPosition;

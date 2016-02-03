@@ -16,6 +16,7 @@
 #include "particles/ParticleSystem.h"
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 namespace {
 const uint8_t WATER_ALPHA = 120;
@@ -24,7 +25,7 @@ const uint8_t WATERCOLOR[] = { 178, 178, 255, WATER_ALPHA };
 
 class ClientMap: public IMap, public IClientCallback, public IEventObserver, public IParticleEnvironment {
 public:
-	typedef std::map<uint16_t, ClientEntityPtr> ClientEntityMap;
+	typedef std::unordered_map<uint16_t, ClientEntityPtr> ClientEntityMap;
 	typedef ClientEntityMap::iterator ClientEntityMapIter;
 	typedef ClientEntityMap::const_iterator ClientEntityMapConstIter;
 protected:
