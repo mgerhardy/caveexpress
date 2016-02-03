@@ -162,12 +162,16 @@ void CaveExpressClientMap::renderEnd (int x, int y) const
 	renderWater(x, y);
 }
 
-void CaveExpressClientMap::renderCooldownDescription (int cooldownIndex, int x, int y) const
+int CaveExpressClientMap::renderCooldownDescription (int cooldownIndex, int x, int y, int w, int h) const
 {
-	ClientMap::renderCooldownDescription(cooldownIndex, x, y);
+	ClientMap::renderCooldownDescription(cooldownIndex, x, y, w, h);
+	const int padding = 5;
 	if (Cooldowns::INVULVERABLE.id == cooldownIndex) {
-		_font->print(tr("Invulverable"), colorWhite, x, y);
+		const std::string& text = tr("Invulverable");
+		_font->print(text, colorWhite, x + w + padding, y);
+		return 2 * padding + _font->getTextWidth(text);
 	}
+	return 0;
 }
 
 void CaveExpressClientMap::start () {

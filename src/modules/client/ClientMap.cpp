@@ -248,7 +248,7 @@ void ClientMap::renderCooldowns (int x, int y) const
 		Texture* tex = texture.get();
 		_frontend->renderImage(tex, cooldownScreenX, cooldownScreenY, cooldownWidth, cooldownHeight, 0, 1.0f);
 		_frontend->renderFilledRect(cooldownScreenX, cooldownScreenY, realWidth, cooldownHeight, colorGrayAlpha40);
-		renderCooldownDescription(cooldownId, cooldownScreenX + cooldownWidth + 5, cooldownScreenY);
+		cooldownScreenX += renderCooldownDescription(cooldownId, cooldownScreenX, cooldownScreenY, cooldownWidth, cooldownHeight);
 		cooldownScreenX += cooldownWidth + padding;
 		if (cooldownScreenX >= getWidth() + x) {
 			cooldownScreenX = screenX;
@@ -257,8 +257,9 @@ void ClientMap::renderCooldowns (int x, int y) const
 	}
 }
 
-void ClientMap::renderCooldownDescription (int cooldownIndex, int x, int y) const
+int ClientMap::renderCooldownDescription (int cooldownIndex, int x, int y, int w, int h) const
 {
+	return 0;
 }
 
 void ClientMap::renderParticles (int x, int y) const
