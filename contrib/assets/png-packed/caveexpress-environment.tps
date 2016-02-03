@@ -219,45 +219,45 @@
             <filename>../png/caveexpress/tile-background-03-back-01.png</filename>
             <filename>../png/caveexpress/tile-background-big-01-back-01.png</filename>
             <filename>../png/caveexpress/tile-background-cave-art-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-01-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-02-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-03-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-01-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-02-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-03-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-big-01-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-big-02-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-waterfall-01-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-waterfall-01-middle-02.png</filename>
-            <filename>../png/caveexpress/tile-waterfall-01-middle-03.png</filename>
-            <filename>../png/caveexpress/tile-waterfall-01-middle-04.png</filename>
+            <filename>../png/caveexpress/tile-ground-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-big-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-big-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-01-back-02.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-01-back-03.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-01-back-04.png</filename>
             <filename>../png/caveexpress/tile-cave-01-off.png</filename>
             <filename>../png/caveexpress/tile-cave-01-on.png</filename>
             <filename>../png/caveexpress/tile-cave-02-off.png</filename>
             <filename>../png/caveexpress/tile-cave-02-on.png</filename>
-            <filename>../png/caveexpress/tile-ground-04-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-active-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-active-middle-02.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-active-middle-03.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-active-middle-04.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-active-middle-05.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-active-middle-06.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-geyser-rock-01-active-back-01.png</filename>
+            <filename>../png/caveexpress/tile-geyser-rock-01-active-back-02.png</filename>
+            <filename>../png/caveexpress/tile-geyser-rock-01-active-back-03.png</filename>
+            <filename>../png/caveexpress/tile-geyser-rock-01-active-back-04.png</filename>
+            <filename>../png/caveexpress/tile-geyser-rock-01-active-back-05.png</filename>
+            <filename>../png/caveexpress/tile-geyser-rock-01-active-back-06.png</filename>
+            <filename>../png/caveexpress/tile-geyser-rock-01-idle-back-01.png</filename>
             <filename>../png/caveexpress/tile-reference.png</filename>
             <filename>../png/caveexpress/tile-background-04-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-slope-DIR-01-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-ledge-DIR-01-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-ledge-DIR-02-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-05-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-06-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-slope-DIR-02-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-shim-01-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-DIR-04-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-idle-middle-02.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-idle-middle-03.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-idle-middle-04.png</filename>
-            <filename>../png/caveexpress/tile-lava-rock-DIR-01-middle-01.png</filename>
-            <filename>../png/caveexpress/tile-lava-rock-DIR-01-middle-02.png</filename>
+            <filename>../png/caveexpress/tile-rock-slope-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ledge-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ledge-DIR-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-05-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-06-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-slope-DIR-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-shim-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-DIR-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-geyser-rock-01-idle-back-02.png</filename>
+            <filename>../png/caveexpress/tile-geyser-rock-01-idle-back-03.png</filename>
+            <filename>../png/caveexpress/tile-geyser-rock-01-idle-back-04.png</filename>
+            <filename>../png/caveexpress/tile-lava-rock-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-lava-rock-DIR-01-back-02.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

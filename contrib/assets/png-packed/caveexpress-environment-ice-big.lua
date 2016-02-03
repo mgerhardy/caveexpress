@@ -246,7 +246,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-geyser-ice-01-active-middle-01"] = {
+	["tile-geyser-ice-01-active-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.875,
 		y0 = 0.125,
@@ -259,7 +259,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 256,
 	},
-	["tile-geyser-ice-01-active-middle-02"] = {
+	["tile-geyser-ice-01-active-back-02"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.75,
 		y0 = 0.125,
@@ -272,7 +272,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 256,
 	},
-	["tile-geyser-ice-01-active-middle-03"] = {
+	["tile-geyser-ice-01-active-back-03"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.625,
 		y0 = 0.125,
@@ -285,7 +285,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 256,
 	},
-	["tile-geyser-ice-01-active-middle-04"] = {
+	["tile-geyser-ice-01-active-back-04"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.5,
 		y0 = 0.125,
@@ -298,7 +298,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 256,
 	},
-	["tile-geyser-ice-01-active-middle-05"] = {
+	["tile-geyser-ice-01-active-back-05"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.375,
 		y0 = 0.125,
@@ -311,7 +311,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 256,
 	},
-	["tile-geyser-ice-01-active-middle-07"] = {
+	["tile-geyser-ice-01-active-back-07"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.25,
 		y0 = 0.125,
@@ -324,7 +324,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 256,
 	},
-	["tile-geyser-ice-01-idle-middle-01"] = {
+	["tile-geyser-ice-01-idle-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.125,
 		y0 = 0.125,
@@ -337,7 +337,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 256,
 	},
-	["tile-geyser-ice-01-idle-middle-02"] = {
+	["tile-geyser-ice-01-idle-back-02"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0,
 		y0 = 0.125,
@@ -350,7 +350,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 256,
 	},
-	["tile-geyser-ice-01-idle-middle-03"] = {
+	["tile-geyser-ice-01-idle-back-03"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.875,
 		y0 = 0,
@@ -363,7 +363,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 256,
 	},
-	["tile-geyser-ice-01-idle-middle-04"] = {
+	["tile-geyser-ice-01-idle-back-04"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0,
 		y0 = 0.125,
@@ -376,7 +376,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 256,
 	},
-	["tile-ground-ice-01-middle-01"] = {
+	["tile-ground-ice-01-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.125,
 		y0 = 0.375,
@@ -389,7 +389,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-ground-ice-02-middle-01"] = {
+	["tile-ground-ice-02-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0,
 		y0 = 0.375,
@@ -402,7 +402,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-ground-ice-03-middle-01"] = {
+	["tile-ground-ice-03-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.875,
 		y0 = 0.3125,
@@ -415,7 +415,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-ground-ice-04-middle-01"] = {
+	["tile-ground-ice-04-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.75,
 		y0 = 0.3125,
@@ -428,7 +428,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-ground-ice-05-middle-01"] = {
+	["tile-ground-ice-05-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.625,
 		y0 = 0.3125,
@@ -441,7 +441,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-ground-ice-06-middle-01"] = {
+	["tile-ground-ice-06-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.5,
 		y0 = 0.3125,
@@ -454,7 +454,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-ground-ice-big-01-middle-01"] = {
+	["tile-ground-ice-big-01-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.25,
 		y0 = 0,
@@ -467,7 +467,7 @@ textures = {
 		untrimmedwidth = 256,
 		untrimmedheight = 256,
 	},
-	["tile-ground-ledge-ice-DIR-01-middle-01"] = {
+	["tile-ground-ledge-ice-DIR-01-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.375,
 		y0 = 0.3125,
@@ -480,7 +480,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-ground-ledge-ice-DIR-02-middle-01"] = {
+	["tile-ground-ledge-ice-DIR-02-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.25,
 		y0 = 0.3125,
@@ -493,7 +493,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-lava-ice-DIR-01-middle-01"] = {
+	["tile-lava-ice-DIR-01-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.125,
 		y0 = 0.3125,
@@ -506,7 +506,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-lava-ice-DIR-01-middle-02"] = {
+	["tile-lava-ice-DIR-01-back-02"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0,
 		y0 = 0.3125,
@@ -519,7 +519,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-lava-ice-DIR-02-middle-01"] = {
+	["tile-lava-ice-DIR-02-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0,
 		y0 = 0.625,
@@ -532,7 +532,7 @@ textures = {
 		untrimmedwidth = 125,
 		untrimmedheight = 125,
 	},
-	["tile-rock-ice-01-middle-01"] = {
+	["tile-rock-ice-01-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.875,
 		y0 = 0.25,
@@ -545,7 +545,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-rock-ice-02-middle-01"] = {
+	["tile-rock-ice-02-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.75,
 		y0 = 0.25,
@@ -558,7 +558,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-rock-ice-03-middle-01"] = {
+	["tile-rock-ice-03-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.625,
 		y0 = 0.25,
@@ -571,7 +571,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-rock-ice-DIR-04-middle-01"] = {
+	["tile-rock-ice-DIR-04-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.5,
 		y0 = 0.25,
@@ -584,7 +584,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-rock-ice-DIR-05-middle-01"] = {
+	["tile-rock-ice-DIR-05-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.375,
 		y0 = 0.25,
@@ -597,7 +597,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-rock-ice-big-01-middle-01"] = {
+	["tile-rock-ice-big-01-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0,
 		y0 = 0,
@@ -610,7 +610,7 @@ textures = {
 		untrimmedwidth = 256,
 		untrimmedheight = 256,
 	},
-	["tile-rock-shim-ice-01-middle-01"] = {
+	["tile-rock-shim-ice-01-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.25,
 		y0 = 0.25,
@@ -623,7 +623,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-rock-slope-ice-DIR-01-middle-01"] = {
+	["tile-rock-slope-ice-DIR-01-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.125,
 		y0 = 0.25,
@@ -636,7 +636,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-rock-slope-ice-DIR-02-middle-01"] = {
+	["tile-rock-slope-ice-DIR-02-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0,
 		y0 = 0.25,
@@ -649,7 +649,7 @@ textures = {
 		untrimmedwidth = 128,
 		untrimmedheight = 128,
 	},
-	["tile-waterfall-ice-01-middle-01"] = {
+	["tile-waterfall-ice-01-back-01"] = {
 		image = "caveexpress-environment-ice-big",
 		x0 = 0.75,
 		y0 = 0,
