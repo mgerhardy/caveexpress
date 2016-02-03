@@ -1,9 +1,3 @@
-get_property(is_included GLOBAL PROPERTY cp_sdks_include_guard)
-if (is_included)
-return()
-endif()
-set_property(GLOBAL PROPERTY cp_sdks_include_guard true)
-
 set(SDKS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../cp-sdks CACHE STRING "SDKs dir")
 
 macro(cp_git_clone_sdk GITURL GITCLONETARGET)
@@ -11,9 +5,9 @@ macro(cp_git_clone_sdk GITURL GITCLONETARGET)
 	if (NOT EXISTS ${SDKS_DIR}/${GITCLONETARGET})
 		find_program(GIT_EXECUTABLE NAMES git)
 		if (NOT GIT_EXECUTABLE)
-			message(FATAL_ERROR "Could not setup the sdk for ${GITURL}")
+			message(FATAL_ERROR "Could not setup the sdk for ${GITURL} - git wasn't found in your path")
 		endif()
-		execute_process(COMMAND ${GIT_EXECUTABLE} clone ${GITURL} ${GITCLONETARGET} WORKING_DIRECTORY ${SDKS_DIR})
+		execute_process(COMMAND ${GIT_EXECUTABLE} clone --depth 1 --branch master ${GITURL} ${GITCLONETARGET} WORKING_DIRECTORY ${SDKS_DIR})
 	endif()
 endmacro()
 
