@@ -45,7 +45,7 @@ public:
 
 	virtual std::string getCurrentUser () = 0;
 
-	virtual std::string getLanguage () { return ""; }
+	virtual std::string getLanguage () { return "en_GB"; }
 
 	virtual void syncFiles() {}
 

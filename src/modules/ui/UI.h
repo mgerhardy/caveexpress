@@ -15,6 +15,7 @@
 
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 // forward decl
 class EventHandler;
@@ -87,7 +88,7 @@ private:
 	ProgressBar _progress;
 	void renderProgress () const;
 
-	typedef std::map<std::string, BitmapFontPtr> Fonts;
+	typedef std::unordered_map<std::string, BitmapFontPtr> Fonts;
 	Fonts _fonts;
 
 	mutable SpriteCache _spriteCache;
@@ -108,7 +109,7 @@ private:
 
 	int _connectedControllers;
 
-	typedef std::map<std::string, std::string> LanguageMap;
+	typedef std::unordered_map<std::string, std::string> LanguageMap;
 	LanguageMap _languageMap;
 
 	SDL_threadID _threadId;
