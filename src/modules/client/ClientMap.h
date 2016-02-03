@@ -119,31 +119,72 @@ public:
 	virtual void renderCooldowns (int x, int y) const;
 	virtual void setSetting (const std::string& key, const std::string& value);
 
+	/**
+	 * @return @c true if the second finger triggers any action.
+	 */
 	virtual bool secondFinger () { return false; }
 
 	virtual void resetCurrentMap ();
 	void close ();
+	/**
+	 * @brief Scrolls the camera by the given pixels
+	 */
 	virtual void scroll (int relX, int relY);
+	/**
+	 * @brief Sets the new zoom level to the given level. This value is clamped between the min and max zoom level
+	 * (which in turn is defined by a config variable
+	 */
 	virtual void setZoom (const float zoom);
 	inline float getZoom () const { return _zoom; }
 	void disconnect ();
 	virtual void init (uint16_t playerID);
+	/**
+	 * @brief Load the given map. This is not loaded from the disk - but comes from the network. So the client
+	 * doesn't need to have the map installed just to play it.
+	 */
 	bool load (const std::string& name, const std::string& title);
 
+	/**
+	 * @brief Sets the amount of start positions for this map.
+	 */
 	void setStartPositions(int startPositions);
 
+	/**
+	 * @brief Accelerate with controller or keyboard - the id specifies which controller did the movement.
+	 * This can be used at some point to implement split screen rendering and allow one player
+	 * per controller
+	 * @note In case of keyboard movement, the id is always 0 right now
+	 */
 	void accelerate (Direction dir, uint8_t id) const;
+	/**
+	 * @brief See @c accelerate above
+	 */
 	void resetAcceleration (Direction dir, uint8_t id) const;
 
 	// finger based movement
-	void setAcceleration (int dx, int dy) const;
-	void resetAcceleration () const;
+	void setFingerAcceleration (int dx, int dy) const;
+	void stopFingerAcceleration () const;
 
+	/**
+	 * @brief Initializes the waiting dialogs for a multiplayer game
+	 */
 	bool initWaitingForPlayer ();
 
+	/**
+	 * @brief The map can decide to show some kind of extra information for a given @c EntityType
+	 * @note This is right now in contexts like spawning and collecting of an entity instance.
+	 */
 	bool wantInformation (const EntityType& type) const;
+
+	/**
+	 * @return @c true if this is a tutorial map that should show additional help texts on
+	 * spawning or collecting entities
+	 */
 	bool isTutorial () const;
 
+	/**
+	 * @return the map time in milliseconds, this is not running when the map is in pause mode
+	 */
 	uint32_t getTime () const;
 
 	void addEntity (ClientEntityPtr entity);

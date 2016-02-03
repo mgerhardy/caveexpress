@@ -22,7 +22,7 @@ void UINodeMapFingerControl::removeFocus ()
 	UINode::removeFocus();
 	_finger = -1;
 	_lastMoveX = _lastMoveY = _moveX = _moveY = 0;
-	_map.resetAcceleration();
+	_map.stopFingerAcceleration();
 }
 
 bool UINodeMapFingerControl::onPush ()
@@ -43,7 +43,7 @@ void UINodeMapFingerControl::update (uint32_t deltaTime)
 		return;
 	}
 
-	_map.setAcceleration(_moveX, _moveY);
+	_map.setFingerAcceleration(_moveX, _moveY);
 	_lastMoveX = _moveX;
 	_lastMoveY = _moveY;
 	_moveX = _moveY = 0;
@@ -82,7 +82,7 @@ bool UINodeMapFingerControl::onFingerRelease (int64_t finger, uint16_t x, uint16
 	if (_finger == finger) {
 		_finger = -1;
 		_lastMoveX = _lastMoveY = _moveX = _moveY = 0;
-		_map.resetAcceleration();
+		_map.stopFingerAcceleration();
 		return true;
 	}
 

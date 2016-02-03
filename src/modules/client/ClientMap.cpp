@@ -323,14 +323,14 @@ void ClientMap::accelerate (Direction dir, uint8_t id) const
 	network.sendToServer(msg);
 }
 
-void ClientMap::resetAcceleration () const
+void ClientMap::stopFingerAcceleration () const
 {
 	static const StopFingerMovementMessage msg;
 	INetwork& network = _serviceProvider.getNetwork();
 	network.sendToServer(msg);
 }
 
-void ClientMap::setAcceleration (int dx, int dy) const
+void ClientMap::setFingerAcceleration (int dx, int dy) const
 {
 	const FingerMovementMessage msg(dx, dy);
 	INetwork& network = _serviceProvider.getNetwork();
