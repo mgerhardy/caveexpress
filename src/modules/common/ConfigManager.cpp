@@ -98,7 +98,6 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	for (KeyValueMap::iterator i = _configVarMap.begin(); i != _configVarMap.end(); ++i) {
 		getConfigVar(i->first, i->second, true);
 	}
-#endif
 
 	std::vector<std::string> vars;
 	_persister->getVars(vars);
@@ -108,6 +107,7 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	for (auto entry : _configVars) {
 		Log::info(LOG_COMMON, "'%s' with value '%s'", entry.first.c_str(), entry.second->getValue().c_str());
 	}
+#endif
 
 	memset(&_debugRendererData, 0, sizeof(_debugRendererData));
 
