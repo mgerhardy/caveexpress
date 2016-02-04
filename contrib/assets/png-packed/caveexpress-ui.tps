@@ -240,6 +240,7 @@
             <filename>../png/caveexpress/ui/ui-button-start.png</filename>
             <filename>../png/caveexpress/ui/icon-close.png</filename>
             <filename>../png/caveexpress/ui/cooldown-1.png</filename>
+            <filename>../png/caveexpress/ui/cooldown-2.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
