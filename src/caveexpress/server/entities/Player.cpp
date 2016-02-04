@@ -137,16 +137,13 @@ bool Player::shouldApplyWind () const
 inline float Player::getCompleteMass () const
 {
 	float mass = getMass() * getGravityScale();
-	// in power up mode the carried masses are not taken into account.
-	if (_time >= _powerUpTime) {
-		for (int i = 0; i < MAX_COLLECTED; ++i) {
-			const Collected &c = _collectedEntities[i];
-			const EntityType *entityType = c.entityType;
-			if (entityType == nullptr || !EntityTypes::isPackage(*entityType))
-				continue;
-			const Package *package = assert_cast<const Package*, const CollectableEntity*>(c.entity);
-			mass += package->getMass() * package->getGravityScale();
-		}
+	for (int i = 0; i < MAX_COLLECTED; ++i) {
+		const Collected &c = _collectedEntities[i];
+		const EntityType *entityType = c.entityType;
+		if (entityType == nullptr || !EntityTypes::isPackage(*entityType))
+			continue;
+		const Package *package = assert_cast<const Package*, const CollectableEntity*>(c.entity);
+		mass += package->getMass() * package->getGravityScale();
 	}
 	return mass;
 }
@@ -158,6 +155,29 @@ void Player::update (uint32_t deltaTime)
 	if (isCrashed()) {
 		// before we crash, we should drop the stuff we are carrying
 		drop();
+	}
+
+	int packages = 0;
+	// in power up mode the carried masses are not taken into account.
+	if (_time <= _powerUpTime) {
+		for (int i = 0; i < MAX_COLLECTED; ++i) {
+			const Collected &c = _collectedEntities[i];
+			const EntityType *entityType = c.entityType;
+			if (entityType == nullptr || !EntityTypes::isPackage(*entityType))
+				continue;
+			++packages;
+		}
+	}
+	for (int i = 0; i < MAX_COLLECTED; ++i) {
+		const Collected &c = _collectedEntities[i];
+		const EntityType *entityType = c.entityType;
+		if (entityType == nullptr || !EntityTypes::isPackage(*entityType))
+			continue;
+		float scale = 1.0f;
+		if (packages > 1) {
+			scale /= ((float)packages - 1.0f);
+		}
+		c.entity->setGravityScale(scale);
 	}
 
 	if (_fingerAcceleration) {
@@ -459,6 +479,7 @@ void Player::drop ()
 			Package *entity = assert_cast<Package*, CollectableEntity*>(c.entity);
 			entity->removeRopeJoint();
 			entity->setCollected(false, this);
+			entity->setGravityScale(1.0f);
 		} else {
 			Log::error(LOG_GAMEIMPL, "unknown entity type: %s", entityType->name.c_str());
 			continue;
