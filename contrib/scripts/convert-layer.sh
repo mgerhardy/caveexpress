@@ -6,25 +6,32 @@ set -e
 SPRITE=
 SRC=middle
 TARGET=back
+APPNAME=caveexpress
 
 usage() {
-	echo "Usage: $0 [--help|-h] [--source|-sl <layer>] [--target|-tl <layer>] [--sprite <file>]"
+	echo "Usage: $0 [--help|-h] [--source|-s <layer>] [--target|-t <layer>] [--sprite <file>]"
 	echo " --help -h         - Shows this help message"
 	echo " --source -s       - The source layer (front, middle, back) - default: middle"
 	echo " --target -t       - The target layer (front, middle, back) - default: back"
 	echo " --sprite          - The sprite base name to convert - example: npc-grandpa-walk-left-"
+	echo " --appname         - Default is ${APPNAME}"
 	exit 1
 }
 
 error() {
 	echo "Error: $@"
-	exit 1
+	usage
 }
 
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--sprite)
 			SPRITE=$2
+			shift
+			shift
+			;;
+		--appname)
+			APPNAME=$2
 			shift
 			shift
 			;;
@@ -51,18 +58,14 @@ done
 [ -z "$SPRITE" ] && error "No sprite given"
 
 echo "move ${SPRITE} from ${SRC} to ${TARGET}"
-cd contrib/assets/png
+cd contrib/assets/png/${APPNAME}
 
-for i in ${SPRITE}*${SRC}*.png; do
-	VAR1=$(echo $i | sed "s/${SRC}/${TARGET}/g")
-	echo "move $i => $VAR1"
-	mv $i $VAR1;
-done
+rename "s/${SRC}/${TARGET}/" ${SPRITE}*${SRC}*.png
 
-cd ..
+cd ../..
 cd png-packed
 
-for i in *.lua *.tps; do
+for i in ${APPNAME}*.lua ${APPNAME}*.tps; do
 	echo "replace in $i"
 	sed -i "s/\(.*${SPRITE}.*\)${SRC}-\([0123456789][0123456789].*\)/\1${TARGET}-\2/g" $i
 done
