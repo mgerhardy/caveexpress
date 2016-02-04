@@ -519,13 +519,13 @@ void ClientMap::spawnInfo (const vec2& position, const EntityType& type)
 	// TODO:
 }
 
-void ClientMap::cooldown (const Cooldown& cooldown)
+void ClientMap::cooldown (const Cooldown& cd)
 {
-	Log::debug(LOG_CLIENT, "trigger cooldown %i", cooldown.id);
-	if (cooldown.id >= _cooldowns.size()) {
+	Log::debug(LOG_CLIENT, "trigger cooldown %i", cd.id);
+	if (cd.id >= _cooldowns.size()) {
 		const CooldownData d{0, 0};
-		_cooldowns.resize(cooldown.id, d);
+		_cooldowns.resize(cd.id, d);
 	}
-	const CooldownData cooldownData{_time, cooldown.getRuntime()};
-	_cooldowns[cooldown.id] = cooldownData;
+	const CooldownData cooldownData{_time, cd.getRuntime()};
+	_cooldowns[cd.id] = cooldownData;
 }
