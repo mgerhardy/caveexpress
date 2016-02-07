@@ -84,13 +84,13 @@ void UISettingsWindow::init()
 	_texturesBig = assert_cast<UINodeButton*, UINode*>(getNode("textures_1", true));
 	_texturesSmall = assert_cast<UINodeButton*, UINode*>(getNode("textures_2", true));
 
-	_soundOn = assert_cast<UINodeButton*, UINode*>(getNode("soundmusic_1", true));
-	_soundOff = assert_cast<UINodeButton*, UINode*>(getNode("soundmusic_2", true));
-	_volume = assert_cast<UINodeSlider*, UINode*>(getNode("volume_1", true));
-	_musicVolume = assert_cast<UINodeSlider*, UINode*>(getNode("musicvolume_1", true));
+	_soundOn = static_cast<UINodeButton*>(getNode("soundmusic_1", false));
+	_soundOff = static_cast<UINodeButton*>(getNode("soundmusic_2", false));
+	_volume = static_cast<UINodeSlider*>(getNode("volume_1", false));
+	_musicVolume = static_cast<UINodeSlider*>(getNode("musicvolume_1", false));
 
-	_fullscreenOn = assert_cast<UINodeButton*, UINode*>(getNode("fullscreen_1", true));
-	_fullscreenOff = assert_cast<UINodeButton*, UINode*>(getNode("fullscreen_2", true));
+	_fullscreenOn = static_cast<UINodeButton*>(getNode("fullscreen_1", false));
+	_fullscreenOff = static_cast<UINodeButton*>(getNode("fullscreen_2", false));
 
 	_triggeraxisOn = assert_cast<UINodeButton*, UINode*>(getNode("triggeraxis_1", true));
 	_triggeraxisOff = assert_cast<UINodeButton*, UINode*>(getNode("triggeraxis_2", true));
@@ -166,8 +166,10 @@ void UISettingsWindow::update (uint32_t time)
 	_noController->setVisible(!visible);
 
 	const bool sound = Config.isSoundEnabled();
-	_volume->setEnabled(sound);
-	_musicVolume->setEnabled(sound);
+	if (_volume)
+		_volume->setEnabled(sound);
+	if (_musicVolume)
+		_musicVolume->setEnabled(sound);
 
 	UIWINDOW_SETTINGS_COLOR(_serviceProvider.getTextureDefinition().getTextureSize() == "big", _texturesBig, _texturesSmall)
 	UIWINDOW_SETTINGS_COLOR(sound, _soundOn, _soundOff)

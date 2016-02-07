@@ -10,11 +10,15 @@ class UINodeSlider;
 
 #define UIWINDOW_SETTINGS_COLOR(state, one, two) \
 	if (state) { \
-		one->setColor(colorBlack); \
-		two->setColor(colorGray); \
+		if (one) \
+			one->setColor(colorBlack); \
+		if (two) \
+			two->setColor(colorGray); \
 	} else { \
-		two->setColor(colorBlack); \
-		one->setColor(colorGray); \
+		if (two) \
+			two->setColor(colorBlack); \
+		if (one) \
+			one->setColor(colorGray); \
 	}
 
 class UISettingsWindow: public UIWindow {
