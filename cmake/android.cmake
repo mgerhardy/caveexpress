@@ -62,7 +62,7 @@ if (GRADLE)
 endif()
 
 find_host_program(JARSIGNER "jarsigner")
-
+find_host_program(ANDROID_NDK_STACK "ndk-stack" HONTS ${ANDROID_NDK_ROOT})
 find_host_program(ANDROID_ZIPALIGN "zipalign" HINTS ${ANDROID_SDK_ROOT}/tools)
 if (ANDROID_ZIPALIGN)
 	message(STATUS "zipalign tool found")
