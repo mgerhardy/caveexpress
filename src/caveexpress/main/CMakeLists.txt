@@ -1,6 +1,4 @@
 project(caveexpress)
-cp_add_executable(TARGET ${PROJECT_NAME} SRCS CaveExpress.cpp ../../Main.cpp WINDOWED APPNAME "CaveExpress" VERSION 2.4 VERSION_CODE 30)
-cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS ${PROJECT_NAME}-server ${PROJECT_NAME}-client ${PROJECT_NAME}-shared game)
 set(TPS
 	caveexpress-entity
 	caveexpress-environment-ice
@@ -27,3 +25,5 @@ textures(${PROJECT_NAME})
 set(LUAFILES config.lua entities.lua entitysounds.lua fonts.lua sprites.lua textures/complete.lua)
 check_lua_files(${PROJECT_NAME} "${LUAFILES}")
 create_dir_header(${PROJECT_NAME})
+cp_add_executable(TARGET ${PROJECT_NAME} SRCS CaveExpress.cpp ../../Main.cpp WINDOWED APPNAME "CaveExpress" VERSION 2.4 VERSION_CODE 30)
+cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS ${PROJECT_NAME}-server ${PROJECT_NAME}-client ${PROJECT_NAME}-shared game)
