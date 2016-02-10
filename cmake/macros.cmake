@@ -207,7 +207,7 @@ macro(check_lua_files TARGET FILES)
 			add_custom_target(
 				${TARGETNAME}
 				COMMENT "checking lua file ${_FILE}"
-				COMMAND ${DEFAULT_LUAC_EXECUTABLE} -p ${_FILE}
+				COMMAND ${LUAC_EXECUTABLE} -p ${_FILE}
 				WORKING_DIRECTORY ${ROOT_DIR}/${GAME_BASE_DIR}/${TARGET}
 			)
 			add_dependencies(${TARGET} ${TARGETNAME})
