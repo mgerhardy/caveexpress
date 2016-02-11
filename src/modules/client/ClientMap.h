@@ -90,7 +90,7 @@ protected:
 	int _startPositions;
 
 	virtual void renderLayer (int x, int y, Layer layer) const;
-	void renderFadeOutOverlay () const;
+	void renderFadeOutOverlay (int x, int y) const;
 	virtual void couldNotFindEntity (const std::string& prefix, uint16_t id) const;
 	void disableScreenRumble ();
 

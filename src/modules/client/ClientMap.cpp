@@ -144,7 +144,7 @@ void ClientMap::removeEntity (uint16_t id, bool fadeOut)
 	}
 }
 
-void ClientMap::renderFadeOutOverlay () const
+void ClientMap::renderFadeOutOverlay (int x, int y) const
 {
 	const uint32_t now = _time;
 	const uint32_t delay = _restartDue - _restartInitialized;
@@ -152,7 +152,7 @@ void ClientMap::renderFadeOutOverlay () const
 	const uint32_t delta = now > _restartDue ? 0U : _restartDue - now;
 	const float alpha = 1.0 - delta * restartFadeStepWidth;
 	const Color color = { 0.0, 0.0, 0.0, alpha };
-	_frontend->renderFilledRect(_x, _y, getPixelWidth() * _zoom, getPixelHeight() * _zoom, color);
+	_frontend->renderFilledRect(x, y, getPixelWidth() * _zoom, getPixelHeight() * _zoom, color);
 }
 
 void ClientMap::renderLayer (int x, int y, Layer layer) const
@@ -202,7 +202,7 @@ void ClientMap::render () const
 	renderEnd(x, y);
 
 	if (_restartDue != 0) {
-		renderFadeOutOverlay();
+		renderFadeOutOverlay(x, y);
 	}
 
 	Config.setDebugRendererData(x, y, getWidth(), getHeight(), _scale * _zoom);
