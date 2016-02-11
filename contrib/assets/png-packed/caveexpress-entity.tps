@@ -232,8 +232,8 @@
             <filename>../png/caveexpress/item-apple-idle-front-01.png</filename>
             <filename>../png/caveexpress/item-banana-idle-front-01.png</filename>
             <filename>../png/caveexpress/item-egg-idle-front-01.png</filename>
-            <filename>../png/caveexpress/item-package-ice-idle-front-01.png</filename>
-            <filename>../png/caveexpress/item-package-idle-front-01.png</filename>
+            <filename>../png/caveexpress/item-package-ice-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/item-package-idle-middle-01.png</filename>
             <filename>../png/caveexpress/bubble-01.png</filename>
             <filename>../png/caveexpress/bubble-02.png</filename>
             <filename>../png/caveexpress/bubble-03.png</filename>
