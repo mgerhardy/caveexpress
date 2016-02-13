@@ -346,8 +346,8 @@ void IUINodeMapEditor::renderSprite (const TileItem& item, const int x, const in
 	const vec2 size = item.getSize();
 	const float tileWidth = getTileWidth();
 	const float tileHeight = getTileHeight();
-	const int rx = getRenderX() + x + ((item.gridX - (gridCoord)_gridScrollX + item.getX()) * tileWidth);
-	const int ry = getRenderY() + y + ((item.gridY - (gridCoord)_gridScrollY + item.getY()) * tileHeight);
+	const int rx = getRenderX() + x + ((item.gridX - (gridCoord)_gridScrollX) * tileWidth);
+	const int ry = getRenderY() + y + ((item.gridY - (gridCoord)_gridScrollY) * tileHeight);
 	const int rw = size.x * tileWidth;
 	const int rh = size.y * tileHeight;
 
@@ -728,7 +728,9 @@ bool IUINodeMapEditor::placeTileItem (bool overwrite)
 			setPlayerPosition(_selectedGridX, _selectedGridY);
 			return true;
 		}
-		return placeEmitter(_activeSpriteDefition, _activeEntityType, _selectedGridX, _selectedGridY, 1, 0, false, _activeSpriteAngle, "");
+		// fake item to the y shift
+		const TileItem item = { this, _activeSpriteDefition, _activeEntityType, 1, 0, _selectedGridX, _selectedGridY, LAYER_EMITTER, (EntityAngle)0.0f, "" };
+		return placeEmitter(_activeSpriteDefition, _activeEntityType, _selectedGridX, _selectedGridY + item.getY(true), 1, 0, false, _activeSpriteAngle, "");
 	}
 	return placeTileItem(_activeSpriteDefition, _activeEntityType, _selectedGridX, _selectedGridY, _activeLayer, overwrite, _activeSpriteAngle);
 }
@@ -956,7 +958,7 @@ void IUINodeMapEditor::prepareContextForSaving(IMapContext* ctx)
 		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
 			continue;
 		if (shouldSaveEmitter(*i)) {
-			const EmitterDefinition e(i->gridX + i->getX(true), i->gridY + i->getY(true), *i->entityType, i->amount, i->delay, i->settings);
+			const EmitterDefinition e(i->gridX, i->gridY, *i->entityType, i->amount, i->delay, i->settings);
 			emitters.push_back(e);
 		}
 	}
