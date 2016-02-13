@@ -956,7 +956,7 @@ void IUINodeMapEditor::prepareContextForSaving(IMapContext* ctx)
 		if (i->gridX >= _mapWidth || i->gridY >= _mapHeight)
 			continue;
 		if (shouldSaveEmitter(*i)) {
-			const EmitterDefinition e(i->gridX, i->gridY, *i->entityType, i->amount, i->delay, i->settings);
+			const EmitterDefinition e(i->gridX + i->getX(true), i->gridY + i->getY(true), *i->entityType, i->amount, i->delay, i->settings);
 			emitters.push_back(e);
 		}
 	}
