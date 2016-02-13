@@ -39,6 +39,7 @@ private:
 	virtual bool placeEmitter (const SpriteDefPtr& def, const EntityType* entityType, gridCoord gridX, gridCoord gridY,
 			int emitterAmount, int emitterDelay, bool overwrite, EntityAngle angle, const std::string& settings) override;
 	virtual bool isOverlapping (const TileItem& item1, const TileItem& item2) const override;
+	virtual void onRotate() override;
 public:
 	UINodeMapEditor (IFrontend *frontend, IMapManager& mapManager);
 	virtual ~UINodeMapEditor ();

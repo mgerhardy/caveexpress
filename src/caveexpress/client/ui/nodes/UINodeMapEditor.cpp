@@ -131,6 +131,19 @@ bool UINodeMapEditor::placeEmitter (const SpriteDefPtr& def, const EntityType* e
 	return Super::placeEmitter(def, entityType, gridX, gridY, emitterAmount, emitterDelay, overwrite, angle, str);
 }
 
+void UINodeMapEditor::onRotate()
+{
+	Super::onRotate();
+	if (_activeEntityType != nullptr && EntityTypes::hasDirection(*_activeEntityType)) {
+		_activeEntityTypeRight ^= true;
+		const Animation& animation = _activeEntityTypeRight ? Animations::ANIMATION_IDLE_RIGHT : Animations::ANIMATION_IDLE_LEFT;
+		const SpriteDefPtr& spriteDef = SpriteDefinition::get().getFromEntityType(*_activeEntityType, animation);
+		if (spriteDef) {
+			_activeSpriteDefition = spriteDef;
+		}
+	}
+}
+
 bool UINodeMapEditor::placeCave (const SpriteDefPtr& def, const EntityType* entityType, gridCoord gridX,
 		gridCoord gridY, MapEditorLayer layer, int delay, bool overwrite)
 {

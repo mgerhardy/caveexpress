@@ -503,6 +503,15 @@ bool IUINodeMapEditor::onKeyRelease (int32_t key)
 	return false;
 }
 
+void IUINodeMapEditor::onRotate()
+{
+	if (_activeSpriteDefition && _activeSpriteDefition->rotateable) {
+		Log::info(LOG_UI, "rotate %s by %i", _activeSpriteDefition->id.c_str(), _activeSpriteDefition->rotateable);
+		_activeSpriteAngle += _activeSpriteDefition->rotateable;
+		_activeSpriteAngle %= 360;
+	}
+}
+
 bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 {
 	if (key == SDLK_LALT || key == SDLK_RALT) {
@@ -577,11 +586,7 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 		save();
 		break;
 	case SDLK_SPACE:
-		if (_activeSpriteDefition && _activeSpriteDefition->rotateable) {
-			Log::info(LOG_UI, "rotate %s by %i", _activeSpriteDefition->id.c_str(), _activeSpriteDefition->rotateable);
-			_activeSpriteAngle += _activeSpriteDefition->rotateable;
-			_activeSpriteAngle %= 360;
-		}
+		onRotate();
 		break;
 	default:
 		return false;
