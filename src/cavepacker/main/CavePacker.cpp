@@ -134,6 +134,9 @@ void CavePacker::update (uint32_t deltaTime)
 			System.track("mapstate", string::format("forced finished: %s", _map.getName().c_str()));
 			const FinishedMapMessage msg(_map.getName(), 0, 0, 0);
 			_serviceProvider->getNetwork().sendToAllClients(msg);
+			const CampaignPtr& campaign = _campaignManager->getAutoActiveCampaign();
+			if (campaign)
+				campaign->unlockNextMap();
 			return;
 		}
 
