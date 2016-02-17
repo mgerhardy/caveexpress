@@ -154,6 +154,11 @@ Player* Map::getPlayer (ClientId clientId)
 	return nullptr;
 }
 
+bool Map::isForcedFinished () const
+{
+	return _forcedFinish;
+}
+
 bool Map::isDone () const
 {
 	if (_forcedFinish)

@@ -129,6 +129,13 @@ void CavePacker::update (uint32_t deltaTime)
 
 	const bool isDone = _map.isDone();
 	if (isDone && !_map.isRestartInitialized()) {
+		if (_map.isForcedFinished()) {
+			System.track("mapstate", string::format("forced finished: %s", _map.getName().c_str()));
+			const FinishedMapMessage msg(_map.getName(), 0, 0, 0);
+			_serviceProvider->getNetwork().sendToAllClients(msg);
+			return;
+		}
+
 		const uint32_t moves = _map.getMoves();
 		const uint32_t pushes = _map.getPushes();
 		const uint8_t stars = getStars();

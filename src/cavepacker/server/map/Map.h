@@ -168,6 +168,7 @@ public:
 	bool isDone () const;
 
 	bool isRestartInitialized () const;
+	bool isForcedFinished () const;
 
 	// returns the time that was needed to finish the map
 	uint32_t getTime () const;
