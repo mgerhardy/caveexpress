@@ -27,6 +27,7 @@
 #include "cavepacker/shared/constants/Commands.h"
 #include "client/entities/ClientEntityFactory.h"
 #include "client/entities/ClientMapTile.h"
+#include "client/entities/ClientPlayer.h"
 #include "network/ProtocolHandlerRegistry.h"
 #include "campaign/ICampaignManager.h"
 #include "campaign/persister/GooglePlayPersister.h"
@@ -292,7 +293,7 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	r.registerFactory(&EntityTypes::SOLID, ClientMapTile::FACTORY);
 	r.registerFactory(&EntityTypes::GROUND, ClientMapTile::FACTORY);
 	r.registerFactory(&EntityTypes::PACKAGE, ClientEntity::FACTORY);
-	r.registerFactory(&EntityTypes::PLAYER, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::PLAYER, ClientPlayer::FACTORY);
 	r.registerFactory(&EntityTypes::TARGET, ClientMapTile::FACTORY);
 
 	ProtocolHandlerRegistry& rp = ProtocolHandlerRegistry::get();
