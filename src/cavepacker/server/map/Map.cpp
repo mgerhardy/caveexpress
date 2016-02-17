@@ -133,9 +133,7 @@ inline bool Map::isActive () const
 
 void Map::finishMap ()
 {
-#ifdef DEBUG
 	_forcedFinish = true;
-#endif
 }
 
 Player* Map::getPlayer (ClientId clientId)
