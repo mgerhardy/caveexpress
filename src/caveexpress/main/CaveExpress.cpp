@@ -302,6 +302,9 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		Config.initOrGetConfigVar(gameConfigVars[i].configVar, gameConfigVars[i].value, gameConfigVars[i].flags);
 	}
 
+	// we have to override this - otherwise the old value from the config is used... which would be bad
+	Config.getConfigVar(NPC_FLYING_SPEED)->setValue("2.0");
+
 	Cooldowns::INVULVERABLE.setRuntime(15000L);
 	Cooldowns::POWERUP.setRuntime(12000L);
 
