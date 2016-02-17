@@ -134,7 +134,7 @@ void CavePacker::update (uint32_t deltaTime)
 		const uint8_t stars = getStars();
 		_campaignManager->getAutoActiveCampaign();
 		const bool tutorial = string::toBool(_map.getSetting(msn::TUTORIAL));
-		if (tutorial)
+		if (!tutorial)
 			Config.increaseCounter("mapfinishedcounter");
 		if (!_campaignManager->updateMapValues(_map.getName(), moves, pushes, stars, true))
 			Log::error(LOG_GAMEIMPL, "Could not save the values for the map");
