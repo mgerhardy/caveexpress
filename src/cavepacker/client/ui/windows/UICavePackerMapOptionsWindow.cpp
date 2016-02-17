@@ -20,8 +20,14 @@ UICavePackerMapOptionsWindow::UICavePackerMapOptionsWindow (IFrontend *frontend,
 	UINodeMainButton* button = new UINodeMainButton(frontend, tr("Solve"));
 	button->setOnActivate(CMD_UI_POP ";solve");
 
-	UINodeMainButton* skipButton = new UINodeMainButton(frontend, tr("Skip puzzle"));
+	UINodeMainButton* skipButton = new UINodeMainButton(frontend, tr("Skip"));
 	skipButton->setOnActivate(CMD_UI_POP ";finish");
+	skipButton->putUnder(_restartMap, 0.02f);
+	if (_backButton == nullptr) {
+		_panel->add(skipButton);
+	} else {
+		_panel->addBefore(_backButton, skipButton);
+	}
 
 	UINodeSlider* autoSolveSlider = new UINodeSlider(frontend, 10.0f, 1000.0f, 10.0f);
 	autoSolveSlider->setSize(0.1f, 0.05f);
@@ -30,12 +36,13 @@ UICavePackerMapOptionsWindow::UICavePackerMapOptionsWindow (IFrontend *frontend,
 
 	_solve->add(button);
 	_solve->add(autoSolveSlider);
-	_solve->putUnder(_restartMap, 0.02f);
+	_solve->putUnder(skipButton, 0.02f);
 
-	if (_backButton == nullptr)
+	if (_backButton == nullptr) {
 		_panel->add(_solve);
-	else
+	} else {
 		_panel->addBefore(_backButton, _solve);
+	}
 }
 
 void UICavePackerMapOptionsWindow::onActive ()
