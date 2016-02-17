@@ -20,6 +20,9 @@ UICavePackerMapOptionsWindow::UICavePackerMapOptionsWindow (IFrontend *frontend,
 	UINodeMainButton* button = new UINodeMainButton(frontend, tr("Solve"));
 	button->setOnActivate(CMD_UI_POP ";solve");
 
+	UINodeMainButton* skipButton = new UINodeMainButton(frontend, tr("Skip puzzle"));
+	skipButton->setOnActivate(CMD_UI_POP ";finish");
+
 	UINodeSlider* autoSolveSlider = new UINodeSlider(frontend, 10.0f, 1000.0f, 10.0f);
 	autoSolveSlider->setSize(0.1f, 0.05f);
 	autoSolveSlider->addListener(UINodeListenerPtr(new SolveListener(autoSolveSlider, "solvestepmillis")));
