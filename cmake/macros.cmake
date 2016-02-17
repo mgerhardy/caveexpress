@@ -205,12 +205,12 @@ macro(check_lua_files TARGET FILES)
 		foreach(_FILE ${FILES})
 			string(REPLACE "/" "-" TARGETNAME ${_FILE})
 			add_custom_target(
-				${TARGETNAME}
+				${TARGET}-${TARGETNAME}
 				COMMENT "checking lua file ${_FILE}"
 				COMMAND ${LUAC_EXECUTABLE} -p ${_FILE}
 				WORKING_DIRECTORY ${ROOT_DIR}/${GAME_BASE_DIR}/${TARGET}
 			)
-			add_dependencies(${TARGET} ${TARGETNAME})
+			add_dependencies(${TARGET} ${TARGET}-${TARGETNAME})
 		endforeach()
 	else()
 		message(STATUS "No lua compiler (${DEFAULT_LUAC_EXECUTABLE}) found")
