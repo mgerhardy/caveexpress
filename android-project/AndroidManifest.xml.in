@@ -8,6 +8,7 @@
 
     <!-- OpenGL ES 2.0 -->
     <uses-feature android:glEsVersion="0x00020000" />
+    <uses-feature android:name="android.hardware.gamepad" android:required="false"/>
 
     @PERMISSIONS@
 
@@ -23,6 +24,7 @@
         android:icon="@drawable/icon"
         android:allowBackup="true"
         android:name="@APPNAME@App"
+        android:isGame="true"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
         android:hardwareAccelerated="true">
         <activity
