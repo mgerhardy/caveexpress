@@ -1,0 +1,44 @@
+2.4 Controller release
+
+This release adds improved game controller support.
+
+**CaveExpress 2.4 (2016-02-18)**
+* Reduced file sizes
+* Improved input handling
+* Improved ui
+* Water refractions with GL3 renderer
+* Fixed key bindings if some unhandled modifiers (like the numpad) are active
+* Fixed mouse speed
+* Reduced ad frequency
+* Rate me popup
+* Improved game controller support
+* Ported to steamlink device
+* Updated tutorial maps to be a little bit easier
+* Changed focus order of some of the buttons
+* Reduced npc flying speed
+* Allow to modify the music and sound volume
+* Transfering npcs is now implemented
+* New campaign
+* The egg makes you invulnerable for some time
+* Flying npc drops egg on death
+* Banana powerup - you can carry more than one package with it
+
+**CavePacker 1.4 (2016-02-17)**
+* Reduced file sizes
+* Deadlock detection
+* Fixed issue on android with scaling whenever you clicked a move button
+* Improved movement by introducing pathfinding
+* Improved input handling
+* Improved ui
+* Fixed key bindings if some unhandled modifiers (like the numpad) are active
+* Fixed mouse speed
+* Improved render speed
+* Reduced ad frequency
+* Rate me popup
+* Map editor support
+* Improved game controller support
+* Ported to steamlink device
+* Allow to modify the music and sound volume
+* Added sound effects
+* Added skip map feature
+
