@@ -53,3 +53,12 @@ on_finish:
   - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests.xml))
   - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests_cavepacker.xml))
   - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests_caveexpress.xml))
+
+deploy:
+  provider: GitHub
+  artifact: /\/contrib\/installer\/windows\/.*\.exe/
+  release: '$(APPVEYOR_BUILD_VERSION)'
+  auth_token:
+    secure: M2aVlWiQ57dYFZxPOvoTqyfzB0oZUxpyjgyoIURBRH4odAC9o4so0WQWl6B+CUlr
+  on:
+    appveyor_repo_tag: true
