@@ -96,7 +96,7 @@ Version 2.2 (2014-12-23)
 Version 2.3 (2015-01-24)
 * Multiple player start positions for multiplayer
 
-Version 2.4 (not yet released)
+Version 2.4 (2016-02-18)
 * Reduced file sizes
 * Improved input handling
 * Improved ui
@@ -116,3 +116,5 @@ Version 2.4 (not yet released)
 * The egg makes you invulnerable for some time
 * Flying npc drops egg on death
 * Banana powerup - you can carry more than one package with it
+
+Version 2.5 (not yet released)
