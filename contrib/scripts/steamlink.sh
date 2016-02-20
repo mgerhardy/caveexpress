@@ -18,7 +18,7 @@ cd cp-build-steamlink
 BINDIR=$(pwd)
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$DIR/../../cmake/toolchains/steamlink-toolchain.cmake -DCMAKE_INSTALL_PREFIX=${BINDIR}/steamlink $DIR/../..
 make $*
-make install
+make install/strip
 
 if [ -n "$STEAMLINK_IP" ]; then
 	echo "Copying the game over to the device"

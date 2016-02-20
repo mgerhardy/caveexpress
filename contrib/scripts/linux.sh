@@ -10,4 +10,3 @@ cmake --version
 cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_INSTALL_PREFIX=${BINDIR}/linux $DIR/../..
 make $*
 make install
-
