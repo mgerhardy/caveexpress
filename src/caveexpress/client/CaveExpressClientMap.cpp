@@ -162,7 +162,7 @@ void CaveExpressClientMap::renderEnd (int x, int y) const
 	renderWater(x, y);
 }
 
-int CaveExpressClientMap::renderCooldownDescription (int cooldownIndex, int x, int y, int w, int h) const
+int CaveExpressClientMap::renderCooldownDescription (uint32_t cooldownIndex, int x, int y, int w, int h) const
 {
 	ClientMap::renderCooldownDescription(cooldownIndex, x, y, w, h);
 	const int padding = 5;

@@ -115,7 +115,7 @@ public:
 	 * @return the pixels that were needed to place the description
 	 * @param[in] x, y, w, h are the upper left corner of the cooldown icon
 	 */
-	virtual int renderCooldownDescription (int cooldownIndex, int x, int y, int w, int h) const;
+	virtual int renderCooldownDescription (uint32_t cooldownIndex, int x, int y, int w, int h) const;
 	virtual void renderCooldowns (int x, int y) const;
 	virtual void setSetting (const std::string& key, const std::string& value);
 

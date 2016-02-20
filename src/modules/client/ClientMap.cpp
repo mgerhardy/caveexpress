@@ -257,7 +257,7 @@ void ClientMap::renderCooldowns (int x, int y) const
 	}
 }
 
-int ClientMap::renderCooldownDescription (int cooldownIndex, int x, int y, int w, int h) const
+int ClientMap::renderCooldownDescription (uint32_t cooldownIndex, int x, int y, int w, int h) const
 {
 	return 0;
 }
