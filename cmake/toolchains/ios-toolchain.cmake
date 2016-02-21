@@ -49,8 +49,8 @@ endif (CMAKE_UNAME)
 
 # Force the compilers to gcc for iOS
 include (CMakeForceCompiler)
-CMAKE_FORCE_C_COMPILER(gcc GNU)
-CMAKE_FORCE_CXX_COMPILER(g++ GNU)
+CMAKE_FORCE_C_COMPILER(/usr/bin/gcc GNU)
+CMAKE_FORCE_CXX_COMPILER(/usr/bin/g++ GNU)
 set(CMAKE_AR ar CACHE FILEPATH "" FORCE)
 
 # Skip the platform compiler checks for cross compiling
