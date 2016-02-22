@@ -122,6 +122,7 @@ script:
         mkdir build-$TRAVIS_OS_NAME;
         cd build-$TRAVIS_OS_NAME;
         cmake -G Xcode .. -DUSE_BUILTIN=$USE_BUILTIN;
+        cat CMakeFiles/CMakeError.log;
         xcodebuild -project caveproductions.xcodeproj -target ALL_BUILD | xcpretty -f `xcpretty-travis-formatter`;
         cd ..;
         ./tests --gtest-filter=-Network*;
@@ -131,6 +132,7 @@ script:
         mkdir build-ios;
         cd build-ios;
         cmake -G Xcode .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake -DUSE_BUILTIN=$USE_BUILTIN;
+        cat CMakeFiles/CMakeError.log;
         xcodebuild -project caveproductions.xcodeproj -target ALL_BUILD | xcpretty -f `xcpretty-travis-formatter`;
     fi"
 
