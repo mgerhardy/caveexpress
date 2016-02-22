@@ -54,6 +54,7 @@ CMAKE_FORCE_CXX_COMPILER(/usr/bin/g++ GNU)
 set(CMAKE_AR ar CACHE FILEPATH "" FORCE)
 
 # Skip the platform compiler checks for cross compiling
+set (CMAKE_CROSSCOMPILING TRUE)
 set (CMAKE_CXX_COMPILER_WORKS TRUE)
 set (CMAKE_C_COMPILER_WORKS TRUE)
 
