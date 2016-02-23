@@ -120,7 +120,7 @@ endif()
 
 # Default option knobs
 if(APPLE OR ARCH_64)
-  if (NOT ${CMAKE_OSX_ARCHITECTURES} MATCHES "arm")
+  if (NOT "${CMAKE_OSX_ARCHITECTURES}" MATCHES "arm")
     set(OPT_DEF_SSEMATH ON)
   endif()
 endif()
