@@ -48,7 +48,7 @@ public:
 
 	inline bool getStartPosition(int index, int&x, int& y) const
 	{
-		const int size = _startPositions.size();
+		const size_t size = _startPositions.size();
 		if (size == 1) {
 			index = 0;
 		}
@@ -65,7 +65,7 @@ public:
 
 	inline bool getStartPosition(int index, float&x, float& y) const
 	{
-		const int size = _startPositions.size();
+		const size_t size = _startPositions.size();
 		if (size == 1) {
 			index = 0;
 		}
