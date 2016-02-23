@@ -312,7 +312,7 @@ void Network::update (uint32_t deltaTime)
 
 int Network::send (TCPsocket socket, const ByteStream &buffer)
 {
-	const int size = buffer.getSize();
+	const size_t size = buffer.getSize();
 	const int written = SDLNet_TCP_Send(socket, buffer.getBuffer(), size);
 	if (written == -1 || written != size) {
 		Log::error(LOG_NETWORK, "%s", getError().c_str());
@@ -349,7 +349,7 @@ int Network::recv (TCPsocket socket, ByteStream &buffer)
 
 int Network::sendToClients (int clientMask, const ByteStream& buffer)
 {
-	const int size = buffer.getSize();
+	const size_t size = buffer.getSize();
 	if (size == 0)
 		return 0;
 	int sent = 0;
@@ -392,7 +392,7 @@ bool Network::sendUDP (UDPsocket sock, const IPaddress &address, const IProtocol
 
 	p->address = address;
 	p->data = const_cast<uint8_t *>(buffer.getBuffer());
-	p->len = length;
+	p->len = static_cast<int>(length);
 
 	const int numsent = SDLNet_UDP_Send(sock, -1, p);
 	if (numsent <= 0) {
@@ -450,7 +450,7 @@ bool Network::broadcast (const OOB* oob, uint8_t* buffer, size_t length, int por
 	}
 
 #ifdef NET_USE_UDP
-	UDPpacket* p = SDLNet_AllocPacket(length);
+	UDPpacket* p = SDLNet_AllocPacket(static_cast<int>(length));
 	if (!p) {
 		Log::error(LOG_NETWORK, "failed to allocate broadcast packet");
 		Log::error(LOG_NETWORK, "%s", getError().c_str());
