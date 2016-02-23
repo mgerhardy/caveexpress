@@ -584,7 +584,9 @@ if(LIBC)
     endforeach()
 
     check_include_files("dlfcn.h;stdint.h;stddef.h;inttypes.h;stdlib.h;strings.h;string.h;float.h" STDC_HEADERS)
-    check_type_size("size_t" SIZEOF_SIZE_T)
+    if (NOT IOS)
+        check_type_size("size_t" SIZEOF_SIZE_T)
+    endif()
     check_symbol_exists(M_PI math.h HAVE_M_PI)
     # TODO: refine the mprotect check
     check_c_source_compiles("#include <sys/types.h>
