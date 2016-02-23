@@ -80,7 +80,7 @@ inline const std::string& Sprite::getName () const
 inline TexturePtr Sprite::getActiveTexture (Layer layer) const
 {
 	const AnimationFrames& frames = _textures[layer];
-	const int size = frames.size();
+	const size_t size = frames.size();
 	if (size == 0)
 		return TexturePtr();
 	if (size < _currentFrame)
