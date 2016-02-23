@@ -100,7 +100,7 @@ addons:
 #    - libyajl2-dev
 
 script:
-  - "if [ $TRAVIS_OS_NAME == linux ]; then \
+  - "if [ $TRAVIS_OS_NAME == linux ] && [ $USE_BUILTIN == ON ]; then \
         export ANDROID_INSTALL_PACKAGES=ON;
         export ANDROID_RELEASE=OFF;
         export ANDROID_NDK=`pwd`/android-ndk-r10b;
@@ -128,7 +128,7 @@ script:
         ./tests --gtest-filter=-Network*;
         ./tests_caveexpress --gtest-filter=-Network*;
     fi"
-  - "if [ $TRAVIS_OS_NAME == osx ]; then \
+  - "if [ $TRAVIS_OS_NAME == osx ] && [ $USE_BUILTIN == ON ]; then \
         mkdir build-ios;
         cd build-ios;
         cmake -G Xcode .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake -DUSE_BUILTIN=$USE_BUILTIN;
