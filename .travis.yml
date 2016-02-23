@@ -113,7 +113,7 @@ script:
         mkdir build-$TRAVIS_OS_NAME;
         cd build-$TRAVIS_OS_NAME;
         cmake .. -DUSE_BUILTIN=$USE_BUILTIN;
-        make -j 4 VERBOSE=1:
+        make -j 4 VERBOSE=1;
         cd ..;
         ./tests --gtest-filter=-Network*;
         ./tests_caveexpress --gtest-filter=-Network*;
