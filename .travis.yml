@@ -134,7 +134,6 @@ script:
         cmake -G Xcode .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake -DUSE_BUILTIN=$USE_BUILTIN;
         cat CMakeFiles/CMakeError.log;
         xcodebuild -project caveproductions.xcodeproj -target ALL_BUILD;
-        # | xcpretty -f `xcpretty-travis-formatter`;
     fi"
 
 notifications:
