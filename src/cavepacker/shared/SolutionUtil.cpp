@@ -6,7 +6,7 @@ namespace cavepacker {
 
 std::string SolutionUtil::compress(const std::string& buffer) {
 	std::string rle;
-	const int bufLen = buffer.length();
+	const int bufLen = static_cast<int>(buffer.length());
 	rle.reserve(bufLen);
 	char lastC = '\0';
 	int cnt = 1;

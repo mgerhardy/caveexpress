@@ -29,7 +29,7 @@ public:
 
 inline int BitmapFont::getTextHeight (const std::string& string) const
 {
-	const int lines = 1 + std::count(string.begin(), string.end(), '\n');
+	const int lines = 1 + static_cast<int>(std::count(string.begin(), string.end(), '\n'));
 	return getCharHeight() * lines;
 }
 

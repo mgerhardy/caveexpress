@@ -28,7 +28,7 @@ public:
 
 inline int ParticleSystem::getParticleAmount () const
 {
-	return _particles.size();
+	return static_cast<int>(_particles.size());
 }
 
 inline bool ParticleSystem::hasParticles () const

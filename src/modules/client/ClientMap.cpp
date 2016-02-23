@@ -221,7 +221,7 @@ void ClientMap::renderCooldowns (int x, int y) const
 	const int screenY = std::max(0, y) + padding + marginTop;
 	int cooldownScreenY = screenY;
 	int cooldownScreenX = screenX;
-	const int cooldowns = _cooldowns.size();
+	const int cooldowns = static_cast<int>(_cooldowns.size());
 	for (int cooldownId = 0; cooldownId < cooldowns; ++cooldownId) {
 		const CooldownData& cooldownData = _cooldowns[cooldownId];
 		if (cooldownData.start == 0) {
