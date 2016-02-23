@@ -209,7 +209,7 @@ public:
 
 	bool hasMoreEntries () const
 	{
-		const int amount = _entries.size();
+		const int amount = static_cast<int>(_entries.size());
 		if (amount == 0)
 			return false;
 		const int amountPerPage = _rows * _cols;
@@ -297,7 +297,7 @@ public:
 		if (!_scrollingEnabled)
 			return;
 		const int rowHeight = _rowHeight * _frontend->getHeight() + _rowSpacing;
-		const int entries = _entries.size();
+		const int entries = static_cast<int>(_entries.size());
 		const int rows = entries / _cols + (entries % _cols != 0 ? 1 : 0);
 		const int maxRows = getRenderHeight(false) / rowHeight;
 		if (maxRows > rows)
@@ -324,7 +324,7 @@ public:
 		_renderY = _entryOffsetY;
 
 		if (_pageVisible) {
-			const int amount = _entries.size();
+			const int amount = static_cast<int>(_entries.size());
 			const int amountPerPage = _rows * _cols;
 			if (amountPerPage != 0) {
 				const int pages = amount / amountPerPage + ((amount % amountPerPage > 0) ? 1 : 0);
@@ -461,7 +461,7 @@ public:
 			_selectedIndex = (_rows * _cols) - 1;
 		}
 		if (_selectedIndex < 0) {
-			_selectedIndex = _entries.size() - 1;
+			_selectedIndex = static_cast<int>(_entries.size()) - 1;
 			_offset = _selectedIndex % (_rows * _cols);
 			return Super::prevFocus(cursorup);
 		}
