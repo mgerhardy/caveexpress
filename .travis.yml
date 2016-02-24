@@ -127,11 +127,11 @@ script:
         cd ..;
         ls;
         echo;
-        ls caveexpress.app/Contents;
+        ls caveexpress.app/Contents/MacOS;
         echo;
-        ls tests.app/Contents;
-        ./tests.app/Contents/tests --gtest-filter=-Network*;
-        ./tests_caveexpress.app/Contents/tests_caveexpress --gtest-filter=-Network*;
+        ls tests.app/Contents/MacOS;
+        ./tests.app/Contents/MacOS/tests --gtest-filter=-Network*;
+        ./tests_caveexpress.app/Contents/MacOS/tests_caveexpress --gtest-filter=-Network*;
     fi"
   - "if [ $TRAVIS_OS_NAME == osx ] && [ $USE_BUILTIN == ON ]; then \
         mkdir build-ios;
