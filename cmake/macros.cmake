@@ -701,6 +701,35 @@ macro(cp_ios_get_provisioning_profiles PROFILE_NAME PROVISIONG_PROFILES_DIR RESU
 	endif()
 endmacro()
 
+macro(cp_ios_import_key KEYCHAIN_NAME)
+	set(KEYCHAIN_FILE ios-build.keychain)
+	# TODO: find_host_program
+	set(SECURITY_BIN security)
+	# TODO: find_host_program
+	set(CODESIGN_BIN /usr/bin/codesign)
+	file(MAKE_DIRECTORY ${IOS_PROVISIONG_PROFILES_DIR})
+	set(DEVELOPMENT_KEY_PASSWORD "123")
+	set(DISTRIBUTION_KEY_PASSWORD "123")
+	add_custom_command(TARGET ALL PRE_BUILD
+		COMMAND ${SECURITY_BIN} ARGS create-keychain -p ${KEYCHAIN_NAME} ${KEYCHAIN_FILE}
+		COMMAND ${SECURITY_BIN} ARGS default-keychain -s ${KEYCHAIN_FILE}
+		COMMAND ${SECURITY_BIN} ARGS unlock-keychain -p ${KEYCHAIN_NAME} ${KEYCHAIN_FILE}
+		COMMAND ${SECURITY_BIN} ARGS set-keychain-settings -t 3600 -u ${KEYCHAIN_FILE}
+		COMMAND ${SECURITY_BIN} ARGS import ./scripts/certs/dist.cer -k ${KEYCHAIN_FILE} -T ${CODESIGN_BIN}
+		COMMAND ${SECURITY_BIN} ARGS import ./scripts/certs/dev.cer -k ${KEYCHAIN_FILE} -T ${CODESIGN_BIN}
+		COMMAND ${SECURITY_BIN} ARGS import ./scripts/certs/dist.p12 -k ${KEYCHAIN_FILE} -P ${DISTRIBUTION_KEY_PASSWORD} -T ${CODESIGN_BIN}
+		COMMAND ${SECURITY_BIN} ARGS import ./scripts/certs/dev.p12 -k ${KEYCHAIN_FILE} -P ${DEVELOPMENT_KEY_PASSWORD} -T ${CODESIGN_BIN}
+		COMMAND ${SECURITY_BIN} ARGS list-keychains
+		COMMAND ${SECURITY_BIN} ARGS find-identity -p codesigning  ~/Library/Keychains/${KEYCHAIN_FILE}
+		COMMENT "Set up the signing keys")
+	add_custom_command(TARGET ALL PRE_BUILD
+		COMMAND ${CMAKE_COMMAND} ARGS -E copy ./scripts/profiles/iOSTeam_Provisioning_Profile_.mobileprovision ${IOS_PROVISIONG_PROFILES_DIR}
+		COMMENT "Copy provision profile")
+	add_custom_command(TARGET ALL PRE_BUILD
+		COMMAND ${CMAKE_COMMAND} ARGS -E copy ./scripts/profiles/DISTRIBUTION_PROFILE_NAME.mobileprovision ${IOS_PROVISIONG_PROFILES_DIR}
+		COMMENT "Copy provision profile")
+endmacro()
+
 macro(cp_osx_add_target_properties TARGET VERSION VERSION_CODE)
 	cp_set_properties(${TARGET} MACOSX_BUNDLE_LONG_VERSION_STRING "${VERSION}")
 	cp_set_properties(${TARGET} MACOSX_BUNDLE_SHORT_VERSION_STRING "${VERSION_CODE}")
