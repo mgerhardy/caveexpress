@@ -1,13 +1,13 @@
 ALT|ALT
 Achievements|Achievements
 Are you sure?|Bist du sicher?
-Back|Back
-Big|Riesig
+Back|Zurück
+Big|Groß
 CTRL|CTRL
 CURSOR|CURSOR
 Campaigns|Kampagnen
-Cancel|Abbrechen
-Close|Close
+Cancel|Abbruch
+Close|Schließen
 Continue|Fortfahren
 Controller trigger|Controller trigger
 Create server|Erstellen
@@ -16,24 +16,24 @@ Description|Beschreibung
 Disconnect|Trennen
 Editor|Editor
 Extras|Extras
-File|File
+File|Datei
 Fullscreen|Vollbild
-Game|Game
+Game|Spiel
 General|General
 Gesture|Geste
 Google Play|Google Play
 Google Play sign-out|Google Play trennen
-Graphics|Graphics
+Graphics|Grafik
 Hard|Schwer
-Help|Help
+Help|Hilfe
 Hints|Hinweise
 Homepage|Homepage
 Increase map size|Increase map size
-Input|Input
+Input|Eingabe
 LMB|LMB
-Later|Spaeter
+Later|Später
 Leaderboard|Leaderboard
-Load|Load
+Load|Laden
 MMB|MMB
 MOUSE WHEEL|MOUSE WHEEL
 Map|Map
@@ -45,14 +45,14 @@ Move all packages onto their targets|Schiebe alle Pakete auf die Paletten
 Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
-New|New
-No controller found|No controller found
+New|Neu
+No controller found|Keinen Controller gefunden
 Normal|Normal
 OK|OK
 Objectives|Ziele
 Off|Aus
 On|An
-Open|Oeffnen
+Open|Öffnen
 Package|Paket
 Place tile|Place tile
 Players|Spieler
@@ -66,12 +66,12 @@ Refresh|Erneuern
 Remove tile|Remove tile
 Reset|Reset
 Reset game progress?|Resete den Fortschritt?
-Restart|Restart
-Retry|Retry
+Restart|Neustart
+Retry|Nochmal
 Rotate entity|Rotate entity
 SHIFT|SHIFT
 SPACE|SPACE
-Save|Save
+Save|Speichern
 Save & Go|Save & Go
 Save map|Save map
 Scroll map|Scroll map
@@ -82,16 +82,16 @@ Shift map (cursor direction)|Shift map (cursor direction)
 Shift tile|Shift tile
 Show Grid|Show Grid
 Show help messages to the player|Show help messages to the player
-Skip|Skip
+Skip|Nächste
 Small|Klein
-Solve|Solve
+Solve|Lösen
 Sound|Sound
 Sound/Music|Sound/Musik
 Start|Start
 Target|Palette
 Textures|Texturen
-The less moves you do the better|Je weniger Schritt, desto besser
-Time|Time
+The less moves you do the better|Je weniger Schritte, desto besser
+Time|Zeit
 Tutorial|Tutorial
 Twitter|Twitter
 Undo|Undo
