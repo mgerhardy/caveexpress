@@ -940,6 +940,17 @@ macro(cp_add_executable)
 		endif()
 	endif()
 
+	if (UNIX)
+		set(LANGUAGES en_GB de_DE)
+		foreach(LANG ${LANGUAGES})
+			add_custom_command(TARGET ${_EXE_TARGET} POST_BUILD
+				COMMAND ${ROOT_DIR}/contrib/scripts/lang.sh
+				ARGS ${LANG} ${_EXE_TARGET}
+				COMMENT "Update language ${LANG} for ${_EXE_TARGET}"
+			)
+		endforeach()
+	endif()
+
 	set_target_properties(${_EXE_TARGET} PROPERTIES FOLDER ${_EXE_TARGET})
 	# install relative to /usr/<APPNAME>
 	if (NOT TESTS)
