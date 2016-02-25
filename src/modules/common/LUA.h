@@ -98,6 +98,9 @@ public:
 	 */
 	bool execute (const std::string &function, int returnValues = 0);
 
+	/**
+	 * @return the UTF-8 character that is stored in the table for the given key.
+	 */
 	int getValueCharFromTable (const char * key, const char defaultValue = '\0');
 	std::string getValueStringFromTable (const char * key, const std::string& defaultValue = "");
 	float getValueFloatFromTable (const char * key, float defaultValue = 0.0f);
