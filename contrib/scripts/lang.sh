@@ -1,10 +1,10 @@
 #!/bin/bash
 
+DIR=$(dirname $(readlink -f $0))
+cd $DIR/../..
+
 LANG=${1:-de}
 APPNAME=${2:-caveexpress}
-
-echo "Updating ${LANG} for ${APPNAME}"
-echo "Usage: $0 <lang> <appname>"
 
 grep -PohR 'tr\("\K[^"]*' src/modules src/${APPNAME} | sort | uniq | awk -v "app=${APPNAME}" -v "lang=${LANG}" '
 BEGIN {
@@ -42,4 +42,3 @@ BEGIN {
 	exit status
 }' > base/${APPNAME}/lang/${LANG}.lang.tmp
 mv base/${APPNAME}/lang/${LANG}.lang.tmp base/${APPNAME}/lang/${LANG}.lang
-echo "done - updated base/${APPNAME}/lang/${LANG}.lang"

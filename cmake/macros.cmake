@@ -940,7 +940,7 @@ macro(cp_add_executable)
 		endif()
 	endif()
 
-	if (UNIX)
+	if (UNIX AND NOT TESTS)
 		set(LANGUAGES en_GB de_DE)
 		foreach(LANG ${LANGUAGES})
 			add_custom_command(TARGET ${_EXE_TARGET} POST_BUILD
