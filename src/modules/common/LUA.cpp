@@ -2,6 +2,7 @@
 #include "common/FileSystem.h"
 #include "common/Config.h"
 #include "common/System.h"
+#include "common/UTF8.h"
 
 LUA::LUA (bool debug)
 {
@@ -103,7 +104,7 @@ bool LUA::getValueBoolFromTable (const char * key, bool defaultValue)
 	return rtn;
 }
 
-char LUA::getValueCharFromTable (const char * key, const char defaultValue)
+int LUA::getValueCharFromTable (const char * key, const char defaultValue)
 {
 	if (!lua_istable(_state, -1)) {
 		Log::error(LOG_COMMON, "expected a lua table at the top of the stack");
@@ -119,8 +120,7 @@ char LUA::getValueCharFromTable (const char * key, const char defaultValue)
 
 	const char *str = luaL_checkstring(_state, -1);
 	pop();
-	SDL_assert_always(SDL_strlen(str) == 1);
-	return str[0];
+	return UTF8ToInt(&str);
 }
 
 std::string LUA::getValueStringFromTable (const char * key, const std::string& defaultValue)

@@ -3,13 +3,14 @@
 #include <memory>
 #include "common/NonCopyable.h"
 #include <map>
+#include <unordered_map>
 #include <string>
 #include <vector>
 #include <stdint.h>
 
 class FontChar {
 private:
-	char character;
+	int character;
 	int width;
 	int x;
 	int y;
@@ -20,7 +21,7 @@ private:
 	float widthFactor;
 	float heightFactor;
 public:
-	FontChar (const char _character, int _width, int _x, int _y, int _w, int _h, int _ox, int _oy) :
+	FontChar (int _character, int _width, int _x, int _y, int _w, int _h, int _ox, int _oy) :
 			character(_character), width(_width), x(_x), y(_y), w(_w), h(_h), ox(_ox), oy(_oy), widthFactor(1.0f), heightFactor(
 					1.0f)
 	{
@@ -39,7 +40,7 @@ public:
 	{
 		heightFactor = _heightFactor;
 	}
-	inline char getCharacter () const
+	inline int getCharacter () const
 	{
 		return character;
 	}
@@ -126,13 +127,13 @@ public:
 		return _metricsDescender * _heightFactor;
 	}
 
-	const FontChar* getFontChar (char character);
+	const FontChar* getFontChar (int character);
 
 	void updateChars (int textureWidth, int textureHeight);
 	void init (const FontChars& fontChars);
 
 private:
-	FontChar _fontCharMap[128];
+	std::unordered_map<int, FontChar> _fontCharMap;
 	int _height;
 	int _metricsHeight;
 	int _metricsAscender;

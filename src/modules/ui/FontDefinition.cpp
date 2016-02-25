@@ -68,7 +68,7 @@ FontDefinition::FontDefinition() {
 					continue;
 				}
 				// push the char entry
-				const char character = lua.getValueCharFromTable("char");
+				const int character = lua.getValueCharFromTable("char");
 				const int width = lua.getValueIntegerFromTable("width");
 				const int x = lua.getValueIntegerFromTable("x");
 				const int y = lua.getValueIntegerFromTable("y");
@@ -108,7 +108,7 @@ void FontDef::init (const FontChars& fontChars)
 {
 	SDL_assert(!fontChars.empty());
 	for (const FontChar& c : fontChars) {
-		_fontCharMap[(int)c.getCharacter()] = c;
+		_fontCharMap[c.getCharacter()] = c;
 	}
 }
 
@@ -117,19 +117,19 @@ void FontDef::updateChars (int tWidth, int tHeight)
 	_widthFactor = tWidth / (float)textureWidth;
 	_heightFactor = tHeight / (float)textureHeight;
 
-	const int len = SDL_arraysize(_fontCharMap);
-	for (int i = 0; i < len; ++i) {
-		FontChar& c = _fontCharMap[i];
+	for (auto entry : _fontCharMap) {
+		FontChar& c = entry.second;
 		c.setWidthFactor(_widthFactor);
 		c.setHeightFactor(_heightFactor);
 	}
 }
 
-const FontChar* FontDef::getFontChar (char character)
+const FontChar* FontDef::getFontChar (int character)
 {
-	if (character < 0 || character > (int)SDL_arraysize(_fontCharMap))
+	auto iter = _fontCharMap.find(character);
+	if (iter == _fontCharMap.end())
 		return nullptr;
-	const FontChar& fc = _fontCharMap[(int)character];
+	const FontChar& fc = iter->second;
 	if (fc.getCharacter() != '\0')
 		return &fc;
 

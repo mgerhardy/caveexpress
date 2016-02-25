@@ -3,6 +3,7 @@
 #include "UI.h"
 #include "common/Log.h"
 #include "common/System.h"
+#include "common/UTF8.h"
 
 BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr, IFrontend *frontend) :
 		_frontend(frontend),_fontDefPtr(fontDefPtr), _time(0U) {
@@ -99,8 +100,11 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 	const TextureRect sourceRect = _font->getSourceRect();
 	const FontChar* space = _fontDefPtr->getFontChar(' ');
 	SDL_assert_always(space);
-	for (std::string::const_iterator i = text.begin(); i != text.end(); ++i) {
-		const unsigned char chr = *i;
+	const char* textStr = text.c_str();
+	for (;;) {
+		const int chr = UTF8ToInt(&textStr);
+		if (chr == -1)
+			break;
 		if (chr == '\n') {
 			x = beginX;
 			yShift += fontHeight;
