@@ -34,3 +34,7 @@
 
 * Cavepacker
 ** sound if you hit the best points available
+
+* UI:
+** text length for bitmap font rendering (e.g. to render background color of a button)
+   is not taking the utf8 length into account
