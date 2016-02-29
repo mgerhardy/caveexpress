@@ -211,7 +211,7 @@ public:
 	virtual ~Map ();
 
 	const PlayerList& getPlayers () const;
-	inline int getConnectedPlayers () const { return _playersWaitingForSpawn.size() + _players.size(); }
+	inline int getConnectedPlayers () const { return static_cast<int>(_playersWaitingForSpawn.size() + _players.size()); }
 	Player* getPlayer (ClientId clientId);
 
 	b2World *getWorld () const;
