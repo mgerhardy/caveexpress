@@ -4,6 +4,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Foundation/Foundation.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 static void uncaughtExceptionHandler (NSException *exception)
 {
@@ -14,6 +15,11 @@ static void uncaughtExceptionHandler (NSException *exception)
 void darwinInit ()
 {
 	NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+	char *basePath = SDL_GetBasePath();
+	if (basePath != nullptr) {
+		chdir(basePath);
+		SDL_free(basePath);
+	}
 }
 
 char* darwinGetHomeDirectory (const std::string& app)

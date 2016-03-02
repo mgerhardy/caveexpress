@@ -107,7 +107,7 @@ public:
 	 * @return @c false if the conversion failed because the index isn't part of the board
 	 */
 	inline bool getColRowFromIndex(int index, int& col, int& row) const {
-		if (index < 0 || index >= _state.size())
+		if (index < 0 || index >= size())
 			return false;
 		if (_state[index] == '\0')
 			return false;

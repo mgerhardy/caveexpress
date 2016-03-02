@@ -83,7 +83,7 @@ inline TexturePtr Sprite::getActiveTexture (Layer layer) const
 	const size_t size = frames.size();
 	if (size == 0)
 		return TexturePtr();
-	if (size < _currentFrame)
+	if ((int)size < _currentFrame)
 		return _textures[layer].at(size - 1);
 	return _textures[layer].at(_currentFrame);
 }
