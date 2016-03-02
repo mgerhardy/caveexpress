@@ -32,10 +32,5 @@
     <true/>
     <key>NSHumanReadableCopyright</key>
     <string>@MACOSX_BUNDLE_COPYRIGHT@</string>
-    <key>LSEnvironment</key>
-    <dict>
-        <key>PREFIX_PATH</key>
-        <string>../Resources</string>
-    </dict>
 </dict>
 </plist>
