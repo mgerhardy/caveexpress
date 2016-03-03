@@ -42,7 +42,7 @@ UINodeLabel* UIHelpWindow::addString (const std::string& string, const std::stri
 	const float pos = (node != nullptr ? node->getRight() : 0.0f) + _iconGap;
 
 	UINodeLabel *labelNode = new UINodeLabel(_frontend, string, getFont(font));
-	labelNode->setPos(pos, _currentY + node->getHeight() / 2.0f - labelNode->getHeight() / 2.0f);
+	labelNode->setPos(pos, _currentY + (node != nullptr ? node->getHeight() / 2.0f : 0.0f) - labelNode->getHeight() / 2.0f);
 	add(labelNode);
 	return labelNode;
 }
