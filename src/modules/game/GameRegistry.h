@@ -3,6 +3,7 @@
 #include "common/IFactoryRegistry.h"
 #include "IGame.h"
 #include "common/Singleton.h"
+#include <common/Log.h>
 #include <string>
 
 class GameFactoryContext {
@@ -50,6 +51,7 @@ private:
 public:
 	GameRegisterStatic(const std::string& id, GamePtr game) : _factory(game) {
 		game->setName(id);
+		Log::info(LOG_GAME, "register game %s", id.c_str());
 		Singleton<GameRegistry>::getInstance().registerFactory(id, _factory);
 	}
 };
