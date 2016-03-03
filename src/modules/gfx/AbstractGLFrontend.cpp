@@ -528,7 +528,7 @@ void AbstractGLFrontend::makeScreenshot (const std::string& filename)
 {
 #ifndef EMSCRIPTEN
 	const int bytesPerPixel = 3;
-	std::unique_ptr<GLubyte> pixels(new GLubyte[bytesPerPixel * _width * _height]);
+	std::unique_ptr<GLubyte[]> pixels(new GLubyte[bytesPerPixel * _width * _height]);
 	int rowPack;
 	glGetIntegerv(GL_PACK_ALIGNMENT, &rowPack);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
