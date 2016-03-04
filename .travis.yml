@@ -64,7 +64,6 @@ addons:
     - autoconf
     - automake
     - libtool
-    - libasound2-dev
     - libpulse-dev
     - libaudio-dev
     - libx11-dev
