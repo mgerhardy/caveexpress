@@ -1,19 +1,19 @@
 #!/bin/bash
 
-export PROJECT=caveexpress
-export ICONDIR=$PROJECT.app/Contents/Resources/$PROJECT.iconset
-export ORIGICON=../caveexpress/contrib/icon-512x512.png
+PROJECT=${1:-caveexpress}
+ICONDIR=$PROJECT.app/Contents/Resources/$PROJECT.iconset
+ORIGICON=../caveexpress/contrib/$PROJECT-icon-512x512.png
 
-mkdir $ICONDIR
+mkdir -p $ICONDIR
 
 # Normal screen icons
 for SIZE in 16 32 64 128 256 512; do
-sips -z $SIZE $SIZE $ORIGICON --out $ICONDIR/icon_${SIZE}x${SIZE}.png ;
+	sips -z $SIZE $SIZE $ORIGICON --out $ICONDIR/icon_${SIZE}x${SIZE}.png
 done
 
 # Retina display icons
 for SIZE in 16 32 64 128 256 512; do
-sips -z $SIZE $SIZE $ORIGICON --out $ICONDIR/icon_$(expr $SIZE / 2)x$(expr $SIZE / 2)x2.png ;
+	sips -z $SIZE $SIZE $ORIGICON --out $ICONDIR/icon_$(expr $SIZE / 2)x$(expr $SIZE / 2)x2.png
 done
 
 # Make a multi-resolution Icon
