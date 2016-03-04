@@ -20,13 +20,13 @@ UICavePackerMapOptionsWindow::UICavePackerMapOptionsWindow (IFrontend *frontend,
 	UINodeMainButton* button = new UINodeMainButton(frontend, tr("Solve"));
 	button->setOnActivate(CMD_UI_POP ";solve");
 
-	UINodeMainButton* skipButton = new UINodeMainButton(frontend, tr("Skip"));
-	skipButton->setOnActivate(CMD_UI_POP ";finish");
-	skipButton->putUnder(_restartMap, 0.02f);
+	_skipButton = new UINodeMainButton(frontend, tr("Skip"));
+	_skipButton->setOnActivate(CMD_UI_POP ";finish");
+	_skipButton->putUnder(_restartMap, 0.02f);
 	if (_backButton == nullptr) {
-		_panel->add(skipButton);
+		_panel->add(_skipButton);
 	} else {
-		_panel->addBefore(_backButton, skipButton);
+		_panel->addBefore(_backButton, _skipButton);
 	}
 
 	UINodeSlider* autoSolveSlider = new UINodeSlider(frontend, 10.0f, 1000.0f, 10.0f);
@@ -36,7 +36,7 @@ UICavePackerMapOptionsWindow::UICavePackerMapOptionsWindow (IFrontend *frontend,
 
 	_solve->add(button);
 	_solve->add(autoSolveSlider);
-	_solve->putUnder(skipButton, 0.02f);
+	_solve->putUnder(_skipButton, 0.02f);
 
 	if (_backButton == nullptr) {
 		_panel->add(_solve);
@@ -50,9 +50,13 @@ void UICavePackerMapOptionsWindow::onActive ()
 	UIMapOptionsWindow::onActive();
 	if (_serviceProvider.getNetwork().isMultiplayer()) {
 		_solve->setVisible(false);
-	} else if (System.supportPayment()) {
+		_skipButton->setVisible(false);
+		return;
+	}
+	if (System.supportPayment()) {
 		_solve->setVisible(System.hasItem("autosolve"));
 	}
+	_skipButton->setVisible(true);
 }
 
 }
