@@ -391,7 +391,7 @@ bool Network::sendUDP (UDPsocket sock, const IPaddress &address, const IProtocol
 	}
 
 	p->address = address;
-	p->data = const_cast<uint8_t *>(buffer.getBuffer());
+	memcpy(p->data, const_cast<uint8_t *>(buffer.getBuffer()), length);
 	p->len = static_cast<int>(length);
 
 	const int numsent = SDLNet_UDP_Send(sock, -1, p);
