@@ -64,6 +64,7 @@ addons:
     - autoconf
     - automake
     - libtool
+    - libasound2-dev
     - libpulse-dev
     - libaudio-dev
     - libx11-dev
@@ -83,8 +84,6 @@ addons:
     - libegl1-mesa-dev
     - libibus-1.0-dev
     - libgd2-xpm
-    - ia32-libs
-    - ia32-libs-multiarch
     sources:
     - ubuntu-toolchain-r-test
     - zoogie-sdl2-snapshots
