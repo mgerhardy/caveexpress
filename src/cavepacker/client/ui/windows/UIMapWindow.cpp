@@ -147,6 +147,8 @@ void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
 		UI::get().push("introgame");
 	} else if (name == "tutorial0002") {
 		UI::get().push("intropathfinding");
+	} else if (name == "tutorial0003") {
+		UI::get().push("introdeadlock");
 	}
 }
 

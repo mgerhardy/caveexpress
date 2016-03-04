@@ -5,6 +5,7 @@ set(${NAME}-client_SRCS
 	ui/windows/UICavePackerMapOptionsWindow.cpp
 	ui/windows/intro/IntroGame.cpp
 	ui/windows/intro/IntroPathfinding.cpp
+	ui/windows/intro/IntroDeadlock.cpp
 	ui/windows/UIMainWindow.cpp
 	ui/windows/UIMapWindow.cpp
 	CavePackerClientMap.cpp

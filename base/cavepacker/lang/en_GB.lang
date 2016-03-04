@@ -12,7 +12,9 @@ Close|Close
 Continue|Continue
 Controller trigger|Controller trigger
 Create server|Create server
+Deadlock package|Deadlock package
 Decrease map size|Decrease map size
+Delivered package|Delivered package
 Description|Description
 Disconnect|Disconnect
 Editor|Editor
@@ -61,6 +63,7 @@ Please rate the app|Please rate the app
 Quit|Quit
 Quit without saving|Quit without saving
 RMB|RMB
+Red packages are deadlocks - undo your step|Red packages are deadlocks - undo your step
 Redo|Redo
 Reference time in seconds|Reference time in seconds
 Refresh|Refresh
