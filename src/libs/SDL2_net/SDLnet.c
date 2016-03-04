@@ -1,6 +1,6 @@
 /*
   SDL_net:  An example cross-platform network library for use with SDL
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
   Copyright (C) 2012 Simeon Maxein <smaxein@googlemail.com>
 
   This software is provided 'as-is', without any express or implied
@@ -149,7 +149,7 @@ int SDLNet_ResolveHost(IPaddress *address, const char *host, Uint16 port)
 
             hp = gethostbyname(host);
             if ( hp ) {
-                memcpy(&address->host,hp->h_addr,hp->h_length);
+                SDL_memcpy(&address->host,hp->h_addr,hp->h_length);
             } else {
                 retval = -1;
             }
@@ -230,13 +230,13 @@ int SDLNet_GetLocalAddresses(IPaddress *addresses, int maxcount)
     DWORD dwRetVal = 0;
     ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
 
-    pAdapterInfo = (IP_ADAPTER_INFO *) malloc(sizeof (IP_ADAPTER_INFO));
+    pAdapterInfo = (IP_ADAPTER_INFO *) SDL_malloc(sizeof (IP_ADAPTER_INFO));
     if (pAdapterInfo == NULL) {
         return 0;
     }
 
     if ((dwRetVal = GetAdaptersInfo(pAdapterInfo, &ulOutBufLen)) == ERROR_BUFFER_OVERFLOW) {
-        pAdapterInfo = (IP_ADAPTER_INFO *) realloc(pAdapterInfo, ulOutBufLen);
+        pAdapterInfo = (IP_ADAPTER_INFO *) SDL_realloc(pAdapterInfo, ulOutBufLen);
         if (pAdapterInfo == NULL) {
             return 0;
         }
@@ -245,7 +245,7 @@ int SDLNet_GetLocalAddresses(IPaddress *addresses, int maxcount)
 
     if (dwRetVal == NO_ERROR) {
         for (pAdapter = pAdapterInfo; pAdapter; pAdapter = pAdapter->Next) {
-            for (pAddress = &pAdapterInfo->IpAddressList; pAddress; pAddress = pAddress->Next) {
+            for (pAddress = &pAdapter->IpAddressList; pAddress; pAddress = pAddress->Next) {
                 if (count < maxcount) {
                     addresses[count].host = inet_addr(pAddress->IpAddress.String);
                     addresses[count].port = 0;
@@ -254,7 +254,7 @@ int SDLNet_GetLocalAddresses(IPaddress *addresses, int maxcount)
             }
         }
     }
-    free(pAdapterInfo);
+    SDL_free(pAdapterInfo);
 #endif
     return count;
 }
@@ -291,7 +291,7 @@ Uint16 SDLNet_Read16(void *areap)
 
 Uint32 SDLNet_Read32(const void *areap)
 {
-    return (SDL_SwapBE32(*(const Uint32 *)(areap)));
+    return (SDL_SwapBE32(*(Uint32 *)(areap)));
 }
 
 #endif /* !defined(WITHOUT_SDL) && !SDL_DATA_ALIGNED */

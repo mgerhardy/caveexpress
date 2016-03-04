@@ -1,6 +1,6 @@
 /*
   SDL_net:  An example cross-platform network library for use with SDL
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -49,7 +49,7 @@ TCPsocket SDLNet_TCP_Open(IPaddress *ip)
     struct sockaddr_in sock_addr;
 
     /* Allocate a TCP socket structure */
-    sock = (TCPsocket)malloc(sizeof(*sock));
+    sock = (TCPsocket)SDL_malloc(sizeof(*sock));
     if ( sock == NULL ) {
         SDLNet_SetError("Out of memory");
         goto error_return;
@@ -67,7 +67,7 @@ TCPsocket SDLNet_TCP_Open(IPaddress *ip)
 
     // #########  Connecting to remote
 
-        memset(&sock_addr, 0, sizeof(sock_addr));
+        SDL_memset(&sock_addr, 0, sizeof(sock_addr));
         sock_addr.sin_family = AF_INET;
         sock_addr.sin_addr.s_addr = ip->host;
         sock_addr.sin_port = ip->port;
@@ -83,7 +83,7 @@ TCPsocket SDLNet_TCP_Open(IPaddress *ip)
 
     // ##########  Binding locally
 
-        memset(&sock_addr, 0, sizeof(sock_addr));
+        SDL_memset(&sock_addr, 0, sizeof(sock_addr));
         sock_addr.sin_family = AF_INET;
         sock_addr.sin_addr.s_addr = INADDR_ANY;
         sock_addr.sin_port = ip->port;
@@ -177,7 +177,7 @@ TCPsocket SDLNet_TCP_Accept(TCPsocket server)
     server->ready = 0;
 
     /* Allocate a TCP socket structure */
-    sock = (TCPsocket)malloc(sizeof(*sock));
+    sock = (TCPsocket)SDL_malloc(sizeof(*sock));
     if ( sock == NULL ) {
         SDLNet_SetError("Out of memory");
         goto error_return;
@@ -292,6 +292,6 @@ void SDLNet_TCP_Close(TCPsocket sock)
         if ( sock->channel != INVALID_SOCKET ) {
             closesocket(sock->channel);
         }
-        free(sock);
+        SDL_free(sock);
     }
 }
