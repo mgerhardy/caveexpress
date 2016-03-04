@@ -299,7 +299,7 @@ public:
 	// UINode
 	virtual bool isActive () const override;
 	virtual void render (int x, int y) const override;
-	virtual void removeFocus () override;
+	virtual void removeFocus (UIFocusRemovalReason reason) override;
 	virtual void update (uint32_t deltaTime) override;
 	virtual bool onKeyPress (int32_t key, int16_t modifier) override;
 	virtual bool onKeyRelease (int32_t key) override;

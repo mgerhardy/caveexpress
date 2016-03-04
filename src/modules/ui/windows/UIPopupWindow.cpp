@@ -19,9 +19,9 @@ public:
 		setBackgroundColor(colorGrayAlpha);
 	}
 
-	void removeFocus () override
+	void removeFocus (UIFocusRemovalReason reason) override
 	{
-		UINodeButton::removeFocus();
+		UINodeButton::removeFocus(reason);
 		setBackgroundColor(colorNull);
 	}
 

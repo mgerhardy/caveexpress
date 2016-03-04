@@ -33,7 +33,7 @@ public:
 	void show () override { setVisible(true); }
 
 	// UINode
-	void removeFocus () override;
+	void removeFocus (UIFocusRemovalReason reason) override;
 	bool isActive () const override;
 	void update (uint32_t deltaTime) override;
 	bool onPush () override;

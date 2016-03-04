@@ -62,7 +62,7 @@ void UIWindow::onActive ()
 {
 	int x, y;
 	UI::get().getCursorPosition(x, y);
-	if (!checkFocus(x, y)) {
+	if (!checkFocus(FOCUSADD_ACTIVE, x, y)) {
 		addFirstFocus();
 	}
 	System.track("activewindow", getId());

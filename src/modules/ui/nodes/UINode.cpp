@@ -483,7 +483,7 @@ bool UINode::prevFocus (bool cursorup)
 		}
 
 		// nothing in the node wanted the focus - so remove it
-		nodePtr->removeFocus();
+		nodePtr->removeFocus(FOCUS_PREV);
 		// and now try the remaining nodes
 		for (++i; i != _nodes.rend(); ++i) {
 			UINode* focusNodePtr = *i;
@@ -495,7 +495,7 @@ bool UINode::prevFocus (bool cursorup)
 		break;
 	}
 
-	removeFocus();
+	removeFocus(FOCUS_PREV);
 
 	return false;
 }
@@ -522,7 +522,7 @@ bool UINode::nextFocus (bool cursordown)
 			return true;
 		}
 
-		nodePtr->removeFocus();
+		nodePtr->removeFocus(FOCUS_NEXT);
 		for (++i; i != _nodes.end(); ++i) {
 			UINode* focusNodePtr = *i;
 			if (focusNodePtr->addFirstFocus()) {
@@ -533,7 +533,7 @@ bool UINode::nextFocus (bool cursordown)
 		break;
 	}
 
-	removeFocus();
+	removeFocus(FOCUS_NEXT);
 
 	return false;
 }
@@ -546,7 +546,7 @@ bool UINode::addLastFocus ()
 	bool focus = false;
 	for (UINodeListRevIter i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
 		UINode* nodePtr = *i;
-		nodePtr->removeFocus();
+		nodePtr->removeFocus(FOCUS_LAST);
 		if (!focus) {
 			focus = nodePtr->addLastFocus();
 			if (focus) {
@@ -569,7 +569,7 @@ bool UINode::addFirstFocus ()
 
 	bool focus = false;
 	for (UINode* nodePtr : _nodes) {
-		nodePtr->removeFocus();
+		nodePtr->removeFocus(FOCUS_FIRST);
 		if (focus)
 			continue;
 		focus = nodePtr->addFirstFocus();
@@ -619,8 +619,23 @@ bool UINode::runFocusNode ()
 	return execute();
 }
 
-bool UINode::checkFocus (int32_t x, int32_t y)
+bool UINode::checkFocus (UIFocusAddReason reason, int32_t x, int32_t y)
 {
+	UIFocusRemovalReason removalReason;
+	switch (reason) {
+	case FOCUSADD_FINGERMOTION:
+		removalReason = FOCUS_CLICKED_FINGER_OUT;
+		break;
+	case FOCUSADD_MOUSEMOTION:
+		removalReason = FOCUS_MOVE_MOUSE_OUT;
+		break;
+	case FOCUSADD_ACTIVE:
+		removalReason = FOCUS_FIRST;
+		break;
+	default:
+		removalReason = FOCUS_FIRST;
+		break;
+	}
 	if (x <= -1 || y <= -1 || !isVisible() || !isActive()) {
 		if (hasFocus()) {
 			if (x <= -1 || y <= -1)
@@ -629,7 +644,7 @@ bool UINode::checkFocus (int32_t x, int32_t y)
 				Log::debug(LOG_UI, "remove focus from invisible node %s", getId().c_str());
 			else if (!isActive())
 				Log::debug(LOG_UI, "remove focus from inactive node %s", getId().c_str());
-			removeFocus();
+			removeFocus(removalReason);
 		}
 		return false;
 	}
@@ -650,7 +665,7 @@ bool UINode::checkFocus (int32_t x, int32_t y)
 			if (focusOnChildren) {
 				focusX = focusY = -1;
 			}
-			const bool focus = nodePtr->checkFocus(focusX, focusY);
+			const bool focus = nodePtr->checkFocus(reason, focusX, focusY);
 			focusOnChildren |= focus;
 		}
 
@@ -664,14 +679,14 @@ bool UINode::checkFocus (int32_t x, int32_t y)
 
 	if (hasFocus()) {
 		Log::debug(LOG_UI, "nothing left that wants the focus - so remove it from node %s", getId().c_str());
-		removeFocus();
+		removeFocus(removalReason);
 	}
 	return false;
 }
 
 bool UINode::onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 {
-	const bool focus = checkFocus(x, y);
+	const bool focus = checkFocus(FOCUSADD_FINGERMOTION, x, y);
 	if (!focus)
 		return false;
 
@@ -772,7 +787,7 @@ void UINode::addFocus (int32_t x, int32_t y)
 		setAlpha(_focusAlpha);
 }
 
-void UINode::removeFocus ()
+void UINode::removeFocus (UIFocusRemovalReason reason)
 {
 	if (!_focus)
 		return;
@@ -791,7 +806,7 @@ void UINode::removeFocus ()
 	for (UINode* nodePtr : _nodes) {
 		if (!nodePtr->hasFocus())
 			continue;
-		nodePtr->removeFocus();
+		nodePtr->removeFocus(reason);
 	}
 }
 
@@ -1100,7 +1115,7 @@ void UINode::setEnabled (bool enable)
 				parent->addFirstFocus();
 			}
 		} else {
-			removeFocus();
+			removeFocus(FOCUS_DISABLENODE);
 		}
 	}
 
@@ -1120,7 +1135,7 @@ void UINode::setVisible (bool visible)
 				parent->addFirstFocus();
 			}
 		} else {
-			removeFocus();
+			removeFocus(FOCUS_INVISBLENODE);
 		}
 	}
 	_visible = visible;

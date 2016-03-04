@@ -155,7 +155,7 @@ void IUIMapWindow::onPushedOver ()
 bool IUIMapWindow::onPop ()
 {
 	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		(*i)->removeFocus();
+		(*i)->removeFocus(FOCUS_POP);
 	}
 	Config.setBindingsSpace(BINDINGS_UI);
 	if (_cursorActive)

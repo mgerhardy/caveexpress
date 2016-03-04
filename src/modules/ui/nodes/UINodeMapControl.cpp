@@ -31,9 +31,9 @@ bool UINodeMapControl::isActive () const
 	return _map.isStarted() && !_map.isPause();
 }
 
-void UINodeMapControl::removeFocus ()
+void UINodeMapControl::removeFocus (UIFocusRemovalReason reason)
 {
-	UINode::removeFocus();
+	UINode::removeFocus(reason);
 	const int size = SDL_arraysize(_d);
 	for (int i = 0; i < size; ++i) {
 		DirectionValues& dv = _d[i];

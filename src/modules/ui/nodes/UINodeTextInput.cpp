@@ -33,7 +33,7 @@ void UINodeTextInput::setHandleInput (bool handleInput)
 	} else {
 		SDL_StopTextInput();
 		setBackgroundColor(colorWhite);
-		UINode::removeFocus();
+		UINode::removeFocus(FOCUS_DISABLENODE);
 	}
 	_handleInput = SDL_IsTextInputActive();
 }
@@ -131,13 +131,19 @@ bool UINodeTextInput::onMouseButtonPress (int32_t x, int32_t y, unsigned char bu
 	return true;
 }
 
-void UINodeTextInput::removeFocus ()
+void UINodeTextInput::removeFocus (UIFocusRemovalReason reason)
 {
 	// focus is removed with the end of the editing
-	if (_handleInput)
+	if (reason != FOCUS_CLICKED_FINGER_OUT && _handleInput) {
 		return;
+	}
 
-	UINode::removeFocus();
+	if (reason == FOCUS_CLICKED_FINGER_OUT) {
+		SDL_StopTextInput();
+		setBackgroundColor(colorWhite);
+	}
+
+	UINode::removeFocus(reason);
 }
 
 bool UINodeTextInput::onPop ()

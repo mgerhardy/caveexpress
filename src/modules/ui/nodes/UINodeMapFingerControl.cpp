@@ -17,9 +17,9 @@ UINodeMapFingerControl::~UINodeMapFingerControl ()
 {
 }
 
-void UINodeMapFingerControl::removeFocus ()
+void UINodeMapFingerControl::removeFocus (UIFocusRemovalReason reason)
 {
-	UINode::removeFocus();
+	UINode::removeFocus(reason);
 	_finger = -1;
 	_lastMoveX = _lastMoveY = _moveX = _moveY = 0;
 	_map.stopFingerAcceleration();

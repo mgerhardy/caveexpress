@@ -398,9 +398,9 @@ bool IUINodeMapEditor::onMouseButtonRelease (int32_t x, int32_t y, unsigned char
 	return false;
 }
 
-void IUINodeMapEditor::removeFocus ()
+void IUINodeMapEditor::removeFocus (UIFocusRemovalReason reason)
 {
-	UINode::removeFocus();
+	UINode::removeFocus(reason);
 	_buttonPressed = 0;
 }
 

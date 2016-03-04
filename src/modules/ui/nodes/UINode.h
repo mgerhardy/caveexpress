@@ -62,6 +62,24 @@ public:
 	};
 #endif
 
+enum UIFocusRemovalReason {
+	FOCUS_NEXT,
+	FOCUS_PREV,
+	FOCUS_MOVE_MOUSE_OUT,
+	FOCUS_CLICKED_FINGER_OUT,
+	FOCUS_LAST,
+	FOCUS_FIRST,
+	FOCUS_DISABLENODE,
+	FOCUS_INVISBLENODE,
+	FOCUS_POP
+};
+
+enum UIFocusAddReason {
+	FOCUSADD_FINGERMOTION,
+	FOCUSADD_MOUSEMOTION,
+	FOCUSADD_ACTIVE
+};
+
 enum UINodeAlign {
 	// horizontal
 	NODE_ALIGN_LEFT = 1 << 0,
@@ -256,7 +274,7 @@ public:
 	// return false if the window that contains this node should not get pushed. true otherwise
 	virtual bool onPush ();
 	virtual void addFocus (int32_t x, int32_t y);
-	virtual void removeFocus ();
+	virtual void removeFocus (UIFocusRemovalReason reason);
 	virtual void update (uint32_t deltaTime);
 	virtual void render (int x, int y) const;
 	virtual void renderBack (int x, int y) const;
@@ -293,7 +311,7 @@ public:
 	float getX () const;
 	float getY () const;
 	virtual bool runFocusNode ();
-	bool checkFocus (int32_t x, int32_t y);
+	bool checkFocus (UIFocusAddReason reason, int32_t x, int32_t y);
 	virtual bool isActive () const;
 	UINode* getNode (const std::string& nodeId, bool check = false);
 	virtual bool nextFocus (bool cursordown);

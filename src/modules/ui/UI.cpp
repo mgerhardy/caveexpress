@@ -423,7 +423,7 @@ bool UI::onFingerRelease (int64_t finger, float x, float y)
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		const bool focus = window->checkFocus(_x, _y);
+		const bool focus = window->checkFocus(FOCUSADD_FINGERMOTION, x, _y);
 		if (focus && window->onFingerRelease(finger, _x, _y, motionFinger))
 			return true;
 		if (window->isModal() || window->isFullscreen())
@@ -442,7 +442,7 @@ bool UI::onFingerPress (int64_t finger, float x, float y)
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		const bool focus = window->checkFocus(_x, _y);
+		const bool focus = window->checkFocus(FOCUSADD_FINGERMOTION, _x, _y);
 		if (focus && window->onFingerPress(finger, _x, _y))
 			return true;
 		if (window->isModal() || window->isFullscreen())
@@ -487,7 +487,7 @@ void UI::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY)
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		const bool focus = window->checkFocus(_cursorX, _cursorY);
+		const bool focus = window->checkFocus(FOCUSADD_MOUSEMOTION, _cursorX, _cursorY);
 		if (focus) {
 			window->onMouseMotion(_cursorX, _cursorY, relX, relY);
 			break;

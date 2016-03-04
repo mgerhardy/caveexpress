@@ -422,9 +422,9 @@ public:
 		return select();
 	}
 
-	void removeFocus () override
+	void removeFocus (UIFocusRemovalReason reason) override
 	{
-		Super::removeFocus();
+		Super::removeFocus(reason);
 		_selectedIndex = -1;
 	}
 

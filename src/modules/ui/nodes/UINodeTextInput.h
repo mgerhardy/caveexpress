@@ -29,7 +29,7 @@ public:
 	bool onKeyPress (int32_t key, int16_t modifier) override;
 	bool onFingerPress (int64_t finger, uint16_t x, uint16_t y) override;
 	bool onMouseButtonPress (int32_t x, int32_t y, unsigned char button) override;
-	void removeFocus () override;
+	void removeFocus (UIFocusRemovalReason reason) override;
 	// override this to not pop a window if we are in edit mode
 	bool onPop () override;
 };
