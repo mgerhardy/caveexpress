@@ -4,6 +4,7 @@ set(${NAME}-client_SRCS
 	ui/nodes/UINodeMap.cpp
 	ui/windows/UICavePackerMapOptionsWindow.cpp
 	ui/windows/intro/IntroGame.cpp
+	ui/windows/intro/IntroPathfinding.cpp
 	ui/windows/UIMainWindow.cpp
 	ui/windows/UIMapWindow.cpp
 	CavePackerClientMap.cpp

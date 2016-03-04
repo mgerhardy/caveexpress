@@ -140,8 +140,14 @@ void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
 	_points->setOwnAndGlobalBest(ownBest, string::toInt(best));
 	_points->setLabel("0");
 
-	if (!_serviceProvider.getNetwork().isMultiplayer() && _campaignManager.firstMap())
+	if (_serviceProvider.getNetwork().isMultiplayer())
+		return;
+
+	if (name == "tutorial0001") {
 		UI::get().push("introgame");
+	} else if (name == "tutorial0002") {
+		UI::get().push("intropathfinding");
+	}
 }
 
 bool UIMapWindow::onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy)

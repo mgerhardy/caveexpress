@@ -3,6 +3,7 @@
 #include "cavepacker/client/ui/windows/UIMainWindow.h"
 #include "cavepacker/client/ui/windows/UIMapWindow.h"
 #include "cavepacker/client/ui/windows/intro/IntroGame.h"
+#include "cavepacker/client/ui/windows/intro/IntroPathfinding.h"
 #include "cavepacker/client/ui/nodes/UINodeMapEditor.h"
 #include "cavepacker/client/ui/nodes/UINodeSpriteSelector.h"
 #include "cavepacker/client/ui/nodes/UINodeEntitySelector.h"
@@ -343,6 +344,7 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIGestureWindow(frontend));
 	ui.addWindow(new UIMapFinishedWindow(frontend, *_campaignManager, serviceProvider, SoundType::NONE));
 	ui.addWindow(new IntroGame(frontend));
+	ui.addWindow(new IntroPathfinding(frontend));
 	ui.addWindow(new UICavePackerMapOptionsWindow(frontend, serviceProvider));
 	ui.addWindow(new UIMultiplayerWindow(frontend, serviceProvider.getMapManager(), serviceProvider));
 	ui.addWindow(new UICreateServerWindow(frontend, serviceProvider.getMapManager()));
