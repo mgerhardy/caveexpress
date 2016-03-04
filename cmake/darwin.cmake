@@ -2,6 +2,16 @@ include(BundleUtilities)
 
 #set(CMAKE_OSX_ARCHITECTURES "i386;x86_64")
 
+macro(cp_osx_get_directory_size DIR OUTVAR)
+	file(GLOB_RECURSE FILES_ "${DIR}/*")
+	set(OUTPUT 0)
+	foreach(FILE ${FILES_})
+		execute_process(COMMAND stat -f%z ${FILE} TIMEOUT 5 OUTPUT_VARIABLE FILESIZE_)
+		math(EXPR OUTPUT "${OUTPUT} + ${FILESIZE_}")
+	endforeach()
+	set(${OUTVAR} ${OUTPUT})
+endmacro()
+
 macro(cp_osx_prepare_content TARGET BUNDLED)
 	if (EXISTS ${ROOT_DIR}/cmake/${TARGET}.xcscheme)
 		configure_file(${ROOT_DIR}/cmake/${TARGET}.xcscheme ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}.xcodeproj/xcshareddata/xcschemes/${TARGET}.xcscheme)
