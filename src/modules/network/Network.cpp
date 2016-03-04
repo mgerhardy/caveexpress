@@ -314,7 +314,7 @@ int Network::send (TCPsocket socket, const ByteStream &buffer)
 {
 	const size_t size = buffer.getSize();
 	const int written = SDLNet_TCP_Send(socket, buffer.getBuffer(), size);
-	if (written == -1 || written != size) {
+	if (written == -1 || written != (int)size) {
 		Log::error(LOG_NETWORK, "%s", getError().c_str());
 	} else {
 		_bytesOut += written;
@@ -356,7 +356,7 @@ int Network::sendToClients (int clientMask, const ByteStream& buffer)
 	for (ClientSockets::iterator i = _clients.begin(); i != _clients.end(); ++i) {
 		if (clientMask == 0 || (clientMask & ClientIdToClientMask((*i)->num))) {
 			const int n = send((*i)->socket, buffer);
-			if (n == size) {
+			if (n == (int)size) {
 				++sent;
 			} else {
 				(*i)->disconnect = true;

@@ -36,7 +36,8 @@ UI::UI () :
 		_serviceProvider(nullptr), _eventHandler(nullptr), _frontend(nullptr), _cursorX(-1), _cursorY(-1), _rotateFonts(true), _restart(
 				false), _delayedPop(false), _noPushAllowed(false), _shutdown(false), _motionFinger(false), _cursor(true), _showCursor(
 				false), _time(0) {
-	for (int i = 0; i < SDL_arraysize(_controllerFocusChange); ++i) {
+	const int size = SDL_arraysize(_controllerFocusChange);
+	for (int i = 0; i < size; ++i) {
 		_controllerFocusChange[i] = false;
 	}
 	_threadId = SDL_ThreadID();

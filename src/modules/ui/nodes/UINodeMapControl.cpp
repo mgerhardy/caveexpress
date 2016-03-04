@@ -12,7 +12,8 @@
 UINodeMapControl::UINodeMapControl (IFrontend *frontend, IUINodeMap *mapNode, bool continuousMovement) :
 		UINode(frontend), _map(mapNode->getMap()), _useTriggers(Config.isGameControllerTriggerActive()), _continuousMovement(continuousMovement)
 {
-	for (int i = 0; i < SDL_arraysize(_d); ++i) {
+	const int size = SDL_arraysize(_d);
+	for (int i = 0; i < size; ++i) {
 		_d[i].direction = 0;
 		_d[i].oldDirection = 0;
 		_d[i].repeated = false;
@@ -33,7 +34,8 @@ bool UINodeMapControl::isActive () const
 void UINodeMapControl::removeFocus ()
 {
 	UINode::removeFocus();
-	for (int i = 0; i < SDL_arraysize(_d); ++i) {
+	const int size = SDL_arraysize(_d);
+	for (int i = 0; i < size; ++i) {
 		DirectionValues& dv = _d[i];
 		if (dv.direction || dv.oldDirection) {
 			_map.resetAcceleration(0, i);
@@ -47,7 +49,8 @@ void UINodeMapControl::update (uint32_t deltaTime)
 {
 	_useTriggers = Config.isGameControllerTriggerActive();
 	if (_map.isPause()) {
-		for (int i = 0; i < SDL_arraysize(_d); ++i) {
+		const int size = SDL_arraysize(_d);
+		for (int i = 0; i < size; ++i) {
 			DirectionValues& dv = _d[i];
 			dv.direction = 0;
 			dv.repeated = false;
@@ -57,7 +60,8 @@ void UINodeMapControl::update (uint32_t deltaTime)
 
 	UINode::update(deltaTime);
 
-	for (int i = 0; i < SDL_arraysize(_d); ++i) {
+	const int size = SDL_arraysize(_d);
+	for (int i = 0; i < size; ++i) {
 		DirectionValues& dv = _d[i];
 		if (dv.direction != 0) {
 			if (!dv.repeated || _continuousMovement) {
@@ -86,7 +90,8 @@ void UINodeMapControl::renderDebug (int x, int y, int textY) const
 	const int cy = getRenderCenterY();
 
 	const int width = 80;
-	for (int i = 0; i < SDL_arraysize(_d); ++i) {
+	const int size = SDL_arraysize(_d);
+	for (int i = 0; i < size; ++i) {
 		const DirectionValues& dv = _d[i];
 		if (dv.direction & DIRECTION_LEFT) {
 			renderLine(cx, cy, cx - width, cy, colorGreen);
@@ -120,7 +125,8 @@ bool UINodeMapControl::onControllerMotion (uint8_t axis, int value, uint32_t id)
 {
 	UINode::onControllerMotion(axis, value, id);
 	if (_map.isPause()) {
-		for (int i = 0; i < SDL_arraysize(_d); ++i) {
+		const int size = SDL_arraysize(_d);
+		for (int i = 0; i < size; ++i) {
 			DirectionValues& dv = _d[i];
 			dv.direction = 0;
 			dv.repeated = false;
