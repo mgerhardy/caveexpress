@@ -81,7 +81,7 @@ TEST_F(PathfindingTest, testSimpleRoute) {
 #endif
 	std::vector<int> path;
 	ASSERT_TRUE(astar(s, s.getIndex(4, 3), s.getIndex(6, 1), path)) << "Could not find the route from 5, 4 to 7, 2";
-	ASSERT_EQ(7, path.size());
+	ASSERT_EQ(7u, path.size());
 	ASSERT_EQ(s.getIndex(4, 3), path[0]);
 	ASSERT_EQ(s.getIndex(4, 4), path[1]);
 	ASSERT_EQ(s.getIndex(5, 4), path[2]);

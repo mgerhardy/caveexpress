@@ -35,10 +35,10 @@ TEST(ByteStreamTest, testCopy) {
 
 	for (std::vector<ByteStream>::const_iterator i = v.begin(); i != v.end(); ++i) {
 		ByteStream s = *i;
-		ASSERT_EQ(4001, s.getSize());
+		ASSERT_EQ(4001u, s.getSize());
 	}
 
-	ASSERT_EQ(1000, v.size());
+	ASSERT_EQ(1000u, v.size());
 }
 
 TEST(ByteStreamTest, testWriteByte) {
@@ -58,10 +58,10 @@ TEST(ByteStreamTest, testWriteShort) {
 TEST(ByteStreamTest, testWriteEmptyString) {
 	ByteStream byteStream;
 	byteStream.addString("");
-	ASSERT_EQ(1, byteStream.getSize());
+	ASSERT_EQ(1u, byteStream.getSize());
 	const std::string empty = byteStream.readString();
 	ASSERT_EQ("", empty);
-	ASSERT_EQ(0, byteStream.getSize());
+	ASSERT_EQ(0u, byteStream.getSize());
 }
 
 TEST(ByteStreamTest, testWriteInt) {

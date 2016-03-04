@@ -131,21 +131,21 @@ TEST(CampaignTest, testUpdateMapValues) {
 	campaignMap->reset();
 	ASSERT_TRUE(mgr.updateMapValues(campaignMap->getId(), 100, 4, 1));
 	ASSERT_EQ(1, (int)campaignMap->getStars()) << "stars don't match";
-	ASSERT_EQ(4, campaignMap->getTime()) << "time doesn't match";
-	ASSERT_EQ(100, campaignMap->getFinishPoints()) << "points don't match";
+	ASSERT_EQ(4u, campaignMap->getTime()) << "time doesn't match";
+	ASSERT_EQ(100u, campaignMap->getFinishPoints()) << "points don't match";
 	ASSERT_TRUE(campaign->loadProgress()) << "failed to load the campaign progress";
 	ASSERT_TRUE(mgr.updateMapValues(campaignMap->getId(), 150, 3, 2));
 	ASSERT_EQ(2, (int)campaignMap->getStars()) << "stars don't match";
-	ASSERT_EQ(3, campaignMap->getTime()) << "time doesn't match";
-	ASSERT_EQ(150, campaignMap->getFinishPoints()) << "points don't match";
+	ASSERT_EQ(3u, campaignMap->getTime()) << "time doesn't match";
+	ASSERT_EQ(150u, campaignMap->getFinishPoints()) << "points don't match";
 	ASSERT_TRUE(campaign->loadProgress())<< "failed to load the campaign progress";
 	ASSERT_EQ(2, (int)campaignMap->getStars()) << "stars don't match after loading";
-	ASSERT_EQ(3, campaignMap->getTime()) << "time doesn't match after loading";
-	ASSERT_EQ(150, campaignMap->getFinishPoints()) << "points don't match after loading";
+	ASSERT_EQ(3u, campaignMap->getTime()) << "time doesn't match after loading";
+	ASSERT_EQ(150u, campaignMap->getFinishPoints()) << "points don't match after loading";
 	ASSERT_TRUE(mgr.updateMapValues(campaignMap->getId(), 1, 10, 1));
 	ASSERT_EQ(2, (int)campaignMap->getStars()) << "stars don't match after loading";
-	ASSERT_EQ(3, campaignMap->getTime()) << "time doesn't match after loading";
-	ASSERT_EQ(150, campaignMap->getFinishPoints()) << "points don't match after loading";
+	ASSERT_EQ(3u, campaignMap->getTime()) << "time doesn't match after loading";
+	ASSERT_EQ(150u, campaignMap->getFinishPoints()) << "points don't match after loading";
 }
 
 TEST(CampaignTest, DISABLED_testResetProgress) {

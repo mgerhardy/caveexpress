@@ -23,10 +23,6 @@ public:
 };
 
 namespace {
-const uint8_t BYTE_ADD = 1;
-const int16_t SHORT_ADD = 64;
-const int32_t INT_ADD = 128;
-
 const char *LOCALHOST = "localhost";
 const int PORT = 4567;
 }

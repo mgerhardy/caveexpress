@@ -19,16 +19,16 @@ public:
 TEST(EnumTest, testNew) {
 	FooEnum test_1;
 	FooEnum test_2;
-	ASSERT_EQ(1, test_1.id);
-	ASSERT_EQ(2, test_2.id);
+	ASSERT_EQ(1u, test_1.id);
+	ASSERT_EQ(2u, test_2.id);
 	ASSERT_EQ(test_1, test_1);
 	ASSERT_NE(test_2, test_1);
 	ASSERT_EQ(FooEnum::get(1), test_1);
 
 	BarEnum test2_1;
 	BarEnum test2_2;
-	ASSERT_EQ(1, test2_1.id);
-	ASSERT_EQ(2, test2_2.id);
+	ASSERT_EQ(1u, test2_1.id);
+	ASSERT_EQ(2u, test2_2.id);
 	ASSERT_EQ(test2_1, test2_1);
 	ASSERT_NE(test2_2, test2_1);
 	ASSERT_EQ(BarEnum::get(1), test2_1);
