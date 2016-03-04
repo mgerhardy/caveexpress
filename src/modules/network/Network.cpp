@@ -398,12 +398,12 @@ bool Network::sendUDP (UDPsocket sock, const IPaddress &address, const IProtocol
 	if (numsent <= 0) {
 		Log::error(LOG_NETWORK, "failed to send packet");
 		Log::error(LOG_NETWORK, "%s", getError().c_str());
-		SDL_free(p);
+		SDLNet_FreePacket(p);
 		return false;
 	}
 
 	_bytesOut += p->len;
-	SDL_free(p);
+	SDLNet_FreePacket(p);
 	return true;
 #else
 	return false;
