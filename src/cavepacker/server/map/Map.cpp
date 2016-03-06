@@ -79,7 +79,7 @@ int Map::solve ()
 	triggerRestart();
 	_autoSolve = true;
 	_serviceProvider->getNetwork().sendToAllClients(AutoSolveStartedMessage());
-	return _solution.size();
+	return (int)_solution.size();
 }
 
 std::string Map::getSolution (const std::string& name)
@@ -540,7 +540,7 @@ bool Map::spawnPlayer (Player* player)
 {
 	SDL_assert(_entityRemovalAllowed);
 
-	const int startPosIdx = _players.size();
+	const int startPosIdx = (int)_players.size();
 	int col, row;
 	if (!getStartPosition(startPosIdx, col, row)) {
 		Log::error(LOG_GAMEIMPL, "no player position for index %i", startPosIdx);
@@ -1011,7 +1011,7 @@ void Map::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 
 int Map::getMaxPlayers() const
 {
-	return _startPositions.size();
+	return (int)_startPositions.size();
 }
 
 void Map::triggerPause ()
