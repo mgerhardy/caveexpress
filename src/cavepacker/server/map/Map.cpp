@@ -663,7 +663,7 @@ bool Map::initPlayer (Player* player)
 	INetwork& network = _serviceProvider->getNetwork();
 	const ClientId clientId = player->getClientId();
 	Log::info(LOG_GAMEIMPL, "init player %i", player->getID());
-	const MapSettingsMessage mapSettingsMsg(_settings, _startPositions.size());
+	const MapSettingsMessage mapSettingsMsg(_settings, (int)_startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);
 
 	const InitDoneMessage msgInit(player->getID(), 0, 0, 0);
