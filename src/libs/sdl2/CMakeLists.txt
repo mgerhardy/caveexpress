@@ -1305,6 +1305,8 @@ elseif(APPLE)
     list(APPEND EXTRA_LIBS ${QUARTZCORE})
     find_library(COREMOTION CoreMotion)
     list(APPEND EXTRA_LIBS ${COREMOTION})
+    find_library(OPENGLES OpenGLES)
+    list(APPEND EXTRA_LIBS ${OPENGLES})
   endif()
 
   # iOS hack needed - http://code.google.com/p/ios-cmake/ ?
