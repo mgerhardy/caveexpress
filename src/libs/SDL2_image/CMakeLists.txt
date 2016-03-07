@@ -29,7 +29,7 @@ set(SRCS
 	IMG_xpm.c
 	IMG_xv.c
 	)
-if (DARWIN)
+if (DARWIN OR IOS)
 	list(APPEND SRCS
 		IMG_ImageIO.m
 	)
