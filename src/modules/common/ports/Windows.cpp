@@ -69,63 +69,9 @@ std::string Windows::getCurrentUser ()
 	return std::string(userName);
 }
 
-std::string Windows::getCurrentWorkingDir ()
-{
-	char cwd[256];
-
-	if (_getcwd(cwd, sizeof(cwd) - 1) == nullptr) {
-		return "";
-	}
-	cwd[sizeof(cwd) - 1] = '\0';
-
-	return std::string(cwd) + "/";
-}
-
 std::string Windows::normalizePath (const std::string& path)
 {
 	return string::replaceAll(string::toLower(path), "\\", "/");
-}
-
-std::string Windows::getDatabaseDirectory ()
-{
-	return getHomeDirectory();
-}
-
-typedef HRESULT (WINAPI *GetFolderPath_t) (HWND hwndOwner, int nFolder, HANDLE hToken, DWORD dwFlags, LPTSTR pszPath);
-
-std::string Windows::getHomeDirectory ()
-{
-	TCHAR pathBuf[MAX_PATH];
-	std::string path;
-	HMODULE shfolder;
-
-	shfolder = LoadLibrary("shfolder.dll");
-	if (shfolder == nullptr) {
-		Log::error(LOG_COMMON, "Unable to load SHFolder.dll");
-		return "";
-	}
-
-	GetFolderPath_t getFolderPath = (GetFolderPath_t) GetProcAddress(shfolder, "SHGetFolderPathA");
-	if (getFolderPath == nullptr) {
-		Log::error(LOG_COMMON, "Unable to find SHGetFolderPathA in SHFolder.dll");
-		FreeLibrary(shfolder);
-		return "";
-	}
-
-	if (!SUCCEEDED(getFolderPath(nullptr, CSIDL_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, pathBuf))) {
-		Log::error(LOG_COMMON, "Unable to detect CSIDL_APPDATA");
-		FreeLibrary(shfolder);
-		return "";
-	}
-
-	path.append(pathBuf).append("\\" + Singleton<Application>::getInstance().getName() + "\\");
-	FreeLibrary(shfolder);
-
-	if (!mkdir(path)) {
-		Log::error(LOG_COMMON, "Unable to create directory \"%s\"", path.c_str());
-		return "";
-	}
-	return path;
 }
 
 DirectoryEntries Windows::listDirectory (const std::string& basedir, const std::string& subdir)

@@ -55,7 +55,6 @@ public:
 	void exit (const std::string& reason, int errorCode) override;
 	std::string getHomeDirectory () override;
 	std::string getCurrentWorkingDir () override { return ""; }
-	std::string getDatabaseDirectory () override;
 	void achievementUnlocked (const std::string& id, bool increment) override;
 	bool hasAchievement (const std::string& id) override;
 	bool hasTouch () const override;

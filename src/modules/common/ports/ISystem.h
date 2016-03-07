@@ -3,6 +3,7 @@
 #include "common/IFrontend.h"
 #include "common/DateUtil.h"
 #include "common/Log.h"
+#include "common/Application.h"
 #include <string>
 #include <vector>
 #include <SDL.h>
@@ -41,7 +42,14 @@ public:
 		exit("quitting via signal", s);
 	}
 
-	virtual std::string getCurrentWorkingDir () = 0;
+	virtual std::string getCurrentWorkingDir () {
+		char* baseDir = SDL_GetBasePath();
+		if (baseDir == nullptr)
+			return "";
+		std::string dir(baseDir);
+		SDL_free(baseDir);
+		return dir;
+	}
 
 	virtual std::string getCurrentUser () = 0;
 
@@ -50,9 +58,18 @@ public:
 	virtual void syncFiles() {}
 
 	// return a slash terminates path to the home directory where the game saves its data to
-	virtual std::string getHomeDirectory () = 0;
+	virtual std::string getHomeDirectory () {
+		char* homeDir = SDL_GetPrefPath("", Singleton<Application>::getInstance().getName().c_str());
+		if (homeDir == nullptr)
+			return "";
+		std::string dir(homeDir);
+		SDL_free(homeDir);
+		return dir;
+	}
 
-	virtual std::string getDatabaseDirectory () = 0;
+	virtual std::string getDatabaseDirectory () {
+		return getHomeDirectory();
+	}
 
 #ifndef _MSC_VER
 #ifndef EMSCRIPTEN
@@ -119,6 +136,7 @@ public:
 
 	virtual bool isSmallScreen (IFrontend* frontend) { return frontend->getWidth() <= 1024 || frontend->getHeight() <= 768; }
 
+	// returns true if you can switch between fullscreen and windowed mode
 	virtual bool isFullscreenSupported () { return true; }
 
 	virtual bool canDisableGameController () { return true; }

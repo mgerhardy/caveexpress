@@ -11,7 +11,6 @@ public:
 	void showAds (bool show) override;
 	int openURL (const std::string& url, bool newWindow) const override;
 	bool isFullscreenSupported () override { return false; }
-	std::string getHomeDirectory () override;
 	bool supportsUserContent () const override { return false; }
 	std::string getRateURL (const std::string& packageName) const override;
 	virtual bool hasTouch () const override { return true; }

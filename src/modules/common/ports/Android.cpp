@@ -257,12 +257,6 @@ bool Android::testException ()
 	return false;
 }
 
-std::string Android::getDatabaseDirectory ()
-{
-	// data/data/your.game.id/databases
-	return getHomeDirectory();
-}
-
 bool Android::hasMouseOrFinger ()
 {
 	return !isOUYA();

@@ -18,14 +18,3 @@ int iosOpenURL (const std::string& url) {
 	return -1;
 #endif
 }
-
-std::string iosGetHomeDirectory() {
-#if 0
-	@autoreleasepool
-	{
-		return [NSHomeDirectory() UTF8String];
-	}
-#else
-	return "";
-#endif
-}

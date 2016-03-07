@@ -14,14 +14,7 @@ public:
 	Unix ();
 	virtual ~Unix ();
 
-	// ISystem implementation
-	virtual std::string getCurrentWorkingDir () override;
-
 	virtual std::string getCurrentUser () override;
-
-	virtual std::string getHomeDirectory () override;
-
-	virtual std::string getDatabaseDirectory () override;
 
 	virtual std::string normalizePath (const std::string& path) override;
 

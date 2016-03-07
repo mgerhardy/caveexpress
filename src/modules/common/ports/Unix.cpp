@@ -53,44 +53,9 @@ Unix::~Unix ()
 {
 }
 
-std::string Unix::getCurrentWorkingDir ()
-{
-	char cwd[256];
-
-	if (getcwd(cwd, sizeof(cwd) - 1) == nullptr)
-		return "";
-	cwd[sizeof(cwd) - 1] = '\0';
-
-	return std::string(cwd) + "/";
-}
-
 std::string Unix::getCurrentUser ()
 {
 	return _user;
-}
-
-std::string Unix::getDatabaseDirectory ()
-{
-	return getHomeDirectory();
-}
-
-std::string Unix::getHomeDirectory ()
-{
-	const char* homeDir = ::SDL_getenv("XDG_DATA_HOME");
-	std::string dir;
-	if (homeDir == nullptr) {
-		homeDir = ::SDL_getenv("HOME");
-		if (homeDir == nullptr || homeDir[0] == '\0')
-			return "";
-		dir = std::string(homeDir) + "/.local/share";
-	} else {
-		dir = std::string(homeDir);
-	}
-
-	dir += "/" + Singleton<Application>::getInstance().getName() + "/";
-	if (!mkdir(dir))
-		return "";
-	return dir;
 }
 
 std::string Unix::normalizePath (const std::string& path)

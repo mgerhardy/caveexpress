@@ -8,10 +8,7 @@ public:
 	Windows ();
 	virtual ~Windows ();
 
-	std::string getCurrentWorkingDir () override;
 	std::string getCurrentUser () override;
-	std::string getHomeDirectory () override;
-	std::string getDatabaseDirectory () override;
 	std::string normalizePath (const std::string& path) override;
 	std::string getRateURL (const std::string& packageName) const override;
 	void exit (const std::string& reason, int errorCode) override;

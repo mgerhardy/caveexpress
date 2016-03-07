@@ -13,17 +13,6 @@ Darwin::~Darwin ()
 {
 }
 
-std::string Darwin::getHomeDirectory ()
-{
-	const std::string& appName = Singleton<Application>::getInstance().getName();
-	char* home = darwinGetHomeDirectory(appName);
-	if (home == nullptr)
-		return "";
-	std::string h(home);
-	SDL_free(home);
-	return h;
-}
-
 int Darwin::openURL (const std::string& url, bool) const
 {
 	CFURLRef cfurl = CFURLCreateWithBytes(nullptr, (const uint8_t *) url.c_str(),

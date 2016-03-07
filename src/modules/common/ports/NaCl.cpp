@@ -45,11 +45,6 @@ std::string NaCl::getCurrentUser ()
 	return "NaCl";
 }
 
-std::string NaCl::getDatabaseDirectory ()
-{
-	return getHomeDirectory();
-}
-
 std::string NaCl::getHomeDirectory ()
 {
 	if (!mkdir(HOMEDIR))

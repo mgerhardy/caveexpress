@@ -23,8 +23,6 @@ public:
 
 	virtual std::string getHomeDirectory () override;
 
-	virtual std::string getDatabaseDirectory () override;
-
 	virtual std::string normalizePath (const std::string& path) override;
 
 	virtual bool supportsUserContent () const override { return false; }

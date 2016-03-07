@@ -6,20 +6,10 @@
 IOS::IOS () :
 		Unix()
 {
-	char *basePath = SDL_GetBasePath();
-	if (basePath != nullptr) {
-		chdir(basePath);
-		SDL_free(basePath);
-	}
 }
 
 IOS::~IOS ()
 {
-}
-
-std::string IOS::getHomeDirectory ()
-{
-	return iosGetHomeDirectory();
 }
 
 void IOS::showAds (bool show)
