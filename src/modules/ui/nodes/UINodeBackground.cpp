@@ -34,7 +34,7 @@ void UINodeBackground::renderMiddle(int x, int y) const {
 	if (_amountVertical > 1)
 		renderImage(getCaveArt(), x + getRenderX(false), y + getRenderY(false) + renderHeight - 2 * _imageHeight);
 
-	const int tileCnt = _tiles.size();
+	const int tileCnt = (int)_tiles.size();
 	if (tileCnt > 0) {
 		for (int row = 3; row <= _amountVertical; ++row) {
 			renderImage(_tiles[(row * _amountHorizontal) % tileCnt],

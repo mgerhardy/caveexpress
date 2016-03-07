@@ -69,7 +69,7 @@ void UINodeTextInput::render (int x, int y) const
 	const int maxChars = _font->getMaxCharsForLength(renderStr, getRenderWidth(false));
 	if (maxChars <= 0)
 		return;
-	const int length = renderStr.size();
+	const int length = (int)renderStr.size();
 	if (maxChars < length) {
 		if (_handleInput) {
 			// we show the end of the string
