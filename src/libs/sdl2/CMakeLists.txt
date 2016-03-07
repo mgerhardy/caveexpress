@@ -202,7 +202,9 @@ if(CYGWIN)
   set(SDL_CFLAGS "${SDL_CFLAGS} -I/usr/include/mingw")
 endif()
 
-add_definitions(-DUSING_GENERATED_CONFIG_H)
+if (LINUX OR EMSCRIPTEN)
+  add_definitions(-DUSING_GENERATED_CONFIG_H)
+endif()
 # General includes
 include_directories(${CMAKE_BINARY_DIR}/include include)
 
@@ -1409,8 +1411,10 @@ endif()
 #   endif()
 # endif()
 
-configure_file("include/SDL_config.h.cmake"
-  "${CMAKE_BINARY_DIR}/SDL_config.h")
+if (LINUX OR EMSCRIPTEN)
+  configure_file("include/SDL_config.h.cmake"
+    "${CMAKE_BINARY_DIR}/SDL_config.h")
+endif()
 
 # Prepare the flags and remove duplicates
 if(EXTRA_LDFLAGS)
@@ -1499,11 +1503,17 @@ FILE(GLOB PLATFORM_SRCS
 	set(ANDROID_LDFLAGS "-Wl,--undefined=Java_org_libsdl_app_SDLActivity_nativeInit")
 endif()
 
+if (LINUX OR EMSCRIPTEN)
+	set(DEFINES USING_GENERATED_CONFIG_H)
+else()
+	set(DEFINES "")
+endif()
+
 cp_add_library(
 	LIB sdl2
 	SRCS ${SOURCE_FILES} ${SDLMAIN_SOURCES} ${PLATFORM_SRCS}
 	CFLAGS "${CMAKE_C_FLAGS} ${SDL_CFLAGS} ${EXTRA_CFLAGS} -Wno-deprecated-declarations -Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare -Wno-ignored-qualifiers -Wno-discarded-qualifiers -Wno-empty-body -Wno-unused-but-set-variable"
-	DEFINES USING_GENERATED_CONFIG_H
+	DEFINES ${DEFINES}
 	LINKERFLAGS ${ANDROID_LDFLAGS} ${EXTRA_LDFLAGS})
 if (NOT SDL2_FOUND)
 	if (CMAKE_DL_LIBS)
