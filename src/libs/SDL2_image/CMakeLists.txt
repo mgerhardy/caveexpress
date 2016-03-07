@@ -1,19 +1,4 @@
 set(SRCS
-	libpng-1.6.2/png.c
-	libpng-1.6.2/pngerror.c
-	libpng-1.6.2/pngget.c
-	libpng-1.6.2/pngmem.c
-	libpng-1.6.2/pngpread.c
-	libpng-1.6.2/pngread.c
-	libpng-1.6.2/pngrio.c
-	libpng-1.6.2/pngrtran.c
-	libpng-1.6.2/pngrutil.c
-	libpng-1.6.2/pngset.c
-	libpng-1.6.2/pngtrans.c
-	libpng-1.6.2/pngwio.c
-	libpng-1.6.2/pngwrite.c
-	libpng-1.6.2/pngwtran.c
-	libpng-1.6.2/pngwutil.c
 	IMG_bmp.c
 	IMG.c
 	IMG_gif.c
@@ -32,6 +17,24 @@ set(SRCS
 if (DARWIN OR IOS)
 	list(APPEND SRCS
 		IMG_ImageIO.m
+	)
+else()
+	list(APPEND SRCS
+		libpng-1.6.2/png.c
+		libpng-1.6.2/pngerror.c
+		libpng-1.6.2/pngget.c
+		libpng-1.6.2/pngmem.c
+		libpng-1.6.2/pngpread.c
+		libpng-1.6.2/pngread.c
+		libpng-1.6.2/pngrio.c
+		libpng-1.6.2/pngrtran.c
+		libpng-1.6.2/pngrutil.c
+		libpng-1.6.2/pngset.c
+		libpng-1.6.2/pngtrans.c
+		libpng-1.6.2/pngwio.c
+		libpng-1.6.2/pngwrite.c
+		libpng-1.6.2/pngwtran.c
+		libpng-1.6.2/pngwutil.c
 	)
 endif()
 cp_add_library(
