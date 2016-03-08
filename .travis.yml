@@ -157,7 +157,7 @@ script:
      fi"
   - "if [ $CP_TARGET == osx ]; then \
         cmake -G Xcode ..;
-        xcodebuild build -target ALL_BUILD -project caveproductions.xcodeproj;
+        xcodebuild build -target ALL_BUILD -project caveproductions.xcodeproj CODE_SIGNING_REQUIRED=NO;
         cd ..;
         ./tests.app/Contents/MacOS/tests --gtest-filter=-Network*;
         ./tests_caveexpress.app/Contents/MacOS/tests_caveexpress --gtest-filter=-Network*;
