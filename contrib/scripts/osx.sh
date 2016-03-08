@@ -11,6 +11,6 @@ BINDIR=$(pwd)
 
 /Applications/CMake.app/Contents/bin/cmake -DCMAKE_INSTALL_PREFIX=${BINDIR} -DCMAKE_BUILD_TYPE=Release -GXcode $DIR/../..
 
-xcodebuild build -target install -project caveproductions.xcodeproj -configuration Release | xcpretty
+xcodebuild build -target install -project caveproductions.xcodeproj -configuration Release
 ${DIR}/create_dmg.sh caveexpress 2.5
 ${DIR}/create_dmg.sh cavepacker 1.5
