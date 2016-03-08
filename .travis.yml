@@ -32,8 +32,35 @@ env:
    #   via the "travis encrypt" command using the project repo's public key
    - secure: "G4/gfaLtLwXbfTNcGwQ2UsGs5b/EAIeRKkfNKoznWhBxs69AesV0SWhqb/Tr+/EcKEVV+Anh1Akj6YQYFIl6/4jNP7SrVPShTAB3Fo0lXlDwzzt+xK2em+2WA05kOMRBKPmoriOFUcAy1QZ8iOX2V5NZhSrF5MpnBsoU/vbHpeg="
   matrix:
-    - USE_BUILTIN=ON
-    - USE_BUILTIN=OFF
+   - CP_TARGET=ios
+   - CP_TARGET=osx
+   - CP_TARGET=linux
+   - CP_TARGET=linux_builtin
+   - CP_TARGET=android
+   - CP_TARGET=windows
+
+matrix:
+  exclude:
+    - os: osx
+      env: CP_TARGET=linux
+    - os: osx
+      env: CP_TARGET=linux_builtin
+    - os: osx
+      env: CP_TARGET=windows
+    - os: linux
+      env: CP_TARGET=ios
+    - os: linux
+      env: CP_TARGET=osx
+    - os: windows
+      env: CP_TARGET=ios
+    - os: windows
+      env: CP_TARGET=osx
+    - os: windows
+      env: CP_TARGET=linux
+    - os: windows
+      env: CP_TARGET=linux_builtin
+    - os: windows
+      env: CP_TARGET=android
 
 addons:
   coverity_scan:
@@ -84,6 +111,13 @@ addons:
     - libegl1-mesa-dev
     - libibus-1.0-dev
     - libgd2-xpm
+    - binutils-mingw-w64-i686
+    - binutils-mingw-w64-x86-64
+    - gcc-mingw-w64-i686
+    - gcc-mingw-w64-x86-64
+    - g++-mingw-w64-i686
+    - g++-mingw-w64-x86-64
+    - mingw-w64
     sources:
     - ubuntu-toolchain-r-test
     - zoogie-sdl2-snapshots
@@ -98,38 +132,36 @@ addons:
 #    - libyajl2-dev
 
 script:
-  - "if [ $TRAVIS_OS_NAME == linux ] && [ $USE_BUILTIN == ON ]; then \
-        export ANDROID_INSTALL_PACKAGES=ON;
-        export ANDROID_RELEASE=OFF;
-        export ANDROID_NDK=`pwd`/android-ndk-r10b;
-        export NDK_ROOT=`pwd`/android-ndk-r10b;
-        export ANDROID_SDK=`pwd`/android-sdk-linux;
-        export PATH=${PATH}:${ANDROID_SDK}/tools:${ANDROID_SDK}/platform-tools:${ANDROID_NDK};
-        ./contrib/scripts/android.sh;
+  - mkdir build-$CP_TARGET
+  - cd build-$CP_TARGET
+  - "if [ $CP_TARGET == android ]; then \
+        cmake .. -DANDROID_INSTALL_PACKAGES=ON -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/android-toolchain.cmake
+        make -j 4
      fi"
-  - "if [ $TRAVIS_OS_NAME == linux ]; then \
-        mkdir build-$TRAVIS_OS_NAME;
-        cd build-$TRAVIS_OS_NAME;
-        cmake .. -DUSE_BUILTIN=$USE_BUILTIN;
-        make -j 4 VERBOSE=1;
+  - "if [ $CP_TARGET == linux ]; then \
+        cmake ..;
+        make -j 4;
         cd ..;
         ./tests --gtest-filter=-Network*;
         ./tests_caveexpress --gtest-filter=-Network*;
      fi"
-  - "if [ $TRAVIS_OS_NAME == osx ]; then \
-        mkdir build-$TRAVIS_OS_NAME;
-        cd build-$TRAVIS_OS_NAME;
-        cmake -G Xcode .. -DUSE_BUILTIN=$USE_BUILTIN;
-        xcodebuild -project caveproductions.xcodeproj -target ALL_BUILD | xcpretty -f `xcpretty-travis-formatter`;
+  - "if [ $CP_TARGET == linux_builtin ]; then \
+        cmake .. -DUSE_BUILTIN=ON;
+        make -j 4;
+        cd ..;
+        ./tests --gtest-filter=-Network*;
+        ./tests_caveexpress --gtest-filter=-Network*;
+     fi"
+  - "if [ $CP_TARGET == osx ]; then \
+        cmake -G Xcode ..;
+        xcodebuild build -target ALL_BUILD -project caveproductions.xcodeproj;
         cd ..;
         ./tests.app/Contents/MacOS/tests --gtest-filter=-Network*;
         ./tests_caveexpress.app/Contents/MacOS/tests_caveexpress --gtest-filter=-Network*;
     fi"
-  - "if [ $TRAVIS_OS_NAME == osx ] && [ $USE_BUILTIN == ON ]; then \
-        mkdir build-ios;
-        cd build-ios;
-        cmake -G Xcode .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake -DUSE_BUILTIN=ON;
-        xcodebuild -project caveproductions.xcodeproj -target ALL_BUILD CODE_SIGNING_REQUIRED=NO | xcpretty -f `xcpretty-travis-formatter`;
+  - "if [ $CP_TARGET == ios ]; then \
+        cmake -G Xcode .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake;
+        xcodebuild build -target ALL_BUILD -project caveproductions.xcodeproj CODE_SIGNING_REQUIRED=NO;
     fi"
 
 notifications:
@@ -138,12 +170,17 @@ notifications:
 
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5"; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then gem install xcpretty; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then gem install xcpretty-travis-formatter; fi
 
-before_install:
+before_script:
   - export TERM=dumb
-  - "if [ $TRAVIS_OS_NAME == linux ]; then \
+  - "if [ $TRAVIS_OS_NAME == osx ] && [ $CP_TARGET == android ]; then \
+        brew update;
+        brew install android-sdk android-ndk;
+        export ANDROID_SDK=/usr/local/opt/android-sdk;
+        export ANDROID_NDK=/usr/local/opt/android-ndk;
+        export PATH=${PATH}:${ANDROID_SDK}/tools:${ANDROID_SDK}/platform-tools:${ANDROID_NDK};
+    fi"
+  - "if [ $TRAVIS_OS_NAME == linux ] && [ $CP_TARGET == android ]; then \
         if [ `uname -m` == x86_64 ]; then \
             wget --quiet --continue http://dl.google.com/android/ndk/android-ndk32-r10b-linux-x86_64.tar.bz2 -O ndk.tgz;
         else
@@ -153,6 +190,9 @@ before_install:
         wget --quiet --continue http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz;
         tar -xzf android-sdk_r24.4.1-linux.tgz;
         echo \"y\" | ./android-sdk-linux/tools/android update sdk -a -u -s -t platform-tools;
+        export ANDROID_SDK=`pwd`/android-sdk-linux;
+        export ANDROID_NDK=`pwd`/android-ndk-r10b;
+        export PATH=${PATH}:${ANDROID_SDK}/tools:${ANDROID_SDK}/platform-tools:${ANDROID_NDK};
     fi"
 
 cache: apt
