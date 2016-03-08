@@ -152,6 +152,9 @@ script:
         ./tests --gtest-filter=-Network*;
         ./tests_caveexpress --gtest-filter=-Network*;
      fi"
+  - "if [ $CP_TARGET == windows ]; then \
+        echo Not yet done;
+     fi"
   - "if [ $CP_TARGET == osx ]; then \
         cmake -G Xcode ..;
         xcodebuild build -target ALL_BUILD -project caveproductions.xcodeproj;
