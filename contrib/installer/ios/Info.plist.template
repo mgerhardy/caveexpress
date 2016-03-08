@@ -42,17 +42,39 @@
     <true/>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+    <key>UIFileSharingEnabled</key>
+    <true/>
+    <key>UILaunchImages</key>
+    <array/>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+    <key>UIRequiresFullScreen</key>
+    <true/>
     <key>UIInterfaceOrientation</key>
     <string>UIInterfaceOrientationLandscapeRight</string>
     <key>UISupportedInterfaceOrientations</key>
     <array>
         <string>UIInterfaceOrientationLandscapeRight</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
     </array>
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+        <string>UIInterfaceOrientationPortrait</string>
+    </array>
+    <key>UIApplicationExitsOnSuspend</key>
+    <false/>
     <key>UIRequiredDeviceCapabilities</key>
     <array>
         <string>opengles-2</string>
         <string>armv7</string>
         <string>accelerometer</string>
+    </array>
+    <key>UIDeviceFamily</key>
+    <array>
+        <integer>1</integer>
+        <integer>2</integer>
     </array>
 </dict>
 </plist>

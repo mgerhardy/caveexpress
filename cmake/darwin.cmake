@@ -49,7 +49,7 @@ endmacro()
 macro(cp_osx_generate_plist_file TARGET)
 	set(PLIST_PATH ${PROJECT_BINARY_DIR}/Info.plist)
 	set_target_properties(${TARGET} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PLIST_PATH})
-	configure_file(${ROOT_DIR}/cmake/MacOSXBundleInfo.plist.template ${PLIST_PATH} @ONLY)
+	configure_file(${ROOT_DIR}/contrib/installer/osx/Info.plist.template ${PLIST_PATH} @ONLY)
 endmacro()
 
 macro(cp_osx_add_target_properties TARGET APPNAME VERSION VERSION_CODE)

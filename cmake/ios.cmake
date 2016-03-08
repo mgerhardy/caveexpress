@@ -44,7 +44,7 @@ endmacro()
 macro(cp_ios_generate_plist_file TARGET)
 	set(PLIST_PATH ${PROJECT_BINARY_DIR}/Info.plist)
 	set_target_properties(${TARGET} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PLIST_PATH})
-	configure_file(${ROOT_DIR}/cmake/iOSBundleInfo.plist.template ${PLIST_PATH} @ONLY)
+	configure_file(${ROOT_DIR}/contrib/installer/ios/Info.plist.template ${PLIST_PATH} @ONLY)
 endmacro()
 
 macro(cp_ios_get_provisioning_profiles PROFILE_NAME PROVISIONG_PROFILES_DIR RESULT)
