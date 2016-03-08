@@ -168,9 +168,6 @@ notifications:
   email:
     - martin.gerhardy@gmail.com
 
-install:
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-5"; fi
-
 before_script:
   - export TERM=dumb
   - "if [ $TRAVIS_OS_NAME == osx ] && [ $CP_TARGET == android ]; then \
