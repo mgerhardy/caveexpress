@@ -37,7 +37,7 @@ macro(cp_ios_prepare_content TARGET BUNDLED)
 			ARGS -c icns -o ${ICNS_TARGET} ${ICONSET_DIR}
 			COMMENT "Create ${TARGET}.icns"
 		)
-		install(FILES ${ICNS_TARGET} DESTINATION ${TARGET}.app/Contents/Resources COMPONENT ${TARGET})
+		install(FILES ${ICNS_TARGET} DESTINATION ${TARGET}.app COMPONENT ${TARGET})
 	endif()
 endmacro()
 
