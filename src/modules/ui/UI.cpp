@@ -423,7 +423,7 @@ bool UI::onFingerRelease (int64_t finger, float x, float y)
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;
-		const bool focus = window->checkFocus(FOCUSADD_FINGERMOTION, x, _y);
+		const bool focus = window->checkFocus(FOCUSADD_FINGERMOTION, _x, _y);
 		if (focus && window->onFingerRelease(finger, _x, _y, motionFinger))
 			return true;
 		if (window->isModal() || window->isFullscreen())
