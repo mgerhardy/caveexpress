@@ -346,6 +346,9 @@ void SDLFrontend::disableScissor ()
 
 void SDLFrontend::minimize ()
 {
+#ifdef __APPLE__
+	SDL_SetWindowFullscreen(_window, SDL_FALSE);
+#endif
 	SDL_MinimizeWindow(_window);
 }
 
