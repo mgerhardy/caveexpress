@@ -120,6 +120,11 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		break;
 	case SDL_WINDOWEVENT:
 		switch (event.window.event) {
+		case SDL_WINDOWEVENT_RESTORED:
+			for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
+				(*i)->onWindowRestored();
+			}
+			break;
 		case SDL_WINDOWEVENT_RESIZED:
 		case SDL_WINDOWEVENT_SIZE_CHANGED:
 			for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {

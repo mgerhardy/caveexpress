@@ -121,6 +121,10 @@ public:
 	{
 	}
 
+	virtual void onWindowRestore ()
+	{
+	}
+
 	/**
 	 * @param[in] theta the amount that the fingers rotated during this motion.
 	 * @param[in] dist the amount that the fingers pinched during this motion.
