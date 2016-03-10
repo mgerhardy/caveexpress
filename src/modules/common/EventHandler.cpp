@@ -122,7 +122,7 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		switch (event.window.event) {
 		case SDL_WINDOWEVENT_RESTORED:
 			for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-				(*i)->onWindowRestored();
+				(*i)->onWindowRestore();
 			}
 			break;
 		case SDL_WINDOWEVENT_RESIZED:

@@ -344,6 +344,15 @@ void SDLFrontend::disableScissor ()
 	SDL_RenderSetClipRect(_renderer, nullptr);
 }
 
+void SDLFrontend::onWindowRestore ()
+{
+#if __APPLE__
+	Log::info(LOG_COMMON, "restored");
+	const ConfigVarPtr& var = Config.getConfigVar("fullscreen");
+	setFullscreen(var->getBoolValue());
+#endif
+}
+
 void SDLFrontend::minimize ()
 {
 #ifdef __APPLE__

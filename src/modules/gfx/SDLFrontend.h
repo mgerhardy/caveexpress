@@ -73,6 +73,7 @@ public:
 	virtual void onForeground () override;
 	void onControllerDeviceRemoved (int32_t device) override;
 	void onControllerDeviceAdded (int32_t device) override;
+	void onWindowRestore () override;
 
 	// IFrontend implementation
 	virtual void toggleGrabMouse () override;
