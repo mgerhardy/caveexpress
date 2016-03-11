@@ -82,6 +82,7 @@ addons:
     - gcc-5
     - clang
     - libc6:i386
+    - libstdc++6:i386
     - lua5.1
     - libdbus-1-dev
     - build-essential
