@@ -550,7 +550,6 @@ void Player::createBody (const b2Vec2 &pos)
 	revoluteJointDef.enableLimit = true;
 	revoluteJointDef.collideConnected = false;
 	revoluteJointDef.enableMotor = true;
-	revoluteJointDef.maxMotorTorque = 20;
 	revoluteJointDef.motorSpeed = 0.0f;
 	revoluteJointDef.maxMotorTorque = 100.0f;
 	_revoluteJoint = assert_cast<b2RevoluteJoint*, b2Joint*>(world->CreateJoint(&revoluteJointDef));
