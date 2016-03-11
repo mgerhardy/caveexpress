@@ -63,7 +63,7 @@ public:
 	typedef Node* iterator;
 	typedef const Node* const_iterator;
 
-	NodeList(int maxSize) : _maxSize(maxSize) {
+	explicit NodeList(int maxSize) : _maxSize(maxSize) {
 		_openList.reserve(maxSize);
 		_openList.assign(maxSize, Node());
 		_closedList.reserve(maxSize);
