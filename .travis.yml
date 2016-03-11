@@ -159,14 +159,14 @@ script:
      fi"
   - "if [ $CP_TARGET == osx ]; then \
         cmake -G Xcode ..;
-        xcodebuild build -target ALL_BUILD -project caveproductions.xcodeproj CODE_SIGNING_REQUIRED=NO;
+        xcodebuild build -target ALL_BUILD -project caveproductions.xcodeproj CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO;
         cd ..;
         ./tests.app/Contents/MacOS/tests --gtest-filter=-Network*;
         ./tests_caveexpress.app/Contents/MacOS/tests_caveexpress --gtest-filter=-Network*;
     fi"
   - "if [ $CP_TARGET == ios ]; then \
         cmake -G Xcode .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ios-toolchain.cmake;
-        xcodebuild build -target ALL_BUILD -project caveproductions.xcodeproj CODE_SIGNING_REQUIRED=NO;
+        xcodebuild build -target ALL_BUILD -project caveproductions.xcodeproj CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO;
     fi"
 
 notifications:
