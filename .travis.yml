@@ -180,7 +180,7 @@ before_script:
   - export TERM=dumb
   - "if [ $TRAVIS_OS_NAME == osx ] && [ $CP_TARGET == android ]; then \
         brew update;
-        brew install android-sdk android-ndk;
+        brew install android-sdk android-ndk ant;
         export ANDROID_SDK=/usr/local/opt/android-sdk;
         export ANDROID_NDK=/usr/local/opt/android-ndk;
         export PATH=${PATH}:${ANDROID_SDK}/tools:${ANDROID_SDK}/platform-tools:${ANDROID_NDK};
