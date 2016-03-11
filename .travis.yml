@@ -91,6 +91,7 @@ addons:
     - autoconf
     - automake
     - libtool
+    - zlib1g:i386
     - libasound2-dev
     - libpulse-dev
     - libaudio-dev

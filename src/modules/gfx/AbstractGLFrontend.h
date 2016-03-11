@@ -10,7 +10,7 @@ struct Vertex {
 		c.c = 1u;
 	}
 
-	Vertex(const Color& color) : x(0.0f), y(0.0f), u(0.0f), v(0.0f) {
+	explicit Vertex(const Color& color) : x(0.0f), y(0.0f), u(0.0f), v(0.0f) {
 		c.r = color[0] * 255.0f;
 		c.g = color[1] * 255.0f;
 		c.b = color[2] * 255.0f;
