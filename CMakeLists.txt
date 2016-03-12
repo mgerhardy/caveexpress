@@ -75,6 +75,8 @@ endif()
 cp_message("ROOT_DIR: ${ROOT_DIR}")
 cp_message("CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 cp_message("PROJECT_SOURCE_DIR: ${PROJECT_SOURCE_DIR}")
+message(STATUS "CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}")
+message(STATUS "CMAKE_HOST_SYSTEM_NAME: ${CMAKE_HOST_SYSTEM_NAME}")
 
 #-------------------------------------------------------------------------------
 # variables
