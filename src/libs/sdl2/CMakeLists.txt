@@ -202,7 +202,7 @@ if(CYGWIN)
   set(SDL_CFLAGS "${SDL_CFLAGS} -I/usr/include/mingw")
 endif()
 
-if (LINUX OR EMSCRIPTEN)
+if (LINUX OR EMSCRIPTEN OR MSVC)
   add_definitions(-DUSING_GENERATED_CONFIG_H)
 endif()
 # General includes
