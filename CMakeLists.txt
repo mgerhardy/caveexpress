@@ -101,7 +101,7 @@ include(${CP_CMAKE_DIR}/pack.cmake)
 include(CPack)
 
 # on mac it e.g. finds the gui launcher - this is not what we want - find a proper way to handle this
-if (LINUX)
+if (NOT ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin")
 	find_host_program(TEXTUREPACKER_BIN NAMES TexturePacker)
 	if (${TEXTUREPACKER_BIN})
 		message(STATUS "Found TexturePacker: ${TEXTUREPACKER_BIN}")
