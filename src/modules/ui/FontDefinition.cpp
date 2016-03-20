@@ -51,7 +51,7 @@ FontDefinition::FontDefinition() {
 		lua.pop();
 
 		FontDef *def = new FontDef(id, height, metricsHeight, metricsAscender, metricsDescender);
-		FontChars fontChars(128);
+		FontChars fontChars;
 
 		// push the chars table
 		const int chars = lua.getTable("chars");
@@ -76,7 +76,7 @@ FontDefinition::FontDefinition() {
 				const int h = lua.getValueIntegerFromTable("h");
 				const int ox = lua.getValueIntegerFromTable("ox");
 				const int oy = lua.getValueIntegerFromTable("oy");
-				const FontChar c(character, width, x, y, w, h, ox, oy);
+				FontChar* c = new FontChar(character, width, x, y, w, h, ox, oy);
 				fontChars.push_back(c);
 				// pop the char entry
 				lua.pop();
@@ -104,11 +104,11 @@ FontDefinition::FontDefinition() {
 	Log::debug(LOG_UI, "Loaded %i font definitions", (int)_fontDefs.size());
 }
 
-void FontDef::init (const FontChars& fontChars)
+void FontDef::init (FontChars& fontChars)
 {
 	SDL_assert(!fontChars.empty());
-	for (const FontChar& c : fontChars) {
-		_fontCharMap[c.getCharacter()] = c;
+	for (FontChar* c : fontChars) {
+		_fontCharMap[c->getCharacter()] = c;
 	}
 }
 
@@ -118,9 +118,9 @@ void FontDef::updateChars (int tWidth, int tHeight)
 	_heightFactor = tHeight / (float)textureHeight;
 
 	for (auto entry : _fontCharMap) {
-		FontChar& c = entry.second;
-		c.setWidthFactor(_widthFactor);
-		c.setHeightFactor(_heightFactor);
+		FontChar* c = entry.second;
+		c->setWidthFactor(_widthFactor);
+		c->setHeightFactor(_heightFactor);
 	}
 }
 
@@ -129,9 +129,10 @@ const FontChar* FontDef::getFontChar (int character)
 	auto iter = _fontCharMap.find(character);
 	if (iter == _fontCharMap.end())
 		return nullptr;
-	const FontChar& fc = iter->second;
-	if (fc.getCharacter() != '\0')
-		return &fc;
+	const FontChar* fc = iter->second;
+	SDL_assert_always(fc != nullptr);
+	if (fc->getCharacter() != '\0')
+		return fc;
 
 	return nullptr;
 }

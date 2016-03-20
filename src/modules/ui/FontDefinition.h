@@ -27,11 +27,6 @@ public:
 	{
 	}
 
-	FontChar () :
-			character('\0'), width(-1), x(-1), y(-1), w(-1), h(-1), ox(-1), oy(-1), widthFactor(1.0f), heightFactor(1.0f)
-	{
-	}
-
 	inline void setWidthFactor (float _widthFactor)
 	{
 		widthFactor = _widthFactor;
@@ -85,7 +80,7 @@ public:
 	}
 };
 
-typedef std::vector<FontChar> FontChars;
+typedef std::vector<FontChar*> FontChars;
 
 class FontDef {
 public:
@@ -99,6 +94,12 @@ public:
 			id(_id), textureWidth(0), textureHeight(0), textureName(""), _height(height), _metricsHeight(metricsHeight), _metricsAscender(
 					metricsAscender), _metricsDescender(metricsDescender), _heightFactor(1.0f), _widthFactor(1.0f)
 	{
+	}
+
+	~FontDef() {
+		for (auto i : _fontCharMap) {
+			delete i.second;
+		}
 	}
 
 	inline int getHeight () const
@@ -125,10 +126,10 @@ public:
 	const FontChar* getFontChar (int character);
 
 	void updateChars (int textureWidth, int textureHeight);
-	void init (const FontChars& fontChars);
+	void init (FontChars& fontChars);
 
 private:
-	std::unordered_map<int, FontChar> _fontCharMap;
+	std::unordered_map<int, FontChar*> _fontCharMap;
 	int _height;
 	int _metricsHeight;
 	int _metricsAscender;
