@@ -101,11 +101,6 @@ public:
 	{
 	}
 
-	FontDef &operator= (const FontDef &r)
-	{
-		return *this;
-	}
-
 	inline int getHeight () const
 	{
 		const float newHeight = _height * _heightFactor;
