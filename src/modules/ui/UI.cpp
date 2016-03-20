@@ -51,7 +51,9 @@ UI::~UI ()
 UI& UI::get ()
 {
 	static UI ui;
+#ifndef __IPHONEOS__
 	SDL_assert_always(ui._threadId == SDL_ThreadID());
+#endif
 	return ui;
 }
 
