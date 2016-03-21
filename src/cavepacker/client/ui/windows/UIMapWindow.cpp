@@ -179,7 +179,7 @@ bool UIMapWindow::getField (int32_t x, int32_t y, int *tx, int *ty) const
 bool UIMapWindow::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion)
 {
 	const bool retVal = IUIMapWindow::onFingerRelease(finger, x, y, motion);
-	if (!retVal)
+	if (!retVal && !motion)
 		tryMove(x, y, false);
 	return retVal;
 }
