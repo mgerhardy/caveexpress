@@ -35,7 +35,16 @@ elseif isAndroid() then
 	defaultshowcursor = false
 	defaultparticles = 0
 	defaultfpslimit = 30
+	rendertotexture = 0
 	defaultpersister = "googleplay"
+	defaultred = 6
+	defaultgreen = 5
+	defaultblue = 6
+elseif isIOS() then
+	defaultshowcursor = false
+	defaultparticles = 0
+	defaultfpslimit = 30
+	rendertotexture = 0
 	defaultred = 6
 	defaultgreen = 5
 	defaultblue = 6
