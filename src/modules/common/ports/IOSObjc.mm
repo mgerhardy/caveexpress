@@ -1,8 +1,8 @@
 #include "IOSObjc.h"
 #include <SDL.h>
+#include <UIKit/UIApplication.h>
 
 int iosOpenURL (const std::string& url) {
-#if 0
 	@autoreleasepool
 	{
 		UIApplication *app = [UIApplication sharedApplication];
@@ -14,7 +14,4 @@ int iosOpenURL (const std::string& url) {
 		}
 		return -1;
 	}
-#else
-	return -1;
-#endif
 }
