@@ -602,13 +602,17 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 
 	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 #ifdef __IPHONEOS__
-	flags |= SDL_WINDOW_RESIZABLE;
+	//flags |= SDL_WINDOW_RESIZABLE;
 #endif
 
 
-#if defined __IPHONEOS__ || defined __ANDROID__
+#if defined __ANDROID__
 	if (fullscreen)
 		flags |= SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS;
+#elif defined __IPHONEOS__
+	if (fullscreen)
+		flags |= SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS;
+	flags |= SDL_WINDOW_ALLOW_HIGHDPI;
 #else
 	if (fullscreen)
 		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_BORDERLESS;
@@ -757,7 +761,7 @@ void SDLFrontend::setGLAttributes ()
 	sdlCheckError();
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
+	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 0);
 	sdlCheckError();
 	const int r = Config.getConfigVar("red")->getIntValue();
 	const int g = Config.getConfigVar("green")->getIntValue();
