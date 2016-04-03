@@ -50,6 +50,8 @@
     <true/>
     <key>UIRequiresFullScreen</key>
     <true/>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
     <key>UIInterfaceOrientation</key>
     <string>UIInterfaceOrientationLandscapeRight</string>
     <key>UISupportedInterfaceOrientations</key>
