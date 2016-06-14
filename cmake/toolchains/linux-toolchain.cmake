@@ -56,7 +56,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wcast-qual -Wcast-align -Wpointer-arith 
 if (CMAKE_USE_PTHREADS_INIT)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
 endif()
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -D_GNU_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_XOPEN_SOURCE -D_FORTIFY_SOURCE=2 -DNDEBUG -fexpensive-optimizations -fomit-frame-pointer -O3")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -D_GNU_SOURCE -D_DEFAULT_SOURCE -D_XOPEN_SOURCE -D_FORTIFY_SOURCE=2 -DNDEBUG -fexpensive-optimizations -fomit-frame-pointer -O3")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG -fno-omit-frame-pointer ${SANITIZE_FLAGS}")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS} -Wnon-virtual-dtor")

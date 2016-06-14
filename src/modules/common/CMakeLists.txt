@@ -41,7 +41,7 @@ elseif(EMSCRIPTEN)
 	set(ports_SRCS ports/Unix.cpp ports/HTML5.cpp)
 elseif(UNIX)
 	set(ports_SRCS ports/Unix.cpp)
-	add_definitions(-D_GNU_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE)
+	add_definitions(-D_GNU_SOURCE -D_DEFAULT_SOURCE -D_XOPEN_SOURCE)
 endif()
 
 add_library(common ${common_SRCS} ${ports_SRCS})
