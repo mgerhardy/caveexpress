@@ -3,18 +3,18 @@
 .TH cavepacker 6 "February 2015" "cavepacker" "games"
 .SH NAME
 cavepacker \- Sokoban game
- 
+
 .SH SYNOPSIS
 .PP
 \fBcavepacker\fR [\fIoption\fR]
 .SH DESCRIPTION
 \fBcavepacker\fP CavePacker is a sokoban game.
-Keep your cave tidy. To do this, make sure that all the spreaded packages are
+Keep your cave tidy. To do this, make sure that all the spread packages are
 put onto their targets. You can only push, pulling is not allowed.
 
 You get higher ratings for lesser moves you need. The first few maps might be
 easy to solve - but the more you progress in the game, the harder the maps
-will be. 
+will be.
 
 There is also a multiplayer mode available.
 .SH OPTIONS
@@ -26,13 +26,18 @@ Start the server for the game (headless mode).
 Change the value of a config variable.
 
 .SH CONSOLE COMMANDS
-Open the in-game console with SHIFT+ESC. Just type a config variable name there to get the current value. The console commands can also be triggered from the commandline by just putting a \fB\-\fR in front of it.
+Open the in-game console with SHIFT+ESC. Just type a config variable name there
+to get the current value. The console commands can also be triggered from the
+commandline by just putting a \fB\-\fR in front of it.
 .TP
 \fB\-loglevel <LEVEL>\fR
 Possible level values are: TRACE, DEBUG, INFO, WARN, ERROR
 
 .SH CONFIG VARIABLES
-These variables can be modified by using the \fB\-set\fR command - or by providing default values for some of them in the config.lua file in the asset directory. You can override any file by putting it into the same subdir as in your installation folder into ~/.local/share/caveexpress
+These variables can be modified by using the \fB\-set\fR command - or by
+providing default values for some of them in the config.lua file in the asset
+directory. You can override any file by putting it into the same subdir as in
+your installation folder into ~/.local/share/caveexpress
 .TP
 \fBalreadyrated\fR
 
@@ -62,11 +67,13 @@ These variables can be modified by using the \fB\-set\fR command - or by providi
 
 .TP
 \fBfrontend\fR
-Change the rendering frontend that is used by the game. Possible values are: sdl, opengl and opengles2
+Change the rendering frontend that is used by the game. Possible values are:
+sdl, opengl and opengles2
 
 .TP
 \fBfullscreen\fR
-Set to false to start in windowed mode - also see \fBwidth\fR and \fBheight\fR vars.
+Set to false to start in windowed mode - also see \fBwidth\fR and \fBheight\fR
+vars.
 .TP
 \fBgamecontroller\fR
 
@@ -111,7 +118,8 @@ Set to false to start in windowed mode - also see \fBwidth\fR and \fBheight\fR v
 The user name that is used in multiplayer games
 .TP
 \fBncurses\fR
-If you start in headless mode via \fB\-server\fR you can disable the ncurses interface by setting this to false
+If you start in headless mode via \fB\-server\fR you can disable the ncurses
+interface by setting this to false
 .TP
 \fBnetwork\fR
 
@@ -129,7 +137,8 @@ If you start in headless mode via \fB\-server\fR you can disable the ncurses int
 
 .TP
 \fBrenderer\fR
-If you have \fBfrontend\fR set to sdl, you can change the renderer that sdl is using. Refer to the SDL documentation for a list of valid options here.
+If you have \fBfrontend\fR set to sdl, you can change the renderer that sdl is
+using. Refer to the SDL documentation for a list of valid options here.
 .TP
 \fBrendertotexture\fR
 
@@ -174,4 +183,5 @@ If you have \fBfrontend\fR set to sdl, you can change the renderer that sdl is u
 http://www.caveproductions.org
 
 .SH COPYRIGHT
-Copyright \[co] 2014\-2016 by Martin Gerhardy. Licensed under GPL3 - assets CC-BY-SA 3
+Copyright \[co] 2014\-2016 by Martin Gerhardy.
+Source code licensed under GPL3 - assets under CC-BY-SA 3.0.
