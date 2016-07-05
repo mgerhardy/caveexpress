@@ -498,7 +498,7 @@ macro(cp_find LIB HEADER SUFFIX HEADERONLY VERSION)
 					${${PKG_PREFIX}_INCLUDE_DIRS}}
 					${_SEARCH_PATHS}
 			)
-			if (NOT HEADERONLY)
+			if (NOT ${HEADERONLY})
 				find_library(${PREFIX}_LIBRARIES
 					NAMES ${LIB}
 					HINTS ENV ${PREFIX}DIR
@@ -509,7 +509,7 @@ macro(cp_find LIB HEADER SUFFIX HEADERONLY VERSION)
 				)
 			endif()
 			include(FindPackageHandleStandardArgs)
-			if (HEADERONLY)
+			if (${HEADERONLY})
 				message(STATUS "Header only lib ${LIB}")
 				set(${PREFIX}_LIBRARIES "")
 				find_package_handle_standard_args(${LIB} DEFAULT_MSG ${PREFIX}_INCLUDE_DIRS)
