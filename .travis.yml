@@ -123,6 +123,7 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     - zoogie-sdl2-snapshots
+    - kubuntu-backports
 
 # currently disabled, because sdl2 ppa is not yet available
 #    - libbox2d-dev (2.0.1 is not supported - we need 2.3.0)
