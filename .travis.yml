@@ -89,6 +89,7 @@ addons:
     - mercurial
     - make
     - cmake
+    - cmake-data
     - autoconf
     - automake
     - libtool
@@ -123,7 +124,7 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     - zoogie-sdl2-snapshots
-    - kubuntu-backports
+    - george-edison55-precise-backports # cmake 3.x
 
 # currently disabled, because sdl2 ppa is not yet available
 #    - libbox2d-dev (2.0.1 is not supported - we need 2.3.0)
@@ -135,6 +136,7 @@ addons:
 #    - libyajl2-dev
 
 script:
+  - cmake --version
   - mkdir build-$CP_TARGET
   - cd build-$CP_TARGET
   - "if [ $CP_TARGET == android ]; then \
