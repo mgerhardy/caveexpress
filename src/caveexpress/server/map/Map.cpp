@@ -46,7 +46,6 @@
 #include "common/vec2.h"
 #include "common/ExecutionTime.h"
 #include "common/Commands.h"
-#include <Common/b2Settings.h>
 #include <SDL.h>
 #include <SDL_stdinc.h>
 #include <algorithm>

@@ -6,7 +6,8 @@
 #endif
 #include "common/Compiler.h"
 GCC_DIAG_OFF(shadow)
-#include <Common/b2Math.h>
+#include <Box2D/Box2D.h>
+#include <Box2D/Common/b2Math.h>
 GCC_DIAG_ON(shadow)
 #include "common/Math.h"
 

@@ -24,6 +24,7 @@ FileSystem::FileSystem () :
 	if (!string::endsWith(_dataDir, "/")) {
 		_dataDir += "/";
 	}
+	_dataDir += Singleton<Application>::getInstance().getName() + "/";
 #endif
 	registerURL("maps", getMapsDir());
 	registerURL("textures", getTexturesDir());

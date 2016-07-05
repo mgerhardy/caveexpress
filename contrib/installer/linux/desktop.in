@@ -9,3 +9,4 @@ Terminal=false
 Type=Application
 Categories=@APPCATEGORIES@
 StartupNotify=false
+Keywords=@KEYWORDS@

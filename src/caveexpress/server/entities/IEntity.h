@@ -4,7 +4,6 @@
 #ifndef b2Assert
 #define b2Assert SDL_assert
 #endif
-#include <Box2D.h>
 #include "physics/Box2DMath.h"
 #include "common/Log.h"
 #include "common/Timer.h"
