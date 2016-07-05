@@ -7,5 +7,5 @@ Exec=@APP@
 Icon=@APP@
 Terminal=false
 Type=Application
-Categories=Game;
+Categories=@APPCATEGORIES@
 StartupNotify=false
