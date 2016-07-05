@@ -1413,7 +1413,7 @@ endif()
 #   endif()
 # endif()
 
-if (LINUX OR EMSCRIPTEN)
+if (LINUX OR EMSCRIPTEN OR MSVC)
   configure_file("include/SDL_config.h.cmake"
     "${CMAKE_BINARY_DIR}/SDL_config.h")
 endif()
@@ -1505,7 +1505,7 @@ FILE(GLOB PLATFORM_SRCS
 	set(ANDROID_LDFLAGS "-Wl,--undefined=Java_org_libsdl_app_SDLActivity_nativeInit")
 endif()
 
-if (LINUX OR EMSCRIPTEN)
+if (LINUX OR EMSCRIPTEN OR MSVC)
 	set(DEFINES USING_GENERATED_CONFIG_H)
 else()
 	set(DEFINES "")
