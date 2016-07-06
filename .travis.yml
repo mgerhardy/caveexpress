@@ -141,7 +141,7 @@ script:
   - cd build-$CP_TARGET
   - "if [ $CP_TARGET == android ]; then \
         cmake .. -DANDROID_INSTALL_PACKAGES=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/android-toolchain.cmake;
-        make -j 4;
+        make;
      fi"
   - "if [ $CP_TARGET == linux ]; then \
         cmake ..;
