@@ -47,6 +47,8 @@ matrix:
       env: CP_TARGET=linux_builtin
     - os: osx
       env: CP_TARGET=windows
+    - os: osx
+      env: CP_TARGET=android
     - os: linux
       env: CP_TARGET=ios
     - os: linux
