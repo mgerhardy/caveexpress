@@ -35,6 +35,11 @@ else()
 	set(RELEASE True)
 endif()
 
+if (BUILD_SHARED_LIBS)
+	message(STATUS "Forcing building the internal libraries as static, even though BUILD_SHARED_LIBS=ON was requested.")
+	set(BUILD_SHARED_LIBS OFF)
+endif()
+
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Root dir")
 message(STATUS "Place binaries in ${ROOT_DIR}")
 # First for the generic no-config case (e.g. with mingw)
