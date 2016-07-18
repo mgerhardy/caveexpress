@@ -758,7 +758,7 @@ macro(cp_add_executable)
 			install(FILES ${PROJECT_BINARY_DIR}/${_EXE_TARGET}.appdata.xml DESTINATION ${SHARE_DIR}/appdata)
 			set(MAN_PAGE ${ROOT_DIR}/contrib/installer/linux/${_EXE_TARGET}.6)
 			if (EXISTS ${MAN_PAGE})
-				install(FILES ${MAN_PAGE} DESTINATION ${SHARE_DIR}/man/en_GB/man6)
+				install(FILES ${MAN_PAGE} DESTINATION ${SHARE_DIR}/man/man6)
 			endif()
 		endif()
 
