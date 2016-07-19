@@ -5,19 +5,19 @@
 #include <SDL_platform.h>
 
 #ifdef __ANDROID__
-#include "common/ports//Android.h"
+#include "common/ports/Android.h"
 #elif defined __WIN32__
-#include "common/ports//Windows.h"
+#include "common/ports/Windows.h"
 #elif defined __IPHONEOS__
-#include "common/ports//IOS.h"
+#include "common/ports/IOS.h"
 #elif defined __MACOSX__
-#include "common/ports//Darwin.h"
+#include "common/ports/Darwin.h"
 #elif defined __NACL__
-#include "common/ports//NaCl.h"
+#include "common/ports/NaCl.h"
 #elif defined EMSCRIPTEN
-#include "common/ports//HTML5.h"
+#include "common/ports/HTML5.h"
 #else
-#include "common/ports//Unix.h"
+#include "common/ports/Unix.h"
 #endif
 
 inline ISystem& getSystem ()
