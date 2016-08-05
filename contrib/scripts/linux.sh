@@ -8,5 +8,4 @@ BINDIR=$(pwd)
 #-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
 cmake --version
 cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_INSTALL_PREFIX=${BINDIR}/linux $DIR/../..
-make $*
-make install
+make install $*
