@@ -1,0 +1,52 @@
+name: @APPNAME@
+version: "@VERSION@"
+summary: @APPNAME@
+description: @DESCRIPTION@
+confinement: strict
+
+apps:
+  @APP@:
+    command: @APP@
+    plugs: [x11, home, pulseaudio, unity7, opengl]
+
+parts:
+  @APP@:
+    source: .
+    plugin: cmake
+    build-packages:
+      - g++
+      - make
+      - libglm-dev
+      - libsqlite3-dev
+      - liblua5.2-dev
+      - zlib1g-dev
+      - libasound2-dev
+      - libpulse-dev
+      - libaudio-dev
+      - libdbus-1-dev
+      - libx11-dev
+      - libxext-dev
+      - libxrandr-dev
+      - libxcursor-dev
+      - libxi-dev
+      - libxinerama-dev
+      - libxxf86vm-dev
+      - libxss-dev
+      - libgl1-mesa-dev
+      - libesd0-dev
+      - libdbus-1-dev
+      - libudev-dev
+      - libgles1-mesa-dev
+      - libgles2-mesa-dev
+      - libegl1-mesa-dev
+      - libibus-1.0-dev
+      - libgd2-xpm
+      - libsdl2-dev
+      - libsdl2-net-dev
+      - libsdl2-mixer-dev
+      - libsdl2-image-dev
+    stage-packages:
+      - libsdl2-2.0-0
+      - libsdl2-net-2.0-0
+      - libsdl2-mixer-2.0-0
+      - libsdl2-image-2.0-0
