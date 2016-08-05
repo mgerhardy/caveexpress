@@ -25,6 +25,14 @@ FileSystem::FileSystem () :
 		_dataDir += "/";
 	}
 	_dataDir += Singleton<Application>::getInstance().getName() + "/";
+#else
+	const char *snap = SDL_getenv("SNAP");
+	if (snap != nullptr && snap[0] != '\0') {
+		_dataDir = snap;
+		if (!string::endsWith(_dataDir, "/")) {
+			_dataDir += "/";
+		}
+	}
 #endif
 	registerURL("maps", getMapsDir());
 	registerURL("textures", getTexturesDir());
