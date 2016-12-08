@@ -45,7 +45,8 @@ struct _SDL_HatMapping
     Uint8 mask;
 };
 
-#define k_nMaxReverseEntries 20
+/* We need 36 entries for Android (as of SDL v2.0.4) */
+#define k_nMaxReverseEntries 48
 
 /**
  * We are encoding the "HAT" as 0xhm. where h == hat ID and m == mask
@@ -79,14 +80,23 @@ struct _SDL_ControllerMapping
 
 
 /* our hard coded list of mapping support */
+typedef enum
+{
+    SDL_CONTROLLER_MAPPING_PRIORITY_DEFAULT,
+    SDL_CONTROLLER_MAPPING_PRIORITY_API,
+    SDL_CONTROLLER_MAPPING_PRIORITY_USER,
+} SDL_ControllerMappingPriority;
+
 typedef struct _ControllerMapping_t
 {
     SDL_JoystickGUID guid;
     char *name;
     char *mapping;
+    SDL_ControllerMappingPriority priority;
     struct _ControllerMapping_t *next;
 } ControllerMapping_t;
 
+static SDL_JoystickGUID s_zeroGUID;
 static ControllerMapping_t *s_pSupportedControllers = NULL;
 static ControllerMapping_t *s_pXInputMapping = NULL;
 static ControllerMapping_t *s_pEmscriptenMapping = NULL;
@@ -106,16 +116,49 @@ int SDL_PrivateGameControllerAxis(SDL_GameController * gamecontroller, SDL_GameC
 int SDL_PrivateGameControllerButton(SDL_GameController * gamecontroller, SDL_GameControllerButton button, Uint8 state);
 
 /*
+ * If there is an existing add event in the queue, it needs to be modified
+ * to have the right value for which, because the number of controllers in
+ * the system is now one less.
+ */
+static void UpdateEventsForDeviceRemoval()
+{
+    int i, num_events;
+    SDL_Event *events;
+
+    num_events = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_CONTROLLERDEVICEADDED, SDL_CONTROLLERDEVICEADDED);
+    if (num_events <= 0) {
+        return;
+    }
+
+    events = SDL_stack_alloc(SDL_Event, num_events);
+    if (!events) {
+        return;
+    }
+
+    num_events = SDL_PeepEvents(events, num_events, SDL_GETEVENT, SDL_CONTROLLERDEVICEADDED, SDL_CONTROLLERDEVICEADDED);
+    for (i = 0; i < num_events; ++i) {
+        --events[i].cdevice.which;
+    }
+    SDL_PeepEvents(events, num_events, SDL_ADDEVENT, 0, 0);
+
+    SDL_stack_free(events);
+}
+
+/*
  * Event filter to fire controller events from joystick ones
  */
-int SDL_GameControllerEventWatcher(void *userdata, SDL_Event * event)
+static int SDL_GameControllerEventWatcher(void *userdata, SDL_Event * event)
 {
     switch(event->type) {
     case SDL_JOYAXISMOTION:
         {
             SDL_GameController *controllerlist;
 
-            if (event->jaxis.axis >= k_nMaxReverseEntries) break;
+            if (event->jaxis.axis >= k_nMaxReverseEntries)
+            {
+                SDL_SetError("SDL_GameControllerEventWatcher: Axis index %d too large, ignoring motion", (int)event->jaxis.axis);
+                break;
+            }
 
             controllerlist = SDL_gamecontrollers;
             while (controllerlist) {
@@ -126,8 +169,8 @@ int SDL_GameControllerEventWatcher(void *userdata, SDL_Event * event)
                         switch (axis) {
                             case SDL_CONTROLLER_AXIS_TRIGGERLEFT:
                             case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:
-                                /* Shift it to be 0 - 32767. */
                                 value = value / 2 + 16384;
+                                break;
                             default:
                                 break;
                         }
@@ -146,7 +189,11 @@ int SDL_GameControllerEventWatcher(void *userdata, SDL_Event * event)
         {
             SDL_GameController *controllerlist;
 
-            if (event->jbutton.button >= k_nMaxReverseEntries) break;
+            if (event->jbutton.button >= k_nMaxReverseEntries)
+            {
+                SDL_SetError("SDL_GameControllerEventWatcher: Button index %d too large, ignoring update", (int)event->jbutton.button);
+                break;
+            }
 
             controllerlist = SDL_gamecontrollers;
             while (controllerlist) {
@@ -223,9 +270,12 @@ int SDL_GameControllerEventWatcher(void *userdata, SDL_Event * event)
             while (controllerlist) {
                 if (controllerlist->joystick->instance_id == event->jdevice.which) {
                     SDL_Event deviceevent;
+
                     deviceevent.type = SDL_CONTROLLERDEVICEREMOVED;
                     deviceevent.cdevice.which = event->jdevice.which;
                     SDL_PushEvent(&deviceevent);
+
+                    UpdateEventsForDeviceRemoval();
                     break;
                 }
                 controllerlist = controllerlist->next;
@@ -242,7 +292,7 @@ int SDL_GameControllerEventWatcher(void *userdata, SDL_Event * event)
 /*
  * Helper function to scan the mappings database for a controller with the specified GUID
  */
-ControllerMapping_t *SDL_PrivateGetControllerMappingForGUID(SDL_JoystickGUID *guid)
+static ControllerMapping_t *SDL_PrivateGetControllerMappingForGUID(SDL_JoystickGUID *guid)
 {
     ControllerMapping_t *pSupportedController = s_pSupportedControllers;
     while (pSupportedController) {
@@ -340,7 +390,7 @@ const char* SDL_GameControllerGetStringForButton(SDL_GameControllerButton axis)
 /*
  * given a controller button name and a joystick name update our mapping structure with it
  */
-void SDL_PrivateGameControllerParseButton(const char *szGameButton, const char *szJoystickButton, struct _SDL_ControllerMapping *pMapping)
+static void SDL_PrivateGameControllerParseButton(const char *szGameButton, const char *szJoystickButton, struct _SDL_ControllerMapping *pMapping)
 {
     int iSDLButton = 0;
     SDL_GameControllerButton button;
@@ -355,11 +405,11 @@ void SDL_PrivateGameControllerParseButton(const char *szGameButton, const char *
             return;
         }
         if (axis != SDL_CONTROLLER_AXIS_INVALID) {
-            pMapping->axes[ axis ] = iSDLButton;
-            pMapping->raxes[ iSDLButton ] = axis;
+            pMapping->axes[axis] = iSDLButton;
+            pMapping->raxes[iSDLButton] = axis;
         } else if (button != SDL_CONTROLLER_BUTTON_INVALID) {
-            pMapping->axesasbutton[ button ] = iSDLButton;
-            pMapping->raxesasbutton[ iSDLButton ] = button;
+            pMapping->axesasbutton[button] = iSDLButton;
+            pMapping->raxesasbutton[iSDLButton] = button;
         } else {
             SDL_assert(!"How did we get here?");
         }
@@ -370,11 +420,11 @@ void SDL_PrivateGameControllerParseButton(const char *szGameButton, const char *
             return;
         }
         if (button != SDL_CONTROLLER_BUTTON_INVALID) {
-            pMapping->buttons[ button ] = iSDLButton;
-            pMapping->rbuttons[ iSDLButton ] = button;
+            pMapping->buttons[button] = iSDLButton;
+            pMapping->rbuttons[iSDLButton] = button;
         } else if (axis != SDL_CONTROLLER_AXIS_INVALID) {
-            pMapping->buttonasaxis[ axis ] = iSDLButton;
-            pMapping->rbuttonasaxis[ iSDLButton ] = axis;
+            pMapping->buttonasaxis[axis] = iSDLButton;
+            pMapping->rbuttonasaxis[iSDLButton] = axis;
         } else {
             SDL_assert(!"How did we get here?");
         }
@@ -387,10 +437,10 @@ void SDL_PrivateGameControllerParseButton(const char *szGameButton, const char *
 
         if (button != SDL_CONTROLLER_BUTTON_INVALID) {
             int ridx;
-            pMapping->hatasbutton[ button ].hat = hat;
-            pMapping->hatasbutton[ button ].mask = mask;
+            pMapping->hatasbutton[button].hat = hat;
+            pMapping->hatasbutton[button].mask = mask;
             ridx = (hat << 4) | mask;
-            pMapping->rhatasbutton[ ridx ] = button;
+            pMapping->rhatasbutton[ridx] = button;
         } else if (axis != SDL_CONTROLLER_AXIS_INVALID) {
             SDL_assert(!"Support hat as axis");
         } else {
@@ -453,7 +503,7 @@ SDL_PrivateGameControllerParseControllerConfigString(struct _SDL_ControllerMappi
 /*
  * Make a new button mapping struct
  */
-void SDL_PrivateLoadButtonMapping(struct _SDL_ControllerMapping *pMapping, SDL_JoystickGUID guid, const char *pchName, const char *pchMapping)
+static void SDL_PrivateLoadButtonMapping(struct _SDL_ControllerMapping *pMapping, SDL_JoystickGUID guid, const char *pchName, const char *pchMapping)
 {
     int j;
 
@@ -489,7 +539,7 @@ void SDL_PrivateLoadButtonMapping(struct _SDL_ControllerMapping *pMapping, SDL_J
 /*
  * grab the guid string from a mapping string
  */
-char *SDL_PrivateGetControllerGUIDFromMappingString(const char *pMapping)
+static char *SDL_PrivateGetControllerGUIDFromMappingString(const char *pMapping)
 {
     const char *pFirstComma = SDL_strchr(pMapping, ',');
     if (pFirstComma) {
@@ -499,7 +549,26 @@ char *SDL_PrivateGetControllerGUIDFromMappingString(const char *pMapping)
             return NULL;
         }
         SDL_memcpy(pchGUID, pMapping, pFirstComma - pMapping);
-        pchGUID[ pFirstComma - pMapping ] = 0;
+        pchGUID[pFirstComma - pMapping] = '\0';
+
+        /* Convert old style GUIDs to the new style in 2.0.5 */
+#if __WIN32__
+        if (SDL_strlen(pchGUID) == 32 &&
+            SDL_memcmp(&pchGUID[20], "504944564944", 12) == 0) {
+            SDL_memcpy(&pchGUID[20], "000000000000", 12);
+            SDL_memcpy(&pchGUID[16], &pchGUID[4], 4);
+            SDL_memcpy(&pchGUID[8], &pchGUID[0], 4);
+            SDL_memcpy(&pchGUID[0], "03000000", 8);
+        }
+#elif __MACOSX__
+        if (SDL_strlen(pchGUID) == 32 &&
+            SDL_memcmp(&pchGUID[4], "000000000000", 12) == 0 &&
+            SDL_memcmp(&pchGUID[20], "000000000000", 12) == 0) {
+            SDL_memcpy(&pchGUID[20], "000000000000", 12);
+            SDL_memcpy(&pchGUID[8], &pchGUID[0], 4);
+            SDL_memcpy(&pchGUID[0], "03000000", 8);
+        }
+#endif
         return pchGUID;
     }
     return NULL;
@@ -509,7 +578,7 @@ char *SDL_PrivateGetControllerGUIDFromMappingString(const char *pMapping)
 /*
  * grab the name string from a mapping string
  */
-char *SDL_PrivateGetControllerNameFromMappingString(const char *pMapping)
+static char *SDL_PrivateGetControllerNameFromMappingString(const char *pMapping)
 {
     const char *pFirstComma, *pSecondComma;
     char *pchName;
@@ -528,7 +597,7 @@ char *SDL_PrivateGetControllerNameFromMappingString(const char *pMapping)
         return NULL;
     }
     SDL_memcpy(pchName, pFirstComma + 1, pSecondComma - pFirstComma);
-    pchName[ pSecondComma - pFirstComma - 1 ] = 0;
+    pchName[pSecondComma - pFirstComma - 1] = 0;
     return pchName;
 }
 
@@ -536,7 +605,7 @@ char *SDL_PrivateGetControllerNameFromMappingString(const char *pMapping)
 /*
  * grab the button mapping string from a mapping string
  */
-char *SDL_PrivateGetControllerMappingFromMappingString(const char *pMapping)
+static char *SDL_PrivateGetControllerMappingFromMappingString(const char *pMapping)
 {
     const char *pFirstComma, *pSecondComma;
 
@@ -554,7 +623,7 @@ char *SDL_PrivateGetControllerMappingFromMappingString(const char *pMapping)
 /*
  * Helper function to refresh a mapping
  */
-void SDL_PrivateGameControllerRefreshMapping(ControllerMapping_t *pControllerMapping)
+static void SDL_PrivateGameControllerRefreshMapping(ControllerMapping_t *pControllerMapping)
 {
     SDL_GameController *gamecontrollerlist = SDL_gamecontrollers;
     while (gamecontrollerlist) {
@@ -576,7 +645,7 @@ void SDL_PrivateGameControllerRefreshMapping(ControllerMapping_t *pControllerMap
  * Helper function to add a mapping for a guid
  */
 static ControllerMapping_t *
-SDL_PrivateAddMappingForGUID(SDL_JoystickGUID jGUID, const char *mappingString, SDL_bool *existing)
+SDL_PrivateAddMappingForGUID(SDL_JoystickGUID jGUID, const char *mappingString, SDL_bool *existing, SDL_ControllerMappingPriority priority)
 {
     char *pchName;
     char *pchMapping;
@@ -597,13 +666,20 @@ SDL_PrivateAddMappingForGUID(SDL_JoystickGUID jGUID, const char *mappingString, 
 
     pControllerMapping = SDL_PrivateGetControllerMappingForGUID(&jGUID);
     if (pControllerMapping) {
-        /* Update existing mapping */
-        SDL_free(pControllerMapping->name);
-        pControllerMapping->name = pchName;
-        SDL_free(pControllerMapping->mapping);
-        pControllerMapping->mapping = pchMapping;
-        /* refresh open controllers */
-        SDL_PrivateGameControllerRefreshMapping(pControllerMapping);
+        /* Only overwrite the mapping if the priority is the same or higher. */
+        if (pControllerMapping->priority <= priority) {
+            /* Update existing mapping */
+            SDL_free(pControllerMapping->name);
+            pControllerMapping->name = pchName;
+            SDL_free(pControllerMapping->mapping);
+            pControllerMapping->mapping = pchMapping;
+            pControllerMapping->priority = priority;
+            /* refresh open controllers */
+            SDL_PrivateGameControllerRefreshMapping(pControllerMapping);
+        } else {
+            SDL_free(pchName);
+            SDL_free(pchMapping);
+        }
         *existing = SDL_TRUE;
     } else {
         pControllerMapping = SDL_malloc(sizeof(*pControllerMapping));
@@ -616,8 +692,22 @@ SDL_PrivateAddMappingForGUID(SDL_JoystickGUID jGUID, const char *mappingString, 
         pControllerMapping->guid = jGUID;
         pControllerMapping->name = pchName;
         pControllerMapping->mapping = pchMapping;
-        pControllerMapping->next = s_pSupportedControllers;
-        s_pSupportedControllers = pControllerMapping;
+        pControllerMapping->next = NULL;
+        pControllerMapping->priority = priority;
+
+        if (s_pSupportedControllers) {
+            /* Add the mapping to the end of the list */
+            ControllerMapping_t *pCurrMapping, *pPrevMapping;
+
+            for ( pPrevMapping = s_pSupportedControllers, pCurrMapping = pPrevMapping->next;
+                  pCurrMapping; 
+                  pPrevMapping = pCurrMapping, pCurrMapping = pCurrMapping->next ) {
+                continue;
+            }
+            pPrevMapping->next = pControllerMapping;
+        } else {
+            s_pSupportedControllers = pControllerMapping;
+        }
         *existing = SDL_FALSE;
     }
     return pControllerMapping;
@@ -626,7 +716,7 @@ SDL_PrivateAddMappingForGUID(SDL_JoystickGUID jGUID, const char *mappingString, 
 /*
  * Helper function to determine pre-calculated offset to certain joystick mappings
  */
-ControllerMapping_t *SDL_PrivateGetControllerMapping(int device_index)
+static ControllerMapping_t *SDL_PrivateGetControllerMapping(int device_index)
 {
     SDL_JoystickGUID jGUID = SDL_JoystickGetDeviceGUID(device_index);
     ControllerMapping_t *mapping;
@@ -651,7 +741,7 @@ ControllerMapping_t *SDL_PrivateGetControllerMapping(int device_index)
                 SDL_bool existing;
                 mapping = SDL_PrivateAddMappingForGUID(jGUID,
 "none,X360 Wireless Controller,a:b0,b:b1,back:b6,dpdown:b14,dpleft:b11,dpright:b12,dpup:b13,guide:b8,leftshoulder:b4,leftstick:b9,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b10,righttrigger:a5,rightx:a3,righty:a4,start:b7,x:b2,y:b3,",
-                              &existing);
+                              &existing, SDL_CONTROLLER_MAPPING_PRIORITY_DEFAULT);
             }
         }
     }
@@ -740,10 +830,10 @@ SDL_GameControllerAddMappingsFromRW(SDL_RWops * rw, int freerw)
 }
 
 /*
- * Add or update an entry into the Mappings Database
+ * Add or update an entry into the Mappings Database with a priority
  */
-int
-SDL_GameControllerAddMapping(const char *mappingString)
+static int
+SDL_PrivateGameControllerAddMapping(const char *mappingString, SDL_ControllerMappingPriority priority)
 {
     char *pchGUID;
     SDL_JoystickGUID jGUID;
@@ -769,7 +859,7 @@ SDL_GameControllerAddMapping(const char *mappingString)
     jGUID = SDL_JoystickGetGUIDFromString(pchGUID);
     SDL_free(pchGUID);
 
-    pControllerMapping = SDL_PrivateAddMappingForGUID(jGUID, mappingString, &existing);
+    pControllerMapping = SDL_PrivateAddMappingForGUID(jGUID, mappingString, &existing, priority);
     if (!pControllerMapping) {
         return -1;
     }
@@ -785,6 +875,66 @@ SDL_GameControllerAddMapping(const char *mappingString)
         }
         return 1;
     }
+}
+
+/*
+ * Add or update an entry into the Mappings Database
+ */
+int
+SDL_GameControllerAddMapping(const char *mappingString)
+{
+    return SDL_PrivateGameControllerAddMapping(mappingString, SDL_CONTROLLER_MAPPING_PRIORITY_API);
+}
+
+/**
+ *  Get the number of mappings installed
+ */
+int
+SDL_GameControllerNumMappings()
+{
+    int num_mappings = 0;
+    ControllerMapping_t *mapping;
+
+    for (mapping = s_pSupportedControllers; mapping; mapping = mapping->next) {
+        if (SDL_memcmp(&mapping->guid, &s_zeroGUID, sizeof(mapping->guid)) == 0) {
+            continue;
+        }
+        ++num_mappings;
+    }
+    return num_mappings;
+}
+
+/**
+ *  Get the mapping at a particular index.
+ */
+char *
+SDL_GameControllerMappingForIndex(int mapping_index)
+{
+    ControllerMapping_t *mapping;
+
+    for (mapping = s_pSupportedControllers; mapping; mapping = mapping->next) {
+        if (SDL_memcmp(&mapping->guid, &s_zeroGUID, sizeof(mapping->guid)) == 0) {
+            continue;
+        }
+        if (mapping_index == 0) {
+            char *pMappingString;
+            char pchGUID[33];
+            size_t needed;
+
+            SDL_JoystickGetGUIDString(mapping->guid, pchGUID, sizeof(pchGUID));
+            /* allocate enough memory for GUID + ',' + name + ',' + mapping + \0 */
+            needed = SDL_strlen(pchGUID) + 1 + SDL_strlen(mapping->name) + 1 + SDL_strlen(mapping->mapping) + 1;
+            pMappingString = SDL_malloc(needed);
+            if (!pMappingString) {
+                SDL_OutOfMemory();
+                return NULL;
+            }
+            SDL_snprintf(pMappingString, needed, "%s,%s,%s", pchGUID, mapping->name, mapping->mapping);
+            return pMappingString;
+        }
+        --mapping_index;
+    }
+    return NULL;
 }
 
 /*
@@ -841,7 +991,7 @@ SDL_GameControllerLoadHints()
             if (pchNewLine)
                 *pchNewLine = '\0';
 
-            SDL_GameControllerAddMapping(pUserMappings);
+            SDL_PrivateGameControllerAddMapping(pUserMappings, SDL_CONTROLLER_MAPPING_PRIORITY_USER);
 
             if (pchNewLine) {
                 pUserMappings = pchNewLine + 1;
@@ -863,7 +1013,7 @@ SDL_GameControllerInit(void)
     const char *pMappingString = NULL;
     pMappingString = s_ControllerMappings[i];
     while (pMappingString) {
-        SDL_GameControllerAddMapping(pMappingString);
+        SDL_PrivateGameControllerAddMapping(pMappingString, SDL_CONTROLLER_MAPPING_PRIORITY_DEFAULT);
 
         i++;
         pMappingString = s_ControllerMappings[i];
@@ -970,6 +1120,20 @@ SDL_GameControllerOpen(int device_index)
 
     SDL_PrivateLoadButtonMapping(&gamecontroller->mapping, pSupportedController->guid, pSupportedController->name, pSupportedController->mapping);
 
+    /* The triggers are mapped from -32768 to 32767, where -32768 is the 'unpressed' value */
+    {
+        int leftTriggerMapping = gamecontroller->mapping.axes[SDL_CONTROLLER_AXIS_TRIGGERLEFT];
+        int rightTriggerMapping = gamecontroller->mapping.axes[SDL_CONTROLLER_AXIS_TRIGGERRIGHT];
+        if (leftTriggerMapping >= 0) {
+            gamecontroller->joystick->axes[leftTriggerMapping] =
+            gamecontroller->joystick->axes_zero[leftTriggerMapping] = (Sint16)-32768;
+        }
+        if (rightTriggerMapping >= 0) {
+            gamecontroller->joystick->axes[rightTriggerMapping] =
+            gamecontroller->joystick->axes_zero[rightTriggerMapping] = (Sint16)-32768;
+        }
+    }
+
     /* Add joystick to list */
     ++gamecontroller->ref_count;
     /* Link the joystick in the list */
@@ -1006,7 +1170,7 @@ SDL_GameControllerGetAxis(SDL_GameController * gamecontroller, SDL_GameControlle
         switch (axis) {
             case SDL_CONTROLLER_AXIS_TRIGGERLEFT:
             case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:
-                /* Shift it to be 0 - 32767. */
+                /* Shift it to be 0 - 32767 */
                 value = value / 2 + 16384;
             default:
                 break;
@@ -1052,6 +1216,33 @@ SDL_GameControllerGetButton(SDL_GameController * gamecontroller, SDL_GameControl
     return 0;
 }
 
+const char *
+SDL_GameControllerName(SDL_GameController * gamecontroller)
+{
+    if (!gamecontroller)
+        return NULL;
+
+    return gamecontroller->mapping.name;
+}
+
+Uint16
+SDL_GameControllerGetVendor(SDL_GameController * gamecontroller)
+{
+    return SDL_JoystickGetVendor(SDL_GameControllerGetJoystick(gamecontroller));
+}
+
+Uint16
+SDL_GameControllerGetProduct(SDL_GameController * gamecontroller)
+{
+    return SDL_JoystickGetProduct(SDL_GameControllerGetJoystick(gamecontroller));
+}
+
+Uint16
+SDL_GameControllerGetProductVersion(SDL_GameController * gamecontroller)
+{
+    return SDL_JoystickGetProductVersion(SDL_GameControllerGetJoystick(gamecontroller));
+}
+
 /*
  * Return if the joystick in question is currently attached to the system,
  *  \return 0 if not plugged in, 1 if still present.
@@ -1064,17 +1255,6 @@ SDL_GameControllerGetAttached(SDL_GameController * gamecontroller)
 
     return SDL_JoystickGetAttached(gamecontroller->joystick);
 }
-
-
-const char *
-SDL_GameControllerName(SDL_GameController * gamecontroller)
-{
-    if (!gamecontroller)
-        return NULL;
-
-    return (gamecontroller->mapping.name);
-}
-
 
 /*
  * Get the joystick for this controller

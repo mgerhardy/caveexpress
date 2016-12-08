@@ -20,8 +20,8 @@
 */
 #include "../SDL_internal.h"
 
-#ifndef _SDL_mouse_c_h
-#define _SDL_mouse_c_h
+#ifndef SDL_mouse_c_h_
+#define SDL_mouse_c_h_
 
 #include "SDL_mouse.h"
 
@@ -83,6 +83,10 @@ typedef struct
     Uint32 buttonstate;
     SDL_bool relative_mode;
     SDL_bool relative_mode_warp;
+    float normal_speed_scale;
+    float relative_speed_scale;
+    float scale_accum_x;
+    float scale_accum_y;
 
     /* Data for double-click tracking */
     int num_clickstates;
@@ -119,12 +123,15 @@ extern int SDL_SendMouseMotion(SDL_Window * window, SDL_MouseID mouseID, int rel
 /* Send a mouse button event */
 extern int SDL_SendMouseButton(SDL_Window * window, SDL_MouseID mouseID, Uint8 state, Uint8 button);
 
+/* Send a mouse button event with a click count */
+extern int SDL_SendMouseButtonClicks(SDL_Window * window, SDL_MouseID mouseID, Uint8 state, Uint8 button, int clicks);
+
 /* Send a mouse wheel event */
 extern int SDL_SendMouseWheel(SDL_Window * window, SDL_MouseID mouseID, int x, int y, SDL_MouseWheelDirection direction);
 
 /* Shutdown the mouse subsystem */
 extern void SDL_MouseQuit(void);
 
-#endif /* _SDL_mouse_c_h */
+#endif /* SDL_mouse_c_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

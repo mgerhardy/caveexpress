@@ -20,11 +20,15 @@
 */
 #include "../SDL_internal.h"
 
-#ifndef _SDL_sysaudio_h
-#define _SDL_sysaudio_h
+#ifndef SDL_sysaudio_h_
+#define SDL_sysaudio_h_
 
 #include "SDL_mutex.h"
 #include "SDL_thread.h"
+
+/* !!! FIXME: These are wordy and unlocalized... */
+#define DEFAULT_OUTPUT_DEVNAME "System audio output device"
+#define DEFAULT_INPUT_DEVNAME "System audio capture device"
 
 /* The SDL audio driver */
 typedef struct SDL_AudioDevice SDL_AudioDevice;
@@ -75,7 +79,9 @@ typedef struct SDL_AudioDriverImpl
     void (*PlayDevice) (_THIS);
     int (*GetPendingBytes) (_THIS);
     Uint8 *(*GetDeviceBuf) (_THIS);
-    void (*WaitDone) (_THIS);
+    int (*CaptureFromDevice) (_THIS, void *buffer, int buflen);
+    void (*FlushCapture) (_THIS);
+    void (*PrepareToClose) (_THIS);  /**< Called between run and draining wait for playback devices */
     void (*CloseDevice) (_THIS);
     void (*LockDevice) (_THIS);
     void (*UnlockDevice) (_THIS);
@@ -87,10 +93,10 @@ typedef struct SDL_AudioDriverImpl
     /* Some flags to push duplicate code into the core and reduce #ifdefs. */
     /* !!! FIXME: these should be SDL_bool */
     int ProvidesOwnCallbackThread;
-    int SkipMixerLock;  /* !!! FIXME: do we need this anymore? */
+    int SkipMixerLock;
     int HasCaptureSupport;
     int OnlyHasDefaultOutputDevice;
-    int OnlyHasDefaultInputDevice;
+    int OnlyHasDefaultCaptureDevice;
     int AllowsArbitraryDeviceNames;
 } SDL_AudioDriverImpl;
 
@@ -157,12 +163,10 @@ struct SDL_AudioDevice
     SDL_AudioStreamer streamer;
 
     /* Current state flags */
-    /* !!! FIXME: should be SDL_bool */
-    int iscapture;
-    int enabled;  /* true if device is functioning and connected. */
-    int shutdown; /* true if we are signaling the play thread to end. */
-    int paused;
-    int opened;
+    SDL_atomic_t shutdown; /* true if we are signaling the play thread to end. */
+    SDL_atomic_t enabled;  /* true if device is functioning and connected. */
+    SDL_atomic_t paused;
+    SDL_bool iscapture;
 
     /* Fake audio buffer for when the audio hardware is busy */
     Uint8 *fake_stream;
@@ -183,6 +187,8 @@ struct SDL_AudioDevice
     /* * * */
     /* Data private to this driver */
     struct SDL_PrivateAudioData *hidden;
+
+    void *handle;
 };
 #undef _THIS
 
@@ -194,6 +200,78 @@ typedef struct AudioBootStrap
     int demand_only;  /* 1==request explicitly, or it won't be available. */
 } AudioBootStrap;
 
-#endif /* _SDL_sysaudio_h */
+#if SDL_AUDIO_DRIVER_PULSEAUDIO
+extern AudioBootStrap PULSEAUDIO_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_ALSA
+extern AudioBootStrap ALSA_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_SNDIO
+extern AudioBootStrap SNDIO_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_BSD
+extern AudioBootStrap BSD_AUDIO_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_OSS
+extern AudioBootStrap DSP_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_QSA
+extern AudioBootStrap QSAAUDIO_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_SUNAUDIO
+extern AudioBootStrap SUNAUDIO_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_ARTS
+extern AudioBootStrap ARTS_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_ESD
+extern AudioBootStrap ESD_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_NACL
+extern AudioBootStrap NACLAUDIO_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_NAS
+extern AudioBootStrap NAS_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_XAUDIO2
+extern AudioBootStrap XAUDIO2_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_DSOUND
+extern AudioBootStrap DSOUND_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_WINMM
+extern AudioBootStrap WINMM_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_PAUDIO
+extern AudioBootStrap PAUDIO_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_HAIKU
+extern AudioBootStrap HAIKUAUDIO_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_COREAUDIO
+extern AudioBootStrap COREAUDIO_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_DISK
+extern AudioBootStrap DISKAUDIO_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_DUMMY
+extern AudioBootStrap DUMMYAUDIO_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_FUSIONSOUND
+extern AudioBootStrap FUSIONSOUND_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_ANDROID
+extern AudioBootStrap ANDROIDAUDIO_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_PSP
+extern AudioBootStrap PSPAUDIO_bootstrap;
+#endif
+#if SDL_AUDIO_DRIVER_EMSCRIPTEN
+extern AudioBootStrap EMSCRIPTENAUDIO_bootstrap;
+#endif
+
+
+
+#endif /* SDL_sysaudio_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

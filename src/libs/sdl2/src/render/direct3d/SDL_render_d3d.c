@@ -512,7 +512,6 @@ D3D_CreateRenderer(SDL_Window * window, Uint32 flags)
     D3D_RenderData *data;
     SDL_SysWMinfo windowinfo;
     HRESULT result;
-    const char *hint;
     D3DPRESENT_PARAMETERS pparams;
     IDirect3DSwapChain9 *chain;
     D3DCAPS9 caps;
@@ -607,8 +606,7 @@ D3D_CreateRenderer(SDL_Window * window, Uint32 flags)
         device_flags |= D3DCREATE_SOFTWARE_VERTEXPROCESSING;
     }
 
-    hint = SDL_GetHint(SDL_HINT_RENDER_DIRECT3D_THREADSAFE);
-    if (hint && SDL_atoi(hint)) {
+    if (SDL_GetHintBoolean(SDL_HINT_RENDER_DIRECT3D_THREADSAFE, SDL_FALSE)) {
         device_flags |= D3DCREATE_MULTITHREADED;
     }
 
@@ -1311,6 +1309,10 @@ D3D_RenderClear(SDL_Renderer * renderer)
         BackBufferHeight = data->pparams.BackBufferHeight;
     }
 
+    if (renderer->clipping_enabled) {
+        IDirect3DDevice9_SetRenderState(data->device, D3DRS_SCISSORTESTENABLE, FALSE);
+    }
+
     /* Don't reset the viewport if we don't have to! */
     if (!renderer->viewport.x && !renderer->viewport.y &&
         renderer->viewport.w == BackBufferWidth &&
@@ -1338,6 +1340,10 @@ D3D_RenderClear(SDL_Renderer * renderer)
         viewport.MinZ = 0.0f;
         viewport.MaxZ = 1.0f;
         IDirect3DDevice9_SetViewport(data->device, &viewport);
+    }
+
+    if (renderer->clipping_enabled) {
+        IDirect3DDevice9_SetRenderState(data->device, D3DRS_SCISSORTESTENABLE, TRUE);
     }
 
     if (FAILED(result)) {
@@ -1717,28 +1723,26 @@ D3D_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
     centerx = center->x;
     centery = center->y;
 
-    if (flip & SDL_FLIP_HORIZONTAL) {
-        minx = dstrect->w - centerx - 0.5f;
-        maxx = -centerx - 0.5f;
-    }
-    else {
-        minx = -centerx - 0.5f;
-        maxx = dstrect->w - centerx - 0.5f;
-    }
-
-    if (flip & SDL_FLIP_VERTICAL) {
-        miny = dstrect->h - centery - 0.5f;
-        maxy = -centery - 0.5f;
-    }
-    else {
-        miny = -centery - 0.5f;
-        maxy = dstrect->h - centery - 0.5f;
-    }
+    minx = -centerx;
+    maxx = dstrect->w - centerx;
+    miny = -centery;
+    maxy = dstrect->h - centery;
 
     minu = (float) srcrect->x / texture->w;
     maxu = (float) (srcrect->x + srcrect->w) / texture->w;
     minv = (float) srcrect->y / texture->h;
     maxv = (float) (srcrect->y + srcrect->h) / texture->h;
+
+    if (flip & SDL_FLIP_HORIZONTAL) {
+        float tmp = maxu;
+        maxu = minu;
+        minu = tmp;
+    }
+    if (flip & SDL_FLIP_VERTICAL) {
+        float tmp = maxv;
+        maxv = minv;
+        minv = tmp;
+    }
 
     color = D3DCOLOR_ARGB(texture->a, texture->r, texture->g, texture->b);
 
@@ -1775,8 +1779,7 @@ D3D_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
     /* Rotate and translate */
     modelMatrix = MatrixMultiply(
             MatrixRotationZ((float)(M_PI * (float) angle / 180.0f)),
-            MatrixTranslation(dstrect->x + center->x, dstrect->y + center->y, 0)
-);
+            MatrixTranslation(dstrect->x + center->x - 0.5f, dstrect->y + center->y - 0.5f, 0));
     IDirect3DDevice9_SetTransform(data->device, D3DTS_VIEW, (D3DMATRIX*)&modelMatrix);
 
     D3D_UpdateTextureScaleMode(data, texturedata, 0);

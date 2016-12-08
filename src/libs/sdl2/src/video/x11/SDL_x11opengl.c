@@ -519,15 +519,6 @@ X11_GL_GetVisual(_THIS, Display * display, int screen)
     return vinfo;
 }
 
-#ifndef GLXBadContext
-#define GLXBadContext 0
-#endif
-#ifndef GLXBadFBConfig
-#define GLXBadFBConfig 9
-#endif
-#ifndef GLXBadProfileARB
-#define GLXBadProfileARB 13
-#endif
 static int (*handler) (Display *, XErrorEvent *) = NULL;
 static const char *errorHandlerOperation = NULL;
 static int errorBase = 0;
@@ -648,6 +639,7 @@ X11_GL_CreateContext(_THIS, SDL_Window * window)
                     context = _this->gl_data->glXCreateContextAttribsARB(display,
                                                     framebuffer_config[0],
                                                     share_context, True, attribs);
+                    X11_XFree(framebuffer_config);
                 }
             }
         }

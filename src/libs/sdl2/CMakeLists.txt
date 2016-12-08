@@ -1,4 +1,24 @@
+find_package(sdl2)
+
 set(SDL2_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+# General source files
+file(GLOB SOURCE_FILES
+  ${SDL2_SOURCE_DIR}/src/*.c
+  ${SDL2_SOURCE_DIR}/src/atomic/*.c
+  ${SDL2_SOURCE_DIR}/src/audio/*.c
+  ${SDL2_SOURCE_DIR}/src/cpuinfo/*.c
+  ${SDL2_SOURCE_DIR}/src/dynapi/*.c
+  ${SDL2_SOURCE_DIR}/src/events/*.c
+  ${SDL2_SOURCE_DIR}/src/file/*.c
+  ${SDL2_SOURCE_DIR}/src/libm/*.c
+  ${SDL2_SOURCE_DIR}/src/render/*.c
+  ${SDL2_SOURCE_DIR}/src/render/*/*.c
+  ${SDL2_SOURCE_DIR}/src/stdlib/*.c
+  ${SDL2_SOURCE_DIR}/src/thread/*.c
+  ${SDL2_SOURCE_DIR}/src/timer/*.c
+  ${SDL2_SOURCE_DIR}/src/video/*.c)
+
+if (NOT SDL2_FOUND)
 
 include(CheckFunctionExists)
 include(CheckLibraryExists)
@@ -24,9 +44,9 @@ include(cmake/sdlchecks.cmake)
 # set SDL_BINARY_AGE and SDL_INTERFACE_AGE to 0.
 set(SDL_MAJOR_VERSION 2)
 set(SDL_MINOR_VERSION 0)
-set(SDL_MICRO_VERSION 4)
-set(SDL_INTERFACE_AGE 0)
-set(SDL_BINARY_AGE 4)
+set(SDL_MICRO_VERSION 5)
+set(SDL_INTERFACE_AGE 1)
+set(SDL_BINARY_AGE 5)
 set(SDL_VERSION "${SDL_MAJOR_VERSION}.${SDL_MINOR_VERSION}.${SDL_MICRO_VERSION}")
 
 # Calculate a libtool-like version number
@@ -36,8 +56,6 @@ math(EXPR LT_MAJOR "${LT_CURRENT}- ${LT_AGE}")
 set(LT_REVISION "${SDL_INTERFACE_AGE}")
 set(LT_RELEASE "${SDL_MAJOR_VERSION}.${SDL_MINOR_VERSION}")
 set(LT_VERSION "${LT_MAJOR}.${LT_AGE}.${LT_REVISION}")
-
-cp_message( "${LT_VERSION} :: ${LT_AGE} :: ${LT_REVISION} :: ${LT_CURRENT} :: ${LT_RELEASE}")
 
 # General settings & flags
 set(LIBRARY_OUTPUT_DIRECTORY "build")
@@ -191,7 +209,7 @@ set(ORIG_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
 if(CYGWIN)
   # We build SDL on cygwin without the UNIX emulation layer
   include_directories("-I/usr/include/mingw")
-  set(CMAKE_REQUIRED_FLAGS "-mno-cygwin")
+  set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} -mno-cygwin")
   check_c_source_compiles("int main(int argc, char **argv) {}"
     HAVE_GCC_NO_CYGWIN)
   set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
@@ -301,22 +319,6 @@ set(SDL_STATIC ON CACHE BOOL "Build a static version of the library")
 
 dep_option(SDL_STATIC_PIC      "Static version of the library should be built with Position Independent Code" OFF "SDL_STATIC" OFF)
 
-# General source files
-file(GLOB SOURCE_FILES
-  ${SDL2_SOURCE_DIR}/src/*.c
-  ${SDL2_SOURCE_DIR}/src/atomic/*.c
-  ${SDL2_SOURCE_DIR}/src/audio/*.c
-  ${SDL2_SOURCE_DIR}/src/cpuinfo/*.c
-  ${SDL2_SOURCE_DIR}/src/dynapi/*.c
-  ${SDL2_SOURCE_DIR}/src/events/*.c
-  ${SDL2_SOURCE_DIR}/src/file/*.c
-  ${SDL2_SOURCE_DIR}/src/libm/*.c
-  ${SDL2_SOURCE_DIR}/src/render/*.c
-  ${SDL2_SOURCE_DIR}/src/render/*/*.c
-  ${SDL2_SOURCE_DIR}/src/stdlib/*.c
-  ${SDL2_SOURCE_DIR}/src/thread/*.c
-  ${SDL2_SOURCE_DIR}/src/timer/*.c
-  ${SDL2_SOURCE_DIR}/src/video/*.c)
 
 
 if(ASSERTIONS STREQUAL "auto")
@@ -788,6 +790,16 @@ if(EMSCRIPTEN)
     set(SOURCE_FILES ${SOURCE_FILES} ${EM_POWER_SOURCES})
     set(HAVE_SDL_POWER TRUE)
   endif()
+  if(SDL_TIMERS)
+    set(SDL_TIMER_UNIX 1)
+    file(GLOB TIMER_SOURCES ${SDL2_SOURCE_DIR}/src/timer/unix/*.c)
+    set(SOURCE_FILES ${SOURCE_FILES} ${TIMER_SOURCES})
+    set(HAVE_SDL_TIMERS TRUE)
+
+    if(CLOCK_GETTIME)
+      set(HAVE_CLOCK_GETTIME 1)
+    endif()
+  endif()
   if(SDL_VIDEO)
     set(SDL_VIDEO_DRIVER_EMSCRIPTEN 1)
     file(GLOB EM_VIDEO_SOURCES ${SDL2_SOURCE_DIR}/src/video/emscripten/*.c)
@@ -881,8 +893,24 @@ elseif(UNIX AND NOT APPLE)
 
     check_include_file("libudev.h" HAVE_LIBUDEV_H)
 
-    # !!! FIXME: this needs pkg-config to find the include path, I think.
-    check_include_file("dbus/dbus.h" HAVE_DBUS_DBUS_H)
+    if(PKG_CONFIG_FOUND)
+      pkg_search_module(DBUS dbus-1 dbus)
+      if(DBUS_FOUND)
+        set(HAVE_DBUS_DBUS_H TRUE)
+        include_directories(${DBUS_INCLUDE_DIRS})
+        list(APPEND EXTRA_LIBS ${DBUS_LIBRARIES})
+      endif()
+
+      pkg_search_module(IBUS ibus-1.0 ibus)
+      if(IBUS_FOUND)
+        set(HAVE_IBUS_IBUS_H TRUE)
+        include_directories(${IBUS_INCLUDE_DIRS})
+        list(APPEND EXTRA_LIBS ${IBUS_LIBRARIES})
+      endif()
+    endif()
+
+    check_include_file("fcitx/frontend.h" HAVE_FCITX_FRONTEND_H)
+
   endif()
 
   if(INPUT_TSLIB)
@@ -1189,15 +1217,11 @@ elseif(APPLE)
 
   if(SDL_AUDIO)
     set(SDL_AUDIO_DRIVER_COREAUDIO 1)
-    file(GLOB AUDIO_SOURCES ${SDL2_SOURCE_DIR}/src/audio/coreaudio/*.c)
+    file(GLOB AUDIO_SOURCES ${SDL2_SOURCE_DIR}/src/audio/coreaudio/*.m)
     set(SOURCE_FILES ${SOURCE_FILES} ${AUDIO_SOURCES})
     set(HAVE_SDL_AUDIO TRUE)
     set(SDL_FRAMEWORK_COREAUDIO 1)
-    if (IOS)
-      set(SDL_FRAMEWORK_AUDIOTOOLBOX 1)
-    else()
-      set(SDL_FRAMEWORK_AUDIOUNIT 1)
-    endif()
+    set(SDL_FRAMEWORK_AUDIOTOOLBOX 1)
   endif()
 
   if(SDL_JOYSTICK)
@@ -1413,7 +1437,7 @@ endif()
 #   endif()
 # endif()
 
-if (LINUX OR EMSCRIPTEN OR MSVC)
+if (LINUX OR EMSCRIPTEN)
   configure_file("include/SDL_config.h.cmake"
     "${CMAKE_BINARY_DIR}/SDL_config.h")
 endif()
@@ -1449,43 +1473,6 @@ if(NOT WINDOWS OR CYGWIN)
   set(SDL_LIBS ${_SDL_LIBS})
 endif()
 
-##### Info output #####
-cp_message("")
-cp_message("SDL2 was configured with the following options:")
-cp_message("")
-cp_message("Platform: ${CMAKE_SYSTEM}")
-cp_message("64-bit:   ${ARCH_64}")
-cp_message("Compiler: ${CMAKE_C_COMPILER}")
-cp_message("")
-cp_message("Subsystems:")
-foreach(_SUB ${SDL_SUBSYSTEMS})
-  string(TOUPPER ${_SUB} _OPT)
-  message_bool_option(${_SUB} SDL_${_OPT})
-endforeach()
-cp_message("")
-cp_message("Options:")
-list(SORT ALLOPTIONS)
-foreach(_OPT ${ALLOPTIONS})
-  # Longest option is VIDEO_X11_XSCREENSAVER = 22 characters
-  # Get the padding
-  string(LENGTH ${_OPT} _OPTLEN)
-  math(EXPR _PADLEN "23 - ${_OPTLEN}")
-  string(RANDOM LENGTH ${_PADLEN} ALPHABET " " _PADDING)
-  message_tested_option(${_OPT} ${_PADDING})
-endforeach()
-cp_message("")
-cp_message(" CFLAGS:        ${CMAKE_C_FLAGS}")
-cp_message(" EXTRA_CFLAGS:  ${EXTRA_CFLAGS}")
-cp_message(" EXTRA_LDFLAGS: ${EXTRA_LDFLAGS}")
-cp_message(" EXTRA_LIBS:    ${EXTRA_LIBS}")
-cp_message("")
-if(UNIX)
-  cp_message("If something was not detected, although the libraries")
-  cp_message("were installed, then make sure you have set the")
-  cp_message("CFLAGS and LDFLAGS environment variables correctly.")
-  cp_message("")
-endif()
-
 if(ANDROID)
 FILE(GLOB PLATFORM_SRCS
 	${SDL2_SOURCE_DIR}/src/filesystem/unix/*.c
@@ -1505,16 +1492,18 @@ FILE(GLOB PLATFORM_SRCS
 	set(ANDROID_LDFLAGS "-Wl,--undefined=Java_org_libsdl_app_SDLActivity_nativeInit")
 endif()
 
-if (LINUX OR EMSCRIPTEN OR MSVC)
+if (LINUX OR EMSCRIPTEN)
 	set(DEFINES USING_GENERATED_CONFIG_H)
 else()
 	set(DEFINES "")
 endif()
 
+endif(NOT SDL2_FOUND)
+
 cp_add_library(
 	LIB sdl2
 	SRCS ${SOURCE_FILES} ${SDLMAIN_SOURCES} ${PLATFORM_SRCS}
-	CFLAGS "${CMAKE_C_FLAGS} ${SDL_CFLAGS} ${EXTRA_CFLAGS} -Wno-deprecated-declarations -Wno-cast-qual -Wno-unused-parameter -Wno-sign-compare -Wno-ignored-qualifiers -Wno-discarded-qualifiers -Wno-empty-body -Wno-unused-but-set-variable"
+	CFLAGS "${CMAKE_C_FLAGS} ${SDL_CFLAGS} ${EXTRA_CFLAGS}"
 	DEFINES ${DEFINES}
 	LINKERFLAGS ${ANDROID_LDFLAGS} ${EXTRA_LDFLAGS})
 if (NOT SDL2_FOUND)
@@ -1522,12 +1511,14 @@ if (NOT SDL2_FOUND)
 		list(APPEND EXTRA_LIBS ${CMAKE_DL_LIBS})
 	endif()
 	target_link_libraries(sdl2 ${EXTRA_LIBS})
-	if (IOS)
-		set_property(TARGET sdl2 APPEND_STRING PROPERTY COMPILE_FLAGS " -fobjc-arc")
+	if (NOT MSVC)
+		if (IOS)
+			set_target_properties(sdl2 PROPERTIES COMPILE_FLAGS "-fobjc-arc")
+		endif()
+		set_target_properties(sdl2 PROPERTIES COMPILE_FLAGS "-Wno-sign-compare")
 	endif()
-	list(APPEND SDL2_INCLUDE_DIRS "${ROOT_DIR}/src/libs/sdl2/include")
-	list(APPEND SDL2_INCLUDE_DIRS "${ROOT_DIR}/src/libs/sdl2/src")
-	list(APPEND SDL2_INCLUDE_DIRS "${ROOT_DIR}/src/libs/sdl2/config")
+	target_include_directories(sdl2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/config)
+	set(SDL2_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include;${CMAKE_CURRENT_SOURCE_DIR}/src;${CMAKE_CURRENT_SOURCE_DIR}/config")
 	include_directories(${SDL2_INCLUDE_DIRS})
 	var_global(SDL2_INCLUDE_DIRS)
 endif()

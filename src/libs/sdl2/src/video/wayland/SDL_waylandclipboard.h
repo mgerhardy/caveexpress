@@ -18,8 +18,15 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "../SDL_internal.h"
+#include "../../SDL_internal.h"
 
-#define SDL_AllocAudioMem   SDL_malloc
-#define SDL_FreeAudioMem    SDL_free
+#ifndef _SDL_waylandclipboard_h
+#define _SDL_waylandclipboard_h
+
+extern int Wayland_SetClipboardText(_THIS, const char *text);
+extern char *Wayland_GetClipboardText(_THIS);
+extern SDL_bool Wayland_HasClipboardText(_THIS);
+
+#endif /* _SDL_waylandclipboard_h */
+
 /* vi: set ts=4 sw=4 expandtab: */

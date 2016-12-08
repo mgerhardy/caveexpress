@@ -91,10 +91,15 @@ void SDL_WAYLAND_UnloadSymbols(void);
 #define wl_output_interface (*WAYLAND_wl_output_interface)
 #define wl_shell_interface (*WAYLAND_wl_shell_interface)
 #define wl_shm_interface (*WAYLAND_wl_shm_interface)
+#define wl_data_device_interface (*WAYLAND_wl_data_device_interface)
+#define wl_data_offer_interface (*WAYLAND_wl_data_offer_interface)
+#define wl_data_source_interface (*WAYLAND_wl_data_source_interface)
+#define wl_data_device_manager_interface (*WAYLAND_wl_data_device_manager_interface)
 
 #endif /* SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC */
 
-#include "wayland-client.h"
+#include "wayland-client-core.h"
+#include "wayland-client-protocol.h"
 #include "wayland-egl.h"
 
 #endif /* !defined _SDL_waylanddyn_h */

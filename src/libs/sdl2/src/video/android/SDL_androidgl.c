@@ -29,6 +29,7 @@
 #include "SDL_androidwindow.h"
 
 #include "SDL_androidvideo.h"
+#include "SDL_androidgl.h"
 #include "../../core/android/SDL_android.h"
 
 #include <android/log.h>

@@ -90,9 +90,6 @@
 #include "SDL_blit.h"
 #include "SDL_RLEaccel_c.h"
 
-#ifndef MAX
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#endif
 #ifndef MIN
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
@@ -1280,7 +1277,7 @@ RLEColorkeySurface(SDL_Surface * surface)
     int y;
     Uint8 *srcbuf, *lastline;
     int maxsize = 0;
-    int bpp = surface->format->BytesPerPixel;
+    const int bpp = surface->format->BytesPerPixel;
     getpix_func getpix;
     Uint32 ckey, rgbmask;
     int w, h;
@@ -1303,6 +1300,9 @@ RLEColorkeySurface(SDL_Surface * surface)
         maxsize = surface->h * (4 * (surface->w / 65535 + 1)
                                 + surface->w * 4) + 4;
         break;
+
+    default:
+        return -1;
     }
 
     rlebuf = (Uint8 *) SDL_malloc(maxsize);
@@ -1396,7 +1396,7 @@ RLEColorkeySurface(SDL_Surface * surface)
         surface->map->data = p;
     }
 
-    return (0);
+    return 0;
 }
 
 int

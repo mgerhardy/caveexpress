@@ -20,8 +20,8 @@
 */
 #include "../../SDL_internal.h"
 
-#ifndef _SDL_diskaudio_h
-#define _SDL_diskaudio_h
+#ifndef SDL_diskaudio_h_
+#define SDL_diskaudio_h_
 
 #include "SDL_rwops.h"
 #include "../SDL_sysaudio.h"
@@ -32,11 +32,10 @@
 struct SDL_PrivateAudioData
 {
     /* The file descriptor for the audio device */
-    SDL_RWops *output;
+    SDL_RWops *io;
+    Uint32 io_delay;
     Uint8 *mixbuf;
-    Uint32 mixlen;
-    Uint32 write_delay;
 };
 
-#endif /* _SDL_diskaudio_h */
+#endif /* SDL_diskaudio_h_ */
 /* vi: set ts=4 sw=4 expandtab: */

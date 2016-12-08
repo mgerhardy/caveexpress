@@ -18,13 +18,8 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-
-#if defined(__clang_analyzer__) && !defined(SDL_DISABLE_ANALYZE_MACROS)
+#if defined(__clang_analyzer__)
 #define SDL_DISABLE_ANALYZE_MACROS 1
-#endif
-
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE 1
 #endif
 
 #include "../SDL_internal.h"
@@ -33,9 +28,10 @@
 
 #include "SDL_stdinc.h"
 
-
+#if !defined(HAVE_VSSCANF) || !defined(HAVE_STRTOL) || !defined(HAVE_STRTOUL)  || !defined(HAVE_STRTOLL) || !defined(HAVE_STRTOULL) || !defined(HAVE_STRTOD)
 #define SDL_isupperhex(X)   (((X) >= 'A') && ((X) <= 'F'))
 #define SDL_islowerhex(X)   (((X) >= 'a') && ((X) <= 'f'))
+#endif
 
 #define UTF8_IsLeadByte(c) ((c) >= 0xC0 && (c) <= 0xF4)
 #define UTF8_IsTrailingByte(c) ((c) >= 0x80 && (c) <= 0xBF)
@@ -1315,6 +1311,7 @@ static size_t
 SDL_PrintString(char *text, size_t maxlen, SDL_FormatInfo *info, const char *string)
 {
     size_t length = 0;
+    size_t slen;
 
     if (info && info->width && (size_t)info->width > SDL_strlen(string)) {
         char fill = info->pad_zeroes ? '0' : ' ';
@@ -1326,7 +1323,8 @@ SDL_PrintString(char *text, size_t maxlen, SDL_FormatInfo *info, const char *str
         }
     }
 
-    length += SDL_strlcpy(text, string, maxlen);
+    slen = SDL_strlcpy(text, string, maxlen);
+    length += SDL_min(slen, maxlen);
 
     if (info) {
         if (info->force_case == SDL_CASE_LOWER) {
@@ -1402,10 +1400,11 @@ SDL_PrintFloat(char *text, size_t maxlen, SDL_FormatInfo *info, double arg)
         }
         value = (unsigned long) arg;
         len = SDL_PrintUnsignedLong(text, left, NULL, value);
-        text += len;
         if (len >= left) {
+            text += (left > 1) ? left - 1 : 0;
             left = SDL_min(left, 1);
         } else {
+            text += len;
             left -= len;
         }
         arg -= value;
@@ -1422,10 +1421,11 @@ SDL_PrintFloat(char *text, size_t maxlen, SDL_FormatInfo *info, double arg)
             while (info->precision-- > 0) {
                 value = (unsigned long) (arg * mult);
                 len = SDL_PrintUnsignedLong(text, left, NULL, value);
-                text += len;
                 if (len >= left) {
+                    text += (left > 1) ? left - 1 : 0;
                     left = SDL_min(left, 1);
                 } else {
+                    text += len;
                     left -= len;
                 }
                 arg -= (double) value / mult;
@@ -1458,10 +1458,11 @@ SDL_PrintFloat(char *text, size_t maxlen, SDL_FormatInfo *info, double arg)
             }
         }
         len = (size_t)width;
-        text += len;
         if (len >= left) {
+            text += (left > 1) ? left - 1 : 0;
             left = SDL_min(left, 1);
         } else {
+            text += len;
             left -= len;
         }
         while (len--) {
@@ -1637,10 +1638,11 @@ SDL_vsnprintf(SDL_OUT_Z_CAP(maxlen) char *text, size_t maxlen, const char *fmt, 
                 }
                 ++fmt;
             }
-            text += len;
             if (len >= left) {
+                text += (left > 1) ? left - 1 : 0;
                 left = SDL_min(left, 1);
             } else {
+                text += len;
                 left -= len;
             }
         } else {

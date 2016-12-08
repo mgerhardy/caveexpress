@@ -36,10 +36,7 @@
 
 /* Initialization/Cleanup routines */
 #if !SDL_TIMERS_DISABLED
-extern int SDL_TimerInit(void);
-extern void SDL_TimerQuit(void);
-extern void SDL_TicksInit(void);
-extern void SDL_TicksQuit(void);
+# include "timer/SDL_timer_c.h"
 #endif
 #if SDL_VIDEO_DRIVER_WINDOWS
 extern int SDL_HelperWindowCreate(void);
@@ -115,6 +112,16 @@ SDL_InitSubSystem(Uint32 flags)
     /* Clear the error message */
     SDL_ClearError();
 
+    if ((flags & SDL_INIT_GAMECONTROLLER)) {
+        /* game controller implies joystick */
+        flags |= SDL_INIT_JOYSTICK;
+    }
+
+    if ((flags & (SDL_INIT_VIDEO|SDL_INIT_JOYSTICK))) {
+        /* video or joystick implies events */
+        flags |= SDL_INIT_EVENTS;
+    }
+
 #if SDL_VIDEO_DRIVER_WINDOWS
 	if ((flags & (SDL_INIT_HAPTIC|SDL_INIT_JOYSTICK))) {
 		if (SDL_HelperWindowCreate() < 0) {
@@ -126,16 +133,6 @@ SDL_InitSubSystem(Uint32 flags)
 #if !SDL_TIMERS_DISABLED
     SDL_TicksInit();
 #endif
-
-    if ((flags & SDL_INIT_GAMECONTROLLER)) {
-        /* game controller implies joystick */
-        flags |= SDL_INIT_JOYSTICK;
-    }
-
-    if ((flags & (SDL_INIT_VIDEO|SDL_INIT_JOYSTICK))) {
-        /* video or joystick implies events */
-        flags |= SDL_INIT_EVENTS;
-    }
 
     /* Initialize the event subsystem */
     if ((flags & SDL_INIT_EVENTS)) {
@@ -443,6 +440,8 @@ SDL_GetPlatform()
     return "Windows";
 #elif __WINRT__
     return "WinRT";
+#elif __TVOS__
+    return "tvOS";
 #elif __IPHONEOS__
     return "iOS";
 #elif __PSP__

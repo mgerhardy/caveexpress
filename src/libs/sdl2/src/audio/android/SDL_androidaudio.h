@@ -34,7 +34,8 @@ struct SDL_PrivateAudioData
     int resume;
 };
 
-static void AndroidAUD_CloseDevice(_THIS);
+void ANDROIDAUDIO_ResumeDevices(void);
+void ANDROIDAUDIO_PauseDevices(void);
 
 #endif /* _SDL_androidaudio_h */
 

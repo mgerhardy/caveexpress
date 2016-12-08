@@ -243,6 +243,7 @@ X11_CreateDevice(int devindex)
     device->MinimizeWindow = X11_MinimizeWindow;
     device->RestoreWindow = X11_RestoreWindow;
     device->SetWindowBordered = X11_SetWindowBordered;
+    device->SetWindowResizable = X11_SetWindowResizable;
     device->SetWindowFullscreen = X11_SetWindowFullscreen;
     device->SetWindowGammaRamp = X11_SetWindowGammaRamp;
     device->SetWindowGrab = X11_SetWindowGrab;
@@ -285,7 +286,7 @@ X11_CreateDevice(int devindex)
     device->StartTextInput = X11_StartTextInput;
     device->StopTextInput = X11_StopTextInput;
     device->SetTextInputRect = X11_SetTextInputRect;
-    
+
     device->free = X11_DeleteDevice;
 
     return device;
@@ -382,14 +383,6 @@ X11_VideoInit(_THIS)
 
     /* I have no idea how random this actually is, or has to be. */
     data->window_group = (XID) (((size_t) data->pid) ^ ((size_t) _this));
-
-    /* Open a connection to the X input manager */
-#ifdef X_HAVE_UTF8_STRING
-    if (SDL_X11_HAVE_UTF8) {
-        data->im =
-            X11_XOpenIM(data->display, NULL, data->classname, data->classname);
-    }
-#endif
 
     /* Look up some useful Atoms */
 #define GET_ATOM(X) data->X = X11_XInternAtom(data->display, #X, False)

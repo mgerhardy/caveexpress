@@ -127,6 +127,7 @@ SetupWindowData(_THIS, SDL_Window * window, HWND hwnd, SDL_bool created)
     data->window = window;
     data->hwnd = hwnd;
     data->hdc = GetDC(hwnd);
+    data->hinstance = (HINSTANCE) GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
     data->created = created;
     data->mouse_button_flags = 0;
     data->videodata = videodata;
@@ -478,7 +479,8 @@ WIN_HideWindow(_THIS, SDL_Window * window)
 void
 WIN_RaiseWindow(_THIS, SDL_Window * window)
 {
-    WIN_SetWindowPositionInternal(_this, window, SWP_NOCOPYBITS | SWP_NOMOVE | SWP_NOSIZE);
+    HWND hwnd = ((SDL_WindowData *) window->driverdata)->hwnd;
+    SetForegroundWindow(hwnd);
 }
 
 void
@@ -517,6 +519,22 @@ WIN_SetWindowBordered(_THIS, SDL_Window * window, SDL_bool bordered)
     SetWindowLong(hwnd, GWL_STYLE, style);
     WIN_SetWindowPositionInternal(_this, window, SWP_NOCOPYBITS | SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOACTIVATE);
     data->in_border_change = SDL_FALSE;
+}
+
+void
+WIN_SetWindowResizable(_THIS, SDL_Window * window, SDL_bool resizable)
+{
+    SDL_WindowData *data = (SDL_WindowData *)window->driverdata;
+    HWND hwnd = data->hwnd;
+    DWORD style = GetWindowLong(hwnd, GWL_STYLE);
+
+    if (resizable) {
+        style |= STYLE_RESIZABLE;
+    } else {
+        style &= ~STYLE_RESIZABLE;
+    }
+
+    SetWindowLong(hwnd, GWL_STYLE, style);
 }
 
 void
@@ -680,9 +698,19 @@ WIN_GetWindowWMInfo(_THIS, SDL_Window * window, SDL_SysWMinfo * info)
 {
     const SDL_WindowData *data = (const SDL_WindowData *) window->driverdata;
     if (info->version.major <= SDL_MAJOR_VERSION) {
+        int versionnum = SDL_VERSIONNUM(info->version.major, info->version.minor, info->version.patch);
+
         info->subsystem = SDL_SYSWM_WINDOWS;
         info->info.win.window = data->hwnd;
-        info->info.win.hdc = data->hdc;
+
+        if (versionnum >= SDL_VERSIONNUM(2, 0, 4)) {
+            info->info.win.hdc = data->hdc;
+        }
+
+        if (versionnum >= SDL_VERSIONNUM(2, 0, 5)) {
+            info->info.win.hinstance = data->hinstance;
+        }
+
         return SDL_TRUE;
     } else {
         SDL_SetError("Application not compiled with SDL %d.%d\n",
