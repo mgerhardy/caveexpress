@@ -609,7 +609,7 @@ bool Map::load (const std::string& name)
 	}
 
 	const CaveMapTile* highestCave = nullptr;
-	if (isWaterRising())
+	if (isWaterRising() && !_water->isWaterFallingEnabled())
 		highestCave = getHighestCave();
 
 	// do another loop when we have all caves - we have to know each of the caves in order to initialize them properly

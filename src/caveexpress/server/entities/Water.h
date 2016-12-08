@@ -44,6 +44,7 @@ public:
 
 	// will return true if this map will at some point rise the water
 	bool isWaterRisingEnabled () const;
+	bool isWaterFallingEnabled () const;
 	bool isWaterChangeOver () const;
 
 	void createBody (float waterHeight);
@@ -71,6 +72,10 @@ inline bool Water::isWaterRisingDue () const
 inline bool Water::isWaterRisingEnabled () const
 {
 	return _waterChangeSpeed > 0.00001f;
+}
+
+inline bool Water::isWaterFallingEnabled () const {
+	return _waterFallingTime > 0;
 }
 
 inline bool Water::isWaterChangeOver () const
