@@ -8,4 +8,4 @@
 # project structure.
 
 # Project target.
-target=android-@TARGET_ANDROID_SDK@
+target=android-@CMAKE_SYSTEM_VERSION@

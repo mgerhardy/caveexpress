@@ -15,8 +15,8 @@ android {
 
     defaultConfig {
         applicationId "org.@PACKAGENAME@"
-        minSdkVersion @MIN_ANDROID_SDK@
-        targetSdkVersion @TARGET_ANDROID_SDK@
+        minSdkVersion @CMAKE_ANDROID_API_MIN@
+        targetSdkVersion @CMAKE_SYSTEM_VERSION@
         versionCode @VERSION_CODE@
         versionName "@VERSION@"
         ndk {

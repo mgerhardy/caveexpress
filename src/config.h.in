@@ -1,6 +1,5 @@
-#cmakedefine HAVE_SYSLOG_H
-#cmakedefine HAVE_EXECINFO_H
-#cmakedefine HAVE_CLOCKGETTIME
-#cmakedefine HAVE_NCURSES_H
-#cmakedefine HD_VERSION
-#cmakedefine APP_PACKAGENAME
+#cmakedefine HAVE_SYSLOG_H 1
+#cmakedefine HAVE_EXECINFO_H 1
+#cmakedefine HAVE_CLOCKGETTIME 1
+#cmakedefine HAVE_NCURSES_H 1
+#cmakedefine HD_VERSION 1

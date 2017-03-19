@@ -13,6 +13,7 @@ import org.base.util.IabResult;
 import org.base.util.Inventory;
 import org.base.util.Purchase;
 import org.base.util.SkuDetails;
+import org.base.util.IabHelper.IabAsyncInProgressException;
 import org.libsdl.app.SDLActivity;
 
 import android.app.AlertDialog;
@@ -90,7 +91,11 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 				// moreSkus.add("campaign" + i);
 				// }
 
-				inAppBillingHelper.queryInventoryAsync(true, moreSkus, mGotInventoryListener);
+				try {
+					inAppBillingHelper.queryInventoryAsync(true, null, moreSkus, mGotInventoryListener);
+				} catch (IabAsyncInProgressException e) {
+					Log.e(getName(), "Failed to query inventory", e);
+				}
 			}
 		}
 	}
@@ -205,8 +210,9 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 
 	protected void doDestroyBilling() {
 		// killing billing services
-		if (inAppBillingHelper != null)
-			inAppBillingHelper.dispose();
+		if (inAppBillingHelper != null) {
+			inAppBillingHelper.disposeWhenFinished();
+		}
 		inAppBillingHelper = null;
 	}
 
@@ -257,8 +263,13 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		Log.v(getName(), "Purchase procedure started");
 		final String payload = getName() + id;
 
-		inAppBillingHelper.launchPurchaseFlow(mSingleton, id, RC_REQUEST, purchaseFinishedListener, payload);
-		return true;
+		try {
+			inAppBillingHelper.launchPurchaseFlow(mSingleton, id, RC_REQUEST, purchaseFinishedListener, payload);
+			return true;
+		} catch (IabAsyncInProgressException e) {
+			Log.e(getName(), "Failed to launch purchase flow", e);
+			return false;
+		}
 	}
 
 	static void alert(final String message) {

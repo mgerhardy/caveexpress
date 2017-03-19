@@ -1,4 +1,3 @@
-#cmakedefine APP_PACKAGENAME "@APP_PACKAGENAME@"
 #cmakedefine GUI_IDENTIFIER "@GUI_IDENTIFIER@"
 #cmakedefine APPNAME "@APPNAME@"
 #cmakedefine VERSION "@VERSION@"
