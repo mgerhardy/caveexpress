@@ -1,6 +1,6 @@
 /*
   SDL_mixer:  An audio mixer library based on the SDL library
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -179,8 +179,7 @@ int OGG_playAudio(OGG_music *music, Uint8 *snd, int len)
         if ( music->volume == MIX_MAX_VOLUME ) {
             SDL_memcpy(snd, music->snd_available, mixable);
         } else {
-            SDL_MixAudio(snd, music->snd_available, mixable,
-                                          music->volume);
+            SDL_MixAudioFormat(snd, music->snd_available, mixer.format, mixable, music->volume);
         }
         music->len_available -= mixable;
         music->snd_available += mixable;

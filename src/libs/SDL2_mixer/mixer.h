@@ -17,35 +17,9 @@
   2. Altered source versions must be plainly marked as such, and must not be
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
-
-  James Le Cuirot
-  chewi@aura-online.co.uk
 */
 
-#ifndef _FLUIDSYNTH_H_
-#define _FLUIDSYNTH_H_
+/* Locking wrapper functions */
+void Mix_LockAudio();
+void Mix_UnlockAudio();
 
-#ifdef USE_FLUIDSYNTH_MIDI
-
-#include "dynamic_fluidsynth.h"
-#include <SDL_rwops.h>
-#include <SDL_audio.h>
-
-typedef struct {
-    SDL_AudioCVT convert;
-    fluid_synth_t *synth;
-    fluid_player_t* player;
-} FluidSynthMidiSong;
-
-int fluidsynth_init(SDL_AudioSpec *mixer);
-FluidSynthMidiSong *fluidsynth_loadsong_RW(SDL_RWops *rw, int freerw);
-void fluidsynth_freesong(FluidSynthMidiSong *song);
-void fluidsynth_start(FluidSynthMidiSong *song);
-void fluidsynth_stop(FluidSynthMidiSong *song);
-int fluidsynth_active(FluidSynthMidiSong *song);
-void fluidsynth_setvolume(FluidSynthMidiSong *song, int volume);
-int fluidsynth_playsome(FluidSynthMidiSong *song, void *stream, int len);
-
-#endif /* USE_FLUIDSYNTH_MIDI */
-
-#endif /* _FLUIDSYNTH_H_ */

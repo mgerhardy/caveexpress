@@ -1,6 +1,6 @@
 /*
   SDL_mixer:  An audio mixer library based on the SDL library
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -264,8 +264,8 @@ mad_getSamples(mad_data *mp3_mad, Uint8 *stream, int len) {
     if (mp3_mad->volume == MIX_MAX_VOLUME) {
       SDL_memcpy(out, mp3_mad->output_buffer + mp3_mad->output_begin, num_bytes);
     } else {
-      SDL_MixAudio(out, mp3_mad->output_buffer + mp3_mad->output_begin,
-                   num_bytes, mp3_mad->volume);
+      SDL_MixAudioFormat(out, mp3_mad->output_buffer + mp3_mad->output_begin,
+                         mixer.format, num_bytes, mp3_mad->volume);
     }
     out += num_bytes;
     mp3_mad->output_begin += num_bytes;
