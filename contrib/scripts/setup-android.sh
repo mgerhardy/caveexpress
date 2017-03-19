@@ -2,12 +2,14 @@
 
 TARGET_ARCH=`uname -p | sed -e s/i.86/i386/`
 ARCH=x86_64
-NDK_VERSION=r10d
+#NDK_VERSION=r10d
+NDK_VERSION=r14
 SDK_VERSION=r24.1.2
 [ $TARGET_ARCH = "i386" ] && ARCH=x86
 echo "Downloading the ndk..."
 echo "==> http://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-$ARCH.bin"
-wget --quiet --continue http://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-$ARCH.bin
+wget --quiet --continue https://dl.google.com/android/repository/android-ndk-$NDK_VERSION-linux-$ARCH.zip
+#wget --quiet --continue http://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-$ARCH.bin
 echo "Extracting the ndk..."
 chmod +x android-ndk-$NDK_VERSION-linux-$ARCH.bin
 ./android-ndk-$NDK_VERSION-linux-$ARCH.bin -o/home/$USER/
