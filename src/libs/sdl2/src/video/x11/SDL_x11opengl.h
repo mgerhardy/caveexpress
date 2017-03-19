@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -34,8 +34,16 @@ struct SDL_GLDriverData
     SDL_bool HAS_GLX_EXT_visual_rating;
     SDL_bool HAS_GLX_EXT_visual_info;
     SDL_bool HAS_GLX_EXT_swap_control_tear;
-    SDL_bool HAS_GLX_EXT_create_context_es2_profile;
     SDL_bool HAS_GLX_ARB_context_flush_control;
+
+	/* Max version of OpenGL ES context that can be created if the
+	   implementation supports GLX_EXT_create_context_es2_profile.
+	   major = minor = 0 when unsupported.
+	 */
+	struct {
+		int major;
+		int minor;
+	} es_profile_max_supported_version;
 
     Bool (*glXQueryExtension) (Display*,int*,int*);
     void *(*glXGetProcAddress) (const GLubyte*);
@@ -57,13 +65,14 @@ struct SDL_GLDriverData
 extern int X11_GL_LoadLibrary(_THIS, const char *path);
 extern void *X11_GL_GetProcAddress(_THIS, const char *proc);
 extern void X11_GL_UnloadLibrary(_THIS);
+extern SDL_bool X11_GL_UseEGL(_THIS);
 extern XVisualInfo *X11_GL_GetVisual(_THIS, Display * display, int screen);
 extern SDL_GLContext X11_GL_CreateContext(_THIS, SDL_Window * window);
 extern int X11_GL_MakeCurrent(_THIS, SDL_Window * window,
                               SDL_GLContext context);
 extern int X11_GL_SetSwapInterval(_THIS, int interval);
 extern int X11_GL_GetSwapInterval(_THIS);
-extern void X11_GL_SwapWindow(_THIS, SDL_Window * window);
+extern int X11_GL_SwapWindow(_THIS, SDL_Window * window);
 extern void X11_GL_DeleteContext(_THIS, SDL_GLContext context);
 
 #endif /* SDL_VIDEO_OPENGL_GLX */

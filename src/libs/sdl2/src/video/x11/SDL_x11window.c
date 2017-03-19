@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -41,6 +41,7 @@
 #include "SDL_timer.h"
 #include "SDL_syswm.h"
 #include "SDL_assert.h"
+#include "SDL_log.h"
 
 #define _NET_WM_STATE_REMOVE    0l
 #define _NET_WM_STATE_ADD       1l
@@ -388,7 +389,7 @@ X11_CreateWindow(_THIS, SDL_Window * window)
 #if SDL_VIDEO_OPENGL_EGL
         if (_this->gl_config.profile_mask == SDL_GL_CONTEXT_PROFILE_ES 
 #if SDL_VIDEO_OPENGL_GLX            
-            && ( !_this->gl_data || ! _this->gl_data->HAS_GLX_EXT_create_context_es2_profile )
+            && ( !_this->gl_data || X11_GL_UseEGL(_this) )
 #endif
         ) {
             vinfo = X11_GLES_GetVisual(_this, display, screen);
@@ -599,7 +600,7 @@ X11_CreateWindow(_THIS, SDL_Window * window)
     if ((window->flags & SDL_WINDOW_OPENGL) && 
         _this->gl_config.profile_mask == SDL_GL_CONTEXT_PROFILE_ES
 #if SDL_VIDEO_OPENGL_GLX            
-        && ( !_this->gl_data || ! _this->gl_data->HAS_GLX_EXT_create_context_es2_profile )
+        && ( !_this->gl_data || X11_GL_UseEGL(_this) )
 #endif  
     ) {
 #if SDL_VIDEO_OPENGL_EGL  
@@ -616,7 +617,7 @@ X11_CreateWindow(_THIS, SDL_Window * window)
             return SDL_SetError("Could not create GLES window surface");
         }
 #else
-        return SDL_SetError("Could not create GLES window surface (no EGL support available)");
+        return SDL_SetError("Could not create GLES window surface (EGL support not configured)");
 #endif /* SDL_VIDEO_OPENGL_EGL */
     }
 #endif
@@ -1483,14 +1484,24 @@ X11_SetWindowGrab(_THIS, SDL_Window * window, SDL_bool grabbed)
 
     if (oldstyle_fullscreen || grabbed) {
         /* Try to grab the mouse */
-        for (;;) {
-            int result =
-                X11_XGrabPointer(display, data->xwindow, True, 0, GrabModeAsync,
-                             GrabModeAsync, data->xwindow, None, CurrentTime);
-            if (result == GrabSuccess) {
-                break;
+        if (!data->videodata->broken_pointer_grab) {
+            int attempts;
+            int result;
+
+            /* Try for up to ~250ms to grab. If it still fails, stop trying. */
+            for (attempts = 0; attempts < 5; attempts++) {
+                result = X11_XGrabPointer(display, data->xwindow, True, 0, GrabModeAsync,
+                                 GrabModeAsync, data->xwindow, None, CurrentTime);
+                if (result == GrabSuccess) {
+                    break;
+                }
+                SDL_Delay(50);
             }
-            SDL_Delay(50);
+
+            if (result != GrabSuccess) {
+                SDL_LogWarn(SDL_LOG_CATEGORY_VIDEO, "The X server refused to let us grab the mouse. You might experience input bugs.");
+                data->videodata->broken_pointer_grab = SDL_TRUE;  /* don't try again. */
+            }
         }
 
         /* Raise the window if we grab the mouse */

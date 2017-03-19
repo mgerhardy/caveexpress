@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -163,6 +163,11 @@ struct SDL_VideoDevice
      */
     void (*VideoQuit) (_THIS);
 
+    /*
+     * Reinitialize the touch devices -- called if an unknown touch ID occurs.
+     */
+    void (*ResetTouch) (_THIS);
+
     /* * * */
     /*
      * Display functions
@@ -252,7 +257,7 @@ struct SDL_VideoDevice
     void (*GL_GetDrawableSize) (_THIS, SDL_Window * window, int *w, int *h);
     int (*GL_SetSwapInterval) (_THIS, int interval);
     int (*GL_GetSwapInterval) (_THIS);
-    void (*GL_SwapWindow) (_THIS, SDL_Window * window);
+    int (*GL_SwapWindow) (_THIS, SDL_Window * window);
     void (*GL_DeleteContext) (_THIS, SDL_GLContext context);
 
     /* * * */
@@ -288,6 +293,7 @@ struct SDL_VideoDevice
 
     /* * * */
     /* Data common to all drivers */
+    SDL_bool is_dummy;
     SDL_bool suspend_screensaver;
     int num_displays;
     SDL_VideoDisplay *displays;
@@ -295,7 +301,7 @@ struct SDL_VideoDevice
     SDL_Window *grabbed_window;
     Uint8 window_magic;
     Uint32 next_object_id;
-    char * clipboard_text;
+    char *clipboard_text;
 
     /* * * */
     /* Data used by the GL drivers */
@@ -366,57 +372,24 @@ typedef struct VideoBootStrap
     SDL_VideoDevice *(*create) (int devindex);
 } VideoBootStrap;
 
-#if SDL_VIDEO_DRIVER_COCOA
+/* Not all of these are available in a given build. Use #ifdefs, etc. */
 extern VideoBootStrap COCOA_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_X11
 extern VideoBootStrap X11_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_MIR
 extern VideoBootStrap MIR_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_DIRECTFB
 extern VideoBootStrap DirectFB_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_WINDOWS
 extern VideoBootStrap WINDOWS_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_WINRT
 extern VideoBootStrap WINRT_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_HAIKU
 extern VideoBootStrap HAIKU_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_PANDORA
 extern VideoBootStrap PND_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_UIKIT
 extern VideoBootStrap UIKIT_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_ANDROID
 extern VideoBootStrap Android_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_PSP
 extern VideoBootStrap PSP_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_RPI
 extern VideoBootStrap RPI_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_DUMMY
 extern VideoBootStrap DUMMY_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_WAYLAND
 extern VideoBootStrap Wayland_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_NACL
 extern VideoBootStrap NACL_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_VIVANTE
 extern VideoBootStrap VIVANTE_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_EMSCRIPTEN
 extern VideoBootStrap Emscripten_bootstrap;
-#endif
 
 extern SDL_VideoDevice *SDL_GetVideoDevice(void);
 extern int SDL_AddBasicVideoDisplay(const SDL_DisplayMode * desktop_mode);
@@ -424,6 +397,8 @@ extern int SDL_AddVideoDisplay(const SDL_VideoDisplay * display);
 extern SDL_bool SDL_AddDisplayMode(SDL_VideoDisplay *display, const SDL_DisplayMode * mode);
 extern SDL_VideoDisplay *SDL_GetDisplayForWindow(SDL_Window *window);
 extern void *SDL_GetDisplayDriverData( int displayIndex );
+
+extern void SDL_GL_DeduceMaxSupportedESProfile(int* major, int* minor);
 
 extern int SDL_RecreateWindow(SDL_Window * window, Uint32 flags);
 

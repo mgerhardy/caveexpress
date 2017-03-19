@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -506,7 +506,7 @@ SDL_Fcitx_UpdateTextRect(SDL_Rect *rect)
 #endif
 
     if (cursor->x == -1 && cursor->y == -1 && cursor->w == 0 && cursor->h == 0) {
-        // move to bottom left
+        /* move to bottom left */
         int w = 0, h = 0;
         SDL_GetWindowSize(focused_win, &w, &h);
         cursor->x = 0;
@@ -535,7 +535,7 @@ SDL_Fcitx_UpdateTextRect(SDL_Rect *rect)
 }
 
 void
-SDL_Fcitx_PumpEvents()
+SDL_Fcitx_PumpEvents(void)
 {
     SDL_DBusContext *dbus = fcitx_client.dbus;
     DBusConnection *conn = dbus->session_conn;

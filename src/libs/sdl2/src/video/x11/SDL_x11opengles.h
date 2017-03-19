@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -46,7 +46,7 @@ typedef struct SDL_PrivateGLESData
 extern int X11_GLES_LoadLibrary(_THIS, const char *path);
 extern XVisualInfo *X11_GLES_GetVisual(_THIS, Display * display, int screen);
 extern SDL_GLContext X11_GLES_CreateContext(_THIS, SDL_Window * window);
-extern void X11_GLES_SwapWindow(_THIS, SDL_Window * window);
+extern int X11_GLES_SwapWindow(_THIS, SDL_Window * window);
 extern int X11_GLES_MakeCurrent(_THIS, SDL_Window * window, SDL_GLContext context);
 
 #endif /* SDL_VIDEO_OPENGL_EGL */

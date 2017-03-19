@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -2473,7 +2473,7 @@ struct blit_table
     Uint32 dstR, dstG, dstB;
     Uint32 blit_features;
     SDL_BlitFunc blitfunc;
-    Uint32 alpha; // bitwise NO_ALPHA, SET_ALPHA, COPY_ALPHA
+    Uint32 alpha;  /* bitwise NO_ALPHA, SET_ALPHA, COPY_ALPHA */
 };
 static const struct blit_table normal_blit_1[] = {
     /* Default for 8-bit RGB source, never optimized */

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -123,6 +123,8 @@ typedef struct SDL_VideoData
 
     SDL_Scancode key_layout[256];
     SDL_bool selection_waiting;
+
+    SDL_bool broken_pointer_grab;  /* true if XGrabPointer seems unreliable. */
 
     Uint32 last_mode_change_deadline;
 

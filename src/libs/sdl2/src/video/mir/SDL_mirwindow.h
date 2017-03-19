@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -35,7 +35,7 @@ struct MIR_Window {
     SDL_Window* sdl_window;
     MIR_Data*   mir_data;
 
-    MirSurface* surface;
+    MirWindow*  window;
     EGLSurface  egl_surface;
 };
 

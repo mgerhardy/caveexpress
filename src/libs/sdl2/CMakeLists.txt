@@ -19,6 +19,24 @@ file(GLOB SOURCE_FILES
   ${SDL2_SOURCE_DIR}/src/video/*.c)
 
 if (NOT SDL2_FOUND)
+if(ANDROID)
+FILE(GLOB PLATFORM_SRCS
+	${SDL2_SOURCE_DIR}/src/filesystem/unix/*.c
+	${SDL2_SOURCE_DIR}/src/filesystem/dummy/*.c
+	${SDL2_SOURCE_DIR}/src/filesystem/android/*.c
+	${SDL2_SOURCE_DIR}/src/video/android/*.c
+	${SDL2_SOURCE_DIR}/src/core/android/*.c
+	${SDL2_SOURCE_DIR}/src/timer/unix/*.c
+	${SDL2_SOURCE_DIR}/src/loadso/dlopen/*.c
+	${SDL2_SOURCE_DIR}/src/main/android/*.c
+	${SDL2_SOURCE_DIR}/src/thread/pthread/*.c
+	${SDL2_SOURCE_DIR}/src/audio/android/*.c
+	${SDL2_SOURCE_DIR}/src/joystick/dummy/*.c
+	${SDL2_SOURCE_DIR}/src/joystick/android/*.c
+	${SDL2_SOURCE_DIR}/src/power/android/*.c)
+
+	set(ANDROID_LDFLAGS "-Wl,--undefined=Java_org_libsdl_app_SDLActivity_nativeInit")
+else(ANDROID)
 
 include(CheckFunctionExists)
 include(CheckLibraryExists)
@@ -221,7 +239,9 @@ if(CYGWIN)
 endif()
 
 if (LINUX OR EMSCRIPTEN OR MSVC)
-  add_definitions(-DUSING_GENERATED_CONFIG_H)
+  if (NOT ANDROID)
+    add_definitions(-DUSING_GENERATED_CONFIG_H)
+  endif()
 endif()
 # General includes
 include_directories(${CMAKE_BINARY_DIR}/include include)
@@ -267,13 +287,12 @@ set_option(MMX                 "Use MMX assembly routines" ${OPT_DEF_ASM})
 set_option(3DNOW               "Use 3Dnow! MMX assembly routines" ${OPT_DEF_ASM})
 set_option(SSE                 "Use SSE assembly routines" ${OPT_DEF_ASM})
 set_option(SSE2                "Use SSE2 assembly routines" ${OPT_DEF_SSEMATH})
+set_option(SSE3                "Use SSE3 assembly routines" ${OPT_DEF_SSEMATH})
 set_option(ALTIVEC             "Use Altivec assembly routines" ${OPT_DEF_ASM})
 set_option(DISKAUDIO           "Support the disk writer audio driver" ON)
 set_option(DUMMYAUDIO          "Support the dummy audio driver" ON)
 set_option(VIDEO_DIRECTFB      "Use DirectFB video driver" OFF)
 dep_option(DIRECTFB_SHARED     "Dynamically load directfb support" ON "VIDEO_DIRECTFB" OFF)
-set_option(FUSIONSOUND         "Use FusionSound audio driver" OFF)
-dep_option(FUSIONSOUND_SHARED  "Dynamically load fusionsound audio support" ON "FUSIONSOUND" OFF)
 set_option(VIDEO_DUMMY         "Use dummy video driver" ON)
 set_option(VIDEO_OPENGL        "Include OpenGL support" ON)
 set_option(VIDEO_OPENGLES      "Include OpenGL ES support" ON)
@@ -292,14 +311,18 @@ dep_option(ARTS_SHARED         "Dynamically load aRts audio support" ON "ARTS" O
 set_option(NAS                 "Support the NAS audio API" ${UNIX_SYS})
 set_option(NAS_SHARED          "Dynamically load NAS audio API" ${UNIX_SYS})
 set_option(SNDIO               "Support the sndio audio API" ${UNIX_SYS})
+set_option(FUSIONSOUND         "Use FusionSound audio driver" OFF)
+dep_option(FUSIONSOUND_SHARED  "Dynamically load fusionsound audio support" ON "FUSIONSOUND" OFF)
+set_option(LIBSAMPLERATE       "Use libsamplerate for audio rate conversion" ${UNIX_SYS})
+dep_option(LIBSAMPLERATE_SHARED "Dynamically load libsamplerate" ON "LIBSAMPLERATE" OFF)
 set_option(RPATH               "Use an rpath when linking SDL" ${UNIX_SYS})
 set_option(CLOCK_GETTIME       "Use clock_gettime() instead of gettimeofday()" OFF)
 set_option(INPUT_TSLIB         "Use the Touchscreen library for input" ${UNIX_SYS})
 set_option(VIDEO_X11           "Use X11 video driver" ${UNIX_SYS})
-set_option(VIDEO_WAYLAND       "Use Wayland video driver" ${UNIX_SYS})
+set_option(VIDEO_WAYLAND       "Use Wayland video driver" ${LINUX})
 dep_option(WAYLAND_SHARED      "Dynamically load Wayland support" ON "VIDEO_WAYLAND" OFF)
 dep_option(VIDEO_WAYLAND_QT_TOUCH  "QtWayland server support for Wayland video driver" ON "VIDEO_WAYLAND" OFF)
-set_option(VIDEO_MIR           "Use Mir video driver" ${UNIX_SYS})
+set_option(VIDEO_MIR           "Use Mir video driver" ${LINUX})
 dep_option(MIR_SHARED          "Dynamically load Mir support" ON "VIDEO_MIR" OFF)
 set_option(VIDEO_RPI           "Use Raspberry Pi video driver" ${UNIX_SYS})
 dep_option(X11_SHARED          "Dynamically load X11 support" ON "VIDEO_X11" OFF)
@@ -502,8 +525,31 @@ if(ASSEMBLY)
       set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
     endif()
 
-    if(SSEMATH)
-      if(SSE OR SSE2)
+    if(SSE3)
+      set(CMAKE_REQUIRED_FLAGS "-msse3")
+      check_c_source_compiles("
+          #ifdef __MINGW32__
+          #include <_mingw.h>
+          #ifdef __MINGW64_VERSION_MAJOR
+          #include <intrin.h>
+          #else
+          #include <pmmintrin.h>
+          #endif
+          #else
+          #include <pmmintrin.h>
+          #endif
+          #ifndef __SSE3__
+          #error Assembler CPP flag not enabled
+          #endif
+          int main(int argc, char **argv) { }" HAVE_SSE3)
+      if(HAVE_SSE3)
+        list(APPEND EXTRA_CFLAGS "-msse3")
+      endif()
+      set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
+    endif()
+
+    if(NOT SSEMATH)
+      if(SSE OR SSE2 OR SSE3)
         if(USE_GCC)
           check_c_compiler_flag(-mfpmath=387 HAVE_FP_387)
           if (HAVE_FP_387)
@@ -546,12 +592,13 @@ if(ASSEMBLY)
     endif()
     set(HAVE_SSE TRUE)
     set(HAVE_SSE2 TRUE)
+    set(HAVE_SSE3 TRUE)
     set(SDL_ASSEMBLY_ROUTINES 1)
   endif()
 # TODO:
 #else()
 #  if(USE_GCC OR USE_CLANG)
-#    list(APPEND EXTRA_CFLAGS "-mno-sse" "-mno-sse2" "-mno-mmx")
+#    list(APPEND EXTRA_CFLAGS "-mno-sse" "-mno-sse2" "-mno-sse3" "-mno-mmx")
 #  endif()
 endif()
 
@@ -608,7 +655,7 @@ if(LIBC)
             _uitoa _ultoa strtol strtoul _i64toa _ui64toa strtoll strtoull
             atoi atof strcmp strncmp _stricmp strcasecmp _strnicmp strncasecmp
             vsscanf vsnprintf fseeko fseeko64 sigaction setjmp
-            nanosleep sysconf sysctlbyname
+            nanosleep sysconf sysctlbyname getauxval
             )
       string(TOUPPER ${_FN} _UPPER)
       set(_HAVEVAR "HAVE_${_UPPER}")
@@ -840,6 +887,7 @@ elseif(UNIX AND NOT APPLE)
     CheckNAS()
     CheckSNDIO()
     CheckFusionSound()
+    CheckLibSampleRate()
   endif()
 
   if(SDL_VIDEO)
@@ -850,7 +898,9 @@ elseif(UNIX AND NOT APPLE)
     CheckDirectFB()
     CheckOpenGLX11()
     CheckOpenGLESX11()
-    CheckWayland()
+    if(NOT ANDROID)
+      CheckWayland()
+    endif()
     CheckVivante()
   endif()
 
@@ -1040,6 +1090,7 @@ elseif(WINDOWS)
     check_include_file(dsound.h HAVE_DSOUND_H)
     check_include_file(dinput.h HAVE_DINPUT_H)
     check_include_file(xaudio2.h HAVE_XAUDIO2_H)
+    check_include_file(audioclient.h HAVE_AUDIOCLIENT_H)
     check_include_file(dxgi.h HAVE_DXGI_H)
     if(HAVE_D3D_H OR HAVE_D3D11_H OR HAVE_DDRAW_H OR HAVE_DSOUND_H OR HAVE_DINPUT_H OR HAVE_XAUDIO2_H)
       set(HAVE_DIRECTX TRUE)
@@ -1068,6 +1119,12 @@ elseif(WINDOWS)
       set(SDL_AUDIO_DRIVER_XAUDIO2 1)
       file(GLOB XAUDIO2_AUDIO_SOURCES ${SDL2_SOURCE_DIR}/src/audio/xaudio2/*.c)
       set(SOURCE_FILES ${SOURCE_FILES} ${XAUDIO2_AUDIO_SOURCES})
+    endif()
+
+    if(HAVE_AUDIOCLIENT_H)
+      set(SDL_AUDIO_DRIVER_WASAPI 1)
+      file(GLOB WASAPI_AUDIO_SOURCES ${SDL2_SOURCE_DIR}/src/audio/wasapi/*.c)
+      set(SOURCE_FILES ${SOURCE_FILES} ${WASAPI_AUDIO_SOURCES})
     endif()
   endif()
 
@@ -1438,8 +1495,10 @@ endif()
 # endif()
 
 if (LINUX OR EMSCRIPTEN)
+  if (NOT ANDROID)
   configure_file("include/SDL_config.h.cmake"
     "${CMAKE_BINARY_DIR}/SDL_config.h")
+  endif()
 endif()
 
 # Prepare the flags and remove duplicates
@@ -1473,30 +1532,15 @@ if(NOT WINDOWS OR CYGWIN)
   set(SDL_LIBS ${_SDL_LIBS})
 endif()
 
-if(ANDROID)
-FILE(GLOB PLATFORM_SRCS
-	${SDL2_SOURCE_DIR}/src/filesystem/unix/*.c
-	${SDL2_SOURCE_DIR}/src/filesystem/dummy/*.c
-	${SDL2_SOURCE_DIR}/src/filesystem/android/*.c
-	${SDL2_SOURCE_DIR}/src/video/android/*.c
-	${SDL2_SOURCE_DIR}/src/core/android/*.c
-	${SDL2_SOURCE_DIR}/src/timer/unix/*.c
-	${SDL2_SOURCE_DIR}/src/loadso/dlopen/*.c
-	${SDL2_SOURCE_DIR}/src/main/android/*.c
-	${SDL2_SOURCE_DIR}/src/thread/pthread/*.c
-	${SDL2_SOURCE_DIR}/src/audio/android/*.c
-	${SDL2_SOURCE_DIR}/src/joystick/dummy/*.c
-	${SDL2_SOURCE_DIR}/src/joystick/android/*.c
-	${SDL2_SOURCE_DIR}/src/power/android/*.c)
 
-	set(ANDROID_LDFLAGS "-Wl,--undefined=Java_org_libsdl_app_SDLActivity_nativeInit")
-endif()
-
+set(DEFINES "")
 if (LINUX OR EMSCRIPTEN)
-	set(DEFINES USING_GENERATED_CONFIG_H)
-else()
-	set(DEFINES "")
+	if (NOT ANDROID)
+		set(DEFINES USING_GENERATED_CONFIG_H)
+	endif()
 endif()
+
+endif(ANDROID)
 
 endif(NOT SDL2_FOUND)
 

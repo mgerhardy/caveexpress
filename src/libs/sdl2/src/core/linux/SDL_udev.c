@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -216,7 +216,7 @@ SDL_UDEV_Scan(void)
     enumerate = _this->udev_enumerate_new(_this->udev);
     if (enumerate == NULL) {
         SDL_UDEV_Quit();
-        SDL_SetError("udev_monitor_new_from_netlink() failed");
+        SDL_SetError("udev_enumerate_new() failed");
         return;
     }
     

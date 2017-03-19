@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -58,12 +58,6 @@ SDL_DYNAPI_PROC(SDL_Thread*,SDL_CreateThread,(SDL_ThreadFunction a, const char *
 SDL_DYNAPI_PROC(SDL_RWops*,SDL_RWFromFP,(FILE *a, SDL_bool b),(a,b),return)
 #else
 SDL_DYNAPI_PROC(SDL_RWops*,SDL_RWFromFP,(void *a, SDL_bool b),(a,b),return)
-#endif
-
-/* so annoying. */
-#if defined(__thumb__) && (defined(__ARM_ARCH_6__) || defined(__ARM_ARCH_6J__) || defined(__ARM_ARCH_6K__) || defined(__ARM_ARCH_6T2__) || defined(__ARM_ARCH_6Z__) || defined(__ARM_ARCH_6ZK__))
-SDL_DYNAPI_PROC(void,SDL_MemoryBarrierRelease,(void),(),)
-SDL_DYNAPI_PROC(void,SDL_MemoryBarrierAcquire,(void),(),)
 #endif
 
 #ifdef __WIN32__
@@ -656,3 +650,9 @@ SDL_DYNAPI_PROC(Uint16,SDL_GameControllerGetProductVersion,(SDL_GameController *
 SDL_DYNAPI_PROC(SDL_bool,SDL_HasNEON,(void),(),return)
 SDL_DYNAPI_PROC(int,SDL_GameControllerNumMappings,(void),(),return)
 SDL_DYNAPI_PROC(char*,SDL_GameControllerMappingForIndex,(int a),(a),return)
+SDL_DYNAPI_PROC(SDL_bool,SDL_JoystickGetAxisInitialState,(SDL_Joystick *a, int b, Sint16 *c),(a,b,c),return)
+SDL_DYNAPI_PROC(SDL_JoystickType,SDL_JoystickGetDeviceType,(int a),(a),return)
+SDL_DYNAPI_PROC(SDL_JoystickType,SDL_JoystickGetType,(SDL_Joystick *a),(a),return)
+SDL_DYNAPI_PROC(void,SDL_MemoryBarrierReleaseFunction,(void),(),)
+SDL_DYNAPI_PROC(void,SDL_MemoryBarrierAcquireFunction,(void),(),)
+SDL_DYNAPI_PROC(SDL_JoystickID,SDL_JoystickGetDeviceInstanceID,(int a),(a),return)

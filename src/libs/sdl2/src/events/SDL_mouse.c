@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -304,7 +304,7 @@ SDL_PrivateSendMouseMotion(SDL_Window * window, SDL_MouseID mouseID, int relativ
     if (window && ((window->flags & SDL_WINDOW_MOUSE_CAPTURE) == 0)) {
         int x_max = 0, y_max = 0;
 
-        // !!! FIXME: shouldn't this be (window) instead of (mouse->focus)?
+        /* !!! FIXME: shouldn't this be (window) instead of (mouse->focus)? */
         SDL_GetWindowSize(mouse->focus, &x_max, &y_max);
         --x_max;
         --y_max;

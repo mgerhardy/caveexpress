@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -263,7 +263,9 @@ static void Emscripten_SetWindowSize(_THIS, SDL_Window * window)
     if (window->driverdata) {
         data = (SDL_WindowData *) window->driverdata;
         /* update pixel ratio */
-        data->pixel_ratio = emscripten_get_device_pixel_ratio();
+        if (window->flags & SDL_WINDOW_ALLOW_HIGHDPI) {
+            data->pixel_ratio = emscripten_get_device_pixel_ratio();
+        }
         emscripten_set_canvas_size(window->w * data->pixel_ratio, window->h * data->pixel_ratio);
 
         /*scale canvas down*/

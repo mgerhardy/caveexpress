@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -29,14 +29,22 @@
 #include "SDL_joystick_c.h"
 
 /* The SDL joystick structure */
+typedef struct _SDL_JoystickAxisInfo
+{
+    Sint16 initial_value;       /* Initial axis state */
+    Sint16 value;               /* Current axis state */
+    Sint16 zero;                /* Zero point on the axis (-32768 for triggers) */
+    SDL_bool has_initial_value; /* Whether we've seen a value on the axis yet */
+    SDL_bool sent_initial_value; /* Whether we've sent the initial axis value */
+} SDL_JoystickAxisInfo;
+
 struct _SDL_Joystick
 {
     SDL_JoystickID instance_id; /* Device instance, monotonically increasing from 0 */
     char *name;                 /* Joystick name - system dependent */
 
     int naxes;                  /* Number of axis controls on the joystick */
-    Sint16 *axes;               /* Current axis states */
-    Sint16 *axes_zero;          /* Zero point on the axis (-32768 for triggers) */
+    SDL_JoystickAxisInfo *axes;
 
     int nhats;                  /* Number of hats on the joystick */
     Uint8 *hats;                /* Current hat states */
@@ -54,6 +62,7 @@ struct _SDL_Joystick
 
     int ref_count;              /* Reference count for multiple opens */
 
+    SDL_bool is_game_controller;
     SDL_bool force_recentering; /* SDL_TRUE if this device needs to have its state reset to 0 */
     SDL_JoystickPowerLevel epowerlevel; /* power level of this joystick, SDL_JOYSTICK_POWER_UNKNOWN if not supported */
     struct _SDL_Joystick *next; /* pointer to next joystick we have allocated */

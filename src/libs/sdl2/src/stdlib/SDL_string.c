@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -1313,6 +1313,10 @@ SDL_PrintString(char *text, size_t maxlen, SDL_FormatInfo *info, const char *str
     size_t length = 0;
     size_t slen;
 
+    if (string == NULL) {
+        string = "(null)";
+    }
+
     if (info && info->width && (size_t)info->width > SDL_strlen(string)) {
         char fill = info->pad_zeroes ? '0' : ' ';
         size_t width = info->width - SDL_strlen(string);
@@ -1484,7 +1488,7 @@ SDL_vsnprintf(SDL_OUT_Z_CAP(maxlen) char *text, size_t maxlen, const char *fmt, 
     if (!fmt) {
         fmt = "";
     }
-    while (*fmt) {
+    while (*fmt && left > 1) {
         if (*fmt == '%') {
             SDL_bool done = SDL_FALSE;
             size_t len = 0;
@@ -1628,6 +1632,16 @@ SDL_vsnprintf(SDL_OUT_Z_CAP(maxlen) char *text, size_t maxlen, const char *fmt, 
                     len = SDL_PrintFloat(text, left, &info, va_arg(ap, double));
                     done = SDL_TRUE;
                     break;
+                case 'S':
+                    {
+                        /* In practice this is used on Windows for WCHAR strings */
+                        wchar_t *wide_arg = va_arg(ap, wchar_t *);
+                        char *arg = SDL_iconv_string("UTF-8", "UTF-16LE", (char *)(wide_arg), (SDL_wcslen(wide_arg)+1)*sizeof(*wide_arg));
+                        len = SDL_PrintString(text, left, &info, arg);
+                        SDL_free(arg);
+                        done = SDL_TRUE;
+                    }
+                    break;
                 case 's':
                     len = SDL_PrintString(text, left, &info, va_arg(ap, char *));
                     done = SDL_TRUE;
@@ -1646,12 +1660,8 @@ SDL_vsnprintf(SDL_OUT_Z_CAP(maxlen) char *text, size_t maxlen, const char *fmt, 
                 left -= len;
             }
         } else {
-            if (left > 1) {
-                *text = *fmt;
-                --left;
-            }
-            ++fmt;
-            ++text;
+            *text++ = *fmt++;
+            --left;
         }
     }
     if (left > 0) {

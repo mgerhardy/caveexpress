@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -569,7 +569,7 @@ SDL_ResetKeyboard(void)
 #ifdef DEBUG_KEYBOARD
     printf("Resetting keyboard\n");
 #endif
-    for (scancode = 0; scancode < SDL_NUM_SCANCODES; ++scancode) {
+    for (scancode = (SDL_Scancode) 0; scancode < SDL_NUM_SCANCODES; ++scancode) {
         if (keyboard->keystate[scancode] == SDL_PRESSED) {
             SDL_SendKeyboardKey(SDL_RELEASED, scancode);
         }
@@ -834,7 +834,7 @@ SDL_GetModState(void)
 {
     SDL_Keyboard *keyboard = &SDL_keyboard;
 
-    return keyboard->modstate;
+    return (SDL_Keymod) keyboard->modstate;
 }
 
 void
@@ -863,7 +863,7 @@ SDL_GetKeyFromScancode(SDL_Scancode scancode)
 {
     SDL_Keyboard *keyboard = &SDL_keyboard;
 
-    if (scancode < SDL_SCANCODE_UNKNOWN || scancode >= SDL_NUM_SCANCODES) {
+    if (((int)scancode) < ((int)SDL_SCANCODE_UNKNOWN) || scancode >= SDL_NUM_SCANCODES) {
           SDL_InvalidParamError("scancode");
           return 0;
     }
@@ -890,7 +890,7 @@ const char *
 SDL_GetScancodeName(SDL_Scancode scancode)
 {
     const char *name;
-    if (scancode < SDL_SCANCODE_UNKNOWN || scancode >= SDL_NUM_SCANCODES) {
+    if (((int)scancode) < ((int)SDL_SCANCODE_UNKNOWN) || scancode >= SDL_NUM_SCANCODES) {
           SDL_InvalidParamError("scancode");
           return "";
     }
@@ -968,8 +968,10 @@ SDL_GetKeyFromName(const char *name)
 {
     SDL_Keycode key;
 
-        /* Check input */
-        if (name == NULL) return SDLK_UNKNOWN;
+    /* Check input */
+    if (name == NULL) {
+        return SDLK_UNKNOWN;
+    }
 
     /* If it's a single UTF-8 character, then that's the keycode itself */
     key = *(const unsigned char *)name;

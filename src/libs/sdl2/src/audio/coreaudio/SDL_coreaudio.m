@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -733,6 +733,13 @@ COREAUDIO_OpenDevice(_THIS, void *handle, const char *devname, int iscapture)
 #if !MACOSX_COREAUDIO
     if (!update_audio_session(this, SDL_TRUE)) {
         return -1;
+    }
+
+    /* Stop CoreAudio from doing expensive audio rate conversion */
+    @autoreleasepool {
+        AVAudioSession* session = [AVAudioSession sharedInstance];
+        [session setPreferredSampleRate:this->spec.freq error:nil];
+        this->spec.freq = (int)session.sampleRate;
     }
 #endif
 

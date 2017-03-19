@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -36,7 +36,7 @@ extern int BE_GL_MakeCurrent(_THIS, SDL_Window * window,
                               SDL_GLContext context);
 extern int BE_GL_SetSwapInterval(_THIS, int interval);                  /* TODO */
 extern int BE_GL_GetSwapInterval(_THIS);                                /* TODO */
-extern void BE_GL_SwapWindow(_THIS, SDL_Window * window);
+extern int BE_GL_SwapWindow(_THIS, SDL_Window * window);
 extern SDL_GLContext BE_GL_CreateContext(_THIS, SDL_Window * window);
 extern void BE_GL_DeleteContext(_THIS, SDL_GLContext context);
 
@@ -47,3 +47,5 @@ extern void BE_GL_RebootContexts(_THIS);
 #endif
 
 #endif
+
+/* vi: set ts=4 sw=4 expandtab: */

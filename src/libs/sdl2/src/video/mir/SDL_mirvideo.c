@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -26,6 +26,8 @@
 #include "../../SDL_internal.h"
 
 #if SDL_VIDEO_DRIVER_MIR
+
+#include "SDL_log.h"
 
 #include "SDL_mirwindow.h"
 #include "SDL_video.h"
@@ -98,7 +100,19 @@ MIR_Available()
     int available = 0;
 
     if (SDL_MIR_LoadSymbols()) {
-        /* !!! FIXME: try to make a MirConnection here. */
+
+        /* Lets ensure we can connect to the mir server */
+        MirConnection* connection = MIR_mir_connect_sync(NULL, __PRETTY_FUNCTION__);
+
+        if (!MIR_mir_connection_is_valid(connection)) {
+            SDL_LogWarn(SDL_LOG_CATEGORY_VIDEO, "Unable to connect to the mir server %s",
+                MIR_mir_connection_get_error_message(connection));
+
+            return available;
+        }
+
+        MIR_mir_connection_release(connection);
+
         available = 1;
         SDL_MIR_UnloadSymbols();
     }
@@ -255,7 +269,7 @@ MIR_InitDisplayFromOutput(_THIS, MirOutput* output)
 
     MirPixelFormat format = MIR_mir_output_get_current_pixel_format(output);
     int num_modes         = MIR_mir_output_get_num_modes(output);
-    SDL_DisplayMode current_mode = MIR_ConvertModeToSDLMode(mir_output_get_current_mode(output), format);
+    SDL_DisplayMode current_mode = MIR_ConvertModeToSDLMode(MIR_mir_output_get_current_mode(output), format);
 
     SDL_zero(display);
 

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -248,6 +248,8 @@ AddHIDElement(const void *value, void *parameter)
                         switch (usage) {
                             case kHIDUsage_Sim_Rudder:
                             case kHIDUsage_Sim_Throttle:
+                            case kHIDUsage_Sim_Accelerator:
+                            case kHIDUsage_Sim_Brake:
                                 if (!ElementAlreadyAdded(cookie, pDevice->firstAxis)) {
                                     element = (recElement *) SDL_calloc(1, sizeof (recElement));
                                     if (element) {
@@ -609,8 +611,8 @@ SDL_SYS_JoystickDetect(void)
         }
     }
 
-	// run this after the checks above so we don't set device->removed and delete the device before
-	// SDL_SYS_JoystickUpdate can run to clean up the SDL_Joystick object that owns this device
+	/* run this after the checks above so we don't set device->removed and delete the device before
+	   SDL_SYS_JoystickUpdate can run to clean up the SDL_Joystick object that owns this device */
 	while (CFRunLoopRunInMode(SDL_JOYSTICK_RUNLOOP_MODE,0,TRUE) == kCFRunLoopRunHandledSource) {
 		/* no-op. Pending callbacks will fire in CFRunLoopRunInMode(). */
 	}
@@ -692,9 +694,7 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
     i = 0;
     while (element) {
         value = GetHIDScaledCalibratedState(device, element, -32768, 32767);
-        if (value != joystick->axes[i]) {
-            SDL_PrivateJoystickAxis(joystick, i, value);
-        }
+        SDL_PrivateJoystickAxis(joystick, i, value);
         element = element->pNext;
         ++i;
     }
@@ -706,9 +706,7 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
         if (value > 1) {          /* handle pressure-sensitive buttons */
             value = 1;
         }
-        if (value != joystick->buttons[i]) {
-            SDL_PrivateJoystickButton(joystick, i, value);
-        }
+        SDL_PrivateJoystickButton(joystick, i, value);
         element = element->pNext;
         ++i;
     }
@@ -759,9 +757,7 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
             break;
         }
 
-        if (pos != joystick->hats[i]) {
-            SDL_PrivateJoystickHat(joystick, i, pos);
-        }
+        SDL_PrivateJoystickHat(joystick, i, pos);
 
         element = element->pNext;
         ++i;

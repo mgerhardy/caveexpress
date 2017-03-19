@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -23,9 +23,12 @@
 #ifndef _SDL_emscriptenmouse_h
 #define _SDL_emscriptenmouse_h
 
+#include "SDL_stdinc.h"
+
 typedef struct _Emscripten_CursorData
 {
     const char *system_cursor;
+    SDL_bool is_custom;
 } Emscripten_CursorData;
 
 extern void

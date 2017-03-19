@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -1894,12 +1894,29 @@ SDL_RenderPresent(SDL_Renderer * renderer)
     renderer->RenderPresent(renderer);
 }
 
-/* this isn't responsible for removing the deleted texture from the list!
-   (this is to keep static analysis happy in SDL_DestroyRenderer().) */
-static void
-SDL_DestroyTextureInternal(SDL_Texture * texture)
+void
+SDL_DestroyTexture(SDL_Texture * texture)
 {
-    SDL_Renderer *renderer = texture->renderer;
+    SDL_Renderer *renderer;
+
+    CHECK_TEXTURE_MAGIC(texture, );
+
+    renderer = texture->renderer;
+    if (texture == renderer->target) {
+        SDL_SetRenderTarget(renderer, NULL);
+    }
+
+    texture->magic = NULL;
+
+    if (texture->next) {
+        texture->next->prev = texture->prev;
+    }
+    if (texture->prev) {
+        texture->prev->next = texture->next;
+    } else {
+        renderer->textures = texture->next;
+    }
+
     if (texture->native) {
         SDL_DestroyTexture(texture->native);
     }
@@ -1913,49 +1930,18 @@ SDL_DestroyTextureInternal(SDL_Texture * texture)
 }
 
 void
-SDL_DestroyTexture(SDL_Texture * texture)
-{
-    SDL_Renderer *renderer;
-
-    CHECK_TEXTURE_MAGIC(texture, );
-
-    renderer = texture->renderer;
-    if (texture == renderer->target) {
-        SDL_SetRenderTarget(renderer, NULL);
-    }
-
-    texture->magic = NULL;  /* just in case, but we're about to free this... */
-
-    if (texture->next) {
-        texture->next->prev = texture->prev;
-    }
-    if (texture->prev) {
-        texture->prev->next = texture->next;
-    } else {
-        renderer->textures = texture->next;
-    }
-
-    SDL_DestroyTextureInternal(texture);
-}
-
-void
 SDL_DestroyRenderer(SDL_Renderer * renderer)
 {
-    SDL_Texture *texture = NULL;
-    SDL_Texture *nexttexture = NULL;
-
     CHECK_RENDERER_MAGIC(renderer, );
 
     SDL_DelEventWatch(SDL_RendererEventWatch, renderer);
 
     /* Free existing textures for this renderer */
-    SDL_SetRenderTarget(renderer, NULL);
-
-    for (texture = renderer->textures; texture; texture = nexttexture) {
-        nexttexture = texture->next;
-        SDL_DestroyTexture(texture);
+    while (renderer->textures) {
+        SDL_Texture *tex = renderer->textures; (void) tex;
+        SDL_DestroyTexture(renderer->textures);
+        SDL_assert(tex != renderer->textures);  /* satisfy static analysis. */
     }
-    renderer->textures = NULL;
 
     if (renderer->window) {
         SDL_SetWindowData(renderer->window, SDL_WINDOWRENDERDATA, NULL);

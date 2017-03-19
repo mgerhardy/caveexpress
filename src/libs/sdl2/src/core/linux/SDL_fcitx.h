@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -33,7 +33,7 @@ extern void SDL_Fcitx_SetFocus(SDL_bool focused);
 extern void SDL_Fcitx_Reset(void);
 extern SDL_bool SDL_Fcitx_ProcessKeyEvent(Uint32 keysym, Uint32 keycode);
 extern void SDL_Fcitx_UpdateTextRect(SDL_Rect *rect);
-extern void SDL_Fcitx_PumpEvents();
+extern void SDL_Fcitx_PumpEvents(void);
 
 #endif /* SDL_fcitx_h_ */
 

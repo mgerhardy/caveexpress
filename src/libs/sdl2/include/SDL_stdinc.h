@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -127,11 +127,18 @@
  */
 /* @{ */
 
+#ifdef __CC_ARM
+/* ARM's compiler throws warnings if we use an enum: like "SDL_bool x = a < b;" */
+#define SDL_FALSE 0
+#define SDL_TRUE 1
+typedef int SDL_bool;
+#else
 typedef enum
 {
     SDL_FALSE = 0,
     SDL_TRUE = 1
 } SDL_bool;
+#endif
 
 /**
  * \brief A signed 8-bit integer type.

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -59,11 +59,8 @@ RPI_Available(void)
 static void
 RPI_Destroy(SDL_VideoDevice * device)
 {
-    /*    SDL_VideoData *phdata = (SDL_VideoData *) device->driverdata; */
-
-    if (device->driverdata != NULL) {
-        device->driverdata = NULL;
-    }
+    SDL_free(device->driverdata);
+    SDL_free(device);
 }
 
 static SDL_VideoDevice *
@@ -183,7 +180,9 @@ RPI_VideoInit(_THIS)
     SDL_AddVideoDisplay(&display);
 
 #ifdef SDL_INPUT_LINUXEV    
-    SDL_EVDEV_Init();
+    if (SDL_EVDEV_Init() < 0) {
+        return -1;
+    }
 #endif    
     
     RPI_InitMouse(_this);

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -172,6 +172,11 @@ ShouldUseTextureFramebuffer()
         return SDL_TRUE;
     }
 
+    /* If this is the dummy driver there is no texture support */
+    if (_this->is_dummy) {
+        return SDL_FALSE;
+    }
+
     /* If the user has specified a software renderer we can't use a
        texture framebuffer, or renderer creation will go recursive.
      */
@@ -197,7 +202,7 @@ ShouldUseTextureFramebuffer()
     return SDL_FALSE;
 
 #elif defined(__MACOSX__)
-    /* Mac OS X uses OpenGL as the native fast path */
+    /* Mac OS X uses OpenGL as the native fast path (for cocoa and X11) */
     return SDL_TRUE;
 
 #elif defined(__LINUX__)
@@ -1164,35 +1169,40 @@ SDL_UpdateFullscreenMode(SDL_Window * window, SDL_bool fullscreen)
     CHECK_WINDOW_MAGIC(window,-1);
 
     /* if we are in the process of hiding don't go back to fullscreen */
-    if ( window->is_hiding && fullscreen )
+    if (window->is_hiding && fullscreen) {
         return 0;
+    }
 
 #ifdef __MACOSX__
     /* if the window is going away and no resolution change is necessary,
-     do nothing, or else we may trigger an ugly double-transition
+       do nothing, or else we may trigger an ugly double-transition
      */
-    if (window->is_destroying && (window->last_fullscreen_flags & FULLSCREEN_MASK) == SDL_WINDOW_FULLSCREEN_DESKTOP)
-        return 0;
+    if (SDL_strcmp(_this->name, "cocoa") == 0) {  /* don't do this for X11, etc */
+        if (window->is_destroying && (window->last_fullscreen_flags & FULLSCREEN_MASK) == SDL_WINDOW_FULLSCREEN_DESKTOP)
+            return 0;
     
-    /* If we're switching between a fullscreen Space and "normal" fullscreen, we need to get back to normal first. */
-    if (fullscreen && ((window->last_fullscreen_flags & FULLSCREEN_MASK) == SDL_WINDOW_FULLSCREEN_DESKTOP) && ((window->flags & FULLSCREEN_MASK) == SDL_WINDOW_FULLSCREEN)) {
-        if (!Cocoa_SetWindowFullscreenSpace(window, SDL_FALSE)) {
-            return -1;
-        }
-    } else if (fullscreen && ((window->last_fullscreen_flags & FULLSCREEN_MASK) == SDL_WINDOW_FULLSCREEN) && ((window->flags & FULLSCREEN_MASK) == SDL_WINDOW_FULLSCREEN_DESKTOP)) {
-        display = SDL_GetDisplayForWindow(window);
-        SDL_SetDisplayModeForDisplay(display, NULL);
-        if (_this->SetWindowFullscreen) {
-            _this->SetWindowFullscreen(_this, window, display, SDL_FALSE);
-        }
-    }
+        if (!_this->is_dummy) {
+            /* If we're switching between a fullscreen Space and "normal" fullscreen, we need to get back to normal first. */
+            if (fullscreen && ((window->last_fullscreen_flags & FULLSCREEN_MASK) == SDL_WINDOW_FULLSCREEN_DESKTOP) && ((window->flags & FULLSCREEN_MASK) == SDL_WINDOW_FULLSCREEN)) {
+                if (!Cocoa_SetWindowFullscreenSpace(window, SDL_FALSE)) {
+                    return -1;
+                }
+            } else if (fullscreen && ((window->last_fullscreen_flags & FULLSCREEN_MASK) == SDL_WINDOW_FULLSCREEN) && ((window->flags & FULLSCREEN_MASK) == SDL_WINDOW_FULLSCREEN_DESKTOP)) {
+                display = SDL_GetDisplayForWindow(window);
+                SDL_SetDisplayModeForDisplay(display, NULL);
+                if (_this->SetWindowFullscreen) {
+                    _this->SetWindowFullscreen(_this, window, display, SDL_FALSE);
+                }
+            }
 
-    if (Cocoa_SetWindowFullscreenSpace(window, fullscreen)) {
-        if (Cocoa_IsWindowInFullscreenSpace(window) != fullscreen) {
-            return -1;
+            if (Cocoa_SetWindowFullscreenSpace(window, fullscreen)) {
+                if (Cocoa_IsWindowInFullscreenSpace(window) != fullscreen) {
+                    return -1;
+                }
+                window->last_fullscreen_flags = window->flags;
+                return 0;
+            }
         }
-        window->last_fullscreen_flags = window->flags;
-        return 0;
     }
 #elif __WINRT__ && (NTDDI_VERSION < NTDDI_WIN10)
     /* HACK: WinRT 8.x apps can't choose whether or not they are fullscreen
@@ -1345,7 +1355,7 @@ SDL_CreateWindow(const char *title, int x, int y, int w, int h, Uint32 flags)
         }
     }
 
-    if ( (((flags & SDL_WINDOW_UTILITY) != 0) + ((flags & SDL_WINDOW_TOOLTIP) != 0) + ((flags & SDL_WINDOW_POPUP_MENU) != 0)) > 1 ) {
+    if ((((flags & SDL_WINDOW_UTILITY) != 0) + ((flags & SDL_WINDOW_TOOLTIP) != 0) + ((flags & SDL_WINDOW_POPUP_MENU) != 0)) > 1) {
         SDL_SetError("Conflicting window flags specified");
         return NULL;
     }
@@ -1366,7 +1376,7 @@ SDL_CreateWindow(const char *title, int x, int y, int w, int h, Uint32 flags)
 
     /* Some platforms have OpenGL enabled by default */
 #if (SDL_VIDEO_OPENGL && __MACOSX__) || __IPHONEOS__ || __ANDROID__ || __NACL__
-    if (SDL_strcmp(_this->name, "dummy") != 0) {
+    if (!_this->is_dummy) {
         flags |= SDL_WINDOW_OPENGL;
     }
 #endif
@@ -1745,7 +1755,7 @@ SDL_SetWindowPosition(SDL_Window * window, int x, int y)
     if (SDL_WINDOWPOS_ISCENTERED(x) || SDL_WINDOWPOS_ISCENTERED(y)) {
         int displayIndex = (x & 0xFFFF);
         SDL_Rect bounds;
-        if (displayIndex > _this->num_displays) {
+        if (displayIndex >= _this->num_displays) {
             displayIndex = 0;
         }
 
@@ -1924,30 +1934,6 @@ SDL_GetWindowSize(SDL_Window * window, int *w, int *h)
     }
 }
 
-void
-SDL_SetWindowMinimumSize(SDL_Window * window, int min_w, int min_h)
-{
-    CHECK_WINDOW_MAGIC(window,);
-    if (min_w <= 0) {
-        SDL_InvalidParamError("min_w");
-        return;
-    }
-    if (min_h <= 0) {
-        SDL_InvalidParamError("min_h");
-        return;
-    }
-
-    if (!(window->flags & SDL_WINDOW_FULLSCREEN)) {
-        window->min_w = min_w;
-        window->min_h = min_h;
-        if (_this->SetWindowMinimumSize) {
-            _this->SetWindowMinimumSize(_this, window);
-        }
-        /* Ensure that window is not smaller than minimal size */
-        SDL_SetWindowSize(window, SDL_max(window->w, window->min_w), SDL_max(window->h, window->min_h));
-    }
-}
-
 int
 SDL_GetWindowBordersSize(SDL_Window * window, int *top, int *left, int *bottom, int *right)
 {
@@ -1968,6 +1954,37 @@ SDL_GetWindowBordersSize(SDL_Window * window, int *top, int *left, int *bottom, 
     }
 
     return _this->GetWindowBordersSize(_this, window, top, left, bottom, right);
+}
+
+void
+SDL_SetWindowMinimumSize(SDL_Window * window, int min_w, int min_h)
+{
+    CHECK_WINDOW_MAGIC(window,);
+    if (min_w <= 0) {
+        SDL_InvalidParamError("min_w");
+        return;
+    }
+    if (min_h <= 0) {
+        SDL_InvalidParamError("min_h");
+        return;
+    }
+
+    if ((window->max_w && min_w >= window->max_w) ||
+        (window->max_h && min_h >= window->max_h)) {
+        SDL_SetError("SDL_SetWindowMinimumSize(): Tried to set minimum size larger than maximum size");
+        return;
+    }
+
+    window->min_w = min_w;
+    window->min_h = min_h;
+
+    if (!(window->flags & SDL_WINDOW_FULLSCREEN)) {
+        if (_this->SetWindowMinimumSize) {
+            _this->SetWindowMinimumSize(_this, window);
+        }
+        /* Ensure that window is not smaller than minimal size */
+        SDL_SetWindowSize(window, SDL_max(window->w, window->min_w), SDL_max(window->h, window->min_h));
+    }
 }
 
 void
@@ -1995,9 +2012,15 @@ SDL_SetWindowMaximumSize(SDL_Window * window, int max_w, int max_h)
         return;
     }
 
+    if (max_w <= window->min_w || max_h <= window->min_h) {
+        SDL_SetError("SDL_SetWindowMaximumSize(): Tried to set maximum size smaller than minimum size");
+        return;
+    }
+
+    window->max_w = max_w;
+    window->max_h = max_h;
+
     if (!(window->flags & SDL_WINDOW_FULLSCREEN)) {
-        window->max_w = max_w;
-        window->max_h = max_h;
         if (_this->SetWindowMaximumSize) {
             _this->SetWindowMaximumSize(_this, window);
         }
@@ -2513,8 +2536,10 @@ ShouldMinimizeOnFocusLoss(SDL_Window * window)
     }
 
 #ifdef __MACOSX__
-    if (Cocoa_IsWindowInFullscreenSpace(window)) {
-        return SDL_FALSE;
+    if (SDL_strcmp(_this->name, "cocoa") == 0) {  /* don't do this for X11, etc */
+        if (Cocoa_IsWindowInFullscreenSpace(window)) {
+            return SDL_FALSE;
+        }
     }
 #endif
 
@@ -2784,11 +2809,13 @@ SDL_GL_UnloadLibrary(void)
     }
 }
 
+#if SDL_VIDEO_OPENGL || SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
 static SDL_INLINE SDL_bool
 isAtLeastGL3(const char *verstr)
 {
     return (verstr && (SDL_atoi(verstr) >= 3));
 }
+#endif
 
 SDL_bool
 SDL_GL_ExtensionSupported(const char *extension)
@@ -2871,6 +2898,35 @@ SDL_GL_ExtensionSupported(const char *extension)
     return SDL_FALSE;
 #else
     return SDL_FALSE;
+#endif
+}
+
+/* Deduce supported ES profile versions from the supported
+   ARB_ES*_compatibility extensions. There is no direct query.
+   
+   This is normally only called when the OpenGL driver supports
+   {GLX,WGL}_EXT_create_context_es2_profile.
+ */
+void
+SDL_GL_DeduceMaxSupportedESProfile(int* major, int* minor)
+{
+#if SDL_VIDEO_OPENGL || SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
+	/* XXX This is fragile; it will break in the event of release of
+	 * new versions of OpenGL ES.
+     */
+    if (SDL_GL_ExtensionSupported("GL_ARB_ES3_2_compatibility")) {
+        *major = 3;
+        *minor = 2;
+    } else if (SDL_GL_ExtensionSupported("GL_ARB_ES3_1_compatibility")) {
+        *major = 3;
+        *minor = 1;
+    } else if (SDL_GL_ExtensionSupported("GL_ARB_ES3_compatibility")) {
+        *major = 3;
+        *minor = 0;
+    } else {
+        *major = 2;
+        *minor = 0;
+    }
 #endif
 }
 
@@ -3789,10 +3845,11 @@ SDL_SetWindowHitTest(SDL_Window * window, SDL_HitTest callback, void *userdata)
     return 0;
 }
 
-float SDL_ComputeDiagonalDPI(int hpix, int vpix, float hinches, float vinches)
+float
+SDL_ComputeDiagonalDPI(int hpix, int vpix, float hinches, float vinches)
 {
 	float den2 = hinches * hinches + vinches * vinches;
-	if ( den2 <= 0.0f ) {
+	if (den2 <= 0.0f) {
 		return 0.0f;
 	}
 		

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -24,6 +24,15 @@
 /* Many of SDL's features require _GNU_SOURCE on various platforms */
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
+
+/* This is for a variable-length array at the end of a struct:
+    struct x { int y; char z[SDL_VARIABLE_LENGTH_ARRAY]; };
+   Use this because GCC 2 needs different magic than other compilers. */
+#if (defined(__GNUC__) && (__GNUC__ <= 2)) || defined(__CC_ARM)
+#define SDL_VARIABLE_LENGTH_ARRAY 1
+#else
+#define SDL_VARIABLE_LENGTH_ARRAY
 #endif
 
 #include "dynapi/SDL_dynapi.h"

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -83,6 +83,7 @@
 #cmakedefine HAVE_DBUS_DBUS_H 1
 #cmakedefine HAVE_IBUS_IBUS_H 1
 #cmakedefine HAVE_FCITX_FRONTEND_H 1
+#cmakedefine HAVE_LIBSAMPLERATE_H 1
 
 /* C library functions */
 #cmakedefine HAVE_MALLOC 1
@@ -214,6 +215,7 @@
 #cmakedefine SDL_AUDIO_DRIVER_DISK @SDL_AUDIO_DRIVER_DISK@
 #cmakedefine SDL_AUDIO_DRIVER_DUMMY @SDL_AUDIO_DRIVER_DUMMY@
 #cmakedefine SDL_AUDIO_DRIVER_XAUDIO2 @SDL_AUDIO_DRIVER_XAUDIO2@
+#cmakedefine SDL_AUDIO_DRIVER_WASAPI @SDL_AUDIO_DRIVER_WASAPI@
 #cmakedefine SDL_AUDIO_DRIVER_DSOUND @SDL_AUDIO_DRIVER_DSOUND@
 #cmakedefine SDL_AUDIO_DRIVER_ESD @SDL_AUDIO_DRIVER_ESD@
 #cmakedefine SDL_AUDIO_DRIVER_ESD_DYNAMIC @SDL_AUDIO_DRIVER_ESD_DYNAMIC@
@@ -358,6 +360,8 @@
 #cmakedefine SDL_ASSEMBLY_ROUTINES @SDL_ASSEMBLY_ROUTINES@
 #cmakedefine SDL_ALTIVEC_BLITTERS @SDL_ALTIVEC_BLITTERS@
 
+/* Enable dynamic libsamplerate support */
+#cmakedefine SDL_LIBSAMPLERATE_DYNAMIC @SDL_LIBSAMPLERATE_DYNAMIC@
 
 /* Platform specific definitions */
 #if !defined(__WIN32__)

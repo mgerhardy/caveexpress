@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -124,17 +124,6 @@ WIN_GLES_SetupWindow(_THIS, SDL_Window * window)
     }
 
     return WIN_GLES_MakeCurrent(_this, current_win, current_ctx);    
-}
-
-int
-WIN_GLES_SetSwapInterval(_THIS, int interval)
-{
-    /* FIXME: This should call SDL_EGL_SetSwapInterval, but ANGLE has a bug that prevents this
-     * from working if we do (the window contents freeze and don't swap properly). So, we ignore
-     * the request for now.
-     */
-    SDL_Log("WARNING: Ignoring SDL_GL_SetSwapInterval call due to ANGLE bug");
-    return 0;
 }
 
 #endif /* SDL_VIDEO_DRIVER_WINDOWS && SDL_VIDEO_OPENGL_EGL */
