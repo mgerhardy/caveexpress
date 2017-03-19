@@ -1,6 +1,6 @@
 /*
   SDL_image:  An example image loading library for use with SDL
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -31,7 +31,7 @@
 
 /* Table of image detection and loading functions */
 static struct {
-    const char *type;
+    char *type;
     int (SDLCALL *is)(SDL_RWops *src);
     SDL_Surface *(SDLCALL *load)(SDL_RWops *src);
 } supported[] = {
