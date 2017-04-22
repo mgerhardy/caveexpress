@@ -4,7 +4,7 @@ BUILD_TYPE=Release
 if [ "$ANDROID_RELEASE" == "OFF" ]; then
 	BUILD_TYPE=Debug
 fi
-INSTALL_PACKAGES=${ANDROID_INSTALL_PACKAGES:-OFF}
+INSTALL_PACKAGES=${ANDROID_INSTALL_PACKAGES:-ON}
 DIR=$(dirname $(readlink -f $0))
 cd $DIR/../../..
 echo "build non hd version"

@@ -260,15 +260,7 @@ endmacro()
 # VERSION_CODE: the android version code needed for google play store
 #
 macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
-	if (ANDROID_INSTALL_PACKAGES)
-		cp_android_package("android-13")
-		cp_android_package("android-16")
-		cp_android_package("extra-google-google_play_services")
-		cp_android_package("platform-tools")
-		cp_android_package("build-tools-${ANDROID_SDK_BUILD_TOOLS_VERSION}")
-		set(ANDROID_INSTALL_PACKAGES OFF)
-	endif()
-	# TODO: add java app and activity classes to dependencies to recompile target on java class changes
+	# TODO: add java activity classes to dependencies to recompile target on java class changes
 	message(STATUS "prepare java code for ${PROJECTNAME}")
 	file(COPY ${ANDROID_ROOT} DESTINATION ${CMAKE_BINARY_DIR}/android-${PROJECTNAME})
 	if (HD_VERSION)
