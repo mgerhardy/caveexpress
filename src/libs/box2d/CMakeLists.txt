@@ -47,7 +47,6 @@ set(SRCS
 	Box2D/Rope/b2Rope.cpp
 	)
 cp_add_library(LIB box2d SRCS ${SRCS} CFLAGS "-Wno-shadow -Wno-unused-but-set-variable -Wno-maybe-uninitialized -Wno-array-bounds")
-target_include_directories(box2d PUBLIC Box2D)
 # system wide lib must be checked for compatibility if not found via pkg-config
 if (BOX2D_FOUND AND "${BOX2D_VERSION}" STREQUAL "")
 	cp_check_source_compiles("
@@ -59,4 +58,6 @@ if (BOX2D_FOUND AND "${BOX2D_VERSION}" STREQUAL "")
 	if (NOT BOX2D_SUPPORTED)
 		message(FATAL_ERROR "System wide box 2d installation is not supported - we need at least 2.3.0. Please use the bundled version (cmake -DUSE_BUILTIN_BOX2D=TRUE) or upgrade box2d")
 	endif()
+else()
+	target_include_directories(box2d PUBLIC Box2D)
 endif()
