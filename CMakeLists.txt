@@ -18,7 +18,7 @@ option(FORCE_USE_SYSTEM_LIBS "Use system libs" OFF)
 option(CAVEEXPRESS "Build caveexpress" ON)
 option(CAVEPACKER "Build cavepacker" ON)
 option(MINIRACER "Build miniracer" OFF)
-option(SANITIZER "Build with sanitizer support if available" ON)
+option(SANITIZER "Build with sanitizer support if available" OFF)
 option(ANDROID_INSTALL_PACKAGES "Install required android packages" ON)
 
 #-------------------------------------------------------------------------------
