@@ -58,6 +58,7 @@ if (BOX2D_FOUND AND "${BOX2D_VERSION}" STREQUAL "")
 	if (NOT BOX2D_SUPPORTED)
 		message(FATAL_ERROR "System wide box 2d installation is not supported - we need at least 2.3.0. Please use the bundled version (cmake -DUSE_BUILTIN_BOX2D=TRUE) or upgrade box2d")
 	endif()
-else()
+elseif (NOT BOX2D_FOUND)
+	# If not found system wide, we have to include the bundled header directory.
 	target_include_directories(box2d PUBLIC Box2D)
 endif()
