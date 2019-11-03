@@ -10,6 +10,9 @@ configuration: Release
 
 install:
   - cinst -y -installArgs /D=%NSIS_ROOT% nsis.install
+  - cmd: set VCPKG_DEFAULT_TRIPLET=x64-windows
+  - cmd: vcpkg integrate install
+  - cmd: vcpkg install sdl2 lua
 
 branches:
   only:
