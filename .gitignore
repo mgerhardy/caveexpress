@@ -6,6 +6,7 @@
 /jsonconvert
 /tests*
 /solutiontool
+/build
 
 # also binaries - but more generic
 /*.exe
