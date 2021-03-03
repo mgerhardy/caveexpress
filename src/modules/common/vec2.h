@@ -7,11 +7,14 @@ inline bool fequals(float v1, float v2, float epsilon = EPSILON) {
 
 class vec2 {
 public:
-	vec2() :
+	constexpr vec2() :
 			x(0.0f), y(0.0f) {
 	}
-	vec2(float _x, float _y) :
+	constexpr vec2(float _x, float _y) :
 			x(_x), y(_y) {
+	}
+	constexpr vec2(const vec2& other) :
+			x(other.x), y(other.y) {
 	}
 	vec2 & operator=(const vec2 &rhs) {
 		x = rhs.x;

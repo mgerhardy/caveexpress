@@ -16,10 +16,6 @@
 #define DEPRECATED_FOR(f) DEPRECATED
 #endif
 
-#ifdef __GNUC__
-#pragma GCC diagnostic ignored "-Wpointer-sign"
-#endif
-
 #ifndef __INTEL_COMPILER
 # if ((__GNUC__ * 100) + __GNUC_MINOR__) >= 402
 #  define GCC_DIAG_STR(s) #s
