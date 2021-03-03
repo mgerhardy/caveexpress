@@ -92,15 +92,15 @@ bool findIntersectionOfFixtures (const b2Fixture* fA, const b2Fixture* fB, std::
 	const b2PolygonShape* polyB = (const b2PolygonShape*) fB->GetShape();
 
 	// fill 'subject polygon' from fixtureA polygon
-	const int polyAVertexCount = polyA->GetVertexCount();
+	const int polyAVertexCount = polyA->m_count;
 	for (int i = 0; i < polyAVertexCount; ++i)
-		outputVertices.push_back(fA->GetBody()->GetWorldPoint(polyA->GetVertex(i)));
+		outputVertices.push_back(fA->GetBody()->GetWorldPoint(polyA->m_vertices[i]));
 
 	// fill 'clip polygon' from fixtureB polygon
 	std::vector<b2Vec2> clipPolygon;
-	const int polyBVertexCount = polyB->GetVertexCount();
+	const int polyBVertexCount = polyB->m_count;
 	for (int i = 0; i < polyBVertexCount; i++)
-		clipPolygon.push_back(fB->GetBody()->GetWorldPoint(polyB->GetVertex(i)));
+		clipPolygon.push_back(fB->GetBody()->GetWorldPoint(polyB->m_vertices[i]));
 
 	b2Vec2 cp1 = clipPolygon[clipPolygon.size() - 1];
 	const int clipPolygonSize = clipPolygon.size();

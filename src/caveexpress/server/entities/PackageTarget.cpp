@@ -50,15 +50,15 @@ void PackageTarget::onPreSolve (b2Contact* contact, IEntity* entity, const b2Man
 	}
 }
 
-std::string PackageTarget::getUserData (const b2Contact* contact) const
+std::string PackageTarget::getUserData (b2Contact* contact) const
 {
-	const b2Fixture* fixture;
+	b2Fixture* fixture;
 	if (contact->GetFixtureA()->GetBody()->GetUserData() == this) {
 		fixture = contact->GetFixtureA();
 	} else {
 		fixture = contact->GetFixtureB();
 	}
-	return static_cast<const char*>(fixture->GetUserData());
+	return reinterpret_cast<const char*>(fixture->GetUserData());
 }
 
 void PackageTarget::update (uint32_t deltaTime)

@@ -1,9 +1,5 @@
 #pragma once
 
-#include <SDL_assert.h>
-#ifndef b2Assert
-#define b2Assert SDL_assert
-#endif
 #include "common/Compiler.h"
 GCC_DIAG_OFF(shadow)
 #include <Box2D/Box2D.h>

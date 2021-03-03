@@ -23,7 +23,7 @@ private:
 	void updateJoint (uint32_t deltaTime);
 
 	bool isValidContact (const b2Contact* contact, const std::string& id) const;
-	std::string getUserData (const b2Contact* contact) const;
+	std::string getUserData (b2Contact* contact) const;
 public:
 	PackageTarget (Map& map, const std::string& spriteID, gridCoord x, gridCoord y);
 	virtual ~PackageTarget ();
@@ -37,7 +37,7 @@ public:
 
 inline bool PackageTarget::isValidContact (const b2Contact* contact, const std::string& id) const
 {
-	const std::string userData = getUserData(contact);
+	const std::string userData = getUserData(const_cast<b2Contact*>(contact));
 	return userData == id;
 }
 

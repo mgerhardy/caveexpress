@@ -68,7 +68,7 @@ class DestructionListener: public b2DestructionListener
 	/// to the destruction of one of its attached bodies.
 	void SayGoodbye (b2Joint* joint) override
 	{
-		IEntity *entity = static_cast<IEntity*>(joint->GetUserData());
+		IEntity *entity = reinterpret_cast<IEntity*>(joint->GetUserData());
 		if (entity == nullptr)
 			return;
 		entity->clearJoint(joint);

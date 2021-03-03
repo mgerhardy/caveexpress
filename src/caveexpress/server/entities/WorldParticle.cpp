@@ -85,7 +85,7 @@ void WorldParticle::onPreSolve (b2Contact* contact, IEntity* entity, const b2Man
 	if (_particleType != WATER)
 		return;
 
-	const b2Fixture* fixture = contact->GetFixtureA();
+	b2Fixture* fixture = contact->GetFixtureA();
 	const bool useBodyA = fixture->GetBody()->GetUserData() == this || fixture->GetUserData() == this;
 	const b2Body *body = useBodyA ? fixture->GetBody() : contact->GetFixtureB()->GetBody();
 	const SimpleParticle* p = _particleReverseMap[body];

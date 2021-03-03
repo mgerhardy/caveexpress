@@ -35,8 +35,8 @@ void Water::onContact (b2Contact* contact, IEntity* entity)
 {
 	b2Fixture* fixtureA = contact->GetFixtureA();
 	b2Fixture* fixtureB = contact->GetFixtureB();
-	IEntity* entityA = static_cast<IEntity*>(fixtureA->GetBody()->GetUserData());
-	IEntity* entityB = static_cast<IEntity*>(fixtureB->GetBody()->GetUserData());
+	IEntity* entityA = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData());
+	IEntity* entityB = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData());
 	const bool entityIsA = entityA == entity;
 	const bool entityIsB = entityB == entity;
 
@@ -58,8 +58,8 @@ void Water::endContact (b2Contact* contact, IEntity* entity)
 {
 	b2Fixture* fixtureA = contact->GetFixtureA();
 	b2Fixture* fixtureB = contact->GetFixtureB();
-	IEntity* entityA = static_cast<IEntity*>(fixtureA->GetBody()->GetUserData());
-	IEntity* entityB = static_cast<IEntity*>(fixtureB->GetBody()->GetUserData());
+	IEntity* entityA = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData());
+	IEntity* entityB = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData());
 	const bool entityIsA = entityA == entity;
 	const bool entityIsB = entityB == entity;
 
@@ -77,7 +77,7 @@ void Water::endContact (b2Contact* contact, IEntity* entity)
 void Water::updateFixtures ()
 {
 	for (FixturePairIter it = _fixturePairs.begin(); it != _fixturePairs.end(); ++it) {
-		const b2Fixture* waterFixture = it->first;
+		b2Fixture* waterFixture = it->first;
 		SDL_assert(waterFixture->GetBody()->GetUserData() == this);
 		b2Fixture* entityFixture = it->second;
 		const float density = waterFixture->GetDensity();
