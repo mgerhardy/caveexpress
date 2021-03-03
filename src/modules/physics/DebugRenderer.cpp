@@ -21,8 +21,8 @@ DebugRenderer::DebugRenderer (int pointCount, const ContactPoint *points, int tr
 
 DebugRenderer::~DebugRenderer ()
 {
-	const float32 k_impulseScale = 0.1f;
-	const float32 k_axisScale = 0.3f;
+	const float k_impulseScale = 0.1f;
+	const float k_axisScale = 0.3f;
 
 	const bool drawFrictionImpulse = Config.getConfigVar("box2d_frictionnormals", "true")->getBoolValue();
 	const bool drawContactNormals = Config.getConfigVar("box2d_contactnormals", "true")->getBoolValue();
@@ -85,11 +85,11 @@ void DebugRenderer::DrawSolidPolygon (const b2Vec2* vertices, int vertexCount, c
 	DrawPolygon(vertices, vertexCount, color);
 }
 
-void DebugRenderer::DrawCircle (const b2Vec2& center, float32 radius, const b2Color& color)
+void DebugRenderer::DrawCircle (const b2Vec2& center, float radius, const b2Color& color)
 {
-	const float32 k_segments = 16.0f;
-	const float32 k_increment = 2.0f * b2_pi / k_segments;
-	float32 theta = 0.0f;
+	const float k_segments = 16.0f;
+	const float k_increment = 2.0f * b2_pi / k_segments;
+	float theta = 0.0f;
 
 	for (int i = 0; i < k_segments; i += 2) {
 		const b2Vec2 p1 = center + radius * b2Vec2(cosf(theta), sinf(theta));
@@ -100,12 +100,12 @@ void DebugRenderer::DrawCircle (const b2Vec2& center, float32 radius, const b2Co
 	}
 }
 
-void DebugRenderer::DrawSolidCircle (const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color)
+void DebugRenderer::DrawSolidCircle (const b2Vec2& center, float radius, const b2Vec2& axis, const b2Color& color)
 {
-	const float32 k_segments = 16.0f;
+	const float k_segments = 16.0f;
 	const int vertexCount = 16;
-	const float32 k_increment = 2.0f * b2_pi / k_segments;
-	float32 theta = 0.0f;
+	const float k_increment = 2.0f * b2_pi / k_segments;
+	float theta = 0.0f;
 
 	b2Vec2 vertices[vertexCount];
 	for (int i = 0; i < k_segments; ++i) {
@@ -120,7 +120,7 @@ void DebugRenderer::DrawSolidCircle (const b2Vec2& center, float32 radius, const
 	DrawSegment(center, center + radius * axis, color);
 }
 
-void DebugRenderer::DrawPoint (const b2Vec2& p, float32 size, const b2Color& color)
+void DebugRenderer::DrawPoint (const b2Vec2& p, float size, const b2Color& color)
 {
 	const Color rgba = { color.r, color.g, color.b, 0.5f };
 	const float minx = VX(p.x - size / 2.0f);
@@ -148,7 +148,7 @@ void DebugRenderer::DrawSegmentWithAlpha (const b2Vec2& p1, const b2Vec2& p2, co
 void DebugRenderer::DrawTransform (const b2Transform& xf)
 {
 	const b2Vec2& p1 = xf.p;
-	const float32 k_axisScale = 0.4f;
+	const float k_axisScale = 0.4f;
 
 	const b2Vec2 p2 = p1 + k_axisScale * xf.q.GetXAxis();
 	DrawSegment(p1, p2, b2Color(1.0f, 0.0f, 0.0f));

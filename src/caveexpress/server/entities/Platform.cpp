@@ -52,8 +52,8 @@ void Platform::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold
 	if (maniFold->pointCount < 2)
 		return;
 
-	const float32 normalImpulse = maniFold->points[0].normalImpulse;
-	const float32 absNormalImpulse = fabs(normalImpulse);
+	const float normalImpulse = maniFold->points[0].normalImpulse;
+	const float absNormalImpulse = fabs(normalImpulse);
 	if (absNormalImpulse < EPSILON)
 		return;
 

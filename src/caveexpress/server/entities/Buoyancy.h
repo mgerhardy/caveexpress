@@ -37,7 +37,7 @@ b2Vec2 computeCentroid (const std::vector<b2Vec2>& vs, float& area)
 	// It's location doesn't change the result (except for rounding error).
 	b2Vec2 pRef(0.0f, 0.0f);
 
-	const float32 inv3 = 1.0f / 3.0f;
+	const float inv3 = 1.0f / 3.0f;
 
 	for (int32 i = 0; i < count; ++i) {
 		// Triangle vertices.
@@ -48,9 +48,9 @@ b2Vec2 computeCentroid (const std::vector<b2Vec2>& vs, float& area)
 		const b2Vec2 e1 = p2 - p1;
 		const b2Vec2 e2 = p3 - p1;
 
-		const float32 D = b2Cross(e1, e2);
+		const float D = b2Cross(e1, e2);
 
-		const float32 triangleArea = 0.5f * D;
+		const float triangleArea = 0.5f * D;
 		area += triangleArea;
 
 		// Area weighted centroid

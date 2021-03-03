@@ -216,7 +216,7 @@ void Player::update (uint32_t deltaTime)
 		const float maxSpeed = 8.0f;
 		const b2Vec2 force = getMass() * _acceleration;
 		b2Vec2 velocity = getLinearVelocity();
-		const float32 speed = velocity.Normalize();
+		const float speed = velocity.Normalize();
 		const b2Vec2 cappedV = std::min(speed, maxSpeed) * velocity;
 		_bodies[0]->SetLinearVelocity(cappedV);
 		applyForce(force);
