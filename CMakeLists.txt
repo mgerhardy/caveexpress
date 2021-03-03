@@ -189,6 +189,7 @@ endif()
 configure_file(${ROOT_DIR}/src/config.h.in ${CMAKE_BINARY_DIR}/cp-config.h)
 include_directories(${CMAKE_BINARY_DIR})
 
+include_directories(src/modules/physics)
 include_directories(src)
 include_directories(src/modules)
 # Packagers might want to remove this

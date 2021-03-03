@@ -33,12 +33,14 @@ void Package::createBody ()
 	sd.SetAsBox(_size.x / 2.0f, _size.y / 2.0f);
 
 	b2FixtureDef fd;
+	fd.userData = nullptr;
 	fd.shape = &sd;
 	fd.density = DENSITY_PACKAGE;
 	fd.friction = 1.0f;
 	fd.restitution = 0.01f;
 
 	b2BodyDef bd;
+	bd.userData = nullptr;
 	bd.position.Set(_x, _y);
 	bd.type = b2_dynamicBody;
 

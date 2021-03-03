@@ -495,6 +495,7 @@ void Player::createBody (const b2Vec2 &pos)
 {
 	b2World *world = _map.getWorld();
 	b2BodyDef bodyDef;
+	bodyDef.userData = this;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(pos.x, pos.y - 0.2f);
 	bodyDef.fixedRotation = true;
@@ -503,6 +504,7 @@ void Player::createBody (const b2Vec2 &pos)
 	centerShape.m_radius = 0.01f;
 	// Define the dynamic body fixture.
 	b2FixtureDef centerFixtureDef;
+	centerFixtureDef.userData = nullptr;
 	centerFixtureDef.isSensor = true;
 	centerFixtureDef.shape = &centerShape;
 	center->CreateFixture(&centerFixtureDef);
@@ -525,6 +527,7 @@ void Player::createBody (const b2Vec2 &pos)
 
 	// Define the dynamic body fixture.
 	b2FixtureDef fixtureDef;
+	fixtureDef.userData = nullptr;
 	fixtureDef.shape = &shape;
 
 	// Set the box density to be non-zero, so it will be dynamic.
@@ -532,8 +535,6 @@ void Player::createBody (const b2Vec2 &pos)
 
 	// Override the default friction.
 	fixtureDef.friction = 1.0f;
-
-	body->SetUserData(this);
 
 	// Add the shape to the body.
 	body->CreateFixture(&fixtureDef);
@@ -543,7 +544,9 @@ void Player::createBody (const b2Vec2 &pos)
 	addBody(body);
 	addBody(center);
 
+	// TODO: this is a problem since 2.4.1
 	b2RevoluteJointDef revoluteJointDef;
+	revoluteJointDef.userData = nullptr;
 	revoluteJointDef.Initialize(center, body, pos);
 	revoluteJointDef.lowerAngle = DegreesToRadians(-10);
 	revoluteJointDef.upperAngle = DegreesToRadians(10);

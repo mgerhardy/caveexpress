@@ -78,8 +78,8 @@ class DestructionListener: public b2DestructionListener
 	/// to the destruction of its parent body.
 	void SayGoodbye (b2Fixture* fixture) override
 	{
-		fixture->SetUserData(nullptr);
-		fixture->GetBody()->SetUserData(nullptr);
+		fixture->GetUserData() = nullptr;
+		fixture->GetBody()->GetUserData() = nullptr;
 	}
 };
 

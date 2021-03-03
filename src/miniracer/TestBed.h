@@ -81,15 +81,16 @@ public:
 
     TDTire(b2World* world) {
         b2BodyDef bodyDef;
+        bodyDef.userData = nullptr;
         bodyDef.type = b2_dynamicBody;
         m_body = world->CreateBody(&bodyDef);
 
         b2PolygonShape polygonShape;
         polygonShape.SetAsBox(0.5f, 1.25f);
         b2Fixture* fixture = m_body->CreateFixture(&polygonShape, 1);//shape, density
-        fixture->SetUserData(new CarTireFUD());
+        fixture->GetUserData() = new CarTireFUD();
 
-        m_body->SetUserData(this);
+        m_body->GetUserData() = this;
 
         m_currentTraction = 1;
     }
@@ -196,6 +197,7 @@ public:
     TDCar(b2World* world) {
         //create car body
         b2BodyDef bodyDef;
+        bodyDef.userData = nullptr;
         bodyDef.type = b2_dynamicBody;
         m_body = world->CreateBody(&bodyDef);
         m_body->SetAngularDamping(3);
@@ -315,6 +317,7 @@ public:
         //set up ground areas
         {
             b2BodyDef bodyDef;
+            bodyDef.userData = nullptr;
             m_groundBody = m_world->CreateBody( &bodyDef );
 
             b2PolygonShape polygonShape;

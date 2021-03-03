@@ -33,12 +33,14 @@ void Bomb::createBody ()
 	sd.SetAsBox(_size.x / 2.0f, _size.y / 2.0f);
 
 	b2FixtureDef fd;
+	fd.userData = nullptr;
 	fd.shape = &sd;
 	fd.density = DENSITY_BOMB;
 	fd.friction = 0.4f;
 	fd.restitution = 0.2f;
 
 	b2BodyDef bd;
+	bd.userData = nullptr;
 	bd.position.Set(_x, _y);
 	bd.type = b2_dynamicBody;
 	bd.fixedRotation = false;
@@ -55,6 +57,7 @@ void Bomb::explode ()
 	const b2Vec2& center = getPos();
 
 	b2BodyDef bd;
+	bd.userData = nullptr;
 	bd.type = b2_dynamicBody;
 	// rotation not necessary
 	bd.fixedRotation = true;
@@ -70,6 +73,7 @@ void Bomb::explode ()
 	circleShape.m_radius = 0.05; // very small
 
 	b2FixtureDef fd;
+	fd.userData = nullptr;
 	fd.shape = &circleShape;
 	fd.density = DENSITY_BOMB / static_cast<float>(_numRays);
 	fd.friction = 0.0f;

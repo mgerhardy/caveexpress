@@ -205,7 +205,7 @@ void Map::render (void *userdata)
 	if (map->_world) {
 		DebugRenderer renderer(map->_pointCount, map->_points, map->_traceCount, map->_traces,  map->_waterIntersectionPoints, Config.getMapDebugRect(), map->_frontend);
 		map->_world->SetDebugDraw(&renderer);
-		map->_world->DrawDebugData();
+		map->_world->DebugDraw();
 		map->_world->SetDebugDraw(nullptr);
 	}
 }
@@ -872,12 +872,14 @@ void Map::initPhysics ()
 	const float height = getMapHeight() + 1.0f;
 
 	b2BodyDef lineBodyDef;
+	lineBodyDef.userData = nullptr;
 	lineBodyDef.type = b2_staticBody;
 	lineBodyDef.position.Set(0, 0);
 	b2Body* boxBody = _world->CreateBody(&lineBodyDef);
 
 	b2EdgeShape edge;
 	b2FixtureDef fd;
+	fd.userData = nullptr;
 	fd.friction = 1.0f;
 	fd.restitution = 0.2f;
 	fd.shape = &edge;
@@ -890,25 +892,25 @@ void Map::initPhysics ()
 	_borders[BORDER_BOTTOM] = new Border(BorderType::BOTTOM, *this);
 	_borders[BORDER_PLAYER_BOTTOM] = new Border(BorderType::PLAYER_BOTTOM, *this);
 
-	edge.Set(b2Vec2(zeroX, zeroY), b2Vec2(width, zeroY));
-	b2Fixture *top = boxBody->CreateFixture(&fd);
-	top->SetUserData(_borders[BORDER_TOP]);
+	edge.SetTwoSided(b2Vec2(zeroX, zeroY), b2Vec2(width, zeroY));
+	fd.userData = _borders[BORDER_TOP];
+	boxBody->CreateFixture(&fd);
 
-	edge.Set(b2Vec2(zeroX, zeroY), b2Vec2(zeroX, height));
-	b2Fixture *left = boxBody->CreateFixture(&fd);
-	left->SetUserData(_borders[BORDER_LEFT]);
+	edge.SetTwoSided(b2Vec2(zeroX, zeroY), b2Vec2(zeroX, height));
+	fd.userData = _borders[BORDER_LEFT];
+	boxBody->CreateFixture(&fd);
 
-	edge.Set(b2Vec2(width, height), b2Vec2(width, zeroY));
-	b2Fixture *right = boxBody->CreateFixture(&fd);
-	right->SetUserData(_borders[BORDER_RIGHT]);
+	edge.SetTwoSided(b2Vec2(width, height), b2Vec2(width, zeroY));
+	fd.userData = _borders[BORDER_RIGHT];
+	boxBody->CreateFixture(&fd);
 
-	edge.Set(b2Vec2(zeroX, height), b2Vec2(width, height));
-	b2Fixture *bottom = boxBody->CreateFixture(&fd);
-	bottom->SetUserData(_borders[BORDER_BOTTOM]);
+	edge.SetTwoSided(b2Vec2(zeroX, height), b2Vec2(width, height));
+	fd.userData = _borders[BORDER_BOTTOM];
+	boxBody->CreateFixture(&fd);
 
-	edge.Set(b2Vec2(zeroX, height), b2Vec2(width, getMapHeight()));
-	b2Fixture *playerBottom = boxBody->CreateFixture(&fd);
-	playerBottom->SetUserData(_borders[BORDER_PLAYER_BOTTOM]);
+	edge.SetTwoSided(b2Vec2(zeroX, height), b2Vec2(width, getMapHeight()));
+	fd.userData = _borders[BORDER_PLAYER_BOTTOM];
+	boxBody->CreateFixture(&fd);
 
 	initWater();
 }
@@ -976,12 +978,14 @@ Platform *Map::getPlatform (MapTile *mapTile, int *start, int *end, gridSize off
 	shape.SetAsBox(width / 2.0f, height);
 
 	b2FixtureDef fixture;
+	fixture.userData = nullptr;
 	fixture.shape = &shape;
 	fixture.friction = 0.4f;
 	fixture.restitution = 0.0f;
 	fixture.density = 0.0f;
 
 	b2BodyDef bd;
+	bd.userData = nullptr;
 	bd.position.Set(x, y);
 	bd.type = b2_kinematicBody;
 	bd.fixedRotation = true;
@@ -1119,12 +1123,12 @@ b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *
 		fixtureDef.friction = def->friction;
 	}
 
+	bodyDef.userData = entity;
 	b2Body* body = _world->CreateBody(&bodyDef);
-	body->SetUserData(entity);
 
 	if (fixtureDef.shape != nullptr) {
-		b2Fixture* fixture = body->CreateFixture(&fixtureDef);
-		fixture->SetUserData(const_cast<char*>(""));
+		fixtureDef.userData = const_cast<char*>("");
+		body->CreateFixture(&fixtureDef);
 		entity->addBody(body);
 		return body;
 	}
@@ -1160,8 +1164,8 @@ b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *
 		b2PolygonShape shape;
 		shape.Set(points, vertexCnt);
 		fixtureDef.shape = &shape;
-		b2Fixture* fixture = body->CreateFixture(&fixtureDef);
-		fixture->SetUserData(const_cast<char*>(polygon.userData.c_str()));
+		fixtureDef.userData = const_cast<char*>(polygon.userData.c_str());;
+		body->CreateFixture(&fixtureDef);
 	}
 
 	// create the shape from the sprite definition circles
@@ -1171,8 +1175,8 @@ b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *
 		shape.m_p = b2Vec2(circle.center.x, circle.center.y);
 		shape.m_radius = circle.radius;
 		fixtureDef.shape = &shape;
-		b2Fixture* fixture = body->CreateFixture(&fixtureDef);
-		fixture->SetUserData(const_cast<char*>(circle.userData.c_str()));
+		fixtureDef.userData = const_cast<char*>(circle.userData.c_str());;
+		body->CreateFixture(&fixtureDef);
 	}
 
 	entity->addBody(body);

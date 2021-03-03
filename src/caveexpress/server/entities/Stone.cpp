@@ -80,11 +80,13 @@ void Stone::endContact (b2Contact* contact, IEntity* entity)
 void Stone::createBody ()
 {
 	b2FixtureDef fd;
+	fd.userData = nullptr;
 	fd.density = DENSITY_STONE;
 	fd.friction = 1.0f;
 	fd.restitution = 0.01f;
 
 	b2BodyDef bd;
+	bd.userData = nullptr;
 	bd.position.Set(_x, _y);
 	bd.type = b2_dynamicBody;
 

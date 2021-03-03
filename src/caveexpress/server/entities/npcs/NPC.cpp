@@ -68,6 +68,7 @@ b2Body* NPC::createBody (const b2Vec2 &pos, bool setOnGround, bool fixedRotation
 	}
 
 	b2BodyDef bodyDef;
+	bodyDef.userData = this;
 	bodyDef.type = getBodyType();
 	bodyDef.position.Set(pos.x, pos.y);
 	b2Body* body = _map.getWorld()->CreateBody(&bodyDef);
@@ -75,11 +76,11 @@ b2Body* NPC::createBody (const b2Vec2 &pos, bool setOnGround, bool fixedRotation
 	const b2Vec2& size = getSize();
 	dynamicBox.SetAsBox(size.x / 2.0f, size.y / 2.0f);
 	b2FixtureDef fixtureDef;
+	fixtureDef.userData = nullptr;
 	fixtureDef.shape = &dynamicBox;
 	fixtureDef.density = getDensity();
 	fixtureDef.friction = 0.0f;
 	fixtureDef.restitution = 0.0f;
-	body->SetUserData(static_cast<void*>(this));
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(fixedRotation);
 	addBody(body);

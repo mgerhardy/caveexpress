@@ -169,6 +169,7 @@ void Water::createBody (float waterHeight)
 	shape.SetAsBox(mapWidth / 2.0f, mapHeight / 2.0f);
 
 	b2FixtureDef fixture;
+	fixture.userData = nullptr;
 	fixture.shape = &shape;
 	fixture.friction = 0.1f;
 	fixture.restitution = 0.0f;
@@ -178,6 +179,7 @@ void Water::createBody (float waterHeight)
 	const float y = mapHeight - waterHeight;
 
 	b2BodyDef bd;
+	bd.userData = nullptr;
 	bd.position.Set(mapWidth / 2.0f, y + mapHeight / 2.0f);
 	//bd.angle = DegreesToRadians(180.0f);
 	bd.type = b2_kinematicBody;

@@ -73,6 +73,7 @@ void WindModificator::createBody (const b2Vec2 &pos, float shift)
 	}
 
 	b2BodyDef bodyDef;
+	bodyDef.userData = this;
 	bodyDef.type = b2_staticBody;
 	b2Vec2 modPos = pos;
 	getRelativePosition(modPos);
@@ -93,11 +94,11 @@ void WindModificator::createBody (const b2Vec2 &pos, float shift)
 	shape.Set(vertices, SDL_arraysize(vertices));
 
 	b2FixtureDef fixtureDef;
+	fixtureDef.userData = nullptr;
 	fixtureDef.shape = &shape;
 	fixtureDef.density = DENSITY_AIR;
 
 	b2Body* body = _map.getWorld()->CreateBody(&bodyDef);
-	body->SetUserData((void*) this);
 	body->CreateFixture(&fixtureDef);
 	addBody(body);
 }
@@ -119,10 +120,10 @@ void WindModificator::update (uint32_t deltaTime)
 
 	b2Body *ownBody = getBodies()[0];
 	if (!_state) {
-		ownBody->SetActive(false);
+		ownBody->SetEnabled(false);
 		return;
 	} else {
-		ownBody->SetActive(true);
+		ownBody->SetEnabled(true);
 	}
 
 	for (b2ContactEdge* c = ownBody->GetContactList(); c != nullptr; c = c->next) {

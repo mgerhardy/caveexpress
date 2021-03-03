@@ -112,6 +112,7 @@ void PackageTarget::applyJoint (Package *package)
 	SDL_assert(_joint == nullptr);
 	const b2Vec2 shift(0.0f, -0.1f);
 	b2DistanceJointDef def;
+	def.userData = nullptr;
 	def.Initialize(getBodies()[0], package->getBodies()[0], getBodies()[0]->GetWorldPoint(shift), package->getBodies()[0]->GetPosition());
 	_joint = assert_cast<b2DistanceJoint*, b2Joint*>(_map.getWorld()->CreateJoint(&def));
 	_lengthUpdate = LENGTH_UPDATE_DELAY;

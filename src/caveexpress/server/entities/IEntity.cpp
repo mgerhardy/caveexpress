@@ -79,11 +79,13 @@ void IEntity::addRopeJoint (IEntity *entity)
 	if (_ropeJoint)
 		removeRopeJoint();
 
-	b2RopeJointDef rDef;
+	b2DistanceJointDef rDef;
+	rDef.userData = entity;
 	b2Body* bodyA = getBodies()[0];
 	b2Body* bodyB = entity->getBodies()[0];
 
 	rDef.maxLength = 0.6f;
+	rDef.minLength = 0.0f;
 	rDef.collideConnected = true;
 	rDef.localAnchorA = b2Vec2_zero;
 	rDef.localAnchorB = b2Vec2_zero;
@@ -95,8 +97,7 @@ void IEntity::addRopeJoint (IEntity *entity)
 	rDef.localAnchorB.y = entity->getSize().y / 2.0f;
 	rDef.bodyA = bodyA;
 	rDef.bodyB = bodyB;
-	_ropeJoint = assert_cast<b2RopeJoint*, b2Joint*>(bodyA->GetWorld()->CreateJoint(&rDef));
-	_ropeJoint->SetUserData(entity);
+	_ropeJoint = assert_cast<b2DistanceJoint*, b2Joint*>(bodyA->GetWorld()->CreateJoint(&rDef));
 	GameEvent.sendRope(getVisMask() | entity->getVisMask(), getID(), entity->getID());
 }
 
@@ -106,7 +107,7 @@ void IEntity::removeRopeJoint ()
 		return;
 
 	b2Body* bodyA = _ropeJoint->GetBodyA();
-	IEntity *entity = static_cast<IEntity*>(_ropeJoint->GetUserData());
+	IEntity *entity = reinterpret_cast<IEntity*>(_ropeJoint->GetUserData());
 	GameEvent.removeRope(getVisMask() | entity->getVisMask(), getID());
 	bodyA->GetWorld()->DestroyJoint(_ropeJoint);
 	_ropeJoint = nullptr;
@@ -335,10 +336,9 @@ void IEntity::computeAABB () const
 
 inline void IEntity::deleteBodies ()
 {
+	b2World *world = getMap().getWorld();
 	for (BodyListIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-		b2Body* body = *i;
-		b2World *world = body->GetWorld();
-		world->DestroyBody(body);
+		world->DestroyBody(*i);
 	}
 	_bodies.clear();
 }

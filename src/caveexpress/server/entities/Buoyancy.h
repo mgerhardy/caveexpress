@@ -23,6 +23,11 @@
 // This file contains the support functions for finding the intersecting portion
 // of two polygon fixtures.
 
+#include <box2d/b2_body.h>
+#include <box2d/b2_fixture.h>
+#include <box2d/b2_math.h>
+#include <vector>
+
 namespace Buoyancy {
 
 b2Vec2 computeCentroid (const std::vector<b2Vec2>& vs, float& area)

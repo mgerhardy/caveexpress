@@ -60,6 +60,7 @@ WorldParticle::SimpleParticle* WorldParticle::createParticleBody ()
 	p->life = _lifetime;
 
 	b2BodyDef bd;
+	bd.userData = this;
 	bd.type = b2_dynamicBody;
 	bd.fixedRotation = false;
 
@@ -67,13 +68,13 @@ WorldParticle::SimpleParticle* WorldParticle::createParticleBody ()
 	shape.SetAsBox(_size.x / 2.0f, _size.y / 2.0f);
 
 	b2FixtureDef fd;
+	fd.userData = nullptr;
 	fd.density = _density;
 	fd.shape = &shape;
 	fd.friction = 2.0f;
 	fd.restitution = 0.1f;
 
 	p->body = _map.getWorld()->CreateBody(&bd);
-	p->body->SetUserData(this);
 	p->body->CreateFixture(&fd);
 	_bodies.push_back(p->body);
 
@@ -114,7 +115,7 @@ void WorldParticle::spawnParticle (const b2Vec2& pos, const b2Vec2& v)
 	p->life = _lifetime;
 
 	b2Body* b = p->body;
-	b->SetActive(true);
+	b->SetEnabled(true);
 	b2Vec2 vel = v;
 	vel *= 0.1;
 	vel.x += randBetweenf(-2, 2);
@@ -138,7 +139,7 @@ void WorldParticle::update (uint32_t deltaTime)
 		SimpleParticle* p = *i;
 		if (p->life < deltaTime) {
 			p->life = 0;
-			p->body->SetActive(false);
+			p->body->SetEnabled(false);
 			continue;
 		}
 		p->life -= deltaTime;

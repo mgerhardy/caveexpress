@@ -65,6 +65,7 @@ void Tree::createBody ()
 	sd.SetAsBox(_size.x / 2.0f, _size.y / 2.0f);
 
 	b2FixtureDef fd;
+	fd.userData = nullptr;
 	fd.shape = &sd;
 	fd.density = DENSITY_TREE;
 	fd.friction = 0.0f;
@@ -72,6 +73,7 @@ void Tree::createBody ()
 	fd.isSensor = true;
 
 	b2BodyDef bd;
+	bd.userData = nullptr;
 	bd.position.Set(_x, _y);
 	bd.type = b2_staticBody;
 	bd.fixedRotation = true;

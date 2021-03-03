@@ -68,7 +68,7 @@ protected:
 	bool _refilter;
 	bool _touchingWater;
 	mutable b2AABB _b2AABB;
-	b2RopeJoint* _ropeJoint;
+	b2DistanceJoint* _ropeJoint;
 
 	// if the entity should be removed, set this to true
 	bool _remove;
