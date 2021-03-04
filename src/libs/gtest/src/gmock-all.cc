@@ -1,4 +1,4 @@
-// Copyright 2006, Google Inc.
+// Copyright 2008, Google Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,28 +27,20 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <cstdio>
-#include "gtest/gtest.h"
+//
+// Google C++ Mocking Framework (Google Mock)
+//
+// This file #includes all Google Mock implementation .cc files.  The
+// purpose is to allow a user to build Google Mock by compiling this
+// file alone.
 
-#if GTEST_OS_ESP8266 || GTEST_OS_ESP32
-#if GTEST_OS_ESP8266
-extern "C" {
-#endif
-void setup() {
-  testing::InitGoogleTest();
-}
+// This line ensures that gmock.h can be compiled on its own, even
+// when it's fused.
+#include "gmock/gmock.h"
 
-void loop() { RUN_ALL_TESTS(); }
-
-#if GTEST_OS_ESP8266
-}
-#endif
-
-#else
-
-GTEST_API_ int main(int argc, char **argv) {
-  printf("Running main() from %s\n", __FILE__);
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
-#endif
+// The following lines pull in the real gmock *.cc files.
+#include "src/gmock-cardinalities.cc"
+#include "src/gmock-internal-utils.cc"
+#include "src/gmock-matchers.cc"
+#include "src/gmock-spec-builders.cc"
+#include "src/gmock.cc"
