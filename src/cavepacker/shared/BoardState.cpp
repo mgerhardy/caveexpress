@@ -4,12 +4,11 @@
 
 namespace cavepacker {
 
-BoardState::BoardState() :
-		_width(0), _height(0), _deadlock() {
+BoardState::BoardState() {
 }
 
 BoardState::BoardState(const BoardState& state) :
-		_state(state._state), _width(state._width), _height(state._height), _deadlock() {
+		_state(state._state), _width(state._width), _height(state._height) {
 }
 
 void BoardState::clear() {

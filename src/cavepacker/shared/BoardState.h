@@ -19,8 +19,8 @@ class BoardState {
 private:
 	StateMap _state;
 	DeadlockDetector _deadlock;
-	int _width;
-	int _height;
+	int _width = 0;
+	int _height = 0;
 
 public:
 	BoardState();

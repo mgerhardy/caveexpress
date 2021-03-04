@@ -57,8 +57,9 @@ protected:
 		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		const int deadlocks = simple.init(s);
-		if (expected > 0)
+		if (expected > 0) {
 			ASSERT_EQ(expected, deadlocks);
+		}
 		const uint32_t start = SDL_GetTicks();
 		ASSERT_FALSE(simple.hasDeadlock(start, 10000000u, s)) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
@@ -67,8 +68,9 @@ protected:
 		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		const int deadlocks = simple.init(s);
-		if (expected > 0)
+		if (expected > 0) {
 			ASSERT_EQ(expected, deadlocks);
+		}
 		const int index = s.getIndex(col, row);
 		const bool deadlock = simple.hasDeadlockAt(index);
 		ASSERT_FALSE(deadlock) << "Unexpected deadlock found at " << (col + 1) << ":" << (row + 1) << " index: " << index << ". Blocked fields: " << getDeadlocks(simple, s);
@@ -82,8 +84,9 @@ protected:
 		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		const int deadlocks = simple.init(s);
-		if (expected > 0)
+		if (expected > 0) {
 			ASSERT_EQ(expected, deadlocks);
+		}
 		ASSERT_TRUE(simple.hasDeadlockAt(s.getIndex(col, row))) << "Expected deadlock not found at " << (col + 1) << ":" << (row + 1) << ". Blocked fields: " << getDeadlocks(simple, s);
 	}
 
@@ -91,8 +94,9 @@ protected:
 		SCOPE(mapStr);
 		SimpleDeadlockDetector simple;
 		const int deadlocks = simple.init(s);
-		if (expected > 0)
+		if (expected > 0) {
 			ASSERT_EQ(expected, deadlocks);
+		}
 		const uint32_t start = SDL_GetTicks();
 		ASSERT_TRUE(simple.hasDeadlock(start, 10000000u, s)) << "Blocked fields: " << getDeadlocks(simple, s);
 	}
