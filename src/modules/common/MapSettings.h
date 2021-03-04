@@ -50,7 +50,7 @@ const std::string INTROWINDOW = "";
 
 // map setting default values
 namespace msdv {
-const float GRAVITY = 9.81;
+const float GRAVITY = 9.81f;
 const int POINTS = 100;
 const int REFERENCETIME = 30;
 }

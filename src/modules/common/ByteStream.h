@@ -151,7 +151,7 @@ inline void ByteStream::addString (const std::string& string)
 
 inline void ByteStream::addShortScaled (float value)
 {
-	addShort(value * Constant::SCALE_FACTOR);
+	addShort((int16_t)(value * (float)Constant::SCALE_FACTOR));
 }
 
 inline void ByteStream::addShort (int16_t word, bool prepend)

@@ -72,7 +72,7 @@ inline float toFloat (const std::string& str, float defaultValue = 0.0f)
 {
 	if (str.empty())
 		return defaultValue;
-	return atof(str.c_str());
+	return (float)atof(str.c_str());
 }
 
 extern std::string cutBeforeLastMatch (const std::string& _string, const std::string& pattern);

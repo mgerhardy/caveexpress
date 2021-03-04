@@ -36,7 +36,7 @@ private:
 	const DebugRendererData _data;
 	IFrontend* _frontend;
 
-	void DrawPoint(const b2Vec2& p, float size, const b2Color& color);
+	void DrawPoint(const b2Vec2& p, float size, const b2Color& color) override;
 	void DrawSegmentWithAlpha (const b2Vec2& p1, const b2Vec2& p2, const b2Color& color, float alpha);
 public:
 	DebugRenderer (int pointCount, const ContactPoint *points, int traceCount, const TraceData *traceData, const std::vector<b2Vec2>& waterIntersectionPoints, const DebugRendererData& rect, IFrontend* frontend);

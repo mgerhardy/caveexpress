@@ -66,7 +66,7 @@ inline double DegreesToRadians (double degrees)
 
 inline float Round (float r)
 {
-	return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
+	return (r > 0.0f) ? floor(r + 0.5f) : ceil(r - 0.5f);
 }
 
 template<class T>
@@ -103,7 +103,7 @@ inline void FadeIn (float& value, float frac)
 
 inline void FadeOut (float& value, float frac)
 {
-	value *= (1.0 - frac);
+	value *= (1.0f - frac);
 }
 
 inline void FadeSin (float& value, float frac)
@@ -113,10 +113,10 @@ inline void FadeSin (float& value, float frac)
 
 inline void FadeSaw (float& value, float frac)
 {
-	if (frac < 0.5)
+	if (frac < 0.5f)
 		frac *= 2.0f;
 	else
-		frac = (1.0 - frac) * 2.0f;
+		frac = (1.0f - frac) * 2.0f;
 	FadeIn(value, frac);
 }
 
