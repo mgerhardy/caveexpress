@@ -449,8 +449,13 @@ macro(cp_find LIB HEADER SUFFIX HEADERONLY VERSION)
 			/usr
 			/sw # Fink
 			/opt/local # DarwinPorts
+			/usr/local/opt
+			/usr/local/opt/${LIB}
 			/opt/csw # Blastwave
 			/opt
+			$ENV{VCPKG_ROOT}/installed/${_PROCESSOR_ARCH}-windows
+			C:/Tools/vcpkg/installed/${_PROCESSOR_ARCH}-windows
+			C:/vcpkg/installed/${_PROCESSOR_ARCH}-windows
 		)
 		find_package(PkgConfig QUIET)
 		if (LINK_STATIC_LIBS)
