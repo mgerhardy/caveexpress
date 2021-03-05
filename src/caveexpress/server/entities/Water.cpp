@@ -35,8 +35,8 @@ void Water::onContact (b2Contact* contact, IEntity* entity)
 {
 	b2Fixture* fixtureA = contact->GetFixtureA();
 	b2Fixture* fixtureB = contact->GetFixtureB();
-	IEntity* entityA = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData());
-	IEntity* entityB = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData());
+	IEntity* entityA = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
+	IEntity* entityB = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
 	const bool entityIsA = entityA == entity;
 	const bool entityIsB = entityB == entity;
 
@@ -58,8 +58,8 @@ void Water::endContact (b2Contact* contact, IEntity* entity)
 {
 	b2Fixture* fixtureA = contact->GetFixtureA();
 	b2Fixture* fixtureB = contact->GetFixtureB();
-	IEntity* entityA = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData());
-	IEntity* entityB = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData());
+	IEntity* entityA = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
+	IEntity* entityB = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
 	const bool entityIsA = entityA == entity;
 	const bool entityIsB = entityB == entity;
 
@@ -78,7 +78,7 @@ void Water::updateFixtures ()
 {
 	for (FixturePairIter it = _fixturePairs.begin(); it != _fixturePairs.end(); ++it) {
 		b2Fixture* waterFixture = it->first;
-		SDL_assert(waterFixture->GetBody()->GetUserData() == this);
+		SDL_assert(waterFixture->GetBody()->GetUserData().pointer == (uintptr_t)this);
 		b2Fixture* entityFixture = it->second;
 		const float density = waterFixture->GetDensity();
 		const b2Body *waterBody = waterFixture->GetBody();
@@ -169,7 +169,6 @@ void Water::createBody (float waterHeight)
 	shape.SetAsBox(mapWidth / 2.0f, mapHeight / 2.0f);
 
 	b2FixtureDef fixture;
-	fixture.userData = nullptr;
 	fixture.shape = &shape;
 	fixture.friction = 0.1f;
 	fixture.restitution = 0.0f;
@@ -179,7 +178,6 @@ void Water::createBody (float waterHeight)
 	const float y = mapHeight - waterHeight;
 
 	b2BodyDef bd;
-	bd.userData = nullptr;
 	bd.position.Set(mapWidth / 2.0f, y + mapHeight / 2.0f);
 	//bd.angle = DegreesToRadians(180.0f);
 	bd.type = b2_kinematicBody;

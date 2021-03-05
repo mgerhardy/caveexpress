@@ -73,7 +73,7 @@ void WindModificator::createBody (const b2Vec2 &pos, float shift)
 	}
 
 	b2BodyDef bodyDef;
-	bodyDef.userData = this;
+	bodyDef.userData.pointer = (uintptr_t)this;
 	bodyDef.type = b2_staticBody;
 	b2Vec2 modPos = pos;
 	getRelativePosition(modPos);
@@ -94,7 +94,6 @@ void WindModificator::createBody (const b2Vec2 &pos, float shift)
 	shape.Set(vertices, SDL_arraysize(vertices));
 
 	b2FixtureDef fixtureDef;
-	fixtureDef.userData = nullptr;
 	fixtureDef.shape = &shape;
 	fixtureDef.density = DENSITY_AIR;
 

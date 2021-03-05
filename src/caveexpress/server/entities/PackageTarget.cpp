@@ -53,12 +53,12 @@ void PackageTarget::onPreSolve (b2Contact* contact, IEntity* entity, const b2Man
 std::string PackageTarget::getUserData (b2Contact* contact) const
 {
 	b2Fixture* fixture;
-	if (contact->GetFixtureA()->GetBody()->GetUserData() == this) {
+	if (contact->GetFixtureA()->GetBody()->GetUserData().pointer == (uintptr_t)this) {
 		fixture = contact->GetFixtureA();
 	} else {
 		fixture = contact->GetFixtureB();
 	}
-	return reinterpret_cast<const char*>(fixture->GetUserData());
+	return reinterpret_cast<const char*>(fixture->GetUserData().pointer);
 }
 
 void PackageTarget::update (uint32_t deltaTime)
@@ -112,7 +112,6 @@ void PackageTarget::applyJoint (Package *package)
 	SDL_assert(_joint == nullptr);
 	const b2Vec2 shift(0.0f, -0.1f);
 	b2DistanceJointDef def;
-	def.userData = nullptr;
 	def.Initialize(getBodies()[0], package->getBodies()[0], getBodies()[0]->GetWorldPoint(shift), package->getBodies()[0]->GetPosition());
 	_joint = assert_cast<b2DistanceJoint*, b2Joint*>(_map.getWorld()->CreateJoint(&def));
 	_lengthUpdate = LENGTH_UPDATE_DELAY;

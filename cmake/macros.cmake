@@ -377,7 +377,7 @@ endmacro()
 #
 macro(cp_add_library)
 	set(_OPTIONS_ARGS)
-	set(_ONE_VALUE_ARGS LIB CFLAGS LINKERFLAGS)
+	set(_ONE_VALUE_ARGS LIB PACKAGE CFLAGS LINKERFLAGS)
 	set(_MULTI_VALUE_ARGS SRCS DEFINES)
 
 	cmake_parse_arguments(_ADDLIB "${_OPTIONS_ARGS}" "${_ONE_VALUE_ARGS}" "${_MULTI_VALUE_ARGS}" ${ARGN} )
@@ -389,12 +389,38 @@ macro(cp_add_library)
 		message(FATAL_ERROR "cp_add_library requires the SRCS argument")
 	endif()
 
-	find_package(${_ADDLIB_LIB})
-	string(TOUPPER ${_ADDLIB_LIB} PREFIX)
-	if (${PREFIX}_FOUND)
-		message(STATUS "System wide installation found for ${_ADDLIB_LIB}")
-		var_global(${PREFIX}_FOUND)
+	if (_ADDLIB_PACKAGE)
+		set(FIND_PACKAGE_NAME ${_ADDLIB_PACKAGE})
 	else()
+		set(FIND_PACKAGE_NAME ${_ADDLIB_LIB})
+	endif()
+
+	string(TOUPPER ${_ADDLIB_LIB} PREFIX)
+	find_package(${FIND_PACKAGE_NAME})
+	find_package(${FIND_PACKAGE_NAME})
+
+	string(TOUPPER ${_ADDLIB_LIB} PREFIX)
+	string(TOUPPER ${FIND_PACKAGE_NAME} PKG_PREFIX)
+	if (NOT ${PREFIX} STREQUAL ${PKG_PREFIX})
+		if (${PKG_PREFIX}_INCLUDE_DIRS)
+			set(${PREFIX}_INCLUDE_DIRS ${${PKG_PREFIX}_INCLUDE_DIRS})
+		elseif(${PKG_PREFIX}_INCLUDE_DIR)
+			set(${PREFIX}_INCLUDE_DIRS ${${PKG_PREFIX}_INCLUDE_DIR})
+		else()
+			set(${PREFIX}_INCLUDE_DIRS ${${PKG_PREFIX}_INCLUDEDIR})
+		endif()
+		if (NOT ${PREFIX}_LIBRARIES AND ${PKG_PREFIX}_LIBRARIES)
+			set(${PREFIX}_LIBRARIES ${${PKG_PREFIX}_LIBRARIES})
+		elseif(NOT ${PREFIX}_LIBRARIES AND ${PKG_PREFIX}_LIBRARY)
+			set(${PREFIX}_LIBRARIES ${${PKG_PREFIX}_LIBRARY})
+		else()
+			message(WARN "Could not find libs for ${PREFIX}")
+		endif()
+		set(${PREFIX}_FOUND ${${PKG_PREFIX}_FOUND})
+		message(STATUS "Found ${PKG_PREFIX} => ${${PREFIX}_FOUND}")
+	endif()
+	var_global(${PREFIX}_INCLUDE_DIRS ${PREFIX}_LIBRARIES ${PREFIX}_FOUND)
+	if (NOT ${PREFIX}_FOUND)
 		message(STATUS "No system wide installation found, use built-in version of ${_ADDLIB_LIB}")
 		set(${PREFIX}_LIBRARIES ${_ADDLIB_LIB})
 		set(${PREFIX}_LINKERFLAGS ${_ADDLIB_LINKERFLAGS})
@@ -402,16 +428,16 @@ macro(cp_add_library)
 		set(${PREFIX}_DEFINITIONS ${_ADDLIB_DEFINES})
 		set(${PREFIX}_INCLUDE_DIRS ${ROOT_DIR}/src/libs/${_ADDLIB_LIB})
 		add_library(${_ADDLIB_LIB} STATIC ${_ADDLIB_SRCS})
-		include_directories(${${PREFIX}_INCLUDE_DIRS})
+		add_library(${PKG_PREFIX}::${PKG_PREFIX} ALIAS ${_ADDLIB_LIB})
+		target_compile_options(${_ADDLIB_LIB} PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-undef>)
+		target_include_directories(${_ADDLIB_LIB} PUBLIC ${${PREFIX}_INCLUDE_DIRS})
 		set_target_properties(${_ADDLIB_LIB} PROPERTIES COMPILE_DEFINITIONS "${${PREFIX}_DEFINITIONS}")
 		if (NOT CP_MSVC)
 			set_target_properties(${_ADDLIB_LIB} PROPERTIES COMPILE_FLAGS "${_ADDLIB_CFLAGS}")
 		endif()
 		set_target_properties(${_ADDLIB_LIB} PROPERTIES FOLDER ${_ADDLIB_LIB})
 		#var_global(${PREFIX}_COMPILERFLAGS)
-		var_global(${PREFIX}_LIBRARIES)
 		var_global(${PREFIX}_LINKERFLAGS)
-		var_global(${PREFIX}_INCLUDE_DIRS)
 		var_global(${PREFIX}_DEFINITIONS)
 	endif()
 	# mark this library as an external dependency.
@@ -426,115 +452,126 @@ endmacro()
 # LIB: the library we are trying to find
 # HEADER: the header we are trying to find
 # SUFFIX: suffix for the include dir
-# HEADERONLY: lib is a header only dependency
 # VERSION: the operator and version that is given to the pkg-config call (e.g. ">=1.0")
 #
 # Example: cp_find(SDL2_image SDL_image.h SDL2 FALSE)
 #
-macro(cp_find LIB HEADER SUFFIX HEADERONLY VERSION)
+macro(cp_find LIB HEADER SUFFIX VERSION)
 	string(TOUPPER ${LIB} PREFIX)
-	if (NOT USE_BUILTIN AND NOT USE_BUILTIN_${PREFIX})
-		unset(${PREFIX}_FOUND CACHE)
-		unset(${PREFIX}_LIBRARIES CACHE)
-		unset(${PREFIX}_INCLUDE_DIRS CACHE)
-		if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-			set(_PROCESSOR_ARCH "x64")
-		else()
-			set(_PROCESSOR_ARCH "x86")
-		endif()
-		set(_SEARCH_PATHS
-			~/Library/Frameworks
-			/Library/Frameworks
-			/usr/local
-			/usr
-			/sw # Fink
-			/opt/local # DarwinPorts
-			/usr/local/opt
-			/usr/local/opt/${LIB}
-			/opt/csw # Blastwave
-			/opt
-			$ENV{VCPKG_ROOT}/installed/${_PROCESSOR_ARCH}-windows
-			C:/Tools/vcpkg/installed/${_PROCESSOR_ARCH}-windows
-			C:/vcpkg/installed/${_PROCESSOR_ARCH}-windows
+	if (DEFINED ${PREFIX}_FOUND)
+		return()
+	endif()
+	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+		set(_PROCESSOR_ARCH "x64")
+	else()
+		set(_PROCESSOR_ARCH "x86")
+	endif()
+	set(_SEARCH_PATHS
+		~/Library/Frameworks
+		/Library/Frameworks
+		/usr/local
+		/usr
+		/sw # Fink
+		/opt/local # DarwinPorts
+		/opt/csw # Blastwave
+		/opt
+		/usr/local/opt
+		/usr/local/opt/${LIB}
+		$ENV{VCPKG_ROOT}/installed/${_PROCESSOR_ARCH}-windows
+		C:/Tools/vcpkg/installed/${_PROCESSOR_ARCH}-windows
+		C:/vcpkg/installed/${_PROCESSOR_ARCH}-windows
+	)
+	find_package(PkgConfig QUIET)
+	if (PKG_CONFIG_FOUND)
+		pkg_check_modules(_${PREFIX} "${LIB}${VERSION}")
+	endif()
+	if (NOT ${PREFIX}_FOUND)
+		find_path(${PREFIX}_INCLUDE_DIRS
+			NAMES ${HEADER}
+			HINTS ENV ${PREFIX}DIR
+			PATH_SUFFIXES include include/${SUFFIX} ${SUFFIX}
+			PATHS
+				${_${PREFIX}_INCLUDE_DIRS}
+				${_SEARCH_PATHS}
 		)
-		find_package(PkgConfig QUIET)
-		if (LINK_STATIC_LIBS)
-			set(PKG_PREFIX _${PREFIX}_STATIC)
-		else()
-			set(PKG_PREFIX _${PREFIX})
+		find_library(${PREFIX}_LIBRARIES
+			NAMES ${LIB} ${PREFIX} ${_${PREFIX}_LIBRARIES}
+			HINTS ENV ${PREFIX}DIR
+			PATH_SUFFIXES lib64 lib lib/${_PROCESSOR_ARCH}
+			PATHS
+				${_${PREFIX}_LIBRARY_DIRS}
+				${_SEARCH_PATHS}
+		)
+	else()
+		set(${PREFIX}_INCLUDE_DIRS ${_${PREFIX}_INCLUDE_DIRS})
+		list(APPEND ${PREFIX}_INCLUDE_DIRS ${_${PREFIX}_INCLUDEDIR})
+		set(${PREFIX}_LIBRARIES ${_${PREFIX}_LIBRARIES})
+		list(APPEND ${PREFIX}_LIBRARIES ${_${PREFIX}_LIBRARY})
+	endif()
+	include(FindPackageHandleStandardArgs)
+	find_package_handle_standard_args(${LIB} FOUND_VAR ${PREFIX}_FOUND REQUIRED_VARS ${PREFIX}_INCLUDE_DIRS ${PREFIX}_LIBRARIES)
+	mark_as_advanced(${PREFIX}_INCLUDE_DIRS ${PREFIX}_LIBRARIES ${PREFIX}_FOUND)
+	if (${PREFIX}_FOUND)
+		add_library(${LIB} INTERFACE)
+		if (${PREFIX}_INCLUDE_DIRS)
+			target_include_directories(${LIB} INTERFACE ${${PREFIX}_INCLUDE_DIRS})
+			message(STATUS "${LIB}: ${PREFIX}_INCLUDE_DIRS: ${${PREFIX}_INCLUDE_DIRS}")
 		endif()
-		if (PKG_CONFIG_FOUND)
-			message(STATUS "Checking for ${LIB}")
-			pkg_check_modules(_${PREFIX} ${LIB}${VERSION})
-			if (_${PREFIX}_FOUND)
-				cp_message("Found ${LIB} via pkg-config")
-				cp_message("CFLAGS: ${${PKG_PREFIX}_CFLAGS_OTHER}")
-				cp_message("LDFLAGS: ${${PKG_PREFIX}_LDFLAGS_OTHER}")
-				cp_message("LIBS: ${${PKG_PREFIX}_LIBRARIES}")
-				cp_message("INCLUDE: ${${PKG_PREFIX}_INCLUDE_DIRS}")
-				set(${PREFIX}_COMPILERFLAGS ${${PKG_PREFIX}_CFLAGS_OTHER})
-				var_global(${PREFIX}_COMPILERFLAGS)
-				set(${PREFIX}_LINKERFLAGS ${${PKG_PREFIX}_LDFLAGS_OTHER})
-				var_global(${PREFIX}_LINKERFLAGS)
-				set(${PREFIX}_FOUND ${${PKG_PREFIX}_FOUND})
-				var_global(${PREFIX}_FOUND)
-				set(${PREFIX}_INCLUDE_DIRS ${${PKG_PREFIX}_INCLUDE_DIRS})
-				var_global(${PREFIX}_INCLUDE_DIRS)
-				set(${PREFIX}_LIBRARY_DIRS ${${PKG_PREFIX}_LIBRARY_DIRS})
-				var_global(${PREFIX}_LIBRARY_DIRS)
-				set(${PREFIX}_LIBRARIES ${${PKG_PREFIX}_LIBRARIES})
-				var_global(${PREFIX}_LIBRARIES)
-				set(${PREFIX}_VERSION ${${PKG_PREFIX}_VERSION})
-				var_global(${PREFIX}_VERSION)
-			else()
-				cp_message("Could not find ${LIB} via pkg-config")
-			endif()
-		endif()
-		if (NOT ${PKG_PREFIX}_FOUND)
-			find_path(${PREFIX}_INCLUDE_DIRS
-				NAMES ${HEADER}
-				HINTS ENV ${PREFIX}DIR
-				PATH_SUFFIXES include include/${SUFFIX} ${SUFFIX}
-				PATHS
-					${${PKG_PREFIX}_INCLUDE_DIRS}}
-					${_SEARCH_PATHS}
-			)
-			if (NOT ${HEADERONLY})
-				find_library(${PREFIX}_LIBRARIES
-					NAMES ${LIB}
-					HINTS ENV ${PREFIX}DIR
-					PATH_SUFFIXES lib64 lib lib/${_PROCESSOR_ARCH}
-					PATHS
-						${${PKG_PREFIX}_LIBRARY_DIRS}}
-						${_SEARCH_PATHS}
-				)
-			endif()
-			include(FindPackageHandleStandardArgs)
-			if (${HEADERONLY})
-				message(STATUS "Header only lib ${LIB}")
-				set(${PREFIX}_LIBRARIES "")
-				find_package_handle_standard_args(${LIB} DEFAULT_MSG ${PREFIX}_INCLUDE_DIRS)
-			else()
-				find_package_handle_standard_args(${LIB} DEFAULT_MSG ${PREFIX}_INCLUDE_DIRS ${PREFIX}_LIBRARIES)
-			endif()
-
-			if (NOT ${PREFIX}_FOUND)
-				unset(${PREFIX}_FOUND CACHE)
-				unset(${PREFIX}_LIBRARIES CACHE)
-				unset(${PREFIX}_INCLUDE_DIRS CACHE)
-				unset(${PREFIX}_INCLUDE CACHE)
-				unset(${PREFIX}_COMPILERFLAGS CACHE)
-				unset(${PREFIX}_LINKERFLAGS CACHE)
-				unset(${PREFIX}_LIBRARY_DIRS CACHE)
-				unset(${PREFIX}_VERSION CACHE)
-			else()
-				var_global(${PREFIX}_INCLUDE_DIRS)
-				var_global(${PREFIX}_LIBRARIES)
-				var_global(${PREFIX}_FOUND)
-				var_global(${PREFIX}_VERSION)
-			endif()
+		if (${PREFIX}_LIBRARIES)
+			target_link_libraries(${LIB} INTERFACE ${${PREFIX}_LIBRARIES})
+			message(STATUS "${LIB}: ${PREFIX}_LIBRARIES: ${${PREFIX}_LIBRARIES}")
 		endif()
 	endif()
+	unset(PREFIX)
+	unset(_SEARCH_PATHS)
+	unset(_PROCESSOR_ARCH)
+endmacro()
+
+macro(cp_find_header_only LIB HEADER SUFFIX VERSION)
+	string(TOUPPER ${LIB} PREFIX)
+	if (DEFINED ${PREFIX}_FOUND)
+		return()
+	endif()
+	set(_SEARCH_PATHS
+		~/Library/Frameworks
+		/Library/Frameworks
+		/usr/local
+		/usr/local/opt
+		/usr/local/opt/${LIB}
+		/usr
+		/sw # Fink
+		/opt/local # DarwinPorts
+		/opt/csw # Blastwave
+		/opt
+	)
+	find_package(PkgConfig QUIET)
+	if (PKG_CONFIG_FOUND)
+		pkg_check_modules(_${PREFIX} "${LIB}${VERSION}")
+	endif()
+	find_path(${PREFIX}_INCLUDE_DIRS
+		NAMES ${HEADER}
+		HINTS ENV ${PREFIX}DIR
+		PATH_SUFFIXES include include/${SUFFIX} ${SUFFIX}
+		PATHS
+			${_${PREFIX}_INCLUDE_DIRS}
+			${_SEARCH_PATHS}
+	)
+	include(FindPackageHandleStandardArgs)
+	find_package_handle_standard_args(${LIB} FOUND_VAR ${PREFIX}_FOUND REQUIRED_VARS ${PREFIX}_INCLUDE_DIRS)
+	mark_as_advanced(${PREFIX}_INCLUDE_DIRS ${PREFIX}_FOUND)
+	if (${PREFIX}_FOUND)
+		add_library(${LIB} INTERFACE)
+		if (${PREFIX}_INCLUDE_DIRS)
+			target_include_directories(${LIB} INTERFACE ${${PREFIX}_INCLUDE_DIRS})
+			message(STATUS "${LIB}: ${PREFIX}_INCLUDE_DIRS: ${${PREFIX}_INCLUDE_DIRS}")
+		endif()
+		if (${PREFIX}_LIBRARIES)
+			target_link_libraries(${LIB} INTERFACE ${${PREFIX}_LIBRARIES})
+			message(STATUS "${LIB}: ${PREFIX}_LIBRARIES: ${${PREFIX}_LIBRARIES}")
+		endif()
+	endif()
+	unset(PREFIX)
+	unset(_SEARCH_PATHS)
 endmacro()
 
 macro(cp_recurse_resolve_dependencies LIB DEPS)
@@ -570,93 +607,7 @@ macro(cp_target_link_libraries)
 
 	cmake_parse_arguments(_LINKLIBS "${_OPTIONS_ARGS}" "${_ONE_VALUE_ARGS}" "${_MULTI_VALUE_ARGS}" ${ARGN} )
 
-	if (NOT _LINKLIBS_TARGET)
-		message(FATAL_ERROR "cp_target_link_libraries requires the TARGET argument")
-	endif()
-	if (NOT _LINKLIBS_LIBS)
-		message(FATAL_ERROR "cp_target_link_libraries requires the LIBS argument")
-	endif()
-	set(LINK_LIBS)
-	cp_message("Resolve dependencies for ${ColorGreen}${_LINKLIBS_TARGET}${ColorReset}")
-	foreach(LIB ${_LINKLIBS_LIBS})
-		cp_resolve_dependencies(${LIB} LINK_LIBS)
-	endforeach()
-	if (LINK_LIBS)
-		list(REVERSE LINK_LIBS)
-		list(REMOVE_DUPLICATES LINK_LIBS)
-		list(REVERSE LINK_LIBS)
-	endif()
-	cp_message("Dependencies for ${ColorGreen}${_LINKLIBS_TARGET}${ColorReset}: ${LINK_LIBS}")
-
-	string(TOUPPER ${_LINKLIBS_TARGET} TARGET)
-
-	set(LINKERFLAGS)
-	set(COMPILERFLAGS)
-	set(LIBRARIES)
-	set(DEFINITIONS)
-	set(INCLUDE_DIRS)
-	if (${_LINKLIBS_TARGET}_INCLUDE_DIRS)
-		list(APPEND INCLUDE_DIRS ${${_LINKLIBS_TARGET}_INCLUDE_DIRS})
-	endif()
-
-	foreach(LIB ${LINK_LIBS})
-		string(TOUPPER ${LIB} PREFIX)
-		if (${PREFIX}_LINKERFLAGS)
-			list(APPEND LINKERFLAGS ${${PREFIX}_LINKERFLAGS})
-			cp_message("Add linker flags from ${LIB} to ${_LINKLIBS_TARGET}")
-		endif()
-		if (${PREFIX}_COMPILERFLAGS)
-			list(APPEND COMPILERFLAGS ${${PREFIX}_COMPILERFLAGS})
-			cp_message("Add compiler flags from ${LIB} to ${_LINKLIBS_TARGET}")
-		endif()
-		if (${PREFIX}_DEFINITIONS)
-			list(APPEND DEFINITIONS ${${PREFIX}_DEFINITIONS})
-			cp_message("Add definitions from ${LIB} to ${_LINKLIBS_TARGET}")
-		endif()
-		if (NOT ${PREFIX}_EXTERNAL)
-			list(APPEND LIBRARIES ${LIB})
-		endif()
-		if (${PREFIX}_LIBRARIES)
-			list(APPEND LIBRARIES ${${PREFIX}_LIBRARIES})
-		endif()
-		if (${PREFIX}_INCLUDE_DIRS)
-			list(APPEND INCLUDE_DIRS ${${PREFIX}_INCLUDE_DIRS})
-			cp_message("Add include dirs for ${LIB} to ${_LINKLIBS_TARGET}: ${${PREFIX}_INCLUDE_DIRS}")
-		endif()
-	endforeach()
-	if (LINKERFLAGS)
-		cp_unique("${LINKERFLAGS}" ${TARGET}_LINKERFLAGS)
-		cp_message("LDFLAGS for ${_LINKLIBS_TARGET}: ${${TARGET}_LINKERFLAGS}")
-		var_global(${TARGET}_LINKERFLAGS)
-		set_target_properties(${_LINKLIBS_TARGET} PROPERTIES LINK_FLAGS "${${TARGET}_LINKERFLAGS}")
-	endif()
-	if (COMPILERFLAGS)
-		cp_unique("${COMPILERFLAGS}" ${TARGET}_COMPILERFLAGS)
-		cp_message("CFLAGS for ${_LINKLIBS_TARGET}: ${${TARGET}_COMPILERFLAGS}")
-		var_global(${TARGET}_COMPILERFLAGS)
-		set_target_properties(${_LINKLIBS_TARGET} PROPERTIES COMPILE_FLAGS "${${TARGET}_COMPILERFLAGS}")
-	endif()
-	if (DEFINITIONS)
-		set(${TARGET}_DEFINITIONS ${DEFINITIONS})
-		list(REMOVE_DUPLICATES ${TARGET}_DEFINITIONS)
-		cp_message("DEFINITIONS for ${_LINKLIBS_TARGET}: ${${TARGET}_DEFINITIONS}")
-		var_global(${TARGET}_DEFINITIONS)
-		set_target_properties(${_LINKLIBS_TARGET} PROPERTIES COMPILE_DEFINITIONS "${DEFINITIONS}")
-	endif()
-
-	set_property(GLOBAL PROPERTY ${_LINKLIBS_TARGET}_DEPS ${_LINKLIBS_LIBS})
-	if (LIBRARIES)
-		list(REVERSE LIBRARIES)
-		list(REMOVE_DUPLICATES LIBRARIES)
-		list(REVERSE LIBRARIES)
-		cp_message("LIBS for ${ColorRed}${_LINKLIBS_TARGET}${ColorReset} => ${LIBRARIES} => ${LINK_LIBS}")
-		target_link_libraries(${_LINKLIBS_TARGET} ${LIBRARIES})
-	endif()
-	if (INCLUDE_DIRS)
-		list(REMOVE_DUPLICATES INCLUDE_DIRS)
-		cp_message("Set include dir for ${_LINKLIBS_TARGET} to ${INCLUDE_DIRS}")
-		include_directories(${INCLUDE_DIRS})
-	endif()
+	target_link_libraries(${_LINKLIBS_TARGET} PUBLIC ${_LINKLIBS_LIBS})
 endmacro()
 
 macro(cp_set_properties TARGET VARNAME VALUE)

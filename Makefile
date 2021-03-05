@@ -9,7 +9,7 @@ BUILDDIR       ?= ./build/$(BUILDTYPE)
 INSTALL_DIR    ?= $(BUILDDIR)
 GENERATOR      := Ninja
 CMAKE          ?= cmake
-CMAKE_OPTIONS  ?= -DCMAKE_BUILD_TYPE=$(BUILDTYPE) -G$(GENERATOR) --graphviz=$(BUILDDIR)/deps.dot
+CMAKE_OPTIONS  ?= -DFORCE_USE_SYSTEM_LIBS=1 -DCMAKE_BUILD_TYPE=$(BUILDTYPE) -G$(GENERATOR) --graphviz=$(BUILDDIR)/deps.dot
 
 all:
 	$(Q)if [ ! -f $(BUILDDIR)/CMakeCache.txt ]; then $(CMAKE) -H$(CURDIR) -B$(BUILDDIR) $(CMAKE_OPTIONS); fi

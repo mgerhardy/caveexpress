@@ -19,7 +19,7 @@ echo "build hd version"
 mkdir -p cp-build-android-hd
 cd cp-build-android-hd
 cmake $DIR/../.. -DTOOLS=OFF -DUNITTESTS=OFF -DANDROID_INSTALL_PACKAGES=${INSTALL_PACKAGES} \
-	-DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DMINIRACER=OFF -DCAVEPACKER=OFF \
+	-DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCAVEPACKER=OFF \
 	-DHD_VERSION=ON -DCMAKE_TOOLCHAIN_FILE=$DIR/../../cmake/toolchains/android-toolchain.cmake
 make $*
 

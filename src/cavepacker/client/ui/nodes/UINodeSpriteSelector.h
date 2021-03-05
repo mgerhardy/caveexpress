@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ui/nodes/IUINodeSpriteSelector.h"
-#include "miniracer/client/commands/CmdMapOpenInEditor.h"
 
 namespace cavepacker {
 

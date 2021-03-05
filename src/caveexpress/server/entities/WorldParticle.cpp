@@ -60,7 +60,7 @@ WorldParticle::SimpleParticle* WorldParticle::createParticleBody ()
 	p->life = _lifetime;
 
 	b2BodyDef bd;
-	bd.userData = this;
+	bd.userData.pointer = (uintptr_t)this;
 	bd.type = b2_dynamicBody;
 	bd.fixedRotation = false;
 
@@ -68,7 +68,6 @@ WorldParticle::SimpleParticle* WorldParticle::createParticleBody ()
 	shape.SetAsBox(_size.x / 2.0f, _size.y / 2.0f);
 
 	b2FixtureDef fd;
-	fd.userData = nullptr;
 	fd.density = _density;
 	fd.shape = &shape;
 	fd.friction = 2.0f;
@@ -87,7 +86,7 @@ void WorldParticle::onPreSolve (b2Contact* contact, IEntity* entity, const b2Man
 		return;
 
 	b2Fixture* fixture = contact->GetFixtureA();
-	const bool useBodyA = fixture->GetBody()->GetUserData() == this || fixture->GetUserData() == this;
+	const bool useBodyA = fixture->GetBody()->GetUserData().pointer == (uintptr_t)this || fixture->GetUserData().pointer == (uintptr_t)this;
 	const b2Body *body = useBodyA ? fixture->GetBody() : contact->GetFixtureB()->GetBody();
 	const SimpleParticle* p = _particleReverseMap[body];
 	SDL_assert(p);

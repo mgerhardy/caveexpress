@@ -667,7 +667,7 @@ public:
 
 	float ReportFixture (b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float fraction) override
 	{
-		IEntity *e = reinterpret_cast<IEntity *>(fixture->GetBody()->GetUserData());
+		IEntity *e = reinterpret_cast<IEntity *>(fixture->GetBody()->GetUserData().pointer);
 		if (e && (e->isSolid() || e->isBorder())) {
 			_fraction = fraction;
 			_entity = e;
@@ -872,14 +872,12 @@ void Map::initPhysics ()
 	const float height = getMapHeight() + 1.0f;
 
 	b2BodyDef lineBodyDef;
-	lineBodyDef.userData = nullptr;
 	lineBodyDef.type = b2_staticBody;
 	lineBodyDef.position.Set(0, 0);
 	b2Body* boxBody = _world->CreateBody(&lineBodyDef);
 
 	b2EdgeShape edge;
 	b2FixtureDef fd;
-	fd.userData = nullptr;
 	fd.friction = 1.0f;
 	fd.restitution = 0.2f;
 	fd.shape = &edge;
@@ -893,23 +891,23 @@ void Map::initPhysics ()
 	_borders[BORDER_PLAYER_BOTTOM] = new Border(BorderType::PLAYER_BOTTOM, *this);
 
 	edge.SetTwoSided(b2Vec2(zeroX, zeroY), b2Vec2(width, zeroY));
-	fd.userData = _borders[BORDER_TOP];
+	fd.userData.pointer = (uintptr_t)_borders[BORDER_TOP];
 	boxBody->CreateFixture(&fd);
 
 	edge.SetTwoSided(b2Vec2(zeroX, zeroY), b2Vec2(zeroX, height));
-	fd.userData = _borders[BORDER_LEFT];
+	fd.userData.pointer = (uintptr_t)_borders[BORDER_LEFT];
 	boxBody->CreateFixture(&fd);
 
 	edge.SetTwoSided(b2Vec2(width, height), b2Vec2(width, zeroY));
-	fd.userData = _borders[BORDER_RIGHT];
+	fd.userData.pointer = (uintptr_t)_borders[BORDER_RIGHT];
 	boxBody->CreateFixture(&fd);
 
 	edge.SetTwoSided(b2Vec2(zeroX, height), b2Vec2(width, height));
-	fd.userData = _borders[BORDER_BOTTOM];
+	fd.userData.pointer = (uintptr_t)_borders[BORDER_BOTTOM];
 	boxBody->CreateFixture(&fd);
 
 	edge.SetTwoSided(b2Vec2(zeroX, height), b2Vec2(width, getMapHeight()));
-	fd.userData = _borders[BORDER_PLAYER_BOTTOM];
+	fd.userData.pointer = (uintptr_t)_borders[BORDER_PLAYER_BOTTOM];
 	boxBody->CreateFixture(&fd);
 
 	initWater();
@@ -978,14 +976,12 @@ Platform *Map::getPlatform (MapTile *mapTile, int *start, int *end, gridSize off
 	shape.SetAsBox(width / 2.0f, height);
 
 	b2FixtureDef fixture;
-	fixture.userData = nullptr;
 	fixture.shape = &shape;
 	fixture.friction = 0.4f;
 	fixture.restitution = 0.0f;
 	fixture.density = 0.0f;
 
 	b2BodyDef bd;
-	bd.userData = nullptr;
 	bd.position.Set(x, y);
 	bd.type = b2_kinematicBody;
 	bd.fixedRotation = true;
@@ -1123,11 +1119,11 @@ b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *
 		fixtureDef.friction = def->friction;
 	}
 
-	bodyDef.userData = entity;
+	bodyDef.userData.pointer = (uintptr_t)entity;
 	b2Body* body = _world->CreateBody(&bodyDef);
 
 	if (fixtureDef.shape != nullptr) {
-		fixtureDef.userData = const_cast<char*>("");
+		fixtureDef.userData.pointer = (uintptr_t)const_cast<char*>("");
 		body->CreateFixture(&fixtureDef);
 		entity->addBody(body);
 		return body;
@@ -1164,7 +1160,7 @@ b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *
 		b2PolygonShape shape;
 		shape.Set(points, vertexCnt);
 		fixtureDef.shape = &shape;
-		fixtureDef.userData = const_cast<char*>(polygon.userData.c_str());;
+		fixtureDef.userData.pointer = (uintptr_t)const_cast<char*>(polygon.userData.c_str());;
 		body->CreateFixture(&fixtureDef);
 	}
 
@@ -1175,7 +1171,7 @@ b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *
 		shape.m_p = b2Vec2(circle.center.x, circle.center.y);
 		shape.m_radius = circle.radius;
 		fixtureDef.shape = &shape;
-		fixtureDef.userData = const_cast<char*>(circle.userData.c_str());;
+		fixtureDef.userData.pointer = (uintptr_t)const_cast<char*>(circle.userData.c_str());;
 		body->CreateFixture(&fixtureDef);
 	}
 
@@ -1642,13 +1638,13 @@ void Map::update (uint32_t deltaTime)
 
 bool Map::ShouldCollide (b2Fixture* fixtureA, b2Fixture* fixtureB)
 {
-	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData());
-	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData());
+	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
+	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
 
 	if (entity1 == nullptr)
-		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData());
+		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData().pointer);
 	if (entity2 == nullptr)
-		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData());
+		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData().pointer);
 
 	if (entity1 != nullptr && entity2 != nullptr) {
 		const bool shouldCollide = entity1->shouldCollide(entity2) || entity2->shouldCollide(entity1);
@@ -1673,13 +1669,13 @@ void Map::BeginContact (b2Contact* contact)
 {
 	b2Fixture *fixtureA = contact->GetFixtureA();
 	b2Fixture *fixtureB = contact->GetFixtureB();
-	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData());
-	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData());
+	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
+	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
 
 	if (entity1 == nullptr)
-		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData());
+		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData().pointer);
 	if (entity2 == nullptr)
-		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData());
+		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData().pointer);
 
 	if (entity1 != nullptr && entity2 != nullptr) {
 		entity1->onContact(contact, entity2);
@@ -1691,13 +1687,13 @@ void Map::EndContact (b2Contact* contact)
 {
 	b2Fixture *fixtureA = contact->GetFixtureA();
 	b2Fixture *fixtureB = contact->GetFixtureB();
-	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData());
-	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData());
+	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
+	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
 
 	if (entity1 == nullptr)
-		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData());
+		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData().pointer);
 	if (entity2 == nullptr)
-		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData());
+		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData().pointer);
 
 	if (entity1 != nullptr && entity2 != nullptr) {
 		entity1->endContact(contact, entity2);
@@ -1709,13 +1705,13 @@ void Map::PostSolve (b2Contact* contact, const b2ContactImpulse* impulse)
 {
 	b2Fixture *fixtureA = contact->GetFixtureA();
 	b2Fixture *fixtureB = contact->GetFixtureB();
-	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData());
-	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData());
+	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
+	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
 
 	if (entity1 == nullptr)
-		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData());
+		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData().pointer);
 	if (entity2 == nullptr)
-		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData());
+		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData().pointer);
 
 	if (entity1 != nullptr && entity2 != nullptr) {
 		entity1->onPostSolve(contact, impulse, entity2);
@@ -1727,13 +1723,13 @@ void Map::PreSolve (b2Contact* contact, const b2Manifold* oldManifold)
 {
 	b2Fixture *fixtureA = contact->GetFixtureA();
 	b2Fixture *fixtureB = contact->GetFixtureB();
-	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData());
-	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData());
+	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
+	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
 
 	if (entity1 == nullptr)
-		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData());
+		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData().pointer);
 	if (entity2 == nullptr)
-		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData());
+		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData().pointer);
 
 	if (entity1 != nullptr && entity2 != nullptr) {
 		entity1->onPreSolve(contact, entity2, oldManifold);

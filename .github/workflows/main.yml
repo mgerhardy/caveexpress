@@ -1,0 +1,83 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+    mac:
+        runs-on: macos-latest
+        steps:
+        - uses: actions/checkout@v1
+
+        - name: Setup
+          run: brew install sdl2 sdl2_image sdl2_mixer sdl2_net sqlite zlib yajl
+
+        - name: Build
+          run: |
+            cmake -DTOOLS=OFF -H. -Bbuild
+            cmake --build build
+
+        - name: Test
+          run: |
+            cd build
+            ctest
+
+    linux:
+        runs-on: ubuntu-20.04
+        steps:
+        - uses: actions/checkout@v1
+
+        - name: Setup
+          run: |
+            sudo apt-get update
+            sudo apt-get install cmake build-essential libsdl2-dev libsdl2-mixer-dev libsdl2-net-dev \
+                 wayland-protocols pkg-config libyajl-dev libglm-dev \
+                 libsdl2-image-dev libsqlite3-dev liblua5.2-dev zlib1g-dev \
+                 pkg-config ninja-build
+
+        - name: Linux
+          run: |
+            cmake -GNinja -H. -Bbuild
+            cmake --build build
+
+        - name: Test
+          run: |
+            cd build
+            ctest
+
+    windows:
+        runs-on: windows-latest
+
+        steps:
+        - uses: actions/checkout@v1
+
+        - name: Setup
+          uses: lukka/run-vcpkg@v6
+          id: runvcpkg
+          with:
+            vcpkgGitCommitId: 2f7a104d4d6f1f3790db929f85a4086aa6973d7f
+            vcpkgTriplet: 'x64-windows'
+            vcpkgArguments: 'sdl2 sdl2-net sdl2-mixer sdl2-image lua'
+
+        - name: Build
+          run: |
+            cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
+            cmake --build build
+            cmake --install -Bbuild --component caveexpress --prefix caveexpress-install
+            cmake --install -Bbuild --component cavepacker --prefix cavepacker-install
+
+        - name: Tests
+          run: |
+            cd build
+            ctest
+
+        - name: Upload the cavepacker artifacts
+          uses: actions/upload-artifact@v2
+          with:
+            name: cavepacker
+            path: build/cavepacker-install
+
+        - name: Upload the caveexpress artifacts
+          uses: actions/upload-artifact@v2
+          with:
+            name: caveexpress
+            path: build/caveexpress-install

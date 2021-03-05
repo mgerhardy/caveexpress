@@ -68,7 +68,7 @@ class DestructionListener: public b2DestructionListener
 	/// to the destruction of one of its attached bodies.
 	void SayGoodbye (b2Joint* joint) override
 	{
-		IEntity *entity = reinterpret_cast<IEntity*>(joint->GetUserData());
+		IEntity *entity = reinterpret_cast<IEntity*>((void*)joint->GetUserData().pointer);
 		if (entity == nullptr)
 			return;
 		entity->clearJoint(joint);
@@ -78,8 +78,8 @@ class DestructionListener: public b2DestructionListener
 	/// to the destruction of its parent body.
 	void SayGoodbye (b2Fixture* fixture) override
 	{
-		fixture->GetUserData() = nullptr;
-		fixture->GetBody()->GetUserData() = nullptr;
+		fixture->GetUserData().pointer = 0;
+		fixture->GetBody()->GetUserData().pointer = 0;
 	}
 };
 

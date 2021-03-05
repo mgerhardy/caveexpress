@@ -17,7 +17,6 @@
 #include "common/MapManager.h"
 #include "common/ConfigManager.h"
 #include "common/TextureDefinition.h"
-#include "miniracer/client/ui/windows/UIMapWindow.h"
 #include "ui/windows/UISettingsWindow.h"
 #include "ui/windows/mapeditor/QuitEditorListener.h"
 #include "ui/nodes/IUINodeMapEditor.h"

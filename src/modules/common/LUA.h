@@ -3,7 +3,13 @@
 #include "common/Config.h"
 GCC_DIAG_OFF(cast-qual)
 GCC_DIAG_OFF(cast-align)
-#include <lua.hpp>
+
+extern "C" {
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+}
+
 GCC_DIAG_ON(cast-align)
 GCC_DIAG_ON(cast-qual)
 #include "common/String.h"

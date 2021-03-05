@@ -80,7 +80,7 @@ void IEntity::addRopeJoint (IEntity *entity)
 		removeRopeJoint();
 
 	b2DistanceJointDef rDef;
-	rDef.userData = entity;
+	rDef.userData.pointer = (uintptr_t)entity;
 	b2Body* bodyA = getBodies()[0];
 	b2Body* bodyB = entity->getBodies()[0];
 
@@ -107,7 +107,7 @@ void IEntity::removeRopeJoint ()
 		return;
 
 	b2Body* bodyA = _ropeJoint->GetBodyA();
-	IEntity *entity = reinterpret_cast<IEntity*>(_ropeJoint->GetUserData());
+	IEntity *entity = reinterpret_cast<IEntity*>(_ropeJoint->GetUserData().pointer);
 	GameEvent.removeRope(getVisMask() | entity->getVisMask(), getID());
 	bodyA->GetWorld()->DestroyJoint(_ropeJoint);
 	_ropeJoint = nullptr;
