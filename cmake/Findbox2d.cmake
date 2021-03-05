@@ -1,2 +1,2 @@
 include(${ROOT_DIR}/cmake/macros.cmake)
-cp_find(box2d Box2D.h Box2D FALSE ">=2.3.0")
+cp_find(box2d box2d.h box2d FALSE ">=2.4.1")
