@@ -13,15 +13,13 @@ jobs:
 
         - name: Build
           run: |
-            mkdir build
-            cd build
-            cmake ..
-            make -j 2
+            cmake -DTOOLS=OFF -H. -Bbuild
+            cmake --build -Bbuild
 
         - name: Test
           run: |
-            ./tests_caveexpress
-            ./tests_cavepacker
+            cd build
+            ctest
 
     linux:
         runs-on: ubuntu-20.04
@@ -38,10 +36,8 @@ jobs:
 
         - name: Linux
           run: |
-            mkdir build
-            cd build
-            cmake .. -GNinja
-            cmake --build .
+            cmake -GNinja -H. -Bbuild
+            cmake --build -Bbuild
 
         - name: Test
           run: |
@@ -64,17 +60,15 @@ jobs:
 
         - name: Build
           run: |
-            mkdir build
-            cd build
-            cmake .. -DCMAKE_BUILD_TYPE=Release
-            cmake --build .
-            cmake --install . --component caveexpress --prefix caveexpress-install
-            cmake --install . --component cavepacker --prefix cavepacker-install
+            cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
+            cmake --build -Bbuild
+            cmake --install -Bbuild --component caveexpress --prefix caveexpress-install
+            cmake --install -Bbuild --component cavepacker --prefix cavepacker-install
 
         - name: Tests
           run: |
-            ./tests_caveexpress
-            ./tests_cavepacker
+            cd build
+            ctest
 
         - name: Upload the cavepacker artifacts
           uses: actions/upload-artifact@v2
