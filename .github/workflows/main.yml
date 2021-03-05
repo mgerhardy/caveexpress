@@ -45,8 +45,8 @@ jobs:
 
         - name: Test
           run: |
-            ./tests_caveexpress
-            ./tests_cavepacker
+            cd build
+            ctest
 
     windows:
         runs-on: windows-latest
