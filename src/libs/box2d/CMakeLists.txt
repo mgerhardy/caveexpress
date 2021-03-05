@@ -54,6 +54,7 @@ set(SRCS
 	box2d/dynamics/b2_world_callbacks.cpp
 	box2d/rope/b2_rope.cpp
 	)
+include_directories(BEFORE ${ROOT_DIR}/src/modules/physics)
 cp_add_library(LIB box2d SRCS ${SRCS} DEFINES B2_USER_SETTINGS CFLAGS "-Wno-shadow -Wno-unused-but-set-variable -Wno-maybe-uninitialized -Wno-array-bounds")
 # system wide lib must be checked for compatibility if not found via pkg-config
 if (BOX2D_FOUND AND "${BOX2D_VERSION}" STREQUAL "")
