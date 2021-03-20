@@ -27,6 +27,7 @@ set(common_SRCS
 	ByteStream.cpp
 )
 
+set(LIBS lua5.4 sdl2 sqlite3 box2d glm curses)
 if(WINDOWS)
 	set(ports_SRCS ports/Windows.cpp)
 elseif(ANDROID)
@@ -37,6 +38,7 @@ elseif(IOS)
 	set(ports_SRCS ports/Unix.cpp ports/IOS.cpp ports/IOSObjc.mm)
 elseif(DARWIN)
 	set(ports_SRCS ports/Unix.cpp ports/Darwin.cpp ports/DarwinObjc.mm)
+	list(APPEND -framework CoreFoundation)
 elseif(EMSCRIPTEN)
 	set(ports_SRCS ports/Unix.cpp ports/HTML5.cpp)
 elseif(UNIX)
@@ -46,4 +48,4 @@ endif()
 
 add_library(common ${common_SRCS} ${ports_SRCS})
 set_target_properties(common PROPERTIES FOLDER common)
-cp_target_link_libraries(TARGET common LIBS lua5.4 sdl2 sqlite3 box2d glm curses)
+cp_target_link_libraries(TARGET common LIBS ${LIBS})
