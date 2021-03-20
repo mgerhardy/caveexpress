@@ -31,7 +31,7 @@ jobs:
         - name: Setup
           run: |
             apt-get update
-            apt-get install cmake build-essential libsdl2-dev libsdl2-mixer-dev libsdl2-net-dev \
+            apt-get install -y cmake build-essential libsdl2-dev libsdl2-mixer-dev libsdl2-net-dev \
                  libyajl-dev libglm-dev libsdl2-image-dev libsqlite3-dev liblua5.4-dev zlib1g-dev \
                  pkg-config ninja-build
 
