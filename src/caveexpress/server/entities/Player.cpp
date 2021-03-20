@@ -498,6 +498,7 @@ void Player::createBody (const b2Vec2 &pos)
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(pos.x, pos.y - 0.2f);
 	bodyDef.fixedRotation = true;
+	bodyDef.userData.pointer = (uintptr_t)this;
 	b2Body* center = world->CreateBody(&bodyDef);
 	b2CircleShape centerShape;
 	centerShape.m_radius = 0.01f;
@@ -532,7 +533,6 @@ void Player::createBody (const b2Vec2 &pos)
 
 	// Override the default friction.
 	fixtureDef.friction = 1.0f;
-	fixtureDef.userData.pointer = (uintptr_t)this;
 
 	// Add the shape to the body.
 	body->CreateFixture(&fixtureDef);
