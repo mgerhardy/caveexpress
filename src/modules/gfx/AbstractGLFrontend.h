@@ -40,14 +40,14 @@ struct RenderTarget {
 #define MAX_BATCHES 128
 
 struct Batch {
-	TexNum texnum;
-	TexNum normaltexnum;
+	TexNum texnum = 0;
+	TexNum normaltexnum = 0;
 	Vertex vertices[MAXNUMVERTICES];
-	int type;
-	int vertexIndexStart;
-	int vertexCount;
-	bool scissor;
-	SDL_Rect scissorRect;
+	int type = 0;
+	int vertexIndexStart = 0;
+	int vertexCount = 0;
+	bool scissor = 0;
+	SDL_Rect scissorRect {0, 0, 0, 0};
 };
 
 class TextureCoords;

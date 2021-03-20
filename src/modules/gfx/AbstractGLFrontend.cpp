@@ -12,7 +12,6 @@ AbstractGLFrontend::AbstractGLFrontend (std::shared_ptr<IConsole> console) :
 	_context = nullptr;
 	_currentVertexIndex = 0;
 	_currentBatch = 0;
-	memset(_batches, 0, sizeof(_batches));
 	memset(&_viewPort, 0, sizeof(_viewPort));
 }
 
@@ -183,7 +182,7 @@ void AbstractGLFrontend::startNewBatch ()
 		SDL_assert_always(_currentBatch == 0);
 		return;
 	}
-	memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
+	_batches[_currentBatch] = Batch();
 	_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
 	_batches[_currentBatch].scissorRect = _batches[_currentBatch - 1].scissorRect;
 	_batches[_currentBatch].scissor = _batches[_currentBatch - 1].scissor;
@@ -653,7 +652,7 @@ void AbstractGLFrontend::renderBatchBuffers()
 	const SDL_Rect scissorRect = _batches[_currentBatch].scissorRect;
 	const bool scissor = _batches[_currentBatch].scissor;
 	_currentBatch = 0;
-	memset(&_batches[_currentBatch], 0, sizeof(_batches[_currentBatch]));
+	_batches[_currentBatch] = Batch();
 	_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
 	_batches[_currentBatch].scissorRect = scissorRect;
 	_batches[_currentBatch].scissor = scissor;
@@ -686,6 +685,8 @@ void AbstractGLFrontend::initRenderer()
 	memset(alpha, 0xff, sizeof(alpha));
 	_alpha = uploadTexture(alpha, 2, 2);
 
-	memset(_batches, 0, sizeof(_batches));
+	for (int i = 0; i < MAX_BATCHES; ++i) {
+		_batches[i] = Batch();
+	}
 	_currentVertexIndex = 0;
 }
