@@ -26,8 +26,8 @@ private:
 	Mix_Chunk* getChunk (const std::string& filename);
 
 	struct Channel {
-		int channel;
-		Mix_Chunk *chunk;
+		int channel = 0;
+		Mix_Chunk *chunk = nullptr;
 		vec2 pos;
 	};
 

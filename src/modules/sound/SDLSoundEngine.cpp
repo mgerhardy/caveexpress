@@ -46,7 +46,7 @@ void SDLSoundEngine::channelFinished (int channel)
 {
 	SDL_assert(channel >= 0);
 	SDL_assert(channel < lengthofi(_channels));
-	memset(&_channels[channel], 0, sizeof(_channels[channel]));
+	_channels[channel] = Channel();
 }
 
 bool SDLSoundEngine::init (bool initCache)
