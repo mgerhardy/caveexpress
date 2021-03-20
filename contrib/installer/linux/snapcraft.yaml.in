@@ -18,7 +18,7 @@ parts:
       - make
       - libglm-dev
       - libsqlite3-dev
-      - liblua5.2-dev
+      - liblua5.3-dev
       - zlib1g-dev
       - libasound2-dev
       - libpulse-dev
