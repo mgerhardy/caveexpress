@@ -15,7 +15,7 @@ TEST_F(FileTest, testFileLoad) {
 	const std::string path = "dirlisting/";
 	const DirectoryEntries& files = FS.listDirectory(path);
 	ASSERT_TRUE(!files.empty()) << FS.getDataDir() << path << " is empty or not readable";
-	for (const std::string file : files) {
+	for (const std::string& file : files) {
 		const std::string filePath = path + file;
 		FilePtr f = FS.getFile(filePath);
 		ASSERT_NE(-1, f->length()) << "Could not load " << FS.getDataDir() << filePath;
