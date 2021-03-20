@@ -9,7 +9,6 @@ set(gfx_SRCS
 if (NOT ANDROID)
 list(APPEND gfx_SRCS
 	GL1Frontend.cpp
-	BGFXFrontend.cpp
 )
 endif()
 add_library(gfx ${gfx_SRCS})
