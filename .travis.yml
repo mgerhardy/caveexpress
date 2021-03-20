@@ -78,7 +78,7 @@ addons:
     - libglm-dev
     - libgtest-dev
     - libsqlite3-dev
-    - liblua5.3-dev
+    - liblua5.4-dev
     - zlib1g-dev
     - g++-5
     - gcc-5

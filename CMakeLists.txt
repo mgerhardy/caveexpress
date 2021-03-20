@@ -203,7 +203,7 @@ find_package(SDL2_mixer REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_net REQUIRED)
 find_package(sqlite3 REQUIRED)
-find_package(lua5.3 REQUIRED)
+find_package(lua5.4 REQUIRED)
 find_package(box2d REQUIRED)
 find_package(zlib REQUIRED)
 

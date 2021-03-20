@@ -46,4 +46,4 @@ endif()
 
 add_library(common ${common_SRCS} ${ports_SRCS})
 set_target_properties(common PROPERTIES FOLDER common)
-cp_target_link_libraries(TARGET common LIBS lua5.3 sdl2 sqlite3 box2d glm curses)
+cp_target_link_libraries(TARGET common LIBS lua5.4 sdl2 sqlite3 box2d glm curses)
