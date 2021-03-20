@@ -532,6 +532,7 @@ void Player::createBody (const b2Vec2 &pos)
 
 	// Override the default friction.
 	fixtureDef.friction = 1.0f;
+	fixtureDef.userData.pointer = (uintptr_t)this;
 
 	// Add the shape to the body.
 	body->CreateFixture(&fixtureDef);
