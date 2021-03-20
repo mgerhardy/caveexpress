@@ -23,7 +23,7 @@ jobs:
 
     linux:
         runs-on: ubuntu-20.04
-        container: debian:bullseye
+        container: debian:experimental
 
         steps:
         - uses: actions/checkout@v1
