@@ -62,7 +62,7 @@ jobs:
           uses: lukka/run-vcpkg@v6
           id: runvcpkg
           with:
-            vcpkgGitCommitId: 2f7a104d4d6f1f3790db929f85a4086aa6973d7f
+            vcpkgGitCommitId: 30124253eecff36bc90f73341edbfb4f845e2a1e
             vcpkgTriplet: 'x64-windows'
             vcpkgArguments: 'sdl2 sdl2-net sdl2-mixer sdl2-image lua sqlite3 box2d'
 
