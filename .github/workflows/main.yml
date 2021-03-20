@@ -9,12 +9,14 @@ jobs:
         - uses: actions/checkout@v1
 
         - name: Setup
-          run: brew install ninja lua box2d sdl2 sdl2_image sdl2_mixer sdl2_net sqlite zlib yajl
+          run: brew install lua box2d sdl2 sdl2_image sdl2_mixer sdl2_net sqlite zlib yajl
 
         - name: Build
           run: |
-            cmake -GNinja -DTOOLS=OFF -H. -Bbuild
-            cmake --build build
+            cmake -GXcode -H. -Bbuild
+            xcodebuild build -target install -project caveproductions.xcodeproj -configuration Release
+            ../contrib/scripts/create_dmg.sh caveexpress 2.5
+            ../contrib/scripts/create_dmg.sh cavepacker 1.5
 
         - name: Test
           run: |
