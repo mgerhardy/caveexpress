@@ -13,7 +13,9 @@ jobs:
 
         - name: Build
           run: |
-            cmake -GXcode -H. -Bbuild
+            mkdir build
+            cd build
+            cmake .. -GXcode -DCMAKE_BUILD_TYPE=Release
             xcodebuild build -target install -project caveproductions.xcodeproj -configuration Release
             ../contrib/scripts/create_dmg.sh caveexpress 2.5
             ../contrib/scripts/create_dmg.sh cavepacker 1.5
