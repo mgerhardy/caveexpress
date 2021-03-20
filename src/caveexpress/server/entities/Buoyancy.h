@@ -23,9 +23,9 @@
 // This file contains the support functions for finding the intersecting portion
 // of two polygon fixtures.
 
-#include <box2d/b2_body.h>
-#include <box2d/b2_fixture.h>
-#include <box2d/b2_math.h>
+#include <b2_body.h>
+#include <b2_fixture.h>
+#include <b2_math.h>
 #include <vector>
 
 namespace Buoyancy {

@@ -2,8 +2,8 @@
 
 #include "common/Compiler.h"
 GCC_DIAG_OFF(shadow)
-#include <box2d/box2d.h>
-#include <box2d/b2_math.h>
+#include <box2d.h>
+#include <b2_math.h>
 GCC_DIAG_ON(shadow)
 #include "common/Math.h"
 
