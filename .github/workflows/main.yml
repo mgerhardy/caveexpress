@@ -51,6 +51,9 @@ jobs:
         steps:
         - uses: actions/checkout@v1
 
+        - name: Get latest CMake and ninja
+          uses: lukka/get-cmake@latest
+
         - name: Setup
           uses: lukka/run-vcpkg@v6
           id: runvcpkg
