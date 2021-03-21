@@ -9,6 +9,7 @@
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/shared/CaveExpressAchievement.h"
 #include "common/Log.h"
+#include "common/Math.h"
 #include "network/INetwork.h"
 #include "common/System.h"
 #include "caveexpress/shared/constants/Density.h"
@@ -222,9 +223,16 @@ void Player::update (uint32_t deltaTime)
 		applyForce(force);
 	}
 
+	const float angle = getAngle();
 	if (_revoluteJoint) {
-		const float angle = getAngle();
 		_revoluteJoint->SetMotorSpeed(-angle);
+	} else {
+		const float maxAngle = (float)DegreesToRadians(10.0);
+		if (angle > maxAngle) {
+			setAngle(maxAngle);
+		} else if (angle < -maxAngle) {
+			setAngle(-maxAngle);
+		}
 	}
 
 	if (_hitpoints <= 0)
@@ -493,6 +501,8 @@ void Player::drop ()
 	memset(_collectedEntities, 0, sizeof(_collectedEntities));
 }
 
+#define ENABLE_REVOLUTE_JOINT 0
+
 void Player::createBody (const b2Vec2 &pos)
 {
 	// this is creating a body with a non-rotateable circle as center,
@@ -501,6 +511,7 @@ void Player::createBody (const b2Vec2 &pos)
 	// the rotation limit mentioned earlier)
 	b2World *world = _map.getWorld();
 
+#if ENABLE_REVOLUTE_JOINT
 	// create the circle
 	b2Body* circleBody;
 	{
@@ -519,6 +530,7 @@ void Player::createBody (const b2Vec2 &pos)
 		circleBody->CreateFixture(&centerFixtureDef);
 		circleBody->SetGravityScale(gravityScale);
 	}
+#endif
 
 	// create the polygon body that should be limited in rotation
 	// (ensured by revolute joint)
@@ -561,6 +573,8 @@ void Player::createBody (const b2Vec2 &pos)
 
 	// the order matters
 	addBody(body);
+
+#if ENABLE_REVOLUTE_JOINT
 	addBody(circleBody);
 
 	// TODO: this is a problem since 2.4.1
@@ -574,6 +588,7 @@ void Player::createBody (const b2Vec2 &pos)
 	revoluteJointDef.motorSpeed = 0.0f;
 	revoluteJointDef.maxMotorTorque = 100.0f;
 	_revoluteJoint = assert_cast<b2RevoluteJoint*, b2Joint*>(world->CreateJoint(&revoluteJointDef));
+#endif
 }
 
 bool Player::isCloseOverSolid (float distance) const
