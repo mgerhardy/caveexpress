@@ -493,58 +493,77 @@ void Player::drop ()
 
 void Player::createBody (const b2Vec2 &pos)
 {
+	// this is creating a body with a non-rotateable circle as center,
+	// an attached polygon that is limited in rotation angles - and
+	// both bodies are connected by a revolute joint (which ensures
+	// the rotation limit mentioned earlier)
 	b2World *world = _map.getWorld();
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
-	bodyDef.position.Set(pos.x, pos.y - 0.2f);
-	bodyDef.fixedRotation = true;
-	bodyDef.userData.pointer = (uintptr_t)this;
-	b2Body* center = world->CreateBody(&bodyDef);
-	b2CircleShape centerShape;
-	centerShape.m_radius = 0.01f;
-	// Define the dynamic body fixture.
-	b2FixtureDef centerFixtureDef;
-	centerFixtureDef.isSensor = true;
-	centerFixtureDef.shape = &centerShape;
-	center->CreateFixture(&centerFixtureDef);
-	center->SetGravityScale(gravityScale);
 
-	bodyDef.fixedRotation = false;
-	b2Body* body = world->CreateBody(&bodyDef);
+	// create the circle
+	b2Body* circleBody;
+	{
+		b2BodyDef circleBodyDef;
+		circleBodyDef.type = b2_dynamicBody;
+		circleBodyDef.position.Set(pos.x, pos.y - 0.2f);
+		circleBodyDef.fixedRotation = true;
+		circleBodyDef.userData.pointer = (uintptr_t)this;
+		circleBody = world->CreateBody(&circleBodyDef);
+		b2CircleShape centerShape;
+		centerShape.m_radius = 0.01f;
+		// Define the dynamic body fixture.
+		b2FixtureDef centerFixtureDef;
+		centerFixtureDef.isSensor = true;
+		centerFixtureDef.shape = &centerShape;
+		circleBody->CreateFixture(&centerFixtureDef);
+		circleBody->SetGravityScale(gravityScale);
+	}
 
-	const float hx = _size.x / 2.0f;
-	const float hy = _size.y / 2.0f;
-	b2Vec2 vertices[4];
+	// create the polygon body that should be limited in rotation
+	// (ensured by revolute joint)
+	// it is put back into the initial rotation by updating the motor
+	// speed in the tick method of the player object.
+	b2Body* body;
+	{
+		b2BodyDef polygonBodyDef;
+		polygonBodyDef.type = b2_dynamicBody;
+		polygonBodyDef.position.Set(pos.x, pos.y - 0.2f);
+		polygonBodyDef.fixedRotation = false;
+		polygonBodyDef.userData.pointer = (uintptr_t)this;
+		body = world->CreateBody(&polygonBodyDef);
+		const float hx = _size.x / 2.0f;
+		const float hy = _size.y / 2.0f;
+		b2Vec2 vertices[4];
 
-	vertices[0].Set(-hx, -hy);
-	vertices[1].Set( hx, -hy);
-	vertices[2].Set( hx / 2.0f,  hy);
-	vertices[3].Set(-hx / 2.0f,  hy);
+		vertices[0].Set(-hx, -hy);
+		vertices[1].Set( hx, -hy);
+		vertices[2].Set( hx / 2.0f,  hy);
+		vertices[3].Set(-hx / 2.0f,  hy);
 
-	b2PolygonShape shape;
-	shape.Set(vertices, SDL_arraysize(vertices));
+		b2PolygonShape shape;
+		shape.Set(vertices, SDL_arraysize(vertices));
 
-	// Define the dynamic body fixture.
-	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &shape;
+		// Define the dynamic body fixture.
+		b2FixtureDef fixtureDef;
+		fixtureDef.shape = &shape;
 
-	// Set the box density to be non-zero, so it will be dynamic.
-	fixtureDef.density = DENSITY_PLAYER;
+		// Set the box density to be non-zero, so it will be dynamic.
+		fixtureDef.density = DENSITY_PLAYER;
 
-	// Override the default friction.
-	fixtureDef.friction = 1.0f;
+		// Override the default friction.
+		fixtureDef.friction = 1.0f;
 
-	// Add the shape to the body.
-	body->CreateFixture(&fixtureDef);
-	body->SetGravityScale(gravityScale);
+		// Add the shape to the body.
+		body->CreateFixture(&fixtureDef);
+		body->SetGravityScale(gravityScale);
+	}
 
 	// the order matters
 	addBody(body);
-	addBody(center);
+	addBody(circleBody);
 
 	// TODO: this is a problem since 2.4.1
 	b2RevoluteJointDef revoluteJointDef;
-	revoluteJointDef.Initialize(center, body, pos);
+	revoluteJointDef.Initialize(circleBody, body, pos);
 	revoluteJointDef.lowerAngle = (float)DegreesToRadians(-10);
 	revoluteJointDef.upperAngle = (float)DegreesToRadians(10);
 	revoluteJointDef.enableLimit = true;
