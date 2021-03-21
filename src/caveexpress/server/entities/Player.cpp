@@ -222,8 +222,10 @@ void Player::update (uint32_t deltaTime)
 		applyForce(force);
 	}
 
-	const float angle = getAngle();
-	_revoluteJoint->SetMotorSpeed(-angle);
+	if (_revoluteJoint) {
+		const float angle = getAngle();
+		_revoluteJoint->SetMotorSpeed(-angle);
+	}
 
 	if (_hitpoints <= 0)
 		setCrashed(CRASH_DAMAGE);
