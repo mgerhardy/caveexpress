@@ -79,7 +79,7 @@ void Bomb::explode ()
 	fd.filter.groupIndex = -1;
 
 	for (int i = 0; i < _numRays; ++i) {
-		const float angle = DegreesToRadians((i / static_cast<float>(_numRays)) * 360.0f);
+		const float angle = (float)DegreesToRadians(((float)i / (float)_numRays) * 360.0f);
 		const b2Vec2 rayDir(sinf(angle), cosf(angle));
 
 		bd.linearVelocity = _blastPower * rayDir;

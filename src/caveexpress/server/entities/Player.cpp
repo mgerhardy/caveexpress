@@ -59,7 +59,7 @@ void Player::accelerate (Direction dir)
 			v.Set(0.0f, -gravity);
 		}
 	} else if (dir & DIRECTION_DOWN) {
-		v.Set(0.0f, gravity / 2.0);
+		v.Set(0.0f, gravity / 2.0f);
 	}
 
 	if (dir & DIRECTION_LEFT) {
@@ -187,7 +187,7 @@ void Player::update (uint32_t deltaTime)
 		const int delta = 1;
 		if (_accelerateY <= -delta) {
 			// go upwards
-			v.y *= _accelerateY;
+			v.y *= (float)_accelerateY;
 		} else if (_accelerateY >= delta) {
 			// go downwards
 			v.y *= 0.5f;
@@ -198,7 +198,7 @@ void Player::update (uint32_t deltaTime)
 
 		const float horizontalMoveSpeed = 1.0f;
 		if (std::abs(_accelerateX) >= delta)
-			v.x = horizontalMoveSpeed * _accelerateX;
+			v.x = horizontalMoveSpeed * (float)_accelerateX;
 
 		const float maxHorizontalVelocity = gravity.y;
 		v.x = clamp(v.x, -maxHorizontalVelocity, maxHorizontalVelocity);
@@ -282,7 +282,7 @@ void Player::setCrashed (const PlayerCrashReason& reason)
 	setAnimationType(Animations::ANIMATION_CRASHED);
 	_crashReason = reason;
 
-	const float rumbleLengthMillis = 500.0f;
+	const int rumbleLengthMillis = 500;
 	const SoundType* sound;
 	switch (reason) {
 	case CRASH_NPC_WALKING:
@@ -368,8 +368,8 @@ void Player::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* 
 		return;
 
 	const float factor = approachVelocity - damageThreshold;
-	const int maxHitpoints = _maxHitPoints->getIntValue();
-	const int hitpointReduceAmount = std::max(1, (int)(maxHitpoints / 10 * (1.0f + factor)));
+	const float maxHitpoints = _maxHitPoints->getFloatValue();
+	const int hitpointReduceAmount = std::max(1, (int)(maxHitpoints / 10.0f * (1.0f + factor)));
 	subtractHitpoints(hitpointReduceAmount);
 	Log::info(LOG_GAMEIMPL, "damageThreshold: %f, approachVelocity: %f, factor: %f, hitpointReduceAmount: %i",
 			   damageThreshold, approachVelocity, factor, hitpointReduceAmount);
@@ -545,8 +545,8 @@ void Player::createBody (const b2Vec2 &pos)
 	// TODO: this is a problem since 2.4.1
 	b2RevoluteJointDef revoluteJointDef;
 	revoluteJointDef.Initialize(center, body, pos);
-	revoluteJointDef.lowerAngle = DegreesToRadians(-10);
-	revoluteJointDef.upperAngle = DegreesToRadians(10);
+	revoluteJointDef.lowerAngle = (float)DegreesToRadians(-10);
+	revoluteJointDef.upperAngle = (float)DegreesToRadians(10);
 	revoluteJointDef.enableLimit = true;
 	revoluteJointDef.collideConnected = false;
 	revoluteJointDef.enableMotor = true;

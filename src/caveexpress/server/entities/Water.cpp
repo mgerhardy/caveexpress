@@ -162,8 +162,8 @@ void Water::update (uint32_t deltaTime)
 
 void Water::createBody (float waterHeight)
 {
-	const float mapHeight = _map.getMapHeight();
-	const float mapWidth = _map.getMapWidth();
+	const float mapHeight = (float)_map.getMapHeight();
+	const float mapWidth = (float)_map.getMapWidth();
 
 	b2PolygonShape shape;
 	shape.SetAsBox(mapWidth / 2.0f, mapHeight / 2.0f);
