@@ -541,13 +541,19 @@ void AbstractGLFrontend::makeScreenshot (const std::string& filename)
 			0x00ff0000, 0x0000ff00, 0x000000ff
 #endif
 			, 0));
-	if (!surface)
+	if (!surface) {
+		Log::warn(LogCategory::LOG_GFX, "Failed to create screenshot surface");
 		return;
+	}
 	const int pitch = _width * bytesPerPixel;
 	for (int y = 0; y < _height; ++y)
 		memcpy((uint8_t *) surface->pixels + surface->pitch * y, (uint8_t *) pixels.get() + pitch * (_height - y - 1), pitch);
-	const std::string fullFilename = FS.getAbsoluteWritePath() + filename + "-" + dateutil::getDateString() + ".png";
-	IMG_SavePNG(surface.get(), fullFilename.c_str());
+	const std::string fullFilename = FS.getAbsoluteWritePath() + filename + "-" + dateutil::getFilenameDateString() + ".png";
+	if (IMG_SavePNG(surface.get(), fullFilename.c_str()) != 0) {
+		Log::error(LogCategory::LOG_GFX, "Failed to write screenshot: %s", fullFilename.c_str());
+	} else {
+		Log::info(LogCategory::LOG_GFX, "Wrote screenshot: %s", fullFilename.c_str());
+	}
 #endif
 }
 

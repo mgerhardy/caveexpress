@@ -178,11 +178,11 @@ else
 			PAGEUP = "zoom 0.1",
 		},
 	}
+	keybindings["ui"]["."] = "screenshot"
+	keybindings["map"]["."] = "screenshot"
 end
 
 if isDebug() then
-	keybindings["ui"]["."] = "screenshot"
-	keybindings["map"]["."] = "screenshot"
 	keybindings["map"]["BACKSPACE"] = "map_debug"
 	keybindings["map"]["E"] = "map_open_in_editor"
 	keybindings["map"]["X"] = "kill"

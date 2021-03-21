@@ -463,14 +463,22 @@ void SDLFrontend::makeScreenshot (const std::string& filename)
 
 	SDL_PixelFormatEnumToMasks(SDL_PIXELFORMAT_RGBA8888, &bpp, &rmask, &gmask, &bmask, &amask);
 	std::unique_ptr<SDL_Surface> surface(SDL_CreateRGBSurface(0, viewport.w, viewport.h, bpp, rmask, gmask, bmask, amask));
-	if (!surface)
+	if (!surface) {
+		Log::warn(LogCategory::LOG_GFX, "Failed to create screenshot surface");
 		return;
+	}
 
-	if (SDL_RenderReadPixels(_renderer, nullptr, surface->format->format, surface->pixels, surface->pitch) < 0)
+	if (SDL_RenderReadPixels(_renderer, nullptr, surface->format->format, surface->pixels, surface->pitch) < 0) {
+		Log::warn(LogCategory::LOG_GFX, "Failed to read surface pixels");
 		return;
+	}
 
-	const std::string fullFilename = FS.getAbsoluteWritePath() + filename + "-" + dateutil::getDateString() + ".png";
-	IMG_SavePNG(surface.get(), fullFilename.c_str());
+	const std::string fullFilename = FS.getAbsoluteWritePath() + filename + "-" + dateutil::getFilenameDateString() + ".png";
+	if (IMG_SavePNG(surface.get(), fullFilename.c_str()) != 0) {
+		Log::error(LogCategory::LOG_GFX, "Failed to write screenshot: %s", fullFilename.c_str());
+	} else {
+		Log::info(LogCategory::LOG_GFX, "Wrote screenshot: %s", fullFilename.c_str());
+	}
 }
 
 void SDLFrontend::setCursorPosition (int x, int y)
