@@ -163,5 +163,5 @@ int Windows::exec (const std::string& command, std::vector<std::string>& argumen
 
 std::string Windows::getRateURL (const std::string& packageName) const
 {
-	return "http://www.desura.com/games/" + Singleton<Application>::getInstance().getName();
+	return "";
 }
