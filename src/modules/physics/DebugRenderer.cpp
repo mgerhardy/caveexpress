@@ -85,26 +85,37 @@ void DebugRenderer::DrawSolidPolygon (const b2Vec2* vertices, int vertexCount, c
 	DrawPolygon(vertices, vertexCount, color);
 }
 
-void DebugRenderer::DrawCircle (const b2Vec2& center, float radius, const b2Color& color)
+void DebugRenderer::DrawCircle(const b2Vec2 &center, float radius, const b2Color &color)
 {
 	const float k_segments = 16.0f;
 	const float k_increment = 2.0f * b2_pi / k_segments;
-	float theta = 0.0f;
+	float sinInc = sinf(k_increment);
+	float cosInc = cosf(k_increment);
+	b2Vec2 r1(1.0f, 0.0f);
+	b2Vec2 v1 = center + radius * r1;
 
-	for (int i = 0; i < k_segments; i += 2) {
-		const b2Vec2 p1 = center + radius * b2Vec2(cosf(theta), sinf(theta));
-		theta += k_increment;
-		const b2Vec2 p2 = center + radius * b2Vec2(cosf(theta), sinf(theta));
-		theta += k_increment;
-		DrawSegment(p1, p2, color);
+	for (int32 i = 0; i < k_segments; ++i)
+	{
+		// Perform rotation to avoid additional trigonometry.
+		b2Vec2 r2;
+		r2.x = cosInc * r1.x - sinInc * r1.y;
+		r2.y = sinInc * r1.x + cosInc * r1.y;
+		b2Vec2 v2 = center + radius * r2;
+		DrawSegment(v1, v2, color);
+		r1 = r2;
+		v1 = v2;
 	}
 }
 
 void DebugRenderer::DrawSolidCircle (const b2Vec2& center, float radius, const b2Vec2& axis, const b2Color& color)
 {
 	const float k_segments = 16.0f;
-	const int vertexCount = 16;
 	const float k_increment = 2.0f * b2_pi / k_segments;
+	float sinInc = sinf(k_increment);
+	float cosInc = cosf(k_increment);
+	b2Vec2 r1(cosInc, sinInc);
+	b2Color fillColor(0.5f * color.r, 0.5f * color.g, 0.5f * color.b, 0.5f);
+	const int vertexCount = 16;
 	float theta = 0.0f;
 
 	b2Vec2 vertices[vertexCount];
@@ -114,10 +125,22 @@ void DebugRenderer::DrawSolidCircle (const b2Vec2& center, float radius, const b
 		theta += k_increment;
 	}
 
-	DrawSolidPolygon(vertices, vertexCount, color);
+	r1.Set(1.0f, 0.0f);
+	b2Vec2 v1 = center + radius * r1;
+	for (int32 i = 0; i < k_segments; ++i)
+	{
+		b2Vec2 r2;
+		r2.x = cosInc * r1.x - sinInc * r1.y;
+		r2.y = sinInc * r1.x + cosInc * r1.y;
+		b2Vec2 v2 = center + radius * r2;
+		DrawSegment(v1, v2, color);
+		r1 = r2;
+		v1 = v2;
+	}
 
-	// Draw the axis line
-	DrawSegment(center, center + radius * axis, color);
+	// Draw a line fixed in the circle to animate rotation.
+	b2Vec2 p = center + radius * axis;
+	DrawSegment(center, p, color);
 }
 
 void DebugRenderer::DrawPoint (const b2Vec2& p, float size, const b2Color& color)
