@@ -402,6 +402,7 @@ private:
 	void triggerRestart ();
 	void triggerPause ();
 	void triggerDebug ();
+	void dump ();
 };
 
 inline const ThemeType& Map::getTheme () const

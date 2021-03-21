@@ -78,6 +78,7 @@ Map::Map () :
 	Commands.registerCommandVoid(CMD_MAP_PAUSE, bindFunctionVoid(Map::triggerPause));
 	Commands.registerCommandVoid(CMD_MAP_RESTART, bindFunctionVoid(Map::triggerRestart));
 	Commands.registerCommandVoid(CMD_MAP_DEBUG, bindFunctionVoid(Map::triggerDebug));
+	Commands.registerCommandVoid(CMD_MAP_DUMP, bindFunctionVoid(Map::dump));
 	Commands.registerCommandVoid(CMD_START, bindFunctionVoid(Map::startMap));
 	Commands.registerCommandVoid(CMD_KILL, bindFunctionVoid(Map::killPlayers));
 	Commands.registerCommandVoid(CMD_FINISHMAP, bindFunctionVoid(Map::finishMap));
@@ -90,6 +91,7 @@ Map::~Map ()
 	Commands.removeCommand(CMD_MAP_PAUSE);
 	Commands.removeCommand(CMD_MAP_RESTART);
 	Commands.removeCommand(CMD_MAP_DEBUG);
+	Commands.removeCommand(CMD_MAP_DUMP);
 	Commands.removeCommand(CMD_START);
 	Commands.removeCommand(CMD_KILL);
 	Commands.removeCommand(CMD_FINISHMAP);
@@ -181,6 +183,14 @@ void Map::triggerRestart ()
 
 	Log::info(LOG_GAMEIMPL, "trigger restart");
 	Commands.executeCommandLine(CMD_MAP_START " " + getName());
+}
+
+void Map::dump ()
+{
+	if (!_world)
+		return;
+
+	_world->Dump();
 }
 
 void Map::triggerDebug ()
