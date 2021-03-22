@@ -4,6 +4,10 @@
 
 namespace caveexpress {
 
+/**
+ * @brief This npc can get picked up and wants to be transfered to another cave.
+ * @sa CaveMapTile
+ */
 class NPCFriendly: public INPCCave {
 private:
 	// used to measure the needed time to bring the npc to its target cave

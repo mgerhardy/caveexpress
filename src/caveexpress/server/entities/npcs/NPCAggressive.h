@@ -4,6 +4,9 @@
 
 namespace caveexpress {
 
+/**
+ * @brief Base class for attacking npcs that try to destroy packages or the player
+ */
 class NPCAggressive: public NPC {
 public:
 	NPCAggressive (const EntityType &type, Map& map);

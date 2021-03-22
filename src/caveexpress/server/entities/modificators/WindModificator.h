@@ -5,6 +5,9 @@
 
 namespace caveexpress {
 
+/**
+ * @brief Applies a wind force to the world
+ */
 class WindModificator: public IWorldModificator {
 private:
 	void getRelativePosition (b2Vec2& out) const;

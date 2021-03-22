@@ -7,6 +7,10 @@ namespace caveexpress {
 // forward decl
 class CaveMapTile;
 
+/**
+ * @brief This npc will put a package in front of its cave
+ * @sa Package
+ */
 class NPCPackage : public INPCCave {
 public:
 	NPCPackage (CaveMapTile *cave, const EntityType& type);

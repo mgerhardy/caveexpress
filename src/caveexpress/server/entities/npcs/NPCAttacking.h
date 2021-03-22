@@ -8,6 +8,12 @@ namespace caveexpress {
 class Player;
 class Map;
 
+/**
+ * @brief Aggressive npc that is moving on a platform and attacks if the player
+ * gets to close to the ground.
+ * @todo It might happen that these npcs are falling off their platform. Using a joint to prevents
+ * this would be a good idea.
+ */
 class NPCAttacking: public NPCAggressive {
 protected:
 	void changeAttackingAnimation (const b2Vec2 &targetPos);

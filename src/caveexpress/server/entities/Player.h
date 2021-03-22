@@ -32,6 +32,10 @@ typedef enum
 	CRASH_MAP_FAILED
 } PlayerCrashReason;
 
+/**
+ * @brief The player entity that can either transfer friendly npcs or carry
+ * packages to deliver them to their corresponding targets.
+ */
 class Player: public IEntity {
 private:
 	// the entity the player is current touching

@@ -7,6 +7,10 @@ namespace caveexpress {
 // forward decl
 class CaveMapTile;
 
+/**
+ * @brief Platform body that is automatically created where NPCs are moving on.
+ * @sa CaveMapTile
+ */
 class Platform: public IEntity {
 private:
 	CaveMapTile* _caveTile;

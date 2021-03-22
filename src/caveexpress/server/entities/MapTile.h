@@ -9,7 +9,10 @@ namespace caveexpress {
 // forward decl
 class Map;
 
-
+/**
+ * @brief The map is built out of map tiles that are fixed bodies
+ * with a sprite assigned
+ */
 class MapTile: public IEntity {
 protected:
 	gridCoord _gridX;

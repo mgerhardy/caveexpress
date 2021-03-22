@@ -6,6 +6,9 @@ namespace caveexpress {
 
 class Map;
 
+/**
+ * @brief The tree will emit entities if you throw a stone onto it.
+ */
 class Tree: public IEntity {
 private:
 	gridCoord _x;

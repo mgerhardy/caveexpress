@@ -9,6 +9,10 @@ namespace caveexpress {
 class Map;
 class Package;
 
+/**
+ * @brief The target for a package that destroys them.
+ * @sa Package
+ */
 class PackageTarget: public MapTile {
 private:
 	b2DistanceJoint *_joint;

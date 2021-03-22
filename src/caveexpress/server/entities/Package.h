@@ -10,6 +10,17 @@ namespace caveexpress {
 class Map;
 class PackageTarget;
 
+/**
+ * @brief The package can get collected by the player or destroyed by
+ * aggressive npcs. The player has to deliver it to a package target in the map.
+ * Once the package is colliding with a suitable package target, it will
+ * automatically get pulled into the target and gets destroyed.
+ *
+ * @sa PackageTarget
+ * @sa Player
+ * @sa AggressiveNPC
+ * @sa CollectableEntity
+ */
 class Package: public CollectableEntity {
 private:
 	gridCoord _x;

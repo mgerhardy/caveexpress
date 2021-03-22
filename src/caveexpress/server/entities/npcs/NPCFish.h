@@ -4,6 +4,9 @@
 
 namespace caveexpress {
 
+/**
+ * @brief An aggressive npc that will destroy the player on contact
+ */
 class NPCFish : public NPCAggressive {
 private:
 	double _magnitude;

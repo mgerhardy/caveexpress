@@ -6,6 +6,9 @@ namespace caveexpress {
 
 class Map;
 
+/**
+ * @brief Collecting a fruit will give you some energy back
+ */
 class Fruit: public CollectableEntity {
 protected:
 	gridCoord _x;

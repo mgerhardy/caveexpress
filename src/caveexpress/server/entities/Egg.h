@@ -5,6 +5,9 @@ namespace caveexpress {
 // forward decl
 class Map;
 
+/**
+ * @brief Collecting the egg might make you invulverable for some time.
+ */
 class Egg: public CollectableEntity {
 protected:
 	gridCoord _x;

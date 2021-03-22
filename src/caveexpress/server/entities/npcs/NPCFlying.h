@@ -4,6 +4,10 @@
 
 namespace caveexpress {
 
+/**
+ * @brief An aggressive npc that is spawning at the height of the player and
+ * is flying straight through the map
+ */
 class NPCFlying : public NPCAggressive {
 private:
 	bool _spawnEgg;

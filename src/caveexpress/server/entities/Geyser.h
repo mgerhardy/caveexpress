@@ -6,6 +6,11 @@ namespace caveexpress {
 
 class WindModificator;
 
+/**
+ * @brief The geyser uses a @c WindModificator to influence entities above it.
+ * @sa MapTile
+ * @sa WindModificator
+ */
 class Geyser: public MapTile {
 private:
 	WindModificator *_modificator;

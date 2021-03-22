@@ -9,6 +9,10 @@ namespace caveexpress {
 // forward decl
 class Map;
 
+/**
+ * @brief The stone - throw it at trees or daze aggressive npcs by throwing it at them.
+ * Can also be useful to be placed next to a package target for easier throwing of packages.
+ */
 class Stone: public CollectableEntity {
 private:
 	gridCoord _x;

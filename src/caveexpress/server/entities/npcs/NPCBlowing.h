@@ -8,6 +8,10 @@ namespace caveexpress {
 class Map;
 class WindModificator;
 
+/**
+ * @brief A sleeping npc that is generating a strong wind with each breath
+ * @sa WindModificator
+ */
 class NPCBlowing: public NPC {
 protected:
 	WindModificator* _modificator;

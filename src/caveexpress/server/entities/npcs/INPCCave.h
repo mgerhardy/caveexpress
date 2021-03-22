@@ -21,6 +21,9 @@ static inline const EntityType& getNpcFriendlyType ()
 }
 }
 
+/**
+ * @brief Base NPC class for of those characters that are spawned by a cave
+ */
 class INPCCave: public NPC {
 protected:
 	CaveMapTile *_cave;
