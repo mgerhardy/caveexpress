@@ -119,7 +119,7 @@ void DebugRenderer::DrawSolidCircle (const b2Vec2& center, float radius, const b
 	float theta = 0.0f;
 
 	b2Vec2 vertices[vertexCount];
-	for (int i = 0; i < k_segments; ++i) {
+	for (int i = 0; i < (int)k_segments; ++i) {
 		const b2Vec2 v = center + radius * b2Vec2(cosf(theta), sinf(theta));
 		vertices[i] = v;
 		theta += k_increment;
@@ -146,10 +146,10 @@ void DebugRenderer::DrawSolidCircle (const b2Vec2& center, float radius, const b
 void DebugRenderer::DrawPoint (const b2Vec2& p, float size, const b2Color& color)
 {
 	const Color rgba = { color.r, color.g, color.b, 0.5f };
-	const float minx = VX(p.x - size / 2.0f);
-	const float maxx = VX(p.x + size / 2.0f);
-	const float miny = VY(p.y - size / 2.0f);
-	const float maxy = VY(p.y + size / 2.0f);
+	const int minx = (int)VX(p.x - size / 2.0f);
+	const int maxx = (int)VX(p.x + size / 2.0f);
+	const int miny = (int)VY(p.y - size / 2.0f);
+	const int maxy = (int)VY(p.y + size / 2.0f);
 	_frontend->renderFilledRect(minx, miny, maxx - minx, maxy - miny, rgba);
 }
 
