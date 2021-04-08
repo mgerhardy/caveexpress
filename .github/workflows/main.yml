@@ -15,7 +15,7 @@ jobs:
           run: |
             mkdir build
             cd build
-            cmake .. -GXcode -DTOOLS=OFF -DCMAKE_BUILD_TYPE=Release
+            cmake .. -GXcode -DTOOLS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(pwd)/install
             xcodebuild build -target install -project caveproductions.xcodeproj CODE_SIGNING_REQUIRED=NO -configuration Release
             ../contrib/scripts/create_dmg.sh caveexpress 2.5
             ../contrib/scripts/create_dmg.sh cavepacker 1.5
@@ -41,8 +41,10 @@ jobs:
 
         - name: Linux
           run: |
-            cmake -GNinja -H. -Bbuild
+            cmake -GNinja -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
             cmake --build build
+            cmake --install -Bbuild --component caveexpress --prefix caveexpress-install
+            cmake --install -Bbuild --component cavepacker --prefix cavepacker-install
 
         - name: Test
           run: |
