@@ -8,7 +8,10 @@ if [ -d "$dir" ]; then
   pushd "$dir"
 fi
 
-pushd ../../../cp-build-osx
+src_dir=${3:-../caveexpress}
+build_dir=${4:-../../../cp-build-osx}
+
+pushd ${build_dir}
 
 # ./contrib/scripts/create_dmg.sh caveexpress 2.4
 
@@ -16,7 +19,7 @@ pushd ../../../cp-build-osx
 APP_NAME="$1"
 VERSION="$2"
 DMG_BACKGROUND_IMG="Background.png"
-cp "../caveexpress/contrib/installer/osx/background.png" ${DMG_BACKGROUND_IMG}
+cp "${src_dir}/contrib/installer/osx/background.png" ${DMG_BACKGROUND_IMG}
 
 # you should not need to change these
 APP_EXE="${APP_NAME}.app/Contents/MacOS/${APP_NAME}"
