@@ -36,19 +36,19 @@ bool Particle::update (uint32_t deltaTime)
 	advanceVector(_s, 0.5f * _deltaTime * _deltaTime, _a, _s);
 	advanceVector(_s, _deltaTime, _v, _s);
 	advanceVector(_v, _deltaTime, _a, _v);
-	_angle = _omega + _deltaTime * _angle;
+	_angle = _omega + _deltaTime * (float)_angle;
 
-	while (_tps && _lastThink * _tps >= 1.0f) {
+	while (_tps > 0.0f && _lastThink * _tps >= 1.0f) {
 		think();
 		_lastThink -= 1.0f / _tps;
 	}
 
-	while (_fps && _lastFrame * _fps >= 1.0f) {
+	while (_fps > 0.0f && _lastFrame * _fps >= 1.0f) {
 		// TODO: sprite
 		_lastFrame -= 1.0f / _fps;
 	}
 
-	if (_life && _t >= _life)
+	if (_life > 0.0f && _t >= _life)
 		return false;
 
 	return true;

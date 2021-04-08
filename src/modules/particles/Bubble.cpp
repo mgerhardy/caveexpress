@@ -32,8 +32,8 @@ void Bubble::run ()
 	_v.x = magnitude * sinf(_v.y * amplitude);
 
 	// bubble has reached the water surface
-	if (_s.y <= _waterSurface) {
-		_s.x = rand() % _waterWidth;
-		_s.y = (_waterSurface + _waterHeight / 2) + (rand() % (_waterHeight / 2));
+	if (_s.y <= (float)_waterSurface) {
+		_s.x = (float)(rand() % _waterWidth);
+		_s.y = (((float)_waterSurface + (float)_waterHeight / 2.0f) + (float)(rand() % (_waterHeight / 2)));
 	}
 }
