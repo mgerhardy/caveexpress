@@ -9,7 +9,7 @@ jobs:
         - uses: actions/checkout@v1
 
         - name: Setup
-          run: brew install lua box2d sdl2 sdl2_image sdl2_mixer sdl2_net sqlite zlib yajl
+          run: brew install lua box2d sdl2 sdl2_image sdl2_mixer sdl2_net sqlite zlib yajl upx
 
         - name: Build
           run: |
