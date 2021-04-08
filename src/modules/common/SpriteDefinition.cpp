@@ -1,5 +1,5 @@
 #include "common/SpriteDefinition.h"
-#include "common/LUA.h"
+#include "common/LUALibrary.h"
 #include "common/System.h"
 #include "common/Log.h"
 #include "common/ExecutionTime.h"

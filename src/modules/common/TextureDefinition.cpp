@@ -1,7 +1,7 @@
 #include "TextureDefinition.h"
 #include "common/ConfigManager.h"
 #include "common/Log.h"
-#include "common/LUA.h"
+#include "common/LUALibrary.h"
 #include "common/System.h"
 #include "common/FileSystem.h"
 #include "common/ExecutionTime.h"

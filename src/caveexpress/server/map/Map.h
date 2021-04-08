@@ -13,7 +13,7 @@
 #include "common/MapFailedReason.h"
 #include "common/TimeManager.h"
 #include "network/IProtocolHandler.h"
-#include "common/LUA.h"
+#include "common/LUALibrary.h"
 #include <string>
 #include <vector>
 #include <list>

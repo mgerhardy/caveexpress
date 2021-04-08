@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/NonCopyable.h"
-#include "common/LUA.h"
+#include "common/LUALibrary.h"
 #include "common/ICommand.h"
 #include <string>
 #include <map>

@@ -1,4 +1,4 @@
-#include "LUA.h"
+#include "LUALibrary.h"
 #include "common/FileSystem.h"
 #include "common/Config.h"
 #include "common/System.h"

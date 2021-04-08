@@ -7,7 +7,7 @@
 #include "common/Log.h"
 #include "common/Singleton.h"
 #include "common/Application.h"
-#include "common/LUA.h"
+#include "common/LUALibrary.h"
 #include "common/System.h"
 #include <SDL.h>
 #include <SDL_platform.h>

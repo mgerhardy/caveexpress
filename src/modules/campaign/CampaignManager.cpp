@@ -6,7 +6,7 @@
 #include "common/Payment.h"
 #include "common/Commands.h"
 #include "common/FileSystem.h"
-#include "common/LUA.h"
+#include "common/LUALibrary.h"
 #include "common/ExecutionTime.h"
 #include "persister/IGameStatePersister.h"
 #include "common/System.h"

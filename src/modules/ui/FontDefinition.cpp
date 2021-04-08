@@ -1,6 +1,6 @@
 #include "FontDefinition.h"
 #include "common/Log.h"
-#include "common/LUA.h"
+#include "common/LUALibrary.h"
 #include "common/ExecutionTime.h"
 #include "common/System.h"
 

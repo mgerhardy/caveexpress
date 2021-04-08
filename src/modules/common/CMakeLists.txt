@@ -13,7 +13,7 @@ set(common_SRCS
 	TextConsole.cpp
 	MapManager.cpp
 	FileSystem.cpp
-	LUA.cpp
+	LUALibrary.cpp
 	LUAMapContext.cpp
 	Log.cpp
 	TimeManager.cpp

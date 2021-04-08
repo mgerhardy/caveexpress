@@ -2,7 +2,7 @@
 
 #include "common/IMapContext.h"
 #include "common/Compiler.h"
-#include "common/LUA.h"
+#include "common/LUALibrary.h"
 #include "common/FileSystem.h"
 #include <string>
 struct lua_State;
