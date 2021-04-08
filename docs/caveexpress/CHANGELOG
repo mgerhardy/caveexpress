@@ -118,4 +118,7 @@ Version 2.4 (2016-02-18)
 * Banana powerup - you can carry more than one package with it
 
 Version 2.5 (not yet released)
+* Updated box2d
+* Updated lua
 * UTF8 support
+* Fixed missing window resize events

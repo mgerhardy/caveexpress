@@ -40,3 +40,4 @@ Version 1.5 (not yet released)
 * UTF8 support
 * Added intro windows for tutorial puzzles
 * Removed skip puzzle feature for multiplayer games
+* Updated lua
