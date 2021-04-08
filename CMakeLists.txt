@@ -203,7 +203,7 @@ find_package(SDL2_mixer REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_net REQUIRED)
 find_package(sqlite3 REQUIRED)
-find_package(lua5.4 REQUIRED)
+find_package(lua REQUIRED)
 find_package(box2d REQUIRED)
 find_package(zlib REQUIRED)
 
@@ -221,7 +221,7 @@ if (UNITTESTS)
 endif()
 
 # TODO move into lib cmakefiles
-if (LUA5.2_FOUND)
+if (LUA_FOUND)
 	add_definitions(-DHAVE_LUA_H)
 endif()
 if (UNITTESTS)
