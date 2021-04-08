@@ -15,6 +15,7 @@ src_dir=${3:-../caveexpress}
 build_dir=${4:-../../../cp-build-osx}
 
 pushd ${build_dir}
+ls
 
 # ./contrib/scripts/create_dmg.sh caveexpress 2.4
 
