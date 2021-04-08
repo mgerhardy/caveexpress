@@ -66,7 +66,7 @@ jobs:
           id: runvcpkg
           with:
             vcpkgGitCommitId: fddf97411017bfcd7dd988d754b25efc3d6a1c3e
-            vcpkgTriplet: 'x64-windows'
+            vcpkgTriplet: 'x64-windows-static'
             vcpkgArguments: 'sdl2 sdl2-net sdl2-mixer sdl2-image lua sqlite3 box2d'
 
         - name: Build
