@@ -107,7 +107,7 @@ message(STATUS "CMAKE_HOST_SYSTEM_NAME: ${CMAKE_HOST_SYSTEM_NAME}")
 # variables
 #-------------------------------------------------------------------------------
 
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+if (WIN32)
 	set(WINDOWS 1)
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Android")
 	set(LINUX 1)
