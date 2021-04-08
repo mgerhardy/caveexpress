@@ -74,9 +74,9 @@ jobs:
             cd build
             cmake --version
             cmake .. -DCMAKE_BUILD_TYPE=Release
-            cmake --build build
-            cmake --install -Bbuild --component caveexpress --prefix caveexpress-install
-            cmake --install -Bbuild --component cavepacker --prefix cavepacker-install
+            cmake --build .
+            cmake --install -B. --component caveexpress --prefix caveexpress-install
+            cmake --install -B. --component cavepacker --prefix cavepacker-install
 
         - name: Tests
           run: |
