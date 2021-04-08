@@ -87,7 +87,7 @@ static void parseCommandline (int argc, char **argv)
 
 static TestConsole console;
 
-extern "C" int main (int argc, char **argv)
+extern "C" int main (int argc, char *argv[])
 {
 	::testing::AddGlobalTestEnvironment(new LocalEnv);
 	//::testing::GTEST_FLAG(throw_on_failure) = true;
