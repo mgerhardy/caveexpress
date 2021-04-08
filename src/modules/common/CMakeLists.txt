@@ -27,7 +27,7 @@ set(common_SRCS
 	ByteStream.cpp
 )
 
-set(LIBS lua sdl2 sqlite3 box2d glm curses)
+set(LIBS lua sdl2 sqlite3 box2d glm)
 if(WINDOWS)
 	set(ports_SRCS ports/Windows.cpp)
 elseif(ANDROID)
@@ -44,6 +44,10 @@ elseif(EMSCRIPTEN)
 elseif(UNIX)
 	set(ports_SRCS ports/Unix.cpp)
 	add_definitions(-D_GNU_SOURCE -D_DEFAULT_SOURCE -D_XOPEN_SOURCE)
+endif()
+
+if (CURSES_FOUND)
+	list(APPEND LIBS ${CURSES_LIBRARIES})
 endif()
 
 add_library(common ${common_SRCS} ${ports_SRCS})
