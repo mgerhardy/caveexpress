@@ -72,6 +72,18 @@ if (${CMAKE_EXTRA_GENERATOR} MATCHES "Eclipse CDT4")
 	set(CMAKE_CXX_COMPILER_ARG1 "-std=c++11" CACHE STRING "C++ version for Eclipse")
 endif()
 
+find_program(GDB_EXECUTABLE gdb)
+find_program(LLDB_EXECUTABLE lldb)
+if (GDB_EXECUTABLE)
+	set(DEBUGGER ${GDB_EXECUTABLE} CACHE STRING "Which debugger should be used")
+elseif (LLDB_EXECUTABLE)
+	set(DEBUGGER ${LLDB_EXECUTABLE} CACHE STRING "Which debugger should be used")
+else()
+	set(DEBUGGER "unknown" CACHE STRING "Which debugger should be used")
+	message(STATUS "No debugger (gdb or lldb) was found")
+endif()
+set_property(CACHE DEBUGGER PROPERTY STRINGS gdb lldb)
+
 include(${CP_CMAKE_DIR}/macros.cmake)
 
 if (COVERAGE)
