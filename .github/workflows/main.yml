@@ -44,8 +44,8 @@ jobs:
           run: |
             cmake -GNinja -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
             cmake --build build
-            cmake --install -Bbuild --component caveexpress --prefix caveexpress-install
-            cmake --install -Bbuild --component cavepacker --prefix cavepacker-install
+            cmake --install build --component caveexpress --prefix install-caveexpress
+            cmake --install build --component cavepacker --prefix install-cavepacker
 
         - name: Test
           run: |
@@ -77,8 +77,8 @@ jobs:
             cmake --version
             cmake .. -DCMAKE_BUILD_TYPE=Release
             cmake --build .
-            cmake --install -B. --component caveexpress --prefix caveexpress-install
-            cmake --install -B. --component cavepacker --prefix cavepacker-install
+            cmake --install . --component caveexpress --prefix install-caveexpress
+            cmake --install . --component cavepacker --prefix install-cavepacker
 
         - name: Tests
           run: |
