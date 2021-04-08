@@ -1,9 +1,8 @@
-States for building on Windows, Linux, Mac, iOS and Android:
+States for building on Linux and Mac
 
-[![Build Status](https://travis-ci.org/mgerhardy/caveexpress.svg?branch=master)](https://travis-ci.org/mgerhardy/caveexpress)
-[![Build status](https://ci.appveyor.com/api/projects/status/5milbiquto4e6u2t?svg=true)](https://ci.appveyor.com/project/mgerhardy/caveexpress)
-[![Coverity status](https://scan.coverity.com/projects/5927/badge.svg)](https://scan.coverity.com/projects/mgerhardy-caveexpress)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/125fc54e4ab24eadb604e02e6fde010b)](https://www.codacy.com/app/martin-gerhardy/caveexpress?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mgerhardy/caveexpress&amp;utm_campaign=Badge_Grade)
+[![Actions Status](https://github.com/mgerhardy/caveexpress/actions/workflows/main.yml/badge.svg)](https://github.com/mgerhardy/caveexpress/actions)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **[Homepage](http://www.caveproductions.org/)**
 
