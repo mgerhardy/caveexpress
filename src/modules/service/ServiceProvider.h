@@ -12,6 +12,7 @@ class INetwork;
 class TextureDefinition;
 class IFrontend;
 class IProgressCallback;
+class EventHandler;
 
 class ServiceProvider: public NonCopyable {
 private:
@@ -20,13 +21,14 @@ private:
 	INetwork* _loopback;
 	TextureDefinition* _textureDefinition;
 	INetwork* _currentNetwork;
+	EventHandler* _eventHandler;
 
 public:
 	ServiceProvider ();
 	virtual ~ServiceProvider ();
 
 	void initTextureDefinition (IFrontend *frontend, const std::string& textureSize, IProgressCallback* progress = nullptr);
-	void init (IFrontend *frontend);
+	void init (IFrontend *frontend, EventHandler *eventHandler);
 	void shutdown();
 
 	// switches the network to either loopback or to real network
@@ -39,7 +41,13 @@ public:
 	// get the texture definition that depends on your current resolution. Either the 'big'
 	// or the 'small' definition was used.
 	TextureDefinition& getTextureDefinition ();
+	EventHandler& getEventHandler ();
 };
+
+inline EventHandler& ServiceProvider::getEventHandler ()
+{
+	return *_eventHandler;
+}
 
 inline INetwork& ServiceProvider::getNetwork ()
 {

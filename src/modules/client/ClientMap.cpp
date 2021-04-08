@@ -30,11 +30,19 @@ ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, 
 	_minZoom = Config.getConfigVar("minzoom", "0.5");
 	_cooldowns.resize(8);
 	_font = UI::get().getFont();
+
+	_serviceProvider.getEventHandler().registerObserver(this);
 }
 
 ClientMap::~ClientMap ()
 {
 	resetCurrentMap();
+	_serviceProvider.getEventHandler().registerObserver(this);
+}
+
+void ClientMap::onWindowResize ()
+{
+	setSize(_frontend->getWidth(), _frontend->getHeight());
 }
 
 void ClientMap::close ()
@@ -148,11 +156,11 @@ void ClientMap::renderFadeOutOverlay (int x, int y) const
 {
 	const uint32_t now = _time;
 	const uint32_t delay = _restartDue - _restartInitialized;
-	const float restartFadeStepWidth = 1.0 / delay;
+	const float restartFadeStepWidth = 1.0f / delay;
 	const uint32_t delta = now > _restartDue ? 0U : _restartDue - now;
-	const float alpha = 1.0 - delta * restartFadeStepWidth;
+	const float alpha = 1.0f - delta * restartFadeStepWidth;
 	const Color color = { 0.0, 0.0, 0.0, alpha };
-	_frontend->renderFilledRect(x, y, getPixelWidth() * _zoom, getPixelHeight() * _zoom, color);
+	_frontend->renderFilledRect(x, y, (int)((float)getPixelWidth() * _zoom), (int)((float)getPixelHeight() * _zoom), color);
 }
 
 void ClientMap::renderLayer (int x, int y, Layer layer) const
@@ -190,9 +198,9 @@ void ClientMap::render () const
 	const int scissorY = std::max(0, y);
 	const bool debug = Config.isDebugUI();
 	if (debug) {
-		_frontend->renderRect(scissorX, scissorY, getPixelWidth() * _zoom, getPixelHeight() * _zoom, colorRed);
+		_frontend->renderRect(scissorX, scissorY, (int)((float)getPixelWidth() * _zoom), (int)((float)getPixelHeight() * _zoom), colorRed);
 	} else {
-		_frontend->enableScissor(scissorX, scissorY, getPixelWidth() * _zoom, getPixelHeight() * _zoom);
+		_frontend->enableScissor(scissorX, scissorY, (int)((float)getPixelWidth() * _zoom), (int)((float)getPixelHeight() * _zoom));
 	}
 
 	renderBegin(x, y);
@@ -205,7 +213,7 @@ void ClientMap::render () const
 		renderFadeOutOverlay(x, y);
 	}
 
-	Config.setDebugRendererData(x, y, getWidth(), getHeight(), _scale * _zoom);
+	Config.setDebugRendererData(x, y, getWidth(), getHeight(), (int)((float)_scale * _zoom));
 	Config.getDebugRenderer().render();
 
 	if (!debug) {
@@ -215,8 +223,8 @@ void ClientMap::render () const
 
 void ClientMap::renderCooldowns (int x, int y) const
 {
-	const int padding = 0.006f * _frontend->getHeight();
-	const int marginTop = 0.1 * _frontend->getHeight();
+	const int padding = (int)(0.006f * (float)_frontend->getHeight());
+	const int marginTop = (int)(0.1f * (float)_frontend->getHeight());
 	const int screenX = std::max(0, x) + padding;
 	const int screenY = std::max(0, y) + padding + marginTop;
 	int cooldownScreenY = screenY;
@@ -240,7 +248,7 @@ void ClientMap::renderCooldowns (int x, int y) const
 		const int cooldownWidth = texture->getWidth();
 		const int cooldownHeight = texture->getHeight();
 		const float ratio = delta / (float)cooldownData.duration;
-		const int realWidth = cooldownWidth * ratio;
+		const int realWidth = (int)((float)cooldownWidth * ratio);
 		if (realWidth <= 0) {
 			continue;
 		}

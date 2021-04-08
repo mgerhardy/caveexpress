@@ -85,8 +85,9 @@ void ServiceProvider::shutdown()
 	_currentNetwork = nullptr;
 }
 
-void ServiceProvider::init (IFrontend *frontend)
+void ServiceProvider::init (IFrontend *frontend, EventHandler *eventHandler)
 {
+	_eventHandler = eventHandler;
 	{
 		const ExecutionTime e("loading network");
 		_loopback = new NoNetwork();

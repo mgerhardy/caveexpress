@@ -242,7 +242,7 @@ bool SDLMainLoop::handleInit() {
 	}
 	case InitState::INITSTATE_SERVICEPROVIDER:
 		Log::info(LOG_SERVER, "init the serviceprovider");
-		_serviceProvider.init(_frontend);
+		_serviceProvider.init(_frontend, &_eventHandler);
 		_serviceProvider.updateNetwork(_dedicated);
 		_initState = InitState::INITSTATE_SPRITE;
 		break;

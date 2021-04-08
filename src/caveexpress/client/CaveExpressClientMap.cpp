@@ -28,7 +28,7 @@
 namespace caveexpress {
 
 static const Color waterLineColor = { 0.99f, 0.99f, 1.0f, 1.0f };
-static const Color color = { WATERCOLOR[0] / 255.0f, WATERCOLOR[1] / 255.0f, WATERCOLOR[2] / 255.0f, WATER_ALPHA
+static const Color color = { (float)WATERCOLOR[0] / 255.0f, (float)WATERCOLOR[1] / 255.0f, (float)WATERCOLOR[2] / 255.0f, WATER_ALPHA
 		/ 255.0f };
 
 CaveExpressClientMap::CaveExpressClientMap (int x, int y, int width, int height, IFrontend *frontend,
@@ -94,8 +94,8 @@ void CaveExpressClientMap::setCaveNumber (uint16_t id, uint8_t number)
 		Log::error(LOG_GAMEIMPL, "no cave entity with the id %i found", id);
 		return;
 	}
-	const char first = number / 10 + '0';
-	const char second = number % 10 + '0';
+	const char first = (char)(number / 10 + '0');
+	const char second = (char)(number % 10 + '0');
 	const std::string caveSprite = string::format("cave-sign-%c%c", first, second);
 	e->addOverlay(UI::get().loadSprite(caveSprite));
 }
@@ -187,7 +187,7 @@ void CaveExpressClientMap::start () {
 		const int border = 5;
 		sizeW -= border;
 		startX += border;
-		startY += sizeH / 2.0f;
+		startY += (int)((float)sizeH / 2.0f);
 		const int sparklePerLava = 4;
 		for (int p = 0; p < sparklePerLava; ++p) {
 			_particleSystem.spawn(ParticlePtr(new Sparkle(*this, startX, startY, sizeW, sizeH)));

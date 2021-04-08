@@ -11,7 +11,7 @@ void AbstractTest::SetUp() {
 	} else {
 		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_CRITICAL);
 	}
-	_serviceProvider.init(&_testFrontend);
+	_serviceProvider.init(&_testFrontend, &_eventHandler);
 	_serviceProvider.updateNetwork(false);
 	Singleton<GameRegistry>::getInstance().getGame()->init(&_testFrontend, _serviceProvider);
 
