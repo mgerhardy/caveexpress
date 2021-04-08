@@ -25,8 +25,8 @@ jobs:
             cd build
             cmake .. -GXcode -DTOOLS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(pwd) -DCAVEEXPRESS=OFF
             xcodebuild build -target install -project caveproductions.xcodeproj CODE_SIGNING_REQUIRED=NO -configuration Release
-            ../contrib/scripts/create_dmg.sh cavepacker 1.4 $(pwd)/.. $(pwd)
-            mv "caveoacker 1.4.dmg" ..
+            ../contrib/scripts/create_dmg.sh cavepacker 1.5 $(pwd)/.. $(pwd)
+            mv "caveoacker 1.5.dmg" ..
 
         - name: Test
           run: |
@@ -38,7 +38,7 @@ jobs:
           uses: actions/upload-artifact@v2
           with:
             name: cavepacker
-            path: "caveoacker 1.4.dmg"
+            path: "caveoacker 1.5.dmg"
 
         - name: Upload the caveexpress artifacts
           uses: actions/upload-artifact@v2
