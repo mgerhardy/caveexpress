@@ -853,6 +853,17 @@ macro(cp_add_executable)
 	endif()
 	configure_file(${ROOT_DIR}/src/game.h.in ${PROJECT_BINARY_DIR}/game.h)
 	include_directories(${PROJECT_BINARY_DIR})
+
+	if (MSVC)
+		set_target_properties(${_EXE_TARGET} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+	endif()
+
+	add_custom_target(${_EXE_TARGET}-run
+		COMMAND $<TARGET_FILE:${_EXE_TARGET}>
+		USES_TERMINAL
+		DEPENDS ${_EXE_TARGET}
+		WORKING_DIRECTORY "${ROOT_DIR}"
+	)
 endmacro()
 
 #
