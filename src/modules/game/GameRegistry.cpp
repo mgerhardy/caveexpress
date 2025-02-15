@@ -15,7 +15,7 @@ GameRegistry::~GameRegistry()
 GamePtr GameRegistry::getGame (const std::string& id)
 {
 	GameFactoryContext ctx;
-	GamePtr game;
+	GamePtr game = nullptr;
 	if (id.empty()) {
 		if (!getFactories().empty()) {
 			FactoryMapConstIter i = getFactories().begin();
