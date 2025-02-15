@@ -89,3 +89,31 @@ jobs:
           with:
             name: caveexpress
             path: build/caveexpress-install
+
+    android:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v4
+        - uses: seanmiddleditch/gha-setup-ninja@master
+        - uses: nttld/setup-ndk@v1
+          id: setup-ndk
+          with:
+            local-cache: true
+            ndk-version: r21e
+        - uses: actions/setup-java@v4
+          with:
+            distribution: 'zulu'
+            java-version: '8'
+        - name: 'Configure Android NDK variables'
+          shell: sh
+          run: |
+            # We cannot use GitHub expressions in the controller job
+            echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >>$GITHUB_ENV
+
+        - name: Build
+          run: |
+            mkdir build
+            cd build
+            cmake --version
+            cmake .. -DCMAKE_BUILD_TYPE=Release -DTOOLS=OFF -DUNITTESTS=OFF -DCMAKE_TOOLCHAIN_FILE=$DIR/../../cmake/toolchains/android-toolchain.cmake
+            cmake --build .
