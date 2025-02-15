@@ -110,8 +110,8 @@ jobs:
             ndk-version: r21e
         - uses: actions/setup-java@v4
           with:
-            distribution: 'zulu'
-            java-version: '8'
+            distribution: 'temurin'
+            java-version: '17'
         - name: 'Configure Android NDK variables'
           shell: sh
           run: |
