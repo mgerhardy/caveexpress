@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 struct Mix_Chunk;
-struct _Mix_Music;
+struct Mix_Music;
 
 #define MAX_CHANNELS 16
 
@@ -15,7 +15,7 @@ private:
 	typedef ChunkMap::iterator ChunkMapIter;
 	ChunkMap _map;
 	vec2 _listenerPosition;
-	_Mix_Music *_music;
+	Mix_Music *_music;
 	std::string _musicPlaying;
 	int _currentChannel;
 	int _state;

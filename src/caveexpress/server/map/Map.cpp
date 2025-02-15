@@ -483,7 +483,8 @@ inline const ThemeType& getTheme (const std::string& name)
 	const std::size_t themeSep = name.find("-");
 	if (themeSep == std::string::npos)
 		return ThemeTypes::ROCK;
-	const ThemeType& t = ThemeType::getByName(name.substr(themeSep + 1, name.size() - (themeSep + 1)));
+	const std::string &themeName = name.substr(themeSep + 1, name.size() - (themeSep + 1));
+	const ThemeType& t = ThemeType::getByName(themeName);
 	if (!t.isNone())
 		return t;
 	return ThemeTypes::ROCK;

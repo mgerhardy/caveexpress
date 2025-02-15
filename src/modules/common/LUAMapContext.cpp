@@ -84,7 +84,8 @@ int LUAMapContext::luaAddTile (lua_State * l)
 int LUAMapContext::luaAddEmitter (lua_State * l)
 {
 	LUAMapContext *ctx = _luaGetContext(l, 1);
-	const EntityType& type = EntityType::getByName(luaL_checkstring(l, 2));
+	const std::string &name = luaL_checkstring(l, 2);
+	const EntityType& type = EntityType::getByName(name);
 	const gridCoord x = luaL_checknumber(l, 3);
 	const gridCoord y = luaL_checknumber(l, 4);
 	const int amount = luaL_optinteger(l, 5, 1);

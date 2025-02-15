@@ -49,7 +49,8 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		if (!type && !typeStr.empty()) {
 			Log::error(LOG_COMMON, "invalid sprite type given: %s", typeStr.c_str());
 		}
-		const ThemeType& theme = ThemeType::getByName(lua.getValueStringFromTable("theme"));
+		const std::string &themeName = lua.getValueStringFromTable("theme");
+		const ThemeType& theme = ThemeType::getByName(themeName);
 		SpriteDef *def = new SpriteDef(id, type, theme);
 
 		def->fps = lua.getValueIntegerFromTable("fps", 20);

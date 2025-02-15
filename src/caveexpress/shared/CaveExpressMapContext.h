@@ -22,7 +22,8 @@ protected:
 		const std::string caveTile = luaL_checkstring(l, 2);
 		const gridCoord x = luaL_checknumber(l, 3);
 		const gridCoord y = luaL_checknumber(l, 4);
-		const EntityType& entityType = EntityType::getByName(luaL_optstring(l, 5, "none"));
+		const std::string& name = luaL_optstring(l, 5, "none");
+		const EntityType& entityType = EntityType::getByName(name);
 		const int delay = luaL_optinteger(l, 6, 5000);
 
 		SpriteDefPtr spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(caveTile);
