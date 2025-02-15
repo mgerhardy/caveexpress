@@ -6,7 +6,7 @@
 		"sdl2-net",
 		"sdl2-mixer",
 		"sdl2-image",
-		" lua",
+		"lua",
 		"sqlite3",
 		"box2d"
 	]
