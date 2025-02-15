@@ -23,7 +23,7 @@ cmake $DIR/../.. -DTOOLS=OFF -DUNITTESTS=OFF -DANDROID_INSTALL_PACKAGES=${INSTAL
 	-DHD_VERSION=ON -DCMAKE_TOOLCHAIN_FILE=$DIR/../../cmake/toolchains/android-toolchain.cmake
 make $*
 
-STATE=$(${ANDROID_SDK}/platform-tools/adb get-state)
+STATE=$(${ANDROID_SDK_ROOT}/platform-tools/adb get-state)
 if [ "$STATE" == "device" ]; then
 	cd ../cp-build-android-hd
 	make android-caveexpress-install

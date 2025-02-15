@@ -22,7 +22,7 @@ echo "Extracting the sdk..."
 echo " ==> target: /home/$USER/"
 tar -xzf android-sdk_$SDK_VERSION-linux.tgz -C ~/
 echo "Configure paths..."
-echo "export ANDROID_SDK=~/android-sdk-linux" >> ~/.bashrc
+echo "export ANDROID_SDK_ROOT=~/android-sdk-linux" >> ~/.bashrc
 echo "export ANDROID_NDK=~/android-ndk-$NDK_VERSION" >> ~/.bashrc
 echo "export NDK_ROOT=\$ANDROID_NDK" >> ~/.bashrc
-echo "export PATH=\$PATH:\$ANDROID_NDK:\$ANDROID_SDK/tools:\$ANDROID_SDK/platform-tools" >> ~/.bashrc
+echo "export PATH=\$PATH:\$ANDROID_NDK:\$ANDROID_SDK_ROOT/tools:\$ANDROID_SDK_ROOT/platform-tools" >> ~/.bashrc
