@@ -8,7 +8,6 @@
 #include "common/Singleton.h"
 #include <SDL.h>
 #include <SDL_assert.h>
-#include <SDL_mixer.h>
 
 namespace {
 const int SOUND_CLOSED = 1 << 0;

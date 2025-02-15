@@ -4,8 +4,7 @@
 #include "ISoundEngine.h"
 #include <unordered_map>
 
-struct Mix_Chunk;
-struct Mix_Music;
+#include <SDL_mixer.h>
 
 #define MAX_CHANNELS 16
 
