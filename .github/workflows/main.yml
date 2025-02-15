@@ -58,6 +58,8 @@ jobs:
         steps:
         - uses: actions/checkout@v4
 
+        - uses: lukka/get-cmake@latest
+
         - name: Setup
           uses: lukka/run-vcpkg@v11
           id: runvcpkg

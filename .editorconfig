@@ -7,3 +7,6 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 vc_generate_documentation_comments = doxygen_slash_star
 charset = utf-8
+
+[.github/workflows/*.yml]
+indent_style = space
