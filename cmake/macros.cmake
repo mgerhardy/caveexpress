@@ -616,27 +616,25 @@ macro(cp_set_properties TARGET VARNAME VALUE)
 	set_target_properties(${TARGET} PROPERTIES ${VARNAME} "${VALUE}")
 endmacro()
 
-macro(cp_add_debugger TARGET)
+function(cp_add_debugger TARGET)
 	if (${DEBUGGER} MATCHES "gdb")
 		add_custom_target(${TARGET}-debug)
 		add_custom_command(TARGET ${TARGET}-debug
+			POST_BUILD
 			COMMAND ${GDB_EXECUTABLE} -ex run --args $<TARGET_FILE:${TARGET}>
 			COMMENT "Starting debugger session for ${TARGET}"
-			USES_TERMINAL
 			WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${TARGET}
-			DEPENDS ${TARGET}
 		)
 	elseif (${DEBUGGER} MATCHES "lldb")
 		add_custom_target(${TARGET}-debug)
 		add_custom_command(TARGET ${TARGET}-debug
+			POST_BUILD
 			COMMAND CG_CONTEXT_SHOW_BACKTRACE=1 ${LLDB_EXECUTABLE} -b -o run $<TARGET_FILE:${TARGET}>
 			COMMENT "Starting debugger session for ${TARGET}"
-			USES_TERMINAL
 			WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${TARGET}
-			DEPENDS ${TARGET}
 		)
 	endif()
-endmacro()
+endfunction()
 
 #
 # set up the binary for the application. This will also set up platform specific stuff for you
