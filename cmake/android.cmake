@@ -23,7 +23,7 @@ if (GRADLE)
 	set(ANDROID_TOOL_FLAGS "${ANDROID_TOOL_FLAGS} -g")
 endif()
 
-set(ANDROID_SDK_TOOL "${ANDROID_SDK_ROOT}/tools/android${ANDROID_SDK_TOOL_EXT}")
+set(ANDROID_SDK_TOOL "${ANDROID_SDK_ROOT}/tools/bin/sdkmanager${ANDROID_SDK_TOOL_EXT}")
 
 if (NOT CMAKE_ANDROID_NDK)
 	message(FATAL_ERROR "ANDROID_NDK environment variable is not set")

@@ -10,12 +10,8 @@ jobs:
 
         - name: Setup
           run: |
-            brew search box2d
-            brew tap homebrew/boneyard
-            brew versions box2d
-            cd $(brew --prefix)
-            #git checkout 6b8d25f Library/Formula/box2d.rb
-            brew install lua box2d sdl2 sdl2_image sdl2_mixer sdl2_net sqlite zlib yajl upx
+            brew install lua sdl2 sdl2_image sdl2_mixer sdl2_net sqlite zlib yajl upx
+            brew install https://raw.githubusercontent.com/Homebrew/homebrew-boneyard/master/box2d.rb
 
         - name: Build
           run: |
