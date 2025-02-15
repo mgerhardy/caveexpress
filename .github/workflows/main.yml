@@ -79,6 +79,7 @@ jobs:
             mkdir build
             cd build
             cmake --version
+            echo CMAKE_TOOLCHAIN_FILE=${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
             cmake .. -DCMAKE_BUILD_TYPE=Release -DTOOLS=OFF -DUNITTESTS=OFF -DCMAKE_TOOLCHAIN_FILE=${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
             cmake --build .
             cmake --install . --component caveexpress --prefix install-caveexpress
