@@ -20,7 +20,7 @@ jobs:
             ../contrib/scripts/create_dmg.sh caveexpress dev $(pwd)/.. $(pwd)
 
         - name: Upload the caveexpress artifacts
-          uses: actions/upload-artifact@v2
+          uses: actions/upload-artifact@v4
           with:
             name: caveexpress
             path: "build/caveexpress dev.dmg"
