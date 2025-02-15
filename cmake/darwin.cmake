@@ -1,5 +1,3 @@
-include(BundleUtilities)
-
 #set(CMAKE_OSX_ARCHITECTURES "i386;x86_64")
 
 macro(cp_osx_get_directory_size DIR OUTVAR)
@@ -70,4 +68,5 @@ macro(cp_osx_add_target_properties TARGET APPNAME VERSION VERSION_CODE)
 	cp_set_properties(${TARGET} MACOSX_BUNDLE_BUNDLE_NAME "${APPNAME}")
 	#cp_set_properties(${TARGET} MACOSX_BUNDLE TRUE)
 	cp_osx_generate_plist_file(${TARGET})
+	add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -DTARGET_BUNDLE_DIR=$<TARGET_BUNDLE_DIR:${TARGET}> -P "${ROOT_DIR}/cmake/applebundle.cmake" VERBATIM)
 endmacro()
