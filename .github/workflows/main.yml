@@ -65,7 +65,7 @@ jobs:
           env:
             VCPKG_DEFAULT_TRIPLET: x64-windows-static
           with:
-            vcpkgGitCommitId: 5b1214315250939257ef5d62ecdcbca18cf4fb1c
+            vcpkgGitCommitId: aa628ceb5f15f0c30d4d481f14fa5b2be2b4a658
             runVcpkgInstall: true
 
         - name: Build
