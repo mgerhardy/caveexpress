@@ -11,6 +11,7 @@ jobs:
         - name: Setup
           run: |
             brew search box2d
+            brew tap homebrew/boneyard
             brew versions box2d
             cd $(brew --prefix)
             #git checkout 6b8d25f Library/Formula/box2d.rb
