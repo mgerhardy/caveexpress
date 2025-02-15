@@ -6,7 +6,7 @@ jobs:
     mac:
         runs-on: macos-latest
         steps:
-        - uses: actions/checkout@v1
+        - uses: actions/checkout@v4
 
         - name: Setup
           run: brew install lua box2d sdl2 sdl2_image sdl2_mixer sdl2_net sqlite zlib yajl upx
@@ -26,11 +26,11 @@ jobs:
             path: "build/caveexpress dev.dmg"
 
     linux:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-22.04
         container: debian:experimental
 
         steps:
-        - uses: actions/checkout@v1
+        - uses: actions/checkout@v4
 
         - name: Setup
           run: |
