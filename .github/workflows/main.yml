@@ -62,11 +62,10 @@ jobs:
 
         - name: Setup
           uses: lukka/run-vcpkg@v11
-          id: runvcpkg
+          env:
+            VCPKG_DEFAULT_TRIPLET: x64-windows-static
           with:
             vcpkgGitCommitId: 5b1214315250939257ef5d62ecdcbca18cf4fb1c
-            vcpkgTriplet: 'x64-windows-static'
-            vcpkgArguments: 'sdl2 sdl2-net sdl2-mixer sdl2-image lua sqlite3 box2d'
 
         - name: Build
           run: |
