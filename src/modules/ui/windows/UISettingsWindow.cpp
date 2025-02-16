@@ -166,10 +166,14 @@ void UISettingsWindow::update (uint32_t time)
 	_noController->setVisible(!visible);
 
 	const bool sound = Config.isSoundEnabled();
-	if (_volume)
+	if (_volume) {
 		_volume->setEnabled(sound);
-	if (_musicVolume)
+		_volume->setValue(Config.getConfigVar("volume")->getFloatValue());
+	}
+	if (_musicVolume) {
 		_musicVolume->setEnabled(sound);
+		_musicVolume->setValue(Config.getConfigVar("musicvolume")->getFloatValue());
+	}
 
 	UIWINDOW_SETTINGS_COLOR(_serviceProvider.getTextureDefinition().getTextureSize() == "big", _texturesBig, _texturesSmall)
 	UIWINDOW_SETTINGS_COLOR(sound, _soundOn, _soundOff)
