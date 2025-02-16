@@ -11,6 +11,7 @@
 #include <conio.h>
 #include <mmsystem.h>
 #include <SDL_messagebox.h>
+#include "windirent.h"
 #include <iterator>
 #include <vector>
 #include <algorithm>
@@ -77,40 +78,41 @@ std::string Windows::normalizePath (const std::string& path)
 DirectoryEntries Windows::listDirectory (const std::string& basedir, const std::string& subdir)
 {
 	DirectoryEntries entities;
-	std::string search(basedir + "\\");
-	int findhandle;
-	struct _finddata_t findinfo;
+	std::string search(basedir + "/");
+	DIR *directory;
+	struct dirent *d;
+	struct stat st;
 
-	if (!subdir.empty()) {
-		search.append(subdir).append("\\");
-	} else {
-		search.append("*");
-	}
+	if (!subdir.empty())
+		search.append(subdir).append("/");
 
-	findhandle = _findfirst(search.c_str(), &findinfo);
-	if (findhandle == -1)
+	if ((directory = ::opendir(search.c_str())) == nullptr)
 		return entities;
 
-	do {
-		if (findinfo.attrib & _A_SUBDIR) {
-			if (strcmp(findinfo.name, ".") && strcmp(findinfo.name, "..")) {
+	while ((d = ::readdir(directory)) != nullptr) {
+		std::string name(search);
+		name.append("/").append(d->d_name);
+		if (::stat(name.c_str(), &st) == -1)
+			continue;
+		if (st.st_mode & S_IFDIR) {
+			if (strcmp(d->d_name, ".") && strcmp(d->d_name, "..")) {
 				std::string newsubdirs;
 				if (!subdir.empty())
-					newsubdirs.append(subdir).append("\\");
-				newsubdirs.append(findinfo.name);
-				DirectoryEntries subDirEnts = listDirectory(basedir, newsubdirs);
+					newsubdirs.append(subdir).append("/");
+				newsubdirs.append(d->d_name);
+				const DirectoryEntries& subDirEnts = listDirectory(basedir, newsubdirs);
 				entities.insert(entities.end(), subDirEnts.begin(), subDirEnts.end());
 			}
 		} else {
 			std::string filename(subdir);
 			if (!filename.empty())
-				filename.append("\\");
-			filename.append(findinfo.name);
+				filename.append("/");
+			filename.append(d->d_name);
 			entities.push_back(filename);
 		}
-	} while (_findnext(findhandle, &findinfo) != -1);
+	}
 
-	_findclose(findhandle);
+	::closedir(directory);
 
 	return entities;
 }
