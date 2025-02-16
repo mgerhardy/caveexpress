@@ -27,7 +27,7 @@ set(common_SRCS
 	ByteStream.cpp
 )
 
-set(LIBS lua SDL2::SDL2 SDL2::SDL2main sqlite3 box2d glm)
+set(LIBS lua::lua SDL2::SDL2-static SDL2::SDL2main SQLite::SQLite3 box2d glm)
 if(WINDOWS)
 	set(ports_SRCS ports/Windows.cpp)
 elseif(ANDROID)
