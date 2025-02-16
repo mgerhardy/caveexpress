@@ -68,7 +68,7 @@ bool SDLSoundEngine::init (bool initCache)
 	}
 
 	const int result = Mix_Init(MIX_INIT_OGG);
-	if (!(result &~ MIX_INIT_OGG)) {
+	if ((result & MIX_INIT_OGG) == 0) {
 		Log::error(LOG_SOUND, "Failed to initialize sdl mixer with ogg support");
 	}
 
