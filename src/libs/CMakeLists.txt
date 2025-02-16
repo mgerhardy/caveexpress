@@ -92,4 +92,5 @@ FetchContent_Declare(
 set(BOX2D_BUILD_UNIT_TESTS OFF)
 set(BOX2D_BUILD_TESTBED OFF)
 set(BOX2D_BUILD_DOCS OFF)
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 FetchContent_MakeAvailable(box2d)
