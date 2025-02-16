@@ -213,12 +213,8 @@ endif()
 
 add_subdirectory(src/libs)
 
-find_package(SDL2_mixer REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_net REQUIRED)
 find_package(sqlite3 REQUIRED)
 find_package(lua REQUIRED)
-find_package(box2d REQUIRED)
 find_package(zlib REQUIRED)
 
 configure_file(${ROOT_DIR}/src/config.h.in ${CMAKE_BINARY_DIR}/cp-config.h)

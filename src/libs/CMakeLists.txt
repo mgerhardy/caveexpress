@@ -19,6 +19,12 @@ FetchContent_Declare(
     GIT_TAG release-2.8.1
 	GIT_SUBMODULES_RECURSE ON
 )
+set(SDL2MIXER_FLAC OFF)
+set(SDL2MIXER_GME OFF)
+set(SDL2MIXER_CMD OFF)
+set(SDL2MIXER_MOD OFF)
+set(SDL2MIXER_MIDI OFF)
+set(SDL2MIXER_MP3 OFF)
 FetchContent_MakeAvailable(SDL2_mixer)
 
 FetchContent_Declare(
@@ -28,6 +34,20 @@ FetchContent_Declare(
 	GIT_SUBMODULES_RECURSE ON
 )
 set(SDL2IMAGE_AVIF OFF)
+set(SDL2IMAGE_BMP OFF)
+set(SDL2IMAGE_GIF OFF)
+set(SDL2IMAGE_JPG OFF)
+set(SDL2IMAGE_JXL OFF)
+set(SDL2IMAGE_LBM OFF)
+set(SDL2IMAGE_PCX OFF)
+set(SDL2IMAGE_PNM OFF)
+set(SDL2IMAGE_QOI OFF)
+set(SDL2IMAGE_SVG OFF)
+set(SDL2IMAGE_TGA OFF)
+set(SDL2IMAGE_TIF OFF)
+set(SDL2IMAGE_WEBP OFF)
+set(SDL2IMAGE_XCF OFF)
+set(SDL2IMAGE_XV OFF)
 FetchContent_MakeAvailable(SDL2_image)
 
 FetchContent_Declare(
@@ -38,8 +58,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(SDL2_net)
 
 FetchContent_Declare(
-    Box2D
+    box2d
     GIT_REPOSITORY https://github.com/erincatto/box2d.git
     GIT_TAG v2.4.2
 )
-FetchContent_MakeAvailable(Box2D)
+set(BOX2D_BUILD_TESTBED OFF)
+set(BOX2D_BUILD_UNIT_TESTS OFF)
+set(BOX2D_BUILD_DOCS OFF)
+FetchContent_MakeAvailable(box2d)
