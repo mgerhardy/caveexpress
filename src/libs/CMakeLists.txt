@@ -8,14 +8,6 @@ if(UNITTESTS)
 endif()
 
 FetchContent_Declare(
-    zlib
-    GIT_REPOSITORY "https://github.com/madler/zlib.git"
-    GIT_TAG v1.3.1
-    FIND_PACKAGE_ARGS NAMES ZLIB
-)
-FetchContent_MakeAvailable(zlib)
-
-FetchContent_Declare(
     lua
     GIT_REPOSITORY "https://github.com/marovira/lua"
     GIT_TAG 5.4.4
@@ -97,4 +89,7 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/erincatto/box2d.git
     GIT_TAG v2.4.2
 )
+set(BOX2D_BUILD_UNIT_TESTS OFF)
+set(BOX2D_BUILD_TESTBED OFF)
+set(BOX2D_BUILD_DOCS OFF)
 FetchContent_MakeAvailable(box2d)
