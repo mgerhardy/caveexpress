@@ -211,7 +211,8 @@ else()
 	message(STATUS "ccache not found")
 endif()
 
-find_package(sdl2 REQUIRED)
+add_subdirectory(src/libs)
+
 find_package(SDL2_mixer REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_net REQUIRED)
@@ -222,8 +223,6 @@ find_package(zlib REQUIRED)
 
 configure_file(${ROOT_DIR}/src/config.h.in ${CMAKE_BINARY_DIR}/cp-config.h)
 include_directories(${CMAKE_BINARY_DIR})
-
-add_subdirectory(src/libs)
 
 include_directories(src)
 include_directories(src/modules)

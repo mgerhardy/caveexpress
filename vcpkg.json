@@ -2,12 +2,7 @@
 	"name": "buildeploy",
 	"version-string": "latest",
 	"dependencies": [
-		"sdl2",
-		"sdl2-net",
-		"sdl2-mixer",
-		"sdl2-image",
 		"lua",
-		"sqlite3",
-		"box2d"
+		"sqlite3"
 	]
 }
