@@ -69,12 +69,16 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 		shader.setUniformf("u_mousepos", x, y);
 	}
 	glBindVertexArray(_vao);
+	GL_checkError();
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	GL_checkError();
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _currentVertexIndex, _vertices, GL_DYNAMIC_DRAW);
+	GL_checkError();
 
 	renderBatchBuffers();
 
 	glBindVertexArray(0);
+	GL_checkError();
 	shader.deactivate();
 }
 
@@ -83,10 +87,14 @@ void GL3Frontend::initRenderer () {
 	AbstractGLFrontend::initRenderer();
 
 	glGenVertexArrays(1, &_vao);
+	GL_checkError();
 	glGenBuffers(1, &_vbo);
+	GL_checkError();
 
 	glBindVertexArray(_vao);
+	GL_checkError();
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	GL_checkError();
 
 	if (!_shader.loadProgram("main")) {
 		Log::error(LOG_GFX, "Failed to load the main shader");
@@ -107,7 +115,9 @@ void GL3Frontend::initRenderer () {
 	_waterShader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, c)));
 	_waterShader.enableVertexAttributeArray("a_color");
 	glBindVertexArray(0);
+	GL_checkError();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	GL_checkError();
 	_waterShader.deactivate();
 
 	_shader.activate();
@@ -122,14 +132,20 @@ void GL3Frontend::initRenderer () {
 	_shader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, c)));
 	_shader.enableVertexAttributeArray("a_color");
 	glBindVertexArray(0);
+	GL_checkError();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	GL_checkError();
 	_shader.deactivate();
 
 	glActiveTexture(GL_TEXTURE1);
+	GL_checkError();
 	glEnable(GL_TEXTURE_2D);
+	GL_checkError();
 
 	glActiveTexture(GL_TEXTURE0);
+	GL_checkError();
 	glEnable(GL_TEXTURE_2D);
+	GL_checkError();
 
 	SDL_Surface *textureSurface = loadTextureIntoSurface("waternoise");
 	if (textureSurface == nullptr) {

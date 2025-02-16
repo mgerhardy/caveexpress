@@ -512,12 +512,20 @@ TexNum AbstractGLFrontend::uploadTexture (const unsigned char* pixels, int w, in
 {
 	TexNum texnum;
 	glGenTextures(1, &texnum);
+	GL_checkError();
 	glBindTexture(GL_TEXTURE_2D, texnum);
+	GL_checkError();
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	GL_checkError();
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	GL_checkError();
+	GL_checkError();
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	GL_checkError();
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	GL_checkError();
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
+	GL_checkError();
 	glBindTexture(GL_TEXTURE_2D, 0);
 	GL_checkError();
 	return texnum;
@@ -530,9 +538,13 @@ void AbstractGLFrontend::makeScreenshot (const std::string& filename)
 	std::unique_ptr<GLubyte[]> pixels(new GLubyte[bytesPerPixel * _width * _height]);
 	int rowPack;
 	glGetIntegerv(GL_PACK_ALIGNMENT, &rowPack);
+	GL_checkError();
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	GL_checkError();
 	glReadPixels(0, 0, _width, _height, GL_RGB, GL_UNSIGNED_BYTE, pixels.get());
+	GL_checkError();
 	glPixelStorei(GL_PACK_ALIGNMENT, rowPack);
+	GL_checkError();
 
 	std::unique_ptr<SDL_Surface> surface(SDL_CreateRGBSurface(SDL_SWSURFACE, _width, _height, 24,
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
@@ -607,7 +619,9 @@ void AbstractGLFrontend::renderBegin ()
 {
 	SDL_GL_MakeCurrent(_window, _context);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	GL_checkError();
 	glClear(GL_COLOR_BUFFER_BIT);
+	GL_checkError();
 	_currentBatch = 0;
 	_drawCalls = 0;
 }
@@ -638,18 +652,25 @@ void AbstractGLFrontend::renderBatchBuffers()
 				glEnable(GL_SCISSOR_TEST);
 			scissorActive = true;
 			glScissor(b.scissorRect.x * _rx, b.scissorRect.y * _ry, b.scissorRect.w * _rx, b.scissorRect.h * _ry);
+			GL_checkError();
 		} else if (scissorActive) {
 			glDisable(GL_SCISSOR_TEST);
+			GL_checkError();
 		}
 		if (_currentTexture != b.texnum || _currentNormal != b.normaltexnum) {
 			_currentTexture = b.texnum;
 			_currentNormal = b.normaltexnum;
 			glActiveTexture(GL_TEXTURE1);
+			GL_checkError();
 			glBindTexture(GL_TEXTURE_2D, b.normaltexnum);
+			GL_checkError();
 			glActiveTexture(GL_TEXTURE0);
+			GL_checkError();
 			glBindTexture(GL_TEXTURE_2D, b.texnum);
+			GL_checkError();
 		}
 		glDrawArrays(b.type, b.vertexIndexStart, b.vertexCount);
+		GL_checkError();
 	}
 	if (scissorActive)
 		glDisable(GL_SCISSOR_TEST);
