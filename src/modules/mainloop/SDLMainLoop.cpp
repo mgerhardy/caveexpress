@@ -194,7 +194,7 @@ bool SDLMainLoop::handleInit() {
 		if (_dedicated) {
 			_frontend = new ConsoleFrontend(_console);
 		} else {
-			const ConfigVarPtr c = Config.getConfigVar("frontend", "sdl", true);
+			const ConfigVarPtr c = Config.getConfigVar("frontend", "opengl3", true);
 			Log::info(LOG_SERVER, "Use frontend %s", c->getValue().c_str());
 			std::shared_ptr<IConsole> clientConsole(new ClientConsole());
 #ifdef SDL_VIDEO_OPENGL
