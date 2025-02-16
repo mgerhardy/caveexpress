@@ -301,10 +301,6 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		return isPackageInstalled("com.android.vending");
 	}
 
-	static boolean isOUYA() {
-		return isPackageInstalled("tv.ouya");
-	}
-
 	static PaymentEntry[] getPaymentEntries() {
 		return getBaseActivity().paymentEntries.toArray(new PaymentEntry[] {});
 	}

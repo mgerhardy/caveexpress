@@ -17,7 +17,7 @@ void IntroTree::addIntroNodes(UINode* parent) {
 	parent->add(new IntroLabel(_frontend, tr("Learn to use the stone")));
 	parent->add(new IntroLabelHeadline(_frontend, tr("Hints")));
 	parent->add(new IntroLabel(_frontend, tr("Drop stones onto the tree")));
-	if (System.hasTouch() && !System.isOUYA()) {
+	if (System.hasTouch()) {
 		parent->add(new IntroLabel(_frontend, tr("Drop them with the second finger")));
 	} else {
 		parent->add(new IntroLabel(_frontend, tr("Drop them by hitting SPACE bar")));

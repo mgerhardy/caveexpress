@@ -29,7 +29,6 @@ void LUA::init (bool debug)
 	lua_register(_state, "isMacOSX", isMacOSX);
 	lua_register(_state, "isIOS", isIOS);
 	lua_register(_state, "isLinux", isLinux);
-	lua_register(_state, "isOUYA", isOUYA);
 	lua_register(_state, "isHTML5", isHTML5);
 	lua_register(_state, "isDebug", isDebug);
 	lua_register(_state, "isHD", isHD);
@@ -540,7 +539,7 @@ int LUA::isTouch (lua_State *L)
 {
 #if defined(__ANDROID__)
 	Android& system = static_cast<Android&>(getSystem());
-	lua_pushboolean(L, !system.isOUYA());
+	lua_pushboolean(L, true);
 #else
 #if defined(__IPHONEOS__)
 	lua_pushboolean(L, true);
@@ -555,17 +554,6 @@ int LUA::isHD (lua_State *L)
 {
 #ifdef HD_VERSION
 	lua_pushboolean(L, true);
-#else
-	lua_pushboolean(L, false);
-#endif
-	return 1;
-}
-
-int LUA::isOUYA (lua_State *L)
-{
-#if defined(__ANDROID__)
-	Android& system = static_cast<Android&>(getSystem());
-	lua_pushboolean(L, system.isOUYA());
 #else
 	lua_pushboolean(L, false);
 #endif

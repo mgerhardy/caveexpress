@@ -21,7 +21,6 @@ private:
 	jmethodID _hasItem;
 	jmethodID _track;
 	jmethodID _buyItem;
-	jmethodID _isOUYA;
 	jmethodID _isSmallScreen;
 	jmethodID _minimize;
 	jmethodID _getPaymentEntries;
@@ -42,7 +41,6 @@ public:
 
 	bool supportsUserContent () const override { return false; }
 	void notifyPaymentLoaded ();
-	bool isOUYA () const override;
 	void tick (uint32_t deltaTime) override;
 	int getAdHeight() const override;
 	bool track (const std::string& hitType, const std::string& screenName) override;
@@ -68,7 +66,6 @@ public:
 	bool hasItem (const std::string& id) override;
 	bool buyItem (const std::string& id) override;
 	bool hasMouseOrFinger () override;
-	bool canDisableGameController () override { return !isOUYA(); }
-	//bool wantBackButton () override { return isOUYA(); }
-	bool supportGooglePlay () { return !isOUYA(); }
+	bool canDisableGameController () override { return true; }
+	bool supportGooglePlay () { return true; }
 };

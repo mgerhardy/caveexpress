@@ -53,11 +53,11 @@ public:
 			return;
 		if (EntityTypes::isStone(type)) {
 			mapNode->displayText(tr("Drop the stone to collect packages again"));
-			if (System.hasTouch() && !System.isOUYA())
+			if (System.hasTouch())
 				mapNode->displayText(tr("Use the second finger to drop the stone"));
 		} else if (EntityTypes::isPackage(type)) {
 			mapNode->displayText(tr("Drop off at the shredder"));
-			if (System.hasTouch() && !System.isOUYA())
+			if (System.hasTouch())
 				mapNode->displayText(tr("Use the second finger to drop the package"));
 		} else if (EntityTypes::isNpcGrandpa(type)) {
 			mapNode->displayText(tr("Transfer the grandpa to the desired cave"));

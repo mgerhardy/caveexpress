@@ -31,7 +31,6 @@ private:
 	static int isIOS (lua_State *L);
 	static int isLinux (lua_State *L);
 	static int isHTML5 (lua_State *L);
-	static int isOUYA (lua_State *L);
 	static int isDebug (lua_State *L);
 	static int isHD (lua_State *L);
 	static int isTouch (lua_State *L);

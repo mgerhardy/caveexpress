@@ -57,7 +57,7 @@ int LocalReferenceHolder::s_active;
 
 Android::Android () :
 		Unix(), _env(nullptr), _cls(nullptr), _assetManager(nullptr), _showAds(nullptr), _hideAds(nullptr),
-		_showFullscreenAds(nullptr), _openURL(nullptr), _hasItem(nullptr), _track(nullptr), _buyItem(nullptr), _isOUYA(nullptr),
+		_showFullscreenAds(nullptr), _openURL(nullptr), _hasItem(nullptr), _track(nullptr), _buyItem(nullptr),
 		_isSmallScreen(nullptr), _minimize(nullptr), _getPaymentEntries(nullptr), _externalState(0) {
 }
 
@@ -114,7 +114,6 @@ void Android::init() {
 	_hasItem = env->GetStaticMethodID(_cls, "hasItem", "(Ljava/lang/String;)Z");
 	_track = env->GetStaticMethodID(_cls, "track", "(Ljava/lang/String;Ljava/lang/String;)Z");
 	_achievementUnlocked = env->GetStaticMethodID(_cls, "achievementUnlocked", "(Ljava/lang/String;Z)V");
-	_isOUYA = env->GetStaticMethodID(_cls, "isOUYA", "()Z");
 	_isSmallScreen = env->GetStaticMethodID(_cls, "isSmallScreen", "()Z");
 	_minimize = env->GetStaticMethodID(_cls, "minimize", "()V");
 	_getPaymentEntries = env->GetStaticMethodID(_cls, "getPaymentEntries", "()[Lorg/PaymentEntry;");
@@ -143,9 +142,6 @@ void Android::init() {
 	}
 	if (_hasItem == 0) {
 		Log::error(LOG_COMMON, "error getting hasItem()");
-	}
-	if (_isOUYA == 0) {
-		Log::error(LOG_COMMON, "error getting isOUYA()");
 	}
 	if (_isSmallScreen == 0) {
 		Log::error(LOG_COMMON, "error getting isSmallScreen()");
@@ -259,7 +255,7 @@ bool Android::testException ()
 
 bool Android::hasMouseOrFinger ()
 {
-	return !isOUYA();
+	return true;
 }
 
 DirectoryEntries Android::listDirectory (const std::string& basedir, const std::string& subdir)
@@ -507,24 +503,16 @@ bool Android::isSmallScreen (IFrontend*)
 
 bool Android::supportFocusChange ()
 {
-	return isOUYA();
+	return false;
 }
 
 bool Android::supportPayment ()
 {
-	// TODO: odk
-	if (isOUYA())
-		return false;
-	return true;
+	return false;
 }
 
 void Android::notifyPaymentLoaded ()
 {
-}
-
-bool Android::isOUYA () const
-{
-    return _env->CallStaticBooleanMethod(_cls, _isOUYA);
 }
 
 int Android::openURL (const std::string& url, bool) const
@@ -540,7 +528,7 @@ int Android::openURL (const std::string& url, bool) const
 
 bool Android::hasTouch () const
 {
-	return !isOUYA();
+	return true;
 }
 
 void Android::exit (const std::string& reason, int errorCode)

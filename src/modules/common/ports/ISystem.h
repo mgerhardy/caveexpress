@@ -119,8 +119,6 @@ public:
 
 	virtual bool hasItem (const std::string& id) { return false; }
 
-	virtual bool isOUYA () const { return false; }
-
 	/**
 	 * @return 0 on success anything else on failure
 	 */

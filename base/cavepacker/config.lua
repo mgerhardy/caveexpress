@@ -1,5 +1,5 @@
 function isMobile()
-	return (isAndroid() or isIOS()) and not isOUYA();
+	return isAndroid() or isIOS()
 end
 
 defaultwidth = -1
@@ -18,13 +18,7 @@ defaultred = 8
 defaultgreen = 8
 defaultblue = 8
 
-if isOUYA() then
-	defaultgamecontroller = true
-	defaultparticles = 0
-	defaultred = 6
-	defaultgreen = 5
-	defaultblue = 6
-elseif isSteamLink() then
+if isSteamLink() then
 	defaultwidth = 1280
 	defaultheight = 720
 	defaultgamecontroller = true
@@ -122,7 +116,7 @@ controllerbindings = {
 	},
 }
 
-if isMobile() or isOUYA() then
+if isMobile() then
 	keybindings = {
 		["ui"] = {
 			AC_BACK = "ui_pop",
@@ -132,11 +126,6 @@ if isMobile() or isOUYA() then
 			AC_BACK = "ui_pop",
 		},
 	}
-
-	if isOUYA() then
-		keybindings["ui"]["PAUSE"] = "ui_pop"
-		keybindings["map"]["PAUSE"] = "ui_pop"
-	end
 else
 	keybindings = {
 		["ui"] = {
