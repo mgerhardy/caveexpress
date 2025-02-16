@@ -174,7 +174,7 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 	Commands.registerCommand(CMD_UI_FOCUS_NEXT, bindFunction(UI::focusNext));
 	Commands.registerCommand(CMD_UI_FOCUS_PREV, bindFunction(UI::focusPrev));
 	Commands.registerCommandVoid(CMD_UI_EXECUTE, bindFunctionVoid(UI::runFocusNode));
-	_mouseSpeed = Config.getConfigVar("mousespeed", "0.2");
+	_mouseSpeed = Config.getConfigVar("mousespeed", "1.0");
 	_showCursor = Config.getConfigVar("showcursor", System.wantCursor() ? "true" : "false", true)->getBoolValue();
 	_cursor = _showCursor;
 	if (_cursor)
