@@ -56,6 +56,8 @@ set(SDL2MIXER_CMD OFF)
 set(SDL2MIXER_MOD OFF)
 set(SDL2MIXER_MIDI OFF)
 set(SDL2MIXER_MP3 OFF)
+set(SDL2MIXER_WAVPACK OFF)
+set(SDL2MIXER_OPUS OFF)
 FetchContent_MakeAvailable(SDL2_mixer)
 
 FetchContent_Declare(
