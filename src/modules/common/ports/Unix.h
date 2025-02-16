@@ -33,17 +33,7 @@ public:
 	virtual std::string getRateURL (const std::string& packageName) const override;
 
 #ifdef DEBUG
-private:
-	std::set<std::string> _testPayment;
 public:
-	virtual bool supportPayment () override;
-
-	virtual void getPaymentEntries (std::vector<PaymentEntry>& entries) override;
-
-	virtual bool buyItem (const std::string& id) override;
-
-	virtual bool hasItem (const std::string& id) override;
-
 	virtual int getScreenPadding () override;
 #endif
 };

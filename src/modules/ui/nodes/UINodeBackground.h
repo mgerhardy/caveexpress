@@ -3,7 +3,6 @@
 #include "ui/nodes/UINode.h"
 #include "common/String.h"
 #include "ui/BitmapFont.h"
-#include "common/Payment.h"
 #include "common/Config.h"
 
 class UINodeBackground: public UINode {

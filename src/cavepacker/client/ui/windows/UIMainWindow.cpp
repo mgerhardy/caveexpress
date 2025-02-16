@@ -44,18 +44,6 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 	settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_SETTINGS)));
 	panel->add(settings);
 
-#if 0
-	UINodeMainButton *gesture = new UINodeMainButton(_frontend, tr("Gesture"));
-	gesture->addListener(UINodeListenerPtr(new OpenWindowListener("gesture")));
-	panel->add(gesture);
-#endif
-
-	if (System.supportPayment()) {
-		UINodeMainButton *payment = new UINodeMainButton(_frontend, tr("Extras"));
-		payment->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_PAYMENT)));
-		panel->add(payment);
-	}
-
 	if (System.supportGooglePlay()) {
 		UINodeButtonImage *googlePlay = new UINodeGooglePlayButton(_frontend);
 		googlePlay->setPadding(padding);
@@ -68,10 +56,6 @@ UIMainWindow::UIMainWindow (IFrontend *frontend) :
 		editor->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_EDITOR)));
 		panel->add(editor);
 	}
-
-	UINodeMainButton *twitter = new UINodeMainButton(_frontend, tr("Twitter"));
-	twitter->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "https://twitter.com/MartinGerhardy")));
-	panel->add(twitter);
 
 	UINodeMainButton *homepage = new UINodeMainButton(_frontend, tr("Homepage"));
 	homepage->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "http://caveproductions.org/")));

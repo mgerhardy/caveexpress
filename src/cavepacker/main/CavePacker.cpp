@@ -46,7 +46,6 @@
 #include "ui/windows/UICampaignWindow.h"
 #include "ui/windows/UICampaignMapWindow.h"
 #include "cavepacker/client/ui/windows/UICavePackerMapOptionsWindow.h"
-#include "ui/windows/UIPaymentWindow.h"
 #include "ui/windows/UIGooglePlayWindow.h"
 #include "ui/windows/UISettingsWindow.h"
 #include "ui/windows/UIMapFinishedWindow.h"
@@ -338,7 +337,6 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	_clientMap = map;
 	ui.addWindow(new UIMapWindow(frontend, serviceProvider, *_campaignManager, *map));
 	ui.addWindow(new UICampaignMapWindow(frontend, *_campaignManager));
-	ui.addWindow(new UIPaymentWindow(frontend));
 	ui.addWindow(new UIGooglePlayWindow(frontend));
 	UISettingsWindow* settings = new UISettingsWindow(frontend, serviceProvider);
 	settings->init();

@@ -50,10 +50,6 @@ void HTML5::backtrace (const char *errorMessage)
 	_jsBacktrace();
 }
 
-void HTML5::showAds (bool show)
-{
-}
-
 int HTML5::openURL (const std::string& url, bool newWindow) const
 {
 	_jsOpenURL(url.c_str(), newWindow);

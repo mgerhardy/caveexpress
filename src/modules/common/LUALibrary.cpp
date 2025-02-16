@@ -32,7 +32,6 @@ void LUA::init (bool debug)
 	lua_register(_state, "isHTML5", isHTML5);
 	lua_register(_state, "isDebug", isDebug);
 	lua_register(_state, "isHD", isHD);
-	lua_register(_state, "isNaCl", isNaCl);
 	lua_register(_state, "isSteamLink", isSteamLink);
 	lua_register(_state, "isTouch", isTouch);
 
@@ -553,16 +552,6 @@ int LUA::isTouch (lua_State *L)
 int LUA::isHD (lua_State *L)
 {
 #ifdef HD_VERSION
-	lua_pushboolean(L, true);
-#else
-	lua_pushboolean(L, false);
-#endif
-	return 1;
-}
-
-int LUA::isNaCl (lua_State *L)
-{
-#if defined(__NACL__)
 	lua_pushboolean(L, true);
 #else
 	lua_pushboolean(L, false);

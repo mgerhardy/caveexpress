@@ -194,32 +194,3 @@ UINode* UIWindow::addTextureNode (const std::string& texture, float x, float y, 
 	add(imageNode);
 	return imageNode;
 }
-
-void UIWindow::showFullscreenAds ()
-{
-	if (getSystem().hasItem(PAYMENT_ADFREE)) {
-		Log::debug(LOG_UI, "skip ads");
-		return;
-	}
-
-	if (!getSystem().showFullscreenAds())
-		Log::error(LOG_UI, "failed to show the fullscreen ads");
-	else
-		Log::info(LOG_UI, "show fullscreen ads");
-}
-
-void UIWindow::showAds ()
-{
-	if (getSystem().hasItem(PAYMENT_ADFREE)) {
-		Log::debug(LOG_UI, "skip ads");
-		return;
-	}
-	getSystem().showAds(true);
-	Log::info(LOG_UI, "show ads");
-}
-
-void UIWindow::hideAds ()
-{
-	getSystem().showAds(false);
-	Log::info(LOG_UI, "hide ads");
-}

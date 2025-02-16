@@ -8,16 +8,6 @@
 #include <vector>
 #include <SDL.h>
 
-struct PaymentEntry {
-	PaymentEntry (const std::string& _name, const std::string& _id, const std::string& _price) :
-			name(_name), id(_id), price(_price)
-	{
-	}
-	std::string name;
-	std::string id;
-	std::string price;
-};
-
 typedef std::vector<std::string> DirectoryEntries;
 
 class ISystem {
@@ -86,12 +76,6 @@ public:
 
 	virtual DirectoryEntries listDirectory (const std::string& basedir, const std::string& subdir = "") = 0;
 
-	virtual void showAds (bool show) {}
-
-	virtual bool showFullscreenAds () { return false; }
-
-	virtual bool supportPayment () { return false; }
-
 	virtual std::string getRateURL (const std::string& packageName) const { return ""; }
 
 	/**
@@ -100,8 +84,6 @@ public:
 	 * @return @c true in cases where you don't want to interrupt the mainloop
 	 */
 	virtual bool quit () { return false; }
-
-	virtual bool buyItem (const std::string& id) { return false; }
 
 	virtual void achievementUnlocked (const std::string& id, bool increment) { }
 
@@ -115,16 +97,10 @@ public:
 
 	virtual bool hasMouseOrFinger () { return true; }
 
-	virtual int getAdHeight() const { return 0; }
-
-	virtual bool hasItem (const std::string& id) { return false; }
-
 	/**
 	 * @return 0 on success anything else on failure
 	 */
 	virtual int openURL (const std::string& url, bool newWindow) const { return 0; }
-
-	virtual void getPaymentEntries (std::vector<PaymentEntry>& entries) { }
 
 	virtual bool wantBackButton () { return true; }
 

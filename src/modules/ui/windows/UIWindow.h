@@ -3,7 +3,6 @@
 #include "ui/nodes/UINode.h"
 #include <memory>
 #include "common/Config.h"
-#include "common/Payment.h"
 #include "common/Log.h"
 #include <vector>
 #include <string>
@@ -16,7 +15,6 @@
 #define UI_WINDOW_CAMPAIGN_MAPS "campaignmaps"
 #define UI_WINDOW_SETTINGS "settings"
 #define UI_WINDOW_OPTIONS "options"
-#define UI_WINDOW_PAYMENT "payment"
 #define UI_WINDOW_MAIN "main"
 #define UI_WINDOW_MODE_SELECTION "modeselection"
 #define UI_WINDOW_MAPEDITOR_HELP "mapeditorhelp"
@@ -85,10 +83,6 @@ public:
 	virtual void onActive ();
 	// called whenever another window is pushed on top of this window (only the direct successor)
 	virtual void onPushedOver ();
-
-	void showFullscreenAds ();
-	void showAds ();
-	void hideAds ();
 
 	virtual bool onKeyRelease (int32_t key) override;
 	// returns true if a node handled the key press event

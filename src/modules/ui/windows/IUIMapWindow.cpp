@@ -135,11 +135,6 @@ void IUIMapWindow::onActive ()
 	if (lives != nullptr)
 		lives->setVisible(Config.isModeHard());
 
-	//if (!getSystem().hasItem(PAYMENT_ADFREE)) {
-	//	const int h = _frontend->getHeight() - getSystem().getAdHeight();
-	//	_nodeMap->setMapRect(0, 0, _frontend->getWidth(), h);
-	//}
-
 	if (_nodeMap->getMap().isStarted())
 		Config.setBindingsSpace(BINDINGS_MAP);
 }

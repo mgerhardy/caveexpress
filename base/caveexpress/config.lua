@@ -47,9 +47,6 @@ elseif isHTML5() then
 	defaultfrontend = "opengl"
 	defaultsoundengine = "dummy"
 	defaultnetwork = false
-elseif isNaCl() then
-	defaultpersister = "nop"
-	defaultnetwork = false
 else
 	defaultgamecontroller = true
 	defaultfrontend = "opengl3"

@@ -7,13 +7,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.PaymentEntry;
-import org.base.util.IabHelper;
-import org.base.util.IabResult;
-import org.base.util.Inventory;
-import org.base.util.Purchase;
-import org.base.util.SkuDetails;
-import org.base.util.IabHelper.IabAsyncInProgressException;
 import org.libsdl.app.SDLActivity;
 
 import android.app.AlertDialog;
@@ -45,24 +38,8 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 
 	protected GoogleApiClient googleApiClient;
 
-	// (arbitrary) request code for the purchase flow
-	protected static final int RC_REQUEST = 10001;
 	// Request code used to invoke sign in user interactions.
 	protected static final int RC_SIGN_IN = 9001;
-
-	protected Map<String, Purchase> paymentIds = new ConcurrentHashMap<String, Purchase>();
-	protected List<String> moreSkus = new CopyOnWriteArrayList<String>();
-	protected List<PaymentEntry> paymentEntries = new CopyOnWriteArrayList<PaymentEntry>();
-	protected boolean noInAppBilling = false;
-	protected IabHelper inAppBillingHelper;
-
-	/**
-	 * Your application's public key, encoded in base64. This is used for
-	 * verification of purchase signatures. You can find your app's
-	 * base64-encoded public key in your application's page on Google Play
-	 * Developer Console. Note that this is NOT your "developer public key".
-	 */
-	protected abstract String getPublicKey();
 
 	/**
 	 * @return The name of the package of the game. This is also used for
@@ -75,125 +52,16 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		return new String[] { getName() };
 	}
 
-	private final class InAppBillingSetupFinishedListener implements IabHelper.OnIabSetupFinishedListener {
-		@Override
-		public void onIabSetupFinished(final IabResult result) {
-			if (!result.isSuccess()) {
-				noInAppBilling = true;
-				Log.e(getName(), "Problem setting up In-app Billing: " + result);
-			} else {
-				Log.v(getName(), "App billing setup OK, querying inventory.");
-
-				moreSkus.clear();
-
-				addSkus(moreSkus);
-				// for (int i = 0; i < 20; i++) {
-				// moreSkus.add("campaign" + i);
-				// }
-
-				try {
-					inAppBillingHelper.queryInventoryAsync(true, null, moreSkus, mGotInventoryListener);
-				} catch (IabAsyncInProgressException e) {
-					Log.e(getName(), "Failed to query inventory", e);
-				}
-			}
-		}
-	}
-
-	protected void addSkus(List<String> moreSkus) {
-		if (!isHD()) {
-			moreSkus.add("adfree");
-		}
-		moreSkus.add("unlockall");
-	}
-
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		configureBilling();
 
 		googleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
 				.addOnConnectionFailedListener(this).addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN).addApi(Games.API)
 				.addScope(Drive.SCOPE_FILE).addScope(Games.SCOPE_GAMES).build();
 	}
 
-	protected void configureBilling() {
-		inAppBillingHelper = new IabHelper(this, getPublicKey());
-		inAppBillingHelper.startSetup(new InAppBillingSetupFinishedListener());
-		inAppBillingHelper.enableDebugLogging(isDebug(), getName());
-	}
-
-	/**
-	 * Listener that's called when we finish querying the items and
-	 * subscriptions we own
-	 */
-	private final IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
-		@Override
-		public void onQueryInventoryFinished(final IabResult result, final Inventory inventory) {
-			if (result.isFailure()) {
-				Log.e(getName(), "Failed to query inventory: " + result);
-				return;
-			}
-
-			Log.d(getName(), "Query inventory was successful.");
-
-			/**
-			 * Check for items we own. Notice that for each purchase, we check
-			 * the developer payload to see if it's correct!
-			 */
-			List<Purchase> allPurchases = inventory.getAllPurchases();
-			for (Purchase purchase : allPurchases) {
-				final String orig = getName() + purchase.getSku();
-				final String payload = purchase.getDeveloperPayload();
-				if (payload.equals(orig)) {
-					paymentIds.put(purchase.getSku(), purchase);
-					Log.v(getName(), "Users has bought: " + purchase.getSku());
-				} else {
-					Log.v(getName(), purchase.getSku() + " is invalid.");
-				}
-			}
-			Log.d(getName(), "more SKUs: " + moreSkus.size());
-			for (String sku : moreSkus) {
-				SkuDetails skuDetails = inventory.getSkuDetails(sku);
-				if (skuDetails == null) {
-					Log.v(getName(), "Could not get details for sku: " + sku);
-					continue;
-				}
-				paymentEntries.add(new PaymentEntry(skuDetails.getSku(), skuDetails.getDescription(), skuDetails
-						.getPrice()));
-			}
-
-			Log.d(getName(), "user purchased " + allPurchases.size() + " items.");
-			onPaymentDone();
-		}
-	};
-
-	private final IabHelper.OnIabPurchaseFinishedListener purchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-		@Override
-		public void onIabPurchaseFinished(final IabResult result, final Purchase purchase) {
-			Log.v(getName(), "Purchase finished: " + result + ", purchase: " + purchase);
-			if (result.isFailure()) {
-				Log.e(getName(), "Failed purchase!");
-				return;
-			}
-			if (!verifyDeveloperPayload(purchase, purchase.getSku())) {
-				Log.e(getName(), "Error purchasing. Authenticity verification failed.");
-				return;
-			}
-
-			paymentIds.put(purchase.getSku(), purchase);
-
-			Log.v(getName(), "Purchase successful.");
-		}
-	};
-
 	private boolean resolvingError;
-
-	protected static boolean verifyDeveloperPayload(final Purchase p, String sku) {
-		final String orig = getBaseActivity().getName() + sku;
-		final String payload = p.getDeveloperPayload();
-		return payload.equals(orig);
-	}
 
 	@Override
 	protected void onDestroy() {
@@ -205,38 +73,11 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 	}
 
 	protected void doOnDestory() {
-		doDestroyBilling();
-	}
-
-	protected void doDestroyBilling() {
-		// killing billing services
-		if (inAppBillingHelper != null) {
-			inAppBillingHelper.disposeWhenFinished();
-		}
-		inAppBillingHelper = null;
-	}
-
-	public static void showAds() {
-		// getBaseActivity().doShowAds();
-	}
-
-	protected abstract void doShowAds();
-
-	public static boolean showFullscreenAds() {
-		return getBaseActivity().doShowFullscreenAds();
 	}
 
 	public static void openPlayStore(String appName) {
 		openURL("market://details?id=" + appName);
 	}
-
-	protected abstract boolean doShowFullscreenAds();
-
-	public static void hideAds() {
-		getBaseActivity().doHideAds();
-	}
-
-	protected abstract void doHideAds();
 
 	public static void openURL(String url) {
 		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -250,42 +91,12 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 		getBaseActivity().startActivity(main);
 	}
 
-	static boolean buyItem(String id) {
-		return getBaseActivity().doBuyItem(id);
-	}
-
-	protected boolean doBuyItem(String id) {
-		if (noInAppBilling) {
-			Log.v(getName(), "Purchase procedure not available");
-			return false;
-		}
-
-		Log.v(getName(), "Purchase procedure started");
-		final String payload = getName() + id;
-
-		try {
-			inAppBillingHelper.launchPurchaseFlow(mSingleton, id, RC_REQUEST, purchaseFinishedListener, payload);
-			return true;
-		} catch (IabAsyncInProgressException e) {
-			Log.e(getName(), "Failed to launch purchase flow", e);
-			return false;
-		}
-	}
-
 	static void alert(final String message) {
 		final AlertDialog.Builder bld = new AlertDialog.Builder(mSingleton);
 		bld.setMessage(message);
 		bld.setNeutralButton("OK", null);
 		Log.d(getBaseActivity().getName(), "Showing alert dialog: " + message);
 		bld.create().show();
-	}
-
-	static boolean hasItem(String id) {
-		return getBaseActivity().doHasItem(id);
-	}
-
-	protected boolean doHasItem(String id) {
-		return paymentIds.containsKey(id);
 	}
 
 	private static boolean isPackageInstalled(String packageName) {
@@ -299,10 +110,6 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 
 	static boolean isPlayStoreInstalled() {
 		return isPackageInstalled("com.android.vending");
-	}
-
-	static PaymentEntry[] getPaymentEntries() {
-		return getBaseActivity().paymentEntries.toArray(new PaymentEntry[] {});
 	}
 
 	private static BaseActivity getBaseActivity() {
@@ -547,8 +354,6 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 	public static native void onPersisterConnectSuccess();
 
 	public static native void onPersisterDisconnect();
-
-	public static native void onPaymentDone();
 
 	public static native boolean isDebug();
 

@@ -50,9 +50,6 @@ elseif isHTML5() then
 	defaultnetwork = false
 	defaultfrontend = "opengl"
 	defaultsoundengine = "dummy"
-elseif isNaCl() then
-	defaultpersister = "nop"
-	defaultnetwork = false
 else
 	defaultgamecontroller = true
 end

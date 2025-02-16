@@ -52,13 +52,11 @@ void UIMapOptionsWindow::update (uint32_t deltaTime)
 
 void UIMapOptionsWindow::onActive ()
 {
-	showAds();
 	UIWindow::onActive();
 	addLastFocus();
 }
 
 bool UIMapOptionsWindow::onPop ()
 {
-	hideAds();
 	return UIWindow::onPop();
 }

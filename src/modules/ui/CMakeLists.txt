@@ -14,7 +14,6 @@ set(ui_SRCS
 	nodes/UINodeGooglePlayButton.cpp
 	nodes/UINodeLabel.cpp
 	nodes/UINode.cpp
-	nodes/UINodePaymentSelector.cpp
 	nodes/UINodeCheckbox.cpp
 	nodes/UINodeMapControl.cpp
 	nodes/UINodeKey.cpp
@@ -43,7 +42,6 @@ set(ui_SRCS
 	windows/IUIMapWindow.cpp
 	windows/UIPopupWindow.cpp
 	windows/UIWindow.cpp
-	windows/UIPaymentWindow.cpp
 	windows/UIMapOptionsWindow.cpp
 	windows/UIGestureWindow.cpp
 	windows/UIMapFinishedWindow.cpp

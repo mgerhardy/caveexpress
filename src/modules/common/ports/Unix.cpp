@@ -296,29 +296,6 @@ void Unix::backtrace (const char *errorMessage)
 }
 
 #ifdef DEBUG
-bool Unix::supportPayment ()
-{
-	return Config.getConfigVar("testpayment", "false", true)->getBoolValue();
-}
-
-void Unix::getPaymentEntries (std::vector<PaymentEntry>& entries)
-{
-	entries.push_back(PaymentEntry("This is some test entry", "bar", "1.79€"));
-	entries.push_back(PaymentEntry("This is some other test entry", "foobar", "10.59€"));
-	entries.push_back(PaymentEntry("This is yet another test entry", "yate", "1.00$"));
-}
-
-bool Unix::buyItem (const std::string& id)
-{
-	_testPayment.insert(id);
-	return true;
-}
-
-bool Unix::hasItem (const std::string& id)
-{
-	return _testPayment.find(id) != _testPayment.end();
-}
-
 int Unix::getScreenPadding ()
 {
 	return Config.getConfigVar("testscreenpadding", "0", true)->getIntValue();

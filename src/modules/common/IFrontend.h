@@ -123,7 +123,7 @@ public:
 	virtual void minimize () = 0;
 	virtual bool rumble (float strength, int lengthMillis) { return false; }
 	virtual bool hasMouse () const {
-#if defined(__WINDOWS__) || defined(__LINUX__) || defined(__MACOSX__) || defined(__PNACL__) || defined(__EMSCRIPTEN__)
+#if defined(__WINDOWS__) || defined(__LINUX__) || defined(__MACOSX__) || defined(__EMSCRIPTEN__)
 		return true;
 #else
 		return false;

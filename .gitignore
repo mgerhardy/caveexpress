@@ -33,8 +33,6 @@
 /core
 /.cproject
 /.project
-/nacl_sdk
-/naclgdb.init
 /*-source.tar*
 
 /.idea

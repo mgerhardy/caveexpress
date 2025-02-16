@@ -12,11 +12,6 @@ IOS::~IOS ()
 {
 }
 
-void IOS::showAds (bool show)
-{
-	// TODO:
-}
-
 int IOS::openURL (const std::string& url, bool) const
 {
 	return iosOpenURL(url);

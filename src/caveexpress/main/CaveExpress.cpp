@@ -29,7 +29,6 @@
 #include "ui/nodes/IUINodeMap.h"
 #include "ui/nodes/UINodeSprite.h"
 #include "ui/windows/IUIMapWindow.h"
-#include "ui/windows/UIPaymentWindow.h"
 #include "ui/windows/UIMultiplayerWindow.h"
 #include "ui/windows/UICampaignWindow.h"
 #include "ui/windows/UICampaignMapWindow.h"
@@ -414,7 +413,6 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new IntroAttack(frontend));
 	ui.addWindow(new IntroFlying(frontend));
 	ui.addWindow(new IntroFindYourWay(frontend));
-	ui.addWindow(new UIPaymentWindow(frontend));
 	ui.addWindow(new UIMultiplayerWindow(frontend, serviceProvider.getMapManager(), serviceProvider));
 	ui.addWindow(new UICreateServerWindow(frontend, serviceProvider.getMapManager()));
 	UINodeMapEditor* editor = new UINodeMapEditor(frontend, serviceProvider.getMapManager());

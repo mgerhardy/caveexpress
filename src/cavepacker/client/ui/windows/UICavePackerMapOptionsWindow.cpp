@@ -1,8 +1,6 @@
 #include "UICavePackerMapOptionsWindow.h"
 #include "ui/nodes/UINodeBackButton.h"
-#include "ui/nodes/UINodeBackToRootButton.h"
 #include "ui/nodes/UINodeMainButton.h"
-#include "ui/nodes/UINodeSettingsBackground.h"
 #include "ui/layouts/UIVBoxLayout.h"
 #include "service/ServiceProvider.h"
 #include "common/Commands.h"
@@ -53,9 +51,7 @@ void UICavePackerMapOptionsWindow::onActive ()
 		_skipButton->setVisible(false);
 		return;
 	}
-	if (System.supportPayment()) {
-		_solve->setVisible(System.hasItem("autosolve"));
-	}
+	_solve->setVisible(true);
 	_skipButton->setVisible(true);
 }
 

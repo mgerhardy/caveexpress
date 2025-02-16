@@ -1,6 +1,5 @@
 #include "Android.h"
 #include "common/Log.h"
-#include "common/Payment.h"
 #include "common/Config.h"
 #include "common/System.h"
 #include "common/ConfigManager.h"
@@ -56,9 +55,9 @@ protected:
 int LocalReferenceHolder::s_active;
 
 Android::Android () :
-		Unix(), _env(nullptr), _cls(nullptr), _assetManager(nullptr), _showAds(nullptr), _hideAds(nullptr),
-		_showFullscreenAds(nullptr), _openURL(nullptr), _hasItem(nullptr), _track(nullptr), _buyItem(nullptr),
-		_isSmallScreen(nullptr), _minimize(nullptr), _getPaymentEntries(nullptr), _externalState(0) {
+		Unix(), _env(nullptr), _cls(nullptr), _assetManager(nullptr),
+		_openURL(nullptr), _track(nullptr), _buyItem(nullptr),
+		_isSmallScreen(nullptr), _minimize(nullptr), _externalState(0) {
 }
 
 void Android::init() {
@@ -106,33 +105,15 @@ void Android::init() {
 	_cls = reinterpret_cast<jclass>(_env->NewGlobalRef(cls));
 	_assetManager = reinterpret_cast<jobject>(_env->NewGlobalRef(assetManager));
 
-	_showAds = _env->GetStaticMethodID(_cls, "showAds", "()V");
-	_hideAds = _env->GetStaticMethodID(_cls, "hideAds", "()V");
-	_showFullscreenAds = _env->GetStaticMethodID(_cls, "showFullscreenAds", "()Z");
 	_openURL = _env->GetStaticMethodID(_cls, "openURL", "(Ljava/lang/String;)V");
-	_buyItem = env->GetStaticMethodID(_cls, "buyItem", "(Ljava/lang/String;)Z");
-	_hasItem = env->GetStaticMethodID(_cls, "hasItem", "(Ljava/lang/String;)Z");
 	_track = env->GetStaticMethodID(_cls, "track", "(Ljava/lang/String;Ljava/lang/String;)Z");
 	_achievementUnlocked = env->GetStaticMethodID(_cls, "achievementUnlocked", "(Ljava/lang/String;Z)V");
 	_isSmallScreen = env->GetStaticMethodID(_cls, "isSmallScreen", "()Z");
 	_minimize = env->GetStaticMethodID(_cls, "minimize", "()V");
-	_getPaymentEntries = env->GetStaticMethodID(_cls, "getPaymentEntries", "()[Lorg/PaymentEntry;");
 	_getLocale = env->GetStaticMethodID(_cls, "getLocale", "()Ljava/lang/String;");
 
-	if (_showAds == 0) {
-		Log::error(LOG_COMMON, "error getting showAds()");
-	}
-	if (_hideAds == 0) {
-		Log::error(LOG_COMMON, "error getting hideAds()");
-	}
-	if (_showFullscreenAds == 0) {
-		Log::error(LOG_COMMON, "error getting showFullscreenAds()");
-	}
 	if (_openURL == 0) {
 		Log::error(LOG_COMMON, "error getting openURL()");
-	}
-	if (_buyItem == 0) {
-		Log::error(LOG_COMMON, "error getting buyItem()");
 	}
 	if (_minimize == 0) {
 		Log::error(LOG_COMMON, "error getting minimize()");
@@ -140,14 +121,8 @@ void Android::init() {
 	if (_track == 0) {
 		Log::error(LOG_COMMON, "error getting track()");
 	}
-	if (_hasItem == 0) {
-		Log::error(LOG_COMMON, "error getting hasItem()");
-	}
 	if (_isSmallScreen == 0) {
 		Log::error(LOG_COMMON, "error getting isSmallScreen()");
-	}
-	if (_getPaymentEntries == 0) {
-		Log::error(LOG_COMMON, "error getting getPaymentEntries()");
 	}
 	if (_getLocale == 0) {
 		Log::error(LOG_COMMON, "error getting getLocale()");
@@ -310,24 +285,6 @@ DirectoryEntries Android::listDirectory (const std::string& basedir, const std::
 	return entries;
 }
 
-bool Android::showFullscreenAds ()
-{
-	const bool retVal = _env->CallStaticBooleanMethod(_cls, _showFullscreenAds);
-	return retVal;
-}
-
-void Android::showAds (bool show)
-{
-	if (_showAds == 0 || _hideAds == 0)
-		return;
-
-	if (show) {
-		_env->CallStaticVoidMethod(_cls, _showAds);
-	} else {
-		_env->CallStaticVoidMethod(_cls, _hideAds);
-	}
-}
-
 void Android::achievementUnlocked (const std::string& id, bool increment)
 {
 	if (_achievementUnlocked == 0) {
@@ -380,7 +337,7 @@ std::string Android::getLanguage ()
 	LocalReferenceHolder refs;
 
 	if (_env == nullptr || !refs.init(_env)) {
-		Log::error(LOG_COMMON, "error while getting the payment entries");
+		Log::error(LOG_COMMON, "error while getting the locale");
 		return "";
 	}
 
@@ -393,96 +350,6 @@ std::string Android::getLanguage ()
 	const std::string cs(js);
 	_env->ReleaseStringUTFChars(locale, js);
 	return cs;
-}
-
-void Android::getPaymentEntries (std::vector<PaymentEntry>& entries)
-{
-	LocalReferenceHolder refs;
-
-	if (_env == nullptr || !refs.init(_env)) {
-		Log::error(LOG_COMMON, "error while getting the payment entries");
-		return;
-	}
-
-	jobjectArray list = reinterpret_cast<jobjectArray>(_env->CallObjectMethod(_cls, _getPaymentEntries));
-	if (testException() || list == nullptr) {
-		Log::error(LOG_COMMON, "error calling getPaymentEntries()");
-		return;
-	}
-
-	jsize n = _env->GetArrayLength(list);
-	Log::info(LOG_COMMON, "payment items found: %i", (int)n);
-
-	// same order as the paymententry ctor!
-	const char *ids[] = { "name", "id", "price", nullptr };
-	std::vector<std::string> memberValues;
-
-	for (int i = 0; i < n; ++i) {
-		jobject entryObj = reinterpret_cast<jobject>(_env->GetObjectArrayElement(list, i));
-		if (testException())
-			break;
-		jclass entryClass = _env->GetObjectClass(entryObj);
-		if (entryClass == nullptr) {
-			Log::error(LOG_COMMON, "could not get entry object class");
-			break;
-		}
-
-		memberValues.clear();
-		for (const char **memberName = ids; *memberName != nullptr; ++memberName) {
-			jfieldID fieldId = _env->GetFieldID(entryClass, *memberName, "Ljava/lang/String;");
-			jstring str = reinterpret_cast<jstring>(_env->GetObjectField(entryObj, fieldId));
-			const char* cstr = _env->GetStringUTFChars(str, 0);
-			const std::string memberValue = cstr;
-			memberValues.push_back(memberValue);
-			Log::info(LOG_COMMON, "%s", memberValue.c_str());
-			_env->ReleaseStringUTFChars(str, cstr);
-			_env->DeleteLocalRef(str);
-		}
-
-		entries.push_back(PaymentEntry(memberValues[0], memberValues[1], memberValues[2]));
-	}
-
-	testException();
-
-	// TODO: get this data from the play store
-	//entries.push_back(PaymentEntry("Remove ads", "adfree", "1.79"));
-	//entries.push_back(PaymentEntry("Unlock all maps and campaigns", "unlockall", "1.50"));
-}
-
-bool Android::hasItem (const std::string& id)
-{
-	LocalReferenceHolder refs;
-
-	if (_env == nullptr || !refs.init(_env)) {
-		Log::error(LOG_COMMON, "error while getting the payment entries");
-		return false;
-	}
-
-	jstring str = _env->NewStringUTF(id.c_str());
-	const bool retVal = _env->CallStaticBooleanMethod(_cls, _hasItem, str);
-	_env->DeleteLocalRef(str);
-
-	testException();
-
-	return retVal;
-}
-
-bool Android::buyItem (const std::string& id)
-{
-	LocalReferenceHolder refs;
-
-	if (_env == nullptr || !refs.init(_env)) {
-		Log::error(LOG_COMMON, "error while getting the payment entries");
-		return false;
-	}
-
-	jstring str = _env->NewStringUTF(id.c_str());
-	const bool retVal = _env->CallStaticBooleanMethod(_cls, _buyItem, str);
-	_env->DeleteLocalRef(str);
-
-	testException();
-
-	return retVal;
 }
 
 bool Android::wantCursor ()
@@ -504,15 +371,6 @@ bool Android::isSmallScreen (IFrontend*)
 bool Android::supportFocusChange ()
 {
 	return false;
-}
-
-bool Android::supportPayment ()
-{
-	return false;
-}
-
-void Android::notifyPaymentLoaded ()
-{
 }
 
 int Android::openURL (const std::string& url, bool) const
@@ -550,19 +408,6 @@ void Android::exit (const std::string& reason, int errorCode)
 
 void Android::tick (uint32_t deltaTime)
 {
-}
-
-int Android::getAdHeight() const
-{
-	// AdSize.BANNER = 320x50
-	return 50;
-}
-
-extern "C" JNIEXPORT void JNICALL Java_org_base_BaseActivity_onPaymentDone(JNIEnv* env, jclass jcls)
-{
-	Log::debug(LOG_COMMON, "onPaymentDone c side");
-	Android& s = static_cast<Android&>(getSystem());
-	s.notifyPaymentLoaded();
 }
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_base_BaseActivity_isDebug(JNIEnv* env, jclass jcls)

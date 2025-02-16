@@ -4,7 +4,6 @@
 #include "common/ConfigManager.h"
 #include "common/Log.h"
 #include "common/IFrontend.h"
-#include "common/Payment.h"
 #include "ui/BitmapFont.h"
 #include "ui/layouts/IUILayout.h"
 #include <SDL.h>

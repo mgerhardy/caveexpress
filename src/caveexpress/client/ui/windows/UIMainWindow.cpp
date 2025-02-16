@@ -59,33 +59,21 @@ UIMainWindow::UIMainWindow (IFrontend *frontend, ServiceProvider& serviceProvide
 	settings->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_SETTINGS)));
 	panel->add(settings);
 
-	if (System.supportPayment()) {
-		UINodeMainButton *payment = new UINodeMainButton(_frontend, tr("Extras"));
-		payment->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_PAYMENT)));
-		panel->add(payment);
-	}
-
 	if (System.supportGooglePlay()) {
 		UINodeButtonImage *googlePlay = new UINodeGooglePlayButton(_frontend);
 		googlePlay->setPadding(padding);
 		add(googlePlay);
 	}
 
-#ifndef STEAMLINK
 	if (System.supportsUserContent()) {
 		UINodeMainButton *editor = new UINodeMainButton(_frontend, tr("Editor"));
 		editor->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_EDITOR)));
 		panel->add(editor);
 	}
 
-	UINodeMainButton *twitter = new UINodeMainButton(_frontend, tr("Twitter"));
-	twitter->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "https://twitter.com/MartinGerhardy")));
-	panel->add(twitter);
-
 	UINodeMainButton *homepage = new UINodeMainButton(_frontend, tr("Homepage"));
 	homepage->addListener(UINodeListenerPtr(new OpenURLListener(_frontend, "http://caveproductions.org/")));
 	panel->add(homepage);
-#endif
 
 	UINodeMainButton *help = new UINodeMainButton(_frontend, tr("Help"));
 	help->addListener(UINodeListenerPtr(new OpenWindowListener(UI_WINDOW_HELP)));

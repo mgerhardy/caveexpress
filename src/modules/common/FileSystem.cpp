@@ -10,7 +10,7 @@
 #include <emscripten.h>
 #endif
 
-#if defined(__EMSCRIPTEN__) || defined(__NACL__)
+#if defined(__EMSCRIPTEN__)
 // use a pregenerated header with the files
 #define DIRLIST_NOT_SUPPORTED 1
 #endif

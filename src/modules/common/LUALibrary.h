@@ -34,7 +34,6 @@ private:
 	static int isDebug (lua_State *L);
 	static int isHD (lua_State *L);
 	static int isTouch (lua_State *L);
-	static int isNaCl (lua_State *L);
 	static int isSteamLink (lua_State *L);
 
 public:

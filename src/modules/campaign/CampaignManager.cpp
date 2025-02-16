@@ -3,7 +3,6 @@
 #include "common/Log.h"
 #include "common/CommandSystem.h"
 #include "common/MapManager.h"
-#include "common/Payment.h"
 #include "common/Commands.h"
 #include "common/FileSystem.h"
 #include "common/LUALibrary.h"
@@ -35,7 +34,6 @@ CampaignManager::~CampaignManager ()
 
 void CampaignManager::unlock ()
 {
-#ifdef DEBUG
 	for (CampaignsMap::iterator i = _campaigns.begin(); i != _campaigns.end(); ++i) {
 		CampaignPtr& c = *i;
 		c->unlock();
@@ -44,7 +42,6 @@ void CampaignManager::unlock ()
 		c->saveProgress();
 		c->loadProgress();
 	}
-#endif
 }
 
 void CampaignManager::init ()
@@ -81,15 +78,6 @@ void CampaignManager::init ()
 		++campaignsLoaded;
 	}
 	Log::debug(LOG_CAMPAIGN, "found %i campaign scripts", campaignsLoaded);
-
-	if (System.hasItem(PAYMENT_UNLOCKALL)) {
-		for (CampaignsMap::iterator i = _campaigns.begin(); i != _campaigns.end(); ++i) {
-			CampaignPtr& c = *i;
-			c->unlock();
-			while (c->unlockNextMap(false)) {
-			}
-		}
-	}
 
 	_completed = isCompleted();
 	Log::info(LOG_CAMPAIGN, "completed: %s", (_completed ? "true" : "false"));

@@ -57,11 +57,6 @@ UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& 
 bool UIMapFinishedWindow::onPush ()
 {
 	_replayCampaign->setVisible(!_serviceProvider.getNetwork().isMultiplayer());
-	const int launchCount = Config.getConfigVar("mapfinishedcounter")->getIntValue();
-	const int fullscreenAds = launchCount % 3;
-	if (fullscreenAds == 1) {
-		showFullscreenAds();
-	}
 	return UIWindow::onPush();
 }
 
