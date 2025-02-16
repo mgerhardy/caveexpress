@@ -217,7 +217,7 @@ public abstract class BaseActivity extends SDLActivity implements GoogleApiClien
 	}
 
 	public static void showAds() {
-		getBaseActivity().doShowAds();
+		// getBaseActivity().doShowAds();
 	}
 
 	protected abstract void doShowAds();
