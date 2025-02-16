@@ -263,6 +263,8 @@ int CavePacker::getMaxClients ()
 void CavePacker::shutdown ()
 {
 	mapShutdown();
+	delete _clientMap;
+	_clientMap = nullptr;
 }
 
 void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)

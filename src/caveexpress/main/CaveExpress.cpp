@@ -278,6 +278,8 @@ std::string CaveExpress::getMapName ()
 void CaveExpress::shutdown ()
 {
 	_map.shutdown();
+	delete _clientMap;
+	_clientMap = nullptr;
 }
 
 void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
