@@ -213,10 +213,6 @@ endif()
 
 add_subdirectory(src/libs)
 
-find_package(sqlite3 REQUIRED)
-find_package(lua REQUIRED)
-find_package(zlib REQUIRED)
-
 configure_file(${ROOT_DIR}/src/config.h.in ${CMAKE_BINARY_DIR}/cp-config.h)
 include_directories(${CMAKE_BINARY_DIR})
 
