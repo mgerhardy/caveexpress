@@ -50,7 +50,7 @@ bool UINodeSlider::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool
 
 bool UINodeSlider::onKeyPress (int32_t key, int16_t modifier)
 {
-	if (!hasFocus())
+	if (!hasFocus() || !isVisible() || !_enabled)
 		return false;
 
 	if (key == SDLK_LEFT) {
