@@ -48,6 +48,22 @@ bool UINodeSlider::onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool
 	return UINode::onFingerRelease(finger, x, y, motion);
 }
 
+bool UINodeSlider::onKeyPress (int32_t key, int16_t modifier)
+{
+	if (!hasFocus())
+		return false;
+
+	if (key == SDLK_LEFT) {
+		setValue(_value - _stepWidth);
+		return true;
+	} else if (key == SDLK_RIGHT) {
+		setValue(_value + _stepWidth);
+		return true;
+	}
+
+	return UINode::onKeyPress(key, modifier);
+}
+
 bool UINodeSlider::onMouseLeftRelease (int32_t x, int32_t y)
 {
 	setValue(calculateValue(x));

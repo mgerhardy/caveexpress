@@ -29,6 +29,7 @@ public:
 	bool onControllerMotion (uint8_t axis, int value, uint32_t id) override;
 	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion) override;
 	bool onMouseLeftRelease (int32_t x, int32_t y) override;
+	bool onKeyPress (int32_t key, int16_t modifier) override;
 };
 
 inline float UINodeSlider::getValue () const
