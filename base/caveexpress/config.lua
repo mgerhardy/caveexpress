@@ -96,7 +96,9 @@ controllerbindings = {
 		--LEFTSHOULDER = "",
 		--RIGHTSHOULDER = "",
 		DPUP = "ui_focus_prev",
-		DPDOWN = "ui_focus_next"
+		DPDOWN = "ui_focus_next",
+		DPLEFT = "ui_focus_prev",
+		DPRIGHT = "ui_focus_next",
 	},
 	["map"] = {
 		A = "drop",
@@ -130,8 +132,12 @@ if isMobile() then
 else
 	keybindings = {
 		["ui"] = {
+			LEFT = "ui_focus_prev",
+			RIGHT = "ui_focus_next",
 			UP = "ui_focus_prev +",
 			DOWN = "ui_focus_next -",
+			A = "ui_focus_prev",
+			D = "ui_focus_next",
 			W = "ui_focus_prev +",
 			S = "ui_focus_next -",
 			SPACE = "ui_execute",
