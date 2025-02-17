@@ -29,7 +29,7 @@ set(common_SRCS
 
 set(LIBS lua::lua SDL2::SDL2 SQLite::SQLite3 box2d glm)
 if(WINDOWS)
-	list(ADD LIBS SDL2::SDL2main)
+	list(APPEND LIBS SDL2::SDL2main)
 	set(ports_SRCS ports/Windows.cpp)
 elseif(ANDROID)
 	set(ports_SRCS ports/Unix.cpp ports/Android.cpp)
