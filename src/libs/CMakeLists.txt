@@ -35,7 +35,7 @@ if (APPLE OR WIN32)
 	set(SDL_TEST_ENABLED_BY_DEFAULT OFF)
 	set(BUILD_SHARED_LIBS OFF)
 	FetchContent_MakeAvailable(SDL2)
-	add_library(SDL2::SDL2 ALIAS SDL2::SDL2-static)
+	add_library(SDL2::SDL2 ALIAS SDL2-static)
 
 	FetchContent_Declare(
 		SDL2_mixer
