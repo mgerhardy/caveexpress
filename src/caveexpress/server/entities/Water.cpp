@@ -13,7 +13,7 @@ namespace caveexpress {
 
 Water::Water (Map& map, float waterChangeSpeed, uint32_t waterRisingDelay, uint32_t waterFallingDelay) :
 		IEntity(EntityTypes::WATER, map), _waterChangeSpeed(waterChangeSpeed), _waterRisingDelay(waterRisingDelay), _waterFallingDelay(waterFallingDelay), _mapHeight(
-				0.0f), _waterRisingState(WATER_UNINITIALIZED), _currentHeightLevel(0.0f), _waterRisingTime(waterRisingDelay), _waterFallingTime(waterFallingDelay)
+				0.0f), _waterRisingState(WATER_UNINITIALIZED), _currentHeightLevel(0.0f), _waterRisingTime(waterRisingDelay), _waterFallingTime(waterFallingDelay), _lastSoundTime(1)
 {
 	const b2Vec2 size(0.06f, 0.06f);
 	if (Config.getConfigVar(WATER_PARTICLE)->getBoolValue())
@@ -46,7 +46,11 @@ void Water::onContact (b2Contact* contact, IEntity* entity)
 		_fixturePairs.insert(std::make_pair(fixtureB, fixtureA));
 
 	entity->setTouchingWater(true);
-	_map.sendSound(entity->getVisMask(), SoundTypes::SOUND_WATER_IMPACT, entity->getPos());
+	// play the sound only once per second
+	if (_lastSoundTime < _time + 1000) {
+		_lastSoundTime = _time;
+		_map.sendSound(entity->getVisMask(), SoundTypes::SOUND_WATER_IMPACT, entity->getPos());
+	}
 
 	// TODO: this is not yet working - might have to do this in the pre solve step
 	GameEvent.sendWaterImpact(entity->getPos().x, 1.0f);
@@ -68,7 +72,11 @@ void Water::endContact (b2Contact* contact, IEntity* entity)
 	else if (entityIsA)
 		_fixturePairs.erase(std::make_pair(fixtureB, fixtureA));
 
-	_map.sendSound(entity->getVisMask(), SoundTypes::SOUND_WATER_LEAVE, entity->getPos());
+	// play the sound only once per second
+	if (_lastSoundTime < _time + 1000) {
+		_lastSoundTime = _time;
+		_map.sendSound(entity->getVisMask(), SoundTypes::SOUND_WATER_LEAVE, entity->getPos());
+	}
 	entity->setTouchingWater(false);
 	if (_waterParticle != nullptr)
 		_waterParticle->removeContact(entityIsA ? entityA : entityB);
