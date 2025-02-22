@@ -26,8 +26,8 @@ protected:
 	vec2 _a;
 	// velocity
 	vec2 _v;
-	// starting speed
-	vec2 _s;
+	// position
+	vec2 _pos;
 	// angle movement
 	float _omega;
 

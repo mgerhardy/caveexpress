@@ -33,8 +33,8 @@ bool Particle::update (uint32_t deltaTime)
 	_t = _time * 0.001f;
 	_lastThink += _deltaTime;
 	_lastFrame += _deltaTime;
-	advanceVector(_s, 0.5f * _deltaTime * _deltaTime, _a, _s);
-	advanceVector(_s, _deltaTime, _v, _s);
+	advanceVector(_pos, 0.5f * _deltaTime * _deltaTime, _a, _pos);
+	advanceVector(_pos, _deltaTime, _v, _pos);
 	advanceVector(_v, _deltaTime, _a, _v);
 	_angle = _omega + _deltaTime * (float)_angle;
 
@@ -58,8 +58,8 @@ void Particle::render (IFrontend* frontend, int x, int y, float zoom) const
 {
 	if (!_texture || !_texture->isValid())
 		return;
-	const float fx = (float)x + _s.x * zoom * _scale.x;
-	const float fy = (float)y + _s.y * zoom * _scale.y;
+	const float fx = (float)x + _pos.x * zoom;
+	const float fy = (float)y + _pos.y * zoom;
 	const float fw = (float)_texture->getWidth() * zoom * _scale.x;
 	const float fh = (float)_texture->getHeight() * zoom * _scale.y;
 	frontend->renderImage(_texture.get(), (int)fx, (int)fy, (int)fw, (int)fh, _angle, _alpha);

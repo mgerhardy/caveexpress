@@ -29,16 +29,16 @@ void Sparkle::run ()
 	_v.x = magnitude * sinf(_v.y * amplitude);
 
 	// sparkle is under water
-	if (_s.y >= _waterSurface) {
+	if (_pos.y >= _waterSurface) {
 		_active = false;
-	} else if (_s.y <= 0.000001f) {
+	} else if (_pos.y <= 0.000001f) {
 		// init
-		_s.y = _startY - rand() % _half;
-		_s.x = _startX + rand() % _sizeW;
-	} else if (_startY - _s.y > _height) {
+		_pos.y = _startY - rand() % _half;
+		_pos.x = _startX + rand() % _sizeW;
+	} else if (_startY - _pos.y > _height) {
 		// high enough - respawn
-		_s.y = _startY - rand() % _half;
-		_s.x = _startX + rand() % _sizeW;
+		_pos.y = _startY - rand() % _half;
+		_pos.x = _startX + rand() % _sizeW;
 		_v = vec2(0.0f, randBetweenf(-0.1f, -0.2f));
 		_height = randBetween(_sizeH, _half);
 	}
