@@ -4,6 +4,7 @@
 
 class UINodePoint: public UINodeLabel {
 private:
+	std::string _prefix;
 	int _current;
 	int _points;
 	uint32_t _lastUpdate;
@@ -14,6 +15,17 @@ public:
 					updateDelay)
 	{
 		Vector4Set(colorWhite, _fontColor);
+	}
+
+	/**
+	 * @brief Set a prefix for the points
+	 *
+	 * @note Keep in mind that you have to add spaces or : on your own. So the submitted
+	 *       string should e.g. be "Points: " not just "Points"
+	 */
+	void setPrefix(const std::string &prefix)
+	{
+		_prefix = prefix;
 	}
 
 	void update (uint32_t deltaTime) override
@@ -31,7 +43,7 @@ public:
 			--_current;
 		else
 			++_current;
-		setLabel(string::toString(_current));
+		setLabel(string::format("%s%i", _prefix.c_str(), _current));
 	}
 
 	// this will increase the points over time. The given points value is an absolute value
