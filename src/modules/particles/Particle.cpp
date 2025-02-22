@@ -2,7 +2,7 @@
 
 Particle::Particle(IParticleEnvironment& env) :
 		_env(env), _active(true), _time(0), _deltaTime(0.0f), _alpha(1.0f), _angle(0), _fps(1.0f),
-		_tps(1.0f), _lastFrame(0.0f), _lastThink(0.0f), _t(0.0f), _life(0.0f), _omega(0.0f)
+		_tps(1.0f), _lastFrame(0.0f), _lastThink(0.0f), _t(0.0f), _life(0.0f), _omega(0.0f), _scale(1.0f, 1.0f)
 {
 }
 
@@ -58,5 +58,9 @@ void Particle::render (IFrontend* frontend, int x, int y, float zoom) const
 {
 	if (!_texture || !_texture->isValid())
 		return;
-	frontend->renderImage(_texture.get(), x + _s.x * zoom, y + _s.y * zoom, _texture->getWidth() * zoom, _texture->getHeight() * zoom, _angle, _alpha);
+	const float fx = (float)x + _s.x * zoom * _scale.x;
+	const float fy = (float)y + _s.y * zoom * _scale.y;
+	const float fw = (float)_texture->getWidth() * zoom * _scale.x;
+	const float fh = (float)_texture->getHeight() * zoom * _scale.y;
+	frontend->renderImage(_texture.get(), (int)fx, (int)fy, (int)fw, (int)fh, _angle, _alpha);
 }

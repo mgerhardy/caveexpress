@@ -31,6 +31,8 @@ protected:
 	// angle movement
 	float _omega;
 
+	vec2 _scale;
+
 	TexturePtr loadTexture (const std::string& image) const;
 	void advanceVector (const vec2& veca, const float scale, const vec2& vecb, vec2& outVector) const;
 public:
