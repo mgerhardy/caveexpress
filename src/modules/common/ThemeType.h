@@ -13,6 +13,8 @@ public:
 namespace ThemeTypes {
 extern ThemeType ICE;
 extern ThemeType ROCK;
+extern ThemeType JUNGLE;
+extern ThemeType DESERT;
 
 inline bool isIce (const ThemeType& other)
 {
@@ -22,6 +24,16 @@ inline bool isIce (const ThemeType& other)
 inline bool isRock (const ThemeType& other)
 {
 	return other == ROCK;
+}
+
+inline bool isJungle (const ThemeType& other)
+{
+	return other == JUNGLE;
+}
+
+inline bool isDesert (const ThemeType& other)
+{
+	return other == DESERT;
 }
 
 }
