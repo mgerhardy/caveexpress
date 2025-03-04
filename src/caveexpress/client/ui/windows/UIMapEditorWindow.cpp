@@ -1,5 +1,6 @@
 #include "UIMapEditorWindow.h"
 
+#include "common/ThemeType.h"
 #include "ui/UI.h"
 #include "ui/nodes/UINodeButton.h"
 #include "ui/nodes/UINodeCheckbox.h"
@@ -68,6 +69,14 @@ UINode *UIMapEditorWindow::createButtons (IMapManager& mapManager, UINodeMapStri
 	UINodeButton *iceNode = new UINodeButtonText(_frontend, tr("Ice"));
 	iceNode->addListener(UINodeListenerPtr(new ChangeThemeListener(_mapEditor, _spritesNode, _emitterNode, _selectedItemNode, ThemeTypes::ICE)));
 	buttonsNode->addFront(iceNode);
+
+	UINodeButton *jungleNode = new UINodeButtonText(_frontend, tr("Jungle"));
+	jungleNode->addListener(UINodeListenerPtr(new ChangeThemeListener(_mapEditor, _spritesNode, _emitterNode, _selectedItemNode, ThemeTypes::JUNGLE)));
+	buttonsNode->addFront(jungleNode);
+
+	UINodeButton *desertNode = new UINodeButtonText(_frontend, tr("Desert"));
+	desertNode->addListener(UINodeListenerPtr(new ChangeThemeListener(_mapEditor, _spritesNode, _emitterNode, _selectedItemNode, ThemeTypes::DESERT)));
+	buttonsNode->addFront(desertNode);
 
 	return buttonsNode;
 }

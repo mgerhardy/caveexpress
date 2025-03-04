@@ -1237,7 +1237,7 @@ sprites = {
 	},
 
 	["tile-packagetarget-desert-01-rotate"] = {
-		type = "packagetarget-desert",
+		type = "packagetarget-rock",
 		theme = "desert",
 		rotateable = 90,
 		polygons = {
@@ -1259,7 +1259,7 @@ sprites = {
 	},
 
 	["tile-packagetarget-desert-01-active"] = {
-		type = "packagetarget-desert",
+		type = "packagetarget-rock",
 		theme = "desert",
 		rotateable = 90,
 		polygons = {
@@ -1281,7 +1281,7 @@ sprites = {
 	},
 
 	["tile-packagetarget-desert-01-idle"] = {
-		type = "packagetarget-desert",
+		type = "packagetarget-rock",
 		theme = "desert",
 		rotateable = 90,
 		polygons = {
