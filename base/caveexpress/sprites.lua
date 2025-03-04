@@ -3,7 +3,7 @@ sprites = {
 -- Player
 
 	["player-flying"] = {
-		fps = 14,
+		fps = 18,
 	},
 	["player-crashed"] = {
 	},
@@ -92,10 +92,10 @@ sprites = {
 -- NPC Flying
 
 	["npc-flying-flying-left" ] = {
-		fps = 6,
+		fps = 16,
 	},
 	["npc-flying-flying-right"] = {
-		fps = 6,
+		fps = 16,
 	},
 	["npc-flying-falling-left"] = {
 		fps = 6,
@@ -352,6 +352,50 @@ sprites = {
 	["tree-dazed"] = {
 	},
 
+-- Various
+
+	["liane-01"] = {
+		rotateable = 1,
+		type = "liane",
+		theme = "rock",
+		width = 0.25,
+		height = 2,
+	},
+	["cave-sign-01"] = { type = "cave-sign", },
+	["cave-sign-02"] = { type = "cave-sign", },
+	["cave-sign-03"] = { type = "cave-sign", },
+	["cave-sign-04"] = { type = "cave-sign", },
+	["cave-sign-05"] = { type = "cave-sign", },
+	["cave-sign-06"] = { type = "cave-sign", },
+	["cave-sign-07"] = { type = "cave-sign", },
+	["cave-sign-08"] = { type = "cave-sign", },
+	["cavenumber1"] = {},
+	["cavenumber2"] = {},
+	["cavenumber3"] = {},
+	["cavenumber4"] = {},
+	["cavenumber5"] = {},
+	["cavenumber6"] = {},
+	["cavenumber7"] = {},
+	["cavenumber8"] = {},
+
+-- UI sprites
+
+	["ui-player"] = {
+		fps = 10,
+	},
+	["ui-npc-grandpa"] = {
+		fps = 8,
+	},
+	["ui-npc-woman"] = {
+		fps = 11,
+	},
+	["ui-npc-mammut"] = {
+		fps = 11,
+	},
+	["icon-heart"] = {},
+
+
+-- -------------------------------------------------------------------------------------------------------------------------------------------
 -- Ice Tiles
 
 	["tile-background-ice-01"] = { type = "background", theme = "ice", },
@@ -676,7 +720,7 @@ sprites = {
 		},
 	},
 
--- Ice Bridge
+	-- Ice Bridge
 
 	["bridge-wall-ice-left-01"] = {
 		type = "bridge-left",
@@ -706,6 +750,7 @@ sprites = {
 		},
 	},
 
+-- -------------------------------------------------------------------------------------------------------------------------------------------
 -- Rock Tiles
 
 	["tile-background-01"] = { type = "background", theme = "rock", },
@@ -1013,7 +1058,7 @@ sprites = {
 		height = 2,
 	},
 
--- Rock Bridge
+	-- Rock Bridge
 
 	["bridge-wall-left-01"] = {
 		type = "bridge-left",
@@ -1043,42 +1088,699 @@ sprites = {
 		},
 	},
 
--- Various
 
-	["liane-01"] = {
-		rotateable = 1,
-		type = "liane",
-		theme = "rock",
-		width = 0.25,
+-- -------------------------------------------------------------------------------------------------------------------------------------------
+-- Desert Tiles
+
+	["tile-background-desert-01"] = { type = "background", theme = "desert", },
+	["tile-background-desert-02"] = { type = "background", theme = "desert", },
+	["tile-background-desert-03"] = { type = "background", theme = "desert", },
+	["tile-background-desert-04"] = { type = "background", theme = "desert", },
+	["tile-background-desert-05"] = { type = "background", theme = "desert", },
+	["tile-background-desert-06"] = { type = "background", theme = "desert", },
+	["tile-background-desert-07"] = { type = "background", theme = "desert", },
+	["tile-background-desert-08"] = { type = "background", theme = "desert", },
+	["tile-background-desert-cave-art-01"] = { type = "background", theme = "desert", },
+	["tile-background-desert-cave-art-02"] = { type = "background", theme = "desert", },
+	["tile-background-desert-big-01"] = { type = "background", width = 2, height = 2, theme = "desert", },
+	["tile-background-desert-window-01"] = {
+		type = "window",
+		theme = "desert",
+		frames = {
+			{ "tile-background-desert-window-01-on", "tile-background-desert-window-01-off", }, --back
+			{}, --middle
+			{}, --front
+		},
+		fps = 0,
+	},
+	["tile-background-desert-window-02"] = {
+		type = "window",
+		theme = "desert",
+		frames = {
+			{ "tile-background-desert-window-02-on", "tile-background-desert-window-02-off", }, --back
+			{}, --middle
+			{}, --front
+		},
+		fps = 0,
+	},
+
+	["tile-cave-desert-01"] = {
+		type = "cave",
+		theme = "desert",
+		frames = {
+			{ "tile-cave-desert-01-on", "tile-cave-desert-01-off", }, --back
+			{}, --middle
+			{}, --front
+		},
+		fps = 0,
+	},
+	["tile-cave-desert-02"] = {
+		type = "cave",
+		theme = "desert",
+		frames = {
+			{ "tile-cave-desert-02-on", "tile-cave-desert-02-off", }, --back
+			{}, --middle
+			{}, --front
+		},
+		fps = 0,
+	},
+
+	["tile-ground-desert-01"] = { type = "ground", theme = "desert", },
+	["tile-ground-desert-02"] = { type = "ground", theme = "desert", },
+	["tile-ground-desert-03"] = { type = "ground", theme = "desert", },
+	["tile-ground-desert-04"] = { type = "ground", theme = "desert", },
+	["tile-ground-desert-05"] = {
+		type = "ground",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 50, 50, 50, 50, 20, -50, 20,
+			},
+		},
+	},
+	["tile-ground-desert-06"] = { type = "ground", theme = "desert", },
+	["tile-ground-desert-big-01"] = { type = "ground", width = 2, height = 2, theme = "desert", },
+	["tile-lava-desert-left-01"] = {
+		type = "lava",
+		theme = "desert",
+		fps = 2,
+		polygons = {
+			{
+				"solid", -50, 0, 50, 0, 50, -50, -50, -50,
+			},
+			{
+				"lava", -50, 40, 50, 40, 50, 0, -50, 0,
+			},
+		},
+	},
+	["tile-lava-desert-left-02"] = { type = "lava", theme = "desert", fps = 2, },
+	["tile-lava-desert-right-01"] = {
+		type = "lava",
+		theme = "desert",
+		fps = 2,
+		polygons = {
+			{
+				"solid", -50, 0, 50, 0, 50, -50, -50, -50,
+			},
+			{
+				"lava", -50, 40, 50, 40, 50, 0, -50, 0,
+			},
+		},
+	},
+	["tile-lava-desert-right-02"] = { type = "lava", theme = "desert", fps = 2, },
+	["tile-ground-ledge-desert-right-01"] = {
+		type = "ground-right",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 50, -50, -20, 50, 0, 50, 50,
+			},
+		},
+	},
+	["tile-ground-ledge-desert-right-02"] = {
+		type = "ground-right",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 50, -50, 0, 50, 20, 50, 50,
+			},
+		},
+	},
+	["tile-ground-ledge-desert-left-01"] = {
+		type = "ground-left",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 50, -50, 0, 50, -20, 50, 50,
+			},
+		},
+	},
+	["tile-ground-ledge-desert-left-02"] = {
+		type = "ground-right",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 50, -50, 20, 50, 0, 50, 50,
+			},
+		},
+	},
+
+	["tile-waterfall-desert-01"] = {
+		type = "waterfall",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 0, 50, 0, 50, -100, -50, -100,
+			},
+		},
 		height = 2,
 	},
-	["cave-sign-01"] = { type = "cave-sign", },
-	["cave-sign-02"] = { type = "cave-sign", },
-	["cave-sign-03"] = { type = "cave-sign", },
-	["cave-sign-04"] = { type = "cave-sign", },
-	["cave-sign-05"] = { type = "cave-sign", },
-	["cave-sign-06"] = { type = "cave-sign", },
-	["cave-sign-07"] = { type = "cave-sign", },
-	["cave-sign-08"] = { type = "cave-sign", },
-	["cavenumber1"] = {},
-	["cavenumber2"] = {},
-	["cavenumber3"] = {},
-	["cavenumber4"] = {},
-	["cavenumber5"] = {},
-	["cavenumber6"] = {},
-	["cavenumber7"] = {},
-	["cavenumber8"] = {},
 
--- UI sprites
-
-	["ui-player"] = {
-		fps = 10,
+	["tile-packagetarget-desert-01-rotate"] = {
+		type = "packagetarget-desert",
+		theme = "desert",
+		rotateable = 90,
+		polygons = {
+			{
+				"top", -40, 35, -40, 40, 40, 40, 40, 35,
+			},
+			{
+				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
+			},
+			{
+				-- winding order: lower left, lower right, upper left
+				"smallleft", -50, 40, -30, 40, -50, 50,
+			},
+			{
+				-- winding order: lower left, lower right, upper left
+				"smallright", 30, 40, 50, 40, 50, 50
+			},
+		},
 	},
-	["ui-npc-grandpa"] = {
+
+	["tile-packagetarget-desert-01-active"] = {
+		type = "packagetarget-desert",
+		theme = "desert",
+		rotateable = 90,
+		polygons = {
+			{
+				"top", -40, 35, -40, 40, 40, 40, 40, 35,
+			},
+			{
+				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
+			},
+			{
+				-- winding order: lower left, lower right, upper left
+				"smallleft", -50, 40, -30, 40, -50, 50,
+			},
+			{
+				-- winding order: lower left, lower right, upper left
+				"smallright", 30, 40, 50, 40, 50, 50
+			},
+		},
+	},
+
+	["tile-packagetarget-desert-01-idle"] = {
+		type = "packagetarget-desert",
+		theme = "desert",
+		rotateable = 90,
+		polygons = {
+			{
+				"top", -40, 35, -40, 40, 40, 40, 40, 35,
+			},
+			{
+				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
+			},
+			{
+				-- winding order: lower left, lower right, upper left
+				"smallleft", -50, 40, -30, 40, -50, 50,
+			},
+			{
+				-- winding order: lower left, lower right, upper left
+				"smallright", 30, 40, 50, 40, 50, 50
+			},
+		},
+	},
+
+	["tile-geyser-desert-01-idle"] = {
+		fps = 4,
+		type = "geyser-desert",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 0, 50, 0, 50, -100, -50, -100,
+			},
+		},
+		height = 2,
+	},
+
+	["tile-geyser-desert-01-active"] = {
 		fps = 8,
+		type = "geyser-desert",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 0, 50, 0, 50, -100, -50, -100,
+			},
+		},
+		height = 2,
 	},
-	["ui-npc-mammut"] = {
-		fps = 11,
+
+	["tile-rock-desert-01"] = { type = "rock", theme = "desert", },
+	["tile-rock-desert-02"] = { type = "rock", theme = "desert", },
+	["tile-rock-desert-03"] = { type = "rock", theme = "desert", },
+	["tile-rock-desert-left-04"] = {
+		type = "rock",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 50, -50, -50, -10, -50, 0, 50,
+			},
+		},
 	},
-	["icon-heart"] = {},
+	["tile-rock-desert-right-04"] = {
+		type = "rock",
+		theme = "desert",
+		polygons = {
+			{
+				"", 0, 50, 50, 50, 50, -50, 10, -50,
+			},
+		},
+	},
+	["tile-rock-desert-left-05"] = {
+		type = "rock",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 50, -50, -50, 0, -50, -10, 50,
+			},
+		},
+	},
+	["tile-rock-desert-right-05"] = {
+		type = "rock",
+		theme = "desert",
+		polygons = {
+			{
+				"", 10, 50, 50, 50, 50, -50, 0, -50,
+			},
+		},
+	},
+	["tile-rock-desert-big-01"] = { type = "rock", width = 2, height = 2, theme = "desert", },
+	["tile-rock-slope-desert-right-01"] = {
+		type = "slope-right",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 50, 50, -50, -50, -50,
+			},
+		},
+		friction = 0.01,
+	},
+	["tile-rock-slope-desert-left-01"] = {
+		type = "slope-left",
+		theme = "desert",
+		polygons = {
+			{
+				"", 50, 50, 50, -50, -50, -50,
+			},
+		},
+		friction = 0.01,
+	},
+	["tile-rock-slope-desert-right-02"] = {
+		type = "rock",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, -50, 50, 50, -50, 50,
+			},
+		},
+	},
+	["tile-rock-slope-desert-left-02"] = {
+		type = "rock",
+		theme = "desert",
+		polygons = {
+			{
+				"", 50, -50, 50, 50, -50, 50,
+			},
+		},
+	},
+	["tile-rock-shim-desert-01"] = {
+		type = "rock",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 50, 0, 0, 50, 50,
+			},
+		},
+	},
+
+	-- Desert Bridge
+
+	["bridge-wall-desert-left-01"] = {
+		type = "bridge-left",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 50, -50, 0, 50, 20, 50, 50,
+			},
+		},
+	},
+	["bridge-plank-desert-01"] = {
+		type = "bridge-plank",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 50, -50, 20, 50, 20, 50, 50,
+			},
+		},
+	},
+	["bridge-wall-desert-right-01"] = {
+		type = "bridge-right",
+		theme = "desert",
+		polygons = {
+			{
+				"", -50, 50, -50, 20, 50, 0, 50, 50,
+			},
+		},
+	},
+
+
+-- -------------------------------------------------------------------------------------------------------------------------------------------
+-- Jungle Tiles
+
+	["tile-background-jungle-01"] = { type = "background", theme = "jungle", },
+	["tile-background-jungle-02"] = { type = "background", theme = "jungle", },
+	["tile-background-jungle-03"] = { type = "background", theme = "jungle", },
+	["tile-background-jungle-04"] = { type = "background", theme = "jungle", },
+	["tile-background-jungle-cave-art-01"] = { type = "background", theme = "jungle", },
+	["tile-ground-jungle-big-01"] = { type = "background", width = 2, height = 2, theme = "jungle", },
+	["tile-background-window-jungle-01"] = {
+		type = "window",
+		theme = "jungle",
+		frames = {
+			{ "tile-background-window-jungle-01-on", "tile-background-window-jungle-01-off", }, --back
+			{}, --middle
+			{}, --front
+		},
+		fps = 0,
+	},
+	["tile-background-window-jungle-02"] = {
+		type = "window",
+		theme = "jungle",
+		frames = {
+			{ "tile-background-window-jungle-02-on", "tile-background-window-jungle-02-off", }, --back
+			{}, --middle
+			{}, --front
+		},
+		fps = 0,
+	},
+
+	["tile-cave-jungle-01"] = {
+		type = "cave",
+		theme = "jungle",
+		frames = {
+			{ "tile-cave-jungle-01-on", "tile-cave-jungle-01-off", }, --back
+			{}, --middle
+			{}, --front
+		},
+		fps = 0,
+	},
+	["tile-cave-jungle-02"] = {
+		type = "cave",
+		theme = "jungle",
+		frames = {
+			{ "tile-cave-jungle-02-on", "tile-cave-jungle-02-off", }, --back
+			{}, --middle
+			{}, --front
+		},
+		fps = 0,
+	},
+
+	["tile-ground-jungle-01"] = { type = "ground", theme = "jungle", },
+	["tile-ground-jungle-02"] = { type = "ground", theme = "jungle", },
+	["tile-ground-jungle-03"] = { type = "ground", theme = "jungle", },
+	["tile-ground-jungle-04"] = { type = "ground", theme = "jungle", },
+	["tile-ground-jungle-05"] = {
+		type = "ground",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 50, 50, 50, 50, 20, -50, 20,
+			},
+		},
+	},
+	["tile-ground-jungle-06"] = {
+		type = "ground",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 50, 50, 50, 50, 20, -50, 20,
+			},
+		},
+	},
+
+	["tile-ground-ledge-jungle-right-01"] = {
+		type = "ground-right",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 50, -50, -20, 50, 0, 50, 50,
+			},
+		},
+	},
+	["tile-ground-ledge-jungle-right-02"] = {
+		type = "ground-right",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 50, -50, 0, 50, 20, 50, 50,
+			},
+		},
+	},
+	["tile-ground-ledge-jungle-left-01"] = {
+		type = "ground-left",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 50, -50, 0, 50, -20, 50, 50,
+			},
+		},
+	},
+	["tile-ground-ledge-jungle-left-02"] = {
+		type = "ground-right",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 50, -50, 20, 50, 0, 50, 50,
+			},
+		},
+	},
+	["tile-rock-shim-jungle-01"] = {
+		type = "rock",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 50, 0, 0, 50, 50,
+			},
+		},
+	},
+
+	["tile-waterfall-jungle-01"] = {
+		type = "waterfall",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 0, 50, 0, 50, -100, -50, -100,
+			},
+		},
+		fps = 6,
+		height = 2,
+	},
+
+	["tile-rock-jungle-01"] = { type = "rock", theme = "jungle", },
+	["tile-rock-jungle-02"] = { type = "rock", theme = "jungle", },
+	["tile-rock-jungle-03"] = { type = "rock", theme = "jungle", },
+	["tile-rock-jungle-left-04"] = {
+		type = "rock",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 50, -10, 50, 0, -10, 0, -50, -50, -50
+			},
+		},
+	},
+	["tile-rock-jungle-right-04"] = {
+		type = "rock",
+		theme = "jungle",
+		polygons = {
+			{
+				"", 50, 50, 10, 50, 0, -10, 0, -50, 50, -50
+			},
+		},
+	},
+	["tile-rock-big-jungle-01"] = { type = "rock", width = 2, height = 2, theme = "jungle", },
+	["tile-lava-rock-jungle-left-01"] = {
+		type = "lava",
+		theme = "jungle",
+		fps = 2,
+		polygons = {
+			{
+				"solid", -50, 0, 50, 0, 50, -50, -50, -50,
+			},
+			{
+				"lava", -50, 40, 50, 40, 50, 0, -50, 0,
+			},
+		},
+	},
+	["tile-lava-rock-jungle-right-01"] = {
+		type = "lava",
+		theme = "jungle",
+		fps = 2,
+		polygons = {
+			{
+				"solid", -50, 0, 50, 0, 50, -50, -50, -50,
+			},
+			{
+				"lava", -50, 40, 50, 40, 50, 0, -50, 0,
+			},
+		},
+	},
+	["tile-rock-slope-jungle-right-01"] = {
+		type = "slope-right",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 50, 50, -50, -50, -50,
+			},
+		},
+		friction = 0.1,
+	},
+	["tile-rock-slope-jungle-left-01"] = {
+		type = "slope-left",
+		theme = "jungle",
+		polygons = {
+			{
+				"", 50, 50, 50, -50, -50, -50,
+			},
+		},
+		friction = 0.1,
+	},
+	["tile-rock-slope-jungle-right-02"] = {
+		type = "rock",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, -50, 50, 50, -50, 50,
+			},
+		},
+	},
+	["tile-rock-slope-jungle-left-02"] = {
+		type = "rock",
+		theme = "jungle",
+		polygons = {
+			{
+				"", 50, -50, 50, 50, -50, 50,
+			},
+		},
+	},
+	["tile-packagetarget-jungle-01-rotate"] = {
+		type = "packagetarget-rock",
+		rotateable = 90,
+		theme = "jungle",
+		polygons = {
+			{
+				"top", -40, 35, -40, 40, 40, 40, 40, 35,
+			},
+			{
+				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
+			},
+			{
+				-- winding order: lower left, lower right, upper left
+				"smallleft", -50, 40, -30, 40, -50, 50,
+			},
+			{
+				-- winding order: lower left, lower right, upper left
+				"smallright", 30, 40, 50, 40, 50, 50
+			},
+		},
+	},
+
+	["tile-packagetarget-jungle-01-active"] = {
+		type = "packagetarget-rock",
+		rotateable = 90,
+		theme = "jungle",
+		polygons = {
+			{
+				"top", -40, 35, -40, 40, 40, 40, 40, 35,
+			},
+			{
+				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
+			},
+			{
+				-- winding order: lower left, lower right, upper left
+				"smallleft", -50, 40, -30, 40, -50, 50,
+			},
+			{
+				-- winding order: lower left, lower right, upper left
+				"smallright", 30, 40, 50, 40, 50, 50
+			},
+		},
+	},
+
+	["tile-packagetarget-jungle-01-idle"] = {
+		type = "packagetarget-rock",
+		rotateable = 90,
+		theme = "jungle",
+		polygons = {
+			{
+				"top", -40, 35, -40, 40, 40, 40, 40, 35,
+			},
+			{
+				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
+			},
+			{
+				-- winding order: lower left, lower right, upper left
+				"smallleft", -50, 40, -30, 40, -50, 50,
+			},
+			{
+				-- winding order: lower left, lower right, upper left
+				"smallright", 30, 40, 50, 40, 50, 50
+			},
+		},
+	},
+
+	["tile-geyser-jungle-01-idle"] = {
+		fps = 6,
+		type = "geyser-rock",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 0, 50, 0, 50, -100, -50, -100,
+			},
+		},
+		height = 2,
+	},
+
+	["tile-geyser-jungle-01-active"] = {
+		fps = 8,
+		type = "geyser-rock",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 0, 50, 0, 50, -100, -50, -100,
+			},
+		},
+		height = 2,
+	},
+
+	-- Jungle Bridge
+
+	["bridge-wall-jungle-left-01"] = {
+		type = "bridge-left",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 50, -50, 0, 50, 20, 50, 50,
+			},
+		},
+	},
+	["bridge-plank-jungle-01"] = {
+		type = "bridge-plank",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 50, -50, 20, 50, 20, 50, 50,
+			},
+		},
+	},
+	["bridge-wall-jungle-right-01"] = {
+		type = "bridge-right",
+		theme = "jungle",
+		polygons = {
+			{
+				"", -50, 50, -50, 20, 50, 0, 50, 50,
+			},
+		},
+	},
+
 }
