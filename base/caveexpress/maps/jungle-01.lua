@@ -253,7 +253,7 @@ function initMap()
 	map:setSetting("points", "100")
 	map:setSetting("referencetime", "30")
 	map:setSetting("sideborderfail", "false")
-	map:setSetting("theme", "rock")
+	map:setSetting("theme", "jungle")
 	map:setSetting("tutorial", "false")
 
 	map:setSetting("waterheight", "0.96")
