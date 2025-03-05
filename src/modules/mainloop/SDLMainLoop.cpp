@@ -34,6 +34,7 @@ static void runFrameEmscripten() {
 	if (!INSTANCE->isRunning()) {
 		Config.shutdown();
 		System.track("step", "sdl backend shutdown");
+		Log::info(LOG_SERVER, "-----");
 		Log::info(LOG_SERVER, "shut down the main loop");
 		emscripten_cancel_main_loop();
 		return;
@@ -59,6 +60,7 @@ SDLMainLoop::SDLMainLoop () :
 
 SDLMainLoop::~SDLMainLoop ()
 {
+	Log::info(LOG_SERVER, "-----");
 	Log::info(LOG_SERVER, "shutdown backend");
 	_eventHandler.removeObserver(this);
 
@@ -97,6 +99,7 @@ void SDLMainLoop::handleEvent (SDL_Event &event)
 
 	switch (event.type) {
 	case SDL_QUIT:
+		Log::info(LOG_SERVER, "-----");
 		Log::info(LOG_SERVER, "received quit event");
 		Config.shutdown();
 		if (!System.quit()) {
@@ -116,6 +119,7 @@ void SDLMainLoop::handleEvent (SDL_Event &event)
 	}
 
 	if (!_running) {
+		Log::info(LOG_SERVER, "-----");
 		Log::info(LOG_SERVER, "Quitting the game");
 
 		_frontend->shutdown();
@@ -180,6 +184,7 @@ void SDLMainLoop::resetKeyStates ()
 bool SDLMainLoop::handleInit() {
 	switch (_initState) {
 	case InitState::INITSTATE_CONFIG:
+		Log::info(LOG_SERVER, "--------------------");
 		Log::info(LOG_SERVER, "init config");
 		Config.init(this, _argc, _argv);
 		Commands.registerCommandVoid(CMD_QUIT, [] () {
@@ -274,6 +279,7 @@ bool SDLMainLoop::handleInit() {
 		_initState = InitState::INITSTATE_DONE;
 
 		Log::info(LOG_SERVER, "initialization done");
+		Log::info(LOG_SERVER, "--------------------");
 
 		break;
 	case InitState::INITSTATE_ERROR:
@@ -352,6 +358,7 @@ void SDLMainLoop::mainLoop (int argc, char **argv)
 		return;
 
 	const ConfigVarPtr& fpsLimit = Config.getConfigVar("fpslimit", "60.0", true);
+	Log::info(LOG_SERVER, "----------");
 	Log::info(LOG_SERVER, "Run the game at %f frames per second", fpsLimit->getFloatValue());
 	double nextFrame = static_cast<double>(SDL_GetTicks());
 	while (_running) {
@@ -493,6 +500,7 @@ void SDLMainLoop::status ()
 		return;
 	}
 
+	Log::info(LOG_SERVER, "----------");
 	Log::info(LOG_SERVER, "map running: %s", map.c_str());
 }
 
@@ -517,7 +525,7 @@ void SDLMainLoop::loadMap (const std::string& mapName)
 		return;
 	}
 
-	Log::info(LOG_SERVER, "failed to load map %s", mapName.c_str());
+	Log::error(LOG_SERVER, "failed to load map %s", mapName.c_str());
 }
 
 void SDLMainLoop::onData (ClientId clientId, ByteStream &data)
