@@ -23,6 +23,7 @@ Create server|Create server
 Decrease map size|Decrease map size
 Deliver packages to the shredders|Deliver packages to the shredders
 Description|Description
+Desert|Desert
 Disconnect|Disconnect
 Drop during flight|Drop during flight
 Drop off at the shredder|Drop off at the shredder
@@ -57,6 +58,7 @@ Initial npc spawn delay for the pterodactyls and the fish|Initial npc spawn dela
 Initial water rising delay in milliseconds|Initial water rising delay in milliseconds
 Input|Input
 Invulverable|Invulverable
+Jungle|Jungle
 Just stay and watch what happens|Just stay and watch what happens
 LMB|LMB
 Later|Later

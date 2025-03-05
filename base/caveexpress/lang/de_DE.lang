@@ -23,6 +23,7 @@ Create server|Server erstellen
 Decrease map size|Map verkleinern
 Deliver packages to the shredders|Transportiere Pakete zu den Schreddern
 Description|Beschreibung
+Desert|Desert
 Disconnect|Disconnect
 Drop during flight|Während des Fluges abwerfen
 Drop off at the shredder|Drop off at the shredder
@@ -57,6 +58,7 @@ Initial npc spawn delay for the pterodactyls and the fish|Initial npc spawn dela
 Initial water rising delay in milliseconds|Initiale Verzögerung der Wassererhöhung in Millisekunden
 Input|Eingabe
 Invulverable|Unverwundbar
+Jungle|Jungle
 Just stay and watch what happens|Einfach nur abwarten und zuschauen
 LMB|LMB
 Later|Später
