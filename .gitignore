@@ -6,6 +6,7 @@
 /tests*
 /solutiontool
 /build
+/tiledgenerator
 
 # also binaries - but more generic
 /*.exe

@@ -129,16 +129,15 @@ long FileSystem::writeSysFile (const std::string& filename, const unsigned char 
 	if (filename.empty())
 		return -1L;
 
-	const std::string path = getAbsoluteWritePath() + filename;
-	SDL_RWops *rwops = createRWops(path, "wb");
-	FilePtr file(new File(rwops, path));
+	SDL_RWops *rwops = createRWops(filename, "wb");
+	FilePtr file(new File(rwops, filename));
 	if (!overwrite && file->exists())
 		return -1L;
 	const long ret = file->write(buf, length);
 	if (ret < 0)
-		Log::error(LOG_COMMON, "failed to write file %s", path.c_str());
+		Log::error(LOG_COMMON, "failed to write file %s", filename.c_str());
 	else
-		Log::info(LOG_COMMON, "wrote file %s of size %li", path.c_str(), ret);
+		Log::info(LOG_COMMON, "wrote file %s of size %li", filename.c_str(), ret);
 	return ret;
 }
 

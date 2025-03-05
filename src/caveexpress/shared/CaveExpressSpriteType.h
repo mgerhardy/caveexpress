@@ -23,8 +23,10 @@ extern SpriteType CAVE_SIGN;
 extern SpriteType LIANE;
 extern SpriteType GEYSER_ICE;
 extern SpriteType GEYSER_ROCK;
+extern SpriteType GEYSER_DESERT;
 extern SpriteType PACKAGETARGET_ICE;
 extern SpriteType PACKAGETARGET_ROCK;
+
 
 inline bool isBackground (const SpriteType& other)
 {

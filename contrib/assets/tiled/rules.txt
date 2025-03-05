@@ -1,4 +1,4 @@
-TILESET caveexpress.tsx
+TILESET caveexpress-tileset-rock.tsx
 
 RULE
     INPUT ground
