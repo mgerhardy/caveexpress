@@ -22,9 +22,9 @@ void Rain::run() {
 	_waterSurface = _env.getWaterSurface();
 
 	// Rain has reached the water surface
-	if (_pos.y >= _waterSurface - _texture->getHeight()) {
-		_pos.x = rand() % _env.getPixelWidth();
-		_pos.y = rand() % (_env.getPixelHeight() / 32); // top
+	if (_pos.y >= (float)(_waterSurface - _texture->getHeight())) {
+		_pos.x = (float)(rand() % _env.getPixelWidth());
+		_pos.y = (float)(rand() % (_env.getPixelHeight() / 32));
 		random();
 	}
 }

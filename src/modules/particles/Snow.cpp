@@ -17,7 +17,6 @@ void Snow::init() {
 	_pos.x = (float)(rand() % _env.getPixelWidth());
 	_pos.y = (float)(rand() % _env.getPixelHeight());
 	_waterSurface = _env.getWaterSurface();
-	Log::error(LogCategory::LOG_PARTICLES, "Snow::init: %i:%i at water height: %i", (int)_pos.x, (int)_pos.y, _waterSurface);
 }
 
 void Snow::run() {
