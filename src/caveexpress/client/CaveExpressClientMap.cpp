@@ -6,6 +6,7 @@
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 #include "particles/Bubble.h"
 #include "particles/Snow.h"
+#include "particles/Rain.h"
 #include "particles/Sparkle.h"
 #include "common/MapSettings.h"
 #include "network/messages/StopMovementMessage.h"
@@ -140,6 +141,13 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 		const int snowFlakes = getWidth() / 10;
 		for (int i = 0; i < snowFlakes; ++i) {
 			_particleSystem.spawn(ParticlePtr(new Snow(*this)));
+		}
+	}
+	else if (ThemeTypes::isJungle(*_theme))	{
+		const int rainDrops = int(randBetweenf(1.2f, 4.5f) * (float)getMapWidth() * 100);
+		//Log::info(LOG_GAMEIMPL, "RAIN drops: %i", rainDrops);
+		for (int i = 0; i < rainDrops; ++i) {
+			_particleSystem.spawn(ParticlePtr(new Rain(*this)));
 		}
 	}
 }
