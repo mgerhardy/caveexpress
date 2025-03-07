@@ -8,7 +8,7 @@ UINodeCampaignSelector::UINodeCampaignSelector (IFrontend *frontend, CampaignMan
 {
 	defaults();
 	setPaddingPixel(10);
-	setColsRowsFromTexture("icon-campaign");
+	// setColsRowsFromTexture("icon-campaign");
 	reset();
 }
 
@@ -39,9 +39,10 @@ void UINodeCampaignSelector::renderSelectorEntry (int index, const CampaignPtr& 
 		t = loadTexture("icon-campaign");
 
 	if (!data->getText().empty()) {
-		const BitmapFontPtr& font = getFont(SMALL_FONT);
+		const BitmapFontPtr& font = getFont(HUGE_FONT); //SMALL_FONT);
 		const int textHeight = font->getTextHeight(data->getText());
-		const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(data->getText()) / 2);
+		// const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(data->getText()) / 2);  // center
+		const int fontX = x;  // left
 		const int fontY = y + rowHeight - textHeight - 1;
 		_frontend->renderFilledRect(x, fontY - 1, colWidth, textHeight + 2, colorBlack);
 		//_frontend->renderRect(x, fontY - 1, colWidth, textHeight + 2, colorWhite);
