@@ -1,5 +1,5 @@
 function getName()
-	return "Cave taxi"
+	return "In8 Cave taxi"
 end
 
 function onMapLoaded()
@@ -205,7 +205,7 @@ function initMap()
 	map:setSetting("gravity", "9.81")
 	map:setSetting("introwindow", "")
 	map:setSetting("npcs", "3")
-	map:setSetting("npctransfercount", "2")
+	map:setSetting("npctransfercount", "15")
 	map:setSetting("packagetransfercount", "0")
 	map:setSetting("points", "100")
 	map:setSetting("referencetime", "30")

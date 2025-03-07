@@ -1,5 +1,5 @@
 function getName()
-	return "Flying"
+	return "In5 Flying npc"
 end
 
 function onMapLoaded()

@@ -1,5 +1,5 @@
 function getName()
-	return "SEcond Ice 02"
+	return "Ice2 2 water rise 3pkg"
 end
 
 function onMapLoaded()

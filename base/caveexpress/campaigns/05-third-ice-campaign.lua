@@ -3,7 +3,7 @@ local c = Campaign.new("thirdice")
 -- set an ingame icon for this campaign
 c:setSetting("icon", "icon-campaign-ice")
 -- set the on screen message when this campaign is activated
-c:setSetting("text", "ThirdIce")
+c:setSetting("text", "Ice 3")
 -- now add all maps
 c:addMaps("third-ice-01")
 c:addMaps("third-ice-02")

@@ -1,5 +1,5 @@
 function getName()
-	return "Map 12"
+	return "Ice3 12 blow island"
 end
 
 function onMapLoaded()

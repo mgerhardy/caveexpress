@@ -1,5 +1,5 @@
 function getName()
-	return "Map 12"
+	return "Rock 12 corner 4pkg"
 end
 
 function initMap()

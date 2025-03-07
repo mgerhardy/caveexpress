@@ -1,5 +1,5 @@
 function getName()
-	return "Map 04"
+	return "Rock2 4 easy 3pkg"
 end
 
 function onMapLoaded()

@@ -1,5 +1,5 @@
 function getName()
-	return "A long way"
+	return "Ice2 10 A long way"
 end
 
 function onMapLoaded()

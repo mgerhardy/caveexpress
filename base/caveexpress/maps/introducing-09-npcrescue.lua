@@ -1,5 +1,5 @@
 function getName()
-	return "Rescue mission"
+	return "In9 Rescue mission"
 end
 
 function onMapLoaded()

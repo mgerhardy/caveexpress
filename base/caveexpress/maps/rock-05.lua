@@ -1,5 +1,5 @@
 function getName()
-	return "Flying dino"
+	return "Rock 5 Flying dino"
 end
 
 function initMap()

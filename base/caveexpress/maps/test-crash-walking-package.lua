@@ -1,5 +1,5 @@
 function getName()
-	return ""
+	return "test walk pkg"
 end
 
 function onMapLoaded()

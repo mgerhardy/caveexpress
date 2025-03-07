@@ -1,5 +1,5 @@
 function getName()
-	return "Test win package"
+	return "test win package"
 end
 
 function onMapLoaded()

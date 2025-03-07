@@ -1,5 +1,5 @@
 function getName()
-	return "Map 02"
+	return "Rock 2 blow"
 end
 
 function initMap()

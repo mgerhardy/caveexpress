@@ -1,5 +1,5 @@
 function getName()
-	return "Find your way"
+	return "In7 Find your way"
 end
 
 function initMap()

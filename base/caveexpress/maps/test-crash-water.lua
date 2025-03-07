@@ -1,5 +1,5 @@
 function getName()
-	return "water"
+	return "test water"
 end
 
 function onMapLoaded()

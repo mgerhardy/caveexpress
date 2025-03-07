@@ -1,5 +1,5 @@
 function getName()
-	return "Aggressive"
+	return "Rock 4 Aggressive"
 end
 
 function initMap()

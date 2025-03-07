@@ -1,5 +1,5 @@
 function getName()
-	return ""
+	return "test hitpoints"
 end
 
 function onMapLoaded()

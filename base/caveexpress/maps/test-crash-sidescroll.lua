@@ -1,5 +1,5 @@
 function getName()
-	return ""
+	return "test side"
 end
 
 function onMapLoaded()

@@ -1,5 +1,5 @@
 function getName()
-	return "Be fast"
+	return "In2 Be fast"
 end
 
 function onMapLoaded()

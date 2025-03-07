@@ -1,5 +1,5 @@
 function getName()
-	return "Map 11"
+	return "Rock 11 geyser slide 3pkg"
 end
 
 function initMap()

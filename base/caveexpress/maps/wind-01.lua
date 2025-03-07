@@ -1,5 +1,5 @@
 function getName()
-	return "Wind 01"
+	return "Wind 1 zig zag 3pkg"
 end
 
 function onMapLoaded()
