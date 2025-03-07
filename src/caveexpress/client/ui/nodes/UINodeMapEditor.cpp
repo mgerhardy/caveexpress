@@ -102,9 +102,7 @@ void UINodeMapEditor::renderWater (int x, int y) const
 	const int waterPixelHeight = _waterHeight * tileHeight;
 	const int waterPixelWidth = getScreenMapGridWidth() * tileWidth;
 
-	Color waterColor = { 0.7f, 0.7f, 1.0f, 0.8f };
-	renderLine(x, waterPixelSurface, x + waterPixelWidth, waterPixelSurface, waterColor);
-	waterColor[3] = 0.4;
+	renderLine(x, waterPixelSurface, x + waterPixelWidth, waterPixelSurface, waterLineColor);
 	renderFilledRect(x, waterPixelSurface + 1, waterPixelWidth, waterPixelHeight, waterColor);
 }
 

@@ -96,6 +96,21 @@ static const Color highlightColor = { 1.0f, 1.0f, 1.0f, 0.5f };
 static const Color colorYellow = { 1.0f, 1.0f, 0.0f, 1.0f };
 static const Color colorCyan = { 0.2313f, 0.7372f, 0.8274f, 1.0f };
 
+//  water color
+// const uint8_t WATER_ALPHA = 80, WATERCOLOR[] = { 26, 45, 71, WATER_ALPHA };  // dark blue
+// const uint8_t WATER_ALPHA = 120, WATERCOLOR[] = { 56, 85, 121, WATER_ALPHA };  // dark cyan
+// const uint8_t WATER_ALPHA = 130, WATERCOLOR[] = { 56, 95, 151, WATER_ALPHA };  // cyan
+static const uint8_t WATER_ALPHA = 150, WATERCOLOR[] = { 58, 118, 181, WATER_ALPHA };  // skyblue
+
+static const Color waterLineColor = 
+	{ (float)WATERCOLOR[0] / 255.0f * 1.2f,
+	  (float)WATERCOLOR[1] / 255.0f * 1.2f,
+	  (float)WATERCOLOR[2] / 255.0f * 1.2f, 1.f };
+static const Color waterColor =
+	{ (float)WATERCOLOR[0] / 255.0f,
+	  (float)WATERCOLOR[1] / 255.0f,
+	  (float)WATERCOLOR[2] / 255.0f, WATER_ALPHA / 255.0f };
+
 inline void FadeIn (float& value, float frac)
 {
 	value *= frac;
