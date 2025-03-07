@@ -6,3 +6,7 @@ c:setSetting("icon", "icon-campaign-rock")
 c:setSetting("text", "Jungle")
 -- now add all maps
 c:addMaps("jungle-01")
+c:addMaps("jungle-02")
+c:addMaps("jungle-03")
+c:addMaps("jungle-04")
+
