@@ -16,6 +16,7 @@ extern SoundType SOUND_PLAYER_PAIN2;
 extern SoundType SOUND_PLAYER_PAIN3;
 extern SoundType SOUND_PLAYER_PAIN;
 extern SoundType SOUND_NPC_FLYING_SPAWNED;
+extern SoundType SOUND_PACKAGE_TARGET;
 extern SoundType SOUND_PACKAGE_COLLIDE1;
 extern SoundType SOUND_PACKAGE_COLLIDE2;
 extern SoundType SOUND_PACKAGE_COLLIDE3;

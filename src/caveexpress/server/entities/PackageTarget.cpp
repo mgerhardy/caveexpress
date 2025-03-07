@@ -1,6 +1,7 @@
 #include "PackageTarget.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/server/entities/Package.h"
+#include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/shared/constants/Density.h"
 #include <SDL_assert.h>
 
@@ -47,6 +48,10 @@ void PackageTarget::onPreSolve (b2Contact* contact, IEntity* entity, const b2Man
 		package->setAngularVelocity(0.0f);
 		setAnimationType(Animations::ANIMATION_ACTIVE);
 		_package = package;
+		
+		b2Vec2 p = getPos();
+		p.y += 1.f;  // quieter
+		_map.sendSound(getVisMask(), SoundTypes::SOUND_PACKAGE_TARGET, p);
 	}
 }
 
