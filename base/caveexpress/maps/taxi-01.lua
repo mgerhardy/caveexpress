@@ -1,5 +1,5 @@
 function getName()
-	return "Taxi 01"
+	return "Taxi 1 VI 2runs"
 end
 
 function onMapLoaded()
@@ -243,7 +243,7 @@ function initMap()
 	map:setSetting("npctransfercount", "2")
 	map:setSetting("packagetransfercount", "0")
 	map:setSetting("points", "100")
-	map:setSetting("referencetime", "30")
+	map:setSetting("referencetime", "40")
 	map:setSetting("sideborderfail", "false")
 	map:setSetting("waterchangespeed", "0.000000")
 	map:setSetting("waterfallingdelay", "0")

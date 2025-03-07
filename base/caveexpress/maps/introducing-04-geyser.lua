@@ -1,5 +1,5 @@
 function getName()
-	return "Geyser"
+	return "In4 Geyser"
 end
 
 function onMapLoaded()

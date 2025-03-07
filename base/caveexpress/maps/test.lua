@@ -1,5 +1,5 @@
 function getName()
-	return "Test"
+	return "Test BIG map"
 end
 
 function onMapLoaded()

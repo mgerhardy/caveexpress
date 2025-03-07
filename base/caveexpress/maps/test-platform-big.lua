@@ -1,5 +1,5 @@
 function getName()
-	return "åtest platform"
+	return "test big platform"
 end
 
 function onMapLoaded()

@@ -1,5 +1,5 @@
 function getName()
-	return "Map 16"
+	return "Ice 16 left 2pkg"
 end
 
 function initMap()

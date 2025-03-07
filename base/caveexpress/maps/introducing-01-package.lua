@@ -1,5 +1,5 @@
 function getName()
-	return "Package"
+	return "In1 Package"
 end
 
 function onMapLoaded()

@@ -1,5 +1,5 @@
 function getName()
-	return "Wind 03"
+	return "Wind 3 long animals 3pkg"
 end
 
 function onMapLoaded()

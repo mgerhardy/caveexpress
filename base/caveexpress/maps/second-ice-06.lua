@@ -1,5 +1,5 @@
 function getName()
-	return "Free the packages"
+	return "Ice2 6 Free the packages"
 end
 
 function onMapLoaded()

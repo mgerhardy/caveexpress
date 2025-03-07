@@ -1,5 +1,5 @@
 function getName()
-	return "Map 18"
+	return "Ice3 18 cross throw 3pkg"
 end
 
 function onMapLoaded()

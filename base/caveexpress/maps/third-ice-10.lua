@@ -1,5 +1,5 @@
 function getName()
-	return "Map 10"
+	return "Ice3 10 tall 3 columns"
 end
 
 function onMapLoaded()

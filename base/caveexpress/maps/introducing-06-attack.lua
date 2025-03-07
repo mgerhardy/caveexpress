@@ -1,5 +1,5 @@
 function getName()
-	return "Attack"
+	return "In6 Attack npc"
 end
 
 function onMapLoaded()

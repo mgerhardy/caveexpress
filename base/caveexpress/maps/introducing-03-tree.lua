@@ -1,5 +1,5 @@
 function getName()
-	return "Tree"
+	return "In3 Tree"
 end
 
 function onMapLoaded()

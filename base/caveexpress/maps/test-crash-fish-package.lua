@@ -1,5 +1,5 @@
 function getName()
-	return ""
+	return "test fish pkg"
 end
 
 function onMapLoaded()

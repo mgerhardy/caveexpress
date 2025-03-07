@@ -1,5 +1,5 @@
 function getName()
-	return "Second ice 15"
+	return "Ice2 15 around 4pkg"
 end
 
 function onMapLoaded()

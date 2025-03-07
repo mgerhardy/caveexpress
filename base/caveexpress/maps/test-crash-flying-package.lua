@@ -1,5 +1,5 @@
 function getName()
-	return ""
+	return "test fly"
 end
 
 function onMapLoaded()

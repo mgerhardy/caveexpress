@@ -1,5 +1,5 @@
 function getName()
-	return ""
+	return "test fish none"
 end
 
 function onMapLoaded()

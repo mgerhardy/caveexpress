@@ -1,5 +1,5 @@
 function getName()
-	return "Getting narrow"
+	return "Ice2 12 Getting narrow"
 end
 
 function onMapLoaded()
