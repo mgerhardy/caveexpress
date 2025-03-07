@@ -17,7 +17,7 @@ public:
 	explicit GL3Frontend (std::shared_ptr<IConsole> console);
 	virtual ~GL3Frontend ();
 
-	bool renderWaterPlane (int x, int y, int w, int h, const Color& fillColor, const Color& waterLineColor) override;
+	bool renderWaterPlane (int x, int y, int w, int h, const Color& fillColor, const Color& lineColor) override;
 	void initRenderer () override;
 	void renderBatches () override;
 };
