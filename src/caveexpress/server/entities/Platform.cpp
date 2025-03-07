@@ -43,20 +43,23 @@ void Platform::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold
 	b2WorldManifold worldManifold;
 	contact->GetWorldManifold(&worldManifold);
 	const b2Vec2 worldNormal = worldManifold.normal;
-	// not from above - then we don't care
-	// -1/sqrt(2)
-	if (worldNormal.y >= -0.707)
+	// not from above - then we don't care	// -1/sqrt(2)
+	// if (worldNormal.y >= -0.707)  // old
+	// 	return;
+	if (worldNormal.y >= -0.07 ||
+		fabs(worldNormal.x) > fabs(worldNormal.y))
 		return;
 
 	const b2Manifold *maniFold = contact->GetManifold();
-	if (maniFold->pointCount < 2)
-		return;
+	// if (maniFold->pointCount < 2)  // old
+	// 	return;
 
 	const float normalImpulse = maniFold->points[0].normalImpulse;
 	const float absNormalImpulse = fabs(normalImpulse);
 	if (absNormalImpulse < EPSILON)
 		return;
 
+	/* old
 	for (int i = 0; i < maniFold->pointCount; i++) {
 		// shut up compiler
 		if (i == 0)
@@ -65,7 +68,7 @@ void Platform::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold
 		const float impulse = fabs(normalImpulse - maniFold->points[i].normalImpulse);
 		if (impulse > 5.0f)
 			return;
-	}
+	}*/
 	player->setPlatform(this);
 	Log::debug(LOG_GAMEIMPL, "player %s (%i) landed on cave %i", player->getName().c_str(), player->getID(), getID());
 }
