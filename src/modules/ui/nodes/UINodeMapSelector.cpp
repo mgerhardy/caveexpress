@@ -8,7 +8,7 @@
 UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, bool multiplayer, int cols, int rows) :
 		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _campaignManager(nullptr), _mapManager(&mapManager), _multiplayer(multiplayer)
 {
-	setColsRowsFromTexture("map-icon-locked");
+	// setColsRowsFromTexture("map-icon-locked");
 	defaults();
 	setPaddingPixel(10);
 	reset();
@@ -18,7 +18,7 @@ UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, CampaignManager &camp
 		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _campaignManager(&campaignManager), _mapManager(
 				nullptr), _multiplayer(multiplayer)
 {
-	setColsRowsFromTexture("map-icon-locked");
+	// setColsRowsFromTexture("map-icon-locked");
 	defaults();
 	setPaddingPixel(10);
 	reset();
@@ -67,11 +67,11 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 		const CampaignPtr& campaignPtr = _campaignManager->getActiveCampaign();
 		const CampaignMap *map = campaignPtr->getMapById(data);
 		if (map != nullptr && !map->isLocked()) {
-			const BitmapFontPtr& font = getFont(MEDIUM_FONT);
+			const BitmapFontPtr& font = getFont(LARGE_FONT);  // MEDIUM_FONT);
 			const std::string points = string::toString(map->getFinishPoints());
 			const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(points) / 2);
-			const int fontHeight = font->getTextHeight(points);
-			const int fontY = y + fontHeight;
+			const int fontHeight = 22;  // font->getTextHeight(points);
+			const int fontY = y;  // + fontHeight;
 			if (t)
 				renderImage(t, x, y, colWidth, rowHeight - fontHeight, alpha);
 			font->printMax(points, colorWhite, fontX, fontY, colWidth);
@@ -86,9 +86,12 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 		return;*/
 
 	if (!title.empty()) {
-		const BitmapFontPtr& font = getFont(SMALL_FONT);
+		const BitmapFontPtr& font = getFont(title.length() > 15
+			? MEDIUM_FONT : HUGE_FONT);
+			// ? SMALL_FONT : MEDIUM_FONT);
 		const int textHeight = font->getTextHeight(title);
-		const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(title) / 2);
+		// const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(title) / 2);  // center
+		const int fontX = x;  // left
 		const int fontY = y + rowHeight - textHeight - 1;
 		_frontend->renderFilledRect(x, fontY - 1, colWidth, textHeight + 2, colorBlack);
 		//_frontend->renderRect(x, fontY - 1, colWidth, textHeight + 2, colorWhite);
