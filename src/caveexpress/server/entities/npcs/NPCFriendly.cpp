@@ -90,9 +90,9 @@ bool NPCFriendly::triggerTargetCaveAnnouncement (const b2Vec2& playerPos)
 		return false;
 	}
 	if (_triggerMovement == 0) {
-		_triggerMovement = _time + 600;
-		GameEvent.announceTargetCave(getVisMask(), *this, 1200);
-		return false;
+		_triggerMovement = _time + 200;  // 600
+		GameEvent.announceTargetCave(getVisMask(), *this, 1400);  // 1200
+		return true;  // false;
 	}
 	return _time > _triggerMovement;
 }
@@ -180,6 +180,7 @@ void NPCFriendly::update (uint32_t deltaTime)
 	if (targetCave != nullptr && targetCave->isUnderWater()) {
 		CaveMapTile *cave = _map.getTargetCave(getCave());
 		if (cave == nullptr) {
+			Log::warn(LOG_GAMEIMPL, "NO target CAVE, restart map ---");
 			_map.restart(2000);
 			return;
 		}
