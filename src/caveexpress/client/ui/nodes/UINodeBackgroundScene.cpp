@@ -1,4 +1,5 @@
 #include "UINodeBackgroundScene.h"
+#include "common/Math.h"
 #include "ui/UI.h"
 #include "client/ClientMap.h"
 #include "caveexpress/shared/CaveExpressMapFailedReasons.h"
@@ -86,9 +87,7 @@ int UINodeBackgroundScene::renderGround (int x, int y) const
 
 void UINodeBackgroundScene::renderWater (int x, int y) const
 {
-	static const Color color = { WATERCOLOR[0] / 255.0f, WATERCOLOR[1] / 255.0f, WATERCOLOR[2] / 255.0f, WATER_ALPHA
-			/ 255.0f };
-	_frontend->renderFilledRect(x, y, _frontend->getWidth() - x, _frontend->getHeight() - y, color);
+	_frontend->renderFilledRect(x, y, _frontend->getWidth() - x, _frontend->getHeight() - y, waterColor);
 }
 
 void UINodeBackgroundScene::renderFailedOnGround (int x, int y, const MapFailedReason& reason, float offsetY) const

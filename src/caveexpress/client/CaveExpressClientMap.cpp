@@ -27,10 +27,6 @@
 
 namespace caveexpress {
 
-static const Color waterLineColor = { 0.99f, 0.99f, 1.0f, 1.0f };
-static const Color color = { (float)WATERCOLOR[0] / 255.0f, (float)WATERCOLOR[1] / 255.0f, (float)WATERCOLOR[2] / 255.0f, WATER_ALPHA
-		/ 255.0f };
-
 CaveExpressClientMap::CaveExpressClientMap (int x, int y, int width, int height, IFrontend *frontend,
 		ServiceProvider& serviceProvider, int referenceTileWidth) :
 		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth), _waterHeight(0.0), _target(nullptr)
@@ -58,7 +54,7 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	const SDL_Rect& rect = getWaterRect(x, y);
 	Log::trace(LOG_GAMEIMPL, "rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
 									_x, _y, _width, _height, x, y, rect.w, rect.h, rect.y, rect.y + rect.h, _waterHeight, _scale);
-	_frontend->renderWaterPlane(rect.x, rect.y, rect.w, rect.h, color, waterLineColor);
+	_frontend->renderWaterPlane(rect.x, rect.y, rect.w, rect.h, waterColor, waterLineColor);
 	if (Config.isDebug()) {
 		const int waterGround = rect.y + rect.h;
 		_frontend->renderLine(rect.x, rect.y, rect.x + rect.w, rect.y, colorRed);
