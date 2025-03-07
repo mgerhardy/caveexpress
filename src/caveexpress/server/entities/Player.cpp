@@ -215,7 +215,8 @@ void Player::update (uint32_t deltaTime)
 		applyLinearImpulse(v);
 	} else {
 		const float maxSpeed = 8.0f;
-		const b2Vec2 force = getMass() * _acceleration;
+		b2Vec2 force = getMass() * _acceleration;
+		force.x *= 2.5f;  // more horizontal
 		b2Vec2 velocity = getLinearVelocity();
 		const float speed = velocity.Normalize();
 		const b2Vec2 cappedV = std::min(speed, maxSpeed) * velocity;
