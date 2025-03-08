@@ -67,8 +67,8 @@ void NPCFriendly::onContact (b2Contact* contact, IEntity* entity)
 			setState(NPCState::NPC_COLLECTED);
 		} else if (isStruggle()) {
 			setDying(nullptr);
-		} else if (isIdle()) {
-			// hit by a player - so we will fall into the water
+		} else if (isIdle() && entity->getLinearVelocity().Length() > 3.0f) {
+			// hit hard by a player - so we will fall into the water
 			setAnimationType(getFallingAnimation());
 			_fallingTimer = _map.getTimeManager().setTimeout(500, assert_cast<NPC*, NPCFriendly*>(this), &NPC::setFalling);
 		}
