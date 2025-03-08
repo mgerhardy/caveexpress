@@ -1493,7 +1493,7 @@ bool Map::visitEntity (IEntity *entity)
 	if (_time >= _warmupPhase) {
 		entity->update(Constant::DELTA_PHYSICS_MILLIS);
 		if (entity->shouldApplyWind())
-			entity->applyLinearImpulse(b2Vec2(_wind, 0.0f));
+			entity->applyLinearImpulse(b2Vec2(_wind * 2.5f, 0.0f));
 	}
 	handleVisibility(entity, vismask);
 
