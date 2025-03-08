@@ -23,6 +23,7 @@ extern SpriteType CAVE_SIGN;
 extern SpriteType LIANE;
 extern SpriteType GEYSER_ICE;
 extern SpriteType GEYSER_ROCK;
+extern SpriteType GEYSER_JUNGLE;
 extern SpriteType GEYSER_DESERT;
 extern SpriteType PACKAGETARGET_ICE;
 extern SpriteType PACKAGETARGET_ROCK;
@@ -70,7 +71,7 @@ inline bool isGround (const SpriteType& other)
 
 inline bool isGeyser (const SpriteType& other)
 {
-	return other == GEYSER_ICE || other == GEYSER_ROCK;
+	return other == GEYSER_ICE || other == GEYSER_ROCK || other == GEYSER_DESERT || other == GEYSER_JUNGLE;
 }
 
 inline bool isPackageTargetIce (const SpriteType& other)

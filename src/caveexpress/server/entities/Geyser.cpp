@@ -1,6 +1,7 @@
 #include "Geyser.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/server/entities/modificators/WindModificator.h"
+#include "common/ThemeType.h"
 
 namespace caveexpress {
 
@@ -9,8 +10,11 @@ namespace caveexpress {
 #define RANDOM_ACTIVE_TIME 5000
 
 Geyser::Geyser (Map& map, const std::string& spriteID, gridCoord gridX, gridCoord gridY, uint32_t initialGeyserDelay) :
-		MapTile(map, spriteID, gridX, gridY, ThemeTypes::isIce(map.getTheme()) ? EntityTypes::GEYSER_ICE : EntityTypes::GEYSER_ROCK), _modificator(
-				nullptr), _lastActivation(0), _activeTime(0), _initialGeyserDelay(initialGeyserDelay)
+		MapTile(map, spriteID, gridX, gridY,
+			ThemeTypes::isJungle(map.getTheme()) ? EntityTypes::GEYSER_JUNGLE : 
+			ThemeTypes::isDesert(map.getTheme()) ? EntityTypes::GEYSER_DESERT : 
+			ThemeTypes::isIce(map.getTheme()) ? EntityTypes::GEYSER_ICE : EntityTypes::GEYSER_ROCK),
+			_modificator(nullptr), _lastActivation(0), _activeTime(0), _initialGeyserDelay(initialGeyserDelay)
 {
 	setAnimationType(Animations::ANIMATION_IDLE);
 	_modificator = new WindModificator(_map, DIRECTION_UP, 11.0f, 2.0f);
