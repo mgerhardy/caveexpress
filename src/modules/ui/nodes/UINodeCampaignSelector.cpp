@@ -38,19 +38,19 @@ void UINodeCampaignSelector::renderSelectorEntry (int index, const CampaignPtr& 
 	if (!t || !t->isValid())
 		t = loadTexture("icon-campaign");
 
-	const int margX = 35;
+	const int marginX = 35, padding = 20, marginXtotal = 2 * marginX + padding;
 	if (!data->getText().empty()) {
+
 		const BitmapFontPtr& font = getFont(HUGE_FONT); //SMALL_FONT);
 		const int textHeight = font->getTextHeight(data->getText());
-		// const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(data->getText()) / 2);  // center
-		const int fontX = x;  // left
-		const int fontY = y + rowHeight - textHeight - 1;
-		_frontend->renderFilledRect(x, fontY - 1, colWidth, textHeight + 2, colorBlack);
-		//_frontend->renderRect(x, fontY - 1, colWidth, textHeight + 2, colorWhite);
-		renderImage(t, x + margX, y, colWidth - 2*margX, rowHeight - textHeight, alpha);
+		const int fontX = x;
+		const int fontY = y + rowHeight - textHeight - 1 - padding;
+		
+		_frontend->renderFilledRect(x, fontY - 1, colWidth - padding, textHeight + 2, colorBlack);
+		renderImage(t, x + marginX, y, colWidth - marginXtotal, rowHeight - textHeight - padding, alpha);
 		font->printMax(data->getText(), colorWhite, fontX, fontY, colWidth);
 	} else {
-		renderImage(t, x + margX, y, colWidth - 2*margX, rowHeight, alpha);
+		renderImage(t, x + marginX, y, colWidth - marginXtotal, rowHeight - padding, alpha);
 	}
 }
 
