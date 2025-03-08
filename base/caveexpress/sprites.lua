@@ -1236,72 +1236,6 @@ sprites = {
 		height = 2,
 	},
 
-	["tile-packagetarget-desert-01-rotate"] = {
-		type = "packagetarget-rock",
-		theme = "desert",
-		rotateable = 90,
-		polygons = {
-			{
-				"top", -40, 35, -40, 40, 40, 40, 40, 35,
-			},
-			{
-				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallleft", -50, 40, -30, 40, -50, 50,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallright", 30, 40, 50, 40, 50, 50
-			},
-		},
-	},
-
-	["tile-packagetarget-desert-01-active"] = {
-		type = "packagetarget-rock",
-		theme = "desert",
-		rotateable = 90,
-		polygons = {
-			{
-				"top", -40, 35, -40, 40, 40, 40, 40, 35,
-			},
-			{
-				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallleft", -50, 40, -30, 40, -50, 50,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallright", 30, 40, 50, 40, 50, 50
-			},
-		},
-	},
-
-	["tile-packagetarget-desert-01-idle"] = {
-		type = "packagetarget-rock",
-		theme = "desert",
-		rotateable = 90,
-		polygons = {
-			{
-				"top", -40, 35, -40, 40, 40, 40, 40, 35,
-			},
-			{
-				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallleft", -50, 40, -30, 40, -50, 50,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallright", 30, 40, 50, 40, 50, 50
-			},
-		},
-	},
-
 	["tile-geyser-desert-01-idle"] = {
 		fps = 4,
 		type = "geyser-desert",
@@ -1410,36 +1344,6 @@ sprites = {
 		polygons = {
 			{
 				"", -50, 50, 0, 0, 50, 50,
-			},
-		},
-	},
-
-	-- Desert Bridge
-
-	["bridge-wall-desert-left-01"] = {
-		type = "bridge-left",
-		theme = "desert",
-		polygons = {
-			{
-				"", -50, 50, -50, 0, 50, 20, 50, 50,
-			},
-		},
-	},
-	["bridge-plank-desert-01"] = {
-		type = "bridge-plank",
-		theme = "desert",
-		polygons = {
-			{
-				"", -50, 50, -50, 20, 50, 20, 50, 50,
-			},
-		},
-	},
-	["bridge-wall-desert-right-01"] = {
-		type = "bridge-right",
-		theme = "desert",
-		polygons = {
-			{
-				"", -50, 50, -50, 20, 50, 0, 50, 50,
 			},
 		},
 	},
@@ -1663,71 +1567,6 @@ sprites = {
 			},
 		},
 	},
-	["tile-packagetarget-jungle-01-rotate"] = {
-		type = "packagetarget-rock",
-		rotateable = 90,
-		theme = "jungle",
-		polygons = {
-			{
-				"top", -40, 35, -40, 40, 40, 40, 40, 35,
-			},
-			{
-				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallleft", -50, 40, -30, 40, -50, 50,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallright", 30, 40, 50, 40, 50, 50
-			},
-		},
-	},
-
-	["tile-packagetarget-jungle-01-active"] = {
-		type = "packagetarget-rock",
-		rotateable = 90,
-		theme = "jungle",
-		polygons = {
-			{
-				"top", -40, 35, -40, 40, 40, 40, 40, 35,
-			},
-			{
-				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallleft", -50, 40, -30, 40, -50, 50,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallright", 30, 40, 50, 40, 50, 50
-			},
-		},
-	},
-
-	["tile-packagetarget-jungle-01-idle"] = {
-		type = "packagetarget-rock",
-		rotateable = 90,
-		theme = "jungle",
-		polygons = {
-			{
-				"top", -40, 35, -40, 40, 40, 40, 40, 35,
-			},
-			{
-				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallleft", -50, 40, -30, 40, -50, 50,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallright", 30, 40, 50, 40, 50, 50
-			},
-		},
-	},
 
 	["tile-geyser-jungle-01-idle"] = {
 		fps = 6,
@@ -1751,36 +1590,6 @@ sprites = {
 			},
 		},
 		height = 2,
-	},
-
-	-- Jungle Bridge
-
-	["bridge-wall-jungle-left-01"] = {
-		type = "bridge-left",
-		theme = "jungle",
-		polygons = {
-			{
-				"", -50, 50, -50, 0, 50, 20, 50, 50,
-			},
-		},
-	},
-	["bridge-plank-jungle-01"] = {
-		type = "bridge-plank",
-		theme = "jungle",
-		polygons = {
-			{
-				"", -50, 50, -50, 20, 50, 20, 50, 50,
-			},
-		},
-	},
-	["bridge-wall-jungle-right-01"] = {
-		type = "bridge-right",
-		theme = "jungle",
-		polygons = {
-			{
-				"", -50, 50, -50, 20, 50, 0, 50, 50,
-			},
-		},
 	},
 
 }
