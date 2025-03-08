@@ -38,6 +38,7 @@ void UINodeCampaignSelector::renderSelectorEntry (int index, const CampaignPtr& 
 	if (!t || !t->isValid())
 		t = loadTexture("icon-campaign");
 
+	const int margX = 35;
 	if (!data->getText().empty()) {
 		const BitmapFontPtr& font = getFont(HUGE_FONT); //SMALL_FONT);
 		const int textHeight = font->getTextHeight(data->getText());
@@ -46,10 +47,10 @@ void UINodeCampaignSelector::renderSelectorEntry (int index, const CampaignPtr& 
 		const int fontY = y + rowHeight - textHeight - 1;
 		_frontend->renderFilledRect(x, fontY - 1, colWidth, textHeight + 2, colorBlack);
 		//_frontend->renderRect(x, fontY - 1, colWidth, textHeight + 2, colorWhite);
-		renderImage(t, x, y, colWidth, rowHeight - textHeight, alpha);
+		renderImage(t, x + margX, y, colWidth - 2*margX, rowHeight - textHeight, alpha);
 		font->printMax(data->getText(), colorWhite, fontX, fontY, colWidth);
 	} else {
-		renderImage(t, x, y, colWidth, rowHeight, alpha);
+		renderImage(t, x + margX, y, colWidth - 2*margX, rowHeight, alpha);
 	}
 }
 

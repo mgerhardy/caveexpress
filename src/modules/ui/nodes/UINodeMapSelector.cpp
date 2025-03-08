@@ -62,6 +62,7 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 		title = map->getName();
 	}
 
+	const int margX = 35;
 	const TexturePtr t = getIcon(data);
 	if (_campaignManager != nullptr) {
 		const CampaignPtr& campaignPtr = _campaignManager->getActiveCampaign();
@@ -73,13 +74,13 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 			const int fontHeight = 22;  // font->getTextHeight(points);
 			const int fontY = y;  // + fontHeight;
 			if (t)
-				renderImage(t, x, y, colWidth, rowHeight - fontHeight, alpha);
+				renderImage(t, x + margX, y, colWidth - 2*margX, rowHeight - fontHeight, alpha);
 			font->printMax(points, colorWhite, fontX, fontY, colWidth);
 		} else if (t) {
-			renderImage(t, x, y, colWidth, rowHeight, alpha);
+			renderImage(t, x + margX, y, colWidth - 2*margX, rowHeight, alpha);
 		}
 	} else if (t) {
-		renderImage(t, x, y, colWidth, rowHeight, alpha);
+		renderImage(t, x + margX, y, colWidth - 2*margX, rowHeight, alpha);
 	}
 
 /*	if (_selectedIndex != index)
