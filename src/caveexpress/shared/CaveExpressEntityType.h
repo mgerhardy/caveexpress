@@ -36,6 +36,8 @@ extern EntityType PACKAGETARGET_ICE;
 extern EntityType PACKAGETARGET_ROCK;
 extern EntityType GEYSER_ICE;
 extern EntityType GEYSER_ROCK;
+extern EntityType GEYSER_JUNGLE;
+extern EntityType GEYSER_DESERT;
 extern EntityType BOMB;
 extern EntityType PARTICLE;
 
@@ -81,7 +83,7 @@ inline bool isEgg (const EntityType& other)
 
 inline bool isGeyser (const EntityType& other)
 {
-	return other == GEYSER_ICE || other == GEYSER_ROCK;
+	return other == GEYSER_ICE || other == GEYSER_ROCK || other == GEYSER_JUNGLE || other == GEYSER_DESERT;
 }
 
 inline bool isBomb (const EntityType& other)

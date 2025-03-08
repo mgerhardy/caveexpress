@@ -59,7 +59,13 @@ public:
 		if (!_nameWithoutTheme.empty())
 			return;
 
-		if (string::endsWith(name, ThemeTypes::ICE.name)) {
+		if (string::endsWith(name, ThemeTypes::JUNGLE.name)) {
+			_nameWithoutTheme = name.substr(0, name.length() - ThemeTypes::JUNGLE.name.length() - 1);
+			_hasTheme = true;
+		} else if (string::endsWith(name, ThemeTypes::DESERT.name)) {
+			_nameWithoutTheme = name.substr(0, name.length() - ThemeTypes::DESERT.name.length() - 1);
+			_hasTheme = true;
+		} else if (string::endsWith(name, ThemeTypes::ICE.name)) {
 			_nameWithoutTheme = name.substr(0, name.length() - ThemeTypes::ICE.name.length() - 1);
 			_hasTheme = true;
 		} else if (string::endsWith(name, ThemeTypes::ROCK.name)) {
