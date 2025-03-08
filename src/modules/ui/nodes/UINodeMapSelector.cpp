@@ -62,25 +62,26 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 		title = map->getName();
 	}
 
-	const int margX = 35;
+	const int marginX = 25, padding = 20, marginXtotal = 2 * marginX + padding;
 	const TexturePtr t = getIcon(data);
 	if (_campaignManager != nullptr) {
 		const CampaignPtr& campaignPtr = _campaignManager->getActiveCampaign();
 		const CampaignMap *map = campaignPtr->getMapById(data);
 		if (map != nullptr && !map->isLocked()) {
+
 			const BitmapFontPtr& font = getFont(LARGE_FONT);  // MEDIUM_FONT);
 			const std::string points = string::toString(map->getFinishPoints());
-			const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(points) / 2);
-			const int fontHeight = 22;  // font->getTextHeight(points);
-			const int fontY = y;  // + fontHeight;
+			const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(points) / 2 - padding / 2);
+			const int fontHeight = 22;
+			const int fontY = y;
 			if (t)
-				renderImage(t, x + margX, y, colWidth - 2*margX, rowHeight - fontHeight, alpha);
+				renderImage(t, x + marginX, y, colWidth - marginXtotal, rowHeight - fontHeight - padding, alpha);
 			font->printMax(points, colorWhite, fontX, fontY, colWidth);
 		} else if (t) {
-			renderImage(t, x + margX, y, colWidth - 2*margX, rowHeight, alpha);
+			renderImage(t, x + marginX, y, colWidth - marginXtotal, rowHeight - padding, alpha);
 		}
 	} else if (t) {
-		renderImage(t, x + margX, y, colWidth - 2*margX, rowHeight, alpha);
+		renderImage(t, x + marginX, y, colWidth - marginXtotal, rowHeight - padding, alpha);
 	}
 
 /*	if (_selectedIndex != index)
@@ -93,8 +94,9 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 		const int textHeight = font->getTextHeight(title);
 		// const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(title) / 2);  // center
 		const int fontX = x;  // left
-		const int fontY = y + rowHeight - textHeight - 1;
-		_frontend->renderFilledRect(x, fontY - 1, colWidth, textHeight + 2, colorBlack);
+		const int fontY = y + rowHeight - textHeight - 1 - padding;
+		
+		_frontend->renderFilledRect(x, fontY - 1, colWidth - padding, textHeight + 2, colorBlack);
 		//_frontend->renderRect(x, fontY - 1, colWidth, textHeight + 2, colorWhite);
 		font->printMax(title, colorWhite, fontX, fontY, colWidth);
 	}
