@@ -43,7 +43,7 @@ void UINodeCampaignSelector::renderSelectorEntry (int index, const CampaignPtr& 
 
 		const BitmapFontPtr& font = getFont(HUGE_FONT);
 		const int textHeight = font->getTextHeight(data->getText());
-		const int fontX = std::max(x, x - padding / 2 + colWidth / 2 - font->getTextWidth(data->getText()) / 2);  // center
+		const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(data->getText()) / 2 - padding / 2 );
 		const int fontY = y + rowHeight - textHeight - 1 - padding;
 		
 		_frontend->renderFilledRect(x, fontY - 1, colWidth - padding, textHeight + 2, colorBlack);

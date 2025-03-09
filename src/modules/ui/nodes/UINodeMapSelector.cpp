@@ -3,10 +3,13 @@
 #include "common/CommandSystem.h"
 #include "campaign/CampaignManager.h"
 #include "common/Commands.h"
+#include "ui/windows/UIMapSelectorWindow.h"
 #include <SDL_assert.h>
 
-UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, bool multiplayer, int cols, int rows) :
-		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _campaignManager(nullptr), _mapManager(&mapManager), _multiplayer(multiplayer)
+UINodeMapSelector::UINodeMapSelector (UIMapSelectorWindow* window,
+	IFrontend *frontend, const IMapManager &mapManager, bool multiplayer, int cols, int rows) :
+		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _window(window),
+		_campaignManager(nullptr), _mapManager(&mapManager), _multiplayer(multiplayer)
 {
 	// setColsRowsFromTexture("map-icon-locked");
 	defaults();
@@ -14,9 +17,10 @@ UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, const IMapManager &ma
 	reset();
 }
 
-UINodeMapSelector::UINodeMapSelector (IFrontend *frontend, CampaignManager &campaignManager, bool multiplayer, int cols, int rows) :
-		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _campaignManager(&campaignManager), _mapManager(
-				nullptr), _multiplayer(multiplayer)
+UINodeMapSelector::UINodeMapSelector (UIMapSelectorWindow* window,
+	IFrontend *frontend, CampaignManager &campaignManager, bool multiplayer, int cols, int rows) :
+		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _window(window),
+		_campaignManager(&campaignManager), _mapManager(nullptr), _multiplayer(multiplayer)
 {
 	// setColsRowsFromTexture("map-icon-locked");
 	defaults();
@@ -62,6 +66,11 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 		title = map->getName();
 	}
 
+	// update top title with selected map
+	if (_selectedIndex == index) {
+		_window->setTextDetails(title);
+	}
+
 	const int marginX = 25, padding = 20, marginXtotal = 2 * marginX + padding;
 	const TexturePtr t = getIcon(data);
 	if (_campaignManager != nullptr) {
@@ -69,9 +78,9 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 		const CampaignMap *map = campaignPtr->getMapById(data);
 		if (map != nullptr && !map->isLocked()) {
 
-			const BitmapFontPtr& font = getFont(LARGE_FONT);  // MEDIUM_FONT);
+			const BitmapFontPtr& font = getFont(LARGE_FONT);
 			const std::string points = string::toString(map->getFinishPoints());
-			const int fontX = std::max(x, x - padding / 2 + colWidth / 2 - font->getTextWidth(points) / 2 - padding / 2);
+			const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(points) / 2 - padding / 2);
 			const int fontHeight = 22;
 			const int fontY = y;
 			if (t)
@@ -90,11 +99,10 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 	if (!title.empty()) {
 		const BitmapFontPtr& font = getFont(MEDIUM_FONT);
 		const int textHeight = font->getTextHeight(title);
-		const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(title) / 2);  // center
+		const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(title) / 2 - padding / 2);
 		const int fontY = y + rowHeight - textHeight - 1 - padding;
 		
 		_frontend->renderFilledRect(x, fontY - 1, colWidth - padding, textHeight + 2, colorBlack);
-		//_frontend->renderRect(x, fontY - 1, colWidth, textHeight + 2, colorWhite);
 		font->printMax(title, colorWhite, fontX, fontY, colWidth);
 	}
 }
