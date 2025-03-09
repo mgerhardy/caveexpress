@@ -150,6 +150,8 @@ protected:
 	uint32_t _transferedNPCLimit;
 	// the already spawned friendly npcs
 	uint32_t _friendlyNPCCount;
+	// how many killed by player
+	uint32_t _friendlyNPCKilled;
 	// the max amount to spawn (they can die)
 	uint32_t _friendlyNPCLimit;
 	uint32_t _caveCounter;
@@ -306,6 +308,8 @@ public:
 	void countTransferedNPC();
 	// this is the amount of npcs that you still have to transfered to other caves in order to win the game
 	int getNpcCount() const;
+
+	void addKilledNPC ();
 
 	// increases the counter for the successfully performed transfers
 	void countTransferedPackage ();

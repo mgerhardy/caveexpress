@@ -127,6 +127,11 @@ void Map::shutdown ()
 	resetCurrentMap();
 }
 
+void Map::addKilledNPC ()
+{
+	++_friendlyNPCKilled;
+}
+
 void Map::addPoints (const IEntity* entity, uint16_t points)
 {
 	if (entity == nullptr)
@@ -354,6 +359,18 @@ bool Map::isFailed () const
 
 	if (_players.empty())
 		return true;
+	
+	if (_friendlyNPCLimit > 0) {
+		// if we support friendly npcs in this map, and all of them are (or were) already spawned,
+		// but none is available anymore, this map is lost
+		if (_friendlyNPCCount >= _friendlyNPCLimit) {
+			if (_friendlyNPCKilled >= _friendlyNPCCount)
+			{
+				Log::warn(LOG_GAMEIMPL, "failed because of all NPCs killed....");
+				return true;
+			}
+		}
+	}
 
 	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
 		const Player* player = *i;
@@ -449,6 +466,7 @@ void Map::resetCurrentMap ()
 	_activateflyingNPC = false;
 	_friendlyNPCLimit = 0;
 	_friendlyNPCCount = 0;
+	_friendlyNPCKilled = 0;
 	_caveCounter = 0;
 	_spawnFishNPCTime = 0;
 	_initialGeyserDelay = 0;

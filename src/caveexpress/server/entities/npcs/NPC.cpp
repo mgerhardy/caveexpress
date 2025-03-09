@@ -302,6 +302,9 @@ void NPC::setDying (const IEntity* entity)
 	if (EntityTypes::isNpcAggressive(_type)) {
 		_map.addPoints(entity, 15);
 	}
+	if (isNpcFriendly()) {
+		_map.addKilledNPC();
+	}
 }
 
 void NPC::setState (int state)
