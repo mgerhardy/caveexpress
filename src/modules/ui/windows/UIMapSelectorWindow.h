@@ -2,11 +2,13 @@
 
 #include "ui/windows/UIWindow.h"
 #include "sprites/Sprite.h"
+#include <string>
 
 // forward decl
 class UINodeMapSelector;
 class UINodeButton;
 class UINodeSprite;
+class UINodeLabel;
 
 class UIMapSelectorWindow: public UIWindow {
 protected:
@@ -14,6 +16,7 @@ protected:
 	UINodeButton *_buttonLeft;
 	UINodeButton *_buttonRight;
 	UINodeSprite *_livesSprite;
+	UINodeLabel *_textDetails;
 	SpritePtr _liveSprite;
 public:
 	UIMapSelectorWindow (UINodeMapSelector* mapSelector, const std::string& title, const std::string& id, IFrontend *frontend, WindowFlags flags =
@@ -23,4 +26,5 @@ public:
 	// UIWindow
 	void update (uint32_t deltaTime) override;
 	void onActive () override;
+	void setTextDetails (const std::string& text);
 };

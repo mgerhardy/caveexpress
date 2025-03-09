@@ -1,8 +1,10 @@
 #include "UIMapSelectorWindow.h"
+#include "ui/nodes/UINode.h"
 #include "ui/nodes/UINodeBackButton.h"
 #include "ui/nodes/UINodeButton.h"
 #include "ui/nodes/UINodeButtonImage.h"
 #include "ui/nodes/UINodeSprite.h"
+#include "ui/nodes/UINodeLabel.h"
 #include "ui/windows/listener/SelectorPageListener.h"
 #include "ui/UI.h"
 #include "common/SpriteDefinition.h"
@@ -17,6 +19,13 @@ UIMapSelectorWindow::UIMapSelectorWindow (UINodeMapSelector* mapSelector, const 
 {
 	UINodeBackground *background = new UINodeBackground(frontend, title);
 	add(background);
+
+	_textDetails = new UINodeLabel(frontend, "");
+	_textDetails->setAlignment(NODE_ALIGN_CENTER);
+	_textDetails->setPos(0.5f, 0.1f);  // below title
+	_textDetails->setFont(LARGE_FONT);
+	_textDetails->setColor(colorWhite);
+	add(_textDetails);
 
 	const float gap = 0.001f;
 
@@ -60,6 +69,11 @@ void UIMapSelectorWindow::update (uint32_t deltaTime)
 	UIWindow::update(deltaTime);
 	_buttonRight->setVisible(_mapSelector->hasMoreEntries());
 	_buttonLeft->setVisible(_mapSelector->hasLessEntries());
+}
+
+void UIMapSelectorWindow::setTextDetails (const std::string& text)
+{
+	_textDetails->setLabel(text);
 }
 
 void UIMapSelectorWindow::onActive ()
