@@ -1498,8 +1498,7 @@ bool Map::visitEntity (IEntity *entity)
 	if (_time >= _warmupPhase) {
 		entity->update(Constant::DELTA_PHYSICS_MILLIS);
 		if (entity->shouldApplyWind())
-			entity->applyLinearImpulse(b2Vec2(_wind * (DENSITY_PLAYER / 400.0f), 0.0f));
-			// entity->applyLinearImpulse(b2Vec2(_wind * entity->getMass() / 200.f, 0.0f));  // acceleration?
+			entity->applyLinearImpulse(b2Vec2(_wind * getFlyingSpeedX() * (DENSITY_PLAYER / 400.0f), 0.0f));
 	}
 	handleVisibility(entity, vismask);
 
