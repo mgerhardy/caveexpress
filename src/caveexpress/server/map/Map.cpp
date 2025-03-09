@@ -1,8 +1,10 @@
 #include "Map.h"
 #include "common/ConfigManager.h"
+#include "common/ConfigVar.h"
 #include "common/MapSettings.h"
 #include "common/Shared.h"
 #include "caveexpress/shared/constants/Commands.h"
+#include "caveexpress/shared/constants/ConfigVars.h"
 #include "common/Log.h"
 #include "service/ServiceProvider.h"
 #include "common/SpriteDefinition.h"
@@ -464,6 +466,7 @@ void Map::resetCurrentMap ()
 	_width = 0;
 	_height = 0;
 	_gravity = 0.0f;
+	_flyingSpeedX = 1.0f;
 	_time = 0;
 	_physicsTime = 0;
 	_waterHeight = 0.0f;
@@ -528,6 +531,7 @@ bool Map::load (const std::string& name)
 	_settings.insert(std::make_pair(msn::THEME, _theme->name));
 	_wind = string::toFloat(getSetting(msn::WIND, msd::WIND));
 	_gravity = string::toFloat(getSetting(msn::GRAVITY, string::toString(msdv::GRAVITY)));
+	_flyingSpeedX = Config.getConfigVar(FLYING_SPEED_X)->getFloatValue();
 	_width = string::toInt(getSetting(msn::WIDTH, "-1"));
 	_height = string::toInt(getSetting(msn::HEIGHT, "-1"));
 	_finishPoints = string::toInt(getSetting(msn::POINTS, string::toString(msdv::POINTS)));

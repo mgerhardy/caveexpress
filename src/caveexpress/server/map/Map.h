@@ -113,6 +113,7 @@ protected:
 
 	float _wind;
 	float _gravity;
+	float _flyingSpeedX;
 
 	int _height;
 	int _width;
@@ -255,6 +256,7 @@ public:
 
 	float getWind () const;
 	float getGravity () const;
+	float getFlyingSpeedX () const;
 
 	CaveMapTile* getTargetCave (const CaveMapTile* ignoreCave = nullptr) const;
 	CaveMapTile *getHighestCave () const;
@@ -448,6 +450,11 @@ inline float Map::getWind () const
 inline float Map::getGravity () const
 {
 	return _gravity;
+}
+
+inline float Map::getFlyingSpeedX () const
+{
+	return _flyingSpeedX;
 }
 
 inline float Map::getWaterHeight () const

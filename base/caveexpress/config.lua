@@ -11,6 +11,7 @@ defaulttexturesize = "auto"
 defaultreferencetimefactor = 1.0
 defaultdamagethreshold = 3.0
 defaultnpcflyingspeed = 2.0
+defaultflyingspeedx = 1.0
 defaultparticles = 100
 defaultred = 8
 defaultgreen = 8
@@ -31,6 +32,7 @@ elseif isHTML5() then
 	defaultsoundengine = "dummy"
 	defaultnetwork = false
 else
+	defaultflyingspeedx = 2.5
 	defaultgamecontroller = true
 	defaultfrontend = "opengl3"
 end
@@ -59,6 +61,7 @@ settings = {
 	fruithitpoints = 10,
 	waterparticle = false,
 	npcflyingspeed = defaultnpcflyingspeed,
+	flyingspeedx = defaultflyingspeedx,
 	particles = defaultparticles,
 	red = defaultred,
 	green = defaultgreen,

@@ -216,7 +216,8 @@ void Player::update (uint32_t deltaTime)
 	} else {
 		const float maxSpeed = 8.0f;
 		b2Vec2 force = getMass() * _acceleration;
-		force.x *= 2.5f;  // more horizontal
+		force.x *= _map.getFlyingSpeedX();
+
 		b2Vec2 velocity = getLinearVelocity();
 		const float speed = velocity.Normalize();
 		const b2Vec2 cappedV = std::min(speed, maxSpeed) * velocity;

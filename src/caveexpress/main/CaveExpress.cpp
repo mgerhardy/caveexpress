@@ -295,7 +295,8 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 		{AMOUNT_OF_FRUITS_FOR_A_NEW_LIFE, "4", CV_NOPERSIST},
 		{FRUIT_HITPOINTS, "10", CV_NOPERSIST},
 		{WATER_PARTICLE, "false", CV_READONLY | CV_NOPERSIST},
-		{NPC_FLYING_SPEED, "2.0", CV_NOPERSIST}
+		{NPC_FLYING_SPEED, "2.0", CV_NOPERSIST},
+		{FLYING_SPEED_X, "1.0", CV_NOPERSIST}
 	};
 
 	const int n = SDL_arraysize(gameConfigVars);
