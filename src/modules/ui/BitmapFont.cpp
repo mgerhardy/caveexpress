@@ -135,9 +135,9 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 			// colorize animation
 			const int c = (x + fontChr->getOX()) - (y + yShift + fontHeight - fontChr->getOY());
 			double cc[4] = {
-				sin((c * 0.325 + _time * 0.121 + _rand + 1.2) / 22.0) * 0.1 + 0.9,
-				sin((c * 0.412 + _time * 0.113 + _rand + 1.2) / 22.0) * 0.0 + 0.95,
-				sin((c * 0.366 + _time * 0.135 + _rand + 1.2) / 22.0) * 0.2 + 0.8,
+				1.0,
+				sin((c * 0.412 + _time * 0.113 + _rand + 1.2) / 22.0) * 0.1 + 0.85,
+				sin((c * 0.366 + _time * 0.113 + _rand + 1.2) / 22.0) * 0.2 + 0.7,
 				1.0
 			};
 			Color clr;
