@@ -7,7 +7,7 @@
 
 namespace caveexpress {
 
-#define LENGTH_UPDATE_DELAY 500
+#define LENGTH_UPDATE_DELAY 50
 
 PackageTarget::PackageTarget (Map& map, const std::string& spriteID, gridCoord x, gridCoord y) :
 		MapTile(map, spriteID, x, y,
