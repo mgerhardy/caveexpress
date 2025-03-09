@@ -59,8 +59,8 @@ void Package::update (uint32_t deltaTime)
 	}
 
 	if (isCollected()) {
-		setLinearDamping(0.0f);
-		setAngularDamping(0.0);
+		setLinearDamping(0.5f);
+		setAngularDamping(0.5f);
 	}
 
 	if (!_target) {
@@ -90,19 +90,21 @@ void Package::onContact (b2Contact* contact, IEntity* entity)
 {
 	const bool oldCollectedState = isCollected();
 	CollectableEntity::onContact(contact, entity);
+
+	if (isImpactVelocityMoreThan(contact, 1.1f))
+		_map.sendSound(getVisMask(), SoundTypes::SOUND_PACKAGE_COLLIDE, getPos());
+
 	if (!oldCollectedState && isCollected()) {
 		_addRopeJointTo = entity;
 	} else {
 		if (entity->isSolid() || entity->isStone() || entity->isPackage()) {
 			setLinearDamping(3.0f);
-			setAngularDamping(1.0);
-			if (isImpactVelocityMoreThan(contact, 1.5f))
-				_map.sendSound(getVisMask(), SoundTypes::SOUND_PACKAGE_COLLIDE, getPos());
+			setAngularDamping(1.0f);
 		} else if (entity->isBorder()) {
 			const Border *b = assert_cast<const Border*, const IEntity*>(entity);
 			if (!b->isTop()) {
 				setLinearDamping(4.0f);
-				setAngularDamping(1.0);
+				setAngularDamping(1.0f);
 			}
 		} else if (entity->isNpcAttacking()) {
 			setDestroyed(true);
@@ -129,7 +131,7 @@ bool Package::setArrived (bool arrived)
 
 	if (_collectCount == 1 && _arrived) {
 		const uint32_t deltaSeconds = _time - _collectedTime;
-		return deltaSeconds < 4000;
+		return deltaSeconds < 1000;
 	}
 
 	return false;
