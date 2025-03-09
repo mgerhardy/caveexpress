@@ -355,14 +355,16 @@ bool Map::isFailed () const
 	if (_players.empty())
 		return true;
 
+	/* old, bad
 	if (_friendlyNPCLimit > 0) {
 		// if we support friendly npcs in this map, and all of them are (or were) already spawned,
 		// but none is available anymore, this map is lost
 		if (_friendlyNPCCount >= _friendlyNPCLimit) {
 			if (_friendlyNPCs.empty())
+				Log::warn(LOG_GAMEIMPL, "failed because of no NPCs....");
 				return true;
 		}
-	}
+	}*/
 
 	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
 		const Player* player = *i;
