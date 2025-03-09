@@ -2,9 +2,11 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <limits>
 #include <string>
 #include <unistd.h>
 #include <vector>
+
 #define STB_RECT_PACK_IMPLEMENTATION
 #include "stb_rect_pack.h"
 
@@ -26,7 +28,7 @@ static const int ATLAS_INCREASE = 32;
 
 struct Image {
 	std::string name;
-	unsigned char *data;
+	uint8_t *data;
 	int width, height, channels;
 
 	Image() : data(nullptr), width(0), height(0), channels(0) {
@@ -109,6 +111,51 @@ static std::string readString(const pugi::xml_node &node, const std::string &nam
 	return defaultVal;
 }
 
+struct Rect {
+	int x, y, width, height;
+};
+
+static Rect findOpaqueRect(const uint8_t *data, int width, int height, int channels) {
+	if (channels < 4) {
+		return {0, 0, width, height};
+	}
+
+	int minX = std::numeric_limits<int>::max();
+	int minY = std::numeric_limits<int>::max();
+	int maxX = std::numeric_limits<int>::min();
+	int maxY = std::numeric_limits<int>::min();
+
+	for (int y = 0; y < height; ++y) {
+		const int stride = y * width;
+		for (int x = 0; x < width; ++x) {
+			const int index = (stride + x) * channels;
+			const uint8_t alpha = data[index + 3]; // Alpha channel
+			if (alpha <= 0) {
+				continue;
+			}
+			if (x < minX) {
+				minX = x;
+			}
+			if (y < minY) {
+				minY = y;
+			}
+			if (x > maxX) {
+				maxX = x;
+			}
+			if (y > maxY) {
+				maxY = y;
+			}
+		}
+	}
+
+	if (minX == std::numeric_limits<int>::max()) {
+		// No opaque pixels found
+		return {0, 0, 0, 0};
+	}
+
+	return {minX, minY, maxX - minX + 1, maxY - minY + 1};
+}
+
 static bool handleVariant(const Variants &v, const std::vector<Image> &images) {
 	std::vector<stbrp_rect> rects;
 	rects.resize(images.size());
@@ -120,7 +167,7 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images) {
 		const Image &image = images[i];
 		const int newWidth = (int)(image.width * v.scale);
 		const int newHeight = (int)(image.height * v.scale);
-		scaledImages[i].data = (unsigned char *)calloc(newWidth * newHeight * 4, 1);
+		scaledImages[i].data = (uint8_t *)calloc(newWidth * newHeight * 4, 1);
 		if (!scaledImages[i].data) {
 			printf("Failed to allocate memory for scaled image\n");
 			return false;
@@ -188,8 +235,13 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images) {
 			if (!rects[j].was_packed) {
 				continue;
 			}
+			const Rect opaqueRect =
+				findOpaqueRect(scaledImages[j].data, scaledImages[j].width, scaledImages[j].height, 4);
+
 			const int x = rects[j].x, y = rects[j].y;
 			const int n = scaledImages[j].width * 4;
+
+			// TODO: only copy the opaque part of the image?
 			for (int row = 0; row < scaledImages[j].height; row++) {
 				uint8_t *dest = atlas + (intptr_t)((y + row) * currentAtlasWidth + x) * 4;
 				const uint8_t *src = scaledImages[j].data + (intptr_t)(row * n);
@@ -206,12 +258,12 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images) {
 			fprintf(luaFile, "\t\ty0 = %f,\n", (float)y / (float)currentAtlasHeight);
 			fprintf(luaFile, "\t\tx1 = %f,\n", (float)scaledImages[j].width / (float)currentAtlasWidth);
 			fprintf(luaFile, "\t\ty1 = %f,\n", (float)scaledImages[j].height / (float)currentAtlasHeight);
-			fprintf(luaFile, "\t\ttrimmedoffsetx = 0,\n");						   // TODO
-			fprintf(luaFile, "\t\ttrimmedoffsety = 0,\n");						   // TODO
-			fprintf(luaFile, "\t\ttrimmedwidth = %i,\n", scaledImages[j].width);   // TODO
-			fprintf(luaFile, "\t\ttrimmedheight = %i,\n", scaledImages[j].height); // TODO
-			fprintf(luaFile, "\t\tuntrimmedwidth = %i,\n", images[j].width);
-			fprintf(luaFile, "\t\tuntrimmedheight = %i,\n", images[j].height);
+			fprintf(luaFile, "\t\ttrimmedoffsetx = %i,\n", opaqueRect.x);
+			fprintf(luaFile, "\t\ttrimmedoffsety = %i,\n", opaqueRect.y);
+			fprintf(luaFile, "\t\ttrimmedwidth = %i,\n", opaqueRect.width);
+			fprintf(luaFile, "\t\ttrimmedheight = %i,\n", opaqueRect.height);
+			fprintf(luaFile, "\t\tuntrimmedwidth = %i,\n", scaledImages[j].width);
+			fprintf(luaFile, "\t\tuntrimmedheight = %i,\n", scaledImages[j].height);
 			fprintf(luaFile, "\t},\n");
 		}
 		fprintf(luaFile, "}\n");
