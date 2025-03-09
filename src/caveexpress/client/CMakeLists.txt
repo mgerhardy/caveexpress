@@ -16,6 +16,7 @@ set(${NAME}-client_SRCS
 	ui/windows/intro/IntroTree.cpp
 	ui/windows/intro/IntroPackage.cpp
 	ui/windows/intro/IntroAttack.cpp
+	ui/windows/intro/IntroDiving.cpp
 	ui/windows/UIGameFinishedWindow.cpp
 	ui/windows/UIMapEditorOptionsWindow.cpp
 	ui/windows/UIMapFailedWindow.cpp
