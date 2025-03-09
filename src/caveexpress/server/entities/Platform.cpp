@@ -49,6 +49,8 @@ void Platform::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold
 		return;
 
 	const b2Manifold *maniFold = contact->GetManifold();
+	if (maniFold->pointCount <= 0)
+		return;
 	const float normalImpulse = maniFold->points[0].normalImpulse;
 	const float absNormalImpulse = fabs(normalImpulse);
 	if (absNormalImpulse < EPSILON)
