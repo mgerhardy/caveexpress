@@ -142,14 +142,55 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 		for (int i = 0; i < snowFlakes; ++i) {
 			_particleSystem.spawn(ParticlePtr(new Snow(*this)));
 		}
-	}
-	else if (ThemeTypes::isJungle(*_theme))	{
+	} else if (ThemeTypes::isJungle(*_theme)) {
 		const int rainDrops = int(randBetweenf(1.2f, 4.5f) * (float)getMapWidth() * 100);
 		//Log::info(LOG_GAMEIMPL, "RAIN drops: %i", rainDrops);
 		for (int i = 0; i < rainDrops; ++i) {
 			_particleSystem.spawn(ParticlePtr(new Rain(*this)));
 		}
 	}
+
+#if 0
+	// write all sprites as png files with SDL_image to the harddisk
+	for (const auto &iter : _serviceProvider.getTextureDefinition().getMap()) {
+		const TextureDef &textureDefinition = iter.second;
+		const std::string &atlasFilename = string::format("base/caveexpress/pics/%s.png", textureDefinition.textureName.c_str());
+		printf("load atlas %s\n", atlasFilename.c_str());
+		SDL_RWops *atlasRW = SDL_RWFromFile(atlasFilename.c_str(), "rb");
+		if (!atlasRW) {
+			Log::error(LOG_GAMEIMPL, "Failed to load %s", atlasFilename.c_str());
+			continue;
+		}
+		SDL_Surface *textureAtlasSurface = IMG_LoadPNG_RW(atlasRW);
+		if (!textureAtlasSurface) {
+			Log::error(LOG_GAMEIMPL, "Failed to load %s", atlasFilename.c_str());
+			SDL_RWclose(atlasRW);
+			continue;
+		}
+		const TextureDefinitionTrim trim = textureDefinition.trim;
+		const int w = trim.untrimmedWidth;
+		const int h = trim.untrimmedHeight;
+		const int x = trim.trimmedOffsetX;
+		const int y = trim.trimmedOffsetY;
+		const int width = trim.trimmedWidth;
+		const int height = trim.trimmedHeight;
+		const TextureDefinitionCoords &texcoords = textureDefinition.texcoords;
+		const int x0 = (int)(texcoords.x0 * (float)textureAtlasSurface->w);
+		const int y0 = (int)(texcoords.y0 * (float)textureAtlasSurface->h);
+		const int x1 = (int)(texcoords.x1 * (float)textureAtlasSurface->w);
+		const int y1 = (int)(texcoords.y1 * (float)textureAtlasSurface->h);
+		const SDL_Rect rect = {x0, y0, x1, y1};
+		SDL_Rect destRect {x, y, width, height};
+		SDL_Surface *sprite = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+		SDL_BlitSurface(textureAtlasSurface, &rect, sprite, &destRect);
+		printf("Save sprite %s\n", textureDefinition.id.c_str());
+		const std::string &spriteFilename = string::format("%s.png", textureDefinition.id.c_str());
+		IMG_SavePNG(sprite, spriteFilename.c_str());
+		SDL_FreeSurface(sprite);
+		SDL_FreeSurface(textureAtlasSurface);
+		SDL_RWclose(atlasRW);
+	}
+#endif
 }
 
 void CaveExpressClientMap::renderBegin (int x, int y) const
