@@ -41,3 +41,6 @@ dependency-%:
 	$(Q)$(CMAKE) -H$(CURDIR) -B$(BUILDDIR) $(CMAKE_OPTIONS)
 	$(Q)dot -Tsvg $(BUILDDIR)/deps.dot.$(subst dependency-,,$@) -o $(BUILDDIR)/deps.dot.$(subst dependency-,,$@).svg;
 	$(Q)xdg-open $(BUILDDIR)/deps.dot.$(subst dependency-,,$@).svg;
+
+pngquant:
+	$(Q)pngquant -f --ext .png contrib/assets/png/caveexpress/*.png

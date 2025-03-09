@@ -25,6 +25,7 @@
 #include "common/ExecutionTime.h"
 #include "common/DateUtil.h"
 #include <SDL.h>
+#include <SDL_image.h>
 
 namespace caveexpress {
 
@@ -154,8 +155,10 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 	// write all sprites as png files with SDL_image to the harddisk
 	for (const auto &iter : _serviceProvider.getTextureDefinition().getMap()) {
 		const TextureDef &textureDefinition = iter.second;
+		if (textureDefinition.id.find("-right-") != std::string::npos) {
+			continue;
+		}
 		const std::string &atlasFilename = string::format("base/caveexpress/pics/%s.png", textureDefinition.textureName.c_str());
-		printf("load atlas %s\n", atlasFilename.c_str());
 		SDL_RWops *atlasRW = SDL_RWFromFile(atlasFilename.c_str(), "rb");
 		if (!atlasRW) {
 			Log::error(LOG_GAMEIMPL, "Failed to load %s", atlasFilename.c_str());
@@ -183,8 +186,12 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 		SDL_Rect destRect {x, y, width, height};
 		SDL_Surface *sprite = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
 		SDL_BlitSurface(textureAtlasSurface, &rect, sprite, &destRect);
+		printf("load atlas %s\n", atlasFilename.c_str());
 		printf("Save sprite %s\n", textureDefinition.id.c_str());
-		const std::string &spriteFilename = string::format("%s.png", textureDefinition.id.c_str());
+		std::string spriteFilename = string::format("%s.png", textureDefinition.id.c_str());
+		if (spriteFilename.find("-left-") != std::string::npos) {
+			spriteFilename.replace(spriteFilename.find("-left-"), 6, "-DIR-");
+		}
 		IMG_SavePNG(sprite, spriteFilename.c_str());
 		SDL_FreeSurface(sprite);
 		SDL_FreeSurface(textureAtlasSurface);
