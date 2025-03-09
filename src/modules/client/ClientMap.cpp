@@ -207,6 +207,7 @@ void ClientMap::render () const
 	renderLayers(x, y);
 	renderParticles(x, y);
 	renderCooldowns(x, y);
+	renderTitle(x, y);
 	renderEnd(x, y);
 
 	if (_restartDue != 0) {
@@ -219,6 +220,12 @@ void ClientMap::render () const
 	if (!debug) {
 		_frontend->disableScissor();
 	}
+}
+
+void ClientMap::renderTitle (int x, int y) const
+{
+	const BitmapFontPtr& font = UI::get().getFont();
+	font->print(_title, colorWhite, x, y);
 }
 
 void ClientMap::renderCooldowns (int x, int y) const

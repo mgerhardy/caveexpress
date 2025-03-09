@@ -1236,72 +1236,6 @@ sprites = {
 		height = 2,
 	},
 
-	["tile-packagetarget-desert-01-rotate"] = {
-		type = "packagetarget-rock",
-		theme = "desert",
-		rotateable = 90,
-		polygons = {
-			{
-				"top", -40, 35, -40, 40, 40, 40, 40, 35,
-			},
-			{
-				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallleft", -50, 40, -30, 40, -50, 50,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallright", 30, 40, 50, 40, 50, 50
-			},
-		},
-	},
-
-	["tile-packagetarget-desert-01-active"] = {
-		type = "packagetarget-rock",
-		theme = "desert",
-		rotateable = 90,
-		polygons = {
-			{
-				"top", -40, 35, -40, 40, 40, 40, 40, 35,
-			},
-			{
-				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallleft", -50, 40, -30, 40, -50, 50,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallright", 30, 40, 50, 40, 50, 50
-			},
-		},
-	},
-
-	["tile-packagetarget-desert-01-idle"] = {
-		type = "packagetarget-rock",
-		theme = "desert",
-		rotateable = 90,
-		polygons = {
-			{
-				"top", -40, 35, -40, 40, 40, 40, 40, 35,
-			},
-			{
-				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallleft", -50, 40, -30, 40, -50, 50,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallright", 30, 40, 50, 40, 50, 50
-			},
-		},
-	},
-
 	["tile-geyser-desert-01-idle"] = {
 		fps = 4,
 		type = "geyser-desert",
@@ -1414,36 +1348,6 @@ sprites = {
 		},
 	},
 
-	-- Desert Bridge
-
-	["bridge-wall-desert-left-01"] = {
-		type = "bridge-left",
-		theme = "desert",
-		polygons = {
-			{
-				"", -50, 50, -50, 0, 50, 20, 50, 50,
-			},
-		},
-	},
-	["bridge-plank-desert-01"] = {
-		type = "bridge-plank",
-		theme = "desert",
-		polygons = {
-			{
-				"", -50, 50, -50, 20, 50, 20, 50, 50,
-			},
-		},
-	},
-	["bridge-wall-desert-right-01"] = {
-		type = "bridge-right",
-		theme = "desert",
-		polygons = {
-			{
-				"", -50, 50, -50, 20, 50, 0, 50, 50,
-			},
-		},
-	},
-
 
 -- -------------------------------------------------------------------------------------------------------------------------------------------
 -- Jungle Tiles
@@ -1452,23 +1356,23 @@ sprites = {
 	["tile-background-jungle-02"] = { type = "background", theme = "jungle", },
 	["tile-background-jungle-03"] = { type = "background", theme = "jungle", },
 	["tile-background-jungle-04"] = { type = "background", theme = "jungle", },
-	["tile-background-jungle-cave-art-01"] = { type = "background", theme = "jungle", },
-	["tile-ground-jungle-big-01"] = { type = "background", width = 2, height = 2, theme = "jungle", },
-	["tile-background-window-jungle-01"] = {
+	["tile-background-cave-art-jungle-01"] = { type = "background", theme = "jungle", },
+	["tile-background-big-jungle-01"] = { type = "background", width = 2, height = 2, theme = "jungle", },
+	["tile-background-jungle-window-01"] = {
 		type = "window",
 		theme = "jungle",
 		frames = {
-			{ "tile-background-window-jungle-01-on", "tile-background-window-jungle-01-off", }, --back
+			{ "tile-background-jungle-window-01-on", "tile-background-jungle-window-01-off", }, --back
 			{}, --middle
 			{}, --front
 		},
 		fps = 0,
 	},
-	["tile-background-window-jungle-02"] = {
+	["tile-background-jungle-window-02"] = {
 		type = "window",
 		theme = "jungle",
 		frames = {
-			{ "tile-background-window-jungle-02-on", "tile-background-window-jungle-02-off", }, --back
+			{ "tile-background-jungle-window-02-on", "tile-background-jungle-window-02-off", }, --back
 			{}, --middle
 			{}, --front
 		},
@@ -1663,75 +1567,10 @@ sprites = {
 			},
 		},
 	},
-	["tile-packagetarget-jungle-01-rotate"] = {
-		type = "packagetarget-rock",
-		rotateable = 90,
-		theme = "jungle",
-		polygons = {
-			{
-				"top", -40, 35, -40, 40, 40, 40, 40, 35,
-			},
-			{
-				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallleft", -50, 40, -30, 40, -50, 50,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallright", 30, 40, 50, 40, 50, 50
-			},
-		},
-	},
-
-	["tile-packagetarget-jungle-01-active"] = {
-		type = "packagetarget-rock",
-		rotateable = 90,
-		theme = "jungle",
-		polygons = {
-			{
-				"top", -40, 35, -40, 40, 40, 40, 40, 35,
-			},
-			{
-				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallleft", -50, 40, -30, 40, -50, 50,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallright", 30, 40, 50, 40, 50, 50
-			},
-		},
-	},
-
-	["tile-packagetarget-jungle-01-idle"] = {
-		type = "packagetarget-rock",
-		rotateable = 90,
-		theme = "jungle",
-		polygons = {
-			{
-				"top", -40, 35, -40, 40, 40, 40, 40, 35,
-			},
-			{
-				"body1", -50, -50, 50, -50, 50, 34, -50, 34,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallleft", -50, 40, -30, 40, -50, 50,
-			},
-			{
-				-- winding order: lower left, lower right, upper left
-				"smallright", 30, 40, 50, 40, 50, 50
-			},
-		},
-	},
 
 	["tile-geyser-jungle-01-idle"] = {
 		fps = 6,
-		type = "geyser-rock",
+		type = "geyser-jungle",
 		theme = "jungle",
 		polygons = {
 			{
@@ -1743,7 +1582,7 @@ sprites = {
 
 	["tile-geyser-jungle-01-active"] = {
 		fps = 8,
-		type = "geyser-rock",
+		type = "geyser-jungle",
 		theme = "jungle",
 		polygons = {
 			{
@@ -1751,36 +1590,6 @@ sprites = {
 			},
 		},
 		height = 2,
-	},
-
-	-- Jungle Bridge
-
-	["bridge-wall-jungle-left-01"] = {
-		type = "bridge-left",
-		theme = "jungle",
-		polygons = {
-			{
-				"", -50, 50, -50, 0, 50, 20, 50, 50,
-			},
-		},
-	},
-	["bridge-plank-jungle-01"] = {
-		type = "bridge-plank",
-		theme = "jungle",
-		polygons = {
-			{
-				"", -50, 50, -50, 20, 50, 20, 50, 50,
-			},
-		},
-	},
-	["bridge-wall-jungle-right-01"] = {
-		type = "bridge-right",
-		theme = "jungle",
-		polygons = {
-			{
-				"", -50, 50, -50, 20, 50, 0, 50, 50,
-			},
-		},
 	},
 
 }

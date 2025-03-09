@@ -44,8 +44,8 @@ cp -rpf "${APP_NAME}.app" "${STAGING_DIR}"
 pushd "${STAGING_DIR}"
 
 # strip the executable
-echo "Stripping ${APP_EXE}..."
-strip -u -r "${APP_EXE}"
+#echo "Stripping ${APP_EXE}..."
+#strip -u -r "${APP_EXE}"
 
 # compress the executable if we have upx in PATH
 #  UPX: http://upx.sourceforge.net/

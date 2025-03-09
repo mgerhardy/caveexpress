@@ -14,6 +14,7 @@ SoundType SOUND_PLAYER_PAIN2("player-pain2");
 SoundType SOUND_PLAYER_PAIN3("player-pain3");
 SoundType SOUND_PLAYER_PAIN("player-pain", false, 3);
 SoundType SOUND_NPC_FLYING_SPAWNED("npc-flying-spawn");
+SoundType SOUND_PACKAGE_TARGET("tile-packagetarget-active");
 SoundType SOUND_PACKAGE_COLLIDE1("crate-hit1");
 SoundType SOUND_PACKAGE_COLLIDE2("crate-hit2");
 SoundType SOUND_PACKAGE_COLLIDE3("crate-hit3");

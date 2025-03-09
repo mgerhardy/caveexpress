@@ -7,3 +7,7 @@ States for building on Linux and Mac
 **[Homepage](http://www.caveproductions.org/)**
 
 Find information about compilation and other stuff in the **[Wiki](https://github.com/mgerhardy/caveexpress/wiki/)**
+
+# Development
+
+The texture atlas is created with TexturePacker 3.9.4, the physical shapes with box2deditor

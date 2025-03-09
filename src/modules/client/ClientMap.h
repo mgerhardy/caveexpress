@@ -112,6 +112,7 @@ public:
 	 */
 	virtual int renderCooldownDescription (uint32_t cooldownIndex, int x, int y, int w, int h) const;
 	virtual void renderCooldowns (int x, int y) const;
+	virtual void renderTitle (int x, int y) const;
 	virtual void setSetting (const std::string& key, const std::string& value);
 
 	/**

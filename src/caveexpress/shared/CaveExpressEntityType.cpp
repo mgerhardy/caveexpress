@@ -34,6 +34,8 @@ EntityType PACKAGETARGET_ICE("tile-packagetarget-ice-01");
 EntityType PACKAGETARGET_ROCK("tile-packagetarget-rock-01");
 EntityType GEYSER_ICE("tile-geyser-ice-01");
 EntityType GEYSER_ROCK("tile-geyser-rock-01");
+EntityType GEYSER_JUNGLE("tile-geyser-jungle-01");
+EntityType GEYSER_DESERT("tile-geyser-desert-01");
 EntityType BOMB("item-bomb");
 EntityType PARTICLE("particle");
 }

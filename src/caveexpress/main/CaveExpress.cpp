@@ -338,6 +338,8 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	r.registerFactory(&EntityTypes::PARTICLE, ClientParticle::FACTORY);
 	r.registerFactory(&EntityTypes::GEYSER_ICE, ClientEntity::FACTORY);
 	r.registerFactory(&EntityTypes::GEYSER_ROCK, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::GEYSER_JUNGLE, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::GEYSER_DESERT, ClientEntity::FACTORY);
 	r.registerFactory(&EntityTypes::BOMB, ClientEntity::FACTORY);
 
 	ProtocolMessageFactory& f = ProtocolMessageFactory::get();

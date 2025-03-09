@@ -5,6 +5,7 @@
 #include "common/Shared.h"
 #include "caveexpress/shared/constants/Commands.h"
 #include "caveexpress/shared/constants/ConfigVars.h"
+#include "caveexpress/shared/constants/Density.h"
 #include "common/Log.h"
 #include "service/ServiceProvider.h"
 #include "common/SpriteDefinition.h"
@@ -1497,7 +1498,8 @@ bool Map::visitEntity (IEntity *entity)
 	if (_time >= _warmupPhase) {
 		entity->update(Constant::DELTA_PHYSICS_MILLIS);
 		if (entity->shouldApplyWind())
-			entity->applyLinearImpulse(b2Vec2(_wind * 2.5f, 0.0f));
+			entity->applyLinearImpulse(b2Vec2(_wind * getFlyingSpeedX() * (DENSITY_PLAYER / 400.0f), 0.0f));
+			// entity->applyLinearImpulse(b2Vec2(_wind * entity->getMass() / 200.f, 0.0f));  // acceleration?
 	}
 	handleVisibility(entity, vismask);
 

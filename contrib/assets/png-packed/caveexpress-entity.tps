@@ -281,6 +281,10 @@
             <filename>../png/caveexpress/item-stone-idle-front-02_n.png</filename>
             <filename>../png/caveexpress/item-stone-idle-front-03_n.png</filename>
             <filename>../png/caveexpress/rope.png</filename>
+            <filename>../png/caveexpress/palm-dazed-middle-01.png</filename>
+            <filename>../png/caveexpress/palm-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/palm-idle-middle-02.png</filename>
+            <filename>../png/caveexpress/palm-idle-middle-03.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

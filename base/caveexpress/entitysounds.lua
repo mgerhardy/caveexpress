@@ -83,3 +83,11 @@ tilegeyserice = {
 tilegeyserrock = {
 	active = "tile-geyser-active",
 }
+
+tilegeyserjungle = {
+	active = "tile-geyser-active",
+}
+
+tilegeyserdesert = {
+	active = "tile-geyser-active",
+}
