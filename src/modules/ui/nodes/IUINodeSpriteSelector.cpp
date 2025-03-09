@@ -1,6 +1,5 @@
 #include <ui/nodes/IUINodeSpriteSelector.h>
 #include "ui/UI.h"
-#include "common/SpriteType.h"
 
 IUINodeSpriteSelector::IUINodeSpriteSelector (IFrontend *frontend, int cols, int rows) :
 		Super(frontend, cols, rows, 40 / static_cast<float>(frontend->getWidth()), 40 / static_cast<float>(frontend->getHeight())), _theme(&ThemeType::NONE)

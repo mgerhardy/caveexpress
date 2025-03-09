@@ -1,5 +1,4 @@
 #include "UINodeTextInput.h"
-#include "common/Log.h"
 #include <SDL.h>
 
 UINodeTextInput::UINodeTextInput (IFrontend *frontend, const std::string& font, int minChars) :

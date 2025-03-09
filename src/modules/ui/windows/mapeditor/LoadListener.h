@@ -1,5 +1,8 @@
 #pragma once
 
+#include "ui/nodes/UINodeButton.h"
+#include "ui/nodes/UINodeMapStringSelector.h"
+
 class LoadListener: public UINodeListener {
 private:
 	UINodeButton *_loadNode;

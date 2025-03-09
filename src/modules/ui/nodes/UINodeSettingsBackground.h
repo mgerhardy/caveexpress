@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ui/UI.h"
 #include "ui/nodes/UINodeBackground.h"
 
 class UINodeSettingsBackground: public UINodeBackground {

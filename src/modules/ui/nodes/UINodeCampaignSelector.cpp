@@ -1,6 +1,5 @@
 #include "UINodeCampaignSelector.h"
 #include "campaign/CampaignManager.h"
-#include "common/CommandSystem.h"
 #include "ui/UI.h"
 
 UINodeCampaignSelector::UINodeCampaignSelector (IFrontend *frontend, CampaignManager &campaignManager, int cols, int rows) :
@@ -45,7 +44,7 @@ void UINodeCampaignSelector::renderSelectorEntry (int index, const CampaignPtr& 
 		const int textHeight = font->getTextHeight(data->getText());
 		const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(data->getText()) / 2 - padding / 2 );
 		const int fontY = y + rowHeight - textHeight - 1 - padding;
-		
+
 		_frontend->renderFilledRect(x, fontY - 1, colWidth - padding, textHeight + 2, colorBlack);
 		renderImage(t, x + marginX, y, colWidth - marginXtotal, rowHeight - textHeight - padding, alpha);
 		font->printMax(data->getText(), colorWhite, fontX, fontY, colWidth);

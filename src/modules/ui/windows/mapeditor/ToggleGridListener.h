@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ui/nodes/IUINodeMapEditor.h"
+
 class ToggleGridListener: public UINodeListener {
 private:
 	IUINodeMapEditor *_mapEditor;

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "ui/nodes/IUINodeMapEditor.h"
+#include "ui/nodes/UINodeTextInput.h"
+
 class NameListener: public UINodeListener, public IMapEditorListener {
 private:
 	IUINodeMapEditor *_mapEditor;

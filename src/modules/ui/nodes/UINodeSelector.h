@@ -3,7 +3,6 @@
 #include "UINode.h"
 #include "ui/BitmapFont.h"
 #include "common/Log.h"
-#include "common/ConfigManager.h"
 
 #include <vector>
 

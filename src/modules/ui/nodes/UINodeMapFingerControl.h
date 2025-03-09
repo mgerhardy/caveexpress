@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ui/nodes/UINode.h"
-#include "common/Direction.h"
 #include "client/IMapControl.h"
 
 class UIWindow;

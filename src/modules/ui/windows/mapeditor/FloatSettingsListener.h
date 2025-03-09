@@ -1,5 +1,8 @@
 #pragma once
 
+#include "ui/nodes/IUINodeMapEditor.h"
+#include "ui/nodes/UINodeSlider.h"
+
 class FloatSettingsListener: public UINodeListener, IMapEditorListener {
 private:
 	IUINodeMapEditor *_mapEditor;

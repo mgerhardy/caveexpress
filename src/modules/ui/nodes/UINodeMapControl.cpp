@@ -1,5 +1,4 @@
 #include "UINodeMapControl.h"
-#include "ui/windows/UIWindow.h"
 #include "ui/nodes/IUINodeMap.h"
 #include "client/ClientMap.h"
 #include "common/ConfigManager.h"

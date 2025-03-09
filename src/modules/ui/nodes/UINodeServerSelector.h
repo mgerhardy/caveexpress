@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ui/nodes/UINodeSelector.h"
-#include "network/INetwork.h"
 
 struct ServerEntry {
 	ServerEntry (const std::string& _name, const std::string& _host, int _port, const std::string& _mapName,

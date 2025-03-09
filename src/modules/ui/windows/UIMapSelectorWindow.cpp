@@ -7,7 +7,6 @@
 #include "ui/nodes/UINodeLabel.h"
 #include "ui/windows/listener/SelectorPageListener.h"
 #include "ui/UI.h"
-#include "common/SpriteDefinition.h"
 #include "common/ConfigManager.h"
 #include "ui/nodes/UINodeBackground.h"
 #include "ui/nodes/UINodeMapSelector.h"

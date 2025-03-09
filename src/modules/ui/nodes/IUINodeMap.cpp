@@ -1,7 +1,6 @@
 #include "IUINodeMap.h"
 #include "common/CommandSystem.h"
 #include "common/Commands.h"
-#include "common/EventHandler.h"
 #include "common/ConfigManager.h"
 #include "common/Direction.h"
 #include "ui/UI.h"
@@ -95,8 +94,8 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 
 	const float w = static_cast<float>(_frontend->getWidth());
 	const float h = static_cast<float>(_frontend->getHeight());
-	setPos(_map.getX() / w, _map.getY() / h);
-	setSize(_map.getWidth() / w, _map.getHeight() / h);
+	setPos((float)_map.getX() / w, (float)_map.getY() / h);
+	setSize((float)_map.getWidth() / w, (float)_map.getHeight() / h);
 }
 
 void IUINodeMap::move(const ICommand::Args& args, Direction dir) {

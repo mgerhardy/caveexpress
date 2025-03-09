@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ui/windows/UIWindow.h"
-#include "ui/nodes/UINodeSelector.h"
 #include "ui/nodes/UINodeLabel.h"
 #include "ui/layouts/UIVBoxLayout.h"
 

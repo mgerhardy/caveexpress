@@ -1,5 +1,9 @@
 #pragma once
 
+#include "ui/nodes/IUINodeEntitySelector.h"
+#include "ui/nodes/IUINodeMapEditor.h"
+#include "ui/nodes/UINodeMapEditorSelectedItem.h"
+
 class EntitySelectionListener: public UINodeListener {
 private:
 	IUINodeMapEditor *_mapEditor;

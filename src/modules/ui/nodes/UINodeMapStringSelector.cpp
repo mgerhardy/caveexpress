@@ -11,7 +11,7 @@ UINodeMapStringSelector::UINodeMapStringSelector (IFrontend *frontend, const IMa
 	setVisible(false);
 	setBorderColor(colorBlack);
 	setFont(MEDIUM_FONT);
-	setRowHeight(getFontHeight() / static_cast<float>(_frontend->getHeight()));
+	setRowHeight((float)getFontHeight() / static_cast<float>(_frontend->getHeight()));
 	Vector4Set(colorBlack, _fontColor);
 	reset();
 	setRowSpacing(2);
@@ -34,7 +34,7 @@ float UINodeMapStringSelector::getAutoWidth () const
 {
 	float w = 0.0f;
 	for (SelectorEntryConstIter i = _entries.begin(); i != _entries.end(); ++i) {
-		w = std::max(w, _font->getTextWidth(*i) / static_cast<float>(_frontend->getWidth()));
+		w = std::max(w, (float)_font->getTextWidth(*i) / static_cast<float>(_frontend->getWidth()));
 	}
 	return w;
 }

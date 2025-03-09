@@ -1,7 +1,6 @@
 #include "UIPopupWindow.h"
 #include "ui/nodes/UINodePopupBackground.h"
 #include "ui/nodes/UINodeButton.h"
-#include "ui/nodes/UINodeLabel.h"
 #include "common/Commands.h"
 
 class UINodePopupButton: public UINodeButton {

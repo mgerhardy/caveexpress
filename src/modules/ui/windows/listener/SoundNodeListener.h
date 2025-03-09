@@ -1,6 +1,8 @@
 #pragma once
 #include "sound/Sound.h"
 #include "common/ConfigManager.h"
+#include "ui/nodes/UINode.h"
+#include "ui/windows/UIWindow.h"
 
 class SoundNodeListener: public UINodeListener {
 private:

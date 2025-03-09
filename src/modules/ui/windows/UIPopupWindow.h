@@ -2,7 +2,6 @@
 
 #include "ui/UI.h"
 #include "ui/windows/UIWindow.h"
-#include <string.h>
 
 class UIPopupWindow: public UIWindow {
 public:

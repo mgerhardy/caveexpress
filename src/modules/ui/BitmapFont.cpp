@@ -2,7 +2,6 @@
 #include "common/IFrontend.h"
 #include "UI.h"
 #include "common/Log.h"
-#include "common/System.h"
 #include "common/UTF8.h"
 
 BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr, IFrontend *frontend) :

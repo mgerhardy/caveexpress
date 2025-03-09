@@ -1,10 +1,6 @@
 #pragma once
 
 #include "ui/nodes/UINode.h"
-#include <memory>
-#include "common/Config.h"
-#include "common/Log.h"
-#include <vector>
 #include <string>
 #include <SDL_platform.h>
 

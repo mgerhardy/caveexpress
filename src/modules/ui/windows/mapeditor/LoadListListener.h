@@ -1,5 +1,9 @@
 #pragma once
 
+#include "ui/nodes/IUINodeMapEditor.h"
+#include "ui/nodes/UINodeButton.h"
+#include "ui/nodes/UINodeMapStringSelector.h"
+
 class LoadListListener: public UINodeListener {
 private:
 	IUINodeMapEditor *_mapEditor;

@@ -75,13 +75,13 @@ void UINodeButton::update (uint32_t deltaTime) {
 
 float UINodeButton::getAutoWidth () const
 {
-	const float w = UINode::getAutoWidth() + _font->getTextWidth(_title) / static_cast<float>(_frontend->getWidth()) + 2.0f * getPadding();
+	const float w = UINode::getAutoWidth() + (float)_font->getTextWidth(_title) / static_cast<float>(_frontend->getWidth()) + 2.0f * getPadding();
 	return w;
 }
 
 float UINodeButton::getAutoHeight () const
 {
 	const float h = std::max(UINode::getAutoHeight(),
-			_font->getTextHeight(_title) / static_cast<float>(_frontend->getHeight()) + 2.0f * getPadding());
+			(float)_font->getTextHeight(_title) / static_cast<float>(_frontend->getHeight()) + 2.0f * getPadding());
 	return h;
 }

@@ -2,7 +2,6 @@
 
 #include "ui/nodes/UINodeSelector.h"
 
-#include <vector>
 #include <string>
 
 // forward decl

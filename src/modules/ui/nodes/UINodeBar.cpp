@@ -42,7 +42,7 @@ void UINodeBar::render (int x, int y) const
 	if (_max > 0 && _current > 0) {
 		const float factor = static_cast<float>(_current) / static_cast<float>(_max);
 		SDL_assert(factor <= 1.0f + EPSILON);
-		const int width = w * factor;
+		const int width = (int)((float)w * factor);
 		if (width > 0) {
 			renderFilledRect(x, y, width, h, _colorBar);
 		}

@@ -1,8 +1,6 @@
 #include "UINodeMapFingerControl.h"
-#include "ui/windows/UIWindow.h"
 #include "ui/nodes/IUINodeMap.h"
 #include "client/ClientMap.h"
-#include "common/ConfigManager.h"
 #include "common/Log.h"
 
 UINodeMapFingerControl::UINodeMapFingerControl (IFrontend *frontend, IUINodeMap *mapNode) :

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include "common/NonCopyable.h"
 #include <map>
 #include <unordered_map>
 #include <string>

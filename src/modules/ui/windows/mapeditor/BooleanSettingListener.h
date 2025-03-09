@@ -1,5 +1,8 @@
 #pragma once
 
+#include "ui/nodes/IUINodeMapEditor.h"
+#include "ui/nodes/UINodeCheckbox.h"
+
 class BooleanSettingListener: public UINodeListener, IMapEditorListener {
 private:
 	IUINodeMapEditor *_mapEditor;

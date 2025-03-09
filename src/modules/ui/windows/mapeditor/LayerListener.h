@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ui/nodes/IUINodeMapEditor.h"
+
 class LayerListener: public UINodeListener {
 private:
 	IUINodeMapEditor *_mapEditor;

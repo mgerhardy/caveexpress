@@ -1,5 +1,4 @@
 #include "UINodeSprite.h"
-#include "common/Log.h"
 #include "common/SpriteDefinition.h"
 #include "ui/UI.h"
 #include <SDL_assert.h>

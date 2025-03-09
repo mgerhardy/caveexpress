@@ -4,26 +4,18 @@
 #include "ui/UI.h"
 #include "ui/nodes/UINodeButton.h"
 #include "ui/nodes/UINodeCheckbox.h"
-#include "ui/nodes/UINodeLabel.h"
-#include "ui/nodes/UINodeSlider.h"
-#include "ui/nodes/UINodeSprite.h"
-#include "ui/nodes/UINodeSpinner.h"
 #include "ui/nodes/UINodeTextInput.h"
 #include "ui/nodes/UINodeButtonText.h"
 #include "ui/layouts/UIVBoxLayout.h"
 #include "ui/layouts/UIHBoxLayout.h"
-#include "ui/layouts/UIFillLayout.h"
 #include "ui/windows/listener/OpenWindowListener.h"
 #include "common/MapManager.h"
-#include "common/ConfigManager.h"
-#include "common/TextureDefinition.h"
 #include "ui/windows/UISettingsWindow.h"
 #include "ui/windows/mapeditor/QuitEditorListener.h"
 #include "ui/nodes/IUINodeMapEditor.h"
 #include "ui/nodes/UINodeMapEditorSelectedItem.h"
 #include "ui/nodes/UINodeMapStringSelector.h"
 
-#include "mapeditor/ChangeThemeListener.h"
 #include "mapeditor/SaveListener.h"
 #include "mapeditor/LoadListener.h"
 #include "mapeditor/LoadListListener.h"
@@ -33,7 +25,6 @@
 #include "mapeditor/RedoListener.h"
 #include "mapeditor/SpriteSelectionListener.h"
 #include "mapeditor/EntitySelectionListener.h"
-#include "mapeditor/BooleanSettingListener.h"
 #include "mapeditor/LayerListener.h"
 
 IUIMapEditorWindow::IUIMapEditorWindow (IFrontend *frontend, IUINodeMapEditor* editor, IUINodeSpriteSelector* spriteSelector, IUINodeEntitySelector* entitySelector) :
@@ -102,8 +93,8 @@ IUIMapEditorWindow::~IUIMapEditorWindow ()
 
 UINode *IUIMapEditorWindow::createLayers ()
 {
-	const float checkBoxWidth = 36.0f / _frontend->getWidth();
-	const float checkBoxHeight = 36.0f / _frontend->getHeight();
+	const float checkBoxWidth = 36.0f / (float)_frontend->getWidth();
+	const float checkBoxHeight = 36.0f / (float)_frontend->getHeight();
 	UINode *layers = new UINode(_frontend, "layers");
 	layers->setLayout(new UIVBoxLayout());
 	for (int layer = LAYER_EMITTER; layer != LAYER_NONE; --layer) {

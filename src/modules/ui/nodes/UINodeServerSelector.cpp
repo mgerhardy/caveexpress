@@ -20,7 +20,7 @@ UINodeServerSelector::UINodeServerSelector (IFrontend *frontend, int rows) :
 	setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_MIDDLE);
 	setId("server-selector");
 	setFont(HUGE_FONT);
-	setRowHeight(getFontHeight() / static_cast<float>(_frontend->getHeight()));
+	setRowHeight((float)getFontHeight() / static_cast<float>(_frontend->getHeight()));
 	_mouseWheelScrollAmount = _rowHeight * _frontend->getHeight() * 5;
 	Vector4Set(colorWhite, _fontColor);
 	reset();

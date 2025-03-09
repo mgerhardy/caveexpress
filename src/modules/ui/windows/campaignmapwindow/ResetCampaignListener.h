@@ -2,6 +2,7 @@
 
 #include "ui/UI.h"
 #include "campaign/CampaignManager.h"
+#include "ui/nodes/UINodeMapSelector.h"
 
 class ResetCampaignPopupCallback: public UIPopupCallback {
 private:

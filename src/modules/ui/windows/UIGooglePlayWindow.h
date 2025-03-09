@@ -1,7 +1,7 @@
 #pragma once
 
+#include "common/ConfigVar.h"
 #include "ui/windows/UIWindow.h"
-#include "common/ConfigManager.h"
 
 // forward decl
 class UINodeButton;

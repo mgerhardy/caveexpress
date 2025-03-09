@@ -1,6 +1,5 @@
 #pragma once
 
-#include "common/EventHandler.h"
 #include "common/System.h"
 #include "common/IFrontend.h"
 #include "textures/Texture.h"
@@ -220,14 +219,14 @@ protected:
 	virtual float getAutoWidth () const
 	{
 		if (_texture)
-			return _texture->getWidth() / static_cast<float>(_frontend->getWidth()) + 2.0f * getPadding();
+			return (float)_texture->getWidth() / static_cast<float>(_frontend->getWidth()) + 2.0f * getPadding();
 		return 0.0f;
 	}
 
 	virtual float getAutoHeight () const
 	{
 		if (_texture)
-			return _texture->getHeight() / static_cast<float>(_frontend->getHeight()) + 2.0f * getPadding();
+			return (float)_texture->getHeight() / static_cast<float>(_frontend->getHeight()) + 2.0f * getPadding();
 		return 0.0f;
 	}
 
@@ -328,27 +327,27 @@ public:
 
 	inline int getRenderY (bool includePadding = true) const
 	{
-		return static_cast<int>(getRenderYf(includePadding) * _frontend->getHeight());
+		return static_cast<int>(getRenderYf(includePadding) * (float)_frontend->getHeight());
 	}
 
 	inline int getRenderCenterX () const
 	{
-		return static_cast<int>(getRenderCenterXf() * _frontend->getWidth());
+		return static_cast<int>(getRenderCenterXf() * (float)_frontend->getWidth());
 	}
 
 	inline int getRenderCenterY () const
 	{
-		return static_cast<int>(getRenderCenterYf() * _frontend->getHeight());
+		return static_cast<int>(getRenderCenterYf() * (float)_frontend->getHeight());
 	}
 
 	inline int getRenderWidth (bool includePadding = true) const
 	{
-		return static_cast<int>(getRenderWidthf(includePadding) * _frontend->getWidth());
+		return static_cast<int>(getRenderWidthf(includePadding) * (float)_frontend->getWidth());
 	}
 
 	inline int getRenderHeight (bool includePadding = true) const
 	{
-		return static_cast<int>(getRenderHeightf(includePadding) * _frontend->getHeight());
+		return static_cast<int>(getRenderHeightf(includePadding) * (float)_frontend->getHeight());
 	}
 
 	inline float getRenderXf (bool includePadding = true) const

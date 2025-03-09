@@ -1,7 +1,6 @@
 #pragma once
 
 #include "UINodeButton.h"
-#include "common/String.h"
 
 class UINodeCheckbox: public UINodeButton {
 protected:

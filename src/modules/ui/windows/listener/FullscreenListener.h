@@ -1,5 +1,6 @@
 #pragma once
 #include "common/ConfigManager.h"
+#include "ui/nodes/UINode.h"
 
 class FullscreenListener: public UINodeListener {
 private:

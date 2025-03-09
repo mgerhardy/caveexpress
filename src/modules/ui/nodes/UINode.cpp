@@ -122,9 +122,9 @@ void UINode::update (uint32_t deltaTime)
 	if (_flashMillis > 0) {
 		_flashMillis -= std::min(_flashMillis, deltaTime);
 		const float hz = 1.0f;
-		const float phase = _time * 0.001f * hz;
+		const float phase = (float)_time * 0.001f * hz;
 		const float moduloPhase = phase - floor(phase);
-		_alpha = (1.0 - cos(moduloPhase * (2 * M_PI))) / 2.0;
+		_alpha = (float)((1.0 - cos(moduloPhase * (2 * M_PI))) / 2.0);
 	} else if (_originalAlpha >= 0.0f) {
 		_flashMillis = 0;
 		_alpha = _originalAlpha;
@@ -137,7 +137,7 @@ float UINode::getParentWidthf () const
 	if (_parent == nullptr)
 		return 1.0f;
 
-	return _parent->getRenderWidth();
+	return (float)_parent->getRenderWidth();
 }
 
 float UINode::getParentHeightf () const

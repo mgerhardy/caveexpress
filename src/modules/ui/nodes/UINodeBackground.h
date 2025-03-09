@@ -1,9 +1,7 @@
 #pragma once
 
 #include "ui/nodes/UINode.h"
-#include "common/String.h"
 #include "ui/BitmapFont.h"
-#include "common/Config.h"
 
 class UINodeBackground: public UINode {
 protected:
@@ -34,21 +32,21 @@ public:
 	inline void setAmountHorizontal (int amount)
 	{
 		setSize(1.0, 1.0f);
-		setSize(amount * _imageWidth / static_cast<float>(getRenderWidth()), getHeight());
+		setSize((float)amount * (float)_imageWidth / static_cast<float>(getRenderWidth()), getHeight());
 		_amountHorizontal = amount;
 	}
 
 	inline void setAmountVertical (int amount)
 	{
 		setSize(1.0, 1.0f);
-		setSize(getWidth(), amount * _imageHeight / static_cast<float>(getRenderHeight()));
+		setSize(getWidth(), (float)amount * (float)_imageHeight / static_cast<float>(getRenderHeight()));
 		_amountVertical = amount;
 	}
 
 	inline void setAmount (int amountHorizontal, int amountVertical)
 	{
 		setSize(1.0, 1.0f);
-		setSize(amountHorizontal * _imageWidth / static_cast<float>(getRenderWidth()), amountVertical * _imageHeight / static_cast<float>(getRenderHeight()));
+		setSize((float)amountHorizontal * (float)_imageWidth / static_cast<float>(getRenderWidth()), (float)amountVertical * (float)_imageHeight / static_cast<float>(getRenderHeight()));
 		_amountHorizontal = amountHorizontal;
 		_amountVertical = amountVertical;
 	}

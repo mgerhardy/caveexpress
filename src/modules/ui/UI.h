@@ -4,9 +4,7 @@
 #include "common/ConfigVar.h"
 #include "windows/UIWindow.h"
 #include "common/CommandSystem.h"
-#include "common/Common.h"
 #include "common/Singleton.h"
-#include "common/System.h"
 #include "common/Log.h"
 #include <memory>
 #include "common/IProgressCallback.h"
@@ -14,7 +12,6 @@
 #include "sprites/SpriteCache.h"
 
 #include <vector>
-#include <map>
 #include <unordered_map>
 
 // forward decl

@@ -1,11 +1,10 @@
 #include "Intro.h"
 #include "common/Commands.h"
 #include "common/ConfigManager.h"
-#include "common/String.h"
-#include "ui/nodes/UINodeBackButton.h"
+#include "ui/nodes/UINodeButton.h"
+#include "ui/nodes/UINodeMainButton.h"
 #include "ui/nodes/UINodeSprite.h"
 #include "ui/nodes/UINodeBar.h"
-#include "ui/nodes/UINodeBackground.h"
 #include "ui/nodes/UINodeIntroBackground.h"
 #include "ui/layouts/UIVBoxLayout.h"
 #include "ui/layouts/UIHBoxLayout.h"
@@ -26,8 +25,8 @@ IntroTypeDescription::IntroTypeDescription(UINode* parent, IFrontend* frontend, 
 IntroBarDescription::IntroBarDescription(IFrontend* frontend, const Color& barColor, const std::string& text) :
 		UINode(frontend) {
 	setLayout(new UIHBoxLayout(0.01f, false, NODE_ALIGN_MIDDLE));
-	const float barHeight = 12.0f / _frontend->getHeight();
-	const float barWidth = 102.0f / _frontend->getWidth();
+	const float barHeight = 12.0f / (float)_frontend->getHeight();
+	const float barWidth = 102.0f / (float)_frontend->getWidth();
 	UINodeBar* timeBar = new UINodeBar(_frontend);
 	timeBar->setMax(100);
 	timeBar->setCurrent(100);
@@ -44,8 +43,8 @@ IntroBarDescription::IntroBarDescription(IFrontend* frontend, const Color& barCo
 IntroBarDescription::IntroBarDescription(IFrontend* frontend, const std::string& text) :
 		UINode(frontend) {
 	setLayout(new UIHBoxLayout(0.01f, false, NODE_ALIGN_MIDDLE));
-	const float barHeight = 12.0f / _frontend->getHeight();
-	const float barWidth = 102.0f / _frontend->getWidth();
+	const float barHeight = 12.0f / (float)_frontend->getHeight();
+	const float barWidth = 102.0f / (float)_frontend->getWidth();
 	UINodeBar* timeBar = new UINodeBar(_frontend);
 	timeBar->setMax(100);
 	timeBar->setCurrent(100);

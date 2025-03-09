@@ -1,6 +1,10 @@
 #pragma once
 
+#include "common/ConfigManager.h"
+#include "common/ConfigVar.h"
 #include "service/ServiceProvider.h"
+#include "ui/UI.h"
+#include "ui/nodes/UINode.h"
 
 class TextureModeListener: public UINodeListener {
 private:

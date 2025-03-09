@@ -30,19 +30,19 @@ void UINodeMapEditorSelectedItem::render (int x, int y) const
 	const int nodeH = getRenderHeight() - textOffset - font->getCharHeight();
 	const int spriteW = sprite->getMaxWidth();
 	const int spriteH = sprite->getMaxHeight();
-	const float aspectW = spriteW / static_cast<float>(nodeW);
-	const float aspectH = spriteH / static_cast<float>(nodeH);
+	const float aspectW = (float)spriteW / static_cast<float>(nodeW);
+	const float aspectH = (float)spriteH / static_cast<float>(nodeH);
 	float widthF;
 	float heightF;
 	if (aspectW > aspectH) {
-		widthF = spriteW / aspectW;
-		heightF = spriteH / aspectW;
+		widthF = (float)spriteW / aspectW;
+		heightF = (float)spriteH / aspectW;
 	} else {
-		widthF = spriteW / aspectH;
-		heightF = spriteH / aspectH;
+		widthF = (float)spriteW / aspectH;
+		heightF = (float)spriteH / aspectH;
 	}
 
-	const int _x = getRenderCenterX() - widthF / 2;
+	const int _x = getRenderCenterX() - widthF / 2.0f;
 	const int _y = nodeY;
 	const int w = widthF;
 	const int h = heightF;

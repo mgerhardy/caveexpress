@@ -2,11 +2,8 @@
 #include "ui/UI.h"
 #include "client/IMapControl.h"
 #include "ui/nodes/UINodeButton.h"
-#include "ui/nodes/UINodeBar.h"
-#include "ui/nodes/UINodeSprite.h"
-#include "ui/nodes/UINodePoint.h"
 #include "ui/nodes/UINodeButtonText.h"
-#include "ui/layouts/UIHBoxLayout.h"
+#include "ui/nodes/UINodeLabel.h"
 #include "ui/windows/listener/OpenWindowListener.h"
 #include "common/IFrontend.h"
 #include "common/System.h"
@@ -18,7 +15,6 @@
 #include "ui/nodes/IUINodeMap.h"
 #include "ui/nodes/UINodeMapControl.h"
 #include "ui/nodes/UINodeMapFingerControl.h"
-#include "campaign/persister/IGameStatePersister.h"
 #include <SDL_platform.h>
 
 class UINodeSettingsButton: public UINodeButton {

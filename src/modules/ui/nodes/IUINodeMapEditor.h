@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ui/nodes/UINode.h"
-#include "sprites/Sprite.h"
 #include "ui/BitmapFont.h"
 #include "common/MapManager.h"
 #include "common/SpriteDefinition.h"
@@ -11,12 +10,10 @@
 #include "common/Animation.h"
 #include "common/String.h"
 #include "common/ConfigVar.h"
-#include "common/File.h"
 #include "common/ICommand.h"
 #include "common/IMap.h"
 #include <vector>
 #include <list>
-#include <map>
 
 // forward decl
 class IMapManager;

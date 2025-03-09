@@ -1,5 +1,4 @@
 #include <ui/nodes/IUINodeEntitySelector.h>
-#include "common/Log.h"
 #include "ui/UI.h"
 #include "common/SpriteDefinition.h"
 

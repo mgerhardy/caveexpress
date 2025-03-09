@@ -1,5 +1,4 @@
 #include "UINodeSpinner.h"
-#include "common/Log.h"
 
 namespace {
 const int gap = 20;
@@ -22,7 +21,7 @@ float UINodeSpinner::getAutoWidth () const
 {
 	const std::string valStr = string::toString(_max);
 	const int bw = _font->getCharWidth() * 2 + _font->getTextWidth(valStr) + 2 * gap;
-	return bw / static_cast<float>(_frontend->getWidth());
+	return (float)bw / static_cast<float>(_frontend->getWidth());
 }
 
 void UINodeSpinner::setValue (int value)
