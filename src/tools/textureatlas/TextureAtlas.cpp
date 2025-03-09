@@ -380,6 +380,7 @@ static bool loadTps(const std::string &tpsFile) {
 			error_printf("Failed to load %s\n", input_files[i].c_str());
 			return false;
 		}
+		// TODO: calculate hash to check for duplicates
 	}
 
 	std::sort(images.begin(), images.end(), [](const Image &a, const Image &b) {
