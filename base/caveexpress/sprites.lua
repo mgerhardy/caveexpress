@@ -1358,21 +1358,21 @@ sprites = {
 	["tile-background-jungle-04"] = { type = "background", theme = "jungle", },
 	["tile-background-cave-art-jungle-01"] = { type = "background", theme = "jungle", },
 	["tile-background-big-jungle-01"] = { type = "background", width = 2, height = 2, theme = "jungle", },
-	["tile-background-window-jungle-01"] = {
+	["tile-background-jungle-window-01"] = {
 		type = "window",
 		theme = "jungle",
 		frames = {
-			{ "tile-background-window-jungle-01-on", "tile-background-window-jungle-01-off", }, --back
+			{ "tile-background-jungle-window-01-on", "tile-background-jungle-window-01-off", }, --back
 			{}, --middle
 			{}, --front
 		},
 		fps = 0,
 	},
-	["tile-background-window-jungle-02"] = {
+	["tile-background-jungle-window-02"] = {
 		type = "window",
 		theme = "jungle",
 		frames = {
-			{ "tile-background-window-jungle-02-on", "tile-background-window-jungle-02-off", }, --back
+			{ "tile-background-jungle-window-02-on", "tile-background-jungle-window-02-off", }, --back
 			{}, --middle
 			{}, --front
 		},
@@ -1570,7 +1570,7 @@ sprites = {
 
 	["tile-geyser-jungle-01-idle"] = {
 		fps = 6,
-		type = "geyser-rock",
+		type = "geyser-jungle",
 		theme = "jungle",
 		polygons = {
 			{
@@ -1582,7 +1582,7 @@ sprites = {
 
 	["tile-geyser-jungle-01-active"] = {
 		fps = 8,
-		type = "geyser-rock",
+		type = "geyser-jungle",
 		theme = "jungle",
 		polygons = {
 			{
