@@ -127,15 +127,18 @@ Version 2.5 (2021-04-08 ?)
 Version 2.6 (not yet released)
 * Two new sceneries: jungle and desert
 * 3 new campaigns with new maps:
-  * jungle (4), desert (3 maps), letters (5)
+  * jungle (4 maps), desert (3), letters (5)
 * Renamed all maps and campaigns
   * Maps are named uniquely now (for multiplayer) and are starting with campaign name
 * Gameplay changes
   * Diving, now possible to fall underwater - few later maps use it
   * Possible to fly up with 3 packages, or even with 4 after powerup (banana)
+  * Faster flying horizontally (on PC)
+  * Faster npcs (taxi gameplay) - less strict landing, faster walk start, take or drop, announce during walk
   * Friendly npc don't get dropped when hit from above, they will only fall after a hard hit
 * Changed water color to skyblue
 * Particles
+  * Water splashes
   * Rain in jungle
   * Smaller snow and more wobbly
 * Package target sound, on consuming package
