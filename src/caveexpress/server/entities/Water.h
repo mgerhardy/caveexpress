@@ -26,13 +26,13 @@ private:
 	float _currentHeightLevel;
 	uint32_t _waterRisingTime;
 	uint32_t _waterFallingTime;
-	uint32_t _lastSoundTime;
 
 	typedef std::pair<b2Fixture*, b2Fixture*> FixturePair;
 	typedef std::set<FixturePair>::iterator FixturePairIter;
 	std::set<FixturePair> _fixturePairs;
 
 	WorldParticle *_waterParticle;
+	float _lastSoundDT;
 
 	void updateFixtures ();
 public:
