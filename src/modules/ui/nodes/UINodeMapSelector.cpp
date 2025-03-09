@@ -71,7 +71,7 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 
 			const BitmapFontPtr& font = getFont(LARGE_FONT);  // MEDIUM_FONT);
 			const std::string points = string::toString(map->getFinishPoints());
-			const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(points) / 2 - padding / 2);
+			const int fontX = std::max(x, x - padding / 2 + colWidth / 2 - font->getTextWidth(points) / 2 - padding / 2);
 			const int fontHeight = 22;
 			const int fontY = y;
 			if (t)
@@ -88,12 +88,9 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 		return;*/
 
 	if (!title.empty()) {
-		const BitmapFontPtr& font = getFont(title.length() > 15
-			? MEDIUM_FONT : HUGE_FONT);
-			// ? SMALL_FONT : MEDIUM_FONT);
+		const BitmapFontPtr& font = getFont(MEDIUM_FONT);
 		const int textHeight = font->getTextHeight(title);
-		// const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(title) / 2);  // center
-		const int fontX = x;  // left
+		const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(title) / 2);  // center
 		const int fontY = y + rowHeight - textHeight - 1 - padding;
 		
 		_frontend->renderFilledRect(x, fontY - 1, colWidth - padding, textHeight + 2, colorBlack);
