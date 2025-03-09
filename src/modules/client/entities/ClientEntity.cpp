@@ -159,8 +159,16 @@ std::string ClientEntity::getSpriteName() const
 	if (name.empty()) {
 		return "";
 	}
-	if (SpriteDefinition::get().exists(name + "-" + _theme->name)) {
-		name += "-" + _theme->name;
+	if (_theme->isNone()) {
+		Log::debug(LOG_GAMEIMPL, "No theme set for entity %s", name.c_str());
+	} else {
+		const std::string themedName = name + "-" + _theme->name;
+		if (SpriteDefinition::get().exists(themedName)) {
+			name = themedName;
+			Log::debug(LOG_GAMEIMPL, "Sprite %s with theme exists", themedName.c_str());
+		} else {
+			Log::debug(LOG_GAMEIMPL, "Sprite %s with theme does not exist", themedName.c_str());
+		}
 	}
 	return name;
 }
@@ -259,6 +267,7 @@ Direction ClientEntity::getMoveDirection ()
 ClientEntityPtr ClientEntity::Factory::create (const ClientEntityFactoryContext *ctx) const
 {
 	ClientEntity *e = new ClientEntity(ctx->type, ctx->id, ctx->x, ctx->y, ctx->width, ctx->height, ctx->soundMapping, ctx->align, ctx->angle);
+	e->setThemeType(*ctx->theme);
 	e->setAnimationType(ctx->animation);
 	return ClientEntityPtr(e);
 }

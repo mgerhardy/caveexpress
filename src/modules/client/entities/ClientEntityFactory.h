@@ -25,9 +25,9 @@ class ClientEntityFactoryContext {
 public:
 	ClientEntityFactoryContext (const EntityType& _type, uint16_t _id, const std::string& _sprite,
 			const Animation& _animation, float _x,
-			float _y, float _width, float _height, EntityAngle _angle, const SoundMapping& _soundMapping, EntityAlignment _align) :
+			float _y, float _width, float _height, EntityAngle _angle, const SoundMapping& _soundMapping, EntityAlignment _align, const ThemeType& _theme) :
 			soundMapping(_soundMapping), type(_type), id(_id), sprite(_sprite), animation(_animation), x(_x), y(_y), width(_width), height(
-					_height), angle(_angle), align(_align)
+					_height), angle(_angle), align(_align), theme(&_theme)
 	{
 	}
 
@@ -42,6 +42,7 @@ public:
 	float height;
 	EntityAngle angle;
 	EntityAlignment align;
+	const ThemeType* theme;
 };
 
 class IClientEntityFactory: public IFactory<ClientEntity, ClientEntityFactoryContext> {
@@ -92,9 +93,9 @@ public:
 	}
 	static ClientEntityPtr get (const EntityType& type, uint16_t id, const std::string& sprite = "",
 			const Animation& animation = Animation::NONE, float x = 0.0f, float y = 0.0f, float sizeX = 0.0f,
-			float sizeY = 0.0f, EntityAngle angle = 0, EntityAlignment align = ENTITY_ALIGN_LOWER_LEFT)	{
+			float sizeY = 0.0f, EntityAngle angle = 0, EntityAlignment align = ENTITY_ALIGN_LOWER_LEFT, const ThemeType& theme = ThemeType::NONE) {
 		ClientEntityRegistry& reg = Singleton<ClientEntityRegistry>::getInstance();
-		const ClientEntityFactoryContext ctx(type, id, sprite, animation, x, y, sizeX, sizeY, angle, reg._soundMappingCache[&type], align);
+		const ClientEntityFactoryContext ctx(type, id, sprite, animation, x, y, sizeX, sizeY, angle, reg._soundMappingCache[&type], align, theme);
 		return reg.create(&type, &ctx);
 	}
 };

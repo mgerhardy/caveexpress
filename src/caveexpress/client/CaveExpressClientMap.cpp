@@ -150,6 +150,9 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 			_particleSystem.spawn(ParticlePtr(new Rain(*this)));
 		}
 	}
+	for (auto iter = ThemeType::begin(); iter != ThemeType::end(); ++iter) {
+		Log::debug(LOG_GAMEIMPL, "Registered theme types: %s", iter->second->name.c_str());
+	}
 
 #if 0
 	// write all sprites as png files with SDL_image to the harddisk
