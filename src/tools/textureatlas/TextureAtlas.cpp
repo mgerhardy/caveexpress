@@ -1,5 +1,6 @@
 // This tool reads a TexturePacker .tps file and creates a texture atlas with the specified scale and extension.
 
+#include "tools/textureatlas/murmur.h"
 #include <algorithm>
 #include <cstdio>
 #include <limits>
@@ -24,15 +25,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static const int ATLAS_INCREASE = 32;
-static bool debug = false;
+static int g_atlasIncrease = 32;
+static bool g_debug = false;
 
 struct Image {
 	std::string name;
 	uint8_t *data;
+	uint32_t hash;
 	int width, height, channels;
+	int rectId;
+	int duplicate;
 
-	Image() : data(nullptr), width(0), height(0), channels(0) {
+	Image() : data(nullptr), hash(0), width(0), height(0), channels(0), rectId(-1), duplicate(-1) {
 	}
 
 	~Image() {
@@ -44,9 +48,12 @@ struct Image {
 	Image(Image &&other) {
 		name = std::move(other.name);
 		data = other.data;
+		hash = other.hash;
 		width = other.width;
 		height = other.height;
 		channels = other.channels;
+		rectId = other.rectId;
+		duplicate = other.duplicate;
 		other.data = nullptr;
 	}
 
@@ -54,9 +61,12 @@ struct Image {
 		if (this != &other) {
 			name = std::move(other.name);
 			data = other.data;
+			hash = other.hash;
 			width = other.width;
 			height = other.height;
 			channels = other.channels;
+			rectId = other.rectId;
+			duplicate = other.duplicate;
 			other.data = nullptr;
 		}
 		return *this;
@@ -65,13 +75,16 @@ struct Image {
 
 struct Variants {
 	Variants(double scaleVal, const std::string &extensionVal, const std::string &textureFilenameVal,
-			 const std::string &luaFilenameVal)
-		: scale(scaleVal), extension(extensionVal), textureFilename(textureFilenameVal), luaFilename(luaFilenameVal) {
+			 const std::string &luaFilenameVal, int maxTextureWidthVal, int maxTextureHeightVal)
+		: scale(scaleVal), extension(extensionVal), textureFilename(textureFilenameVal), luaFilename(luaFilenameVal),
+		  maxTextureWidth(maxTextureWidthVal), maxTextureHeight(maxTextureHeightVal) {
 	}
 	double scale = 1.0f;
 	std::string extension;
 	std::string textureFilename;
 	std::string luaFilename;
+	int maxTextureWidth;
+	int maxTextureHeight;
 };
 
 static std::string extractBasenameNoExtension(const std::string &in) {
@@ -91,7 +104,7 @@ static std::string extractBasenameNoExtension(const std::string &in) {
 
 // TODO: add gcc printf format checks
 static void debug_printf(const char *format, ...) {
-	if (debug) {
+	if (g_debug) {
 		va_list args;
 		va_start(args, format);
 		printf("DEBUG: ");
@@ -178,6 +191,7 @@ static Rect findOpaqueRect(const uint8_t *data, int width, int height, int chann
 
 struct Config {
 	int alphaThreshold = 0;
+	int heuristic = STBRP_HEURISTIC_Skyline_default;
 };
 
 static bool handleVariant(const Variants &v, const std::vector<Image> &images, const Config &cfg) {
@@ -190,6 +204,7 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 	printf("  * Save texture atlas at %s\n", v.textureFilename.c_str());
 	printf("  * Save lua file: %s\n", v.luaFilename.c_str());
 
+	int currentRectId = 0;
 	for (size_t i = 0; i < images.size(); i++) {
 		const Image &image = images[i];
 		const int newWidth = (int)(image.width * v.scale);
@@ -203,6 +218,8 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 		scaledImages[i].width = newWidth;
 		scaledImages[i].height = newHeight;
 		scaledImages[i].channels = 4;
+		scaledImages[i].hash = image.hash;
+		scaledImages[i].duplicate = image.duplicate;
 		const int inputImageStride = image.width * 4;
 		const int outputImageStride = newWidth * 4;
 		if (fabs(v.scale - 1.0) < 0.0001) {
@@ -213,28 +230,47 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 			printf("  * Scaled image: %s, %i:%i -> %i:%i\n", image.name.c_str(), image.width, image.height, newWidth,
 				   newHeight);
 		}
-		rects[i].id = (int)i;
-		rects[i].w = scaledImages[i].width;
-		rects[i].h = scaledImages[i].height;
+		if (image.duplicate < 0) {
+			scaledImages[i].rectId = currentRectId;
+			rects[currentRectId].id = (int)i;
+			rects[currentRectId].w = scaledImages[i].width;
+			rects[currentRectId].h = scaledImages[i].height;
+			++currentRectId;
+		} else {
+			scaledImages[i].rectId = scaledImages[image.duplicate].rectId;
+			assert(scaledImages[i].rectId >= 0);
+		}
 	}
 
 	int currentAtlasWidth = 256;
 	int currentAtlasHeight = 256;
 	int attempt = 0;
-	for (int i = 0; i < 100; ++i) {
+	for (;;) {
+		if (currentAtlasHeight > v.maxTextureHeight || currentAtlasWidth > v.maxTextureWidth) {
+			error_printf("Texture atlas size exceeds maximum texture size\n");
+			return false;
+		}
 		// Initialize packing context
 		stbrp_context ctx;
 		std::vector<stbrp_node> nodes;
 		nodes.resize(currentAtlasWidth);
 		stbrp_init_target(&ctx, currentAtlasWidth, currentAtlasHeight, nodes.data(), currentAtlasWidth);
-
+		stbrp_setup_heuristic(&ctx, cfg.heuristic);
 		// Pack rectangles
 		if (!stbrp_pack_rects(&ctx, rects.data(), (int)rects.size())) {
-			if (++attempt % 2 == 0) {
-				currentAtlasWidth += ATLAS_INCREASE;
-			} else {
-				currentAtlasHeight += ATLAS_INCREASE;
+			const int oldAtlasWidth = currentAtlasWidth;
+			const int oldAtlasHeight = currentAtlasHeight;
+			if (++attempt % 2 == 0 && currentAtlasWidth < v.maxTextureWidth) {
+				currentAtlasWidth = (currentAtlasWidth + g_atlasIncrease) % v.maxTextureWidth;
+			} else if (currentAtlasHeight < v.maxTextureHeight) {
+				currentAtlasHeight = (currentAtlasHeight + g_atlasIncrease) % v.maxTextureHeight;
 			}
+			if (currentAtlasWidth == oldAtlasWidth && currentAtlasHeight == oldAtlasHeight) {
+				error_printf("Failed to pack texture atlas - no more space left\n");
+				return false;
+			}
+			debug_printf("Failed to pack texture atlas, trying again with %i:%i\n", currentAtlasWidth,
+						 currentAtlasHeight);
 			continue;
 		}
 		printf("  * Texture atlas resolution %i:%i\n", currentAtlasWidth, currentAtlasHeight);
@@ -259,24 +295,28 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 		fprintf(luaFile, "textures = {\n");
 
 		// Copy images into atlas
-		for (size_t j = 0; j < rects.size(); j++) {
-			if (!rects[j].was_packed) {
-				continue;
+		for (size_t imgId = 0; imgId < scaledImages.size(); imgId++) {
+			const Image &scaledImage = scaledImages[imgId];
+			int rectId = scaledImage.rectId;
+			if (scaledImage.duplicate >= 0) {
+				rectId = scaledImages[scaledImage.duplicate].rectId;
 			}
-			const Rect opaqueRect = findOpaqueRect(scaledImages[j].data, scaledImages[j].width, scaledImages[j].height,
-												   4, cfg.alphaThreshold);
-
-			const int x = rects[j].x, y = rects[j].y;
-			const int n = scaledImages[j].width * 4;
-
-			// TODO: only copy the opaque part of the image?
-			for (int row = 0; row < scaledImages[j].height; row++) {
-				uint8_t *dest = atlas + (intptr_t)((y + row) * currentAtlasWidth + x) * 4;
-				const uint8_t *src = scaledImages[j].data + (intptr_t)(row * n);
-				memcpy(dest, src, n);
+			assert(rectId >= 0);
+			const Rect opaqueRect =
+				findOpaqueRect(scaledImage.data, scaledImage.width, scaledImage.height, 4, cfg.alphaThreshold);
+			const int x = rects[rectId].x;
+			const int y = rects[rectId].y;
+			if (rects[rectId].was_packed) {
+				const int n = scaledImage.width * 4;
+				// TODO: only copy the opaque part of the image?
+				for (int row = 0; row < scaledImage.height; row++) {
+					uint8_t *dest = atlas + (intptr_t)((y + row) * currentAtlasWidth + x) * 4;
+					const uint8_t *src = scaledImage.data + (intptr_t)(row * n);
+					memcpy(dest, src, n);
+				}
 			}
 
-			const std::string &spriteId = extractBasenameNoExtension(scaledImages[j].name);
+			const std::string &spriteId = extractBasenameNoExtension(scaledImage.name);
 
 			fprintf(luaFile, "\t[");
 			fprintf(luaFile, "\"%s\"", spriteId.c_str());
@@ -284,14 +324,14 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 			fprintf(luaFile, "\t\timage = \"%s\",\n", baseTextureName.c_str());
 			fprintf(luaFile, "\t\tx0 = %f,\n", (float)x / (float)currentAtlasWidth);
 			fprintf(luaFile, "\t\ty0 = %f,\n", (float)y / (float)currentAtlasHeight);
-			fprintf(luaFile, "\t\tx1 = %f,\n", (float)scaledImages[j].width / (float)currentAtlasWidth);
-			fprintf(luaFile, "\t\ty1 = %f,\n", (float)scaledImages[j].height / (float)currentAtlasHeight);
+			fprintf(luaFile, "\t\tx1 = %f,\n", (float)scaledImage.width / (float)currentAtlasWidth);
+			fprintf(luaFile, "\t\ty1 = %f,\n", (float)scaledImage.height / (float)currentAtlasHeight);
 			fprintf(luaFile, "\t\ttrimmedoffsetx = %i,\n", opaqueRect.x);
 			fprintf(luaFile, "\t\ttrimmedoffsety = %i,\n", opaqueRect.y);
 			fprintf(luaFile, "\t\ttrimmedwidth = %i,\n", opaqueRect.width);
 			fprintf(luaFile, "\t\ttrimmedheight = %i,\n", opaqueRect.height);
-			fprintf(luaFile, "\t\tuntrimmedwidth = %i,\n", scaledImages[j].width);
-			fprintf(luaFile, "\t\tuntrimmedheight = %i,\n", scaledImages[j].height);
+			fprintf(luaFile, "\t\tuntrimmedwidth = %i,\n", scaledImage.width);
+			fprintf(luaFile, "\t\tuntrimmedheight = %i,\n", scaledImage.height);
 			fprintf(luaFile, "\t},\n");
 		}
 		fprintf(luaFile, "}\n");
@@ -305,6 +345,26 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 	}
 	error_printf("Failed to pack texture atlas\n");
 	return false;
+}
+
+// mark the second and third version of the same image (same hash as duplicate)
+// but not the first one
+static void markDuplicates(std::vector<Image> &images) {
+	for (size_t i = 0; i < images.size(); i++) {
+		if (images[i].duplicate >= 0) {
+			continue;
+		}
+		for (size_t j = i + 1; j < images.size(); j++) {
+			if (images[j].duplicate >= 0) {
+				continue;
+			}
+			if (images[i].hash == images[j].hash) {
+				printf(" * Found duplicate: %s - %i (of %s - %i)\n", images[j].name.c_str(), (int)j,
+					   images[i].name.c_str(), (int)i);
+				images[j].duplicate = (int)i;
+			}
+		}
+	}
 }
 
 static bool loadTps(const std::string &tpsFile) {
@@ -352,7 +412,21 @@ static bool loadTps(const std::string &tpsFile) {
 		if (pos != std::string::npos) {
 			luaFilenameVariant.replace(pos, 3, extension);
 		}
-		variants.emplace_back(scale, extension, textureFilenameVariant, luaFilenameVariant);
+
+		int maxTextureWidth = 2048;
+		int maxTextureHeight = 2048;
+		const std::string xpathWidth =
+			"./key[text()='maxTextureSize']/following-sibling::QSize/key[text()='width']/following-sibling::int";
+		const std::string xpathHeight =
+			"./key[text()='maxTextureSize']/following-sibling::QSize/key[text()='height']/following-sibling::int";
+		pugi::xpath_node_set widthNode = structNode.select_nodes(xpathWidth.c_str());
+		pugi::xpath_node_set heightNode = structNode.select_nodes(xpathHeight.c_str());
+		if (!widthNode.empty() && !heightNode.empty()) {
+			maxTextureWidth = widthNode.first().node().text().as_int();
+			maxTextureHeight = heightNode.first().node().text().as_int();
+		}
+		variants.emplace_back(scale, extension, textureFilenameVariant, luaFilenameVariant, maxTextureWidth,
+							  maxTextureHeight);
 		printf("* Found variant: scale: %f, extension: %s\n", scale, extension.c_str());
 	}
 	if (variants.empty()) {
@@ -380,12 +454,14 @@ static bool loadTps(const std::string &tpsFile) {
 			error_printf("Failed to load %s\n", input_files[i].c_str());
 			return false;
 		}
-		// TODO: calculate hash to check for duplicates
+		images[i].hash = hash(images[i].data, images[i].width * images[i].height * 4, 0);
 	}
 
 	std::sort(images.begin(), images.end(), [](const Image &a, const Image &b) {
 		return extractBasenameNoExtension(a.name) < extractBasenameNoExtension(b.name);
 	});
+
+	markDuplicates(images);
 
 	for (const Variants &v : variants) {
 		if (!handleVariant(v, images, cfg)) {
@@ -396,7 +472,12 @@ static bool loadTps(const std::string &tpsFile) {
 }
 
 static void usage(const char *appname) {
-	fprintf(stderr, "Usage: %s [-d] [-h] [file.tps]...\n\n", appname);
+	fprintf(stderr, "Usage: %s [-d] [-h] [-i 32] [file.tps]...\n\n", appname);
+	fprintf(stderr, "Options:\n");
+	fprintf(stderr, "  -d\tEnable debug output\n");
+	fprintf(stderr, "  -i\tIncrease the texture atlas size by the specified amount\n");
+	fprintf(stderr, "  -h\tShow this help\n");
+	fprintf(stderr, "\n");
 	fprintf(stderr, "This tool reads a TexturePacker .tps file and creates the texture atlas.\n");
 	exit(EXIT_FAILURE);
 }
@@ -407,8 +488,16 @@ int main(int argc, char *argv[]) {
 	for (optsParsed = 1; optsParsed < argc && argv[optsParsed][0] == '-'; optsParsed++) {
 		switch (argv[optsParsed][1]) {
 		case 'd':
-			debug = true;
+			g_debug = true;
 			break;
+		case 'i': {
+			if (optsParsed + 1 >= argc) {
+				usage(appname);
+			}
+			g_atlasIncrease = atoi(argv[optsParsed + 1]);
+			optsParsed++;
+			break;
+		}
 		case 'h':
 		default:
 			usage(appname);
@@ -426,6 +515,10 @@ int main(int argc, char *argv[]) {
 		usage(appname);
 	}
 
+	char cwd[1024] = "";
+	getcwd(cwd, sizeof(cwd));
+	printf("Current working directory: %s\n", cwd);
+
 	for (int i = 0; i < argc; i++) {
 		const std::string tpsFile = argv[0];
 		printf("Processing %s\n", tpsFile.c_str());
@@ -442,11 +535,20 @@ int main(int argc, char *argv[]) {
 			error_printf("Failed to chdir to %s\n", path.c_str());
 			return 1;
 		}
+		debug_printf("Changed directory to %s\n", path.c_str());
 		// extract the filename
 		std::string filename = tpsFile.substr(pos + 1);
 		if (!loadTps(filename)) {
 			error_printf("Failed to handle %s\n", tpsFile.c_str());
 			return 1;
+		}
+
+		if (i < argc - 1) {
+			if (chdir(cwd) != 0) {
+				error_printf("Failed to chdir to %s\n", cwd);
+				return 1;
+			}
+			debug_printf("Changed directory to %s\n", cwd);
 		}
 	}
 	return 0;
