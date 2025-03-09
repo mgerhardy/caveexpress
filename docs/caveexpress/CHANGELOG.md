@@ -56,8 +56,8 @@ Version 1.6 (2014-05-02)
 * Reworked the map and game options menus
 * Fixed a bug with the angry dinosaurs that leads to sliding in rare situations
 * Two new campaigns with new game modes
-** The first campaign is also about getting the packages indirectly to their packagetarget
-** The second (flappy) campaign is not about birds - but almost the same (Cryptic? Try it!)
+  * The first campaign is also about getting the packages indirectly to their packagetarget
+  * The second (flappy) campaign is not about birds - but almost the same (Cryptic? Try it!)
 * Translation support (english and german currently)
 * Readded android quit button
 * Changed ads handling in the free android version
@@ -117,7 +117,7 @@ Version 2.4 (2016-02-18)
 * Flying npc drops egg on death
 * Banana powerup - you can carry more than one package with it
 
-Version 2.5 (not yet released)
+Version 2.5
 * Updated box2d
 * Updated lua
 * UTF8 support
