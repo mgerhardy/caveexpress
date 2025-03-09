@@ -73,6 +73,7 @@
 #include "caveexpress/client/ui/windows/intro/IntroAttack.h"
 #include "caveexpress/client/ui/windows/intro/IntroFlying.h"
 #include "caveexpress/client/ui/windows/intro/IntroFindYourWay.h"
+#include "caveexpress/client/ui/windows/intro/IntroDiving.h"
 #include "caveexpress/client/CaveExpressClientMap.h"
 #include "caveexpress/client/network/AddRopeHandler.h"
 #include "caveexpress/client/network/RemoveRopeHandler.h"
@@ -416,6 +417,7 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new IntroAttack(frontend));
 	ui.addWindow(new IntroFlying(frontend));
 	ui.addWindow(new IntroFindYourWay(frontend));
+	ui.addWindow(new IntroDiving(frontend));
 	ui.addWindow(new UIMultiplayerWindow(frontend, serviceProvider.getMapManager(), serviceProvider));
 	ui.addWindow(new UICreateServerWindow(frontend, serviceProvider.getMapManager()));
 	UINodeMapEditor* editor = new UINodeMapEditor(frontend, serviceProvider.getMapManager());
