@@ -1,5 +1,6 @@
 // This tool reads a TexturePacker .tps file and creates a texture atlas with the specified scale and extension.
 
+#include <algorithm>
 #include <cstdio>
 #include <string>
 #include <unistd.h>
@@ -28,10 +29,34 @@ struct Image {
 	unsigned char *data;
 	int width, height, channels;
 
+	Image() : data(nullptr), width(0), height(0), channels(0) {
+	}
+
 	~Image() {
 		if (data) {
 			stbi_image_free(data);
 		}
+	}
+
+	Image(Image &&other) {
+		name = std::move(other.name);
+		data = other.data;
+		width = other.width;
+		height = other.height;
+		channels = other.channels;
+		other.data = nullptr;
+	}
+
+	Image &operator=(Image &&other) {
+		if (this != &other) {
+			name = std::move(other.name);
+			data = other.data;
+			width = other.width;
+			height = other.height;
+			channels = other.channels;
+			other.data = nullptr;
+		}
+		return *this;
 	}
 };
 
@@ -45,6 +70,21 @@ struct Variants {
 	std::string textureFilename;
 	std::string luaFilename;
 };
+
+static std::string extractBasenameNoExtension(const std::string &in) {
+	std::string str = in;
+	size_t pos = str.find_last_of('.');
+	// remove extension
+	if (pos != std::string::npos) {
+		str = str.substr(0, pos);
+	}
+	// remove path
+	pos = str.find_last_of("/\\");
+	if (pos != std::string::npos) {
+		str = str.substr(pos + 1);
+	}
+	return str;
+}
 
 static double readDouble(const pugi::xml_node &parent, const std::string &name, double defaultVal = 0.0f) {
 	const std::string xpath = "./key[text()='" + name + "']/following-sibling::double";
@@ -85,6 +125,7 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images) {
 			printf("Failed to allocate memory for scaled image\n");
 			return false;
 		}
+		scaledImages[i].name = image.name;
 		scaledImages[i].width = newWidth;
 		scaledImages[i].height = newHeight;
 		scaledImages[i].channels = 4;
@@ -137,6 +178,8 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images) {
 			return false;
 		}
 
+		const std::string &baseTextureName = extractBasenameNoExtension(v.textureFilename);
+
 		// Write lua file
 		fprintf(luaFile, "textures = {\n");
 
@@ -153,33 +196,23 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images) {
 				memcpy(dest, src, n);
 			}
 
-			fprintf(luaFile, "[");
-			std::string spriteId = images[j].name;
-			size_t pos = spriteId.find_last_of('.');
-			// remove extension
-			if (pos != std::string::npos) {
-				spriteId = spriteId.substr(0, pos);
-			}
-			// remove path
-			pos = spriteId.find_last_of("/\\");
-			if (pos != std::string::npos) {
-				spriteId = spriteId.substr(pos + 1);
-			}
+			const std::string &spriteId = extractBasenameNoExtension(scaledImages[j].name);
 
+			fprintf(luaFile, "\t[");
 			fprintf(luaFile, "\"%s\"", spriteId.c_str());
 			fprintf(luaFile, "] = {\n");
-			fprintf(luaFile, "\timage = \"%s\",\n", v.textureFilename.c_str());
-			fprintf(luaFile, "\tx0 = %i,\n", x);
-			fprintf(luaFile, "\ty0 = %i,\n", y);
-			fprintf(luaFile, "\tx1 = %i,\n", x + scaledImages[j].width);
-			fprintf(luaFile, "\ty1 = %i,\n", y + scaledImages[j].height);
-			fprintf(luaFile, "\ttrimmedoffsetx = 0,\n"); // TODO
-			fprintf(luaFile, "\ttrimmedoffsety = 0,\n"); // TODO
-			fprintf(luaFile, "\ttrimmedwidth = %i,\n", scaledImages[j].width); // TODO
-			fprintf(luaFile, "\ttrimmedheight = %i,\n", scaledImages[j].height); // TODO
-			fprintf(luaFile, "\tuntrimmedwidth = %i,\n", images[j].width);
-			fprintf(luaFile, "\tuntrimmedheight = %i,\n", images[j].height);
-			fprintf(luaFile, "},\n");
+			fprintf(luaFile, "\t\timage = \"%s\",\n", baseTextureName.c_str());
+			fprintf(luaFile, "\t\tx0 = %f,\n", (float)x / (float)currentAtlasWidth);
+			fprintf(luaFile, "\t\ty0 = %f,\n", (float)y / (float)currentAtlasHeight);
+			fprintf(luaFile, "\t\tx1 = %f,\n", (float)scaledImages[j].width / (float)currentAtlasWidth);
+			fprintf(luaFile, "\t\ty1 = %f,\n", (float)scaledImages[j].height / (float)currentAtlasHeight);
+			fprintf(luaFile, "\t\ttrimmedoffsetx = 0,\n");						   // TODO
+			fprintf(luaFile, "\t\ttrimmedoffsety = 0,\n");						   // TODO
+			fprintf(luaFile, "\t\ttrimmedwidth = %i,\n", scaledImages[j].width);   // TODO
+			fprintf(luaFile, "\t\ttrimmedheight = %i,\n", scaledImages[j].height); // TODO
+			fprintf(luaFile, "\t\tuntrimmedwidth = %i,\n", images[j].width);
+			fprintf(luaFile, "\t\tuntrimmedheight = %i,\n", images[j].height);
+			fprintf(luaFile, "\t},\n");
 		}
 		fprintf(luaFile, "}\n");
 
@@ -263,6 +296,10 @@ static bool loadTps(const std::string &tpsFile) {
 			return false;
 		}
 	}
+
+	std::sort(images.begin(), images.end(), [](const Image &a, const Image &b) {
+		return extractBasenameNoExtension(a.name) < extractBasenameNoExtension(b.name);
+	});
 
 	for (const Variants &v : variants) {
 		if (!handleVariant(v, images)) {
