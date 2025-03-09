@@ -117,8 +117,26 @@ Version 2.4 (2016-02-18)
 * Flying npc drops egg on death
 * Banana powerup - you can carry more than one package with it
 
-Version 2.5
+Version 2.5 (2021-04-08 ?)
 * Updated box2d
 * Updated lua
 * UTF8 support
 * Fixed missing window resize events
+* Added CI builds in github actions tab
+
+Version 2.6 (not yet released)
+* Two new sceneries: jungle and desert
+* 3 new campaigns with new maps:
+  * jungle (4), desert (3 maps), letters (5)
+* Renamed all maps and campaigns
+  * Maps are named uniquely now (for multiplayer) and are starting with campaign name
+* Gameplay changes
+  * Diving, now possible to fall underwater - few later maps use it
+  * Possible to fly up with 3 packages, or even with 4 after powerup (banana)
+  * Friendly npc don't get dropped when hit from above, they will only fall after a hard hit
+* Changed water color to skyblue
+* Particles
+  * Rain in jungle
+  * Smaller snow and more wobbly
+* Package target sound, on consuming package
+* New palm tree
