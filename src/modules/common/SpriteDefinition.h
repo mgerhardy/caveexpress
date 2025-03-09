@@ -183,6 +183,7 @@ public:
 
 	SpriteDefPtr getFromEntityType (const EntityType& entityType, const Animation& animation) const;
 
+	bool exists(const std::string& spriteName) const;
 	SpriteDefPtr getSpriteDefinition (const std::string& spriteName) const;
 
 	std::string getSpriteName (const EntityType& type, const Animation& animation) const;

@@ -16,6 +16,7 @@ public:
 	virtual ~SpriteCache ();
 
 	SpritePtr load (const std::string& spriteName);
+	bool exists (const std::string& spriteName) const;
 
 	void init ();
 	void shutdown ();

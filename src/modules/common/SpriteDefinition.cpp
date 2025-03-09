@@ -279,6 +279,11 @@ SpriteDefPtr SpriteDefinition::getFromEntityType (const EntityType& entityType, 
 	return def;
 }
 
+bool SpriteDefinition::exists(const std::string& spriteName) const
+{
+	return _spriteDefs.find(spriteName) != _spriteDefs.end();
+}
+
 SpriteDefPtr SpriteDefinition::getSpriteDefinition (const std::string& spriteName) const
 {
 	if (spriteName.empty())

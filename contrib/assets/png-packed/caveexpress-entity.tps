@@ -281,10 +281,14 @@
             <filename>../png/caveexpress/item-stone-idle-front-02_n.png</filename>
             <filename>../png/caveexpress/item-stone-idle-front-03_n.png</filename>
             <filename>../png/caveexpress/rope.png</filename>
-            <filename>../png/caveexpress/palm-dazed-middle-01.png</filename>
-            <filename>../png/caveexpress/palm-idle-middle-01.png</filename>
-            <filename>../png/caveexpress/palm-idle-middle-02.png</filename>
-            <filename>../png/caveexpress/palm-idle-middle-03.png</filename>
+            <filename>../png/caveexpress/tree-dazed-jungle-middle-01.png</filename>
+            <filename>../png/caveexpress/tree-idle-jungle-middle-01.png</filename>
+            <filename>../png/caveexpress/tree-idle-jungle-middle-02.png</filename>
+            <filename>../png/caveexpress/tree-idle-jungle-middle-03.png</filename>
+            <filename>../png/caveexpress/tree-dazed-desert-middle-01.png</filename>
+            <filename>../png/caveexpress/tree-idle-desert-middle-01.png</filename>
+            <filename>../png/caveexpress/tree-idle-desert-middle-02.png</filename>
+            <filename>../png/caveexpress/tree-idle-desert-middle-03.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

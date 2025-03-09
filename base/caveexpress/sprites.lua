@@ -354,13 +354,22 @@ sprites = {
 
 -- Palm
 
-	["palm-idle"] = {
+	["tree-idle-desert"] = {
 		fps = 5,
 		maptile = true,
 		delays = { 2000, },
 	},
 
-	["palm-dazed"] = {
+	["tree-dazed-desert"] = {
+	},
+
+	["tree-idle-jungle"] = {
+		fps = 5,
+		maptile = true,
+		delays = { 2000, },
+	},
+
+	["tree-dazed-jungle"] = {
 	},
 
 -- Various

@@ -436,6 +436,7 @@ void ClientMap::addEntity (ClientEntityPtr e)
 	if (iter != _entities.end()) {
 		delete iter->second;
 	}
+	e->setThemeType(*_theme);
 	_entities[e->getID()] = e;
 	if (e->getID() == _playerID) {
 		_player = assert_cast<ClientPlayer*, ClientEntity*>(e);

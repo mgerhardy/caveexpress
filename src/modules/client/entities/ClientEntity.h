@@ -4,6 +4,7 @@
 #include "common/Animation.h"
 #include "common/Direction.h"
 #include "common/EntityAlignment.h"
+#include "common/ThemeType.h"
 #include "sprites/Sprite.h"
 #include "common/SpriteDefinition.h"
 #include <memory>
@@ -37,6 +38,8 @@ public:
 	const vec2& getSize () const;
 	virtual bool update (uint32_t deltaTime, bool lerpPos);
 	void setAnimationType (const Animation& type);
+	void setThemeType (const ThemeType& theme);
+	std::string getSpriteName() const;
 	void setPos (const vec2& pos, bool lerp);
 	Direction getMoveDirection ();
 	void setAngle (int16_t angle);
@@ -139,12 +142,13 @@ protected:
 	// the lifetime of this entity
 	uint32_t _time;
 	mutable SpritePtr _currSprite;
-	typedef std::unordered_map<const Animation*, SpritePtr> SpritesMap;
+	typedef std::unordered_map<std::string, SpritePtr> SpritesMap;
 	typedef SpritesMap::const_iterator SpritesMapConstIter;
 	SpritesMap _sprites;
 	uint8_t _state;
 	// the current animation to play
 	const Animation *_animation;
+	const ThemeType *_theme;
 	// initialized a delayed removal of the entity until it is faded out
 	// this entity is already removed on the server side
 	uint32_t _fadeOutTime;

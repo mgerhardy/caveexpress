@@ -15,6 +15,10 @@ void SpriteCache::init ()
 {
 }
 
+bool SpriteCache::exists (const std::string& spriteName) const {
+	return _sprites.find(spriteName) != _sprites.end();
+}
+
 SpritePtr SpriteCache::load (const std::string& spriteName)
 {
 	SpriteMap::iterator iter = _sprites.find(spriteName);

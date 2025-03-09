@@ -11,7 +11,7 @@
 
 ClientEntity::ClientEntity (const EntityType& type, uint16_t id, float x, float y, float sizeX, float sizeY,
 		const SoundMapping& soundMapping, EntityAlignment align, EntityAngle angle) :
-		_type(type), _id(id), _angle(angle), _time(0), _currSprite(), _state(0), _animation(&Animation::NONE), _fadeOutTime(
+		_type(type), _id(id), _angle(angle), _time(0), _currSprite(), _state(0), _animation(&Animation::NONE), _theme(&ThemeType::NONE), _fadeOutTime(
 				0), _alpha(1.0f), _ropeEntity(nullptr), _animationSound(-1), _soundMapping(soundMapping), _visible(true), _visChanged(false), _align(
 				align), _screenPosX(0), _screenPosY(0), _screenWidth(0), _screenHeight(0)
 {
@@ -148,6 +148,23 @@ inline void ClientEntity::renderDot (IFrontend* frontend, int x, int y, const Co
 	frontend->renderFilledRect(x, y, 5, 5, color);
 }
 
+void ClientEntity::setThemeType (const ThemeType& theme)
+{
+	_theme = &theme;
+}
+
+std::string ClientEntity::getSpriteName() const
+{
+	std::string name = SpriteDefinition::get().getSpriteName(_type, *_animation);
+	if (name.empty()) {
+		return "";
+	}
+	if (SpriteDefinition::get().exists(name + "-" + _theme->name)) {
+		name += "-" + _theme->name;
+	}
+	return name;
+}
+
 void ClientEntity::setAnimationType (const Animation& animation)
 {
 	_animation = &animation;
@@ -159,15 +176,12 @@ void ClientEntity::setAnimationType (const Animation& animation)
 		_animationSound = SoundControl.play(soundIter->second, getPos(), _animation->loop);
 	}
 
-	const std::string name = SpriteDefinition::get().getSpriteName(_type, *_animation);
-	if (name.empty())
-		return;
-
-	SpritesMapConstIter i = _sprites.find(_animation);
+	const std::string &name = getSpriteName();
+	SpritesMapConstIter i = _sprites.find(name);
 	if (i == _sprites.end()) {
 		_currSprite = SpritePtr(UI::get().loadSprite(name)->copy());
 		_currSprite->setLoop(_animation->loop);
-		_sprites[_animation] = _currSprite;
+		_sprites[name] = _currSprite;
 	} else {
 		_currSprite = i->second;
 	}
