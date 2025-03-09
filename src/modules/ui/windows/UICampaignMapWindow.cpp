@@ -5,7 +5,7 @@
 #include "ui/windows/campaignmapwindow/ResetCampaignListener.h"
 
 UICampaignMapWindow::UICampaignMapWindow (IFrontend *frontend, CampaignManager &campaignManager) :
-	UIMapSelectorWindow(new UINodeMapSelector(frontend, campaignManager), tr("Maps"), UI_WINDOW_CAMPAIGN_MAPS, frontend, WINDOW_FLAG_FULLSCREEN | WINDOW_FLAG_MAIN)
+	UIMapSelectorWindow(new UINodeMapSelector(this, frontend, campaignManager), tr("Maps"), UI_WINDOW_CAMPAIGN_MAPS, frontend, WINDOW_FLAG_FULLSCREEN | WINDOW_FLAG_MAIN)
 {
 #if 0
 	UINodeButton *resetButton = new UINodeButton(frontend);

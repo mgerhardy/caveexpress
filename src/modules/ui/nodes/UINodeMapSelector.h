@@ -8,16 +8,18 @@
 // forward decl
 class IMapManager;
 class CampaignManager;
+class UIMapSelectorWindow;
 
 class UINodeMapSelector: public UINodeBackgroundSelector<std::string> {
 private:
+	UIMapSelectorWindow* _window;
 	CampaignManager *_campaignManager;
 	const IMapManager *_mapManager;
 	bool _multiplayer;
 public:
-	UINodeMapSelector (IFrontend *frontend, const IMapManager &mapManager, bool multiplayer = false,
+	UINodeMapSelector (UIMapSelectorWindow* window, IFrontend *frontend, const IMapManager &mapManager, bool multiplayer = false,
 		int cols = 6, int rows = 4);
-	UINodeMapSelector (IFrontend *frontend, CampaignManager &campaignManager, bool multiplayer = false,
+	UINodeMapSelector (UIMapSelectorWindow* window, IFrontend *frontend, CampaignManager &campaignManager, bool multiplayer = false,
 		int cols = 6, int rows = 4);
 	virtual ~UINodeMapSelector ();
 
