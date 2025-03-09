@@ -9,7 +9,7 @@
 namespace caveexpress {
 
 NPCFriendly::NPCFriendly (CaveMapTile *cave, const EntityType& type, bool returnToCaveOnIdle) :
-		INPCCave(cave, type, false), _collectingTime(0), _fallingTimer(-1), _playerId(-1), _returnToCaveOnIdle(returnToCaveOnIdle), _targetCave(nullptr)
+		INPCCave(cave, type, false), _returnToCaveOnIdle(returnToCaveOnIdle)
 {
 	_swimmingTime = 0;
 	_swimmingTimeDelay = 7000;
@@ -45,6 +45,10 @@ bool NPCFriendly::shouldCollide (const IEntity* entity) const
 	if (isFalling())
 		return entity->isWater();
 
+	if (entity->isPlayer() && _doNotCollideWithPlayer) {
+		return false;
+	}
+
 	return INPCCave::shouldCollide(entity);
 }
 
@@ -67,10 +71,14 @@ void NPCFriendly::onContact (b2Contact* contact, IEntity* entity)
 			setState(NPCState::NPC_COLLECTED);
 		} else if (isStruggle()) {
 			setDying(nullptr);
-		} else if (isIdle() && entity->getLinearVelocity().Length() > 3.0f) {
-			// hit hard by a player - so we will fall into the water
-			setAnimationType(getFallingAnimation());
-			_fallingTimer = _map.getTimeManager().setTimeout(500, assert_cast<NPC*, NPCFriendly*>(this), &NPC::setFalling);
+		} else if (isIdle()) {
+			if (entity->getLinearVelocity().Length() > 3.0f) {
+				// hit hard by a player - so we will fall into the water
+				setAnimationType(getFallingAnimation());
+				_fallingTimer = _map.getTimeManager().setTimeout(500, assert_cast<NPC*, NPCFriendly*>(this), &NPC::setFalling);
+			} else {
+				_doNotCollideWithPlayer = true;
+			}
 		}
 	}
 }
@@ -146,6 +154,10 @@ bool NPCFriendly::isDirty() const
 void NPCFriendly::update (uint32_t deltaTime)
 {
 	INPCCave::update(deltaTime);
+
+	if (!isIdle()) {
+		_doNotCollideWithPlayer = false;
+	}
 
 	// return to start (cave) if the npc is idling (the player left the landing spot)
 	if (_returnToCaveOnIdle && isIdle()) {

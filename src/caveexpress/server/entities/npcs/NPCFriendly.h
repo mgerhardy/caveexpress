@@ -11,13 +11,14 @@ namespace caveexpress {
 class NPCFriendly: public INPCCave {
 private:
 	// used to measure the needed time to bring the npc to its target cave
-	uint32_t _collectingTime;
-	TimerID _fallingTimer;
-	uint32_t _waitPatience;
-	uint16_t _swimmingDistance;
-	uint16_t _playerId;
-	bool _returnToCaveOnIdle;
-	CaveMapTile *_targetCave;
+	uint32_t _collectingTime = 0;
+	TimerID _fallingTimer = -1;
+	uint32_t _waitPatience = 0;
+	uint16_t _swimmingDistance = 0;
+	uint16_t _playerId = -1;
+	bool _returnToCaveOnIdle = false;
+	bool _doNotCollideWithPlayer = false;
+	CaveMapTile *_targetCave = nullptr;
 
 public:
 	NPCFriendly (CaveMapTile *cave, const EntityType& type = EntityType::NONE, bool returnToCaveOnIdle = false);
