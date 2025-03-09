@@ -115,7 +115,7 @@ struct Rect {
 	int x, y, width, height;
 };
 
-static Rect findOpaqueRect(const uint8_t *data, int width, int height, int channels) {
+static Rect findOpaqueRect(const uint8_t *data, int width, int height, int channels, int alphaThreshold = 0) {
 	if (channels < 4) {
 		return {0, 0, width, height};
 	}
@@ -130,7 +130,7 @@ static Rect findOpaqueRect(const uint8_t *data, int width, int height, int chann
 		for (int x = 0; x < width; ++x) {
 			const int index = (stride + x) * channels;
 			const uint8_t alpha = data[index + 3]; // Alpha channel
-			if (alpha <= 0) {
+			if (alpha <= alphaThreshold) {
 				continue;
 			}
 			if (x < minX) {
@@ -156,7 +156,11 @@ static Rect findOpaqueRect(const uint8_t *data, int width, int height, int chann
 	return {minX, minY, maxX - minX + 1, maxY - minY + 1};
 }
 
-static bool handleVariant(const Variants &v, const std::vector<Image> &images) {
+struct Config {
+	int alphaThreshold = 0;
+};
+
+static bool handleVariant(const Variants &v, const std::vector<Image> &images, const Config &cfg) {
 	std::vector<stbrp_rect> rects;
 	rects.resize(images.size());
 	std::vector<Image> scaledImages;
@@ -178,8 +182,12 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images) {
 		scaledImages[i].channels = 4;
 		const int inputImageStride = image.width * 4;
 		const int outputImageStride = newWidth * 4;
-		stbir_resize_uint8_linear(image.data, image.width, image.height, inputImageStride, scaledImages[i].data,
-								  newWidth, newHeight, outputImageStride, STBIR_RGBA);
+		if (fabs(v.scale - 1.0) < 0.0001) {
+			memcpy(scaledImages[i].data, image.data, newWidth * newHeight * 4);
+		} else {
+			stbir_resize_uint8_linear(image.data, image.width, image.height, inputImageStride, scaledImages[i].data,
+									  newWidth, newHeight, outputImageStride, STBIR_RGBA);
+		}
 	}
 
 	for (size_t i = 0; i < scaledImages.size(); i++) {
@@ -235,8 +243,8 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images) {
 			if (!rects[j].was_packed) {
 				continue;
 			}
-			const Rect opaqueRect =
-				findOpaqueRect(scaledImages[j].data, scaledImages[j].width, scaledImages[j].height, 4);
+			const Rect opaqueRect = findOpaqueRect(scaledImages[j].data, scaledImages[j].width, scaledImages[j].height,
+												   4, cfg.alphaThreshold);
 
 			const int x = rects[j].x, y = rects[j].y;
 			const int n = scaledImages[j].width * 4;
@@ -296,6 +304,10 @@ static bool loadTps(const std::string &tpsFile) {
 		return false;
 	}
 
+	Config cfg;
+	cfg.alphaThreshold = 1; // TODO: read cleanTransparentPixels (The rgb values of transparent pixels are set to 0)
+							// TODO: read reduceBorderArtifacts (Alpha bleeding)
+
 	const pugi::xpath_node &luaNode = doc.select_node("//key[text()='lua']/following-sibling::struct/filename");
 	const std::string &luaFilename = luaNode.node().text().as_string();
 	printf("Lua file: %s\n", luaFilename.c_str());
@@ -354,7 +366,7 @@ static bool loadTps(const std::string &tpsFile) {
 	});
 
 	for (const Variants &v : variants) {
-		if (!handleVariant(v, images)) {
+		if (!handleVariant(v, images, cfg)) {
 			return false;
 		}
 	}
