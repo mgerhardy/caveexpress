@@ -33,6 +33,7 @@ elseif isHTML5() then
 else
 	defaultgamecontroller = true
 	defaultfrontend = "opengl3"
+	defaultparticles = 1000
 end
 
 settings = {
@@ -57,7 +58,7 @@ settings = {
 	fruitcollectdelayforanewlife = 15000,
 	amountoffruitsforanewlife = 4,
 	fruithitpoints = 10,
-	waterparticle = false,
+	waterparticle = true,
 	npcflyingspeed = defaultnpcflyingspeed,
 	particles = defaultparticles,
 	red = defaultred,

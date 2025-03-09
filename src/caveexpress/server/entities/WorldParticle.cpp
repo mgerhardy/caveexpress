@@ -32,18 +32,19 @@ b2Vec2 WorldParticle::getSpawnPosition (const IEntity* entity) const
 {
 	float offset;
 	const float vx = entity->getLinearVelocity().x;
-	if (vx < 0.0f)
-		offset = -entity->getSize().x / 3.0f;
+	/*if (vx < 0.0f)
+		offset = -entity->getSize().x / 7.0f;
 	else if (vx > 0.0f)
-		offset = entity->getSize().x / 3.0f;
-	else
+		offset = entity->getSize().x / 7.0f;
+	else*/
 		offset = 0.0f;
-	return b2Vec2(entity->getPos().x + offset, _map.getWaterHeight());
+	// return b2Vec2(entity->getPos().x + offset, _map.getWaterHeight());
+	return b2Vec2(entity->getPos().x + offset, entity->getPos().y);
 }
 
 void WorldParticle::checkParticleGeneratingContacts ()
 {
-	const float threshold = 0.45;
+	const float threshold = 0.35;  //0.45
 	for (ContactsIter it = _contacts.begin(); it != _contacts.end(); ++it) {
 		const IEntity* entity = *it;
 		b2Body* body = entity->getBodies()[0];
@@ -116,20 +117,28 @@ void WorldParticle::spawnParticle (const b2Vec2& pos, const b2Vec2& v)
 	b2Body* b = p->body;
 	b->SetEnabled(true);
 	b2Vec2 vel = v;
-	vel *= 0.1;
-	vel.x += randBetweenf(-2, 2);
-	vel.y += randBetweenf(-2, 2);
-	b->SetTransform(pos, 0);
+	vel *= 1.7f;  // vel *= 0.1;
+	vel.y *= -1.f;  // splash
+	vel.x = std::min(2.f, std::max(-2.f, vel.x));
+	vel.y = std::min(2.f, std::max(-2.f, vel.y));
+	vel.x += randBetweenf(-1, 1);
+	vel.y += randBetweenf(-1, 1);
 	b->SetLinearVelocity(vel);
+
+	b2Vec2 pos2 = pos;
+	pos2.x += randBetweenf(-0.2, 0.2);
+	pos2.y += randBetweenf(-0.2, 0.2);
+	b->SetTransform(pos2, 0);
+	
 	b->SetGravityScale(1.0f);
-	b->SetLinearDamping(4);
-	b->SetAngularDamping(4);
+	b->SetLinearDamping(1);  // 4
+	b->SetAngularDamping(1);  // 4
 }
 
 void WorldParticle::update (uint32_t deltaTime)
 {
 	IEntity::update(deltaTime);
-	_particlesDirty = _time - _lastDirtyTime > 100;
+	_particlesDirty = _time - _lastDirtyTime > 10;  // 100 slow
 	if (_particlesDirty) {
 		_lastDirtyTime = _time;
 	}
