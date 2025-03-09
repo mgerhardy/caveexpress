@@ -8,4 +8,5 @@
 #define FRUIT_HITPOINTS "fruithitpoints"
 #define WATER_PARTICLE "waterparticle"
 #define NPC_FLYING_SPEED "npcflyingspeed"
+#define FLYING_SPEED_X "flyingspeedx"
 #define GOD_MODE "godmode"
