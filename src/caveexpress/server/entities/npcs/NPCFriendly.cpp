@@ -90,9 +90,9 @@ bool NPCFriendly::triggerTargetCaveAnnouncement (const b2Vec2& playerPos)
 		return false;
 	}
 	if (_triggerMovement == 0) {
-		_triggerMovement = _time + 200;  // 600
-		GameEvent.announceTargetCave(getVisMask(), *this, 1400);  // 1200
-		return true;  // false;
+		_triggerMovement = _time + 200;
+		GameEvent.announceTargetCave(getVisMask(), *this, 1400);
+		return true;
 	}
 	return _time > _triggerMovement;
 }
