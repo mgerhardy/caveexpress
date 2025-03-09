@@ -77,7 +77,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-background-window-01-off"] = {
+	["tile-background-jungle-window-01-off"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.75,
 		y0 = 0.4375,
@@ -90,7 +90,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-background-window-jungle-01-on"] = {
+	["tile-background-jungle-window-01-on"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.625,
 		y0 = 0.4375,
@@ -103,7 +103,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-background-window-02-off"] = {
+	["tile-background-jungle-window-02-off"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.5,
 		y0 = 0.4375,
@@ -116,7 +116,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-background-window-jungle-02-on"] = {
+	["tile-background-jungle-window-02-on"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.375,
 		y0 = 0.4375,
@@ -181,7 +181,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 64,
 	},
-	["tile-geyser-rock-jungle-01-active-back-01"] = {
+	["tile-geyser-jungle-01-active-back-01"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.25,
 		y0 = 0.25,
@@ -194,7 +194,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 128,
 	},
-	["tile-geyser-rock-01-active-back-02"] = {
+	["tile-geyser-jungle-01-active-back-02"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.125,
 		y0 = 0.25,
@@ -207,7 +207,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 128,
 	},
-	["tile-geyser-rock-jungle-01-active-back-03"] = {
+	["tile-geyser-jungle-01-active-back-03"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0,
 		y0 = 0.25,
@@ -220,7 +220,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 128,
 	},
-	["tile-geyser-rock-jungle-01-active-back-04"] = {
+	["tile-geyser-jungle-01-active-back-04"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.875,
 		y0 = 0.125,
@@ -233,7 +233,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 128,
 	},
-	["tile-geyser-rock-jungle-01-active-back-05"] = {
+	["tile-geyser-jungle-01-active-back-05"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.75,
 		y0 = 0.125,
@@ -246,7 +246,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 128,
 	},
-	["tile-geyser-rock-jungle-01-active-back-06"] = {
+	["tile-geyser-jungle-01-active-back-06"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.625,
 		y0 = 0.125,
@@ -259,7 +259,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 128,
 	},
-	["tile-geyser-rock-jungle-01-idle-back-01"] = {
+	["tile-geyser-jungle-01-idle-back-01"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.5,
 		y0 = 0.125,
@@ -272,7 +272,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 128,
 	},
-	["tile-geyser-rock-jungle-01-idle-back-02"] = {
+	["tile-geyser-jungle-01-idle-back-02"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.375,
 		y0 = 0.125,
@@ -285,7 +285,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 128,
 	},
-	["tile-geyser-rock-jungle-01-idle-back-03"] = {
+	["tile-geyser-jungle-01-idle-back-03"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.25,
 		y0 = 0.125,
@@ -298,7 +298,7 @@ textures = {
 		untrimmedwidth = 64,
 		untrimmedheight = 128,
 	},
-	["tile-geyser-rock-jungle-01-idle-back-04"] = {
+	["tile-geyser-jungle-01-idle-back-04"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.375,
 		y0 = 0.125,
