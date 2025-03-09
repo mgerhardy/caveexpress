@@ -1,4 +1,5 @@
 // This tool reads a TexturePacker .tps file and creates a texture atlas with the specified scale and extension.
+// Put into the public domain
 
 #include "tools/textureatlas/murmur.h"
 #include <algorithm>
@@ -27,6 +28,7 @@
 
 static int g_atlasIncrease = 32;
 static bool g_debug = false;
+static bool g_verbose = false;
 
 struct Image {
 	std::string name;
@@ -108,6 +110,16 @@ static void debug_printf(const char *format, ...) {
 		va_list args;
 		va_start(args, format);
 		printf("DEBUG: ");
+		vprintf(format, args);
+		va_end(args);
+	}
+}
+
+static void verbose_printf(const char *format, ...) {
+	if (g_verbose) {
+		va_list args;
+		va_start(args, format);
+		printf("INFO: ");
 		vprintf(format, args);
 		va_end(args);
 	}
@@ -200,9 +212,9 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 	std::vector<Image> scaledImages;
 	scaledImages.resize(images.size());
 
-	printf("* Generate texture atlas for variant: %s (scale: %f)\n", v.extension.c_str(), v.scale);
-	printf("  * Save texture atlas at %s\n", v.textureFilename.c_str());
-	printf("  * Save lua file: %s\n", v.luaFilename.c_str());
+	verbose_printf("* Generate texture atlas for variant: %s (scale: %f)\n", v.extension.c_str(), v.scale);
+	verbose_printf("  * Save texture atlas at %s\n", v.textureFilename.c_str());
+	verbose_printf("  * Save lua file: %s\n", v.luaFilename.c_str());
 
 	int currentRectId = 0;
 	for (size_t i = 0; i < images.size(); i++) {
@@ -227,8 +239,8 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 		} else {
 			stbir_resize_uint8_linear(image.data, image.width, image.height, inputImageStride, scaledImages[i].data,
 									  newWidth, newHeight, outputImageStride, STBIR_RGBA);
-			printf("  * Scaled image: %s, %i:%i -> %i:%i\n", image.name.c_str(), image.width, image.height, newWidth,
-				   newHeight);
+			verbose_printf("  * Scaled image: %s, %i:%i -> %i:%i\n", image.name.c_str(), image.width, image.height,
+						   newWidth, newHeight);
 		}
 		if (image.duplicate < 0) {
 			scaledImages[i].rectId = currentRectId;
@@ -261,19 +273,20 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 			const int oldAtlasWidth = currentAtlasWidth;
 			const int oldAtlasHeight = currentAtlasHeight;
 			if (++attempt % 2 == 0 && currentAtlasWidth < v.maxTextureWidth) {
-				currentAtlasWidth = (currentAtlasWidth + g_atlasIncrease) % v.maxTextureWidth;
+				currentAtlasWidth = (currentAtlasWidth + g_atlasIncrease) % (v.maxTextureWidth + 1);
 			} else if (currentAtlasHeight < v.maxTextureHeight) {
-				currentAtlasHeight = (currentAtlasHeight + g_atlasIncrease) % v.maxTextureHeight;
-			}
-			if (currentAtlasWidth == oldAtlasWidth && currentAtlasHeight == oldAtlasHeight) {
-				error_printf("Failed to pack texture atlas - no more space left\n");
-				return false;
+				currentAtlasHeight = (currentAtlasHeight + g_atlasIncrease) % (v.maxTextureHeight + 1);
 			}
 			debug_printf("Failed to pack texture atlas, trying again with %i:%i\n", currentAtlasWidth,
 						 currentAtlasHeight);
+			if (currentAtlasHeight == 0 || currentAtlasWidth == 0 ||
+				(currentAtlasWidth <= oldAtlasWidth && currentAtlasHeight <= oldAtlasHeight)) {
+				error_printf("Failed to pack texture atlas - no more space left\n");
+				return false;
+			}
 			continue;
 		}
-		printf("  * Texture atlas resolution %i:%i\n", currentAtlasWidth, currentAtlasHeight);
+		verbose_printf("  * Texture atlas resolution %i:%i\n", currentAtlasWidth, currentAtlasHeight);
 
 		// Create atlas
 		const size_t atlasMemSize = ((size_t)currentAtlasWidth * (size_t)currentAtlasHeight * 4);
@@ -359,8 +372,8 @@ static void markDuplicates(std::vector<Image> &images) {
 				continue;
 			}
 			if (images[i].hash == images[j].hash) {
-				printf(" * Found duplicate: %s - %i (of %s - %i)\n", images[j].name.c_str(), (int)j,
-					   images[i].name.c_str(), (int)i);
+				verbose_printf(" * Found duplicate: %s - %i (of %s - %i)\n", images[j].name.c_str(), (int)j,
+							   images[i].name.c_str(), (int)i);
 				images[j].duplicate = (int)i;
 			}
 		}
@@ -388,8 +401,8 @@ static bool loadTps(const std::string &tpsFile) {
 
 	const pugi::xpath_node &luaNode = doc.select_node("//key[text()='lua']/following-sibling::struct/filename");
 	const std::string &luaFilename = luaNode.node().text().as_string();
-	printf("* Lua file template: %s\n", luaFilename.c_str());
-	printf("* Texture file template: %s\n", textureFilename.c_str());
+	verbose_printf("* Lua file template: %s\n", luaFilename.c_str());
+	verbose_printf("* Texture file template: %s\n", textureFilename.c_str());
 
 	pugi::xpath_node_set autoSDSettingsStructs =
 		doc.select_nodes("//key[text()='autoSDSettings']/following-sibling::array/struct");
@@ -427,7 +440,7 @@ static bool loadTps(const std::string &tpsFile) {
 		}
 		variants.emplace_back(scale, extension, textureFilenameVariant, luaFilenameVariant, maxTextureWidth,
 							  maxTextureHeight);
-		printf("* Found variant: scale: %f, extension: %s\n", scale, extension.c_str());
+		verbose_printf("* Found variant: scale: %f, extension: %s\n", scale, extension.c_str());
 	}
 	if (variants.empty()) {
 		error_printf("No variants found\n");
@@ -437,10 +450,10 @@ static bool loadTps(const std::string &tpsFile) {
 	const pugi::xpath_node_set &tpsFiles =
 		doc.select_nodes("//key[text()='fileList']/following-sibling::array/filename");
 	std::vector<std::string> input_files;
-	printf("* Images:\n");
+	verbose_printf("* Images:\n");
 	for (const pugi::xpath_node &file : tpsFiles) {
 		const std::string &imageName = file.node().text().as_string();
-		printf("  * Image file: %s\n", imageName.c_str());
+		verbose_printf("  * Image file: %s\n", imageName.c_str());
 		input_files.push_back(imageName);
 	}
 
@@ -472,13 +485,15 @@ static bool loadTps(const std::string &tpsFile) {
 }
 
 static void usage(const char *appname) {
-	fprintf(stderr, "Usage: %s [-d] [-h] [-i 32] [file.tps]...\n\n", appname);
+	fprintf(stderr, "Usage: %s [-d] [-h] [-v] [-i 32] [file.tps]...\n\n", appname);
 	fprintf(stderr, "Options:\n");
 	fprintf(stderr, "  -d\tEnable debug output\n");
 	fprintf(stderr, "  -i\tIncrease the texture atlas size by the specified amount\n");
 	fprintf(stderr, "  -h\tShow this help\n");
+	fprintf(stderr, "  -v\tEnable verbose output\n");
 	fprintf(stderr, "\n");
-	fprintf(stderr, "This tool reads a TexturePacker .tps file and creates the texture atlas.\n");
+	fprintf(stderr, "This tool reads a TexturePacker .tps file and creates the texture atlas\n"
+					" as well as the lua scripts.\n");
 	exit(EXIT_FAILURE);
 }
 
@@ -489,6 +504,9 @@ int main(int argc, char *argv[]) {
 		switch (argv[optsParsed][1]) {
 		case 'd':
 			g_debug = true;
+			break;
+		case 'v':
+			g_verbose = true;
 			break;
 		case 'i': {
 			if (optsParsed + 1 >= argc) {
@@ -517,11 +535,11 @@ int main(int argc, char *argv[]) {
 
 	char cwd[1024] = "";
 	getcwd(cwd, sizeof(cwd));
-	printf("Current working directory: %s\n", cwd);
+	verbose_printf("Current working directory: %s\n", cwd);
 
 	for (int i = 0; i < argc; i++) {
-		const std::string tpsFile = argv[0];
-		printf("Processing %s\n", tpsFile.c_str());
+		const std::string tpsFile = argv[i];
+		verbose_printf("Processing %s\n", tpsFile.c_str());
 
 		// extract path
 		std::string path = tpsFile;

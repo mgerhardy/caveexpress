@@ -42,5 +42,8 @@ dependency-%:
 	$(Q)dot -Tsvg $(BUILDDIR)/deps.dot.$(subst dependency-,,$@) -o $(BUILDDIR)/deps.dot.$(subst dependency-,,$@).svg;
 	$(Q)xdg-open $(BUILDDIR)/deps.dot.$(subst dependency-,,$@).svg;
 
-pngquant:
+caveexpress-pngquant:
 	$(Q)pngquant -f --ext .png contrib/assets/png/caveexpress/*.png
+
+caveexpress-textures: textureatlas
+	./textureatlas contrib/assets/png-packed/caveexpress*.tps
