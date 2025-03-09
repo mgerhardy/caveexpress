@@ -11,17 +11,16 @@
 
 namespace caveexpress {
 
-const float min_lastSoundDT = 1.f;  // time, sec
+const float min_lastSoundDT = 1.0f;  // minimum time in seconds, between sounds
 
 Water::Water (Map& map, float waterChangeSpeed, uint32_t waterRisingDelay, uint32_t waterFallingDelay) :
-		_lastSoundDT(min_lastSoundDT),
 		IEntity(EntityTypes::WATER, map), _waterChangeSpeed(waterChangeSpeed), _waterRisingDelay(waterRisingDelay),
 		_waterFallingDelay(waterFallingDelay), _mapHeight(0.0f), _waterRisingState(WATER_UNINITIALIZED),
-		_currentHeightLevel(0.0f), _waterRisingTime(waterRisingDelay), _waterFallingTime(waterFallingDelay)
+		_currentHeightLevel(0.0f), _waterRisingTime(waterRisingDelay), _waterFallingTime(waterFallingDelay),
+		_lastSoundDT(min_lastSoundDT)
 {
-	const b2Vec2 size(0.05f, 0.05f);  // 0.06
+	const b2Vec2 size(0.05f, 0.05f);
 	if (Config.getConfigVar(WATER_PARTICLE)->getBoolValue())
-		// _waterParticle = new WorldParticle(map, WATER, 40, DENSITY_WATER / 1.05f, size, 1000);
 		_waterParticle = new WorldParticle(map, WATER, 200, DENSITY_WATER / 1.05f, size, 1000);
 	else
 		_waterParticle = nullptr;
@@ -51,8 +50,8 @@ void Water::onContact (b2Contact* contact, IEntity* entity)
 		_fixturePairs.insert(std::make_pair(fixtureB, fixtureA));
 
 	entity->setTouchingWater(true);
-	if (_lastSoundDT > min_lastSoundDT)
-	{	_lastSoundDT = 0.f;
+	if (_lastSoundDT > min_lastSoundDT) {
+		_lastSoundDT = 0.f;
 		_map.sendSound(entity->getVisMask(), SoundTypes::SOUND_WATER_IMPACT, entity->getPos());
 	}
 
@@ -76,8 +75,8 @@ void Water::endContact (b2Contact* contact, IEntity* entity)
 	else if (entityIsA)
 		_fixturePairs.erase(std::make_pair(fixtureB, fixtureA));
 
-	if (_lastSoundDT > min_lastSoundDT)
-	{	_lastSoundDT = 0.f;
+	if (_lastSoundDT > min_lastSoundDT) {
+		_lastSoundDT = 0.f;
 		_map.sendSound(entity->getVisMask(), SoundTypes::SOUND_WATER_LEAVE, entity->getPos());
 	}
 	entity->setTouchingWater(false);
