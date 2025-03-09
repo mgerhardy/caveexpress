@@ -42,7 +42,7 @@ void UINodeButton::render (int x, int y) const
 	} else if (_titleAlign & NODE_ALIGN_RIGHT) {
 		x += getRenderWidth() - _font->getTextWidth(_title);
 	} else {
-		x += getRenderCenterX() - _font->getTextWidth(_title) / 2;
+		x += getRenderX();
 	}
 
 	if (_titleAlign & NODE_ALIGN_MIDDLE) {
@@ -50,7 +50,7 @@ void UINodeButton::render (int x, int y) const
 	} else if (_titleAlign & NODE_ALIGN_BOTTOM) {
 		y += getRenderY() + getRenderHeight() - _font->getTextHeight(_title);
 	} else {
-		y += getRenderCenterY() - _font->getTextHeight(_title) / 2;
+		y += getRenderY();
 	}
 
 	_font->print(_title, _fontColor, x, y);
