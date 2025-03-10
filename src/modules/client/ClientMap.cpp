@@ -53,7 +53,9 @@ void ClientMap::close ()
 
 void ClientMap::start ()
 {
-	Log::info(LOG_CLIENT, "client map start");
+	Log::info(LOG_CLIENT, "-----------------");
+	Log::info(LOG_CLIENT, "client map start:  %s", _title.c_str());
+	Log::info(LOG_CLIENT, "entities size:  %lu", _entities.size());
 	_started = true;
 }
 
@@ -436,7 +438,7 @@ void ClientMap::addEntity (ClientEntityPtr e)
 	if (iter != _entities.end()) {
 		delete iter->second;
 	}
-	Log::error(LOG_GAMEIMPL, "Set theme for ent to %s (%s)", _theme->name.c_str(), e->getType().name.c_str());
+	Log::trace(LOG_GAMEIMPL, "Set theme for ent to %s (%s)", _theme->name.c_str(), e->getType().name.c_str());
 	_entities[e->getID()] = e;
 	if (e->getID() == _playerID) {
 		_player = assert_cast<ClientPlayer*, ClientEntity*>(e);
