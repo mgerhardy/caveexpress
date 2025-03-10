@@ -9,4 +9,5 @@ c:addMaps("jungle-01")
 c:addMaps("jungle-02")
 c:addMaps("jungle-03")
 c:addMaps("jungle-04")
-
+c:addMaps("jungle-05")
+c:addMaps("jungle-06")
