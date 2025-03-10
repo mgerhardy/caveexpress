@@ -806,7 +806,12 @@ void Map::sendMapToClient (ClientId clientId) const
 void Map::loadEntity (IEntity *entity)
 {
 	SDL_assert(_entityRemovalAllowed);
-	SDL_assert(entity);
+	SDL_assert(entity != nullptr);
+	if (_entities.size() + 1 > _entities.capacity()) {
+		Log::error(LOG_SERVER, "entity list is full - cannot add more entities");
+		delete entity;
+		return;
+	}
 	_entities.push_back(entity);
 }
 
