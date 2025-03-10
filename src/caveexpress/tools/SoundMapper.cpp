@@ -1,29 +1,32 @@
-#include <stdlib.h>
-#include "client/entities/ClientEntityFactory.h"
+/**
+ * @file
+ * @brief Generate a sound mapping file (entitysounds.lua) for the CaveExpress entities.
+ */
+
 #include "caveexpress/shared/CaveExpressEntityType.h"
+#include "client/entities/ClientEntityFactory.h"
+#include "common/FileSystem.h"
+#include "common/Log.h"
 #include "common/Singleton.h"
 #include "common/String.h"
 #include "sound/Sound.h"
-#include "common/FileSystem.h"
-#include "common/Log.h"
+#include <stdlib.h>
 
 using namespace caveexpress;
 static SoundMappingCache soundMappingCache;
 
-static inline bool exists (const std::string& sound)
-{
+static inline bool exists(const std::string &sound) {
 	return FS.exists(FS.getSoundsDir() + sound + ".ogg");
 }
 
-static bool checkSound (const EntityType* type, const std::string& prefix, const Animation* animation)
-{
+static bool checkSound(const EntityType *type, const std::string &prefix, const Animation *animation) {
 	if (exists(prefix + animation->name)) {
 		const std::string sound = prefix + animation->name;
 		soundMappingCache[type][animation] = sound;
 		Log::info(LOG_GAMEIMPL, "use sound %s for animation %s", sound.c_str(), animation->name.c_str());
 		return true;
 	} else if (animation->hasDirection()) {
-		const std::string& sound = prefix + animation->getNameWithoutDirection();
+		const std::string &sound = prefix + animation->getNameWithoutDirection();
 		if (exists(sound)) {
 			soundMappingCache[type][animation] = sound;
 			Log::info(LOG_GAMEIMPL, "use sound %s for animation %s", sound.c_str(), animation->name.c_str());
@@ -41,15 +44,16 @@ static bool checkSound (const EntityType* type, const std::string& prefix, const
 	return false;
 }
 
-#define CHECKSOUND(type, prefix, animation) if (checkSound(type, prefix, animation)) continue;
+#define CHECKSOUND(type, prefix, animation)                                                                            \
+	if (checkSound(type, prefix, animation))                                                                           \
+		continue;
 
-static void fillSounds ()
-{
+static void fillSounds() {
 	for (EntityType::TypeMapConstIter eIter = EntityType::begin(); eIter != EntityType::end(); ++eIter) {
-		const EntityType* type = eIter->second;
-		const std::string& typeName = type->name;
+		const EntityType *type = eIter->second;
+		const std::string &typeName = type->name;
 		for (Animation::TypeMapConstIter i = Animation::begin(); i != Animation::end(); ++i) {
-			const Animation* animation = i->second;
+			const Animation *animation = i->second;
 			CHECKSOUND(type, typeName + "-", animation)
 			if (type->hasTheme()) {
 				CHECKSOUND(type, type->getNameWithoutTheme() + "-", animation)
@@ -70,7 +74,7 @@ static void fillSounds ()
 	}
 }
 
-extern "C" int main(int argc, char* argv[]) {
+extern "C" int main(int argc, char *argv[]) {
 	fillSounds();
 
 	const std::string path = FS.getAbsoluteWritePath() + "entitysounds.lua";
@@ -90,13 +94,13 @@ extern "C" int main(int argc, char* argv[]) {
 		std::string name = string::replaceAll(eIter->second->name, "-", "");
 		file->writeString(name.c_str());
 		file->writeString(" = {\n");
-		const SoundMapping& soundMapping = mIter->second;
+		const SoundMapping &soundMapping = mIter->second;
 		for (Animation::TypeMapConstIter aIter = Animation::begin(); aIter != Animation::end(); ++aIter) {
 			SoundMappingConstIter sIter = soundMapping.find(aIter->second);
 			if (sIter == soundMapping.end())
 				continue;
 			name = string::replaceAll(aIter->second->name, "-", "");
-			file->writeString("\t" );
+			file->writeString("\t");
 			file->writeString(name.c_str());
 			file->writeString(" = \"");
 			file->writeString(sIter->second.c_str());

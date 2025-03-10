@@ -1,5 +1,6 @@
 /**
  * @file
+ * @brief Generate a Tiled mapeditor tileset from the CaveExpress sprites.
  */
 
 #include "caveexpress/shared/CaveExpressSpriteType.h"
