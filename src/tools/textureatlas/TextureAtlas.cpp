@@ -189,7 +189,18 @@ static Rect findOpaqueRect(const uint8_t *data, int width, int height, int chann
 struct Config {
 	int alphaThreshold = 1;
 	int heuristic = STBRP_HEURISTIC_Skyline_default;
+	bool pngQuant = false;
 };
+
+static void pngQuant(const std::string &textureFile) {
+	const std::string pngQuantPath = "pngquant";
+	const std::string pngQuantArgs = "--force --ext .png --speed 1 --quality 80-100 " + textureFile;
+	const std::string pngQuantCmd = pngQuantPath + " " + pngQuantArgs;
+	debug_printf("Run pngquant: %s\n", pngQuantCmd.c_str());
+	if (system(pngQuantCmd.c_str()) != 0) {
+		error_printf("Failed to run pngquant\n");
+	}
+}
 
 static bool handleVariant(const Variants &v, const std::vector<Image> &images, const Config &cfg) {
 	std::vector<stbrp_rect> rects;
@@ -338,6 +349,9 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 		// Save the atlas
 		stbi_write_png(v.textureFilename.c_str(), currentAtlasWidth, currentAtlasHeight, 4, atlas,
 					   currentAtlasWidth * 4);
+		if (cfg.pngQuant) {
+			pngQuant(v.textureFilename);
+		}
 		free(atlas);
 		return true;
 	}
@@ -466,12 +480,13 @@ static bool loadTps(const std::string &tpsFile, const Config &cfg) {
 }
 
 static void usage(const char *appname) {
-	fprintf(stderr, "Usage: %s [-a 0-255] [-d] [-h] [-i 32] [-v] [file.tps]...\n\n", appname);
+	fprintf(stderr, "Usage: %s [-a 0-255] [-d] [-h] [-i 32] [-p] [-v] [file.tps]...\n\n", appname);
 	fprintf(stderr, "Options:\n");
 	fprintf(stderr, "  -a <threshold>\tAlpha threshold\n");
 	fprintf(stderr, "  -d\tEnable debug output\n");
 	fprintf(stderr, "  -h\tShow this help\n");
 	fprintf(stderr, "  -i <value>\tIncrease the texture atlas size by the specified amount\n");
+	fprintf(stderr, "  -p\tUse pngquant to compress the texture atlas. pngquant tool must be in the path\n");
 	fprintf(stderr, "  -v\tEnable verbose output\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "This tool reads a TexturePacker .tps file and creates the texture atlas\n"
@@ -500,6 +515,9 @@ int main(int argc, char *argv[]) {
 			optsParsed++;
 			break;
 		}
+		case 'p':
+			cfg.pngQuant = true;
+			break;
 		case 'i': {
 			if (optsParsed + 1 >= argc) {
 				usage(appname);
