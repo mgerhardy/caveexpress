@@ -8,6 +8,7 @@
 #include "common/Singleton.h"
 #include "common/Application.h"
 #include "common/LUALibrary.h"
+#include "common/String.h"
 #include "common/System.h"
 #include <SDL.h>
 #include <SDL_platform.h>
@@ -282,7 +283,7 @@ void ConfigManager::setLogLevel (const ICommand::Args& args)
 		return;
 	const int max = static_cast<int>(LogLevel::LEVEL_MAX);
 	for (int i = 0; i < max; ++i) {
-		if (args[0] == LogLevels[i].logLevelStr) {
+		if (string::toLower(args[0]) == string::toLower(LogLevels[i].logLevelStr)) {
 			SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, LogLevels[i].sdlLevel);
 			_logLevel = LogLevels[i].logLevel;
 			Log::info(LOG_COMMON, "Changing log level to %s", args[0].c_str());
