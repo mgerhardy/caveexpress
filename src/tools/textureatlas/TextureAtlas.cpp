@@ -20,8 +20,8 @@
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "stb_image_resize2.h"
 
-#include "pugixml.hpp"
 #include "murmur.h"
+#include "pugixml.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -202,7 +202,7 @@ static Rect findOpaqueRect(const uint8_t *data, int width, int height, int chann
 }
 
 struct Config {
-	int alphaThreshold = 0;
+	int alphaThreshold = 1;
 	int heuristic = STBRP_HEURISTIC_Skyline_default;
 };
 
@@ -380,7 +380,7 @@ static void markDuplicates(std::vector<Image> &images) {
 	}
 }
 
-static bool loadTps(const std::string &tpsFile) {
+static bool loadTps(const std::string &tpsFile, const Config &cfg) {
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(tpsFile.c_str());
 	if (!result) {
@@ -394,10 +394,6 @@ static bool loadTps(const std::string &tpsFile) {
 		error_printf("No textureFileName found\n");
 		return false;
 	}
-
-	Config cfg;
-	cfg.alphaThreshold = 1; // TODO: read cleanTransparentPixels (The rgb values of transparent pixels are set to 0)
-							// TODO: read reduceBorderArtifacts (Alpha bleeding)
 
 	const pugi::xpath_node &luaNode = doc.select_node("//key[text()='lua']/following-sibling::struct/filename");
 	const std::string &luaFilename = luaNode.node().text().as_string();
@@ -485,11 +481,12 @@ static bool loadTps(const std::string &tpsFile) {
 }
 
 static void usage(const char *appname) {
-	fprintf(stderr, "Usage: %s [-d] [-h] [-v] [-i 32] [file.tps]...\n\n", appname);
+	fprintf(stderr, "Usage: %s [-a 0-255] [-d] [-h] [-i 32] [-v] [file.tps]...\n\n", appname);
 	fprintf(stderr, "Options:\n");
+	fprintf(stderr, "  -a <threshold>\tAlpha threshold\n");
 	fprintf(stderr, "  -d\tEnable debug output\n");
-	fprintf(stderr, "  -i\tIncrease the texture atlas size by the specified amount\n");
 	fprintf(stderr, "  -h\tShow this help\n");
+	fprintf(stderr, "  -i <value>\tIncrease the texture atlas size by the specified amount\n");
 	fprintf(stderr, "  -v\tEnable verbose output\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "This tool reads a TexturePacker .tps file and creates the texture atlas\n"
@@ -500,6 +497,8 @@ static void usage(const char *appname) {
 int main(int argc, char *argv[]) {
 	const char *appname = argv[0];
 	size_t optsParsed = 1;
+	Config cfg;
+
 	for (optsParsed = 1; optsParsed < argc && argv[optsParsed][0] == '-'; optsParsed++) {
 		switch (argv[optsParsed][1]) {
 		case 'd':
@@ -508,6 +507,14 @@ int main(int argc, char *argv[]) {
 		case 'v':
 			g_verbose = true;
 			break;
+		case 'a': {
+			if (optsParsed + 1 >= argc) {
+				usage(appname);
+			}
+			cfg.alphaThreshold = atoi(argv[optsParsed + 1]);
+			optsParsed++;
+			break;
+		}
 		case 'i': {
 			if (optsParsed + 1 >= argc) {
 				usage(appname);
@@ -556,7 +563,7 @@ int main(int argc, char *argv[]) {
 		debug_printf("Changed directory to %s\n", path.c_str());
 		// extract the filename
 		std::string filename = tpsFile.substr(pos + 1);
-		if (!loadTps(filename)) {
+		if (!loadTps(filename, cfg)) {
 			error_printf("Failed to handle %s\n", tpsFile.c_str());
 			return 1;
 		}
