@@ -216,7 +216,7 @@ function initMap()
 	map:addCave("tile-cave-jungle-02", 1.000000, 11.000000, "", 2000)
 	map:addCave("tile-cave-jungle-02", 7.000000, 7.000000, "", 3000)
 	map:addCave("tile-cave-jungle-02", 12.000000, 11.000000, "", 4000)
-	map:addCave("tile-cave-jungle-02", 13.000000, 1.000000, "right=false", 5000)
+	map:addCave("tile-cave-jungle-02", 13.000000, 1.000000, "", 5000)
 
 	map:setSetting("width", "14")
 	map:setSetting("height", "14")
