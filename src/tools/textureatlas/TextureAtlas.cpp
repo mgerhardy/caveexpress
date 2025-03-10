@@ -1,7 +1,6 @@
 // This tool reads a TexturePacker .tps file and creates a texture atlas with the specified scale and extension.
 // Put into the public domain
 
-#include "tools/textureatlas/murmur.h"
 #include <algorithm>
 #include <cstdio>
 #include <limits>
@@ -22,6 +21,7 @@
 #include "stb_image_resize2.h"
 
 #include "pugixml.hpp"
+#include "murmur.h"
 
 #include <stdio.h>
 #include <stdlib.h>
