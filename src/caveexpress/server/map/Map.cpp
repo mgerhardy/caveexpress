@@ -1,4 +1,5 @@
 #include "Map.h"
+#include "caveexpress/server/entities/IEntity.h"
 #include "common/ConfigManager.h"
 #include "common/ConfigVar.h"
 #include "common/MapSettings.h"
@@ -610,6 +611,7 @@ bool Map::load (const std::string& name)
 	Log::info(LOG_GAMEIMPL, "init platforms");
 	for (Map::EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
 		IEntity* entity = *i;
+		SDL_assert(entity);
 		if (!entity->isGround())
 			continue;
 		MapTile *mapTile = assert_cast<MapTile*, IEntity*>(entity);
@@ -1228,6 +1230,12 @@ void Map::loadEntity (IEntity *entity)
 {
 	SDL_assert(_entityRemovalAllowed);
 	//entity->onSpawn();
+	SDL_assert(entity != nullptr);
+	if (_entities.size() + 1 > _entities.capacity()) {
+		Log::error(LOG_SERVER, "entity list is full - cannot add more entities");
+		delete entity;
+		return;
+	}
 	_entities.push_back(entity);
 }
 
@@ -1859,7 +1867,9 @@ void Map::visitEntities (IEntityVisitor *visitor, const EntityType& type)
 
 	// now we will add the newly added entities to the list to not invalidate the iterators
 	for (Map::EntityListIter i = _entitiesToAdd.begin(); i != _entitiesToAdd.end(); ++i) {
-		_entities.push_back(*i);
+		IEntity *ent = *i;
+		SDL_assert(ent != nullptr);
+		_entities.push_back(ent);
 	}
 	_entitiesToAdd.clear();
 }

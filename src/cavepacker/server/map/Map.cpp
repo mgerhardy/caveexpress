@@ -806,6 +806,7 @@ void Map::sendMapToClient (ClientId clientId) const
 void Map::loadEntity (IEntity *entity)
 {
 	SDL_assert(_entityRemovalAllowed);
+	SDL_assert(entity);
 	_entities.push_back(entity);
 }
 
