@@ -84,6 +84,18 @@ To generate e.g. all needed images and lua scripts for caveexpress, you can do t
 ./textureatlas contrib/assets/png-packed/caveexpress*.tps
 ```
 
+## jsonconvert
+
+Converts the box2deditor json output into CaveExpress readable format.
+
+## soundmapper
+
+Generate the entitysound.lua file for CaveExpress.
+
+## tiledgenerator
+
+Generate tiled mapeditor tileset definitions.
+
 ## CVARs
 
 There is an in-game console (open it with `SHIFT+TAB` where you can execute commands and show or change configuration variables)
