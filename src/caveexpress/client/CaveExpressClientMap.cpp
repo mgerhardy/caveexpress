@@ -82,8 +82,23 @@ bool CaveExpressClientMap::drop ()
 	return true;
 }
 
-void CaveExpressClientMap::setCaveNumber (uint16_t id, uint8_t number)
-{
+void CaveExpressClientMap::calcCaveSignOffset(const ClientEntityPtr &e, const SpritePtr &caveSignSprite, const SpritePtr &caveSprite,
+									 int &offsetX, int &offsetY) {
+	switch (e->getAlignment()) {
+	case ENTITY_ALIGN_UPPER_LEFT:
+		break;
+	case ENTITY_ALIGN_LOWER_LEFT:
+		offsetX = (int)((float)caveSprite->getMaxWidth() / 2.0f);
+		offsetY = (int)((float)(caveSprite->getMaxHeight() - caveSignSprite->getMaxHeight()));
+		break;
+	case ENTITY_ALIGN_MIDDLE_CENTER:
+		offsetX = (int)((float)(caveSprite->getMaxWidth() - caveSignSprite->getMaxWidth()) / 2.0f);
+		offsetY = (int)((float)(caveSprite->getMaxHeight() - caveSignSprite->getMaxHeight()) / 2.0f);
+		break;
+	}
+}
+
+void CaveExpressClientMap::setCaveNumber(uint16_t id, uint8_t number) {
 	if (number == 0)
 		return;
 	Log::debug(LOG_GAMEIMPL, "set cave for %i to %i", id, number);
@@ -94,8 +109,21 @@ void CaveExpressClientMap::setCaveNumber (uint16_t id, uint8_t number)
 	}
 	const char first = (char)(number / 10 + '0');
 	const char second = (char)(number % 10 + '0');
-	const std::string caveSprite = string::format("cave-sign-%c%c", first, second);
-	e->addOverlay(UI::get().loadSprite(caveSprite));
+	const std::string caveSignSpriteName = string::format("cave-sign-%c%c", first, second);
+	const SpritePtr &caveSignSprite = UI::get().loadSprite(caveSignSpriteName);
+	if (!caveSignSprite) {
+		Log::error(LOG_GAMEIMPL, "no sprite found for %s", caveSignSpriteName.c_str());
+		return;
+	}
+	const SpritePtr &caveSprite = e->getSprite();
+	if (!caveSprite) {
+		Log::error(LOG_GAMEIMPL, "no sprite found for %s", e->getSpriteName().c_str());
+		return;
+	}
+	int offsetX = 0;
+	int offsetY = 0;
+	calcCaveSignOffset(e, caveSignSprite, caveSprite, offsetX, offsetY);
+	e->addOverlay(caveSignSprite, offsetX, offsetY);
 }
 
 void CaveExpressClientMap::setCaveState (uint16_t id, bool state)

@@ -23,6 +23,10 @@ protected:
 	virtual void onVisibilityChanged ();
 	void renderDot (IFrontend* frontend, int x, int y, const Color& color = colorRed) const;
 	void renderOverlays(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int posX, int posY) const;
+
+	void calcPosition(const Layer &layer, int scale, float zoom, int &posX, int &posY) const;
+
+	// calculate the entity overlay offset
 	void calcOffset(int scale, float zoom, int posX, int posY, int &offsetPosX, int &offsetPosY) const;
 public:
 	class Factory: public IClientEntityFactory {
@@ -96,14 +100,15 @@ public:
 	}
 
 	// @param[in] scale The conversion from the physics coordinate system to the pixel coordinate system.
-	virtual void render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX = 0, int offsetY = 0) const;
+	virtual void render(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX = 0,
+						int offsetY = 0) const;
 
 	inline const Animation& getAnimation () const
 	{
 		return *_animation;
 	}
 
-	void addOverlay (const SpritePtr& sprite);
+	void addOverlay (const SpritePtr& sprite, int offsetX = 0, int offsetY = 0);
 	void removeOverlay (const SpritePtr& sprite);
 
 	void addRope (const ClientEntityPtr& ropeEntity)
@@ -114,6 +119,11 @@ public:
 	void removeRope ()
 	{
 		_ropeEntity = nullptr;
+	}
+
+	EntityAlignment getAlignment () const
+	{
+		return _align;
 	}
 
 protected:
@@ -127,7 +137,18 @@ protected:
 	// the unique id of this entity
 	uint16_t _id;
 
-	typedef std::vector<SpritePtr> EntityOverlays;
+	struct Overlay {
+		SpritePtr sprite;
+		int offsetX;
+		int offsetY;
+
+		Overlay (const SpritePtr& _sprite, int _offsetX, int _offsetY) :
+				sprite(_sprite), offsetX(_offsetX), offsetY(_offsetY)
+		{
+		}
+	};
+
+	typedef std::vector<Overlay> EntityOverlays;
 	typedef EntityOverlays::iterator EntityOverlaysIter;
 	typedef EntityOverlays::const_iterator EntityOverlaysConstIter;
 	EntityOverlays _entityOverlays;
@@ -174,16 +195,19 @@ protected:
 
 inline void ClientEntity::removeOverlay (const SpritePtr& sprite)
 {
-	auto i = std::find(_entityOverlays.begin(), _entityOverlays.end(), sprite);
+	auto pred = [&sprite](const Overlay &lhs) {
+		return lhs.sprite == sprite;
+	};
+	auto i = std::find_if(_entityOverlays.begin(), _entityOverlays.end(), pred);
 	if (i != _entityOverlays.end())
 		_entityOverlays.erase(i);
 }
 
-inline void ClientEntity::addOverlay (const SpritePtr& sprite)
+inline void ClientEntity::addOverlay (const SpritePtr& sprite, int offsetX, int offsetY)
 {
 	if (!sprite)
 		return;
-	_entityOverlays.push_back(sprite);
+	_entityOverlays.emplace_back(sprite, offsetX, offsetY);
 }
 
 inline void ClientEntity::initFadeOut ()

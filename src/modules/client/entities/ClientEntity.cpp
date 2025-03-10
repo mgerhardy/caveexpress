@@ -37,6 +37,24 @@ void ClientEntity::onVisibilityChanged ()
 {
 }
 
+void ClientEntity::calcPosition(const Layer &layer, int scale, float zoom, int &posX, int &posY) const
+{
+	switch (_align) {
+	case ENTITY_ALIGN_UPPER_LEFT:
+		break;
+	case ENTITY_ALIGN_LOWER_LEFT:
+		posX -= _currSprite->getWidth(layer) * zoom / 2.0f;
+		posY += _size.y * scale * zoom / 2.0f;
+		posY -= _currSprite->getHeight(layer) * zoom;
+		break;
+	case ENTITY_ALIGN_MIDDLE_CENTER: {
+		posX -= _currSprite->getWidth(layer) * zoom / 2.0f;
+		posY -= _currSprite->getHeight(layer) * zoom / 2.0f;
+		break;
+	}
+	}
+}
+
 void ClientEntity::calcOffset (int scale, float zoom, int posX, int posY, int &offsetPosX, int &offsetPosY) const
 {
 	offsetPosX = posX;
@@ -59,15 +77,17 @@ void ClientEntity::renderOverlays (IFrontend *frontend, Layer layer, int scale, 
 	int offsetPosX, offsetPosY;
 	calcOffset(scale, zoom, posX, posY, offsetPosX, offsetPosY);
 	for (EntityOverlaysConstIter i = _entityOverlays.begin(); i != _entityOverlays.end(); ++i) {
-		const SpritePtr& overlay = *i;
+		const Overlay& overlay = *i;
 		Log::trace(LOG_CLIENT, "render %s, layer %i, x: %i, y: %i, zoom: %f, angle: %i, alpha: %f",
-				overlay->getName().c_str(), layer, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha);
-		overlay->render(frontend, layer, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha);
+				overlay.sprite->getName().c_str(), layer, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha);
+		const int overlaySpriteY = overlay.offsetY * zoom;
+		const int overlaySpriteX = overlay.offsetX * zoom;
+		overlay.sprite->render(frontend, layer, overlaySpriteX + offsetX + offsetPosX,
+							   overlaySpriteY + offsetY + offsetPosY, zoom, _angle, _alpha);
 	}
 }
 
-void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY) const
-{
+void ClientEntity::render(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY) const {
 	if (!_currSprite)
 		return;
 
@@ -77,20 +97,7 @@ void ClientEntity::render (IFrontend *frontend, Layer layer, int scale, float zo
 	int posX = basePosX;
 	int posY = basePosY;
 
-	switch (_align) {
-	case ENTITY_ALIGN_UPPER_LEFT:
-		break;
-	case ENTITY_ALIGN_LOWER_LEFT:
-		posX -= _currSprite->getWidth(layer) * zoom / 2.0f;
-		posY += _size.y * scale * zoom / 2.0f;
-		posY -= _currSprite->getHeight(layer) * zoom;
-		break;
-	case ENTITY_ALIGN_MIDDLE_CENTER: {
-		posX -= _currSprite->getWidth(layer) * zoom / 2.0f;
-		posY -= _currSprite->getHeight(layer) * zoom / 2.0f;
-		break;
-	}
-	}
+	calcPosition(layer, scale, zoom, posX, posY);
 
 	setScreenPos(offsetX + posX, offsetY + posY);
 

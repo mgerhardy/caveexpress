@@ -13,12 +13,14 @@ private:
 	SDL_Rect getWaterRect(int x, int y) const;
 	void couldNotFindEntity (const std::string& prefix, uint16_t id) const override;
 	void resetCurrentMap () override;
+	void calcCaveSignOffset(const ClientEntityPtr &e, const SpritePtr &caveSignSprite, const SpritePtr &caveSprite,
+							int &offsetX, int &offsetY);
 
 public:
 	CaveExpressClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider,
 			int referenceTileWidth);
 
-	void setCaveNumber (uint16_t id, uint8_t number);
+	void setCaveNumber(uint16_t id, uint8_t number);
 	void setCaveState (uint16_t id, bool state);
 	bool drop ();
 	void start () override;

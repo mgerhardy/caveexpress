@@ -2,6 +2,7 @@
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/server/entities/npcs/NPCPackage.h"
 #include "caveexpress/server/entities/npcs/NPCFriendly.h"
+#include "common/EntityAlignment.h"
 #include "common/Log.h"
 
 namespace caveexpress {

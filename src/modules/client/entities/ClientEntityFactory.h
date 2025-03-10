@@ -41,7 +41,7 @@ public:
 	float width;
 	float height;
 	EntityAngle angle;
-	EntityAlignment align;
+	EntityAlignment align; // IEntity::_spriteAlignment
 	const ThemeType* theme;
 };
 
