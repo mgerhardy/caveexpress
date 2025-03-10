@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.8.0</string>
+        <string>3.9.4</string>
         <key>fileName</key>
-        <string>/home/mattn/dev/caveexpress/contrib/assets/png-packed/caveexpress-environment-ice.tps</string>
+        <string>/home/mgerhardy/dev/oss/caveexpress/contrib/assets/png-packed/caveexpress-environment-ice.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -60,6 +60,8 @@
         <false/>
         <key>pvrCompressionQuality</key>
         <enum type="SettingsBase::PvrCompressionQuality">PVR_QUALITY_NORMAL</enum>
+        <key>atfCompressData</key>
+        <false/>
         <key>mipMapMinSize</key>
         <uint>32768</uint>
         <key>etc1CompressionQuality</key>
@@ -261,6 +263,7 @@
             <filename>../png/caveexpress/tile-lava-ice-DIR-01-back-01.png</filename>
             <filename>../png/caveexpress/tile-lava-ice-DIR-02-back-01.png</filename>
             <filename>../png/caveexpress/tile-lava-ice-DIR-01-back-02.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-09-back-01.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

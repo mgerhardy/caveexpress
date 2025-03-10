@@ -428,6 +428,7 @@ sprites = {
 	["tile-background-ice-06"] = { type = "background", theme = "ice", },
 	["tile-background-ice-07"] = { type = "background", theme = "ice", },
 	["tile-background-ice-08"] = { type = "background", theme = "ice", },
+	["tile-background-ice-09"] = { type = "background", theme = "ice", },
 	["tile-background-ice-cave-art-01"] = { type = "background", theme = "ice", },
 	["tile-background-ice-cave-art-02"] = { type = "background", theme = "ice", },
 	["tile-background-ice-big-01"] = { type = "background", width = 2, height = 2, theme = "ice", },
