@@ -285,8 +285,9 @@ void Map::clearPhysics ()
 		for (IEntity* entity : _entitiesToAdd) {
 			entity->prepareRemoval();
 		}
-		if (!_name.empty())
+		if (!_name.empty()) {
 			Log::info(LOG_GAMEIMPL, "* removed box2d references");
+		}
 	}
 
 	{ // now free the allocated memory
@@ -313,8 +314,9 @@ void Map::clearPhysics ()
 		}
 		_players.clear();
 		_players.reserve(MAX_CLIENTS);
-		if (!_name.empty())
+		if (!_name.empty()) {
 			Log::info(LOG_GAMEIMPL, "* removed allocated memory");
+		}
 	}
 
 	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
@@ -360,7 +362,7 @@ bool Map::isFailed () const
 
 	if (_players.empty())
 		return true;
-	
+
 	if (_friendlyNPCLimit > 0) {
 		// if we support friendly npcs in this map, and all of them are (or were) already spawned,
 		// but none is available anymore, this map is lost
@@ -588,33 +590,38 @@ bool Map::load (const std::string& name)
 	std::vector<MapTile*> mapTilesWithBody;
 
 	const std::vector<MapTileDefinition>& mapTileList = ctx->getMapTileDefinitions();
-	for (std::vector<MapTileDefinition>::const_iterator i = mapTileList.begin(); i != mapTileList.end(); ++i) {
-		MapTile *mapTile = createMapTileWithoutBody(i->spriteDef, i->x, i->y, i->angle);
-		if (!mapTile->isDecoration() && !mapTile->isWindow())
+	for (const MapTileDefinition& mapTileDef : mapTileList) {
+		MapTile *mapTile = createMapTileWithoutBody(mapTileDef.spriteDef, mapTileDef.x, mapTileDef.y, mapTileDef.angle);
+		if (!mapTile->isDecoration() && !mapTile->isWindow()) {
 			mapTilesWithBody.push_back(mapTile);
+		}
 		loadEntity(mapTile);
 	}
 
 	const std::vector<CaveTileDefinition>& caveList = ctx->getCaveTileDefinitions();
-	for (std::vector<CaveTileDefinition>::const_iterator i = caveList.begin(); i != caveList.end(); ++i) {
-		MapTile *mapTile = new CaveMapTile(*this, ++_caveCounter, i->spriteDef->id, i->x, i->y, *i->type, i->delay);
-		mapTile->setGridDimensions(i->spriteDef->width, i->spriteDef->height, 0);
-		mapTilesWithBody.push_back(mapTile);
-		loadEntity(mapTile);
+	for (const CaveTileDefinition& caveTileDef : caveList) {
+		const SpriteDefPtr &spriteDef = caveTileDef.spriteDef;
+		MapTile *mapTile = new CaveMapTile(*this, ++_caveCounter, spriteDef->id, caveTileDef.x, caveTileDef.y, *caveTileDef.type, caveTileDef.delay);
+		mapTile->setGridDimensions(spriteDef->width, spriteDef->height, 0);
+		if (loadEntity(mapTile)) {
+			mapTilesWithBody.push_back(mapTile);
+		}
 	}
 
-	for (std::vector<MapTile*>::iterator i = mapTilesWithBody.begin(); i != mapTilesWithBody.end(); ++i) {
-		MapTile* mapTile = *i;
+	for (MapTile* mapTile : mapTilesWithBody) {
 		mapTile->createBody();
 	}
 
 	Log::info(LOG_GAMEIMPL, "init platforms");
-	for (Map::EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
-		IEntity* entity = *i;
-		SDL_assert(entity);
-		if (!entity->isGround())
+	std::vector<MapTile*> platforms;
+	for (IEntity* entity : _entities) {
+		if (!entity->isGround()) {
 			continue;
+		}
 		MapTile *mapTile = assert_cast<MapTile*, IEntity*>(entity);
+		platforms.push_back(mapTile);
+	}
+	for (MapTile* mapTile : platforms) {
 		int start = -1;
 		int end = -1;
 		const int y = mapTile->getGridY() - 1.0f + EPSILON;
@@ -627,21 +634,21 @@ bool Map::load (const std::string& name)
 
 	Log::info(LOG_GAMEIMPL, "init caves");
 	int friendlyNPCLimit = _friendlyNPCLimit;
-	for (Map::EntityListIter i = _entities.begin(); i != _entities.end(); ++i) {
-		IEntity* entity = *i;
-		if (!entity->isCave())
+	for (IEntity* entity : _entities) {
+		if (!entity->isCave()) {
 			continue;
+		}
 		CaveMapTile *cave = assert_cast<CaveMapTile*, IEntity*>(entity);
 		_caves.push_back(cave);
 	}
 
 	const CaveMapTile* highestCave = nullptr;
-	if (isWaterRising() && !_water->isWaterFallingEnabled())
+	if (isWaterRising() && !_water->isWaterFallingEnabled()) {
 		highestCave = getHighestCave();
+	}
 
 	// do another loop when we have all caves - we have to know each of the caves in order to initialize them properly
-	for (Map::CaveListIter i = _caves.begin(); i != _caves.end(); ++i) {
-		CaveMapTile* cave = *i;
+	for (CaveMapTile* cave : _caves) {
 		const bool npcLeft = friendlyNPCLimit > 0;
 		const bool skipCave = highestCave == cave;
 		if (initCave(cave, npcLeft && !skipCave)) {
@@ -649,22 +656,25 @@ bool Map::load (const std::string& name)
 			Log::info(LOG_GAMEIMPL, "spawn npc on cave %i", cave->getCaveNumber());
 		}
 	}
-	if (friendlyNPCLimit > 0)
+	if (friendlyNPCLimit > 0) {
 		Log::info(LOG_GAMEIMPL, "could not spawn %i npcs", friendlyNPCLimit);
+	}
 
 	const std::vector<EmitterDefinition>& emitterList = ctx->getEmitterDefinitions();
-	for (std::vector<EmitterDefinition>::const_iterator i = emitterList.begin(); i != emitterList.end(); ++i) {
-		const EntityType &type = *i->type;
-		if (type.isNone())
+	for (const EmitterDefinition &emitterDef : emitterList) {
+		const EntityType &type = *emitterDef.type;
+		if (type.isNone()) {
 			continue;
-		EntityEmitter *entity = new EntityEmitter(*this, i->x, i->y, i->amount, i->delay, type, i->settings);
+		}
+		EntityEmitter *entity = new EntityEmitter(*this, emitterDef.x, emitterDef.y, emitterDef.amount, emitterDef.delay, type, emitterDef.settings);
 		loadEntity(entity);
 	}
 
 	if (_transferedPackageLimit > 0 && !hasPackageTarget()) {
 		Log::error(LOG_GAMEIMPL, "there is no package target in this map");
 		return false;
-	} else if (_transferedPackageLimit <= 0 && hasPackageTarget()) {
+	}
+	if (_transferedPackageLimit <= 0 && hasPackageTarget()) {
 		Log::error(LOG_GAMEIMPL, "transferpackagecount is not set, but there are package targets");
 		return false;
 	}
@@ -721,11 +731,13 @@ bool Map::isReachableByWalking (const IEntity *start, const IEntity *end, int st
 	// check that there is nothing solid in between
 	IEntity* entity = nullptr;
 	rayTrace(start, end, &entity);
-	if (entity != nullptr && entity->isSolid())
+	if (entity != nullptr && entity->isSolid()) {
 		return false;
+	}
 
-	if (startPos == -1 || endPos == -1)
+	if (startPos == -1 || endPos == -1) {
 		getPlatformDimensions(static_cast<int>(start->getPos().x), static_cast<int>(start->getPos().y), &startPos, &endPos);
+	}
 
 	// if there is a start and end pos of a platform given, then let's check whether end is inside the range
 	const gridCoord xStart = start->getPos().x;
@@ -742,8 +754,9 @@ bool Map::rayTrace (const b2Vec2& start, const b2Vec2& end, IEntity **hit) const
 {
 	TraceCallback callback;
 	_world->RayCast(&callback, start, end);
-	if (hit)
+	if (hit) {
 		*hit = callback.getEntity();
+	}
 
 	uint32_t index = _traceCount;
 	if (index < SDL_arraysize(_traces)) {
@@ -803,8 +816,7 @@ bool Map::isReadyToStart () const
 void Map::startMap ()
 {
 	Log::info(LOG_GAMEIMPL, "start the map and spawn pending players: %i", (int)_playersWaitingForSpawn.size());
-	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
-		Player* player = *i;
+	for (Player* player : _playersWaitingForSpawn) {
 		spawnPlayer(player);
 	}
 	_playersWaitingForSpawn.clear();
@@ -852,12 +864,12 @@ bool Map::initPlayer (Player* player)
 
 void Map::printPlayersList () const
 {
-	for (PlayerListConstIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
-		const std::string& name = (*i)->getName();
+	for (Player* player : _playersWaitingForSpawn) {
+		const std::string& name = player->getName();
 		Log::info(LOG_GAMEIMPL, "* %s (waiting)", name.c_str());
 	}
-	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
-		const std::string& name = (*i)->getName();
+	for (Player* player : _players) {
+		const std::string& name = player->getName();
 		Log::info(LOG_GAMEIMPL, "* %s (spawned)", name.c_str());
 	}
 }
@@ -865,12 +877,12 @@ void Map::printPlayersList () const
 void Map::sendPlayersList () const
 {
 	std::vector<std::string> names;
-	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
-		const std::string& name = (*i)->getName();
+	for (Player* player : _players) {
+		const std::string& name = player->getName();
 		names.push_back(name);
 	}
-	for (PlayerListConstIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
-		const std::string& name = (*i)->getName();
+	for (Player* player : _playersWaitingForSpawn) {
+		const std::string& name = player->getName();
 		names.push_back(name);
 	}
 	INetwork& network = _serviceProvider->getNetwork();
@@ -958,19 +970,20 @@ bool Map::initCave (CaveMapTile* caveTile, bool canSpawn)
 
 void Map::initWindows (CaveMapTile* caveTile, int start, int end)
 {
-	const int x = caveTile->getGridX();
+	const int x = (int)caveTile->getGridX();
 	const int left = std::max(x - 2, start);
 	const int right = std::max(x + 2, end);
-	const int caveY = caveTile->getGridY();
-	for (EntityListConstIter i = _entities.begin(); i != _entities.end(); ++i) {
-		IEntity* e = *i;
-		if (!e->isWindow())
+	const int caveY = (int)caveTile->getGridY();
+	for (IEntity* e : _entities) {
+		if (!e->isWindow()) {
 			continue;
+		}
 		WindowTile* window = assert_cast<WindowTile*, IEntity*>(e);
-		if (window->getGridY() != caveY)
+		if ((int)window->getGridY() != caveY) {
 			continue;
+		}
 		for (int gridX = left; gridX < right; ++gridX) {
-			const int windowX = window->getGridX();
+			const int windowX = (int)window->getGridX();
 			if (Between(windowX, left, right)) {
 				caveTile->addWindow(window);
 				break;
@@ -981,9 +994,10 @@ void Map::initWindows (CaveMapTile* caveTile, int start, int end)
 
 Platform *Map::getPlatform (MapTile *mapTile, int *start, int *end, gridSize offset)
 {
-	const int mapY = mapTile->getGridY() + offset + EPSILON;
-	if (*start == -1 || *end == -1)
-		getPlatformDimensions(mapTile->getGridX(), mapTile->getGridY(), start, end);
+	const int mapY = (int)(mapTile->getGridY() + offset + EPSILON);
+	if (*start == -1 || *end == -1) {
+		getPlatformDimensions((int)mapTile->getGridX(), (int)mapTile->getGridY(), start, end);
+	}
 
 	PlatformYMapConstIter iy = _platforms.find(mapY);
 	if (iy != _platforms.end()) {
@@ -996,7 +1010,7 @@ Platform *Map::getPlatform (MapTile *mapTile, int *start, int *end, gridSize off
 	Log::info(LOG_GAMEIMPL, "create a new platform at %i:%i to %i:%i", *start, mapY, *end, mapY);
 	const int width = *end - *start + 1;
 	const gridSize height = 0.015f;
-	const gridCoord x = *start + width / 2.0f;
+	const gridCoord x = (gridCoord)*start + (gridCoord)width / 2.0f;
 	const gridSize y = mapTile->getGridY() + offset;
 
 	b2PolygonShape shape;
@@ -1094,8 +1108,9 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 		const b2Vec2 startV(_width - 1.0f, startTraceGridY);
 		const b2Vec2 endV(_width - 1.0f, startTraceGridY + 0.0001f);
 		const bool state = rayTrace(startV, endV, &hit);
-		if (state && hit && hit->isSolid())
+		if (state && hit && hit->isSolid()) {
 			return;
+		}
 
 		*end = _width - 1;
 	}
@@ -1226,17 +1241,20 @@ void Map::sendMapToClient (ClientId clientId) const
 	}
 }
 
-void Map::loadEntity (IEntity *entity)
+bool Map::loadEntity (IEntity *entity)
 {
 	SDL_assert(_entityRemovalAllowed);
 	//entity->onSpawn();
 	SDL_assert(entity != nullptr);
+#if 0
 	if (_entities.size() + 1 > _entities.capacity()) {
 		Log::error(LOG_SERVER, "entity list is full - cannot add more entities");
 		delete entity;
-		return;
+		return false;
 	}
+#endif
 	_entities.push_back(entity);
+	return true;
 }
 
 PackageTarget *Map::getPackageTarget () const

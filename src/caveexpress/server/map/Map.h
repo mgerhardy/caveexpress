@@ -337,7 +337,7 @@ public:
 	// delay add
 	void addEntity (IEntity *entity);
 	// initial add
-	void loadEntity (IEntity *entity);
+	bool loadEntity (IEntity *entity);
 
 	void sendMapToClient (ClientId clientId) const;
 
