@@ -1,5 +1,5 @@
 function getName()
-	return "Jungle6 Elevator 4pkg 6runs"
+	return "Jungle6 Elevator 4pkg 8runs"
 end
 
 function onMapLoaded()
@@ -213,10 +213,10 @@ function initMap()
 
 	map:addCave("tile-cave-jungle-01", 0.000000, 1.000000, "", 500)
 	map:addCave("tile-cave-jungle-01", 0.000000, 4.000000, "", 1000)
-	map:addCave("tile-cave-jungle-02", 1.000000, 11.000000, "", 2000)
+	map:addCave("tile-cave-jungle-02", 1.000000, 11.000000, "right=false", 2000)
 	map:addCave("tile-cave-jungle-02", 7.000000, 7.000000, "", 3000)
 	map:addCave("tile-cave-jungle-02", 12.000000, 11.000000, "", 4000)
-	map:addCave("tile-cave-jungle-02", 13.000000, 1.000000, "", 5000)
+	map:addCave("tile-cave-jungle-02", 13.000000, 1.000000, "right=false", 5000)
 
 	map:setSetting("width", "14")
 	map:setSetting("height", "14")

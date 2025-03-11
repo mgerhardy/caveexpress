@@ -1,5 +1,5 @@
 function getName()
-	return "Jungle2 Anchor"
+	return "Jungle2 Anchor 7runs"
 end
 
 function onMapLoaded()
