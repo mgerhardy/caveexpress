@@ -1,5 +1,5 @@
 function getName()
-	return "Jungle1 Trident"
+	return "Jungle1 Trident 8runs"
 end
 
 function onMapLoaded()
