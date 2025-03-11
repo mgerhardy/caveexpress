@@ -6,6 +6,7 @@ States for building on Linux and Mac
 
 **[Homepage](http://www.caveproductions.org/)**
 
+**[Discord](https://discord.com/invite/XqNBRsBY)
 
 # About
 
