@@ -142,4 +142,4 @@ Version 2.6 (2025-not yet released)
   * Rain in jungle
   * Smaller snow and more wobbly
 * Package target sound, on consuming package
-* New palm tree
+* New palm and desert trees
