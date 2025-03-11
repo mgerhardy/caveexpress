@@ -306,7 +306,7 @@ void Map::clearPhysics ()
 		_entities.clear();
 		_caves.clear();
 		_platforms.clear();
-		_entities.reserve(400);
+		_entities.reserve(800);
 		_friendlyNPCs.clear();
 
 		for (Player* player : _players) {
