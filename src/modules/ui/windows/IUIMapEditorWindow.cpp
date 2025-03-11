@@ -36,7 +36,7 @@ void IUIMapEditorWindow::init(IMapManager& mapManager) {
 	setBackgroundColor(colorDark);
 
 	int cols = 6;
-	int rows = 6;
+	int rows = 9;
 
 	if (isSmallScreen()) {
 		cols = 3;
