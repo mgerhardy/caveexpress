@@ -14,7 +14,7 @@ This repository is the home of two games: CaveExpress and CavePacker
 
 ## CaveExpress
 
-[![CavePacker](https://raw.githubusercontent.com/mgerhardy/caveexpress/master/contrib/assets/media/caveexpress/950x500.png)]
+![CaveExpress](https://raw.githubusercontent.com/mgerhardy/caveexpress/master/contrib/assets/media/caveexpress/950x500.png)
 
 CaveExpress is a classic 2D platformer with physics-based gameplay and dozens of levels. Master your pedal-powered flying machine to pick up packages from your cave-dwelling clients and drop them off at the collection point. But beware! Mighty mastodons, terrifying pterodactyls and others would rather see you extinct.
 
@@ -26,7 +26,7 @@ Features:
 
 ## CavePacker
 
-[![CavePacker](https://raw.githubusercontent.com/mgerhardy/caveexpress/master/contrib/assets/media/cavepacker/screenshot-microban3.png)]
+![CavePacker](https://raw.githubusercontent.com/mgerhardy/caveexpress/master/contrib/assets/media/cavepacker/screenshot-microban3.png)
 
 CavePacker is a sokoban game. It is a puzzle game where you have to move the packages onto their targets without getting stuck. The lesser steps you made for solving a level, the better. You may only push but not pull packages.
 
