@@ -7,7 +7,7 @@ namespace caveexpress {
 
 class UINodeEntitySelector: public IUINodeEntitySelector {
 private:
-	typedef IUINodeEntitySelector Super;
+	using Super = IUINodeEntitySelector;
 protected:
 	bool shouldBeShown(const EntityType& type) const override {
 		if (EntityTypes::isPlayer(type))

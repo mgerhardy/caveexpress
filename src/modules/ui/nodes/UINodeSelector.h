@@ -409,13 +409,15 @@ public:
 		_cursorY = y;
 	}
 
-	bool renderDebug (int x, int y, int textY, bool focusHandled) const override
+	bool renderDebug (int x, int y, int textY, bool& focusHandled) const override
 	{
 		if (!Super::renderDebug(x, y, textY, focusHandled)) {
 			return false;
 		}
-		const BitmapFontPtr& font = getFont(MEDIUM_FONT);
-		font->print(string::format("x: %i, y: %i, index: %i", _cursorX, _cursorY, _selectedIndex), colorWhite, x, textY);
+		const int dx = x + getRenderX();
+		const int dy = y + getRenderY();
+		const BitmapFontPtr &font = getFont(MEDIUM_FONT);
+		font->print(string::format("%s: index: %i", _id.c_str(), _selectedIndex), colorWhite, dx, dy + textY, false);
 		return true;
 	}
 

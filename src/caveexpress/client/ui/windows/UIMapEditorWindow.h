@@ -6,7 +6,7 @@ namespace caveexpress {
 
 class UIMapEditorWindow: public IUIMapEditorWindow {
 	friend class AutoGenerateListener;
-	typedef IUIMapEditorWindow Super;
+	using Super = IUIMapEditorWindow;
 protected:
 	virtual UINode *createSettings () override;
 	virtual UINode *createButtons (IMapManager& mapManager, UINodeMapStringSelector *mapListNode) override;

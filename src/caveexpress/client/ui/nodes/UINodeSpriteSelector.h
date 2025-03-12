@@ -7,7 +7,7 @@ namespace caveexpress {
 
 class UINodeSpriteSelector: public IUINodeSpriteSelector {
 private:
-	typedef IUINodeSpriteSelector Super;
+	using Super = IUINodeSpriteSelector;
 protected:
 	bool shouldBeShown(const SpriteDefPtr& sprite) const override {
 		const SpriteType& type = sprite->type;

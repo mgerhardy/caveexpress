@@ -81,7 +81,7 @@ void UINodeMapControl::update (uint32_t deltaTime)
 	}
 }
 
-bool UINodeMapControl::renderDebug (int x, int y, int textY, bool focusHandled) const
+bool UINodeMapControl::renderDebug (int x, int y, int textY, bool& focusHandled) const
 {
 	if (!UINode::renderDebug(x, y, textY, focusHandled)) {
 		return false;

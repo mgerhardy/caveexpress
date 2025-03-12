@@ -32,7 +32,7 @@ public:
 	void show () override { setVisible(true); }
 
 	// UINode
-	bool renderDebug (int x, int y, int textY, bool focusHandled) const override;
+	bool renderDebug (int x, int y, int textY, bool& focusHandled) const override;
 	void removeFocus (UIFocusRemovalReason reason) override;
 	bool isActive () const override;
 	void update (uint32_t deltaTime) override;

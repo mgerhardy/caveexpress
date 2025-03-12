@@ -324,14 +324,15 @@ void UINode::renderTop (int x, int y) const
 		t.font->print(t.text, colorWhite, fontX, fontY);
 	}
 
-	renderDebug(x, y, y + 20, false);
-
 	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
 		const UINode* nodePtr = *i;
 		if (!nodePtr->isVisible())
 			continue;
 		nodePtr->render(childX, childY);
 	}
+
+	bool focusHandled = false;
+	renderDebug(x, y, y + 20, focusHandled);
 }
 
 void UINode::render (int x, int y) const
@@ -343,7 +344,7 @@ void UINode::render (int x, int y) const
 	renderTop(x, y);
 }
 
-bool UINode::renderDebug (int x, int y, int textY, bool focusHandled) const
+bool UINode::renderDebug (int x, int y, int textY, bool& focusHandled) const
 {
 	const bool debug = Config.isDebugUI();
 	if (!debug) {
@@ -357,38 +358,34 @@ bool UINode::renderDebug (int x, int y, int textY, bool focusHandled) const
 
 	const BitmapFontPtr& font = getFont(MEDIUM_FONT);
 	int panelTextY = textY;
-	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
-		const UINode* nodePtr = *i;
+	int cursorX, cursorY;
+	UI::get().getCursorPosition(cursorX, cursorY);
+	for (const UINode* nodePtr : _nodes) {
 		nodePtr->renderDebug(x + panelX, y + panelY, panelTextY, focusHandled);
 		if (focusHandled || !nodePtr->hasFocus()) {
 			continue;
 		}
 		const std::string debugInfo = "[id=" + nodePtr->getId() + "]";
-		_frontend->renderFilledRect(x + panelX - 1, panelTextY + panelY + 1, font->getTextWidth(debugInfo) + 2, font->getTextHeight(debugInfo) + 2, colorGrayAlpha);
-		font->print(debugInfo, colorCyan, x + panelX, panelTextY + panelY);
+		_frontend->renderFilledRect(20 + cursorX - 1, cursorY - 1, font->getTextWidth(debugInfo) + 2, font->getTextHeight(debugInfo) + 2, colorGrayAlpha);
+		font->print(debugInfo, colorBlack, 20 + cursorX, cursorY, false);
 		panelTextY += font->getTextHeight(debugInfo);
 		focusHandled = true;
 	}
 
-	if (focusHandled) {
-		return true;
-	}
-
 	const Color *colorBox = &colorGreen;
-	const Color *colorCenter = &colorYellow;
-	const Color *colorLeft = &colorBlue;
-	if (hasFocus()) {
+	const bool focus = hasFocus();
+	if (focus) {
 		colorBox = &colorRed;
-		colorCenter = &colorRed;
-		colorLeft = &colorRed;
 	}
 
 	renderRect(x + getRenderX(false), y + getRenderY(false), w, h, *colorBox);
 	if (!fequals(_padding, 0.0f)) {
 		renderRect(x + panelX, y + panelY, getRenderWidth(), getRenderHeight(), *colorBox);
 	}
-	renderFilledRect(x + getRenderCenterX(), y + getRenderCenterY(), 4, 4, *colorCenter);
-	renderFilledRect(x + panelX, y + panelY, 4, 4, *colorLeft);
+	if (focus) {
+		renderFilledRect(x + getRenderCenterX(), y + getRenderCenterY(), 4, 4, colorRed);
+		renderFilledRect(x + panelX, y + panelY, 4, 4, colorRed);
+	}
 
 	return true;
 }
