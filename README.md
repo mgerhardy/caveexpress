@@ -73,7 +73,7 @@ Download from [github releases](https://github.com/mgerhardy/caveexpress/release
 
 ## TextureAtlas
 
-The texture atlas is created with TexturePacker 3.9.4, the physical shapes with box2deditor
+The texture atlas is created with TexturePacker 3.9.4, the physical shapes with [box2deditor](https://github.com/mgerhardy/box2d-editor)
 
 To convert the `tps` files into a texture atlas and the lua sprite definition, you can either use TexturePacker - or the bundled opensource tool `textureatlas`.
 
