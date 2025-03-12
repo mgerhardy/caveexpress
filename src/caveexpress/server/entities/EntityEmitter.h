@@ -10,7 +10,7 @@ class Map;
 
 class EntityEmitter: public IEntity {
 private:
-	// the position of the emitter
+	// the grid position of the emitter
 	float _x;
 	float _y;
 	// the overall amount of emits before this emitter will get removed

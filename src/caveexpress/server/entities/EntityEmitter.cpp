@@ -11,6 +11,8 @@
 #include "caveexpress/server/entities/Stone.h"
 #include "caveexpress/server/entities/Package.h"
 #include "caveexpress/server/entities/PackageTarget.h"
+#include "common/Log.h"
+#include <glm/common.hpp>
 
 namespace caveexpress {
 
@@ -34,9 +36,16 @@ b2Vec2 EntityEmitter::getRealPos (const EntityType &entityType) const
 {
 	const b2Vec2 size(entityType.width, entityType.height);
 	b2Vec2 pos;
-	// TODO: _x and _y is the gridpos - not the center of the emitter body.
 	pos.x = _x + size.x / 2.0f;
-	pos.y = _y + ceilf(size.y - EPSILON) - size.y / 2.0f;
+	const float fract = glm::fract(size.y);
+	if (fract > 0.0f) {
+		pos.y = _y + _size.y - size.y / 2.0f;
+	} else {
+		pos.y = _y + size.y / 2.0f;
+	}
+	Log::trace(LOG_GAMEIMPL, "%s: pos: %f:%f x:%f, y:%f (size: %f:%f) / (_size: %f:%f)", entityType.name.c_str(), pos.x,
+			   pos.y, _x, _y, size.x, size.y, _size.x, _size.y);
+
 	return pos;
 }
 
