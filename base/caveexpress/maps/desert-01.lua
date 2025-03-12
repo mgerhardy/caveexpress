@@ -555,7 +555,7 @@ function initMap()
 	map:addEmitter("npc-mammut", 12.000000, 10.000000, 1, 0, "")
 	map:addEmitter("item-stone", 21.000000, 4.317583, 1, 0, "")
 	map:addEmitter("item-stone", 25.000000, 3.317583, 1, 0, "")
-	map:addEmitter("npc-blowing", 37.000000, 10.800000, 1, 0, "right=false")
+	map:addEmitter("npc-blowing", 40, 11, 1, 0, "right=false")
 	map:addEmitter("tree", 43.000000, 9.000000, 1, 0, "")
 
 	map:addCave("tile-cave-desert-02", 2.000000, 5.000000, "", 3000)
