@@ -2,8 +2,10 @@ set(UNITTESTS OFF)
 set(TOOLS OFF)
 set(USE_BUILTIN ON)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-warning-option -Wno-warn-absolute-paths")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unknown-warning-option -Wno-warn-absolute-paths")
+set(PORTS "--use-port=sdl2_mixer --use-port=sdl2 --use-port=sdl2_net --use-port=sdl2_image:formats=png")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-warning-option -Wno-warn-absolute-paths ${PORTS}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unknown-warning-option -Wno-warn-absolute-paths ${PORTS}")
 # -s ALLOW_MEMORY_GROWTH=1 -s ASSERTIONS=1 --memory-init-file 0
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s WARN_ON_UNDEFINED_SYMBOLS=1")
@@ -20,7 +22,7 @@ else()
 endif()
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s DEAD_FUNCTIONS=\"['_glPushClientAttrib','_glPopClientAttrib','_glPointSize']\"")
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s LEGACY_GL_EMULATION=1")
-#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O2")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O2")
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --js-library contrib/installer/html5/lua.js")
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --memory-init-file 1")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lidbfs.js -sSTACK_SIZE=2048576 -sFETCH=1 -sFULL_ES3=1")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lidbfs.js -sSTACK_SIZE=2048576 -sFETCH=1 -sFULL_ES3=1 ${PORTS}")
