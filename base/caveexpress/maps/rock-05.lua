@@ -1,5 +1,5 @@
 function getName()
-	return "Rock 5 Flying dino"
+	return "Rock 5 Flying dino 2pkg"
 end
 
 function initMap()
@@ -137,7 +137,7 @@ function initMap()
 	map:setSetting("packagetransfercount", "2")
 	map:addStartPosition("3", "2")
 	map:setSetting("points", "100")
-	map:setSetting("referencetime", "20")
+	map:setSetting("referencetime", "25")
 	map:setSetting("theme", "rock")
 	map:setSetting("waterheight", "0.8")
 	map:setSetting("waterchangespeed", "0")

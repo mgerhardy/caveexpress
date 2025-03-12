@@ -1,5 +1,5 @@
 function getName()
-	return "Rock 2 blow"
+	return "Rock 2 blow 4pkg"
 end
 
 function initMap()

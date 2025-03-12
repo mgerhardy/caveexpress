@@ -1,5 +1,5 @@
 function getName()
-	return "Rock 6 underwater 3pkg"
+	return "Rock 6 dive 3pkg"
 end
 
 function onMapLoaded()
@@ -192,7 +192,7 @@ function initMap()
 	end
 	map:addStartPosition("6", "5")
 	map:setSetting("points", "100")
-	map:setSetting("referencetime", "40")
+	map:setSetting("referencetime", "50")
 	map:setSetting("theme", "rock")
 	map:setSetting("waterchangespeed", "0")
 	map:setSetting("waterfallingdelay", "0")
