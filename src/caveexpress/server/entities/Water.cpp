@@ -118,7 +118,7 @@ void Water::updateFixtures ()
 			// find relative velocity between object and fluid at edge midpoint
 			b2Vec2 velDir = entityBody->GetLinearVelocityFromWorldPoint(midPoint)
 					- waterBody->GetLinearVelocityFromWorldPoint(midPoint);
-			const float maxVel = 1.0f;
+			const float maxVel = 4.0f;
 			const float vel = std::min(maxVel, velDir.Normalize());
 
 			b2Vec2 edge = v1 - v0;
