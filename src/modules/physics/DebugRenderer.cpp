@@ -145,12 +145,11 @@ void DebugRenderer::DrawSolidCircle (const b2Vec2& center, float radius, const b
 
 void DebugRenderer::DrawPoint (const b2Vec2& p, float size, const b2Color& color)
 {
+	size = std::max(size, 1.0f);
 	const Color rgba = { color.r, color.g, color.b, 0.5f };
-	const int minx = (int)VX(p.x - size / 2.0f);
-	const int maxx = (int)VX(p.x + size / 2.0f);
-	const int miny = (int)VY(p.y - size / 2.0f);
-	const int maxy = (int)VY(p.y + size / 2.0f);
-	_frontend->renderFilledRect(minx, miny, maxx - minx, maxy - miny, rgba);
+	const int minx = (int)(VX(p.x) - size / 2.0f);
+	const int miny = (int)(VY(p.y) - size / 2.0f);
+	_frontend->renderFilledRect(minx, miny, (int)size, (int)size, rgba);
 }
 
 void DebugRenderer::DrawSegment (const b2Vec2& p1, const b2Vec2& p2, const b2Color& color)
