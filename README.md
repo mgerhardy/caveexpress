@@ -24,6 +24,8 @@ Features:
 * Built-in mapeditor
 * Physics-based gameplay
 
+Online version: [caveexpress](https://mgerhardy.github.io/caveexpress/caveexpress.html)
+
 ## CavePacker
 
 ![CavePacker](https://raw.githubusercontent.com/mgerhardy/caveexpress/master/contrib/assets/media/cavepacker/screenshot-microban3.png)
@@ -42,6 +44,8 @@ Features:
 * Built-in mapeditor
 
 CavePacker includes a map editor. You can start it by executing it via `cavepacker -ui_push editor`
+
+Online version: [cavepacker](https://mgerhardy.github.io/caveexpress/cavepacker.html)
 
 ## Installation
 
