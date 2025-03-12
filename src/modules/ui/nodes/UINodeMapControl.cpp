@@ -81,9 +81,11 @@ void UINodeMapControl::update (uint32_t deltaTime)
 	}
 }
 
-void UINodeMapControl::renderDebug (int x, int y, int textY) const
+bool UINodeMapControl::renderDebug (int x, int y, int textY, bool focusHandled) const
 {
-	UINode::renderDebug(x, y, textY);
+	if (!UINode::renderDebug(x, y, textY, focusHandled)) {
+		return false;
+	}
 
 	const int cx = getRenderCenterX();
 	const int cy = getRenderCenterY();
@@ -105,6 +107,7 @@ void UINodeMapControl::renderDebug (int x, int y, int textY) const
 			renderLine(cx, cy, cx, cy + width, colorBrightBlue);
 		}
 	}
+	return true;
 }
 
 void UINodeMapControl::onControllerDeviceAdded (uint32_t id)

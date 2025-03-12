@@ -37,7 +37,7 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 	}
 	{
 		const AutoBorder b(this, _currentY);
-		addKey("SHIFT");
+		addKey(tr("SHIFT"));
 		addTexture("icon-plus");
 		addKey("+");
 		addTexture("icon-result");

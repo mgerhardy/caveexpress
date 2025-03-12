@@ -182,7 +182,7 @@ protected:
 	void renderFilledRect (int x, int y, int w, int h, const Color& rgba) const;
 	void renderLine (int x1, int y1, int x2, int y2, const Color& rgba = colorNull) const;
 
-	virtual void renderDebug (int x, int y, int textY) const;
+	virtual bool renderDebug (int x, int y, int textY, bool focusHandled) const;
 
 	inline bool checkAABB (float x, float y, float aabbX, float aabbY, float aabbW, float aabbH) const
 	{

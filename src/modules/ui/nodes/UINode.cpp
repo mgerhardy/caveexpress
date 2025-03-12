@@ -1,4 +1,5 @@
 #include "UINode.h"
+#include "common/Math.h"
 #include "ui/UI.h"
 #include "common/CommandSystem.h"
 #include "common/ConfigManager.h"
@@ -323,10 +324,7 @@ void UINode::renderTop (int x, int y) const
 		t.font->print(t.text, colorWhite, fontX, fontY);
 	}
 
-	const bool debug = Config.isDebugUI();
-	const bool focus = hasFocus();
-	if (debug && focus)
-		renderDebug(x, y, y + 20);
+	renderDebug(x, y, y + 20, false);
 
 	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
 		const UINode* nodePtr = *i;
@@ -345,40 +343,54 @@ void UINode::render (int x, int y) const
 	renderTop(x, y);
 }
 
-void UINode::renderDebug (int x, int y, int textY) const
+bool UINode::renderDebug (int x, int y, int textY, bool focusHandled) const
 {
+	const bool debug = Config.isDebugUI();
+	if (!debug) {
+		return false;
+	}
+
 	const int panelX = getRenderX();
 	const int panelY = getRenderY();
 	const int w = getRenderWidth(false);
 	const int h = getRenderHeight(false);
 
-	const Color* color[5];
-	color[0] = &colorGreen;
-	color[1] = &colorBlue;
-	color[2] = &colorRed;
-	color[3] = &colorYellow;
-	color[4] = &colorCyan;
-
-	const int index = (panelX * 22 * h + panelY * 23 * w) % 5;
-	renderRect(x + getRenderX(false), y + getRenderY(false), w, h, *color[index]);
-	if (!fequals(_padding, 0.0f)) {
-		renderRect(x + panelX, y + panelY, getRenderWidth(), getRenderHeight(), *color[index]);
-	}
-	renderFilledRect(x + getRenderCenterX(), y + getRenderCenterY(), 4, 4, colorRed);
-	renderFilledRect(x + panelX, y + panelY, 4, 4, colorBlue);
-
 	const BitmapFontPtr& font = getFont(MEDIUM_FONT);
 	int panelTextY = textY;
 	for (UINodeListConstIter i = _nodes.begin(); i != _nodes.end(); ++i) {
 		const UINode* nodePtr = *i;
-		if (!nodePtr->hasFocus())
+		nodePtr->renderDebug(x + panelX, y + panelY, panelTextY, focusHandled);
+		if (focusHandled || !nodePtr->hasFocus()) {
 			continue;
-		nodePtr->renderDebug(x + panelX, y + panelY, panelTextY);
+		}
 		const std::string debugInfo = "[id=" + nodePtr->getId() + "]";
-		_frontend->renderFilledRect(x - 1, panelTextY + 1, font->getTextWidth(debugInfo) + 2, font->getTextHeight(debugInfo) + 2, colorGrayAlpha);
-		font->print(debugInfo, colorCyan, x, panelTextY);
+		_frontend->renderFilledRect(x + panelX - 1, panelTextY + panelY + 1, font->getTextWidth(debugInfo) + 2, font->getTextHeight(debugInfo) + 2, colorGrayAlpha);
+		font->print(debugInfo, colorCyan, x + panelX, panelTextY + panelY);
 		panelTextY += font->getTextHeight(debugInfo);
+		focusHandled = true;
 	}
+
+	if (focusHandled) {
+		return true;
+	}
+
+	const Color *colorBox = &colorGreen;
+	const Color *colorCenter = &colorYellow;
+	const Color *colorLeft = &colorBlue;
+	if (hasFocus()) {
+		colorBox = &colorRed;
+		colorCenter = &colorRed;
+		colorLeft = &colorRed;
+	}
+
+	renderRect(x + getRenderX(false), y + getRenderY(false), w, h, *colorBox);
+	if (!fequals(_padding, 0.0f)) {
+		renderRect(x + panelX, y + panelY, getRenderWidth(), getRenderHeight(), *colorBox);
+	}
+	renderFilledRect(x + getRenderCenterX(), y + getRenderCenterY(), 4, 4, *colorCenter);
+	renderFilledRect(x + panelX, y + panelY, 4, 4, *colorLeft);
+
+	return true;
 }
 
 void UINode::renderRect (int x, int y, int w, int h, const Color& color) const

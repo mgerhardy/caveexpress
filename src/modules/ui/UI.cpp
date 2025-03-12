@@ -322,8 +322,7 @@ void UI::render ()
 		_frontend->renderImage(_mouseCursor.get(), _cursorX, _cursorY, w, h, 0, 1.0f);
 	}
 
-	const bool debug = Config.getConfigVar("debugui")->getBoolValue();
-	if (debug) {
+	if (Config.isDebugUI()) {
 		const BitmapFontPtr& font = getFont();
 		const std::string s = string::format("%i:%i", _cursorX, _cursorY);
 		font->print(s, colorWhite, 0, 0);

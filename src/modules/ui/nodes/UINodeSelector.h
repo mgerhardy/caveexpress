@@ -409,11 +409,14 @@ public:
 		_cursorY = y;
 	}
 
-	void renderDebug (int x, int y, int textY) const override
+	bool renderDebug (int x, int y, int textY, bool focusHandled) const override
 	{
-		Super::renderDebug(x, y, textY);
+		if (!Super::renderDebug(x, y, textY, focusHandled)) {
+			return false;
+		}
 		const BitmapFontPtr& font = getFont(MEDIUM_FONT);
 		font->print(string::format("x: %i, y: %i, index: %i", _cursorX, _cursorY, _selectedIndex), colorWhite, x, textY);
+		return true;
 	}
 
 	bool runFocusNode () override
