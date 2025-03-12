@@ -1,8 +1,0 @@
----
-Checks:          'clang-diagnostic-*,clang-analyzer-*,performance-*,portability-*,bugprone-*'
-CheckOptions:
-  - key:   readability-identifier-naming.MethodCase
-    value: camelBack
-  - key:   readability-identifier-naming.ParameterCase
-    value: camelBack
-...

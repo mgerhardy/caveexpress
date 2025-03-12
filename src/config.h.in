@@ -1,5 +1,0 @@
-#cmakedefine HAVE_SYSLOG_H 1
-#cmakedefine HAVE_EXECINFO_H 1
-#cmakedefine HAVE_CLOCKGETTIME 1
-#cmakedefine HAVE_NCURSES_H 1
-#cmakedefine HD_VERSION 1

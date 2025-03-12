@@ -1,8 +1,0 @@
-set(texture_SRCS Texture.cpp TextureCache.cpp)
-add_library(texture ${texture_SRCS})
-set_target_properties(texture PROPERTIES FOLDER texture)
-set(LIBS common)
-if (NOT EMSCRIPTEN)
-	list(APPEND LIBS SDL2_image)
-endif()
-cp_target_link_libraries(TARGET texture LIBS ${LIBS})
