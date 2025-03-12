@@ -53,6 +53,10 @@ protected:
 	void setSDLColor (const Color& rgba);
 	void getTrimmed (const Texture* texture, int& x, int& y, int& w, int& h) const;
 	void initControllerAndHaptic ();
+
+	virtual void newFrameImGui();
+	virtual void renderImGui();
+	virtual void shutdownImGui();
 public:
 	explicit SDLFrontend (std::shared_ptr<IConsole> console);
 	virtual ~SDLFrontend ();
@@ -65,7 +69,7 @@ public:
 	virtual void setColor (const Color& rgba) override;
 
 	virtual void renderBegin ();
-	virtual void renderEnd ();
+	virtual void renderEnd (bool imgui = true);
 
 	// IEventObserver
 	virtual void onWindowResize () override;

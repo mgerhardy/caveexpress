@@ -626,9 +626,12 @@ void AbstractGLFrontend::renderBegin ()
 	_drawCalls = 0;
 }
 
-void AbstractGLFrontend::renderEnd ()
+void AbstractGLFrontend::renderEnd (bool imgui)
 {
 	renderBatches();
+	if (imgui) {
+		renderImGui();
+	}
 #ifdef DEBUG
 	Log::debug(LOG_GFX, "%i drawcalls", _drawCalls);
 #endif

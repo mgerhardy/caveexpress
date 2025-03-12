@@ -56,7 +56,6 @@ private:
 	EventHandler *_eventHandler;
 	IFrontend *_frontend;
 	TexturePtr _mouseCursor;
-	ConfigVarPtr _mouseSpeed;
 
 	typedef std::unordered_map<std::string, UIWindow*> UIWindowMap;
 	typedef UIWindowMap::const_iterator UIWindowMapConstIter;
@@ -97,6 +96,7 @@ private:
 	bool _delayedPop;
 	bool _noPushAllowed;
 	bool _shutdown;
+	bool _initialized;
 	bool _motionFinger;
 
 	bool _cursor;

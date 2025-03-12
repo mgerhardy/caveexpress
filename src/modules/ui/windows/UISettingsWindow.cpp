@@ -135,10 +135,6 @@ void UISettingsWindow::addSections()
 		addSliderEntry(_settingsSound, tr("Music volume"), "musicvolume", 0, 128, 1);
 	}
 
-	if (_frontend->hasMouse()) {
-		addSliderEntry(_settingsInput, tr("Mouse speed"), "mousespeed", 0.1f, 3.0f, 0.1f);
-	}
-
 	addTextInputEntry(_settingsGame, tr("Username"), "name");
 
 	addToggleEntry(_settingsInput, tr("Controller trigger"), "triggeraxis",

@@ -42,6 +42,7 @@ void GL1Frontend::initRenderer ()
 
 void GL1Frontend::renderBatches ()
 {
+	Super::renderBatches();
 #ifdef SDL_VIDEO_OPENGL
 	uint8_t *start = (uint8_t*)_vertices;
 	glVertexPointer(2, GL_FLOAT, sizeof(Vertex), GL_CALC_OFFSET(start + offsetof(Vertex, x)));

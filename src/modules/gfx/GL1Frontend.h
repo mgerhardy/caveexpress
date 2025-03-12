@@ -3,6 +3,8 @@
 #include "AbstractGLFrontend.h"
 
 class GL1Frontend: public AbstractGLFrontend {
+private:
+	using Super = AbstractGLFrontend;
 protected:
 	void setColorPointer (const Color& color, int amount);
 public:

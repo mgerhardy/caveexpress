@@ -1,9 +1,13 @@
 #include "GL3Frontend.h"
+#include "gfx/SDLFrontend.h"
+#include "imgui_impl_sdl2.h"
 #include "textures/TextureCoords.h"
 #include "common/Log.h"
 #include "common/System.h"
 #include "common/FileSystem.h"
 #include <SDL.h>
+#include "imgui.h"
+#include "imgui_impl_opengl3.h"
 
 GL3Frontend::GL3Frontend (std::shared_ptr<IConsole> console) :
 		AbstractGLFrontend(console), _vao(0u), _vbo(0u), _waterNoise(0)
@@ -52,6 +56,7 @@ bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fil
 void GL3Frontend::renderBatches()
 {
 	renderBatchesWithShader(_shader);
+	Super::renderBatches();
 }
 
 void GL3Frontend::renderBatchesWithShader (Shader& shader)
@@ -155,4 +160,23 @@ void GL3Frontend::initRenderer () {
 		SDL_FreeSurface(textureSurface);
 		Log::info(LOG_GFX, "Uploaded water noise with texnum %u", _waterNoise);
 	}
+
+	ImGui_ImplSDL2_InitForOpenGL(_window, _context);
+	ImGui_ImplOpenGL3_Init(nullptr);
+}
+
+void GL3Frontend::newFrameImGui() {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+}
+
+void GL3Frontend::renderImGui() {
+	if (ImGui::GetCurrentContext() == nullptr)
+		return;
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void GL3Frontend::shutdownImGui() {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
 }

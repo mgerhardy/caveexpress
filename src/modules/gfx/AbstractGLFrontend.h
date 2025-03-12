@@ -81,13 +81,13 @@ protected:
 	void renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum);
 	SDL_Surface* loadTextureIntoSurface(const std::string& file);
 	void renderBatchBuffers();
-
+	virtual void renderBatches () {}
 public:
 	explicit AbstractGLFrontend (std::shared_ptr<IConsole> console);
 	virtual ~AbstractGLFrontend ();
 
 	void renderBegin () override;
-	void renderEnd () override;
+	void renderEnd (bool imgui = true) override;
 
 	void makeScreenshot (const std::string& filename) override;
 	int getCoordinateOffsetX () const override;

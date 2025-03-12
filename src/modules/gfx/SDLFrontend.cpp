@@ -18,6 +18,10 @@
 #include <SDL_assert.h>
 #include <limits.h>
 
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_sdlrenderer2.h"
+
 struct TextureData {
 	void* unused;
 };
@@ -152,7 +156,12 @@ void SDLFrontend::onInit ()
 	const int x = getWidth() / 2 - ptr->getWidth() / 2;
 	const int y = getHeight() / 2 - ptr->getHeight() / 2;
 	renderImage(ptr.get(), x, y, ptr->getWidth(), ptr->getHeight(), 0);
-	renderEnd();
+	renderEnd(false);
+}
+
+void SDLFrontend::shutdownImGui() {
+	ImGui_ImplSDLRenderer2_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
 }
 
 void SDLFrontend::shutdown ()
@@ -163,8 +172,10 @@ void SDLFrontend::shutdown ()
 		_eventHandler->removeObserver(this);
 		_eventHandler = nullptr;
 	}
-	UI::get().shutdown();
 	SoundControl.close();
+
+	shutdownImGui();
+	ImGui::DestroyContext();
 }
 
 bool SDLFrontend::handlesInput () const
@@ -395,8 +406,11 @@ void SDLFrontend::renderBegin ()
 		sdlCheckError();
 }
 
-void SDLFrontend::renderEnd ()
+void SDLFrontend::renderEnd (bool imgui)
 {
+	if (imgui) {
+		renderImGui();
+	}
 	SDL_assert(_renderer);
 	SDL_RenderPresent(_renderer);
 }
@@ -426,6 +440,8 @@ bool SDLFrontend::renderTarget (RenderTarget* target)
 void SDLFrontend::render ()
 {
 	renderBegin();
+	newFrameImGui();
+
 	UI::get().render();
 	_console->render();
 
@@ -449,6 +465,19 @@ void SDLFrontend::render ()
 
 	renderEnd();
 	lastDrawCalls = _drawCalls;
+}
+
+void SDLFrontend::newFrameImGui()
+{
+	ImGui_ImplSDLRenderer2_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+}
+
+void SDLFrontend::renderImGui()
+{
+	if (ImGui::GetCurrentContext() == nullptr)
+		return;
+	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), _renderer);
 }
 
 void SDLFrontend::makeScreenshot (const std::string& filename)
@@ -491,9 +520,6 @@ void SDLFrontend::setCursorPosition (int x, int y)
 	x = clamp(x, 0, _width);
 	y = clamp(y, 0, _height);
 	UI::get().setCursorPosition(x, y);
-	if (!SDL_GetRelativeMouseMode() && Config.isGrabMouse()) {
-		SDL_WarpMouseInWindow(_window, x, y);
-	}
 }
 
 void SDLFrontend::showCursor (bool show)
@@ -649,6 +675,15 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 
 	SDL_DisableScreenSaver();
 
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+	io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+
+	ImGui::StyleColorsDark();
+
 	initRenderer();
 	resetColor();
 
@@ -671,10 +706,7 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	// some platforms may override or hardcode the resolution - so
 	// we have to query it here to get the resolution
 	SDL_GetWindowSize(_window, &width, &height);
-	if (SDL_SetRelativeMouseMode(SDL_TRUE) == -1)
-		Log::error(LOG_GFX, "no relative mouse mode support");
 
-	SDL_ShowCursor(0);
 	Log::info(LOG_GFX, "resolution: %dx%d", width, height);
 	setVSync(ConfigManager::get().isVSync());
 
@@ -753,6 +785,10 @@ void SDLFrontend::initRenderer ()
 	SDL_RenderSetLogicalSize(_renderer, getWidth(), getHeight());
 
 	_softwareRenderer = (ri.flags & SDL_RENDERER_SOFTWARE);
+
+	// Setup Platform/Renderer backends
+	ImGui_ImplSDL2_InitForSDLRenderer(_window, _renderer);
+	ImGui_ImplSDLRenderer2_Init(_renderer);
 
 	Log::info(LOG_GFX, "got renderer: %s", ri.name);
 	Log::info(LOG_GFX, "max texture resolution: %i:%i", ri.max_texture_width, ri.max_texture_height);

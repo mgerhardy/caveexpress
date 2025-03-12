@@ -27,7 +27,7 @@ set(common_SRCS
 	ByteStream.cpp
 )
 
-set(LIBS lua::lua SDL2::SDL2 SQLite::SQLite3 box2d glm)
+set(LIBS lua::lua SDL2::SDL2 SQLite::SQLite3 box2d glm imgui)
 if(WINDOWS)
 	list(APPEND LIBS SDL2::SDL2main)
 	set(ports_SRCS ports/Windows.cpp)

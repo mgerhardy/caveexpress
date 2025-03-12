@@ -4,7 +4,7 @@ add_subdirectory(glm)
 add_subdirectory(yajl)
 
 if(UNITTESTS)
-    add_subdirectory(gtest)
+	add_subdirectory(gtest)
 endif()
 
 if (APPLE OR WIN32)
@@ -109,3 +109,5 @@ else()
 	find_package(SDL2_net REQUIRED)
 	find_package(box2d REQUIRED)
 endif()
+
+add_subdirectory(imgui)

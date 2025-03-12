@@ -4,6 +4,9 @@
 #include "common/ConfigManager.h"
 #include <SDL.h>
 
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
+
 EventHandler::EventHandler () : _multiGesture(false)
 {
 	//SDL_JoystickEventState(SDL_DISABLE);
@@ -40,6 +43,14 @@ inline std::string EventHandler::getControllerButtonName (uint8_t button) const
 
 bool EventHandler::handleEvent (SDL_Event &event)
 {
+	if (ImGui::GetCurrentContext() != nullptr) {
+		if (ImGui_ImplSDL2_ProcessEvent(&event)) {
+			if (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard) {
+				return true;
+			}
+		}
+	}
+
 	switch (event.type) {
 	case SDL_TEXTINPUT:
 		textInput(std::string(event.text.text));
@@ -55,9 +66,6 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		break;
 	case SDL_MOUSEMOTION: {
 		if (event.motion.which == SDL_TOUCH_MOUSEID)
-			break;
-		SDL_Window *window = SDL_GetWindowFromID(event.motion.windowID);
-		if (!(SDL_GetWindowFlags(window) & SDL_WINDOW_INPUT_FOCUS))
 			break;
 		mouseMotion(event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel);
 		break;

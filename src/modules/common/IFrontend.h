@@ -90,7 +90,6 @@ public:
 	virtual void toggleGrabMouse () {}
 	virtual bool isFullscreen () = 0;
 	virtual void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha) = 0;
-	virtual void renderBatches () {}
 	virtual void setCursorPosition (int x, int y) = 0;
 	virtual bool isSoftwareRenderer () const { return false; }
 	virtual void showCursor (bool show) = 0;

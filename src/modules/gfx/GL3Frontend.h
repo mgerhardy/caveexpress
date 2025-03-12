@@ -4,6 +4,8 @@
 #include "gfx/Shader.h"
 
 class GL3Frontend: public AbstractGLFrontend {
+private:
+	using Super = AbstractGLFrontend;
 protected:
 	GLuint _vao;
 	GLuint _vbo;
@@ -13,6 +15,10 @@ protected:
 	Shader _waterShader;
 
 	void renderBatchesWithShader (Shader& shader);
+
+	void newFrameImGui() override;
+	void shutdownImGui() override;
+	void renderImGui() override;
 public:
 	explicit GL3Frontend (std::shared_ptr<IConsole> console);
 	virtual ~GL3Frontend ();

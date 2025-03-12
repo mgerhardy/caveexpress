@@ -8,6 +8,7 @@
 /build
 /tiledgenerator
 /textureatlas
+/imgui.ini
 
 # also binaries - but more generic
 /*.exe

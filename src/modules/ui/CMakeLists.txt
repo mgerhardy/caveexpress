@@ -50,4 +50,4 @@ set(ui_SRCS
 )
 add_library(ui ${ui_SRCS})
 set_target_properties(ui PROPERTIES FOLDER ui)
-cp_target_link_libraries(TARGET ui LIBS texture sprite sound campaign game service)
+cp_target_link_libraries(TARGET ui LIBS imgui texture sprite sound campaign game service)

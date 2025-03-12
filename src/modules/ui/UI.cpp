@@ -18,23 +18,11 @@
 #include <SDL.h>
 #include <SDL_stdinc.h>
 
-static inline int coordinateScaleX(int x, float scale, IFrontend* frontend) {
-	const float offset = (float)(x + frontend->getCoordinateOffsetX());
-	const float offsetScaled = offset / frontend->getWidthScale();
-	const int scaledCoord = offsetScaled * scale;
-	return scaledCoord;
-}
-
-static inline int coordinateScaleY(int y, float scale, IFrontend* frontend) {
-	const float offset = (float)(y + frontend->getCoordinateOffsetY());
-	const float offsetScaled = offset / frontend->getHeightScale();
-	const int scaledCoord = offsetScaled * scale;
-	return scaledCoord;
-}
+#include "imgui.h"
 
 UI::UI () :
 		_serviceProvider(nullptr), _eventHandler(nullptr), _frontend(nullptr), _cursorX(-1), _cursorY(-1), _rotateFonts(true), _restart(
-				false), _delayedPop(false), _noPushAllowed(false), _shutdown(false), _motionFinger(false), _cursor(true), _showCursor(
+				false), _delayedPop(false), _noPushAllowed(false), _shutdown(false), _initialized(false), _motionFinger(false), _cursor(true), _showCursor(
 				false), _time(0), _connectedControllers(0) {
 	const int size = SDL_arraysize(_controllerFocusChange);
 	for (int i = 0; i < size; ++i) {
@@ -86,8 +74,6 @@ void UI::shutdown ()
 {
 	_shutdown = true;
 	System.track("step", "shutdownui");
-	// we might have temp windows on the stack
-	popMain();
 	for (UIWindowMapIter i = _windows.begin(); i != _windows.end(); ++i) {
 		delete i->second;
 	}
@@ -163,6 +149,7 @@ const std::string UI::translate (const std::string& in) const
 
 void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFrontend &frontend)
 {
+	_initialized = true;
 	System.track("step", "initui");
 	const std::string& language = Config.getLanguage();
 	if (!initLanguage(language))
@@ -174,9 +161,8 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 	Commands.registerCommand(CMD_UI_FOCUS_NEXT, bindFunction(UI::focusNext));
 	Commands.registerCommand(CMD_UI_FOCUS_PREV, bindFunction(UI::focusPrev));
 	Commands.registerCommandVoid(CMD_UI_EXECUTE, bindFunctionVoid(UI::runFocusNode));
-	_mouseSpeed = Config.getConfigVar("mousespeed", "1.0");
 	_showCursor = Config.getConfigVar("showcursor", System.wantCursor() ? "true" : "false", true)->getBoolValue();
-	_cursor = _showCursor;
+	showCursor(_showCursor);
 	if (_cursor)
 		Log::info(LOG_UI, "enable cursor");
 	else
@@ -247,10 +233,11 @@ void UI::showCursor (bool show)
 		return;
 	}
 	if (show)
-		Log::debug(LOG_UI, "show the cursor");
+		Log::error(LOG_UI, "show the cursor");
 	else
-		Log::debug(LOG_UI, "hide the cursor");
+		Log::error(LOG_UI, "hide the cursor");
 	_cursor = show;
+	SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
 }
 
 bool UI::isCursorVisible () const
@@ -297,6 +284,14 @@ void UI::renderProgress () const
 
 void UI::render ()
 {
+	if (!_initialized) {
+		return;
+	}
+	ImGui::NewFrame();
+
+	// static bool show_demo_window = true;
+	// ImGui::ShowDemoWindow(&show_demo_window);
+
 	std::vector<UIWindow*> renderOrder;
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
@@ -311,15 +306,9 @@ void UI::render ()
 		(*i)->render(0, 0);
 	}
 
-	// TODO: move cursor and progress bar into frontend
+	// TODO: move progress bar into frontend
 	if (_progress.active) {
 		renderProgress();
-	}
-
-	if (_cursorX != -1 && _cursorY != -1 && _cursor) {
-		const int w = _mouseCursor->getWidth();
-		const int h = _mouseCursor->getHeight();
-		_frontend->renderImage(_mouseCursor.get(), _cursorX, _cursorY, w, h, 0, 1.0f);
 	}
 
 	if (Config.isDebugUI()) {
@@ -327,6 +316,8 @@ void UI::render ()
 		const std::string s = string::format("%i:%i", _cursorX, _cursorY);
 		font->print(s, colorWhite, 0, 0, false);
 	}
+
+	ImGui::Render();
 }
 
 void UI::update (uint32_t deltaTime)
@@ -481,10 +472,7 @@ void UI::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY)
 	if (_restart)
 		return;
 
-	const float speedScale = _mouseSpeed->getFloatValue();
-	relX = coordinateScaleX(relX, speedScale, _frontend);
-	relY = coordinateScaleY(relY, speedScale, _frontend);
-	_frontend->setCursorPosition(_cursorX + relX, _cursorY + relY);
+	_frontend->setCursorPosition(x, y);
 	UIStack stack = _stack;
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {
 		UIWindow* window = *i;

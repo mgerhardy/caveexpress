@@ -3,6 +3,7 @@
 #include "network/INetwork.h"
 #include "common/String.h"
 #include "gfx/SDLFrontend.h"
+#include "ui/UI.h"
 #ifdef SDL_VIDEO_OPENGL
 #include "gfx/GL1Frontend.h"
 #endif
@@ -90,10 +91,6 @@ void SDLMainLoop::handleEvent (SDL_Event &event)
 		if (sym == SDLK_RETURN && (mod & KMOD_ALT)) {
 			const int isFullscreen = _frontend->isFullscreen();
 			_frontend->setFullscreen(!isFullscreen);
-		} else if (sym == SDLK_g && (mod & KMOD_CTRL)) {
-			_frontend->toggleGrabMouse();
-		} else if (sym == SDLK_r && (mod & KMOD_CTRL)) {
-			SDL_SetRelativeMouseMode(!SDL_GetRelativeMouseMode() ? SDL_TRUE : SDL_FALSE);
 		}
 	}
 
@@ -122,7 +119,6 @@ void SDLMainLoop::handleEvent (SDL_Event &event)
 		Log::info(LOG_SERVER, "-----");
 		Log::info(LOG_SERVER, "Quitting the game");
 
-		_frontend->shutdown();
 		getGame()->shutdown();
 	}
 }
@@ -374,6 +370,7 @@ void SDLMainLoop::mainLoop (int argc, char **argv)
 		nextFrame += 1000.0 / fpsCap;
 	}
 
+	UI::get().shutdown();
 	_frontend->shutdown();
 	_serviceProvider.shutdown();
 	Config.shutdown();
