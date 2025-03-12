@@ -157,7 +157,7 @@ canvas.emscripten {
 			}
 		};
 		Module['preRun'].push(function() {
-				FS.createFolder('/', 'user_data', true, true)
+				FS.mkdir('/user_data')
 				FS.mount(IDBFS, {}, '/user_data');
 				FS.syncfs(true, function(err) {
 					if (err)

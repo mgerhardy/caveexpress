@@ -7,7 +7,7 @@ if(UNITTESTS)
 	add_subdirectory(gtest)
 endif()
 
-if (APPLE OR WIN32)
+if (APPLE OR WIN32 OR EMSCRIPTEN)
 	FetchContent_Declare(
 		lua
 		GIT_REPOSITORY "https://github.com/marovira/lua"

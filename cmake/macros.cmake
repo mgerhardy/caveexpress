@@ -600,7 +600,7 @@ macro(cp_target_link_libraries)
 
 	cmake_parse_arguments(_LINKLIBS "${_OPTIONS_ARGS}" "${_ONE_VALUE_ARGS}" "${_MULTI_VALUE_ARGS}" ${ARGN} )
 
-	target_link_libraries(${_LINKLIBS_TARGET} PUBLIC ${_LINKLIBS_LIBS})
+	target_link_libraries(${_LINKLIBS_TARGET} ${_LINKLIBS_LIBS})
 endmacro()
 
 macro(cp_set_properties TARGET VARNAME VALUE)
@@ -778,11 +778,9 @@ macro(cp_add_executable)
 
 	if (EMSCRIPTEN)
 		em_link_js_library(${_EXE_TARGET} ${ROOT_DIR}/contrib/installer/html5/library.js)
-		set_target_properties(${_EXE_TARGET} PROPERTIES PROFILING_POSTFIX .html)
-		set_target_properties(${_EXE_TARGET} PROPERTIES RELEASE_POSTFIX .html)
-		set_target_properties(${_EXE_TARGET} PROPERTIES DEBUG_POSTFIX .html)
+		set_target_properties(${_EXE_TARGET} PROPERTIES SUFFIX .html)
 		configure_file(${ROOT_DIR}/contrib/installer/html5/shell.html.in ${CMAKE_CURRENT_BINARY_DIR}/shell.html @ONLY)
-		set_target_properties(${_EXE_TARGET} PROPERTIES LINK_FLAGS "--preload-file ${ROOT_DIR}/${GAME_BASE_DIR}/${_EXE_TARGET}@/ --shell-file ${CMAKE_CURRENT_BINARY_DIR}/shell.html")
+		set_target_properties(${_EXE_TARGET} PROPERTIES LINK_FLAGS "--preload-file ${ROOT_DIR}/${GAME_BASE_DIR}/${_EXE_TARGET}@/${GAME_BASE_DIR}/${_EXE_TARGET}/ --shell-file ${CMAKE_CURRENT_BINARY_DIR}/shell.html")
 	endif()
 
 	if (NOT TESTS)

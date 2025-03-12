@@ -73,11 +73,15 @@ bool Shader::load (const std::string& filename, const std::string& source, Shade
 bool Shader::loadFromFile (const std::string& filename, ShaderType shaderType)
 {
 	FilePtr filePtr = FS.getFileFromURL("shaders://" + filename);
+	if (!filePtr->exists()) {
+		Log::error(LOG_GFX, "could not find file for shader %s", filename.c_str());
+		return false;
+	}
 	char *buffer;
 	const int fileLen = filePtr->read((void **) &buffer);
 	std::unique_ptr<char[]> p(buffer);
 	if (!buffer || fileLen <= 0) {
-		Log::error(LOG_GFX, "could not load shader %s", filename.c_str());
+		Log::error(LOG_GFX, "could not load shader data %s", filename.c_str());
 		return false;
 	}
 
