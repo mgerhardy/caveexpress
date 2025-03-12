@@ -1,5 +1,5 @@
 function getName()
-	return "Rock 7 geyser or underwater 2pkg"
+	return "Rock 7 geyser or dive 2pkg"
 end
 
 function initMap()
@@ -207,7 +207,7 @@ function initMap()
 	map:setSetting("packagetransfercount", "2")
 	map:addStartPosition("2", "2")
 	map:setSetting("points", "150")
-	map:setSetting("referencetime", "30")
+	map:setSetting("referencetime", "35")
 	map:setSetting("theme", "rock")
 	map:setSetting("waterheight", "4")
 	map:setSetting("waterchangespeed", "0")

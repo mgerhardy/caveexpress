@@ -1,5 +1,5 @@
 function getName()
-	return "Rock 4 Aggressive"
+	return "Rock 4 Aggressive 2pkg"
 end
 
 function initMap()

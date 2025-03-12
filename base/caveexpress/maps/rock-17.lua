@@ -1,5 +1,5 @@
 function getName()
-	return "Rock 17 4pkg"
+	return "Rock 17 narrow bird 4pkg"
 end
 
 function initMap()
@@ -170,7 +170,7 @@ function initMap()
 	map:setSetting("packagetransfercount", "4")
 	map:addStartPosition("10", "2")
 	map:setSetting("points", "100")
-	map:setSetting("referencetime", "40")
+	map:setSetting("referencetime", "60")
 	map:setSetting("theme", "rock")
 	map:setSetting("waterheight", "0.5")
 	map:setSetting("waterchangespeed", "0.0")

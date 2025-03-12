@@ -1,5 +1,5 @@
 function getName()
-	return "Ice 21 easy blow to pipe"
+	return "Ice 21 blow to pipe 2pkg"
 end
 
 function onMapLoaded()
@@ -141,7 +141,7 @@ function initMap()
 	map:setSetting("flyingnpc", "false")
 	map:setSetting("gravity", "9.81")
 	map:setSetting("height", "8")
-	map:setSetting("packagetransfercount", "1")
+	map:setSetting("packagetransfercount", "2")
 	map:addStartPosition("7", "3")
 	map:setSetting("points", "100")
 	map:setSetting("referencetime", "30")

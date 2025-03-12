@@ -1,5 +1,5 @@
 function getName()
-	return "Ice 12 2 rhinos bird"
+	return "Ice 12 2 rhinos bird 3pkg"
 end
 
 function initMap()
@@ -189,7 +189,7 @@ function initMap()
 	map:setSetting("packagetransfercount", "3")
 	map:addStartPosition("13", "6")
 	map:setSetting("points", "100")
-	map:setSetting("referencetime", "30")
+	map:setSetting("referencetime", "40")
 	map:setSetting("theme", "ice")
 	map:setSetting("waterheight", "1.1")
 	map:setSetting("waterchangespeed", "0")

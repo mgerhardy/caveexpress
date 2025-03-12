@@ -1,5 +1,5 @@
 function getName()
-	return "Rock 14 tricky rhino"
+	return "Rock 14 tricky rhino 3pkg"
 end
 
 function initMap()
@@ -166,7 +166,7 @@ function initMap()
 	map:setSetting("packagetransfercount", "3")
 	map:addStartPosition("0", "7")
 	map:setSetting("points", "100")
-	map:setSetting("referencetime", "10")
+	map:setSetting("referencetime", "50")
 	map:setSetting("theme", "rock")
 	map:setSetting("waterheight", "3.8")
 	map:setSetting("waterchangespeed", "0")
