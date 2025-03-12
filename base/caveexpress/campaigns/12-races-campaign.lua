@@ -6,3 +6,7 @@ c:setSetting("icon", "icon-campaign-ice")
 c:setSetting("text", "Races")
 -- now add all maps
 c:addMaps("races-01")
+c:addMaps("races-02")
+c:addMaps("races-03")
+c:addMaps("races-04")
+c:addMaps("races-05")

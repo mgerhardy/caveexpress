@@ -109,12 +109,12 @@ Version 2.4 (2016-02-18)
 * Ported to steamlink device
 * Updated tutorial maps to be a little bit easier
 * Changed focus order of some of the buttons
-* Reduced npc flying speed
+* Reduced NPC flying speed
 * Allow to modify the music and sound volume
-* Transfering npcs is now implemented
+* Transfering NPCs is now implemented
 * New campaign
 * The egg makes you invulnerable for some time
-* Flying npc drops egg on death
+* Flying NPC drops egg on death
 * Banana powerup - you can carry more than one package with it
 
 Version 2.5 (2021-04-08 ?)
@@ -126,20 +126,22 @@ Version 2.5 (2021-04-08 ?)
 
 Version 2.6 (2025-not yet released)
 * Two new sceneries: jungle and desert
-* 3 new campaigns with new maps:
-  * jungle (6 maps), desert (4), letters (6), villages (1)
+* 5 New campaigns with new maps (23 total):
+  * jungle (6 maps), desert (5), letters (6), villages (1), races (5)
 * Renamed all maps and campaigns
   * Maps are named uniquely now (for multiplayer) and are starting with campaign name
+* UI map and campaign browsers now bigger, tiles 6 x 4, bigger font and map title shown
 * Gameplay changes
   * Diving, now possible to fall underwater - few later maps use it
   * Possible to fly up with 3 packages, or even with 4 after powerup (banana)
   * Faster flying horizontally (on PC)
-  * Faster npcs (taxi gameplay) - less strict landing, faster walk start, take or drop, announce during walk
-  * Friendly npc don't get dropped when hit from above, they will only fall after a hard hit
+  * Faster NPCs (taxi gameplay) - less strict landing, faster walk start, take or drop, announce during walk
+  * Friendly NPC don't get dropped when hit from above, they will only fall after a hard hit
+  * Faster consuming of packages in target, added sound
 * Changed water color to skyblue
 * Particles
   * Water splashes
   * Rain in jungle
   * Smaller snow and more wobbly
-* Package target sound, on consuming package
 * New palm and desert trees
+* Updated tools, new: textureatlas
