@@ -58,6 +58,9 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	if (success) {
 		Log::info(LOG_COMMON, "load config values");
 		getKeyValueMap(lua, _configVarMap, "settings");
+		for (const auto &entry : _configVarMap) {
+			Log::info(LOG_COMMON, "config value: %s = %s", entry.first.c_str(), entry.second.c_str());
+		}
 		Log::info(LOG_COMMON, "load keybindings");
 		getBindingMap(lua, _keybindings, KEY_CONFIG_KEYBINDINGS, KEYBOARD);
 		Log::info(LOG_COMMON, "load controller bindings");
@@ -116,11 +119,12 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 	Log::info(LOG_COMMON, "controller enabled: %s", _gameController->getValue().c_str());
 	Log::info(LOG_COMMON, "     sound enabled: %s", _soundEnabled->getValue().c_str());
 	Log::info(LOG_COMMON, "     debug enabled: %s", _debug->getValue().c_str());
+	Log::info(LOG_COMMON, "          frontend: %s", getConfigValue(_configVarMap, "frontend")->getValue().c_str());
 
 	Commands.registerCommand("loglevel", bindFunction(ConfigManager::setLogLevel));
 	CommandPtr cmd = Commands.registerCommand(CMD_SETVAR, bindFunction(ConfigManager::setConfig));
 	cmd->setCompleter([&] (const std::string& input, std::vector<std::string>& matches) {
-		for (auto entry : _configVars) {
+		for (const auto &entry : _configVars) {
 			if (!string::startsWith(entry.first, input))
 				continue;
 			matches.push_back(entry.first);
@@ -344,8 +348,13 @@ ConfigVarPtr ConfigManager::getConfigVar (const std::string& name, const std::st
 		if (!create)
 			return ConfigVarPtr();
 		std::string v = _persister->getValue(name);
-		if (v.empty())
+		if (v.empty()) {
+			// if the value is empty, we use the default value
+			Log::debug(LOG_COMMON, "create config var '%s' with default value '%s'", name.c_str(), value.c_str());
 			v = value;
+		} else {
+			Log::debug(LOG_COMMON, "create config var '%s' with value from persister: '%s'", name.c_str(), v.c_str());
+		}
 		ConfigVarPtr p(new ConfigVar(name, v, flags));
 		_configVars[name] = p;
 		return p;
