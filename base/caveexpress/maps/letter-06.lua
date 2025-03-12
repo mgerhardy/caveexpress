@@ -108,10 +108,10 @@ function initMap()
 	map:addTile("tile-ground-02", 11.000000, 8.000000)
 
 	map:addEmitter("tree", 0.000000, 6.000000, 1, 0, "")
-	map:addEmitter("item-stone", 1.000000, 4.317583, 1, 0, "")
-	map:addEmitter("item-apple", 1.000000, 6.410000, 1, 0, "")
+	map:addEmitter("item-stone", 0.000000, 4.417583, 1, 0, "")
+	map:addEmitter("item-apple", 1.500000, 7.000000, 1, 0, "")
 	map:addEmitter("item-apple", 6.000000, 3.410000, 1, 0, "")
-	map:addEmitter("npc-blowing", 7.500000, 3.800000, 1, 0, "right=false")
+	map:addEmitter("npc-blowing", 7.500000, 4.000000, 1, 0, "right=false")
 
 	map:addCave("tile-cave-01", 4.000000, 4.000000, "", 500)
 	map:addCave("tile-cave-02", 5.000000, 1.000000, "", 7000)
