@@ -85,7 +85,7 @@ void UINodeMapEditor::renderHighlightItem (int x, int y) const
 	x += getRenderX() + _highlightItem->gridX * getTileWidth();
 	y += getRenderY() + _highlightItem->gridY * getTileHeight();
 	renderFilledRect(x, y, _font->getTextWidth(str), _font->getTextHeight(str), colorWhite);
-	_font->print(str, _fontColor, x, y);
+	_font->print(str, _fontColor, x, y, false);
 }
 
 void UINodeMapEditor::renderWater (int x, int y) const

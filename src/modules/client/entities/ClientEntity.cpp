@@ -143,10 +143,10 @@ void ClientEntity::render(IFrontend *frontend, Layer layer, int scale, float zoo
 
 		int fontY = _screenPosY;
 		if (!_animation->isNone()) {
-			font->print(_animation->name, colorWhite, _screenPosX, fontY);
+			font->print(_animation->name, colorWhite, _screenPosX, fontY, false);
 			fontY += font->getTextHeight(_animation->name);
 		}
-		font->print(string::toString(_angle), colorWhite, _screenPosX, fontY);
+		font->print(string::toString(_angle), colorWhite, _screenPosX, fontY, false);
 	}
 }
 

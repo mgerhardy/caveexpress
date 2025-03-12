@@ -227,7 +227,7 @@ void ClientMap::render () const
 void ClientMap::renderTitle (int x, int y) const
 {
 	const BitmapFontPtr& font = UI::get().getFont();
-	font->print(_title, colorWhite, x, y);
+	font->print(_title, colorWhite, x, y, false);
 }
 
 void ClientMap::renderCooldowns (int x, int y) const

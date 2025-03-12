@@ -52,7 +52,7 @@ void ClientConsole::render ()
 			y = newY;
 
 		for (ConsoleTextConstIter i = _text.end() - 1; i != _text.begin(); --i) {
-			font->print(*i, _fontColor, _padding, y);
+			font->print(*i, _fontColor, _padding, y, false);
 			y -= font->getCharHeight();
 			if (y < 0)
 				break;

@@ -325,7 +325,7 @@ void UI::render ()
 	if (Config.isDebugUI()) {
 		const BitmapFontPtr& font = getFont();
 		const std::string s = string::format("%i:%i", _cursorX, _cursorY);
-		font->print(s, colorWhite, 0, 0);
+		font->print(s, colorWhite, 0, 0, false);
 	}
 }
 
