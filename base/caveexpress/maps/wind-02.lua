@@ -1,5 +1,5 @@
 function getName()
-	return "Wind 2 ticky slalom 3pkg"
+	return "Wind 2 tricky slalom 3pkg"
 end
 
 function onMapLoaded()
