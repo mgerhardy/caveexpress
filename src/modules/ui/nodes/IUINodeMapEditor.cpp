@@ -474,7 +474,8 @@ void IUINodeMapEditor::deleteItem ()
 	notifyTileRemoved(_highlightItem->def);
 	TileItemsIter i = std::find(_map.begin(), _map.end(), *_highlightItem);
 	_map.erase(i);
-	_highlightItem = getSelectedTile();
+	setHighlightItem(getSelectedTile());
+	_moveTileHorizontally = false;
 }
 
 bool IUINodeMapEditor::onKeyRelease (int32_t key)
@@ -654,7 +655,8 @@ void IUINodeMapEditor::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_
 
 	const bool gridPosChanged = oldSlectedGridX != _selectedGridX || oldSelectedGridY != _selectedGridY;
 	if (gridPosChanged) {
-		_highlightItem = getSelectedTile();
+		setHighlightItem(getSelectedTile());
+		_moveTileHorizontally = false;
 	}
 
 	if (_moveTileHorizontally) {
@@ -830,14 +832,21 @@ bool IUINodeMapEditor::checkTileHit (const TileItem& tileItem, bool remove)
 		}
 
 		if (remove) {
-			if (_highlightItem == &(*item))
-				_highlightItem = nullptr;
+			if (_highlightItem == &(*item)) {
+				setHighlightItem(nullptr);
+			}
 			item = _map.erase(item);
 			continue;
 		}
 		return true;
 	}
 	return false;
+}
+
+void IUINodeMapEditor::setHighlightItem (TileItem* item)
+{
+	_highlightItem = item;
+	_moveTileHorizontally = false;
 }
 
 void IUINodeMapEditor::setState (const State& state)
@@ -899,7 +908,7 @@ void IUINodeMapEditor::shift (int shiftX, int shiftY)
 
 void IUINodeMapEditor::doClear ()
 {
-	_highlightItem = nullptr;
+	setHighlightItem(nullptr);
 	_map.clear();
 	for (IMap::SettingsMapConstIter i = _settings.begin(); i != _settings.end(); ++i) {
 		setSetting(i->first, "");

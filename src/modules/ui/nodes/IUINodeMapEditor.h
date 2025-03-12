@@ -245,6 +245,7 @@ protected:
 	void notifyTileRemoved (const SpriteDefPtr& def);
 	void notifySelectionChange (const SpriteDefPtr& def);
 	virtual void setState (const State& state);
+	void setHighlightItem (TileItem* item);
 
 	void updateScrolling ();
 
