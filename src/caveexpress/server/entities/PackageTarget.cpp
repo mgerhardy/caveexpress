@@ -49,9 +49,7 @@ void PackageTarget::onPreSolve (b2Contact* contact, IEntity* entity, const b2Man
 		setAnimationType(Animations::ANIMATION_ACTIVE);
 		_package = package;
 		
-		b2Vec2 p = getPos();
-		p.y += 1.f;  // quieter
-		_map.sendSound(getVisMask(), SoundTypes::SOUND_PACKAGE_TARGET, p);
+		_map.sendSound(getVisMask(), SoundTypes::SOUND_PACKAGE_TARGET);
 	}
 }
 
