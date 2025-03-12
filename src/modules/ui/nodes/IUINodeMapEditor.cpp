@@ -344,11 +344,10 @@ void IUINodeMapEditor::renderSprite (const TileItem& item, const int x, const in
 	const vec2 size = item.getSize();
 	const float tileWidth = getTileWidth();
 	const float tileHeight = getTileHeight();
-	const int rx = getRenderX() + x + ((item.gridX - (gridCoord)_gridScrollX) * tileWidth);
-	const int ry = getRenderY() + y + ((item.gridY - (gridCoord)_gridScrollY) * tileHeight);
+	const int rx = getRenderX() + x + ((item.gridX - (gridCoord)_gridScrollX + item.getX()) * tileWidth);
+	const int ry = getRenderY() + y + ((item.gridY - (gridCoord)_gridScrollY + item.getY()) * tileHeight);
 	const int rw = size.x * tileWidth;
 	const int rh = size.y * tileHeight;
-
 	for (Layer layer = LAYER_BACK; layer < MAX_LAYERS; ++layer) {
 		sprite->render(_frontend, layer, rx, ry, rw, rh, item.angle, alpha);
 	}
