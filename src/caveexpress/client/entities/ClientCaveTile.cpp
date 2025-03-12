@@ -18,7 +18,7 @@ ClientCaveTile::~ClientCaveTile ()
 {
 }
 
-void ClientCaveTile::render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY) const
+void ClientCaveTile::render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int mapPixelWidth, int mapPixelHeight) const
 {
 	if (_currSprite) {
 		if (_lightState)
@@ -27,7 +27,7 @@ void ClientCaveTile::render (IFrontend *frontend, Layer layer, int scale, float 
 			_currSprite->setCurrentFrame(1);
 	}
 
-	ClientMapTile::render(frontend, layer, scale, zoom, offsetX, offsetY);
+	ClientMapTile::render(frontend, layer, scale, zoom, offsetX, offsetY, mapPixelWidth, mapPixelHeight);
 }
 
 ClientEntityPtr ClientCaveTile::Factory::create (const ClientEntityFactoryContext *ctx) const

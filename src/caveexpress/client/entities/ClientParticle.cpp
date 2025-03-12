@@ -48,7 +48,7 @@ void ClientParticle::updateParticle (int index, float x, float y, uint32_t lifet
 	d.lifetime = lifetime;
 }
 
-void ClientParticle::render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY) const
+void ClientParticle::render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int mapPixelWidth, int mapPixelHeight) const
 {
 	const TexturePtr& texture = UI::get().loadTexture(_sprite);
 	if (!texture || !texture->isValid()) {

@@ -38,7 +38,7 @@ public:
 
 	// ClientEntity
 	bool update (uint32_t deltaTime, bool lerpPos) override;
-	void render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY) const override;
+	void render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int mapPixelWidth, int mapPixelHeight) const override;
 };
 
 inline void ClientParticle::setSprite (const std::string& sprite)

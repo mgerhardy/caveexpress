@@ -23,7 +23,7 @@ public:
 	void setLightState (bool lightState);
 	bool isLightState () const;
 
-	void render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX = 0, int offsetY = 0) const override;
+	void render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int mapPixelWidth, int mapPixelHeight) const override;
 };
 
 inline bool ClientWindowTile::isLightState () const

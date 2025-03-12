@@ -22,7 +22,7 @@ protected:
 
 	virtual void onVisibilityChanged ();
 	void renderDot (IFrontend* frontend, int x, int y, const Color& color = colorRed) const;
-	void renderOverlays(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int posX, int posY) const;
+	void renderOverlays(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int posX, int posY, int mapPixelWidth, int mapPixelHeight) const;
 
 	void calcPosition(const Layer &layer, int scale, float zoom, int &posX, int &posY) const;
 
@@ -100,8 +100,8 @@ public:
 	}
 
 	// @param[in] scale The conversion from the physics coordinate system to the pixel coordinate system.
-	virtual void render(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX = 0,
-						int offsetY = 0) const;
+	virtual void render(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX,
+						int offsetY, int mapPixelWidth, int mapPixelHeight) const;
 
 	inline const Animation& getAnimation () const
 	{

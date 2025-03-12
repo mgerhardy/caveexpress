@@ -35,7 +35,7 @@ void ClientNPC::setTargetCave(uint8_t caveNumber, short delay) {
 	_speechBubbleDelay = _time + delay;
 	const std::string caveSprite = string::format("cavenumber%i", caveNumber);
 	_targetCaveSprite = UI::get().loadSprite(caveSprite);
-	addOverlay(_targetCaveSprite);
+	addOverlay(_targetCaveSprite, 20, 50);
 }
 
 ClientEntityPtr ClientNPC::Factory::create(const ClientEntityFactoryContext *ctx) const {

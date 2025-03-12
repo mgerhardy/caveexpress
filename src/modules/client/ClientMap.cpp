@@ -171,9 +171,11 @@ void ClientMap::renderLayer (int x, int y, Layer layer) const
 		_frontend->renderRect(x, y, 4, 4, colorYellow);
 	}
 
+	const int w = (int)((float)getPixelWidth() * _zoom);
+	const int h = (int)((float)getPixelHeight() * _zoom);
 	for (ClientEntityMapConstIter iter = _entities.begin(); iter != _entities.end(); ++iter) {
 		const ClientEntityPtr& e = iter->second;
-		e->render(_frontend, layer, _scale, _zoom, x, y);
+		e->render(_frontend, layer, _scale, _zoom, x, y, w, h);
 	}
 }
 

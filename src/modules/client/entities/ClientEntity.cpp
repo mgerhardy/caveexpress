@@ -1,4 +1,5 @@
 #include "client/entities/ClientEntity.h"
+#include "common/String.h"
 #include "sound/Sound.h"
 #include "common/IFrontend.h"
 #include "ui/UI.h"
@@ -72,22 +73,26 @@ void ClientEntity::calcOffset (int scale, float zoom, int posX, int posY, int &o
 	}
 }
 
-void ClientEntity::renderOverlays (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int posX, int posY) const
-{
-	int offsetPosX, offsetPosY;
-	calcOffset(scale, zoom, posX, posY, offsetPosX, offsetPosY);
-	for (EntityOverlaysConstIter i = _entityOverlays.begin(); i != _entityOverlays.end(); ++i) {
-		const Overlay& overlay = *i;
-		Log::trace(LOG_CLIENT, "render %s, layer %i, x: %i, y: %i, zoom: %f, angle: %i, alpha: %f",
-				overlay.sprite->getName().c_str(), layer, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha);
+void ClientEntity::renderOverlays(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY,
+								  int posX, int posY, int mapPixelWidth, int mapPixelHeight) const {
+	for (const Overlay &overlay : _entityOverlays) {
+		int offsetPosX, offsetPosY;
+		calcOffset(scale, zoom, posX, posY, offsetPosX, offsetPosY);
 		const int overlaySpriteY = overlay.offsetY * zoom;
 		const int overlaySpriteX = overlay.offsetX * zoom;
-		overlay.sprite->render(frontend, layer, overlaySpriteX + offsetX + offsetPosX,
-							   overlaySpriteY + offsetY + offsetPosY, zoom, _angle, _alpha);
+		int spriteX = overlaySpriteX + offsetPosX;
+		int spriteY = overlaySpriteY + offsetPosY;
+		const SpritePtr &sprite = overlay.sprite;
+		if (spriteX >= mapPixelWidth) {
+			spriteX -= sprite->getWidth(layer) * zoom * 2.0f;
+		}
+		Log::trace(LOG_CLIENT, "render %s, layer %i, x: %i, y: %i, zoom: %f, angle: %i, alpha: %f",
+				   sprite->getName().c_str(), layer, offsetX + offsetPosX, offsetY + offsetPosY, zoom, _angle, _alpha);
+		sprite->render(frontend, layer, offsetX + spriteX, offsetY + spriteY, zoom, _angle, _alpha);
 	}
 }
 
-void ClientEntity::render(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY) const {
+void ClientEntity::render(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int mapPixelWidth, int mapPixelHeight) const {
 	if (!_currSprite)
 		return;
 
@@ -119,7 +124,7 @@ void ClientEntity::render(IFrontend *frontend, Layer layer, int scale, float zoo
 	const bool visible = _currSprite->render(frontend, layer, _screenPosX, _screenPosY, zoom, _angle, _alpha);
 	_visChanged = visible != _visible;
 
-	renderOverlays(frontend, layer, scale, zoom, offsetX, offsetY, posX, posY);
+	renderOverlays(frontend, layer, scale, zoom, offsetX, offsetY, posX, posY, mapPixelWidth, mapPixelHeight);
 
 	if (layer != LAYER_FRONT)
 		return;
