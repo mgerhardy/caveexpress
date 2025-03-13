@@ -618,5 +618,5 @@ function initMap()
 	map:setSetting("waterfallingdelay", "0")
 	map:setSetting("waterheight", "0.9")
 	map:setSetting("waterrisingdelay", "0")
-	map:setSetting("wind", "4.0")
+	map:setSetting("wind", "2.5")
 end

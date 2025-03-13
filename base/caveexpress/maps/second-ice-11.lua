@@ -1,5 +1,5 @@
 function getName()
-	return "Ice2 11 Take the short way"
+	return "Ice2 11 Take the short way 3pkg"
 end
 
 function onMapLoaded()

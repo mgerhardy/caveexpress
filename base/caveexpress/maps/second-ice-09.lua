@@ -1,5 +1,5 @@
 function getName()
-	return "Ice2 9 Blowing"
+	return "Ice2 9 Blowing 1pkg"
 end
 
 function onMapLoaded()
@@ -200,7 +200,7 @@ function initMap()
 
 	map:addCave("tile-cave-ice-01", 2, 7, "none", 1000)
 
-	map:addEmitter("npc-blowing", 4, 3, 1, 0, "strength=10,size=4")
+	map:addEmitter("npc-blowing", 4, 4, 1, 0, "strength=10,size=4")
 
 	map:setSetting("width", "18")
 	map:setSetting("height", "10")

@@ -1,5 +1,5 @@
 function getName()
-	return "Ice3 11 geyser in blow"
+	return "Ice3 11 geyser in blow 4pkg"
 end
 
 function onMapLoaded()
@@ -198,7 +198,7 @@ function initMap()
 	map:setSetting("packagetransfercount", "4")
 	map:addStartPosition("1", "1")
 	map:setSetting("points", "100")
-	map:setSetting("referencetime", "40")
+	map:setSetting("referencetime", "80")
 	map:setSetting("theme", "ice")
 	map:setSetting("waterchangespeed", "0")
 	map:setSetting("waterfallingdelay", "0")
