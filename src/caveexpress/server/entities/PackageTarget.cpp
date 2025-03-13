@@ -50,7 +50,7 @@ void PackageTarget::onPreSolve (b2Contact* contact, IEntity* entity, const b2Man
 		_package = package;
 		
 		b2Vec2 p = getPos();
-		p.y += 1.f;  // quieter
+		p.y -= 2.f;  // louder
 		_map.sendSound(getVisMask(), SoundTypes::SOUND_PACKAGE_TARGET, p);
 	}
 }
