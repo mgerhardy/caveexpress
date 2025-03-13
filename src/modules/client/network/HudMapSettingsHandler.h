@@ -25,7 +25,7 @@ public:
 		} else {
 			seconds = string::toInt(i->second);
 		}
-		UI::get().setBarValue(UI_WINDOW_MAP, UINODE_SECONDS_REMAINING, seconds);
-		UI::get().setBarMax(UI_WINDOW_MAP, UINODE_SECONDS_REMAINING, seconds);
+		UI::get().setBarValue(UI_WINDOW_MAP, UINODE_SECONDS_BAR, seconds);
+		UI::get().setBarMax(UI_WINDOW_MAP, UINODE_SECONDS_BAR, seconds);
 	}
 };

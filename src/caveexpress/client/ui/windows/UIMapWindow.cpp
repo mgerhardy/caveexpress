@@ -1,5 +1,7 @@
 #include "UIMapWindow.h"
 #include "caveexpress/client/ui/nodes/UINodeMap.h"
+#include "caveexpress/shared/CaveExpressAnimation.h"
+#include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/constants/ConfigVars.h"
 #include "client/IMapControl.h"
 #include "ui/UI.h"
@@ -36,13 +38,15 @@ void UIMapWindow::initHudNodes()
 	_panel->setStandardPadding();
 	_panel->setAlignment(NODE_ALIGN_TOP | NODE_ALIGN_CENTER);
 
+
 	UINodePoint* _points = new UINodePoint(_frontend, 150);
-	_points->setLabel("00000");
+	_points->setLabel("0");
 	_points->setId(UINODE_POINTS);
 	_panel->add(_points);
 
+	//  time  ---
 	UINodeBar* timeBar = new UINodeBar(_frontend);
-	timeBar->setId(UINODE_SECONDS_REMAINING);
+	timeBar->setId(UINODE_SECONDS_BAR);
 	const Color timeBarColor = { 1.0f, 1.0f, 1.0f, 0.5f };
 	timeBar->setSize(barWidth, barHeight);
 	timeBar->setBarColor(timeBarColor);
@@ -50,6 +54,12 @@ void UIMapWindow::initHudNodes()
 	timeBar->setBorderColor(colorWhite);
 	_panel->add(timeBar);
 
+	UINodeLabel *timeLeft = new UINodeLabel(_frontend, "1:00");
+	timeLeft->setId(UINODE_SECONDS_REMAINING);
+	timeLeft->setFont(HUGE_FONT);
+	_panel->add(timeLeft);
+
+	//  hp bar  ---
 	UINodeBar* hitpointsBar = new UINodeBar(_frontend);
 	hitpointsBar->setId(UINODE_HITPOINTS);
 	const int maxHitpoints = Config.getConfigVar(MAX_HITPOINTS)->getIntValue();
@@ -57,10 +67,10 @@ void UIMapWindow::initHudNodes()
 	hitpointsBar->setSize(barWidth, barHeight);
 	hitpointsBar->setBorder(true);
 	hitpointsBar->setBorderColor(colorWhite);
-	// TODO: wind indicator
-
+	// TODO: wind indicator / wind particles
 	_panel->add(hitpointsBar);
 
+	//  lives
 	UINodeSprite* livesSprite = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
 	livesSprite->setId(UINODE_LIVES);
 	livesSprite->setSpriteOffset(spriteHeight);
@@ -70,6 +80,8 @@ void UIMapWindow::initHudNodes()
 	}
 	_panel->add(livesSprite);
 
+
+	//  target cave  ---
 	UINodeSprite *targetCave = new UINodeSprite(_frontend, spriteHeight * 2, spriteHeight);
 	targetCave->setId(UINODE_TARGETCAVEID);
 	targetCave->setImage("icon-targetcave");
@@ -79,10 +91,45 @@ void UIMapWindow::initHudNodes()
 	collected->setId(UINODE_COLLECTED);
 	_panel->add(collected);
 
-	UINodeSprite* packagesSprite = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
-	packagesSprite->setId(UINODE_PACKAGES);
-	packagesSprite->setSpriteOffset(spriteNodeOffset);
-	_panel->add(packagesSprite);
+	UINodeLabel *spacer1 = new UINodeLabel(_frontend, "    ");
+	spacer1->setFont(HUGE_FONT);
+	spacer1->setVisible(false);
+	_panel->add(spacer1);
+
+	
+	//  transfers  ---
+	UINodeSprite *npcIcon = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
+	npcIcon->setSpriteOffset(spriteNodeOffset / 2);
+	collected->setId(UINODE_TRANSFERS);
+	const std::string npcName = SpriteDefinition::get().getSpriteName(
+		EntityTypes::NPC_FRIENDLY_MAN, Animations::ANIMATION_IDLE);
+	const SpritePtr npcSprite = UI::get().loadSprite(npcName);
+	npcIcon->addSprite(npcSprite);
+	_panel->add(npcIcon);
+
+	UINodeLabel *npcLeft = new UINodeLabel(_frontend, "");
+	npcLeft->setId(UINODE_TRANSFERS_LEFT);
+	npcLeft->setFont(HUGE_FONT);
+	_panel->add(npcLeft);
+
+	UINodeLabel *spacer2 = new UINodeLabel(_frontend, "    ");
+	spacer2->setFont(HUGE_FONT);
+	spacer2->setVisible(false);
+	_panel->add(spacer2);
+
+	//  packages  ---
+	UINodeSprite* packageIcon = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
+	packageIcon->setId(UINODE_PACKAGES);
+	const std::string pkgName = SpriteDefinition::get().getSpriteName(
+		EntityTypes::PACKAGE_ROCK, Animations::ANIMATION_IDLE);
+	const SpritePtr pkgIco = UI::get().loadSprite(pkgName);
+	packageIcon->addSprite(pkgIco);
+	_panel->add(packageIcon);
+
+	UINodeLabel *pkgLeft = new UINodeLabel(_frontend, "");
+	pkgLeft->setId(UINODE_PACKAGES_LEFT);
+	pkgLeft->setFont(HUGE_FONT);
+	_panel->add(pkgLeft);
 
 	add(_panel);
 }

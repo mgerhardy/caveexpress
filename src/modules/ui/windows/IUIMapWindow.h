@@ -3,13 +3,17 @@
 #include "ui/windows/UIWindow.h"
 
 #define UINODE_LIVES "lives"
-#define UINODE_PACKAGES "packages"
+#define UINODE_POINTS "points"
+#define UINODE_HITPOINTS "hitpoints"
+#define UINODE_SECONDS_BAR "seconds_bar"
 #define UINODE_SECONDS_REMAINING "seconds"
 #define UINODE_MAP "map"
-#define UINODE_HITPOINTS "hitpoints"
-#define UINODE_COLLECTED "collected"
 #define UINODE_TARGETCAVEID "targetcave"
-#define UINODE_POINTS "points"
+#define UINODE_COLLECTED "collected"
+#define UINODE_TRANSFERS "transfers"
+#define UINODE_TRANSFERS_LEFT "transfers_left"
+#define UINODE_PACKAGES "packages"
+#define UINODE_PACKAGES_LEFT "packages_left"
 
 // forward decl
 class UINode;

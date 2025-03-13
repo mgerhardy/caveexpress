@@ -8,6 +8,7 @@
 #include "caveexpress/shared/constants/ConfigVars.h"
 #include "caveexpress/shared/constants/Density.h"
 #include "common/Log.h"
+#include "network/messages/UpdateTransferCountMessage.h"
 #include "service/ServiceProvider.h"
 #include "common/SpriteDefinition.h"
 #include "network/messages/LoadMapMessage.h"
@@ -244,6 +245,10 @@ void Map::countTransferedNPC()
 {
 	_transferedNPCs++;
 	Log::info(LOG_GAMEIMPL, "collected %i of %i npcs", _transferedNPCs, _transferedNPCLimit);
+
+	const UpdateTransferCountMessage msg(
+		_transferedNPCs, _transferedNPCLimit);
+	_serviceProvider->getNetwork().sendToAllClients(msg);
 }
 
 void Map::countTransferedPackage ()
@@ -254,7 +259,9 @@ void Map::countTransferedPackage ()
 	}
 	_transferedPackages++;
 	Log::info(LOG_GAMEIMPL, "collected %i of %i packages", _transferedPackages, _transferedPackageLimit);
-	const UpdatePackageCountMessage msg(getPackageCount());
+	
+	const UpdatePackageCountMessage msg(
+		_transferedPackages, _transferedPackageLimit);
 	_serviceProvider->getNetwork().sendToAllClients(msg);
 }
 
@@ -844,7 +851,8 @@ bool Map::initPlayer (Player* player)
 	network.sendToClient(clientId, mapSettingsMsg);
 	GameEvent.sendWaterUpdate(clientMask, *_water);
 
-	const InitDoneMessage msgInit(player->getID(), getPackageCount(), player->getLives(), player->getHitpoints());
+	const InitDoneMessage msgInit(player->getID(),
+		getPackageCount(), getNpcCount(), player->getLives(), player->getHitpoints());
 	network.sendToClient(clientId, msgInit);
 
 	sendSound(0, SoundTypes::SOUND_PLAYER_SPAWN);

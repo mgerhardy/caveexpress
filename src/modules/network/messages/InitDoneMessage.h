@@ -6,12 +6,14 @@ class InitDoneMessage: public IProtocolMessage {
 private:
 	uint16_t _playerId;
 	uint8_t _packages;
+	uint8_t _transfers;
 	uint8_t _lives;
 	uint16_t _hitpoints;
-
+	
 public:
-	InitDoneMessage (uint16_t playerId, uint8_t packages, uint8_t lives, uint16_t hitpoints) :
-			IProtocolMessage(protocol::PROTO_INITDONE), _playerId(playerId), _packages(packages), _lives(lives), _hitpoints(hitpoints)
+	InitDoneMessage (uint16_t playerId, uint8_t packages, uint8_t transfers, uint8_t lives, uint16_t hitpoints) :
+			IProtocolMessage(protocol::PROTO_INITDONE),
+			_playerId(playerId), _packages(packages), _transfers(transfers), _lives(lives), _hitpoints(hitpoints)
 	{
 	}
 
@@ -22,6 +24,7 @@ public:
 	{
 		_playerId = input.readShort();
 		_packages = input.readByte();
+		_transfers = input.readByte();
 		_lives = input.readByte();
 		_hitpoints = input.readShort();
 	}
@@ -31,6 +34,7 @@ public:
 		out.addByte(_id);
 		out.addShort(_playerId);
 		out.addByte(_packages);
+		out.addByte(_transfers);
 		out.addByte(_lives);
 		out.addShort(_hitpoints);
 	}
@@ -38,6 +42,11 @@ public:
 	inline uint8_t getPackages () const
 	{
 		return _packages;
+	}
+
+	inline uint8_t getTransfers () const
+	{
+		return _transfers;
 	}
 
 	inline uint16_t getPlayerId () const
