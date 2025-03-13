@@ -3,7 +3,7 @@
 namespace caveexpress {
 
 namespace Cooldowns {
-Cooldown INVULVERABLE("invulverable");
+Cooldown INVULNERABLE("invulnerable");
 Cooldown POWERUP("powerup");
 }
 

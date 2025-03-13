@@ -16,7 +16,7 @@ void IntroAttack::addIntroNodes(UINode* parent) {
 	parent->add(new IntroLabelHeadline(_frontend, tr("Objectives")));
 	parent->add(new IntroLabel(_frontend, tr("Just stay and watch what happens")));
 	parent->add(new IntroLabelHeadline(_frontend, tr("Hints")));
-	parent->add(new IntroLabel(_frontend, tr("The egg makes you invulverable")));
+	parent->add(new IntroLabel(_frontend, tr("The egg makes you invulnerable")));
 	parent->add(new IntroLabel(_frontend, tr("Dropping stones onto dinos stuns them")));
 	if (System.hasTouch()) {
 		parent->add(new IntroLabel(_frontend, tr("Drop them with the second finger")));

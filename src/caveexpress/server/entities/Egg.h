@@ -6,7 +6,7 @@ namespace caveexpress {
 class Map;
 
 /**
- * @brief Collecting the egg might make you invulverable for some time.
+ * @brief Collecting the egg makes you invulnerable for some time.
  */
 class Egg: public CollectableEntity {
 protected:

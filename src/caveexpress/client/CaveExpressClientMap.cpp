@@ -249,8 +249,8 @@ int CaveExpressClientMap::renderCooldownDescription (uint32_t cooldownIndex, int
 {
 	ClientMap::renderCooldownDescription(cooldownIndex, x, y, w, h);
 	const int padding = 5;
-	if (Cooldowns::INVULVERABLE.id == cooldownIndex) {
-		const std::string& text = tr("Invulverable");
+	if (Cooldowns::INVULNERABLE.id == cooldownIndex) {
+		const std::string& text = tr("Invulnerable");
 		_font->print(text, colorWhite, x + w + padding, y);
 		return 2 * padding + _font->getTextWidth(text);
 	}
