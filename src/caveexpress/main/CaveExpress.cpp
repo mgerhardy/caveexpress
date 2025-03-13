@@ -87,6 +87,7 @@
 #include "caveexpress/client/network/HudInitDoneHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
 #include "caveexpress/client/network/UpdatePackageCountHandler.h"
+#include "caveexpress/client/network/UpdateTransferCountHandler.h"
 #include "caveexpress/client/network/TargetCaveHandler.h"
 #include "caveexpress/client/network/AnnounceTargetCaveHandler.h"
 #include "caveexpress/client/network/FailedMapHandler.h"
@@ -457,6 +458,8 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.registerClientHandler(protocol::PROTO_WATERHEIGHT, new WaterHeightHandler(*map));
 	r.unregisterClientHandler(::protocol::PROTO_UPDATEPACKAGECOUNT);
 	r.registerClientHandler(::protocol::PROTO_UPDATEPACKAGECOUNT, new UpdatePackageCountHandler());
+	r.unregisterClientHandler(::protocol::PROTO_UPDATETRANSFERCOUNT);
+	r.registerClientHandler(::protocol::PROTO_UPDATETRANSFERCOUNT, new UpdateTransferCountHandler());
 	r.unregisterClientHandler(protocol::PROTO_UPDATECOLLECTEDTYPE);
 	r.registerClientHandler(protocol::PROTO_UPDATECOLLECTEDTYPE, new UpdateCollectedTypeHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_WATERIMPACT);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "client/ClientMap.h"
 #include "network/IProtocolHandler.h"
 #include "network/messages/MapSettingsMessage.h"
 

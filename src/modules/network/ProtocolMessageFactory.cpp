@@ -29,6 +29,7 @@
 #include "messages/TimeRemainingMessage.h"
 #include "messages/UpdatePointsMessage.h"
 #include "messages/UpdatePackageCountMessage.h"
+#include "messages/UpdateTransferCountMessage.h"
 
 PROTOCOL_CLASS_FACTORY_IMPL(PingMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(LoadMapMessage);
@@ -66,6 +67,7 @@ PROTOCOL_CLASS_FACTORY_IMPL(UpdateLivesMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(UpdatePointsMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(UpdatePackageCountMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(TimeRemainingMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(UpdateTransferCountMessage);
 
 ProtocolMessageFactory::ProtocolMessageFactory() {
 	registerFactory(protocol::PROTO_PING, PingMessage::FACTORY);
@@ -104,6 +106,7 @@ ProtocolMessageFactory::ProtocolMessageFactory() {
 	registerFactory(protocol::PROTO_UPDATEPOINTS, UpdatePointsMessage::FACTORY);
 	registerFactory(protocol::PROTO_UPDATEPACKAGECOUNT, UpdatePackageCountMessage::FACTORY);
 	registerFactory(protocol::PROTO_TIMEREMAINING, TimeRemainingMessage::FACTORY);
+	registerFactory(protocol::PROTO_UPDATETRANSFERCOUNT, UpdateTransferCountMessage::FACTORY);
 }
 
 bool ProtocolMessageFactory::isNewMessageAvailable(const ByteStream& in) const {

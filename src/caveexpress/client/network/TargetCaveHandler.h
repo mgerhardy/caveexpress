@@ -6,8 +6,10 @@
 #include "ui/UI.h"
 #include "caveexpress/client/entities/ClientNPC.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
+#include "ui/nodes/UINodeLabel.h"
 #include "ui/nodes/UINodeSprite.h"
 #include "common/String.h"
+#include <string>
 
 namespace caveexpress {
 
