@@ -49,7 +49,7 @@ protected:
 		settings["foo"] = "bar";
 		settings["bar"] = "foo";
 		testMessage("MapSettingsMessage", MapSettingsMessage(settings, 1));
-		testMessage("InitDoneMessage", InitDoneMessage(1, 4, 3, 100));
+		testMessage("InitDoneMessage", InitDoneMessage(1, 4, 5, 3, 100));
 		testMessage("RemoveEntityMessage", RemoveEntityMessage(1, false));
 		testMessage("SpawnInfoMessage", SpawnInfoMessage(0.0f, 0.0f, EntityType::NONE));
 		testMessage("RumbleMessage", RumbleMessage(1.0f, 1000));
@@ -73,7 +73,7 @@ protected:
 		testMessage("UpdateLivesMessage", UpdateLivesMessage(2));
 		testMessage("TimeRemainingMessage", TimeRemainingMessage(1));
 		testMessage("UpdatePointsMessage", UpdatePointsMessage(12314));
-		testMessage("UpdatePackageCountMessage", UpdatePackageCountMessage(254));
+		testMessage("UpdatePackageCountMessage", UpdatePackageCountMessage(254,254));
 	}
 
 	template<class MSG>
