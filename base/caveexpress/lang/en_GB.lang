@@ -57,7 +57,7 @@ Increase map size|Increase map size
 Initial npc spawn delay for the pterodactyls and the fish|Initial npc spawn delay for the pterodactyls and the fish
 Initial water rising delay in milliseconds|Initial water rising delay in milliseconds
 Input|Input
-Invulverable|Invulverable
+Invulnerable|Invulnerable
 Jungle|Jungle
 Just stay and watch what happens|Just stay and watch what happens
 LMB|LMB
@@ -130,7 +130,7 @@ Stone|Stone
 Textures|Textures
 The amount of npcs to deliver|The amount of npcs to deliver
 The amount of packages to deliver|The amount of packages to deliver
-The egg makes you invulverable|The egg makes you invulverable
+The egg makes you invulnerable|The egg makes you invulnerable
 The geyser will do the work for you|The geyser will do the work for you
 The points you get for finishing the map|The points you get for finishing the map
 The water change speed|The water change speed

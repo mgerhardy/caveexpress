@@ -438,8 +438,8 @@ bool Player::collect (CollectableEntity* entity)
 		addHitpoints(_fruitHitPoints->getIntValue());
 		return true;
 	} else if (EntityTypes::isEgg(entityType)) {
-		_invulnerableTime = _time + Cooldowns::INVULVERABLE.getRuntime();
-		_map.sendCooldown(_clientId, Cooldowns::INVULVERABLE);
+		_invulnerableTime = _time + Cooldowns::INVULNERABLE.getRuntime();
+		_map.sendCooldown(_clientId, Cooldowns::INVULNERABLE);
 		return true;
 	}
 
