@@ -22,13 +22,13 @@ TEST(MapManagerTest, testMeta)
 {
 	LUAMapManager mgr;
 	mgr.loadMaps();
-	ASSERT_EQ("Package", mgr.getMapTitle("introducing-01-package"));
+	ASSERT_EQ("In1 Package", mgr.getMapTitle("introducing-01-package"));
 	//ASSERT_EQ(1, mgr.getMapStartPositions("introducing-01-package"));
 
-	ASSERT_EQ("Be fast", mgr.getMapTitle("introducing-02-game"));
+	ASSERT_EQ("In2 Be fast", mgr.getMapTitle("introducing-02-game"));
 	//ASSERT_EQ(1, mgr.getMapStartPositions("introducing-02-game"));
 
-	ASSERT_EQ("Tree", mgr.getMapTitle("introducing-03-tree"));
+	ASSERT_EQ("In3 Tree", mgr.getMapTitle("introducing-03-tree"));
 	//ASSERT_EQ(1, mgr.getMapStartPositions("introducing-03-tree"));
 }
 
