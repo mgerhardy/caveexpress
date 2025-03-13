@@ -1,5 +1,5 @@
 function getName()
-	return "Ice3 7 3pkg underwater"
+	return "Ice3 7 dive 3pkg"
 end
 
 function onMapLoaded()
@@ -337,7 +337,7 @@ function initMap()
 	map:setSetting("packagetransfercount", "3")
 	map:addStartPosition("0", "0")
 	map:setSetting("points", "100")
-	map:setSetting("referencetime", "40")
+	map:setSetting("referencetime", "55")
 	map:setSetting("theme", "ice")
 	map:setSetting("waterchangespeed", "0.2")
 	map:setSetting("waterfallingdelay", "8000")

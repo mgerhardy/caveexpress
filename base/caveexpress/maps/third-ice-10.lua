@@ -1,5 +1,5 @@
 function getName()
-	return "Ice3 10 tall 3 columns"
+	return "Ice3 10 tall 3 columns 4pkg"
 end
 
 function onMapLoaded()
@@ -444,7 +444,7 @@ function initMap()
 	map:setSetting("packagetransfercount", "4")
 	map:addStartPosition("5", "3")
 	map:setSetting("points", "100")
-	map:setSetting("referencetime", "55")
+	map:setSetting("referencetime", "60")
 	map:setSetting("theme", "ice")
 	map:setSetting("waterchangespeed", "0")
 	map:setSetting("waterfallingdelay", "0")

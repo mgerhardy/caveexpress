@@ -1,5 +1,5 @@
 function getName()
-	return "Ice2 12 Getting narrow"
+	return "Ice2 12 Getting narrow 4pkg"
 end
 
 function onMapLoaded()

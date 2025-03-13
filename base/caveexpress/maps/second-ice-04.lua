@@ -1,5 +1,5 @@
 function getName()
-	return "Ice2 4 blow to rising water"
+	return "Ice2 4 blow to rising water 1pkg"
 end
 
 function onMapLoaded()
@@ -176,7 +176,7 @@ function initMap()
 	map:setSetting("packagetransfercount", "1")
 	map:addStartPosition("7", "3")
 	map:setSetting("points", "100")
-	map:setSetting("referencetime", "16")
+	map:setSetting("referencetime", "26")
 	map:setSetting("theme", "ice")
 	map:setSetting("waterchangespeed", "0.4")
 	map:setSetting("waterfallingdelay", "7500")
