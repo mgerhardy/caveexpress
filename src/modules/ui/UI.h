@@ -146,6 +146,11 @@ public:
 	UIWindow* getWindow (const std::string& windowID);
 	void addWindow (UIWindow *window);
 
+	bool isSoftwareRenderer() const;
+	void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha = 1.0f);
+	void resetColor ();
+	void setColor (const Color& rgba);
+
 	void restart ();
 	void initRestart ();
 	bool initLanguage (const std::string& language);

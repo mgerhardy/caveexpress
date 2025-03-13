@@ -4,8 +4,8 @@
 #include "common/Log.h"
 #include "common/UTF8.h"
 
-BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr, IFrontend *frontend) :
-		_frontend(frontend),_fontDefPtr(fontDefPtr), _time(0U) {
+BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr) :
+		_fontDefPtr(fontDefPtr), _time(0U) {
 	_font = UI::get().loadTexture(_fontDefPtr->textureName);
 	_rand = randBetween(0, 10000);
 	if (!_font->isValid()) {
@@ -13,7 +13,7 @@ BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr, IFrontend *frontend) :
 		SDL_assert_always(_font->isValid());
 	}
 	_fontDefPtr->updateChars(_font->getTrim().untrimmedWidth, _font->getTrim().untrimmedHeight);
-	_softwareRendering = _frontend->isSoftwareRenderer();
+	_softwareRendering = UI::get().isSoftwareRenderer();
 }
 
 BitmapFont::~BitmapFont (void)
@@ -75,7 +75,6 @@ int BitmapFont::getTextWidth (const std::string& string) const
 int BitmapFont::printMax (const std::string& text, const Color& color, int x, int y, int maxLength, bool rotate) const
 {
 	SDL_assert_always(_fontDefPtr);
-	SDL_assert_always(_frontend);
 	SDL_assert_always(_font->isValid());
 
 	if (_fontDefPtr->getHeight() < 5)
@@ -94,7 +93,7 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 		rotate = false;
 	}
 
-	_frontend->setColor(color);
+	UI::get().setColor(color);
 	const int fontHeight = _fontDefPtr->getHeight();
 	const TextureRect sourceRect = _font->getSourceRect();
 	const FontChar* space = _fontDefPtr->getFontChar(' ');
@@ -130,12 +129,12 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 			} else {
 				angle = 0;
 			}
-			_frontend->renderImage(_font.get(), x + fontChr->getOX(), y + yShift + fontHeight - fontChr->getOY(), fcw, fch, angle, color[3]);
+			UI::get().renderImage(_font.get(), x + fontChr->getOX(), y + yShift + fontHeight - fontChr->getOY(), fcw, fch, angle, color[3]);
 		}
 		x += fontChr->getWidth();
 	}
 	_font->setRect(sourceRect.x, sourceRect.y, sourceRect.w, sourceRect.h);
-	_frontend->resetColor();
+	UI::get().resetColor();
 	return yShift;
 }
 

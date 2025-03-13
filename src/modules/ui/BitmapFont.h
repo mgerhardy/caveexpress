@@ -4,17 +4,15 @@
 #include "FontDefinition.h"
 #include <algorithm>
 
-class IFrontend;
 
 class BitmapFont {
 	mutable TexturePtr _font;
-	IFrontend *_frontend;
 	FontDefPtr _fontDefPtr;
 	uint32_t _time;
 	int _rand;
 	bool _softwareRendering;
 public:
-	BitmapFont (const FontDefPtr& fontDefPtr, IFrontend *frontend);
+	BitmapFont (const FontDefPtr& fontDefPtr);
 	virtual ~BitmapFont (void);
 	int print (const std::string& text, const Color& color, int x, int y, bool rotate = true) const;
 	int printMax (const std::string& text, const Color& color, int x, int y, int maxLength, bool rotate = true) const;

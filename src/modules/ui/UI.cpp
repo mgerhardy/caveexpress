@@ -180,7 +180,7 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 	FontDefinition& fontDef = Singleton<FontDefinition>::getInstance();
 	FontDefMapConstIter i = fontDef.begin();
 	for (; i != fontDef.end(); ++i) {
-		_fonts[i->second->id] = BitmapFontPtr(new BitmapFont(i->second, _frontend));
+		_fonts[i->second->id] = BitmapFontPtr(new BitmapFont(i->second));
 	}
 
 	Singleton<GameRegistry>::getInstance().getGame()->initUI(_frontend, serviceProvider);
@@ -318,6 +318,26 @@ void UI::render ()
 	}
 
 	ImGui::Render();
+}
+
+bool UI::isSoftwareRenderer() const
+{
+	return _frontend->isSoftwareRenderer();
+}
+
+void UI::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha)
+{
+	_frontend->renderImage(texture, x, y, w, h, angle, alpha);
+}
+
+void UI::resetColor ()
+{
+	_frontend->resetColor();
+}
+
+void UI::setColor (const Color& rgba)
+{
+	_frontend->setColor(rgba);
 }
 
 void UI::update (uint32_t deltaTime)
