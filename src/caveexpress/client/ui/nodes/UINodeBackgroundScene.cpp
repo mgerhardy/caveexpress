@@ -87,7 +87,7 @@ int UINodeBackgroundScene::renderGround (int x, int y) const
 
 void UINodeBackgroundScene::renderWater (int x, int y) const
 {
-	_frontend->renderFilledRect(x, y, _frontend->getWidth() - x, _frontend->getHeight() - y, waterColor);
+	renderFilledRect(x, y, _frontend->getWidth() - x, _frontend->getHeight() - y, waterColor);
 }
 
 void UINodeBackgroundScene::renderFailedOnGround (int x, int y, const MapFailedReason& reason, float offsetY) const

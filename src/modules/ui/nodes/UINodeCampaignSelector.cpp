@@ -39,13 +39,12 @@ void UINodeCampaignSelector::renderSelectorEntry (int index, const CampaignPtr& 
 
 	const int marginX = 35, padding = 20, marginXtotal = 2 * marginX + padding;
 	if (!data->getText().empty()) {
-
 		const BitmapFontPtr& font = getFont(HUGE_FONT);
 		const int textHeight = font->getTextHeight(data->getText());
 		const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(data->getText()) / 2 - padding / 2 );
 		const int fontY = y + rowHeight - textHeight - 1 - padding;
 
-		_frontend->renderFilledRect(x, fontY - 1, colWidth - padding, textHeight + 2, colorBlack);
+		renderFilledRect(x, fontY - 1, colWidth - padding, textHeight + 2, colorBlack);
 		renderImage(t, x + marginX, y, colWidth - marginXtotal, rowHeight - textHeight - padding, alpha);
 		font->printMax(data->getText(), colorWhite, fontX, fontY, colWidth);
 	} else {

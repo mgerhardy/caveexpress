@@ -337,9 +337,9 @@ public:
 					for (int i = 0; i < pages; ++i) {
 						const int _x = x + pageX + i * (pageWidth + pageGap);
 						if (i == currentPage)
-							_frontend->renderFilledRect(_x, _y, pageWidth, pageWidth, colorWhite);
+							renderFilledRect(_x, _y, pageWidth, pageWidth, colorWhite);
 						else
-							_frontend->renderFilledRect(_x, _y, pageWidth, pageWidth, colorGray);
+							renderFilledRect(_x, _y, pageWidth, pageWidth, colorGray);
 					}
 				}
 			}

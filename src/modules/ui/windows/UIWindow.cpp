@@ -1,4 +1,5 @@
 #include "UIWindow.h"
+#include "imgui.h"
 #include "ui/UI.h"
 #include "sound/Sound.h"
 #include "common/Log.h"
@@ -26,10 +27,20 @@ void UIWindow::render (int x, int y) const
 {
 	if (_flags & WINDOW_FLAG_MODAL) {
 		const Color bgColor = {0.7f, 0.7f, 0.7f, 0.4f};
-		_frontend->renderFilledRect(0, 0, 0, 0, bgColor);
+		renderFilledRect(0, 0, 0, 0, bgColor);
 	}
 
-	UINode::render(x, y);
+	const float px = getRenderXf(false);
+	const float py = getRenderYf(false);
+	const float pw = getRenderWidthf(false);
+	const float ph = getRenderHeightf(false);
+	ImGui::SetNextWindowSize({pw, ph});
+	ImGui::SetNextWindowPos({px, py});
+	if (ImGui::Begin(_id.c_str(), nullptr,
+					 ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoBackground)) {
+		UINode::render(x, y);
+	}
+	ImGui::End();
 
 	for (const UINode* nodePtr : _nodes) {
 		nodePtr->renderOnTop(x, y);

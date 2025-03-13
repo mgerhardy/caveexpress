@@ -101,8 +101,8 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 		const int textHeight = font->getTextHeight(title);
 		const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(title) / 2 - padding / 2);
 		const int fontY = y + rowHeight - textHeight - 1 - padding;
-		
-		_frontend->renderFilledRect(x, fontY - 1, colWidth - padding, textHeight + 2, colorBlack);
+
+		renderFilledRect(x, fontY - 1, colWidth - padding, textHeight + 2, colorBlack);
 		font->printMax(title, colorWhite, fontX, fontY, colWidth);
 	}
 }

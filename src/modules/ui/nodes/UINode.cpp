@@ -1,5 +1,6 @@
 #include "UINode.h"
 #include "common/Math.h"
+#include "imgui.h"
 #include "ui/UI.h"
 #include "common/CommandSystem.h"
 #include "common/ConfigManager.h"
@@ -274,8 +275,8 @@ void UINode::renderOnTop (int x, int y) const
 	const int padding = 2;
 	const int width = font->getTextWidth(_tooltip) + 2 * padding;
 	const int height = font->getTextHeight(_tooltip) + 2 * padding;
-	const int xTooltip = std::min(_frontend->getWidth(), x + _focusMouseX + width) - width;
-	const int yTooltip = std::max(0, y + _focusMouseY - height);
+	const int xTooltip = std::min(_frontend->getWidth(), relX + _focusMouseX + width) - width;
+	const int yTooltip = std::max(0, relY + _focusMouseY - height);
 	renderFilledRect(xTooltip - padding, yTooltip - padding, width, height, colorBlack);
 	font->print(_tooltip, colorWhite, xTooltip, yTooltip);
 }
@@ -366,7 +367,7 @@ bool UINode::renderDebug (int x, int y, int textY, bool& focusHandled) const
 			continue;
 		}
 		const std::string debugInfo = "[id=" + nodePtr->getId() + "]";
-		_frontend->renderFilledRect(20 + cursorX - 1, cursorY - 1, font->getTextWidth(debugInfo) + 2, font->getTextHeight(debugInfo) + 2, colorGrayAlpha);
+		renderFilledRect(20 + cursorX - 1, cursorY - 1, font->getTextWidth(debugInfo) + 2, font->getTextHeight(debugInfo) + 2, colorGrayAlpha);
 		font->print(debugInfo, colorBlack, 20 + cursorX, cursorY, false);
 		panelTextY += font->getTextHeight(debugInfo);
 		focusHandled = true;

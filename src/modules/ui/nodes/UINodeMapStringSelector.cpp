@@ -42,7 +42,7 @@ float UINodeMapStringSelector::getAutoWidth () const
 void UINodeMapStringSelector::renderSelectorEntry (int index, const std::string& data, int x, int y, int colWidth, int rowHeight, float alpha) const
 {
 	if (_selectedIndex == index) {
-		_frontend->renderFilledRect(x, y, colWidth, rowHeight, colorGray);
+		renderFilledRect(x, y, colWidth, rowHeight, colorGray);
 	}
 }
 
