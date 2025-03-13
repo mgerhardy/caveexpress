@@ -666,7 +666,7 @@ bool Map::initPlayer (Player* player)
 	const MapSettingsMessage mapSettingsMsg(_settings, (int)_startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);
 
-	const InitDoneMessage msgInit(player->getID(), 0, 0, 0);
+	const InitDoneMessage msgInit(player->getID(), 0, 0, 0, 0);
 	network.sendToClient(clientId, msgInit);
 
 	network.sendToClient(clientId, InitWaitingMapMessage());
