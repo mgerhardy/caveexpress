@@ -23,7 +23,7 @@ jobs:
         - name: Upload the caveexpress artifacts
           uses: actions/upload-artifact@v4
           with:
-            name: caveexpress
+            name: mac-caveexpress
             path: "build/caveexpress dev.dmg"
 
     linux:
@@ -72,13 +72,13 @@ jobs:
         - name: Upload the cavepacker artifacts
           uses: actions/upload-artifact@v4
           with:
-            name: cavepacker
+            name: win-cavepacker
             path: build/install-cavepacker
 
         - name: Upload the caveexpress artifacts
           uses: actions/upload-artifact@v4
           with:
-            name: caveexpress
+            name: win-caveexpress
             path: build/install-caveexpress
 
     emscripten:
@@ -113,39 +113,14 @@ jobs:
             emcmake cmake -H. -Bbuild -GNinja -DCMAKE_BUILD_TYPE=Release -DUNITTESTS=OFF -DTOOLS=OFF
             cmake --build build --target caveexpress
 
-        - name: Upload the build artifacts
+        - name: Upload the build artifacts for caveexpress
           uses: actions/upload-artifact@v4
           with:
-            name: emscripten
+            name: html5-caveexpress
             path: caveexpress.*
 
-    android:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v4
-        - uses: seanmiddleditch/gha-setup-ninja@master
-        - uses: nttld/setup-ndk@v1
-          id: setup-ndk
+        - name: Upload the build artifacts for cavepacker
+          uses: actions/upload-artifact@v4
           with:
-            local-cache: true
-            ndk-version: r21e
-        - uses: actions/setup-java@v4
-          with:
-            distribution: 'temurin'
-            java-version: '17'
-        - name: 'Configure Android NDK variables'
-          shell: sh
-          run: |
-            # We cannot use GitHub expressions in the controller job
-            echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >>$GITHUB_ENV
-
-        - name: Setup Android SDK
-          uses: android-actions/setup-android@v3
-
-        - name: Build
-          run: |
-            mkdir build
-            cd build
-            cmake --version
-            cmake .. -DCMAKE_BUILD_TYPE=Release -DTOOLS=OFF -DUNITTESTS=OFF -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/cmake/toolchains/android-toolchain.cmake
-            cmake --build .
+            name: html5-cavepacker
+            path: cavepacker.*
