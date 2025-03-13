@@ -94,6 +94,7 @@ public:
 	int getCoordinateOffsetY () const override;
 	void getViewPort (int* x, int *y, int *w, int *h) const override;
 	bool loadTexture (Texture *texture, const std::string& filename) override;
+	void* getTextureData (const Texture* texture) const override;
 	void destroyTexture (TextureData *data) override;
 	void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha = 1.0f) override;
 	void bindTexture (Texture* texture, int textureUnit) override;

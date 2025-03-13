@@ -233,6 +233,10 @@ void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	++_drawCalls;
 }
 
+void* SDLFrontend::getTextureData (const Texture* texture) const {
+	return texture->getData();
+}
+
 bool SDLFrontend::loadTexture (Texture *texture, const std::string& filename)
 {
 	SDL_assert(_renderer);

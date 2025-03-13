@@ -482,6 +482,10 @@ SDL_Surface* AbstractGLFrontend::loadTextureIntoSurface(const std::string& filen
 	return surface;
 }
 
+void* AbstractGLFrontend::getTextureData (const Texture* texture) const {
+	return (void*)(intptr_t)texture->getData()->texnum;
+}
+
 bool AbstractGLFrontend::loadTexture (Texture *texture, const std::string& filename)
 {
 	SDL_Surface* textureSurface = loadTextureIntoSurface(filename);

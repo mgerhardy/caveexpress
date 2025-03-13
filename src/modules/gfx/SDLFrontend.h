@@ -51,7 +51,6 @@ protected:
 
 	void setVSync (bool vsync);
 	void setSDLColor (const Color& rgba);
-	void getTrimmed (const Texture* texture, int& x, int& y, int& w, int& h) const;
 	void initControllerAndHaptic ();
 
 	virtual void newFrameImGui();
@@ -65,6 +64,7 @@ public:
 	virtual void setHints ();
 	virtual void setGLAttributes ();
 
+	void getTrimmed (const Texture* texture, int& x, int& y, int& w, int& h) const override;
 	virtual void resetColor () override;
 	virtual void setColor (const Color& rgba) override;
 
@@ -89,6 +89,7 @@ public:
 	virtual void setCursorPosition (int x, int y) override;
 	virtual void showCursor (bool show) override;
 	virtual void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha = 1.0f) override;
+	virtual void* getTextureData (const Texture* texture) const override;
 	virtual bool loadTexture (Texture *texture, const std::string& filename) override;
 	virtual bool isSoftwareRenderer () const override { return _softwareRenderer; }
 	virtual void bindTexture (Texture* texture, int textureUnit) override;

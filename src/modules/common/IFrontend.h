@@ -61,6 +61,8 @@ public:
 	{
 		return 1.0f;
 	}
+	virtual void getTrimmed (const Texture* texture, int& x, int& y, int& w, int& h) const {}
+	virtual void* getTextureData (const Texture* texture) const {return nullptr;}
 
 	virtual void getViewPort (int* x, int *y, int *w, int *h) const
 	{
