@@ -6,3 +6,4 @@ c:setSetting("icon", "icon-campaign-rock")
 c:setSetting("text", "Villages")
 -- now add all maps
 c:addMaps("villages-01")
+c:unlock()
