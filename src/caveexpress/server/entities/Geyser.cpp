@@ -17,7 +17,7 @@ Geyser::Geyser (Map& map, const std::string& spriteID, gridCoord gridX, gridCoor
 			_modificator(nullptr), _lastActivation(0), _activeTime(0), _initialGeyserDelay(initialGeyserDelay)
 {
 	setAnimationType(Animations::ANIMATION_IDLE);
-	_modificator = new WindModificator(_map, DIRECTION_UP, 11.0f, 2.0f);
+	_modificator = new WindModificator(_map, DIRECTION_UP, 17.6f, 2.0f);
 	_modificator->createBody(getPos(), -0.5f);
 	updateLastActivation();
 }
