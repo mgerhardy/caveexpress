@@ -1,3 +1,5 @@
+return  -- comment this line, to show campaign in game
+
 -- create a new campaign
 local c = Campaign.new("tests")
 -- set an ingame icon for this campaign
