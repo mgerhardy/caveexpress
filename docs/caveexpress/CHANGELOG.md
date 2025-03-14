@@ -131,6 +131,8 @@ Version 2.6 (2025-not yet released)
 * Renamed all maps and campaigns
   * Maps are named uniquely now (for multiplayer) and are starting with campaign name
 * UI map and campaign browsers now bigger, tiles 6 x 4, bigger font and map title shown
+* Reworked in-game Hud, now also showing:
+  * time as text, package and NPC transfer counts (currently done and total to do on map)
 * Gameplay changes
   * Diving, now possible to fall underwater - few later maps use it
   * Possible to fly up with 3 packages, or even with 4 after powerup (banana)

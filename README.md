@@ -8,6 +8,7 @@ States for building on Linux and Mac
 
 **[Discord](https://discord.com/invite/XqNBRsBY)**
 
+
 # About
 
 This repository is the home of two games: CaveExpress and CavePacker
@@ -47,7 +48,8 @@ CavePacker includes a map editor. You can start it by executing it via `cavepack
 
 Online version: [cavepacker](https://mgerhardy.github.io/caveexpress/cavepacker.html)
 
-## Installation
+
+# Installation
 
 Use the nightly builds from [github actions](https://github.com/mgerhardy/caveexpress/actions) or install a stable release:
 
@@ -58,6 +60,7 @@ Use the nightly builds from [github actions](https://github.com/mgerhardy/caveex
 ### Other
 
 Download from [github releases](https://github.com/mgerhardy/caveexpress/releases/tag/2.4)
+
 
 # Development
 
@@ -74,6 +77,15 @@ Download from [github releases](https://github.com/mgerhardy/caveexpress/release
  * lua >= 5.2
  * Box2D >= 2.4.1
  * yajl (only if you compile tools)
+
+## Compilation
+
+How to build projects from sources described on wiki page [Compilation](https://github.com/mgerhardy/caveexpress/wiki/Compilation).
+
+
+# Tools
+
+Tools used for development, included in [sources](https://github.com/mgerhardy/caveexpress/tree/master/src/caveexpress/tools).
 
 ## TextureAtlas
 
