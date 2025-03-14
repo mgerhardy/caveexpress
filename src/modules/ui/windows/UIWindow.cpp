@@ -25,26 +25,24 @@ UIWindow::~UIWindow ()
 
 void UIWindow::render (int x, int y) const
 {
-	if (_flags & WINDOW_FLAG_MODAL) {
-		const Color bgColor = {0.7f, 0.7f, 0.7f, 0.4f};
-		renderFilledRect(0, 0, 0, 0, bgColor);
-	}
-
-	const float px = getRenderXf(false);
-	const float py = getRenderYf(false);
-	const float pw = getRenderWidthf(false);
-	const float ph = getRenderHeightf(false);
-	ImGui::SetNextWindowSize({pw, ph});
-	ImGui::SetNextWindowPos({px, py});
-	if (ImGui::Begin(_id.c_str(), nullptr,
-					 ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoBackground)) {
+	const float px = (float)getRenderX(false);
+	const float py = (float)getRenderY(false);
+	const float pw = (float)getRenderWidth(false);
+	const float ph = (float)getRenderHeight(false);
+	ImGui::SetNextWindowSize({pw, ph}, ImGuiCond_Always);
+	ImGui::SetNextWindowPos({px, py}, ImGuiCond_Always);
+	if (ImGui::Begin(_id.c_str(), nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoBackground)) {
+		if (_flags & WINDOW_FLAG_MODAL) {
+			const Color bgColor = {0.7f, 0.7f, 0.7f, 0.4f};
+			renderFilledRect(0, 0, 0, 0, bgColor);
+		}
 		UINode::render(x, y);
+
+		for (const UINode* nodePtr : _nodes) {
+			nodePtr->renderOnTop(x, y);
+		}
 	}
 	ImGui::End();
-
-	for (const UINode* nodePtr : _nodes) {
-		nodePtr->renderOnTop(x, y);
-	}
 }
 
 bool UIWindow::onPop ()
