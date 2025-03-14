@@ -2,6 +2,7 @@
 
 #include "common/IEventObserver.h"
 #include "common/ConfigVar.h"
+#include "common/Math.h"
 #include "windows/UIWindow.h"
 #include "common/CommandSystem.h"
 #include "common/Singleton.h"
@@ -147,9 +148,7 @@ public:
 	void addWindow (UIWindow *window);
 
 	bool isSoftwareRenderer() const;
-	void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha = 1.0f);
-	void resetColor ();
-	void setColor (const Color& rgba);
+	void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, const Color &color);
 
 	void restart ();
 	void initRestart ();

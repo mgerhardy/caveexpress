@@ -325,19 +325,13 @@ bool UI::isSoftwareRenderer() const
 	return _frontend->isSoftwareRenderer();
 }
 
-void UI::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha)
+void UI::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, const Color &color)
 {
-	_frontend->renderImage(texture, x, y, w, h, angle, alpha);
-}
-
-void UI::resetColor ()
-{
+	if (!texture || !texture->isValid())
+		return;
+	_frontend->setColor(color);
+	_frontend->renderImage(texture, x, y, w, h, angle, color[3]);
 	_frontend->resetColor();
-}
-
-void UI::setColor (const Color& rgba)
-{
-	_frontend->setColor(rgba);
 }
 
 void UI::update (uint32_t deltaTime)

@@ -93,7 +93,6 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 		rotate = false;
 	}
 
-	UI::get().setColor(color);
 	const int fontHeight = _fontDefPtr->getHeight();
 	const TextureRect sourceRect = _font->getSourceRect();
 	const FontChar* space = _fontDefPtr->getFontChar(' ');
@@ -129,12 +128,11 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 			} else {
 				angle = 0;
 			}
-			UI::get().renderImage(_font.get(), x + fontChr->getOX(), y + yShift + fontHeight - fontChr->getOY(), fcw, fch, angle, color[3]);
+			UI::get().renderImage(_font.get(), x + fontChr->getOX(), y + yShift + fontHeight - fontChr->getOY(), fcw, fch, angle, color);
 		}
 		x += fontChr->getWidth();
 	}
 	_font->setRect(sourceRect.x, sourceRect.y, sourceRect.w, sourceRect.h);
-	UI::get().resetColor();
 	return yShift;
 }
 
