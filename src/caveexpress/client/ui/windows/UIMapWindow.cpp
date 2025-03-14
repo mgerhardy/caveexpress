@@ -4,6 +4,7 @@
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/constants/ConfigVars.h"
 #include "client/IMapControl.h"
+#include "common/Math.h"
 #include "ui/UI.h"
 #include "ui/nodes/UINodeButton.h"
 #include "ui/nodes/UINodeBar.h"
@@ -57,6 +58,7 @@ void UIMapWindow::initHudNodes()
 	UINodeLabel *timeLeft = new UINodeLabel(_frontend, "1:00");
 	timeLeft->setId(UINODE_SECONDS_REMAINING);
 	timeLeft->setFont(HUGE_FONT);
+	timeLeft->setColor(colorWhite);
 	_panel->add(timeLeft);
 
 	//  hp bar  ---
@@ -98,7 +100,7 @@ void UIMapWindow::initHudNodes()
 
 	
 	//  transfers  ---
-	UINodeSprite *npcIcon = new UINodeSprite(_frontend, spriteHeight, spriteHeight);
+	UINodeSprite *npcIcon = new UINodeSprite(_frontend, spriteHeight*3/2, spriteHeight);
 	npcIcon->setSpriteOffset(spriteNodeOffset / 2);
 	collected->setId(UINODE_TRANSFERS);
 	const std::string npcName = SpriteDefinition::get().getSpriteName(
@@ -110,6 +112,7 @@ void UIMapWindow::initHudNodes()
 	UINodeLabel *npcLeft = new UINodeLabel(_frontend, "");
 	npcLeft->setId(UINODE_TRANSFERS_LEFT);
 	npcLeft->setFont(HUGE_FONT);
+	npcLeft->setColor(colorWhite);
 	_panel->add(npcLeft);
 
 	UINodeLabel *spacer2 = new UINodeLabel(_frontend, "    ");
@@ -129,6 +132,7 @@ void UIMapWindow::initHudNodes()
 	UINodeLabel *pkgLeft = new UINodeLabel(_frontend, "");
 	pkgLeft->setId(UINODE_PACKAGES_LEFT);
 	pkgLeft->setFont(HUGE_FONT);
+	pkgLeft->setColor(colorWhite);
 	_panel->add(pkgLeft);
 
 	add(_panel);
