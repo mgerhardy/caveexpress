@@ -417,12 +417,8 @@ void UINode::renderImage (const TexturePtr& texture, int x, int y, int w, int h,
 	if (!texture || !texture->isValid())
 		return;
 
-	if (w == -1)
-		w = texture->getWidth();
-	if (h == -1)
-		h = texture->getHeight();
-
-	_frontend->renderImage(texture.get(), x, y, w, h, 0, alpha);
+	Color color{1.0f, 1.0f, 1.0f, alpha};
+	UI::get().renderImage(texture.get(), x, y, w, h, 0, color);
 }
 
 void UINode::renderImage (const std::string& texture, int x, int y, int w, int h, float alpha) const
