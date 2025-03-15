@@ -394,22 +394,22 @@ bool UINode::renderDebug (int x, int y, int textY, bool& focusHandled) const
 void UINode::renderRect (int x, int y, int w, int h, const Color& color) const
 {
 	const float alpha = fequals(_alpha, 1.0f) ? color[3] : _alpha;
-	const Color alphaColor = { color[0], color[1], color[2], alpha };
-	_frontend->renderRect(x, y, w, h, alphaColor);
+	const ImVec4 alphaColor = { color[0], color[1], color[2], alpha };
+	ImGui::GetWindowDrawList()->AddRect(ImVec2(x, y), ImVec2(x + w, y + h), ImColor(alphaColor));
 }
 
 void UINode::renderFilledRect (int x, int y, int w, int h, const Color& color) const
 {
 	const float alpha = fequals(_alpha, 1.0f) ? color[3] : _alpha;
-	const Color alphaColor = { color[0], color[1], color[2], alpha };
-	_frontend->renderFilledRect(x, y, w, h, alphaColor);
+	const ImVec4 alphaColor = { color[0], color[1], color[2], alpha };
+	ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(x, y), ImVec2(x + w, y + h), ImColor(alphaColor));
 }
 
 void UINode::renderLine (int x1, int y1, int x2, int y2, const Color& color) const
 {
 	const float alpha = fequals(_alpha, 1.0f) ? color[3] : _alpha;
-	const Color alphaColor = { color[0], color[1], color[2], alpha };
-	_frontend->renderLine(x1, y1, x2, y2, alphaColor);
+	const ImVec4 alphaColor = { color[0], color[1], color[2], alpha };
+	ImGui::GetWindowDrawList()->AddLine(ImVec2(x1, y1), ImVec2(x2, y2), ImColor(alphaColor));
 }
 
 void UINode::renderImage (const TexturePtr& texture, int x, int y, int w, int h, float alpha) const

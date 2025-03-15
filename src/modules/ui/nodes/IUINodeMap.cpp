@@ -166,9 +166,10 @@ void IUINodeMap::onWindowResize ()
 
 void IUINodeMap::render (int x, int y) const
 {
-	renderFilledRect(getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight(), colorBlack);
-	if (_map.isActive())
+	// renderFilledRect(getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight(), colorBlack);
+	if (_map.isActive()) {
 		_map.render();
+	}
 	UINode::render(0, 0);
 
 	if (_map.isStarted())

@@ -329,9 +329,21 @@ void UI::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angl
 {
 	if (!texture || !texture->isValid())
 		return;
-	_frontend->setColor(color);
-	_frontend->renderImage(texture, x, y, w, h, angle, color[3]);
-	_frontend->resetColor();
+
+	if (w == -1)
+		w = texture->getWidth();
+	if (h == -1)
+		h = texture->getHeight();
+
+	_frontend->getTrimmed(texture, x, y, w, h);
+
+	const TextureRect& r = texture->getSourceRect();
+	const SDL_Rect srcRect { r.x, r.y, r.w, r.h };
+	const ImColor imcolor(color[0], color[1], color[2], color[3]);
+	const ImVec2 uvmin(srcRect.x / (float)texture->getFullWidth(), srcRect.y / (float)texture->getFullHeight());
+	const ImVec2 uvmax((srcRect.x + srcRect.w) / (float)texture->getFullWidth(), (srcRect.y + srcRect.h) / (float)texture->getFullHeight());
+	const ImTextureID texId = (ImTextureID)_frontend->getTextureData(texture);
+	ImGui::GetWindowDrawList()->AddImage(texId, ImVec2(x, y), ImVec2(x + w, y + h), uvmin, uvmax, imcolor);
 }
 
 void UI::update (uint32_t deltaTime)
