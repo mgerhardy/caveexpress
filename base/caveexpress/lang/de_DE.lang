@@ -1,9 +1,12 @@
+A banana will grant more strength for some time|A banana will grant more strength for some time
 A mighty fish is after you|Ein mächtiger Fisch ist hinter dir her
 A player will lose the map if he touches the side borders|Der Spieler hat die Map verloren wenn er eines der beiden Seitenränder berührt
 ALT|ALT
+ARROWS|ARROWS
 Achievements|Achievements
 Activate the fish spawn|Aktiviere den Fisch für diese Map
 Activate the pterodactyls spawn|Aktiviere den Pterodactylus für diese Map
+An egg will make you invulnerable for some time|An egg will make you invulnerable for some time
 Angry dinosaur|Wütender Dinosaurier
 Are you sure?|Wirklich fortfahren?
 Auto|Auto
@@ -20,13 +23,17 @@ Collecting fruits will restore hitpoints|Früchte regenerieren Lebensenergie
 Continue|Weiter
 Controller trigger|Controller trigger
 Create server|Server erstellen
+Decrease map height|Decrease map height
 Decrease map size|Map verkleinern
+Decrease map width|Decrease map width
 Deliver packages to the shredders|Transportiere Pakete zu den Schreddern
 Description|Beschreibung
 Desert|Desert
 Disconnect|Disconnect
 Drop during flight|Während des Fluges abwerfen
 Drop off at the shredder|Drop off at the shredder
+Drop rock on dinos to shortly knock them out|Drop rock on dinos to shortly knock them out
+Drop rock on tree to get a fruit and restore stamina|Drop rock on tree to get a fruit and restore stamina
 Drop stones onto the tree|Lasse den Stein auf Bäume fallen
 Drop the stone to collect packages again|Lasse den Stein fallen um wieder Kisten heben zu können
 Drop them by hitting SPACE bar|Abwerfen durch LEERTASTE
@@ -37,9 +44,11 @@ Egg|Ei
 Fall delay|Fallverzögerung
 File|Datei
 Fish|Fisch
+Flying dino when hit may drop an egg|Flying dino when hit may drop an egg
 Fullscreen|Vollbild
 Game|Spiele
 Game mode|Modus
+Gather fruits for new life|Gather fruits for new life
 General|Allgemein
 Geyser|Geyser
 Google Play|Google Play
@@ -53,7 +62,9 @@ Hints|Tipps
 Hitting walls hard will inflict damage|Zu harter Wandkontakt reduziert Lebensenergie
 Homepage|Homepage
 Ice|Eis
+Increase map height|Increase map height
 Increase map size|Map vergrößern
+Increase map width|Increase map width
 Initial npc spawn delay for the pterodactyls and the fish|Initial npc spawn delay for the pterodactyls and the fish
 Initial water rising delay in milliseconds|Initiale Verzögerung der Wassererhöhung in Millisekunden
 Input|Eingabe
@@ -93,6 +104,7 @@ Please rate the app|Bitte bewerte die App
 Points|Punkte
 Pterodactyls|Pterodactylus
 Pterodactyls is after you|Der Pterodactylus hat es auch dich abgesehen
+Put packages in crusher to consume|Put packages in crusher to consume
 Quit|Beenden
 Quit without saving|Beenden ohne Speichern
 RMB|RMB
