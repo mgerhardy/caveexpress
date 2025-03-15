@@ -1,5 +1,6 @@
 #include "UIGameHelpWindow.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
+#include "common/Math.h"
 #include "ui/nodes/UINodeBackground.h"
 #include "common/ConfigManager.h"
 #include "ui/nodes/UINodeBackButton.h"
@@ -68,6 +69,13 @@ UINode* UIGameHelpWindow::createTexture (const std::string& texture)
 	return imageNode;
 }
 
+UINode* UIGameHelpWindow::createLabel (const std::string& text)
+{
+	UINodeLabel* label = new UINodeLabel(_frontend, text, getFont(HUGE_FONT));
+	label->setColor(colorWhite);
+	return label;
+}
+
 UINode* UIGameHelpWindow::createHPanel ()
 {
 	UINode* hbox = new UINode(_frontend);
@@ -81,6 +89,8 @@ UINode* UIGameHelpWindow::createHPanel ()
 
 void UIGameHelpWindow::addTreeHelp (UINode *panel)
 {
+	panel->add(createLabel(tr("Drop rock on tree to get a fruit and restore stamina")));
+	panel->add(createLabel(tr("A banana will grant more strength for some time")));
 	UINode* hbox = createHPanel();
 	hbox->add(createSprite(EntityTypes::STONE));
 	hbox->add(createTexture("icon-plus"));
@@ -93,6 +103,7 @@ void UIGameHelpWindow::addTreeHelp (UINode *panel)
 
 void UIGameHelpWindow::addPackageHelp (UINode *panel)
 {
+	panel->add(createLabel(tr("Put packages in crusher to consume")));
 	UINode* hbox = createHPanel();
 	hbox->add(createSprite(EntityTypes::PACKAGE_ROCK));
 	hbox->add(createTexture("icon-plus"));
@@ -104,6 +115,7 @@ void UIGameHelpWindow::addPackageHelp (UINode *panel)
 
 void UIGameHelpWindow::addStoneWalkingHelp (UINode *panel)
 {
+	panel->add(createLabel(tr("Drop rock on dinos to shortly knock them out")));
 	UINode* hbox = createHPanel();
 	hbox->add(createSprite(EntityTypes::STONE));
 	hbox->add(createTexture("icon-plus"));
@@ -115,6 +127,8 @@ void UIGameHelpWindow::addStoneWalkingHelp (UINode *panel)
 
 void UIGameHelpWindow::addStoneFlyingHelp (UINode *panel)
 {
+	panel->add(createLabel(tr("Flying dino when hit may drop an egg")));
+	panel->add(createLabel(tr("An egg will make you invulnerable for some time")));
 	UINode* hbox = createHPanel();
 	hbox->add(createSprite(EntityTypes::STONE));
 	hbox->add(createTexture("icon-plus"));
@@ -126,6 +140,7 @@ void UIGameHelpWindow::addStoneFlyingHelp (UINode *panel)
 
 void UIGameHelpWindow::addLivesHelp (UINode *panel)
 {
+	panel->add(createLabel(tr("Gather fruits for new life")));
 	UINode* hbox = createHPanel();
 	const int n = Config.getConfigVar(AMOUNT_OF_FRUITS_FOR_A_NEW_LIFE)->getIntValue();
 	for (int i = 0; i < n - 1; ++i) {
