@@ -12,6 +12,7 @@ class UIGameHelpWindow: public UIWindow {
 private:
 	UINodeSprite* createSprite (const EntityType& type, const Animation& animation = Animations::ANIMATION_IDLE, float w = 0.08f, float h = 0.08f);
 	UINode* createTexture (const std::string& texture);
+	UINode* createLabel (const std::string& text);
 	UINode* createHPanel ();
 
 	void addStoneWalkingHelp (UINode *panel);
