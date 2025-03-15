@@ -210,19 +210,19 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/npc-flying-falling-DIR-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-flying-falling-DIR-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-flying-falling-DIR-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-flying-falling-DIR-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-flying-falling-DIR-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-flying-flying-DIR-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-flying-flying-DIR-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-flying-flying-DIR-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-flying-flying-DIR-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-flying-flying-DIR-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-flying-flying-DIR-middle-06.png</filename>
-            <filename>../png/caveexpress/npc-flying-flying-DIR-middle-07.png</filename>
-            <filename>../png/caveexpress/npc-flying-flying-DIR-middle-08.png</filename>
+            <filename>../png/caveexpress/npc-flying-falling-DIR-front2-01.png</filename>
+            <filename>../png/caveexpress/npc-flying-falling-DIR-front2-02.png</filename>
+            <filename>../png/caveexpress/npc-flying-falling-DIR-front2-03.png</filename>
+            <filename>../png/caveexpress/npc-flying-falling-DIR-front2-04.png</filename>
+            <filename>../png/caveexpress/npc-flying-falling-DIR-front2-05.png</filename>
+            <filename>../png/caveexpress/npc-flying-flying-DIR-front2-01.png</filename>
+            <filename>../png/caveexpress/npc-flying-flying-DIR-front2-02.png</filename>
+            <filename>../png/caveexpress/npc-flying-flying-DIR-front2-03.png</filename>
+            <filename>../png/caveexpress/npc-flying-flying-DIR-front2-04.png</filename>
+            <filename>../png/caveexpress/npc-flying-flying-DIR-front2-05.png</filename>
+            <filename>../png/caveexpress/npc-flying-flying-DIR-front2-06.png</filename>
+            <filename>../png/caveexpress/npc-flying-flying-DIR-front2-07.png</filename>
+            <filename>../png/caveexpress/npc-flying-flying-DIR-front2-08.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

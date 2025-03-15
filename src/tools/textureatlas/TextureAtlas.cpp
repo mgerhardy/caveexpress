@@ -74,6 +74,21 @@ struct Variants {
 	int maxTextureHeight;
 };
 
+enum class TrimMode : uint8_t { None, Trim, Max };
+enum class PivotPoint : uint8_t { Center, TopLeft, Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left };
+
+struct Config {
+	int alphaThreshold = 1;
+	int heuristic = STBRP_HEURISTIC_Skyline_default;
+	bool pngQuant = false;
+	TrimMode trimMode = TrimMode::None;
+	PivotPoint pivotPoint = PivotPoint::Center;
+};
+
+struct Rect {
+	int x, y, width, height;
+};
+
 static std::string extractBasenameNoExtension(const std::string &in) {
 	std::string str = in;
 	size_t pos = str.find_last_of('.');
@@ -141,12 +156,8 @@ static std::string readString(const pugi::xml_node &node, const std::string &nam
 	return defaultVal;
 }
 
-struct Rect {
-	int x, y, width, height;
-};
-
-static Rect findOpaqueRect(const uint8_t *data, int width, int height, int channels, int alphaThreshold = 0) {
-	if (channels < 4) {
+static Rect findOpaqueRect(const uint8_t *data, int width, int height, int channels, const Config& cfg) {
+	if (channels < 4 || cfg.trimMode == TrimMode::None) {
 		return {0, 0, width, height};
 	}
 
@@ -160,7 +171,7 @@ static Rect findOpaqueRect(const uint8_t *data, int width, int height, int chann
 		for (int x = 0; x < width; ++x) {
 			const int index = (stride + x) * channels;
 			const uint8_t alpha = data[index + 3]; // Alpha channel
-			if (alpha <= alphaThreshold) {
+			if (alpha <= cfg.alphaThreshold) {
 				continue;
 			}
 			if (x < minX) {
@@ -185,12 +196,6 @@ static Rect findOpaqueRect(const uint8_t *data, int width, int height, int chann
 
 	return {minX, minY, maxX - minX + 1, maxY - minY + 1};
 }
-
-struct Config {
-	int alphaThreshold = 1;
-	int heuristic = STBRP_HEURISTIC_Skyline_default;
-	bool pngQuant = false;
-};
 
 static void pngQuant(const std::string &textureFile) {
 	const std::string pngQuantPath = "pngquant";
@@ -312,7 +317,7 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 			}
 			assert(rectId >= 0);
 			const Rect opaqueRect =
-				findOpaqueRect(scaledImage.data, scaledImage.width, scaledImage.height, 4, cfg.alphaThreshold);
+				findOpaqueRect(scaledImage.data, scaledImage.width, scaledImage.height, 4, cfg);
 			const int x = rects[rectId].x;
 			const int y = rects[rectId].y;
 			if (rects[rectId].was_packed) {
@@ -379,7 +384,7 @@ static void markDuplicates(std::vector<Image> &images) {
 	}
 }
 
-static bool loadTps(const std::string &tpsFile, const Config &cfg) {
+static bool loadTps(const std::string &tpsFile, Config &cfg) {
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(tpsFile.c_str());
 	if (!result) {
@@ -398,6 +403,25 @@ static bool loadTps(const std::string &tpsFile, const Config &cfg) {
 	const std::string &luaFilename = luaNode.node().text().as_string();
 	verbose_printf("* Lua file template: %s\n", luaFilename.c_str());
 	verbose_printf("* Texture file template: %s\n", textureFilename.c_str());
+
+	const pugi::xpath_node &spriteSettingsNode = doc.select_node("//key[text()='globalSpriteSettings']/following-sibling::struct");
+	if (spriteSettingsNode) {
+		const std::string &trimMode = readString(spriteSettingsNode.node(), "trimMode", "None", "enum");
+		if (trimMode == "None") {
+			cfg.trimMode = TrimMode::None;
+		} else if (trimMode == "Trim") {
+			cfg.trimMode = TrimMode::Trim;
+		} else {
+			error_printf("Unknown TrimMode: %s\n", trimMode.c_str());
+			return false;
+		}
+		verbose_printf("* TrimMode: %s\n", trimMode.c_str());
+
+		const std::string &pivotPoint = readString(spriteSettingsNode.node(), "pivotPoint", "Center", "enum");
+		verbose_printf("* PivotPoint: %s\n", pivotPoint.c_str());
+	} else {
+		verbose_printf("No SpriteSettings struct found\n");
+	}
 
 	pugi::xpath_node_set autoSDSettingsStructs =
 		doc.select_nodes("//key[text()='autoSDSettings']/following-sibling::array/struct");

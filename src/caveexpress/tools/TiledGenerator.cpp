@@ -59,7 +59,7 @@ extern "C" int main(int argc, char *argv[]) {
 		tsx += " <grid orientation=\"orthogonal\" width=\"1\" height=\"1\"/>\n";
 
 		// only add one of the images to the tileset - the first one found - let's start with the middle layer
-		const Layer layers[] = {LAYER_MIDDLE, LAYER_BACK, LAYER_FRONT};
+		const Layer layers[] = {LAYER_MIDDLE, LAYER_BACK, LAYER_FRONT, LAYER_FRONT_1, LAYER_FRONT_2};
 		static_assert(lengthof(layers) == MAX_LAYERS, "Invalid layer count");
 
 		int tileId = 0;

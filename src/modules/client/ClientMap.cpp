@@ -173,8 +173,8 @@ void ClientMap::renderLayer (int x, int y, Layer layer) const
 
 	const int w = (int)((float)getPixelWidth() * _zoom);
 	const int h = (int)((float)getPixelHeight() * _zoom);
-	for (ClientEntityMapConstIter iter = _entities.begin(); iter != _entities.end(); ++iter) {
-		const ClientEntityPtr& e = iter->second;
+	for (const auto &iter : _entities) {
+		const ClientEntityPtr& e = iter.second;
 		e->render(_frontend, layer, _scale, _zoom, x, y, w, h);
 	}
 }
@@ -183,6 +183,8 @@ void ClientMap::renderLayers (int x, int y) const {
 	renderLayer(x, y, LAYER_BACK);
 	renderLayer(x, y, LAYER_MIDDLE);
 	renderLayer(x, y, LAYER_FRONT);
+	renderLayer(x, y, LAYER_FRONT_1);
+	renderLayer(x, y, LAYER_FRONT_2);
 }
 
 void ClientMap::renderBegin (int x, int y) const {

@@ -7,7 +7,6 @@
 #include "common/Shared.h"
 #include "common/Direction.h"
 #include "common/Log.h"
-#include "common/FileSystem.h"
 #include "common/ConfigManager.h"
 
 ClientEntity::ClientEntity (const EntityType& type, uint16_t id, float x, float y, float sizeX, float sizeY,
@@ -126,7 +125,7 @@ void ClientEntity::render(IFrontend *frontend, Layer layer, int scale, float zoo
 
 	renderOverlays(frontend, layer, scale, zoom, offsetX, offsetY, posX, posY, mapPixelWidth, mapPixelHeight);
 
-	if (layer != LAYER_FRONT)
+	if (layer != LAYER_FRONT && layer != LAYER_FRONT_1 && layer != LAYER_FRONT_2)
 		return;
 
 	if (Config.isDebug())

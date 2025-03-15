@@ -2,7 +2,7 @@
 
 // the layer types - don't change the order
 typedef enum {
-	LAYER_BACK, LAYER_MIDDLE, LAYER_FRONT, MAX_LAYERS
+	LAYER_BACK, LAYER_MIDDLE, LAYER_FRONT, LAYER_FRONT_1, LAYER_FRONT_2, MAX_LAYERS
 } Layer;
 
 namespace std {

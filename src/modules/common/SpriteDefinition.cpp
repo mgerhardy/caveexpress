@@ -185,6 +185,12 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 				case LAYER_FRONT:
 					spriteFrameName += "-front-01";
 					break;
+				case LAYER_FRONT_1:
+					spriteFrameName += "-front1-01";
+					break;
+				case LAYER_FRONT_2:
+					spriteFrameName += "-front2-01";
+					break;
 				case LAYER_MIDDLE:
 					spriteFrameName += "-middle-01";
 					break;
