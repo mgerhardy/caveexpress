@@ -210,34 +210,34 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-01.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-28.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-02.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-03.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-04.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-05.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-06.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-07.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-08.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-09.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-10.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-11.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-12.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-13.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-14.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-15.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-16.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-17.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-18.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-19.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-20.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-21.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-22.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-23.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-24.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-25.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-26.png</filename>
-            <filename>../png/caveexpress/npc-fish-swimming-DIR-front-27.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-01.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-28.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-02.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-03.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-04.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-05.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-06.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-07.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-08.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-09.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-10.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-11.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-12.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-13.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-14.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-15.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-16.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-17.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-18.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-19.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-20.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-21.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-22.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-23.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-24.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-25.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-26.png</filename>
+            <filename>../png/caveexpress/npc-fish-swimming-DIR-front1-27.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
