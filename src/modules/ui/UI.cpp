@@ -329,6 +329,12 @@ void UI::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angl
 {
 	if (!texture || !texture->isValid())
 		return;
+
+	if (w == -1)
+		w = texture->getWidth();
+	if (h == -1)
+		h = texture->getHeight();
+
 	_frontend->setColor(color);
 	_frontend->renderImage(texture, x, y, w, h, angle, color[3]);
 	_frontend->resetColor();
