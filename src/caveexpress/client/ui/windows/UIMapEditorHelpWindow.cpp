@@ -18,62 +18,6 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 	const float top = background->getY() / static_cast<float>(_frontend->getHeight()) + padding;
 	const float middle = background->getMiddle() + padding;
 	const float left = background->getLeft() + padding;
-	_currentX = middle;
-	_currentY = top;
-
-	{
-		const AutoBorder b(this, _currentY);
-		addKey("+");
-		addTexture("icon-result");
-		addString(tr("Increase map size"));
-		_currentY += yGap;
-	}
-	{
-		const AutoBorder b(this, _currentY);
-		addKey("-");
-		addTexture("icon-result");
-		addString(tr("Decrease map size"));
-		_currentY += yGap;
-	}
-	{
-		const AutoBorder b(this, _currentY);
-		addKey(tr("SHIFT"));
-		addTexture("icon-plus");
-		addKey("+");
-		addTexture("icon-result");
-		addString(tr("Increase map size"));
-		_currentY += yGap;
-	}
-	{
-		const AutoBorder b(this, _currentY);
-		addKey(tr("SHIFT"));
-		addTexture("icon-plus");
-		addKey("-");
-		addTexture("icon-result");
-		addString(tr("Decrease map size"));
-		_currentY += yGap;
-	}
-	{
-		const AutoBorder b(this, _currentY);
-		addKey(tr("CURSOR"));
-		addTexture("icon-result");
-		addString(tr("Scroll map"));
-		_currentY += yGap;
-	}
-	{
-		const AutoBorder b(this, _currentY);
-		addKey("s");
-		addTexture("icon-result");
-		addString(tr("Save map"));
-		_currentY += yGap;
-	}
-	{
-		const AutoBorder b(this, _currentY);
-		addKey(tr("SPACE"));
-		addTexture("icon-result");
-		addString(tr("Rotate entity"));
-		_currentY += yGap;
-	}
 
 	_currentX = left;
 	_currentY = top;
@@ -82,6 +26,13 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		addKey(tr("MOUSE WHEEL"));
 		addTexture("icon-result");
 		addString(tr("Zoom map"));
+		_currentY += yGap;
+	}
+	{
+		const AutoBorder b(this, _currentY);
+		addKey(tr("ARROWS"));
+		addTexture("icon-result");
+		addString(tr("Scroll map"));
 		_currentY += yGap;
 	}
 	{
@@ -107,6 +58,13 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 	}
 	{
 		const AutoBorder b(this, _currentY);
+		addKey("s");
+		addTexture("icon-result");
+		addString(tr("Save map"));
+		_currentY += yGap;
+	}
+	{
+		const AutoBorder b(this, _currentY);
 		addKey(tr("CTRL"));
 		addTexture("icon-plus");
 		addKey("z");
@@ -123,6 +81,49 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		addString(tr("Redo"));
 		_currentY += yGap;
 	}
+
+	_currentX = middle;
+	_currentY = top;
+
+	{
+		const AutoBorder b(this, _currentY);
+		addKey("+");
+		addTexture("icon-result");
+		addString(tr("Increase map height"));
+		_currentY += yGap;
+	}
+	{
+		const AutoBorder b(this, _currentY);
+		addKey("-");
+		addTexture("icon-result");
+		addString(tr("Decrease map height"));
+		_currentY += yGap;
+	}
+	{
+		const AutoBorder b(this, _currentY);
+		addKey(tr("SHIFT"));
+		addTexture("icon-plus");
+		addKey("+");
+		addTexture("icon-result");
+		addString(tr("Increase map width"));
+		_currentY += yGap;
+	}
+	{
+		const AutoBorder b(this, _currentY);
+		addKey(tr("SHIFT"));
+		addTexture("icon-plus");
+		addKey("-");
+		addTexture("icon-result");
+		addString(tr("Decrease map width"));
+		_currentY += yGap;
+	}
+	{
+		const AutoBorder b(this, _currentY);
+		addKey(tr("SPACE"));
+		addTexture("icon-result");
+		addString(tr("Rotate entity"));
+		_currentY += yGap;
+	}
 	{
 		const AutoBorder b(this, _currentY);
 		addKey(tr("ALT"));
@@ -136,7 +137,7 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		const AutoBorder b(this, _currentY);
 		addKey(tr("SHIFT"));
 		addTexture("icon-plus");
-		addKey(tr("CURSOR"));
+		addKey(tr("ARROWS"));
 		addTexture("icon-result");
 		addString(tr("Shift map (cursor direction)"));
 		_currentY += yGap;
