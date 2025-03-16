@@ -18,6 +18,11 @@ WorldParticle::~WorldParticle()
 	}
 }
 
+bool WorldParticle::shouldApplyWind () const
+{
+	return _particleType != WATER;
+}
+
 bool WorldParticle::shouldCollide (const IEntity *entity) const
 {
 	switch (_particleType) {

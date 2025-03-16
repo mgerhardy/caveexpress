@@ -49,6 +49,7 @@ public:
 	uint32_t getRemainingLifetime (int index) const;
 
 	// IEntity
+	bool shouldApplyWind () const override;
 	bool shouldCollide (const IEntity *entity) const override;
 	void update (uint32_t deltaTime) override;
 	bool isDirty () const override;
