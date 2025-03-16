@@ -11,6 +11,7 @@
 #include "particles/Rain.h"
 #include "particles/Sand.h"
 #include "particles/Dirt.h"
+#include "particles/Leaf.h"
 #include "particles/Sparkle.h"
 #include "common/MapSettings.h"
 #include "network/messages/StopMovementMessage.h"
@@ -163,12 +164,12 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 	ClientMap::init(playerID);
 	// TODO: also take the non water height into account - so not have the amount of bubbles
 	// on a small area when the water is rising
-	const float mapWidth = (float)getMapWidth();
-	const bool windy = fabs(_wind) > 0.2f;
+	const float mapWidth = (float)getMapWidth();  // for map scaled counts
+	const bool windy = fabs(_wind) > 0.05f;
 	const float wind = std::min(1.f, fabs(_wind) * 0.3f);
 	Log::info(LOG_GAMEIMPL, "** Wind: %f", _wind);
 
-	const int bubbles = int(randBetweenf(0.02f, 0.04f) * mapWidth * 10.f);  // map scaled
+	const int bubbles = int(randBetweenf(0.02f, 0.04f) * mapWidth * 10.f);
 	Log::info(LOG_GAMEIMPL, "** Bubbles: %i", bubbles);
 	for (int i = 0; i < bubbles; ++i) {
 		_particleSystem.spawn(ParticlePtr(new Bubble(*this)));
@@ -177,7 +178,7 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 	const bool xmas = dateutil::isXmas();
 	if (xmas || ThemeTypes::isIce(*_theme)) {
 		// TODO: also take the non water height into account - so not have the amount of flakes
-		// on a small area when the water is rising
+		// on a small area when the water is rising. Also decrease count. Dynamic count based on area.
 		const int snowFlakes = int(randBetweenf(0.2f, 3.5f) * mapWidth * 50.f);
 		Log::info(LOG_GAMEIMPL, "** Snow flakes: %i", snowFlakes);
 		for (int i = 0; i < snowFlakes; ++i) {
@@ -190,7 +191,7 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 			_particleSystem.spawn(ParticlePtr(new Rain(*this)));
 		}
 	} else if (ThemeTypes::isDesert(*_theme) && windy) {
-		const int sandGrains = int(randBetweenf(1.6f, 4.5f) * mapWidth * 100.f * wind);
+		const int sandGrains = int(randBetweenf(1.6f, 3.5f) * mapWidth * 100.f * wind);
 		Log::info(LOG_GAMEIMPL, "** Sand grains: %i", sandGrains);
 		for (int i = 0; i < sandGrains; ++i) {
 			_particleSystem.spawn(ParticlePtr(new Sand(*this)));
@@ -200,6 +201,13 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 		Log::info(LOG_GAMEIMPL, "** Dirt grains: %i", dirtGrains);
 		for (int i = 0; i < dirtGrains; ++i) {
 			_particleSystem.spawn(ParticlePtr(new Dirt(*this)));
+		}
+	}
+	if (windy && (ThemeTypes::isRock(*_theme) || ThemeTypes::isJungle(*_theme))) {
+		const int leaves = int(randBetweenf(0.5f, 1.0f) * mapWidth * 10.f * wind);
+		Log::info(LOG_GAMEIMPL, "** Leaves: %i", leaves);
+		for (int i = 0; i < leaves; ++i) {
+			_particleSystem.spawn(ParticlePtr(new Leaf(*this)));
 		}
 	}
 	for (auto iter = ThemeType::begin(); iter != ThemeType::end(); ++iter) {
