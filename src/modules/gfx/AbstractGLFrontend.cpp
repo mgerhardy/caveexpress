@@ -85,6 +85,9 @@ void AbstractGLFrontend::renderImage (Texture* texture, int x, int y, int w, int
  */
 void AbstractGLFrontend::renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum)
 {
+	if (x + w < 0 || y + h < 0 || x > getWidth() || y > getHeight()) {
+		return;
+	}
 	glm::mat4 transform(1.0f);
 	if (angle != 0) {
 		transform = glm::translate(transform, glm::vec3(x + w / 2, y + h / 2, 0));
