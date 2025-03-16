@@ -1,25 +1,13 @@
 #include "cavepacker/client/CavePackerClientMap.h"
 #include "cavepacker/shared/EntityStates.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
-#include "particles/Sparkle.h"
-#include "common/MapSettings.h"
-#include "network/messages/StopMovementMessage.h"
-#include "network/messages/MovementMessage.h"
-#include "network/messages/FingerMovementMessage.h"
-#include "network/messages/ClientInitMessage.h"
 #include "client/entities/ClientMapTile.h"
 #include "ui/UI.h"
 #include "common/IFrontend.h"
-#include "network/ProtocolHandlerRegistry.h"
-#include "sound/Sound.h"
 #include "common/ConfigManager.h"
-#include "common/EventHandler.h"
 #include "service/ServiceProvider.h"
-#include "common/ExecutionTime.h"
-#include "common/DateUtil.h"
 #include "cavepacker/shared/CavePackerAnimation.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
-#include <SDL.h>
 
 namespace cavepacker {
 

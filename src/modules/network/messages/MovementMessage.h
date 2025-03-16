@@ -4,6 +4,8 @@
 #include "common/Direction.h"
 #include <string>
 
+// player movement message
+// see MovementHandler
 class MovementMessage: public IProtocolMessage {
 private:
 	Direction _direction;

@@ -45,6 +45,7 @@ Player::~Player ()
 {
 }
 
+// see MovementMessage and MovementHandler
 void Player::accelerate (Direction dir)
 {
 	if (isCrashed())

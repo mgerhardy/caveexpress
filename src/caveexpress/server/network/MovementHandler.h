@@ -6,6 +6,7 @@
 
 namespace caveexpress {
 
+// MovementMessage and Player::accelerate()
 class MovementHandler: public IServerProtocolHandler {
 private:
 	Map& _map;
