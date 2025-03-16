@@ -1,4 +1,5 @@
 #include "ClientParticle.h"
+#include "caveexpress/shared/WorldParticleType.h"
 #include "sound/Sound.h"
 #include "common/SoundType.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
@@ -48,9 +49,18 @@ void ClientParticle::updateParticle (int index, float x, float y, uint32_t lifet
 	d.lifetime = lifetime;
 }
 
+std::string ClientParticle::getSpriteName() const
+{
+	if (_type == WorldParticleType::WATER)
+		return "particle-water";
+	if (_type == WorldParticleType::LEAF)
+		return "particle-leaf";
+	return Super::getSpriteName();
+}
+
 void ClientParticle::render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int mapPixelWidth, int mapPixelHeight) const
 {
-	const std::string &sprite = _type == EntityTypes::WATER ? "particle-water" : "particle-leaf";
+	const std::string &sprite = getSpriteName();
 	const TexturePtr& texture = UI::get().loadTexture(sprite);
 	if (!texture || !texture->isValid()) {
 		Log::error(LOG_GAMEIMPL, "client particle texture '%s' not found", sprite.c_str());

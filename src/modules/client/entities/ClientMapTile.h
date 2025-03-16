@@ -19,7 +19,7 @@ public:
 	/**
 	 * @brief Access to the initial sprite name (might e.g. be changed if you change the animation)
 	 */
-	inline const std::string& getSpriteName () const { return _sprite; }
+	std::string getSpriteName () const override { return _sprite; }
 
 	/**
 	 * @brief Set a new sprite - but does not change the original sprite name

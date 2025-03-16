@@ -39,6 +39,7 @@ public:
 	int getParticleType () const;
 
 	// ClientEntity
+	std::string getSpriteName() const override;
 	bool update (uint32_t deltaTime, bool lerpPos) override;
 	void render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int mapPixelWidth, int mapPixelHeight) const override;
 };
