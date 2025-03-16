@@ -86,9 +86,13 @@ void AbstractGLFrontend::renderImage (Texture* texture, int x, int y, int w, int
 void AbstractGLFrontend::renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum)
 {
 	glm::mat4 transform(1.0f);
-	transform = glm::translate(transform, glm::vec3(x + w / 2, y + h / 2, 0));
-	transform = glm::rotate(transform, (float)DegreesToRadians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
-	transform = glm::translate(transform, glm::vec3(-w / 2, -h / 2, 0));
+	if (angle != 0) {
+		transform = glm::translate(transform, glm::vec3(x + w / 2, y + h / 2, 0));
+		transform = glm::rotate(transform, (float)DegreesToRadians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+		transform = glm::translate(transform, glm::vec3(-w / 2, -h / 2, 0));
+	} else {
+		transform = glm::translate(transform, glm::vec3(x, y, 0));
+	}
 	transform = glm::scale(transform, glm::vec3(w * _rx, h * _ry, 1.0f));
 	glm::vec4 vertexTL(0.0f, 0.0f, 0.0f, 1.0f);
 	glm::vec4 vertexTR(1.0f, 0.0f, 0.0f, 1.0f);
