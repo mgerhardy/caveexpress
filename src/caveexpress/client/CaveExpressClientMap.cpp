@@ -229,6 +229,7 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 		SDL_RWclose(atlasRW);
 	}
 #endif
+	_camera.update({0, 0}, 0, _zoom);
 }
 
 void CaveExpressClientMap::renderBegin (int x, int y) const
