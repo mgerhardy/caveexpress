@@ -1,4 +1,5 @@
 #include "Particle.h"
+#include "common/Log.h"
 
 Particle::Particle(IParticleEnvironment& env) :
 		_env(env), _active(true), _time(0), _deltaTime(0.0f), _alpha(1.0f), _angle(0), _fps(1.0f),
@@ -12,7 +13,11 @@ Particle::~Particle ()
 
 TexturePtr Particle::loadTexture (const std::string& image) const
 {
-	return _env.loadTexture(image);
+	const TexturePtr &t = _env.loadTexture(image);
+	if (!t || !t->isValid()) {
+		Log::error(LOG_PARTICLES, "loadTexture: failed to load texture %s", image.c_str());
+	}
+	return t;
 }
 
 inline void Particle::advanceVector (const vec2& veca, const float scale, const vec2& vecb, vec2& outVector) const

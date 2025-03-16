@@ -6,7 +6,7 @@
 #define FRUIT_COLLECT_DELAY_FOR_A_NEW_LIFE "fruitcollectdelayforanewlife"
 #define AMOUNT_OF_FRUITS_FOR_A_NEW_LIFE "amountoffruitsforanewlife"
 #define FRUIT_HITPOINTS "fruithitpoints"
-#define WATER_PARTICLE "waterparticle"
+#define WORLD_PARTICLE "worldparticle"
 #define NPC_FLYING_SPEED "npcflyingspeed"
 #define FLYING_SPEED_X "flyingspeedx"
 #define GOD_MODE "godmode"

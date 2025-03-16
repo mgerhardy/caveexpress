@@ -31,7 +31,7 @@ private:
 	typedef std::set<FixturePair>::iterator FixturePairIter;
 	std::set<FixturePair> _fixturePairs;
 
-	WorldParticle *_waterParticle;
+	WorldParticle *_waterParticle = nullptr;
 	float _lastSoundDT;
 
 	void updateFixtures ();

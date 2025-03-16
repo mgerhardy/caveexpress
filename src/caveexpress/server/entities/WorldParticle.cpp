@@ -41,8 +41,9 @@ void WorldParticle::checkParticleGeneratingContacts ()
 		b2Body* body = entity->getBodies()[0];
 		const b2Vec2& v = body->GetLinearVelocity();
 		const float speed = v.Length();
-		if (speed > threshold)
+		if (speed > threshold) {
 			spawnParticle(getSpawnPosition(entity), v);
+		}
 	}
 }
 
@@ -108,19 +109,21 @@ void WorldParticle::spawnParticle (const b2Vec2& pos, const b2Vec2& v)
 	b2Body* b = p->body;
 	b->SetEnabled(true);
 	b2Vec2 vel = v;
-	vel *= 1.7f;
-	vel.y *= -1.f;  // splash
-	vel.x = std::min(2.f, std::max(-2.f, vel.x));
-	vel.y = std::min(2.f, std::max(-2.f, vel.y));
-	vel.x += randBetweenf(-1.f, 1.f);
-	vel.y += randBetweenf(-1.f, 1.f);
+	if (_particleType == WATER) {
+		vel *= 1.7f;
+		vel.y *= -1.f;  // splash
+		vel.x = std::min(2.f, std::max(-2.f, vel.x));
+		vel.y = std::min(2.f, std::max(-2.f, vel.y));
+		vel.x += randBetweenf(-1.f, 1.f);
+		vel.y += randBetweenf(-1.f, 1.f);
+	}
 	b->SetLinearVelocity(vel);
 
 	b2Vec2 pos2 = pos;
 	pos2.x += randBetweenf(-0.2f, 0.2f);
 	pos2.y += randBetweenf(-0.2f, 0.2f);
 	b->SetTransform(pos2, 0);
-	
+
 	b->SetGravityScale(1.0f);
 	b->SetLinearDamping(1.f);
 	b->SetAngularDamping(1.f);

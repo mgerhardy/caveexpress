@@ -19,11 +19,10 @@ Water::Water (Map& map, float waterChangeSpeed, uint32_t waterRisingDelay, uint3
 		_currentHeightLevel(0.0f), _waterRisingTime(waterRisingDelay), _waterFallingTime(waterFallingDelay),
 		_lastSoundDT(min_lastSoundDT)
 {
-	const b2Vec2 size(0.05f, 0.05f);
-	if (Config.getConfigVar(WATER_PARTICLE)->getBoolValue())
+	if (Config.getConfigVar(WORLD_PARTICLE)->getBoolValue()) {
+		const b2Vec2 size(0.05f, 0.05f);
 		_waterParticle = new WorldParticle(map, WATER, 200, DENSITY_WATER / 1.05f, size, 1000);
-	else
-		_waterParticle = nullptr;
+	}
 }
 
 Water::~Water ()
