@@ -41,9 +41,22 @@ public:
 	int getViewportX () const;
 	int getViewportY () const;
 
+	int scrollOffsetX () const;
+	int scrollOffsetY () const;
+
 	Camera ();
 	~Camera ();
 };
+
+inline int Camera::scrollOffsetX () const
+{
+	return _scrollOffsetX;
+}
+
+inline int Camera::scrollOffsetY () const
+{
+	return _scrollOffsetY;
+}
 
 inline int Camera::getViewportX () const
 {
