@@ -4,13 +4,12 @@
 #include "FontDefinition.h"
 #include <algorithm>
 
-
 class BitmapFont {
+private:
 	mutable TexturePtr _font;
 	FontDefPtr _fontDefPtr;
 	uint32_t _time;
 	int _rand;
-	bool _softwareRendering;
 public:
 	BitmapFont (const FontDefPtr& fontDefPtr);
 	virtual ~BitmapFont (void);

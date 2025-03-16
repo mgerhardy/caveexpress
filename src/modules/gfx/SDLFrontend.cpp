@@ -31,7 +31,7 @@ struct RenderTarget {
 };
 
 SDLFrontend::SDLFrontend (std::shared_ptr<IConsole> console) :
-		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _updateControllers(false), _softwareRenderer(false), _drawCalls(0)
+		IFrontend(), _eventHandler(nullptr), _numFrames(0), _time(0), _timeBase(0), _console(console), _updateControllers(false), _drawCalls(0)
 {
 	_window = nullptr;
 	_haptic = nullptr;
@@ -219,12 +219,6 @@ void SDLFrontend::renderImage (Texture* texture, int x, int y, int w, int h, int
 	SDL_Texture *t = reinterpret_cast<SDL_Texture*>(texture->getData());
 	SDL_SetTextureAlphaMod(t, alpha * 255);
 	SDL_SetTextureColorMod(t, _color[0] * 255, _color[1] * 255, _color[2] * 255);
-	if (_softwareRenderer) {
-		// angle is 0 here - because on the fly rotating is really expensive
-		// TODO: create a lockup map here for one side of the rotation (180 degree) and do the other side
-		// via horizontal flip to see if this is faster than rotating
-		//angle = 0;
-	}
 	if (SDL_RenderCopyEx(_renderer, t, &srcRect, &destRect, static_cast<double>(angle), nullptr,
 			texture->isMirror() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) != 0) {
 		Log::error(LOG_GFX, "could not render texture %s", texture->getName().c_str());
@@ -788,8 +782,6 @@ void SDLFrontend::initRenderer ()
 
 	SDL_RenderSetLogicalSize(_renderer, getWidth(), getHeight());
 
-	_softwareRenderer = (ri.flags & SDL_RENDERER_SOFTWARE);
-
 	// Setup Platform/Renderer backends
 	ImGui_ImplSDL2_InitForSDLRenderer(_window, _renderer);
 	ImGui_ImplSDLRenderer2_Init(_renderer);
@@ -802,8 +794,6 @@ void SDLFrontend::initRenderer ()
 
 void SDLFrontend::setGLAttributes ()
 {
-	if (_softwareRenderer)
-		return;
 	SDL_ClearError();
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	sdlCheckError();

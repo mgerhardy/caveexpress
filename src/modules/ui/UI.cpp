@@ -320,11 +320,6 @@ void UI::render ()
 	ImGui::Render();
 }
 
-bool UI::isSoftwareRenderer() const
-{
-	return _frontend->isSoftwareRenderer();
-}
-
 void UI::renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, const Color &color)
 {
 	if (!texture || !texture->isValid())

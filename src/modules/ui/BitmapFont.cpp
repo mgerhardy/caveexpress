@@ -13,7 +13,6 @@ BitmapFont::BitmapFont(const FontDefPtr& fontDefPtr) :
 		SDL_assert_always(_font->isValid());
 	}
 	_fontDefPtr->updateChars(_font->getTrim().untrimmedWidth, _font->getTrim().untrimmedHeight);
-	_softwareRendering = UI::get().isSoftwareRenderer();
 }
 
 BitmapFont::~BitmapFont (void)
@@ -87,11 +86,6 @@ int BitmapFont::printMax (const std::string& text, const Color& color, int x, in
 
 	const int beginX = x;
 	int yShift = 0;
-
-	// would be too expensive
-	if (_softwareRendering) {
-		rotate = false;
-	}
 
 	const int fontHeight = _fontDefPtr->getHeight();
 	const TextureRect sourceRect = _font->getSourceRect();
