@@ -123,7 +123,7 @@ function initMap()
 	map:addCave("tile-cave-ice-01", 0.000000, 4.000000, "", 1000)
 	map:addCave("tile-cave-ice-01", 1.000000, 7.000000, "", 500)
 	map:addCave("tile-cave-ice-02", 11.000000, 1.000000, "", 1500)
-	map:addCave("tile-cave-ice-01", 12.000000, 6.000000, "right=false", 1000)
+	map:addCave("tile-cave-ice-01", 12.000000, 6.000000, "", 1000)
 
 	map:setSetting("width", "13")
 	map:setSetting("height", "9")

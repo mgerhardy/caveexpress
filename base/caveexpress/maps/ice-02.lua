@@ -169,8 +169,8 @@ function initMap()
 	map:addTile("tile-rock-ice-01", 15, 10)
 	map:addTile("tile-rock-ice-01", 15, 11)
 
-	map:addCave("tile-cave-ice-01", 1, 1, "none", 5000)
-	map:addCave("tile-cave-ice-02", 12, 2, "none", 5000)
+	map:addCave("tile-cave-ice-01", 1, 1, "", 5000)
+	map:addCave("tile-cave-ice-02", 12, 2, "", 5000)
 
 	map:addEmitter("npc-mammut", 2, 8, 1, 0, "")
 	map:addEmitter("tree", 9, 7, 1, 0, "")
