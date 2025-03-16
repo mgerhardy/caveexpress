@@ -236,6 +236,8 @@
             <filename>../png/caveexpress/item-egg-idle-front-01.png</filename>
             <filename>../png/caveexpress/item-package-ice-idle-middle-01.png</filename>
             <filename>../png/caveexpress/item-package-idle-middle-01.png</filename>
+			<filename>../png/caveexpress/particle-leaf.png</filename>
+            <filename>../png/caveexpress/leaf-01.png</filename>
             <filename>../png/caveexpress/bubble-01.png</filename>
             <filename>../png/caveexpress/bubble-02.png</filename>
             <filename>../png/caveexpress/bubble-03.png</filename>
