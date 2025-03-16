@@ -20,8 +20,8 @@
 #include <SDL.h>
 
 ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth) :
-		IMap(), _x(x), _y(y), _width(width), _height(height), _scale(referenceTileWidth), _zoom(1.0f), _player(nullptr), _restartDue(0), _restartInitialized(0), _mapWidth(
-				0), _mapHeight(0), _time(0), _playerID(0), _frontend(frontend), _pause(false), _serviceProvider(
+		IMap(), _x(x), _y(y), _width(width), _height(height), _scaleGridToPixel(referenceTileWidth), _zoom(1.0f), _player(nullptr), _restartDue(0), _restartInitialized(0), _mapGridWidth(
+				0), _mapGridHeight(0), _time(0), _playerID(0), _frontend(frontend), _pause(false), _serviceProvider(
 						serviceProvider), _screenRumble(false), _screenRumbleStrength(0.0f), _screenRumbleOffsetX(
 						0), _screenRumbleOffsetY(0), _particleSystem(
 				Config.getClientSideParticleMaxAmount()), _tutorial(false), _started(false), _theme(&ThemeTypes::ROCK), _startPositions(0)
@@ -82,8 +82,8 @@ void ClientMap::resetCurrentMap ()
 	_started = false;
 	_introWindow = "";
 	_tutorial = false;
-	_mapWidth = 0;
-	_mapHeight = 0;
+	_mapGridWidth = 0;
+	_mapGridHeight = 0;
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
 		delete i->second;
 	}
@@ -175,7 +175,7 @@ void ClientMap::renderLayer (int x, int y, Layer layer) const
 	const int h = (int)((float)getPixelHeight() * _zoom);
 	for (const auto &iter : _entities) {
 		const ClientEntityPtr& e = iter.second;
-		e->render(_frontend, layer, _scale, _zoom, x, y, w, h);
+		e->render(_frontend, layer, _scaleGridToPixel, _zoom, x, y, w, h);
 	}
 }
 
@@ -220,7 +220,7 @@ void ClientMap::render () const
 		renderFadeOutOverlay(x, y);
 	}
 
-	Config.setDebugRendererData(x, y, getWidth(), getHeight(), (int)((float)_scale * _zoom));
+	Config.setDebugRendererData(x, y, getWidth(), getHeight(), (int)((float)_scaleGridToPixel * _zoom));
 	Config.getDebugRenderer().render();
 
 	if (!debug) {
@@ -307,15 +307,15 @@ void ClientMap::getMapGridForScreenPixel (int x, int y, int *outX, int *outY)
 
 	const int nx = _screenRumbleOffsetX + _x + _camera.getViewportX();
 	const int ny = _screenRumbleOffsetY + _y + _camera.getViewportY();
-	*outX = (x - nx) / _scale;
-	*outY = (y - ny) / _scale;
+	*outX = (x - nx) / _scaleGridToPixel;
+	*outY = (y - ny) / _scaleGridToPixel;
 }
 
 void ClientMap::init (uint16_t playerID)
 {
 	Log::info(LOG_CLIENT, "init client map for player %i", playerID);
 
-	_camera.init(getWidth(), getHeight(), _mapWidth, _mapHeight, _scale);
+	_camera.init(getWidth(), getHeight(), _mapGridWidth, _mapGridHeight, _scaleGridToPixel);
 
 	_restartInitialized = 0U;
 	_restartDue = 0U;
@@ -457,9 +457,9 @@ void ClientMap::setSetting (const std::string& key, const std::string& value)
 	_settings[key] = value;
 
 	if (key == msn::WIDTH) {
-		_mapWidth = string::toInt(value);
+		_mapGridWidth = string::toInt(value);
 	} else if (key == msn::HEIGHT) {
-		_mapHeight = string::toInt(value);
+		_mapGridHeight = string::toInt(value);
 	} else if (key == msn::THEME) {
 		_theme = &ThemeType::getByName(value);
 	} else if (key == msn::TUTORIAL) {

@@ -36,7 +36,7 @@ protected:
 	int _width;
 	int _height;
 	// the reference tile width to convert the grid sizes into pixels
-	int _scale;
+	int _scaleGridToPixel;
 	float _zoom;
 
 	// all the maptiles and other entities (e.g. stones) in this map
@@ -47,8 +47,8 @@ protected:
 	uint32_t _restartInitialized;
 
 	// map grid dimensions
-	int _mapWidth;
-	int _mapHeight;
+	int _mapGridWidth;
+	int _mapGridHeight;
 
 	uint32_t _time;
 
@@ -211,9 +211,9 @@ public:
 	void rumble (float strength, int lengthMillis);
 	virtual void spawnInfo (const vec2& position, const EntityType& type);
 
-	int getWaterWidth () const override { return _mapWidth * _scale; }
-	int getPixelWidth () const override { return _mapWidth * _scale; }
-	int getPixelHeight () const override { return _mapHeight * _scale; }
+	int getWaterWidth () const override { return _mapGridWidth * _scaleGridToPixel; }
+	int getPixelWidth () const override { return _mapGridWidth * _scaleGridToPixel; }
+	int getPixelHeight () const override { return _mapGridHeight * _scaleGridToPixel; }
 	TexturePtr loadTexture (const std::string& name) const override;
 
 	// converts the given x and y screen coordinates into map coordinates that take the scale, shift and so on into account.
@@ -240,7 +240,7 @@ inline const ThemeType& ClientMap::getTheme () const
 
 inline bool ClientMap::isActive () const
 {
-	return _mapWidth > 0 && _mapHeight > 0 && !_name.empty();
+	return _mapGridWidth > 0 && _mapGridHeight > 0 && !_name.empty();
 }
 
 inline Camera& ClientMap::getCamera ()
@@ -256,12 +256,12 @@ inline void ClientMap::restart (uint32_t delay)
 
 inline int ClientMap::getMapWidth () const
 {
-	return _mapWidth;
+	return _mapGridWidth;
 }
 
 inline int ClientMap::getMapHeight () const
 {
-	return _mapHeight;
+	return _mapGridHeight;
 }
 
 inline ClientPlayer* ClientMap::getPlayer () const
@@ -295,7 +295,7 @@ inline void ClientMap::setSize (int width, int height)
 	_width = width;
 	_height = height;
 
-	_camera.init(getWidth(), getHeight(), _mapWidth, _mapHeight, _scale);
+	_camera.init(getWidth(), getHeight(), _mapGridWidth, _mapGridHeight, _scaleGridToPixel);
 }
 
 inline int ClientMap::getX () const

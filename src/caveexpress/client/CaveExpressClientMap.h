@@ -37,8 +37,8 @@ public:
 	int renderCooldownDescription (uint32_t cooldownIndex, int x, int y, int w, int h) const override;
 	void setSetting (const std::string& key, const std::string& value) override;
 
-	int getWaterSurface () const override { return (int)((_waterHeight + 0.00001f) * static_cast<float>(_scale)); }
-	int getWaterGround () const override { return getWaterSurface() + _mapHeight - (int)((_waterHeight + 0.00001f) * static_cast<float>(_scale)); }
+	int getWaterSurface () const override { return (int)((_waterHeight + 0.00001f) * static_cast<float>(_scaleGridToPixel)); }
+	int getWaterGround () const override { return getWaterSurface() + _mapGridHeight - (int)((_waterHeight + 0.00001f) * static_cast<float>(_scaleGridToPixel)); }
 
 	bool secondFinger () override { return drop(); }
 };

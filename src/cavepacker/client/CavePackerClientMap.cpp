@@ -76,7 +76,7 @@ void CavePackerClientMap::setDeadlocks(const std::vector<int>& _deadlocks) {
 		const vec2& pos = tile->getPos();
 		const int col = pos.x + 0.5f;
 		const int row = pos.y + 0.5f;
-		const int index = col + _mapWidth * row;
+		const int index = col + _mapGridWidth * row;
 		auto iter = std::find(deadlocks.begin(), deadlocks.end(), index);
 		if (iter == deadlocks.end()) {
 			tile->removeOverlay(_deadlockOverlay);

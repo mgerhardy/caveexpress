@@ -55,7 +55,7 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 		return;
 	const SDL_Rect& rect = getWaterRect(x, y);
 	Log::trace(LOG_GAMEIMPL, "rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
-									_x, _y, _width, _height, x, y, rect.w, rect.h, rect.y, rect.y + rect.h, _waterHeight, _scale);
+									_x, _y, _width, _height, x, y, rect.w, rect.h, rect.y, rect.y + rect.h, _waterHeight, _scaleGridToPixel);
 	_frontend->renderWaterPlane(rect.x, rect.y, rect.w, rect.h, waterColor, waterLineColor);
 	if (Config.isDebug()) {
 		const int waterGround = rect.y + rect.h;
@@ -229,7 +229,7 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 		SDL_RWclose(atlasRW);
 	}
 #endif
-	_camera.update({0, 0}, 0, _zoom);
+	_camera.update(vec2_zero, 0, _zoom);
 }
 
 void CaveExpressClientMap::renderBegin (int x, int y) const
