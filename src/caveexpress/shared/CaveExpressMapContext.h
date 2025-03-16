@@ -24,6 +24,11 @@ protected:
 		const gridCoord y = luaL_checknumber(l, 4);
 		const std::string& name = luaL_optstring(l, 5, "none");
 		const EntityType& entityType = EntityType::getByName(name);
+		if (entityType.isNone() && name != "none") {
+			Log::error(LOG_COMMON, "invalid entity type given: %s", name.c_str());
+			ctx->_error = true;
+			return 0;
+		}
 		const int delay = luaL_optinteger(l, 6, 5000);
 
 		SpriteDefPtr spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(caveTile);
