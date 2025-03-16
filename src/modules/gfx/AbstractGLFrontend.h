@@ -6,8 +6,8 @@
 #include "GLShared.h"
 
 struct Vertex {
-	Vertex() : x(0.0f), y(0.0f), u(0.0f), v(0.0f) {
-		c.c = 1u;
+	Vertex() {
+		memset((void*)this, 0, sizeof(*this));
 	}
 
 	explicit Vertex(const Color& color) : x(0.0f), y(0.0f), u(0.0f), v(0.0f) {
@@ -48,6 +48,10 @@ struct Batch {
 	int vertexCount = 0;
 	bool scissor = 0;
 	SDL_Rect scissorRect {0, 0, 0, 0};
+
+	void reset() {
+		memset((void*)this, 0, sizeof(*this));
+	}
 };
 
 class TextureCoords;

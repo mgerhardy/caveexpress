@@ -690,7 +690,7 @@ void AbstractGLFrontend::renderBatchBuffers()
 	const SDL_Rect scissorRect = _batches[_currentBatch].scissorRect;
 	const bool scissor = _batches[_currentBatch].scissor;
 	_currentBatch = 0;
-	_batches[_currentBatch] = Batch();
+	_batches[_currentBatch].reset();
 	_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
 	_batches[_currentBatch].scissorRect = scissorRect;
 	_batches[_currentBatch].scissor = scissor;
