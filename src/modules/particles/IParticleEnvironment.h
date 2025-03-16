@@ -21,6 +21,8 @@ public:
 	virtual int getPixelWidth() const = 0;
 	// return the pixel height of the environment the particle is living in
 	virtual int getPixelHeight() const = 0;
+	// return wind horizontal speed
+	virtual float getWind() const = 0;
 
 	virtual TexturePtr loadTexture (const std::string& name) const = 0;
 };

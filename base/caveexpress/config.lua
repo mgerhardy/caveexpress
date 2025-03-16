@@ -35,7 +35,7 @@ else
 	defaultflyingspeedx = 2.5
 	defaultgamecontroller = true
 	defaultfrontend = "opengl3"
-	defaultparticles = 1000
+	defaultparticles = 10000
 end
 
 settings = {

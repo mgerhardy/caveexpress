@@ -396,6 +396,7 @@ bool CampaignManager::firstMap () const
 
 void CampaignManager::startMap (const std::string& map)
 {
+	Log::info(LOG_CAMPAIGN, "-----------------");
 	Log::info(LOG_CAMPAIGN, "start map %s", map.c_str());
 	Commands.executeCommandLine(CMD_MAP_START " " + map);
 	_lastPlayedMap = map;

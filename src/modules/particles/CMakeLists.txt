@@ -3,8 +3,10 @@ set(particle_SRCS
 	ParticleSystem.cpp
 
 	Bubble.cpp
+	Dirt.cpp
 	Leaf.cpp
 	Rain.cpp
+	Sand.cpp 
 	Snow.cpp
 	Sparkle.cpp
 )
