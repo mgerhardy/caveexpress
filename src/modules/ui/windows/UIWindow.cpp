@@ -32,7 +32,7 @@ void UIWindow::render (int x, int y) const
 	ImGui::SetNextWindowSize({pw, ph}, ImGuiCond_Always);
 	ImGui::SetNextWindowPos({px, py}, ImGuiCond_Always);
 	if (ImGui::Begin(_id.c_str(), nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoBackground)) {
-		if (_flags & WINDOW_FLAG_MODAL) {
+		if ((_flags & WINDOW_FLAG_MODAL) != 0 && (_flags & WINDOW_FLAG_FULLSCREEN) == 0) {
 			const Color bgColor = {0.7f, 0.7f, 0.7f, 0.4f};
 			renderFilledRect(0, 0, 0, 0, bgColor);
 		}
