@@ -1,4 +1,7 @@
-return  -- comment this line, to show campaign in game
+local activate = false
+if not activate then
+	return
+end
 
 -- create a new campaign
 local c = Campaign.new("tests")
