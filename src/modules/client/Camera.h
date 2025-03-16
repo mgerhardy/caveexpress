@@ -15,6 +15,11 @@ private:
 	int _mapGridWidth;
 	int _mapGridHeight;
 
+	// this is used as an offset for the other rendering functions if the map is scolled because it's too big to
+	// fit onto the screen - this is usually negative if scrolled to the right or down and 0, 0 if not scrolled (upper
+	// left corner)
+	// these values are positive in maps that fit into the screen - and don't even use the whole screen. This is the offset
+	// from the screen/node borders then
 	int _viewportX;
 	int _viewportY;
 
@@ -27,7 +32,7 @@ private:
 	int _scrollingAreaHeight;
 
 	// the pixels of one grid tile
-	int _scale;
+	int _scaleGridToPixel;
 
 	int _scrollOffsetX;
 	int _scrollOffsetY;

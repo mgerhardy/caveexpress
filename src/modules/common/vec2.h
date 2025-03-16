@@ -34,19 +34,34 @@ public:
 		return v;
 	}
 
-	void operator +=(const vec2& v) {
+	vec2& operator +=(const vec2& v) {
 		x += v.x;
 		y += v.y;
+		return *this;
 	}
 
-	void operator -=(const vec2& v) {
+	vec2& operator -=(const vec2& v) {
 		x -= v.x;
 		y -= v.y;
+		return *this;
 	}
 
-	void operator *=(float scalar) {
+	vec2 &operator *=(float scalar) {
 		x *= scalar;
 		y *= scalar;
+		return *this;
+	}
+
+	vec2& operator /=(const vec2 &rhs) {
+		x /= rhs.x;
+		y /= rhs.y;
+		return *this;
+	}
+
+	vec2& operator /=(float scalar) {
+		x /= scalar;
+		y /= scalar;
+		return *this;
 	}
 
 	inline float sqrDistance(const vec2& other) const {
@@ -68,6 +83,18 @@ inline vec2 operator -(const vec2& a, const vec2& b) {
 
 inline vec2 operator *(float scalar, const vec2& a) {
 	return vec2(scalar * a.x, scalar * a.y);
+}
+
+inline vec2 operator *(const vec2& a, float scalar) {
+	return vec2(scalar * a.x, scalar * a.y);
+}
+
+inline vec2 operator /(const vec2& a, float scalar) {
+	return vec2(a.x / scalar, a.y / scalar);
+}
+
+inline vec2 operator /(const vec2& a, const vec2& b) {
+	return vec2(a.x / b.x, a.y / b.y);
 }
 
 static const vec2 vec2_zero;

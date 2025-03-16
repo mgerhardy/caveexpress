@@ -25,8 +25,8 @@ bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fil
 	const float height = _fbo.rect().h;
 	const float xTexCoord = x / width;
 	const float xTexCoord2 = xTexCoord + w / width;
-	const float yTexCoord = 1.0 - y / height;
-	const float yTexCoord2 = 1.0 - (y + h) / height;
+	const float yTexCoord = 1.0f - y / height;
+	const float yTexCoord2 = 1.0f - (y + h) / height;
 
 	float tex[8];
 
@@ -158,6 +158,8 @@ void GL3Frontend::initRenderer () {
 	if (textureSurface == nullptr) {
 		Log::error(LOG_GFX, "Could not load the water noise");
 	} else {
+		_waterNoiseW = textureSurface->w;
+		_waterNoiseH = textureSurface->h;
 		_waterNoise = uploadTexture(static_cast<unsigned char *>(textureSurface->pixels), textureSurface->w, textureSurface->h);
 		SDL_FreeSurface(textureSurface);
 		Log::info(LOG_GFX, "Uploaded water noise with texnum %u", _waterNoise);

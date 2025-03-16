@@ -197,8 +197,10 @@ void ClientMap::render () const
 {
 	ExecutionTime renderTime("ClientMapRender", 2000L);
 
-	const int x = _screenRumbleOffsetX + _x + _camera.getViewportX();
-	const int y = _screenRumbleOffsetY + _y + _camera.getViewportY();
+	const int scrollOffsetX = _camera.getViewportX();
+	const int scrollOffsetY = _camera.getViewportY();
+	const int x = _screenRumbleOffsetX + _x + scrollOffsetX;
+	const int y = _screenRumbleOffsetY + _y + scrollOffsetY;
 
 	const int scissorX = std::max(0, x);
 	const int scissorY = std::max(0, y);
@@ -213,7 +215,7 @@ void ClientMap::render () const
 	renderLayers(x, y);
 	renderParticles(x, y);
 	renderCooldowns(x, y);
-	renderTitle(x, y);
+	renderTitle(x, y); // TODO: this shouldn't be x and y - because it will scroll out of the map
 	renderEnd(x, y);
 
 	if (_restartDue != 0) {

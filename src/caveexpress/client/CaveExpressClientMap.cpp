@@ -57,7 +57,7 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	const SDL_Rect& rect = getWaterRect(x, y);
 	Log::trace(LOG_GAMEIMPL, "rect:(%i,%i,%i,%i), x:%i, y:%i, water:(w:%i, h:%i, surf:%i, grnd:%i, wh:%f, scale:%i)",
 									_x, _y, _width, _height, x, y, rect.w, rect.h, rect.y, rect.y + rect.h, _waterHeight, _scaleGridToPixel);
-	vec2 offsets = vec2_zero; // TODO: implement me - see https://github.com/mgerhardy/caveexpress/issues/171
+	vec2 offsets{(float)x, (float)y};
 	_frontend->renderWaterPlane(rect.x, rect.y, rect.w, rect.h, waterColor, waterLineColor, offsets);
 	if (Config.isDebug()) {
 		const int waterGround = rect.y + rect.h;

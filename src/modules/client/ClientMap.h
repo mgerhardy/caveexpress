@@ -101,6 +101,8 @@ public:
 	virtual void cooldown (const Cooldown& cooldown);
 
 	virtual void render () const;
+
+	// the x and y values here are the scrolling offset - see Camera::getViewportX() and Camera::getViewportY()
 	virtual void renderBegin (int x, int y) const;
 	virtual void renderEnd (int x, int y) const;
 	virtual void renderLayers (int x, int y) const;

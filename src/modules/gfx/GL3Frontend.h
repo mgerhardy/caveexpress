@@ -10,6 +10,8 @@ protected:
 	GLuint _vao;
 	GLuint _vbo;
 
+	int _waterNoiseW = 1;
+	int _waterNoiseH = 1;
 	TexNum _waterNoise;
 	Shader _shader;
 	Shader _waterShader;
