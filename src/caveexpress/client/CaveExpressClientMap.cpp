@@ -31,7 +31,7 @@ namespace caveexpress {
 
 CaveExpressClientMap::CaveExpressClientMap (int x, int y, int width, int height, IFrontend *frontend,
 		ServiceProvider& serviceProvider, int referenceTileWidth) :
-		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth), _waterHeight(0.0), _target(nullptr)
+		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth)
 {
 }
 
@@ -255,6 +255,14 @@ int CaveExpressClientMap::renderCooldownDescription (uint32_t cooldownIndex, int
 		return 2 * padding + _font->getTextWidth(text);
 	}
 	return 0;
+}
+
+void CaveExpressClientMap::setSetting (const std::string& key, const std::string& value)
+{
+	Super::setSetting(key, value);
+	if (key == msn::WIND) {
+		_wind = string::toFloat(value);
+	}
 }
 
 void CaveExpressClientMap::start () {

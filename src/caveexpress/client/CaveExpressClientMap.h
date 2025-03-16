@@ -6,8 +6,10 @@ namespace caveexpress {
 
 class CaveExpressClientMap: public ClientMap {
 private:
-	float _waterHeight;
-	mutable RenderTarget* _target;
+	using Super = ClientMap;
+	float _waterHeight = 0.0f;
+	float _wind = 0.0f;
+	mutable RenderTarget* _target = nullptr;
 
 	void renderWater (int x, int y) const;
 	SDL_Rect getWaterRect(int x, int y) const;
@@ -33,6 +35,7 @@ public:
 	void renderBegin (int x, int y) const override;
 	void renderEnd (int x, int y) const override;
 	int renderCooldownDescription (uint32_t cooldownIndex, int x, int y, int w, int h) const override;
+	void setSetting (const std::string& key, const std::string& value) override;
 
 	int getWaterSurface () const override { return (int)((_waterHeight + 0.00001f) * static_cast<float>(_scale)); }
 	int getWaterGround () const override { return getWaterSurface() + _mapHeight - (int)((_waterHeight + 0.00001f) * static_cast<float>(_scale)); }
