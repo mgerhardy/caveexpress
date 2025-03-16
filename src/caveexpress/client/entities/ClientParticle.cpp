@@ -51,10 +51,12 @@ void ClientParticle::updateParticle (int index, float x, float y, uint32_t lifet
 
 std::string ClientParticle::getSpriteName() const
 {
-	if (_type == WorldParticleType::WATER)
+	if (_particleType == WorldParticleType::WATER) {
 		return "particle-water";
-	if (_type == WorldParticleType::LEAF)
+	}
+	if (_particleType == WorldParticleType::LEAF) {
 		return "particle-leaf";
+	}
 	return Super::getSpriteName();
 }
 

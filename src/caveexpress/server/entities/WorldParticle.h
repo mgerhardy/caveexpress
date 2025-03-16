@@ -43,6 +43,7 @@ public:
 	void addContact (const IEntity* entity);
 	void removeContact (const IEntity* entity);
 
+	WorldParticleType getParticleType () const;
 	int getMaxParticles () const;
 	uint32_t getLifeTime () const;
 	bool isActive (int index) const;
@@ -55,6 +56,11 @@ public:
 	bool isDirty () const override;
 	void onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold) override;
 };
+
+inline WorldParticleType WorldParticle::getParticleType () const
+{
+	return _particleType;
+}
 
 inline int WorldParticle::getMaxParticles () const
 {

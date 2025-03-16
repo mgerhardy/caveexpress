@@ -68,7 +68,7 @@ void GameEventHandler::updateParticle (int clientMask, const IEntity& entity) co
 		const UpdateParticleEntity e = { pos.x, pos.y, angle, i, particle.getRemainingLifetime(i) };
 		bodies.push_back(e);
 	}
-	const UpdateParticleMessage msg(particle.getID(), particle.getType(), bodies, particle.getMaxParticles(), particle.getLifeTime());
+	const UpdateParticleMessage msg(particle.getID(), particle.getParticleType(), bodies, particle.getMaxParticles(), particle.getLifeTime());
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 
