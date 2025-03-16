@@ -233,9 +233,9 @@ void UI::showCursor (bool show)
 		return;
 	}
 	if (show)
-		Log::error(LOG_UI, "show the cursor");
+		Log::debug(LOG_UI, "show the cursor");
 	else
-		Log::error(LOG_UI, "hide the cursor");
+		Log::debug(LOG_UI, "hide the cursor");
 	_cursor = show;
 	SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
 }
