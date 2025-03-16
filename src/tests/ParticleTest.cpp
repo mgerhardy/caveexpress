@@ -12,6 +12,7 @@ class TestParticleEnv: public IParticleEnvironment {
 	int getWaterWidth () const override { return getPixelWidth(); }
 	int getPixelWidth () const override { return 1920; }
 	int getPixelHeight () const override { return 1080; }
+	float getWind() const override { return 1.0f; }
 	TexturePtr loadTexture (const std::string& name) const override { return TexturePtr(); }
 };
 
