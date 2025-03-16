@@ -381,7 +381,7 @@ void AbstractGLFrontend::renderLineWithTexture (int x, int y, int x2, int y2, Te
 	getTrimmed(texture, x, y, w, h);
 	const double angle = getAngleBetweenPoints(x, y, x2, y2);
 
-	Log::info(LOG_GFX, "x: %i, y: %i, w: %i, h: %i, angle: %f, tw: %i, th: %i", x, y, w, h, (float)angle, texture->getWidth(), texture->getHeight());
+	Log::debug(LOG_GFX, "x: %i, y: %i, w: %i, h: %i, angle: %f, tw: %i, th: %i", x, y, w, h, (float)angle, texture->getWidth(), texture->getHeight());
 
 	glm::mat4 transform(1.0f);
 	transform = glm::translate(transform, glm::vec3(x, y, 0));
