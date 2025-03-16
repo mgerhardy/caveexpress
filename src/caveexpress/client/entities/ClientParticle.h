@@ -6,6 +6,7 @@ namespace caveexpress {
 
 class ClientParticle: public ClientEntity {
 private:
+	using Super = ClientEntity;
 	struct ParticleData {
 		ParticleData() :
 				angle(0), lifetime(0) {

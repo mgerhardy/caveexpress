@@ -43,7 +43,7 @@ public:
 	virtual bool update (uint32_t deltaTime, bool lerpPos);
 	void setAnimationType (const Animation& type);
 	void setThemeType (const ThemeType& theme);
-	std::string getSpriteName() const;
+	virtual std::string getSpriteName() const;
 	void setPos (const vec2& pos, bool lerp);
 	Direction getMoveDirection ();
 	void setAngle (int16_t angle);
