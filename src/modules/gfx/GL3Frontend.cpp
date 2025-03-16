@@ -18,7 +18,7 @@ GL3Frontend::~GL3Frontend ()
 {
 }
 
-bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fillColor, const Color& lineColor)
+bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fillColor, const Color& lineColor, const vec2 &offsets)
 {
 	renderBatches();
 	const float width = _fbo.rect().w;
@@ -48,6 +48,8 @@ bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fil
 	_waterShader.activate();
 	if (_waterShader.hasUniform("u_watercolor"))
 		_waterShader.setUniform4fv("u_watercolor", fillColor, 0, 4);
+	if (_waterShader.hasUniform("u_offsets"))
+		_waterShader.setUniform2fv("u_offsets", &offsets.x, 0, 2);
 	renderBatchesWithShader(_waterShader);
 	renderLine(x, y - 1, x + w, y - 1, lineColor);
 	return true;

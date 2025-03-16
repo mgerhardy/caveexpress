@@ -2,6 +2,7 @@ uniform sampler2D u_texture;
 uniform sampler2D u_normals;
 uniform int u_time;
 uniform vec4 u_watercolor;
+// uniform vec2 u_offsets; // TODO: implement me - see https://github.com/mgerhardy/caveexpress/issues/171
 in vec2 v_texcoord;
 in vec4 v_color;
 out vec4 o_color;
