@@ -165,8 +165,8 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 	// TODO: also take the non water height into account - so not have the amount of bubbles
 	// on a small area when the water is rising
 	const float mapWidth = (float)getMapWidth();  // for map scaled counts
-	const bool windy = fabs(_wind) > 0.05f;
-	const float wind = std::min(1.f, fabs(_wind) * 0.3f);
+	const bool windy = fabs(_wind) > 0.02f;
+	const float wind = std::min(1.f, fabs(_wind) * 0.5f);
 	Log::info(LOG_GAMEIMPL, "** Wind: %f", _wind);
 
 	const int bubbles = int(randBetweenf(0.02f, 0.04f) * mapWidth * 10.f);
@@ -204,7 +204,7 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 		}
 	}
 	if (windy && (ThemeTypes::isRock(*_theme) || ThemeTypes::isJungle(*_theme))) {
-		const int leaves = int(randBetweenf(0.5f, 1.0f) * mapWidth * 10.f * wind);
+		const int leaves = int(randBetweenf(0.7f, 1.0f) * mapWidth * 2.f * wind);
 		Log::info(LOG_GAMEIMPL, "** Leaves: %i", leaves);
 		for (int i = 0; i < leaves; ++i) {
 			_particleSystem.spawn(ParticlePtr(new Leaf(*this)));
