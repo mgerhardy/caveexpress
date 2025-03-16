@@ -21,8 +21,10 @@ public:
 	bool updateCameraPosition () override;
 	void scroll (int relX, int Y) override;
 	void setZoom (const float zoom) override;
+	
 	int getWaterSurface() const override { return 0; }
 	int getWaterGround() const override { return 0; }
+	float getWind() const override { return 0.f; }
 
 	void undo ();
 

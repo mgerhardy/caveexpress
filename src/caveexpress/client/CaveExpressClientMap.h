@@ -39,6 +39,7 @@ public:
 
 	int getWaterSurface () const override { return (int)((_waterHeight + 0.00001f) * static_cast<float>(_scaleGridToPixel)); }
 	int getWaterGround () const override { return getWaterSurface() + _mapGridHeight - (int)((_waterHeight + 0.00001f) * static_cast<float>(_scaleGridToPixel)); }
+	float getWind () const override {  return _wind;  }
 
 	bool secondFinger () override { return drop(); }
 };

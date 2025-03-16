@@ -1,30 +1,18 @@
 #include "Rain.h"
+#include "common/Math.h"
 
-Rain::Rain(IParticleEnvironment &env) : Particle(env), _waterSurface(0) {
+Rain::Rain(IParticleEnvironment &env) : Particle(env) {
 	_texture = loadTexture("snow-01");
-	float s = randBetweenf(0.1f, 0.6f);
-	_scale = vec2(s * 0.2f, s * 4.f);
-	_alpha = randBetweenf(0.3f, 0.5f);
+	const float s = randBetweenf(0.1f, 0.6f);
+	_scale = vec2(s * 4.f, s * 0.2f);
+	_alpha = randBetweenf(0.4f, 0.7f);
+	_wind = env.getWind() * 0.2f;
+	_angle = -90.f - 30.f * _env.getWind() + randBetweenf(-5.f, 5.f);
+	_omega = 0.0f;
 	random();
 }
+
 void Rain::random() {
-	_v = vec2(randBetweenf(-0.01f, 0.01f), randBetweenf(0.3f, 0.6f));
-}
-
-void Rain::init() {
-	_waterSurface = _env.getWaterSurface();
-	_pos.x = rand() % _env.getPixelWidth();
-	_pos.y = rand() % std::min(_waterSurface, _env.getPixelHeight());
-}
-
-void Rain::run() {
-	// the water height might change, so update this
-	_waterSurface = _env.getWaterSurface();
-
-	// Rain has reached the water surface
-	if (_pos.y >= (float)(_waterSurface - _texture->getHeight())) {
-		_pos.x = (float)(rand() % _env.getPixelWidth());
-		_pos.y = (float)(rand() % (_env.getPixelHeight() / 32));
-		random();
-	}
+	float a = DegreesToRadians(_angle), d = randBetweenf(0.4f, 0.8f);
+	_v = vec2(-cosf(a) * d, -sinf(a) * d);
 }

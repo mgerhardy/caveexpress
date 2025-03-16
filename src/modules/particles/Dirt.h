@@ -2,10 +2,10 @@
 
 #include "Particle.h"
 
-class Rain : public Particle {
+class Dirt : public Particle {
 
 public:
-	explicit Rain(IParticleEnvironment &env);
+	explicit Dirt(IParticleEnvironment &env);
 
 	void random () override;
 };
