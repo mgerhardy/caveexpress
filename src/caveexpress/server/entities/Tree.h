@@ -1,6 +1,7 @@
 #pragma once
 
 #include "caveexpress/server/entities/IEntity.h"
+#include "caveexpress/server/entities/WorldParticle.h"
 
 namespace caveexpress {
 
@@ -17,6 +18,7 @@ private:
 	int _droppedFruits;
 	IEntity *_dropFruitCausedBy;
 	TimerID _idleTimer;
+	WorldParticle *_leafParticle = nullptr;
 
 public:
 	Tree (Map& map, gridCoord x, gridCoord y);

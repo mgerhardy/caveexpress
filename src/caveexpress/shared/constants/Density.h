@@ -16,5 +16,6 @@ namespace caveexpress {
 #define DENSITY_AIR				1.2041f
 #define DENSITY_PACKAGETARGET	450.0f
 #define DENSITY_BRIDGE			1000.0f
+#define DENSITY_LEAF			500.0f
 
 }

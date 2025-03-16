@@ -1,7 +1,9 @@
 #include "Tree.h"
 #include "caveexpress/server/map/Map.h"
+#include "caveexpress/shared/constants/ConfigVars.h"
 #include "caveexpress/shared/constants/Density.h"
 #include "caveexpress/server/entities/Fruit.h"
+#include "common/ConfigManager.h"
 #include "common/TimeManager.h"
 #include "caveexpress/shared/constants/TreeState.h"
 
@@ -10,6 +12,10 @@ namespace caveexpress {
 Tree::Tree (Map& map, gridCoord x, gridCoord y) :
 		IEntity(EntityTypes::TREE, map), _x(x), _y(y), _dropFruit(false), _droppedFruits(0), _dropFruitCausedBy(nullptr), _idleTimer(0)
 {
+	if (Config.getConfigVar(WORLD_PARTICLE)->getBoolValue()) {
+		const b2Vec2 size(0.05f, 0.05f);
+		_leafParticle = new WorldParticle(map, LEAF, 10, DENSITY_LEAF, size, 10000);
+	}
 	setIdle();
 }
 
@@ -78,6 +84,9 @@ void Tree::createBody ()
 
 	_map.addToWorld(fd, bd, this);
 	_map.addEntity(this);
+
+	if (_leafParticle != nullptr)
+		_map.addEntity(_leafParticle);
 }
 
 bool Tree::shouldCollide (const IEntity *entity) const
@@ -99,12 +108,29 @@ void Tree::onContact (b2Contact* contact, IEntity* entity)
 
 	if (entity->getLinearVelocity().y > 0.1)
 		setDazed(entity);
+
+	if (_leafParticle != nullptr) {
+		b2Fixture* fixtureA = contact->GetFixtureA();
+		b2Fixture* fixtureB = contact->GetFixtureB();
+		IEntity* entityA = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
+		IEntity* entityB = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
+		const bool entityIsA = entityA == entity;
+		_leafParticle->addContact(entityIsA ? entityA : entityB);
+	}
 }
 
 void Tree::endContact (b2Contact* contact, IEntity* entity)
 {
 	if (_dropFruitCausedBy == entity)
 		_dropFruitCausedBy = nullptr;
+	if (_leafParticle != nullptr) {
+		b2Fixture* fixtureA = contact->GetFixtureA();
+		b2Fixture* fixtureB = contact->GetFixtureB();
+		IEntity* entityA = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
+		IEntity* entityB = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
+		const bool entityIsA = entityA == entity;
+		_leafParticle->removeContact(entityIsA ? entityA : entityB);
+	}
 }
 
 }

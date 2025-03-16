@@ -3,7 +3,8 @@
 namespace caveexpress {
 
 typedef enum {
-	WATER
+	WATER,
+	LEAF
 } WorldParticleType;
 
 }

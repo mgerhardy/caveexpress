@@ -18,10 +18,10 @@ private:
 		vec2 nextPos;
 	};
 
-	ParticleData *_particles;
-	int _maxParticles;
-	int _lifetime;
-	std::string _sprite;
+	ParticleData *_particles = nullptr;
+	int _maxParticles = 0;
+	int _lifetime = 0;
+	int _particleType = 0;
 
 	ClientParticle (uint16_t id, const std::string& sprite, float x, float y);
 public:
@@ -34,16 +34,22 @@ public:
 
 	void resetParticles (uint8_t maxParticles, uint32_t lifetime);
 	void updateParticle (int index, float x, float y, uint32_t lifetime, EntityAngle angle);
-	void setSprite (const std::string& sprite);
+	void setParticleType (int type);
+	int getParticleType () const;
 
 	// ClientEntity
 	bool update (uint32_t deltaTime, bool lerpPos) override;
 	void render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int mapPixelWidth, int mapPixelHeight) const override;
 };
 
-inline void ClientParticle::setSprite (const std::string& sprite)
+inline int ClientParticle::getParticleType () const
 {
-	_sprite = sprite;
+	return _particleType;
+}
+
+inline void ClientParticle::setParticleType (int type)
+{
+	_particleType = type;
 }
 
 }

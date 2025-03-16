@@ -1,5 +1,6 @@
 #include "WorldParticle.h"
 #include "caveexpress/server/map/Map.h"
+#include "caveexpress/shared/WorldParticleType.h"
 #include <SDL_assert.h>
 
 namespace caveexpress {
@@ -28,6 +29,8 @@ bool WorldParticle::shouldCollide (const IEntity *entity) const
 	switch (_particleType) {
 	case WATER:
 		return entity->isWater() || entity->isParticle();
+	case LEAF:
+		return entity->isSolid() || entity->isParticle();
 	default:
 		return false;
 	}

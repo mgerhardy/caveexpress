@@ -50,9 +50,10 @@ void ClientParticle::updateParticle (int index, float x, float y, uint32_t lifet
 
 void ClientParticle::render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int mapPixelWidth, int mapPixelHeight) const
 {
-	const TexturePtr& texture = UI::get().loadTexture(_sprite);
+	const std::string &sprite = _type == EntityTypes::WATER ? "particle-water" : "particle-leaf";
+	const TexturePtr& texture = UI::get().loadTexture(sprite);
 	if (!texture || !texture->isValid()) {
-		Log::error(LOG_GAMEIMPL, "client particle texture '%s' not found", _sprite.c_str());
+		Log::error(LOG_GAMEIMPL, "client particle texture '%s' not found", sprite.c_str());
 		return;
 	}
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "caveexpress/shared/WorldParticleType.h"
 #include "network/IProtocolMessage.h"
 #include <vector>
 
@@ -14,6 +15,7 @@ struct UpdateParticleEntity {
 class UpdateParticleMessage: public IProtocolMessage {
 private:
 	uint16_t _entityId;
+	uint8_t _particleType;
 	std::vector<UpdateParticleEntity> _bodies;
 	const std::vector<UpdateParticleEntity>* _bodiesPtr;
 	uint8_t _bodyCount;
@@ -21,8 +23,8 @@ private:
 	uint32_t _maxLifetime;
 
 public:
-	UpdateParticleMessage (uint16_t entityId, const std::vector<UpdateParticleEntity>& bodies, int maxParticles, uint32_t maxLifetime) :
-			IProtocolMessage(protocol::PROTO_UPDATEPARTICLE), _entityId(entityId), _bodiesPtr(&bodies), _bodyCount(
+	UpdateParticleMessage (uint16_t entityId, uint8_t particleType, const std::vector<UpdateParticleEntity>& bodies, int maxParticles, uint32_t maxLifetime) :
+			IProtocolMessage(protocol::PROTO_UPDATEPARTICLE), _entityId(entityId), _particleType(particleType), _bodiesPtr(&bodies), _bodyCount(
 					bodies.size()), _maxParticles(maxParticles), _maxLifetime(maxLifetime)
 	{
 	}
@@ -33,6 +35,7 @@ public:
 			IProtocolMessage(protocol::PROTO_UPDATEPARTICLE), _bodiesPtr(nullptr)
 	{
 		_entityId = input.readShort();
+		_particleType = input.readByte();
 		_maxParticles = input.readByte();
 		_maxLifetime = input.readByte() * 100;
 		_bodyCount = input.readByte();
@@ -51,6 +54,7 @@ public:
 	{
 		out.addByte(_id);
 		out.addShort(_entityId);
+		out.addByte(_particleType);
 		out.addByte(_maxParticles);
 		out.addByte(_maxLifetime / 100);
 		out.addByte(_bodyCount);
@@ -67,6 +71,11 @@ public:
 	inline uint16_t getEntityId () const
 	{
 		return _entityId;
+	}
+
+	inline uint8_t getParticleType () const
+	{
+		return _particleType;
 	}
 
 	inline uint8_t getBodyCount () const
@@ -113,10 +122,5 @@ public:
 	{
 		const UpdateParticleEntity& e = _bodies[bodyIndex];
 		return e.angle;
-	}
-
-	inline const std::string getSprite () const
-	{
-		return "particle-water";
 	}
 };

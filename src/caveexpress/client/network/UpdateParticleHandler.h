@@ -28,9 +28,8 @@ public:
 		}
 
 		ClientParticle *particle = static_cast<ClientParticle*>(entity);
+		particle->setParticleType(msg->getParticleType());
 		particle->resetParticles(msg->getMaxParticles(), msg->getMaxLifeTime());
-		const std::string& sprite = msg->getSprite();
-		particle->setSprite(sprite);
 		const uint8_t bodyCount = msg->getBodyCount();
 		for (int i = 0; i < bodyCount; i++) {
 			const float x = msg->getX(i);
