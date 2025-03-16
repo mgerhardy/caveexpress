@@ -466,6 +466,8 @@ void ClientMap::setSetting (const std::string& key, const std::string& value)
 		_tutorial = string::toBool(value);
 	} else if (key == msn::INTROWINDOW) {
 		_introWindow = value;
+	} else if (key == msn::WIND) {
+		_particleSystem.setWind(string::toFloat(value));
 	}
 }
 

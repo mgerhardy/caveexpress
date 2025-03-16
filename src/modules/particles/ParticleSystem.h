@@ -11,7 +11,8 @@ private:
 	typedef Particles::iterator ParticlesIter;
 	typedef Particles::const_iterator ParticlesConstIter;
 	Particles _particles;
-	int _maxParticles;
+	const int _maxParticles;
+	float _wind = 0.0f;
 public:
 	explicit ParticleSystem(int maxParticles);
 	virtual ~ParticleSystem();
@@ -24,7 +25,14 @@ public:
 	void remove (const ParticlePtr& particle);
 	bool hasParticles () const ;
 	int getParticleAmount () const;
+
+	void setWind(float wind);
 };
+
+inline void ParticleSystem::setWind(float wind)
+{
+	_wind = wind;
+}
 
 inline int ParticleSystem::getParticleAmount () const
 {
