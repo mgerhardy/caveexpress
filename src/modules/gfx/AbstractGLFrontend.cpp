@@ -189,7 +189,7 @@ void AbstractGLFrontend::startNewBatch ()
 		SDL_assert_always(_currentBatch == 0);
 		return;
 	}
-	_batches[_currentBatch] = Batch();
+	_batches[_currentBatch].reset();
 	_batches[_currentBatch].vertexIndexStart = _currentVertexIndex;
 	_batches[_currentBatch].scissorRect = _batches[_currentBatch - 1].scissorRect;
 	_batches[_currentBatch].scissor = _batches[_currentBatch - 1].scissor;
