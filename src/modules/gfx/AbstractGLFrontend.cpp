@@ -90,11 +90,11 @@ void AbstractGLFrontend::renderTexture(const TextureCoords& texCoords, int x, in
 	}
 	glm::mat4 transform(1.0f);
 	if (angle != 0) {
-		transform = glm::translate(transform, glm::vec3(x + w / 2, y + h / 2, 0));
+		transform[3] = glm::vec4(x + w / 2, y + h / 2, 0, 1.0f);
 		transform = glm::rotate(transform, (float)DegreesToRadians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
 		transform = glm::translate(transform, glm::vec3(-w / 2, -h / 2, 0));
 	} else {
-		transform = glm::translate(transform, glm::vec3(x, y, 0));
+		transform[3] = glm::vec4(x, y, 0.0f, 1.0f);
 	}
 	transform = glm::scale(transform, glm::vec3(w * _rx, h * _ry, 1.0f));
 	glm::vec4 vertexTL(0.0f, 0.0f, 0.0f, 1.0f);
