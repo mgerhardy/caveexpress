@@ -133,6 +133,7 @@ Version 2.6 (2025-not yet released)
 * UI map and campaign browsers now bigger, tiles 6 x 4, bigger font and map title shown
 * Reworked in-game Hud, now also showing:
   * time as text, package and NPC transfer counts (currently done and total to do on map)
+* Reworked in-game and editor Help screens
 * Gameplay changes
   * Diving, now possible to fall underwater - few later maps use it
   * Possible to fly up with 3 packages, or even with 4 after powerup (banana)
@@ -145,5 +146,6 @@ Version 2.6 (2025-not yet released)
   * Water splashes
   * Rain in jungle
   * Smaller snow and more wobbly
+  * Wind sand, flying leaves
 * New palm and desert trees
 * Updated tools, new: textureatlas
