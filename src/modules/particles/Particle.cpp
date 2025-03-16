@@ -67,5 +67,8 @@ void Particle::render (IFrontend* frontend, int x, int y, float zoom) const
 	const float fy = (float)y + _pos.y * zoom;
 	const float fw = (float)_texture->getWidth() * zoom * _scale.x;
 	const float fh = (float)_texture->getHeight() * zoom * _scale.y;
+	if (fx + fw < 0.0f || fy + fh < 0.0f || fx > (float)frontend->getWidth() || fy > (float)frontend->getHeight()) {
+		return;
+	}
 	frontend->renderImage(_texture.get(), (int)fx, (int)fy, (int)fw, (int)fh, _angle, _alpha);
 }
