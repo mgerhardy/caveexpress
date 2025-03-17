@@ -299,6 +299,8 @@ void IUINodeMapEditor::renderScrollbars (int x, int y) const
 	const Color color = { 0.8f, 0.8f, 0.8f, 1.0f };
 	const int visibleMapGridWidth = getRenderWidth() / _tileWidth;
 	const int visibleMapGridHeight = getRenderHeight() / _tileWidth;
+	
+	//  vertical |
 	if (_mapHeight > visibleMapGridHeight) {
 		const int xBarRight = x + getRenderX() + getRenderWidth() + scrollBarPadding;
 		const int yBarRight = y + getRenderY();
@@ -312,6 +314,7 @@ void IUINodeMapEditor::renderScrollbars (int x, int y) const
 		renderFilledRect(xBarRight, yRight, wBarRight, hRight, color);
 	}
 
+	//  horizontal --
 	if (_mapWidth > visibleMapGridWidth) {
 		const int xBarBottom = x + getRenderX();
 		const int yBarBottom = y + getRenderY() + getRenderHeight() + scrollBarPadding;
@@ -601,6 +604,11 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 	case SDLK_SPACE:
 		onRotate();
 		break;
+
+	case SDLK_f:
+		fitView(_alt);
+		break;
+	
 	default:
 		return false;
 	}
@@ -684,10 +692,13 @@ void IUINodeMapEditor::onMouseMotion (int32_t x, int32_t y, int32_t relX, int32_
 	}
 }
 
-void IUINodeMapEditor::fitView ()
+void IUINodeMapEditor::fitView (bool full)
 {
 	_gridScrollX = _gridScrollY = 0;
 	_scale = 1.0f / static_cast<float>(_tileWidth);
+	if (!full && _scale < 0.5f) {
+		_scale = 0.5f;
+	}
 	scale(-0.001f);
 }
 
