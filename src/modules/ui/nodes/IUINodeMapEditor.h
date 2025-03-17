@@ -140,6 +140,8 @@ protected:
 	EntityAngle _activeSpriteAngle;
 	const EntityType* _activeEntityType;
 	bool _activeEntityTypeRight;
+
+	// grid pos
 	gridCoord _selectedGridX;
 	gridCoord _selectedGridY;
 	int _gridScrollX;
@@ -147,6 +149,7 @@ protected:
 	float _scale;
 	int _mapWidth;
 	int _mapHeight;
+
 	MapEditorLayer _activeLayer;
 	std::string _fileName;
 	std::string _mapName;
@@ -175,6 +178,8 @@ protected:
 
 	ConfigVarPtr _lastMap;
 
+	// modifiers, arrow keys
+	bool _alt, _shift, _ctrl;
 	bool _moveTileHorizontally;
 
 	int _scrollX;
