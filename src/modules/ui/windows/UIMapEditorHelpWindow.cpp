@@ -124,6 +124,7 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 	{
 		const AutoBorder b(this, _currentY);
 		addKey(tr("ALT"));
+		addKey(tr("SHIFT"));
 		addTexture("icon-plus");
 		addKey(tr("Mouse movement"));
 		addTexture("icon-result");
