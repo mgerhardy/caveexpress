@@ -180,10 +180,9 @@ protected:
 
 	// modifiers, arrow keys
 	bool _alt, _shift, _ctrl;
+	bool _up, _down, _left, _right;
 	bool _moveTileHorizontally;
 
-	int _scrollX;
-	int _scrollY;
 	int32_t _lastScrollUpdate;
 	uint32_t _nextScrollDelta;
 

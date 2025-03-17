@@ -1,4 +1,5 @@
 #include "ui/nodes/IUINodeMapEditor.h"
+#include "SDL_keycode.h"
 #include "ui/UI.h"
 #include "common/ConfigManager.h"
 #include "common/CommandSystem.h"
@@ -13,7 +14,7 @@
 
 namespace {
 const float SCALE_STEP = 0.05f;
-const uint32_t INITIAL_SCROLL_STEP_DELAY = 500U;
+const uint32_t SCROLL_STEP_DELAY = 40U;  // ms
 }
 
 bool TileItem::operator== (const TileItem &other) const
@@ -147,8 +148,9 @@ IUINodeMapEditor::IUINodeMapEditor (IFrontend *frontend, IMapManager& mapManager
 		_selectedGridX(0.0f), _selectedGridY(0.0f), _gridScrollX(0), _gridScrollY(0), _activeLayer(LAYER_FOREGROUND),
 		_buttonPressed(0), _renderGrid(true), _mapManager(mapManager), _theme(&ThemeTypes::ROCK), _highlightItem(nullptr),
 		_alt(false), _shift(false), _ctrl(false),
-		_moveTileHorizontally(false), _scrollX(0), _scrollY(0), _lastScrollUpdate(0.f),
-		_nextScrollDelta(INITIAL_SCROLL_STEP_DELAY), _layerMask(0xFFFFFFFF), _lastSave(0u)
+		_up(false), _down(false), _left(false), _right(false),
+		_moveTileHorizontally(false), _lastScrollUpdate(0), _nextScrollDelta(SCROLL_STEP_DELAY),
+		_layerMask(0xFFFFFFFF), _lastSave(0u)
 {
 	_font = getFont();
 	Vector4Set(colorBlack, _fontColor);
@@ -495,23 +497,14 @@ bool IUINodeMapEditor::onKeyRelease (int32_t key)
 	if (key == SDLK_LALT || key == SDLK_RALT)  _alt = false;
 	if (key == SDLK_LSHIFT || key == SDLK_RSHIFT)  _shift = false;
 	if (key == SDLK_LCTRL || key == SDLK_RCTRL)  _ctrl = false;
+	// arrows
+	if (key == SDLK_LEFT)  _left = false;
+	if (key == SDLK_RIGHT)  _right = false;
+	if (key == SDLK_UP)  _up = false;
+	if (key == SDLK_DOWN)  _down = false;
 
 	if (!_alt && !_shift) {
 		_moveTileHorizontally = false;
-	}
-	switch (key) {
-	case SDLK_LEFT:
-	case SDLK_RIGHT:
-		_scrollX = 0;
-		if (_scrollY == 0)
-			_nextScrollDelta = INITIAL_SCROLL_STEP_DELAY;
-		return true;
-	case SDLK_DOWN:
-	case SDLK_UP:
-		_scrollY = 0;
-		if (_scrollX == 0)
-			_nextScrollDelta = INITIAL_SCROLL_STEP_DELAY;
-		return true;
 	}
 	return false;
 }
@@ -531,6 +524,11 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 	if (key == SDLK_LALT || key == SDLK_RALT)  _alt = true;
 	if (key == SDLK_LSHIFT || key == SDLK_RSHIFT)  _shift = true;
 	if (key == SDLK_LCTRL || key == SDLK_RCTRL)  _ctrl = true;
+	// arrows
+	if (key == SDLK_LEFT)  _left = true;
+	if (key == SDLK_RIGHT)  _right = true;
+	if (key == SDLK_UP)  _up = true;
+	if (key == SDLK_DOWN)  _down = true;
 
 	if (_alt && _shift) {
 		_moveTileHorizontally = true;
@@ -581,26 +579,18 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 	case SDLK_LEFT:
 		if (modifier & KMOD_SHIFT)
 			shift(-1, 0);
-		else
-			_scrollX = -1;
 		break;
 	case SDLK_RIGHT:
 		if (modifier & KMOD_SHIFT)
 			shift(1, 0);
-		else
-			_scrollX = 1;
 		break;
 	case SDLK_UP:
 		if (modifier & KMOD_SHIFT)
 			shift(0, -1);
-		else
-			_scrollY = -1;
 		break;
 	case SDLK_DOWN:
 		if (modifier & KMOD_SHIFT)
 			shift(0, 1);
-		else
-			_scrollY = 1;
 		break;
 
 	// other
@@ -629,15 +619,20 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 void IUINodeMapEditor::update (uint32_t deltaTime)
 {
 	UINode::update(deltaTime);
+
+	int dx = _right ? 1 : _left ? -1 : 0;
+	int dy = _down ? 1 : _up ? -1 : 0;
+	if (dx != 0 || dy != 0) {
 		if (_lastScrollUpdate <= 0) {
 			_lastScrollUpdate = _nextScrollDelta;
-		_nextScrollDelta /= 2;
-		_gridScrollX += _scrollX;
-		_gridScrollY += _scrollY;
+
+			_gridScrollX += dx;
+			_gridScrollY += dy;
 			updateScrolling();
-	} else {
-		_lastScrollUpdate -= deltaTime;
 		}
+	}
+	if (_lastScrollUpdate > 0)
+		_lastScrollUpdate -= deltaTime;
 }
 
 void IUINodeMapEditor::updateScrolling ()
