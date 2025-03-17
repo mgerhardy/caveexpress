@@ -116,6 +116,7 @@ public:
 
 class IUINodeMapEditor: public UINode {
 	friend class StateChecker;
+	friend class IUIMapEditorWindow;
 protected:
 	static bool layerSort (const TileItem& tileItem1, const TileItem& tileItem2)
 	{
@@ -260,7 +261,7 @@ protected:
 	void shift (int shiftX, int shiftY);
 	void moveTile (bool right);
 	void scale (float scale);
-	// find the optimal scale level to show the whole map
+	// find the optimal scale level to show the whole map (if full)
 	void fitView (bool full = false);
 
 	// command callback

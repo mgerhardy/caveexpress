@@ -1084,7 +1084,7 @@ void IUINodeMapEditor::load (const std::string& mapName)
 		std::unique_ptr<IMapContext> ctx(getContext(mapName));
 		loadFromContext(*ctx.get());
 	}
-	fitView();
+	fitView(false);
 	_lastSave = _undoStates.size();
 }
 

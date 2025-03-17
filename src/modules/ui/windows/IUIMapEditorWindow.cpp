@@ -1,7 +1,11 @@
 #include "IUIMapEditorWindow.h"
+#include "common/IFrontend.h"
+#include "common/Math.h"
 #include "ui/nodes/IUINodeEntitySelector.h"
 #include "ui/nodes/IUINodeSpriteSelector.h"
 #include "ui/UI.h"
+#include "ui/nodes/UINode.h"
+#include "ui/nodes/UINodeLabel.h"
 #include "ui/nodes/UINodeButton.h"
 #include "ui/nodes/UINodeCheckbox.h"
 #include "ui/nodes/UINodeTextInput.h"
@@ -28,7 +32,9 @@
 #include "mapeditor/LayerListener.h"
 
 IUIMapEditorWindow::IUIMapEditorWindow (IFrontend *frontend, IUINodeMapEditor* editor, IUINodeSpriteSelector* spriteSelector, IUINodeEntitySelector* entitySelector) :
-		UIWindow(UI_WINDOW_EDITOR, frontend, WINDOW_FLAG_ROOT), _spritesNode(spriteSelector), _emitterNode(entitySelector), _selectedItemNode(nullptr), _mapEditor(editor)
+		UIWindow(UI_WINDOW_EDITOR, frontend, WINDOW_FLAG_ROOT), _spritesNode(spriteSelector),
+		_emitterNode(entitySelector), _selectedItemNode(nullptr), _mapEditor(editor),
+		_debugText(nullptr)
 {
 }
 
@@ -65,6 +71,13 @@ void IUIMapEditorWindow::init(IMapManager& mapManager) {
 	left->add(_selectedItemNode);
 	left->add(createLayers());
 
+	// debug text
+#if 0
+	_debugText = new UINodeLabel(_frontend, "", getFont(HUGE_FONT));
+	// _debug->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_BOTTOM);
+	_debugText->setColor(colorWhite);
+	left->add(_debugText);
+#endif
 	UINodeMapStringSelector *mapListNode = new UINodeMapStringSelector(_frontend, mapManager, 30);
 	UINode *buttons = createButtons(mapManager, mapListNode);
 	UINode *settings = createSettings();
@@ -184,4 +197,29 @@ bool IUIMapEditorWindow::onPush ()
 	const bool ret = UIWindow::onPush();
 	_mapEditor->loadLast();
 	return ret;
+}
+
+void IUIMapEditorWindow::update (uint32_t deltaTime)
+{
+	_mapEditor->update(deltaTime);
+
+	if (!_debugText)
+		return;
+
+	// debug text  ----
+	const int visibleWidth = _mapEditor->getScreenMapGridWidth();
+	const int visibleHeight = _mapEditor->getScreenMapGridHeight();
+
+	_debugText->setLabel(string::format("\n-\n-\n\n"
+		"scale: %.3f\n"
+		"scr X: %d\n"
+		"scr Y: %d\n"
+		"vis X: %d\n"
+		"vis Y: %d\n"
+		,_mapEditor->_scale
+		,_mapEditor->_gridScrollX
+		,_mapEditor->_gridScrollY
+		,visibleWidth 
+		,visibleHeight
+	));
 }
