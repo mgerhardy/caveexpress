@@ -30,6 +30,7 @@ protected:
 	IUINodeEntitySelector *_emitterNode;
 	UINodeMapEditorSelectedItem *_selectedItemNode;
 	IUINodeMapEditor *_mapEditor;
+	UINodeLabel *_debugText;
 
 	std::string _theme;
 
@@ -59,4 +60,6 @@ public:
 	void onSelectEntry (UINode &node);
 
 	bool onPush () override;
+
+	virtual void update (uint32_t deltaTime) override;
 };
