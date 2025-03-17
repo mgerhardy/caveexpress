@@ -11,8 +11,8 @@ UINodeKey::UINodeKey (IFrontend *frontend, const std::string& keyName, float x, 
 	setColor(colorWhite);
 	setBackgroundColor(colorBlack);
 
-	setPos(x, y);
-	setSize(0.0f, height);
+	setPos(x, y - height * 0.5f);
+	setSize(0.0f, height * 2.f);
 	autoSize();
 }
 
