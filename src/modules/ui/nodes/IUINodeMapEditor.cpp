@@ -293,38 +293,41 @@ void IUINodeMapEditor::renderHighlightItem (int x, int y) const
 // FIXME: does not work right now
 void IUINodeMapEditor::renderScrollbars (int x, int y) const
 {
-	const int scrollBarPadding = -3;
+	const int scrollBarPadding = -10;
 	const int scrollBarSize = std::abs(scrollBarPadding);
-	const Color colorBar = { 0.7f, 0.7f, 0.7f, 0.4f };
+	const Color colorBar = { 0.1f, 0.1f, 0.1f, 0.6f };
 	const Color color = { 0.8f, 0.8f, 0.8f, 1.0f };
-	const int visibleMapGridWidth = getRenderWidth() / _tileWidth;
-	const int visibleMapGridHeight = getRenderHeight() / _tileWidth;
-	
+
+	const int visibleWidth = getScreenMapGridWidth();  // all in tiles
+	const int visibleHeight = getScreenMapGridHeight();
+	const float xStart = (float)(_gridScrollX) / (1 + _mapWidth);
+	const float yStart = (float)(_gridScrollY) / (1 + _mapHeight);
+	const float xSize = (float)(visibleWidth)  / (1 + _mapWidth);
+	const float ySize = (float)(visibleHeight) / (1 + _mapHeight);
+
 	//  vertical |
-	if (_mapHeight > visibleMapGridHeight) {
+	if (visibleHeight < _mapHeight) {
 		const int xBarRight = x + getRenderX() + getRenderWidth() + scrollBarPadding;
 		const int yBarRight = y + getRenderY();
 		const int wBarRight = scrollBarSize;
 		const int hBarRight = getRenderHeight();
 		renderFilledRect(xBarRight, yBarRight, wBarRight, hBarRight, colorBar);
 
-		const float aspect = visibleMapGridHeight / (float)_mapHeight;
-		const int yRight = yBarRight + _gridScrollY * _tileWidth * aspect;
-		const int hRight = visibleMapGridHeight * _tileWidth * aspect;
+		const int yRight = yBarRight + yStart * getRenderHeight();
+		const int hRight = ySize * getRenderHeight();
 		renderFilledRect(xBarRight, yRight, wBarRight, hRight, color);
 	}
 
 	//  horizontal --
-	if (_mapWidth > visibleMapGridWidth) {
+	if (visibleWidth < _mapWidth) {
 		const int xBarBottom = x + getRenderX();
 		const int yBarBottom = y + getRenderY() + getRenderHeight() + scrollBarPadding;
 		const int wBarBottom = getRenderWidth();
 		const int hBarBottom = scrollBarSize;
 		renderFilledRect(xBarBottom, yBarBottom, wBarBottom, hBarBottom, colorBar);
 
-		const float aspect = visibleMapGridWidth / (float)_mapWidth;
-		const int xBottom = xBarBottom + _gridScrollX * _tileWidth * aspect;
-		const int wBottom = visibleMapGridWidth * _tileWidth * aspect;
+		const int xBottom = xBarBottom + xStart * getRenderWidth();
+		const int wBottom = xSize * getRenderWidth();
 		renderFilledRect(xBottom, yBarBottom, wBottom, hBarBottom, color);
 	}
 }
