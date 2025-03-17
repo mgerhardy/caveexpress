@@ -216,10 +216,14 @@ void IUIMapEditorWindow::update (uint32_t deltaTime)
 		"scr Y: %d\n"
 		"vis X: %d\n"
 		"vis Y: %d\n"
+		"map X: %d\n"
+		"map Y: %d\n"
 		,_mapEditor->_scale
 		,_mapEditor->_gridScrollX
 		,_mapEditor->_gridScrollY
 		,visibleWidth 
 		,visibleHeight
+		,_mapEditor->_mapWidth
+		,_mapEditor->_mapHeight
 	));
 }
