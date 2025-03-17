@@ -14,7 +14,7 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 	add(background);
 
 	const float padding = std::max(_currentX, _currentY);
-	const float yGap = 0.08f;
+	const float yGap = 0.04f, yGap2 = yGap * 2.f;
 	const float top = background->getY() / static_cast<float>(_frontend->getHeight()) + padding;
 	const float middle = background->getMiddle() + padding;
 	const float left = background->getLeft() + padding;
@@ -33,8 +33,9 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		addKey(tr("ARROWS"));
 		addTexture("icon-result");
 		addString(tr("Scroll map"));
-		_currentY += yGap;
+		_currentY += yGap2;
 	}
+	
 	{
 		const AutoBorder b(this, _currentY);
 		addKey(tr("LMB"));
@@ -54,8 +55,9 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		addKey(tr("RMB"));
 		addTexture("icon-result");
 		addString(tr("Remove tile"));
-		_currentY += yGap;
+		_currentY += yGap2;
 	}
+	
 	{
 		const AutoBorder b(this, _currentY);
 		addKey("s");
@@ -79,6 +81,23 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		addKey("y");
 		addTexture("icon-result");
 		addString(tr("Redo"));
+		_currentY += yGap2;
+	}
+
+	{
+		const AutoBorder b(this, _currentY);
+		addKey(tr("ALT"));
+		addTexture("icon-plus");
+		addKey("f");
+		addTexture("icon-result");
+		addString(tr("Zoom out to fit"));
+		_currentY += yGap;
+	}
+	{
+		const AutoBorder b(this, _currentY);
+		addKey("f");
+		addTexture("icon-result");
+		addString(tr("Zoom out"));
 		_currentY += yGap;
 	}
 
@@ -127,6 +146,7 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 	{
 		const AutoBorder b(this, _currentY);
 		addKey(tr("ALT"));
+		addKey(tr("SHIFT"));
 		addTexture("icon-plus");
 		addKey(tr("Mouse movement"));
 		addTexture("icon-result");

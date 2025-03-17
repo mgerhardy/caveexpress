@@ -18,8 +18,8 @@ protected:
 				_window(window)
 		{
 			_border = new UINode(_window->_frontend);
-			_border->setBorder(true);
-			_border->setBorderColor(colorWhite);
+			// _border->setBorder(true);
+			// _border->setBorderColor(colorGray);
 			_border->setBackgroundColor(backgroundColor);
 			_border->setStandardPadding();
 			_border->setPos(_window->_currentX - getPadding(), y - getPadding());
