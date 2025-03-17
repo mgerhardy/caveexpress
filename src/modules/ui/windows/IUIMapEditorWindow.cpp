@@ -79,11 +79,11 @@ void IUIMapEditorWindow::init(IMapManager& mapManager) {
 	mainPanel->add(buttons);
 	mainPanel->add(editorControls);
 
-	add(mainPanel);
 	add(settings);
 	_mapEditor->setPos(left->getWidth(), buttons->getHeight());
 	_mapEditor->setSize(1.0f - left->getWidth(), 1.0f - buttons->getHeight() - settings->getHeight());
 	add(_mapEditor);
+	add(mainPanel);
 	add(mapListNode);
 }
 
