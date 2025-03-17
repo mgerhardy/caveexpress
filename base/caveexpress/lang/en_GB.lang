@@ -81,7 +81,7 @@ MOUSE WHEEL|MOUSE WHEEL
 Map|Map
 Map Options|Map Options
 Maps|Maps
-Mouse movement|Mouse movement
+Mouse move|Mouse move
 Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
@@ -128,7 +128,7 @@ Scroll map|Scroll map
 Select game mode|Select game mode
 Select tile|Select tile
 Settings|Settings
-Shift map (cursor direction)|Shift map (cursor direction)
+Shift map|Shift map
 Shift tile|Shift tile
 Show Grid|Show Grid
 Show help messages to the player|Show help messages to the player
@@ -173,4 +173,6 @@ Win conditions|Win conditions
 Wind|Wind
 You won!|You won!
 Zoom map|Zoom map
+Zoom out|Zoom out
+Zoom out to fit|Zoom out to fit
 or A on your controller|or A on your controller
