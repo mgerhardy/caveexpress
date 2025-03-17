@@ -246,8 +246,18 @@ void IUINodeMapEditor::render (int x, int y) const
 
 	UINode::render(x, y);
 
+	const int visibleWidth = getScreenMapGridWidth();
+	const int visibleHeight = getScreenMapGridHeight();
+
 	for (TileItemsConstIter pItem = _map.begin(); pItem != _map.end(); ++pItem) {
 		const TileItem& item = *pItem;
+		// check if outside, skip not visible
+		if (item.gridX < _gridScrollX-1 ||
+			item.gridY < _gridScrollY-1 ||  // -1 is for 2x2 tiles
+			item.gridX >= _gridScrollX + visibleWidth ||
+			item.gridY >= _gridScrollY + visibleHeight) {
+			continue;
+		}
 		renderSprite(item, x, y);
 		if (_highlightItem == &item) {
 			renderBorder(item, x, y, colorYellow, true, false);
@@ -550,6 +560,7 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 	const int oldHeight = _mapHeight;
 
 	switch (key) {
+	// map size
 	case SDLK_PLUS :
 	case SDLK_KP_PLUS:
 		if (modifier & KMOD_SHIFT)
@@ -566,6 +577,7 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 		// TODO: update scaling
 		break;
 
+	// map shift
 	case SDLK_LEFT:
 		if (modifier & KMOD_SHIFT)
 			shift(-1, 0);
@@ -591,10 +603,11 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 			_scrollY = 1;
 		break;
 
+	// other
 	case SDLK_s:
 		save();
 		break;
-	
+
 	case SDLK_SPACE:
 		onRotate();
 		break;
@@ -616,7 +629,7 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 void IUINodeMapEditor::update (uint32_t deltaTime)
 {
 	UINode::update(deltaTime);
-	if (_lastScrollUpdate <= 0) {
+		if (_lastScrollUpdate <= 0) {
 			_lastScrollUpdate = _nextScrollDelta;
 		_nextScrollDelta /= 2;
 		_gridScrollX += _scrollX;
@@ -624,7 +637,7 @@ void IUINodeMapEditor::update (uint32_t deltaTime)
 			updateScrolling();
 	} else {
 		_lastScrollUpdate -= deltaTime;
-	}
+		}
 }
 
 void IUINodeMapEditor::updateScrolling ()
