@@ -261,7 +261,7 @@ protected:
 	void moveTile (bool right);
 	void scale (float scale);
 	// find the optimal scale level to show the whole map
-	void fitView ();
+	void fitView (bool full = false);
 
 	// command callback
 	void loadMap (const ICommand::Args& args);
