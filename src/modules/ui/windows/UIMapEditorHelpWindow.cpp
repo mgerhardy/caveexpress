@@ -126,7 +126,7 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		addKey(tr("ALT"));
 		addKey(tr("SHIFT"));
 		addTexture("icon-plus");
-		addKey(tr("Mouse movement"));
+		addKey(tr("Mouse move"));
 		addTexture("icon-result");
 		addString(tr("Shift tile"));
 		_currentY += yGap;
@@ -135,9 +135,9 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		const AutoBorder b(this, _currentY);
 		addKey(tr("SHIFT"));
 		addTexture("icon-plus");
-		addKey(tr("CURSOR"));
+		addKey(tr("ARROWS"));
 		addTexture("icon-result");
-		addString(tr("Shift map (cursor direction)"));
+		addString(tr("Shift map"));
 		_currentY += yGap;
 	}
 

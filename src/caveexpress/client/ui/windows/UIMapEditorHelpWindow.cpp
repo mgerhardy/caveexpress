@@ -148,7 +148,7 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		addKey(tr("ALT"));
 		addKey(tr("SHIFT"));
 		addTexture("icon-plus");
-		addKey(tr("Mouse movement"));
+		addKey(tr("Mouse move"));
 		addTexture("icon-result");
 		addString(tr("Shift tile"));
 		_currentY += yGap;
@@ -159,7 +159,7 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		addTexture("icon-plus");
 		addKey(tr("ARROWS"));
 		addTexture("icon-result");
-		addString(tr("Shift map (cursor direction)"));
+		addString(tr("Shift map"));
 		_currentY += yGap;
 	}
 
