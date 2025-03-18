@@ -541,7 +541,7 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 	}
 
 	if (key == SDLK_z) {
-		if (modifier & KMOD_CTRL)
+		if (_ctrl)
 			undo();
 		else
 			return false;
@@ -549,7 +549,7 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 		updateScrolling();
 		return true;
 	} else if (key == SDLK_y) {
-		if (modifier & KMOD_CTRL)
+		if (_ctrl)
 			redo();
 		else
 			return false;
@@ -567,14 +567,14 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 	// map size
 	case SDLK_PLUS :
 	case SDLK_KP_PLUS:
-		if (modifier & KMOD_SHIFT)
+		if (_shift)
 			++_mapWidth;
 		else
 			++_mapHeight;
 		break;
 	case SDLK_MINUS:
 	case SDLK_KP_MINUS:
-		if (modifier & KMOD_SHIFT)
+		if (_shift)
 			--_mapWidth;
 		else
 			--_mapHeight;
@@ -583,19 +583,19 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 
 	// map shift
 	case SDLK_LEFT:
-		if (modifier & KMOD_SHIFT)
+		if (_shift)
 			shift(-1, 0);
 		break;
 	case SDLK_RIGHT:
-		if (modifier & KMOD_SHIFT)
+		if (_shift)
 			shift(1, 0);
 		break;
 	case SDLK_UP:
-		if (modifier & KMOD_SHIFT)
+		if (_shift)
 			shift(0, -1);
 		break;
 	case SDLK_DOWN:
-		if (modifier & KMOD_SHIFT)
+		if (_shift)
 			shift(0, 1);
 		break;
 
