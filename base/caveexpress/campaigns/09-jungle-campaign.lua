@@ -3,7 +3,7 @@ local c = Campaign.new("jungle")
 -- set an ingame icon for this campaign
 c:setSetting("icon", "icon-campaign-rock")
 -- set the on screen message when this campaign is activated
-c:setSetting("text", "Jungle")
+c:setSetting("text", "Jungle 2")
 -- now add all maps
 c:addMaps("jungle-01")
 c:addMaps("jungle-02")
