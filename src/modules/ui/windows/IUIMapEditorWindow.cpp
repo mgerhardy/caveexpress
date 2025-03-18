@@ -74,7 +74,7 @@ void IUIMapEditorWindow::init(IMapManager& mapManager) {
 	// debug text
 #if 0
 	_debugText = new UINodeLabel(_frontend, "", getFont(HUGE_FONT));
-	// _debug->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_BOTTOM);
+	// _debugText->setAlignment(NODE_ALIGN_MIDDLE);
 	_debugText->setColor(colorWhite);
 	left->add(_debugText);
 #endif
@@ -210,7 +210,7 @@ void IUIMapEditorWindow::update (uint32_t deltaTime)
 	const int visibleWidth = _mapEditor->getScreenMapGridWidth();
 	const int visibleHeight = _mapEditor->getScreenMapGridHeight();
 
-	_debugText->setLabel(string::format("\n-\n-\n\n"
+	_debugText->setLabel(string::format("\n\n\n\n\n\n\n"
 		"scale: %.3f\n"
 		"scr X: %d\n"
 		"scr Y: %d\n"
