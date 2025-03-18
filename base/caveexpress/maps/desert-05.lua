@@ -1,5 +1,5 @@
 function getName()
-	return "Desert5 Diving caves 3pkg 3runs"
+	return "Desert2 5 Diving caves 3pkg 3runs"
 end
 
 function onMapLoaded()

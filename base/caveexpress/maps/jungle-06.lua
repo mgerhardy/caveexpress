@@ -1,5 +1,5 @@
 function getName()
-	return "Jungle6 Elevator 4pkg 8runs"
+	return "Jungle2 6 Elevator 4pkg 8runs"
 end
 
 function onMapLoaded()

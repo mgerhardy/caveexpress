@@ -1,5 +1,5 @@
 function getName()
-	return "Desert 4 Tomb 5pkg 8runs"
+	return "Desert2 4 Tomb 5pkg 8runs"
 end
 
 function onMapLoaded()

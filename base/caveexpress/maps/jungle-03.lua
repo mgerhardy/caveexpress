@@ -1,5 +1,5 @@
 function getName()
-	return "Jungle3 Hooks"
+	return "Jungle2 3 Hooks"
 end
 
 function onMapLoaded()

@@ -1,5 +1,5 @@
 function getName()
-	return "Jungle7 Tricky 6runs"
+	return "Jungle2 7 Tricky 6runs"
 end
 
 function onMapLoaded()
