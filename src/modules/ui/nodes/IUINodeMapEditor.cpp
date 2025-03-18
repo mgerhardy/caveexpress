@@ -1243,9 +1243,9 @@ void IUINodeMapEditor::changeMapTheme (const ThemeType& toTheme)
 		replaces["tile-ground-ledge-ice-left-01"]  = "tile-ground-ledge-desert-left-01";
 		replaces["tile-ground-ledge-ice-left-02"]  = "tile-ground-ledge-desert-left-02";
 		replaces["tile-waterfall-ice-01"] = "tile-waterfall-desert-01";
-		// replaces["tile-packagetarget-ice-01-rotate"] = 
-		// replaces["tile-packagetarget-ice-01-active"] = 
-		// replaces["tile-packagetarget-ice-01-idle"] = 
+		replaces["tile-packagetarget-ice-01-rotate"] = "tile-packagetarget-rock-01-rotate";
+		replaces["tile-packagetarget-ice-01-active"] = "tile-packagetarget-rock-01-active";
+		replaces["tile-packagetarget-ice-01-idle"] = "tile-packagetarget-rock-01-idle";
 		replaces["tile-geyser-ice-01-idle"] = "tile-geyser-desert-01-idle";
 		replaces["tile-geyser-ice-01-active"] = "tile-geyser-desert-01-active";
 		replaces["tile-rock-ice-01"] = "tile-rock-desert-01";
@@ -1261,9 +1261,9 @@ void IUINodeMapEditor::changeMapTheme (const ThemeType& toTheme)
 		replaces["tile-rock-slope-ice-right-02"] = "tile-rock-slope-desert-right-02";
 		replaces["tile-rock-slope-ice-left-02"]  = "tile-rock-slope-desert-left-02";
 		replaces["tile-rock-shim-ice-01"] = "tile-rock-shim-desert-01";
-		// replaces["bridge-wall-ice-left-01"] = 
-		// replaces["bridge-plank-ice-01"] = 
-		// replaces["bridge-wall-ice-right-01"] = 
+		replaces["bridge-wall-ice-left-01"] = "bridge-wall-left-01";
+		replaces["bridge-plank-ice-01"] = "bridge-plank-01";
+		replaces["bridge-wall-ice-right-01"] = "bridge-wall-right-01";
 	}
 
 	int replaced = 0;
@@ -1278,7 +1278,7 @@ void IUINodeMapEditor::changeMapTheme (const ThemeType& toTheme)
 			}
 		// Log::warn(LOG_UI, tile.def->id.c_str(), 0);  // test
 	}
-	if (replaced > 10) {
+	if (replaced > 0) {
 		setTheme(toTheme);
 	}
 }
