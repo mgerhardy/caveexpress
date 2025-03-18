@@ -108,7 +108,7 @@ public:
 	vec2 getMaxs () const;
 
 	// the id if the spritedef
-	const std::string id;
+	std::string id;
 
 	// the type of the sprite
 	const SpriteType& type;
