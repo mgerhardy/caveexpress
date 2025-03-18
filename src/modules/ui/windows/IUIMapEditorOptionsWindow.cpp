@@ -2,6 +2,7 @@
 #include "ui/nodes/IUINodeEntitySelector.h"
 #include "ui/nodes/IUINodeSpriteSelector.h"
 #include "ui/UI.h"
+#include "ui/nodes/UINode.h"
 #include "ui/nodes/UINodeBackground.h"
 #include "ui/nodes/IUINodeMapEditor.h"
 
@@ -113,6 +114,7 @@ UINode* IUIMapEditorOptionsWindow::createSection (UINode* parent, const std::str
 	label->setFont(HUGE_FONT);
 	label->setColor(colorWhite);
 	label->setAlignment(NODE_ALIGN_CENTER);
+	label->setSize(1.0f, 0.02f);  // 1.0f fixes mouse area, no click
 	parent->add(label);
 	UINode *optionsPanel = new UINode(_frontend, title);
 	UIHBoxLayout *hlayout = new UIHBoxLayout(0.02f);
@@ -139,6 +141,9 @@ UINode* IUIMapEditorOptionsWindow::createGeneralOptions (UINode* vbox)
 	UINode *hbox = createSection(vbox, tr("General"));
 	fillGeneralOptions(hbox);
 	vbox->add(hbox);
+	UINode *hbox2 = createSection(vbox, tr("General"));
+	fillGeneralOptions2(hbox2);
+	vbox->add(hbox2);
 	return hbox;
 }
 
@@ -157,4 +162,9 @@ void IUIMapEditorOptionsWindow::fillGeneralOptions (UINode* hbox)
 	gridCheckBox->setFont(getFont(), colorBlack);
 	gridCheckBox->addListener(UINodeListenerPtr(new ToggleGridListener(_mapEditor)));
 	hbox->add(new UINodeSetting(_frontend, tr("Show Grid"), gridCheckBox));
+}
+
+void IUIMapEditorOptionsWindow::fillGeneralOptions2 (UINode* hbox)
+{
+
 }

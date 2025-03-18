@@ -76,6 +76,11 @@ void UIMapEditorOptionsWindow::fillGeneralOptions (UINode* hbox)
 	IUIMapEditorOptionsWindow::fillGeneralOptions(hbox);
 	new UINodeSettingsSlider(hbox, 0.0f, 20.0f, 0.1f, _mapEditor, tr("Gravity"), msn::GRAVITY);
 	new UINodeSettingsSlider(hbox, 0.0f, 6.0f, 0.1f, _mapEditor, tr("Wind"), msn::WIND);
+}
+
+void UIMapEditorOptionsWindow::fillGeneralOptions2 (UINode* hbox)
+{
+	IUIMapEditorOptionsWindow::fillGeneralOptions2(hbox);
 	new UINodeSettingsSpinner(hbox, 0, 100, 1, _mapEditor, tr("Npcs"), msn::NPCS, tr("This is the max amount of npcs that spawn, if you let more than these die, you lose the game"));
 	new UINodeSettingsSpinner(hbox, 0, 200000, 500, _mapEditor, tr("Npc delay"), msn::NPC_INITIAL_SPAWN_TIME, tr("Initial npc spawn delay for the pterodactyls and the fish"));
 	new UINodeSettingsCheckbox(hbox, _mapEditor, tr("Pterodactyls"), msn::FLYING_NPC, tr("Activate the pterodactyls spawn"));

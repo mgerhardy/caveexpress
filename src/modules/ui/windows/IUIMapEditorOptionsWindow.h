@@ -32,6 +32,7 @@ protected:
 	virtual UINode* createWinConditions (UINode* vbox);
 
 	virtual void fillGeneralOptions (UINode* hbox);
+	virtual void fillGeneralOptions2 (UINode* hbox);
 	virtual void fillWinConditions (UINode* hbox);
 public:
 	IUIMapEditorOptionsWindow (IFrontend* frontend, IUINodeMapEditor* mapEditor);

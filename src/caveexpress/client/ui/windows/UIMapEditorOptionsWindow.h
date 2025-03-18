@@ -9,6 +9,7 @@ class UINodeMapEditor;
 class UIMapEditorOptionsWindow: public IUIMapEditorOptionsWindow {
 protected:
 	virtual void fillGeneralOptions (UINode* hbox) override;
+	virtual void fillGeneralOptions2 (UINode* hbox) override;
 	virtual void fillWinConditions (UINode* hbox) override;
 	virtual UINode* createGeneralOptions (UINode* vbox) override;
 	UINode* createWaterOptions (UINode* vbox);
