@@ -138,7 +138,7 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		addKey("-");
 		addTexture("icon-result");
 		addString(tr("Decrease map width"), font);
-		_currentY += yGap2;
+		_currentY += yGap;
 	}
 	{
 		const AutoBorder b(this, _currentY);
@@ -147,7 +147,7 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		addKey(tr("ARROWS"));
 		addTexture("icon-result");
 		addString(tr("Shift map"), font);
-		_currentY += yGap;
+		_currentY += yGap2;
 	}
 	// ----
 	{
@@ -155,7 +155,7 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		addKey(tr("SPACE"));
 		addTexture("icon-result");
 		addString(tr("Rotate entity"), font);
-		_currentY += yGap2;
+		_currentY += yGap;
 	}
 	{
 		const AutoBorder b(this, _currentY);
@@ -165,6 +165,25 @@ UIMapEditorHelpWindow::UIMapEditorHelpWindow (IFrontend *frontend) :
 		addKey(tr("Mouse move"));
 		addTexture("icon-result");
 		addString(tr("Shift tile"), font);
+		_currentY += yGap2;
+	}
+	// ----
+	{
+		const AutoBorder b(this, _currentY);
+		addKey(tr("CTRL"));
+		addTexture("icon-plus");
+		addKey("d");
+		addTexture("icon-result");
+		addString(tr("Convert ice theme to desert"), font);
+		_currentY += yGap;
+	}
+	{
+		const AutoBorder b(this, _currentY);
+		addKey(tr("CTRL"));
+		addTexture("icon-plus");
+		addKey("j");
+		addTexture("icon-result");
+		addString(tr("Convert rock theme to jungle"), font);
 		_currentY += yGap;
 	}
 	// --------
