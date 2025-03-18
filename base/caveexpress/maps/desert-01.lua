@@ -1,5 +1,5 @@
 function getName()
-	return "Desert 1 Pyramid 6runs"
+	return "Desert2 1 Pyramid 6runs"
 end
 
 function onMapLoaded()

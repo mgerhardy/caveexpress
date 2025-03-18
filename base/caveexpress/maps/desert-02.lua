@@ -1,5 +1,5 @@
 function getName()
-	return "Desert 2 wide 8runs"
+	return "Desert2 2 wide 8runs"
 end
 
 function onMapLoaded()

@@ -1,5 +1,5 @@
 function getName()
-	return "Jungle5 Shaft 3pkg 6runs"
+	return "Jungle2 5 Shaft 3pkg 6runs"
 end
 
 function onMapLoaded()
