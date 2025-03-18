@@ -9,6 +9,7 @@
 #include "common/KeyValueParser.h"
 #include "common/MapManager.h"
 #include "common/IMapContext.h"
+#include "common/ThemeType.h"
 #include <ctime>
 #include <SDL.h>
 
@@ -611,7 +612,17 @@ bool IUINodeMapEditor::onKeyPress (int32_t key, int16_t modifier)
 	case SDLK_f:
 		fitView(_alt);
 		break;
-	
+
+	// theme
+	case SDLK_j:
+		if (_ctrl)
+			changeMapTheme(ThemeTypes::JUNGLE);
+		break;
+	case SDLK_d:
+		if (_ctrl)
+			changeMapTheme(ThemeTypes::DESERT);
+		break;
+
 	default:
 		return false;
 	}
@@ -1148,5 +1159,126 @@ void IUINodeMapEditor::setFileName (const std::string& fileName)
 	_fileName = fileName;
 	for (std::vector<IMapEditorListener*>::iterator i = _editorListeners.begin(); i != _editorListeners.end(); ++i) {
 		(*i)->onFileNameChange(old, _fileName);
+	}
+}
+
+void IUINodeMapEditor::changeMapTheme (const ThemeType& toTheme)
+{
+	std::map<std::string, std::string> replaces;
+	if (toTheme == ThemeTypes::JUNGLE)
+	{
+		replaces["tile-background-01"] = "tile-background-jungle-01";
+		replaces["tile-background-02"] = "tile-background-jungle-02";
+		replaces["tile-background-03"] = "tile-background-jungle-03";
+		replaces["tile-background-04"] = "tile-background-jungle-04";
+		replaces["tile-background-cave-art-01"] = "tile-background-cave-art-jungle-01";
+		replaces["tile-background-big-01"] = "tile-background-big-jungle-01";
+		replaces["tile-background-window-01"] = "tile-background-jungle-window-01";
+		replaces["tile-background-window-02"] = "tile-background-jungle-window-02";
+		replaces["tile-cave-01"] = "tile-cave-jungle-01";
+		replaces["tile-cave-02"] = "tile-cave-jungle-02";
+		replaces["tile-ground-01"] = "tile-ground-jungle-01";
+		replaces["tile-ground-02"] = "tile-ground-jungle-02";
+		replaces["tile-ground-03"] = "tile-ground-jungle-03";
+		replaces["tile-ground-04"] = "tile-ground-jungle-04";
+		replaces["tile-ground-05"] = "tile-ground-jungle-05";
+		replaces["tile-ground-06"] = "tile-ground-jungle-06";
+		replaces["tile-ground-ledge-right-01"] = "tile-ground-ledge-jungle-right-01";
+		replaces["tile-ground-ledge-right-02"] = "tile-ground-ledge-jungle-right-02";
+		replaces["tile-ground-ledge-left-01"]  = "tile-ground-ledge-jungle-left-01";
+		replaces["tile-ground-ledge-left-02"]  = "tile-ground-ledge-jungle-left-02";
+		replaces["tile-rock-shim-01"] = "tile-rock-shim-jungle-01";
+		replaces["tile-waterfall-01"] = "tile-waterfall-jungle-01";
+		replaces["tile-rock-01"] = "tile-rock-jungle-01";
+		replaces["tile-rock-02"] = "tile-rock-jungle-02";
+		replaces["tile-rock-03"] = "tile-rock-jungle-03";
+		replaces["tile-rock-left-04"]  = "tile-rock-jungle-left-04";
+		replaces["tile-rock-right-04"] = "tile-rock-jungle-right-04";
+		replaces["tile-rock-big-01"] = "tile-rock-big-jungle-01";
+		replaces["tile-lava-rock-left-01"]  = "tile-lava-rock-jungle-left-01";
+		replaces["tile-lava-rock-right-01"] = "tile-lava-rock-jungle-right-01";
+		replaces["tile-rock-slope-right-01"] = "tile-rock-slope-jungle-right-01";
+		replaces["tile-rock-slope-left-01"]  = "tile-rock-slope-jungle-left-01";
+		replaces["tile-rock-slope-right-02"] = "tile-rock-slope-jungle-right-02";
+		replaces["tile-rock-slope-left-02"]  = "tile-rock-slope-jungle-left-02";
+		// replaces["tile-packagetarget-rock-01-rotate"] = "tile-packagetarget-rock-";
+		// replaces["tile-packagetarget-rock-01-active"] = "tile-packagetarget-rock-";
+		// replaces["tile-packagetarget-rock-01-idle"] = "tile-packagetarget-rock-";
+		replaces["tile-geyser-rock-01-idle"] = "tile-geyser-rock-jungle-";
+		replaces["tile-geyser-rock-01-active"] = "tile-geyser-rock-jungle-";
+		// replaces["bridge-wall-left-01"] = "bridge-wall-left-";
+		// replaces["bridge-plank-01"] = "bridge-plank-01";
+		// replaces["bridge-wall-right-01"] = "bridge-wall-right-";
+	}
+	else if (toTheme == ThemeTypes::DESERT) {
+		replaces["tile-background-ice-01"] = "tile-background-desert-01";
+		replaces["tile-background-ice-02"] = "tile-background-desert-02";
+		replaces["tile-background-ice-03"] = "tile-background-desert-03";
+		replaces["tile-background-ice-04"] = "tile-background-desert-04";
+		replaces["tile-background-ice-05"] = "tile-background-desert-05";
+		replaces["tile-background-ice-06"] = "tile-background-desert-06";
+		replaces["tile-background-ice-07"] = "tile-background-desert-07";
+		replaces["tile-background-ice-08"] = "tile-background-desert-08";
+		replaces["tile-background-ice-09"] = "tile-background-desert-09";
+		replaces["tile-background-ice-cave-art-01"] = "tile-background-desert-cave-art-01";
+		replaces["tile-background-ice-cave-art-02"] = "tile-background-desert-cave-art-02";
+		replaces["tile-background-ice-big-01"] = "tile-background-desert-big-01";
+		replaces["tile-background-ice-window-01"] = "tile-background-desert-window-01";
+		replaces["tile-background-ice-window-02"] = "tile-background-desert-window-02";
+		replaces["tile-cave-ice-01"] = "tile-cave-desert-01";
+		replaces["tile-cave-ice-02"] = "tile-cave-desert-02";
+		replaces["tile-ground-ice-01"] = "tile-ground-desert-01";
+		replaces["tile-ground-ice-02"] = "tile-ground-desert-02";
+		replaces["tile-ground-ice-03"] = "tile-ground-desert-03";
+		replaces["tile-ground-ice-04"] = "tile-ground-desert-04";
+		replaces["tile-ground-ice-05"] = "tile-ground-desert-05";
+		replaces["tile-ground-ice-06"] = "tile-ground-desert-06";
+		replaces["tile-ground-ice-big-01"] = "tile-ground-desert-big-01";
+		replaces["tile-lava-ice-left-01"]  = "tile-lava-desert-left-01";
+		replaces["tile-lava-ice-left-02"]  = "tile-lava-desert-left-02";
+		replaces["tile-lava-ice-right-01"] = "tile-lava-desert-right-01";
+		replaces["tile-lava-ice-right-02"] = "tile-lava-desert-right-02";
+		replaces["tile-ground-ledge-ice-right-01"] = "tile-ground-ledge-desert-right-01";
+		replaces["tile-ground-ledge-ice-right-02"] = "tile-ground-ledge-desert-right-02";
+		replaces["tile-ground-ledge-ice-left-01"]  = "tile-ground-ledge-desert-left-01";
+		replaces["tile-ground-ledge-ice-left-02"]  = "tile-ground-ledge-desert-left-02";
+		replaces["tile-waterfall-ice-01"] = "tile-waterfall-desert-01";
+		// replaces["tile-packagetarget-ice-01-rotate"] = 
+		// replaces["tile-packagetarget-ice-01-active"] = 
+		// replaces["tile-packagetarget-ice-01-idle"] = 
+		replaces["tile-geyser-ice-01-idle"] = "tile-geyser-desert-01-idle";
+		replaces["tile-geyser-ice-01-active"] = "tile-geyser-desert-01-active";
+		replaces["tile-rock-ice-01"] = "tile-rock-desert-01";
+		replaces["tile-rock-ice-02"] = "tile-rock-desert-02";
+		replaces["tile-rock-ice-03"] = "tile-rock-desert-03";
+		replaces["tile-rock-ice-left-04"]  = "tile-rock-desert-left-04";
+		replaces["tile-rock-ice-right-04"] = "tile-rock-desert-right-04";
+		replaces["tile-rock-ice-left-05"]  = "tile-rock-desert-left-05";
+		replaces["tile-rock-ice-right-05"] = "tile-rock-desert-right-05";
+		replaces["tile-rock-ice-big-01"] = "tile-rock-desert-big-01";
+		replaces["tile-rock-slope-ice-right-01"] = "tile-rock-slope-desert-right-01";
+		replaces["tile-rock-slope-ice-left-01"]  = "tile-rock-slope-desert-left-01";
+		replaces["tile-rock-slope-ice-right-02"] = "tile-rock-slope-desert-right-02";
+		replaces["tile-rock-slope-ice-left-02"]  = "tile-rock-slope-desert-left-02";
+		replaces["tile-rock-shim-ice-01"] = "tile-rock-shim-desert-01";
+		// replaces["bridge-wall-ice-left-01"] = 
+		// replaces["bridge-plank-ice-01"] = 
+		// replaces["bridge-wall-ice-right-01"] = 
+	}
+
+	int replaced = 0;
+	for (TileItemsIter item = _map.begin(); item != _map.end(); ++item) {
+		TileItem& tile = *item;
+		std::string& org = tile.def->id;
+		for (const auto& m : replaces)
+			if (org == m.first) {
+				tile.def->id = m.second;
+				++replaced;
+				continue;
+			}
+		// Log::warn(LOG_UI, tile.def->id.c_str(), 0);  // test
+	}
+	if (replaced > 10) {
+		setTheme(toTheme);
 	}
 }

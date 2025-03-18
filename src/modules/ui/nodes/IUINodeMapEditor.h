@@ -270,6 +270,9 @@ protected:
 	virtual void onRotate();
 
 	bool isLayerActive (int layer) const;
+
+	void changeMapTheme (const ThemeType& toTheme);
+
 public:
 	IUINodeMapEditor (IFrontend *frontend, IMapManager& mapManager);
 	virtual ~IUINodeMapEditor ();
