@@ -148,4 +148,9 @@ Version 2.6 (2025-not yet released)
   * Smaller snow and more wobbly
   * Wind sand, flying leaves
 * New palm and desert trees
+* Editor
+  * Fixed garbage tiles on big maps after scroll
+  * Fixed scroll by arrow keys and scrollbars visible area
+  * Added zoom to fit key F
+  * Shift tile with alt+shift
 * Updated tools, new: textureatlas
