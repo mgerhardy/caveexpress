@@ -44,7 +44,8 @@ bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fil
 
 	const TextureCoords texCoords(tex);
 	renderTexture(texCoords, x, y, w, h, 0, 1.0f, _renderTargetTexture, _waterNoise);
-	Log::trace(LOG_GFX, "x: %i, y: %i, w: %i, h: %i, fbo(%f, %f), tex(%f:%f:%f:%f)", x, y, w, h, width, height, xTexCoord, yTexCoord, xTexCoord2, yTexCoord2);
+	Log::trace(LOG_GFX, "o: %4.3f, %4.3f  x: %i, y: %i, w: %i, h: %i, fbo(%f, %f), tex(%f:%f:%f:%f)",
+		offsets.x, offsets.y, x, y, w, h, width, height, xTexCoord, yTexCoord, xTexCoord2, yTexCoord2);
 	_waterShader.activate();
 	if (_waterShader.hasUniform("u_watercolor"))
 		_waterShader.setUniform4fv("u_watercolor", fillColor, 0, 4);
