@@ -1,4 +1,5 @@
 ALT|ALT
+ARROWS|ARROWS
 Achievements|Achievements
 Are you sure?|Bist du sicher?
 Back|Zurück
@@ -40,7 +41,7 @@ MOUSE WHEEL|MOUSE WHEEL
 Map|Map
 Map Options|Map Options
 Maps|Maps
-Mouse movement|Mouse movement
+Mouse move|Mouse move
 Move all packages onto their targets|Schiebe alle Pakete auf die Paletten
 Multiplayer|Multiplayer
 Music volume|Music volume
@@ -79,7 +80,7 @@ Scroll map|Scroll map
 Select game mode|Spielemodus aussuchen
 Select tile|Select tile
 Settings|Einstellungen
-Shift map (cursor direction)|Shift map (cursor direction)
+Shift map|Shift map
 Shift tile|Shift tile
 Show Grid|Show Grid
 Show help messages to the player|Show help messages to the player
