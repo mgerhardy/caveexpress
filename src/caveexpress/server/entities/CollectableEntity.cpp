@@ -13,13 +13,14 @@ CollectableEntity::CollectableEntity (const EntityType& type, Map& map, const IE
 void CollectableEntity::onContact (b2Contact* contact, IEntity* entity)
 {
 	IEntity::onContact(contact, entity);
-	if (isDestroyed() || isCollected() || isRemove())
+	if (isDestroyed() || isRemove())
 		return;
 	if (entity->isPlayer()) {
 		Player *player = assert_cast<Player*, IEntity*>(entity);
-		if (player->collect(this)) {
+		if (!isCollected() && player->collect(this)) {
 			setCollected(true, player);
 		}
+		player->damageFromHit(contact, entity);
 	}
 }
 

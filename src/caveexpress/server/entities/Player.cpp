@@ -354,13 +354,18 @@ void Player::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* 
 	if (!entity->isSolid() && !entity->isPlatform())
 		return;
 
-	b2WorldManifold worldManifold;
-	contact->GetWorldManifold(&worldManifold);
 	b2PointState state1[2], state2[2];
 	b2GetPointStates(state1, state2, oldManifold, contact->GetManifold());
 	if (state2[0] != b2_addState)
 		return;
 
+	damageFromHit (contact, entity);
+}
+
+void Player::damageFromHit (b2Contact* contact, IEntity* entity)
+{
+	b2WorldManifold worldManifold;
+	contact->GetWorldManifold(&worldManifold);
 	const b2Body* bodyA = contact->GetFixtureA()->GetBody();
 	const b2Body* bodyB = contact->GetFixtureB()->GetBody();
 	const b2Vec2& point = worldManifold.points[0];
