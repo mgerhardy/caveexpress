@@ -65,24 +65,16 @@ bool EventHandler::handleEvent (SDL_Event &event)
 		keyPress((int32_t) event.key.keysym.sym, (int16_t) event.key.keysym.mod);
 		break;
 	case SDL_MOUSEMOTION: {
-		if (event.motion.which == SDL_TOUCH_MOUSEID)
-			break;
 		mouseMotion(event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel);
 		break;
 	}
 	case SDL_MOUSEBUTTONDOWN:
-		if (event.button.which == SDL_TOUCH_MOUSEID)
-			break;
 		mouseButtonPress(event.button.x, event.button.y, event.button.button);
 		break;
 	case SDL_MOUSEBUTTONUP:
-		if (event.button.which == SDL_TOUCH_MOUSEID)
-			break;
 		mouseButtonRelease(event.button.x, event.button.y, event.button.button);
 		break;
 	case SDL_MOUSEWHEEL:
-		if (event.wheel.which == SDL_TOUCH_MOUSEID)
-			break;
 		mouseWheel(event.wheel.x, event.wheel.y);
 		break;
 	case SDL_CONTROLLERAXISMOTION:
