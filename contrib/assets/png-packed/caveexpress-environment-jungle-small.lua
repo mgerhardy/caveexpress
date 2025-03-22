@@ -1,5 +1,5 @@
 textures = {
-	["tile-background-big-jungle-01-back-01"] = {
+	["tile-background-jungle-big-01-back-01"] = {
 		image = "caveexpress-environment-jungle-small",
 		x0 = 0.125,
 		y0 = 0.25,

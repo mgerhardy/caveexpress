@@ -1383,7 +1383,7 @@ sprites = {
 	["tile-background-jungle-03"] = { type = "background", theme = "jungle", },
 	["tile-background-jungle-04"] = { type = "background", theme = "jungle", },
 	["tile-background-cave-art-jungle-01"] = { type = "background", theme = "jungle", },
-	["tile-background-big-jungle-01"] = { type = "background", width = 2, height = 2, theme = "jungle", },
+	["tile-background-jungle-big-01"] = { type = "background", width = 2, height = 2, theme = "jungle", },
 	["tile-background-jungle-window-01"] = {
 		type = "window",
 		theme = "jungle",

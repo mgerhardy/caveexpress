@@ -1172,7 +1172,7 @@ void IUINodeMapEditor::changeMapTheme (const ThemeType& toTheme)
 		replaces["tile-background-03"] = "tile-background-jungle-03";
 		replaces["tile-background-04"] = "tile-background-jungle-04";
 		replaces["tile-background-cave-art-01"] = "tile-background-cave-art-jungle-01";
-		replaces["tile-background-big-01"] = "tile-background-big-jungle-01";
+		replaces["tile-background-big-01"] = "tile-background-jungle-big-01";
 		replaces["tile-background-window-01"] = "tile-background-jungle-window-01";
 		replaces["tile-background-window-02"] = "tile-background-jungle-window-02";
 		replaces["tile-cave-01"] = "tile-cave-jungle-01";

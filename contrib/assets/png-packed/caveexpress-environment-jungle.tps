@@ -212,7 +212,7 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/tile-background-big-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-big-01-back-01.png</filename>
             <filename>../png/caveexpress/tile-background-cave-art-jungle-01-back-01.png</filename>
             <filename>../png/caveexpress/tile-background-jungle-01-back-01.png</filename>
             <filename>../png/caveexpress/tile-background-jungle-02-back-01.png</filename>
