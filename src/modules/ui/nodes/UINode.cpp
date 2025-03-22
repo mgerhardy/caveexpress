@@ -16,8 +16,9 @@ int UINode::_counter = 0;
 UINode::UINode (IFrontend *frontend, const std::string& id) :
 		_padding(0.0f), _marginTop(0.0f), _marginLeft(0.0f), _onActivate(""), _focusAlpha(0.0f), _focusMouseX(-1), _focusMouseY(-1), _focus(
 				false), _visible(true), _enabled(true), _renderBorder(false), _dragStartX(-1), _dragStartY(-1), _alpha(1.0f), _previousAlpha(
-				1.0f), _id(id), _frontend(frontend), _align(NODE_ALIGN_LEFT), _time(0), _flashMillis(0), _originalAlpha(-1.0f), _layout(
-				nullptr), _parent(nullptr), _fingerPressed(false), _mousePressed(false), _autoId(false) {
+				1.0f), _id(id), _frontend(frontend), _align(NODE_ALIGN_LEFT), _time(0),
+				_flashMillis(0), _originalAlpha(-1.0f), _flashAlwaysFreq(1),
+				_layout(nullptr), _parent(nullptr), _fingerPressed(false), _mousePressed(false), _autoId(false) {
 	setPos(0.0f, 0.0f);
 	setSize(0.0f, 0.0f);
 	Vector4Set(colorWhite, _borderColor);
@@ -121,12 +122,14 @@ void UINode::update (uint32_t deltaTime)
 			++i;
 	}
 
-	if (_flashMillis > 0) {
-		_flashMillis -= std::min(_flashMillis, deltaTime);
-		const float hz = 1.0f;
+	bool always = _flashAlwaysFreq > 1;
+	if (_flashMillis > 0 || always) {
+		if (!always)
+			_flashMillis -= std::min(_flashMillis, deltaTime);
+		const float hz = 1.0f * _flashAlwaysFreq;
 		const float phase = (float)_time * 0.001f * hz;
 		const float moduloPhase = phase - floor(phase);
-		_alpha = (float)((1.0 - cos(moduloPhase * (2 * M_PI))) / 2.0);
+		_alpha = 0.25f + 0.75f * (float)((0.5 - cos(moduloPhase * (2 * M_PI)) * 0.5));
 	} else if (_originalAlpha >= 0.0f) {
 		_flashMillis = 0;
 		_alpha = _originalAlpha;
@@ -227,10 +230,11 @@ void UINode::displayText (const std::string& text, uint32_t delayMillis, float x
 	_texts.push_back(UINodeDelayedText(text, delayMillis, c, font));
 }
 
-void UINode::flash (uint32_t flashMillis)
+void UINode::flash (uint32_t flashMillis, uint32_t flashAlwaysFreq)
 {
 	_originalAlpha = _alpha;
 	_flashMillis = flashMillis;
+	_flashAlwaysFreq = flashAlwaysFreq;
 }
 
 void UINode::alignTo (const UINode* node, int align, float padding)

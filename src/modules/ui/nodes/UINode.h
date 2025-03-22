@@ -150,6 +150,7 @@ protected:
 	uint32_t _time;
 	uint32_t _flashMillis;
 	float _originalAlpha;
+	uint32_t _flashAlwaysFreq;  // 1 off
 
 	struct UINodeDelayedText {
 		std::string text;
@@ -389,7 +390,7 @@ public:
 	}
 
 	void alignTo (const UINode* node, int align = NODE_ALIGN_CENTER | NODE_ALIGN_MIDDLE, float padding = 0.0f);
-	void flash (uint32_t flashMillis = 2000);
+	void flash (uint32_t flashMillis = 2000, uint32_t flashAlwaysFreq = 1);
 
 	virtual void displayText (const std::string& text, uint32_t delayMillis = 3000, float x = -1.0f, float y = -1.0f);
 
