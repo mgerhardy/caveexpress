@@ -138,6 +138,8 @@ public:
 	void update (uint32_t deltaTime) override;
 	void onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold) override;
 	bool shouldCollide (const IEntity* entity) const override;
+	
+	void damageFromHit (b2Contact* contact, IEntity* entity);
 };
 
 inline ClientId Player::getClientId () const
