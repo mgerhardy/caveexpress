@@ -22,6 +22,9 @@ protected:
 	std::string _campaignTextForNextPush;
 	std::vector<std::string> _players;
 	std::string _title;
+	
+	bool keys[4];  // pressed state for all directions, arrows keys
+	int horizOld, vericalOld;  // movement, active direction -1, 0, 1
 
 	void move(const ICommand::Args& args, Direction dir);
 

@@ -33,8 +33,12 @@
 #include "client/network/FinishedMapHandler.h"
 
 IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, int x, int y, int width, int height, ClientMap& map) :
-		UINode(frontend), _map(map), _campaignManager(campaignManager)
+		UINode(frontend), _map(map), _campaignManager(campaignManager),
+		horizOld(0), vericalOld(0)
 {
+	for (int i=0; i < 4; ++i)
+		keys[i] = false;
+
 	Commands.registerCommand(CMD_CL_CONNECT, [&] (const ICommand::Args& args) {
 		if (args.size() < 1) {
 			Log::error(LOG_CLIENT, "usage: host <port>");
@@ -98,16 +102,35 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	setSize((float)_map.getWidth() / w, (float)_map.getHeight() / h);
 }
 
-void IUINodeMap::move(const ICommand::Args& args, Direction dir) {
-	if (!args.empty()) {
-		_map.resetAcceleration(dir, 0);
-		return;
+void IUINodeMap::move(const ICommand::Args& args, Direction dir)
+{
+	int id = 0;
+	switch (dir) {
+		case DIRECTION_UP:     id = 0;  break;
+		case DIRECTION_DOWN:   id = 1;  break;
+		case DIRECTION_LEFT:   id = 2;  break;
+		case DIRECTION_RIGHT:  id = 3;  break;
 	}
+	keys[id] = args.empty();
 
-	if (!_map.isActive() || _map.isPause())
-		return;
+	const int horiz = keys[3] - keys[2];
+	const int verical = keys[1] - keys[0];
+	const bool active = _map.isActive() && !_map.isPause();
 
-	_map.accelerate(dir, 0);
+	if (horiz != horizOld) {
+		if (horiz == 0)
+			_map.resetAcceleration(horizOld > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT, 0);
+		else if (active)
+			_map.accelerate(horiz > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT, 0);
+	}
+	if (verical != vericalOld) {
+		if (verical == 0)
+			_map.resetAcceleration(vericalOld > 0 ? DIRECTION_DOWN : DIRECTION_UP, 0);
+		else if (active)
+			_map.accelerate(verical > 0 ? DIRECTION_DOWN : DIRECTION_UP, 0);
+	}
+	horizOld = horiz;
+	vericalOld = verical;
 }
 
 IUINodeMap::~IUINodeMap ()
