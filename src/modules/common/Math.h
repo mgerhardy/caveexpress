@@ -75,7 +75,18 @@ inline bool Between (T value, T min, T max)
 	return value >= min && value <= max;
 }
 
-typedef float Color[4];
+struct Color
+{
+	float rgba[4];
+	float operator[](size_t i) const
+	{
+		return rgba[i];
+	}
+	float& operator[](size_t i)
+	{
+		return rgba[i];
+	}
+};
 
 static const Color colorGrayAlpha40 = { 0.976f, 0.976f, 0.976f, 0.4f };
 static const Color colorGrayAlpha = { 0.976f, 0.976f, 0.976f, 0.8f };

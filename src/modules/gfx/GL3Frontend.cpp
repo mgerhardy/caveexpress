@@ -48,7 +48,7 @@ bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fil
 		offsets.x, offsets.y, x, y, w, h, width, height, xTexCoord, yTexCoord, xTexCoord2, yTexCoord2);
 	_waterShader.activate();
 	if (_waterShader.hasUniform("u_watercolor"))
-		_waterShader.setUniform4fv("u_watercolor", fillColor, 0, 4);
+		_waterShader.setUniform4fv("u_watercolor", &fillColor.rgba[0], 0, 4);
 	if (_waterShader.hasUniform("u_offsets"))
 		_waterShader.setUniform2fv("u_offsets", &offsets.x, 0, 2);
 	renderBatchesWithShader(_waterShader);
