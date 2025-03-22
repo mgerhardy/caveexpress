@@ -141,6 +141,7 @@ Version 2.6 (2025-not yet released)
   * Faster NPCs (taxi gameplay) - less strict landing, faster walk start, take or drop, announce during walk
   * Friendly NPC don't get dropped when hit from above, they will only fall after a hard hit
   * Faster consuming of packages in target, added sound
+  * Stamina/health bar colors, yellow and flashing red when low
 * Changed water color to skyblue
 * Particles
   * Water splashes
