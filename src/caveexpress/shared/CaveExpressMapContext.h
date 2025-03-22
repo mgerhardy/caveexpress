@@ -24,7 +24,7 @@ protected:
 		const gridCoord y = luaL_checknumber(l, 4);
 		const std::string& name = luaL_optstring(l, 5, "none");
 		const EntityType& entityType = EntityType::getByName(name);
-		if (entityType.isNone() && name != "none") {
+		if (entityType.isNone() && name != "" && name != "none") {
 			Log::error(LOG_COMMON, "invalid entity type given: %s", name.c_str());
 			ctx->_error = true;
 			return 0;
