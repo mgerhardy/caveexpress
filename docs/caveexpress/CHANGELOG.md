@@ -125,30 +125,33 @@ Version 2.5 (2021-04-08 ?)
 * Added CI builds in github actions tab
 
 Version 2.6 (2025-not yet released)
-* Two new sceneries: jungle and desert
-* 5 New campaigns with new maps (33 total):
-  * jungle (7 maps), desert (5), letters (9), villages (6), races (6)
-* Renamed all maps and campaigns
-  * Maps are named uniquely now (for multiplayer) and are starting with campaign name
-* UI map and campaign browsers now bigger, tiles 6 x 4, bigger font and map title shown
-* Reworked in-game Hud, now also showing:
-  * time as text, package and NPC transfer counts (currently done and total to do on map)
-* Reworked in-game and editor Help screens
+* Content
+  * 5 New campaigns with new maps (33 total):
+    * jungle (7 maps), desert (5), letters (9), villages (6), races (6)
+  * 2 New sceneries: jungle and desert
+  * New palm and desert trees
 * Gameplay changes
   * Diving, now possible to fall underwater - few later maps use it
   * Possible to fly up with 3 packages, or even with 4 after powerup (banana)
   * Faster flying horizontally (on PC)
+  * Faster consuming of packages in target, added sound
   * Faster NPCs (taxi gameplay) - less strict landing, faster walk start, take or drop, announce during walk
   * Friendly NPC don't get dropped when hit from above, they will only fall after a hard hit
-  * Faster consuming of packages in target, added sound
+  * More stamina restored by fruits
+* UI and HUD
   * Stamina/health bar colors, yellow and flashing red when low
+  * Reworked in-game HUD, now also showing:
+    * time as text, package and NPC transfer counts (currently done and total to do on map)
+  * Reworked in-game and editor Help screens
+  * Map and campaign browsers now bigger, tiles 6 x 4, bigger font and map title shown
+  * Renamed all maps and campaigns
+    * Maps are named uniquely now (for multiplayer) and are starting with campaign name
 * Changed water color to skyblue
 * Particles
   * Water splashes
   * Rain in jungle
   * Smaller snow and more wobbly
   * Wind sand, flying leaves
-* New palm and desert trees
 * Editor
   * Fixed garbage tiles on big maps after scroll
   * Fixed scroll by arrow keys and scrollbars visible area
