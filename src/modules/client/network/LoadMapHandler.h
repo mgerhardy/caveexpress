@@ -2,7 +2,9 @@
 
 #include "network/IProtocolHandler.h"
 #include "network/messages/LoadMapMessage.h"
+#include "service/ServiceProvider.h"
 #include "ui/nodes/UINodePoint.h"
+#include "ui/nodes/UINodeBar.h"
 #include "client/ClientMap.h"
 #include "ui/UI.h"
 
@@ -30,6 +32,13 @@ public:
 		UINodePoint* pointsNode = UI::get().getNode<UINodePoint>(UI_WINDOW_MAP, UINODE_POINTS);
 		if (pointsNode)
 			pointsNode->setPoints(0);
+		UINodeBar* hitpointsBar = UI::get().getNode<UINodeBar>(UI_WINDOW_MAP, UINODE_HITPOINTS);
+		if (hitpointsBar) {
+			hitpointsBar->setBarColor(colorGreen);
+			hitpointsBar->setBorderColor(colorGreen);
+			hitpointsBar->setCurrent(100);
+			hitpointsBar->reset();
+		}
 		_map.load(msg->getName(), msg->getTitle());
 	}
 };

@@ -68,7 +68,9 @@ void UIMapWindow::initHudNodes()
 	hitpointsBar->setMax(maxHitpoints);
 	hitpointsBar->setSize(barWidth, barHeight);
 	hitpointsBar->setBorder(true);
-	hitpointsBar->setBorderColor(colorWhite);
+	hitpointsBar->setBarColor(colorGreen);
+	hitpointsBar->setBorderColor(colorGreen);
+	hitpointsBar->reset();
 	// TODO: wind indicator / wind particles
 	_panel->add(hitpointsBar);
 
