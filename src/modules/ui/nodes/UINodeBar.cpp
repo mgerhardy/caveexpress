@@ -28,6 +28,15 @@ void UINodeBar::setBackgroundColor (const Color& color)
 	Vector4Set(color, _colorBackground);
 }
 
+
+void UINodeBar::reset ()
+{
+	_alpha = 0.75f;
+	_flashMillis = 0;
+	_flashAlwaysFreq = 1;
+	_current = _max;
+}
+
 void UINodeBar::render (int x, int y) const
 {
 	UINode::render(x, y);

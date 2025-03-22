@@ -21,6 +21,7 @@ public:
 
 	void setBarColor (const Color& color);
 	void setBackgroundColor (const Color& color);
+	void reset ();
 
 	void render (int x, int y) const override;
 };
