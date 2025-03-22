@@ -26,6 +26,11 @@ public:
 			node->clearSprites();
 			return;
 		}
+		if (caveNumber >= 100) {
+			const SpritePtr& sprite = UI::get().loadSprite("item-stone-idle");
+			node->addSprite(sprite);
+			return;
+		}
 
 		const std::string caveNumberStr = "cavenumber" + string::toString((int) caveNumber);
 		const SpritePtr& sprite = UI::get().loadSprite(caveNumberStr);

@@ -6,7 +6,7 @@ namespace caveexpress {
 
 class TargetCaveMessage: public IProtocolMessage {
 private:
-	uint8_t _targetCave;
+	uint8_t _targetCave;  // 0 none,  100 stone
 
 public:
 	TargetCaveMessage(uint8_t targetCave) :
