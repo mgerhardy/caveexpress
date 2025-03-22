@@ -458,8 +458,8 @@ public:
 	void setEnabled (bool enable);
 
 	void setBorder (bool border);
-	void setBackgroundColor (const Color color);
-	void setBorderColor (const Color color);
+	void setBackgroundColor (const Color& color);
+	void setBorderColor (const Color& color);
 
 	inline void addListener (const UINodeListenerPtr &listener)
 	{
@@ -535,18 +535,14 @@ inline bool UINode::isVisible () const
 	return _visible;
 }
 
-inline void UINode::setBackgroundColor (const Color color)
+inline void UINode::setBackgroundColor (const Color& color)
 {
-	for (int i = 0; i < 4; ++i) {
-		_backgroundColor[i] = color[i];
-	}
+	Vector4Set(color, _backgroundColor);
 }
 
-inline void UINode::setBorderColor (const Color color)
+inline void UINode::setBorderColor (const Color& color)
 {
-	for (int i = 0; i < 4; ++i) {
-		_borderColor[i] = color[i];
-	}
+	Vector4Set(color, _borderColor);
 }
 
 inline void UINode::setBorder (bool border)

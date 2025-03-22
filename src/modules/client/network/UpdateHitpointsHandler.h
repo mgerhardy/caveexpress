@@ -14,8 +14,11 @@ public:
 		UINodeBar* bar = UI::get().setBarValue(UI_WINDOW_MAP, UINODE_HITPOINTS, msg->getHitpoints());
 		const bool red = msg->getHitpoints() < 30;
 		const bool yellow = msg->getHitpoints() < 60;
-		bar->setBarColor(   red ? colorRed : yellow ? colorYellow : colorGreen);
-		bar->setBorderColor(red ? colorRed : yellow ? colorYellow : colorGreen);
+		const Color& colorValue = red ? colorRed : yellow ? colorYellow : colorGreen;
+		Color color;
+		Vector4Set(colorValue, color);
+		bar->setBarColor(color);
+		bar->setBorderColor(color);
 		bar->flash(2000, red ? 2 : 1);
 	}
 };
