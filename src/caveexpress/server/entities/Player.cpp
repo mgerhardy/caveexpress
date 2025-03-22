@@ -457,6 +457,7 @@ bool Player::collect (CollectableEntity* entity)
 		break;
 	}
 	if (EntityTypes::isStone(entityType)) {
+		GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), 100);
 		Achievements::COLLECT_10_STONES.unlock();
 		Achievements::COLLECT_100_STONES.unlock();
 	}
@@ -475,6 +476,7 @@ void Player::drop ()
 		if (EntityTypes::isStone(*entityType)) {
 			Stone *entity = new Stone(_map, getPos().x, getPos().y, this);
 			entity->createBody();
+			GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), 0);
 		} else if (EntityTypes::isBomb(*entityType)) {
 			Bomb *entity = new Bomb(_map, getPos().x, getPos().y, this);
 			entity->createBody();

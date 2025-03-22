@@ -6,6 +6,7 @@
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "client/ClientMap.h"
 #include "ui/UI.h"
+#include "ui/nodes/UINodeSprite.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
 
 namespace caveexpress {
