@@ -121,14 +121,14 @@ bool EventHandler::handleEvent (SDL_Event &event)
 	case SDL_WINDOWEVENT:
 		switch (event.window.event) {
 		case SDL_WINDOWEVENT_RESTORED:
-			for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-				(*i)->onWindowRestore();
+			for (IEventObserver* observer : _observers) {
+				observer->onWindowRestore();
 			}
 			break;
 		case SDL_WINDOWEVENT_RESIZED:
 		case SDL_WINDOWEVENT_SIZE_CHANGED:
-			for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-				(*i)->onWindowResize();
+			for (IEventObserver* observer : _observers) {
+				observer->onWindowResize();
 			}
 			break;
 		}
@@ -164,78 +164,78 @@ bool EventHandler::handleAppEvent (SDL_Event &event)
 
 void EventHandler::lowMemory ()
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onLowMemory();
+	for (IEventObserver* observer : _observers) {
+		observer->onLowMemory();
 	}
 }
 
 void EventHandler::prepareShutdown ()
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onPrepareShutdown();
+	for (IEventObserver* observer : _observers) {
+		observer->onPrepareShutdown();
 	}
 }
 
 void EventHandler::prepareBackground ()
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onPrepareBackground();
+	for (IEventObserver* observer : _observers) {
+		observer->onPrepareBackground();
 	}
 }
 
 void EventHandler::prepareForeground ()
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onPrepareForeground();
+	for (IEventObserver* observer : _observers) {
+		observer->onPrepareForeground();
 	}
 }
 
 void EventHandler::background ()
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onBackground();
+	for (IEventObserver* observer : _observers) {
+		observer->onBackground();
 	}
 }
 
 void EventHandler::foreground ()
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onForeground();
+	for (IEventObserver* observer : _observers) {
+		observer->onForeground();
 	}
 }
 
 void EventHandler::mouseWheel (int32_t x, int32_t y)
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onMouseWheel(x, y);
+	for (IEventObserver* observer : _observers) {
+		observer->onMouseWheel(x, y);
 	}
 }
 
 void EventHandler::mouseMotion (int32_t x, int32_t y, int32_t relX, int32_t relY)
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onMouseMotion(x, y, relX, relY);
+	for (IEventObserver* observer : _observers) {
+		observer->onMouseMotion(x, y, relX, relY);
 	}
 }
 
 void EventHandler::controllerDeviceAdded (int32_t device)
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onControllerDeviceAdded(device);
+	for (IEventObserver* observer : _observers) {
+		observer->onControllerDeviceAdded(device);
 	}
 }
 
 void EventHandler::controllerDeviceRemoved (int32_t device)
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onControllerDeviceRemoved(device);
+	for (IEventObserver* observer : _observers) {
+		observer->onControllerDeviceRemoved(device);
 	}
 }
 
 void EventHandler::controllerMotion (uint8_t axis, int value, uint32_t id)
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onControllerMotion(axis, value, id);
+	for (IEventObserver* observer : _observers) {
+		observer->onControllerMotion(axis, value, id);
 	}
 }
 
@@ -244,8 +244,8 @@ void EventHandler::controllerButtonPress (const std::string& button, uint32_t id
 	if (!Config.isGameController())
 		return;
 
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onControllerButtonPress(button, id);
+	for (IEventObserver* observer : _observers) {
+		observer->onControllerButtonPress(button, id);
 	}
 }
 
@@ -254,58 +254,58 @@ void EventHandler::controllerButtonRelease (const std::string& button, uint32_t 
 	if (!Config.isGameController())
 		return;
 
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onControllerButtonRelease(button, id);
+	for (IEventObserver* observer : _observers) {
+		observer->onControllerButtonRelease(button, id);
 	}
 }
 
 void EventHandler::mouseButtonPress (int32_t x, int32_t y, uint8_t button)
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onMouseButtonPress(x, y, button);
+	for (IEventObserver* observer : _observers) {
+		observer->onMouseButtonPress(x, y, button);
 	}
 }
 
 void EventHandler::mouseButtonRelease (int32_t x, int32_t y, uint8_t button)
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onMouseButtonRelease(x, y, button);
+	for (IEventObserver* observer : _observers) {
+		observer->onMouseButtonRelease(x, y, button);
 	}
 }
 
 void EventHandler::textInput (const std::string& text)
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onTextInput(text);
+	for (IEventObserver* observer : _observers) {
+		observer->onTextInput(text);
 	}
 }
 
 void EventHandler::keyRelease (int32_t key)
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onKeyRelease(key);
+	for (IEventObserver* observer : _observers) {
+		observer->onKeyRelease(key);
 	}
 }
 
 void EventHandler::keyPress (int32_t key, int16_t modifier)
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onKeyPress(key, modifier);
+	for (IEventObserver* observer : _observers) {
+		observer->onKeyPress(key, modifier);
 	}
 }
 
 void EventHandler::fingerPress (int64_t finger, float x, float y)
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onFingerPress(finger, x, y);
+	for (IEventObserver* observer : _observers) {
+		observer->onFingerPress(finger, x, y);
 	}
 }
 
 void EventHandler::fingerRelease (int64_t finger, float x, float y)
 {
 	_multiGesture = false;
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onFingerRelease(finger, x, y);
+	for (IEventObserver* observer : _observers) {
+		observer->onFingerRelease(finger, x, y);
 	}
 }
 
@@ -313,29 +313,29 @@ void EventHandler::fingerMotion (int64_t finger, float x, float y, float dx, flo
 {
 	if (_multiGesture)
 		return;
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onFingerMotion(finger, x, y, dx, dy);
+	for (IEventObserver* observer : _observers) {
+		observer->onFingerMotion(finger, x, y, dx, dy);
 	}
 }
 
 void EventHandler::gestureRecord (int64_t gestureId)
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onGestureRecord(gestureId);
+	for (IEventObserver* observer : _observers) {
+		observer->onGestureRecord(gestureId);
 	}
 }
 
 void EventHandler::gesture (int64_t gestureId, float error, int32_t numFingers)
 {
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onGesture(gestureId, error, numFingers);
+	for (IEventObserver* observer : _observers) {
+		observer->onGesture(gestureId, error, numFingers);
 	}
 }
 
 void EventHandler::multiGesture (float theta, float dist, int32_t numFingers)
 {
 	_multiGesture = true;
-	for (EventObservers::iterator i = _observers.begin(); i != _observers.end(); ++i) {
-		(*i)->onMultiGesture(theta, dist, numFingers);
+	for (IEventObserver* observer : _observers) {
+		observer->onMultiGesture(theta, dist, numFingers);
 	}
 }
