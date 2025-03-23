@@ -393,6 +393,12 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	_serviceProvider = &serviceProvider;
 	_map.init(_frontend, *_serviceProvider);
 	GameEvent.init(*_serviceProvider);
+
+	if (System.hasTouch()) {
+		Log::info(LOG_MAIN, "System has touch devices");
+	} else {
+		Log::info(LOG_MAIN, "System has no touch devices");
+	}
 }
 
 void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
