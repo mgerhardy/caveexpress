@@ -12,8 +12,7 @@ UINodeBackground::UINodeBackground (IFrontend *frontend, const std::string& titl
 	_caveArt = loadTexture("ui-scene-caveart-ice");
 	_imageWidth = _cave->getWidth();
 	_imageHeight = _cave->getHeight();
-	_amountHorizontal = _imageWidth <= 0 ? 1 : getRenderWidth(false) / _imageWidth + 1;
-	_amountVertical = _imageHeight <= 0 ? 1 : getRenderHeight(false) / _imageHeight + 1;
+	onWindowResize();
 
 	const TexturePtr& tile1 = loadTexture("ui-scene-tile1-ice");
 	if (tile1)
@@ -26,6 +25,11 @@ UINodeBackground::UINodeBackground (IFrontend *frontend, const std::string& titl
 	Vector4Set(colorWhite, _fontColor);
 	_textWidth = _font->getTextWidth(_title);
 	_textHeight = _font->getTextHeight(_title);
+}
+
+void UINodeBackground::onWindowResize () {
+	_amountHorizontal = _imageWidth <= 0 ? 1 : getRenderWidth(false) / _imageWidth + 1;
+	_amountVertical = _imageHeight <= 0 ? 1 : getRenderHeight(false) / _imageHeight + 1;
 }
 
 void UINodeBackground::renderMiddle(int x, int y) const {

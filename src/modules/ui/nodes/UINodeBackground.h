@@ -61,7 +61,8 @@ public:
 		return _caveArt;
 	}
 
-	virtual void renderMiddle (int x, int y) const override;
+	void renderMiddle (int x, int y) const override;
+	void onWindowResize () override;
 
 	int getY () const
 	{
