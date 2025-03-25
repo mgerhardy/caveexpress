@@ -1,39 +1,37 @@
 #pragma once
 
-#include "common/IFrontend.h"
-#include "common/DateUtil.h"
-#include "common/Log.h"
 #include "common/Application.h"
+#include "common/DateUtil.h"
+#include "common/IFrontend.h"
+#include "common/Log.h"
+#include <SDL.h>
 #include <string>
 #include <vector>
-#include <SDL.h>
 
 typedef std::vector<std::string> DirectoryEntries;
 
 class ISystem {
 private:
-	explicit ISystem (const ISystem&);
-	ISystem& operator= (const ISystem&);
+	explicit ISystem(const ISystem &);
+	ISystem &operator=(const ISystem &);
 
 public:
-
-	ISystem ()
-	{
+	ISystem() {
 	}
 
-	virtual ~ISystem ()
-	{
+	virtual ~ISystem() {
 	}
 
-	virtual void init () {}
+	virtual void init() {
+	}
 
-	void signalHandler (int s) {
+	void signalHandler(int s) {
 		backtrace("");
 		exit("quitting via signal", s);
 	}
 
-	virtual std::string getCurrentWorkingDir () {
-		char* baseDir = SDL_GetBasePath();
+	virtual std::string getCurrentWorkingDir() {
+		char *baseDir = SDL_GetBasePath();
 		if (baseDir == nullptr)
 			return "";
 		std::string dir(baseDir);
@@ -41,15 +39,18 @@ public:
 		return dir;
 	}
 
-	virtual std::string getCurrentUser () = 0;
+	virtual std::string getCurrentUser() = 0;
 
-	virtual std::string getLanguage () { return "en_GB"; }
+	virtual std::string getLanguage() {
+		return "en_GB";
+	}
 
-	virtual void syncFiles() {}
+	virtual void syncFiles() {
+	}
 
 	// return a slash terminates path to the home directory where the game saves its data to
-	virtual std::string getHomeDirectory () {
-		char* homeDir = SDL_GetPrefPath("", Singleton<Application>::getInstance().getName().c_str());
+	virtual std::string getHomeDirectory() {
+		char *homeDir = SDL_GetPrefPath("", Singleton<Application>::getInstance().getName().c_str());
 		if (homeDir == nullptr)
 			return "";
 		std::string dir(homeDir);
@@ -57,7 +58,7 @@ public:
 		return dir;
 	}
 
-	virtual std::string getDatabaseDirectory () {
+	virtual std::string getDatabaseDirectory() {
 		return getHomeDirectory();
 	}
 
@@ -66,66 +67,93 @@ public:
 	[[noreturn]]
 #endif
 #endif
-	virtual void exit (const std::string& reason, int errorCode) = 0;
+	virtual void exit(const std::string &reason, int errorCode) = 0;
 
-	virtual void tick (uint32_t deltaTime) {}
+	virtual void tick(uint32_t deltaTime) {
+	}
 
-	virtual std::string normalizePath (const std::string& path) = 0;
+	virtual std::string normalizePath(const std::string &path) = 0;
 
-	virtual bool mkdir (const std::string& directory) = 0;
+	virtual bool mkdir(const std::string &directory) = 0;
 
-	virtual DirectoryEntries listDirectory (const std::string& basedir, const std::string& subdir = "") = 0;
+	virtual DirectoryEntries listDirectory(const std::string &basedir, const std::string &subdir = "") = 0;
 
-	virtual std::string getRateURL (const std::string& packageName) const { return ""; }
+	virtual std::string getRateURL(const std::string &packageName) const {
+		return "";
+	}
 
 	/**
 	 * @brief Handle quit in a system specific manner. The default is to not handle it differently.
 	 *
 	 * @return @c true in cases where you don't want to interrupt the mainloop
 	 */
-	virtual bool quit () { return false; }
+	virtual bool quit() {
+		return false;
+	}
 
-	virtual void achievementUnlocked (const std::string& id, bool increment) { }
+	virtual void achievementUnlocked(const std::string &id, bool increment) {
+	}
 
-	virtual bool hasAchievement (const std::string& id) { return false; }
+	virtual bool hasAchievement(const std::string &id) {
+		return false;
+	}
 
-	virtual bool supportsUserContent () const { return true; }
+	virtual bool supportsUserContent() const {
+		return true;
+	}
 
-	virtual bool track (const std::string& hitType, const std::string& screenName) { Log::info(LOG_COMMON, "%s => %s", hitType.c_str(), screenName.c_str()); return true; }
+	virtual bool track(const std::string &hitType, const std::string &screenName) {
+		Log::info(LOG_COMMON, "%s => %s", hitType.c_str(), screenName.c_str());
+		return true;
+	}
 
-	virtual int getScreenPadding () { return 0; }
-
-	virtual bool hasMouseOrFinger () { return true; }
+	virtual int getScreenPadding() {
+		return 0;
+	}
 
 	/**
 	 * @return 0 on success anything else on failure
 	 */
-	virtual int openURL (const std::string& url, bool newWindow) const { return 0; }
+	virtual int openURL(const std::string &url, bool newWindow) const {
+		return 0;
+	}
 
-	virtual bool wantBackButton () { return true; }
+	virtual bool wantBackButton() {
+		return true;
+	}
 
-	virtual bool wantCursor () { return true; }
+	virtual bool wantCursor() {
+		return true;
+	}
 
-	virtual bool supportFocusChange () { return true; }
+	virtual bool supportFocusChange() {
+		return true;
+	}
 
-	virtual bool isSmallScreen (IFrontend* frontend) { return frontend->getWidth() <= 1024 || frontend->getHeight() <= 768; }
+	virtual bool isSmallScreen(IFrontend *frontend) {
+		return frontend->getWidth() <= 1024 || frontend->getHeight() <= 768;
+	}
 
 	// returns true if you can switch between fullscreen and windowed mode
-	virtual bool isFullscreenSupported () { return true; }
+	virtual bool isFullscreenSupported() {
+		return true;
+	}
 
-	virtual bool canDisableGameController () { return true; }
+	virtual bool supportGooglePlay() {
+		return false;
+	}
 
-	virtual bool supportGooglePlay () { return false; }
+	virtual void backtrace(const char *errorMessage) {
+	}
 
-	virtual void backtrace (const char *errorMessage) {}
-
-	virtual bool hasTouch () const
-	{
+	virtual bool hasTouch() const {
 		return SDL_GetNumTouchDevices() > 0;
 	}
 
 	/**
 	 * @return -1 indicates an error - 0 success
 	 */
-	virtual int exec (const std::string& command, std::vector<std::string>& arguments) const { return 0; }
+	virtual int exec(const std::string &command, std::vector<std::string> &arguments) const {
+		return 0;
+	}
 };

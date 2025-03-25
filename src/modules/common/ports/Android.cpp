@@ -228,11 +228,6 @@ bool Android::testException ()
 	return false;
 }
 
-bool Android::hasMouseOrFinger ()
-{
-	return true;
-}
-
 DirectoryEntries Android::listDirectory (const std::string& basedir, const std::string& subdir)
 {
 	if (basedir[0] == '/')

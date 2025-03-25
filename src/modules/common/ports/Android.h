@@ -52,7 +52,5 @@ public:
 	bool isSmallScreen (IFrontend*) override;
 	bool supportFocusChange () override;
 	std::string getLanguage () override;
-	bool hasMouseOrFinger () override;
-	bool canDisableGameController () override { return true; }
 	bool supportGooglePlay () override { return true; }
 };
