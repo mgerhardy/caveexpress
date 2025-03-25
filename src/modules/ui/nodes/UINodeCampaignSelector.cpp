@@ -6,7 +6,7 @@ UINodeCampaignSelector::UINodeCampaignSelector (IFrontend *frontend, CampaignMan
 		Super(frontend, cols, rows), _campaignManager(campaignManager)
 {
 	defaults();
-	setPaddingPixel(10);
+	setPadding(0.001);
 	setColsRowsFromTexture("icon-campaign");
 	reset();
 }

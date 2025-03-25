@@ -11,7 +11,7 @@ UINodeMapSelector::UINodeMapSelector (UIMapSelectorWindow* window, IFrontend *fr
 {
 	setColsRowsFromTexture("map-icon-locked");
 	defaults();
-	setPaddingPixel(10);
+	setPadding(0.001);
 	reset();
 }
 
@@ -21,7 +21,7 @@ UINodeMapSelector::UINodeMapSelector (UIMapSelectorWindow* window, IFrontend *fr
 {
 	setColsRowsFromTexture("map-icon-locked");
 	defaults();
-	setPaddingPixel(10);
+	setPadding(0.001);
 	reset();
 }
 
