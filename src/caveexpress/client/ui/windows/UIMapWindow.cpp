@@ -3,16 +3,12 @@
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/constants/ConfigVars.h"
-#include "client/IMapControl.h"
 #include "common/Math.h"
 #include "ui/UI.h"
-#include "ui/nodes/UINodeButton.h"
 #include "ui/nodes/UINodeBar.h"
 #include "ui/nodes/UINodeSprite.h"
 #include "ui/nodes/UINodePoint.h"
-#include "ui/nodes/UINodeButtonText.h"
 #include "ui/layouts/UIHBoxLayout.h"
-#include "ui/windows/listener/OpenWindowListener.h"
 #include "common/ConfigManager.h"
 #include "campaign/persister/IGameStatePersister.h"
 
@@ -100,9 +96,9 @@ void UIMapWindow::initHudNodes()
 	spacer1->setVisible(false);
 	_panel->add(spacer1);
 
-	
+
 	//  transfers  ---
-	UINodeSprite *npcIcon = new UINodeSprite(_frontend, spriteHeight*3/2, spriteHeight);
+	UINodeSprite *npcIcon = new UINodeSprite(_frontend, spriteHeight * 3 / 2, spriteHeight);
 	npcIcon->setSpriteOffset(spriteNodeOffset / 2);
 	collected->setId(UINODE_TRANSFERS);
 	const std::string npcName = SpriteDefinition::get().getSpriteName(
