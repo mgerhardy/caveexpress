@@ -92,7 +92,7 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 		return;*/
 
 	if (!title.empty()) {
-		const BitmapFontPtr& font = getFont(SMALL_FONT);
+		const BitmapFontPtr& font = getFont(MEDIUM_FONT);
 		const int textHeight = font->getTextHeight(title);
 		const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(title) / 2);
 		const int fontY = y + rowHeight - textHeight - 1;

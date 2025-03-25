@@ -73,7 +73,6 @@ public:
 		if (isSmallScreen()) {
 			_colWidth *= 1.5f;
 			_rowHeight *= 1.5f;
-			_padding *= 0.5f;
 			setAutoColsRows();
 			autoSize();
 		}
@@ -358,11 +357,12 @@ public:
 				alpha = 0.5f;
 			}
 
-			const int _innerPadding = _padding;
-			const int xEntry = colX + _innerPadding;
-			const int yEntry = colY + _innerPadding;
-			const int wEntry = colWidth - 2 * _innerPadding;
-			const int hEntry = rowHeight - 2 * _innerPadding;
+			const int _innerPaddingX = _padding * _frontend->getWidth();
+			const int _innerPaddingY = _padding * _frontend->getHeight();
+			const int xEntry = colX + _innerPaddingX;
+			const int yEntry = colY + _innerPaddingY;
+			const int wEntry = colWidth - 2 * _innerPaddingX;
+			const int hEntry = rowHeight - 2 * _innerPaddingY;
 			renderSelectorEntry(index, *i, xEntry, yEntry, wEntry, hEntry, alpha);
 
 			if (_font) {
