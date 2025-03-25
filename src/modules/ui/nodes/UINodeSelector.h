@@ -110,8 +110,8 @@ public:
 		const TexturePtr& refPicForSelector = loadTexture(refTexture);
 		if (!refPicForSelector->isValid())
 			return;
-		const int rw = getRenderWidth(false);
-		const int rh = getRenderHeight(false);
+		const int rw = getRenderWidth(true);
+		const int rh = getRenderHeight(true);
 		const int cols = std::max(1, rw / refPicForSelector->getWidth());
 		const int rows = std::max(1, rh / refPicForSelector->getHeight());
 		setLayoutData(cols, rows, refPicForSelector->getWidth() / static_cast<float>(_frontend->getWidth()),
