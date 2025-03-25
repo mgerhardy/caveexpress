@@ -1,5 +1,5 @@
 function getName()
-	return "Letter13 J"
+	return "Letter13 J blow wind"
 end
 
 function onMapLoaded()

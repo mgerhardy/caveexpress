@@ -1,5 +1,5 @@
 function getName()
-	return "Letter8 X"
+	return "Letter8 X dive"
 end
 
 function onMapLoaded()

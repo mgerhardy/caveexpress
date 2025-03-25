@@ -1,5 +1,5 @@
 function getName()
-	return "Letter5 H"
+	return "Letter5 H bird"
 end
 
 function onMapLoaded()

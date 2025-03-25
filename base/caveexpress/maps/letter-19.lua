@@ -1,5 +1,5 @@
 function getName()
-	return "Letter19 B"
+	return "Letter19 B big"
 end
 
 function onMapLoaded()

@@ -1,5 +1,5 @@
 function getName()
-	return "Letter9 S"
+	return "Letter9 S blow"
 end
 
 function onMapLoaded()
@@ -119,10 +119,10 @@ function initMap()
 	map:addTile("tile-ground-desert-04", 11.000000, 8.000000)
 	map:addTile("tile-background-desert-02", 11.000000, 9.000000)
 
-	map:addEmitter("item-egg", 6.000000, 0.294000, 1, 0, "")
-	map:addEmitter("item-banana", 6.000000, 3.319000, 1, 0, "")
-	map:addEmitter("npc-blowing", 9.000000, 3.800000, 1, 0, "right=false")
-	map:addEmitter("item-apple", 9.000000, 6.294000, 1, 0, "")
+	map:addEmitter("item-egg", 6.000000, 0.900000, 1, 0, "")
+	map:addEmitter("item-banana", 6.000000, 3.900000, 1, 0, "")
+	map:addEmitter("npc-blowing", 9.000000, 4.000000, 1, 0, "right=false")
+	map:addEmitter("item-apple", 9.000000, 6.900000, 1, 0, "")
 
 	map:addCave("tile-cave-desert-01", 5.000000, 1.000000, "", 5000)
 	map:addCave("tile-cave-desert-01", 6.000000, 4.000000, "", 3000)
