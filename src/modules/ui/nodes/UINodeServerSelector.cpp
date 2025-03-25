@@ -85,10 +85,10 @@ void UINodeServerSelector::renderSelectorEntry (int index, const ServerEntry& da
 		color[3] = 0.3f;
 	}
 
-	const int nameWidth = getMapX() - getNameX() - _rowSpacingPixel;
-	const int mapNameWidth = getPlayersX() - getMapX() - _rowSpacingPixel;
+	const int nameWidth = getMapX() - getNameX() - _rowSpacing;
+	const int mapNameWidth = getPlayersX() - getMapX() - _rowSpacing;
 	const std::string players = string::toString(data.playerCount) + "/" + string::toString(data.maxPlayerCount);
-	const int playersWidth = _font->getTextWidth(PLAYERS_HEADLINE) - _rowSpacingPixel;
+	const int playersWidth = _font->getTextWidth(PLAYERS_HEADLINE) - _rowSpacing;
 
 	renderFilledRect(x, y, colWidth, rowHeight, color);
 	_font->printMax(data.name, _fontColor, x + getNameX(), y, nameWidth, false);

@@ -15,16 +15,20 @@ protected:
 	typedef typename SelectorEntries::iterator SelectorEntryIter;
 	SelectorEntries _entries;
 
+	// current render positions
+	mutable int _renderX;
+	mutable int _renderY;
+
 	bool _scrollingEnabled;
 
 	int _mouseWheelScrollAmount;
 	// scrolling pixels
-	int _scrollingPixels;
+	int _scrolling;
 	// amount of entries to skip while showing the selector
 	int _offset;
 
-	int _rowSpacingPixel;
-	int _colSpacingPixel;
+	int _rowSpacing;
+	int _colSpacing;
 
 	// rows and cols to use for rendering the entries
 	int _cols;
@@ -63,7 +67,7 @@ protected:
 
 public:
 	UINodeSelector (IFrontend *frontend, int cols, int rows, float colWidth = 0.2f, float rowHeight = 0.2f) :
-			UINode(frontend), _scrollingEnabled(true), _mouseWheelScrollAmount(10), _scrollingPixels(0), _offset(0), _rowSpacingPixel(0), _colSpacingPixel(0), _cols(
+			UINode(frontend), _renderX(0), _renderY(0), _scrollingEnabled(true), _mouseWheelScrollAmount(10), _scrolling(0), _offset(0), _rowSpacing(0), _colSpacing(0), _cols(
 					cols), _rows(rows), _selectedIndex(-1), _selection(nullptr), _pageVisible(false), _colWidth(colWidth), _rowHeight(rowHeight), _cursorX(0), _cursorY(0),
 					_entryOffsetX(0), _entryOffsetY(0), _motionHandled(false)
 	{
@@ -73,7 +77,6 @@ public:
 		if (isSmallScreen()) {
 			_colWidth *= 1.5f;
 			_rowHeight *= 1.5f;
-			_padding *= 0.5f;
 			setAutoColsRows();
 			autoSize();
 		}
@@ -131,7 +134,7 @@ public:
 	virtual void reset ()
 	{
 		_entries.clear();
-		_scrollingPixels = 0;
+		_scrolling = 0;
 		_selection = nullptr;
 		_offset = 0;
 	}
@@ -139,8 +142,8 @@ public:
 	// if the width and height is set, we can determine how many entries fit into the selector
 	inline void setAutoColsRows ()
 	{
-		_rows = std::max(1, (int)((_size.y - 2.0f * _padding) / (_rowHeight + _rowSpacingPixel / static_cast<float>(_frontend->getHeight()))));
-		_cols = std::max(1, (int)((_size.x - 2.0f * _padding) / (_colWidth + _colSpacingPixel / static_cast<float>(_frontend->getWidth()))));
+		_rows = std::max(1, (int)((_size.y - 2.0f * _padding) / (_rowHeight + _rowSpacing / static_cast<float>(_frontend->getHeight()))));
+		_cols = std::max(1, (int)((_size.x - 2.0f * _padding) / (_colWidth + _colSpacing / static_cast<float>(_frontend->getWidth()))));
 	}
 
 	inline T* getSelection () const
@@ -292,7 +295,7 @@ public:
 	{
 		if (!_scrollingEnabled)
 			return;
-		const int rowHeight = _rowHeight * _frontend->getHeight() + _rowSpacingPixel;
+		const int rowHeight = _rowHeight * _frontend->getHeight() + _rowSpacing;
 		const int entries = static_cast<int>(_entries.size());
 		const int rows = entries / _cols + (entries % _cols != 0 ? 1 : 0);
 		const int maxRows = getRenderHeight(false) / rowHeight;
@@ -302,19 +305,22 @@ public:
 		const int maxY = (rows - maxRows) * rowHeight;
 
 		if (up)
-			_scrollingPixels += amount;
+			_scrolling += amount;
 		else
-			_scrollingPixels -= amount;
+			_scrolling -= amount;
 
-		if (_scrollingPixels < -maxY)
-			_scrollingPixels = -maxY;
-		else if (_scrollingPixels > 0)
-			_scrollingPixels = 0;
+		if (_scrolling < -maxY)
+			_scrolling = -maxY;
+		else if (_scrolling > 0)
+			_scrolling = 0;
 	}
 
 	virtual void render (int x, int y) const override
 	{
 		Super::render(x, y);
+
+		_renderX = _entryOffsetX;
+		_renderY = _entryOffsetY;
 
 		if (_pageVisible) {
 			const int amount = static_cast<int>(_entries.size());
@@ -339,19 +345,15 @@ public:
 			}
 		}
 
-		// current render positions
-		int currentX = _entryOffsetX;
-		int currentY = _entryOffsetY;
-
 		enableScissor(x, y);
 		int index = 0;
-		const int colWidth = _colWidth * getRenderWidth();
-		const int rowHeight = _rowHeight * getRenderHeight();
+		const int colWidth = _colWidth * _frontend->getWidth();
+		const int rowHeight = _rowHeight * _frontend->getHeight();
 		for (SelectorEntryConstIter i = _entries.begin(); i != _entries.end(); ++i, ++index) {
 			if (index < _offset)
 				continue;
-			const int colX = x + getRenderX() + currentX;
-			const int colY = y + _scrollingPixels + getRenderY() + currentY;
+			const int _x = x + getRenderX() + _renderX;
+			const int _y = y + _scrolling + getRenderY() + _renderY;
 
 			float alpha = 1.0f;
 			if (_selectedIndex == index) {
@@ -359,23 +361,23 @@ public:
 			}
 
 			const int _innerPadding = _padding;
-			const int xEntry = colX + _innerPadding;
-			const int yEntry = colY + _innerPadding;
+			const int xEntry = _x + _innerPadding;
+			const int yEntry = _y + _innerPadding;
 			const int wEntry = colWidth - 2 * _innerPadding;
 			const int hEntry = rowHeight - 2 * _innerPadding;
 			renderSelectorEntry(index, *i, xEntry, yEntry, wEntry, hEntry, alpha);
 
 			if (_font) {
 				const std::string& text = getText(*i);
-				_font->printMax(text, _fontColor, colX, colY, colWidth);
+				_font->printMax(text, _fontColor, xEntry, yEntry, wEntry);
 			}
 
-			currentX += colWidth + _colSpacingPixel;
-			if (currentX >= getRenderWidth()) {
-				currentX = 0;
-				currentY += rowHeight + _rowSpacingPixel;
+			_renderX += colWidth + _colSpacing;
+			if (_renderX >= getRenderWidth()) {
+				_renderX = 0;
+				_renderY += rowHeight + _rowSpacing;
 			}
-			if (currentY + _scrollingPixels >= getRenderHeight()) {
+			if (_renderY + _scrolling >= getRenderHeight()) {
 				break;
 			}
 		}
@@ -482,9 +484,9 @@ public:
 			return;
 		}
 		const int relX = x - getRenderX() + _entryOffsetX;
-		const int relY = y - getRenderY() - _scrollingPixels - _entryOffsetY;
-		const int colWidth = _colWidth * getRenderWidth() + _colSpacingPixel;
-		const int rowHeight = _rowHeight * getRenderHeight() + _rowSpacingPixel;
+		const int relY = y - getRenderY() - _scrolling - _entryOffsetY;
+		const int colWidth = _colWidth * _frontend->getWidth() + _colSpacing;
+		const int rowHeight = _rowHeight * _frontend->getHeight() + _rowSpacing;
 		const int xEntry = relX / colWidth;
 		const int yEntry = (relY + rowHeight) / rowHeight;
 
@@ -533,13 +535,13 @@ public:
 
 	float getAutoWidth () const override
 	{
-		const float w = _colWidth * _cols + (_cols - 1) * (_colSpacingPixel / static_cast<float>(_frontend->getWidth())) + 2.0f * getPadding();
+		const float w = _colWidth * _cols + (_cols - 1) * (_colSpacing / static_cast<float>(_frontend->getWidth())) + 2.0f * getPadding();
 		return std::min(1.0f, w);
 	}
 
 	float getAutoHeight () const override
 	{
-		const float h = _rowHeight * _rows + (_rows - 1) * (_rowSpacingPixel / static_cast<float>(_frontend->getHeight())) + 2.0f * getPadding();
+		const float h = _rowHeight * _rows + (_rows - 1) * (_rowSpacing / static_cast<float>(_frontend->getHeight())) + 2.0f * getPadding();
 		return std::min(1.0f, h);
 	}
 
@@ -566,13 +568,13 @@ public:
 template<class T>
 inline void UINodeSelector<T>::setColSpacing (int colSpacing)
 {
-	_colSpacingPixel = colSpacing;
+	_colSpacing = colSpacing;
 }
 
 template<class T>
 inline void UINodeSelector<T>::setRowSpacing (int rowSpacing)
 {
-	_rowSpacingPixel = rowSpacing;
+	_rowSpacing = rowSpacing;
 }
 
 template<class T>
