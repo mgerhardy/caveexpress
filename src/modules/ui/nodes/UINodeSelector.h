@@ -73,6 +73,7 @@ public:
 		if (isSmallScreen()) {
 			_colWidth *= 1.5f;
 			_rowHeight *= 1.5f;
+			_padding *= 0.5f;
 			setAutoColsRows();
 			autoSize();
 		}
