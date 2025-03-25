@@ -126,8 +126,8 @@ Version 2.5 (2021-04-08 ?)
 
 Version 2.6 (2025-not yet released)
 * Content
-  * 5 New campaigns with new maps (42 total):
-    * jungle (8 maps), desert (5), letters (14), villages (9), races (6)
+  * 5 New campaigns with new maps (52 total):
+    * jungle (8 maps), desert (5), letters (24), villages (9), races (6)
   * 2 New sceneries: jungle and desert
   * New palm and desert trees
 * Gameplay changes

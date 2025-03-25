@@ -1,5 +1,5 @@
 function getName()
-	return "Letter11 O"
+	return "Letter11 O 5pkg"
 end
 
 function onMapLoaded()

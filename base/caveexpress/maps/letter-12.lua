@@ -1,5 +1,5 @@
 function getName()
-	return "Letter12 Y"
+	return "Letter12 Y attack"
 end
 
 function onMapLoaded()
@@ -117,7 +117,7 @@ function initMap()
 	map:setSetting("npctransfercount", "8")
 	map:setSetting("packagetransfercount", "0")
 	map:setSetting("points", "100")
-	map:setSetting("referencetime", "120")
+	map:setSetting("referencetime", "100")
 	map:setSetting("sideborderfail", "false")
 	map:setSetting("theme", "jungle")
 	map:setSetting("tutorial", "false")

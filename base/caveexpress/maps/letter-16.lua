@@ -1,5 +1,5 @@
 function getName()
-	return "Letter16 F"
+	return "Letter16 F dive"
 end
 
 function onMapLoaded()
