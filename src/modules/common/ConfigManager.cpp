@@ -83,7 +83,7 @@ void ConfigManager::init (IBindingSpaceListener *bindingSpaceListener, int argc,
 #endif
 	_vsync = getConfigValue(_configVarMap, "vsync", "true");
 	_textureSize = getConfigValue(_configVarMap, "texturesize", "auto");
-	_grabMouse = getConfigValue(_configVarMap, "grabmouse", "true");
+	_grabMouse = getConfigValue(_configVarMap, "grabmouse", "false");
 	_soundEngine = getConfigValue(_configVarMap, "soundengine", "sdl");
 	_particles = getConfigValue(_configVarMap, "particles", "0");
 	_renderToTexture = getConfigValue(_configVarMap, "rendertotexture", "1");
