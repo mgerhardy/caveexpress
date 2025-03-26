@@ -147,7 +147,6 @@ Version 2.6 (2025-not yet released)
   * Reworked in-game HUD, now also showing:
     * time as text, package and NPC transfer counts (currently done and total to do on map)
   * Reworked in-game and editor Help screens
-  * _Map and campaign browsers now bigger, tiles 6 x 4, bigger font and map title shown_
   * Uniquely renamed all maps and campaigns (for multiplayer), starting with campaign name
 * Water
   * Changed water color to skyblue
