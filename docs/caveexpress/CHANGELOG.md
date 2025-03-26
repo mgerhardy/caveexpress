@@ -127,26 +127,31 @@ Version 2.5 (2021-04-08 ?)
 Version 2.6 (2025-not yet released)
 * Content
   * 5 New campaigns with new maps (52 total):
-    * jungle (8 maps), desert (5), letters (24), villages (9), races (6)
-  * 2 New sceneries: jungle and desert
+    * Jungle (8 maps), Desert (5), Letters (24), Villages (9), Races (6)
+  * 2 New sceneries: Jungle and Desert
   * New palm and desert trees
+  * Turned Rock 2 campaign into Jungle and Third Ice into Desert
+  * Balanced maps times, for more consistent getting of 3 stars
 * Gameplay changes
-  * Diving, now possible to fall underwater - few later maps use it
+  * Diving - now possible to fall underwater, few later maps use it
   * Possible to fly up with 3 packages, or even with 4 after powerup (banana)
   * Faster flying horizontally (on PC)
   * Faster consuming of packages in target, added sound
   * Faster NPCs (taxi gameplay) - less strict landing, faster walk start, take or drop, announce during walk
-  * Friendly NPC don't get dropped when hit from above, they will only fall after a hard hit
-  * More stamina restored by fruits
+  * Friendly NPCs don't get always dropped when hit from above, they will only fall after a hard hit
+  * More stamina restored by fruits, now 40%
+  * Fixed arrow keys reset when in same direction
+  * Added damage from landing on package, stone or NPC
 * UI and HUD
-  * Stamina/health bar colors, yellow and flashing red when low
+  * Stamina/health bar colors: green, yellow and flashing red when low
   * Reworked in-game HUD, now also showing:
     * time as text, package and NPC transfer counts (currently done and total to do on map)
   * Reworked in-game and editor Help screens
-  * Map and campaign browsers now bigger, tiles 6 x 4, bigger font and map title shown
-  * Renamed all maps and campaigns
-    * Maps are named uniquely now (for multiplayer) and are starting with campaign name
-* Changed water color to skyblue
+  * _Map and campaign browsers now bigger, tiles 6 x 4, bigger font and map title shown_
+  * Uniquely renamed all maps and campaigns (for multiplayer), starting with campaign name
+* Water
+  * Changed water color to skyblue
+  * Fixed refraction offset
 * Particles
   * Water splashes
   * Rain in jungle
@@ -156,5 +161,6 @@ Version 2.6 (2025-not yet released)
   * Fixed garbage tiles on big maps after scroll
   * Fixed scroll by arrow keys and scrollbars visible area
   * Added zoom to fit key F
-  * Shift tile with alt+shift
+  * Added keys to convert theme: from rock to jungle (ctrl-J), or from ice to desert (ctrl-D)
+  * Shift tile with alt+shift not alt
 * Updated tools, new: textureatlas
