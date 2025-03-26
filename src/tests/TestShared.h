@@ -8,6 +8,7 @@
 #include "campaign/ICampaignManager.h"
 #include "game/GameRegistry.h"
 #include "network/INetwork.h"
+#include "common/ConfigManager.h"
 
 class NopClientProtocolHandler : public IClientProtocolHandler {
 	void execute (const IProtocolMessage&) override {}

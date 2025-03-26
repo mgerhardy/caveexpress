@@ -5,6 +5,7 @@
 #include "common/System.h"
 #include "game/GameRegistry.h"
 #include "cavepacker/shared/SolutionUtil.h"
+#include "common/ConfigManager.h"
 #include <SDL.h>
 #include <SDL_main.h>
 
