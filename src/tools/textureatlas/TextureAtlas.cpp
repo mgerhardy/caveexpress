@@ -8,12 +8,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#ifdef _WIN32
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <direct.h>
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 #include <vector>
 
 static int g_atlasIncrease = 32;
 static bool g_debug = false;
 static bool g_verbose = false;
+
+#ifdef _WIN32
+char *getcwd(char *buf, size_t size) {
+	if (!buf || size == 0) {
+		return nullptr;
+	}
+
+	DWORD length = GetCurrentDirectoryA(static_cast<DWORD>(size), buf);
+	if (length == 0 || length >= size) {
+		return nullptr; // Failed or buffer too small
+	}
+
+	return buf;
+}
+
+int chdir(const char *path) {
+	return SetCurrentDirectoryA(path) ? 0 : -1;
+}
+#endif
 
 struct Image {
 	std::string name;
@@ -156,7 +182,7 @@ static std::string readString(const pugi::xml_node &node, const std::string &nam
 	return defaultVal;
 }
 
-static Rect findOpaqueRect(const uint8_t *data, int width, int height, int channels, const Config& cfg) {
+static Rect findOpaqueRect(const uint8_t *data, int width, int height, int channels, const Config &cfg) {
 	if (channels < 4 || cfg.trimMode == TrimMode::None) {
 		return {0, 0, width, height};
 	}
@@ -316,8 +342,7 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 				rectId = scaledImages[scaledImage.duplicate].rectId;
 			}
 			assert(rectId >= 0);
-			const Rect opaqueRect =
-				findOpaqueRect(scaledImage.data, scaledImage.width, scaledImage.height, 4, cfg);
+			const Rect opaqueRect = findOpaqueRect(scaledImage.data, scaledImage.width, scaledImage.height, 4, cfg);
 			const int x = rects[rectId].x;
 			const int y = rects[rectId].y;
 			if (rects[rectId].was_packed) {
