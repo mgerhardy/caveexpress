@@ -117,13 +117,13 @@ jobs:
         - name: Upload the build artifacts for caveexpress
           uses: actions/upload-artifact@v4
           with:
-            name: html5-caveexpress
+            name: wasm-caveexpress
             path: caveexpress.*
 
         - name: Upload the build artifacts for cavepacker
           uses: actions/upload-artifact@v4
           with:
-            name: html5-cavepacker
+            name: wasm-cavepacker
             path: cavepacker.*
 
         - name: Deploy to branch deploy
@@ -134,7 +134,11 @@ jobs:
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
             git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
             git fetch
+            mkdir wasm
+            mv cavepacker.* wasm
+            mv caveexpress.* wasm
             git checkout origin/deploy
+            mv wasm/* .
             git status
             git commit -am "Update the html5 build"
             git push origin HEAD:deploy
