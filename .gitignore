@@ -19,9 +19,6 @@
 /*.js*
 /*.data
 
-# build created
-/*-files.h
-
 # ---
 /gmon.out
 /.settings/

@@ -1,11 +1,7 @@
 #pragma once
 
-#include <memory>
 #include "network/IProtocolHandler.h"
 #include "common/MapManager.h"
-#include "common/ConfigManager.h"
-#include "common/Commands.h"
-#include "common/CommandSystem.h"
 #include "campaign/CampaignManager.h"
 #include <string>
 
@@ -23,11 +19,6 @@ public:
 
 	inline const std::string& getName() const {
 		return _name;
-	}
-
-	virtual DirectoryEntries listDirectory(const std::string& basedir, const std::string& subdir) {
-		DirectoryEntries e;
-		return e;
 	}
 
 	// create the windows

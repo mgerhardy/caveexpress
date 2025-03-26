@@ -10,11 +10,6 @@
 #include <emscripten.h>
 #endif
 
-#if defined(__EMSCRIPTEN__)
-// use a pregenerated header with the files
-#define DIRLIST_NOT_SUPPORTED 1
-#endif
-
 FileSystem::FileSystem () :
 		_homeDir(System.getHomeDirectory()), _dataDir("base/" + Singleton<Application>::getInstance().getName() + "/"), _mapsDir("maps/"), _campaignsDir("campaigns/"), _texturesDir(
 				"textures/"), _picsDir("pics/"), _soundsDir("sounds/"), _musicDir("music/"), _shaderDir("shaders/"), _languageDir("lang/"), _gesturesDir("gestures/")
@@ -212,9 +207,6 @@ const std::string FileSystem::getAbsoluteWritePath () const
 
 DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const std::string& subdir) const
 {
-#if DIRLIST_NOT_SUPPORTED
-	return Singleton<GameRegistry>::getInstance().getGame()->listDirectory(basedir, subdir);
-#else
 	DirectoryEntries entriesAll;
 	const std::string sysWritePath = getAbsoluteWritePath() + basedir;
 	if (!sysWritePath.empty())
@@ -228,5 +220,4 @@ DirectoryEntries FileSystem::listDirectory (const std::string& basedir, const st
 	std::sort(entriesAll.begin(), entriesAll.end());
 	entriesAll.erase(std::unique(entriesAll.begin(), entriesAll.end()), entriesAll.end());
 	return entriesAll;
-#endif
 }

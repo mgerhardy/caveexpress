@@ -137,15 +137,6 @@ CaveExpress::~CaveExpress ()
 	delete _clientMap;
 }
 
-DirectoryEntries CaveExpress::listDirectory(const std::string& basedir, const std::string& subdir) {
-	DirectoryEntries entriesAll;
-	#include "caveexpress-files.h"
-	if (entriesAll.empty()) {
-		Log::error(LOG_GAMEIMPL, "no files found in %s", basedir.c_str());
-	}
-	return entriesAll;
-}
-
 IMapManager* CaveExpress::getMapManager ()
 {
 	return new LUAMapManager();
