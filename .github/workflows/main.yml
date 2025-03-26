@@ -97,6 +97,7 @@ jobs:
         - uses: mymindstorm/setup-emsdk@v13
           with:
             version: 4.0.5
+            no-cache: true
 
         - name: Emscripten
           run: |
