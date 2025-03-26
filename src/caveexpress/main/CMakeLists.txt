@@ -28,47 +28,5 @@ set(LUAFILES
 	entitysounds.lua
 	fonts.lua
 	sprites.lua
-	textures/caveexpress-entity-big.lua
-	textures/caveexpress-entity-small.lua
-	textures/caveexpress-environment-big.lua
-	textures/caveexpress-environment-desert-big.lua
-	textures/caveexpress-environment-desert-small.lua
-	textures/caveexpress-environment-ice-big.lua
-	textures/caveexpress-environment-ice-small.lua
-	textures/caveexpress-environment-jungle-big.lua
-	textures/caveexpress-environment-jungle-small.lua
-	textures/caveexpress-environment-small.lua
-	textures/caveexpress-npc_blowing-big.lua
-	textures/caveexpress-npc_blowing-small.lua
-	textures/caveexpress-npc_fish-big.lua
-	textures/caveexpress-npc_fish-small.lua
-	textures/caveexpress-npc_flying-big.lua
-	textures/caveexpress-npc_flying-small.lua
-	textures/caveexpress-npc_grandpa-big.lua
-	textures/caveexpress-npc_grandpa-small.lua
-	textures/caveexpress-npc_mammut-big.lua
-	textures/caveexpress-npc_mammut-small.lua
-	textures/caveexpress-npc_man-big.lua
-	textures/caveexpress-npc_man-small.lua
-	textures/caveexpress-npc_walking-big.lua
-	textures/caveexpress-npc_walking-small.lua
-	textures/caveexpress-npc_woman-big.lua
-	textures/caveexpress-npc_woman-small.lua
-	textures/caveexpress-packagetarget-ice-big.lua
-	textures/caveexpress-packagetarget-ice-small.lua
-	textures/caveexpress-packagetarget-rock-big.lua
-	textures/caveexpress-packagetarget-rock-small.lua
-	textures/caveexpress-ui-big.lua
-	textures/caveexpress-ui-dead-big.lua
-	textures/caveexpress-ui-dead-small.lua
-	textures/caveexpress-ui-fonts-big.lua
-	textures/caveexpress-ui-fonts-small.lua
-	textures/caveexpress-ui-npc-mammut-big.lua
-	textures/caveexpress-ui-npc-mammut-small.lua
-	textures/caveexpress-ui-player-grandpa-big.lua
-	textures/caveexpress-ui-player-grandpa-small.lua
-	textures/caveexpress-ui-scene-big.lua
-	textures/caveexpress-ui-scene-small.lua
-	textures/caveexpress-ui-small.lua
 )
 check_lua_files(${PROJECT_NAME} "${LUAFILES}")

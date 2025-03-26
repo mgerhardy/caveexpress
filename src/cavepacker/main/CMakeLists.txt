@@ -12,16 +12,5 @@ set(LUAFILES
 	config.lua
 	fonts.lua
 	sprites.lua
-	textures/cavepacker-entity-big.lua
-	textures/cavepacker-entity-small.lua
-	textures/cavepacker-environment-big.lua
-	textures/cavepacker-environment.lua
-	textures/cavepacker-environment-small.lua
-	textures/cavepacker-ui-big.lua
-	textures/cavepacker-ui-fonts-big.lua
-	textures/cavepacker-ui-fonts-small.lua
-	textures/cavepacker-ui-scene-big.lua
-	textures/cavepacker-ui-scene-small.lua
-	textures/cavepacker-ui-small.lua
 )
 check_lua_files(${PROJECT_NAME} "${LUAFILES}")

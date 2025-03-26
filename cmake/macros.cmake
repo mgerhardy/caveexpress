@@ -136,7 +136,7 @@ macro(textureatlas)
 			DEPENDS ${_tps_full}
 			SOURCES ${_tps_full}
 		)
-		add_dependencies(${_TP_PROJECTNAME}-textures ${_TP_PROJECTNAME}-${_tps})
+		add_dependencies(${_TP_PROJECTNAME} ${_TP_PROJECTNAME}-${_tps})
 	endforeach()
 endmacro()
 
