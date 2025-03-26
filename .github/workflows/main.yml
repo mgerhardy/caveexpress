@@ -140,5 +140,5 @@ jobs:
             git checkout origin/deploy
             mv wasm/* .
             git status
-            git commit -a --amend
+            git commit -a --amend -m "wasm deploy"
             git push origin HEAD:deploy --force
