@@ -125,3 +125,15 @@ jobs:
           with:
             name: html5-cavepacker
             path: cavepacker.*
+
+        - name: Deploy to branch deploy
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          run: |
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+            git checkout origin/deploy
+            git status
+            git commit -am "Update the html5 build"
+            git push origin deploy
