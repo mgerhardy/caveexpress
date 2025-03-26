@@ -89,9 +89,9 @@ Tools used for development, included in [sources](https://github.com/mgerhardy/c
 
 ## TextureAtlas
 
-The texture atlas is created with TexturePacker 3.9.4, the physical shapes with [box2deditor](https://github.com/mgerhardy/box2d-editor)
+The physical shapes with [box2deditor](https://github.com/mgerhardy/box2d-editor)
 
-To convert the `tps` files into a texture atlas and the lua sprite definition, you can either use TexturePacker - or the bundled opensource tool `textureatlas`.
+To convert the `tps` files into a texture atlas you can use the bundled tool `textureatlas`. The `tps` files can get created with Texturepacker 3.9.4.
 
 The tool can read `tps` files (to some extent) and generate the needed texture atlas and lua sprite definitions that are needed for cavepacker and caveexpress. Call the tool with `-h` as parameter to get an overview of the command line options.
 
