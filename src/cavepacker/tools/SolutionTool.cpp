@@ -2,8 +2,6 @@
 #include "common/Log.h"
 #include "common/FileSystem.h"
 #include "common/Application.h"
-#include "common/System.h"
-#include "game/GameRegistry.h"
 #include "cavepacker/shared/SolutionUtil.h"
 #include "common/ConfigManager.h"
 #include <SDL.h>

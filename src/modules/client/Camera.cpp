@@ -1,8 +1,5 @@
 #include "Camera.h"
-#include "common/ConfigManager.h"
 #include "common/Log.h"
-#include "common/EventHandler.h"
-#include "common/IFrontend.h"
 
 Camera::Camera () :
 		_mapPixelWidth(0), _mapPixelHeight(0), _mapGridWidth(0), _mapGridHeight(0), _scrollingAreaWidth(0), _scrollingAreaHeight(0), _scaleGridToPixel(0), _scrollOffsetX(0), _scrollOffsetY(0)

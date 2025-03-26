@@ -1,6 +1,4 @@
 #include "IntroGeyser.h"
-#include "ui/nodes/UINodeSprite.h"
-#include "ui/nodes/UINodeLabel.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "ui/UI.h"

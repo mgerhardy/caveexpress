@@ -1,7 +1,5 @@
 #include "ClientNPC.h"
-#include "common/Log.h"
 #include "ui/UI.h"
-#include "caveexpress/shared/constants/NPCState.h"
 
 namespace caveexpress {
 

@@ -1,7 +1,6 @@
 #include "UINodeBackgroundScene.h"
 #include "common/Math.h"
 #include "ui/UI.h"
-#include "client/ClientMap.h"
 #include "caveexpress/shared/CaveExpressMapFailedReasons.h"
 
 namespace caveexpress {

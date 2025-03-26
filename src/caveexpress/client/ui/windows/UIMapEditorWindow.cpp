@@ -3,27 +3,18 @@
 #include "common/ThemeType.h"
 #include "ui/UI.h"
 #include "ui/nodes/UINodeButton.h"
-#include "ui/nodes/UINodeCheckbox.h"
-#include "ui/nodes/UINodeLabel.h"
 #include "ui/nodes/UINodeSlider.h"
-#include "ui/nodes/UINodeSprite.h"
-#include "ui/nodes/UINodeSpinner.h"
-#include "ui/nodes/UINodeTextInput.h"
 #include "ui/nodes/UINodeButtonText.h"
 #include "ui/nodes/IUINodeMapEditor.h"
-#include "ui/nodes/UINodeMapEditorSelectedItem.h"
 #include "ui/nodes/UINodeMapStringSelector.h"
 
 #include "ui/windows/UISettingsWindow.h"
 #include "ui/windows/mapeditor/ChangeThemeListener.h"
 
 #include "common/MapManager.h"
-#include "common/ConfigManager.h"
-#include "common/TextureDefinition.h"
 
 #include "caveexpress/client/ui/nodes/UINodeEntitySelector.h"
 #include "caveexpress/client/ui/nodes/UINodeSpriteSelector.h"
-#include "caveexpress/client/ui/windows/UIMapWindow.h"
 #include "mapeditor/WaterHeightListener.h"
 #include "mapeditor/AutoGenerateListener.h"
 

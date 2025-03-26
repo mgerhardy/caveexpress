@@ -4,9 +4,6 @@
 #include "common/CommandSystem.h"
 #include "common/IFrontend.h"
 #include "common/Log.h"
-#include "common/ConfigManager.h"
-#include "common/EventHandler.h"
-#include "common/System.h"
 #include <SDL.h>
 #include <SDL_platform.h>
 

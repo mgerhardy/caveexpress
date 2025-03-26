@@ -1,26 +1,11 @@
 #include "UIMapEditorOptionsWindow.h"
 #include "ui/UI.h"
-#include "ui/nodes/UINodeBackground.h"
-#include "ui/nodes/UINodeBackButton.h"
-#include "ui/nodes/UINodeButton.h"
-#include "ui/nodes/UINodeCheckbox.h"
-#include "ui/nodes/UINodeLabel.h"
 #include "ui/nodes/UINodeSlider.h"
-#include "ui/nodes/UINodeSprite.h"
-#include "ui/nodes/UINodeSpinner.h"
-#include "ui/nodes/UINodeTextInput.h"
-#include "ui/nodes/UINodeButtonText.h"
-#include "ui/nodes/UINodeMapEditorSelectedItem.h"
-#include "ui/nodes/UINodeMapStringSelector.h"
 
 #include "ui/windows/IUIMapEditorWindow.h"
 #include "ui/windows/UISettingsWindow.h"
 
 #include "caveexpress/client/ui/nodes/UINodeMapEditor.h"
-#include "caveexpress/client/ui/windows/UIMapWindow.h"
-#include "caveexpress/client/ui/nodes/UINodeSpriteSelector.h"
-#include "caveexpress/client/ui/nodes/UINodeEntitySelector.h"
-#include "caveexpress/shared/constants/Commands.h"
 #include "mapeditor/WaterHeightListener.h"
 
 namespace caveexpress {

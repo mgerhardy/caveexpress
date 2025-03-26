@@ -1,5 +1,4 @@
 #include "UINodeMapEditor.h"
-#include "common/FileSystem.h"
 #include "common/KeyValueParser.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
@@ -7,7 +6,6 @@
 #include "caveexpress/shared/constants/EmitterSettings.h"
 #include "caveexpress/server/map/RandomMapContext.h"
 #include "caveexpress/shared/CaveExpressMapContext.h"
-#include "caveexpress/shared/constants/Commands.h"
 
 namespace caveexpress {
 

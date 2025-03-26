@@ -4,7 +4,6 @@
 #include "common/Log.h"
 #include "caveexpress/client/ui/nodes/UINodeGameOverBackground.h"
 #include "campaign/CampaignManager.h"
-#include <string>
 
 namespace caveexpress {
 

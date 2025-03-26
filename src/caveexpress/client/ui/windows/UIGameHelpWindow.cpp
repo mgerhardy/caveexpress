@@ -10,7 +10,6 @@
 #include "ui/nodes/UINodeSprite.h"
 #include "ui/UI.h"
 #include "common/SpriteDefinition.h"
-#include "common/Shared.h"
 #include "caveexpress/shared/constants/ConfigVars.h"
 
 namespace caveexpress {

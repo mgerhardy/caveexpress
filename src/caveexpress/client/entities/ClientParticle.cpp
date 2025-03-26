@@ -1,11 +1,8 @@
 #include "ClientParticle.h"
 #include "caveexpress/shared/WorldParticleType.h"
-#include "sound/Sound.h"
-#include "common/SoundType.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "ui/UI.h"
 #include "common/Log.h"
-#include "common/Shared.h"
 
 namespace caveexpress {
 

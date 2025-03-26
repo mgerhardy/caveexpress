@@ -4,7 +4,6 @@
 #include "network/messages/MovementMessage.h"
 #include "network/messages/FingerMovementMessage.h"
 #include "network/messages/ClientInitMessage.h"
-#include "client/entities/ClientMapTile.h"
 #include "ui/UI.h"
 #include "common/IFrontend.h"
 #include "network/ProtocolHandlerRegistry.h"
@@ -14,7 +13,6 @@
 #include "service/ServiceProvider.h"
 #include "common/CommandSystem.h"
 #include "common/ExecutionTime.h"
-#include "common/DateUtil.h"
 #include "common/Commands.h"
 #include "common/Log.h"
 #include <SDL.h>
