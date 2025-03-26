@@ -9,7 +9,7 @@
 UINodeMapSelector::UINodeMapSelector (UIMapSelectorWindow* window, IFrontend *frontend, const IMapManager &mapManager, bool multiplayer, int cols, int rows) :
 		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _window(window), _campaignManager(nullptr), _mapManager(&mapManager), _multiplayer(multiplayer)
 {
-	setColsRowsFromTexture("map-icon-locked");
+	onWindowResize();
 	defaults();
 	setPadding(0.001);
 	reset();
@@ -19,7 +19,7 @@ UINodeMapSelector::UINodeMapSelector (UIMapSelectorWindow* window, IFrontend *fr
 		UINodeBackgroundSelector<std::string>(frontend, cols, rows), _window(window), _campaignManager(&campaignManager), _mapManager(
 				nullptr), _multiplayer(multiplayer)
 {
-	setColsRowsFromTexture("map-icon-locked");
+	onWindowResize();
 	defaults();
 	setPadding(0.001);
 	reset();
@@ -27,6 +27,11 @@ UINodeMapSelector::UINodeMapSelector (UIMapSelectorWindow* window, IFrontend *fr
 
 UINodeMapSelector::~UINodeMapSelector ()
 {
+}
+
+void UINodeMapSelector::onWindowResize()
+{
+	setColsRowsFromTexture("map-icon-locked");
 }
 
 bool UINodeMapSelector::onSelect (const std::string& data)

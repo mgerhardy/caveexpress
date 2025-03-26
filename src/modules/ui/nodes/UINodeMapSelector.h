@@ -30,4 +30,5 @@ public:
 	void renderSelectorEntry (int index, const std::string& data, int x, int y, int colWidth, int rowHeight,
 			float alpha) const override;
 	void reset () override;
+	void onWindowResize() override;
 };

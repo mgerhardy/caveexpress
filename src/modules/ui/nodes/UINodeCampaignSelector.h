@@ -20,4 +20,5 @@ public:
 	bool onSelect (const CampaignPtr& data) override;
 	void renderSelectorEntry (int index, const CampaignPtr& data, int x, int y, int colWidth, int rowHeight, float alpha) const override;
 	void reset () override;
+	void onWindowResize() override;
 };

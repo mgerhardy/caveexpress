@@ -7,12 +7,17 @@ UINodeCampaignSelector::UINodeCampaignSelector (IFrontend *frontend, CampaignMan
 {
 	defaults();
 	setPadding(0.001);
-	setColsRowsFromTexture("icon-campaign");
+	onWindowResize();
 	reset();
 }
 
 UINodeCampaignSelector::~UINodeCampaignSelector ()
 {
+}
+
+void UINodeCampaignSelector::onWindowResize()
+{
+	setColsRowsFromTexture("icon-campaign");
 }
 
 void UINodeCampaignSelector::visitCampaign (CampaignPtr& campaign)
