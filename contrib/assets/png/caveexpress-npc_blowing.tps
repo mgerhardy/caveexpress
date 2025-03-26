@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.7.1</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-npc_blowing.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/caveexpress-npc_blowing.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">

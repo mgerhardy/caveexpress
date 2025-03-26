@@ -98,7 +98,7 @@ The tool can read `tps` files (to some extent) and generate the needed texture a
 To generate e.g. all needed images and lua scripts for caveexpress, you can do this:
 
 ```sh
-./textureatlas contrib/assets/png-packed/caveexpress*.tps
+./textureatlas contrib/assets/png/caveexpress*.tps
 ```
 
 ## jsonconvert

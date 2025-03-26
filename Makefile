@@ -46,4 +46,4 @@ caveexpress-pngquant:
 	$(Q)pngquant -f --ext .png contrib/assets/png/caveexpress/*.png
 
 caveexpress-textures: textureatlas
-	./textureatlas contrib/assets/png-packed/caveexpress*.tps
+	./textureatlas contrib/assets/png/caveexpress*.tps

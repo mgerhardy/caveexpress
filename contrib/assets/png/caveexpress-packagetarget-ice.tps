@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.8.0</string>
+        <string>3.7.1</string>
         <key>fileName</key>
-        <string>/home/mattn/dev/caveexpress/contrib/assets/png-packed/caveexpress-environment.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/caveexpress-packagetarget-ice.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/caveexpress/pics/caveexpress-environment-{v}.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-packagetarget-ice-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -167,7 +167,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/caveexpress/textures/caveexpress-environment-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-packagetarget-ice-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -175,7 +175,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGB565</enum>
+        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -210,54 +210,35 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/tile-background-window-01-off.png</filename>
-            <filename>../png/caveexpress/tile-background-window-01-on.png</filename>
-            <filename>../png/caveexpress/tile-background-window-02-off.png</filename>
-            <filename>../png/caveexpress/tile-background-window-02-on.png</filename>
-            <filename>../png/caveexpress/tile-background-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-background-02-back-01.png</filename>
-            <filename>../png/caveexpress/tile-background-03-back-01.png</filename>
-            <filename>../png/caveexpress/tile-background-big-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-background-cave-art-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-02-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-03-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-02-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-03-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-big-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-big-02-back-01.png</filename>
-            <filename>../png/caveexpress/tile-waterfall-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-waterfall-01-back-02.png</filename>
-            <filename>../png/caveexpress/tile-waterfall-01-back-03.png</filename>
-            <filename>../png/caveexpress/tile-waterfall-01-back-04.png</filename>
-            <filename>../png/caveexpress/tile-cave-01-off.png</filename>
-            <filename>../png/caveexpress/tile-cave-01-on.png</filename>
-            <filename>../png/caveexpress/tile-cave-02-off.png</filename>
-            <filename>../png/caveexpress/tile-cave-02-on.png</filename>
-            <filename>../png/caveexpress/tile-ground-04-back-01.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-active-back-01.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-active-back-02.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-active-back-03.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-active-back-04.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-active-back-05.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-active-back-06.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-idle-back-01.png</filename>
-            <filename>../png/caveexpress/tile-reference.png</filename>
-            <filename>../png/caveexpress/tile-background-04-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-slope-DIR-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-ledge-DIR-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-ledge-DIR-02-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-05-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-06-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-slope-DIR-02-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-shim-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-DIR-04-back-01.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-idle-back-02.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-idle-back-03.png</filename>
-            <filename>../png/caveexpress/tile-geyser-rock-01-idle-back-04.png</filename>
-            <filename>../png/caveexpress/tile-lava-rock-DIR-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-lava-rock-DIR-01-back-02.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-active-front-01.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-active-front-02.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-active-front-03.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-active-front-04.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-active-front-05.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-active-front-06.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-active-front-07.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-active-front-08.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-active-front-09.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-idle-front-01.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-01.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-02.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-03.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-04.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-05.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-06.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-07.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-08.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-09.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-10.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-11.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-12.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-13.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-14.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-15.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-16.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-17.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-18.png</filename>
+            <filename>../png/caveexpress/tile-packagetarget-ice-01-rotate-front-19.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

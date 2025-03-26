@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.9.4</string>
+        <string>3.8.0</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/oss/caveexpress/contrib/assets/png-packed/caveexpress-environment-ice.tps</string>
+        <string>/home/mattn/dev/caveexpress/contrib/assets/png/caveexpress-npc_walking.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -55,13 +55,11 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/caveexpress/pics/caveexpress-environment-ice-{v}.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-npc_walking-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
         <enum type="SettingsBase::PvrCompressionQuality">PVR_QUALITY_NORMAL</enum>
-        <key>atfCompressData</key>
-        <false/>
         <key>mipMapMinSize</key>
         <uint>32768</uint>
         <key>etc1CompressionQuality</key>
@@ -105,9 +103,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>2048</int>
+            <int>1024</int>
             <key>height</key>
-            <int>2048</int>
+            <int>1024</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -121,7 +119,7 @@
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
-            <enum type="AlgorithmSettings::AlgorithmId">MaxRects</enum>
+            <enum type="AlgorithmSettings::AlgorithmId">Basic</enum>
             <key>freeSizeMode</key>
             <enum type="AlgorithmSettings::AlgorithmFreeSizeMode">Best</enum>
             <key>sizeConstraints</key>
@@ -164,12 +162,12 @@
             <key>java</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/pics/environment-ice.java</filename>
+                <filename>npc_flying.java</filename>
             </struct>
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/caveexpress/textures/caveexpress-environment-ice-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-npc_walking-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -177,7 +175,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGB565</enum>
+        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -206,64 +204,53 @@
             <key>trimMode</key>
             <enum type="SpriteSettings::TrimMode">None</enum>
             <key>heuristicMask</key>
-            <false/>
+            <true/>
             <key>pivotPoint</key>
             <enum type="SpriteSettings::PivotPoint">Center</enum>
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/tile-background-ice-window-01-off.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-window-01-on.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-window-02-off.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-window-02-on.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-02-back-01.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-03-back-01.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-04-back-01.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-05-back-01.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-06-back-01.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-big-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-cave-art-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-ice-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-ice-02-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-ice-03-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-ledge-ice-DIR-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-ledge-ice-DIR-02-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-ice-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-ice-02-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-ice-03-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-ice-big-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-waterfall-ice-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-cave-ice-01-on.png</filename>
-            <filename>../png/caveexpress/tile-cave-ice-02-on.png</filename>
-            <filename>../png/caveexpress/tile-cave-ice-01-off.png</filename>
-            <filename>../png/caveexpress/tile-cave-ice-02-off.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-07-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-ice-04-back-01.png</filename>
-            <filename>../png/caveexpress/tile-geyser-ice-01-active-back-01.png</filename>
-            <filename>../png/caveexpress/tile-geyser-ice-01-active-back-02.png</filename>
-            <filename>../png/caveexpress/tile-geyser-ice-01-active-back-03.png</filename>
-            <filename>../png/caveexpress/tile-geyser-ice-01-active-back-04.png</filename>
-            <filename>../png/caveexpress/tile-geyser-ice-01-active-back-05.png</filename>
-            <filename>../png/caveexpress/tile-geyser-ice-01-active-back-07.png</filename>
-            <filename>../png/caveexpress/tile-geyser-ice-01-idle-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-ice-05-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-slope-ice-DIR-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-slope-ice-DIR-02-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-shim-ice-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-geyser-ice-01-idle-back-02.png</filename>
-            <filename>../png/caveexpress/tile-geyser-ice-01-idle-back-03.png</filename>
-            <filename>../png/caveexpress/tile-geyser-ice-01-idle-back-04.png</filename>
-            <filename>../png/caveexpress/tile-ground-ice-big-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-08-back-01.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-cave-art-02-back-01.png</filename>
-            <filename>../png/caveexpress/tile-ground-ice-06-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-ice-DIR-04-back-01.png</filename>
-            <filename>../png/caveexpress/tile-rock-ice-DIR-05-back-01.png</filename>
-            <filename>../png/caveexpress/tile-lava-ice-DIR-01-back-01.png</filename>
-            <filename>../png/caveexpress/tile-lava-ice-DIR-02-back-01.png</filename>
-            <filename>../png/caveexpress/tile-lava-ice-DIR-01-back-02.png</filename>
-            <filename>../png/caveexpress/tile-background-ice-09-back-01.png</filename>
+            <filename>../png/caveexpress/npc-walking-walk-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-walking-attack-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-walking-attack-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-walking-attack-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-walking-attack-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-walking-attack-init-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-walking-attack-init-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-walking-attack-init-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-08.png</filename>
+            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-09.png</filename>
+            <filename>../png/caveexpress/npc-walking-idle-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-walking-idle-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-walking-idle-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-walking-idle-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-walking-idle-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-walking-knockout-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-walking-knockout-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-walking-knockout-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-walking-wakeup-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-walking-wakeup-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-walking-wakeup-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-walking-wakeup-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-walking-wakeup-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-walking-wakeup-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-walking-walk-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-walking-walk-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-walking-walk-DIR-middle-03.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

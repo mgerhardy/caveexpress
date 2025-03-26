@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.7.1</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-ui-dead.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/caveexpress-ui-scene.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/caveexpress/pics/caveexpress-ui-dead-{v}.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-ui-scene-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -73,7 +73,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">FloydSteinbergAlpha</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -167,7 +167,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/caveexpress/textures/caveexpress-ui-dead-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-ui-scene-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -175,7 +175,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
+        <enum type="SettingsBase::OutputFormat">RGB565</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -202,7 +202,7 @@
             <key>trimThreshold</key>
             <uint>1</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">None</enum>
+            <enum type="SpriteSettings::TrimMode">Trim</enum>
             <key>heuristicMask</key>
             <false/>
             <key>pivotPoint</key>
@@ -210,12 +210,18 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/ui/dead-hitpoints.png</filename>
-            <filename>../png/caveexpress/ui/dead-npc-fish.png</filename>
-            <filename>../png/caveexpress/ui/dead-npc-flying.png</filename>
-            <filename>../png/caveexpress/ui/dead-npc-mammut.png</filename>
-            <filename>../png/caveexpress/ui/dead-npc-walking.png</filename>
-            <filename>../png/caveexpress/ui/dead-waterheight.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-caveart-ice.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-cave-ice.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-ground1-ice.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-ground2-ice.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-tile1-ice.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-tile2-ice.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-caveart-rock.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-cave-rock.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-ground1-rock.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-ground2-rock.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-tile1-rock.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-tile2-rock.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

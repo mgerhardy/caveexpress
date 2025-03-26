@@ -6,12 +6,12 @@
         <key>texturePackerVersion</key>
         <string>3.9.4</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/cavepacker-entity.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/cavepacker-ui.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.25</double>
+                <double>1</double>
                 <key>extension</key>
                 <string>big</string>
                 <key>spriteFilter</key>
@@ -28,7 +28,7 @@
             </struct>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.25</double>
+                <double>0.5</double>
                 <key>extension</key>
                 <string>small</string>
                 <key>spriteFilter</key>
@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/cavepacker/pics/cavepacker-entity-{v}.png</filename>
+        <filename>../../../base/cavepacker/pics/cavepacker-ui-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -75,7 +75,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">PngQuantLow</enum>
+        <enum type="SettingsBase::DitherType">PngQuantMedium</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -105,9 +105,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>1024</int>
+            <int>2048</int>
             <key>height</key>
-            <int>1024</int>
+            <int>2048</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -117,7 +117,7 @@
             <int>-1</int>
         </QSize>
         <key>reduceBorderArtifacts</key>
-        <false/>
+        <true/>
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
@@ -164,12 +164,12 @@
             <key>java</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>npc_flying.java</filename>
+                <filename>ui.java</filename>
             </struct>
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/cavepacker/textures/cavepacker-entity-{v}.lua</filename>
+                <filename>../../../base/cavepacker/textures/cavepacker-ui-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -202,7 +202,7 @@
             <key>extrude</key>
             <uint>0</uint>
             <key>trimThreshold</key>
-            <uint>8</uint>
+            <uint>1</uint>
             <key>trimMode</key>
             <enum type="SpriteSettings::TrimMode">None</enum>
             <key>heuristicMask</key>
@@ -212,10 +212,27 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/cavepacker/package-deadlock-front-01.png</filename>
-            <filename>../png/cavepacker/package-delivered-front-01.png</filename>
-            <filename>../png/cavepacker/package-front-01.png</filename>
-            <filename>../png/cavepacker/player-middle-01.png</filename>
+            <filename>../png/cavepacker/ui/icon-settings.png</filename>
+            <filename>../png/cavepacker/ui/icon-scroll-page-DIR.png</filename>
+            <filename>../png/cavepacker/ui/mouse.png</filename>
+            <filename>../png/cavepacker/ui/map-icon-unlocked.png</filename>
+            <filename>../png/cavepacker/ui/map-icon-locked.png</filename>
+            <filename>../png/cavepacker/ui/map-icon-unlocked-0.png</filename>
+            <filename>../png/cavepacker/ui/map-icon-unlocked-1.png</filename>
+            <filename>../png/cavepacker/ui/map-icon-unlocked-2.png</filename>
+            <filename>../png/cavepacker/ui/map-icon-unlocked-3.png</filename>
+            <filename>../png/cavepacker/ui/icon-cursor-down.png</filename>
+            <filename>../png/cavepacker/ui/icon-cursor-left.png</filename>
+            <filename>../png/cavepacker/ui/icon-cursor-right.png</filename>
+            <filename>../png/cavepacker/ui/icon-cursor-up.png</filename>
+            <filename>../png/cavepacker/ui/bones.png</filename>
+            <filename>../png/cavepacker/ui/icon-undo.png</filename>
+            <filename>../png/cavepacker/ui/icon-star-disabled.png</filename>
+            <filename>../png/cavepacker/ui/icon-star-enabled.png</filename>
+            <filename>../png/cavepacker/ui/ui-button-start.png</filename>
+            <filename>../png/cavepacker/ui/icon-close.png</filename>
+            <filename>../png/cavepacker/ui/icon-google-login.png</filename>
+            <filename>../png/cavepacker/ui/icon-reload.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

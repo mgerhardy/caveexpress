@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.9.4</string>
+        <string>3.7.1</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/cavepacker-ui.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/caveexpress-ui-npc-mammut.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -55,13 +55,11 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/cavepacker/pics/cavepacker-ui-{v}.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-ui-npc-mammut-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
         <enum type="SettingsBase::PvrCompressionQuality">PVR_QUALITY_NORMAL</enum>
-        <key>atfCompressData</key>
-        <false/>
         <key>mipMapMinSize</key>
         <uint>32768</uint>
         <key>etc1CompressionQuality</key>
@@ -75,7 +73,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">PngQuantMedium</enum>
+        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -107,7 +105,7 @@
             <key>width</key>
             <int>2048</int>
             <key>height</key>
-            <int>2048</int>
+            <int>1024</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -169,7 +167,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/cavepacker/textures/cavepacker-ui-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-ui-npc-mammut-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -177,7 +175,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">INDEXED</enum>
+        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -202,9 +200,9 @@
             <key>extrude</key>
             <uint>0</uint>
             <key>trimThreshold</key>
-            <uint>1</uint>
+            <uint>100</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">None</enum>
+            <enum type="SpriteSettings::TrimMode">Trim</enum>
             <key>heuristicMask</key>
             <false/>
             <key>pivotPoint</key>
@@ -212,27 +210,11 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/cavepacker/ui/icon-settings.png</filename>
-            <filename>../png/cavepacker/ui/icon-scroll-page-DIR.png</filename>
-            <filename>../png/cavepacker/ui/mouse.png</filename>
-            <filename>../png/cavepacker/ui/map-icon-unlocked.png</filename>
-            <filename>../png/cavepacker/ui/map-icon-locked.png</filename>
-            <filename>../png/cavepacker/ui/map-icon-unlocked-0.png</filename>
-            <filename>../png/cavepacker/ui/map-icon-unlocked-1.png</filename>
-            <filename>../png/cavepacker/ui/map-icon-unlocked-2.png</filename>
-            <filename>../png/cavepacker/ui/map-icon-unlocked-3.png</filename>
-            <filename>../png/cavepacker/ui/icon-cursor-down.png</filename>
-            <filename>../png/cavepacker/ui/icon-cursor-left.png</filename>
-            <filename>../png/cavepacker/ui/icon-cursor-right.png</filename>
-            <filename>../png/cavepacker/ui/icon-cursor-up.png</filename>
-            <filename>../png/cavepacker/ui/bones.png</filename>
-            <filename>../png/cavepacker/ui/icon-undo.png</filename>
-            <filename>../png/cavepacker/ui/icon-star-disabled.png</filename>
-            <filename>../png/cavepacker/ui/icon-star-enabled.png</filename>
-            <filename>../png/cavepacker/ui/ui-button-start.png</filename>
-            <filename>../png/cavepacker/ui/icon-close.png</filename>
-            <filename>../png/cavepacker/ui/icon-google-login.png</filename>
-            <filename>../png/cavepacker/ui/icon-reload.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-01.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-02.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-03.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-04.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-05.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

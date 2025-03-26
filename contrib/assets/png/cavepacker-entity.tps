@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.9.4</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/oss/caveexpress/contrib/assets/png-packed/caveexpress-entity.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/cavepacker-entity.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -28,7 +28,7 @@
             </struct>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.125</double>
+                <double>0.25</double>
                 <key>extension</key>
                 <string>small</string>
                 <key>spriteFilter</key>
@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/caveexpress/pics/caveexpress-entity-{v}.png</filename>
+        <filename>../../../base/cavepacker/pics/cavepacker-entity-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -75,7 +75,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">PngQuantLow</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -105,9 +105,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>2048</int>
+            <int>1024</int>
             <key>height</key>
-            <int>2048</int>
+            <int>1024</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -121,7 +121,7 @@
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
-            <enum type="AlgorithmSettings::AlgorithmId">Basic</enum>
+            <enum type="AlgorithmSettings::AlgorithmId">MaxRects</enum>
             <key>freeSizeMode</key>
             <enum type="AlgorithmSettings::AlgorithmFreeSizeMode">Best</enum>
             <key>sizeConstraints</key>
@@ -169,7 +169,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/caveexpress/textures/caveexpress-entity-{v}.lua</filename>
+                <filename>../../../base/cavepacker/textures/cavepacker-entity-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -177,7 +177,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
+        <enum type="SettingsBase::OutputFormat">INDEXED</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -212,87 +212,10 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/player-crashed-middle-01.png</filename>
-            <filename>../png/caveexpress/player-flying-middle-03.png</filename>
-            <filename>../png/caveexpress/player-flying-middle-01.png</filename>
-            <filename>../png/caveexpress/player-flying-middle-02.png</filename>
-            <filename>../png/caveexpress/item-stone-idle-front-02.png</filename>
-            <filename>../png/caveexpress/item-stone-idle-front-03.png</filename>
-            <filename>../png/caveexpress/item-stone-idle-front-01.png</filename>
-            <filename>../png/caveexpress/tree-idle-middle-03.png</filename>
-            <filename>../png/caveexpress/tree-idle-middle-01.png</filename>
-            <filename>../png/caveexpress/tree-idle-middle-02.png</filename>
-            <filename>../png/caveexpress/bridge-plank-01-front-01.png</filename>
-            <filename>../png/caveexpress/bridge-plank-ice-01-front-01.png</filename>
-            <filename>../png/caveexpress/bridge-wall-ice-left-01-front-01.png</filename>
-            <filename>../png/caveexpress/bridge-wall-ice-right-01-front-01.png</filename>
-            <filename>../png/caveexpress/bridge-wall-left-01-front-01.png</filename>
-            <filename>../png/caveexpress/bridge-wall-right-01-front-01.png</filename>
-            <filename>../png/caveexpress/liane-01-front-01.png</filename>
-            <filename>../png/caveexpress/tree-dazed-middle-01.png</filename>
-            <filename>../png/caveexpress/item-bomb-idle-front-01.png</filename>
-            <filename>../png/caveexpress/item-apple-idle-front-01.png</filename>
-            <filename>../png/caveexpress/item-banana-idle-front-01.png</filename>
-            <filename>../png/caveexpress/item-egg-idle-front-01.png</filename>
-            <filename>../png/caveexpress/item-package-ice-idle-middle-01.png</filename>
-            <filename>../png/caveexpress/item-package-idle-middle-01.png</filename>
-			<filename>../png/caveexpress/particle-leaf.png</filename>
-            <filename>../png/caveexpress/leaf-01.png</filename>
-            <filename>../png/caveexpress/bubble-01.png</filename>
-            <filename>../png/caveexpress/bubble-02.png</filename>
-            <filename>../png/caveexpress/bubble-03.png</filename>
-            <filename>../png/caveexpress/bubble-04.png</filename>
-            <filename>../png/caveexpress/bubble-05.png</filename>
-            <filename>../png/caveexpress/bubble-06.png</filename>
-            <filename>../png/caveexpress/bubble-07.png</filename>
-            <filename>../png/caveexpress/bubble-08.png</filename>
-            <filename>../png/caveexpress/bubble-09.png</filename>
-            <filename>../png/caveexpress/snow-01.png</filename>
-            <filename>../png/caveexpress/particle-water.png</filename>
-            <filename>../png/caveexpress/sparkle-01.png</filename>
-            <filename>../png/caveexpress/sparkle-02.png</filename>
-            <filename>../png/caveexpress/sparkle-03.png</filename>
-            <filename>../png/caveexpress/cave-sign-01-front-01.png</filename>
-            <filename>../png/caveexpress/cave-sign-02-front-01.png</filename>
-            <filename>../png/caveexpress/cave-sign-03-front-01.png</filename>
-            <filename>../png/caveexpress/cave-sign-04-front-01.png</filename>
-            <filename>../png/caveexpress/cave-sign-05-front-01.png</filename>
-            <filename>../png/caveexpress/cave-sign-06-front-01.png</filename>
-            <filename>../png/caveexpress/cave-sign-07-front-01.png</filename>
-            <filename>../png/caveexpress/cavenumber1.png</filename>
-            <filename>../png/caveexpress/cavenumber2.png</filename>
-            <filename>../png/caveexpress/cavenumber3.png</filename>
-            <filename>../png/caveexpress/cavenumber4.png</filename>
-            <filename>../png/caveexpress/cavenumber5.png</filename>
-            <filename>../png/caveexpress/cavenumber6.png</filename>
-            <filename>../png/caveexpress/cavenumber7.png</filename>
-            <filename>../png/caveexpress/cavenumber8.png</filename>
-            <filename>../png/caveexpress/icon-cavenumber1.png</filename>
-            <filename>../png/caveexpress/icon-cavenumber2.png</filename>
-            <filename>../png/caveexpress/icon-cavenumber3.png</filename>
-            <filename>../png/caveexpress/icon-cavenumber4.png</filename>
-            <filename>../png/caveexpress/icon-cavenumber5.png</filename>
-            <filename>../png/caveexpress/icon-cavenumber6.png</filename>
-            <filename>../png/caveexpress/icon-cavenumber7.png</filename>
-            <filename>../png/caveexpress/icon-cavenumber8.png</filename>
-            <filename>../png/caveexpress/icon-targetcave.png</filename>
-            <filename>../png/caveexpress/tree-dazed-middle-02_n.png</filename>
-            <filename>../png/caveexpress/tree-idle-middle-01_n.png</filename>
-            <filename>../png/caveexpress/tree-idle-middle-02_n.png</filename>
-            <filename>../png/caveexpress/tree-dazed-middle-01_n.png</filename>
-            <filename>../png/caveexpress/tree-idle-middle-03_n.png</filename>
-            <filename>../png/caveexpress/item-stone-idle-front-01_n.png</filename>
-            <filename>../png/caveexpress/item-stone-idle-front-02_n.png</filename>
-            <filename>../png/caveexpress/item-stone-idle-front-03_n.png</filename>
-            <filename>../png/caveexpress/rope.png</filename>
-            <filename>../png/caveexpress/tree-dazed-jungle-middle-01.png</filename>
-            <filename>../png/caveexpress/tree-idle-jungle-middle-01.png</filename>
-            <filename>../png/caveexpress/tree-idle-jungle-middle-02.png</filename>
-            <filename>../png/caveexpress/tree-idle-jungle-middle-03.png</filename>
-            <filename>../png/caveexpress/tree-dazed-desert-middle-01.png</filename>
-            <filename>../png/caveexpress/tree-idle-desert-middle-01.png</filename>
-            <filename>../png/caveexpress/tree-idle-desert-middle-02.png</filename>
-            <filename>../png/caveexpress/tree-idle-desert-middle-03.png</filename>
+            <filename>../png/cavepacker/package-deadlock-front-01.png</filename>
+            <filename>../png/cavepacker/package-delivered-front-01.png</filename>
+            <filename>../png/cavepacker/package-front-01.png</filename>
+            <filename>../png/cavepacker/player-middle-01.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
@@ -305,7 +228,7 @@
         <key>commonDivisorY</key>
         <uint>1</uint>
         <key>packNormalMaps</key>
-        <true/>
+        <false/>
         <key>autodetectNormalMaps</key>
         <true/>
         <key>normalMapFilter</key>

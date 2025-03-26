@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.7.1</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-ui-player-grandpa.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/cavepacker-ui-scene.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/caveexpress/pics/caveexpress-ui-player-grandpa-{v}.png</filename>
+        <filename>../../../base/cavepacker/pics/cavepacker-ui-scene-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -73,7 +73,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">FloydSteinbergAlpha</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -103,9 +103,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>1024</int>
+            <int>2048</int>
             <key>height</key>
-            <int>1024</int>
+            <int>2048</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -167,7 +167,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/caveexpress/textures/caveexpress-ui-player-grandpa-{v}.lua</filename>
+                <filename>../../../base/cavepacker/textures/cavepacker-ui-scene-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -175,7 +175,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
+        <enum type="SettingsBase::OutputFormat">RGB565</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -200,9 +200,9 @@
             <key>extrude</key>
             <uint>0</uint>
             <key>trimThreshold</key>
-            <uint>100</uint>
+            <uint>1</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">Trim</enum>
+            <enum type="SpriteSettings::TrimMode">None</enum>
             <key>heuristicMask</key>
             <false/>
             <key>pivotPoint</key>
@@ -210,17 +210,17 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/ui/ui-player-middle-01.png</filename>
-            <filename>../png/caveexpress/ui/ui-player-middle-02.png</filename>
-            <filename>../png/caveexpress/ui/ui-player-middle-03.png</filename>
-            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-01.png</filename>
-            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-02.png</filename>
-            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-03.png</filename>
-            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-04.png</filename>
-            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-05.png</filename>
-            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-06.png</filename>
-            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-07.png</filename>
-            <filename>../png/caveexpress/ui/ui-scene-player.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-caveart-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-ground1-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-ground2-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-tile1-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-tile2-ice.png</filename>
+            <filename>../png/cavepacker/ui/ui-scene-cave-ice.png</filename>
+            <filename>../png/cavepacker/ui/icon-campaign.png</filename>
+            <filename>../png/cavepacker/ui/xsokoban-campaign.png</filename>
+            <filename>../png/cavepacker/ui/ksokoban-campaign.png</filename>
+            <filename>../png/cavepacker/ui/gri-campaign.png</filename>
+            <filename>../png/cavepacker/ui/mgerhardy-campaign.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

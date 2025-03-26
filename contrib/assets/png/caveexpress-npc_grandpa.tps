@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.7.1</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-npc_man.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/caveexpress-npc_grandpa.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/caveexpress/pics/caveexpress-npc_man-{v}.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-npc_grandpa-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -91,7 +91,7 @@
         <key>jpgQuality</key>
         <uint>80</uint>
         <key>pngOptimizationLevel</key>
-        <uint>7</uint>
+        <uint>0</uint>
         <key>webpQualityLevel</key>
         <uint>101</uint>
         <key>textureSubPath</key>
@@ -167,7 +167,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/caveexpress/textures/caveexpress-npc_man-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-npc_grandpa-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -210,39 +210,42 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/npc-man-walk-right-middle-07.png</filename>
-            <filename>../png/caveexpress/npc-man-walk-left-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-man-walk-left-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-man-walk-left-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-man-walk-left-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-man-walk-left-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-man-walk-left-middle-06.png</filename>
-            <filename>../png/caveexpress/npc-man-walk-left-middle-07.png</filename>
-            <filename>../png/caveexpress/npc-man-walk-right-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-man-walk-right-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-man-walk-right-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-man-walk-right-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-man-walk-right-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-man-walk-right-middle-06.png</filename>
-            <filename>../png/caveexpress/npc-man-falling-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-man-falling-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-man-falling-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-man-falling-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-man-falling-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-man-idle-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-man-idle-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-man-idle-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-man-idle-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-man-swimming-idle-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-man-swimming-idle-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-man-swimming-idle-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-man-swimming-idle-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-man-swimming-left-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-man-swimming-left-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-man-swimming-left-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-man-swimming-right-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-man-swimming-right-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-man-swimming-right-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-06_nm.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-falling-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-idle-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-idle-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-idle-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-left-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-left-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-left-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-right-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-right-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-grandpa-swimming-right-middle-03.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
@@ -255,13 +258,13 @@
         <key>commonDivisorY</key>
         <uint>1</uint>
         <key>packNormalMaps</key>
-        <false/>
-        <key>autodetectNormalMaps</key>
         <true/>
+        <key>autodetectNormalMaps</key>
+        <false/>
         <key>normalMapFilter</key>
         <string></string>
         <key>normalMapSuffix</key>
-        <string></string>
+        <string>_nm</string>
         <key>normalMapSheetFileName</key>
         <filename></filename>
     </struct>

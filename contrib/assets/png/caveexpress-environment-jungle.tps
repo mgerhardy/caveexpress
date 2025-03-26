@@ -6,12 +6,12 @@
         <key>texturePackerVersion</key>
         <string>3.9.4</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/cavepacker-environment.tps</string>
+        <string>/home/mgerhardy/dev/oss/caveexpress/contrib/assets/png/caveexpress-environment-jungle.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.125</double>
+                <double>0.25</double>
                 <key>extension</key>
                 <string>big</string>
                 <key>spriteFilter</key>
@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/cavepacker/pics/cavepacker-environment-{v}.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-environment-jungle-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -75,7 +75,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">PngQuantHigh</enum>
+        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -105,9 +105,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>1024</int>
+            <int>2048</int>
             <key>height</key>
-            <int>1024</int>
+            <int>2048</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -164,12 +164,12 @@
             <key>java</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>npc_flying.java</filename>
+                <filename>../../../base/pics/environment-jungle.java</filename>
             </struct>
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/cavepacker/textures/cavepacker-environment-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-environment-jungle-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -177,7 +177,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">INDEXED</enum>
+        <enum type="SettingsBase::OutputFormat">RGB565</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -212,16 +212,53 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/cavepacker/tile-background-04-back-01.png</filename>
-            <filename>../png/cavepacker/tile-background-01-back-01.png</filename>
-            <filename>../png/cavepacker/tile-background-02-back-01.png</filename>
-            <filename>../png/cavepacker/tile-background-03-back-01.png</filename>
-            <filename>../png/cavepacker/tile-reference.png</filename>
-            <filename>../png/cavepacker/deadlock-middle-01.png</filename>
-            <filename>../png/cavepacker/tile-rock-01-back-01.png</filename>
-            <filename>../png/cavepacker/tile-rock-02-back-01.png</filename>
-            <filename>../png/cavepacker/tile-rock-03-back-01.png</filename>
-            <filename>../png/cavepacker/target-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-big-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-cave-art-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-window-01-off.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-window-01-on.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-window-02-off.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-window-02-on.png</filename>
+            <filename>../png/caveexpress/tile-cave-jungle-01-off.png</filename>
+            <filename>../png/caveexpress/tile-cave-jungle-01-on.png</filename>
+            <filename>../png/caveexpress/tile-cave-jungle-02-off.png</filename>
+            <filename>../png/caveexpress/tile-cave-jungle-02-on.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-01.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-02.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-03.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-04.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-05.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-06.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-idle-back-01.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-idle-back-02.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-idle-back-03.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-idle-back-04.png</filename>
+            <filename>../png/caveexpress/tile-ground-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-jungle-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-jungle-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-jungle-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-jungle-05-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-jungle-06-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ledge-jungle-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ledge-jungle-DIR-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-lava-rock-jungle-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-lava-rock-jungle-DIR-01-back-02.png</filename>
+            <filename>../png/caveexpress/tile-rock-big-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-big-jungle-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-jungle-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-jungle-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-jungle-DIR-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-shim-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-slope-jungle-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-jungle-01-back-02.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-jungle-01-back-03.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-jungle-01-back-04.png</filename>
+            <filename>../png/caveexpress/tile-rock-slope-jungle-DIR-02-back-01.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

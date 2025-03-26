@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.7.1</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-packagetarget-rock.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/caveexpress-npc_mammut.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/caveexpress/pics/caveexpress-packagetarget-rock-{v}.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-npc_mammut-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -103,9 +103,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>1024</int>
+            <int>2048</int>
             <key>height</key>
-            <int>1024</int>
+            <int>2048</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -167,7 +167,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/caveexpress/textures/caveexpress-packagetarget-rock-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-npc_mammut-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -210,35 +210,59 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-active-front-01.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-active-front-02.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-active-front-03.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-active-front-04.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-active-front-05.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-active-front-06.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-active-front-07.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-active-front-08.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-active-front-09.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-idle-front-01.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-01.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-02.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-03.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-04.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-05.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-06.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-07.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-08.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-09.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-10.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-11.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-12.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-13.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-14.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-15.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-16.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-17.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-18.png</filename>
-            <filename>../png/caveexpress/tile-packagetarget-rock-01-rotate-front-19.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-12.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-08.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-09.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-10.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-11.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-08.png</filename>
+            <filename>../png/caveexpress/npc-mammut-knockout-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-knockout-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-knockout-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-05.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

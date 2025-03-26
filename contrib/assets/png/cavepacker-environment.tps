@@ -4,14 +4,14 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.7.1</string>
+        <string>3.9.4</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/cavepacker-ui-scene.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/cavepacker-environment.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>1</double>
+                <double>0.125</double>
                 <key>extension</key>
                 <string>big</string>
                 <key>spriteFilter</key>
@@ -28,7 +28,7 @@
             </struct>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.5</double>
+                <double>0.125</double>
                 <key>extension</key>
                 <string>small</string>
                 <key>spriteFilter</key>
@@ -55,11 +55,13 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/cavepacker/pics/cavepacker-ui-scene-{v}.png</filename>
+        <filename>../../../base/cavepacker/pics/cavepacker-environment-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
         <enum type="SettingsBase::PvrCompressionQuality">PVR_QUALITY_NORMAL</enum>
+        <key>atfCompressData</key>
+        <false/>
         <key>mipMapMinSize</key>
         <uint>32768</uint>
         <key>etc1CompressionQuality</key>
@@ -73,7 +75,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">FloydSteinbergAlpha</enum>
+        <enum type="SettingsBase::DitherType">PngQuantHigh</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -103,9 +105,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>2048</int>
+            <int>1024</int>
             <key>height</key>
-            <int>2048</int>
+            <int>1024</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -115,7 +117,7 @@
             <int>-1</int>
         </QSize>
         <key>reduceBorderArtifacts</key>
-        <true/>
+        <false/>
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
@@ -162,12 +164,12 @@
             <key>java</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>ui.java</filename>
+                <filename>npc_flying.java</filename>
             </struct>
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/cavepacker/textures/cavepacker-ui-scene-{v}.lua</filename>
+                <filename>../../../base/cavepacker/textures/cavepacker-environment-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -175,7 +177,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGB565</enum>
+        <enum type="SettingsBase::OutputFormat">INDEXED</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -200,7 +202,7 @@
             <key>extrude</key>
             <uint>0</uint>
             <key>trimThreshold</key>
-            <uint>1</uint>
+            <uint>8</uint>
             <key>trimMode</key>
             <enum type="SpriteSettings::TrimMode">None</enum>
             <key>heuristicMask</key>
@@ -210,17 +212,16 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/cavepacker/ui/ui-scene-caveart-ice.png</filename>
-            <filename>../png/cavepacker/ui/ui-scene-ground1-ice.png</filename>
-            <filename>../png/cavepacker/ui/ui-scene-ground2-ice.png</filename>
-            <filename>../png/cavepacker/ui/ui-scene-tile1-ice.png</filename>
-            <filename>../png/cavepacker/ui/ui-scene-tile2-ice.png</filename>
-            <filename>../png/cavepacker/ui/ui-scene-cave-ice.png</filename>
-            <filename>../png/cavepacker/ui/icon-campaign.png</filename>
-            <filename>../png/cavepacker/ui/xsokoban-campaign.png</filename>
-            <filename>../png/cavepacker/ui/ksokoban-campaign.png</filename>
-            <filename>../png/cavepacker/ui/gri-campaign.png</filename>
-            <filename>../png/cavepacker/ui/mgerhardy-campaign.png</filename>
+            <filename>../png/cavepacker/tile-background-04-back-01.png</filename>
+            <filename>../png/cavepacker/tile-background-01-back-01.png</filename>
+            <filename>../png/cavepacker/tile-background-02-back-01.png</filename>
+            <filename>../png/cavepacker/tile-background-03-back-01.png</filename>
+            <filename>../png/cavepacker/tile-reference.png</filename>
+            <filename>../png/cavepacker/deadlock-middle-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-01-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-02-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-03-back-01.png</filename>
+            <filename>../png/cavepacker/target-back-01.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

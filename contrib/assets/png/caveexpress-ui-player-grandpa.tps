@@ -6,12 +6,12 @@
         <key>texturePackerVersion</key>
         <string>3.7.1</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-npc_woman.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/caveexpress-ui-player-grandpa.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.25</double>
+                <double>1</double>
                 <key>extension</key>
                 <string>big</string>
                 <key>spriteFilter</key>
@@ -28,7 +28,7 @@
             </struct>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.125</double>
+                <double>0.5</double>
                 <key>extension</key>
                 <string>small</string>
                 <key>spriteFilter</key>
@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/caveexpress/pics/caveexpress-npc_woman-{v}.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-ui-player-grandpa-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -115,7 +115,7 @@
             <int>-1</int>
         </QSize>
         <key>reduceBorderArtifacts</key>
-        <false/>
+        <true/>
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
@@ -162,12 +162,12 @@
             <key>java</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>npc_flying.java</filename>
+                <filename>ui.java</filename>
             </struct>
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/caveexpress/textures/caveexpress-npc_woman-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-ui-player-grandpa-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -200,9 +200,9 @@
             <key>extrude</key>
             <uint>0</uint>
             <key>trimThreshold</key>
-            <uint>8</uint>
+            <uint>100</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">None</enum>
+            <enum type="SpriteSettings::TrimMode">Trim</enum>
             <key>heuristicMask</key>
             <false/>
             <key>pivotPoint</key>
@@ -210,38 +210,17 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/npc-woman-walk-right-middle-07.png</filename>
-            <filename>../png/caveexpress/npc-woman-walk-left-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-woman-walk-left-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-woman-walk-left-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-woman-walk-left-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-woman-walk-left-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-woman-walk-left-middle-06.png</filename>
-            <filename>../png/caveexpress/npc-woman-walk-left-middle-07.png</filename>
-            <filename>../png/caveexpress/npc-woman-walk-right-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-woman-walk-right-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-woman-walk-right-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-woman-walk-right-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-woman-walk-right-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-woman-walk-right-middle-06.png</filename>
-            <filename>../png/caveexpress/npc-woman-falling-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-woman-falling-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-woman-falling-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-woman-falling-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-woman-falling-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-woman-falling-middle-06.png</filename>
-            <filename>../png/caveexpress/npc-woman-falling-middle-07.png</filename>
-            <filename>../png/caveexpress/npc-woman-idle-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-woman-idle-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-woman-idle-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-woman-swimming-idle-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-woman-swimming-idle-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-woman-swimming-left-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-woman-swimming-left-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-woman-swimming-left-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-woman-swimming-right-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-woman-swimming-right-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-woman-swimming-right-middle-03.png</filename>
+            <filename>../png/caveexpress/ui/ui-player-middle-01.png</filename>
+            <filename>../png/caveexpress/ui/ui-player-middle-02.png</filename>
+            <filename>../png/caveexpress/ui/ui-player-middle-03.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-01.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-02.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-03.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-04.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-05.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-06.png</filename>
+            <filename>../png/caveexpress/ui/ui-npc-grandpa-middle-07.png</filename>
+            <filename>../png/caveexpress/ui/ui-scene-player.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

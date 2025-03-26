@@ -4,14 +4,14 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.8.0</string>
+        <string>4.0.1</string>
         <key>fileName</key>
-        <string>/home/mattn/dev/caveexpress/contrib/assets/png-packed/caveexpress-npc_walking.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/caveexpress-ui.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.25</double>
+                <double>1</double>
                 <key>extension</key>
                 <string>big</string>
                 <key>spriteFilter</key>
@@ -28,7 +28,7 @@
             </struct>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.125</double>
+                <double>0.5</double>
                 <key>extension</key>
                 <string>small</string>
                 <key>spriteFilter</key>
@@ -55,11 +55,13 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/caveexpress/pics/caveexpress-npc_walking-{v}.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-ui-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
         <enum type="SettingsBase::PvrCompressionQuality">PVR_QUALITY_NORMAL</enum>
+        <key>atfCompressData</key>
+        <false/>
         <key>mipMapMinSize</key>
         <uint>32768</uint>
         <key>etc1CompressionQuality</key>
@@ -73,7 +75,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">PngQuantMedium</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -103,9 +105,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>1024</int>
+            <int>2048</int>
             <key>height</key>
-            <int>1024</int>
+            <int>2048</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -115,11 +117,11 @@
             <int>-1</int>
         </QSize>
         <key>reduceBorderArtifacts</key>
-        <false/>
+        <true/>
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
-            <enum type="AlgorithmSettings::AlgorithmId">Basic</enum>
+            <enum type="AlgorithmSettings::AlgorithmId">MaxRects</enum>
             <key>freeSizeMode</key>
             <enum type="AlgorithmSettings::AlgorithmFreeSizeMode">Best</enum>
             <key>sizeConstraints</key>
@@ -162,12 +164,12 @@
             <key>java</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>npc_flying.java</filename>
+                <filename>ui.java</filename>
             </struct>
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/caveexpress/textures/caveexpress-npc_walking-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-ui-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -175,7 +177,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
+        <enum type="SettingsBase::OutputFormat">INDEXED</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -195,62 +197,50 @@
             <double>1</double>
             <key>scaleMode</key>
             <enum type="ScaleMode">Smooth</enum>
-            <key>innerPadding</key>
-            <uint>0</uint>
             <key>extrude</key>
             <uint>0</uint>
             <key>trimThreshold</key>
-            <uint>8</uint>
+            <uint>1</uint>
+            <key>trimMargin</key>
+            <uint>1</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">None</enum>
+            <enum type="SpriteSettings::TrimMode">Trim</enum>
+            <key>tracerTolerance</key>
+            <int>200</int>
             <key>heuristicMask</key>
-            <true/>
+            <false/>
             <key>pivotPoint</key>
             <enum type="SpriteSettings::PivotPoint">Center</enum>
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/npc-walking-walk-DIR-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-walking-attack-DIR-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-walking-attack-DIR-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-walking-attack-DIR-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-walking-attack-DIR-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-walking-attack-init-DIR-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-walking-attack-init-DIR-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-walking-attack-init-DIR-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-06.png</filename>
-            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-07.png</filename>
-            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-08.png</filename>
-            <filename>../png/caveexpress/npc-walking-dazed-DIR-middle-09.png</filename>
-            <filename>../png/caveexpress/npc-walking-idle-DIR-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-walking-idle-DIR-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-walking-idle-DIR-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-walking-idle-DIR-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-walking-idle-DIR-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-walking-knockout-DIR-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-walking-knockout-DIR-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-walking-knockout-DIR-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-06.png</filename>
-            <filename>../png/caveexpress/npc-walking-turn-DIR-middle-07.png</filename>
-            <filename>../png/caveexpress/npc-walking-wakeup-DIR-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-walking-wakeup-DIR-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-walking-wakeup-DIR-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-walking-wakeup-DIR-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-walking-wakeup-DIR-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-walking-wakeup-DIR-middle-06.png</filename>
-            <filename>../png/caveexpress/npc-walking-walk-DIR-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-walking-walk-DIR-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-walking-walk-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/ui/icon-settings.png</filename>
+            <filename>../png/caveexpress/ui/icon-reload.png</filename>
+            <filename>../png/caveexpress/ui/icon-checkbox-off.png</filename>
+            <filename>../png/caveexpress/ui/icon-checkbox-on.png</filename>
+            <filename>../png/caveexpress/ui/icon-scroll-page-DIR.png</filename>
+            <filename>../png/caveexpress/ui/ui-background-title.png</filename>
+            <filename>../png/caveexpress/ui/mouse.png</filename>
+            <filename>../png/caveexpress/ui/map-icon-locked.png</filename>
+            <filename>../png/caveexpress/ui/map-icon-unlocked.png</filename>
+            <filename>../png/caveexpress/ui/map-icon-unlocked-0.png</filename>
+            <filename>../png/caveexpress/ui/map-icon-unlocked-1.png</filename>
+            <filename>../png/caveexpress/ui/map-icon-unlocked-2.png</filename>
+            <filename>../png/caveexpress/ui/icon-google-login.png</filename>
+            <filename>../png/caveexpress/ui/map-icon-unlocked-3.png</filename>
+            <filename>../png/caveexpress/ui/icon-campaign.png</filename>
+            <filename>../png/caveexpress/ui/icon-result.png</filename>
+            <filename>../png/caveexpress/ui/icon-campaign-rock.png</filename>
+            <filename>../png/caveexpress/ui/icon-campaign-ice.png</filename>
+            <filename>../png/caveexpress/ui/icon-plus.png</filename>
+            <filename>../png/caveexpress/ui/icon-heart.png</filename>
+            <filename>../png/caveexpress/ui/icon-star-disabled.png</filename>
+            <filename>../png/caveexpress/ui/icon-star-enabled.png</filename>
+            <filename>../png/caveexpress/ui/ui-background-gameover.png</filename>
+            <filename>../png/caveexpress/ui/ui-button-start.png</filename>
+            <filename>../png/caveexpress/ui/icon-close.png</filename>
+            <filename>../png/caveexpress/ui/cooldown-1.png</filename>
+            <filename>../png/caveexpress/ui/cooldown-2.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

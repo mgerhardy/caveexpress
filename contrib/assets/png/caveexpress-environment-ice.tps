@@ -4,14 +4,14 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.7.1</string>
+        <string>3.9.4</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-ui-npc-mammut.tps</string>
+        <string>/home/mgerhardy/dev/oss/caveexpress/contrib/assets/png/caveexpress-environment-ice.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>1</double>
+                <double>0.25</double>
                 <key>extension</key>
                 <string>big</string>
                 <key>spriteFilter</key>
@@ -28,7 +28,7 @@
             </struct>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.5</double>
+                <double>0.125</double>
                 <key>extension</key>
                 <string>small</string>
                 <key>spriteFilter</key>
@@ -55,11 +55,13 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/caveexpress/pics/caveexpress-ui-npc-mammut-{v}.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-environment-ice-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
         <enum type="SettingsBase::PvrCompressionQuality">PVR_QUALITY_NORMAL</enum>
+        <key>atfCompressData</key>
+        <false/>
         <key>mipMapMinSize</key>
         <uint>32768</uint>
         <key>etc1CompressionQuality</key>
@@ -105,7 +107,7 @@
             <key>width</key>
             <int>2048</int>
             <key>height</key>
-            <int>1024</int>
+            <int>2048</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -115,7 +117,7 @@
             <int>-1</int>
         </QSize>
         <key>reduceBorderArtifacts</key>
-        <true/>
+        <false/>
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
@@ -162,12 +164,12 @@
             <key>java</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>ui.java</filename>
+                <filename>../../../base/pics/environment-ice.java</filename>
             </struct>
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/caveexpress/textures/caveexpress-ui-npc-mammut-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-environment-ice-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -175,7 +177,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
+        <enum type="SettingsBase::OutputFormat">RGB565</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -200,9 +202,9 @@
             <key>extrude</key>
             <uint>0</uint>
             <key>trimThreshold</key>
-            <uint>100</uint>
+            <uint>8</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">Trim</enum>
+            <enum type="SpriteSettings::TrimMode">None</enum>
             <key>heuristicMask</key>
             <false/>
             <key>pivotPoint</key>
@@ -210,11 +212,58 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-01.png</filename>
-            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-02.png</filename>
-            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-03.png</filename>
-            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-04.png</filename>
-            <filename>../png/caveexpress/ui/ui-npc-mammut-middle-05.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-window-01-off.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-window-01-on.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-window-02-off.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-window-02-on.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-05-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-06-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-big-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-cave-art-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ice-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ice-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ice-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ledge-ice-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ledge-ice-DIR-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-ice-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-ice-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-ice-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-ice-big-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-ice-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-cave-ice-01-on.png</filename>
+            <filename>../png/caveexpress/tile-cave-ice-02-on.png</filename>
+            <filename>../png/caveexpress/tile-cave-ice-01-off.png</filename>
+            <filename>../png/caveexpress/tile-cave-ice-02-off.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-07-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ice-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-geyser-ice-01-active-back-01.png</filename>
+            <filename>../png/caveexpress/tile-geyser-ice-01-active-back-02.png</filename>
+            <filename>../png/caveexpress/tile-geyser-ice-01-active-back-03.png</filename>
+            <filename>../png/caveexpress/tile-geyser-ice-01-active-back-04.png</filename>
+            <filename>../png/caveexpress/tile-geyser-ice-01-active-back-05.png</filename>
+            <filename>../png/caveexpress/tile-geyser-ice-01-active-back-07.png</filename>
+            <filename>../png/caveexpress/tile-geyser-ice-01-idle-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ice-05-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-slope-ice-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-slope-ice-DIR-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-shim-ice-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-geyser-ice-01-idle-back-02.png</filename>
+            <filename>../png/caveexpress/tile-geyser-ice-01-idle-back-03.png</filename>
+            <filename>../png/caveexpress/tile-geyser-ice-01-idle-back-04.png</filename>
+            <filename>../png/caveexpress/tile-ground-ice-big-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-08-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-cave-art-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ice-06-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-ice-DIR-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-ice-DIR-05-back-01.png</filename>
+            <filename>../png/caveexpress/tile-lava-ice-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-lava-ice-DIR-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-lava-ice-DIR-01-back-02.png</filename>
+            <filename>../png/caveexpress/tile-background-ice-09-back-01.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

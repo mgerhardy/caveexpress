@@ -6,12 +6,12 @@
         <key>texturePackerVersion</key>
         <string>3.7.1</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-ui-scene.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/caveexpress-npc_man.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>1</double>
+                <double>0.25</double>
                 <key>extension</key>
                 <string>big</string>
                 <key>spriteFilter</key>
@@ -28,7 +28,7 @@
             </struct>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.5</double>
+                <double>0.125</double>
                 <key>extension</key>
                 <string>small</string>
                 <key>spriteFilter</key>
@@ -55,7 +55,7 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/caveexpress/pics/caveexpress-ui-scene-{v}.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-npc_man-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -73,7 +73,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">FloydSteinbergAlpha</enum>
+        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -91,7 +91,7 @@
         <key>jpgQuality</key>
         <uint>80</uint>
         <key>pngOptimizationLevel</key>
-        <uint>0</uint>
+        <uint>7</uint>
         <key>webpQualityLevel</key>
         <uint>101</uint>
         <key>textureSubPath</key>
@@ -103,9 +103,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>2048</int>
+            <int>1024</int>
             <key>height</key>
-            <int>2048</int>
+            <int>1024</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -115,7 +115,7 @@
             <int>-1</int>
         </QSize>
         <key>reduceBorderArtifacts</key>
-        <true/>
+        <false/>
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
@@ -162,12 +162,12 @@
             <key>java</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>ui.java</filename>
+                <filename>npc_flying.java</filename>
             </struct>
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/caveexpress/textures/caveexpress-ui-scene-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-npc_man-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -175,7 +175,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGB565</enum>
+        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -200,9 +200,9 @@
             <key>extrude</key>
             <uint>0</uint>
             <key>trimThreshold</key>
-            <uint>1</uint>
+            <uint>8</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">Trim</enum>
+            <enum type="SpriteSettings::TrimMode">None</enum>
             <key>heuristicMask</key>
             <false/>
             <key>pivotPoint</key>
@@ -210,18 +210,39 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/ui/ui-scene-caveart-ice.png</filename>
-            <filename>../png/caveexpress/ui/ui-scene-cave-ice.png</filename>
-            <filename>../png/caveexpress/ui/ui-scene-ground1-ice.png</filename>
-            <filename>../png/caveexpress/ui/ui-scene-ground2-ice.png</filename>
-            <filename>../png/caveexpress/ui/ui-scene-tile1-ice.png</filename>
-            <filename>../png/caveexpress/ui/ui-scene-tile2-ice.png</filename>
-            <filename>../png/caveexpress/ui/ui-scene-caveart-rock.png</filename>
-            <filename>../png/caveexpress/ui/ui-scene-cave-rock.png</filename>
-            <filename>../png/caveexpress/ui/ui-scene-ground1-rock.png</filename>
-            <filename>../png/caveexpress/ui/ui-scene-ground2-rock.png</filename>
-            <filename>../png/caveexpress/ui/ui-scene-tile1-rock.png</filename>
-            <filename>../png/caveexpress/ui/ui-scene-tile2-rock.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-man-falling-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-falling-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-falling-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-man-falling-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-man-falling-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-man-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-idle-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-idle-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-man-idle-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-idle-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-idle-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-idle-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-left-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-left-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-left-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-right-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-right-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-right-middle-03.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -4,14 +4,14 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.7.1</string>
+        <string>4.1.0</string>
         <key>fileName</key>
-        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png-packed/caveexpress-npc_grandpa.tps</string>
+        <string>/home/mgerhardy/dev/caveexpress/contrib/assets/png/caveexpress-ui-fonts.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.25</double>
+                <double>1</double>
                 <key>extension</key>
                 <string>big</string>
                 <key>spriteFilter</key>
@@ -28,7 +28,7 @@
             </struct>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.125</double>
+                <double>0.5</double>
                 <key>extension</key>
                 <string>small</string>
                 <key>spriteFilter</key>
@@ -55,11 +55,13 @@
         <key>dataFormat</key>
         <string>CaveExpress</string>
         <key>textureFileName</key>
-        <filename>../../../base/caveexpress/pics/caveexpress-npc_grandpa-{v}.png</filename>
+        <filename>../../../base/caveexpress/pics/caveexpress-ui-fonts-{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
         <enum type="SettingsBase::PvrCompressionQuality">PVR_QUALITY_NORMAL</enum>
+        <key>atfCompressData</key>
+        <false/>
         <key>mipMapMinSize</key>
         <uint>32768</uint>
         <key>etc1CompressionQuality</key>
@@ -73,7 +75,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">PngQuantLow</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -115,7 +117,7 @@
             <int>-1</int>
         </QSize>
         <key>reduceBorderArtifacts</key>
-        <false/>
+        <true/>
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
@@ -162,12 +164,12 @@
             <key>java</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>npc_flying.java</filename>
+                <filename>ui.java</filename>
             </struct>
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../base/caveexpress/textures/caveexpress-npc_grandpa-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-ui-fonts-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -175,7 +177,7 @@
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
-        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
+        <enum type="SettingsBase::OutputFormat">INDEXED</enum>
         <key>contentProtection</key>
         <struct type="ContentProtection">
             <key>key</key>
@@ -195,57 +197,42 @@
             <double>1</double>
             <key>scaleMode</key>
             <enum type="ScaleMode">Smooth</enum>
-            <key>innerPadding</key>
-            <uint>0</uint>
             <key>extrude</key>
             <uint>0</uint>
             <key>trimThreshold</key>
-            <uint>8</uint>
+            <uint>1</uint>
+            <key>trimMargin</key>
+            <uint>1</uint>
             <key>trimMode</key>
             <enum type="SpriteSettings::TrimMode">None</enum>
+            <key>tracerTolerance</key>
+            <int>200</int>
             <key>heuristicMask</key>
             <false/>
-            <key>pivotPoint</key>
-            <enum type="SpriteSettings::PivotPoint">Center</enum>
+            <key>defaultPivotPoint</key>
+            <point_f>0.5,0.5</point_f>
+            <key>writePivotPoints</key>
+            <false/>
         </struct>
+        <key>individualSpriteSettings</key>
+        <map type="IndividualSpriteSettingsMap">
+            <key type="filename">../png/caveexpress/ui/font-10.png</key>
+            <key type="filename">../png/caveexpress/ui/font-12.png</key>
+            <key type="filename">../png/caveexpress/ui/font-24.png</key>
+            <key type="filename">../png/caveexpress/ui/font-48.png</key>
+            <key type="filename">../png/caveexpress/ui/font-8.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+            </struct>
+        </map>
         <key>fileList</key>
         <array>
-            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-06.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-07.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-06.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-right-middle-07.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-walk-left-middle-06_nm.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-falling-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-falling-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-falling-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-falling-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-falling-middle-05.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-falling-middle-06.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-falling-middle-07.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-idle-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-idle-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-idle-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-idle-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-swimming-idle-middle-04.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-swimming-left-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-swimming-left-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-swimming-left-middle-03.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-swimming-right-middle-01.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-swimming-right-middle-02.png</filename>
-            <filename>../png/caveexpress/npc-grandpa-swimming-right-middle-03.png</filename>
+            <filename>../png/caveexpress/ui/font-12.png</filename>
+            <filename>../png/caveexpress/ui/font-24.png</filename>
+            <filename>../png/caveexpress/ui/font-48.png</filename>
+            <filename>../png/caveexpress/ui/font-8.png</filename>
+            <filename>../png/caveexpress/ui/font-10.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
@@ -258,13 +245,13 @@
         <key>commonDivisorY</key>
         <uint>1</uint>
         <key>packNormalMaps</key>
-        <true/>
-        <key>autodetectNormalMaps</key>
         <false/>
+        <key>autodetectNormalMaps</key>
+        <true/>
         <key>normalMapFilter</key>
         <string></string>
         <key>normalMapSuffix</key>
-        <string>_nm</string>
+        <string></string>
         <key>normalMapSheetFileName</key>
         <filename></filename>
     </struct>

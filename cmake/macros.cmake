@@ -127,7 +127,7 @@ macro(textureatlas)
 	endif()
 	add_custom_target(${_TP_PROJECTNAME}-textures)
 	foreach (_tps ${_TP_FILELIST})
-		set(_tps_dir ${ROOT_DIR}/contrib/assets/png-packed)
+		set(_tps_dir ${ROOT_DIR}/contrib/assets/png)
 		set(_tps_full ${_tps_dir}/${_tps}.tps)
 		add_custom_target(
 			${_TP_PROJECTNAME}-${_tps}
