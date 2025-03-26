@@ -140,5 +140,5 @@ jobs:
             git checkout origin/deploy
             mv wasm/* .
             git status
-            git commit -am "Update the html5 build"
-            git push origin HEAD:deploy
+            git commit -a --amend
+            git push origin HEAD:deploy --force
