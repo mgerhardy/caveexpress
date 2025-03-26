@@ -19,16 +19,17 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 	const std::string& path = FS.getTexturesDir();
 	const DirectoryEntries& entries = FS.listDirectory(path);
 	LUA lua;
+	const std::string textureSizeSuffix = "-" + textureSize + ".lua";
 	for (const std::string& entry : entries) {
 		const std::string filename = path + entry;
-		if (!FS.hasExtension(filename, "lua"))
+		if (!string::endsWith(entry, textureSizeSuffix))
 			continue;
 		if (!lua.load(filename)) {
 			Log::error(LOG_COMMON, "failed to load textures from %s", filename.c_str());
 			continue;
 		}
 		LUA_checkStack2(lua.getState());
-		if (!lua.getGlobalKeyValue("textures" + textureSize))
+		if (!lua.getGlobalKeyValue("textures"))
 			continue;
 
 		while (lua.getNextKeyValue()) {
@@ -73,8 +74,10 @@ TextureDefinition::TextureDefinition (const std::string& textureSize, IProgressC
 		}
 	}
 
-	if (_textureDefs.empty())
-		Log::info(LOG_COMMON, "could not load any texture definition");
+	if (_textureDefs.empty()) {
+		Log::error(LOG_COMMON, "could not load any texture definition");
+		getSystem().exit("Failed to load texture definition for " + textureSize, 1);
+	}
 	Log::info(LOG_COMMON, "loaded %i texture definitions", (int)_textureDefs.size());
 }
 

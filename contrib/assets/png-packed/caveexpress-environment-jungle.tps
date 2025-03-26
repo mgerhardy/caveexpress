@@ -169,7 +169,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>caveexpress-environment-jungle-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-environment-jungle-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>

@@ -169,7 +169,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>caveexpress-ui-fonts-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-ui-fonts-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>

@@ -169,7 +169,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>cavepacker-environment-{v}.lua</filename>
+                <filename>../../../base/cavepacker/textures/cavepacker-environment-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>

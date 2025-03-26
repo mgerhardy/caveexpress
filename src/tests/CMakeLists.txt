@@ -1,5 +1,4 @@
 project(tests)
-textures(${PROJECT_NAME})
 set(${PROJECT_NAME}_SRC
 	ByteStreamTest.cpp
 	EnumTest.cpp

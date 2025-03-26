@@ -167,7 +167,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>caveexpress-npc_blowing-{v}.lua</filename>
+                <filename>../../../base/caveexpress/textures/caveexpress-npc_blowing-{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
