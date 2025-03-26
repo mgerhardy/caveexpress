@@ -92,39 +92,17 @@ jobs:
           run: |
             sudo apt-get update
             sudo apt-get install -y --no-install-recommends \
-                 libsdl2-dev libsdl2-mixer-dev libsdl2-net-dev \
-                 libyajl-dev libglm-dev libsdl2-image-dev libsqlite3-dev liblua5.4-dev zlib1g-dev \
-                 pkg-config ninja-build libbox2d-dev=2.4*
+                 pkg-config ninja-build
 
         - uses: mymindstorm/setup-emsdk@v13
           with:
             version: 4.0.5
-
-        - name: ccache
-          uses: actions/cache@v4
-          with:
-            path: |
-              ~/.ccache
-            key: ${{ runner.os }}-${{ secrets.CACHE_VERSION }}-emscripten-build-${{ hashFiles('**/CMakeLists.txt') }}
-            restore-keys: ${{ runner.os }}-${{ secrets.CACHE_VERSION }}-emscripten-build-${{ hashFiles('**/CMakeLists.txt') }}
 
         - name: Emscripten
           run: |
             emcmake cmake -H. -Bbuild -GNinja -DCMAKE_BUILD_TYPE=Release -DUNITTESTS=OFF -DTOOLS=OFF
             cmake --build build --target caveexpress
             cmake --build build --target cavepacker
-
-        - name: Upload the build artifacts for caveexpress
-          uses: actions/upload-artifact@v4
-          with:
-            name: wasm-caveexpress
-            path: caveexpress.*
-
-        - name: Upload the build artifacts for cavepacker
-          uses: actions/upload-artifact@v4
-          with:
-            name: wasm-cavepacker
-            path: cavepacker.*
 
         - name: Deploy to branch deploy
           env:
