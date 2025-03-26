@@ -125,19 +125,22 @@ macro(textureatlas)
 	if (NOT _TP_FILELIST)
 		message(FATAL_ERROR "textureatlas requires the FILELIST argument")
 	endif()
-	add_custom_target(${_TP_PROJECTNAME}-textures)
-	foreach (_tps ${_TP_FILELIST})
-		set(_tps_dir ${ROOT_DIR}/contrib/assets/png)
-		set(_tps_full ${_tps_dir}/${_tps}.tps)
-		add_custom_target(
-			${_TP_PROJECTNAME}-${_tps}
-			COMMAND textureatlas ${_tps_full}
-			WORKING_DIRECTORY ${_tps_dir}
-			DEPENDS ${_tps_full}
-			SOURCES ${_tps_full}
-		)
-		add_dependencies(${_TP_PROJECTNAME} ${_TP_PROJECTNAME}-${_tps})
-	endforeach()
+
+	if (TOOLS)
+		add_custom_target(${_TP_PROJECTNAME}-textures)
+		foreach (_tps ${_TP_FILELIST})
+			set(_tps_dir ${ROOT_DIR}/contrib/assets/png)
+			set(_tps_full ${_tps_dir}/${_tps}.tps)
+			add_custom_target(
+				${_TP_PROJECTNAME}-${_tps}
+				COMMAND textureatlas ${_tps_full}
+				WORKING_DIRECTORY ${_tps_dir}
+				DEPENDS ${_tps_full}
+				SOURCES ${_tps_full}
+			)
+			add_dependencies(${_TP_PROJECTNAME} ${_TP_PROJECTNAME}-${_tps})
+		endforeach()
+	endif()
 endmacro()
 
 macro(check_lua_files TARGET FILES)
