@@ -648,6 +648,8 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 #else
 	if (fullscreen)
 		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_BORDERLESS;
+	else if (Config.getConfigVar("resizeable", "false")->getBoolValue())
+		flags |= SDL_WINDOW_RESIZABLE;
 #endif
 
 	const int videoDrivers = SDL_GetNumVideoDrivers();
