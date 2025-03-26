@@ -274,7 +274,7 @@ public:
 	{
 		if (!_scrollingEnabled) {
 			// TODO: only offset one row
-			offset(true);
+			offset(y < 0);
 			selectEntry(_offset);
 			return false;
 		}
