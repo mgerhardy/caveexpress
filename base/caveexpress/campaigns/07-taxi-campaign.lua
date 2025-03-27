@@ -1,7 +1,7 @@
 -- create a new campaign
 local c = Campaign.new("taxi")
 -- set an ingame icon for this campaign
---c:setSetting("icon", "wind-campaign")
+c:setSetting("icon", "icon-campaign-taxi")
 -- set the on screen message when this campaign is activated
 c:setSetting("text", "Taxi")
 -- now add all maps

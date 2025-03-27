@@ -1,7 +1,7 @@
 -- create a new campaign
 local c = Campaign.new("wind")
 -- set an ingame icon for this campaign
---c:setSetting("icon", "wind-campaign")
+c:setSetting("icon", "icon-campaign-wind")
 -- set the on screen message when this campaign is activated
 c:setSetting("text", "Wind")
 -- now add all maps

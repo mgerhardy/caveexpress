@@ -230,8 +230,10 @@
             <filename>../png/caveexpress/ui/map-icon-unlocked-3.png</filename>
             <filename>../png/caveexpress/ui/icon-campaign.png</filename>
             <filename>../png/caveexpress/ui/icon-result.png</filename>
-            <filename>../png/caveexpress/ui/icon-campaign-rock.png</filename>
             <filename>../png/caveexpress/ui/icon-campaign-ice.png</filename>
+            <filename>../png/caveexpress/ui/icon-campaign-rock.png</filename>
+            <filename>../png/caveexpress/ui/icon-campaign-taxi.png</filename>
+            <filename>../png/caveexpress/ui/icon-campaign-wind.png</filename>
             <filename>../png/caveexpress/ui/icon-plus.png</filename>
             <filename>../png/caveexpress/ui/icon-heart.png</filename>
             <filename>../png/caveexpress/ui/icon-star-disabled.png</filename>
