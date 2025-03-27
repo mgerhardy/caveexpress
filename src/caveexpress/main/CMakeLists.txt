@@ -1,7 +1,9 @@
 project(caveexpress)
 set(TPS
 	caveexpress-entity
+	caveexpress-environment-desert
 	caveexpress-environment-ice
+	caveexpress-environment-jungle
 	caveexpress-environment
 	caveexpress-npc_blowing
 	caveexpress-npc_fish

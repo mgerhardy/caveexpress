@@ -42,7 +42,7 @@ SpritePtr SpriteCache::load (const std::string& spriteName)
 				const SpriteDef::SpriteDefFrames& defFrames = def->textures[layer];
 				for (SpriteDef::TexturesConstIter i = defFrames.begin(); i != defFrames.end(); ++i) {
 					if (!sprite->addFrame(layer, i->name, i->delay, i->active))
-						Log::error(LOG_SPRITES, "could not add frame '%s'' to sprite '%s'", i->name.c_str(), spriteName.c_str());
+						Log::error(LOG_SPRITES, "could not add frame '%s' to sprite '%s'", i->name.c_str(), spriteName.c_str());
 				}
 			}
 		}
