@@ -43,27 +43,38 @@ int chdir(const char *path) {
 
 struct Image {
 	std::string name;
-	uint8_t *data;
-	uint32_t hash;
-	int width, height, channels;
-	int rectId;
-	int duplicate;
+	uint8_t *data = nullptr;
+	uint32_t hash = 0;
+	int width = 0;
+	int height = 0;
+	int channels = 0;
+	int originalX = 0;
+	int originalY = 0;
+	int originalWidth = 0;
+	int originalHeight = 0;
+	int rectId = -1;
+	int duplicate = -1;
 
-	Image() : data(nullptr), hash(0), width(0), height(0), channels(0), rectId(-1), duplicate(-1) {
+	Image() {
 	}
 
 	~Image() {
 		if (data) {
-			stbi_image_free(data);
+			free(data);
 		}
 	}
 
 	Image(Image &&other) {
 		name = std::move(other.name);
 		data = other.data;
+		other.data = nullptr;
 		hash = other.hash;
 		width = other.width;
 		height = other.height;
+		originalWidth = other.originalWidth;
+		originalHeight = other.originalHeight;
+		originalX = other.originalX;
+		originalY = other.originalY;
 		channels = other.channels;
 		rectId = other.rectId;
 		duplicate = other.duplicate;
@@ -74,9 +85,14 @@ struct Image {
 		if (this != &other) {
 			name = std::move(other.name);
 			data = other.data;
+			other.data = nullptr;
 			hash = other.hash;
 			width = other.width;
 			height = other.height;
+			originalWidth = other.originalWidth;
+			originalHeight = other.originalHeight;
+			originalX = other.originalX;
+			originalY = other.originalY;
 			channels = other.channels;
 			rectId = other.rectId;
 			duplicate = other.duplicate;
@@ -256,6 +272,10 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 		scaledImages[i].name = image.name;
 		scaledImages[i].width = newWidth;
 		scaledImages[i].height = newHeight;
+		scaledImages[i].originalWidth = (int)(image.originalWidth * v.scale);
+		scaledImages[i].originalHeight = (int)(image.originalHeight * v.scale);
+		scaledImages[i].originalX = (int)(image.originalX * v.scale);
+		scaledImages[i].originalY = (int)(image.originalY * v.scale);
 		scaledImages[i].channels = 4;
 		scaledImages[i].hash = image.hash;
 		scaledImages[i].duplicate = image.duplicate;
@@ -342,17 +362,10 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 				rectId = scaledImages[scaledImage.duplicate].rectId;
 			}
 			assert(rectId >= 0);
-			Rect opaqueRect = findOpaqueRect(scaledImage.data, scaledImage.width, scaledImage.height, 4, cfg);
 			const int x = rects[rectId].x;
 			const int y = rects[rectId].y;
-			// TODO: the opaque rect handling is wrong - the image must get cut before we pack it
-			opaqueRect.x = rects[rectId].x;
-			opaqueRect.y = rects[rectId].y;
-			opaqueRect.width = scaledImage.width;
-			opaqueRect.height = scaledImage.height;
 			if (rects[rectId].was_packed) {
 				const int n = scaledImage.width * 4;
-				// TODO: only copy the opaque part of the image?
 				for (int row = 0; row < scaledImage.height; row++) {
 					uint8_t *dest = atlas + (intptr_t)((y + row) * currentAtlasWidth + x) * 4;
 					const uint8_t *src = scaledImage.data + (intptr_t)(row * n);
@@ -370,12 +383,12 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 			fprintf(luaFile, "\t\ty0 = %f,\n", (float)y / (float)currentAtlasHeight);
 			fprintf(luaFile, "\t\tx1 = %f,\n", (float)scaledImage.width / (float)currentAtlasWidth);
 			fprintf(luaFile, "\t\ty1 = %f,\n", (float)scaledImage.height / (float)currentAtlasHeight);
-			fprintf(luaFile, "\t\ttrimmedoffsetx = %i,\n", opaqueRect.x);
-			fprintf(luaFile, "\t\ttrimmedoffsety = %i,\n", opaqueRect.y);
-			fprintf(luaFile, "\t\ttrimmedwidth = %i,\n", opaqueRect.width);
-			fprintf(luaFile, "\t\ttrimmedheight = %i,\n", opaqueRect.height);
-			fprintf(luaFile, "\t\tuntrimmedwidth = %i,\n", scaledImage.width);
-			fprintf(luaFile, "\t\tuntrimmedheight = %i,\n", scaledImage.height);
+			fprintf(luaFile, "\t\ttrimmedoffsetx = %i,\n", scaledImage.originalX);
+			fprintf(luaFile, "\t\ttrimmedoffsety = %i,\n", scaledImage.originalY);
+			fprintf(luaFile, "\t\ttrimmedwidth = %i,\n", scaledImage.width);
+			fprintf(luaFile, "\t\ttrimmedheight = %i,\n", scaledImage.height);
+			fprintf(luaFile, "\t\tuntrimmedwidth = %i,\n", scaledImage.originalWidth);
+			fprintf(luaFile, "\t\tuntrimmedheight = %i,\n", scaledImage.originalHeight);
 			fprintf(luaFile, "\t},\n");
 		}
 		fprintf(luaFile, "}\n");
@@ -434,7 +447,8 @@ static bool loadTps(const std::string &tpsFile, Config &cfg) {
 	verbose_printf("* Lua file template: %s\n", luaFilename.c_str());
 	verbose_printf("* Texture file template: %s\n", textureFilename.c_str());
 
-	const pugi::xpath_node &spriteSettingsNode = doc.select_node("//key[text()='globalSpriteSettings']/following-sibling::struct");
+	const pugi::xpath_node &spriteSettingsNode =
+		doc.select_node("//key[text()='globalSpriteSettings']/following-sibling::struct");
 	if (spriteSettingsNode) {
 		const std::string &trimMode = readString(spriteSettingsNode.node(), "trimMode", "None", "enum");
 		if (trimMode == "None") {
@@ -511,12 +525,34 @@ static bool loadTps(const std::string &tpsFile, Config &cfg) {
 
 	for (size_t i = 0; i < input_files.size(); i++) {
 		images[i].name = input_files[i];
-		images[i].data = stbi_load(input_files[i].c_str(), &images[i].width, &images[i].height, &images[i].channels, 4);
-		if (!images[i].data) {
+		uint8_t *dataOriginal = stbi_load(input_files[i].c_str(), &images[i].originalWidth, &images[i].originalHeight, &images[i].channels, 4);
+		if (!dataOriginal) {
 			error_printf("Failed to load %s\n", input_files[i].c_str());
 			return false;
 		}
+		Rect opaqueRect = findOpaqueRect(dataOriginal, images[i].originalWidth, images[i].originalHeight, 4, cfg);
+		if (opaqueRect.width == 0 || opaqueRect.height == 0) {
+			error_printf("Failed to find opaque rect for %s\n", input_files[i].c_str());
+			return false;
+		}
+		images[i].width = opaqueRect.width;
+		images[i].height = opaqueRect.height;
+		images[i].originalX = opaqueRect.x;
+		images[i].originalY = opaqueRect.y;
+		images[i].data = (uint8_t *)calloc(images[i].width * images[i].height * 4, 1);
+		if (!images[i].data) {
+			error_printf("Failed to allocate memory for opaque rect\n");
+			return false;
+		}
+		const int inputImageStride = images[i].originalWidth * 4;
+		const int outputImageStride = images[i].width * 4;
+		for (int row = 0; row < opaqueRect.height; row++) {
+			uint8_t *dest = images[i].data + (intptr_t)(row * outputImageStride);
+			const uint8_t *src = dataOriginal + (intptr_t)((opaqueRect.y + row) * inputImageStride + opaqueRect.x * 4);
+			memcpy(dest, src, outputImageStride);
+		}
 		images[i].hash = hash(images[i].data, images[i].width * images[i].height * 4, 0);
+		stbi_image_free(dataOriginal);
 	}
 
 	std::sort(images.begin(), images.end(), [](const Image &a, const Image &b) {
