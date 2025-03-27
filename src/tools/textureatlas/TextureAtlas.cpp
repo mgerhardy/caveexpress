@@ -104,7 +104,7 @@ enum class TrimMode : uint8_t { None, Trim, Max };
 enum class PivotPoint : uint8_t { Center, TopLeft, Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left };
 
 struct Config {
-	int alphaThreshold = 1;
+	int alphaThreshold = 90;
 	int heuristic = STBRP_HEURISTIC_Skyline_default;
 	bool pngQuant = false;
 	TrimMode trimMode = TrimMode::None;
@@ -342,9 +342,14 @@ static bool handleVariant(const Variants &v, const std::vector<Image> &images, c
 				rectId = scaledImages[scaledImage.duplicate].rectId;
 			}
 			assert(rectId >= 0);
-			const Rect opaqueRect = findOpaqueRect(scaledImage.data, scaledImage.width, scaledImage.height, 4, cfg);
+			Rect opaqueRect = findOpaqueRect(scaledImage.data, scaledImage.width, scaledImage.height, 4, cfg);
 			const int x = rects[rectId].x;
 			const int y = rects[rectId].y;
+			// TODO: the opaque rect handling is wrong - the image must get cut before we pack it
+			opaqueRect.x = rects[rectId].x;
+			opaqueRect.y = rects[rectId].y;
+			opaqueRect.width = scaledImage.width;
+			opaqueRect.height = scaledImage.height;
 			if (rects[rectId].was_packed) {
 				const int n = scaledImage.width * 4;
 				// TODO: only copy the opaque part of the image?
