@@ -33,7 +33,7 @@ CaveExpressClientMap::CaveExpressClientMap (int x, int y, int width, int height,
 
 void CaveExpressClientMap::resetCurrentMap ()
 {
-	ClientMap::resetCurrentMap();
+	Super::resetCurrentMap();
 	_waterHeight = 0.0f;
 }
 
@@ -142,7 +142,7 @@ void CaveExpressClientMap::setCaveState (uint16_t id, bool state)
 
 void CaveExpressClientMap::couldNotFindEntity (const std::string& prefix, uint16_t id) const
 {
-	ClientMap::couldNotFindEntity(prefix, id);
+	Super::couldNotFindEntity(prefix, id);
 	for (ClientEntityMapConstIter i = _entities.begin(); i != _entities.end(); ++i) {
 		const ClientEntityPtr e = i->second;
 		if (EntityTypes::isMapTile(e->getType()))
@@ -152,7 +152,7 @@ void CaveExpressClientMap::couldNotFindEntity (const std::string& prefix, uint16
 }
 
 void CaveExpressClientMap::init (uint16_t playerID) {
-	ClientMap::init(playerID);
+	Super::init(playerID);
 	// TODO: also take the non water height into account - so not have the amount of bubbles
 	// on a small area when the water is rising
 	const float mapWidth = (float)getMapWidth();  // for map scaled counts
@@ -258,12 +258,12 @@ void CaveExpressClientMap::init (uint16_t playerID) {
 void CaveExpressClientMap::renderBegin (int x, int y) const
 {
 	_target = _frontend->renderToTexture(_x, _y, _width, _height);
-	ClientMap::renderBegin(x, y);
+	Super::renderBegin(x, y);
 }
 
 void CaveExpressClientMap::renderEnd (int x, int y) const
 {
-	ClientMap::renderEnd(x, y);
+	Super::renderEnd(x, y);
 	if (_target)
 		_frontend->renderTarget(_target);
 	renderWater(x, y);
@@ -271,7 +271,7 @@ void CaveExpressClientMap::renderEnd (int x, int y) const
 
 int CaveExpressClientMap::renderCooldownDescription (uint32_t cooldownIndex, int x, int y, int w, int h) const
 {
-	ClientMap::renderCooldownDescription(cooldownIndex, x, y, w, h);
+	Super::renderCooldownDescription(cooldownIndex, x, y, w, h);
 	const int padding = 5;
 	if (Cooldowns::INVULNERABLE.id == cooldownIndex) {
 		const std::string& text = tr("Invulnerable");
@@ -290,7 +290,7 @@ void CaveExpressClientMap::setSetting (const std::string& key, const std::string
 }
 
 void CaveExpressClientMap::start () {
-	ClientMap::start();
+	Super::start();
 	for (ClientEntityMapConstIter i = _entities.begin(); i != _entities.end(); ++i) {
 		const ClientEntityPtr& e = i->second;
 		if (!EntityTypes::isLava(e->getType())) {
