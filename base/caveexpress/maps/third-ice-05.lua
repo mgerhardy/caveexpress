@@ -1,5 +1,5 @@
 function getName()
-	return "Desert 5 blows easy 6pkg"
+	return "Desert 5 blow 6pkg"
 end
 
 function onMapLoaded()
@@ -178,7 +178,7 @@ function initMap()
 	map:setSetting("gravity", "9.81")
 	map:setSetting("packagetransfercount", "6")
 	map:setSetting("points", "100")
-	map:setSetting("referencetime", "40")
+	map:setSetting("referencetime", "60")
 	map:setSetting("sideborderfail", "false")
 	map:setSetting("theme", "desert")
 	map:setSetting("waterchangespeed", "0")
