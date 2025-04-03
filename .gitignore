@@ -5,10 +5,11 @@
 /jsonconvert
 /tests*
 /solutiontool
-/build
+/build*
 /tiledgenerator
 /textureatlas
 /imgui.ini
+doxygen
 
 # also binaries - but more generic
 /*.exe
@@ -18,6 +19,7 @@
 /*.pexe
 /*.js*
 /*.data
+*.js
 
 # ---
 /gmon.out
