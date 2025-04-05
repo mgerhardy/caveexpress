@@ -109,7 +109,7 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 			font->printMax(title, colorWhite, fontX, fontY, colWidth);
 		}
 	} else {  // big 6 x 4
-		const int marginX = 25, padding = 20, marginXtotal = 2 * marginX + padding;
+		const int marginX = 5 * colWidth / 50, padding = 4 * colWidth / 50, marginXtotal = 2 * marginX + padding;
 		const TexturePtr t = getIcon(data);
 		if (_campaignManager != nullptr) {
 			const CampaignPtr& campaignPtr = _campaignManager->getActiveCampaign();
@@ -117,9 +117,10 @@ void UINodeMapSelector::renderSelectorEntry (int index, const std::string& data,
 			if (map != nullptr && !map->isLocked()) {
 
 				const BitmapFontPtr& font = getFont(LARGE_FONT);
+				const int textHeight = font->getTextHeight(title);
 				const std::string points = string::toString(map->getFinishPoints());
 				const int fontX = std::max(x, x + colWidth / 2 - font->getTextWidth(points) / 2 - padding / 2);
-				const int fontHeight = 22;
+				const int fontHeight = 22 * textHeight / 64;
 				const int fontY = y;
 				if (t)
 					renderImage(t, x + marginX, y, colWidth - marginXtotal, rowHeight - fontHeight - padding, alpha);

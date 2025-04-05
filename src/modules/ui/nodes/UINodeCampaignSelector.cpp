@@ -55,7 +55,7 @@ void UINodeCampaignSelector::renderSelectorEntry (int index, const CampaignPtr& 
 			renderImage(t, x, y, colWidth, rowHeight, alpha);
 		}
 	}else{
-		const int marginX = 35, padding = 20, marginXtotal = 2 * marginX + padding;
+		const int marginX = 7 * colWidth / 50, padding = 4 * colWidth / 50, marginXtotal = 2 * marginX + padding;
 		if (!data->getText().empty()) {
 
 			const BitmapFontPtr& font = getFont(HUGE_FONT);
