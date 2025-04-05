@@ -110,12 +110,18 @@ public:
 		const TexturePtr& refPicForSelector = loadTexture(refTexture);
 		if (!refPicForSelector->isValid())
 			return;
-		const int rw = getRenderWidth(true);
-		const int rh = getRenderHeight(true);
-		const int cols = std::max(1, rw / refPicForSelector->getWidth());
-		const int rows = std::max(1, rh / refPicForSelector->getHeight());
-		setLayoutData(cols, rows, refPicForSelector->getWidth() / static_cast<float>(_frontend->getWidth()),
-				refPicForSelector->getHeight() / static_cast<float>(_frontend->getHeight()));
+		
+		if (isSmallScreen()) {
+			const int rw = getRenderWidth(true);
+			const int rh = getRenderHeight(true);
+			const int cols = std::max(1, rw / refPicForSelector->getWidth());
+			const int rows = std::max(1, rh / refPicForSelector->getHeight());
+			setLayoutData(cols, rows, refPicForSelector->getWidth() / static_cast<float>(_frontend->getWidth()),
+					refPicForSelector->getHeight() / static_cast<float>(_frontend->getHeight()));
+		}else{
+			setLayoutData(_cols, _rows, refPicForSelector->getWidth() / static_cast<float>(_frontend->getWidth()),
+					refPicForSelector->getHeight() * 3 / 4 / static_cast<float>(_frontend->getHeight()));
+		}
 	}
 
 	inline void setLayoutData (int cols, int rows, float colWidth, float rowHeight)
