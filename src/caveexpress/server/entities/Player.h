@@ -46,6 +46,7 @@ private:
 	uint32_t _powerUpTime;
 
 	NPCFriendly* _collectedNPC;
+	b2Vec2 _targetCavePos;
 
 	b2Vec2 _acceleration;
 
@@ -127,6 +128,7 @@ public:
 	void createBody (const b2Vec2 &pos);
 
 	void setCollectedNPC(NPCFriendly *npc);
+	void sendTargetCaveAngle();
 	void reset ();
 
 	ClientId getClientId () const;

@@ -1,9 +1,11 @@
 #include "caveexpress/client/CaveExpressClientMap.h"
+#include "caveexpress/server/entities/Player.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressCooldown.h"
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
+#include "common/Math.h"
 #include "common/ThemeType.h"
 #include "common/vec2.h"
 #include "particles/Bubble.h"
@@ -20,6 +22,8 @@
 #include "common/Log.h"
 #include "service/ServiceProvider.h"
 #include "common/DateUtil.h"
+#include "ui/nodes/UINodeSprite.h"
+#include "ui/windows/IUIMapWindow.h"
 #include <SDL.h>
 #include <SDL_image.h>
 
@@ -61,6 +65,42 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 		_frontend->renderLine(rect.x, rect.y, rect.x, waterGround, colorRed);
 		_frontend->renderLine(rect.x + rect.w - 1, rect.y, rect.x + rect.w - 1, waterGround, colorGreen);
 	}
+}
+
+// _player arrow to cave
+void CaveExpressClientMap::renderArrow () const
+{
+	ClientPlayer *player = getPlayer();
+	if (!player)
+		return;
+	UINodeSpriteRot* arrow = UI::get().getNode<UINodeSpriteRot>(UI_WINDOW_MAP, UINODE_TARGET_ARROW);
+	float ang = arrow->_angle;
+	if (ang < 0.f)
+		return;
+
+	float xdir = cosf(ang), ydir = -sinf(ang);
+
+	int x1, y1;
+	player->getScreenPos(x1,y1);
+	const vec2& s = player->getSize();
+	y1 -= s.y / 2;
+	const float d1 = 40.f, d2 = 90.f;
+	int x2 = x1 + xdir * d2;
+	int y2 = y1 + ydir * d2;
+	x1 += xdir * d1;
+	y1 += ydir * d1;
+	_frontend->renderLine(x1, y1, x2, y2, colorGreen);
+
+	const float a = M_PI + M_PI / 6.f, d3 = 15.f;
+	float xa = cosf(ang + a), ya = -sinf(ang + a);
+	int x3 = x2 + xa * d3;
+	int y3 = y2 + ya * d3;
+	const float b = M_PI - M_PI / 6.f;
+	_frontend->renderLine(x2, y2, x3, y3, colorGreen);
+	float xb = cosf(ang + b), yb = -sinf(ang + b);
+	int x4 = x2 + xb * d3;
+	int y4 = y2 + yb * d3;
+	_frontend->renderLine(x2, y2, x4, y4, colorGreen);
 }
 
 bool CaveExpressClientMap::drop ()
@@ -267,6 +307,7 @@ void CaveExpressClientMap::renderEnd (int x, int y) const
 	if (_target)
 		_frontend->renderTarget(_target);
 	renderWater(x, y);
+	renderArrow();
 }
 
 int CaveExpressClientMap::renderCooldownDescription (uint32_t cooldownIndex, int x, int y, int w, int h) const

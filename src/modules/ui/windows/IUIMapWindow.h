@@ -9,6 +9,7 @@
 #define UINODE_SECONDS_REMAINING "seconds"
 #define UINODE_MAP "map"
 #define UINODE_TARGETCAVEID "targetcave"
+#define UINODE_TARGET_ARROW "target_arrow"
 #define UINODE_COLLECTED "collected"
 #define UINODE_TRANSFERS "transfers"
 #define UINODE_TRANSFERS_LEFT "transfers_left"

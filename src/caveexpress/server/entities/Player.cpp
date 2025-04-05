@@ -18,6 +18,7 @@
 #include "caveexpress/shared/CaveExpressCooldown.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/shared/constants/ConfigVars.h"
+#include <cmath>
 
 namespace caveexpress {
 
@@ -28,7 +29,8 @@ const float gravityScale = 0.3f;
 Player::Player (Map& map, ClientId clientId) :
 		IEntity(EntityTypes::PLAYER, map), _touching(nullptr), _invulnerableTime(0u), _powerUpTime(0u), _collectedNPC(nullptr), _acceleration(b2Vec2_zero), _fingerAcceleration(
 				false), _accelerateX(0), _accelerateY(0), _clientId(clientId), _lastAccelerate(0), _name(""), _lastFruitCollected(0), _hitpoints(
-				0), _lives(0), _fruitsCollectedInARow(0), _revoluteJoint(nullptr), _crashReason(CRASH_NONE) {
+				0), _lives(0), _fruitsCollectedInARow(0), _revoluteJoint(nullptr), _crashReason(CRASH_NONE)
+{
 	_godMode = Config.getConfigVar(GOD_MODE);
 	_maxHitPoints = Config.getConfigVar(MAX_HITPOINTS);
 	_hitpoints = _maxHitPoints->getIntValue();
@@ -39,6 +41,8 @@ Player::Player (Map& map, ClientId clientId) :
 	setAnimationType(Animations::ANIMATION_IDLE);
 	setState(PlayerState::PLAYER_IDLE);
 	memset(_collectedEntities, 0, sizeof(_collectedEntities));
+	_targetCavePos.x = -1.f;
+	_targetCavePos.y = -1.f;
 }
 
 Player::~Player ()
@@ -153,6 +157,8 @@ inline float Player::getCompleteMass () const
 void Player::update (uint32_t deltaTime)
 {
 	IEntity::update(deltaTime);
+
+	sendTargetCaveAngle();
 
 	if (isCrashed()) {
 		// before we crash, we should drop the stuff we are carrying
@@ -462,7 +468,7 @@ bool Player::collect (CollectableEntity* entity)
 		break;
 	}
 	if (EntityTypes::isStone(entityType)) {
-		GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), 100);
+		GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), 100, -1.f);
 		Achievements::COLLECT_10_STONES.unlock();
 		Achievements::COLLECT_100_STONES.unlock();
 	}
@@ -481,7 +487,7 @@ void Player::drop ()
 		if (EntityTypes::isStone(*entityType)) {
 			Stone *entity = new Stone(_map, getPos().x, getPos().y, this);
 			entity->createBody();
-			GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), 0);
+			GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), 0, -1.f);
 		} else if (EntityTypes::isBomb(*entityType)) {
 			Bomb *entity = new Bomb(_map, getPos().x, getPos().y, this);
 			entity->createBody();
@@ -629,7 +635,33 @@ void Player::setPlatform (Platform* entity)
 	npc->resetTriggerMovement();
 }
 
-void Player::setCollectedNPC(NPCFriendly *npc) {
+static float GetAngle(float x, float y)
+{
+	if (x == 0.f && y == 0.f)
+		return 0.f;
+
+	if (y == 0.f)
+		return (x < 0.f) ? M_PI : 0.f;
+	else
+		return (y < 0.f) ? atan2f(-y, x) : (2.f * M_PI - atan2f(y, x));
+}
+
+void Player::sendTargetCaveAngle()
+{
+	if (_collectedNPC == nullptr)
+		return;
+	if (_collectedNPC->getTargetCave() == nullptr)
+		return;
+
+	_targetCavePos = _collectedNPC->getTargetCave()->getPos();
+	const b2Vec2 dir = _targetCavePos - getPos();
+	const float angle = GetAngle(dir.x, dir.y);
+	
+	GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), 200, angle);
+}
+
+void Player::setCollectedNPC(NPCFriendly *npc)
+{
 	// we can't collect a npc if we have collected something else
 	if (npc && !isFree())
 		return;
@@ -637,9 +669,9 @@ void Player::setCollectedNPC(NPCFriendly *npc) {
 	_collectedNPC = npc;
 	if (npc != nullptr) {
 		npc->setCollected();
-		GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), npc->getTargetCaveNumber());
+		GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), npc->getTargetCaveNumber(), -1.f);
 	} else {
-		GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), 0);
+		GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), 0, -1.f);
 	}
 }
 
