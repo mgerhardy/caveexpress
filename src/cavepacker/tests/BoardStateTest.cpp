@@ -686,7 +686,7 @@ TEST_F(BoardStateTest, testSpeed) {
 	const int maxRow = 512;
 	const int maxCol = 512;
 	mapStr.reserve(maxCol * maxRow);
-	int packages = 0;
+	// int packages = 0;
 	for (int row = 0; row < maxRow; ++row) {
 		for (int col = 0; col < maxCol; ++col) {
 			// build the outer rectangular wall
@@ -696,7 +696,7 @@ TEST_F(BoardStateTest, testSpeed) {
 				if (col % 5 <= 2 && row % 5 <= 2 && col < maxCol - 2 && row < maxRow - 2) {
 					mapStr.append("$");
 					mapStr.append(".");
-					++packages;
+					// ++packages;
 					++col;
 				}
 			}

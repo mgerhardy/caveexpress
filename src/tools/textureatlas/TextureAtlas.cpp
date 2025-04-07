@@ -586,7 +586,7 @@ static void usage(const char *appname) {
 
 int main(int argc, char *argv[]) {
 	const char *appname = argv[0];
-	size_t optsParsed = 1;
+	int optsParsed = 1;
 	Config cfg;
 
 	for (optsParsed = 1; optsParsed < argc && argv[optsParsed][0] == '-'; optsParsed++) {
