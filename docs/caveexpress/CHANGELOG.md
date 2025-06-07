@@ -124,7 +124,7 @@ Version 2.5 (2021-04-08 ?)
 * Fixed missing window resize events
 * Added CI builds in github actions tab
 
-Version 2.6 (2025-not yet released)
+Version 2.6 (2025-06-07)
 * Content
   * 5 New campaigns with new maps (64 total):
     * Jungle (13 maps), Desert (8), Letters (24), Villages (12), Races (7)
