@@ -1,11 +1,9 @@
-ALT|ALT
-ARROWS|ARROWS
 Achievements|Achievements
+ALT|ALT
 Are you sure?|Are you sure?
+ARROWS|ARROWS
 Back|Back
 Big|Big
-CTRL|CTRL
-CURSOR|CURSOR
 Campaigns|Campaigns
 Cancel|Cancel
 Clicking the position will move the player there|Clicking the position will move the player there
@@ -13,6 +11,8 @@ Close|Close
 Continue|Continue
 Controller trigger|Controller trigger
 Create server|Create server
+CTRL|CTRL
+CURSOR|CURSOR
 Deadlock package|Deadlock package
 Decrease map size|Decrease map size
 Delivered package|Delivered package
@@ -32,16 +32,16 @@ Hints|Hints
 Homepage|Homepage
 Increase map size|Increase map size
 Input|Input
-LMB|LMB
 Later|Later
 Leaderboard|Leaderboard
+LMB|LMB
 Load|Load
-MMB|MMB
-MOUSE WHEEL|MOUSE WHEEL
 Map|Map
 Map Options|Map Options
 Maps|Maps
+MMB|MMB
 Mouse move|Mouse move
+MOUSE WHEEL|MOUSE WHEEL
 Move all packages onto their targets|Move all packages onto their targets
 Multiplayer|Multiplayer
 Music volume|Music volume
@@ -49,9 +49,9 @@ Name|Name
 New|New
 No controller found|No controller found
 Normal|Normal
-OK|OK
 Objectives|Objectives
 Off|Off
+OK|OK
 On|On
 Open|Open
 Package|Package
@@ -60,9 +60,8 @@ Players|Players
 Please rate the app|Please rate the app
 Quit|Quit
 Quit without saving|Quit without saving
-RMB|RMB
-Red packages are deadlocks - undo your step|Red packages are deadlocks - undo your step
 Redo|Redo
+Red packages are deadlocks - undo your step|Red packages are deadlocks - undo your step
 Reference time in seconds|Reference time in seconds
 Refresh|Refresh
 Remove tile|Remove tile
@@ -70,9 +69,8 @@ Reset|Reset
 Reset game progress?|Reset game progress?
 Restart|Restart
 Retry|Retry
+RMB|RMB
 Rotate entity|Rotate entity
-SHIFT|SHIFT
-SPACE|SPACE
 Save|Save
 Save & Go|Save & Go
 Save map|Save map
@@ -80,6 +78,7 @@ Scroll map|Scroll map
 Select game mode|Select game mode
 Select tile|Select tile
 Settings|Settings
+SHIFT|SHIFT
 Shift map|Shift map
 Shift tile|Shift tile
 Show Grid|Show Grid
@@ -89,6 +88,7 @@ Small|Small
 Solve|Solve
 Sound|Sound
 Sound/Music|Sound/Music
+SPACE|SPACE
 Start|Start
 Target|Target
 Textures|Textures

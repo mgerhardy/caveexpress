@@ -1,11 +1,9 @@
-ALT|ALT
-ARROWS|ARROWS
 Achievements|Achievements
+ALT|ALT
 Are you sure?|Bist du sicher?
+ARROWS|ARROWS
 Back|Zurück
 Big|Groß
-CTRL|CTRL
-CURSOR|CURSOR
 Campaigns|Kampagnen
 Cancel|Abbruch
 Clicking the position will move the player there|Clicking the position will move the player there
@@ -13,6 +11,8 @@ Close|Schließen
 Continue|Fortfahren
 Controller trigger|Controller trigger
 Create server|Erstellen
+CTRL|CTRL
+CURSOR|CURSOR
 Deadlock package|Deadlock package
 Decrease map size|Decrease map size
 Delivered package|Delivered package
@@ -32,16 +32,16 @@ Hints|Hinweise
 Homepage|Homepage
 Increase map size|Increase map size
 Input|Eingabe
-LMB|LMB
 Later|Später
 Leaderboard|Leaderboard
+LMB|LMB
 Load|Laden
-MMB|MMB
-MOUSE WHEEL|MOUSE WHEEL
 Map|Map
 Map Options|Map Options
 Maps|Maps
+MMB|MMB
 Mouse move|Mouse move
+MOUSE WHEEL|MOUSE WHEEL
 Move all packages onto their targets|Schiebe alle Pakete auf die Paletten
 Multiplayer|Multiplayer
 Music volume|Music volume
@@ -49,9 +49,9 @@ Name|Name
 New|Neu
 No controller found|Keinen Controller gefunden
 Normal|Normal
-OK|OK
 Objectives|Ziele
 Off|Aus
+OK|OK
 On|An
 Open|Öffnen
 Package|Paket
@@ -60,9 +60,8 @@ Players|Spieler
 Please rate the app|Bitte bewerte die App
 Quit|Beenden
 Quit without saving|Quit without saving
-RMB|RMB
-Red packages are deadlocks - undo your step|Red packages are deadlocks - undo your step
 Redo|Redo
+Red packages are deadlocks - undo your step|Red packages are deadlocks - undo your step
 Reference time in seconds|Reference time in seconds
 Refresh|Erneuern
 Remove tile|Remove tile
@@ -70,9 +69,8 @@ Reset|Reset
 Reset game progress?|Resete den Fortschritt?
 Restart|Neustart
 Retry|Nochmal
+RMB|RMB
 Rotate entity|Rotate entity
-SHIFT|SHIFT
-SPACE|SPACE
 Save|Speichern
 Save & Go|Save & Go
 Save map|Save map
@@ -80,6 +78,7 @@ Scroll map|Scroll map
 Select game mode|Spielemodus aussuchen
 Select tile|Select tile
 Settings|Einstellungen
+SHIFT|SHIFT
 Shift map|Shift map
 Shift tile|Shift tile
 Show Grid|Show Grid
@@ -89,6 +88,7 @@ Small|Klein
 Solve|Lösen
 Sound|Sound
 Sound/Music|Sound/Musik
+SPACE|SPACE
 Start|Start
 Target|Palette
 Textures|Texturen

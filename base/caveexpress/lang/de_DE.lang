@@ -1,30 +1,30 @@
 A banana will grant more strength for some time|A banana will grant more strength for some time
-A mighty fish is after you|Ein mächtiger Fisch ist hinter dir her
-A player will lose the map if he touches the side borders|Der Spieler hat die Map verloren wenn er eines der beiden Seitenränder berührt
-ALT|ALT
-ARROWS|ARROWS
 Achievements|Achievements
 Activate the fish spawn|Aktiviere den Fisch für diese Map
 Activate the pterodactyls spawn|Aktiviere den Pterodactylus für diese Map
+ALT|ALT
+A mighty fish is after you|Ein mächtiger Fisch ist hinter dir her
 An egg will make you invulnerable for some time|An egg will make you invulnerable for some time
 Angry dinosaur|Wütender Dinosaurier
+A player will lose the map if he touches the side borders|Der Spieler hat die Map verloren wenn er eines der beiden Seitenränder berührt
 Are you sure?|Wirklich fortfahren?
+ARROWS|ARROWS
 Auto|Auto
 Back|Zurück
 Big|Groß
-CTRL|STRG
-CURSOR|CURSOR
 Campaign|Kampagne
 Campaigns|Kampagnen
 Cancel|Abbrechen
 Close|Schließen
-Collect packages by landing on them|Sammele Pakete in dem du auf ihnen landest
 Collecting fruits will restore hitpoints|Früchte regenerieren Lebensenergie
+Collect packages by landing on them|Sammele Pakete in dem du auf ihnen landest
 Continue|Weiter
 Controller trigger|Controller trigger
 Convert ice theme to desert|Convert ice theme to desert
 Convert rock theme to jungle|Convert rock theme to jungle
 Create server|Server erstellen
+CTRL|STRG
+CURSOR|CURSOR
 Decrease map height|Decrease map height
 Decrease map size|Map verkleinern
 Decrease map width|Decrease map width
@@ -34,13 +34,13 @@ Desert|Desert
 Disconnect|Disconnect
 Drop during flight|Während des Fluges abwerfen
 Drop off at the shredder|Drop off at the shredder
+Dropping stones onto dinos stuns them|Dropping stones onto dinos stuns them
 Drop rock on dinos to shortly knock them out|Drop rock on dinos to shortly knock them out
 Drop rock on tree to get a fruit and restore stamina|Drop rock on tree to get a fruit and restore stamina
 Drop stones onto the tree|Lasse den Stein auf Bäume fallen
-Drop the stone to collect packages again|Lasse den Stein fallen um wieder Kisten heben zu können
 Drop them by hitting SPACE bar|Abwerfen durch LEERTASTE
 Drop them with the second finger|Abwerfen durch zweiten Finger
-Dropping stones onto dinos stuns them|Dropping stones onto dinos stuns them
+Drop the stone to collect packages again|Lasse den Stein fallen um wieder Kisten heben zu können
 Editor|Editor
 Egg|Ei
 Fall delay|Fallverzögerung
@@ -73,17 +73,17 @@ Input|Eingabe
 Invulnerable|Unverwundbar
 Jungle|Jungle
 Just stay and watch what happens|Einfach nur abwarten und zuschauen
-LMB|LMB
 Later|Später
 Leaderboard|Leaderboard
 Learn to use the stone|Lerne den Stein zu benutzen
+LMB|LMB
 Load|Laden
-MMB|MMB
-MOUSE WHEEL|MAUSRAD
 Map|Map
 Map Options|Optionen
 Maps|Maps
+MMB|MMB
 Mouse move|Mausbewegung
+MOUSE WHEEL|MAUSRAD
 Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
@@ -92,11 +92,12 @@ No controller found|No controller found
 Normal|Normal
 Npc delay|Npc delay
 Npcs|Npcs
-OK|OK
 Objectives|Ziele
 Off|Aus
+OK|OK
 On|An
 Open|Starten
+or A on your controller|or A on your controller
 Package|Paket
 Packages|Pakete
 Place tile|Teil plazieren
@@ -109,7 +110,6 @@ Pterodactyls is after you|Der Pterodactylus hat es auch dich abgesehen
 Put packages in crusher to consume|Put packages in crusher to consume
 Quit|Beenden
 Quit without saving|Beenden ohne Speichern
-RMB|RMB
 Redo|Redo
 Reference time in seconds|Referenzzeit in Sekunden
 Refresh|Erneuern
@@ -119,10 +119,9 @@ Reset game progress?|Resetten des Spielfortschritts?
 Restart|Restart
 Retry|Retry
 Rising delay|Rising delay
+RMB|RMB
 Rock|Felsen
 Rotate entity|Drehe Objekt
-SHIFT|SHIFT
-SPACE|LEERTASTE
 Save|Speichern
 Save & Go|Testen
 Save map|Speichere Map
@@ -130,6 +129,7 @@ Scroll map|Scrolle Map
 Select game mode|Auswahl des Spielmodus
 Select tile|Teil selektieren
 Settings|Einstellungen
+SHIFT|SHIFT
 Shift map|Map verschieben
 Shift tile|Teil verschieben
 Show Grid|Gitter anzeigen
@@ -139,6 +139,7 @@ SideScroll|SideScroll
 Small|Klein
 Sound|Sound
 Sound/Music|Sound/Music
+SPACE|LEERTASTE
 Start|Start
 Stone|Stein
 Textures|Texturen
@@ -160,10 +161,10 @@ Tree|Baum
 Try to avoid crashes but still be fast|Harte Treffer vermeiden und schnell sein
 Tutorial|Tutorial
 Undo|Undo
+Username|Username
 Use the second finger to drop the package|Benutze den zweiten Finger um das Paket abzuwerfen
 Use the second finger to drop the stone|Benutze den zweiten Finger um den Stein abzuwerfen
 Use the swing of the package|Benutze den Schwung des Paketes
-Username|Username
 Volume|Volume
 Waiting|Warte
 Watch the geyser|Beobachte den Geisir
@@ -177,4 +178,3 @@ You won!|Gewonnen
 Zoom map|Zoom map
 Zoom out|Zoom out
 Zoom out to fit|Zoom out to fit
-or A on your controller|or A on your controller

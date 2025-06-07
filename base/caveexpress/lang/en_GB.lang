@@ -1,30 +1,30 @@
 A banana will grant more strength for some time|A banana will grant more strength for some time
-A mighty fish is after you|A mighty fish is after you
-A player will lose the map if he touches the side borders|A player will lose the map if he touches the side borders
-ALT|ALT
-ARROWS|ARROWS
 Achievements|Achievements
 Activate the fish spawn|Activate the fish spawn
 Activate the pterodactyls spawn|Activate the pterodactyls spawn
+ALT|ALT
+A mighty fish is after you|A mighty fish is after you
 An egg will make you invulnerable for some time|An egg will make you invulnerable for some time
 Angry dinosaur|Angry dinosaur
+A player will lose the map if he touches the side borders|A player will lose the map if he touches the side borders
 Are you sure?|Are you sure?
+ARROWS|ARROWS
 Auto|Auto
 Back|Back
 Big|Big
-CTRL|CTRL
-CURSOR|CURSOR
 Campaign|Campaign
 Campaigns|Campaigns
 Cancel|Cancel
 Close|Close
-Collect packages by landing on them|Collect packages by landing on them
 Collecting fruits will restore hitpoints|Collecting fruits will restore hitpoints
+Collect packages by landing on them|Collect packages by landing on them
 Continue|Continue
 Controller trigger|Controller trigger
 Convert ice theme to desert|Convert ice theme to desert
 Convert rock theme to jungle|Convert rock theme to jungle
 Create server|Create server
+CTRL|CTRL
+CURSOR|CURSOR
 Decrease map height|Decrease map height
 Decrease map size|Decrease map size
 Decrease map width|Decrease map width
@@ -34,13 +34,13 @@ Desert|Desert
 Disconnect|Disconnect
 Drop during flight|Drop during flight
 Drop off at the shredder|Drop off at the shredder
+Dropping stones onto dinos stuns them|Dropping stones onto dinos stuns them
 Drop rock on dinos to shortly knock them out|Drop rock on dinos to shortly knock them out
 Drop rock on tree to get a fruit and restore stamina|Drop rock on tree to get a fruit and restore stamina
 Drop stones onto the tree|Drop stones onto the tree
-Drop the stone to collect packages again|Drop the stone to collect packages again
 Drop them by hitting SPACE bar|Drop them by hitting SPACE bar
 Drop them with the second finger|Drop them with the second finger
-Dropping stones onto dinos stuns them|Dropping stones onto dinos stuns them
+Drop the stone to collect packages again|Drop the stone to collect packages again
 Editor|Editor
 Egg|Egg
 Fall delay|Fall delay
@@ -73,17 +73,17 @@ Input|Input
 Invulnerable|Invulnerable
 Jungle|Jungle
 Just stay and watch what happens|Just stay and watch what happens
-LMB|LMB
 Later|Later
 Leaderboard|Leaderboard
 Learn to use the stone|Learn to use the stone
+LMB|LMB
 Load|Load
-MMB|MMB
-MOUSE WHEEL|MOUSE WHEEL
 Map|Map
 Map Options|Map Options
 Maps|Maps
+MMB|MMB
 Mouse move|Mouse move
+MOUSE WHEEL|MOUSE WHEEL
 Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
@@ -92,11 +92,12 @@ No controller found|No controller found
 Normal|Normal
 Npc delay|Npc delay
 Npcs|Npcs
-OK|OK
 Objectives|Objectives
 Off|Off
+OK|OK
 On|On
 Open|Open
+or A on your controller|or A on your controller
 Package|Package
 Packages|Packages
 Place tile|Place tile
@@ -109,7 +110,6 @@ Pterodactyls is after you|Pterodactyls is after you
 Put packages in crusher to consume|Put packages in crusher to consume
 Quit|Quit
 Quit without saving|Quit without saving
-RMB|RMB
 Redo|Redo
 Reference time in seconds|Reference time in seconds
 Refresh|Refresh
@@ -119,10 +119,9 @@ Reset game progress?|Reset game progress?
 Restart|Restart
 Retry|Retry
 Rising delay|Rising delay
+RMB|RMB
 Rock|Rock
 Rotate entity|Rotate entity
-SHIFT|SHIFT
-SPACE|SPACE
 Save|Save
 Save & Go|Save & Go
 Save map|Save map
@@ -130,6 +129,7 @@ Scroll map|Scroll map
 Select game mode|Select game mode
 Select tile|Select tile
 Settings|Settings
+SHIFT|SHIFT
 Shift map|Shift map
 Shift tile|Shift tile
 Show Grid|Show Grid
@@ -139,6 +139,7 @@ SideScroll|SideScroll
 Small|Small
 Sound|Sound
 Sound/Music|Sound/Music
+SPACE|SPACE
 Start|Start
 Stone|Stone
 Textures|Textures
@@ -160,10 +161,10 @@ Tree|Tree
 Try to avoid crashes but still be fast|Try to avoid crashes but still be fast
 Tutorial|Tutorial
 Undo|Undo
+Username|Username
 Use the second finger to drop the package|Use the second finger to drop the package
 Use the second finger to drop the stone|Use the second finger to drop the stone
 Use the swing of the package|Use the swing of the package
-Username|Username
 Volume|Volume
 Waiting|Waiting
 Watch the geyser|Watch the geyser
@@ -177,4 +178,3 @@ You won!|You won!
 Zoom map|Zoom map
 Zoom out|Zoom out
 Zoom out to fit|Zoom out to fit
-or A on your controller|or A on your controller
