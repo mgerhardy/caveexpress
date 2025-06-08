@@ -61,14 +61,14 @@ Var StartMenuGroup
 !insertmacro MUI_RESERVEFILE_LANGDLL
 ; MUI end ------
 
-OutFile "@APPNAME@-${PRODUCT_VERSION}.exe"
+OutFile "@APPNAME@-@VERSION@.exe"
 InstallDir "$PROGRAMFILES\@APPNAME@"
 InstallDirRegKey HKCU "${PRODUCT_DIR_REGKEY}" "InstallPath"
 
 Section "@APPNAME@" SecMain
 	SetOverwrite on
 
-	SetOutPath "$INSTDIR\base\@APPNAME@"
+	SetOutPath "$INSTDIR\@GAME_BASE_DIR@\@BASEDIR@"
 		File /r "@ROOT_DIR@\@GAME_BASE_DIR@\@BASEDIR@\"
 
 	SetOutPath "$INSTDIR"
