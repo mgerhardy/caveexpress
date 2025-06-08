@@ -18,4 +18,4 @@ set(${PROJECT_NAME}_SRC
 	UITest.cpp)
 cp_add_executable(TARGET ${PROJECT_NAME} SRCS ${${PROJECT_NAME}_SRC} APPNAME Tests VERSION 1.0 VERSION_CODE 1)
 cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS common client game network ui gtest)
-add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME} WORKING_DIRECTORY ${ROOT_DIR})

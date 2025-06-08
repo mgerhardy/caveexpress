@@ -20,4 +20,4 @@ cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS ${NAME}-client ${NAME}-serv
 if (MSVC)
 	target_compile_options(${PROJECT_NAME} PRIVATE -bigobj)
 endif()
-add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME} WORKING_DIRECTORY ${ROOT_DIR})
