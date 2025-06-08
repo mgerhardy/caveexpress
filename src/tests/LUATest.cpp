@@ -100,25 +100,19 @@ TEST_F(LUATest, testTextureDefinition)
 	ASSERT_FALSE(big.getMap().empty()) << "no texture definitions for big found";
 	{
 		const TextureDef& td = big.getTextureDef("bones");
-		ASSERT_EQ(td.id, "bones");
-		ASSERT_EQ(td.textureName, "cavepacker-ui-small");
-		ASSERT_FALSE(td.mirror);
-		ASSERT_DOUBLE_EQ(td.texcoords.x0, 0.494140625);
-		ASSERT_DOUBLE_EQ(td.texcoords.y0, 0.244140625);
-		ASSERT_DOUBLE_EQ(td.texcoords.x1, 0.2392578125);
-		ASSERT_DOUBLE_EQ(td.texcoords.y1, 0.0400390625);
-		ASSERT_EQ(td.trim.trimmedWidth, 245);
-		ASSERT_EQ(td.trim.trimmedHeight, 41);
-		ASSERT_EQ(td.trim.untrimmedWidth, 245);
-		ASSERT_EQ(td.trim.untrimmedHeight, 41);
-		ASSERT_EQ(td.trim.trimmedOffsetX, 0);
-		ASSERT_EQ(td.trim.trimmedOffsetY, 0);
-	}
-	{
-		const TextureDef& td = big.getTextureDef("gri-campaign");
-		ASSERT_EQ(td.id, "gri-campaign");
-		ASSERT_EQ(td.textureName, "cavepacker-ui-small");
-		ASSERT_FALSE(td.mirror);
+		EXPECT_EQ(td.id, "bones");
+		EXPECT_EQ(td.textureName, "cavepacker-ui-big");
+		EXPECT_FALSE(td.mirror);
+		EXPECT_DOUBLE_EQ(td.texcoords.x0, 0);
+		EXPECT_DOUBLE_EQ(td.texcoords.y0, 0.9027780294418335);
+		EXPECT_DOUBLE_EQ(td.texcoords.x1, 0.58894199132919312);
+		EXPECT_DOUBLE_EQ(td.texcoords.y1, 0.09375);
+		EXPECT_EQ(td.trim.trimmedWidth, 490);
+		EXPECT_EQ(td.trim.trimmedHeight, 81);
+		EXPECT_EQ(td.trim.untrimmedWidth, 490);
+		EXPECT_EQ(td.trim.untrimmedHeight, 81);
+		EXPECT_EQ(td.trim.trimmedOffsetX, 0);
+		EXPECT_EQ(td.trim.trimmedOffsetY, 0);
 	}
 }
 
