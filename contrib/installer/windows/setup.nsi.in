@@ -109,7 +109,7 @@ Section -post SecMainPost
 	!insertmacro MUI_STARTMENU_WRITE_END
 
 	WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\@APPNAME@" DisplayName "@APPNAME@"
-	WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\@APPNAME@" DisplayVersion "@VERSION@
+	WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\@APPNAME@" DisplayVersion "@VERSION@"
 	WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\@APPNAME@" Publisher "${PRODUCT_PUBLISHER}"
 	WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\@APPNAME@" URLInfoAbout "${PRODUCT_WEB_SITE}"
 	WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\@APPNAME@" DisplayIcon $INSTDIR\uninstall.exe
