@@ -51,7 +51,6 @@ jobs:
           run: |
             cd build
             ctest
-          continue-on-error: true
 
     windows:
         runs-on: windows-latest
