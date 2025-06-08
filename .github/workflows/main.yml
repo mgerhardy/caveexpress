@@ -69,6 +69,28 @@ jobs:
             cmake --install . --component caveexpress --prefix install-caveexpress
             cmake --install . --component cavepacker --prefix install-cavepacker
 
+        - name: Create caveexpress installer
+          uses: joncloud/makensis-action@v4.1
+          with:
+            script-file : "build/src/caveexpress/main/setup.nsi"
+
+        - name: Create cavepacker installer
+          uses: joncloud/makensis-action@v4.1
+          with:
+            script-file : "build/src/cavepacker/main/setup.nsi"
+
+        - name: Upload the caveexpress installer
+          uses: actions/upload-artifact@v4
+          with:
+            name: win-caveexpress-installer
+            path: build/src/caveexpress/main/caveexpress*.exe
+
+        - name: Upload the cavepacker installer
+          uses: actions/upload-artifact@v4
+          with:
+            name: win-cavepacker-installer
+            path: build/src/cavepacker/main/cavepacker*.exe
+
         - name: Upload the cavepacker artifacts
           uses: actions/upload-artifact@v4
           with:

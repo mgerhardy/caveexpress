@@ -736,6 +736,7 @@ macro(cp_add_executable)
 				install(FILES ${ROOT_DIR}/contrib/${ICON} DESTINATION ${ICON_DIR} COMPONENT ${_EXE_TARGET})
 			endif()
 		endif()
+		configure_file(${ROOT_DIR}/contrib/installer/windows/setup.nsi.in ${PROJECT_BINARY_DIR}/setup.nsi)
 	endif()
 
 	if (LINUX AND NOT TESTS)
