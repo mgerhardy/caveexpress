@@ -6,7 +6,7 @@ BrandingText "@APPNAME@ @VERSION@"
 !define PRODUCT_PUBLISHER "CaveProductions"
 !define PRODUCT_WEB_SITE "http://www.caveproductions.org"
 !define PRODUCT_DIR_REGKEY "Software\@APPNAME@\@APPNAME@"
-!define GAME_EXPLORER
+; !define GAME_EXPLORER
 
 SetCompressor /FINAL /SOLID lzma
 SetCompressorDictSize 64
