@@ -142,6 +142,7 @@ jobs:
             mkdir wasm
             mv cavepacker.* wasm
             mv caveexpress.* wasm
+            git checkout -f
             git checkout origin/deploy
             mv wasm/* .
             git status
