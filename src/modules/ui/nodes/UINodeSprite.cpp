@@ -9,6 +9,10 @@ UINodeSprite::UINodeSprite (IFrontend *frontend, int spriteWidth, int spriteHeig
 				0.0f), _movementSpeed(0.0f), _movementActive(false) {
 }
 
+UINodeSpriteRot::UINodeSpriteRot (IFrontend *frontend, int spriteWidth, int spriteHeight)
+	: UINodeSprite(frontend, spriteWidth, spriteHeight)
+{
+}
 
 UINodeSprite::UINodeSprite (IFrontend *frontend, const EntityType& type, const Animation& animation, int spriteWidth, int spriteHeight) :
 		UINode(frontend), _offset(0), _borderWidth(-1.0f), _borderHeight(-1.0f), _spriteWidth(

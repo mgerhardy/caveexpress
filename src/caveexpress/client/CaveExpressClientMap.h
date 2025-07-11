@@ -11,6 +11,7 @@ private:
 	float _wind = 0.0f;
 	mutable RenderTarget* _target = nullptr;
 
+	void renderArrow () const;
 	void renderWater (int x, int y) const;
 	SDL_Rect getWaterRect(int x, int y) const;
 	void couldNotFindEntity (const std::string& prefix, uint16_t id) const override;

@@ -40,6 +40,14 @@ public:
 	void update (uint32_t deltaTime) override;
 };
 
+class UINodeSpriteRot: public UINodeSprite {
+public:
+	float _angle = -1.f;
+
+	UINodeSpriteRot (IFrontend *frontend, int spriteWidth = -1, int spriteHeight = -1);
+};
+
+
 inline void UINodeSprite::addSprite (const SpritePtr& sprite)
 {
 	_sprites.push_back(sprite);

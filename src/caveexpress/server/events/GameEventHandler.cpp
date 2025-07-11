@@ -115,8 +115,8 @@ void GameEventHandler::announceTargetCave(int clientMask, const NPCFriendly& npc
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 
-void GameEventHandler::sendTargetCave(int clientMask, uint8_t number) const {
-	const TargetCaveMessage msg(number);
+void GameEventHandler::sendTargetCave(int clientMask, uint8_t number, float angle) const {
+	const TargetCaveMessage msg(number, angle);
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 

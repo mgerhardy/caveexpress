@@ -134,6 +134,10 @@ void UIMapWindow::initHudNodes()
 	_panel->add(pkgLeft);
 
 	add(_panel);
+
+	UINodeSpriteRot *arrow = new UINodeSpriteRot(_frontend, spriteHeight, spriteHeight);
+	arrow->setId(UINODE_TARGET_ARROW);
+	add(arrow);
 }
 
 }
