@@ -7,14 +7,14 @@
 #include <stdlib.h>
 #include <string>
 #include <string.h>
-#include "physics/Box2DMath.h"
+#include "physics/Physics.h"
 #include <SDL.h>
 #include <yajl/yajl_parse.h>
 #include "common/Common.h"
 #include "common/Log.h"
 #include "common/File.h"
 
-const b2Vec2 Vec2Zero(0.0f, 0.0f);
+const PhysicsVec2 Vec2Zero(0.0f, 0.0f);
 #define VERTICESINDENT "\t\t\t\t"
 
 static int polygonDepth = -1;

@@ -6,7 +6,7 @@
 
 namespace caveexpress {
 
-NPCBlowing::NPCBlowing (Map& map, const b2Vec2& pos, bool right, float force, float modificatorSize) :
+NPCBlowing::NPCBlowing (Map& map, const PhysicsVec2& pos, bool right, float force, float modificatorSize) :
 		NPC(EntityTypes::NPC_BLOWING, map)
 {
 	_lastDirectionRight = right;

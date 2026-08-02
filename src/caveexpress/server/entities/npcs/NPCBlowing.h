@@ -17,7 +17,7 @@ protected:
 	WindModificator* _modificator;
 	SpriteDefPtr _spriteDef;
 public:
-	NPCBlowing (Map& map, const b2Vec2& pos, bool right, float force, float modificatorSize);
+	NPCBlowing (Map& map, const PhysicsVec2& pos, bool right, float force, float modificatorSize);
 	virtual ~NPCBlowing ();
 
 	// NPC

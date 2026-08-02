@@ -26,9 +26,9 @@ public:
 
 	// IEntity
 	bool shouldCollide (const IEntity *entity) const override;
-	void onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold) override;
-	void onContact (b2Contact* contact, IEntity* entity) override;
-	void endContact (b2Contact* contact, IEntity* entity) override;
+	void onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold) override;
+	void onContact (PhysicsContact contact, IEntity* entity) override;
+	void endContact (PhysicsContact contact, IEntity* entity) override;
 };
 
 typedef std::shared_ptr<Stone> StonePtr;

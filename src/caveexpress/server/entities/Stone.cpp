@@ -26,7 +26,7 @@ bool Stone::shouldCollide (const IEntity *entity) const
 	return entity->isStone() || entity->isPackage() || entity->isNpcBlowing() || entity->isNpcAggressive();
 }
 
-void Stone::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold)
+void Stone::onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold)
 {
 	CollectableEntity::onPreSolve(contact, entity, oldManifold);
 	if (entity->isSolid() || entity->isStone()) {
@@ -42,12 +42,12 @@ void Stone::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* o
 		if (direction & DIRECTION_DOWN) {
 			if (npc->isNpcBlowing() || npc->isNpcAttacking()) {
 				npc->setDazed(_creator);
-				contact->SetEnabled(false);
+				contact.setEnabled(false);
 			} else if (entity->isNpcFlying() || entity->isNpcFish()) {
 				npc->setDying(_creator);
 			}
 		} else {
-			contact->SetEnabled(false);
+			contact.setEnabled(false);
 		}
 	} else if (entity->isPackage()) {
 		// if the stone is in rest, it does not have any impact on the packages
@@ -59,7 +59,7 @@ void Stone::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* o
 	}
 }
 
-void Stone::onContact (b2Contact* contact, IEntity* entity)
+void Stone::onContact (PhysicsContact contact, IEntity* entity)
 {
 	CollectableEntity::onContact(contact, entity);
 	if (!entity->isSolid() && !entity->isStone() && !entity->isPackage())
@@ -68,7 +68,7 @@ void Stone::onContact (b2Contact* contact, IEntity* entity)
 		_map.sendSound(getVisMask(), SoundTypes::SOUND_STONE_COLLIDE, getPos());
 }
 
-void Stone::endContact (b2Contact* contact, IEntity* entity)
+void Stone::endContact (PhysicsContact contact, IEntity* entity)
 {
 	IEntity::endContact(contact, entity);
 	if (entity->isSolid() || entity->isStone() || entity->isBorder()) {
@@ -79,19 +79,19 @@ void Stone::endContact (b2Contact* contact, IEntity* entity)
 
 void Stone::createBody ()
 {
-	b2FixtureDef fd;
+	PhysicsFixtureDef fd;
 	fd.density = DENSITY_STONE;
 	fd.friction = 1.0f;
 	fd.restitution = 0.01f;
 
-	b2BodyDef bd;
-	bd.position.Set(_x, _y);
-	bd.type = b2_dynamicBody;
+	PhysicsBodyDef bd;
+	bd.position.set(_x, _y);
+	bd.type = PhysicsBodyType::Dynamic;
 
-	b2Body* body = _map.addToWorld(fd, bd, this);
+	PhysicsBody body = _map.addToWorld(fd, bd, this);
 	_map.addEntity(this);
-	const b2Vec2 v(0.5f, _map.getGravity());
-	body->SetLinearVelocity(v);
+	const PhysicsVec2 v(0.5f, _map.getGravity());
+	body.setLinearVelocity(v);
 }
 
 }

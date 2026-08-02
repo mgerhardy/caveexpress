@@ -16,7 +16,7 @@ Bomb::~Bomb ()
 	_map.getTimeManager().clearTimeout(_explodeTimer);
 	_map.getTimeManager().clearTimeout(_destroyTimer);
 	for (ParticlesIter i = _particles.begin(); i != _particles.end(); ++i) {
-		_map.getWorld()->DestroyBody(*i);
+		_map.getWorld()->destroyBody(*i);
 	}
 	_particles.clear();
 }
@@ -29,18 +29,18 @@ void Bomb::initiateDetonation ()
 
 void Bomb::createBody ()
 {
-	b2PolygonShape sd;
-	sd.SetAsBox(_size.x / 2.0f, _size.y / 2.0f);
-
-	b2FixtureDef fd;
-	fd.shape = &sd;
+	PhysicsFixtureDef fd;
+	fd.shapeType = PhysicsShapeType::Polygon;
+	fd.useBox = true;
+	fd.boxHalfWidth = _size.x / 2.0f;
+	fd.boxHalfHeight = _size.y / 2.0f;
 	fd.density = DENSITY_BOMB;
 	fd.friction = 0.4f;
 	fd.restitution = 0.2f;
 
-	b2BodyDef bd;
-	bd.position.Set(_x, _y);
-	bd.type = b2_dynamicBody;
+	PhysicsBodyDef bd;
+	bd.position.set(_x, _y);
+	bd.type = PhysicsBodyType::Dynamic;
 	bd.fixedRotation = false;
 	bd.angularDamping = 1.0f;
 
@@ -52,10 +52,10 @@ void Bomb::explode ()
 {
 	setState(EntityState::ENTITY_DESTROYED);
 
-	const b2Vec2& center = getPos();
+	const PhysicsVec2& center = getPos();
 
-	b2BodyDef bd;
-	bd.type = b2_dynamicBody;
+	PhysicsBodyDef bd;
+	bd.type = PhysicsBodyType::Dynamic;
 	// rotation not necessary
 	bd.fixedRotation = true;
 	// prevent tunneling at high speed
@@ -66,11 +66,9 @@ void Bomb::explode ()
 	bd.gravityScale = 0.0f;
 	bd.position = center;
 
-	b2CircleShape circleShape;
-	circleShape.m_radius = 0.05; // very small
-
-	b2FixtureDef fd;
-	fd.shape = &circleShape;
+	PhysicsFixtureDef fd;
+	fd.shapeType = PhysicsShapeType::Circle;
+	fd.radius = 0.05f; // very small
 	fd.density = DENSITY_BOMB / static_cast<float>(_numRays);
 	fd.friction = 0.0f;
 	// high restitution to reflect off obstacles
@@ -80,11 +78,11 @@ void Bomb::explode ()
 
 	for (int i = 0; i < _numRays; ++i) {
 		const float angle = (float)DegreesToRadians(((float)i / (float)_numRays) * 360.0f);
-		const b2Vec2 rayDir(sinf(angle), cosf(angle));
+		const PhysicsVec2 rayDir(sinf(angle), cosf(angle));
 
 		bd.linearVelocity = _blastPower * rayDir;
-		b2Body* body = _map.getWorld()->CreateBody(&bd);
-		body->CreateFixture(&fd);
+		PhysicsBody body = _map.getWorld()->createBody(bd);
+		body.createFixture(fd);
 		_particles.push_back(body);
 	}
 

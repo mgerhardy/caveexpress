@@ -47,7 +47,7 @@ private:
 
 	NPCFriendly* _collectedNPC;
 
-	b2Vec2 _acceleration;
+	PhysicsVec2 _acceleration;
 
 	bool _fingerAcceleration;
 	int _accelerateX;
@@ -80,7 +80,7 @@ private:
 	uint8_t _lives;
 	int8_t _fruitsCollectedInARow;
 
-	b2RevoluteJoint *_revoluteJoint;
+	PhysicsJoint _revoluteJoint;
 
 	PlayerCrashReason _crashReason;
 
@@ -94,7 +94,7 @@ public:
 	void accelerate (Direction dir);
 	void setFingerAcceleration (int dx, int dy);
 	void resetFingerAcceleration ();
-	void applyForce (const b2Vec2& v);
+	void applyForce (const PhysicsVec2& v);
 
 	// sets the landing spot the player is currently landed on
 	void setPlatform (Platform* entity);
@@ -124,7 +124,7 @@ public:
 	void subtractHitpoints (uint16_t hitpoints);
 	void addHitpoints (uint16_t hitpoints);
 
-	void createBody (const b2Vec2 &pos);
+	void createBody (const PhysicsVec2 &pos);
 
 	void setCollectedNPC(NPCFriendly *npc);
 	void reset ();
@@ -136,10 +136,10 @@ public:
 	// IEntity
 	bool shouldApplyWind () const override;
 	void update (uint32_t deltaTime) override;
-	void onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold) override;
+	void onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold) override;
 	bool shouldCollide (const IEntity* entity) const override;
 	
-	void damageFromHit (b2Contact* contact, IEntity* entity);
+	void damageFromHit (PhysicsContact contact, IEntity* entity);
 };
 
 inline ClientId Player::getClientId () const
@@ -160,7 +160,7 @@ inline void Player::setName (const std::string& name)
 inline void Player::reset ()
 {
 	setState(PlayerState::PLAYER_FLYING);
-	_acceleration = b2Vec2_zero;
+	_acceleration = PhysicsVec2_zero;
 	_touching = nullptr;
 }
 

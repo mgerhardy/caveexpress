@@ -1,6 +1,6 @@
 #pragma once
 
-#include "physics/Box2DMath.h"
+#include "physics/Physics.h"
 #include "common/Log.h"
 #include "common/Timer.h"
 #include "common/IMap.h"
@@ -55,20 +55,20 @@ protected:
 	// the current entity state
 	int _state;
 	// this is the server size of the object
-	b2Vec2 _size;
+	PhysicsVec2 _size;
 
 	typedef std::vector<IEntityObserver*> EntityObservers;
 	EntityObservers _observers;
 
-	typedef std::vector<b2Body*> BodyList;
+	typedef std::vector<PhysicsBody> BodyList;
 	typedef BodyList::iterator BodyListIterator;
 	typedef BodyList::const_iterator BodyListConstIterator;
 	BodyList _bodies;
 	// if a state change was made we have to reset the physic collide filters
 	bool _refilter;
 	bool _touchingWater;
-	mutable b2AABB _b2AABB;
-	b2DistanceJoint* _ropeJoint;
+	mutable PhysicsAABB _b2AABB;
+	PhysicsJoint _ropeJoint;
 
 	// if the entity should be removed, set this to true
 	bool _remove;
@@ -87,12 +87,12 @@ private:
 	bool isSnapshotDirty () const;
 
 	struct Snapshot {
-		b2Vec2 pos;
+		PhysicsVec2 pos;
 		float angle;
 		int state;
 		uint8_t count;
 
-		Snapshot (const b2Vec2& __pos, float __angle, int __state) :
+		Snapshot (const PhysicsVec2& __pos, float __angle, int __state) :
 				pos(__pos), angle(__angle), state(__state), count(0)
 		{
 		}
@@ -120,16 +120,16 @@ public:
 	virtual void onSpawn ();
 
 	// returns the axis-aligned-bounding-box
-	virtual const b2AABB& getAABB () const;
+	virtual const PhysicsAABB& getAABB () const;
 
 	// returns the center of the object
 	// this is not the screen coordinate!
-	virtual const b2Vec2& getPos () const;
+	virtual PhysicsVec2 getPos () const;
 
 	// returns the angle of the entity in radians
 	virtual float getAngle () const;
 
-	virtual void setPos (const b2Vec2& pos);
+	virtual void setPos (const PhysicsVec2& pos);
 
 	virtual void setState (int state);
 
@@ -138,22 +138,22 @@ public:
 	// notifies the entity that another entity was hit. The hit entity will get
 	// notified about the contact, too. The order in which the listeners are called
 	// is not defined
-	virtual void onContact (b2Contact* contact, IEntity* entity);
+	virtual void onContact (PhysicsContact contact, IEntity* entity);
 
 	// notifies the entity that the contact to another entity has ended
-	virtual void endContact (b2Contact* contact, IEntity* entity);
+	virtual void endContact (PhysicsContact contact, IEntity* entity);
 
 	// This lets you inspect a contact after the solver is finished. This is useful
 	// for inspecting impulses. This is only called for contacts that are touching,
 	// solid, and awake.
-	virtual void onPostSolve (b2Contact* contact, const b2ContactImpulse* impulse, IEntity* entity);
+	virtual void onPostSolve (PhysicsContact contact, const PhysicsContactImpulse& impulse, IEntity* entity);
 
 	/// This is called after a contact is updated. This allows you to inspect a
 	/// contact before it goes to the solver. If you are careful, you can modify the
 	/// contact manifold (e.g. disable contact).
 	/// This is called after onContact is called.
 	/// This is not called for sensor bodies.
-	virtual void onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold);
+	virtual void onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold);
 
 	// return false if the entity should not collide with the given entity. true
 	// if it should collide
@@ -186,7 +186,7 @@ public:
 	virtual float getDensity () const;
 	float getGravityScale () const;
 	float getMass () const;
-	b2Vec2 getGravity () const;
+	PhysicsVec2 getGravity () const;
 
 	inline uint16_t getID () const
 	{
@@ -209,7 +209,7 @@ public:
 		_spriteIDs.push_back(spriteID);
 	}
 
-	inline const b2Vec2& getSize () const
+	inline const PhysicsVec2& getSize () const
 	{
 		return _size;
 	}
@@ -448,10 +448,10 @@ public:
 		return _state;
 	}
 
-	inline void setPosAndAngle (const b2Vec2& pos, float angle)
+	inline void setPosAndAngle (const PhysicsVec2& pos, float angle)
 	{
 		for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-			(*i)->SetTransform(pos, angle);
+			(*i).setTransform(pos, angle);
 		}
 	}
 
@@ -462,7 +462,7 @@ public:
 	}
 
 	// register the physics body
-	void addBody (b2Body* body)
+	void addBody (PhysicsBody body)
 	{
 		_bodies.push_back(body);
 
@@ -481,11 +481,11 @@ public:
 	// Returns the directions the entity is moving in
 	Direction getVelocityDirection (IEntity* entity, float vEpsilon = 0.01f) const;
 
-	b2Vec2 getImpactVelocity (b2Contact *contact) const;
+	PhysicsVec2 getImpactVelocity (PhysicsContact contact) const;
 
-	inline bool isImpactVelocityMoreThan (b2Contact* contact, float impactThreshold) const
+	inline bool isImpactVelocityMoreThan (PhysicsContact contact, float impactThreshold) const
 	{
-		const b2Vec2& impactV = getImpactVelocity(contact);
+		const PhysicsVec2 impactV = getImpactVelocity(contact);
 		return fabs(impactV.x) >= impactThreshold || fabs(impactV.y) >= impactThreshold;
 	}
 
@@ -497,7 +497,7 @@ public:
 	inline void setGravityScale (float gravityScale)
 	{
 		for (BodyListIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-			(*i)->SetGravityScale(gravityScale);
+			(*i).setGravityScale(gravityScale);
 		}
 	}
 
@@ -512,80 +512,80 @@ public:
 		}
 	}
 
-	inline void setLinearVelocity (const b2Vec2& v)
+	inline void setLinearVelocity (const PhysicsVec2& v)
 	{
 		for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-			(*i)->SetLinearVelocity(v);
+			(*i).setLinearVelocity(v);
 		}
 	}
 
 	inline void setAngularVelocity (const float v)
 	{
 		for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-			(*i)->SetAngularVelocity(v);
+			(*i).setAngularVelocity(v);
 		}
 	}
 
-	inline b2Vec2 getLinearVelocity () const
+	inline PhysicsVec2 getLinearVelocity () const
 	{
 		if (_bodies.empty())
-			return b2Vec2_zero;
-		return _bodies[0]->GetLinearVelocity();
+			return PhysicsVec2_zero;
+		return _bodies[0].getLinearVelocity();
 	}
 
 	inline float getAngularVelocity () const
 	{
 		if (_bodies.empty())
 			return 0.0f;
-		return _bodies[0]->GetAngularVelocity();
+		return _bodies[0].getAngularVelocity();
 	}
 
 	inline float getInertia () const
 	{
 		if (_bodies.empty())
 			return 0.0f;
-		return _bodies[0]->GetInertia();
+		return _bodies[0].getInertia();
 	}
 
 	inline void applyTorque (float torque)
 	{
 		for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-			(*i)->ApplyTorque(torque, true);
+			(*i).applyTorque(torque, true);
 		}
 	}
 
-	inline b2Vec2 getLinearVelocityFromWorldPoint (const b2Vec2& worldPoint) const
+	inline PhysicsVec2 getLinearVelocityFromWorldPoint (const PhysicsVec2& worldPoint) const
 	{
 		if (_bodies.empty())
-			return b2Vec2_zero;
-		return _bodies[0]->GetLinearVelocityFromWorldPoint(worldPoint);
+			return PhysicsVec2_zero;
+		return _bodies[0].getLinearVelocityFromWorldPoint(worldPoint);
 	}
 
 	inline void setLinearDamping (float linearDamping)
 	{
 		for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-			(*i)->SetLinearDamping(linearDamping);
+			(*i).setLinearDamping(linearDamping);
 		}
 	}
 
-	inline void applyLinearImpulse (const b2Vec2& impulse)
+	inline void applyLinearImpulse (const PhysicsVec2& impulse)
 	{
 		for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-			(*i)->ApplyLinearImpulse(impulse, (*i)->GetWorldCenter(), true);
+			(*i).applyLinearImpulse(impulse, (*i).getWorldCenter(), true);
 		}
 	}
 
 	inline void setAngularDamping (float angularDamping)
 	{
 		for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-			(*i)->SetAngularDamping(angularDamping);
+			(*i).setAngularDamping(angularDamping);
 		}
 	}
 
-	inline void applyForceToCenter (const b2Vec2& force)
+	inline void applyForceToCenter (const PhysicsVec2& force)
 	{
 		for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-			(*i)->ApplyForceToCenter(force, true);
+			(*i).applyForceToCenter(force, true);
 		}
 	}
 
@@ -594,10 +594,10 @@ public:
 		return _touchingWater;
 	}
 
-	virtual void clearJoint (b2Joint *joint)
+	virtual void clearJoint (PhysicsJoint joint)
 	{
 		if (_ropeJoint == joint)
-			_ropeJoint = nullptr;
+			_ropeJoint.clear();
 	}
 };
 

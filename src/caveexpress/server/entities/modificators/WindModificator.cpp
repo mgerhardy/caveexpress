@@ -22,7 +22,7 @@ void WindModificator::setModificatorState (bool enable)
 	_state = enable;
 }
 
-inline void WindModificator::getRelativePosition (b2Vec2& out) const
+inline void WindModificator::getRelativePosition (PhysicsVec2& out) const
 {
 	switch (_direction) {
 	case DIRECTION_RIGHT:
@@ -42,14 +42,14 @@ inline void WindModificator::getRelativePosition (b2Vec2& out) const
 	}
 }
 
-void WindModificator::setRelativePositionTo (const b2Vec2& pos)
+void WindModificator::setRelativePositionTo (const PhysicsVec2& pos)
 {
-	b2Vec2 modPos = pos;
+	PhysicsVec2 modPos = pos;
 	getRelativePosition(modPos);
 	setPos(modPos);
 }
 
-void WindModificator::createBody (const b2Vec2 &pos, float shift)
+void WindModificator::createBody (const PhysicsVec2 &pos, float shift)
 {
 	if (!_bodies.empty())
 		return;
@@ -72,40 +72,42 @@ void WindModificator::createBody (const b2Vec2 &pos, float shift)
 		break;
 	}
 
-	b2BodyDef bodyDef;
-	bodyDef.userData.pointer = (uintptr_t)this;
-	bodyDef.type = b2_staticBody;
-	b2Vec2 modPos = pos;
+	PhysicsBodyDef bodyDef;
+	bodyDef.userData = (uintptr_t)this;
+	bodyDef.type = PhysicsBodyType::Static;
+	PhysicsVec2 modPos = pos;
 	getRelativePosition(modPos);
-	bodyDef.position.Set(modPos.x, modPos.y);
+	bodyDef.position.set(modPos.x, modPos.y);
 	bodyDef.angle = DegreesToRadians(angle);
 	bodyDef.fixedRotation = true;
 
 	// counterclock wise - starting at upper left
-	b2Vec2 vertices[4];
+	PhysicsVec2 vertices[4];
 	const float x1 = 0.5f;
 	const float x2 = x1 / _beginSizeDivisor;
-	vertices[0].Set(0.0f, -x2);
-	vertices[1].Set(0.0f, x2);
-	vertices[2].Set(_modificatorSize, x1);
-	vertices[3].Set(_modificatorSize, -x1);
+	vertices[0].set(0.0f, -x2);
+	vertices[1].set(0.0f, x2);
+	vertices[2].set(_modificatorSize, x1);
+	vertices[3].set(_modificatorSize, -x1);
 
-	b2PolygonShape shape;
-	shape.Set(vertices, SDL_arraysize(vertices));
-
-	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &shape;
+	PhysicsFixtureDef fixtureDef;
+	fixtureDef.shapeType = PhysicsShapeType::Polygon;
+	fixtureDef.vertexCount = 4;
+	fixtureDef.vertices[0] = vertices[0];
+	fixtureDef.vertices[1] = vertices[1];
+	fixtureDef.vertices[2] = vertices[2];
+	fixtureDef.vertices[3] = vertices[3];
 	fixtureDef.density = DENSITY_AIR;
 
-	b2Body* body = _map.getWorld()->CreateBody(&bodyDef);
-	body->CreateFixture(&fixtureDef);
+	PhysicsBody body = _map.getWorld()->createBody(bodyDef);
+	body.createFixture(fixtureDef);
 	addBody(body);
 }
 
-void WindModificator::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold)
+void WindModificator::onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold)
 {
 	IEntity::onPreSolve(contact, entity, oldManifold);
-	contact->SetEnabled(false);
+	contact.setEnabled(false);
 }
 
 bool WindModificator::shouldCollide (const IEntity* entity) const
@@ -117,40 +119,40 @@ void WindModificator::update (uint32_t deltaTime)
 {
 	IEntity::update(deltaTime);
 
-	b2Body *ownBody = getBodies()[0];
+	PhysicsBody ownBody = getBodies()[0];
 	if (!_state) {
-		ownBody->SetEnabled(false);
+		ownBody.setEnabled(false);
 		return;
 	} else {
-		ownBody->SetEnabled(true);
+		ownBody.setEnabled(true);
 	}
 
-	for (b2ContactEdge* c = ownBody->GetContactList(); c != nullptr; c = c->next) {
-		b2Contact *contact = c->contact;
-		if (!contact->IsTouching())
+	for (PhysicsContactEdge c = ownBody.getContactList(); c.isValid(); c = c.next()) {
+		PhysicsContact contact = c.contact;
+		if (!contact.isTouching())
 			continue;
 
-		b2Body *bodyA = contact->GetFixtureA()->GetBody();
-		b2Body *bodyB = contact->GetFixtureB()->GetBody();
-		b2Body *body = ownBody != bodyA ? bodyA : bodyB;
+		PhysicsBody bodyA = contact.getFixtureA().getBody();
+		PhysicsBody bodyB = contact.getFixtureB().getBody();
+		PhysicsBody body = ownBody != bodyA ? bodyA : bodyB;
 
-		b2WorldManifold worldManifold;
-		contact->GetWorldManifold(&worldManifold);
+		PhysicsWorldManifold worldManifold;
+		contact.getWorldManifold(worldManifold);
 
-		const b2Manifold *manifold = contact->GetManifold();
-		for (int i = 0; i < manifold->pointCount; ++i) {
-			const b2Vec2& contactPoint = worldManifold.points[i];
+		const PhysicsManifold manifold = contact.getManifold();
+		for (int i = 0; i < manifold.pointCount; ++i) {
+			const PhysicsVec2& contactPoint = worldManifold.points[i];
 			applyImpulse(body, contactPoint, _force);
 		}
 	}
 }
 
-void WindModificator::applyImpulse (b2Body* body, b2Vec2 contactPoint, float force) const
+void WindModificator::applyImpulse (PhysicsBody body, PhysicsVec2 contactPoint, float force) const
 {
-	const b2Vec2 direction = body->GetPosition() - getPos();
-	const float distance = 0.1f * b2Distance(body->GetPosition(), getPos());
+	const PhysicsVec2 direction = body.getPosition() - getPos();
+	const float distance = 0.1f * physDistance(body.getPosition(), getPos());
 	const float impulseMag = std::min(70.0f, force * _modificatorSize / distance);
-	body->ApplyLinearImpulse(impulseMag * direction, contactPoint, true);
+	body.applyLinearImpulse(impulseMag * direction, contactPoint, true);
 }
 
 }

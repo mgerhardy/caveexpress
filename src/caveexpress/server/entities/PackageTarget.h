@@ -15,7 +15,7 @@ class Package;
  */
 class PackageTarget: public MapTile {
 private:
-	b2DistanceJoint *_joint;
+	PhysicsJoint _joint;
 	Package *_package;
 	// millis to reduce the distance joint
 	int32_t _lengthUpdate;
@@ -26,22 +26,22 @@ private:
 	// update the distance if enough time has passed to slowly pull the package into the target
 	void updateJoint (uint32_t deltaTime);
 
-	bool isValidContact (const b2Contact* contact, const std::string& id) const;
-	std::string getUserData (b2Contact* contact) const;
+	bool isValidContact (const PhysicsContact contact, const std::string& id) const;
+	std::string getUserData (PhysicsContact contact) const;
 public:
 	PackageTarget (Map& map, const std::string& spriteID, gridCoord x, gridCoord y);
 	virtual ~PackageTarget ();
 
 	// IEntity
 	bool shouldCollide (const IEntity* entity) const override;
-	void onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold) override;
+	void onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold) override;
 	void update (uint32_t deltaTime) override;
-	void clearJoint (b2Joint *joint) override;
+	void clearJoint (PhysicsJoint joint) override;
 };
 
-inline bool PackageTarget::isValidContact (const b2Contact* contact, const std::string& id) const
+inline bool PackageTarget::isValidContact (const PhysicsContact contact, const std::string& id) const
 {
-	const std::string userData = getUserData(const_cast<b2Contact*>(contact));
+	const std::string userData = getUserData(contact);
 	return userData == id;
 }
 

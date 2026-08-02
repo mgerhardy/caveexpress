@@ -13,7 +13,7 @@ Tree::Tree (Map& map, gridCoord x, gridCoord y) :
 		IEntity(EntityTypes::TREE, map), _x(x), _y(y), _dropFruit(false), _droppedFruits(0), _dropFruitCausedBy(nullptr), _idleTimer(0)
 {
 	if (Config.getConfigVar(WORLD_PARTICLE)->getBoolValue()) {
-		const b2Vec2 size(0.05f, 0.05f);
+		const PhysicsVec2 size(0.05f, 0.05f);
 		_leafParticle = new WorldParticle(map, LEAF, 10, DENSITY_LEAF, size, 10000);
 	}
 	setIdle();
@@ -67,19 +67,19 @@ void Tree::setDazed (IEntity* entity)
 
 void Tree::createBody ()
 {
-	b2PolygonShape sd;
-	sd.SetAsBox(_size.x / 2.0f, _size.y / 2.0f);
-
-	b2FixtureDef fd;
-	fd.shape = &sd;
+	PhysicsFixtureDef fd;
+	fd.shapeType = PhysicsShapeType::Polygon;
+	fd.useBox = true;
+	fd.boxHalfWidth = _size.x / 2.0f;
+	fd.boxHalfHeight = _size.y / 2.0f;
 	fd.density = DENSITY_TREE;
 	fd.friction = 0.0f;
 	fd.restitution = 0.0f;
 	fd.isSensor = true;
 
-	b2BodyDef bd;
-	bd.position.Set(_x, _y);
-	bd.type = b2_staticBody;
+	PhysicsBodyDef bd;
+	bd.position.set(_x, _y);
+	bd.type = PhysicsBodyType::Static;
 	bd.fixedRotation = true;
 
 	_map.addToWorld(fd, bd, this);
@@ -100,7 +100,7 @@ bool Tree::shouldCollide (const IEntity *entity) const
 	return entity->isStone();
 }
 
-void Tree::onContact (b2Contact* contact, IEntity* entity)
+void Tree::onContact (PhysicsContact contact, IEntity* entity)
 {
 	IEntity::onContact(contact, entity);
 	if (!entity->isStone())
@@ -110,24 +110,24 @@ void Tree::onContact (b2Contact* contact, IEntity* entity)
 		setDazed(entity);
 
 	if (_leafParticle != nullptr) {
-		b2Fixture* fixtureA = contact->GetFixtureA();
-		b2Fixture* fixtureB = contact->GetFixtureB();
-		IEntity* entityA = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
-		IEntity* entityB = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
+		PhysicsFixture fixtureA = contact.getFixtureA();
+		PhysicsFixture fixtureB = contact.getFixtureB();
+		IEntity* entityA = reinterpret_cast<IEntity*>(fixtureA.getBody().getUserData());
+		IEntity* entityB = reinterpret_cast<IEntity*>(fixtureB.getBody().getUserData());
 		const bool entityIsA = entityA == entity;
 		_leafParticle->addContact(entityIsA ? entityA : entityB);
 	}
 }
 
-void Tree::endContact (b2Contact* contact, IEntity* entity)
+void Tree::endContact (PhysicsContact contact, IEntity* entity)
 {
 	if (_dropFruitCausedBy == entity)
 		_dropFruitCausedBy = nullptr;
 	if (_leafParticle != nullptr) {
-		b2Fixture* fixtureA = contact->GetFixtureA();
-		b2Fixture* fixtureB = contact->GetFixtureB();
-		IEntity* entityA = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
-		IEntity* entityB = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
+		PhysicsFixture fixtureA = contact.getFixtureA();
+		PhysicsFixture fixtureB = contact.getFixtureB();
+		IEntity* entityA = reinterpret_cast<IEntity*>(fixtureA.getBody().getUserData());
+		IEntity* entityB = reinterpret_cast<IEntity*>(fixtureB.getBody().getUserData());
 		const bool entityIsA = entityA == entity;
 		_leafParticle->removeContact(entityIsA ? entityA : entityB);
 	}

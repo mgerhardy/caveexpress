@@ -8,8 +8,8 @@ namespace caveexpress {
 class NPC: public IEntity {
 protected:
 	float _initialWalkingSpeed;
-	b2Vec2 _targetPos;
-	b2Vec2 _initialPosition;
+	PhysicsVec2 _targetPos;
+	PhysicsVec2 _initialPosition;
 	bool _lastDirectionRight;
 	uint32_t _triggerMovement;
 	// the time at which the npc was dazed
@@ -22,22 +22,22 @@ protected:
 	uint32_t _swimmingTime;
 	uint16_t _swimmingTimeDelay;
 	float _initialSwimmingSpeed;
-	b2Vec2 _currentSwimmingSpeed;
+	PhysicsVec2 _currentSwimmingSpeed;
 
-	int handleTurnAnimation (const b2Vec2& targetPos, const Animation& left, const Animation& right);
+	int handleTurnAnimation (const PhysicsVec2& targetPos, const Animation& left, const Animation& right);
 	void move ();
 
-	virtual b2BodyType getBodyType () const;
+	virtual PhysicsBodyType getBodyType () const;
 
 public:
 	explicit NPC (const EntityType &type, Map& map);
 	virtual ~NPC ();
 
-	virtual void setSwimming (const b2Vec2& pos);
+	virtual void setSwimming (const PhysicsVec2& pos);
 	virtual void setSwimmingIdle ();
 	virtual void setFalling ();
 	virtual void setMoving (gridCoord x);
-	virtual void setMoving (const b2Vec2& targetPos = b2Vec2_zero);
+	virtual void setMoving (const PhysicsVec2& targetPos = PhysicsVec2_zero);
 	virtual void setIdle ();
 	virtual void setDone ();
 	// @param[in] entity The entity that caused the dying
@@ -57,7 +57,7 @@ public:
 	virtual const Animation& getFallingAnimation () const;
 	virtual const Animation& getIdleAnimation () const;
 
-	virtual b2Body* createBody (const b2Vec2 &pos, bool setOnGround = true, bool fixedRotation = true);
+	virtual PhysicsBody createBody (const PhysicsVec2 &pos, bool setOnGround = true, bool fixedRotation = true);
 
 	std::string getStateStr () const;
 
@@ -130,13 +130,13 @@ public:
 	virtual float getDensity () const override;
 	virtual void update (uint32_t deltaTime) override;
 	void setState (int state) override;
-	virtual void onContact (b2Contact* contact, IEntity* entity) override;
+	virtual void onContact (PhysicsContact contact, IEntity* entity) override;
 	virtual bool shouldCollide (const IEntity* entity) const override;
 	virtual void onSpawn () override;
-	virtual void setPos (const b2Vec2& pos) override;
+	virtual void setPos (const PhysicsVec2& pos) override;
 };
 
-class SetOnGroundRayCastCallback: public b2RayCastCallback {
+class SetOnGroundRayCastCallback: public IPhysicsRayCastCallback {
 private:
 	NPC* _npc;
 
@@ -146,15 +146,15 @@ public:
 	{
 	}
 
-	float ReportFixture (b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float fraction) override
+	float reportFixture (PhysicsFixture fixture, const PhysicsVec2& point, const PhysicsVec2& normal, float fraction) override
 	{
-		IEntity *e = reinterpret_cast<IEntity*>(fixture->GetBody()->GetUserData().pointer);
+		IEntity *e = reinterpret_cast<IEntity*>(fixture.getBody().getUserData());
 		// the border fixture
 		if (e == nullptr)
 			return -1;
 		if (!_npc->shouldCollide(e))
 			return -1;
-		const b2Vec2 newPos(point.x, point.y - _npc->getSize().y / 2.0f);
+		const PhysicsVec2 newPos(point.x, point.y - _npc->getSize().y / 2.0f);
 		_npc->setPos(newPos);
 		return 0;
 	}

@@ -12,7 +12,7 @@ protected:
 	float _blastPower;
 	int _numRays;
 	float _linearDamping;
-	typedef std::vector<b2Body*> Particles;
+	typedef std::vector<PhysicsBody> Particles;
 	typedef Particles::iterator ParticlesIter;
 	Particles _particles;
 	TimerID _explodeTimer;

@@ -29,7 +29,7 @@ void NPCPackage::setIdle ()
 {
 	Log::debug(LOG_GAMEIMPL, "idle npc %i: %s", getID(), _type.name.c_str());
 	setState(NPCState::NPC_IDLE);
-	setLinearVelocity(b2Vec2_zero);
+	setLinearVelocity(PhysicsVec2_zero);
 	_idleTimer = 0;
 }
 
@@ -48,7 +48,7 @@ void NPCPackage::update (uint32_t deltaTime)
 
 void NPCPackage::leavePackage ()
 {
-	const b2Vec2& pos = getPos();
+	const PhysicsVec2& pos = getPos();
 	Package* package = new Package(_map, pos.x, pos.y);
 	package->createBody();
 	returnToInitialPosition();

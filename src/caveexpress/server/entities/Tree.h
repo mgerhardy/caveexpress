@@ -35,8 +35,8 @@ public:
 
 	// IEntity
 	bool shouldCollide (const IEntity *entity) const override;
-	void onContact (b2Contact* contact, IEntity* entity) override;
-	void endContact (b2Contact* contact, IEntity* entity) override;
+	void onContact (PhysicsContact contact, IEntity* entity) override;
+	void endContact (PhysicsContact contact, IEntity* entity) override;
 	void update (uint32_t deltaTime) override;
 };
 

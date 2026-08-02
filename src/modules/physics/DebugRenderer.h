@@ -1,53 +1,50 @@
 #pragma once
 
-#include <box2d/box2d.h>
+#include "physics/Physics.h"
 #include "common/IFrontend.h"
 #include "common/Compiler.h"
 #include "common/DebugRendererData.h"
 #include <vector>
 
-// forward decl
 class IFrontend;
 
 struct ContactPoint {
-	b2Fixture* fixtureA;
-	b2Fixture* fixtureB;
-	b2Vec2 normal;
-	b2Vec2 position;
-	b2PointState state;
+	PhysicsFixture fixtureA;
+	PhysicsFixture fixtureB;
+	PhysicsVec2 normal;
+	PhysicsVec2 position;
+	PhysicsPointState state;
 	float normalImpulse;
 	float tangentImpulse;
 };
 
 struct TraceData {
-	b2Vec2 start;
-	b2Vec2 end;
+	PhysicsVec2 start;
+	PhysicsVec2 end;
 	float fraction;
 };
 
 #define DEBUG_RENDERER_MAX_COLORS 128
-class DebugRenderer: public b2Draw {
+class DebugRenderer: public IPhysicsDebugDraw {
 private:
 	int _pointCount;
 	const ContactPoint *_points;
-	const std::vector<b2Vec2>& _waterIntersectionPoints;
+	const std::vector<PhysicsVec2>& _waterIntersectionPoints;
 	int _traceCount;
 	const TraceData *_traceData;
 	const DebugRendererData _data;
 	IFrontend* _frontend;
 
-	void DrawPoint(const b2Vec2& p, float size, const b2Color& color) override;
-	void DrawSegmentWithAlpha (const b2Vec2& p1, const b2Vec2& p2, const b2Color& color, float alpha);
+	void drawSegmentWithAlpha (const PhysicsVec2& p1, const PhysicsVec2& p2, const PhysicsColor& color, float alpha);
 public:
-	DebugRenderer (int pointCount, const ContactPoint *points, int traceCount, const TraceData *traceData, const std::vector<b2Vec2>& waterIntersectionPoints, const DebugRendererData& rect, IFrontend* frontend);
+	DebugRenderer (int pointCount, const ContactPoint *points, int traceCount, const TraceData *traceData, const std::vector<PhysicsVec2>& waterIntersectionPoints, const DebugRendererData& rect, IFrontend* frontend);
 	virtual ~DebugRenderer ();
 
-	// b2Draw
-	void DrawPolygon (const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;
-	void DrawSolidPolygon (const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;
-	void DrawCircle (const b2Vec2& center, float radius, const b2Color& color) override;
-	void DrawSolidCircle (const b2Vec2& center, float radius, const b2Vec2& axis, const b2Color& color) override;
-	void DrawSegment (const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) override;
-	void DrawTransform (const b2Transform& xf) override;
+	void drawPolygon (const PhysicsVec2* vertices, int vertexCount, const PhysicsColor& color) override;
+	void drawSolidPolygon (const PhysicsVec2* vertices, int vertexCount, const PhysicsColor& color) override;
+	void drawCircle (const PhysicsVec2& center, float radius, const PhysicsColor& color) override;
+	void drawSolidCircle (const PhysicsVec2& center, float radius, const PhysicsVec2& axis, const PhysicsColor& color) override;
+	void drawSegment (const PhysicsVec2& p1, const PhysicsVec2& p2, const PhysicsColor& color) override;
+	void drawTransform (const PhysicsTransform& xf) override;
+	void drawPoint (const PhysicsVec2& p, float size, const PhysicsColor& color) override;
 };
-

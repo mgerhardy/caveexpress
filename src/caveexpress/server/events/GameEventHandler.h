@@ -9,7 +9,7 @@
 #include "common/ThemeType.h"
 #include <string>
 
-struct b2Vec2;
+struct PhysicsVec2;
 class ByteStream;
 class ServiceProvider;
 class EntityType;

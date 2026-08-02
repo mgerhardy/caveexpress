@@ -1,2 +1,80 @@
-include(${ROOT_DIR}/cmake/macros.cmake)
-cp_find(box2d box2d.h box2d "<=2.4.2")
+# Find Box2D 2.4.x or 3.x without a hard version pin.
+# Prefer CMake package config (box2d::box2d), then pkg-config / manual search.
+# Sets: box2d_FOUND, box2d_VERSION, CP_BOX2D_MAJOR, and target box2d (alias of box2d::box2d when needed).
+
+if (TARGET box2d::box2d OR TARGET box2d)
+	if (NOT DEFINED CP_BOX2D_MAJOR)
+		if (DEFINED box2d_VERSION AND box2d_VERSION VERSION_GREATER_EQUAL "3.0")
+			set(CP_BOX2D_MAJOR 3 CACHE INTERNAL "Box2D major version")
+		elseif (DEFINED BOX2D_VERSION AND BOX2D_VERSION VERSION_GREATER_EQUAL "3.0")
+			set(CP_BOX2D_MAJOR 3 CACHE INTERNAL "Box2D major version")
+		else()
+			set(CP_BOX2D_MAJOR 2 CACHE INTERNAL "Box2D major version")
+		endif()
+	endif()
+	if (TARGET box2d::box2d AND NOT TARGET box2d)
+		add_library(box2d INTERFACE)
+		target_link_libraries(box2d INTERFACE box2d::box2d)
+	endif()
+	return()
+endif()
+
+set(_CP_BOX2D_VERSION "")
+
+# Config-mode first (Debian 2.4 and upstream 3.x both export box2d::box2d).
+find_package(box2d QUIET CONFIG)
+if (box2d_FOUND AND TARGET box2d::box2d)
+	if (DEFINED box2d_VERSION)
+		set(_CP_BOX2D_VERSION "${box2d_VERSION}")
+	elseif (DEFINED PACKAGE_VERSION)
+		set(_CP_BOX2D_VERSION "${PACKAGE_VERSION}")
+	endif()
+else()
+	# Module-mode / pkg-config fallback without version constraint.
+	include(${ROOT_DIR}/cmake/macros.cmake)
+	cp_find(box2d box2d.h box2d "")
+	if (BOX2D_FOUND)
+		find_package(PkgConfig QUIET)
+		if (PKG_CONFIG_FOUND)
+			pkg_check_modules(_CP_BOX2D_PC QUIET box2d)
+			if (_CP_BOX2D_PC_VERSION)
+				set(_CP_BOX2D_VERSION "${_CP_BOX2D_PC_VERSION}")
+			endif()
+		endif()
+		# Heuristic: Box2D 3.x has id.h; 2.4 does not.
+		if (NOT _CP_BOX2D_VERSION AND BOX2D_INCLUDE_DIRS)
+			find_file(_CP_BOX2D_ID_H NAMES box2d/id.h PATHS ${BOX2D_INCLUDE_DIRS} NO_DEFAULT_PATH)
+			if (_CP_BOX2D_ID_H)
+				set(_CP_BOX2D_VERSION "3.0.0")
+			else()
+				set(_CP_BOX2D_VERSION "2.4.0")
+			endif()
+			unset(_CP_BOX2D_ID_H CACHE)
+		endif()
+	endif()
+endif()
+
+if (NOT box2d_FOUND AND NOT BOX2D_FOUND AND NOT TARGET box2d AND NOT TARGET box2d::box2d)
+	set(box2d_FOUND FALSE)
+	return()
+endif()
+
+set(box2d_FOUND TRUE)
+
+if (NOT _CP_BOX2D_VERSION)
+	set(_CP_BOX2D_VERSION "2.4.0")
+endif()
+set(box2d_VERSION "${_CP_BOX2D_VERSION}" CACHE STRING "Detected Box2D version" FORCE)
+
+if (box2d_VERSION VERSION_GREATER_EQUAL "3.0")
+	set(CP_BOX2D_MAJOR 3 CACHE INTERNAL "Box2D major version")
+else()
+	set(CP_BOX2D_MAJOR 2 CACHE INTERNAL "Box2D major version")
+endif()
+
+if (TARGET box2d::box2d AND NOT TARGET box2d)
+	add_library(box2d INTERFACE)
+	target_link_libraries(box2d INTERFACE box2d::box2d)
+endif()
+
+message(STATUS "Box2D ${box2d_VERSION} (major ${CP_BOX2D_MAJOR})")

@@ -12,14 +12,14 @@ uint32_t IEntity::GLOBAL_ENTITY_NUM = 0;
 IEntity::IEntity (const EntityType &type, Map& map) :
 		_id(GLOBAL_ENTITY_NUM++), _type(type), _time(0), _vismask(NOTVISIBLE), _animationType(
 				&Animation::NONE), _spriteAlignment(ENTITY_ALIGN_LOWER_LEFT), _state(0), _refilter(false), _touchingWater(
-				false), _ropeJoint(nullptr), _remove(false), _map(map), _oldGravityScale(0.0f), _animationChangeTimer(0),
-				_snapshot(b2Vec2_zero, 0.0f, 0)
+				false), _remove(false), _map(map), _oldGravityScale(0.0f), _animationChangeTimer(0),
+				_snapshot(PhysicsVec2_zero, 0.0f, 0)
 {
 	setSpriteID("");
-	_size = b2Vec2(_type.width, _type.height);
+	_size = PhysicsVec2(_type.width, _type.height);
 
-	_b2AABB.lowerBound = b2Vec2(FLT_MAX, FLT_MAX);
-	_b2AABB.upperBound = b2Vec2(-FLT_MAX, -FLT_MAX);
+	_b2AABB.lowerBound = PhysicsVec2(FLT_MAX, FLT_MAX);
+	_b2AABB.upperBound = PhysicsVec2(-FLT_MAX, -FLT_MAX);
 }
 
 IEntity::~IEntity ()
@@ -53,64 +53,64 @@ bool IEntity::isNpcPackage() const {
 	return npc->isDeliverPackage();
 }
 
-const b2Vec2& IEntity::getPos () const
+PhysicsVec2 IEntity::getPos () const
 {
 	for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-		return (*i)->GetPosition();
+		return (*i).getPosition();
 	}
-	return b2Vec2_zero;
+	return PhysicsVec2_zero;
 }
 
 float IEntity::getAngle () const
 {
 	for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-		return (*i)->GetAngle();
+		return (*i).getAngle();
 	}
 	return 0.0f;
 }
 
-void IEntity::setPos (const b2Vec2& pos)
+void IEntity::setPos (const PhysicsVec2& pos)
 {
 	setPosAndAngle(pos, getAngle());
 }
 
 void IEntity::addRopeJoint (IEntity *entity)
 {
-	if (_ropeJoint)
+	if (_ropeJoint.isValid())
 		removeRopeJoint();
 
-	b2DistanceJointDef rDef;
-	rDef.userData.pointer = (uintptr_t)entity;
-	b2Body* bodyA = getBodies()[0];
-	b2Body* bodyB = entity->getBodies()[0];
+	PhysicsDistanceJointDef rDef;
+	rDef.userData = (uintptr_t)entity;
+	PhysicsBody bodyA = getBodies()[0];
+	PhysicsBody bodyB = entity->getBodies()[0];
 
 	rDef.maxLength = 0.6f;
 	rDef.minLength = 0.0f;
 	rDef.collideConnected = true;
-	rDef.localAnchorA = b2Vec2_zero;
-	rDef.localAnchorB = b2Vec2_zero;
+	rDef.localAnchorA = PhysicsVec2_zero;
+	rDef.localAnchorB = PhysicsVec2_zero;
 	rDef.localAnchorA.y = getSize().y / 2.0f;
 	// TODO: handle the rotation
-	if (bodyA->GetPosition().y < bodyB->GetPosition().y) {
+	if (bodyA.getPosition().y < bodyB.getPosition().y) {
 		rDef.localAnchorA.y *= -1.0f;
 	}
 	rDef.localAnchorB.y = entity->getSize().y / 2.0f;
 	rDef.bodyA = bodyA;
 	rDef.bodyB = bodyB;
-	_ropeJoint = assert_cast<b2DistanceJoint*, b2Joint*>(bodyA->GetWorld()->CreateJoint(&rDef));
+	_ropeJoint = bodyA.getWorld()->createDistanceJoint(rDef);
 	GameEvent.sendRope(getVisMask() | entity->getVisMask(), getID(), entity->getID());
 }
 
 void IEntity::removeRopeJoint ()
 {
-	if (!_ropeJoint)
+	if (!_ropeJoint.isValid())
 		return;
 
-	b2Body* bodyA = _ropeJoint->GetBodyA();
-	IEntity *entity = reinterpret_cast<IEntity*>(_ropeJoint->GetUserData().pointer);
+	PhysicsBody bodyA = _ropeJoint.getBodyA();
+	IEntity *entity = reinterpret_cast<IEntity*>(_ropeJoint.getUserData());
 	GameEvent.removeRope(getVisMask() | entity->getVisMask(), getID());
-	bodyA->GetWorld()->DestroyJoint(_ropeJoint);
-	_ropeJoint = nullptr;
+	bodyA.getWorld()->destroyJoint(_ropeJoint);
+	_ropeJoint.clear();
 }
 
 void IEntity::resetAnimationChange ()
@@ -167,7 +167,7 @@ void IEntity::setState (int state)
 	_refilter = true;
 }
 
-const b2AABB& IEntity::getAABB () const
+const PhysicsAABB& IEntity::getAABB () const
 {
 	if (!EntityTypes::isDynamic(_type))
 		computeAABB();
@@ -182,22 +182,22 @@ void IEntity::update (uint32_t deltaTime)
 	}
 }
 
-void IEntity::onContact (b2Contact* contact, IEntity* entity)
+void IEntity::onContact (PhysicsContact contact, IEntity* entity)
 {
 	//if (EntityTypes::isLava(entity->getType())) {
 	// TODO: play sound and handle "death"
 	//}
 }
 
-void IEntity::endContact (b2Contact* contact, IEntity* entity)
+void IEntity::endContact (PhysicsContact contact, IEntity* entity)
 {
 }
 
-void IEntity::onPostSolve (b2Contact* contact, const b2ContactImpulse* impulse, IEntity* entity)
+void IEntity::onPostSolve (PhysicsContact contact, const PhysicsContactImpulse& impulse, IEntity* entity)
 {
 }
 
-void IEntity::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold)
+void IEntity::onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold)
 {
 }
 
@@ -239,7 +239,7 @@ inline bool IEntity::isSnapshotDirty () const
 		return true;
 	if (!fequals(_snapshot.angle, getAngle(), 0.2f))
 		return true;
-	if (!b2Vec2Equals(_snapshot.pos, getPos(), 0.011f))
+	if (!physVec2Equals(_snapshot.pos, getPos(), 0.011f))
 		return true;
 
 	_snapshot.count = 0;
@@ -264,8 +264,8 @@ float IEntity::getDensity () const
 {
 	float density = 0.0f;
 	for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-		for (b2Fixture* f = (*i)->GetFixtureList(); f; f = f->GetNext()) {
-			density += f->GetDensity();
+		for (PhysicsFixture f = (*i).getFixtureList(); f.isValid(); f = f.getNext()) {
+			density += f.getDensity();
 		}
 	}
 	return density /= (float) _bodies.size();
@@ -275,7 +275,7 @@ float IEntity::getGravityScale () const
 {
 	float gravityScale = 0.0f;
 	for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-		gravityScale += (*i)->GetGravityScale();
+		gravityScale += (*i).getGravityScale();
 	}
 	return gravityScale /= (float) _bodies.size();
 }
@@ -284,27 +284,27 @@ float IEntity::getMass () const
 {
 	float mass = 0.0f;
 	for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-		mass += (*i)->GetMass();
+		mass += (*i).getMass();
 	}
 	return mass;
 }
 
-b2Vec2 IEntity::getGravity () const
+PhysicsVec2 IEntity::getGravity () const
 {
 	if (_bodies.empty())
-		return b2Vec2_zero;
+		return PhysicsVec2_zero;
 
-	return (*_bodies.begin())->GetWorld()->GetGravity();
+	return (*_bodies.begin()).getWorld()->getGravity();
 }
 
 void IEntity::computeAABB () const
 {
-	_b2AABB.lowerBound = b2Vec2(FLT_MAX, FLT_MAX);
-	_b2AABB.upperBound = b2Vec2(-FLT_MAX, -FLT_MAX);
+	_b2AABB.lowerBound = PhysicsVec2(FLT_MAX, FLT_MAX);
+	_b2AABB.upperBound = PhysicsVec2(-FLT_MAX, -FLT_MAX);
 
 	if (_bodies.empty()) {
-		const b2Vec2& pos = getPos();
-		const b2Vec2& size = getSize();
+		const PhysicsVec2& pos = getPos();
+		const PhysicsVec2& size = getSize();
 		const float halfWidth = size.x / 2.0f;
 		const float halfHeight = size.y / 2.0f;
 		_b2AABB.lowerBound.x = pos.x - halfWidth;
@@ -315,30 +315,25 @@ void IEntity::computeAABB () const
 	}
 
 	for (BodyListConstIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-		b2Fixture* fixture = (*i)->GetFixtureList();
-		b2AABB aabb;
-		b2Transform t;
-		t.SetIdentity();
-		while (fixture != nullptr) {
-			const b2Shape *shape = fixture->GetShape();
-			const int childCount = shape->GetChildCount();
+		PhysicsAABB aabb;
+		PhysicsTransform t;
+		t.setIdentity();
+		for (PhysicsFixture fixture = (*i).getFixtureList(); fixture.isValid(); fixture = fixture.getNext()) {
+			const int childCount = fixture.getChildCount();
 			for (int child = 0; child < childCount; ++child) {
-				const b2Vec2 r(shape->m_radius, shape->m_radius);
-				shape->ComputeAABB(&aabb, t, child);
-				aabb.lowerBound = aabb.lowerBound + r;
-				aabb.upperBound = aabb.upperBound - r;
-				_b2AABB.Combine(aabb);
+				fixture.computeAABB(aabb, t, child);
+				_b2AABB.combine(aabb);
 			}
-			fixture = fixture->GetNext();
 		}
 	}
 }
 
 inline void IEntity::deleteBodies ()
 {
-	b2World *world = getMap().getWorld();
+	PhysicsWorld *world = getMap().getWorld();
 	for (BodyListIterator i = _bodies.begin(); i != _bodies.end(); ++i) {
-		world->DestroyBody(*i);
+		world->destroyBody(*i);
+		(*i).clear();
 	}
 	_bodies.clear();
 }
@@ -349,12 +344,12 @@ bool IEntity::isVisibleFor (const IEntity* entity) const
 		return false;
 
 #if 0
-	const b2Vec2 &selfPos = getPos();
-	const b2Vec2 &otherPos = entity->getPos();
+	const PhysicsVec2 &selfPos = getPos();
+	const PhysicsVec2 &otherPos = entity->getPos();
 	// TODO: this is very silly - improve the checks
-	if (b2Abs(selfPos.x - otherPos.x) > Config.getScreenMapWidth())
+	if (physAbs(selfPos.x - otherPos.x) > Config.getScreenMapWidth())
 		return false;
-	if (b2Abs(selfPos.y - otherPos.y) > Config.getScreenMapHeight())
+	if (physAbs(selfPos.y - otherPos.y) > Config.getScreenMapHeight())
 		return false;
 #endif
 	return true;
@@ -363,7 +358,7 @@ bool IEntity::isVisibleFor (const IEntity* entity) const
 Direction IEntity::getVelocityDirection (IEntity* entity, float vEpsilon) const
 {
 	Direction dir = 0;
-	const b2Vec2& velocity = entity->getLinearVelocity();
+	const PhysicsVec2& velocity = entity->getLinearVelocity();
 	if (velocity.y > vEpsilon) {
 		dir |= DIRECTION_DOWN;
 	} else if (velocity.y < vEpsilon) {
@@ -379,15 +374,15 @@ Direction IEntity::getVelocityDirection (IEntity* entity, float vEpsilon) const
 	return dir;
 }
 
-b2Vec2 IEntity::getImpactVelocity (b2Contact *contact) const
+PhysicsVec2 IEntity::getImpactVelocity (PhysicsContact contact) const
 {
-	const b2Body *bodyA = contact->GetFixtureA()->GetBody();
-	const b2Body *bodyB = contact->GetFixtureB()->GetBody();
-	b2WorldManifold worldManifold;
-	contact->GetWorldManifold(&worldManifold);
-	const b2Vec2 vel1 = bodyA->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
-	const b2Vec2 vel2 = bodyB->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
-	const b2Vec2 impactVelocity = vel1 - vel2;
+	const PhysicsBody bodyA = contact.getFixtureA().getBody();
+	const PhysicsBody bodyB = contact.getFixtureB().getBody();
+	PhysicsWorldManifold worldManifold;
+	contact.getWorldManifold(worldManifold);
+	const PhysicsVec2 vel1 = bodyA.getLinearVelocityFromWorldPoint(worldManifold.points[0]);
+	const PhysicsVec2 vel2 = bodyB.getLinearVelocityFromWorldPoint(worldManifold.points[0]);
+	const PhysicsVec2 impactVelocity = vel1 - vel2;
 	return impactVelocity;
 }
 

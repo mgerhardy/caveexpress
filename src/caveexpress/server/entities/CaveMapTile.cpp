@@ -46,7 +46,7 @@ void CaveMapTile::update (uint32_t deltaTime)
 		const Map::PlayerList& players = _map.getPlayers();
 		for (Map::PlayerListConstIter i = players.begin(); i != players.end(); ++i) {
 			const Player* p = *i;
-			const float distance = b2Distance(p->getPos(), getPos());
+			const float distance = physDistance(p->getPos(), getPos());
 			const float allowedDistance = getSize().y;
 			if (distance < allowedDistance)
 				return;

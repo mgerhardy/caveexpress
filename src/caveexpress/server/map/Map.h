@@ -36,8 +36,8 @@ class Water;
 class PackageTarget;
 class Geyser;
 
-const int32 MAXCONTACTPOINTS = 128;
-const int32 MAXTRACEDATA = 512;
+const int32_t MAXCONTACTPOINTS = 128;
+const int32_t MAXTRACEDATA = 512;
 
 class IEntityVisitor {
 public:
@@ -62,28 +62,24 @@ enum {
 	BORDER_MAX
 };
 
-class DestructionListener: public b2DestructionListener
+class DestructionListener: public IPhysicsDestructionListener
 {
-	/// Called when any joint is about to be destroyed due
-	/// to the destruction of one of its attached bodies.
-	void SayGoodbye (b2Joint* joint) override
+	void sayGoodbye (PhysicsJoint joint) override
 	{
-		IEntity *entity = reinterpret_cast<IEntity*>((void*)joint->GetUserData().pointer);
+		IEntity *entity = reinterpret_cast<IEntity*>(joint.getUserData());
 		if (entity == nullptr)
 			return;
 		entity->clearJoint(joint);
 	}
 
-	/// Called when any fixture is about to be destroyed due
-	/// to the destruction of its parent body.
-	void SayGoodbye (b2Fixture* fixture) override
+	void sayGoodbye (PhysicsFixture fixture) override
 	{
-		fixture->GetUserData().pointer = 0;
-		fixture->GetBody()->GetUserData().pointer = 0;
+		fixture.setUserData(0);
+		fixture.getBody().setUserData(0);
 	}
 };
 
-class Map: public IMap, public b2ContactListener, public b2ContactFilter, public IEntityVisitor {
+class Map: public IMap, public IPhysicsContactListener, public IPhysicsContactFilter, public IEntityVisitor {
 public:
 	typedef std::vector<Player*> PlayerList;
 	typedef PlayerList::iterator PlayerListIter;
@@ -107,7 +103,7 @@ public:
 	mutable TraceData _traces[MAXTRACEDATA];
 	mutable int32_t _traceCount;
 
-	mutable std::vector<b2Vec2> _waterIntersectionPoints;
+	mutable std::vector<PhysicsVec2> _waterIntersectionPoints;
 protected:
 	DestructionListener _destructionListener;
 
@@ -177,7 +173,7 @@ protected:
 	BorderList _borders;
 
 	// Box2D
-	b2World* _world;
+	PhysicsWorld* _world;
 
 	bool _pause;
 	// sanity check in the world step callbacks
@@ -217,7 +213,7 @@ public:
 	inline int getConnectedPlayers () const { return static_cast<int>(_playersWaitingForSpawn.size() + _players.size()); }
 	Player* getPlayer (ClientId clientId);
 
-	b2World *getWorld () const;
+	PhysicsWorld *getWorld () const;
 
 	TimeManager& getTimeManager ();
 
@@ -235,7 +231,7 @@ public:
 	// param[in] endPos The grid end position of the starting entity. If -1 is given here the platform dimensions are calculated
 	bool isReachableByWalking (const IEntity *start, const IEntity *end, int startPos = -1, int endPos = -1) const;
 	// return true if something was hit
-	bool rayTrace (const b2Vec2& start, const b2Vec2& end, IEntity **hit) const;
+	bool rayTrace (const PhysicsVec2& start, const PhysicsVec2& end, IEntity **hit) const;
 	bool rayTrace (const IEntity *start, const IEntity *end, IEntity **hit = nullptr) const;
 	bool rayTrace (int startGridX, int startGridY, int endGridX, int endGridY, IEntity **hit) const;
 
@@ -292,15 +288,15 @@ public:
 	NPCFriendly* createFriendlyNPC (CaveMapTile* cave, const EntityType& type = EntityType::NONE, bool returnToCaveOnIdle = false);
 
 	// creates a new flying npc (aggressive)
-	NPCFlying* createFlyingNPC (const b2Vec2& pos);
+	NPCFlying* createFlyingNPC (const PhysicsVec2& pos);
 
 	// creates a new blow npc
-	NPCBlowing* createBlowingNPC (const b2Vec2& pos, bool right, float force, float modificatorSize);
+	NPCBlowing* createBlowingNPC (const PhysicsVec2& pos, bool right, float force, float modificatorSize);
 
 	// creates a new walking npc (aggressive)
-	NPCAttacking* createAttackingNPC (const b2Vec2& pos, const EntityType& entityType, bool right = true);
+	NPCAttacking* createAttackingNPC (const PhysicsVec2& pos, const EntityType& entityType, bool right = true);
 
-	NPCFish* createFishNPC (const b2Vec2& pos);
+	NPCFish* createFishNPC (const PhysicsVec2& pos);
 
 	NPCPackage* createPackageNPC (CaveMapTile* cave, const EntityType& type);
 
@@ -332,7 +328,7 @@ public:
 
 	void resetCurrentMap ();
 
-	b2Body* addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *entity);
+	PhysicsBody addToWorld (PhysicsFixtureDef &fixtureDef, PhysicsBodyDef &bodyDef, IEntity *entity);
 
 	// delay add
 	void addEntity (IEntity *entity);
@@ -341,15 +337,15 @@ public:
 
 	void sendMapToClient (ClientId clientId) const;
 
-	const b2Vec2& getPlayerPos () const;
+	PhysicsVec2 getPlayerPos () const;
 
 	bool removePlayer (ClientId clientId);
 
 	void sendCooldown (int clientMask, const Cooldown& cooldown) const;
 
-	void sendSound (int clientMask, const SoundType& type, const b2Vec2& pos = b2Vec2_zero) const;
+	void sendSound (int clientMask, const SoundType& type, const PhysicsVec2& pos = PhysicsVec2_zero) const;
 
-	void sendSpawnInfo (const b2Vec2& pos, const EntityType& type) const;
+	void sendSpawnInfo (const PhysicsVec2& pos, const EntityType& type) const;
 
 	bool isWaterRising () const;
 
@@ -366,7 +362,7 @@ public:
 	// by underlying solid ground tiles.
 	void getPlatformDimensions (int gridX, int gridY, int *start, int *end) const;
 
-	std::vector<b2Vec2>& getWaterIntersectionPoints () { return _waterIntersectionPoints; }
+	std::vector<PhysicsVec2>& getWaterIntersectionPoints () { return _waterIntersectionPoints; }
 
 private:
 	void killPlayers ();
@@ -379,14 +375,14 @@ private:
 
 	MapTile* createMapTileWithoutBody (const SpriteDefPtr& spriteDef, gridCoord gridX, gridCoord gridY, EntityAngle angle);
 
-	// b2ContactFilter
-	bool ShouldCollide (b2Fixture* fixtureA, b2Fixture* fixtureB) override;
+	// IPhysicsContactFilter
+	bool shouldCollide (PhysicsFixture fixtureA, PhysicsFixture fixtureB) override;
 
-	// b2ContactListener
-	void BeginContact (b2Contact* contact) override;
-	void EndContact (b2Contact* contact) override;
-	void PostSolve (b2Contact* contact, const b2ContactImpulse* impulse) override;
-	void PreSolve (b2Contact* contact, const b2Manifold* oldManifold) override;
+	// IPhysicsContactListener
+	void beginContact (PhysicsContact contact) override;
+	void endContact (PhysicsContact contact) override;
+	void postSolve (PhysicsContact contact, const PhysicsContactImpulse& impulse) override;
+	void preSolve (PhysicsContact contact, const PhysicsManifold& oldManifold) override;
 
 	// init the map boundaries and configure the box2d stuff
 	void initPhysics ();
@@ -469,7 +465,7 @@ inline float Map::getWaterHeight () const
 	return 0.0f;
 }
 
-inline b2World *Map::getWorld () const
+inline PhysicsWorld *Map::getWorld () const
 {
 	return _world;
 }
@@ -485,10 +481,10 @@ inline bool Map::isDone () const
 	return true;
 }
 
-inline const b2Vec2& Map::getPlayerPos () const
+inline PhysicsVec2 Map::getPlayerPos () const
 {
 	if (_players.empty())
-		return b2Vec2_zero;
+		return PhysicsVec2_zero;
 	return _players[0]->getPos();
 }
 

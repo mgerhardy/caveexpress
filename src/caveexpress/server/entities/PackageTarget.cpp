@@ -11,8 +11,8 @@ namespace caveexpress {
 
 PackageTarget::PackageTarget (Map& map, const std::string& spriteID, gridCoord x, gridCoord y) :
 		MapTile(map, spriteID, x, y,
-				ThemeTypes::isIce(map.getTheme()) ? EntityTypes::PACKAGETARGET_ICE : EntityTypes::PACKAGETARGET_ROCK), _joint(
-				nullptr), _package(nullptr), _lengthUpdate(0)
+				ThemeTypes::isIce(map.getTheme()) ? EntityTypes::PACKAGETARGET_ICE : EntityTypes::PACKAGETARGET_ROCK),
+		_joint(), _package(nullptr), _lengthUpdate(0)
 {
 	setAnimationType(Animations::ANIMATION_IDLE);
 }
@@ -30,40 +30,40 @@ bool PackageTarget::shouldCollide (const IEntity* entity) const
 	return package->hasTarget(this);
 }
 
-void PackageTarget::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold)
+void PackageTarget::onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold)
 {
 	IEntity::onPreSolve(contact, entity, oldManifold);
 	// there is already a pull in progress
-	if (_joint != nullptr)
+	if (_joint.isValid())
 		return;
 
 	if (!isValidContact(contact, "top"))
 		return;
 
-	contact->SetEnabled(false);
+	contact.setEnabled(false);
 
 	if (entity->isPackage()) {
 		Package *package = assert_cast<Package*, IEntity*>(entity);
-		package->setLinearVelocity(b2Vec2_zero);
+		package->setLinearVelocity(PhysicsVec2_zero);
 		package->setAngularVelocity(0.0f);
 		setAnimationType(Animations::ANIMATION_ACTIVE);
 		_package = package;
 		
-		b2Vec2 p = getPos();
+		PhysicsVec2 p = getPos();
 		p.y -= 2.f;  // louder
 		_map.sendSound(getVisMask(), SoundTypes::SOUND_PACKAGE_TARGET, p);
 	}
 }
 
-std::string PackageTarget::getUserData (b2Contact* contact) const
+std::string PackageTarget::getUserData (PhysicsContact contact) const
 {
-	b2Fixture* fixture;
-	if (contact->GetFixtureA()->GetBody()->GetUserData().pointer == (uintptr_t)this) {
-		fixture = contact->GetFixtureA();
+	PhysicsFixture fixture;
+	if (contact.getFixtureA().getBody().getUserData() == (uintptr_t)this) {
+		fixture = contact.getFixtureA();
 	} else {
-		fixture = contact->GetFixtureB();
+		fixture = contact.getFixtureB();
 	}
-	return reinterpret_cast<const char*>(fixture->GetUserData().pointer);
+	return reinterpret_cast<const char*>(fixture.getUserData());
 }
 
 void PackageTarget::update (uint32_t deltaTime)
@@ -72,14 +72,14 @@ void PackageTarget::update (uint32_t deltaTime)
 	if (_package == nullptr)
 		return;
 
-	if (_joint == nullptr) {
+	if (!_joint.isValid()) {
 		applyJoint(_package);
 	} else {
 		updateJoint(deltaTime);
 	}
 }
 
-void PackageTarget::clearJoint (b2Joint *joint)
+void PackageTarget::clearJoint (PhysicsJoint joint)
 {
 	IEntity::clearJoint(joint);
 	if (_joint == joint) {
@@ -89,8 +89,8 @@ void PackageTarget::clearJoint (b2Joint *joint)
 
 void PackageTarget::updateJoint (uint32_t deltaTime)
 {
-	SDL_assert(_joint != nullptr);
-	const float currentLength = _joint->GetLength();
+	SDL_assert(_joint.isValid());
+	const float currentLength = _joint.getLength();
 	if (currentLength < 0.05f) {
 		removeJoint();
 		return;
@@ -100,13 +100,13 @@ void PackageTarget::updateJoint (uint32_t deltaTime)
 		return;
 
 	_lengthUpdate = LENGTH_UPDATE_DELAY;
-	_joint->SetLength(currentLength - 0.1f);
+	_joint.setLength(currentLength - 0.1f);
 }
 
 void PackageTarget::removeJoint ()
 {
 	// the joint is deleted once the body is removed
-	_joint = nullptr;
+	_joint.clear();
 	setAnimationType(Animations::ANIMATION_IDLE);
 	_package->setDelivered();
 	_package = nullptr;
@@ -114,14 +114,20 @@ void PackageTarget::removeJoint ()
 
 void PackageTarget::applyJoint (Package *package)
 {
-	SDL_assert(_joint == nullptr);
-	const b2Vec2 shift(0.0f, -0.1f);
-	b2Body* bodyA = getBodies()[0];
-	b2Body* bodyB = package->getBodies()[0];
+	SDL_assert(!_joint.isValid());
+	const PhysicsVec2 shift(0.0f, -0.1f);
+	PhysicsBody bodyA = getBodies()[0];
+	PhysicsBody bodyB = package->getBodies()[0];
 
-	b2DistanceJointDef def;
-	def.Initialize(bodyA, bodyB, bodyA->GetWorldPoint(shift), package->getPos());
-	_joint = assert_cast<b2DistanceJoint*, b2Joint*>(_map.getWorld()->CreateJoint(&def));
+	PhysicsDistanceJointDef def;
+	def.useWorldAnchors = true;
+	def.bodyA = bodyA;
+	def.bodyB = bodyB;
+	def.worldAnchorA = bodyA.getWorldPoint(shift);
+	def.worldAnchorB = package->getPos();
+	def.minLength = 0.0f;
+	def.maxLength = physDistance(def.worldAnchorA, def.worldAnchorB);
+	_joint = _map.getWorld()->createDistanceJoint(def);
 
 	_lengthUpdate = LENGTH_UPDATE_DELAY;
 	package->setGravityScale(0.0f);

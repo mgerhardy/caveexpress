@@ -8,7 +8,7 @@ namespace caveexpress {
 NPCFish::NPCFish (Map& map, double magnitude, double amplitude) :
 		NPCAggressive(EntityTypes::NPC_FISH, map), _magnitude(magnitude), _amplitude(amplitude)
 {
-	_currentSwimmingSpeed = b2Vec2_zero;
+	_currentSwimmingSpeed = PhysicsVec2_zero;
 	_initialSwimmingSpeed = 2.0f;
 	_spriteAlignment = ENTITY_ALIGN_MIDDLE_CENTER;
 }
@@ -17,7 +17,7 @@ NPCFish::~NPCFish ()
 {
 }
 
-void NPCFish::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold)
+void NPCFish::onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold)
 {
 	NPCAggressive::onPreSolve(contact, entity, oldManifold);
 	// we hit a player - so the player is crashing
@@ -25,25 +25,25 @@ void NPCFish::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold*
 		Player* player = assert_cast<Player*, IEntity*>(entity);
 		player->setCrashed(CRASH_NPC_FISH);
 	}
-	contact->SetEnabled(false);
+	contact.setEnabled(false);
 }
 
 void NPCFish::update (uint32_t deltaTime)
 {
 	NPCAggressive::update(deltaTime);
 	// TODO: look for players and try to attack them
-	const b2Vec2& position = getPos();
+	const PhysicsVec2& position = getPos();
 	// 1/4 * sin(x/4) => d/dx => 1/4 * cos(x/4) * (1 * 1/4 * x^0) => 1/16 * cos(x/4)
 	const double divAmplitude = 1.0 / _amplitude;
 	const double elevation = _magnitude * cos(position.x / divAmplitude) * _amplitude;
 	const double radians = atan(elevation);
-	const b2Vec2 pos(position.x, std::max(_map.getWaterHeight(), (float)(position.y + _magnitude * sinf(position.x) * _amplitude)));
+	const PhysicsVec2 pos(position.x, std::max(_map.getWaterHeight(), (float)(position.y + _magnitude * sinf(position.x) * _amplitude)));
 	setPosAndAngle(pos, radians);
 
 	if (!isDying())
 		return;
 
-	b2Vec2 v = getLinearVelocity();
+	PhysicsVec2 v = getLinearVelocity();
 	v.y = _map.getGravity() / 2.0f;
 	setLinearVelocity(v);
 }
@@ -83,7 +83,7 @@ void NPCFish::setSwimmingAnimation (const Animation& animation)
 		vx = -_initialSwimmingSpeed;
 	else
 		vx = _initialSwimmingSpeed;
-	_currentSwimmingSpeed = b2Vec2(vx, 0);
+	_currentSwimmingSpeed = PhysicsVec2(vx, 0);
 }
 
 bool NPCFish::shouldCollide (const IEntity* entity) const

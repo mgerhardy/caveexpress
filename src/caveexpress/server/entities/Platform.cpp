@@ -27,7 +27,7 @@ SpriteDefPtr Platform::getSpriteDef () const
 	return SpriteDefPtr();
 }
 
-void Platform::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold)
+void Platform::onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold)
 {
 	IEntity::onPreSolve(contact, entity, oldManifold);
 	if (!entity->isPlayer())
@@ -40,18 +40,18 @@ void Platform::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold
 	if (player->isLandedOn(_caveTile))
 		return;
 
-	b2WorldManifold worldManifold;
-	contact->GetWorldManifold(&worldManifold);
-	const b2Vec2 worldNormal = worldManifold.normal;
+	PhysicsWorldManifold worldManifold;
+	contact.getWorldManifold(worldManifold);
+	const PhysicsVec2 worldNormal = worldManifold.normal;
 	// not from above - then we don't care	// -1/sqrt(2)
 	if (worldNormal.y >= -0.07 ||
 		fabs(worldNormal.x) > fabs(worldNormal.y))
 		return;
 
-	const b2Manifold *maniFold = contact->GetManifold();
-	if (maniFold->pointCount <= 0)
+	const PhysicsManifold maniFold = contact.getManifold();
+	if (maniFold.pointCount <= 0)
 		return;
-	const float normalImpulse = maniFold->points[0].normalImpulse;
+	const float normalImpulse = maniFold.points[0].normalImpulse;
 	const float absNormalImpulse = fabs(normalImpulse);
 	if (absNormalImpulse < EPSILON)
 		return;
@@ -60,7 +60,7 @@ void Platform::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold
 	Log::debug(LOG_GAMEIMPL, "player %s (%i) landed on cave %i", player->getName().c_str(), player->getID(), getID());
 }
 
-void Platform::endContact (b2Contact* contact, IEntity* entity)
+void Platform::endContact (PhysicsContact contact, IEntity* entity)
 {
 	IEntity::endContact(contact, entity);
 	if (entity->isPlayer()) {

@@ -32,10 +32,10 @@ bool EntityEmitter::shouldCollide (const IEntity* entity) const
 	return false;
 }
 
-b2Vec2 EntityEmitter::getRealPos (const EntityType &entityType) const
+PhysicsVec2 EntityEmitter::getRealPos (const EntityType &entityType) const
 {
-	const b2Vec2 size(entityType.width, entityType.height);
-	b2Vec2 pos;
+	const PhysicsVec2 size(entityType.width, entityType.height);
+	PhysicsVec2 pos;
 	pos.x = _x + size.x / 2.0f;
 	const float fract = glm::fract(size.y);
 	if (fract > 0.0f) {
@@ -63,7 +63,7 @@ void EntityEmitter::update (uint32_t deltaTime)
 
 	_spawnTimer = _delay;
 
-	const b2Vec2 realPos = getRealPos(_type);
+	const PhysicsVec2 realPos = getRealPos(_type);
 
 	Log::debug(LOG_GAMEIMPL, "%s spawning", _type.name.c_str());
 	if (EntityTypes::isStone(_type)) {

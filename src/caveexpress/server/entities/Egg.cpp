@@ -22,18 +22,18 @@ void Egg::onSpawn ()
 
 void Egg::createBody ()
 {
-	b2PolygonShape sd;
-	sd.SetAsBox(_size.x / 2.0f, _size.y / 2.0f);
-
-	b2FixtureDef fd;
-	fd.shape = &sd;
+	PhysicsFixtureDef fd;
+	fd.shapeType = PhysicsShapeType::Polygon;
+	fd.useBox = true;
+	fd.boxHalfWidth = _size.x / 2.0f;
+	fd.boxHalfHeight = _size.y / 2.0f;
 	fd.density = DENSITY_EGG;
 	fd.friction = 0.0f;
 	fd.restitution = 0.0f;
 
-	b2BodyDef bd;
-	bd.position.Set(_x, _y);
-	bd.type = b2_dynamicBody;
+	PhysicsBodyDef bd;
+	bd.position.set(_x, _y);
+	bd.type = PhysicsBodyType::Dynamic;
 	bd.fixedRotation = false;
 
 	_map.addToWorld(fd, bd, this);

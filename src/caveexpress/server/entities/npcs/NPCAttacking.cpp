@@ -20,9 +20,9 @@ NPCAttacking::~NPCAttacking ()
 	t.clearTimeout(_returnTimer);
 }
 
-inline void NPCAttacking::changeAttackingAnimation (const b2Vec2 &targetPos)
+inline void NPCAttacking::changeAttackingAnimation (const PhysicsVec2 &targetPos)
 {
-	const b2Vec2 speed(_initialWalkingSpeed * 2, -0.01f);
+	const PhysicsVec2 speed(_initialWalkingSpeed * 2, -0.01f);
 	if (targetPos.x > getPos().x) {
 		_lastDirectionRight = true;
 		setLinearVelocity(speed);
@@ -34,14 +34,14 @@ inline void NPCAttacking::changeAttackingAnimation (const b2Vec2 &targetPos)
 	}
 }
 
-void NPCAttacking::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold)
+void NPCAttacking::onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold)
 {
 	NPCAggressive::onPreSolve(contact, entity, oldManifold);
 	if (!entity->isPlayer())
 		return;
 
 	if (!isAttacking() || _returnTimer != 0) {
-		contact->SetEnabled(false);
+		contact.setEnabled(false);
 		return;
 	}
 
@@ -181,11 +181,11 @@ void NPCAttacking::update (uint32_t deltaTime)
 
 	// gradual acceleration reduction if we are about to return to the initial position
 	if (_returnTimer != 0) {
-		const b2Vec2 vel = getLinearVelocity();
+		const PhysicsVec2 vel = getLinearVelocity();
 		const float desiredVel = vel.x * 0.98f;
 		const float velChange = desiredVel - vel.x;
 		const float impulse = getMass() * velChange;
-		applyLinearImpulse(b2Vec2(impulse, 0.0f));
+		applyLinearImpulse(PhysicsVec2(impulse, 0.0f));
 	}
 
 	// attack player if he is landed

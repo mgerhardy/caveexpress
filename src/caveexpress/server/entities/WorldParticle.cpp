@@ -5,7 +5,7 @@
 
 namespace caveexpress {
 
-WorldParticle::WorldParticle(Map& map, WorldParticleType type, int maxParticles, float density, const b2Vec2& size, uint32_t lifetime) :
+WorldParticle::WorldParticle(Map& map, WorldParticleType type, int maxParticles, float density, const PhysicsVec2& size, uint32_t lifetime) :
 		IEntity(EntityTypes::PARTICLE, map), _particleType(type), _maxParticles(
 				maxParticles), _nextParticleIndex(0), _density(density), _lifetime(lifetime), _lastDirtyTime(0), _particlesDirty(false)
 {
@@ -36,9 +36,9 @@ bool WorldParticle::shouldCollide (const IEntity *entity) const
 	}
 }
 
-b2Vec2 WorldParticle::getSpawnPosition (const IEntity* entity) const
+PhysicsVec2 WorldParticle::getSpawnPosition (const IEntity* entity) const
 {
-	return b2Vec2(entity->getPos().x, entity->getPos().y);
+	return PhysicsVec2(entity->getPos().x, entity->getPos().y);
 }
 
 void WorldParticle::checkParticleGeneratingContacts ()
@@ -46,9 +46,9 @@ void WorldParticle::checkParticleGeneratingContacts ()
 	const float threshold = 0.35f;
 	for (ContactsIter it = _contacts.begin(); it != _contacts.end(); ++it) {
 		const IEntity* entity = *it;
-		b2Body* body = entity->getBodies()[0];
-		const b2Vec2& v = body->GetLinearVelocity();
-		const float speed = v.Length();
+		PhysicsBody body = entity->getBodies()[0];
+		const PhysicsVec2& v = body.getLinearVelocity();
+		const float speed = v.length();
 		if (speed > threshold) {
 			spawnParticle(getSpawnPosition(entity), v);
 		}
@@ -60,42 +60,42 @@ WorldParticle::SimpleParticle* WorldParticle::createParticleBody ()
 	SimpleParticle* p = new SimpleParticle();
 	p->life = _lifetime;
 
-	b2BodyDef bd;
-	bd.userData.pointer = (uintptr_t)this;
-	bd.type = b2_dynamicBody;
+	PhysicsBodyDef bd;
+	bd.userData = (uintptr_t)this;
+	bd.type = PhysicsBodyType::Dynamic;
 	bd.fixedRotation = false;
 
-	b2PolygonShape shape;
-	shape.SetAsBox(_size.x / 2.0f, _size.y / 2.0f);
-
-	b2FixtureDef fd;
+	PhysicsFixtureDef fd;
+	fd.shapeType = PhysicsShapeType::Polygon;
+	fd.useBox = true;
+	fd.boxHalfWidth = _size.x / 2.0f;
+	fd.boxHalfHeight = _size.y / 2.0f;
 	fd.density = _density;
-	fd.shape = &shape;
 	fd.friction = 2.0f;
 	fd.restitution = 0.1f;
 
-	p->body = _map.getWorld()->CreateBody(&bd);
-	p->body->CreateFixture(&fd);
+	p->body = _map.getWorld()->createBody(bd);
+	p->body.createFixture(fd);
 	_bodies.push_back(p->body);
 
 	return p;
 }
 
-void WorldParticle::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold)
+void WorldParticle::onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold)
 {
 	if (_particleType != WATER)
 		return;
 
-	b2Fixture* fixture = contact->GetFixtureA();
-	const bool useBodyA = fixture->GetBody()->GetUserData().pointer == (uintptr_t)this || fixture->GetUserData().pointer == (uintptr_t)this;
-	const b2Body *body = useBodyA ? fixture->GetBody() : contact->GetFixtureB()->GetBody();
+	PhysicsFixture fixture = contact.getFixtureA();
+	const bool useBodyA = fixture.getBody().getUserData() == (uintptr_t)this || fixture.getUserData() == (uintptr_t)this;
+	PhysicsBody body = useBodyA ? fixture.getBody() : contact.getFixtureB().getBody();
 	const SimpleParticle* p = _particleReverseMap[body];
 	SDL_assert(p);
 	const bool enabled = p->life > 0;
-	contact->SetEnabled(enabled);
+	contact.setEnabled(enabled);
 }
 
-void WorldParticle::spawnParticle (const b2Vec2& pos, const b2Vec2& v)
+void WorldParticle::spawnParticle (const PhysicsVec2& pos, const PhysicsVec2& v)
 {
 	int currentParticleIndex = _nextParticleIndex;
 	SimpleParticle* p;
@@ -114,9 +114,9 @@ void WorldParticle::spawnParticle (const b2Vec2& pos, const b2Vec2& v)
 
 	p->life = _lifetime;
 
-	b2Body* b = p->body;
-	b->SetEnabled(true);
-	b2Vec2 vel = v;
+	PhysicsBody b = p->body;
+	b.setEnabled(true);
+	PhysicsVec2 vel = v;
 	if (_particleType == WATER) {
 		vel *= 1.7f;
 		vel.y *= -1.f;  // splash
@@ -125,16 +125,16 @@ void WorldParticle::spawnParticle (const b2Vec2& pos, const b2Vec2& v)
 		vel.x += randBetweenf(-1.f, 1.f);
 		vel.y += randBetweenf(-1.f, 1.f);
 	}
-	b->SetLinearVelocity(vel);
+	b.setLinearVelocity(vel);
 
-	b2Vec2 pos2 = pos;
+	PhysicsVec2 pos2 = pos;
 	pos2.x += randBetweenf(-0.2f, 0.2f);
 	pos2.y += randBetweenf(-0.2f, 0.2f);
-	b->SetTransform(pos2, 0);
+	b.setTransform(pos2, 0);
 
-	b->SetGravityScale(1.0f);
-	b->SetLinearDamping(1.f);
-	b->SetAngularDamping(1.f);
+	b.setGravityScale(1.0f);
+	b.setLinearDamping(1.f);
+	b.setAngularDamping(1.f);
 }
 
 void WorldParticle::update (uint32_t deltaTime)
@@ -149,7 +149,7 @@ void WorldParticle::update (uint32_t deltaTime)
 		SimpleParticle* p = *i;
 		if (p->life < deltaTime) {
 			p->life = 0;
-			p->body->SetEnabled(false);
+			p->body.setEnabled(false);
 			continue;
 		}
 		p->life -= deltaTime;

@@ -27,7 +27,7 @@ private:
 	uint32_t _waterRisingTime;
 	uint32_t _waterFallingTime;
 
-	typedef std::pair<b2Fixture*, b2Fixture*> FixturePair;
+	typedef std::pair<PhysicsFixture, PhysicsFixture> FixturePair;
 	typedef std::set<FixturePair>::iterator FixturePairIter;
 	std::set<FixturePair> _fixturePairs;
 
@@ -53,8 +53,8 @@ public:
 	// IEntity
 	SpriteDefPtr getSpriteDef () const override;
 	void update (uint32_t deltaTime) override;
-	void onContact (b2Contact* contact, IEntity* entity) override;
-	void endContact (b2Contact* contact, IEntity* entity) override;
+	void onContact (PhysicsContact contact, IEntity* entity) override;
+	void endContact (PhysicsContact contact, IEntity* entity) override;
 	bool shouldCollide (const IEntity* entity) const override;
 };
 

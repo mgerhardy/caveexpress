@@ -44,7 +44,7 @@ public:
 	CaveMapTile *getCave () const;
 
 	// NPC
-	void setPos (const b2Vec2& pos) override;
+	void setPos (const PhysicsVec2& pos) override;
 };
 
 inline CaveMapTile *INPCCave::getCave () const

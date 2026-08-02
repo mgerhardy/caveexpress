@@ -10,7 +10,7 @@ CollectableEntity::CollectableEntity (const EntityType& type, Map& map, const IE
 	setState(EntityState::ENTITY_NORMAL);
 }
 
-void CollectableEntity::onContact (b2Contact* contact, IEntity* entity)
+void CollectableEntity::onContact (PhysicsContact contact, IEntity* entity)
 {
 	IEntity::onContact(contact, entity);
 	if (isDestroyed() || isRemove())

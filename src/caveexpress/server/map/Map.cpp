@@ -57,10 +57,6 @@
 #include <functional>
 #include <SDL_assert.h>
 
-typedef std::shared_ptr<b2Shape> ShapePtr;
-typedef std::multimap<std::string, ShapePtr> ShapeMap;
-typedef ShapeMap::iterator ShapeIter;
-
 namespace caveexpress {
 
 #define SPAWN_FRIENDLY_NPC_DELAY 10000
@@ -149,13 +145,13 @@ void Map::sendCooldown (int clientMask, const Cooldown& cooldown) const
 	_serviceProvider->getNetwork().sendToClients(clientMask, CooldownMessage(cooldown));
 }
 
-void Map::sendSound (int clientMask, const SoundType& type, const b2Vec2& pos) const
+void Map::sendSound (int clientMask, const SoundType& type, const PhysicsVec2& pos) const
 {
 	const SoundMessage msg(pos.x, pos.y, type);
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 
-void Map::sendSpawnInfo (const b2Vec2& pos, const EntityType& type) const
+void Map::sendSpawnInfo (const PhysicsVec2& pos, const EntityType& type) const
 {
 	const SpawnInfoMessage msg(pos.x, pos.y, type);
 	_serviceProvider->getNetwork().sendToAllClients(msg);
@@ -200,7 +196,7 @@ void Map::dump ()
 	if (!_world)
 		return;
 
-	_world->Dump();
+	_world->dump();
 }
 
 void Map::triggerDebug ()
@@ -224,9 +220,9 @@ void Map::render (void *userdata)
 	Map* map = static_cast<Map*>(userdata);
 	if (map->_world) {
 		DebugRenderer renderer(map->_pointCount, map->_points, map->_traceCount, map->_traces,  map->_waterIntersectionPoints, Config.getMapDebugRect(), map->_frontend);
-		map->_world->SetDebugDraw(&renderer);
-		map->_world->DebugDraw();
-		map->_world->SetDebugDraw(nullptr);
+		map->_world->setDebugDraw(&renderer);
+		map->_world->debugDraw();
+		map->_world->setDebugDraw(nullptr);
 	}
 }
 
@@ -281,7 +277,7 @@ void Map::clearPhysics ()
 		Log::info(LOG_GAMEIMPL, "* clear physics");
 
 	if (_world)
-		_world->SetContactListener(nullptr);
+		_world->setContactListener(nullptr);
 	{ // delete the box2d stuff
 		for (IEntity* entity : _entities) {
 			entity->prepareRemoval();
@@ -698,7 +694,7 @@ bool Map::load (const std::string& name)
 	return true;
 }
 
-class TraceCallback: public b2RayCastCallback {
+class TraceCallback: public IPhysicsRayCastCallback {
 private:
 	float _fraction;
 	IEntity *_entity;
@@ -709,9 +705,9 @@ public:
 	{
 	}
 
-	float ReportFixture (b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float fraction) override
+	float reportFixture (PhysicsFixture fixture, const PhysicsVec2& point, const PhysicsVec2& normal, float fraction) override
 	{
-		IEntity *e = reinterpret_cast<IEntity *>(fixture->GetBody()->GetUserData().pointer);
+		IEntity *e = reinterpret_cast<IEntity *>(fixture.getBody().getUserData());
 		if (e && (e->isSolid() || e->isBorder())) {
 			_fraction = fraction;
 			_entity = e;
@@ -757,10 +753,10 @@ bool Map::isReachableByWalking (const IEntity *start, const IEntity *end, int st
 	return startPos <= xEnd;
 }
 
-bool Map::rayTrace (const b2Vec2& start, const b2Vec2& end, IEntity **hit) const
+bool Map::rayTrace (const PhysicsVec2& start, const PhysicsVec2& end, IEntity **hit) const
 {
 	TraceCallback callback;
-	_world->RayCast(&callback, start, end);
+	_world->rayCast(callback, start, end);
 	if (hit) {
 		*hit = callback.getEntity();
 	}
@@ -784,8 +780,8 @@ bool Map::rayTrace (const IEntity *start, const IEntity *end, IEntity **hit) con
 bool Map::rayTrace (int startGridX, int startGridY, int endGridX, int endGridY, IEntity **hit) const
 {
 	// center of the cells
-	const b2Vec2 start(startGridX + 0.5f, startGridY + 0.5f);
-	const b2Vec2 end(endGridX + 0.5f, endGridY + 0.5f);
+	const PhysicsVec2 start(startGridX + 0.5f, startGridY + 0.5f);
+	const PhysicsVec2 end(endGridX + 0.5f, endGridY + 0.5f);
 	return rayTrace(start, end, hit);
 }
 
@@ -801,8 +797,8 @@ bool Map::spawnPlayer (Player* player)
 		return false;
 	}
 
-	const b2Vec2& size = player->getSize();
-	const b2Vec2 pos(playerStartX + size.x / 2.0f, playerStartY + size.y / 2.0f);
+	const PhysicsVec2& size = player->getSize();
+	const PhysicsVec2 pos(playerStartX + size.x / 2.0f, playerStartY + size.y / 2.0f);
 	player->createBody(pos);
 	player->onSpawn();
 	_players.push_back(player);
@@ -899,18 +895,18 @@ void Map::sendPlayersList () const
 
 void Map::initPhysics ()
 {
-	b2Vec2 gravity;
-	gravity.Set(0.0f, getGravity());
-	_world = new b2World(gravity);
+	PhysicsVec2 gravity;
+	gravity.set(0.0f, getGravity());
+	_world = new PhysicsWorld(gravity);
 
-	_world->SetDestructionListener(&_destructionListener);
+	_world->setDestructionListener(&_destructionListener);
 
 	//_world->SetWarmStarting(false);
 	//_world->SetContinuousPhysics(false);
 	//_world->SetSubStepping(false);
-	_world->SetAutoClearForces(true);
-	_world->SetContactListener(this);
-	_world->SetContactFilter(this);
+	_world->setAutoClearForces(true);
+	_world->setContactListener(this);
+	_world->setContactFilter(this);
 
 	const float zeroX = 0.0f;
 	const float zeroY = -0.5f;
@@ -918,16 +914,16 @@ void Map::initPhysics ()
 	// added a small offset to allow water diving out of screen
 	const float height = getMapHeight() + 1.0f;
 
-	b2BodyDef lineBodyDef;
-	lineBodyDef.type = b2_staticBody;
-	lineBodyDef.position.Set(0, 0);
-	b2Body* boxBody = _world->CreateBody(&lineBodyDef);
+	PhysicsBodyDef lineBodyDef;
+	lineBodyDef.type = PhysicsBodyType::Static;
+	lineBodyDef.position.set(0, 0);
+	PhysicsBody boxBody = _world->createBody(lineBodyDef);
 
-	b2EdgeShape edge;
-	b2FixtureDef fd;
+	PhysicsFixtureDef fd;
+	fd.shapeType = PhysicsShapeType::Edge;
+	fd.vertexCount = 2;
 	fd.friction = 1.0f;
 	fd.restitution = 0.2f;
-	fd.shape = &edge;
 
 	_borders.resize(BORDER_MAX);
 	const bool isSideBorderFail = string::toBool(getSetting(msn::SIDEBORDERFAIL));
@@ -937,25 +933,30 @@ void Map::initPhysics ()
 	_borders[BORDER_BOTTOM] = new Border(BorderType::BOTTOM, *this);
 	_borders[BORDER_PLAYER_BOTTOM] = new Border(BorderType::PLAYER_BOTTOM, *this);
 
-	edge.SetTwoSided(b2Vec2(zeroX, zeroY), b2Vec2(width, zeroY));
-	fd.userData.pointer = (uintptr_t)_borders[BORDER_TOP];
-	boxBody->CreateFixture(&fd);
+	fd.vertices[0].set(zeroX, zeroY);
+	fd.vertices[1].set(width, zeroY);
+	fd.userData = (PhysicsUserData)_borders[BORDER_TOP];
+	boxBody.createFixture(fd);
 
-	edge.SetTwoSided(b2Vec2(zeroX, zeroY), b2Vec2(zeroX, height));
-	fd.userData.pointer = (uintptr_t)_borders[BORDER_LEFT];
-	boxBody->CreateFixture(&fd);
+	fd.vertices[0].set(zeroX, zeroY);
+	fd.vertices[1].set(zeroX, height);
+	fd.userData = (PhysicsUserData)_borders[BORDER_LEFT];
+	boxBody.createFixture(fd);
 
-	edge.SetTwoSided(b2Vec2(width, height), b2Vec2(width, zeroY));
-	fd.userData.pointer = (uintptr_t)_borders[BORDER_RIGHT];
-	boxBody->CreateFixture(&fd);
+	fd.vertices[0].set(width, height);
+	fd.vertices[1].set(width, zeroY);
+	fd.userData = (PhysicsUserData)_borders[BORDER_RIGHT];
+	boxBody.createFixture(fd);
 
-	edge.SetTwoSided(b2Vec2(zeroX, height), b2Vec2(width, height));
-	fd.userData.pointer = (uintptr_t)_borders[BORDER_BOTTOM];
-	boxBody->CreateFixture(&fd);
+	fd.vertices[0].set(zeroX, height);
+	fd.vertices[1].set(width, height);
+	fd.userData = (PhysicsUserData)_borders[BORDER_BOTTOM];
+	boxBody.createFixture(fd);
 
-	edge.SetTwoSided(b2Vec2(zeroX, height), b2Vec2(width, getMapHeight()));
-	fd.userData.pointer = (uintptr_t)_borders[BORDER_PLAYER_BOTTOM];
-	boxBody->CreateFixture(&fd);
+	fd.vertices[0].set(zeroX, height);
+	fd.vertices[1].set(width, getMapHeight());
+	fd.userData = (PhysicsUserData)_borders[BORDER_PLAYER_BOTTOM];
+	boxBody.createFixture(fd);
 
 	initWater();
 }
@@ -1021,18 +1022,17 @@ Platform *Map::getPlatform (MapTile *mapTile, int *start, int *end, gridSize off
 	const gridCoord x = (gridCoord)*start + (gridCoord)width / 2.0f;
 	const gridSize y = mapTile->getGridY() + offset;
 
-	b2PolygonShape shape;
-	shape.SetAsBox(width / 2.0f, height);
-
-	b2FixtureDef fixture;
-	fixture.shape = &shape;
+	PhysicsFixtureDef fixture;
+	fixture.useBox = true;
+	fixture.boxHalfWidth = width / 2.0f;
+	fixture.boxHalfHeight = height;
 	fixture.friction = 0.4f;
 	fixture.restitution = 0.0f;
 	fixture.density = 0.0f;
 
-	b2BodyDef bd;
-	bd.position.Set(x, y);
-	bd.type = b2_kinematicBody;
+	PhysicsBodyDef bd;
+	bd.position.set(x, y);
+	bd.type = PhysicsBodyType::Kinematic;
 	bd.fixedRotation = true;
 
 	Platform *platform = new Platform(*this);
@@ -1068,8 +1068,8 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 		int startTraceGridX = gridX;
 		const int steps = startTraceGridX - leftGridX;
 		for (int i = 0; i < steps; ++i) {
-			const b2Vec2 startV(startTraceGridX - 0.5f, startTraceGridY + 0.5f);
-			const b2Vec2 endV(startTraceGridX - 0.5f, endTraceGridY + 0.2f);
+			const PhysicsVec2 startV(startTraceGridX - 0.5f, startTraceGridY + 0.5f);
+			const PhysicsVec2 endV(startTraceGridX - 0.5f, endTraceGridY + 0.2f);
 			const bool state = rayTrace(startV, endV, &hit);
 			if (state && hit && hit->isSolid()) {
 				--startTraceGridX;
@@ -1080,8 +1080,8 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 		*start = startTraceGridX;
 	} else {
 		IEntity *hit = nullptr;
-		const b2Vec2 startV(0, startTraceGridY);
-		const b2Vec2 endV(0, startTraceGridY + 0.0001f);
+		const PhysicsVec2 startV(0, startTraceGridY);
+		const PhysicsVec2 endV(0, startTraceGridY + 0.0001f);
 		const bool state = rayTrace(startV, endV, &hit);
 		if (state && hit && hit->isSolid())
 			return;
@@ -1101,8 +1101,8 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 		int endTraceGridX = gridX;
 		const int steps = rightGridX - endTraceGridX;
 		for (int i = 0; i < steps; ++i) {
-			const b2Vec2 startV(endTraceGridX + 1.5f, startTraceGridY + 0.5f);
-			const b2Vec2 endV(endTraceGridX + 1.5f, endTraceGridY + 0.2f);
+			const PhysicsVec2 startV(endTraceGridX + 1.5f, startTraceGridY + 0.5f);
+			const PhysicsVec2 endV(endTraceGridX + 1.5f, endTraceGridY + 0.2f);
 			const bool state = rayTrace(startV, endV, &hit);
 			if (state && hit && hit->isSolid()) {
 				++endTraceGridX;
@@ -1113,8 +1113,8 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 		*end = endTraceGridX;
 	} else {
 		IEntity *hit = nullptr;
-		const b2Vec2 startV(_width - 1.0f, startTraceGridY);
-		const b2Vec2 endV(_width - 1.0f, startTraceGridY + 0.0001f);
+		const PhysicsVec2 startV(_width - 1.0f, startTraceGridY);
+		const PhysicsVec2 endV(_width - 1.0f, startTraceGridY + 0.0001f);
 		const bool state = rayTrace(startV, endV, &hit);
 		if (state && hit && hit->isSolid()) {
 			return;
@@ -1157,31 +1157,34 @@ MapTile* Map::createMapTileWithoutBody (const SpriteDefPtr& spriteDef, gridCoord
 	return mapTile;
 }
 
-b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *entity)
+PhysicsBody Map::addToWorld (PhysicsFixtureDef &fixtureDef, PhysicsBodyDef &bodyDef, IEntity *entity)
 {
 	SDL_assert(_entityRemovalAllowed);
 
 	SpriteDefPtr def = entity->getSpriteDef();
+	bool useProvidedShape = fixtureDef.useBox || fixtureDef.vertexCount > 0
+			|| (fixtureDef.shapeType == PhysicsShapeType::Circle && fixtureDef.radius > 0.0f)
+			|| fixtureDef.shapeType == PhysicsShapeType::Edge;
 	if (def) {
 		if (def->hasShape())
-			fixtureDef.shape = nullptr;
+			useProvidedShape = false;
 		fixtureDef.restitution = def->restitution;
 		fixtureDef.friction = def->friction;
 	}
 
-	bodyDef.userData.pointer = (uintptr_t)entity;
-	b2Body* body = _world->CreateBody(&bodyDef);
+	bodyDef.userData = (PhysicsUserData)entity;
+	PhysicsBody body = _world->createBody(bodyDef);
 
-	if (fixtureDef.shape != nullptr) {
-		fixtureDef.userData.pointer = (uintptr_t)const_cast<char*>("");
-		body->CreateFixture(&fixtureDef);
+	if (useProvidedShape) {
+		fixtureDef.userData = (PhysicsUserData)const_cast<char*>("");
+		body.createFixture(fixtureDef);
 		entity->addBody(body);
 		return body;
 	}
 
 	if (!def) {
 		Log::error(LOG_GAMEIMPL, "no shape given - could not find sprite definition for %s", entity->getType().name.c_str());
-		return nullptr;
+		return PhysicsBody();
 	}
 
 	// create the shape from the sprite definition polygons
@@ -1190,15 +1193,18 @@ b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *
 		const SpritePolygon& polygon = def->polygons[j];
 		const int cnt = polygon.vertices.size();
 		int vertexCnt = 0;
-		b2Vec2 points[b2_maxPolygonVertices];
-		const int size = SDL_arraysize(points);
+		const int size = PhysicsMaxPolygonVertices;
 		if (cnt > size)
 			Log::error(LOG_GAMEIMPL, "too many vertices given for sprite %s", def->id.c_str());
 
+		PhysicsFixtureDef polyFd = fixtureDef;
+		polyFd.shapeType = PhysicsShapeType::Polygon;
+		polyFd.useBox = false;
+		polyFd.radius = 0.0f;
 		for (int i = 0; i < cnt; ++i) {
 			const SpriteVertex &v = polygon.vertices[i];
-			points[vertexCnt].x = v.x;
-			points[vertexCnt].y = v.y * -1.0f;
+			polyFd.vertices[vertexCnt].x = v.x;
+			polyFd.vertices[vertexCnt].y = v.y * -1.0f;
 			vertexCnt++;
 			if (vertexCnt >= size)
 				break;
@@ -1207,22 +1213,22 @@ b2Body* Map::addToWorld (b2FixtureDef &fixtureDef, b2BodyDef &bodyDef, IEntity *
 		if (vertexCnt == 0)
 			continue;
 
-		b2PolygonShape shape;
-		shape.Set(points, vertexCnt);
-		fixtureDef.shape = &shape;
-		fixtureDef.userData.pointer = (uintptr_t)const_cast<char*>(polygon.userData.c_str());;
-		body->CreateFixture(&fixtureDef);
+		polyFd.vertexCount = vertexCnt;
+		polyFd.userData = (PhysicsUserData)const_cast<char*>(polygon.userData.c_str());
+		body.createFixture(polyFd);
 	}
 
 	// create the shape from the sprite definition circles
 	for (std::vector<SpriteCircle>::const_iterator i = def->circles.begin(); i != def->circles.end(); ++i) {
 		const SpriteCircle& circle = *i;
-		b2CircleShape shape;
-		shape.m_p = b2Vec2(circle.center.x, circle.center.y);
-		shape.m_radius = circle.radius;
-		fixtureDef.shape = &shape;
-		fixtureDef.userData.pointer = (uintptr_t)const_cast<char*>(circle.userData.c_str());;
-		body->CreateFixture(&fixtureDef);
+		PhysicsFixtureDef circleFd = fixtureDef;
+		circleFd.shapeType = PhysicsShapeType::Circle;
+		circleFd.useBox = false;
+		circleFd.vertexCount = 0;
+		circleFd.circleCenter = PhysicsVec2(circle.center.x, circle.center.y);
+		circleFd.radius = circle.radius;
+		circleFd.userData = (PhysicsUserData)const_cast<char*>(circle.userData.c_str());
+		body.createFixture(circleFd);
 	}
 
 	entity->addBody(body);
@@ -1393,7 +1399,7 @@ bool Map::removePlayer (ClientId clientId)
 	return false;
 }
 
-NPCBlowing* Map::createBlowingNPC (const b2Vec2& pos, bool right, float force, float modificatorSize)
+NPCBlowing* Map::createBlowingNPC (const PhysicsVec2& pos, bool right, float force, float modificatorSize)
 {
 	SDL_assert(_entityRemovalAllowed);
 
@@ -1403,18 +1409,18 @@ NPCBlowing* Map::createBlowingNPC (const b2Vec2& pos, bool right, float force, f
 	return npc;
 }
 
-NPCAttacking* Map::createAttackingNPC (const b2Vec2& pos, const EntityType& entityType, bool right)
+NPCAttacking* Map::createAttackingNPC (const PhysicsVec2& pos, const EntityType& entityType, bool right)
 {
 	SDL_assert(EntityTypes::isNpcAttacking(entityType));
 	SDL_assert(_entityRemovalAllowed);
 	NPCAttacking *npc = new NPCAttacking(entityType, *this, right);
-	npc->createBody(pos, _world);
+	npc->createBody(pos);
 	npc->calculatePlatformDimensions();
 	addEntity(npc);
 	return npc;
 }
 
-NPCFish* Map::createFishNPC (const b2Vec2& pos)
+NPCFish* Map::createFishNPC (const PhysicsVec2& pos)
 {
 	SDL_assert(_entityRemovalAllowed);
 	NPCFish *npc = new NPCFish(*this);
@@ -1423,7 +1429,7 @@ NPCFish* Map::createFishNPC (const b2Vec2& pos)
 	return npc;
 }
 
-NPCFlying* Map::createFlyingNPC (const b2Vec2& pos)
+NPCFlying* Map::createFlyingNPC (const PhysicsVec2& pos)
 {
 	SDL_assert(_entityRemovalAllowed);
 	NPCFlying *npc = new NPCFlying(*this);
@@ -1541,7 +1547,7 @@ bool Map::visitEntity (IEntity *entity)
 	if (_time >= _warmupPhase) {
 		entity->update(Constant::DELTA_PHYSICS_MILLIS);
 		if (entity->shouldApplyWind())
-			entity->applyLinearImpulse(b2Vec2(_wind * getFlyingSpeedX() * (DENSITY_PLAYER / 400.0f), 0.0f));
+			entity->applyLinearImpulse(PhysicsVec2(_wind * getFlyingSpeedX() * (DENSITY_PLAYER / 400.0f), 0.0f));
 	}
 	handleVisibility(entity, vismask);
 
@@ -1563,7 +1569,7 @@ void Map::handleFlyingNPC ()
 
 		const int index = rand() % _players.size();
 		const Player* player = _players[index];
-		const b2Vec2& pos = player->getPos();
+		const PhysicsVec2& pos = player->getPos();
 		const float waterBodyY = getWaterHeight();
 		float y = pos.y;
 		if (y >= waterBodyY) {
@@ -1578,10 +1584,10 @@ void Map::handleFlyingNPC ()
 			x = -gap;
 		else
 			x = getMapWidth() + gap;
-		const b2Vec2 npcSpawnPos(x, y);
+		const PhysicsVec2 npcSpawnPos(x, y);
 		_flyingNPC = createFlyingNPC(npcSpawnPos);
 	} else {
-		const b2Vec2 &pos = _flyingNPC->getPos();
+		const PhysicsVec2 &pos = _flyingNPC->getPos();
 		const float x = pos.x;
 		const float y = pos.y;
 		if (x < -gap || y < 0 || x > getMapWidth() + gap || y > getMapHeight()) {
@@ -1612,7 +1618,7 @@ void Map::handleFishNPC ()
 
 		const int index = rand() % _players.size();
 		const Player* player = _players[index];
-		const b2Vec2& pos = player->getPos();
+		const PhysicsVec2& pos = player->getPos();
 		const float mapHeight = static_cast<float>(getMapHeight());
 		float y = std::min(waterBodyY, std::max(mapHeight, mapHeight - 0.5f));
 		if (y < 0.f) {
@@ -1624,10 +1630,10 @@ void Map::handleFishNPC ()
 			x = -gap;
 		else
 			x = getMapWidth() + gap;
-		const b2Vec2 npcSpawnPos(x, y);
+		const PhysicsVec2 npcSpawnPos(x, y);
 		_fishNPC = createFishNPC(npcSpawnPos);
 	} else {
-		const b2Vec2 &pos = _fishNPC->getPos();
+		const PhysicsVec2 &pos = _fishNPC->getPos();
 		const float x = pos.x;
 		const float y = pos.y;
 		if (x < -gap || y < 0 || x > getMapWidth() + gap || y > getMapHeight()) {
@@ -1678,7 +1684,7 @@ void Map::update (uint32_t deltaTime)
 			if (_time >= _warmupPhase) {
 				_entityRemovalAllowed = false;
 				ExecutionTime stepTime("StepTime", 2000L);
-				_world->Step(Constant::DELTA_PHYSICS_SECONDS, 8, 3);
+				_world->step(Constant::DELTA_PHYSICS_SECONDS, 8, 3);
 				_entityRemovalAllowed = true;
 			}
 		}
@@ -1695,27 +1701,27 @@ void Map::update (uint32_t deltaTime)
 	}
 }
 
-bool Map::ShouldCollide (b2Fixture* fixtureA, b2Fixture* fixtureB)
+bool Map::shouldCollide (PhysicsFixture fixtureA, PhysicsFixture fixtureB)
 {
-	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
-	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
+	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA.getBody().getUserData());
+	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB.getBody().getUserData());
 
 	if (entity1 == nullptr)
-		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData().pointer);
+		entity1 = reinterpret_cast<IEntity*>(fixtureA.getUserData());
 	if (entity2 == nullptr)
-		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData().pointer);
+		entity2 = reinterpret_cast<IEntity*>(fixtureB.getUserData());
 
 	if (entity1 != nullptr && entity2 != nullptr) {
 		const bool shouldCollide = entity1->shouldCollide(entity2) || entity2->shouldCollide(entity1);
 		if (entity1->shouldRefilter())
-			fixtureA->Refilter();
+			fixtureA.refilter();
 		if (entity2->shouldRefilter())
-			fixtureB->Refilter();
+			fixtureB.refilter();
 		return shouldCollide;
 	}
 
-	const b2Filter& filterA = fixtureA->GetFilterData();
-	const b2Filter& filterB = fixtureB->GetFilterData();
+	const PhysicsFilter& filterA = fixtureA.getFilterData();
+	const PhysicsFilter& filterB = fixtureB.getFilterData();
 	if (filterA.groupIndex == filterB.groupIndex && filterA.groupIndex != 0) {
 		return filterA.groupIndex > 0;
 	}
@@ -1724,17 +1730,17 @@ bool Map::ShouldCollide (b2Fixture* fixtureA, b2Fixture* fixtureB)
 	return collide;
 }
 
-void Map::BeginContact (b2Contact* contact)
+void Map::beginContact (PhysicsContact contact)
 {
-	b2Fixture *fixtureA = contact->GetFixtureA();
-	b2Fixture *fixtureB = contact->GetFixtureB();
-	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
-	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
+	PhysicsFixture fixtureA = contact.getFixtureA();
+	PhysicsFixture fixtureB = contact.getFixtureB();
+	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA.getBody().getUserData());
+	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB.getBody().getUserData());
 
 	if (entity1 == nullptr)
-		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData().pointer);
+		entity1 = reinterpret_cast<IEntity*>(fixtureA.getUserData());
 	if (entity2 == nullptr)
-		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData().pointer);
+		entity2 = reinterpret_cast<IEntity*>(fixtureB.getUserData());
 
 	if (entity1 != nullptr && entity2 != nullptr) {
 		entity1->onContact(contact, entity2);
@@ -1742,17 +1748,17 @@ void Map::BeginContact (b2Contact* contact)
 	}
 }
 
-void Map::EndContact (b2Contact* contact)
+void Map::endContact (PhysicsContact contact)
 {
-	b2Fixture *fixtureA = contact->GetFixtureA();
-	b2Fixture *fixtureB = contact->GetFixtureB();
-	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
-	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
+	PhysicsFixture fixtureA = contact.getFixtureA();
+	PhysicsFixture fixtureB = contact.getFixtureB();
+	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA.getBody().getUserData());
+	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB.getBody().getUserData());
 
 	if (entity1 == nullptr)
-		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData().pointer);
+		entity1 = reinterpret_cast<IEntity*>(fixtureA.getUserData());
 	if (entity2 == nullptr)
-		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData().pointer);
+		entity2 = reinterpret_cast<IEntity*>(fixtureB.getUserData());
 
 	if (entity1 != nullptr && entity2 != nullptr) {
 		entity1->endContact(contact, entity2);
@@ -1760,17 +1766,17 @@ void Map::EndContact (b2Contact* contact)
 	}
 }
 
-void Map::PostSolve (b2Contact* contact, const b2ContactImpulse* impulse)
+void Map::postSolve (PhysicsContact contact, const PhysicsContactImpulse& impulse)
 {
-	b2Fixture *fixtureA = contact->GetFixtureA();
-	b2Fixture *fixtureB = contact->GetFixtureB();
-	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
-	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
+	PhysicsFixture fixtureA = contact.getFixtureA();
+	PhysicsFixture fixtureB = contact.getFixtureB();
+	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA.getBody().getUserData());
+	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB.getBody().getUserData());
 
 	if (entity1 == nullptr)
-		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData().pointer);
+		entity1 = reinterpret_cast<IEntity*>(fixtureA.getUserData());
 	if (entity2 == nullptr)
-		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData().pointer);
+		entity2 = reinterpret_cast<IEntity*>(fixtureB.getUserData());
 
 	if (entity1 != nullptr && entity2 != nullptr) {
 		entity1->onPostSolve(contact, impulse, entity2);
@@ -1778,44 +1784,44 @@ void Map::PostSolve (b2Contact* contact, const b2ContactImpulse* impulse)
 	}
 }
 
-void Map::PreSolve (b2Contact* contact, const b2Manifold* oldManifold)
+void Map::preSolve (PhysicsContact contact, const PhysicsManifold& oldManifold)
 {
-	b2Fixture *fixtureA = contact->GetFixtureA();
-	b2Fixture *fixtureB = contact->GetFixtureB();
-	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA->GetBody()->GetUserData().pointer);
-	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB->GetBody()->GetUserData().pointer);
+	PhysicsFixture fixtureA = contact.getFixtureA();
+	PhysicsFixture fixtureB = contact.getFixtureB();
+	IEntity *entity1 = reinterpret_cast<IEntity*>(fixtureA.getBody().getUserData());
+	IEntity *entity2 = reinterpret_cast<IEntity*>(fixtureB.getBody().getUserData());
 
 	if (entity1 == nullptr)
-		entity1 = reinterpret_cast<IEntity*>(fixtureA->GetUserData().pointer);
+		entity1 = reinterpret_cast<IEntity*>(fixtureA.getUserData());
 	if (entity2 == nullptr)
-		entity2 = reinterpret_cast<IEntity*>(fixtureB->GetUserData().pointer);
+		entity2 = reinterpret_cast<IEntity*>(fixtureB.getUserData());
 
 	if (entity1 != nullptr && entity2 != nullptr) {
 		entity1->onPreSolve(contact, entity2, oldManifold);
 		entity2->onPreSolve(contact, entity1, oldManifold);
 	}
 
-	const b2Manifold* manifold = contact->GetManifold();
+	const PhysicsManifold manifold = contact.getManifold();
 
-	if (manifold->pointCount == 0) {
+	if (manifold.pointCount == 0) {
 		return;
 	}
 
-	b2PointState state1[b2_maxManifoldPoints], state2[b2_maxManifoldPoints];
-	b2GetPointStates(state1, state2, oldManifold, manifold);
+	PhysicsPointState state1[PhysicsMaxManifoldPoints], state2[PhysicsMaxManifoldPoints];
+	physGetPointStates(state1, state2, oldManifold, manifold);
 
-	b2WorldManifold worldManifold;
-	contact->GetWorldManifold(&worldManifold);
+	PhysicsWorldManifold worldManifold;
+	contact.getWorldManifold(worldManifold);
 
-	for (int32_t i = 0; i < manifold->pointCount && _pointCount < MAXCONTACTPOINTS; ++i) {
+	for (int32_t i = 0; i < manifold.pointCount && _pointCount < MAXCONTACTPOINTS; ++i) {
 		ContactPoint* cp = _points + _pointCount;
 		cp->fixtureA = fixtureA;
 		cp->fixtureB = fixtureB;
 		cp->position = worldManifold.points[i];
 		cp->normal = worldManifold.normal;
 		cp->state = state2[i];
-		cp->normalImpulse = manifold->points[i].normalImpulse;
-		cp->tangentImpulse = manifold->points[i].tangentImpulse;
+		cp->normalImpulse = manifold.points[i].normalImpulse;
+		cp->tangentImpulse = manifold.points[i].tangentImpulse;
 		++_pointCount;
 	}
 }

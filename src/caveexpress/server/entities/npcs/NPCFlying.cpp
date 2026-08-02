@@ -27,7 +27,7 @@ void NPCFlying::setDying (const IEntity* entity)
 	NPCAggressive::setDying(entity);
 }
 
-void NPCFlying::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold)
+void NPCFlying::onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold)
 {
 	NPCAggressive::onPreSolve(contact, entity, oldManifold);
 	// we hit a player - so the player is crashing
@@ -37,7 +37,7 @@ void NPCFlying::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifol
 			player->setCrashed(CRASH_NPC_FLYING);
 		}
 	}
-	contact->SetEnabled(false);
+	contact.setEnabled(false);
 }
 
 void NPCFlying::update (uint32_t deltaTime)
@@ -47,12 +47,12 @@ void NPCFlying::update (uint32_t deltaTime)
 		return;
 	if (_spawnEgg) {
 		_spawnEgg = false;
-		const b2Vec2& pos = getPos();
+		const PhysicsVec2& pos = getPos();
 		Egg* egg = new Egg(_map, pos.x, pos.y);
 		egg->createBody();
 	}
 
-	b2Vec2 v = getLinearVelocity();
+	PhysicsVec2 v = getLinearVelocity();
 	v.y = _map.getGravity() / 2.0f;
 	setLinearVelocity(v);
 }
@@ -92,7 +92,7 @@ void NPCFlying::setFlying (const Animation& animation, float speed)
 		vx = -speed;
 	else
 		vx = speed;
-	setLinearVelocity(b2Vec2(vx, 0));
+	setLinearVelocity(PhysicsVec2(vx, 0));
 }
 
 bool NPCFlying::shouldCollide (const IEntity* entity) const

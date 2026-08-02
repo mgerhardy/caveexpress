@@ -29,18 +29,18 @@ bool Package::shouldApplyWind () const
 
 void Package::createBody ()
 {
-	b2PolygonShape sd;
-	sd.SetAsBox(_size.x / 2.0f, _size.y / 2.0f);
-
-	b2FixtureDef fd;
-	fd.shape = &sd;
+	PhysicsFixtureDef fd;
+	fd.shapeType = PhysicsShapeType::Polygon;
+	fd.useBox = true;
+	fd.boxHalfWidth = _size.x / 2.0f;
+	fd.boxHalfHeight = _size.y / 2.0f;
 	fd.density = DENSITY_PACKAGE;
 	fd.friction = 1.0f;
 	fd.restitution = 0.01f;
 
-	b2BodyDef bd;
-	bd.position.Set(_x, _y);
-	bd.type = b2_dynamicBody;
+	PhysicsBodyDef bd;
+	bd.position.set(_x, _y);
+	bd.type = PhysicsBodyType::Dynamic;
 
 	_map.addToWorld(fd, bd, this);
 	_map.addEntity(this);
@@ -54,7 +54,7 @@ void Package::update (uint32_t deltaTime)
 		_addRopeJointTo = nullptr;
 	}
 
-	if ((_arrived || _delivered || isDestroyed()) && _ropeJoint) {
+	if ((_arrived || _delivered || isDestroyed()) && _ropeJoint.isValid()) {
 		removeRopeJoint();
 	}
 
@@ -86,7 +86,7 @@ bool Package::isRemove () const
 	return isCounted();
 }
 
-void Package::onContact (b2Contact* contact, IEntity* entity)
+void Package::onContact (PhysicsContact contact, IEntity* entity)
 {
 	const bool oldCollectedState = isCollected();
 	CollectableEntity::onContact(contact, entity);
@@ -112,7 +112,7 @@ void Package::onContact (b2Contact* contact, IEntity* entity)
 	}
 }
 
-void Package::endContact (b2Contact* contact, IEntity* entity)
+void Package::endContact (PhysicsContact contact, IEntity* entity)
 {
 	CollectableEntity::endContact(contact, entity);
 

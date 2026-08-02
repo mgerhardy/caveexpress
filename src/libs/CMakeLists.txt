@@ -88,16 +88,32 @@ if (APPLE OR WIN32 OR EMSCRIPTEN)
 		FetchContent_MakeAvailable(SDL2_net)
 	endif()
 
+	# Optional override: -DCP_BOX2D_FETCH_TAG=v3.1.0 (defaults to 2.4.x for FetchContent platforms)
+	if (NOT DEFINED CP_BOX2D_FETCH_TAG)
+		set(CP_BOX2D_FETCH_TAG v2.4.2)
+	endif()
 	FetchContent_Declare(
 		box2d
 		GIT_REPOSITORY https://github.com/erincatto/box2d.git
-		GIT_TAG v2.4.2
+		GIT_TAG ${CP_BOX2D_FETCH_TAG}
 	)
 	set(BOX2D_BUILD_UNIT_TESTS OFF)
 	set(BOX2D_BUILD_TESTBED OFF)
 	set(BOX2D_BUILD_DOCS OFF)
 	set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 	FetchContent_MakeAvailable(box2d)
+	if (CP_BOX2D_FETCH_TAG MATCHES "^v?3")
+		set(CP_BOX2D_MAJOR 3 CACHE INTERNAL "Box2D major version")
+		set(box2d_VERSION "3.0.0" CACHE STRING "Detected Box2D version" FORCE)
+	else()
+		set(CP_BOX2D_MAJOR 2 CACHE INTERNAL "Box2D major version")
+		set(box2d_VERSION "2.4.2" CACHE STRING "Detected Box2D version" FORCE)
+	endif()
+	if (TARGET box2d::box2d AND NOT TARGET box2d)
+		add_library(box2d INTERFACE)
+		target_link_libraries(box2d INTERFACE box2d::box2d)
+	endif()
+	message(STATUS "Box2D ${box2d_VERSION} via FetchContent tag ${CP_BOX2D_FETCH_TAG} (major ${CP_BOX2D_MAJOR})")
 else()
 	set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CP_CMAKE_DIR})
 	find_package(lua REQUIRED)

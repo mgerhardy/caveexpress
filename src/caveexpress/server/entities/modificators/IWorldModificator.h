@@ -19,7 +19,7 @@ public:
 	}
 
 	virtual void setModificatorState (bool enable) = 0;
-	virtual void setRelativePositionTo (const b2Vec2& pos) = 0;
+	virtual void setRelativePositionTo (const PhysicsVec2& pos) = 0;
 };
 
 }

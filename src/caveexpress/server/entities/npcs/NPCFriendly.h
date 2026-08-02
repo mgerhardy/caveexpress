@@ -35,14 +35,14 @@ public:
 
 	// returns true if the movement should get triggered. This usually happens after a short
 	// delay in which the npc tells the player where he wanna go
-	bool triggerTargetCaveAnnouncement (const b2Vec2& playerPos);
-	bool setArrived (const b2Vec2& targetPos);
+	bool triggerTargetCaveAnnouncement (const PhysicsVec2& playerPos);
+	bool setArrived (const PhysicsVec2& targetPos);
 
 	bool updateCollectedState ();
 	void setCollected ();
 
 	// NPC
-	void onContact (b2Contact* contact, IEntity* entity) override;
+	void onContact (PhysicsContact contact, IEntity* entity) override;
 	bool shouldCollide (const IEntity* entity) const override;
 
 	// ICaveNPC

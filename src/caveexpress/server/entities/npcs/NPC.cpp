@@ -12,9 +12,9 @@
 namespace caveexpress {
 
 NPC::NPC (const EntityType &type, Map& map) :
-		IEntity(type, map), _initialWalkingSpeed(1.1f), _targetPos(b2Vec2_zero), _initialPosition(b2Vec2_zero), _lastDirectionRight(
+		IEntity(type, map), _initialWalkingSpeed(1.1f), _targetPos(PhysicsVec2_zero), _initialPosition(PhysicsVec2_zero), _lastDirectionRight(
 				true), _triggerMovement(0), _dazedTime(0), _dazedTimeout(8000), _idleTimer(0), _moveTimer(0), _swimmingTime(0), _swimmingTimeDelay(0), _initialSwimmingSpeed(0.0f),
-				_currentSwimmingSpeed(b2Vec2_zero)
+				_currentSwimmingSpeed(PhysicsVec2_zero)
 {
 	setState(NPCState::NPC_IDLE);
 }
@@ -26,7 +26,7 @@ NPC::~NPC ()
 	t.clearTimeout(_idleTimer);
 }
 
-void NPC::setPos (const b2Vec2& pos)
+void NPC::setPos (const PhysicsVec2& pos)
 {
 	IEntity::setPos(pos);
 	_initialPosition = pos;
@@ -38,7 +38,7 @@ void NPC::onSpawn ()
 		setAnimationType(getIdleAnimation());
 }
 
-void NPC::onContact (b2Contact* contact, IEntity* entity)
+void NPC::onContact (PhysicsContact contact, IEntity* entity)
 {
 	IEntity::onContact(contact, entity);
 
@@ -55,40 +55,41 @@ void NPC::onContact (b2Contact* contact, IEntity* entity)
 	}
 }
 
-b2BodyType NPC::getBodyType () const
+PhysicsBodyType NPC::getBodyType () const
 {
-	return b2_dynamicBody;
+	return PhysicsBodyType::Dynamic;
 }
 
-b2Body* NPC::createBody (const b2Vec2 &pos, bool setOnGround, bool fixedRotation)
+PhysicsBody NPC::createBody (const PhysicsVec2 &pos, bool setOnGround, bool fixedRotation)
 {
 	if (!_bodies.empty()) {
 		Log::error(LOG_GAMEIMPL, "there are already bodies defined for this npc");
-		return nullptr;
+		return PhysicsBody();
 	}
 
-	b2BodyDef bodyDef;
-	bodyDef.userData.pointer = (uintptr_t)this;
+	PhysicsBodyDef bodyDef;
+	bodyDef.userData = (uintptr_t)this;
 	bodyDef.type = getBodyType();
-	bodyDef.position.Set(pos.x, pos.y);
-	b2Body* body = _map.getWorld()->CreateBody(&bodyDef);
-	b2PolygonShape dynamicBox;
-	const b2Vec2& size = getSize();
-	dynamicBox.SetAsBox(size.x / 2.0f, size.y / 2.0f);
-	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &dynamicBox;
+	bodyDef.position.set(pos.x, pos.y);
+	PhysicsBody body = _map.getWorld()->createBody(bodyDef);
+	const PhysicsVec2& size = getSize();
+	PhysicsFixtureDef fixtureDef;
+	fixtureDef.shapeType = PhysicsShapeType::Polygon;
+	fixtureDef.useBox = true;
+	fixtureDef.boxHalfWidth = size.x / 2.0f;
+	fixtureDef.boxHalfHeight = size.y / 2.0f;
 	fixtureDef.density = getDensity();
 	fixtureDef.friction = 0.0f;
 	fixtureDef.restitution = 0.0f;
-	body->CreateFixture(&fixtureDef);
-	body->SetFixedRotation(fixedRotation);
+	body.createFixture(fixtureDef);
+	body.setFixedRotation(fixedRotation);
 	addBody(body);
 
 	if (setOnGround) {
-		static const b2Vec2 unitdir(0, 1);
-		const b2Vec2 end = pos + 1 * unitdir;
+		static const PhysicsVec2 unitdir(0, 1);
+		const PhysicsVec2 end = pos + 1 * unitdir;
 		SetOnGroundRayCastCallback c(this);
-		_map.getWorld()->RayCast(&c, pos, end);
+		_map.getWorld()->rayCast(c, pos, end);
 		setPos(pos);
 	}
 
@@ -123,7 +124,7 @@ void NPC::update (uint32_t deltaTime)
 			setDying(nullptr);
 		}
 	} else if (isSwimming()) {
-		b2Vec2 v = getLinearVelocity();
+		PhysicsVec2 v = getLinearVelocity();
 		v.x = _currentSwimmingSpeed.x;
 		setLinearVelocity(v);
 	} else if (isTouchingWater()) {
@@ -136,7 +137,7 @@ void NPC::update (uint32_t deltaTime)
 			setIdle();
 		}
 	} else if (isDazed() || isIdle()) {
-		setLinearVelocity(b2Vec2_zero);
+		setLinearVelocity(PhysicsVec2_zero);
 	}
 }
 
@@ -148,19 +149,19 @@ void NPC::setSwimmingIdle() {
 	_swimmingTime = _time + deltaTime;
 	setState(NPCState::NPC_STRUGGLE);
 	setAnimationType(Animations::ANIMATION_SWIMMING_IDLE);
-	setLinearVelocity(b2Vec2_zero);
+	setLinearVelocity(PhysicsVec2_zero);
 	Log::info(LOG_GAMEIMPL, "set struggle for %i", getID());
 }
 
-void NPC::setSwimming(const b2Vec2& targetPos) {
+void NPC::setSwimming(const PhysicsVec2& targetPos) {
 	Log::debug(LOG_GAMEIMPL, "swimming npc %i: %s", getID(), _type.name.c_str());
 	setState(NPCState::NPC_SWIMMING);
 
 	if (targetPos.x > getPos().x) {
-		_currentSwimmingSpeed = b2Vec2(_initialSwimmingSpeed, 0);
+		_currentSwimmingSpeed = PhysicsVec2(_initialSwimmingSpeed, 0);
 		setAnimationType(Animations::ANIMATION_SWIMMING_RIGHT);
 	} else {
-		_currentSwimmingSpeed = b2Vec2(-_initialSwimmingSpeed, 0);
+		_currentSwimmingSpeed = PhysicsVec2(-_initialSwimmingSpeed, 0);
 		setAnimationType(Animations::ANIMATION_SWIMMING_LEFT);
 	}
 }
@@ -195,7 +196,7 @@ bool NPC::shouldCollide (const IEntity* entity) const
 	return entity->isSolid();
 }
 
-int NPC::handleTurnAnimation (const b2Vec2& targetPos, const Animation& left, const Animation& right)
+int NPC::handleTurnAnimation (const PhysicsVec2& targetPos, const Animation& left, const Animation& right)
 {
 	int length = -1;
 	if (targetPos.x > getPos().x) {
@@ -211,7 +212,7 @@ int NPC::handleTurnAnimation (const b2Vec2& targetPos, const Animation& left, co
 			length = changeAnimations(left);
 		_lastDirectionRight = false;
 	}
-	setLinearVelocity(b2Vec2_zero);
+	setLinearVelocity(PhysicsVec2_zero);
 	setState(NPCState::NPC_IDLE);
 	return length;
 }
@@ -226,7 +227,7 @@ void NPC::setFalling ()
 
 void NPC::setMoving (gridCoord x)
 {
-	setMoving(b2Vec2(x, getPos().y));
+	setMoving(PhysicsVec2(x, getPos().y));
 }
 
 void NPC::move ()
@@ -235,11 +236,11 @@ void NPC::move ()
 	const float yMovement = -0.01f;
 	setState(NPCState::NPC_MOVING);
 	const float xMovement = _lastDirectionRight ? _initialWalkingSpeed : -_initialWalkingSpeed;
-	const b2Vec2 speed(xMovement, yMovement);
+	const PhysicsVec2 speed(xMovement, yMovement);
 	setLinearVelocity(speed);
 }
 
-void NPC::setMoving (const b2Vec2& targetPos)
+void NPC::setMoving (const PhysicsVec2& targetPos)
 {
 	Log::debug(LOG_GAMEIMPL, "moving npc %i: %s", getID(), _type.name.c_str());
 	_targetPos = targetPos;
@@ -269,7 +270,7 @@ void NPC::setIdle ()
 	Log::debug(LOG_GAMEIMPL, "idle npc %i: %s", getID(), _type.name.c_str());
 	setState(NPCState::NPC_IDLE);
 	setAnimationType(getIdleAnimation());
-	setLinearVelocity(b2Vec2_zero);
+	setLinearVelocity(PhysicsVec2_zero);
 	resetTriggerMovement();
 	_idleTimer = 0;
 }
@@ -328,7 +329,7 @@ void NPC::setDazed (const IEntity* entity)
 
 	Log::info(LOG_GAMEIMPL, "dazed npc %i: %s", getID(), _type.name.c_str());
 	setState(NPCState::NPC_DAZED);
-	setLinearVelocity(b2Vec2_zero);
+	setLinearVelocity(PhysicsVec2_zero);
 	if (EntityTypes::isNpcMammut(_type)) {
 		Achievements::DAZE_A_MASTODON.unlock();
 	} else if (EntityTypes::isNpcFish(_type)) {

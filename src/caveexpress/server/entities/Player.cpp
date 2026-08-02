@@ -26,9 +26,9 @@ const float gravityScale = 0.3f;
 }
 
 Player::Player (Map& map, ClientId clientId) :
-		IEntity(EntityTypes::PLAYER, map), _touching(nullptr), _invulnerableTime(0u), _powerUpTime(0u), _collectedNPC(nullptr), _acceleration(b2Vec2_zero), _fingerAcceleration(
+		IEntity(EntityTypes::PLAYER, map), _touching(nullptr), _invulnerableTime(0u), _powerUpTime(0u), _collectedNPC(nullptr), _acceleration(PhysicsVec2_zero), _fingerAcceleration(
 				false), _accelerateX(0), _accelerateY(0), _clientId(clientId), _lastAccelerate(0), _name(""), _lastFruitCollected(0), _hitpoints(
-				0), _lives(0), _fruitsCollectedInARow(0), _revoluteJoint(nullptr), _crashReason(CRASH_NONE) {
+				0), _lives(0), _fruitsCollectedInARow(0), _revoluteJoint(), _crashReason(CRASH_NONE) {
 	_godMode = Config.getConfigVar(GOD_MODE);
 	_maxHitPoints = Config.getConfigVar(MAX_HITPOINTS);
 	_hitpoints = _maxHitPoints->getIntValue();
@@ -52,25 +52,25 @@ void Player::accelerate (Direction dir)
 		return;
 
 	_lastAccelerate = _time;
-	b2Vec2 v(0.0f, 0.0f);
+	PhysicsVec2 v(0.0f, 0.0f);
 	const float gravity = getGravity().y;
 	const float scaledGravity = gravity * getGravityScale();
 
 	if (dir & DIRECTION_UP) {
 		if (_acceleration.y >= 0.0f) {
-			v.Set(0.0f, -gravity);
+			v.set(0.0f, -gravity);
 		}
 	} else if (dir & DIRECTION_DOWN) {
-		v.Set(0.0f, gravity / 2.0f);
+		v.set(0.0f, gravity / 2.0f);
 	}
 
 	if (dir & DIRECTION_LEFT) {
 		if (_acceleration.x >= 0.0f) {
-			v.Set(-scaledGravity, 0.0f);
+			v.set(-scaledGravity, 0.0f);
 		}
 	} else if (dir & DIRECTION_RIGHT) {
 		if (_acceleration.x <= 0.0f) {
-			v.Set(scaledGravity, 0.0f);
+			v.set(scaledGravity, 0.0f);
 		}
 	}
 
@@ -184,8 +184,8 @@ void Player::update (uint32_t deltaTime)
 
 	if (_fingerAcceleration) {
 		const float mass = getCompleteMass();
-		const b2Vec2& gravity = getGravity();
-		b2Vec2 v = mass * gravity;
+		const PhysicsVec2& gravity = getGravity();
+		PhysicsVec2 v = mass * gravity;
 		const int delta = 1;
 		if (_accelerateY <= -delta) {
 			// go upwards
@@ -209,25 +209,25 @@ void Player::update (uint32_t deltaTime)
 		Log::debug(LOG_GAMEIMPL, "v(%f:%f), accel(%i:%i)", v.x, v.y, _accelerateX, _accelerateY);
 
 		if (fabs(v.y) < 0.0001f) {
-			const b2Vec2 force = -mass * getGravity();
+			const PhysicsVec2 force = -mass * getGravity();
 			Log::debug(LOG_GAMEIMPL, "f: (%f:%f)", force.x, force.y);
 			applyForce(force);
 		}
 		applyLinearImpulse(v);
 	} else {
 		const float maxSpeed = 8.0f;
-		b2Vec2 force = getMass() * _acceleration;
+		PhysicsVec2 force = getMass() * _acceleration;
 		force.x *= _map.getFlyingSpeedX();
 
-		b2Vec2 velocity = getLinearVelocity();
-		const float speed = velocity.Normalize();
-		const b2Vec2 cappedV = std::min(speed, maxSpeed) * velocity;
-		_bodies[0]->SetLinearVelocity(cappedV);
+		PhysicsVec2 velocity = getLinearVelocity();
+		const float speed = velocity.normalize();
+		const PhysicsVec2 cappedV = std::min(speed, maxSpeed) * velocity;
+		_bodies[0].setLinearVelocity(cappedV);
 		applyForce(force);
 	}
 
 	const float angle = getAngle();
-	_revoluteJoint->SetMotorSpeed(-angle);
+	_revoluteJoint.setMotorSpeed(-angle);
 
 	if (_hitpoints <= 0)
 		setCrashed(CRASH_DAMAGE);
@@ -325,15 +325,15 @@ void Player::resetAcceleration (Direction dir)
 		if (dir & DIRECTION_VERTICAL)
 			_acceleration.y = 0.0f;
 	} else {
-		_acceleration = b2Vec2_zero;
+		_acceleration = PhysicsVec2_zero;
 	}
-	if (b2Vec2Equals(_acceleration, b2Vec2_zero))
+	if (physVec2Equals(_acceleration, PhysicsVec2_zero))
 		setAnimationType(Animations::ANIMATION_IDLE);
 }
 
-void Player::applyForce (const b2Vec2& v)
+void Player::applyForce (const PhysicsVec2& v)
 {
-	_bodies[0]->ApplyForceToCenter(v, true);
+	_bodies[0].applyForceToCenter(v, true);
 }
 
 bool Player::shouldCollide (const IEntity* entity) const
@@ -347,31 +347,31 @@ bool Player::shouldCollide (const IEntity* entity) const
 	return entity->isSolid() || entity->isWater();
 }
 
-void Player::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold)
+void Player::onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold)
 {
 	if (isCrashed())
 		return;
 	if (!entity->isSolid() && !entity->isPlatform())
 		return;
 
-	b2PointState state1[2], state2[2];
-	b2GetPointStates(state1, state2, oldManifold, contact->GetManifold());
-	if (state2[0] != b2_addState)
+	PhysicsPointState state1[2], state2[2];
+	physGetPointStates(state1, state2, oldManifold, contact.getManifold());
+	if (state2[0] != PhysicsPointState::Add)
 		return;
 
 	damageFromHit (contact, entity);
 }
 
-void Player::damageFromHit (b2Contact* contact, IEntity* entity)
+void Player::damageFromHit (PhysicsContact contact, IEntity* entity)
 {
-	b2WorldManifold worldManifold;
-	contact->GetWorldManifold(&worldManifold);
-	const b2Body* bodyA = contact->GetFixtureA()->GetBody();
-	const b2Body* bodyB = contact->GetFixtureB()->GetBody();
-	const b2Vec2& point = worldManifold.points[0];
-	const b2Vec2& vA = bodyA->GetLinearVelocityFromWorldPoint(point);
-	const b2Vec2& vB = bodyB->GetLinearVelocityFromWorldPoint(point);
-	const float approachVelocity = fabs(b2Dot(vB - vA, worldManifold.normal));
+	PhysicsWorldManifold worldManifold;
+	contact.getWorldManifold(worldManifold);
+	const PhysicsBody bodyA = contact.getFixtureA().getBody();
+	const PhysicsBody bodyB = contact.getFixtureB().getBody();
+	const PhysicsVec2& point = worldManifold.points[0];
+	const PhysicsVec2& vA = bodyA.getLinearVelocityFromWorldPoint(point);
+	const PhysicsVec2& vB = bodyB.getLinearVelocityFromWorldPoint(point);
+	const float approachVelocity = fabs(physDot(vB - vA, worldManifold.normal));
 	const float damageThreshold = _damageThreshold->getFloatValue();
 	if (approachVelocity <= damageThreshold)
 		return;
@@ -502,80 +502,65 @@ void Player::drop ()
 	memset(_collectedEntities, 0, sizeof(_collectedEntities));
 }
 
-void Player::createBody (const b2Vec2 &pos)
+void Player::createBody (const PhysicsVec2 &pos)
 {
 	// this is creating a body with a non-rotateable circle as center,
 	// an attached polygon that is limited in rotation angles - and
 	// both bodies are connected by a revolute joint (which ensures
 	// the rotation limit mentioned earlier)
-	b2World *world = _map.getWorld();
+	PhysicsWorld *world = _map.getWorld();
 
 	// create the circle
-	b2Body* circleBody;
+	PhysicsBody circleBody;
 	{
-		b2BodyDef circleBodyDef;
-		circleBodyDef.type = b2_dynamicBody;
-		circleBodyDef.position.Set(pos.x, pos.y - 0.2f);
+		PhysicsBodyDef circleBodyDef;
+		circleBodyDef.type = PhysicsBodyType::Dynamic;
+		circleBodyDef.position.set(pos.x, pos.y - 0.2f);
 		circleBodyDef.fixedRotation = true;
-		circleBodyDef.userData.pointer = (uintptr_t)this;
-		circleBody = world->CreateBody(&circleBodyDef);
-		b2CircleShape centerShape;
-		centerShape.m_radius = 0.09f;
-		// Define the dynamic body fixture.
-		b2FixtureDef centerFixtureDef;
+		circleBodyDef.userData = (uintptr_t)this;
+		circleBody = world->createBody(circleBodyDef);
+		PhysicsFixtureDef centerFixtureDef;
+		centerFixtureDef.shapeType = PhysicsShapeType::Circle;
+		centerFixtureDef.radius = 0.09f;
 		centerFixtureDef.isSensor = true;
 		centerFixtureDef.density = DENSITY_PLAYER;
-		centerFixtureDef.shape = &centerShape;
-		circleBody->CreateFixture(&centerFixtureDef);
-		circleBody->SetGravityScale(gravityScale);
+		circleBody.createFixture(centerFixtureDef);
+		circleBody.setGravityScale(gravityScale);
 	}
 
 	// create the polygon body that should be limited in rotation
-	// (ensured by revolute joint)
-	// it is put back into the initial rotation by updating the motor
-	// speed in the tick method of the player object.
-	b2Body* body;
+	PhysicsBody body;
 	{
-		b2BodyDef polygonBodyDef;
-		polygonBodyDef.type = b2_dynamicBody;
-		polygonBodyDef.position.Set(pos.x, pos.y - 0.2f);
+		PhysicsBodyDef polygonBodyDef;
+		polygonBodyDef.type = PhysicsBodyType::Dynamic;
+		polygonBodyDef.position.set(pos.x, pos.y - 0.2f);
 		polygonBodyDef.fixedRotation = false;
-		polygonBodyDef.userData.pointer = (uintptr_t)this;
-		body = world->CreateBody(&polygonBodyDef);
+		polygonBodyDef.userData = (uintptr_t)this;
+		body = world->createBody(polygonBodyDef);
 		const float hx = _size.x / 2.0f;
 		const float hy = _size.y / 2.0f;
-		b2Vec2 vertices[4];
 
-		vertices[0].Set(-hx, -hy);
-		vertices[1].Set( hx, -hy);
-		vertices[2].Set( hx / 2.0f,  hy);
-		vertices[3].Set(-hx / 2.0f,  hy);
-
-		b2PolygonShape shape;
-		shape.Set(vertices, SDL_arraysize(vertices));
-
-		// Define the dynamic body fixture.
-		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &shape;
-
-		// Set the box density to be non-zero, so it will be dynamic.
+		PhysicsFixtureDef fixtureDef;
+		fixtureDef.shapeType = PhysicsShapeType::Polygon;
+		fixtureDef.vertexCount = 4;
+		fixtureDef.vertices[0].set(-hx, -hy);
+		fixtureDef.vertices[1].set( hx, -hy);
+		fixtureDef.vertices[2].set( hx / 2.0f,  hy);
+		fixtureDef.vertices[3].set(-hx / 2.0f,  hy);
 		fixtureDef.density = DENSITY_PLAYER;
-
-		// Override the default friction.
 		fixtureDef.friction = 1.0f;
-
-		// Add the shape to the body.
-		body->CreateFixture(&fixtureDef);
-		body->SetGravityScale(gravityScale);
+		body.createFixture(fixtureDef);
+		body.setGravityScale(gravityScale);
 	}
 
-	// the order matters
 	addBody(body);
 	addBody(circleBody);
 
-	// TODO: this is a problem since 2.4.1
-	b2RevoluteJointDef revoluteJointDef;
-	revoluteJointDef.Initialize(circleBody, body, pos);
+	PhysicsRevoluteJointDef revoluteJointDef;
+	revoluteJointDef.useWorldPivot = true;
+	revoluteJointDef.worldPivot = pos;
+	revoluteJointDef.bodyA = circleBody;
+	revoluteJointDef.bodyB = body;
 	revoluteJointDef.lowerAngle = (float)DegreesToRadians(-10);
 	revoluteJointDef.upperAngle = (float)DegreesToRadians(10);
 	revoluteJointDef.enableLimit = true;
@@ -583,12 +568,12 @@ void Player::createBody (const b2Vec2 &pos)
 	revoluteJointDef.enableMotor = true;
 	revoluteJointDef.motorSpeed = 10.0f;
 	revoluteJointDef.maxMotorTorque = 100.0f;
-	_revoluteJoint = assert_cast<b2RevoluteJoint*, b2Joint*>(world->CreateJoint(&revoluteJointDef));
+	_revoluteJoint = world->createRevoluteJoint(revoluteJointDef);
 }
 
 bool Player::isCloseOverSolid (float distance) const
 {
-	b2Vec2 end = getPos();
+	PhysicsVec2 end = getPos();
 	end.y += distance;
 	IEntity* entity = nullptr;
 	_map.rayTrace(getPos(), end, &entity);

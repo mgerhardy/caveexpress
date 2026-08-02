@@ -29,7 +29,7 @@ public:
 
 	// IEntity
 	bool shouldCollide (const IEntity *entity) const override;
-	void onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold) override;
+	void onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold) override;
 };
 
 inline bool Border::isTop () const

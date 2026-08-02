@@ -16,7 +16,7 @@ class Map;
  */
 class NPCAttacking: public NPCAggressive {
 protected:
-	void changeAttackingAnimation (const b2Vec2 &targetPos);
+	void changeAttackingAnimation (const PhysicsVec2 &targetPos);
 	void setAttacking ();
 
 	TimerID _attackTimer;
@@ -46,7 +46,7 @@ public:
 	void update (uint32_t deltaTime) override;
 
 	// IEntity
-	void onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold) override;
+	void onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold) override;
 };
 
 }

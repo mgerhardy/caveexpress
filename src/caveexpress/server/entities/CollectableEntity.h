@@ -30,7 +30,7 @@ public:
 
 	// IEntity
 	virtual bool shouldCollide (const IEntity *entity) const override;
-	virtual void onContact (b2Contact* contact, IEntity* entity) override;
+	virtual void onContact (PhysicsContact contact, IEntity* entity) override;
 };
 
 inline void CollectableEntity::setCollected (bool collected, IEntity* collector)

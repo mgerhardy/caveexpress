@@ -28,12 +28,12 @@ public:
 	void onSpawn () override;
 	float getDensity () const override;
 	void update (uint32_t deltaTime) override;
-	b2BodyType getBodyType () const override { return b2_kinematicBody; }
+	PhysicsBodyType getBodyType () const override { return PhysicsBodyType::Kinematic; }
 
 	// NPCAggressive
 	const Animation& getFallingAnimation () const override;
 	bool shouldCollide (const IEntity* entity) const override;
-	void onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold) override;
+	void onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold) override;
 };
 
 inline void NPCFish::changeSpeed (float factor)

@@ -21,7 +21,7 @@ protected:
 	gridSize _gridHeight;
 	EntityAngle _angle;
 
-	b2Vec2 _pos;
+	PhysicsVec2 _pos;
 
 public:
 	MapTile (Map& map, const std::string& spriteID, gridCoord gridX, gridCoord gridY, const EntityType &type);
@@ -43,17 +43,17 @@ public:
 
 	// IEntity
 	bool shouldCollide (const IEntity* entity) const override;
-	const b2Vec2& getPos () const override;
+	PhysicsVec2 getPos () const override;
 	SpriteDefPtr getSpriteDef () const override;
 };
 
 inline void MapTile::setGridDimensions (float gridWidth, float gridHeight, EntityAngle angle)
 {
-	_size = b2Vec2(gridWidth, gridHeight);
+	_size = PhysicsVec2(gridWidth, gridHeight);
 	_gridWidth = gridWidth;
 	_gridHeight = gridHeight;
 	_angle = angle;
-	_pos = b2Vec2(_gridX + gridWidth / 2.0f, _gridY + gridHeight / 2.0f);
+	_pos = PhysicsVec2(_gridX + gridWidth / 2.0f, _gridY + gridHeight / 2.0f);
 }
 
 inline gridCoord MapTile::getGridX () const

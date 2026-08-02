@@ -26,7 +26,7 @@ private:
 	// key=value,key=value
 	std::string _settings;
 
-	b2Vec2 getRealPos (const EntityType &entityType) const;
+	PhysicsVec2 getRealPos (const EntityType &entityType) const;
 public:
 	EntityEmitter (Map& map, float x, float y, int amount, int delay, const EntityType& type, const std::string& settings);
 	virtual ~EntityEmitter ();

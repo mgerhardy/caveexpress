@@ -52,7 +52,7 @@ bool NPCFriendly::shouldCollide (const IEntity* entity) const
 	return INPCCave::shouldCollide(entity);
 }
 
-void NPCFriendly::onContact (b2Contact* contact, IEntity* entity)
+void NPCFriendly::onContact (PhysicsContact contact, IEntity* entity)
 {
 	INPCCave::onContact(contact, entity);
 
@@ -72,7 +72,7 @@ void NPCFriendly::onContact (b2Contact* contact, IEntity* entity)
 		} else if (isStruggle()) {
 			setDying(nullptr);
 		} else if (isIdle()) {
-			if (entity->getLinearVelocity().Length() > 3.0f) {
+			if (entity->getLinearVelocity().length() > 3.0f) {
 				// hit hard by a player - so we will fall into the water
 				Player *player = assert_cast<Player*, IEntity*>(entity);
 				player->damageFromHit(contact, entity);
@@ -85,9 +85,9 @@ void NPCFriendly::onContact (b2Contact* contact, IEntity* entity)
 	}
 }
 
-bool NPCFriendly::triggerTargetCaveAnnouncement (const b2Vec2& playerPos)
+bool NPCFriendly::triggerTargetCaveAnnouncement (const PhysicsVec2& playerPos)
 {
-	const float distance = b2Distance(playerPos, getPos());
+	const float distance = physDistance(playerPos, getPos());
 	if (isSwimming() && distance > _swimmingDistance) {
 		return false;
 	}
@@ -111,11 +111,11 @@ bool NPCFriendly::updateCollectedState ()
 
 		const float start = getTargetCave()->getPlatformStartGridX();
 		const float end = getTargetCave()->getPlatformEndGridX();
-		b2Vec2 pos = player->getPos();
+		PhysicsVec2 pos = player->getPos();
 		pos.x = clamp(pos.x, start, end);
-		createBody(pos, _map.getWorld(), true);
+		createBody(pos, true);
 		player->setCollectedNPC(nullptr);
-		const b2Vec2& targetPos = getTargetCave()->getPos();
+		const PhysicsVec2& targetPos = getTargetCave()->getPos();
 		const bool bonus = setArrived(targetPos);
 		Log::debug(LOG_GAMEIMPL, "landed on target cave and (re-)spawned npc with id %i", getID());
 		if (bonus) {
@@ -134,7 +134,7 @@ uint8_t NPCFriendly::getTargetCaveNumber () const
 	return getTargetCave()->getCaveNumber();
 }
 
-bool NPCFriendly::setArrived (const b2Vec2& targetPos)
+bool NPCFriendly::setArrived (const PhysicsVec2& targetPos)
 {
 	setMoving(targetPos);
 	setState(NPCState::NPC_ARRIVED);

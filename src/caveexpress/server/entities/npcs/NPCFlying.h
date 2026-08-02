@@ -22,12 +22,12 @@ public:
 	void onSpawn () override;
 	void update (uint32_t deltaTime) override;
 	const Animation& getFallingAnimation () const override;
-	b2BodyType getBodyType () const override { return b2_kinematicBody; }
+	PhysicsBodyType getBodyType () const override { return PhysicsBodyType::Kinematic; }
 	void setDying (const IEntity* entity) override;
 
 	// NPCAggressive
 	bool shouldCollide (const IEntity* entity) const override;
-	void onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold) override;
+	void onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold) override;
 };
 
 inline void NPCFlying::setRemove ()

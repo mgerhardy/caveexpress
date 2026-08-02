@@ -7,10 +7,10 @@ INPCCave::INPCCave (CaveMapTile *cave, const EntityType& type, bool deliverPacka
 		NPC(EntityTypes::isNpcCave(type) ? type : getNpcFriendlyType(), cave->getMap()), _cave(cave), _deliverPackage(
 				deliverPackage)
 {
-	const b2Vec2& caveSize = cave->getSize();
-	const b2Vec2& npcSize = getSize();
+	const PhysicsVec2& caveSize = cave->getSize();
+	const PhysicsVec2& npcSize = getSize();
 	const float yDelta = (caveSize.y - npcSize.y) / 2.0f;
-	b2Vec2 cavePos = cave->getPos();
+	PhysicsVec2 cavePos = cave->getPos();
 	cavePos.y += yDelta;
 	createBody(cavePos);
 }
@@ -19,7 +19,7 @@ INPCCave::~INPCCave ()
 {
 }
 
-void INPCCave::setPos (const b2Vec2& pos)
+void INPCCave::setPos (const PhysicsVec2& pos)
 {
 	// sanity check
 	if (pos.x < getMaxWalkingLeft() || pos.x > getMaxWalkingRight())

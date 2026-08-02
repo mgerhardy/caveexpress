@@ -62,9 +62,9 @@ void GameEventHandler::updateParticle (int clientMask, const IEntity& entity) co
 	for (uint8_t i = 0; i < bodyCnt; i++) {
 		if (!particle.isActive(i))
 			continue;
-		const b2Body* body = particle.getBodies()[i];
-		const b2Vec2& pos = body->GetPosition();
-		const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(body->GetAngle()));
+		const PhysicsBody body = particle.getBodies()[i];
+		const PhysicsVec2& pos = body.getPosition();
+		const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(body.getAngle()));
 		const UpdateParticleEntity e = { pos.x, pos.y, angle, i, particle.getRemainingLifetime(i) };
 		bodies.push_back(e);
 	}
@@ -78,8 +78,8 @@ void GameEventHandler::addEntity (int clientMask, const IEntity& entity) const
 		updateParticle(clientMask, entity);
 		return;
 	}
-	const b2Vec2& pos = entity.getPos();
-	const b2Vec2& size = entity.getSize();
+	const PhysicsVec2& pos = entity.getPos();
+	const PhysicsVec2& size = entity.getSize();
 	const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(entity.getAngle()));
 	const AddEntityMessage msg(entity.getID(), entity.getType(), entity.getAnimationType(),
 			entity.getSpriteID(), pos.x, pos.y, size.x, size.y, angle, entity.getSpriteAlignment());
@@ -92,7 +92,7 @@ void GameEventHandler::updateEntity (int clientMask, const IEntity& entity) cons
 		updateParticle(clientMask, entity);
 		return;
 	}
-	const b2Vec2& vec = entity.getPos();
+	const PhysicsVec2& vec = entity.getPos();
 	const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(entity.getAngle()));
 	const UpdateEntityMessage msg(entity.getID(), vec.x, vec.y, angle, entity.getState());
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);

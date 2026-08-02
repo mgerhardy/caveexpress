@@ -20,7 +20,7 @@ bool Border::shouldCollide (const IEntity *entity) const
 	return !entity->isNpcFlying() && !entity->isNpcFish();
 }
 
-void Border::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* oldManifold)
+void Border::onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold)
 {
 	IEntity::onPreSolve(contact, entity, oldManifold);
 	if (!entity->isPlayer())
@@ -28,10 +28,10 @@ void Border::onPreSolve (b2Contact* contact, IEntity* entity, const b2Manifold* 
 
 	Player* player = assert_cast<Player*, IEntity*>(entity);
 	if (_borderType == BorderType::TOP) {
-		b2Vec2 v = player->getLinearVelocity();
+		PhysicsVec2 v = player->getLinearVelocity();
 		v.y = 0.4f;
 		player->setLinearVelocity(v);
-		contact->SetEnabled(false);
+		contact.setEnabled(false);
 	}
 
 	if (!_crashOnTouch)
