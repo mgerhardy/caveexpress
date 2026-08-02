@@ -1,10 +1,14 @@
 A banana will grant more strength for some time|A banana will grant more strength for some time
 Achievements|Achievements
+Activate the fish spawn|Aktiviere den Fisch für diese Map
+Activate the pterodactyls spawn|Aktiviere den Pterodactylus für diese Map
 A mighty fish is after you|Ein mächtiger Fisch ist hinter dir her
 An egg will make you invulnerable for some time|An egg will make you invulnerable for some time
 Angry dinosaur|Wütender Dinosaurier
 Are you sure?|Wirklich fortfahren?
+Auto|Auto
 Back|Zurück
+background|Hintergrund
 Big|Groß
 Campaign|Kampagne
 Campaigns|Kampagnen
@@ -15,8 +19,14 @@ Collect packages by landing on them|Sammele Pakete in dem du auf ihnen landest
 Continue|Weiter
 Controller trigger|Controller trigger
 Create server|Server erstellen
+Ctrl+S save, Ctrl+Z/Y undo/redo|Strg+S speichern, Strg+Z/Y rückgängig/wiederholen
+decoration|Dekoration
+Decrease map height|Map-Höhe verkleinern
+Decrease map width|Map-Breite verkleinern
+Delete: remove selection|Entf: Auswahl entfernen
 Deliver packages to the shredders|Transportiere Pakete zu den Schreddern
 Description|Beschreibung
+Desert|Wüste
 Disconnect|Disconnect
 Drop during flight|Während des Fluges abwerfen
 Drop off at the shredder|Drop off at the shredder
@@ -29,7 +39,17 @@ Drop them with the second finger|Abwerfen durch zweiten Finger
 Drop the stone to collect packages again|Lasse den Stein fallen um wieder Kisten heben zu können
 Editor|Editor
 Egg|Ei
+emitter|Emitter
+Emitter amount|Emitter-Anzahl
+Emitter delay|Emitter-Verzögerung
+Entities|Objekte
+Entity|Objekt
+F fit view, G toggle grid, F1 help|F Ansicht einpassen, G Gitter, F1 Hilfe
+File|Datei
+Filter|Filter
+Fit|Einpassen
 Flying dino when hit may drop an egg|Flying dino when hit may drop an egg
+foreground|Vordergrund
 Fullscreen|Vollbild
 Game|Spiele
 Game mode|Modus
@@ -38,25 +58,40 @@ Geyser|Geyser
 Google Play|Google Play
 Google Play sign-out|Google Play trennen
 Graphics|Grafik
+Gravity|Gravitation
+Grid|Gitter
 Hard|Schwer
 Health bar|Lebensenergie
+Height|Höhe
 Help|Hilfe
 Hints|Tipps
 Hitting walls hard will inflict damage|Zu harter Wandkontakt reduziert Lebensenergie
 Homepage|Homepage
+Hover a tile on the map|Kachel auf der Map anzeigen
+Ice|Eis
+Increase map height|Map-Höhe vergrößern
+Increase map width|Map-Breite vergrößern
 Input|Eingabe
 Invulnerable|Unverwundbar
+Jungle|Dschungel
 Just stay and watch what happens|Einfach nur abwarten und zuschauen
 Later|Später
+Layers|Ebenen
 Leaderboard|Leaderboard
 Learn to use the stone|Lerne den Stein zu benutzen
+LMB: paint / place|LMT: malen / platzieren
 Map|Map
+Map Editor|Map-Editor
 Maps|Maps
+MMB or Space+LMB: pan|MMT oder Leertaste+LMT: verschieben
 Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
+New|Neu
 No controller found|No controller found
+none|keine
 Normal|Normal
+Npc delay|Npc delay
 Objectives|Ziele
 Off|Aus
 OK|OK
@@ -64,37 +99,58 @@ On|An
 Open|Starten
 or A on your controller|or A on your controller
 Package|Paket
+Place tile|Teil plazieren
 Player|Spieler
 Players|Players
 Please rate the app|Bitte bewerte die App
+Points|Punkte
+Properties|Eigenschaften
 Pterodactyls|Pterodactylus
 Pterodactyls is after you|Der Pterodactylus hat es auch dich abgesehen
 Put packages in crusher to consume|Put packages in crusher to consume
 Quit|Beenden
+Quit without saving|Beenden ohne Speichern
+Redo|Wiederholen
+Reference time in seconds|Referenzzeit in Sekunden
 Refresh|Erneuern
+Remove tile|Teil entfernen
 Reset|Reset
 Reset game progress?|Resetten des Spielfortschritts?
 Restart|Restart
 Retry|Retry
+RMB: erase|RMT: löschen
+Rock|Felsen
+Save|Speichern
+Save & Go|Testen
 Select game mode|Auswahl des Spielmodus
+Select tile|Teil selektieren
 Settings|Einstellungen
+Show Grid|Gitter anzeigen
 Shredder|Schredder
 Small|Klein
+solid|Fest
 Sound|Sound
 Sound/Music|Sound/Music
+Space (on canvas): rotate brush|Leertaste (auf Canvas): Pinsel drehen
 Start|Start
 Stone|Stein
 Textures|Texturen
+The amount of packages to deliver|Anzahl der zu liefernden Pakete
 The egg makes you invulnerable|The egg makes you invulnerable
 The geyser will do the work for you|Der Geisir erledigt die Arbeit
+Theme|Thema
 This is the goal in every map|Dies ist das Ziel jedes Levels
+Tiles|Kacheln
 Time bar|Zeitanzeige
+Title|Titel
 To dive across, fall fast into water flying to side|To dive across, fall fast into water flying to side
 Transfer the grandpa to the desired cave|Transfer the grandpa to the desired cave
 Transfer the man to the desired cave|Transfer the man to the desired cave
 Transfer the woman to the desired cave|Transfer the woman to the desired cave
 Tree|Baum
 Try to avoid crashes but still be fast|Harte Treffer vermeiden und schnell sein
+Undo|Rückgängig
+Unsaved changes|Ungespeicherte Änderungen
 Username|Username
 Use the second finger to drop the package|Benutze den zweiten Finger um das Paket abzuwerfen
 Use the second finger to drop the stone|Benutze den zweiten Finger um den Stein abzuwerfen
@@ -102,4 +158,9 @@ Use the swing of the package|Benutze den Schwung des Paketes
 Volume|Volume
 Waiting|Warte
 Watch the geyser|Beobachte den Geisir
+Waterheight|Wasserhöhe
+Wheel: zoom toward cursor|Mausrad: Zoom zum Cursor
+Width|Breite
+Wind|Wind
+You have unsaved changes. Continue?|Es gibt ungespeicherte Änderungen. Fortfahren?
 You won!|Gewonnen

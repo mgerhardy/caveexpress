@@ -173,43 +173,43 @@ void UIMapEditorWindow::handleHotkeys () const
 
 void UIMapEditorWindow::drawToolbar () const
 {
-	if (ImGui::Button("New"))
+	if (ImGui::Button(tr("New").c_str()))
 		requestAction("new");
 	ImGui::SameLine();
-	if (ImGui::Button("Save")) {
+	if (ImGui::Button(tr("Save").c_str())) {
 		_doc->setFileName(_fileNameBuf);
 		_doc->setMapName(_mapTitleBuf);
 		if (!_doc->save())
 			Log::error(LOG_UI, "Failed to save map");
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Save & Play")) {
+	if (ImGui::Button(tr("Save & Go").c_str())) {
 		_doc->setFileName(_fileNameBuf);
 		_doc->setMapName(_mapTitleBuf);
 		_doc->saveAndPlay();
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Undo") && _doc->canUndo())
+	if (ImGui::Button(tr("Undo").c_str()) && _doc->canUndo())
 		_doc->undo();
 	ImGui::SameLine();
-	if (ImGui::Button("Redo") && _doc->canRedo())
+	if (ImGui::Button(tr("Redo").c_str()) && _doc->canRedo())
 		_doc->redo();
 	ImGui::SameLine();
-	if (ImGui::Button("Fit"))
+	if (ImGui::Button(tr("Fit").c_str()))
 		fitView();
 	ImGui::SameLine();
-	if (ImGui::Button("Help"))
+	if (ImGui::Button(tr("Help").c_str()))
 		_showHelp = !_showHelp;
 	ImGui::SameLine();
 	ImGui::TextDisabled("|");
 	ImGui::SameLine();
-	if (ImGui::RadioButton("Paint", _doc->getTool() == IMapEditorDocument::Tool::Paint))
+	if (ImGui::RadioButton(tr("Place tile").c_str(), _doc->getTool() == IMapEditorDocument::Tool::Paint))
 		_doc->setTool(IMapEditorDocument::Tool::Paint);
 	ImGui::SameLine();
-	if (ImGui::RadioButton("Erase", _doc->getTool() == IMapEditorDocument::Tool::Erase))
+	if (ImGui::RadioButton(tr("Remove tile").c_str(), _doc->getTool() == IMapEditorDocument::Tool::Erase))
 		_doc->setTool(IMapEditorDocument::Tool::Erase);
 	ImGui::SameLine();
-	if (ImGui::RadioButton("Pick", _doc->getTool() == IMapEditorDocument::Tool::Pick))
+	if (ImGui::RadioButton(tr("Select tile").c_str(), _doc->getTool() == IMapEditorDocument::Tool::Pick))
 		_doc->setTool(IMapEditorDocument::Tool::Pick);
 	ImGui::SameLine();
 	ImGui::Text("%s%s", _doc->getFileName().c_str(), _doc->isDirty() ? " *" : "");
@@ -219,7 +219,7 @@ void UIMapEditorWindow::drawTilesPanel () const
 {
 	if (_paletteTheme != &_doc->getTheme())
 		rebuildPalettes();
-	ImGui::InputText("Filter", _tileFilter, sizeof(_tileFilter));
+	ImGui::InputText(tr("Filter").c_str(), _tileFilter, sizeof(_tileFilter));
 	ImGui::BeginChild("tiles_grid", ImVec2(0, 0), true);
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 	const float cell = 48.0f;
@@ -249,7 +249,7 @@ void UIMapEditorWindow::drawTilesPanel () const
 
 void UIMapEditorWindow::drawEntitiesPanel () const
 {
-	ImGui::InputText("Filter", _entityFilter, sizeof(_entityFilter));
+	ImGui::InputText(tr("Filter").c_str(), _entityFilter, sizeof(_entityFilter));
 	ImGui::BeginChild("entities_list", ImVec2(0, 0), true);
 	for (const EntityType* type : _entityPalette) {
 		if (!passesFilter(type->name, _entityFilter))
@@ -262,60 +262,83 @@ void UIMapEditorWindow::drawEntitiesPanel () const
 
 void UIMapEditorWindow::drawLayersPanel () const
 {
+	auto layerLabel = [] (int layer) -> std::string {
+		switch (layer) {
+		case LAYER_BACKGROUND: return tr("background");
+		case LAYER_SOLID: return tr("solid");
+		case LAYER_FOREGROUND: return tr("foreground");
+		case LAYER_DECORATION: return tr("decoration");
+		case LAYER_EMITTER: return tr("emitter");
+		default: return tr("none");
+		}
+	};
 	for (int layer = LAYER_BACKGROUND; layer < LAYER_MAX; ++layer) {
 		bool active = _doc->isLayerActive(layer);
-		if (ImGui::Checkbox(MapEditorLayerNames[layer], &active))
+		const std::string label = layerLabel(layer);
+		if (ImGui::Checkbox(label.c_str(), &active))
 			_doc->toggleLayer(static_cast<MapEditorLayer>(layer));
 	}
 	bool grid = _doc->isRenderGrid();
-	if (ImGui::Checkbox("Grid", &grid))
+	if (ImGui::Checkbox(tr("Show Grid").c_str(), &grid))
 		_doc->toggleGrid();
 }
 
 void UIMapEditorWindow::drawPropertiesPanel () const
 {
-	if (ImGui::InputText("File", _fileNameBuf, sizeof(_fileNameBuf)))
+	if (ImGui::InputText(tr("File").c_str(), _fileNameBuf, sizeof(_fileNameBuf)))
 		_doc->setFileName(_fileNameBuf);
-	if (ImGui::InputText("Title", _mapTitleBuf, sizeof(_mapTitleBuf)))
+	if (ImGui::InputText(tr("Title").c_str(), _mapTitleBuf, sizeof(_mapTitleBuf)))
 		_doc->setMapName(_mapTitleBuf);
 
 	int w = _doc->getMapWidth();
 	int h = _doc->getMapHeight();
-	if (ImGui::InputInt("Width", &w))
+	if (ImGui::InputInt(tr("Width").c_str(), &w))
 		_doc->resizeMap(w, _doc->getMapHeight());
-	if (ImGui::InputInt("Height", &h))
+	if (ImGui::InputInt(tr("Height").c_str(), &h))
 		_doc->resizeMap(_doc->getMapWidth(), h);
 
 	if (_doc->supportsEmitterParams()) {
 		int amount = _doc->getEmitterAmount();
-		if (ImGui::InputInt("Emitter amount", &amount))
+		if (ImGui::InputInt(tr("Emitter amount").c_str(), &amount))
 			_doc->setEmitterAmount(std::max(0, amount));
 		int delay = _doc->getEmitterDelay();
-		if (ImGui::InputInt("Emitter delay", &delay))
+		if (ImGui::InputInt(tr("Emitter delay").c_str(), &delay))
 			_doc->setEmitterDelay(std::max(0, delay));
 	}
 
+	// Fixed-height selection block so hover highlight does not reflow the panel.
+	ImGui::Separator();
+	const float selectionHeight = ImGui::GetTextLineHeightWithSpacing() * 3.25f;
+	ImGui::BeginChild("selection_info", ImVec2(0.0f, selectionHeight), false, ImGuiWindowFlags_NoScrollbar);
 	if (const MapEditorTileItem* highlight = _doc->getHighlightItem()) {
-		ImGui::Separator();
-		ImGui::Text("Selected: %s", highlight->def->id.c_str());
-		ImGui::Text("Grid: %.1f, %.1f", highlight->gridX, highlight->gridY);
+		ImGui::TextWrapped("%s", highlight->def->id.c_str());
+		ImGui::Text("%s: %.1f, %.1f", tr("Grid").c_str(), highlight->gridX, highlight->gridY);
 		if (highlight->entityType)
-			ImGui::Text("Entity: %s", highlight->entityType->name.c_str());
+			ImGui::Text("%s: %s", tr("Entity").c_str(), highlight->entityType->name.c_str());
+	} else {
+		ImGui::TextDisabled("%s", tr("Hover a tile on the map").c_str());
+		ImGui::TextDisabled(" ");
+		ImGui::TextDisabled(" ");
 	}
+	ImGui::EndChild();
 
 	ImGui::Separator();
 	if (ImGui::Button("+W")) _doc->shift(1, 0);
+	if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", tr("Increase map width").c_str());
 	ImGui::SameLine();
 	if (ImGui::Button("-W")) _doc->shift(-1, 0);
+	if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", tr("Decrease map width").c_str());
 	ImGui::SameLine();
 	if (ImGui::Button("+H")) _doc->shift(0, 1);
+	if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", tr("Increase map height").c_str());
 	ImGui::SameLine();
 	if (ImGui::Button("-H")) _doc->shift(0, -1);
+	if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", tr("Decrease map height").c_str());
 }
 
 void UIMapEditorWindow::drawMapsPanel () const
 {
-	ImGui::InputText("Filter", _mapFilter, sizeof(_mapFilter));
+	ImGui::InputText(tr("Filter").c_str(), _mapFilter, sizeof(_mapFilter));
 	ImGui::BeginChild("maps_list", ImVec2(0, 0), true);
 	for (const auto& entry : _doc->getMapManager().getMapsByWildcard("*")) {
 		if (!passesFilter(entry.first, _mapFilter))
@@ -328,31 +351,32 @@ void UIMapEditorWindow::drawMapsPanel () const
 
 void UIMapEditorWindow::drawHelpPanel () const
 {
-	ImGui::TextUnformatted("Map Editor");
+	ImGui::TextUnformatted(tr("Map Editor").c_str());
 	ImGui::Separator();
-	ImGui::BulletText("LMB: paint / place");
-	ImGui::BulletText("RMB: erase");
-	ImGui::BulletText("MMB or Space+LMB: pan");
-	ImGui::BulletText("Wheel: zoom toward cursor");
-	ImGui::BulletText("Space (on canvas): rotate brush");
-	ImGui::BulletText("Ctrl+S save, Ctrl+Z/Y undo/redo");
-	ImGui::BulletText("F fit view, G toggle grid, F1 help");
-	ImGui::BulletText("Delete: remove selection");
+	ImGui::BulletText("%s", tr("LMB: paint / place").c_str());
+	ImGui::BulletText("%s", tr("RMB: erase").c_str());
+	ImGui::BulletText("%s", tr("MMB or Space+LMB: pan").c_str());
+	ImGui::BulletText("%s", tr("Wheel: zoom toward cursor").c_str());
+	ImGui::BulletText("%s", tr("Space (on canvas): rotate brush").c_str());
+	ImGui::BulletText("%s", tr("Ctrl+S save, Ctrl+Z/Y undo/redo").c_str());
+	ImGui::BulletText("%s", tr("F fit view, G toggle grid, F1 help").c_str());
+	ImGui::BulletText("%s", tr("Delete: remove selection").c_str());
 	drawHelpExtras();
 }
 
 void UIMapEditorWindow::drawConfirmModal () const
 {
+	const std::string popupTitle = tr("Unsaved changes") + "###unsaved";
 	if (_showConfirm)
-		ImGui::OpenPopup("Unsaved changes");
-	if (ImGui::BeginPopupModal("Unsaved changes", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-		ImGui::TextUnformatted("You have unsaved changes. Continue?");
-		if (ImGui::Button("Discard")) {
+		ImGui::OpenPopup(popupTitle.c_str());
+	if (ImGui::BeginPopupModal(popupTitle.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::TextUnformatted(tr("You have unsaved changes. Continue?").c_str());
+		if (ImGui::Button(tr("Quit without saving").c_str())) {
 			executePendingAction();
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::SameLine();
-		if (ImGui::Button("Cancel")) {
+		if (ImGui::Button(tr("Cancel").c_str())) {
 			_showConfirm = false;
 			_confirmAction.clear();
 			ImGui::CloseCurrentPopup();
@@ -521,7 +545,7 @@ void UIMapEditorWindow::render (int x, int y) const
 	const float ph = static_cast<float>(getRenderHeight(false));
 	ImGui::SetNextWindowPos(ImVec2(static_cast<float>(getRenderX(false)), static_cast<float>(getRenderY(false))), ImGuiCond_Always);
 	ImGui::SetNextWindowSize(ImVec2(pw, ph), ImGuiCond_Always);
-	ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus);
+	ImGui::Begin(tr("Map Editor").c_str(), nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
 	handleHotkeys();
 	drawToolbar();
@@ -531,15 +555,15 @@ void UIMapEditorWindow::render (int x, int y) const
 	const float rightWidth = 280.0f;
 	ImGui::BeginChild("left", ImVec2(leftWidth, 0), true);
 	if (ImGui::BeginTabBar("left_tabs")) {
-		if (ImGui::BeginTabItem("Tiles")) {
+		if (ImGui::BeginTabItem(tr("Tiles").c_str())) {
 			drawTilesPanel();
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Entities")) {
+		if (ImGui::BeginTabItem(tr("Entities").c_str())) {
 			drawEntitiesPanel();
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Maps")) {
+		if (ImGui::BeginTabItem(tr("Maps").c_str())) {
 			drawMapsPanel();
 			ImGui::EndTabItem();
 		}
@@ -555,11 +579,11 @@ void UIMapEditorWindow::render (int x, int y) const
 	ImGui::SameLine();
 	ImGui::BeginChild("right", ImVec2(rightWidth, 0), true);
 	if (ImGui::BeginTabBar("right_tabs")) {
-		if (ImGui::BeginTabItem("Properties")) {
+		if (ImGui::BeginTabItem(tr("Properties").c_str())) {
 			drawPropertiesPanel();
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Layers")) {
+		if (ImGui::BeginTabItem(tr("Layers").c_str())) {
 			drawLayersPanel();
 			ImGui::EndTabItem();
 		}

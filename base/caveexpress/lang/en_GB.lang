@@ -1,10 +1,14 @@
 A banana will grant more strength for some time|A banana will grant more strength for some time
 Achievements|Achievements
+Activate the fish spawn|Activate the fish spawn
+Activate the pterodactyls spawn|Activate the pterodactyls spawn
 A mighty fish is after you|A mighty fish is after you
 An egg will make you invulnerable for some time|An egg will make you invulnerable for some time
 Angry dinosaur|Angry dinosaur
 Are you sure?|Are you sure?
+Auto|Auto
 Back|Back
+background|background
 Big|Big
 Campaign|Campaign
 Campaigns|Campaigns
@@ -15,8 +19,14 @@ Collect packages by landing on them|Collect packages by landing on them
 Continue|Continue
 Controller trigger|Controller trigger
 Create server|Create server
+Ctrl+S save, Ctrl+Z/Y undo/redo|Ctrl+S save, Ctrl+Z/Y undo/redo
+decoration|decoration
+Decrease map height|Decrease map height
+Decrease map width|Decrease map width
+Delete: remove selection|Delete: remove selection
 Deliver packages to the shredders|Deliver packages to the shredders
 Description|Description
+Desert|Desert
 Disconnect|Disconnect
 Drop during flight|Drop during flight
 Drop off at the shredder|Drop off at the shredder
@@ -29,7 +39,17 @@ Drop them with the second finger|Drop them with the second finger
 Drop the stone to collect packages again|Drop the stone to collect packages again
 Editor|Editor
 Egg|Egg
+emitter|emitter
+Emitter amount|Emitter amount
+Emitter delay|Emitter delay
+Entities|Entities
+Entity|Entity
+F fit view, G toggle grid, F1 help|F fit view, G toggle grid, F1 help
+File|File
+Filter|Filter
+Fit|Fit
 Flying dino when hit may drop an egg|Flying dino when hit may drop an egg
+foreground|foreground
 Fullscreen|Fullscreen
 Game|Game
 Game mode|Game mode
@@ -38,25 +58,40 @@ Geyser|Geyser
 Google Play|Google Play
 Google Play sign-out|Google Play sign-out
 Graphics|Graphics
+Gravity|Gravity
+Grid|Grid
 Hard|Hard
 Health bar|Health bar
+Height|Height
 Help|Help
 Hints|Hints
 Hitting walls hard will inflict damage|Hitting walls hard will inflict damage
 Homepage|Homepage
+Hover a tile on the map|Hover a tile on the map
+Ice|Ice
+Increase map height|Increase map height
+Increase map width|Increase map width
 Input|Input
 Invulnerable|Invulnerable
+Jungle|Jungle
 Just stay and watch what happens|Just stay and watch what happens
 Later|Later
+Layers|Layers
 Leaderboard|Leaderboard
 Learn to use the stone|Learn to use the stone
+LMB: paint / place|LMB: paint / place
 Map|Map
+Map Editor|Map Editor
 Maps|Maps
+MMB or Space+LMB: pan|MMB or Space+LMB: pan
 Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
+New|New
 No controller found|No controller found
+none|none
 Normal|Normal
+Npc delay|Npc delay
 Objectives|Objectives
 Off|Off
 OK|OK
@@ -64,37 +99,58 @@ On|On
 Open|Open
 or A on your controller|or A on your controller
 Package|Package
+Place tile|Place tile
 Player|Player
 Players|Players
 Please rate the app|Please rate the app
+Points|Points
+Properties|Properties
 Pterodactyls|Pterodactyls
 Pterodactyls is after you|Pterodactyls is after you
 Put packages in crusher to consume|Put packages in crusher to consume
 Quit|Quit
+Quit without saving|Quit without saving
+Redo|Redo
+Reference time in seconds|Reference time in seconds
 Refresh|Refresh
+Remove tile|Remove tile
 Reset|Reset
 Reset game progress?|Reset game progress?
 Restart|Restart
 Retry|Retry
+RMB: erase|RMB: erase
+Rock|Rock
+Save|Save
+Save & Go|Save & Go
 Select game mode|Select game mode
+Select tile|Select tile
 Settings|Settings
+Show Grid|Show Grid
 Shredder|Shredder
 Small|Small
+solid|solid
 Sound|Sound
 Sound/Music|Sound/Music
+Space (on canvas): rotate brush|Space (on canvas): rotate brush
 Start|Start
 Stone|Stone
 Textures|Textures
+The amount of packages to deliver|The amount of packages to deliver
 The egg makes you invulnerable|The egg makes you invulnerable
 The geyser will do the work for you|The geyser will do the work for you
+Theme|Theme
 This is the goal in every map|This is the goal in every map
+Tiles|Tiles
 Time bar|Time bar
+Title|Title
 To dive across, fall fast into water flying to side|To dive across, fall fast into water flying to side
 Transfer the grandpa to the desired cave|Transfer the grandpa to the desired cave
 Transfer the man to the desired cave|Transfer the man to the desired cave
 Transfer the woman to the desired cave|Transfer the woman to the desired cave
 Tree|Tree
 Try to avoid crashes but still be fast|Try to avoid crashes but still be fast
+Undo|Undo
+Unsaved changes|Unsaved changes
 Username|Username
 Use the second finger to drop the package|Use the second finger to drop the package
 Use the second finger to drop the stone|Use the second finger to drop the stone
@@ -102,4 +158,9 @@ Use the swing of the package|Use the swing of the package
 Volume|Volume
 Waiting|Waiting
 Watch the geyser|Watch the geyser
+Waterheight|Waterheight
+Wheel: zoom toward cursor|Wheel: zoom toward cursor
+Width|Width
+Wind|Wind
+You have unsaved changes. Continue?|You have unsaved changes. Continue?
 You won!|You won!

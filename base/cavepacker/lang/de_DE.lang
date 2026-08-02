@@ -1,6 +1,7 @@
 Achievements|Achievements
 Are you sure?|Bist du sicher?
 Back|Zurück
+background|Hintergrund
 Big|Groß
 Campaigns|Kampagnen
 Cancel|Abbruch
@@ -9,29 +10,56 @@ Close|Schließen
 Continue|Fortfahren
 Controller trigger|Controller trigger
 Create server|Erstellen
+Ctrl+S save, Ctrl+Z/Y undo/redo|Strg+S speichern, Strg+Z/Y rückgängig/wiederholen
 Deadlock package|Deadlock package
+decoration|Dekoration
+Decrease map height|Map-Höhe verkleinern
+Decrease map width|Map-Breite verkleinern
+Delete: remove selection|Entf: Auswahl entfernen
 Delivered package|Delivered package
 Description|Beschreibung
 Disconnect|Trennen
 Editor|Editor
+emitter|Emitter
+Emitter amount|Emitter-Anzahl
+Emitter delay|Emitter-Verzögerung
+Entities|Objekte
+Entity|Objekt
+F fit view, G toggle grid, F1 help|F Ansicht einpassen, G Gitter, F1 Hilfe
+File|Datei
+Filter|Filter
+Fit|Einpassen
+foreground|Vordergrund
 Fullscreen|Vollbild
 Game|Spiel
 Google Play|Google Play
 Google Play sign-out|Google Play trennen
 Graphics|Grafik
+Grid|Gitter
 Hard|Schwer
+Height|Höhe
+Help|Hilfe
 Hints|Hinweise
 Homepage|Homepage
+Hover a tile on the map|Kachel auf der Map anzeigen
+Increase map height|Map-Höhe vergrößern
+Increase map width|Map-Breite vergrößern
 Input|Eingabe
 Later|Später
+Layers|Ebenen
 Leaderboard|Leaderboard
+LMB: paint / place|LMT: malen / platzieren
 Map|Map
+Map Editor|Map-Editor
 Maps|Maps
+MMB or Space+LMB: pan|MMT oder Leertaste+LMT: verschieben
 Move all packages onto their targets|Schiebe alle Pakete auf die Paletten
 Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
+New|Neu
 No controller found|Keinen Controller gefunden
+none|keine
 Normal|Normal
 Objectives|Ziele
 Off|Aus
@@ -39,27 +67,46 @@ OK|OK
 On|An
 Open|Öffnen
 Package|Paket
+Place tile|Teil plazieren
 Players|Spieler
 Please rate the app|Bitte bewerte die App
+Properties|Eigenschaften
 Quit|Beenden
+Quit without saving|Beenden ohne Speichern
+Redo|Wiederholen
 Red packages are deadlocks - undo your step|Red packages are deadlocks - undo your step
 Refresh|Erneuern
+Remove tile|Teil entfernen
 Reset|Reset
 Reset game progress?|Resete den Fortschritt?
 Restart|Neustart
 Retry|Nochmal
+RMB: erase|RMT: löschen
+Save|Speichern
+Save & Go|Testen
 Select game mode|Spielemodus aussuchen
+Select tile|Teil selektieren
 Settings|Einstellungen
+Show Grid|Gitter anzeigen
 Skip|Nächste
 Small|Klein
+solid|Fest
 Solve|Lösen
 Sound|Sound
 Sound/Music|Sound/Musik
+Space (on canvas): rotate brush|Leertaste (auf Canvas): Pinsel drehen
 Start|Start
 Target|Palette
 Textures|Texturen
 The less moves you do the better|Je weniger Schritte, desto besser
+Tiles|Kacheln
+Title|Titel
+Undo|Rückgängig
+Unsaved changes|Ungespeicherte Änderungen
 Username|Username
 Volume|Volume
 Waiting|Warten
+Wheel: zoom toward cursor|Mausrad: Zoom zum Cursor
+Width|Breite
+You have unsaved changes. Continue?|Es gibt ungespeicherte Änderungen. Fortfahren?
 Your player|Dein Spieler
