@@ -8,6 +8,8 @@ set(${NAME}-client_SRCS
 	ui/windows/intro/IntroDeadlock.cpp
 	ui/windows/UIMainWindow.cpp
 	ui/windows/UIMapWindow.cpp
+	editor/MapEditorDocument.cpp
+	editor/UIMapEditorWindow.cpp
 	CavePackerClientMap.cpp
 )
 add_library(${NAME}-client ${${NAME}-client_SRCS})

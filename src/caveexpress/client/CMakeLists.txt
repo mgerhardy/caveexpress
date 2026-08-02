@@ -5,7 +5,8 @@ set(${NAME}-client_SRCS
 	entities/ClientWindowTile.cpp
 	entities/ClientParticle.cpp
 	CaveExpressClientMap.cpp
-	ui/nodes/UINodeMapEditor.cpp
+	editor/MapEditorDocument.cpp
+	editor/UICaveExpressMapEditorWindow.cpp
 	ui/nodes/UINodeBackgroundScene.cpp
 	ui/nodes/UINodeMap.cpp
 	ui/windows/UIGameOverWindow.cpp
@@ -18,14 +19,11 @@ set(${NAME}-client_SRCS
 	ui/windows/intro/IntroAttack.cpp
 	ui/windows/intro/IntroDiving.cpp
 	ui/windows/UIGameFinishedWindow.cpp
-	ui/windows/UIMapEditorOptionsWindow.cpp
 	ui/windows/UIMapFailedWindow.cpp
 	ui/windows/UICaveExpressSettingsWindow.cpp
 	ui/windows/UIMainWindow.cpp
 	ui/windows/UIGameHelpWindow.cpp
-	ui/windows/UIMapEditorHelpWindow.cpp
 	ui/windows/UIMapWindow.cpp
-	ui/windows/UIMapEditorWindow.cpp
 )
 add_library(${NAME}-client ${${NAME}-client_SRCS})
 set_target_properties(${NAME}-client PROPERTIES FOLDER ${NAME}-client)

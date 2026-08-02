@@ -1,7 +1,5 @@
 Achievements|Achievements
-ALT|ALT
 Are you sure?|Bist du sicher?
-ARROWS|ARROWS
 Back|Zurück
 Big|Groß
 Campaigns|Kampagnen
@@ -11,42 +9,28 @@ Close|Schließen
 Continue|Fortfahren
 Controller trigger|Controller trigger
 Create server|Erstellen
-CTRL|CTRL
-CURSOR|CURSOR
 Deadlock package|Deadlock package
-Decrease map size|Decrease map size
 Delivered package|Delivered package
 Description|Beschreibung
 Disconnect|Trennen
 Editor|Editor
-File|Datei
 Fullscreen|Vollbild
 Game|Spiel
-General|General
 Google Play|Google Play
 Google Play sign-out|Google Play trennen
 Graphics|Grafik
 Hard|Schwer
-Help|Hilfe
 Hints|Hinweise
 Homepage|Homepage
-Increase map size|Increase map size
 Input|Eingabe
 Later|Später
 Leaderboard|Leaderboard
-LMB|LMB
-Load|Laden
 Map|Map
-Map Options|Map Options
 Maps|Maps
-MMB|MMB
-Mouse move|Mouse move
-MOUSE WHEEL|MOUSE WHEEL
 Move all packages onto their targets|Schiebe alle Pakete auf die Paletten
 Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
-New|Neu
 No controller found|Keinen Controller gefunden
 Normal|Normal
 Objectives|Ziele
@@ -55,50 +39,27 @@ OK|OK
 On|An
 Open|Öffnen
 Package|Paket
-Place tile|Place tile
 Players|Spieler
 Please rate the app|Bitte bewerte die App
 Quit|Beenden
-Quit without saving|Quit without saving
-Redo|Redo
 Red packages are deadlocks - undo your step|Red packages are deadlocks - undo your step
-Reference time in seconds|Reference time in seconds
 Refresh|Erneuern
-Remove tile|Remove tile
 Reset|Reset
 Reset game progress?|Resete den Fortschritt?
 Restart|Neustart
 Retry|Nochmal
-RMB|RMB
-Rotate entity|Rotate entity
-Save|Speichern
-Save & Go|Save & Go
-Save map|Save map
-Scroll map|Scroll map
 Select game mode|Spielemodus aussuchen
-Select tile|Select tile
 Settings|Einstellungen
-SHIFT|SHIFT
-Shift map|Shift map
-Shift tile|Shift tile
-Show Grid|Show Grid
-Show help messages to the player|Show help messages to the player
 Skip|Nächste
 Small|Klein
 Solve|Lösen
 Sound|Sound
 Sound/Music|Sound/Musik
-SPACE|SPACE
 Start|Start
 Target|Palette
 Textures|Texturen
 The less moves you do the better|Je weniger Schritte, desto besser
-Time|Zeit
-Tutorial|Tutorial
-Undo|Undo
 Username|Username
 Volume|Volume
 Waiting|Warten
-Win conditions|Win conditions
 Your player|Dein Spieler
-Zoom map|Zoom map

@@ -1,4 +1,5 @@
 #include "RandomMapContext.h"
+#include "WfcMapGenerator.h"
 #include "common/MapSettings.h"
 #include "common/KeyValueParser.h"
 #include "common/EntityType.h"
@@ -584,59 +585,38 @@ void RandomMapContext::findValidPlayerStartingPositionsAndFillBackground ()
 bool RandomMapContext::load (bool skipErrors)
 {
 	resetTiles();
-
-	if (_solidTiles.size() == 0) {
-		Log::error(LOG_GAMEIMPL, "no solid tiles available");
-		return false;
-	}
+	CaveExpressMapContext::setCaveTileDefinitions({});
 
 	if (_mapWidth == 0 || _mapHeight == 0) {
 		Log::error(LOG_GAMEIMPL, "no width or height set for the random map");
 		return false;
 	}
 
-	memset(_map, 0, sizeof(SpriteDef*) * _mapWidth * _mapHeight);
-
-	if (_randomRockTiles == 0) {
-		Log::error(LOG_GAMEIMPL, "no initial random rock tiles");
-		return false;
-	}
-
-	if (_randomRockTiles >= _mapWidth * _mapHeight) {
-		Log::error(LOG_GAMEIMPL, "map is too small for the initial solid tiles setting");
-		return false;
-	}
-
-	if (!placeInitialRandomTiles()) {
-		Log::error(LOG_GAMEIMPL, "could not place the initial tiles");
-		return false;
-	}
-	placeTilesAroundInitialTiles();
-	placeGroundTiles();
-	placeBridges();
-
-	if (_groundPos.empty()) {
-		Log::error(LOG_GAMEIMPL, "no valid spots to place a cave on were found");
+	WfcMapGenerator generator(*_theme, _mapWidth, _mapHeight, _caves);
+	const unsigned int seed = static_cast<unsigned int>(rand());
+	WfcMapGenerator::Result result = generator.generate(seed);
+	if (!result.success) {
+		Log::error(LOG_GAMEIMPL, "WFC map generation failed");
 		if (!skipErrors)
 			return false;
 	}
 
-	const int caves = _groundPos.empty() ? 0 : placeCaveTiles();
-	if (caves < 1) {
-		Log::error(LOG_GAMEIMPL, "could not create random map - not enough caves were placed");
-		if (!skipErrors)
-			return false;
-	}
-	findValidPlayerStartingPositionsAndFillBackground();
-	placeEmitterTiles();
+	setMapTileDefinitions(result.tiles);
+	setEmitterDefinitions(result.emitters);
+	setStartPositions(result.startPositions);
+	CaveExpressMapContext::setCaveTileDefinitions(result.caves);
+	setTitle(result.title.empty() ? _name : result.title);
 
-	if (_playerPos.empty()) {
-		Log::error(LOG_GAMEIMPL, "no valid player positions found");
-		if (!skipErrors)
-			return false;
+	for (IMap::SettingsMapConstIter i = result.settings.begin(); i != result.settings.end(); ++i) {
+		if (_settings.find(i->first) == _settings.end() || i->first == msn::THEME || i->first == msn::WATER_HEIGHT
+				|| i->first == msn::WIDTH || i->first == msn::HEIGHT)
+			_settings[i->first] = i->second;
 	}
 
-	return true;
+	Log::info(LOG_GAMEIMPL, "WFC map ready: tiles=%i caves=%i emitters=%i starts=%i",
+			(int)result.tiles.size(), (int)result.caves.size(), (int)result.emitters.size(),
+			(int)result.startPositions.size());
+	return result.success || skipErrors;
 }
 
 bool RandomMapContext::isFree (randomGridCoord x, randomGridCoord y) const

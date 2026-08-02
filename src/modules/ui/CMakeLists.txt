@@ -1,9 +1,9 @@
 set(ui_SRCS
 	UI.cpp
 	BitmapFont.cpp
-	nodes/IUINodeMapEditor.cpp
-	nodes/IUINodeEntitySelector.cpp
-	nodes/IUINodeSpriteSelector.cpp
+	editor/MapEditorTypes.cpp
+	editor/IMapEditorDocument.cpp
+	editor/UIMapEditorWindow.cpp
 	nodes/UINodeMapSelector.cpp
 	nodes/UINodeCampaignSelector.cpp
 	nodes/UINodeSlider.cpp
@@ -20,7 +20,6 @@ set(ui_SRCS
 	nodes/UINodeMapStringSelector.cpp
 	nodes/UINodeSpinner.cpp
 	nodes/UINodeTextInput.cpp
-	nodes/UINodeMapEditorSelectedItem.cpp
 	nodes/UINodeMapFingerControl.cpp
 	nodes/IUINodeMap.cpp
 	nodes/UINodeServerSelector.cpp
@@ -28,9 +27,6 @@ set(ui_SRCS
 	layouts/UIFillLayout.cpp
 	layouts/UIHBoxLayout.cpp
 	layouts/UIVBoxLayout.cpp
-	windows/IUIMapEditorOptionsWindow.cpp
-	windows/UIMapEditorHelpWindow.cpp
-	windows/IUIMapEditorWindow.cpp
 	windows/UIMapSelectorWindow.cpp
 	windows/UICreateServerWindow.cpp
 	windows/UICampaignMapWindow.cpp

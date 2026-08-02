@@ -17,10 +17,9 @@ struct RandomMapPos {
 	randomGridCoord x, y;
 };
 
-// this context will generate a randomly assembled map
-// there are some assumptions that you should be aware of:
-// * each solid and background tile must be grid aligned
-// * each solid and background tile can't have a fractional part for their width and height
+// Generates a CaveExpress map via Wave Function Collapse (see WfcMapGenerator).
+// The constructor still accepts rock-scatter parameters for API compatibility;
+// generation is rule-based (Air / Solid / Ground adjacency) rather than random scatter.
 class RandomMapContext: public CaveExpressMapContext {
 private:
 	// the amount of caves

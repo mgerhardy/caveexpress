@@ -9,6 +9,7 @@
 #include "common/Log.h"
 #include "common/SQLite.h"
 #include "common/System.h"
+#include "common/MapSettings.h"
 #include "caveexpress/shared/constants/ConfigVars.h"
 #include "caveexpress/shared/CaveExpressCooldown.h"
 
@@ -54,18 +55,14 @@
 #include "caveexpress/client/entities/ClientCaveTile.h"
 #include "caveexpress/client/entities/ClientNPC.h"
 #include "caveexpress/client/entities/ClientParticle.h"
-#include "caveexpress/client/ui/windows/UIMapEditorWindow.h"
-#include "caveexpress/client/ui/nodes/UINodeMapEditor.h"
 #include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
 #include "caveexpress/client/ui/windows/UIMainWindow.h"
 #include "caveexpress/client/ui/windows/UIMapWindow.h"
-#include "caveexpress/client/ui/windows/UIMapEditorWindow.h"
 #include "caveexpress/client/ui/windows/UIGameHelpWindow.h"
 #include "caveexpress/client/ui/windows/UIGameOverWindow.h"
-#include "caveexpress/client/ui/windows/UIMapEditorHelpWindow.h"
-#include "caveexpress/client/ui/windows/UIMapEditorOptionsWindow.h"
 #include "caveexpress/client/ui/windows/UIGameFinishedWindow.h"
 #include "caveexpress/client/ui/windows/UICaveExpressSettingsWindow.h"
+#include "caveexpress/client/editor/UICaveExpressMapEditorWindow.h"
 #include "caveexpress/client/ui/windows/intro/IntroPackage.h"
 #include "caveexpress/client/ui/windows/intro/IntroTime.h"
 #include "caveexpress/client/ui/windows/intro/IntroTree.h"
@@ -421,9 +418,7 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new IntroDiving(frontend));
 	ui.addWindow(new UIMultiplayerWindow(frontend, serviceProvider.getMapManager(), serviceProvider));
 	ui.addWindow(new UICreateServerWindow(frontend, serviceProvider.getMapManager()));
-	UINodeMapEditor* editor = new UINodeMapEditor(frontend, serviceProvider.getMapManager());
-	UIMapEditorWindow* mapEditorWindow = new UIMapEditorWindow(frontend, serviceProvider.getMapManager(), editor);
-	ui.addWindow(mapEditorWindow);
+	ui.addWindow(new UICaveExpressMapEditorWindow(frontend, serviceProvider.getMapManager()));
 	ui.addWindow(new UIGameHelpWindow(frontend));
 	ui.addWindow(new UIGestureWindow(frontend));
 	ui.addWindow(new UIGameOverWindow(frontend, campaignMgr));
@@ -432,8 +427,6 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UIGooglePlayWindow(frontend));
 	ui.addWindow(new UIMapFinishedWindow(frontend, campaignMgr, serviceProvider, SoundTypes::SOUND_PACKAGE_COLLIDE));
 	ui.addWindow(new UIMapFailedWindow(frontend, campaignMgr));
-	ui.addWindow(new UIMapEditorHelpWindow(frontend));
-	ui.addWindow(new UIMapEditorOptionsWindow(frontend, editor));
 
 	Commands.registerCommandVoid(CMD_DROP, [=] () { map->drop(); });
 	CommandPtr cmd = Commands.registerCommandVoid(CMD_MAP_OPEN_IN_EDITOR, [=] () {

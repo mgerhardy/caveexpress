@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ui/nodes/UINode.h"
+#include "imgui.h"
 #include <string>
 #include <SDL_platform.h>
 
@@ -13,8 +14,6 @@
 #define UI_WINDOW_OPTIONS "options"
 #define UI_WINDOW_MAIN "main"
 #define UI_WINDOW_MODE_SELECTION "modeselection"
-#define UI_WINDOW_MAPEDITOR_HELP "mapeditorhelp"
-#define UI_WINDOW_MAPEDITOR_OPTIONS "mapeditoroptions"
 #define UI_WINDOW_GAMEOVER "gameover"
 #define UI_WINDOW_GAMEFINISHED "finished"
 #define UI_WINDOW_MAPFINISHED "mapfinished"
@@ -53,6 +52,15 @@ protected:
 	{
 		_inactiveAfterPush = millis;
 	}
+
+	// Node-chrome windows use NoInputs so the legacy UINode hit-testing keeps working.
+	// ImGui-driven windows (e.g. map editor) override this to accept mouse/keyboard.
+	virtual ImGuiWindowFlags getImGuiWindowFlags () const
+	{
+		return ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoBackground;
+	}
+
+	bool beginFullscreenImGui () const;
 public:
 	virtual ~UIWindow ();
 

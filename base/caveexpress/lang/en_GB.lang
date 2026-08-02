@@ -1,15 +1,9 @@
 A banana will grant more strength for some time|A banana will grant more strength for some time
 Achievements|Achievements
-Activate the fish spawn|Activate the fish spawn
-Activate the pterodactyls spawn|Activate the pterodactyls spawn
-ALT|ALT
 A mighty fish is after you|A mighty fish is after you
 An egg will make you invulnerable for some time|An egg will make you invulnerable for some time
 Angry dinosaur|Angry dinosaur
-A player will lose the map if he touches the side borders|A player will lose the map if he touches the side borders
 Are you sure?|Are you sure?
-ARROWS|ARROWS
-Auto|Auto
 Back|Back
 Big|Big
 Campaign|Campaign
@@ -20,17 +14,9 @@ Collecting fruits will restore hitpoints|Collecting fruits will restore hitpoint
 Collect packages by landing on them|Collect packages by landing on them
 Continue|Continue
 Controller trigger|Controller trigger
-Convert ice theme to desert|Convert ice theme to desert
-Convert rock theme to jungle|Convert rock theme to jungle
 Create server|Create server
-CTRL|CTRL
-CURSOR|CURSOR
-Decrease map height|Decrease map height
-Decrease map size|Decrease map size
-Decrease map width|Decrease map width
 Deliver packages to the shredders|Deliver packages to the shredders
 Description|Description
-Desert|Desert
 Disconnect|Disconnect
 Drop during flight|Drop during flight
 Drop off at the shredder|Drop off at the shredder
@@ -43,55 +29,34 @@ Drop them with the second finger|Drop them with the second finger
 Drop the stone to collect packages again|Drop the stone to collect packages again
 Editor|Editor
 Egg|Egg
-Fall delay|Fall delay
-File|File
-Fish|Fish
 Flying dino when hit may drop an egg|Flying dino when hit may drop an egg
 Fullscreen|Fullscreen
 Game|Game
 Game mode|Game mode
 Gather fruits for new life|Gather fruits for new life
-General|General
 Geyser|Geyser
 Google Play|Google Play
 Google Play sign-out|Google Play sign-out
 Graphics|Graphics
-Gravity|Gravity
 Hard|Hard
 Health bar|Health bar
 Help|Help
 Hints|Hints
 Hitting walls hard will inflict damage|Hitting walls hard will inflict damage
 Homepage|Homepage
-Ice|Ice
-Increase map height|Increase map height
-Increase map size|Increase map size
-Increase map width|Increase map width
-Initial npc spawn delay for the pterodactyls and the fish|Initial npc spawn delay for the pterodactyls and the fish
-Initial water rising delay in milliseconds|Initial water rising delay in milliseconds
 Input|Input
 Invulnerable|Invulnerable
-Jungle|Jungle
 Just stay and watch what happens|Just stay and watch what happens
 Later|Later
 Leaderboard|Leaderboard
 Learn to use the stone|Learn to use the stone
-LMB|LMB
-Load|Load
 Map|Map
-Map Options|Map Options
 Maps|Maps
-MMB|MMB
-Mouse move|Mouse move
-MOUSE WHEEL|MOUSE WHEEL
 Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
-New|New
 No controller found|No controller found
 Normal|Normal
-Npc delay|Npc delay
-Npcs|Npcs
 Objectives|Objectives
 Off|Off
 OK|OK
@@ -99,59 +64,30 @@ On|On
 Open|Open
 or A on your controller|or A on your controller
 Package|Package
-Packages|Packages
-Place tile|Place tile
 Player|Player
 Players|Players
 Please rate the app|Please rate the app
-Points|Points
 Pterodactyls|Pterodactyls
 Pterodactyls is after you|Pterodactyls is after you
 Put packages in crusher to consume|Put packages in crusher to consume
 Quit|Quit
-Quit without saving|Quit without saving
-Redo|Redo
-Reference time in seconds|Reference time in seconds
 Refresh|Refresh
-Remove tile|Remove tile
 Reset|Reset
 Reset game progress?|Reset game progress?
 Restart|Restart
 Retry|Retry
-Rising delay|Rising delay
-RMB|RMB
-Rock|Rock
-Rotate entity|Rotate entity
-Save|Save
-Save & Go|Save & Go
-Save map|Save map
-Scroll map|Scroll map
 Select game mode|Select game mode
-Select tile|Select tile
 Settings|Settings
-SHIFT|SHIFT
-Shift map|Shift map
-Shift tile|Shift tile
-Show Grid|Show Grid
-Show help messages to the player|Show help messages to the player
 Shredder|Shredder
-SideScroll|SideScroll
 Small|Small
 Sound|Sound
 Sound/Music|Sound/Music
-SPACE|SPACE
 Start|Start
 Stone|Stone
 Textures|Textures
-The amount of npcs to deliver|The amount of npcs to deliver
-The amount of packages to deliver|The amount of packages to deliver
 The egg makes you invulnerable|The egg makes you invulnerable
 The geyser will do the work for you|The geyser will do the work for you
-The points you get for finishing the map|The points you get for finishing the map
-The water change speed|The water change speed
 This is the goal in every map|This is the goal in every map
-This is the max amount of npcs that spawn, if you let more than these die, you lose the game|This is the max amount of npcs that spawn, if you let more than these die, you lose the game
-Time|Time
 Time bar|Time bar
 To dive across, fall fast into water flying to side|To dive across, fall fast into water flying to side
 Transfer the grandpa to the desired cave|Transfer the grandpa to the desired cave
@@ -159,8 +95,6 @@ Transfer the man to the desired cave|Transfer the man to the desired cave
 Transfer the woman to the desired cave|Transfer the woman to the desired cave
 Tree|Tree
 Try to avoid crashes but still be fast|Try to avoid crashes but still be fast
-Tutorial|Tutorial
-Undo|Undo
 Username|Username
 Use the second finger to drop the package|Use the second finger to drop the package
 Use the second finger to drop the stone|Use the second finger to drop the stone
@@ -168,13 +102,4 @@ Use the swing of the package|Use the swing of the package
 Volume|Volume
 Waiting|Waiting
 Watch the geyser|Watch the geyser
-Water|Water
-Water fall delay in milliseconds|Water fall delay in milliseconds
-Waterheight|Waterheight
-Waterspeed|Waterspeed
-Win conditions|Win conditions
-Wind|Wind
 You won!|You won!
-Zoom map|Zoom map
-Zoom out|Zoom out
-Zoom out to fit|Zoom out to fit

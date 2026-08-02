@@ -5,9 +5,6 @@
 #include "cavepacker/client/ui/windows/intro/IntroGame.h"
 #include "cavepacker/client/ui/windows/intro/IntroPathfinding.h"
 #include "cavepacker/client/ui/windows/intro/IntroDeadlock.h"
-#include "cavepacker/client/ui/nodes/UINodeMapEditor.h"
-#include "cavepacker/client/ui/nodes/UINodeSpriteSelector.h"
-#include "cavepacker/client/ui/nodes/UINodeEntitySelector.h"
 #include "cavepacker/client/CavePackerClientMap.h"
 #include "cavepacker/server/network/SpawnHandler.h"
 #include "cavepacker/server/network/DisconnectHandler.h"
@@ -52,9 +49,7 @@
 #include "ui/windows/UIGestureWindow.h"
 #include "ui/windows/UICreateServerWindow.h"
 #include "ui/windows/UIMultiplayerWindow.h"
-#include "ui/windows/IUIMapEditorWindow.h"
-#include "ui/windows/UIMapEditorHelpWindow.h"
-#include "ui/windows/IUIMapEditorOptionsWindow.h"
+#include "cavepacker/client/editor/UIMapEditorWindow.h"
 #include "cavepacker/shared/CavePackerSQLitePersister.h"
 #include "cavepacker/shared/CavePackerMapManager.h"
 #include <SDL.h>
@@ -343,15 +338,7 @@ void CavePacker::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(new UICavePackerMapOptionsWindow(frontend, serviceProvider));
 	ui.addWindow(new UIMultiplayerWindow(frontend, serviceProvider.getMapManager(), serviceProvider));
 	ui.addWindow(new UICreateServerWindow(frontend, serviceProvider.getMapManager()));
-
-	UINodeMapEditor* editor = new UINodeMapEditor(frontend, serviceProvider.getMapManager());
-	UINodeSpriteSelector* spriteSelector = new UINodeSpriteSelector(frontend);
-	UINodeEntitySelector* entitySelector = new UINodeEntitySelector(frontend);
-	IUIMapEditorWindow* mapEditorWindow = new IUIMapEditorWindow(frontend, editor, spriteSelector, entitySelector);
-	mapEditorWindow->init(serviceProvider.getMapManager());
-	ui.addWindow(mapEditorWindow);
-	ui.addWindow(new UIMapEditorHelpWindow(frontend));
-	ui.addWindow(new IUIMapEditorOptionsWindow(frontend, mapEditorWindow->getMapEditorNode()));
+	ui.addWindow(new UIMapEditorWindow(frontend, serviceProvider.getMapManager()));
 
 	CommandPtr cmd = Commands.registerCommandVoid(CMD_MAP_OPEN_IN_EDITOR, [=] () {
 		if (!map->isActive())

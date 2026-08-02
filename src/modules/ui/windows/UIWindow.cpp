@@ -25,24 +25,30 @@ UIWindow::~UIWindow ()
 
 void UIWindow::render (int x, int y) const
 {
+	if (!beginFullscreenImGui())
+		return;
+
+	if ((_flags & WINDOW_FLAG_MODAL) != 0 && (_flags & WINDOW_FLAG_FULLSCREEN) == 0) {
+		const Color bgColor = {0.7f, 0.7f, 0.7f, 0.4f};
+		renderFilledRect(0, 0, 0, 0, bgColor);
+	}
+	UINode::render(x, y);
+
+	for (const UINode* nodePtr : _nodes) {
+		nodePtr->renderOnTop(x, y);
+	}
+	ImGui::End();
+}
+
+bool UIWindow::beginFullscreenImGui () const
+{
 	const float px = (float)getRenderX(false);
 	const float py = (float)getRenderY(false);
 	const float pw = (float)getRenderWidth(false);
 	const float ph = (float)getRenderHeight(false);
 	ImGui::SetNextWindowSize({pw, ph}, ImGuiCond_Always);
 	ImGui::SetNextWindowPos({px, py}, ImGuiCond_Always);
-	if (ImGui::Begin(_id.c_str(), nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoBackground)) {
-		if ((_flags & WINDOW_FLAG_MODAL) != 0 && (_flags & WINDOW_FLAG_FULLSCREEN) == 0) {
-			const Color bgColor = {0.7f, 0.7f, 0.7f, 0.4f};
-			renderFilledRect(0, 0, 0, 0, bgColor);
-		}
-		UINode::render(x, y);
-
-		for (const UINode* nodePtr : _nodes) {
-			nodePtr->renderOnTop(x, y);
-		}
-	}
-	ImGui::End();
+	return ImGui::Begin(_id.c_str(), nullptr, getImGuiWindowFlags());
 }
 
 bool UIWindow::onPop ()
