@@ -127,19 +127,43 @@ macro(textureatlas)
 	endif()
 
 	if (TOOLS)
-		add_custom_target(${_TP_PROJECTNAME}-textures)
+		# Collect stamp files so make/ninja only regenerates atlases when inputs change.
+		# (add_custom_target COMMAND always rebuilds; add_custom_command OUTPUT does not.)
+		set(_TP_STAMPS)
+		set(_tps_dir ${ROOT_DIR}/contrib/assets/png)
 		foreach (_tps ${_TP_FILELIST})
-			set(_tps_dir ${ROOT_DIR}/contrib/assets/png)
 			set(_tps_full ${_tps_dir}/${_tps}.tps)
-			add_custom_target(
-				${_TP_PROJECTNAME}-${_tps}
+			set(_stamp ${CMAKE_BINARY_DIR}/${_TP_PROJECTNAME}-${_tps}.atlas.stamp)
+
+			# .tps + listed source PNGs (paths are relative to the textureatlas working dir)
+			set(_tps_deps ${_tps_full})
+			if (EXISTS ${_tps_full})
+				file(STRINGS ${_tps_full} _tps_lines)
+				foreach (_line IN LISTS _tps_lines)
+					if (_line MATCHES "<filename>([^<]+\\.[Pp][Nn][Gg])</filename>")
+						get_filename_component(_png_abs "${_tps_dir}/${CMAKE_MATCH_1}" ABSOLUTE)
+						if (EXISTS ${_png_abs})
+							list(APPEND _tps_deps ${_png_abs})
+						endif()
+					endif()
+				endforeach()
+				list(REMOVE_DUPLICATES _tps_deps)
+			endif()
+
+			add_custom_command(
+				OUTPUT ${_stamp}
 				COMMAND textureatlas ${_tps_full}
+				COMMAND ${CMAKE_COMMAND} -E touch ${_stamp}
 				WORKING_DIRECTORY ${_tps_dir}
-				DEPENDS ${_tps_full}
-				SOURCES ${_tps_full}
+				DEPENDS ${_tps_deps} textureatlas
+				COMMENT "Generating texture atlas ${_tps}"
+				VERBATIM
 			)
-			add_dependencies(${_TP_PROJECTNAME} ${_TP_PROJECTNAME}-${_tps})
+			list(APPEND _TP_STAMPS ${_stamp})
 		endforeach()
+
+		add_custom_target(${_TP_PROJECTNAME}-textures DEPENDS ${_TP_STAMPS})
+		add_dependencies(${_TP_PROJECTNAME} ${_TP_PROJECTNAME}-textures)
 	endif()
 endmacro()
 
