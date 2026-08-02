@@ -286,6 +286,11 @@ bool IMapEditorDocument::placeTileItem (const MapEditorTileItem& item, bool over
 	return true;
 }
 
+bool IMapEditorDocument::canPlaceTileItem (const MapEditorTileItem& item) const
+{
+	return true;
+}
+
 bool IMapEditorDocument::placeBrushItem (bool overwrite)
 {
 	if (!_activeSprite)
@@ -305,6 +310,8 @@ bool IMapEditorDocument::placeBrushItem (bool overwrite)
 	item.layer = _activeEntityType ? LAYER_EMITTER : _activeLayer;
 	item.angle = _activeAngle;
 	item.mapTile = _activeEntityType == nullptr && isMapTileType(_activeSprite->type);
+	if (!canPlaceTileItem(item))
+		return false;
 	return placeTileItem(item, overwrite);
 }
 

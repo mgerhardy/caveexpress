@@ -11,6 +11,7 @@
 #include "caveexpress/shared/CaveTileDefinition.h"
 #include "caveexpress/server/map/RandomMapContext.h"
 #include "caveexpress/server/entities/EntityEmitter.h"
+#include <cmath>
 #include <ctime>
 #include <map>
 
@@ -38,6 +39,54 @@ MapEditorLayer MapEditorDocument::getLayer (const SpriteType& type) const
 bool MapEditorDocument::isMapTileType (const SpriteType& type) const
 {
 	return SpriteTypes::isMapTile(type);
+}
+
+bool MapEditorDocument::requiresBackgroundTile (const SpriteType& type) const
+{
+	// Foreground/decoration overlays that only make sense on open background cells
+	// (e.g. bridges, lianes). Solid rock/ground cells are not valid hosts.
+	return SpriteTypes::isBridge(type) || SpriteTypes::isLiane(type);
+}
+
+bool MapEditorDocument::hasBackgroundCovering (gridCoord gridX, gridCoord gridY, gridSize width, gridSize height) const
+{
+	if (width <= 0.0f || height <= 0.0f)
+		return false;
+
+	const int x0 = static_cast<int>(std::floor(gridX + EPSILON));
+	const int y0 = static_cast<int>(std::floor(gridY + EPSILON));
+	const int x1 = static_cast<int>(std::ceil(gridX + width - EPSILON));
+	const int y1 = static_cast<int>(std::ceil(gridY + height - EPSILON));
+	if (x1 <= x0 || y1 <= y0)
+		return false;
+
+	for (int cy = y0; cy < y1; ++cy) {
+		for (int cx = x0; cx < x1; ++cx) {
+			bool covered = false;
+			for (const MapEditorTileItem& item : _map) {
+				if (!item.def || !SpriteTypes::isBackground(item.def->type))
+					continue;
+				if (IMapEditorDocument::isOverlapping(static_cast<gridCoord>(cx), static_cast<gridCoord>(cy), item)) {
+					covered = true;
+					break;
+				}
+			}
+			if (!covered)
+				return false;
+		}
+	}
+	return true;
+}
+
+bool MapEditorDocument::canPlaceTileItem (const MapEditorTileItem& item) const
+{
+	if (!item.def || !requiresBackgroundTile(item.def->type))
+		return true;
+
+	const vec2& size = item.getSize(true);
+	const gridCoord x = item.gridX + item.getX(true);
+	const gridCoord y = item.gridY + item.getY(true);
+	return hasBackgroundCovering(x, y, size.x, size.y);
 }
 
 bool MapEditorDocument::isPlayerType (const EntityType& type) const
@@ -150,6 +199,8 @@ bool MapEditorDocument::placeBrushItem (bool overwrite)
 		item.angle = _activeAngle;
 		item.settings = settings;
 		item.mapTile = false;
+		if (!canPlaceTileItem(item))
+			return false;
 		return placeTileItem(item, overwrite);
 	}
 
@@ -160,6 +211,8 @@ bool MapEditorDocument::placeBrushItem (bool overwrite)
 	item.layer = _activeLayer;
 	item.angle = _activeAngle;
 	item.mapTile = isMapTileType(_activeSprite->type);
+	if (!canPlaceTileItem(item))
+		return false;
 	return placeTileItem(item, overwrite);
 }
 

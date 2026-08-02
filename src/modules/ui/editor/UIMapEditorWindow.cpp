@@ -354,8 +354,9 @@ void UIMapEditorWindow::drawHelpPanel () const
 	ImGui::TextUnformatted(tr("Map Editor").c_str());
 	ImGui::Separator();
 	ImGui::BulletText("%s", tr("LMB: paint / place").c_str());
+	ImGui::BulletText("%s", tr("Shift+LMB: pick tile under cursor").c_str());
 	ImGui::BulletText("%s", tr("RMB: erase").c_str());
-	ImGui::BulletText("%s", tr("MMB or Space+LMB: pan").c_str());
+	ImGui::BulletText("%s", tr("MMB click: pick, MMB drag or Space+LMB: pan").c_str());
 	ImGui::BulletText("%s", tr("Wheel: zoom toward cursor").c_str());
 	ImGui::BulletText("%s", tr("Space (on canvas): rotate brush").c_str());
 	ImGui::BulletText("%s", tr("Ctrl+S save, Ctrl+Z/Y undo/redo").c_str());
@@ -522,10 +523,15 @@ void UIMapEditorWindow::drawCanvas () const
 		}
 
 		if (!_panning && !space) {
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-				_doc->paintAtSelection(true, true);
-			else if (ImGui::IsMouseDown(ImGuiMouseButton_Left))
+			const bool shift = ImGui::GetIO().KeyShift;
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+				if (shift)
+					_doc->pickAtSelection();
+				else
+					_doc->paintAtSelection(true, true);
+			} else if (!shift && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 				_doc->paintAtSelection(true, false);
+			}
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 				_doc->eraseAtSelection(true);
 			else if (ImGui::IsMouseDown(ImGuiMouseButton_Right))

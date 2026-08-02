@@ -102,6 +102,11 @@ protected:
 	virtual bool isMapTileType (const SpriteType& type) const = 0;
 	virtual bool isPlayerType (const EntityType& type) const = 0;
 	virtual const Animation& getEmitterAnimation (const EntityType& type) const = 0;
+	/**
+	 * Game-specific brush placement rules. Returning false rejects the paint
+	 * without modifying the map. Not applied when loading existing maps.
+	 */
+	virtual bool canPlaceTileItem (const MapEditorTileItem& item) const;
 	virtual bool shouldSaveTile (const MapEditorTileItem& tile) const;
 	virtual bool shouldSaveEmitter (const MapEditorTileItem& tile) const;
 	virtual void doClear ();

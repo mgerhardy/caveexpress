@@ -88,6 +88,8 @@ bool MapEditorDocument::placeBrushItem (bool overwrite)
 
 	item.layer = getLayer(item.def->type);
 	item.mapTile = true;
+	if (!canPlaceTileItem(item))
+		return false;
 	return placeTileItem(item, overwrite);
 }
 

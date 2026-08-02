@@ -13,11 +13,15 @@ private:
 			MapEditorLayer layer, int delay, bool overwrite);
 	void setWaterParameters (float waterHeight, float waterChangeSpeed, uint32_t waterRisingDelay, uint32_t waterFallingDelay);
 
+	bool requiresBackgroundTile (const SpriteType& type) const;
+	bool hasBackgroundCovering (gridCoord gridX, gridCoord gridY, gridSize width, gridSize height) const;
+
 protected:
 	MapEditorLayer getLayer (const SpriteType& type) const override;
 	bool isMapTileType (const SpriteType& type) const override;
 	bool isPlayerType (const EntityType& type) const override;
 	const Animation& getEmitterAnimation (const EntityType& type) const override;
+	bool canPlaceTileItem (const MapEditorTileItem& item) const override;
 	bool shouldSaveTile (const MapEditorTileItem& tile) const override;
 	bool shouldSaveEmitter (const MapEditorTileItem& tile) const override;
 	void doClear () override;

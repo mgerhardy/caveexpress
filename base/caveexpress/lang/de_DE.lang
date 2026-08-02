@@ -83,7 +83,7 @@ LMB: paint / place|LMT: malen / platzieren
 Map|Map
 Map Editor|Map-Editor
 Maps|Maps
-MMB or Space+LMB: pan|MMT oder Leertaste+LMT: verschieben
+MMB: pick tile (or Space+LMB: pan)|MMB: pick tile (or Space+LMB: pan)
 Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
@@ -125,6 +125,7 @@ Save & Go|Testen
 Select game mode|Auswahl des Spielmodus
 Select tile|Teil selektieren
 Settings|Einstellungen
+Shift+LMB: pick tile under cursor|Shift+LMB: pick tile under cursor
 Show Grid|Gitter anzeigen
 Shredder|Schredder
 Small|Klein
