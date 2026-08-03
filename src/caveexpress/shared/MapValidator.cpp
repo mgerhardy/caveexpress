@@ -86,12 +86,52 @@ void MapValidator::floodFlyable (const Grid& grid, int sx, int sy, std::vector<u
 	}
 }
 
+int MapValidator::airPathDistance (const Grid& grid, int sx, int sy, int gx, int gy) const
+{
+	if (!grid.flyable(sx, sy) || !grid.flyable(gx, gy))
+		return -1;
+	if (sx == gx && sy == gy)
+		return 0;
+
+	const int n = grid.width * grid.height;
+	std::vector<int> dist(n, -1);
+	std::queue<int> q;
+	const int start = grid.idx(sx, sy);
+	const int goal = grid.idx(gx, gy);
+	dist[start] = 0;
+	q.push(start);
+	static const int DIR[4][2] = { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } };
+	while (!q.empty()) {
+		const int i = q.front();
+		q.pop();
+		if (i == goal)
+			return dist[i];
+		const int x = i % grid.width;
+		const int y = i / grid.width;
+		for (const auto& d : DIR) {
+			const int nx = x + d[0];
+			const int ny = y + d[1];
+			if (!grid.flyable(nx, ny))
+				continue;
+			const int ni = grid.idx(nx, ny);
+			if (dist[ni] >= 0)
+				continue;
+			dist[ni] = dist[i] + 1;
+			q.push(ni);
+		}
+	}
+	return -1;
+}
+
 MapMetrics MapValidator::evaluate (int width, int height,
 		const std::vector<MapTileDefinition>& tiles,
 		const std::vector<CaveTileDefinition>& caves,
 		const std::vector<EmitterDefinition>& emitters,
 		const IMap::StartPositions& starts,
-		int minCaveSeparation) const
+		int minCaveSeparation,
+		int minCavePackageAirSeparation,
+		int minPlatformLength,
+		int minSolidComponentSize) const
 {
 	MapMetrics m;
 	m.width = width;
@@ -172,6 +212,8 @@ MapMetrics MapValidator::evaluate (int width, int height,
 			packageTargets.emplace_back(static_cast<int>(std::floor(e.x + EPSILON)),
 					static_cast<int>(std::floor(e.y + EPSILON)));
 			++m.packageTargetCount;
+		} else if (EntityTypes::isTree(*e.type)) {
+			++m.treeEmitterCount;
 		}
 	}
 
@@ -201,6 +243,18 @@ MapMetrics MapValidator::evaluate (int width, int height,
 	std::vector<uint8_t> reached;
 	floodFlyable(grid, startX, startY, reached);
 
+	for (int i = 0; i < n; ++i) {
+		if (grid.kind[i] != CellKind::Empty && grid.kind[i] != CellKind::FlyableDecor)
+			continue;
+		if (reached[i])
+			++m.flyableReachable;
+		else
+			++m.unreachableFlyable;
+	}
+	m.flyableReachabilityRatio = m.flyableCells > 0
+			? static_cast<float>(m.flyableReachable) / static_cast<float>(m.flyableCells)
+			: 0.0f;
+
 	auto poiReachable = [&] (int x, int y) {
 		static const int DIR[4][2] = { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } };
 		if (grid.flyable(x, y) && reached[grid.idx(x, y)])
@@ -219,7 +273,7 @@ MapMetrics MapValidator::evaluate (int width, int height,
 			++m.cavesReachable;
 	}
 	for (const auto& t : packageTargets) {
-		// Delivery approach: air above target (angle 0)
+		// Delivery from air above the target (player approach cell).
 		const int ax = t.first;
 		const int ay = t.second - 1;
 		if ((grid.inBounds(ax, ay) && grid.flyable(ax, ay) && reached[grid.idx(ax, ay)]) || poiReachable(t.first, t.second))
@@ -314,26 +368,114 @@ MapMetrics MapValidator::evaluate (int width, int height,
 
 	m.airOpenness = n > 0 ? static_cast<float>(m.flyableCells) / static_cast<float>(n) : 0.0f;
 
-	// Platform run lengths on walkable rows
+	// Platform run lengths on non-bridge walkable rows. Package targets sit in the
+	// walkable niche and should not split an otherwise coherent platform.
 	std::vector<int> runs;
 	for (int y = 0; y < height; ++y) {
 		int run = 0;
 		for (int x = 0; x < width; ++x) {
-			if (grid.kind[grid.idx(x, y)] == CellKind::Walkable) {
+			const int i = grid.idx(x, y);
+			const bool plat = (grid.kind[i] == CellKind::Walkable && !grid.isBridge[i]) || grid.isPackageTarget[i];
+			if (plat) {
 				++run;
 			} else if (run > 0) {
 				runs.push_back(run);
+				if (run < minPlatformLength)
+					++m.shortPlatformRuns;
 				run = 0;
 			}
 		}
-		if (run > 0)
+		if (run > 0) {
 			runs.push_back(run);
+			if (run < minPlatformLength)
+				++m.shortPlatformRuns;
+		}
 	}
 	if (!runs.empty()) {
 		int sum = 0;
 		for (int r : runs)
 			sum += r;
 		m.meanPlatformLength = static_cast<float>(sum) / static_cast<float>(runs.size());
+	}
+
+	// Distinct rows that host a real platform (non-bridge walkable / package niche).
+	for (int y = 0; y < height; ++y) {
+		int run = 0;
+		bool rowCounts = false;
+		for (int x = 0; x < width; ++x) {
+			const int i = grid.idx(x, y);
+			const bool plat = (grid.kind[i] == CellKind::Walkable && !grid.isBridge[i]) || grid.isPackageTarget[i];
+			if (plat) {
+				++run;
+				if (run >= minPlatformLength)
+					rowCounts = true;
+			} else {
+				run = 0;
+			}
+		}
+		if (rowCounts)
+			++m.platformRows;
+	}
+
+	// Isolated non-bridge walkable tiles (no walkable/package-target orthogonal neighbor).
+	for (int y = 0; y < height; ++y) {
+		for (int x = 0; x < width; ++x) {
+			const int i = grid.idx(x, y);
+			if (grid.kind[i] != CellKind::Walkable || grid.isBridge[i])
+				continue;
+			int walkNeighbors = 0;
+			for (const auto& d : N4) {
+				const int nx = x + d[0];
+				const int ny = y + d[1];
+				if (!grid.inBounds(nx, ny))
+					continue;
+				const int ni = grid.idx(nx, ny);
+				if ((grid.kind[ni] == CellKind::Walkable) || grid.isPackageTarget[ni])
+					++walkNeighbors;
+			}
+			if (walkNeighbors == 0)
+				++m.isolatedWalkables;
+		}
+	}
+
+	// Small solid components (4-connected) not counting the bottom water bed as "good structure".
+	{
+		std::vector<uint8_t> seen(n, 0);
+		std::vector<int> stack;
+		for (int y = 0; y < height; ++y) {
+			for (int x = 0; x < width; ++x) {
+				const int start = grid.idx(x, y);
+				if (seen[start] || !grid.solid(x, y))
+					continue;
+				stack.clear();
+				stack.push_back(start);
+				seen[start] = 1;
+				int size = 0;
+				bool touchesBottom = false;
+				while (!stack.empty()) {
+					const int i = stack.back();
+					stack.pop_back();
+					++size;
+					const int cx = i % width;
+					const int cy = i / width;
+					if (cy >= height - 2)
+						touchesBottom = true;
+					for (const auto& d : N4) {
+						const int nx = cx + d[0];
+						const int ny = cy + d[1];
+						if (!grid.inBounds(nx, ny) || !grid.solid(nx, ny))
+							continue;
+						const int ni = grid.idx(nx, ny);
+						if (seen[ni])
+							continue;
+						seen[ni] = 1;
+						stack.push_back(ni);
+					}
+				}
+				if (!touchesBottom && size < minSolidComponentSize)
+					++m.smallSolidComponents;
+			}
+		}
 	}
 
 	// Cave separation
@@ -360,7 +502,8 @@ MapMetrics MapValidator::evaluate (int width, int height,
 			++m.windowWindowAdjacencies;
 	}
 
-	// Package target niche (angle 0): walkable L/R, solid below, air above
+	// Package target niche for delivery from air above the target (player approach
+	// cell): walkable L/R, solid below, air above.
 	for (const auto& t : packageTargets) {
 		const int x = t.first;
 		const int y = t.second;
@@ -372,6 +515,62 @@ MapMetrics MapValidator::evaluate (int width, int height,
 		const bool rightWalk = grid.inBounds(x + 1, y) && grid.kind[grid.idx(x + 1, y)] == CellKind::Walkable;
 		if (!(leftOk && rightOk && belowOk && aboveOk && leftWalk && rightWalk))
 			++m.packageTargetsWithBadNiche;
+	}
+
+	// Cave vs package-target layout: no cave stacked above a target, and a minimum
+	// flyable air-path length (walls/gaps that force a detour count as farther).
+	m.minCavePackageAirPath = (m.caveCount == 0 || m.packageTargetCount == 0) ? 99.0f : 99.0f;
+	if (m.caveCount > 0 && m.packageTargetCount > 0) {
+		int bestAir = 999;
+		for (const auto& c : cavePositions) {
+			for (const auto& t : packageTargets) {
+				if (c.first == t.first && c.second < t.second)
+					++m.cavesAbovePackageTarget;
+
+				int caveX = c.first;
+				int caveY = c.second;
+				if (!grid.flyable(caveX, caveY)) {
+					// Fall back to a flyable neighbor of the cave entry
+					static const int OFF[4][2] = { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } };
+					bool found = false;
+					for (const auto& o : OFF) {
+						if (grid.flyable(c.first + o[0], c.second + o[1])) {
+							caveX = c.first + o[0];
+							caveY = c.second + o[1];
+							found = true;
+							break;
+						}
+					}
+					if (!found)
+						continue;
+				}
+
+				int targetAirX = t.first;
+				int targetAirY = t.second - 1;
+				if (!grid.flyable(targetAirX, targetAirY)) {
+					static const int OFF[4][2] = { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } };
+					bool found = false;
+					for (const auto& o : OFF) {
+						if (grid.flyable(t.first + o[0], t.second + o[1])) {
+							targetAirX = t.first + o[0];
+							targetAirY = t.second + o[1];
+							found = true;
+							break;
+						}
+					}
+					if (!found)
+						continue;
+				}
+
+				const int dist = airPathDistance(grid, caveX, caveY, targetAirX, targetAirY);
+				if (dist < 0)
+					continue;
+				bestAir = std::min(bestAir, dist);
+				if (dist < minCavePackageAirSeparation)
+					++m.cavePackageAirTooClose;
+			}
+		}
+		m.minCavePackageAirPath = bestAir >= 999 ? -1.0f : static_cast<float>(bestAir);
 	}
 
 	// Bridges should have background on the same cell (or open air below as a weaker proxy)
@@ -386,7 +585,9 @@ MapMetrics MapValidator::evaluate (int width, int height,
 		}
 	}
 
-	// Hard validity
+	// Hard validity (POI reachability). Full flyable coverage is a soft metric that
+	// mapgen generation enforces separately — hand maps often paint backgrounds into
+	// enclosed rock niches for visuals.
 	m.valid = true;
 	if (m.caveCount > 0 && m.cavesReachable < m.caveCount) {
 		m.valid = false;
@@ -402,20 +603,30 @@ MapMetrics MapValidator::evaluate (int width, int height,
 		if (m.failureReason.empty())
 			m.failureReason = "package cannot reach target airspace";
 	}
+	if (m.failureReason.empty() && m.unreachableFlyable > 0)
+		m.failureReason = "unreachable flyable";
 
 	// Composite score 0-100
 	float score = 0.0f;
-	score += 25.0f * m.walkableSurfaceRatio;
-	score += 15.0f * (1.0f - std::min(1.0f, m.exposedRockTopRatio));
-	score += 15.0f * (1.0f - std::min(1.0f, m.orphanColliderRatio * 5.0f));
-	score += 10.0f * std::min(1.0f, m.airOpenness / 0.45f);
-	score += 10.0f * (m.caveCount == 0 ? 1.0f :
+	score += 20.0f * m.walkableSurfaceRatio;
+	score += 12.0f * (1.0f - std::min(1.0f, m.exposedRockTopRatio));
+	score += 12.0f * (1.0f - std::min(1.0f, m.orphanColliderRatio * 5.0f));
+	score += 8.0f * std::min(1.0f, m.airOpenness / 0.45f);
+	score += 5.0f * m.flyableReachabilityRatio;
+	score += 8.0f * (m.caveCount == 0 ? 1.0f :
 			static_cast<float>(m.cavesReachable) / static_cast<float>(m.caveCount));
-	score += 10.0f * (m.packageTargetCount == 0 ? 1.0f :
+	score += 8.0f * (m.packageTargetCount == 0 ? 1.0f :
 			static_cast<float>(m.packageTargetsReachable) / static_cast<float>(m.packageTargetCount));
 	score += 5.0f * (m.windowWindowAdjacencies == 0 ? 1.0f : 0.0f);
 	score += 5.0f * (m.cavesTooClose == 0 ? 1.0f : 0.0f);
-	score += 5.0f * (m.packageTargetCount == 0 ? 1.0f :
+	score += 5.0f * (m.cavesAbovePackageTarget == 0 ? 1.0f : 0.0f);
+	score += 5.0f * (m.cavePackageAirTooClose == 0 ? 1.0f : 0.0f);
+	score += 4.0f * (m.shortPlatformRuns == 0 ? 1.0f : 0.0f);
+	score += 4.0f * (m.smallSolidComponents == 0 ? 1.0f : 0.0f);
+	score += 3.0f * (m.isolatedWalkables == 0 ? 1.0f : 0.0f);
+	score += 4.0f * std::min(1.0f, static_cast<float>(m.platformRows) / 3.0f);
+	score += 3.0f * (m.treeEmitterCount > 0 ? 1.0f : 0.0f);
+	score += 4.0f * (m.packageTargetCount == 0 ? 1.0f :
 			1.0f - static_cast<float>(m.packageTargetsWithBadNiche) / static_cast<float>(m.packageTargetCount));
 	if (!m.valid)
 		score *= 0.35f;

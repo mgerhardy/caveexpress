@@ -7,6 +7,7 @@ set(caveexpress-shared_SRCS
 	CaveExpressEntityType.cpp
 	CaveExpressMapFailedReasons.cpp
 	MapValidator.cpp
+	SpriteShapeTraits.cpp
 )
 add_library(caveexpress-shared ${caveexpress-shared_SRCS})
 set_target_properties(caveexpress-shared PROPERTIES FOLDER caveexpress-shared)

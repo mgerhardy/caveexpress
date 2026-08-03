@@ -163,3 +163,12 @@ Version 2.6 (2025-06-07)
   * Added keys to convert theme: from rock to jungle (ctrl-J), or from ice to desert (ctrl-D)
   * Shift tile with alt+shift not alt
 * Updated tools, new: textureatlas
+
+Version 2.7 (not yet released)
+* Fade map out when finishing a level
+* Editor
+  * Reworked map editor UI (ImGui)
+  * Shift+LMB or middle-click to pick the tile under the cursor
+  * Bridges and lianes can only be placed on background tiles
+  * Improved random map generator (Auto) with seed support
+  * Updated editor translations (English and German)

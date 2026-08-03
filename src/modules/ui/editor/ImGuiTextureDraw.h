@@ -2,6 +2,7 @@
 
 #include "imgui.h"
 #include "common/IFrontend.h"
+#include "common/Math.h"
 #include "textures/Texture.h"
 #include "textures/TextureCoords.h"
 #include "sprites/Sprite.h"
@@ -41,7 +42,7 @@ inline void mapEditorAddTexture (ImDrawList* drawList, IFrontend* frontend, Text
 	const ImVec2 center((pMin.x + pMax.x) * 0.5f, (pMin.y + pMax.y) * 0.5f);
 	const float hw = (pMax.x - pMin.x) * 0.5f;
 	const float hh = (pMax.y - pMin.y) * 0.5f;
-	const float rad = static_cast<float>(angle) * 0.017453292519943295f; // deg to rad
+	const float rad = static_cast<float>(angle) * static_cast<float>(DEG2RAD);
 	const float c = std::cos(rad);
 	const float s = std::sin(rad);
 	auto rot = [&] (float x, float y) -> ImVec2 {

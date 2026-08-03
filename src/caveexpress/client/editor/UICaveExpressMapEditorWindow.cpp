@@ -95,10 +95,18 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 		ImGui::SameLine();
 	}
 	ImGui::NewLine();
+	int seed = string::toInt(doc.getSetting("seed", "0"));
+	if (ImGui::InputInt(tr("Seed").c_str(), &seed))
+		doc.setSetting("seed", string::toString(std::max(0, seed)));
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("%s", tr("Map generator seed. 0 picks a new seed on Auto.").c_str());
+	ImGui::SameLine();
 	if (ImGui::Button(tr("Auto").c_str())) {
 		doc.autoFill(doc.getTheme());
 		fitView();
 	}
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("%s", tr("Generate a random map with the current seed.").c_str());
 }
 
 }

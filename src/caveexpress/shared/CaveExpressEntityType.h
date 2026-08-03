@@ -239,4 +239,8 @@ inline bool hasDirection (const EntityType& other)
 
 }
 
+/** Load width/height from entities.lua into registered EntityType instances.
+ *  @return false if the lua file could not be loaded */
+bool loadEntitySizesFromLua (const std::string& path = "entities.lua");
+
 }

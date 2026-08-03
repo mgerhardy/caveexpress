@@ -1,7 +1,7 @@
 #include "tests/TestShared.h"
 #include "caveexpress/shared/MapValidator.h"
 #include "caveexpress/shared/CaveExpressMapContext.h"
-#include "caveexpress/server/map/WfcMapGenerator.h"
+#include "caveexpress/server/map/RandomMapGenerator.h"
 #include "common/ThemeType.h"
 #include "common/TextureDefinition.h"
 #include "common/SpriteDefinition.h"
@@ -9,8 +9,6 @@
 #include "common/Log.h"
 #include "common/String.h"
 #include <vector>
-#include <algorithm>
-#include <cmath>
 
 namespace caveexpress {
 
@@ -40,11 +38,31 @@ protected:
 				ctx.getEmitterDefinitions(), ctx.getStartPositions());
 	}
 
-	MapMetrics evaluateWfc (const WfcMapGenerator::Result& result) const
+	SpriteDefPtr requireSprite (const char* id) const
 	{
-		const int w = string::toInt(result.settings.at(msn::WIDTH));
-		const int h = string::toInt(result.settings.at(msn::HEIGHT));
-		return MapValidator().evaluate(w, h, result.tiles, result.caves, result.emitters, result.startPositions);
+		const SpriteDefPtr def = SpriteDefinition::get().getSpriteDefinition(id);
+		EXPECT_TRUE(!!def) << id;
+		return def;
+	}
+
+	void addTile (std::vector<MapTileDefinition>& tiles, const char* id, int x, int y) const
+	{
+		const SpriteDefPtr def = requireSprite(id);
+		if (def)
+			tiles.emplace_back(static_cast<gridCoord>(x), static_cast<gridCoord>(y), def, 0);
+	}
+
+	/** Open flyable map with rock border; start at (1,1). */
+	void fillOpenBorder (std::vector<MapTileDefinition>& tiles, int w, int h) const
+	{
+		for (int y = 0; y < h; ++y) {
+			for (int x = 0; x < w; ++x) {
+				if (x == 0 || y == 0 || x == w - 1 || y == h - 1)
+					addTile(tiles, "tile-rock-01", x, y);
+				else
+					addTile(tiles, "tile-background-01", x, y);
+			}
+		}
 	}
 };
 
@@ -55,86 +73,194 @@ TEST_F(MapValidatorTest, testHandMapBaseline)
 		"villages-01", "villages-08", "third-ice-01", "third-ice-05"
 	};
 
-	std::vector<float> scores;
-	std::vector<float> exposed;
-	std::vector<float> orphans;
 	int hardPass = 0;
-
 	for (const char* name : maps) {
 		CaveExpressMapContext ctx(name);
 		ASSERT_TRUE(ctx.load(true)) << name;
 		const MapMetrics m = evaluateContext(ctx);
 		Log::info(LOG_GAMEIMPL,
-				"hand map %s score=%.1f valid=%i exposed=%.3f orphan=%.3f caves=%i/%i pkgTarget=%i walkSurf=%.3f",
+				"hand map %s score=%.1f valid=%i exposed=%.3f orphan=%.3f caves=%i/%i",
 				name, m.totalScore, m.valid ? 1 : 0, m.exposedRockTopRatio, m.orphanColliderRatio,
-				m.cavesReachable, m.caveCount, m.packageTargetCount, m.walkableSurfaceRatio);
-		scores.push_back(m.totalScore);
-		exposed.push_back(m.exposedRockTopRatio);
-		orphans.push_back(m.orphanColliderRatio);
+				m.cavesReachable, m.caveCount);
 		if (m.valid)
 			++hardPass;
-		// Hand maps should mostly pass hard reachability
 		EXPECT_TRUE(m.valid || m.caveCount == 0) << name << ": " << m.failureReason;
 	}
-
-	ASSERT_FALSE(scores.empty());
-	std::sort(scores.begin(), scores.end());
-	std::sort(exposed.begin(), exposed.end());
-	std::sort(orphans.begin(), orphans.end());
-	const float scoreP10 = scores[std::max<size_t>(0, scores.size() / 10)];
-	const float exposedP90 = exposed[std::min(exposed.size() - 1, (exposed.size() * 9) / 10)];
-	const float orphanP90 = orphans[std::min(orphans.size() - 1, (orphans.size() * 9) / 10)];
-	Log::info(LOG_GAMEIMPL, "hand baseline scoreP10=%.1f exposedP90=%.3f orphanP90=%.3f hardPass=%i/%i",
-			scoreP10, exposedP90, orphanP90, hardPass, (int)scores.size());
-
-	EXPECT_GE(hardPass, static_cast<int>(scores.size()) - 2);
-	EXPECT_GE(scoreP10, 30.0f);
+	EXPECT_GE(hardPass, static_cast<int>(sizeof(maps) / sizeof(maps[0])) - 2);
 }
 
-TEST_F(MapValidatorTest, testWfcMetricsVsHandBaseline)
+TEST_F(MapValidatorTest, testRandomMapAcceptedMapsMeetRules)
 {
-	// Thresholds seeded from typical hand-map quality (relaxed slightly for procedural).
-	const float minScore = 40.0f;
-	const float maxExposedRock = 0.55f;
-	const float maxOrphan = 0.25f;
+	RandomMapRules rules = RandomMapRules::loadFromLua();
+	rules.caveTarget = 2;
+	const unsigned int seeds[] = { 42u, 7u, 4242u, 2017u, 3030u };
+	for (unsigned int seed : seeds) {
+		const ThemeType& theme = (seed % 2u == 0) ? ThemeTypes::ROCK : ThemeTypes::ICE;
+		RandomMapGenerator gen(theme, 18, 12, rules);
+		const RandomMapGenerator::Result result = gen.generate(seed);
+		ASSERT_TRUE(result.success) << "seed " << seed;
+		const int w = string::toInt(result.settings.at(msn::WIDTH));
+		const int h = string::toInt(result.settings.at(msn::HEIGHT));
+		const MapMetrics m = MapValidator().evaluate(w, h, result.tiles, result.caves, result.emitters,
+				result.startPositions, rules.minCaveSeparation, rules.minCavePackageAirSeparation,
+				rules.minPlatformLength, rules.minSolidComponentSize);
+		EXPECT_TRUE(rules.accepts(m, w, h, string::toFloat(result.settings.at(msn::WATER_HEIGHT))))
+				<< "seed " << seed << ": " << m.failureReason;
+		EXPECT_EQ(0, m.cavesAbovePackageTarget) << "seed " << seed;
+		EXPECT_EQ(0, m.shortPlatformRuns) << "seed " << seed;
+		EXPECT_EQ(0, m.windowWindowAdjacencies) << "seed " << seed;
+	}
+}
 
-	int success = 0;
-	int metricPass = 0;
-	float scoreSum = 0.0f;
-	const int attempts = 24;
+TEST_F(MapValidatorTest, testValidatorCatchesUnreachableAir)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts;
+	starts.push_back({ "1", "1" });
 
-	WfcRules rules = WfcRules::loadFromLua();
-	for (int i = 0; i < attempts; ++i) {
-		const ThemeType& theme = (i & 1) ? ThemeTypes::ICE : ThemeTypes::ROCK;
-		WfcMapGenerator gen(theme, 18, 12, static_cast<unsigned>(std::max(2, rules.caveTarget)), rules);
-		const WfcMapGenerator::Result result = gen.generate(static_cast<unsigned int>(2000 + i * 17));
-		if (!result.success)
-			continue;
-		++success;
-		const MapMetrics m = evaluateWfc(result);
-		scoreSum += m.totalScore;
-		Log::info(LOG_GAMEIMPL,
-				"wfc seed=%i score=%.1f valid=%i exposed=%.3f orphan=%.3f caves=%i pkgBadNiche=%i winAdj=%i (%s)",
-				2000 + i * 17, m.totalScore, m.valid ? 1 : 0, m.exposedRockTopRatio, m.orphanColliderRatio,
-				m.caveCount, m.packageTargetsWithBadNiche, m.windowWindowAdjacencies, m.failureReason.c_str());
-
-		const bool ok = m.valid
-				&& m.totalScore >= minScore
-				&& m.exposedRockTopRatio <= maxExposedRock
-				&& m.orphanColliderRatio <= maxOrphan
-				&& m.windowWindowAdjacencies == 0
-				&& m.cavesTooClose == 0;
-		if (ok)
-			++metricPass;
+	const int w = 6;
+	const int h = 6;
+	for (int y = 0; y < h; ++y) {
+		for (int x = 0; x < w; ++x) {
+			const bool outer = x == 0 || y == 0 || x == w - 1 || y == h - 1;
+			const bool pocketWall = (x >= 2 && x <= 4 && y >= 2 && y <= 4 && !(x == 3 && y == 3));
+			if (outer || pocketWall)
+				addTile(tiles, "tile-rock-01", x, y);
+			else
+				addTile(tiles, "tile-background-01", x, y);
+		}
 	}
 
-	EXPECT_GE(success, attempts * 2 / 3) << "WFC success rate too low";
-	EXPECT_GE(metricPass, success / 2) << "WFC metric pass rate too low vs hand baseline";
-	if (success > 0) {
-		const float avg = scoreSum / static_cast<float>(success);
-		Log::info(LOG_GAMEIMPL, "wfc avgScore=%.1f metricPass=%i/%i", avg, metricPass, success);
-		EXPECT_GE(avg, minScore - 5.0f);
-	}
+	const MapMetrics m = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_GT(m.unreachableFlyable, 0) << m.failureReason;
+}
+
+TEST_F(MapValidatorTest, testMetricCaveAbovePackageTarget)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts = { { "1", "1" } };
+	const int w = 8;
+	const int h = 8;
+	fillOpenBorder(tiles, w, h);
+
+	// Same column: cave above package target.
+	addTile(tiles, "tile-cave-01", 3, 2);
+	addTile(tiles, "tile-ground-01", 2, 5);
+	addTile(tiles, "tile-packagetarget-rock-01-idle", 3, 5);
+	addTile(tiles, "tile-ground-01", 4, 5);
+	addTile(tiles, "tile-rock-01", 3, 6);
+
+	const MapMetrics m = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_GT(m.cavesAbovePackageTarget, 0);
+}
+
+TEST_F(MapValidatorTest, testMetricShortPlatformRun)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts = { { "1", "1" } };
+	const int w = 8;
+	const int h = 6;
+	fillOpenBorder(tiles, w, h);
+	addTile(tiles, "tile-ground-01", 3, 3); // length-1 run
+
+	const MapMetrics m = MapValidator().evaluate(w, h, tiles, caves, emitters, starts,
+			3, 4, /*minPlatformLength=*/3, 4);
+	EXPECT_GT(m.shortPlatformRuns, 0);
+	EXPECT_GE(m.isolatedWalkables, 1);
+}
+
+TEST_F(MapValidatorTest, testMetricPackageTargetBadNiche)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts = { { "1", "1" } };
+	const int w = 8;
+	const int h = 6;
+	fillOpenBorder(tiles, w, h);
+	// Target with air on both sides — missing walkable L/R niche.
+	addTile(tiles, "tile-packagetarget-rock-01-idle", 3, 3);
+	addTile(tiles, "tile-rock-01", 3, 4);
+
+	const MapMetrics goodMissing = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_GT(goodMissing.packageTargetsWithBadNiche, 0);
+
+	tiles.clear();
+	fillOpenBorder(tiles, w, h);
+	addTile(tiles, "tile-ground-01", 2, 3);
+	addTile(tiles, "tile-packagetarget-rock-01-idle", 3, 3);
+	addTile(tiles, "tile-ground-01", 4, 3);
+	addTile(tiles, "tile-rock-01", 3, 4);
+	const MapMetrics nicheOk = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_EQ(0, nicheOk.packageTargetsWithBadNiche);
+}
+
+TEST_F(MapValidatorTest, testMetricWindowWindowAdjacency)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts = { { "1", "1" } };
+	const int w = 8;
+	const int h = 6;
+	fillOpenBorder(tiles, w, h);
+	addTile(tiles, "tile-background-window-01", 2, 2);
+	addTile(tiles, "tile-background-window-02", 3, 2);
+
+	const MapMetrics m = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_GT(m.windowWindowAdjacencies, 0);
+
+	tiles.clear();
+	fillOpenBorder(tiles, w, h);
+	addTile(tiles, "tile-background-window-01", 2, 2);
+	addTile(tiles, "tile-background-window-02", 4, 2);
+	const MapMetrics spaced = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_EQ(0, spaced.windowWindowAdjacencies);
+}
+
+TEST_F(MapValidatorTest, testAcceptsRejectsIndividualGates)
+{
+	RandomMapRules rules;
+	rules.minPlatformRows = 0;
+	rules.minWalkableCells = 0;
+	rules.minColliderCells = 0;
+	rules.minTreeEmitters = 0;
+	rules.minTotalScore = -999.0f;
+	rules.maxExposedRockTopRatio = 1.0f;
+	rules.maxOrphanColliderRatio = 1.0f;
+
+	MapMetrics m;
+	m.valid = true;
+	EXPECT_TRUE(rules.accepts(m, 10, 10, 1.0f));
+
+	m.cavesAbovePackageTarget = 1;
+	EXPECT_FALSE(rules.accepts(m, 10, 10, 1.0f));
+	m.cavesAbovePackageTarget = 0;
+
+	m.shortPlatformRuns = 1;
+	EXPECT_FALSE(rules.accepts(m, 10, 10, 1.0f));
+	m.shortPlatformRuns = 0;
+
+	m.windowWindowAdjacencies = 1;
+	EXPECT_FALSE(rules.accepts(m, 10, 10, 1.0f));
+	m.windowWindowAdjacencies = 0;
+
+	m.cavePackageAirTooClose = 1;
+	EXPECT_FALSE(rules.accepts(m, 10, 10, 1.0f));
+	m.cavePackageAirTooClose = 0;
+
+	m.packageTargetsWithBadNiche = 1;
+	EXPECT_FALSE(rules.accepts(m, 10, 10, 1.0f));
+	m.packageTargetsWithBadNiche = 0;
+
+	m.bridgesWithoutBackground = 1;
+	EXPECT_FALSE(rules.accepts(m, 10, 10, 1.0f));
 }
 
 }

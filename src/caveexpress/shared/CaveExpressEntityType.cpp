@@ -1,4 +1,7 @@
 #include "CaveExpressEntityType.h"
+#include "common/LUALibrary.h"
+#include "common/Log.h"
+#include "common/String.h"
 
 namespace caveexpress {
 
@@ -38,6 +41,23 @@ EntityType GEYSER_JUNGLE("tile-geyser-jungle-01");
 EntityType GEYSER_DESERT("tile-geyser-desert-01");
 EntityType BOMB("item-bomb");
 EntityType PARTICLE("particle");
+}
+
+bool loadEntitySizesFromLua (const std::string& path)
+{
+	LUA lua;
+	if (!lua.load(path)) {
+		Log::error(LOG_GAMEIMPL, "could not load %s for entity sizes", path.c_str());
+		return false;
+	}
+	EntityType::TypeMapConstIter i = EntityType::begin();
+	for (; i != EntityType::end(); ++i) {
+		const std::string& name = string::replaceAll(i->second->name, "-", "");
+		const float width = lua.getFloatValue(name + ".width", i->second->width);
+		const float height = lua.getFloatValue(name + ".height", i->second->height);
+		i->second->setSize(width, height);
+	}
+	return true;
 }
 
 }

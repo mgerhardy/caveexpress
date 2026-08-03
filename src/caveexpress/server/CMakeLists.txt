@@ -1,6 +1,6 @@
 set(caveexpress-server_SRCS
 	map/RandomMapContext.cpp
-	map/WfcMapGenerator.cpp
+	map/RandomMapGenerator.cpp
 	map/Map.cpp
 	events/GameEventHandler.cpp
 	entities/CollectableEntity.cpp

@@ -6,6 +6,7 @@ SET(${PROJECT_NAME}_SRC
 	LUASpriteTest.cpp
 	RandomMapContextTest.cpp
 	MapValidatorTest.cpp
+	SpriteShapeTraitsTest.cpp
 	MapTest.cpp
 	MapManagerTest.cpp
 	CampaignTest.cpp

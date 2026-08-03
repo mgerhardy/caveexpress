@@ -529,7 +529,7 @@ inline CaveExpressMapContext* getMapContext (const std::string& name)
 	if (name.compare(0, randomMapBase.size(), randomMapBase) == 0) {
 		const ThemeType& theme = getTheme(name);
 		Log::info(LOG_GAMEIMPL, "use theme %s", theme.name.c_str());
-		RandomMapContext *ctx = new RandomMapContext(name, theme, 8, 18, 20, 14);
+		RandomMapContext *ctx = new RandomMapContext(name, theme, 20, 14);
 		return ctx;
 	}
 	return new CaveExpressMapContext(name);
@@ -1932,22 +1932,9 @@ void Map::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	_frontend = frontend;
 	_serviceProvider = &serviceProvider;
 
-	LUA lua;
-
-	if (!lua.load("entities.lua")) {
-		System.exit("could not load entities.lua script", 1);
-	}
-
 	Log::info(LOG_GAMEIMPL, "initialize entity sizes");
-
-	EntityType::TypeMapConstIter i = EntityType::begin();
-	for (; i != EntityType::end(); ++i) {
-		const std::string& name = string::replaceAll(i->second->name, "-", "");
-		const float width = lua.getFloatValue(name + ".width", 1.0f);
-		const float height = lua.getFloatValue(name + ".height", 1.0f);
-		Log::debug(LOG_GAMEIMPL, "entity %s: %f:%f", name.c_str(), width, height);
-		i->second->setSize(width, height);
-	}
+	if (!loadEntitySizesFromLua())
+		System.exit("could not load entities.lua script", 1);
 	Log::debug(LOG_GAMEIMPL, "initialized entity sizes");
 }
 

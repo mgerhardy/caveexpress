@@ -12,7 +12,6 @@
 #include "caveexpress/server/map/RandomMapContext.h"
 #include "caveexpress/server/entities/EntityEmitter.h"
 #include <cmath>
-#include <ctime>
 #include <map>
 
 namespace caveexpress {
@@ -425,12 +424,12 @@ void MapEditorDocument::fillEntityPalette (std::vector<const EntityType*>& out) 
 void MapEditorDocument::autoFill (const ThemeType& theme)
 {
 	MapEditorUndo();
-	srand(static_cast<unsigned int>(time(nullptr)));
-	const int initialTiles = _mapWidth / 4;
-	const int rockAmount = initialTiles * (3 + rand() % 6);
 	const std::string name = "editor-random-" + theme.name;
-	RandomMapContext ctx(name, theme, initialTiles, rockAmount, _mapWidth, _mapHeight);
+	RandomMapContext ctx(name, theme, _mapWidth, _mapHeight);
 	ctx.setSettings(_settings);
+	const unsigned int seed = static_cast<unsigned int>(string::toInt(getSetting("seed", "0")));
+	if (seed != 0)
+		ctx.setSeed(seed);
 	const std::string oldName = _fileName;
 	loadFromContext(ctx);
 	setFileName(oldName);

@@ -54,6 +54,7 @@ Fullscreen|Fullscreen
 Game|Game
 Game mode|Game mode
 Gather fruits for new life|Gather fruits for new life
+Generate a random map with the current seed.|Generate a random map with the current seed.
 Geyser|Geyser
 Google Play|Google Play
 Google Play sign-out|Google Play sign-out
@@ -82,6 +83,7 @@ Learn to use the stone|Learn to use the stone
 LMB: paint / place|LMB: paint / place
 Map|Map
 Map Editor|Map Editor
+Map generator seed. 0 picks a new seed on Auto.|Map generator seed. 0 picks a new seed on Auto.
 Maps|Maps
 MMB click: pick, MMB drag or Space+LMB: pan|MMB click: pick, MMB drag or Space+LMB: pan
 Multiplayer|Multiplayer
@@ -122,6 +124,7 @@ RMB: erase|RMB: erase
 Rock|Rock
 Save|Save
 Save & Go|Save & Go
+Seed|Seed
 Select game mode|Select game mode
 Select tile|Select tile
 Settings|Settings
