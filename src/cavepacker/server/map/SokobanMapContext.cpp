@@ -160,7 +160,25 @@ bool SokobanMapContext::load(bool skipErrors) {
 	bool empty = true;
 	bool inComment = false;
 	bool inText = false;
+	// Spaces after the last non-space on a line are exterior void, not floor.
+	// Defer ground placement until more content appears on the same line.
+	int pendingGroundCol = -1;
+	int pendingGroundCount = 0;
 	std::string line;
+
+	auto discardPendingGrounds = [&] () {
+		pendingGroundCol = -1;
+		pendingGroundCount = 0;
+	};
+	auto flushPendingGrounds = [&] () {
+		for (int g = 0; g < pendingGroundCount; ++g) {
+			const int groundCol = pendingGroundCol + g;
+			if (!isEmpty(groundCol, row - 1))
+				addGround(groundCol, row);
+		}
+		discardPendingGrounds();
+	};
+
 	for (int i = 0; i < fileLen; ++i) {
 		if (inText) {
 			inText = buffer[i] != '\n';
@@ -189,33 +207,48 @@ bool SokobanMapContext::load(bool skipErrors) {
 		}
 		switch (buffer[i]) {
 		case Sokoban::WALL:
+			flushPendingGrounds();
 			addWall(col, row);
 			empty = false;
 			break;
 		case Sokoban::GROUND:
-			if (!empty && !isEmpty(col, row - 1))
-				addGround(col, row);
+			if (!empty) {
+				if (pendingGroundCount == 0)
+					pendingGroundCol = col;
+				++pendingGroundCount;
+			}
 			break;
 		case Sokoban::PLAYER:
+			flushPendingGrounds();
 			addGround(col, row);
 			addPlayer(col, row);
+			empty = false;
 			break;
 		case Sokoban::PACKAGE:
+			flushPendingGrounds();
 			addGround(col, row);
 			addPackage(col, row);
+			empty = false;
 			break;
 		case Sokoban::TARGET:
+			flushPendingGrounds();
 			addTarget(col, row);
+			empty = false;
 			break;
 		case Sokoban::PACKAGEONTARGET:
+			flushPendingGrounds();
 			addTarget(col, row);
 			addPackage(col, row);
+			empty = false;
 			break;
 		case Sokoban::PLAYERONTARGET:
+			flushPendingGrounds();
 			addTarget(col, row);
 			addPlayer(col, row);
+			empty = false;
 			break;
 		case '\n':
+			discardPendingGrounds();
 			col = -1;
 			++row;
 			empty = true;
@@ -234,6 +267,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 		++col;
 		maxCol = std::max(maxCol, col);
 	}
+	discardPendingGrounds();
 
 	if (buffer[fileLen - 1] != '\n')
 		++row;
