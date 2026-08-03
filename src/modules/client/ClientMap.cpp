@@ -415,8 +415,10 @@ void ClientMap::update (uint32_t deltaTime)
 	}
 	const ExecutionTime updateTime("ClientMap", 2000L);
 	const bool lerp = wantLerp();
+	const bool timedGridLerp = getEntityMoveLerpMillis() != 0;
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end();) {
-		const bool val = i->second->update(deltaTime, lerp);
+		const bool animateSpriteAlways = !timedGridLerp || !i->second->animateSpriteOnlyWhenMoving();
+		const bool val = i->second->update(deltaTime, lerp, animateSpriteAlways);
 		if (!val) {
 			delete i->second;
 			_entities.erase(i++);
@@ -490,7 +492,7 @@ bool ClientMap::updateEntity (uint16_t id, float x, float y, EntityAngle angle, 
 {
 	const ClientEntityMapIter& iter = _entities.find(id);
 	if (iter != _entities.end()) {
-		iter->second->setPos(vec2(x, y), wantLerp());
+		iter->second->setPos(vec2(x, y), wantLerp(), getEntityMoveLerpMillis());
 		iter->second->setAngle(angle);
 		iter->second->changeState(state);
 		return true;

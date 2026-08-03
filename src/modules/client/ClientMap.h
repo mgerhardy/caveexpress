@@ -93,6 +93,12 @@ protected:
 
 	virtual bool wantLerp () { return _restartDue == 0; }
 
+	/**
+	 * Duration for client-side move interpolation in milliseconds.
+	 * 0 keeps the legacy frame-ratio lerp used by CaveExpress.
+	 */
+	virtual uint32_t getEntityMoveLerpMillis () const { return 0; }
+
 public:
 	ClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth);
 	virtual ~ClientMap ();

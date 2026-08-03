@@ -79,7 +79,7 @@ void ClientParticle::render (IFrontend *frontend, Layer layer, int scale, float 
 	}
 }
 
-bool ClientParticle::update (uint32_t deltaTime, bool lerpPos)
+bool ClientParticle::update (uint32_t deltaTime, bool lerpPos, bool animateSpriteAlways)
 {
 	for (int i = 0; i < _maxParticles; ++i) {
 		ParticleData &p = _particles[i];
@@ -90,7 +90,7 @@ bool ClientParticle::update (uint32_t deltaTime, bool lerpPos)
 		else
 			p.lifetime -= deltaTime;
 	}
-	return ClientEntity::update(deltaTime, lerpPos);
+	return ClientEntity::update(deltaTime, lerpPos, animateSpriteAlways);
 }
 
 ClientEntityPtr ClientParticle::Factory::create (const ClientEntityFactoryContext *ctx) const

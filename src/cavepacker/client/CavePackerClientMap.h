@@ -10,6 +10,7 @@ private:
 	SpritePtr _deadlockOverlay;
 	mutable RenderTarget* _target;
 	mutable std::size_t _targetEnts;
+	ConfigVarPtr _moveLerpMillis;
 	void renderLayer (int x, int y, Layer layer) const override;
 
 public:
@@ -25,6 +26,8 @@ public:
 	int getWaterSurface() const override { return 0; }
 	int getWaterGround() const override { return 0; }
 	float getWind() const override { return 0.f; }
+
+	uint32_t getEntityMoveLerpMillis () const override;
 
 	void undo ();
 

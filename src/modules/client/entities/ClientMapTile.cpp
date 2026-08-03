@@ -27,12 +27,9 @@ void ClientMapTile::setNewSprite (const std::string& spriteName)
 		_currSprite = sprite;
 }
 
-bool ClientMapTile::update (uint32_t deltaTime, bool lerpPos)
+bool ClientMapTile::update (uint32_t deltaTime, bool lerpPos, bool animateSpriteAlways)
 {
-	ClientEntity::update(deltaTime, lerpPos);
-	if (_currSprite)
-		_currSprite->update(deltaTime);
-
+	ClientEntity::update(deltaTime, lerpPos, animateSpriteAlways);
 	return true;
 }
 

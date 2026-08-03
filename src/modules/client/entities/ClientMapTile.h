@@ -27,5 +27,5 @@ public:
 	void setNewSprite (const std::string& spriteName);
 
 	// ClientEntity
-	bool update (uint32_t deltaTime, bool lerpPos) override;
+	bool update (uint32_t deltaTime, bool lerpPos, bool animateSpriteAlways = true) override;
 };

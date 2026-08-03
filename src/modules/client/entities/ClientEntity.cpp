@@ -11,9 +11,10 @@
 
 ClientEntity::ClientEntity (const EntityType& type, uint16_t id, float x, float y, float sizeX, float sizeY,
 		const SoundMapping& soundMapping, EntityAlignment align, EntityAngle angle) :
-		_type(type), _id(id), _angle(angle), _time(0), _currSprite(), _state(0), _animation(&Animation::NONE), _theme(&ThemeType::NONE), _fadeOutTime(
-				0), _alpha(1.0f), _ropeEntity(nullptr), _animationSound(-1), _soundMapping(soundMapping), _visible(true), _visChanged(false), _align(
-				align), _screenPosX(0), _screenPosY(0), _screenWidth(0), _screenHeight(0)
+		_lerpDuration(0), _lerpElapsed(0), _type(type), _id(id), _angle(angle), _time(0), _currSprite(), _state(0),
+		_animation(&Animation::NONE), _theme(&ThemeType::NONE), _fadeOutTime(0), _alpha(1.0f), _ropeEntity(nullptr),
+		_animationSound(-1), _soundMapping(soundMapping), _visible(true), _visChanged(false), _align(align),
+		_screenPosX(0), _screenPosY(0), _screenWidth(0), _screenHeight(0)
 {
 	const vec2 startPos(x, y);
 	_prevPos = _nextPos = _pos = startPos;
@@ -210,21 +211,35 @@ void ClientEntity::setAnimationType (const Animation& animation)
 	setScreenSize(_currSprite->getMaxWidth(), _currSprite->getMaxHeight());
 }
 
-bool ClientEntity::update (uint32_t deltaTime, bool lerpPos)
+bool ClientEntity::update (uint32_t deltaTime, bool lerpPos, bool animateSpriteAlways)
 {
 	static const float interval = Constant::FPS_SERVER / (float) Constant::FPS_CLIENT;
 	_time += deltaTime;
+	bool moveLerpActive = false;
 	if (lerpPos) {
-		const vec2 before = _pos - _nextPos;
-		if (!before.isZero(0.01f)) {
-			const vec2 inc = interval * (_nextPos - _prevPos);
-			_pos += inc;
+		if (_lerpDuration > 0) {
+			_lerpElapsed = std::min(_lerpDuration, _lerpElapsed + deltaTime);
+			const float t = static_cast<float>(_lerpElapsed) / static_cast<float>(_lerpDuration);
+			_pos = _prevPos + (_nextPos - _prevPos) * t;
+			moveLerpActive = _lerpElapsed < _lerpDuration;
 		} else {
-			_pos = _nextPos;
+			const vec2 before = _pos - _nextPos;
+			if (!before.isZero(0.01f)) {
+				const vec2 inc = interval * (_nextPos - _prevPos);
+				_pos += inc;
+				moveLerpActive = true;
+			} else {
+				_pos = _nextPos;
+			}
 		}
 	}
 	if (_currSprite) {
-		_currSprite->update(deltaTime);
+		if (animateSpriteAlways || moveLerpActive) {
+			_currSprite->update(deltaTime);
+		} else if (!animateSpriteAlways) {
+			// Idle pose between grid steps
+			_currSprite->setCurrentFrame(0);
+		}
 	}
 
 	if (_visChanged) {
@@ -248,14 +263,30 @@ bool ClientEntity::update (uint32_t deltaTime, bool lerpPos)
 	return true;
 }
 
-void ClientEntity::setPos (const vec2& pos, bool lerp)
+void ClientEntity::setPos (const vec2& pos, bool lerp, uint32_t durationMillis)
 {
 	if (lerp) {
-		_prevPos = _nextPos;
+		// State-only updates (same cell) must not restart or snap the in-progress move.
+		if ((_nextPos - pos).isZero(0.01f)) {
+			return;
+		}
+		if (durationMillis > 0) {
+			// Discrete grid moves: continue from the current visual position.
+			_prevPos = _pos;
+			_lerpDuration = durationMillis;
+			_lerpElapsed = 0;
+		} else {
+			// Legacy CaveExpress-style snapshot lerp between server ticks.
+			_prevPos = _nextPos;
+			_lerpDuration = 0;
+			_lerpElapsed = 0;
+		}
 		_nextPos = pos;
 		_pos = _prevPos;
 	} else {
 		_prevPos = _nextPos = _pos = pos;
+		_lerpDuration = 0;
+		_lerpElapsed = 0;
 	}
 }
 

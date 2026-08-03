@@ -1,5 +1,7 @@
 sprites = {
-	["player"] = {},
+	["player"] = {
+		fps = 8,
+	},
 	["target"] = { type = "target", },
 	["package"] = { type = "package", },
 	["package-delivered"] = { type = "package", },

@@ -12,8 +12,8 @@ ClientNPC::ClientNPC(const EntityType& type, uint16_t id, const Animation& anima
 ClientNPC::~ClientNPC() {
 }
 
-bool ClientNPC::update(uint32_t deltaTime, bool lerpPos) {
-	const bool val = ClientEntity::update(deltaTime, lerpPos);
+bool ClientNPC::update(uint32_t deltaTime, bool lerpPos, bool animateSpriteAlways) {
+	const bool val = ClientEntity::update(deltaTime, lerpPos, animateSpriteAlways);
 	if (_speechBubbleDelay < _time) {
 		_speechBubbleDelay = 0;
 		removeOverlay(_targetCaveSprite);

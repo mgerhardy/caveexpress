@@ -15,6 +15,7 @@ CavePackerClientMap::CavePackerClientMap(int x, int y, int width, int height,
 		IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth) :
 		ClientMap(x, y, width, height, frontend, serviceProvider, referenceTileWidth), _target(nullptr), _targetEnts(0u) {
 	_deadlockOverlay = UI::get().loadSprite("deadlock");
+	_moveLerpMillis = Config.getConfigVar("clientmovelerpmillis", "200");
 }
 
 void CavePackerClientMap::onWindowResize () {
@@ -58,6 +59,11 @@ void CavePackerClientMap::renderLayer (int x, int y, Layer layer) const {
 
 void CavePackerClientMap::start() {
 	ClientMap::start();
+}
+
+uint32_t CavePackerClientMap::getEntityMoveLerpMillis () const {
+	// Slightly under the 250ms pathfinding/auto-solve step so chained grid moves stay readable.
+	return _moveLerpMillis->getIntValue();
 }
 
 void CavePackerClientMap::undo() {

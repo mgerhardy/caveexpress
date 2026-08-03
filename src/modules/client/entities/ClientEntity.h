@@ -40,11 +40,21 @@ public:
 	SpritePtr& getSprite ();
 	const vec2& getPos () const;
 	const vec2& getSize () const;
-	virtual bool update (uint32_t deltaTime, bool lerpPos);
+	/**
+	 * @param[in] animateSpriteAlways if false, multi-frame sprites only advance while a timed move lerp is active
+	 */
+	virtual bool update (uint32_t deltaTime, bool lerpPos, bool animateSpriteAlways = true);
+
+	/** When true and the map uses timed grid lerps, walk frames only advance while sliding between cells. */
+	virtual bool animateSpriteOnlyWhenMoving () const { return false; }
 	void setAnimationType (const Animation& type);
 	void setThemeType (const ThemeType& theme);
 	virtual std::string getSpriteName() const;
-	void setPos (const vec2& pos, bool lerp);
+	/**
+	 * @param[in] lerp whether to interpolate toward @c pos
+	 * @param[in] durationMillis time-based lerp duration; 0 keeps the legacy frame-ratio lerp
+	 */
+	void setPos (const vec2& pos, bool lerp, uint32_t durationMillis = 0);
 	Direction getMoveDirection ();
 	void setAngle (int16_t angle);
 	void initFadeOut ();
@@ -131,6 +141,9 @@ protected:
 	vec2 _nextPos;
 	// used for lerping the position
 	vec2 _prevPos;
+	// time-based lerp (durationMillis > 0 in setPos); 0 means legacy frame-ratio lerp
+	uint32_t _lerpDuration;
+	uint32_t _lerpElapsed;
 	// the size of the entity. This might differ from what the physical size is in the server
 	vec2 _size;
 	const EntityType &_type;

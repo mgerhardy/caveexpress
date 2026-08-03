@@ -16,6 +16,8 @@ public:
 	static Factory FACTORY;
 	virtual ~ClientPlayer ();
 
+	bool animateSpriteOnlyWhenMoving () const override { return true; }
+
 	inline bool hasCollected () const
 	{
 		return !_hasCollected->isNone();

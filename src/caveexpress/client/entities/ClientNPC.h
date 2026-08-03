@@ -23,7 +23,7 @@ public:
 
 	// ClientEntity
 	void changeState(uint8_t state) override;
-	bool update(uint32_t deltaTime, bool lerpPos) override;
+	bool update(uint32_t deltaTime, bool lerpPos, bool animateSpriteAlways = true) override;
 };
 
 typedef ClientNPC* ClientNPCPtr;
