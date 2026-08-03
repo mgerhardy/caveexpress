@@ -332,40 +332,43 @@ bool Map::movePlayer (Player* player, char step)
 }
 
 void Map::checkDeadlock () {
-	if (!_state.hasDeadlock()) {
-		return;
-	}
+	const std::vector<int> previousDeadLocks = _deadLocks;
+
+	// Clear previous deadlock highlights first so undo / resolved situations
+	// do not leave packages stuck on the deadlock sprite.
 	for (auto index : _deadLocks) {
-		auto entity = _field[index];
-		if (entity == nullptr) {
+		if (index < 0 || index >= (int)_field.size())
 			continue;
-		}
+		auto entity = _field[index];
+		if (entity == nullptr)
+			continue;
 		if (EntityTypes::isPackage(entity->getType())) {
 			MapTile* pkg = static_cast<MapTile*>(entity);
-			if (pkg->getState() != CavePackerEntityStates::DEADLOCK) {
+			if (pkg->getState() == CavePackerEntityStates::DEADLOCK)
 				pkg->setState(CavePackerEntityStates::NONE);
-			}
 		}
 	}
+	_deadLocks.clear();
+
+	if (!_state.hasDeadlock())
+		return;
 
 	auto deadlocks = _state.getDeadlockDetector().getDeadlocks();
 	bool newDeadlock = false;
 	for (auto index : deadlocks) {
-		auto entity = _field[index];
-		if (entity == nullptr) {
+		if (index < 0 || index >= (int)_field.size())
 			continue;
-		}
+		auto entity = _field[index];
+		if (entity == nullptr)
+			continue;
 		if (EntityTypes::isPackage(entity->getType())) {
 			MapTile* pkg = static_cast<MapTile*>(entity);
-			if (pkg->getState() != CavePackerEntityStates::DELIVERED) {
+			if (pkg->getState() != CavePackerEntityStates::DELIVERED)
 				pkg->setState(CavePackerEntityStates::DEADLOCK);
-			}
 		}
-		auto i = std::find(_deadLocks.begin(), _deadLocks.end(), index);
-		if (i == _deadLocks.end()) {
-			_deadLocks.push_back(index);
+		_deadLocks.push_back(index);
+		if (std::find(previousDeadLocks.begin(), previousDeadLocks.end(), index) == previousDeadLocks.end())
 			newDeadlock = true;
-		}
 	}
 	if (newDeadlock) {
 		static const TextMessage msg("Deadlock detected");

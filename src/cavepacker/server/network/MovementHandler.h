@@ -24,7 +24,10 @@ public:
 			return;
 		}
 		const MovementMessage* msg = static_cast<const MovementMessage*>(&message);
-		switch (msg->getDirection()) {
+		const Direction direction = msg->getDirection();
+		player->setHeldDirection(direction);
+		player->setTargetIndex(NO_TARGET_INDEX);
+		switch (direction) {
 		case DIRECTION_UP:
 			_map.movePlayer(player, MOVE_UP);
 			break;
@@ -38,7 +41,6 @@ public:
 			_map.movePlayer(player, MOVE_RIGHT);
 			break;
 		}
-		player->setTargetIndex(NO_TARGET_INDEX);
 	}
 };
 

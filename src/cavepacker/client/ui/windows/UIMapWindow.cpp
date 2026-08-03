@@ -1,6 +1,7 @@
 #include "UIMapWindow.h"
 #include "cavepacker/client/ui/nodes/UINodeMap.h"
 #include "cavepacker/client/ui/nodes/UICavePackerNodePoint.h"
+#include "cavepacker/client/ui/nodes/UINodeDirectionButton.h"
 #include "cavepacker/shared/network/messages/MoveToMessage.h"
 #include "listener/SolveListener.h"
 #include "ui/nodes/UINodeBar.h"
@@ -95,29 +96,21 @@ void UIMapWindow::initInputHudNodes ()
 	add(_undo);
 
 	if (Config.getConfigVar("forcefingercontrol", "false", true, CV_READONLY)->getBoolValue() || System.hasTouch()) {
-		UINodeButton* left = new UINodeButton(_frontend);
+		UINodeDirectionButton* left = new UINodeDirectionButton(_frontend, CMD_MOVE_LEFT);
 		left->setImage("icon-cursor-left");
-		left->setOnActivate(CMD_MOVE_LEFT);
-		left->setTriggerTime(500u);
 		left->setAlignment(NODE_ALIGN_LEFT | NODE_ALIGN_BOTTOM);
 		add(left);
-		UINodeButton* right = new UINodeButton(_frontend);
+		UINodeDirectionButton* right = new UINodeDirectionButton(_frontend, CMD_MOVE_RIGHT);
 		right->setImage("icon-cursor-right");
-		right->setOnActivate(CMD_MOVE_RIGHT);
-		right->setTriggerTime(500u);
 		right->putRight(left);
 		add(right);
 
-		UINodeButton* down = new UINodeButton(_frontend);
+		UINodeDirectionButton* down = new UINodeDirectionButton(_frontend, CMD_MOVE_DOWN);
 		down->setImage("icon-cursor-down");
-		down->setOnActivate(CMD_MOVE_DOWN);
 		down->setAlignment(NODE_ALIGN_RIGHT | NODE_ALIGN_BOTTOM);
-		down->setTriggerTime(500u);
 		add(down);
-		UINodeButton* up = new UINodeButton(_frontend);
+		UINodeDirectionButton* up = new UINodeDirectionButton(_frontend, CMD_MOVE_UP);
 		up->setImage("icon-cursor-up");
-		up->setOnActivate(CMD_MOVE_UP);
-		up->setTriggerTime(500u);
 		up->putAbove(down);
 		add(up);
 	}

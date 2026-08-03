@@ -24,12 +24,17 @@ private:
 	std::string _solutionSave;
 	int _targetIndex;
 	uint32_t _lastStep;
+	Direction _heldDirection;
+
+	char getHeldMoveStep () const;
 public:
 	Player (Map& map, ClientId clientId);
 	virtual ~Player ();
 
 	void update (uint32_t deltaTime) override;
 
+	void setHeldDirection (Direction dir);
+	void clearHeldDirection (Direction dir);
 	void setTargetIndex(int targetIndex = NO_TARGET_INDEX);
 	ClientId getClientId () const;
 	const std::string& getName () const;

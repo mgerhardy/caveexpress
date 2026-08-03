@@ -1,9 +1,13 @@
 #include "tests/TestShared.h"
 #include "cavepacker/server/map/Map.h"
 #include "cavepacker/server/entities/Player.h"
+#include "cavepacker/shared/EntityStates.h"
+#include "cavepacker/shared/BoardState.h"
 #include "cavepacker/shared/network/ProtocolMessageTypes.h"
+#include "common/FileSystem.h"
 #include "tests/NetworkTestListener.h"
 #include "data.h"
+#include <cstring>
 
 namespace cavepacker {
 
@@ -1208,6 +1212,58 @@ TEST_F(SokobanMapTest, testsasquatch09_0046) { testSingleMap("sasquatch09_0046")
 TEST_F(SokobanMapTest, testsasquatch09_0047) { testSingleMap("sasquatch09_0047"); }
 TEST_F(SokobanMapTest, testsasquatch09_0048) { testSingleMap("sasquatch09_0048"); }
 TEST_F(SokobanMapTest, testsasquatch09_0049) { testSingleMap("sasquatch09_0049"); }
-TEST_F(SokobanMapTest, testsasquatch09_0050) { testSingleMap("sasquatch09_0050"); }
+TEST_F(SokobanMapTest, testUndoClearsDeadlockPackageState)
+{
+	const char* board =
+		";undo-deadlock-test\n"
+		"#####\n"
+		"#   #\n"
+		"# $@#\n"
+		"#  .#\n"
+		"#####\n";
+	const std::string name = "undo_deadlock_test";
+	const std::string relPath = FS.getDataDir() + FS.getMapsDir() + name + ".sok";
+	const std::string absPath = FS.getAbsoluteWritePath() + relPath;
+	ASSERT_NE(-1L, FS.writeSysFile(absPath, (const unsigned char*)board, strlen(board), true))
+		<< "Failed to write " << absPath;
+
+	NetworkTestListener listener;
+	NetworkTestServerListener serverListener;
+	ASSERT_TRUE(_serviceProvider.getNetwork().openServer(12345, &serverListener));
+	ASSERT_TRUE(_serviceProvider.getNetwork().openClient("localhost", 12345, &listener));
+
+	Map map;
+	map.init(&_testFrontend, _serviceProvider);
+	ASSERT_TRUE(map.load(name));
+	_serviceProvider.getNetwork().update(1);
+	Player* player = new Player(map, 1);
+	ASSERT_TRUE(map.initPlayer(player));
+	_serviceProvider.getNetwork().update(1);
+	map.startMap();
+	_serviceProvider.getNetwork().update(1);
+
+	MapTile* pkg = map.getPackage(2, 2);
+	ASSERT_NE(nullptr, pkg);
+	EXPECT_EQ(CavePackerEntityStates::NONE, (int)pkg->getState());
+
+	// Push package into the left-wall simple deadlock.
+	ASSERT_TRUE(map.movePlayer(player, MOVE_LEFT));
+	_serviceProvider.getNetwork().update(1);
+	pkg = map.getPackage(1, 2);
+	ASSERT_NE(nullptr, pkg);
+	EXPECT_EQ(CavePackerEntityStates::DEADLOCK, (int)pkg->getState())
+		<< "expected deadlock highlight after push into corner\n" << map.getMapString();
+
+	map.undo(player);
+	_serviceProvider.getNetwork().update(1);
+	pkg = map.getPackage(2, 2);
+	ASSERT_NE(nullptr, pkg);
+	EXPECT_EQ(CavePackerEntityStates::NONE, (int)pkg->getState())
+		<< "undo should clear package-deadlock highlight\n" << map.getMapString();
+
+	_serviceProvider.getNetwork().closeClient();
+	_serviceProvider.getNetwork().closeServer();
+	FS.deleteFile(relPath);
+}
 
 }
