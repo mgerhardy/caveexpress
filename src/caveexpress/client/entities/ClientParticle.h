@@ -33,7 +33,7 @@ public:
 
 	virtual ~ClientParticle ();
 
-	void resetParticles (uint8_t maxParticles, uint32_t lifetime);
+	void resetParticles (int maxParticles, uint32_t lifetime);
 	void updateParticle (int index, float x, float y, uint32_t lifetime, EntityAngle angle);
 	void setParticleType (int type);
 	int getParticleType () const;

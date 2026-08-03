@@ -58,14 +58,14 @@ void GameEventHandler::updateParticle (int clientMask, const IEntity& entity) co
 {
 	const WorldParticle& particle = static_cast<const WorldParticle&>(entity);
 	std::vector<UpdateParticleEntity> bodies;
-	const uint8_t bodyCnt = particle.getBodies().size();
-	for (uint8_t i = 0; i < bodyCnt; i++) {
+	const int bodyCnt = static_cast<int>(particle.getBodies().size());
+	for (int i = 0; i < bodyCnt; i++) {
 		if (!particle.isActive(i))
 			continue;
 		const PhysicsBody body = particle.getBodies()[i];
 		const PhysicsVec2& pos = body.getPosition();
 		const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(body.getAngle()));
-		const UpdateParticleEntity e = { pos.x, pos.y, angle, i, particle.getRemainingLifetime(i) };
+		const UpdateParticleEntity e = { pos.x, pos.y, angle, static_cast<uint16_t>(i), particle.getRemainingLifetime(i) };
 		bodies.push_back(e);
 	}
 	const UpdateParticleMessage msg(particle.getID(), particle.getParticleType(), bodies, particle.getMaxParticles(), particle.getLifeTime());

@@ -8,7 +8,7 @@ struct UpdateParticleEntity {
 	float x;
 	float y;
 	EntityAngle angle;
-	uint8_t index;
+	uint16_t index;
 	uint32_t lifetime;
 };
 
@@ -18,8 +18,8 @@ private:
 	uint8_t _particleType;
 	std::vector<UpdateParticleEntity> _bodies;
 	const std::vector<UpdateParticleEntity>* _bodiesPtr;
-	uint8_t _bodyCount;
-	int _maxParticles;
+	uint16_t _bodyCount;
+	uint16_t _maxParticles;
 	uint32_t _maxLifetime;
 
 public:
@@ -36,16 +36,16 @@ public:
 	{
 		_entityId = input.readShort();
 		_particleType = input.readByte();
-		_maxParticles = input.readByte();
+		_maxParticles = input.readShort();
 		_maxLifetime = input.readByte() * 100;
-		_bodyCount = input.readByte();
+		_bodyCount = input.readShort();
 		_bodies.resize(_bodyCount);
 		for (int i = 0; i < _bodyCount; ++i) {
 			UpdateParticleEntity& e = _bodies[i];
 			e.x = input.readShortScaled();
 			e.y = input.readShortScaled();
 			e.angle = static_cast<EntityAngle>(input.readByte()) * 2;
-			e.index = input.readByte();
+			e.index = input.readShort();
 			e.lifetime = input.readByte() * 100;
 		}
 	}
@@ -55,15 +55,15 @@ public:
 		out.addByte(_id);
 		out.addShort(_entityId);
 		out.addByte(_particleType);
-		out.addByte(_maxParticles);
+		out.addShort(_maxParticles);
 		out.addByte(_maxLifetime / 100);
-		out.addByte(_bodyCount);
+		out.addShort(_bodyCount);
 		for (int i = 0; i < _bodyCount; ++i) {
 			const UpdateParticleEntity& e = (*_bodiesPtr)[i];
 			out.addShortScaled(e.x);
 			out.addShortScaled(e.y);
 			out.addByte(e.angle / 2);
-			out.addByte(e.index);
+			out.addShort(e.index);
 			out.addByte(e.lifetime / 100);
 		}
 	}
@@ -78,7 +78,7 @@ public:
 		return _particleType;
 	}
 
-	inline uint8_t getBodyCount () const
+	inline uint16_t getBodyCount () const
 	{
 		return _bodyCount;
 	}
@@ -112,7 +112,7 @@ public:
 		return e.y;
 	}
 
-	inline uint8_t getIndex (int bodyIndex) const
+	inline uint16_t getIndex (int bodyIndex) const
 	{
 		const UpdateParticleEntity& e = _bodies[bodyIndex];
 		return e.index;
