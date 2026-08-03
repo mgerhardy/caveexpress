@@ -17,6 +17,9 @@ private:
 	void addTarget(int col, int row);
 	void addTile(const std::string& tile, int col, int row);
 	bool isEmpty(int col, int row) const;
+	bool isWallAt(int col, int row) const;
+	bool isPlayableAt(int col, int row) const;
+	void resolveWallTiles();
 public:
 	explicit SokobanMapContext(const std::string& map);
 	virtual ~SokobanMapContext();

@@ -1,8 +1,12 @@
 #include "SokobanMapContext.h"
 #include "common/FileSystem.h"
 #include "common/Log.h"
+#include "common/SpriteDefinition.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
 #include "cavepacker/shared/CavePackerSpriteType.h"
+#include "cavepacker/shared/WallTilePlacement.h"
+#include <map>
+#include <cstdlib>
 
 namespace cavepacker {
 
@@ -30,6 +34,95 @@ bool SokobanMapContext::isEmpty(int col, int row) const {
 		return false;
 	}
 	return true;
+}
+
+bool SokobanMapContext::isWallAt(int col, int row) const {
+	for (const MapTileDefinition& tileDef : _definitions) {
+		if (tileDef.x != col || tileDef.y != row)
+			continue;
+		if (SpriteTypes::isSolid(tileDef.spriteDef->type))
+			return true;
+	}
+	return false;
+}
+
+bool SokobanMapContext::isPlayableAt(int col, int row) const {
+	if (isWallAt(col, row))
+		return false;
+	for (const MapTileDefinition& tileDef : _definitions) {
+		if (tileDef.x != col || tileDef.y != row)
+			continue;
+		// ground, target, package - anything non-solid on the board
+		if (!SpriteTypes::isSolid(tileDef.spriteDef->type))
+			return true;
+	}
+	for (const IMap::StartPosition& pos : _startPositions) {
+		if (string::toInt(pos._x) == col && string::toInt(pos._y) == row)
+			return true;
+	}
+	return false;
+}
+
+void SokobanMapContext::resolveWallTiles() {
+	std::map<std::string, std::vector<std::string>> rocksByPlacement;
+	for (SpriteDefMapConstIter i = SpriteDefinition::get().begin(); i != SpriteDefinition::get().end(); ++i) {
+		if (!string::startsWith(i->first, "tile-rock-"))
+			continue;
+		if (!SpriteTypes::isSolid(i->second->type))
+			continue;
+		const WallPlacement placement = wallPlacementFromString(i->second->placement);
+		rocksByPlacement[wallPlacementToString(placement)].push_back(i->first);
+	}
+
+	const std::vector<std::string>& anyRocks = rocksByPlacement["any"];
+	if (anyRocks.empty() && rocksByPlacement.empty()) {
+		Log::error(LOG_GAMEIMPL, "no tile-rock sprites available for wall placement");
+		return;
+	}
+
+	for (std::vector<MapTileDefinition>::iterator i = _definitions.begin(); i != _definitions.end(); ++i) {
+		if (!SpriteTypes::isSolid(i->spriteDef->type))
+			continue;
+
+		const int col = static_cast<int>(i->x);
+		const int row = static_cast<int>(i->y);
+		const bool openL = isPlayableAt(col - 1, row);
+		const bool openR = isPlayableAt(col + 1, row);
+		const bool openT = isPlayableAt(col, row - 1);
+		const bool openD = isPlayableAt(col, row + 1);
+		const bool wallL = isWallAt(col - 1, row);
+		const bool wallR = isWallAt(col + 1, row);
+		const bool wallT = isWallAt(col, row - 1);
+		const bool wallD = isWallAt(col, row + 1);
+
+		const WallPlacement needed = computeWallPlacement(openL, openR, openT, openD, wallL, wallR, wallT, wallD);
+		const char* neededStr = wallPlacementToString(needed);
+
+		// Prefer orientation-specific art when available (do not dilute with "any"),
+		// so rare feature tiles like cave/torch actually show up on matching edges.
+		std::vector<std::string> candidates;
+		if (needed != WallPlacement::Any) {
+			const std::vector<std::string>& specific = rocksByPlacement[neededStr];
+			candidates.insert(candidates.end(), specific.begin(), specific.end());
+		}
+		if (candidates.empty())
+			candidates.insert(candidates.end(), anyRocks.begin(), anyRocks.end());
+		if (candidates.empty()) {
+			for (const auto& entry : rocksByPlacement)
+				candidates.insert(candidates.end(), entry.second.begin(), entry.second.end());
+		}
+		if (candidates.empty())
+			continue;
+
+		const std::string& tile = candidates[rand() % candidates.size()];
+		const SpriteDefPtr& spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(tile);
+		if (!spriteDefPtr) {
+			Log::error(LOG_GAMEIMPL, "could not resolve wall tile: %s", tile.c_str());
+			continue;
+		}
+		i->spriteDef = spriteDefPtr;
+		i->angle = spriteDefPtr->angle;
+	}
 }
 
 static inline int getIndex(int col, int row, int width) {
@@ -275,6 +368,8 @@ bool SokobanMapContext::load(bool skipErrors) {
 	_settings[msn::WIDTH] = string::toString(maxCol);
 	_settings[msn::HEIGHT] = string::toString(row);
 
+	resolveWallTiles();
+
 	Log::info(LOG_GAMEIMPL, "found %i start positions", (int)_startPositions.size());
 
 	return _playerSpawned;
@@ -298,8 +393,8 @@ inline void SokobanMapContext::addTarget(int col, int row) {
 }
 
 inline void SokobanMapContext::addWall(int col, int row) {
-	const int rnd = rand() % 3 + 1;
-	addTile("tile-rock-" + string::format("%02i", rnd), col, row);
+	// Provisional sprite; resolveWallTiles() selects by placement after the board is known.
+	addTile("tile-rock-01", col, row);
 }
 
 inline void SokobanMapContext::addPackage(int col, int row) {

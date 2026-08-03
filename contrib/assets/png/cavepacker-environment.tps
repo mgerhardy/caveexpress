@@ -221,7 +221,10 @@
             <filename>../png/cavepacker/tile-rock-01-back-01.png</filename>
             <filename>../png/cavepacker/tile-rock-02-back-01.png</filename>
             <filename>../png/cavepacker/tile-rock-03-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-04-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-05-back-01.png</filename>
             <filename>../png/cavepacker/target-back-01.png</filename>
+            <filename>../png/cavepacker/target-back-02.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -55,6 +55,9 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 
 		def->fps = lua.getValueIntegerFromTable("fps", 20);
 		def->redirect = lua.getValueStringFromTable("redirect");
+		def->placement = lua.getValueStringFromTable("placement", "any");
+		if (def->placement.empty())
+			def->placement = "any";
 		def->width = lua.getValueFloatFromTable("width", 1.0f);
 		def->height = lua.getValueFloatFromTable("height", 1.0f);
 		def->angle = lua.getValueIntegerFromTable("angle", 0);

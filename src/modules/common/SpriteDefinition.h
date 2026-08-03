@@ -69,7 +69,7 @@ private:
 	mutable bool _shapeSizeCalculated;
 public:
 	SpriteDef (const std::string& _id, const SpriteType& _type, const ThemeType& _theme) :
-			_shapeSizeCalculated(false), id(_id), type(_type), theme(_theme), redirect(""), fps(0.0f), width(1.0f), height(
+			_shapeSizeCalculated(false), id(_id), type(_type), theme(_theme), redirect(""), placement("any"), fps(0.0f), width(1.0f), height(
 					1.0f), angle(0), rotateable(0.0f), friction(0.2f), restitution(0.0f), delay(0)
 	{
 	}
@@ -122,6 +122,10 @@ public:
 
 	// some sprites may redirect to other sprites
 	std::string redirect;
+
+	// Optional placement constraint for auto-tiling (e.g. cavepacker walls).
+	// Unused by caveexpress. Values: any|left|right|top|down|full
+	std::string placement;
 
 	// frames per second
 	float fps;
