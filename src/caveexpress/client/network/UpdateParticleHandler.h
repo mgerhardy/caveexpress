@@ -30,12 +30,12 @@ public:
 		ClientParticle *particle = static_cast<ClientParticle*>(entity);
 		particle->setParticleType(msg->getParticleType());
 		particle->resetParticles(msg->getMaxParticles(), msg->getMaxLifeTime());
-		const uint8_t bodyCount = msg->getBodyCount();
-		for (int i = 0; i < bodyCount; i++) {
+		const uint16_t bodyCount = msg->getBodyCount();
+		for (uint16_t i = 0; i < bodyCount; i++) {
 			const float x = msg->getX(i);
 			const float y = msg->getY(i);
 			const uint32_t lifetime = msg->getLifeTime(i);
-			const uint8_t index = msg->getIndex(i);
+			const uint16_t index = msg->getIndex(i);
 			const EntityAngle angle = msg->getAngle(i);
 			particle->updateParticle(index, x, y, lifetime, angle);
 		}

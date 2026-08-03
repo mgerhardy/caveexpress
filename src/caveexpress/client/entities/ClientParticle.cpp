@@ -17,7 +17,7 @@ ClientParticle::~ClientParticle ()
 	resetParticles(0, 0);
 }
 
-void ClientParticle::resetParticles (uint8_t maxParticles, uint32_t lifetime)
+void ClientParticle::resetParticles (int maxParticles, uint32_t lifetime)
 {
 	_lifetime = lifetime;
 	if (_maxParticles == maxParticles)
@@ -59,6 +59,10 @@ std::string ClientParticle::getSpriteName() const
 
 void ClientParticle::render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int mapPixelWidth, int mapPixelHeight) const
 {
+	// Entity render is invoked once per layer; only draw particles once.
+	if (layer != LAYER_FRONT)
+		return;
+
 	const std::string &sprite = getSpriteName();
 	const TexturePtr& texture = UI::get().loadTexture(sprite);
 	if (!texture || !texture->isValid()) {
@@ -66,16 +70,18 @@ void ClientParticle::render (IFrontend *frontend, Layer layer, int scale, float 
 		return;
 	}
 
-	const int basePosX = offsetX - texture->getWidth() / 2;
-	const int basePosY = offsetY - texture->getHeight() / 2;
+	const float particleW = 20.0f * zoom;
+	const float particleH = 16.0f * zoom;
+	const int basePosX = offsetX - static_cast<int>(particleW / 2.0f);
+	const int basePosY = offsetY - static_cast<int>(particleH / 2.0f);
 	for (int i = 0; i < _maxParticles; ++i) {
 		ParticleData &p = _particles[i];
 		if (p.lifetime <= 0)
 			continue;
-		const int posX = basePosX + p.pos.x * scale;
-		const int posY = basePosY + p.pos.y * scale;
+		const int posX = basePosX + static_cast<int>(p.pos.x * scale * zoom);
+		const int posY = basePosY + static_cast<int>(p.pos.y * scale * zoom);
 		const float alpha = p.lifetime / static_cast<float>(_lifetime);
-		frontend->renderImage(texture.get(), posX, posY, 20.0f * zoom, 16.0f * zoom, p.angle, alpha);
+		frontend->renderImage(texture.get(), posX, posY, particleW, particleH, p.angle, alpha);
 	}
 }
 

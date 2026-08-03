@@ -68,6 +68,10 @@ protected:
 		b.lifetime = 2000;
 		bodies.push_back(b);
 		testMessage("UpdateParticleMessage", UpdateParticleMessage(1, 0, bodies, 100, 2000));
+		// Ensure particle counts/indices above 255 survive the protocol (uint16)
+		b.index = 300;
+		bodies.push_back(b);
+		testMessage("UpdateParticleMessageLarge", UpdateParticleMessage(1, 0, bodies, 300, 2000));
 		testMessage("SoundMessage", SoundMessage(0.0f, 0.0f, SoundType::NONE));
 		testMessage("UpdateHitpointsMessage", UpdateHitpointsMessage(99));
 		testMessage("UpdateLivesMessage", UpdateLivesMessage(2));
