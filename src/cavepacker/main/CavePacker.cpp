@@ -84,7 +84,9 @@ Achievement* fullStarsAchievements[] = {
 }
 
 CavePacker::CavePacker ():
-	_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _frontend(nullptr), _serviceProvider(nullptr)
+	_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _frontend(nullptr), _serviceProvider(nullptr),
+	_mapFinishDelayStarted(false), _mapFinishSent(false), _finishMapName(""),
+	_finishMoves(0), _finishPushes(0), _finishStars(0)
 {
 }
 
@@ -118,65 +120,79 @@ void CavePacker::update (uint32_t deltaTime)
 	_map.update(deltaTime);
 
 	const bool isDone = _map.isDone();
-	if (isDone && !_map.isRestartInitialized()) {
-		if (_map.isForcedFinished()) {
-			System.track("mapstate", string::format("forced finished: %s", _map.getName().c_str()));
-			const FinishedMapMessage msg(_map.getName(), 0, 0, 0);
-			_serviceProvider->getNetwork().sendToAllClients(msg);
-			const CampaignPtr& campaign = _campaignManager->getAutoActiveCampaign();
-			if (campaign)
-				campaign->unlockNextMap();
-			return;
-		}
-
-		const uint32_t moves = _map.getMoves();
-		const uint32_t pushes = _map.getPushes();
-		const uint8_t stars = getStars();
-		_campaignManager->getAutoActiveCampaign();
-		const bool tutorial = string::toBool(_map.getSetting(msn::TUTORIAL));
-		if (!tutorial)
-			Config.increaseCounter("mapfinishedcounter");
-		if (!_campaignManager->updateMapValues(_map.getName(), moves, pushes, stars, true))
-			Log::error(LOG_GAMEIMPL, "Could not save the values for the map");
-
-		if (stars == 3) {
-			const int n = SDL_arraysize(fullStarsAchievements);
-			for (int i = 0; i < n; ++i) {
-				fullStarsAchievements[i]->unlock();
-			}
-		}
-
-		if (_map.getPlayers().size() == 1) {
-			const Player* player = _map.getPlayers()[0];
-			const std::string& solution = player->getSolution();
-			Log::info(LOG_GAMEIMPL, "solution: %s", solution.c_str());
-			SDL_SetClipboardText(solution.c_str());
-#if 0
-			FilePtr solutionFilePtr = FS.getFileFromURL("maps://" + _map.getName() + ".sol");
-			if (!solutionFilePtr->exists()) {
-				FS.writeFile(solutionFilePtr->getName(), reinterpret_cast<const uint8_t*>(solution.c_str()), solution.size(), true);
-			}
-#endif
-			if (!_map.isAutoSolve()) {
-				const std::string solutionId = "solution" + _map.getName();
-				System.track(solutionId, solution);
-				const int n = SDL_arraysize(puzzleAchievements);
-				for (int i = 0; i < n; ++i) {
-					puzzleAchievements[i]->unlock();
-				}
+	if (isDone && !_mapFinishSent && !_map.isRestartInitialized()) {
+		if (!_mapFinishDelayStarted) {
+			if (_map.isForcedFinished()) {
+				System.track("mapstate", string::format("forced finished: %s", _map.getName().c_str()));
+				const CampaignPtr& campaign = _campaignManager->getAutoActiveCampaign();
+				if (campaign)
+					campaign->unlockNextMap();
+				_finishMapName = _map.getName();
+				_finishMoves = 0;
+				_finishPushes = 0;
+				_finishStars = 0;
 			} else {
-				System.track("autosolve", _map.getName());
-			}
-			if (!_campaignManager->addAdditionMapData(_map.getName(), solution))
-				Log::error(LOG_GAMEIMPL, "Could not save the solution for the map");
-		} else {
-			Log::info(LOG_GAMEIMPL, "no solution in multiplayer games");
-		}
+				const uint32_t moves = _map.getMoves();
+				const uint32_t pushes = _map.getPushes();
+				const uint8_t stars = getStars();
+				_campaignManager->getAutoActiveCampaign();
+				const bool tutorial = string::toBool(_map.getSetting(msn::TUTORIAL));
+				if (!tutorial)
+					Config.increaseCounter("mapfinishedcounter");
+				if (!_campaignManager->updateMapValues(_map.getName(), moves, pushes, stars, true))
+					Log::error(LOG_GAMEIMPL, "Could not save the values for the map");
 
-		System.track("mapstate", string::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), moves, pushes, stars));
-		_map.abortAutoSolve();
-		const FinishedMapMessage msg(_map.getName(), moves, pushes, stars);
-		_serviceProvider->getNetwork().sendToAllClients(msg);
+				if (stars == 3) {
+					const int n = SDL_arraysize(fullStarsAchievements);
+					for (int i = 0; i < n; ++i) {
+						fullStarsAchievements[i]->unlock();
+					}
+				}
+
+				if (_map.getPlayers().size() == 1) {
+					const Player* player = _map.getPlayers()[0];
+					const std::string& solution = player->getSolution();
+					Log::info(LOG_GAMEIMPL, "solution: %s", solution.c_str());
+					SDL_SetClipboardText(solution.c_str());
+#if 0
+					FilePtr solutionFilePtr = FS.getFileFromURL("maps://" + _map.getName() + ".sol");
+					if (!solutionFilePtr->exists()) {
+						FS.writeFile(solutionFilePtr->getName(), reinterpret_cast<const uint8_t*>(solution.c_str()), solution.size(), true);
+					}
+#endif
+					if (!_map.isAutoSolve()) {
+						const std::string solutionId = "solution" + _map.getName();
+						System.track(solutionId, solution);
+						const int n = SDL_arraysize(puzzleAchievements);
+						for (int i = 0; i < n; ++i) {
+							puzzleAchievements[i]->unlock();
+						}
+					} else {
+						System.track("autosolve", _map.getName());
+					}
+					if (!_campaignManager->addAdditionMapData(_map.getName(), solution))
+						Log::error(LOG_GAMEIMPL, "Could not save the solution for the map");
+				} else {
+					Log::info(LOG_GAMEIMPL, "no solution in multiplayer games");
+				}
+
+				System.track("mapstate", string::format("finished: %s with %i moves and %i pushes - got %i stars", _map.getName().c_str(), moves, pushes, stars));
+				_map.abortAutoSolve();
+				_finishMapName = _map.getName();
+				_finishMoves = moves;
+				_finishPushes = pushes;
+				_finishStars = stars;
+			}
+			_mapFinishDelayStarted = true;
+			// Give the player a moment to see the win state while the map fades out.
+			static const uint32_t MAP_FINISH_DELAY_MS = 3000;
+			_map.scheduleFinish(MAP_FINISH_DELAY_MS);
+		} else {
+			const FinishedMapMessage msg(_finishMapName, _finishMoves, _finishPushes, _finishStars);
+			_serviceProvider->getNetwork().sendToAllClients(msg);
+			_mapFinishSent = true;
+			_mapFinishDelayStarted = false;
+		}
 	} else if (!isDone && _map.isFailed()) {
 		Log::debug(LOG_GAMEIMPL, "map failed");
 		const uint32_t delay = 1000;
@@ -207,6 +223,12 @@ uint8_t CavePacker::getStars () const {
 
 bool CavePacker::mapLoad (const std::string& map)
 {
+	_mapFinishDelayStarted = false;
+	_mapFinishSent = false;
+	_finishMapName.clear();
+	_finishMoves = 0;
+	_finishPushes = 0;
+	_finishStars = 0;
 	return _map.load(map);
 }
 

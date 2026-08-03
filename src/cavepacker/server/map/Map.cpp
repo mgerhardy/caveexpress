@@ -397,7 +397,21 @@ void Map::restart (uint32_t delay)
 		return;
 
 	Log::info(LOG_GAMEIMPL, "trigger map restart");
+	_finishPending = false;
 	_restartDue = _time + delay;
+	const MapRestartMessage msg(delay);
+	_serviceProvider->getNetwork().sendToAllClients(msg);
+}
+
+void Map::scheduleFinish (uint32_t delay)
+{
+	if (_restartDue > 0)
+		return;
+
+	Log::info(LOG_GAMEIMPL, "trigger map finish delay %u ms", delay);
+	_finishPending = true;
+	_restartDue = _time + delay;
+	// Reuse MapRestartMessage so the client fades out with the existing overlay.
 	const MapRestartMessage msg(delay);
 	_serviceProvider->getNetwork().sendToAllClients(msg);
 }
@@ -420,6 +434,7 @@ void Map::resetCurrentMap ()
 	_moves = 0;
 	_pushes = 0;
 	_restartDue = 0;
+	_finishPending = false;
 	_pause = false;
 	_mapRunning = false;
 	_width = 0;
@@ -908,6 +923,13 @@ void Map::update (uint32_t deltaTime)
 
 	if (_restartDue > 0 && _restartDue <= _time) {
 		const std::string currentName = getName();
+		const bool finishPending = _finishPending;
+		_restartDue = 0;
+		_finishPending = false;
+		if (finishPending) {
+			Log::info(LOG_GAMEIMPL, "map finish delay elapsed for %s", currentName.c_str());
+			return;
+		}
 		Log::info(LOG_GAMEIMPL, "restarting map %s", currentName.c_str());
 		load(currentName);
 	}

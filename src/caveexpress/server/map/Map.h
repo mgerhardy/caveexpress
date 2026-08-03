@@ -116,6 +116,8 @@ protected:
 	uint32_t _warmupPhase;
 
 	uint32_t _restartDue;
+	// true while a successful map finish is waiting out its fade delay
+	bool _finishPending;
 
 	// this is just a pointer to the shared ptr instance - you don't have to free this
 	Water *_water;
@@ -249,6 +251,9 @@ public:
 	void update (uint32_t deltaTime) override;
 	bool isActive () const override;
 	void restart (uint32_t delay) override;
+	// Start a delayed successful finish (client fade via restartMap); does not reload when due.
+	void scheduleFinish (uint32_t delay);
+	bool isFinishPending () const;
 	int getMapWidth () const override;
 	int getMapHeight () const override;
 
@@ -522,6 +527,11 @@ inline TimeManager& Map::getTimeManager ()
 inline bool Map::isRestartInitialized () const
 {
 	return _restartDue > 0;
+}
+
+inline bool Map::isFinishPending () const
+{
+	return _finishPending;
 }
 
 inline uint16_t Map::getPoints () const

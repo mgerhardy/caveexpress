@@ -22,6 +22,12 @@ private:
 	int _packageCount;
 	int32_t _loadDelay;
 	std::string _loadDelayName;
+	bool _mapFinishDelayStarted;
+	bool _mapFinishSent;
+	std::string _finishMapName;
+	uint32_t _finishPoints;
+	uint32_t _finishTimeSeconds;
+	uint8_t _finishStars;
 public:
 	CaveExpress();
 	virtual ~CaveExpress();

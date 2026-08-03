@@ -17,6 +17,13 @@ private:
 	IFrontend *_frontend;
 	ServiceProvider* _serviceProvider;
 
+	bool _mapFinishDelayStarted;
+	bool _mapFinishSent;
+	std::string _finishMapName;
+	uint32_t _finishMoves;
+	uint32_t _finishPushes;
+	uint8_t _finishStars;
+
 	uint8_t getStars () const;
 public:
 	CavePacker();

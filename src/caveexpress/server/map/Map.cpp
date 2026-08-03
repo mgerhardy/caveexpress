@@ -444,7 +444,20 @@ void Map::restart (uint32_t delay)
 		return;
 
 	Log::info(LOG_GAMEIMPL, "trigger map restart");
+	_finishPending = false;
 	_restartDue = _time + delay;
+	GameEvent.restartMap(delay);
+}
+
+void Map::scheduleFinish (uint32_t delay)
+{
+	if (_restartDue > 0)
+		return;
+
+	Log::info(LOG_GAMEIMPL, "trigger map finish delay %u ms", delay);
+	_finishPending = true;
+	_restartDue = _time + delay;
+	// Reuse restartMap so the client fades out with the existing overlay.
 	GameEvent.restartMap(delay);
 }
 
@@ -462,6 +475,7 @@ void Map::resetCurrentMap ()
 	_referenceTime = 0;
 	_warmupPhase = 0;
 	_restartDue = 0;
+	_finishPending = false;
 	_pause = false;
 	_transferedNPCs = 0;
 	_transferedNPCLimit = 0;
@@ -1655,6 +1669,13 @@ void Map::update (uint32_t deltaTime)
 
 	if (_restartDue > 0 && _restartDue <= _time) {
 		const std::string currentName = getName();
+		const bool finishPending = _finishPending;
+		_restartDue = 0;
+		_finishPending = false;
+		if (finishPending && !isFailed()) {
+			Log::info(LOG_GAMEIMPL, "map finish delay elapsed for %s", currentName.c_str());
+			return;
+		}
 		Log::info(LOG_GAMEIMPL, "restarting map %s", currentName.c_str());
 		if (isFailed()) {
 			const Map::PlayerList& players = getPlayers();
