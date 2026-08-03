@@ -2,15 +2,7 @@ sprites = {
 	["player"] = {
 		fps = 8,
 	},
-	["target"] = {
-		type = "target",
-		fps = 3,
-		-- back stays static (LAYER_BACK is cached); animate on middle
-		frames = {
-			{ "target-back-01", },
-			{ "target-back-01", "target-back-02", },
-		},
-	},
+	["target"] = { type = "target", fps = 3, },
 	["package"] = { type = "package", },
 	["package-delivered"] = { type = "package", },
 	["package-deadlock"] = { type = "package", },

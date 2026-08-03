@@ -12,6 +12,7 @@ private:
 	mutable std::size_t _targetEnts;
 	ConfigVarPtr _moveLerpMillis;
 	void renderLayer (int x, int y, Layer layer) const override;
+	void renderBackLayerEntities (int x, int y, bool animated) const;
 
 public:
 	CavePackerClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider,

@@ -216,21 +216,21 @@ bool ClientEntity::update (uint32_t deltaTime, bool lerpPos, bool animateSpriteA
 	static const float interval = Constant::FPS_SERVER / (float) Constant::FPS_CLIENT;
 	_time += deltaTime;
 	bool moveLerpActive = false;
-	if (lerpPos) {
-		if (_lerpDuration > 0) {
-			_lerpElapsed = std::min(_lerpDuration, _lerpElapsed + deltaTime);
-			const float t = static_cast<float>(_lerpElapsed) / static_cast<float>(_lerpDuration);
-			_pos = _prevPos + (_nextPos - _prevPos) * t;
-			moveLerpActive = _lerpElapsed < _lerpDuration;
+	// Timed grid moves must keep advancing even when wantLerp() is false (e.g. map-finish
+	// fade via MapRestartMessage). Otherwise the winning push freezes at the previous cell.
+	if (_lerpDuration > 0) {
+		_lerpElapsed = std::min(_lerpDuration, _lerpElapsed + deltaTime);
+		const float t = static_cast<float>(_lerpElapsed) / static_cast<float>(_lerpDuration);
+		_pos = _prevPos + (_nextPos - _prevPos) * t;
+		moveLerpActive = _lerpElapsed < _lerpDuration;
+	} else if (lerpPos) {
+		const vec2 before = _pos - _nextPos;
+		if (!before.isZero(0.01f)) {
+			const vec2 inc = interval * (_nextPos - _prevPos);
+			_pos += inc;
+			moveLerpActive = true;
 		} else {
-			const vec2 before = _pos - _nextPos;
-			if (!before.isZero(0.01f)) {
-				const vec2 inc = interval * (_nextPos - _prevPos);
-				_pos += inc;
-				moveLerpActive = true;
-			} else {
-				_pos = _nextPos;
-			}
+			_pos = _nextPos;
 		}
 	}
 	if (_currSprite) {

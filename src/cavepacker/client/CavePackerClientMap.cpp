@@ -40,18 +40,36 @@ void CavePackerClientMap::setZoom (const float zoom) {
 	_target = nullptr;
 }
 
+void CavePackerClientMap::renderBackLayerEntities (int x, int y, bool animated) const {
+	const int w = (int)((float)getPixelWidth() * _zoom);
+	const int h = (int)((float)getPixelHeight() * _zoom);
+	for (const auto &iter : _entities) {
+		const ClientEntityPtr& e = iter.second;
+		const SpritePtr& sprite = e->getSprite();
+		if (!sprite)
+			continue;
+		const bool multiFrame = sprite->getFrameCount(LAYER_BACK) > 1;
+		if (multiFrame != animated)
+			continue;
+		e->render(_frontend, LAYER_BACK, _scaleGridToPixel, _zoom, x, y, w, h);
+	}
+}
+
 void CavePackerClientMap::renderLayer (int x, int y, Layer layer) const {
 	if (Config.renderToTexture()) {
 		if (layer == LAYER_BACK) {
+			// Cache only single-frame back sprites. Multi-frame back sprites (e.g. animated
+			// targets) are drawn live after the cache blit so they can advance.
 			if (_target == nullptr || _targetEnts != _entities.size()) {
 				_targetEnts = _entities.size();
 				_target = _frontend->renderToTexture(x, y, getWidth() * _zoom, getHeight() * _zoom);
-				ClientMap::renderLayer(x, y, layer);
+				renderBackLayerEntities(x, y, false);
 				_frontend->disableRenderTarget(_target);
 			}
 			return;
 		} else if (layer == LAYER_MIDDLE && _target) {
 			_frontend->renderTarget(_target);
+			renderBackLayerEntities(x, y, true);
 		}
 	}
 	ClientMap::renderLayer(x, y, layer);

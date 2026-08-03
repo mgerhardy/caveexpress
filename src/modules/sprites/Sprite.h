@@ -49,6 +49,7 @@ public:
 	void update (uint32_t deltaTime);
 
 	int getFrameCount () const;
+	int getFrameCount (Layer layer) const;
 	int getWidth (Layer layer) const;
 	int getHeight (Layer layer) const;
 	int getMaxWidth () const;
@@ -173,6 +174,11 @@ inline void Sprite::setDelay (int frame, int delay)
 inline int Sprite::getFrameCount () const
 {
 	return _frameCount;
+}
+
+inline int Sprite::getFrameCount (Layer layer) const
+{
+	return static_cast<int>(_textures[layer].size());
 }
 
 typedef std::shared_ptr<Sprite> SpritePtr;

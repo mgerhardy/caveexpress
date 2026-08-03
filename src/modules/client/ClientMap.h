@@ -91,6 +91,11 @@ protected:
 
 	virtual bool updateCameraPosition ();
 
+	/**
+	 * Whether new position updates should start interpolating.
+	 * False while a restart/finish fade is pending (_restartDue != 0).
+	 * In-progress timed grid lerps still complete in ClientEntity::update.
+	 */
 	virtual bool wantLerp () { return _restartDue == 0; }
 
 	/**
