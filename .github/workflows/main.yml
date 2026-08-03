@@ -69,15 +69,18 @@ jobs:
             cmake --install . --component caveexpress --prefix install-caveexpress
             cmake --install . --component cavepacker --prefix install-cavepacker
 
+        - name: Install NSIS
+          run: choco install nsis -y
+
         - name: Create caveexpress installer
           uses: joncloud/makensis-action@v4.1
           with:
-            script-file : "build/src/caveexpress/main/setup.nsi"
+            script-file: "build/src/caveexpress/main/setup.nsi"
 
         - name: Create cavepacker installer
           uses: joncloud/makensis-action@v4.1
           with:
-            script-file : "build/src/cavepacker/main/setup.nsi"
+            script-file: "build/src/cavepacker/main/setup.nsi"
 
         - name: Upload the caveexpress installer
           uses: actions/upload-artifact@v4
