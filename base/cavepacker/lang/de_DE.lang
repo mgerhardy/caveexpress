@@ -52,7 +52,7 @@ LMB: paint / place|LMT: malen / platzieren
 Map|Map
 Map Editor|Map-Editor
 Maps|Maps
-MMB or Space+LMB: pan|MMT oder Leertaste+LMT: verschieben
+MMB click: pick, MMB drag or Space+LMB: pan|MMB click: pick, MMB drag or Space+LMB: pan
 Move all packages onto their targets|Schiebe alle Pakete auf die Paletten
 Multiplayer|Multiplayer
 Music volume|Music volume
@@ -87,6 +87,7 @@ Save & Go|Testen
 Select game mode|Spielemodus aussuchen
 Select tile|Teil selektieren
 Settings|Einstellungen
+Shift+LMB: pick tile under cursor|Shift+LMB: pick tile under cursor
 Show Grid|Gitter anzeigen
 Skip|Nächste
 Small|Klein

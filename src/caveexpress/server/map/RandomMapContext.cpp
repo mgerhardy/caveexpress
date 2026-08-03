@@ -592,7 +592,9 @@ bool RandomMapContext::load (bool skipErrors)
 		return false;
 	}
 
-	WfcMapGenerator generator(*_theme, _mapWidth, _mapHeight, _caves);
+	WfcRules rules = WfcRules::loadFromLua();
+	const unsigned int caveCount = rules.caveTarget > 0 ? static_cast<unsigned int>(rules.caveTarget) : _caves;
+	WfcMapGenerator generator(*_theme, _mapWidth, _mapHeight, caveCount, rules);
 	const unsigned int seed = static_cast<unsigned int>(rand());
 	WfcMapGenerator::Result result = generator.generate(seed);
 	if (!result.success) {

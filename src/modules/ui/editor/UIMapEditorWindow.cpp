@@ -525,21 +525,29 @@ void UIMapEditorWindow::drawCanvas () const
 		if (!_panning && !space) {
 			const bool shift = ImGui::GetIO().KeyShift;
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-				if (shift)
+				if (shift) {
 					_doc->pickAtSelection();
-				else
-					_doc->paintAtSelection(true, true);
+				} else {
+					_doc->beginUndoStroke();
+					_doc->paintAtSelection(true, false);
+				}
 			} else if (!shift && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 				_doc->paintAtSelection(true, false);
 			}
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-				_doc->eraseAtSelection(true);
-			else if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+				_doc->beginUndoStroke();
 				_doc->eraseAtSelection(false);
+			} else if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
+				_doc->eraseAtSelection(false);
+			}
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle) && !ImGui::IsMouseDragging(ImGuiMouseButton_Middle))
 				_doc->pickAtSelection();
 		}
 	}
+
+	// Commit paint/erase strokes even if the cursor left the canvas before release.
+	if (ImGui::IsMouseReleased(ImGuiMouseButton_Left) || ImGui::IsMouseReleased(ImGuiMouseButton_Right))
+		_doc->endUndoStroke();
 
 	renderMapIntoCanvas(ImGui::GetWindowDrawList());
 	ImGui::EndChild();

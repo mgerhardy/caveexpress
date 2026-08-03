@@ -15,21 +15,24 @@ const int IMapEditorDocument::MIN_WIDTH = 6;
 const int IMapEditorDocument::MIN_HEIGHT = 4;
 
 MapEditorStateChecker::MapEditorStateChecker (IMapEditorDocument* doc) :
-		_doc(doc), _map(doc->_map), _settings(doc->_settings), _startPositions(doc->_startPositions),
-		_mapName(doc->_mapName), _mapWidth(doc->_mapWidth), _mapHeight(doc->_mapHeight)
+		_doc(doc)
 {
+	// Finish any open mouse-stroke so this discrete edit gets its own undo step.
+	_doc->endUndoStroke();
+	_map = doc->_map;
+	_settings = doc->_settings;
+	_startPositions = doc->_startPositions;
+	_mapName = doc->_mapName;
+	_mapWidth = doc->_mapWidth;
+	_mapHeight = doc->_mapHeight;
 }
 
 MapEditorStateChecker::~MapEditorStateChecker ()
 {
-	const bool dirty = _mapWidth != _doc->_mapWidth || _mapHeight != _doc->_mapHeight || _mapName != _doc->_mapName
-			|| _map.size() != _doc->_map.size() || _settings.size() != _doc->_settings.size()
-			|| _startPositions.size() != _doc->_startPositions.size()
-			|| !std::equal(_settings.begin(), _settings.end(), _doc->_settings.begin())
-			|| !std::equal(_map.begin(), _map.end(), _doc->_map.begin());
-	if (!dirty)
+	const IMapEditorDocument::State before(_map, _settings, _startPositions, _mapName, _mapWidth, _mapHeight);
+	if (!_doc->stateDiffersFrom(before))
 		return;
-	_doc->_undoStates.emplace_back(_map, _settings, _startPositions, _mapName, _mapWidth, _mapHeight);
+	_doc->_undoStates.push_back(before);
 	_doc->_redoStates.clear();
 }
 
@@ -42,6 +45,47 @@ IMapEditorDocument::IMapEditorDocument (IMapManager& mapManager) :
 
 IMapEditorDocument::~IMapEditorDocument ()
 {
+}
+
+IMapEditorDocument::State IMapEditorDocument::captureState () const
+{
+	return State(_map, _settings, _startPositions, _mapName, _mapWidth, _mapHeight);
+}
+
+bool IMapEditorDocument::stateDiffersFrom (const State& state) const
+{
+	if (state.mapWidth != _mapWidth || state.mapHeight != _mapHeight || state.mapName != _mapName)
+		return true;
+	if (state.map.size() != _map.size() || state.settingsMap.size() != _settings.size()
+			|| state.startPositions.size() != _startPositions.size())
+		return true;
+	if (!std::equal(state.settingsMap.begin(), state.settingsMap.end(), _settings.begin()))
+		return true;
+	if (!std::equal(state.startPositions.begin(), state.startPositions.end(), _startPositions.begin(),
+			[] (const IMap::StartPosition& a, const IMap::StartPosition& b) {
+				return a._x == b._x && a._y == b._y;
+			}))
+		return true;
+	return !std::equal(state.map.begin(), state.map.end(), _map.begin());
+}
+
+void IMapEditorDocument::beginUndoStroke ()
+{
+	if (_undoStrokeActive)
+		return;
+	_undoStrokeSnapshot = captureState();
+	_undoStrokeActive = true;
+}
+
+void IMapEditorDocument::endUndoStroke ()
+{
+	if (!_undoStrokeActive)
+		return;
+	_undoStrokeActive = false;
+	if (!stateDiffersFrom(_undoStrokeSnapshot))
+		return;
+	_undoStates.push_back(std::move(_undoStrokeSnapshot));
+	_redoStates.clear();
 }
 
 void IMapEditorDocument::registerCommands ()
@@ -99,9 +143,10 @@ void IMapEditorDocument::setState (const State& state)
 
 void IMapEditorDocument::undo ()
 {
+	endUndoStroke();
 	if (_undoStates.empty())
 		return;
-	const State current(_map, _settings, _startPositions, _mapName, _mapWidth, _mapHeight);
+	const State current = captureState();
 	setState(_undoStates.back());
 	_redoStates.push_back(current);
 	_undoStates.pop_back();
@@ -109,12 +154,13 @@ void IMapEditorDocument::undo ()
 
 void IMapEditorDocument::redo ()
 {
+	endUndoStroke();
 	if (_redoStates.empty())
 		return;
-	const State current(_map, _settings, _startPositions, _mapName, _mapWidth, _mapHeight);
-	setState(_redoStates.front());
-	_redoStates.erase(_redoStates.begin());
+	const State current = captureState();
+	setState(_redoStates.back());
 	_undoStates.push_back(current);
+	_redoStates.pop_back();
 }
 
 bool IMapEditorDocument::isDirty () const
@@ -278,6 +324,13 @@ bool IMapEditorDocument::placeTileItem (const MapEditorTileItem& item, bool over
 {
 	if (!item.def || item.gridX >= _mapWidth || item.gridY >= _mapHeight)
 		return false;
+	if (overwrite) {
+		// Already have an identical tile here - treat as success without mutating.
+		for (const MapEditorTileItem& existing : _map) {
+			if (existing == item)
+				return true;
+		}
+	}
 	const bool hit = checkTileHit(item, overwrite);
 	if (hit && !overwrite)
 		return false;

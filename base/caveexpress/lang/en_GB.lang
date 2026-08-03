@@ -83,7 +83,7 @@ LMB: paint / place|LMB: paint / place
 Map|Map
 Map Editor|Map Editor
 Maps|Maps
-MMB: pick tile (or Space+LMB: pan)|MMB: pick tile (or Space+LMB: pan)
+MMB click: pick, MMB drag or Space+LMB: pan|MMB click: pick, MMB drag or Space+LMB: pan
 Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name

@@ -44,5 +44,5 @@ typedef std::list<MapEditorTileItem> MapEditorTileItems;
 
 inline bool mapEditorLayerSort (const MapEditorTileItem& a, const MapEditorTileItem& b)
 {
-	return a.layer <= b.layer;
+	return a.layer < b.layer;
 }

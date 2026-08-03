@@ -5,7 +5,9 @@
 bool MapEditorTileItem::operator== (const MapEditorTileItem& other) const
 {
 	return gridX == other.gridX && gridY == other.gridY && layer == other.layer
-			&& def.get() == other.def.get() && entityType == other.entityType;
+			&& def.get() == other.def.get() && entityType == other.entityType
+			&& amount == other.amount && delay == other.delay && angle == other.angle
+			&& settings == other.settings && mapTile == other.mapTile;
 }
 
 bool MapEditorTileItem::operator< (const MapEditorTileItem& other) const

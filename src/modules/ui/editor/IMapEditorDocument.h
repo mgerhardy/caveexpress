@@ -90,6 +90,8 @@ protected:
 	std::vector<State> _undoStates;
 	std::vector<State> _redoStates;
 	size_t _lastSave = 0;
+	bool _undoStrokeActive = false;
+	State _undoStrokeSnapshot;
 
 	bool placeTileItem (const MapEditorTileItem& item, bool overwrite);
 	bool checkTileHit (const MapEditorTileItem& tileItem, bool remove);
@@ -97,6 +99,8 @@ protected:
 	bool isOverlapping (gridCoord gridX, gridCoord gridY, gridSize width, gridSize height, const MapEditorTileItem& item) const;
 	bool isOverlapping (gridCoord gridX, gridCoord gridY, const MapEditorTileItem& item) const;
 	void setState (const State& state);
+	State captureState () const;
+	bool stateDiffersFrom (const State& state) const;
 
 	virtual MapEditorLayer getLayer (const SpriteType& type) const = 0;
 	virtual bool isMapTileType (const SpriteType& type) const = 0;
@@ -136,6 +140,9 @@ public:
 	void redo ();
 	bool canUndo () const { return !_undoStates.empty(); }
 	bool canRedo () const { return !_redoStates.empty(); }
+	/** Snapshot once for a paint/erase drag; commit with endUndoStroke(). */
+	void beginUndoStroke ();
+	void endUndoStroke ();
 
 	void setSprite (const SpriteDefPtr& spriteDef);
 	void setEmitterEntity (const EntityType& type);

@@ -3,11 +3,14 @@
 #include "common/MapSettings.h"
 #include "common/Log.h"
 #include "common/String.h"
+#include "common/LUALibrary.h"
+#include "common/ThemeType.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include <algorithm>
 #include <queue>
 #include <cmath>
+#include <set>
 
 namespace caveexpress {
 
@@ -34,13 +37,6 @@ uint16_t bit (WfcMapGenerator::Cell c)
 
 const uint16_t MASK_AIR = bit(WfcMapGenerator::Cell::Air);
 const uint16_t MASK_ROCK = bit(WfcMapGenerator::Cell::Rock);
-const uint16_t MASK_GROUND = bit(WfcMapGenerator::Cell::Ground);
-const uint16_t MASK_LEDGEL = bit(WfcMapGenerator::Cell::LedgeL);
-const uint16_t MASK_LEDGER = bit(WfcMapGenerator::Cell::LedgeR);
-const uint16_t MASK_UL = bit(WfcMapGenerator::Cell::UndercutL);
-const uint16_t MASK_UR = bit(WfcMapGenerator::Cell::UndercutR);
-const uint16_t MASK_SHIM = bit(WfcMapGenerator::Cell::Shim);
-const uint16_t MASK_SURFACE = MASK_GROUND | MASK_LEDGEL | MASK_LEDGER;
 const uint16_t MASK_FILL = MASK_AIR | MASK_ROCK;
 const uint16_t MASK_ALL = static_cast<uint16_t>((1u << static_cast<unsigned>(WfcMapGenerator::Cell::Count)) - 1u);
 
@@ -48,18 +44,116 @@ bool containsId (const std::string& id, const char* needle)
 {
 	return id.find(needle) != std::string::npos;
 }
+
+int keyXY (int x, int y)
+{
+	return (y << 16) | (x & 0xffff);
+}
 }
 
-WfcMapGenerator::WfcMapGenerator (const ThemeType& theme, unsigned int width, unsigned int height, unsigned int caveTarget) :
-		_theme(&theme), _width(std::max(10u, width)), _height(std::max(8u, height)), _caveTarget(std::max(1u, caveTarget))
+WfcRules WfcRules::loadFromLua (const std::string& path)
+{
+	WfcRules r;
+	LUA lua(false);
+	if (!lua.load(path)) {
+		Log::info(LOG_GAMEIMPL, "WFC: no %s, using defaults", path.c_str());
+		return r;
+	}
+	if (!lua.execute("getWfcRules", 1)) {
+		Log::info(LOG_GAMEIMPL, "WFC: getWfcRules() missing in %s, using defaults", path.c_str());
+		return r;
+	}
+	lua_State* L = lua.getState();
+	if (!lua_istable(L, -1)) {
+		lua_pop(L, 1);
+		return r;
+	}
+	auto getTable = [&] (const char* name) -> bool {
+		lua_getfield(L, -1, name);
+		if (!lua_istable(L, -1)) {
+			lua_pop(L, 1);
+			return false;
+		}
+		return true;
+	};
+	auto pop = [&] () { lua_pop(L, 1); };
+
+	if (getTable("caves")) {
+		r.caveTarget = lua.getValueIntegerFromTable("target", r.caveTarget);
+		r.minCaveSeparation = lua.getValueIntegerFromTable("minSeparation", r.minCaveSeparation);
+		r.caveNpcChance = lua.getValueFloatFromTable("npcChance", r.caveNpcChance);
+		pop();
+	}
+	if (getTable("windows")) {
+		r.windowsEnabled = lua.getValueBoolFromTable("enabled", r.windowsEnabled);
+		r.oneWindowPerCave = lua.getValueBoolFromTable("onePerCave", r.oneWindowPerCave);
+		r.forbidAdjacentWindows = lua.getValueBoolFromTable("forbidAdjacentWindows", r.forbidAdjacentWindows);
+		pop();
+	}
+	if (getTable("platforms")) {
+		r.platformBandMin = lua.getValueIntegerFromTable("bandMin", r.platformBandMin);
+		r.platformBandMax = lua.getValueIntegerFromTable("bandMax", r.platformBandMax);
+		r.minVerticalGap = lua.getValueIntegerFromTable("minVerticalGap", r.minVerticalGap);
+		r.lengthMin = lua.getValueIntegerFromTable("lengthMin", r.lengthMin);
+		r.lengthMax = lua.getValueIntegerFromTable("lengthMax", r.lengthMax);
+		r.gapMin = lua.getValueIntegerFromTable("gapMin", r.gapMin);
+		r.gapMax = lua.getValueIntegerFromTable("gapMax", r.gapMax);
+		r.floatingChance = lua.getValueFloatFromTable("floatingChance", r.floatingChance);
+		pop();
+	}
+	if (getTable("bridges")) {
+		r.bridgesEnabled = lua.getValueBoolFromTable("enabled", r.bridgesEnabled);
+		r.bridgeMaxGap = lua.getValueIntegerFromTable("maxGap", r.bridgeMaxGap);
+		pop();
+	}
+	if (getTable("weights")) {
+		r.weightAir = lua.getValueIntegerFromTable("air", r.weightAir);
+		r.weightRock = lua.getValueIntegerFromTable("rock", r.weightRock);
+		r.weightGround = lua.getValueIntegerFromTable("ground", r.weightGround);
+		r.weightLedge = lua.getValueIntegerFromTable("ledge", r.weightLedge);
+		r.weightUndercut = lua.getValueIntegerFromTable("undercut", r.weightUndercut);
+		r.weightShim = lua.getValueIntegerFromTable("shim", r.weightShim);
+		pop();
+	}
+	if (getTable("packageTarget")) {
+		r.packageTargetRequired = lua.getValueBoolFromTable("required", r.packageTargetRequired);
+		r.packageTargetSidesWalkable = lua.getValueBoolFromTable("sidesMustBeWalkable", r.packageTargetSidesWalkable);
+		r.packageTargetRequireAirAbove = lua.getValueBoolFromTable("requireAirOppositeSupport", r.packageTargetRequireAirAbove);
+		pop();
+	}
+	if (getTable("emitters")) {
+		r.stoneChance = lua.getValueIntegerFromTable("stoneChance", r.stoneChance);
+		r.treeChance = lua.getValueIntegerFromTable("treeChance", r.treeChance);
+		r.walkingChance = lua.getValueIntegerFromTable("walkingChance", r.walkingChance);
+		r.packageChance = lua.getValueIntegerFromTable("packageChance", r.packageChance);
+		pop();
+	}
+	if (getTable("decor")) {
+		r.caveArtChance = lua.getValueIntegerFromTable("caveArtChance", r.caveArtChance);
+		pop();
+	}
+	lua_pop(L, 1);
+	return r;
+}
+
+WfcMapGenerator::WfcMapGenerator (const ThemeType& theme, unsigned int width, unsigned int height,
+		unsigned int caveTarget, const WfcRules& rules) :
+		_theme(&theme), _width(std::max(10u, width)), _height(std::max(8u, height)),
+		_caveTarget(std::max(1u, caveTarget)), _rules(rules)
 {
 	_waterHeight = std::min(2.5f, std::max(1.0f, static_cast<float>(_height) * 0.18f));
 	collectSprites();
 }
 
-bool WfcMapGenerator::isSurface (Cell c) const
+bool WfcMapGenerator::isWalkableSurface (Cell c) const
 {
-	return c == Cell::Ground || c == Cell::LedgeL || c == Cell::LedgeR;
+	return c == Cell::Ground || c == Cell::LedgeL || c == Cell::LedgeR || c == Cell::Bridge;
+}
+
+bool WfcMapGenerator::isColliderSolid (Cell c) const
+{
+	return c == Cell::Rock || c == Cell::UndercutL || c == Cell::UndercutR || c == Cell::Shim
+			|| isWalkableSurface(c);
 }
 
 bool WfcMapGenerator::isShimSprite (const SpriteDefPtr& def) const
@@ -67,9 +161,14 @@ bool WfcMapGenerator::isShimSprite (const SpriteDefPtr& def) const
 	return containsId(def->id, "shim");
 }
 
+bool WfcMapGenerator::isHangingGroundSprite (const SpriteDefPtr& def) const
+{
+	// tile-ground-05/06 are thin liane-like decks - collision only on the top slab; need air beneath.
+	return containsId(def->id, "ground-05") || containsId(def->id, "ground-06");
+}
+
 bool WfcMapGenerator::isUndercutLeftSprite (const SpriteDefPtr& def) const
 {
-	// slope-*-left-02: bottom-right open / solid SW — used under left platform mass edges
 	return containsId(def->id, "slope") && containsId(def->id, "left-02");
 }
 
@@ -86,7 +185,6 @@ bool WfcMapGenerator::isFullRockSprite (const SpriteDefPtr& def) const
 		return false;
 	if (isShimSprite(def) || isUndercutLeftSprite(def) || isUndercutRightSprite(def))
 		return false;
-	// Face rocks / partial solids (left-04, right-04, …) have custom polygons — skip for fill
 	if (def->hasShape())
 		return false;
 	return true;
@@ -99,7 +197,16 @@ void WfcMapGenerator::collectSprites ()
 		if (!def->theme.isNone() && def->theme != *_theme)
 			continue;
 		const SpriteType& type = def->type;
-		if (!SpriteTypes::isMapTile(type))
+		if (SpriteTypes::isBridgeLeft(type) && def->width <= 1.01f)
+			_bridgeLeft.push_back(def);
+		else if (SpriteTypes::isBridgeRight(type) && def->width <= 1.01f)
+			_bridgeRight.push_back(def);
+		else if (SpriteTypes::isBridgePlank(type) && def->width <= 1.01f)
+			_bridgePlank.push_back(def);
+		else if (SpriteTypes::isPackageTarget(type) && def->isStatic())
+			_packageTargets.push_back(def);
+
+		if (!SpriteTypes::isMapTile(type) && !SpriteTypes::isBridge(type) && !SpriteTypes::isPackageTarget(type))
 			continue;
 		if (def->width > 1.01f || def->height > 1.01f)
 			continue;
@@ -112,9 +219,12 @@ void WfcMapGenerator::collectSprites ()
 			_undercutR.push_back(def);
 		else if (isFullRockSprite(def))
 			_rocksFull.push_back(def);
-		else if (SpriteTypes::isGround(type))
-			_grounds.push_back(def);
-		else if (SpriteTypes::isGroundLeft(type))
+		else if (SpriteTypes::isGround(type)) {
+			if (isHangingGroundSprite(def))
+				_groundsHanging.push_back(def);
+			else
+				_grounds.push_back(def);
+		} else if (SpriteTypes::isGroundLeft(type))
 			_groundLeft.push_back(def);
 		else if (SpriteTypes::isGroundRight(type))
 			_groundRight.push_back(def);
@@ -142,96 +252,96 @@ void WfcMapGenerator::collectSprites ()
 		_shims = _rocksFull;
 	if (_backgrounds.empty() && !_caveArt.empty())
 		_backgrounds = _caveArt;
-	Log::info(LOG_GAMEIMPL, "WFC sprites rock=%i ground=%i ledgeL=%i ledgeR=%i underL=%i underR=%i shim=%i bg=%i cave=%i",
-			(int)_rocksFull.size(), (int)_grounds.size(), (int)_groundLeft.size(), (int)_groundRight.size(),
-			(int)_undercutL.size(), (int)_undercutR.size(), (int)_shims.size(), (int)_backgrounds.size(),
-			(int)_caves.size());
+	if (_bridgePlank.empty())
+		_bridgePlank = _bridgeLeft;
+	Log::info(LOG_GAMEIMPL, "WFC sprites rock=%i ground=%i bridge=%i/%i/%i pkgTarget=%i cave=%i",
+			(int)_rocksFull.size(), (int)_grounds.size(), (int)_bridgeLeft.size(), (int)_bridgePlank.size(),
+			(int)_bridgeRight.size(), (int)_packageTargets.size(), (int)_caves.size());
 }
 
 bool WfcMapGenerator::compatible (Cell a, Cell b, int dir) const
 {
-	// dir: 0=N 1=E 2=S 3=W — sockets from sprites.lua shapes + rock-*/ice-* map grammar
-	auto surface = [this] (Cell c) { return isSurface(c); };
-	auto solid = [] (Cell c) {
-		return c == Cell::Rock || c == Cell::UndercutL || c == Cell::UndercutR || c == Cell::Shim;
-	};
+	auto walkable = [this] (Cell c) { return isWalkableSurface(c); };
+	auto solid = [this] (Cell c) { return isColliderSolid(c); };
 
 	switch (a) {
 	case Cell::Air:
 		if (b == Cell::Air)
 			return true;
 		if (solid(b))
-			return true; // cliffs / walls
-		if (surface(b))
-			return dir == 2 || dir == 1 || dir == 3; // surface below or beside air
+			return true;
 		break;
 
 	case Cell::Rock:
+		if (b == Cell::Bridge)
+			return false; // bridges only neighbor ground/bridge
 		if (b == Cell::Rock || b == Cell::Air || b == Cell::Shim)
 			return true;
 		if (b == Cell::UndercutL || b == Cell::UndercutR)
 			return true;
-		if (surface(b))
-			return dir == 0 || dir == 1 || dir == 3; // surface above/beside rock mass
+		if (walkable(b))
+			return dir == 0 || dir == 1 || dir == 3;
 		break;
 
 	case Cell::Ground:
 		if (dir == 0)
-			return b == Cell::Air; // walkable top needs open sky/façade
+			return b == Cell::Air;
 		if (dir == 2)
-			// Solid decks sit on rock; floating village-style segments may hang over air
-			return solid(b) || b == Cell::Ground || b == Cell::Air;
-		// sides: continue platform, meet ledge ends, or butt into a wall
-		return b == Cell::Ground || b == Cell::LedgeL || b == Cell::LedgeR || b == Cell::Rock || b == Cell::Air;
+			return solid(b) || b == Cell::Ground || b == Cell::Bridge || b == Cell::Air;
+		return b == Cell::Ground || b == Cell::Bridge || b == Cell::LedgeL || b == Cell::LedgeR
+				|| b == Cell::Rock || b == Cell::Air;
+
+	case Cell::Bridge:
+		// Bridges sit over open air (background on the same cell) and only connect to ground/bridge.
+		if (dir == 0 || dir == 2)
+			return b == Cell::Air;
+		return b == Cell::Ground || b == Cell::Bridge || b == Cell::LedgeL || b == Cell::LedgeR;
 
 	case Cell::LedgeL:
-		// left ledge: open air to the west, platform continues east (ground/ledgeR)
 		if (dir == 3)
 			return b == Cell::Air;
 		if (dir == 1)
-			return b == Cell::Ground || b == Cell::LedgeR || b == Cell::LedgeL;
+			return b == Cell::Ground || b == Cell::Bridge || b == Cell::LedgeR || b == Cell::LedgeL;
 		if (dir == 0)
 			return b == Cell::Air;
 		if (dir == 2)
-			return b == Cell::Air || solid(b); // floating or supported
+			return b == Cell::Air; // overhang - never solid fill under ledge sprites
 		break;
 
 	case Cell::LedgeR:
 		if (dir == 1)
 			return b == Cell::Air;
 		if (dir == 3)
-			return b == Cell::Ground || b == Cell::LedgeL || b == Cell::LedgeR;
+			return b == Cell::Ground || b == Cell::Bridge || b == Cell::LedgeL || b == Cell::LedgeR;
 		if (dir == 0)
 			return b == Cell::Air;
 		if (dir == 2)
-			return b == Cell::Air || solid(b);
+			return b == Cell::Air;
 		break;
 
 	case Cell::UndercutL:
-		// slope-left-02 under mass: often rock/surface above, air below, rock toward mass (east)
 		if (dir == 0)
-			return surface(b) || b == Cell::Rock;
+			return walkable(b) || b == Cell::Rock;
 		if (dir == 2)
 			return b == Cell::Air;
 		if (dir == 1)
-			return b == Cell::Rock || b == Cell::UndercutL || surface(b);
+			return b == Cell::Rock || b == Cell::UndercutL || walkable(b);
 		if (dir == 3)
 			return b == Cell::Air || b == Cell::Rock;
 		break;
 
 	case Cell::UndercutR:
 		if (dir == 0)
-			return surface(b) || b == Cell::Rock;
+			return walkable(b) || b == Cell::Rock;
 		if (dir == 2)
 			return b == Cell::Air;
 		if (dir == 3)
-			return b == Cell::Rock || b == Cell::UndercutR || surface(b);
+			return b == Cell::Rock || b == Cell::UndercutR || walkable(b);
 		if (dir == 1)
 			return b == Cell::Air || b == Cell::Rock;
 		break;
 
 	case Cell::Shim:
-		// tip hanging under rock into air
 		if (dir == 0)
 			return b == Cell::Rock;
 		if (dir == 2)
@@ -256,7 +366,7 @@ int WfcMapGenerator::entropy (uint16_t mask) const
 WfcMapGenerator::Cell WfcMapGenerator::observe (uint16_t mask, unsigned int& rng) const
 {
 	struct Opt { Cell c; int w; };
-	Opt opts[8];
+	Opt opts[16];
 	int count = 0;
 	auto add = [&] (Cell c, int w) {
 		if (mask & bit(c)) {
@@ -265,15 +375,15 @@ WfcMapGenerator::Cell WfcMapGenerator::observe (uint16_t mask, unsigned int& rng
 			++count;
 		}
 	};
-	// Prefer air/rock for free cells; surfaces/undercuts mainly arrive via seeds/decorate
-	add(Cell::Air, 60);
-	add(Cell::Rock, 40);
-	add(Cell::Ground, 8);
-	add(Cell::LedgeL, 3);
-	add(Cell::LedgeR, 3);
-	add(Cell::UndercutL, 4);
-	add(Cell::UndercutR, 4);
-	add(Cell::Shim, 2);
+	add(Cell::Air, _rules.weightAir);
+	add(Cell::Rock, _rules.weightRock);
+	add(Cell::Ground, _rules.weightGround);
+	add(Cell::LedgeL, _rules.weightLedge);
+	add(Cell::LedgeR, _rules.weightLedge);
+	add(Cell::UndercutL, _rules.weightUndercut);
+	add(Cell::UndercutR, _rules.weightUndercut);
+	add(Cell::Shim, _rules.weightShim);
+	add(Cell::Bridge, 1);
 	if (count == 0)
 		return Cell::Air;
 	int total = 0;
@@ -299,10 +409,8 @@ void WfcMapGenerator::applyBorderSeeds (std::vector<uint16_t>& domain) const
 			else if (y >= _height - static_cast<unsigned>(waterRows))
 				cell = MASK_ROCK;
 			else if (x == 0 || x == _width - 1)
-				// Side walls may open into air so platform ledges can terminate cleanly
 				cell = MASK_AIR | MASK_ROCK;
 			else
-				// Free cells collapse to air/rock; surfaces come from platform seeds
 				cell = MASK_FILL;
 		}
 	}
@@ -316,14 +424,15 @@ void WfcMapGenerator::seedPlatforms (std::vector<uint16_t>& domain, unsigned int
 	if (maxY <= minY)
 		return;
 
-	const int bandCount = 2 + randRange(rng, 2); // 2–3 platform bands
+	const int bandSpan = std::max(0, _rules.platformBandMax - _rules.platformBandMin);
+	const int bandCount = _rules.platformBandMin + randRange(rng, bandSpan + 1);
 	std::vector<int> rows;
 	int guard = 0;
 	while (static_cast<int>(rows.size()) < bandCount && guard++ < 40) {
 		const int y = minY + randRange(rng, maxY - minY + 1);
 		bool ok = true;
 		for (int existing : rows) {
-			if (std::abs(existing - y) < 5) {
+			if (std::abs(existing - y) < _rules.minVerticalGap) {
 				ok = false;
 				break;
 			}
@@ -333,16 +442,17 @@ void WfcMapGenerator::seedPlatforms (std::vector<uint16_t>& domain, unsigned int
 	}
 	std::sort(rows.begin(), rows.end());
 
+	const int lenSpan = std::max(0, _rules.lengthMax - _rules.lengthMin);
+	const int gapSpan = std::max(0, _rules.gapMax - _rules.gapMin);
 	for (int y : rows) {
 		int x = 2 + randRange(rng, 2);
 		while (x < static_cast<int>(_width) - 3) {
-			const int len = 3 + randRange(rng, 3); // 3–5
+			const int len = _rules.lengthMin + randRange(rng, lenSpan + 1);
 			if (x + len >= static_cast<int>(_width) - 2)
 				break;
-			const bool floating = randRange(rng, 5) == 0;
-			const int fillDepth = floating ? 0 : (1 + randRange(rng, 2)); // 1–2 rock under decks
+			const bool floating = randRange(rng, 1000) < static_cast<int>(_rules.floatingChance * 1000.0f);
+			const int fillDepth = floating ? 0 : (1 + randRange(rng, 2));
 
-			// Ensure open air beside ledge ends (matches ground-left/right physics sockets)
 			if (x - 1 >= 0)
 				domain[(x - 1) + y * _width] = MASK_AIR;
 			if (x + len < static_cast<int>(_width))
@@ -357,6 +467,14 @@ void WfcMapGenerator::seedPlatforms (std::vector<uint16_t>& domain, unsigned int
 					surface = Cell::LedgeR;
 				domain[cx + y * _width] = bit(surface);
 
+				// Ledge end sprites overhang - keep air beneath them.
+				if (surface == Cell::LedgeL || surface == Cell::LedgeR) {
+					const int cy = y + 1;
+					if (cy < static_cast<int>(_height) - waterRows)
+						domain[cx + cy * _width] = MASK_AIR;
+					continue;
+				}
+
 				for (int d = 1; d <= fillDepth; ++d) {
 					const int cy = y + d;
 					if (cy >= static_cast<int>(_height) - waterRows)
@@ -364,7 +482,7 @@ void WfcMapGenerator::seedPlatforms (std::vector<uint16_t>& domain, unsigned int
 					domain[cx + cy * _width] = MASK_ROCK;
 				}
 			}
-			x += len + 2 + randRange(rng, 3); // gap 2–4
+			x += len + _rules.gapMin + randRange(rng, gapSpan + 1);
 		}
 	}
 }
@@ -432,20 +550,77 @@ void WfcMapGenerator::decorateEdges (std::vector<Cell>& grid, unsigned int& rng)
 			if (c != Cell::Rock)
 				continue;
 
-			// Undercut under surface edge into open air (slope-*-02)
-			if (isSurface(above) && below == Cell::Air) {
+			if (isWalkableSurface(above) && below == Cell::Air) {
 				if (left == Cell::Air || at(grid, static_cast<int>(x) - 1, static_cast<int>(y) + 1, Cell::Air) == Cell::Air)
 					next[x + y * _width] = Cell::UndercutL;
 				else if (right == Cell::Air || at(grid, static_cast<int>(x) + 1, static_cast<int>(y) + 1, Cell::Air) == Cell::Air)
 					next[x + y * _width] = Cell::UndercutR;
 			}
 
-			// Shim tip: rock above, air below, open sides
 			if (above == Cell::Rock && below == Cell::Air && (left == Cell::Air || right == Cell::Air) && randRange(rng, 3) == 0)
 				next[x + y * _width] = Cell::Shim;
 		}
 	}
 	grid.swap(next);
+}
+
+void WfcMapGenerator::ensureWalkableTops (std::vector<Cell>& grid) const
+{
+	for (unsigned y = 1; y < _height; ++y) {
+		for (unsigned x = 0; x < _width; ++x) {
+			const Cell c = grid[x + y * _width];
+			const Cell above = at(grid, static_cast<int>(x), static_cast<int>(y) - 1, Cell::Air);
+			if (above != Cell::Air)
+				continue;
+			if (c == Cell::Rock || c == Cell::UndercutL || c == Cell::UndercutR || c == Cell::Shim)
+				grid[x + y * _width] = Cell::Ground;
+		}
+	}
+	// Ground ledge tiles must overhang open air.
+	for (unsigned y = 0; y + 1 < _height; ++y) {
+		for (unsigned x = 0; x < _width; ++x) {
+			const Cell c = grid[x + y * _width];
+			if (c != Cell::LedgeL && c != Cell::LedgeR)
+				continue;
+			grid[x + (y + 1) * _width] = Cell::Air;
+		}
+	}
+}
+
+void WfcMapGenerator::placeBridgeSpans (std::vector<Cell>& grid, unsigned int& rng) const
+{
+	if (!_rules.bridgesEnabled)
+		return;
+	for (unsigned y = 2; y + 1 < _height; ++y) {
+		int x = 1;
+		while (x < static_cast<int>(_width) - 1) {
+			if (!isWalkableSurface(at(grid, x, static_cast<int>(y))) || at(grid, x + 1, static_cast<int>(y)) != Cell::Air) {
+				++x;
+				continue;
+			}
+			int gapStart = x + 1;
+			int gapEnd = gapStart;
+			while (gapEnd < static_cast<int>(_width) - 1 && at(grid, gapEnd, static_cast<int>(y)) == Cell::Air)
+				++gapEnd;
+			const int gapLen = gapEnd - gapStart;
+			if (gapLen >= 1 && gapLen <= _rules.bridgeMaxGap) {
+				const Cell leftAnchor = at(grid, x, static_cast<int>(y));
+				const Cell rightAnchor = at(grid, gapEnd, static_cast<int>(y));
+				const bool leftOk = leftAnchor == Cell::Ground || leftAnchor == Cell::LedgeL || leftAnchor == Cell::LedgeR;
+				const bool rightOk = rightAnchor == Cell::Ground || rightAnchor == Cell::LedgeL || rightAnchor == Cell::LedgeR;
+				bool openBelow = leftOk && rightOk;
+				for (int bx = gapStart; bx < gapEnd && openBelow; ++bx) {
+					if (at(grid, bx, static_cast<int>(y) + 1) != Cell::Air)
+						openBelow = false;
+				}
+				if (openBelow && randRange(rng, 2) == 0) {
+					for (int bx = gapStart; bx < gapEnd; ++bx)
+						grid[bx + y * _width] = Cell::Bridge;
+				}
+			}
+			x = std::max(x + 1, gapEnd);
+		}
+	}
 }
 
 bool WfcMapGenerator::collapse (std::vector<uint16_t>& domain, std::vector<Cell>& out, unsigned int& rng) const
@@ -494,9 +669,8 @@ bool WfcMapGenerator::collapse (std::vector<uint16_t>& domain, std::vector<Cell>
 		if (domain[i] == 0)
 			return false;
 		Cell resolved = Cell::Air;
-		// Prefer more specific types when multiple bits remain
 		static const Cell preference[] = {
-			Cell::LedgeL, Cell::LedgeR, Cell::Ground, Cell::UndercutL, Cell::UndercutR,
+			Cell::LedgeL, Cell::LedgeR, Cell::Ground, Cell::Bridge, Cell::UndercutL, Cell::UndercutR,
 			Cell::Shim, Cell::Rock, Cell::Air
 		};
 		for (Cell c : preference) {
@@ -509,6 +683,8 @@ bool WfcMapGenerator::collapse (std::vector<uint16_t>& domain, std::vector<Cell>
 	}
 
 	decorateEdges(out, rng);
+	ensureWalkableTops(out);
+	placeBridgeSpans(out, rng);
 	return true;
 }
 
@@ -523,29 +699,29 @@ bool WfcMapGenerator::isAirConnected (const std::vector<Cell>& grid) const
 				start = static_cast<int>(i);
 		}
 	}
-	if (start < 0 || airCount == 0)
+	if (airCount == 0 || start < 0)
 		return false;
 
-	std::vector<uint8_t> visited(grid.size(), 0);
+	std::vector<uint8_t> seen(grid.size(), 0);
 	std::queue<int> q;
 	q.push(start);
-	visited[start] = 1;
+	seen[start] = 1;
 	int reached = 0;
 	while (!q.empty()) {
 		const int idx = q.front();
 		q.pop();
 		++reached;
-		const int x = idx % static_cast<int>(_width);
-		const int y = idx / static_cast<int>(_width);
+		const int cx = idx % static_cast<int>(_width);
+		const int cy = idx / static_cast<int>(_width);
 		for (int d = 0; d < 4; ++d) {
-			const int nx = x + DIR[d][0];
-			const int ny = y + DIR[d][1];
+			const int nx = cx + DIR[d][0];
+			const int ny = cy + DIR[d][1];
 			if (nx < 0 || ny < 0 || nx >= static_cast<int>(_width) || ny >= static_cast<int>(_height))
 				continue;
 			const int nidx = nx + ny * static_cast<int>(_width);
-			if (visited[nidx] || grid[nidx] != Cell::Air)
+			if (seen[nidx] || grid[nidx] != Cell::Air)
 				continue;
-			visited[nidx] = 1;
+			seen[nidx] = 1;
 			q.push(nidx);
 		}
 	}
@@ -588,6 +764,7 @@ void WfcMapGenerator::instantiate (const std::vector<Cell>& grid, Result& result
 
 	std::vector<std::pair<int, int>> surfaceCells;
 	std::vector<std::pair<int, int>> airCells;
+	std::set<int> occupied;
 
 	for (unsigned y = 0; y < _height; ++y) {
 		for (unsigned x = 0; x < _width; ++x) {
@@ -597,18 +774,42 @@ void WfcMapGenerator::instantiate (const std::vector<Cell>& grid, Result& result
 			case Cell::Rock:
 				def = pick(_rocksFull, rng);
 				break;
-			case Cell::Ground:
-				def = pick(_grounds, rng);
-				surfaceCells.push_back({ static_cast<int>(x), static_cast<int>(y) });
+			case Cell::Ground: {
+				// Hanging decks (ground-05/06) only when air is beneath; otherwise solid ground.
+				const Cell below = at(grid, static_cast<int>(x), static_cast<int>(y) + 1);
+				if (below == Cell::Air && !_groundsHanging.empty() && randRange(rng, 4) == 0)
+					def = pick(_groundsHanging, rng);
+				else
+					def = pick(_grounds, rng);
+				surfaceCells.emplace_back(static_cast<int>(x), static_cast<int>(y));
 				break;
+			}
 			case Cell::LedgeL:
 				def = pick(_groundLeft, rng);
-				surfaceCells.push_back({ static_cast<int>(x), static_cast<int>(y) });
+				surfaceCells.emplace_back(static_cast<int>(x), static_cast<int>(y));
 				break;
 			case Cell::LedgeR:
 				def = pick(_groundRight, rng);
-				surfaceCells.push_back({ static_cast<int>(x), static_cast<int>(y) });
+				surfaceCells.emplace_back(static_cast<int>(x), static_cast<int>(y));
 				break;
+			case Cell::Bridge: {
+				const Cell left = at(grid, static_cast<int>(x) - 1, static_cast<int>(y));
+				const Cell right = at(grid, static_cast<int>(x) + 1, static_cast<int>(y));
+				const bool leftWalk = left == Cell::Ground || left == Cell::LedgeL || left == Cell::LedgeR || left == Cell::Bridge;
+				const bool rightWalk = right == Cell::Ground || right == Cell::LedgeL || right == Cell::LedgeR || right == Cell::Bridge;
+				if (!leftWalk && rightWalk && !_bridgeLeft.empty())
+					def = pick(_bridgeLeft, rng);
+				else if (leftWalk && !rightWalk && !_bridgeRight.empty())
+					def = pick(_bridgeRight, rng);
+				else
+					def = pick(_bridgePlank.empty() ? _grounds : _bridgePlank, rng);
+				// Same-cell background under the bridge (matches hand maps / editor rule)
+				const SpriteDefPtr bg = pick(_backgrounds, rng);
+				if (bg)
+					result.tiles.emplace_back(static_cast<gridCoord>(x), static_cast<gridCoord>(y), bg, 0);
+				surfaceCells.emplace_back(static_cast<int>(x), static_cast<int>(y));
+				break;
+			}
 			case Cell::UndercutL:
 				def = pick(_undercutL, rng);
 				break;
@@ -620,9 +821,10 @@ void WfcMapGenerator::instantiate (const std::vector<Cell>& grid, Result& result
 				break;
 			case Cell::Air:
 			default: {
-				const bool art = !_caveArt.empty() && randRange(rng, 6) == 0;
+				const bool art = !_caveArt.empty() && _rules.caveArtChance > 0
+						&& randRange(rng, _rules.caveArtChance) == 0;
 				def = art ? pick(_caveArt, rng) : pick(_backgrounds, rng);
-				airCells.push_back({ static_cast<int>(x), static_cast<int>(y) });
+				airCells.emplace_back(static_cast<int>(x), static_cast<int>(y));
 				break;
 			}
 			}
@@ -631,12 +833,13 @@ void WfcMapGenerator::instantiate (const std::vector<Cell>& grid, Result& result
 		}
 	}
 
-	// Caves on façades above surfaces, with adjacent windows (matches rock-*/ice-* maps)
 	for (int i = static_cast<int>(surfaceCells.size()) - 1; i > 0; --i) {
 		const int j = randRange(rng, i + 1);
 		std::swap(surfaceCells[i], surfaceCells[j]);
 	}
+
 	unsigned cavesPlaced = 0;
+	std::vector<std::pair<int, int>> placedCaves;
 	for (const auto& g : surfaceCells) {
 		if (cavesPlaced >= _caveTarget)
 			break;
@@ -644,6 +847,20 @@ void WfcMapGenerator::instantiate (const std::vector<Cell>& grid, Result& result
 		const int cy = g.second - 1;
 		if (cy < 1 || at(grid, cx, cy) != Cell::Air)
 			continue;
+		if (occupied.count(keyXY(cx, cy)))
+			continue;
+
+		bool farEnough = true;
+		for (const auto& prev : placedCaves) {
+			const int d = std::max(std::abs(prev.first - cx), std::abs(prev.second - cy));
+			if (d < _rules.minCaveSeparation) {
+				farEnough = false;
+				break;
+			}
+		}
+		if (!farEnough)
+			continue;
+
 		const SpriteDefPtr cave = pick(_caves, rng);
 		if (!cave)
 			break;
@@ -653,23 +870,86 @@ void WfcMapGenerator::instantiate (const std::vector<Cell>& grid, Result& result
 				}), result.tiles.end());
 
 		const EntityType* npc = &EntityType::NONE;
-		const int npcRoll = randRange(rng, 4);
-		if (npcRoll == 0)
-			npc = &EntityTypes::NPC_FRIENDLY_MAN;
-		else if (npcRoll == 1)
-			npc = &EntityTypes::NPC_FRIENDLY_WOMAN;
-		else if (npcRoll == 2)
-			npc = &EntityTypes::NPC_FRIENDLY_GRANDPA;
+		if (randRange(rng, 1000) < static_cast<int>(_rules.caveNpcChance * 1000.0f)) {
+			const int npcRoll = randRange(rng, 3);
+			if (npcRoll == 0)
+				npc = &EntityTypes::NPC_FRIENDLY_MAN;
+			else if (npcRoll == 1)
+				npc = &EntityTypes::NPC_FRIENDLY_WOMAN;
+			else
+				npc = &EntityTypes::NPC_FRIENDLY_GRANDPA;
+		}
 		result.caves.emplace_back(static_cast<gridCoord>(cx), static_cast<gridCoord>(cy), cave, *npc, 5000);
+		occupied.insert(keyXY(cx, cy));
+		placedCaves.emplace_back(cx, cy);
 		++cavesPlaced;
 
-		// Window beside cave on the same façade row
-		if (!_windows.empty()) {
-			const int wx = (randRange(rng, 2) == 0) ? cx + 1 : cx - 1;
+		if (_rules.windowsEnabled && !_windows.empty()) {
+			const int side = randRange(rng, 2) == 0 ? -1 : 1;
+			const int wx = cx + side;
 			if (wx > 0 && wx < static_cast<int>(_width) - 1 && at(grid, wx, cy) == Cell::Air
-					&& isSurface(at(grid, wx, cy + 1))) {
-				setTile(result, wx, cy, pick(_windows, rng));
+					&& isWalkableSurface(at(grid, wx, cy + 1)) && !occupied.count(keyXY(wx, cy))) {
+				auto hasWindowAt = [&] (int x, int y) {
+					for (const MapTileDefinition& t : result.tiles) {
+						if (static_cast<int>(t.x) == x && static_cast<int>(t.y) == y && t.spriteDef
+								&& SpriteTypes::isWindow(t.spriteDef->type))
+							return true;
+					}
+					return false;
+				};
+				if (!(_rules.forbidAdjacentWindows && (hasWindowAt(wx - 1, cy) || hasWindowAt(wx + 1, cy)))) {
+					setTile(result, wx, cy, pick(_windows, rng));
+					occupied.insert(keyXY(wx, cy));
+				}
 			}
+		}
+	}
+
+	// Package target as map tile in niche (angle 0)
+	bool placedTarget = false;
+	if (!_packageTargets.empty()) {
+		for (const auto& g : surfaceCells) {
+			const int x = g.first;
+			const int y = g.second;
+			if (occupied.count(keyXY(x, y)))
+				continue;
+			const Cell left = at(grid, x - 1, y);
+			const Cell right = at(grid, x + 1, y);
+			const Cell below = at(grid, x, y + 1);
+			const Cell above = at(grid, x, y - 1);
+			if (_rules.packageTargetRequireAirAbove && above != Cell::Air)
+				continue;
+			if (!isColliderSolid(below))
+				continue;
+			if (_rules.packageTargetSidesWalkable) {
+				if (!isWalkableSurface(left) || !isWalkableSurface(right))
+					continue;
+			} else if (!isColliderSolid(left) || !isColliderSolid(right)) {
+				continue;
+			}
+			setTile(result, x, y, pick(_packageTargets, rng));
+			occupied.insert(keyXY(x, y));
+			placedTarget = true;
+			break;
+		}
+	}
+	if (_rules.packageTargetRequired && !placedTarget && !_packageTargets.empty()) {
+		// Relaxed: solid sides instead of walkable
+		for (const auto& g : surfaceCells) {
+			const int x = g.first;
+			const int y = g.second;
+			if (occupied.count(keyXY(x, y)))
+				continue;
+			if (at(grid, x, y - 1) != Cell::Air)
+				continue;
+			if (!isColliderSolid(at(grid, x, y + 1)))
+				continue;
+			if (!isColliderSolid(at(grid, x - 1, y)) || !isColliderSolid(at(grid, x + 1, y)))
+				continue;
+			setTile(result, x, y, pick(_packageTargets, rng));
+			occupied.insert(keyXY(x, y));
+			placedTarget = true;
+			break;
 		}
 	}
 
@@ -679,6 +959,8 @@ void WfcMapGenerator::instantiate (const std::vector<Cell>& grid, Result& result
 			continue;
 		if (a.second >= static_cast<int>(_height) - static_cast<int>(std::ceil(_waterHeight)) - 1)
 			continue;
+		if (occupied.count(keyXY(a.first, a.second)))
+			continue;
 		starts.push_back(a);
 	}
 	if (!starts.empty()) {
@@ -687,6 +969,8 @@ void WfcMapGenerator::instantiate (const std::vector<Cell>& grid, Result& result
 	}
 
 	auto trySurfaceEmitter = [&] (const EntityType& type, int chance) {
+		if (chance <= 0)
+			return false;
 		for (const auto& g : surfaceCells) {
 			if (randRange(rng, chance) != 0)
 				continue;
@@ -694,18 +978,22 @@ void WfcMapGenerator::instantiate (const std::vector<Cell>& grid, Result& result
 			const int py = g.second - 1;
 			if (at(grid, px, py) != Cell::Air)
 				continue;
+			if (occupied.count(keyXY(px, py)))
+				continue;
+			if (occupied.count(keyXY(g.first, g.second)))
+				continue;
 			result.emitters.emplace_back(static_cast<gridCoord>(px), static_cast<gridCoord>(py), type, 1, 0, "");
+			occupied.insert(keyXY(px, py));
 			return true;
 		}
 		return false;
 	};
-	trySurfaceEmitter(EntityTypes::STONE, 5);
-	trySurfaceEmitter(EntityTypes::TREE, 6);
-	trySurfaceEmitter(EntityTypes::NPC_WALKING, 8);
-	const EntityType& packageTarget = ThemeTypes::isIce(*_theme) ? EntityTypes::PACKAGETARGET_ICE : EntityTypes::PACKAGETARGET_ROCK;
-	if (trySurfaceEmitter(packageTarget, 3)) {
+	trySurfaceEmitter(EntityTypes::STONE, _rules.stoneChance);
+	trySurfaceEmitter(EntityTypes::TREE, _rules.treeChance);
+	trySurfaceEmitter(EntityTypes::NPC_WALKING, _rules.walkingChance);
+	if (placedTarget) {
 		const EntityType& packageType = ThemeTypes::isIce(*_theme) ? EntityTypes::PACKAGE_ICE : EntityTypes::PACKAGE_ROCK;
-		trySurfaceEmitter(packageType, 2);
+		trySurfaceEmitter(packageType, _rules.packageChance);
 	}
 }
 
@@ -732,7 +1020,7 @@ WfcMapGenerator::Result WfcMapGenerator::generate (unsigned int seed)
 	}
 
 	unsigned int rng = seed ? seed : 1u;
-	for (int attempt = 0; attempt < 32; ++attempt) {
+	for (int attempt = 0; attempt < 48; ++attempt) {
 		std::vector<uint16_t> domain(_width * _height, MASK_ALL);
 		std::vector<Cell> grid;
 		unsigned int attemptSeed = rng + static_cast<unsigned int>(attempt) * 9973u;
@@ -743,7 +1031,7 @@ WfcMapGenerator::Result WfcMapGenerator::generate (unsigned int seed)
 
 		int surfaces = 0;
 		for (Cell c : grid)
-			if (isSurface(c))
+			if (isWalkableSurface(c))
 				++surfaces;
 		if (surfaces < 6)
 			continue;
@@ -752,6 +1040,11 @@ WfcMapGenerator::Result WfcMapGenerator::generate (unsigned int seed)
 		if (result.startPositions.empty())
 			continue;
 		if (result.caves.empty() && !_caves.empty())
+			continue;
+		if (_rules.packageTargetRequired && result.tiles.end() == std::find_if(result.tiles.begin(), result.tiles.end(),
+				[] (const MapTileDefinition& t) {
+					return t.spriteDef && SpriteTypes::isPackageTarget(t.spriteDef->type);
+				}))
 			continue;
 
 		result.success = true;

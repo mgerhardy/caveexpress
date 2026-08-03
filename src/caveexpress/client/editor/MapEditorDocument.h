@@ -14,7 +14,10 @@ private:
 	void setWaterParameters (float waterHeight, float waterChangeSpeed, uint32_t waterRisingDelay, uint32_t waterFallingDelay);
 
 	bool requiresBackgroundTile (const SpriteType& type) const;
+	bool isHangingGroundSprite (const SpriteDefPtr& def) const;
 	bool hasBackgroundCovering (gridCoord gridX, gridCoord gridY, gridSize width, gridSize height) const;
+	bool hasAirBelow (gridCoord gridX, gridCoord gridY) const;
+	bool hasBridgeSideNeighbors (gridCoord gridX, gridCoord gridY) const;
 
 protected:
 	MapEditorLayer getLayer (const SpriteType& type) const override;

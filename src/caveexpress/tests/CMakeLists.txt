@@ -5,6 +5,7 @@ SET(${PROJECT_NAME}_SRC
 	EnumSpriteTypesTest.cpp
 	LUASpriteTest.cpp
 	RandomMapContextTest.cpp
+	MapValidatorTest.cpp
 	MapTest.cpp
 	MapManagerTest.cpp
 	CampaignTest.cpp

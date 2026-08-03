@@ -52,7 +52,7 @@ LMB: paint / place|LMB: paint / place
 Map|Map
 Map Editor|Map Editor
 Maps|Maps
-MMB or Space+LMB: pan|MMB or Space+LMB: pan
+MMB click: pick, MMB drag or Space+LMB: pan|MMB click: pick, MMB drag or Space+LMB: pan
 Move all packages onto their targets|Move all packages onto their targets
 Multiplayer|Multiplayer
 Music volume|Music volume
@@ -87,6 +87,7 @@ Save & Go|Save & Go
 Select game mode|Select game mode
 Select tile|Select tile
 Settings|Settings
+Shift+LMB: pick tile under cursor|Shift+LMB: pick tile under cursor
 Show Grid|Show Grid
 Skip|Skip
 Small|Small

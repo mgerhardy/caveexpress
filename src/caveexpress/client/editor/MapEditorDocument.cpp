@@ -48,6 +48,18 @@ bool MapEditorDocument::requiresBackgroundTile (const SpriteType& type) const
 	return SpriteTypes::isBridge(type) || SpriteTypes::isLiane(type);
 }
 
+bool MapEditorDocument::isHangingGroundSprite (const SpriteDefPtr& def) const
+{
+	if (!def)
+		return false;
+	// Thin ground decks and all ground-ledge ends need open air beneath.
+	if (SpriteTypes::isGroundLeft(def->type) || SpriteTypes::isGroundRight(def->type))
+		return true;
+	if (!SpriteTypes::isGround(def->type))
+		return false;
+	return def->id.find("ground-05") != std::string::npos || def->id.find("ground-06") != std::string::npos;
+}
+
 bool MapEditorDocument::hasBackgroundCovering (gridCoord gridX, gridCoord gridY, gridSize width, gridSize height) const
 {
 	if (width <= 0.0f || height <= 0.0f)
@@ -78,15 +90,68 @@ bool MapEditorDocument::hasBackgroundCovering (gridCoord gridX, gridCoord gridY,
 	return true;
 }
 
+bool MapEditorDocument::hasAirBelow (gridCoord gridX, gridCoord gridY) const
+{
+	const int cx = static_cast<int>(std::floor(gridX + EPSILON));
+	const int cy = static_cast<int>(std::floor(gridY + EPSILON)) + 1;
+	if (cy >= _mapHeight)
+		return true;
+	for (const MapEditorTileItem& item : _map) {
+		if (!item.def)
+			continue;
+		if (!IMapEditorDocument::isOverlapping(static_cast<gridCoord>(cx), static_cast<gridCoord>(cy), item))
+			continue;
+		const SpriteType& type = item.def->type;
+		if (SpriteTypes::isBackground(type) || SpriteTypes::isWindow(type) || SpriteTypes::isLiane(type))
+			continue;
+		if (SpriteTypes::isSolid(type) || SpriteTypes::isCave(type) || SpriteTypes::isPackageTarget(type))
+			return false;
+	}
+	return true;
+}
+
+bool MapEditorDocument::hasBridgeSideNeighbors (gridCoord gridX, gridCoord gridY) const
+{
+	auto isGroundOrBridgeAt = [this] (int cx, int cy) {
+		if (cx < 0 || cy < 0 || cx >= _mapWidth || cy >= _mapHeight)
+			return false;
+		for (const MapEditorTileItem& item : _map) {
+			if (!item.def)
+				continue;
+			if (!IMapEditorDocument::isOverlapping(static_cast<gridCoord>(cx), static_cast<gridCoord>(cy), item))
+				continue;
+			const SpriteType& type = item.def->type;
+			if (SpriteTypes::isAnyGround(type) || SpriteTypes::isBridge(type))
+				return true;
+		}
+		return false;
+	};
+	const int cx = static_cast<int>(std::floor(gridX + EPSILON));
+	const int cy = static_cast<int>(std::floor(gridY + EPSILON));
+	return isGroundOrBridgeAt(cx - 1, cy) || isGroundOrBridgeAt(cx + 1, cy);
+}
+
 bool MapEditorDocument::canPlaceTileItem (const MapEditorTileItem& item) const
 {
-	if (!item.def || !requiresBackgroundTile(item.def->type))
+	if (!item.def)
 		return true;
 
 	const vec2& size = item.getSize(true);
 	const gridCoord x = item.gridX + item.getX(true);
 	const gridCoord y = item.gridY + item.getY(true);
-	return hasBackgroundCovering(x, y, size.x, size.y);
+
+	if (requiresBackgroundTile(item.def->type)) {
+		if (!hasBackgroundCovering(x, y, size.x, size.y))
+			return false;
+		if (SpriteTypes::isBridge(item.def->type) && !hasBridgeSideNeighbors(item.gridX, item.gridY))
+			return false;
+		return true;
+	}
+
+	if (isHangingGroundSprite(item.def) && !hasAirBelow(item.gridX, item.gridY))
+		return false;
+
+	return true;
 }
 
 bool MapEditorDocument::isPlayerType (const EntityType& type) const
