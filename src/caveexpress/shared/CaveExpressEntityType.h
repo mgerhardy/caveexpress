@@ -40,6 +40,8 @@ extern EntityType GEYSER_JUNGLE;
 extern EntityType GEYSER_DESERT;
 extern EntityType BOMB;
 extern EntityType PARTICLE;
+extern EntityType GATE;
+extern EntityType PRESSUREPLATE;
 
 inline bool isNpcGrandpa (const EntityType& other)
 {
@@ -186,9 +188,20 @@ inline bool isCave (const EntityType& other)
 	return other == CAVE;
 }
 
+inline bool isGate (const EntityType& other)
+{
+	return other == GATE;
+}
+
+inline bool isPressurePlate (const EntityType& other)
+{
+	return other == PRESSUREPLATE;
+}
+
 inline bool isSolid (const EntityType& other)
 {
-	return other == SOLID || isGround(other) || isGeyser(other) || isPackageTarget(other);
+	return other == SOLID || isGround(other) || isGeyser(other) || isPackageTarget(other) || isGate(other)
+			|| isPressurePlate(other);
 }
 
 inline bool isMapTile (const EntityType& other)

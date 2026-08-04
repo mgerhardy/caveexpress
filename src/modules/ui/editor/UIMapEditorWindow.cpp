@@ -306,7 +306,7 @@ void UIMapEditorWindow::drawPropertiesPanel () const
 			_doc->setEmitterDelay(std::max(0, delay));
 	}
 
-	// Fixed-height selection block so hover highlight does not reflow the panel.
+	// Fixed-height selection block so the panel does not reflow when selection changes.
 	ImGui::Separator();
 	const float selectionHeight = ImGui::GetTextLineHeightWithSpacing() * 3.25f;
 	ImGui::BeginChild("selection_info", ImVec2(0.0f, selectionHeight), false, ImGuiWindowFlags_NoScrollbar);
@@ -316,7 +316,7 @@ void UIMapEditorWindow::drawPropertiesPanel () const
 		if (highlight->entityType)
 			ImGui::Text("%s: %s", tr("Entity").c_str(), highlight->entityType->name.c_str());
 	} else {
-		ImGui::TextDisabled("%s", tr("Hover a tile on the map").c_str());
+		ImGui::TextDisabled("%s", tr("Select a tile on the map").c_str());
 		ImGui::TextDisabled(" ");
 		ImGui::TextDisabled(" ");
 	}
@@ -353,8 +353,8 @@ void UIMapEditorWindow::drawHelpPanel () const
 {
 	ImGui::TextUnformatted(tr("Map Editor").c_str());
 	ImGui::Separator();
-	ImGui::BulletText("%s", tr("LMB: paint / place").c_str());
-	ImGui::BulletText("%s", tr("Shift+LMB: pick tile under cursor").c_str());
+	ImGui::BulletText("%s", tr("LMB: paint / place (also selects)").c_str());
+	ImGui::BulletText("%s", tr("Select tool or Shift+LMB: select / pick tile").c_str());
 	ImGui::BulletText("%s", tr("RMB: erase").c_str());
 	ImGui::BulletText("%s", tr("MMB click: pick, MMB drag or Space+LMB: pan").c_str());
 	ImGui::BulletText("%s", tr("Wheel: zoom toward cursor").c_str());
@@ -362,6 +362,7 @@ void UIMapEditorWindow::drawHelpPanel () const
 	ImGui::BulletText("%s", tr("Ctrl+S save, Ctrl+Z/Y undo/redo").c_str());
 	ImGui::BulletText("%s", tr("F fit view, G toggle grid, F1 help").c_str());
 	ImGui::BulletText("%s", tr("Delete: remove selection").c_str());
+	ImGui::BulletText("%s", tr("Properties edit the selected tile, not the hovered one").c_str());
 	drawHelpExtras();
 }
 
@@ -498,9 +499,9 @@ void UIMapEditorWindow::drawCanvas () const
 	const float tileH = tileHeight();
 	if (_canvasHovered) {
 		const ImVec2 mouse = ImGui::GetIO().MousePos;
+		// Cursor grid follows the mouse for painting; properties use the stable click selection.
 		_doc->setSelectedGrid(std::floor((mouse.x - _canvasMinX + _panX) / tileW),
 				std::floor((mouse.y - _canvasMinY + _panY) / tileH));
-		_doc->setHighlightFromSelection();
 
 		const bool space = ImGui::IsKeyDown(ImGuiKey_Space);
 		if (ImGui::IsMouseDragging(ImGuiMouseButton_Middle) || (space && ImGui::IsMouseDragging(ImGuiMouseButton_Left))) {

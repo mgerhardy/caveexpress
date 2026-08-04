@@ -32,6 +32,8 @@ set(caveexpress-server_SRCS
 	entities/Border.cpp
 	entities/Fruit.cpp
 	entities/WindowTile.cpp
+	entities/Gate.cpp
+	entities/PressurePlate.cpp
 )
 add_library(caveexpress-server ${caveexpress-server_SRCS})
 set_target_properties(caveexpress-server PROPERTIES FOLDER caveexpress-server)

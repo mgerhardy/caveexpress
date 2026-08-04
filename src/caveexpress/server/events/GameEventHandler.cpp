@@ -18,6 +18,7 @@
 #include "caveexpress/shared/network/messages/AddCaveMessage.h"
 #include "caveexpress/shared/network/messages/WaterImpactMessage.h"
 #include "caveexpress/shared/network/messages/LightStateMessage.h"
+#include "caveexpress/shared/network/messages/GateStateMessage.h"
 #include "caveexpress/shared/network/messages/TargetCaveMessage.h"
 #include "caveexpress/shared/network/messages/AnnounceTargetCaveMessage.h"
 #include "network/messages/RumbleMessage.h"
@@ -189,6 +190,12 @@ void GameEventHandler::closeMap () const
 void GameEventHandler::sendLightState (int clientMask, int id, bool state) const
 {
 	const LightStateMessage msg(id, state);
+	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
+}
+
+void GameEventHandler::sendGateState (int clientMask, int id, uint8_t openAmount) const
+{
+	const GateStateMessage msg(id, openAmount);
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 

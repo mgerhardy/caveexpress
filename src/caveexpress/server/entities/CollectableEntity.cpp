@@ -45,7 +45,7 @@ bool CollectableEntity::shouldCollide (const IEntity *entity) const
 		return false;
 	}
 
-	return entity->isSolid() || entity->isWater() || entity->isPlayer() || entity->isCollectable();
+	return entity->isSolid() || entity->isWater() || entity->isPlayer() || entity->isCollectable() || entity->isLava();
 }
 
 }

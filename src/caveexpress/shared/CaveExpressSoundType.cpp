@@ -22,6 +22,7 @@ SoundType SOUND_PACKAGE_COLLIDE4("crate-hit4");
 SoundType SOUND_PACKAGE_COLLIDE5("crate-hit5");
 SoundType SOUND_PACKAGE_COLLIDE("crate-hit", false, 5);
 SoundType SOUND_STONE_COLLIDE("stone-hit");
+SoundType SOUND_GATE_MOVE("gate-move");
 SoundType SOUND_FRUIT_SPAWN("fruit-spawn");
 SoundType SOUND_FRUIT_COLLECTED("fruit-eat");
 SoundType SOUND_PLAYER_LAND("player-land", false, 3);

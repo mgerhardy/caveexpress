@@ -8,6 +8,9 @@ class MapEditorDocument: public IMapEditorDocument {
 private:
 	float _waterHeight = 0.0f;
 	int _caveDelay = 5000;
+	bool _pickGateTarget = false;
+	gridCoord _linkPlateX = 0.0f;
+	gridCoord _linkPlateY = 0.0f;
 
 	bool placeCave (const SpriteDefPtr& def, const EntityType* entityType, gridCoord gridX, gridCoord gridY,
 			MapEditorLayer layer, int delay, bool overwrite);
@@ -52,6 +55,12 @@ public:
 	bool supportsWater () const override { return true; }
 	bool supportsEmitterParams () const override { return true; }
 	const EntityType& getPlayerEntityType () const override;
+
+	void beginPickGateTarget ();
+	bool isPickingGateTarget () const { return _pickGateTarget; }
+	void cancelPickGateTarget () { _pickGateTarget = false; }
+	MapEditorTileItem* findTileAt (gridCoord gridX, gridCoord gridY);
+	MapEditorTileItem* findLinkedPartner (const MapEditorTileItem& item);
 };
 
 }

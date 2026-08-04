@@ -13,6 +13,8 @@ Big|Big
 Campaign|Campaign
 Campaigns|Campaigns
 Cancel|Cancel
+Cancel pick|Cancel pick
+Click a gate to link|Click a gate to link
 Close|Close
 Collecting fruits will restore hitpoints|Collecting fruits will restore hitpoints
 Collect packages by landing on them|Collect packages by landing on them
@@ -67,8 +69,8 @@ Height|Height
 Help|Help
 Hints|Hints
 Hitting walls hard will inflict damage|Hitting walls hard will inflict damage
+Hold ms|Hold ms
 Homepage|Homepage
-Hover a tile on the map|Hover a tile on the map
 Ice|Ice
 Increase map height|Increase map height
 Increase map width|Increase map width
@@ -80,7 +82,8 @@ Later|Later
 Layers|Layers
 Leaderboard|Leaderboard
 Learn to use the stone|Learn to use the stone
-LMB: paint / place|LMB: paint / place
+Link id|Link id
+LMB: paint / place (also selects)|LMB: paint / place (also selects)
 Map|Map
 Map Editor|Map Editor
 Map generator seed. 0 picks a new seed on Auto.|Map generator seed. 0 picks a new seed on Auto.
@@ -99,14 +102,17 @@ Off|Off
 OK|OK
 On|On
 Open|Open
+Open amount|Open amount
 or A on your controller|or A on your controller
 Package|Package
+Pick gate target|Pick gate target
 Place tile|Place tile
 Player|Player
 Players|Players
 Please rate the app|Please rate the app
 Points|Points
 Properties|Properties
+Properties edit the selected tile, not the hovered one|Properties edit the selected tile, not the hovered one
 Pterodactyls|Pterodactyls
 Pterodactyls is after you|Pterodactyls is after you
 Put packages in crusher to consume|Put packages in crusher to consume
@@ -116,6 +122,7 @@ Redo|Redo
 Reference time in seconds|Reference time in seconds
 Refresh|Refresh
 Remove tile|Remove tile
+Required weight|Required weight
 Reset|Reset
 Reset game progress?|Reset game progress?
 Restart|Restart
@@ -125,10 +132,11 @@ Rock|Rock
 Save|Save
 Save & Go|Save & Go
 Seed|Seed
+Select a tile on the map|Select a tile on the map
 Select game mode|Select game mode
 Select tile|Select tile
+Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / pick tile
 Settings|Settings
-Shift+LMB: pick tile under cursor|Shift+LMB: pick tile under cursor
 Show Grid|Show Grid
 Shredder|Shredder
 Small|Small
@@ -152,6 +160,7 @@ Transfer the grandpa to the desired cave|Transfer the grandpa to the desired cav
 Transfer the man to the desired cave|Transfer the man to the desired cave
 Transfer the woman to the desired cave|Transfer the woman to the desired cave
 Tree|Tree
+Trigger link|Trigger link
 Try to avoid crashes but still be fast|Try to avoid crashes but still be fast
 Undo|Undo
 Unsaved changes|Unsaved changes

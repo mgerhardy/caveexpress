@@ -4,9 +4,12 @@
 #include "common/String.h"
 #include "common/MapSettings.h"
 #include "common/ThemeType.h"
+#include "common/Math.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
 #include <memory>
+#include <cstdio>
+#include <algorithm>
 
 namespace caveexpress {
 
@@ -29,16 +32,32 @@ void UICaveExpressMapEditorWindow::renderCanvasOverlay (ImDrawList* drawList, fl
 	const float waterY = doc.getMapHeight() - doc.getWaterHeight();
 	const float waterPixelSurface = originY + waterY * tileH - _panY;
 	const float h = _canvasMaxY - _canvasMinY;
-	if (waterPixelSurface >= originY + h)
+	if (waterPixelSurface < originY + h) {
+		const float waterPixelHeight = doc.getWaterHeight() * tileH;
+		const float waterPixelWidth = doc.getMapWidth() * tileW;
+		const float waterX = originX - _panX;
+		drawList->AddLine(ImVec2(waterX, waterPixelSurface), ImVec2(waterX + waterPixelWidth, waterPixelSurface),
+				IM_COL32(90, 170, 230, 255));
+		drawList->AddRectFilled(ImVec2(waterX, waterPixelSurface + 1.0f),
+				ImVec2(waterX + waterPixelWidth, waterPixelSurface + 1.0f + waterPixelHeight),
+				IM_COL32(58, 118, 181, 150));
+	}
+
+	const MapEditorTileItem* focus = doc.getHighlightItem();
+	if (focus == nullptr || focus->def == nullptr || focus->linkId.empty())
 		return;
-	const float waterPixelHeight = doc.getWaterHeight() * tileH;
-	const float waterPixelWidth = doc.getMapWidth() * tileW;
-	const float waterX = originX - _panX;
-	drawList->AddLine(ImVec2(waterX, waterPixelSurface), ImVec2(waterX + waterPixelWidth, waterPixelSurface),
-			IM_COL32(90, 170, 230, 255));
-	drawList->AddRectFilled(ImVec2(waterX, waterPixelSurface + 1.0f),
-			ImVec2(waterX + waterPixelWidth, waterPixelSurface + 1.0f + waterPixelHeight),
-			IM_COL32(58, 118, 181, 150));
+	if (!SpriteTypes::isGate(focus->def->type) && !SpriteTypes::isPressurePlate(focus->def->type))
+		return;
+	MapEditorTileItem* partner = doc.findLinkedPartner(*focus);
+	if (partner == nullptr)
+		return;
+	const float ax = originX + (focus->gridX + 0.5f) * tileW - _panX;
+	const float ay = originY + (focus->gridY + 0.5f) * tileH - _panY;
+	const float bx = originX + (partner->gridX + 0.5f) * tileW - _panX;
+	const float by = originY + (partner->gridY + 0.5f) * tileH - _panY;
+	drawList->AddLine(ImVec2(ax, ay), ImVec2(bx, by), IM_COL32(255, 200, 40, 220), 2.0f);
+	drawList->AddCircleFilled(ImVec2(ax, ay), 4.0f, IM_COL32(255, 200, 40, 255));
+	drawList->AddCircleFilled(ImVec2(bx, by), 4.0f, IM_COL32(255, 200, 40, 255));
 }
 
 void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
@@ -74,6 +93,36 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 	int caveDelay = doc.getCaveDelay();
 	if (ImGui::InputInt(tr("Npc delay").c_str(), &caveDelay))
 		doc.setCaveDelay(caveDelay);
+
+	MapEditorTileItem* sel = doc.getHighlightItem();
+	if (sel != nullptr && sel->def != nullptr
+			&& (SpriteTypes::isGate(sel->def->type) || SpriteTypes::isPressurePlate(sel->def->type))) {
+		ImGui::Separator();
+		ImGui::TextUnformatted(tr("Trigger link").c_str());
+		char linkBuf[64];
+		std::snprintf(linkBuf, sizeof(linkBuf), "%s", sel->linkId.c_str());
+		if (ImGui::InputText(tr("Link id").c_str(), linkBuf, sizeof(linkBuf)))
+			sel->linkId = linkBuf;
+		if (SpriteTypes::isPressurePlate(sel->def->type)) {
+			float weight = sel->requiredWeight;
+			if (ImGui::InputFloat(tr("Required weight").c_str(), &weight))
+				sel->requiredWeight = std::max(0.0f, weight);
+			int hold = sel->delay;
+			if (ImGui::InputInt(tr("Hold ms").c_str(), &hold))
+				sel->delay = std::max(0, hold);
+			if (doc.isPickingGateTarget()) {
+				ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.2f, 1.0f), "%s", tr("Click a gate to link").c_str());
+				if (ImGui::Button(tr("Cancel pick").c_str()))
+					doc.cancelPickGateTarget();
+			} else if (ImGui::Button(tr("Pick gate target").c_str())) {
+				doc.beginPickGateTarget();
+			}
+		} else if (SpriteTypes::isGate(sel->def->type)) {
+			float openAmount = sel->openAmount;
+			if (ImGui::InputFloat(tr("Open amount").c_str(), &openAmount))
+				sel->openAmount = clamp(openAmount, 0.0f, 1.0f);
+		}
+	}
 
 	ImGui::Separator();
 	ImGui::TextUnformatted(tr("Theme").c_str());

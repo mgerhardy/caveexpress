@@ -2,6 +2,7 @@
 #include "caveexpress/shared/network/messages/AddCaveMessage.h"
 #include "caveexpress/shared/network/messages/AddRopeMessage.h"
 #include "caveexpress/shared/network/messages/LightStateMessage.h"
+#include "caveexpress/shared/network/messages/GateStateMessage.h"
 #include "caveexpress/shared/network/messages/RemoveRopeMessage.h"
 #include "caveexpress/shared/network/messages/UpdateCollectedTypeMessage.h"
 #include "caveexpress/shared/network/messages/WaterHeightMessage.h"
@@ -24,6 +25,7 @@ TEST_F(ProtocolTest, testProtocols)
 	testMessage("WaterHeightMessage", WaterHeightMessage(1.0f));
 	testMessage("WaterImpactMessage", WaterImpactMessage(1.0f, 1.0f));
 	testMessage("DropMessage", DropMessage());
+	testMessage("GateStateMessage", GateStateMessage(9, 128));
 }
 
 }

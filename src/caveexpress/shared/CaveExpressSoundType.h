@@ -24,6 +24,7 @@ extern SoundType SOUND_PACKAGE_COLLIDE4;
 extern SoundType SOUND_PACKAGE_COLLIDE5;
 extern SoundType SOUND_PACKAGE_COLLIDE;
 extern SoundType SOUND_STONE_COLLIDE;
+extern SoundType SOUND_GATE_MOVE;
 extern SoundType SOUND_FRUIT_SPAWN;
 extern SoundType SOUND_FRUIT_COLLECTED;
 extern SoundType SOUND_PLAYER_LAND;

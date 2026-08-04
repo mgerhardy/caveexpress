@@ -18,6 +18,7 @@
 #include "caveexpress/shared/CaveExpressCooldown.h"
 #include "caveexpress/shared/CaveExpressSoundType.h"
 #include "caveexpress/shared/constants/ConfigVars.h"
+#include <cstring>
 
 namespace caveexpress {
 
@@ -305,6 +306,9 @@ void Player::setCrashed (const PlayerCrashReason& reason)
 	case CRASH_DAMAGE:
 		sound = &SoundTypes::SOUND_PLAYER_CRASH_HITPOINTS;
 		break;
+	case CRASH_LAVA:
+		sound = &SoundTypes::SOUND_PLAYER_CRASH_HITPOINTS;
+		break;
 	default:
 		sound = nullptr;
 		break;
@@ -344,7 +348,28 @@ bool Player::shouldCollide (const IEntity* entity) const
 		const Player* player = assert_cast<const Player*, const IEntity*>(entity);
 		return !player->isCrashed();
 	}
-	return entity->isSolid() || entity->isWater();
+	return entity->isSolid() || entity->isWater() || entity->isLava();
+}
+
+void Player::onContact (PhysicsContact contact, IEntity* entity)
+{
+	IEntity::onContact(contact, entity);
+	if (entity == nullptr || !entity->isLava())
+		return;
+	if (isCrashed())
+		return;
+
+	// Only the "lava" fixture is lethal; the rock base ("solid") is standable.
+	PhysicsFixture fixture;
+	if (contact.getFixtureA().getBody().getUserData() == (uintptr_t)entity)
+		fixture = contact.getFixtureA();
+	else
+		fixture = contact.getFixtureB();
+	const char* userData = reinterpret_cast<const char*>(fixture.getUserData());
+	if (userData != nullptr && userData[0] != '\0' && strcmp(userData, "lava") != 0)
+		return;
+
+	setCrashed(CRASH_LAVA);
 }
 
 void Player::onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold)

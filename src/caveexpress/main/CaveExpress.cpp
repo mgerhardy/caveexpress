@@ -53,6 +53,8 @@
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
+#include "caveexpress/client/entities/ClientGate.h"
+#include "caveexpress/client/entities/ClientPressurePlate.h"
 #include "caveexpress/client/entities/ClientNPC.h"
 #include "caveexpress/client/entities/ClientParticle.h"
 #include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
@@ -81,6 +83,7 @@
 #include "caveexpress/client/network/WaterImpactHandler.h"
 #include "caveexpress/client/network/AddCaveHandler.h"
 #include "caveexpress/client/network/LightStateHandler.h"
+#include "caveexpress/client/network/GateStateHandler.h"
 #include "caveexpress/client/network/HudInitDoneHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
 #include "caveexpress/client/network/UpdatePackageCountHandler.h"
@@ -118,6 +121,7 @@ PROTOCOL_CLASS_FACTORY_IMPL(WaterHeightMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(WaterImpactMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(TargetCaveMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(AnnounceTargetCaveMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(GateStateMessage);
 
 CaveExpress::CaveExpress () :
 		_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _updateEntitiesTime(0), _frontend(nullptr), _serviceProvider(nullptr),_connectedClients(
@@ -354,6 +358,8 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	r.registerFactory(&EntityTypes::GEYSER_JUNGLE, ClientEntity::FACTORY);
 	r.registerFactory(&EntityTypes::GEYSER_DESERT, ClientEntity::FACTORY);
 	r.registerFactory(&EntityTypes::BOMB, ClientEntity::FACTORY);
+	r.registerFactory(&EntityTypes::GATE, ClientGate::FACTORY);
+	r.registerFactory(&EntityTypes::PRESSUREPLATE, ClientPressurePlate::FACTORY);
 
 	ProtocolMessageFactory& f = ProtocolMessageFactory::get();
 	f.registerFactory(protocol::PROTO_DROP, DropMessage::FACTORY);
@@ -362,6 +368,7 @@ void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 	f.registerFactory(protocol::PROTO_WATERIMPACT, WaterImpactMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_ADDCAVE, AddCaveMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_LIGHTSTATE, LightStateMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_GATESTATE, GateStateMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_TARGETCAVE, TargetCaveMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_ANNOUNCETARGETCAVE, AnnounceTargetCaveMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_UPDATECOLLECTEDTYPE,UpdateCollectedTypeMessage::FACTORY);
@@ -481,6 +488,8 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.registerClientHandler(protocol::PROTO_ADDCAVE, new AddCaveHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_LIGHTSTATE);
 	r.registerClientHandler(protocol::PROTO_LIGHTSTATE, new LightStateHandler(*map));
+	r.unregisterClientHandler(protocol::PROTO_GATESTATE);
+	r.registerClientHandler(protocol::PROTO_GATESTATE, new GateStateHandler(*map));
 	r.unregisterClientHandler(::protocol::PROTO_ADDENTITY);
 	r.registerClientHandler(::protocol::PROTO_ADDENTITY, new AddEntityWithSoundHandler(*map));
 	r.unregisterClientHandler(::protocol::PROTO_INITDONE);

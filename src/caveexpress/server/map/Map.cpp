@@ -20,6 +20,8 @@
 #include "caveexpress/server/entities/Tree.h"
 #include "caveexpress/server/entities/EntityEmitter.h"
 #include "caveexpress/server/entities/WindowTile.h"
+#include "caveexpress/server/entities/Gate.h"
+#include "caveexpress/server/entities/PressurePlate.h"
 #include "caveexpress/shared/CaveExpressMapContext.h"
 #include "caveexpress/server/map/RandomMapContext.h"
 #include "caveexpress/server/events/GameEventHandler.h"
@@ -401,6 +403,8 @@ const MapFailedReason& Map::getFailReason (const Player* player) const
 			return MapFailedReasons::FAILED_NPC_FISH;
 		case CRASH_NPC_FLYING:
 			return MapFailedReasons::FAILED_NPC_FLYING;
+		case CRASH_LAVA:
+			return MapFailedReasons::FAILED_LAVA;
 		case CRASH_MAP_FAILED:
 			return MapFailedReasons::FAILED_SIDESCROLL;
 		default:
@@ -625,8 +629,58 @@ bool Map::load (const std::string& name)
 		}
 	}
 
+	const std::vector<GateDefinition>& gateList = ctx->getGateDefinitions();
+	for (const GateDefinition& gateDef : gateList) {
+		Gate *gate = new Gate(*this, gateDef.spriteDef->id, gateDef.x, gateDef.y, gateDef.linkId, gateDef.openAmount);
+		gate->setGridDimensions(gateDef.spriteDef->width, gateDef.spriteDef->height, 0);
+		if (loadEntity(gate)) {
+			mapTilesWithBody.push_back(gate);
+		}
+	}
+
+	const std::vector<PressurePlateDefinition>& plateList = ctx->getPressurePlateDefinitions();
+	for (const PressurePlateDefinition& plateDef : plateList) {
+		PressurePlate *plate = new PressurePlate(*this, plateDef.spriteDef->id, plateDef.x, plateDef.y, plateDef.linkId,
+				plateDef.requiredWeight, plateDef.holdMs);
+		plate->setGridDimensions(plateDef.spriteDef->width, plateDef.spriteDef->height, 0);
+		if (loadEntity(plate)) {
+			mapTilesWithBody.push_back(plate);
+		}
+	}
+
 	for (MapTile* mapTile : mapTilesWithBody) {
 		mapTile->createBody();
+	}
+
+	// Resolve 1:1 pressure plate -> gate links by linkId
+	{
+		std::unordered_map<std::string, Gate*> gatesByLink;
+		std::unordered_map<std::string, PressurePlate*> platesByLink;
+		for (IEntity* entity : _entities) {
+			if (entity->isGate()) {
+				Gate* gate = assert_cast<Gate*, IEntity*>(entity);
+				if (gate->getLinkId().empty())
+					continue;
+				if (gatesByLink.count(gate->getLinkId()))
+					Log::warn(LOG_GAMEIMPL, "duplicate gate linkId '%s'", gate->getLinkId().c_str());
+				gatesByLink[gate->getLinkId()] = gate;
+			} else if (entity->isPressurePlate()) {
+				PressurePlate* plate = assert_cast<PressurePlate*, IEntity*>(entity);
+				if (plate->getLinkId().empty())
+					continue;
+				if (platesByLink.count(plate->getLinkId()))
+					Log::warn(LOG_GAMEIMPL, "duplicate pressure plate linkId '%s'", plate->getLinkId().c_str());
+				platesByLink[plate->getLinkId()] = plate;
+			}
+		}
+		for (auto& entry : platesByLink) {
+			auto gi = gatesByLink.find(entry.first);
+			if (gi == gatesByLink.end()) {
+				Log::warn(LOG_GAMEIMPL, "pressure plate linkId '%s' has no matching gate", entry.first.c_str());
+				continue;
+			}
+			entry.second->setLinkedGate(gi->second);
+		}
 	}
 
 	Log::info(LOG_GAMEIMPL, "init platforms");
@@ -1158,6 +1212,10 @@ MapTile* Map::createMapTileWithoutBody (const SpriteDefPtr& spriteDef, gridCoord
 		mapTile = new MapTile(*this, spriteDef->id, gridX, gridY, EntityTypes::LAVA);
 	} else if (SpriteTypes::isPackageTarget(type)) {
 		mapTile = new PackageTarget(*this, spriteDef->id, gridX, gridY);
+	} else if (SpriteTypes::isGate(type)) {
+		mapTile = new Gate(*this, spriteDef->id, gridX, gridY, "", 1.0f);
+	} else if (SpriteTypes::isPressurePlate(type)) {
+		mapTile = new PressurePlate(*this, spriteDef->id, gridX, gridY, "", 700.0f, 0);
 	} else if (SpriteTypes::isGeyser(type)) {
 		mapTile = new Geyser(*this, spriteDef->id, gridX, gridY, _initialGeyserDelay);
 	} else if (SpriteTypes::isAnyGround(type) || SpriteTypes::isBridge(type)) {
@@ -1552,6 +1610,9 @@ void Map::sendVisibleEntity (int clientMask, const IEntity *entity) const
 	} else if (entity->isWindow()) {
 		const WindowTile *tile = assert_cast<const WindowTile *, const IEntity*>(entity);
 		GameEvent.sendLightState(clientMask, tile->getID(), tile->getLightState());
+	} else if (entity->isGate()) {
+		const Gate *gate = assert_cast<const Gate *, const IEntity*>(entity);
+		GameEvent.sendGateState(clientMask, gate->getID(), gate->getProtrusionByte());
 	}
 }
 

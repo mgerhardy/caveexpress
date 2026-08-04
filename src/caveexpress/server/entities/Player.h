@@ -29,6 +29,7 @@ typedef enum
 	CRASH_NPC_FISH,
 	CRASH_NPC_FLYING,
 	CRASH_DAMAGE,
+	CRASH_LAVA,
 	CRASH_MAP_FAILED
 } PlayerCrashReason;
 
@@ -136,6 +137,7 @@ public:
 	// IEntity
 	bool shouldApplyWind () const override;
 	void update (uint32_t deltaTime) override;
+	void onContact (PhysicsContact contact, IEntity* entity) override;
 	void onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold) override;
 	bool shouldCollide (const IEntity* entity) const override;
 	

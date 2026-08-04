@@ -21,9 +21,9 @@
                 <key>maxTextureSize</key>
                 <QSize>
                     <key>width</key>
-                    <int>2048</int>
+                    <int>4096</int>
                     <key>height</key>
-                    <int>2048</int>
+                    <int>4096</int>
                 </QSize>
             </struct>
             <struct type="AutoSDSettings">
@@ -38,9 +38,9 @@
                 <key>maxTextureSize</key>
                 <QSize>
                     <key>width</key>
-                    <int>2048</int>
+                    <int>4096</int>
                     <key>height</key>
-                    <int>2048</int>
+                    <int>4096</int>
                 </QSize>
             </struct>
         </array>
@@ -103,9 +103,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>2048</int>
+            <int>4096</int>
             <key>height</key>
-            <int>2048</int>
+            <int>4096</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -211,6 +211,7 @@
         <key>fileList</key>
         <array>
             <filename>../png/caveexpress/ui/dead-hitpoints.png</filename>
+            <filename>../png/caveexpress/ui/dead-lava.png</filename>
             <filename>../png/caveexpress/ui/dead-npc-fish.png</filename>
             <filename>../png/caveexpress/ui/dead-npc-flying.png</filename>
             <filename>../png/caveexpress/ui/dead-npc-mammut.png</filename>

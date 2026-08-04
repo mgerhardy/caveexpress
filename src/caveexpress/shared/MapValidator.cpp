@@ -11,9 +11,9 @@ namespace caveexpress {
 
 MapValidator::CellKind MapValidator::classifyTile (const SpriteType& type) const
 {
-	if (SpriteTypes::isAnyGround(type) || SpriteTypes::isBridge(type))
+	if (SpriteTypes::isAnyGround(type) || SpriteTypes::isBridge(type) || SpriteTypes::isPressurePlate(type))
 		return CellKind::Walkable;
-	if (SpriteTypes::isSolid(type) || SpriteTypes::isPackageTarget(type))
+	if (SpriteTypes::isSolid(type) || SpriteTypes::isPackageTarget(type) || SpriteTypes::isGate(type))
 		return CellKind::Collider;
 	if (SpriteTypes::isBackground(type) || SpriteTypes::isWindow(type) || SpriteTypes::isCave(type)
 			|| SpriteTypes::isLiane(type))

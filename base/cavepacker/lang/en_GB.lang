@@ -41,14 +41,13 @@ Height|Height
 Help|Help
 Hints|Hints
 Homepage|Homepage
-Hover a tile on the map|Hover a tile on the map
 Increase map height|Increase map height
 Increase map width|Increase map width
 Input|Input
 Later|Later
 Layers|Layers
 Leaderboard|Leaderboard
-LMB: paint / place|LMB: paint / place
+LMB: paint / place (also selects)|LMB: paint / place (also selects)
 Map|Map
 Map Editor|Map Editor
 Maps|Maps
@@ -71,6 +70,7 @@ Place tile|Place tile
 Players|Players
 Please rate the app|Please rate the app
 Properties|Properties
+Properties edit the selected tile, not the hovered one|Properties edit the selected tile, not the hovered one
 Quit|Quit
 Quit without saving|Quit without saving
 Redo|Redo
@@ -84,10 +84,11 @@ Retry|Retry
 RMB: erase|RMB: erase
 Save|Save
 Save & Go|Save & Go
+Select a tile on the map|Select a tile on the map
 Select game mode|Select game mode
 Select tile|Select tile
+Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / pick tile
 Settings|Settings
-Shift+LMB: pick tile under cursor|Shift+LMB: pick tile under cursor
 Show Grid|Show Grid
 Skip|Skip
 Small|Small

@@ -26,6 +26,8 @@ bool MapTile::isUnderWater () const
 
 bool MapTile::shouldCollide (const IEntity* entity) const
 {
+	if (isLava())
+		return entity->isDynamic();
 	return entity->isSolid();
 }
 

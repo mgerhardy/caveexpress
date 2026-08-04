@@ -57,6 +57,7 @@ public:
 	void addCave (int clientMask, int id, int caveNumber, bool state) const;
 	// send the state of a cave (including the windows) to the client
 	void sendLightState (int clientMask, int id, bool state) const;
+	void sendGateState (int clientMask, int id, uint8_t openAmount) const;
 
 	void updateEntity (int clientMask, const IEntity& entity) const;
 

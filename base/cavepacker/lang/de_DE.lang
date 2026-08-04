@@ -41,14 +41,13 @@ Height|Höhe
 Help|Hilfe
 Hints|Hinweise
 Homepage|Homepage
-Hover a tile on the map|Kachel auf der Map anzeigen
 Increase map height|Map-Höhe vergrößern
 Increase map width|Map-Breite vergrößern
 Input|Eingabe
 Later|Später
 Layers|Ebenen
 Leaderboard|Leaderboard
-LMB: paint / place|LMT: malen / platzieren
+LMB: paint / place (also selects)|LMB: paint / place (also selects)
 Map|Map
 Map Editor|Map-Editor
 Maps|Maps
@@ -71,6 +70,7 @@ Place tile|Teil plazieren
 Players|Spieler
 Please rate the app|Bitte bewerte die App
 Properties|Eigenschaften
+Properties edit the selected tile, not the hovered one|Properties edit the selected tile, not the hovered one
 Quit|Beenden
 Quit without saving|Beenden ohne Speichern
 Redo|Wiederholen
@@ -84,10 +84,11 @@ Retry|Nochmal
 RMB: erase|RMT: löschen
 Save|Speichern
 Save & Go|Testen
+Select a tile on the map|Select a tile on the map
 Select game mode|Spielemodus aussuchen
 Select tile|Teil selektieren
+Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / pick tile
 Settings|Einstellungen
-Shift+LMB: pick tile under cursor|Shift+LMB: pick tile under cursor
 Show Grid|Gitter anzeigen
 Skip|Nächste
 Small|Klein

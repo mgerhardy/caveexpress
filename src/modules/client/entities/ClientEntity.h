@@ -47,7 +47,7 @@ public:
 
 	/** When true and the map uses timed grid lerps, walk frames only advance while sliding between cells. */
 	virtual bool animateSpriteOnlyWhenMoving () const { return false; }
-	void setAnimationType (const Animation& type);
+	virtual void setAnimationType (const Animation& type);
 	void setThemeType (const ThemeType& theme);
 	virtual std::string getSpriteName() const;
 	/**

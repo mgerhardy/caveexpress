@@ -1,14 +1,18 @@
 #include "MapEditorDocument.h"
 #include "common/Log.h"
 #include "common/String.h"
+#include "common/Math.h"
 #include "common/MapSettings.h"
 #include "common/KeyValueParser.h"
+#include "common/vec2.h"
 #include "caveexpress/shared/CaveExpressMapContext.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressAnimation.h"
 #include "caveexpress/shared/constants/EmitterSettings.h"
 #include "caveexpress/shared/CaveTileDefinition.h"
+#include "caveexpress/shared/GateDefinition.h"
+#include "caveexpress/shared/PressurePlateDefinition.h"
 #include "caveexpress/server/map/RandomMapContext.h"
 #include "caveexpress/server/entities/EntityEmitter.h"
 #include <cmath>
@@ -24,7 +28,8 @@ MapEditorDocument::MapEditorDocument (IMapManager& mapManager) :
 
 MapEditorLayer MapEditorDocument::getLayer (const SpriteType& type) const
 {
-	if (SpriteTypes::isRock(type) || SpriteTypes::isAnyGround(type) || SpriteTypes::isWaterFall(type))
+	if (SpriteTypes::isRock(type) || SpriteTypes::isAnyGround(type) || SpriteTypes::isWaterFall(type)
+			|| SpriteTypes::isGate(type) || SpriteTypes::isPressurePlate(type))
 		return LAYER_SOLID;
 	if (SpriteTypes::isBackground(type) || SpriteTypes::isWindow(type) || SpriteTypes::isCave(type))
 		return LAYER_BACKGROUND;
@@ -239,6 +244,22 @@ bool MapEditorDocument::placeCave (const SpriteDefPtr& def, const EntityType* en
 
 bool MapEditorDocument::placeBrushItem (bool overwrite)
 {
+	if (_pickGateTarget) {
+		MapEditorTileItem* gate = findTileAt(_selectedGridX, _selectedGridY);
+		MapEditorTileItem* plate = findTileAt(_linkPlateX, _linkPlateY);
+		if (gate != nullptr && SpriteTypes::isGate(gate->def->type) && plate != nullptr
+				&& SpriteTypes::isPressurePlate(plate->def->type)) {
+			MapEditorUndo();
+			if (plate->linkId.empty())
+				plate->linkId = string::format("link-%d-%d", (int)plate->gridX, (int)plate->gridY);
+			gate->linkId = plate->linkId;
+			_pickGateTarget = false;
+			return true;
+		}
+		_pickGateTarget = false;
+		return false;
+	}
+
 	if (!_activeSprite)
 		return false;
 	if (_activeEntityType != nullptr && isPlayerType(*_activeEntityType)) {
@@ -284,11 +305,20 @@ bool MapEditorDocument::isOverlapping (const MapEditorTileItem& item1, const Map
 {
 	switch (item1.layer) {
 	case LAYER_BACKGROUND:
-		if (item2.layer == LAYER_FOREGROUND || item2.layer == LAYER_DECORATION || item2.layer == LAYER_EMITTER)
+		// Background may share a cell with solid overlays (gates, plates, ground) and other layers.
+		if (item2.layer == LAYER_FOREGROUND || item2.layer == LAYER_DECORATION || item2.layer == LAYER_EMITTER
+				|| item2.layer == LAYER_SOLID)
 			return false;
 		break;
 	case LAYER_FOREGROUND:
-		if (item2.layer == LAYER_BACKGROUND || item2.layer == LAYER_DECORATION || item2.layer == LAYER_EMITTER)
+		if (item2.layer == LAYER_BACKGROUND || item2.layer == LAYER_DECORATION || item2.layer == LAYER_EMITTER
+				|| item2.layer == LAYER_SOLID)
+			return false;
+		break;
+	case LAYER_SOLID:
+		// Gates / plates / caves sit on background cells in corridor maps.
+		if (item2.layer == LAYER_BACKGROUND || item2.layer == LAYER_FOREGROUND || item2.layer == LAYER_DECORATION
+				|| item2.layer == LAYER_EMITTER)
 			return false;
 		break;
 	case LAYER_DECORATION:
@@ -309,7 +339,8 @@ bool MapEditorDocument::isOverlapping (const MapEditorTileItem& item1, const Map
 
 bool MapEditorDocument::shouldSaveTile (const MapEditorTileItem& tile) const
 {
-	return tile.entityType == nullptr && !SpriteTypes::isCave(tile.def->type);
+	return tile.entityType == nullptr && !SpriteTypes::isCave(tile.def->type)
+			&& !SpriteTypes::isGate(tile.def->type) && !SpriteTypes::isPressurePlate(tile.def->type);
 }
 
 bool MapEditorDocument::shouldSaveEmitter (const MapEditorTileItem& tile) const
@@ -323,14 +354,23 @@ void MapEditorDocument::prepareContextForSaving (IMapContext& ctx)
 	MapEditorTileItems map = _map;
 	map.sort();
 	std::vector<CaveTileDefinition> caves;
+	std::vector<GateDefinition> gates;
+	std::vector<PressurePlateDefinition> plates;
 	for (const MapEditorTileItem& item : map) {
 		if (item.gridX >= _mapWidth || item.gridY >= _mapHeight)
 			continue;
-		if (!SpriteTypes::isCave(item.def->type))
-			continue;
-		caves.emplace_back(item.gridX, item.gridY, item.def, *item.entityType, item.delay);
+		if (SpriteTypes::isCave(item.def->type)) {
+			caves.emplace_back(item.gridX, item.gridY, item.def, *item.entityType, item.delay);
+		} else if (SpriteTypes::isGate(item.def->type)) {
+			gates.emplace_back(item.gridX, item.gridY, item.def, item.linkId, item.openAmount);
+		} else if (SpriteTypes::isPressurePlate(item.def->type)) {
+			plates.emplace_back(item.gridX, item.gridY, item.def, item.linkId, item.requiredWeight, item.delay);
+		}
 	}
-	static_cast<CaveExpressMapContext&>(ctx).setCaveTileDefinitions(caves);
+	CaveExpressMapContext& ceCtx = static_cast<CaveExpressMapContext&>(ctx);
+	ceCtx.setCaveTileDefinitions(caves);
+	ceCtx.setGateDefinitions(gates);
+	ceCtx.setPressurePlateDefinitions(plates);
 }
 
 void MapEditorDocument::loadFromContext (IMapContext& ctx)
@@ -365,6 +405,32 @@ void MapEditorDocument::loadFromContext (IMapContext& ctx)
 	for (const CaveTileDefinition& cave : static_cast<CaveExpressMapContext&>(ctx).getCaveTileDefinitions()) {
 		if (!placeCave(cave.spriteDef, cave.type, cave.x, cave.y, getLayer(cave.spriteDef->type), cave.delay, false))
 			Log::error(LOG_GAMEIMPL, "could not place cave %s", cave.spriteDef->id.c_str());
+	}
+	CaveExpressMapContext& ceCtx = static_cast<CaveExpressMapContext&>(ctx);
+	for (const GateDefinition& gate : ceCtx.getGateDefinitions()) {
+		MapEditorTileItem item;
+		item.def = gate.spriteDef;
+		item.gridX = gate.x;
+		item.gridY = gate.y;
+		item.layer = getLayer(gate.spriteDef->type);
+		item.linkId = gate.linkId;
+		item.openAmount = gate.openAmount;
+		item.mapTile = true;
+		if (!placeTileItem(item, false))
+			Log::error(LOG_GAMEIMPL, "could not place gate %s", gate.spriteDef->id.c_str());
+	}
+	for (const PressurePlateDefinition& plate : ceCtx.getPressurePlateDefinitions()) {
+		MapEditorTileItem item;
+		item.def = plate.spriteDef;
+		item.gridX = plate.x;
+		item.gridY = plate.y;
+		item.layer = getLayer(plate.spriteDef->type);
+		item.linkId = plate.linkId;
+		item.requiredWeight = plate.requiredWeight;
+		item.delay = plate.holdMs;
+		item.mapTile = true;
+		if (!placeTileItem(item, false))
+			Log::error(LOG_GAMEIMPL, "could not place pressure plate %s", plate.spriteDef->id.c_str());
 	}
 	for (const EmitterDefinition& emitter : ctx.getEmitterDefinitions()) {
 		const EntityType& entityType = *emitter.type;
@@ -419,6 +485,44 @@ void MapEditorDocument::fillEntityPalette (std::vector<const EntityType*>& out) 
 	const EntityType** types = EntityEmitter::getSupportedEntityTypes();
 	for (; types && *types; ++types)
 		out.push_back(*types);
+}
+
+void MapEditorDocument::beginPickGateTarget ()
+{
+	MapEditorTileItem* plate = getHighlightItem();
+	if (plate == nullptr || plate->def == nullptr || !SpriteTypes::isPressurePlate(plate->def->type))
+		return;
+	_linkPlateX = plate->gridX;
+	_linkPlateY = plate->gridY;
+	_pickGateTarget = true;
+}
+
+MapEditorTileItem* MapEditorDocument::findTileAt (gridCoord gridX, gridCoord gridY)
+{
+	for (MapEditorTileItem& item : _map) {
+		if (fequals(item.gridX, gridX) && fequals(item.gridY, gridY))
+			return &item;
+	}
+	return nullptr;
+}
+
+MapEditorTileItem* MapEditorDocument::findLinkedPartner (const MapEditorTileItem& item)
+{
+	if (item.linkId.empty() || item.def == nullptr)
+		return nullptr;
+	const bool wantGate = SpriteTypes::isPressurePlate(item.def->type);
+	const bool wantPlate = SpriteTypes::isGate(item.def->type);
+	if (!wantGate && !wantPlate)
+		return nullptr;
+	for (MapEditorTileItem& other : _map) {
+		if (&other == &item || other.linkId != item.linkId || other.def == nullptr)
+			continue;
+		if (wantGate && SpriteTypes::isGate(other.def->type))
+			return &other;
+		if (wantPlate && SpriteTypes::isPressurePlate(other.def->type))
+			return &other;
+	}
+	return nullptr;
 }
 
 void MapEditorDocument::autoFill (const ThemeType& theme)

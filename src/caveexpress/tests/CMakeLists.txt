@@ -10,6 +10,7 @@ SET(${PROJECT_NAME}_SRC
 	MapTest.cpp
 	MapManagerTest.cpp
 	CampaignTest.cpp
+	GatePressurePlateTest.cpp
 	../main/CaveExpress.cpp
 	../../tests/TestAll.cpp
 	../../tests/TestShared.cpp

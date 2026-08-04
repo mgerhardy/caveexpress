@@ -13,6 +13,7 @@ MapFailedReason FAILED_HITPOINTS;
 MapFailedReason FAILED_NO_MORE_PLAYERS;
 MapFailedReason FAILED_ALL_NPCS_DIED;
 MapFailedReason FAILED_SIDESCROLL;
+MapFailedReason FAILED_LAVA;
 MapFailedReason FAILED_MAX;
 }
 

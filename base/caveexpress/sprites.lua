@@ -505,7 +505,19 @@ sprites = {
 			},
 		},
 	},
-	["tile-lava-ice-left-02"] = { type = "lava", theme = "ice", fps = 2, },
+	["tile-lava-ice-left-02"] = {
+		type = "lava",
+		theme = "ice",
+		fps = 2,
+		polygons = {
+			{
+				"solid", -50, 0, 50, 0, 50, -50, -50, -50,
+			},
+			{
+				"lava", -50, 40, 50, 40, 50, 0, -50, 0,
+			},
+		},
+	},
 	["tile-lava-ice-right-01"] = {
 		type = "lava",
 		theme = "ice",
@@ -519,7 +531,19 @@ sprites = {
 			},
 		},
 	},
-	["tile-lava-ice-right-02"] = { type = "lava", theme = "ice", fps = 2, },
+	["tile-lava-ice-right-02"] = {
+		type = "lava",
+		theme = "ice",
+		fps = 2,
+		polygons = {
+			{
+				"solid", -50, 0, 50, 0, 50, -50, -50, -50,
+			},
+			{
+				"lava", -50, 40, 50, 40, 50, 0, -50, 0,
+			},
+		},
+	},
 	["tile-ground-ledge-ice-right-01"] = {
 		type = "ground-right",
 		theme = "ice",
@@ -1084,6 +1108,45 @@ sprites = {
 		height = 2,
 	},
 
+	-- Gates (wall-recessed) and pressure plates
+	-- LAYER_BACK (above backgrounds via render order, below player on LAYER_MIDDLE).
+	["tile-gate-rock-01"] = {
+		type = "gate",
+		theme = "rock",
+		frames = {
+			{ "tile-gate-rock-01-open-back-01", "tile-gate-rock-01-mid1-back-01", "tile-gate-rock-01-mid2-back-01", "tile-gate-rock-01-closed-back-01", },
+			{},
+			{},
+		},
+		fps = 0,
+		polygons = {
+			{
+				"", -28, 28, 27, 28, 27, -27, -28, -27,
+			},
+		},
+	},
+	-- Full-tile solid ground collision (same as tile-ground); pressed state swaps to back-02.
+	["tile-plate-01-idle"] = {
+		type = "pressureplate",
+		theme = "rock",
+		frames = {
+			{ "tile-plate-01-back-01", },
+			{},
+			{},
+		},
+		fps = 0,
+	},
+	["tile-plate-01-active"] = {
+		type = "pressureplate",
+		theme = "rock",
+		frames = {
+			{ "tile-plate-01-back-02", },
+			{},
+			{},
+		},
+		fps = 0,
+	},
+
 	-- Rock Bridge
 
 	["bridge-wall-left-01"] = {
@@ -1199,7 +1262,19 @@ sprites = {
 			},
 		},
 	},
-	["tile-lava-desert-left-02"] = { type = "lava", theme = "desert", fps = 2, },
+	["tile-lava-desert-left-02"] = {
+		type = "lava",
+		theme = "desert",
+		fps = 2,
+		polygons = {
+			{
+				"solid", -50, 0, 50, 0, 50, -50, -50, -50,
+			},
+			{
+				"lava", -50, 40, 50, 40, 50, 0, -50, 0,
+			},
+		},
+	},
 	["tile-lava-desert-right-01"] = {
 		type = "lava",
 		theme = "desert",
@@ -1213,7 +1288,19 @@ sprites = {
 			},
 		},
 	},
-	["tile-lava-desert-right-02"] = { type = "lava", theme = "desert", fps = 2, },
+	["tile-lava-desert-right-02"] = {
+		type = "lava",
+		theme = "desert",
+		fps = 2,
+		polygons = {
+			{
+				"solid", -50, 0, 50, 0, 50, -50, -50, -50,
+			},
+			{
+				"lava", -50, 40, 50, 40, 50, 0, -50, 0,
+			},
+		},
+	},
 	["tile-ground-ledge-desert-right-01"] = {
 		type = "ground-right",
 		theme = "desert",

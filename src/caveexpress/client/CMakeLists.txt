@@ -3,6 +3,8 @@ set(${NAME}-client_SRCS
 	entities/ClientCaveTile.cpp
 	entities/ClientNPC.cpp
 	entities/ClientWindowTile.cpp
+	entities/ClientGate.cpp
+	entities/ClientPressurePlate.cpp
 	entities/ClientParticle.cpp
 	CaveExpressClientMap.cpp
 	editor/MapEditorDocument.cpp

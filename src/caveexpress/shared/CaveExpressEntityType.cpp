@@ -41,6 +41,8 @@ EntityType GEYSER_JUNGLE("tile-geyser-jungle-01");
 EntityType GEYSER_DESERT("tile-geyser-desert-01");
 EntityType BOMB("item-bomb");
 EntityType PARTICLE("particle");
+EntityType GATE("gate");
+EntityType PRESSUREPLATE("pressureplate");
 }
 
 bool loadEntitySizesFromLua (const std::string& path)

@@ -3,9 +3,12 @@
 #include "caveexpress/shared/CaveExpressCooldown.h"
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
+#include "caveexpress/client/entities/ClientGate.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 #include "common/ThemeType.h"
 #include "common/vec2.h"
+#include "common/ConfigManager.h"
+#include "common/Shared.h"
 #include "particles/Bubble.h"
 #include "particles/Snow.h"
 #include "particles/Rain.h"
@@ -16,10 +19,10 @@
 #include "common/MapSettings.h"
 #include "ui/UI.h"
 #include "common/IFrontend.h"
-#include "common/ConfigManager.h"
 #include "common/Log.h"
 #include "service/ServiceProvider.h"
 #include "common/DateUtil.h"
+#include "common/Math.h"
 #include <SDL.h>
 #include <SDL_image.h>
 
@@ -138,6 +141,19 @@ void CaveExpressClientMap::setCaveState (uint16_t id, bool state)
 		ClientCaveTile *tile = static_cast<ClientCaveTile*>(e);
 		tile->setLightState(state);
 	}
+}
+
+void CaveExpressClientMap::setGateState (uint16_t id, uint8_t openAmount)
+{
+	ClientEntityPtr e = getEntity(id);
+	if (!e) {
+		Log::error(LOG_GAMEIMPL, "no entity with the id %i found in setGateState", id);
+		return;
+	}
+	if (!EntityTypes::isGate(e->getType()))
+		return;
+	ClientGate *gate = static_cast<ClientGate*>(e);
+	gate->setOpenAmount(openAmount);
 }
 
 void CaveExpressClientMap::couldNotFindEntity (const std::string& prefix, uint16_t id) const
@@ -259,6 +275,32 @@ void CaveExpressClientMap::renderBegin (int x, int y) const
 {
 	_target = _frontend->renderToTexture(_x, _y, _width, _height);
 	Super::renderBegin(x, y);
+}
+
+void CaveExpressClientMap::renderLayer (int x, int y, Layer layer) const
+{
+	if (layer != LAYER_BACK) {
+		Super::renderLayer(x, y, layer);
+		return;
+	}
+
+	// Background decorations first, then solid/lava/gate/cave so they are not covered.
+	if (Config.isDebug()) {
+		_frontend->renderRect(x, y, 4, 4, colorYellow);
+	}
+	const int w = (int)((float)getPixelWidth() * _zoom);
+	const int h = (int)((float)getPixelHeight() * _zoom);
+	for (int pass = 0; pass < 2; ++pass) {
+		for (const auto &iter : _entities) {
+			const ClientEntityPtr& e = iter.second;
+			const bool decoration = EntityTypes::isDecoration(e->getType());
+			if (pass == 0 && !decoration)
+				continue;
+			if (pass == 1 && decoration)
+				continue;
+			e->render(_frontend, layer, _scaleGridToPixel, _zoom, x, y, w, h);
+		}
+	}
 }
 
 void CaveExpressClientMap::renderEnd (int x, int y) const

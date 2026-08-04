@@ -370,17 +370,20 @@ bool IMapEditorDocument::placeBrushItem (bool overwrite)
 
 bool IMapEditorDocument::paintAtSelection (bool overwrite, bool recordUndo)
 {
-	if (!_activeSprite)
-		return false;
 	if (_tool == Tool::Erase)
 		return eraseAtSelection(recordUndo);
 	if (_tool == Tool::Pick) {
 		pickAtSelection();
 		return true;
 	}
+	if (!_activeSprite)
+		return false;
 	if (recordUndo)
 		MapEditorUndo();
-	return placeBrushItem(overwrite);
+	const bool placed = placeBrushItem(overwrite);
+	// Keep properties bound to the last clicked cell (not the hover cursor).
+	setHighlightFromSelection();
+	return placed;
 }
 
 bool IMapEditorDocument::eraseAtSelection (bool recordUndo)

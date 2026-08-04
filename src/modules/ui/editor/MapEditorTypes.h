@@ -31,6 +31,9 @@ struct MapEditorTileItem {
 	EntityAngle angle = 0;
 	std::string settings;
 	bool mapTile = true;
+	std::string linkId;
+	float requiredWeight = 700.0f;
+	float openAmount = 1.0f;
 
 	bool operator== (const MapEditorTileItem& other) const;
 	bool operator< (const MapEditorTileItem& other) const;

@@ -13,6 +13,8 @@ Big|Groß
 Campaign|Kampagne
 Campaigns|Kampagnen
 Cancel|Abbrechen
+Cancel pick|Cancel pick
+Click a gate to link|Click a gate to link
 Close|Schließen
 Collecting fruits will restore hitpoints|Früchte regenerieren Lebensenergie
 Collect packages by landing on them|Sammele Pakete in dem du auf ihnen landest
@@ -67,8 +69,8 @@ Height|Höhe
 Help|Hilfe
 Hints|Tipps
 Hitting walls hard will inflict damage|Zu harter Wandkontakt reduziert Lebensenergie
+Hold ms|Hold ms
 Homepage|Homepage
-Hover a tile on the map|Kachel auf der Map anzeigen
 Ice|Eis
 Increase map height|Map-Höhe vergrößern
 Increase map width|Map-Breite vergrößern
@@ -80,7 +82,8 @@ Later|Später
 Layers|Ebenen
 Leaderboard|Leaderboard
 Learn to use the stone|Lerne den Stein zu benutzen
-LMB: paint / place|LMT: malen / platzieren
+Link id|Link id
+LMB: paint / place (also selects)|LMB: paint / place (also selects)
 Map|Map
 Map Editor|Map-Editor
 Map generator seed. 0 picks a new seed on Auto.|Map generator seed. 0 picks a new seed on Auto.
@@ -99,14 +102,17 @@ Off|Aus
 OK|OK
 On|An
 Open|Starten
+Open amount|Open amount
 or A on your controller|or A on your controller
 Package|Paket
+Pick gate target|Pick gate target
 Place tile|Teil plazieren
 Player|Spieler
 Players|Players
 Please rate the app|Bitte bewerte die App
 Points|Punkte
 Properties|Eigenschaften
+Properties edit the selected tile, not the hovered one|Properties edit the selected tile, not the hovered one
 Pterodactyls|Pterodactylus
 Pterodactyls is after you|Der Pterodactylus hat es auch dich abgesehen
 Put packages in crusher to consume|Put packages in crusher to consume
@@ -116,6 +122,7 @@ Redo|Wiederholen
 Reference time in seconds|Referenzzeit in Sekunden
 Refresh|Erneuern
 Remove tile|Teil entfernen
+Required weight|Required weight
 Reset|Reset
 Reset game progress?|Resetten des Spielfortschritts?
 Restart|Restart
@@ -125,10 +132,11 @@ Rock|Felsen
 Save|Speichern
 Save & Go|Testen
 Seed|Seed
+Select a tile on the map|Select a tile on the map
 Select game mode|Auswahl des Spielmodus
 Select tile|Teil selektieren
+Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / pick tile
 Settings|Einstellungen
-Shift+LMB: pick tile under cursor|Shift+LMB: pick tile under cursor
 Show Grid|Gitter anzeigen
 Shredder|Schredder
 Small|Klein
@@ -152,6 +160,7 @@ Transfer the grandpa to the desired cave|Transfer the grandpa to the desired cav
 Transfer the man to the desired cave|Transfer the man to the desired cave
 Transfer the woman to the desired cave|Transfer the woman to the desired cave
 Tree|Baum
+Trigger link|Trigger link
 Try to avoid crashes but still be fast|Harte Treffer vermeiden und schnell sein
 Undo|Rückgängig
 Unsaved changes|Ungespeicherte Änderungen

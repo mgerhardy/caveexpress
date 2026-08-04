@@ -24,6 +24,7 @@ public:
 
 	void setCaveNumber(uint16_t id, uint8_t number);
 	void setCaveState (uint16_t id, bool state);
+	void setGateState (uint16_t id, uint8_t openAmount);
 	bool drop ();
 	void start () override;
 	void init (uint16_t playerID) override;
@@ -34,6 +35,7 @@ public:
 
 	void renderBegin (int x, int y) const override;
 	void renderEnd (int x, int y) const override;
+	void renderLayer (int x, int y, Layer layer) const override;
 	int renderCooldownDescription (uint32_t cooldownIndex, int x, int y, int w, int h) const override;
 	void setSetting (const std::string& key, const std::string& value) override;
 

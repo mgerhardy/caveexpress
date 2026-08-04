@@ -391,6 +391,11 @@ public:
 		return EntityTypes::isWater(_type);
 	}
 
+	inline bool isLava () const
+	{
+		return EntityTypes::isLava(_type);
+	}
+
 	inline bool isMapTile () const
 	{
 		return EntityTypes::isMapTile(_type);
@@ -399,6 +404,16 @@ public:
 	inline bool isGeyser () const
 	{
 		return EntityTypes::isGeyser(_type);
+	}
+
+	inline bool isGate () const
+	{
+		return EntityTypes::isGate(_type);
+	}
+
+	inline bool isPressurePlate () const
+	{
+		return EntityTypes::isPressurePlate(_type);
 	}
 
 	inline bool isBorder () const

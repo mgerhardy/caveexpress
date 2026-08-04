@@ -25,6 +25,8 @@ SpriteType GEYSER_JUNGLE("geyser-jungle");
 SpriteType GEYSER_DESERT("geyser-desert");
 SpriteType PACKAGETARGET_ICE("packagetarget-ice");
 SpriteType PACKAGETARGET_ROCK("packagetarget-rock");
+SpriteType GATE("gate");
+SpriteType PRESSUREPLATE("pressureplate");
 }
 
 }

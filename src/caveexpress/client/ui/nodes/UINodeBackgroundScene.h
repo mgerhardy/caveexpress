@@ -37,6 +37,7 @@ private:
 	void renderFailedNpcWalking (int x, int y) const;
 	void renderFailedWaterHeight (int x, int y) const;
 	void renderFailedNpcFlying (int x, int y) const;
+	void renderFailedLava (int x, int y) const;
 
 	void renderFailedOnGround (int x, int y, const MapFailedReason& reason, float offsetY) const;
 	void renderFailedCenter (int x, int y, const MapFailedReason& reason) const;

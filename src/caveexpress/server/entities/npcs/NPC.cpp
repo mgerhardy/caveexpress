@@ -193,7 +193,7 @@ bool NPC::shouldCollide (const IEntity* entity) const
 		return !player->isCrashed();
 	}
 
-	return entity->isSolid();
+	return entity->isSolid() || entity->isLava();
 }
 
 int NPC::handleTurnAnimation (const PhysicsVec2& targetPos, const Animation& left, const Animation& right)

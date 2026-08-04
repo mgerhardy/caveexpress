@@ -27,6 +27,8 @@ extern SpriteType GEYSER_JUNGLE;
 extern SpriteType GEYSER_DESERT;
 extern SpriteType PACKAGETARGET_ICE;
 extern SpriteType PACKAGETARGET_ROCK;
+extern SpriteType GATE;
+extern SpriteType PRESSUREPLATE;
 
 
 inline bool isBackground (const SpriteType& other)
@@ -139,15 +141,25 @@ inline bool isAnyGround (const SpriteType& other)
 	return isGround(other) || isGroundLeft(other) || isGroundRight(other);
 }
 
+inline bool isGate (const SpriteType& other)
+{
+	return other == GATE;
+}
+
+inline bool isPressurePlate (const SpriteType& other)
+{
+	return other == PRESSUREPLATE;
+}
+
 inline bool isSolid (const SpriteType& other)
 {
 	return isRock(other) || isAnyGround(other) || isWaterFall(other) || isBridge(other) || isGeyser(other)
-			|| isPackageTarget(other) || isSlope(other) || isLava(other);
+			|| isPackageTarget(other) || isSlope(other) || isLava(other) || isGate(other);
 }
 
 inline bool isMapTile (const SpriteType& other)
 {
-	return isSolid(other) || isCave(other) || isBackground(other) || isWindow(other);
+	return isSolid(other) || isCave(other) || isBackground(other) || isWindow(other) || isPressurePlate(other);
 }
 
 }

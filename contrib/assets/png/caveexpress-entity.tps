@@ -236,6 +236,12 @@
             <filename>../png/caveexpress/item-egg-idle-front-01.png</filename>
             <filename>../png/caveexpress/item-package-ice-idle-middle-01.png</filename>
             <filename>../png/caveexpress/item-package-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/tile-gate-rock-01-open-back-01.png</filename>
+            <filename>../png/caveexpress/tile-gate-rock-01-mid1-back-01.png</filename>
+            <filename>../png/caveexpress/tile-gate-rock-01-mid2-back-01.png</filename>
+            <filename>../png/caveexpress/tile-gate-rock-01-closed-back-01.png</filename>
+            <filename>../png/caveexpress/tile-plate-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-plate-01-back-02.png</filename>
 			<filename>../png/caveexpress/particle-leaf.png</filename>
             <filename>../png/caveexpress/leaf-01.png</filename>
             <filename>../png/caveexpress/bubble-01.png</filename>

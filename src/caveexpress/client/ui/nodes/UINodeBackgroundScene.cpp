@@ -37,6 +37,7 @@ UINodeBackgroundScene::UINodeBackgroundScene (IFrontend *frontend) :
 	_failed[&MapFailedReasons::FAILED_NPC_FISH] = loadTexture("dead-npc-fish");
 	_failed[&MapFailedReasons::FAILED_NPC_MAMMUT] = loadTexture("dead-npc-mammut");
 	_failed[&MapFailedReasons::FAILED_NO_MORE_PLAYERS] = loadTexture("dead-hitpoints");
+	_failed[&MapFailedReasons::FAILED_LAVA] = loadTexture("dead-lava");
 }
 
 void UINodeBackgroundScene::updateReason (const MapFailedReason& reason, const ThemeType& theme)
@@ -157,6 +158,14 @@ void UINodeBackgroundScene::renderFailedWaterHeight (int x, int y) const
 	renderWater(x, y);
 }
 
+void UINodeBackgroundScene::renderFailedLava (int x, int y) const
+{
+	const float offsetY = 0.11;
+	renderCave(x, y);
+	renderGround(x, y);
+	renderFailedOnGround(x, y, MapFailedReasons::FAILED_LAVA, offsetY);
+}
+
 void UINodeBackgroundScene::render (int x, int y) const
 {
 	UINode::render(x, y);
@@ -176,6 +185,8 @@ void UINodeBackgroundScene::render (int x, int y) const
 		renderFailedNpcMammut(x, y);
 	else if (MapFailedReasons::FAILED_NPC_FISH == *_reason)
 		renderFailedNpcFish(x, y);
+	else if (MapFailedReasons::FAILED_LAVA == *_reason)
+		renderFailedLava(x, y);
 	else if (MapFailedReasons::FAILED_HITPOINTS == *_reason || MapFailedReasons::FAILED_SIDESCROLL == *_reason)
 		renderFailedHitpoints(x, y);
 }
