@@ -342,6 +342,11 @@ void UI::update (uint32_t deltaTime)
 		_delayedPop = false;
 		pop();
 	}
+	if (!_delayedPushRoot.empty()) {
+		const std::string windowID = _delayedPushRoot;
+		_delayedPushRoot.clear();
+		pushRoot(windowID);
+	}
 	if (_restart)
 		restart();
 
@@ -811,6 +816,16 @@ void UI::pop ()
 void UI::delayedPop ()
 {
 	_delayedPop = true;
+}
+
+void UI::delayedPushRoot (const std::string& windowID)
+{
+	_delayedPushRoot = windowID;
+}
+
+bool UI::canPop () const
+{
+	return _stack.size() > 1;
 }
 
 void UI::popMain ()

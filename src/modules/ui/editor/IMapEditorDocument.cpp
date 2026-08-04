@@ -168,6 +168,11 @@ bool IMapEditorDocument::isDirty () const
 	return _lastSave != _undoStates.size();
 }
 
+void IMapEditorDocument::discardChanges ()
+{
+	_lastSave = _undoStates.size();
+}
+
 void IMapEditorDocument::setSetting (const std::string& key, const std::string& value)
 {
 	_settings[key] = value;

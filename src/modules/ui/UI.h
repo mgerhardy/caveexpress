@@ -95,6 +95,7 @@ private:
 	bool _restart;
 
 	bool _delayedPop;
+	std::string _delayedPushRoot;
 	bool _noPushAllowed;
 	bool _shutdown;
 	bool _initialized;
@@ -177,6 +178,9 @@ public:
 	// pops the current window and its popups from the ui stack
 	void pop ();
 	void delayedPop ();
+	/** Queue pushRoot after the current frame (safe from within ImGui/render). */
+	void delayedPushRoot (const std::string& windowID);
+	bool canPop () const;
 
 	const std::string translate (const std::string& in) const;
 

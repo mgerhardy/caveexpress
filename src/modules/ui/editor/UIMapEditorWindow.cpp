@@ -124,7 +124,8 @@ void UIMapEditorWindow::executePendingAction () const
 		rebuildPalettes();
 		fitView();
 	} else if (action == "pop") {
-		UI::get().pop();
+		_doc->discardChanges();
+		leaveEditor();
 	} else if (string::startsWith(action, "load:")) {
 		_doc->load(action.substr(5));
 		std::strncpy(_fileNameBuf, _doc->getFileName().c_str(), sizeof(_fileNameBuf) - 1);
@@ -132,6 +133,20 @@ void UIMapEditorWindow::executePendingAction () const
 		rebuildPalettes();
 		fitView();
 	}
+}
+
+void UIMapEditorWindow::leaveEditor () const
+{
+	if (_doc->isDirty()) {
+		_showConfirm = true;
+		_confirmAction = "pop";
+		return;
+	}
+	// Never mutate the UI stack mid-ImGui/render frame — that crashes on re-entry.
+	if (UI::get().canPop())
+		UI::get().delayedPop();
+	else
+		UI::get().delayedPushRoot(UI_WINDOW_MAIN);
 }
 
 void UIMapEditorWindow::handleHotkeys () const
@@ -167,7 +182,7 @@ void UIMapEditorWindow::handleHotkeys () const
 			_showConfirm = false;
 			_confirmAction.clear();
 		} else
-			UI::get().pop();
+			leaveEditor();
 	}
 }
 

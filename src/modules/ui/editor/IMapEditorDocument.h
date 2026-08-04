@@ -135,6 +135,8 @@ public:
 	virtual bool save ();
 	bool saveAndPlay ();
 	bool isDirty () const;
+	/** Treat current undo state as saved (discard unsaved changes without reloading). */
+	void discardChanges ();
 
 	void undo ();
 	void redo ();

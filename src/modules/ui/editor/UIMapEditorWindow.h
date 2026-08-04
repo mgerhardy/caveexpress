@@ -51,6 +51,7 @@ protected:
 			float tileW, float tileH, float alpha = 1.0f) const;
 	bool requestAction (const char* action) const;
 	void executePendingAction () const;
+	void leaveEditor () const;
 	float tileWidth () const;
 	float tileHeight () const;
 
