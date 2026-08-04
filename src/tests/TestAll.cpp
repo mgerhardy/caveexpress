@@ -7,12 +7,24 @@
 #include "common/System.h"
 #include <SDL.h>
 #include <SDL_main.h>
+#include <SDL_assert.h>
 
 struct TestConfiguration {
 	bool verbose;
 };
 
 static TestConfiguration config;
+
+static SDL_AssertState SDLCALL testAssertionHandler (const SDL_AssertData* data, void*)
+{
+	SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION,
+			"SDL assert failed: %s (%s:%d)",
+			data->condition ? data->condition : "?",
+			data->filename ? data->filename : "?",
+			data->linenum);
+	// No UI dialog in unit tests - abort so CI/gdb see a hard failure.
+	return SDL_ASSERTION_ABORT;
+}
 
 class TestConsole: public IConsole {
 	void init (IFrontend *frontend) override
@@ -89,6 +101,11 @@ static TestConsole console;
 
 extern "C" int main (int argc, char *argv[])
 {
+	// Prefer abort-on-assert for automation; also install a handler so SDL never
+	// pops a GUI dialog when assertions fire under the unit test runner.
+	setenv("SDL_ASSERT", "abort", 0);
+	SDL_SetAssertionHandler(testAssertionHandler, nullptr);
+
 	::testing::AddGlobalTestEnvironment(new LocalEnv);
 	//::testing::GTEST_FLAG(throw_on_failure) = true;
 	::testing::InitGoogleTest(&argc, argv);
@@ -100,6 +117,7 @@ extern "C" int main (int argc, char *argv[])
 	const GamePtr& game = Singleton<GameRegistry>::getInstance().getGame();
 	app.setOrganisation("caveproductions");
 	app.setName(game->getName());
+	app.setNonInteractive(true);
 	Log::get().addConsole(&console);
 	Config.init(nullptr, argc, argv);
 	return RUN_ALL_TESTS();

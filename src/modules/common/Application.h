@@ -9,9 +9,18 @@ protected:
 	std::string _name;
 	std::string _version;
 	std::string _packageName;
+	bool _nonInteractive;
 public:
 	Application() :
-			_organisation("caveproductions") {
+			_organisation("caveproductions"), _nonInteractive(false) {
+	}
+
+	inline void setNonInteractive (bool nonInteractive) {
+		_nonInteractive = nonInteractive;
+	}
+
+	inline bool isNonInteractive () const {
+		return _nonInteractive;
 	}
 
 	inline void setPackageName(const std::string& packageName) {

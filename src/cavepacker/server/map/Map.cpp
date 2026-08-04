@@ -186,6 +186,11 @@ void Map::undo (Player* player)
 	if (!player->undo())
 		return;
 
+	// Undoing a winning push must abort the finish fade; otherwise the delayed
+	// FinishedMapMessage still fires and drops the player back to the menu.
+	if (_finishPending)
+		cancelFinish();
+
 	_serviceProvider->getNetwork().sendToAllClients(STEPSOUND);
 	--_moves;
 	Log::debug(LOG_GAMEIMPL, "moved fields after undo: %i", _moves);
@@ -235,20 +240,23 @@ char Map::getDirectionForMove (int currentIndex, int targetIndex) const
 
 bool Map::undoPackage (int col, int row, int targetCol, int targetRow)
 {
+	// Player already moved back; rebuild so field/state match entity positions.
+	rebuildField();
 	MapTile* package = getPackage(col, row);
 	if (package == nullptr) {
 		Log::info(LOG_GAMEIMPL, "don't move package back");
 		return false;
 	}
 	Log::info(LOG_GAMEIMPL, "move package back");
-	rebuildField();
 	const int origCol = package->getCol();
 	const int origRow = package->getRow();
-	if (!package->setPos(targetCol, targetRow))
-		return false;
+	// The destination is the cell the player just vacated; isFree() can still see a
+	// stale blocker depending on rebuild order, so force the undo placement.
+	package->setPosForced(targetCol, targetRow);
 	rebuildField();
 	if (_state.isInvalid(targetCol, targetRow)) {
-		package->setPos(origCol, origRow);
+		package->setPosForced(origCol, origRow);
+		rebuildField();
 		return false;
 	}
 
@@ -320,6 +328,7 @@ bool Map::movePlayer (Player* player, char step)
 		Log::debug(LOG_GAMEIMPL, "failed to move the player");
 		return false;
 	}
+	rebuildField();
 
 	_serviceProvider->getNetwork().sendToAllClients(STEPSOUND);
 
@@ -416,6 +425,19 @@ void Map::scheduleFinish (uint32_t delay)
 	_restartDue = _time + delay;
 	// Reuse MapRestartMessage so the client fades out with the existing overlay.
 	const MapRestartMessage msg(delay);
+	_serviceProvider->getNetwork().sendToAllClients(msg);
+}
+
+void Map::cancelFinish ()
+{
+	if (!_finishPending && _restartDue == 0)
+		return;
+
+	Log::info(LOG_GAMEIMPL, "cancel map finish delay");
+	_finishPending = false;
+	_restartDue = 0;
+	// delay 0 clears the client fade overlay (see ClientMap::restart)
+	const MapRestartMessage msg(0);
 	_serviceProvider->getNetwork().sendToAllClients(msg);
 }
 
@@ -658,12 +680,17 @@ void Map::startMap ()
 
 MapTile* Map::getPackage (int col, int row) const
 {
-	auto i = _field[_state.getIndex(col, row)];
-	if (i == nullptr) {
-		return nullptr;
+	if (!_state.isInvalid(col, row)) {
+		auto i = _field[_state.getIndex(col, row)];
+		if (i != nullptr && EntityTypes::isPackage(i->getType()))
+			return static_cast<MapTile*>(i);
 	}
-	if (EntityTypes::isPackage(i->getType())) {
-		return static_cast<MapTile*>(i);
+	// Fall back to entity positions - _field can lag if rebuildField has not run yet.
+	for (EntityListConstIter i = _entities.begin(); i != _entities.end(); ++i) {
+		if ((*i)->getCol() != col || (*i)->getRow() != row)
+			continue;
+		if (EntityTypes::isPackage((*i)->getType()))
+			return static_cast<MapTile*>(*i);
 	}
 	return nullptr;
 }

@@ -135,7 +135,8 @@ void Unix::exit (const std::string& reason, int errorCode)
 	if (errorCode != 0) {
 		Log::error(LOG_COMMON, "%s", reason.c_str());
 		backtrace(reason.c_str());
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", reason.c_str(), nullptr);
+		if (!Singleton<Application>::getInstance().isNonInteractive())
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", reason.c_str(), nullptr);
 	} else {
 		Log::info(LOG_COMMON, "%s", reason.c_str());
 	}

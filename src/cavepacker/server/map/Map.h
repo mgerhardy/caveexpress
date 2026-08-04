@@ -150,6 +150,8 @@ public:
 	void restart (uint32_t delay) override;
 	// Start a delayed successful finish (client fade via MapRestartMessage); does not reload when due.
 	void scheduleFinish (uint32_t delay);
+	// Abort a pending finish (e.g. undo of the winning move) and clear the client fade.
+	void cancelFinish ();
 	bool isFinishPending () const;
 	int getMapWidth () const override;
 	int getMapHeight () const override;

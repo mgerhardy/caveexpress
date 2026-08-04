@@ -8,6 +8,12 @@
 #include "common/Log.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 
+namespace {
+const char *LOCALHOST = "localhost";
+const int PORT = 4567;
+
+// Keep these names local - NetworkTestListener.h defines different types with the
+// same names used by SokobanMapTest / NoNetworkTest (ODR violation caused heap corruption).
 class NetworkTestListener: public IClientCallback {
 public:
 	void onData (ByteStream& data) override {
@@ -18,13 +24,8 @@ public:
 class NetworkTestServerListener: public IServerCallback {
 public:
 	void onConnection (ClientId clientId) override {
-		// debugVA("client connected: %i", clientId);
 	}
 };
-
-namespace {
-const char *LOCALHOST = "localhost";
-const int PORT = 4567;
 }
 
 TEST(NetworkTest, testOpenServer)

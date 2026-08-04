@@ -263,6 +263,12 @@ inline Camera& ClientMap::getCamera ()
 
 inline void ClientMap::restart (uint32_t delay)
 {
+	// delay 0 cancels a pending restart/finish fade (used when a win is undone).
+	if (delay == 0) {
+		_restartInitialized = 0;
+		_restartDue = 0;
+		return;
+	}
 	_restartInitialized = _time;
 	_restartDue = _time + delay;
 }

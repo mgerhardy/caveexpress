@@ -61,6 +61,8 @@ public:
 	inline int getCol() const { return _col; }
 
 	virtual bool setPos (int col, int row);
+	/** Set position without occupancy checks (e.g. undo into a cell the player just left). */
+	void setPosForced (int col, int row);
 
 	// called when the entity is added to the world
 	virtual void onSpawn ();

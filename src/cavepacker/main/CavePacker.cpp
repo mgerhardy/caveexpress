@@ -120,7 +120,15 @@ void CavePacker::update (uint32_t deltaTime)
 	_map.update(deltaTime);
 
 	const bool isDone = _map.isDone();
-	if (isDone && !_mapFinishSent && !_map.isRestartInitialized()) {
+	if (!isDone && _mapFinishDelayStarted) {
+		// Winning state was undone (or otherwise lost) before the finish message was sent.
+		_mapFinishDelayStarted = false;
+		_finishMapName.clear();
+		_finishMoves = 0;
+		_finishPushes = 0;
+		_finishStars = 0;
+		_map.cancelFinish();
+	} else if (isDone && !_mapFinishSent && !_map.isRestartInitialized()) {
 		if (!_mapFinishDelayStarted) {
 			if (_map.isForcedFinished()) {
 				System.track("mapstate", string::format("forced finished: %s", _map.getName().c_str()));

@@ -119,7 +119,9 @@ bool Player::undo ()
 		Log::debug(LOG_GAMEIMPL, "failed to undo a move of the player");
 		return false;
 	}
-	// we moved a package with this step
+	_map.rebuildField();
+
+	// Uppercase steps are package pushes (sokoban standard).
 	if (tolower(s) != s) {
 		int xPackage;
 		int yPackage;
@@ -128,6 +130,7 @@ bool Player::undo ()
 		const int packageRow = origRow + yPackage;
 		if (!_map.undoPackage(packageCol, packageRow, origCol, origRow)) {
 			setPos(origCol, origRow);
+			_map.rebuildField();
 			return false;
 		}
 	}

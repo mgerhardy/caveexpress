@@ -1242,24 +1242,140 @@ TEST_F(SokobanMapTest, testUndoClearsDeadlockPackageState)
 	map.startMap();
 	_serviceProvider.getNetwork().update(1);
 
-	MapTile* pkg = map.getPackage(2, 2);
-	ASSERT_NE(nullptr, pkg);
+	class PackageCollector: public IEntityVisitor {
+	public:
+		std::vector<MapTile*> packages;
+		bool visitEntity (IEntity *entity) override {
+			if (EntityTypes::isPackage(entity->getType()))
+				packages.push_back(static_cast<MapTile*>(entity));
+			return false;
+		}
+	};
+
+	PackageCollector before;
+	map.visitEntities(&before, EntityTypes::PACKAGE);
+	ASSERT_EQ(1u, before.packages.size());
+	MapTile* pkg = before.packages[0];
 	EXPECT_EQ(CavePackerEntityStates::NONE, (int)pkg->getState());
+	const int startCol = pkg->getCol();
+	const int startRow = pkg->getRow();
 
 	// Push package into the left-wall simple deadlock.
-	ASSERT_TRUE(map.movePlayer(player, MOVE_LEFT));
+	ASSERT_TRUE(map.movePlayer(player, MOVE_LEFT)) << map.getMapString();
 	_serviceProvider.getNetwork().update(1);
-	pkg = map.getPackage(1, 2);
-	ASSERT_NE(nullptr, pkg);
 	EXPECT_EQ(CavePackerEntityStates::DEADLOCK, (int)pkg->getState())
 		<< "expected deadlock highlight after push into corner\n" << map.getMapString();
 
+	const int movesBeforeUndo = map.getMoves();
 	map.undo(player);
 	_serviceProvider.getNetwork().update(1);
-	pkg = map.getPackage(2, 2);
-	ASSERT_NE(nullptr, pkg);
+	EXPECT_EQ(movesBeforeUndo - 1, map.getMoves()) << "undo should consume one move\n" << map.getMapString();
+	EXPECT_EQ(startCol, pkg->getCol()) << map.getMapString();
+	EXPECT_EQ(startRow, pkg->getRow()) << map.getMapString();
 	EXPECT_EQ(CavePackerEntityStates::NONE, (int)pkg->getState())
 		<< "undo should clear package-deadlock highlight\n" << map.getMapString();
+	EXPECT_FALSE(map.isDone())
+		<< "undo must not mark the map done\n" << map.getMapString() << "\n" << map.getStateString();
+
+	_serviceProvider.getNetwork().closeClient();
+	_serviceProvider.getNetwork().closeServer();
+	FS.deleteFile(relPath);
+}
+
+TEST_F(SokobanMapTest, testUndoAfterPackagePushDoesNotFinishMap)
+{
+	const char* board =
+		";undo-not-done\n"
+		"#####\n"
+		"#   #\n"
+		"#@$.#\n"
+		"#   #\n"
+		"#####\n";
+	const std::string name = "undo_not_done";
+	const std::string relPath = FS.getDataDir() + FS.getMapsDir() + name + ".sok";
+	const std::string absPath = FS.getAbsoluteWritePath() + relPath;
+	ASSERT_NE(-1L, FS.writeSysFile(absPath, (const unsigned char*)board, strlen(board), true))
+		<< "Failed to write " << absPath;
+
+	NetworkTestListener listener;
+	NetworkTestServerListener serverListener;
+	ASSERT_TRUE(_serviceProvider.getNetwork().openServer(12345, &serverListener));
+	ASSERT_TRUE(_serviceProvider.getNetwork().openClient("localhost", 12345, &listener));
+
+	Map map;
+	map.init(&_testFrontend, _serviceProvider);
+	ASSERT_TRUE(map.load(name));
+	_serviceProvider.getNetwork().update(1);
+	Player* player = new Player(map, 1);
+	ASSERT_TRUE(map.initPlayer(player));
+	_serviceProvider.getNetwork().update(1);
+	map.startMap();
+	_serviceProvider.getNetwork().update(1);
+
+	EXPECT_FALSE(map.isDone()) << map.getMapString() << "\n" << map.getStateString();
+	ASSERT_TRUE(map.movePlayer(player, MOVE_RIGHT)) << "push package onto target\n" << map.getMapString();
+	_serviceProvider.getNetwork().update(1);
+	EXPECT_TRUE(map.isDone()) << "package should be on target\n" << map.getMapString() << "\n" << map.getStateString();
+
+	map.scheduleFinish(3000);
+	EXPECT_TRUE(map.isFinishPending());
+	EXPECT_TRUE(map.isRestartInitialized());
+
+	map.undo(player);
+	map.update(1);
+	_serviceProvider.getNetwork().update(1);
+	EXPECT_FALSE(map.isDone())
+		<< "undo of winning push must un-finish the map\n" << map.getMapString() << "\n" << map.getStateString();
+	EXPECT_FALSE(map.isFinishPending()) << "undo must cancel the finish fade";
+	EXPECT_FALSE(map.isRestartInitialized()) << "undo must clear the finish timer";
+
+	_serviceProvider.getNetwork().closeClient();
+	_serviceProvider.getNetwork().closeServer();
+	FS.deleteFile(relPath);
+}
+
+TEST_F(SokobanMapTest, testUndoAfterNonWinningPackagePushDoesNotFinishMap)
+{
+	const char* board =
+		";undo-push-not-done\n"
+		"######\n"
+		"#    #\n"
+		"# $ .#\n"
+		"# @  #\n"
+		"######\n";
+	const std::string name = "undo_push_not_done";
+	const std::string relPath = FS.getDataDir() + FS.getMapsDir() + name + ".sok";
+	const std::string absPath = FS.getAbsoluteWritePath() + relPath;
+	ASSERT_NE(-1L, FS.writeSysFile(absPath, (const unsigned char*)board, strlen(board), true))
+		<< "Failed to write " << absPath;
+
+	NetworkTestListener listener;
+	NetworkTestServerListener serverListener;
+	ASSERT_TRUE(_serviceProvider.getNetwork().openServer(12345, &serverListener));
+	ASSERT_TRUE(_serviceProvider.getNetwork().openClient("localhost", 12345, &listener));
+
+	Map map;
+	map.init(&_testFrontend, _serviceProvider);
+	ASSERT_TRUE(map.load(name));
+	_serviceProvider.getNetwork().update(1);
+	Player* player = new Player(map, 1);
+	ASSERT_TRUE(map.initPlayer(player));
+	_serviceProvider.getNetwork().update(1);
+	map.startMap();
+	_serviceProvider.getNetwork().update(1);
+
+	EXPECT_FALSE(map.isDone()) << map.getMapString() << "\n" << map.getStateString();
+	ASSERT_TRUE(map.movePlayer(player, MOVE_UP)) << map.getMapString();
+	_serviceProvider.getNetwork().update(1);
+	ASSERT_TRUE(map.movePlayer(player, MOVE_RIGHT)) << "push package one step\n" << map.getMapString();
+	_serviceProvider.getNetwork().update(1);
+	EXPECT_FALSE(map.isDone()) << "package not on target yet\n" << map.getMapString() << "\n" << map.getStateString();
+
+	map.undo(player);
+	map.update(1);
+	_serviceProvider.getNetwork().update(1);
+	EXPECT_FALSE(map.isDone())
+		<< "undo after package push must not finish the map\n" << map.getMapString() << "\n" << map.getStateString();
 
 	_serviceProvider.getNetwork().closeClient();
 	_serviceProvider.getNetwork().closeServer();

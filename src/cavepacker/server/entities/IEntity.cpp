@@ -49,10 +49,15 @@ bool IEntity::setPos (int col, int row)
 		_map.updateEntity(0, *this);
 		return false;
 	}
+	setPosForced(col, row);
+	return true;
+}
+
+void IEntity::setPosForced (int col, int row)
+{
 	_col = col;
 	_row = row;
 	_map.updateEntity(0, *this);
-	return true;
 }
 
 uint8_t IEntity::setState (uint8_t state)
