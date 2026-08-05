@@ -154,8 +154,8 @@ function initMap()
 
 	map:addEmitter("tree", 1.000000, 3.000000, 1, 0, "")
 
-	map:addCave("tile-cave-02", 0.000000, 4.000000, 1000)
-	map:addCave("tile-cave-02", 7.000000, 7.000000, 500000)
+	map:addCave("tile-cave-02", 0.000000, 4.000000, "", 1000)
+	map:addCave("tile-cave-02", 7.000000, 7.000000, "", 500000)
 	map:setSetting("width", "16")
 	map:setSetting("height", "11")
 	map:setSetting("fishnpc", "false")
