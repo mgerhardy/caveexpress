@@ -23,6 +23,7 @@
 #include "caveexpress/server/entities/Gate.h"
 #include "caveexpress/server/entities/PressurePlate.h"
 #include "caveexpress/shared/CaveExpressMapContext.h"
+#include "caveexpress/server/map/MapScript.h"
 #include "caveexpress/server/map/RandomMapContext.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/server/entities/modificators/WindModificator.h"
@@ -109,6 +110,111 @@ void Map::finishMap ()
 		countTransferedPackage();
 	}
 #endif
+}
+
+void Map::setInputEnabled (bool enabled)
+{
+	_inputEnabled = enabled;
+	Log::info(LOG_GAMEIMPL, "map input enabled: %s", enabled ? "true" : "false");
+}
+
+void Map::forceComplete ()
+{
+	_scriptForcedDone = true;
+	Log::info(LOG_GAMEIMPL, "map force-completed by script");
+}
+
+CaveMapTile* Map::getCave (int index) const
+{
+	if (index < 0 || index >= (int)_caves.size())
+		return nullptr;
+	return _caves[index];
+}
+
+int Map::getCaveCount () const
+{
+	return (int)_caves.size();
+}
+
+IEntity* Map::findEntity (uint16_t id)
+{
+	for (Player* player : _players) {
+		if (player->getID() == id)
+			return player;
+	}
+	for (IEntity* entity : _entities) {
+		if (entity->getID() == id)
+			return entity;
+	}
+	for (IEntity* entity : _entitiesToAdd) {
+		if (entity->getID() == id)
+			return entity;
+	}
+	return nullptr;
+}
+
+NPCFriendly* Map::spawnFriendlyNPCScripted (CaveMapTile* cave, const EntityType& type, bool returnToCaveOnIdle)
+{
+	if (cave == nullptr)
+		return nullptr;
+	_nextFriendlyNPCSpawn = 0;
+	if (_friendlyNPCs.size() >= _friendlyNPCLimit)
+		_friendlyNPCLimit = static_cast<uint32_t>(_friendlyNPCs.size()) + 1;
+	return createFriendlyNPC(cave, type, returnToCaveOnIdle);
+}
+
+NPCPackage* Map::spawnPackageNPCScripted (CaveMapTile* cave, const EntityType& type)
+{
+	if (cave == nullptr)
+		return nullptr;
+	return createPackageNPC(cave, type);
+}
+
+Package* Map::spawnPackageScripted (float x, float y)
+{
+	SDL_assert(_entityRemovalAllowed);
+	Package* package = new Package(*this, x, y);
+	package->createBody();
+	return package;
+}
+
+NPCAttacking* Map::spawnAttackingNPCScripted (float x, float y, const EntityType& type, bool right)
+{
+	return createAttackingNPC(PhysicsVec2(x, y), type, right);
+}
+
+NPCFlying* Map::spawnFlyingNPCScripted (float x, float y)
+{
+	return createFlyingNPC(PhysicsVec2(x, y));
+}
+
+NPCFish* Map::spawnFishNPCScripted (float x, float y)
+{
+	return createFishNPC(PhysicsVec2(x, y));
+}
+
+NPCBlowing* Map::spawnBlowingNPCScripted (float x, float y, bool right, float force, float size)
+{
+	return createBlowingNPC(PhysicsVec2(x, y), right, force, size);
+}
+
+MapTile* Map::addTileScripted (const std::string& spriteId, float x, float y, EntityAngle angle)
+{
+	SDL_assert(_entityRemovalAllowed);
+	SpriteDefPtr spriteDef = SpriteDefinition::get().getSpriteDefinition(spriteId);
+	if (!spriteDef) {
+		Log::error(LOG_GAMEIMPL, "addTileScripted: unknown sprite %s", spriteId.c_str());
+		return nullptr;
+	}
+	MapTile* mapTile = createMapTileWithoutBody(spriteDef, x, y, angle);
+	if (!mapTile->isDecoration() && !mapTile->isWindow()) {
+		loadEntity(mapTile);
+		mapTile->createBody();
+	} else {
+		addEntity(mapTile);
+	}
+	visitEntity(mapTile);
+	return mapTile;
 }
 
 void Map::killPlayers ()
@@ -481,6 +587,8 @@ void Map::resetCurrentMap ()
 	_restartDue = 0;
 	_finishPending = false;
 	_pause = false;
+	_inputEnabled = true;
+	_scriptForcedDone = false;
 	_transferedNPCs = 0;
 	_transferedNPCLimit = 0;
 	_transferedPackages = 0;
@@ -509,6 +617,7 @@ void Map::resetCurrentMap ()
 	_waterFallingDelay = 0;
 	_allPlayers = 0;
 	_entityRemovalAllowed = true;
+	_mapContext.reset();
 	clearPhysics();
 	if (!_name.empty())
 		Log::info(LOG_GAMEIMPL, "done with resetting: %s", _name.c_str());
@@ -752,12 +861,15 @@ bool Map::load (const std::string& name)
 
 	Log::info(LOG_GAMEIMPL, "map loading done");
 
+	ctx->setRuntimeMap(this);
+	MapScript::install(*ctx);
 	ctx->onMapLoaded();
 
 	_frontend->onMapLoaded();
 	const LoadMapMessage msg(_name, _title);
 	_serviceProvider->getNetwork().sendToClients(0, msg);
 
+	_mapContext = std::move(ctx);
 	_mapRunning = true;
 	return true;
 }
@@ -1727,6 +1839,9 @@ void Map::update (uint32_t deltaTime)
 		return;
 
 	_timeManager.update(deltaTime);
+
+	if (_mapContext)
+		_mapContext->onUpdate(deltaTime);
 
 	if (_restartDue > 0 && _restartDue <= _time) {
 		const std::string currentName = getName();

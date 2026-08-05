@@ -21,6 +21,8 @@ public:
 			Log::error(LOG_GAMEIMPL, "drop for player with clientId %i failed", (int)clientId);
 			return;
 		}
+		if (!_map.isInputEnabled())
+			return;
 		player->drop();
 	}
 };

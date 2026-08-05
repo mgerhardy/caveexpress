@@ -8,7 +8,7 @@
 LUAMapContext *LUAMapContext::currentCtx;
 
 LUAMapContext::LUAMapContext (const std::string& name) :
-		IMapContext(name), _lua(true), _error(false)
+		IMapContext(name), _lua(true), _error(false), _hasOnMapLoaded(false), _hasOnUpdate(false)
 {
 	currentCtx = this;
 }
@@ -98,7 +98,23 @@ int LUAMapContext::luaAddEmitter (lua_State * l)
 
 void LUAMapContext::onMapLoaded ()
 {
-	_lua.execute("onMapLoaded");
+	if (!_hasOnMapLoaded)
+		return;
+	currentCtx = this;
+	if (!_lua.execute("onMapLoaded")) {
+		_hasOnMapLoaded = false;
+	}
+}
+
+void LUAMapContext::onUpdate (uint32_t deltaTime)
+{
+	if (!_hasOnUpdate)
+		return;
+	currentCtx = this;
+	if (!_lua.execute("onUpdate", static_cast<double>(deltaTime))) {
+		// Avoid spamming the log every frame if the script errors.
+		_hasOnUpdate = false;
+	}
 }
 
 int LUAMapContext::luaAddStartPosition (lua_State * l) {
@@ -146,6 +162,9 @@ bool LUAMapContext::load (bool skipErrors)
 
 	if (!_lua.execute("initMap"))
 		return false;
+
+	_hasOnMapLoaded = _lua.hasFunction("onMapLoaded");
+	_hasOnUpdate = _lua.hasFunction("onUpdate");
 
 	return !_error;
 }
@@ -203,6 +222,8 @@ bool LUAMapContext::save() const
 	file->appendString("\"\n");
 	file->appendString("end\n\n");
 	file->appendString("function onMapLoaded()\n");
+	file->appendString("end\n\n");
+	file->appendString("function onUpdate(dt)\n");
 	file->appendString("end\n\n");
 	file->appendString("function initMap()\n");
 	file->appendString("\t-- get the current map context\n");

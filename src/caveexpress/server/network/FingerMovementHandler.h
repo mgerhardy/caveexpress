@@ -22,6 +22,8 @@ public:
 			Log::error(LOG_GAMEIMPL, "movement for player with clientId %i failed", (int)clientId);
 			return;
 		}
+		if (!_map.isInputEnabled())
+			return;
 		const FingerMovementMessage* msg = assert_cast<const FingerMovementMessage*, const IProtocolMessage*>(&message);
 		player->setFingerAcceleration(msg->getDeltaX(), msg->getDeltaY());
 	}

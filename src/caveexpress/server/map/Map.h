@@ -34,6 +34,7 @@ class NPCBlowing;
 class CaveExpressMapContext;
 class Water;
 class PackageTarget;
+class Package;
 class Geyser;
 
 const int32_t MAXCONTACTPOINTS = 128;
@@ -178,6 +179,10 @@ protected:
 	PhysicsWorld* _world;
 
 	bool _pause;
+	// when false, player movement/drop network handlers are ignored (scripted cutscenes)
+	bool _inputEnabled;
+	// set by map scripts to complete the map without meeting transfer quotas
+	bool _scriptForcedDone;
 	// sanity check in the world step callbacks
 	bool _entityRemovalAllowed;
 	bool _mapRunning;
@@ -187,6 +192,8 @@ protected:
 	ServiceProvider *_serviceProvider;
 
 	TimeManager _timeManager;
+
+	std::unique_ptr<CaveExpressMapContext> _mapContext;
 
 	uint32_t _finishPoints;
 	uint32_t _referenceTime;
@@ -242,6 +249,12 @@ public:
 	const MapFailedReason& getFailReason (const Player* player) const;
 	bool isPause () const;
 
+	bool isInputEnabled () const;
+	void setInputEnabled (bool enabled);
+
+	/** Force the map win condition from a map script (intro movies, cutscenes). */
+	void forceComplete ();
+
 	int handleDeadPlayers ();
 
 	bool hasPackageTarget () const;
@@ -263,6 +276,20 @@ public:
 
 	CaveMapTile* getTargetCave (const CaveMapTile* ignoreCave = nullptr) const;
 	CaveMapTile *getHighestCave () const;
+	CaveMapTile* getCave (int index) const;
+	int getCaveCount () const;
+
+	IEntity* findEntity (uint16_t id);
+
+	/** Script helpers that bypass normal spawn cooldowns/limits where needed. */
+	NPCFriendly* spawnFriendlyNPCScripted (CaveMapTile* cave, const EntityType& type = EntityType::NONE, bool returnToCaveOnIdle = false);
+	NPCPackage* spawnPackageNPCScripted (CaveMapTile* cave, const EntityType& type = EntityType::NONE);
+	Package* spawnPackageScripted (float x, float y);
+	NPCAttacking* spawnAttackingNPCScripted (float x, float y, const EntityType& type, bool right = true);
+	NPCFlying* spawnFlyingNPCScripted (float x, float y);
+	NPCFish* spawnFishNPCScripted (float x, float y);
+	NPCBlowing* spawnBlowingNPCScripted (float x, float y, bool right, float force = 1.0f, float size = 1.0f);
+	MapTile* addTileScripted (const std::string& spriteId, float x, float y, EntityAngle angle = 0);
 
 	PackageTarget *getPackageTarget () const;
 
@@ -479,6 +506,8 @@ inline bool Map::isDone () const
 {
 	if (isFailed())
 		return false;
+	if (_scriptForcedDone)
+		return true;
 	if (_transferedNPCLimit > 0 && _transferedNPCs < _transferedNPCLimit)
 		return false;
 	if (_transferedPackageLimit > 0 && _transferedPackages < _transferedPackageLimit)
@@ -542,6 +571,11 @@ inline uint16_t Map::getPoints () const
 inline bool Map::isPause () const
 {
 	return _pause;
+}
+
+inline bool Map::isInputEnabled () const
+{
+	return _inputEnabled;
 }
 
 }

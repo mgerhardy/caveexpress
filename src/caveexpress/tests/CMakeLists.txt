@@ -4,6 +4,7 @@ SET(${PROJECT_NAME}_SRC
 	ProtocolTest.cpp
 	EnumSpriteTypesTest.cpp
 	LUASpriteTest.cpp
+	LUAMapUpdateTest.cpp
 	RandomMapContextTest.cpp
 	MapValidatorTest.cpp
 	SpriteShapeTraitsTest.cpp

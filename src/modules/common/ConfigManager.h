@@ -203,6 +203,11 @@ public:
 		return iter->second;
 	}
 
+	inline const std::map<int, std::string>& getKeyBindings () const
+	{
+		return _keybindings[_bindingSpace];
+	}
+
 	inline std::string getControllerBinding (const std::string& button) const
 	{
 		ControllerBindingMap::const_iterator iter = _controllerBindings[_bindingSpace].find(button);

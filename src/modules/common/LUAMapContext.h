@@ -14,6 +14,8 @@ protected:
 	LUA _lua;
 	static LUAMapContext *currentCtx;
 	bool _error;
+	bool _hasOnMapLoaded;
+	bool _hasOnUpdate;
 
 	static int luaGetMapContext (lua_State * l);
 
@@ -43,8 +45,35 @@ public:
 
 	bool isLocationFree (gridCoord x, gridCoord y);
 
+	LUA& getLua ();
+	const LUA& getLua () const;
+
+	bool hasOnUpdate () const;
+	bool hasOnMapLoaded () const;
+
 	// IMapContext
 	virtual void onMapLoaded () override;
+	virtual void onUpdate (uint32_t deltaTime) override;
 	virtual bool load (bool skipErrors) override;
 	virtual bool save () const override;
 };
+
+inline LUA& LUAMapContext::getLua ()
+{
+	return _lua;
+}
+
+inline const LUA& LUAMapContext::getLua () const
+{
+	return _lua;
+}
+
+inline bool LUAMapContext::hasOnUpdate () const
+{
+	return _hasOnUpdate;
+}
+
+inline bool LUAMapContext::hasOnMapLoaded () const
+{
+	return _hasOnMapLoaded;
+}

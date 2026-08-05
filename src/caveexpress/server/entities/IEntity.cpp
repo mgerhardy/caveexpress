@@ -251,11 +251,6 @@ bool IEntity::isDirty () const
 	return !isRemove() && isDynamic() && isSnapshotDirty();
 }
 
-bool IEntity::isRemove () const
-{
-	return _remove;
-}
-
 void IEntity::onSpawn ()
 {
 }

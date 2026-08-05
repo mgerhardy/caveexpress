@@ -48,6 +48,13 @@ public:
 	// called whenever a new map was loaded
 	virtual void onMapLoaded () {}
 
+	/**
+	 * @brief Optional per-frame map script hook (e.g. Lua @c onUpdate).
+	 * Called while the map is running and not paused.
+	 * @param[in] deltaTime milliseconds since the last update
+	 */
+	virtual void onUpdate (uint32_t /*deltaTime*/) {}
+
 	const ThemeType& getTheme () const
 	{
 		return *_theme;

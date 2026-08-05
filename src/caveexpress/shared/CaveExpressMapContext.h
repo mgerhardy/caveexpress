@@ -10,11 +10,14 @@
 
 namespace caveexpress {
 
+class Map;
+
 class CaveExpressMapContext: public LUAMapContext {
 protected:
 	std::vector<CaveTileDefinition> _caveDefinitions;
 	std::vector<GateDefinition> _gateDefinitions;
 	std::vector<PressurePlateDefinition> _pressurePlateDefinitions;
+	Map* _runtimeMap;
 
 	bool isSolid (const SpriteType& type) const override {
 		return SpriteTypes::isSolid(type);
@@ -90,7 +93,7 @@ protected:
 
 public:
 	CaveExpressMapContext(const std::string& name) :
-			LUAMapContext(name) {
+			LUAMapContext(name), _runtimeMap(nullptr) {
 		luaL_Reg funcs[] = {
 				{ "addCave", luaAddCave },
 				{ "addGate", luaAddGate },
@@ -102,6 +105,14 @@ public:
 	}
 
 	virtual ~CaveExpressMapContext() {}
+
+	inline void setRuntimeMap (Map* map) {
+		_runtimeMap = map;
+	}
+
+	inline Map* getRuntimeMap () const {
+		return _runtimeMap;
+	}
 
 	inline const std::vector<CaveTileDefinition>& getCaveTileDefinitions() const {
 		return _caveDefinitions;

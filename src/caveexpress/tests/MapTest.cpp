@@ -107,6 +107,28 @@ protected:
 	}
 };
 
+TEST_F(MapTest, testIntroMoviePackageLoadsAndFinishes) {
+	ASSERT_TRUE(_map.load("intro-movie-package")) << "Could not load intro-movie-package";
+	ASSERT_EQ(1, _map.getCaveCount());
+	ASSERT_FALSE(_map.isInputEnabled()); // onMapLoaded disables input
+
+	Player* player = new Player(_map, 1);
+	player->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(player));
+	_map.startMap();
+	ASSERT_TRUE(_map.isActive());
+
+	// Drive the script for a few seconds of simulated time
+	for (int i = 0; i < 400; ++i)
+		_map.update(16);
+
+	// Script should have progressed; force-complete path must work
+	_map.forceComplete();
+	ASSERT_TRUE(_map.isDone());
+	_map.setInputEnabled(true);
+	ASSERT_TRUE(_map.isInputEnabled());
+}
+
 TEST_F(MapTest, testPlatform) {
 	ASSERT_TRUE(_map.load("test-platform")) << "Could not load the map test-platform";
 	{

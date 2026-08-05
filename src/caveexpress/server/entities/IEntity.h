@@ -114,7 +114,15 @@ public:
 	// returns true if the entity should get removed
 	// we may not remove it in the tick due to concurrent modification
 	// exceptions while looping over the entity lists
-	virtual bool isRemove () const;
+	virtual bool isRemove () const
+	{
+		return _remove;
+	}
+
+	void setRemove (bool remove = true)
+	{
+		_remove = remove;
+	}
 
 	// called when the entity is added to the world
 	virtual void onSpawn ();
