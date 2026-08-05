@@ -28,7 +28,10 @@ void CaveMapTile::update (uint32_t deltaTime)
 	_now += deltaTime;
 
 	if (_npc != nullptr) {
-		if (_npc->isNpcFriendly() && _npc->isCollected()) {
+		if (_npc->isRemove()) {
+			_npc = nullptr;
+			_nextSpawn = _now + _delaySpawn;
+		} else if (_npc->isNpcFriendly() && _npc->isCollected()) {
 			Log::info(LOG_GAMEIMPL, "npc %i is collected, remove from world", _npc->getID());
 			_map.removeNPCFromWorld(assert_cast<NPCFriendly*, INPCCave*>(_npc));
 			_npc = nullptr;
@@ -99,9 +102,19 @@ bool CaveMapTile::moveBackIntoCave ()
 		return false;
 
 	Log::info(LOG_GAMEIMPL, "move npc back into cave");
-	setRespawnPossible(true, _npc->getType());
+	const EntityType& type = _npc->getType();
 	_npc = nullptr;
+	// Only re-arm respawn if this cave was already set to respawn (cutscenes leave it off).
+	if (_respawn)
+		setRespawnPossible(true, type);
 	return true;
+}
+
+void CaveMapTile::setNPC (INPCCave* npc)
+{
+	_npc = npc;
+	if (npc != nullptr)
+		_spawned = _now;
 }
 
 void CaveMapTile::spawnNPC (bool spawnPackage)

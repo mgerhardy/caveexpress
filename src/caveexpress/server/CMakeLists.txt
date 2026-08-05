@@ -2,6 +2,7 @@ set(caveexpress-server_SRCS
 	map/RandomMapContext.cpp
 	map/RandomMapGenerator.cpp
 	map/Map.cpp
+	map/MapScript.cpp
 	events/GameEventHandler.cpp
 	entities/CollectableEntity.cpp
 	entities/Stone.cpp

@@ -2,20 +2,215 @@
 #include "common/MapSettings.h"
 #include "common/SpriteType.h"
 #include "common/Log.h"
+#include "common/String.h"
+#include <cctype>
+#include <cstring>
 #include <memory>
 #include <string>
+#include <vector>
 
 LUAMapContext *LUAMapContext::currentCtx;
 
+namespace {
+
+bool isIdentChar (char c)
+{
+	return std::isalnum(static_cast<unsigned char>(c)) != 0 || c == '_';
+}
+
+bool matchKeywordAt (const std::string& s, size_t i, const char* keyword)
+{
+	const size_t n = std::strlen(keyword);
+	if (i + n > s.size() || s.compare(i, n, keyword) != 0)
+		return false;
+	if (i > 0 && isIdentChar(s[i - 1]))
+		return false;
+	if (i + n < s.size() && isIdentChar(s[i + n]))
+		return false;
+	return true;
+}
+
+/**
+ * Advance one character, or skip a full string / comment starting at @p i.
+ * Returns the index just past the skipped region.
+ */
+size_t skipLuaToken (const std::string& s, size_t i)
+{
+	if (i >= s.size())
+		return i;
+
+	// Line comment
+	if (s[i] == '-' && i + 1 < s.size() && s[i + 1] == '-') {
+		if (i + 3 < s.size() && s[i + 2] == '[') {
+			// long comment --[=*[ ... ]=*]
+			size_t j = i + 3;
+			size_t eqs = 0;
+			while (j < s.size() && s[j] == '=') {
+				++eqs;
+				++j;
+			}
+			if (j < s.size() && s[j] == '[') {
+				++j;
+				const std::string closer = "]" + std::string(eqs, '=') + "]";
+				const size_t end = s.find(closer, j);
+				return end == std::string::npos ? s.size() : end + closer.size();
+			}
+		}
+		while (i < s.size() && s[i] != '\n')
+			++i;
+		return i;
+	}
+
+	// Short string
+	if (s[i] == '"' || s[i] == '\'') {
+		const char quote = s[i++];
+		while (i < s.size() && s[i] != quote) {
+			if (s[i] == '\\' && i + 1 < s.size())
+				i += 2;
+			else
+				++i;
+		}
+		return i < s.size() ? i + 1 : i;
+	}
+
+	// Long string [=*[ ... ]=*]
+	if (s[i] == '[') {
+		size_t j = i + 1;
+		size_t eqs = 0;
+		while (j < s.size() && s[j] == '=') {
+			++eqs;
+			++j;
+		}
+		if (j < s.size() && s[j] == '[') {
+			++j;
+			const std::string closer = "]" + std::string(eqs, '=') + "]";
+			const size_t end = s.find(closer, j);
+			return end == std::string::npos ? s.size() : end + closer.size();
+		}
+	}
+
+	return i + 1;
+}
+
+size_t findMatchingFunctionEnd (const std::string& s, size_t functionKeywordPos)
+{
+	// Start scanning after "function"
+	size_t i = functionKeywordPos + 8;
+	int depth = 1;
+	while (i < s.size()) {
+		if (s[i] == '-' || s[i] == '"' || s[i] == '\'' || s[i] == '[') {
+			const size_t next = skipLuaToken(s, i);
+			if (next != i + 1) {
+				i = next;
+				continue;
+			}
+		}
+
+		if (matchKeywordAt(s, i, "function") || matchKeywordAt(s, i, "if") || matchKeywordAt(s, i, "repeat")
+				|| matchKeywordAt(s, i, "do")) {
+			// for/while open via their trailing "do" — do not also count those keywords.
+			++depth;
+			while (i < s.size() && isIdentChar(s[i]))
+				++i;
+			continue;
+		}
+		if (matchKeywordAt(s, i, "end") || matchKeywordAt(s, i, "until")) {
+			--depth;
+			const size_t keywordLen = matchKeywordAt(s, i, "until") ? 5 : 3;
+			i += keywordLen;
+			if (depth == 0)
+				return i;
+			continue;
+		}
+		++i;
+	}
+	return std::string::npos;
+}
+
+bool findTopLevelFunctionRange (const std::string& s, const std::string& name, size_t& outStart, size_t& outEnd)
+{
+	size_t i = 0;
+	while (i < s.size()) {
+		if (s[i] == '-' || s[i] == '"' || s[i] == '\'' || s[i] == '[') {
+			const size_t next = skipLuaToken(s, i);
+			if (next != i + 1) {
+				i = next;
+				continue;
+			}
+		}
+
+		if (matchKeywordAt(s, i, "function")) {
+			size_t j = i + 8;
+			while (j < s.size() && std::isspace(static_cast<unsigned char>(s[j])))
+				++j;
+			if (s.compare(j, name.size(), name) == 0 && (j + name.size() >= s.size() || !isIdentChar(s[j + name.size()]))) {
+				size_t k = j + name.size();
+				while (k < s.size() && std::isspace(static_cast<unsigned char>(s[k])))
+					++k;
+				if (k < s.size() && s[k] == '(') {
+					const size_t end = findMatchingFunctionEnd(s, i);
+					if (end == std::string::npos)
+						return false;
+					outStart = i;
+					outEnd = end;
+					return true;
+				}
+			}
+		}
+		++i;
+	}
+	return false;
+}
+
+void eraseTopLevelFunction (std::string& s, const std::string& name)
+{
+	size_t start = 0;
+	size_t end = 0;
+	if (!findTopLevelFunctionRange(s, name, start, end))
+		return;
+
+	// Also drop blank lines immediately surrounding the removed function.
+	while (start > 0 && (s[start - 1] == ' ' || s[start - 1] == '\t'))
+		--start;
+	if (start > 0 && s[start - 1] == '\n')
+		--start;
+	while (end < s.size() && (s[end] == ' ' || s[end] == '\t' || s[end] == '\r'))
+		++end;
+	if (end < s.size() && s[end] == '\n')
+		++end;
+
+	s.erase(start, end - start);
+}
+
+std::string collapseExcessBlankLines (const std::string& input)
+{
+	std::string out;
+	out.reserve(input.size());
+	int newlines = 0;
+	for (char c : input) {
+		if (c == '\n') {
+			if (++newlines <= 2)
+				out.push_back(c);
+		} else {
+			newlines = 0;
+			out.push_back(c);
+		}
+	}
+	return string::trim(out);
+}
+
+}
+
 LUAMapContext::LUAMapContext (const std::string& name) :
-		IMapContext(name), _lua(true), _error(false)
+		IMapContext(name), _lua(true), _error(false), _hasOnMapLoaded(false), _hasOnUpdate(false)
 {
 	currentCtx = this;
 }
 
 LUAMapContext::~LUAMapContext ()
 {
-	currentCtx = nullptr;
+	if (currentCtx == this)
+		currentCtx = nullptr;
 }
 
 void LUAMapContext::initLUABindings (luaL_Reg* additional)
@@ -98,7 +293,23 @@ int LUAMapContext::luaAddEmitter (lua_State * l)
 
 void LUAMapContext::onMapLoaded ()
 {
-	_lua.execute("onMapLoaded");
+	if (!_hasOnMapLoaded)
+		return;
+	currentCtx = this;
+	if (!_lua.execute("onMapLoaded")) {
+		_hasOnMapLoaded = false;
+	}
+}
+
+void LUAMapContext::onUpdate (uint32_t deltaTime)
+{
+	if (!_hasOnUpdate)
+		return;
+	currentCtx = this;
+	if (!_lua.execute("onUpdate", static_cast<double>(deltaTime))) {
+		// Avoid spamming the log every frame if the script errors.
+		_hasOnUpdate = false;
+	}
 }
 
 int LUAMapContext::luaAddStartPosition (lua_State * l) {
@@ -131,10 +342,38 @@ int LUAMapContext::luaSetSetting (lua_State * l)
 	return 0;
 }
 
+void LUAMapContext::capturePreservedLogic (const std::string& source)
+{
+	std::string logic = source;
+	eraseTopLevelFunction(logic, "getName");
+	eraseTopLevelFunction(logic, "initMap");
+	_preservedLogic = collapseExcessBlankLines(logic);
+}
+
 bool LUAMapContext::load (bool skipErrors)
 {
 	resetTiles();
-	if (!_lua.load(FS.getMapsDir() + _name + ".lua")) {
+	_preservedLogic.clear();
+
+	const std::string mapFile = FS.getMapsDir() + _name + ".lua";
+	const FilePtr file = FS.getFile(mapFile);
+	if (!file->exists()) {
+		Log::info(LOG_COMMON, "could not load map lua script");
+		return false;
+	}
+
+	char* buffer = nullptr;
+	const int fileLen = file->read((void**)&buffer);
+	std::unique_ptr<char[]> holder(buffer);
+	if (buffer == nullptr || fileLen <= 0) {
+		Log::info(LOG_COMMON, "could not read map lua script");
+		return false;
+	}
+
+	const std::string source(buffer, fileLen);
+	capturePreservedLogic(source);
+
+	if (!_lua.loadBuffer(source, _name.c_str())) {
 		Log::info(LOG_COMMON, "could not load map lua script");
 		return false;
 	}
@@ -146,6 +385,9 @@ bool LUAMapContext::load (bool skipErrors)
 
 	if (!_lua.execute("initMap"))
 		return false;
+
+	_hasOnMapLoaded = _lua.hasFunction("onMapLoaded");
+	_hasOnUpdate = _lua.hasFunction("onUpdate");
 
 	return !_error;
 }
@@ -202,8 +444,18 @@ bool LUAMapContext::save() const
 	file->appendString(_title.c_str());
 	file->appendString("\"\n");
 	file->appendString("end\n\n");
-	file->appendString("function onMapLoaded()\n");
-	file->appendString("end\n\n");
+
+	if (!_preservedLogic.empty()) {
+		file->appendString(_preservedLogic.c_str());
+		if (_preservedLogic.back() != '\n')
+			file->appendString("\n");
+		file->appendString("\n");
+	} else {
+		// New / logic-free maps keep a trivial onMapLoaded hook for editor compatibility.
+		file->appendString("function onMapLoaded()\n");
+		file->appendString("end\n\n");
+	}
+
 	file->appendString("function initMap()\n");
 	file->appendString("\t-- get the current map context\n");
 	file->appendString("\tlocal map = Map.get()\n");

@@ -213,6 +213,7 @@
         <key>fileList</key>
         <array>
             <filename>../png/caveexpress/player-crashed-middle-01.png</filename>
+            <filename>../png/caveexpress/player-empty-middle-01.png</filename>
             <filename>../png/caveexpress/player-flying-middle-03.png</filename>
             <filename>../png/caveexpress/player-flying-middle-01.png</filename>
             <filename>../png/caveexpress/player-flying-middle-02.png</filename>

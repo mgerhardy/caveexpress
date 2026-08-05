@@ -18,6 +18,7 @@ class Map;
 class NPCFriendly;
 class CaveMapTile;
 class CollectableEntity;
+class Package;
 
 #define MAX_COLLECTED 4
 
@@ -121,9 +122,15 @@ public:
 
 	bool collect (CollectableEntity* entity);
 	void drop ();
+	/** Packages currently attached to the player (not yet delivered). */
+	int getCollectedPackageCount () const;
+	/** 0-based index into currently carried packages; nullptr if out of range. */
+	Package* getCollectedPackage (int index) const;
 
 	void subtractHitpoints (uint16_t hitpoints);
 	void addHitpoints (uint16_t hitpoints);
+	/** Make the player ignore damage until @c _time + durationMillis. */
+	void setInvulnerable (uint32_t durationMillis);
 
 	void createBody (const PhysicsVec2 &pos);
 

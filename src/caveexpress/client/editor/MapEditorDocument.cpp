@@ -455,6 +455,8 @@ void MapEditorDocument::loadFromContext (IMapContext& ctx)
 		if (!placeTileItem(item, false))
 			Log::error(LOG_GAMEIMPL, "could not place emitter %s", entityType.name.c_str());
 	}
+	_scriptLogic = ctx.getScriptLogic();
+	_scriptDirty = false;
 }
 
 std::unique_ptr<IMapContext> MapEditorDocument::createContext (const std::string& mapName) const

@@ -115,6 +115,8 @@ void IMapEditorDocument::doClear ()
 	_map.clear();
 	_settings.clear();
 	_startPositions.clear();
+	_scriptLogic.clear();
+	_scriptDirty = false;
 	_lastSave = 0;
 	_fileName = "newmap";
 	_mapName = "A new map";
@@ -165,12 +167,21 @@ void IMapEditorDocument::redo ()
 
 bool IMapEditorDocument::isDirty () const
 {
-	return _lastSave != _undoStates.size();
+	return _lastSave != _undoStates.size() || _scriptDirty;
 }
 
 void IMapEditorDocument::discardChanges ()
 {
 	_lastSave = _undoStates.size();
+	_scriptDirty = false;
+}
+
+void IMapEditorDocument::setScriptLogic (const std::string& logic)
+{
+	if (_scriptLogic == logic)
+		return;
+	_scriptLogic = logic;
+	_scriptDirty = true;
 }
 
 void IMapEditorDocument::setSetting (const std::string& key, const std::string& value)
@@ -503,6 +514,7 @@ void IMapEditorDocument::prepareContextForSaving (IMapContext& ctx)
 	ctx.setSettings(_settings);
 	ctx.setStartPositions(_startPositions);
 	ctx.setTitle(_mapName);
+	ctx.setScriptLogic(_scriptLogic);
 
 	std::vector<MapTileDefinition> definitions;
 	std::vector<EmitterDefinition> emitters;
@@ -527,6 +539,7 @@ bool IMapEditorDocument::save ()
 	_lastMap->setValue(_fileName);
 	_mapManager.loadMaps();
 	_lastSave = _undoStates.size();
+	_scriptDirty = false;
 	return ctx->save();
 }
 
@@ -581,6 +594,8 @@ void IMapEditorDocument::loadFromContext (IMapContext& ctx)
 		if (!placeTileItem(item, false))
 			Log::error(LOG_UI, "could not place emitter %s", entityType.name.c_str());
 	}
+	_scriptLogic = ctx.getScriptLogic();
+	_scriptDirty = false;
 }
 
 bool IMapEditorDocument::load (const std::string& mapName)
@@ -592,6 +607,7 @@ bool IMapEditorDocument::load (const std::string& mapName)
 		loadFromContext(*ctx);
 	}
 	_lastSave = _undoStates.size();
+	_scriptDirty = false;
 	return true;
 }
 

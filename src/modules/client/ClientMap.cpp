@@ -22,7 +22,7 @@ ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, 
 				0), _mapGridHeight(0), _time(0), _playerID(0), _frontend(frontend), _pause(false), _serviceProvider(
 						serviceProvider), _screenRumble(false), _screenRumbleStrength(0.0f), _screenRumbleOffsetX(
 						0), _screenRumbleOffsetY(0), _particleSystem(
-				Config.getClientSideParticleMaxAmount()), _tutorial(false), _started(false), _theme(&ThemeTypes::ROCK), _startPositions(0)
+				Config.getClientSideParticleMaxAmount()), _tutorial(false), _cutscene(false), _started(false), _theme(&ThemeTypes::ROCK), _startPositions(0)
 {
 	_maxZoom = Config.getConfigVar("maxzoom", "1.2");
 	_minZoom = Config.getConfigVar("minzoom", "0.5");
@@ -80,6 +80,7 @@ void ClientMap::resetCurrentMap ()
 	_started = false;
 	_introWindow = "";
 	_tutorial = false;
+	_cutscene = false;
 	_mapGridWidth = 0;
 	_mapGridHeight = 0;
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
@@ -466,6 +467,8 @@ void ClientMap::setSetting (const std::string& key, const std::string& value)
 		_theme = &ThemeType::getByName(value);
 	} else if (key == msn::TUTORIAL) {
 		_tutorial = string::toBool(value);
+	} else if (key == msn::CUTSCENE) {
+		_cutscene = string::toBool(value);
 	} else if (key == msn::INTROWINDOW) {
 		_introWindow = value;
 	} else if (key == msn::WIND) {

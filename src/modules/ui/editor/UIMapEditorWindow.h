@@ -25,6 +25,7 @@ protected:
 	mutable bool _panning = false;
 	mutable bool _showHelp = false;
 	mutable bool _showConfirm = false;
+	mutable bool _showScriptEditor = false;
 	mutable std::string _confirmAction;
 	mutable char _tileFilter[128] = {};
 	mutable char _entityFilter[128] = {};
@@ -45,6 +46,7 @@ protected:
 	void drawMapsPanel () const;
 	void drawHelpPanel () const;
 	void drawConfirmModal () const;
+	void drawScriptEditor () const;
 	void drawCanvas () const;
 	void renderMapIntoCanvas (ImDrawList* drawList) const;
 	void renderSprite (ImDrawList* drawList, const MapEditorTileItem& item, float originX, float originY,

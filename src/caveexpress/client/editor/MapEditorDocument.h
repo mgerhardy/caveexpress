@@ -54,6 +54,7 @@ public:
 	bool supportsThemeControls () const override { return true; }
 	bool supportsWater () const override { return true; }
 	bool supportsEmitterParams () const override { return true; }
+	bool supportsMapScript () const override { return true; }
 	const EntityType& getPlayerEntityType () const override;
 
 	void beginPickGateTarget ();

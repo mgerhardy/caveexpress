@@ -230,6 +230,17 @@ void UINode::displayText (const std::string& text, uint32_t delayMillis, float x
 	_texts.push_back(UINodeDelayedText(text, delayMillis, c, font));
 }
 
+void UINode::clearTexts ()
+{
+	_texts.clear();
+}
+
+void UINode::displayTextReplace (const std::string& text, uint32_t delayMillis, float x, float y)
+{
+	clearTexts();
+	displayText(text, delayMillis, x, y);
+}
+
 void UINode::flash (uint32_t flashMillis, uint32_t flashAlwaysFreq)
 {
 	_originalAlpha = _alpha;

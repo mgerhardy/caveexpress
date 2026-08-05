@@ -23,11 +23,13 @@
 #include "caveexpress/server/entities/Gate.h"
 #include "caveexpress/server/entities/PressurePlate.h"
 #include "caveexpress/shared/CaveExpressMapContext.h"
+#include "caveexpress/server/map/MapScript.h"
 #include "caveexpress/server/map/RandomMapContext.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/server/entities/modificators/WindModificator.h"
 #include "caveexpress/server/entities/Package.h"
 #include "caveexpress/server/entities/Geyser.h"
+#include "caveexpress/server/entities/Platform.h"
 #include "caveexpress/server/entities/npcs/NPCAggressive.h"
 #include "caveexpress/server/entities/npcs/NPCBlowing.h"
 #include "caveexpress/server/entities/npcs/NPCFish.h"
@@ -109,6 +111,310 @@ void Map::finishMap ()
 		countTransferedPackage();
 	}
 #endif
+}
+
+void Map::setInputEnabled (bool enabled)
+{
+	if (_inputEnabled == enabled)
+		return;
+	_inputEnabled = enabled;
+	if (enabled)
+		clearScriptClientInput();
+	Log::info(LOG_GAMEIMPL, "map input enabled: %s", enabled ? "true" : "false");
+}
+
+void Map::forceComplete ()
+{
+	_scriptForcedDone = true;
+	Log::info(LOG_GAMEIMPL, "map force-completed by script");
+}
+
+void Map::noteClientDirectionPressed (Direction dir)
+{
+	_scriptClientDirections |= dir;
+}
+
+void Map::noteClientDirectionReleased (Direction dir)
+{
+	_scriptClientDirections &= ~dir;
+}
+
+void Map::noteClientAction ()
+{
+	_scriptClientActionLatched = true;
+	// Space/drop may skip a cinematic beat, but fly keys must not (see noteClientDirectionPressed).
+	_scriptClientSkipLatched = true;
+}
+
+void Map::noteClientSkip ()
+{
+	_scriptClientSkipLatched = true;
+}
+
+void Map::clearScriptClientInput ()
+{
+	_scriptClientDirections = 0;
+	_scriptClientActionLatched = false;
+	_scriptClientSkipLatched = false;
+}
+
+void Map::consumeScriptClientSkip ()
+{
+	_scriptClientSkipLatched = false;
+	_scriptClientActionLatched = false;
+}
+
+void Map::broadcastScriptMessage (const std::string& message, uint32_t delayMillis)
+{
+	if (_players.empty()) {
+		_pendingScriptMessages.push_back({message, delayMillis});
+		return;
+	}
+	for (Player* player : _players)
+		sendMessage(player->getClientId(), message, delayMillis);
+}
+
+void Map::flushPendingScriptMessages ()
+{
+	if (_pendingScriptMessages.empty() || _players.empty())
+		return;
+	for (const PendingScriptMessage& message : _pendingScriptMessages) {
+		for (Player* player : _players)
+			sendMessage(player->getClientId(), message.text, message.delayMillis);
+	}
+	_pendingScriptMessages.clear();
+}
+
+void Map::setWaterHeight (float waterHeight)
+{
+	if (_water == nullptr)
+		return;
+	_water->setHeight(waterHeight);
+	_waterHeight = waterHeight;
+}
+
+CaveMapTile* Map::getCave (int index) const
+{
+	if (index < 0 || index >= (int)_caves.size())
+		return nullptr;
+	return _caves[index];
+}
+
+int Map::getCaveCount () const
+{
+	return (int)_caves.size();
+}
+
+IEntity* Map::findEntity (uint16_t id)
+{
+	for (Player* player : _players) {
+		if (player->getID() == id)
+			return player;
+	}
+	for (IEntity* entity : _entities) {
+		if (entity->getID() == id)
+			return entity;
+	}
+	for (IEntity* entity : _entitiesToAdd) {
+		if (entity->getID() == id)
+			return entity;
+	}
+	return nullptr;
+}
+
+NPCFriendly* Map::spawnFriendlyNPCScripted (CaveMapTile* cave, const EntityType& type, bool returnToCaveOnIdle)
+{
+	if (cave == nullptr)
+		return nullptr;
+	_nextFriendlyNPCSpawn = 0;
+	if (_friendlyNPCs.size() >= _friendlyNPCLimit)
+		_friendlyNPCLimit = static_cast<uint32_t>(_friendlyNPCs.size()) + 1;
+	// Scripts may spawn taxi/story NPCs without a second cave as destination.
+	NPCFriendly* npc = createFriendlyNPC(cave, type, returnToCaveOnIdle, false);
+	if (npc != nullptr)
+		cave->setNPC(npc);
+	return npc;
+}
+
+NPCPackage* Map::spawnPackageNPCScripted (CaveMapTile* cave, const EntityType& type)
+{
+	if (cave == nullptr)
+		return nullptr;
+	SDL_assert(_entityRemovalAllowed);
+	// Scripted cutscenes may spawn dumpers even before/without a package target.
+	NPCPackage* npc = new NPCPackage(cave, type.isNone() ? EntityTypes::NPC_FRIENDLY_MAN : type);
+	// Scripts drive dump/return explicitly; disable the idle auto-leave behaviour.
+	npc->setAutoLeavePackage(false);
+	cave->setNPC(npc);
+	addEntity(npc);
+	visitEntity(npc);
+	return npc;
+}
+
+Package* Map::spawnPackageScripted (float x, float y)
+{
+	SDL_assert(_entityRemovalAllowed);
+	Package* package = new Package(*this, x, y);
+	package->createBody();
+	return package;
+}
+
+NPCAttacking* Map::spawnAttackingNPCScripted (float x, float y, const EntityType& type, bool right)
+{
+	return createAttackingNPC(PhysicsVec2(x, y), type, right);
+}
+
+NPCFlying* Map::spawnFlyingNPCScripted (float x, float y)
+{
+	return createFlyingNPC(PhysicsVec2(x, y));
+}
+
+NPCFish* Map::spawnFishNPCScripted (float x, float y)
+{
+	return createFishNPC(PhysicsVec2(x, y));
+}
+
+NPCBlowing* Map::spawnBlowingNPCScripted (float x, float y, bool right, float force, float size)
+{
+	return createBlowingNPC(PhysicsVec2(x, y), right, force, size);
+}
+
+MapTile* Map::addTileScripted (const std::string& spriteId, float x, float y, EntityAngle angle)
+{
+	SDL_assert(_entityRemovalAllowed);
+	SpriteDefPtr spriteDef = SpriteDefinition::get().getSpriteDefinition(spriteId);
+	if (!spriteDef) {
+		Log::error(LOG_GAMEIMPL, "addTileScripted: unknown sprite %s", spriteId.c_str());
+		return nullptr;
+	}
+	MapTile* mapTile = createMapTileWithoutBody(spriteDef, x, y, angle);
+	if (!mapTile->isDecoration() && !mapTile->isWindow()) {
+		loadEntity(mapTile);
+		mapTile->createBody();
+	} else {
+		addEntity(mapTile);
+	}
+	if (mapTile->isCave()) {
+		CaveMapTile* cave = assert_cast<CaveMapTile*, MapTile*>(mapTile);
+		_caves.push_back(cave);
+		initCave(cave, false);
+	} else if (mapTile->isGround() || mapTile->isSolid()) {
+		rebuildPlatforms();
+	}
+	visitEntity(mapTile);
+	return mapTile;
+}
+
+static bool mapTileCoversCell (const MapTile* tile, int gridX, int gridY)
+{
+	const int x0 = static_cast<int>(tile->getGridX() + EPSILON);
+	const int y0 = static_cast<int>(tile->getGridY() + EPSILON);
+	const int x1 = x0 + std::max(1, static_cast<int>(tile->getGridWidth() + EPSILON));
+	const int y1 = y0 + std::max(1, static_cast<int>(tile->getGridHeight() + EPSILON));
+	return gridX >= x0 && gridX < x1 && gridY >= y0 && gridY < y1;
+}
+
+bool Map::removeEntityImmediate (IEntity* entity)
+{
+	SDL_assert(_entityRemovalAllowed);
+	if (entity == nullptr || entity->isPlayer())
+		return false;
+
+	GameEvent.removeEntity(entity->getVisMask(), *entity);
+	entity->prepareRemoval();
+
+	if (entity->isCave()) {
+		CaveMapTile* cave = assert_cast<CaveMapTile*, IEntity*>(entity);
+		_caves.erase(std::remove(_caves.begin(), _caves.end(), cave), _caves.end());
+	}
+	if (entity->isNpc()) {
+		NPCFriendly* friendly = dynamic_cast<NPCFriendly*>(entity);
+		if (friendly != nullptr)
+			_friendlyNPCs.remove(friendly);
+	}
+
+	auto eraseFrom = [] (EntityList& list, IEntity* e) {
+		list.erase(std::remove(list.begin(), list.end(), e), list.end());
+	};
+	eraseFrom(_entities, entity);
+	eraseFrom(_entitiesToAdd, entity);
+	delete entity;
+	return true;
+}
+
+int Map::removeTileAtScripted (int gridX, int gridY)
+{
+	SDL_assert(_entityRemovalAllowed);
+	std::vector<MapTile*> matches;
+	auto collect = [&] (EntityList& list) {
+		for (IEntity* entity : list) {
+			if (!entity->isMapTile() || entity->isRemove())
+				continue;
+			MapTile* tile = assert_cast<MapTile*, IEntity*>(entity);
+			if (mapTileCoversCell(tile, gridX, gridY))
+				matches.push_back(tile);
+		}
+	};
+	collect(_entities);
+	collect(_entitiesToAdd);
+
+	bool needRebuild = false;
+	int removed = 0;
+	for (MapTile* tile : matches) {
+		needRebuild = needRebuild || tile->isGround() || tile->isSolid() || tile->isCave();
+		if (removeEntityImmediate(tile))
+			++removed;
+	}
+	if (needRebuild && removed > 0)
+		rebuildPlatforms();
+	return removed;
+}
+
+MapTile* Map::replaceTileScripted (const std::string& spriteId, float x, float y, EntityAngle angle)
+{
+	const int gridX = static_cast<int>(x + EPSILON);
+	const int gridY = static_cast<int>(y + EPSILON);
+	removeTileAtScripted(gridX, gridY);
+	return addTileScripted(spriteId, x, y, angle);
+}
+
+void Map::rebuildPlatforms ()
+{
+	SDL_assert(_entityRemovalAllowed);
+
+	std::vector<Platform*> platforms;
+	for (PlatformYMap::iterator iy = _platforms.begin(); iy != _platforms.end(); ++iy) {
+		for (PlatformXMap::iterator ix = iy->second.begin(); ix != iy->second.end(); ++ix)
+			platforms.push_back(ix->second);
+	}
+	_platforms.clear();
+	for (Platform* platform : platforms)
+		removeEntityImmediate(platform);
+
+	for (IEntity* entity : _entities) {
+		if (!entity->isGround() || entity->isRemove())
+			continue;
+		MapTile* mapTile = assert_cast<MapTile*, IEntity*>(entity);
+		int start = -1;
+		int end = -1;
+		const int y = mapTile->getGridY() - 1.0f + EPSILON;
+		getPlatformDimensions(mapTile->getGridX(), y, &start, &end);
+		if (start == -1 || end == -1)
+			continue;
+		getPlatform(mapTile, &start, &end);
+	}
+
+	for (CaveMapTile* cave : _caves) {
+		if (cave->isRemove())
+			continue;
+		int start = -1;
+		int end = -1;
+		Platform* platform = getPlatform(cave, &start, &end, cave->getSize().y);
+		if (platform == nullptr)
+			continue;
+		platform->setCave(cave);
+		cave->setPlatformDimensions(start, end);
+	}
 }
 
 void Map::killPlayers ()
@@ -271,6 +577,23 @@ int Map::getNpcCount() const
 int Map::getPackageCount () const
 {
 	return _transferedPackageLimit - _transferedPackages;
+}
+
+int Map::getDeliveredPackageCount () const
+{
+	return static_cast<int>(_transferedPackages);
+}
+
+int Map::getCollectedPackageCount () const
+{
+	if (_players.empty())
+		return 0;
+	return _players[0]->getCollectedPackageCount();
+}
+
+int Map::getPackageDeliveryGoal () const
+{
+	return static_cast<int>(_transferedPackageLimit);
 }
 
 void Map::clearPhysics ()
@@ -481,6 +804,10 @@ void Map::resetCurrentMap ()
 	_restartDue = 0;
 	_finishPending = false;
 	_pause = false;
+	_inputEnabled = true;
+	_scriptForcedDone = false;
+	_pendingScriptMessages.clear();
+	clearScriptClientInput();
 	_transferedNPCs = 0;
 	_transferedNPCLimit = 0;
 	_transferedPackages = 0;
@@ -509,6 +836,7 @@ void Map::resetCurrentMap ()
 	_waterFallingDelay = 0;
 	_allPlayers = 0;
 	_entityRemovalAllowed = true;
+	_mapContext.reset();
 	clearPhysics();
 	if (!_name.empty())
 		Log::info(LOG_GAMEIMPL, "done with resetting: %s", _name.c_str());
@@ -541,9 +869,12 @@ inline CaveExpressMapContext* getMapContext (const std::string& name)
 
 bool Map::load (const std::string& name)
 {
-	std::unique_ptr<CaveExpressMapContext> ctx(getMapContext(name));
-
+	// Tear down any previous map/context before constructing a new one.
+	// LUAMapContext::currentCtx is a process-wide pointer; destroying the old
+	// context after allocating the new one would clear the new currentCtx.
 	resetCurrentMap();
+
+	std::unique_ptr<CaveExpressMapContext> ctx(getMapContext(name));
 
 	if (name.empty()) {
 		Log::info(LOG_GAMEIMPL, "no map name given");
@@ -752,12 +1083,15 @@ bool Map::load (const std::string& name)
 
 	Log::info(LOG_GAMEIMPL, "map loading done");
 
+	ctx->setRuntimeMap(this);
+	MapScript::install(*ctx);
 	ctx->onMapLoaded();
 
 	_frontend->onMapLoaded();
 	const LoadMapMessage msg(_name, _title);
 	_serviceProvider->getNetwork().sendToClients(0, msg);
 
+	_mapContext = std::move(ctx);
 	_mapRunning = true;
 	return true;
 }
@@ -873,10 +1207,10 @@ bool Map::spawnPlayer (Player* player)
 	return true;
 }
 
-void Map::sendMessage (ClientId clientId, const std::string& message) const
+void Map::sendMessage (ClientId clientId, const std::string& message, uint32_t delayMillis) const
 {
 	INetwork& network = _serviceProvider->getNetwork();
-	network.sendToClient(clientId, TextMessage(message));
+	network.sendToClient(clientId, TextMessage(message, delayMillis));
 }
 
 bool Map::isReadyToStart () const
@@ -892,6 +1226,7 @@ void Map::startMap ()
 	}
 	_playersWaitingForSpawn.clear();
 	updateVisMask();
+	flushPendingScriptMessages();
 
 	INetwork& network = _serviceProvider->getNetwork();
 	network.sendToAllClients(StartMapMessage());
@@ -1525,7 +1860,7 @@ NPCPackage* Map::createPackageNPC (CaveMapTile* cave, const EntityType& type)
 	return npc;
 }
 
-NPCFriendly* Map::createFriendlyNPC(CaveMapTile* cave, const EntityType& type, bool returnToCaveOnIdle)
+NPCFriendly* Map::createFriendlyNPC(CaveMapTile* cave, const EntityType& type, bool returnToCaveOnIdle, bool requireTargetCave)
 {
 	SDL_assert(_entityRemovalAllowed);
 	if (_friendlyNPCs.size() >= _friendlyNPCLimit)
@@ -1535,11 +1870,12 @@ NPCFriendly* Map::createFriendlyNPC(CaveMapTile* cave, const EntityType& type, b
 		return nullptr;
 
 	CaveMapTile* targetCave = getTargetCave(cave);
-	if (targetCave == nullptr)
+	if (targetCave == nullptr && requireTargetCave)
 		return nullptr;
 
 	NPCFriendly* npc = new NPCFriendly(cave, type, returnToCaveOnIdle);
-	npc->setTargetCave(targetCave);
+	if (targetCave != nullptr)
+		npc->setTargetCave(targetCave);
 	_friendlyNPCs.push_back(npc);
 	++_friendlyNPCCount;
 
@@ -1726,7 +2062,12 @@ void Map::update (uint32_t deltaTime)
 	if (_pause)
 		return;
 
+	flushPendingScriptMessages();
+
 	_timeManager.update(deltaTime);
+
+	if (_mapContext)
+		_mapContext->onUpdate(deltaTime);
 
 	if (_restartDue > 0 && _restartDue <= _time) {
 		const std::string currentName = getName();
@@ -1932,6 +2273,22 @@ int Map::countPackages () const
 		++packages;
 	}
 	return packages;
+}
+
+Package* Map::getPackage (int index) const
+{
+	int current = 0;
+	for (Map::EntityListConstIter i = _entities.begin(); i != _entities.end(); ++i) {
+		if (!(*i)->isPackage())
+			continue;
+		Package* package = assert_cast<Package*, IEntity*>(*i);
+		if (package->isCounted() || package->isDestroyed())
+			continue;
+		if (current == index)
+			return package;
+		++current;
+	}
+	return nullptr;
 }
 
 void Map::visitEntities (IEntityVisitor *visitor, const EntityType& type)

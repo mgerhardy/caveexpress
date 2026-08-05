@@ -142,6 +142,10 @@ bool Package::shouldCollide (const IEntity *entity) const
 	if (isDestroyed())
 		return false;
 
+	// Cave NPCs walk the same ledge they dump onto — never block them.
+	if (entity->isNpcCave())
+		return false;
+
 	if (entity->isPlayer()) {
 		const Player* player = assert_cast<const Player*, const IEntity*>(entity);
 		return !player->isCrashed() && !isArrived() && !isDelivered() && entity->getPos().y < getPos().y;

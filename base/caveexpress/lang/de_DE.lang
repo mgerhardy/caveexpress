@@ -39,6 +39,7 @@ Drop stones onto the tree|Lasse den Stein auf Bäume fallen
 Drop them by hitting SPACE bar|Abwerfen durch LEERTASTE
 Drop them with the second finger|Abwerfen durch zweiten Finger
 Drop the stone to collect packages again|Lasse den Stein fallen um wieder Kisten heben zu können
+Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save.|Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save.
 Editor|Editor
 Egg|Ei
 emitter|Emitter
@@ -88,6 +89,7 @@ Map|Map
 Map Editor|Map-Editor
 Map generator seed. 0 picks a new seed on Auto.|Map generator seed. 0 picks a new seed on Auto.
 Maps|Maps
+Map Script|Map Script
 MMB click: pick, MMB drag or Space+LMB: pan|MMB click: pick, MMB drag or Space+LMB: pan
 Multiplayer|Multiplayer
 Music volume|Music volume
@@ -131,6 +133,8 @@ RMB: erase|RMT: löschen
 Rock|Felsen
 Save|Speichern
 Save & Go|Testen
+Script|Script
+Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test
 Seed|Seed
 Select a tile on the map|Select a tile on the map
 Select game mode|Auswahl des Spielmodus

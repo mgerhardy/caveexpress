@@ -60,6 +60,8 @@ player = {
 	flying = "player-flying",
 	flyingleft = "player-flying",
 	flyingright = "player-flying",
+	empty = "player-flying",
+	idle = "player-flying",
 }
 
 tree = {

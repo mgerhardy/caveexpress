@@ -67,6 +67,9 @@ protected:
 	IMap::StartPositions _startPositions;
 	std::string _fileName;
 	std::string _mapName;
+	/** Lua kept across saves (onUpdate/onMapLoaded/helpers); not part of undo. */
+	std::string _scriptLogic;
+	bool _scriptDirty = false;
 	int _mapWidth = 16;
 	int _mapHeight = 12;
 	const ThemeType* _theme;
@@ -208,8 +211,15 @@ public:
 	virtual bool supportsThemeControls () const { return false; }
 	virtual bool supportsWater () const { return false; }
 	virtual bool supportsEmitterParams () const { return false; }
+	/** True when maps are Lua files and script logic can be edited in the editor. */
+	virtual bool supportsMapScript () const { return false; }
 	virtual const EntityType& getPlayerEntityType () const = 0;
 	virtual void changeMapTheme (const ThemeType& toTheme) { setTheme(toTheme); }
 	virtual void autoFill (const ThemeType& theme) {}
 	virtual void setWaterHeight (float) {}
+
+	const std::string& getScriptLogic () const { return _scriptLogic; }
+	std::string& getScriptLogicMutable () { return _scriptLogic; }
+	void markScriptChanged () { _scriptDirty = true; }
+	void setScriptLogic (const std::string& logic);
 };

@@ -48,6 +48,24 @@ public:
 	// called whenever a new map was loaded
 	virtual void onMapLoaded () {}
 
+	/**
+	 * @brief Optional per-frame map script hook (e.g. Lua @c onUpdate).
+	 * Called while the map is running and not paused.
+	 * @param[in] deltaTime milliseconds since the last update
+	 */
+	virtual void onUpdate (uint32_t /*deltaTime*/) {}
+
+	/**
+	 * @brief Optional Lua kept across editor saves (onMapLoaded/onUpdate/helpers).
+	 * getName/initMap are regenerated from structured map data and are not part of this.
+	 */
+	virtual const std::string& getScriptLogic () const
+	{
+		static const std::string empty;
+		return empty;
+	}
+	virtual void setScriptLogic (const std::string& /*logic*/) {}
+
 	const ThemeType& getTheme () const
 	{
 		return *_theme;

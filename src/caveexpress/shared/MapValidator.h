@@ -41,6 +41,8 @@ struct MapMetrics {
 	int bridgesWithoutBackground = 0;
 	int cavesAbovePackageTarget = 0;
 	int cavePackageAirTooClose = 0;
+	/** Cave cells that are also solid/walkable (covered by a larger rock tile, etc.). */
+	int cavesCoveredBySolid = 0;
 	int shortPlatformRuns = 0;
 	int smallSolidComponents = 0;
 	int isolatedWalkables = 0;

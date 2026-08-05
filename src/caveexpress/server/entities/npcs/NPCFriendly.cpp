@@ -87,6 +87,11 @@ void NPCFriendly::onContact (PhysicsContact contact, IEntity* entity)
 
 bool NPCFriendly::triggerTargetCaveAnnouncement (const PhysicsVec2& playerPos)
 {
+	if (_targetCave == nullptr) {
+		if (_triggerMovement == 0)
+			_triggerMovement = _time + 200;
+		return _time > _triggerMovement;
+	}
 	const float distance = physDistance(playerPos, getPos());
 	if (isSwimming() && distance > _swimmingDistance) {
 		return false;
@@ -101,6 +106,8 @@ bool NPCFriendly::triggerTargetCaveAnnouncement (const PhysicsVec2& playerPos)
 
 bool NPCFriendly::updateCollectedState ()
 {
+	if (_targetCave == nullptr)
+		return false;
 	const Map::PlayerList& players = _map.getPlayers();
 	for (Map::PlayerListConstIter i = players.begin(); i != players.end(); ++i) {
 		Player* player = *i;
@@ -131,7 +138,9 @@ bool NPCFriendly::updateCollectedState ()
 
 uint8_t NPCFriendly::getTargetCaveNumber () const
 {
-	return getTargetCave()->getCaveNumber();
+	if (_targetCave == nullptr)
+		return 0;
+	return _targetCave->getCaveNumber();
 }
 
 bool NPCFriendly::setArrived (const PhysicsVec2& targetPos)

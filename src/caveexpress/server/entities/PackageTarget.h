@@ -32,12 +32,26 @@ public:
 	PackageTarget (Map& map, const std::string& spriteID, gridCoord x, gridCoord y);
 	virtual ~PackageTarget ();
 
+	/** True while a distance joint is pulling a package into the shredder. */
+	bool isPulling () const;
+	Package* getPullingPackage () const;
+
 	// IEntity
 	bool shouldCollide (const IEntity* entity) const override;
 	void onPreSolve (PhysicsContact contact, IEntity* entity, const PhysicsManifold& oldManifold) override;
 	void update (uint32_t deltaTime) override;
 	void clearJoint (PhysicsJoint joint) override;
 };
+
+inline bool PackageTarget::isPulling () const
+{
+	return _package != nullptr;
+}
+
+inline Package* PackageTarget::getPullingPackage () const
+{
+	return _package;
+}
 
 inline bool PackageTarget::isValidContact (const PhysicsContact contact, const std::string& id) const
 {

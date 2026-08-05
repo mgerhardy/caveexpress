@@ -392,6 +392,9 @@ public:
 	void flash (uint32_t flashMillis = 2000, uint32_t flashAlwaysFreq = 1);
 
 	virtual void displayText (const std::string& text, uint32_t delayMillis = 3000, float x = -1.0f, float y = -1.0f);
+	/** Replace any currently displayed delayed texts with a single new message. */
+	virtual void displayTextReplace (const std::string& text, uint32_t delayMillis = 3000, float x = -1.0f, float y = -1.0f);
+	void clearTexts ();
 
 	virtual bool onTextInput (const std::string& text);
 	/**

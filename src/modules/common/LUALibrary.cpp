@@ -176,6 +176,14 @@ int LUA::getValueIntegerFromTable (const char * key, int defaultValue)
 	return rtn;
 }
 
+bool LUA::hasFunction (const std::string& name) const
+{
+	lua_getglobal(_state, name.c_str());
+	const bool isFunc = lua_isfunction(_state, -1) != 0;
+	lua_pop(_state, 1);
+	return isFunc;
+}
+
 /**
  * @param[in] function function to be called
  */
@@ -184,6 +192,24 @@ bool LUA::execute (const std::string &function, int returnValues)
 	if (!getGlobal(function))
 		return false;
 	const int ret = lua_pcall(_state, 0, returnValues, 0);
+	if (ret != 0) {
+		const char * s = luaL_checkstring(_state, -1);
+		if (s == nullptr)
+			Log::error(LOG_COMMON, "unrecognized Lua error");
+		else
+			Log::error(LOG_COMMON, "%s", s);
+		return false;
+	}
+
+	return true;
+}
+
+bool LUA::execute (const std::string &function, double argument, int returnValues)
+{
+	if (!getGlobal(function))
+		return false;
+	lua_pushnumber(_state, argument);
+	const int ret = lua_pcall(_state, 1, returnValues, 0);
 	if (ret != 0) {
 		const char * s = luaL_checkstring(_state, -1);
 		if (s == nullptr)

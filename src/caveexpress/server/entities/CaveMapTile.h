@@ -60,6 +60,9 @@ public:
 
 	bool moveBackIntoCave ();
 
+	/** Register the active cave NPC (required for moveBackIntoCave / removal). */
+	void setNPC (INPCCave* npc);
+
 	int getCaveNumber() const;
 	uint32_t getSpawnTime () const;
 

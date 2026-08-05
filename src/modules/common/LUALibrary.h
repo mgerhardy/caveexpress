@@ -96,9 +96,20 @@ public:
 	bool load (const std::string &file);
 	bool loadBuffer(const std::string& buffer, const char *ctx);
 	/**
+	 * @return @c true if a global Lua function with the given name exists
+	 */
+	bool hasFunction (const std::string& name) const;
+	/**
 	 * @param[in] function function to be called
 	 */
 	bool execute (const std::string &function, int returnValues = 0);
+	/**
+	 * @brief Call a global Lua function with a single numeric argument.
+	 * @param[in] function function to be called
+	 * @param[in] argument numeric argument pushed as a Lua number
+	 * @param[in] returnValues number of expected return values
+	 */
+	bool execute (const std::string &function, double argument, int returnValues = 0);
 
 	/**
 	 * @return the UTF-8 character that is stored in the table for the given key.
