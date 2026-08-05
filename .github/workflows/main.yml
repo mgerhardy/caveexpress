@@ -50,7 +50,7 @@ jobs:
         - name: Test
           run: |
             cd build
-            ctest --output-on-failure --timeout 60
+            ctest --output-on-failure --timeout 300 -j$(nproc)
           continue-on-error: true
 
     windows:

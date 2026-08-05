@@ -6,104 +6,141 @@
 namespace cavepacker {
 
 bool FrozenDeadlockDetector::hasWallClose(const BoardState& s, int index) const {
-	const char field = s.getFieldByIndex(index);
-	return isWall(field);
+	return isWall(s.getFieldByIndex(index));
 }
 
-bool FrozenDeadlockDetector::hasAnyBlockedPackageClose(uint32_t millisStart, uint32_t millisTimeout, const SimpleDeadlockDetector& simple, BoardState& s, int index, int origIndex) {
-	const char field = s.getFieldByIndex(index);
-	if (isPackage(field) || isPackageOnTarget(field)) {
-		s.clearFieldForIndex(origIndex);
-		s.setFieldForIndex(origIndex, Sokoban::WALL);
-		const bool dl = hasDeadlock(millisStart, millisTimeout, simple, s);
-		s.clearFieldForIndex(origIndex);
-		s.setFieldForIndex(origIndex, field);
-		return dl;
-	}
-	return false;
-}
-
-bool FrozenDeadlockDetector::hasSimpleDeadlock(const SimpleDeadlockDetector& simple, const BoardState& s, int index) const {
+bool FrozenDeadlockDetector::hasSimpleDeadlock(const SimpleDeadlockDetector& simple, int index) const {
 	return simple.hasDeadlockAt(index);
 }
 
-#define BLOCKEDPACKAGE(indexPrefix) hasAnyBlockedPackageClose(millisStart, millisTimeout, simple, s, index##indexPrefix, origIndex)
-#define HASWALL(indexPrefix) hasWallClose(s, index##indexPrefix)
-#define SIMPLEDEADLOCK(indexPrefix) hasSimpleDeadlock(simple, s, index##indexPrefix)
+bool FrozenDeadlockDetector::isPackageFrozen(uint32_t millisStart, uint32_t millisTimeout,
+		const SimpleDeadlockDetector& simple, BoardState& s,
+		std::vector<uint8_t>& visiting, int index) {
+	if (index < 0 || index >= (int)visiting.size())
+		return false;
+	if (visiting[index])
+		return true;
 
-bool FrozenDeadlockDetector::hasDeadlockVertically(uint32_t millisStart, uint32_t millisTimeout, const SimpleDeadlockDetector& simple, BoardState& s, int col, int row) {
-	int upx;
-	int upy;
+	int col;
+	int row;
+	if (!s.getColRowFromIndex(index, col, row))
+		return false;
+
+	visiting[index] = 1;
+	const bool frozen = hasDeadlockAt(millisStart, millisTimeout, simple, s, visiting, col, row);
+	visiting[index] = 0;
+	return frozen;
+}
+
+bool FrozenDeadlockDetector::hasBlockedPackageClose(uint32_t millisStart, uint32_t millisTimeout,
+		const SimpleDeadlockDetector& simple, BoardState& s,
+		std::vector<uint8_t>& visiting, int neighborIndex, int origIndex) {
+	const char field = s.getFieldByIndex(neighborIndex);
+	if (!isPackage(field) && !isPackageOnTarget(field))
+		return false;
+
+	// Same as before: treat the current package as a wall and see whether that
+	// creates a frozen deadlock anywhere. Use a visiting set instead of calling
+	// hasDeadlock() again (which used to re-copy the board and rescan everything).
+	const char restored = s.clearFieldForIndex(origIndex);
+	s.setFieldForIndex(origIndex, Sokoban::WALL);
+
+	bool deadlock = false;
+	int index = 0;
+	int checked = 0;
+	const uint32_t deadline = millisStart + millisTimeout;
+	for (auto i = s.begin(); i != s.end(); ++i, ++index) {
+		if ((++checked & 7) == 0) {
+			if (SDL_TICKS_PASSED(SDL_GetTicks(), deadline)) {
+				s.clearFieldForIndex(origIndex);
+				s.setFieldForIndex(origIndex, restored);
+				return false;
+			}
+		}
+		if (!isPackage(*i))
+			continue;
+		if (isPackageFrozen(millisStart, millisTimeout, simple, s, visiting, index)) {
+			deadlock = true;
+			break;
+		}
+	}
+
+	s.clearFieldForIndex(origIndex);
+	s.setFieldForIndex(origIndex, restored);
+	return deadlock;
+}
+
+bool FrozenDeadlockDetector::hasDeadlockVertically(uint32_t millisStart, uint32_t millisTimeout,
+		const SimpleDeadlockDetector& simple, BoardState& s,
+		std::vector<uint8_t>& visiting, int col, int row) {
+	int upx, upy;
 	getXY(MOVE_UP, upx, upy);
 	const int indexUp = s.getIndex(col + upx, row + upy);
 
-	int downx;
-	int downy;
+	int downx, downy;
 	getXY(MOVE_DOWN, downx, downy);
 	const int indexDown = s.getIndex(col + downx, row + downy);
 
-	const bool blockedVertically = HASWALL(Up) || HASWALL(Down);
-	if (blockedVertically)
+	if (hasWallClose(s, indexUp) || hasWallClose(s, indexDown))
 		return true;
-	const bool simpleVertically = SIMPLEDEADLOCK(Up) && SIMPLEDEADLOCK(Down);
-	if (simpleVertically)
+	if (hasSimpleDeadlock(simple, indexUp) && hasSimpleDeadlock(simple, indexDown))
 		return true;
 
 	const int origIndex = s.getIndex(col, row);
-	const bool packageVertically = BLOCKEDPACKAGE(Up) || BLOCKEDPACKAGE(Down);
-	if (packageVertically)
+	if (hasBlockedPackageClose(millisStart, millisTimeout, simple, s, visiting, indexUp, origIndex)
+			|| hasBlockedPackageClose(millisStart, millisTimeout, simple, s, visiting, indexDown, origIndex))
 		return true;
-
 	return false;
 }
 
-bool FrozenDeadlockDetector::hasDeadlock_(uint32_t millisStart, uint32_t millisTimeout, const SimpleDeadlockDetector& simple, BoardState& s, int col, int row) {
-	int rightx;
-	int righty;
+bool FrozenDeadlockDetector::hasDeadlockAt(uint32_t millisStart, uint32_t millisTimeout,
+		const SimpleDeadlockDetector& simple, BoardState& s,
+		std::vector<uint8_t>& visiting, int col, int row) {
+	int rightx, righty;
 	getXY(MOVE_RIGHT, rightx, righty);
 	const int indexRight = s.getIndex(col + rightx, row + righty);
 
-	int leftx;
-	int lefty;
+	int leftx, lefty;
 	getXY(MOVE_LEFT, leftx, lefty);
 	const int indexLeft = s.getIndex(col + leftx, row + lefty);
 
-	const bool blockedHorizontally = HASWALL(Left) || HASWALL(Right);
-	if (blockedHorizontally) {
-		const bool blockedVertically = hasDeadlockVertically(millisStart, millisTimeout, simple, s, col, row);
-		return blockedVertically;
+	if (hasWallClose(s, indexLeft) || hasWallClose(s, indexRight)) {
+		return hasDeadlockVertically(millisStart, millisTimeout, simple, s, visiting, col, row);
 	}
-	const bool simpleHorizontally = SIMPLEDEADLOCK(Left) && SIMPLEDEADLOCK(Right);
-	if (simpleHorizontally) {
-		const bool blockedVertically = hasDeadlockVertically(millisStart, millisTimeout, simple, s, col, row);
-		return blockedVertically;
-	}
-	const int origIndex = s.getIndex(col, row);
-	const bool packageHorizontally = BLOCKEDPACKAGE(Left) || BLOCKEDPACKAGE(Right);
-	if (packageHorizontally) {
-		const bool blockedVertically = hasDeadlockVertically(millisStart, millisTimeout, simple, s, col, row);
-		return blockedVertically;
+	if (hasSimpleDeadlock(simple, indexLeft) && hasSimpleDeadlock(simple, indexRight)) {
+		return hasDeadlockVertically(millisStart, millisTimeout, simple, s, visiting, col, row);
 	}
 
+	const int origIndex = s.getIndex(col, row);
+	if (hasBlockedPackageClose(millisStart, millisTimeout, simple, s, visiting, indexLeft, origIndex)
+			|| hasBlockedPackageClose(millisStart, millisTimeout, simple, s, visiting, indexRight, origIndex)) {
+		return hasDeadlockVertically(millisStart, millisTimeout, simple, s, visiting, col, row);
+	}
 	return false;
 }
 
-bool FrozenDeadlockDetector::hasDeadlock(uint32_t millisStart, uint32_t millisTimeout, const SimpleDeadlockDetector& simple, const BoardState& s) {
+bool FrozenDeadlockDetector::hasDeadlock(uint32_t millisStart, uint32_t millisTimeout,
+		const SimpleDeadlockDetector& simple, const BoardState& s) {
 	clear();
+	const int size = s.size();
+	if (size <= 0)
+		return false;
+
 	BoardState copy = s;
+	std::vector<uint8_t> visiting(size, 0);
+
+	const uint32_t deadline = millisStart + millisTimeout;
 	int index = 0;
+	int checked = 0;
 	for (auto i = s.begin(); i != s.end(); ++i, ++index) {
-		TIMEOUTREACHED(millisStart + millisTimeout)
-		if (!isPackage(*i)) {
-			continue;
+		if ((++checked & 7) == 0) {
+			TIMEOUTREACHED(deadline)
 		}
-
-		int col;
-		int row;
-		if (!s.getColRowFromIndex(index, col, row))
+		if (!isPackage(*i))
 			continue;
 
-		if (hasDeadlock_(millisStart, millisTimeout, simple, copy, col, row)) {
+		std::fill(visiting.begin(), visiting.end(), 0);
+		if (isPackageFrozen(millisStart, millisTimeout, simple, copy, visiting, index)) {
 			_deadlocks.insert(index);
 			return true;
 		}

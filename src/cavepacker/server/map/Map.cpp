@@ -273,7 +273,9 @@ bool Map::undoPackage (int col, int row, int targetCol, int targetRow)
 
 	--_pushes;
 
-	checkDeadlock();
+	// Autosolve replays a known-good solution; deadlock detection is expensive and redundant there.
+	if (!_autoSolve)
+		checkDeadlock();
 
 	return true;
 }
@@ -334,8 +336,8 @@ bool Map::movePlayer (Player* player, char step)
 
 	player->storeStep(step);
 	increaseMoves();
-	// if we moved a package, check the state
-	if (package != nullptr)
+	// if we moved a package, check the state (skip during autosolve — known-good solutions)
+	if (package != nullptr && !_autoSolve)
 		checkDeadlock();
 	return true;
 }

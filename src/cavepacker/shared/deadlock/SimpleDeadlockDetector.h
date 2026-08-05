@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DeadlockTypes.h"
+#include <vector>
 
 namespace cavepacker {
 
@@ -13,6 +14,8 @@ class SimpleDeadlockDetector {
 private:
 	DeadlockSet _deadlocks;
 	DeadlockSet _visited;
+	/** Indexed by board cell; faster than unordered_set::find in hot paths. */
+	std::vector<uint8_t> _deadlockFlags;
 	bool pull(char direction, BoardState& s, int index);
 	bool moveBackwards(BoardState& s, int index);
 public:
@@ -24,7 +27,9 @@ public:
 };
 
 inline bool SimpleDeadlockDetector::hasDeadlockAt(int index) const {
-	return _deadlocks.find(index) != _deadlocks.end();
+	if (index < 0 || index >= (int)_deadlockFlags.size())
+		return false;
+	return _deadlockFlags[index] != 0;
 }
 
 inline void SimpleDeadlockDetector::fillDeadlocks(DeadlockSet& set) const {
@@ -36,6 +41,7 @@ inline void SimpleDeadlockDetector::fillDeadlocks(DeadlockSet& set) const {
 inline void SimpleDeadlockDetector::clear() {
 	_visited.clear();
 	_deadlocks.clear();
+	_deadlockFlags.clear();
 }
 
 }

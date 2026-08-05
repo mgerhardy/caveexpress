@@ -42,6 +42,10 @@ bool SimpleDeadlockDetector::moveBackwards(BoardState& s, int index) {
 }
 
 int SimpleDeadlockDetector::init(const BoardState& s) {
+	_deadlocks.clear();
+	_visited.clear();
+	_deadlockFlags.assign(s.size(), 0);
+
 	std::vector<int> targets;
 	int index = 0;
 	for (auto i = s.begin(); i != s.end(); ++i, ++index) {
@@ -90,6 +94,7 @@ int SimpleDeadlockDetector::init(const BoardState& s) {
 		Log::debug(LOG_GAMEIMPL, "Simple deadlock detected at %i:%i", col, row);
 #endif
 		_deadlocks.insert(index);
+		_deadlockFlags[index] = 1;
 	}
 	Log::info(LOG_GAMEIMPL, "Found %i simple deadlocks", (int)_deadlocks.size());
 	Log::debug(LOG_GAMEIMPL, "Visited %i fields", (int)_visited.size());
@@ -99,12 +104,16 @@ int SimpleDeadlockDetector::init(const BoardState& s) {
 
 bool SimpleDeadlockDetector::hasDeadlock(uint32_t millisStart, uint32_t millisTimeout, const BoardState& s) const {
 	int index = 0;
+	int checked = 0;
+	const uint32_t deadline = millisStart + millisTimeout;
 	for (auto i = s.begin(); i != s.end(); ++i, ++index) {
-		TIMEOUTREACHED(millisStart + millisTimeout)
+		if ((++checked & 31) == 0) {
+			TIMEOUTREACHED(deadline)
+		}
 		if (!isPackage(*i)) {
 			continue;
 		}
-		if (_deadlocks.find(index) != _deadlocks.end()) {
+		if (hasDeadlockAt(index)) {
 			return true;
 		}
 	}
