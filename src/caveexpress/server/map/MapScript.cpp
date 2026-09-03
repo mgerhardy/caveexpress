@@ -504,10 +504,9 @@ int luaEntityReturnToCave (lua_State* L)
 int luaEntityLeavePackage (lua_State* L)
 {
 	IEntity* entity = luaGetEntity(L);
-	NPCPackage* packageNpc = dynamic_cast<NPCPackage*>(entity);
-	if (packageNpc == nullptr)
+	if (!entity->isNpcPackage())
 		luaL_error(L, "leavePackage() is only valid for package NPCs");
-	packageNpc->leavePackage();
+	assert_cast<NPCPackage*, IEntity*>(entity)->leavePackage();
 	return 0;
 }
 
