@@ -4,7 +4,9 @@
 
 class PhysicsFixture;
 class PhysicsContact;
+class PhysicsContactEdge;
 class PhysicsWorld;
+struct PhysicsFixtureDef;
 
 class PhysicsBody {
 public:
@@ -58,10 +60,10 @@ public:
 	void applyLinearImpulse (const PhysicsVec2& impulse, const PhysicsVec2& point, bool wake = true) const;
 	void applyTorque (float torque, bool wake = true) const;
 
-	PhysicsFixture createFixture (const class PhysicsFixtureDef& def) const;
+	PhysicsFixture createFixture (const PhysicsFixtureDef& def) const;
 	PhysicsFixture getFixtureList () const;
 	/// First contact edge for this body (iterate with PhysicsContactEdge::next).
-	class PhysicsContactEdge getContactList () const;
+	PhysicsContactEdge getContactList () const;
 
 	/// Opaque storage accessors used by backends.
 	uint64_t key () const { return _key; }
