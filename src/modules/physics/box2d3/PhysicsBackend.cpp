@@ -1,3 +1,4 @@
+// API gates use CP_BOX2D_VERSION_ATLEAST from cp-config.h (CMake-detected).
 #include "physics/box2d3/Native.h"
 #include "physics/PhysicsCallbacks.h"
 #include <algorithm>
@@ -22,11 +23,6 @@ inline PhysicsColor fromHex (b2HexColor c)
 			1.0f);
 }
 
-inline PhysicsVec2 transformPoint (b2Transform t, b2Vec2 p)
-{
-	return toVec(b2TransformPoint(t, p));
-}
-
 bool customFilterFcn (b2ShapeId shapeIdA, b2ShapeId shapeIdB, void* context)
 {
 	auto* impl = static_cast<WorldImpl*>(context);
@@ -35,17 +31,29 @@ bool customFilterFcn (b2ShapeId shapeIdA, b2ShapeId shapeIdB, void* context)
 	return impl->contactFilter->shouldCollide(toFixture(shapeIdA), toFixture(shapeIdB));
 }
 
-bool preSolveFcn (b2ShapeId shapeIdA, b2ShapeId shapeIdB, b2Pos point, b2Vec2 normal, void* context)
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
+void preSolveFcn (b2ShapeId shapeIdA, b2ShapeId shapeIdB, b2Manifold* manifold, void* context)
 {
 	auto* impl = static_cast<WorldImpl*>(context);
 	if (!impl || !impl->contactListener)
-		return true;
+		return;
 	impl->preSolveEnabled = true;
 	impl->preShapeA = shapeIdA;
 	impl->preShapeB = shapeIdB;
 	PhysicsManifold oldManifold;
 	impl->contactListener->preSolve(toContact(shapeIdA, shapeIdB), oldManifold);
-	return impl->preSolveEnabled;
+	if (!impl->preSolveEnabled && manifold != nullptr)
+		manifold->pointCount = 0;
+}
+
+bool preContinuousFcn (b2ShapeId shapeIdA, b2ShapeId shapeIdB, b2Pos point, b2Vec2 normal, void* context)
+{
+	(void)shapeIdA;
+	(void)shapeIdB;
+	(void)point;
+	(void)normal;
+	auto* impl = static_cast<WorldImpl*>(context);
+	return impl == nullptr || impl->preSolveEnabled;
 }
 
 float rayCastFcn (b2ShapeId shapeId, b2Pos point, b2Vec2 normal, float fraction, void* context)
@@ -53,7 +61,7 @@ float rayCastFcn (b2ShapeId shapeId, b2Pos point, b2Vec2 normal, float fraction,
 	auto* cb = static_cast<IPhysicsRayCastCallback*>(context);
 	if (!cb)
 		return 0.0f;
-	return cb->reportFixture(toFixture(shapeId), toVec(point), toVec(normal), fraction);
+	return cb->reportFixture(toFixture(shapeId), fromPos(point), toVec(normal), fraction);
 }
 
 void drawPolygonFcn (b2WorldTransform transform, const b2Vec2* vertices, int vertexCount, b2HexColor color, void* context)
@@ -64,7 +72,7 @@ void drawPolygonFcn (b2WorldTransform transform, const b2Vec2* vertices, int ver
 	PhysicsVec2 tmp[B2_MAX_POLYGON_VERTICES];
 	const int n = std::min(vertexCount, (int)B2_MAX_POLYGON_VERTICES);
 	for (int i = 0; i < n; ++i)
-		tmp[i] = transformPoint(transform, vertices[i]);
+		tmp[i] = fromPos(b2TransformWorldPoint(transform, vertices[i]));
 	draw->drawPolygon(tmp, n, fromHex(color));
 }
 
@@ -77,7 +85,7 @@ void drawSolidPolygonFcn (b2WorldTransform transform, const b2Vec2* vertices, in
 	PhysicsVec2 tmp[B2_MAX_POLYGON_VERTICES];
 	const int n = std::min(vertexCount, (int)B2_MAX_POLYGON_VERTICES);
 	for (int i = 0; i < n; ++i)
-		tmp[i] = transformPoint(transform, vertices[i]);
+		tmp[i] = fromPos(b2TransformWorldPoint(transform, vertices[i]));
 	draw->drawSolidPolygon(tmp, n, fromHex(color));
 }
 
@@ -85,7 +93,7 @@ void drawCircleFcn (b2Pos center, float radius, b2HexColor color, void* context)
 {
 	auto* draw = static_cast<IPhysicsDebugDraw*>(context);
 	if (draw)
-		draw->drawCircle(toVec(center), radius, fromHex(color));
+		draw->drawCircle(fromPos(center), radius, fromHex(color));
 }
 
 void drawSolidCircleFcn (b2WorldTransform transform, b2Vec2 center, float radius, b2HexColor color, void* context)
@@ -93,7 +101,7 @@ void drawSolidCircleFcn (b2WorldTransform transform, b2Vec2 center, float radius
 	auto* draw = static_cast<IPhysicsDebugDraw*>(context);
 	if (!draw)
 		return;
-	const PhysicsVec2 worldCenter = transformPoint(transform, center);
+	const PhysicsVec2 worldCenter = fromPos(b2TransformWorldPoint(transform, center));
 	PhysicsVec2 xAxis(transform.q.c, transform.q.s);
 	draw->drawSolidCircle(worldCenter, radius, xAxis, fromHex(color));
 }
@@ -102,10 +110,99 @@ void drawLineFcn (b2Pos p1, b2Pos p2, b2HexColor color, void* context)
 {
 	auto* draw = static_cast<IPhysicsDebugDraw*>(context);
 	if (draw)
-		draw->drawSegment(toVec(p1), toVec(p2), fromHex(color));
+		draw->drawSegment(fromPos(p1), fromPos(p2), fromHex(color));
 }
 
 void drawTransformFcn (b2WorldTransform transform, void* context)
+{
+	auto* draw = static_cast<IPhysicsDebugDraw*>(context);
+	if (!draw)
+		return;
+	PhysicsTransform t;
+	t.p = fromPos(transform.p);
+	t.c = transform.q.c;
+	t.s = transform.q.s;
+	draw->drawTransform(t);
+}
+
+void drawPointFcn (b2Pos p, float size, b2HexColor color, void* context)
+{
+	auto* draw = static_cast<IPhysicsDebugDraw*>(context);
+	if (draw)
+		draw->drawPoint(fromPos(p), size, fromHex(color));
+}
+#else
+bool preSolveFcn (b2ShapeId shapeIdA, b2ShapeId shapeIdB, b2Manifold* manifold, void* context)
+{
+	(void)manifold;
+	auto* impl = static_cast<WorldImpl*>(context);
+	if (!impl || !impl->contactListener)
+		return true;
+	impl->preSolveEnabled = true;
+	impl->preShapeA = shapeIdA;
+	impl->preShapeB = shapeIdB;
+	PhysicsManifold oldManifold;
+	impl->contactListener->preSolve(toContact(shapeIdA, shapeIdB), oldManifold);
+	return impl->preSolveEnabled;
+}
+
+float rayCastFcn (b2ShapeId shapeId, b2Vec2 point, b2Vec2 normal, float fraction, void* context)
+{
+	auto* cb = static_cast<IPhysicsRayCastCallback*>(context);
+	if (!cb)
+		return 0.0f;
+	return cb->reportFixture(toFixture(shapeId), toVec(point), toVec(normal), fraction);
+}
+
+void drawPolygonFcn (const b2Vec2* vertices, int vertexCount, b2HexColor color, void* context)
+{
+	auto* draw = static_cast<IPhysicsDebugDraw*>(context);
+	if (!draw)
+		return;
+	PhysicsVec2 tmp[B2_MAX_POLYGON_VERTICES];
+	const int n = std::min(vertexCount, (int)B2_MAX_POLYGON_VERTICES);
+	for (int i = 0; i < n; ++i)
+		tmp[i] = toVec(vertices[i]);
+	draw->drawPolygon(tmp, n, fromHex(color));
+}
+
+void drawSolidPolygonFcn (b2Transform transform, const b2Vec2* vertices, int vertexCount, float radius, b2HexColor color, void* context)
+{
+	(void)radius;
+	auto* draw = static_cast<IPhysicsDebugDraw*>(context);
+	if (!draw)
+		return;
+	PhysicsVec2 tmp[B2_MAX_POLYGON_VERTICES];
+	const int n = std::min(vertexCount, (int)B2_MAX_POLYGON_VERTICES);
+	for (int i = 0; i < n; ++i)
+		tmp[i] = toVec(b2TransformPoint(transform, vertices[i]));
+	draw->drawSolidPolygon(tmp, n, fromHex(color));
+}
+
+void drawCircleFcn (b2Vec2 center, float radius, b2HexColor color, void* context)
+{
+	auto* draw = static_cast<IPhysicsDebugDraw*>(context);
+	if (draw)
+		draw->drawCircle(toVec(center), radius, fromHex(color));
+}
+
+void drawSolidCircleFcn (b2Transform transform, float radius, b2HexColor color, void* context)
+{
+	auto* draw = static_cast<IPhysicsDebugDraw*>(context);
+	if (!draw)
+		return;
+	PhysicsVec2 xAxis(transform.q.c, transform.q.s);
+	draw->drawSolidCircle(toVec(transform.p), radius, xAxis, fromHex(color));
+}
+
+void drawSegmentFcn (b2Vec2 p1, b2Vec2 p2, b2HexColor color, void* context)
+{
+	auto* draw = static_cast<IPhysicsDebugDraw*>(context);
+	if (draw)
+		draw->drawSegment(toVec(p1), toVec(p2), fromHex(color));
+}
+
+void drawTransformFcn (b2Transform transform, void* context)
 {
 	auto* draw = static_cast<IPhysicsDebugDraw*>(context);
 	if (!draw)
@@ -117,12 +214,13 @@ void drawTransformFcn (b2WorldTransform transform, void* context)
 	draw->drawTransform(t);
 }
 
-void drawPointFcn (b2Pos p, float size, b2HexColor color, void* context)
+void drawPointFcn (b2Vec2 p, float size, b2HexColor color, void* context)
 {
 	auto* draw = static_cast<IPhysicsDebugDraw*>(context);
 	if (draw)
 		draw->drawPoint(toVec(p), size, fromHex(color));
 }
+#endif
 
 void drainEvents (WorldImpl* impl)
 {
@@ -154,14 +252,21 @@ b2ShapeDef makeShapeDef (const PhysicsFixtureDef& def)
 {
 	b2ShapeDef sd = b2DefaultShapeDef();
 	sd.density = def.density;
+#if !CP_BOX2D_VERSION_ATLEAST(3, 1, 0)
+	sd.friction = def.friction;
+	sd.restitution = def.restitution;
+#else
 	sd.material.friction = def.friction;
 	sd.material.restitution = def.restitution;
+#endif
 	sd.isSensor = def.isSensor;
 	sd.filter = toB2(def.filter);
 	sd.userData = reinterpret_cast<void*>(def.userData);
 	sd.enableContactEvents = def.enableContactEvents;
 	sd.enablePreSolveEvents = def.enablePreSolveEvents;
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
 	sd.enableCustomFiltering = true;
+#endif
 	sd.enableSensorEvents = def.isSensor || def.enableContactEvents;
 	return sd;
 }
@@ -222,7 +327,14 @@ PhysicsBody PhysicsWorld::createBody (const PhysicsBodyDef& def)
 {
 	b2BodyDef bd = b2DefaultBodyDef();
 	bd.type = toB2(def.type);
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
+	bd.position = toB2Pos(def.position);
+	if (def.fixedRotation)
+		bd.motionLocks.angularZ = true;
+#else
 	bd.position = toB2(def.position);
+	bd.fixedRotation = def.fixedRotation;
+#endif
 	bd.rotation = b2MakeRot(def.angle);
 	bd.linearVelocity = toB2(def.linearVelocity);
 	bd.angularVelocity = def.angularVelocity;
@@ -231,8 +343,6 @@ PhysicsBody PhysicsWorld::createBody (const PhysicsBodyDef& def)
 	bd.gravityScale = def.gravityScale;
 	bd.isBullet = def.bullet;
 	bd.userData = reinterpret_cast<void*>(def.userData);
-	if (def.fixedRotation)
-		bd.motionLocks.angularZ = true;
 	return toBody(b2CreateBody(implOf(_impl)->worldId, &bd));
 }
 
@@ -246,49 +356,77 @@ void PhysicsWorld::destroyBody (PhysicsBody body)
 PhysicsJoint PhysicsWorld::createDistanceJoint (const PhysicsDistanceJointDef& def)
 {
 	b2DistanceJointDef jd = b2DefaultDistanceJointDef();
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
 	jd.base.bodyIdA = toB2Body(def.bodyA);
 	jd.base.bodyIdB = toB2Body(def.bodyB);
 	if (def.useWorldAnchors) {
-		jd.base.localFrameA.p = b2Body_GetLocalPoint(jd.base.bodyIdA, toB2(def.worldAnchorA));
-		jd.base.localFrameB.p = b2Body_GetLocalPoint(jd.base.bodyIdB, toB2(def.worldAnchorB));
+		jd.base.localFrameA.p = b2Body_GetLocalPoint(jd.base.bodyIdA, toB2Pos(def.worldAnchorA));
+		jd.base.localFrameB.p = b2Body_GetLocalPoint(jd.base.bodyIdB, toB2Pos(def.worldAnchorB));
 	} else {
 		jd.base.localFrameA.p = toB2(def.localAnchorA);
 		jd.base.localFrameB.p = toB2(def.localAnchorB);
 	}
 	jd.base.localFrameA.q = b2Rot_identity;
 	jd.base.localFrameB.q = b2Rot_identity;
+	jd.base.collideConnected = def.collideConnected;
+	jd.base.userData = reinterpret_cast<void*>(def.userData);
+#else
+	jd.bodyIdA = toB2Body(def.bodyA);
+	jd.bodyIdB = toB2Body(def.bodyB);
+	if (def.useWorldAnchors) {
+		jd.localAnchorA = b2Body_GetLocalPoint(jd.bodyIdA, toB2(def.worldAnchorA));
+		jd.localAnchorB = b2Body_GetLocalPoint(jd.bodyIdB, toB2(def.worldAnchorB));
+	} else {
+		jd.localAnchorA = toB2(def.localAnchorA);
+		jd.localAnchorB = toB2(def.localAnchorB);
+	}
+	jd.collideConnected = def.collideConnected;
+	jd.userData = reinterpret_cast<void*>(def.userData);
+#endif
 	jd.length = 0.5f * (def.minLength + def.maxLength);
 	jd.enableSpring = false;
 	jd.enableLimit = true;
 	jd.minLength = def.minLength;
 	jd.maxLength = def.maxLength;
-	jd.base.collideConnected = def.collideConnected;
-	jd.base.userData = reinterpret_cast<void*>(def.userData);
 	return toJoint(b2CreateDistanceJoint(implOf(_impl)->worldId, &jd));
 }
 
 PhysicsJoint PhysicsWorld::createRevoluteJoint (const PhysicsRevoluteJointDef& def)
 {
 	b2RevoluteJointDef jd = b2DefaultRevoluteJointDef();
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
 	jd.base.bodyIdA = toB2Body(def.bodyA);
 	jd.base.bodyIdB = toB2Body(def.bodyB);
 	if (def.useWorldPivot) {
-		jd.base.localFrameA.p = b2Body_GetLocalPoint(jd.base.bodyIdA, toB2(def.worldPivot));
-		jd.base.localFrameB.p = b2Body_GetLocalPoint(jd.base.bodyIdB, toB2(def.worldPivot));
+		jd.base.localFrameA.p = b2Body_GetLocalPoint(jd.base.bodyIdA, toB2Pos(def.worldPivot));
+		jd.base.localFrameB.p = b2Body_GetLocalPoint(jd.base.bodyIdB, toB2Pos(def.worldPivot));
 	} else {
 		jd.base.localFrameA.p = toB2(def.localAnchorA);
 		jd.base.localFrameB.p = toB2(def.localAnchorB);
 	}
 	jd.base.localFrameA.q = b2Rot_identity;
 	jd.base.localFrameB.q = b2Rot_identity;
+	jd.base.collideConnected = def.collideConnected;
+	jd.base.userData = reinterpret_cast<void*>(def.userData);
+#else
+	jd.bodyIdA = toB2Body(def.bodyA);
+	jd.bodyIdB = toB2Body(def.bodyB);
+	if (def.useWorldPivot) {
+		jd.localAnchorA = b2Body_GetLocalPoint(jd.bodyIdA, toB2(def.worldPivot));
+		jd.localAnchorB = b2Body_GetLocalPoint(jd.bodyIdB, toB2(def.worldPivot));
+	} else {
+		jd.localAnchorA = toB2(def.localAnchorA);
+		jd.localAnchorB = toB2(def.localAnchorB);
+	}
+	jd.collideConnected = def.collideConnected;
+	jd.userData = reinterpret_cast<void*>(def.userData);
+#endif
 	jd.lowerAngle = def.lowerAngle;
 	jd.upperAngle = def.upperAngle;
 	jd.enableLimit = def.enableLimit;
 	jd.enableMotor = def.enableMotor;
 	jd.motorSpeed = def.motorSpeed;
 	jd.maxMotorTorque = def.maxMotorTorque;
-	jd.base.collideConnected = def.collideConnected;
-	jd.base.userData = reinterpret_cast<void*>(def.userData);
 	return toJoint(b2CreateRevoluteJoint(implOf(_impl)->worldId, &jd));
 }
 
@@ -296,21 +434,29 @@ void PhysicsWorld::destroyJoint (PhysicsJoint joint)
 {
 	const b2JointId id = toB2Joint(joint);
 	if (B2_IS_NON_NULL(id))
-		b2DestroyJoint(id, true);
+		b2DestroyJoint(id);
 }
 
 void PhysicsWorld::rayCast (IPhysicsRayCastCallback& callback, const PhysicsVec2& point1, const PhysicsVec2& point2) const
 {
-	const b2Vec2 origin = toB2(point1);
 	const b2Vec2 translation = toB2(point2 - point1);
-	b2World_CastRay(implOf(_impl)->worldId, origin, translation, b2DefaultQueryFilter(), rayCastFcn, &callback);
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
+	b2World_CastRay(implOf(_impl)->worldId, toB2Pos(point1), translation, b2DefaultQueryFilter(), rayCastFcn, &callback);
+#else
+	b2World_CastRay(implOf(_impl)->worldId, toB2(point1), translation, b2DefaultQueryFilter(), rayCastFcn, &callback);
+#endif
 }
 
 void PhysicsWorld::setContactListener (IPhysicsContactListener* listener)
 {
 	WorldImpl* impl = implOf(_impl);
 	impl->contactListener = listener;
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
+	b2World_SetPreSolveCallback(impl->worldId, listener ? preSolveFcn : nullptr,
+			listener ? preContinuousFcn : nullptr, impl);
+#else
 	b2World_SetPreSolveCallback(impl->worldId, listener ? preSolveFcn : nullptr, impl);
+#endif
 }
 
 void PhysicsWorld::setContactFilter (IPhysicsContactFilter* filter)
@@ -338,19 +484,39 @@ void PhysicsWorld::debugDraw () const
 	WorldImpl* impl = implOf(_impl);
 	if (!impl->debugDraw)
 		return;
+#if !CP_BOX2D_VERSION_ATLEAST(3, 1, 0)
+	b2DebugDraw dd = {};
+	dd.context = impl->debugDraw;
+	dd.DrawPolygon = drawPolygonFcn;
+	dd.DrawSolidPolygon = drawSolidPolygonFcn;
+	dd.DrawCircle = drawCircleFcn;
+	dd.DrawSolidCircle = drawSolidCircleFcn;
+	dd.DrawSegment = drawSegmentFcn;
+	dd.DrawTransform = drawTransformFcn;
+	dd.DrawPoint = drawPointFcn;
+	dd.drawShapes = (impl->debugFlags & PhysicsDrawShapes) != 0;
+	dd.drawJoints = (impl->debugFlags & PhysicsDrawJoints) != 0;
+	dd.drawAABBs = (impl->debugFlags & PhysicsDrawAabb) != 0;
+	dd.drawMass = (impl->debugFlags & PhysicsDrawCenterOfMass) != 0;
+#else
 	b2DebugDraw dd = b2DefaultDebugDraw();
 	dd.context = impl->debugDraw;
 	dd.DrawPolygonFcn = drawPolygonFcn;
 	dd.DrawSolidPolygonFcn = drawSolidPolygonFcn;
 	dd.DrawCircleFcn = drawCircleFcn;
 	dd.DrawSolidCircleFcn = drawSolidCircleFcn;
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
 	dd.DrawLineFcn = drawLineFcn;
+#else
+	dd.DrawSegmentFcn = drawSegmentFcn;
+#endif
 	dd.DrawTransformFcn = drawTransformFcn;
 	dd.DrawPointFcn = drawPointFcn;
 	dd.drawShapes = (impl->debugFlags & PhysicsDrawShapes) != 0;
 	dd.drawJoints = (impl->debugFlags & PhysicsDrawJoints) != 0;
 	dd.drawBounds = (impl->debugFlags & PhysicsDrawAabb) != 0;
 	dd.drawMass = (impl->debugFlags & PhysicsDrawCenterOfMass) != 0;
+#endif
 	b2World_Draw(impl->worldId, &dd);
 }
 
@@ -364,7 +530,7 @@ PhysicsWorld* PhysicsWorld::fromBody (PhysicsBody body)
 	const b2BodyId id = toB2Body(body);
 	if (B2_IS_NULL(id))
 		return nullptr;
-	WorldImpl* st = stateForWorld(b2Body_GetWorld(id));
+	WorldImpl* st = stateForWorld(worldOfBody(id));
 	return st ? st->owner : nullptr;
 }
 
@@ -374,7 +540,11 @@ PhysicsWorld* PhysicsWorld::fromBody (PhysicsBody body)
 
 PhysicsVec2 PhysicsBody::getPosition () const
 {
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
+	return fromPos(b2Body_GetPosition(toB2Body(*this)));
+#else
 	return toVec(b2Body_GetPosition(toB2Body(*this)));
+#endif
 }
 
 float PhysicsBody::getAngle () const
@@ -384,12 +554,20 @@ float PhysicsBody::getAngle () const
 
 PhysicsVec2 PhysicsBody::getWorldCenter () const
 {
-	return toVec(b2Body_GetWorldCenter(toB2Body(*this)));
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
+	return fromPos(b2Body_GetWorldCenter(toB2Body(*this)));
+#else
+	return toVec(b2Body_GetWorldCenterOfMass(toB2Body(*this)));
+#endif
 }
 
 PhysicsVec2 PhysicsBody::getWorldPoint (const PhysicsVec2& localPoint) const
 {
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
+	return fromPos(b2Body_GetWorldPoint(toB2Body(*this), toB2(localPoint)));
+#else
 	return toVec(b2Body_GetWorldPoint(toB2Body(*this), toB2(localPoint)));
+#endif
 }
 
 PhysicsVec2 PhysicsBody::getLinearVelocity () const
@@ -404,7 +582,11 @@ float PhysicsBody::getAngularVelocity () const
 
 float PhysicsBody::getInertia () const
 {
+#if !CP_BOX2D_VERSION_ATLEAST(3, 1, 0)
+	return b2Body_GetInertiaTensor(toB2Body(*this));
+#else
 	return b2Body_GetRotationalInertia(toB2Body(*this));
+#endif
 }
 
 float PhysicsBody::getMass () const
@@ -419,7 +601,19 @@ float PhysicsBody::getGravityScale () const
 
 PhysicsVec2 PhysicsBody::getLinearVelocityFromWorldPoint (const PhysicsVec2& worldPoint) const
 {
+#if !CP_BOX2D_VERSION_ATLEAST(3, 1, 0)
+	const b2BodyId body = toB2Body(*this);
+	const b2Vec2 v = b2Body_GetLinearVelocity(body);
+	const float w = b2Body_GetAngularVelocity(body);
+	const b2Vec2 c = b2Body_GetWorldCenterOfMass(body);
+	const float rx = worldPoint.x - c.x;
+	const float ry = worldPoint.y - c.y;
+	return PhysicsVec2(v.x - w * ry, v.y + w * rx);
+#elif CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
+	return toVec(b2Body_GetWorldPointVelocity(toB2Body(*this), toB2Pos(worldPoint)));
+#else
 	return toVec(b2Body_GetWorldPointVelocity(toB2Body(*this), toB2(worldPoint)));
+#endif
 }
 
 PhysicsUserData PhysicsBody::getUserData () const
@@ -433,7 +627,11 @@ PhysicsWorld* PhysicsBody::getWorld () const
 }
 
 void PhysicsBody::setTransform (const PhysicsVec2& position, float angle) const {
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
+	b2Body_SetTransform(toB2Body(*this), toB2Pos(position), b2MakeRot(angle));
+#else
 	b2Body_SetTransform(toB2Body(*this), toB2(position), b2MakeRot(angle));
+#endif
 }
 
 void PhysicsBody::setLinearVelocity (const PhysicsVec2& v) const {
@@ -457,9 +655,13 @@ void PhysicsBody::setAngularDamping (float damping) const {
 }
 
 void PhysicsBody::setFixedRotation (bool flag) const {
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
 	b2MotionLocks locks = b2Body_GetMotionLocks(toB2Body(*this));
 	locks.angularZ = flag;
 	b2Body_SetMotionLocks(toB2Body(*this), locks);
+#else
+	b2Body_SetFixedRotation(toB2Body(*this), flag);
+#endif
 }
 
 void PhysicsBody::setEnabled (bool flag) const {
@@ -474,7 +676,11 @@ void PhysicsBody::setUserData (PhysicsUserData data) const {
 }
 
 void PhysicsBody::applyForce (const PhysicsVec2& force, const PhysicsVec2& point, bool wake) const {
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
+	b2Body_ApplyForce(toB2Body(*this), toB2(force), toB2Pos(point), wake);
+#else
 	b2Body_ApplyForce(toB2Body(*this), toB2(force), toB2(point), wake);
+#endif
 }
 
 void PhysicsBody::applyForceToCenter (const PhysicsVec2& force, bool wake) const {
@@ -482,7 +688,11 @@ void PhysicsBody::applyForceToCenter (const PhysicsVec2& force, bool wake) const
 }
 
 void PhysicsBody::applyLinearImpulse (const PhysicsVec2& impulse, const PhysicsVec2& point, bool wake) const {
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
+	b2Body_ApplyLinearImpulse(toB2Body(*this), toB2(impulse), toB2Pos(point), wake);
+#else
 	b2Body_ApplyLinearImpulse(toB2Body(*this), toB2(impulse), toB2(point), wake);
+#endif
 }
 
 void PhysicsBody::applyTorque (float torque, bool wake) const {
@@ -540,7 +750,7 @@ PhysicsFixture PhysicsBody::getFixtureList () const
 
 PhysicsContactEdge PhysicsBody::getContactList () const
 {
-	WorldImpl* impl = stateForWorld(b2Body_GetWorld(toB2Body(*this)));
+	WorldImpl* impl = stateForWorld(worldOfBody(toB2Body(*this)));
 	if (!impl)
 		return PhysicsContactEdge();
 
@@ -605,7 +815,7 @@ PhysicsFixture PhysicsFixture::getNext () const
 	b2ShapeId shapes[32];
 	const int count = b2Body_GetShapes(body, shapes, 32);
 	for (int i = 0; i < count - 1; ++i) {
-		if (shapes[i].index1 == self.index1 && shapes[i].generation == self.generation && shapes[i].world0 == self.world0)
+		if (B2_ID_EQUALS(shapes[i], self))
 			return toFixture(shapes[i + 1]);
 	}
 	return PhysicsFixture();
@@ -720,16 +930,22 @@ void PhysicsContact::getWorldManifold (PhysicsWorldManifold& manifold) const
 	// Approximate normal from centers
 	const b2BodyId bodyA = b2Shape_GetBody(a);
 	const b2BodyId bodyB = b2Shape_GetBody(b);
-	const b2Vec2 ca = b2Body_GetWorldCenter(bodyA);
-	const b2Vec2 cb = b2Body_GetWorldCenter(bodyB);
+#if CP_BOX2D_VERSION_ATLEAST(3, 2, 0)
+	const b2Pos ca = b2Body_GetWorldCenter(bodyA);
+	const b2Pos cb = b2Body_GetWorldCenter(bodyB);
+	b2Vec2 n = { static_cast<float>(cb.x - ca.x), static_cast<float>(cb.y - ca.y) };
+#else
+	const b2Vec2 ca = b2Body_GetWorldCenterOfMass(bodyA);
+	const b2Vec2 cb = b2Body_GetWorldCenterOfMass(bodyB);
 	b2Vec2 n = { cb.x - ca.x, cb.y - ca.y };
+#endif
 	const float len = sqrtf(n.x * n.x + n.y * n.y);
 	if (len > 0.0f) {
 		n.x /= len;
 		n.y /= len;
 	}
 	manifold.normal = toVec(n);
-	manifold.points[0] = PhysicsVec2(0.5f * (ca.x + cb.x), 0.5f * (ca.y + cb.y));
+	manifold.points[0] = PhysicsVec2(0.5f * static_cast<float>(ca.x + cb.x), 0.5f * static_cast<float>(ca.y + cb.y));
 }
 
 bool PhysicsContact::isTouching () const
@@ -742,7 +958,7 @@ void PhysicsContact::setEnabled (bool enabled) const {
 	fromContact(*this, a, b);
 	WorldImpl* impl = nullptr;
 	if (B2_IS_NON_NULL(a))
-		impl = stateForWorld(b2Body_GetWorld(b2Shape_GetBody(a)));
+		impl = stateForWorld(worldOfBody(b2Shape_GetBody(a)));
 	if (impl)
 		impl->preSolveEnabled = enabled;
 }

@@ -160,6 +160,16 @@ endif()
 
 add_subdirectory(src/libs)
 
+if (NOT DEFINED CP_BOX2D_MAJOR)
+	set(CP_BOX2D_MAJOR 2)
+endif()
+if (NOT DEFINED CP_BOX2D_MINOR)
+	set(CP_BOX2D_MINOR 4)
+endif()
+if (NOT DEFINED CP_BOX2D_MICRO)
+	set(CP_BOX2D_MICRO 2)
+endif()
+
 configure_file(${ROOT_DIR}/src/config.h.in ${CMAKE_BINARY_DIR}/cp-config.h)
 include_directories(${CMAKE_BINARY_DIR})
 

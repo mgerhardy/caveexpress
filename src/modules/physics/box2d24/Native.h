@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/Compiler.h"
+#include "physics/Version.h"
 GCC_DIAG_OFF(shadow)
 #include <box2d/box2d.h>
 GCC_DIAG_ON(shadow)

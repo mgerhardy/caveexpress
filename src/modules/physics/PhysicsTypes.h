@@ -1,12 +1,9 @@
 #pragma once
 
+#include "common/Config.h"
 #include <cstdint>
 #include <cmath>
 #include <cstddef>
-
-#ifndef CP_BOX2D_MAJOR
-#define CP_BOX2D_MAJOR 2
-#endif
 
 struct PhysicsVec2 {
 	float x = 0.0f;
