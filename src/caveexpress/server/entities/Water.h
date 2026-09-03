@@ -49,6 +49,8 @@ public:
 	bool isWaterChangeOver () const;
 
 	void createBody (float waterHeight);
+	/** Reposition water to @p waterHeight (same units as the map waterheight setting). */
+	void setHeight (float waterHeight);
 
 	// IEntity
 	SpriteDefPtr getSpriteDef () const override;

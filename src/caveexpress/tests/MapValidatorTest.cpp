@@ -1,6 +1,7 @@
 #include "tests/TestShared.h"
 #include "caveexpress/shared/MapValidator.h"
 #include "caveexpress/shared/CaveExpressMapContext.h"
+#include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/server/map/RandomMapGenerator.h"
 #include "common/ThemeType.h"
 #include "common/TextureDefinition.h"
@@ -261,6 +262,41 @@ TEST_F(MapValidatorTest, testAcceptsRejectsIndividualGates)
 
 	m.bridgesWithoutBackground = 1;
 	EXPECT_FALSE(rules.accepts(m, 10, 10, 1.0f));
+}
+
+TEST_F(MapValidatorTest, testCaveCoveredByMultiCellSolid)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts = { { "3", "2" } };
+	const int w = 8;
+	const int h = 8;
+	fillOpenBorder(tiles, w, h);
+	for (int x = 1; x < w - 1; ++x)
+		addTile(tiles, "tile-ground-04", x, 5);
+
+	// 2x2 rock at (0,3) covers (0,3)(1,3)(0,4)(1,4) — same bug as the intro movie map.
+	addTile(tiles, "tile-rock-big-01", 0, 3);
+	const SpriteDefPtr caveDef = requireSprite("tile-cave-01");
+	ASSERT_TRUE(!!caveDef);
+	caves.emplace_back(1, 4, caveDef, EntityTypes::NPC_FRIENDLY_MAN, 5000);
+
+	const MapMetrics m = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_GT(m.cavesCoveredBySolid, 0);
+	EXPECT_FALSE(m.valid);
+	EXPECT_EQ("cave covered by solid", m.failureReason);
+}
+
+TEST_F(MapValidatorTest, testIntroMoviePackageLayout)
+{
+	CaveExpressMapContext ctx("intro-movie-package");
+	ASSERT_TRUE(ctx.load(false));
+	const MapMetrics m = evaluateContext(ctx);
+	EXPECT_EQ(1, m.caveCount);
+	EXPECT_EQ(0, m.cavesCoveredBySolid) << m.failureReason;
+	EXPECT_EQ(m.caveCount, m.cavesReachable) << m.failureReason;
+	EXPECT_TRUE(m.valid) << m.failureReason;
 }
 
 }

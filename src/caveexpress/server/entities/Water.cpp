@@ -203,6 +203,17 @@ void Water::createBody (float waterHeight)
 	_mapHeight = mapHeight / 2.0f;
 }
 
+void Water::setHeight (float waterHeight)
+{
+	const float mapHeight = (float)_map.getMapHeight();
+	const float mapWidth = (float)_map.getMapWidth();
+	const float y = mapHeight - waterHeight;
+	setPos(PhysicsVec2(mapWidth / 2.0f, y + mapHeight / 2.0f));
+	setLinearVelocity(PhysicsVec2_zero);
+	_currentHeightLevel = getPos().y;
+	GameEvent.sendWaterUpdate(0, *this);
+}
+
 bool Water::shouldCollide (const IEntity* entity) const
 {
 	return false;

@@ -23,6 +23,9 @@ public:
 			return;
 		}
 		const StopMovementMessage* msg = assert_cast<const StopMovementMessage*, const IProtocolMessage*>(&message);
+		_map.noteClientDirectionReleased(msg->getDirection());
+		if (!_map.isInputEnabled())
+			return;
 		player->resetAcceleration(msg->getDirection());
 	}
 };

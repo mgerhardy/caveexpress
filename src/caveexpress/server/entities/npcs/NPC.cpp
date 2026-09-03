@@ -135,6 +135,11 @@ void NPC::update (uint32_t deltaTime)
 		if (Between(xPos, _targetPos.x - gap, _targetPos.x + gap)) {
 			// target reached
 			setIdle();
+		} else {
+			// Re-apply walking velocity each tick; contacts can zero it out.
+			const float yMovement = -0.01f;
+			const float xMovement = _lastDirectionRight ? _initialWalkingSpeed : -_initialWalkingSpeed;
+			setLinearVelocity(PhysicsVec2(xMovement, yMovement));
 		}
 	} else if (isDazed() || isIdle()) {
 		setLinearVelocity(PhysicsVec2_zero);

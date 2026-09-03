@@ -7,6 +7,13 @@ sprites = {
 	},
 	["player-crashed"] = {
 	},
+	["player-empty"] = {
+		frames = {
+			{}, --back
+			{ "player-empty-middle-01", }, --middle
+			{}, --front
+		}
+	},
 	["player-idle"] = {
 		frames = {
 			{}, --back

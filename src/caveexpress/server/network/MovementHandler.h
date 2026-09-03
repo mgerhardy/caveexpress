@@ -23,9 +23,10 @@ public:
 			Log::error(LOG_GAMEIMPL, "movement for player with clientId %i failed", (int)clientId);
 			return;
 		}
+		const MovementMessage* msg = assert_cast<const MovementMessage*, const IProtocolMessage*>(&message);
+		_map.noteClientDirectionPressed(msg->getDirection());
 		if (!_map.isInputEnabled())
 			return;
-		const MovementMessage* msg = assert_cast<const MovementMessage*, const IProtocolMessage*>(&message);
 		player->accelerate(msg->getDirection());
 	}
 };

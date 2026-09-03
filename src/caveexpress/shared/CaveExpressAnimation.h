@@ -14,6 +14,7 @@ extern Animation ANIMATION_SWIMMING_RIGHT;
 extern Animation ANIMATION_SWIMMING_IDLE;
 extern Animation ANIMATION_FLYING;
 extern Animation ANIMATION_CRASHED;
+extern Animation ANIMATION_EMPTY;
 extern Animation ANIMATION_FLYING_LEFT;
 extern Animation ANIMATION_FLYING_RIGHT;
 extern Animation ANIMATION_ATTACK_INIT_LEFT;

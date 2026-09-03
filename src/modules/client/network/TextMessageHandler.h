@@ -14,6 +14,6 @@ public:
 
 	void execute (const TextMessage* msg) override
 	{
-		_mapNode->displayText(msg->getMessage());
+		_mapNode->displayTextReplace(msg->getMessage(), msg->getDelayMillis());
 	}
 };

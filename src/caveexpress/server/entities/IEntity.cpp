@@ -125,7 +125,11 @@ bool IEntity::setAnimationType (const Animation& type)
 {
 	if (getAnimationType() != type) {
 		_animationType = &type;
-		GameEvent.changeAnimation(_vismask, *this, type);
+		// AddEntity already carries the current animation. Sending a change
+		// before the client has the entity (vismask still NOTVISIBLE) only
+		// produces "could not find entity" warnings.
+		if (_vismask != 0 && _vismask != NOTVISIBLE)
+			GameEvent.changeAnimation(_vismask, *this, type);
 		return true;
 	}
 	return false;

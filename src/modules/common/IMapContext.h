@@ -55,6 +55,17 @@ public:
 	 */
 	virtual void onUpdate (uint32_t /*deltaTime*/) {}
 
+	/**
+	 * @brief Optional Lua kept across editor saves (onMapLoaded/onUpdate/helpers).
+	 * getName/initMap are regenerated from structured map data and are not part of this.
+	 */
+	virtual const std::string& getScriptLogic () const
+	{
+		static const std::string empty;
+		return empty;
+	}
+	virtual void setScriptLogic (const std::string& /*logic*/) {}
+
 	const ThemeType& getTheme () const
 	{
 		return *_theme;

@@ -187,6 +187,9 @@ std::string ClientEntity::getSpriteName() const
 
 void ClientEntity::setAnimationType (const Animation& animation)
 {
+	if (_animation == &animation)
+		return;
+
 	_animation = &animation;
 
 	SoundControl.halt(_animationSound);

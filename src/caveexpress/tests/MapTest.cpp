@@ -2,7 +2,15 @@
 #include "caveexpress/main/CaveExpress.h"
 #include "caveexpress/shared/CaveExpressMapFailedReasons.h"
 #include "caveexpress/shared/constants/ConfigVars.h"
+#include "caveexpress/shared/CaveExpressEntityType.h"
+#include "caveexpress/server/entities/CaveMapTile.h"
+#include "caveexpress/server/entities/npcs/NPCFriendly.h"
+#include "caveexpress/server/entities/npcs/NPCPackage.h"
+#include "caveexpress/server/entities/Player.h"
+#include "caveexpress/server/entities/PackageTarget.h"
 #include "common/ConfigManager.h"
+#include "common/Direction.h"
+#include "common/EntityType.h"
 #include "network/INetwork.h"
 
 namespace caveexpress {
@@ -110,6 +118,11 @@ protected:
 TEST_F(MapTest, testIntroMoviePackageLoadsAndFinishes) {
 	ASSERT_TRUE(_map.load("intro-movie-package")) << "Could not load intro-movie-package";
 	ASSERT_EQ(1, _map.getCaveCount());
+	CaveMapTile* cave = _map.getCave(0);
+	ASSERT_NE(nullptr, cave);
+	// Cave must sit on a free flyable cell (not buried under a multi-cell solid).
+	ASSERT_EQ(1, static_cast<int>(cave->getGridX() + EPSILON));
+	ASSERT_EQ(4, static_cast<int>(cave->getGridY() + EPSILON));
 	ASSERT_FALSE(_map.isInputEnabled()); // onMapLoaded disables input
 
 	Player* player = new Player(_map, 1);
@@ -117,16 +130,156 @@ TEST_F(MapTest, testIntroMoviePackageLoadsAndFinishes) {
 	ASSERT_TRUE(_map.initPlayer(player));
 	_map.startMap();
 	ASSERT_TRUE(_map.isActive());
+	ASSERT_FALSE(_map.isInputEnabled());
 
-	// Drive the script for a few seconds of simulated time
-	for (int i = 0; i < 400; ++i)
+	// Drive through boot/dump/pilot boarding into scripted rescue (~25s of text beats)
+	for (int i = 0; i < 2000; ++i)
 		_map.update(16);
 
-	// Script should have progressed; force-complete path must work
+	// Fully scripted cutscene: input stays locked; packages should be staged.
+	ASSERT_FALSE(_map.isInputEnabled()) << "intro cutscene must never enable player input";
+	ASSERT_GT(_map.countPackages(), 0) << "script should spawn packages";
+
 	_map.forceComplete();
 	ASSERT_TRUE(_map.isDone());
+}
+
+TEST_F(MapTest, testScriptWaterAndCaveApis) {
+	ASSERT_TRUE(_map.load("intro-movie-package")) << "Could not load intro-movie-package";
+	CaveMapTile* cave = _map.getCave(0);
+	ASSERT_NE(nullptr, cave);
+	const bool lightBefore = cave->getLightState();
+	cave->setLightState(!lightBefore);
+	ASSERT_EQ(!lightBefore, cave->getLightState());
+	cave->setNextSpawn(0);
+	cave->setRespawnPossible(false, EntityType::NONE);
+
+	_map.setWaterHeight(2.0f);
+	// getWaterHeight returns the water body Y-derived height; just ensure the call is safe
+	(void)_map.getWaterHeight();
+}
+
+TEST_F(MapTest, testScriptClientInputAndTileReplace) {
+	ASSERT_TRUE(_map.load("intro-movie-package")) << "Could not load intro-movie-package";
+	ASSERT_FALSE(_map.isInputEnabled());
+
+	_map.noteClientDirectionPressed(DIRECTION_LEFT);
+	ASSERT_TRUE(_map.isScriptClientDirectionPressed(DIRECTION_LEFT));
+	ASSERT_FALSE(_map.isScriptClientSkipPressed()) << "fly keys must not latch cinematic skip";
+	_map.noteClientDirectionReleased(DIRECTION_LEFT);
+	ASSERT_FALSE(_map.isScriptClientDirectionPressed(DIRECTION_LEFT));
+
+	_map.noteClientAction();
+	ASSERT_TRUE(_map.isScriptClientActionPressed());
+	ASSERT_TRUE(_map.isScriptClientSkipPressed());
+
+	_map.clearScriptClientInput();
+	_map.noteClientSkip();
+	ASSERT_TRUE(_map.isScriptClientSkipPressed());
+
+	// Enabling input clears latched cinematic skip/action so play phase is clean.
 	_map.setInputEnabled(true);
-	ASSERT_TRUE(_map.isInputEnabled());
+	ASSERT_FALSE(_map.isScriptClientSkipPressed());
+	ASSERT_FALSE(_map.isScriptClientActionPressed());
+
+	_map.setInputEnabled(false);
+	const int removed = _map.removeTileAtScripted(3, 5);
+	ASSERT_GE(removed, 1);
+	MapTile* replaced = _map.replaceTileScripted("tile-rock-02", 3, 5);
+	ASSERT_NE(nullptr, replaced);
+	_map.rebuildPlatforms();
+}
+
+TEST_F(MapTest, testScriptFriendlyNpcWithoutTargetCave) {
+	ASSERT_TRUE(_map.load("intro-movie-package")) << "Could not load intro-movie-package";
+	CaveMapTile* cave = _map.getCave(0);
+	ASSERT_NE(nullptr, cave);
+	// Single-cave map: normal createFriendlyNPC would fail without a destination.
+	NPCFriendly* npc = _map.spawnFriendlyNPCScripted(cave, EntityTypes::NPC_FRIENDLY_MAN, true);
+	ASSERT_NE(nullptr, npc) << "scripted friendly spawn should work without a target cave";
+	ASSERT_EQ(nullptr, npc->getTargetCave());
+	npc->setTargetCave(cave);
+	ASSERT_EQ(cave, npc->getTargetCave());
+}
+
+TEST_F(MapTest, testScriptPackageNpcSpawnAndPhysicsBindings) {
+	ASSERT_TRUE(_map.load("intro-movie-package")) << "Could not load intro-movie-package";
+	CaveMapTile* cave = _map.getCave(0);
+	ASSERT_NE(nullptr, cave);
+	NPCPackage* npc = _map.spawnPackageNPCScripted(cave, EntityTypes::NPC_FRIENDLY_MAN);
+	ASSERT_NE(nullptr, npc) << "scripted package NPC should spawn for the intro cave";
+	ASSERT_EQ(npc, cave->getNPC()) << "scripted spawn must register NPC on the cave for moveBackIntoCave";
+
+	Player* player = new Player(_map, 1);
+	player->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(player));
+	_map.startMap();
+	ASSERT_TRUE(_map.isActive());
+
+	const PhysicsVec2 before = player->getPos();
+	player->setGravityScale(0.0f);
+	player->setLinearVelocity(PhysicsVec2(-1.5f, -0.5f));
+	player->applyLinearImpulse(PhysicsVec2(0.1f, 0.0f));
+	for (int i = 0; i < 10; ++i)
+		_map.update(16);
+	const PhysicsVec2 after = player->getPos();
+	ASSERT_NE(before.x, after.x) << "scripted velocity should move the player without input";
+	player->setGravityScale(1.0f);
+	player->setLinearVelocity(PhysicsVec2_zero);
+}
+
+TEST_F(MapTest, testScriptPackageNpcReturnsIntoCave) {
+	ASSERT_TRUE(_map.load("intro-movie-package")) << "Could not load intro-movie-package";
+	CaveMapTile* cave = _map.getCave(0);
+	ASSERT_NE(nullptr, cave);
+	cave->setRespawnPossible(false, EntityType::NONE);
+
+	NPCPackage* npc = _map.spawnPackageNPCScripted(cave, EntityTypes::NPC_FRIENDLY_MAN);
+	ASSERT_NE(nullptr, npc);
+	ASSERT_EQ(npc, cave->getNPC());
+	const uint16_t npcId = npc->getID();
+
+	Player* player = new Player(_map, 1);
+	player->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(player));
+	_map.startMap();
+
+	// Walk out, dump, walk home — then the cave must take the NPC back and remove it.
+	for (int i = 0; i < 30; ++i)
+		_map.update(16);
+	Package* pkg = npc->leavePackage();
+	ASSERT_NE(nullptr, pkg);
+
+	bool removed = false;
+	for (int i = 0; i < 600; ++i) {
+		_map.update(16);
+		if (_map.findEntity(npcId) == nullptr) {
+			removed = true;
+			break;
+		}
+	}
+	ASSERT_TRUE(removed) << "package NPC should disappear after returning to the cave";
+	ASSERT_EQ(nullptr, cave->getNPC());
+	ASSERT_FALSE(cave->shouldSpawnNPC());
+}
+
+TEST_F(MapTest, testScriptPackageDeliveryApis) {
+	ASSERT_TRUE(_map.load("intro-movie-package")) << "Could not load intro-movie-package";
+	PackageTarget* target = _map.getPackageTarget();
+	ASSERT_NE(nullptr, target);
+	ASSERT_EQ(3, _map.getPackageDeliveryGoal());
+	ASSERT_EQ(0, _map.getDeliveredPackageCount());
+	ASSERT_EQ(0, _map.getCollectedPackageCount());
+	ASSERT_FALSE(target->isPulling());
+	ASSERT_EQ(nullptr, target->getPullingPackage());
+
+	Player* player = new Player(_map, 1);
+	player->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(player));
+	_map.startMap();
+	ASSERT_EQ(0, player->getCollectedPackageCount());
+	ASSERT_EQ(nullptr, player->getCollectedPackage(0));
+	ASSERT_EQ(player->getCollectedPackageCount(), _map.getCollectedPackageCount());
 }
 
 TEST_F(MapTest, testPlatform) {

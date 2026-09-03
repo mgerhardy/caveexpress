@@ -27,5 +27,13 @@ public:
 		}
 		UI::get().setBarValue(UI_WINDOW_MAP, UINODE_SECONDS_BAR, seconds);
 		UI::get().setBarMax(UI_WINDOW_MAP, UINODE_SECONDS_BAR, seconds);
+
+		IUIMapWindow* window = static_cast<IUIMapWindow*>(UI::get().getWindow(UI_WINDOW_MAP));
+		if (window != nullptr) {
+			if (_map.isCutscene())
+				window->hideHud();
+			else
+				window->showHud();
+		}
 	}
 };

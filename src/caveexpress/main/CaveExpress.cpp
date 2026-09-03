@@ -513,8 +513,11 @@ bool CaveExpress::visitEntity (IEntity *entity)
 		return false;
 
 	if (entity->isDirty()) {
-		entity->snapshot();
-		GameEvent.updateEntity(entity->getVisMask(), *entity);
+		const VisMask visMask = entity->getVisMask();
+		if (visMask != 0 && visMask != NOTVISIBLE) {
+			entity->snapshot();
+			GameEvent.updateEntity(visMask, *entity);
+		}
 	}
 	return false;
 }

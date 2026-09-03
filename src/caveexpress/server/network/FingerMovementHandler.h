@@ -22,6 +22,8 @@ public:
 			Log::error(LOG_GAMEIMPL, "movement for player with clientId %i failed", (int)clientId);
 			return;
 		}
+		// Finger input is treated as skip/any intent for cutscenes.
+		_map.noteClientAction();
 		if (!_map.isInputEnabled())
 			return;
 		const FingerMovementMessage* msg = assert_cast<const FingerMovementMessage*, const IProtocolMessage*>(&message);

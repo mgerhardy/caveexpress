@@ -73,6 +73,8 @@ protected:
 
 	// true if this is a tutorial map - might print extra information on player actions
 	bool _tutorial;
+	/** Intro/cutscene maps hide the gameplay HUD. */
+	bool _cutscene;
 	// the window id that should get pushed to the stack whenever the map is started
 	std::string _introWindow;
 	bool _started;
@@ -190,6 +192,7 @@ public:
 	 * spawning or collecting entities
 	 */
 	bool isTutorial () const;
+	bool isCutscene () const;
 
 	/**
 	 * @return the map time in milliseconds, this is not running when the map is in pause mode
@@ -349,6 +352,11 @@ inline const ClientMap::ClientEntityMap& ClientMap::getEntities () const
 inline bool ClientMap::isTutorial () const
 {
 	return _tutorial;
+}
+
+inline bool ClientMap::isCutscene () const
+{
+	return _cutscene;
 }
 
 inline void ClientMap::setStartPositions (int startPositions)

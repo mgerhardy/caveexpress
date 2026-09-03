@@ -27,6 +27,7 @@ const std::string WATER_CHANGE = "waterchangespeed";
 const std::string WATER_RISING_DELAY = "waterrisingdelay";
 const std::string WATER_FALLING_DELAY = "waterfallingdelay";
 const std::string THEME = "theme";
+const std::string CUTSCENE = "cutscene";
 }
 
 // map setting default
@@ -46,6 +47,7 @@ const std::string PLAYER_Y = "1";
 const std::string WATER_RISING_DELAY = "0";
 const std::string WATER_FALLING_DELAY = "0";
 const std::string INTROWINDOW = "";
+const std::string CUTSCENE = "false";
 }
 
 // map setting default values

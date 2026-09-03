@@ -1,6 +1,7 @@
 #include "ui/editor/UIMapEditorWindow.h"
 #include "ui/editor/ImGuiTextureDraw.h"
 #include "imgui.h"
+#include "imgui_stdlib.h"
 #include "ui/UI.h"
 #include "common/Log.h"
 #include "common/String.h"
@@ -152,15 +153,22 @@ void UIMapEditorWindow::leaveEditor () const
 void UIMapEditorWindow::handleHotkeys () const
 {
 	ImGuiIO& io = ImGui::GetIO();
-	if (io.WantTextInput)
-		return;
 
+	// Allow save while typing in the script editor (WantTextInput is true there).
 	if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_S, false)) {
 		_doc->setFileName(_fileNameBuf);
 		_doc->setMapName(_mapTitleBuf);
 		if (!_doc->save())
 			Log::error(LOG_UI, "Failed to save map");
 	}
+	if (ImGui::IsKeyPressed(ImGuiKey_Escape, false) && _showScriptEditor) {
+		_showScriptEditor = false;
+		return;
+	}
+
+	if (io.WantTextInput)
+		return;
+
 	if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_Z, false))
 		_doc->undo();
 	if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_Y, false))
@@ -176,7 +184,9 @@ void UIMapEditorWindow::handleHotkeys () const
 	if (ImGui::IsKeyPressed(ImGuiKey_F, false))
 		fitView();
 	if (ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
-		if (_showHelp)
+		if (_showScriptEditor)
+			_showScriptEditor = false;
+		else if (_showHelp)
 			_showHelp = false;
 		else if (_showConfirm) {
 			_showConfirm = false;
@@ -213,6 +223,11 @@ void UIMapEditorWindow::drawToolbar () const
 	if (ImGui::Button(tr("Fit").c_str()))
 		fitView();
 	ImGui::SameLine();
+	if (_doc->supportsMapScript()) {
+		if (ImGui::Button(tr("Script").c_str()))
+			_showScriptEditor = !_showScriptEditor;
+		ImGui::SameLine();
+	}
 	if (ImGui::Button(tr("Help").c_str()))
 		_showHelp = !_showHelp;
 	ImGui::SameLine();
@@ -378,7 +393,47 @@ void UIMapEditorWindow::drawHelpPanel () const
 	ImGui::BulletText("%s", tr("F fit view, G toggle grid, F1 help").c_str());
 	ImGui::BulletText("%s", tr("Delete: remove selection").c_str());
 	ImGui::BulletText("%s", tr("Properties edit the selected tile, not the hovered one").c_str());
+	if (_doc->supportsMapScript())
+		ImGui::BulletText("%s", tr("Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test").c_str());
 	drawHelpExtras();
+}
+
+void UIMapEditorWindow::drawScriptEditor () const
+{
+	if (!_showScriptEditor || !_doc->supportsMapScript())
+		return;
+
+	ImGui::SetNextWindowSize(ImVec2(720.0f, 520.0f), ImGuiCond_FirstUseEver);
+	if (!ImGui::Begin(tr("Map Script").c_str(), &_showScriptEditor)) {
+		ImGui::End();
+		return;
+	}
+
+	ImGui::TextWrapped("%s", tr("Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save.").c_str());
+	ImGui::Separator();
+
+	if (ImGui::Button(tr("Save").c_str())) {
+		_doc->setFileName(_fileNameBuf);
+		_doc->setMapName(_mapTitleBuf);
+		if (!_doc->save())
+			Log::error(LOG_UI, "Failed to save map");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(tr("Save & Go").c_str())) {
+		_doc->setFileName(_fileNameBuf);
+		_doc->setMapName(_mapTitleBuf);
+		_doc->saveAndPlay();
+	}
+	ImGui::SameLine();
+	ImGui::TextDisabled("%s", _doc->isDirty() ? "*" : "");
+
+	ImGui::BeginChild("script_body", ImVec2(0, 0), true);
+	if (ImGui::InputTextMultiline("##map_script", &_doc->getScriptLogicMutable(),
+			ImVec2(-FLT_MIN, -FLT_MIN), ImGuiInputTextFlags_AllowTabInput))
+		_doc->markScriptChanged();
+	ImGui::EndChild();
+
+	ImGui::End();
 }
 
 void UIMapEditorWindow::drawConfirmModal () const
@@ -626,5 +681,6 @@ void UIMapEditorWindow::render (int x, int y) const
 	ImGui::EndChild();
 
 	drawConfirmModal();
+	drawScriptEditor();
 	ImGui::End();
 }

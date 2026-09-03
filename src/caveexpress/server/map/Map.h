@@ -183,6 +183,10 @@ protected:
 	bool _inputEnabled;
 	// set by map scripts to complete the map without meeting transfer quotas
 	bool _scriptForcedDone;
+	// client gameplay intent for map scripts (works headless / multiplayer; not SDL keyboard)
+	Direction _scriptClientDirections;
+	bool _scriptClientActionLatched;
+	bool _scriptClientSkipLatched;
 	// sanity check in the world step callbacks
 	bool _entityRemovalAllowed;
 	bool _mapRunning;
@@ -194,6 +198,13 @@ protected:
 	TimeManager _timeManager;
 
 	std::unique_ptr<CaveExpressMapContext> _mapContext;
+
+	/** Script messages queued before any player is connected (flushed on spawn/update). */
+	struct PendingScriptMessage {
+		std::string text;
+		uint32_t delayMillis;
+	};
+	std::vector<PendingScriptMessage> _pendingScriptMessages;
 
 	uint32_t _finishPoints;
 	uint32_t _referenceTime;
@@ -255,10 +266,31 @@ public:
 	/** Force the map win condition from a map script (intro movies, cutscenes). */
 	void forceComplete ();
 
+	/**
+	 * @brief Broadcast a HUD message to all players.
+	 * If no player is connected yet, the message is queued and flushed later.
+	 * @param[in] delayMillis how long the client should show the text
+	 */
+	void broadcastScriptMessage (const std::string& message, uint32_t delayMillis = 4000);
+	void flushPendingScriptMessages ();
+
+	/** Track client movement/drop intent for map scripts (esp. while input is locked). */
+	void noteClientDirectionPressed (Direction dir);
+	void noteClientDirectionReleased (Direction dir);
+	void noteClientAction ();
+	void noteClientSkip ();
+	void clearScriptClientInput ();
+	void consumeScriptClientSkip ();
+	bool isScriptClientDirectionPressed (Direction dir) const;
+	bool isScriptClientActionPressed () const;
+	bool isScriptClientSkipPressed () const;
+
 	int handleDeadPlayers ();
 
 	bool hasPackageTarget () const;
 	float getWaterHeight () const;
+	/** Move the water body to the given height (map-setting semantics). */
+	void setWaterHeight (float waterHeight);
 
 	// IMap
 	void update (uint32_t deltaTime) override;
@@ -290,11 +322,17 @@ public:
 	NPCFish* spawnFishNPCScripted (float x, float y);
 	NPCBlowing* spawnBlowingNPCScripted (float x, float y, bool right, float force = 1.0f, float size = 1.0f);
 	MapTile* addTileScripted (const std::string& spriteId, float x, float y, EntityAngle angle = 0);
+	/** Remove map tile(s) covering the grid cell (immediate). Returns how many were removed. */
+	int removeTileAtScripted (int gridX, int gridY);
+	/** Replace tile(s) at the grid cell with a new sprite; rebuilds platforms if needed. */
+	MapTile* replaceTileScripted (const std::string& spriteId, float x, float y, EntityAngle angle = 0);
+	/** Rebuild landing platforms from current ground/cave tiles (after runtime terrain edits). */
+	void rebuildPlatforms ();
 
 	PackageTarget *getPackageTarget () const;
 
 	int countPackages () const;
-
+	Package* getPackage (int index) const;
 	void visitEntities (IEntityVisitor *visitor, const EntityType& type = EntityType::NONE);
 
 	const IEntity* getEntity (int16_t id) const;
@@ -305,7 +343,7 @@ public:
 	void startMap ();
 	bool isReadyToStart () const;
 	void sendPlayersList () const;
-	void sendMessage (ClientId clientId, const std::string& message) const;
+	void sendMessage (ClientId clientId, const std::string& message, uint32_t delayMillis = 4000) const;
 	void printPlayersList () const;
 
 	void disconnect (ClientId clientId);
@@ -317,7 +355,8 @@ public:
 	bool removeNPC(NPCFriendly* npc, bool fadeOut);
 
 	// creates a new friendly npc
-	NPCFriendly* createFriendlyNPC (CaveMapTile* cave, const EntityType& type = EntityType::NONE, bool returnToCaveOnIdle = false);
+	// @param requireTargetCave when false (map scripts), allow spawning without a destination cave
+	NPCFriendly* createFriendlyNPC (CaveMapTile* cave, const EntityType& type = EntityType::NONE, bool returnToCaveOnIdle = false, bool requireTargetCave = true);
 
 	// creates a new flying npc (aggressive)
 	NPCFlying* createFlyingNPC (const PhysicsVec2& pos);
@@ -343,6 +382,12 @@ public:
 	void countTransferedPackage ();
 	// this is the amount of packages that you still have to deliver to the package station in order to win the game
 	int getPackageCount () const;
+	/** Packages already delivered to a target this map. */
+	int getDeliveredPackageCount () const;
+	/** Packages the player is currently carrying. */
+	int getCollectedPackageCount () const;
+	/** Win quota from packagetransfercount (0 if unset). */
+	int getPackageDeliveryGoal () const;
 
 	// checks the winning conditions of the map
 	// e.g. if enough npcs were brought to their target cave, the map is done
@@ -432,6 +477,9 @@ private:
 	// cleanup on map shutdown
 	void clearPhysics ();
 
+	/** Immediately remove an entity from the world (used by scripted tile edits). */
+	bool removeEntityImmediate (IEntity* entity);
+
 	// command callbacks
 	void triggerRestart ();
 	void triggerPause ();
@@ -504,10 +552,11 @@ inline PhysicsWorld *Map::getWorld () const
 
 inline bool Map::isDone () const
 {
-	if (isFailed())
-		return false;
+	// Scripted cutscenes may force a win even if the player crashed during a non-interactive beat.
 	if (_scriptForcedDone)
 		return true;
+	if (isFailed())
+		return false;
 	if (_transferedNPCLimit > 0 && _transferedNPCs < _transferedNPCLimit)
 		return false;
 	if (_transferedPackageLimit > 0 && _transferedPackages < _transferedPackageLimit)
@@ -576,6 +625,21 @@ inline bool Map::isPause () const
 inline bool Map::isInputEnabled () const
 {
 	return _inputEnabled;
+}
+
+inline bool Map::isScriptClientDirectionPressed (Direction dir) const
+{
+	return (_scriptClientDirections & dir) != 0;
+}
+
+inline bool Map::isScriptClientActionPressed () const
+{
+	return _scriptClientActionLatched;
+}
+
+inline bool Map::isScriptClientSkipPressed () const
+{
+	return _scriptClientSkipLatched;
 }
 
 }

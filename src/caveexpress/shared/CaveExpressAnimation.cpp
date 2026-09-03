@@ -19,6 +19,7 @@ Animation ANIMATION_SWIMMING_IDLE("swimming-idle");
 // flying taxi animation
 Animation ANIMATION_FLYING("flying");
 Animation ANIMATION_CRASHED("crashed");
+Animation ANIMATION_EMPTY("empty");
 // flying npc animations
 Animation ANIMATION_FLYING_LEFT("flying-left");
 Animation ANIMATION_FLYING_RIGHT("flying-right");

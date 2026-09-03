@@ -118,4 +118,55 @@ TEST_F(LUAMapUpdateTest, testMapWithoutOnUpdate)
 	ctx.onUpdate(16); // must be a no-op
 }
 
+TEST_F(LUAMapUpdateTest, testSavePreservesOnUpdateLogic)
+{
+	const char* script =
+			"-- cutscene map\n"
+			"function getName()\n"
+			"  return \"preserve-test\"\n"
+			"end\n"
+			"local phase = \"boot\"\n"
+			"function onMapLoaded()\n"
+			"  phase = \"loaded\"\n"
+			"end\n"
+			"function onUpdate(dt)\n"
+			"  phase = phase .. \"-tick\"\n"
+			"end\n"
+			"function initMap()\n"
+			"  local map = Map.get()\n"
+			"  for x = 0, 1 do\n"
+			"    map:addTile(\"tile-background-01\", x, 0)\n"
+			"  end\n"
+			"  map:setSetting(\"width\", \"2\")\n"
+			"  map:setSetting(\"height\", \"2\")\n"
+			"  map:setSetting(\"packagetransfercount\", \"1\")\n"
+			"  map:setSetting(\"theme\", \"rock\")\n"
+			"end\n";
+
+	const std::string name = "lua_preserve_logic_test";
+	const std::string relPath = FS.getDataDir() + FS.getMapsDir() + name + ".lua";
+	const std::string absPath = FS.getAbsoluteWritePath() + relPath;
+	ASSERT_NE(-1L, FS.writeSysFile(absPath, (const unsigned char*)script, strlen(script), true))
+			<< "Failed to write " << absPath;
+
+	CaveExpressMapContext ctx(name);
+	ASSERT_TRUE(ctx.load(false));
+	ASSERT_TRUE(ctx.hasOnUpdate());
+	ASSERT_FALSE(ctx.getPreservedLogic().empty());
+	EXPECT_NE(std::string::npos, ctx.getPreservedLogic().find("function onUpdate"));
+	EXPECT_NE(std::string::npos, ctx.getPreservedLogic().find("local phase"));
+	EXPECT_EQ(std::string::npos, ctx.getPreservedLogic().find("function initMap"));
+	EXPECT_EQ(std::string::npos, ctx.getPreservedLogic().find("function getName"));
+
+	ASSERT_TRUE(ctx.save());
+
+	CaveExpressMapContext reloaded(name);
+	ASSERT_TRUE(reloaded.load(false));
+	ASSERT_TRUE(reloaded.hasOnUpdate()) << "onUpdate must survive editor save";
+	ASSERT_TRUE(reloaded.hasOnMapLoaded());
+	EXPECT_NE(std::string::npos, reloaded.getPreservedLogic().find("function onUpdate"));
+
+	FS.deleteFile(relPath);
+}
+
 }

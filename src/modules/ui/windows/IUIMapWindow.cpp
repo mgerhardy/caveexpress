@@ -52,6 +52,9 @@ void IUIMapWindow::hideHud()
 		_panel->setVisible(false);
 	if (_mapControl)
 		_mapControl->hide();
+	UINode* settings = getNode("settings");
+	if (settings)
+		settings->setVisible(false);
 }
 
 void IUIMapWindow::showHud()
@@ -60,6 +63,9 @@ void IUIMapWindow::showHud()
 		_panel->setVisible(true);
 	if (_mapControl)
 		_mapControl->show();
+	UINode* settings = getNode("settings");
+	if (settings)
+		settings->setVisible(true);
 }
 
 void IUIMapWindow::initInputHudNodes()
@@ -194,6 +200,10 @@ void IUIMapWindow::start ()
 		showCursor(false);
 	_nodeMap->start();
 	Config.setBindingsSpace(BINDINGS_MAP);
+	if (_nodeMap->getMap().isCutscene())
+		hideHud();
+	else
+		showHud();
 }
 
 bool IUIMapWindow::onFingerPress (int64_t finger, uint16_t x, uint16_t y)

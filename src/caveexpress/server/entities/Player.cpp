@@ -132,6 +132,11 @@ void Player::addHitpoints (uint16_t hitpoints)
 	}
 }
 
+void Player::setInvulnerable (uint32_t durationMillis)
+{
+	_invulnerableTime = _time + durationMillis;
+}
+
 bool Player::shouldApplyWind () const
 {
 	return true;
@@ -318,7 +323,7 @@ void Player::setCrashed (const PlayerCrashReason& reason)
 		_map.sendSound(getVisMask(), *sound, getPos());
 }
 
-void Player::resetAcceleration (Direction dir)
+void Player::clearAcceleration (Direction dir)
 {
 	if (isCrashed())
 		return;
@@ -331,8 +336,16 @@ void Player::resetAcceleration (Direction dir)
 	} else {
 		_acceleration = PhysicsVec2_zero;
 	}
-	if (physVec2Equals(_acceleration, PhysicsVec2_zero))
-		setAnimationType(Animations::ANIMATION_IDLE);
+}
+
+void Player::resetAcceleration (Direction dir)
+{
+	clearAcceleration(dir);
+	if (physVec2Equals(_acceleration, PhysicsVec2_zero)) {
+		// Keep the empty pedal machine look until a cutscene boards the player.
+		if (getAnimationType() != Animations::ANIMATION_EMPTY)
+			setAnimationType(Animations::ANIMATION_IDLE);
+	}
 }
 
 void Player::applyForce (const PhysicsVec2& v)
@@ -494,6 +507,33 @@ bool Player::collect (CollectableEntity* entity)
 
 	GameEvent.sendCollectState(_clientId, entityType, true);
 	return true;
+}
+
+int Player::getCollectedPackageCount () const
+{
+	int count = 0;
+	for (int i = 0; i < MAX_COLLECTED; ++i) {
+		const EntityType *entityType = _collectedEntities[i].entityType;
+		if (entityType != nullptr && EntityTypes::isPackage(*entityType))
+			++count;
+	}
+	return count;
+}
+
+Package* Player::getCollectedPackage (int index) const
+{
+	if (index < 0)
+		return nullptr;
+	int seen = 0;
+	for (int i = 0; i < MAX_COLLECTED; ++i) {
+		const EntityType *entityType = _collectedEntities[i].entityType;
+		if (entityType == nullptr || !EntityTypes::isPackage(*entityType))
+			continue;
+		if (seen == index)
+			return assert_cast<Package*, CollectableEntity*>(_collectedEntities[i].entity);
+		++seen;
+	}
+	return nullptr;
 }
 
 void Player::drop ()

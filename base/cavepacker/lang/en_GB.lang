@@ -19,6 +19,7 @@ Delete: remove selection|Delete: remove selection
 Delivered package|Delivered package
 Description|Description
 Disconnect|Disconnect
+Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save.|Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save.
 Editor|Editor
 emitter|emitter
 Emitter amount|Emitter amount
@@ -51,6 +52,7 @@ LMB: paint / place (also selects)|LMB: paint / place (also selects)
 Map|Map
 Map Editor|Map Editor
 Maps|Maps
+Map Script|Map Script
 MMB click: pick, MMB drag or Space+LMB: pan|MMB click: pick, MMB drag or Space+LMB: pan
 Move all packages onto their targets|Move all packages onto their targets
 Multiplayer|Multiplayer
@@ -84,6 +86,8 @@ Retry|Retry
 RMB: erase|RMB: erase
 Save|Save
 Save & Go|Save & Go
+Script|Script
+Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test
 Select a tile on the map|Select a tile on the map
 Select game mode|Select game mode
 Select tile|Select tile

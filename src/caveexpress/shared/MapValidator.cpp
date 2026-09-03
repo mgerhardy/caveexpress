@@ -201,6 +201,11 @@ MapMetrics MapValidator::evaluate (int width, int height,
 	m.packageTargetCount = static_cast<int>(packageTargets.size());
 	m.windowCount = static_cast<int>(windows.size());
 
+	for (const auto& c : cavePositions) {
+		if (grid.solid(c.first, c.second))
+			++m.cavesCoveredBySolid;
+	}
+
 	for (const EmitterDefinition& e : emitters) {
 		if (!e.type)
 			continue;
@@ -589,9 +594,14 @@ MapMetrics MapValidator::evaluate (int width, int height,
 	// mapgen generation enforces separately — hand maps often paint backgrounds into
 	// enclosed rock niches for visuals.
 	m.valid = true;
+	if (m.cavesCoveredBySolid > 0) {
+		m.valid = false;
+		m.failureReason = "cave covered by solid";
+	}
 	if (m.caveCount > 0 && m.cavesReachable < m.caveCount) {
 		m.valid = false;
-		m.failureReason = "unreachable cave";
+		if (m.failureReason.empty())
+			m.failureReason = "unreachable cave";
 	}
 	if (m.packageTargetCount > 0 && m.packageTargetsReachable < m.packageTargetCount) {
 		m.valid = false;
@@ -621,6 +631,7 @@ MapMetrics MapValidator::evaluate (int width, int height,
 	score += 5.0f * (m.cavesTooClose == 0 ? 1.0f : 0.0f);
 	score += 5.0f * (m.cavesAbovePackageTarget == 0 ? 1.0f : 0.0f);
 	score += 5.0f * (m.cavePackageAirTooClose == 0 ? 1.0f : 0.0f);
+	score += 5.0f * (m.cavesCoveredBySolid == 0 ? 1.0f : 0.0f);
 	score += 4.0f * (m.shortPlatformRuns == 0 ? 1.0f : 0.0f);
 	score += 4.0f * (m.smallSolidComponents == 0 ? 1.0f : 0.0f);
 	score += 3.0f * (m.isolatedWalkables == 0 ? 1.0f : 0.0f);

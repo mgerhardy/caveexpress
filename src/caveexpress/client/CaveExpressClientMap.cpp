@@ -163,7 +163,7 @@ void CaveExpressClientMap::couldNotFindEntity (const std::string& prefix, uint16
 		const ClientEntityPtr e = i->second;
 		if (EntityTypes::isMapTile(e->getType()))
 			continue;
-		Log::info(LOG_GAMEIMPL, "id: %i, type: %s", e->getID(), e->getType().name.c_str());
+		Log::debug(LOG_GAMEIMPL, "id: %i, type: %s", e->getID(), e->getType().name.c_str());
 	}
 }
 
