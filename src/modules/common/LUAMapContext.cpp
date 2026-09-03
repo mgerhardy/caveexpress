@@ -75,7 +75,7 @@ int LUAMapContext::luaAddTile (lua_State * l)
 		return 0;
 	}
 
-	const EntityAngle angle = luaL_optinteger(l, 5, spriteDefPtr->angle);
+	const EntityAngle angle = static_cast<EntityAngle>(luaL_optinteger(l, 5, spriteDefPtr->angle));
 	ctx->addTile(spriteDefPtr, x, y, angle);
 
 	return 0;
@@ -88,8 +88,8 @@ int LUAMapContext::luaAddEmitter (lua_State * l)
 	const EntityType& type = EntityType::getByName(name);
 	const gridCoord x = luaL_checknumber(l, 3);
 	const gridCoord y = luaL_checknumber(l, 4);
-	const int amount = luaL_optinteger(l, 5, 1);
-	const int delay = luaL_optinteger(l, 6, 0);
+	const int amount = static_cast<int>(luaL_optinteger(l, 5, 1));
+	const int delay = static_cast<int>(luaL_optinteger(l, 6, 0));
 	const std::string settings = luaL_optstring(l, 7, "");
 	ctx->addEmitter(type, x, y, amount, delay, settings);
 

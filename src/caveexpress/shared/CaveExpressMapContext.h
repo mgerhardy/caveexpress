@@ -36,7 +36,7 @@ protected:
 			ctx->_error = true;
 			return 0;
 		}
-		const int delay = luaL_optinteger(l, 6, 5000);
+		const int delay = static_cast<int>(luaL_optinteger(l, 6, 5000));
 
 		SpriteDefPtr spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(caveTile);
 		if (!spriteDefPtr) {
@@ -78,7 +78,7 @@ protected:
 		const gridCoord y = luaL_checknumber(l, 4);
 		const std::string linkId = luaL_optstring(l, 5, "");
 		const float requiredWeight = static_cast<float>(luaL_optnumber(l, 6, 700.0));
-		const int holdMs = luaL_optinteger(l, 7, 0);
+		const int holdMs = static_cast<int>(luaL_optinteger(l, 7, 0));
 
 		SpriteDefPtr spriteDefPtr = SpriteDefinition::get().getSpriteDefinition(sprite);
 		if (!spriteDefPtr) {

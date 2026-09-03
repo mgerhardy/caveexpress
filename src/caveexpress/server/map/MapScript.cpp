@@ -221,7 +221,7 @@ int luaMapMessage (lua_State* L)
 int luaMapGetPlayer (lua_State* L)
 {
 	Map* map = luaRequireMap(L);
-	const int index = luaL_optinteger(L, 2, 1) - 1; // Lua is 1-based
+	const int index = static_cast<int>(luaL_optinteger(L, 2, 1) - 1); // Lua is 1-based
 	const Map::PlayerList& players = map->getPlayers();
 	if (index < 0 || index >= (int)players.size()) {
 		lua_pushnil(L);
@@ -253,7 +253,7 @@ int luaMapGetCaveCount (lua_State* L)
 int luaMapGetCave (lua_State* L)
 {
 	Map* map = luaRequireMap(L);
-	const int index = luaL_checkinteger(L, 2) - 1; // 1-based
+	const int index = static_cast<int>(luaL_checkinteger(L, 2) - 1); // 1-based
 	CaveMapTile* cave = map->getCave(index);
 	if (cave == nullptr)
 		lua_pushnil(L);
@@ -285,7 +285,7 @@ int luaMapSpawnPackage (lua_State* L)
 int luaMapSpawnPackageNPC (lua_State* L)
 {
 	Map* map = luaRequireMap(L);
-	const int caveIndex = luaL_checkinteger(L, 2) - 1;
+	const int caveIndex = static_cast<int>(luaL_checkinteger(L, 2) - 1);
 	CaveMapTile* cave = map->getCave(caveIndex);
 	const EntityType& type = luaParseEntityType(L, 3, EntityTypes::NPC_FRIENDLY_MAN);
 	NPCPackage* npc = map->spawnPackageNPCScripted(cave, type);
@@ -299,7 +299,7 @@ int luaMapSpawnPackageNPC (lua_State* L)
 int luaMapSpawnFriendlyNPC (lua_State* L)
 {
 	Map* map = luaRequireMap(L);
-	const int caveIndex = luaL_checkinteger(L, 2) - 1;
+	const int caveIndex = static_cast<int>(luaL_checkinteger(L, 2) - 1);
 	CaveMapTile* cave = map->getCave(caveIndex);
 	const EntityType& type = luaParseEntityType(L, 3, EntityTypes::NPC_FRIENDLY_MAN);
 	const bool returnToCave = lua_toboolean(L, 4) != 0;
@@ -349,7 +349,7 @@ int luaMapAddTile (lua_State* L)
 	const char* sprite = luaL_checkstring(L, 2);
 	const float x = static_cast<float>(luaL_checknumber(L, 3));
 	const float y = static_cast<float>(luaL_checknumber(L, 4));
-	const EntityAngle angle = luaL_optinteger(L, 5, 0);
+	const EntityAngle angle = static_cast<EntityAngle>(luaL_optinteger(L, 5, 0));
 	MapTile* tile = map->addTileScripted(sprite, x, y, angle);
 	if (tile == nullptr)
 		lua_pushnil(L);
@@ -419,7 +419,7 @@ int luaEntityGetState (lua_State* L)
 int luaEntitySetState (lua_State* L)
 {
 	IEntity* entity = luaGetEntity(L);
-	entity->setState(luaL_checkinteger(L, 2));
+	entity->setState(static_cast<int>(luaL_checkinteger(L, 2)));
 	return 0;
 }
 

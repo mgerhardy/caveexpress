@@ -171,7 +171,7 @@ int LUA::getValueIntegerFromTable (const char * key, int defaultValue)
 		return defaultValue;
 	}
 
-	const int rtn = luaL_checkinteger(_state, -1);
+	const int rtn = static_cast<int>(luaL_checkinteger(_state, -1));
 	pop();
 	return rtn;
 }
@@ -426,7 +426,7 @@ int LUA::getTableInteger (int i)
 		return 0;
 	}
 	lua_rawgeti(_state, -1, i);
-	const int val = luaL_checkinteger(_state, -1);
+	const int val = static_cast<int>(luaL_checkinteger(_state, -1));
 	pop();
 	return val;
 }
