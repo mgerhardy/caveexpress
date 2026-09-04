@@ -132,11 +132,11 @@ TEST_F(MapTest, testIntroMoviePackageLoadsAndFinishes) {
 	ASSERT_TRUE(_map.isActive());
 	ASSERT_FALSE(_map.isInputEnabled());
 
-	// Drive through boot/dump/pilot boarding into scripted rescue (~25s of text beats)
+	// Drive through waste/idea/dust/reveal and boarding into scripted rescue.
 	for (int i = 0; i < 2000; ++i)
 		_map.update(16);
 
-	// Fully scripted cutscene: input stays locked; packages should be staged.
+	// Fully scripted cutscene: input stays locked; packed garbage is staged after the build.
 	ASSERT_FALSE(_map.isInputEnabled()) << "intro cutscene must never enable player input";
 	ASSERT_GT(_map.countPackages(), 0) << "script should spawn packages";
 

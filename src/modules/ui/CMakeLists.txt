@@ -4,6 +4,7 @@ set(ui_SRCS
 	editor/MapEditorTypes.cpp
 	editor/IMapEditorDocument.cpp
 	editor/UIMapEditorWindow.cpp
+	editor/UIShapeEditor.cpp
 	nodes/UINodeMapSelector.cpp
 	nodes/UINodeCampaignSelector.cpp
 	nodes/UINodeSlider.cpp

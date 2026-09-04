@@ -16,7 +16,7 @@ Unsaved changes are confirmed before leaving the editor, starting a new map, or 
 
 | Area | Contents |
 | --- | --- |
-| Top toolbar | New, Save, Save & Go, Undo, Redo, Fit, Script, Help, and the Place / Remove / Select tools |
+| Top toolbar | New, Save, Save & Go, Undo, Redo, Fit, Script, Shapes, Help, and the Place / Remove / Select tools |
 | Left tabs | **Tiles**, **Entities**, **Maps** |
 | Center | Map canvas |
 | Right tabs | **Properties** (map settings and the selected item) and **Layers** |
@@ -78,7 +78,7 @@ These shortcuts are ignored while you are typing in a text field, except **Ctrl+
 | **F1** | Toggle the in-editor help panel |
 | **Space** (cursor on canvas) | Rotate the brush. Directional entities flip left/right. Rotatable tiles step by their sprite rotation increment (often 90 degrees). |
 | **Delete** / **Backspace** | Remove the selected item of the active tab |
-| **Esc** | Close Script, Help, or the unsaved-changes dialog; otherwise leave the editor |
+| **Esc** | Close Script, Shapes, Help, or the unsaved-changes dialog; otherwise leave the editor |
 
 ## Tiles tab
 
@@ -196,6 +196,21 @@ If you want the map in a campaign, add its filename (without `.lua`) to a campai
 ```lua
 c:addMaps("mymap")
 ```
+
+## Sprite shape editor
+
+**Shapes** opens a tool for editing the collision polygons defined in `sprites.lua`. The first version copies Lua you paste back into that file; it does not rewrite `sprites.lua` on disk.
+
+1. Click **Shapes**, or select a tile/entity first so that sprite is preselected.
+2. Pick any sprite from the filterable list.
+3. The sprite image is shown centered on the origin. The blue rectangle is the sprite's tile size (`width` x `height`).
+4. Left-click empty canvas to append a vertex (line strip). Left-drag a red dot to move it. Right-click a red dot to delete it.
+5. **New polygon** / **Delete polygon** switch among multiple fixtures (see `item-banana-idle`). **User data** is the first string in each polygon table (`""`, `"solid"`, `"lava"`, ...).
+6. Copy the generated `polygons = { ... },` block and paste it into the sprite entry in `sprites.lua`. **Paste** + **Apply Lua** loads a definition from the clipboard or the text box.
+
+Hold **Ctrl** while placing or dragging to snap to 1 Lua unit (0.01 tiles). Box2D allows at most 8 vertices per convex polygon; the editor warns if a shape is concave or too large. Circles are drawn read-only.
+
+Edits update the in-memory sprite definition for the current session. Restart (or reload sprites) after you paste into `sprites.lua` to keep them.
 
 ## Map scripts and Lua
 

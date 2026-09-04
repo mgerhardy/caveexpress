@@ -300,6 +300,16 @@
             <filename>../png/caveexpress/tree-idle-desert-middle-01.png</filename>
             <filename>../png/caveexpress/tree-idle-desert-middle-02.png</filename>
             <filename>../png/caveexpress/tree-idle-desert-middle-03.png</filename>
+            <filename>../png/caveexpress/waste.png</filename>
+            <filename>../png/caveexpress/idea.png</filename>
+            <filename>../png/caveexpress/dust-01.png</filename>
+            <filename>../png/caveexpress/dust-02.png</filename>
+            <filename>../png/caveexpress/dust-03.png</filename>
+            <filename>../png/caveexpress/dust-04.png</filename>
+            <filename>../png/caveexpress/dust-05.png</filename>
+            <filename>../png/caveexpress/dust-06.png</filename>
+            <filename>../png/caveexpress/dust-07.png</filename>
+            <filename>../png/caveexpress/dust-08.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

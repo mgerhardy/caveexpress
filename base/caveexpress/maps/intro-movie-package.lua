@@ -1,6 +1,8 @@
 -- Intro movie: "The garbage problem"
 -- Fully scripted cutscene - no player interaction.
--- Empty pedal machine waits, an NPC boards it, then the taxi cleans up the garbage.
+-- Rubbish sits in front of the cave. A villager has an idea, walks over,
+-- and the dust cloud turns the waste into the empty CaveExpress machine.
+-- After that the taxi collects the remaining packed garbage.
 --
 -- Coordinate note: Y grows downward (gravity). "Above" means a smaller Y.
 
@@ -10,9 +12,11 @@ end
 
 local phase = "boot"
 local timer = 0
-local npc = nil
 local pilot = nil
 local player = nil
+local waste = nil
+local dust = nil
+local idea = nil
 local drops = 0
 local packages = {}
 local flyPath = nil
@@ -32,6 +36,13 @@ local HOVER_MAX_MS = 3500
 local DELIVER_TIMEOUT_MS = 8000
 local MAX_DELIVER_ATTEMPTS = 3
 local BOARD_DIST = 0.75
+local WASTE_X = 3.0
+local WASTE_Y = 3.5
+local WASTE_CX = 4.5
+local WASTE_APPROACH_X = 3.15
+local DUST_MS = 1100
+local MACHINE_HIDE_X = -4.0
+local machineShown = false
 
 local function setPhase(map, name, message)
 	phase = name
@@ -39,6 +50,40 @@ local function setPhase(map, name, message)
 	if message then
 		map:message(message, MSG_MS)
 	end
+end
+
+local function removeDeco(ent)
+	if ent ~= nil and ent:isValid() then
+		ent:remove()
+	end
+	return nil
+end
+
+-- Cave-sign style: 1x1 tile whose sprite sits at the bottom of the cell,
+-- parked just above the entity's head.
+local function ideaAbove(map, entity)
+	if entity == nil or not entity:isValid() then
+		return nil
+	end
+	local x, y = entity:getPos()
+	return map:addTileRuntime("idea", x - 0.5, y - 1.32)
+end
+
+local function placeIdea(map, entity)
+	idea = removeDeco(idea)
+	idea = ideaAbove(map, entity)
+	return idea
+end
+
+local function spawnWaste(map)
+	waste = removeDeco(waste)
+	waste = map:addTileRuntime("waste", WASTE_X, WASTE_Y)
+end
+
+local function spawnDust(map)
+	dust = removeDeco(dust)
+	-- Center the puff on the waste pile.
+	dust = map:addTileRuntime("dust", WASTE_CX - 0.75, WASTE_Y - 0.1)
 end
 
 local function rememberPackage(pkg)
@@ -49,23 +94,6 @@ end
 
 local function refreshPackages(map)
 	packages = map:getPackages() or {}
-end
-
-local function packageCentroid()
-	local sx, sy, n = 0, 0, 0
-	for i = 1, #packages do
-		local pkg = packages[i]
-		if pkg ~= nil and pkg:isValid() and not pkg:isDelivered() and not pkg:isArrived() then
-			local x, y = pkg:getPos()
-			sx = sx + x
-			sy = sy + y
-			n = n + 1
-		end
-	end
-	if n == 0 then
-		return nil, nil
-	end
-	return sx / n, sy / n
 end
 
 local function nextFreePackage(map)
@@ -86,7 +114,7 @@ end
 local function ensurePackages(map)
 	refreshPackages(map)
 	while #packages < 3 do
-		local x = 3.5 + #packages * 1.0
+		local x = 2.4 + #packages * 0.85
 		rememberPackage(map:spawnPackage(x, 3.5))
 	end
 	drops = math.max(drops, #packages)
@@ -106,25 +134,60 @@ end
 local function keepEmpty(playerEnt)
 	if playerEnt ~= nil and playerEnt:isValid() then
 		-- Parked machine: no gravity drift, fixed on the ground surface (y=5).
-		local x = select(1, playerEnt:getPos())
 		local groundY = 5.0
 		local halfH = 0.435 -- player height 0.87 / 2
 		playerEnt:setGravityScale(0)
 		playerEnt:resetAcceleration()
 		playerEnt:setVelocity(0, 0)
-		playerEnt:setPos(x, groundY - halfH)
+		playerEnt:setPos(WASTE_CX, groundY - halfH)
 		playerEnt:setAnimation("empty")
 	end
+end
+
+local function hideMachine(playerEnt)
+	if playerEnt == nil or not playerEnt:isValid() then
+		return
+	end
+	-- Park off the left edge so the finished heli is not drawn until the reveal.
+	local groundY = 5.0
+	local halfH = 0.435 -- player height 0.87 / 2
+	playerEnt:setGravityScale(0)
+	playerEnt:resetAcceleration()
+	playerEnt:setVelocity(0, 0)
+	playerEnt:setPos(MACHINE_HIDE_X, groundY - halfH)
+	playerEnt:setAnimation("empty")
+end
+
+local function parkMachine(playerEnt)
+	if machineShown then
+		keepEmpty(playerEnt)
+	else
+		hideMachine(playerEnt)
+	end
+end
+
+local function revealMachine(playerEnt)
+	waste = removeDeco(waste)
+	dust = removeDeco(dust)
+	idea = removeDeco(idea)
+	machineShown = true
+	keepEmpty(playerEnt)
 end
 
 -- Skip finishes the cutscene; never hands control to the player.
 local function skipCutscene(map)
 	map:consumeSkip()
+	revealMachine(player or map:getPlayer())
 	ensurePackages(map)
 	player = player or map:getPlayer()
 	if player ~= nil and player:isValid() then
 		endScriptedFlight(player)
+		keepEmpty(player)
 	end
+	if pilot ~= nil and pilot:isValid() then
+		pilot:remove()
+	end
+	pilot = nil
 	map:setInputEnabled(false)
 	setPhase(map, "done", "The caves are clean again. Thank you!")
 	map:finish()
@@ -147,24 +210,6 @@ local function flyToward(entity, tx, ty, speed)
 	return false
 end
 
-local function buildFlyPath(playerEnt, cx, cy)
-	local px, py = playerEnt:getPos()
-	local cruiseY = math.min(py, cy) - 1.0
-	if cruiseY < 0.8 then
-		cruiseY = 0.8
-	end
-	local hoverY = cy - 0.85
-	if hoverY < cruiseY then
-		hoverY = cruiseY
-	end
-	return {
-		{ px, cruiseY, 2.2 },
-		{ cx, cruiseY, 2.8 },
-		{ cx, hoverY, 1.8 },
-	}
-end
-
--- Descend onto a package so the player is slightly above it (required to collect).
 local function buildCollectPath(playerEnt, pkg)
 	local px, py = playerEnt:getPos()
 	local cx, cy = pkg:getPos()
@@ -288,7 +333,10 @@ function onMapLoaded()
 	deliverAttempts = 0
 	collectTarget = nil
 	pilot = nil
-	npc = nil
+	idea = nil
+	dust = nil
+	waste = nil
+	machineShown = false
 	local cave = map:getCave(1)
 	if cave ~= nil then
 		cave:setRespawnPossible(false)
@@ -297,8 +345,9 @@ function onMapLoaded()
 	player = map:getPlayer()
 	if player ~= nil and player:isValid() then
 		player:setInvulnerable(60000)
-		keepEmpty(player)
+		parkMachine(player)
 	end
+	spawnWaste(map)
 	setPhase(map, "boot", "Long ago in the caves...")
 end
 
@@ -314,66 +363,21 @@ function onUpdate(dt)
 	player = player or map:getPlayer()
 
 	if phase == "boot" then
-		keepEmpty(player)
+		parkMachine(player)
 		if timer > 3500 then
-			setPhase(map, "spawn")
+			setPhase(map, "appear", "Others left their rubbish in front of the caves.")
 		end
 		return
 	end
 
-	if phase == "spawn" then
-		keepEmpty(player)
-		npc = map:spawnPackageNPC(1, "npc-man")
-		if npc == nil or not npc:isValid() then
-			ensurePackages(map)
-			setPhase(map, "annoyed", "@#$%! Look at this mess!")
-			return
-		end
-		setPhase(map, "drop", "Someone is dumping garbage...")
-		return
-	end
-
-	if phase == "drop" then
-		keepEmpty(player)
-		if npc ~= nil and npc:isValid() and drops < 3 then
-			local nx = select(1, npc:getPos())
-			local cave = map:getCave(1)
-			local cx = cave ~= nil and select(1, cave:getPos()) or nx
-			local farEnough = math.abs(nx - cx) > 0.55
-			if farEnough and timer > 1200 then
-				rememberPackage(npc:dropPackage())
-				drops = drops + 1
-				timer = 0
-				if drops >= 3 then
-					npc:returnToCave()
-					setPhase(map, "annoyed", "@#$%! Too much garbage!")
-				end
-			end
-		elseif npc == nil or not npc:isValid() then
-			ensurePackages(map)
-			setPhase(map, "annoyed", "@#$%! Look at this mess!")
-		end
-		return
-	end
-
-	if phase == "annoyed" then
-		keepEmpty(player)
-		local npcGone = npc == nil or not npc:isValid()
-		if (npcGone and timer > 1500) or timer > 7000 then
-			refreshPackages(map)
-			ensurePackages(map)
-			setPhase(map, "pilotIdle", "Who will clean this up?")
-		end
-		return
-	end
-
-	-- Pilot NPC appears idle, then walks to the empty pedal machine.
-	if phase == "pilotIdle" then
-		keepEmpty(player)
+	-- Villager leaves the cave and walks to the waste. No idea bubble yet.
+	if phase == "appear" then
+		parkMachine(player)
 		if pilot == nil then
 			pilot = map:spawnFriendlyNPC(1, "npc-man", false)
 			if pilot == nil or not pilot:isValid() then
-				-- No pilot available; board immediately so the cutscene can continue.
+				revealMachine(player)
+				ensurePackages(map)
 				if player ~= nil and player:isValid() then
 					player:setAnimation("idle")
 				end
@@ -383,7 +387,65 @@ function onUpdate(dt)
 			pilot:setIdle()
 		end
 		if timer > 1800 then
-			if player ~= nil and player:isValid() and pilot ~= nil and pilot:isValid() then
+			if pilot ~= nil and pilot:isValid() then
+				pilot:setMoving(WASTE_APPROACH_X)
+			end
+			setPhase(map, "walkToWaste")
+		end
+		return
+	end
+
+	if phase == "walkToWaste" then
+		parkMachine(player)
+		if pilot == nil or not pilot:isValid() then
+			revealMachine(player)
+			ensurePackages(map)
+			if player ~= nil and player:isValid() then
+				player:setAnimation("idle")
+			end
+			beginRescueFlight(map, player)
+			return
+		end
+		local nx = select(1, pilot:getPos())
+		if timer > 400 then
+			pilot:setMoving(WASTE_APPROACH_X)
+		end
+		if math.abs(nx - WASTE_APPROACH_X) < 0.35 or timer > 12000 then
+			pilot:setIdle()
+			placeIdea(map, pilot)
+			setPhase(map, "think", "We could build something from this!")
+		end
+		return
+	end
+
+	if phase == "think" then
+		parkMachine(player)
+		if pilot ~= nil and pilot:isValid() then
+			pilot:setIdle()
+		end
+		if timer > 1800 then
+			idea = removeDeco(idea)
+			spawnDust(map)
+			setPhase(map, "dust")
+		end
+		return
+	end
+
+	-- Dust plays over the waste; when it ends the pile is gone and the
+	-- empty machine appears in its place.
+	if phase == "dust" then
+		parkMachine(player)
+		if timer > DUST_MS then
+			revealMachine(player)
+			setPhase(map, "reveal", "The CaveExpress is ready!")
+		end
+		return
+	end
+
+	if phase == "reveal" then
+		parkMachine(player)
+		if timer > 900 then
+			if pilot ~= nil and pilot:isValid() and player ~= nil and player:isValid() then
 				local px = select(1, player:getPos())
 				pilot:setMoving(px)
 			end
@@ -407,16 +469,14 @@ function onUpdate(dt)
 		local px, py = player:getPos()
 		local nx, ny = pilot:getPos()
 		local dist = math.sqrt((px - nx) * (px - nx) + (py - ny) * (py - ny))
-		-- Keep walking toward the machine in case the NPC idled early.
 		if timer > 400 then
 			pilot:setMoving(px)
 			timer = 0
 		end
 		if dist < BOARD_DIST or (math.abs(px - nx) < BOARD_DIST and math.abs(py - ny) < 1.2) then
-			setPhase(map, "board", "The CaveExpress is ready!")
+			setPhase(map, "board")
 		elseif timer > 12000 then
-			-- Safety: board even if pathfinding stalled.
-			setPhase(map, "board", "The CaveExpress is ready!")
+			setPhase(map, "board")
 		end
 		return
 	end
@@ -464,13 +524,11 @@ function onUpdate(dt)
 			end
 			local wp = flyPath[flyWaypoint]
 			if wp == nil then
-				-- Nudge down onto the package for a moment.
 				player:setGravityScale(0.4)
 				player:resetAcceleration()
 				player:setVelocity(0, 0.6)
 				player:setAnimation("flying")
 				if timer > 1500 then
-					-- Missed this pass; rebuild path toward the same / next package.
 					local pkg = nextFreePackage(map)
 					if pkg ~= nil then
 						beginCollect(map, player, pkg)
@@ -599,9 +657,9 @@ function initMap()
 	map:addTile("tile-rock-03", 13, 3)
 	map:addTile("tile-rock-03", 13, 4)
 
-	-- Park the empty pedal machine on the ground (tile top at y=5).
-	-- Spawn uses start + size/2, then createBody shifts -0.2; 4.33 lands the hull on the floor.
-	map:addStartPosition("8", "4.33")
+	-- Start off-map so the finished heli never flashes before onMapLoaded hides it.
+	-- Reveal teleports to the waste pile (x=4.5, y=4.33 on the floor).
+	map:addStartPosition("-4", "4.33")
 
 	map:setSetting("width", "14")
 	map:setSetting("height", "8")

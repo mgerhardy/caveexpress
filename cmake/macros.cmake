@@ -135,16 +135,25 @@ macro(textureatlas)
 			set(_tps_full ${_tps_dir}/${_tps}.tps)
 			set(_stamp ${CMAKE_BINARY_DIR}/${_TP_PROJECTNAME}-${_tps}.atlas.stamp)
 
-			# .tps + listed source PNGs (paths are relative to the textureatlas working dir)
+			# Re-parse this .tps on the next build if it changed, so newly listed
+			# sprites become DEPENDS. file(STRINGS) is configure-time only.
+			set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${_tps_full})
+
+			# .tps + listed source PNGs (paths are relative to the textureatlas working dir).
+			# Always add listed paths: EXISTS is configure-time and would drop files
+			# created after the last cmake run (e.g. waste.png added to an existing atlas).
 			set(_tps_deps ${_tps_full})
 			if (EXISTS ${_tps_full})
 				file(STRINGS ${_tps_full} _tps_lines)
 				foreach (_line IN LISTS _tps_lines)
 					if (_line MATCHES "<filename>([^<]+\\.[Pp][Nn][Gg])</filename>")
-						get_filename_component(_png_abs "${_tps_dir}/${CMAKE_MATCH_1}" ABSOLUTE)
-						if (EXISTS ${_png_abs})
-							list(APPEND _tps_deps ${_png_abs})
+						set(_png_rel "${CMAKE_MATCH_1}")
+						# Skip atlas outputs such as caveexpress-entity-{v}.png
+						if (_png_rel MATCHES "\\{")
+							continue()
 						endif()
+						get_filename_component(_png_abs "${_tps_dir}/${_png_rel}" ABSOLUTE)
+						list(APPEND _tps_deps ${_png_abs})
 					endif()
 				endforeach()
 				list(REMOVE_DUPLICATES _tps_deps)

@@ -1,21 +1,28 @@
 Achievements|Achievements
+Applied Lua definition|Applied Lua definition
+Apply Lua|Apply Lua
 Are you sure?|Bist du sicher?
 Back|Zurück
 background|Hintergrund
 Big|Groß
 Campaigns|Kampagnen
 Cancel|Abbruch
+Clear|Clear
 Clicking the position will move the player there|Clicking the position will move the player there
 Close|Schließen
 Continue|Fortfahren
 Controller trigger|Controller trigger
+Copied to clipboard|Copied to clipboard
+Copy to clipboard|Copy to clipboard
 Create server|Erstellen
 Ctrl+S save, Ctrl+Z/Y undo/redo|Strg+S speichern, Strg+Z/Y rückgängig/wiederholen
 Deadlock package|Deadlock package
 decoration|Dekoration
 Decrease map height|Map-Höhe verkleinern
 Decrease map width|Map-Breite verkleinern
+Delete polygon|Delete polygon
 Delete: remove selection of the active tab|Entf: Auswahl der aktiven Registerkarte entfernen
+Delete vertex|Delete vertex
 Delivered package|Delivered package
 Description|Beschreibung
 Disconnect|Trennen
@@ -45,10 +52,13 @@ Homepage|Homepage
 Increase map height|Map-Höhe vergrößern
 Increase map width|Map-Breite vergrößern
 Input|Eingabe
+Invalid Lua polygon definition|Invalid Lua polygon definition
 Later|Später
 Layers|Ebenen
 Leaderboard|Leaderboard
 LMB: paint / place (also selects)|LMB: paint / place (also selects)
+LMB place / drag, RMB delete vertex, wheel zoom, MMB pan|LMB place / drag, RMB delete vertex, wheel zoom, MMB pan
+Lua polygon definition (paste into sprites.lua)|Lua polygon definition (paste into sprites.lua)
 Map|Map
 Map Editor|Map-Editor
 Maps|Maps
@@ -59,6 +69,7 @@ Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
 New|Neu
+New polygon|New polygon
 No controller found|Keinen Controller gefunden
 none|keine
 Normal|Normal
@@ -68,9 +79,13 @@ OK|OK
 On|An
 Open|Öffnen
 Package|Paket
+Paste|Paste
+Pick a sprite to edit its collision polygons.|Pick a sprite to edit its collision polygons.
 Place tile|Teil plazieren
 Players|Spieler
 Please rate the app|Bitte bewerte die App
+Polygon|Polygon
+Polygon is concave — Box2D needs convex shapes (split it).|Polygon is concave — Box2D needs convex shapes (split it).
 Properties|Eigenschaften
 Properties edit the selected tile, not the hovered one|Properties edit the selected tile, not the hovered one
 Quit|Beenden
@@ -88,11 +103,14 @@ Save|Speichern
 Save & Go|Testen
 Script|Script
 Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test
+Select a sprite|Select a sprite
 Select a tile on the map|Select a tile on the map
 Select game mode|Spielemodus aussuchen
 Select tile|Teil selektieren
 Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / pick tile
 Settings|Einstellungen
+Shapes|Shapes
+Shapes: edit sprite collision polygons and copy Lua|Shapes: edit sprite collision polygons and copy Lua
 Show Grid|Gitter anzeigen
 Skip|Nächste
 Small|Klein
@@ -101,6 +119,7 @@ Solve|Lösen
 Sound|Sound
 Sound/Music|Sound/Musik
 Space (on canvas): rotate brush|Leertaste (auf Canvas): Pinsel drehen
+Sprite Shape Editor|Sprite Shape Editor
 Start|Start
 Target|Palette
 Textures|Texturen
@@ -108,9 +127,12 @@ The less moves you do the better|Je weniger Schritte, desto besser
 Tiles|Kacheln
 Tiles / Entities tab: place and erase only that kind|Kacheln / Objekte: nur diese Art setzen und löschen
 Title|Titel
+Too many vertices for Box2D|Too many vertices for Box2D
 Undo|Rückgängig
 Unsaved changes|Ungespeicherte Änderungen
+User data|User data
 Username|Username
+Vertices|Vertices
 Volume|Volume
 Waiting|Warten
 Wheel: zoom toward cursor|Mausrad: Zoom zum Cursor

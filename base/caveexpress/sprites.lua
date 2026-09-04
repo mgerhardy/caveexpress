@@ -401,6 +401,36 @@ sprites = {
 	["cave-sign-06"] = { type = "cave-sign", },
 	["cave-sign-07"] = { type = "cave-sign", },
 	["cave-sign-08"] = { type = "cave-sign", },
+	-- Cutscene props. Front layer so they draw over ground characters.
+	["waste"] = {
+		width = 3,
+		height = 1.5,
+		frames = {
+			{}, --back
+			{}, --middle
+			{ "waste", }, --front
+		},
+	},
+	["dust"] = {
+		fps = 8,
+		width = 1.5,
+		height = 1.2,
+		frames = {
+			{}, --back
+			{}, --middle
+			{ "dust-01", "dust-02", "dust-03", "dust-04", "dust-05", "dust-06", "dust-07", "dust-08", }, --front
+		},
+	},
+	["idea"] = {
+		type = "cave-sign",
+		width = 1,
+		height = 1,
+		frames = {
+			{}, --back
+			{}, --middle
+			{ "idea", }, --front
+		},
+	},
 	["cavenumber1"] = {},
 	["cavenumber2"] = {},
 	["cavenumber3"] = {},

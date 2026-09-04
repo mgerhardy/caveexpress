@@ -5,6 +5,8 @@ Activate the pterodactyls spawn|Aktiviere den Pterodactylus für diese Map
 A mighty fish is after you|Ein mächtiger Fisch ist hinter dir her
 An egg will make you invulnerable for some time|An egg will make you invulnerable for some time
 Angry dinosaur|Wütender Dinosaurier
+Applied Lua definition|Applied Lua definition
+Apply Lua|Apply Lua
 Are you sure?|Wirklich fortfahren?
 Auto|Auto
 Back|Zurück
@@ -14,18 +16,23 @@ Campaign|Kampagne
 Campaigns|Kampagnen
 Cancel|Abbrechen
 Cancel pick|Cancel pick
+Clear|Clear
 Click a gate to link|Click a gate to link
 Close|Schließen
 Collecting fruits will restore hitpoints|Früchte regenerieren Lebensenergie
 Collect packages by landing on them|Sammele Pakete in dem du auf ihnen landest
 Continue|Weiter
 Controller trigger|Controller trigger
+Copied to clipboard|Copied to clipboard
+Copy to clipboard|Copy to clipboard
 Create server|Server erstellen
 Ctrl+S save, Ctrl+Z/Y undo/redo|Strg+S speichern, Strg+Z/Y rückgängig/wiederholen
 decoration|Dekoration
 Decrease map height|Map-Höhe verkleinern
 Decrease map width|Map-Breite verkleinern
+Delete polygon|Delete polygon
 Delete: remove selection of the active tab|Entf: Auswahl der aktiven Registerkarte entfernen
+Delete vertex|Delete vertex
 Deliver packages to the shredders|Transportiere Pakete zu den Schreddern
 Description|Beschreibung
 Desert|Wüste
@@ -76,6 +83,7 @@ Ice|Eis
 Increase map height|Map-Höhe vergrößern
 Increase map width|Map-Breite vergrößern
 Input|Eingabe
+Invalid Lua polygon definition|Invalid Lua polygon definition
 Invulnerable|Unverwundbar
 Jungle|Dschungel
 Just stay and watch what happens|Einfach nur abwarten und zuschauen
@@ -85,6 +93,8 @@ Leaderboard|Leaderboard
 Learn to use the stone|Lerne den Stein zu benutzen
 Link id|Link id
 LMB: paint / place (also selects)|LMB: paint / place (also selects)
+LMB place / drag, RMB delete vertex, wheel zoom, MMB pan|LMB place / drag, RMB delete vertex, wheel zoom, MMB pan
+Lua polygon definition (paste into sprites.lua)|Lua polygon definition (paste into sprites.lua)
 Map|Map
 Map Editor|Map-Editor
 Map generator seed. 0 picks a new seed on Auto.|Map generator seed. 0 picks a new seed on Auto.
@@ -95,6 +105,7 @@ Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
 New|Neu
+New polygon|New polygon
 No controller found|No controller found
 none|keine
 Normal|Normal
@@ -107,12 +118,16 @@ Open|Starten
 Open amount|Open amount
 or A on your controller|or A on your controller
 Package|Paket
+Paste|Paste
+Pick a sprite to edit its collision polygons.|Pick a sprite to edit its collision polygons.
 Pick gate target|Pick gate target
 Place tile|Teil plazieren
 Player|Spieler
 Players|Players
 Please rate the app|Bitte bewerte die App
 Points|Punkte
+Polygon|Polygon
+Polygon is concave — Box2D needs convex shapes (split it).|Polygon is concave — Box2D needs convex shapes (split it).
 Properties|Eigenschaften
 Properties edit the selected tile, not the hovered one|Properties edit the selected tile, not the hovered one
 Pterodactyls|Pterodactylus
@@ -136,11 +151,14 @@ Save & Go|Testen
 Script|Script
 Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test
 Seed|Seed
+Select a sprite|Select a sprite
 Select a tile on the map|Select a tile on the map
 Select game mode|Auswahl des Spielmodus
 Select tile|Teil selektieren
 Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / pick tile
 Settings|Einstellungen
+Shapes|Shapes
+Shapes: edit sprite collision polygons and copy Lua|Shapes: edit sprite collision polygons and copy Lua
 Show Grid|Gitter anzeigen
 Shredder|Schredder
 Small|Klein
@@ -148,6 +166,7 @@ solid|Fest
 Sound|Sound
 Sound/Music|Sound/Music
 Space (on canvas): rotate brush|Leertaste (auf Canvas): Pinsel drehen
+Sprite Shape Editor|Sprite Shape Editor
 Start|Start
 Stone|Stein
 Textures|Texturen
@@ -161,6 +180,7 @@ Tiles / Entities tab: place and erase only that kind|Kacheln / Objekte: nur dies
 Time bar|Zeitanzeige
 Title|Titel
 To dive across, fall fast into water flying to side|To dive across, fall fast into water flying to side
+Too many vertices for Box2D|Too many vertices for Box2D
 Transfer the grandpa to the desired cave|Transfer the grandpa to the desired cave
 Transfer the man to the desired cave|Transfer the man to the desired cave
 Transfer the woman to the desired cave|Transfer the woman to the desired cave
@@ -169,10 +189,12 @@ Trigger link|Trigger link
 Try to avoid crashes but still be fast|Harte Treffer vermeiden und schnell sein
 Undo|Rückgängig
 Unsaved changes|Ungespeicherte Änderungen
+User data|User data
 Username|Username
 Use the second finger to drop the package|Benutze den zweiten Finger um das Paket abzuwerfen
 Use the second finger to drop the stone|Benutze den zweiten Finger um den Stein abzuwerfen
 Use the swing of the package|Benutze den Schwung des Paketes
+Vertices|Vertices
 Volume|Volume
 Waiting|Warte
 Watch the geyser|Beobachte den Geisir

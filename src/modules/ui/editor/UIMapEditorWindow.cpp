@@ -165,6 +165,10 @@ void UIMapEditorWindow::handleHotkeys () const
 		_showScriptEditor = false;
 		return;
 	}
+	if (ImGui::IsKeyPressed(ImGuiKey_Escape, false) && _shapeEditor.isVisible()) {
+		_shapeEditor.setVisible(false);
+		return;
+	}
 
 	if (io.WantTextInput)
 		return;
@@ -177,15 +181,18 @@ void UIMapEditorWindow::handleHotkeys () const
 		_showHelp = !_showHelp;
 	if (ImGui::IsKeyPressed(ImGuiKey_G, false))
 		_doc->toggleGrid();
-	if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && _canvasHovered)
+	if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && _canvasHovered && !_shapeEditor.isVisible())
 		_doc->rotateBrush();
-	if (ImGui::IsKeyPressed(ImGuiKey_Delete, false) || ImGui::IsKeyPressed(ImGuiKey_Backspace, false))
+	if (!_shapeEditor.isVisible()
+			&& (ImGui::IsKeyPressed(ImGuiKey_Delete, false) || ImGui::IsKeyPressed(ImGuiKey_Backspace, false)))
 		_doc->deleteSelection();
 	if (ImGui::IsKeyPressed(ImGuiKey_F, false))
 		fitView();
 	if (ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 		if (_showScriptEditor)
 			_showScriptEditor = false;
+		else if (_shapeEditor.isVisible())
+			_shapeEditor.setVisible(false);
 		else if (_showHelp)
 			_showHelp = false;
 		else if (_showConfirm) {
@@ -228,6 +235,19 @@ void UIMapEditorWindow::drawToolbar () const
 			_showScriptEditor = !_showScriptEditor;
 		ImGui::SameLine();
 	}
+	if (ImGui::Button(tr("Shapes").c_str())) {
+		if (_shapeEditor.isVisible()) {
+			_shapeEditor.setVisible(false);
+		} else {
+			std::string suggested;
+			if (_doc->getHighlightItem() && _doc->getHighlightItem()->def)
+				suggested = _doc->getHighlightItem()->def->id;
+			else if (_doc->getActiveSprite())
+				suggested = _doc->getActiveSprite()->id;
+			_shapeEditor.open(suggested);
+		}
+	}
+	ImGui::SameLine();
 	if (ImGui::Button(tr("Help").c_str()))
 		_showHelp = !_showHelp;
 	ImGui::SameLine();
@@ -396,6 +416,7 @@ void UIMapEditorWindow::drawHelpPanel () const
 	ImGui::BulletText("%s", tr("Properties edit the selected tile, not the hovered one").c_str());
 	if (_doc->supportsMapScript())
 		ImGui::BulletText("%s", tr("Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test").c_str());
+	ImGui::BulletText("%s", tr("Shapes: edit sprite collision polygons and copy Lua").c_str());
 	drawHelpExtras();
 }
 
@@ -685,5 +706,13 @@ void UIMapEditorWindow::render (int x, int y) const
 
 	drawConfirmModal();
 	drawScriptEditor();
+	{
+		std::string suggested;
+		if (_doc->getHighlightItem() && _doc->getHighlightItem()->def)
+			suggested = _doc->getHighlightItem()->def->id;
+		else if (_doc->getActiveSprite())
+			suggested = _doc->getActiveSprite()->id;
+		_shapeEditor.draw(_frontendPtr, suggested);
+	}
 	ImGui::End();
 }

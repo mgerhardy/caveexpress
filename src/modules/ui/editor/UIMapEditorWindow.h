@@ -2,6 +2,7 @@
 
 #include "ui/windows/UIWindow.h"
 #include "ui/editor/IMapEditorDocument.h"
+#include "ui/editor/UIShapeEditor.h"
 #include "common/Animation.h"
 #include "imgui.h"
 #include <memory>
@@ -26,6 +27,7 @@ protected:
 	mutable bool _showHelp = false;
 	mutable bool _showConfirm = false;
 	mutable bool _showScriptEditor = false;
+	mutable UIShapeEditor _shapeEditor;
 	mutable std::string _confirmAction;
 	mutable char _tileFilter[128] = {};
 	mutable char _entityFilter[128] = {};

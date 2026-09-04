@@ -1,6 +1,7 @@
 #include "TestShared.h"
 #include "common/Log.h"
 #include "common/SpriteDefinition.h"
+#include "common/SpritePolygonLua.h"
 #include "common/TextureDefinition.h"
 #include "ui/FontDefinition.h"
 #include "common/EntityType.h"
@@ -134,4 +135,44 @@ TEST_F(LUATest, testSpriteDefinition)
 	ASSERT_TRUE(spriteDef->textures[LAYER_BACK].empty());
 	ASSERT_FALSE(spriteDef->textures[LAYER_MIDDLE].empty());
 	ASSERT_TRUE(spriteDef->textures[LAYER_FRONT].empty());
+}
+
+TEST_F(LUATest, testSpritePolygonLuaRoundTrip)
+{
+	std::vector<SpritePolygon> polygons;
+	SpritePolygon apple("");
+	apple.vertices.push_back(SpriteVertex(0.16f, 0.0f));
+	apple.vertices.push_back(SpriteVertex(0.09f, 0.11f));
+	apple.vertices.push_back(SpriteVertex(-0.09f, 0.13f));
+	polygons.push_back(apple);
+	SpritePolygon tagged("solid");
+	tagged.vertices.push_back(SpriteVertex(-0.5f, 0.5f));
+	tagged.vertices.push_back(SpriteVertex(0.5f, 0.5f));
+	tagged.vertices.push_back(SpriteVertex(0.5f, 0.2f));
+	tagged.vertices.push_back(SpriteVertex(-0.5f, 0.2f));
+	polygons.push_back(tagged);
+
+	const std::string lua = sprite_polygon_lua::toLua(polygons);
+	ASSERT_NE(std::string::npos, lua.find("polygons = {"));
+	ASSERT_NE(std::string::npos, lua.find("\"solid\""));
+
+	std::vector<SpritePolygon> parsed;
+	std::string error;
+	ASSERT_TRUE(sprite_polygon_lua::fromLua(lua, parsed, &error)) << error;
+	ASSERT_EQ(2u, parsed.size());
+	ASSERT_EQ("", parsed[0].userData);
+	ASSERT_EQ("solid", parsed[1].userData);
+	ASSERT_EQ(3u, parsed[0].vertices.size());
+	ASSERT_EQ(4u, parsed[1].vertices.size());
+	EXPECT_NEAR(0.16f, parsed[0].vertices[0].x, 1.0e-4f);
+	EXPECT_NEAR(0.11f, parsed[0].vertices[1].y, 1.0e-4f);
+	EXPECT_NEAR(-0.5f, parsed[1].vertices[0].x, 1.0e-4f);
+	EXPECT_NEAR(0.2f, parsed[1].vertices[3].y, 1.0e-4f);
+
+	std::vector<SpritePolygon> single;
+	ASSERT_TRUE(sprite_polygon_lua::fromLua("{ \"\", 16.0, 0.0, 9.0, 11.0 }", single, &error)) << error;
+	ASSERT_EQ(1u, single.size());
+	ASSERT_EQ(2u, single[0].vertices.size());
+	EXPECT_NEAR(0.16f, single[0].vertices[0].x, 1.0e-5f);
+	EXPECT_NEAR(0.09f, single[0].vertices[1].x, 1.0e-5f);
 }

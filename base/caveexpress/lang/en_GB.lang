@@ -5,6 +5,8 @@ Activate the pterodactyls spawn|Activate the pterodactyls spawn
 A mighty fish is after you|A mighty fish is after you
 An egg will make you invulnerable for some time|An egg will make you invulnerable for some time
 Angry dinosaur|Angry dinosaur
+Applied Lua definition|Applied Lua definition
+Apply Lua|Apply Lua
 Are you sure?|Are you sure?
 Auto|Auto
 Back|Back
@@ -14,18 +16,23 @@ Campaign|Campaign
 Campaigns|Campaigns
 Cancel|Cancel
 Cancel pick|Cancel pick
+Clear|Clear
 Click a gate to link|Click a gate to link
 Close|Close
 Collecting fruits will restore hitpoints|Collecting fruits will restore hitpoints
 Collect packages by landing on them|Collect packages by landing on them
 Continue|Continue
 Controller trigger|Controller trigger
+Copied to clipboard|Copied to clipboard
+Copy to clipboard|Copy to clipboard
 Create server|Create server
 Ctrl+S save, Ctrl+Z/Y undo/redo|Ctrl+S save, Ctrl+Z/Y undo/redo
 decoration|decoration
 Decrease map height|Decrease map height
 Decrease map width|Decrease map width
+Delete polygon|Delete polygon
 Delete: remove selection of the active tab|Delete: remove selection of the active tab
+Delete vertex|Delete vertex
 Deliver packages to the shredders|Deliver packages to the shredders
 Description|Description
 Desert|Desert
@@ -76,6 +83,7 @@ Ice|Ice
 Increase map height|Increase map height
 Increase map width|Increase map width
 Input|Input
+Invalid Lua polygon definition|Invalid Lua polygon definition
 Invulnerable|Invulnerable
 Jungle|Jungle
 Just stay and watch what happens|Just stay and watch what happens
@@ -85,6 +93,8 @@ Leaderboard|Leaderboard
 Learn to use the stone|Learn to use the stone
 Link id|Link id
 LMB: paint / place (also selects)|LMB: paint / place (also selects)
+LMB place / drag, RMB delete vertex, wheel zoom, MMB pan|LMB place / drag, RMB delete vertex, wheel zoom, MMB pan
+Lua polygon definition (paste into sprites.lua)|Lua polygon definition (paste into sprites.lua)
 Map|Map
 Map Editor|Map Editor
 Map generator seed. 0 picks a new seed on Auto.|Map generator seed. 0 picks a new seed on Auto.
@@ -95,6 +105,7 @@ Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
 New|New
+New polygon|New polygon
 No controller found|No controller found
 none|none
 Normal|Normal
@@ -107,12 +118,16 @@ Open|Open
 Open amount|Open amount
 or A on your controller|or A on your controller
 Package|Package
+Paste|Paste
+Pick a sprite to edit its collision polygons.|Pick a sprite to edit its collision polygons.
 Pick gate target|Pick gate target
 Place tile|Place tile
 Player|Player
 Players|Players
 Please rate the app|Please rate the app
 Points|Points
+Polygon|Polygon
+Polygon is concave — Box2D needs convex shapes (split it).|Polygon is concave — Box2D needs convex shapes (split it).
 Properties|Properties
 Properties edit the selected tile, not the hovered one|Properties edit the selected tile, not the hovered one
 Pterodactyls|Pterodactyls
@@ -136,11 +151,14 @@ Save & Go|Save & Go
 Script|Script
 Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test
 Seed|Seed
+Select a sprite|Select a sprite
 Select a tile on the map|Select a tile on the map
 Select game mode|Select game mode
 Select tile|Select tile
 Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / pick tile
 Settings|Settings
+Shapes|Shapes
+Shapes: edit sprite collision polygons and copy Lua|Shapes: edit sprite collision polygons and copy Lua
 Show Grid|Show Grid
 Shredder|Shredder
 Small|Small
@@ -148,6 +166,7 @@ solid|solid
 Sound|Sound
 Sound/Music|Sound/Music
 Space (on canvas): rotate brush|Space (on canvas): rotate brush
+Sprite Shape Editor|Sprite Shape Editor
 Start|Start
 Stone|Stone
 Textures|Textures
@@ -161,6 +180,7 @@ Tiles / Entities tab: place and erase only that kind|Tiles / Entities tab: place
 Time bar|Time bar
 Title|Title
 To dive across, fall fast into water flying to side|To dive across, fall fast into water flying to side
+Too many vertices for Box2D|Too many vertices for Box2D
 Transfer the grandpa to the desired cave|Transfer the grandpa to the desired cave
 Transfer the man to the desired cave|Transfer the man to the desired cave
 Transfer the woman to the desired cave|Transfer the woman to the desired cave
@@ -169,10 +189,12 @@ Trigger link|Trigger link
 Try to avoid crashes but still be fast|Try to avoid crashes but still be fast
 Undo|Undo
 Unsaved changes|Unsaved changes
+User data|User data
 Username|Username
 Use the second finger to drop the package|Use the second finger to drop the package
 Use the second finger to drop the stone|Use the second finger to drop the stone
 Use the swing of the package|Use the swing of the package
+Vertices|Vertices
 Volume|Volume
 Waiting|Waiting
 Watch the geyser|Watch the geyser

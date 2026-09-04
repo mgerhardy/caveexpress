@@ -145,6 +145,11 @@ public:
 	float friction;
 	float restitution;
 
+	void invalidateShapeSize ()
+	{
+		_shapeSizeCalculated = false;
+	}
+
 	void calcDelay () {
 		for (Layer layer = LAYER_BACK; layer < MAX_LAYERS; layer++) {
 			SpriteDef::SpriteDefFrames& frames = textures[layer];
