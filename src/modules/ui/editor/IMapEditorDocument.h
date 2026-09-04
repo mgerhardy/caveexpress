@@ -58,6 +58,12 @@ public:
 		Pick
 	};
 
+	/** Palette / erase scope: Tiles tab edits tiles, Entities tab edits emitters. */
+	enum class EditMode {
+		Tiles,
+		Entities
+	};
+
 protected:
 	IMapManager& _mapManager;
 	ConfigVarPtr _lastMap;
@@ -89,6 +95,7 @@ protected:
 	int _layerMask = 0xFFFFFFFF;
 	bool _renderGrid = true;
 	Tool _tool = Tool::Paint;
+	EditMode _editMode = EditMode::Tiles;
 
 	std::vector<State> _undoStates;
 	std::vector<State> _redoStates;
@@ -98,6 +105,8 @@ protected:
 
 	bool placeTileItem (const MapEditorTileItem& item, bool overwrite);
 	bool checkTileHit (const MapEditorTileItem& tileItem, bool remove);
+	bool isEntityItem (const MapEditorTileItem& item) const;
+	bool matchesEditMode (const MapEditorTileItem& item) const;
 	virtual bool isOverlapping (const MapEditorTileItem& item1, const MapEditorTileItem& item2) const;
 	bool isOverlapping (gridCoord gridX, gridCoord gridY, gridSize width, gridSize height, const MapEditorTileItem& item) const;
 	bool isOverlapping (gridCoord gridX, gridCoord gridY, const MapEditorTileItem& item) const;
@@ -155,6 +164,8 @@ public:
 	virtual void rotateBrush ();
 	void setTool (Tool tool) { _tool = tool; }
 	Tool getTool () const { return _tool; }
+	void setEditMode (EditMode mode);
+	EditMode getEditMode () const { return _editMode; }
 
 	void setSelectedGrid (gridCoord x, gridCoord y);
 	gridCoord getSelectedGridX () const { return _selectedGridX; }

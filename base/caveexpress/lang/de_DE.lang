@@ -25,7 +25,7 @@ Ctrl+S save, Ctrl+Z/Y undo/redo|Strg+S speichern, Strg+Z/Y rückgängig/wiederho
 decoration|Dekoration
 Decrease map height|Map-Höhe verkleinern
 Decrease map width|Map-Breite verkleinern
-Delete: remove selection|Entf: Auswahl entfernen
+Delete: remove selection of the active tab|Entf: Auswahl der aktiven Registerkarte entfernen
 Deliver packages to the shredders|Transportiere Pakete zu den Schreddern
 Description|Beschreibung
 Desert|Wüste
@@ -129,7 +129,7 @@ Reset|Reset
 Reset game progress?|Resetten des Spielfortschritts?
 Restart|Restart
 Retry|Retry
-RMB: erase|RMT: löschen
+RMB: erase items of the active tab|RMT: Objekte der aktiven Registerkarte löschen
 Rock|Felsen
 Save|Speichern
 Save & Go|Testen
@@ -157,6 +157,7 @@ The geyser will do the work for you|Der Geisir erledigt die Arbeit
 Theme|Thema
 This is the goal in every map|Dies ist das Ziel jedes Levels
 Tiles|Kacheln
+Tiles / Entities tab: place and erase only that kind|Kacheln / Objekte: nur diese Art setzen und löschen
 Time bar|Zeitanzeige
 Title|Titel
 To dive across, fall fast into water flying to side|To dive across, fall fast into water flying to side

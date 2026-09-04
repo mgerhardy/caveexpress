@@ -15,7 +15,7 @@ Deadlock package|Deadlock package
 decoration|decoration
 Decrease map height|Decrease map height
 Decrease map width|Decrease map width
-Delete: remove selection|Delete: remove selection
+Delete: remove selection of the active tab|Delete: remove selection of the active tab
 Delivered package|Delivered package
 Description|Description
 Disconnect|Disconnect
@@ -83,7 +83,7 @@ Reset|Reset
 Reset game progress?|Reset game progress?
 Restart|Restart
 Retry|Retry
-RMB: erase|RMB: erase
+RMB: erase items of the active tab|RMB: erase items of the active tab
 Save|Save
 Save & Go|Save & Go
 Script|Script
@@ -106,6 +106,7 @@ Target|Target
 Textures|Textures
 The less moves you do the better|The less moves you do the better
 Tiles|Tiles
+Tiles / Entities tab: place and erase only that kind|Tiles / Entities tab: place and erase only that kind
 Title|Title
 Undo|Undo
 Unsaved changes|Unsaved changes

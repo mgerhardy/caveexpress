@@ -383,15 +383,16 @@ void UIMapEditorWindow::drawHelpPanel () const
 {
 	ImGui::TextUnformatted(tr("Map Editor").c_str());
 	ImGui::Separator();
+	ImGui::BulletText("%s", tr("Tiles / Entities tab: place and erase only that kind").c_str());
 	ImGui::BulletText("%s", tr("LMB: paint / place (also selects)").c_str());
 	ImGui::BulletText("%s", tr("Select tool or Shift+LMB: select / pick tile").c_str());
-	ImGui::BulletText("%s", tr("RMB: erase").c_str());
+	ImGui::BulletText("%s", tr("RMB: erase items of the active tab").c_str());
 	ImGui::BulletText("%s", tr("MMB click: pick, MMB drag or Space+LMB: pan").c_str());
 	ImGui::BulletText("%s", tr("Wheel: zoom toward cursor").c_str());
 	ImGui::BulletText("%s", tr("Space (on canvas): rotate brush").c_str());
 	ImGui::BulletText("%s", tr("Ctrl+S save, Ctrl+Z/Y undo/redo").c_str());
 	ImGui::BulletText("%s", tr("F fit view, G toggle grid, F1 help").c_str());
-	ImGui::BulletText("%s", tr("Delete: remove selection").c_str());
+	ImGui::BulletText("%s", tr("Delete: remove selection of the active tab").c_str());
 	ImGui::BulletText("%s", tr("Properties edit the selected tile, not the hovered one").c_str());
 	if (_doc->supportsMapScript())
 		ImGui::BulletText("%s", tr("Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test").c_str());
@@ -641,10 +642,12 @@ void UIMapEditorWindow::render (int x, int y) const
 	ImGui::BeginChild("left", ImVec2(leftWidth, 0), true);
 	if (ImGui::BeginTabBar("left_tabs")) {
 		if (ImGui::BeginTabItem(tr("Tiles").c_str())) {
+			_doc->setEditMode(IMapEditorDocument::EditMode::Tiles);
 			drawTilesPanel();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(tr("Entities").c_str())) {
+			_doc->setEditMode(IMapEditorDocument::EditMode::Entities);
 			drawEntitiesPanel();
 			ImGui::EndTabItem();
 		}

@@ -221,6 +221,25 @@ void IMapEditorDocument::setTheme (const ThemeType& theme)
 	setSetting(msn::THEME, theme.name);
 }
 
+void IMapEditorDocument::setEditMode (EditMode mode)
+{
+	if (_editMode == mode)
+		return;
+	_editMode = mode;
+	setHighlightFromSelection();
+}
+
+bool IMapEditorDocument::isEntityItem (const MapEditorTileItem& item) const
+{
+	return item.layer == LAYER_EMITTER;
+}
+
+bool IMapEditorDocument::matchesEditMode (const MapEditorTileItem& item) const
+{
+	const bool entity = isEntityItem(item);
+	return _editMode == EditMode::Entities ? entity : !entity;
+}
+
 void IMapEditorDocument::setSprite (const SpriteDefPtr& spriteDef)
 {
 	_activeSprite = spriteDef;
@@ -406,16 +425,18 @@ bool IMapEditorDocument::eraseAtSelection (bool recordUndo)
 {
 	if (recordUndo)
 		MapEditorUndo();
-	const std::string xStr = string::toString(_selectedGridX);
-	const std::string yStr = string::toString(_selectedGridY);
-	for (auto i = _startPositions.begin(); i != _startPositions.end(); ++i) {
-		if (i->_x == xStr && i->_y == yStr) {
-			_startPositions.erase(i);
-			return true;
+	if (_editMode == EditMode::Entities) {
+		const std::string xStr = string::toString(_selectedGridX);
+		const std::string yStr = string::toString(_selectedGridY);
+		for (auto i = _startPositions.begin(); i != _startPositions.end(); ++i) {
+			if (i->_x == xStr && i->_y == yStr) {
+				_startPositions.erase(i);
+				return true;
+			}
 		}
 	}
 	setHighlightFromSelection();
-	if (_highlightItem == nullptr)
+	if (_highlightItem == nullptr || !matchesEditMode(*_highlightItem))
 		return false;
 	auto i = std::find(_map.begin(), _map.end(), *_highlightItem);
 	if (i == _map.end())
@@ -451,8 +472,14 @@ MapEditorTileItem* IMapEditorDocument::getSelectedTile ()
 	for (int layer = LAYER_EMITTER; layer != LAYER_NONE; --layer) {
 		if (!isLayerActive(layer))
 			continue;
+		if (_editMode == EditMode::Entities && layer != LAYER_EMITTER)
+			continue;
+		if (_editMode == EditMode::Tiles && layer == LAYER_EMITTER)
+			continue;
 		for (MapEditorTileItem& item : _map) {
 			if (item.layer != static_cast<MapEditorLayer>(layer))
+				continue;
+			if (!matchesEditMode(item))
 				continue;
 			if (!isOverlapping(_selectedGridX, _selectedGridY, item))
 				continue;

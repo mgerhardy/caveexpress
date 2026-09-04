@@ -15,7 +15,7 @@ Deadlock package|Deadlock package
 decoration|Dekoration
 Decrease map height|Map-Höhe verkleinern
 Decrease map width|Map-Breite verkleinern
-Delete: remove selection|Entf: Auswahl entfernen
+Delete: remove selection of the active tab|Entf: Auswahl der aktiven Registerkarte entfernen
 Delivered package|Delivered package
 Description|Beschreibung
 Disconnect|Trennen
@@ -83,7 +83,7 @@ Reset|Reset
 Reset game progress?|Resete den Fortschritt?
 Restart|Neustart
 Retry|Nochmal
-RMB: erase|RMT: löschen
+RMB: erase items of the active tab|RMT: Objekte der aktiven Registerkarte löschen
 Save|Speichern
 Save & Go|Testen
 Script|Script
@@ -106,6 +106,7 @@ Target|Palette
 Textures|Texturen
 The less moves you do the better|Je weniger Schritte, desto besser
 Tiles|Kacheln
+Tiles / Entities tab: place and erase only that kind|Kacheln / Objekte: nur diese Art setzen und löschen
 Title|Titel
 Undo|Rückgängig
 Unsaved changes|Ungespeicherte Änderungen

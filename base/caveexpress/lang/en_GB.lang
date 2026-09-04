@@ -25,7 +25,7 @@ Ctrl+S save, Ctrl+Z/Y undo/redo|Ctrl+S save, Ctrl+Z/Y undo/redo
 decoration|decoration
 Decrease map height|Decrease map height
 Decrease map width|Decrease map width
-Delete: remove selection|Delete: remove selection
+Delete: remove selection of the active tab|Delete: remove selection of the active tab
 Deliver packages to the shredders|Deliver packages to the shredders
 Description|Description
 Desert|Desert
@@ -129,7 +129,7 @@ Reset|Reset
 Reset game progress?|Reset game progress?
 Restart|Restart
 Retry|Retry
-RMB: erase|RMB: erase
+RMB: erase items of the active tab|RMB: erase items of the active tab
 Rock|Rock
 Save|Save
 Save & Go|Save & Go
@@ -157,6 +157,7 @@ The geyser will do the work for you|The geyser will do the work for you
 Theme|Theme
 This is the goal in every map|This is the goal in every map
 Tiles|Tiles
+Tiles / Entities tab: place and erase only that kind|Tiles / Entities tab: place and erase only that kind
 Time bar|Time bar
 Title|Title
 To dive across, fall fast into water flying to side|To dive across, fall fast into water flying to side
