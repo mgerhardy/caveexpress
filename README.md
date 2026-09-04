@@ -22,8 +22,10 @@ CaveExpress is a classic 2D platformer with physics-based gameplay and dozens of
 Features:
 
 * Multiplayer
-* Built-in mapeditor
+* Built-in map editor
 * Physics-based gameplay
+
+The map editor is available from the main menu (**Editor**) or via `caveexpress -ui_push editor`. See [docs/caveexpress/EDITOR.md](docs/caveexpress/EDITOR.md) for how to create maps, tools, and key bindings.
 
 Online version: [caveexpress](https://mgerhardy.github.io/caveexpress/caveexpress.html)
 
