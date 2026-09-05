@@ -7,7 +7,7 @@ if(UNITTESTS)
 	add_subdirectory(gtest)
 endif()
 
-if (APPLE OR WIN32 OR EMSCRIPTEN)
+if (APPLE OR WIN32 OR EMSCRIPTEN OR ANDROID)
 	FetchContent_Declare(
 		lua
 		GIT_REPOSITORY "https://github.com/marovira/lua"
@@ -20,6 +20,10 @@ if (APPLE OR WIN32 OR EMSCRIPTEN)
 		GIT_REPOSITORY https://github.com/sjinks/sqlite3-cmake
 		GIT_TAG v3.45.1
 	)
+	if (ANDROID)
+		# CheckCSourceRuns/try_run cannot execute under the NDK. Bionic has POSIX strerror_r.
+		set(HAVE_GNU_STRERROR_R_EXITCODE 1 CACHE STRING "Android NDK: POSIX strerror_r" FORCE)
+	endif()
 	FetchContent_MakeAvailable(sqlite3)
 
 	if (NOT EMSCRIPTEN)
@@ -35,8 +39,17 @@ if (APPLE OR WIN32 OR EMSCRIPTEN)
 		set(SDL_STATIC_ENABLED_BY_DEFAULT OFF)
 		set(SDL_TEST_ENABLED_BY_DEFAULT OFF)
 		set(BUILD_SHARED_LIBS OFF)
+		if (ANDROID)
+			# One game .so is loaded by SDLActivity (see BaseActivity.getLibraries).
+			set(SDL_SHARED OFF CACHE BOOL "" FORCE)
+			set(SDL_STATIC ON CACHE BOOL "" FORCE)
+			set(SDL_TEST OFF CACHE BOOL "" FORCE)
+			set(SDL_HIDAPI_LIBUSB OFF CACHE BOOL "" FORCE)
+		endif()
 		FetchContent_MakeAvailable(SDL2)
-		add_library(SDL2::SDL2 ALIAS SDL2-static)
+		if (NOT TARGET SDL2::SDL2)
+			add_library(SDL2::SDL2 ALIAS SDL2-static)
+		endif()
 
 		FetchContent_Declare(
 			SDL2_mixer
@@ -45,6 +58,9 @@ if (APPLE OR WIN32 OR EMSCRIPTEN)
 			GIT_SUBMODULES_RECURSE ON
 		)
 		set(BUILD_SHARED_LIBS OFF)
+		if (ANDROID)
+			set(SDL2MIXER_VENDORED ON CACHE BOOL "" FORCE)
+		endif()
 		set(SDL2MIXER_FLAC OFF)
 		set(SDL2MIXER_GME OFF)
 		set(SDL2MIXER_CMD OFF)
@@ -62,6 +78,9 @@ if (APPLE OR WIN32 OR EMSCRIPTEN)
 			GIT_SUBMODULES_RECURSE ON
 		)
 		set(BUILD_SHARED_LIBS OFF)
+		if (ANDROID)
+			set(SDL2IMAGE_VENDORED ON CACHE BOOL "" FORCE)
+		endif()
 		set(SDL2IMAGE_AVIF OFF)
 		set(SDL2IMAGE_BMP OFF)
 		set(SDL2IMAGE_GIF OFF)

@@ -1,27 +1,42 @@
 #!/bin/bash
+# Install a local Android SDK + NDK for native / Gradle builds.
+# CI uses nttld/setup-ndk and android-actions/setup-android instead.
+set -euo pipefail
 
-# taken from https://github.com/floooh/sokol/blob/master/tests/test_common.sh
+SDK_ROOT="${ANDROID_SDK_ROOT:-$PWD/build/android_sdk}"
+CMDLINE_VERSION="${ANDROID_CMDLINE_TOOLS:-11076708}"
+PLATFORM="${ANDROID_PLATFORM_PKG:-platforms;android-34}"
+BUILD_TOOLS="${ANDROID_BUILD_TOOLS_PKG:-build-tools;34.0.0}"
+NDK_PKG="${ANDROID_NDK_PKG:-ndk;28.2.13676358}"
 
-setup_android() {
-	if [ ! -d "build/android_sdk" ] ; then
-		mkdir -p build/android_sdk && cd build/android_sdk
-		sdk_file="commandlinetools-linux-11076708_latest.zip"
-		wget --no-verbose https://dl.google.com/android/repository/$sdk_file
-		unzip -q $sdk_file
-		cd cmdline-tools/bin
-		echo "Install platform android"
-		yes | ./sdkmanager --sdk_root=. "platforms;android-28" >/dev/null
+mkdir -p "$SDK_ROOT"
+cd "$SDK_ROOT"
 
-		echo "Install build-tools"
-		yes | ./sdkmanager --sdk_root=. "build-tools;29.0.3" >/dev/null
+if [ ! -x cmdline-tools/latest/bin/sdkmanager ]; then
+	sdk_file="commandlinetools-linux-${CMDLINE_VERSION}_latest.zip"
+	wget --no-verbose "https://dl.google.com/android/repository/${sdk_file}"
+	rm -rf cmdline-tools/latest
+	mkdir -p cmdline-tools
+	unzip -q "$sdk_file" -d /tmp/android-cmdline-$$
+	mv /tmp/android-cmdline-$$/cmdline-tools cmdline-tools/latest
+	rm -rf /tmp/android-cmdline-$$ "$sdk_file"
+fi
 
-		echo "Install platform-tools"
-		yes | ./sdkmanager --sdk_root=. "platform-tools" >/dev/null
+SDKMANAGER="$PWD/cmdline-tools/latest/bin/sdkmanager"
+set +e
+yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --licenses >/dev/null
+set -e
+"$SDKMANAGER" --sdk_root="$SDK_ROOT" \
+	"$PLATFORM" \
+	"$BUILD_TOOLS" \
+	platform-tools \
+	"$NDK_PKG"
 
-		echo "Install ndk-bundle"
-		yes | ./sdkmanager --sdk_root=. "ndk-bundle" >/dev/null
-		cd ../../../..
-	fi
-}
-
-setup_android
+ENV_FILE="$SDK_ROOT/android-env.sh"
+{
+	echo "export ANDROID_SDK_ROOT=$SDK_ROOT"
+	echo "export ANDROID_HOME=$SDK_ROOT"
+	echo "export ANDROID_NDK_HOME=$SDK_ROOT/ndk/28.2.13676358"
+	echo "export PATH=\"\$ANDROID_SDK_ROOT/platform-tools:\$ANDROID_NDK_HOME:\$PATH\""
+} > "$ENV_FILE"
+cat "$ENV_FILE"

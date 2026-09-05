@@ -196,131 +196,102 @@ macro(check_lua_files TARGET FILES)
 endmacro()
 
 #
-# Install android packages
+# Stage native libraries and game assets for the Gradle project in android-project/.
+#
+# Helper targets:
+# * android-PROJECTNAME-apk       packages a debug APK via Gradle
+# * android-PROJECTNAME-install   installs that APK with adb
+# * android-PROJECTNAME-start     launches the activity
+# * android-PROJECTNAME-backtrace symbolizes a tombstone / logcat crash
 #
 # parameters:
-# PACKAGE The package id that you need to install
-#
-macro(cp_android_package PACKAGE)
-	message(STATUS "install android sdk package ${PACKAGE}")
-	file(WRITE ${CMAKE_BINARY_DIR}/yes.txt "y")
-	execute_process(
-		COMMAND ${ANDROID_SDK_TOOL} list target -c
-		OUTPUT_VARIABLE TARGETS_LIST
-	)
-	if (${TARGETS_LIST} MATCHES ${PACKAGE})
-		message(STATUS "${PACKAGE} is already installed")
-	else()
-		execute_process(
-			COMMAND ${ANDROID_SDK_TOOL} update sdk -a -u -s -t ${PACKAGE}
-			INPUT_FILE ${CMAKE_BINARY_DIR}/yes.txt
-		)
-	endif()
-endmacro()
-
-#
-# Prepare android workspace with assets and sdk/ndk commands.
-#
-# Also adds some helper targets:
-# * android-PROJECTNAME-uninstall uninstalls the application
-# * android-PROJECTNAME-install installs the application
-# * android-PROJECTNAME-start starts the application
-# * android-PROJECTNAME-backtrace creates a backtrace from a crash
-#
-# parameters:
-# PROJECTNAME: the project name in lower case letters - used for e.g. resolving the java classes and icons
-#              if this is a test project for a specific game, it should start with 'tests_' - as we then just
-#              reuse some of the game settings and assets for the tests.
-# APPNAME: the normal app name, must not contain whitespaces, but can contain upper case letters.
-# VERSION: the version code, e.g. 1.0
-# VERSION_CODE: the android version code needed for google play store
+# PROJECTNAME: lowercase target/package name (caveexpress, cavepacker)
+# APPNAME: display name (CaveExpress)
+# VERSION: version string, e.g. 2.7
+# VERSION_CODE: Play Store versionCode
 #
 macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
-	# TODO: add java activity classes to dependencies to recompile target on java class changes
-	message(STATUS "prepare java code for ${PROJECTNAME}")
-	file(COPY ${ANDROID_ROOT} DESTINATION ${CMAKE_BINARY_DIR}/android-${PROJECTNAME})
 	if (HD_VERSION)
 		set(PACKAGENAME ${PROJECTNAME}hd)
 	else()
 		set(PACKAGENAME ${PROJECTNAME})
 	endif()
-	set(APPCLASS ${APPNAME})
-	if (${PACKAGENAME} MATCHES "tests")
-		set(PACKAGENAME "tests")
-		set(APPCLASS "TestsApp")
-	endif()
-	set(WHITELIST ${GAME_BASE_DIR} libsdl ${PACKAGENAME})
-	set(ANDROID_BIN_ROOT ${CMAKE_BINARY_DIR}/android-${PROJECTNAME})
-	get_subdirs(SUBDIRS ${ANDROID_BIN_ROOT}/src/org)
-	list(REMOVE_ITEM SUBDIRS ${WHITELIST})
-	foreach(DIR ${SUBDIRS})
-		file(REMOVE_RECURSE ${ANDROID_BIN_ROOT}/src/org/${DIR})
-	endforeach()
-	configure_file(${ANDROID_BIN_ROOT}/AndroidManifest.xml.in ${ANDROID_BIN_ROOT}/AndroidManifest.xml @ONLY)
-	configure_file(${ANDROID_BIN_ROOT}/strings.xml.in ${ANDROID_BIN_ROOT}/res/values/strings.xml @ONLY)
-	configure_file(${ANDROID_BIN_ROOT}/default.properties.in ${ANDROID_BIN_ROOT}/default.properties @ONLY)
-	configure_file(${ANDROID_BIN_ROOT}/project.in ${ANDROID_BIN_ROOT}/.project @ONLY)
-	configure_file(${ANDROID_BIN_ROOT}/project.properties.in ${ANDROID_BIN_ROOT}/project.properties @ONLY)
-	configure_file(${ANDROID_BIN_ROOT}/google-play-services_lib/project.properties.in ${ANDROID_BIN_ROOT}/google-play-services_lib/project.properties @ONLY)
-	configure_file(${ANDROID_BIN_ROOT}/build.gradle.in ${ANDROID_BIN_ROOT}/build.gradle @ONLY)
-	add_custom_target(android-${PROJECTNAME}-backtrace ${ANDROID_ADB} logcat | ${ANDROID_NDK_STACK} -sym ${ANDROID_BIN_ROOT}/obj/local/${CMAKE_ANDROID_ARCH_ABI} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
-	add_custom_target(android-${PROJECTNAME}-install ${ANDROID_ANT} ${ANT_INSTALL_TARGET} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
-	add_custom_target(android-${PROJECTNAME}-uninstall ${ANDROID_ANT} uninstall WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
-	set(APP_PACKAGENAME "org.${PACKAGENAME}")
-	add_custom_target(android-${PROJECTNAME}-start ${ANDROID_ADB} shell am start -n ${APP_PACKAGENAME}/${APP_PACKAGENAME}.${APPCLASS} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
 	string(REPLACE "tests_" "" CLEAN_PROJECTNAME "${PROJECTNAME}")
-	if (EXISTS ${ROOT_DIR}/contrib/installer/android/${CLEAN_PROJECTNAME}/)
-		file(COPY ${ROOT_DIR}/contrib/installer/android/${CLEAN_PROJECTNAME}/ DESTINATION ${ANDROID_BIN_ROOT})
-	endif()
-	message(STATUS "copy files from ${ROOT_DIR}/${GAME_BASE_DIR}/${CLEAN_PROJECTNAME} to ${ANDROID_BIN_ROOT}/assets/${GAME_BASE_DIR}/${CLEAN_PROJECTNAME}")
-	file(COPY ${ROOT_DIR}/${GAME_BASE_DIR}/${CLEAN_PROJECTNAME} DESTINATION ${ANDROID_BIN_ROOT}/assets/${GAME_BASE_DIR})
-	#install(DIRECTORY ${ROOT_DIR}/${GAME_BASE_DIR}/${CLEAN_PROJECTNAME} DESTINATION ${ANDROID_BIN_ROOT}/assets/${GAME_BASE_DIR})
-	set(RESOLUTIONS hdpi ldpi mdpi xhdpi)
-	set(ICON "${PACKAGENAME}-icon.png")
-	if (NOT EXISTS ${ROOT_DIR}/contrib/${ICON})
-		set(ICON "${CLEAN_PROJECTNAME}-icon.png")
-	endif()
-	if (EXISTS ${ROOT_DIR}/contrib/${ICON})
-		foreach(RES ${RESOLUTIONS})
-			file(MAKE_DIRECTORY ${ANDROID_BIN_ROOT}/res/drawable-${RES})
-			configure_file(${ROOT_DIR}/contrib/${ICON} ${ANDROID_BIN_ROOT}/res/drawable-${RES}/icon.png COPYONLY)
-		endforeach()
-	endif()
-	set(ANDROID_SO_OUTDIR ${ANDROID_BIN_ROOT}/libs/${CMAKE_ANDROID_ARCH_ABI})
-	set_target_properties(${PROJECTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${ANDROID_SO_OUTDIR})
-	set_target_properties(${PROJECTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${ANDROID_SO_OUTDIR})
-	set_target_properties(${PROJECTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG ${ANDROID_SO_OUTDIR})
-	if (NOT EXISTS ${ANDROID_BIN_ROOT}/local.properties)
-		message(STATUS "=> create Android SDK project: ${PROJECTNAME}")
-		execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent update project
-				--path .
-				${ANDROID_TOOL_FLAGS}
-				--name ${APPNAME}
-				--target ${ANDROID_API}
-				WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
-		execute_process(COMMAND ${ANDROID_SDK_TOOL} --silent update lib-project
-				${ANDROID_TOOL_FLAGS}
-				--path google-play-services_lib
-				--target ${ANDROID_API}
-				WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
-	endif()
-	if (RELEASE)
-		set(APK_NAME ${APPNAME}-${ANT_TARGET}-unsigned.apk)
-	else()
-		set(APK_NAME ${APPNAME}-${ANT_TARGET}.apk)
-	endif()
-	set(TMP_APK_NAME ${APPNAME}-${ANT_TARGET}-tmp.apk)
-	set(FINAL_APK_NAME ${APPNAME}-${ANT_TARGET}.apk)
+	set(ANDROID_BIN_ROOT ${CMAKE_BINARY_DIR}/android/${PROJECTNAME})
+	set(ANDROID_SO_OUTDIR ${ANDROID_BIN_ROOT}/jniLibs/${CMAKE_ANDROID_ARCH_ABI})
+	set(ANDROID_ASSETS_OUTDIR ${ANDROID_BIN_ROOT}/assets)
+	file(MAKE_DIRECTORY ${ANDROID_SO_OUTDIR})
+	file(MAKE_DIRECTORY ${ANDROID_ASSETS_OUTDIR}/${GAME_BASE_DIR})
 
-	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E rename ${ANDROID_SO_OUTDIR}/lib${PROJECTNAME}.so ${ANDROID_SO_OUTDIR}/lib${PACKAGENAME}.so)
-	message(STATUS "Android settings: keystore=${ANDROID_KEYSTORE} apkname=${APK_NAME} alias=${ANDROID_ALIAS} (apk /${TMP_APK_NAME})")
-	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${ANDROID_ANT} ${ANT_FLAGS} ${ANT_TARGET} WORKING_DIRECTORY ${ANDROID_BIN_ROOT})
-	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E rename ${ANDROID_BIN_ROOT}/bin/${APK_NAME} ${ANDROID_BIN_ROOT}/bin/${TMP_APK_NAME})
-	if (RELEASE)
-		add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${JARSIGNER} -sigalg SHA1withRSA -digestalg SHA1 -keypass ${ANDROID_KEYPASS} -storepass ${ANDROID_STOREPASS} -keystore ${ANDROID_KEYSTORE} ${TMP_APK_NAME} ${ANDROID_ALIAS} WORKING_DIRECTORY ${ANDROID_BIN_ROOT}/bin/)
-		add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${JARSIGNER} -verify -certs ${TMP_APK_NAME} WORKING_DIRECTORY ${ANDROID_BIN_ROOT}/bin/)
+	message(STATUS "Android ${PROJECTNAME}: libs ${ANDROID_SO_OUTDIR}, assets ${ANDROID_ASSETS_OUTDIR}")
+
+	set_target_properties(${PROJECTNAME} PROPERTIES
+		LIBRARY_OUTPUT_DIRECTORY ${ANDROID_SO_OUTDIR}
+		LIBRARY_OUTPUT_DIRECTORY_RELEASE ${ANDROID_SO_OUTDIR}
+		LIBRARY_OUTPUT_DIRECTORY_DEBUG ${ANDROID_SO_OUTDIR}
+		LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${ANDROID_SO_OUTDIR}
+		LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${ANDROID_SO_OUTDIR}
+	)
+
+	# Keep SDL and game JNI entry points when linking SDL statically into the game .so
+	set_property(TARGET ${PROJECTNAME} APPEND_STRING PROPERTY LINK_FLAGS
+		" -Wl,--undefined=JNI_OnLoad,--undefined=Java_org_libsdl_app_SDLActivity_nativeSetupJNI,--undefined=Java_org_base_BaseActivity_isDebug,--undefined=Java_org_base_BaseActivity_isTrackingOptOut,--undefined=Java_org_base_BaseActivity_isHD,--undefined=Java_org_base_BaseActivity_onPersisterConnectFailed,--undefined=Java_org_base_BaseActivity_onPersisterConnectSuccess,--undefined=Java_org_base_BaseActivity_onPersisterDisconnect")
+
+	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E make_directory ${ANDROID_ASSETS_OUTDIR}/${GAME_BASE_DIR}
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+			${ROOT_DIR}/${GAME_BASE_DIR}/${CLEAN_PROJECTNAME}
+			${ANDROID_ASSETS_OUTDIR}/${GAME_BASE_DIR}/${CLEAN_PROJECTNAME}
+		COMMENT "Staging Android assets for ${PROJECTNAME}"
+	)
+
+	if (EXISTS ${ROOT_DIR}/contrib/installer/android/${CLEAN_PROJECTNAME}/)
+		add_custom_command(TARGET ${PROJECTNAME} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_directory
+				${ROOT_DIR}/contrib/installer/android/${CLEAN_PROJECTNAME}
+				${ANDROID_BIN_ROOT}/res-extra
+		)
 	endif()
-	add_custom_command(TARGET ${PROJECTNAME} POST_BUILD COMMAND ${ANDROID_ZIPALIGN} -f ${ZIPALIGN_FLAGS} 4 ${TMP_APK_NAME} ${FINAL_APK_NAME} WORKING_DIRECTORY ${ANDROID_BIN_ROOT}/bin/)
+
+	string(SUBSTRING ${PROJECTNAME} 0 1 _APK_FIRST)
+	string(TOUPPER ${_APK_FIRST} _APK_FIRST)
+	string(SUBSTRING ${PROJECTNAME} 1 -1 _APK_REST)
+	set(_APK_FLAVOR "${_APK_FIRST}${_APK_REST}")
+	set(APP_PACKAGENAME "org.${PACKAGENAME}")
+
+	if (ANDROID_GRADLEW)
+		add_custom_target(android-${PROJECTNAME}-apk
+			COMMAND ${ANDROID_GRADLEW}
+				--project-dir ${ANDROID_ROOT}
+				assemble${_APK_FLAVOR}Debug
+				-PnativeLibDir=${ANDROID_BIN_ROOT}/jniLibs
+				-PassetsDir=${ANDROID_ASSETS_OUTDIR}
+				-Pandroid.injected.version.name=${VERSION}
+				-Pandroid.injected.version.code=${VERSION_CODE}
+			DEPENDS ${PROJECTNAME}
+			WORKING_DIRECTORY ${ANDROID_ROOT}
+			USES_TERMINAL
+			COMMENT "Gradle assemble${_APK_FLAVOR}Debug"
+		)
+		if (ANDROID_ADB)
+			add_custom_target(android-${PROJECTNAME}-install
+				COMMAND ${ANDROID_ADB} install -r
+					${ANDROID_ROOT}/app/build/outputs/apk/${PROJECTNAME}/debug/app-${PROJECTNAME}-debug.apk
+				DEPENDS android-${PROJECTNAME}-apk
+				USES_TERMINAL
+			)
+			add_custom_target(android-${PROJECTNAME}-start
+				COMMAND ${ANDROID_ADB} shell am start -n ${APP_PACKAGENAME}/${APP_PACKAGENAME}.${APPNAME}
+				USES_TERMINAL
+			)
+		endif()
+	endif()
+	if (ANDROID_ADB AND ANDROID_NDK_STACK)
+		add_custom_target(android-${PROJECTNAME}-backtrace
+			COMMAND ${ANDROID_ADB} logcat | ${ANDROID_NDK_STACK} -sym ${ANDROID_SO_OUTDIR}
+			USES_TERMINAL
+		)
+	endif()
 endmacro()
 
 #
@@ -686,7 +657,6 @@ macro(cp_add_executable)
 			textureatlas(PROJECTNAME ${_EXE_TARGET} FILELIST ${_EXE_TPS})
 		endif()
 		cp_android_prepare(${_EXE_TARGET} ${APPNAME} ${VERSION} ${VERSION_CODE})
-		set_target_properties(${_EXE_TARGET} PROPERTIES LINK_FLAGS "-Wl,--undefined=Java_org_base_BaseActivity_isDebug,--undefined=Java_org_base_BaseActivity_isTrackingOptOut,--undefined=Java_org_base_BaseActivity_isHD,--undefined=Java_org_base_BaseActivity_onPersisterConnectFailed,--undefined=Java_org_base_BaseActivity_onPersisterConnectSuccess,--undefined=Java_org_base_BaseActivity_onPersisterDisconnect")
 	else()
 		if (LINUX AND NOT TESTS)
 			set(SHARE_DIR "share")

@@ -56,8 +56,9 @@ int LocalReferenceHolder::s_active;
 
 Android::Android () :
 		Unix(), _env(nullptr), _cls(nullptr), _assetManager(nullptr),
-		_openURL(nullptr), _track(nullptr), _buyItem(nullptr),
-		_isSmallScreen(nullptr), _minimize(nullptr), _externalState(0) {
+		_openURL(nullptr), _hasItem(nullptr), _track(nullptr),
+		_isSmallScreen(nullptr), _minimize(nullptr), _getLocale(nullptr),
+		_achievementUnlocked(nullptr), _externalState(0) {
 }
 
 void Android::init() {
@@ -105,7 +106,7 @@ void Android::init() {
 	_cls = reinterpret_cast<jclass>(_env->NewGlobalRef(cls));
 	_assetManager = reinterpret_cast<jobject>(_env->NewGlobalRef(assetManager));
 
-	_openURL = _env->GetStaticMethodID(_cls, "openURL", "(Ljava/lang/String;)V");
+	_openURL = _env->GetStaticMethodID(_cls, "openURL", "(Ljava/lang/String;)I");
 	_track = env->GetStaticMethodID(_cls, "track", "(Ljava/lang/String;Ljava/lang/String;)Z");
 	_achievementUnlocked = env->GetStaticMethodID(_cls, "achievementUnlocked", "(Ljava/lang/String;Z)V");
 	_isSmallScreen = env->GetStaticMethodID(_cls, "isSmallScreen", "()Z");
@@ -374,9 +375,9 @@ int Android::openURL (const std::string& url, bool) const
 		return -1;
 
 	jstring str = _env->NewStringUTF(url.c_str());
-	_env->CallStaticVoidMethod(_cls, _openURL, str);
+	const int rc = _env->CallStaticIntMethod(_cls, _openURL, str);
 	_env->DeleteLocalRef(str);
-	return 0;
+	return rc;
 }
 
 bool Android::hasTouch () const

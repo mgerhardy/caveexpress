@@ -84,6 +84,18 @@ Download from [github releases](https://github.com/mgerhardy/caveexpress/release
 
 How to build projects from sources described on wiki page [Compilation](https://github.com/mgerhardy/caveexpress/wiki/Compilation).
 
+### Android
+
+CI builds arm64-v8a debug APKs with the NDK CMake toolchain and the Gradle project in `android-project/` (same layout as [libsdl-org/SDL](https://github.com/libsdl-org/SDL/tree/main/.github)).
+
+```sh
+# ANDROID_NDK_HOME must point at an NDK (r28c or compatible)
+# ANDROID_SDK_ROOT is required to package APKs
+./contrib/scripts/android.sh
+```
+
+`ANDROID_SKIP_APK=1` builds only the native `.so` files. `ANDROID_ABI` defaults to `arm64-v8a`. Helper targets after CMake configure: `android-caveexpress-apk`, `android-cavepacker-apk`.
+
 
 # Tools
 

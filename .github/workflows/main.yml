@@ -106,6 +106,71 @@ jobs:
             name: win-caveexpress
             path: build/install-caveexpress
 
+    android:
+        timeout-minutes: 90
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v4
+
+        - name: Install host packages
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends ninja-build ccache
+
+        - uses: actions/setup-java@v4
+          with:
+            distribution: temurin
+            java-version: '17'
+
+        - uses: nttld/setup-ndk@v1
+          id: setup-ndk
+          with:
+            ndk-version: r28c
+            local-cache: false
+
+        - name: Configure Android NDK
+          run: echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> "$GITHUB_ENV"
+
+        - uses: android-actions/setup-android@v3
+
+        - name: Install Android SDK packages
+          run: |
+            yes | sdkmanager --licenses >/dev/null || true
+            sdkmanager --install "platforms;android-34" "build-tools;34.0.0"
+
+        - name: Cache FetchContent dependencies
+          uses: actions/cache@v4
+          with:
+            path: cp-build-android/_deps
+            key: android-deps-${{ hashFiles('src/libs/CMakeLists.txt') }}
+
+        - uses: hendrikmuhs/ccache-action@v1.2
+          with:
+            key: android-arm64-v8a
+
+        - uses: gradle/actions/setup-gradle@v4
+
+        - name: Build native libraries and debug APKs
+          env:
+            ANDROID_ABI: arm64-v8a
+            ANDROID_PLATFORM: android-21
+          run: ./contrib/scripts/android.sh
+
+        - name: Upload CaveExpress APK
+          uses: actions/upload-artifact@v4
+          with:
+            name: android-caveexpress
+            if-no-files-found: error
+            path: android-project/app/build/outputs/apk/caveexpress/debug/*.apk
+
+        - name: Upload CavePacker APK
+          uses: actions/upload-artifact@v4
+          with:
+            name: android-cavepacker
+            if-no-files-found: error
+            path: android-project/app/build/outputs/apk/cavepacker/debug/*.apk
+
     emscripten:
         timeout-minutes: 60
         runs-on: ubuntu-latest

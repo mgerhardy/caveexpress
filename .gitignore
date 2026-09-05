@@ -40,3 +40,8 @@ doxygen
 /.idea
 .cache
 /*.ini
+/android-project/.gradle
+/android-project/local.properties
+/android-project/app/build
+/android-project/build
+/cp-build-android
