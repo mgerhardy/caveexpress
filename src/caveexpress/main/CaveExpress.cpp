@@ -189,44 +189,65 @@ void CaveExpress::update (uint32_t deltaTime)
 	}
 
 	const bool isDone = _map.isDone();
-	if (isDone && !_mapFinishSent && !_map.isRestartInitialized()) {
+	const bool isCutscene = string::toBool(_map.getSetting(msn::CUTSCENE, msd::CUTSCENE));
+	// Cutscenes win on package quota like normal maps, but the script owns the
+	// closing beat (land, walk home). Wait for map:finish() / forceComplete().
+	const bool cutsceneWait = isCutscene && !_map.isScriptForcedDone();
+	if (isDone && !cutsceneWait && !_mapFinishSent && !_map.isRestartInitialized()) {
 		if (!_mapFinishDelayStarted) {
 			const uint32_t playTime = _map.getTime();
-			const uint32_t referenceTime = _map.getReferenceTime();
-			const float relativeRefTime = Config.getConfigVar(REFERENCE_TIME_FACTOR)->getFloatValue() * referenceTime;
-			// this max is needed for debug reasons (if you force a map win)
-			const float time = std::max(1.0f, playTime / 1000.0f);
 			const uint32_t timeSeconds = std::max(1U, playTime / 1000U);
-			const float pointsRate = relativeRefTime / time;
-			const uint32_t timePoints = pointsRate * _map.getFinishPoints();
-			const uint32_t finishPoints = timePoints + _map.getPoints();
-			const int percent = time * 100.0f / relativeRefTime;
-			Log::info(LOG_GAMEIMPL, "seconds: %.0f, refseconds: %i, rate: %f, refpoints: %i, timePoints: %i, finishPoints: %i, percent: %i",
-							time, _map.getReferenceTime(), pointsRate, _map.getFinishPoints(), timePoints, finishPoints, percent);
-			_map.sendSound(0, SoundTypes::SOUND_MUSIC_WIN);
-			uint8_t stars = 0;
-			if (percent <= 70) {
-				stars = 3;
-			} else if (percent <= 90) {
-				stars = 2;
-			} else if (percent <= 100) {
-				stars = 1;
-			}
 			const bool tutorial = string::toBool(_map.getSetting(msn::TUTORIAL));
 			if (!tutorial)
 				Config.increaseCounter("mapfinishedcounter");
-			if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, timeSeconds, stars))
-				Log::error(LOG_GAMEIMPL, "Could not save the values for the map");
 
-			System.track("mapstate", string::format("finished: %s with %i points in %i seconds and with %i stars", _map.getName().c_str(), finishPoints, timeSeconds, stars));
-			_finishMapName = _map.getName();
-			_finishPoints = finishPoints;
-			_finishTimeSeconds = timeSeconds;
-			_finishStars = stars;
-			_mapFinishDelayStarted = true;
-			// Give the player a moment to see the win state while the map fades out.
-			static const uint32_t MAP_FINISH_DELAY_MS = 3000;
-			_map.scheduleFinish(MAP_FINISH_DELAY_MS);
+			if (isCutscene) {
+				// No human score: mark the map played (Continue skips it) and
+				// hand off to the next campaign map without the stars window.
+				if (!_campaignManager->updateMapValues(_map.getName(), 0, timeSeconds, 0))
+					Log::error(LOG_GAMEIMPL, "Could not save the values for the map");
+				System.track("mapstate", string::format("cutscene-finished: %s in %u seconds", _map.getName().c_str(), timeSeconds));
+				_mapFinishDelayStarted = true;
+				static const uint32_t CUTSCENE_FINISH_DELAY_MS = 1800;
+				_map.scheduleFinish(CUTSCENE_FINISH_DELAY_MS);
+			} else {
+				const uint32_t referenceTime = _map.getReferenceTime();
+				const float relativeRefTime = Config.getConfigVar(REFERENCE_TIME_FACTOR)->getFloatValue() * referenceTime;
+				// this max is needed for debug reasons (if you force a map win)
+				const float time = std::max(1.0f, playTime / 1000.0f);
+				const float pointsRate = relativeRefTime / time;
+				const uint32_t timePoints = pointsRate * _map.getFinishPoints();
+				const uint32_t finishPoints = timePoints + _map.getPoints();
+				const int percent = time * 100.0f / relativeRefTime;
+				Log::info(LOG_GAMEIMPL, "seconds: %.0f, refseconds: %i, rate: %f, refpoints: %i, timePoints: %i, finishPoints: %i, percent: %i",
+								time, _map.getReferenceTime(), pointsRate, _map.getFinishPoints(), timePoints, finishPoints, percent);
+				_map.sendSound(0, SoundTypes::SOUND_MUSIC_WIN);
+				uint8_t stars = 0;
+				if (percent <= 70) {
+					stars = 3;
+				} else if (percent <= 90) {
+					stars = 2;
+				} else if (percent <= 100) {
+					stars = 1;
+				}
+				if (!_campaignManager->updateMapValues(_map.getName(), finishPoints, timeSeconds, stars))
+					Log::error(LOG_GAMEIMPL, "Could not save the values for the map");
+
+				System.track("mapstate", string::format("finished: %s with %i points in %i seconds and with %i stars", _map.getName().c_str(), finishPoints, timeSeconds, stars));
+				_finishMapName = _map.getName();
+				_finishPoints = finishPoints;
+				_finishTimeSeconds = timeSeconds;
+				_finishStars = stars;
+				_mapFinishDelayStarted = true;
+				// Give the player a moment to see the win state while the map fades out.
+				static const uint32_t MAP_FINISH_DELAY_MS = 3000;
+				_map.scheduleFinish(MAP_FINISH_DELAY_MS);
+			}
+		} else if (isCutscene) {
+			_mapFinishSent = true;
+			_mapFinishDelayStarted = false;
+			if (!_campaignManager->continuePlay())
+				GameEvent.backToMain("");
 		} else {
 			GameEvent.finishedMap(_finishMapName, _finishPoints, _finishTimeSeconds, _finishStars);
 			_mapFinishSent = true;

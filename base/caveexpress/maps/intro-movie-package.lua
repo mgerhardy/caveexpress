@@ -6,7 +6,8 @@
 -- and hauls packed garbage out. The machine then delivers it to the target.
 --
 -- After the machine appears the builder stands beside it, waits, and boards.
--- Only then does the woman leave the cave.
+-- Only then does the woman leave the cave. After the last delivery the machine
+-- lands next to the cave, the villager walks home, and the cave light goes out.
 --
 -- Coordinate note: Y grows downward (gravity). "Above" means a smaller Y.
 
@@ -52,7 +53,14 @@ local BOARD_WAIT_MS = 2000
 local NPC_GROUND_Y = 4.726 -- ground 5.0 - npc-man height 0.548 / 2
 local DUST_W = 2.0
 local DUST_H = 1.4
-local DUST_MS = 1100
+-- Dust plays on the front layer (over the machine/NPC). Place them while the
+-- puff is still up, then clear the dust so they are revealed, not spawned.
+local DUST_HIDE_NPC_MS = 220
+local DUST_REVEAL_MS = 420
+local DUST_CLEAR_MS = 1750
+local HOME_X = 2.70
+local CAVE_ENTER_X = 1.35
+local PLAYER_HALF_H = 0.435
 -- Between the cave (x=1) and the machine, on the walkway.
 local DUMP_X = { 2.15, 2.60, 3.05 }
 local MACHINE_HIDE_X = -4.0
@@ -151,11 +159,10 @@ local function keepEmpty(playerEnt)
 	if playerEnt ~= nil and playerEnt:isValid() then
 		-- Parked machine: no gravity drift, fixed on the ground surface (y=5).
 		local groundY = 5.0
-		local halfH = 0.435 -- player height 0.87 / 2
 		playerEnt:setGravityScale(0)
 		playerEnt:resetAcceleration()
 		playerEnt:setVelocity(0, 0)
-		playerEnt:setPos(WASTE_CX, groundY - halfH)
+		playerEnt:setPos(WASTE_CX, groundY - PLAYER_HALF_H)
 		playerEnt:setAnimation("empty")
 	end
 end
@@ -166,11 +173,10 @@ local function hideMachine(playerEnt)
 	end
 	-- Park off the left edge so the finished heli is not drawn until the reveal.
 	local groundY = 5.0
-	local halfH = 0.435 -- player height 0.87 / 2
 	playerEnt:setGravityScale(0)
 	playerEnt:resetAcceleration()
 	playerEnt:setVelocity(0, 0)
-	playerEnt:setPos(MACHINE_HIDE_X, groundY - halfH)
+	playerEnt:setPos(MACHINE_HIDE_X, groundY - PLAYER_HALF_H)
 	playerEnt:setAnimation("empty")
 end
 
@@ -215,12 +221,32 @@ local function standBesideMachine(ent, playerEnt)
 	placeNpc(ent, machineStandX(playerEnt))
 end
 
+-- Place the parked machine and builder while dust is still covering them.
+-- Dust stays; it is a front-layer sprite so it draws over both.
+local function showMachineUnderDust(playerEnt)
+	waste = removeDeco(waste)
+	idea = removeDeco(idea)
+	machineShown = true
+	keepEmpty(playerEnt)
+end
+
 local function revealMachine(playerEnt)
 	waste = removeDeco(waste)
 	dust = removeDeco(dust)
 	idea = removeDeco(idea)
 	machineShown = true
 	keepEmpty(playerEnt)
+end
+
+local function parkAt(playerEnt, x)
+	if playerEnt == nil or not playerEnt:isValid() then
+		return
+	end
+	playerEnt:setGravityScale(0)
+	playerEnt:resetAcceleration()
+	playerEnt:setVelocity(0, 0)
+	playerEnt:setPos(x, 5.0 - PLAYER_HALF_H)
+	playerEnt:setInvulnerable(60000)
 end
 
 -- Skip finishes the cutscene; never hands control to the player.
@@ -278,6 +304,35 @@ local function buildCollectPath(playerEnt, pkg)
 	}
 end
 
+local function buildHomePath(playerEnt)
+	local px, py = playerEnt:getPos()
+	local landY = 5.0 - PLAYER_HALF_H
+	local cruiseY = math.min(py, landY) - 2.0
+	if cruiseY < 0.6 then
+		cruiseY = 0.6
+	end
+	return {
+		{ px, cruiseY, 2.0 },
+		{ HOME_X, cruiseY, 2.2 },
+		{ HOME_X, landY - 0.40, 0.85 },
+		{ HOME_X, landY, 0.40 },
+	}
+end
+
+local function beginHome(map, playerEnt)
+	if playerEnt == nil or not playerEnt:isValid() then
+		setPhase(map, "done")
+		map:finish()
+		return
+	end
+	playMode = "flyHome"
+	flyWaypoint = 1
+	flyPath = buildHomePath(playerEnt)
+	playerEnt:setInvulnerable(60000)
+	playerEnt:setGravityScale(0)
+	setPhase(map, "home", "The caves are clean again. Thank you!")
+end
+
 local function buildDeliverPath(playerEnt, tx, ty)
 	local px, py = playerEnt:getPos()
 	local cruiseY = math.min(py, ty) - 2.2
@@ -332,7 +387,7 @@ local function beginCollect(map, playerEnt, pkg)
 	collectTarget = pkg
 	flyWaypoint = 1
 	flyPath = buildCollectPath(playerEnt, pkg)
-	playerEnt:setInvulnerable(20000)
+	playerEnt:setInvulnerable(60000)
 end
 
 local function beginDeliver(map, playerEnt)
@@ -342,7 +397,7 @@ local function beginDeliver(map, playerEnt)
 	hoverWait = 0
 	settleFrames = 0
 	droppedPackage = firstCarriedPackage(playerEnt)
-	playerEnt:setInvulnerable(20000)
+	playerEnt:setInvulnerable(60000)
 	flyWaypoint = 1
 	local target = map:getPackageTarget()
 	if target ~= nil and target:isValid() then
@@ -374,10 +429,7 @@ local function beginRescueFlight(map, playerEnt)
 	ensurePackages(map)
 	local pkg = nextFreePackage(map)
 	if pkg == nil then
-		if map:isDone() then
-			setPhase(map, "done", "The caves are clean again. Thank you!")
-			map:finish()
-		end
+		beginHome(map, playerEnt)
 		return
 	end
 	setPhase(map, "rescue", "CaveExpress to the rescue!")
@@ -521,15 +573,20 @@ function onUpdate(dt)
 		return
 	end
 
-	-- Dust covers the NPC at the pile, then they stay hidden until the machine appears.
+	-- Dust covers the pile. The machine and builder are placed underneath while
+	-- the puff is still playing (front layer), then the dust is removed.
 	if phase == "dust" then
-		parkMachine(player)
-		if timer > 250 then
+		if timer > DUST_HIDE_NPC_MS then
 			hideNpc(pilot)
 		end
-		if timer > DUST_MS then
-			revealMachine(player)
+		if timer > DUST_REVEAL_MS then
+			showMachineUnderDust(player)
 			standBesideMachine(pilot, player)
+		else
+			parkMachine(player)
+		end
+		if timer > DUST_CLEAR_MS then
+			dust = removeDeco(dust)
 			setPhase(map, "reveal", "The CaveExpress is ready!")
 		end
 		return
@@ -562,7 +619,7 @@ function onUpdate(dt)
 		pilot = nil
 		if player ~= nil and player:isValid() then
 			player:setAnimation("idle")
-			player:setInvulnerable(20000)
+			player:setInvulnerable(60000)
 		end
 		if timer > 400 then
 			beginDumper(map)
@@ -654,6 +711,7 @@ function onUpdate(dt)
 		if player == nil or not player:isValid() then
 			return
 		end
+		player:setInvulnerable(60000)
 
 		if playMode == "collect" then
 			if player:getCollectedPackageCount() > 0 then
@@ -667,10 +725,7 @@ function onUpdate(dt)
 					pkg = nextFreePackage(map)
 				end
 				if pkg == nil then
-					if map:isDone() then
-						setPhase(map, "done", "The caves are clean again. Thank you!")
-						map:finish()
-					end
+					beginHome(map, player)
 					return
 				end
 				beginCollect(map, player, pkg)
@@ -744,20 +799,12 @@ function onUpdate(dt)
 			if hit then
 				droppedPackage = nil
 				deliverAttempts = 0
-				if map:isDone() then
-					endScriptedFlight(player)
-					setPhase(map, "done", "The caves are clean again. Thank you!")
-					map:finish()
-					return
-				end
 				local pkg = nextFreePackage(map)
 				if pkg ~= nil then
 					map:message("Next package...", MSG_MS)
 					beginCollect(map, player, pkg)
 				else
-					endScriptedFlight(player)
-					setPhase(map, "done", "The caves are clean again. Thank you!")
-					map:finish()
+					beginHome(map, player)
 				end
 			elseif deliverWait > DELIVER_TIMEOUT_MS then
 				if player:getCollectedPackageCount() > 0 and deliverAttempts < MAX_DELIVER_ATTEMPTS then
@@ -772,13 +819,92 @@ function onUpdate(dt)
 					local pkg = nextFreePackage(map)
 					if pkg ~= nil then
 						beginCollect(map, player, pkg)
-					elseif map:isDone() then
-						endScriptedFlight(player)
-						setPhase(map, "done", "The caves are clean again. Thank you!")
-						map:finish()
+					else
+						beginHome(map, player)
 					end
 				end
 			end
+		end
+		return
+	end
+
+	-- Fly back, land softly next to the cave, villager steps out and goes home.
+	if phase == "home" then
+		if player == nil or not player:isValid() then
+			setPhase(map, "done")
+			map:finish()
+			return
+		end
+		player:setInvulnerable(60000)
+
+		if playMode == "flyHome" then
+			if flyPath == nil then
+				flyPath = buildHomePath(player)
+				flyWaypoint = 1
+			end
+			local wp = flyPath[flyWaypoint]
+			if wp == nil then
+				parkAt(player, HOME_X)
+				player:setAnimation("idle")
+				playMode = "deboard"
+				timer = 0
+				return
+			end
+			if flyToward(player, wp[1], wp[2], wp[3]) then
+				flyWaypoint = flyWaypoint + 1
+			end
+			return
+		end
+
+		if playMode == "deboard" then
+			parkAt(player, HOME_X)
+			player:setAnimation("empty")
+			if timer > 500 and (pilot == nil or not pilot:isValid()) then
+				pilot = map:spawnFriendlyNPC(1, "npc-man", false)
+				if pilot ~= nil and pilot:isValid() then
+					standBesideMachine(pilot, player)
+				end
+			end
+			if timer > 1400 then
+				if pilot ~= nil and pilot:isValid() then
+					pilot:setMoving(CAVE_ENTER_X)
+				end
+				playMode = "walkIn"
+				timer = 0
+			end
+			return
+		end
+
+		if playMode == "walkIn" then
+			parkAt(player, HOME_X)
+			player:setAnimation("empty")
+			if pilot == nil or not pilot:isValid() or npcCloseTo(pilot, CAVE_ENTER_X, 0.35) or timer > 8000 then
+				if pilot ~= nil and pilot:isValid() then
+					pilot:remove()
+				end
+				pilot = nil
+				local cave = map:getCave(1)
+				if cave ~= nil then
+					cave:setLightState(false)
+				end
+				playMode = "lightsOut"
+				timer = 0
+				return
+			end
+			if timer > 350 then
+				pilot:setMoving(CAVE_ENTER_X)
+			end
+			return
+		end
+
+		if playMode == "lightsOut" then
+			parkAt(player, HOME_X)
+			player:setAnimation("empty")
+			if timer > 2000 then
+				setPhase(map, "done")
+				map:finish()
+			end
+			return
 		end
 		return
 	end

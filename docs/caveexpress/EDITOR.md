@@ -199,7 +199,7 @@ c:addMaps("mymap")
 
 ## Sprite shape editor
 
-**Shapes** opens a tool for editing the collision polygons defined in `sprites.lua`. The first version copies Lua you paste back into that file; it does not rewrite `sprites.lua` on disk.
+**Shapes** opens a tool for editing the collision polygons defined in `sprites.lua`. The first version copies Lua you paste back into that file; it does not rewrite `sprites.lua` on disk. How those polygons, layers, and atlas sizes relate to drawing is in [SPRITES.md](SPRITES.md).
 
 1. Click **Shapes**, or select a tile/entity first so that sprite is preselected.
 2. Pick any sprite from the filterable list.
@@ -216,6 +216,8 @@ Edits update the in-memory sprite definition for the current session. Restart (o
 
 **Script** opens a Lua editor for logic that is kept across saves: `onMapLoaded`, `onUpdate`, and helper functions. `getName` and `initMap` are regenerated from the editor data on every save, so do not keep hand-edited tiles there if you will save from the editor again.
 
+The full runtime API, coordinates, and cutscene rules are in [MAPS.md](MAPS.md). Sprite layers, atlas sizes, and alignment are in [SPRITES.md](SPRITES.md).
+
 Useful settings that are not all in the Properties panel can be added in `initMap` after a save, or kept in mind when designing:
 
 | Setting | Meaning |
@@ -226,6 +228,9 @@ Useful settings that are not all in the Properties panel can be added in `initMa
 | `waterrisingdelay` / `waterfallingdelay` | Delay before water starts moving. |
 | `sideborderfail` | Fail if you touch the side border (used on some wind maps). |
 | `flyingnpc` / `fishnpc` | Also in Properties. |
+| `tutorial` | Do not increment the global maps-finished counter. |
+| `cutscene` | Hide the HUD. `map:finish()` skips the star screen and starts the next campaign map. |
+| `introwindow` | Help window id; use `""` to skip. |
 
 Example from a built-in map:
 

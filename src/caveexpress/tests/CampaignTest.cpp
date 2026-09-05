@@ -103,6 +103,9 @@ TEST(CampaignTest, testMaps) {
 				CaveExpressMapContext ctx(id);
 				EXPECT_TRUE(ctx.load(false)) << "failed to load the map " << id;
 				IMap::SettingsMap settings = ctx.getSettings();
+				// Scripted intros park the player off-map until a beat reveals them.
+				if (string::toBool(settings[msn::CUTSCENE]))
+					continue;
 				const gridCoord x = string::toFloat(ctx.getStartPositions()[0]._x);
 				const gridCoord y = string::toFloat(ctx.getStartPositions()[0]._y);
 				EXPECT_TRUE(ctx.isLocationValid(x, y)) << "map " << id << " has invalid player start positions: " << x << ":" << y << " (" << settings[msn::WIDTH] << ":" << settings[msn::HEIGHT] << ")";

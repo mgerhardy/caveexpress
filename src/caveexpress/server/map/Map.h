@@ -265,6 +265,8 @@ public:
 
 	/** Force the map win condition from a map script (intro movies, cutscenes). */
 	void forceComplete ();
+	/** True after a script called finish()/forceComplete(). */
+	bool isScriptForcedDone () const;
 
 	/**
 	 * @brief Broadcast a HUD message to all players.
@@ -610,6 +612,11 @@ inline bool Map::isRestartInitialized () const
 inline bool Map::isFinishPending () const
 {
 	return _finishPending;
+}
+
+inline bool Map::isScriptForcedDone () const
+{
+	return _scriptForcedDone;
 }
 
 inline uint16_t Map::getPoints () const
