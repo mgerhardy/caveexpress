@@ -8,10 +8,11 @@
 #include "sprites/Sprite.h"
 #include "common/Layer.h"
 #include <cmath>
+#include <cstdint>
 
 inline ImTextureID mapEditorToImTextureID (IFrontend* frontend, const Texture* texture)
 {
-	return reinterpret_cast<ImTextureID>(frontend->getTextureData(texture));
+	return static_cast<ImTextureID>(reinterpret_cast<uintptr_t>(frontend->getTextureData(texture)));
 }
 
 inline ImU32 mapEditorColorWithAlpha (ImU32 col, float alpha)

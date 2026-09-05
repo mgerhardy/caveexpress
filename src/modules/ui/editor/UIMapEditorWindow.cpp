@@ -1,6 +1,7 @@
 #include "ui/editor/UIMapEditorWindow.h"
 #include "ui/editor/ImGuiTextureDraw.h"
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "imgui_stdlib.h"
 #include "ui/UI.h"
 #include "common/Log.h"
@@ -907,82 +908,82 @@ void UIMapEditorWindow::drawCanvas () const
 	ImGui::EndChild();
 }
 
+void UIMapEditorWindow::setupEditorDockSpace () const
+{
+	const ImGuiID dockspaceId = ImGui::GetID("MapEditorDockSpace");
+	if (ImGui::DockBuilderGetNode(dockspaceId) == nullptr) {
+		ImGui::DockBuilderRemoveNode(dockspaceId);
+		ImGui::DockBuilderAddNode(dockspaceId, ImGuiDockNodeFlags_DockSpace);
+		ImGui::DockBuilderSetNodeSize(dockspaceId, ImGui::GetContentRegionAvail());
+		ImGuiID dockMain = dockspaceId;
+		const ImGuiID dockLeft = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Left, 0.22f, nullptr, &dockMain);
+		const ImGuiID dockRight = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Right, 0.28f, nullptr, &dockMain);
+		ImGui::DockBuilderDockWindow("Palette###editor_palette", dockLeft);
+		ImGui::DockBuilderDockWindow("Map###editor_map", dockMain);
+		ImGui::DockBuilderDockWindow("Properties###editor_properties", dockRight);
+		ImGui::DockBuilderDockWindow("Layers###editor_layers", dockRight);
+		ImGui::DockBuilderFinish(dockspaceId);
+	}
+	ImGui::DockSpace(dockspaceId, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
+}
+
 void UIMapEditorWindow::render (int x, int y) const
 {
 	const float pw = static_cast<float>(getRenderWidth(false));
 	const float ph = static_cast<float>(getRenderHeight(false));
 	ImGui::SetNextWindowPos(ImVec2(static_cast<float>(getRenderX(false)), static_cast<float>(getRenderY(false))), ImGuiCond_Always);
 	ImGui::SetNextWindowSize(ImVec2(pw, ph), ImGuiCond_Always);
-	ImGui::Begin(tr("Map Editor").c_str(), nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus);
+	const ImGuiWindowFlags hostFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse
+			| ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus
+			| ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoDocking;
+	ImGui::Begin(tr("Map Editor").c_str(), nullptr, hostFlags);
 
 	handleHotkeys();
 	drawToolbar();
 	ImGui::Separator();
+	setupEditorDockSpace();
+	ImGui::End();
 
-	const float leftWidth = 260.0f;
-	const float splitterW = 6.0f;
-	const float minRight = 200.0f;
-	const float minCenter = 180.0f;
-	const float availX = ImGui::GetContentRegionAvail().x;
-	const float maxRight = std::max(minRight, availX - leftWidth - splitterW - minCenter);
-	_rightPanelWidth = std::max(minRight, std::min(_rightPanelWidth, maxRight));
-	ImGui::BeginChild("left", ImVec2(leftWidth, 0), true);
-	if (ImGui::BeginTabBar("left_tabs")) {
-		if (ImGui::BeginTabItem(tr("Tiles").c_str())) {
-			_doc->setEditMode(IMapEditorDocument::EditMode::Tiles);
-			drawTilesPanel();
-			ImGui::EndTabItem();
+	if (ImGui::Begin((tr("Palette") + "###editor_palette").c_str())) {
+		if (ImGui::BeginTabBar("left_tabs")) {
+			if (ImGui::BeginTabItem(tr("Tiles").c_str())) {
+				_doc->setEditMode(IMapEditorDocument::EditMode::Tiles);
+				drawTilesPanel();
+				ImGui::EndTabItem();
+			}
+			if (ImGui::BeginTabItem(tr("Entities").c_str())) {
+				_doc->setEditMode(IMapEditorDocument::EditMode::Entities);
+				drawEntitiesPanel();
+				ImGui::EndTabItem();
+			}
+			if (ImGui::BeginTabItem(tr("Maps").c_str())) {
+				drawMapsPanel();
+				ImGui::EndTabItem();
+			}
+			ImGui::EndTabBar();
 		}
-		if (ImGui::BeginTabItem(tr("Entities").c_str())) {
-			_doc->setEditMode(IMapEditorDocument::EditMode::Entities);
-			drawEntitiesPanel();
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(tr("Maps").c_str())) {
-			drawMapsPanel();
-			ImGui::EndTabItem();
-		}
-		ImGui::EndTabBar();
 	}
-	ImGui::EndChild();
+	ImGui::End();
 
-	ImGui::SameLine();
-	ImGui::BeginChild("center", ImVec2(-(_rightPanelWidth + splitterW), 0), false);
-	drawCanvas();
-	ImGui::EndChild();
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	if (ImGui::Begin((tr("Map") + "###editor_map").c_str(), nullptr, ImGuiWindowFlags_NoScrollbar))
+		drawCanvas();
+	ImGui::End();
+	ImGui::PopStyleVar();
 
-	ImGui::SameLine(0.0f, 0.0f);
-	ImGui::InvisibleButton("##prop_splitter", ImVec2(splitterW, ImGui::GetContentRegionAvail().y));
-	if (ImGui::IsItemHovered() || ImGui::IsItemActive())
-		ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
-	if (ImGui::IsItemActive())
-		_rightPanelWidth = std::max(minRight, std::min(_rightPanelWidth - ImGui::GetIO().MouseDelta.x, maxRight));
-	{
-		const ImVec2 p0 = ImGui::GetItemRectMin();
-		const ImVec2 p1 = ImGui::GetItemRectMax();
-		const ImU32 col = ImGui::GetColorU32(ImGui::IsItemActive() ? ImGuiCol_SeparatorActive
-				: (ImGui::IsItemHovered() ? ImGuiCol_SeparatorHovered : ImGuiCol_Separator));
-		ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(p0.x + 2.0f, p0.y), ImVec2(p1.x - 2.0f, p1.y), col);
-	}
+	if (ImGui::Begin((tr("Properties") + "###editor_properties").c_str()))
+		drawPropertiesPanel();
+	ImGui::End();
 
-	ImGui::SameLine(0.0f, 0.0f);
-	ImGui::BeginChild("right", ImVec2(_rightPanelWidth, 0), true);
-	if (ImGui::BeginTabBar("right_tabs")) {
-		if (ImGui::BeginTabItem(tr("Properties").c_str())) {
-			drawPropertiesPanel();
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(tr("Layers").c_str())) {
-			drawLayersPanel();
-			ImGui::EndTabItem();
-		}
-		ImGui::EndTabBar();
-	}
+	if (ImGui::Begin((tr("Layers") + "###editor_layers").c_str()))
+		drawLayersPanel();
+	ImGui::End();
+
 	if (_showHelp) {
-		ImGui::Separator();
-		drawHelpPanel();
+		if (ImGui::Begin((tr("Help") + "###editor_help").c_str(), &_showHelp))
+			drawHelpPanel();
+		ImGui::End();
 	}
-	ImGui::EndChild();
 
 	drawConfirmModal();
 	drawValidationModal();
@@ -995,5 +996,4 @@ void UIMapEditorWindow::render (int x, int y) const
 			suggested = _doc->getActiveSprite()->id;
 		_shapeEditor.draw(_frontendPtr, suggested);
 	}
-	ImGui::End();
 }

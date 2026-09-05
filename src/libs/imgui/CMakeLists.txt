@@ -1,3 +1,4 @@
+# Dear ImGui from https://github.com/ocornut/imgui (docking branch)
 set(SOURCES
     misc/cpp/imgui_stdlib.cpp
 

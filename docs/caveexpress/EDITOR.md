@@ -17,9 +17,11 @@ Unsaved changes are confirmed before leaving the editor, starting a new map, or 
 | Area | Contents |
 | --- | --- |
 | Top toolbar | New, Save, Save to game data, Save & Go, Play from here, Undo, Redo, Fit, Script, Shapes, Help, and the Place / Remove / Select / Fill tools |
-| Left tabs | **Tiles**, **Entities**, **Maps** |
-| Center | Map canvas |
-| Right tabs | **Properties** (map settings and the selected item) and **Layers** |
+| **Palette** (left) | **Tiles**, **Entities**, **Maps** |
+| **Map** (center) | Map canvas |
+| **Properties** / **Layers** (right) | Map settings, the selected item, and layer visibility |
+
+These are Dear ImGui dock panels. Drag a title bar to undock or restack them. Drag the split between panels to resize. The first-run layout is Palette left, map in the center, Properties and Layers stacked on the right.
 
 The filename in the toolbar shows a `*` when there are unsaved changes.
 

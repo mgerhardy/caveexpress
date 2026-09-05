@@ -101,7 +101,9 @@ On|On
 On save, copy initMap from the existing file instead of regenerating tiles.|On save, copy initMap from the existing file instead of regenerating tiles.
 Open|Open
 Package|Package
+Palette|Palette
 Paste|Paste
+Patched sprites.lua is not valid Lua|Patched sprites.lua is not valid Lua
 Patch this sprite's polygons/circles in the game data sprites.lua|Patch this sprite's polygons/circles in the game data sprites.lua
 Pick a sprite to edit its collision polygons.|Pick a sprite to edit its collision polygons.
 Place tile|Place tile
@@ -150,7 +152,7 @@ solid|solid
 Solve|Solve
 Sound|Sound
 Sound/Music|Sound/Music
-Space (on canvas): rotate brush|Space (on canvas): rotate brush
+Space (on canvas): rotate selected tile or brush|Space (on canvas): rotate selected tile or brush
 Sprite Shape Editor|Sprite Shape Editor
 Start|Start
 Target|Target

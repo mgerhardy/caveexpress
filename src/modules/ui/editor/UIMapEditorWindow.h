@@ -17,7 +17,6 @@ protected:
 	mutable float _panX = 0.0f;
 	mutable float _panY = 0.0f;
 	mutable float _zoom = 1.0f;
-	mutable float _rightPanelWidth = 280.0f;
 	mutable int _tileRefWidth = 16;
 	mutable float _canvasMinX = 0.0f;
 	mutable float _canvasMinY = 0.0f;
@@ -64,6 +63,7 @@ protected:
 	bool trySave (bool toGameData = false) const;
 	void applyScriptFind (bool replaceAll) const;
 	void drawCanvas () const;
+	void setupEditorDockSpace () const;
 	void renderMapIntoCanvas (ImDrawList* drawList) const;
 	void renderSprite (ImDrawList* drawList, const MapEditorTileItem& item, float originX, float originY,
 			float tileW, float tileH, float alpha = 1.0f) const;
