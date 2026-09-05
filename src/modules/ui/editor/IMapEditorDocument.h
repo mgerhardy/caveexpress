@@ -179,6 +179,7 @@ public:
 
 	void setSprite (const SpriteDefPtr& spriteDef);
 	void setEmitterEntity (const EntityType& type);
+	SpriteDefPtr findEntitySprite (const EntityType& type) const;
 	virtual void setActiveEntityRight (bool right);
 	virtual void rotateBrush ();
 	/** Rotate the highlighted tile in place, or the brush if nothing rotatable is selected. */

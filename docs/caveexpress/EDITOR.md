@@ -125,7 +125,7 @@ Hiding a layer also prevents selecting and erasing items on that layer. **Show G
 
 ## Entities tab
 
-Click an entity type, then left-click the map to place it. Right-click removes only entities and the player start. Background and other tiles stay in place.
+Click a sprite in the grid (tooltip shows the type name), then left-click the map to place it. Right-click removes only entities and the player start. Background and other tiles stay in place. Use the filter box to search by entity type name.
 
 | Entity | Notes |
 | --- | --- |

@@ -51,6 +51,8 @@ void MapEditorDocument::fillTilePalette (std::vector<SpriteDefPtr>& out) const
 		const SpriteDefPtr& sprite = i->second;
 		if (!SpriteTypes::isMapTile(sprite->type) && !SpriteTypes::isPackage(sprite->type))
 			continue;
+		if (sprite->hasNoTextures())
+			continue;
 		out.push_back(sprite);
 	}
 }

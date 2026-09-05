@@ -438,6 +438,8 @@ void UIShapeEditor::drawCanvas (IFrontend* frontend)
 
 	const bool space = ImGui::IsKeyDown(ImGuiKey_Space);
 	if (hovered) {
+		if (space || ImGui::IsMouseDragging(ImGuiMouseButton_Middle))
+			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
 		if (ImGui::IsMouseDragging(ImGuiMouseButton_Middle) || (space && ImGui::IsMouseDragging(ImGuiMouseButton_Left))) {
 			_panX -= ImGui::GetIO().MouseDelta.x;
 			_panY -= ImGui::GetIO().MouseDelta.y;

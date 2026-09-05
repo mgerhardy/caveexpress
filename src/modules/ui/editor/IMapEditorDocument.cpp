@@ -284,9 +284,14 @@ void IMapEditorDocument::setSprite (const SpriteDefPtr& spriteDef)
 	_tool = Tool::Paint;
 }
 
+SpriteDefPtr IMapEditorDocument::findEntitySprite (const EntityType& type) const
+{
+	return SpriteDefinition::get().getFromEntityType(type, getEmitterAnimation(type));
+}
+
 void IMapEditorDocument::setEmitterEntity (const EntityType& type)
 {
-	const SpriteDefPtr& spriteDef = SpriteDefinition::get().getFromEntityType(type, getEmitterAnimation(type));
+	const SpriteDefPtr& spriteDef = findEntitySprite(type);
 	if (!spriteDef)
 		return;
 	_activeSprite = spriteDef;
@@ -791,7 +796,7 @@ void IMapEditorDocument::loadFromContext (IMapContext& ctx)
 	}
 	for (const EmitterDefinition& emitter : ctx.getEmitterDefinitions()) {
 		const EntityType& entityType = *emitter.type;
-		const SpriteDefPtr def = SpriteDefinition::get().getFromEntityType(entityType, getEmitterAnimation(entityType));
+		const SpriteDefPtr def = findEntitySprite(entityType);
 		if (!def) {
 			Log::error(LOG_UI, "could not get sprite for emitter %s", entityType.name.c_str());
 			continue;

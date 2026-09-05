@@ -508,6 +508,8 @@ void MapEditorDocument::fillTilePalette (std::vector<SpriteDefPtr>& out) const
 		if (!SpriteTypes::isMapTile(type) && !SpriteTypes::isLiane(type) && !SpriteTypes::isCaveSign(type)
 				&& sprite->id != "dust" && sprite->id != "waste")
 			continue;
+		if (sprite->hasNoTextures())
+			continue;
 		if (SpriteTypes::isGeyser(type) && sprite->isStatic())
 			continue;
 		if (SpriteTypes::isPackageTarget(type) && !sprite->isStatic())

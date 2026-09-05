@@ -330,7 +330,7 @@ void UIMapEditorWindow::drawTilesPanel () const
 	const int columns = std::max(1, static_cast<int>(ImGui::GetContentRegionAvail().x / (cell + 4.0f)));
 	int col = 0;
 	for (const SpriteDefPtr& sprite : _tilePalette) {
-		if (!passesFilter(sprite->id, _tileFilter))
+		if (!sprite || sprite->hasNoTextures() || !passesFilter(sprite->id, _tileFilter))
 			continue;
 		if (col > 0)
 			ImGui::SameLine();
@@ -354,12 +354,38 @@ void UIMapEditorWindow::drawTilesPanel () const
 void UIMapEditorWindow::drawEntitiesPanel () const
 {
 	ImGui::InputText(tr("Filter").c_str(), _entityFilter, sizeof(_entityFilter));
-	ImGui::BeginChild("entities_list", ImVec2(0, 0), true);
+	ImGui::BeginChild("entities_grid", ImVec2(0, 0), true);
+	ImDrawList* drawList = ImGui::GetWindowDrawList();
+	const float cell = 48.0f;
+	const int columns = std::max(1, static_cast<int>(ImGui::GetContentRegionAvail().x / (cell + 4.0f)));
+	int col = 0;
 	for (const EntityType* type : _entityPalette) {
-		if (!passesFilter(type->name, _entityFilter))
+		if (type == nullptr || !passesFilter(type->name, _entityFilter))
 			continue;
-		if (ImGui::Selectable(type->name.c_str(), _doc->getActiveEntityType() == type))
+		if (col > 0)
+			ImGui::SameLine();
+		ImGui::PushID(type->name.c_str());
+		const bool selected = _doc->getActiveEntityType() == type;
+		if (ImGui::Selectable("##entity", selected, 0, ImVec2(cell, cell)))
 			_doc->setEmitterEntity(*type);
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("%s", type->name.c_str());
+		const ImVec2 min = ImGui::GetItemRectMin();
+		const ImVec2 max = ImGui::GetItemRectMax();
+		const SpriteDefPtr def = _doc->findEntitySprite(*type);
+		SpritePtr s;
+		if (def && !def->hasNoTextures())
+			s = UI::get().loadSprite(def->id);
+		if (s)
+			mapEditorAddSprite(drawList, _frontendPtr, s,
+					ImVec2(min.x + 4.0f, min.y + 4.0f), ImVec2(max.x - 4.0f, max.y - 4.0f), 1.0f, 0);
+		else {
+			drawList->PushClipRect(min, max, true);
+			drawList->AddText(ImVec2(min.x + 2.0f, min.y + cell * 0.5f - 6.0f), IM_COL32_WHITE, type->name.c_str());
+			drawList->PopClipRect();
+		}
+		ImGui::PopID();
+		col = (col + 1) % columns;
 	}
 	ImGui::EndChild();
 }
@@ -843,6 +869,8 @@ void UIMapEditorWindow::drawCanvas () const
 		} else {
 			_panning = false;
 		}
+		if (_panning || space)
+			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
 
 		const float wheel = ImGui::GetIO().MouseWheel;
 		if (wheel != 0.0f) {

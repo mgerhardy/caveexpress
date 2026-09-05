@@ -317,6 +317,11 @@ void UI::render ()
 		font->print(s, colorWhite, 0, 0, false);
 	}
 
+	// imgui_impl_sdl2 applies GetMouseCursor() via SDL_CreateSystemCursor. When the
+	// game hid the OS cursor, request None so the backend does not force the arrow.
+	if (!_cursor)
+		ImGui::SetMouseCursor(ImGuiMouseCursor_None);
+
 	ImGui::Render();
 }
 
