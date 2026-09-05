@@ -61,6 +61,9 @@ void NPCFriendly::onContact (PhysicsContact contact, IEntity* entity)
 		CaveMapTile *cave = assert_cast<CaveMapTile*, IEntity*>(entity);
 		cave->setRespawnPossible(true, getType());
 	} else if (entity->isPlayer()) {
+		// Cutscenes lock input and park the machine; walking past it must not board.
+		if (!_map.isInputEnabled())
+			return;
 		if (isMoving() || isSwimming()) {
 			Player *player = assert_cast<Player*, IEntity*>(entity);
 			if (isSwimming())
@@ -206,7 +209,7 @@ void NPCFriendly::update (uint32_t deltaTime)
 	const Map::PlayerList& players = _map.getPlayers();
 	for (Map::PlayerListConstIter i = players.begin(); i != players.end(); ++i) {
 		Player* player = *i;
-		if (player->isFree() && player->isLandedOn(getCave())) {
+		if (_map.isInputEnabled() && player->isFree() && player->isLandedOn(getCave())) {
 			// player is landed on our tile - walk toward him
 			if (isIdle()) {
 				if (triggerTargetCaveAnnouncement(player->getPos())) {

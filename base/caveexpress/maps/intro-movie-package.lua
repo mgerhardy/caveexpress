@@ -58,8 +58,10 @@ local DUST_H = 1.4
 local DUST_HIDE_NPC_MS = 220
 local DUST_REVEAL_MS = 420
 local DUST_CLEAR_MS = 1750
-local HOME_X = 2.70
-local CAVE_ENTER_X = 1.35
+-- Land far enough right of the cave that a villager can step out and walk in.
+local HOME_X = 3.25
+local CAVE_ENTER_X = 1.50
+local DEBOARD_OFFSET = 0.95
 local PLAYER_HALF_H = 0.435
 -- Between the cave (x=1) and the machine, on the walkway.
 local DUMP_X = { 2.15, 2.60, 3.05 }
@@ -219,6 +221,26 @@ end
 
 local function standBesideMachine(ent, playerEnt)
 	placeNpc(ent, machineStandX(playerEnt))
+end
+
+-- Left of the parked machine with a gap so the bodies do not overlap.
+local function deboardStandX(playerEnt)
+	local px = HOME_X
+	if playerEnt ~= nil and playerEnt:isValid() then
+		local x = select(1, playerEnt:getPos())
+		if x > 1.5 then
+			px = x
+		end
+	end
+	return px - DEBOARD_OFFSET
+end
+
+local function caveWalkX(map)
+	local cave = map:getCave(1)
+	if cave ~= nil then
+		return select(1, cave:getPos())
+	end
+	return CAVE_ENTER_X
 end
 
 -- Place the parked machine and builder while dust is still covering them.
@@ -862,12 +884,14 @@ function onUpdate(dt)
 			if timer > 500 and (pilot == nil or not pilot:isValid()) then
 				pilot = map:spawnFriendlyNPC(1, "npc-man", false)
 				if pilot ~= nil and pilot:isValid() then
-					standBesideMachine(pilot, player)
+					placeNpc(pilot, deboardStandX(player))
 				end
+			elseif pilot ~= nil and pilot:isValid() then
+				placeNpc(pilot, deboardStandX(player))
 			end
-			if timer > 1400 then
+			if timer > 1600 then
 				if pilot ~= nil and pilot:isValid() then
-					pilot:setMoving(CAVE_ENTER_X)
+					pilot:setMoving(caveWalkX(map))
 				end
 				playMode = "walkIn"
 				timer = 0
@@ -878,10 +902,20 @@ function onUpdate(dt)
 		if playMode == "walkIn" then
 			parkAt(player, HOME_X)
 			player:setAnimation("empty")
-			if pilot == nil or not pilot:isValid() or npcCloseTo(pilot, CAVE_ENTER_X, 0.35) or timer > 8000 then
-				if pilot ~= nil and pilot:isValid() then
-					pilot:remove()
+			local enterX = caveWalkX(map)
+			if pilot == nil or not pilot:isValid() then
+				local cave = map:getCave(1)
+				if cave ~= nil then
+					cave:setLightState(false)
 				end
+				playMode = "lightsOut"
+				timer = 0
+				return
+			end
+			if npcCloseTo(pilot, enterX, 0.22) or timer > 10000 then
+				pilot:setIdle()
+				pilot:setVelocity(0, 0)
+				pilot:remove()
 				pilot = nil
 				local cave = map:getCave(1)
 				if cave ~= nil then
@@ -891,8 +925,8 @@ function onUpdate(dt)
 				timer = 0
 				return
 			end
-			if timer > 350 then
-				pilot:setMoving(CAVE_ENTER_X)
+			if timer > 200 then
+				pilot:setMoving(enterX)
 			end
 			return
 		end
