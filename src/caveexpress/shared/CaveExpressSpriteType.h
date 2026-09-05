@@ -66,6 +66,11 @@ inline bool isWindow (const SpriteType& other)
 	return other == WINDOW;
 }
 
+inline bool isCaveSign (const SpriteType& other)
+{
+	return other == CAVE_SIGN;
+}
+
 inline bool isGround (const SpriteType& other)
 {
 	return other == GROUND;

@@ -1,7 +1,11 @@
 #include "ui/editor/UIShapeEditor.h"
 #include "ui/editor/ImGuiTextureDraw.h"
 #include "common/SpritePolygonLua.h"
+#include "common/SpriteLuaPatcher.h"
 #include "common/String.h"
+#include "common/FileSystem.h"
+#include "common/File.h"
+#include "common/LUALibrary.h"
 #include "sprites/Sprite.h"
 #include "ui/UI.h"
 #include "imgui_stdlib.h"
@@ -82,7 +86,9 @@ void UIShapeEditor::loadSprite (const std::string& id)
 		return;
 	_spriteId = id;
 	_polygons = def->polygons;
-	_activePoly = _polygons.empty() ? 0 : 0;
+	_circles = def->circles;
+	_activePoly = 0;
+	_activeCircle = _circles.empty() ? -1 : 0;
 	if (_polygons.empty())
 		_polygons.push_back(SpritePolygon(""));
 	if (_activePoly >= static_cast<int>(_polygons.size()))
@@ -90,8 +96,9 @@ void UIShapeEditor::loadSprite (const std::string& id)
 	std::snprintf(_userDataBuf, sizeof(_userDataBuf), "%s", _polygons[_activePoly].userData.c_str());
 	_luaDirty = true;
 	_luaEdited = false;
-	_dragPoly = _dragVert = -1;
+	_dragPoly = _dragVert = _dragCircle = -1;
 	_dragging = false;
+	_hasShapeUndo = false;
 	_zoom = 4.0f;
 	_panX = _panY = 0.0f;
 }
@@ -102,19 +109,89 @@ void UIShapeEditor::applyToDef ()
 	if (!def)
 		return;
 	def->polygons = _polygons;
+	def->circles = _circles;
 	def->invalidateShapeSize();
 }
 
 void UIShapeEditor::rebuildLua ()
 {
-	_luaText = sprite_polygon_lua::toLua(_polygons);
+	_luaText = sprite_polygon_lua::toLuaShapes(_polygons, _circles);
 	_luaDirty = false;
+}
+
+void UIShapeEditor::pushShapeUndo ()
+{
+	_undoPolygons = _polygons;
+	_undoCircles = _circles;
+	_hasShapeUndo = true;
 }
 
 void UIShapeEditor::setStatus (const std::string& text)
 {
 	_status = text;
 	_statusUntil = ImGui::GetTime() + 2.5;
+}
+
+bool UIShapeEditor::writeSpritesLua ()
+{
+	applyToDef();
+	const std::string path = FS.getDataDir() + "sprites.lua";
+	SDL_RWops* rwops = FS.createRWops(path, "rb");
+	FilePtr file = rwops != nullptr ? FilePtr(new File(rwops, path)) : FS.getFile("sprites.lua");
+	if (!file || !file->exists()) {
+		setStatus(tr("Could not open sprites.lua"));
+		return false;
+	}
+	void* buf = nullptr;
+	const int n = file->read(&buf);
+	if (n <= 0 || buf == nullptr) {
+		delete[] static_cast<char*>(buf);
+		setStatus(tr("Could not read sprites.lua"));
+		return false;
+	}
+	const std::string source(static_cast<char*>(buf), static_cast<size_t>(n));
+	delete[] static_cast<char*>(buf);
+	std::string patched;
+	std::string error;
+	if (!sprite_lua_patcher::patchSpriteShapes(source, _spriteId, _polygons, _circles, patched, &error)) {
+		setStatus(error.empty() ? tr("Failed to patch sprites.lua") : error);
+		return false;
+	}
+	LUA check;
+	if (!check.loadBuffer(patched, "sprites.lua")) {
+		setStatus(tr("Patched sprites.lua is not valid Lua"));
+		return false;
+	}
+	if (FS.writeSysFile(path, reinterpret_cast<const unsigned char*>(patched.c_str()), patched.size(), true) < 0) {
+		setStatus(tr("Failed to write sprites.lua"));
+		return false;
+	}
+	setStatus(tr("Wrote sprites.lua"));
+	return true;
+}
+
+int UIShapeEditor::hitCircle (const ImVec2& origin, float tilePixels, const ImVec2& mouse, bool& onRim) const
+{
+	onRim = false;
+	int best = -1;
+	float bestDist = VERTEX_HIT_RADIUS * 2.0f;
+	for (int c = 0; c < static_cast<int>(_circles.size()); ++c) {
+		const ImVec2 center = toScreen(origin, tilePixels, _circles[c].center.x, _circles[c].center.y);
+		const float dx = mouse.x - center.x;
+		const float dy = mouse.y - center.y;
+		const float dist = std::sqrt(dx * dx + dy * dy);
+		const float radiusPx = _circles[c].radius * tilePixels;
+		if (dist <= VERTEX_HIT_RADIUS && dist < bestDist) {
+			best = c;
+			bestDist = dist;
+			onRim = false;
+		} else if (std::fabs(dist - radiusPx) <= VERTEX_HIT_RADIUS && std::fabs(dist - radiusPx) < bestDist) {
+			best = c;
+			bestDist = std::fabs(dist - radiusPx);
+			onRim = true;
+		}
+	}
+	return best;
 }
 
 void UIShapeEditor::ensureActivePolygon ()
@@ -226,6 +303,41 @@ void UIShapeEditor::drawToolbar ()
 		applyToDef();
 	}
 	ImGui::SameLine();
+	if (ImGui::Button(tr("New circle").c_str())) {
+		pushShapeUndo();
+		SpriteCircle circle("");
+		circle.radius = 0.25f;
+		_circles.push_back(circle);
+		_activeCircle = static_cast<int>(_circles.size()) - 1;
+		_luaDirty = true;
+		_luaEdited = false;
+		applyToDef();
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(tr("Delete circle").c_str()) && _activeCircle >= 0
+			&& _activeCircle < static_cast<int>(_circles.size())) {
+		pushShapeUndo();
+		_circles.erase(_circles.begin() + _activeCircle);
+		_activeCircle = _circles.empty() ? -1 : std::min(_activeCircle, static_cast<int>(_circles.size()) - 1);
+		_luaDirty = true;
+		_luaEdited = false;
+		applyToDef();
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(tr("Undo shape").c_str()) && _hasShapeUndo) {
+		_polygons = _undoPolygons;
+		_circles = _undoCircles;
+		_hasShapeUndo = false;
+		_luaDirty = true;
+		_luaEdited = false;
+		applyToDef();
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(tr("Write sprites.lua").c_str()))
+		writeSpritesLua();
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("%s", tr("Patch this sprite's polygons/circles in the game data sprites.lua").c_str());
+	ImGui::SameLine();
 	if (ImGui::Button(tr("Fit").c_str())) {
 		_zoom = 4.0f;
 		_panX = _panY = 0.0f;
@@ -311,12 +423,12 @@ void UIShapeEditor::drawCanvas (IFrontend* frontend)
 	drawList->AddLine(ImVec2(tileMin.x, origin.y), ImVec2(tileMax.x, origin.y), IM_COL32(80, 160, 255, 70));
 	drawList->AddLine(ImVec2(origin.x, tileMin.y), ImVec2(origin.x, tileMax.y), IM_COL32(80, 160, 255, 70));
 
-	if (def) {
-		for (size_t c = 0; c < def->circles.size(); ++c) {
-			const SpriteCircle& circle = def->circles[c];
-			const ImVec2 center = toScreen(origin, tilePixels, circle.center.x, circle.center.y);
-			drawList->AddCircle(center, circle.radius * tilePixels, IM_COL32(80, 220, 220, 180), 32, 1.5f);
-		}
+	for (int c = 0; c < static_cast<int>(_circles.size()); ++c) {
+		const SpriteCircle& circle = _circles[c];
+		const ImVec2 center = toScreen(origin, tilePixels, circle.center.x, circle.center.y);
+		const ImU32 col = c == _activeCircle ? IM_COL32(80, 255, 255, 240) : IM_COL32(80, 220, 220, 180);
+		drawList->AddCircle(center, std::max(2.0f, circle.radius * tilePixels), col, 32, c == _activeCircle ? 2.0f : 1.5f);
+		drawList->AddCircleFilled(center, 4.0f, IM_COL32(40, 200, 200, 255));
 	}
 
 	const ImVec2 mouse = ImGui::GetIO().MousePos;
@@ -343,8 +455,16 @@ void UIShapeEditor::drawCanvas (IFrontend* frontend)
 
 		if (!space && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
 			_pressMouse = mouse;
+			bool onRim = false;
+			const int hitC = hitCircle(origin, tilePixels, mouse, onRim);
 			_pressOnVertex = _hoverPoly >= 0;
-			if (_pressOnVertex) {
+			if (hitC >= 0 && !_pressOnVertex) {
+				pushShapeUndo();
+				_dragCircle = hitC;
+				_dragCircleRadius = onRim;
+				_activeCircle = hitC;
+			} else if (_pressOnVertex) {
+				pushShapeUndo();
 				_dragPoly = _hoverPoly;
 				_dragVert = _hoverVert;
 				_activePoly = _hoverPoly;
@@ -362,7 +482,21 @@ void UIShapeEditor::drawCanvas (IFrontend* frontend)
 		}
 	}
 
-	if (_dragPoly >= 0 && _dragVert >= 0 && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+	if (_dragCircle >= 0 && _dragCircle < static_cast<int>(_circles.size()) && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+		float vx, vy;
+		toVertex(origin, tilePixels, mouse, vx, vy);
+		if (_dragCircleRadius) {
+			const float dx = vx - _circles[_dragCircle].center.x;
+			const float dy = vy - _circles[_dragCircle].center.y;
+			_circles[_dragCircle].radius = std::max(0.02f, std::sqrt(dx * dx + dy * dy));
+		} else {
+			_circles[_dragCircle].center.x = vx;
+			_circles[_dragCircle].center.y = vy;
+		}
+		_luaDirty = true;
+		_luaEdited = false;
+		applyToDef();
+	} else if (_dragPoly >= 0 && _dragVert >= 0 && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 		const float dx = mouse.x - _pressMouse.x;
 		const float dy = mouse.y - _pressMouse.y;
 		if (_dragging || dx * dx + dy * dy >= DRAG_THRESHOLD * DRAG_THRESHOLD) {
@@ -381,7 +515,8 @@ void UIShapeEditor::drawCanvas (IFrontend* frontend)
 		}
 	}
 	if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
-		if (!_dragging && !_pressOnVertex && hovered && !space) {
+		if (!_dragging && !_pressOnVertex && _dragCircle < 0 && hovered && !space) {
+			pushShapeUndo();
 			ensureActivePolygon();
 			float vx, vy;
 			toVertex(origin, tilePixels, mouse, vx, vy);
@@ -394,7 +529,8 @@ void UIShapeEditor::drawCanvas (IFrontend* frontend)
 			_luaEdited = false;
 			applyToDef();
 		}
-		_dragPoly = _dragVert = -1;
+		_dragPoly = _dragVert = _dragCircle = -1;
+		_dragCircleRadius = false;
 		_dragging = false;
 		_pressOnVertex = false;
 	}
@@ -460,7 +596,7 @@ void UIShapeEditor::drawLuaPanel ()
 	if (_luaDirty && !_luaEdited)
 		rebuildLua();
 
-	ImGui::TextUnformatted(tr("Lua polygon definition (paste into sprites.lua)").c_str());
+	ImGui::TextUnformatted(tr("Lua polygon / circle definition").c_str());
 	if (ImGui::Button(tr("Copy to clipboard").c_str())) {
 		ImGui::SetClipboardText(_luaText.c_str());
 		setStatus(tr("Copied to clipboard"));
@@ -476,19 +612,23 @@ void UIShapeEditor::drawLuaPanel ()
 	ImGui::SameLine();
 	if (ImGui::Button(tr("Apply Lua").c_str())) {
 		std::vector<SpritePolygon> parsed;
+		std::vector<SpriteCircle> parsedCircles;
 		std::string error;
-		if (sprite_polygon_lua::fromLua(_luaText, parsed, &error)) {
+		if (sprite_polygon_lua::fromLuaShapes(_luaText, parsed, parsedCircles, &error)) {
 			if (parsed.empty())
 				parsed.push_back(SpritePolygon(""));
+			pushShapeUndo();
 			_polygons = parsed;
+			_circles = parsedCircles;
 			_activePoly = 0;
+			_activeCircle = _circles.empty() ? -1 : 0;
 			std::snprintf(_userDataBuf, sizeof(_userDataBuf), "%s", _polygons[0].userData.c_str());
 			_luaEdited = false;
 			_luaDirty = true;
 			applyToDef();
 			setStatus(tr("Applied Lua definition"));
 		} else {
-			setStatus(error.empty() ? tr("Invalid Lua polygon definition") : error);
+			setStatus(error.empty() ? tr("Invalid Lua shape definition") : error);
 		}
 	}
 	if (!_status.empty() && ImGui::GetTime() < _statusUntil) {

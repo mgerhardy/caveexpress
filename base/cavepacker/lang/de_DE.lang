@@ -1,5 +1,7 @@
 Achievements|Achievements
+Alt+click: pick whatever is on top (any tab)|Alt+click: pick whatever is on top (any tab)
 Applied Lua definition|Applied Lua definition
+Applies to the next placed emitter|Applies to the next placed emitter
 Apply Lua|Apply Lua
 Are you sure?|Bist du sicher?
 Back|Zurück
@@ -7,6 +9,7 @@ background|Hintergrund
 Big|Groß
 Campaigns|Kampagnen
 Cancel|Abbruch
+Change the grid tile size to check alignment against the other texture atlas.|Change the grid tile size to check alignment against the other texture atlas.
 Clear|Clear
 Clicking the position will move the player there|Clicking the position will move the player there
 Close|Schließen
@@ -14,28 +17,40 @@ Continue|Fortfahren
 Controller trigger|Controller trigger
 Copied to clipboard|Copied to clipboard
 Copy to clipboard|Copy to clipboard
+Could not open sprites.lua|Could not open sprites.lua
+Could not read sprites.lua|Could not read sprites.lua
 Create server|Erstellen
 Ctrl+S save, Ctrl+Z/Y undo/redo|Strg+S speichern, Strg+Z/Y rückgängig/wiederholen
 Deadlock package|Deadlock package
 decoration|Dekoration
 Decrease map height|Map-Höhe verkleinern
 Decrease map width|Map-Breite verkleinern
+Delete circle|Delete circle
 Delete polygon|Delete polygon
 Delete: remove selection of the active tab|Entf: Auswahl der aktiven Registerkarte entfernen
 Delete vertex|Delete vertex
 Delivered package|Delivered package
 Description|Beschreibung
 Disconnect|Trennen
-Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save.|Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save.
+Docs (in the source tree)|Docs (in the source tree)
+Do not put tiles in this window — initMap is rebuilt from the canvas.|Do not put tiles in this window — initMap is rebuilt from the canvas.
+Editing the selected emitter|Editing the selected emitter
+Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.|Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.
 Editor|Editor
 emitter|Emitter
 Emitter amount|Emitter-Anzahl
 Emitter delay|Emitter-Verzögerung
 Entities|Objekte
 Entity|Objekt
+Failed to patch sprites.lua|Failed to patch sprites.lua
+Failed to write sprites.lua|Failed to write sprites.lua
 F fit view, G toggle grid, F1 help|F Ansicht einpassen, G Gitter, F1 Hilfe
 File|Datei
+Fill|Fill
+Fill: flood-fill background / same tile|Fill: flood-fill background / same tile
 Filter|Filter
+Find|Find
+Find next|Find next
 Fit|Einpassen
 foreground|Vordergrund
 Fullscreen|Vollbild
@@ -52,23 +67,29 @@ Homepage|Homepage
 Increase map height|Map-Höhe vergrößern
 Increase map width|Map-Breite vergrößern
 Input|Eingabe
-Invalid Lua polygon definition|Invalid Lua polygon definition
+Invalid Lua shape definition|Invalid Lua shape definition
+Keep handwritten initMap|Keep handwritten initMap
+Keep initMap|Keep initMap
 Later|Später
 Layers|Ebenen
 Leaderboard|Leaderboard
+Lines|Lines
 LMB: paint / place (also selects)|LMB: paint / place (also selects)
 LMB place / drag, RMB delete vertex, wheel zoom, MMB pan|LMB place / drag, RMB delete vertex, wheel zoom, MMB pan
-Lua polygon definition (paste into sprites.lua)|Lua polygon definition (paste into sprites.lua)
+Lua API|Lua API
+Lua polygon / circle definition|Lua polygon / circle definition
 Map|Map
 Map Editor|Map-Editor
 Maps|Maps
 Map Script|Map Script
+Map validation|Map validation
 MMB click: pick, MMB drag or Space+LMB: pan|MMB click: pick, MMB drag or Space+LMB: pan
 Move all packages onto their targets|Schiebe alle Pakete auf die Paletten
 Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
 New|Neu
+New circle|New circle
 New polygon|New polygon
 No controller found|Keinen Controller gefunden
 none|keine
@@ -77,15 +98,19 @@ Objectives|Ziele
 Off|Aus
 OK|OK
 On|An
+On save, copy initMap from the existing file instead of regenerating tiles.|On save, copy initMap from the existing file instead of regenerating tiles.
 Open|Öffnen
 Package|Paket
 Paste|Paste
+Patch this sprite's polygons/circles in the game data sprites.lua|Patch this sprite's polygons/circles in the game data sprites.lua
 Pick a sprite to edit its collision polygons.|Pick a sprite to edit its collision polygons.
 Place tile|Teil plazieren
 Players|Spieler
+Play from here|Play from here
 Please rate the app|Bitte bewerte die App
 Polygon|Polygon
 Polygon is concave — Box2D needs convex shapes (split it).|Polygon is concave — Box2D needs convex shapes (split it).
+Preview other atlas size|Preview other atlas size
 Properties|Eigenschaften
 Properties edit the selected tile, not the hovered one|Properties edit the selected tile, not the hovered one
 Quit|Beenden
@@ -94,15 +119,21 @@ Redo|Wiederholen
 Red packages are deadlocks - undo your step|Red packages are deadlocks - undo your step
 Refresh|Erneuern
 Remove tile|Teil entfernen
+Replace|Replace
+Replace all|Replace all
 Reset|Reset
 Reset game progress?|Resete den Fortschritt?
 Restart|Neustart
 Retry|Nochmal
 RMB: erase items of the active tab|RMT: Objekte der aktiven Registerkarte löschen
 Save|Speichern
+Save and start with the machine at the view center (god mode)|Save and start with the machine at the view center (god mode)
+Save anyway|Save anyway
 Save & Go|Testen
+Save to game data|Save to game data
 Script|Script
 Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test
+See docs/caveexpress/MAPS.md|See docs/caveexpress/MAPS.md
 Select a sprite|Select a sprite
 Select a tile on the map|Select a tile on the map
 Select game mode|Spielemodus aussuchen
@@ -110,7 +141,8 @@ Select tile|Teil selektieren
 Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / pick tile
 Settings|Einstellungen
 Shapes|Shapes
-Shapes: edit sprite collision polygons and copy Lua|Shapes: edit sprite collision polygons and copy Lua
+Shapes: edit polygons/circles and write sprites.lua|Shapes: edit polygons/circles and write sprites.lua
+Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge|Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge
 Show Grid|Gitter anzeigen
 Skip|Nächste
 Small|Klein
@@ -124,11 +156,13 @@ Start|Start
 Target|Palette
 Textures|Texturen
 The less moves you do the better|Je weniger Schritte, desto besser
+These checks would fail CampaignTest / play:|These checks would fail CampaignTest / play:
 Tiles|Kacheln
 Tiles / Entities tab: place and erase only that kind|Kacheln / Objekte: nur diese Art setzen und löschen
 Title|Titel
 Too many vertices for Box2D|Too many vertices for Box2D
 Undo|Rückgängig
+Undo shape|Undo shape
 Unsaved changes|Ungespeicherte Änderungen
 User data|User data
 Username|Username
@@ -137,5 +171,8 @@ Volume|Volume
 Waiting|Warten
 Wheel: zoom toward cursor|Mausrad: Zoom zum Cursor
 Width|Breite
+Write into the project maps folder|Write into the project maps folder
+Write sprites.lua|Write sprites.lua
+Wrote sprites.lua|Wrote sprites.lua
 You have unsaved changes. Continue?|Es gibt ungespeicherte Änderungen. Fortfahren?
 Your player|Dein Spieler

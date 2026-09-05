@@ -436,6 +436,16 @@ bool LUAMapContext::saveTiles(const FilePtr& file) const {
 bool LUAMapContext::save() const
 {
 	const std::string path = FS.getAbsoluteWritePath() + FS.getDataDir() + FS.getMapsDir() + _name + ".lua";
+	return writeMapFile(path);
+}
+
+bool LUAMapContext::saveToPath (const std::string& path) const
+{
+	return writeMapFile(path);
+}
+
+bool LUAMapContext::writeMapFile (const std::string& path) const
+{
 	SDL_RWops *rwops = FS.createRWops(path, "wb");
 	FilePtr file(new File(rwops, path));
 
@@ -454,6 +464,37 @@ bool LUAMapContext::save() const
 		// New / logic-free maps keep a trivial onMapLoaded hook for editor compatibility.
 		file->appendString("function onMapLoaded()\n");
 		file->appendString("end\n\n");
+	}
+
+	std::string keptInitMap;
+	if (_preserveInitMap) {
+		FilePtr existing = FS.getFile(FS.getMapsDir() + _name + ".lua");
+		if (existing && existing->exists()) {
+			void* buf = nullptr;
+			const int n = existing->read(&buf);
+			if (n > 0 && buf != nullptr) {
+				const std::string source(static_cast<char*>(buf), static_cast<size_t>(n));
+				delete[] static_cast<char*>(buf);
+				size_t start = 0;
+				size_t end = 0;
+				if (findTopLevelFunctionRange(source, "initMap", start, end))
+					keptInitMap = source.substr(start, end - start);
+			} else {
+				delete[] static_cast<char*>(buf);
+			}
+		}
+	}
+
+	if (!keptInitMap.empty()) {
+		file->appendString(keptInitMap.c_str());
+		if (keptInitMap.back() != '\n')
+			file->appendString("\n");
+		if (file->length() <= 0L) {
+			FS.deleteFile(path);
+			return false;
+		}
+		Log::info(LOG_UI, "wrote %s (kept handwritten initMap)", path.c_str());
+		return true;
 	}
 
 	file->appendString("function initMap()\n");

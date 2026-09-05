@@ -2,20 +2,38 @@ A banana will grant more strength for some time|A banana will grant more strengt
 Achievements|Achievements
 Activate the fish spawn|Activate the fish spawn
 Activate the pterodactyls spawn|Activate the pterodactyls spawn
+Add|Add
+Add a cave, shredder, package, and start if they are missing.|Add a cave, shredder, package, and start if they are missing.
+Add setting|Add setting
+Adds onMapLoaded that locks input and pins the machine.|Adds onMapLoaded that locks input and pins the machine.
+Adds onUpdate that ends the cutscene when skip is pressed.|Adds onUpdate that ends the cutscene when skip is pressed.
+Add to campaign|Add to campaign
+Alt+click: pick whatever is on top (any tab)|Alt+click: pick whatever is on top (any tab)
+Alt+drag water|Alt+drag water
 A mighty fish is after you|A mighty fish is after you
 An egg will make you invulnerable for some time|An egg will make you invulnerable for some time
 Angry dinosaur|Angry dinosaur
 Applied Lua definition|Applied Lua definition
+Applies to the next placed emitter|Applies to the next placed emitter
 Apply Lua|Apply Lua
 Are you sure?|Are you sure?
 Auto|Auto
 Back|Back
 background|background
 Big|Big
+Blow strength|Blow strength
 Campaign|Campaign
+Campaign id|Campaign id
 Campaigns|Campaigns
+Campaign text|Campaign text
 Cancel|Cancel
 Cancel pick|Cancel pick
+Cave|Cave
+Cave NPC (brush)|Cave NPC (brush)
+Caves covered|Caves covered
+Caves reachable|Caves reachable
+Change the grid tile size to check alignment against the other texture atlas.|Change the grid tile size to check alignment against the other texture atlas.
+Check layout|Check layout
 Clear|Clear
 Click a gate to link|Click a gate to link
 Close|Close
@@ -24,12 +42,20 @@ Collect packages by landing on them|Collect packages by landing on them
 Continue|Continue
 Controller trigger|Controller trigger
 Copied to clipboard|Copied to clipboard
+Copy|Copy
 Copy to clipboard|Copy to clipboard
+Could not open sprites.lua|Could not open sprites.lua
+Could not read sprites.lua|Could not read sprites.lua
+Create campaign|Create campaign
 Create server|Create server
 Ctrl+S save, Ctrl+Z/Y undo/redo|Ctrl+S save, Ctrl+Z/Y undo/redo
+Cutscene|Cutscene
 decoration|decoration
 Decrease map height|Decrease map height
 Decrease map width|Decrease map width
+Default spawn delay for newly placed caves|Default spawn delay for newly placed caves
+Del|Del
+Delete circle|Delete circle
 Delete polygon|Delete polygon
 Delete: remove selection of the active tab|Delete: remove selection of the active tab
 Delete vertex|Delete vertex
@@ -37,6 +63,8 @@ Deliver packages to the shredders|Deliver packages to the shredders
 Description|Description
 Desert|Desert
 Disconnect|Disconnect
+Docs (in the source tree)|Docs (in the source tree)
+Do not put tiles in this window — initMap is rebuilt from the canvas.|Do not put tiles in this window — initMap is rebuilt from the canvas.
 Drop during flight|Drop during flight
 Drop off at the shredder|Drop off at the shredder
 Dropping stones onto dinos stuns them|Dropping stones onto dinos stuns them
@@ -46,26 +74,43 @@ Drop stones onto the tree|Drop stones onto the tree
 Drop them by hitting SPACE bar|Drop them by hitting SPACE bar
 Drop them with the second finger|Drop them with the second finger
 Drop the stone to collect packages again|Drop the stone to collect packages again
-Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save.|Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save.
+Editing the selected emitter|Editing the selected emitter
+Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.|Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.
 Editor|Editor
 Egg|Egg
 emitter|emitter
+Emitter|Emitter
 Emitter amount|Emitter amount
 Emitter delay|Emitter delay
 Entities|Entities
 Entity|Entity
+Extra settings|Extra settings
+Faces right|Faces right
+Failed to patch sprites.lua|Failed to patch sprites.lua
+Failed to write sprites.lua|Failed to write sprites.lua
+Fail on side border|Fail on side border
 F fit view, G toggle grid, F1 help|F fit view, G toggle grid, F1 help
 File|File
+Fill|Fill
+Fill: flood-fill background / same tile|Fill: flood-fill background / same tile
 Filter|Filter
+Find|Find
+Find next|Find next
+First flying/fish spawn delay|First flying/fish spawn delay
 Fit|Fit
+Flyable reachable|Flyable reachable
 Flying dino when hit may drop an egg|Flying dino when hit may drop an egg
 foreground|foreground
+Friendly NPC spawn cap|Friendly NPC spawn cap
+Friendly NPCs to deliver|Friendly NPCs to deliver
 Fullscreen|Fullscreen
 Game|Game
 Game mode|Game mode
 Gather fruits for new life|Gather fruits for new life
 Generate a random map with the current seed.|Generate a random map with the current seed.
 Geyser|Geyser
+Geyser initial delay|Geyser initial delay
+Go|Go
 Google Play|Google Play
 Google Play sign-out|Google Play sign-out
 Graphics|Graphics
@@ -80,54 +125,82 @@ Hitting walls hard will inflict damage|Hitting walls hard will inflict damage
 Hold ms|Hold ms
 Homepage|Homepage
 Ice|Ice
+In campaigns|In campaigns
 Increase map height|Increase map height
 Increase map width|Increase map width
+initialspawntime in ms. 0 lets the engine pick a random delay.|initialspawntime in ms. 0 lets the engine pick a random delay.
 Input|Input
-Invalid Lua polygon definition|Invalid Lua polygon definition
+Insert cutscene lock|Insert cutscene lock
+Insert HUD message|Insert HUD message
+Insert skip-to-finish|Insert skip-to-finish
+Inserts map:message in the script (put it inside onMapLoaded / onUpdate).|Inserts map:message in the script (put it inside onMapLoaded / onUpdate).
+Insert spawn villager|Insert spawn villager
+Inserts spawnFriendlyNPC. Runtime only — not valid in initMap.|Inserts spawnFriendlyNPC. Runtime only — not valid in initMap.
+Intro window|Intro window
+Invalid Lua shape definition|Invalid Lua shape definition
 Invulnerable|Invulnerable
 Jungle|Jungle
 Just stay and watch what happens|Just stay and watch what happens
+Keep handwritten initMap|Keep handwritten initMap
+Keep initMap|Keep initMap
+Key|Key
 Later|Later
 Layers|Layers
+Layout|Layout
+Layout ok|Layout ok
 Leaderboard|Leaderboard
 Learn to use the stone|Learn to use the stone
+Lines|Lines
 Link id|Link id
 LMB: paint / place (also selects)|LMB: paint / place (also selects)
 LMB place / drag, RMB delete vertex, wheel zoom, MMB pan|LMB place / drag, RMB delete vertex, wheel zoom, MMB pan
-Lua polygon definition (paste into sprites.lua)|Lua polygon definition (paste into sprites.lua)
+Lua API|Lua API
+Lua polygon / circle definition|Lua polygon / circle definition
+Make playable|Make playable
 Map|Map
 Map Editor|Map Editor
 Map generator seed. 0 picks a new seed on Auto.|Map generator seed. 0 picks a new seed on Auto.
 Maps|Maps
 Map Script|Map Script
+Maps in campaign|Maps in campaign
+Map validation|Map validation
 MMB click: pick, MMB drag or Space+LMB: pan|MMB click: pick, MMB drag or Space+LMB: pan
 Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
 New|New
+New campaign file|New campaign file
+New circle|New circle
 New polygon|New polygon
 No controller found|No controller found
 none|none
 Normal|Normal
 Npc delay|Npc delay
+npcs: how many friendly villagers can be alive from caves|npcs: how many friendly villagers can be alive from caves
 Objectives|Objectives
 Off|Off
 OK|OK
 On|On
+On save, copy initMap from the existing file instead of regenerating tiles.|On save, copy initMap from the existing file instead of regenerating tiles.
 Open|Open
 Open amount|Open amount
 or A on your controller|or A on your controller
 Package|Package
 Paste|Paste
+Patched sprites.lua is not valid Lua|Patched sprites.lua is not valid Lua
+Patch this sprite's polygons/circles in the game data sprites.lua|Patch this sprite's polygons/circles in the game data sprites.lua
 Pick a sprite to edit its collision polygons.|Pick a sprite to edit its collision polygons.
 Pick gate target|Pick gate target
 Place tile|Place tile
+Play|Play
 Player|Player
 Players|Players
+Play from here|Play from here
 Please rate the app|Please rate the app
 Points|Points
 Polygon|Polygon
 Polygon is concave — Box2D needs convex shapes (split it).|Polygon is concave — Box2D needs convex shapes (split it).
+Preview other atlas size|Preview other atlas size
 Properties|Properties
 Properties edit the selected tile, not the hovered one|Properties edit the selected tile, not the hovered one
 Pterodactyls|Pterodactyls
@@ -138,7 +211,11 @@ Quit without saving|Quit without saving
 Redo|Redo
 Reference time in seconds|Reference time in seconds
 Refresh|Refresh
+Remap|Remap
+Remove|Remove
 Remove tile|Remove tile
+Replace|Replace
+Replace all|Replace all
 Required weight|Required weight
 Reset|Reset
 Reset game progress?|Reset game progress?
@@ -146,37 +223,56 @@ Restart|Restart
 Retry|Retry
 RMB: erase items of the active tab|RMB: erase items of the active tab
 Rock|Rock
+Rotate selected|Rotate selected
+Run MapValidator: reachability, covered caves, flyable cells|Run MapValidator: reachability, covered caves, flyable cells
 Save|Save
+Save and start at this pad (god mode)|Save and start at this pad (god mode)
+Save and start with the machine at the view center (god mode)|Save and start with the machine at the view center (god mode)
+Save anyway|Save anyway
 Save & Go|Save & Go
+Save to game data|Save to game data
 Script|Script
 Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test
 Seed|Seed
+See docs/caveexpress/MAPS.md|See docs/caveexpress/MAPS.md
 Select a sprite|Select a sprite
 Select a tile on the map|Select a tile on the map
 Select game mode|Select game mode
 Select tile|Select tile
 Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / pick tile
 Settings|Settings
+Settings without a dedicated control. Saved with the map.|Settings without a dedicated control. Saved with the map.
 Shapes|Shapes
-Shapes: edit sprite collision polygons and copy Lua|Shapes: edit sprite collision polygons and copy Lua
+Shapes: edit polygons/circles and write sprites.lua|Shapes: edit polygons/circles and write sprites.lua
+Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge|Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge
+Show all trigger links|Show all trigger links
 Show Grid|Show Grid
 Shredder|Shredder
 Small|Small
 solid|solid
 Sound|Sound
 Sound/Music|Sound/Music
-Space (on canvas): rotate brush|Space (on canvas): rotate brush
+Space (on canvas): rotate selected tile or brush|Space (on canvas): rotate selected tile or brush
+Spawn delay ms|Spawn delay ms
+Spawn NPC|Spawn NPC
 Sprite Shape Editor|Sprite Shape Editor
 Start|Start
+Start positions|Start positions
 Stone|Stone
+Targets reachable|Targets reachable
 Textures|Textures
 The amount of packages to deliver|The amount of packages to deliver
 The egg makes you invulnerable|The egg makes you invulnerable
 The geyser will do the work for you|The geyser will do the work for you
 Theme|Theme
+Themed tiles left unchanged|Themed tiles left unchanged
+Theme remap|Theme remap
+These checks would fail CampaignTest / play:|These checks would fail CampaignTest / play:
 This is the goal in every map|This is the goal in every map
+Tile angle|Tile angle
 Tiles|Tiles
 Tiles / Entities tab: place and erase only that kind|Tiles / Entities tab: place and erase only that kind
+Tiles that will be remapped|Tiles that will be remapped
 Time bar|Time bar
 Title|Title
 To dive across, fall fast into water flying to side|To dive across, fall fast into water flying to side
@@ -187,20 +283,34 @@ Transfer the woman to the desired cave|Transfer the woman to the desired cave
 Tree|Tree
 Trigger link|Trigger link
 Try to avoid crashes but still be fast|Try to avoid crashes but still be fast
+Tutorial|Tutorial
 Undo|Undo
+Undo shape|Undo shape
+Unpaired plates / gates|Unpaired plates / gates
 Unsaved changes|Unsaved changes
 User data|User data
 Username|Username
 Use the second finger to drop the package|Use the second finger to drop the package
 Use the second finger to drop the stone|Use the second finger to drop the stone
 Use the swing of the package|Use the swing of the package
+Value|Value
 Vertices|Vertices
 Volume|Volume
 Waiting|Waiting
 Watch the geyser|Watch the geyser
+Water change speed|Water change speed
+Water falling delay|Water falling delay
 Waterheight|Waterheight
+Water rising delay|Water rising delay
 Wheel: zoom toward cursor|Wheel: zoom toward cursor
 Width|Width
 Wind|Wind
+Wind column height in tiles (emitter setting size=)|Wind column height in tiles (emitter setting size=)
+Wind size|Wind size
+Write into the project maps folder|Write into the project maps folder
+Write sprites.lua|Write sprites.lua
+Wrote sprites.lua|Wrote sprites.lua
+X|X
+Y|Y
 You have unsaved changes. Continue?|You have unsaved changes. Continue?
 You won!|You won!

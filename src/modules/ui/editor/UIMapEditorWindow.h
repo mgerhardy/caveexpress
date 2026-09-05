@@ -17,6 +17,7 @@ protected:
 	mutable float _panX = 0.0f;
 	mutable float _panY = 0.0f;
 	mutable float _zoom = 1.0f;
+	mutable float _rightPanelWidth = 280.0f;
 	mutable int _tileRefWidth = 16;
 	mutable float _canvasMinX = 0.0f;
 	mutable float _canvasMinY = 0.0f;
@@ -27,13 +28,23 @@ protected:
 	mutable bool _showHelp = false;
 	mutable bool _showConfirm = false;
 	mutable bool _showScriptEditor = false;
+	mutable bool _showValidation = false;
+	mutable bool _validationSaveGameData = false;
+	mutable bool _regionDragging = false;
+	mutable bool _previewAltAtlas = false;
+	mutable int _nativeTileRefWidth = 16;
 	mutable UIShapeEditor _shapeEditor;
 	mutable std::string _confirmAction;
+	mutable std::vector<std::string> _validationIssues;
 	mutable char _tileFilter[128] = {};
 	mutable char _entityFilter[128] = {};
 	mutable char _mapFilter[128] = {};
 	mutable char _fileNameBuf[128] = {};
 	mutable char _mapTitleBuf[256] = {};
+	mutable char _scriptFind[128] = {};
+	mutable char _scriptReplace[128] = {};
+	mutable int _regionAnchorX = 0;
+	mutable int _regionAnchorY = 0;
 	mutable std::vector<SpriteDefPtr> _tilePalette;
 	mutable std::vector<const EntityType*> _entityPalette;
 	mutable const ThemeType* _paletteTheme = nullptr;
@@ -48,7 +59,10 @@ protected:
 	void drawMapsPanel () const;
 	void drawHelpPanel () const;
 	void drawConfirmModal () const;
+	void drawValidationModal () const;
 	void drawScriptEditor () const;
+	bool trySave (bool toGameData = false) const;
+	void applyScriptFind (bool replaceAll) const;
 	void drawCanvas () const;
 	void renderMapIntoCanvas (ImDrawList* drawList) const;
 	void renderSprite (ImDrawList* drawList, const MapEditorTileItem& item, float originX, float originY,
@@ -61,6 +75,8 @@ protected:
 
 	virtual void drawPropertiesPanel () const;
 	virtual void drawHelpExtras () const {}
+	virtual void drawScriptExtras () const {}
+	virtual bool handleCanvasOverlayInput (float /*tileW*/, float /*tileH*/) const { return false; }
 	virtual void renderCanvasOverlay (ImDrawList* drawList, float originX, float originY, float tileW, float tileH) const {}
 	virtual const Animation& getPlayerAnimation () const { return Animation::NONE; }
 

@@ -44,6 +44,9 @@ public:
 	 * @return @c false if there was an error
 	 */
 	virtual bool save () const = 0;
+	/** Write to an explicit filesystem path. Default is unsupported. */
+	virtual bool saveToPath (const std::string& /*path*/) const { return false; }
+	virtual void setPreserveInitMap (bool /*preserve*/) {}
 
 	// called whenever a new map was loaded
 	virtual void onMapLoaded () {}

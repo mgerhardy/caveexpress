@@ -3,6 +3,7 @@
 #include "common/String.h"
 #include "common/Math.h"
 #include "common/MapSettings.h"
+#include "common/ThemeType.h"
 #include "common/KeyValueParser.h"
 #include "common/vec2.h"
 #include "caveexpress/shared/CaveExpressMapContext.h"
@@ -13,10 +14,16 @@
 #include "caveexpress/shared/CaveTileDefinition.h"
 #include "caveexpress/shared/GateDefinition.h"
 #include "caveexpress/shared/PressurePlateDefinition.h"
+#include "caveexpress/shared/MapValidator.h"
 #include "caveexpress/server/map/RandomMapContext.h"
 #include "caveexpress/server/entities/EntityEmitter.h"
+#include "common/FileSystem.h"
+#include "common/File.h"
+#include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <map>
+#include <set>
 
 namespace caveexpress {
 
@@ -35,7 +42,7 @@ MapEditorLayer MapEditorDocument::getLayer (const SpriteType& type) const
 		return LAYER_BACKGROUND;
 	if (SpriteTypes::isBridge(type))
 		return LAYER_FOREGROUND;
-	if (SpriteTypes::isLiane(type))
+	if (SpriteTypes::isLiane(type) || SpriteTypes::isCaveSign(type) || type.isNone())
 		return LAYER_DECORATION;
 	return LAYER_SOLID;
 }
@@ -228,6 +235,28 @@ void MapEditorDocument::rotateBrush ()
 	IMapEditorDocument::rotateBrush();
 }
 
+void MapEditorDocument::rotateSelectionOrBrush ()
+{
+	if (_highlightItem != nullptr && _highlightItem->def && _highlightItem->entityType != nullptr
+			&& EntityTypes::hasDirection(*_highlightItem->entityType)
+			&& !SpriteTypes::isCave(_highlightItem->def->type)) {
+		KeyValueParser kv(_highlightItem->settings);
+		const bool right = !kv.getBool(EMITTER_RIGHT, true);
+		if (right)
+			kv.remove(EMITTER_RIGHT);
+		else
+			kv.set(EMITTER_RIGHT, false);
+		_highlightItem->settings = kv.str();
+		setActiveEntityRight(right);
+		const Animation& animation = right ? Animations::ANIMATION_IDLE_RIGHT : Animations::ANIMATION_IDLE_LEFT;
+		const SpriteDefPtr def = SpriteDefinition::get().getFromEntityType(*_highlightItem->entityType, animation);
+		if (def)
+			_highlightItem->def = def;
+		return;
+	}
+	IMapEditorDocument::rotateSelectionOrBrush();
+}
+
 bool MapEditorDocument::placeCave (const SpriteDefPtr& def, const EntityType* entityType, gridCoord gridX, gridCoord gridY,
 		MapEditorLayer layer, int delay, bool overwrite)
 {
@@ -267,12 +296,16 @@ bool MapEditorDocument::placeBrushItem (bool overwrite)
 		return true;
 	}
 	if (SpriteTypes::isCave(_activeSprite->type))
-		return placeCave(_activeSprite, &EntityType::NONE, _selectedGridX, _selectedGridY, _activeLayer, _caveDelay, overwrite);
+		return placeCave(_activeSprite, _caveNpcType, _selectedGridX, _selectedGridY, _activeLayer, _caveDelay, overwrite);
 
 	if (_activeEntityType != nullptr) {
-		std::string settings;
+		KeyValueParser settings("");
 		if (EntityTypes::hasDirection(*_activeEntityType) && !_activeEntityRight)
-			settings = EMITTER_RIGHT "=false";
+			settings.set(EMITTER_RIGHT, false);
+		if (EntityTypes::isNpcBlowing(*_activeEntityType)) {
+			settings.set(EMITTER_STRENGTH, 10.0f);
+			settings.set(EMITTER_WIND_MOD_SIZE, 2.0f);
+		}
 		MapEditorTileItem item;
 		item.def = _activeSprite;
 		item.entityType = _activeEntityType;
@@ -282,7 +315,7 @@ bool MapEditorDocument::placeBrushItem (bool overwrite)
 		item.gridY = _selectedGridY;
 		item.layer = LAYER_EMITTER;
 		item.angle = _activeAngle;
-		item.settings = settings;
+		item.settings = settings.str();
 		item.mapTile = false;
 		if (!canPlaceTileItem(item))
 			return false;
@@ -360,7 +393,8 @@ void MapEditorDocument::prepareContextForSaving (IMapContext& ctx)
 		if (item.gridX >= _mapWidth || item.gridY >= _mapHeight)
 			continue;
 		if (SpriteTypes::isCave(item.def->type)) {
-			caves.emplace_back(item.gridX, item.gridY, item.def, *item.entityType, item.delay);
+			const EntityType& npc = item.entityType != nullptr ? *item.entityType : EntityType::NONE;
+			caves.emplace_back(item.gridX, item.gridY, item.def, npc, item.delay);
 		} else if (SpriteTypes::isGate(item.def->type)) {
 			gates.emplace_back(item.gridX, item.gridY, item.def, item.linkId, item.openAmount);
 		} else if (SpriteTypes::isPressurePlate(item.def->type)) {
@@ -471,7 +505,8 @@ void MapEditorDocument::fillTilePalette (std::vector<SpriteDefPtr>& out) const
 		if (!sprite->theme.isNone() && sprite->theme != getTheme())
 			continue;
 		const SpriteType& type = sprite->type;
-		if (!SpriteTypes::isMapTile(type) && !SpriteTypes::isLiane(type))
+		if (!SpriteTypes::isMapTile(type) && !SpriteTypes::isLiane(type) && !SpriteTypes::isCaveSign(type)
+				&& sprite->id != "dust" && sprite->id != "waste")
 			continue;
 		if (SpriteTypes::isGeyser(type) && sprite->isStatic())
 			continue;
@@ -508,7 +543,7 @@ MapEditorTileItem* MapEditorDocument::findTileAt (gridCoord gridX, gridCoord gri
 	return nullptr;
 }
 
-MapEditorTileItem* MapEditorDocument::findLinkedPartner (const MapEditorTileItem& item)
+ const MapEditorTileItem* MapEditorDocument::findLinkedPartner (const MapEditorTileItem& item) const
 {
 	if (item.linkId.empty() || item.def == nullptr)
 		return nullptr;
@@ -516,7 +551,7 @@ MapEditorTileItem* MapEditorDocument::findLinkedPartner (const MapEditorTileItem
 	const bool wantPlate = SpriteTypes::isGate(item.def->type);
 	if (!wantGate && !wantPlate)
 		return nullptr;
-	for (MapEditorTileItem& other : _map) {
+	for (const MapEditorTileItem& other : _map) {
 		if (&other == &item || other.linkId != item.linkId || other.def == nullptr)
 			continue;
 		if (wantGate && SpriteTypes::isGate(other.def->type))
@@ -541,11 +576,12 @@ void MapEditorDocument::autoFill (const ThemeType& theme)
 	setFileName(oldName);
 }
 
-void MapEditorDocument::changeMapTheme (const ThemeType& toTheme)
+namespace {
+
+std::map<std::string, std::string> themeReplaceMap (const ThemeType& toTheme)
 {
-	std::map<std::string, std::string> replaces;
 	if (toTheme == ThemeTypes::JUNGLE) {
-		replaces = {
+		return {
 			{"tile-background-01", "tile-background-jungle-01"},
 			{"tile-background-02", "tile-background-jungle-02"},
 			{"tile-background-03", "tile-background-jungle-03"},
@@ -558,20 +594,52 @@ void MapEditorDocument::changeMapTheme (const ThemeType& toTheme)
 			{"tile-rock-02", "tile-rock-jungle-02"},
 			{"tile-rock-03", "tile-rock-jungle-03"},
 		};
-	} else if (toTheme == ThemeTypes::DESERT) {
-		replaces = {
+	}
+	if (toTheme == ThemeTypes::DESERT) {
+		return {
 			{"tile-background-ice-01", "tile-background-desert-01"},
 			{"tile-cave-ice-01", "tile-cave-desert-01"},
 			{"tile-ground-ice-01", "tile-ground-desert-01"},
 			{"tile-rock-ice-01", "tile-rock-desert-01"},
 		};
-	} else {
+	}
+	return {};
+}
+
+bool idLooksThemed (const std::string& id)
+{
+	return id.find("jungle") != std::string::npos || id.find("desert") != std::string::npos
+			|| id.find("-ice-") != std::string::npos || string::endsWith(id, "-ice");
+}
+
+}
+
+void MapEditorDocument::previewThemeRemap (const ThemeType& toTheme, int& wouldReplace, int& leftoverThemed) const
+{
+	wouldReplace = 0;
+	leftoverThemed = 0;
+	const auto replaces = themeReplaceMap(toTheme);
+	for (const MapEditorTileItem& tile : _map) {
+		if (!tile.def)
+			continue;
+		if (replaces.find(tile.def->id) != replaces.end())
+			++wouldReplace;
+		else if (idLooksThemed(tile.def->id) && tile.def->theme != toTheme && !tile.def->theme.isNone())
+			++leftoverThemed;
+	}
+}
+
+void MapEditorDocument::changeMapTheme (const ThemeType& toTheme)
+{
+	const auto replaces = themeReplaceMap(toTheme);
+	if (replaces.empty()) {
 		setTheme(toTheme);
 		return;
 	}
 	MapEditorUndo();
-	int replaced = 0;
 	for (MapEditorTileItem& tile : _map) {
+		if (!tile.def)
+			continue;
 		const auto i = replaces.find(tile.def->id);
 		if (i == replaces.end())
 			continue;
@@ -579,9 +647,376 @@ void MapEditorDocument::changeMapTheme (const ThemeType& toTheme)
 		if (!next)
 			continue;
 		tile.def = next;
-		++replaced;
 	}
 	setTheme(toTheme);
+}
+
+MapMetrics MapEditorDocument::evaluateLayout () const
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	for (const MapEditorTileItem& item : _map) {
+		if (!item.def)
+			continue;
+		if (item.gridX >= _mapWidth || item.gridY >= _mapHeight)
+			continue;
+		if (SpriteTypes::isCave(item.def->type)) {
+			const EntityType& npc = item.entityType != nullptr ? *item.entityType : EntityType::NONE;
+			caves.emplace_back(item.gridX, item.gridY, item.def, npc, item.delay);
+		} else if (item.entityType != nullptr) {
+			emitters.emplace_back(item.gridX, item.gridY, *item.entityType, item.amount, item.delay, item.settings);
+		} else {
+			tiles.emplace_back(item.gridX, item.gridY, item.def, item.angle);
+		}
+	}
+	return MapValidator().evaluate(_mapWidth, _mapHeight, tiles, caves, emitters, _startPositions);
+}
+
+void MapEditorDocument::collectGameValidationIssues (std::vector<std::string>& out) const
+{
+	const bool cutscene = string::toBool(getSetting(msn::CUTSCENE, msd::CUTSCENE));
+	if (!cutscene) {
+		for (const IMap::StartPosition& pos : _startPositions) {
+			const gridCoord x = string::toFloat(pos._x);
+			const gridCoord y = string::toFloat(pos._y);
+			for (const MapEditorTileItem& item : _map) {
+				if (!item.def || !SpriteTypes::isSolid(item.def->type))
+					continue;
+				if (IMapEditorDocument::isOverlapping(x, y, item)) {
+					out.push_back("Start position is blocked by solid tiles");
+					break;
+				}
+			}
+		}
+	}
+	const int packages = string::toInt(getSetting(msn::PACKAGE_TRANSFER_COUNT, msd::PACKAGE_TRANSFER_COUNT));
+	const int npcs = string::toInt(getSetting(msn::NPC_TRANSFER_COUNT, msd::NPC_TRANSFER_COUNT));
+	bool hasShredder = false;
+	bool hasCave = false;
+	bool hasPackage = false;
+	bool hasRockPackage = false;
+	bool hasIcePackage = false;
+	bool hasGeyser = false;
+	for (const MapEditorTileItem& item : _map) {
+		if (!item.def)
+			continue;
+		if (SpriteTypes::isPackageTarget(item.def->type))
+			hasShredder = true;
+		if (SpriteTypes::isCave(item.def->type))
+			hasCave = true;
+		if (SpriteTypes::isGeyser(item.def->type))
+			hasGeyser = true;
+		if (item.entityType != nullptr && EntityTypes::isPackage(*item.entityType)) {
+			hasPackage = true;
+			if (EntityTypes::isPackage(*item.entityType) && item.entityType == &EntityTypes::PACKAGE_ICE)
+				hasIcePackage = true;
+			else
+				hasRockPackage = true;
+		}
+	}
+	if (packages > 0 && !hasShredder)
+		out.push_back("packagetransfercount > 0 but no shredder / package target");
+	if (packages > 0 && !hasPackage && !hasCave)
+		out.push_back("packagetransfercount > 0 but no package emitter or cave");
+	int caveCount = 0;
+	for (const MapEditorTileItem& item : _map) {
+		if (item.def && SpriteTypes::isCave(item.def->type))
+			++caveCount;
+	}
+	if (npcs > 0 && caveCount < 2)
+		out.push_back("npctransfercount > 0 needs at least two caves (pickup and destination)");
+
+	const bool fish = string::toBool(getSetting(msn::FISH_NPC, msd::FISH_NPC));
+	if (fish && _waterHeight <= 0.0f)
+		out.push_back("fishnpc is on but waterheight is 0");
+	const float waterChange = string::toFloat(getSetting(msn::WATER_CHANGE, msd::WATER_CHANGE));
+	if (std::fabs(waterChange) > 0.0001f && _waterHeight <= 0.0f)
+		out.push_back("water is moving but waterheight is 0");
+	if (hasGeyser && string::toInt(getSetting(msn::GEYSER_INITIAL_DELAY_TIME, "3000")) < 0)
+		out.push_back("geyserinitialdelay is negative");
+	if (getTheme() == ThemeTypes::ICE && hasRockPackage && !hasIcePackage)
+		out.push_back("Ice map uses rock packages (item-package-ice slides on ice)");
+	if (getTheme() != ThemeTypes::ICE && hasIcePackage && !hasRockPackage)
+		out.push_back("Non-ice map uses ice packages");
+
+	if (!cutscene) {
+		const MapMetrics metrics = evaluateLayout();
+		if (!metrics.valid && !metrics.failureReason.empty())
+			out.push_back(std::string("Layout: ") + metrics.failureReason);
+	}
+}
+
+void MapEditorDocument::makePlayable ()
+{
+	MapEditorUndo();
+	bool hasCave = false;
+	bool hasShredder = false;
+	bool hasPackage = false;
+	for (const MapEditorTileItem& item : _map) {
+		if (!item.def)
+			continue;
+		if (SpriteTypes::isCave(item.def->type))
+			hasCave = true;
+		if (SpriteTypes::isPackageTarget(item.def->type))
+			hasShredder = true;
+		if (item.entityType != nullptr && EntityTypes::isPackage(*item.entityType))
+			hasPackage = true;
+	}
+
+	auto findSprite = [this] (bool (*pred) (const SpriteType&)) -> SpriteDefPtr {
+		for (SpriteDefMapConstIter i = SpriteDefinition::get().begin(); i != SpriteDefinition::get().end(); ++i) {
+			const SpriteDefPtr& sprite = i->second;
+			if (!pred(sprite->type))
+				continue;
+			if (!sprite->theme.isNone() && sprite->theme != getTheme())
+				continue;
+			if (SpriteTypes::isPackageTarget(sprite->type) && !sprite->isStatic())
+				continue;
+			return sprite;
+		}
+		return SpriteDefPtr();
+	};
+
+	auto findOpenCell = [this] (int& ox, int& oy) -> bool {
+		for (int y = 1; y < _mapHeight - 1; ++y) {
+			for (int x = 1; x < _mapWidth - 1; ++x) {
+				bool blocked = false;
+				bool background = false;
+				for (const MapEditorTileItem& item : _map) {
+					if (!item.def)
+						continue;
+					if (!IMapEditorDocument::isOverlapping(static_cast<gridCoord>(x), static_cast<gridCoord>(y), item))
+						continue;
+					if (SpriteTypes::isBackground(item.def->type))
+						background = true;
+					if (SpriteTypes::isSolid(item.def->type) || SpriteTypes::isCave(item.def->type)
+							|| SpriteTypes::isPackageTarget(item.def->type))
+						blocked = true;
+				}
+				if (background && !blocked) {
+					ox = x;
+					oy = y;
+					return true;
+				}
+			}
+		}
+		return false;
+	};
+
+	int x = 2;
+	int y = 2;
+	if (!hasCave) {
+		const SpriteDefPtr cave = findSprite(SpriteTypes::isCave);
+		if (cave && findOpenCell(x, y))
+			placeCave(cave, _caveNpcType, static_cast<gridCoord>(x), static_cast<gridCoord>(y),
+					getLayer(cave->type), _caveDelay, false);
+	}
+	if (!hasShredder) {
+		const SpriteDefPtr shredder = findSprite(SpriteTypes::isPackageTarget);
+		if (shredder && findOpenCell(x, y)) {
+			MapEditorTileItem item;
+			item.def = shredder;
+			item.gridX = static_cast<gridCoord>(x);
+			item.gridY = static_cast<gridCoord>(y);
+			item.layer = getLayer(shredder->type);
+			item.mapTile = true;
+			placeTileItem(item, false);
+		}
+	}
+	if (!hasPackage) {
+		const EntityType& pkg = getTheme() == ThemeTypes::ICE ? EntityTypes::PACKAGE_ICE : EntityTypes::PACKAGE_ROCK;
+		const SpriteDefPtr def = SpriteDefinition::get().getFromEntityType(pkg, Animations::ANIMATION_IDLE);
+		if (def && findOpenCell(x, y)) {
+			MapEditorTileItem item;
+			item.def = def;
+			item.entityType = &pkg;
+			item.amount = 1;
+			item.gridX = static_cast<gridCoord>(x);
+			item.gridY = static_cast<gridCoord>(y);
+			item.layer = LAYER_EMITTER;
+			item.mapTile = false;
+			placeTileItem(item, false);
+		}
+	}
+	if (_startPositions.empty() && findOpenCell(x, y))
+		setPlayerPosition(static_cast<gridCoord>(x), static_cast<gridCoord>(y));
+	if (string::toInt(getSetting(msn::PACKAGE_TRANSFER_COUNT, msd::PACKAGE_TRANSFER_COUNT)) <= 0)
+		setSetting(msn::PACKAGE_TRANSFER_COUNT, "1");
+}
+
+namespace {
+
+std::string readCampaignSource (const std::string& campaignFile)
+{
+	const std::string rel = FS.getCampaignsDir() + campaignFile;
+	FilePtr file = FS.getFile(rel);
+	if (!file || !file->exists())
+		return "";
+	void* buf = nullptr;
+	const int n = file->read(&buf);
+	if (n <= 0 || buf == nullptr) {
+		delete[] static_cast<char*>(buf);
+		return "";
+	}
+	std::string source(static_cast<char*>(buf), static_cast<size_t>(n));
+	delete[] static_cast<char*>(buf);
+	return source;
+}
+
+bool writeCampaignSource (const std::string& campaignFile, const std::string& source)
+{
+	const std::string rel = FS.getCampaignsDir() + campaignFile;
+	const std::string path = FS.getDataDir() + rel;
+	return FS.writeSysFile(path, reinterpret_cast<const unsigned char*>(source.c_str()), source.size(), true) >= 0;
+}
+
+void collectCampaignMapIds (const std::string& source, std::vector<std::string>& out)
+{
+	const char* keys[] = { "c:addMaps(\"", "c:addMap(\"" };
+	for (const char* key : keys) {
+		size_t pos = 0;
+		const size_t keyLen = std::strlen(key);
+		while ((pos = source.find(key, pos)) != std::string::npos) {
+			pos += keyLen;
+			const size_t end = source.find('"', pos);
+			if (end == std::string::npos)
+				break;
+			out.push_back(source.substr(pos, end - pos));
+			pos = end + 1;
+		}
+	}
+}
+
+std::string campaignAddLine (const std::string& mapId)
+{
+	return "c:addMaps(\"" + mapId + "\")";
+}
+
+}
+
+std::vector<std::string> MapEditorDocument::listCampaignFiles () const
+{
+	std::vector<std::string> out;
+	const DirectoryEntries entries = FS.listDirectory(FS.getCampaignsDir());
+	for (const std::string& e : entries) {
+		if (string::endsWith(e, ".lua"))
+			out.push_back(e);
+	}
+	std::sort(out.begin(), out.end());
+	return out;
+}
+
+std::vector<std::string> MapEditorDocument::listMapsInCampaign (const std::string& campaignFile) const
+{
+	std::vector<std::string> out;
+	collectCampaignMapIds(readCampaignSource(campaignFile), out);
+	return out;
+}
+
+std::vector<std::string> MapEditorDocument::campaignsContainingMap () const
+{
+	std::vector<std::string> out;
+	if (_fileName.empty())
+		return out;
+	for (const std::string& file : listCampaignFiles()) {
+		const std::vector<std::string> maps = listMapsInCampaign(file);
+		if (std::find(maps.begin(), maps.end(), _fileName) != maps.end())
+			out.push_back(file);
+	}
+	return out;
+}
+
+bool MapEditorDocument::addToCampaign (const std::string& campaignFile)
+{
+	if (_fileName.empty() || campaignFile.empty())
+		return false;
+	std::string source = readCampaignSource(campaignFile);
+	if (source.empty())
+		return false;
+	const std::string needle = campaignAddLine(_fileName);
+	if (source.find(needle) != std::string::npos)
+		return true;
+	const std::string line = needle + "\n";
+	const size_t unlock = source.find("c:unlock()");
+	if (unlock != std::string::npos)
+		source.insert(unlock, line);
+	else
+		source += line;
+	return writeCampaignSource(campaignFile, source);
+}
+
+bool MapEditorDocument::removeFromCampaign (const std::string& campaignFile)
+{
+	if (_fileName.empty() || campaignFile.empty())
+		return false;
+	std::string source = readCampaignSource(campaignFile);
+	if (source.empty())
+		return false;
+	const std::string needle = campaignAddLine(_fileName);
+	size_t pos = source.find(needle);
+	if (pos == std::string::npos) {
+		const std::string alt = "c:addMap(\"" + _fileName + "\")";
+		pos = source.find(alt);
+		if (pos == std::string::npos)
+			return true;
+		size_t end = pos + alt.size();
+		if (end < source.size() && source[end] == '\n')
+			++end;
+		source.erase(pos, end - pos);
+		return writeCampaignSource(campaignFile, source);
+	}
+	size_t end = pos + needle.size();
+	if (end < source.size() && source[end] == '\n')
+		++end;
+	source.erase(pos, end - pos);
+	return writeCampaignSource(campaignFile, source);
+}
+
+bool MapEditorDocument::createCampaign (const std::string& campaignFile, const std::string& campaignId, const std::string& text)
+{
+	if (campaignFile.empty() || campaignId.empty())
+		return false;
+	std::string name = campaignFile;
+	if (!string::endsWith(name, ".lua"))
+		name += ".lua";
+	if (campaignId.find('"') != std::string::npos || text.find('"') != std::string::npos)
+		return false;
+	const FilePtr existing = FS.getFile(FS.getCampaignsDir() + name);
+	if (existing && existing->exists())
+		return false;
+	std::string source = "-- create a new campaign\nlocal c = Campaign.new(\"";
+	source += campaignId;
+	source += "\")\nc:setSetting(\"icon\", \"icon-campaign-rock\")\n";
+	source += "c:setSetting(\"text\", \"";
+	source += text.empty() ? campaignId : text;
+	source += "\")\n";
+	if (!_fileName.empty()) {
+		source += campaignAddLine(_fileName);
+		source += "\n";
+	}
+	source += "c:unlock()\n";
+	return writeCampaignSource(name, source);
+}
+
+std::vector<UnpairedTrigger> MapEditorDocument::listUnpairedTriggers () const
+{
+	std::vector<UnpairedTrigger> out;
+	for (const MapEditorTileItem& item : _map) {
+		if (!item.def)
+			continue;
+		if (!SpriteTypes::isGate(item.def->type) && !SpriteTypes::isPressurePlate(item.def->type))
+			continue;
+		if (item.linkId.empty() || findLinkedPartner(item) == nullptr) {
+			UnpairedTrigger t;
+			t.kind = SpriteTypes::isGate(item.def->type) ? "gate" : "plate";
+			t.linkId = item.linkId;
+			t.x = item.gridX;
+			t.y = item.gridY;
+			out.push_back(t);
+		}
+	}
+	return out;
 }
 
 }

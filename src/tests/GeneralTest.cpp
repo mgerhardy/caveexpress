@@ -50,6 +50,13 @@ TEST_F(GeneralTest, testKeyValueParser)
 	EXPECT_TRUE(p.getBool("key3"));
 	ASSERT_EQ(1, p.getInt("key4"));
 	ASSERT_EQ(1.1f, p.getFloat("key5"));
+	p.set("right", false);
+	p.set("strength", 6.0f);
+	EXPECT_FALSE(p.getBool("right", true));
+	EXPECT_NEAR(6.0f, p.getFloat("strength"), 0.001f);
+	const std::string packed = p.str();
+	EXPECT_NE(std::string::npos, packed.find("right=false"));
+	EXPECT_NE(std::string::npos, packed.find("strength="));
 }
 
 TEST_F(GeneralTest, testMapManager)

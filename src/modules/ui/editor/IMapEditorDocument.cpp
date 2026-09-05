@@ -6,10 +6,14 @@
 #include "common/Commands.h"
 #include "common/MapSettings.h"
 #include "common/KeyValueParser.h"
+#include "common/FileSystem.h"
 #include "ui/UI.h"
 #include "ui/windows/UIWindow.h"
 #include <algorithm>
+#include <cmath>
+#include <cstddef>
 #include <memory>
+#include <queue>
 
 const int IMapEditorDocument::MIN_WIDTH = 6;
 const int IMapEditorDocument::MIN_HEIGHT = 4;
@@ -25,11 +29,12 @@ MapEditorStateChecker::MapEditorStateChecker (IMapEditorDocument* doc) :
 	_mapName = doc->_mapName;
 	_mapWidth = doc->_mapWidth;
 	_mapHeight = doc->_mapHeight;
+	_scriptLogic = doc->_scriptLogic;
 }
 
 MapEditorStateChecker::~MapEditorStateChecker ()
 {
-	const IMapEditorDocument::State before(_map, _settings, _startPositions, _mapName, _mapWidth, _mapHeight);
+	const IMapEditorDocument::State before(_map, _settings, _startPositions, _mapName, _mapWidth, _mapHeight, _scriptLogic);
 	if (!_doc->stateDiffersFrom(before))
 		return;
 	_doc->_undoStates.push_back(before);
@@ -49,12 +54,14 @@ IMapEditorDocument::~IMapEditorDocument ()
 
 IMapEditorDocument::State IMapEditorDocument::captureState () const
 {
-	return State(_map, _settings, _startPositions, _mapName, _mapWidth, _mapHeight);
+	return State(_map, _settings, _startPositions, _mapName, _mapWidth, _mapHeight, _scriptLogic);
 }
 
 bool IMapEditorDocument::stateDiffersFrom (const State& state) const
 {
 	if (state.mapWidth != _mapWidth || state.mapHeight != _mapHeight || state.mapName != _mapName)
+		return true;
+	if (state.scriptLogic != _scriptLogic)
 		return true;
 	if (state.map.size() != _map.size() || state.settingsMap.size() != _settings.size()
 			|| state.startPositions.size() != _startPositions.size())
@@ -138,6 +145,7 @@ void IMapEditorDocument::setState (const State& state)
 	_settings = state.settingsMap;
 	_startPositions = state.startPositions;
 	_mapName = state.mapName;
+	_scriptLogic = state.scriptLogic;
 	setMapDimensions(string::toInt(_settings[msn::WIDTH]), string::toInt(_settings[msn::HEIGHT]));
 	_highlightItem = nullptr;
 	onAfterStateRestored();
@@ -184,9 +192,35 @@ void IMapEditorDocument::setScriptLogic (const std::string& logic)
 	_scriptDirty = true;
 }
 
+void IMapEditorDocument::beginScriptUndo ()
+{
+	_scriptUndoBefore = captureState();
+	_scriptUndoPending = true;
+}
+
+void IMapEditorDocument::markScriptChanged ()
+{
+	_scriptDirty = true;
+	if (_scriptUndoPending) {
+		_undoStates.push_back(_scriptUndoBefore);
+		_redoStates.clear();
+		_scriptUndoPending = false;
+	}
+}
+
+void IMapEditorDocument::endScriptUndo ()
+{
+	_scriptUndoPending = false;
+}
+
 void IMapEditorDocument::setSetting (const std::string& key, const std::string& value)
 {
 	_settings[key] = value;
+}
+
+void IMapEditorDocument::removeSetting (const std::string& key)
+{
+	_settings.erase(key);
 }
 
 std::string IMapEditorDocument::getSetting (const std::string& key, const std::string& fallback) const
@@ -276,10 +310,27 @@ void IMapEditorDocument::rotateBrush ()
 	}
 }
 
+void IMapEditorDocument::rotateSelectionOrBrush ()
+{
+	if (_highlightItem != nullptr && _highlightItem->def && _highlightItem->def->rotateable > 0) {
+		_highlightItem->angle += _highlightItem->def->rotateable;
+		_highlightItem->angle %= 360;
+		_activeAngle = _highlightItem->angle;
+		return;
+	}
+	rotateBrush();
+}
+
 void IMapEditorDocument::setSelectedGrid (gridCoord x, gridCoord y)
 {
 	_selectedGridX = x;
 	_selectedGridY = y;
+}
+
+void IMapEditorDocument::focusCell (gridCoord x, gridCoord y)
+{
+	setSelectedGrid(x, y);
+	setHighlightFromSelection();
 }
 
 void IMapEditorDocument::setPlayerPosition (gridCoord gridX, gridCoord gridY)
@@ -290,6 +341,22 @@ void IMapEditorDocument::setPlayerPosition (gridCoord gridX, gridCoord gridY)
 			return;
 	}
 	_startPositions.push_back(p);
+}
+
+void IMapEditorDocument::removeStartPosition (size_t index)
+{
+	if (index >= _startPositions.size())
+		return;
+	MapEditorUndo();
+	_startPositions.erase(_startPositions.begin() + static_cast<std::ptrdiff_t>(index));
+}
+
+void IMapEditorDocument::setStartPositionAt (size_t index, gridCoord gridX, gridCoord gridY)
+{
+	if (index >= _startPositions.size())
+		return;
+	_startPositions[index]._x = string::toString(gridX);
+	_startPositions[index]._y = string::toString(gridY);
 }
 
 bool IMapEditorDocument::isOverlapping (gridCoord gridX, gridCoord gridY, const MapEditorTileItem& item) const
@@ -411,6 +478,10 @@ bool IMapEditorDocument::paintAtSelection (bool overwrite, bool recordUndo)
 		pickAtSelection();
 		return true;
 	}
+	if (_tool == Tool::Fill) {
+		floodFillAtSelection();
+		return true;
+	}
 	if (!_activeSprite)
 		return false;
 	if (recordUndo)
@@ -462,8 +533,65 @@ void IMapEditorDocument::pickAtSelection ()
 	_activeAngle = _highlightItem->angle;
 }
 
+void IMapEditorDocument::pickTopmostAtSelection ()
+{
+	MapEditorTileItem* found = nullptr;
+	for (int layer = LAYER_EMITTER; layer != LAYER_NONE; --layer) {
+		if (!isLayerActive(layer))
+			continue;
+		for (MapEditorTileItem& item : _map) {
+			if (item.layer != static_cast<MapEditorLayer>(layer))
+				continue;
+			if (!isOverlapping(_selectedGridX, _selectedGridY, item))
+				continue;
+			found = &item;
+			break;
+		}
+		if (found)
+			break;
+	}
+	_highlightItem = found;
+	if (found == nullptr)
+		return;
+	if (found->entityType != nullptr)
+		_editMode = EditMode::Entities;
+	else
+		_editMode = EditMode::Tiles;
+	if (found->entityType != nullptr) {
+		setEmitterEntity(*found->entityType);
+		_emitterAmount = found->amount;
+		_emitterDelay = found->delay;
+		_activeAngle = found->angle;
+		return;
+	}
+	setSprite(found->def);
+	_activeAngle = found->angle;
+}
+
 void IMapEditorDocument::deleteSelection ()
 {
+	if (_hasRegion) {
+		MapEditorUndo();
+		const int x0 = std::min(_regionX0, _regionX1);
+		const int y0 = std::min(_regionY0, _regionY1);
+		const int x1 = std::max(_regionX0, _regionX1);
+		const int y1 = std::max(_regionY0, _regionY1);
+		_highlightItem = nullptr;
+		for (auto i = _map.begin(); i != _map.end();) {
+			if (!matchesEditMode(*i)) {
+				++i;
+				continue;
+			}
+			const int ix = static_cast<int>(std::floor(i->gridX + EPSILON));
+			const int iy = static_cast<int>(std::floor(i->gridY + EPSILON));
+			if (ix < x0 || iy < y0 || ix > x1 || iy > y1) {
+				++i;
+				continue;
+			}
+			i = _map.erase(i);
+		}
+		return;
+	}
 	eraseAtSelection();
 }
 
@@ -557,12 +685,45 @@ void IMapEditorDocument::prepareContextForSaving (IMapContext& ctx)
 	ctx.setEmitterDefinitions(emitters);
 }
 
+std::string IMapEditorDocument::getUserMapsPath () const
+{
+	return FS.getAbsoluteWritePath() + FS.getDataDir() + FS.getMapsDir() + _fileName + ".lua";
+}
+
+std::string IMapEditorDocument::getGameDataMapsPath () const
+{
+	return FS.getDataDir() + FS.getMapsDir() + _fileName + ".lua";
+}
+
+void IMapEditorDocument::collectValidationIssues (std::vector<std::string>& out) const
+{
+	out.clear();
+	if (_fileName.empty())
+		out.push_back("File name is empty");
+	const bool cutscene = string::toBool(getSetting(msn::CUTSCENE, msd::CUTSCENE));
+	if (_startPositions.empty() && !cutscene)
+		out.push_back("No player start position");
+	for (const IMap::StartPosition& pos : _startPositions) {
+		const gridCoord x = string::toFloat(pos._x);
+		const gridCoord y = string::toFloat(pos._y);
+		if (x + 0.000001f < 0.0f || y + 0.000001f < 0.0f || x > _mapWidth + 0.000001f || y > _mapHeight + 0.000001f)
+			out.push_back("Start position is outside the map");
+	}
+	collectGameValidationIssues(out);
+}
+
+void IMapEditorDocument::collectGameValidationIssues (std::vector<std::string>& out) const
+{
+	(void)out;
+}
+
 bool IMapEditorDocument::save ()
 {
 	if (_fileName.empty())
 		return false;
 	std::unique_ptr<IMapContext> ctx(createContext(_fileName));
 	prepareContextForSaving(*ctx);
+	ctx->setPreserveInitMap(_preserveInitMap);
 	_lastMap->setValue(_fileName);
 	_mapManager.loadMaps();
 	_lastSave = _undoStates.size();
@@ -570,10 +731,37 @@ bool IMapEditorDocument::save ()
 	return ctx->save();
 }
 
+bool IMapEditorDocument::saveToGameData ()
+{
+	if (_fileName.empty())
+		return false;
+	std::unique_ptr<IMapContext> ctx(createContext(_fileName));
+	prepareContextForSaving(*ctx);
+	ctx->setPreserveInitMap(_preserveInitMap);
+	if (!ctx->saveToPath(getGameDataMapsPath()))
+		return false;
+	_lastMap->setValue(_fileName);
+	_mapManager.loadMaps();
+	_lastSave = _undoStates.size();
+	_scriptDirty = false;
+	return true;
+}
+
 bool IMapEditorDocument::saveAndPlay ()
 {
 	if (!save())
 		return false;
+	Commands.executeCommandLine(CMD_MAP_START " " + _fileName);
+	return true;
+}
+
+bool IMapEditorDocument::saveAndPlayFrom (gridCoord gridX, gridCoord gridY)
+{
+	if (!save())
+		return false;
+	Config.getConfigVar("editor-play-x")->setValue(string::toString(gridX));
+	Config.getConfigVar("editor-play-y")->setValue(string::toString(gridY));
+	Config.getConfigVar("editor-play-god")->setValue("true");
 	Commands.executeCommandLine(CMD_MAP_START " " + _fileName);
 	return true;
 }
@@ -642,4 +830,152 @@ void IMapEditorDocument::loadLast ()
 {
 	if (_lastMap && !_lastMap->getValue().empty())
 		load(_lastMap->getValue());
+}
+
+void IMapEditorDocument::setRegion (int x0, int y0, int x1, int y1)
+{
+	_regionX0 = x0;
+	_regionY0 = y0;
+	_regionX1 = x1;
+	_regionY1 = y1;
+	_hasRegion = true;
+}
+
+void IMapEditorDocument::getRegion (int& x0, int& y0, int& x1, int& y1) const
+{
+	x0 = std::min(_regionX0, _regionX1);
+	y0 = std::min(_regionY0, _regionY1);
+	x1 = std::max(_regionX0, _regionX1);
+	y1 = std::max(_regionY0, _regionY1);
+}
+
+void IMapEditorDocument::copyRegion ()
+{
+	_clipboard.clear();
+	if (!_hasRegion)
+		return;
+	int x0, y0, x1, y1;
+	getRegion(x0, y0, x1, y1);
+	for (const MapEditorTileItem& item : _map) {
+		if (!matchesEditMode(item))
+			continue;
+		const int ix = static_cast<int>(std::floor(item.gridX + EPSILON));
+		const int iy = static_cast<int>(std::floor(item.gridY + EPSILON));
+		if (ix < x0 || iy < y0 || ix > x1 || iy > y1)
+			continue;
+		MapEditorTileItem copy = item;
+		copy.gridX -= static_cast<gridCoord>(x0);
+		copy.gridY -= static_cast<gridCoord>(y0);
+		_clipboard.push_back(copy);
+	}
+}
+
+void IMapEditorDocument::pasteAtSelection ()
+{
+	if (_clipboard.empty())
+		return;
+	MapEditorUndo();
+	const gridCoord ox = _hasRegion ? static_cast<gridCoord>(std::min(_regionX0, _regionX1)) : _selectedGridX;
+	const gridCoord oy = _hasRegion ? static_cast<gridCoord>(std::min(_regionY0, _regionY1)) : _selectedGridY;
+	for (const MapEditorTileItem& clip : _clipboard) {
+		MapEditorTileItem item = clip;
+		item.gridX += ox;
+		item.gridY += oy;
+		placeTileItem(item, true);
+	}
+	setHighlightFromSelection();
+}
+
+void IMapEditorDocument::nudgeSelection (int dx, int dy)
+{
+	if (dx == 0 && dy == 0)
+		return;
+	MapEditorUndo();
+	if (_hasRegion) {
+		int x0, y0, x1, y1;
+		getRegion(x0, y0, x1, y1);
+		for (MapEditorTileItem& item : _map) {
+			if (!matchesEditMode(item))
+				continue;
+			const int ix = static_cast<int>(std::floor(item.gridX + EPSILON));
+			const int iy = static_cast<int>(std::floor(item.gridY + EPSILON));
+			if (ix < x0 || iy < y0 || ix > x1 || iy > y1)
+				continue;
+			item.gridX += static_cast<gridCoord>(dx);
+			item.gridY += static_cast<gridCoord>(dy);
+		}
+		_regionX0 += dx;
+		_regionY0 += dy;
+		_regionX1 += dx;
+		_regionY1 += dy;
+		return;
+	}
+	if (_highlightItem == nullptr)
+		return;
+	_highlightItem->gridX += static_cast<gridCoord>(dx);
+	_highlightItem->gridY += static_cast<gridCoord>(dy);
+}
+
+void IMapEditorDocument::floodFillAtSelection ()
+{
+	if (!_activeSprite || _editMode == EditMode::Entities)
+		return;
+	const int sx = static_cast<int>(std::floor(_selectedGridX + EPSILON));
+	const int sy = static_cast<int>(std::floor(_selectedGridY + EPSILON));
+	if (sx < 0 || sy < 0 || sx >= _mapWidth || sy >= _mapHeight)
+		return;
+
+	auto backgroundAt = [this] (int x, int y) -> const MapEditorTileItem* {
+		for (const MapEditorTileItem& item : _map) {
+			if (item.layer != _activeLayer)
+				continue;
+			if (!isOverlapping(static_cast<gridCoord>(x), static_cast<gridCoord>(y), item))
+				continue;
+			return &item;
+		}
+		return nullptr;
+	};
+
+	const MapEditorTileItem* seed = backgroundAt(sx, sy);
+	const SpriteDef* seedDef = seed ? seed->def.get() : nullptr;
+	if (seedDef == _activeSprite.get())
+		return;
+
+	MapEditorUndo();
+	std::queue<std::pair<int, int>> q;
+	std::vector<char> seen(static_cast<size_t>(_mapWidth * _mapHeight), 0);
+	auto enqueue = [&] (int x, int y) {
+		if (x < 0 || y < 0 || x >= _mapWidth || y >= _mapHeight)
+			return;
+		const size_t idx = static_cast<size_t>(y * _mapWidth + x);
+		if (seen[idx])
+			return;
+		seen[idx] = 1;
+		q.push({x, y});
+	};
+	enqueue(sx, sy);
+	int placed = 0;
+	while (!q.empty()) {
+		const int x = q.front().first;
+		const int y = q.front().second;
+		q.pop();
+		const MapEditorTileItem* hit = backgroundAt(x, y);
+		const SpriteDef* hitDef = hit ? hit->def.get() : nullptr;
+		if (hitDef != seedDef)
+			continue;
+		MapEditorTileItem item;
+		item.def = _activeSprite;
+		item.gridX = static_cast<gridCoord>(x);
+		item.gridY = static_cast<gridCoord>(y);
+		item.layer = _activeLayer;
+		item.angle = _activeAngle;
+		item.mapTile = isMapTileType(_activeSprite->type);
+		if (placeTileItem(item, true))
+			++placed;
+		enqueue(x + 1, y);
+		enqueue(x - 1, y);
+		enqueue(x, y + 1);
+		enqueue(x, y - 1);
+	}
+	setHighlightFromSelection();
 }

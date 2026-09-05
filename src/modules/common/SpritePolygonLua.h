@@ -67,6 +67,42 @@ inline std::string toLua (const std::vector<SpritePolygon>& polygons)
 	return out;
 }
 
+/**
+ * Emit a sprites.lua circles table. Center/radius storage is tile units; Lua uses * 100.
+ */
+inline std::string toLuaCircles (const std::vector<SpriteCircle>& circles)
+{
+	std::string out;
+	out += "\t\tcircles = {\n";
+	for (size_t c = 0; c < circles.size(); ++c) {
+		const SpriteCircle& circle = circles[c];
+		out += "\t\t\t{ \"";
+		out += escapeString(circle.userData);
+		out += "\", ";
+		out += formatNumber(circle.center.x * 100.0f);
+		out += ", ";
+		out += formatNumber(circle.center.y * 100.0f);
+		out += ", ";
+		out += formatNumber(circle.radius * 100.0f);
+		out += " },\n";
+	}
+	out += "\t\t},";
+	return out;
+}
+
+inline std::string toLuaShapes (const std::vector<SpritePolygon>& polygons, const std::vector<SpriteCircle>& circles)
+{
+	std::string out;
+	if (!polygons.empty()) {
+		out += toLua(polygons);
+		if (!circles.empty())
+			out += "\n";
+	}
+	if (!circles.empty())
+		out += toLuaCircles(circles);
+	return out;
+}
+
 enum TokenType {
 	TOKEN_END,
 	TOKEN_LBRACE,
@@ -309,6 +345,115 @@ inline bool fromLua (const std::string& lua, std::vector<SpritePolygon>& out, st
 		return false;
 	}
 	out.push_back(poly);
+	return true;
+}
+
+inline bool parseCircleBody (Lexer& lex, SpriteCircle& circle, std::string* error)
+{
+	std::vector<float> nums;
+	bool first = true;
+	for (;;) {
+		const Token t = lex.peek();
+		if (t.type == TOKEN_RBRACE || t.type == TOKEN_END)
+			break;
+		if (t.type == TOKEN_COMMA) {
+			lex.next();
+			continue;
+		}
+		if (first && t.type == TOKEN_STRING) {
+			lex.next();
+			circle.userData = t.text;
+			first = false;
+			continue;
+		}
+		if (t.type != TOKEN_NUMBER) {
+			if (error)
+				*error = "expected number or '}' in circle";
+			return false;
+		}
+		lex.next();
+		nums.push_back(t.number);
+		first = false;
+	}
+	if (nums.size() != 3) {
+		if (error)
+			*error = "circle needs x, y, radius";
+		return false;
+	}
+	circle.center = SpriteVertex(nums[0] / 100.0f, nums[1] / 100.0f);
+	circle.radius = nums[2] / 100.0f;
+	return true;
+}
+
+inline bool fromLuaCircles (const std::string& lua, std::vector<SpriteCircle>& out, std::string* error = nullptr)
+{
+	out.clear();
+	Lexer lex(lua);
+	Token t = lex.next();
+	if (t.type == TOKEN_IDENT && t.text == "circles") {
+		t = lex.next();
+		if (t.type != TOKEN_EQUALS) {
+			if (error)
+				*error = "expected '=' after circles";
+			return false;
+		}
+		t = lex.next();
+	}
+	if (t.type != TOKEN_LBRACE) {
+		if (error)
+			*error = "expected '{' at start of circle definition";
+		return false;
+	}
+
+	while (lex.peek().type != TOKEN_RBRACE && lex.peek().type != TOKEN_END) {
+		if (lex.peek().type == TOKEN_COMMA) {
+			lex.next();
+			continue;
+		}
+		if (lex.peek().type != TOKEN_LBRACE) {
+			if (error)
+				*error = "expected '{' for a circle";
+			return false;
+		}
+		lex.next();
+		SpriteCircle circle("");
+		if (!parseCircleBody(lex, circle, error))
+			return false;
+		const Token close = lex.next();
+		if (close.type != TOKEN_RBRACE) {
+			if (error)
+				*error = "expected '}' at end of circle";
+			return false;
+		}
+		out.push_back(circle);
+	}
+	const Token close = lex.next();
+	if (close.type != TOKEN_RBRACE) {
+		if (error)
+			*error = "expected '}' at end of circles table";
+		return false;
+	}
+	return true;
+}
+
+inline bool fromLuaShapes (const std::string& lua, std::vector<SpritePolygon>& polygons,
+		std::vector<SpriteCircle>& circles, std::string* error = nullptr)
+{
+	polygons.clear();
+	circles.clear();
+	const size_t polyPos = lua.find("polygons");
+	const size_t circlePos = lua.find("circles");
+	if (polyPos == std::string::npos && circlePos == std::string::npos)
+		return fromLua(lua, polygons, error);
+
+	if (polyPos != std::string::npos) {
+		if (!fromLua(lua.substr(polyPos), polygons, error))
+			return false;
+	}
+	if (circlePos != std::string::npos) {
+		if (!fromLuaCircles(lua.substr(circlePos), circles, error))
+			return false;
+	}
 	return true;
 }
 

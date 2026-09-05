@@ -16,7 +16,7 @@ Unsaved changes are confirmed before leaving the editor, starting a new map, or 
 
 | Area | Contents |
 | --- | --- |
-| Top toolbar | New, Save, Save & Go, Undo, Redo, Fit, Script, Shapes, Help, and the Place / Remove / Select tools |
+| Top toolbar | New, Save, Save to game data, Save & Go, Play from here, Undo, Redo, Fit, Script, Shapes, Help, and the Place / Remove / Select / Fill tools |
 | Left tabs | **Tiles**, **Entities**, **Maps** |
 | Center | Map canvas |
 | Right tabs | **Properties** (map settings and the selected item) and **Layers** |
@@ -47,6 +47,7 @@ The toolbar radio buttons choose the left-mouse action:
 | **Place tile** | Paint the active brush (tile or entity) and select that cell |
 | **Remove tile** | Erase items that belong to the active tab |
 | **Select tile** | Pick the item under the cursor into the brush (active tab only) |
+| **Fill** | Flood-fill empty cells or matching tiles of the active layer with the brush |
 
 Right mouse button always erases, regardless of the selected tool.
 
@@ -55,9 +56,10 @@ Right mouse button always erases, regardless of the selected tool.
 | Input | Action |
 | --- | --- |
 | Left click / drag | Paint or place. Also selects the cell so Properties show that item. |
-| Shift + left click | Pick the item under the cursor into the brush (same as Select tool). |
+| Shift + left click / drag | Rectangle select. Ctrl+C / Ctrl+V copies and pastes the active tab. Arrow keys nudge. |
+| Alt + left or middle click | Pick whatever is on top (any tab). |
 | Right click / drag | Erase. On the **Tiles** tab this removes tiles only (background, rock, caves, gates, ...). On the **Entities** tab this removes entities only (packages, stones, NPCs, player start, ...). Holding the button does not punch through to the other kind. |
-| Middle click | Pick the item under the cursor. |
+| Middle click | Pick the item under the cursor (active tab). |
 | Middle drag | Pan the view. |
 | Space + left drag | Pan the view. |
 | Mouse wheel | Zoom toward the cursor. |
@@ -76,8 +78,10 @@ These shortcuts are ignored while you are typing in a text field, except **Ctrl+
 | **F** | Fit the map in the canvas |
 | **G** | Toggle the grid |
 | **F1** | Toggle the in-editor help panel |
-| **Space** (cursor on canvas) | Rotate the brush. Directional entities flip left/right. Rotatable tiles step by their sprite rotation increment (often 90 degrees). |
-| **Delete** / **Backspace** | Remove the selected item of the active tab |
+| **Space** (cursor on canvas) | Rotate the **selected** tile if it is rotatable, or flip a selected directional NPC. Otherwise rotates the brush. Angle / facing is shown on the ghost and in the toolbar. |
+| **Ctrl+C** / **Ctrl+V** | Copy / paste the rectangle selection |
+| **Arrow keys** | Nudge the selection (or the highlighted tile) |
+| **Delete** / **Backspace** | Remove the selected item or the rectangle of the active tab |
 | **Esc** | Close Script, Shapes, Help, or the unsaved-changes dialog; otherwise leave the editor |
 
 ## Tiles tab
@@ -131,11 +135,13 @@ Click an entity type, then left-click the map to place it. Right-click removes o
 | `npc-walking` / `npc-blowing` / `npc-mammut` | Ground dinosaurs. Space flips facing. |
 | `tree` | Drop a stone on it for fruit. |
 
-**Emitter amount** and **Emitter delay** (Properties) apply to the next placed emitter: how many entities spawn and the wait in milliseconds before spawning.
+**Emitter amount** and **Emitter delay** (Properties) apply to the next placed emitter, or to the selected emitter if one is highlighted. Directional NPCs have **Faces right**. Blowing dinosaurs also have **Blow strength** and **Wind size** (`strength=` / `size=` in Lua). Selected emitters can be nudged with sub-tile **X** / **Y**.
+
+Cave signs, `dust`, `waste`, and `idea` are on the Tiles tab (decoration / cutscene props).
 
 Fish and pterodactyls are not placed as entities. Enable them with the **Activate the fish spawn** and **Activate the pterodactyls spawn** checkboxes so they appear according to map water and flying space.
 
-Friendly cave NPCs (`npc-man`, `npc-woman`, `npc-grandpa`) are assigned on cave tiles in the map file, not from this list. Taxi/rescue maps also need `npctransfercount` in the Lua settings (see [Map scripts](#map-scripts-and-lua)).
+Friendly cave NPCs (`npc-man`, `npc-woman`, `npc-grandpa`) are assigned on a selected cave tile (Properties: **Spawn NPC** and **Spawn delay ms**). The brush default is **Cave NPC (brush)** / **Npc delay**. Taxi/rescue maps also need **Friendly NPCs to deliver** (`npctransfercount`).
 
 ## Properties
 
@@ -155,11 +161,23 @@ Always bound to the last clicked cell, not the hover ghost.
 | Wind | Horizontal force. Use with care; some wind maps also set `sideborderfail`. |
 | Waterheight | Water surface from the bottom of the map, in tiles. Drawn as a blue overlay. `0` means no water. |
 | The amount of packages to deliver | Packages that must reach a shredder to win. |
+| Friendly NPCs to deliver | `npctransfercount` for taxi/rescue maps (needs two caves). |
+| Friendly NPC spawn cap | `npcs` — how many villagers caves may keep alive. |
+| First flying/fish spawn delay | `initialspawntime` in ms (`0` = engine random). |
+| Geyser initial delay | `geyserinitialdelay` in ms (all geysers). |
 | Activate the pterodactyls spawn | Random flying enemy. |
 | Activate the fish spawn | Random fish in water. |
-| Npc delay | Default cave spawn delay in milliseconds. |
-| Theme | Switches the palette and remaps some existing tiles when changing theme. |
-| Seed + Auto | Generate a random map for the current theme. Seed `0` picks a new seed each time. |
+| Fail on side border | `sideborderfail`. |
+| Tutorial / Cutscene | `tutorial` and `cutscene` (cutscenes skip the star screen). |
+| Intro window | Built-in help window (`intropackage`, `introflying`, …). Empty skips it. |
+| Water change / rising / falling delay | Rising or falling water. |
+| Npc delay / Cave NPC (brush) | Defaults for newly placed caves. |
+| Theme | Switches the palette. A confirm dialog appears if the remap would leave themed tiles unchanged. |
+| Seed + Auto + Make playable | Generate a random map. **Make playable** adds a cave, shredder, package, and start if missing. |
+| Add to campaign | Append `c:addMaps("file")` to a campaign Lua file. Lists campaigns that already contain the map; **Remove** drops the line. **Create campaign** writes a new `campaigns/*.lua`. |
+| Check layout | Runs the same reachability checks as `MapValidator` (covered caves, unreachable caves/targets). |
+| Extra settings | Raw key/value pairs that have no dedicated control (still written on save). |
+| Keep handwritten initMap | On save, copy `initMap` from the existing file instead of regenerating tiles. |
 
 ### Gates and pressure plates
 
@@ -172,6 +190,10 @@ Select a plate or gate (Tiles tab). Properties then show **Trigger link**:
 
 A yellow line is drawn between linked partners.
 
+Start positions are listed under Properties (edit X/Y, **Play** from that pad, or delete). Place extra starts with the **player** entity.
+
+Alt+drag the blue water line on the canvas to change water height. Wind draws arrows along the top of the map. **Show all trigger links** draws every plate–gate pair; unpaired items have **Go**.
+
 ## Maps tab
 
 Lists installed and previously saved maps. Click a name to load it (you are asked to confirm if the current map is dirty). The filter box searches by filename.
@@ -180,26 +202,24 @@ Lists installed and previously saved maps. Click a name to load it (you are aske
 
 | Action | Result |
 | --- | --- |
-| **Save** / **Ctrl+S** | Writes the Lua map file and reloads the map list. |
-| **Save & Go** | Saves and starts the map immediately. |
+| **Save** / **Ctrl+S** | Writes the Lua map file to the user data directory and reloads the map list. Validation warnings can be ignored with Save anyway. |
+| **Save to game data** | Writes `base/caveexpress/maps/<file>.lua` in the project / install data dir. |
+| **Save & Go** | Saves to user data and starts the map immediately. |
+| **Play from here** | Saves and starts with the machine at the view center (god mode for 10 minutes). |
 
 Maps are written to the user data directory:
 
 `~/.local/share/caveexpress/base/caveexpress/maps/<file>.lua`
 
-(on other platforms, the equivalent SDL preference path). Built-in maps live in `base/caveexpress/maps/` next to the game data.
+(on other platforms, the equivalent SDL preference path). Built-in maps live in `base/caveexpress/maps/` next to the game data. Use **Save to game data** to write there.
 
 After saving, the map appears on the **Maps** tab and can be started with `map <file>` from the console.
 
-If you want the map in a campaign, add its filename (without `.lua`) to a campaign script in `base/caveexpress/campaigns/`, for example:
-
-```lua
-c:addMaps("mymap")
-```
+**Add to campaign** on Properties appends `c:addMaps("mymap")` to the chosen `base/caveexpress/campaigns/*.lua` file. **Create campaign** writes a new file with `icon-campaign-rock` and the current map already listed. Campaign icon, achievement, and map order stay in that Lua file.
 
 ## Sprite shape editor
 
-**Shapes** opens a tool for editing the collision polygons defined in `sprites.lua`. The first version copies Lua you paste back into that file; it does not rewrite `sprites.lua` on disk. How those polygons, layers, and atlas sizes relate to drawing is in [SPRITES.md](SPRITES.md).
+**Shapes** opens a tool for editing collision polygons and circles defined in `sprites.lua`. **Write sprites.lua** patches that sprite's `polygons` / `circles` tables in the game-data file. Copy Lua remains available. How those shapes, layers, and atlas sizes relate to drawing is in [SPRITES.md](SPRITES.md).
 
 1. Click **Shapes**, or select a tile/entity first so that sprite is preselected.
 2. Pick any sprite from the filterable list.
@@ -208,17 +228,17 @@ c:addMaps("mymap")
 5. **New polygon** / **Delete polygon** switch among multiple fixtures (see `item-banana-idle`). **User data** is the first string in each polygon table (`""`, `"solid"`, `"lava"`, ...).
 6. Copy the generated `polygons = { ... },` block and paste it into the sprite entry in `sprites.lua`. **Paste** + **Apply Lua** loads a definition from the clipboard or the text box.
 
-Hold **Ctrl** while placing or dragging to snap to 1 Lua unit (0.01 tiles). Box2D allows at most 8 vertices per convex polygon; the editor warns if a shape is concave or too large. Circles are drawn read-only.
+Hold **Ctrl** while placing or dragging to snap to 1 Lua unit (0.01 tiles). Box2D allows at most 8 vertices per convex polygon; the editor warns if a shape is concave or too large. **New circle** adds a circle; drag the center to move it, drag the rim to resize.
 
-Edits update the in-memory sprite definition for the current session. Restart (or reload sprites) after you paste into `sprites.lua` to keep them.
+Edits update the in-memory sprite definition for the current session. **Write sprites.lua** (or a restart after a manual paste) keeps them.
 
 ## Map scripts and Lua
 
-**Script** opens a Lua editor for logic that is kept across saves: `onMapLoaded`, `onUpdate`, and helper functions. `getName` and `initMap` are regenerated from the editor data on every save, so do not keep hand-edited tiles there if you will save from the editor again.
+**Script** opens a Lua editor for logic that is kept across saves: `onMapLoaded`, `onUpdate`, and helper functions. Line numbers, find/replace-all, a short API list, and **Insert cutscene lock** / **Insert skip-to-finish** snippets are in that window. `getName` and `initMap` are regenerated from the editor data on every save unless **Keep handwritten initMap** is checked.
 
 The full runtime API, coordinates, and cutscene rules are in [MAPS.md](MAPS.md). Sprite layers, atlas sizes, and alignment are in [SPRITES.md](SPRITES.md).
 
-Useful settings that are not all in the Properties panel can be added in `initMap` after a save, or kept in mind when designing:
+Useful settings (most are also on Properties):
 
 | Setting | Meaning |
 | --- | --- |

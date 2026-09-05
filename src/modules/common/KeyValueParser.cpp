@@ -25,3 +25,39 @@ const std::string KeyValueParser::getString (const std::string& key, const std::
 	}
 	return i->second;
 }
+
+void KeyValueParser::set (const std::string& key, const std::string& value)
+{
+	if (value.empty())
+		_settings.erase(key);
+	else
+		_settings[key] = value;
+}
+
+void KeyValueParser::set (const std::string& key, float value)
+{
+	set(key, string::toString(value));
+}
+
+void KeyValueParser::set (const std::string& key, bool value)
+{
+	set(key, std::string(value ? "true" : "false"));
+}
+
+void KeyValueParser::remove (const std::string& key)
+{
+	_settings.erase(key);
+}
+
+std::string KeyValueParser::str () const
+{
+	std::string out;
+	for (const auto& entry : _settings) {
+		if (!out.empty())
+			out += ",";
+		out += entry.first;
+		out += "=";
+		out += entry.second;
+	}
+	return out;
+}

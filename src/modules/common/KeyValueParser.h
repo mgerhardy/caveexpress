@@ -28,4 +28,9 @@ public:
 	}
 
 	const std::string getString (const std::string& key, const std::string& defaultVal = "") const;
+	void set (const std::string& key, const std::string& value);
+	void set (const std::string& key, float value);
+	void set (const std::string& key, bool value);
+	void remove (const std::string& key);
+	std::string str () const;
 };

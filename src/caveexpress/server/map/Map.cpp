@@ -1,6 +1,7 @@
 #include "Map.h"
 #include "caveexpress/server/entities/IEntity.h"
 #include "common/ConfigManager.h"
+#include "common/String.h"
 #include "common/ConfigVar.h"
 #include "common/MapSettings.h"
 #include "common/Shared.h"
@@ -1195,7 +1196,14 @@ bool Map::spawnPlayer (Player* player)
 	Log::info(LOG_GAMEIMPL, "spawn player %i", player->getID());
 	const int startPosIdx = _players.size();
 	float playerStartX, playerStartY;
-	if (!getStartPosition(startPosIdx, playerStartX, playerStartY)) {
+	const std::string editorX = Config.getConfigVar("editor-play-x", "", true)->getValue();
+	const std::string editorY = Config.getConfigVar("editor-play-y", "", true)->getValue();
+	if (!editorX.empty() && !editorY.empty()) {
+		playerStartX = string::toFloat(editorX);
+		playerStartY = string::toFloat(editorY);
+		Config.getConfigVar("editor-play-x")->setValue("");
+		Config.getConfigVar("editor-play-y")->setValue("");
+	} else if (!getStartPosition(startPosIdx, playerStartX, playerStartY)) {
 		Log::error(LOG_GAMEIMPL, "no player position for index %i", startPosIdx);
 		return false;
 	}
@@ -1204,6 +1212,10 @@ bool Map::spawnPlayer (Player* player)
 	const PhysicsVec2 pos(playerStartX + size.x / 2.0f, playerStartY + size.y / 2.0f);
 	player->createBody(pos);
 	player->onSpawn();
+	if (string::toBool(Config.getConfigVar("editor-play-god", "false", true)->getValue())) {
+		player->setInvulnerable(10 * 60 * 1000);
+		Config.getConfigVar("editor-play-god")->setValue("false");
+	}
 	_players.push_back(player);
 	return true;
 }

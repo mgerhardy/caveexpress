@@ -46,6 +46,9 @@ protected:
 
 	/** Capture non-initMap/non-getName source so editor saves do not strip cutscene logic. */
 	void capturePreservedLogic (const std::string& source);
+	bool _preserveInitMap = false;
+
+	bool writeMapFile (const std::string& path) const;
 
 public:
 	explicit LUAMapContext (const std::string& name);
@@ -66,6 +69,9 @@ public:
 	virtual void onUpdate (uint32_t deltaTime) override;
 	virtual bool load (bool skipErrors) override;
 	virtual bool save () const override;
+	virtual bool saveToPath (const std::string& path) const override;
+	void setPreserveInitMap (bool preserve) override { _preserveInitMap = preserve; }
+	bool isPreserveInitMap () const { return _preserveInitMap; }
 	virtual const std::string& getScriptLogic () const override;
 	virtual void setScriptLogic (const std::string& logic) override;
 };

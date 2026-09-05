@@ -21,6 +21,7 @@ private:
 	IMap::SettingsMap _settings;
 	IMap::StartPositions _startPositions;
 	std::string _mapName;
+	std::string _scriptLogic;
 	int _mapWidth;
 	int _mapHeight;
 public:
@@ -41,13 +42,16 @@ public:
 		IMap::SettingsMap settingsMap;
 		IMap::StartPositions startPositions;
 		std::string mapName;
+		std::string scriptLogic;
 		int mapWidth = 0;
 		int mapHeight = 0;
 
 		State () = default;
 		State (const MapEditorTileItems& tiles, const IMap::SettingsMap& settings,
-				const IMap::StartPositions& starts, const std::string& name, int width, int height) :
-				map(tiles), settingsMap(settings), startPositions(starts), mapName(name), mapWidth(width), mapHeight(height)
+				const IMap::StartPositions& starts, const std::string& name, int width, int height,
+				const std::string& script = "") :
+				map(tiles), settingsMap(settings), startPositions(starts), mapName(name), scriptLogic(script),
+				mapWidth(width), mapHeight(height)
 		{
 		}
 	};
@@ -55,7 +59,8 @@ public:
 	enum class Tool {
 		Paint,
 		Erase,
-		Pick
+		Pick,
+		Fill
 	};
 
 	/** Palette / erase scope: Tiles tab edits tiles, Entities tab edits emitters. */
@@ -76,6 +81,9 @@ protected:
 	/** Lua kept across saves (onUpdate/onMapLoaded/helpers); not part of undo. */
 	std::string _scriptLogic;
 	bool _scriptDirty = false;
+	bool _preserveInitMap = false;
+	bool _scriptUndoPending = false;
+	State _scriptUndoBefore;
 	int _mapWidth = 16;
 	int _mapHeight = 12;
 	const ThemeType* _theme;
@@ -96,6 +104,13 @@ protected:
 	bool _renderGrid = true;
 	Tool _tool = Tool::Paint;
 	EditMode _editMode = EditMode::Tiles;
+
+	bool _hasRegion = false;
+	int _regionX0 = 0;
+	int _regionY0 = 0;
+	int _regionX1 = 0;
+	int _regionY1 = 0;
+	std::vector<MapEditorTileItem> _clipboard;
 
 	std::vector<State> _undoStates;
 	std::vector<State> _redoStates;
@@ -145,8 +160,12 @@ public:
 	bool load (const std::string& mapName);
 	void loadLast ();
 	virtual bool save ();
+	virtual bool saveToGameData ();
 	bool saveAndPlay ();
+	bool saveAndPlayFrom (gridCoord gridX, gridCoord gridY);
 	bool isDirty () const;
+	void collectValidationIssues (std::vector<std::string>& out) const;
+	virtual void collectGameValidationIssues (std::vector<std::string>& out) const;
 	/** Treat current undo state as saved (discard unsaved changes without reloading). */
 	void discardChanges ();
 
@@ -162,20 +181,33 @@ public:
 	void setEmitterEntity (const EntityType& type);
 	virtual void setActiveEntityRight (bool right);
 	virtual void rotateBrush ();
+	/** Rotate the highlighted tile in place, or the brush if nothing rotatable is selected. */
+	virtual void rotateSelectionOrBrush ();
 	void setTool (Tool tool) { _tool = tool; }
 	Tool getTool () const { return _tool; }
 	void setEditMode (EditMode mode);
 	EditMode getEditMode () const { return _editMode; }
 
 	void setSelectedGrid (gridCoord x, gridCoord y);
+	void focusCell (gridCoord x, gridCoord y);
 	gridCoord getSelectedGridX () const { return _selectedGridX; }
 	gridCoord getSelectedGridY () const { return _selectedGridY; }
 
 	bool paintAtSelection (bool overwrite = true, bool recordUndo = true);
 	bool eraseAtSelection (bool recordUndo = true);
 	void pickAtSelection ();
+	void pickTopmostAtSelection ();
 	void deleteSelection ();
 	void resizeMap (int mapWidth, int mapHeight);
+	void floodFillAtSelection ();
+	void setRegion (int x0, int y0, int x1, int y1);
+	void clearRegion () { _hasRegion = false; }
+	bool hasRegion () const { return _hasRegion; }
+	void getRegion (int& x0, int& y0, int& x1, int& y1) const;
+	void copyRegion ();
+	void pasteAtSelection ();
+	void nudgeSelection (int dx, int dy);
+	bool hasClipboard () const { return !_clipboard.empty(); }
 
 	MapEditorTileItem* getSelectedTile ();
 	MapEditorTileItem* getHighlightItem () { return _highlightItem; }
@@ -188,6 +220,7 @@ public:
 	bool isRenderGrid () const { return _renderGrid; }
 
 	void setSetting (const std::string& key, const std::string& value);
+	void removeSetting (const std::string& key);
 	std::string getSetting (const std::string& key, const std::string& fallback = "") const;
 	void setFileName (const std::string& fileName);
 	void setMapName (const std::string& mapName);
@@ -195,6 +228,8 @@ public:
 	void setTheme (const ThemeType& theme);
 	void shift (int shiftX, int shiftY);
 	void setPlayerPosition (gridCoord gridX, gridCoord gridY);
+	void removeStartPosition (size_t index);
+	void setStartPositionAt (size_t index, gridCoord gridX, gridCoord gridY);
 	void setEmitterAmount (int amount) { _emitterAmount = amount; }
 	void setEmitterDelay (int delay) { _emitterDelay = delay; }
 	int getEmitterAmount () const { return _emitterAmount; }
@@ -231,6 +266,12 @@ public:
 
 	const std::string& getScriptLogic () const { return _scriptLogic; }
 	std::string& getScriptLogicMutable () { return _scriptLogic; }
-	void markScriptChanged () { _scriptDirty = true; }
+	void beginScriptUndo ();
+	void markScriptChanged ();
+	void endScriptUndo ();
 	void setScriptLogic (const std::string& logic);
+	void setPreserveInitMap (bool preserve) { _preserveInitMap = preserve; }
+	bool isPreserveInitMap () const { return _preserveInitMap; }
+	std::string getUserMapsPath () const;
+	std::string getGameDataMapsPath () const;
 };

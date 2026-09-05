@@ -12,6 +12,8 @@
 #include <algorithm>
 #include <cstring>
 #include <cmath>
+#include <cstdio>
+#include <vector>
 
 namespace {
 const float ZOOM_MIN = 0.15f;
@@ -36,6 +38,7 @@ UIMapEditorWindow::UIMapEditorWindow (IFrontend* frontend, std::unique_ptr<IMapE
 {
 	_doc->registerCommands();
 	_tileRefWidth = std::max(1, UI::get().loadTexture("tile-reference")->getWidth());
+	_nativeTileRefWidth = _tileRefWidth;
 	_zoom = 32.0f / static_cast<float>(_tileRefWidth);
 	std::strncpy(_fileNameBuf, _doc->getFileName().c_str(), sizeof(_fileNameBuf) - 1);
 	std::strncpy(_mapTitleBuf, _doc->getMapName().c_str(), sizeof(_mapTitleBuf) - 1);
@@ -158,8 +161,7 @@ void UIMapEditorWindow::handleHotkeys () const
 	if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_S, false)) {
 		_doc->setFileName(_fileNameBuf);
 		_doc->setMapName(_mapTitleBuf);
-		if (!_doc->save())
-			Log::error(LOG_UI, "Failed to save map");
+		trySave(false);
 	}
 	if (ImGui::IsKeyPressed(ImGuiKey_Escape, false) && _showScriptEditor) {
 		_showScriptEditor = false;
@@ -173,16 +175,30 @@ void UIMapEditorWindow::handleHotkeys () const
 	if (io.WantTextInput)
 		return;
 
+	if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_C, false))
+		_doc->copyRegion();
+	if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_V, false))
+		_doc->pasteAtSelection();
 	if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_Z, false))
 		_doc->undo();
 	if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_Y, false))
 		_doc->redo();
+	if (!io.KeyCtrl) {
+		if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow, false))
+			_doc->nudgeSelection(-1, 0);
+		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow, false))
+			_doc->nudgeSelection(1, 0);
+		if (ImGui::IsKeyPressed(ImGuiKey_UpArrow, false))
+			_doc->nudgeSelection(0, -1);
+		if (ImGui::IsKeyPressed(ImGuiKey_DownArrow, false))
+			_doc->nudgeSelection(0, 1);
+	}
 	if (ImGui::IsKeyPressed(ImGuiKey_F1, false))
 		_showHelp = !_showHelp;
 	if (ImGui::IsKeyPressed(ImGuiKey_G, false))
 		_doc->toggleGrid();
 	if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && _canvasHovered && !_shapeEditor.isVisible())
-		_doc->rotateBrush();
+		_doc->rotateSelectionOrBrush();
 	if (!_shapeEditor.isVisible()
 			&& (ImGui::IsKeyPressed(ImGuiKey_Delete, false) || ImGui::IsKeyPressed(ImGuiKey_Backspace, false)))
 		_doc->deleteSelection();
@@ -211,15 +227,44 @@ void UIMapEditorWindow::drawToolbar () const
 	if (ImGui::Button(tr("Save").c_str())) {
 		_doc->setFileName(_fileNameBuf);
 		_doc->setMapName(_mapTitleBuf);
-		if (!_doc->save())
-			Log::error(LOG_UI, "Failed to save map");
+		trySave(false);
 	}
+	ImGui::SameLine();
+	if (ImGui::Button(tr("Save to game data").c_str())) {
+		_doc->setFileName(_fileNameBuf);
+		_doc->setMapName(_mapTitleBuf);
+		trySave(true);
+	}
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("%s\n%s", tr("Write into the project maps folder").c_str(),
+				_doc->getGameDataMapsPath().c_str());
 	ImGui::SameLine();
 	if (ImGui::Button(tr("Save & Go").c_str())) {
 		_doc->setFileName(_fileNameBuf);
 		_doc->setMapName(_mapTitleBuf);
-		_doc->saveAndPlay();
+		std::vector<std::string> issues;
+		_doc->collectValidationIssues(issues);
+		if (issues.empty())
+			_doc->saveAndPlay();
+		else {
+			_validationIssues = issues;
+			_validationSaveGameData = false;
+			_showValidation = true;
+			_confirmAction = "play";
+		}
 	}
+	ImGui::SameLine();
+	if (ImGui::Button(tr("Play from here").c_str())) {
+		_doc->setFileName(_fileNameBuf);
+		_doc->setMapName(_mapTitleBuf);
+		const float tileW = tileWidth();
+		const float tileH = tileHeight();
+		const gridCoord gx = (_panX + (_canvasMaxX - _canvasMinX) * 0.5f) / tileW;
+		const gridCoord gy = (_panY + (_canvasMaxY - _canvasMinY) * 0.5f) / tileH;
+		_doc->saveAndPlayFrom(std::floor(gx), std::floor(gy));
+	}
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("%s", tr("Save and start with the machine at the view center (god mode)").c_str());
 	ImGui::SameLine();
 	if (ImGui::Button(tr("Undo").c_str()) && _doc->canUndo())
 		_doc->undo();
@@ -262,7 +307,15 @@ void UIMapEditorWindow::drawToolbar () const
 	if (ImGui::RadioButton(tr("Select tile").c_str(), _doc->getTool() == IMapEditorDocument::Tool::Pick))
 		_doc->setTool(IMapEditorDocument::Tool::Pick);
 	ImGui::SameLine();
-	ImGui::Text("%s%s", _doc->getFileName().c_str(), _doc->isDirty() ? " *" : "");
+	if (ImGui::RadioButton(tr("Fill").c_str(), _doc->getTool() == IMapEditorDocument::Tool::Fill))
+		_doc->setTool(IMapEditorDocument::Tool::Fill);
+	ImGui::SameLine();
+	if (_doc->getActiveEntityType() != nullptr && _doc->isActiveEntityRight())
+		ImGui::TextDisabled("%s 0° R", _doc->getFileName().c_str());
+	else if (_doc->getActiveEntityType() != nullptr)
+		ImGui::TextDisabled("%s 0° L", _doc->getFileName().c_str());
+	else
+		ImGui::Text("%s%s  %i°", _doc->getFileName().c_str(), _doc->isDirty() ? " *" : "", _doc->getActiveAngle());
 }
 
 void UIMapEditorWindow::drawTilesPanel () const
@@ -331,6 +384,12 @@ void UIMapEditorWindow::drawLayersPanel () const
 	bool grid = _doc->isRenderGrid();
 	if (ImGui::Checkbox(tr("Show Grid").c_str(), &grid))
 		_doc->toggleGrid();
+	if (ImGui::Checkbox(tr("Preview other atlas size").c_str(), &_previewAltAtlas)) {
+		_tileRefWidth = _previewAltAtlas ? (_nativeTileRefWidth == 32 ? 16 : 32) : _nativeTileRefWidth;
+		fitView();
+	}
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("%s", tr("Change the grid tile size to check alignment against the other texture atlas.").c_str());
 }
 
 void UIMapEditorWindow::drawPropertiesPanel () const
@@ -348,12 +407,24 @@ void UIMapEditorWindow::drawPropertiesPanel () const
 		_doc->resizeMap(_doc->getMapWidth(), h);
 
 	if (_doc->supportsEmitterParams()) {
-		int amount = _doc->getEmitterAmount();
-		if (ImGui::InputInt(tr("Emitter amount").c_str(), &amount))
-			_doc->setEmitterAmount(std::max(0, amount));
-		int delay = _doc->getEmitterDelay();
-		if (ImGui::InputInt(tr("Emitter delay").c_str(), &delay))
-			_doc->setEmitterDelay(std::max(0, delay));
+		MapEditorTileItem* sel = _doc->getHighlightItem();
+		if (sel != nullptr && sel->entityType != nullptr) {
+			int amount = sel->amount;
+			if (ImGui::InputInt(tr("Emitter amount").c_str(), &amount))
+				sel->amount = std::max(0, amount);
+			int delay = sel->delay;
+			if (ImGui::InputInt(tr("Emitter delay").c_str(), &delay))
+				sel->delay = std::max(0, delay);
+			ImGui::TextDisabled("%s", tr("Editing the selected emitter").c_str());
+		} else {
+			int amount = _doc->getEmitterAmount();
+			if (ImGui::InputInt(tr("Emitter amount").c_str(), &amount))
+				_doc->setEmitterAmount(std::max(0, amount));
+			int delay = _doc->getEmitterDelay();
+			if (ImGui::InputInt(tr("Emitter delay").c_str(), &delay))
+				_doc->setEmitterDelay(std::max(0, delay));
+			ImGui::TextDisabled("%s", tr("Applies to the next placed emitter").c_str());
+		}
 	}
 
 	// Fixed-height selection block so the panel does not reflow when selection changes.
@@ -384,6 +455,13 @@ void UIMapEditorWindow::drawPropertiesPanel () const
 	ImGui::SameLine();
 	if (ImGui::Button("-H")) _doc->shift(0, -1);
 	if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", tr("Decrease map height").c_str());
+	if (_doc->supportsMapScript()) {
+		bool keep = _doc->isPreserveInitMap();
+		if (ImGui::Checkbox(tr("Keep handwritten initMap").c_str(), &keep))
+			_doc->setPreserveInitMap(keep);
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("%s", tr("On save, copy initMap from the existing file instead of regenerating tiles.").c_str());
+	}
 }
 
 void UIMapEditorWindow::drawMapsPanel () const
@@ -409,14 +487,22 @@ void UIMapEditorWindow::drawHelpPanel () const
 	ImGui::BulletText("%s", tr("RMB: erase items of the active tab").c_str());
 	ImGui::BulletText("%s", tr("MMB click: pick, MMB drag or Space+LMB: pan").c_str());
 	ImGui::BulletText("%s", tr("Wheel: zoom toward cursor").c_str());
-	ImGui::BulletText("%s", tr("Space (on canvas): rotate brush").c_str());
+	ImGui::BulletText("%s", tr("Space (on canvas): rotate selected tile or brush").c_str());
 	ImGui::BulletText("%s", tr("Ctrl+S save, Ctrl+Z/Y undo/redo").c_str());
 	ImGui::BulletText("%s", tr("F fit view, G toggle grid, F1 help").c_str());
 	ImGui::BulletText("%s", tr("Delete: remove selection of the active tab").c_str());
 	ImGui::BulletText("%s", tr("Properties edit the selected tile, not the hovered one").c_str());
 	if (_doc->supportsMapScript())
 		ImGui::BulletText("%s", tr("Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test").c_str());
-	ImGui::BulletText("%s", tr("Shapes: edit sprite collision polygons and copy Lua").c_str());
+	ImGui::BulletText("%s", tr("Shapes: edit polygons/circles and write sprites.lua").c_str());
+	ImGui::BulletText("%s", tr("Alt+click: pick whatever is on top (any tab)").c_str());
+	ImGui::BulletText("%s", tr("Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge").c_str());
+	ImGui::BulletText("%s", tr("Fill: flood-fill background / same tile").c_str());
+	ImGui::Separator();
+	ImGui::TextUnformatted(tr("Docs (in the source tree)").c_str());
+	ImGui::BulletText("docs/caveexpress/EDITOR.md");
+	ImGui::BulletText("docs/caveexpress/MAPS.md");
+	ImGui::BulletText("docs/caveexpress/SPRITES.md");
 	drawHelpExtras();
 }
 
@@ -431,14 +517,15 @@ void UIMapEditorWindow::drawScriptEditor () const
 		return;
 	}
 
-	ImGui::TextWrapped("%s", tr("Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save.").c_str());
+	ImGui::TextWrapped("%s", tr("Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.").c_str());
+	ImGui::TextColored(ImVec4(1.0f, 0.75f, 0.3f, 1.0f), "%s",
+			tr("Do not put tiles in this window — initMap is rebuilt from the canvas.").c_str());
 	ImGui::Separator();
 
 	if (ImGui::Button(tr("Save").c_str())) {
 		_doc->setFileName(_fileNameBuf);
 		_doc->setMapName(_mapTitleBuf);
-		if (!_doc->save())
-			Log::error(LOG_UI, "Failed to save map");
+		trySave(false);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button(tr("Save & Go").c_str())) {
@@ -448,11 +535,61 @@ void UIMapEditorWindow::drawScriptEditor () const
 	}
 	ImGui::SameLine();
 	ImGui::TextDisabled("%s", _doc->isDirty() ? "*" : "");
+	ImGui::SameLine();
+	bool keep = _doc->isPreserveInitMap();
+	if (ImGui::Checkbox(tr("Keep initMap").c_str(), &keep))
+		_doc->setPreserveInitMap(keep);
+
+	ImGui::SetNextItemWidth(160.0f);
+	ImGui::InputText(tr("Find").c_str(), _scriptFind, sizeof(_scriptFind));
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(160.0f);
+	ImGui::InputText(tr("Replace").c_str(), _scriptReplace, sizeof(_scriptReplace));
+	ImGui::SameLine();
+	if (ImGui::Button(tr("Find next").c_str()))
+		applyScriptFind(false);
+	ImGui::SameLine();
+	if (ImGui::Button(tr("Replace all").c_str()))
+		applyScriptFind(true);
+
+	drawScriptExtras();
+	if (ImGui::CollapsingHeader(tr("Lua API").c_str())) {
+		ImGui::BulletText("map:setSetting(key, value)");
+		ImGui::BulletText("map:addTile / addCave / addEmitter / addStartPosition");
+		ImGui::BulletText("onMapLoaded()  onUpdate(dt)");
+		ImGui::BulletText("map:setInputEnabled / finish / consumeSkip / message");
+		ImGui::BulletText("map:spawnFriendlyNPC / spawnPackage / addTileRuntime");
+		ImGui::BulletText("player:setGravityScale / setInvulnerable / setAnimation");
+		ImGui::TextDisabled("%s", tr("See docs/caveexpress/MAPS.md").c_str());
+	}
+
+	const std::string& script = _doc->getScriptLogic();
+	int lines = 1;
+	for (char c : script) {
+		if (c == '\n')
+			++lines;
+	}
+	ImGui::TextDisabled("%s: %i", tr("Lines").c_str(), lines);
 
 	ImGui::BeginChild("script_body", ImVec2(0, 0), true);
+	const float lineCol = 48.0f;
+	ImGui::BeginChild("script_lines", ImVec2(lineCol, 0), false, ImGuiWindowFlags_NoScrollbar);
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.55f, 0.55f, 0.6f, 1.0f));
+	for (int i = 1; i <= lines; ++i)
+		ImGui::Text("%i", i);
+	ImGui::PopStyleColor();
+	ImGui::EndChild();
+	ImGui::SameLine();
 	if (ImGui::InputTextMultiline("##map_script", &_doc->getScriptLogicMutable(),
-			ImVec2(-FLT_MIN, -FLT_MIN), ImGuiInputTextFlags_AllowTabInput))
+			ImVec2(-FLT_MIN, -FLT_MIN), ImGuiInputTextFlags_AllowTabInput)) {
+		if (ImGui::IsItemActivated())
+			_doc->beginScriptUndo();
 		_doc->markScriptChanged();
+	} else if (ImGui::IsItemActivated()) {
+		_doc->beginScriptUndo();
+	}
+	if (ImGui::IsItemDeactivated())
+		_doc->endScriptUndo();
 	ImGui::EndChild();
 
 	ImGui::End();
@@ -477,6 +614,82 @@ void UIMapEditorWindow::drawConfirmModal () const
 		}
 		ImGui::EndPopup();
 	}
+}
+
+bool UIMapEditorWindow::trySave (bool toGameData) const
+{
+	std::vector<std::string> issues;
+	_doc->collectValidationIssues(issues);
+	if (!issues.empty()) {
+		_validationIssues = issues;
+		_validationSaveGameData = toGameData;
+		_showValidation = true;
+		_confirmAction = toGameData ? "save-gamedata" : "save";
+		return false;
+	}
+	const bool ok = toGameData ? _doc->saveToGameData() : _doc->save();
+	if (!ok)
+		Log::error(LOG_UI, "Failed to save map");
+	return ok;
+}
+
+void UIMapEditorWindow::drawValidationModal () const
+{
+	const std::string popupTitle = tr("Map validation") + "###mapvalid";
+	if (_showValidation)
+		ImGui::OpenPopup(popupTitle.c_str());
+	if (ImGui::BeginPopupModal(popupTitle.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::TextUnformatted(tr("These checks would fail CampaignTest / play:").c_str());
+		for (const std::string& issue : _validationIssues)
+			ImGui::BulletText("%s", issue.c_str());
+		if (ImGui::Button(tr("Save anyway").c_str())) {
+			bool ok = true;
+			if (_confirmAction == "play")
+				ok = _doc->saveAndPlay();
+			else if (_validationSaveGameData)
+				ok = _doc->saveToGameData();
+			else
+				ok = _doc->save();
+			if (!ok)
+				Log::error(LOG_UI, "Failed to save map");
+			_showValidation = false;
+			_confirmAction.clear();
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button(tr("Cancel").c_str())) {
+			_showValidation = false;
+			_confirmAction.clear();
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::EndPopup();
+	}
+}
+
+void UIMapEditorWindow::applyScriptFind (bool replaceAll) const
+{
+	if (_scriptFind[0] == '\0')
+		return;
+	std::string& text = _doc->getScriptLogicMutable();
+	if (replaceAll) {
+		_doc->beginScriptUndo();
+		size_t pos = 0;
+		int count = 0;
+		while ((pos = text.find(_scriptFind, pos)) != std::string::npos) {
+			text.replace(pos, std::strlen(_scriptFind), _scriptReplace);
+			pos += std::strlen(_scriptReplace);
+			++count;
+		}
+		if (count > 0)
+			_doc->markScriptChanged();
+		_doc->endScriptUndo();
+		return;
+	}
+	const size_t pos = text.find(_scriptFind);
+	if (pos == std::string::npos)
+		return;
+	// InputTextMultiline does not expose caret; copy the match to the status via tooltip.
+	ImGui::SetClipboardText(text.substr(pos, std::strlen(_scriptFind)).c_str());
 }
 
 void UIMapEditorWindow::renderSprite (ImDrawList* drawList, const MapEditorTileItem& item, float originX, float originY,
@@ -520,12 +733,30 @@ void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 		if (item.gridX >= startGX + visibleW || item.gridY >= startGY + visibleH)
 			continue;
 		renderSprite(drawList, item, x, y, tileW, tileH);
+		if (item.entityType != nullptr && (item.amount > 1 || item.delay > 0)) {
+			const float tx = x + item.gridX * tileW - _panX + 2.0f;
+			const float ty = y + item.gridY * tileH - _panY + 2.0f;
+			char buf[32];
+			std::snprintf(buf, sizeof(buf), "%ix/%ims", item.amount, item.delay);
+			drawList->AddText(ImVec2(tx, ty), IM_COL32(255, 230, 120, 255), buf);
+		}
 		if (_doc->getHighlightItem() != nullptr && *_doc->getHighlightItem() == item) {
 			const float hx = x + (item.gridX + item.getX(false)) * tileW - _panX;
 			const float hy = y + (item.gridY + item.getY(false)) * tileH - _panY;
 			const vec2 size = item.getSize(false);
 			drawList->AddRect(ImVec2(hx, hy), ImVec2(hx + size.x * tileW, hy + size.y * tileH), IM_COL32(255, 255, 0, 255));
 		}
+	}
+
+	if (_doc->hasRegion()) {
+		int rx0, ry0, rx1, ry1;
+		_doc->getRegion(rx0, ry0, rx1, ry1);
+		const float x0 = x + rx0 * tileW - _panX;
+		const float y0 = y + ry0 * tileH - _panY;
+		const float x1 = x + (rx1 + 1) * tileW - _panX;
+		const float y1 = y + (ry1 + 1) * tileH - _panY;
+		drawList->AddRect(ImVec2(x0, y0), ImVec2(x1, y1), IM_COL32(80, 200, 255, 220), 0.0f, 0, 2.0f);
+		drawList->AddRectFilled(ImVec2(x0, y0), ImVec2(x1, y1), IM_COL32(80, 180, 255, 40));
 	}
 
 	for (const IMap::StartPosition& position : _doc->getStartPositions()) {
@@ -567,6 +798,13 @@ void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 		const float hy = y + (ghost.gridY + ghost.getY(false)) * tileH - _panY;
 		const vec2 size = ghost.getSize(false);
 		drawList->AddRect(ImVec2(hx, hy), ImVec2(hx + size.x * tileW, hy + size.y * tileH), IM_COL32(0, 255, 0, 255));
+		char brushBuf[48];
+		if (_doc->getActiveEntityType() != nullptr)
+			std::snprintf(brushBuf, sizeof(brushBuf), "%s %s", _doc->isActiveEntityRight() ? "R" : "L",
+					_doc->getActiveEntityType()->name.c_str());
+		else
+			std::snprintf(brushBuf, sizeof(brushBuf), "%i°", _doc->getActiveAngle());
+		drawList->AddText(ImVec2(hx, hy - 16.0f), IM_COL32(180, 255, 180, 255), brushBuf);
 	}
 
 	drawList->PopClipRect();
@@ -589,7 +827,8 @@ void UIMapEditorWindow::drawCanvas () const
 
 	const float tileW = tileWidth();
 	const float tileH = tileHeight();
-	if (_canvasHovered) {
+	const bool overlayConsumed = handleCanvasOverlayInput(tileW, tileH);
+	if (_canvasHovered && !overlayConsumed) {
 		const ImVec2 mouse = ImGui::GetIO().MousePos;
 		// Cursor grid follows the mouse for painting; properties use the stable click selection.
 		_doc->setSelectedGrid(std::floor((mouse.x - _canvasMinX + _panX) / tileW),
@@ -617,24 +856,46 @@ void UIMapEditorWindow::drawCanvas () const
 
 		if (!_panning && !space) {
 			const bool shift = ImGui::GetIO().KeyShift;
+			const bool alt = ImGui::GetIO().KeyAlt;
+			const int gx = static_cast<int>(std::floor(_doc->getSelectedGridX()));
+			const int gy = static_cast<int>(std::floor(_doc->getSelectedGridY()));
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-				if (shift) {
-					_doc->pickAtSelection();
+				if (alt) {
+					_doc->pickTopmostAtSelection();
+				} else if (shift || _doc->getTool() == IMapEditorDocument::Tool::Pick) {
+					if (shift) {
+						_regionDragging = true;
+						_regionAnchorX = gx;
+						_regionAnchorY = gy;
+						_doc->setRegion(gx, gy, gx, gy);
+					} else {
+						_doc->pickAtSelection();
+						_doc->clearRegion();
+					}
 				} else {
 					_doc->beginUndoStroke();
 					_doc->paintAtSelection(true, false);
 				}
-			} else if (!shift && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+			} else if (_regionDragging && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+				_doc->setRegion(_regionAnchorX, _regionAnchorY, gx, gy);
+			} else if (!shift && !alt && _doc->getTool() != IMapEditorDocument::Tool::Fill
+					&& ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 				_doc->paintAtSelection(true, false);
 			}
+			if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+				_regionDragging = false;
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 				_doc->beginUndoStroke();
 				_doc->eraseAtSelection(false);
 			} else if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
 				_doc->eraseAtSelection(false);
 			}
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle) && !ImGui::IsMouseDragging(ImGuiMouseButton_Middle))
-				_doc->pickAtSelection();
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle) && !ImGui::IsMouseDragging(ImGuiMouseButton_Middle)) {
+				if (alt)
+					_doc->pickTopmostAtSelection();
+				else
+					_doc->pickAtSelection();
+			}
 		}
 	}
 
@@ -659,7 +920,12 @@ void UIMapEditorWindow::render (int x, int y) const
 	ImGui::Separator();
 
 	const float leftWidth = 260.0f;
-	const float rightWidth = 280.0f;
+	const float splitterW = 6.0f;
+	const float minRight = 200.0f;
+	const float minCenter = 180.0f;
+	const float availX = ImGui::GetContentRegionAvail().x;
+	const float maxRight = std::max(minRight, availX - leftWidth - splitterW - minCenter);
+	_rightPanelWidth = std::max(minRight, std::min(_rightPanelWidth, maxRight));
 	ImGui::BeginChild("left", ImVec2(leftWidth, 0), true);
 	if (ImGui::BeginTabBar("left_tabs")) {
 		if (ImGui::BeginTabItem(tr("Tiles").c_str())) {
@@ -681,12 +947,26 @@ void UIMapEditorWindow::render (int x, int y) const
 	ImGui::EndChild();
 
 	ImGui::SameLine();
-	ImGui::BeginChild("center", ImVec2(-rightWidth - 8.0f, 0), false);
+	ImGui::BeginChild("center", ImVec2(-(_rightPanelWidth + splitterW), 0), false);
 	drawCanvas();
 	ImGui::EndChild();
 
-	ImGui::SameLine();
-	ImGui::BeginChild("right", ImVec2(rightWidth, 0), true);
+	ImGui::SameLine(0.0f, 0.0f);
+	ImGui::InvisibleButton("##prop_splitter", ImVec2(splitterW, ImGui::GetContentRegionAvail().y));
+	if (ImGui::IsItemHovered() || ImGui::IsItemActive())
+		ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+	if (ImGui::IsItemActive())
+		_rightPanelWidth = std::max(minRight, std::min(_rightPanelWidth - ImGui::GetIO().MouseDelta.x, maxRight));
+	{
+		const ImVec2 p0 = ImGui::GetItemRectMin();
+		const ImVec2 p1 = ImGui::GetItemRectMax();
+		const ImU32 col = ImGui::GetColorU32(ImGui::IsItemActive() ? ImGuiCol_SeparatorActive
+				: (ImGui::IsItemHovered() ? ImGuiCol_SeparatorHovered : ImGuiCol_Separator));
+		ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(p0.x + 2.0f, p0.y), ImVec2(p1.x - 2.0f, p1.y), col);
+	}
+
+	ImGui::SameLine(0.0f, 0.0f);
+	ImGui::BeginChild("right", ImVec2(_rightPanelWidth, 0), true);
 	if (ImGui::BeginTabBar("right_tabs")) {
 		if (ImGui::BeginTabItem(tr("Properties").c_str())) {
 			drawPropertiesPanel();
@@ -705,6 +985,7 @@ void UIMapEditorWindow::render (int x, int y) const
 	ImGui::EndChild();
 
 	drawConfirmModal();
+	drawValidationModal();
 	drawScriptEditor();
 	{
 		std::string suggested;

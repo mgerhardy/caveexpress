@@ -2,10 +2,13 @@
 #include "common/Log.h"
 #include "common/SpriteDefinition.h"
 #include "common/SpritePolygonLua.h"
+#include "common/SpriteLuaPatcher.h"
 #include "common/TextureDefinition.h"
 #include "ui/FontDefinition.h"
 #include "common/EntityType.h"
 #include "common/Animation.h"
+#include "common/LUALibrary.h"
+#include <fstream>
 
 class LUATest: public AbstractTest {
 };
@@ -175,4 +178,219 @@ TEST_F(LUATest, testSpritePolygonLuaRoundTrip)
 	ASSERT_EQ(2u, single[0].vertices.size());
 	EXPECT_NEAR(0.16f, single[0].vertices[0].x, 1.0e-5f);
 	EXPECT_NEAR(0.09f, single[0].vertices[1].x, 1.0e-5f);
+}
+
+TEST_F(LUATest, testSpriteCircleLuaRoundTrip)
+{
+	std::vector<SpriteCircle> circles;
+	SpriteCircle bomb("fuse");
+	bomb.center = SpriteVertex(0.0f, -0.25f);
+	bomb.radius = 0.23f;
+	circles.push_back(bomb);
+
+	const std::string lua = sprite_polygon_lua::toLuaCircles(circles);
+	ASSERT_NE(std::string::npos, lua.find("circles = {"));
+	ASSERT_NE(std::string::npos, lua.find("\"fuse\""));
+
+	std::vector<SpriteCircle> parsed;
+	std::string error;
+	ASSERT_TRUE(sprite_polygon_lua::fromLuaCircles(lua, parsed, &error)) << error;
+	ASSERT_EQ(1u, parsed.size());
+	EXPECT_EQ("fuse", parsed[0].userData);
+	EXPECT_NEAR(0.0f, parsed[0].center.x, 1.0e-4f);
+	EXPECT_NEAR(-0.25f, parsed[0].center.y, 1.0e-4f);
+	EXPECT_NEAR(0.23f, parsed[0].radius, 1.0e-4f);
+}
+
+TEST_F(LUATest, testSpriteLuaPatcher)
+{
+	const std::string src =
+			"sprites = {\n"
+			"\t[\"item-bomb-idle\"] = {\n"
+			"\t\trotateable = 1,\n"
+			"\t\tcircles = {\n"
+			"\t\t\t{ \"\", 0, -25, 23 },\n"
+			"\t\t},\n"
+			"\t},\n"
+			"\t[\"item-bomb-explode\"] = {},\n"
+			"}\n";
+	std::vector<SpritePolygon> polys;
+	std::vector<SpriteCircle> circles;
+	SpriteCircle c("");
+	c.center = SpriteVertex(0.1f, -0.2f);
+	c.radius = 0.3f;
+	circles.push_back(c);
+	std::string out;
+	std::string error;
+	ASSERT_TRUE(sprite_lua_patcher::patchSpriteShapes(src, "item-bomb-idle", polys, circles, out, &error)) << error;
+	ASSERT_NE(std::string::npos, out.find("circles = {"));
+	ASSERT_NE(std::string::npos, out.find("rotateable = 1"));
+	ASSERT_EQ(std::string::npos, out.find("{ \"\", 0, -25, 23 }"));
+	LUA lua;
+	ASSERT_TRUE(lua.loadBuffer(out, "patched-bomb"));
+}
+
+TEST_F(LUATest, testSpriteLuaPatcherInsertWithoutTrailingComma)
+{
+	const std::string src =
+			"sprites = {\n"
+			"\t[\"player-flying\"] = {\n"
+			"\t\tfps = 18\n"
+			"\t},\n"
+			"}\n";
+	std::vector<SpritePolygon> polys;
+	SpritePolygon poly("");
+	poly.vertices.push_back(SpriteVertex(0.16f, 0.0f));
+	poly.vertices.push_back(SpriteVertex(0.09f, 0.11f));
+	poly.vertices.push_back(SpriteVertex(-0.09f, 0.13f));
+	polys.push_back(poly);
+	std::string out;
+	std::string error;
+	ASSERT_TRUE(sprite_lua_patcher::patchSpriteShapes(src, "player-flying", polys, {}, out, &error)) << error;
+	ASSERT_NE(std::string::npos, out.find("fps = 18,"));
+	ASSERT_NE(std::string::npos, out.find("polygons = {"));
+	LUA lua;
+	ASSERT_TRUE(lua.loadBuffer(out, "patched-insert"));
+}
+
+TEST_F(LUATest, testSpriteLuaPatcherEraseAndIsolate)
+{
+	const std::string src =
+			"-- keep this comment\n"
+			"sprites = {\n"
+			"\t[\"item-package\"] = {\n"
+			"\t\tpolygons = {\n"
+			"\t\t\t{ \"\", 1, 2, 3, 4, 5, 6 },\n"
+			"\t\t},\n"
+			"\t},\n"
+			"\t[\"item-package-ice\"] = {\n"
+			"\t\tpolygons = {\n"
+			"\t\t\t{ \"\", 9, 9, 8, 8, 7, 7 },\n"
+			"\t\t},\n"
+			"\t},\n"
+			"}\n";
+	std::string out;
+	std::string error;
+	ASSERT_TRUE(sprite_lua_patcher::patchSpriteShapes(src, "item-package", {}, {}, out, &error)) << error;
+	ASSERT_NE(std::string::npos, out.find("-- keep this comment"));
+	ASSERT_NE(std::string::npos, out.find("[\"item-package\"]"));
+	ASSERT_NE(std::string::npos, out.find("[\"item-package-ice\"]"));
+	ASSERT_NE(std::string::npos, out.find("{ \"\", 9, 9, 8, 8, 7, 7 }"));
+	size_t open = 0;
+	size_t close = 0;
+	ASSERT_TRUE(sprite_lua_patcher::findSpriteTable(out, "item-package", open, close));
+	size_t keyStart = 0;
+	size_t valueClose = 0;
+	EXPECT_FALSE(sprite_lua_patcher::findTableKey(out, open, close, "polygons", keyStart, valueClose));
+	LUA lua;
+	ASSERT_TRUE(lua.loadBuffer(out, "patched-erase"));
+}
+
+TEST_F(LUATest, testSpriteLuaPatcherRealSpritesLua)
+{
+	std::ifstream in;
+	const char* paths[] = {
+		"base/caveexpress/sprites.lua",
+		"../base/caveexpress/sprites.lua",
+		"../../base/caveexpress/sprites.lua"
+	};
+	for (const char* path : paths) {
+		in.open(path);
+		if (in.good())
+			break;
+		in.close();
+	}
+	ASSERT_TRUE(in.good()) << "base/caveexpress/sprites.lua";
+	const std::string src((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+	ASSERT_FALSE(src.empty());
+
+	std::vector<SpritePolygon> apple;
+	ASSERT_TRUE(sprite_polygon_lua::fromLua(
+			"polygons = { { \"\", 16.0, 0.0, 9.0, 11.0, -9.0, 13.0, -15.0, 0.0, -8.0, -12.0, 9.0, -12.0, 0.0, -16.0, }, }",
+			apple, nullptr));
+	apple[0].vertices[0].x = 0.20f;
+
+	std::string out;
+	std::string error;
+	ASSERT_TRUE(sprite_lua_patcher::patchSpriteShapes(src, "item-apple-idle", apple, {}, out, &error)) << error;
+	ASSERT_NE(std::string::npos, out.find("rotateable = 1"));
+	const size_t banana = out.find("[\"item-banana-idle\"]");
+	ASSERT_NE(std::string::npos, banana);
+	ASSERT_NE(std::string::npos, out.find("-0.855, -1.04, -19.8, 0.238", banana));
+
+	std::vector<SpriteCircle> bomb;
+	SpriteCircle c("");
+	c.center = SpriteVertex(0.0f, -0.25f);
+	c.radius = 0.30f;
+	bomb.push_back(c);
+	std::string out2;
+	ASSERT_TRUE(sprite_lua_patcher::patchSpriteShapes(out, "item-bomb-idle", {}, bomb, out2, &error)) << error;
+	ASSERT_NE(std::string::npos, out2.find("30.0"));
+
+	LUA lua;
+	ASSERT_TRUE(lua.loadBuffer(out2, "real-sprites-patched"));
+	ASSERT_TRUE(lua.getGlobalKeyValue("sprites"));
+}
+
+TEST_F(LUATest, testSpriteLuaPatcherRoundTripAndErrors)
+{
+	const std::string src =
+			"sprites = {\n"
+			"\t-- polygons = { should stay a comment }\n"
+			"\t[\"item-apple-idle\"] = {\n"
+			"\t\ttype = \"collectable\",\n"
+			"\t\tframes = {\n"
+			"\t\t\t{}, --back\n"
+			"\t\t\t{ \"item-apple-idle\", }, --middle\n"
+			"\t\t},\n"
+			"\t\tpolygons = {\n"
+			"\t\t\t{ \"\", 16.0, 0.0, 9.0, 11.0, -9.0, 13.0 },\n"
+			"\t\t},\n"
+			"\t},\n"
+			"}\n";
+
+	std::string error;
+	std::string out;
+	ASSERT_FALSE(sprite_lua_patcher::patchSpriteShapes(src, "does-not-exist", {}, {}, out, &error));
+	EXPECT_NE(std::string::npos, error.find("not found"));
+
+	std::vector<SpritePolygon> polys;
+	SpritePolygon poly("solid");
+	poly.vertices.push_back(SpriteVertex(0.10f, 0.20f));
+	poly.vertices.push_back(SpriteVertex(-0.10f, 0.20f));
+	poly.vertices.push_back(SpriteVertex(0.00f, -0.15f));
+	polys.push_back(poly);
+	std::vector<SpriteCircle> circles;
+	SpriteCircle circle("fuse");
+	circle.center = SpriteVertex(0.05f, -0.25f);
+	circle.radius = 0.12f;
+	circles.push_back(circle);
+
+	ASSERT_TRUE(sprite_lua_patcher::patchSpriteShapes(src, "item-apple-idle", polys, circles, out, &error)) << error;
+	EXPECT_NE(std::string::npos, out.find("-- polygons = { should stay a comment }"));
+	EXPECT_NE(std::string::npos, out.find("type = \"collectable\""));
+	EXPECT_NE(std::string::npos, out.find("{ \"item-apple-idle\", }, --middle"));
+
+	size_t tableOpen = 0;
+	size_t tableClose = 0;
+	ASSERT_TRUE(sprite_lua_patcher::findSpriteTable(out, "item-apple-idle", tableOpen, tableClose));
+	const std::string body = out.substr(tableOpen, tableClose - tableOpen + 1);
+	std::vector<SpritePolygon> parsedPolys;
+	std::vector<SpriteCircle> parsedCircles;
+	ASSERT_TRUE(sprite_polygon_lua::fromLuaShapes(body, parsedPolys, parsedCircles, &error)) << error;
+	ASSERT_EQ(1u, parsedPolys.size());
+	ASSERT_EQ(3u, parsedPolys[0].vertices.size());
+	EXPECT_EQ("solid", parsedPolys[0].userData);
+	EXPECT_NEAR(0.10f, parsedPolys[0].vertices[0].x, 1.0e-4f);
+	EXPECT_NEAR(0.20f, parsedPolys[0].vertices[0].y, 1.0e-4f);
+	EXPECT_NEAR(0.00f, parsedPolys[0].vertices[2].x, 1.0e-4f);
+	EXPECT_NEAR(-0.15f, parsedPolys[0].vertices[2].y, 1.0e-4f);
+	ASSERT_EQ(1u, parsedCircles.size());
+	EXPECT_EQ("fuse", parsedCircles[0].userData);
+	EXPECT_NEAR(0.05f, parsedCircles[0].center.x, 1.0e-4f);
+	EXPECT_NEAR(-0.25f, parsedCircles[0].center.y, 1.0e-4f);
+	EXPECT_NEAR(0.12f, parsedCircles[0].radius, 1.0e-4f);
+
+	LUA lua;
+	ASSERT_TRUE(lua.loadBuffer(out, "patched-roundtrip"));
 }
