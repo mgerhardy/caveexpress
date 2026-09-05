@@ -413,8 +413,8 @@ sprites = {
 	},
 	["dust"] = {
 		fps = 8,
-		width = 1.5,
-		height = 1.2,
+		width = 2.0,
+		height = 1.4,
 		frames = {
 			{}, --back
 			{}, --middle

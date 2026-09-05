@@ -811,6 +811,15 @@ int luaEntitySetIdle (lua_State* L)
 	return 0;
 }
 
+int luaEntityIsIdle (lua_State* L)
+{
+	IEntity* entity = luaGetEntity(L);
+	if (!entity->isNpc())
+		luaL_error(L, "isIdle() is only valid for NPCs");
+	lua_pushboolean(L, assert_cast<NPC*, IEntity*>(entity)->isIdle() ? 1 : 0);
+	return 1;
+}
+
 int luaEntitySetDone (lua_State* L)
 {
 	IEntity* entity = luaGetEntity(L);
@@ -1155,6 +1164,7 @@ void MapScript::install (CaveExpressMapContext& ctx)
 			{ "resetAcceleration", luaEntityResetAcceleration },
 			{ "setMoving", luaEntitySetMoving },
 			{ "setIdle", luaEntitySetIdle },
+			{ "isIdle", luaEntityIsIdle },
 			{ "setDone", luaEntitySetDone },
 			{ "returnToCave", luaEntityReturnToCave },
 			{ "leavePackage", luaEntityLeavePackage },

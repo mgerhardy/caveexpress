@@ -30,10 +30,7 @@ bool NPCPackage::shouldCollide (const IEntity* entity) const
 
 void NPCPackage::setIdle ()
 {
-	Log::debug(LOG_GAMEIMPL, "idle npc %i: %s", getID(), _type.name.c_str());
-	setState(NPCState::NPC_IDLE);
-	setLinearVelocity(PhysicsVec2_zero);
-	_idleTimer = 0;
+	NPC::setIdle();
 }
 
 void NPCPackage::update (uint32_t deltaTime)

@@ -273,6 +273,9 @@ void NPC::setMoving (const PhysicsVec2& targetPos)
 void NPC::setIdle ()
 {
 	Log::debug(LOG_GAMEIMPL, "idle npc %i: %s", getID(), _type.name.c_str());
+	TimeManager& t = _map.getTimeManager();
+	t.clearTimeout(_moveTimer);
+	_moveTimer = 0;
 	setState(NPCState::NPC_IDLE);
 	setAnimationType(getIdleAnimation());
 	setLinearVelocity(PhysicsVec2_zero);

@@ -1,8 +1,12 @@
 -- Intro movie: "The garbage problem"
 -- Fully scripted cutscene - no player interaction.
--- Rubbish sits in front of the cave. A villager has an idea, walks over,
--- and the dust cloud turns the waste into the empty CaveExpress machine.
--- After that the taxi collects the remaining packed garbage.
+-- Rubbish sits in front of the cave. A villager has an idea, walks into the
+-- pile, vanishes in the dust, then reappears beside the new machine and boards.
+-- While the pilot sits idle, another villager leaves the cave, has an idea,
+-- and hauls packed garbage out. The machine then delivers it to the target.
+--
+-- After the machine appears the builder stands beside it, waits, and boards.
+-- Only then does the woman leave the cave.
 --
 -- Coordinate note: Y grows downward (gravity). "Above" means a smaller Y.
 
@@ -17,6 +21,8 @@ local player = nil
 local waste = nil
 local dust = nil
 local idea = nil
+local dumper = nil
+local dumperDrops = 0
 local drops = 0
 local packages = {}
 local flyPath = nil
@@ -35,12 +41,20 @@ local HOVER_MIN_MS = 900
 local HOVER_MAX_MS = 3500
 local DELIVER_TIMEOUT_MS = 8000
 local MAX_DELIVER_ATTEMPTS = 3
-local BOARD_DIST = 0.75
 local WASTE_X = 3.0
 local WASTE_Y = 3.5
-local WASTE_CX = 4.5
+local WASTE_W = 3.0
+local WASTE_H = 1.5
+local WASTE_CX = WASTE_X + WASTE_W * 0.5
 local WASTE_APPROACH_X = 3.15
+local WASTE_WORK_X = 4.5
+local BOARD_WAIT_MS = 2000
+local NPC_GROUND_Y = 4.726 -- ground 5.0 - npc-man height 0.548 / 2
+local DUST_W = 2.0
+local DUST_H = 1.4
 local DUST_MS = 1100
+-- Between the cave (x=1) and the machine, on the walkway.
+local DUMP_X = { 2.15, 2.60, 3.05 }
 local MACHINE_HIDE_X = -4.0
 local machineShown = false
 
@@ -82,8 +96,10 @@ end
 
 local function spawnDust(map)
 	dust = removeDeco(dust)
-	-- Center the puff on the waste pile.
-	dust = map:addTileRuntime("dust", WASTE_CX - 0.75, WASTE_Y - 0.1)
+	-- LOWER_LEFT tiles sit on gridY+height. Put that baseline on the same
+	-- ground line as the waste so the puff covers the pile instead of hanging above it.
+	local wasteBottom = WASTE_Y + WASTE_H
+	dust = map:addTileRuntime("dust", WASTE_CX - DUST_W * 0.5, wasteBottom - DUST_H)
 end
 
 local function rememberPackage(pkg)
@@ -166,6 +182,39 @@ local function parkMachine(playerEnt)
 	end
 end
 
+local function hideNpc(ent)
+	if ent == nil or not ent:isValid() then
+		return
+	end
+	ent:setIdle()
+	ent:setPos(MACHINE_HIDE_X, NPC_GROUND_Y)
+end
+
+local function placeNpc(ent, x)
+	if ent == nil or not ent:isValid() then
+		return
+	end
+	ent:setPos(x, NPC_GROUND_Y)
+	ent:setIdle()
+	ent:setVelocity(0, 0)
+end
+
+-- Stand flush with the left side of the parked machine (player-empty).
+local function machineStandX(playerEnt)
+	local px = WASTE_CX
+	if playerEnt ~= nil and playerEnt:isValid() then
+		local x = select(1, playerEnt:getPos())
+		if x > 1.5 then
+			px = x
+		end
+	end
+	return px - 0.52
+end
+
+local function standBesideMachine(ent, playerEnt)
+	placeNpc(ent, machineStandX(playerEnt))
+end
+
 local function revealMachine(playerEnt)
 	waste = removeDeco(waste)
 	dust = removeDeco(dust)
@@ -188,6 +237,10 @@ local function skipCutscene(map)
 		pilot:remove()
 	end
 	pilot = nil
+	if dumper ~= nil and dumper:isValid() then
+		dumper:remove()
+	end
+	dumper = nil
 	map:setInputEnabled(false)
 	setPhase(map, "done", "The caves are clean again. Thank you!")
 	map:finish()
@@ -302,6 +355,20 @@ local function beginDeliver(map, playerEnt)
 	return false
 end
 
+local function npcCloseTo(ent, x, maxDist)
+	if ent == nil or not ent:isValid() then
+		return false
+	end
+	return math.abs(select(1, ent:getPos()) - x) < (maxDist or 0.35)
+end
+
+local function beginDumper(map)
+	dumper = nil
+	dumperDrops = 0
+	idea = removeDeco(idea)
+	setPhase(map, "dumperOut", "Someone else has an idea...")
+end
+
 local function beginRescueFlight(map, playerEnt)
 	refreshPackages(map)
 	ensurePackages(map)
@@ -333,6 +400,8 @@ function onMapLoaded()
 	deliverAttempts = 0
 	collectTarget = nil
 	pilot = nil
+	dumper = nil
+	dumperDrops = 0
 	idea = nil
 	dust = nil
 	waste = nil
@@ -423,59 +492,64 @@ function onUpdate(dt)
 		if pilot ~= nil and pilot:isValid() then
 			pilot:setIdle()
 		end
-		if timer > 1800 then
+		if timer > 2500 then
 			idea = removeDeco(idea)
+			if pilot ~= nil and pilot:isValid() then
+				pilot:setMoving(WASTE_WORK_X)
+			end
+			setPhase(map, "walkIntoWaste")
+		end
+		return
+	end
+
+	-- Walk into the pile, then vanish inside the dust cloud.
+	if phase == "walkIntoWaste" then
+		parkMachine(player)
+		if pilot == nil or not pilot:isValid() then
+			spawnDust(map)
+			setPhase(map, "dust")
+			return
+		end
+		local nx = select(1, pilot:getPos())
+		if timer > 400 then
+			pilot:setMoving(WASTE_WORK_X)
+		end
+		if math.abs(nx - WASTE_WORK_X) < 0.35 or timer > 8000 then
 			spawnDust(map)
 			setPhase(map, "dust")
 		end
 		return
 	end
 
-	-- Dust plays over the waste; when it ends the pile is gone and the
-	-- empty machine appears in its place.
+	-- Dust covers the NPC at the pile, then they stay hidden until the machine appears.
 	if phase == "dust" then
 		parkMachine(player)
+		if timer > 250 then
+			hideNpc(pilot)
+		end
 		if timer > DUST_MS then
 			revealMachine(player)
+			standBesideMachine(pilot, player)
 			setPhase(map, "reveal", "The CaveExpress is ready!")
 		end
 		return
 	end
 
 	if phase == "reveal" then
-		parkMachine(player)
-		if timer > 900 then
-			if pilot ~= nil and pilot:isValid() and player ~= nil and player:isValid() then
-				local px = select(1, player:getPos())
-				pilot:setMoving(px)
-			end
-			setPhase(map, "pilotWalk", "A volunteer steps up...")
+		keepEmpty(player)
+		-- Pin beside the machine; do not start a walk.
+		standBesideMachine(pilot, player)
+		if timer > BOARD_WAIT_MS then
+			setPhase(map, "board")
 		end
 		return
 	end
 
 	if phase == "pilotWalk" then
+		-- Legacy phase: stand and board, do not walk in from far away.
 		keepEmpty(player)
-		if pilot == nil or not pilot:isValid() then
-			if player ~= nil and player:isValid() then
-				player:setAnimation("idle")
-			end
-			beginRescueFlight(map, player)
-			return
-		end
-		if player == nil or not player:isValid() then
-			return
-		end
-		local px, py = player:getPos()
-		local nx, ny = pilot:getPos()
-		local dist = math.sqrt((px - nx) * (px - nx) + (py - ny) * (py - ny))
-		if timer > 400 then
-			pilot:setMoving(px)
-			timer = 0
-		end
-		if dist < BOARD_DIST or (math.abs(px - nx) < BOARD_DIST and math.abs(py - ny) < 1.2) then
-			setPhase(map, "board")
-		elseif timer > 12000 then
+		standBesideMachine(pilot, player)
+		if timer > BOARD_WAIT_MS or pilot == nil or not pilot:isValid() then
 			setPhase(map, "board")
 		end
 		return
@@ -490,8 +564,88 @@ function onUpdate(dt)
 			player:setAnimation("idle")
 			player:setInvulnerable(20000)
 		end
-		if timer > 900 then
+		if timer > 400 then
+			beginDumper(map)
+		end
+		return
+	end
+
+	-- Second villager leaves the cave, has an idea, and dumps packed garbage.
+	if phase == "dumperOut" then
+		keepEmpty(player)
+		if dumper == nil then
+			dumper = map:spawnPackageNPC(1, "npc-woman")
+			if dumper == nil or not dumper:isValid() then
+				ensurePackages(map)
+				beginRescueFlight(map, player)
+				return
+			end
+			dumper:setMoving(DUMP_X[1])
+		elseif dumper:isValid() and not npcCloseTo(dumper, DUMP_X[1], 0.35) and timer < 10000 then
+			if timer > 400 and math.floor(timer / 450) ~= math.floor((timer - dt) / 450) then
+				dumper:setMoving(DUMP_X[1])
+			end
+		end
+		if dumper ~= nil and dumper:isValid()
+			and (npcCloseTo(dumper, DUMP_X[1], 0.35) or timer > 10000) then
+			dumper:setIdle()
+			dumper:setVelocity(0, 0)
+			placeIdea(map, dumper)
+			setPhase(map, "dumperThink", "We could pack this and fly it away!")
+		end
+		return
+	end
+
+	if phase == "dumperThink" then
+		keepEmpty(player)
+		if dumper ~= nil and dumper:isValid() then
+			dumper:setIdle()
+			dumper:setVelocity(0, 0)
+		end
+		if timer > 2400 then
+			idea = removeDeco(idea)
+			dumperDrops = 0
+			setPhase(map, "dumperDump")
+		end
+		return
+	end
+
+	if phase == "dumperDump" then
+		keepEmpty(player)
+		if dumper == nil or not dumper:isValid() then
+			ensurePackages(map)
 			beginRescueFlight(map, player)
+			return
+		end
+		local targetX = DUMP_X[math.min(dumperDrops + 1, #DUMP_X)]
+		if timer > 300 then
+			dumper:setMoving(targetX)
+		end
+		if npcCloseTo(dumper, targetX, 0.4) or timer > 8000 then
+			dumper:setIdle()
+			local pkg = dumper:dropPackage()
+			rememberPackage(pkg)
+			dumperDrops = dumperDrops + 1
+			timer = 0
+			if dumperDrops >= #DUMP_X then
+				dumper:returnToCave()
+				setPhase(map, "dumperHome")
+			end
+		end
+		return
+	end
+
+	if phase == "dumperHome" then
+		keepEmpty(player)
+		if dumper == nil or not dumper:isValid() or timer > 10000 then
+			dumper = nil
+			ensurePackages(map)
+			beginRescueFlight(map, player)
+			return
+		end
+		if timer > 400 then
+			dumper:returnToCave()
+			timer = 0
 		end
 		return
 	end

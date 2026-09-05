@@ -12,6 +12,7 @@
 #include "common/Direction.h"
 #include "common/EntityType.h"
 #include "network/INetwork.h"
+#include <algorithm>
 
 namespace caveexpress {
 
@@ -132,13 +133,16 @@ TEST_F(MapTest, testIntroMoviePackageLoadsAndFinishes) {
 	ASSERT_TRUE(_map.isActive());
 	ASSERT_FALSE(_map.isInputEnabled());
 
-	// Drive through waste/idea/dust/reveal and boarding into scripted rescue.
-	for (int i = 0; i < 2000; ++i)
+	// Drive through waste/idea/dust/reveal, boarding, the dumper, and rescue.
+	int seenPackages = 0;
+	for (int i = 0; i < 4000; ++i) {
 		_map.update(16);
+		seenPackages = std::max(seenPackages, _map.countPackages() + _map.getDeliveredPackageCount());
+	}
 
 	// Fully scripted cutscene: input stays locked; packed garbage is staged after the build.
 	ASSERT_FALSE(_map.isInputEnabled()) << "intro cutscene must never enable player input";
-	ASSERT_GT(_map.countPackages(), 0) << "script should spawn packages";
+	ASSERT_GT(seenPackages, 0) << "script should spawn packages";
 
 	_map.forceComplete();
 	ASSERT_TRUE(_map.isDone());
