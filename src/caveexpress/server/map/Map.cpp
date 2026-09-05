@@ -327,10 +327,9 @@ bool Map::removeEntityImmediate (IEntity* entity)
 		CaveMapTile* cave = assert_cast<CaveMapTile*, IEntity*>(entity);
 		_caves.erase(std::remove(_caves.begin(), _caves.end(), cave), _caves.end());
 	}
-	if (entity->isNpc()) {
-		NPCFriendly* friendly = dynamic_cast<NPCFriendly*>(entity);
-		if (friendly != nullptr)
-			_friendlyNPCs.remove(friendly);
+	if (entity->isNpcFriendly()) {
+		NPCFriendly* friendly = assert_cast<NPCFriendly*, IEntity*>(entity);
+		_friendlyNPCs.remove(friendly);
 	}
 
 	auto eraseFrom = [] (EntityList& list, IEntity* e) {
