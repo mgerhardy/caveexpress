@@ -139,6 +139,10 @@ jobs:
             yes | sdkmanager --licenses >/dev/null || true
             sdkmanager --install "platforms;android-34" "build-tools;34.0.0"
 
+        # Validate android-project's wrapper before FetchContent restores
+        # unused SDL gradle-wrapper.jar files that fail checksum checks.
+        - uses: gradle/actions/setup-gradle@v4
+
         - name: Cache FetchContent dependencies
           uses: actions/cache@v4
           with:
@@ -148,8 +152,6 @@ jobs:
         - uses: hendrikmuhs/ccache-action@v1.2
           with:
             key: android-arm64-v8a
-
-        - uses: gradle/actions/setup-gradle@v4
 
         - name: Build native libraries and debug APKs
           env:
