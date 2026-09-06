@@ -129,6 +129,29 @@ static inline int getIndex(int col, int row, int width) {
 	return col + width * row;
 }
 
+static char mergeSokobanField (char current, char incoming)
+{
+	if (incoming == Sokoban::WALL || current == Sokoban::WALL)
+		return Sokoban::WALL;
+	const bool target = isTarget(current) || isTarget(incoming) || isPackageOnTarget(current)
+			|| isPackageOnTarget(incoming) || isPlayerOnTarget(current) || isPlayerOnTarget(incoming);
+	const bool package = isPackage(current) || isPackage(incoming) || isPackageOnTarget(current)
+			|| isPackageOnTarget(incoming);
+	const bool player = isPlayer(current) || isPlayer(incoming) || isPlayerOnTarget(current)
+			|| isPlayerOnTarget(incoming);
+	if (player && target)
+		return Sokoban::PLAYERONTARGET;
+	if (package && target)
+		return Sokoban::PACKAGEONTARGET;
+	if (player)
+		return Sokoban::PLAYER;
+	if (package)
+		return Sokoban::PACKAGE;
+	if (target)
+		return Sokoban::TARGET;
+	return incoming == Sokoban::GROUND ? current : incoming;
+}
+
 bool SokobanMapContext::save () const {
 	const std::string path = FS.getAbsoluteWritePath() + FS.getDataDir() + FS.getMapsDir() + _name + ".sok";
 	return writeBoard(path);
@@ -180,14 +203,8 @@ bool SokobanMapContext::writeBoard (const std::string& path) const {
 		} else if (SpriteTypes::isPackage(spriteType)) {
 			field = Sokoban::PACKAGE;
 		}
-		if (board[index] == Sokoban::TARGET) {
-			if (field == Sokoban::PLAYER)
-				field = Sokoban::PLAYERONTARGET;
-			else if (field == Sokoban::PACKAGE)
-				field = Sokoban::PACKAGEONTARGET;
-		}
-		Log::debug(LOG_GAMEIMPL, "field: %c at index %i", field, index);
-		board[index] = field;
+		board[index] = mergeSokobanField(board[index], field);
+		Log::debug(LOG_GAMEIMPL, "field: %c at index %i", board[index], index);
 	}
 	for (const EmitterDefinition& i : _emitters) {
 		const int index = getIndex(i.x, i.y, width);
@@ -202,10 +219,7 @@ bool SokobanMapContext::writeBoard (const std::string& path) const {
 		} else if (EntityTypes::isTarget(type)) {
 			field = Sokoban::TARGET;
 		}
-		if (isTarget(board[index]) && isPackage(field)) {
-			field = Sokoban::PACKAGEONTARGET;
-		}
-		board[index] = field;
+		board[index] = mergeSokobanField(board[index], field);
 	}
 
 	for (const IMap::StartPosition& pos : _startPositions) {
@@ -309,8 +323,10 @@ bool SokobanMapContext::load(bool skipErrors) {
 			inComment = buffer[i] != '\n';
 			if (inComment)
 				line.push_back(buffer[i]);
-			else
+			else {
 				Log::info(LOG_GAMEIMPL, "comment: %s", line.c_str());
+				line.clear();
+			}
 			continue;
 		}
 		switch (buffer[i]) {

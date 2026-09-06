@@ -6,6 +6,7 @@
 #include "common/SpriteDefinition.h"
 #include "common/TextureDefinition.h"
 #include <cstring>
+#include <fstream>
 
 namespace cavepacker {
 
@@ -157,6 +158,54 @@ TEST_F(SokobanMapContextTest, testDownPlacementTilesOnlyOnDownEdges)
 	EXPECT_GT(torchCount, 0) << "tile-rock-05 (torch) was never selected on down edges";
 
 	FS.deleteFile(relPath);
+}
+
+TEST_F(SokobanMapContextTest, testSaveWritesTitleAndPackageOnTarget)
+{
+	const char* board =
+		";roundtrip-title\n"
+		"Title: Round Trip\n"
+		"####\n"
+		"#@*#\n"
+		"#  #\n"
+		"####\n";
+	const std::string name = "roundtrip_title";
+	const std::string relPath = FS.getDataDir() + FS.getMapsDir() + name + ".sok";
+	const std::string absPath = FS.getAbsoluteWritePath() + relPath;
+	ASSERT_NE(-1L, FS.writeSysFile(absPath, (const unsigned char*)board, strlen(board), true));
+
+	SokobanMapContext ctx(name);
+	ASSERT_TRUE(ctx.load(false));
+	EXPECT_EQ("Round Trip", ctx.getTitle());
+
+	int packages = 0;
+	int targets = 0;
+	for (const MapTileDefinition& tile : ctx.getMapTileDefinitions()) {
+		if (SpriteTypes::isPackage(tile.spriteDef->type))
+			++packages;
+		if (SpriteTypes::isTarget(tile.spriteDef->type))
+			++targets;
+	}
+	EXPECT_EQ(1, packages);
+	EXPECT_EQ(1, targets);
+
+	const std::string outName = "roundtrip_title_out";
+	const std::string outRel = FS.getDataDir() + FS.getMapsDir() + outName + ".sok";
+	const std::string outAbs = FS.getAbsoluteWritePath() + outRel;
+	ASSERT_TRUE(ctx.saveToPath(outAbs));
+
+	std::ifstream in(outAbs.c_str(), std::ios::binary);
+	ASSERT_TRUE(in.good()) << outAbs;
+	const std::string saved((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+	EXPECT_NE(std::string::npos, saved.find("Title: Round Trip"));
+	EXPECT_NE(std::string::npos, saved.find('*'));
+
+	SokobanMapContext reloaded(outName);
+	ASSERT_TRUE(reloaded.load(false));
+	EXPECT_EQ("Round Trip", reloaded.getTitle());
+
+	FS.deleteFile(relPath);
+	FS.deleteFile(outRel);
 }
 
 }

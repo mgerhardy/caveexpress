@@ -1,15 +1,24 @@
 Achievements|Achievements
+Add|Add
+Add a wall border, floors, a package, a target, and a start if they are missing.|Add a wall border, floors, a package, a target, and a start if they are missing.
+Add to campaign|Add to campaign
 Alt+click: pick whatever is on top (any tab)|Alt+click: pick whatever is on top (any tab)
 Applied Lua definition|Applied Lua definition
 Applies to the next placed emitter|Applies to the next placed emitter
 Apply Lua|Apply Lua
 Are you sure?|Are you sure?
+Auto-tile walls|Auto-tile walls
+Auto-tile walls picks rock art from neighboring floors.|Auto-tile walls picks rock art from neighboring floors.
 Back|Back
 background|background
 Big|Big
+Campaign|Campaign
+Campaign id|Campaign id
 Campaigns|Campaigns
+Campaign text|Campaign text
 Cancel|Cancel
 Change the grid tile size to check alignment against the other texture atlas.|Change the grid tile size to check alignment against the other texture atlas.
+Check layout|Check layout
 Clear|Clear
 Clicking the position will move the player there|Clicking the position will move the player there
 Close|Close
@@ -23,12 +32,14 @@ Copy type name|Copy type name
 Could not open sprites.lua|Could not open sprites.lua
 Could not read entities.lua|Could not read entities.lua
 Could not read sprites.lua|Could not read sprites.lua
+Create campaign|Create campaign
 Create server|Create server
 Ctrl+S save, Ctrl+Z/Y undo/redo|Ctrl+S save, Ctrl+Z/Y undo/redo
 Deadlock package|Deadlock package
 decoration|decoration
 Decrease map height|Decrease map height
 Decrease map width|Decrease map width
+Del|Del
 Delete circle|Delete circle
 Delete polygon|Delete polygon
 Delete: remove selection of the active tab|Delete: remove selection of the active tab
@@ -64,6 +75,8 @@ Filter|Filter
 Find|Find
 Find next|Find next
 Fit|Fit
+Flood-fill from the player: packages and targets must be reachable.|Flood-fill from the player: packages and targets must be reachable.
+Floors|Floors
 foreground|foreground
 FPS|FPS
 Fullscreen|Fullscreen
@@ -79,6 +92,7 @@ Height|Height
 Help|Help
 Hints|Hints
 Homepage|Homepage
+In campaigns|In campaigns
 Increase map height|Increase map height
 Increase map width|Increase map width
 Input|Input
@@ -88,16 +102,20 @@ Keep handwritten initMap|Keep handwritten initMap
 Keep initMap|Keep initMap
 Later|Later
 Layers|Layers
+Layout|Layout
+Layout ok|Layout ok
 Leaderboard|Leaderboard
 Lines|Lines
 LMB: paint / place (also selects)|LMB: paint / place (also selects)
 LMB place / drag, RMB delete vertex, wheel zoom, MMB pan|LMB place / drag, RMB delete vertex, wheel zoom, MMB pan
 Lua API|Lua API
 Lua polygon / circle definition|Lua polygon / circle definition
+Make playable|Make playable
 Map|Map
 Map Editor|Map Editor
 Maps|Maps
 Map Script|Map Script
+Maps in campaign|Maps in campaign
 Map validation|Map validation
 MMB click: pick, MMB drag or Space+LMB: pan|MMB click: pick, MMB drag or Space+LMB: pan
 Move all packages onto their targets|Move all packages onto their targets
@@ -105,6 +123,7 @@ Multiplayer|Multiplayer
 Music volume|Music volume
 Name|Name
 New|New
+New campaign file|New campaign file
 New circle|New circle
 New polygon|New polygon
 No|No
@@ -120,12 +139,17 @@ On|On
 On save, copy initMap from the existing file instead of regenerating tiles.|On save, copy initMap from the existing file instead of regenerating tiles.
 Open|Open
 Package|Package
+Package count must match target count|Package count must match target count
+Packages|Packages
+Packages sit on floors or targets. Walls replace everything in a cell.|Packages sit on floors or targets. Walls replace everything in a cell.
 Palette|Palette
 Paste|Paste
 Patched sprites.lua is not valid Lua|Patched sprites.lua is not valid Lua
 Patch this sprite's polygons/circles in the game data sprites.lua|Patch this sprite's polygons/circles in the game data sprites.lua
 Pick a sprite to edit its collision polygons.|Pick a sprite to edit its collision polygons.
 Place tile|Place tile
+Play|Play
+Playable reachable|Playable reachable
 Players|Players
 Play from here|Play from here
 Please rate the app|Please rate the app
@@ -139,10 +163,12 @@ Quit without saving|Quit without saving
 Redo|Redo
 Red packages are deadlocks - undo your step|Red packages are deadlocks - undo your step
 Refresh|Refresh
+Remove|Remove
 Remove all from map|Remove all from map
 Remove tile|Remove tile
 Replace|Replace
 Replace all|Replace all
+Replace wall sprites using neighboring floors (same rules as map load).|Replace wall sprites using neighboring floors (same rules as map load).
 Reset|Reset
 Reset game progress?|Reset game progress?
 Restart|Restart
@@ -150,6 +176,8 @@ Retry|Retry
 Right-click a palette item for more actions|Right-click a palette item for more actions
 RMB: erase items of the active tab|RMB: erase items of the active tab
 Save|Save
+Save and start at the view center|Save and start at the view center
+Save and start at this pad|Save and start at this pad
 Save and start with the machine at the view center (god mode)|Save and start with the machine at the view center (god mode)
 Save anyway|Save anyway
 Save & Go|Save & Go
@@ -172,6 +200,8 @@ Show Grid|Show Grid
 Size|Size
 Skip|Skip
 Small|Small
+Sokoban cell|Sokoban cell
+Sokoban tiles|Sokoban tiles
 solid|solid
 Solve|Solve
 Sound|Sound
@@ -180,7 +210,9 @@ Space (on canvas): rotate selected tile or brush|Space (on canvas): rotate selec
 Sprite|Sprite
 Sprite Shape Editor|Sprite Shape Editor
 Start|Start
+Start positions|Start positions
 Target|Target
+Targets|Targets
 Textures|Textures
 The less moves you do the better|The less moves you do the better
 Theme|Theme
@@ -201,46 +233,14 @@ Username|Username
 Vertices|Vertices
 Volume|Volume
 Waiting|Waiting
+Walls|Walls
 Wheel: zoom toward cursor|Wheel: zoom toward cursor
 Width|Width
+wildcard|wildcard
 Write into the project maps folder|Write into the project maps folder
 Write sprites.lua|Write sprites.lua
 Wrote entities.lua|Wrote entities.lua
 Wrote sprites.lua|Wrote sprites.lua
 Yes|Yes
-Add|Add
-Add a wall border, floors, a package, a target, and a start if they are missing.|Add a wall border, floors, a package, a target, and a start if they are missing.
-Add to campaign|Add to campaign
-Auto-tile walls|Auto-tile walls
-Auto-tile walls picks rock art from neighboring floors.|Auto-tile walls picks rock art from neighboring floors.
-Campaign|Campaign
-Campaign id|Campaign id
-Campaign text|Campaign text
-Check layout|Check layout
-Create campaign|Create campaign
-Del|Del
-Flood-fill from the player: packages and targets must be reachable.|Flood-fill from the player: packages and targets must be reachable.
-Floors|Floors
-In campaigns|In campaigns
-Layout|Layout
-Layout ok|Layout ok
-Make playable|Make playable
-Maps in campaign|Maps in campaign
-New campaign file|New campaign file
-Package count must match target count|Package count must match target count
-Packages|Packages
-Packages sit on floors or targets. Walls replace everything in a cell.|Packages sit on floors or targets. Walls replace everything in a cell.
-Play|Play
-Playable reachable|Playable reachable
-Remove|Remove
-Replace wall sprites using neighboring floors (same rules as map load).|Replace wall sprites using neighboring floors (same rules as map load).
-Save and start at the view center|Save and start at the view center
-Save and start at this pad|Save and start at this pad
-Sokoban cell|Sokoban cell
-Sokoban tiles|Sokoban tiles
-Start positions|Start positions
-Targets|Targets
-Walls|Walls
-wildcard|wildcard
 You have unsaved changes. Continue?|You have unsaved changes. Continue?
 Your player|Your player
