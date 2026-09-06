@@ -1,4 +1,5 @@
 #include "File.h"
+#include "common/FileSystem.h"
 #include "common/System.h"
 #include "common/Config.h"
 #include "common/Log.h"
@@ -22,29 +23,36 @@ const std::string& File::getName () const
 	return _rawPath;
 }
 
-long File::writeString (const char *buf) const
+long File::writeString (const char *buf)
 {
 	return write((const unsigned char*)buf, strlen(buf));
 }
 
-long File::appendString (const char *buf) const
+long File::appendString (const char *buf)
 {
 	return write((const unsigned char*)buf, strlen(buf), "ab");
 }
 
-long File::write (const unsigned char *buf, size_t len, const char *mode) const
+long File::write (const unsigned char *buf, size_t len, const char *mode)
 {
 	System.mkdir(getPath());
 
-	SDL_RWops *rwops = SDL_RWFromFile(_rawPath.c_str(), mode);
-	if (!rwops) {
-		Log::info(LOG_COMMON, "failed to get stream for %s", _rawPath.c_str());
-		return -1L;
+	if (_file != nullptr && mode != nullptr && mode[0] == 'w') {
+		close();
+	}
+
+	if (_file == nullptr) {
+		const char *openMode = (mode != nullptr && mode[0] != '\0') ? mode : "wb";
+		_file = FS.createRWops(_rawPath, openMode);
+		if (_file == nullptr) {
+			Log::info(LOG_COMMON, "failed to get stream for %s", _rawPath.c_str());
+			return -1L;
+		}
 	}
 
 	int remaining = len;
 	while (remaining) {
-		const size_t written = SDL_RWwrite(rwops, buf, 1, remaining);
+		const size_t written = SDL_RWwrite(_file, buf, 1, remaining);
 		if (written == 0) {
 			Log::info(LOG_COMMON, "failed to write to stream %s", _rawPath.c_str());
 			return -1L;
@@ -54,7 +62,6 @@ long File::write (const unsigned char *buf, size_t len, const char *mode) const
 		buf += written;
 	}
 
-	SDL_RWclose(rwops);
 	getSystem().syncFiles();
 
 	return len;
@@ -158,8 +165,11 @@ int File::read (void *buf, size_t size, size_t maxnum)
 
 void File::close ()
 {
-	if (_file != nullptr)
-		SDL_RWclose(_file);
+	if (_file == nullptr)
+		return;
+	SDL_RWops *rwops = _file;
+	_file = nullptr;
+	SDL_RWclose(rwops);
 }
 
 long File::tell () const

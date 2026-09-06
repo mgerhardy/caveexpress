@@ -4,12 +4,16 @@
 #include "common/ports/ISystem.h"
 #include "common/NonCopyable.h"
 #include <unordered_map>
+#include <unordered_set>
 
 struct SDL_RWops;
 
 class FileSystem: public NonCopyable {
 private:
 	std::unordered_map<std::string, std::string> _schemes;
+	mutable std::unordered_set<std::string> _openedFiles;
+	mutable std::unordered_map<SDL_RWops*, std::string> _openedRWops;
+	mutable std::unordered_map<SDL_RWops*, void*> _origRWopsClose;
 	std::string _homeDir;
 	std::string _dataDir;
 	const std::string _mapsDir;
@@ -23,6 +27,9 @@ private:
 	const std::string _gesturesDir;
 
 	std::string getDirForURLType (const std::string& type) const;
+	std::string normalizeOpenPath (const std::string& path) const;
+	bool beginOpen (const std::string& path) const;
+	void endOpen (const std::string& path) const;
 
 	FileSystem ();
 public:
@@ -30,7 +37,14 @@ public:
 
 	static FileSystem& get ();
 
+	/**
+	 * Opens a file via SDL_RWops.
+	 * Asserts if the same path is already open so Linux/macOS catch the
+	 * duplicate-handle bugs that only fail on Windows.
+	 */
 	SDL_RWops* createRWops (const std::string& file, const std::string& mode = "rb") const;
+	/** SDL_RWops close hook; untracks the path then calls the original close. */
+	int onTrackedRWopsClose (SDL_RWops *rwops);
 	void shutdown ();
 	void registerURL(const std::string& type, const std::string& dir);
 	// writes a file to the users home directory

@@ -68,7 +68,9 @@ TEST_F(FileTest, testCopy) {
 			reinterpret_cast<const unsigned char *>(testStr.c_str());
 	const size_t length = testStr.size();
 	ASSERT_TRUE(FS.writeFile(filename, buf, length, true) != -1L) << "Failed to write file " << filename;
-	ASSERT_TRUE(FS.copy(filename, targetFilename)) << "Failed to copy file " << filename << " to " << targetFilename;
+	const std::string src = FS.getAbsoluteWritePath() + filename;
+	const std::string target = FS.getAbsoluteWritePath() + targetFilename;
+	ASSERT_TRUE(FS.copy(src, target)) << "Failed to copy file " << src << " to " << target;
 }
 
 TEST_F(FileTest, testName) {
@@ -98,5 +100,25 @@ TEST_F(FileTest, testSaveAndLoadHomeDir) {
 		ASSERT_EQ(5, fileLen) << "File " << path << " has unexpected size";
 		const std::string str(buffer, fileLen);
 		ASSERT_EQ(str, "test\n");
+	}
+}
+
+TEST_F(FileTest, testReopenAfterClose) {
+	const std::string path = FS.getAbsoluteWritePath() + "test-reopen-after-close.tmp";
+	{
+		SDL_RWops *rwops = FS.createRWops(path, "wb");
+		ASSERT_NE(nullptr, rwops);
+		FilePtr file(new File(rwops, path));
+		ASSERT_NE(-1L, file->writeString("hello"));
+	}
+	{
+		SDL_RWops *rwops = FS.createRWops(path, "rb");
+		ASSERT_NE(nullptr, rwops) << "reopening a closed file must succeed";
+		FilePtr file(new File(rwops, path));
+		char *buffer = nullptr;
+		const int fileLen = file->read((void **) &buffer);
+		const std::unique_ptr<char[]> p(buffer);
+		ASSERT_EQ(5, fileLen);
+		ASSERT_EQ(std::string(buffer, fileLen), "hello");
 	}
 }

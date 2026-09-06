@@ -604,10 +604,14 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	INIT_Subsystem(SDL_INIT_GAMECONTROLLER, false);
 	INIT_Subsystem(SDL_INIT_HAPTIC, false);
 
-	const FilePtr& file = FS.getFile("gamecontrollerdb.txt");
-	SDL_RWops* controllerDb = FS.createRWops(file->getName());
-	if (controllerDb) {
-		SDL_GameControllerAddMappingsFromRW(controllerDb, 1);
+	FilePtr file = FS.getFile("gamecontrollerdb.txt");
+	if (file->exists()) {
+		const std::string controllerDbPath = file->getName();
+		file.reset();
+		SDL_RWops* controllerDb = FS.createRWops(controllerDbPath);
+		if (controllerDb) {
+			SDL_GameControllerAddMappingsFromRW(controllerDb, 1);
+		}
 	} else {
 		Log::info(LOG_GFX, "Could not update gamecontroller database. gamecontrollerdb.txt not found.");
 	}

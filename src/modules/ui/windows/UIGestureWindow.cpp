@@ -40,7 +40,7 @@ bool UIGestureWindow::onGestureRecord (int64_t gestureId)
 	Log::info(LOG_UI, "Save gestures");
 	const bool retVal = UIWindow::onGestureRecord(gestureId);
 	const std::string path = FS.getAbsoluteWritePath() + "gesture-" + string::toString(gestureId);
-	SDL_RWops* rwops = SDL_RWFromFile(path.c_str(), "wb");
+	SDL_RWops* rwops = FS.createRWops(path, "wb");
 	if (rwops) {
 		Log::info(LOG_UI, "Save gestures to %s", path.c_str());
 		if (SDL_SaveDollarTemplate(gestureId, rwops) <= 0) {

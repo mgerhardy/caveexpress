@@ -4,6 +4,7 @@
 #include "common/Application.h"
 #include "../game/GameRegistry.h"
 #include <SDL.h>
+#include <SDL_assert.h>
 #include <SDL_platform.h>
 
 #ifdef __EMSCRIPTEN__
@@ -41,6 +42,13 @@ FileSystem::FileSystem () :
 	registerURL("home", _homeDir);
 }
 
+namespace {
+int SDLCALL closeTrackedRWops (SDL_RWops *rwops)
+{
+	return FileSystem::get().onTrackedRWopsClose(rwops);
+}
+}
+
 FileSystem::~FileSystem ()
 {
 }
@@ -56,15 +64,25 @@ void FileSystem::shutdown ()
 }
 
 bool FileSystem::copy (const std::string& src, const std::string& target) const {
+	if (!beginOpen(src))
+		return false;
 	FILE *f = fopen(src.c_str(), "rb");
 	if (!f) {
+		endOpen(src);
 		Log::error(LOG_COMMON, "Opening source file '%s' failed", src.c_str());
 		return false;
 	}
 
+	if (!beginOpen(target)) {
+		fclose(f);
+		endOpen(src);
+		return false;
+	}
 	FILE* ft = fopen(target.c_str(), "wb");
 	if (!ft) {
 		fclose(f);
+		endOpen(src);
+		endOpen(target);
 		return false;
 	}
 	fseek(f, 0, SEEK_END);
@@ -75,20 +93,25 @@ bool FileSystem::copy (const std::string& src, const std::string& target) const 
 	if (fread(buf, 1, len, f) != len) {
 		fclose(f);
 		fclose(ft);
+		endOpen(src);
+		endOpen(target);
 		free(buf);
 		return false;
 	}
 	fclose(f);
+	endOpen(src);
 
 	if (fwrite(buf, 1, len, ft) != len) {
 		Log::error(LOG_COMMON, "Opening dest file '%s' failed", target.c_str());
 		free(buf);
 		fclose(ft);
+		endOpen(target);
 		return false;
 	}
 
 	free(buf);
 	fclose(ft);
+	endOpen(target);
 	return true;
 }
 
@@ -105,7 +128,7 @@ long FileSystem::writeFile (const std::string& filename, const unsigned char *bu
 
 	const std::string path = _homeDir + filename;
 	SDL_RWops *rwops = createRWops(path, "wb");
-	File file(rwops, filename);
+	File file(rwops, path);
 	if (!overwrite && file.exists()) {
 		Log::info(LOG_COMMON, "file already exists: %s", path.c_str());
 		return -1L;
@@ -150,9 +173,75 @@ bool FileSystem::exists (const std::string& filename) const
 
 SDL_RWops* FileSystem::createRWops (const std::string& path, const std::string& mode) const
 {
+	if (!beginOpen(path))
+		return nullptr;
+
 	SDL_RWops *rwops = SDL_RWFromFile(path.c_str(), mode.c_str());
-	SDL_ClearError();
+	if (rwops == nullptr) {
+		endOpen(path);
+		SDL_ClearError();
+		return nullptr;
+	}
+
+	_openedRWops[rwops] = normalizeOpenPath(path);
+	_origRWopsClose[rwops] = reinterpret_cast<void*>(rwops->close);
+	rwops->close = closeTrackedRWops;
 	return rwops;
+}
+
+std::string FileSystem::normalizeOpenPath (const std::string& path) const
+{
+	std::string normalized = path;
+	for (char& c : normalized) {
+		if (c == '\\')
+			c = '/';
+	}
+	return normalized;
+}
+
+bool FileSystem::beginOpen (const std::string& path) const
+{
+	const std::string key = normalizeOpenPath(path);
+	if (_openedFiles.find(key) != _openedFiles.end()) {
+		Log::error(LOG_COMMON, "file already open: %s", key.c_str());
+		for (const std::string& open : _openedFiles) {
+			Log::error(LOG_COMMON, "  still open: %s", open.c_str());
+		}
+		SDL_assert_always(!"duplicate file open");
+		return false;
+	}
+	_openedFiles.insert(key);
+	return true;
+}
+
+void FileSystem::endOpen (const std::string& path) const
+{
+	_openedFiles.erase(normalizeOpenPath(path));
+}
+
+int FileSystem::onTrackedRWopsClose (SDL_RWops *rwops)
+{
+	if (rwops == nullptr)
+		return 0;
+
+	auto pathIter = _openedRWops.find(rwops);
+	if (pathIter != _openedRWops.end()) {
+		endOpen(pathIter->second);
+		_openedRWops.erase(pathIter);
+	}
+
+	using RWopsCloseFn = int (SDLCALL *)(SDL_RWops *);
+	RWopsCloseFn orig = nullptr;
+	auto origIter = _origRWopsClose.find(rwops);
+	if (origIter != _origRWopsClose.end()) {
+		orig = reinterpret_cast<RWopsCloseFn>(origIter->second);
+		_origRWopsClose.erase(origIter);
+	}
+
+	if (orig == nullptr)
+		return 0;
+	rwops->close = orig;
+	return orig(rwops);
 }
 
 FilePtr FileSystem::getFile (const std::string& filename) const
