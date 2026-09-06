@@ -949,7 +949,9 @@ function initMap()
 
 	for x = 0, 13 do
 		for y = 0, 7 do
-			map:addTile("tile-background-0" .. tostring((x + y) % 4 + 1), x, y)
+			if not (x == 1 and y == 4) then
+				map:addTile("tile-background-0" .. tostring((x + y) % 4 + 1), x, y)
+			end
 		end
 	end
 

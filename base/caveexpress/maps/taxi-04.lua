@@ -148,6 +148,9 @@ function initMap()
 	map:addTile("tile-background-02", 15.000000, 7.000000)
 	map:addTile("tile-background-03", 15.000000, 8.000000)
 	map:addTile("tile-background-03", 15.000000, 9.000000)
+	map:addTile("tile-background-01", 15.000000, 10.000000)
+	map:addTile("tile-background-01", 14.000000, 11.000000)
+	map:addTile("tile-background-01", 15.000000, 11.000000)
 
 
 	map:addCave("tile-cave-01", 2.000000, 8.000000, "", 1000)

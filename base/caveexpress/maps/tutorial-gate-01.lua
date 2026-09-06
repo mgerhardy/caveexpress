@@ -35,12 +35,10 @@ function initMap()
 	map:addTile("tile-background-03", 7, 2)
 
 	map:addTile("tile-background-04", 0, 3)
-	map:addTile("tile-background-04", 1, 3)
 	map:addTile("tile-background-04", 2, 3)
 	map:addTile("tile-background-04", 3, 3)
 	map:addTile("tile-background-04", 4, 3)
 	map:addTile("tile-background-04", 5, 3)
-	map:addTile("tile-background-04", 6, 3)
 	map:addTile("tile-background-04", 7, 3)
 
 	map:addTile("tile-ground-01", 0, 4)
