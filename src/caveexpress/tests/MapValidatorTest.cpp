@@ -288,6 +288,82 @@ TEST_F(MapValidatorTest, testCaveCoveredByMultiCellSolid)
 	EXPECT_EQ("cave covered by solid", m.failureReason);
 }
 
+TEST_F(MapValidatorTest, testCaveOverlapsBackgroundTile)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts = { { "3", "2" } };
+	const int w = 8;
+	const int h = 8;
+	fillOpenBorder(tiles, w, h);
+	for (int x = 1; x < w - 1; ++x)
+		addTile(tiles, "tile-ground-04", x, 5);
+	addTile(tiles, "tile-background-01", 2, 4);
+	const SpriteDefPtr caveDef = requireSprite("tile-cave-01");
+	ASSERT_TRUE(!!caveDef);
+	caves.emplace_back(2, 4, caveDef, EntityType::NONE, 1000);
+
+	const MapMetrics m = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_GT(m.cavesOverlappingTiles, 0);
+	EXPECT_FALSE(m.valid);
+	EXPECT_EQ("cave overlaps another tile", m.failureReason);
+}
+
+TEST_F(MapValidatorTest, testCaveAllowsBridgeOverlay)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts = { { "3", "2" } };
+	const int w = 8;
+	const int h = 8;
+	for (int y = 0; y < h; ++y) {
+		for (int x = 0; x < w; ++x) {
+			if (x == 0 || y == 0 || x == w - 1 || y == h - 1)
+				addTile(tiles, "tile-rock-01", x, y);
+			else if (!(x == 2 && y == 4))
+				addTile(tiles, "tile-background-01", x, y);
+		}
+	}
+	for (int x = 1; x < w - 1; ++x)
+		addTile(tiles, "tile-ground-04", x, 5);
+	addTile(tiles, "bridge-plank-01", 2, 4);
+	const SpriteDefPtr caveDef = requireSprite("tile-cave-01");
+	ASSERT_TRUE(!!caveDef);
+	caves.emplace_back(2, 4, caveDef, EntityType::NONE, 1000);
+
+	const MapMetrics m = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_EQ(0, m.cavesOverlappingTiles);
+	EXPECT_EQ(0, m.cavesCoveredBySolid);
+	EXPECT_TRUE(m.valid) << m.failureReason;
+}
+
+TEST_F(MapValidatorTest, testCaveMissingPlatformBelow)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts = { { "3", "2" } };
+	const int w = 8;
+	const int h = 8;
+	for (int y = 0; y < h; ++y) {
+		for (int x = 0; x < w; ++x) {
+			if (x == 0 || y == 0 || x == w - 1 || y == h - 1)
+				addTile(tiles, "tile-rock-01", x, y);
+		}
+	}
+	const SpriteDefPtr caveDef = requireSprite("tile-cave-01");
+	ASSERT_TRUE(!!caveDef);
+	caves.emplace_back(2, 4, caveDef, EntityType::NONE, 1000);
+
+	const MapMetrics m = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_EQ(0, m.cavesOverlappingTiles);
+	EXPECT_GT(m.cavesMissingPlatform, 0);
+	EXPECT_FALSE(m.valid);
+	EXPECT_EQ("cave has no ground or solid below", m.failureReason);
+}
+
 TEST_F(MapValidatorTest, testIntroMoviePackageLayout)
 {
 	CaveExpressMapContext ctx("intro-movie-package");

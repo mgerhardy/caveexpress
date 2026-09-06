@@ -56,7 +56,7 @@ bool MapEditorDocument::requiresBackgroundTile (const SpriteType& type) const
 {
 	// Foreground/decoration overlays that only make sense on open background cells
 	// (e.g. bridges, lianes). Solid rock/ground cells are not valid hosts.
-	return SpriteTypes::isBridge(type) || SpriteTypes::isLiane(type);
+	return SpriteTypes::isBackgroundOverlay(type);
 }
 
 bool MapEditorDocument::isHangingGroundSprite (const SpriteDefPtr& def) const

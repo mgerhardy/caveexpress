@@ -425,6 +425,12 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 		if (_layoutMetrics.cavesCoveredBySolid > 0)
 			ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %i", tr("Caves covered").c_str(),
 					_layoutMetrics.cavesCoveredBySolid);
+		if (_layoutMetrics.cavesOverlappingTiles > 0)
+			ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %i", tr("Caves overlapping tiles").c_str(),
+					_layoutMetrics.cavesOverlappingTiles);
+		if (_layoutMetrics.cavesMissingPlatform > 0)
+			ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %i", tr("Caves missing ground below").c_str(),
+					_layoutMetrics.cavesMissingPlatform);
 	}
 
 	ImGui::Separator();

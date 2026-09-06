@@ -6,9 +6,107 @@
 #include "common/vec2.h"
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <queue>
+#include <vector>
 
 namespace caveexpress {
+
+namespace {
+
+bool tileCoversCell (const MapTileDefinition& tile, int x, int y)
+{
+	if (!tile.spriteDef)
+		return false;
+	const int tx = static_cast<int>(tile.x);
+	const int ty = static_cast<int>(tile.y);
+	const int w = std::max(1, static_cast<int>(std::ceil(tile.spriteDef->width - 0.001f)));
+	const int h = std::max(1, static_cast<int>(std::ceil(tile.spriteDef->height - 0.001f)));
+	return x >= tx && x < tx + w && y >= ty && y < ty + h;
+}
+
+bool tileSupportsCavePlatform (const SpriteType& type)
+{
+	return SpriteTypes::isSolid(type) || SpriteTypes::isPressurePlate(type);
+}
+
+bool tileOccupiesCell (const SpriteType& type)
+{
+	return !SpriteTypes::isBackgroundOverlay(type) && !SpriteTypes::isCaveSign(type);
+}
+
+bool tileConflictsWithCave (const SpriteType& type)
+{
+	if (!tileOccupiesCell(type))
+		return false;
+	return SpriteTypes::isBackground(type) || SpriteTypes::isWindow(type) || SpriteTypes::isSolid(type)
+			|| SpriteTypes::isPressurePlate(type);
+}
+
+void countCavePlacement (const std::vector<MapTileDefinition>& tiles,
+		const std::vector<CaveTileDefinition>& caves, int& overlappingTiles, int& missingPlatform)
+{
+	overlappingTiles = 0;
+	missingPlatform = 0;
+	for (const CaveTileDefinition& cave : caves) {
+		const int cx = static_cast<int>(cave.x);
+		const int cy = static_cast<int>(cave.y);
+		bool overlap = false;
+		bool support = false;
+		for (const MapTileDefinition& tile : tiles) {
+			if (!tile.spriteDef)
+				continue;
+			if (tileCoversCell(tile, cx, cy) && tileConflictsWithCave(tile.spriteDef->type))
+				overlap = true;
+			if (tileCoversCell(tile, cx, cy + 1) && tileSupportsCavePlatform(tile.spriteDef->type))
+				support = true;
+		}
+		if (overlap)
+			++overlappingTiles;
+		if (!support)
+			++missingPlatform;
+	}
+}
+
+void markCoveredCells (std::vector<uint8_t>& filled, int width, int height, const SpriteDefPtr& def, int x, int y)
+{
+	if (!def || width <= 0 || height <= 0)
+		return;
+	const int tw = std::max(1, static_cast<int>(std::ceil(def->width - 0.001f)));
+	const int th = std::max(1, static_cast<int>(std::ceil(def->height - 0.001f)));
+	for (int dy = 0; dy < th; ++dy) {
+		for (int dx = 0; dx < tw; ++dx) {
+			const int cx = x + dx;
+			const int cy = y + dy;
+			if (cx < 0 || cy < 0 || cx >= width || cy >= height)
+				continue;
+			filled[cx + cy * width] = 1;
+		}
+	}
+}
+
+int countEmptyCells (int width, int height, const std::vector<MapTileDefinition>& tiles,
+		const std::vector<CaveTileDefinition>& caves)
+{
+	if (width <= 0 || height <= 0)
+		return 0;
+	std::vector<uint8_t> filled(static_cast<size_t>(width * height), 0);
+	for (const MapTileDefinition& tile : tiles) {
+		if (!tile.spriteDef || !tileOccupiesCell(tile.spriteDef->type))
+			continue;
+		markCoveredCells(filled, width, height, tile.spriteDef, static_cast<int>(tile.x), static_cast<int>(tile.y));
+	}
+	for (const CaveTileDefinition& cave : caves)
+		markCoveredCells(filled, width, height, cave.spriteDef, static_cast<int>(cave.x), static_cast<int>(cave.y));
+	int empty = 0;
+	for (uint8_t cell : filled) {
+		if (!cell)
+			++empty;
+	}
+	return empty;
+}
+
+}
 
 MapValidator::CellKind MapValidator::classifyTile (const SpriteType& type) const
 {
@@ -203,9 +301,13 @@ MapMetrics MapValidator::evaluate (int width, int height,
 	m.windowCount = static_cast<int>(windows.size());
 
 	for (const auto& c : cavePositions) {
-		if (grid.solid(c.first, c.second))
+		if (!grid.inBounds(c.first, c.second))
+			continue;
+		// Bridges are walkable overlays; they do not bury a cave the way a rock tile does.
+		if (grid.kind[grid.idx(c.first, c.second)] == CellKind::Collider)
 			++m.cavesCoveredBySolid;
 	}
+	countCavePlacement(tiles, caves, m.cavesOverlappingTiles, m.cavesMissingPlatform);
 
 	for (const EmitterDefinition& e : emitters) {
 		if (!e.type)
@@ -599,6 +701,16 @@ MapMetrics MapValidator::evaluate (int width, int height,
 		m.valid = false;
 		m.failureReason = "cave covered by solid";
 	}
+	if (m.cavesOverlappingTiles > 0) {
+		m.valid = false;
+		if (m.failureReason.empty())
+			m.failureReason = "cave overlaps another tile";
+	}
+	if (m.cavesMissingPlatform > 0) {
+		m.valid = false;
+		if (m.failureReason.empty())
+			m.failureReason = "cave has no ground or solid below";
+	}
 	if (m.caveCount > 0 && m.cavesReachable < m.caveCount) {
 		m.valid = false;
 		if (m.failureReason.empty())
@@ -633,6 +745,8 @@ MapMetrics MapValidator::evaluate (int width, int height,
 	score += 5.0f * (m.cavesAbovePackageTarget == 0 ? 1.0f : 0.0f);
 	score += 5.0f * (m.cavePackageAirTooClose == 0 ? 1.0f : 0.0f);
 	score += 5.0f * (m.cavesCoveredBySolid == 0 ? 1.0f : 0.0f);
+	score += 4.0f * (m.cavesOverlappingTiles == 0 ? 1.0f : 0.0f);
+	score += 4.0f * (m.cavesMissingPlatform == 0 ? 1.0f : 0.0f);
 	score += 4.0f * (m.shortPlatformRuns == 0 ? 1.0f : 0.0f);
 	score += 4.0f * (m.smallSolidComponents == 0 ? 1.0f : 0.0f);
 	score += 3.0f * (m.isolatedWalkables == 0 ? 1.0f : 0.0f);
@@ -716,6 +830,22 @@ MapWinCondition MapValidator::checkWinConditions (const IMap::SettingsMap& setti
 			result.issues.emplace_back("npctransfercount > 0 needs at least two caves (pickup and destination)");
 		if (npcSpawnLimit <= 0)
 			result.issues.emplace_back("npctransfercount > 0 but npcs is 0");
+	}
+
+	int overlappingTiles = 0;
+	int missingPlatform = 0;
+	countCavePlacement(tiles, caves, overlappingTiles, missingPlatform);
+	if (overlappingTiles > 0)
+		result.issues.emplace_back("cave overlaps another tile - remove the existing tile at the cave cell");
+	if (missingPlatform > 0)
+		result.issues.emplace_back("cave has no ground or solid tile in the cell below");
+
+	const int width = string::toInt(settingValue(settings, msn::WIDTH, "0"));
+	const int height = string::toInt(settingValue(settings, msn::HEIGHT, "0"));
+	if (width > 0 && height > 0) {
+		const int emptyCells = countEmptyCells(width, height, tiles, caves);
+		if (emptyCells > 0)
+			result.issues.emplace_back(string::format("%d empty cells - every cell must have a tile", emptyCells));
 	}
 
 	result.winnable = result.issues.empty();

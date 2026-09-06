@@ -41,8 +41,12 @@ struct MapMetrics {
 	int bridgesWithoutBackground = 0;
 	int cavesAbovePackageTarget = 0;
 	int cavePackageAirTooClose = 0;
-	/** Cave cells that are also solid/walkable (covered by a larger rock tile, etc.). */
+	/** Cave cells painted as colliders (e.g. covered by a larger rock tile). Bridge overlays do not count. */
 	int cavesCoveredBySolid = 0;
+	/** Cave cells that still have a host tile (background, rock, window, ...) occupying them. Overlays (bridge, liane) do not count. */
+	int cavesOverlappingTiles = 0;
+	/** Caves with no ground/solid/bridge in the cell immediately below. */
+	int cavesMissingPlatform = 0;
 	int shortPlatformRuns = 0;
 	int smallSolidComponents = 0;
 	int isolatedWalkables = 0;

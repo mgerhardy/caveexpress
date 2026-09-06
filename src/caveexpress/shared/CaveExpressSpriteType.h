@@ -141,6 +141,12 @@ inline bool isBridge (const SpriteType& other)
 	return isBridgeLeft(other) || isBridgeRight(other) || isBridgePlank(other);
 }
 
+/** Overlay drawn on top of a host cell (background, cave, ...). Does not replace that cell. */
+inline bool isBackgroundOverlay (const SpriteType& other)
+{
+	return isBridge(other) || isLiane(other);
+}
+
 inline bool isAnyGround (const SpriteType& other)
 {
 	return isGround(other) || isGroundLeft(other) || isGroundRight(other);
