@@ -1,132 +1,81 @@
 #!/bin/bash
 
-set -e
-set -x
+# Package a macOS .app into a compressed DMG.
+# Finder AppleScript layout is skipped: it fails on headless CI (no TCC / Finder).
 
-# by Andy Maloney
-# http://asmaloney.com/2013/07/howto/packaging-a-mac-os-x-application-using-a-dmg/
+set -euo pipefail
 
-dir=${0%/*}
-if [ -d "$dir" ]; then
-  pushd "$dir"
+if [ $# -lt 2 ]; then
+	echo "usage: $0 <app-name> <version> [src-dir] [build-dir]" >&2
+	exit 1
 fi
 
-src_dir=${3:-../caveexpress}
-build_dir=${4:-../../../cp-build-osx}
-
-pushd ${build_dir}
-ls
-
-# ./contrib/scripts/create_dmg.sh caveexpress 2.4
-
-# set up your app name, version number, and background image file name
 APP_NAME="$1"
 VERSION="$2"
-DMG_BACKGROUND_IMG="Background.png"
-cp "${src_dir}/contrib/installer/osx/background.png" ${DMG_BACKGROUND_IMG}
+SRC_DIR="${3:-.}"
+BUILD_DIR="${4:-.}"
 
-# you should not need to change these
-APP_EXE="${APP_NAME}.app/Contents/MacOS/${APP_NAME}"
+SRC_DIR="$(cd "$SRC_DIR" && pwd)"
+BUILD_DIR="$(cd "$BUILD_DIR" && pwd)"
 
-VOL_NAME="${APP_NAME} ${VERSION}"   # volume name will be "SuperCoolApp 1.0.0"
-DMG_TMP="${VOL_NAME}-temp.dmg"
-DMG_FINAL="${VOL_NAME}.dmg"         # final DMG name will be "SuperCoolApp 1.0.0.dmg"
-STAGING_DIR="./Install"             # we copy all our stuff into this dir
+find_app() {
+	local name="$1.app"
+	local candidate
+	for candidate in \
+		"$BUILD_DIR/$name" \
+		"$SRC_DIR/$name" \
+		"$BUILD_DIR/Release/$name" \
+		"$BUILD_DIR/src/caveexpress/main/Release/$name" \
+		"$BUILD_DIR/src/caveexpress/main/$name"
+	do
+		if [ -d "$candidate" ]; then
+			printf '%s\n' "$candidate"
+			return 0
+		fi
+	done
+	# CMAKE_RUNTIME_OUTPUT_DIRECTORY may place the bundle at the repo root.
+	# macOS /usr/bin/find has no -quit; take the first match.
+	find "$SRC_DIR" "$BUILD_DIR" -name "$name" -type d | head -n 1
+}
 
-# clear out any old data
-rm -rf "${STAGING_DIR}" "${DMG_TMP}" "${DMG_FINAL}"
-
-# copy over the stuff we want in the final disk image to our staging dir
-mkdir -p "${STAGING_DIR}"
-cp -rpf "${APP_NAME}.app" "${STAGING_DIR}"
-# ... cp anything else you want in the DMG - documentation, etc.
-
-pushd "${STAGING_DIR}"
-
-# strip the executable
-#echo "Stripping ${APP_EXE}..."
-#strip -u -r "${APP_EXE}"
-
-# compress the executable if we have upx in PATH
-#  UPX: http://upx.sourceforge.net/
-if hash upx 2>/dev/null; then
-   echo "Compressing (UPX) ${APP_EXE}..."
-   upx -9 "${APP_EXE}"
+APP_BUNDLE="$(find_app "$APP_NAME")"
+if [ -z "${APP_BUNDLE:-}" ] || [ ! -d "$APP_BUNDLE" ]; then
+	echo "Could not find ${APP_NAME}.app under ${SRC_DIR} or ${BUILD_DIR}" >&2
+	find "$SRC_DIR" "$BUILD_DIR" -name '*.app' -type d || true
+	exit 1
 fi
 
-# ... perform any other stripping/compressing of libs and executables
+echo "Using app bundle: $APP_BUNDLE"
 
-popd
-
-# figure out how big our DMG needs to be
-#  assumes our contents are at least 1M!
-SIZE=`du -sh "${STAGING_DIR}" | sed 's/\([0-9\.]*\)M\(.*\)/\1/'`
-SIZE=`echo "${SIZE} + 1.0" | bc | awk '{print int($1+0.5)}'`
-
-if [ $? -ne 0 ]; then
-   echo "Error: Cannot compute size of staging dir"
-   exit
+# Ad-hoc signature only (no Apple Developer ID). Needed on Apple Silicon after
+# fixup_bundle rewrites the Mach-O; CMake/Ninja does not sign anything itself.
+if command -v codesign >/dev/null 2>&1; then
+	codesign --force --deep --sign - "$APP_BUNDLE"
 fi
 
-# create the temp DMG file
-hdiutil create -srcfolder "${STAGING_DIR}" -volname "${VOL_NAME}" -fs HFS+ \
-      -fsargs "-c c=64,a=16,e=16" -format UDRW -size ${SIZE}M "${DMG_TMP}"
+VOL_NAME="${APP_NAME} ${VERSION}"
+DMG_FINAL="${BUILD_DIR}/${VOL_NAME}.dmg"
+STAGING_DIR="${BUILD_DIR}/Install"
 
-echo "Created DMG: ${DMG_TMP} with size ${SIZE}"
+rm -rf "$STAGING_DIR" "$DMG_FINAL"
+mkdir -p "$STAGING_DIR"
+cp -R "$APP_BUNDLE" "$STAGING_DIR/"
+ln -s /Applications "$STAGING_DIR/Applications"
 
-# mount it and save the device
-DEVICE=$(hdiutil attach -readwrite -noverify "${DMG_TMP}" | \
-         egrep '^/dev/' | sed 1q | awk '{print $1}')
+BACKGROUND_SRC="${SRC_DIR}/contrib/installer/osx/background.png"
+if [ -f "$BACKGROUND_SRC" ]; then
+	mkdir -p "$STAGING_DIR/.background"
+	cp "$BACKGROUND_SRC" "$STAGING_DIR/.background/Background.png"
+fi
 
-sleep 2
+hdiutil create \
+	-volname "$VOL_NAME" \
+	-srcfolder "$STAGING_DIR" \
+	-ov \
+	-fs HFS+ \
+	-format UDZO \
+	-imagekey zlib-level=9 \
+	"$DMG_FINAL"
 
-# add a link to the Applications dir
-echo "Add link to /Applications"
-pushd /Volumes/"${VOL_NAME}"
-ln -s /Applications
-popd
-
-# add a background image
-mkdir /Volumes/"${VOL_NAME}"/.background
-cp "${DMG_BACKGROUND_IMG}" /Volumes/"${VOL_NAME}"/.background/
-
-# tell the Finder to resize the window, set the background,
-#  change the icon size, place the icons in the right position, etc.
-echo '
-   tell application "Finder"
-     tell disk "'${VOL_NAME}'"
-           open
-           set current view of container window to icon view
-           set toolbar visible of container window to false
-           set statusbar visible of container window to false
-           set the bounds of container window to {400, 100, 920, 440}
-           set viewOptions to the icon view options of container window
-           set arrangement of viewOptions to not arranged
-           set icon size of viewOptions to 72
-           set background picture of viewOptions to file ".background:'${DMG_BACKGROUND_IMG}'"
-           set position of item "'${APP_NAME}'.app" of container window to {160, 205}
-           set position of item "Applications" of container window to {360, 205}
-           close
-           open
-           update without registering applications
-           delay 2
-     end tell
-   end tell
-' | osascript
-
-sync
-
-# unmount it
-hdiutil detach "${DEVICE}"
-
-# now make the final image a compressed disk image
-echo "Creating compressed image"
-hdiutil convert "${DMG_TMP}" -format UDZO -imagekey zlib-level=9 -o "${DMG_FINAL}"
-
-# clean up
-rm -rf "${DMG_TMP}"
-rm -rf "${STAGING_DIR}"
-
-echo 'Done.'
-
-exit
+rm -rf "$STAGING_DIR"
+echo "Created ${DMG_FINAL}"

@@ -4,21 +4,23 @@ on: [push, pull_request]
 
 jobs:
     mac:
+        timeout-minutes: 60
         runs-on: macos-latest
         steps:
         - uses: actions/checkout@v4
 
         - name: Setup
           run: |
-            brew install lua sqlite
+            brew install ninja
 
         - name: Build
           run: |
-            mkdir build
-            cd build
-            cmake .. -GXcode -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(pwd) -DCAVEPACKER=OFF -DUNITTESTS=OFF
-            xcodebuild build -target install -project caveproductions.xcodeproj CODE_SIGNING_REQUIRED=NO -configuration Release
-            ../contrib/scripts/create_dmg.sh caveexpress dev $(pwd)/.. $(pwd)
+            cmake -S . -B build -GNinja \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DCAVEPACKER=OFF \
+              -DUNITTESTS=OFF
+            cmake --build build --parallel
+            ./contrib/scripts/create_dmg.sh caveexpress dev "$(pwd)" "$(pwd)/build"
 
         - name: Upload the caveexpress artifacts
           uses: actions/upload-artifact@v4
