@@ -17,9 +17,8 @@ inline void Camera::reset ()
 	_viewportY = 0;
 }
 
-void Camera::init (int mapPixelWidth, int mapPixelHeight, int mapGridWidth, int mapGridHeight, int scale)
+void Camera::init (int mapPixelWidth, int mapPixelHeight, int mapGridWidth, int mapGridHeight, int scale, float zoom)
 {
-	reset();
 	_scaleGridToPixel = scale;
 	_mapPixelWidth = mapPixelWidth;
 	_mapPixelHeight = mapPixelHeight;
@@ -29,6 +28,9 @@ void Camera::init (int mapPixelWidth, int mapPixelHeight, int mapGridWidth, int 
 	_scrollingAreaHeight = std::max(0, _mapGridHeight * _scaleGridToPixel - _mapPixelHeight);
 	_scrollOffsetX = 0;
 	_scrollOffsetY = 0;
+	// Center maps that fit the view immediately. reset() left the viewport at 0,0, so the
+	// first rendered frame was in the upper-left until update() ran with a player.
+	update(vec2_zero, 0, zoom);
 }
 
 void Camera::scroll (int offsetX, int offsetY)

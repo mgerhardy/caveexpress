@@ -434,4 +434,26 @@ TEST_F(MapTest, testPlayerWinCondition) {
 	testSuccess("test-win-package", c);
 }
 
+TEST_F(MapTest, testPackageCavesKeepRespawnUntilQuota)
+{
+	ASSERT_TRUE(_map.load("rock-01")) << "Could not load rock-01";
+	ASSERT_EQ(4, _map.getPackageCount());
+	ASSERT_EQ(3, _map.getCaveCount());
+
+	Player* player = new Player(_map, 1);
+	player->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(player));
+	_map.startMap();
+	ASSERT_TRUE(_map.isActive());
+
+	for (int i = 0; i < _map.getCaveCount(); ++i) {
+		CaveMapTile* cave = _map.getCave(i);
+		ASSERT_NE(nullptr, cave);
+		cave->spawnNPC(true);
+		ASSERT_NE(nullptr, cave->getNPC()) << "cave " << cave->getCaveNumber() << " should spawn a package NPC";
+		EXPECT_TRUE(cave->isRespawnPossible()) << "cave " << cave->getCaveNumber()
+				<< " must keep respawning while packagetransfercount is unmet";
+	}
+}
+
 }

@@ -62,6 +62,16 @@ struct MapMetrics {
 };
 
 /**
+ * Static check that a map's settings and placed objects can satisfy the win
+ * conditions. Catches Lua mistakes such as packagetransfercount with no
+ * shredder, or npctransfercount with fewer than two caves.
+ */
+struct MapWinCondition {
+	bool winnable = true;
+	std::vector<std::string> issues;
+};
+
+/**
  * Static quality analysis for CaveExpress maps (hand-authored or random).
  * Reachability uses flyable-cell flood fill from the player start (flying game).
  * Full flyable coverage is reported in metrics; random generation enforces it as a hard gate.
@@ -77,6 +87,11 @@ public:
 			int minCavePackageAirSeparation = 4,
 			int minPlatformLength = 3,
 			int minSolidComponentSize = 4) const;
+
+	static MapWinCondition checkWinConditions (const IMap::SettingsMap& settings,
+			const std::vector<MapTileDefinition>& tiles,
+			const std::vector<CaveTileDefinition>& caves,
+			const std::vector<EmitterDefinition>& emitters);
 
 private:
 	enum class CellKind : uint8_t {

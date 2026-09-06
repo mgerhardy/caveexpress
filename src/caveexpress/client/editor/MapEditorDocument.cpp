@@ -692,42 +692,37 @@ void MapEditorDocument::collectGameValidationIssues (std::vector<std::string>& o
 			}
 		}
 	}
-	const int packages = string::toInt(getSetting(msn::PACKAGE_TRANSFER_COUNT, msd::PACKAGE_TRANSFER_COUNT));
-	const int npcs = string::toInt(getSetting(msn::NPC_TRANSFER_COUNT, msd::NPC_TRANSFER_COUNT));
-	bool hasShredder = false;
-	bool hasCave = false;
-	bool hasPackage = false;
 	bool hasRockPackage = false;
 	bool hasIcePackage = false;
 	bool hasGeyser = false;
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
 	for (const MapEditorTileItem& item : _map) {
 		if (!item.def)
 			continue;
-		if (SpriteTypes::isPackageTarget(item.def->type))
-			hasShredder = true;
-		if (SpriteTypes::isCave(item.def->type))
-			hasCave = true;
 		if (SpriteTypes::isGeyser(item.def->type))
 			hasGeyser = true;
 		if (item.entityType != nullptr && EntityTypes::isPackage(*item.entityType)) {
-			hasPackage = true;
-			if (EntityTypes::isPackage(*item.entityType) && item.entityType == &EntityTypes::PACKAGE_ICE)
+			if (item.entityType == &EntityTypes::PACKAGE_ICE)
 				hasIcePackage = true;
 			else
 				hasRockPackage = true;
 		}
+		if (item.gridX >= _mapWidth || item.gridY >= _mapHeight)
+			continue;
+		if (SpriteTypes::isCave(item.def->type)) {
+			const EntityType& npc = item.entityType != nullptr ? *item.entityType : EntityType::NONE;
+			caves.emplace_back(item.gridX, item.gridY, item.def, npc, item.delay);
+		} else if (item.entityType != nullptr) {
+			emitters.emplace_back(item.gridX, item.gridY, *item.entityType, item.amount, item.delay, item.settings);
+		} else {
+			tiles.emplace_back(item.gridX, item.gridY, item.def, item.angle);
+		}
 	}
-	if (packages > 0 && !hasShredder)
-		out.push_back("packagetransfercount > 0 but no shredder / package target");
-	if (packages > 0 && !hasPackage && !hasCave)
-		out.push_back("packagetransfercount > 0 but no package emitter or cave");
-	int caveCount = 0;
-	for (const MapEditorTileItem& item : _map) {
-		if (item.def && SpriteTypes::isCave(item.def->type))
-			++caveCount;
-	}
-	if (npcs > 0 && caveCount < 2)
-		out.push_back("npctransfercount > 0 needs at least two caves (pickup and destination)");
+	const MapWinCondition win = MapValidator::checkWinConditions(_settings, tiles, caves, emitters);
+	for (const std::string& issue : win.issues)
+		out.push_back(issue);
 
 	const bool fish = string::toBool(getSetting(msn::FISH_NPC, msd::FISH_NPC));
 	if (fish && _waterHeight <= 0.0f)

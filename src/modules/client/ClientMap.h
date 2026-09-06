@@ -317,7 +317,7 @@ inline void ClientMap::setSize (int width, int height)
 	_width = width;
 	_height = height;
 
-	_camera.init(getWidth(), getHeight(), _mapGridWidth, _mapGridHeight, _scaleGridToPixel);
+	_camera.init(getWidth(), getHeight(), _mapGridWidth, _mapGridHeight, _scaleGridToPixel, _zoom);
 }
 
 inline int ClientMap::getX () const

@@ -68,6 +68,7 @@ function initMap()
 	map:addEmitter("item-stone", 0, 3, 1, 0, "")
 
 	map:addStartPosition(1, 2)
+	map:addCave("tile-cave-01", 1, 3, "none", 5000)
 	map:addCave("tile-cave-01", 6, 3, "npc-man", 5000)
 
 	map:setSetting("width", "8")

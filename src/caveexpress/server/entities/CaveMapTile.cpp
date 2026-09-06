@@ -135,7 +135,12 @@ void CaveMapTile::spawnNPC (bool spawnPackage)
 	Log::info(LOG_GAMEIMPL, "created new npc %i on cave %i", npc->getID(), _caveNumber);
 	_npc = npc;
 	_spawned = _now;
-	setRespawnPossible(!_npcTypes.empty(), EntityType::NONE);
+	// Generic ("none") caves have an empty type queue. They must keep respawning
+	// while packages are still required; otherwise packagetransfercount > cave
+	// count is unwinnable (e.g. rock-01: 4 packages, 3 caves).
+	const bool keepSpawningPackages = npc->isDeliverPackage() && _map.hasPackageTarget()
+			&& _map.countPackages() < _map.getPackageCount();
+	setRespawnPossible(!_npcTypes.empty() || keepSpawningPackages, EntityType::NONE);
 }
 
 void CaveMapTile::setLightStates (bool state)

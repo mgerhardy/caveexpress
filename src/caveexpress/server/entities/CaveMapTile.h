@@ -50,6 +50,7 @@ public:
 	// the grid coordinate of the landing spots right side
 	int getPlatformEndGridX () const;
 	void setRespawnPossible (bool respawn, const EntityType& type);
+	bool isRespawnPossible () const;
 	void setNextSpawn (uint32_t time);
 	void setReturnToCaveOnIdle (bool returnToCaveOnIdle);
 
@@ -75,6 +76,11 @@ public:
 inline void CaveMapTile::setReturnToCaveOnIdle (bool returnToCaveOnIdle)
 {
 	_returnToCaveOnIdle = returnToCaveOnIdle;
+}
+
+inline bool CaveMapTile::isRespawnPossible () const
+{
+	return _respawn;
 }
 
 inline void CaveMapTile::setNextSpawn (uint32_t time)

@@ -316,7 +316,7 @@ void ClientMap::init (uint16_t playerID)
 {
 	Log::info(LOG_CLIENT, "init client map for player %i", playerID);
 
-	_camera.init(getWidth(), getHeight(), _mapGridWidth, _mapGridHeight, _scaleGridToPixel);
+	_camera.init(getWidth(), getHeight(), _mapGridWidth, _mapGridHeight, _scaleGridToPixel, _zoom);
 
 	_restartInitialized = 0U;
 	_restartDue = 0U;
@@ -382,7 +382,9 @@ bool ClientMap::initWaitingForPlayer () {
 
 bool ClientMap::updateCameraPosition ()
 {
-	return _camera.update(_player->getPos(), _player->getMoveDirection(), _zoom);
+	if (_player)
+		return _camera.update(_player->getPos(), _player->getMoveDirection(), _zoom);
+	return _camera.update(vec2_zero, 0, _zoom);
 }
 
 void ClientMap::update (uint32_t deltaTime)
@@ -410,8 +412,8 @@ void ClientMap::update (uint32_t deltaTime)
 	_particleSystem.update(deltaTime);
 
 	_time += deltaTime;
+	updateCameraPosition();
 	if (_player) {
-		updateCameraPosition();
 		SoundControl.setListenerPosition(_player->getPos());
 	}
 	const ExecutionTime updateTime("ClientMap", 2000L);
@@ -461,8 +463,12 @@ void ClientMap::setSetting (const std::string& key, const std::string& value)
 
 	if (key == msn::WIDTH) {
 		_mapGridWidth = string::toInt(value);
+		if (_mapGridHeight > 0)
+			_camera.init(getWidth(), getHeight(), _mapGridWidth, _mapGridHeight, _scaleGridToPixel, _zoom);
 	} else if (key == msn::HEIGHT) {
 		_mapGridHeight = string::toInt(value);
+		if (_mapGridWidth > 0)
+			_camera.init(getWidth(), getHeight(), _mapGridWidth, _mapGridHeight, _scaleGridToPixel, _zoom);
 	} else if (key == msn::THEME) {
 		_theme = &ThemeType::getByName(value);
 	} else if (key == msn::TUTORIAL) {

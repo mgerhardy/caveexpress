@@ -1,6 +1,7 @@
 #include "MapValidator.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
+#include "common/MapSettings.h"
 #include "common/String.h"
 #include "common/vec2.h"
 #include <algorithm>
@@ -643,6 +644,82 @@ MapMetrics MapValidator::evaluate (int width, int height,
 		score *= 0.35f;
 	m.totalScore = std::max(0.0f, std::min(100.0f, score));
 	return m;
+}
+
+namespace {
+
+std::string settingValue (const IMap::SettingsMap& settings, const std::string& key, const std::string& def)
+{
+	const auto i = settings.find(key);
+	if (i == settings.end() || i->second.empty())
+		return def;
+	return i->second;
+}
+
+}
+
+MapWinCondition MapValidator::checkWinConditions (const IMap::SettingsMap& settings,
+		const std::vector<MapTileDefinition>& tiles,
+		const std::vector<CaveTileDefinition>& caves,
+		const std::vector<EmitterDefinition>& emitters)
+{
+	MapWinCondition result;
+	if (string::toBool(settingValue(settings, msn::CUTSCENE, msd::CUTSCENE)))
+		return result;
+
+	const int packageGoal = string::toInt(settingValue(settings, msn::PACKAGE_TRANSFER_COUNT, msd::PACKAGE_TRANSFER_COUNT));
+	const int npcGoal = string::toInt(settingValue(settings, msn::NPC_TRANSFER_COUNT, msd::NPC_TRANSFER_COUNT));
+	const int npcSpawnLimit = string::toInt(settingValue(settings, msn::NPCS, msd::NPCS));
+	const float waterChange = string::toFloat(settingValue(settings, msn::WATER_CHANGE, msd::WATER_CHANGE));
+	const float waterFallingDelay = string::toFloat(settingValue(settings, msn::WATER_FALLING_DELAY, msd::WATER_FALLING_DELAY));
+
+	int packageTargets = 0;
+	for (const MapTileDefinition& tile : tiles) {
+		if (tile.spriteDef && SpriteTypes::isPackageTarget(tile.spriteDef->type))
+			++packageTargets;
+	}
+
+	int finitePackageEmitters = 0;
+	bool infinitePackageEmitter = false;
+	for (const EmitterDefinition& e : emitters) {
+		if (e.type == nullptr)
+			continue;
+		if (EntityTypes::isPackageTarget(*e.type))
+			++packageTargets;
+		if (!EntityTypes::isPackage(*e.type))
+			continue;
+		if (e.amount <= 0)
+			infinitePackageEmitter = true;
+		else
+			finitePackageEmitters += e.amount;
+	}
+
+	int spawnCaves = std::min(static_cast<int>(caves.size()), std::max(0, npcSpawnLimit));
+	const bool waterRisingNoFall = std::fabs(waterChange) > 0.00001f && waterFallingDelay <= 0.0f;
+	if (waterRisingNoFall && spawnCaves > 0)
+		--spawnCaves;
+
+	if (packageGoal <= 0 && npcGoal <= 0)
+		result.issues.emplace_back("packagetransfercount and npctransfercount are both 0 - map has nothing to do");
+
+	if (packageGoal > 0) {
+		if (packageTargets <= 0)
+			result.issues.emplace_back("packagetransfercount > 0 but no shredder / package target");
+		if (spawnCaves <= 0 && !infinitePackageEmitter && finitePackageEmitters <= 0)
+			result.issues.emplace_back("packagetransfercount > 0 but no package emitter or spawn-enabled cave");
+		else if (spawnCaves <= 0 && !infinitePackageEmitter && finitePackageEmitters < packageGoal)
+			result.issues.emplace_back("packagetransfercount exceeds finite package emitters and caves cannot spawn packages");
+	}
+
+	if (npcGoal > 0) {
+		if (caves.size() < 2)
+			result.issues.emplace_back("npctransfercount > 0 needs at least two caves (pickup and destination)");
+		if (npcSpawnLimit <= 0)
+			result.issues.emplace_back("npctransfercount > 0 but npcs is 0");
+	}
+
+	result.winnable = result.issues.empty();
+	return result;
 }
 
 }

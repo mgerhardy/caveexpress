@@ -40,7 +40,7 @@ private:
 	void reset ();
 
 public:
-	void init (int width, int height, int mapGridWidth, int mapGridHeight, int scale);
+	void init (int width, int height, int mapGridWidth, int mapGridHeight, int scale, float zoom = 1.0f);
 	bool update (const vec2& playerPos, Direction direction, float zoom);
 	void scroll (int offsetX, int offsetY);
 	int getViewportX () const;
