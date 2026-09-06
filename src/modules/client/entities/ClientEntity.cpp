@@ -187,7 +187,9 @@ std::string ClientEntity::getSpriteName() const
 
 void ClientEntity::setAnimationType (const Animation& animation)
 {
-	if (_animation == &animation)
+	// ClientEntity starts as Animation::NONE with no sprite. CavePacker (and any other
+	// spawn that sends NONE) must still load the idle sprite on that first call.
+	if (_animation == &animation && _currSprite)
 		return;
 
 	_animation = &animation;
