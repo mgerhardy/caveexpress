@@ -600,6 +600,90 @@ void IMapEditorDocument::deleteSelection ()
 	eraseAtSelection();
 }
 
+int IMapEditorDocument::countTilesWithSprite (const std::string& spriteId) const
+{
+	int n = 0;
+	for (const MapEditorTileItem& item : _map) {
+		if (item.entityType == nullptr && item.def && item.def->id == spriteId)
+			++n;
+	}
+	return n;
+}
+
+int IMapEditorDocument::countEntitiesOfType (const EntityType& type) const
+{
+	int n = 0;
+	if (isPlayerType(type))
+		n += static_cast<int>(_startPositions.size());
+	for (const MapEditorTileItem& item : _map) {
+		if (item.entityType != nullptr && item.entityType->name == type.name)
+			++n;
+	}
+	return n;
+}
+
+bool IMapEditorDocument::removeTilesWithSprite (const std::string& spriteId)
+{
+	int removed = 0;
+	for (const MapEditorTileItem& item : _map) {
+		if (item.entityType == nullptr && item.def && item.def->id == spriteId)
+			++removed;
+	}
+	if (removed == 0)
+		return false;
+	MapEditorUndo();
+	_highlightItem = nullptr;
+	_map.remove_if([&] (const MapEditorTileItem& item) {
+		return item.entityType == nullptr && item.def && item.def->id == spriteId;
+	});
+	setHighlightFromSelection();
+	return true;
+}
+
+bool IMapEditorDocument::removeEntitiesOfType (const EntityType& type)
+{
+	if (countEntitiesOfType(type) == 0)
+		return false;
+	MapEditorUndo();
+	_highlightItem = nullptr;
+	if (isPlayerType(type))
+		_startPositions.clear();
+	_map.remove_if([&] (const MapEditorTileItem& item) {
+		return item.entityType != nullptr && item.entityType->name == type.name;
+	});
+	setHighlightFromSelection();
+	return true;
+}
+
+bool IMapEditorDocument::findFirstTileWithSprite (const std::string& spriteId, gridCoord& x, gridCoord& y) const
+{
+	for (const MapEditorTileItem& item : _map) {
+		if (item.entityType == nullptr && item.def && item.def->id == spriteId) {
+			x = item.gridX;
+			y = item.gridY;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IMapEditorDocument::findFirstEntityOfType (const EntityType& type, gridCoord& x, gridCoord& y) const
+{
+	if (isPlayerType(type) && !_startPositions.empty()) {
+		x = string::toFloat(_startPositions.front()._x);
+		y = string::toFloat(_startPositions.front()._y);
+		return true;
+	}
+	for (const MapEditorTileItem& item : _map) {
+		if (item.entityType != nullptr && item.entityType->name == type.name) {
+			x = item.gridX;
+			y = item.gridY;
+			return true;
+		}
+	}
+	return false;
+}
+
 MapEditorTileItem* IMapEditorDocument::getSelectedTile ()
 {
 	for (int layer = LAYER_EMITTER; layer != LAYER_NONE; --layer) {
@@ -921,6 +1005,11 @@ void IMapEditorDocument::nudgeSelection (int dx, int dy)
 	_highlightItem->gridY += static_cast<gridCoord>(dy);
 }
 
+bool IMapEditorDocument::floodFillCanPaint (int, int, const SpriteDefPtr&) const
+{
+	return true;
+}
+
 void IMapEditorDocument::floodFillAtSelection ()
 {
 	if (!_activeSprite || _editMode == EditMode::Entities)
@@ -967,6 +1056,8 @@ void IMapEditorDocument::floodFillAtSelection ()
 		const MapEditorTileItem* hit = backgroundAt(x, y);
 		const SpriteDef* hitDef = hit ? hit->def.get() : nullptr;
 		if (hitDef != seedDef)
+			continue;
+		if (!floodFillCanPaint(x, y, _activeSprite))
 			continue;
 		MapEditorTileItem item;
 		item.def = _activeSprite;

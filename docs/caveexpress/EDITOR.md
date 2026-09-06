@@ -88,7 +88,7 @@ These shortcuts are ignored while you are typing in a text field, except **Ctrl+
 
 ## Tiles tab
 
-Click a tile in the palette to make it the brush, then paint on the canvas. Use the filter box to search by sprite id.
+Click a tile in the palette to make it the brush, then paint on the canvas. Use the filter box to search by sprite id. Right-click a tile for **Edit shape**, **Edit tile definition** (`sprites.lua`), **Remove all from map**, **Go to first on map**, and **Copy sprite id**.
 
 ### Common tile kinds
 
@@ -125,7 +125,7 @@ Hiding a layer also prevents selecting and erasing items on that layer. **Show G
 
 ## Entities tab
 
-Click a sprite in the grid (tooltip shows the type name), then left-click the map to place it. Right-click removes only entities and the player start. Background and other tiles stay in place. Use the filter box to search by entity type name.
+Click a sprite in the grid (tooltip shows the type name), then left-click the map to place it. Right-click on the canvas removes only entities and the player start. Right-click a palette item for **Edit shape**, **Edit entity lua** (`entities.lua`), **Edit sprite definition**, **Remove all from map**, **Go to first on map**, and **Copy type name**. Use the filter box to search by entity type name.
 
 | Entity | Notes |
 | --- | --- |

@@ -87,6 +87,65 @@ inline bool findSpriteTable (const std::string& lua, const std::string& spriteId
 	return false;
 }
 
+inline bool findAssignmentTable (const std::string& lua, const std::string& name, size_t& tableOpen, size_t& tableClose)
+{
+	if (name.empty())
+		return false;
+	size_t i = 0;
+	bool inStr = false;
+	char quote = 0;
+	while (i < lua.size()) {
+		const char c = lua[i];
+		if (inStr) {
+			if (c == '\\' && i + 1 < lua.size()) {
+				i += 2;
+				continue;
+			}
+			if (c == quote)
+				inStr = false;
+			++i;
+			continue;
+		}
+		if (c == '-' && i + 1 < lua.size() && lua[i + 1] == '-') {
+			i += 2;
+			while (i < lua.size() && lua[i] != '\n')
+				++i;
+			continue;
+		}
+		if (c == '"' || c == '\'') {
+			inStr = true;
+			quote = c;
+			++i;
+			continue;
+		}
+		if (lua.compare(i, name.size(), name) == 0) {
+			const bool startOk = i == 0
+					|| !(std::isalnum(static_cast<unsigned char>(lua[i - 1])) || lua[i - 1] == '_');
+			const size_t end = i + name.size();
+			const bool endOk = end >= lua.size()
+					|| !(std::isalnum(static_cast<unsigned char>(lua[end])) || lua[end] == '_');
+			if (startOk && endOk) {
+				size_t j = end;
+				skipCommentAndSpace(lua, j);
+				if (j < lua.size() && lua[j] == '=') {
+					++j;
+					skipCommentAndSpace(lua, j);
+					if (j < lua.size() && lua[j] == '{') {
+						const size_t close = matchingBrace(lua, j);
+						if (close == std::string::npos)
+							return false;
+						tableOpen = j;
+						tableClose = close;
+						return true;
+					}
+				}
+			}
+		}
+		++i;
+	}
+	return false;
+}
+
 inline size_t lineIndentStart (const std::string& s, size_t pos)
 {
 	size_t i = pos;

@@ -130,6 +130,15 @@ static inline int getIndex(int col, int row, int width) {
 }
 
 bool SokobanMapContext::save () const {
+	const std::string path = FS.getAbsoluteWritePath() + FS.getDataDir() + FS.getMapsDir() + _name + ".sok";
+	return writeBoard(path);
+}
+
+bool SokobanMapContext::saveToPath (const std::string& path) const {
+	return writeBoard(path);
+}
+
+bool SokobanMapContext::writeBoard (const std::string& path) const {
 	const IMap::SettingsMap& settings = _settings;
 	const auto widthIter = settings.find(msn::WIDTH);
 	if (widthIter == settings.end()) {
@@ -140,8 +149,9 @@ bool SokobanMapContext::save () const {
 		return false;
 	}
 
-	const std::string path = FS.getAbsoluteWritePath() + FS.getDataDir() + FS.getMapsDir() + _name + ".sok";
 	SDL_RWops *rwops = FS.createRWops(path, "wb");
+	if (rwops == nullptr)
+		return false;
 	FilePtr file(new File(rwops, path));
 
 	const int width = string::toInt(widthIter->second);
@@ -150,6 +160,11 @@ bool SokobanMapContext::save () const {
 	file->writeString(";");
 	file->appendString(_name.c_str());
 	file->appendString("\n");
+	if (!_title.empty()) {
+		file->appendString("Title: ");
+		file->appendString(_title.c_str());
+		file->appendString("\n");
+	}
 
 	std::vector<char> board;
 	board.resize(width * height, Sokoban::GROUND);
@@ -187,7 +202,7 @@ bool SokobanMapContext::save () const {
 		} else if (EntityTypes::isTarget(type)) {
 			field = Sokoban::TARGET;
 		}
-		if (isTarget(board[index] && isPackage(field))) {
+		if (isTarget(board[index]) && isPackage(field)) {
 			field = Sokoban::PACKAGEONTARGET;
 		}
 		board[index] = field;
@@ -283,7 +298,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 					std::vector<std::string> tokens;
 					string::splitString(string::trim(line), tokens, ":");
 					if (tokens.size() == 2) {
-						_title = tokens[1];
+						_title = string::trim(tokens[1]);
 					}
 				}
 				line = "";

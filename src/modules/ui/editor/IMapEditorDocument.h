@@ -195,12 +195,14 @@ public:
 	gridCoord getSelectedGridY () const { return _selectedGridY; }
 
 	bool paintAtSelection (bool overwrite = true, bool recordUndo = true);
-	bool eraseAtSelection (bool recordUndo = true);
+	virtual bool eraseAtSelection (bool recordUndo = true);
 	void pickAtSelection ();
 	void pickTopmostAtSelection ();
 	void deleteSelection ();
 	void resizeMap (int mapWidth, int mapHeight);
 	void floodFillAtSelection ();
+	/** Return false to skip a cell during flood fill (game-specific blockers). */
+	virtual bool floodFillCanPaint (int /*x*/, int /*y*/, const SpriteDefPtr& /*brush*/) const;
 	void setRegion (int x0, int y0, int x1, int y1);
 	void clearRegion () { _hasRegion = false; }
 	bool hasRegion () const { return _hasRegion; }
@@ -255,6 +257,13 @@ public:
 	void collectTilePalette (std::vector<SpriteDefPtr>& out) const { fillTilePalette(out); }
 	void collectEntityPalette (std::vector<const EntityType*>& out) const { fillEntityPalette(out); }
 
+	int countTilesWithSprite (const std::string& spriteId) const;
+	int countEntitiesOfType (const EntityType& type) const;
+	bool removeTilesWithSprite (const std::string& spriteId);
+	bool removeEntitiesOfType (const EntityType& type);
+	bool findFirstTileWithSprite (const std::string& spriteId, gridCoord& x, gridCoord& y) const;
+	bool findFirstEntityOfType (const EntityType& type, gridCoord& x, gridCoord& y) const;
+
 	virtual bool supportsThemeControls () const { return false; }
 	virtual bool supportsWater () const { return false; }
 	virtual bool supportsEmitterParams () const { return false; }
@@ -273,6 +282,6 @@ public:
 	void setScriptLogic (const std::string& logic);
 	void setPreserveInitMap (bool preserve) { _preserveInitMap = preserve; }
 	bool isPreserveInitMap () const { return _preserveInitMap; }
-	std::string getUserMapsPath () const;
-	std::string getGameDataMapsPath () const;
+	virtual std::string getUserMapsPath () const;
+	virtual std::string getGameDataMapsPath () const;
 };

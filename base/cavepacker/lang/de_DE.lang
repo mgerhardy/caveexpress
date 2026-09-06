@@ -16,8 +16,12 @@ Close|Schließen
 Continue|Fortfahren
 Controller trigger|Controller trigger
 Copied to clipboard|Copied to clipboard
+Copy|Kopieren
+Copy sprite id|Sprite-ID kopieren
 Copy to clipboard|Copy to clipboard
+Copy type name|Typname kopieren
 Could not open sprites.lua|Could not open sprites.lua
+Could not read entities.lua|entities.lua konnte nicht gelesen werden
 Could not read sprites.lua|Could not read sprites.lua
 Create server|Erstellen
 Ctrl+S save, Ctrl+Z/Y undo/redo|Strg+S speichern, Strg+Z/Y rückgängig/wiederholen
@@ -34,15 +38,23 @@ Description|Beschreibung
 Disconnect|Trennen
 Docs (in the source tree)|Docs (in the source tree)
 Do not put tiles in this window — initMap is rebuilt from the canvas.|Do not put tiles in this window — initMap is rebuilt from the canvas.
+Edit entity lua|Entity-Lua bearbeiten
 Editing the selected emitter|Editing the selected emitter
 Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.|Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.
 Editor|Editor
+Edit shape|Form bearbeiten
+Edit sprite definition|Sprite-Definition bearbeiten
+Edit tile definition|Kacheldefinition bearbeiten
 emitter|Emitter
 Emitter amount|Emitter-Anzahl
 Emitter delay|Emitter-Verzögerung
 Entities|Objekte
 Entity|Objekt
+Entity definition|Entity-Definition
 Failed to patch sprites.lua|Failed to patch sprites.lua
+Failed to update entities.lua|entities.lua konnte nicht aktualisiert werden
+Failed to update sprites.lua|sprites.lua konnte nicht aktualisiert werden
+Failed to write entities.lua|entities.lua konnte nicht geschrieben werden
 Failed to write sprites.lua|Failed to write sprites.lua
 F fit view, G toggle grid, F1 help|F Ansicht einpassen, G Gitter, F1 Hilfe
 File|Datei
@@ -53,13 +65,16 @@ Find|Find
 Find next|Find next
 Fit|Einpassen
 foreground|Vordergrund
+FPS|FPS
 Fullscreen|Vollbild
 Game|Spiel
 Google Play|Google Play
 Google Play sign-out|Google Play trennen
+Go to first on map|Zum ersten auf der Karte
 Graphics|Grafik
 Grid|Gitter
 Hard|Schwer
+Has collision shape|Hat Kollisionsform
 Height|Höhe
 Help|Hilfe
 Hints|Hinweise
@@ -67,6 +82,7 @@ Homepage|Homepage
 Increase map height|Map-Höhe vergrößern
 Increase map width|Map-Breite vergrößern
 Input|Eingabe
+Invalid Lua|Ungültiges Lua
 Invalid Lua shape definition|Invalid Lua shape definition
 Keep handwritten initMap|Keep handwritten initMap
 Keep initMap|Keep initMap
@@ -91,9 +107,12 @@ Name|Name
 New|Neu
 New circle|New circle
 New polygon|New polygon
+No|Nein
 No controller found|Keinen Controller gefunden
 none|keine
 Normal|Normal
+Not found in entities.lua|Nicht in entities.lua gefunden
+Not found in sprites.lua|Nicht in sprites.lua gefunden
 Objectives|Ziele
 Off|Aus
 OK|OK
@@ -120,6 +139,7 @@ Quit without saving|Beenden ohne Speichern
 Redo|Wiederholen
 Red packages are deadlocks - undo your step|Red packages are deadlocks - undo your step
 Refresh|Erneuern
+Remove all from map|Alle von der Karte entfernen
 Remove tile|Teil entfernen
 Replace|Replace
 Replace all|Replace all
@@ -127,12 +147,15 @@ Reset|Reset
 Reset game progress?|Resete den Fortschritt?
 Restart|Neustart
 Retry|Nochmal
+Right-click a palette item for more actions|Rechtsklick auf ein Palette-Element für weitere Aktionen
 RMB: erase items of the active tab|RMT: Objekte der aktiven Registerkarte löschen
 Save|Speichern
 Save and start with the machine at the view center (god mode)|Save and start with the machine at the view center (god mode)
 Save anyway|Save anyway
 Save & Go|Testen
+Save to entities.lua|In entities.lua speichern
 Save to game data|Save to game data
+Save to sprites.lua|In sprites.lua speichern
 Script|Script
 Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test
 See docs/caveexpress/MAPS.md|See docs/caveexpress/MAPS.md
@@ -146,6 +169,7 @@ Shapes|Shapes
 Shapes: edit polygons/circles and write sprites.lua|Shapes: edit polygons/circles and write sprites.lua
 Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge|Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge
 Show Grid|Gitter anzeigen
+Size|Größe
 Skip|Nächste
 Small|Klein
 solid|Fest
@@ -153,19 +177,25 @@ Solve|Lösen
 Sound|Sound
 Sound/Music|Sound/Musik
 Space (on canvas): rotate selected tile or brush|Space (on canvas): rotate selected tile or brush
+Sprite|Sprite
 Sprite Shape Editor|Sprite Shape Editor
 Start|Start
 Target|Palette
 Textures|Texturen
 The less moves you do the better|Je weniger Schritte, desto besser
+Theme|Thema
 These checks would fail CampaignTest / play:|These checks would fail CampaignTest / play:
+Tile definition|Kacheldefinition
 Tiles|Kacheln
 Tiles / Entities tab: place and erase only that kind|Kacheln / Objekte: nur diese Art setzen und löschen
 Title|Titel
 Too many vertices for Box2D|Too many vertices for Box2D
+Type|Typ
 Undo|Rückgängig
 Undo shape|Undo shape
 Unsaved changes|Ungespeicherte Änderungen
+Use as brush|Als Pinsel verwenden
+Used on this map|Auf dieser Karte verwendet
 User data|User data
 Username|Username
 Vertices|Vertices
@@ -175,6 +205,42 @@ Wheel: zoom toward cursor|Mausrad: Zoom zum Cursor
 Width|Breite
 Write into the project maps folder|Write into the project maps folder
 Write sprites.lua|Write sprites.lua
+Wrote entities.lua|entities.lua geschrieben
 Wrote sprites.lua|Wrote sprites.lua
+Yes|Ja
+Add|Hinzufügen
+Add a wall border, floors, a package, a target, and a start if they are missing.|Fügt bei Bedarf einen Mauerrahmen, Böden, ein Paket, ein Ziel und einen Start hinzu.
+Add to campaign|Zur Kampagne hinzufügen
+Auto-tile walls|Wände automatisch kacheln
+Auto-tile walls picks rock art from neighboring floors.|Auto-Kacheln wählt Felsgrafik nach benachbarten Böden.
+Campaign|Kampagne
+Campaign id|Kampagnen-ID
+Campaign text|Kampagnentext
+Check layout|Layout prüfen
+Create campaign|Kampagne anlegen
+Del|Löschen
+Flood-fill from the player: packages and targets must be reachable.|Flutfüllung vom Spieler: Pakete und Ziele müssen erreichbar sein.
+Floors|Böden
+In campaigns|In Kampagnen
+Layout|Layout
+Layout ok|Layout in Ordnung
+Make playable|Spielbar machen
+Maps in campaign|Karten in der Kampagne
+New campaign file|Neue Kampagnendatei
+Package count must match target count|Anzahl der Pakete muss der Anzahl der Ziele entsprechen
+Packages|Pakete
+Packages sit on floors or targets. Walls replace everything in a cell.|Pakete stehen auf Böden oder Zielen. Wände ersetzen alles in einer Zelle.
+Play|Spielen
+Playable reachable|Spielbar erreichbar
+Remove|Entfernen
+Replace wall sprites using neighboring floors (same rules as map load).|Ersetzt Wand-Sprites anhand benachbarter Böden (wie beim Laden).
+Save and start at the view center|Speichern und in der Bildmitte starten
+Save and start at this pad|Speichern und an diesem Startpunkt beginnen
+Sokoban cell|Sokoban-Zelle
+Sokoban tiles|Sokoban-Kacheln
+Start positions|Startpositionen
+Targets|Ziele
+Walls|Wände
+wildcard|Platzhalter
 You have unsaved changes. Continue?|Es gibt ungespeicherte Änderungen. Fortfahren?
 Your player|Dein Spieler

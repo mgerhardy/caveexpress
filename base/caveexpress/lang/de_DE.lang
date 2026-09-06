@@ -43,8 +43,11 @@ Continue|Weiter
 Controller trigger|Controller trigger
 Copied to clipboard|Copied to clipboard
 Copy|Copy
+Copy sprite id|Sprite-ID kopieren
 Copy to clipboard|Copy to clipboard
+Copy type name|Typname kopieren
 Could not open sprites.lua|Could not open sprites.lua
+Could not read entities.lua|entities.lua konnte nicht gelesen werden
 Could not read sprites.lua|Could not read sprites.lua
 Create campaign|Kampagne anlegen
 Create server|Server erstellen
@@ -74,9 +77,13 @@ Drop stones onto the tree|Lasse den Stein auf Bäume fallen
 Drop them by hitting SPACE bar|Abwerfen durch LEERTASTE
 Drop them with the second finger|Abwerfen durch zweiten Finger
 Drop the stone to collect packages again|Lasse den Stein fallen um wieder Kisten heben zu können
+Edit entity lua|Entity-Lua bearbeiten
 Editing the selected emitter|Editing the selected emitter
 Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.|Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.
 Editor|Editor
+Edit shape|Form bearbeiten
+Edit sprite definition|Sprite-Definition bearbeiten
+Edit tile definition|Kacheldefinition bearbeiten
 Egg|Ei
 emitter|Emitter
 Emitter|Emitter
@@ -84,9 +91,13 @@ Emitter amount|Emitter-Anzahl
 Emitter delay|Emitter-Verzögerung
 Entities|Objekte
 Entity|Objekt
+Entity definition|Entity-Definition
 Extra settings|Weitere Einstellungen
 Faces right|Faces right
 Failed to patch sprites.lua|Failed to patch sprites.lua
+Failed to update entities.lua|entities.lua konnte nicht aktualisiert werden
+Failed to update sprites.lua|sprites.lua konnte nicht aktualisiert werden
+Failed to write entities.lua|entities.lua konnte nicht geschrieben werden
 Failed to write sprites.lua|Failed to write sprites.lua
 Fail on side border|Fail on side border
 F fit view, G toggle grid, F1 help|F Ansicht einpassen, G Gitter, F1 Hilfe
@@ -101,6 +112,7 @@ Fit|Einpassen
 Flyable reachable|Flugraum erreichbar
 Flying dino when hit may drop an egg|Flying dino when hit may drop an egg
 foreground|Vordergrund
+FPS|FPS
 Friendly NPC spawn cap|Friendly NPC spawn cap
 Friendly NPCs to deliver|Friendly NPCs to deliver
 Fullscreen|Vollbild
@@ -113,10 +125,12 @@ Geyser initial delay|Geyser initial delay
 Go|Gehe zu
 Google Play|Google Play
 Google Play sign-out|Google Play trennen
+Go to first on map|Zum ersten auf der Karte
 Graphics|Grafik
 Gravity|Gravitation
 Grid|Gitter
 Hard|Schwer
+Has collision shape|Hat Kollisionsform
 Health bar|Lebensenergie
 Height|Höhe
 Help|Hilfe
@@ -137,6 +151,7 @@ Inserts map:message in the script (put it inside onMapLoaded / onUpdate).|Fügt 
 Insert spawn villager|Dorfbewohner-Spawn einfügen
 Inserts spawnFriendlyNPC. Runtime only — not valid in initMap.|Fügt spawnFriendlyNPC ein. Nur zur Laufzeit — nicht in initMap.
 Intro window|Intro window
+Invalid Lua|Ungültiges Lua
 Invalid Lua shape definition|Invalid Lua shape definition
 Invulnerable|Unverwundbar
 Jungle|Dschungel
@@ -172,9 +187,12 @@ New|Neu
 New campaign file|Neue Kampagnendatei
 New circle|New circle
 New polygon|New polygon
+No|Nein
 No controller found|No controller found
 none|keine
 Normal|Normal
+Not found in entities.lua|Nicht in entities.lua gefunden
+Not found in sprites.lua|Nicht in sprites.lua gefunden
 Npc delay|Npc delay
 npcs: how many friendly villagers can be alive from caves|npcs: how many friendly villagers can be alive from caves
 Objectives|Ziele
@@ -214,6 +232,7 @@ Reference time in seconds|Referenzzeit in Sekunden
 Refresh|Erneuern
 Remap|Remap
 Remove|Entfernen
+Remove all from map|Alle von der Karte entfernen
 Remove tile|Teil entfernen
 Replace|Replace
 Replace all|Replace all
@@ -222,6 +241,7 @@ Reset|Reset
 Reset game progress?|Resetten des Spielfortschritts?
 Restart|Restart
 Retry|Retry
+Right-click a palette item for more actions|Rechtsklick auf ein Palette-Element für weitere Aktionen
 RMB: erase items of the active tab|RMT: Objekte der aktiven Registerkarte löschen
 Rock|Felsen
 Rotate selected|Auswahl drehen
@@ -231,7 +251,9 @@ Save and start at this pad (god mode)|Speichern und an diesem Startpunkt beginne
 Save and start with the machine at the view center (god mode)|Save and start with the machine at the view center (god mode)
 Save anyway|Save anyway
 Save & Go|Testen
+Save to entities.lua|In entities.lua speichern
 Save to game data|Save to game data
+Save to sprites.lua|In sprites.lua speichern
 Script|Script
 Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test
 Seed|Seed
@@ -249,6 +271,7 @@ Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge|Shift+drag (Se
 Show all trigger links|Alle Trigger-Verbindungen zeigen
 Show Grid|Gitter anzeigen
 Shredder|Schredder
+Size|Größe
 Small|Klein
 solid|Fest
 Sound|Sound
@@ -256,6 +279,7 @@ Sound/Music|Sound/Music
 Space (on canvas): rotate selected tile or brush|Leertaste (auf der Karte): Auswahl oder Pinsel drehen
 Spawn delay ms|Spawn delay ms
 Spawn NPC|Spawn NPC
+Sprite|Sprite
 Sprite Shape Editor|Sprite Shape Editor
 Start|Start
 Start positions|Start positions
@@ -271,6 +295,7 @@ Theme remap|Theme remap
 These checks would fail CampaignTest / play:|These checks would fail CampaignTest / play:
 This is the goal in every map|Dies ist das Ziel jedes Levels
 Tile angle|Kachelwinkel
+Tile definition|Kacheldefinition
 Tiles|Kacheln
 Tiles / Entities tab: place and erase only that kind|Kacheln / Objekte: nur diese Art setzen und löschen
 Tiles that will be remapped|Tiles that will be remapped
@@ -285,10 +310,13 @@ Tree|Baum
 Trigger link|Trigger link
 Try to avoid crashes but still be fast|Harte Treffer vermeiden und schnell sein
 Tutorial|Tutorial
+Type|Typ
 Undo|Rückgängig
 Undo shape|Undo shape
 Unpaired plates / gates|Unpaired plates / gates
 Unsaved changes|Ungespeicherte Änderungen
+Use as brush|Als Pinsel verwenden
+Used on this map|Auf dieser Karte verwendet
 User data|User data
 Username|Username
 Use the second finger to drop the package|Benutze den zweiten Finger um das Paket abzuwerfen
@@ -310,8 +338,10 @@ Wind column height in tiles (emitter setting size=)|Wind column height in tiles 
 Wind size|Wind size
 Write into the project maps folder|Write into the project maps folder
 Write sprites.lua|Write sprites.lua
+Wrote entities.lua|entities.lua geschrieben
 Wrote sprites.lua|Wrote sprites.lua
 X|X
 Y|Y
+Yes|Ja
 You have unsaved changes. Continue?|Es gibt ungespeicherte Änderungen. Fortfahren?
 You won!|Gewonnen

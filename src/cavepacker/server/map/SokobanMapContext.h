@@ -20,6 +20,7 @@ private:
 	bool isWallAt(int col, int row) const;
 	bool isPlayableAt(int col, int row) const;
 	void resolveWallTiles();
+	bool writeBoard (const std::string& path) const;
 public:
 	explicit SokobanMapContext(const std::string& map);
 	virtual ~SokobanMapContext();
@@ -28,6 +29,7 @@ public:
 	void onMapLoaded () override;
 	bool load (bool skipErrors) override;
 	bool save () const override;
+	bool saveToPath (const std::string& path) const override;
 };
 
 }

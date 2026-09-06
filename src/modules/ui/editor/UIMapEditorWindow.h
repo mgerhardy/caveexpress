@@ -47,13 +47,27 @@ protected:
 	mutable std::vector<SpriteDefPtr> _tilePalette;
 	mutable std::vector<const EntityType*> _entityPalette;
 	mutable const ThemeType* _paletteTheme = nullptr;
+	mutable bool _showDefinition = false;
+	mutable bool _definitionIsEntity = false;
+	mutable std::string _definitionId;
+	mutable std::string _definitionLua;
+	mutable std::string _definitionStatus;
+	mutable SpriteDefPtr _definitionSprite;
+	mutable const EntityType* _definitionEntity = nullptr;
 
 	void rebuildPalettes () const;
 	void fitView () const;
+	void centerViewOnGrid (gridCoord x, gridCoord y) const;
 	void handleHotkeys () const;
 	void drawToolbar () const;
 	void drawTilesPanel () const;
 	void drawEntitiesPanel () const;
+	void drawTileContextMenu (const SpriteDefPtr& sprite) const;
+	void drawEntityContextMenu (const EntityType& type) const;
+	void openSpriteDefinition (const SpriteDefPtr& sprite) const;
+	void openEntityDefinition (const EntityType& type) const;
+	void drawDefinitionEditor () const;
+	bool saveDefinitionEditor () const;
 	void drawLayersPanel () const;
 	void drawMapsPanel () const;
 	void drawHelpPanel () const;
@@ -74,8 +88,10 @@ protected:
 	float tileHeight () const;
 
 	virtual void drawPropertiesPanel () const;
+	virtual void drawHelpDocs () const;
 	virtual void drawHelpExtras () const {}
 	virtual void drawScriptExtras () const {}
+	virtual std::string getPlayFromHereTooltip () const;
 	virtual bool handleCanvasOverlayInput (float /*tileW*/, float /*tileH*/) const { return false; }
 	virtual void renderCanvasOverlay (ImDrawList* drawList, float originX, float originY, float tileW, float tileH) const {}
 	virtual const Animation& getPlayerAnimation () const { return Animation::NONE; }

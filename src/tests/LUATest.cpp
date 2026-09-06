@@ -394,3 +394,26 @@ TEST_F(LUATest, testSpriteLuaPatcherRoundTripAndErrors)
 	LUA lua;
 	ASSERT_TRUE(lua.loadBuffer(out, "patched-roundtrip"));
 }
+
+TEST_F(LUATest, testFindAssignmentTable)
+{
+	const std::string src =
+			"-- npcwalking = { leftover comment }\n"
+			"npcwalking = {\n"
+			"	width = 1.95,\n"
+			"	height = 0.8,\n"
+			"}\n"
+			"player = {\n"
+			"	width = 0.94,\n"
+			"	height = 0.87,\n"
+			"}\n";
+	size_t open = 0;
+	size_t close = 0;
+	ASSERT_TRUE(sprite_lua_patcher::findAssignmentTable(src, "npcwalking", open, close));
+	const std::string body = src.substr(open, close - open + 1);
+	EXPECT_NE(std::string::npos, body.find("width = 1.95"));
+	EXPECT_EQ(std::string::npos, body.find("player"));
+	ASSERT_TRUE(sprite_lua_patcher::findAssignmentTable(src, "player", open, close));
+	EXPECT_NE(std::string::npos, src.substr(open, close - open + 1).find("0.94"));
+	EXPECT_FALSE(sprite_lua_patcher::findAssignmentTable(src, "npcwalk", open, close));
+}

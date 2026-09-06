@@ -9,7 +9,12 @@
 #include "common/MapSettings.h"
 #include "common/ThemeType.h"
 #include "common/Animation.h"
+#include "common/FileSystem.h"
+#include "common/File.h"
+#include "common/LUALibrary.h"
+#include "common/SpriteLuaPatcher.h"
 #include "sprites/Sprite.h"
+#include <SDL.h>
 #include <algorithm>
 #include <cstring>
 #include <cmath>
@@ -30,6 +35,137 @@ bool passesFilter (const std::string& text, const char* filter)
 	std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 	std::transform(needle.begin(), needle.end(), needle.begin(), ::tolower);
 	return lower.find(needle) != std::string::npos;
+}
+
+bool readGameDataFile (const char* name, std::string& out)
+{
+	const std::string path = FS.getDataDir() + name;
+	SDL_RWops* rwops = FS.createRWops(path, "rb");
+	FilePtr file = rwops != nullptr ? FilePtr(new File(rwops, path)) : FS.getFile(name);
+	if (!file || !file->exists())
+		return false;
+	void* buf = nullptr;
+	const int n = file->read(&buf);
+	if (n <= 0 || buf == nullptr) {
+		delete[] static_cast<char*>(buf);
+		return false;
+	}
+	out.assign(static_cast<char*>(buf), static_cast<size_t>(n));
+	delete[] static_cast<char*>(buf);
+	return true;
+}
+
+bool writeGameDataFile (const char* name, const std::string& contents)
+{
+	const std::string path = FS.getDataDir() + name;
+	return FS.writeSysFile(path, reinterpret_cast<const unsigned char*>(contents.c_str()), contents.size(), true) >= 0;
+}
+
+bool extractSpriteLua (const std::string& lua, const std::string& spriteId, std::string& excerpt)
+{
+	size_t tableOpen = 0;
+	size_t tableClose = 0;
+	if (!sprite_lua_patcher::findSpriteTable(lua, spriteId, tableOpen, tableClose))
+		return false;
+	const std::string needle = "[\"" + spriteId + "\"]";
+	const size_t keyStart = lua.rfind(needle, tableOpen);
+	if (keyStart == std::string::npos)
+		return false;
+	excerpt = lua.substr(keyStart, tableClose - keyStart + 1);
+	return true;
+}
+
+bool replaceSpriteLua (std::string& lua, const std::string& spriteId, const std::string& excerpt)
+{
+	size_t tableOpen = 0;
+	size_t tableClose = 0;
+	if (!sprite_lua_patcher::findSpriteTable(lua, spriteId, tableOpen, tableClose))
+		return false;
+	const std::string needle = "[\"" + spriteId + "\"]";
+	const size_t keyStart = lua.rfind(needle, tableOpen);
+	if (keyStart == std::string::npos)
+		return false;
+	lua.replace(keyStart, tableClose - keyStart + 1, excerpt);
+	return true;
+}
+
+std::string entityLuaKey (const std::string& typeName)
+{
+	return string::replaceAll(typeName, "-", "");
+}
+
+bool extractEntityLua (const std::string& lua, const std::string& typeName, std::string& excerpt)
+{
+	const std::string key = entityLuaKey(typeName);
+	size_t tableOpen = 0;
+	size_t tableClose = 0;
+	if (!sprite_lua_patcher::findAssignmentTable(lua, key, tableOpen, tableClose))
+		return false;
+	const size_t keyStart = lua.rfind(key, tableOpen);
+	if (keyStart == std::string::npos)
+		return false;
+	excerpt = lua.substr(keyStart, tableClose - keyStart + 1);
+	return true;
+}
+
+bool replaceEntityLua (std::string& lua, const std::string& typeName, const std::string& excerpt)
+{
+	const std::string key = entityLuaKey(typeName);
+	size_t tableOpen = 0;
+	size_t tableClose = 0;
+	if (sprite_lua_patcher::findAssignmentTable(lua, key, tableOpen, tableClose)) {
+		const size_t keyStart = lua.rfind(key, tableOpen);
+		if (keyStart == std::string::npos)
+			return false;
+		lua.replace(keyStart, tableClose - keyStart + 1, excerpt);
+		return true;
+	}
+	if (!lua.empty() && lua.back() != '\n')
+		lua += '\n';
+	lua += excerpt;
+	if (!lua.empty() && lua.back() != '\n')
+		lua += '\n';
+	return true;
+}
+
+bool gameDataFileExists (const char* name)
+{
+	const std::string path = FS.getDataDir() + name;
+	SDL_RWops* rwops = FS.createRWops(path, "rb");
+	FilePtr file = rwops != nullptr ? FilePtr(new File(rwops, path)) : FS.getFile(name);
+	return file && file->exists();
+}
+
+void applySpriteFieldsFromLua (const SpriteDefPtr& def, const std::string& excerpt)
+{
+	if (!def)
+		return;
+	const size_t brace = excerpt.find('{');
+	if (brace == std::string::npos)
+		return;
+	LUA lua;
+	if (!lua.loadBuffer("s = " + excerpt.substr(brace), "sprite-def"))
+		return;
+	def->width = lua.getFloatValue("s.width", def->width);
+	def->height = lua.getFloatValue("s.height", def->height);
+	def->fps = lua.getFloatValue("s.fps", def->fps);
+	def->friction = lua.getFloatValue("s.friction", def->friction);
+	def->restitution = lua.getFloatValue("s.restitution", def->restitution);
+	def->rotateable = static_cast<EntityAngle>(lua.getFloatValue("s.rotateable", def->rotateable));
+}
+
+void applyEntityFieldsFromLua (const EntityType* type, const std::string& excerpt)
+{
+	if (type == nullptr)
+		return;
+	const size_t brace = excerpt.find('{');
+	if (brace == std::string::npos)
+		return;
+	LUA lua;
+	if (!lua.loadBuffer("e = " + excerpt.substr(brace), "entity-def"))
+		return;
+	const_cast<EntityType*>(type)->setSize(lua.getFloatValue("e.width", type->width),
+			lua.getFloatValue("e.height", type->height));
 }
 }
 
@@ -88,6 +224,16 @@ float UIMapEditorWindow::tileWidth () const
 float UIMapEditorWindow::tileHeight () const
 {
 	return std::max(1.0f, static_cast<float>(_tileRefWidth) * _zoom + 0.5f);
+}
+
+void UIMapEditorWindow::centerViewOnGrid (gridCoord x, gridCoord y) const
+{
+	const float tileW = tileWidth();
+	const float tileH = tileHeight();
+	const float viewW = std::max(1.0f, _canvasMaxX - _canvasMinX);
+	const float viewH = std::max(1.0f, _canvasMaxY - _canvasMinY);
+	_panX = x * tileW - viewW * 0.5f + tileW * 0.5f;
+	_panY = y * tileH - viewH * 0.5f + tileH * 0.5f;
 }
 
 void UIMapEditorWindow::fitView () const
@@ -172,6 +318,10 @@ void UIMapEditorWindow::handleHotkeys () const
 		_shapeEditor.setVisible(false);
 		return;
 	}
+	if (ImGui::IsKeyPressed(ImGuiKey_Escape, false) && _showDefinition) {
+		_showDefinition = false;
+		return;
+	}
 
 	if (io.WantTextInput)
 		return;
@@ -210,6 +360,8 @@ void UIMapEditorWindow::handleHotkeys () const
 			_showScriptEditor = false;
 		else if (_shapeEditor.isVisible())
 			_shapeEditor.setVisible(false);
+		else if (_showDefinition)
+			_showDefinition = false;
 		else if (_showHelp)
 			_showHelp = false;
 		else if (_showConfirm) {
@@ -265,7 +417,7 @@ void UIMapEditorWindow::drawToolbar () const
 		_doc->saveAndPlayFrom(std::floor(gx), std::floor(gy));
 	}
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("%s", tr("Save and start with the machine at the view center (god mode)").c_str());
+		ImGui::SetTooltip("%s", getPlayFromHereTooltip().c_str());
 	ImGui::SameLine();
 	if (ImGui::Button(tr("Undo").c_str()) && _doc->canUndo())
 		_doc->undo();
@@ -324,6 +476,7 @@ void UIMapEditorWindow::drawTilesPanel () const
 	if (_paletteTheme != &_doc->getTheme())
 		rebuildPalettes();
 	ImGui::InputText(tr("Filter").c_str(), _tileFilter, sizeof(_tileFilter));
+	ImGui::TextDisabled("%s", tr("Right-click a palette item for more actions").c_str());
 	ImGui::BeginChild("tiles_grid", ImVec2(0, 0), true);
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 	const float cell = 48.0f;
@@ -340,6 +493,10 @@ void UIMapEditorWindow::drawTilesPanel () const
 			_doc->setSprite(sprite);
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip("%s", sprite->id.c_str());
+		if (ImGui::BeginPopupContextItem("tile_ctx")) {
+			drawTileContextMenu(sprite);
+			ImGui::EndPopup();
+		}
 		const ImVec2 min = ImGui::GetItemRectMin();
 		const ImVec2 max = ImGui::GetItemRectMax();
 		const SpritePtr& s = UI::get().loadSprite(sprite->id);
@@ -354,6 +511,7 @@ void UIMapEditorWindow::drawTilesPanel () const
 void UIMapEditorWindow::drawEntitiesPanel () const
 {
 	ImGui::InputText(tr("Filter").c_str(), _entityFilter, sizeof(_entityFilter));
+	ImGui::TextDisabled("%s", tr("Right-click a palette item for more actions").c_str());
 	ImGui::BeginChild("entities_grid", ImVec2(0, 0), true);
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 	const float cell = 48.0f;
@@ -370,6 +528,10 @@ void UIMapEditorWindow::drawEntitiesPanel () const
 			_doc->setEmitterEntity(*type);
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip("%s", type->name.c_str());
+		if (ImGui::BeginPopupContextItem("entity_ctx")) {
+			drawEntityContextMenu(*type);
+			ImGui::EndPopup();
+		}
 		const ImVec2 min = ImGui::GetItemRectMin();
 		const ImVec2 max = ImGui::GetItemRectMax();
 		const SpriteDefPtr def = _doc->findEntitySprite(*type);
@@ -388,6 +550,221 @@ void UIMapEditorWindow::drawEntitiesPanel () const
 		col = (col + 1) % columns;
 	}
 	ImGui::EndChild();
+}
+
+void UIMapEditorWindow::drawTileContextMenu (const SpriteDefPtr& sprite) const
+{
+	if (!sprite)
+		return;
+	const int count = _doc->countTilesWithSprite(sprite->id);
+	if (ImGui::MenuItem(tr("Use as brush").c_str()))
+		_doc->setSprite(sprite);
+	if (ImGui::MenuItem(tr("Edit shape").c_str()))
+		_shapeEditor.open(sprite->id);
+	if (ImGui::MenuItem(tr("Edit tile definition").c_str()))
+		openSpriteDefinition(sprite);
+	ImGui::Separator();
+	char removeLabel[128];
+	std::snprintf(removeLabel, sizeof(removeLabel), "%s (%i)", tr("Remove all from map").c_str(), count);
+	if (ImGui::MenuItem(removeLabel, nullptr, false, count > 0))
+		_doc->removeTilesWithSprite(sprite->id);
+	if (ImGui::MenuItem(tr("Go to first on map").c_str(), nullptr, false, count > 0)) {
+		gridCoord x = 0.0f;
+		gridCoord y = 0.0f;
+		if (_doc->findFirstTileWithSprite(sprite->id, x, y)) {
+			_doc->setEditMode(IMapEditorDocument::EditMode::Tiles);
+			_doc->setSprite(sprite);
+			_doc->focusCell(x, y);
+			centerViewOnGrid(x, y);
+		}
+	}
+	ImGui::Separator();
+	if (ImGui::MenuItem(tr("Copy sprite id").c_str()))
+		ImGui::SetClipboardText(sprite->id.c_str());
+	ImGui::TextDisabled("%s: %s", tr("Type").c_str(), sprite->type.name.c_str());
+	ImGui::TextDisabled("%s: %i", tr("Used on this map").c_str(), count);
+}
+
+void UIMapEditorWindow::drawEntityContextMenu (const EntityType& type) const
+{
+	const int count = _doc->countEntitiesOfType(type);
+	const SpriteDefPtr sprite = _doc->findEntitySprite(type);
+	if (ImGui::MenuItem(tr("Use as brush").c_str()))
+		_doc->setEmitterEntity(type);
+	if (sprite && ImGui::MenuItem(tr("Edit shape").c_str()))
+		_shapeEditor.open(sprite->id);
+	if (gameDataFileExists("entities.lua") && ImGui::MenuItem(tr("Edit entity lua").c_str()))
+		openEntityDefinition(type);
+	if (sprite && ImGui::MenuItem(tr("Edit sprite definition").c_str()))
+		openSpriteDefinition(sprite);
+	ImGui::Separator();
+	char removeLabel[128];
+	std::snprintf(removeLabel, sizeof(removeLabel), "%s (%i)", tr("Remove all from map").c_str(), count);
+	if (ImGui::MenuItem(removeLabel, nullptr, false, count > 0))
+		_doc->removeEntitiesOfType(type);
+	if (ImGui::MenuItem(tr("Go to first on map").c_str(), nullptr, false, count > 0)) {
+		gridCoord x = 0.0f;
+		gridCoord y = 0.0f;
+		if (_doc->findFirstEntityOfType(type, x, y)) {
+			_doc->setEditMode(IMapEditorDocument::EditMode::Entities);
+			_doc->setEmitterEntity(type);
+			_doc->focusCell(x, y);
+			centerViewOnGrid(x, y);
+		}
+	}
+	ImGui::Separator();
+	if (ImGui::MenuItem(tr("Copy type name").c_str()))
+		ImGui::SetClipboardText(type.name.c_str());
+	if (sprite)
+		ImGui::TextDisabled("%s: %s", tr("Sprite").c_str(), sprite->id.c_str());
+	ImGui::TextDisabled("%s: %i", tr("Used on this map").c_str(), count);
+}
+
+void UIMapEditorWindow::openSpriteDefinition (const SpriteDefPtr& sprite) const
+{
+	if (!sprite)
+		return;
+	_definitionIsEntity = false;
+	_definitionId = sprite->id;
+	_definitionSprite = sprite;
+	_definitionEntity = nullptr;
+	_definitionLua.clear();
+	_definitionStatus.clear();
+	std::string source;
+	if (readGameDataFile("sprites.lua", source)) {
+		if (!extractSpriteLua(source, sprite->id, _definitionLua))
+			_definitionStatus = tr("Not found in sprites.lua");
+	} else {
+		_definitionStatus = tr("Could not read sprites.lua");
+	}
+	_showDefinition = true;
+}
+
+void UIMapEditorWindow::openEntityDefinition (const EntityType& type) const
+{
+	_definitionIsEntity = true;
+	_definitionId = type.name;
+	_definitionEntity = &type;
+	_definitionSprite = _doc->findEntitySprite(type);
+	_definitionLua.clear();
+	_definitionStatus.clear();
+	std::string source;
+	if (readGameDataFile("entities.lua", source)) {
+		if (!extractEntityLua(source, type.name, _definitionLua)) {
+			char buf[256];
+			std::snprintf(buf, sizeof(buf), "%s = {\n\twidth = %.2f,\n\theight = %.2f,\n}",
+					entityLuaKey(type.name).c_str(), type.width, type.height);
+			_definitionLua = buf;
+			_definitionStatus = tr("Not found in entities.lua");
+		}
+	} else {
+		_definitionStatus = tr("Could not read entities.lua");
+	}
+	_showDefinition = true;
+}
+
+bool UIMapEditorWindow::saveDefinitionEditor () const
+{
+	if (_definitionLua.empty())
+		return false;
+	if (_definitionIsEntity) {
+		LUA excerptCheck;
+		if (!excerptCheck.loadBuffer(_definitionLua, "entities.lua")) {
+			_definitionStatus = tr("Invalid Lua");
+			return false;
+		}
+		std::string source;
+		if (!readGameDataFile("entities.lua", source)) {
+			_definitionStatus = tr("Could not read entities.lua");
+			return false;
+		}
+		if (!replaceEntityLua(source, _definitionId, _definitionLua)) {
+			_definitionStatus = tr("Failed to update entities.lua");
+			return false;
+		}
+		LUA fileCheck;
+		if (!fileCheck.loadBuffer(source, "entities.lua")) {
+			_definitionStatus = tr("Invalid Lua");
+			return false;
+		}
+		if (!writeGameDataFile("entities.lua", source)) {
+			_definitionStatus = tr("Failed to write entities.lua");
+			return false;
+		}
+		applyEntityFieldsFromLua(_definitionEntity, _definitionLua);
+		_definitionStatus = tr("Wrote entities.lua");
+		return true;
+	}
+
+	LUA excerptCheck;
+	if (!excerptCheck.loadBuffer("sprites = {\n" + _definitionLua + "\n}\n", "sprites.lua")) {
+		_definitionStatus = tr("Invalid Lua");
+		return false;
+	}
+	std::string source;
+	if (!readGameDataFile("sprites.lua", source)) {
+		_definitionStatus = tr("Could not read sprites.lua");
+		return false;
+	}
+	if (!replaceSpriteLua(source, _definitionId, _definitionLua)) {
+		_definitionStatus = tr("Failed to update sprites.lua");
+		return false;
+	}
+	LUA fileCheck;
+	if (!fileCheck.loadBuffer(source, "sprites.lua")) {
+		_definitionStatus = tr("Invalid Lua");
+		return false;
+	}
+	if (!writeGameDataFile("sprites.lua", source)) {
+		_definitionStatus = tr("Failed to write sprites.lua");
+		return false;
+	}
+	applySpriteFieldsFromLua(_definitionSprite, _definitionLua);
+	_definitionStatus = tr("Wrote sprites.lua");
+	return true;
+}
+
+void UIMapEditorWindow::drawDefinitionEditor () const
+{
+	if (!_showDefinition)
+		return;
+	const std::string title = (_definitionIsEntity ? tr("Entity definition") : tr("Tile definition"))
+			+ "###editor_definition";
+	if (!ImGui::Begin(title.c_str(), &_showDefinition)) {
+		ImGui::End();
+		return;
+	}
+	ImGui::TextUnformatted(_definitionId.c_str());
+	if (_definitionIsEntity && _definitionEntity != nullptr) {
+		ImGui::Text("%s: %.2f x %.2f", tr("Size").c_str(), _definitionEntity->width, _definitionEntity->height);
+		if (_definitionSprite)
+			ImGui::Text("%s: %s", tr("Sprite").c_str(), _definitionSprite->id.c_str());
+	} else if (_definitionSprite) {
+		const SpriteDefPtr& def = _definitionSprite;
+		ImGui::Text("%s: %s", tr("Type").c_str(), def->type.name.c_str());
+		if (!def->theme.isNone())
+			ImGui::Text("%s: %s", tr("Theme").c_str(), def->theme.name.c_str());
+		ImGui::Text("%s: %.2f x %.2f", tr("Size").c_str(), def->width, def->height);
+		ImGui::Text("%s: %.1f", tr("FPS").c_str(), def->fps);
+		ImGui::Text("%s: %s", tr("Has collision shape").c_str(), def->hasShape() ? tr("Yes").c_str() : tr("No").c_str());
+	}
+	if (_definitionSprite && ImGui::Button(tr("Edit shape").c_str()))
+		_shapeEditor.open(_definitionSprite->id);
+	ImGui::Separator();
+	ImGui::BeginChild("definition_lua", ImVec2(0.0f, -28.0f), true);
+	ImGui::InputTextMultiline("##definition_lua_text", &_definitionLua, ImVec2(-FLT_MIN, -FLT_MIN),
+			ImGuiInputTextFlags_AllowTabInput);
+	ImGui::EndChild();
+	if (ImGui::Button((_definitionIsEntity ? tr("Save to entities.lua") : tr("Save to sprites.lua")).c_str()))
+		saveDefinitionEditor();
+	ImGui::SameLine();
+	if (ImGui::Button(tr("Copy").c_str()))
+		ImGui::SetClipboardText(_definitionLua.c_str());
+	if (!_definitionStatus.empty()) {
+		ImGui::SameLine();
+		ImGui::TextUnformatted(_definitionStatus.c_str());
+	}
+	ImGui::End();
 }
 
 void UIMapEditorWindow::drawLayersPanel () const
@@ -522,15 +899,26 @@ void UIMapEditorWindow::drawHelpPanel () const
 	if (_doc->supportsMapScript())
 		ImGui::BulletText("%s", tr("Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test").c_str());
 	ImGui::BulletText("%s", tr("Shapes: edit polygons/circles and write sprites.lua").c_str());
+	ImGui::BulletText("%s", tr("Right-click a palette item for more actions").c_str());
 	ImGui::BulletText("%s", tr("Alt+click: pick whatever is on top (any tab)").c_str());
 	ImGui::BulletText("%s", tr("Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge").c_str());
 	ImGui::BulletText("%s", tr("Fill: flood-fill background / same tile").c_str());
 	ImGui::Separator();
 	ImGui::TextUnformatted(tr("Docs (in the source tree)").c_str());
+	drawHelpDocs();
+	drawHelpExtras();
+}
+
+void UIMapEditorWindow::drawHelpDocs () const
+{
 	ImGui::BulletText("docs/caveexpress/EDITOR.md");
 	ImGui::BulletText("docs/caveexpress/MAPS.md");
 	ImGui::BulletText("docs/caveexpress/SPRITES.md");
-	drawHelpExtras();
+}
+
+std::string UIMapEditorWindow::getPlayFromHereTooltip () const
+{
+	return tr("Save and start with the machine at the view center (god mode)");
 }
 
 void UIMapEditorWindow::drawScriptEditor () const
@@ -1016,6 +1404,7 @@ void UIMapEditorWindow::render (int x, int y) const
 	drawConfirmModal();
 	drawValidationModal();
 	drawScriptEditor();
+	drawDefinitionEditor();
 	{
 		std::string suggested;
 		if (_doc->getHighlightItem() && _doc->getHighlightItem()->def)

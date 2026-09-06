@@ -16,8 +16,12 @@ Close|Close
 Continue|Continue
 Controller trigger|Controller trigger
 Copied to clipboard|Copied to clipboard
+Copy|Copy
+Copy sprite id|Copy sprite id
 Copy to clipboard|Copy to clipboard
+Copy type name|Copy type name
 Could not open sprites.lua|Could not open sprites.lua
+Could not read entities.lua|Could not read entities.lua
 Could not read sprites.lua|Could not read sprites.lua
 Create server|Create server
 Ctrl+S save, Ctrl+Z/Y undo/redo|Ctrl+S save, Ctrl+Z/Y undo/redo
@@ -34,15 +38,23 @@ Description|Description
 Disconnect|Disconnect
 Docs (in the source tree)|Docs (in the source tree)
 Do not put tiles in this window — initMap is rebuilt from the canvas.|Do not put tiles in this window — initMap is rebuilt from the canvas.
+Edit entity lua|Edit entity lua
 Editing the selected emitter|Editing the selected emitter
 Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.|Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.
 Editor|Editor
+Edit shape|Edit shape
+Edit sprite definition|Edit sprite definition
+Edit tile definition|Edit tile definition
 emitter|emitter
 Emitter amount|Emitter amount
 Emitter delay|Emitter delay
 Entities|Entities
 Entity|Entity
+Entity definition|Entity definition
 Failed to patch sprites.lua|Failed to patch sprites.lua
+Failed to update entities.lua|Failed to update entities.lua
+Failed to update sprites.lua|Failed to update sprites.lua
+Failed to write entities.lua|Failed to write entities.lua
 Failed to write sprites.lua|Failed to write sprites.lua
 F fit view, G toggle grid, F1 help|F fit view, G toggle grid, F1 help
 File|File
@@ -53,13 +65,16 @@ Find|Find
 Find next|Find next
 Fit|Fit
 foreground|foreground
+FPS|FPS
 Fullscreen|Fullscreen
 Game|Game
 Google Play|Google Play
 Google Play sign-out|Google Play sign-out
+Go to first on map|Go to first on map
 Graphics|Graphics
 Grid|Grid
 Hard|Hard
+Has collision shape|Has collision shape
 Height|Height
 Help|Help
 Hints|Hints
@@ -67,6 +82,7 @@ Homepage|Homepage
 Increase map height|Increase map height
 Increase map width|Increase map width
 Input|Input
+Invalid Lua|Invalid Lua
 Invalid Lua shape definition|Invalid Lua shape definition
 Keep handwritten initMap|Keep handwritten initMap
 Keep initMap|Keep initMap
@@ -91,9 +107,12 @@ Name|Name
 New|New
 New circle|New circle
 New polygon|New polygon
+No|No
 No controller found|No controller found
 none|none
 Normal|Normal
+Not found in entities.lua|Not found in entities.lua
+Not found in sprites.lua|Not found in sprites.lua
 Objectives|Objectives
 Off|Off
 OK|OK
@@ -120,6 +139,7 @@ Quit without saving|Quit without saving
 Redo|Redo
 Red packages are deadlocks - undo your step|Red packages are deadlocks - undo your step
 Refresh|Refresh
+Remove all from map|Remove all from map
 Remove tile|Remove tile
 Replace|Replace
 Replace all|Replace all
@@ -127,12 +147,15 @@ Reset|Reset
 Reset game progress?|Reset game progress?
 Restart|Restart
 Retry|Retry
+Right-click a palette item for more actions|Right-click a palette item for more actions
 RMB: erase items of the active tab|RMB: erase items of the active tab
 Save|Save
 Save and start with the machine at the view center (god mode)|Save and start with the machine at the view center (god mode)
 Save anyway|Save anyway
 Save & Go|Save & Go
+Save to entities.lua|Save to entities.lua
 Save to game data|Save to game data
+Save to sprites.lua|Save to sprites.lua
 Script|Script
 Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test
 See docs/caveexpress/MAPS.md|See docs/caveexpress/MAPS.md
@@ -146,6 +169,7 @@ Shapes|Shapes
 Shapes: edit polygons/circles and write sprites.lua|Shapes: edit polygons/circles and write sprites.lua
 Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge|Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge
 Show Grid|Show Grid
+Size|Size
 Skip|Skip
 Small|Small
 solid|solid
@@ -153,19 +177,25 @@ Solve|Solve
 Sound|Sound
 Sound/Music|Sound/Music
 Space (on canvas): rotate selected tile or brush|Space (on canvas): rotate selected tile or brush
+Sprite|Sprite
 Sprite Shape Editor|Sprite Shape Editor
 Start|Start
 Target|Target
 Textures|Textures
 The less moves you do the better|The less moves you do the better
+Theme|Theme
 These checks would fail CampaignTest / play:|These checks would fail CampaignTest / play:
+Tile definition|Tile definition
 Tiles|Tiles
 Tiles / Entities tab: place and erase only that kind|Tiles / Entities tab: place and erase only that kind
 Title|Title
 Too many vertices for Box2D|Too many vertices for Box2D
+Type|Type
 Undo|Undo
 Undo shape|Undo shape
 Unsaved changes|Unsaved changes
+Use as brush|Use as brush
+Used on this map|Used on this map
 User data|User data
 Username|Username
 Vertices|Vertices
@@ -175,6 +205,42 @@ Wheel: zoom toward cursor|Wheel: zoom toward cursor
 Width|Width
 Write into the project maps folder|Write into the project maps folder
 Write sprites.lua|Write sprites.lua
+Wrote entities.lua|Wrote entities.lua
 Wrote sprites.lua|Wrote sprites.lua
+Yes|Yes
+Add|Add
+Add a wall border, floors, a package, a target, and a start if they are missing.|Add a wall border, floors, a package, a target, and a start if they are missing.
+Add to campaign|Add to campaign
+Auto-tile walls|Auto-tile walls
+Auto-tile walls picks rock art from neighboring floors.|Auto-tile walls picks rock art from neighboring floors.
+Campaign|Campaign
+Campaign id|Campaign id
+Campaign text|Campaign text
+Check layout|Check layout
+Create campaign|Create campaign
+Del|Del
+Flood-fill from the player: packages and targets must be reachable.|Flood-fill from the player: packages and targets must be reachable.
+Floors|Floors
+In campaigns|In campaigns
+Layout|Layout
+Layout ok|Layout ok
+Make playable|Make playable
+Maps in campaign|Maps in campaign
+New campaign file|New campaign file
+Package count must match target count|Package count must match target count
+Packages|Packages
+Packages sit on floors or targets. Walls replace everything in a cell.|Packages sit on floors or targets. Walls replace everything in a cell.
+Play|Play
+Playable reachable|Playable reachable
+Remove|Remove
+Replace wall sprites using neighboring floors (same rules as map load).|Replace wall sprites using neighboring floors (same rules as map load).
+Save and start at the view center|Save and start at the view center
+Save and start at this pad|Save and start at this pad
+Sokoban cell|Sokoban cell
+Sokoban tiles|Sokoban tiles
+Start positions|Start positions
+Targets|Targets
+Walls|Walls
+wildcard|wildcard
 You have unsaved changes. Continue?|You have unsaved changes. Continue?
 Your player|Your player

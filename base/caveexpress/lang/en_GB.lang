@@ -43,8 +43,11 @@ Continue|Continue
 Controller trigger|Controller trigger
 Copied to clipboard|Copied to clipboard
 Copy|Copy
+Copy sprite id|Copy sprite id
 Copy to clipboard|Copy to clipboard
+Copy type name|Copy type name
 Could not open sprites.lua|Could not open sprites.lua
+Could not read entities.lua|Could not read entities.lua
 Could not read sprites.lua|Could not read sprites.lua
 Create campaign|Create campaign
 Create server|Create server
@@ -74,9 +77,13 @@ Drop stones onto the tree|Drop stones onto the tree
 Drop them by hitting SPACE bar|Drop them by hitting SPACE bar
 Drop them with the second finger|Drop them with the second finger
 Drop the stone to collect packages again|Drop the stone to collect packages again
+Edit entity lua|Edit entity lua
 Editing the selected emitter|Editing the selected emitter
 Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.|Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.
 Editor|Editor
+Edit shape|Edit shape
+Edit sprite definition|Edit sprite definition
+Edit tile definition|Edit tile definition
 Egg|Egg
 emitter|emitter
 Emitter|Emitter
@@ -84,9 +91,13 @@ Emitter amount|Emitter amount
 Emitter delay|Emitter delay
 Entities|Entities
 Entity|Entity
+Entity definition|Entity definition
 Extra settings|Extra settings
 Faces right|Faces right
 Failed to patch sprites.lua|Failed to patch sprites.lua
+Failed to update entities.lua|Failed to update entities.lua
+Failed to update sprites.lua|Failed to update sprites.lua
+Failed to write entities.lua|Failed to write entities.lua
 Failed to write sprites.lua|Failed to write sprites.lua
 Fail on side border|Fail on side border
 F fit view, G toggle grid, F1 help|F fit view, G toggle grid, F1 help
@@ -101,6 +112,7 @@ Fit|Fit
 Flyable reachable|Flyable reachable
 Flying dino when hit may drop an egg|Flying dino when hit may drop an egg
 foreground|foreground
+FPS|FPS
 Friendly NPC spawn cap|Friendly NPC spawn cap
 Friendly NPCs to deliver|Friendly NPCs to deliver
 Fullscreen|Fullscreen
@@ -113,10 +125,12 @@ Geyser initial delay|Geyser initial delay
 Go|Go
 Google Play|Google Play
 Google Play sign-out|Google Play sign-out
+Go to first on map|Go to first on map
 Graphics|Graphics
 Gravity|Gravity
 Grid|Grid
 Hard|Hard
+Has collision shape|Has collision shape
 Health bar|Health bar
 Height|Height
 Help|Help
@@ -137,6 +151,7 @@ Inserts map:message in the script (put it inside onMapLoaded / onUpdate).|Insert
 Insert spawn villager|Insert spawn villager
 Inserts spawnFriendlyNPC. Runtime only — not valid in initMap.|Inserts spawnFriendlyNPC. Runtime only — not valid in initMap.
 Intro window|Intro window
+Invalid Lua|Invalid Lua
 Invalid Lua shape definition|Invalid Lua shape definition
 Invulnerable|Invulnerable
 Jungle|Jungle
@@ -172,9 +187,12 @@ New|New
 New campaign file|New campaign file
 New circle|New circle
 New polygon|New polygon
+No|No
 No controller found|No controller found
 none|none
 Normal|Normal
+Not found in entities.lua|Not found in entities.lua
+Not found in sprites.lua|Not found in sprites.lua
 Npc delay|Npc delay
 npcs: how many friendly villagers can be alive from caves|npcs: how many friendly villagers can be alive from caves
 Objectives|Objectives
@@ -214,6 +232,7 @@ Reference time in seconds|Reference time in seconds
 Refresh|Refresh
 Remap|Remap
 Remove|Remove
+Remove all from map|Remove all from map
 Remove tile|Remove tile
 Replace|Replace
 Replace all|Replace all
@@ -222,6 +241,7 @@ Reset|Reset
 Reset game progress?|Reset game progress?
 Restart|Restart
 Retry|Retry
+Right-click a palette item for more actions|Right-click a palette item for more actions
 RMB: erase items of the active tab|RMB: erase items of the active tab
 Rock|Rock
 Rotate selected|Rotate selected
@@ -231,7 +251,9 @@ Save and start at this pad (god mode)|Save and start at this pad (god mode)
 Save and start with the machine at the view center (god mode)|Save and start with the machine at the view center (god mode)
 Save anyway|Save anyway
 Save & Go|Save & Go
+Save to entities.lua|Save to entities.lua
 Save to game data|Save to game data
+Save to sprites.lua|Save to sprites.lua
 Script|Script
 Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test
 Seed|Seed
@@ -249,6 +271,7 @@ Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge|Shift+drag (Se
 Show all trigger links|Show all trigger links
 Show Grid|Show Grid
 Shredder|Shredder
+Size|Size
 Small|Small
 solid|solid
 Sound|Sound
@@ -256,6 +279,7 @@ Sound/Music|Sound/Music
 Space (on canvas): rotate selected tile or brush|Space (on canvas): rotate selected tile or brush
 Spawn delay ms|Spawn delay ms
 Spawn NPC|Spawn NPC
+Sprite|Sprite
 Sprite Shape Editor|Sprite Shape Editor
 Start|Start
 Start positions|Start positions
@@ -271,6 +295,7 @@ Theme remap|Theme remap
 These checks would fail CampaignTest / play:|These checks would fail CampaignTest / play:
 This is the goal in every map|This is the goal in every map
 Tile angle|Tile angle
+Tile definition|Tile definition
 Tiles|Tiles
 Tiles / Entities tab: place and erase only that kind|Tiles / Entities tab: place and erase only that kind
 Tiles that will be remapped|Tiles that will be remapped
@@ -285,10 +310,13 @@ Tree|Tree
 Trigger link|Trigger link
 Try to avoid crashes but still be fast|Try to avoid crashes but still be fast
 Tutorial|Tutorial
+Type|Type
 Undo|Undo
 Undo shape|Undo shape
 Unpaired plates / gates|Unpaired plates / gates
 Unsaved changes|Unsaved changes
+Use as brush|Use as brush
+Used on this map|Used on this map
 User data|User data
 Username|Username
 Use the second finger to drop the package|Use the second finger to drop the package
@@ -310,8 +338,10 @@ Wind column height in tiles (emitter setting size=)|Wind column height in tiles 
 Wind size|Wind size
 Write into the project maps folder|Write into the project maps folder
 Write sprites.lua|Write sprites.lua
+Wrote entities.lua|Wrote entities.lua
 Wrote sprites.lua|Wrote sprites.lua
 X|X
 Y|Y
+Yes|Yes
 You have unsaved changes. Continue?|You have unsaved changes. Continue?
 You won!|You won!
