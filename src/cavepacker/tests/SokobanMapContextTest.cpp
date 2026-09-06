@@ -208,4 +208,19 @@ TEST_F(SokobanMapContextTest, testSaveWritesTitleAndPackageOnTarget)
 	FS.deleteFile(outRel);
 }
 
+TEST_F(SokobanMapContextTest, testEmptyUserOverlayDoesNotHidePackagedMap)
+{
+	const std::string name = "xsokoban0001";
+	const std::string relPath = FS.getDataDir() + FS.getMapsDir() + name + ".sok";
+	const std::string absPath = FS.getAbsoluteWritePath() + relPath;
+	ASSERT_NE(-1L, FS.writeSysFile(absPath, (const unsigned char*)"", 0, true))
+		<< "Failed to write empty overlay " << absPath;
+
+	SokobanMapContext ctx(name);
+	ASSERT_TRUE(ctx.load(false)) << "empty user overlay must not block the packaged map";
+	EXPECT_FALSE(ctx.getStartPositions().empty());
+
+	FS.deleteFile(relPath);
+}
+
 }

@@ -1,5 +1,6 @@
 #include "SokobanMapContext.h"
 #include "common/FileSystem.h"
+#include "common/File.h"
 #include "common/Log.h"
 #include "common/SpriteDefinition.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
@@ -172,21 +173,19 @@ bool SokobanMapContext::writeBoard (const std::string& path) const {
 		return false;
 	}
 
-	SDL_RWops *rwops = FS.createRWops(path, "wb");
-	if (rwops == nullptr)
-		return false;
-	FilePtr file(new File(rwops, path));
-
 	const int width = string::toInt(widthIter->second);
 	const int height = string::toInt(heightIter->second);
+	if (width <= 0 || height <= 0)
+		return false;
 
-	file->writeString(";");
-	file->appendString(_name.c_str());
-	file->appendString("\n");
+	std::string out;
+	out += ';';
+	out += _name;
+	out += '\n';
 	if (!_title.empty()) {
-		file->appendString("Title: ");
-		file->appendString(_title.c_str());
-		file->appendString("\n");
+		out += "Title: ";
+		out += _title;
+		out += '\n';
 	}
 
 	std::vector<char> board;
@@ -235,22 +234,19 @@ bool SokobanMapContext::writeBoard (const std::string& path) const {
 
 	int col = 0;
 	for (int i = 0; i < width * height; ++i) {
-		const char field = board[i];
-		char str[2] = { field, '\0' };
-		file->appendString(str);
+		out += board[i];
 		++col;
 		if (col >= width) {
-			file->appendString("\n");
+			out += '\n';
 			col = 0;
 		}
 	}
 
-	if (file->length() <= 0L) {
-		FS.deleteFile(path);
+	if (out.empty())
 		return false;
-	}
 
-	return true;
+	File file(nullptr, path);
+	return file.write(reinterpret_cast<const unsigned char*>(out.data()), out.size()) >= 0;
 }
 
 bool SokobanMapContext::load(bool skipErrors) {
@@ -259,6 +255,13 @@ bool SokobanMapContext::load(bool skipErrors) {
 	resetTiles();
 
 	FilePtr filePtr = FS.getFileFromURL("maps://" + _name + ".sok");
+	if (filePtr->exists() && filePtr->length() <= 0) {
+		const std::string overlayRel = FS.getDataDir() + FS.getMapsDir() + _name + ".sok";
+		Log::warn(LOG_GAMEIMPL, "Sokoban map overlay '%s' is empty - removing it", filePtr->getName().c_str());
+		filePtr.reset();
+		FS.deleteFile(overlayRel);
+		filePtr = FS.getFileFromURL("maps://" + _name + ".sok");
+	}
 	if (!filePtr->exists()) {
 		Log::error(LOG_GAMEIMPL, "Sokoban map file '%s' does not exist", filePtr->getName().c_str());
 		return false;

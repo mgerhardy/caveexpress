@@ -535,7 +535,6 @@ bool Map::load (const std::string& name)
 		return false;
 	}
 
-	ctx->save();
 	_settings = ctx->getSettings();
 	_startPositions = ctx->getStartPositions();
 	_name = ctx->getName();
