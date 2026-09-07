@@ -86,15 +86,19 @@ How to build projects from sources described on wiki page [Compilation](https://
 
 ### Android
 
-CI builds arm64-v8a debug APKs with the NDK CMake toolchain and the Gradle project in `android-project/` (same layout as [libsdl-org/SDL](https://github.com/libsdl-org/SDL/tree/main/.github)).
+CI builds arm64-v8a debug APKs with the NDK CMake toolchain and the Gradle project in `android-project/` (same layout as [libsdl-org/SDL](https://github.com/libsdl-org/SDL/tree/main/.github)). Local builds use the same Makefile entry point.
 
 ```sh
-# ANDROID_NDK_HOME must point at an NDK (r28c or compatible)
-# ANDROID_SDK_ROOT is required to package APKs
-./contrib/scripts/android.sh
+make android-setup              # SDK, NDK r28c, emulator, AVD (skips files that already exist)
+make android BUILDTYPE=Release  # arm64-v8a APKs (same as GitHub Actions)
+make android-run                # host-ABI APK, start emulator, install, launch CaveExpress
 ```
 
-`ANDROID_SKIP_APK=1` builds only the native `.so` files. `ANDROID_ABI` defaults to `arm64-v8a`. Helper targets after CMake configure: `android-caveexpress-apk`, `android-cavepacker-apk`.
+`make android-run ANDROID_GAME=cavepacker` launches CavePacker. `make android-stop` shuts the emulator down.
+
+Need JDK 17+, ninja, unzip, and `/dev/kvm` for a fast emulator. The SDK is stored in `build/android_sdk/` by default. `ANDROID_SKIP_APK=1` builds only the native `.so` files. `ANDROID_ABI` defaults to `arm64-v8a` for `make android` and to the host ABI (`x86_64` or `arm64-v8a`) for `make android-run`.
+
+Helper targets after the Android tree is configured: `android-caveexpress-apk`, `android-cavepacker-apk`, `android-caveexpress-install`, `android-caveexpress-start`.
 
 
 # Tools
