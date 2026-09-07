@@ -225,6 +225,9 @@ protected:
 
 	// do the spawning on the map and add the physic objects
 	bool spawnPlayer (Player* player);
+
+	// init the map boundaries and configure the box2d stuff
+	void initPhysics ();
 public:
 	Map ();
 	virtual ~Map ();
@@ -462,9 +465,6 @@ private:
 	void endContact (PhysicsContact contact) override;
 	void postSolve (PhysicsContact contact, const PhysicsContactImpulse& impulse) override;
 	void preSolve (PhysicsContact contact, const PhysicsManifold& oldManifold) override;
-
-	// init the map boundaries and configure the box2d stuff
-	void initPhysics ();
 
 	// init the water body
 	void initWater ();

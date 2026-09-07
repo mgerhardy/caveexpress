@@ -13,6 +13,11 @@ SET(${PROJECT_NAME}_SRC
 	MapManagerTest.cpp
 	CampaignTest.cpp
 	GatePressurePlateTest.cpp
+	PhysicsStoneTest.cpp
+	PhysicsPlayerTest.cpp
+	PhysicsPackageTest.cpp
+	PhysicsNPCTest.cpp
+	PhysicsEnvironmentTest.cpp
 	../main/CaveExpress.cpp
 	../../tests/TestAll.cpp
 	../../tests/TestShared.cpp
