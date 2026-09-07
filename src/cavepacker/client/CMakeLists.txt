@@ -11,6 +11,7 @@ set(${NAME}-client_SRCS
 	editor/MapEditorDocument.cpp
 	editor/UIMapEditorWindow.cpp
 	ClientEntityFactories.cpp
+	ClientMapHandlers.cpp
 	CavePackerClientMap.cpp
 )
 add_library(${NAME}-client ${${NAME}-client_SRCS})

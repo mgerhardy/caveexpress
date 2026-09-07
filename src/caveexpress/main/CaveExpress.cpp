@@ -10,6 +10,7 @@
 #include "common/System.h"
 #include "common/MapSettings.h"
 #include "caveexpress/shared/constants/ConfigVars.h"
+#include "caveexpress/shared/CaveExpressConfig.h"
 #include "caveexpress/shared/CaveExpressCooldown.h"
 
 #include "sound/Sound.h"
@@ -17,6 +18,8 @@
 #include "service/ServiceProvider.h"
 
 #include "caveexpress/client/ClientEntityFactories.h"
+#include "caveexpress/client/ClientMapHandlers.h"
+#include "caveexpress/shared/network/ProtocolMessageFactories.h"
 
 #include "network/INetwork.h"
 #include "network/IProtocolMessage.h"
@@ -67,14 +70,9 @@
 #include "caveexpress/client/CaveExpressClientMap.h"
 #include "caveexpress/client/network/AddRopeHandler.h"
 #include "caveexpress/client/network/RemoveRopeHandler.h"
-#include "caveexpress/client/network/AddEntityWithSoundHandler.h"
-#include "caveexpress/client/network/WaterHeightHandler.h"
 #include "caveexpress/client/network/UpdateCollectedTypeHandler.h"
 #include "caveexpress/client/network/SpawnInfoHandler.h"
 #include "caveexpress/client/network/WaterImpactHandler.h"
-#include "caveexpress/client/network/AddCaveHandler.h"
-#include "caveexpress/client/network/LightStateHandler.h"
-#include "caveexpress/client/network/GateStateHandler.h"
 #include "caveexpress/client/network/HudInitDoneHandler.h"
 #include "caveexpress/client/network/UpdateParticleHandler.h"
 #include "caveexpress/client/network/UpdatePackageCountHandler.h"
@@ -101,18 +99,6 @@
 #include <SDL_assert.h>
 
 namespace caveexpress {
-
-PROTOCOL_CLASS_FACTORY_IMPL(DropMessage);
-PROTOCOL_CLASS_FACTORY_IMPL(RemoveRopeMessage);
-PROTOCOL_CLASS_FACTORY_IMPL(AddRopeMessage);
-PROTOCOL_CLASS_FACTORY_IMPL(LightStateMessage);
-PROTOCOL_CLASS_FACTORY_IMPL(AddCaveMessage);
-PROTOCOL_CLASS_FACTORY_IMPL(UpdateCollectedTypeMessage);
-PROTOCOL_CLASS_FACTORY_IMPL(WaterHeightMessage);
-PROTOCOL_CLASS_FACTORY_IMPL(WaterImpactMessage);
-PROTOCOL_CLASS_FACTORY_IMPL(TargetCaveMessage);
-PROTOCOL_CLASS_FACTORY_IMPL(AnnounceTargetCaveMessage);
-PROTOCOL_CLASS_FACTORY_IMPL(GateStateMessage);
 
 CaveExpress::CaveExpress () :
 		_persister(nullptr), _campaignManager(nullptr), _clientMap(nullptr), _updateEntitiesTime(0), _frontend(nullptr), _serviceProvider(nullptr),_connectedClients(
@@ -312,47 +298,13 @@ void CaveExpress::shutdown ()
 
 void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 {
-	struct {
-		const char *configVar;
-		const char *value;
-		int flags;
-	} gameConfigVars[] = {
-		{MAX_HITPOINTS, "100", CV_NOPERSIST},
-		{DAMAGE_THRESHOLD, "0.3", CV_NOPERSIST},
-		{REFERENCE_TIME_FACTOR, "1.0", CV_NOPERSIST},
-		{FRUIT_COLLECT_DELAY_FOR_A_NEW_LIFE, "15000", CV_NOPERSIST},
-		{AMOUNT_OF_FRUITS_FOR_A_NEW_LIFE, "4", CV_NOPERSIST},
-		{FRUIT_HITPOINTS, "10", CV_NOPERSIST},
-		{WORLD_PARTICLE, "true", CV_READONLY | CV_NOPERSIST},
-		{NPC_FLYING_SPEED, "2.0", CV_NOPERSIST},
-		{FLYING_SPEED_X, "1.0", CV_NOPERSIST}
-	};
-
-	const int n = SDL_arraysize(gameConfigVars);
-	for (int i = 0; i < n; ++i) {
-		Config.initOrGetConfigVar(gameConfigVars[i].configVar, gameConfigVars[i].value, gameConfigVars[i].flags);
-	}
-
-	// we have to override this - otherwise the old value from the config is used... which would be bad
-	Config.getConfigVar(NPC_FLYING_SPEED)->setValue("2.0");
+	registerCaveExpressConfigVars();
 
 	Cooldowns::INVULNERABLE.setRuntime(15000L);
 	Cooldowns::POWERUP.setRuntime(12000L);
 
 	registerClientEntityFactories();
-
-	ProtocolMessageFactory& f = ProtocolMessageFactory::get();
-	f.registerFactory(protocol::PROTO_DROP, DropMessage::FACTORY);
-	f.registerFactory(protocol::PROTO_REMOVEROPE, RemoveRopeMessage::FACTORY);
-	f.registerFactory(protocol::PROTO_WATERHEIGHT, WaterHeightMessage::FACTORY);
-	f.registerFactory(protocol::PROTO_WATERIMPACT, WaterImpactMessage::FACTORY);
-	f.registerFactory(protocol::PROTO_ADDCAVE, AddCaveMessage::FACTORY);
-	f.registerFactory(protocol::PROTO_LIGHTSTATE, LightStateMessage::FACTORY);
-	f.registerFactory(protocol::PROTO_GATESTATE, GateStateMessage::FACTORY);
-	f.registerFactory(protocol::PROTO_TARGETCAVE, TargetCaveMessage::FACTORY);
-	f.registerFactory(protocol::PROTO_ANNOUNCETARGETCAVE, AnnounceTargetCaveMessage::FACTORY);
-	f.registerFactory(protocol::PROTO_UPDATECOLLECTEDTYPE,UpdateCollectedTypeMessage::FACTORY);
-	f.registerFactory(protocol::PROTO_ADDROPE, AddRopeMessage::FACTORY);
+	registerCaveExpressProtocolMessages();
 
 	{
 		ExecutionTime e("loading persister");
@@ -411,6 +363,7 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	// if we reinit the ui - we have to destroy previously allocated memory
 	delete _clientMap;
 	_clientMap = map;
+	registerClientMapHandlers(*map);
 	UIMapWindow *mapWindow = new UIMapWindow(frontend, serviceProvider, campaignMgr, *_clientMap);
 	ui.addWindow(mapWindow);
 	ui.addWindow(new UIModeSelectionWindow(frontend, campaignMgr));
@@ -454,8 +407,6 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.registerClientHandler(protocol::PROTO_ADDROPE, new AddRopeHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_REMOVEROPE);
 	r.registerClientHandler(protocol::PROTO_REMOVEROPE, new RemoveRopeHandler(*map));
-	r.unregisterClientHandler(protocol::PROTO_WATERHEIGHT);
-	r.registerClientHandler(protocol::PROTO_WATERHEIGHT, new WaterHeightHandler(*map));
 	r.unregisterClientHandler(::protocol::PROTO_UPDATEPACKAGECOUNT);
 	r.registerClientHandler(::protocol::PROTO_UPDATEPACKAGECOUNT, new UpdatePackageCountHandler());
 	r.unregisterClientHandler(::protocol::PROTO_UPDATETRANSFERCOUNT);
@@ -464,14 +415,6 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.registerClientHandler(protocol::PROTO_UPDATECOLLECTEDTYPE, new UpdateCollectedTypeHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_WATERIMPACT);
 	r.registerClientHandler(protocol::PROTO_WATERIMPACT, new WaterImpactHandler(*map));
-	r.unregisterClientHandler(protocol::PROTO_ADDCAVE);
-	r.registerClientHandler(protocol::PROTO_ADDCAVE, new AddCaveHandler(*map));
-	r.unregisterClientHandler(protocol::PROTO_LIGHTSTATE);
-	r.registerClientHandler(protocol::PROTO_LIGHTSTATE, new LightStateHandler(*map));
-	r.unregisterClientHandler(protocol::PROTO_GATESTATE);
-	r.registerClientHandler(protocol::PROTO_GATESTATE, new GateStateHandler(*map));
-	r.unregisterClientHandler(::protocol::PROTO_ADDENTITY);
-	r.registerClientHandler(::protocol::PROTO_ADDENTITY, new AddEntityWithSoundHandler(*map));
 	r.unregisterClientHandler(::protocol::PROTO_INITDONE);
 	r.registerClientHandler(::protocol::PROTO_INITDONE, new HudInitDoneHandler(*map));
 	r.unregisterClientHandler(::protocol::PROTO_FAILEDMAP);

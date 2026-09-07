@@ -1,8 +1,7 @@
 #include "UINodeMap.h"
 #include "service/ServiceProvider.h"
 #include "network/ProtocolHandlerRegistry.h"
-#include "client/network/AddEntityHandler.h"
-#include "client/network/InitDoneHandler.h"
+#include "cavepacker/client/ClientMapHandlers.h"
 #include "cavepacker/client/network/ClientAutoSolveHandler.h"
 #include "cavepacker/client/network/ClientShowDeadlocksHandler.h"
 
@@ -15,8 +14,7 @@ UINodeMap::UINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, Cam
 	Commands.registerCommandVoid("deadlocks", bindFunctionVoid(UINodeMap::requestDeadlocks));
 
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
-	r.registerClientHandler(::protocol::PROTO_ADDENTITY, new AddEntityHandler(_map));
-	r.registerClientHandler(::protocol::PROTO_INITDONE, new InitDoneHandler(_map));
+	registerClientMapHandlers(map);
 	r.registerClientHandler(protocol::PROTO_AUTOSOLVE, new ClientAutoSolveHandler(true));
 	r.registerClientHandler(protocol::PROTO_AUTOSOLVEABORT, new ClientAutoSolveHandler(false));
 	r.registerClientHandler(protocol::PROTO_SHOWDEADLOCKS, new ClientShowDeadlocksHandler(map));
