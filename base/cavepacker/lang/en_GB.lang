@@ -37,8 +37,6 @@ Create server|Create server
 Ctrl+S save, Ctrl+Z/Y undo/redo|Ctrl+S save, Ctrl+Z/Y undo/redo
 Deadlock package|Deadlock package
 decoration|decoration
-Decrease map height|Decrease map height
-Decrease map width|Decrease map width
 Del|Del
 Delete circle|Delete circle
 Delete polygon|Delete polygon
@@ -50,6 +48,8 @@ Description|Description
 Disconnect|Disconnect
 Docs (in the source tree)|Docs (in the source tree)
 Do not put tiles in this window — initMap is rebuilt from the canvas.|Do not put tiles in this window — initMap is rebuilt from the canvas.
+Drag a map edge on the canvas to grow or shrink that side. Left and top keep existing tiles in place.|Drag a map edge on the canvas to grow or shrink that side. Left and top keep existing tiles in place.
+Drag to resize this side|Drag to resize this side
 Drop them by hitting SPACE bar|Drop them by hitting SPACE bar
 Drop them with the second finger|Drop them with the second finger
 Edit entity lua|Edit entity lua
@@ -96,9 +96,8 @@ Help|Help
 Hints|Hints
 Homepage|Homepage
 Horizontal position in tiles. Drag in Select tool to slide.|Horizontal position in tiles. Drag in Select tool to slide.
+Hover a map edge and drag to resize|Hover a map edge and drag to resize
 In campaigns|In campaigns
-Increase map height|Increase map height
-Increase map width|Increase map width
 Input|Input
 Invalid Lua|Invalid Lua
 Invalid Lua shape definition|Invalid Lua shape definition

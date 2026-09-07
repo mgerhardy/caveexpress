@@ -57,8 +57,6 @@ Create server|Server erstellen
 Ctrl+S save, Ctrl+Z/Y undo/redo|Strg+S speichern, Strg+Z/Y rückgängig/wiederholen
 Cutscene|Cutscene
 decoration|Dekoration
-Decrease map height|Map-Höhe verkleinern
-Decrease map width|Map-Breite verkleinern
 Default spawn delay for newly placed caves|Default spawn delay for newly placed caves
 Del|Del
 Delete circle|Delete circle
@@ -73,6 +71,8 @@ Disconnect|Disconnect
 Docs (in the source tree)|Docs (in the source tree)
 Do not put tiles in this window — initMap is rebuilt from the canvas.|Do not put tiles in this window — initMap is rebuilt from the canvas.
 Don't hit them hard or they will fall into the water|Stoße sie nicht hart an, sonst fallen sie ins Wasser
+Drag a map edge on the canvas to grow or shrink that side. Left and top keep existing tiles in place.|Ziehe einen Map-Rand auf der Zeichenfläche, um diese Seite zu vergrößern oder zu verkleinern. Links und oben behalten vorhandene Kacheln.
+Drag to resize this side|Ziehen, um diese Seite zu ändern
 Drop a stone onto the pressure plate to open it|Wirf einen Stein auf die Druckplatte, um das Tor zu öffnen
 Drop during flight|Während des Fluges abwerfen
 Drop off at the shredder|Drop off at the shredder
@@ -148,10 +148,9 @@ Hitting walls hard will inflict damage|Zu harter Wandkontakt reduziert Lebensene
 Hold ms|Hold ms
 Homepage|Homepage
 Horizontal position in tiles. Drag in Select tool to slide.|Horizontal position in tiles. Drag in Select tool to slide.
+Hover a map edge and drag to resize|Map-Rand anfahren und ziehen, um die Größe zu ändern
 Ice|Eis
 In campaigns|In Kampagnen
-Increase map height|Map-Höhe vergrößern
-Increase map width|Map-Breite vergrößern
 initialspawntime in ms. 0 lets the engine pick a random delay.|initialspawntime in ms. 0 lets the engine pick a random delay.
 Input|Eingabe
 Insert cutscene lock|Insert cutscene lock

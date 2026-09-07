@@ -36,6 +36,16 @@ class IMapEditorDocument {
 public:
 	static const int MIN_WIDTH;
 	static const int MIN_HEIGHT;
+	static const int MAX_WIDTH;
+	static const int MAX_HEIGHT;
+
+	enum class MapEdge {
+		None,
+		Left,
+		Right,
+		Top,
+		Bottom
+	};
 
 	struct State {
 		MapEditorTileItems map;
@@ -147,6 +157,8 @@ protected:
 	virtual bool shouldSaveEmitter (const MapEditorTileItem& tile) const;
 	virtual void doClear ();
 	virtual void onAfterStateRestored () {}
+	void shiftContents (int dx, int dy);
+	virtual void onContentsShifted (int /*dx*/, int /*dy*/) {}
 	virtual bool placeBrushItem (bool overwrite);
 	virtual void prepareContextForSaving (IMapContext& ctx);
 	virtual void loadFromContext (IMapContext& ctx);
@@ -208,6 +220,12 @@ public:
 	void pickTopmostAtSelection ();
 	void deleteSelection ();
 	void resizeMap (int mapWidth, int mapHeight);
+	/**
+	 * Grow or shrink from one edge. Positive delta grows that side.
+	 * Left/top also shift tiles, starts, and selection so content stays put.
+	 * Returns the applied delta (may be clamped). recordUndo is skipped during a mouse stroke.
+	 */
+	int resizeFromEdge (MapEdge edge, int delta, bool recordUndo = true);
 	void floodFillAtSelection ();
 	/** Return false to skip a cell during flood fill (game-specific blockers). */
 	virtual bool floodFillCanPaint (int /*x*/, int /*y*/, const SpriteDefPtr& /*brush*/) const;

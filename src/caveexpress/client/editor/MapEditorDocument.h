@@ -43,6 +43,7 @@ protected:
 	bool shouldSaveEmitter (const MapEditorTileItem& tile) const override;
 	void doClear () override;
 	void onAfterStateRestored () override;
+	void onContentsShifted (int dx, int dy) override;
 	bool placeBrushItem (bool overwrite) override;
 	void prepareContextForSaving (IMapContext& ctx) override;
 	void loadFromContext (IMapContext& ctx) override;

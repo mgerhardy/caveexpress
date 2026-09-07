@@ -811,8 +811,12 @@ void UIMapEditorWindow::drawPropertiesPanel () const
 	int h = _doc->getMapHeight();
 	if (ImGui::InputInt(tr("Width").c_str(), &w))
 		_doc->resizeMap(w, _doc->getMapHeight());
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("%s", tr("Drag a map edge on the canvas to grow or shrink that side. Left and top keep existing tiles in place.").c_str());
 	if (ImGui::InputInt(tr("Height").c_str(), &h))
 		_doc->resizeMap(_doc->getMapWidth(), h);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("%s", tr("Drag a map edge on the canvas to grow or shrink that side. Left and top keep existing tiles in place.").c_str());
 
 	if (_doc->supportsEmitterParams()) {
 		MapEditorTileItem* sel = _doc->getHighlightItem();
@@ -862,17 +866,6 @@ void UIMapEditorWindow::drawPropertiesPanel () const
 	}
 
 	ImGui::Separator();
-	if (ImGui::Button("+W")) _doc->shift(1, 0);
-	if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", tr("Increase map width").c_str());
-	ImGui::SameLine();
-	if (ImGui::Button("-W")) _doc->shift(-1, 0);
-	if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", tr("Decrease map width").c_str());
-	ImGui::SameLine();
-	if (ImGui::Button("+H")) _doc->shift(0, 1);
-	if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", tr("Increase map height").c_str());
-	ImGui::SameLine();
-	if (ImGui::Button("-H")) _doc->shift(0, -1);
-	if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", tr("Decrease map height").c_str());
 	if (_doc->supportsMapScript()) {
 		bool keep = _doc->isPreserveInitMap();
 		if (ImGui::Checkbox(tr("Keep handwritten initMap").c_str(), &keep))
@@ -906,6 +899,7 @@ void UIMapEditorWindow::drawHelpPanel () const
 	ImGui::BulletText("%s", tr("Select + drag a liane to move it horizontally").c_str());
 	ImGui::BulletText("%s", tr("RMB: erase items of the active tab").c_str());
 	ImGui::BulletText("%s", tr("MMB click: pick, MMB drag or Space+LMB: pan").c_str());
+	ImGui::BulletText("%s", tr("Hover a map edge and drag to resize").c_str());
 	ImGui::BulletText("%s", tr("Wheel: zoom toward cursor").c_str());
 	ImGui::BulletText("%s", tr("Space (on canvas): rotate selected tile or brush").c_str());
 	ImGui::BulletText("%s", tr("Ctrl+S save, Ctrl+Z/Y undo/redo").c_str());
@@ -1154,6 +1148,185 @@ void UIMapEditorWindow::renderItemBounds (ImDrawList* drawList, const MapEditorT
 	drawList->AddRect(a, b, lineCol, 0.0f, 0, thickness);
 }
 
+IMapEditorDocument::MapEdge UIMapEditorWindow::hitTestMapEdge (float tileW, float tileH) const
+{
+	using MapEdge = IMapEditorDocument::MapEdge;
+	const ImVec2 mouse = ImGui::GetIO().MousePos;
+	const float mapLeft = _canvasMinX - _panX;
+	const float mapTop = _canvasMinY - _panY;
+	const float mapRight = mapLeft + static_cast<float>(_doc->getMapWidth()) * tileW;
+	const float mapBottom = mapTop + static_cast<float>(_doc->getMapHeight()) * tileH;
+	const float outside = 12.0f;
+	const float inside = std::min(6.0f, std::max(2.0f, tileW * 0.2f));
+	const bool alongV = mouse.y >= mapTop - outside && mouse.y <= mapBottom + outside;
+	const bool alongH = mouse.x >= mapLeft - outside && mouse.x <= mapRight + outside;
+
+	float best = outside + 1.0f;
+	MapEdge edge = MapEdge::None;
+	auto consider = [&] (MapEdge candidate, float dist, bool along) {
+		if (!along || dist > best)
+			return;
+		best = dist;
+		edge = candidate;
+	};
+	if (mouse.x >= mapLeft - outside && mouse.x <= mapLeft + inside)
+		consider(MapEdge::Left, std::fabs(mouse.x - mapLeft), alongV);
+	if (mouse.x >= mapRight - inside && mouse.x <= mapRight + outside)
+		consider(MapEdge::Right, std::fabs(mouse.x - mapRight), alongV);
+	if (mouse.y >= mapTop - outside && mouse.y <= mapTop + inside)
+		consider(MapEdge::Top, std::fabs(mouse.y - mapTop), alongH);
+	if (mouse.y >= mapBottom - inside && mouse.y <= mapBottom + outside)
+		consider(MapEdge::Bottom, std::fabs(mouse.y - mapBottom), alongH);
+	return edge;
+}
+
+bool UIMapEditorWindow::handleMapEdgeResize (float tileW, float tileH, bool allowHover) const
+{
+	using MapEdge = IMapEditorDocument::MapEdge;
+	const bool space = ImGui::IsKeyDown(ImGuiKey_Space);
+
+	if (_mapEdgeDragging == MapEdge::None) {
+		_mapEdgeHover = MapEdge::None;
+		if (allowHover && !space && !_panning)
+			_mapEdgeHover = hitTestMapEdge(tileW, tileH);
+	}
+
+	const MapEdge edge = _mapEdgeDragging != MapEdge::None ? _mapEdgeDragging : _mapEdgeHover;
+	if (edge != MapEdge::None) {
+		if (edge == MapEdge::Left || edge == MapEdge::Right)
+			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+		else
+			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeNS);
+		if (_mapEdgeDragging == MapEdge::None)
+			ImGui::SetTooltip("%s", tr("Drag to resize this side").c_str());
+	}
+
+	if (_mapEdgeDragging != MapEdge::None) {
+		if (!ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+			_mapEdgeDragging = MapEdge::None;
+			return true;
+		}
+		const ImVec2 mouse = ImGui::GetIO().MousePos;
+		int target = 0;
+		switch (_mapEdgeDragging) {
+		case MapEdge::Right:
+			target = static_cast<int>(std::lround((mouse.x - _mapResizeStartMouseX) / tileW));
+			break;
+		case MapEdge::Left:
+			target = static_cast<int>(std::lround((_mapResizeStartMouseX - mouse.x) / tileW));
+			break;
+		case MapEdge::Bottom:
+			target = static_cast<int>(std::lround((mouse.y - _mapResizeStartMouseY) / tileH));
+			break;
+		case MapEdge::Top:
+			target = static_cast<int>(std::lround((_mapResizeStartMouseY - mouse.y) / tileH));
+			break;
+		default:
+			break;
+		}
+		const int need = target - _mapResizeApplied;
+		if (need != 0) {
+			const int applied = _doc->resizeFromEdge(_mapEdgeDragging, need, false);
+			if (applied != 0) {
+				_mapResizeApplied += applied;
+				if (_mapEdgeDragging == MapEdge::Left)
+					_panX += static_cast<float>(applied) * tileW;
+				else if (_mapEdgeDragging == MapEdge::Top)
+					_panY += static_cast<float>(applied) * tileH;
+			}
+		}
+		return true;
+	}
+
+	if (_mapEdgeHover != MapEdge::None && allowHover && !space && !_panning) {
+		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+			_mapEdgeDragging = _mapEdgeHover;
+			_mapResizeStartMouseX = ImGui::GetIO().MousePos.x;
+			_mapResizeStartMouseY = ImGui::GetIO().MousePos.y;
+			_mapResizeApplied = 0;
+			_doc->beginUndoStroke();
+		}
+		return true;
+	}
+	return false;
+}
+
+void UIMapEditorWindow::renderMapResizeHandles (ImDrawList* drawList, float originX, float originY, float tileW,
+		float tileH) const
+{
+	using MapEdge = IMapEditorDocument::MapEdge;
+	const MapEdge edge = _mapEdgeDragging != MapEdge::None ? _mapEdgeDragging : _mapEdgeHover;
+	if (edge == MapEdge::None || drawList == nullptr)
+		return;
+
+	const float mapLeft = originX - _panX;
+	const float mapTop = originY - _panY;
+	const float mapRight = mapLeft + static_cast<float>(_doc->getMapWidth()) * tileW;
+	const float mapBottom = mapTop + static_cast<float>(_doc->getMapHeight()) * tileH;
+	const float midX = (mapLeft + mapRight) * 0.5f;
+	const float midY = (mapTop + mapBottom) * 0.5f;
+	const ImU32 outline = IM_COL32(255, 176, 64, 90);
+	const ImU32 active = IM_COL32(255, 176, 64, 240);
+	const ImU32 grip = IM_COL32(255, 176, 64, 210);
+	drawList->AddRect(ImVec2(mapLeft, mapTop), ImVec2(mapRight, mapBottom), outline, 0.0f, 0, 1.0f);
+
+	const float gripHalf = 22.0f;
+	const float gripThick = 8.0f;
+	switch (edge) {
+	case MapEdge::Left:
+		drawList->AddLine(ImVec2(mapLeft, mapTop), ImVec2(mapLeft, mapBottom), active, 3.0f);
+		drawList->AddRectFilled(ImVec2(mapLeft - 2.0f, midY - gripHalf), ImVec2(mapLeft + gripThick, midY + gripHalf),
+				grip, 3.0f);
+		drawList->AddTriangleFilled(ImVec2(mapLeft + 2.0f, midY), ImVec2(mapLeft + 12.0f, midY - 7.0f),
+				ImVec2(mapLeft + 12.0f, midY + 7.0f), active);
+		break;
+	case MapEdge::Right:
+		drawList->AddLine(ImVec2(mapRight, mapTop), ImVec2(mapRight, mapBottom), active, 3.0f);
+		drawList->AddRectFilled(ImVec2(mapRight - gripThick, midY - gripHalf), ImVec2(mapRight + 2.0f, midY + gripHalf),
+				grip, 3.0f);
+		drawList->AddTriangleFilled(ImVec2(mapRight - 2.0f, midY), ImVec2(mapRight - 12.0f, midY - 7.0f),
+				ImVec2(mapRight - 12.0f, midY + 7.0f), active);
+		break;
+	case MapEdge::Top:
+		drawList->AddLine(ImVec2(mapLeft, mapTop), ImVec2(mapRight, mapTop), active, 3.0f);
+		drawList->AddRectFilled(ImVec2(midX - gripHalf, mapTop - 2.0f), ImVec2(midX + gripHalf, mapTop + gripThick),
+				grip, 3.0f);
+		drawList->AddTriangleFilled(ImVec2(midX, mapTop + 2.0f), ImVec2(midX - 7.0f, mapTop + 12.0f),
+				ImVec2(midX + 7.0f, mapTop + 12.0f), active);
+		break;
+	case MapEdge::Bottom:
+		drawList->AddLine(ImVec2(mapLeft, mapBottom), ImVec2(mapRight, mapBottom), active, 3.0f);
+		drawList->AddRectFilled(ImVec2(midX - gripHalf, mapBottom - gripThick), ImVec2(midX + gripHalf, mapBottom + 2.0f),
+				grip, 3.0f);
+		drawList->AddTriangleFilled(ImVec2(midX, mapBottom - 2.0f), ImVec2(midX - 7.0f, mapBottom - 12.0f),
+				ImVec2(midX + 7.0f, mapBottom - 12.0f), active);
+		break;
+	default:
+		break;
+	}
+
+	char buf[32];
+	std::snprintf(buf, sizeof(buf), "%i × %i", _doc->getMapWidth(), _doc->getMapHeight());
+	ImVec2 textPos(midX + 10.0f, midY - 8.0f);
+	switch (edge) {
+	case MapEdge::Left:
+		textPos = ImVec2(mapLeft + 10.0f, midY - 8.0f);
+		break;
+	case MapEdge::Right:
+		textPos = ImVec2(mapRight - 70.0f, midY - 8.0f);
+		break;
+	case MapEdge::Top:
+		textPos = ImVec2(midX - 28.0f, mapTop + 8.0f);
+		break;
+	case MapEdge::Bottom:
+		textPos = ImVec2(midX - 28.0f, mapBottom - 22.0f);
+		break;
+	default:
+		break;
+	}
+	drawList->AddText(textPos, IM_COL32(255, 230, 180, 255), buf);
+}
+
 void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 {
 	const float x = _canvasMinX;
@@ -1227,7 +1400,9 @@ void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 		}
 	}
 
-	if (_canvasHovered && _doc->getTool() == IMapEditorDocument::Tool::Pick) {
+	const bool resizingMap = _mapEdgeHover != IMapEditorDocument::MapEdge::None
+			|| _mapEdgeDragging != IMapEditorDocument::MapEdge::None;
+	if (!resizingMap && _canvasHovered && _doc->getTool() == IMapEditorDocument::Tool::Pick) {
 		if (const MapEditorTileItem* hover = _doc->getTileAtCursor(ImGui::GetIO().KeyAlt)) {
 			renderItemBounds(drawList, *hover, x, y, tileW, tileH, IM_COL32(80, 220, 255, 255),
 					IM_COL32(80, 220, 255, 50), 2.0f);
@@ -1242,7 +1417,7 @@ void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 		renderItemBounds(drawList, *selected, x, y, tileW, tileH, IM_COL32(255, 255, 0, 255), 0, 2.0f);
 	}
 
-	if (_canvasHovered && _doc->getActiveSprite() && _doc->getTool() != IMapEditorDocument::Tool::Pick) {
+	if (!resizingMap && _canvasHovered && _doc->getActiveSprite() && _doc->getTool() != IMapEditorDocument::Tool::Pick) {
 		MapEditorTileItem ghost;
 		ghost.def = _doc->getActiveSprite();
 		ghost.entityType = _doc->getActiveEntityType();
@@ -1263,6 +1438,8 @@ void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 			std::snprintf(brushBuf, sizeof(brushBuf), "%i°", _doc->getActiveAngle());
 		drawList->AddText(ImVec2(hx, hy - 16.0f), IM_COL32(180, 255, 180, 255), brushBuf);
 	}
+
+	renderMapResizeHandles(drawList, x, y, tileW, tileH);
 
 	drawList->PopClipRect();
 }
@@ -1294,8 +1471,8 @@ void UIMapEditorWindow::drawCanvas () const
 	}
 
 	const bool overlayConsumed = handleCanvasOverlayInput(tileW, tileH);
-	if (_canvasHovered && !overlayConsumed) {
-		const bool space = ImGui::IsKeyDown(ImGuiKey_Space);
+	const bool space = ImGui::IsKeyDown(ImGuiKey_Space);
+	if (_canvasHovered && !overlayConsumed && _mapEdgeDragging == IMapEditorDocument::MapEdge::None) {
 		if (ImGui::IsMouseDragging(ImGuiMouseButton_Middle) || (space && ImGui::IsMouseDragging(ImGuiMouseButton_Left))) {
 			_panning = true;
 			_panX -= ImGui::GetIO().MouseDelta.x;
@@ -1305,12 +1482,6 @@ void UIMapEditorWindow::drawCanvas () const
 		}
 		if (_panning || space)
 			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
-		else if (_doc->getTool() == IMapEditorDocument::Tool::Pick) {
-			if (const MapEditorTileItem* hover = _doc->getTileAtCursor(ImGui::GetIO().KeyAlt)) {
-				if (hover->allowsSubTileX())
-					ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
-			}
-		}
 
 		const float wheel = ImGui::GetIO().MouseWheel;
 		if (wheel != 0.0f) {
@@ -1321,6 +1492,17 @@ void UIMapEditorWindow::drawCanvas () const
 			const float my = mouse.y - _canvasMinY;
 			_panX = (_panX + mx) * ratio - mx;
 			_panY = (_panY + my) * ratio - my;
+		}
+	}
+
+	const bool edgeConsumed = handleMapEdgeResize(tileW, tileH,
+			_canvasHovered && !overlayConsumed && !ImGui::GetIO().KeyAlt && !ImGui::GetIO().KeyShift);
+	if (_canvasHovered && !overlayConsumed && !edgeConsumed) {
+		if (!_panning && !space && _doc->getTool() == IMapEditorDocument::Tool::Pick) {
+			if (const MapEditorTileItem* hover = _doc->getTileAtCursor(ImGui::GetIO().KeyAlt)) {
+				if (hover->allowsSubTileX())
+					ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+			}
 		}
 
 		if (!_panning && !space) {
@@ -1377,7 +1559,8 @@ void UIMapEditorWindow::drawCanvas () const
 		}
 	}
 
-	if (_movingItem && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && _doc->getHighlightItem() != nullptr) {
+	if (_movingItem && _mapEdgeDragging == IMapEditorDocument::MapEdge::None
+			&& ImGui::IsMouseDragging(ImGuiMouseButton_Left) && _doc->getHighlightItem() != nullptr) {
 		ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
 		if (!_moveUndoStarted) {
 			_doc->beginUndoStroke();
@@ -1392,6 +1575,7 @@ void UIMapEditorWindow::drawCanvas () const
 		_doc->endUndoStroke();
 		_movingItem = false;
 		_moveUndoStarted = false;
+		_mapEdgeDragging = IMapEditorDocument::MapEdge::None;
 	}
 
 	renderMapIntoCanvas(ImGui::GetWindowDrawList());

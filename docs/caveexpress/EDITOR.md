@@ -31,7 +31,7 @@ The filename in the toolbar shows a `*` when there are unsaved changes.
 
 1. Click **New** (or start from an existing map on the **Maps** tab).
 2. Set **File** (on-disk name, no `.lua`) and **Title** (shown in-game).
-3. Set **Width** and **Height**. Minimum size is 6x4.
+3. Set **Width** and **Height** (or hover a map edge and drag). Minimum size is 6x4. Dragging the left or top edge grows that side and keeps existing tiles in place.
 4. Choose a **Theme** (rock, ice, jungle, desert). The tile palette is filtered to that theme.
 5. On the **Tiles** tab, paint background, then ground/rock, caves, and a package target (shredder).
 6. On the **Entities** tab, place the **player** start and at least one package (or rely on caves to spawn them).
@@ -62,6 +62,7 @@ Right mouse button always erases, regardless of the selected tool.
 | Alt + left or middle click | Pick whatever is on top (any tab). |
 | Right click / drag | Erase. On the **Tiles** tab this removes tiles only (background, rock, caves, gates, ...). On the **Entities** tab this removes entities only (packages, stones, NPCs, player start, ...). Holding the button does not punch through to the other kind. |
 | Middle click | Pick the item under the cursor (active tab). |
+| Hover a map edge and drag | Grow or shrink that side. Left and top keep existing tiles in place. |
 | Middle drag | Pan the view. |
 | Space + left drag | Pan the view. |
 | Mouse wheel | Zoom toward the cursor. |
@@ -155,8 +156,7 @@ Always bound to the last clicked cell, not the hover ghost.
 | --- | --- |
 | File | Saved as `<file>.lua` (see [Saving](#saving-and-testing)). |
 | Title | In-game map name (`getName()`). |
-| Width / Height | Grid size. Values are clamped to 6-160 by 4-120. |
-| +W / -W / +H / -H | Grow or shrink the map and shift existing tiles. |
+| Width / Height | Grid size. Values are clamped to 6-160 by 4-120. These fields grow or shrink the **right** and **bottom**. Hover a map edge and drag to resize any side (left/top keep tiles in place). |
 | Points | Score awarded for finishing. |
 | Reference time in seconds | Par time used for stars. |
 | Gravity | Default `9.81`. |

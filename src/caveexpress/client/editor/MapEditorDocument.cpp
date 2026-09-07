@@ -215,6 +215,12 @@ void MapEditorDocument::onAfterStateRestored ()
 	setWaterHeight(string::toFloat(_settings[msn::WATER_HEIGHT]));
 }
 
+void MapEditorDocument::onContentsShifted (int dx, int dy)
+{
+	_linkPlateX += static_cast<gridCoord>(dx);
+	_linkPlateY += static_cast<gridCoord>(dy);
+}
+
 void MapEditorDocument::setActiveEntityRight (bool right)
 {
 	if (_activeEntityType == nullptr || !EntityTypes::hasDirection(*_activeEntityType))

@@ -78,6 +78,7 @@ struct MapWinCondition {
 /**
  * Static quality analysis for CaveExpress maps (hand-authored or random).
  * Reachability uses flyable-cell flood fill from the player start (flying game).
+ * Gates are treated as flyable (a pressure plate can open them).
  * Full flyable coverage is reported in metrics; random generation enforces it as a hard gate.
  */
 class MapValidator {

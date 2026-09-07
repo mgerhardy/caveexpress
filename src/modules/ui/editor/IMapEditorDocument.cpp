@@ -18,6 +18,8 @@
 
 const int IMapEditorDocument::MIN_WIDTH = 6;
 const int IMapEditorDocument::MIN_HEIGHT = 4;
+const int IMapEditorDocument::MAX_WIDTH = 160;
+const int IMapEditorDocument::MAX_HEIGHT = 120;
 
 MapEditorStateChecker::MapEditorStateChecker (IMapEditorDocument* doc) :
 		_doc(doc)
@@ -244,8 +246,8 @@ void IMapEditorDocument::setMapName (const std::string& mapName)
 
 void IMapEditorDocument::setMapDimensions (int mapWidth, int mapHeight)
 {
-	_mapWidth = std::max(MIN_WIDTH, std::min(160, mapWidth));
-	_mapHeight = std::max(MIN_HEIGHT, std::min(120, mapHeight));
+	_mapWidth = std::max(MIN_WIDTH, std::min(MAX_WIDTH, mapWidth));
+	_mapHeight = std::max(MIN_HEIGHT, std::min(MAX_HEIGHT, mapHeight));
 	setSetting(msn::WIDTH, string::toString(_mapWidth));
 	setSetting(msn::HEIGHT, string::toString(_mapHeight));
 }
@@ -753,22 +755,88 @@ void IMapEditorDocument::toggleLayer (MapEditorLayer layer)
 	_layerMask ^= (1 << layer);
 }
 
+void IMapEditorDocument::shiftContents (int dx, int dy)
+{
+	if (dx == 0 && dy == 0)
+		return;
+	const gridCoord gdx = static_cast<gridCoord>(dx);
+	const gridCoord gdy = static_cast<gridCoord>(dy);
+	for (MapEditorTileItem& item : _map) {
+		item.gridX += gdx;
+		item.gridY += gdy;
+	}
+	for (IMap::StartPosition& pos : _startPositions) {
+		pos._x = string::toString(string::toFloat(pos._x) + gdx);
+		pos._y = string::toString(string::toFloat(pos._y) + gdy);
+	}
+	if (_hasRegion) {
+		_regionX0 += dx;
+		_regionY0 += dy;
+		_regionX1 += dx;
+		_regionY1 += dy;
+	}
+	_selectedGridX += gdx;
+	_selectedGridY += gdy;
+	_cursorGridX += gdx;
+	_cursorGridY += gdy;
+	onContentsShifted(dx, dy);
+}
+
 void IMapEditorDocument::shift (int shiftX, int shiftY)
 {
-	if (_mapWidth + shiftX < MIN_WIDTH || _mapHeight + shiftY < MIN_HEIGHT)
+	const int newWidth = _mapWidth + shiftX;
+	const int newHeight = _mapHeight + shiftY;
+	if (newWidth < MIN_WIDTH || newHeight < MIN_HEIGHT || newWidth > MAX_WIDTH || newHeight > MAX_HEIGHT)
 		return;
 	MapEditorUndo();
-	setMapDimensions(_mapWidth + shiftX, _mapHeight + shiftY);
-	for (MapEditorTileItem& item : _map) {
-		item.gridX += shiftX;
-		item.gridY += shiftY;
-	}
+	setMapDimensions(newWidth, newHeight);
+	shiftContents(shiftX, shiftY);
 }
 
 void IMapEditorDocument::resizeMap (int mapWidth, int mapHeight)
 {
 	MapEditorUndo();
 	setMapDimensions(mapWidth, mapHeight);
+}
+
+int IMapEditorDocument::resizeFromEdge (MapEdge edge, int delta, bool recordUndo)
+{
+	if (edge == MapEdge::None || delta == 0)
+		return 0;
+
+	int newWidth = _mapWidth;
+	int newHeight = _mapHeight;
+	int shiftX = 0;
+	int shiftY = 0;
+	switch (edge) {
+	case MapEdge::Left:
+		newWidth = clamp(_mapWidth + delta, MIN_WIDTH, MAX_WIDTH);
+		shiftX = newWidth - _mapWidth;
+		break;
+	case MapEdge::Right:
+		newWidth = clamp(_mapWidth + delta, MIN_WIDTH, MAX_WIDTH);
+		break;
+	case MapEdge::Top:
+		newHeight = clamp(_mapHeight + delta, MIN_HEIGHT, MAX_HEIGHT);
+		shiftY = newHeight - _mapHeight;
+		break;
+	case MapEdge::Bottom:
+		newHeight = clamp(_mapHeight + delta, MIN_HEIGHT, MAX_HEIGHT);
+		break;
+	default:
+		return 0;
+	}
+
+	const int applied = (edge == MapEdge::Left || edge == MapEdge::Right) ? (newWidth - _mapWidth)
+			: (newHeight - _mapHeight);
+	if (applied == 0)
+		return 0;
+
+	if (recordUndo)
+		MapEditorUndo();
+	setMapDimensions(newWidth, newHeight);
+	shiftContents(shiftX, shiftY);
+	return applied;
 }
 
 bool IMapEditorDocument::shouldSaveTile (const MapEditorTileItem& tile) const

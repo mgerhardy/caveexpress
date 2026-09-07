@@ -55,7 +55,7 @@ The selected cell's Sokoban character is shown on Properties.
 
 ## Tools
 
-Same mouse and key bindings as the CaveExpress editor (see [../caveexpress/EDITOR.md](../caveexpress/EDITOR.md)): paint, erase, select, fill, copy/paste, nudge, undo, and **Save & Go**.
+Same mouse and key bindings as the CaveExpress editor (see [../caveexpress/EDITOR.md](../caveexpress/EDITOR.md)): paint, erase, select, fill, copy/paste, nudge, undo, and **Save & Go**. Hover a map edge and drag to grow or shrink that side; left and top keep existing tiles in place.
 
 ## Shapes
 

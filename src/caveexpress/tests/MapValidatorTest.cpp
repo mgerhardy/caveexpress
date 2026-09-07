@@ -35,7 +35,12 @@ protected:
 	{
 		const int w = string::toInt(ctx.getSettings().at(msn::WIDTH));
 		const int h = string::toInt(ctx.getSettings().at(msn::HEIGHT));
-		return MapValidator().evaluate(w, h, ctx.getMapTileDefinitions(), ctx.getCaveTileDefinitions(),
+		std::vector<MapTileDefinition> tiles = ctx.getMapTileDefinitions();
+		for (const GateDefinition& gate : ctx.getGateDefinitions())
+			tiles.emplace_back(gate.x, gate.y, gate.spriteDef, 0);
+		for (const PressurePlateDefinition& plate : ctx.getPressurePlateDefinitions())
+			tiles.emplace_back(plate.x, plate.y, plate.spriteDef, 0);
+		return MapValidator().evaluate(w, h, tiles, ctx.getCaveTileDefinitions(),
 				ctx.getEmitterDefinitions(), ctx.getStartPositions());
 	}
 
@@ -414,6 +419,37 @@ TEST_F(MapValidatorTest, testIntroMoviePackageLayout)
 	EXPECT_EQ(1, m.caveCount);
 	EXPECT_EQ(0, m.cavesCoveredBySolid) << m.failureReason;
 	EXPECT_EQ(m.caveCount, m.cavesReachable) << m.failureReason;
+	EXPECT_TRUE(m.valid) << m.failureReason;
+}
+
+TEST_F(MapValidatorTest, testGateIsValidFlyablePath)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts = { { "1", "1" } };
+	const int w = 8;
+	const int h = 4;
+	for (int y = 0; y < h; ++y) {
+		for (int x = 0; x < w; ++x) {
+			if (x == 0 || y == 0 || x == w - 1 || y == h - 1)
+				addTile(tiles, "tile-rock-01", x, y);
+			else if (y == h - 2)
+				addTile(tiles, "tile-ground-01", x, y);
+			else if (!((x == 1 || x == 6) && y == 1))
+				addTile(tiles, "tile-background-01", x, y);
+		}
+	}
+	addTile(tiles, "tile-gate-rock-01", 4, 1);
+	addTile(tiles, "tile-plate-01-idle", 2, 2);
+	const SpriteDefPtr caveDef = requireSprite("tile-cave-01");
+	ASSERT_TRUE(!!caveDef);
+	caves.emplace_back(1, 1, caveDef, EntityType::NONE, 1000);
+	caves.emplace_back(6, 1, caveDef, EntityType::NONE, 1000);
+
+	const MapMetrics m = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_EQ(2, m.cavesReachable) << m.failureReason;
+	EXPECT_EQ(0, m.unreachableFlyable) << m.failureReason;
 	EXPECT_TRUE(m.valid) << m.failureReason;
 }
 

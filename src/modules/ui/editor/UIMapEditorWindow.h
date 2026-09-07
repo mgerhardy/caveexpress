@@ -47,6 +47,11 @@ protected:
 	mutable char _scriptReplace[128] = {};
 	mutable int _regionAnchorX = 0;
 	mutable int _regionAnchorY = 0;
+	mutable IMapEditorDocument::MapEdge _mapEdgeHover = IMapEditorDocument::MapEdge::None;
+	mutable IMapEditorDocument::MapEdge _mapEdgeDragging = IMapEditorDocument::MapEdge::None;
+	mutable float _mapResizeStartMouseX = 0.0f;
+	mutable float _mapResizeStartMouseY = 0.0f;
+	mutable int _mapResizeApplied = 0;
 	mutable std::vector<SpriteDefPtr> _tilePalette;
 	mutable std::vector<const EntityType*> _entityPalette;
 	mutable const ThemeType* _paletteTheme = nullptr;
@@ -82,6 +87,9 @@ protected:
 	void drawCanvas () const;
 	void setupEditorDockSpace () const;
 	void renderMapIntoCanvas (ImDrawList* drawList) const;
+	IMapEditorDocument::MapEdge hitTestMapEdge (float tileW, float tileH) const;
+	bool handleMapEdgeResize (float tileW, float tileH, bool allowHover) const;
+	void renderMapResizeHandles (ImDrawList* drawList, float originX, float originY, float tileW, float tileH) const;
 	void renderSprite (ImDrawList* drawList, const MapEditorTileItem& item, float originX, float originY,
 			float tileW, float tileH, float alpha = 1.0f) const;
 	void renderItemBounds (ImDrawList* drawList, const MapEditorTileItem& item, float originX, float originY,

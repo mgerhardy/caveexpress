@@ -112,7 +112,11 @@ MapValidator::CellKind MapValidator::classifyTile (const SpriteType& type) const
 {
 	if (SpriteTypes::isNpcGround(type) || SpriteTypes::isPressurePlate(type))
 		return CellKind::Walkable;
-	if (SpriteTypes::isSolid(type) || SpriteTypes::isPackageTarget(type) || SpriteTypes::isGate(type))
+	// Gates block when closed, but a linked plate can open them. Treat them as
+	// flyable so reachability matches a completable map.
+	if (SpriteTypes::isGate(type))
+		return CellKind::FlyableDecor;
+	if (SpriteTypes::isSolid(type) || SpriteTypes::isPackageTarget(type))
 		return CellKind::Collider;
 	if (SpriteTypes::isBackground(type) || SpriteTypes::isWindow(type) || SpriteTypes::isCave(type)
 			|| SpriteTypes::isLiane(type))
