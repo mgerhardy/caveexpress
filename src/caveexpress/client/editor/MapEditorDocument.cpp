@@ -71,34 +71,22 @@ bool MapEditorDocument::isHangingGroundSprite (const SpriteDefPtr& def) const
 	return def->id.find("ground-05") != std::string::npos || def->id.find("ground-06") != std::string::npos;
 }
 
-bool MapEditorDocument::hasBackgroundCovering (gridCoord gridX, gridCoord gridY, gridSize width, gridSize height) const
+bool MapEditorDocument::hasOverlayHost (gridCoord gridX, gridCoord gridY) const
 {
-	if (width <= 0.0f || height <= 0.0f)
+	const int cx = static_cast<int>(std::floor(gridX + EPSILON));
+	const int cy = static_cast<int>(std::floor(gridY + EPSILON));
+	if (cx < 0 || cy < 0 || cx >= _mapWidth || cy >= _mapHeight)
 		return false;
-
-	const int x0 = static_cast<int>(std::floor(gridX + EPSILON));
-	const int y0 = static_cast<int>(std::floor(gridY + EPSILON));
-	const int x1 = static_cast<int>(std::ceil(gridX + width - EPSILON));
-	const int y1 = static_cast<int>(std::ceil(gridY + height - EPSILON));
-	if (x1 <= x0 || y1 <= y0)
-		return false;
-
-	for (int cy = y0; cy < y1; ++cy) {
-		for (int cx = x0; cx < x1; ++cx) {
-			bool covered = false;
-			for (const MapEditorTileItem& item : _map) {
-				if (!item.def || !SpriteTypes::isBackground(item.def->type))
-					continue;
-				if (IMapEditorDocument::isOverlapping(static_cast<gridCoord>(cx), static_cast<gridCoord>(cy), item)) {
-					covered = true;
-					break;
-				}
-			}
-			if (!covered)
-				return false;
-		}
+	for (const MapEditorTileItem& item : _map) {
+		if (!item.def)
+			continue;
+		const SpriteType& type = item.def->type;
+		if (!SpriteTypes::isBackground(type) && !SpriteTypes::isWindow(type) && !SpriteTypes::isCave(type))
+			continue;
+		if (IMapEditorDocument::isOverlapping(static_cast<gridCoord>(cx), static_cast<gridCoord>(cy), item))
+			return true;
 	}
-	return true;
+	return false;
 }
 
 bool MapEditorDocument::hasAirBelow (gridCoord gridX, gridCoord gridY) const
@@ -147,12 +135,10 @@ bool MapEditorDocument::canPlaceTileItem (const MapEditorTileItem& item) const
 	if (!item.def)
 		return true;
 
-	const vec2& size = item.getSize(true);
-	const gridCoord x = item.gridX + item.getX(true);
-	const gridCoord y = item.gridY + item.getY(true);
-
 	if (requiresBackgroundTile(item.def->type)) {
-		if (!hasBackgroundCovering(x, y, size.x, size.y))
+		// Host is the cell being painted. Lianes are 2 tiles tall; requiring the
+		// full sprite AABB would reject every 1-cell-high corridor.
+		if (!hasOverlayHost(item.gridX, item.gridY))
 			return false;
 		if (SpriteTypes::isBridge(item.def->type) && !hasBridgeSideNeighbors(item.gridX, item.gridY))
 			return false;
@@ -361,6 +347,8 @@ bool MapEditorDocument::isOverlapping (const MapEditorTileItem& item1, const Map
 			return false;
 		break;
 	case LAYER_DECORATION:
+		// Overlays (lianes) hang in front of host tiles and must not replace them.
+		return false;
 	case LAYER_EMITTER:
 		if (item2.entityType != nullptr && EntityTypes::isNpc(*item2.entityType))
 			break;
@@ -508,9 +496,9 @@ void MapEditorDocument::fillTilePalette (std::vector<SpriteDefPtr>& out) const
 {
 	for (SpriteDefMapConstIter i = SpriteDefinition::get().begin(); i != SpriteDefinition::get().end(); ++i) {
 		const SpriteDefPtr& sprite = i->second;
-		if (!sprite->theme.isNone() && sprite->theme != getTheme())
-			continue;
 		const SpriteType& type = sprite->type;
+		if (!sprite->theme.isNone() && sprite->theme != getTheme() && !SpriteTypes::isLiane(type))
+			continue;
 		if (!SpriteTypes::isMapTile(type) && !SpriteTypes::isLiane(type) && !SpriteTypes::isCaveSign(type)
 				&& sprite->id != "dust" && sprite->id != "waste")
 			continue;

@@ -108,7 +108,7 @@ Click a tile in the palette to make it the brush, then paint on the canvas. Use 
 
 The editor rejects some illegal placements instead of painting:
 
-- Bridges and lianes need a background tile covering their cells.
+- Bridges and lianes need a background, window, or cave in the cell you click. Lianes are two tiles tall and may hang into the cell below.
 - Bridges also need a ground or bridge neighbor on the left or right.
 - Thin hanging ground (`ground-05`, `ground-06`) and ground ledge ends need empty space beneath them.
 

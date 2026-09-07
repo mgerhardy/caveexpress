@@ -7,6 +7,7 @@ SET(${PROJECT_NAME}_SRC
 	LUAMapUpdateTest.cpp
 	RandomMapContextTest.cpp
 	MapValidatorTest.cpp
+	MapEditorDocumentTest.cpp
 	MapWinConditionTest.cpp
 	SpriteShapeTraitsTest.cpp
 	MapTest.cpp
