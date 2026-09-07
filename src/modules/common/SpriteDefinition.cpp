@@ -11,6 +11,7 @@ SpriteDefinition::SpriteDefinition ()
 
 void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 {
+	_spriteDefs.clear();
 	ExecutionTime e("Sprites loading");
 	Log::debug(LOG_COMMON, "Sprites loading");
 	LUA lua;
