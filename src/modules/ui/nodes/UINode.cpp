@@ -1041,7 +1041,9 @@ bool UINode::checkBounds (int x, int y) const
 {
 	const float _x = x / static_cast<float>(_frontend->getWidth());
 	const float _y = y / static_cast<float>(_frontend->getHeight());
-	return checkAABB(_x, _y, getX(), getY(), getWidth(), getHeight());
+	// Same rect as renderDebug: include margin, exclude padding. getX()/getY() omit
+	// margin, so a node with setMargin() would draw the correct box but miss hover.
+	return checkAABB(_x, _y, getRenderXf(false), getRenderYf(false), getRenderWidthf(false), getRenderHeightf(false));
 }
 
 void UINode::addBefore (UINode* reference, UINode* node)
