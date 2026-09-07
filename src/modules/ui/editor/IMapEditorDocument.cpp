@@ -556,8 +556,6 @@ bool IMapEditorDocument::eraseAtSelection (bool recordUndo)
 		}
 	}
 	MapEditorTileItem* hit = getTileAtCursor();
-	if (hit == nullptr)
-		hit = getSelectedTile();
 	_highlightItem = hit;
 	if (_highlightItem == nullptr || !matchesEditMode(*_highlightItem))
 		return false;
@@ -577,8 +575,6 @@ void IMapEditorDocument::pickAtSelection ()
 {
 	_highlightItem = getTileAtCursor();
 	if (_highlightItem == nullptr)
-		_highlightItem = getSelectedTile();
-	if (_highlightItem == nullptr)
 		return;
 	const Tool previousTool = _tool;
 	if (_highlightItem->entityType != nullptr) {
@@ -596,8 +592,6 @@ void IMapEditorDocument::pickAtSelection ()
 void IMapEditorDocument::pickTopmostAtSelection ()
 {
 	MapEditorTileItem* found = getTileAtCursor(true);
-	if (found == nullptr)
-		found = const_cast<MapEditorTileItem*>(findTopmostItem(true, false));
 	_highlightItem = found;
 	if (found == nullptr)
 		return;

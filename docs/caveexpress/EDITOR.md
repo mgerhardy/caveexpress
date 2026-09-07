@@ -57,7 +57,7 @@ Right mouse button always erases, regardless of the selected tool.
 
 | Input | Action |
 | --- | --- |
-| Left click / drag | Paint or place. Also selects the cell so Properties show that item. |
+| Left click / drag | Paint or place. Also selects the cell so Properties show that item. In **Select** tool, click picks the sprite under the cursor; drag a liane left/right to offset it. |
 | Shift + left click / drag | Rectangle select. Ctrl+C / Ctrl+V copies and pastes the active tab. Arrow keys nudge. |
 | Alt + left or middle click | Pick whatever is on top (any tab). |
 | Right click / drag | Erase. On the **Tiles** tab this removes tiles only (background, rock, caves, gates, ...). On the **Entities** tab this removes entities only (packages, stones, NPCs, player start, ...). Holding the button does not punch through to the other kind. |

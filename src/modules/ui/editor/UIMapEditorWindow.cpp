@@ -1227,9 +1227,7 @@ void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 	}
 
 	if (_canvasHovered && _doc->getTool() == IMapEditorDocument::Tool::Pick) {
-		const MapEditorTileItem* hover = _doc->getTileAtCursor(ImGui::GetIO().KeyAlt);
-		const MapEditorTileItem* selected = _doc->getHighlightItem();
-		if (hover != nullptr && hover != selected) {
+		if (const MapEditorTileItem* hover = _doc->getTileAtCursor(ImGui::GetIO().KeyAlt)) {
 			renderItemBounds(drawList, *hover, x, y, tileW, tileH, IM_COL32(80, 220, 255, 255),
 					IM_COL32(80, 220, 255, 50), 2.0f);
 			if (hover->def) {
