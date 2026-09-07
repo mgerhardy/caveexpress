@@ -130,6 +130,11 @@
  </tile>
  <tile id = "29">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-lava-desert-left-02-back-01.png" />
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="0" y="0" width="1" height="0">
+    <polygon points="0,0 0,0 0,0 0,0 0,0 0,0 0,0 0,0 "/>
+   </object>
+  </objectgroup>
  </tile>
  <tile id = "30">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-lava-desert-right-01-back-01.png" />
@@ -141,6 +146,11 @@
  </tile>
  <tile id = "31">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-lava-desert-right-02-back-01.png" />
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="0" y="0" width="1" height="0">
+    <polygon points="0,0 0,0 0,0 0,0 0,0 0,0 0,0 0,0 "/>
+   </object>
+  </objectgroup>
  </tile>
  <tile id = "32">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-rock-desert-01-back-01.png" />

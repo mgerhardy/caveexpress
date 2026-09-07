@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.8" tiledversion="1.8.2" name="caveexpress-tileset-ice" tilewidth="1024" tileheight="1024" tilecount="53" columns="0">
+<tileset version="1.8" tiledversion="1.8.2" name="caveexpress-tileset-ice" tilewidth="1024" tileheight="1024" tilecount="54" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id = "0">
   <image width = "1" height = "1" source = "../png/caveexpress/bridge-plank-ice-01-front-01.png" />
@@ -53,27 +53,30 @@
   <image width = "1" height = "1" source = "../png/caveexpress/tile-background-ice-08-back-01.png" />
  </tile>
  <tile id = "12">
-  <image width = "2" height = "2" source = "../png/caveexpress/tile-background-ice-big-01-back-01.png" />
+  <image width = "1" height = "1" source = "../png/caveexpress/tile-background-ice-09-back-01.png" />
  </tile>
  <tile id = "13">
-  <image width = "1" height = "1" source = "../png/caveexpress/tile-background-ice-cave-art-01-back-01.png" />
+  <image width = "2" height = "2" source = "../png/caveexpress/tile-background-ice-big-01-back-01.png" />
  </tile>
  <tile id = "14">
-  <image width = "1" height = "1" source = "../png/caveexpress/tile-background-ice-cave-art-02-back-01.png" />
+  <image width = "1" height = "1" source = "../png/caveexpress/tile-background-ice-cave-art-01-back-01.png" />
  </tile>
  <tile id = "15">
-  <image width = "1" height = "1" source = "../png/caveexpress/tile-background-ice-window-01-on.png" />
+  <image width = "1" height = "1" source = "../png/caveexpress/tile-background-ice-cave-art-02-back-01.png" />
  </tile>
  <tile id = "16">
-  <image width = "1" height = "1" source = "../png/caveexpress/tile-background-ice-window-02-on.png" />
+  <image width = "1" height = "1" source = "../png/caveexpress/tile-background-ice-window-01-on.png" />
  </tile>
  <tile id = "17">
-  <image width = "1" height = "1" source = "../png/caveexpress/tile-cave-ice-01-on.png" />
+  <image width = "1" height = "1" source = "../png/caveexpress/tile-background-ice-window-02-on.png" />
  </tile>
  <tile id = "18">
-  <image width = "1" height = "1" source = "../png/caveexpress/tile-cave-ice-02-on.png" />
+  <image width = "1" height = "1" source = "../png/caveexpress/tile-cave-ice-01-on.png" />
  </tile>
  <tile id = "19">
+  <image width = "1" height = "1" source = "../png/caveexpress/tile-cave-ice-02-on.png" />
+ </tile>
+ <tile id = "20">
   <image width = "1" height = "2" source = "../png/caveexpress/tile-geyser-ice-01-active-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="0">
@@ -81,7 +84,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "20">
+ <tile id = "21">
   <image width = "1" height = "2" source = "../png/caveexpress/tile-geyser-ice-01-idle-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="0">
@@ -89,19 +92,19 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "21">
+ <tile id = "22">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-ground-ice-01-back-01.png" />
  </tile>
- <tile id = "22">
+ <tile id = "23">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-ground-ice-02-back-01.png" />
  </tile>
- <tile id = "23">
+ <tile id = "24">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-ground-ice-03-back-01.png" />
  </tile>
- <tile id = "24">
+ <tile id = "25">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-ground-ice-04-back-01.png" />
  </tile>
- <tile id = "25">
+ <tile id = "26">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-ground-ice-05-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -109,13 +112,13 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "26">
+ <tile id = "27">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-ground-ice-06-back-01.png" />
  </tile>
- <tile id = "27">
+ <tile id = "28">
   <image width = "2" height = "2" source = "../png/caveexpress/tile-ground-ice-big-01-back-01.png" />
  </tile>
- <tile id = "28">
+ <tile id = "29">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-ground-ledge-ice-left-01-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -123,7 +126,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "29">
+ <tile id = "30">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-ground-ledge-ice-left-02-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -131,7 +134,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "30">
+ <tile id = "31">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-ground-ledge-ice-right-01-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -139,7 +142,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "31">
+ <tile id = "32">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-ground-ledge-ice-right-02-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -147,7 +150,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "32">
+ <tile id = "33">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-lava-ice-left-01-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="0">
@@ -155,11 +158,8 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "33">
-  <image width = "1" height = "1" source = "../png/caveexpress/tile-lava-ice-left-02-back-01.png" />
- </tile>
  <tile id = "34">
-  <image width = "1" height = "1" source = "../png/caveexpress/tile-lava-ice-right-01-back-01.png" />
+  <image width = "1" height = "1" source = "../png/caveexpress/tile-lava-ice-left-02-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="0">
     <polygon points="0,0 0,0 0,0 0,0 0,0 0,0 0,0 0,0 "/>
@@ -167,9 +167,22 @@
   </objectgroup>
  </tile>
  <tile id = "35">
-  <image width = "1" height = "1" source = "../png/caveexpress/tile-lava-ice-right-02-back-01.png" />
+  <image width = "1" height = "1" source = "../png/caveexpress/tile-lava-ice-right-01-back-01.png" />
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="0" y="0" width="1" height="0">
+    <polygon points="0,0 0,0 0,0 0,0 0,0 0,0 0,0 0,0 "/>
+   </object>
+  </objectgroup>
  </tile>
  <tile id = "36">
+  <image width = "1" height = "1" source = "../png/caveexpress/tile-lava-ice-right-02-back-01.png" />
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="0" y="0" width="1" height="0">
+    <polygon points="0,0 0,0 0,0 0,0 0,0 0,0 0,0 0,0 "/>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id = "37">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-packagetarget-ice-01-active-front-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -177,7 +190,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "37">
+ <tile id = "38">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-packagetarget-ice-01-idle-front-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -185,7 +198,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "38">
+ <tile id = "39">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-packagetarget-ice-01-rotate-front-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -193,19 +206,19 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "39">
+ <tile id = "40">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-rock-ice-01-back-01.png" />
  </tile>
- <tile id = "40">
+ <tile id = "41">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-rock-ice-02-back-01.png" />
  </tile>
- <tile id = "41">
+ <tile id = "42">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-rock-ice-03-back-01.png" />
  </tile>
- <tile id = "42">
+ <tile id = "43">
   <image width = "2" height = "2" source = "../png/caveexpress/tile-rock-ice-big-01-back-01.png" />
  </tile>
- <tile id = "43">
+ <tile id = "44">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-rock-ice-left-04-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="0" height="1">
@@ -213,7 +226,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "44">
+ <tile id = "45">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-rock-ice-left-05-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="0" height="1">
@@ -221,7 +234,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "45">
+ <tile id = "46">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-rock-ice-right-04-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -229,7 +242,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "46">
+ <tile id = "47">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-rock-ice-right-05-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -237,7 +250,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "47">
+ <tile id = "48">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-rock-shim-ice-01-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -245,7 +258,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "48">
+ <tile id = "49">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-rock-slope-ice-left-01-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -253,7 +266,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "49">
+ <tile id = "50">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-rock-slope-ice-left-02-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -261,7 +274,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "50">
+ <tile id = "51">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-rock-slope-ice-right-01-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -269,7 +282,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "51">
+ <tile id = "52">
   <image width = "1" height = "1" source = "../png/caveexpress/tile-rock-slope-ice-right-02-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="1">
@@ -277,7 +290,7 @@
    </object>
   </objectgroup>
  </tile>
- <tile id = "52">
+ <tile id = "53">
   <image width = "1" height = "2" source = "../png/caveexpress/tile-waterfall-ice-01-back-01.png" />
   <objectgroup draworder="index" id="2">
    <object id="1" x="0" y="0" width="1" height="0">
