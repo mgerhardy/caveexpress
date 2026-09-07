@@ -29,6 +29,8 @@ public:
 
 	void initTextureDefinition (IFrontend *frontend, const std::string& textureSize, IProgressCallback* progress = nullptr);
 	void init (IFrontend *frontend, EventHandler *eventHandler);
+	/** Loopback network + event handler only. No GameRegistry / map manager. */
+	void initForTool (EventHandler *eventHandler);
 	void shutdown();
 
 	// switches the network to either loopback or to real network

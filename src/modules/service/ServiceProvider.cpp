@@ -85,6 +85,19 @@ void ServiceProvider::shutdown()
 	_currentNetwork = nullptr;
 }
 
+void ServiceProvider::initForTool (EventHandler *eventHandler)
+{
+	_eventHandler = eventHandler;
+	_loopback = new NoNetwork();
+#ifndef NONETWORK
+	_network = new NoNetwork();
+#else
+	_network = _loopback;
+#endif
+	_currentNetwork = _loopback;
+	_currentNetwork->init();
+}
+
 void ServiceProvider::init (IFrontend *frontend, EventHandler *eventHandler)
 {
 	_eventHandler = eventHandler;
