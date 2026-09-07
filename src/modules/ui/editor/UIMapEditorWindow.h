@@ -30,6 +30,9 @@ protected:
 	mutable bool _showValidation = false;
 	mutable bool _validationSaveGameData = false;
 	mutable bool _regionDragging = false;
+	mutable bool _movingItem = false;
+	mutable bool _moveUndoStarted = false;
+	mutable gridCoord _moveGrabOffsetX = 0.0f;
 	mutable bool _previewAltAtlas = false;
 	mutable int _nativeTileRefWidth = 16;
 	mutable UIShapeEditor _shapeEditor;
@@ -81,6 +84,8 @@ protected:
 	void renderMapIntoCanvas (ImDrawList* drawList) const;
 	void renderSprite (ImDrawList* drawList, const MapEditorTileItem& item, float originX, float originY,
 			float tileW, float tileH, float alpha = 1.0f) const;
+	void renderItemBounds (ImDrawList* drawList, const MapEditorTileItem& item, float originX, float originY,
+			float tileW, float tileH, ImU32 lineCol, ImU32 fillCol, float thickness) const;
 	bool requestAction (const char* action) const;
 	void executePendingAction () const;
 	void leaveEditor () const;

@@ -48,7 +48,7 @@ The toolbar radio buttons choose the left-mouse action:
 | --- | --- |
 | **Place tile** | Paint the active brush (tile or entity) and select that cell |
 | **Remove tile** | Erase items that belong to the active tab |
-| **Select tile** | Pick the item under the cursor into the brush (active tab only) |
+| **Select tile** | Pick the sprite under the cursor into the brush (active tab only). A cyan outline shows the bounding box that will be picked, so a thin liane can be distinguished from the background tile in the same cell. |
 | **Fill** | Flood-fill empty cells or matching tiles of the active layer with the brush |
 
 Right mouse button always erases, regardless of the selected tool.
@@ -66,7 +66,7 @@ Right mouse button always erases, regardless of the selected tool.
 | Space + left drag | Pan the view. |
 | Mouse wheel | Zoom toward the cursor. |
 
-A green ghost preview follows the cursor when a brush is selected. The yellow outline is the selected item used by Properties, not merely the hovered cell.
+A green ghost preview follows the cursor when a brush is selected (Place tool). In **Select** mode a cyan outline follows the sprite under the cursor (its real size, not the whole cell). The yellow outline is the selected item used by Properties.
 
 ## Keyboard
 
@@ -82,7 +82,7 @@ These shortcuts are ignored while you are typing in a text field, except **Ctrl+
 | **F1** | Toggle the in-editor help panel |
 | **Space** (cursor on canvas) | Rotate the **selected** tile if it is rotatable, or flip a selected directional NPC. Otherwise rotates the brush. Angle / facing is shown on the ghost and in the toolbar. |
 | **Ctrl+C** / **Ctrl+V** | Copy / paste the rectangle selection |
-| **Arrow keys** | Nudge the selection (or the highlighted tile) |
+| **Arrow keys** | Nudge the selection (or the highlighted tile). **Shift+arrows** nudge a liane or emitter by 0.1 tiles |
 | **Delete** / **Backspace** | Remove the selected item or the rectangle of the active tab |
 | **Esc** | Close Script, Shapes, Help, or the unsaved-changes dialog; otherwise leave the editor |
 
@@ -99,7 +99,7 @@ Click a tile in the palette to make it the brush, then paint on the canvas. Use 
 | Cave | Clients live here. Caves spawn packages (or a named NPC) after **Npc delay**. |
 | Package target (shredder) | Deliver packages here to score. |
 | Geyser | Updraft that can lift the plane. |
-| Bridge / liane | Overlay decoration on open background. |
+| Bridge / liane | Overlay decoration on open background. Lianes are a quarter-tile wide; in **Select** tool, click the vine itself (cyan bounds) rather than empty space in the cell. Drag left/right, use **X** in Properties, or Shift+arrows to offset them horizontally. |
 | Window / cave art | Visual detail on background. |
 | Gate / pressure plate | Linked trigger pair (see below). |
 

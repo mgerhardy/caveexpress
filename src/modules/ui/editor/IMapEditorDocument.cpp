@@ -7,6 +7,7 @@
 #include "common/MapSettings.h"
 #include "common/KeyValueParser.h"
 #include "common/FileSystem.h"
+#include "common/Math.h"
 #include "ui/UI.h"
 #include "ui/windows/UIWindow.h"
 #include <algorithm>
@@ -332,6 +333,12 @@ void IMapEditorDocument::setSelectedGrid (gridCoord x, gridCoord y)
 	_selectedGridY = y;
 }
 
+void IMapEditorDocument::setCursorGrid (gridCoord x, gridCoord y)
+{
+	_cursorGridX = x;
+	_cursorGridY = y;
+}
+
 void IMapEditorDocument::focusCell (gridCoord x, gridCoord y)
 {
 	setSelectedGrid(x, y);
@@ -367,6 +374,43 @@ void IMapEditorDocument::setStartPositionAt (size_t index, gridCoord gridX, grid
 bool IMapEditorDocument::isOverlapping (gridCoord gridX, gridCoord gridY, const MapEditorTileItem& item) const
 {
 	return isOverlapping(gridX, gridY, 1.0f, 1.0f, item);
+}
+
+bool IMapEditorDocument::containsPoint (gridCoord x, gridCoord y, const MapEditorTileItem& item) const
+{
+	if (!item.def)
+		return false;
+	const vec2 size = item.getSize(false);
+	const gridCoord itemX = item.gridX + item.getX(false);
+	const gridCoord itemY = item.gridY + item.getY(false);
+	return x >= itemX && x < itemX + size.x && y >= itemY && y < itemY + size.y;
+}
+
+const MapEditorTileItem* IMapEditorDocument::findTopmostItem (bool anyEditMode, bool useCursorPoint) const
+{
+	for (int layer = LAYER_EMITTER; layer != LAYER_NONE; --layer) {
+		if (!isLayerActive(layer))
+			continue;
+		if (!anyEditMode) {
+			if (_editMode == EditMode::Entities && layer != LAYER_EMITTER)
+				continue;
+			if (_editMode == EditMode::Tiles && layer == LAYER_EMITTER)
+				continue;
+		}
+		for (const MapEditorTileItem& item : _map) {
+			if (item.layer != static_cast<MapEditorLayer>(layer))
+				continue;
+			if (!anyEditMode && !matchesEditMode(item))
+				continue;
+			if (useCursorPoint) {
+				if (!containsPoint(_cursorGridX, _cursorGridY, item))
+					continue;
+			} else if (!isOverlapping(_selectedGridX, _selectedGridY, item))
+				continue;
+			return &item;
+		}
+	}
+	return nullptr;
 }
 
 bool IMapEditorDocument::isOverlapping (gridCoord gridX, gridCoord gridY, gridSize width, gridSize height,
@@ -511,50 +555,49 @@ bool IMapEditorDocument::eraseAtSelection (bool recordUndo)
 			}
 		}
 	}
-	setHighlightFromSelection();
+	MapEditorTileItem* hit = getTileAtCursor();
+	if (hit == nullptr)
+		hit = getSelectedTile();
+	_highlightItem = hit;
 	if (_highlightItem == nullptr || !matchesEditMode(*_highlightItem))
 		return false;
-	auto i = std::find(_map.begin(), _map.end(), *_highlightItem);
-	if (i == _map.end())
-		return false;
-	_map.erase(i);
-	_highlightItem = getSelectedTile();
-	return true;
+	for (auto i = _map.begin(); i != _map.end(); ++i) {
+		if (&(*i) != _highlightItem)
+			continue;
+		_map.erase(i);
+		_highlightItem = getTileAtCursor();
+		if (_highlightItem == nullptr)
+			_highlightItem = getSelectedTile();
+		return true;
+	}
+	return false;
 }
 
 void IMapEditorDocument::pickAtSelection ()
 {
-	setHighlightFromSelection();
+	_highlightItem = getTileAtCursor();
+	if (_highlightItem == nullptr)
+		_highlightItem = getSelectedTile();
 	if (_highlightItem == nullptr)
 		return;
+	const Tool previousTool = _tool;
 	if (_highlightItem->entityType != nullptr) {
 		setEmitterEntity(*_highlightItem->entityType);
 		_emitterAmount = _highlightItem->amount;
 		_emitterDelay = _highlightItem->delay;
 		_activeAngle = _highlightItem->angle;
-		return;
+	} else {
+		setSprite(_highlightItem->def);
+		_activeAngle = _highlightItem->angle;
 	}
-	setSprite(_highlightItem->def);
-	_activeAngle = _highlightItem->angle;
+	_tool = previousTool;
 }
 
 void IMapEditorDocument::pickTopmostAtSelection ()
 {
-	MapEditorTileItem* found = nullptr;
-	for (int layer = LAYER_EMITTER; layer != LAYER_NONE; --layer) {
-		if (!isLayerActive(layer))
-			continue;
-		for (MapEditorTileItem& item : _map) {
-			if (item.layer != static_cast<MapEditorLayer>(layer))
-				continue;
-			if (!isOverlapping(_selectedGridX, _selectedGridY, item))
-				continue;
-			found = &item;
-			break;
-		}
-		if (found)
-			break;
-	}
+	MapEditorTileItem* found = getTileAtCursor(true);
+	if (found == nullptr)
+		found = const_cast<MapEditorTileItem*>(findTopmostItem(true, false));
 	_highlightItem = found;
 	if (found == nullptr)
 		return;
@@ -562,15 +605,17 @@ void IMapEditorDocument::pickTopmostAtSelection ()
 		_editMode = EditMode::Entities;
 	else
 		_editMode = EditMode::Tiles;
+	const Tool previousTool = _tool;
 	if (found->entityType != nullptr) {
 		setEmitterEntity(*found->entityType);
 		_emitterAmount = found->amount;
 		_emitterDelay = found->delay;
 		_activeAngle = found->angle;
-		return;
+	} else {
+		setSprite(found->def);
+		_activeAngle = found->angle;
 	}
-	setSprite(found->def);
-	_activeAngle = found->angle;
+	_tool = previousTool;
 }
 
 void IMapEditorDocument::deleteSelection ()
@@ -686,24 +731,17 @@ bool IMapEditorDocument::findFirstEntityOfType (const EntityType& type, gridCoor
 
 MapEditorTileItem* IMapEditorDocument::getSelectedTile ()
 {
-	for (int layer = LAYER_EMITTER; layer != LAYER_NONE; --layer) {
-		if (!isLayerActive(layer))
-			continue;
-		if (_editMode == EditMode::Entities && layer != LAYER_EMITTER)
-			continue;
-		if (_editMode == EditMode::Tiles && layer == LAYER_EMITTER)
-			continue;
-		for (MapEditorTileItem& item : _map) {
-			if (item.layer != static_cast<MapEditorLayer>(layer))
-				continue;
-			if (!matchesEditMode(item))
-				continue;
-			if (!isOverlapping(_selectedGridX, _selectedGridY, item))
-				continue;
-			return &item;
-		}
-	}
-	return nullptr;
+	return const_cast<MapEditorTileItem*>(findTopmostItem(false, false));
+}
+
+const MapEditorTileItem* IMapEditorDocument::getTileAtCursor (bool topmostAnyTab) const
+{
+	return findTopmostItem(topmostAnyTab, true);
+}
+
+MapEditorTileItem* IMapEditorDocument::getTileAtCursor (bool topmostAnyTab)
+{
+	return const_cast<MapEditorTileItem*>(findTopmostItem(topmostAnyTab, true));
 }
 
 void IMapEditorDocument::setHighlightFromSelection ()
@@ -975,14 +1013,16 @@ void IMapEditorDocument::pasteAtSelection ()
 	setHighlightFromSelection();
 }
 
-void IMapEditorDocument::nudgeSelection (int dx, int dy)
+void IMapEditorDocument::nudgeSelection (gridCoord dx, gridCoord dy)
 {
-	if (dx == 0 && dy == 0)
+	if (dx == 0.0f && dy == 0.0f)
 		return;
 	MapEditorUndo();
 	if (_hasRegion) {
 		int x0, y0, x1, y1;
 		getRegion(x0, y0, x1, y1);
+		const int idx = static_cast<int>(std::lround(dx));
+		const int idy = static_cast<int>(std::lround(dy));
 		for (MapEditorTileItem& item : _map) {
 			if (!matchesEditMode(item))
 				continue;
@@ -990,19 +1030,35 @@ void IMapEditorDocument::nudgeSelection (int dx, int dy)
 			const int iy = static_cast<int>(std::floor(item.gridY + EPSILON));
 			if (ix < x0 || iy < y0 || ix > x1 || iy > y1)
 				continue;
-			item.gridX += static_cast<gridCoord>(dx);
-			item.gridY += static_cast<gridCoord>(dy);
+			item.gridX += static_cast<gridCoord>(idx);
+			item.gridY += static_cast<gridCoord>(idy);
 		}
-		_regionX0 += dx;
-		_regionY0 += dy;
-		_regionX1 += dx;
-		_regionY1 += dy;
+		_regionX0 += idx;
+		_regionY0 += idy;
+		_regionX1 += idx;
+		_regionY1 += idy;
 		return;
 	}
 	if (_highlightItem == nullptr)
 		return;
-	_highlightItem->gridX += static_cast<gridCoord>(dx);
-	_highlightItem->gridY += static_cast<gridCoord>(dy);
+	setHighlightPosition(_highlightItem->gridX + dx, _highlightItem->gridY + dy);
+}
+
+void IMapEditorDocument::setHighlightPosition (gridCoord x, gridCoord y)
+{
+	if (_highlightItem == nullptr || !_highlightItem->def)
+		return;
+	const vec2 size = _highlightItem->getSize(false);
+	const gridCoord oldX = _highlightItem->gridX;
+	const gridCoord oldY = _highlightItem->gridY;
+	const gridCoord maxX = std::max(0.0f, static_cast<gridCoord>(_mapWidth) - size.x);
+	const gridCoord maxY = std::max(0.0f, static_cast<gridCoord>(_mapHeight) - size.y);
+	_highlightItem->gridX = clamp(x, 0.0f, maxX);
+	_highlightItem->gridY = clamp(y, 0.0f, maxY);
+	if (!canPlaceTileItem(*_highlightItem)) {
+		_highlightItem->gridX = oldX;
+		_highlightItem->gridY = oldY;
+	}
 }
 
 bool IMapEditorDocument::floodFillCanPaint (int, int, const SpriteDefPtr&) const

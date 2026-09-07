@@ -98,6 +98,9 @@ protected:
 
 	gridCoord _selectedGridX = 0.0f;
 	gridCoord _selectedGridY = 0.0f;
+	/** Fractional mouse position in tile units; used for point picking in Select mode. */
+	gridCoord _cursorGridX = 0.0f;
+	gridCoord _cursorGridY = 0.0f;
 	MapEditorTileItem* _highlightItem = nullptr;
 
 	int _layerMask = 0xFFFFFFFF;
@@ -125,6 +128,8 @@ protected:
 	virtual bool isOverlapping (const MapEditorTileItem& item1, const MapEditorTileItem& item2) const;
 	bool isOverlapping (gridCoord gridX, gridCoord gridY, gridSize width, gridSize height, const MapEditorTileItem& item) const;
 	bool isOverlapping (gridCoord gridX, gridCoord gridY, const MapEditorTileItem& item) const;
+	bool containsPoint (gridCoord x, gridCoord y, const MapEditorTileItem& item) const;
+	const MapEditorTileItem* findTopmostItem (bool anyEditMode, bool useCursorPoint) const;
 	void setState (const State& state);
 	State captureState () const;
 	bool stateDiffersFrom (const State& state) const;
@@ -190,9 +195,12 @@ public:
 	EditMode getEditMode () const { return _editMode; }
 
 	void setSelectedGrid (gridCoord x, gridCoord y);
+	void setCursorGrid (gridCoord x, gridCoord y);
 	void focusCell (gridCoord x, gridCoord y);
 	gridCoord getSelectedGridX () const { return _selectedGridX; }
 	gridCoord getSelectedGridY () const { return _selectedGridY; }
+	gridCoord getCursorGridX () const { return _cursorGridX; }
+	gridCoord getCursorGridY () const { return _cursorGridY; }
 
 	bool paintAtSelection (bool overwrite = true, bool recordUndo = true);
 	virtual bool eraseAtSelection (bool recordUndo = true);
@@ -209,10 +217,13 @@ public:
 	void getRegion (int& x0, int& y0, int& x1, int& y1) const;
 	void copyRegion ();
 	void pasteAtSelection ();
-	void nudgeSelection (int dx, int dy);
+	void nudgeSelection (gridCoord dx, gridCoord dy);
+	void setHighlightPosition (gridCoord x, gridCoord y);
 	bool hasClipboard () const { return !_clipboard.empty(); }
 
 	MapEditorTileItem* getSelectedTile ();
+	MapEditorTileItem* getTileAtCursor (bool topmostAnyTab = false);
+	const MapEditorTileItem* getTileAtCursor (bool topmostAnyTab = false) const;
 	MapEditorTileItem* getHighlightItem () { return _highlightItem; }
 	const MapEditorTileItem* getHighlightItem () const { return _highlightItem; }
 	void setHighlightFromSelection ();

@@ -92,6 +92,7 @@ Height|Höhe
 Help|Hilfe
 Hints|Hinweise
 Homepage|Homepage
+Horizontal position in tiles. Drag in Select tool to slide.|Horizontal position in tiles. Drag in Select tool to slide.
 In campaigns|In Kampagnen
 Increase map height|Map-Höhe vergrößern
 Increase map width|Map-Breite vergrößern
@@ -189,12 +190,15 @@ Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onU
 See docs/caveexpress/MAPS.md|See docs/caveexpress/MAPS.md
 Select a sprite|Select a sprite
 Select a tile on the map|Select a tile on the map
+Select + drag a liane to move it horizontally|Select + drag a liane to move it horizontally
 Select game mode|Spielemodus aussuchen
 Select tile|Teil selektieren
+Select tool: hover shows the sprite bounds that will be picked|Select tool: hover shows the sprite bounds that will be picked
 Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / pick tile
 Settings|Einstellungen
 Shapes|Shapes
 Shapes: edit polygons/circles and write sprites.lua|Shapes: edit polygons/circles and write sprites.lua
+Shift+arrows: nudge a liane or emitter by 0.1 tiles|Shift+arrows: nudge a liane or emitter by 0.1 tiles
 Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge|Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge
 Show Grid|Gitter anzeigen
 Size|Größe
@@ -241,6 +245,7 @@ Write into the project maps folder|Write into the project maps folder
 Write sprites.lua|Write sprites.lua
 Wrote entities.lua|entities.lua geschrieben
 Wrote sprites.lua|Wrote sprites.lua
+X|X
 Yes|Ja
 You have unsaved changes. Continue?|Es gibt ungespeicherte Änderungen. Fortfahren?
 Your player|Dein Spieler

@@ -41,6 +41,8 @@ struct MapEditorTileItem {
 	gridCoord getX (bool useShape = false) const;
 	gridCoord getY (bool useShape = false) const;
 	vec2 getSize (bool useShape = false) const;
+	/** True for sprites narrower than one cell (e.g. lianes) that can sit at fractional X. */
+	bool allowsSubTileX () const;
 };
 
 typedef std::list<MapEditorTileItem> MapEditorTileItems;

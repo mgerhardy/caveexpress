@@ -53,3 +53,10 @@ vec2 MapEditorTileItem::getSize (bool useShape) const
 		return vec2(entityType->width, entityType->height);
 	return vec2(def->width, def->height);
 }
+
+bool MapEditorTileItem::allowsSubTileX () const
+{
+	if (!def)
+		return false;
+	return getSize(false).x + EPSILON < 1.0f;
+}

@@ -335,14 +335,18 @@ void UIMapEditorWindow::handleHotkeys () const
 	if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_Y, false))
 		_doc->redo();
 	if (!io.KeyCtrl) {
+		const MapEditorTileItem* highlight = _doc->getHighlightItem();
+		const bool fine = io.KeyShift && highlight != nullptr
+				&& (highlight->allowsSubTileX() || highlight->entityType != nullptr);
+		const gridCoord step = fine ? 0.1f : 1.0f;
 		if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow, false))
-			_doc->nudgeSelection(-1, 0);
+			_doc->nudgeSelection(-step, 0);
 		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow, false))
-			_doc->nudgeSelection(1, 0);
+			_doc->nudgeSelection(step, 0);
 		if (ImGui::IsKeyPressed(ImGuiKey_UpArrow, false))
-			_doc->nudgeSelection(0, -1);
+			_doc->nudgeSelection(0, -step);
 		if (ImGui::IsKeyPressed(ImGuiKey_DownArrow, false))
-			_doc->nudgeSelection(0, 1);
+			_doc->nudgeSelection(0, step);
 	}
 	if (ImGui::IsKeyPressed(ImGuiKey_F1, false))
 		_showHelp = !_showHelp;
@@ -847,6 +851,16 @@ void UIMapEditorWindow::drawPropertiesPanel () const
 	}
 	ImGui::EndChild();
 
+	if (MapEditorTileItem* sel = _doc->getHighlightItem()) {
+		if (sel->allowsSubTileX()) {
+			float ex = sel->gridX;
+			if (ImGui::InputFloat(tr("X").c_str(), &ex, 0.1f, 1.0f, "%.2f"))
+				_doc->setHighlightPosition(ex, sel->gridY);
+			if (ImGui::IsItemHovered())
+				ImGui::SetTooltip("%s", tr("Horizontal position in tiles. Drag in Select tool to slide.").c_str());
+		}
+	}
+
 	ImGui::Separator();
 	if (ImGui::Button("+W")) _doc->shift(1, 0);
 	if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", tr("Increase map width").c_str());
@@ -887,7 +901,9 @@ void UIMapEditorWindow::drawHelpPanel () const
 	ImGui::Separator();
 	ImGui::BulletText("%s", tr("Tiles / Entities tab: place and erase only that kind").c_str());
 	ImGui::BulletText("%s", tr("LMB: paint / place (also selects)").c_str());
+	ImGui::BulletText("%s", tr("Select tool: hover shows the sprite bounds that will be picked").c_str());
 	ImGui::BulletText("%s", tr("Select tool or Shift+LMB: select / pick tile").c_str());
+	ImGui::BulletText("%s", tr("Select + drag a liane to move it horizontally").c_str());
 	ImGui::BulletText("%s", tr("RMB: erase items of the active tab").c_str());
 	ImGui::BulletText("%s", tr("MMB click: pick, MMB drag or Space+LMB: pan").c_str());
 	ImGui::BulletText("%s", tr("Wheel: zoom toward cursor").c_str());
@@ -902,6 +918,7 @@ void UIMapEditorWindow::drawHelpPanel () const
 	ImGui::BulletText("%s", tr("Right-click a palette item for more actions").c_str());
 	ImGui::BulletText("%s", tr("Alt+click: pick whatever is on top (any tab)").c_str());
 	ImGui::BulletText("%s", tr("Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge").c_str());
+	ImGui::BulletText("%s", tr("Shift+arrows: nudge a liane or emitter by 0.1 tiles").c_str());
 	ImGui::BulletText("%s", tr("Fill: flood-fill background / same tile").c_str());
 	ImGui::Separator();
 	ImGui::TextUnformatted(tr("Docs (in the source tree)").c_str());
@@ -1121,6 +1138,21 @@ void UIMapEditorWindow::renderSprite (ImDrawList* drawList, const MapEditorTileI
 	mapEditorAddSprite(drawList, _frontendPtr, sprite, ImVec2(rx, ry), ImVec2(rx + rw, ry + rh), alpha, item.angle);
 }
 
+void UIMapEditorWindow::renderItemBounds (ImDrawList* drawList, const MapEditorTileItem& item, float originX,
+		float originY, float tileW, float tileH, ImU32 lineCol, ImU32 fillCol, float thickness) const
+{
+	if (!item.def)
+		return;
+	const vec2 size = item.getSize(false);
+	const float hx = originX + (item.gridX + item.getX(false)) * tileW - _panX;
+	const float hy = originY + (item.gridY + item.getY(false)) * tileH - _panY;
+	const ImVec2 a(hx, hy);
+	const ImVec2 b(hx + size.x * tileW, hy + size.y * tileH);
+	if (fillCol != 0)
+		drawList->AddRectFilled(a, b, fillCol);
+	drawList->AddRect(a, b, lineCol, 0.0f, 0, thickness);
+}
+
 void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 {
 	const float x = _canvasMinX;
@@ -1154,12 +1186,6 @@ void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 			char buf[32];
 			std::snprintf(buf, sizeof(buf), "%ix/%ims", item.amount, item.delay);
 			drawList->AddText(ImVec2(tx, ty), IM_COL32(255, 230, 120, 255), buf);
-		}
-		if (_doc->getHighlightItem() != nullptr && *_doc->getHighlightItem() == item) {
-			const float hx = x + (item.gridX + item.getX(false)) * tileW - _panX;
-			const float hy = y + (item.gridY + item.getY(false)) * tileH - _panY;
-			const vec2 size = item.getSize(false);
-			drawList->AddRect(ImVec2(hx, hy), ImVec2(hx + size.x * tileW, hy + size.y * tileH), IM_COL32(255, 255, 0, 255));
 		}
 	}
 
@@ -1200,7 +1226,24 @@ void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 		}
 	}
 
-	if (_canvasHovered && _doc->getActiveSprite()) {
+	if (_canvasHovered && _doc->getTool() == IMapEditorDocument::Tool::Pick) {
+		const MapEditorTileItem* hover = _doc->getTileAtCursor(ImGui::GetIO().KeyAlt);
+		const MapEditorTileItem* selected = _doc->getHighlightItem();
+		if (hover != nullptr && hover != selected) {
+			renderItemBounds(drawList, *hover, x, y, tileW, tileH, IM_COL32(80, 220, 255, 255),
+					IM_COL32(80, 220, 255, 50), 2.0f);
+			if (hover->def) {
+				const float lx = x + (hover->gridX + hover->getX(false)) * tileW - _panX;
+				const float ly = y + (hover->gridY + hover->getY(false)) * tileH - _panY;
+				drawList->AddText(ImVec2(lx, ly - 16.0f), IM_COL32(160, 230, 255, 255), hover->def->id.c_str());
+			}
+		}
+	}
+	if (const MapEditorTileItem* selected = _doc->getHighlightItem()) {
+		renderItemBounds(drawList, *selected, x, y, tileW, tileH, IM_COL32(255, 255, 0, 255), 0, 2.0f);
+	}
+
+	if (_canvasHovered && _doc->getActiveSprite() && _doc->getTool() != IMapEditorDocument::Tool::Pick) {
 		MapEditorTileItem ghost;
 		ghost.def = _doc->getActiveSprite();
 		ghost.entityType = _doc->getActiveEntityType();
@@ -1242,13 +1285,17 @@ void UIMapEditorWindow::drawCanvas () const
 
 	const float tileW = tileWidth();
 	const float tileH = tileHeight();
+	const ImVec2 mouse = ImGui::GetIO().MousePos;
+	if (_canvasHovered || _movingItem) {
+		const float gx = (mouse.x - _canvasMinX + _panX) / tileW;
+		const float gy = (mouse.y - _canvasMinY + _panY) / tileH;
+		_doc->setCursorGrid(gx, gy);
+		if (_canvasHovered)
+			_doc->setSelectedGrid(std::floor(gx), std::floor(gy));
+	}
+
 	const bool overlayConsumed = handleCanvasOverlayInput(tileW, tileH);
 	if (_canvasHovered && !overlayConsumed) {
-		const ImVec2 mouse = ImGui::GetIO().MousePos;
-		// Cursor grid follows the mouse for painting; properties use the stable click selection.
-		_doc->setSelectedGrid(std::floor((mouse.x - _canvasMinX + _panX) / tileW),
-				std::floor((mouse.y - _canvasMinY + _panY) / tileH));
-
 		const bool space = ImGui::IsKeyDown(ImGuiKey_Space);
 		if (ImGui::IsMouseDragging(ImGuiMouseButton_Middle) || (space && ImGui::IsMouseDragging(ImGuiMouseButton_Left))) {
 			_panning = true;
@@ -1259,6 +1306,12 @@ void UIMapEditorWindow::drawCanvas () const
 		}
 		if (_panning || space)
 			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
+		else if (_doc->getTool() == IMapEditorDocument::Tool::Pick) {
+			if (const MapEditorTileItem* hover = _doc->getTileAtCursor(ImGui::GetIO().KeyAlt)) {
+				if (hover->allowsSubTileX())
+					ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+			}
+		}
 
 		const float wheel = ImGui::GetIO().MouseWheel;
 		if (wheel != 0.0f) {
@@ -1277,6 +1330,8 @@ void UIMapEditorWindow::drawCanvas () const
 			const int gx = static_cast<int>(std::floor(_doc->getSelectedGridX()));
 			const int gy = static_cast<int>(std::floor(_doc->getSelectedGridY()));
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+				_movingItem = false;
+				_moveUndoStarted = false;
 				if (alt) {
 					_doc->pickTopmostAtSelection();
 				} else if (shift || _doc->getTool() == IMapEditorDocument::Tool::Pick) {
@@ -1288,6 +1343,12 @@ void UIMapEditorWindow::drawCanvas () const
 					} else {
 						_doc->pickAtSelection();
 						_doc->clearRegion();
+						if (const MapEditorTileItem* hit = _doc->getHighlightItem()) {
+							if (hit->allowsSubTileX()) {
+								_movingItem = true;
+								_moveGrabOffsetX = _doc->getCursorGridX() - hit->gridX;
+							}
+						}
 					}
 				} else {
 					_doc->beginUndoStroke();
@@ -1295,7 +1356,8 @@ void UIMapEditorWindow::drawCanvas () const
 				}
 			} else if (_regionDragging && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 				_doc->setRegion(_regionAnchorX, _regionAnchorY, gx, gy);
-			} else if (!shift && !alt && _doc->getTool() != IMapEditorDocument::Tool::Fill
+			} else if (!shift && !alt && !_movingItem && _doc->getTool() != IMapEditorDocument::Tool::Fill
+					&& _doc->getTool() != IMapEditorDocument::Tool::Pick
 					&& ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 				_doc->paintAtSelection(true, false);
 			}
@@ -1316,9 +1378,22 @@ void UIMapEditorWindow::drawCanvas () const
 		}
 	}
 
+	if (_movingItem && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && _doc->getHighlightItem() != nullptr) {
+		ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+		if (!_moveUndoStarted) {
+			_doc->beginUndoStroke();
+			_moveUndoStarted = true;
+		}
+		const gridCoord x = std::round((_doc->getCursorGridX() - _moveGrabOffsetX) * 10.0f) / 10.0f;
+		_doc->setHighlightPosition(x, _doc->getHighlightItem()->gridY);
+	}
+
 	// Commit paint/erase strokes even if the cursor left the canvas before release.
-	if (ImGui::IsMouseReleased(ImGuiMouseButton_Left) || ImGui::IsMouseReleased(ImGuiMouseButton_Right))
+	if (ImGui::IsMouseReleased(ImGuiMouseButton_Left) || ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
 		_doc->endUndoStroke();
+		_movingItem = false;
+		_moveUndoStarted = false;
+	}
 
 	renderMapIntoCanvas(ImGui::GetWindowDrawList());
 	ImGui::EndChild();
