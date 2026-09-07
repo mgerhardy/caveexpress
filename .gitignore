@@ -3,6 +3,8 @@
 /caveexpress
 /soundmapper
 /jsonconvert
+/caveexpress-map2png
+/cavepacker-map2png
 /tests*
 /solutiontool
 /build*
