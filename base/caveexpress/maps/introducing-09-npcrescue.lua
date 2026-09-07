@@ -177,3 +177,17 @@ function initMap()
 
 	map:addStartPosition("4.000000", "7.000000")
 end
+
+function intro(help)
+	help:headline(tr("Objectives"))
+	help:text(tr("Rescue the villager before the water rises"))
+	help:headline(tr("Hints"))
+	help:text(tr("Land next to a waiting villager to pick them up"))
+	help:text(tr("Villagers in the water swim towards you"))
+	help:text(tr("Don't hit them hard or they will fall into the water"))
+	help:headline(tr("Description"))
+	help:beginRow()
+	help:entity("npc-man", "idle", tr("Man"))
+	help:entity("npc-grandpa", "idle", tr("Grandpa"))
+	help:endRow()
+end

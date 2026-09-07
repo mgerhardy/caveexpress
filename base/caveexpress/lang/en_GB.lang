@@ -72,6 +72,7 @@ Desert|Desert
 Disconnect|Disconnect
 Docs (in the source tree)|Docs (in the source tree)
 Do not put tiles in this window — initMap is rebuilt from the canvas.|Do not put tiles in this window — initMap is rebuilt from the canvas.
+Don't hit them hard or they will fall into the water|Don't hit them hard or they will fall into the water
 Drop during flight|Drop during flight
 Drop off at the shredder|Drop off at the shredder
 Dropping stones onto dinos stuns them|Dropping stones onto dinos stuns them
@@ -131,6 +132,7 @@ Go|Go
 Google Play|Google Play
 Google Play sign-out|Google Play sign-out
 Go to first on map|Go to first on map
+Grandpa|Grandpa
 Graphics|Graphics
 Gravity|Gravity
 Grid|Grid
@@ -165,6 +167,8 @@ Just stay and watch what happens|Just stay and watch what happens
 Keep handwritten initMap|Keep handwritten initMap
 Keep initMap|Keep initMap
 Key|Key
+Land at that cave to drop them off|Land at that cave to drop them off
+Land next to a waiting villager to pick them up|Land next to a waiting villager to pick them up
 Later|Later
 Lava|Lava
 Lava destroys your plane on contact|Lava destroys your plane on contact
@@ -180,6 +184,7 @@ LMB place / drag, RMB delete vertex, wheel zoom, MMB pan|LMB place / drag, RMB d
 Lua API|Lua API
 Lua polygon / circle definition|Lua polygon / circle definition
 Make playable|Make playable
+Man|Man
 Map|Map
 Map Editor|Map Editor
 Map generator seed. 0 picks a new seed on Auto.|Map generator seed. 0 picks a new seed on Auto.
@@ -246,6 +251,7 @@ Remove tile|Remove tile
 Replace|Replace
 Replace all|Replace all
 Required weight|Required weight
+Rescue the villager before the water rises|Rescue the villager before the water rises
 Reset|Reset
 Reset game progress?|Reset game progress?
 Restart|Restart
@@ -305,6 +311,7 @@ Theme|Theme
 Themed tiles left unchanged|Themed tiles left unchanged
 Theme remap|Theme remap
 These checks would fail CampaignTest / play:|These checks would fail CampaignTest / play:
+The target cave is shown when they start walking|The target cave is shown when they start walking
 This is the goal in every map|This is the goal in every map
 Tile angle|Tile angle
 Tile definition|Tile definition
@@ -318,6 +325,7 @@ Too many vertices for Box2D|Too many vertices for Box2D
 Transfer the grandpa to the desired cave|Transfer the grandpa to the desired cave
 Transfer the man to the desired cave|Transfer the man to the desired cave
 Transfer the woman to the desired cave|Transfer the woman to the desired cave
+Transfer villagers to the cave they want|Transfer villagers to the cave they want
 Tree|Tree
 Trigger link|Trigger link
 Try to avoid crashes but still be fast|Try to avoid crashes but still be fast
@@ -336,6 +344,7 @@ Use the second finger to drop the stone|Use the second finger to drop the stone
 Use the swing of the package|Use the swing of the package
 Value|Value
 Vertices|Vertices
+Villagers in the water swim towards you|Villagers in the water swim towards you
 Volume|Volume
 Waiting|Waiting
 Watch the geyser|Watch the geyser
@@ -348,6 +357,7 @@ Width|Width
 Wind|Wind
 Wind column height in tiles (emitter setting size=)|Wind column height in tiles (emitter setting size=)
 Wind size|Wind size
+Woman|Woman
 Write into the project maps folder|Write into the project maps folder
 Write sprites.lua|Write sprites.lua
 Wrote entities.lua|Wrote entities.lua

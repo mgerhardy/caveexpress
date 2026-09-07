@@ -218,3 +218,18 @@ function initMap()
 	map:setSetting("wind", "0")
 	map:addStartPosition(10, 7)
 end
+
+function intro(help)
+	help:headline(tr("Objectives"))
+	help:text(tr("Transfer villagers to the cave they want"))
+	help:headline(tr("Hints"))
+	help:text(tr("Land next to a waiting villager to pick them up"))
+	help:text(tr("The target cave is shown when they start walking"))
+	help:text(tr("Land at that cave to drop them off"))
+	help:headline(tr("Description"))
+	help:beginRow()
+	help:entity("npc-man", "idle", tr("Man"))
+	help:entity("npc-woman", "idle", tr("Woman"))
+	help:entity("npc-grandpa", "idle", tr("Grandpa"))
+	help:endRow()
+end
