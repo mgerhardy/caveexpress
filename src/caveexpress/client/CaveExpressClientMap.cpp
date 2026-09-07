@@ -66,6 +66,49 @@ void CaveExpressClientMap::renderWater (int x, int y) const
 	}
 }
 
+void CaveExpressClientMap::renderLavaHeat (int x, int y) const
+{
+	if (!_target)
+		return;
+
+	const bool hasWater = getWaterHeight() > 0.000001f;
+	const int waterSurface = hasWater ? y + static_cast<int>(getWaterSurface() * _zoom) : 0;
+
+	for (const auto &iter : _entities) {
+		const ClientEntityPtr& e = iter.second;
+		if (!EntityTypes::isLava(e->getType()))
+			continue;
+
+		int sx, sy, sw, sh;
+		e->getScreenPos(sx, sy);
+		e->getScreenSize(sw, sh);
+		sw = static_cast<int>(sw * _zoom);
+		sh = static_cast<int>(sh * _zoom);
+		if (sw <= 0 || sh <= 0)
+			continue;
+
+		const int lavaSurfaceY = sy + sh / 2;
+		if (hasWater && lavaSurfaceY >= waterSurface)
+			continue;
+
+		const int hazeH = std::max(1, static_cast<int>(sh * 1.75f));
+		const int overlap = sh / 3;
+		int hx = sx;
+		int hy = sy - (hazeH - overlap);
+		int hw = sw;
+		int hh = hazeH;
+		if (hasWater && hy + hh > waterSurface)
+			hh = waterSurface - hy;
+		if (hw <= 0 || hh <= 0)
+			continue;
+
+		_frontend->renderHeatHaze(hx, hy, hw, hh);
+		if (Config.isDebug()) {
+			_frontend->renderRect(hx, hy, hw, hh, colorYellow);
+		}
+	}
+}
+
 bool CaveExpressClientMap::drop ()
 {
 	if (isPause() || !isActive())
@@ -308,6 +351,7 @@ void CaveExpressClientMap::renderEnd (int x, int y) const
 	Super::renderEnd(x, y);
 	if (_target)
 		_frontend->renderTarget(_target);
+	renderLavaHeat(x, y);
 	renderWater(x, y);
 }
 

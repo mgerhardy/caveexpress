@@ -109,6 +109,9 @@ public:
 		renderFilledRect(x, y, w, h, fillColor);
 		return true;
 	}
+	virtual bool renderHeatHaze (int x, int y, int w, int h) {
+		return false;
+	}
 	// @param w the width of the rect to fill <= 0 to use the full screen width
 	// @param h the height of the rect to fill <= 0 to use the full screen height
 	virtual void renderFilledRect (int x, int y, int w, int h, const Color& fillColor) = 0;

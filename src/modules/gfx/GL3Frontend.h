@@ -15,6 +15,7 @@ protected:
 	TexNum _waterNoise;
 	Shader _shader;
 	Shader _waterShader;
+	Shader _lavaShader;
 
 	void renderBatchesWithShader (Shader& shader);
 
@@ -26,6 +27,7 @@ public:
 	virtual ~GL3Frontend ();
 
 	bool renderWaterPlane (int x, int y, int w, int h, const Color& fillColor, const Color& lineColor, const vec2 &offsets) override;
+	bool renderHeatHaze (int x, int y, int w, int h) override;
 	void initRenderer () override;
 	void renderBatches () override;
 };

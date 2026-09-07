@@ -99,6 +99,7 @@ public:
 	void enableVertexAttributeArray (int location) const;
 	bool hasAttribute (const std::string& name) const;
 	bool hasUniform (const std::string& name) const;
+	bool isInitialized () const;
 };
 
 inline GLuint Shader::getShader (ShaderType shaderType) const
@@ -362,6 +363,11 @@ inline bool Shader::hasAttribute (const std::string& name) const
 inline bool Shader::hasUniform (const std::string& name) const
 {
 	return _uniforms.find(name) != _uniforms.end();
+}
+
+inline bool Shader::isInitialized () const
+{
+	return _initialized;
 }
 
 class ShaderScope {

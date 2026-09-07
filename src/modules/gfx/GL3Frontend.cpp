@@ -56,6 +56,41 @@ bool GL3Frontend::renderWaterPlane (int x, int y, int w, int h, const Color& fil
 	return true;
 }
 
+bool GL3Frontend::renderHeatHaze (int x, int y, int w, int h)
+{
+	if (!_lavaShader.isInitialized() || _waterNoise == 0 || _renderTargetTexture == 0)
+		return false;
+
+	renderBatches();
+	const float width = _fbo.rect().w;
+	const float height = _fbo.rect().h;
+	if (width <= 0.0f || height <= 0.0f)
+		return false;
+
+	const float xTexCoord = x / width;
+	const float xTexCoord2 = xTexCoord + w / width;
+	const float yTexCoord = 1.0f - y / height;
+	const float yTexCoord2 = 1.0f - (y + h) / height;
+
+	float tex[8];
+	tex[0] = xTexCoord;
+	tex[1] = yTexCoord;
+	tex[2] = xTexCoord2;
+	tex[3] = yTexCoord;
+	tex[4] = xTexCoord2;
+	tex[5] = yTexCoord2;
+	tex[6] = xTexCoord;
+	tex[7] = yTexCoord2;
+
+	const TextureCoords texCoords(tex);
+	renderTexture(texCoords, x, y, w, h, 0, 1.0f, _renderTargetTexture, _waterNoise);
+	_lavaShader.activate();
+	if (_lavaShader.hasUniform("u_bandv"))
+		_lavaShader.setUniformf("u_bandv", yTexCoord, yTexCoord2);
+	renderBatchesWithShader(_lavaShader);
+	return true;
+}
+
 void GL3Frontend::renderBatches()
 {
 	renderBatchesWithShader(_shader);
@@ -127,6 +162,31 @@ void GL3Frontend::initRenderer () {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	GL_checkError();
 	_waterShader.deactivate();
+
+	if (!_lavaShader.loadProgram("lava")) {
+		Log::error(LOG_GFX, "Failed to load the lava shader");
+	} else {
+		glBindVertexArray(_vao);
+		GL_checkError();
+		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+		GL_checkError();
+		_lavaShader.activate();
+		if (_lavaShader.hasUniform("u_texture"))
+			_lavaShader.setUniformi("u_texture", 0);
+		if (_lavaShader.hasUniform("u_normals"))
+			_lavaShader.setUniformi("u_normals", 1);
+		_lavaShader.setVertexAttribute("a_pos", 2, GL_FLOAT, false, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, x)));
+		_lavaShader.enableVertexAttributeArray("a_pos");
+		_lavaShader.setVertexAttribute("a_texcoord", 2, GL_FLOAT, false, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, u)));
+		_lavaShader.enableVertexAttributeArray("a_texcoord");
+		_lavaShader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, c)));
+		_lavaShader.enableVertexAttributeArray("a_color");
+		glBindVertexArray(0);
+		GL_checkError();
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		GL_checkError();
+		_lavaShader.deactivate();
+	}
 
 	_shader.activate();
 	if (_shader.hasUniform("u_texture"))
