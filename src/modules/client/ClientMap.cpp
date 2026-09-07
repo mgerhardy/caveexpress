@@ -35,7 +35,7 @@ ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, 
 ClientMap::~ClientMap ()
 {
 	resetCurrentMap();
-	_serviceProvider.getEventHandler().registerObserver(this);
+	_serviceProvider.getEventHandler().removeObserver(this);
 }
 
 void ClientMap::onWindowResize ()
