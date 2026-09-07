@@ -104,7 +104,11 @@ void ClientEntity::render(IFrontend *frontend, Layer layer, int scale, float zoo
 
 	calcPosition(layer, scale, zoom, posX, posY);
 
-	setScreenPos(offsetX + posX, offsetY + posY);
+	// Only layers that actually draw a sprite own the screen rect. Empty
+	// layers have 0 width/height, so LOWER_LEFT math would leave the body
+	// center in place and shift later effects (lava heat, sparkles).
+	if (_currSprite->getWidth(layer) > 0 && _currSprite->getHeight(layer) > 0)
+		setScreenPos(offsetX + posX, offsetY + posY);
 
 	// package upper side
 	const int ropeX1 = basePosX;

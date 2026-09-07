@@ -87,6 +87,10 @@ bool GL3Frontend::renderHeatHaze (int x, int y, int w, int h)
 	_lavaShader.activate();
 	if (_lavaShader.hasUniform("u_bandv"))
 		_lavaShader.setUniformf("u_bandv", yTexCoord, yTexCoord2);
+	if (_lavaShader.hasUniform("u_bandu"))
+		_lavaShader.setUniformf("u_bandu", xTexCoord, xTexCoord2);
+	if (_lavaShader.hasUniform("u_fadeuv"))
+		_lavaShader.setUniformf("u_fadeuv", 28.0f / width, 32.0f / height);
 	renderBatchesWithShader(_lavaShader);
 	return true;
 }

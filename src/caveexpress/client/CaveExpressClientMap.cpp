@@ -25,6 +25,8 @@
 #include "common/Math.h"
 #include <SDL.h>
 #include <SDL_image.h>
+#include <algorithm>
+#include <vector>
 
 namespace caveexpress {
 
@@ -74,25 +76,28 @@ void CaveExpressClientMap::renderLavaHeat (int x, int y) const
 	const bool hasWater = getWaterHeight() > 0.000001f;
 	const int waterSurface = hasWater ? y + static_cast<int>(getWaterSurface() * _zoom) : 0;
 
+	std::vector<SDL_Rect> rects;
 	for (const auto &iter : _entities) {
 		const ClientEntityPtr& e = iter.second;
 		if (!EntityTypes::isLava(e->getType()))
 			continue;
 
-		int sx, sy, sw, sh;
-		e->getScreenPos(sx, sy);
-		e->getScreenSize(sw, sh);
-		sw = static_cast<int>(sw * _zoom);
-		sh = static_cast<int>(sh * _zoom);
-		if (sw <= 0 || sh <= 0)
-			continue;
+		const vec2& pos = e->getPos();
+		const vec2& size = e->getSize();
+		const float px = static_cast<float>(_scaleGridToPixel) * _zoom;
+		const int sw = std::max(1, static_cast<int>(size.x * px));
+		const int sh = std::max(1, static_cast<int>(size.y * px));
+		// Map tiles report the body center; haze is placed from the tile's
+		// upper-left so it lines up with the sprite, not the origin.
+		const int sx = x + static_cast<int>((pos.x - size.x * 0.5f) * px);
+		const int sy = y + static_cast<int>((pos.y - size.y * 0.5f) * px);
 
 		const int lavaSurfaceY = sy + sh / 2;
 		if (hasWater && lavaSurfaceY >= waterSurface)
 			continue;
 
-		const int hazeH = std::max(1, static_cast<int>(sh * 1.75f));
-		const int overlap = sh / 3;
+		const int hazeH = std::max(1, static_cast<int>(sh * 1.6f));
+		const int overlap = sh / 5;
 		int hx = sx;
 		int hy = sy - (hazeH - overlap);
 		int hw = sw;
@@ -101,10 +106,45 @@ void CaveExpressClientMap::renderLavaHeat (int x, int y) const
 			hh = waterSurface - hy;
 		if (hw <= 0 || hh <= 0)
 			continue;
+		rects.push_back(SDL_Rect{hx, hy, hw, hh});
+	}
 
-		_frontend->renderHeatHaze(hx, hy, hw, hh);
+	std::sort(rects.begin(), rects.end(), [] (const SDL_Rect& a, const SDL_Rect& b) {
+		if (a.y != b.y)
+			return a.y < b.y;
+		return a.x < b.x;
+	});
+
+	std::vector<SDL_Rect> merged;
+	const int slack = 3;
+	for (const SDL_Rect& r : rects) {
+		if (!merged.empty()) {
+			SDL_Rect& last = merged.back();
+			if (std::abs(last.y - r.y) <= slack && std::abs(last.h - r.h) <= slack
+				&& r.x <= last.x + last.w + slack) {
+				const int right = std::max(last.x + last.w, r.x + r.w);
+				const int bottom = std::max(last.y + last.h, r.y + r.h);
+				last.x = std::min(last.x, r.x);
+				last.y = std::min(last.y, r.y);
+				last.w = right - last.x;
+				last.h = bottom - last.y;
+				continue;
+			}
+		}
+		merged.push_back(r);
+	}
+
+	const int padX = 24;
+	const int padTop = 20;
+	const int padBottom = 10;
+	for (SDL_Rect& r : merged) {
+		r.x -= padX;
+		r.w += padX * 2;
+		r.y -= padTop;
+		r.h += padTop + padBottom;
+		_frontend->renderHeatHaze(r.x, r.y, r.w, r.h);
 		if (Config.isDebug()) {
-			_frontend->renderRect(hx, hy, hw, hh, colorYellow);
+			_frontend->renderRect(r.x, r.y, r.w, r.h, colorYellow);
 		}
 	}
 }
