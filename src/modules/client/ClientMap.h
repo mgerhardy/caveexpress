@@ -75,8 +75,6 @@ protected:
 	bool _tutorial;
 	/** Intro/cutscene maps hide the gameplay HUD. */
 	bool _cutscene;
-	// the window id that should get pushed to the stack whenever the map is started
-	std::string _introWindow;
 	bool _started;
 	const ThemeType* _theme;
 

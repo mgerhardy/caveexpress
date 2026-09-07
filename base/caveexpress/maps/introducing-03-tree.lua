@@ -160,7 +160,6 @@ function initMap()
 	map:setSetting("fishnpc", "false")
 	map:setSetting("flyingnpc", "false")
 	map:setSetting("gravity", "9.81")
-	map:setSetting("introwindow", "introtree")
 	map:setSetting("packagetransfercount", "2")
 	map:setSetting("points", "100")
 	map:setSetting("referencetime", "30")
@@ -174,4 +173,21 @@ function initMap()
 	map:setSetting("wind", "0")
 
 	map:addStartPosition("9", "7")
+end
+
+function intro(help)
+	help:headline(tr("Objectives"))
+	help:text(tr("Learn to use the stone"))
+	help:headline(tr("Hints"))
+	help:text(tr("Drop stones onto the tree"))
+	if isTouch() then
+		help:text(tr("Drop them with the second finger"))
+	else
+		help:text(tr("Drop them by hitting SPACE bar"))
+	end
+	help:headline(tr("Description"))
+	help:beginRow()
+	help:entity("tree", "idle", tr("Tree"))
+	help:entity("item-stone", "idle", tr("Stone"))
+	help:endRow()
 end

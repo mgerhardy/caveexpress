@@ -155,7 +155,6 @@ function initMap()
 	map:setSetting("fishnpc", "false")
 	map:setSetting("flyingnpc", "false")
 	map:setSetting("gravity", "9.81")
-	map:setSetting("introwindow", "intropackage")
 	map:setSetting("packagetransfercount", "2")
 	map:addStartPosition("6", "3")
 	map:setSetting("points", "100")
@@ -168,4 +167,23 @@ function initMap()
 	map:setSetting("waterheight", "5.7")
 	map:setSetting("waterrisingdelay", "0")
 	map:setSetting("wind", "0")
+end
+
+function intro(help)
+	help:headline(tr("Objectives"))
+	help:text(tr("Deliver packages to the shredders"))
+	help:text(tr("This is the goal in every map"))
+	help:headline(tr("Hints"))
+	help:text(tr("Collect packages by landing on them"))
+	if isTouch() then
+		help:text(tr("Drop them with the second finger"))
+	else
+		help:text(tr("Drop them by hitting SPACE bar"))
+	end
+	help:headline(tr("Description"))
+	help:beginRow()
+	help:entity("player", "flying", tr("Player"))
+	help:entity("item-package", "idle", tr("Package"))
+	help:endRow()
+	help:entity("tile-packagetarget-rock-01", "rotate", tr("Shredder"))
 end

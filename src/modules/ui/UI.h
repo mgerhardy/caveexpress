@@ -178,6 +178,8 @@ public:
 
 	// pushes a new window onto the ui stack
 	UIWindow* push (const std::string& window);
+	/** Push a heap-allocated window (e.g. map intro). Deleted on pop if shouldDelete(). */
+	void pushTransient (UIWindow* window);
 	// pops the current window and its popups from the ui stack
 	void pop ();
 	void delayedPop ();

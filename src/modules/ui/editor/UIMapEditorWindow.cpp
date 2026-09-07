@@ -949,7 +949,7 @@ void UIMapEditorWindow::drawScriptEditor () const
 		return;
 	}
 
-	ImGui::TextWrapped("%s", tr("Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.").c_str());
+	ImGui::TextWrapped("%s", tr("Edit Lua kept across saves (onMapLoaded, onUpdate, intro, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.").c_str());
 	ImGui::TextColored(ImVec4(1.0f, 0.75f, 0.3f, 1.0f), "%s",
 			tr("Do not put tiles in this window — initMap is rebuilt from the canvas.").c_str());
 	ImGui::Separator();
@@ -988,7 +988,8 @@ void UIMapEditorWindow::drawScriptEditor () const
 	if (ImGui::CollapsingHeader(tr("Lua API").c_str())) {
 		ImGui::BulletText("map:setSetting(key, value)");
 		ImGui::BulletText("map:addTile / addCave / addEmitter / addStartPosition");
-		ImGui::BulletText("onMapLoaded()  onUpdate(dt)");
+		ImGui::BulletText("onMapLoaded()  onUpdate(dt)  intro(help)");
+		ImGui::BulletText("help:headline / text / entity / beginRow / bar");
 		ImGui::BulletText("map:setInputEnabled / finish / consumeSkip / message");
 		ImGui::BulletText("map:spawnFriendlyNPC / spawnPackage / addTileRuntime");
 		ImGui::BulletText("player:setGravityScale / setInvulnerable / setAnimation");

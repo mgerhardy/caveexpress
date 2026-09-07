@@ -1,6 +1,6 @@
 # Map Lua scripts
 
-Maps are Lua files in `base/caveexpress/maps/` (player copies go under the SDL user data dir). The in-game editor writes `getName` and `initMap` on every save. Hand-written logic belongs in `onMapLoaded`, `onUpdate`, and helpers — see [EDITOR.md](EDITOR.md#map-scripts-and-lua).
+Maps are Lua files in `base/caveexpress/maps/` (player copies go under the SDL user data dir). The in-game editor writes `getName` and `initMap` on every save. Hand-written logic belongs in `onMapLoaded`, `onUpdate`, `intro`, and helpers — see [EDITOR.md](EDITOR.md#map-scripts-and-lua).
 
 This page covers the **runtime** script API used by cutscenes and scripted maps. The intro movie `intro-movie-package` is the worked example.
 
@@ -31,9 +31,14 @@ end
 function onUpdate(dt)
     -- dt is milliseconds since the last tick
 end
+
+function intro(help)
+    help:headline(tr("Objectives"))
+    help:text(tr("Deliver packages to the shredders"))
+end
 ```
 
-`initMap` / `getName` run when the map is parsed. `onMapLoaded` / `onUpdate` run only after the server has a live `Map` (they error if you call spawn APIs during `initMap`).
+`initMap` / `getName` run when the map is parsed. `intro` runs on the client before play. `onMapLoaded` / `onUpdate` run only after the server has a live `Map` (they error if you call spawn APIs during `initMap`).
 
 ## Coordinates
 
@@ -64,7 +69,43 @@ See [SPRITES.md](SPRITES.md) for how sprite `width`/`height` relates to the draw
 | `sideborderfail` | Fail when touching the side border |
 | `tutorial` | Do not increment the global “maps finished” counter |
 | `cutscene` | Hide the HUD. The script owns the ending (see below). |
-| `introwindow` | Optional help window id; empty string skips it |
+
+### Intro help (`function intro`)
+
+If the map script defines `intro(help)`, that help window is shown on the client before the map starts (single player only). Closing it starts the map. There is no `introwindow` setting.
+
+`intro` is kept across editor saves (it is not part of `initMap`). Use `tr("…")` for player-facing strings. `isTouch()` is available.
+
+| Method | Notes |
+| --- | --- |
+| `help:headline(text)` | Section title |
+| `help:text(text)` | Body line |
+| `help:entity(type [, animation [, label]])` | Sprite + label. Animation defaults to `idle`. Entity type names match the game (`player`, `item-package`, `tree`, `lava`, `npc-flying`, `tile-geyser-rock-01`, …). Animations include `flying`, `idle`, `rotate`, `flying-right`, `attack-init-right`, `active`. |
+| `help:beginRow()` / `help:endRow()` | Place following `entity` calls on one row |
+| `help:bar(text [, r, g, b, a])` | Legend bar. One argument uses the default health-bar colors; four extra numbers are 0–1 RGBA (e.g. time bar `1, 1, 1, 0.5`). |
+
+Example:
+
+```lua
+function intro(help)
+    help:headline(tr("Objectives"))
+    help:text(tr("Deliver packages to the shredders"))
+    help:headline(tr("Hints"))
+    if isTouch() then
+        help:text(tr("Drop them with the second finger"))
+    else
+        help:text(tr("Drop them by hitting SPACE bar"))
+    end
+    help:headline(tr("Description"))
+    help:beginRow()
+    help:entity("player", "flying", tr("Player"))
+    help:entity("item-package", "idle", tr("Package"))
+    help:endRow()
+    help:entity("tile-packagetarget-rock-01", "rotate", tr("Shredder"))
+end
+```
+
+The editor Script tab has **Insert intro help** for a starting snippet.
 
 ### Cutscenes (`cutscene=true`)
 

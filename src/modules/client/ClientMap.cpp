@@ -5,6 +5,7 @@
 #include "network/messages/FingerMovementMessage.h"
 #include "network/messages/ClientInitMessage.h"
 #include "ui/UI.h"
+#include "ui/windows/intro/Intro.h"
 #include "common/IFrontend.h"
 #include "network/ProtocolHandlerRegistry.h"
 #include "sound/Sound.h"
@@ -78,7 +79,6 @@ void ClientMap::resetCurrentMap ()
 	_name.clear();
 	_time = 0;
 	_started = false;
-	_introWindow = "";
 	_tutorial = false;
 	_cutscene = false;
 	_mapGridWidth = 0;
@@ -371,11 +371,10 @@ bool ClientMap::initWaitingForPlayer () {
 	if (network.isMultiplayer())
 		return false;
 
-	if (!_introWindow.empty()) {
-		UI::get().push(_introWindow);
-	} else {
-		Commands.executeCommandLine(CMD_START);
-	}
+	if (Intro::pushFromMapScript(getName(), _frontend))
+		return true;
+
+	Commands.executeCommandLine(CMD_START);
 
 	return true;
 }
@@ -475,8 +474,6 @@ void ClientMap::setSetting (const std::string& key, const std::string& value)
 		_tutorial = string::toBool(value);
 	} else if (key == msn::CUTSCENE) {
 		_cutscene = string::toBool(value);
-	} else if (key == msn::INTROWINDOW) {
-		_introWindow = value;
 	} else if (key == msn::WIND) {
 		_particleSystem.setWind(string::toFloat(value));
 	}

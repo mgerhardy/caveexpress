@@ -171,7 +171,7 @@ Always bound to the last clicked cell, not the hover ghost.
 | Activate the fish spawn | Random fish in water. |
 | Fail on side border | `sideborderfail`. |
 | Tutorial / Cutscene | `tutorial` and `cutscene` (cutscenes skip the star screen). |
-| Intro window | Built-in help window (`intropackage`, `introflying`, …). Empty skips it. |
+| Pre-map help | Not a setting. Add `function intro(help)` on the Script tab (shown before the map starts). |
 | Water change / rising / falling delay | Rising or falling water. |
 | Npc delay / Cave NPC (brush) | Defaults for newly placed caves. |
 | Theme | Switches the palette. A confirm dialog appears if the remap would leave themed tiles unchanged. |
@@ -236,7 +236,7 @@ Edits update the in-memory sprite definition for the current session. **Write sp
 
 ## Map scripts and Lua
 
-**Script** opens a Lua editor for logic that is kept across saves: `onMapLoaded`, `onUpdate`, and helper functions. Line numbers, find/replace-all, a short API list, and **Insert cutscene lock** / **Insert skip-to-finish** snippets are in that window. `getName` and `initMap` are regenerated from the editor data on every save unless **Keep handwritten initMap** is checked.
+**Script** opens a Lua editor for logic that is kept across saves: `onMapLoaded`, `onUpdate`, `intro`, and helper functions. Line numbers, find/replace-all, a short API list, and **Insert cutscene lock** / **Insert skip-to-finish** / **Insert intro help** snippets are in that window. `getName` and `initMap` are regenerated from the editor data on every save unless **Keep handwritten initMap** is checked.
 
 The full runtime API, coordinates, and cutscene rules are in [MAPS.md](MAPS.md). Sprite layers, atlas sizes, and alignment are in [SPRITES.md](SPRITES.md).
 
@@ -252,7 +252,6 @@ Useful settings (most are also on Properties):
 | `flyingnpc` / `fishnpc` | Also in Properties. |
 | `tutorial` | Do not increment the global maps-finished counter. |
 | `cutscene` | Hide the HUD. `map:finish()` skips the star screen and starts the next campaign map. |
-| `introwindow` | Help window id; use `""` to skip. |
 
 Example from a built-in map:
 

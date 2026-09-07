@@ -78,7 +78,7 @@ protected:
 	IMap::StartPositions _startPositions;
 	std::string _fileName;
 	std::string _mapName;
-	/** Lua kept across saves (onUpdate/onMapLoaded/helpers); not part of undo. */
+	/** Lua kept across saves (onUpdate/onMapLoaded/intro/helpers); not part of undo. */
 	std::string _scriptLogic;
 	bool _scriptDirty = false;
 	bool _preserveInitMap = false;

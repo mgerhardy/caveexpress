@@ -59,15 +59,6 @@
 #include "caveexpress/client/ui/windows/UIGameFinishedWindow.h"
 #include "caveexpress/client/ui/windows/UICaveExpressSettingsWindow.h"
 #include "caveexpress/client/editor/UICaveExpressMapEditorWindow.h"
-#include "caveexpress/client/ui/windows/intro/IntroPackage.h"
-#include "caveexpress/client/ui/windows/intro/IntroTime.h"
-#include "caveexpress/client/ui/windows/intro/IntroTree.h"
-#include "caveexpress/client/ui/windows/intro/IntroGeyser.h"
-#include "caveexpress/client/ui/windows/intro/IntroAttack.h"
-#include "caveexpress/client/ui/windows/intro/IntroFlying.h"
-#include "caveexpress/client/ui/windows/intro/IntroFindYourWay.h"
-#include "caveexpress/client/ui/windows/intro/IntroDiving.h"
-#include "caveexpress/client/ui/windows/intro/IntroLava.h"
 #include "caveexpress/client/CaveExpressClientMap.h"
 #include "caveexpress/client/network/AddRopeHandler.h"
 #include "caveexpress/client/network/RemoveRopeHandler.h"
@@ -369,15 +360,6 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	ui.addWindow(mapWindow);
 	ui.addWindow(new UIModeSelectionWindow(frontend, campaignMgr));
 	ui.addWindow(new UICaveExpressSettingsWindow(frontend, serviceProvider, campaignMgr));
-	ui.addWindow(new IntroPackage(frontend));
-	ui.addWindow(new IntroTime(frontend));
-	ui.addWindow(new IntroTree(frontend));
-	ui.addWindow(new IntroGeyser(frontend));
-	ui.addWindow(new IntroAttack(frontend));
-	ui.addWindow(new IntroFlying(frontend));
-	ui.addWindow(new IntroFindYourWay(frontend));
-	ui.addWindow(new IntroDiving(frontend));
-	ui.addWindow(new IntroLava(frontend));
 	ui.addWindow(new UIMultiplayerWindow(frontend, serviceProvider.getMapManager(), serviceProvider));
 	ui.addWindow(new UICreateServerWindow(frontend, serviceProvider.getMapManager()));
 	ui.addWindow(new UICaveExpressMapEditorWindow(frontend, serviceProvider.getMapManager()));

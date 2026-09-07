@@ -345,6 +345,7 @@ int LUAMapContext::luaSetSetting (lua_State * l)
 void LUAMapContext::capturePreservedLogic (const std::string& source)
 {
 	std::string logic = source;
+	// Keep onMapLoaded, onUpdate, intro, and any other top-level helpers.
 	eraseTopLevelFunction(logic, "getName");
 	eraseTopLevelFunction(logic, "initMap");
 	_preservedLogic = collapseExcessBlankLines(logic);

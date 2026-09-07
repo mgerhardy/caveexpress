@@ -782,6 +782,24 @@ UIWindow* UI::push (const std::string& windowID)
 	return window;
 }
 
+void UI::pushTransient (UIWindow* window)
+{
+	if (window == nullptr || _noPushAllowed) {
+		delete window;
+		return;
+	}
+	if (!window->onPush()) {
+		delete window;
+		return;
+	}
+	Log::info(LOG_UI, "push window %s", window->getId().c_str());
+	System.track("pushwindow", window->getId());
+	if (!_stack.empty())
+		_stack.back()->onPushedOver();
+	_stack.push_back(window);
+	window->onActive();
+}
+
 void UI::focusNext (const ICommand::Args& args)
 {
 	if (_stack.empty())

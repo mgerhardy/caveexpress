@@ -14,15 +14,6 @@ set(${NAME}-client_SRCS
 	ui/nodes/UINodeBackgroundScene.cpp
 	ui/nodes/UINodeMap.cpp
 	ui/windows/UIGameOverWindow.cpp
-	ui/windows/intro/IntroFlying.cpp
-	ui/windows/intro/IntroFindYourWay.cpp
-	ui/windows/intro/IntroGeyser.cpp
-	ui/windows/intro/IntroTime.cpp
-	ui/windows/intro/IntroTree.cpp
-	ui/windows/intro/IntroPackage.cpp
-	ui/windows/intro/IntroAttack.cpp
-	ui/windows/intro/IntroDiving.cpp
-	ui/windows/intro/IntroLava.cpp
 	ui/windows/UIGameFinishedWindow.cpp
 	ui/windows/UIMapFailedWindow.cpp
 	ui/windows/UICaveExpressSettingsWindow.cpp

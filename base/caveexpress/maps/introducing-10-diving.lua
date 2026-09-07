@@ -148,7 +148,6 @@ function initMap()
 	map:setSetting("fishnpc", "false")
 	map:setSetting("flyingnpc", "false")
 	map:setSetting("gravity", "9.81")
-	map:setSetting("introwindow", "introdiving")
 	map:setSetting("npcs", "2")
 	map:setSetting("npctransfercount", "2")
 	map:setSetting("packagetransfercount", "0")
@@ -164,4 +163,14 @@ function initMap()
 	map:setSetting("wind", "0")
 
 	map:addStartPosition("2.000000", "1.000000")
+end
+
+function intro(help)
+	help:headline(tr("Objectives"))
+	help:text(tr("To dive across, fall fast into water flying to side"))
+	help:headline(tr("Hints"))
+	help:text(tr("Hitting walls hard will inflict damage"))
+	help:headline(tr("Description"))
+	help:bar(tr("Time bar"), 1, 1, 1, 0.5)
+	help:bar(tr("Health bar"))
 end

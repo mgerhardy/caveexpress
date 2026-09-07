@@ -5,6 +5,7 @@ Activate the pterodactyls spawn|Activate the pterodactyls spawn
 Add|Add
 Add a cave, shredder, package, and start if they are missing.|Add a cave, shredder, package, and start if they are missing.
 Add setting|Add setting
+Adds intro(help) shown before the map starts. See docs/caveexpress/MAPS.md.|Adds intro(help) shown before the map starts. See docs/caveexpress/MAPS.md.
 Adds onMapLoaded that locks input and pins the machine.|Adds onMapLoaded that locks input and pins the machine.
 Adds onUpdate that ends the cutscene when skip is pressed.|Adds onUpdate that ends the cutscene when skip is pressed.
 Add to campaign|Add to campaign
@@ -82,7 +83,7 @@ Drop them with the second finger|Drop them with the second finger
 Drop the stone to collect packages again|Drop the stone to collect packages again
 Edit entity lua|Edit entity lua
 Editing the selected emitter|Editing the selected emitter
-Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.|Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.
+Edit Lua kept across saves (onMapLoaded, onUpdate, intro, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.|Edit Lua kept across saves (onMapLoaded, onUpdate, intro, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.
 Editor|Editor
 Edit shape|Edit shape
 Edit sprite definition|Edit sprite definition
@@ -151,11 +152,11 @@ initialspawntime in ms. 0 lets the engine pick a random delay.|initialspawntime 
 Input|Input
 Insert cutscene lock|Insert cutscene lock
 Insert HUD message|Insert HUD message
+Insert intro help|Insert intro help
 Insert skip-to-finish|Insert skip-to-finish
 Inserts map:message in the script (put it inside onMapLoaded / onUpdate).|Inserts map:message in the script (put it inside onMapLoaded / onUpdate).
 Insert spawn villager|Insert spawn villager
 Inserts spawnFriendlyNPC. Runtime only — not valid in initMap.|Inserts spawnFriendlyNPC. Runtime only — not valid in initMap.
-Intro window|Intro window
 Invalid Lua|Invalid Lua
 Invalid Lua shape definition|Invalid Lua shape definition
 Invulnerable|Invulnerable
@@ -226,6 +227,7 @@ Please rate the app|Please rate the app
 Points|Points
 Polygon|Polygon
 Polygon is concave — Box2D needs convex shapes (split it).|Polygon is concave — Box2D needs convex shapes (split it).
+Pre-map help: add function intro(help) on the Script tab.|Pre-map help: add function intro(help) on the Script tab.
 Preview other atlas size|Preview other atlas size
 Properties|Properties
 Properties edit the selected tile, not the hovered one|Properties edit the selected tile, not the hovered one

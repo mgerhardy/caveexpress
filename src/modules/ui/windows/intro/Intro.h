@@ -4,39 +4,70 @@
 #include "ui/nodes/UINodeLabel.h"
 #include "common/EntityType.h"
 #include "common/Animation.h"
+#include "common/Math.h"
 
 /**
- * @brief This is a window that is shown before the map is starting.
+ * @brief Help window shown before a map starts. The map stays paused until it is closed.
  *
- * As long as it's visible, the map is in a pause mode. Once you close the window,
- * the map is starting.
+ * CaveExpress maps define the contents from Lua:
  *
- * In order to show such a window, you have to tell the map that it should show it
- * on start. There is a special property for that: @c introwindow
+ * @code
+ * function intro(help)
+ *     help:headline(tr("Objectives"))
+ *     help:text(tr("Deliver packages to the shredders"))
+ *     if isTouch() then
+ *         help:text(tr("Drop them with the second finger"))
+ *     else
+ *         help:text(tr("Drop them by hitting SPACE bar"))
+ *     end
+ *     help:beginRow()
+ *     help:entity("player", "flying", tr("Player"))
+ *     help:entity("item-package", "idle", tr("Package"))
+ *     help:endRow()
+ *     help:bar(tr("Time bar"), 1, 1, 1, 0.5)
+ * end
+ * @endcode
+ *
+ * If @c intro exists in the map script, it is shown automatically. There is no
+ * separate C++ window class per tutorial.
  */
 class Intro: public UIWindow {
 public:
-	Intro(const std::string& name, IFrontend* frontend);
+	Intro(const std::string& name, IFrontend* frontend, bool transient = false);
 
 	virtual ~Intro() {
 	}
 
-	// call this in the ctor of your derived class
-	// this ensures, that the vtable of Intro is set up already
+	/** Call from a derived class ctor after the vtable is set up. */
 	void init ();
 
 	void onActive () override;
 	bool onPop () override;
+	bool shouldDelete () const override;
 
 	bool onKeyPress (int32_t key, int16_t modifier) override;
 	bool onFingerPress (int64_t finger, uint16_t x, uint16_t y) override;
+
+	void addHeadline (const std::string& text);
+	void addText (const std::string& text);
+	void addEntity (const std::string& typeName, const std::string& animationName, const std::string& text);
+	void beginRow ();
+	void endRow ();
+	void addBar (const std::string& text);
+	void addBar (const std::string& text, const Color& barColor);
+
+	/** Load @c maps/<name>.lua, run @c intro(help) if present, and push the window. */
+	static bool pushFromMapScript (const std::string& mapName, IFrontend* frontend);
+
 protected:
 	UINode *_background;
 	UINode *_panel;
+	UINode *_row;
+	bool _transient;
 
-	// Add your custom nodes for your intro window implementation
-	// Should keep the current style of existing intro windows
-	virtual void addIntroNodes(UINode* parent) = 0;
+	virtual void addIntroNodes(UINode* /*parent*/) {}
+	UINode* contentParent ();
+	void addPanel ();
 };
 
 class IntroLabel: public UINodeLabel {

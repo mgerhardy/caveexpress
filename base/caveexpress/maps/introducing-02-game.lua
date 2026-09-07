@@ -119,7 +119,6 @@ function initMap()
 	map:setSetting("fishnpc", "false")
 	map:setSetting("flyingnpc", "false")
 	map:setSetting("gravity", "9.81")
-	map:setSetting("introwindow", "introtime")
 	map:setSetting("packages", "3")
 	map:setSetting("packagetransfercount", "1")
 	map:addStartPosition("2.3", "3")
@@ -133,4 +132,18 @@ function initMap()
 	map:setSetting("waterheight", "5.600000")
 	map:setSetting("waterrisingdelay", "0")
 	map:setSetting("wind", "0.0")
+end
+
+function intro(help)
+	help:headline(tr("Objectives"))
+	help:text(tr("Drop during flight"))
+	help:headline(tr("Hints"))
+	help:text(tr("Use the swing of the package"))
+	if isTouch() then
+		help:text(tr("Drop them with the second finger"))
+	else
+		help:text(tr("Drop them by hitting SPACE bar"))
+	end
+	help:headline(tr("Description"))
+	help:bar(tr("Time bar"), 1, 1, 1, 0.5)
 end

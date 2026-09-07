@@ -150,22 +150,7 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 	bool cutscene = string::toBool(doc.getSetting(msn::CUTSCENE, msd::CUTSCENE));
 	if (ImGui::Checkbox(tr("Cutscene").c_str(), &cutscene))
 		doc.setSetting(msn::CUTSCENE, cutscene ? "true" : "false");
-	const char* introIds[] = {
-		"", "intropackage", "introtime", "introtree", "introgeyser", "introflying",
-		"introattack", "introfindyourway", "introdiving", "introlava"
-	};
-	const char* introLabels[] = {
-		"(none)", "intropackage", "introtime", "introtree", "introgeyser", "introflying",
-		"introattack", "introfindyourway", "introdiving", "introlava"
-	};
-	std::string intro = doc.getSetting(msn::INTROWINDOW, msd::INTROWINDOW);
-	int introIdx = 0;
-	for (int i = 0; i < 10; ++i) {
-		if (intro == introIds[i])
-			introIdx = i;
-	}
-	if (ImGui::Combo(tr("Intro window").c_str(), &introIdx, introLabels, 10))
-		doc.setSetting(msn::INTROWINDOW, introIds[introIdx]);
+	ImGui::TextWrapped("%s", tr("Pre-map help: add function intro(help) on the Script tab.").c_str());
 
 	float waterChange = string::toFloat(doc.getSetting(msn::WATER_CHANGE, msd::WATER_CHANGE));
 	if (ImGui::InputFloat(tr("Water change speed").c_str(), &waterChange))
@@ -584,6 +569,32 @@ void UICaveExpressMapEditorWindow::drawScriptExtras () const
 	}
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("%s", tr("Inserts spawnFriendlyNPC. Runtime only — not valid in initMap.").c_str());
+	if (ImGui::Button(tr("Insert intro help").c_str())) {
+		const char* snippet =
+				"function intro(help)\n"
+				"\thelp:headline(tr(\"Objectives\"))\n"
+				"\thelp:text(tr(\"Describe the goal\"))\n"
+				"\thelp:headline(tr(\"Hints\"))\n"
+				"\tif isTouch() then\n"
+				"\t\thelp:text(tr(\"Touch-specific hint\"))\n"
+				"\telse\n"
+				"\t\thelp:text(tr(\"Keyboard hint\"))\n"
+				"\tend\n"
+				"\thelp:headline(tr(\"Description\"))\n"
+				"\thelp:beginRow()\n"
+				"\thelp:entity(\"player\", \"flying\", tr(\"Player\"))\n"
+				"\thelp:entity(\"item-package\", \"idle\", tr(\"Package\"))\n"
+				"\thelp:endRow()\n"
+				"\t-- help:bar(tr(\"Time bar\"), 1, 1, 1, 0.5)\n"
+				"end\n";
+		if (doc.getScriptLogic().find("function intro") == std::string::npos) {
+			doc.beginScriptUndo();
+			doc.getScriptLogicMutable() += snippet;
+			doc.markScriptChanged();
+		}
+	}
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("%s", tr("Adds intro(help) shown before the map starts. See docs/caveexpress/MAPS.md.").c_str());
 }
 
 bool UICaveExpressMapEditorWindow::handleCanvasOverlayInput (float tileW, float tileH) const

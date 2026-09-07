@@ -117,7 +117,6 @@ function initMap()
 	map:setSetting("flyingnpc", "true")
 	map:setSetting("gravity", "9.81")
 	map:setSetting("initialspawntime", "0")
-	map:setSetting("introwindow", "introflying")
 	map:setSetting("packagetransfercount", "1")
 	map:setSetting("points", "100")
 	map:setSetting("referencetime", "20")
@@ -131,4 +130,24 @@ function initMap()
 	map:setSetting("wind", "0")
 
 	map:addStartPosition("0", "5")
+end
+
+function intro(help)
+	help:headline(tr("Objectives"))
+	help:text(tr("Just stay and watch what happens"))
+	help:headline(tr("Hints"))
+	help:text(tr("The egg makes you invulnerable"))
+	help:text(tr("Dropping stones onto dinos stuns them"))
+	if isTouch() then
+		help:text(tr("Drop them with the second finger"))
+	else
+		help:text(tr("Drop them by hitting SPACE bar"))
+		help:text(tr("or A on your controller"))
+	end
+	help:headline(tr("Description"))
+	help:beginRow()
+	help:entity("npc-flying", "flying-right", tr("Pterodactyls"))
+	help:entity("item-stone", "idle", tr("Stone"))
+	help:entity("item-egg", "idle", tr("Egg"))
+	help:endRow()
 end

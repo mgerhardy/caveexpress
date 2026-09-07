@@ -6,7 +6,7 @@ cd $DIR/../..
 LANG=${1:-de}
 APPNAME=${2:-caveexpress}
 
-grep -PohR 'tr\("\K[^"]*' src/modules src/${APPNAME} | sort | uniq | awk -v "app=${APPNAME}" -v "lang=${LANG}" '
+grep -PohR 'tr\("\K[^"]*' src/modules src/${APPNAME} base/${APPNAME} | sort | uniq | awk -v "app=${APPNAME}" -v "lang=${LANG}" '
 BEGIN {
 	old_FS = FS
 	FS     = "\\|"

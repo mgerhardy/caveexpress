@@ -9,6 +9,7 @@ const std::string HEIGHT = "height";
 const std::string POINTS = "points";
 const std::string TUTORIAL = "tutorial";
 const std::string NPCS = "npcs";
+/** Unused. Pre-map help is defined with function intro(help) in the map script. */
 const std::string INTROWINDOW = "introwindow";
 const std::string REFERENCETIME = "referencetime";
 // can be used for those wind levels where you lose if not all packages are

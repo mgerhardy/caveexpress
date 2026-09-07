@@ -45,13 +45,16 @@ Delete polygon|Delete polygon
 Delete: remove selection of the active tab|Entf: Auswahl der aktiven Registerkarte entfernen
 Delete vertex|Delete vertex
 Delivered package|Delivered package
+Deliver packages to the shredders|Deliver packages to the shredders
 Description|Beschreibung
 Disconnect|Trennen
 Docs (in the source tree)|Docs (in the source tree)
 Do not put tiles in this window — initMap is rebuilt from the canvas.|Do not put tiles in this window — initMap is rebuilt from the canvas.
+Drop them by hitting SPACE bar|Drop them by hitting SPACE bar
+Drop them with the second finger|Drop them with the second finger
 Edit entity lua|Entity-Lua bearbeiten
 Editing the selected emitter|Editing the selected emitter
-Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.|Edit Lua kept across saves (onMapLoaded, onUpdate, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.
+Edit Lua kept across saves (onMapLoaded, onUpdate, intro, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.|Edit Lua kept across saves (onMapLoaded, onUpdate, intro, helpers). getName and initMap are regenerated from the map data on save unless Keep handwritten initMap is checked.
 Editor|Editor
 Edit shape|Form bearbeiten
 Edit sprite definition|Sprite-Definition bearbeiten
@@ -151,6 +154,7 @@ Pick a sprite to edit its collision polygons.|Pick a sprite to edit its collisio
 Place tile|Teil plazieren
 Play|Spielen
 Playable reachable|Spielbar erreichbar
+Player|Player
 Players|Spieler
 Play from here|Play from here
 Please rate the app|Bitte bewerte die App
@@ -224,6 +228,7 @@ These checks would fail CampaignTest / play:|These checks would fail CampaignTes
 Tile definition|Kacheldefinition
 Tiles|Kacheln
 Tiles / Entities tab: place and erase only that kind|Kacheln / Objekte: nur diese Art setzen und löschen
+Time bar|Time bar
 Title|Titel
 Too many vertices for Box2D|Too many vertices for Box2D
 Type|Typ
