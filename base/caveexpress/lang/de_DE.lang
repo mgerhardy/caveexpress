@@ -31,6 +31,8 @@ Cancel pick|Cancel pick
 Cave|Cave
 Cave NPC (brush)|Cave NPC (brush)
 Caves covered|Höhlen verdeckt
+Caves missing ground below|Caves missing ground below
+Caves overlapping tiles|Caves overlapping tiles
 Caves reachable|Höhlen erreichbar
 Change the grid tile size to check alignment against the other texture atlas.|Change the grid tile size to check alignment against the other texture atlas.
 Check layout|Layout prüfen
