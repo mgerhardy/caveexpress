@@ -14,6 +14,8 @@ class SDLFrontend: public IFrontend, public NonCopyable, public IEventObserver {
 private:
 	SDL_Renderer *_renderer;
 	SDL_Texture *_renderToTexture;
+	SDL_Surface *_offscreenSurface;
+	bool _offscreen;
 protected:
 	EventHandler *_eventHandler;
 	SDL_Window *_window;
@@ -114,6 +116,11 @@ public:
 	virtual bool setFrameCallback (int interval, void (*callback) (void*), void *callbackParam) override;
 	virtual int init (int width, int height, bool fullscreen, EventHandler &eventHandler) override;
 	virtual void initUI (ServiceProvider& serviceProvider) override;
+	/** Software renderer with no window. Grows the surface if a later map is larger. */
+	int initOffscreen (int width, int height);
+	/** Grow the offscreen target. Returns true if the SDL renderer was recreated (textures are invalid). */
+	bool ensureOffscreenSize (int width, int height);
+	bool savePng (const std::string& path, int width, int height);
 	virtual bool rumble (float strength, int lengthMillis) override;
 	virtual bool isConsoleActive () const override;
 };

@@ -17,6 +17,7 @@
 #include <SDL_platform.h>
 #include <SDL_assert.h>
 #include <limits.h>
+#include <algorithm>
 
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
@@ -37,6 +38,8 @@ SDLFrontend::SDLFrontend (std::shared_ptr<IConsole> console) :
 	_haptic = nullptr;
 	_renderer = nullptr;
 	_renderToTexture = nullptr;
+	_offscreenSurface = nullptr;
+	_offscreen = false;
 
 	_debugSleep = Config.getConfigVar("debugSleep", "0", true);
 	Vector4Set(colorBlack, _color);
@@ -48,9 +51,16 @@ SDLFrontend::~SDLFrontend ()
 		SDL_HapticClose(_haptic);
 
 	SDL_DestroyTexture(_renderToTexture);
+	_renderToTexture = nullptr;
 	if (_renderer)
 		SDL_DestroyRenderer(_renderer);
-	SDL_DestroyWindow(_window);
+	_renderer = nullptr;
+	if (_window)
+		SDL_DestroyWindow(_window);
+	_window = nullptr;
+	if (_offscreenSurface)
+		SDL_FreeSurface(_offscreenSurface);
+	_offscreenSurface = nullptr;
 	IMG_Quit();
 }
 
@@ -174,8 +184,10 @@ void SDLFrontend::shutdown ()
 	}
 	SoundControl.close();
 
-	shutdownImGui();
-	ImGui::DestroyContext();
+	if (!_offscreen) {
+		shutdownImGui();
+		ImGui::DestroyContext();
+	}
 }
 
 bool SDLFrontend::handlesInput () const
@@ -737,6 +749,103 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	}
 
 	return 0;
+}
+
+int SDLFrontend::initOffscreen (int width, int height)
+{
+	_offscreen = true;
+	width = std::max(1, width);
+	height = std::max(1, height);
+
+	if (!SDL_WasInit(SDL_INIT_VIDEO)) {
+		SDL_SetHint(SDL_HINT_RENDER_DRIVER, "software");
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+		if (SDL_Init(SDL_INIT_VIDEO) == -1) {
+			sdlCheckError();
+			return -1;
+		}
+	}
+
+	const int initState = IMG_Init(IMG_INIT_PNG);
+	if (!(initState & IMG_INIT_PNG)) {
+		sdlCheckError();
+		return -1;
+	}
+
+	return ensureOffscreenSize(width, height) || _renderer != nullptr ? 0 : -1;
+}
+
+bool SDLFrontend::ensureOffscreenSize (int width, int height)
+{
+	width = std::max(1, width);
+	height = std::max(1, height);
+	if (_renderer && _offscreenSurface && width <= _width && height <= _height)
+		return false;
+
+	const int newW = std::max(width, _width);
+	const int newH = std::max(height, _height);
+
+	SDL_DestroyTexture(_renderToTexture);
+	_renderToTexture = nullptr;
+	if (_renderer) {
+		SDL_DestroyRenderer(_renderer);
+		_renderer = nullptr;
+	}
+	if (_offscreenSurface) {
+		SDL_FreeSurface(_offscreenSurface);
+		_offscreenSurface = nullptr;
+	}
+
+	_offscreenSurface = SDL_CreateRGBSurfaceWithFormat(0, newW, newH, 32, SDL_PIXELFORMAT_ARGB8888);
+	if (_offscreenSurface == nullptr) {
+		sdlCheckError();
+		return false;
+	}
+
+	_renderer = SDL_CreateSoftwareRenderer(_offscreenSurface);
+	if (_renderer == nullptr) {
+		sdlCheckError();
+		SDL_FreeSurface(_offscreenSurface);
+		_offscreenSurface = nullptr;
+		return false;
+	}
+
+	SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
+	_width = newW;
+	_height = newH;
+	updateViewport(0, 0, getWidth(), getHeight());
+	Log::info(LOG_GFX, "offscreen renderer %dx%d", newW, newH);
+	return true;
+}
+
+bool SDLFrontend::savePng (const std::string& path, int width, int height)
+{
+	SDL_assert(_renderer);
+	width = std::min(getWidth(), std::max(1, width));
+	height = std::min(getHeight(), std::max(1, height));
+
+	int bpp;
+	Uint32 rmask, gmask, bmask, amask;
+	SDL_PixelFormatEnumToMasks(SDL_PIXELFORMAT_RGBA8888, &bpp, &rmask, &gmask, &bmask, &amask);
+	std::unique_ptr<SDL_Surface, void(*)(SDL_Surface*)> surface(
+			SDL_CreateRGBSurface(0, width, height, bpp, rmask, gmask, bmask, amask), SDL_FreeSurface);
+	if (!surface) {
+		Log::error(LOG_GFX, "Failed to create png surface");
+		return false;
+	}
+
+	const SDL_Rect rect = { 0, 0, width, height };
+	if (SDL_RenderReadPixels(_renderer, &rect, surface->format->format, surface->pixels, surface->pitch) < 0) {
+		Log::error(LOG_GFX, "Failed to read renderer pixels: %s", SDL_GetError());
+		return false;
+	}
+
+	if (IMG_SavePNG(surface.get(), path.c_str()) != 0) {
+		Log::error(LOG_GFX, "Failed to write %s: %s", path.c_str(), SDL_GetError());
+		return false;
+	}
+	return true;
 }
 
 void SDLFrontend::toggleGrabMouse () {
