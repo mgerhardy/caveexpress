@@ -152,19 +152,19 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 		doc.setSetting(msn::CUTSCENE, cutscene ? "true" : "false");
 	const char* introIds[] = {
 		"", "intropackage", "introtime", "introtree", "introgeyser", "introflying",
-		"introattack", "introfindyourway", "introdiving"
+		"introattack", "introfindyourway", "introdiving", "introlava"
 	};
 	const char* introLabels[] = {
 		"(none)", "intropackage", "introtime", "introtree", "introgeyser", "introflying",
-		"introattack", "introfindyourway", "introdiving"
+		"introattack", "introfindyourway", "introdiving", "introlava"
 	};
 	std::string intro = doc.getSetting(msn::INTROWINDOW, msd::INTROWINDOW);
 	int introIdx = 0;
-	for (int i = 0; i < 9; ++i) {
+	for (int i = 0; i < 10; ++i) {
 		if (intro == introIds[i])
 			introIdx = i;
 	}
-	if (ImGui::Combo(tr("Intro window").c_str(), &introIdx, introLabels, 9))
+	if (ImGui::Combo(tr("Intro window").c_str(), &introIdx, introLabels, 10))
 		doc.setSetting(msn::INTROWINDOW, introIds[introIdx]);
 
 	float waterChange = string::toFloat(doc.getSetting(msn::WATER_CHANGE, msd::WATER_CHANGE));

@@ -65,6 +65,7 @@ Delete polygon|Delete polygon
 Delete: remove selection of the active tab|Delete: remove selection of the active tab
 Delete vertex|Delete vertex
 Deliver packages to the shredders|Deliver packages to the shredders
+Deliver the packages without touching lava|Deliver the packages without touching lava
 Description|Description
 Desert|Desert
 Disconnect|Disconnect
@@ -113,6 +114,7 @@ First flying/fish spawn delay|First flying/fish spawn delay
 Fit|Fit
 Flyable reachable|Flyable reachable
 Flying dino when hit may drop an egg|Flying dino when hit may drop an egg
+Fly over the lava - do not land in it|Fly over the lava - do not land in it
 foreground|foreground
 FPS|FPS
 Friendly NPC spawn cap|Friendly NPC spawn cap
@@ -163,6 +165,8 @@ Keep handwritten initMap|Keep handwritten initMap
 Keep initMap|Keep initMap
 Key|Key
 Later|Later
+Lava|Lava
+Lava destroys your plane on contact|Lava destroys your plane on contact
 Layers|Layers
 Layout|Layout
 Layout ok|Layout ok

@@ -1017,6 +1017,16 @@ sprites = {
 			},
 		},
 	},
+	["lava-idle"] = {
+		type = "lava",
+		theme = "rock",
+		fps = 2,
+		frames = {
+			{ "tile-lava-rock-left-01-back-01", "tile-lava-rock-left-01-back-02" },
+			{},
+			{},
+		},
+	},
 	["tile-rock-slope-right-01"] = {
 		type = "slope-right",
 		theme = "rock",

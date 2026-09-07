@@ -22,6 +22,7 @@ set(${NAME}-client_SRCS
 	ui/windows/intro/IntroPackage.cpp
 	ui/windows/intro/IntroAttack.cpp
 	ui/windows/intro/IntroDiving.cpp
+	ui/windows/intro/IntroLava.cpp
 	ui/windows/UIGameFinishedWindow.cpp
 	ui/windows/UIMapFailedWindow.cpp
 	ui/windows/UICaveExpressSettingsWindow.cpp

@@ -30,6 +30,8 @@ TEST(MapManagerTest, testMeta)
 
 	ASSERT_EQ("In3 Tree", mgr.getMapTitle("introducing-03-tree"));
 	//ASSERT_EQ(1, mgr.getMapStartPositions("introducing-03-tree"));
+
+	ASSERT_EQ("In11 Lava", mgr.getMapTitle("introducing-11-lava"));
 }
 
 TEST(MapManagerTest, testStartPositions)
