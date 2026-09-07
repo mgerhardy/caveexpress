@@ -46,6 +46,8 @@ public:
 	/** SDL_RWops close hook; untracks the path then calls the original close. */
 	int onTrackedRWopsClose (SDL_RWops *rwops);
 	void shutdown ();
+	/** Point the data root at base/<game>/ (or PKGDATADIR/<game>/). */
+	void setGame (const std::string& game);
 	void registerURL(const std::string& type, const std::string& dir);
 	// writes a file to the users home directory
 	long writeFile (const std::string& filename, const unsigned char *buf, size_t length, bool overwrite = false) const;

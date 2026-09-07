@@ -42,6 +42,20 @@ FileSystem::FileSystem () :
 	registerURL("home", _homeDir);
 }
 
+void FileSystem::setGame (const std::string& game)
+{
+	if (game.empty())
+		return;
+#ifdef PKGDATADIR
+	_dataDir = PKGDATADIR;
+	if (!string::endsWith(_dataDir, "/"))
+		_dataDir += "/";
+	_dataDir += game + "/";
+#else
+	_dataDir = "base/" + game + "/";
+#endif
+}
+
 namespace {
 int SDLCALL closeTrackedRWops (SDL_RWops *rwops)
 {
