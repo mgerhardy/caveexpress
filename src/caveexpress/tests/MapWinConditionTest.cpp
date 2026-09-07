@@ -181,6 +181,46 @@ TEST_F(MapWinConditionTest, testCaveNeedsGroundBelow)
 	EXPECT_FALSE(win.winnable) << joinIssues(win);
 }
 
+TEST_F(MapWinConditionTest, testCaveAcceptsLedgeAndBridgeBelow)
+{
+	IMap::SettingsMap settings;
+	settings[msn::NPC_TRANSFER_COUNT] = "1";
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	const SpriteDefPtr caveDef = requireSprite("tile-cave-01");
+	const SpriteDefPtr ledge = requireSprite("tile-ground-ledge-desert-left-01");
+	const SpriteDefPtr plank = requireSprite("bridge-plank-01");
+	ASSERT_TRUE(!!caveDef);
+	ASSERT_TRUE(!!ledge);
+	ASSERT_TRUE(!!plank);
+	caves.emplace_back(1, 2, caveDef, EntityTypes::NPC_FRIENDLY_MAN, 1000);
+	caves.emplace_back(6, 2, caveDef, EntityType::NONE, 1000);
+	tiles.emplace_back(1, 3, ledge, 0);
+	tiles.emplace_back(6, 3, plank, 0);
+	const MapWinCondition win = MapValidator::checkWinConditions(settings, tiles, caves, emitters);
+	EXPECT_TRUE(win.winnable) << joinIssues(win);
+}
+
+TEST_F(MapWinConditionTest, testCaveRejectsRockBelow)
+{
+	IMap::SettingsMap settings;
+	settings[msn::NPC_TRANSFER_COUNT] = "1";
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	const SpriteDefPtr caveDef = requireSprite("tile-cave-01");
+	const SpriteDefPtr rock = requireSprite("tile-rock-01");
+	ASSERT_TRUE(!!caveDef);
+	ASSERT_TRUE(!!rock);
+	caves.emplace_back(1, 2, caveDef, EntityTypes::NPC_FRIENDLY_MAN, 1000);
+	caves.emplace_back(6, 2, caveDef, EntityType::NONE, 1000);
+	tiles.emplace_back(1, 3, rock, 0);
+	tiles.emplace_back(6, 3, rock, 0);
+	const MapWinCondition win = MapValidator::checkWinConditions(settings, tiles, caves, emitters);
+	EXPECT_FALSE(win.winnable) << joinIssues(win);
+}
+
 TEST_F(MapWinConditionTest, testFiniteEmittersCannotMeetQuotaWithoutCaves)
 {
 	IMap::SettingsMap settings;
@@ -239,8 +279,8 @@ TEST_F(MapWinConditionTest, testEveryCellMustBeFilled)
 	caves.emplace_back(1, 0, caveDef, EntityType::NONE, 1000);
 	tiles.emplace_back(2, 0, bg, 0);
 	tiles.emplace_back(0, 1, ground, 0);
-	tiles.emplace_back(1, 1, target, 0);
-	tiles.emplace_back(2, 1, ground, 0);
+	tiles.emplace_back(1, 1, ground, 0);
+	tiles.emplace_back(2, 1, target, 0);
 	EXPECT_TRUE(MapValidator::checkWinConditions(settings, tiles, caves, emitters).winnable);
 
 	tiles.pop_back();
@@ -277,8 +317,8 @@ TEST_F(MapWinConditionTest, testBridgeAloneDoesNotFillCell)
 			tiles.emplace_back(2, 0, bg, 0);
 		tiles.emplace_back(2, 0, plank, 0);
 		tiles.emplace_back(0, 1, ground, 0);
-		tiles.emplace_back(1, 1, target, 0);
-		tiles.emplace_back(2, 1, ground, 0);
+		tiles.emplace_back(1, 1, ground, 0);
+		tiles.emplace_back(2, 1, target, 0);
 	};
 
 	fillHostTiles(false);

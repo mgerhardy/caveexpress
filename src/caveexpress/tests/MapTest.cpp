@@ -7,6 +7,8 @@
 #include "caveexpress/server/entities/npcs/NPCFriendly.h"
 #include "caveexpress/server/entities/npcs/NPCPackage.h"
 #include "caveexpress/server/entities/Player.h"
+#include "caveexpress/server/entities/Platform.h"
+#include "caveexpress/shared/constants/NPCState.h"
 #include "caveexpress/server/entities/PackageTarget.h"
 #include "common/ConfigManager.h"
 #include "common/Direction.h"
@@ -432,6 +434,117 @@ TEST_F(MapTest, testPlayerWinCondition) {
 	};
 	PackageCallback c;
 	testSuccess("test-win-package", c);
+}
+
+TEST_F(MapTest, testLetter01TaxiLandingAndKnockOff)
+{
+	ASSERT_TRUE(_map.load("letter-01")) << "Could not load letter-01";
+	Player* player = new Player(_map, 1);
+	player->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(player));
+	_map.startMap();
+	ASSERT_TRUE(_map.isActive());
+
+	ASSERT_EQ(5, _map.getCaveCount());
+	for (int i = 0; i < _map.getCaveCount(); ++i) {
+		CaveMapTile* cave = _map.getCave(i);
+		ASSERT_NE(nullptr, cave);
+		Log::info(LOG_GAMEIMPL, "cave %i at %.1f,%.1f platform %i-%i size %.2fx%.2f",
+				cave->getCaveNumber(), cave->getGridX(), cave->getGridY(),
+				cave->getPlatformStartGridX(), cave->getPlatformEndGridX(),
+				cave->getSize().x, cave->getSize().y);
+	}
+
+	CaveMapTile* cave5 = nullptr;
+	for (int i = 0; i < _map.getCaveCount(); ++i) {
+		if (_map.getCave(i)->getCaveNumber() == 5) {
+			cave5 = _map.getCave(i);
+			break;
+		}
+	}
+	ASSERT_NE(nullptr, cave5);
+
+	class PlatformVisitor: public IEntityVisitor {
+	public:
+		int platforms = 0;
+		int withCave5 = 0;
+		bool visitEntity (IEntity *entity) override
+		{
+			if (!entity->isPlatform())
+				return false;
+			++platforms;
+			Platform* p = static_cast<Platform*>(entity);
+			Log::info(LOG_GAMEIMPL, "platform at %.2f,%.2f size %.2fx%.2f cave=%i",
+					p->getPos().x, p->getPos().y, p->getSize().x, p->getSize().y,
+					p->getCave() ? p->getCave()->getCaveNumber() : -1);
+			if (p->getCave() && p->getCave()->getCaveNumber() == 5)
+				++withCave5;
+			return false;
+		}
+	};
+	PlatformVisitor platforms;
+	_map.visitEntities(&platforms);
+	EXPECT_GT(platforms.withCave5, 0) << "cave 5 should own a platform body";
+
+	// Sit on the visible ledge under cave 5 (below the thin platform sensor).
+	player->setGravityScale(0.0f);
+	player->setLinearVelocity(PhysicsVec2_zero);
+	PhysicsVec2 ledgePos;
+	bool foundLedge = false;
+	const float xs[] = { 12.5f, 13.2f, 13.5f, 12.8f };
+	const float ys[] = { 5.7f, 5.9f, 6.1f, 6.3f, 6.5f, 5.5f };
+	for (float x : xs) {
+		for (float y : ys) {
+			player->setPos(PhysicsVec2(x, y));
+			if (player->isCloseOverSolid()) {
+				ledgePos = PhysicsVec2(x, y);
+				foundLedge = true;
+				break;
+			}
+		}
+		if (foundLedge)
+			break;
+	}
+	ASSERT_TRUE(foundLedge) << "could not find a solid-over pose on cave 5 platform "
+			<< cave5->getPlatformStartGridX() << "-" << cave5->getPlatformEndGridX();
+	player->setPos(ledgePos);
+	ASSERT_TRUE(player->isLandedOn(cave5)) << "spatial landing should accept cave 5 ground at "
+			<< ledgePos.x << "," << ledgePos.y;
+
+	CaveMapTile* src = _map.getCave(0);
+	ASSERT_NE(cave5, src);
+	NPCFriendly* npc = _map.spawnFriendlyNPCScripted(src, EntityTypes::NPC_FRIENDLY_MAN, false);
+	ASSERT_NE(nullptr, npc);
+	npc->setTargetCave(cave5);
+	player->setCollectedNPC(npc);
+	npc->setState(NPCState::NPC_COLLECTED);
+	ASSERT_TRUE(player->isTransfering(npc));
+	ASSERT_TRUE(npc->isCollected());
+	// Real collect path hides the passenger (no physics) but must keep it updating.
+	ASSERT_TRUE(_map.removeNPCFromWorld(npc));
+	ASSERT_FALSE(npc->isRemove());
+	player->setPos(ledgePos);
+	player->setLinearVelocity(PhysicsVec2_zero);
+	ASSERT_TRUE(player->isLandedOn(cave5)) << "still landed on cave 5 at " << ledgePos.x << "," << ledgePos.y;
+	npc->update(16);
+	EXPECT_TRUE(npc->isArrived() || !player->isTransfering(npc))
+			<< "direct update after hide should drop off; collected=" << npc->isCollected()
+			<< " pos=" << player->getPos().x << "," << player->getPos().y;
+
+	// Soft-touch an idle NPC must not disable later knock-off collisions.
+	CaveMapTile* cave1 = _map.getCave(0);
+	NPCFriendly* idle = dynamic_cast<NPCFriendly*>(cave1->getNPC());
+	if (idle == nullptr)
+		idle = _map.spawnFriendlyNPCScripted(cave1, EntityTypes::NPC_FRIENDLY_WOMAN, false);
+	ASSERT_NE(nullptr, idle);
+	idle->setState(NPCState::NPC_IDLE);
+	player->setCollectedNPC(nullptr);
+	player->setPos(PhysicsVec2(10.5f, 2.0f));
+	player->setLinearVelocity(PhysicsVec2(0.4f, 0.0f));
+	ASSERT_FALSE(player->isLanded());
+	idle->onContact(PhysicsContact(), player);
+	EXPECT_TRUE(idle->shouldCollide(player))
+			<< "a slow airborne bump must not make the idle NPC ignore the player";
 }
 
 TEST_F(MapTest, testPackageCavesKeepRespawnUntilQuota)

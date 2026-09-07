@@ -361,7 +361,49 @@ TEST_F(MapValidatorTest, testCaveMissingPlatformBelow)
 	EXPECT_EQ(0, m.cavesOverlappingTiles);
 	EXPECT_GT(m.cavesMissingPlatform, 0);
 	EXPECT_FALSE(m.valid);
-	EXPECT_EQ("cave has no ground or solid below", m.failureReason);
+	EXPECT_EQ("cave has no ground, ledge, or bridge below", m.failureReason);
+}
+
+TEST_F(MapValidatorTest, testCavePlatformAcceptsLedgeAndBridgeRejectsRock)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts = { { "3", "2" } };
+	const int w = 8;
+	const int h = 8;
+	const SpriteDefPtr caveDef = requireSprite("tile-cave-01");
+	ASSERT_TRUE(!!caveDef);
+	caves.emplace_back(2, 4, caveDef, EntityType::NONE, 1000);
+
+	auto paintHost = [&] (const char* belowId) {
+		tiles.clear();
+		for (int y = 0; y < h; ++y) {
+			for (int x = 0; x < w; ++x) {
+				if (x == 0 || y == 0 || x == w - 1 || y == h - 1)
+					addTile(tiles, "tile-rock-01", x, y);
+				else if (!(x == 2 && y == 4))
+					addTile(tiles, "tile-background-01", x, y);
+			}
+		}
+		addTile(tiles, belowId, 2, 5);
+	};
+
+	paintHost("tile-ground-ledge-desert-left-01");
+	MapMetrics ledge = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_EQ(0, ledge.cavesMissingPlatform);
+	EXPECT_TRUE(ledge.valid) << ledge.failureReason;
+
+	paintHost("bridge-plank-01");
+	MapMetrics bridge = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_EQ(0, bridge.cavesMissingPlatform);
+	EXPECT_TRUE(bridge.valid) << bridge.failureReason;
+
+	paintHost("tile-rock-01");
+	MapMetrics rock = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_GT(rock.cavesMissingPlatform, 0);
+	EXPECT_FALSE(rock.valid);
+	EXPECT_EQ("cave has no ground, ledge, or bridge below", rock.failureReason);
 }
 
 TEST_F(MapValidatorTest, testIntroMoviePackageLayout)

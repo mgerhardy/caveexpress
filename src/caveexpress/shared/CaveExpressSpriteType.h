@@ -152,6 +152,12 @@ inline bool isAnyGround (const SpriteType& other)
 	return isGround(other) || isGroundLeft(other) || isGroundRight(other);
 }
 
+/** Tiles that become EntityTypes::GROUND and host NPC walking platforms. */
+inline bool isNpcGround (const SpriteType& other)
+{
+	return isAnyGround(other) || isBridge(other);
+}
+
 inline bool isGate (const SpriteType& other)
 {
 	return other == GATE;

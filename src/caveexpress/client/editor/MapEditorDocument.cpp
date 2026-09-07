@@ -132,7 +132,7 @@ bool MapEditorDocument::hasBridgeSideNeighbors (gridCoord gridX, gridCoord gridY
 			if (!IMapEditorDocument::isOverlapping(static_cast<gridCoord>(cx), static_cast<gridCoord>(cy), item))
 				continue;
 			const SpriteType& type = item.def->type;
-			if (SpriteTypes::isAnyGround(type) || SpriteTypes::isBridge(type))
+			if (SpriteTypes::isNpcGround(type))
 				return true;
 		}
 		return false;

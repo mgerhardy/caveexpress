@@ -104,6 +104,7 @@ public:
 	void setPlatform (Platform* entity);
 	bool isLanded () const;
 	bool isCloseOverSolid (float distance = 1.0f) const;
+	bool isCloseOverNpcGround (float distance = 1.0f) const;
 	bool isLandedOn (const CaveMapTile *cave) const;
 	void setCrashed (const PlayerCrashReason& reason);
 	bool isCrashed () const;
@@ -226,12 +227,6 @@ inline bool Player::isTransfering(NPCFriendly *npc) const {
 	return _collectedNPC == npc;
 }
 
-inline bool Player::isLandedOn (const CaveMapTile *cave) const
-{
-	if (_touching == nullptr || !isLanded())
-		return false;
-	return _touching->getCave() == cave;
-}
 
 inline const PlayerCrashReason& Player::getCrashReason () const
 {

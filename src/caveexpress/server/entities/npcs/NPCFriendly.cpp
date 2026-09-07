@@ -75,13 +75,15 @@ void NPCFriendly::onContact (PhysicsContact contact, IEntity* entity)
 		} else if (isStruggle()) {
 			setDying(nullptr);
 		} else if (isIdle()) {
+			Player *player = assert_cast<Player*, IEntity*>(entity);
 			if (entity->getLinearVelocity().length() > 3.0f) {
 				// hit hard by a player - so we will fall into the water
-				Player *player = assert_cast<Player*, IEntity*>(entity);
 				player->damageFromHit(contact, entity);
 				setAnimationType(getFallingAnimation());
 				_fallingTimer = _map.getTimeManager().setTimeout(500, assert_cast<NPC*, NPCFriendly*>(this), &NPC::setFalling);
-			} else {
+			} else if (player->isLanded()) {
+				// Sitting on the platform: don't shove the waiting NPC.
+				// Keep colliding while airborne so a later knock-off still works.
 				_doNotCollideWithPlayer = true;
 			}
 		}
@@ -127,7 +129,7 @@ bool NPCFriendly::updateCollectedState ()
 		player->setCollectedNPC(nullptr);
 		const PhysicsVec2& targetPos = getTargetCave()->getPos();
 		const bool bonus = setArrived(targetPos);
-		Log::debug(LOG_GAMEIMPL, "landed on target cave and (re-)spawned npc with id %i", getID());
+		Log::info(LOG_GAMEIMPL, "landed on target cave and (re-)spawned npc with id %i", getID());
 		if (bonus) {
 			_map.addPoints(player, 20);
 			Fruit* entity = new Fruit(_map, EntityTypes::APPLE, getPos().x, getPos().y);

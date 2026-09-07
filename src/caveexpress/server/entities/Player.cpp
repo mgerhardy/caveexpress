@@ -160,6 +160,9 @@ void Player::update (uint32_t deltaTime)
 {
 	IEntity::update(deltaTime);
 
+	if (_collectedNPC != nullptr)
+		_collectedNPC->updateCollectedState();
+
 	if (isCrashed()) {
 		// before we crash, we should drop the stuff we are carrying
 		drop();
@@ -654,6 +657,32 @@ bool Player::isLanded () const
 		return true;
 
 	return false;
+}
+
+bool Player::isCloseOverNpcGround (float distance) const
+{
+	PhysicsVec2 end = getPos();
+	end.y += distance;
+	IEntity* entity = nullptr;
+	_map.rayTrace(getPos(), end, &entity);
+	return entity != nullptr && entity->isGround();
+}
+
+bool Player::isLandedOn (const CaveMapTile *cave) const
+{
+	if (cave == nullptr || !isCloseOverNpcGround())
+		return false;
+	if (_touching != nullptr && _touching->getCave() == cave)
+		return true;
+	// Ledges and sloped ground sit below the thin platform sensor. Sitting on
+	// that visible ground must still count as landed on this cave.
+	const float start = static_cast<float>(cave->getPlatformStartGridX());
+	const float end = static_cast<float>(cave->getPlatformEndGridX()) + 1.0f;
+	if (end < start || getPos().x < start || getPos().x > end)
+		return false;
+	const float platformY = cave->getGridY() + cave->getSize().y;
+	const float y = getPos().y;
+	return y >= platformY - 0.5f && y <= platformY + 1.25f;
 }
 
 void Player::setPlatform (Platform* entity)

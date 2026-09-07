@@ -27,7 +27,7 @@ bool tileCoversCell (const MapTileDefinition& tile, int x, int y)
 
 bool tileSupportsCavePlatform (const SpriteType& type)
 {
-	return SpriteTypes::isSolid(type) || SpriteTypes::isPressurePlate(type);
+	return SpriteTypes::isNpcGround(type);
 }
 
 bool tileOccupiesCell (const SpriteType& type)
@@ -110,7 +110,7 @@ int countEmptyCells (int width, int height, const std::vector<MapTileDefinition>
 
 MapValidator::CellKind MapValidator::classifyTile (const SpriteType& type) const
 {
-	if (SpriteTypes::isAnyGround(type) || SpriteTypes::isBridge(type) || SpriteTypes::isPressurePlate(type))
+	if (SpriteTypes::isNpcGround(type) || SpriteTypes::isPressurePlate(type))
 		return CellKind::Walkable;
 	if (SpriteTypes::isSolid(type) || SpriteTypes::isPackageTarget(type) || SpriteTypes::isGate(type))
 		return CellKind::Collider;
@@ -709,7 +709,7 @@ MapMetrics MapValidator::evaluate (int width, int height,
 	if (m.cavesMissingPlatform > 0) {
 		m.valid = false;
 		if (m.failureReason.empty())
-			m.failureReason = "cave has no ground or solid below";
+			m.failureReason = "cave has no ground, ledge, or bridge below";
 	}
 	if (m.caveCount > 0 && m.cavesReachable < m.caveCount) {
 		m.valid = false;
@@ -838,7 +838,7 @@ MapWinCondition MapValidator::checkWinConditions (const IMap::SettingsMap& setti
 	if (overlappingTiles > 0)
 		result.issues.emplace_back("cave overlaps another tile - remove the existing tile at the cave cell");
 	if (missingPlatform > 0)
-		result.issues.emplace_back("cave has no ground or solid tile in the cell below");
+		result.issues.emplace_back("cave has no ground, ledge, or bridge in the cell below");
 
 	const int width = string::toInt(settingValue(settings, msn::WIDTH, "0"));
 	const int height = string::toInt(settingValue(settings, msn::HEIGHT, "0"));

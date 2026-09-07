@@ -1423,6 +1423,8 @@ Platform *Map::getPlatform (MapTile *mapTile, int *start, int *end, gridSize off
 	if (*start == -1 || *end == -1) {
 		getPlatformDimensions((int)mapTile->getGridX(), (int)mapTile->getGridY(), start, end);
 	}
+	if (*start == -1 || *end == -1 || *end < *start)
+		return nullptr;
 
 	PlatformYMapConstIter iy = _platforms.find(mapY);
 	if (iy != _platforms.end()) {
@@ -1495,13 +1497,6 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 		}
 		*start = startTraceGridX;
 	} else {
-		IEntity *hit = nullptr;
-		const PhysicsVec2 startV(0, startTraceGridY);
-		const PhysicsVec2 endV(0, startTraceGridY + 0.0001f);
-		const bool state = rayTrace(startV, endV, &hit);
-		if (state && hit && hit->isSolid())
-			return;
-
 		*start = 0;
 	}
 
@@ -1528,14 +1523,6 @@ void Map::getPlatformDimensions (int gridX, int startTraceGridY, int *start, int
 		}
 		*end = endTraceGridX;
 	} else {
-		IEntity *hit = nullptr;
-		const PhysicsVec2 startV(_width - 1.0f, startTraceGridY);
-		const PhysicsVec2 endV(_width - 1.0f, startTraceGridY + 0.0001f);
-		const bool state = rayTrace(startV, endV, &hit);
-		if (state && hit && hit->isSolid()) {
-			return;
-		}
-
 		*end = _width - 1;
 	}
 }
@@ -1566,7 +1553,7 @@ MapTile* Map::createMapTileWithoutBody (const SpriteDefPtr& spriteDef, gridCoord
 		mapTile = new PressurePlate(*this, spriteDef->id, gridX, gridY, "", 700.0f, 0);
 	} else if (SpriteTypes::isGeyser(type)) {
 		mapTile = new Geyser(*this, spriteDef->id, gridX, gridY, _initialGeyserDelay);
-	} else if (SpriteTypes::isAnyGround(type) || SpriteTypes::isBridge(type)) {
+	} else if (SpriteTypes::isNpcGround(type)) {
 		mapTile = new MapTile(*this, spriteDef->id, gridX, gridY, EntityTypes::GROUND);
 	} else if (SpriteTypes::isSolid(type)) {
 		mapTile = new MapTile(*this, spriteDef->id, gridX, gridY, EntityTypes::SOLID);
@@ -1754,13 +1741,13 @@ CaveMapTile *Map::getTargetCave (const CaveMapTile* ignoreCave) const
 bool Map::removeNPCFromWorld(NPCFriendly* npc)
 {
 	SDL_assert(_entityRemovalAllowed);
-	Log::debug(LOG_GAMEIMPL, "remove npc %i from world: %s", npc->getID(), npc->getType().name.c_str());
+	Log::info(LOG_GAMEIMPL, "hide collected npc %i until drop-off: %s", npc->getID(), npc->getType().name.c_str());
 	GameEvent.removeEntity(npc->getVisMask(), *npc);
 	npc->setVisMask(NOTVISIBLE);
+	// Drop physics only. The passenger must stay in the entity list so
+	// updateCollectedState() can run when the player lands.
 	npc->remove();
-	npc->setRemove(true);
 	return true;
-
 }
 
 bool Map::removeNPC(NPCFriendly* npc, bool fadeOut)

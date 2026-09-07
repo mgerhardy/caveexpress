@@ -32,7 +32,7 @@ void CaveMapTile::update (uint32_t deltaTime)
 			_npc = nullptr;
 			_nextSpawn = _now + _delaySpawn;
 		} else if (_npc->isNpcFriendly() && _npc->isCollected()) {
-			Log::info(LOG_GAMEIMPL, "npc %i is collected, remove from world", _npc->getID());
+			Log::info(LOG_GAMEIMPL, "npc %i is collected, hide until drop-off", _npc->getID());
 			_map.removeNPCFromWorld(assert_cast<NPCFriendly*, INPCCave*>(_npc));
 			_npc = nullptr;
 			_nextSpawn = _now + _delaySpawn;

@@ -45,7 +45,7 @@ struct MapMetrics {
 	int cavesCoveredBySolid = 0;
 	/** Cave cells that still have a host tile (background, rock, window, ...) occupying them. Overlays (bridge, liane) do not count. */
 	int cavesOverlappingTiles = 0;
-	/** Caves with no ground/solid/bridge in the cell immediately below. */
+	/** Caves with no NPC-walkable ground, ledge, or bridge in the cell immediately below. */
 	int cavesMissingPlatform = 0;
 	int shortPlatformRuns = 0;
 	int smallSolidComponents = 0;

@@ -110,7 +110,7 @@ function initMap()
 	map:addTile("tile-background-ice-08", 12.000000, 3.000000)
 	map:addTile("tile-background-ice-06", 12.000000, 4.000000)
 	map:addTile("tile-ground-ledge-ice-left-01", 12.000000, 5.000000)
-	map:addTile("tile-rock-slope-ice-left-02", 12.000000, 7.000000)
+	map:addTile("tile-ground-ice-04", 12.000000, 7.000000)
 	map:addTile("tile-background-ice-01", 12.000000, 8.000000)
 
 	map:addEmitter("item-egg", 2.000000, 1.000000, 1, 0, "")
