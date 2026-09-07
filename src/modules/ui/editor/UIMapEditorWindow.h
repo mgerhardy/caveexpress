@@ -26,7 +26,7 @@ protected:
 	mutable bool _panning = false;
 	mutable bool _showHelp = false;
 	mutable bool _showConfirm = false;
-	mutable bool _showScriptEditor = false;
+	mutable bool _focusScriptPanel = false;
 	mutable bool _showValidation = false;
 	mutable bool _validationSaveGameData = false;
 	mutable bool _regionDragging = false;

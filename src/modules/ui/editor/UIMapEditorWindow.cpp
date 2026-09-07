@@ -310,14 +310,6 @@ void UIMapEditorWindow::handleHotkeys () const
 		_doc->setMapName(_mapTitleBuf);
 		trySave(false);
 	}
-	if (ImGui::IsKeyPressed(ImGuiKey_Escape, false) && _showScriptEditor) {
-		_showScriptEditor = false;
-		return;
-	}
-	if (ImGui::IsKeyPressed(ImGuiKey_Escape, false) && _shapeEditor.isVisible()) {
-		_shapeEditor.setVisible(false);
-		return;
-	}
 	if (ImGui::IsKeyPressed(ImGuiKey_Escape, false) && _showDefinition) {
 		_showDefinition = false;
 		return;
@@ -352,19 +344,15 @@ void UIMapEditorWindow::handleHotkeys () const
 		_showHelp = !_showHelp;
 	if (ImGui::IsKeyPressed(ImGuiKey_G, false))
 		_doc->toggleGrid();
-	if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && _canvasHovered && !_shapeEditor.isVisible())
+	if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && _canvasHovered)
 		_doc->rotateSelectionOrBrush();
-	if (!_shapeEditor.isVisible()
+	if (_canvasHovered
 			&& (ImGui::IsKeyPressed(ImGuiKey_Delete, false) || ImGui::IsKeyPressed(ImGuiKey_Backspace, false)))
 		_doc->deleteSelection();
 	if (ImGui::IsKeyPressed(ImGuiKey_F, false))
 		fitView();
 	if (ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
-		if (_showScriptEditor)
-			_showScriptEditor = false;
-		else if (_shapeEditor.isVisible())
-			_shapeEditor.setVisible(false);
-		else if (_showDefinition)
+		if (_showDefinition)
 			_showDefinition = false;
 		else if (_showHelp)
 			_showHelp = false;
@@ -434,20 +422,16 @@ void UIMapEditorWindow::drawToolbar () const
 	ImGui::SameLine();
 	if (_doc->supportsMapScript()) {
 		if (ImGui::Button(tr("Script").c_str()))
-			_showScriptEditor = !_showScriptEditor;
+			_focusScriptPanel = true;
 		ImGui::SameLine();
 	}
 	if (ImGui::Button(tr("Shapes").c_str())) {
-		if (_shapeEditor.isVisible()) {
-			_shapeEditor.setVisible(false);
-		} else {
-			std::string suggested;
-			if (_doc->getHighlightItem() && _doc->getHighlightItem()->def)
-				suggested = _doc->getHighlightItem()->def->id;
-			else if (_doc->getActiveSprite())
-				suggested = _doc->getActiveSprite()->id;
-			_shapeEditor.open(suggested);
-		}
+		std::string suggested;
+		if (_doc->getHighlightItem() && _doc->getHighlightItem()->def)
+			suggested = _doc->getHighlightItem()->def->id;
+		else if (_doc->getActiveSprite())
+			suggested = _doc->getActiveSprite()->id;
+		_shapeEditor.open(suggested);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button(tr("Help").c_str()))
@@ -912,8 +896,8 @@ void UIMapEditorWindow::drawHelpPanel () const
 	ImGui::BulletText("%s", tr("Delete: remove selection of the active tab").c_str());
 	ImGui::BulletText("%s", tr("Properties edit the selected tile, not the hovered one").c_str());
 	if (_doc->supportsMapScript())
-		ImGui::BulletText("%s", tr("Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test").c_str());
-	ImGui::BulletText("%s", tr("Shapes: edit polygons/circles and write sprites.lua").c_str());
+		ImGui::BulletText("%s", tr("Script tab: edit Lua (onUpdate/onMapLoaded); Save & Go to test").c_str());
+	ImGui::BulletText("%s", tr("Shapes tab: edit polygons/circles and write sprites.lua").c_str());
 	ImGui::BulletText("%s", tr("Right-click a palette item for more actions").c_str());
 	ImGui::BulletText("%s", tr("Alt+click: pick whatever is on top (any tab)").c_str());
 	ImGui::BulletText("%s", tr("Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge").c_str());
@@ -939,11 +923,14 @@ std::string UIMapEditorWindow::getPlayFromHereTooltip () const
 
 void UIMapEditorWindow::drawScriptEditor () const
 {
-	if (!_showScriptEditor || !_doc->supportsMapScript())
+	if (!_doc->supportsMapScript())
 		return;
 
-	ImGui::SetNextWindowSize(ImVec2(720.0f, 520.0f), ImGuiCond_FirstUseEver);
-	if (!ImGui::Begin(tr("Map Script").c_str(), &_showScriptEditor)) {
+	if (_focusScriptPanel) {
+		ImGui::SetNextWindowFocus();
+		_focusScriptPanel = false;
+	}
+	if (!ImGui::Begin((tr("Script") + "###editor_script").c_str())) {
 		ImGui::End();
 		return;
 	}
@@ -1589,7 +1576,7 @@ void UIMapEditorWindow::drawCanvas () const
 
 void UIMapEditorWindow::setupEditorDockSpace () const
 {
-	const ImGuiID dockspaceId = ImGui::GetID("MapEditorDockSpace");
+	const ImGuiID dockspaceId = ImGui::GetID("MapEditorDockSpace_v2");
 	if (ImGui::DockBuilderGetNode(dockspaceId) == nullptr) {
 		ImGui::DockBuilderRemoveNode(dockspaceId);
 		ImGui::DockBuilderAddNode(dockspaceId, ImGuiDockNodeFlags_DockSpace);
@@ -1600,6 +1587,9 @@ void UIMapEditorWindow::setupEditorDockSpace () const
 		ImGui::DockBuilderDockWindow("Palette###editor_palette", dockLeft);
 		ImGui::DockBuilderDockWindow("Map###editor_map", dockMain);
 		ImGui::DockBuilderDockWindow("Layers###editor_layers", dockRight);
+		ImGui::DockBuilderDockWindow("Shapes###editor_shapes", dockRight);
+		if (_doc->supportsMapScript())
+			ImGui::DockBuilderDockWindow("Script###editor_script", dockRight);
 		ImGui::DockBuilderDockWindow("Properties###editor_properties", dockRight);
 		ImGui::DockBuilderFinish(dockspaceId);
 	}

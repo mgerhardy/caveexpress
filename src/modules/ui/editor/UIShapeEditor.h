@@ -8,7 +8,7 @@
 class IFrontend;
 
 class UIShapeEditor {
-	bool _visible = false;
+	bool _focusNext = false;
 	std::string _spriteId;
 	std::vector<SpritePolygon> _polygons;
 	std::vector<SpriteCircle> _circles;
@@ -55,9 +55,6 @@ class UIShapeEditor {
 	void drawLuaPanel ();
 
 public:
-	bool isVisible () const { return _visible; }
-	void setVisible (bool visible) { _visible = visible; }
-	void toggle () { _visible = !_visible; }
 	void open (const std::string& suggestedSpriteId);
 	void draw (IFrontend* frontend, const std::string& suggestedSpriteId);
 };

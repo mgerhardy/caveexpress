@@ -88,7 +88,7 @@ A 1×1 map tile at grid `(gx, gy)` has its **visual baseline** at `gy + height`.
 
 ## Collision polygons
 
-`polygons` in `sprites.lua` are Box2D fixtures. The in-game **Shapes** tool (see [EDITOR.md](EDITOR.md#sprite-shape-editor)) edits them.
+`polygons` in `sprites.lua` are Box2D fixtures. The **Shapes** tab in the map editor (see [EDITOR.md](EDITOR.md#sprite-shape-editor)) edits them.
 
 - Stored vertices are **tile units**.
 - Lua writes them as tile × 100 (`100` = 1 tile).

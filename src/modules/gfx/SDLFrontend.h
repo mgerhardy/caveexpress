@@ -29,6 +29,7 @@ protected:
 	std::shared_ptr<IConsole> _console;
 
 	ConfigVarPtr _debugSleep;
+	std::string _imguiIniPath;
 
 	bool _updateControllers;
 	int _drawCalls;

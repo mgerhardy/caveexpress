@@ -193,7 +193,6 @@ Map|Map
 Map Editor|Map-Editor
 Map generator seed. 0 picks a new seed on Auto.|Map generator seed. 0 picks a new seed on Auto.
 Maps|Maps
-Map Script|Map Script
 Maps in campaign|Karten in der Kampagne
 Map validation|Map validation
 MMB click: pick, MMB drag or Space+LMB: pan|MMB click: pick, MMB drag or Space+LMB: pan
@@ -275,7 +274,7 @@ Save to entities.lua|In entities.lua speichern
 Save to game data|Save to game data
 Save to sprites.lua|In sprites.lua speichern
 Script|Script
-Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test
+Script tab: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script tab: edit Lua (onUpdate/onMapLoaded); Save & Go to test
 Seed|Seed
 See docs/caveexpress/MAPS.md|See docs/caveexpress/MAPS.md
 Select a sprite|Select a sprite
@@ -290,7 +289,7 @@ Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / 
 Settings|Einstellungen
 Settings without a dedicated control. Saved with the map.|Einstellungen ohne eigenes Feld. Werden mit der Karte gespeichert.
 Shapes|Shapes
-Shapes: edit polygons/circles and write sprites.lua|Shapes: edit polygons/circles and write sprites.lua
+Shapes tab: edit polygons/circles and write sprites.lua|Shapes tab: edit polygons/circles and write sprites.lua
 Shift+arrows: nudge a liane or emitter by 0.1 tiles|Shift+arrows: nudge a liane or emitter by 0.1 tiles
 Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge|Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge
 Show all trigger links|Alle Trigger-Verbindungen zeigen
@@ -305,7 +304,6 @@ Space (on canvas): rotate selected tile or brush|Leertaste (auf der Karte): Ausw
 Spawn delay ms|Spawn delay ms
 Spawn NPC|Spawn NPC
 Sprite|Sprite
-Sprite Shape Editor|Sprite Shape Editor
 Start|Start
 Start positions|Start positions
 Stone|Stein

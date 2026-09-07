@@ -117,7 +117,6 @@ Make playable|Make playable
 Map|Map
 Map Editor|Map Editor
 Maps|Maps
-Map Script|Map Script
 Maps in campaign|Maps in campaign
 Map validation|Map validation
 MMB click: pick, MMB drag or Space+LMB: pan|MMB click: pick, MMB drag or Space+LMB: pan
@@ -189,7 +188,7 @@ Save to entities.lua|Save to entities.lua
 Save to game data|Save to game data
 Save to sprites.lua|Save to sprites.lua
 Script|Script
-Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script: edit Lua (onUpdate/onMapLoaded); Save & Go to test
+Script tab: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script tab: edit Lua (onUpdate/onMapLoaded); Save & Go to test
 See docs/caveexpress/MAPS.md|See docs/caveexpress/MAPS.md
 Select a sprite|Select a sprite
 Select a tile on the map|Select a tile on the map
@@ -201,7 +200,7 @@ Select tool: hover shows the sprite bounds that will be picked|Select tool: hove
 Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / pick tile
 Settings|Settings
 Shapes|Shapes
-Shapes: edit polygons/circles and write sprites.lua|Shapes: edit polygons/circles and write sprites.lua
+Shapes tab: edit polygons/circles and write sprites.lua|Shapes tab: edit polygons/circles and write sprites.lua
 Shift+arrows: nudge a liane or emitter by 0.1 tiles|Shift+arrows: nudge a liane or emitter by 0.1 tiles
 Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge|Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge
 Show Grid|Show Grid
@@ -217,7 +216,6 @@ Sound|Sound
 Sound/Music|Sound/Music
 Space (on canvas): rotate selected tile or brush|Space (on canvas): rotate selected tile or brush
 Sprite|Sprite
-Sprite Shape Editor|Sprite Shape Editor
 Start|Start
 Start positions|Start positions
 Target|Target

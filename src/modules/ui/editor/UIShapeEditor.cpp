@@ -65,7 +65,7 @@ bool isConvex (const SpritePolygon::SpriteVector& verts)
 
 void UIShapeEditor::open (const std::string& suggestedSpriteId)
 {
-	_visible = true;
+	_focusNext = true;
 	if (!suggestedSpriteId.empty() && suggestedSpriteId != _spriteId)
 		loadSprite(suggestedSpriteId);
 }
@@ -647,13 +647,14 @@ void UIShapeEditor::drawLuaPanel ()
 
 void UIShapeEditor::draw (IFrontend* frontend, const std::string& suggestedSpriteId)
 {
-	if (!_visible)
-		return;
 	if (_spriteId.empty() && !suggestedSpriteId.empty())
 		loadSprite(suggestedSpriteId);
 
-	ImGui::SetNextWindowSize(ImVec2(980.0f, 640.0f), ImGuiCond_FirstUseEver);
-	if (!ImGui::Begin(tr("Sprite Shape Editor").c_str(), &_visible)) {
+	if (_focusNext) {
+		ImGui::SetNextWindowFocus();
+		_focusNext = false;
+	}
+	if (!ImGui::Begin((tr("Shapes") + "###editor_shapes").c_str())) {
 		ImGui::End();
 		return;
 	}

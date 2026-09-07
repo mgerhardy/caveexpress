@@ -697,6 +697,15 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	// ImGui does not copy IniFilename; keep the string alive for the context lifetime.
+	_imguiIniPath = FS.getAbsoluteWritePath();
+	if (_imguiIniPath.empty()) {
+		io.IniFilename = nullptr;
+	} else {
+		_imguiIniPath += "imgui.ini";
+		io.IniFilename = _imguiIniPath.c_str();
+	}
+	Log::info(LOG_GFX, "imgui settings: %s", io.IniFilename != nullptr ? io.IniFilename : "(disabled)");
 
 	ImGui::StyleColorsDark();
 

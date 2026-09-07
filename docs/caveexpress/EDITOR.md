@@ -19,9 +19,9 @@ Unsaved changes are confirmed before leaving the editor, starting a new map, or 
 | Top toolbar | New, Save, Save to game data, Save & Go, Play from here, Undo, Redo, Fit, Script, Shapes, Help, and the Place / Remove / Select / Fill tools |
 | **Palette** (left) | **Tiles**, **Entities**, **Maps** |
 | **Map** (center) | Map canvas |
-| **Properties** / **Layers** (right) | Map settings, the selected item, and layer visibility. **Properties** is the default tab. |
+| **Properties** / **Script** / **Shapes** / **Layers** (right) | Map settings, map Lua, sprite collision shapes, and layer visibility. **Properties** is the default tab. |
 
-These are Dear ImGui dock panels. Drag a title bar to undock or restack them. Drag the split between panels to resize. The first-run layout is Palette left, map in the center, **Properties** (selected) and Layers stacked on the right. Property fields are grouped in collapsible headers (Map, Selection, Gameplay, Water, Wildlife, …).
+These are Dear ImGui dock panels. Drag a title bar to undock or restack them. Drag the split between panels to resize. The first-run layout is Palette left, map in the center, and **Properties** (selected), **Script**, **Shapes**, and **Layers** stacked as tabs on the right. Toolbar **Script** / **Shapes** focus those tabs. Property fields are grouped in collapsible headers (Map, Selection, Gameplay, Water, Wildlife, …).
 
 The filename in the toolbar shows a `*` when there are unsaved changes.
 
@@ -85,7 +85,7 @@ These shortcuts are ignored while you are typing in a text field, except **Ctrl+
 | **Ctrl+C** / **Ctrl+V** | Copy / paste the rectangle selection |
 | **Arrow keys** | Nudge the selection (or the highlighted tile). **Shift+arrows** nudge a liane or emitter by 0.1 tiles |
 | **Delete** / **Backspace** | Remove the selected item or the rectangle of the active tab |
-| **Esc** | Close Script, Shapes, Help, or the unsaved-changes dialog; otherwise leave the editor |
+| **Esc** | Close Help, the definition editor, or the unsaved-changes dialog; otherwise leave the editor |
 
 ## Tiles tab
 
@@ -221,9 +221,9 @@ After saving, the map appears on the **Maps** tab and can be started with `map <
 
 ## Sprite shape editor
 
-**Shapes** opens a tool for editing collision polygons and circles defined in `sprites.lua`. **Write sprites.lua** patches that sprite's `polygons` / `circles` tables in the game-data file. Copy Lua remains available. How those shapes, layers, and atlas sizes relate to drawing is in [SPRITES.md](SPRITES.md).
+The **Shapes** tab edits collision polygons and circles defined in `sprites.lua`. Toolbar **Shapes** (or right-click **Edit shape**) focuses this tab and loads the selected sprite. **Write sprites.lua** patches that sprite's `polygons` / `circles` tables in the game-data file. Copy Lua remains available. How those shapes, layers, and atlas sizes relate to drawing is in [SPRITES.md](SPRITES.md).
 
-1. Click **Shapes**, or select a tile/entity first so that sprite is preselected.
+1. Open the **Shapes** tab (toolbar **Shapes**, or select a tile/entity first so that sprite is preselected).
 2. Pick any sprite from the filterable list.
 3. The sprite image is shown centered on the origin. The blue rectangle is the sprite's tile size (`width` x `height`).
 4. Left-click empty canvas to append a vertex (line strip). Left-drag a red dot to move it. Right-click a red dot to delete it.
@@ -236,7 +236,7 @@ Edits update the in-memory sprite definition for the current session. **Write sp
 
 ## Map scripts and Lua
 
-**Script** opens a Lua editor for logic that is kept across saves: `onMapLoaded`, `onUpdate`, `intro`, and helper functions. Line numbers, find/replace-all, a short API list, and **Insert cutscene lock** / **Insert skip-to-finish** / **Insert intro help** snippets are in that window. `getName` and `initMap` are regenerated from the editor data on every save unless **Keep handwritten initMap** is checked.
+The **Script** tab is a Lua editor for logic that is kept across saves: `onMapLoaded`, `onUpdate`, `intro`, and helper functions. Toolbar **Script** focuses it. Line numbers, find/replace-all, a short API list, and **Insert cutscene lock** / **Insert skip-to-finish** / **Insert intro help** snippets are in that window. `getName` and `initMap` are regenerated from the editor data on every save unless **Keep handwritten initMap** is checked.
 
 The full runtime API, coordinates, and cutscene rules are in [MAPS.md](MAPS.md). Sprite layers, atlas sizes, and alignment are in [SPRITES.md](SPRITES.md).
 
