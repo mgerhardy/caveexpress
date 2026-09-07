@@ -43,7 +43,7 @@ inline std::string EventHandler::getControllerButtonName (uint8_t button) const
 
 bool EventHandler::handleEvent (SDL_Event &event)
 {
-	if (ImGui::GetCurrentContext() != nullptr) {
+	if (ImGui::GetCurrentContext() != nullptr && ImGui::GetIO().BackendPlatformUserData != nullptr) {
 		if (ImGui_ImplSDL2_ProcessEvent(&event)) {
 			if (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard) {
 				return true;
