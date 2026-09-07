@@ -154,6 +154,9 @@ public:
 	void initRestart ();
 	bool initLanguage (const std::string& language);
 	void init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFrontend &frontend);
+	/** Texture cache, sprite cache, and fonts. Does not construct game windows. */
+	void initAssets (IFrontend &frontend, ServiceProvider &serviceProvider);
+	void shutdownAssets ();
 	void initStack ();
 	void shutdown ();
 	void update (uint32_t deltaTime);

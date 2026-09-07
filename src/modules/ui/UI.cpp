@@ -83,11 +83,8 @@ void UI::shutdown ()
 		_eventHandler->removeObserver(this);
 		_eventHandler = nullptr;
 	}
-	Singleton<TextureCache>::getInstance().shutdown();
-	_spriteCache.shutdown();
-
 	_stack.clear();
-	_fonts.clear();
+	shutdownAssets();
 
 	Commands.removeCommand(CMD_UI_PRINTSTACK);
 	Commands.removeCommand(CMD_UI_PUSH);
@@ -168,10 +165,25 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 	else
 		Log::info(LOG_UI, "disable cursor");
 
-	_serviceProvider = &serviceProvider;
 	_eventHandler = &eventHandler;
-	_frontend = &frontend;
 	eventHandler.registerObserver(this);
+	initAssets(frontend, serviceProvider);
+
+	Singleton<GameRegistry>::getInstance().getGame()->initUI(_frontend, serviceProvider);
+
+	_mouseCursor = loadTexture("mouse");
+
+	loadGesture(zoominGesture, SDL_arraysize(zoominGesture));
+	loadGesture(zoomoutGesture, SDL_arraysize(zoomoutGesture));
+}
+
+void UI::initAssets (IFrontend &frontend, ServiceProvider &serviceProvider)
+{
+	_serviceProvider = &serviceProvider;
+	_frontend = &frontend;
+	_initialized = true;
+
+	shutdownAssets();
 
 	Log::info(LOG_UI, "init the texture cache with %s", serviceProvider.getTextureDefinition().getTextureSize().c_str());
 	Singleton<TextureCache>::getInstance().init(_frontend, serviceProvider.getTextureDefinition());
@@ -182,13 +194,13 @@ void UI::init (ServiceProvider& serviceProvider, EventHandler &eventHandler, IFr
 	for (; i != fontDef.end(); ++i) {
 		_fonts[i->second->id] = BitmapFontPtr(new BitmapFont(i->second));
 	}
+}
 
-	Singleton<GameRegistry>::getInstance().getGame()->initUI(_frontend, serviceProvider);
-
-	_mouseCursor = loadTexture("mouse");
-
-	loadGesture(zoominGesture, SDL_arraysize(zoominGesture));
-	loadGesture(zoomoutGesture, SDL_arraysize(zoomoutGesture));
+void UI::shutdownAssets ()
+{
+	Singleton<TextureCache>::getInstance().shutdown();
+	_spriteCache.shutdown();
+	_fonts.clear();
 }
 
 bool UI::loadGesture (const unsigned char* data, int length)
