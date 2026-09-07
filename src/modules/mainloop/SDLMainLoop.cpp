@@ -204,7 +204,7 @@ bool SDLMainLoop::handleInit() {
 			else
 #endif
 #if defined(SDL_VIDEO_OPENGL_ES) || defined(SDL_VIDEO_OPENGL_ES2)
-			if (c->getValue() == "opengl3")
+			if (c->getValue() == "opengl3" || c->getValue() == "opengl")
 				_frontend = new GL3Frontend(clientConsole);
 			else
 #endif

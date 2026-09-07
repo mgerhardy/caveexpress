@@ -15,6 +15,9 @@ set(SOURCES
 
 add_library(imgui ${SOURCES})
 target_include_directories(imgui PUBLIC . backends misc/cpp)
+if (EMSCRIPTEN)
+	target_compile_definitions(imgui PUBLIC IMGUI_IMPL_OPENGL_ES3)
+endif()
 if (NOT EMSCRIPTEN)
 	target_link_libraries(imgui PUBLIC SDL2::SDL2)
 endif()

@@ -40,12 +40,7 @@ void FrameBuffer::bind ()
 
 	glGenFramebuffers(1, &_framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
-	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (status != GL_FRAMEBUFFER_COMPLETE) {
-		Log::error(LOG_GFX, "Failed to bind the framebuffer");
-	} else {
-		_bound = true;
-	}
+	// Completeness is checked after color/depth attachments are added.
 }
 
 void FrameBuffer::bind (int x, int y, int w, int h)

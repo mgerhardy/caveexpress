@@ -28,7 +28,7 @@ if isAndroid() then
 	defaultgreen = 5
 	defaultblue = 6
 elseif isHTML5() then
-	defaultfrontend = "opengl"
+	defaultfrontend = "opengl3"
 	defaultsoundengine = "dummy"
 	defaultnetwork = false
 else

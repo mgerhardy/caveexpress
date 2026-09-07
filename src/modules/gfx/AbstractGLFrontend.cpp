@@ -5,6 +5,7 @@
 #include "common/FileSystem.h"
 #include <SDL.h>
 #include <SDL_image.h>
+#include <vector>
 
 AbstractGLFrontend::AbstractGLFrontend (std::shared_ptr<IConsole> console) :
 		SDLFrontend(console), _currentTexture(-1), _currentNormal(-1), _rx(1.0f), _ry(1.0f), _renderTargetTexture(0), _white(0), _alpha(0)
@@ -23,7 +24,15 @@ AbstractGLFrontend::~AbstractGLFrontend ()
 
 void AbstractGLFrontend::setGLAttributes ()
 {
+	SDLFrontend::setGLAttributes();
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+#ifdef HAVE_GLES
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+#ifndef __IPHONEOS__
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#endif
+#endif
 }
 
 void AbstractGLFrontend::setHints ()
@@ -535,7 +544,20 @@ TexNum AbstractGLFrontend::uploadTexture (const unsigned char* pixels, int w, in
 	GL_checkError();
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	GL_checkError();
+#ifdef HAVE_GLES
+	// GLES has no GL_BGRA / GL_UNSIGNED_INT_8_8_8_8_REV. SDL ARGB8888 is B,G,R,A in memory.
+	std::vector<unsigned char> rgba(static_cast<size_t>(w) * static_cast<size_t>(h) * 4);
+	for (int i = 0; i < w * h; ++i) {
+		const unsigned char* p = pixels + i * 4;
+		rgba[i * 4 + 0] = p[2];
+		rgba[i * 4 + 1] = p[1];
+		rgba[i * 4 + 2] = p[0];
+		rgba[i * 4 + 3] = p[3];
+	}
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgba.data());
+#else
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
+#endif
 	GL_checkError();
 	glBindTexture(GL_TEXTURE_2D, 0);
 	GL_checkError();
@@ -706,6 +728,14 @@ void AbstractGLFrontend::initRenderer()
 	ExtGLLoadFunctions();
 	GL_checkError();
 
+	int glMajor = 0;
+	int glMinor = 0;
+	int glProfile = 0;
+	SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &glMajor);
+	SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &glMinor);
+	SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &glProfile);
+	Log::info(LOG_GFX, "GL context %i.%i (profile %i)", glMajor, glMinor, glProfile);
+
 	glClearColor(0, 0, 0, 0);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
@@ -715,8 +745,10 @@ void AbstractGLFrontend::initRenderer()
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	GL_checkError();
+#ifndef HAVE_GLES
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	GL_checkError();
+#endif
 
 	unsigned char white[16];
 	memset(white, 0xff, sizeof(white));

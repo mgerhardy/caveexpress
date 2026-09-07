@@ -9,12 +9,12 @@ out vec4 o_color;
 
 void main(void) {
 	vec2 uv = v_texcoord.xy;
-	float offset = u_time / 1000.0 * 0.009;
+	float offset = float(u_time) / 1000.0 * 0.009;
 	uv.x += offset;
 	uv += u_offsets;
-	vec4 offsetN = texture2D(u_normals, uv);
+	vec4 offsetN = texture(u_normals, uv);
 	uv = v_texcoord.xy + offsetN.rg * 0.005;
-	vec4 color = texture2D(u_texture, uv);
+	vec4 color = texture(u_texture, uv);
 	o_color = vec4(mix(u_watercolor.rgb, color.rgb, u_watercolor.a), 1.0) * v_color;
 	//o_color = vec4(offsetN.rgb, 1.0) * v_color;  // test
 }

@@ -149,23 +149,24 @@ void GL3Frontend::initRenderer () {
 	}
 	if (!_waterShader.loadProgram("water")) {
 		Log::error(LOG_GFX, "Failed to load the water shader");
+	} else {
+		_waterShader.activate();
+		if (_waterShader.hasUniform("u_texture"))
+			_waterShader.setUniformi("u_texture", 0);
+		if (_waterShader.hasUniform("u_normals"))
+			_waterShader.setUniformi("u_normals", 1);
+		_waterShader.setVertexAttribute("a_pos", 2, GL_FLOAT, false, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, x)));
+		_waterShader.enableVertexAttributeArray("a_pos");
+		_waterShader.setVertexAttribute("a_texcoord", 2, GL_FLOAT, false, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, u)));
+		_waterShader.enableVertexAttributeArray("a_texcoord");
+		_waterShader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, c)));
+		_waterShader.enableVertexAttributeArray("a_color");
+		glBindVertexArray(0);
+		GL_checkError();
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		GL_checkError();
+		_waterShader.deactivate();
 	}
-	_waterShader.activate();
-	if (_waterShader.hasUniform("u_texture"))
-		_waterShader.setUniformi("u_texture", 0);
-	if (_waterShader.hasUniform("u_normals"))
-		_waterShader.setUniformi("u_normals", 1);
-	_waterShader.setVertexAttribute("a_pos", 2, GL_FLOAT, false, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, x)));
-	_waterShader.enableVertexAttributeArray("a_pos");
-	_waterShader.setVertexAttribute("a_texcoord", 2, GL_FLOAT, false, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, u)));
-	_waterShader.enableVertexAttributeArray("a_texcoord");
-	_waterShader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, c)));
-	_waterShader.enableVertexAttributeArray("a_color");
-	glBindVertexArray(0);
-	GL_checkError();
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	GL_checkError();
-	_waterShader.deactivate();
 
 	if (!_lavaShader.loadProgram("lava")) {
 		Log::error(LOG_GFX, "Failed to load the lava shader");
@@ -192,6 +193,10 @@ void GL3Frontend::initRenderer () {
 		_lavaShader.deactivate();
 	}
 
+	glBindVertexArray(_vao);
+	GL_checkError();
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	GL_checkError();
 	_shader.activate();
 	if (_shader.hasUniform("u_texture"))
 		_shader.setUniformi("u_texture", 0);
@@ -211,13 +216,17 @@ void GL3Frontend::initRenderer () {
 
 	glActiveTexture(GL_TEXTURE1);
 	GL_checkError();
+#ifndef HAVE_GLES
 	glEnable(GL_TEXTURE_2D);
 	GL_checkError();
+#endif
 
 	glActiveTexture(GL_TEXTURE0);
 	GL_checkError();
+#ifndef HAVE_GLES
 	glEnable(GL_TEXTURE_2D);
 	GL_checkError();
+#endif
 
 	SDL_Surface *textureSurface = loadTextureIntoSurface("waternoise");
 	if (textureSurface == nullptr) {
@@ -231,7 +240,11 @@ void GL3Frontend::initRenderer () {
 	}
 
 	ImGui_ImplSDL2_InitForOpenGL(_window, _context);
+#ifdef HAVE_GLES
+	ImGui_ImplOpenGL3_Init("#version 300 es");
+#else
 	ImGui_ImplOpenGL3_Init(nullptr);
+#endif
 }
 
 void GL3Frontend::newFrameImGui() {

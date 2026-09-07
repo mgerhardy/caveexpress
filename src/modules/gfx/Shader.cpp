@@ -92,8 +92,10 @@ bool Shader::loadFromFile (const std::string& filename, ShaderType shaderType)
 std::string Shader::getSource (ShaderType shaderType, const char *buffer, int len)
 {
 	std::string src;
-#ifdef GL_ES_VERSION_2_0
-	src.append("#version 300\n");
+#ifdef HAVE_GLES
+	src.append("#version 300 es\n");
+	src.append("precision mediump float;\n");
+	src.append("precision mediump int;\n");
 #else
 	src.append("#version 130\n");
 #endif

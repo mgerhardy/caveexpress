@@ -10,6 +10,10 @@
 
 typedef unsigned int TexNum;
 
+#if defined(__EMSCRIPTEN__) || defined(__ANDROID__) || defined(__IPHONEOS__)
+#define HAVE_GLES 1
+#endif
+
 inline const char* translateError (GLenum glError)
 {
 #define GL_ERROR_TRANSLATE(e) case e: return #e;

@@ -28,15 +28,15 @@ void main(void) {
 
 	float t = float(u_time) * 0.001;
 	vec2 nUV = v_texcoord * vec2(2.2, 1.5) + vec2(t * 0.03, -t * 0.10);
-	vec4 n = texture2D(u_normals, nUV);
+	vec4 n = texture(u_normals, nUV);
 	vec2 nUV2 = v_texcoord * 4.4 + vec2(-t * 0.05, -t * 0.16);
-	vec4 n2 = texture2D(u_normals, nUV2);
+	vec4 n2 = texture(u_normals, nUV2);
 
 	vec2 distort = (n.rg - 0.5) * 0.006 * heat;
 	distort += (n2.rg - 0.5) * 0.0025 * heat;
 
-	vec4 base = texture2D(u_texture, v_texcoord);
-	vec4 warped = texture2D(u_texture, v_texcoord + distort);
+	vec4 base = texture(u_texture, v_texcoord);
+	vec4 warped = texture(u_texture, v_texcoord + distort);
 	vec4 color = mix(base, warped, heat);
 
 	vec3 tint = vec3(1.10, 0.58, 0.24);
