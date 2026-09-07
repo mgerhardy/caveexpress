@@ -358,9 +358,11 @@ bool MapEditorDocument::isOverlapping (const MapEditorTileItem& item1, const Map
 	default:
 		break;
 	}
-	const vec2& size = item1.getSize(true);
-	const gridCoord x = item1.gridX + item1.getX(true) + EPSILON;
-	const gridCoord y = item1.gridY + item1.getY(true) + EPSILON;
+	// Sprite width/height, not the physics shape. A waterfall is 1x2 but its
+	// polygon is 1x1, so shape-based hit tests left the second cell in place.
+	const vec2 size = item1.getSize(false);
+	const gridCoord x = item1.gridX + item1.getX(false) + EPSILON;
+	const gridCoord y = item1.gridY + item1.getY(false) + EPSILON;
 	return IMapEditorDocument::isOverlapping(x, y, size.x - 2.0f * EPSILON, size.y - 2.0f * EPSILON, item2);
 }
 

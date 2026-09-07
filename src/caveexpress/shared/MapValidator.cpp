@@ -85,6 +85,47 @@ void markCoveredCells (std::vector<uint8_t>& filled, int width, int height, cons
 	}
 }
 
+void addCoveredCells (std::vector<uint8_t>& counts, int width, int height, const SpriteDefPtr& def, int x, int y)
+{
+	if (!def || width <= 0 || height <= 0)
+		return;
+	const int tw = std::max(1, static_cast<int>(std::ceil(def->width - 0.001f)));
+	const int th = std::max(1, static_cast<int>(std::ceil(def->height - 0.001f)));
+	for (int dy = 0; dy < th; ++dy) {
+		for (int dx = 0; dx < tw; ++dx) {
+			const int cx = x + dx;
+			const int cy = y + dy;
+			if (cx < 0 || cy < 0 || cx >= width || cy >= height)
+				continue;
+			const int i = cx + cy * width;
+			if (counts[i] < 255)
+				++counts[i];
+		}
+	}
+}
+
+int countOccupyingOverlaps (int width, int height, const std::vector<MapTileDefinition>& tiles)
+{
+	if (width <= 0 || height <= 0)
+		return 0;
+	std::vector<uint8_t> counts(static_cast<size_t>(width * height), 0);
+	for (const MapTileDefinition& tile : tiles) {
+		if (!tile.spriteDef)
+			continue;
+		const SpriteType& type = tile.spriteDef->type;
+		if (!tileOccupiesCell(type) || SpriteTypes::isBackground(type) || SpriteTypes::isWindow(type)
+				|| SpriteTypes::isCave(type))
+			continue;
+		addCoveredCells(counts, width, height, tile.spriteDef, static_cast<int>(tile.x), static_cast<int>(tile.y));
+	}
+	int overlaps = 0;
+	for (uint8_t c : counts) {
+		if (c > 1)
+			++overlaps;
+	}
+	return overlaps;
+}
+
 int countEmptyCells (int width, int height, const std::vector<MapTileDefinition>& tiles,
 		const std::vector<CaveTileDefinition>& caves)
 {
@@ -782,8 +823,7 @@ MapWinCondition MapValidator::checkWinConditions (const IMap::SettingsMap& setti
 		const std::vector<EmitterDefinition>& emitters)
 {
 	MapWinCondition result;
-	if (string::toBool(settingValue(settings, msn::CUTSCENE, msd::CUTSCENE)))
-		return result;
+	const bool cutscene = string::toBool(settingValue(settings, msn::CUTSCENE, msd::CUTSCENE));
 
 	const int packageGoal = string::toInt(settingValue(settings, msn::PACKAGE_TRANSFER_COUNT, msd::PACKAGE_TRANSFER_COUNT));
 	const int npcGoal = string::toInt(settingValue(settings, msn::NPC_TRANSFER_COUNT, msd::NPC_TRANSFER_COUNT));
@@ -817,23 +857,25 @@ MapWinCondition MapValidator::checkWinConditions (const IMap::SettingsMap& setti
 	if (waterRisingNoFall && spawnCaves > 0)
 		--spawnCaves;
 
-	if (packageGoal <= 0 && npcGoal <= 0)
-		result.issues.emplace_back("packagetransfercount and npctransfercount are both 0 - map has nothing to do");
+	if (!cutscene) {
+		if (packageGoal <= 0 && npcGoal <= 0)
+			result.issues.emplace_back("packagetransfercount and npctransfercount are both 0 - map has nothing to do");
 
-	if (packageGoal > 0) {
-		if (packageTargets <= 0)
-			result.issues.emplace_back("packagetransfercount > 0 but no shredder / package target");
-		if (spawnCaves <= 0 && !infinitePackageEmitter && finitePackageEmitters <= 0)
-			result.issues.emplace_back("packagetransfercount > 0 but no package emitter or spawn-enabled cave");
-		else if (spawnCaves <= 0 && !infinitePackageEmitter && finitePackageEmitters < packageGoal)
-			result.issues.emplace_back("packagetransfercount exceeds finite package emitters and caves cannot spawn packages");
-	}
+		if (packageGoal > 0) {
+			if (packageTargets <= 0)
+				result.issues.emplace_back("packagetransfercount > 0 but no shredder / package target");
+			if (spawnCaves <= 0 && !infinitePackageEmitter && finitePackageEmitters <= 0)
+				result.issues.emplace_back("packagetransfercount > 0 but no package emitter or spawn-enabled cave");
+			else if (spawnCaves <= 0 && !infinitePackageEmitter && finitePackageEmitters < packageGoal)
+				result.issues.emplace_back("packagetransfercount exceeds finite package emitters and caves cannot spawn packages");
+		}
 
-	if (npcGoal > 0) {
-		if (caves.size() < 2)
-			result.issues.emplace_back("npctransfercount > 0 needs at least two caves (pickup and destination)");
-		if (npcSpawnLimit <= 0)
-			result.issues.emplace_back("npctransfercount > 0 but npcs is 0");
+		if (npcGoal > 0) {
+			if (caves.size() < 2)
+				result.issues.emplace_back("npctransfercount > 0 needs at least two caves (pickup and destination)");
+			if (npcSpawnLimit <= 0)
+				result.issues.emplace_back("npctransfercount > 0 but npcs is 0");
+		}
 	}
 
 	int overlappingTiles = 0;
@@ -847,6 +889,11 @@ MapWinCondition MapValidator::checkWinConditions (const IMap::SettingsMap& setti
 	const int width = string::toInt(settingValue(settings, msn::WIDTH, "0"));
 	const int height = string::toInt(settingValue(settings, msn::HEIGHT, "0"));
 	if (width > 0 && height > 0) {
+		const int occupyingOverlaps = countOccupyingOverlaps(width, height, tiles);
+		if (occupyingOverlaps > 0)
+			result.issues.emplace_back(string::format(
+					"%d cells have overlapping occupying tiles (e.g. a 1x2 waterfall covering another solid)",
+					occupyingOverlaps));
 		const int emptyCells = countEmptyCells(width, height, tiles, caves);
 		if (emptyCells > 0)
 			result.issues.emplace_back(string::format("%d empty cells - every cell must have a tile", emptyCells));

@@ -166,6 +166,34 @@ TEST_F(MapWinConditionTest, testCaveAllowsBridgeOverlay)
 	EXPECT_TRUE(win.winnable) << joinIssues(win);
 }
 
+TEST_F(MapWinConditionTest, testOccupyingTilesMustNotOverlap)
+{
+	IMap::SettingsMap settings;
+	settings[msn::PACKAGE_TRANSFER_COUNT] = "1";
+	settings[msn::WIDTH] = "3";
+	settings[msn::HEIGHT] = "2";
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	const SpriteDefPtr bg = requireSprite("tile-background-01");
+	const SpriteDefPtr ground = requireSprite("tile-ground-01");
+	const SpriteDefPtr target = requireSprite("tile-packagetarget-rock-01-idle");
+	const SpriteDefPtr waterfall = requireSprite("tile-waterfall-01");
+	const SpriteDefPtr caveDef = requireSprite("tile-cave-01");
+	ASSERT_TRUE(!!bg && !!ground && !!target && !!waterfall && !!caveDef);
+	tiles.emplace_back(0, 0, bg, 0);
+	caves.emplace_back(1, 0, caveDef, EntityType::NONE, 1000);
+	tiles.emplace_back(2, 0, bg, 0);
+	tiles.emplace_back(0, 1, ground, 0);
+	tiles.emplace_back(1, 1, ground, 0);
+	tiles.emplace_back(2, 1, target, 0);
+	EXPECT_TRUE(MapValidator::checkWinConditions(settings, tiles, caves, emitters).winnable);
+
+	tiles.emplace_back(0, 0, waterfall, 0);
+	const MapWinCondition overlap = MapValidator::checkWinConditions(settings, tiles, caves, emitters);
+	EXPECT_FALSE(overlap.winnable) << joinIssues(overlap);
+}
+
 TEST_F(MapWinConditionTest, testCaveNeedsGroundBelow)
 {
 	IMap::SettingsMap settings;

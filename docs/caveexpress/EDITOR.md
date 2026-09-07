@@ -111,6 +111,7 @@ The editor rejects some illegal placements instead of painting:
 - Bridges and lianes need a background, window, or cave in the cell you click. Lianes are two tiles tall and may hang into the cell below.
 - Bridges also need a ground or bridge neighbor on the left or right.
 - Thin hanging ground (`ground-05`, `ground-06`) and ground ledge ends need empty space beneath them.
+- Multi-cell solids (waterfalls and geysers are 1x2) replace other solids in every cell they cover. Background in those cells is kept. Save validation reports leftover overlapping solids.
 
 ### Layers
 

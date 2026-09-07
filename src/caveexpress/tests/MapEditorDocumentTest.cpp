@@ -131,4 +131,33 @@ TEST_F(MapEditorDocumentTest, testLianeInJunglePalette)
 	EXPECT_TRUE(found);
 }
 
+TEST_F(MapEditorDocumentTest, testPlaceWaterfallRemovesSolidInSecondCell)
+{
+	MapEditorDocument doc(_mapMgr);
+	const SpriteDefPtr background = requireSprite("tile-background-01");
+	const SpriteDefPtr ground = requireSprite("tile-ground-01");
+	const SpriteDefPtr waterfall = requireSprite("tile-waterfall-01");
+	ASSERT_TRUE(!!background && !!ground && !!waterfall);
+
+	doc.setSprite(background);
+	doc.setSelectedGrid(2.0f, 1.0f);
+	ASSERT_TRUE(doc.paintAtSelection(true, false));
+	doc.setSelectedGrid(2.0f, 2.0f);
+	ASSERT_TRUE(doc.paintAtSelection(true, false));
+
+	doc.setSprite(ground);
+	doc.setSelectedGrid(2.0f, 2.0f);
+	ASSERT_TRUE(doc.paintAtSelection(true, false));
+	EXPECT_TRUE(hasSpriteAt(doc, "tile-ground-01", 2.0f, 2.0f));
+
+	doc.setSprite(waterfall);
+	doc.setSelectedGrid(2.0f, 1.0f);
+	ASSERT_TRUE(doc.paintAtSelection(true, false));
+	EXPECT_EQ(1, countSprite(doc, "tile-waterfall-01"));
+	EXPECT_TRUE(hasSpriteAt(doc, "tile-waterfall-01", 2.0f, 1.0f));
+	EXPECT_FALSE(hasSpriteAt(doc, "tile-ground-01", 2.0f, 2.0f));
+	EXPECT_TRUE(hasSpriteAt(doc, "tile-background-01", 2.0f, 1.0f));
+	EXPECT_TRUE(hasSpriteAt(doc, "tile-background-01", 2.0f, 2.0f));
+}
+
 }

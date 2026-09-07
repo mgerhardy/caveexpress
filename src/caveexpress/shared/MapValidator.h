@@ -68,7 +68,9 @@ struct MapMetrics {
 /**
  * Static check that a map's settings and placed objects can satisfy the win
  * conditions. Catches Lua mistakes such as packagetransfercount with no
- * shredder, or npctransfercount with fewer than two caves.
+ * shredder, npctransfercount with fewer than two caves, or a 1x2 waterfall
+ * covering another solid. Cutscenes skip package/NPC quota checks but still
+ * validate cave placement, empty cells, and occupying-tile overlaps.
  */
 struct MapWinCondition {
 	bool winnable = true;
