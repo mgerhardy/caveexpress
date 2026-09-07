@@ -6,6 +6,7 @@ set(${NAME}-client_SRCS
 	entities/ClientGate.cpp
 	entities/ClientPressurePlate.cpp
 	entities/ClientParticle.cpp
+	ClientEntityFactories.cpp
 	CaveExpressClientMap.cpp
 	editor/MapEditorDocument.cpp
 	editor/UICaveExpressMapEditorWindow.cpp

@@ -24,9 +24,7 @@
 #include "cavepacker/shared/network/messages/ShowDeadlocksMessage.h"
 #include "cavepacker/shared/network/messages/ProtocolMessages.h"
 #include "cavepacker/shared/constants/Commands.h"
-#include "client/entities/ClientEntityFactory.h"
-#include "client/entities/ClientMapTile.h"
-#include "client/entities/ClientPlayer.h"
+#include "cavepacker/client/ClientEntityFactories.h"
 #include "network/ProtocolHandlerRegistry.h"
 #include "campaign/ICampaignManager.h"
 #include "campaign/persister/GooglePlayPersister.h"
@@ -313,12 +311,7 @@ void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 
 	_map.init(_frontend, *_serviceProvider);
 
-	ClientEntityRegistry &r = Singleton<ClientEntityRegistry>::getInstance();
-	r.registerFactory(&EntityTypes::SOLID, ClientMapTile::FACTORY);
-	r.registerFactory(&EntityTypes::GROUND, ClientMapTile::FACTORY);
-	r.registerFactory(&EntityTypes::PACKAGE, ClientEntity::FACTORY);
-	r.registerFactory(&EntityTypes::PLAYER, ClientPlayer::FACTORY);
-	r.registerFactory(&EntityTypes::TARGET, ClientMapTile::FACTORY);
+	registerClientEntityFactories();
 
 	ProtocolHandlerRegistry& rp = ProtocolHandlerRegistry::get();
 	rp.registerServerHandler(::protocol::PROTO_SPAWN, new SpawnHandler(_map));
