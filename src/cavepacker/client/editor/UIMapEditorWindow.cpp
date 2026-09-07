@@ -44,77 +44,78 @@ void UIMapEditorWindow::drawPropertiesPanel () const
 	::UIMapEditorWindow::drawPropertiesPanel();
 	MapEditorDocument& doc = sokobanDocument();
 
-	ImGui::Separator();
-	ImGui::Text("%s: %i", tr("Walls").c_str(), doc.countWalls());
-	ImGui::Text("%s: %i", tr("Floors").c_str(), doc.countGrounds());
-	ImGui::Text("%s: %i", tr("Packages").c_str(), doc.countPackages());
-	ImGui::SameLine();
-	ImGui::Text("%s: %i", tr("Targets").c_str(), doc.countTargets());
-	if (doc.countPackages() != doc.countTargets())
-		ImGui::TextColored(ImVec4(1.0f, 0.55f, 0.25f, 1.0f), "%s",
-				tr("Package count must match target count").c_str());
-
-	const int selX = static_cast<int>(std::floor(doc.getSelectedGridX()));
-	const int selY = static_cast<int>(std::floor(doc.getSelectedGridY()));
-	ImGui::Text("%s: %c", tr("Sokoban cell").c_str(), doc.cellGlyphAt(selX, selY));
-
-	if (ImGui::Button(tr("Make playable").c_str()))
-		doc.makePlayable();
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("%s", tr("Add a wall border, floors, a package, a target, and a start if they are missing.").c_str());
-	ImGui::SameLine();
-	if (ImGui::Button(tr("Auto-tile walls").c_str()))
-		doc.autoTileWalls(true);
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("%s", tr("Replace wall sprites using neighboring floors (same rules as map load).").c_str());
-
-	if (ImGui::Button(tr("Check layout").c_str())) {
-		_layoutChecked = true;
-		_layoutFailure.clear();
-		if (!doc.evaluateReachability(_reachablePlayable, _playableCells, _layoutFailure) && _layoutFailure.empty())
-			_layoutFailure = tr("Layout");
-	}
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("%s", tr("Flood-fill from the player: packages and targets must be reachable.").c_str());
-	if (_layoutChecked) {
-		if (_layoutFailure.empty())
-			ImGui::TextColored(ImVec4(0.4f, 0.85f, 0.4f, 1.0f), "%s", tr("Layout ok").c_str());
-		else
-			ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %s", tr("Layout").c_str(),
-					_layoutFailure.c_str());
-		ImGui::Text("%s: %i / %i", tr("Playable reachable").c_str(), _reachablePlayable, _playableCells);
-	}
-
-	ImGui::Separator();
-	ImGui::Text("%s: %i", tr("Start positions").c_str(), static_cast<int>(doc.getStartPositions().size()));
-	const IMap::StartPositions& starts = doc.getStartPositions();
-	for (size_t i = 0; i < starts.size(); ++i) {
-		ImGui::PushID(static_cast<int>(i));
-		float sx = string::toFloat(starts[i]._x);
-		float sy = string::toFloat(starts[i]._y);
-		ImGui::SetNextItemWidth(70.0f);
-		if (ImGui::InputFloat("##sx", &sx, 0.0f, 0.0f, "%.2f"))
-			doc.setStartPositionAt(i, sx, sy);
+	if (beginPropertiesGroup(tr("Sokoban").c_str())) {
+		ImGui::Text("%s: %i", tr("Walls").c_str(), doc.countWalls());
+		ImGui::Text("%s: %i", tr("Floors").c_str(), doc.countGrounds());
+		ImGui::Text("%s: %i", tr("Packages").c_str(), doc.countPackages());
 		ImGui::SameLine();
-		ImGui::SetNextItemWidth(70.0f);
-		if (ImGui::InputFloat("##sy", &sy, 0.0f, 0.0f, "%.2f"))
-			doc.setStartPositionAt(i, sx, sy);
+		ImGui::Text("%s: %i", tr("Targets").c_str(), doc.countTargets());
+		if (doc.countPackages() != doc.countTargets())
+			ImGui::TextColored(ImVec4(1.0f, 0.55f, 0.25f, 1.0f), "%s",
+					tr("Package count must match target count").c_str());
+
+		const int selX = static_cast<int>(std::floor(doc.getSelectedGridX()));
+		const int selY = static_cast<int>(std::floor(doc.getSelectedGridY()));
+		ImGui::Text("%s: %c", tr("Sokoban cell").c_str(), doc.cellGlyphAt(selX, selY));
+
+		if (ImGui::Button(tr("Make playable").c_str()))
+			doc.makePlayable();
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("%s", tr("Add a wall border, floors, a package, a target, and a start if they are missing.").c_str());
 		ImGui::SameLine();
-		if (ImGui::Button(tr("Play").c_str())) {
-			doc.setFileName(_fileNameBuf);
-			doc.setMapName(_mapTitleBuf);
-			doc.saveAndPlayFrom(sx, sy);
+		if (ImGui::Button(tr("Auto-tile walls").c_str()))
+			doc.autoTileWalls(true);
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("%s", tr("Replace wall sprites using neighboring floors (same rules as map load).").c_str());
+
+		if (ImGui::Button(tr("Check layout").c_str())) {
+			_layoutChecked = true;
+			_layoutFailure.clear();
+			if (!doc.evaluateReachability(_reachablePlayable, _playableCells, _layoutFailure) && _layoutFailure.empty())
+				_layoutFailure = tr("Layout");
 		}
 		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("%s", tr("Save and start at this pad").c_str());
-		ImGui::SameLine();
-		if (ImGui::Button(tr("Del").c_str()))
-			doc.removeStartPosition(i);
-		ImGui::PopID();
+			ImGui::SetTooltip("%s", tr("Flood-fill from the player: packages and targets must be reachable.").c_str());
+		if (_layoutChecked) {
+			if (_layoutFailure.empty())
+				ImGui::TextColored(ImVec4(0.4f, 0.85f, 0.4f, 1.0f), "%s", tr("Layout ok").c_str());
+			else
+				ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %s", tr("Layout").c_str(),
+						_layoutFailure.c_str());
+			ImGui::Text("%s: %i / %i", tr("Playable reachable").c_str(), _reachablePlayable, _playableCells);
+		}
 	}
 
-	ImGui::Separator();
-	ImGui::TextUnformatted(tr("Campaign").c_str());
+	if (beginPropertiesGroup(tr("Start positions").c_str())) {
+		ImGui::Text("%s: %i", tr("Start positions").c_str(), static_cast<int>(doc.getStartPositions().size()));
+		const IMap::StartPositions& starts = doc.getStartPositions();
+		for (size_t i = 0; i < starts.size(); ++i) {
+			ImGui::PushID(static_cast<int>(i));
+			float sx = string::toFloat(starts[i]._x);
+			float sy = string::toFloat(starts[i]._y);
+			ImGui::SetNextItemWidth(70.0f);
+			if (ImGui::InputFloat("##sx", &sx, 0.0f, 0.0f, "%.2f"))
+				doc.setStartPositionAt(i, sx, sy);
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(70.0f);
+			if (ImGui::InputFloat("##sy", &sy, 0.0f, 0.0f, "%.2f"))
+				doc.setStartPositionAt(i, sx, sy);
+			ImGui::SameLine();
+			if (ImGui::Button(tr("Play").c_str())) {
+				doc.setFileName(_fileNameBuf);
+				doc.setMapName(_mapTitleBuf);
+				doc.saveAndPlayFrom(sx, sy);
+			}
+			if (ImGui::IsItemHovered())
+				ImGui::SetTooltip("%s", tr("Save and start at this pad").c_str());
+			ImGui::SameLine();
+			if (ImGui::Button(tr("Del").c_str()))
+				doc.removeStartPosition(i);
+			ImGui::PopID();
+		}
+	}
+
+	if (beginPropertiesGroup(tr("Campaign").c_str(), false)) {
 	const std::vector<std::string> inCampaigns = doc.campaignsContainingMap();
 	if (!inCampaigns.empty()) {
 		ImGui::TextUnformatted(tr("In campaigns").c_str());
@@ -165,6 +166,7 @@ void UIMapEditorWindow::drawPropertiesPanel () const
 	if (ImGui::Button(tr("Create campaign").c_str())) {
 		if (!doc.createCampaign(newCampaignFile, newCampaignId, newCampaignText))
 			Log::error(LOG_UI, "Failed to create campaign (exists, empty id, or quote in text)");
+	}
 	}
 }
 

@@ -800,78 +800,83 @@ void UIMapEditorWindow::drawLayersPanel () const
 		ImGui::SetTooltip("%s", tr("Change the grid tile size to check alignment against the other texture atlas.").c_str());
 }
 
+bool UIMapEditorWindow::beginPropertiesGroup (const char* label, bool defaultOpen) const
+{
+	return ImGui::CollapsingHeader(label, defaultOpen ? ImGuiTreeNodeFlags_DefaultOpen : 0);
+}
+
 void UIMapEditorWindow::drawPropertiesPanel () const
 {
-	if (ImGui::InputText(tr("File").c_str(), _fileNameBuf, sizeof(_fileNameBuf)))
-		_doc->setFileName(_fileNameBuf);
-	if (ImGui::InputText(tr("Title").c_str(), _mapTitleBuf, sizeof(_mapTitleBuf)))
-		_doc->setMapName(_mapTitleBuf);
+	if (beginPropertiesGroup(tr("Map").c_str())) {
+		if (ImGui::InputText(tr("File").c_str(), _fileNameBuf, sizeof(_fileNameBuf)))
+			_doc->setFileName(_fileNameBuf);
+		if (ImGui::InputText(tr("Title").c_str(), _mapTitleBuf, sizeof(_mapTitleBuf)))
+			_doc->setMapName(_mapTitleBuf);
 
-	int w = _doc->getMapWidth();
-	int h = _doc->getMapHeight();
-	if (ImGui::InputInt(tr("Width").c_str(), &w))
-		_doc->resizeMap(w, _doc->getMapHeight());
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("%s", tr("Drag a map edge on the canvas to grow or shrink that side. Left and top keep existing tiles in place.").c_str());
-	if (ImGui::InputInt(tr("Height").c_str(), &h))
-		_doc->resizeMap(_doc->getMapWidth(), h);
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("%s", tr("Drag a map edge on the canvas to grow or shrink that side. Left and top keep existing tiles in place.").c_str());
-
-	if (_doc->supportsEmitterParams()) {
-		MapEditorTileItem* sel = _doc->getHighlightItem();
-		if (sel != nullptr && sel->entityType != nullptr) {
-			int amount = sel->amount;
-			if (ImGui::InputInt(tr("Emitter amount").c_str(), &amount))
-				sel->amount = std::max(0, amount);
-			int delay = sel->delay;
-			if (ImGui::InputInt(tr("Emitter delay").c_str(), &delay))
-				sel->delay = std::max(0, delay);
-			ImGui::TextDisabled("%s", tr("Editing the selected emitter").c_str());
-		} else {
-			int amount = _doc->getEmitterAmount();
-			if (ImGui::InputInt(tr("Emitter amount").c_str(), &amount))
-				_doc->setEmitterAmount(std::max(0, amount));
-			int delay = _doc->getEmitterDelay();
-			if (ImGui::InputInt(tr("Emitter delay").c_str(), &delay))
-				_doc->setEmitterDelay(std::max(0, delay));
-			ImGui::TextDisabled("%s", tr("Applies to the next placed emitter").c_str());
-		}
-	}
-
-	// Fixed-height selection block so the panel does not reflow when selection changes.
-	ImGui::Separator();
-	const float selectionHeight = ImGui::GetTextLineHeightWithSpacing() * 3.25f;
-	ImGui::BeginChild("selection_info", ImVec2(0.0f, selectionHeight), false, ImGuiWindowFlags_NoScrollbar);
-	if (const MapEditorTileItem* highlight = _doc->getHighlightItem()) {
-		ImGui::TextWrapped("%s", highlight->def->id.c_str());
-		ImGui::Text("%s: %.1f, %.1f", tr("Grid").c_str(), highlight->gridX, highlight->gridY);
-		if (highlight->entityType)
-			ImGui::Text("%s: %s", tr("Entity").c_str(), highlight->entityType->name.c_str());
-	} else {
-		ImGui::TextDisabled("%s", tr("Select a tile on the map").c_str());
-		ImGui::TextDisabled(" ");
-		ImGui::TextDisabled(" ");
-	}
-	ImGui::EndChild();
-
-	if (MapEditorTileItem* sel = _doc->getHighlightItem()) {
-		if (sel->allowsSubTileX()) {
-			float ex = sel->gridX;
-			if (ImGui::InputFloat(tr("X").c_str(), &ex, 0.1f, 1.0f, "%.2f"))
-				_doc->setHighlightPosition(ex, sel->gridY);
-			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip("%s", tr("Horizontal position in tiles. Drag in Select tool to slide.").c_str());
-		}
-	}
-
-	ImGui::Separator();
-	if (_doc->supportsMapScript()) {
-		bool keep = _doc->isPreserveInitMap();
-		if (ImGui::Checkbox(tr("Keep handwritten initMap").c_str(), &keep))
-			_doc->setPreserveInitMap(keep);
+		int w = _doc->getMapWidth();
+		int h = _doc->getMapHeight();
+		if (ImGui::InputInt(tr("Width").c_str(), &w))
+			_doc->resizeMap(w, _doc->getMapHeight());
 		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("%s", tr("On save, copy initMap from the existing file instead of regenerating tiles.").c_str());
+			ImGui::SetTooltip("%s", tr("Drag a map edge on the canvas to grow or shrink that side. Left and top keep existing tiles in place.").c_str());
+		if (ImGui::InputInt(tr("Height").c_str(), &h))
+			_doc->resizeMap(_doc->getMapWidth(), h);
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("%s", tr("Drag a map edge on the canvas to grow or shrink that side. Left and top keep existing tiles in place.").c_str());
+		if (_doc->supportsMapScript()) {
+			bool keep = _doc->isPreserveInitMap();
+			if (ImGui::Checkbox(tr("Keep handwritten initMap").c_str(), &keep))
+				_doc->setPreserveInitMap(keep);
+			if (ImGui::IsItemHovered())
+				ImGui::SetTooltip("%s", tr("On save, copy initMap from the existing file instead of regenerating tiles.").c_str());
+		}
+	}
+
+	if (beginPropertiesGroup(tr("Selection").c_str())) {
+		if (_doc->supportsEmitterParams()) {
+			MapEditorTileItem* sel = _doc->getHighlightItem();
+			if (sel != nullptr && sel->entityType != nullptr) {
+				int amount = sel->amount;
+				if (ImGui::InputInt(tr("Emitter amount").c_str(), &amount))
+					sel->amount = std::max(0, amount);
+				int delay = sel->delay;
+				if (ImGui::InputInt(tr("Emitter delay").c_str(), &delay))
+					sel->delay = std::max(0, delay);
+				ImGui::TextDisabled("%s", tr("Editing the selected emitter").c_str());
+			} else {
+				int amount = _doc->getEmitterAmount();
+				if (ImGui::InputInt(tr("Emitter amount").c_str(), &amount))
+					_doc->setEmitterAmount(std::max(0, amount));
+				int delay = _doc->getEmitterDelay();
+				if (ImGui::InputInt(tr("Emitter delay").c_str(), &delay))
+					_doc->setEmitterDelay(std::max(0, delay));
+				ImGui::TextDisabled("%s", tr("Applies to the next placed emitter").c_str());
+			}
+		}
+
+		const float selectionHeight = ImGui::GetTextLineHeightWithSpacing() * 3.25f;
+		ImGui::BeginChild("selection_info", ImVec2(0.0f, selectionHeight), false, ImGuiWindowFlags_NoScrollbar);
+		if (const MapEditorTileItem* highlight = _doc->getHighlightItem()) {
+			ImGui::TextWrapped("%s", highlight->def->id.c_str());
+			ImGui::Text("%s: %.1f, %.1f", tr("Grid").c_str(), highlight->gridX, highlight->gridY);
+			if (highlight->entityType)
+				ImGui::Text("%s: %s", tr("Entity").c_str(), highlight->entityType->name.c_str());
+		} else {
+			ImGui::TextDisabled("%s", tr("Select a tile on the map").c_str());
+			ImGui::TextDisabled(" ");
+			ImGui::TextDisabled(" ");
+		}
+		ImGui::EndChild();
+
+		if (MapEditorTileItem* sel = _doc->getHighlightItem()) {
+			if (sel->allowsSubTileX()) {
+				float ex = sel->gridX;
+				if (ImGui::InputFloat(tr("X").c_str(), &ex, 0.1f, 1.0f, "%.2f"))
+					_doc->setHighlightPosition(ex, sel->gridY);
+				if (ImGui::IsItemHovered())
+					ImGui::SetTooltip("%s", tr("Horizontal position in tiles. Drag in Select tool to slide.").c_str());
+			}
+		}
 	}
 }
 
@@ -1594,8 +1599,8 @@ void UIMapEditorWindow::setupEditorDockSpace () const
 		const ImGuiID dockRight = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Right, 0.28f, nullptr, &dockMain);
 		ImGui::DockBuilderDockWindow("Palette###editor_palette", dockLeft);
 		ImGui::DockBuilderDockWindow("Map###editor_map", dockMain);
-		ImGui::DockBuilderDockWindow("Properties###editor_properties", dockRight);
 		ImGui::DockBuilderDockWindow("Layers###editor_layers", dockRight);
+		ImGui::DockBuilderDockWindow("Properties###editor_properties", dockRight);
 		ImGui::DockBuilderFinish(dockspaceId);
 	}
 	ImGui::DockSpace(dockspaceId, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);

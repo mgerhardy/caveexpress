@@ -13,7 +13,7 @@ Unsaved changes are confirmed before leaving the editor, starting a new map, or 
 
 ## Window layout
 
-The same docked ImGui layout as CaveExpress: palette on the left, map in the center, Properties and Layers on the right. Drag title bars to undock or resize.
+The same docked ImGui layout as CaveExpress: palette on the left, map in the center, Properties (the default tab) and Layers on the right. Drag title bars to undock or resize. Property fields are grouped in collapsible headers.
 
 **Tiles** and **Entities** are separate edit modes. Floors, walls, and targets are tiles. The player start and packages are entities. A cell can hold a floor or a target, plus one package.
 

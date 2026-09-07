@@ -101,256 +101,325 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 	UIMapEditorWindow::drawPropertiesPanel();
 	MapEditorDocument& doc = ceDocument();
 
-	int points = string::toInt(doc.getSetting(msn::POINTS, string::toString(msdv::POINTS)));
-	if (ImGui::InputInt(tr("Points").c_str(), &points))
-		doc.setSetting(msn::POINTS, string::toString(points));
-	int refTime = string::toInt(doc.getSetting(msn::REFERENCETIME, string::toString(msdv::REFERENCETIME)));
-	if (ImGui::InputInt(tr("Reference time in seconds").c_str(), &refTime))
-		doc.setSetting(msn::REFERENCETIME, string::toString(refTime));
-	float gravity = string::toFloat(doc.getSetting(msn::GRAVITY, string::toString(msdv::GRAVITY)));
-	if (ImGui::InputFloat(tr("Gravity").c_str(), &gravity))
-		doc.setSetting(msn::GRAVITY, string::toString(gravity));
-	float wind = string::toFloat(doc.getSetting(msn::WIND, msd::WIND));
-	if (ImGui::InputFloat(tr("Wind").c_str(), &wind))
-		doc.setSetting(msn::WIND, string::toString(wind));
-	float water = doc.getWaterHeight();
-	if (ImGui::InputFloat(tr("Waterheight").c_str(), &water))
-		doc.setWaterHeight(water);
-	int packages = string::toInt(doc.getSetting(msn::PACKAGE_TRANSFER_COUNT, msd::PACKAGE_TRANSFER_COUNT));
-	if (ImGui::InputInt(tr("The amount of packages to deliver").c_str(), &packages))
-		doc.setSetting(msn::PACKAGE_TRANSFER_COUNT, string::toString(packages));
-	int npcs = string::toInt(doc.getSetting(msn::NPC_TRANSFER_COUNT, msd::NPC_TRANSFER_COUNT));
-	if (ImGui::InputInt(tr("Friendly NPCs to deliver").c_str(), &npcs))
-		doc.setSetting(msn::NPC_TRANSFER_COUNT, string::toString(std::max(0, npcs)));
-	int npcCap = string::toInt(doc.getSetting(msn::NPCS, msd::NPCS));
-	if (ImGui::InputInt(tr("Friendly NPC spawn cap").c_str(), &npcCap))
-		doc.setSetting(msn::NPCS, string::toString(std::max(0, npcCap)));
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("%s", tr("npcs: how many friendly villagers can be alive from caves").c_str());
-	bool flying = string::toBool(doc.getSetting(msn::FLYING_NPC, msd::FLYING_NPC));
-	if (ImGui::Checkbox(tr("Activate the pterodactyls spawn").c_str(), &flying))
-		doc.setSetting(msn::FLYING_NPC, flying ? "true" : "false");
-	bool fish = string::toBool(doc.getSetting(msn::FISH_NPC, msd::FISH_NPC));
-	if (ImGui::Checkbox(tr("Activate the fish spawn").c_str(), &fish))
-		doc.setSetting(msn::FISH_NPC, fish ? "true" : "false");
-	int spawnTime = string::toInt(doc.getSetting(msn::NPC_INITIAL_SPAWN_TIME, "0"));
-	if (ImGui::InputInt(tr("First flying/fish spawn delay").c_str(), &spawnTime))
-		doc.setSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(std::max(0, spawnTime)));
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("%s", tr("initialspawntime in ms. 0 lets the engine pick a random delay.").c_str());
-	int geyserDelay = string::toInt(doc.getSetting(msn::GEYSER_INITIAL_DELAY_TIME, "3000"));
-	if (ImGui::InputInt(tr("Geyser initial delay").c_str(), &geyserDelay))
-		doc.setSetting(msn::GEYSER_INITIAL_DELAY_TIME, string::toString(std::max(0, geyserDelay)));
-	bool sideFail = string::toBool(doc.getSetting(msn::SIDEBORDERFAIL, msd::SIDEBORDERFAIL));
-	if (ImGui::Checkbox(tr("Fail on side border").c_str(), &sideFail))
-		doc.setSetting(msn::SIDEBORDERFAIL, sideFail ? "true" : "false");
-	bool tutorial = string::toBool(doc.getSetting(msn::TUTORIAL, msd::TUTORIAL));
-	if (ImGui::Checkbox(tr("Tutorial").c_str(), &tutorial))
-		doc.setSetting(msn::TUTORIAL, tutorial ? "true" : "false");
-	bool cutscene = string::toBool(doc.getSetting(msn::CUTSCENE, msd::CUTSCENE));
-	if (ImGui::Checkbox(tr("Cutscene").c_str(), &cutscene))
-		doc.setSetting(msn::CUTSCENE, cutscene ? "true" : "false");
-	ImGui::TextWrapped("%s", tr("Pre-map help: add function intro(help) on the Script tab.").c_str());
+	if (beginPropertiesGroup(tr("Gameplay").c_str())) {
+		int points = string::toInt(doc.getSetting(msn::POINTS, string::toString(msdv::POINTS)));
+		if (ImGui::InputInt(tr("Points").c_str(), &points))
+			doc.setSetting(msn::POINTS, string::toString(points));
+		int refTime = string::toInt(doc.getSetting(msn::REFERENCETIME, string::toString(msdv::REFERENCETIME)));
+		if (ImGui::InputInt(tr("Reference time in seconds").c_str(), &refTime))
+			doc.setSetting(msn::REFERENCETIME, string::toString(refTime));
+		float gravity = string::toFloat(doc.getSetting(msn::GRAVITY, string::toString(msdv::GRAVITY)));
+		if (ImGui::InputFloat(tr("Gravity").c_str(), &gravity))
+			doc.setSetting(msn::GRAVITY, string::toString(gravity));
+		float wind = string::toFloat(doc.getSetting(msn::WIND, msd::WIND));
+		if (ImGui::InputFloat(tr("Wind").c_str(), &wind))
+			doc.setSetting(msn::WIND, string::toString(wind));
+		int packages = string::toInt(doc.getSetting(msn::PACKAGE_TRANSFER_COUNT, msd::PACKAGE_TRANSFER_COUNT));
+		if (ImGui::InputInt(tr("The amount of packages to deliver").c_str(), &packages))
+			doc.setSetting(msn::PACKAGE_TRANSFER_COUNT, string::toString(packages));
+		bool sideFail = string::toBool(doc.getSetting(msn::SIDEBORDERFAIL, msd::SIDEBORDERFAIL));
+		if (ImGui::Checkbox(tr("Fail on side border").c_str(), &sideFail))
+			doc.setSetting(msn::SIDEBORDERFAIL, sideFail ? "true" : "false");
+		bool tutorial = string::toBool(doc.getSetting(msn::TUTORIAL, msd::TUTORIAL));
+		if (ImGui::Checkbox(tr("Tutorial").c_str(), &tutorial))
+			doc.setSetting(msn::TUTORIAL, tutorial ? "true" : "false");
+		bool cutscene = string::toBool(doc.getSetting(msn::CUTSCENE, msd::CUTSCENE));
+		if (ImGui::Checkbox(tr("Cutscene").c_str(), &cutscene))
+			doc.setSetting(msn::CUTSCENE, cutscene ? "true" : "false");
+		ImGui::TextWrapped("%s", tr("Pre-map help: add function intro(help) on the Script tab.").c_str());
+	}
 
-	float waterChange = string::toFloat(doc.getSetting(msn::WATER_CHANGE, msd::WATER_CHANGE));
-	if (ImGui::InputFloat(tr("Water change speed").c_str(), &waterChange))
-		doc.setSetting(msn::WATER_CHANGE, string::toString(waterChange));
-	int waterRise = string::toInt(doc.getSetting(msn::WATER_RISING_DELAY, msd::WATER_RISING_DELAY));
-	if (ImGui::InputInt(tr("Water rising delay").c_str(), &waterRise))
-		doc.setSetting(msn::WATER_RISING_DELAY, string::toString(std::max(0, waterRise)));
-	int waterFall = string::toInt(doc.getSetting(msn::WATER_FALLING_DELAY, msd::WATER_FALLING_DELAY));
-	if (ImGui::InputInt(tr("Water falling delay").c_str(), &waterFall))
-		doc.setSetting(msn::WATER_FALLING_DELAY, string::toString(std::max(0, waterFall)));
+	if (beginPropertiesGroup(tr("Water").c_str())) {
+		float water = doc.getWaterHeight();
+		if (ImGui::InputFloat(tr("Waterheight").c_str(), &water))
+			doc.setWaterHeight(water);
+		float waterChange = string::toFloat(doc.getSetting(msn::WATER_CHANGE, msd::WATER_CHANGE));
+		if (ImGui::InputFloat(tr("Water change speed").c_str(), &waterChange))
+			doc.setSetting(msn::WATER_CHANGE, string::toString(waterChange));
+		int waterRise = string::toInt(doc.getSetting(msn::WATER_RISING_DELAY, msd::WATER_RISING_DELAY));
+		if (ImGui::InputInt(tr("Water rising delay").c_str(), &waterRise))
+			doc.setSetting(msn::WATER_RISING_DELAY, string::toString(std::max(0, waterRise)));
+		int waterFall = string::toInt(doc.getSetting(msn::WATER_FALLING_DELAY, msd::WATER_FALLING_DELAY));
+		if (ImGui::InputInt(tr("Water falling delay").c_str(), &waterFall))
+			doc.setSetting(msn::WATER_FALLING_DELAY, string::toString(std::max(0, waterFall)));
+	}
 
-	int caveDelay = doc.getCaveDelay();
-	if (ImGui::InputInt(tr("Npc delay").c_str(), &caveDelay))
-		doc.setCaveDelay(caveDelay);
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("%s", tr("Default spawn delay for newly placed caves").c_str());
+	if (beginPropertiesGroup(tr("Wildlife").c_str())) {
+		bool flying = string::toBool(doc.getSetting(msn::FLYING_NPC, msd::FLYING_NPC));
+		if (ImGui::Checkbox(tr("Activate the pterodactyls spawn").c_str(), &flying))
+			doc.setSetting(msn::FLYING_NPC, flying ? "true" : "false");
+		bool fish = string::toBool(doc.getSetting(msn::FISH_NPC, msd::FISH_NPC));
+		if (ImGui::Checkbox(tr("Activate the fish spawn").c_str(), &fish))
+			doc.setSetting(msn::FISH_NPC, fish ? "true" : "false");
+		int spawnTime = string::toInt(doc.getSetting(msn::NPC_INITIAL_SPAWN_TIME, "0"));
+		ImGui::BeginDisabled(!flying && !fish);
+		if (ImGui::InputInt(tr("First flying/fish spawn delay").c_str(), &spawnTime))
+			doc.setSetting(msn::NPC_INITIAL_SPAWN_TIME, string::toString(std::max(0, spawnTime)));
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+			if (!flying && !fish)
+				ImGui::SetTooltip("%s", tr("Enable pterodactyls or fish spawn to set this delay.").c_str());
+			else
+				ImGui::SetTooltip("%s", tr("initialspawntime in ms. 0 lets the engine pick a random delay.").c_str());
+		}
+		ImGui::EndDisabled();
+		int geyserDelay = string::toInt(doc.getSetting(msn::GEYSER_INITIAL_DELAY_TIME, "3000"));
+		if (ImGui::InputInt(tr("Geyser initial delay").c_str(), &geyserDelay))
+			doc.setSetting(msn::GEYSER_INITIAL_DELAY_TIME, string::toString(std::max(0, geyserDelay)));
+	}
 
+	if (beginPropertiesGroup(tr("Caves and villagers").c_str())) {
+		int npcs = string::toInt(doc.getSetting(msn::NPC_TRANSFER_COUNT, msd::NPC_TRANSFER_COUNT));
+		if (ImGui::InputInt(tr("Friendly NPCs to deliver").c_str(), &npcs))
+			doc.setSetting(msn::NPC_TRANSFER_COUNT, string::toString(std::max(0, npcs)));
+		int npcCap = string::toInt(doc.getSetting(msn::NPCS, msd::NPCS));
+		if (ImGui::InputInt(tr("Friendly NPC spawn cap").c_str(), &npcCap))
+			doc.setSetting(msn::NPCS, string::toString(std::max(0, npcCap)));
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("%s", tr("npcs: how many friendly villagers can be alive from caves").c_str());
+		int caveDelay = doc.getCaveDelay();
+		if (ImGui::InputInt(tr("Npc delay").c_str(), &caveDelay))
+			doc.setCaveDelay(caveDelay);
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("%s", tr("Default spawn delay for newly placed caves").c_str());
+
+		const EntityType* caveTypes[] = {
+			&EntityType::NONE, &EntityTypes::NPC_FRIENDLY_MAN, &EntityTypes::NPC_FRIENDLY_WOMAN,
+			&EntityTypes::NPC_FRIENDLY_GRANDPA
+		};
+		const char* caveTypeLabels[] = { "none", "npc-man", "npc-woman", "npc-grandpa" };
+		int brushType = 0;
+		for (int i = 0; i < 4; ++i) {
+			if (&doc.getCaveNpcType() == caveTypes[i])
+				brushType = i;
+		}
+		if (ImGui::Combo(tr("Cave NPC (brush)").c_str(), &brushType, caveTypeLabels, 4))
+			doc.setCaveNpcType(*caveTypes[brushType]);
+	}
+
+	MapEditorTileItem* sel = doc.getHighlightItem();
 	const EntityType* caveTypes[] = {
 		&EntityType::NONE, &EntityTypes::NPC_FRIENDLY_MAN, &EntityTypes::NPC_FRIENDLY_WOMAN,
 		&EntityTypes::NPC_FRIENDLY_GRANDPA
 	};
 	const char* caveTypeLabels[] = { "none", "npc-man", "npc-woman", "npc-grandpa" };
-	int brushType = 0;
-	for (int i = 0; i < 4; ++i) {
-		if (&doc.getCaveNpcType() == caveTypes[i])
-			brushType = i;
-	}
-	if (ImGui::Combo(tr("Cave NPC (brush)").c_str(), &brushType, caveTypeLabels, 4))
-		doc.setCaveNpcType(*caveTypes[brushType]);
-
-	MapEditorTileItem* sel = doc.getHighlightItem();
-	if (sel != nullptr && sel->def != nullptr
-			&& (SpriteTypes::isGate(sel->def->type) || SpriteTypes::isPressurePlate(sel->def->type))) {
-		ImGui::Separator();
-		ImGui::TextUnformatted(tr("Trigger link").c_str());
-		char linkBuf[64];
-		std::snprintf(linkBuf, sizeof(linkBuf), "%s", sel->linkId.c_str());
-		if (ImGui::InputText(tr("Link id").c_str(), linkBuf, sizeof(linkBuf)))
-			sel->linkId = linkBuf;
-		ImGui::SameLine();
-		if (ImGui::Button(tr("Copy").c_str()))
-			ImGui::SetClipboardText(sel->linkId.c_str());
-		if (SpriteTypes::isPressurePlate(sel->def->type)) {
-			float weight = sel->requiredWeight;
-			if (ImGui::InputFloat(tr("Required weight").c_str(), &weight))
-				sel->requiredWeight = std::max(0.0f, weight);
-			int hold = sel->delay;
-			if (ImGui::InputInt(tr("Hold ms").c_str(), &hold))
-				sel->delay = std::max(0, hold);
-			if (doc.isPickingGateTarget()) {
-				ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.2f, 1.0f), "%s", tr("Click a gate to link").c_str());
-				if (ImGui::Button(tr("Cancel pick").c_str()))
-					doc.cancelPickGateTarget();
-			} else if (ImGui::Button(tr("Pick gate target").c_str())) {
-				doc.beginPickGateTarget();
+	const bool hasSelExtras = sel != nullptr && sel->def != nullptr
+			&& (SpriteTypes::isGate(sel->def->type) || SpriteTypes::isPressurePlate(sel->def->type)
+					|| SpriteTypes::isCave(sel->def->type) || sel->def->rotateable > 0
+					|| sel->entityType != nullptr);
+	if (hasSelExtras && beginPropertiesGroup(tr("Selected item").c_str())) {
+		if (SpriteTypes::isGate(sel->def->type) || SpriteTypes::isPressurePlate(sel->def->type)) {
+			ImGui::TextUnformatted(tr("Trigger link").c_str());
+			char linkBuf[64];
+			std::snprintf(linkBuf, sizeof(linkBuf), "%s", sel->linkId.c_str());
+			if (ImGui::InputText(tr("Link id").c_str(), linkBuf, sizeof(linkBuf)))
+				sel->linkId = linkBuf;
+			ImGui::SameLine();
+			if (ImGui::Button(tr("Copy").c_str()))
+				ImGui::SetClipboardText(sel->linkId.c_str());
+			if (SpriteTypes::isPressurePlate(sel->def->type)) {
+				float weight = sel->requiredWeight;
+				if (ImGui::InputFloat(tr("Required weight").c_str(), &weight))
+					sel->requiredWeight = std::max(0.0f, weight);
+				int hold = sel->delay;
+				if (ImGui::InputInt(tr("Hold ms").c_str(), &hold))
+					sel->delay = std::max(0, hold);
+				if (doc.isPickingGateTarget()) {
+					ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.2f, 1.0f), "%s", tr("Click a gate to link").c_str());
+					if (ImGui::Button(tr("Cancel pick").c_str()))
+						doc.cancelPickGateTarget();
+				} else if (ImGui::Button(tr("Pick gate target").c_str())) {
+					doc.beginPickGateTarget();
+				}
+			} else if (SpriteTypes::isGate(sel->def->type)) {
+				float openAmount = sel->openAmount;
+				if (ImGui::InputFloat(tr("Open amount").c_str(), &openAmount))
+					sel->openAmount = clamp(openAmount, 0.0f, 1.0f);
 			}
-		} else if (SpriteTypes::isGate(sel->def->type)) {
-			float openAmount = sel->openAmount;
-			if (ImGui::InputFloat(tr("Open amount").c_str(), &openAmount))
-				sel->openAmount = clamp(openAmount, 0.0f, 1.0f);
+		}
+
+		if (SpriteTypes::isCave(sel->def->type)) {
+			ImGui::TextUnformatted(tr("Cave").c_str());
+			int caveSel = 0;
+			for (int i = 0; i < 4; ++i) {
+				if (sel->entityType == caveTypes[i])
+					caveSel = i;
+			}
+			if (ImGui::Combo(tr("Spawn NPC").c_str(), &caveSel, caveTypeLabels, 4))
+				sel->entityType = caveTypes[caveSel];
+			int delay = sel->delay;
+			if (ImGui::InputInt(tr("Spawn delay ms").c_str(), &delay))
+				sel->delay = std::max(0, delay);
+		}
+
+		if (sel->def->rotateable > 0) {
+			int angle = sel->angle;
+			if (ImGui::InputInt(tr("Tile angle").c_str(), &angle))
+				sel->angle = static_cast<EntityAngle>(((angle % 360) + 360) % 360);
+			if (ImGui::Button(tr("Rotate selected").c_str()))
+				doc.rotateSelectionOrBrush();
+		}
+
+		if (sel->entityType != nullptr) {
+			ImGui::TextUnformatted(tr("Emitter").c_str());
+			float ex = sel->gridX;
+			float ey = sel->gridY;
+			if (ImGui::InputFloat(tr("X").c_str(), &ex, 0.1f, 1.0f, "%.2f"))
+				sel->gridX = ex;
+			if (ImGui::InputFloat(tr("Y").c_str(), &ey, 0.1f, 1.0f, "%.2f"))
+				sel->gridY = ey;
+			KeyValueParser kv(sel->settings);
+			if (EntityTypes::hasDirection(*sel->entityType)) {
+				bool right = kv.getBool(EMITTER_RIGHT, true);
+				if (ImGui::Checkbox(tr("Faces right").c_str(), &right)) {
+					if (right)
+						kv.remove(EMITTER_RIGHT);
+					else
+						kv.set(EMITTER_RIGHT, false);
+					sel->settings = kv.str();
+					doc.setActiveEntityRight(right);
+				}
+			}
+			if (EntityTypes::isNpcBlowing(*sel->entityType)) {
+				float strength = kv.getFloat(EMITTER_STRENGTH, 10.0f);
+				float size = kv.getFloat(EMITTER_WIND_MOD_SIZE, 2.0f);
+				if (ImGui::InputFloat(tr("Blow strength").c_str(), &strength, 0.5f, 1.0f, "%.1f")) {
+					kv.set(EMITTER_STRENGTH, std::max(0.0f, strength));
+					sel->settings = kv.str();
+				}
+				if (ImGui::InputFloat(tr("Wind size").c_str(), &size, 0.5f, 1.0f, "%.1f")) {
+					kv.set(EMITTER_WIND_MOD_SIZE, std::max(0.0f, size));
+					sel->settings = kv.str();
+				}
+				if (ImGui::IsItemHovered())
+					ImGui::SetTooltip("%s", tr("Wind column height in tiles (emitter setting size=)").c_str());
+			}
 		}
 	}
 
-	if (sel != nullptr && sel->def != nullptr && SpriteTypes::isCave(sel->def->type)) {
-		ImGui::Separator();
-		ImGui::TextUnformatted(tr("Cave").c_str());
-		int caveSel = 0;
-		for (int i = 0; i < 4; ++i) {
-			if (sel->entityType == caveTypes[i])
-				caveSel = i;
-		}
-		if (ImGui::Combo(tr("Spawn NPC").c_str(), &caveSel, caveTypeLabels, 4))
-			sel->entityType = caveTypes[caveSel];
-		int delay = sel->delay;
-		if (ImGui::InputInt(tr("Spawn delay ms").c_str(), &delay))
-			sel->delay = std::max(0, delay);
-	}
-
-	if (sel != nullptr && sel->def != nullptr && sel->def->rotateable > 0) {
-		int angle = sel->angle;
-		if (ImGui::InputInt(tr("Tile angle").c_str(), &angle))
-			sel->angle = static_cast<EntityAngle>(((angle % 360) + 360) % 360);
-		if (ImGui::Button(tr("Rotate selected").c_str()))
-			doc.rotateSelectionOrBrush();
-	}
-
-	if (sel != nullptr && sel->entityType != nullptr) {
-		ImGui::Separator();
-		ImGui::TextUnformatted(tr("Emitter").c_str());
-		float ex = sel->gridX;
-		float ey = sel->gridY;
-		if (ImGui::InputFloat(tr("X").c_str(), &ex, 0.1f, 1.0f, "%.2f"))
-			sel->gridX = ex;
-		if (ImGui::InputFloat(tr("Y").c_str(), &ey, 0.1f, 1.0f, "%.2f"))
-			sel->gridY = ey;
-		KeyValueParser kv(sel->settings);
-		if (EntityTypes::hasDirection(*sel->entityType)) {
-			bool right = kv.getBool(EMITTER_RIGHT, true);
-			if (ImGui::Checkbox(tr("Faces right").c_str(), &right)) {
-				if (right)
-					kv.remove(EMITTER_RIGHT);
-				else
-					kv.set(EMITTER_RIGHT, false);
-				sel->settings = kv.str();
-				doc.setActiveEntityRight(right);
-			}
-		}
-		if (EntityTypes::isNpcBlowing(*sel->entityType)) {
-			float strength = kv.getFloat(EMITTER_STRENGTH, 10.0f);
-			float size = kv.getFloat(EMITTER_WIND_MOD_SIZE, 2.0f);
-			if (ImGui::InputFloat(tr("Blow strength").c_str(), &strength, 0.5f, 1.0f, "%.1f")) {
-				kv.set(EMITTER_STRENGTH, std::max(0.0f, strength));
-				sel->settings = kv.str();
-			}
-			if (ImGui::InputFloat(tr("Wind size").c_str(), &size, 0.5f, 1.0f, "%.1f")) {
-				kv.set(EMITTER_WIND_MOD_SIZE, std::max(0.0f, size));
-				sel->settings = kv.str();
+	if (beginPropertiesGroup(tr("Start positions").c_str())) {
+		ImGui::Text("%s: %i", tr("Start positions").c_str(), static_cast<int>(doc.getStartPositions().size()));
+		const IMap::StartPositions& starts = doc.getStartPositions();
+		for (size_t i = 0; i < starts.size(); ++i) {
+			ImGui::PushID(static_cast<int>(i));
+			float sx = string::toFloat(starts[i]._x);
+			float sy = string::toFloat(starts[i]._y);
+			ImGui::SetNextItemWidth(70.0f);
+			if (ImGui::InputFloat("##sx", &sx, 0.0f, 0.0f, "%.2f"))
+				doc.setStartPositionAt(i, sx, sy);
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(70.0f);
+			if (ImGui::InputFloat("##sy", &sy, 0.0f, 0.0f, "%.2f"))
+				doc.setStartPositionAt(i, sx, sy);
+			ImGui::SameLine();
+			if (ImGui::Button(tr("Play").c_str())) {
+				doc.setFileName(_fileNameBuf);
+				doc.setMapName(_mapTitleBuf);
+				doc.saveAndPlayFrom(sx, sy);
 			}
 			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip("%s", tr("Wind column height in tiles (emitter setting size=)").c_str());
-		}
-	}
-
-	ImGui::Separator();
-	ImGui::Text("%s: %i", tr("Start positions").c_str(), static_cast<int>(doc.getStartPositions().size()));
-	const IMap::StartPositions& starts = doc.getStartPositions();
-	for (size_t i = 0; i < starts.size(); ++i) {
-		ImGui::PushID(static_cast<int>(i));
-		float sx = string::toFloat(starts[i]._x);
-		float sy = string::toFloat(starts[i]._y);
-		ImGui::SetNextItemWidth(70.0f);
-		if (ImGui::InputFloat("##sx", &sx, 0.0f, 0.0f, "%.2f"))
-			doc.setStartPositionAt(i, sx, sy);
-		ImGui::SameLine();
-		ImGui::SetNextItemWidth(70.0f);
-		if (ImGui::InputFloat("##sy", &sy, 0.0f, 0.0f, "%.2f"))
-			doc.setStartPositionAt(i, sx, sy);
-		ImGui::SameLine();
-		if (ImGui::Button(tr("Play").c_str())) {
-			doc.setFileName(_fileNameBuf);
-			doc.setMapName(_mapTitleBuf);
-			doc.saveAndPlayFrom(sx, sy);
-		}
-		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("%s", tr("Save and start at this pad (god mode)").c_str());
-		ImGui::SameLine();
-		if (ImGui::Button(tr("Del").c_str()))
-			doc.removeStartPosition(i);
-		ImGui::PopID();
-	}
-
-	ImGui::Checkbox(tr("Show all trigger links").c_str(), &_showAllTriggerLinks);
-
-	const std::vector<UnpairedTrigger> unpaired = doc.listUnpairedTriggers();
-	if (!unpaired.empty()) {
-		ImGui::Separator();
-		ImGui::TextColored(ImVec4(1.0f, 0.7f, 0.2f, 1.0f), "%s", tr("Unpaired plates / gates").c_str());
-		for (size_t i = 0; i < unpaired.size(); ++i) {
-			const UnpairedTrigger& t = unpaired[i];
-			ImGui::PushID(static_cast<int>(i + 1000));
-			ImGui::BulletText("%s @ %.0f,%.0f %s", t.kind.c_str(), t.x, t.y, t.linkId.c_str());
+				ImGui::SetTooltip("%s", tr("Save and start at this pad (god mode)").c_str());
 			ImGui::SameLine();
-			if (ImGui::SmallButton(tr("Go").c_str())) {
-				doc.focusCell(t.x, t.y);
-				_panX = t.x * tileWidth() - (_canvasMaxX - _canvasMinX) * 0.5f;
-				_panY = t.y * tileHeight() - (_canvasMaxY - _canvasMinY) * 0.5f;
-			}
+			if (ImGui::Button(tr("Del").c_str()))
+				doc.removeStartPosition(i);
 			ImGui::PopID();
 		}
 	}
 
-	ImGui::Separator();
-	ImGui::TextUnformatted(tr("Theme").c_str());
-	const struct {
-		const ThemeType* theme;
-		std::string label;
-	} themes[] = {
-		{ &ThemeTypes::ROCK, tr("Rock") },
-		{ &ThemeTypes::ICE, tr("Ice") },
-		{ &ThemeTypes::JUNGLE, tr("Jungle") },
-		{ &ThemeTypes::DESERT, tr("Desert") },
-	};
-	static const ThemeType* pendingTheme = nullptr;
-	for (const auto& entry : themes) {
-		const bool selected = &doc.getTheme() == entry.theme;
-		if (ImGui::RadioButton(entry.label.c_str(), selected)) {
-			int wouldReplace = 0;
-			int leftover = 0;
-			doc.previewThemeRemap(*entry.theme, wouldReplace, leftover);
-			if (leftover > 0) {
-				pendingTheme = entry.theme;
-				ImGui::OpenPopup("###themeremap");
-			} else {
-				doc.changeMapTheme(*entry.theme);
-				rebuildPalettes();
+	if (beginPropertiesGroup(tr("Triggers").c_str())) {
+		ImGui::Checkbox(tr("Show all trigger links").c_str(), &_showAllTriggerLinks);
+		const std::vector<UnpairedTrigger> unpaired = doc.listUnpairedTriggers();
+		if (!unpaired.empty()) {
+			ImGui::TextColored(ImVec4(1.0f, 0.7f, 0.2f, 1.0f), "%s", tr("Unpaired plates / gates").c_str());
+			for (size_t i = 0; i < unpaired.size(); ++i) {
+				const UnpairedTrigger& t = unpaired[i];
+				ImGui::PushID(static_cast<int>(i + 1000));
+				ImGui::BulletText("%s @ %.0f,%.0f %s", t.kind.c_str(), t.x, t.y, t.linkId.c_str());
+				ImGui::SameLine();
+				if (ImGui::SmallButton(tr("Go").c_str())) {
+					doc.focusCell(t.x, t.y);
+					_panX = t.x * tileWidth() - (_canvasMaxX - _canvasMinX) * 0.5f;
+					_panY = t.y * tileHeight() - (_canvasMaxY - _canvasMinY) * 0.5f;
+				}
+				ImGui::PopID();
 			}
 		}
-		ImGui::SameLine();
 	}
-	ImGui::NewLine();
+
+	static const ThemeType* pendingTheme = nullptr;
+	if (beginPropertiesGroup(tr("Theme and generate").c_str())) {
+		ImGui::TextUnformatted(tr("Theme").c_str());
+		const struct {
+			const ThemeType* theme;
+			std::string label;
+		} themes[] = {
+			{ &ThemeTypes::ROCK, tr("Rock") },
+			{ &ThemeTypes::ICE, tr("Ice") },
+			{ &ThemeTypes::JUNGLE, tr("Jungle") },
+			{ &ThemeTypes::DESERT, tr("Desert") },
+		};
+		for (const auto& entry : themes) {
+			const bool selected = &doc.getTheme() == entry.theme;
+			if (ImGui::RadioButton(entry.label.c_str(), selected)) {
+				int wouldReplace = 0;
+				int leftover = 0;
+				doc.previewThemeRemap(*entry.theme, wouldReplace, leftover);
+				if (leftover > 0) {
+					pendingTheme = entry.theme;
+					ImGui::OpenPopup("###themeremap");
+				} else {
+					doc.changeMapTheme(*entry.theme);
+					rebuildPalettes();
+				}
+			}
+			ImGui::SameLine();
+		}
+		ImGui::NewLine();
+		int seed = string::toInt(doc.getSetting("seed", "0"));
+		if (ImGui::InputInt(tr("Seed").c_str(), &seed))
+			doc.setSetting("seed", string::toString(std::max(0, seed)));
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("%s", tr("Map generator seed. 0 picks a new seed on Auto.").c_str());
+		ImGui::SameLine();
+		if (ImGui::Button(tr("Auto").c_str())) {
+			doc.autoFill(doc.getTheme());
+			fitView();
+		}
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("%s", tr("Generate a random map with the current seed.").c_str());
+		ImGui::SameLine();
+		if (ImGui::Button(tr("Make playable").c_str()))
+			doc.makePlayable();
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("%s", tr("Add a cave, shredder, package, and start if they are missing.").c_str());
+
+		if (ImGui::Button(tr("Check layout").c_str())) {
+			_layoutMetrics = doc.evaluateLayout();
+			_layoutChecked = true;
+		}
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("%s", tr("Run MapValidator: reachability, covered caves, flyable cells").c_str());
+		if (_layoutChecked) {
+			if (_layoutMetrics.valid)
+				ImGui::TextColored(ImVec4(0.4f, 0.85f, 0.4f, 1.0f), "%s", tr("Layout ok").c_str());
+			else
+				ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %s", tr("Layout").c_str(),
+						_layoutMetrics.failureReason.c_str());
+			ImGui::Text("%s: %i / %i", tr("Caves reachable").c_str(), _layoutMetrics.cavesReachable, _layoutMetrics.caveCount);
+			ImGui::Text("%s: %i / %i", tr("Targets reachable").c_str(), _layoutMetrics.packageTargetsReachable,
+					_layoutMetrics.packageTargetCount);
+			ImGui::Text("%s: %i / %i", tr("Flyable reachable").c_str(), _layoutMetrics.flyableReachable,
+					_layoutMetrics.flyableCells);
+			if (_layoutMetrics.cavesCoveredBySolid > 0)
+				ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %i", tr("Caves covered").c_str(),
+						_layoutMetrics.cavesCoveredBySolid);
+			if (_layoutMetrics.cavesOverlappingTiles > 0)
+				ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %i", tr("Caves overlapping tiles").c_str(),
+						_layoutMetrics.cavesOverlappingTiles);
+			if (_layoutMetrics.cavesMissingPlatform > 0)
+				ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %i", tr("Caves missing ground below").c_str(),
+						_layoutMetrics.cavesMissingPlatform);
+		}
+	}
 	if (ImGui::BeginPopupModal((tr("Theme remap") + "###themeremap").c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
 		int wouldReplace = 0;
 		int leftover = 0;
@@ -371,55 +440,8 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 		}
 		ImGui::EndPopup();
 	}
-	int seed = string::toInt(doc.getSetting("seed", "0"));
-	if (ImGui::InputInt(tr("Seed").c_str(), &seed))
-		doc.setSetting("seed", string::toString(std::max(0, seed)));
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("%s", tr("Map generator seed. 0 picks a new seed on Auto.").c_str());
-	ImGui::SameLine();
-	if (ImGui::Button(tr("Auto").c_str())) {
-		doc.autoFill(doc.getTheme());
-		fitView();
-	}
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("%s", tr("Generate a random map with the current seed.").c_str());
-	ImGui::SameLine();
-	if (ImGui::Button(tr("Make playable").c_str()))
-		doc.makePlayable();
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("%s", tr("Add a cave, shredder, package, and start if they are missing.").c_str());
 
-	ImGui::Separator();
-	if (ImGui::Button(tr("Check layout").c_str())) {
-		_layoutMetrics = doc.evaluateLayout();
-		_layoutChecked = true;
-	}
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("%s", tr("Run MapValidator: reachability, covered caves, flyable cells").c_str());
-	if (_layoutChecked) {
-		if (_layoutMetrics.valid)
-			ImGui::TextColored(ImVec4(0.4f, 0.85f, 0.4f, 1.0f), "%s", tr("Layout ok").c_str());
-		else
-			ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %s", tr("Layout").c_str(),
-					_layoutMetrics.failureReason.c_str());
-		ImGui::Text("%s: %i / %i", tr("Caves reachable").c_str(), _layoutMetrics.cavesReachable, _layoutMetrics.caveCount);
-		ImGui::Text("%s: %i / %i", tr("Targets reachable").c_str(), _layoutMetrics.packageTargetsReachable,
-				_layoutMetrics.packageTargetCount);
-		ImGui::Text("%s: %i / %i", tr("Flyable reachable").c_str(), _layoutMetrics.flyableReachable,
-				_layoutMetrics.flyableCells);
-		if (_layoutMetrics.cavesCoveredBySolid > 0)
-			ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %i", tr("Caves covered").c_str(),
-					_layoutMetrics.cavesCoveredBySolid);
-		if (_layoutMetrics.cavesOverlappingTiles > 0)
-			ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %i", tr("Caves overlapping tiles").c_str(),
-					_layoutMetrics.cavesOverlappingTiles);
-		if (_layoutMetrics.cavesMissingPlatform > 0)
-			ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %i", tr("Caves missing ground below").c_str(),
-					_layoutMetrics.cavesMissingPlatform);
-	}
-
-	ImGui::Separator();
-	ImGui::TextUnformatted(tr("Campaign").c_str());
+	if (beginPropertiesGroup(tr("Campaign").c_str(), false)) {
 	const std::vector<std::string> inCampaigns = doc.campaignsContainingMap();
 	if (!inCampaigns.empty()) {
 		ImGui::TextUnformatted(tr("In campaigns").c_str());
@@ -467,8 +489,9 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 		if (!doc.createCampaign(newCampaignFile, newCampaignId, newCampaignText))
 			Log::error(LOG_UI, "Failed to create campaign (exists, empty id, or quote in text)");
 	}
+	}
 
-	if (ImGui::CollapsingHeader(tr("Extra settings").c_str())) {
+	if (beginPropertiesGroup(tr("Extra settings").c_str(), false)) {
 		static const char* known[] = {
 			"width", "height", "points", "tutorial", "npcs", "introwindow", "referencetime",
 			"sideborderfail", "packagetransfercount", "npctransfercount", "initialspawntime",

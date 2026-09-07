@@ -19,9 +19,9 @@ Unsaved changes are confirmed before leaving the editor, starting a new map, or 
 | Top toolbar | New, Save, Save to game data, Save & Go, Play from here, Undo, Redo, Fit, Script, Shapes, Help, and the Place / Remove / Select / Fill tools |
 | **Palette** (left) | **Tiles**, **Entities**, **Maps** |
 | **Map** (center) | Map canvas |
-| **Properties** / **Layers** (right) | Map settings, the selected item, and layer visibility |
+| **Properties** / **Layers** (right) | Map settings, the selected item, and layer visibility. **Properties** is the default tab. |
 
-These are Dear ImGui dock panels. Drag a title bar to undock or restack them. Drag the split between panels to resize. The first-run layout is Palette left, map in the center, Properties and Layers stacked on the right.
+These are Dear ImGui dock panels. Drag a title bar to undock or restack them. Drag the split between panels to resize. The first-run layout is Palette left, map in the center, **Properties** (selected) and Layers stacked on the right. Property fields are grouped in collapsible headers (Map, Selection, Gameplay, Water, Wildlife, …).
 
 The filename in the toolbar shows a `*` when there are unsaved changes.
 
@@ -165,7 +165,7 @@ Always bound to the last clicked cell, not the hover ghost.
 | The amount of packages to deliver | Packages that must reach a shredder to win. |
 | Friendly NPCs to deliver | `npctransfercount` for taxi/rescue maps (needs two caves). |
 | Friendly NPC spawn cap | `npcs` — how many villagers caves may keep alive. |
-| First flying/fish spawn delay | `initialspawntime` in ms (`0` = engine random). |
+| First flying/fish spawn delay | `initialspawntime` in ms (`0` = engine random). Disabled unless pterodactyls or fish spawn is enabled. |
 | Geyser initial delay | `geyserinitialdelay` in ms (all geysers). |
 | Activate the pterodactyls spawn | Random flying enemy. |
 | Activate the fish spawn | Random fish in water. |

@@ -101,6 +101,7 @@ protected:
 	float tileHeight () const;
 
 	virtual void drawPropertiesPanel () const;
+	bool beginPropertiesGroup (const char* label, bool defaultOpen = true) const;
 	virtual void drawHelpDocs () const;
 	virtual void drawHelpExtras () const {}
 	virtual void drawScriptExtras () const {}

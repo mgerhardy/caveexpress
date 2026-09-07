@@ -195,6 +195,7 @@ Select a sprite|Select a sprite
 Select a tile on the map|Select a tile on the map
 Select + drag a liane to move it horizontally|Select + drag a liane to move it horizontally
 Select game mode|Spielemodus aussuchen
+Selection|Auswahl
 Select tile|Teil selektieren
 Select tool: hover shows the sprite bounds that will be picked|Select tool: hover shows the sprite bounds that will be picked
 Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / pick tile
@@ -207,6 +208,7 @@ Show Grid|Gitter anzeigen
 Size|Größe
 Skip|Nächste
 Small|Klein
+Sokoban|Sokoban
 Sokoban cell|Sokoban-Zelle
 Sokoban tiles|Sokoban-Kacheln
 solid|Fest

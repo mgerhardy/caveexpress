@@ -31,6 +31,7 @@ Cancel|Abbrechen
 Cancel pick|Cancel pick
 Cave|Cave
 Cave NPC (brush)|Cave NPC (brush)
+Caves and villagers|Höhlen und Dorfbewohner
 Caves covered|Höhlen verdeckt
 Caves missing ground below|Caves missing ground below
 Caves overlapping tiles|Caves overlapping tiles
@@ -95,6 +96,7 @@ emitter|Emitter
 Emitter|Emitter
 Emitter amount|Emitter-Anzahl
 Emitter delay|Emitter-Verzögerung
+Enable pterodactyls or fish spawn to set this delay.|Aktiviere Flugsaurier- oder Fisch-Spawn, um die Verzögerung zu setzen.
 Entities|Objekte
 Entity|Objekt
 Entity definition|Entity-Definition
@@ -125,6 +127,7 @@ Friendly NPCs to deliver|Friendly NPCs to deliver
 Fullscreen|Vollbild
 Game|Spiele
 Game mode|Modus
+Gameplay|Spielregeln
 Gate|Tor
 Gather fruits for new life|Gather fruits for new life
 Generate a random map with the current seed.|Generate a random map with the current seed.
@@ -278,7 +281,9 @@ See docs/caveexpress/MAPS.md|See docs/caveexpress/MAPS.md
 Select a sprite|Select a sprite
 Select a tile on the map|Select a tile on the map
 Select + drag a liane to move it horizontally|Select + drag a liane to move it horizontally
+Selected item|Ausgewähltes Objekt
 Select game mode|Auswahl des Spielmodus
+Selection|Auswahl
 Select tile|Teil selektieren
 Select tool: hover shows the sprite bounds that will be picked|Select tool: hover shows the sprite bounds that will be picked
 Select tool or Shift+LMB: select / pick tile|Select tool or Shift+LMB: select / pick tile
@@ -312,6 +317,7 @@ The gate blocks the way|Das Tor versperrt den Weg
 The gate closes when nothing is on the plate|Das Tor schließt sich, wenn nichts auf der Platte liegt
 The geyser will do the work for you|Der Geisir erledigt die Arbeit
 Theme|Thema
+Theme and generate|Thema und Generator
 Themed tiles left unchanged|Themed tiles left unchanged
 Theme remap|Theme remap
 These checks would fail CampaignTest / play:|These checks would fail CampaignTest / play:
@@ -333,6 +339,7 @@ Transfer the woman to the desired cave|Transfer the woman to the desired cave
 Transfer villagers to the cave they want|Bringe die Dorfbewohner zur gewünschten Höhle
 Tree|Baum
 Trigger link|Trigger link
+Triggers|Auslöser
 Try to avoid crashes but still be fast|Harte Treffer vermeiden und schnell sein
 Tutorial|Tutorial
 Type|Typ
@@ -353,12 +360,14 @@ Villagers in the water swim towards you|Dorfbewohner im Wasser schwimmen auf dic
 Volume|Volume
 Waiting|Warte
 Watch the geyser|Beobachte den Geisir
+Water|Wasser
 Water change speed|Water change speed
 Water falling delay|Water falling delay
 Waterheight|Wasserhöhe
 Water rising delay|Water rising delay
 Wheel: zoom toward cursor|Mausrad: Zoom zum Cursor
 Width|Breite
+Wildlife|Tiere
 Wind|Wind
 Wind column height in tiles (emitter setting size=)|Wind column height in tiles (emitter setting size=)
 Wind size|Wind size
