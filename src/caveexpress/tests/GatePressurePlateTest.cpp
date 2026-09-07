@@ -73,7 +73,7 @@ protected:
 
 TEST_F(GatePressurePlateMapTest, testLoadLinksAndOpens)
 {
-	ASSERT_TRUE(_game.mapLoad("tutorial-gate-01")) << "could not load tutorial-gate-01";
+	ASSERT_TRUE(_game.mapLoad("introducing-09-gate")) << "could not load introducing-09-gate";
 	Map& map = _game.getMap();
 
 	FindGatePlateVisitor visitor;
@@ -119,7 +119,7 @@ protected:
 
 TEST_F(GatePressurePlateMapContextTest, testLuaRoundTrip)
 {
-	CaveExpressMapContext ctx("tutorial-gate-01");
+	CaveExpressMapContext ctx("introducing-09-gate");
 	ASSERT_TRUE(ctx.load(true));
 	ASSERT_FALSE(ctx.getGateDefinitions().empty());
 	ASSERT_FALSE(ctx.getPressurePlateDefinitions().empty());

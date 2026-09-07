@@ -12,17 +12,34 @@
 #include "ui/layouts/UIVBoxLayout.h"
 #include "ui/layouts/UIHBoxLayout.h"
 #include "ui/UI.h"
+#include "common/SpriteDefinition.h"
+
+namespace {
+
+void addIntroSpriteAndLabel (UINode* row, UINode* parent, IFrontend* frontend, UINodeSprite* sprite, const std::string& text)
+{
+	const float wp = parent->getWidth() / 5.0f;
+	sprite->setAspectRatioSize(wp, wp);
+	row->add(sprite);
+	UINodeLabel* label = new UINodeLabel(frontend, text, UI::get().getFont(HUGE_FONT));
+	label->setColor(colorBlack);
+	row->add(label);
+}
+
+}
 
 IntroTypeDescription::IntroTypeDescription(UINode* parent, IFrontend* frontend, const EntityType& type, const Animation& animation, const std::string& text) :
 		UINode(frontend) {
 	setLayout(new UIHBoxLayout(0.01f, false, NODE_ALIGN_MIDDLE));
-	UINodeSprite* sprite = new UINodeSprite(frontend, type, animation);
-	const float wp = parent->getWidth() / 5.0f;
-	sprite->setAspectRatioSize(wp, wp);
-	add(sprite);
-	UINodeLabel* label = new UINodeLabel(frontend, text, getFont(HUGE_FONT));
-	label->setColor(colorBlack);
-	add(label);
+	addIntroSpriteAndLabel(this, parent, frontend, new UINodeSprite(frontend, type, animation), text);
+}
+
+IntroTypeDescription::IntroTypeDescription(UINode* parent, IFrontend* frontend, const std::string& spriteName, const std::string& text) :
+		UINode(frontend) {
+	setLayout(new UIHBoxLayout(0.01f, false, NODE_ALIGN_MIDDLE));
+	UINodeSprite* sprite = new UINodeSprite(frontend);
+	sprite->addSprite(UI::get().loadSprite(spriteName));
+	addIntroSpriteAndLabel(this, parent, frontend, sprite, text);
 }
 
 IntroBarDescription::IntroBarDescription(IFrontend* frontend, const Color& barColor, const std::string& text) :
@@ -165,16 +182,20 @@ void Intro::addText (const std::string& text)
 void Intro::addEntity (const std::string& typeName, const std::string& animationName, const std::string& text)
 {
 	const EntityType& type = EntityType::getByName(typeName);
-	if (type.isNone()) {
-		Log::error(LOG_UI, "intro: unknown entity type '%s'", typeName.c_str());
+	if (!type.isNone()) {
+		const Animation& animation = animationName.empty() ? Animation::NONE : Animation::getByName(animationName);
+		if (!animationName.empty() && animation.isNone()) {
+			Log::error(LOG_UI, "intro: unknown animation '%s'", animationName.c_str());
+			return;
+		}
+		contentParent()->add(new IntroTypeDescription(_panel, _frontend, type, animation, text));
 		return;
 	}
-	const Animation& animation = animationName.empty() ? Animation::NONE : Animation::getByName(animationName);
-	if (!animationName.empty() && animation.isNone()) {
-		Log::error(LOG_UI, "intro: unknown animation '%s'", animationName.c_str());
+	if (SpriteDefinition::get().getSpriteDefinition(typeName)) {
+		contentParent()->add(new IntroTypeDescription(_panel, _frontend, typeName, text));
 		return;
 	}
-	contentParent()->add(new IntroTypeDescription(_panel, _frontend, type, animation, text));
+	Log::error(LOG_UI, "intro: unknown entity type or sprite '%s'", typeName.c_str());
 }
 
 void Intro::beginRow ()

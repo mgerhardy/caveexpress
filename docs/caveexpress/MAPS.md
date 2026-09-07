@@ -80,7 +80,7 @@ If the map script defines `intro(help)`, that help window is shown on the client
 | --- | --- |
 | `help:headline(text)` | Section title |
 | `help:text(text)` | Body line |
-| `help:entity(type [, animation [, label]])` | Sprite + label. Animation defaults to `idle`. Entity type names match the game (`player`, `item-package`, `tree`, `lava`, `npc-flying`, `tile-geyser-rock-01`, …). Animations include `flying`, `idle`, `rotate`, `flying-right`, `attack-init-right`, `active`. |
+| `help:entity(type [, animation [, label]])` | Sprite + label. Animation defaults to `idle`. Entity type names match the game (`player`, `item-package`, `tree`, `lava`, `npc-flying`, `tile-geyser-rock-01`, …). If the name is not an entity type, it is loaded as a sprite id (`tile-gate-rock-01`, `tile-plate-01-idle`). Animations include `flying`, `idle`, `rotate`, `flying-right`, `attack-init-right`, `active`. |
 | `help:beginRow()` / `help:endRow()` | Place following `entity` calls on one row |
 | `help:bar(text [, r, g, b, a])` | Legend bar. One argument uses the default health-bar colors; four extra numbers are 0–1 RGBA (e.g. time bar `1, 1, 1, 0.5`). |
 
@@ -245,6 +245,7 @@ Add the map id (filename without `.lua`) to `base/caveexpress/campaigns/*.lua`:
 ```lua
 c:addMaps("intro-movie-package")
 c:addMaps("introducing-01-package")
+c:addMaps("introducing-09-gate")
 ```
 
 After a cutscene `finish()`, Continue / the automatic hand-off starts the next unlocked map. Replaying the campaign from a reset plays the intro again.

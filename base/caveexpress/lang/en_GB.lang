@@ -73,6 +73,7 @@ Disconnect|Disconnect
 Docs (in the source tree)|Docs (in the source tree)
 Do not put tiles in this window — initMap is rebuilt from the canvas.|Do not put tiles in this window — initMap is rebuilt from the canvas.
 Don't hit them hard or they will fall into the water|Don't hit them hard or they will fall into the water
+Drop a stone onto the pressure plate to open it|Drop a stone onto the pressure plate to open it
 Drop during flight|Drop during flight
 Drop off at the shredder|Drop off at the shredder
 Dropping stones onto dinos stuns them|Dropping stones onto dinos stuns them
@@ -124,6 +125,7 @@ Friendly NPCs to deliver|Friendly NPCs to deliver
 Fullscreen|Fullscreen
 Game|Game
 Game mode|Game mode
+Gate|Gate
 Gather fruits for new life|Gather fruits for new life
 Generate a random map with the current seed.|Generate a random map with the current seed.
 Geyser|Geyser
@@ -233,6 +235,7 @@ Points|Points
 Polygon|Polygon
 Polygon is concave — Box2D needs convex shapes (split it).|Polygon is concave — Box2D needs convex shapes (split it).
 Pre-map help: add function intro(help) on the Script tab.|Pre-map help: add function intro(help) on the Script tab.
+Pressure plate|Pressure plate
 Preview other atlas size|Preview other atlas size
 Properties|Properties
 Properties edit the selected tile, not the hovered one|Properties edit the selected tile, not the hovered one
@@ -306,6 +309,8 @@ Targets reachable|Targets reachable
 Textures|Textures
 The amount of packages to deliver|The amount of packages to deliver
 The egg makes you invulnerable|The egg makes you invulnerable
+The gate blocks the way|The gate blocks the way
+The gate closes when nothing is on the plate|The gate closes when nothing is on the plate
 The geyser will do the work for you|The geyser will do the work for you
 Theme|Theme
 Themed tiles left unchanged|Themed tiles left unchanged
@@ -324,6 +329,7 @@ To dive across, fall fast into water flying to side|To dive across, fall fast in
 Too many vertices for Box2D|Too many vertices for Box2D
 Transfer the grandpa to the desired cave|Transfer the grandpa to the desired cave
 Transfer the man to the desired cave|Transfer the man to the desired cave
+Transfer the villager to the other cave|Transfer the villager to the other cave
 Transfer the woman to the desired cave|Transfer the woman to the desired cave
 Transfer villagers to the cave they want|Transfer villagers to the cave they want
 Tree|Tree

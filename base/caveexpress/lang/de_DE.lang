@@ -73,6 +73,7 @@ Disconnect|Disconnect
 Docs (in the source tree)|Docs (in the source tree)
 Do not put tiles in this window — initMap is rebuilt from the canvas.|Do not put tiles in this window — initMap is rebuilt from the canvas.
 Don't hit them hard or they will fall into the water|Stoße sie nicht hart an, sonst fallen sie ins Wasser
+Drop a stone onto the pressure plate to open it|Wirf einen Stein auf die Druckplatte, um das Tor zu öffnen
 Drop during flight|Während des Fluges abwerfen
 Drop off at the shredder|Drop off at the shredder
 Dropping stones onto dinos stuns them|Dropping stones onto dinos stuns them
@@ -124,6 +125,7 @@ Friendly NPCs to deliver|Friendly NPCs to deliver
 Fullscreen|Vollbild
 Game|Spiele
 Game mode|Modus
+Gate|Tor
 Gather fruits for new life|Gather fruits for new life
 Generate a random map with the current seed.|Generate a random map with the current seed.
 Geyser|Geyser
@@ -233,6 +235,7 @@ Points|Punkte
 Polygon|Polygon
 Polygon is concave — Box2D needs convex shapes (split it).|Polygon is concave — Box2D needs convex shapes (split it).
 Pre-map help: add function intro(help) on the Script tab.|Pre-map help: add function intro(help) on the Script tab.
+Pressure plate|Druckplatte
 Preview other atlas size|Preview other atlas size
 Properties|Eigenschaften
 Properties edit the selected tile, not the hovered one|Properties edit the selected tile, not the hovered one
@@ -306,6 +309,8 @@ Targets reachable|Ziele erreichbar
 Textures|Texturen
 The amount of packages to deliver|Anzahl der zu liefernden Pakete
 The egg makes you invulnerable|The egg makes you invulnerable
+The gate blocks the way|Das Tor versperrt den Weg
+The gate closes when nothing is on the plate|Das Tor schließt sich, wenn nichts auf der Platte liegt
 The geyser will do the work for you|Der Geisir erledigt die Arbeit
 Theme|Thema
 Themed tiles left unchanged|Themed tiles left unchanged
@@ -324,6 +329,7 @@ To dive across, fall fast into water flying to side|To dive across, fall fast in
 Too many vertices for Box2D|Too many vertices for Box2D
 Transfer the grandpa to the desired cave|Transfer the grandpa to the desired cave
 Transfer the man to the desired cave|Transfer the man to the desired cave
+Transfer the villager to the other cave|Bringe den Dorfbewohner zur anderen Höhle
 Transfer the woman to the desired cave|Transfer the woman to the desired cave
 Transfer villagers to the cave they want|Bringe die Dorfbewohner zur gewünschten Höhle
 Tree|Baum

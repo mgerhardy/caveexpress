@@ -1,5 +1,5 @@
 function getName()
-	return "In10 Diving"
+	return "In11 Diving"
 end
 
 function onMapLoaded()

@@ -89,6 +89,7 @@ public:
 class IntroTypeDescription: public UINode {
 public:
 	IntroTypeDescription(UINode* parent, IFrontend* frontend, const EntityType& type, const Animation& animation, const std::string& text);
+	IntroTypeDescription(UINode* parent, IFrontend* frontend, const std::string& spriteName, const std::string& text);
 };
 
 class IntroBarDescription: public UINode {

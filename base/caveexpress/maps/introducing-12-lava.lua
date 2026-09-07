@@ -1,5 +1,5 @@
 function getName()
-	return "In11 Lava"
+	return "In12 Lava"
 end
 
 function onMapLoaded()
