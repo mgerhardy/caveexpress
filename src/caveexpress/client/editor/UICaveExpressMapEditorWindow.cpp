@@ -266,12 +266,7 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 
 		if (sel->entityType != nullptr) {
 			ImGui::TextUnformatted(tr("Emitter").c_str());
-			float ex = sel->gridX;
-			float ey = sel->gridY;
-			if (ImGui::InputFloat(tr("X").c_str(), &ex, 0.1f, 1.0f, "%.2f"))
-				sel->gridX = ex;
-			if (ImGui::InputFloat(tr("Y").c_str(), &ey, 0.1f, 1.0f, "%.2f"))
-				sel->gridY = ey;
+			ImGui::TextDisabled("%s", tr("Use X shift / Y shift in Selection to pack fruit and eggs in one tile.").c_str());
 			KeyValueParser kv(sel->settings);
 			if (EntityTypes::hasDirection(*sel->entityType)) {
 				bool right = kv.getBool(EMITTER_RIGHT, true);

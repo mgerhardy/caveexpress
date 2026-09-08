@@ -33,6 +33,7 @@ protected:
 	mutable bool _movingItem = false;
 	mutable bool _moveUndoStarted = false;
 	mutable gridCoord _moveGrabOffsetX = 0.0f;
+	mutable gridCoord _moveGrabOffsetY = 0.0f;
 	mutable bool _previewAltAtlas = false;
 	mutable int _nativeTileRefWidth = 16;
 	mutable UIShapeEditor _shapeEditor;

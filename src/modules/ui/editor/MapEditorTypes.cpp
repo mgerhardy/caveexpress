@@ -60,3 +60,10 @@ bool MapEditorTileItem::allowsSubTileX () const
 		return false;
 	return getSize(false).x + EPSILON < 1.0f;
 }
+
+bool MapEditorTileItem::allowsSubTileY () const
+{
+	if (!def)
+		return false;
+	return getSize(false).y + EPSILON < 1.0f;
+}

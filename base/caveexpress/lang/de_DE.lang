@@ -155,7 +155,6 @@ Hints|Tipps
 Hitting walls hard will inflict damage|Zu harter Wandkontakt reduziert Lebensenergie
 Hold ms|Hold ms
 Homepage|Homepage
-Horizontal position in tiles. Drag in Select tool to slide.|Horizontal position in tiles. Drag in Select tool to slide.
 Hover a map edge and drag to resize|Map-Rand anfahren und ziehen, um die Größe zu ändern
 Ice|Eis
 In campaigns|In Kampagnen
@@ -218,6 +217,7 @@ Npc delay|Npc delay
 npcs: how many friendly villagers can be alive from caves|npcs: how many friendly villagers can be alive from caves
 Objectives|Ziele
 Off|Aus
+Offset in tiles (0.1). Pack several fruit/eggs in one cell, or slide a liane. Select-tool drag also works.|Offset in tiles (0.1). Pack several fruit/eggs in one cell, or slide a liane. Select-tool drag also works.
 OK|OK
 On|An
 On save, copy initMap from the existing file instead of regenerating tiles.|On save, copy initMap from the existing file instead of regenerating tiles.
@@ -284,7 +284,7 @@ Seed|Seed
 See docs/caveexpress/MAPS.md|See docs/caveexpress/MAPS.md
 Select a sprite|Select a sprite
 Select a tile on the map|Select a tile on the map
-Select + drag a liane to move it horizontally|Select + drag a liane to move it horizontally
+Select + drag a liane or small item (fruit, egg) to offset it|Select + drag a liane or small item (fruit, egg) to offset it
 Selected item|Ausgewähltes Objekt
 Select game mode|Auswahl des Spielmodus
 Selection|Auswahl
@@ -360,7 +360,9 @@ Username|Username
 Use the second finger to drop the package|Benutze den zweiten Finger um das Paket abzuwerfen
 Use the second finger to drop the stone|Benutze den zweiten Finger um den Stein abzuwerfen
 Use the swing of the package|Benutze den Schwung des Paketes
+Use X shift / Y shift in Selection to pack fruit and eggs in one tile.|Use X shift / Y shift in Selection to pack fruit and eggs in one tile.
 Value|Wert
+Vertical offset in tiles (0.1). Shift+arrows nudge too.|Vertical offset in tiles (0.1). Shift+arrows nudge too.
 Vertices|Vertices
 Villagers in the water swim towards you|Dorfbewohner im Wasser schwimmen auf dich zu
 Volume|Volume
@@ -382,9 +384,9 @@ Write into the project maps folder|Write into the project maps folder
 Write sprites.lua|Write sprites.lua
 Wrote entities.lua|entities.lua geschrieben
 Wrote sprites.lua|Wrote sprites.lua
-X|X
-Y|Y
+X shift|X shift
 Yes|Ja
 You have unsaved changes. Continue?|Es gibt ungespeicherte Änderungen. Fortfahren?
 You lose if the water reaches the top|You lose if the water reaches the top
 You won!|Gewonnen
+Y shift|Y shift

@@ -100,7 +100,7 @@ Click a tile in the palette to make it the brush, then paint on the canvas. Use 
 | Cave | Clients live here. Caves spawn packages (or a named NPC) after **Npc delay**. |
 | Package target (shredder) | Deliver packages here to score. |
 | Geyser | Updraft that can lift the plane. |
-| Bridge / liane | Overlay decoration on open background. Lianes are a quarter-tile wide; in **Select** tool, click the vine itself (cyan bounds) rather than empty space in the cell. Drag left/right, use **X** in Properties, or Shift+arrows to offset them horizontally. |
+| Bridge / liane | Overlay decoration on open background. Lianes are a quarter-tile wide; in **Select** tool, click the vine itself (cyan bounds) rather than empty space in the cell. Drag left/right, use **X shift** in Properties, or Shift+arrows to offset them horizontally. |
 | Window / cave art | Visual detail on background. |
 | Gate / pressure plate | Linked trigger pair (see below). |
 
@@ -140,7 +140,9 @@ Click a sprite in the grid (tooltip shows the type name), then left-click the ma
 | `npc-walking` / `npc-blowing` / `npc-mammut` | Ground dinosaurs. Space flips facing. |
 | `tree` | Drop a stone on it for fruit. |
 
-**Emitter amount** and **Emitter delay** (Properties) apply to the next placed emitter, or to the selected emitter if one is highlighted. Directional NPCs have **Faces right**. Blowing dinosaurs also have **Blow strength** and **Wind size** (`strength=` / `size=` in Lua). Click-place and selected emitters use the same **0.1** tile **X** / **Y** step (also **Shift+arrows**).
+**Emitter amount** and **Emitter delay** (Properties) apply to the next placed emitter, or to the selected emitter if one is highlighted. Directional NPCs have **Faces right**. Blowing dinosaurs also have **Blow strength** and **Wind size** (`strength=` / `size=` in Lua).
+
+To pack several fruit, eggs, or stones into one cell: click to place (cursor snaps to **0.1** tiles), then select the item and use **X shift** / **Y shift** in Properties (same +/- 0.1 buttons as a liane), drag it in the **Select** tool, or **Shift+arrows**. A second click on the same bounds replaces the old emitter; offset it first if you want both.
 
 Cave signs, `dust`, `waste`, and `idea` are on the Tiles tab (decoration / cutscene props).
 

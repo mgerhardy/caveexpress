@@ -853,12 +853,21 @@ void UIMapEditorWindow::drawPropertiesPanel () const
 		ImGui::EndChild();
 
 		if (MapEditorTileItem* sel = _doc->getHighlightItem()) {
-			if (sel->allowsSubTileX()) {
+			const bool shiftX = sel->allowsSubTileX() || sel->entityType != nullptr;
+			const bool shiftY = sel->allowsSubTileY() || sel->entityType != nullptr;
+			if (shiftX) {
 				float ex = sel->gridX;
-				if (ImGui::InputFloat(tr("X").c_str(), &ex, 0.1f, 1.0f, "%.2f"))
-					_doc->setHighlightPosition(ex, sel->gridY);
+				if (ImGui::InputFloat(tr("X shift").c_str(), &ex, 0.1f, 1.0f, "%.2f"))
+					_doc->setHighlightPosition(std::round(ex * 10.0f) / 10.0f, sel->gridY);
 				if (ImGui::IsItemHovered())
-					ImGui::SetTooltip("%s", tr("Horizontal position in tiles. Drag in Select tool to slide.").c_str());
+					ImGui::SetTooltip("%s", tr("Offset in tiles (0.1). Pack several fruit/eggs in one cell, or slide a liane. Select-tool drag also works.").c_str());
+			}
+			if (shiftY) {
+				float ey = sel->gridY;
+				if (ImGui::InputFloat(tr("Y shift").c_str(), &ey, 0.1f, 1.0f, "%.2f"))
+					_doc->setHighlightPosition(sel->gridX, std::round(ey * 10.0f) / 10.0f);
+				if (ImGui::IsItemHovered())
+					ImGui::SetTooltip("%s", tr("Vertical offset in tiles (0.1). Shift+arrows nudge too.").c_str());
 			}
 		}
 	}
@@ -885,7 +894,7 @@ void UIMapEditorWindow::drawHelpPanel () const
 	ImGui::BulletText("%s", tr("LMB: paint / place (also selects)").c_str());
 	ImGui::BulletText("%s", tr("Select tool: hover shows the sprite bounds that will be picked").c_str());
 	ImGui::BulletText("%s", tr("Select tool or Shift+LMB: select / pick tile").c_str());
-	ImGui::BulletText("%s", tr("Select + drag a liane to move it horizontally").c_str());
+	ImGui::BulletText("%s", tr("Select + drag a liane or small item (fruit, egg) to offset it").c_str());
 	ImGui::BulletText("%s", tr("RMB: erase items of the active tab").c_str());
 	ImGui::BulletText("%s", tr("MMB click: pick, MMB drag or Space+LMB: pan").c_str());
 	ImGui::BulletText("%s", tr("Hover a map edge and drag to resize").c_str());
@@ -1494,8 +1503,9 @@ void UIMapEditorWindow::drawCanvas () const
 	if (_canvasHovered && !overlayConsumed && !edgeConsumed) {
 		if (!_panning && !space && _doc->getTool() == IMapEditorDocument::Tool::Pick) {
 			if (const MapEditorTileItem* hover = _doc->getTileAtCursor(ImGui::GetIO().KeyAlt)) {
-				if (hover->allowsSubTileX())
-					ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+				if (hover->allowsSubTileX() || hover->allowsSubTileY())
+					ImGui::SetMouseCursor(hover->allowsSubTileY() || hover->entityType != nullptr
+							? ImGuiMouseCursor_ResizeAll : ImGuiMouseCursor_ResizeEW);
 			}
 		}
 
@@ -1519,9 +1529,10 @@ void UIMapEditorWindow::drawCanvas () const
 						_doc->pickAtSelection();
 						_doc->clearRegion();
 						if (const MapEditorTileItem* hit = _doc->getHighlightItem()) {
-							if (hit->allowsSubTileX()) {
+							if (hit->allowsSubTileX() || hit->allowsSubTileY()) {
 								_movingItem = true;
 								_moveGrabOffsetX = _doc->getCursorGridX() - hit->gridX;
+								_moveGrabOffsetY = _doc->getCursorGridY() - hit->gridY;
 							}
 						}
 					}
@@ -1555,13 +1566,18 @@ void UIMapEditorWindow::drawCanvas () const
 
 	if (_movingItem && _mapEdgeDragging == IMapEditorDocument::MapEdge::None
 			&& ImGui::IsMouseDragging(ImGuiMouseButton_Left) && _doc->getHighlightItem() != nullptr) {
-		ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+		const MapEditorTileItem* moving = _doc->getHighlightItem();
+		ImGui::SetMouseCursor(moving->allowsSubTileY() || moving->entityType != nullptr
+				? ImGuiMouseCursor_ResizeAll : ImGuiMouseCursor_ResizeEW);
 		if (!_moveUndoStarted) {
 			_doc->beginUndoStroke();
 			_moveUndoStarted = true;
 		}
 		const gridCoord x = std::round((_doc->getCursorGridX() - _moveGrabOffsetX) * 10.0f) / 10.0f;
-		_doc->setHighlightPosition(x, _doc->getHighlightItem()->gridY);
+		const gridCoord y = (moving->allowsSubTileY() || moving->entityType != nullptr)
+				? std::round((_doc->getCursorGridY() - _moveGrabOffsetY) * 10.0f) / 10.0f
+				: moving->gridY;
+		_doc->setHighlightPosition(x, y);
 	}
 
 	// Commit paint/erase strokes even if the cursor left the canvas before release.
