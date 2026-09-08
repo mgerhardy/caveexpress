@@ -14,14 +14,55 @@ namespace caveexpress {
 
 namespace {
 
+int normalizeTileAngle (int angle)
+{
+	int a = angle % 360;
+	if (a < 0)
+		a += 360;
+	return ((a + 45) / 90) * 90 % 360;
+}
+
+/** Intake side of a package target after rotation (local "top" fixture). */
+void packageTargetApproachDelta (int angle, int& dx, int& dy)
+{
+	switch (normalizeTileAngle(angle)) {
+	case 90:
+		dx = 1;
+		dy = 0;
+		break;
+	case 180:
+		dx = 0;
+		dy = 1;
+		break;
+	case 270:
+		dx = -1;
+		dy = 0;
+		break;
+	default:
+		dx = 0;
+		dy = -1;
+		break;
+	}
+}
+
+void spriteFootprint (const SpriteDefPtr& def, int angle, int& w, int& h)
+{
+	w = std::max(1, static_cast<int>(std::ceil(def->width - 0.001f)));
+	h = std::max(1, static_cast<int>(std::ceil(def->height - 0.001f)));
+	// MapTile::setGridDimensions keeps width/height; the body rotates in place.
+	// 90/270 only changes the intake side (see packageTargetApproachDelta).
+	(void)angle;
+}
+
 bool tileCoversCell (const MapTileDefinition& tile, int x, int y)
 {
 	if (!tile.spriteDef)
 		return false;
 	const int tx = static_cast<int>(tile.x);
 	const int ty = static_cast<int>(tile.y);
-	const int w = std::max(1, static_cast<int>(std::ceil(tile.spriteDef->width - 0.001f)));
-	const int h = std::max(1, static_cast<int>(std::ceil(tile.spriteDef->height - 0.001f)));
+	int w = 1;
+	int h = 1;
+	spriteFootprint(tile.spriteDef, tile.angle, w, h);
 	return x >= tx && x < tx + w && y >= ty && y < ty + h;
 }
 
@@ -68,12 +109,13 @@ void countCavePlacement (const std::vector<MapTileDefinition>& tiles,
 	}
 }
 
-void markCoveredCells (std::vector<uint8_t>& filled, int width, int height, const SpriteDefPtr& def, int x, int y)
+void markCoveredCells (std::vector<uint8_t>& filled, int width, int height, const SpriteDefPtr& def, int x, int y, int angle = 0)
 {
 	if (!def || width <= 0 || height <= 0)
 		return;
-	const int tw = std::max(1, static_cast<int>(std::ceil(def->width - 0.001f)));
-	const int th = std::max(1, static_cast<int>(std::ceil(def->height - 0.001f)));
+	int tw = 1;
+	int th = 1;
+	spriteFootprint(def, angle, tw, th);
 	for (int dy = 0; dy < th; ++dy) {
 		for (int dx = 0; dx < tw; ++dx) {
 			const int cx = x + dx;
@@ -85,12 +127,13 @@ void markCoveredCells (std::vector<uint8_t>& filled, int width, int height, cons
 	}
 }
 
-void addCoveredCells (std::vector<uint8_t>& counts, int width, int height, const SpriteDefPtr& def, int x, int y)
+void addCoveredCells (std::vector<uint8_t>& counts, int width, int height, const SpriteDefPtr& def, int x, int y, int angle = 0)
 {
 	if (!def || width <= 0 || height <= 0)
 		return;
-	const int tw = std::max(1, static_cast<int>(std::ceil(def->width - 0.001f)));
-	const int th = std::max(1, static_cast<int>(std::ceil(def->height - 0.001f)));
+	int tw = 1;
+	int th = 1;
+	spriteFootprint(def, angle, tw, th);
 	for (int dy = 0; dy < th; ++dy) {
 		for (int dx = 0; dx < tw; ++dx) {
 			const int cx = x + dx;
@@ -116,7 +159,8 @@ int countOccupyingOverlaps (int width, int height, const std::vector<MapTileDefi
 		if (!tileOccupiesCell(type) || SpriteTypes::isBackground(type) || SpriteTypes::isWindow(type)
 				|| SpriteTypes::isCave(type))
 			continue;
-		addCoveredCells(counts, width, height, tile.spriteDef, static_cast<int>(tile.x), static_cast<int>(tile.y));
+		addCoveredCells(counts, width, height, tile.spriteDef, static_cast<int>(tile.x), static_cast<int>(tile.y),
+				tile.angle);
 	}
 	int overlaps = 0;
 	for (uint8_t c : counts) {
@@ -135,7 +179,8 @@ int countEmptyCells (int width, int height, const std::vector<MapTileDefinition>
 	for (const MapTileDefinition& tile : tiles) {
 		if (!tile.spriteDef || !tileOccupiesCell(tile.spriteDef->type))
 			continue;
-		markCoveredCells(filled, width, height, tile.spriteDef, static_cast<int>(tile.x), static_cast<int>(tile.y));
+		markCoveredCells(filled, width, height, tile.spriteDef, static_cast<int>(tile.x), static_cast<int>(tile.y),
+				tile.angle);
 	}
 	for (const CaveTileDefinition& cave : caves)
 		markCoveredCells(filled, width, height, cave.spriteDef, static_cast<int>(cave.x), static_cast<int>(cave.y));
@@ -165,12 +210,14 @@ MapValidator::CellKind MapValidator::classifyTile (const SpriteType& type) const
 	return CellKind::FlyableDecor;
 }
 
-void MapValidator::paintSprite (Grid& grid, const SpriteDefPtr& def, int x, int y, CellKind kind) const
+void MapValidator::paintSprite (Grid& grid, const SpriteDefPtr& def, int x, int y, CellKind kind, int angle) const
 {
 	if (!def)
 		return;
-	const int w = std::max(1, static_cast<int>(std::ceil(def->width - 0.001f)));
-	const int h = std::max(1, static_cast<int>(std::ceil(def->height - 0.001f)));
+	int w = 1;
+	int h = 1;
+	spriteFootprint(def, angle, w, h);
+	const int16_t targetAngle = static_cast<int16_t>(normalizeTileAngle(angle));
 	for (int dy = 0; dy < h; ++dy) {
 		for (int dx = 0; dx < w; ++dx) {
 			const int cx = x + dx;
@@ -192,12 +239,18 @@ void MapValidator::paintSprite (Grid& grid, const SpriteDefPtr& def, int x, int 
 				grid.isWindow[i] = 1;
 			if (SpriteTypes::isCave(def->type))
 				grid.isCave[i] = 1;
-			if (SpriteTypes::isPackageTarget(def->type))
+			if (SpriteTypes::isPackageTarget(def->type)) {
 				grid.isPackageTarget[i] = 1;
+				grid.packageTargetAngle[i] = targetAngle;
+			}
 			if (SpriteTypes::isBridge(def->type))
 				grid.isBridge[i] = 1;
 			if (SpriteTypes::isBackground(def->type))
 				grid.isBackground[i] = 1;
+			if (SpriteTypes::isGeyser(def->type))
+				grid.isGeyser[i] = 1;
+			if (SpriteTypes::isSlope(def->type) || def->id.find("slope") != std::string::npos)
+				grid.isSlope[i] = 1;
 		}
 	}
 }
@@ -293,14 +346,17 @@ MapMetrics MapValidator::evaluate (int width, int height,
 	grid.isWindow.assign(n, 0);
 	grid.isCave.assign(n, 0);
 	grid.isPackageTarget.assign(n, 0);
+	grid.packageTargetAngle.assign(n, 0);
 	grid.isBridge.assign(n, 0);
 	grid.isBackground.assign(n, 0);
+	grid.isGeyser.assign(n, 0);
+	grid.isSlope.assign(n, 0);
 
 	for (const MapTileDefinition& tile : tiles) {
 		if (!tile.spriteDef)
 			continue;
 		paintSprite(grid, tile.spriteDef, static_cast<int>(tile.x), static_cast<int>(tile.y),
-				classifyTile(tile.spriteDef->type));
+				classifyTile(tile.spriteDef->type), tile.angle);
 	}
 	for (const CaveTileDefinition& cave : caves) {
 		if (!cave.spriteDef)
@@ -312,8 +368,13 @@ MapMetrics MapValidator::evaluate (int width, int height,
 			grid.isCave[grid.idx(cx, cy)] = 1;
 	}
 
+	struct TargetPoi {
+		int x;
+		int y;
+		int angle;
+	};
 	std::vector<std::pair<int, int>> cavePositions;
-	std::vector<std::pair<int, int>> packageTargets;
+	std::vector<TargetPoi> packageTargets;
 	std::vector<std::pair<int, int>> packageEmitters;
 	std::vector<std::pair<int, int>> windows;
 
@@ -323,7 +384,7 @@ MapMetrics MapValidator::evaluate (int width, int height,
 			if (grid.isCave[i])
 				cavePositions.emplace_back(x, y);
 			if (grid.isPackageTarget[i])
-				packageTargets.emplace_back(x, y);
+				packageTargets.push_back({ x, y, grid.packageTargetAngle[i] });
 			if (grid.isWindow[i])
 				windows.emplace_back(x, y);
 			if (grid.kind[i] == CellKind::Walkable)
@@ -362,8 +423,8 @@ MapMetrics MapValidator::evaluate (int width, int height,
 					static_cast<int>(std::floor(e.y + EPSILON)));
 			++m.packageEmitterCount;
 		} else if (EntityTypes::isPackageTarget(*e.type)) {
-			packageTargets.emplace_back(static_cast<int>(std::floor(e.x + EPSILON)),
-					static_cast<int>(std::floor(e.y + EPSILON)));
+			packageTargets.push_back({ static_cast<int>(std::floor(e.x + EPSILON)),
+					static_cast<int>(std::floor(e.y + EPSILON)), 0 });
 			++m.packageTargetCount;
 		} else if (EntityTypes::isTree(*e.type)) {
 			++m.treeEmitterCount;
@@ -421,27 +482,88 @@ MapMetrics MapValidator::evaluate (int width, int height,
 		return false;
 	};
 
+	// Packages slide on slopes and ride geysers, connecting air pockets the
+	// player cannot fly through. BFS from the shredder through air/geyser/slope.
+	auto packagePipeReachable = [&] (int tx, int ty, std::vector<uint8_t>* pipeAir) {
+		static const int DIR[4][2] = { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } };
+		auto pipeCell = [&] (int x, int y) {
+			if (!grid.inBounds(x, y))
+				return false;
+			const int i = grid.idx(x, y);
+			return grid.flyable(x, y) || grid.isGeyser[i] || grid.isSlope[i];
+		};
+		if (!pipeCell(tx, ty)) {
+			// Start from intake / neighbours if the shredder cell itself is solid.
+			bool any = false;
+			for (const auto& d : DIR) {
+				if (pipeCell(tx + d[0], ty + d[1])) {
+					any = true;
+					break;
+				}
+			}
+			if (!any)
+				return false;
+		}
+		std::vector<uint8_t> seen(static_cast<size_t>(n), 0);
+		std::queue<std::pair<int, int>> q;
+		auto enqueue = [&] (int x, int y) {
+			if (!pipeCell(x, y))
+				return;
+			const int i = grid.idx(x, y);
+			if (seen[i])
+				return;
+			seen[i] = 1;
+			q.emplace(x, y);
+		};
+		enqueue(tx, ty);
+		for (const auto& d : DIR)
+			enqueue(tx + d[0], ty + d[1]);
+		bool hitReached = false;
+		while (!q.empty()) {
+			const int x = q.front().first;
+			const int y = q.front().second;
+			q.pop();
+			const int i = grid.idx(x, y);
+			if (grid.flyable(x, y)) {
+				if (pipeAir)
+					(*pipeAir)[i] = 1;
+				if (reached[i])
+					hitReached = true;
+			}
+			for (const auto& d : DIR)
+				enqueue(x + d[0], y + d[1]);
+		}
+		return hitReached;
+	};
+
 	for (const auto& c : cavePositions) {
 		if (poiReachable(c.first, c.second))
 			++m.cavesReachable;
 	}
 	for (const auto& t : packageTargets) {
-		// Delivery from air above the target (player approach cell).
-		const int ax = t.first;
-		const int ay = t.second - 1;
-		if ((grid.inBounds(ax, ay) && grid.flyable(ax, ay) && reached[grid.idx(ax, ay)]) || poiReachable(t.first, t.second))
+		int adx = 0;
+		int ady = -1;
+		packageTargetApproachDelta(t.angle, adx, ady);
+		const int ax = t.x + adx;
+		const int ay = t.y + ady;
+		if ((grid.inBounds(ax, ay) && grid.flyable(ax, ay) && reached[grid.idx(ax, ay)])
+				|| poiReachable(t.x, t.y) || packagePipeReachable(t.x, t.y, nullptr))
 			++m.packageTargetsReachable;
 	}
 
 	// Package emitters reach same component as some target delivery cell
 	std::vector<uint8_t> targetAir(n, 0);
 	for (const auto& t : packageTargets) {
-		const int ax = t.first;
-		const int ay = t.second - 1;
+		int adx = 0;
+		int ady = -1;
+		packageTargetApproachDelta(t.angle, adx, ady);
+		const int ax = t.x + adx;
+		const int ay = t.y + ady;
 		if (grid.flyable(ax, ay))
 			targetAir[grid.idx(ax, ay)] = 1;
-		if (grid.flyable(t.first, t.second))
-			targetAir[grid.idx(t.first, t.second)] = 1;
+		if (grid.flyable(t.x, t.y))
+			targetAir[grid.idx(t.x, t.y)] = 1;
+		packagePipeReachable(t.x, t.y, &targetAir);
 	}
 	for (const auto& p : packageEmitters) {
 		bool ok = false;
@@ -655,18 +777,29 @@ MapMetrics MapValidator::evaluate (int width, int height,
 			++m.windowWindowAdjacencies;
 	}
 
-	// Package target niche for delivery from air above the target (player approach
-	// cell): walkable L/R, solid below, air above.
+	// Package target niche: air on the rotated intake side, solid opposite,
+	// walkable on the two perpendicular sides.
 	for (const auto& t : packageTargets) {
-		const int x = t.first;
-		const int y = t.second;
-		const bool leftOk = grid.solid(x - 1, y);
-		const bool rightOk = grid.solid(x + 1, y);
-		const bool belowOk = grid.solid(x, y + 1);
-		const bool aboveOk = grid.flyable(x, y - 1);
-		const bool leftWalk = grid.inBounds(x - 1, y) && grid.kind[grid.idx(x - 1, y)] == CellKind::Walkable;
-		const bool rightWalk = grid.inBounds(x + 1, y) && grid.kind[grid.idx(x + 1, y)] == CellKind::Walkable;
-		if (!(leftOk && rightOk && belowOk && aboveOk && leftWalk && rightWalk))
+		int adx = 0;
+		int ady = -1;
+		packageTargetApproachDelta(t.angle, adx, ady);
+		const int x = t.x;
+		const int y = t.y;
+		const int sx = -adx;
+		const int sy = -ady;
+		const int p1x = ady;
+		const int p1y = -adx;
+		const int p2x = -ady;
+		const int p2y = adx;
+		const bool intakeOk = grid.flyable(x + adx, y + ady);
+		const bool backOk = grid.solid(x + sx, y + sy);
+		const bool side1Ok = grid.solid(x + p1x, y + p1y);
+		const bool side2Ok = grid.solid(x + p2x, y + p2y);
+		const bool side1Walk = grid.inBounds(x + p1x, y + p1y)
+				&& grid.kind[grid.idx(x + p1x, y + p1y)] == CellKind::Walkable;
+		const bool side2Walk = grid.inBounds(x + p2x, y + p2y)
+				&& grid.kind[grid.idx(x + p2x, y + p2y)] == CellKind::Walkable;
+		if (!(intakeOk && backOk && side1Ok && side2Ok && side1Walk && side2Walk))
 			++m.packageTargetsWithBadNiche;
 	}
 
@@ -677,7 +810,14 @@ MapMetrics MapValidator::evaluate (int width, int height,
 		int bestAir = 999;
 		for (const auto& c : cavePositions) {
 			for (const auto& t : packageTargets) {
-				if (c.first == t.first && c.second < t.second)
+				int adx = 0;
+				int ady = -1;
+				packageTargetApproachDelta(t.angle, adx, ady);
+				const bool stackedOnIntake = (adx == 0 && c.first == t.x
+						&& ((ady < 0 && c.second < t.y) || (ady > 0 && c.second > t.y)))
+						|| (ady == 0 && c.second == t.y
+						&& ((adx > 0 && c.first > t.x) || (adx < 0 && c.first < t.x)));
+				if (stackedOnIntake)
 					++m.cavesAbovePackageTarget;
 
 				int caveX = c.first;
@@ -698,15 +838,15 @@ MapMetrics MapValidator::evaluate (int width, int height,
 						continue;
 				}
 
-				int targetAirX = t.first;
-				int targetAirY = t.second - 1;
+				int targetAirX = t.x + adx;
+				int targetAirY = t.y + ady;
 				if (!grid.flyable(targetAirX, targetAirY)) {
 					static const int OFF[4][2] = { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } };
 					bool found = false;
 					for (const auto& o : OFF) {
-						if (grid.flyable(t.first + o[0], t.second + o[1])) {
-							targetAirX = t.first + o[0];
-							targetAirY = t.second + o[1];
+						if (grid.flyable(t.x + o[0], t.y + o[1])) {
+							targetAirX = t.x + o[0];
+							targetAirY = t.y + o[1];
 							found = true;
 							break;
 						}

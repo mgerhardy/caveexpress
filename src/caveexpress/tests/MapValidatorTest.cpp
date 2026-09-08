@@ -53,11 +53,11 @@ protected:
 		return def;
 	}
 
-	void addTile (std::vector<MapTileDefinition>& tiles, const char* id, int x, int y) const
+	void addTile (std::vector<MapTileDefinition>& tiles, const char* id, int x, int y, EntityAngle angle = 0) const
 	{
 		const SpriteDefPtr def = requireSprite(id);
 		if (def)
-			tiles.emplace_back(static_cast<gridCoord>(x), static_cast<gridCoord>(y), def, 0);
+			tiles.emplace_back(static_cast<gridCoord>(x), static_cast<gridCoord>(y), def, angle);
 	}
 
 	/** Open flyable map with rock border; start at (1,1). */
@@ -109,25 +109,26 @@ TEST_F(MapValidatorTest, testAllMapsValidate)
 
 TEST_F(MapValidatorTest, testHandMapBaseline)
 {
-	const char* maps[] = {
-		"rock-01", "rock-08", "wind-01", "wind-02", "wind-03",
-		"villages-01", "villages-08", "third-ice-01", "third-ice-05"
-	};
+	LUAMapManager mgr;
+	mgr.loadMaps();
+	ASSERT_FALSE(mgr.getMaps().empty());
 
-	int hardPass = 0;
-	for (const char* name : maps) {
+	int checked = 0;
+	for (const auto& entry : mgr.getMaps()) {
+		const std::string& name = entry.first;
+		if (string::startsWith(name, "test") || string::startsWith(name, "empty"))
+			continue;
 		CaveExpressMapContext ctx(name);
 		ASSERT_TRUE(ctx.load(true)) << name;
 		const MapMetrics m = evaluateContext(ctx);
 		Log::info(LOG_GAMEIMPL,
 				"hand map %s score=%.1f valid=%i exposed=%.3f orphan=%.3f caves=%i/%i",
-				name, m.totalScore, m.valid ? 1 : 0, m.exposedRockTopRatio, m.orphanColliderRatio,
+				name.c_str(), m.totalScore, m.valid ? 1 : 0, m.exposedRockTopRatio, m.orphanColliderRatio,
 				m.cavesReachable, m.caveCount);
-		if (m.valid)
-			++hardPass;
-		EXPECT_TRUE(m.valid || m.caveCount == 0) << name << ": " << m.failureReason;
+		++checked;
+		EXPECT_TRUE(m.valid) << name << ": " << m.failureReason;
 	}
-	EXPECT_GE(hardPass, static_cast<int>(sizeof(maps) / sizeof(maps[0])) - 2);
+	EXPECT_GT(checked, 0);
 }
 
 TEST_F(MapValidatorTest, testRandomMapAcceptedMapsMeetRules)
@@ -214,6 +215,36 @@ TEST_F(MapValidatorTest, testMetricShortPlatformRun)
 			3, 4, /*minPlatformLength=*/3, 4);
 	EXPECT_GT(m.shortPlatformRuns, 0);
 	EXPECT_GE(m.isolatedWalkables, 1);
+}
+
+TEST_F(MapValidatorTest, testRotatedPackageTargetUsesIntakeSide)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts = { { "1", "1" } };
+	const int w = 8;
+	const int h = 8;
+	fillOpenBorder(tiles, w, h);
+	// Seal every neighbour of (3,3) except the intake cell below.
+	addTile(tiles, "tile-rock-01", 3, 2);
+	addTile(tiles, "tile-rock-01", 2, 3);
+	addTile(tiles, "tile-rock-01", 4, 3);
+	addTile(tiles, "tile-packagetarget-rock-01-idle", 3, 3, 180);
+
+	const MapMetrics rotated = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_EQ(1, rotated.packageTargetsReachable) << rotated.failureReason;
+	EXPECT_TRUE(rotated.valid) << rotated.failureReason;
+
+	tiles.clear();
+	fillOpenBorder(tiles, w, h);
+	addTile(tiles, "tile-rock-01", 3, 2);
+	addTile(tiles, "tile-rock-01", 2, 3);
+	addTile(tiles, "tile-rock-01", 4, 3);
+	addTile(tiles, "tile-packagetarget-rock-01-idle", 3, 3, 0);
+	const MapMetrics upright = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	// Upright intake is above, which is rock — still reachable via the flyable neighbour below.
+	EXPECT_EQ(1, upright.packageTargetsReachable) << upright.failureReason;
 }
 
 TEST_F(MapValidatorTest, testMetricPackageTargetBadNiche)

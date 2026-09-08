@@ -115,8 +115,12 @@ private:
 		std::vector<uint8_t> isWindow;
 		std::vector<uint8_t> isCave;
 		std::vector<uint8_t> isPackageTarget;
+		/** 0, 90, 180, 270 — intake/"top" after tile rotation. */
+		std::vector<int16_t> packageTargetAngle;
 		std::vector<uint8_t> isBridge;
 		std::vector<uint8_t> isBackground;
+		std::vector<uint8_t> isGeyser;
+		std::vector<uint8_t> isSlope;
 
 		int idx (int x, int y) const { return x + y * width; }
 		bool inBounds (int x, int y) const {
@@ -136,7 +140,7 @@ private:
 		}
 	};
 
-	void paintSprite (Grid& grid, const SpriteDefPtr& def, int x, int y, CellKind kind) const;
+	void paintSprite (Grid& grid, const SpriteDefPtr& def, int x, int y, CellKind kind, int angle = 0) const;
 	CellKind classifyTile (const SpriteType& type) const;
 	void floodFlyable (const Grid& grid, int sx, int sy, std::vector<uint8_t>& reached) const;
 	int airPathDistance (const Grid& grid, int sx, int sy, int gx, int gy) const;
