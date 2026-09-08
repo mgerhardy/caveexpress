@@ -33,6 +33,7 @@ Commands:
   wait           Wait until the emulator/device has finished booting
   install        adb install APK(s); starts the emulator if needed
   start          Launch ANDROID_GAME (default: caveexpress)
+  logs           Follow logcat for the game (crashes, SDL, ActivityManager)
   run            setup + build (host ABI) + emulator + install + start
   stop           Shut down a running emulator
   cmake-target   cmake --build <android-dir> --target <name>
@@ -49,6 +50,7 @@ Environment:
   ANDROID_AVD                       AVD name (default: caveexpress-<abi>)
   ANDROID_SKIP_APK=1                native .so only
   ANDROID_EMULATOR_HEADLESS=1       no emulator window
+  ANDROID_LOGS_DUMP=1               logs: print the buffer and exit
 EOF
 }
 
@@ -437,6 +439,36 @@ cmd_start() {
 	"$adb" shell am start -n "$(activity_for_game "$ANDROID_GAME")"
 }
 
+cmd_logs() {
+	setup_sdk_ndk
+	if ! device_connected; then
+		echo "No Android device connected. Start one with: make android-emulator" >&2
+		exit 1
+	fi
+	local adb="$SDK_ROOT/platform-tools/adb"
+	local pkg="org.${ANDROID_GAME}"
+	# SDL native logs, Java activity, ART/JNI aborts, linker errors
+	local filters=(
+		SDL:V
+		DEBUG:I
+		AndroidRuntime:V
+		libc:V
+		"${ANDROID_GAME}:V"
+		"${pkg}:V"
+		ActivityManager:I
+		ActivityTaskManager:I
+	)
+	if [ "${ANDROID_LOGS_DUMP:-}" = "1" ]; then
+		"$adb" logcat -d -v threadtime -t "${ANDROID_LOGS_LINES:-500}" "${filters[@]}" '*:S'
+		return 0
+	fi
+	echo "Following logcat for ${pkg} (Ctrl-C to stop)"
+	echo "Recent crash/fatal lines:"
+	"$adb" logcat -d -v threadtime -t 400 | grep -E 'F/DEBUG|E/AndroidRuntime|FATAL EXCEPTION|UnsatisfiedLinkError|F/libc' || true
+	echo "---- live ----"
+	"$adb" logcat -v threadtime "${filters[@]}" '*:S'
+}
+
 cmd_run() {
 	ANDROID_ABI="${ANDROID_ABI:-$(host_abi)}"
 	GAMES="${GAMES:-$ANDROID_GAME}"
@@ -486,6 +518,7 @@ case "$cmd" in
 	wait) export_android_env; cmd_wait ;;
 	install) cmd_install ;;
 	start) cmd_start ;;
+	logs) cmd_logs ;;
 	run) cmd_run ;;
 	stop) cmd_stop ;;
 	cmake-target) cmd_cmake_target "${1:-}" ;;

@@ -20,6 +20,8 @@ android {
     }
 
     flavorDimensions "game"
+    // Launcher icons live in src/<flavor>/res/mipmap-*/ic_launcher.png
+    // (from contrib/<game>-icon-512x512.png).
     productFlavors {
         caveexpress {
             dimension "game"

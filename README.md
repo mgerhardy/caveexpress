@@ -94,7 +94,7 @@ make android BUILDTYPE=Release  # arm64-v8a APKs (same as GitHub Actions)
 make android-run                # host-ABI APK, start emulator, install, launch CaveExpress
 ```
 
-`make android-run ANDROID_GAME=cavepacker` launches CavePacker. `make android-stop` shuts the emulator down.
+`make android-run ANDROID_GAME=cavepacker` launches CavePacker. `make android-stop` shuts the emulator down. `make android-logs` follows logcat (crashes, SDL, the game process); `ANDROID_LOGS_DUMP=1 make android-logs` prints the current buffer and exits.
 
 Need JDK 17+, ninja, unzip, and `/dev/kvm` for a fast emulator. The SDK is stored in `build/android_sdk/` by default. `ANDROID_SKIP_APK=1` builds only the native `.so` files. `ANDROID_ABI` defaults to `arm64-v8a` for `make android` and to the host ABI (`x86_64` or `arm64-v8a`) for `make android-run`.
 

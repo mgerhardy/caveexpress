@@ -20,7 +20,7 @@ export ANDROID_SDK_ROOT
 # Optional local overrides; empty recipe so the catch-all `%` does not try to build it.
 $(CONFIG): ;
 
-.PHONY: android android-setup android-apk android-emulator android-run android-install android-start android-stop android-clean android-help
+.PHONY: android android-setup android-apk android-emulator android-run android-install android-start android-stop android-logs android-clean android-help
 .PHONY: android-caveexpress-apk android-caveexpress-install android-caveexpress-start android-caveexpress-backtrace
 .PHONY: android-cavepacker-apk android-cavepacker-install android-cavepacker-start android-cavepacker-backtrace
 
@@ -40,6 +40,9 @@ android-install:
 
 android-start:
 	$(Q)$(ANDROID_SCRIPT) start
+
+android-logs:
+	$(Q)$(ANDROID_SCRIPT) logs
 
 # Host-ABI APK, start emulator if needed, install and launch CaveExpress (or ANDROID_GAME=cavepacker).
 android-run:

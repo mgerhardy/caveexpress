@@ -337,7 +337,7 @@ std::string Android::getLanguage ()
 		return "";
 	}
 
-	jstring locale = reinterpret_cast<jstring>(_env->CallObjectMethod(_cls, _getLocale));
+	jstring locale = reinterpret_cast<jstring>(_env->CallStaticObjectMethod(_cls, _getLocale));
 	if (testException() || locale == nullptr) {
 		Log::error(LOG_COMMON, "error calling getLocale()");
 		return "";
