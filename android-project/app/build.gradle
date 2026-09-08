@@ -2,6 +2,11 @@ apply plugin: 'com.android.application'
 
 def nativeLibDir = project.findProperty('nativeLibDir')
 def assetsDir = project.findProperty('assetsDir')
+// ANDROID_VERSION_* wins so a GitHub tag can override CMake/flavor defaults.
+def injectedVersionName = System.getenv('ANDROID_VERSION_NAME') ?: project.findProperty('appVersionName')
+def injectedVersionCode = System.getenv('ANDROID_VERSION_CODE') ?: project.findProperty('appVersionCode')
+def keystorePath = System.getenv('ANDROID_KEYSTORE_PATH')
+def hasReleaseKeystore = keystorePath != null && !keystorePath.isEmpty() && file(keystorePath).exists()
 
 android {
     namespace "org.caveproductions.game"
@@ -19,6 +24,17 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
+    if (hasReleaseKeystore) {
+        signingConfigs {
+            release {
+                storeFile file(keystorePath)
+                storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('ANDROID_KEY_ALIAS')
+                keyPassword System.getenv('ANDROID_KEY_PASSWORD') ?: System.getenv('ANDROID_KEYSTORE_PASSWORD')
+            }
+        }
+    }
+
     flavorDimensions "game"
     // Launcher icons live in src/<flavor>/res/mipmap-*/ic_launcher.png
     // (from contrib/<game>-icon-512x512.png).
@@ -26,16 +42,16 @@ android {
         caveexpress {
             dimension "game"
             applicationId "org.caveexpress"
-            versionCode 31
-            versionName "2.7"
+            versionCode injectedVersionCode ? injectedVersionCode.toInteger() : 31
+            versionName injectedVersionName ?: "2.7"
             resValue "string", "app_name", "CaveExpress"
             manifestPlaceholders = [gameActivity: "org.caveexpress.CaveExpress"]
         }
         cavepacker {
             dimension "game"
             applicationId "org.cavepacker"
-            versionCode 11
-            versionName "2.7"
+            versionCode injectedVersionCode ? injectedVersionCode.toInteger() : 11
+            versionName injectedVersionName ?: "2.7"
             resValue "string", "app_name", "CavePacker"
             manifestPlaceholders = [gameActivity: "org.cavepacker.CavePacker"]
         }
@@ -45,6 +61,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (hasReleaseKeystore) {
+                signingConfig signingConfigs.release
+            }
         }
         debug {
             jniDebuggable true

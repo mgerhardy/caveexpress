@@ -3,6 +3,7 @@
 # Versions match .github/workflows/main.yml (NDK r28c, platform 34, build-tools 34.0.0).
 #
 #   ./contrib/scripts/android.sh          # build APKs (CI default)
+#   ./contrib/scripts/android.sh bundle   # release Play App Bundles (AAB)
 #   ./contrib/scripts/android.sh setup    # SDK, NDK, emulator, AVD — skips existing files
 #   ./contrib/scripts/android.sh run      # setup + build (host ABI) + emulator + install + launch
 #
@@ -29,6 +30,7 @@ Usage: $(basename "$0") [command] [cmake-target]
 Commands:
   setup          Install SDK, NDK, emulator, system image, AVD (skips existing)
   build          Configure + build native libs and debug APKs (default; CI)
+  bundle         Configure + build native libs and release Play App Bundles
   emulator       Start the AVD if no Android device is connected
   wait           Wait until the emulator/device has finished booting
   install        adb install APK(s); starts the emulator if needed
@@ -49,6 +51,13 @@ Environment:
   ANDROID_GAME                      game to launch (default: caveexpress)
   ANDROID_AVD                       AVD name (default: caveexpress-<abi>)
   ANDROID_SKIP_APK=1                native .so only
+  ANDROID_PACKAGE=aab               build: package release AABs instead of debug APKs
+  ANDROID_VERSION_NAME              Gradle versionName override (tag releases)
+  ANDROID_VERSION_CODE              Gradle versionCode override (tag releases)
+  ANDROID_KEYSTORE_PATH             release keystore for signed AABs
+  ANDROID_KEYSTORE_PASSWORD         keystore password
+  ANDROID_KEY_ALIAS                 key alias
+  ANDROID_KEY_PASSWORD              key password (defaults to keystore password)
   ANDROID_EMULATOR_HEADLESS=1       no emulator window
   ANDROID_LOGS_DUMP=1               logs: print the buffer and exit
 EOF
@@ -404,9 +413,21 @@ cmd_build() {
 		return 0
 	fi
 	write_local_properties
+	local pkg="${ANDROID_PACKAGE:-apk}" target
 	for game in $(games_to_build); do
-		cmake --build "$BUILD_DIR" --target "android-${game}-apk"
+		if [ "$pkg" = "aab" ]; then
+			target="android-${game}-aab"
+		else
+			target="android-${game}-apk"
+		fi
+		cmake --build "$BUILD_DIR" --target "$target"
 	done
+}
+
+cmd_bundle() {
+	export ANDROID_PACKAGE=aab
+	export BUILDTYPE="${BUILDTYPE:-Release}"
+	cmd_build
 }
 
 cmd_install() {
@@ -514,6 +535,7 @@ fi
 case "$cmd" in
 	setup) cmd_setup ;;
 	build) cmd_build ;;
+	bundle) cmd_bundle ;;
 	emulator) cmd_emulator ;;
 	wait) export_android_env; cmd_wait ;;
 	install) cmd_install ;;

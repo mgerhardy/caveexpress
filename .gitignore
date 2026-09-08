@@ -47,3 +47,6 @@ doxygen
 /android-project/app/build
 /android-project/build
 /cp-build-android
+*.jks
+*.keystore
+*.p12

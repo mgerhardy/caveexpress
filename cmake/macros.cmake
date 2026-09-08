@@ -200,6 +200,7 @@ endmacro()
 #
 # Helper targets:
 # * android-PROJECTNAME-apk       packages a debug APK via Gradle
+# * android-PROJECTNAME-aab       packages a release Play App Bundle via Gradle
 # * android-PROJECTNAME-install   installs that APK with adb
 # * android-PROJECTNAME-start     launches the activity
 # * android-PROJECTNAME-backtrace symbolizes a tombstone / logcat crash
@@ -266,12 +267,25 @@ macro(cp_android_prepare PROJECTNAME APPNAME VERSION VERSION_CODE)
 				assemble${_APK_FLAVOR}Debug
 				-PnativeLibDir=${ANDROID_BIN_ROOT}/jniLibs
 				-PassetsDir=${ANDROID_ASSETS_OUTDIR}
-				-Pandroid.injected.version.name=${VERSION}
-				-Pandroid.injected.version.code=${VERSION_CODE}
+				-PappVersionName=${VERSION}
+				-PappVersionCode=${VERSION_CODE}
 			DEPENDS ${PROJECTNAME}
 			WORKING_DIRECTORY ${ANDROID_ROOT}
 			USES_TERMINAL
 			COMMENT "Gradle assemble${_APK_FLAVOR}Debug"
+		)
+		add_custom_target(android-${PROJECTNAME}-aab
+			COMMAND ${ANDROID_GRADLEW}
+				--project-dir ${ANDROID_ROOT}
+				bundle${_APK_FLAVOR}Release
+				-PnativeLibDir=${ANDROID_BIN_ROOT}/jniLibs
+				-PassetsDir=${ANDROID_ASSETS_OUTDIR}
+				-PappVersionName=${VERSION}
+				-PappVersionCode=${VERSION_CODE}
+			DEPENDS ${PROJECTNAME}
+			WORKING_DIRECTORY ${ANDROID_ROOT}
+			USES_TERMINAL
+			COMMENT "Gradle bundle${_APK_FLAVOR}Release"
 		)
 		if (ANDROID_ADB)
 			add_custom_target(android-${PROJECTNAME}-install

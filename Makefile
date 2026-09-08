@@ -20,13 +20,17 @@ export ANDROID_SDK_ROOT
 # Optional local overrides; empty recipe so the catch-all `%` does not try to build it.
 $(CONFIG): ;
 
-.PHONY: android android-setup android-apk android-emulator android-run android-install android-start android-stop android-logs android-clean android-help
-.PHONY: android-caveexpress-apk android-caveexpress-install android-caveexpress-start android-caveexpress-backtrace
-.PHONY: android-cavepacker-apk android-cavepacker-install android-cavepacker-start android-cavepacker-backtrace
+.PHONY: android android-setup android-apk android-aab android-emulator android-run android-install android-start android-stop android-logs android-clean android-help
+.PHONY: android-caveexpress-apk android-caveexpress-aab android-caveexpress-install android-caveexpress-start android-caveexpress-backtrace
+.PHONY: android-cavepacker-apk android-cavepacker-aab android-cavepacker-install android-cavepacker-start android-cavepacker-backtrace
 
 # Native debug APKs (arm64-v8a). Same entry point as CI (`make android BUILDTYPE=Release`).
 android android-apk:
 	$(Q)BUILDTYPE=$(BUILDTYPE) $(ANDROID_SCRIPT) build
+
+# Signed Play App Bundles when ANDROID_KEYSTORE_* is set; unsigned otherwise.
+android-aab:
+	$(Q)BUILDTYPE=Release $(ANDROID_SCRIPT) bundle
 
 # SDK, NDK r28c, emulator, system image, AVD — skips packages/files that already exist.
 android-setup:
@@ -58,8 +62,8 @@ android-help:
 	$(Q)$(ANDROID_SCRIPT) help
 
 # CMake helper targets in the Android build tree (not the desktop BUILDDIR).
-android-caveexpress-apk android-caveexpress-install android-caveexpress-start android-caveexpress-backtrace \
-android-cavepacker-apk android-cavepacker-install android-cavepacker-start android-cavepacker-backtrace:
+android-caveexpress-apk android-caveexpress-aab android-caveexpress-install android-caveexpress-start android-caveexpress-backtrace \
+android-cavepacker-apk android-cavepacker-aab android-cavepacker-install android-cavepacker-start android-cavepacker-backtrace:
 	$(Q)BUILDTYPE=$(BUILDTYPE) $(ANDROID_SCRIPT) cmake-target $@
 
 all:

@@ -1,0 +1,183 @@
+name: Play Store
+
+# Signed AABs for org.caveexpress and org.cavepacker.
+# Tags like 2.7 or 2.7.1 start a release. Prerelease tags (2.5-dev) are ignored.
+#
+# Required repository secrets:
+#   ANDROID_KEYSTORE_BASE64     base64 of the Play upload keystore (.jks / .keystore)
+#   ANDROID_KEYSTORE_PASSWORD
+#   ANDROID_KEY_ALIAS
+#   ANDROID_KEY_PASSWORD        optional; defaults to ANDROID_KEYSTORE_PASSWORD
+#   PLAY_SERVICE_ACCOUNT_JSON   Play Console service account JSON (single line preferred)
+#
+# Optional repository variables:
+#   PLAY_TRACK                  internal (default), alpha, beta, or production
+#   PLAY_RELEASE_STATUS         completed (default) or draft
+on:
+    push:
+        tags:
+            - '*'
+    workflow_dispatch:
+        inputs:
+            track:
+                description: Play Console track
+                type: choice
+                default: internal
+                options:
+                    - internal
+                    - alpha
+                    - beta
+                    - production
+            status:
+                description: Release status
+                type: choice
+                default: completed
+                options:
+                    - completed
+                    - draft
+            version:
+                description: versionName when not running from a tag (e.g. 2.7)
+                required: false
+                default: '2.7'
+
+permissions:
+    contents: write
+
+jobs:
+    play:
+        if: github.event_name == 'workflow_dispatch' || (github.ref_type == 'tag' && !contains(github.ref_name, '-'))
+        timeout-minutes: 90
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v4
+
+        - name: Resolve version
+          id: version
+          run: |
+            if [ "${{ github.ref_type }}" = "tag" ]; then
+              VER="${GITHUB_REF_NAME#v}"
+            else
+              VER="${{ github.event.inputs.version }}"
+              VER="${VER:-2.7}"
+            fi
+            if ! echo "$VER" | grep -Eq '^[0-9]+\.[0-9]+(\.[0-9]+)?$'; then
+              echo "Tag/version must be X.Y or X.Y.Z, got: $VER" >&2
+              exit 1
+            fi
+            IFS=. read -r major minor patch <<< "${VER}.0"
+            patch="${patch:-0}"
+            CODE=$((major * 10000 + minor * 100 + patch))
+            echo "name=$VER" >> "$GITHUB_OUTPUT"
+            echo "code=$CODE" >> "$GITHUB_OUTPUT"
+            echo "Using versionName=$VER versionCode=$CODE"
+
+        - name: Install host packages
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends ninja-build ccache
+
+        - uses: actions/setup-java@v4
+          with:
+            distribution: temurin
+            java-version: '17'
+
+        - uses: nttld/setup-ndk@v1
+          id: setup-ndk
+          with:
+            ndk-version: r28c
+            local-cache: false
+
+        - name: Configure Android NDK
+          run: echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> "$GITHUB_ENV"
+
+        - uses: android-actions/setup-android@v3
+
+        - name: Install Android SDK packages
+          run: |
+            yes | sdkmanager --licenses >/dev/null || true
+            sdkmanager --install "platforms;android-34" "build-tools;34.0.0"
+
+        - uses: gradle/actions/setup-gradle@v4
+
+        - name: Cache FetchContent dependencies
+          uses: actions/cache@v4
+          with:
+            path: cp-build-android/_deps
+            key: android-deps-${{ hashFiles('src/libs/CMakeLists.txt') }}
+
+        - uses: hendrikmuhs/ccache-action@v1.2
+          with:
+            key: android-play-arm64-v8a
+
+        - name: Decode upload keystore
+          if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+          env:
+            ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          run: |
+            echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/play.keystore"
+            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/play.keystore" >> "$GITHUB_ENV"
+
+        - name: Build native libraries and release AABs
+          env:
+            ANDROID_ABI: arm64-v8a
+            ANDROID_PLATFORM: android-21
+            ANDROID_VERSION_NAME: ${{ steps.version.outputs.name }}
+            ANDROID_VERSION_CODE: ${{ steps.version.outputs.code }}
+            ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+            ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+            ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          run: make android-aab
+
+        - name: Upload CaveExpress AAB artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: play-caveexpress
+            if-no-files-found: error
+            path: android-project/app/build/outputs/bundle/caveexpressRelease/*.aab
+
+        - name: Upload CavePacker AAB artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: play-cavepacker
+            if-no-files-found: error
+            path: android-project/app/build/outputs/bundle/cavepackerRelease/*.aab
+
+        - name: Attach AABs to GitHub Release
+          if: github.ref_type == 'tag'
+          uses: softprops/action-gh-release@v2
+          with:
+            files: |
+              android-project/app/build/outputs/bundle/caveexpressRelease/*.aab
+              android-project/app/build/outputs/bundle/cavepackerRelease/*.aab
+
+        - name: Play release notes
+          run: |
+            mkdir -p play-whatsnew
+            printf '%s\n' "Version ${{ steps.version.outputs.name }}." > play-whatsnew/whatsnew-en-US
+
+        - name: Upload CaveExpress to Google Play
+          if: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON != '' && secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+          uses: r0adkll/upload-google-play@v1
+          with:
+            serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+            packageName: org.caveexpress
+            releaseFiles: android-project/app/build/outputs/bundle/caveexpressRelease/app-caveexpress-release.aab
+            track: ${{ github.event.inputs.track || vars.PLAY_TRACK || 'internal' }}
+            status: ${{ github.event.inputs.status || vars.PLAY_RELEASE_STATUS || 'completed' }}
+            releaseName: ${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }})
+            whatsNewDirectory: play-whatsnew
+            changesNotSentForReview: true
+
+        - name: Upload CavePacker to Google Play
+          if: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON != '' && secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+          uses: r0adkll/upload-google-play@v1
+          with:
+            serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+            packageName: org.cavepacker
+            releaseFiles: android-project/app/build/outputs/bundle/cavepackerRelease/app-cavepacker-release.aab
+            track: ${{ github.event.inputs.track || vars.PLAY_TRACK || 'internal' }}
+            status: ${{ github.event.inputs.status || vars.PLAY_RELEASE_STATUS || 'completed' }}
+            releaseName: ${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }})
+            whatsNewDirectory: play-whatsnew
+            changesNotSentForReview: true
