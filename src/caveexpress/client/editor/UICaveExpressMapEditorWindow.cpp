@@ -114,6 +114,11 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 		float wind = string::toFloat(doc.getSetting(msn::WIND, msd::WIND));
 		if (ImGui::InputFloat(tr("Wind").c_str(), &wind))
 			doc.setSetting(msn::WIND, string::toString(wind));
+		float zoom = string::toFloat(doc.getSetting(msn::ZOOM, msd::ZOOM));
+		if (ImGui::InputFloat(tr("Default zoom").c_str(), &zoom))
+			doc.setSetting(msn::ZOOM, string::toString(zoom));
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("%s", tr("Camera zoom when the map starts. Restart keeps the player's zoom.").c_str());
 		int packages = string::toInt(doc.getSetting(msn::PACKAGE_TRANSFER_COUNT, msd::PACKAGE_TRANSFER_COUNT));
 		if (ImGui::InputInt(tr("The amount of packages to deliver").c_str(), &packages))
 			doc.setSetting(msn::PACKAGE_TRANSFER_COUNT, string::toString(packages));
@@ -496,7 +501,7 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 			"width", "height", "points", "tutorial", "npcs", "introwindow", "referencetime",
 			"sideborderfail", "packagetransfercount", "npctransfercount", "initialspawntime",
 			"geyserinitialdelay", "flyingnpc", "fishnpc", "wind", "gravity", "waterheight",
-			"waterchangespeed", "waterrisingdelay", "waterfallingdelay", "theme", "cutscene", "seed"
+			"waterchangespeed", "waterrisingdelay", "waterfallingdelay", "theme", "cutscene", "seed", "zoom"
 		};
 		ImGui::TextWrapped("%s", tr("Settings without a dedicated control. Saved with the map.").c_str());
 		const IMap::SettingsMap settings = doc.getSettings();

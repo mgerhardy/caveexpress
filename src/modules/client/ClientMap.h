@@ -83,6 +83,11 @@ protected:
 
 	// how many different start positions are available in this particular map
 	int _startPositions;
+	/** Keep the current zoom when the same map is reloaded after a fail/restart. */
+	bool _preserveZoomOnLoad;
+	float _mapDefaultZoom;
+
+	float getEffectiveMinZoom () const;
 
 	virtual void renderLayer (int x, int y, Layer layer) const;
 	void renderFadeOutOverlay (int x, int y) const;
@@ -140,8 +145,8 @@ public:
 	 */
 	virtual void scroll (int relX, int relY);
 	/**
-	 * @brief Sets the new zoom level to the given level. This value is clamped between the min and max zoom level
-	 * (which in turn is defined by a config variable
+	 * @brief Sets the new zoom level. Clamped between the effective min (config, or low enough
+	 * to fit a large map) and maxzoom.
 	 */
 	virtual void setZoom (const float zoom);
 	inline float getZoom () const { return _zoom; }
@@ -314,6 +319,8 @@ inline void ClientMap::setSize (int width, int height)
 {
 	_width = width;
 	_height = height;
+	if (_minZoom && _maxZoom)
+		_zoom = clamp(_zoom, getEffectiveMinZoom(), _maxZoom->getFloatValue());
 
 	_camera.init(getWidth(), getHeight(), _mapGridWidth, _mapGridHeight, _scaleGridToPixel, _zoom);
 }

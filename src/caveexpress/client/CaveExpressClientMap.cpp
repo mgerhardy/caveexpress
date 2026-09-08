@@ -422,14 +422,14 @@ void CaveExpressClientMap::start () {
 		if (!EntityTypes::isLava(e->getType())) {
 			continue;
 		}
-		int startX, startY, sizeW, sizeH;
-		e->getScreenPos(startX, startY);
-		e->getScreenSize(sizeW, sizeH);
-		const int border = 5;
-		sizeW -= border;
-		startX += border;
-		startY += (int)((float)sizeH / 2.0f);
 		const int sparklePerLava = 4;
+		const vec2& pos = e->getPos();
+		const vec2& size = e->getSize();
+		const float scale = static_cast<float>(_scaleGridToPixel);
+		const int sizeW = std::max(1, static_cast<int>(size.x * scale) - 5);
+		const int sizeH = std::max(1, static_cast<int>(size.y * scale));
+		const int startX = static_cast<int>((pos.x - size.x * 0.5f) * scale) + 5;
+		const int startY = static_cast<int>(pos.y * scale);
 		for (int p = 0; p < sparklePerLava; ++p) {
 			_particleSystem.spawn(ParticlePtr(new Sparkle(*this, startX, startY, sizeW, sizeH)));
 		}

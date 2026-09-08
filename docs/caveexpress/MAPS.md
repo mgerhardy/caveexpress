@@ -69,6 +69,7 @@ See [SPRITES.md](SPRITES.md) for how sprite `width`/`height` relates to the draw
 | `sideborderfail` | Fail when touching the side border |
 | `tutorial` | Do not increment the global “maps finished” counter |
 | `cutscene` | Hide the HUD. The script owns the ending (see below). |
+| `zoom` | Client camera zoom on load (e.g. `0.5` for large maps). Restart keeps the player's zoom. |
 
 ### Intro help (`function intro`)
 

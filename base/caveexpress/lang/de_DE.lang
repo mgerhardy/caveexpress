@@ -23,6 +23,7 @@ Back|Zurück
 background|Hintergrund
 Big|Groß
 Blow strength|Blow strength
+Camera zoom when the map starts. Restart keeps the player's zoom.|Camera zoom when the map starts. Restart keeps the player's zoom.
 Campaign|Kampagne
 Campaign id|Kampagnen-ID
 Campaigns|Kampagnen
@@ -59,6 +60,7 @@ Ctrl+S save, Ctrl+Z/Y undo/redo|Strg+S speichern, Strg+Z/Y rückgängig/wiederho
 Cutscene|Cutscene
 decoration|Dekoration
 Default spawn delay for newly placed caves|Default spawn delay for newly placed caves
+Default zoom|Default zoom
 Del|Del
 Delete circle|Delete circle
 Delete polygon|Delete polygon

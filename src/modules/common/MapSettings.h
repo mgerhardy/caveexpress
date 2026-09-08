@@ -29,6 +29,8 @@ const std::string WATER_RISING_DELAY = "waterrisingdelay";
 const std::string WATER_FALLING_DELAY = "waterfallingdelay";
 const std::string THEME = "theme";
 const std::string CUTSCENE = "cutscene";
+/** Client camera zoom applied when the map is loaded. Restart keeps the player's zoom. */
+const std::string ZOOM = "zoom";
 }
 
 // map setting default
@@ -49,6 +51,7 @@ const std::string WATER_RISING_DELAY = "0";
 const std::string WATER_FALLING_DELAY = "0";
 const std::string INTROWINDOW = "";
 const std::string CUTSCENE = "false";
+const std::string ZOOM = "1.0";
 }
 
 // map setting default values

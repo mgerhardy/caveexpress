@@ -23,7 +23,8 @@ ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, 
 				0), _mapGridHeight(0), _time(0), _playerID(0), _frontend(frontend), _pause(false), _serviceProvider(
 						serviceProvider), _screenRumble(false), _screenRumbleStrength(0.0f), _screenRumbleOffsetX(
 						0), _screenRumbleOffsetY(0), _particleSystem(
-				Config.getClientSideParticleMaxAmount()), _tutorial(false), _cutscene(false), _started(false), _theme(&ThemeTypes::ROCK), _startPositions(0)
+				Config.getClientSideParticleMaxAmount()), _tutorial(false), _cutscene(false), _started(false), _theme(&ThemeTypes::ROCK), _startPositions(0),
+				_preserveZoomOnLoad(false), _mapDefaultZoom(1.0f)
 {
 	_maxZoom = Config.getConfigVar("maxzoom", "1.2");
 	_minZoom = Config.getConfigVar("minzoom", "0.5");
@@ -73,7 +74,6 @@ void ClientMap::resetCurrentMap ()
 		cooldownData.duration = cooldownData.start = 0;
 	}
 	_startPositions = 0;
-	_zoom = 1.0f;
 	_timeManager.reset();
 	_settings.clear();
 	_name.clear();
@@ -105,11 +105,29 @@ void ClientMap::scroll(int relX, int relY)
 	getCamera().scroll(relX, relY);
 }
 
+float ClientMap::getEffectiveMinZoom () const
+{
+	const float configMin = _minZoom->getFloatValue();
+	if (_mapGridWidth < 1 || _mapGridHeight < 1 || _scaleGridToPixel < 1)
+		return configMin;
+	const int viewW = getWidth();
+	const int viewH = getHeight();
+	if (viewW < 1 || viewH < 1)
+		return configMin;
+	const float mapW = static_cast<float>(_mapGridWidth * _scaleGridToPixel);
+	const float mapH = static_cast<float>(_mapGridHeight * _scaleGridToPixel);
+	const float fit = std::min(static_cast<float>(viewW) / mapW, static_cast<float>(viewH) / mapH);
+	if (fit >= configMin)
+		return configMin;
+	return std::max(0.15f, fit);
+}
+
 void ClientMap::setZoom (const float zoom)
 {
-	const float minZoom = _minZoom->getFloatValue();
+	const float minZoom = getEffectiveMinZoom();
 	const float maxZoom = _maxZoom->getFloatValue();
 	_zoom = clamp(zoom, minZoom, maxZoom);
+	updateCameraPosition();
 }
 
 void ClientMap::disconnect ()
@@ -433,9 +451,16 @@ void ClientMap::update (uint32_t deltaTime)
 bool ClientMap::load (const std::string& name, const std::string& title)
 {
 	Log::info(LOG_CLIENT, "load map %s", name.c_str());
+	const bool sameMap = !_name.empty() && _name == name;
+	const float preservedZoom = _zoom;
 	close();
 	_name = name;
 	_title = title;
+	_preserveZoomOnLoad = sameMap;
+	if (sameMap)
+		_zoom = preservedZoom;
+	else
+		_zoom = _mapDefaultZoom = 1.0f;
 
 	return true;
 }
@@ -462,12 +487,20 @@ void ClientMap::setSetting (const std::string& key, const std::string& value)
 
 	if (key == msn::WIDTH) {
 		_mapGridWidth = string::toInt(value);
-		if (_mapGridHeight > 0)
+		if (_mapGridHeight > 0) {
+			_zoom = clamp(_zoom, getEffectiveMinZoom(), _maxZoom->getFloatValue());
 			_camera.init(getWidth(), getHeight(), _mapGridWidth, _mapGridHeight, _scaleGridToPixel, _zoom);
+		}
 	} else if (key == msn::HEIGHT) {
 		_mapGridHeight = string::toInt(value);
-		if (_mapGridWidth > 0)
+		if (_mapGridWidth > 0) {
+			_zoom = clamp(_zoom, getEffectiveMinZoom(), _maxZoom->getFloatValue());
 			_camera.init(getWidth(), getHeight(), _mapGridWidth, _mapGridHeight, _scaleGridToPixel, _zoom);
+		}
+	} else if (key == msn::ZOOM) {
+		_mapDefaultZoom = string::toFloat(value);
+		if (!_preserveZoomOnLoad)
+			setZoom(_mapDefaultZoom);
 	} else if (key == msn::THEME) {
 		_theme = &ThemeType::getByName(value);
 	} else if (key == msn::TUTORIAL) {

@@ -24,6 +24,7 @@
 #include "common/SpriteDefinition.h"
 #include "common/String.h"
 #include "common/TextureDefinition.h"
+#include "common/Math.h"
 #include "client/ClientMap.h"
 #include "client/network/ChangeAnimationHandler.h"
 #include "client/network/MapSettingsHandler.h"
@@ -107,6 +108,13 @@ public:
 struct Options {
 	std::string textureSize = "small";
 	int extraScale = 1;
+	float zoom = 0.0f;
+	int viewportW = 0;
+	int viewportH = 0;
+	uint32_t timeMs = 0;
+	bool hasFocus = false;
+	float focusX = 0.0f;
+	float focusY = 0.0f;
 	std::string out;
 	bool all = false;
 	std::vector<std::string> maps;
@@ -122,13 +130,18 @@ void usage ()
 			"\n"
 			"Options:\n"
 			"  --size small|big                     Texture atlas size (default: small)\n"
-			"  --scale N                            Extra zoom (default: 1)\n"
+			"  --scale N                            Extra zoom for full-map captures (default: 1)\n"
+			"  --zoom F                             In-game camera zoom (use with --viewport)\n"
+			"  --viewport WxH                       Window-sized view instead of the full map\n"
+			"  --time MS                            Advance particles this many milliseconds\n"
+			"  --focus X,Y                          Camera focus in grid coordinates\n"
 			"  --out PATH                           Output file, or directory with --all / multiple maps\n"
 			"  --all                                Render every map\n"
 			"  -h, --help                           Show this help\n"
 			"\n"
-			"Maps can be ids or files under base/%s/maps/.\n",
-			kToolName, kToolName, kGameName, kGameName);
+			"Maps can be ids or files under base/%s/maps/.\n"
+			"Example: %s --viewport 1024x768 --zoom 0.5 --time 800 --out races-01.png races-01\n",
+			kToolName, kToolName, kGameName, kGameName, kToolName);
 }
 
 bool parseArgs (int argc, char** argv, Options& opt)
@@ -153,6 +166,43 @@ bool parseArgs (int argc, char** argv, Options& opt)
 		}
 		if (a == "--scale" && i + 1 < argc) {
 			opt.extraScale = std::max(1, atoi(argv[++i]));
+			continue;
+		}
+		if (a == "--zoom" && i + 1 < argc) {
+			opt.zoom = static_cast<float>(atof(argv[++i]));
+			if (opt.zoom <= 0.0f) {
+				std::fprintf(stderr, "--zoom must be > 0\n");
+				return false;
+			}
+			continue;
+		}
+		if (a == "--viewport" && i + 1 < argc) {
+			int w = 0;
+			int h = 0;
+			const char* v = argv[++i];
+			if (std::sscanf(v, "%dx%d", &w, &h) != 2 && std::sscanf(v, "%d,%d", &w, &h) != 2) {
+				std::fprintf(stderr, "--viewport must be WxH\n");
+				return false;
+			}
+			if (w < 1 || h < 1) {
+				std::fprintf(stderr, "--viewport sizes must be positive\n");
+				return false;
+			}
+			opt.viewportW = w;
+			opt.viewportH = h;
+			continue;
+		}
+		if (a == "--time" && i + 1 < argc) {
+			opt.timeMs = static_cast<uint32_t>(std::max(0, atoi(argv[++i])));
+			continue;
+		}
+		if (a == "--focus" && i + 1 < argc) {
+			const char* v = argv[++i];
+			if (std::sscanf(v, "%f,%f", &opt.focusX, &opt.focusY) != 2) {
+				std::fprintf(stderr, "--focus must be X,Y in grid coordinates\n");
+				return false;
+			}
+			opt.hasFocus = true;
 			continue;
 		}
 		if (a == "--out" && i + 1 < argc) {
@@ -235,8 +285,8 @@ struct Renderer {
 			opt(options), frontend(std::make_shared<NullConsole>()), extraScale(options.extraScale)
 	{
 		services.initForTool(&events);
-		Config.getConfigVar("maxzoom", "1.2")->setValue(string::toString(std::max(2, extraScale)));
-		Config.getConfigVar("minzoom", "0.5")->setValue("0.25");
+		Config.getConfigVar("maxzoom", "1.2")->setValue(string::toString(std::max(8, extraScale)));
+		Config.getConfigVar("minzoom", "0.5")->setValue("0.1");
 	}
 
 	~Renderer ()
@@ -348,8 +398,16 @@ struct Renderer {
 		}
 		recreateMap();
 		map->setSize(pixelW, pixelH);
-		map->setZoom(static_cast<float>(extraScale));
+		applyZoom();
 		return true;
+	}
+
+	void applyZoom ()
+	{
+		if (opt.zoom > 0.0f)
+			map->setZoom(opt.zoom);
+		else if (opt.viewportW <= 0)
+			map->setZoom(static_cast<float>(extraScale));
 	}
 
 	bool openLoopback ()
@@ -376,9 +434,17 @@ struct Renderer {
 	bool capture (const std::string& pngPath, int pixelW, int pixelH)
 	{
 		map->setSize(pixelW, pixelH);
-		map->setZoom(static_cast<float>(extraScale));
+		applyZoom();
 		map->start();
-		map->update(0);
+		const uint32_t step = 16;
+		if (opt.timeMs == 0)
+			map->update(0);
+		else {
+			for (uint32_t t = 0; t < opt.timeMs; t += step)
+				map->update(step);
+		}
+		if (opt.hasFocus)
+			map->getCamera().update(vec2(opt.focusX, opt.focusY), 0, map->getZoom());
 		frontend.renderBegin();
 		map->render();
 		frontend.renderEnd(false);
@@ -387,7 +453,7 @@ struct Renderer {
 			std::fprintf(stderr, "failed to write %s\n", pngPath.c_str());
 			return false;
 		}
-		std::printf("wrote %s (%ix%i)\n", pngPath.c_str(), pixelW, pixelH);
+		std::printf("wrote %s (%ix%i) zoom=%.3f\n", pngPath.c_str(), pixelW, pixelH, map->getZoom());
 		return true;
 	}
 
@@ -410,8 +476,8 @@ struct Renderer {
 			std::fprintf(stderr, "invalid dimensions for '%s'\n", mapId.c_str());
 			return false;
 		}
-		const int pixelW = mapW * scaledTile();
-		const int pixelH = mapH * scaledTile();
+		const int pixelW = opt.viewportW > 0 ? opt.viewportW : mapW * scaledTile();
+		const int pixelH = opt.viewportH > 0 ? opt.viewportH : mapH * scaledTile();
 		serverMap.shutdown();
 		closeNetwork();
 

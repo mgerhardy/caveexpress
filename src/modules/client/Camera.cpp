@@ -44,32 +44,34 @@ void Camera::scroll (int offsetX, int offsetY)
 	_scrollOffsetY = clamp(_scrollOffsetY, -h, h);
 }
 
+static int viewportForAxis (float mapPx, float nodePx, float playerGrid, float scaledTile)
+{
+	if (mapPx <= nodePx) {
+		return static_cast<int>((nodePx - mapPx) * 0.5f);
+	}
+	const float playerPx = playerGrid * scaledTile;
+	const float desired = nodePx * 0.5f - playerPx;
+	const float minVp = nodePx - mapPx;
+	return static_cast<int>(clamp(desired, minVp, 0.0f));
+}
+
 bool Camera::update (const vec2& playerPos, Direction direction, float zoom)
 {
-	// TODO: don't scroll on every pixel - but only if the player is near the border
-	// after zooming center the map
-	const int pixelW = _mapGridWidth * _scaleGridToPixel * zoom;
-	const int nodeW = _mapPixelWidth;
+	const float scaledTile = static_cast<float>(_scaleGridToPixel) * zoom;
+	const float mapPixelW = static_cast<float>(_mapGridWidth) * scaledTile;
+	const float mapPixelH = static_cast<float>(_mapGridHeight) * scaledTile;
+	const float nodeW = static_cast<float>(_mapPixelWidth);
+	const float nodeH = static_cast<float>(_mapPixelHeight);
 	const int oldViewX = _viewportX;
 	const int oldViewY = _viewportY;
-	if (pixelW < nodeW) {
-		// if we can show the full width of the map - then center it
-		_viewportX = _mapPixelWidth / 2 - pixelW / 2;
-	} else {
-		// TODO: broken - doesn't center on the player
-		_viewportX = -clamp(playerPos.x * _scaleGridToPixel - _mapPixelWidth / 2.0f, 0.0f, static_cast<float>(_scrollingAreaWidth)) * zoom;
-	}
-	const int pixelH = _mapGridHeight * _scaleGridToPixel * zoom;
-	const int nodeH = _mapPixelHeight;
-	if (pixelH < nodeH) {
-		// if we can show the full width of the map - then center it
-		_viewportY = _mapPixelHeight / 2 - pixelH / 2;
-	} else {
-		// TODO: broken - doesn't center on the player
-		_viewportY = -clamp(playerPos.y * _scaleGridToPixel - _mapPixelHeight / 2.0f, 0.0f, static_cast<float>(_scrollingAreaHeight)) * zoom;
-	}
+
+	_scrollingAreaWidth = std::max(0, static_cast<int>(mapPixelW - nodeW));
+	_scrollingAreaHeight = std::max(0, static_cast<int>(mapPixelH - nodeH));
+
+	_viewportX = viewportForAxis(mapPixelW, nodeW, playerPos.x, scaledTile);
+	_viewportY = viewportForAxis(mapPixelH, nodeH, playerPos.y, scaledTile);
 	_viewportX += _scrollOffsetX;
 	_viewportY += _scrollOffsetY;
-	Log::trace(LOG_CLIENT, "zoom: %f, viewportX %i, pixelW %i, nodeW: %i", zoom, _viewportX, pixelW, nodeW);
+	Log::trace(LOG_CLIENT, "zoom: %f, viewportX %i, mapW %f, nodeW: %f", zoom, _viewportX, mapPixelW, nodeW);
 	return oldViewX != _viewportX || oldViewY != _viewportY;
 }

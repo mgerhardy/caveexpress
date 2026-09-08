@@ -162,6 +162,7 @@ Always bound to the last clicked cell, not the hover ghost.
 | Reference time in seconds | Par time used for stars. |
 | Gravity | Default `9.81`. |
 | Wind | Horizontal force. Use with care; some wind maps also set `sideborderfail`. |
+| Default zoom | Camera zoom when the map starts (`zoom`). Restart keeps the player's zoom. Large maps can zoom out further than the `minzoom` default. |
 | Waterheight | Water surface from the bottom of the map, in tiles. Drawn as a blue overlay. `0` means no water. |
 | The amount of packages to deliver | Packages that must reach a shredder to win. |
 | Friendly NPCs to deliver | `npctransfercount` for taxi/rescue maps (needs two caves). |

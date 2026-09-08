@@ -1,6 +1,7 @@
 project(tests)
 set(${PROJECT_NAME}_SRC
 	ByteStreamTest.cpp
+	CameraTest.cpp
 	EnumTest.cpp
 	FileTest.cpp
 	GeneralTest.cpp
