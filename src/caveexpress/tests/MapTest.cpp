@@ -533,7 +533,10 @@ TEST_F(MapTest, testLetter01TaxiLandingAndKnockOff)
 
 	// Soft-touch an idle NPC must not disable later knock-off collisions.
 	CaveMapTile* cave1 = _map.getCave(0);
-	NPCFriendly* idle = dynamic_cast<NPCFriendly*>(cave1->getNPC());
+	INPCCave* caveNpc = cave1->getNPC();
+	NPCFriendly* idle = nullptr;
+	if (caveNpc != nullptr && !caveNpc->isDeliverPackage())
+		idle = static_cast<NPCFriendly*>(caveNpc);
 	if (idle == nullptr)
 		idle = _map.spawnFriendlyNPCScripted(cave1, EntityTypes::NPC_FRIENDLY_WOMAN, false);
 	ASSERT_NE(nullptr, idle);
