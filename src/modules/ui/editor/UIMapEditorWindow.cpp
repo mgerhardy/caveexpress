@@ -1416,7 +1416,9 @@ void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 		ghost.gridX = _doc->getSelectedGridX();
 		ghost.gridY = _doc->getSelectedGridY();
 		ghost.angle = _doc->getActiveAngle();
+		ghost.layer = _doc->getActiveEntityType() != nullptr ? LAYER_EMITTER : _doc->getActiveLayer();
 		ghost.mapTile = _doc->getActiveEntityType() == nullptr;
+		_doc->prepareBrushPlacement(ghost);
 		renderSprite(drawList, ghost, x, y, tileW, tileH, 0.55f);
 		const float hx = x + (ghost.gridX + ghost.getX(false)) * tileW - _panX;
 		const float hy = y + (ghost.gridY + ghost.getY(false)) * tileH - _panY;

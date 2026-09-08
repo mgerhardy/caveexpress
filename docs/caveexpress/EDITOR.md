@@ -112,6 +112,7 @@ The editor rejects some illegal placements instead of painting:
 - Bridges also need a ground or bridge neighbor on the left or right.
 - Thin hanging ground (`ground-05`, `ground-06`) and ground ledge ends need empty space beneath them.
 - Multi-cell solids (waterfalls and geysers are 1x2) replace other solids in every cell they cover. Background in those cells is kept. Save validation reports leftover overlapping solids.
+- A solid tile also removes emitters whose bounds it covers (a rock over a tree deletes the tree). Emitters that only stand on the solid (feet on the surface) stay.
 
 ### Layers
 
@@ -127,7 +128,7 @@ Hiding a layer also prevents selecting and erasing items on that layer. **Show G
 
 ## Entities tab
 
-Click a sprite in the grid (tooltip shows the type name), then left-click the map to place it. Right-click on the canvas removes only entities and the player start. Right-click a palette item for **Edit shape**, **Edit entity lua** (`entities.lua`), **Edit sprite definition**, **Remove all from map**, **Go to first on map**, and **Copy type name**. Use the filter box to search by entity type name.
+Click a sprite in the grid (tooltip shows the type name), then left-click the map to place it. Placement follows the cursor at **0.1** tile steps. Clicking a solid lifts the entity so its feet sit on that surface instead of deleting the ground. Painting another emitter on the same bounds replaces the old one; offset pickups in the same cell can coexist. Right-click on the canvas removes only entities and the player start. Right-click a palette item for **Edit shape**, **Edit entity lua** (`entities.lua`), **Edit sprite definition**, **Remove all from map**, **Go to first on map**, and **Copy type name**. Use the filter box to search by entity type name.
 
 | Entity | Notes |
 | --- | --- |
@@ -139,7 +140,7 @@ Click a sprite in the grid (tooltip shows the type name), then left-click the ma
 | `npc-walking` / `npc-blowing` / `npc-mammut` | Ground dinosaurs. Space flips facing. |
 | `tree` | Drop a stone on it for fruit. |
 
-**Emitter amount** and **Emitter delay** (Properties) apply to the next placed emitter, or to the selected emitter if one is highlighted. Directional NPCs have **Faces right**. Blowing dinosaurs also have **Blow strength** and **Wind size** (`strength=` / `size=` in Lua). Selected emitters can be nudged with sub-tile **X** / **Y**.
+**Emitter amount** and **Emitter delay** (Properties) apply to the next placed emitter, or to the selected emitter if one is highlighted. Directional NPCs have **Faces right**. Blowing dinosaurs also have **Blow strength** and **Wind size** (`strength=` / `size=` in Lua). Click-place and selected emitters use the same **0.1** tile **X** / **Y** step (also **Shift+arrows**).
 
 Cave signs, `dust`, `waste`, and `idea` are on the Tiles tab (decoration / cutscene props).
 

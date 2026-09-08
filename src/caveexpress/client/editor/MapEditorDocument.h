@@ -29,6 +29,9 @@ private:
 
 	bool requiresBackgroundTile (const SpriteType& type) const;
 	bool isHangingGroundSprite (const SpriteDefPtr& def) const;
+	gridCoord snapEmitterCoord (gridCoord value) const;
+	gridCoord emitterPlacementCoord (gridCoord cursor, gridCoord selected) const;
+	void liftEmitterOffSolids (MapEditorTileItem& item) const;
 	bool hasOverlayHost (gridCoord gridX, gridCoord gridY) const;
 	bool hasAirBelow (gridCoord gridX, gridCoord gridY) const;
 	bool hasBridgeSideNeighbors (gridCoord gridX, gridCoord gridY) const;
@@ -45,6 +48,7 @@ protected:
 	void onAfterStateRestored () override;
 	void onContentsShifted (int dx, int dy) override;
 	bool placeBrushItem (bool overwrite) override;
+	void prepareBrushPlacement (MapEditorTileItem& item) const override;
 	void prepareContextForSaving (IMapContext& ctx) override;
 	void loadFromContext (IMapContext& ctx) override;
 	std::unique_ptr<IMapContext> createContext (const std::string& mapName) const override;

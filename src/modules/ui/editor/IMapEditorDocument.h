@@ -209,6 +209,11 @@ public:
 	void setSelectedGrid (gridCoord x, gridCoord y);
 	void setCursorGrid (gridCoord x, gridCoord y);
 	void focusCell (gridCoord x, gridCoord y);
+	/**
+	 * Adjust a brush ghost / pending item to the position that placeBrushItem
+	 * will use (fractional snap, lift off solids). Default keeps the given grid.
+	 */
+	virtual void prepareBrushPlacement (MapEditorTileItem& item) const;
 	gridCoord getSelectedGridX () const { return _selectedGridX; }
 	gridCoord getSelectedGridY () const { return _selectedGridY; }
 	gridCoord getCursorGridX () const { return _cursorGridX; }

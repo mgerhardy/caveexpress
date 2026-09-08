@@ -1,11 +1,13 @@
 #include "tests/TestShared.h"
 #include "caveexpress/client/editor/MapEditorDocument.h"
+#include "caveexpress/shared/CaveExpressEntityType.h"
 #include "common/MapManager.h"
 #include "common/SpriteDefinition.h"
 #include "common/TextureDefinition.h"
 #include "common/ThemeType.h"
 #include "common/vec2.h"
 #include <algorithm>
+#include <cmath>
 
 namespace caveexpress {
 
@@ -19,6 +21,7 @@ protected:
 		AbstractTest::SetUp();
 		_textures = new TextureDefinition("small");
 		SpriteDefinition::get().init(*_textures);
+		ASSERT_TRUE(loadEntitySizesFromLua());
 	}
 
 	void TearDown () override
@@ -52,6 +55,24 @@ protected:
 				return true;
 		}
 		return false;
+	}
+
+	bool hasEntityAt (const MapEditorDocument& doc, const EntityType& type, gridCoord x, gridCoord y) const
+	{
+		for (const MapEditorTileItem& item : doc.getTiles()) {
+			if (item.entityType != nullptr && item.entityType->name == type.name
+					&& fequals(item.gridX, x) && fequals(item.gridY, y))
+				return true;
+		}
+		return false;
+	}
+
+	void paintEmitterAt (MapEditorDocument& doc, const EntityType& type, gridCoord x, gridCoord y)
+	{
+		doc.setEmitterEntity(type);
+		doc.setCursorGrid(x, y);
+		doc.setSelectedGrid(std::floor(x), std::floor(y));
+		ASSERT_TRUE(doc.paintAtSelection(true, false));
 	}
 };
 
@@ -184,6 +205,92 @@ TEST_F(MapEditorDocumentTest, testAutoFillKeepsIntroScript)
 	EXPECT_NE(std::string::npos, doc.getScriptLogic().find("function intro"))
 			<< "Auto fill must not drop intro(help):\n" << doc.getScriptLogic();
 	EXPECT_NE(std::string::npos, doc.getScriptLogic().find("without touching the fish"));
+}
+
+TEST_F(MapEditorDocumentTest, testReplaceOverlappingEmitters)
+{
+	MapEditorDocument doc(_mapMgr);
+	paintEmitterAt(doc, EntityTypes::APPLE, 2.0f, 3.0f);
+	paintEmitterAt(doc, EntityTypes::APPLE, 2.0f, 3.0f);
+	EXPECT_EQ(1, doc.countEntitiesOfType(EntityTypes::APPLE));
+	EXPECT_TRUE(hasEntityAt(doc, EntityTypes::APPLE, 2.0f, 3.0f));
+}
+
+TEST_F(MapEditorDocumentTest, testAllowNonOverlappingEmittersInSameCell)
+{
+	MapEditorDocument doc(_mapMgr);
+	paintEmitterAt(doc, EntityTypes::APPLE, 2.0f, 3.0f);
+	paintEmitterAt(doc, EntityTypes::APPLE, 2.5f, 3.0f);
+	EXPECT_EQ(2, doc.countEntitiesOfType(EntityTypes::APPLE));
+	EXPECT_TRUE(hasEntityAt(doc, EntityTypes::APPLE, 2.0f, 3.0f));
+	EXPECT_TRUE(hasEntityAt(doc, EntityTypes::APPLE, 2.5f, 3.0f));
+}
+
+TEST_F(MapEditorDocumentTest, testPlaceEmitterAtFractionalCursor)
+{
+	MapEditorDocument doc(_mapMgr);
+	paintEmitterAt(doc, EntityTypes::APPLE, 2.37f, 3.12f);
+	EXPECT_EQ(1, doc.countEntitiesOfType(EntityTypes::APPLE));
+	EXPECT_TRUE(hasEntityAt(doc, EntityTypes::APPLE, 2.4f, 3.1f));
+}
+
+TEST_F(MapEditorDocumentTest, testPlaceEmitterOnSolidLiftsAndKeepsGround)
+{
+	MapEditorDocument doc(_mapMgr);
+	const SpriteDefPtr ground = requireSprite("tile-ground-01");
+	ASSERT_TRUE(!!ground);
+
+	doc.setSprite(ground);
+	doc.setSelectedGrid(2.0f, 4.0f);
+	ASSERT_TRUE(doc.paintAtSelection(true, false));
+
+	paintEmitterAt(doc, EntityTypes::APPLE, 2.0f, 4.0f);
+	EXPECT_TRUE(hasSpriteAt(doc, "tile-ground-01", 2.0f, 4.0f));
+	EXPECT_EQ(1, doc.countEntitiesOfType(EntityTypes::APPLE));
+	EXPECT_TRUE(hasEntityAt(doc, EntityTypes::APPLE, 2.0f, 3.0f));
+
+	paintEmitterAt(doc, EntityTypes::NPC_WALKING, 2.0f, 4.0f);
+	EXPECT_TRUE(hasSpriteAt(doc, "tile-ground-01", 2.0f, 4.0f));
+	EXPECT_EQ(1, doc.countEntitiesOfType(EntityTypes::NPC_WALKING));
+	EXPECT_TRUE(hasEntityAt(doc, EntityTypes::NPC_WALKING, 2.0f, 3.0f));
+}
+
+TEST_F(MapEditorDocumentTest, testSolidBuriesOverlappingEmitters)
+{
+	MapEditorDocument doc(_mapMgr);
+	const SpriteDefPtr rock = requireSprite("tile-rock-01");
+	const SpriteDefPtr ground = requireSprite("tile-ground-01");
+	ASSERT_TRUE(!!rock && !!ground);
+
+	doc.setSprite(ground);
+	doc.setSelectedGrid(2.0f, 4.0f);
+	ASSERT_TRUE(doc.paintAtSelection(true, false));
+	doc.setSelectedGrid(3.0f, 4.0f);
+	ASSERT_TRUE(doc.paintAtSelection(true, false));
+
+	paintEmitterAt(doc, EntityTypes::TREE, 2.0f, 2.0f);
+	EXPECT_EQ(1, doc.countEntitiesOfType(EntityTypes::TREE));
+
+	doc.setSprite(rock);
+	doc.setSelectedGrid(2.0f, 3.0f);
+	ASSERT_TRUE(doc.paintAtSelection(true, false));
+	EXPECT_EQ(0, doc.countEntitiesOfType(EntityTypes::TREE));
+	EXPECT_TRUE(hasSpriteAt(doc, "tile-rock-01", 2.0f, 3.0f));
+	EXPECT_TRUE(hasSpriteAt(doc, "tile-ground-01", 2.0f, 4.0f));
+}
+
+TEST_F(MapEditorDocumentTest, testSolidUnderEmitterFeetDoesNotRemoveIt)
+{
+	MapEditorDocument doc(_mapMgr);
+	const SpriteDefPtr rock = requireSprite("tile-rock-01");
+	ASSERT_TRUE(!!rock);
+
+	paintEmitterAt(doc, EntityTypes::TREE, 2.0f, 2.0f);
+	doc.setSprite(rock);
+	doc.setSelectedGrid(2.0f, 4.0f);
+	ASSERT_TRUE(doc.paintAtSelection(true, false));
+	EXPECT_EQ(1, doc.countEntitiesOfType(EntityTypes::TREE));
+	EXPECT_TRUE(hasSpriteAt(doc, "tile-rock-01", 2.0f, 4.0f));
 }
 
 }

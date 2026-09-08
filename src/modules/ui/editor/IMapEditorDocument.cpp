@@ -341,6 +341,10 @@ void IMapEditorDocument::setCursorGrid (gridCoord x, gridCoord y)
 	_cursorGridY = y;
 }
 
+void IMapEditorDocument::prepareBrushPlacement (MapEditorTileItem&) const
+{
+}
+
 void IMapEditorDocument::focusCell (gridCoord x, gridCoord y)
 {
 	setSelectedGrid(x, y);

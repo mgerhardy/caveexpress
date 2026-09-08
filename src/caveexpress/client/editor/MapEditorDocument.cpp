@@ -284,7 +284,15 @@ bool MapEditorDocument::placeBrushItem (bool overwrite)
 	if (!_activeSprite)
 		return false;
 	if (_activeEntityType != nullptr && isPlayerType(*_activeEntityType)) {
-		setPlayerPosition(_selectedGridX, _selectedGridY);
+		MapEditorTileItem start;
+		start.def = _activeSprite;
+		start.entityType = _activeEntityType;
+		start.gridX = _selectedGridX;
+		start.gridY = _selectedGridY;
+		start.layer = LAYER_EMITTER;
+		start.mapTile = false;
+		prepareBrushPlacement(start);
+		setPlayerPosition(start.gridX, start.gridY);
 		return true;
 	}
 	if (SpriteTypes::isCave(_activeSprite->type))
@@ -309,9 +317,13 @@ bool MapEditorDocument::placeBrushItem (bool overwrite)
 		item.angle = _activeAngle;
 		item.settings = settings.str();
 		item.mapTile = false;
+		prepareBrushPlacement(item);
 		if (!canPlaceTileItem(item))
 			return false;
-		return placeTileItem(item, overwrite);
+		if (!placeTileItem(item, overwrite))
+			return false;
+		setSelectedGrid(item.gridX, item.gridY);
+		return true;
 	}
 
 	MapEditorTileItem item;
@@ -342,19 +354,18 @@ bool MapEditorDocument::isOverlapping (const MapEditorTileItem& item1, const Map
 		break;
 	case LAYER_SOLID:
 		// Gates / plates / caves sit on background cells in corridor maps.
-		if (item2.layer == LAYER_BACKGROUND || item2.layer == LAYER_FOREGROUND || item2.layer == LAYER_DECORATION
-				|| item2.layer == LAYER_EMITTER)
+		if (item2.layer == LAYER_BACKGROUND || item2.layer == LAYER_FOREGROUND || item2.layer == LAYER_DECORATION)
 			return false;
+		// Solids bury emitters (trees, pickups, NPCs) whose AABBs overlap.
 		break;
 	case LAYER_DECORATION:
 		// Overlays (lianes) hang in front of host tiles and must not replace them.
 		return false;
 	case LAYER_EMITTER:
-		if (item2.entityType != nullptr && EntityTypes::isNpc(*item2.entityType))
+		// Replace other emitters that occupy the same space. Never overwrite terrain.
+		if (item2.layer == LAYER_EMITTER)
 			break;
-		if (item2.layer != LAYER_SOLID)
-			return false;
-		break;
+		return false;
 	default:
 		break;
 	}
@@ -364,6 +375,65 @@ bool MapEditorDocument::isOverlapping (const MapEditorTileItem& item1, const Map
 	const gridCoord x = item1.gridX + item1.getX(false) + EPSILON;
 	const gridCoord y = item1.gridY + item1.getY(false) + EPSILON;
 	return IMapEditorDocument::isOverlapping(x, y, size.x - 2.0f * EPSILON, size.y - 2.0f * EPSILON, item2);
+}
+
+gridCoord MapEditorDocument::snapEmitterCoord (gridCoord value) const
+{
+	return Round(value * 10.0f) / 10.0f;
+}
+
+gridCoord MapEditorDocument::emitterPlacementCoord (gridCoord cursor, gridCoord selected) const
+{
+	if (std::floor(cursor + EPSILON) == std::floor(selected + EPSILON))
+		return snapEmitterCoord(cursor);
+	return snapEmitterCoord(selected);
+}
+
+void MapEditorDocument::liftEmitterOffSolids (MapEditorTileItem& item) const
+{
+	const vec2 size = item.getSize(false);
+	const gridCoord ox = item.getX(false);
+	const gridCoord oy = item.getY(false);
+	for (int step = 0; step < _mapHeight + 2; ++step) {
+		const gridCoord visX = item.gridX + ox;
+		const gridCoord visY = item.gridY + oy;
+		gridCoord surface = visY + size.y;
+		bool hit = false;
+		for (const MapEditorTileItem& other : _map) {
+			if (other.layer != LAYER_SOLID || !other.def)
+				continue;
+			const vec2 os = other.getSize(false);
+			const gridCoord sx = other.gridX + other.getX(false);
+			const gridCoord sy = other.gridY + other.getY(false);
+			if (sx + os.x <= visX + EPSILON || sx >= visX + size.x - EPSILON)
+				continue;
+			if (sy + os.y <= visY + EPSILON || sy >= visY + size.y - EPSILON)
+				continue;
+			if (!hit || sy < surface)
+				surface = sy;
+			hit = true;
+		}
+		if (!hit)
+			return;
+		const gridCoord lifted = surface - oy - size.y;
+		if (lifted >= item.gridY - EPSILON)
+			return;
+		item.gridY = lifted;
+	}
+}
+
+void MapEditorDocument::prepareBrushPlacement (MapEditorTileItem& item) const
+{
+	if (item.layer != LAYER_EMITTER || item.entityType == nullptr)
+		return;
+	item.gridX = emitterPlacementCoord(_cursorGridX, _selectedGridX);
+	item.gridY = emitterPlacementCoord(_cursorGridY, _selectedGridY);
+	liftEmitterOffSolids(item);
+	const vec2 size = item.getSize(false);
+	const gridCoord maxX = std::max(0.0f, static_cast<gridCoord>(_mapWidth) - size.x);
+	const gridCoord maxY = std::max(0.0f, static_cast<gridCoord>(_mapHeight) - size.y);
+	item.gridX = clamp(item.gridX, 0.0f, maxX);
+	item.gridY = clamp(item.gridY, 0.0f, maxY);
 }
 
 bool MapEditorDocument::shouldSaveTile (const MapEditorTileItem& tile) const
