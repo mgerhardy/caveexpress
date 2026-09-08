@@ -570,8 +570,13 @@ void MapEditorDocument::autoFill (const ThemeType& theme)
 	if (seed != 0)
 		ctx.setSeed(seed);
 	const std::string oldName = _fileName;
+	const std::string oldTitle = _mapName;
+	const std::string oldScript = _scriptLogic;
 	loadFromContext(ctx);
 	setFileName(oldName);
+	setMapName(oldTitle);
+	// Auto replaces tiles/emitters, not onMapLoaded / onUpdate / intro(help).
+	_scriptLogic = oldScript;
 }
 
 namespace {

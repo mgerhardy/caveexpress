@@ -2,6 +2,8 @@
 #include "caveexpress/shared/CaveExpressMapContext.h"
 #include "common/FileSystem.h"
 #include "common/LUALibrary.h"
+#include "common/MapManager.h"
+#include "common/String.h"
 #include "common/TextureDefinition.h"
 #include "common/SpriteDefinition.h"
 #include <cstring>
@@ -132,6 +134,9 @@ TEST_F(LUAMapUpdateTest, testSavePreservesOnUpdateLogic)
 			"function onUpdate(dt)\n"
 			"  phase = phase .. \"-tick\"\n"
 			"end\n"
+			"function intro(help)\n"
+			"  help:text(\"goal\")\n"
+			"end\n"
 			"function initMap()\n"
 			"  local map = Map.get()\n"
 			"  for x = 0, 1 do\n"
@@ -154,6 +159,7 @@ TEST_F(LUAMapUpdateTest, testSavePreservesOnUpdateLogic)
 	ASSERT_TRUE(ctx.hasOnUpdate());
 	ASSERT_FALSE(ctx.getPreservedLogic().empty());
 	EXPECT_NE(std::string::npos, ctx.getPreservedLogic().find("function onUpdate"));
+	EXPECT_NE(std::string::npos, ctx.getPreservedLogic().find("function intro"));
 	EXPECT_NE(std::string::npos, ctx.getPreservedLogic().find("local phase"));
 	EXPECT_EQ(std::string::npos, ctx.getPreservedLogic().find("function initMap"));
 	EXPECT_EQ(std::string::npos, ctx.getPreservedLogic().find("function getName"));
@@ -165,8 +171,45 @@ TEST_F(LUAMapUpdateTest, testSavePreservesOnUpdateLogic)
 	ASSERT_TRUE(reloaded.hasOnUpdate()) << "onUpdate must survive editor save";
 	ASSERT_TRUE(reloaded.hasOnMapLoaded());
 	EXPECT_NE(std::string::npos, reloaded.getPreservedLogic().find("function onUpdate"));
+	EXPECT_NE(std::string::npos, reloaded.getPreservedLogic().find("function intro"))
+			<< "intro(help) must survive editor save";
 
 	FS.deleteFile(relPath);
+}
+
+static int luaTrIdentity (lua_State* L)
+{
+	lua_pushvalue(L, 1);
+	return 1;
+}
+
+TEST_F(LUAMapUpdateTest, testIntroducingMapsDefineAndRunIntro)
+{
+	LUAMapManager mgr;
+	mgr.loadMaps();
+	int checked = 0;
+	for (const auto& entry : mgr.getMaps()) {
+		if (!string::startsWith(entry.first, "introducing-"))
+			continue;
+		++checked;
+		const std::string mapFile = FS.getMapsDir() + entry.first + ".lua";
+		LUA lua;
+		lua_register(lua.getState(), "tr", luaTrIdentity);
+		ASSERT_TRUE(lua.load(mapFile)) << entry.first;
+		ASSERT_TRUE(lua.hasFunction("intro")) << entry.first
+				<< " is missing function intro(help) — the pre-map help window will not show";
+		ASSERT_TRUE(lua.loadBuffer(
+				"local help = {}\n"
+				"function help:headline(t) end\n"
+				"function help:text(t) end\n"
+				"function help:entity(...) end\n"
+				"function help:beginRow() end\n"
+				"function help:endRow() end\n"
+				"function help:bar(...) end\n"
+				"intro(help)\n",
+				"runintro")) << entry.first << " intro() failed";
+	}
+	ASSERT_GE(checked, 14);
 }
 
 }

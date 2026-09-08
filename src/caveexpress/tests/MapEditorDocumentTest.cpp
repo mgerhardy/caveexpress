@@ -160,4 +160,30 @@ TEST_F(MapEditorDocumentTest, testPlaceWaterfallRemovesSolidInSecondCell)
 	EXPECT_TRUE(hasSpriteAt(doc, "tile-background-01", 2.0f, 2.0f));
 }
 
+TEST_F(MapEditorDocumentTest, testAutoFillKeepsIntroScript)
+{
+	MapEditorDocument doc(_mapMgr);
+	doc.setFileName("introducing-14-fish");
+	doc.setMapName("In14 Fish");
+	doc.setTheme(ThemeTypes::ROCK);
+	doc.setSetting("seed", "1350490027");
+	const char* script =
+			"function onMapLoaded()\n"
+			"end\n"
+			"\n"
+			"function intro(help)\n"
+			"	help:headline(tr(\"Objectives\"))\n"
+			"	help:text(tr(\"Deliver the packages without touching the fish\"))\n"
+			"end\n";
+	doc.setScriptLogic(script);
+
+	doc.autoFill(ThemeTypes::ROCK);
+
+	EXPECT_EQ("introducing-14-fish", doc.getFileName());
+	EXPECT_EQ("In14 Fish", doc.getMapName());
+	EXPECT_NE(std::string::npos, doc.getScriptLogic().find("function intro"))
+			<< "Auto fill must not drop intro(help):\n" << doc.getScriptLogic();
+	EXPECT_NE(std::string::npos, doc.getScriptLogic().find("without touching the fish"));
+}
+
 }

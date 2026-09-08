@@ -385,7 +385,7 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 			fitView();
 		}
 		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("%s", tr("Generate a random map with the current seed.").c_str());
+			ImGui::SetTooltip("%s", tr("Generate a random layout. Lua (intro, onMapLoaded, onUpdate) is kept.").c_str());
 		ImGui::SameLine();
 		if (ImGui::Button(tr("Make playable").c_str()))
 			doc.makePlayable();

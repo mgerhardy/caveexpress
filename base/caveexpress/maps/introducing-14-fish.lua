@@ -5,6 +5,16 @@ end
 function onMapLoaded()
 end
 
+function intro(help)
+	help:headline(tr("Objectives"))
+	help:text(tr("Deliver the packages without touching the fish"))
+	help:headline(tr("Hints"))
+	help:text(tr("Stay out of the water - fish live there"))
+	help:text(tr("The fish will crash your plane"))
+	help:headline(tr("Description"))
+	help:entity("npc-fish", "swimming-left", tr("Fish"))
+end
+
 function initMap()
 	-- get the current map context
 	local map = Map.get()
