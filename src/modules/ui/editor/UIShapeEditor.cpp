@@ -249,8 +249,10 @@ void UIShapeEditor::drawSpritePicker ()
 	ImGui::InputText(tr("Filter").c_str(), _filter, sizeof(_filter));
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(-1.0f);
-	const char* preview = _spriteId.empty() ? tr("Select a sprite").c_str() : _spriteId.c_str();
-	if (ImGui::BeginCombo("##shape_sprite", preview)) {
+	std::string label = _spriteId;
+	if (label.empty())
+		label = tr("Select a sprite");
+	if (ImGui::BeginCombo("##shape_sprite", label.c_str())) {
 		for (SpriteDefMapConstIter i = SpriteDefinition::get().begin(); i != SpriteDefinition::get().end(); ++i) {
 			if (!passesFilter(i->first, _filter))
 				continue;
