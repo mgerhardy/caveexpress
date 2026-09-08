@@ -400,6 +400,13 @@ sprites = {
 		width = 0.25,
 		height = 2,
 	},
+	["liane-03"] = {
+		rotateable = 1,
+		type = "liane",
+		theme = "rock",
+		width = 0.64,
+		height = 2,
+	},
 	["cave-sign-01"] = { type = "cave-sign", },
 	["cave-sign-02"] = { type = "cave-sign", },
 	["cave-sign-03"] = { type = "cave-sign", },

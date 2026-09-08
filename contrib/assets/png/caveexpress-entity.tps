@@ -231,6 +231,7 @@
             <filename>../png/caveexpress/bridge-wall-right-01-front-01.png</filename>
             <filename>../png/caveexpress/liane-01-front-01.png</filename>
             <filename>../png/caveexpress/liane-02-front-01.png</filename>
+            <filename>../png/caveexpress/liane-03-front-01.png</filename>
             <filename>../png/caveexpress/tree-dazed-middle-01.png</filename>
             <filename>../png/caveexpress/item-bomb-idle-front-01.png</filename>
             <filename>../png/caveexpress/item-apple-idle-front-01.png</filename>
