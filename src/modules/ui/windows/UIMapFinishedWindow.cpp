@@ -12,7 +12,7 @@
 #include <string>
 
 UIMapFinishedWindow::UIMapFinishedWindow (IFrontend *frontend, CampaignManager& campaignManager, ServiceProvider& serviceProvider, const SoundType& soundType) :
-		UIWindow(UI_WINDOW_MAPFINISHED, frontend), _serviceProvider(serviceProvider)
+		UIWindow(UI_WINDOW_MAPFINISHED, frontend, WINDOW_FLAG_FULLSCREEN | WINDOW_FLAG_MODAL), _serviceProvider(serviceProvider)
 {
 	setInactiveAfterPush();
 

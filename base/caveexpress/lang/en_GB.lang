@@ -187,6 +187,7 @@ Layout|Layout
 Layout ok|Layout ok
 Leaderboard|Leaderboard
 Learn to use the stone|Learn to use the stone
+Leave|Leave
 Lines|Lines
 Link id|Link id
 LMB: paint / place (also selects)|LMB: paint / place (also selects)
@@ -201,6 +202,7 @@ Map generator seed. 0 picks a new seed on Auto.|Map generator seed. 0 picks a ne
 Maps|Maps
 Maps in campaign|Maps in campaign
 Map validation|Map validation
+Max players|Max players
 MMB click: pick, MMB drag or Space+LMB: pan|MMB click: pick, MMB drag or Space+LMB: pan
 Multiplayer|Multiplayer
 Music volume|Music volume
@@ -369,6 +371,7 @@ Vertices|Vertices
 Villagers in the water swim towards you|Villagers in the water swim towards you
 Volume|Volume
 Waiting|Waiting
+Watching|Watching
 Watch the geyser|Watch the geyser
 Water|Water
 Water change speed|Water change speed
@@ -388,6 +391,7 @@ Wrote entities.lua|Wrote entities.lua
 Wrote sprites.lua|Wrote sprites.lua
 X shift|X shift
 Yes|Yes
+You crashed - watching|You crashed - watching
 You have unsaved changes. Continue?|You have unsaved changes. Continue?
 You lose if the water reaches the top|You lose if the water reaches the top
 You won!|You won!

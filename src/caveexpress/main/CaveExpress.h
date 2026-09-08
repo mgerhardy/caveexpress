@@ -38,6 +38,8 @@ public:
 	void init (IFrontend *frontend, ServiceProvider& serviceProvider) override;
 	void shutdown () override;
 	int getPlayers () override;
+	int getMaxClients () override;
+	bool isMatchInProgress () const override;
 	void connect (ClientId clientId) override;
 	int disconnect (ClientId clientId) override;
 	void mapReload () override;

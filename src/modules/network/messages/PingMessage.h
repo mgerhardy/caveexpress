@@ -10,11 +10,12 @@ private:
 	int _port;
 	int _playerCount;
 	int _maxPlayerCount;
+	bool _inGame;
 
 public:
-	PingMessage (const std::string& name, const std::string& mapName, int port, int playerCount, int maxPlayerCount) :
+	PingMessage (const std::string& name, const std::string& mapName, int port, int playerCount, int maxPlayerCount, bool inGame = false) :
 			IProtocolMessage(protocol::PROTO_PING), _name(name), _mapName(mapName), _port(port), _playerCount(playerCount), _maxPlayerCount(
-					maxPlayerCount)
+					maxPlayerCount), _inGame(inGame)
 	{
 	}
 
@@ -28,6 +29,8 @@ public:
 		_port = input.readInt();
 		_playerCount = input.readByte();
 		_maxPlayerCount = input.readByte();
+		// Older servers omit this trailing flag (OOB datagram leftover is ignored by old clients).
+		_inGame = input.getSize() > 0 && input.readByte() != 0;
 	}
 
 	void serialize (ByteStream& out) const override
@@ -38,6 +41,7 @@ public:
 		out.addInt(_port);
 		out.addByte(_playerCount);
 		out.addByte(_maxPlayerCount);
+		out.addByte(_inGame ? 1 : 0);
 	}
 
 	inline const std::string& getMapName () const
@@ -63,5 +67,10 @@ public:
 	inline int getMaxPlayerCount () const
 	{
 		return _maxPlayerCount;
+	}
+
+	inline bool isInGame () const
+	{
+		return _inGame;
 	}
 };

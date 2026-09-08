@@ -164,6 +164,10 @@ protected:
 	PlayerList _playersWaitingForSpawn;
 	// these are the already spawned players
 	PlayerList _players;
+	/** Connected clients watching a match that already started (no ship). */
+	PlayerList _spectators;
+	ClientId _hostClientId;
+	bool _hostClientIdSet;
 	VisMask _allPlayers;
 
 	EntityList _entities;
@@ -190,6 +194,13 @@ protected:
 	// sanity check in the world step callbacks
 	bool _entityRemovalAllowed;
 	bool _mapRunning;
+	/** True after startMap/spawnPlayer. Lobby waiters are not a failed match. */
+	bool _matchStarted = false;
+	bool _sendCloseMapOnReset = true;
+	/** Frozen after fail/finish until Continue. World must not tick or reload. */
+	bool _endScreenHold = false;
+	/** First lobby fill may auto-start. After a match, host Start is required. */
+	bool _lobbyAutoStartEnabled = true;
 
 	IFrontend *_frontend;
 
@@ -222,9 +233,12 @@ protected:
 	bool visitEntity (IEntity *entity) override;
 	void handleVisibility (IEntity *entity, const VisMask vismask) const;
 	void sendVisibleEntity (int clientMask, const IEntity *entity) const;
+	void sendWorldSnapshotToClient (ClientId clientId) const;
+	Player* findPlayer (ClientId clientId) const;
 
 	// do the spawning on the map and add the physic objects
 	bool spawnPlayer (Player* player);
+	void noteHostPlayer (const Player* player);
 
 	// init the map boundaries and configure the box2d stuff
 	void initPhysics ();
@@ -233,7 +247,14 @@ public:
 	virtual ~Map ();
 
 	const PlayerList& getPlayers () const;
-	inline int getConnectedPlayers () const { return static_cast<int>(_playersWaitingForSpawn.size() + _players.size()); }
+	const PlayerList& getSpectators () const;
+	inline int getConnectedPlayers () const {
+		return static_cast<int>(_playersWaitingForSpawn.size() + _players.size() + _spectators.size());
+	}
+	inline int getSessionPlayerCount () const {
+		return static_cast<int>(_playersWaitingForSpawn.size() + _players.size());
+	}
+	int getMaxPlayers () const;
 	Player* getPlayer (ClientId clientId);
 
 	PhysicsWorld *getWorld () const;
@@ -260,8 +281,17 @@ public:
 
 	void reload ();
 	bool isFailed () const;
+	bool isMatchStarted () const;
+	bool isMultiplayerSession () const;
+	int countLivingPlayers () const;
 	const MapFailedReason& getFailReason (const Player* player) const;
 	bool isPause () const;
+	bool isEndScreenHold () const;
+	/** Freeze simulation and wait for Continue before lobby/reload. */
+	void holdForEndScreen ();
+	/** Send FailedMap to every connected client. */
+	void notifyClientsFailed ();
+	void triggerReturnToLobby ();
 
 	bool isInputEnabled () const;
 	void setInputEnabled (bool enabled);
@@ -348,6 +378,10 @@ public:
 	void startMap ();
 	bool isReadyToStart () const;
 	void sendPlayersList () const;
+	std::vector<std::string> getLobbyPlayerNames () const;
+	ClientId getHostClientId () const;
+	/** Reload the current map and keep connected clients in the wait overlay. */
+	bool returnToLobby ();
 	void sendMessage (ClientId clientId, const std::string& message, uint32_t delayMillis = 4000) const;
 	void printPlayersList () const;
 
@@ -457,10 +491,11 @@ private:
 
 	MapTile* createMapTileWithoutBody (const SpriteDefPtr& spriteDef, gridCoord gridX, gridCoord gridY, EntityAngle angle);
 
+protected:
 	// IPhysicsContactFilter
 	bool shouldCollide (PhysicsFixture fixtureA, PhysicsFixture fixtureB) override;
 
-	// IPhysicsContactListener
+private:
 	void beginContact (PhysicsContact contact) override;
 	void endContact (PhysicsContact contact) override;
 	void postSolve (PhysicsContact contact, const PhysicsContactImpulse& impulse) override;
@@ -514,6 +549,11 @@ inline const Map::PlayerList& Map::getPlayers () const
 	return _players;
 }
 
+inline const Map::PlayerList& Map::getSpectators () const
+{
+	return _spectators;
+}
+
 inline int Map::getMapWidth () const
 {
 	return _width;
@@ -557,6 +597,8 @@ inline bool Map::isDone () const
 	// Scripted cutscenes may force a win even if the player crashed during a non-interactive beat.
 	if (_scriptForcedDone)
 		return true;
+	if (!_matchStarted)
+		return false;
 	if (isFailed())
 		return false;
 	if (_transferedNPCLimit > 0 && _transferedNPCs < _transferedNPCLimit)
@@ -627,6 +669,16 @@ inline uint16_t Map::getPoints () const
 inline bool Map::isPause () const
 {
 	return _pause;
+}
+
+inline bool Map::isEndScreenHold () const
+{
+	return _endScreenHold;
+}
+
+inline bool Map::isMatchStarted () const
+{
+	return _matchStarted;
 }
 
 inline bool Map::isInputEnabled () const

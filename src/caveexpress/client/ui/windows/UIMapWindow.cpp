@@ -5,9 +5,11 @@
 #include "caveexpress/shared/constants/ConfigVars.h"
 #include "common/Math.h"
 #include "ui/UI.h"
+#include "client/IMapControl.h"
 #include "ui/nodes/UINodeBar.h"
 #include "ui/nodes/UINodeSprite.h"
 #include "ui/nodes/UINodePoint.h"
+#include "ui/nodes/UINodeLabel.h"
 #include "ui/layouts/UIHBoxLayout.h"
 #include "common/ConfigManager.h"
 #include "campaign/persister/IGameStatePersister.h"
@@ -134,6 +136,39 @@ void UIMapWindow::initHudNodes()
 	_panel->add(pkgLeft);
 
 	add(_panel);
+
+	_spectateLabel = new UINodeLabel(_frontend, tr("You crashed - watching"));
+	_spectateLabel->setFont(LARGE_FONT);
+	_spectateLabel->setColor(colorWhite);
+	_spectateLabel->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_TOP);
+	_spectateLabel->setVisible(false);
+	add(_spectateLabel);
+}
+
+void UIMapWindow::update (uint32_t deltaTime)
+{
+	IUIMapWindow::update(deltaTime);
+	if (_spectateLabel == nullptr)
+		return;
+	const bool spectate = _nodeMap->getMap().isStarted() && _nodeMap->getMap().isLocalPlayerSpectating();
+	if (spectate) {
+		_spectateLabel->setLabel(_nodeMap->getMap().isJoinAsSpectator() ? tr("Watching") : tr("You crashed - watching"));
+		_nodeMap->getMap().applyFollowedPlayerHudIfChanged();
+	}
+	_spectateLabel->setVisible(spectate);
+	if (spectate && _mapControl)
+		_mapControl->hide();
+}
+
+bool UIMapWindow::onFingerPress (int64_t finger, uint16_t x, uint16_t y)
+{
+	if (IUIMapWindow::onFingerPress(finger, x, y))
+		return true;
+	if (_nodeMap->getMap().isStarted() && _nodeMap->getMap().isLocalPlayerSpectating()) {
+		_nodeMap->getMap().cycleSpectateTarget(1);
+		return true;
+	}
+	return false;
 }
 
 }

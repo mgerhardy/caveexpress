@@ -97,6 +97,7 @@ Hints|Hinweise
 Homepage|Homepage
 Hover a map edge and drag to resize|Map-Rand anfahren und ziehen, um die Größe zu ändern
 In campaigns|In Kampagnen
+in game|Im Spiel
 Input|Eingabe
 Invalid Lua|Ungültiges Lua
 Invalid Lua shape definition|Invalid Lua shape definition
@@ -108,6 +109,7 @@ Layout|Layout
 Layout ok|Layout in Ordnung
 Leaderboard|Leaderboard
 Lines|Lines
+lobby|Lobby
 LMB: paint / place (also selects)|LMB: paint / place (also selects)
 LMB place / drag, RMB delete vertex, wheel zoom, MMB pan|LMB place / drag, RMB delete vertex, wheel zoom, MMB pan
 Lua API|Lua API

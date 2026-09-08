@@ -17,6 +17,7 @@ private:
 	UINodeBackgroundScene *_background;
 	CampaignManager& _campaignManager;
 	UINodeButton *_replayCampaign;
+	UINodeButton *_returnToLobby;
 public:
 	UIMapFailedWindow (IFrontend *frontend, CampaignManager& campaignManager);
 	void updateReason (bool isMultiplayer, const MapFailedReason& reason, const ThemeType& theme);

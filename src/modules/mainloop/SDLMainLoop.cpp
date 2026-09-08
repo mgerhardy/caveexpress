@@ -548,7 +548,7 @@ ProtocolMessagePtr SDLMainLoop::onOOBData (const unsigned char *data)
 	if (mapName.empty())
 		return ProtocolMessagePtr();
 
-	const ProtocolMessagePtr msg(new PingMessage(Config.getServerName(), mapName, Config.getPort(), game->getPlayers(), game->getMaxClients()));
+	const ProtocolMessagePtr msg(new PingMessage(Config.getServerName(), mapName, Config.getPort(), game->getPlayers(), game->getMaxClients(), game->isMatchInProgress()));
 	return msg;
 }
 
@@ -562,6 +562,8 @@ void SDLMainLoop::onDisconnect (ClientId clientId)
 {
 	Log::info(LOG_SERVER, "disconnect of client with id %i", static_cast<int>(clientId));
 	const GamePtr& game = getGame();
+	// 0 remaining session members: dedicated reloads, listen-server stops.
+	// A remote leaving while the host is still in the match must not stop it.
 	if (game->disconnect(clientId) == 0) {
 		if (_dedicated)
 			game->mapReload();

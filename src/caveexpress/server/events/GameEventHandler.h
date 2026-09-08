@@ -65,6 +65,10 @@ public:
 
 	void updateLives (const Player& player) const;
 
+	/** Broadcast one player's HUD so spectators can show that player's bars. */
+	void sendPlayerHud (const Player& player) const;
+	void sendPlayerHud (const Player& player, int clientMask) const;
+
 	// informs the client about the cave the npc wanna go
 	void announceTargetCave (int clientMask, const NPCFriendly& npc, int16_t delayMillis) const;
 

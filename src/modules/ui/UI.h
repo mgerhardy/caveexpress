@@ -165,6 +165,8 @@ public:
 	SpritePtr loadSprite (const std::string& name) const;
 
 	UIWindow* getRootWindow () const;
+	UIWindow* getFrontWindow () const;
+	bool isOnStack (const std::string& windowID) const;
 	bool isMainRoot () const;
 
 	UINodeBar* setBarValue (const std::string& window, const std::string& nodeId, uint16_t value);

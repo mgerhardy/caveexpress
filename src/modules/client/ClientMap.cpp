@@ -27,7 +27,7 @@ ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, 
 				0), _mapGridHeight(0), _time(0), _playerID(0), _frontend(frontend), _pause(false), _serviceProvider(
 						serviceProvider), _screenRumble(false), _screenRumbleStrength(0.0f), _screenRumbleOffsetX(
 						0), _screenRumbleOffsetY(0), _particleSystem(
-				Config.getClientSideParticleMaxAmount()), _tutorial(false), _cutscene(false), _started(false), _theme(&ThemeTypes::ROCK), _startPositions(0),
+				Config.getClientSideParticleMaxAmount()), _tutorial(false), _cutscene(false), _started(false), _joinAsSpectator(false), _theme(&ThemeTypes::ROCK), _startPositions(0),
 				_preserveZoomOnLoad(false), _mapDefaultZoom(1.0f)
 {
 	_maxZoom = Config.getConfigVar("maxzoom", "1.2");
@@ -83,6 +83,7 @@ void ClientMap::resetCurrentMap ()
 	_name.clear();
 	_time = 0;
 	_started = false;
+	_joinAsSpectator = false;
 	_tutorial = false;
 	_cutscene = false;
 	_mapGridWidth = 0;
@@ -434,6 +435,8 @@ bool ClientMap::wantInformation (const EntityType& type) const
 
 void ClientMap::accelerate (Direction dir, uint8_t id) const
 {
+	if (isLocalPlayerSpectating())
+		return;
 	const MovementMessage msg(dir, id);
 	INetwork& network = _serviceProvider.getNetwork();
 	network.sendToServer(msg);
@@ -441,6 +444,8 @@ void ClientMap::accelerate (Direction dir, uint8_t id) const
 
 void ClientMap::stopFingerAcceleration () const
 {
+	if (isLocalPlayerSpectating())
+		return;
 	static const StopFingerMovementMessage msg;
 	INetwork& network = _serviceProvider.getNetwork();
 	network.sendToServer(msg);
@@ -448,6 +453,8 @@ void ClientMap::stopFingerAcceleration () const
 
 void ClientMap::setFingerAcceleration (int dx, int dy) const
 {
+	if (isLocalPlayerSpectating())
+		return;
 	const FingerMovementMessage msg(dx, dy);
 	INetwork& network = _serviceProvider.getNetwork();
 	network.sendToServer(msg);
@@ -455,6 +462,8 @@ void ClientMap::setFingerAcceleration (int dx, int dy) const
 
 void ClientMap::resetAcceleration (Direction dir, uint8_t id) const
 {
+	if (isLocalPlayerSpectating())
+		return;
 	const StopMovementMessage msg(dir, id);
 	INetwork& network = _serviceProvider.getNetwork();
 	network.sendToServer(msg);
@@ -473,10 +482,40 @@ bool ClientMap::initWaitingForPlayer () {
 	return true;
 }
 
+bool ClientMap::isLocalPlayerSpectating () const
+{
+	if (_joinAsSpectator)
+		return true;
+	if (_player == nullptr)
+		return false;
+	return _player->getAnimation().name == "crashed";
+}
+
+ClientEntity* ClientMap::getSpectateTarget () const
+{
+	if (_player == nullptr && !_joinAsSpectator)
+		return nullptr;
+	if (!isLocalPlayerSpectating())
+		return _player;
+	if (_player == nullptr)
+		return nullptr;
+	for (ClientEntityMapConstIter i = _entities.begin(); i != _entities.end(); ++i) {
+		ClientEntity* e = i->second;
+		if (e == nullptr || e == _player)
+			continue;
+		if (!(e->getType() == _player->getType()))
+			continue;
+		if (e->getAnimation().name == "crashed")
+			continue;
+		return e;
+	}
+	return _player;
+}
+
 bool ClientMap::updateCameraPosition ()
 {
-	if (_player)
-		return _camera.update(_player->getPos(), _player->getMoveDirection(), _zoom);
+	if (ClientEntity* follow = getSpectateTarget())
+		return _camera.update(follow->getPos(), follow->getMoveDirection(), _zoom);
 	return _camera.update(vec2_zero, 0, _zoom);
 }
 
@@ -506,8 +545,8 @@ void ClientMap::update (uint32_t deltaTime)
 
 	_time += deltaTime;
 	updateCameraPosition();
-	if (_player) {
-		SoundControl.setListenerPosition(_player->getPos());
+	if (ClientEntity* follow = getSpectateTarget()) {
+		SoundControl.setListenerPosition(follow->getPos());
 	}
 	const ExecutionTime updateTime("ClientMap", 2000L);
 	const bool lerp = wantLerp();

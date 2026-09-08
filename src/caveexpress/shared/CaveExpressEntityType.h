@@ -244,6 +244,12 @@ inline bool isDynamic (const EntityType& other)
 	return isNpc(other) || isPlayer(other) || isCollectable(other) || isParticle(other);
 }
 
+/** Physics/helpers with no client factory. Must not be sent as AddEntity. */
+inline bool isServerOnly (const EntityType& other)
+{
+	return isPlatform(other) || isWater(other) || isBorder(other) || isModificator(other) || isEmitter(other);
+}
+
 // returns true if the entity has a direction for the idle animation
 inline bool hasDirection (const EntityType& other)
 {

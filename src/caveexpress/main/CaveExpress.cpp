@@ -71,6 +71,7 @@
 #include "caveexpress/client/network/UpdateTransferCountHandler.h"
 #include "caveexpress/client/network/TargetCaveHandler.h"
 #include "caveexpress/client/network/AnnounceTargetCaveHandler.h"
+#include "caveexpress/client/network/PlayerHudHandler.h"
 #include "caveexpress/client/network/FailedMapHandler.h"
 #include "caveexpress/server/events/GameEventHandler.h"
 #include "caveexpress/server/entities/CaveMapTile.h"
@@ -130,6 +131,14 @@ void CaveExpress::update (uint32_t deltaTime)
 
 	if (_map.isPause())
 		return;
+
+	if (_map.isEndScreenHold())
+		return;
+
+	if (!_map.isMatchStarted()) {
+		_mapFinishSent = false;
+		_mapFinishDelayStarted = false;
+	}
 
 	_updateEntitiesTime -= deltaTime;
 	_map.update(deltaTime);
@@ -218,14 +227,23 @@ void CaveExpress::update (uint32_t deltaTime)
 			if (!_campaignManager->continuePlay())
 				GameEvent.backToMain("");
 		} else {
-			GameEvent.finishedMap(_finishMapName, _finishPoints, _finishTimeSeconds, _finishStars);
-			_mapFinishSent = true;
-			_mapFinishDelayStarted = false;
+			const std::string finishedName = _finishMapName;
+			if (_map.isMultiplayerSession()) {
+				_map.holdForEndScreen();
+				_mapFinishSent = true;
+				_mapFinishDelayStarted = false;
+			} else {
+				_mapFinishSent = true;
+				_mapFinishDelayStarted = false;
+			}
+			GameEvent.finishedMap(finishedName, _finishPoints, _finishTimeSeconds, _finishStars);
 		}
-	} else if (!isDone && _map.isFailed()) {
-		Log::debug(LOG_GAMEIMPL, "map failed");
-		const uint32_t delay = 1000;
-		_map.restart(delay);
+	} else if (!isDone && _map.isMatchStarted() && _map.isFailed()) {
+		if (!_map.isEndScreenHold()) {
+			Log::info(LOG_GAMEIMPL, "map failed, holding until continue");
+			_map.notifyClientsFailed();
+			_map.holdForEndScreen();
+		}
 	}
 }
 
@@ -268,12 +286,25 @@ int CaveExpress::disconnect (ClientId clientId)
 	} else {
 		_connectedClients--;
 	}
-	return _connectedClients;
+	// Remaining session members keep the listen-server map running. Using the
+	// map roster (not _connectedClients) so a remote leaving cannot shut the
+	// host out of their own match.
+	return _map.getConnectedPlayers();
 }
 
 int CaveExpress::getPlayers ()
 {
-	return _map.getConnectedPlayers();
+	return _map.getSessionPlayerCount();
+}
+
+int CaveExpress::getMaxClients ()
+{
+	return _map.getMaxPlayers();
+}
+
+bool CaveExpress::isMatchInProgress () const
+{
+	return _map.isMatchStarted();
 }
 
 std::string CaveExpress::getMapName ()
@@ -404,9 +435,11 @@ void CaveExpress::initUI (IFrontend* frontend, ServiceProvider& serviceProvider)
 	r.unregisterClientHandler(::protocol::PROTO_FAILEDMAP);
 	r.registerClientHandler(::protocol::PROTO_FAILEDMAP, new FailedMapHandler(*map, serviceProvider));
 	r.unregisterClientHandler(protocol::PROTO_TARGETCAVE);
-	r.registerClientHandler(protocol::PROTO_TARGETCAVE, new TargetCaveHandler());
+	r.registerClientHandler(protocol::PROTO_TARGETCAVE, new TargetCaveHandler(*map));
 	r.unregisterClientHandler(protocol::PROTO_ANNOUNCETARGETCAVE);
 	r.registerClientHandler(protocol::PROTO_ANNOUNCETARGETCAVE, new AnnounceTargetCaveHandler(*map));
+	r.unregisterClientHandler(protocol::PROTO_PLAYERHUD);
+	r.registerClientHandler(protocol::PROTO_PLAYERHUD, new PlayerHudHandler(*map));
 }
 
 Map& CaveExpress::getMap ()

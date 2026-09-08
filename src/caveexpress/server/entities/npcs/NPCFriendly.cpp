@@ -211,6 +211,13 @@ void NPCFriendly::update (uint32_t deltaTime)
 	const Map::PlayerList& players = _map.getPlayers();
 	for (Map::PlayerListConstIter i = players.begin(); i != players.end(); ++i) {
 		Player* player = *i;
+		if (!player->isLive()) {
+			if (isMoving() && getTargetPlayer() == player->getID()) {
+				setIdle();
+				setTargetPlayer(-1);
+			}
+			continue;
+		}
 		if (_map.isInputEnabled() && player->isFree() && player->isLandedOn(getCave())) {
 			// player is landed on our tile - walk toward him
 			if (isIdle()) {

@@ -3,6 +3,7 @@
 #include "caveexpress/shared/CaveExpressMapFailedReasons.h"
 #include "caveexpress/shared/constants/ConfigVars.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
+#include "client/entities/ClientEntityFactory.h"
 #include "caveexpress/server/entities/CaveMapTile.h"
 #include "caveexpress/server/entities/npcs/NPCFriendly.h"
 #include "caveexpress/server/entities/npcs/NPCPackage.h"
@@ -11,6 +12,7 @@
 #include "caveexpress/shared/constants/NPCState.h"
 #include "caveexpress/server/entities/PackageTarget.h"
 #include "common/ConfigManager.h"
+#include "common/LobbyPlayers.h"
 #include "common/Direction.h"
 #include "common/EntityType.h"
 #include "network/INetwork.h"
@@ -115,6 +117,8 @@ protected:
 		_game.init(&_testFrontend, _serviceProvider);
 		TextureDefinition t("small");
 		SpriteDefinition::get().init(t);
+		// Manual Start in tests: do not auto-start when the second player joins.
+		Config.getConfigVar("maxplayers", "2")->setValue(MAX_CLIENTS);
 	}
 };
 
@@ -550,6 +554,113 @@ TEST_F(MapTest, testLetter01TaxiLandingAndKnockOff)
 			<< "a slow airborne bump must not make the idle NPC ignore the player";
 }
 
+TEST_F(MapTest, testLobbyPlayerListMarksHost)
+{
+	ASSERT_TRUE(_map.load("ice-01")) << "Could not load ice-01";
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	host->setName("Alice");
+	ASSERT_TRUE(_map.initPlayer(host));
+	Player* guest = new Player(_map, 2);
+	guest->setLives(3);
+	guest->setName("Bob");
+	ASSERT_TRUE(_map.initPlayer(guest));
+	EXPECT_TRUE(_map.isReadyToStart());
+	EXPECT_EQ(1, _map.getHostClientId());
+	const std::vector<std::string> names = _map.getLobbyPlayerNames();
+	ASSERT_EQ(2u, names.size());
+	EXPECT_EQ(std::string("Alice") + " (host)", names[0]);
+	EXPECT_EQ("Bob", names[1]);
+	_map.startMap();
+	ASSERT_TRUE(_map.isActive());
+	const std::vector<std::string> afterStart = _map.getLobbyPlayerNames();
+	ASSERT_EQ(2u, afterStart.size());
+	EXPECT_EQ(std::string("Alice") + " (host)", afterStart[0]);
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testReturnToLobbyAllowsSecondStart)
+{
+	_serviceProvider.updateNetwork(true);
+	ASSERT_TRUE(_map.isMultiplayerSession());
+	ASSERT_TRUE(_map.load("ice-01")) << "Could not load ice-01";
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	host->setName("Alice");
+	ASSERT_TRUE(_map.initPlayer(host));
+	Player* guest = new Player(_map, 2);
+	guest->setLives(3);
+	guest->setName("Bob");
+	ASSERT_TRUE(_map.initPlayer(guest));
+	_map.startMap();
+	ASSERT_EQ(2u, _map.getPlayers().size());
+	ASSERT_TRUE(_map.isActive());
+	EXPECT_EQ(1, _map.getHostClientId());
+
+	ASSERT_TRUE(_map.returnToLobby());
+	EXPECT_TRUE(_map.getPlayers().empty()) << "match entities are gone until the next start";
+	EXPECT_EQ(1, _map.getHostClientId()) << "host stays the first client";
+	EXPECT_FALSE(_map.isActive());
+	EXPECT_FALSE(_map.isMatchStarted());
+	EXPECT_FALSE(_map.isFailed()) << "the lobby must not look like a failed match";
+	_map.restart(1000);
+	EXPECT_FALSE(_map.isRestartInitialized()) << "lobby must not schedule a restart that would CloseMap";
+
+	Player* hostAgain = new Player(_map, 1);
+	hostAgain->setLives(3);
+	hostAgain->setName("Alice");
+	ASSERT_TRUE(_map.initPlayer(hostAgain));
+	Player* guestAgain = new Player(_map, 2);
+	guestAgain->setLives(3);
+	guestAgain->setName("Bob");
+	ASSERT_TRUE(_map.initPlayer(guestAgain));
+	EXPECT_TRUE(_map.isReadyToStart());
+	const std::vector<std::string> names = _map.getLobbyPlayerNames();
+	ASSERT_EQ(2u, names.size());
+	EXPECT_EQ(std::string("Alice") + " (host)", names[0]);
+	EXPECT_EQ("Bob", names[1]);
+	_map.startMap();
+	ASSERT_EQ(2u, _map.getPlayers().size());
+	ASSERT_TRUE(_map.isActive());
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testSinglePlayerDoesNotReturnToLobby)
+{
+	ASSERT_FALSE(_map.isMultiplayerSession());
+	ASSERT_TRUE(_map.load("ice-01"));
+	Player* player = new Player(_map, 1);
+	player->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(player));
+	_map.startMap();
+	ASSERT_TRUE(_map.isActive());
+	EXPECT_FALSE(_map.returnToLobby());
+	EXPECT_EQ(1u, _map.getPlayers().size()) << "single-player stay on the running map";
+	EXPECT_TRUE(_map.isActive());
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testSinglePlayerStartsWithoutLobbyReadyCheck)
+{
+	ASSERT_TRUE(_map.load("ice-01")) << "Could not load ice-01";
+	Player* player = new Player(_map, 1);
+	player->setLives(3);
+	player->setName("Solo");
+	ASSERT_TRUE(_map.initPlayer(player));
+	EXPECT_FALSE(_map.isReadyToStart()) << "one waiting player is not enough for the MP start handler";
+	EXPECT_FALSE(_map.isMatchStarted());
+	EXPECT_FALSE(_map.isFailed()) << "waiting to start is not a fail";
+	ASSERT_EQ(1u, _map.getLobbyPlayerNames().size());
+	EXPECT_EQ(std::string("Solo") + " (host)", _map.getLobbyPlayerNames()[0]);
+	// Single player calls startMap() directly (CMD_START), not StartMapHandler.
+	_map.startMap();
+	ASSERT_TRUE(_map.isActive());
+	ASSERT_TRUE(_map.isMatchStarted());
+	ASSERT_EQ(1u, _map.getPlayers().size());
+	EXPECT_FALSE(_map.isFailed());
+	_map.shutdown();
+}
+
 TEST_F(MapTest, testPackageCavesKeepRespawnUntilQuota)
 {
 	ASSERT_TRUE(_map.load("rock-01")) << "Could not load rock-01";
@@ -570,6 +681,325 @@ TEST_F(MapTest, testPackageCavesKeepRespawnUntilQuota)
 		EXPECT_TRUE(cave->isRespawnPossible()) << "cave " << cave->getCaveNumber()
 				<< " must keep respawning while packagetransfercount is unmet";
 	}
+}
+
+TEST_F(MapTest, testJoinDuringLobbySpawnsAsPlayer)
+{
+	_serviceProvider.updateNetwork(true);
+	ASSERT_TRUE(_map.isMultiplayerSession());
+	ASSERT_TRUE(_map.load("ice-01")) << "Could not load ice-01";
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	host->setName("Alice");
+	ASSERT_TRUE(_map.initPlayer(host));
+	Player* guest = new Player(_map, 2);
+	guest->setLives(3);
+	guest->setName("Bob");
+	ASSERT_TRUE(_map.initPlayer(guest));
+	Player* lateLobby = new Player(_map, 3);
+	lateLobby->setLives(3);
+	lateLobby->setName("Carol");
+	ASSERT_TRUE(_map.initPlayer(lateLobby));
+	EXPECT_FALSE(_map.isMatchStarted());
+	EXPECT_TRUE(_map.getSpectators().empty());
+	EXPECT_EQ(3, _map.getConnectedPlayers());
+	_map.startMap();
+	ASSERT_EQ(3u, _map.getPlayers().size());
+	EXPECT_TRUE(_map.getSpectators().empty());
+	EXPECT_TRUE(_map.isMatchStarted());
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testJoinAfterStartIsSpectator)
+{
+	_serviceProvider.updateNetwork(true);
+	ASSERT_TRUE(_map.isMultiplayerSession());
+	ASSERT_TRUE(_map.load("ice-01")) << "Could not load ice-01";
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	host->setName("Alice");
+	ASSERT_TRUE(_map.initPlayer(host));
+	Player* guest = new Player(_map, 2);
+	guest->setLives(3);
+	guest->setName("Bob");
+	ASSERT_TRUE(_map.initPlayer(guest));
+	_map.startMap();
+	ASSERT_EQ(2u, _map.getPlayers().size());
+	ASSERT_TRUE(_map.isMatchStarted());
+	EXPECT_EQ(2, _map.countLivingPlayers());
+
+	Player* late = new Player(_map, 3);
+	late->setLives(3);
+	late->setName("Carol");
+	ASSERT_TRUE(_map.initPlayer(late));
+	EXPECT_EQ(2u, _map.getPlayers().size()) << "late joiner must not spawn a ship";
+	ASSERT_EQ(1u, _map.getSpectators().size());
+	EXPECT_EQ(late, _map.getSpectators().front());
+	EXPECT_TRUE(late->isSpectator());
+	EXPECT_FALSE(late->isLive());
+	EXPECT_FALSE(late->acceptsControlInput());
+	EXPECT_EQ(2, _map.countLivingPlayers());
+	EXPECT_EQ(3, _map.getConnectedPlayers());
+	EXPECT_EQ(late, _map.getPlayer(3));
+	EXPECT_FALSE(_map.isFailed());
+	const std::vector<std::string> names = _map.getLobbyPlayerNames();
+	ASSERT_EQ(3u, names.size());
+	EXPECT_EQ(std::string("Carol") + lobby::SPECTATING_SUFFIX, names[2]);
+
+	int platforms = 0;
+	class ServerOnlyCount: public IEntityVisitor {
+	public:
+		int* platforms;
+		explicit ServerOnlyCount (int* p) : platforms(p) {}
+		bool visitEntity (IEntity *entity) override
+		{
+			if (entity->isPlatform()) {
+				++*platforms;
+				EXPECT_TRUE(entity->isServerOnly()) << entity->getType().name;
+			}
+			if (entity->isServerOnly()) {
+				EXPECT_EQ(nullptr, ClientEntityRegistry::get(entity->getType(), entity->getID()))
+					<< "late-join snapshot must not AddEntity " << entity->getType().name;
+			}
+			return false;
+		}
+	};
+	ServerOnlyCount counter(&platforms);
+	_map.visitEntities(&counter);
+	EXPECT_GT(platforms, 0) << "ice-01 must have landing platforms that used to crash spectators";
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testSpectatorReturnsToLobbyAsPlayer)
+{
+	_serviceProvider.updateNetwork(true);
+	ASSERT_TRUE(_map.load("ice-01"));
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	host->setName("Alice");
+	ASSERT_TRUE(_map.initPlayer(host));
+	Player* guest = new Player(_map, 2);
+	guest->setLives(3);
+	guest->setName("Bob");
+	ASSERT_TRUE(_map.initPlayer(guest));
+	_map.startMap();
+	Player* late = new Player(_map, 3);
+	late->setLives(3);
+	late->setName("Carol");
+	ASSERT_TRUE(_map.initPlayer(late));
+	ASSERT_EQ(1u, _map.getSpectators().size());
+
+	ASSERT_TRUE(_map.returnToLobby());
+	EXPECT_TRUE(_map.getSpectators().empty());
+	EXPECT_FALSE(_map.isMatchStarted());
+
+	Player* hostAgain = new Player(_map, 1);
+	hostAgain->setLives(3);
+	hostAgain->setName("Alice");
+	ASSERT_TRUE(_map.initPlayer(hostAgain));
+	Player* guestAgain = new Player(_map, 2);
+	guestAgain->setLives(3);
+	guestAgain->setName("Bob");
+	ASSERT_TRUE(_map.initPlayer(guestAgain));
+	Player* lateAgain = new Player(_map, 3);
+	lateAgain->setLives(3);
+	lateAgain->setName("Carol");
+	ASSERT_TRUE(_map.initPlayer(lateAgain));
+	EXPECT_TRUE(_map.getSpectators().empty());
+	EXPECT_FALSE(lateAgain->isSpectator());
+	_map.startMap();
+	ASSERT_EQ(3u, _map.getPlayers().size());
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testLobbyAutoStartsWhenMaxPlayersJoin)
+{
+	_serviceProvider.updateNetwork(true);
+	Config.getConfigVar("maxplayers")->setValue(2);
+	ASSERT_EQ(2, _map.getMaxPlayers());
+	ASSERT_TRUE(_map.load("ice-01"));
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	host->setName("Alice");
+	ASSERT_TRUE(_map.initPlayer(host));
+	EXPECT_FALSE(_map.isMatchStarted());
+	EXPECT_EQ(1, _map.getSessionPlayerCount());
+	Player* guest = new Player(_map, 2);
+	guest->setLives(3);
+	guest->setName("Bob");
+	ASSERT_TRUE(_map.initPlayer(guest));
+	EXPECT_TRUE(_map.isMatchStarted()) << "second player must auto-start a max-2 lobby";
+	ASSERT_EQ(2u, _map.getPlayers().size());
+	EXPECT_TRUE(_map.getSpectators().empty());
+	_map.startMap();
+	EXPECT_EQ(2u, _map.getPlayers().size()) << "host Start after auto-start is a no-op";
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testHostCanForceStartBeforeLobbyIsFull)
+{
+	_serviceProvider.updateNetwork(true);
+	Config.getConfigVar("maxplayers")->setValue(2);
+	ASSERT_TRUE(_map.load("ice-01"));
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	host->setName("Alice");
+	ASSERT_TRUE(_map.initPlayer(host));
+	EXPECT_FALSE(_map.isReadyToStart());
+	EXPECT_FALSE(_map.isMatchStarted());
+	_map.startMap();
+	EXPECT_TRUE(_map.isMatchStarted());
+	ASSERT_EQ(1u, _map.getPlayers().size());
+	Player* late = new Player(_map, 2);
+	late->setLives(3);
+	late->setName("Bob");
+	ASSERT_TRUE(_map.initPlayer(late));
+	EXPECT_TRUE(late->isSpectator()) << "after a forced start, further joins watch";
+	EXPECT_EQ(1u, _map.getPlayers().size());
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testLobbyDoesNotAutoStartBeforeMaxPlayers)
+{
+	_serviceProvider.updateNetwork(true);
+	Config.getConfigVar("maxplayers")->setValue(4);
+	ASSERT_TRUE(_map.load("ice-01"));
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(host));
+	Player* guest = new Player(_map, 2);
+	guest->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(guest));
+	EXPECT_FALSE(_map.isMatchStarted());
+	EXPECT_TRUE(_map.isReadyToStart());
+	EXPECT_EQ(2, _map.getSessionPlayerCount());
+	EXPECT_EQ(4, _map.getMaxPlayers());
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testPlayerHudSnapshotDefaults)
+{
+	_serviceProvider.updateNetwork(true);
+	ASSERT_TRUE(_map.load("ice-01")) << "Could not load ice-01";
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(host));
+	Player* guest = new Player(_map, 2);
+	guest->setLives(2);
+	ASSERT_TRUE(_map.initPlayer(guest));
+	_map.startMap();
+	ASSERT_EQ(2u, _map.getPlayers().size());
+	EXPECT_EQ(0, host->getHudTargetCave());
+	EXPECT_TRUE(host->getHudCollectedType().isNone());
+	EXPECT_EQ(3, host->getLives());
+	EXPECT_EQ(2, guest->getLives());
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testGuestLeaveDoesNotEndHostMatch)
+{
+	_serviceProvider.updateNetwork(true);
+	ASSERT_TRUE(_map.load("ice-01"));
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	host->setName("Alice");
+	ASSERT_TRUE(_map.initPlayer(host));
+	Player* guest = new Player(_map, 2);
+	guest->setLives(3);
+	guest->setName("Bob");
+	ASSERT_TRUE(_map.initPlayer(guest));
+	_map.startMap();
+	ASSERT_EQ(2u, _map.getPlayers().size());
+	ASSERT_TRUE(_map.isMatchStarted());
+	ASSERT_TRUE(_map.isActive());
+
+	_map.disconnect(2);
+	EXPECT_EQ(1u, _map.getPlayers().size()) << "host ship stays after the guest leaves";
+	EXPECT_EQ(1, _map.getConnectedPlayers());
+	EXPECT_EQ(1, _map.countLivingPlayers());
+	EXPECT_TRUE(_map.isMatchStarted());
+	EXPECT_TRUE(_map.isActive()) << "host must be able to finish the map alone";
+	EXPECT_EQ("ice-01", _map.getName()) << "leaving client must not reset the running map";
+	EXPECT_FALSE(_map.isFailed());
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testGuestLeaveLobbyKeepsHostWaiting)
+{
+	_serviceProvider.updateNetwork(true);
+	ASSERT_TRUE(_map.load("ice-01"));
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(host));
+	Player* guest = new Player(_map, 2);
+	guest->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(guest));
+	EXPECT_FALSE(_map.isMatchStarted());
+	EXPECT_EQ(2, _map.getConnectedPlayers());
+	_map.disconnect(2);
+	EXPECT_EQ(1, _map.getConnectedPlayers());
+	EXPECT_FALSE(_map.isMatchStarted());
+	EXPECT_EQ("ice-01", _map.getName());
+	EXPECT_FALSE(_map.isReadyToStart());
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testFailHoldDoesNotReloadUntilContinue)
+{
+	_serviceProvider.updateNetwork(true);
+	ASSERT_TRUE(_map.load("ice-01"));
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(host));
+	Player* guest = new Player(_map, 2);
+	guest->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(guest));
+	_map.startMap();
+	for (int i = 0; i < 5; ++i)
+		_map.update(20);
+	host->setCrashed(CRASH_DAMAGE);
+	guest->setCrashed(CRASH_DAMAGE);
+	ASSERT_TRUE(_map.isFailed());
+	_map.notifyClientsFailed();
+	_map.holdForEndScreen();
+	const uint32_t frozen = _map.getTime();
+	const std::string name = _map.getName();
+	for (int i = 0; i < 30; ++i)
+		_map.update(20);
+	EXPECT_EQ(frozen, _map.getTime()) << "the failed map must not tick during the death screen";
+	EXPECT_EQ(name, _map.getName());
+	EXPECT_TRUE(_map.isMatchStarted()) << "Continue has not re-entered the lobby yet";
+	EXPECT_TRUE(_map.isEndScreenHold());
+	ASSERT_TRUE(_map.returnToLobby());
+	EXPECT_FALSE(_map.isEndScreenHold());
+	EXPECT_FALSE(_map.isMatchStarted());
+	EXPECT_TRUE(_map.getPlayers().empty());
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testReturnToLobbyDoesNotAutoStart)
+{
+	_serviceProvider.updateNetwork(true);
+	Config.getConfigVar("maxplayers")->setValue("2");
+	ASSERT_TRUE(_map.load("ice-01"));
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(host));
+	Player* guest = new Player(_map, 2);
+	guest->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(guest));
+	_map.startMap();
+	ASSERT_TRUE(_map.isMatchStarted());
+	ASSERT_TRUE(_map.returnToLobby());
+	Player* hostAgain = new Player(_map, 1);
+	hostAgain->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(hostAgain));
+	Player* guestAgain = new Player(_map, 2);
+	guestAgain->setLives(3);
+	ASSERT_TRUE(_map.initPlayer(guestAgain));
+	EXPECT_FALSE(_map.isMatchStarted()) << "after a match the lobby must wait for host Start";
+	EXPECT_EQ(2, _map.getSessionPlayerCount());
+	_map.shutdown();
 }
 
 }

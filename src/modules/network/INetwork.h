@@ -12,6 +12,9 @@
 #define ClientIdToClientMask(clientId) (1 << clientId)
 
 #define MAX_CLIENTS 4
+/** SDL_net socket set: listen + host outbound client + accepted sessions.
+ * Accepted sessions are players (up to MAX_CLIENTS) plus late-join spectators. */
+#define MAX_NETWORK_SOCKETS (MAX_CLIENTS * 2 + 2)
 
 namespace {
 const ClientId defaultClientId = 1;

@@ -37,6 +37,6 @@ public:
 		Log::info(LOG_CLIENT, "got ping broadcast reply");
 		const PingMessage* p = static_cast<const PingMessage*>(message);
 		_serverSelector->addServer(host, p->getName(), p->getMapName(), p->getPort(), p->getPlayerCount(),
-				p->getMaxPlayerCount());
+				p->getMaxPlayerCount(), p->isInGame());
 	}
 };

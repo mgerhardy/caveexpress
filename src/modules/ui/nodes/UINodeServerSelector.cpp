@@ -3,6 +3,8 @@
 #include "common/CommandSystem.h"
 #include "common/Log.h"
 #include "common/Commands.h"
+#include "common/LobbyPlayers.h"
+#include "common/String.h"
 
 #define MAP_HEADLINE tr("Map")
 #define NAME_HEADLINE tr("Name")
@@ -35,10 +37,10 @@ UINodeServerSelector::~UINodeServerSelector ()
 }
 
 void UINodeServerSelector::addServer (const std::string &host, const std::string& name, const std::string& mapName,
-		int port, int playerCount, int maxPlayerCount)
+		int port, int playerCount, int maxPlayerCount, bool inGame)
 {
 	Log::info(LOG_UI, "add server: %s", host.c_str());
-	addData(ServerEntry(name, host, port, mapName, playerCount, maxPlayerCount));
+	addData(ServerEntry(name, host, port, mapName, playerCount, maxPlayerCount, inGame));
 }
 
 bool UINodeServerSelector::onSelect (const ServerEntry& data)
@@ -87,12 +89,13 @@ void UINodeServerSelector::renderSelectorEntry (int index, const ServerEntry& da
 
 	const int nameWidth = getMapX() - getNameX() - _rowSpacingPixel;
 	const int mapNameWidth = getPlayersX() - getMapX() - _rowSpacingPixel;
+	const std::string mapLabel = data.mapName + " (" + tr(lobby::sessionPhaseLabel(data.inGame)) + ")";
 	const std::string players = string::toString(data.playerCount) + "/" + string::toString(data.maxPlayerCount);
 	const int playersWidth = _font->getTextWidth(PLAYERS_HEADLINE) - _rowSpacingPixel;
 
 	renderFilledRect(x, y, colWidth, rowHeight, color);
 	_font->printMax(data.name, _fontColor, x + getNameX(), y, nameWidth, false);
-	_font->printMax(data.mapName, _fontColor, x + getMapX(), y, mapNameWidth, false);
+	_font->printMax(mapLabel, _fontColor, x + getMapX(), y, mapNameWidth, false);
 	_font->printMax(players, _fontColor, x + getPlayersX(), y, playersWidth, false);
 }
 

@@ -26,6 +26,8 @@ public:
 		_map.noteClientAction();
 		if (!_map.isInputEnabled())
 			return;
+		if (!player->acceptsControlInput())
+			return;
 		const FingerMovementMessage* msg = assert_cast<const FingerMovementMessage*, const IProtocolMessage*>(&message);
 		player->setFingerAcceleration(msg->getDeltaX(), msg->getDeltaY());
 	}

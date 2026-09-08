@@ -85,6 +85,7 @@ private:
 	PhysicsJoint _revoluteJoint;
 
 	PlayerCrashReason _crashReason;
+	bool _spectator;
 
 	float getCompleteMass () const;
 
@@ -108,6 +109,12 @@ public:
 	bool isLandedOn (const CaveMapTile *cave) const;
 	void setCrashed (const PlayerCrashReason& reason);
 	bool isCrashed () const;
+	/** False once crashed, out of lives, or watching without a ship. */
+	bool isLive () const;
+	/** False once crashed or out of lives: ignore fly/drop/finger input. */
+	bool acceptsControlInput () const;
+	bool isSpectator () const;
+	void setSpectator (bool spectator);
 	const PlayerCrashReason& getCrashReason () const;
 	// returns true if the player does not carry anything
 	bool isFree () const;
@@ -116,6 +123,10 @@ public:
 
 	uint16_t getHitpoints () const;
 	uint8_t getLives () const;
+	/** Cave number, 100 for stone, 0 if none - same encoding as TargetCaveMessage. */
+	uint8_t getHudTargetCave () const;
+	/** Carried NPC or collectable type for the HUD; EntityType::NONE if empty. */
+	const EntityType& getHudCollectedType () const;
 	void setLives (uint8_t lives);
 	void reduceLive ();
 	void addLife ();
@@ -179,6 +190,26 @@ inline void Player::reset ()
 inline bool Player::isCrashed () const
 {
 	return getState() == PlayerState::PLAYER_CRASHED;
+}
+
+inline bool Player::isLive () const
+{
+	return !_spectator && !isCrashed() && !isDead();
+}
+
+inline bool Player::acceptsControlInput () const
+{
+	return isLive();
+}
+
+inline bool Player::isSpectator () const
+{
+	return _spectator;
+}
+
+inline void Player::setSpectator (bool spectator)
+{
+	_spectator = spectator;
 }
 
 inline uint16_t Player::getHitpoints () const

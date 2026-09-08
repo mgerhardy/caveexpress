@@ -2,6 +2,7 @@
 
 #include "network/IProtocolHandler.h"
 #include "network/messages/UpdateLivesMessage.h"
+#include "client/ClientMap.h"
 #include "ui/UI.h"
 #include "ui/windows/IUIMapWindow.h"
 #include "campaign/CampaignManager.h"
@@ -9,14 +10,17 @@
 class UpdateLivesHandler: public ClientProtocolHandler<UpdateLivesMessage> {
 private:
 	CampaignManager& _campaignManager;
+	ClientMap& _map;
 public:
-	UpdateLivesHandler (CampaignManager& campaignManager) :
-			_campaignManager(campaignManager)
+	UpdateLivesHandler (CampaignManager& campaignManager, ClientMap& map) :
+			_campaignManager(campaignManager), _map(map)
 	{
 	}
 
 	void execute (const UpdateLivesMessage* msg) override
 	{
+		if (_map.isLocalPlayerSpectating())
+			return;
 		const uint8_t lives = msg->getLives();
 		CampaignPtr campaign = _campaignManager.getActiveCampaign();
 		if (campaign) {

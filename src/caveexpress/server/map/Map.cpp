@@ -47,6 +47,7 @@
 #include "caveexpress/shared/CaveExpressAchievement.h"
 #include "network/messages/CooldownMessage.h"
 #include "network/messages/InitDoneMessage.h"
+#include "network/IProtocolMessage.h"
 #include "network/messages/SoundMessage.h"
 #include "network/messages/MapSettingsMessage.h"
 #include "network/messages/TextMessage.h"
@@ -56,6 +57,7 @@
 #include "common/vec2.h"
 #include "common/ExecutionTime.h"
 #include "common/Commands.h"
+#include "common/LobbyPlayers.h"
 #include <SDL.h>
 #include <SDL_stdinc.h>
 #include <algorithm>
@@ -76,6 +78,20 @@ Achievement* packageAchievements[] = {
 		&Achievements::DELIVER_100_PACKAGES,
 		&Achievements::DELIVER_150_PACKAGES
 };
+
+Player* pickLivePlayer (const Map::PlayerList& players)
+{
+	Player* player = nullptr;
+	int n = 0;
+	for (Map::PlayerListConstIter i = players.begin(); i != players.end(); ++i) {
+		if (!(*i)->isLive())
+			continue;
+		++n;
+		if ((rand() % n) == 0)
+			player = *i;
+	}
+	return player;
+}
 }
 
 Map::Map () :
@@ -86,6 +102,7 @@ Map::Map () :
 	Commands.registerCommandVoid(CMD_MAP_DEBUG, bindFunctionVoid(Map::triggerDebug));
 	Commands.registerCommandVoid(CMD_MAP_DUMP, bindFunctionVoid(Map::dump));
 	Commands.registerCommandVoid(CMD_START, bindFunctionVoid(Map::startMap));
+	Commands.registerCommandVoid(CMD_RETURN_TO_LOBBY, bindFunctionVoid(Map::triggerReturnToLobby));
 	Commands.registerCommandVoid(CMD_KILL, bindFunctionVoid(Map::killPlayers));
 	Commands.registerCommandVoid(CMD_FINISHMAP, bindFunctionVoid(Map::finishMap));
 
@@ -99,6 +116,7 @@ Map::~Map ()
 	Commands.removeCommand(CMD_MAP_DEBUG);
 	Commands.removeCommand(CMD_MAP_DUMP);
 	Commands.removeCommand(CMD_START);
+	Commands.removeCommand(CMD_RETURN_TO_LOBBY);
 	Commands.removeCommand(CMD_KILL);
 	Commands.removeCommand(CMD_FINISHMAP);
 	clearPhysics();
@@ -478,6 +496,11 @@ void Map::updateVisMask ()
 		const ClientId id = player->getClientId();
 		_allPlayers |= ClientIdToClientMask(id);
 	}
+
+	for (const Player* player : _spectators) {
+		const ClientId id = player->getClientId();
+		_allPlayers |= ClientIdToClientMask(id);
+	}
 }
 
 void Map::disconnect (ClientId clientId)
@@ -486,7 +509,7 @@ void Map::disconnect (ClientId clientId)
 
 	_serviceProvider->getNetwork().disconnectClientFromServer(clientId);
 
-	if (_players.size() == 1 && _playersWaitingForSpawn.empty())
+	if (_players.empty() && _playersWaitingForSpawn.empty() && _spectators.empty())
 		resetCurrentMap();
 }
 
@@ -655,6 +678,12 @@ void Map::clearPhysics ()
 	_playersWaitingForSpawn.clear();
 	_playersWaitingForSpawn.reserve(MAX_CLIENTS);
 
+	for (PlayerListIter i = _spectators.begin(); i != _spectators.end(); ++i) {
+		delete *i;
+	}
+	_spectators.clear();
+	_spectators.reserve(MAX_CLIENTS);
+
 	if (_world)
 		delete _world;
 	if (!_name.empty())
@@ -665,7 +694,7 @@ void Map::clearPhysics ()
 	_fishNPC = nullptr;
 }
 
-Player* Map::getPlayer (ClientId clientId)
+Player* Map::findPlayer (ClientId clientId) const
 {
 	for (Player* player : _players) {
 		if (player->getClientId() == clientId) {
@@ -679,12 +708,28 @@ Player* Map::getPlayer (ClientId clientId)
 		}
 	}
 
-	Log::error(LOG_GAMEIMPL, "no player found for the client id %i", clientId);
+	for (Player* player : _spectators) {
+		if (player->getClientId() == clientId) {
+			return player;
+		}
+	}
+
 	return nullptr;
+}
+
+Player* Map::getPlayer (ClientId clientId)
+{
+	Player* player = findPlayer(clientId);
+	if (player == nullptr)
+		Log::error(LOG_GAMEIMPL, "no player found for the client id %i", clientId);
+	return player;
 }
 
 bool Map::isFailed () const
 {
+	if (!_matchStarted)
+		return false;
+
 	if (getWaterHeight() <= 0) {
 		Log::debug(LOG_GAMEIMPL, "failed because water hit the top");
 		return true;
@@ -705,15 +750,27 @@ bool Map::isFailed () const
 		}
 	}
 
+	if (countLivingPlayers() > 0)
+		return false;
+
+	Log::debug(LOG_GAMEIMPL, "failed because all %i players are out", (int)_players.size());
+	return true;
+}
+
+bool Map::isMultiplayerSession () const
+{
+	return _serviceProvider != nullptr && _serviceProvider->getNetwork().isMultiplayer();
+}
+
+int Map::countLivingPlayers () const
+{
+	int n = 0;
 	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
 		const Player* player = *i;
-		if (!player->isCrashed()) {
-			return false;
-		}
+		if (player->isLive())
+			++n;
 	}
-
-	Log::debug(LOG_GAMEIMPL, "failed because all %i players crashed", (int)_players.size());
-	return true;
+	return n;
 }
 
 const MapFailedReason& Map::getFailReason (const Player* player) const
@@ -761,7 +818,8 @@ int Map::handleDeadPlayers ()
 		const ClientId clientId = p->getClientId();
 		Log::info(LOG_GAMEIMPL, "player %s is dead", p->getName().c_str());
 		p->onDeath();
-		disconnect(clientId);
+		if (!isMultiplayerSession())
+			disconnect(clientId);
 		++deadPlayers;
 	}
 	return deadPlayers;
@@ -770,6 +828,10 @@ int Map::handleDeadPlayers ()
 void Map::restart (uint32_t delay)
 {
 	if (_restartDue > 0)
+		return;
+	if (!_matchStarted)
+		return;
+	if (_endScreenHold)
 		return;
 
 	Log::info(LOG_GAMEIMPL, "trigger map restart");
@@ -794,7 +856,8 @@ void Map::resetCurrentMap ()
 {
 	_timeManager.reset();
 	if (!_name.empty()) {
-		GameEvent.closeMap();
+		if (_sendCloseMapOnReset)
+			GameEvent.closeMap();
 		Log::info(LOG_GAMEIMPL, "reset map: %s", _name.c_str());
 	}
 	_pointCount = 0;
@@ -825,6 +888,10 @@ void Map::resetCurrentMap ()
 	_initialGeyserDelay = 0;
 	_activateFishNPC = false;
 	_mapRunning = false;
+	_matchStarted = false;
+	_endScreenHold = false;
+	_lobbyAutoStartEnabled = true;
+	_sendCloseMapOnReset = true;
 	_wind = 0.0f;
 	_width = 0;
 	_height = 0;
@@ -837,6 +904,8 @@ void Map::resetCurrentMap ()
 	_waterRisingDelay = 0;
 	_waterFallingDelay = 0;
 	_allPlayers = 0;
+	_hostClientId = 0;
+	_hostClientIdSet = false;
 	_entityRemovalAllowed = true;
 	_mapContext.reset();
 	clearPhysics();
@@ -1217,6 +1286,9 @@ bool Map::spawnPlayer (Player* player)
 		Config.getConfigVar("editor-play-god")->setValue("false");
 	}
 	_players.push_back(player);
+	_matchStarted = true;
+	noteHostPlayer(player);
+	GameEvent.sendPlayerHud(*player);
 	return true;
 }
 
@@ -1231,9 +1303,19 @@ bool Map::isReadyToStart () const
 	return _playersWaitingForSpawn.size() > 1;
 }
 
+int Map::getMaxPlayers () const
+{
+	const int configured = Config.getConfigVar("maxplayers", "2")->getIntValue();
+	return lobby::clampSessionMaxPlayers(configured, MAX_CLIENTS);
+}
+
 void Map::startMap ()
 {
+	if (_matchStarted)
+		return;
+
 	Log::info(LOG_GAMEIMPL, "start the map and spawn pending players: %i", (int)_playersWaitingForSpawn.size());
+	_matchStarted = true;
 	for (Player* player : _playersWaitingForSpawn) {
 		spawnPlayer(player);
 	}
@@ -1250,35 +1332,51 @@ bool Map::initPlayer (Player* player)
 	if (!_mapRunning)
 		return false;
 
-	if (getPlayer(player->getClientId()) != nullptr)
+	if (findPlayer(player->getClientId()) != nullptr)
 		return false;
 
 	SDL_assert(_entityRemovalAllowed);
 
 	INetwork& network = _serviceProvider->getNetwork();
 	const ClientId clientId = player->getClientId();
-	Log::info(LOG_GAMEIMPL, "init player %i", player->getID());
+	const bool spectator = isMultiplayerSession() && _matchStarted;
+	Log::info(LOG_GAMEIMPL, "init player %i%s", player->getID(), spectator ? " as spectator" : "");
+	if (spectator)
+		player->setSpectator(true);
 	const int clientMask = ClientIdToClientMask(clientId);
 	const MapSettingsMessage mapSettingsMsg(_settings, _startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);
 	GameEvent.sendWaterUpdate(clientMask, *_water);
 
 	const InitDoneMessage msgInit(player->getID(),
-		getPackageCount(), getNpcCount(), player->getLives(), player->getHitpoints());
+		getPackageCount(), getNpcCount(), spectator ? 0 : player->getLives(),
+		player->getHitpoints(), spectator);
 	network.sendToClient(clientId, msgInit);
 
-	sendSound(0, SoundTypes::SOUND_PLAYER_SPAWN);
+	if (!spectator)
+		sendSound(0, SoundTypes::SOUND_PLAYER_SPAWN);
 
-	network.sendToClient(clientId, InitWaitingMapMessage());
+	if (!spectator)
+		network.sendToClient(clientId, InitWaitingMapMessage());
 	updateVisMask();
 	sendMapToClient(clientId);
-	if (!_players.empty()) {
-		const bool spawned = spawnPlayer(player);
+	if (spectator) {
+		sendWorldSnapshotToClient(clientId);
+		_spectators.push_back(player);
 		updateVisMask();
-		return spawned;
+		network.sendToClient(clientId, StartMapMessage());
+		sendPlayersList();
+		return true;
 	}
 	Log::info(LOG_GAMEIMPL, "delay spawn of player");
 	_playersWaitingForSpawn.push_back(player);
+	noteHostPlayer(player);
+	if (_lobbyAutoStartEnabled && lobby::shouldAutoStartMatch(isMultiplayerSession(), _matchStarted,
+			static_cast<int>(_playersWaitingForSpawn.size()), getMaxPlayers())) {
+		Log::info(LOG_GAMEIMPL, "auto-start: lobby is full (%i/%i)",
+				(int)_playersWaitingForSpawn.size(), getMaxPlayers());
+		startMap();
+	}
 	return true;
 }
 
@@ -1292,21 +1390,65 @@ void Map::printPlayersList () const
 		const std::string& name = player->getName();
 		Log::info(LOG_GAMEIMPL, "* %s (spawned)", name.c_str());
 	}
+	for (Player* player : _spectators) {
+		const std::string& name = player->getName();
+		Log::info(LOG_GAMEIMPL, "* %s (watching)", name.c_str());
+	}
+}
+
+void Map::noteHostPlayer (const Player* player)
+{
+	if (_hostClientIdSet || player == nullptr)
+		return;
+	_hostClientId = player->getClientId();
+	_hostClientIdSet = true;
+}
+
+ClientId Map::getHostClientId () const
+{
+	return _hostClientIdSet ? _hostClientId : 0;
+}
+
+std::vector<std::string> Map::getLobbyPlayerNames () const
+{
+	std::vector<std::string> names;
+	names.reserve(_players.size() + _playersWaitingForSpawn.size() + _spectators.size());
+	const ClientId hostId = getHostClientId();
+	for (Player* player : _players)
+		names.push_back(lobby::formatPlayerName(player->getName(), player->getClientId() == hostId));
+	for (Player* player : _playersWaitingForSpawn)
+		names.push_back(lobby::formatPlayerName(player->getName(), player->getClientId() == hostId));
+	for (Player* player : _spectators)
+		names.push_back(lobby::formatPlayerName(player->getName(), player->getClientId() == hostId, true));
+	return names;
 }
 
 void Map::sendPlayersList () const
 {
-	std::vector<std::string> names;
-	for (Player* player : _players) {
-		const std::string& name = player->getName();
-		names.push_back(name);
-	}
-	for (Player* player : _playersWaitingForSpawn) {
-		const std::string& name = player->getName();
-		names.push_back(name);
-	}
 	INetwork& network = _serviceProvider->getNetwork();
-	network.sendToAllClients(PlayerListMessage(names));
+	network.sendToAllClients(PlayerListMessage(getLobbyPlayerNames()));
+}
+
+bool Map::returnToLobby ()
+{
+	if (!isMultiplayerSession() || _name.empty())
+		return false;
+
+	const std::string name = _name;
+	const ClientId hostId = getHostClientId();
+	const bool hostSet = _hostClientIdSet;
+	Log::info(LOG_GAMEIMPL, "return to lobby: %s", name.c_str());
+	_sendCloseMapOnReset = false;
+	const bool loaded = load(name);
+	_sendCloseMapOnReset = true;
+	if (!loaded)
+		return false;
+	if (hostSet) {
+		_hostClientId = hostId;
+		_hostClientIdSet = true;
+	}
+	_lobbyAutoStartEnabled = false;
+	return true;
 }
 
 void Map::initPhysics ()
@@ -1662,6 +1804,22 @@ void Map::sendMapToClient (ClientId clientId) const
 	}
 }
 
+void Map::sendWorldSnapshotToClient (ClientId clientId) const
+{
+	const VisMask clientMask = ClientIdToClientMask(clientId);
+	for (const Player* player : _players) {
+		sendVisibleEntity(clientMask, player);
+	}
+	for (EntityListConstIter i = _entities.begin(); i != _entities.end(); ++i) {
+		if ((*i)->isMapTile())
+			continue;
+		sendVisibleEntity(clientMask, *i);
+	}
+	for (const Player* player : _players) {
+		GameEvent.sendPlayerHud(*player, clientMask);
+	}
+}
+
 bool Map::loadEntity (IEntity *entity)
 {
 	SDL_assert(_entityRemovalAllowed);
@@ -1801,6 +1959,18 @@ bool Map::removePlayer (ClientId clientId)
 		(*i)->prepareRemoval();
 		delete *i;
 		_players.erase(i);
+		sendPlayersList();
+		updateVisMask();
+		return true;
+	}
+
+	for (PlayerListIter i = _spectators.begin(); i != _spectators.end(); ++i) {
+		if ((*i)->getClientId() != clientId)
+			continue;
+		(*i)->prepareRemoval();
+		delete *i;
+		_spectators.erase(i);
+		sendPlayersList();
 		updateVisMask();
 		return true;
 	}
@@ -1903,6 +2073,9 @@ inline void Map::calculateVisibility (IEntity *entity) const
 				visMask |= ClientIdToClientMask(id);
 			}
 		}
+		for (const Player* spectator : _spectators) {
+			visMask |= ClientIdToClientMask(spectator->getClientId());
+		}
 		if (visMask == 0)
 			visMask = NOTVISIBLE;
 		entity->setVisMask(visMask);
@@ -1939,6 +2112,8 @@ void Map::handleVisibility (IEntity *entity, const VisMask vismask) const
 
 void Map::sendVisibleEntity (int clientMask, const IEntity *entity) const
 {
+	if (entity->isServerOnly())
+		return;
 	//Log::debug(LOG_GAMEIMPL, string::format("server: add entity %i type: %s", entity->getID(), entity->getType().name.c_str()));
 	GameEvent.addEntity(clientMask, *entity);
 	if (entity->isCave()) {
@@ -1980,11 +2155,9 @@ void Map::handleFlyingNPC ()
 
 	const float gap = 2.0f;
 	if (_flyingNPC == nullptr) {
-		if (_players.empty())
+		const Player* player = pickLivePlayer(_players);
+		if (player == nullptr)
 			return;
-
-		const int index = rand() % _players.size();
-		const Player* player = _players[index];
 		const PhysicsVec2& pos = player->getPos();
 		const float waterBodyY = getWaterHeight();
 		float y = pos.y;
@@ -2029,11 +2202,9 @@ void Map::handleFishNPC ()
 
 	const float gap = 2.0f;
 	if (_fishNPC == nullptr) {
-		if (_players.empty())
+		const Player* player = pickLivePlayer(_players);
+		if (player == nullptr)
 			return;
-
-		const int index = rand() % _players.size();
-		const Player* player = _players[index];
 		const PhysicsVec2& pos = player->getPos();
 		const float mapHeight = static_cast<float>(getMapHeight());
 		float y = std::min(waterBodyY, std::max(mapHeight, mapHeight - 0.5f));
@@ -2060,11 +2231,49 @@ void Map::handleFishNPC ()
 	}
 }
 
+void Map::holdForEndScreen ()
+{
+	if (_endScreenHold)
+		return;
+	Log::info(LOG_GAMEIMPL, "hold map for end screen: %s", _name.c_str());
+	_endScreenHold = true;
+	_restartDue = 0;
+	_finishPending = false;
+}
+
+void Map::notifyClientsFailed ()
+{
+	const std::string currentName = getName();
+	const ThemeType& theme = getTheme();
+	auto sendFail = [&] (Player* p) {
+		if (p == nullptr)
+			return;
+		GameEvent.failedMap(p->getClientId(), currentName, getFailReason(p), theme);
+	};
+	for (Player* p : _players)
+		sendFail(p);
+	for (Player* p : _playersWaitingForSpawn)
+		sendFail(p);
+	for (Player* p : _spectators)
+		sendFail(p);
+	System.track("mapstate", "failed:" + currentName);
+}
+
+void Map::triggerReturnToLobby ()
+{
+	if (_serviceProvider == nullptr || !_serviceProvider->getNetwork().isServer())
+		return;
+	if (!_endScreenHold)
+		return;
+	Log::info(LOG_GAMEIMPL, "continue from end screen to lobby");
+	returnToLobby();
+}
+
 void Map::update (uint32_t deltaTime)
 {
 	_pointCount = 0;
 
-	if (_pause)
+	if (_pause || _endScreenHold)
 		return;
 
 	flushPendingScriptMessages();
@@ -2085,12 +2294,8 @@ void Map::update (uint32_t deltaTime)
 		}
 		Log::info(LOG_GAMEIMPL, "restarting map %s", currentName.c_str());
 		if (isFailed()) {
-			const Map::PlayerList& players = getPlayers();
-			for (Map::PlayerListConstIter i = players.begin(); i != players.end(); ++i) {
-				const Player* p = *i;
-				GameEvent.failedMap(p->getClientId(), currentName, getFailReason(p), getTheme());
-			}
-			System.track("mapstate", "failed:" + currentName);
+			notifyClientsFailed();
+			holdForEndScreen();
 		} else {
 			load(currentName);
 		}
@@ -2140,7 +2345,19 @@ bool Map::shouldCollide (PhysicsFixture fixtureA, PhysicsFixture fixtureB)
 		entity2 = reinterpret_cast<IEntity*>(fixtureB.getUserData());
 
 	if (entity1 != nullptr && entity2 != nullptr) {
-		const bool shouldCollide = entity1->shouldCollide(entity2) || entity2->shouldCollide(entity1);
+		// Box2D ORs both sides. A wreck still wants tiles/water, but wind/NPCs
+		// that collide with "any player" must not force a contact.
+		bool wreckContact = false;
+		bool shouldCollide = false;
+		if (entity1->isPlayer() && !assert_cast<Player*, IEntity*>(entity1)->isLive()) {
+			wreckContact = true;
+			shouldCollide = entity1->shouldCollide(entity2);
+		} else if (entity2->isPlayer() && !assert_cast<Player*, IEntity*>(entity2)->isLive()) {
+			wreckContact = true;
+			shouldCollide = entity2->shouldCollide(entity1);
+		}
+		if (!wreckContact)
+			shouldCollide = entity1->shouldCollide(entity2) || entity2->shouldCollide(entity1);
 		if (entity1->shouldRefilter())
 			fixtureA.refilter();
 		if (entity2->shouldRefilter())
@@ -2314,7 +2531,7 @@ void Map::visitEntities (IEntityVisitor *visitor, const EntityType& type)
 		}
 		if (needUpdate) {
 			updateVisMask();
-			if (_players.empty()) {
+			if (_players.empty() && _spectators.empty()) {
 				resetCurrentMap();
 				return;
 			}

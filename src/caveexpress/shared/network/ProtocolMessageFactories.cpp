@@ -10,6 +10,7 @@
 #include "caveexpress/shared/network/messages/UpdateCollectedTypeMessage.h"
 #include "caveexpress/shared/network/messages/WaterHeightMessage.h"
 #include "caveexpress/shared/network/messages/WaterImpactMessage.h"
+#include "caveexpress/shared/network/messages/PlayerHudMessage.h"
 #include "network/ProtocolMessageFactory.h"
 
 PROTOCOL_CLASS_FACTORY_IMPL(caveexpress::DropMessage);
@@ -23,6 +24,7 @@ PROTOCOL_CLASS_FACTORY_IMPL(caveexpress::WaterImpactMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(caveexpress::TargetCaveMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(caveexpress::AnnounceTargetCaveMessage);
 PROTOCOL_CLASS_FACTORY_IMPL(caveexpress::GateStateMessage);
+PROTOCOL_CLASS_FACTORY_IMPL(caveexpress::PlayerHudMessage);
 
 namespace caveexpress {
 
@@ -40,6 +42,7 @@ void registerCaveExpressProtocolMessages ()
 	f.registerFactory(protocol::PROTO_ANNOUNCETARGETCAVE, AnnounceTargetCaveMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_UPDATECOLLECTEDTYPE, UpdateCollectedTypeMessage::FACTORY);
 	f.registerFactory(protocol::PROTO_ADDROPE, AddRopeMessage::FACTORY);
+	f.registerFactory(protocol::PROTO_PLAYERHUD, PlayerHudMessage::FACTORY);
 }
 
 }

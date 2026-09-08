@@ -21,6 +21,7 @@
 #include "caveexpress/shared/network/messages/GateStateMessage.h"
 #include "caveexpress/shared/network/messages/TargetCaveMessage.h"
 #include "caveexpress/shared/network/messages/AnnounceTargetCaveMessage.h"
+#include "caveexpress/shared/network/messages/PlayerHudMessage.h"
 #include "network/messages/RumbleMessage.h"
 #include "network/messages/BackToMainMessage.h"
 #include "network/messages/FinishedMapMessage.h"
@@ -103,12 +104,29 @@ void GameEventHandler::updateHitpoints (const Player& player) const
 {
 	const UpdateHitpointsMessage msg(player.getHitpoints());
 	_serviceProvider->getNetwork().sendToClient(player.getClientId(), msg);
+	sendPlayerHud(player);
 }
 
 void GameEventHandler::updateLives (const Player& player) const
 {
 	const UpdateLivesMessage msg(player.getLives());
 	_serviceProvider->getNetwork().sendToClient(player.getClientId(), msg);
+	sendPlayerHud(player);
+}
+
+void GameEventHandler::sendPlayerHud (const Player& player) const
+{
+	sendPlayerHud(player, 0);
+}
+
+void GameEventHandler::sendPlayerHud (const Player& player, int clientMask) const
+{
+	if (player.isSpectator())
+		return;
+	const EntityType& collected = player.getHudCollectedType();
+	const PlayerHudMessage msg(player.getID(), player.getHitpoints(), player.getLives(),
+			player.getHudTargetCave(), static_cast<uint8_t>(collected.id));
+	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 
 void GameEventHandler::announceTargetCave(int clientMask, const NPCFriendly& npc, int16_t delayMillis) const {

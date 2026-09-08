@@ -111,4 +111,156 @@ TEST_F(PhysicsTest, TopBorderClampsPlayerWithoutCrash)
 	EXPECT_GE(player->getLinearVelocity().y, 0.0f);
 }
 
+TEST_F(PhysicsTest, MultiplayerOneDeathDoesNotEndMatch)
+{
+	_serviceProvider.updateNetwork(true);
+	ASSERT_TRUE(_map.isMultiplayerSession());
+	ASSERT_NE(nullptr, addGround(8.0f, 12.0f));
+	Player* a = addPlayer(8.0f, 6.0f);
+	Player* b = _map.spawnPlayerAt(10.0f, 6.0f, 2);
+	ASSERT_NE(nullptr, a);
+	ASSERT_NE(nullptr, b);
+	ASSERT_EQ(2u, _map.getPlayers().size());
+	EXPECT_EQ(2, _map.countLivingPlayers());
+	// setCrashed is a no-op while entity time is still 0 (treated as invulnerable).
+	tick(1);
+
+	a->setCrashed(CRASH_DAMAGE);
+	a->setLives(0);
+	EXPECT_TRUE(a->isCrashed());
+	EXPECT_TRUE(a->isDead());
+	EXPECT_EQ(1, _map.countLivingPlayers());
+	EXPECT_FALSE(_map.isFailed());
+
+	EXPECT_EQ(1, _map.handleDeadPlayers());
+	EXPECT_EQ(2u, _map.getPlayers().size()) << "dead player must stay connected in multiplayer";
+	EXPECT_EQ(b, _map.getPlayer(2));
+	EXPECT_TRUE(_map.isActive());
+	EXPECT_FALSE(_map.isFailed());
+}
+
+TEST_F(PhysicsTest, CrashedPlayerIgnoresInputAndKeepsCrashedAnimation)
+{
+	_serviceProvider.updateNetwork(true);
+	ASSERT_NE(nullptr, addGround(8.0f, 12.0f));
+	Player* player = addPlayer(8.0f, 6.0f);
+	ASSERT_NE(nullptr, player);
+	tick(1);
+	player->setCrashed(CRASH_DAMAGE);
+	player->setLives(0);
+	ASSERT_TRUE(player->isCrashed());
+	ASSERT_TRUE(player->isDead());
+	ASSERT_FALSE(player->acceptsControlInput());
+	EXPECT_TRUE(player->getAnimationType() == Animations::ANIMATION_CRASHED);
+
+	player->accelerate(DIRECTION_UP);
+	EXPECT_TRUE(player->getAnimationType() == Animations::ANIMATION_CRASHED)
+			<< "fly input must not revive a crashed ship";
+
+	player->resetAcceleration(DIRECTION_UP);
+	EXPECT_TRUE(player->getAnimationType() == Animations::ANIMATION_CRASHED)
+			<< "releasing a key must not switch a wreck back to idle";
+
+	player->setFingerAcceleration(10, -10);
+	player->resetFingerAcceleration();
+	EXPECT_TRUE(player->getAnimationType() == Animations::ANIMATION_CRASHED);
+}
+
+TEST_F(PhysicsTest, CrashedPlayerKeepsWorldCollision)
+{
+	_serviceProvider.updateNetwork(true);
+	MapTile* ground = addGround(8.0f, 12.0f);
+	ASSERT_NE(nullptr, ground);
+	Player* living = addPlayer(8.0f, 6.0f);
+	Player* wreck = _map.spawnPlayerAt(10.0f, 6.0f, 2);
+	ASSERT_NE(nullptr, living);
+	ASSERT_NE(nullptr, wreck);
+	tick(1);
+	wreck->setCrashed(CRASH_DAMAGE);
+	wreck->setLives(0);
+	ASSERT_FALSE(wreck->isLive());
+	ASSERT_TRUE(living->isLive());
+
+	EXPECT_FALSE(wreck->shouldCollide(living));
+	EXPECT_FALSE(living->shouldCollide(wreck));
+	EXPECT_TRUE(wreck->shouldCollide(ground)) << "wrecks must still rest on tiles";
+	EXPECT_TRUE(living->shouldCollide(ground));
+
+	IEntity* water = findType<IEntity>(EntityTypes::WATER);
+	ASSERT_NE(nullptr, water);
+	EXPECT_TRUE(wreck->shouldCollide(water)) << "wrecks must still get buoyancy";
+	EXPECT_TRUE(wreck->shouldApplyWind()) << "map wind still pushes wrecks";
+
+	ASSERT_FALSE(wreck->getBodies().empty());
+	ASSERT_FALSE(living->getBodies().empty());
+	ASSERT_FALSE(ground->getBodies().empty());
+	const PhysicsFixture wreckFix = wreck->getBodies()[0].getFixtureList();
+	const PhysicsFixture livingFix = living->getBodies()[0].getFixtureList();
+	const PhysicsFixture groundFix = ground->getBodies()[0].getFixtureList();
+	EXPECT_FALSE(_map.filterCollide(wreckFix, livingFix));
+	EXPECT_TRUE(_map.filterCollide(wreckFix, groundFix));
+	EXPECT_TRUE(_map.filterCollide(livingFix, groundFix));
+}
+
+TEST_F(PhysicsTest, MultiplayerAllDeadFailsMap)
+{
+	_serviceProvider.updateNetwork(true);
+	ASSERT_TRUE(_map.isMultiplayerSession());
+	ASSERT_NE(nullptr, addGround(8.0f, 12.0f));
+	Player* a = addPlayer(8.0f, 6.0f);
+	Player* b = _map.spawnPlayerAt(10.0f, 6.0f, 2);
+	ASSERT_NE(nullptr, a);
+	ASSERT_NE(nullptr, b);
+	tick(1);
+	a->setCrashed(CRASH_DAMAGE);
+	a->setLives(0);
+	b->setCrashed(CRASH_DAMAGE);
+	b->setLives(0);
+	EXPECT_EQ(0, _map.countLivingPlayers());
+	EXPECT_TRUE(_map.isFailed());
+	EXPECT_EQ(2, _map.handleDeadPlayers());
+	EXPECT_EQ(2u, _map.getPlayers().size()) << "spectators stay until the match ends";
+}
+
+TEST_F(PhysicsTest, MultiplayerLobbyMarksFirstPlayerAsHost)
+{
+	_serviceProvider.updateNetwork(true);
+	Player* a = addPlayer(8.0f, 6.0f);
+	Player* b = _map.spawnPlayerAt(10.0f, 6.0f, 2);
+	ASSERT_NE(nullptr, a);
+	ASSERT_NE(nullptr, b);
+	a->setName("A");
+	b->setName("B");
+	EXPECT_EQ(1, _map.getHostClientId());
+	const std::vector<std::string> names = _map.getLobbyPlayerNames();
+	ASSERT_EQ(2u, names.size());
+	EXPECT_EQ(std::string("A") + " (host)", names[0]);
+	EXPECT_EQ("B", names[1]);
+}
+
+TEST_F(PhysicsTest, SinglePlayerLobbyListStillWorks)
+{
+	ASSERT_FALSE(_map.isMultiplayerSession());
+	Player* a = addPlayer(8.0f, 6.0f);
+	ASSERT_NE(nullptr, a);
+	a->setName("Solo");
+	const std::vector<std::string> names = _map.getLobbyPlayerNames();
+	ASSERT_EQ(1u, names.size());
+	EXPECT_EQ(std::string("Solo") + " (host)", names[0]);
+	EXPECT_FALSE(_map.isFailed());
+	EXPECT_EQ(1u, _map.getPlayers().size());
+}
+
+TEST_F(PhysicsTest, SinglePlayerDeathStillLeavesTheMap)
+{
+	ASSERT_FALSE(_map.isMultiplayerSession());
+	Player* a = addPlayer(8.0f, 6.0f);
+	ASSERT_NE(nullptr, a);
+	tick(1);
+	a->setCrashed(CRASH_DAMAGE);
+	a->setLives(0);
+	EXPECT_EQ(1, _map.handleDeadPlayers());
+	EXPECT_TRUE(_map.getPlayers().empty());
+}
+
 }

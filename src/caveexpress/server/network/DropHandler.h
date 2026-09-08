@@ -24,6 +24,8 @@ public:
 		_map.noteClientAction();
 		if (!_map.isInputEnabled())
 			return;
+		if (!player->acceptsControlInput())
+			return;
 		player->drop();
 	}
 };

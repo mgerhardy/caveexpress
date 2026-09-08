@@ -29,7 +29,7 @@ const float gravityScale = 0.3f;
 Player::Player (Map& map, ClientId clientId) :
 		IEntity(EntityTypes::PLAYER, map), _touching(nullptr), _invulnerableTime(0u), _powerUpTime(0u), _collectedNPC(nullptr), _acceleration(PhysicsVec2_zero), _fingerAcceleration(
 				false), _accelerateX(0), _accelerateY(0), _clientId(clientId), _lastAccelerate(0), _name(""), _lastFruitCollected(0), _hitpoints(
-				0), _lives(0), _fruitsCollectedInARow(0), _revoluteJoint(), _crashReason(CRASH_NONE) {
+				0), _lives(0), _fruitsCollectedInARow(0), _revoluteJoint(), _crashReason(CRASH_NONE), _spectator(false) {
 	_godMode = Config.getConfigVar(GOD_MODE);
 	_maxHitPoints = Config.getConfigVar(MAX_HITPOINTS);
 	_hitpoints = _maxHitPoints->getIntValue();
@@ -49,7 +49,7 @@ Player::~Player ()
 // see MovementMessage and MovementHandler
 void Player::accelerate (Direction dir)
 {
-	if (isCrashed())
+	if (!acceptsControlInput())
 		return;
 
 	_lastAccelerate = _time;
@@ -86,7 +86,7 @@ void Player::accelerate (Direction dir)
 
 void Player::resetFingerAcceleration ()
 {
-	if (isCrashed())
+	if (!acceptsControlInput())
 		return;
 
 	_fingerAcceleration = false;
@@ -95,7 +95,7 @@ void Player::resetFingerAcceleration ()
 
 void Player::setFingerAcceleration (int dx, int dy)
 {
-	if (isCrashed())
+	if (!acceptsControlInput())
 		return;
 
 	_fingerAcceleration = true;
@@ -191,48 +191,50 @@ void Player::update (uint32_t deltaTime)
 		c.entity->setGravityScale(scale);
 	}
 
-	if (_fingerAcceleration) {
-		const float mass = getCompleteMass();
-		const PhysicsVec2& gravity = getGravity();
-		PhysicsVec2 v = mass * gravity;
-		const int delta = 1;
-		if (_accelerateY <= -delta) {
-			// go upwards
-			v.y *= (float)_accelerateY;
-		} else if (_accelerateY >= delta) {
-			// go downwards
-			v.y *= 0.5f;
+	if (!isCrashed()) {
+		if (_fingerAcceleration) {
+			const float mass = getCompleteMass();
+			const PhysicsVec2& gravity = getGravity();
+			PhysicsVec2 v = mass * gravity;
+			const int delta = 1;
+			if (_accelerateY <= -delta) {
+				// go upwards
+				v.y *= (float)_accelerateY;
+			} else if (_accelerateY >= delta) {
+				// go downwards
+				v.y *= 0.5f;
+			} else {
+				// stay in the air (see below)
+				v.y *= 0.0f;
+			}
+
+			const float horizontalMoveSpeed = 1.0f;
+			if (std::abs(_accelerateX) >= delta)
+				v.x = horizontalMoveSpeed * (float)_accelerateX;
+
+			const float maxHorizontalVelocity = gravity.y;
+			v.x = clamp(v.x, -maxHorizontalVelocity, maxHorizontalVelocity);
+			v.y = clamp(v.y, -gravity.y * 3.0f, gravity.y);
+
+			Log::debug(LOG_GAMEIMPL, "v(%f:%f), accel(%i:%i)", v.x, v.y, _accelerateX, _accelerateY);
+
+			if (fabs(v.y) < 0.0001f) {
+				const PhysicsVec2 force = -mass * getGravity();
+				Log::debug(LOG_GAMEIMPL, "f: (%f:%f)", force.x, force.y);
+				applyForce(force);
+			}
+			applyLinearImpulse(v);
 		} else {
-			// stay in the air (see below)
-			v.y *= 0.0f;
-		}
+			const float maxSpeed = 8.0f;
+			PhysicsVec2 force = getMass() * _acceleration;
+			force.x *= _map.getFlyingSpeedX();
 
-		const float horizontalMoveSpeed = 1.0f;
-		if (std::abs(_accelerateX) >= delta)
-			v.x = horizontalMoveSpeed * (float)_accelerateX;
-
-		const float maxHorizontalVelocity = gravity.y;
-		v.x = clamp(v.x, -maxHorizontalVelocity, maxHorizontalVelocity);
-		v.y = clamp(v.y, -gravity.y * 3.0f, gravity.y);
-
-		Log::debug(LOG_GAMEIMPL, "v(%f:%f), accel(%i:%i)", v.x, v.y, _accelerateX, _accelerateY);
-
-		if (fabs(v.y) < 0.0001f) {
-			const PhysicsVec2 force = -mass * getGravity();
-			Log::debug(LOG_GAMEIMPL, "f: (%f:%f)", force.x, force.y);
+			PhysicsVec2 velocity = getLinearVelocity();
+			const float speed = velocity.normalize();
+			const PhysicsVec2 cappedV = std::min(speed, maxSpeed) * velocity;
+			_bodies[0].setLinearVelocity(cappedV);
 			applyForce(force);
 		}
-		applyLinearImpulse(v);
-	} else {
-		const float maxSpeed = 8.0f;
-		PhysicsVec2 force = getMass() * _acceleration;
-		force.x *= _map.getFlyingSpeedX();
-
-		PhysicsVec2 velocity = getLinearVelocity();
-		const float speed = velocity.normalize();
-		const PhysicsVec2 cappedV = std::min(speed, maxSpeed) * velocity;
-		_bodies[0].setLinearVelocity(cappedV);
-		applyForce(force);
 	}
 
 	const float angle = getAngle();
@@ -269,6 +271,7 @@ void Player::update (uint32_t deltaTime)
 	}
 	// no, we don't - inform the client about this
 	GameEvent.sendCollectState(_clientId, *arrived, false);
+	GameEvent.sendPlayerHud(*this);
 }
 
 void Player::setCrashed (const PlayerCrashReason& reason)
@@ -294,6 +297,10 @@ void Player::setCrashed (const PlayerCrashReason& reason)
 	setState(PlayerState::PLAYER_CRASHED);
 	setAnimationType(Animations::ANIMATION_CRASHED);
 	_crashReason = reason;
+	_acceleration = PhysicsVec2_zero;
+	_fingerAcceleration = false;
+	_accelerateX = 0;
+	_accelerateY = 0;
 
 	const int rumbleLengthMillis = 500;
 	const SoundType* sound;
@@ -328,7 +335,7 @@ void Player::setCrashed (const PlayerCrashReason& reason)
 
 void Player::clearAcceleration (Direction dir)
 {
-	if (isCrashed())
+	if (!acceptsControlInput())
 		return;
 
 	if (dir != 0) {
@@ -343,6 +350,9 @@ void Player::clearAcceleration (Direction dir)
 
 void Player::resetAcceleration (Direction dir)
 {
+	if (!acceptsControlInput())
+		return;
+
 	clearAcceleration(dir);
 	if (physVec2Equals(_acceleration, PhysicsVec2_zero)) {
 		// Keep the empty pedal machine look until a cutscene boards the player.
@@ -358,11 +368,20 @@ void Player::applyForce (const PhysicsVec2& v)
 
 bool Player::shouldCollide (const IEntity* entity) const
 {
+	if (!isLive()) {
+		// Wrecks still sit on tiles and float in water; they must not block
+		// other ships, NPCs, or pickups.
+		if (entity->isPlayer() || entity->isNpc())
+			return false;
+		return entity->isSolid() || entity->isWater() || entity->isLava()
+				|| entity->isPlatform() || entity->isBorder()
+				|| EntityTypes::isModificator(entity->getType());
+	}
 	if (entity->isPackage() && getPos().y < entity->getPos().y)
 		return false;
 	if (entity->isPlayer()) {
 		const Player* player = assert_cast<const Player*, const IEntity*>(entity);
-		return !player->isCrashed();
+		return player->isLive();
 	}
 	return entity->isSolid() || entity->isWater() || entity->isLava();
 }
@@ -428,7 +447,11 @@ void Player::damageFromHit (PhysicsContact contact, IEntity* entity)
 
 void Player::onDeath ()
 {
-	// TODO: use UI_WINDOW_GAMEOVER
+	if (_map.isMultiplayerSession()) {
+		Log::info(LOG_GAMEIMPL, "player %s is out - stay connected and spectate", getName().c_str());
+		return;
+	}
+	// Single-player campaign: last life ends the session.
 	GameEvent.backToMain("gameover");
 }
 
@@ -472,8 +495,10 @@ bool Player::collect (CollectableEntity* entity)
 			if (++_fruitsCollectedInARow == _amountOfFruitsForANewLife->getIntValue()) {
 				_fruitsCollectedInARow = 0;
 				_lastFruitCollected = 0;
-				if (Config.isModeHard())
+				if (Config.isModeHard()) {
 					addLife();
+					GameEvent.updateLives(*this);
+				}
 			}
 		} else {
 			_fruitsCollectedInARow = 0;
@@ -509,6 +534,7 @@ bool Player::collect (CollectableEntity* entity)
 	}
 
 	GameEvent.sendCollectState(_clientId, entityType, true);
+	GameEvent.sendPlayerHud(*this);
 	return true;
 }
 
@@ -568,6 +594,7 @@ void Player::drop ()
 	}
 
 	memset(_collectedEntities, 0, sizeof(_collectedEntities));
+	GameEvent.sendPlayerHud(*this);
 }
 
 void Player::createBody (const PhysicsVec2 &pos)
@@ -720,6 +747,31 @@ void Player::setCollectedNPC(NPCFriendly *npc) {
 	} else {
 		GameEvent.sendTargetCave(ClientIdToClientMask(_clientId), 0);
 	}
+	GameEvent.sendPlayerHud(*this);
+}
+
+uint8_t Player::getHudTargetCave () const
+{
+	if (_collectedNPC != nullptr)
+		return _collectedNPC->getTargetCaveNumber();
+	for (int i = 0; i < MAX_COLLECTED; ++i) {
+		const EntityType *entityType = _collectedEntities[i].entityType;
+		if (entityType != nullptr && EntityTypes::isStone(*entityType))
+			return 100;
+	}
+	return 0;
+}
+
+const EntityType& Player::getHudCollectedType () const
+{
+	if (_collectedNPC != nullptr)
+		return _collectedNPC->getType();
+	for (int i = 0; i < MAX_COLLECTED; ++i) {
+		const EntityType *entityType = _collectedEntities[i].entityType;
+		if (entityType != nullptr)
+			return *entityType;
+	}
+	return EntityType::NONE;
 }
 
 }

@@ -18,5 +18,6 @@ public:
 		// TODO: close console?
 		const uint16_t id = msg->getPlayerId();
 		_map.init(id);
+		_map.setJoinAsSpectator(msg->isSpectator());
 	}
 };

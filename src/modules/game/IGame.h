@@ -34,8 +34,12 @@ public:
 
 	virtual int getPlayers () { return -1; }
 
+	/** True when a match is running (not lobby wait). Used by LAN ping. */
+	virtual bool isMatchInProgress () const { return false; }
+
 	virtual void connect (ClientId clientId) {}
 
+	/** Remove this client. Return remaining session members; 0 stops the map. */
 	virtual int disconnect (ClientId clientId) { return -1; }
 
 	virtual void init (IFrontend *frontend, ServiceProvider& serviceProvider) {}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ui/windows/UIWindow.h"
+#include "common/LobbyPlayers.h"
 
 #define UINODE_LIVES "lives"
 #define UINODE_POINTS "points"
@@ -32,6 +33,7 @@ protected:
 	UINodeLabel *_waitLabel;
 	IMapControl *_mapControl;
 	UINodeButtonText *_startButton;
+	UINodeButtonText *_leaveButton;
 	ServiceProvider& _serviceProvider;
 	// the hud panel
 	UINode* _panel;
@@ -47,6 +49,7 @@ protected:
 	// override this if you need nodes on top of the IMapControl nodes
 	virtual void initInputHudNodes();
 	virtual void showCursor (bool show);
+	void applyLobbyOverlay (const lobby::OverlayVisibility& visibility);
 public:
 	IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, IUINodeMap* nodeMap, bool continuousMovement);
 	virtual ~IUIMapWindow() {}

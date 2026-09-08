@@ -143,4 +143,36 @@ TEST(NetworkTest, testSendToServer)
 	network.shutdown();
 }
 
+TEST(NetworkTest, testListenServerAcceptsSpectatorClient)
+{
+	NetworkTestListener hostListener;
+	NetworkTestListener remoteAListener;
+	NetworkTestListener remoteBListener;
+	NetworkTestServerListener serverListener;
+	Network server;
+	server.init();
+	ASSERT_TRUE(server.openServer(PORT, &serverListener)) << server.getError();
+	ASSERT_TRUE(server.openClient(LOCALHOST, PORT, &hostListener)) << server.getError();
+	server.update(0);
+
+	Network remoteA;
+	remoteA.init();
+	ASSERT_TRUE(remoteA.openClient(LOCALHOST, PORT, &remoteAListener)) << remoteA.getError();
+	server.update(0);
+
+	Network remoteB;
+	remoteB.init();
+	ASSERT_TRUE(remoteB.openClient(LOCALHOST, PORT, &remoteBListener)) << remoteB.getError();
+	server.update(0);
+
+	const DisconnectMessage msg;
+	EXPECT_GE(server.sendToAllClients(msg), 3) << "listen + two remotes must fit (spectator join after a 2-player match)";
+
+	remoteB.closeClient();
+	remoteA.closeClient();
+	server.closeClient();
+	server.closeServer();
+	server.shutdown();
+}
+
 #endif

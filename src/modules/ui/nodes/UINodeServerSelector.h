@@ -4,9 +4,9 @@
 
 struct ServerEntry {
 	ServerEntry (const std::string& _name, const std::string& _host, int _port, const std::string& _mapName,
-			int _playerCount, int _maxPlayerCount) :
+			int _playerCount, int _maxPlayerCount, bool _inGame = false) :
 			name(_name), host(_host), mapName(_mapName), port(_port), playerCount(_playerCount), maxPlayerCount(
-					_maxPlayerCount)
+					_maxPlayerCount), inGame(_inGame)
 	{
 	}
 	std::string name;
@@ -15,6 +15,7 @@ struct ServerEntry {
 	int port;
 	int playerCount;
 	int maxPlayerCount;
+	bool inGame;
 };
 
 // this node search for servers and presents then in a list to connect to them
@@ -32,7 +33,7 @@ public:
 	virtual ~UINodeServerSelector ();
 
 	void addServer (const std::string& host, const std::string& name, const std::string& mapName, int port,
-			int playerCount, int maxPlayerCount);
+			int playerCount, int maxPlayerCount, bool inGame = false);
 
 	// UINodeSelector
 	bool onSelect (const ServerEntry& data) override;

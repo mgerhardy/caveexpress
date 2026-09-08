@@ -14,12 +14,18 @@
 namespace caveexpress {
 
 class TargetCaveHandler: public ClientProtocolHandler<TargetCaveMessage> {
+private:
+	ClientMap& _map;
 public:
-	TargetCaveHandler() {
+	TargetCaveHandler(ClientMap& map) :
+			_map(map)
+	{
 	}
 
 	void execute(const TargetCaveMessage* msg) override
 	{
+		if (_map.isLocalPlayerSpectating())
+			return;
 		const uint8_t caveNumber = msg->getCaveNumber();
 		UINodeSprite* node = UI::get().getNode<UINodeSprite>(UI_WINDOW_MAP, UINODE_TARGETCAVEID);
 		if (caveNumber == 0) {

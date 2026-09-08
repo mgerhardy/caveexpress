@@ -34,7 +34,8 @@ void NPCFlying::onPreSolve (PhysicsContact contact, IEntity* entity, const Physi
 	if (!isDying()) {
 		if (entity->isPlayer()) {
 			Player* player = assert_cast<Player*, IEntity*>(entity);
-			player->setCrashed(CRASH_NPC_FLYING);
+			if (player->isLive())
+				player->setCrashed(CRASH_NPC_FLYING);
 		}
 	}
 	contact.setEnabled(false);
@@ -103,7 +104,7 @@ bool NPCFlying::shouldCollide (const IEntity* entity) const
 	// flying npcs do only collide with players
 	if (entity->isPlayer()) {
 		const Player *p = assert_cast<const Player*, const IEntity*>(entity);
-		return !p->isCrashed();
+		return p->isLive();
 	}
 	return false;
 }

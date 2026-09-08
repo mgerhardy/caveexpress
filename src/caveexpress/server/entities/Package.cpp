@@ -148,7 +148,7 @@ bool Package::shouldCollide (const IEntity *entity) const
 
 	if (entity->isPlayer()) {
 		const Player* player = assert_cast<const Player*, const IEntity*>(entity);
-		return !player->isCrashed() && !isArrived() && !isDelivered() && entity->getPos().y < getPos().y;
+		return player->isLive() && !isArrived() && !isDelivered() && entity->getPos().y < getPos().y;
 	}
 
 	if (entity->isPackageTarget() || entity->isWater()) {

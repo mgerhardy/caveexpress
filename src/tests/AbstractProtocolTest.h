@@ -36,6 +36,7 @@ class AbstractProtocolTest: public AbstractTest {
 protected:
 	void testSharedMessages() const {
 		testMessage("PingMessage", PingMessage("name", "mapName", 42, 0, 1));
+		testMessage("PingMessageInGame", PingMessage("name", "mapName", 42, 2, 4, true));
 		testMessage("LoadMapMessage", LoadMapMessage("name", "title"));
 		testMessage("ClientInitMessage", ClientInitMessage("name"));
 		testMessage("ErrorMessage", ErrorMessage(UNKNOWN_ENTITY, 1));
@@ -50,6 +51,7 @@ protected:
 		settings["bar"] = "foo";
 		testMessage("MapSettingsMessage", MapSettingsMessage(settings, 1));
 		testMessage("InitDoneMessage", InitDoneMessage(1, 4, 5, 3, 100));
+		testMessage("InitDoneMessageSpectator", InitDoneMessage(1, 4, 5, 0, 100, true));
 		testMessage("RemoveEntityMessage", RemoveEntityMessage(1, false));
 		testMessage("SpawnInfoMessage", SpawnInfoMessage(0.0f, 0.0f, EntityType::NONE));
 		testMessage("RumbleMessage", RumbleMessage(1.0f, 1000));

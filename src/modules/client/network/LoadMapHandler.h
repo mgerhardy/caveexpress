@@ -7,6 +7,7 @@
 #include "ui/nodes/UINodeBar.h"
 #include "client/ClientMap.h"
 #include "ui/UI.h"
+#include "common/Log.h"
 
 class LoadMapHandler: public ClientProtocolHandler<LoadMapMessage> {
 protected:
@@ -21,12 +22,22 @@ public:
 
 	virtual void execute (const LoadMapMessage* msg) override
 	{
+		while (true) {
+			UIWindow* front = UI::get().getFrontWindow();
+			if (front == nullptr)
+				break;
+			const std::string& id = front->getId();
+			if (id != UI_WINDOW_MAPFAILED && id != UI_WINDOW_MAPFINISHED && id != UI_WINDOW_GAMEOVER)
+				break;
+			UI::get().pop();
+		}
 		const SpawnMessage spawnMsg;
 		if (_serviceProvider.getNetwork().sendToServer(spawnMsg) == -1) {
 			Log::error(LOG_CLIENT, "could not send spawn command to server");
 			return;
 		}
-		UI::get().push(UI_WINDOW_MAP);
+		if (!UI::get().isOnStack(UI_WINDOW_MAP))
+			UI::get().push(UI_WINDOW_MAP);
 
 		System.track("mapload", msg->getName());
 		UINodePoint* pointsNode = UI::get().getNode<UINodePoint>(UI_WINDOW_MAP, UINODE_POINTS);

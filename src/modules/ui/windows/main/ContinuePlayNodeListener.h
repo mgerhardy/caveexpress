@@ -6,6 +6,8 @@
 #include "service/ServiceProvider.h"
 #include "network/INetwork.h"
 #include "common/Log.h"
+#include "common/Commands.h"
+#include "common/CommandSystem.h"
 
 class ContinuePlayNodeListener: public UINodeListener {
 private:
@@ -22,6 +24,8 @@ public:
 		Log::info(LOG_UI, "Continue in campaign");
 		if (_serviceProvider.getNetwork().isMultiplayer()) {
 			UI::get().pop();
+			if (_serviceProvider.getNetwork().isServer())
+				Commands.executeCommandLine(CMD_RETURN_TO_LOBBY);
 			return;
 		}
 		if (_campaignManager.isNewlyCompleted()) {

@@ -47,7 +47,7 @@ void NPCAttacking::onPreSolve (PhysicsContact contact, IEntity* entity, const Ph
 
 	// we hit a player - so the player is crashing
 	Player* player = assert_cast<Player*, IEntity*>(entity);
-	if (!player->isCrashed()) {
+	if (player->isLive()) {
 		if (EntityTypes::isNpcMammut(_type))
 			player->setCrashed(CRASH_NPC_MAMMUT);
 		else if (EntityTypes::isNpcWalking(_type))
@@ -83,7 +83,7 @@ void NPCAttacking::checkAttack (Player *player)
 	}
 
 	// a crashed player does not need another attack
-	if (player->isCrashed()) {
+	if (!player->isLive()) {
 		stopAttack(player);
 		return;
 	}

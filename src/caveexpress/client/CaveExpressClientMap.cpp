@@ -1,4 +1,5 @@
 #include "caveexpress/client/CaveExpressClientMap.h"
+#include "caveexpress/client/PlayerHudView.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "caveexpress/shared/CaveExpressCooldown.h"
 #include "caveexpress/client/entities/ClientWindowTile.h"
@@ -23,6 +24,7 @@
 #include "service/ServiceProvider.h"
 #include "common/DateUtil.h"
 #include "common/Math.h"
+#include "common/Spectate.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <algorithm>
@@ -40,6 +42,11 @@ void CaveExpressClientMap::resetCurrentMap ()
 {
 	Super::resetCurrentMap();
 	_waterHeight = 0.0f;
+	_spectateEntityId = 0;
+	_appliedSpectateHudEntityId = 0;
+	_appliedSpectateHudValid = false;
+	_appliedSpectateHud = SpectatePlayerHud();
+	_playerHud.clear();
 }
 
 SDL_Rect CaveExpressClientMap::getWaterRect(int x, int y) const {
@@ -151,7 +158,7 @@ void CaveExpressClientMap::renderLavaHeat (int x, int y) const
 
 bool CaveExpressClientMap::drop ()
 {
-	if (isPause() || !isActive())
+	if (isPause() || !isActive() || isLocalPlayerSpectating())
 		return false;
 
 	if (!_player || !_player->hasCollected())
@@ -248,6 +255,117 @@ void CaveExpressClientMap::couldNotFindEntity (const std::string& prefix, uint16
 			continue;
 		Log::debug(LOG_GAMEIMPL, "id: %i, type: %s", e->getID(), e->getType().name.c_str());
 	}
+}
+
+ClientEntity* CaveExpressClientMap::getSpectateTarget () const
+{
+	if (!isLocalPlayerSpectating())
+		return Super::getSpectateTarget();
+
+	std::vector<uint16_t> ids;
+	collectSpectateTargets(ids);
+	if (ids.empty())
+		return _player;
+
+	uint16_t want = _spectateEntityId;
+	bool found = false;
+	if (want != 0) {
+		for (uint16_t id : ids) {
+			if (id == want) {
+				found = true;
+				break;
+			}
+		}
+	}
+	if (!found)
+		want = ids.front();
+
+	ClientEntityMapConstIter i = _entities.find(want);
+	if (i != _entities.end())
+		return i->second;
+	return _player;
+}
+
+void CaveExpressClientMap::collectSpectateTargets (std::vector<uint16_t>& ids) const
+{
+	ids.clear();
+	std::vector<uint16_t> living;
+	std::vector<uint16_t> crashed;
+	for (ClientEntityMapConstIter i = _entities.begin(); i != _entities.end(); ++i) {
+		ClientEntity* e = i->second;
+		if (e == nullptr || !EntityTypes::isPlayer(e->getType()))
+			continue;
+		if (_player != nullptr && e == _player)
+			continue;
+		if (e->getAnimation().name == "crashed")
+			crashed.push_back(e->getID());
+		else
+			living.push_back(e->getID());
+	}
+	std::sort(living.begin(), living.end());
+	std::sort(crashed.begin(), crashed.end());
+	if (!living.empty())
+		ids.swap(living);
+	else
+		ids.swap(crashed);
+}
+
+uint16_t CaveExpressClientMap::cycleSpectateTarget (int dir)
+{
+	if (!isLocalPlayerSpectating())
+		return 0;
+
+	std::vector<uint16_t> ids;
+	collectSpectateTargets(ids);
+	if (ids.empty())
+		return 0;
+
+	uint16_t current = _spectateEntityId;
+	if (current == 0)
+		current = ids.front();
+	_spectateEntityId = spectate::cycleId(ids, current, dir);
+	applyFollowedPlayerHudIfChanged();
+	return _spectateEntityId;
+}
+
+void CaveExpressClientMap::storePlayerHud (uint16_t entityId, uint16_t hitpoints, uint8_t lives, uint8_t targetCave,
+		uint8_t collectedTypeId)
+{
+	SpectatePlayerHud& hud = _playerHud[entityId];
+	hud.hitpoints = hitpoints;
+	hud.lives = lives;
+	hud.targetCave = targetCave;
+	hud.collectedTypeId = collectedTypeId;
+}
+
+void CaveExpressClientMap::applyFollowedPlayerHudIfChanged ()
+{
+	if (!isLocalPlayerSpectating())
+		return;
+
+	ClientEntity* target = getSpectateTarget();
+	if (target == nullptr || !EntityTypes::isPlayer(target->getType()))
+		return;
+
+	const uint16_t entityId = target->getID();
+	const auto cached = _playerHud.find(entityId);
+	if (cached == _playerHud.end())
+		return;
+	const SpectatePlayerHud& hud = cached->second;
+
+	if (_appliedSpectateHudValid && _appliedSpectateHudEntityId == entityId && hud == _appliedSpectateHud)
+		return;
+
+	const bool flash = !_appliedSpectateHudValid || _appliedSpectateHudEntityId != entityId;
+	PlayerHudState state;
+	state.hitpoints = hud.hitpoints;
+	state.lives = hud.lives;
+	state.targetCave = hud.targetCave;
+	state.collectedTypeId = hud.collectedTypeId;
+	PlayerHudView::apply(state, flash);
+	_appliedSpectateHud = hud;
+	_appliedSpectateHudEntityId = entityId;
+	_appliedSpectateHudValid = true;
 }
 
 void CaveExpressClientMap::init (uint16_t playerID) {

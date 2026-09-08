@@ -22,6 +22,8 @@ public:
 
 	void execute (const UpdateCollectedTypeMessage* msg) override
 	{
+		if (_map.isLocalPlayerSpectating())
+			return;
 		const EntityType& type = msg->getEntityType();
 		const bool collected = msg->isCollected();
 		ClientPlayer* player = _map.getPlayer();

@@ -21,6 +21,7 @@
 #include "service/ServiceProvider.h"
 #include "common/IFrontend.h"
 #include "campaign/CampaignManager.h"
+#include "game/GameRegistry.h"
 #include "client/network/CloseMapHandler.h"
 #include "client/network/HudLoadMapHandler.h"
 #include "client/network/HudMapSettingsHandler.h"
@@ -53,7 +54,7 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 		INetwork& network = serviceProvider.getNetwork();
 		network.closeClient();
 		if (network.isServer()) {
-			// TODO: the map (server side) is still running
+			Singleton<GameRegistry>::getInstance().getGame()->mapShutdown();
 			network.closeServer();
 		}
 	});
@@ -68,6 +69,12 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	Commands.registerCommand(CMD_MOVE_DOWN, std::bind(&IUINodeMap::move, this, std::placeholders::_1, DIRECTION_DOWN));
 	Commands.registerCommand(CMD_MOVE_LEFT, std::bind(&IUINodeMap::move, this, std::placeholders::_1, DIRECTION_LEFT));
 	Commands.registerCommand(CMD_MOVE_RIGHT, std::bind(&IUINodeMap::move, this, std::placeholders::_1, DIRECTION_RIGHT));
+	Commands.registerCommand(CMD_SPECTATE_NEXT, [&] (const ICommand::Args&) {
+		_map.cycleSpectateTarget(1);
+	});
+	Commands.registerCommand(CMD_SPECTATE_PREV, [&] (const ICommand::Args&) {
+		_map.cycleSpectateTarget(-1);
+	});
 
 	ProtocolHandlerRegistry& r = ProtocolHandlerRegistry::get();
 	r.registerClientHandler(protocol::PROTO_CHANGEANIMATION, new ChangeAnimationHandler(_map));
@@ -86,8 +93,8 @@ IUINodeMap::IUINodeMap (IFrontend *frontend, ServiceProvider& serviceProvider, C
 	r.registerClientHandler(protocol::PROTO_MAPSETTINGS, new HudMapSettingsHandler(_map));
 	r.registerClientHandler(protocol::PROTO_INITWAITING, new InitWaitingMapHandler(serviceProvider));
 	r.registerClientHandler(protocol::PROTO_STARTMAP, new StartClientMapHandler());
-	r.registerClientHandler(protocol::PROTO_UPDATEHITPOINTS, new UpdateHitpointsHandler());
-	r.registerClientHandler(protocol::PROTO_UPDATELIVES, new UpdateLivesHandler(campaignManager));
+	r.registerClientHandler(protocol::PROTO_UPDATEHITPOINTS, new UpdateHitpointsHandler(_map));
+	r.registerClientHandler(protocol::PROTO_UPDATELIVES, new UpdateLivesHandler(campaignManager, _map));
 	r.registerClientHandler(protocol::PROTO_UPDATEPOINTS, new UpdatePointsHandler());
 	r.registerClientHandler(protocol::PROTO_TIMEREMAINING, new TimeRemainingHandler());
 	r.registerClientHandler(protocol::PROTO_FINISHEDMAP, new FinishedMapHandler(_map));
@@ -117,6 +124,14 @@ void IUINodeMap::move(const ICommand::Args& args, Direction dir)
 	const int verical = keys[1] - keys[0];
 	const bool active = _map.isActive() && !_map.isPause();
 
+	if (_map.isLocalPlayerSpectating()) {
+		if (horiz != horizOld && horiz != 0 && active)
+			_map.cycleSpectateTarget(horiz);
+		horizOld = horiz;
+		vericalOld = verical;
+		return;
+	}
+
 	if (horiz != horizOld) {
 		if (horiz == 0)
 			_map.resetAcceleration(horizOld > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT, 0);
@@ -141,6 +156,8 @@ IUINodeMap::~IUINodeMap ()
 	Commands.removeCommand(CMD_MOVE_DOWN);
 	Commands.removeCommand(CMD_MOVE_LEFT);
 	Commands.removeCommand(CMD_MOVE_RIGHT);
+	Commands.removeCommand(CMD_SPECTATE_NEXT);
+	Commands.removeCommand(CMD_SPECTATE_PREV);
 	Commands.removeCommand(CMD_ZOOM);
 
 	_campaignManager.removeListener(this);
@@ -178,6 +195,12 @@ void IUINodeMap::setMapRect (int x, int y, int w, int h)
 void IUINodeMap::update (uint32_t deltaTime)
 {
 	UINode::update(deltaTime);
+	UIWindow* front = UI::get().getFrontWindow();
+	if (front != nullptr) {
+		const std::string& id = front->getId();
+		if (id == UI_WINDOW_MAPFAILED || id == UI_WINDOW_MAPFINISHED || id == UI_WINDOW_GAMEOVER)
+			return;
+	}
 	_map.update(deltaTime);
 }
 

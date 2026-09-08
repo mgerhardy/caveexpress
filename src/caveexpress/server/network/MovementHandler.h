@@ -27,6 +27,8 @@ public:
 		_map.noteClientDirectionPressed(msg->getDirection());
 		if (!_map.isInputEnabled())
 			return;
+		if (!player->acceptsControlInput())
+			return;
 		player->accelerate(msg->getDirection());
 	}
 };

@@ -76,6 +76,7 @@ protected:
 	/** Intro/cutscene maps hide the gameplay HUD. */
 	bool _cutscene;
 	bool _started;
+	bool _joinAsSpectator;
 	const ThemeType* _theme;
 
 	ConfigVarPtr _minZoom;
@@ -216,12 +217,22 @@ public:
 	bool updateEntity (uint16_t id, float x, float y, EntityAngle angle, uint8_t state);
 	ClientPlayer* getPlayer () const;
 	const ClientEntityMap& getEntities () const;
+	/** True when the local ship is crashed or this client joined after start. */
+	bool isLocalPlayerSpectating () const;
+	virtual ClientEntity* getSpectateTarget () const;
+	/** Cycle follow target while spectating. dir > 0 next, dir < 0 previous. */
+	virtual uint16_t cycleSpectateTarget (int dir) { (void)dir; return 0; }
+	virtual void applyFollowedPlayerHudIfChanged () {}
+	bool isJoinAsSpectator () const;
+	void setJoinAsSpectator (bool spectator);
 
 	bool isPause () const;
 	void setPause (bool pause);
 
 	bool isStarted () const;
 	virtual void start ();
+	/** CaveExpress multiplayer keeps the session after fail/finish. */
+	virtual bool keepSessionOnMatchEnd () const;
 
 	void setPos (int x, int y);
 	void setSize (int width, int height);
@@ -267,6 +278,11 @@ inline const ThemeType& ClientMap::getTheme () const
 inline bool ClientMap::isActive () const
 {
 	return _mapGridWidth > 0 && _mapGridHeight > 0 && !_name.empty();
+}
+
+inline bool ClientMap::keepSessionOnMatchEnd () const
+{
+	return false;
 }
 
 inline Camera& ClientMap::getCamera ()
@@ -374,4 +390,14 @@ inline bool ClientMap::isCutscene () const
 inline void ClientMap::setStartPositions (int startPositions)
 {
 	_startPositions = startPositions;
+}
+
+inline bool ClientMap::isJoinAsSpectator () const
+{
+	return _joinAsSpectator;
+}
+
+inline void ClientMap::setJoinAsSpectator (bool spectator)
+{
+	_joinAsSpectator = spectator;
 }

@@ -5,6 +5,7 @@ set(${PROJECT_NAME}_SRC
 	EnumTest.cpp
 	FileTest.cpp
 	GeneralTest.cpp
+	LobbyOverlayTest.cpp
 	LUATest.cpp
 	MemoryAllocatorTest.cpp
 	NetworkTest.cpp

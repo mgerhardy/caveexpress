@@ -439,6 +439,11 @@ public:
 		return EntityTypes::isEmitter(_type);
 	}
 
+	inline bool isServerOnly () const
+	{
+		return EntityTypes::isServerOnly(_type);
+	}
+
 	// checks whether the entity is solid. a solid entity will collide with other
 	// entities by default
 	inline bool isSolid () const

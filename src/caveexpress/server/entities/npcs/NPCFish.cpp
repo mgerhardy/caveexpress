@@ -23,7 +23,8 @@ void NPCFish::onPreSolve (PhysicsContact contact, IEntity* entity, const Physics
 	// we hit a player - so the player is crashing
 	if (!isDying() && entity->isPlayer()) {
 		Player* player = assert_cast<Player*, IEntity*>(entity);
-		player->setCrashed(CRASH_NPC_FISH);
+		if (player->isLive())
+			player->setCrashed(CRASH_NPC_FISH);
 	}
 	contact.setEnabled(false);
 }
@@ -100,7 +101,7 @@ bool NPCFish::shouldCollide (const IEntity* entity) const
 	// fish npcs only collide with players
 	if (entity->isPlayer()) {
 		const Player *p = assert_cast<const Player*, const IEntity*>(entity);
-		return !p->isCrashed();
+		return p->isLive();
 	}
 	return false;
 }

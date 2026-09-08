@@ -713,6 +713,22 @@ UIWindow* UI::getRootWindow () const
 	return *_stack.begin();
 }
 
+UIWindow* UI::getFrontWindow () const
+{
+	if (_stack.empty())
+		return nullptr;
+	return _stack.back();
+}
+
+bool UI::isOnStack (const std::string& windowID) const
+{
+	for (UIStack::const_iterator i = _stack.begin(); i != _stack.end(); ++i) {
+		if ((*i)->getId() == windowID)
+			return true;
+	}
+	return false;
+}
+
 bool UI::isMainRoot () const
 {
 	const UIWindow* window = getRootWindow();
@@ -757,6 +773,10 @@ UIWindow* UI::push (const std::string& windowID)
 			// the stack just after each other
 			return activeWindow;
 		}
+	}
+	if (isOnStack(windowID)) {
+		Log::info(LOG_UI, "window %s is already on the stack", windowID.c_str());
+		return getWindow(windowID);
 	}
 
 	UIWindow* window = getWindow(windowID);

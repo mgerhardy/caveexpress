@@ -34,9 +34,25 @@ public:
 	}
 };
 
+class LeaveSessionListener: public UINodeListener {
+private:
+	IUINodeMap* _nodeMap;
+public:
+	LeaveSessionListener (IUINodeMap* nodeMap) :
+			_nodeMap(nodeMap)
+	{
+	}
+
+	void onClick () override
+	{
+		_nodeMap->getMap().close();
+		UI::get().pop();
+	}
+};
+
 IUIMapWindow::IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, IUINodeMap* nodeMap, bool continuousMovement) :
 		UIWindow(UI_WINDOW_MAP, frontend, WINDOW_FLAG_MODAL | WINDOW_FLAG_FULLSCREEN), _nodeMap(nodeMap), _waitLabel(nullptr), _mapControl(nullptr),
-		_startButton(nullptr), _serviceProvider(serviceProvider), _panel(nullptr), _lastFingerPressEvent(0L), _cursorActive(false), _continuousMovement(continuousMovement) {
+		_startButton(nullptr), _leaveButton(nullptr), _serviceProvider(serviceProvider), _panel(nullptr), _lastFingerPressEvent(0L), _cursorActive(false), _continuousMovement(continuousMovement) {
 	const float screenPadding = getScreenPadding();
 	setPadding(screenPadding);
 	_playClickSound = false;
@@ -111,6 +127,14 @@ void IUIMapWindow::init()
 	_waitLabel->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_TOP);
 	_waitLabel->setVisible(false);
 	add(_waitLabel);
+
+	_leaveButton = new UINodeButtonText(_frontend, tr("Leave"), 0.05f);
+	_leaveButton->setId("leavebutton");
+	_leaveButton->addListener(UINodeListenerPtr(new LeaveSessionListener(_nodeMap)));
+	_leaveButton->setFont(getFont(LARGE_FONT), colorBlack);
+	_leaveButton->setAlignment(NODE_ALIGN_CENTER | NODE_ALIGN_BOTTOM);
+	_leaveButton->setVisible(false);
+	add(_leaveButton);
 }
 
 UINode* IUIMapWindow::getControl ()
@@ -131,11 +155,17 @@ void IUIMapWindow::onActive ()
 {
 	UIWindow::onActive();
 	_cursorActive = UI::get().isCursorVisible();
-	if (_cursorActive && !_startButton->isVisible())
+	const bool lobby = (_startButton && _startButton->isVisible())
+			|| (_waitLabel && _waitLabel->isVisible())
+			|| (_leaveButton && _leaveButton->isVisible());
+	if (_cursorActive && !lobby)
 		showCursor(false);
 	UINode* lives = getNode(UINODE_LIVES);
 	if (lives != nullptr)
 		lives->setVisible(Config.isModeHard());
+
+	if (lobby)
+		hideHud();
 
 	if (_nodeMap->getMap().isStarted())
 		Config.setBindingsSpace(BINDINGS_MAP);
@@ -169,22 +199,28 @@ bool IUIMapWindow::onPop ()
 	return false;
 }
 
+void IUIMapWindow::applyLobbyOverlay (const lobby::OverlayVisibility& visibility)
+{
+	if (_startButton)
+		_startButton->setVisible(visibility.startButton);
+	if (_waitLabel)
+		_waitLabel->setVisible(visibility.waitLabel);
+	if (_leaveButton)
+		_leaveButton->setVisible(visibility.leaveButton);
+}
+
 void IUIMapWindow::initWaitingForPlayers (bool adminOptions)
 {
 	if (_nodeMap->initWaitingForPlayer()) {
+		applyLobbyOverlay(lobby::overlayVisibility(false, false, false));
 		return;
 	}
 
-	if (adminOptions) {
-		_startButton->setVisible(true);
-		_waitLabel->setVisible(false);
-		// we need the cursor back to click onto the start button
-		if (_cursorActive)
-			showCursor(true);
-	} else {
-		_startButton->setVisible(false);
-		_waitLabel->setVisible(true);
-	}
+	applyLobbyOverlay(lobby::overlayVisibility(true, false, adminOptions));
+	hideHud();
+	if (_cursorActive)
+		showCursor(true);
+	Config.setBindingsSpace(BINDINGS_UI);
 }
 
 void IUIMapWindow::showCursor (bool show)
@@ -194,8 +230,7 @@ void IUIMapWindow::showCursor (bool show)
 
 void IUIMapWindow::start ()
 {
-	_startButton->setVisible(false);
-	_waitLabel->setVisible(false);
+	applyLobbyOverlay(lobby::overlayVisibility(true, true, false));
 	if (_cursorActive)
 		showCursor(false);
 	_nodeMap->start();

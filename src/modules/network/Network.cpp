@@ -33,7 +33,7 @@ void Network::init ()
 	_serverDatagramPacket = nullptr;
 #endif
 
-	_socketSet = SDLNet_AllocSocketSet(MAX_CLIENTS);
+	_socketSet = SDLNet_AllocSocketSet(MAX_NETWORK_SOCKETS);
 	if (!_socketSet)
 		System.exit(getError(), 1);
 }

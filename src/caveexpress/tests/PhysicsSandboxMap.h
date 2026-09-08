@@ -38,20 +38,26 @@ public:
 		return _world != nullptr;
 	}
 
-	Player* spawnPlayerAt (float x, float y)
+	Player* spawnPlayerAt (float x, float y, ClientId clientId = 1)
 	{
 		if (!_mapRunning || _world == nullptr)
 			return nullptr;
 
-		Player* player = new Player(*this, 1);
+		Player* player = new Player(*this, clientId);
 		player->setLives(3);
-		_startPositions.clear();
+		if (_players.empty())
+			_startPositions.clear();
 		_startPositions.push_back({ string::toString(x), string::toString(y) });
 		if (!spawnPlayer(player)) {
 			delete player;
 			return nullptr;
 		}
 		return player;
+	}
+
+	bool filterCollide (PhysicsFixture fixtureA, PhysicsFixture fixtureB)
+	{
+		return shouldCollide(fixtureA, fixtureB);
 	}
 };
 

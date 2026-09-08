@@ -195,7 +195,7 @@ bool NPC::shouldCollide (const IEntity* entity) const
 
 	if (entity->isPlayer()) {
 		const Player* player = assert_cast<const Player*, const IEntity*>(entity);
-		return !player->isCrashed();
+		return player->isLive();
 	}
 
 	return entity->isSolid() || entity->isLava();

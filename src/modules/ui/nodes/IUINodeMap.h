@@ -34,6 +34,7 @@ public:
 	virtual ~IUINodeMap ();
 
 	void setPlayerList (const std::vector<std::string>& players);
+	const std::vector<std::string>& getPlayerList () const;
 	void setTitle (const std::string& title);
 	void start();
 
@@ -59,6 +60,11 @@ inline ClientMap& IUINodeMap::getMap()
 inline void IUINodeMap::setPlayerList (const std::vector<std::string>& players)
 {
 	_players = players;
+}
+
+inline const std::vector<std::string>& IUINodeMap::getPlayerList () const
+{
+	return _players;
 }
 
 inline void IUINodeMap::setTitle (const std::string& title)

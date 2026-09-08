@@ -11,6 +11,7 @@ SET(${PROJECT_NAME}_SRC
 	MapWinConditionTest.cpp
 	SpriteShapeTraitsTest.cpp
 	MapTest.cpp
+	MapWindowLobbyTest.cpp
 	MapManagerTest.cpp
 	CampaignTest.cpp
 	GatePressurePlateTest.cpp
@@ -24,6 +25,7 @@ SET(${PROJECT_NAME}_SRC
 	../../tests/TestShared.cpp
 	../../tests/NetworkTest.cpp
 	../../tests/NoNetworkTest.cpp
+	../../tests/LobbyOverlayTest.cpp
 )
 cp_add_executable(TARGET ${PROJECT_NAME} SRCS ${${PROJECT_NAME}_SRC} APPNAME ${PROJECT_NAME} VERSION 1.0 VERSION_CODE 1)
 cp_target_link_libraries(TARGET ${PROJECT_NAME} LIBS ${NAME}-client ${NAME}-server ${NAME}-shared gtest)

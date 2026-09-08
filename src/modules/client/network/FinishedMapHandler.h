@@ -9,14 +9,16 @@
 #include "ui/nodes/UINodePoint.h"
 #include "ui/nodes/UINodeStar.h"
 #include "client/ClientMap.h"
+#include "common/LobbyPlayers.h"
 
 class FinishedMapHandler: public ClientProtocolHandler<FinishedMapMessage> {
 private:
 	ClientMap& _clientMap;
 
-	void showFinishedWindow (const FinishedMapMessage& msg) const
+	void showFinishedWindow (const FinishedMapMessage& msg, bool popMapWindow) const
 	{
-		UI::get().pop(); // pop the map
+		if (popMapWindow)
+			UI::get().pop();
 		UI::get().push(UI_WINDOW_MAPFINISHED);
 		UINodePoint *finishedPointsLabel = UI::get().getNode<UINodePoint>(UI_WINDOW_MAPFINISHED, UINODE_FINISHEDPOINTS);
 		if (finishedPointsLabel)
@@ -46,8 +48,11 @@ public:
 
 	void execute (const FinishedMapMessage* msg) override
 	{
-		_clientMap.close();
-		Commands.executeCommandLine(CMD_CL_DISCONNECT);
-		showFinishedWindow(*msg);
+		const lobby::AfterMatchUi ui = lobby::afterMatchUi(_clientMap.keepSessionOnMatchEnd(), false);
+		if (ui.disconnect) {
+			_clientMap.close();
+			Commands.executeCommandLine(CMD_CL_DISCONNECT);
+		}
+		showFinishedWindow(*msg, ui.popMapWindow);
 	}
 };
