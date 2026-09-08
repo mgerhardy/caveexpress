@@ -585,6 +585,8 @@ TEST_F(MapEditorDocumentTest, testEditorRenderCostRacesVsSmall)
 
 TEST_F(MapEditorDocumentTest, testEditorRenderPerfRaces01)
 {
+	if (std::getenv("CAVEEXPRESS_EDITOR_PERF") == nullptr)
+		GTEST_SKIP() << "set CAVEEXPRESS_EDITOR_PERF=1 to run the long races-01 loop";
 	MapEditorDocument doc(_mapMgr);
 	ASSERT_TRUE(doc.load("races-01"));
 	const int frames = 8000;
@@ -601,6 +603,8 @@ TEST_F(MapEditorDocumentTest, testEditorRenderPerfRaces01)
 
 TEST_F(MapEditorDocumentTest, testEditorRenderPerfIntroducing01)
 {
+	if (std::getenv("CAVEEXPRESS_EDITOR_PERF") == nullptr)
+		GTEST_SKIP() << "set CAVEEXPRESS_EDITOR_PERF=1 to run the long introducing-01 loop";
 	MapEditorDocument doc(_mapMgr);
 	ASSERT_TRUE(doc.load("introducing-01-package"));
 	const int frames = 8000;
