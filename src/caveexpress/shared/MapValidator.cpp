@@ -1,5 +1,6 @@
 #include "MapValidator.h"
 #include "caveexpress/shared/CaveExpressSpriteType.h"
+#include "caveexpress/shared/SpriteShapeTraits.h"
 #include "caveexpress/shared/CaveExpressEntityType.h"
 #include "common/MapSettings.h"
 #include "common/String.h"
@@ -210,6 +211,13 @@ MapValidator::CellKind MapValidator::classifyTile (const SpriteType& type) const
 	return CellKind::FlyableDecor;
 }
 
+bool MapValidator::isPartialFlightGap (const SpriteDefPtr& def) const
+{
+	if (!def || SpriteTypes::isPackageTarget(def->type) || !def->hasShape())
+		return false;
+	return !analyzeSpriteShape(def).fullSolid;
+}
+
 void MapValidator::paintSprite (Grid& grid, const SpriteDefPtr& def, int x, int y, CellKind kind, int angle) const
 {
 	if (!def)
@@ -251,6 +259,10 @@ void MapValidator::paintSprite (Grid& grid, const SpriteDefPtr& def, int x, int 
 				grid.isGeyser[i] = 1;
 			if (SpriteTypes::isSlope(def->type) || def->id.find("slope") != std::string::npos)
 				grid.isSlope[i] = 1;
+			if (isPartialFlightGap(def))
+				grid.flightGap[i] = 1;
+			else if (kind == CellKind::Walkable || kind == CellKind::Collider)
+				grid.flightGap[i] = 0;
 		}
 	}
 }
@@ -258,7 +270,7 @@ void MapValidator::paintSprite (Grid& grid, const SpriteDefPtr& def, int x, int 
 void MapValidator::floodFlyable (const Grid& grid, int sx, int sy, std::vector<uint8_t>& reached) const
 {
 	reached.assign(grid.width * grid.height, 0);
-	if (!grid.flyable(sx, sy))
+	if (!grid.flightPassable(sx, sy))
 		return;
 	std::queue<int> q;
 	q.push(grid.idx(sx, sy));
@@ -272,7 +284,7 @@ void MapValidator::floodFlyable (const Grid& grid, int sx, int sy, std::vector<u
 		for (const auto& d : DIR) {
 			const int nx = x + d[0];
 			const int ny = y + d[1];
-			if (!grid.flyable(nx, ny))
+			if (!grid.flightPassable(nx, ny))
 				continue;
 			const int ni = grid.idx(nx, ny);
 			if (reached[ni])
@@ -351,6 +363,7 @@ MapMetrics MapValidator::evaluate (int width, int height,
 	grid.isBackground.assign(n, 0);
 	grid.isGeyser.assign(n, 0);
 	grid.isSlope.assign(n, 0);
+	grid.flightGap.assign(n, 0);
 
 	for (const MapTileDefinition& tile : tiles) {
 		if (!tile.spriteDef)
@@ -519,11 +532,14 @@ MapMetrics MapValidator::evaluate (int width, int height,
 		for (const auto& d : DIR)
 			enqueue(tx + d[0], ty + d[1]);
 		bool hitReached = false;
+		bool hitGeyser = false;
 		while (!q.empty()) {
 			const int x = q.front().first;
 			const int y = q.front().second;
 			q.pop();
 			const int i = grid.idx(x, y);
+			if (grid.isGeyser[i])
+				hitGeyser = true;
 			if (grid.flyable(x, y)) {
 				if (pipeAir)
 					(*pipeAir)[i] = 1;
@@ -533,7 +549,8 @@ MapMetrics MapValidator::evaluate (int width, int height,
 			for (const auto& d : DIR)
 				enqueue(x + d[0], y + d[1]);
 		}
-		return hitReached;
+		// Geyser on the pipe can launch packages into the shredder (ice-21).
+		return hitReached || hitGeyser;
 	};
 
 	for (const auto& c : cavePositions) {

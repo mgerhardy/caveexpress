@@ -121,6 +121,8 @@ private:
 		std::vector<uint8_t> isBackground;
 		std::vector<uint8_t> isGeyser;
 		std::vector<uint8_t> isSlope;
+		/** Partial solids the player can fly through (ledges, thin faces, slopes). */
+		std::vector<uint8_t> flightGap;
 
 		int idx (int x, int y) const { return x + y * width; }
 		bool inBounds (int x, int y) const {
@@ -132,6 +134,13 @@ private:
 			const CellKind k = kind[idx(x, y)];
 			return k == CellKind::Empty || k == CellKind::FlyableDecor;
 		}
+		bool flightPassable (int x, int y) const {
+			if (flyable(x, y))
+				return true;
+			if (!inBounds(x, y))
+				return false;
+			return flightGap[idx(x, y)] != 0;
+		}
 		bool solid (int x, int y) const {
 			if (!inBounds(x, y))
 				return true; // out of bounds blocks
@@ -142,6 +151,7 @@ private:
 
 	void paintSprite (Grid& grid, const SpriteDefPtr& def, int x, int y, CellKind kind, int angle = 0) const;
 	CellKind classifyTile (const SpriteType& type) const;
+	bool isPartialFlightGap (const SpriteDefPtr& def) const;
 	void floodFlyable (const Grid& grid, int sx, int sy, std::vector<uint8_t>& reached) const;
 	int airPathDistance (const Grid& grid, int sx, int sy, int gx, int gy) const;
 };

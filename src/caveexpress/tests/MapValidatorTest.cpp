@@ -247,6 +247,25 @@ TEST_F(MapValidatorTest, testRotatedPackageTargetUsesIntakeSide)
 	EXPECT_EQ(1, upright.packageTargetsReachable) << upright.failureReason;
 }
 
+TEST_F(MapValidatorTest, testGeyserOnPipeCountsAsPackageDelivery)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts = { { "1", "1" } };
+	const int w = 8;
+	const int h = 8;
+	fillOpenBorder(tiles, w, h);
+	addTile(tiles, "tile-rock-01", 3, 4);
+	addTile(tiles, "tile-rock-01", 2, 5);
+	addTile(tiles, "tile-rock-01", 3, 6);
+	addTile(tiles, "tile-packagetarget-ice-01-idle", 3, 5);
+	addTile(tiles, "tile-geyser-ice-01-active", 4, 5);
+
+	const MapMetrics m = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_EQ(1, m.packageTargetsReachable) << m.failureReason;
+}
+
 TEST_F(MapValidatorTest, testMetricPackageTargetBadNiche)
 {
 	std::vector<MapTileDefinition> tiles;
