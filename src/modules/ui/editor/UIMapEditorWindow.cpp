@@ -488,11 +488,12 @@ void UIMapEditorWindow::drawTilesPanel () const
 		const ImVec2 min = ImGui::GetItemRectMin();
 		const ImVec2 max = ImGui::GetItemRectMax();
 		const SpritePtr& s = UI::get().loadSprite(sprite->id);
-		mapEditorAddSprite(drawList, _frontendPtr, s,
+		mapEditorCollectSprite(_mapSpriteBatch, _frontendPtr, s,
 				ImVec2(min.x + 4.0f, min.y + 4.0f), ImVec2(max.x - 4.0f, max.y - 4.0f), 1.0f, sprite->angle);
 		ImGui::PopID();
 		col = (col + 1) % columns;
 	}
+	mapEditorFlushSprites(drawList, _mapSpriteBatch);
 	ImGui::EndChild();
 }
 
@@ -527,7 +528,7 @@ void UIMapEditorWindow::drawEntitiesPanel () const
 		if (def && !def->hasNoTextures())
 			s = UI::get().loadSprite(def->id);
 		if (s)
-			mapEditorAddSprite(drawList, _frontendPtr, s,
+			mapEditorCollectSprite(_mapSpriteBatch, _frontendPtr, s,
 					ImVec2(min.x + 4.0f, min.y + 4.0f), ImVec2(max.x - 4.0f, max.y - 4.0f), 1.0f, 0);
 		else {
 			drawList->PushClipRect(min, max, true);
@@ -537,6 +538,7 @@ void UIMapEditorWindow::drawEntitiesPanel () const
 		ImGui::PopID();
 		col = (col + 1) % columns;
 	}
+	mapEditorFlushSprites(drawList, _mapSpriteBatch);
 	ImGui::EndChild();
 }
 
@@ -1120,8 +1122,8 @@ void UIMapEditorWindow::applyScriptFind (bool replaceAll) const
 	ImGui::SetClipboardText(text.substr(pos, std::strlen(_scriptFind)).c_str());
 }
 
-void UIMapEditorWindow::renderSprite (ImDrawList* drawList, const MapEditorTileItem& item, float originX, float originY,
-		float tileW, float tileH, float alpha) const
+void UIMapEditorWindow::collectSprite (std::vector<MapEditorSpriteQuad>& quads, const MapEditorTileItem& item,
+		float originX, float originY, float tileW, float tileH, float alpha) const
 {
 	if (!item.def)
 		return;
@@ -1131,7 +1133,16 @@ void UIMapEditorWindow::renderSprite (ImDrawList* drawList, const MapEditorTileI
 	const float ry = originY + (item.gridY + item.getY(false)) * tileH - _panY;
 	const float rw = size.x * tileW;
 	const float rh = size.y * tileH;
-	mapEditorAddSprite(drawList, _frontendPtr, sprite, ImVec2(rx, ry), ImVec2(rx + rw, ry + rh), alpha, item.angle);
+	mapEditorCollectSprite(quads, _frontendPtr, sprite, ImVec2(rx, ry), ImVec2(rx + rw, ry + rh),
+			alpha, item.angle, static_cast<uint8_t>(item.layer));
+}
+
+void UIMapEditorWindow::renderSprite (ImDrawList* drawList, const MapEditorTileItem& item, float originX, float originY,
+		float tileW, float tileH, float alpha) const
+{
+	std::vector<MapEditorSpriteQuad> local;
+	collectSprite(local, item, originX, originY, tileW, tileH, alpha);
+	mapEditorFlushSprites(drawList, local);
 }
 
 void UIMapEditorWindow::renderItemBounds (ImDrawList* drawList, const MapEditorTileItem& item, float originX,
@@ -1347,6 +1358,13 @@ void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 	const int visibleW = static_cast<int>(w / tileW) + 3;
 	const int visibleH = static_cast<int>(h / tileH) + 3;
 
+	_mapSpriteBatch.clear();
+	_mapSpriteBatch.reserve(_doc->getTiles().size());
+	struct EmitterLabel {
+		ImVec2 pos;
+		char text[32];
+	};
+	std::vector<EmitterLabel> labels;
 	for (const MapEditorTileItem& item : _doc->getTiles()) {
 		if (!_doc->isLayerActive(item.layer))
 			continue;
@@ -1354,15 +1372,18 @@ void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 			continue;
 		if (item.gridX >= startGX + visibleW || item.gridY >= startGY + visibleH)
 			continue;
-		renderSprite(drawList, item, x, y, tileW, tileH);
+		collectSprite(_mapSpriteBatch, item, x, y, tileW, tileH);
 		if (item.entityType != nullptr && (item.amount > 1 || item.delay > 0)) {
-			const float tx = x + item.gridX * tileW - _panX + 2.0f;
-			const float ty = y + item.gridY * tileH - _panY + 2.0f;
-			char buf[32];
-			std::snprintf(buf, sizeof(buf), "%ix/%ims", item.amount, item.delay);
-			drawList->AddText(ImVec2(tx, ty), IM_COL32(255, 230, 120, 255), buf);
+			EmitterLabel label;
+			label.pos = ImVec2(x + item.gridX * tileW - _panX + 2.0f,
+					y + item.gridY * tileH - _panY + 2.0f);
+			std::snprintf(label.text, sizeof(label.text), "%ix/%ims", item.amount, item.delay);
+			labels.push_back(label);
 		}
 	}
+	mapEditorFlushSprites(drawList, _mapSpriteBatch);
+	for (const EmitterLabel& label : labels)
+		drawList->AddText(label.pos, IM_COL32(255, 230, 120, 255), label.text);
 
 	if (_doc->hasRegion()) {
 		int rx0, ry0, rx1, ry1;
@@ -1391,13 +1412,23 @@ void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 
 	if (_doc->isRenderGrid()) {
 		const ImU32 gridColor = IM_COL32(80, 80, 80, 160);
-		for (int gx = 0; gx <= _doc->getMapWidth(); ++gx) {
+		const int mapW = _doc->getMapWidth();
+		const int mapH = _doc->getMapHeight();
+		const int gx0 = std::max(0, static_cast<int>(std::floor(startGX)) - 1);
+		const int gx1 = std::min(mapW, static_cast<int>(std::ceil(startGX + visibleW)) + 1);
+		const int gy0 = std::max(0, static_cast<int>(std::floor(startGY)) - 1);
+		const int gy1 = std::min(mapH, static_cast<int>(std::ceil(startGY + visibleH)) + 1);
+		const float clipY0 = y;
+		const float clipY1 = y + h;
+		const float clipX0 = x;
+		const float clipX1 = x + w;
+		for (int gx = gx0; gx <= gx1; ++gx) {
 			const float px = x + gx * tileW - _panX;
-			drawList->AddLine(ImVec2(px, y - _panY), ImVec2(px, y + _doc->getMapHeight() * tileH - _panY), gridColor);
+			drawList->AddLine(ImVec2(px, clipY0), ImVec2(px, clipY1), gridColor);
 		}
-		for (int gy = 0; gy <= _doc->getMapHeight(); ++gy) {
+		for (int gy = gy0; gy <= gy1; ++gy) {
 			const float py = y + gy * tileH - _panY;
-			drawList->AddLine(ImVec2(x - _panX, py), ImVec2(x + _doc->getMapWidth() * tileW - _panX, py), gridColor);
+			drawList->AddLine(ImVec2(clipX0, py), ImVec2(clipX1, py), gridColor);
 		}
 	}
 

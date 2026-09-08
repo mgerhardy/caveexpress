@@ -2,6 +2,7 @@
 
 #include "ui/windows/UIWindow.h"
 #include "ui/editor/IMapEditorDocument.h"
+#include "ui/editor/ImGuiTextureDraw.h"
 #include "ui/editor/UIShapeEditor.h"
 #include "common/Animation.h"
 #include "imgui.h"
@@ -63,6 +64,7 @@ protected:
 	mutable std::string _definitionStatus;
 	mutable SpriteDefPtr _definitionSprite;
 	mutable const EntityType* _definitionEntity = nullptr;
+	mutable std::vector<MapEditorSpriteQuad> _mapSpriteBatch;
 
 	void rebuildPalettes () const;
 	void fitView () const;
@@ -91,6 +93,8 @@ protected:
 	IMapEditorDocument::MapEdge hitTestMapEdge (float tileW, float tileH) const;
 	bool handleMapEdgeResize (float tileW, float tileH, bool allowHover) const;
 	void renderMapResizeHandles (ImDrawList* drawList, float originX, float originY, float tileW, float tileH) const;
+	void collectSprite (std::vector<MapEditorSpriteQuad>& quads, const MapEditorTileItem& item,
+			float originX, float originY, float tileW, float tileH, float alpha = 1.0f) const;
 	void renderSprite (ImDrawList* drawList, const MapEditorTileItem& item, float originX, float originY,
 			float tileW, float tileH, float alpha = 1.0f) const;
 	void renderItemBounds (ImDrawList* drawList, const MapEditorTileItem& item, float originX, float originY,

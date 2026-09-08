@@ -181,7 +181,12 @@ protected:
 			int visibleW, int visibleH, EditorRenderStats& stats) const
 	{
 		stats.tilesTotal = static_cast<int>(doc.getTiles().size());
-		std::vector<std::string> images;
+		struct Quad {
+			int mapLayer;
+			int spriteLayer;
+			std::string atlas;
+		};
+		std::vector<Quad> images;
 		images.reserve(doc.getTiles().size() * 2);
 		for (const MapEditorTileItem& item : doc.getTiles()) {
 			++stats.tilesWalked;
@@ -194,15 +199,25 @@ protected:
 				if (item.def->textures[layer].empty())
 					continue;
 				++stats.layersPerVisibleTile;
-				images.push_back(atlasForFrame(item.def->textures[layer].front().name));
+				Quad q;
+				q.mapLayer = item.layer;
+				q.spriteLayer = layer;
+				q.atlas = atlasForFrame(item.def->textures[layer].front().name);
+				images.push_back(q);
 			}
 		}
-		std::sort(images.begin(), images.end());
+		std::stable_sort(images.begin(), images.end(), [] (const Quad& a, const Quad& b) {
+			if (a.mapLayer != b.mapLayer)
+				return a.mapLayer < b.mapLayer;
+			if (a.spriteLayer != b.spriteLayer)
+				return a.spriteLayer < b.spriteLayer;
+			return a.atlas < b.atlas;
+		});
 		std::string lastAtlas;
 		bool haveAtlas = false;
 		std::unordered_map<std::string, int> atlasHits;
-		for (const std::string& atlas : images)
-			emitImage(stats, atlas, lastAtlas, haveAtlas, atlasHits);
+		for (const Quad& q : images)
+			emitImage(stats, q.atlas, lastAtlas, haveAtlas, atlasHits);
 		stats.uniqueAtlases = static_cast<int>(atlasHits.size());
 	}
 
@@ -520,9 +535,9 @@ TEST_F(MapEditorDocumentTest, testEditorRenderCostRacesVsSmall)
 		simulateEditorDraw(races, view.startGX, view.startGY, view.visibleW, view.visibleH, false, layerMajor);
 		simulateAtlasGrouped(races, view.startGX, view.startGY, view.visibleW, view.visibleH, atlasGrouped);
 		std::printf("races-01 %s\n", view.name);
-		printStats("editor tile-major (current)", editor);
+		printStats("list order (old)", editor);
 		printStats("game layer-major", layerMajor);
-		printStats("sorted by atlas", atlasGrouped);
+		printStats("editor grouped (current)", atlasGrouped);
 		if (std::string(view.name) == "fit") {
 			racesFitEditor = editor;
 			racesFitLayer = layerMajor;
@@ -538,11 +553,11 @@ TEST_F(MapEditorDocumentTest, testEditorRenderCostRacesVsSmall)
 	simulateAtlasGrouped(intro, 0.0f, 0.0f, intro.getMapWidth() + 3, intro.getMapHeight() + 3, introFitAtlas);
 	simulateEditorDraw(intro, 4.0f, 3.0f, 23, 15, true, introZoomEditor);
 	std::printf("introducing-01-package fit\n");
-	printStats("editor tile-major (current)", introFitEditor);
+	printStats("list order (old)", introFitEditor);
 	printStats("game layer-major", introFitLayer);
-	printStats("sorted by atlas", introFitAtlas);
+	printStats("editor grouped (current)", introFitAtlas);
 	std::printf("introducing-01-package zoomed-in\n");
-	printStats("editor tile-major (current)", introZoomEditor);
+	printStats("list order (old)", introZoomEditor);
 
 	const int frames = 200;
 	auto timeDraw = [&] (const MapEditorDocument& doc, float gx, float gy, int vw, int vh, bool tileMajor) {
@@ -566,7 +581,7 @@ TEST_F(MapEditorDocumentTest, testEditorRenderCostRacesVsSmall)
 
 	std::printf("ms/frame (%d iters)  races fit=%.4f  races zoomed-in=%.4f  races layer-major=%.4f  intro fit=%.4f\n",
 			frames, racesFitMs, racesZoomMs, racesFitLayerMs, introFitMs);
-	std::printf("grid lines every frame: races=%d  intro=%d (not view-culled)\n",
+	std::printf("grid lines (full map, now view-culled in the editor): races=%d  intro=%d\n",
 			races.getMapWidth() + races.getMapHeight() + 2,
 			intro.getMapWidth() + intro.getMapHeight() + 2);
 
@@ -575,10 +590,10 @@ TEST_F(MapEditorDocumentTest, testEditorRenderCostRacesVsSmall)
 			<< "zoom-in must drop visible tiles; if editor cost stays flat the walk or cmds dominate";
 	EXPECT_EQ(racesFitEditor.batchBreaks, racesFitLayer.batchBreaks)
 			<< "races-01 tiles are single-layer; layer-major order should not change cmd count";
-	EXPECT_LE(racesFitAtlas.batchBreaks, racesFitAtlas.uniqueAtlases + 1)
-			<< "grouping by atlas should collapse to one cmd per atlas";
-	EXPECT_GT(racesFitEditor.batchBreaks, racesFitAtlas.batchBreaks * 20)
-			<< "list order fragments atlases; grouping would cut draw cmds sharply";
+	EXPECT_LE(racesFitAtlas.batchBreaks, racesFitAtlas.uniqueAtlases * LAYER_MAX)
+			<< "grouping by map layer + atlas should stay near one cmd per atlas per document layer";
+	EXPECT_GT(racesFitEditor.batchBreaks, racesFitAtlas.batchBreaks * 10)
+			<< "list order fragments atlases; grouping must cut draw cmds sharply";
 	EXPECT_GT(racesFitEditor.images, introFitEditor.images * 8);
 	(void)racesZoomLayer;
 }
@@ -595,7 +610,7 @@ TEST_F(MapEditorDocumentTest, testEditorRenderPerfRaces01)
 	volatile int sink = 0;
 	for (int i = 0; i < frames; ++i) {
 		EditorRenderStats s;
-		simulateEditorDraw(doc, 0.0f, 0.0f, vw, vh, true, s);
+		simulateAtlasGrouped(doc, 0.0f, 0.0f, vw, vh, s);
 		sink += s.images + s.batchBreaks;
 	}
 	EXPECT_GT(sink, 0);
@@ -613,7 +628,7 @@ TEST_F(MapEditorDocumentTest, testEditorRenderPerfIntroducing01)
 	volatile int sink = 0;
 	for (int i = 0; i < frames; ++i) {
 		EditorRenderStats s;
-		simulateEditorDraw(doc, 0.0f, 0.0f, vw, vh, true, s);
+		simulateAtlasGrouped(doc, 0.0f, 0.0f, vw, vh, s);
 		sink += s.images + s.batchBreaks;
 	}
 	EXPECT_GT(sink, 0);
