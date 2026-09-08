@@ -528,14 +528,13 @@ TEST_F(MapValidatorTest, testCaveIsolatedGroundFailsConnectedCheck)
 	EXPECT_EQ("cave has no connected ground, ledge, or bridge", m.failureReason);
 }
 
-TEST_F(MapValidatorTest, testDesert03PyramidCavesNeedConnectedGround)
+TEST_F(MapValidatorTest, testDesert03PyramidCavesHaveConnectedGround)
 {
 	CaveExpressMapContext ctx("desert-03");
 	ASSERT_TRUE(ctx.load(false));
 	const MapMetrics m = evaluateContext(ctx);
-	EXPECT_GT(m.cavesMissingConnectedGround, 0) << m.failureReason;
-	EXPECT_FALSE(m.valid);
-	EXPECT_EQ("cave has no connected ground, ledge, or bridge", m.failureReason);
+	EXPECT_EQ(0, m.cavesMissingConnectedGround) << m.failureReason;
+	EXPECT_TRUE(m.valid) << m.failureReason;
 }
 
 TEST_F(MapValidatorTest, testIntroMoviePackageLayout)
