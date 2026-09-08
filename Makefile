@@ -17,12 +17,20 @@ ANDROID_BUILDDIR  ?= $(CURDIR)/cp-build-android
 ANDROID_SDK_ROOT  ?= $(CURDIR)/build/android_sdk
 export ANDROID_SDK_ROOT
 
-# Optional local overrides; empty recipe so the catch-all `%` does not try to build it.
+.DEFAULT_GOAL := all
+
+# Empty recipes so the catch-all `%` does not try to rebuild Make's own files
+# (GNU Make always attempts to remake the Makefile; CONFIG is an optional include).
+Makefile: ;
 $(CONFIG): ;
 
 .PHONY: android android-setup android-apk android-aab android-emulator android-run android-install android-start android-stop android-logs android-clean android-help
 .PHONY: android-caveexpress-apk android-caveexpress-aab android-caveexpress-install android-caveexpress-start android-caveexpress-backtrace
 .PHONY: android-cavepacker-apk android-cavepacker-aab android-cavepacker-install android-cavepacker-start android-cavepacker-backtrace
+.PHONY: all clean distclean ccmake release FORCE
+# Executables are written to the source root (CMAKE_RUNTIME_OUTPUT_DIRECTORY).
+# Without FORCE the catch-all `%` sees e.g. `./caveexpress` and skips cmake.
+FORCE: ;
 
 # Native debug APKs (arm64-v8a). Same entry point as CI (`make android BUILDTYPE=Release`).
 android android-apk:
@@ -86,7 +94,7 @@ ccmake:
 release-%:
 	$(Q)$(MAKE) BUILDTYPE=Release $(subst release-,,$@)
 
-%:
+%: FORCE
 	$(Q)if [ ! -f $(BUILDDIR)/CMakeCache.txt ]; then $(CMAKE) -H$(CURDIR) -B$(BUILDDIR) $(CMAKE_OPTIONS); fi
 	$(Q)$(CMAKE) --build $(BUILDDIR) --target $@
 	$(Q)$(CMAKE) --install $(BUILDDIR) --component $@ --prefix $(INSTALL_DIR)/install-$@
