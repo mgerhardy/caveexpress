@@ -186,6 +186,7 @@ void MapEditorDocument::setWaterHeight (float waterHeight)
 void MapEditorDocument::doClear ()
 {
 	IMapEditorDocument::doClear();
+	_validationMarkers.clear();
 	setSetting(msn::PACKAGE_TRANSFER_COUNT, msd::PACKAGE_TRANSFER_COUNT);
 	setSetting(msn::FLYING_NPC, msd::FLYING_NPC);
 	setSetting(msn::FISH_NPC, msd::FISH_NPC);
@@ -199,6 +200,17 @@ void MapEditorDocument::doClear ()
 void MapEditorDocument::onAfterStateRestored ()
 {
 	setWaterHeight(string::toFloat(_settings[msn::WATER_HEIGHT]));
+}
+
+void MapEditorDocument::onEditorCellsCleared (int x0, int y0, int x1, int y1)
+{
+	if (_validationMarkers.empty())
+		return;
+	auto gone = std::remove_if(_validationMarkers.begin(), _validationMarkers.end(),
+			[x0, y0, x1, y1] (const MapValidationMarker& marker) {
+				return marker.x >= x0 && marker.x <= x1 && marker.y >= y0 && marker.y <= y1;
+			});
+	_validationMarkers.erase(gone, _validationMarkers.end());
 }
 
 void MapEditorDocument::onContentsShifted (int dx, int dy)
@@ -743,7 +755,34 @@ MapMetrics MapEditorDocument::evaluateLayout () const
 			tiles.emplace_back(item.gridX, item.gridY, item.def, item.angle);
 		}
 	}
-	return MapValidator().evaluate(_mapWidth, _mapHeight, tiles, caves, emitters, _startPositions);
+	MapMetrics m = MapValidator().evaluate(_mapWidth, _mapHeight, tiles, caves, emitters, _startPositions);
+	const MapWinCondition win = MapValidator::checkWinConditions(_settings, tiles, caves, emitters);
+	for (const MapValidationMarker& marker : win.markers) {
+		if (marker.kind == MapValidationKind::Occupancy)
+			m.markers.push_back(marker);
+	}
+	const bool cutscene = string::toBool(getSetting(msn::CUTSCENE, msd::CUTSCENE));
+	if (!cutscene) {
+		for (const IMap::StartPosition& pos : _startPositions) {
+			const gridCoord x = string::toFloat(pos._x);
+			const gridCoord y = string::toFloat(pos._y);
+			for (const MapEditorTileItem& item : _map) {
+				if (!item.def || !SpriteTypes::isSolid(item.def->type))
+					continue;
+				if (IMapEditorDocument::isOverlapping(x, y, item)) {
+					MapValidationMarker marker;
+					marker.x = static_cast<int>(x);
+					marker.y = static_cast<int>(y);
+					marker.kind = MapValidationKind::Other;
+					marker.reason = "start position is blocked";
+					m.markers.push_back(marker);
+					break;
+				}
+			}
+		}
+	}
+	_validationMarkers = m.markers;
+	return m;
 }
 
 void MapEditorDocument::collectGameValidationIssues (std::vector<std::string>& out) const
@@ -808,11 +847,9 @@ void MapEditorDocument::collectGameValidationIssues (std::vector<std::string>& o
 	if (getTheme() != ThemeTypes::ICE && hasIcePackage && !hasRockPackage)
 		out.push_back("Non-ice map uses ice packages");
 
-	if (!cutscene) {
-		const MapMetrics metrics = evaluateLayout();
-		if (!metrics.valid && !metrics.failureReason.empty())
-			out.push_back(std::string("Layout: ") + metrics.failureReason);
-	}
+	const MapMetrics metrics = evaluateLayout();
+	if (!cutscene && !metrics.valid && !metrics.failureReason.empty())
+		out.push_back(std::string("Layout: ") + metrics.failureReason);
 }
 
 void MapEditorDocument::makePlayable ()

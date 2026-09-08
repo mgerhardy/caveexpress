@@ -158,6 +158,9 @@ protected:
 	virtual bool shouldSaveEmitter (const MapEditorTileItem& tile) const;
 	virtual void doClear ();
 	virtual void onAfterStateRestored () {}
+	/** Inclusive cell range. Used to drop editor overlays when tiles are deleted. */
+	virtual void onEditorCellsCleared (int /*x0*/, int /*y0*/, int /*x1*/, int /*y1*/) {}
+	void notifyItemRemoved (const MapEditorTileItem& item);
 	void shiftContents (int dx, int dy);
 	virtual void onContentsShifted (int /*dx*/, int /*dy*/) {}
 	virtual bool placeBrushItem (bool overwrite);

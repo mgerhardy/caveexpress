@@ -157,6 +157,7 @@ Hitting walls hard will inflict damage|Zu harter Wandkontakt reduziert Lebensene
 Hold ms|Hold ms
 Homepage|Homepage
 Hover a map edge and drag to resize|Map-Rand anfahren und ziehen, um die Größe zu ändern
+Hover marked tiles for the reason|Markierte Kacheln zeigen den Grund
 Ice|Eis
 In campaigns|In Kampagnen
 initialspawntime in ms. 0 lets the engine pick a random delay.|initialspawntime in ms. 0 lets the engine pick a random delay.
@@ -270,7 +271,7 @@ Right-click a palette item for more actions|Rechtsklick auf ein Palette-Element 
 RMB: erase items of the active tab|RMT: Objekte der aktiven Registerkarte löschen
 Rock|Felsen
 Rotate selected|Auswahl drehen
-Run MapValidator: reachability, covered caves, flyable cells|MapValidator: Erreichbarkeit, verdeckte Höhlen, Flugzellen
+Run MapValidator and mark failing tiles on the map|MapValidator ausführen und fehlerhafte Kacheln markieren
 Save|Speichern
 Save and start at this pad (god mode)|Speichern und an diesem Startpunkt beginnen (God-Modus)
 Save and start with the machine at the view center (god mode)|Save and start with the machine at the view center (god mode)

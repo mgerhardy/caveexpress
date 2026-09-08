@@ -93,6 +93,16 @@ bool cavePlatformIsConnected (const std::vector<MapTileDefinition>& tiles, int s
 	return false;
 }
 
+void addMarker (std::vector<MapValidationMarker>& markers, int x, int y, MapValidationKind kind, const char* reason)
+{
+	MapValidationMarker marker;
+	marker.x = x;
+	marker.y = y;
+	marker.kind = kind;
+	marker.reason = reason;
+	markers.push_back(marker);
+}
+
 bool tileOccupiesCell (const SpriteType& type)
 {
 	return !SpriteTypes::isBackgroundOverlay(type) && !SpriteTypes::isCaveSign(type);
@@ -108,7 +118,7 @@ bool tileConflictsWithCave (const SpriteType& type)
 
 void countCavePlacement (const std::vector<MapTileDefinition>& tiles,
 		const std::vector<CaveTileDefinition>& caves, int& overlappingTiles, int& missingPlatform,
-		int& missingConnectedGround)
+		int& missingConnectedGround, std::vector<MapValidationMarker>* markers)
 {
 	overlappingTiles = 0;
 	missingPlatform = 0;
@@ -123,12 +133,24 @@ void countCavePlacement (const std::vector<MapTileDefinition>& tiles,
 			if (tileCoversCell(tile, cx, cy) && tileConflictsWithCave(tile.spriteDef->type))
 				overlap = true;
 		}
-		if (overlap)
+		if (overlap) {
 			++overlappingTiles;
-		if (!cellHasCavePlatform(tiles, cx, cy + 1))
+			if (markers)
+				addMarker(*markers, cx, cy, MapValidationKind::Cave, "cave overlaps another tile");
+		}
+		if (!cellHasCavePlatform(tiles, cx, cy + 1)) {
 			++missingPlatform;
-		else if (!cavePlatformIsConnected(tiles, cx, cy + 1))
+			if (markers) {
+				addMarker(*markers, cx, cy, MapValidationKind::Cave, "cave has no ground, ledge, or bridge below");
+				addMarker(*markers, cx, cy + 1, MapValidationKind::Cave, "cave needs ground, ledge, or bridge here");
+			}
+		} else if (!cavePlatformIsConnected(tiles, cx, cy + 1)) {
 			++missingConnectedGround;
+			if (markers) {
+				addMarker(*markers, cx, cy, MapValidationKind::Cave, "cave has no connected ground, ledge, or bridge");
+				addMarker(*markers, cx, cy + 1, MapValidationKind::Cave, "isolated ground - connect another ground tile");
+			}
+		}
 	}
 }
 
@@ -170,7 +192,8 @@ void addCoveredCells (std::vector<uint8_t>& counts, int width, int height, const
 	}
 }
 
-int countOccupyingOverlaps (int width, int height, const std::vector<MapTileDefinition>& tiles)
+int countOccupyingOverlaps (int width, int height, const std::vector<MapTileDefinition>& tiles,
+		std::vector<MapValidationMarker>* markers)
 {
 	if (width <= 0 || height <= 0)
 		return 0;
@@ -186,15 +209,20 @@ int countOccupyingOverlaps (int width, int height, const std::vector<MapTileDefi
 				tile.angle);
 	}
 	int overlaps = 0;
-	for (uint8_t c : counts) {
-		if (c > 1)
+	for (int y = 0; y < height; ++y) {
+		for (int x = 0; x < width; ++x) {
+			if (counts[x + y * width] <= 1)
+				continue;
 			++overlaps;
+			if (markers)
+				addMarker(*markers, x, y, MapValidationKind::Occupancy, "overlapping occupying tiles");
+		}
 	}
 	return overlaps;
 }
 
 int countEmptyCells (int width, int height, const std::vector<MapTileDefinition>& tiles,
-		const std::vector<CaveTileDefinition>& caves)
+		const std::vector<CaveTileDefinition>& caves, std::vector<MapValidationMarker>* markers)
 {
 	if (width <= 0 || height <= 0)
 		return 0;
@@ -208,9 +236,14 @@ int countEmptyCells (int width, int height, const std::vector<MapTileDefinition>
 	for (const CaveTileDefinition& cave : caves)
 		markCoveredCells(filled, width, height, cave.spriteDef, static_cast<int>(cave.x), static_cast<int>(cave.y));
 	int empty = 0;
-	for (uint8_t cell : filled) {
-		if (!cell)
+	for (int y = 0; y < height; ++y) {
+		for (int x = 0; x < width; ++x) {
+			if (filled[x + y * width])
+				continue;
 			++empty;
+			if (markers)
+				addMarker(*markers, x, y, MapValidationKind::Occupancy, "empty cell");
+		}
 	}
 	return empty;
 }
@@ -445,11 +478,13 @@ MapMetrics MapValidator::evaluate (int width, int height,
 		if (!grid.inBounds(c.first, c.second))
 			continue;
 		// Bridges are walkable overlays; they do not bury a cave the way a rock tile does.
-		if (grid.kind[grid.idx(c.first, c.second)] == CellKind::Collider)
+		if (grid.kind[grid.idx(c.first, c.second)] == CellKind::Collider) {
 			++m.cavesCoveredBySolid;
+			addMarker(m.markers, c.first, c.second, MapValidationKind::Cave, "cave covered by solid");
+		}
 	}
 	countCavePlacement(tiles, caves, m.cavesOverlappingTiles, m.cavesMissingPlatform,
-			m.cavesMissingConnectedGround);
+			m.cavesMissingConnectedGround, &m.markers);
 
 	for (const EmitterDefinition& e : emitters) {
 		if (!e.type)
@@ -487,6 +522,10 @@ MapMetrics MapValidator::evaluate (int width, int height,
 	}
 	if (startX < 0) {
 		m.failureReason = "no flyable start";
+		if (!starts.empty()) {
+			addMarker(m.markers, string::toInt(starts[0]._x), string::toInt(starts[0]._y),
+					MapValidationKind::Reachability, "no flyable start");
+		}
 		return m;
 	}
 
@@ -579,6 +618,8 @@ MapMetrics MapValidator::evaluate (int width, int height,
 	for (const auto& c : cavePositions) {
 		if (poiReachable(c.first, c.second))
 			++m.cavesReachable;
+		else
+			addMarker(m.markers, c.first, c.second, MapValidationKind::Reachability, "unreachable cave");
 	}
 	for (const auto& t : packageTargets) {
 		int adx = 0;
@@ -589,6 +630,8 @@ MapMetrics MapValidator::evaluate (int width, int height,
 		if ((grid.inBounds(ax, ay) && grid.flyable(ax, ay) && reached[grid.idx(ax, ay)])
 				|| poiReachable(t.x, t.y) || packagePipeReachable(t.x, t.y, nullptr))
 			++m.packageTargetsReachable;
+		else
+			addMarker(m.markers, t.x, t.y, MapValidationKind::Reachability, "unreachable package target");
 	}
 
 	// Package emitters reach same component as some target delivery cell
@@ -605,6 +648,7 @@ MapMetrics MapValidator::evaluate (int width, int height,
 			targetAir[grid.idx(t.x, t.y)] = 1;
 		packagePipeReachable(t.x, t.y, &targetAir);
 	}
+	std::vector<std::pair<int, int>> packagesBlockedFromTarget;
 	for (const auto& p : packageEmitters) {
 		bool ok = false;
 		// Packages rest near a surface - probe the cell and flyable neighbors for shared airspace with targets.
@@ -635,9 +679,16 @@ MapMetrics MapValidator::evaluate (int width, int height,
 		}
 		if (ok)
 			++m.packagesReachableToTarget;
+		else
+			packagesBlockedFromTarget.emplace_back(p);
 	}
 	if (packageEmitters.empty() && !packageTargets.empty() && m.packageTargetsReachable > 0)
 		m.packagesReachableToTarget = 1;
+	if (m.packageEmitterCount > 0 && m.packageTargetCount > 0 && m.packagesReachableToTarget == 0) {
+		for (const auto& p : packagesBlockedFromTarget)
+			addMarker(m.markers, p.first, p.second, MapValidationKind::Reachability,
+					"package cannot reach target airspace");
+	}
 
 	// Soft metrics
 	for (int y = 1; y < height; ++y) {
@@ -1067,7 +1118,7 @@ MapWinCondition MapValidator::checkWinConditions (const IMap::SettingsMap& setti
 	int overlappingTiles = 0;
 	int missingPlatform = 0;
 	int missingConnectedGround = 0;
-	countCavePlacement(tiles, caves, overlappingTiles, missingPlatform, missingConnectedGround);
+	countCavePlacement(tiles, caves, overlappingTiles, missingPlatform, missingConnectedGround, &result.markers);
 	if (overlappingTiles > 0)
 		result.issues.emplace_back("cave overlaps another tile - remove the existing tile at the cave cell");
 	if (missingPlatform > 0)
@@ -1078,12 +1129,12 @@ MapWinCondition MapValidator::checkWinConditions (const IMap::SettingsMap& setti
 	const int width = string::toInt(settingValue(settings, msn::WIDTH, "0"));
 	const int height = string::toInt(settingValue(settings, msn::HEIGHT, "0"));
 	if (width > 0 && height > 0) {
-		const int occupyingOverlaps = countOccupyingOverlaps(width, height, tiles);
+		const int occupyingOverlaps = countOccupyingOverlaps(width, height, tiles, &result.markers);
 		if (occupyingOverlaps > 0)
 			result.issues.emplace_back(string::format(
 					"%d cells have overlapping occupying tiles (e.g. a 1x2 waterfall covering another solid)",
 					occupyingOverlaps));
-		const int emptyCells = countEmptyCells(width, height, tiles, caves);
+		const int emptyCells = countEmptyCells(width, height, tiles, caves, &result.markers);
 		if (emptyCells > 0)
 			result.issues.emplace_back(string::format("%d empty cells - every cell must have a tile", emptyCells));
 	}

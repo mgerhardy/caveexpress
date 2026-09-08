@@ -10,6 +10,21 @@
 
 namespace caveexpress {
 
+enum class MapValidationKind : uint8_t {
+	Cave = 0,
+	Reachability,
+	Occupancy,
+	Other
+};
+
+/** One map cell that caused a validator / win-condition failure. */
+struct MapValidationMarker {
+	int x = 0;
+	int y = 0;
+	MapValidationKind kind = MapValidationKind::Other;
+	const char* reason = "";
+};
+
 struct MapMetrics {
 	bool valid = false;
 
@@ -65,6 +80,7 @@ struct MapMetrics {
 
 	float totalScore = 0.0f;
 	std::string failureReason;
+	std::vector<MapValidationMarker> markers;
 };
 
 /**
@@ -78,6 +94,7 @@ struct MapMetrics {
 struct MapWinCondition {
 	bool winnable = true;
 	std::vector<std::string> issues;
+	std::vector<MapValidationMarker> markers;
 };
 
 /**

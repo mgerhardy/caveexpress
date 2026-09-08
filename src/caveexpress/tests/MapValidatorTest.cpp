@@ -60,6 +60,17 @@ protected:
 			tiles.emplace_back(static_cast<gridCoord>(x), static_cast<gridCoord>(y), def, angle);
 	}
 
+	static bool hasMarker (const std::vector<MapValidationMarker>& markers, int x, int y, const char* needle)
+	{
+		for (const MapValidationMarker& marker : markers) {
+			if (marker.x != x || marker.y != y || marker.reason == nullptr)
+				continue;
+			if (std::string(marker.reason).find(needle) != std::string::npos)
+				return true;
+		}
+		return false;
+	}
+
 	/** Open flyable map with rock border; start at (1,1). */
 	void fillOpenBorder (std::vector<MapTileDefinition>& tiles, int w, int h) const
 	{
@@ -526,6 +537,8 @@ TEST_F(MapValidatorTest, testCaveIsolatedGroundFailsConnectedCheck)
 	EXPECT_GT(m.cavesMissingConnectedGround, 0);
 	EXPECT_FALSE(m.valid);
 	EXPECT_EQ("cave has no connected ground, ledge, or bridge", m.failureReason);
+	EXPECT_TRUE(hasMarker(m.markers, 2, 4, "connected ground")) << m.failureReason;
+	EXPECT_TRUE(hasMarker(m.markers, 2, 5, "isolated ground"));
 }
 
 TEST_F(MapValidatorTest, testDesert03PyramidCavesHaveConnectedGround)

@@ -75,6 +75,46 @@ void UICaveExpressMapEditorWindow::renderCanvasOverlay (ImDrawList* drawList, fl
 		drawList->AddCircleFilled(ImVec2(bx, by), 4.0f, col);
 	};
 
+	const std::vector<MapValidationMarker>& markers = doc.getValidationMarkers();
+	if (!markers.empty()) {
+		auto markerColor = [] (MapValidationKind kind, bool border) -> ImU32 {
+			switch (kind) {
+			case MapValidationKind::Cave:
+				return border ? IM_COL32(255, 160, 40, 255) : IM_COL32(255, 150, 40, 90);
+			case MapValidationKind::Reachability:
+				return border ? IM_COL32(210, 80, 255, 255) : IM_COL32(180, 70, 230, 90);
+			case MapValidationKind::Occupancy:
+				return border ? IM_COL32(255, 220, 40, 255) : IM_COL32(255, 210, 40, 80);
+			default:
+				return border ? IM_COL32(255, 90, 90, 255) : IM_COL32(255, 80, 80, 90);
+			}
+		};
+		const ImVec2 mouse = ImGui::GetIO().MousePos;
+		const int hoverX = static_cast<int>(std::floor((mouse.x - originX + _panX) / tileW));
+		const int hoverY = static_cast<int>(std::floor((mouse.y - originY + _panY) / tileH));
+		std::vector<const char*> hoverReasons;
+		for (const MapValidationMarker& marker : markers) {
+			const float x0 = originX + static_cast<float>(marker.x) * tileW - _panX;
+			const float y0 = originY + static_cast<float>(marker.y) * tileH - _panY;
+			const float x1 = x0 + tileW;
+			const float y1 = y0 + tileH;
+			drawList->AddRectFilled(ImVec2(x0, y0), ImVec2(x1, y1), markerColor(marker.kind, false));
+			drawList->AddRect(ImVec2(x0, y0), ImVec2(x1, y1), markerColor(marker.kind, true), 0.0f, 0, 2.0f);
+			drawList->AddLine(ImVec2(x0 + 3.0f, y0 + 3.0f), ImVec2(x1 - 3.0f, y1 - 3.0f), markerColor(marker.kind, true), 2.0f);
+			drawList->AddLine(ImVec2(x1 - 3.0f, y0 + 3.0f), ImVec2(x0 + 3.0f, y1 - 3.0f), markerColor(marker.kind, true), 2.0f);
+			if (marker.x == hoverX && marker.y == hoverY && marker.reason && marker.reason[0] != '\0')
+				hoverReasons.push_back(marker.reason);
+		}
+		if (!hoverReasons.empty() && _canvasHovered) {
+			ImGui::BeginTooltip();
+			ImGui::TextUnformatted(tr("Layout").c_str());
+			for (const char* reason : hoverReasons) {
+				ImGui::BulletText("%s", tr(reason).c_str());
+			}
+			ImGui::EndTooltip();
+		}
+	}
+
 	if (_showAllTriggerLinks) {
 		for (const MapEditorTileItem& item : doc.getTiles()) {
 			if (!item.def || item.linkId.empty() || !SpriteTypes::isPressurePlate(item.def->type))
@@ -397,7 +437,7 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 			_layoutChecked = true;
 		}
 		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("%s", tr("Run MapValidator: reachability, covered caves, flyable cells").c_str());
+			ImGui::SetTooltip("%s", tr("Run MapValidator and mark failing tiles on the map").c_str());
 		if (_layoutChecked) {
 			if (_layoutMetrics.valid)
 				ImGui::TextColored(ImVec4(0.4f, 0.85f, 0.4f, 1.0f), "%s", tr("Layout ok").c_str());
@@ -421,6 +461,8 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 			if (_layoutMetrics.cavesMissingConnectedGround > 0)
 				ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %i", tr("Caves without connected ground").c_str(),
 						_layoutMetrics.cavesMissingConnectedGround);
+			if (!doc.getValidationMarkers().empty())
+				ImGui::TextWrapped("%s", tr("Hover marked tiles for the reason").c_str());
 		}
 	}
 	if (ImGui::BeginPopupModal((tr("Theme remap") + "###themeremap").c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {

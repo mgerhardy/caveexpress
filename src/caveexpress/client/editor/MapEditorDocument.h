@@ -22,6 +22,7 @@ private:
 	bool _pickGateTarget = false;
 	gridCoord _linkPlateX = 0.0f;
 	gridCoord _linkPlateY = 0.0f;
+	mutable std::vector<MapValidationMarker> _validationMarkers;
 
 	bool placeCave (const SpriteDefPtr& def, const EntityType* entityType, gridCoord gridX, gridCoord gridY,
 			MapEditorLayer layer, int delay, bool overwrite);
@@ -46,6 +47,7 @@ protected:
 	bool shouldSaveEmitter (const MapEditorTileItem& tile) const override;
 	void doClear () override;
 	void onAfterStateRestored () override;
+	void onEditorCellsCleared (int x0, int y0, int x1, int y1) override;
 	void onContentsShifted (int dx, int dy) override;
 	bool placeBrushItem (bool overwrite) override;
 	void prepareBrushPlacement (MapEditorTileItem& item) const override;
@@ -74,6 +76,7 @@ public:
 	void makePlayable ();
 	void collectGameValidationIssues (std::vector<std::string>& out) const override;
 	MapMetrics evaluateLayout () const;
+	const std::vector<MapValidationMarker>& getValidationMarkers () const { return _validationMarkers; }
 	bool addToCampaign (const std::string& campaignFile);
 	bool removeFromCampaign (const std::string& campaignFile);
 	bool createCampaign (const std::string& campaignFile, const std::string& campaignId, const std::string& text);

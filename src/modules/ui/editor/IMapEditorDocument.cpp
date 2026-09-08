@@ -15,6 +15,7 @@
 #include <cstddef>
 #include <memory>
 #include <queue>
+#include <vector>
 
 const int IMapEditorDocument::MIN_WIDTH = 6;
 const int IMapEditorDocument::MIN_HEIGHT = 4;
@@ -459,6 +460,24 @@ bool IMapEditorDocument::isOverlapping (const MapEditorTileItem& item1, const Ma
 	return isOverlapping(x, y, size.x - 2.0f * EPSILON, size.y - 2.0f * EPSILON, item2);
 }
 
+void IMapEditorDocument::notifyItemRemoved (const MapEditorTileItem& item)
+{
+	if (!item.def) {
+		const int x = static_cast<int>(std::floor(item.gridX));
+		const int y = static_cast<int>(std::floor(item.gridY));
+		onEditorCellsCleared(x, y, x, y);
+		return;
+	}
+	const vec2 size = item.getSize(false);
+	const gridCoord ox = item.gridX + item.getX(false);
+	const gridCoord oy = item.gridY + item.getY(false);
+	const int x0 = static_cast<int>(std::floor(ox + EPSILON));
+	const int y0 = static_cast<int>(std::floor(oy + EPSILON));
+	const int x1 = static_cast<int>(std::floor(ox + size.x - EPSILON));
+	const int y1 = static_cast<int>(std::floor(oy + size.y - EPSILON));
+	onEditorCellsCleared(x0, y0, std::max(x0, x1), std::max(y0, y1));
+}
+
 bool IMapEditorDocument::checkTileHit (const MapEditorTileItem& tileItem, bool remove)
 {
 	for (auto item = _map.begin(); item != _map.end();) {
@@ -467,9 +486,11 @@ bool IMapEditorDocument::checkTileHit (const MapEditorTileItem& tileItem, bool r
 			continue;
 		}
 		if (remove) {
+			const MapEditorTileItem removed = *item;
 			if (_highlightItem == &(*item))
 				_highlightItem = nullptr;
 			item = _map.erase(item);
+			notifyItemRemoved(removed);
 			continue;
 		}
 		return true;
@@ -497,7 +518,9 @@ void IMapEditorDocument::buryEmittersUnder (const MapEditorTileItem& solid)
 		}
 		if (_highlightItem == &(*item))
 			_highlightItem = nullptr;
+		const MapEditorTileItem removed = *item;
 		item = _map.erase(item);
+		notifyItemRemoved(removed);
 	}
 }
 
@@ -582,7 +605,10 @@ bool IMapEditorDocument::eraseAtSelection (bool recordUndo)
 		const std::string yStr = string::toString(_selectedGridY);
 		for (auto i = _startPositions.begin(); i != _startPositions.end(); ++i) {
 			if (i->_x == xStr && i->_y == yStr) {
+				const int sx = static_cast<int>(std::floor(_selectedGridX));
+				const int sy = static_cast<int>(std::floor(_selectedGridY));
 				_startPositions.erase(i);
+				onEditorCellsCleared(sx, sy, sx, sy);
 				return true;
 			}
 		}
@@ -594,7 +620,9 @@ bool IMapEditorDocument::eraseAtSelection (bool recordUndo)
 	for (auto i = _map.begin(); i != _map.end(); ++i) {
 		if (&(*i) != _highlightItem)
 			continue;
+		const MapEditorTileItem removed = *i;
 		_map.erase(i);
+		notifyItemRemoved(removed);
 		_highlightItem = getTileAtCursor();
 		if (_highlightItem == nullptr)
 			_highlightItem = getSelectedTile();
@@ -664,7 +692,9 @@ void IMapEditorDocument::deleteSelection ()
 				++i;
 				continue;
 			}
+			const MapEditorTileItem removed = *i;
 			i = _map.erase(i);
+			notifyItemRemoved(removed);
 		}
 		return;
 	}
@@ -704,9 +734,16 @@ bool IMapEditorDocument::removeTilesWithSprite (const std::string& spriteId)
 		return false;
 	MapEditorUndo();
 	_highlightItem = nullptr;
+	std::vector<MapEditorTileItem> gone;
+	for (const MapEditorTileItem& item : _map) {
+		if (item.entityType == nullptr && item.def && item.def->id == spriteId)
+			gone.push_back(item);
+	}
 	_map.remove_if([&] (const MapEditorTileItem& item) {
 		return item.entityType == nullptr && item.def && item.def->id == spriteId;
 	});
+	for (const MapEditorTileItem& item : gone)
+		notifyItemRemoved(item);
 	setHighlightFromSelection();
 	return true;
 }
@@ -717,11 +754,24 @@ bool IMapEditorDocument::removeEntitiesOfType (const EntityType& type)
 		return false;
 	MapEditorUndo();
 	_highlightItem = nullptr;
-	if (isPlayerType(type))
+	if (isPlayerType(type)) {
+		for (const IMap::StartPosition& pos : _startPositions) {
+			const int sx = static_cast<int>(std::floor(string::toFloat(pos._x)));
+			const int sy = static_cast<int>(std::floor(string::toFloat(pos._y)));
+			onEditorCellsCleared(sx, sy, sx, sy);
+		}
 		_startPositions.clear();
+	}
+	std::vector<MapEditorTileItem> gone;
+	for (const MapEditorTileItem& item : _map) {
+		if (item.entityType != nullptr && item.entityType->name == type.name)
+			gone.push_back(item);
+	}
 	_map.remove_if([&] (const MapEditorTileItem& item) {
 		return item.entityType != nullptr && item.entityType->name == type.name;
 	});
+	for (const MapEditorTileItem& item : gone)
+		notifyItemRemoved(item);
 	setHighlightFromSelection();
 	return true;
 }
