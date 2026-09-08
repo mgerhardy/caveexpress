@@ -42,12 +42,10 @@ protected:
 	inline void checkError (const char *file, unsigned int line, const char *function) const
 	{
 		const char *error = SDL_GetError();
-		if (*error != '\0') {
-			Log::error(LOG_GFX, "%s (%s:%i => %s)", error, file, line, function);
-			SDL_ClearError();
-		} else {
-			Log::error(LOG_GFX, "unknown error (%s:%i => %s)", file, line, function);
-		}
+		if (*error == '\0')
+			return;
+		Log::error(LOG_GFX, "%s (%s:%i => %s)", error, file, line, function);
+		SDL_ClearError();
 	}
 	#define sdlCheckError() /*OpenGLStateHandlerCheckError(__FILE__, __LINE__, __PRETTY_FUNCTION__);*/checkError(__FILE__, __LINE__, __PRETTY_FUNCTION__)
 

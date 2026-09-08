@@ -67,7 +67,9 @@ Delete polygon|Delete polygon
 Delete: remove selection of the active tab|Delete: remove selection of the active tab
 Delete vertex|Delete vertex
 Deliver packages to the shredders|Deliver packages to the shredders
+Deliver the packages before the water fills the cave|Deliver the packages before the water fills the cave
 Deliver the packages without touching lava|Deliver the packages without touching lava
+Deliver the packages without touching the fish|Deliver the packages without touching the fish
 Description|Description
 Desert|Desert
 Disconnect|Disconnect
@@ -118,6 +120,7 @@ Filter|Filter
 Find|Find
 Find next|Find next
 First flying/fish spawn delay|First flying/fish spawn delay
+Fish|Fish
 Fit|Fit
 Flyable reachable|Flyable reachable
 Flying dino when hit may drop an egg|Flying dino when hit may drop an egg
@@ -132,7 +135,7 @@ Game mode|Game mode
 Gameplay|Gameplay
 Gate|Gate
 Gather fruits for new life|Gather fruits for new life
-Generate a random map with the current seed.|Generate a random map with the current seed.
+Generate a random layout. Lua (intro, onMapLoaded, onUpdate) is kept.|Generate a random layout. Lua (intro, onMapLoaded, onUpdate) is kept.
 Geyser|Geyser
 Geyser initial delay|Geyser initial delay
 Go|Go
@@ -308,11 +311,13 @@ Spawn NPC|Spawn NPC
 Sprite|Sprite
 Start|Start
 Start positions|Start positions
+Stay out of the water - fish live there|Stay out of the water - fish live there
 Stone|Stone
 Targets reachable|Targets reachable
 Textures|Textures
 The amount of packages to deliver|The amount of packages to deliver
 The egg makes you invulnerable|The egg makes you invulnerable
+The fish will crash your plane|The fish will crash your plane
 The gate blocks the way|The gate blocks the way
 The gate closes when nothing is on the plate|The gate closes when nothing is on the plate
 The geyser will do the work for you|The geyser will do the work for you
@@ -322,6 +327,7 @@ Themed tiles left unchanged|Themed tiles left unchanged
 Theme remap|Theme remap
 These checks would fail CampaignTest / play:|These checks would fail CampaignTest / play:
 The target cave is shown when they start walking|The target cave is shown when they start walking
+The water is rising - do not wait|The water is rising - do not wait
 This is the goal in every map|This is the goal in every map
 Tile angle|Tile angle
 Tile definition|Tile definition
@@ -380,4 +386,5 @@ X|X
 Y|Y
 Yes|Yes
 You have unsaved changes. Continue?|You have unsaved changes. Continue?
+You lose if the water reaches the top|You lose if the water reaches the top
 You won!|You won!

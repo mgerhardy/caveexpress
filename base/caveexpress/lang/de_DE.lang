@@ -67,7 +67,9 @@ Delete polygon|Delete polygon
 Delete: remove selection of the active tab|Entf: Auswahl der aktiven Registerkarte entfernen
 Delete vertex|Delete vertex
 Deliver packages to the shredders|Transportiere Pakete zu den Schreddern
+Deliver the packages before the water fills the cave|Deliver the packages before the water fills the cave
 Deliver the packages without touching lava|Deliver the packages without touching lava
+Deliver the packages without touching the fish|Deliver the packages without touching the fish
 Description|Beschreibung
 Desert|Wüste
 Disconnect|Disconnect
@@ -118,6 +120,7 @@ Filter|Filter
 Find|Find
 Find next|Find next
 First flying/fish spawn delay|First flying/fish spawn delay
+Fish|Fish
 Fit|Einpassen
 Flyable reachable|Flugraum erreichbar
 Flying dino when hit may drop an egg|Flying dino when hit may drop an egg
@@ -132,7 +135,7 @@ Game mode|Modus
 Gameplay|Spielregeln
 Gate|Tor
 Gather fruits for new life|Gather fruits for new life
-Generate a random map with the current seed.|Generate a random map with the current seed.
+Generate a random layout. Lua (intro, onMapLoaded, onUpdate) is kept.|Generate a random layout. Lua (intro, onMapLoaded, onUpdate) is kept.
 Geyser|Geyser
 Geyser initial delay|Geyser initial delay
 Go|Gehe zu
@@ -308,11 +311,13 @@ Spawn NPC|Spawn NPC
 Sprite|Sprite
 Start|Start
 Start positions|Start positions
+Stay out of the water - fish live there|Stay out of the water - fish live there
 Stone|Stein
 Targets reachable|Ziele erreichbar
 Textures|Texturen
 The amount of packages to deliver|Anzahl der zu liefernden Pakete
 The egg makes you invulnerable|The egg makes you invulnerable
+The fish will crash your plane|The fish will crash your plane
 The gate blocks the way|Das Tor versperrt den Weg
 The gate closes when nothing is on the plate|Das Tor schließt sich, wenn nichts auf der Platte liegt
 The geyser will do the work for you|Der Geisir erledigt die Arbeit
@@ -322,6 +327,7 @@ Themed tiles left unchanged|Themed tiles left unchanged
 Theme remap|Theme remap
 These checks would fail CampaignTest / play:|These checks would fail CampaignTest / play:
 The target cave is shown when they start walking|Die Zielhöhle wird angezeigt, wenn sie loslaufen
+The water is rising - do not wait|The water is rising - do not wait
 This is the goal in every map|Dies ist das Ziel jedes Levels
 Tile angle|Kachelwinkel
 Tile definition|Kacheldefinition
@@ -380,4 +386,5 @@ X|X
 Y|Y
 Yes|Ja
 You have unsaved changes. Continue?|Es gibt ungespeicherte Änderungen. Fortfahren?
+You lose if the water reaches the top|You lose if the water reaches the top
 You won!|Gewonnen

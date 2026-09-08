@@ -919,27 +919,27 @@ void SDLFrontend::initRenderer ()
 void SDLFrontend::setGLAttributes ()
 {
 	SDL_ClearError();
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
-	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 0);
-	sdlCheckError();
+	if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) == -1)
+		sdlCheckError();
+	if (SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0) == -1)
+		sdlCheckError();
+	if (SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 0) == -1)
+		sdlCheckError();
 	const int r = Config.getConfigVar("red")->getIntValue();
 	const int g = Config.getConfigVar("green")->getIntValue();
 	const int b = Config.getConfigVar("blue")->getIntValue();
 	Log::info(LOG_GFX, "r: %i, g: %i, b: %i", r, g, b);
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, r);
-	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, g);
-	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, b);
-	sdlCheckError();
+	if (SDL_GL_SetAttribute(SDL_GL_RED_SIZE, r) == -1)
+		sdlCheckError();
+	if (SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, g) == -1)
+		sdlCheckError();
+	if (SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, b) == -1)
+		sdlCheckError();
 #ifdef __IPHONEOS__
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	sdlCheckError();
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-	sdlCheckError();
+	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3) == -1)
+		sdlCheckError();
+	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2) == -1)
+		sdlCheckError();
 #endif
 }
 
