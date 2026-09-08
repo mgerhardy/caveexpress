@@ -188,6 +188,8 @@ std::string collapseExcessBlankLines (const std::string& input)
 	out.reserve(input.size());
 	int newlines = 0;
 	for (char c : input) {
+		if (c == '\r')
+			continue;
 		if (c == '\n') {
 			if (++newlines <= 2)
 				out.push_back(c);
@@ -196,7 +198,15 @@ std::string collapseExcessBlankLines (const std::string& input)
 			out.push_back(c);
 		}
 	}
-	return string::trim(out);
+	// string::trim only strips spaces/tabs. Leading/trailing newlines must
+	// go too, or each save frames getName with end\\n\\n plus leftover blanks.
+	size_t start = 0;
+	while (start < out.size() && (out[start] == '\n' || out[start] == ' ' || out[start] == '\t'))
+		++start;
+	size_t end = out.size();
+	while (end > start && (out[end - 1] == '\n' || out[end - 1] == ' ' || out[end - 1] == '\t'))
+		--end;
+	return out.substr(start, end - start);
 }
 
 }
@@ -477,10 +487,16 @@ bool LUAMapContext::writeMapFile (const std::string& path) const
 	file->appendString("end\n\n");
 
 	if (!_preservedLogic.empty()) {
-		file->appendString(_preservedLogic.c_str());
-		if (_preservedLogic.back() != '\n')
+		const std::string logic = collapseExcessBlankLines(_preservedLogic);
+		if (!logic.empty()) {
+			file->appendString(logic.c_str());
+			if (logic.back() != '\n')
+				file->appendString("\n");
 			file->appendString("\n");
-		file->appendString("\n");
+		} else {
+			file->appendString("function onMapLoaded()\n");
+			file->appendString("end\n\n");
+		}
 	} else {
 		// New / logic-free maps keep a trivial onMapLoaded hook for editor compatibility.
 		file->appendString("function onMapLoaded()\n");

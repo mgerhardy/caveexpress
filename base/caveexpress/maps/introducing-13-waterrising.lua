@@ -2,7 +2,6 @@ function getName()
 	return "In13 Water rising"
 end
 
-
 function onMapLoaded()
 end
 
@@ -15,7 +14,6 @@ function intro(help)
 	help:headline(tr("Description"))
 	help:bar(tr("Time bar"), 1, 1, 1, 0.5)
 end
-
 
 function initMap()
 	-- get the current map context
