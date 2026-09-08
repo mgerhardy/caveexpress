@@ -84,6 +84,20 @@ void TextureCache::init (IFrontend *frontend, TextureDefinition& textureDefiniti
 		const TextureDef& t = i->second;
 		create(t.textureName, t.id, t.texcoords, t.trim, t.mirror);
 	}
+
+	int linked = 0;
+	for (TextureDefinitionMap::iterator i = _textureDefs.begin(); i != _textureDefs.end(); ++i) {
+		const std::string& id = i->first;
+		if (string::endsWith(id, "_n"))
+			continue;
+		TextureDefinitionMap::iterator n = _textureDefs.find(id + "_n");
+		if (n == _textureDefs.end())
+			continue;
+		i->second->setNormalMap(n->second);
+		++linked;
+	}
+	if (linked > 0)
+		Log::info(LOG_TEXTURES, "linked %i atlas normal maps", linked);
 }
 
 void TextureCache::shutdown ()

@@ -15,6 +15,9 @@ struct TextureRect {
 	int h;
 };
 
+class Texture;
+typedef std::shared_ptr<Texture> TexturePtr;
+
 class Texture {
 private:
 	int _uploadedWidth;
@@ -27,6 +30,8 @@ private:
 	TextureData *_data;
 	IFrontend *_frontend;
 	TextureDefinitionTrim _trim;
+	TexturePtr _normalMap;
+	bool _hasFileNormal;
 
 public:
 	Texture (const std::string &filename, IFrontend *frontend);
@@ -61,6 +66,11 @@ public:
 	bool isMirror () const;
 	void setRect (int x, int y, int width, int height);
 	const TextureRect& getSourceRect () const;
+
+	void setNormalMap (const TexturePtr& normalMap);
+	void setHasFileNormal (bool hasFileNormal);
+	const TexturePtr& getNormalMap () const;
+	bool hasNormalMap () const;
 };
 
 inline TextureData *Texture::getData () const
@@ -133,4 +143,22 @@ inline bool Texture::isValid () const
 	return _data != nullptr;
 }
 
-typedef std::shared_ptr<Texture> TexturePtr;
+inline void Texture::setNormalMap (const TexturePtr& normalMap)
+{
+	_normalMap = normalMap;
+}
+
+inline const TexturePtr& Texture::getNormalMap () const
+{
+	return _normalMap;
+}
+
+inline void Texture::setHasFileNormal (bool hasFileNormal)
+{
+	_hasFileNormal = hasFileNormal;
+}
+
+inline bool Texture::hasNormalMap () const
+{
+	return _normalMap || _hasFileNormal;
+}

@@ -183,6 +183,10 @@ void Shader::fetchUniforms ()
 		glGetActiveUniform(_program, i, MAX_SHADER_VAR_NAME - 1, &length, &size, &type, name);
 		const int location = glGetUniformLocation(_program, name);
 		_uniforms[name] = location;
+		std::string uname(name);
+		const std::size_t bracket = uname.find('[');
+		if (bracket != std::string::npos && bracket > 0)
+			_uniforms[uname.substr(0, bracket)] = location;
 		Log::debug(LOG_GFX, "uniform %s found at location %i in shader %s", name, location, _name.c_str());
 	}
 }

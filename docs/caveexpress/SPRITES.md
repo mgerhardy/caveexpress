@@ -20,6 +20,14 @@ Regenerate entity atlases after changing PNGs:
 
 See `src/tools/textureatlas/README.md` and the [README tools section](../../README.md#textureatlas).
 
+## Normal maps
+
+Atlas frames named `*_n` (for example `tree-idle-middle-01_n`) are tangent-space normal maps packed next to the color sprite. They are not animation frames. At load time each color frame is linked to `name + "_n"` when that id exists.
+
+The GL renderer samples those normals and lights them from **caves** and **cave windows** whose in-game light is on (NPC home / occupied cave). Only sprites that have a normal map receive this lighting; everything else draws as before. Rock-theme trees and stones already ship with `_n` art. Add a matching `*_n.png` to the entity atlas for any other sprite that should pick up cave light.
+
+A standalone `pics/<name>_n.png` next to `pics/<name>.png` is also loaded when that image is not an atlas frame.
+
 ## `sprites.lua`
 
 Each key is a sprite id used by `map:addTile(...)`, `addTileRuntime(...)`, or an animation name (`player-empty`, `npc-man-idle`).

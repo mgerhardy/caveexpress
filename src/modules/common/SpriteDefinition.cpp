@@ -4,6 +4,7 @@
 #include "common/Log.h"
 #include "common/ExecutionTime.h"
 #include "common/TextureDefinition.h"
+#include "common/String.h"
 
 SpriteDefinition::SpriteDefinition ()
 {
@@ -212,6 +213,8 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 					layerToUse = LAYER_MIDDLE;
 				for (;;) {
 					if (!textureDefinition.exists(spriteFrameName))
+						break;
+					if (string::endsWith(spriteFrameName, "_n"))
 						break;
 
 					def->textures[layerToUse].push_back(SpriteDefFrame(spriteFrameName, 0, true));

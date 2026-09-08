@@ -1,14 +1,17 @@
 #include "AbstractGLFrontend.h"
 #include "textures/TextureCoords.h"
+#include "textures/Texture.h"
 #include "common/Log.h"
 #include "common/System.h"
 #include "common/FileSystem.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <vector>
+#include <algorithm>
 
 AbstractGLFrontend::AbstractGLFrontend (std::shared_ptr<IConsole> console) :
-		SDLFrontend(console), _currentTexture(-1), _currentNormal(-1), _rx(1.0f), _ry(1.0f), _renderTargetTexture(0), _white(0), _alpha(0)
+		SDLFrontend(console), _currentTexture(-1), _currentNormal(-1), _rx(1.0f), _ry(1.0f), _renderTargetTexture(0), _white(0), _alpha(0),
+		_flatNormal(0), _lightCount(0)
 {
 	_context = nullptr;
 	_currentVertexIndex = 0;
@@ -81,7 +84,19 @@ void AbstractGLFrontend::renderImage (Texture* texture, int x, int y, int w, int
 
 	const TextureCoords texCoords(texture);
 	getTrimmed(texture, x, y, w, h);
-	renderTexture(texCoords, x, y, w, h, angle, alpha, texture->getData()->texnum, texture->getData()->normalnum);
+	GLuint normaltexnum = texture->getData()->normalnum;
+	TextureCoords normalCoords(texCoords.texCoords);
+	float lit = 0.0f;
+	if (texture->hasNormalMap()) {
+		lit = 1.0f;
+		const TexturePtr& normalMap = texture->getNormalMap();
+		if (normalMap && normalMap->isValid()) {
+			normalCoords = TextureCoords(normalMap->getSourceRect(), normalMap->getFullWidth(),
+					normalMap->getFullHeight(), texture->isMirror(), false);
+			normaltexnum = normalMap->getData()->texnum;
+		}
+	}
+	renderTexture(texCoords, x, y, w, h, angle, alpha, texture->getData()->texnum, normaltexnum, &normalCoords, lit);
 }
 
 /**
@@ -92,7 +107,7 @@ void AbstractGLFrontend::renderImage (Texture* texture, int x, int y, int w, int
  * |    3
  * 6 -- 5
  */
-void AbstractGLFrontend::renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum)
+void AbstractGLFrontend::renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum, const TextureCoords* normalCoords, float lit)
 {
 	if (x + w < 0 || y + h < 0 || x > getWidth() || y > getHeight()) {
 		return;
@@ -115,51 +130,79 @@ void AbstractGLFrontend::renderTexture(const TextureCoords& texCoords, int x, in
 	vertexBR = transform * vertexBR;
 	vertexBL = transform * vertexBL;
 
-	flushBatch(GL_TRIANGLES, texnum, 6);
-	Batch& batch = _batches[_currentBatch];
-	batch.normaltexnum = normaltexnum;
+	flushBatch(GL_TRIANGLES, texnum, normaltexnum, 6);
+
+	const TextureCoords& nCoords = normalCoords != nullptr ? *normalCoords : texCoords;
 
 	Vertex v(_color);
 	v.c.a = alpha * 255.0f;
+	v.lit = lit;
 
 	v.u = texCoords.texCoords[0];
 	v.v = texCoords.texCoords[1];
+	v.nu = nCoords.texCoords[0];
+	v.nv = nCoords.texCoords[1];
 	v.x = vertexTL.x;
 	v.y = vertexTL.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[2];
 	v.v = texCoords.texCoords[3];
+	v.nu = nCoords.texCoords[2];
+	v.nv = nCoords.texCoords[3];
 	v.x = vertexTR.x;
 	v.y = vertexTR.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[4];
 	v.v = texCoords.texCoords[5];
+	v.nu = nCoords.texCoords[4];
+	v.nv = nCoords.texCoords[5];
 	v.x = vertexBR.x;
 	v.y = vertexBR.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[0];
 	v.v = texCoords.texCoords[1];
+	v.nu = nCoords.texCoords[0];
+	v.nv = nCoords.texCoords[1];
 	v.x = vertexTL.x;
 	v.y = vertexTL.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[4];
 	v.v = texCoords.texCoords[5];
+	v.nu = nCoords.texCoords[4];
+	v.nv = nCoords.texCoords[5];
 	v.x = vertexBR.x;
 	v.y = vertexBR.y;
 	_vertices[_currentVertexIndex++] = v;
 
 	v.u = texCoords.texCoords[6];
 	v.v = texCoords.texCoords[7];
+	v.nu = nCoords.texCoords[6];
+	v.nv = nCoords.texCoords[7];
 	v.x = vertexBL.x;
 	v.y = vertexBL.y;
 	_vertices[_currentVertexIndex++] = v;
 }
 
-void AbstractGLFrontend::flushBatch (int type, GLuint texnum, int vertexAmount)
+GLuint AbstractGLFrontend::dummyNormal () const
+{
+	return _flatNormal != 0 ? _flatNormal : _alpha;
+}
+
+void AbstractGLFrontend::setRenderLights (const RenderLight* lights, int count)
+{
+	_lightCount = 0;
+	if (lights == nullptr || count <= 0)
+		return;
+	_lightCount = std::min(count, MAX_RENDER_LIGHTS);
+	for (int i = 0; i < _lightCount; ++i)
+		_lights[i] = lights[i];
+}
+
+void AbstractGLFrontend::flushBatch (int type, GLuint texnum, GLuint normaltexnum, int vertexAmount)
 {
 	if (_currentVertexIndex + vertexAmount >= MAXNUMVERTICES)
 		renderBatches();
@@ -167,13 +210,14 @@ void AbstractGLFrontend::flushBatch (int type, GLuint texnum, int vertexAmount)
 		renderBatches();
 	SDL_assert_always(vertexAmount < MAXNUMVERTICES);
 	const Batch& b = _batches[_currentBatch];
-	if (b.type == type && b.texnum == texnum) {
+	if (b.type == type && b.texnum == texnum && b.normaltexnum == normaltexnum) {
 		_batches[_currentBatch].vertexCount += vertexAmount;
 		return;
 	}
 	startNewBatch();
 	_batches[_currentBatch].type = type;
 	_batches[_currentBatch].texnum = texnum;
+	_batches[_currentBatch].normaltexnum = normaltexnum;
 	_batches[_currentBatch].vertexCount += vertexAmount;
 }
 
@@ -269,9 +313,7 @@ int AbstractGLFrontend::renderFilledPolygon (int *vx, int *vy, int n, const Colo
 	if (n < 3 || vx == nullptr || vy == nullptr)
 		return -1;
 
-	flushBatch(GL_TRIANGLE_FAN, _white, n);
-	Batch& batch = _batches[_currentBatch];
-	batch.normaltexnum = _alpha;
+	flushBatch(GL_TRIANGLE_FAN, _white, dummyNormal(), n);
 
 	Vertex v(color);
 
@@ -289,9 +331,7 @@ int AbstractGLFrontend::renderPolygon (int *vx, int *vy, int n, const Color& col
 	if (n < 3 || vx == nullptr || vy == nullptr)
 		return -1;
 
-	flushBatch(GL_LINES, _white, n + 1);
-	Batch& batch = _batches[_currentBatch];
-	batch.normaltexnum = _alpha;
+	flushBatch(GL_LINES, _white, dummyNormal(), n + 1);
 
 	Vertex v(color);
 
@@ -326,9 +366,7 @@ void AbstractGLFrontend::renderFilledRect (int x, int y, int w, int h, const Col
 	const glm::vec4 pos1 = mat * glm::vec4(x, y, 0.0f, 1.0f);
 	const glm::vec4 pos2 = mat * glm::vec4(x + w, y + h, 0.0f, 1.0f);
 
-	flushBatch(GL_TRIANGLES, _white, 6);
-	Batch& batch = _batches[_currentBatch];
-	batch.normaltexnum = _alpha;
+	flushBatch(GL_TRIANGLES, _white, dummyNormal(), 6);
 
 	Vertex v(color);
 
@@ -367,9 +405,7 @@ void AbstractGLFrontend::renderRect (int x, int y, int w, int h, const Color& co
 
 void AbstractGLFrontend::renderLine (int x1, int y1, int x2, int y2, const Color& color)
 {
-	flushBatch(GL_LINES, _white, 2);
-	Batch& batch = _batches[_currentBatch];
-	batch.normaltexnum = _alpha;
+	flushBatch(GL_LINES, _white, dummyNormal(), 2);
 
 	Vertex v(color);
 	v.x = x1 * _rx;
@@ -412,9 +448,7 @@ void AbstractGLFrontend::renderLineWithTexture (int x, int y, int x2, int y2, Te
 	vertexBR = transform * vertexBR;
 	vertexBL = transform * vertexBL;
 
-	flushBatch(GL_TRIANGLES, texture->getData()->texnum, 6);
-	Batch& batch = _batches[_currentBatch];
-	batch.normaltexnum = texture->getData()->normalnum;
+	flushBatch(GL_TRIANGLES, texture->getData()->texnum, texture->getData()->normalnum, 6);
 
 	Vertex v(_color);
 	v.c.a = alpha * 255.0f;
@@ -458,8 +492,12 @@ void AbstractGLFrontend::renderLineWithTexture (int x, int y, int x2, int y2, Te
 
 void AbstractGLFrontend::destroyTexture (TextureData *data)
 {
-	if (data->texnum != _white && data->texnum != _alpha && data->normalnum != _white && data->normalnum != _alpha) {
+	if (data->texnum != _white && data->texnum != _alpha && data->texnum != _flatNormal) {
 		glDeleteTextures(1, &data->texnum);
+		GL_checkError();
+	}
+	if (data->hasFileNormal && data->normalnum != data->texnum && data->normalnum != _white
+			&& data->normalnum != _alpha && data->normalnum != _flatNormal) {
 		glDeleteTextures(1, &data->normalnum);
 		GL_checkError();
 	}
@@ -510,17 +548,16 @@ bool AbstractGLFrontend::loadTexture (Texture *texture, const std::string& filen
 		return false;
 	}
 	TextureData* data = new TextureData();
+	data->hasFileNormal = false;
 	data->texnum = uploadTexture(static_cast<unsigned char*>(textureSurface->pixels), textureSurface->w, textureSurface->h);
-#if 0
+	data->normalnum = dummyNormal();
 	SDL_Surface* normalSurface = loadTextureIntoSurface(filename + "_n");
 	if (normalSurface) {
 		data->normalnum = uploadTexture(static_cast<unsigned char*>(normalSurface->pixels), normalSurface->w, normalSurface->h);
+		data->hasFileNormal = true;
+		texture->setHasFileNormal(true);
 		Log::info(LOG_GFX, "load normal map for: %s", filename.c_str());
 		SDL_FreeSurface(normalSurface);
-	} else
-#endif
-	{
-		data->normalnum = _alpha;
 	}
 	texture->setData(data);
 	texture->setRect(0, 0, textureSurface->w, textureSurface->h);
@@ -757,6 +794,15 @@ void AbstractGLFrontend::initRenderer()
 	unsigned char alpha[16];
 	memset(alpha, 0xff, sizeof(alpha));
 	_alpha = uploadTexture(alpha, 2, 2);
+
+	unsigned char flat[16];
+	for (int i = 0; i < 4; ++i) {
+		flat[i * 4 + 0] = 128;
+		flat[i * 4 + 1] = 128;
+		flat[i * 4 + 2] = 255;
+		flat[i * 4 + 3] = 255;
+	}
+	_flatNormal = uploadTexture(flat, 2, 2);
 
 	for (int i = 0; i < MAX_BATCHES; ++i) {
 		_batches[i] = Batch();

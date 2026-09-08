@@ -10,7 +10,8 @@ struct Vertex {
 		memset((void*)this, 0, sizeof(*this));
 	}
 
-	explicit Vertex(const Color& color) : x(0.0f), y(0.0f), u(0.0f), v(0.0f) {
+	explicit Vertex(const Color& color) {
+		memset((void*)this, 0, sizeof(*this));
 		c.r = color[0] * 255.0f;
 		c.g = color[1] * 255.0f;
 		c.b = color[2] * 255.0f;
@@ -25,11 +26,14 @@ struct Vertex {
 		};
 		uint32_t c;
 	} c;
+	float nu, nv;
+	float lit;
 };
 
 struct TextureData {
 	GLuint texnum;
 	GLuint normalnum;
+	bool hasFileNormal;
 };
 
 struct RenderTarget {
@@ -79,10 +83,15 @@ protected:
 	Batch _batches[MAX_BATCHES];
 	int _currentBatch;
 
+	TexNum _flatNormal;
+	RenderLight _lights[MAX_RENDER_LIGHTS];
+	int _lightCount;
+
 	TexNum uploadTexture(const unsigned char* pixels, int w, int h) const;
-	void flushBatch (int type, GLuint texnum, int vertexAmount);
+	GLuint dummyNormal () const;
+	void flushBatch (int type, GLuint texnum, GLuint normaltexnum, int vertexAmount);
 	void startNewBatch ();
-	void renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum);
+	void renderTexture(const TextureCoords& texCoords, int x, int y, int w, int h, int16_t angle, float alpha, GLuint texnum, GLuint normaltexnum, const TextureCoords* normalCoords = nullptr, float lit = 0.0f);
 	SDL_Surface* loadTextureIntoSurface(const std::string& file);
 	void renderBatchBuffers();
 	virtual void renderBatches () {}
@@ -102,6 +111,7 @@ public:
 	void destroyTexture (TextureData *data) override;
 	void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha = 1.0f) override;
 	void bindTexture (Texture* texture, int textureUnit) override;
+	void setRenderLights (const RenderLight* lights, int count) override;
 	RenderTarget* renderToTexture (int x, int y, int w, int h) override;
 	bool renderTarget (RenderTarget* target) override;
 	bool disableRenderTarget (RenderTarget* target) override;

@@ -115,6 +115,20 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 		SDL_GetMouseState(&x, &y);
 		shader.setUniformf("u_mousepos", x, y);
 	}
+	if (shader.hasUniform("u_lightcount"))
+		shader.setUniformi("u_lightcount", _lightCount);
+	if (shader.hasUniform("u_lights") && _lightCount > 0) {
+		float packed[MAX_RENDER_LIGHTS * 4];
+		for (int i = 0; i < _lightCount; ++i) {
+			packed[i * 4 + 0] = _lights[i].x * _rx;
+			packed[i * 4 + 1] = _lights[i].y * _ry;
+			packed[i * 4 + 2] = _lights[i].radius * _rx;
+			packed[i * 4 + 3] = _lights[i].intensity;
+		}
+		shader.setUniform4fv("u_lights", packed, 0, _lightCount * 4);
+	}
+	if (shader.hasUniform("u_lightcolor"))
+		shader.setUniformf("u_lightcolor", 1.0f, 0.82f, 0.48f);
 	glBindVertexArray(_vao);
 	GL_checkError();
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -206,8 +220,16 @@ void GL3Frontend::initRenderer () {
 	_shader.enableVertexAttributeArray("a_pos");
 	_shader.setVertexAttribute("a_texcoord", 2, GL_FLOAT, false, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, u)));
 	_shader.enableVertexAttributeArray("a_texcoord");
-	_shader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, c)));
+		_shader.setVertexAttribute("a_color", 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, c)));
 	_shader.enableVertexAttributeArray("a_color");
+	if (_shader.hasAttribute("a_normalcoord")) {
+		_shader.setVertexAttribute("a_normalcoord", 2, GL_FLOAT, false, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, nu)));
+		_shader.enableVertexAttributeArray("a_normalcoord");
+	}
+	if (_shader.hasAttribute("a_lit")) {
+		_shader.setVertexAttribute("a_lit", 1, GL_FLOAT, false, sizeof(Vertex), GL_CALC_OFFSET(offsetof(Vertex, lit)));
+		_shader.enableVertexAttributeArray("a_lit");
+	}
 	glBindVertexArray(0);
 	GL_checkError();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

@@ -358,6 +358,41 @@ void CaveExpressClientMap::renderBegin (int x, int y) const
 {
 	_target = _frontend->renderToTexture(_x, _y, _width, _height);
 	Super::renderBegin(x, y);
+
+	RenderLight lights[MAX_RENDER_LIGHTS];
+	int lightCount = 0;
+	const float tilePx = static_cast<float>(_scaleGridToPixel) * _zoom;
+	for (const auto &iter : _entities) {
+		if (lightCount >= MAX_RENDER_LIGHTS)
+			break;
+		const ClientEntityPtr& e = iter.second;
+		float radiusTiles = 0.0f;
+		float intensity = 0.0f;
+		if (EntityTypes::isCave(e->getType())) {
+			const ClientCaveTile *cave = static_cast<const ClientCaveTile*>(e);
+			if (!cave->isLightState())
+				continue;
+			radiusTiles = 6.0f;
+			intensity = 1.0f;
+		} else if (EntityTypes::isWindow(e->getType())) {
+			const ClientWindowTile *window = static_cast<const ClientWindowTile*>(e);
+			if (!window->isLightState())
+				continue;
+			radiusTiles = 4.0f;
+			intensity = 0.7f;
+		} else {
+			continue;
+		}
+		const vec2& pos = e->getPos();
+		lights[lightCount].x = static_cast<float>(x) + pos.x * tilePx;
+		// Caves sit on a platform; the opening is the lower half of the tile.
+		const float mouth = EntityTypes::isCave(e->getType()) ? 0.35f : 0.0f;
+		lights[lightCount].y = static_cast<float>(y) + (pos.y + mouth) * tilePx;
+		lights[lightCount].radius = radiusTiles * tilePx;
+		lights[lightCount].intensity = intensity;
+		++lightCount;
+	}
+	_frontend->setRenderLights(lights, lightCount);
 }
 
 void CaveExpressClientMap::renderLayer (int x, int y, Layer layer) const
@@ -391,6 +426,7 @@ void CaveExpressClientMap::renderEnd (int x, int y) const
 	Super::renderEnd(x, y);
 	if (_target)
 		_frontend->renderTarget(_target);
+	_frontend->setRenderLights(nullptr, 0);
 	renderLavaHeat(x, y);
 	renderWater(x, y);
 }

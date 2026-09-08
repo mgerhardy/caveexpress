@@ -17,6 +17,16 @@ typedef std::shared_ptr<BitmapFont> BitmapFontPtr;
 struct RenderTarget;
 struct TextureData;
 
+#define MAX_RENDER_LIGHTS 16
+
+/** Screen-space point light used by the GL shader when a sprite has a normal map. */
+struct RenderLight {
+	float x = 0.0f;
+	float y = 0.0f;
+	float radius = 0.0f;
+	float intensity = 1.0f;
+};
+
 #define TINY_FONT "font-8"
 #define SMALL_FONT "font-10"
 #define MEDIUM_FONT "font-12"
@@ -96,6 +106,10 @@ public:
 	virtual void showCursor (bool show) = 0;
 	virtual bool loadTexture (Texture *texture, const std::string& filename) = 0;
 	virtual void bindTexture (Texture* texture, int textureUnit) = 0;
+	virtual void setRenderLights (const RenderLight* lights, int count) {
+		(void)lights;
+		(void)count;
+	}
 	virtual RenderTarget* renderToTexture (int x, int y, int w, int h) { return nullptr; }
 	virtual bool renderTarget (RenderTarget* target) { return false; }
 	virtual bool disableRenderTarget (RenderTarget* target) { return false; }
