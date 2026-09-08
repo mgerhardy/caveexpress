@@ -213,55 +213,105 @@
         <key>fileList</key>
         <array>
             <filename>../png/caveexpress/tile-background-desert-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-02-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-03-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-04-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-05-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-05-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-06-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-06-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-07-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-07-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-08-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-08-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-big-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-big-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-cave-art-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-cave-art-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-cave-art-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-cave-art-02-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-window-01-off.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-window-01-off_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-window-01-on.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-window-01-on_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-window-02-off.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-window-02-off_n.png</filename>
             <filename>../png/caveexpress/tile-background-desert-window-02-on.png</filename>
+            <filename>../png/caveexpress/tile-background-desert-window-02-on_n.png</filename>
             <filename>../png/caveexpress/tile-cave-desert-01-off.png</filename>
+            <filename>../png/caveexpress/tile-cave-desert-01-off_n.png</filename>
             <filename>../png/caveexpress/tile-cave-desert-01-on.png</filename>
+            <filename>../png/caveexpress/tile-cave-desert-01-on_n.png</filename>
             <filename>../png/caveexpress/tile-cave-desert-02-off.png</filename>
+            <filename>../png/caveexpress/tile-cave-desert-02-off_n.png</filename>
             <filename>../png/caveexpress/tile-cave-desert-02-on.png</filename>
+            <filename>../png/caveexpress/tile-cave-desert-02-on_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-desert-01-active-back-01.png</filename>
+            <filename>../png/caveexpress/tile-geyser-desert-01-active-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-desert-01-active-back-02.png</filename>
+            <filename>../png/caveexpress/tile-geyser-desert-01-active-back-02_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-desert-01-active-back-03.png</filename>
+            <filename>../png/caveexpress/tile-geyser-desert-01-active-back-03_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-desert-01-active-back-04.png</filename>
+            <filename>../png/caveexpress/tile-geyser-desert-01-active-back-04_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-desert-01-active-back-05.png</filename>
+            <filename>../png/caveexpress/tile-geyser-desert-01-active-back-05_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-desert-01-active-back-07.png</filename>
+            <filename>../png/caveexpress/tile-geyser-desert-01-active-back-07_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-desert-01-idle-back-01.png</filename>
+            <filename>../png/caveexpress/tile-geyser-desert-01-idle-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-desert-01-idle-back-02.png</filename>
+            <filename>../png/caveexpress/tile-geyser-desert-01-idle-back-02_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-desert-01-idle-back-03.png</filename>
+            <filename>../png/caveexpress/tile-geyser-desert-01-idle-back-03_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-desert-01-idle-back-04.png</filename>
+            <filename>../png/caveexpress/tile-geyser-desert-01-idle-back-04_n.png</filename>
             <filename>../png/caveexpress/tile-ground-desert-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-desert-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-desert-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-desert-02-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-desert-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-desert-03-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-desert-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-desert-04-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-desert-05-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-desert-05-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-desert-06-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-desert-06-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-desert-big-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-desert-big-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-ledge-desert-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ledge-desert-DIR-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-ledge-desert-DIR-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ledge-desert-DIR-02-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-lava-desert-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-lava-desert-DIR-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-lava-desert-DIR-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-lava-desert-DIR-02-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-desert-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-desert-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-desert-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-desert-02-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-desert-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-desert-03-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-desert-big-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-desert-big-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-desert-DIR-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-desert-DIR-04-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-desert-DIR-05-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-desert-DIR-05-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-shim-desert-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-shim-desert-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-slope-desert-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-slope-desert-DIR-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-slope-desert-DIR-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-slope-desert-DIR-02-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-waterfall-desert-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-desert-01-back-01_n.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

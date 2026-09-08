@@ -213,52 +213,99 @@
         <key>fileList</key>
         <array>
             <filename>../png/caveexpress/tile-background-jungle-big-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-big-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-cave-art-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-cave-art-jungle-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-jungle-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-02-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-jungle-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-03-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-jungle-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-04-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-background-jungle-window-01-off.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-window-01-off_n.png</filename>
             <filename>../png/caveexpress/tile-background-jungle-window-01-on.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-window-01-on_n.png</filename>
             <filename>../png/caveexpress/tile-background-jungle-window-02-off.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-window-02-off_n.png</filename>
             <filename>../png/caveexpress/tile-background-jungle-window-02-on.png</filename>
+            <filename>../png/caveexpress/tile-background-jungle-window-02-on_n.png</filename>
             <filename>../png/caveexpress/tile-cave-jungle-01-off.png</filename>
+            <filename>../png/caveexpress/tile-cave-jungle-01-off_n.png</filename>
             <filename>../png/caveexpress/tile-cave-jungle-01-on.png</filename>
+            <filename>../png/caveexpress/tile-cave-jungle-01-on_n.png</filename>
             <filename>../png/caveexpress/tile-cave-jungle-02-off.png</filename>
+            <filename>../png/caveexpress/tile-cave-jungle-02-off_n.png</filename>
             <filename>../png/caveexpress/tile-cave-jungle-02-on.png</filename>
+            <filename>../png/caveexpress/tile-cave-jungle-02-on_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-01.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-02.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-02_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-03.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-03_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-04.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-04_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-05.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-05_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-06.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-active-back-06_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-jungle-01-idle-back-01.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-idle-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-jungle-01-idle-back-02.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-idle-back-02_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-jungle-01-idle-back-03.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-idle-back-03_n.png</filename>
             <filename>../png/caveexpress/tile-geyser-jungle-01-idle-back-04.png</filename>
+            <filename>../png/caveexpress/tile-geyser-jungle-01-idle-back-04_n.png</filename>
             <filename>../png/caveexpress/tile-ground-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-jungle-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-jungle-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-jungle-02-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-jungle-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-jungle-03-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-jungle-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-jungle-04-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-jungle-05-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-jungle-05-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-jungle-06-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-jungle-06-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-ledge-jungle-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ledge-jungle-DIR-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-ground-ledge-jungle-DIR-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-ground-ledge-jungle-DIR-02-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-lava-rock-jungle-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-lava-rock-jungle-DIR-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-lava-rock-jungle-DIR-01-back-02.png</filename>
+            <filename>../png/caveexpress/tile-lava-rock-jungle-DIR-01-back-02_n.png</filename>
             <filename>../png/caveexpress/tile-rock-big-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-big-jungle-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-big-jungle-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-big-jungle-02-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-jungle-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-jungle-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-jungle-02-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-jungle-03-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-jungle-03-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-jungle-DIR-04-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-jungle-DIR-04-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-shim-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-shim-jungle-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-rock-slope-jungle-DIR-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-slope-jungle-DIR-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-waterfall-jungle-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-jungle-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-waterfall-jungle-01-back-02.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-jungle-01-back-02_n.png</filename>
             <filename>../png/caveexpress/tile-waterfall-jungle-01-back-03.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-jungle-01-back-03_n.png</filename>
             <filename>../png/caveexpress/tile-waterfall-jungle-01-back-04.png</filename>
+            <filename>../png/caveexpress/tile-waterfall-jungle-01-back-04_n.png</filename>
             <filename>../png/caveexpress/tile-rock-slope-jungle-DIR-02-back-01.png</filename>
+            <filename>../png/caveexpress/tile-rock-slope-jungle-DIR-02-back-01_n.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

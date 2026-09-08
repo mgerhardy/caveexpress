@@ -211,38 +211,71 @@
         <key>fileList</key>
         <array>
             <filename>../png/caveexpress/npc-man-walk-right-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-07_n.png</filename>
             <filename>../png/caveexpress/npc-man-walk-left-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-man-walk-left-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-man-walk-left-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-man-walk-left-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-04_n.png</filename>
             <filename>../png/caveexpress/npc-man-walk-left-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-05_n.png</filename>
             <filename>../png/caveexpress/npc-man-walk-left-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-06_n.png</filename>
             <filename>../png/caveexpress/npc-man-walk-left-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-left-middle-07_n.png</filename>
             <filename>../png/caveexpress/npc-man-walk-right-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-man-walk-right-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-man-walk-right-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-man-walk-right-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-04_n.png</filename>
             <filename>../png/caveexpress/npc-man-walk-right-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-05_n.png</filename>
             <filename>../png/caveexpress/npc-man-walk-right-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-man-walk-right-middle-06_n.png</filename>
             <filename>../png/caveexpress/npc-man-falling-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-falling-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-man-falling-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-falling-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-man-falling-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-man-falling-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-man-falling-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-man-falling-middle-04_n.png</filename>
             <filename>../png/caveexpress/npc-man-falling-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-man-falling-middle-05_n.png</filename>
             <filename>../png/caveexpress/npc-man-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-idle-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-man-idle-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-idle-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-man-idle-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-man-idle-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-man-idle-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-man-idle-middle-04_n.png</filename>
             <filename>../png/caveexpress/npc-man-swimming-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-idle-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-man-swimming-idle-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-idle-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-man-swimming-idle-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-idle-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-man-swimming-idle-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-idle-middle-04_n.png</filename>
             <filename>../png/caveexpress/npc-man-swimming-left-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-left-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-man-swimming-left-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-left-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-man-swimming-left-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-left-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-man-swimming-right-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-right-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-man-swimming-right-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-right-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-man-swimming-right-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-man-swimming-right-middle-03_n.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

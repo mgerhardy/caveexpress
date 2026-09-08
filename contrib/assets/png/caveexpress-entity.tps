@@ -213,10 +213,15 @@
         <key>fileList</key>
         <array>
             <filename>../png/caveexpress/player-crashed-middle-01.png</filename>
+            <filename>../png/caveexpress/player-crashed-middle-01_n.png</filename>
             <filename>../png/caveexpress/player-empty-middle-01.png</filename>
+            <filename>../png/caveexpress/player-empty-middle-01_n.png</filename>
             <filename>../png/caveexpress/player-flying-middle-03.png</filename>
+            <filename>../png/caveexpress/player-flying-middle-03_n.png</filename>
             <filename>../png/caveexpress/player-flying-middle-01.png</filename>
+            <filename>../png/caveexpress/player-flying-middle-01_n.png</filename>
             <filename>../png/caveexpress/player-flying-middle-02.png</filename>
+            <filename>../png/caveexpress/player-flying-middle-02_n.png</filename>
             <filename>../png/caveexpress/item-stone-idle-front-02.png</filename>
             <filename>../png/caveexpress/item-stone-idle-front-03.png</filename>
             <filename>../png/caveexpress/item-stone-idle-front-01.png</filename>
@@ -224,29 +229,52 @@
             <filename>../png/caveexpress/tree-idle-middle-01.png</filename>
             <filename>../png/caveexpress/tree-idle-middle-02.png</filename>
             <filename>../png/caveexpress/bridge-plank-01-front-01.png</filename>
+            <filename>../png/caveexpress/bridge-plank-01-front-01_n.png</filename>
             <filename>../png/caveexpress/bridge-plank-ice-01-front-01.png</filename>
+            <filename>../png/caveexpress/bridge-plank-ice-01-front-01_n.png</filename>
             <filename>../png/caveexpress/bridge-wall-ice-left-01-front-01.png</filename>
+            <filename>../png/caveexpress/bridge-wall-ice-left-01-front-01_n.png</filename>
             <filename>../png/caveexpress/bridge-wall-ice-right-01-front-01.png</filename>
+            <filename>../png/caveexpress/bridge-wall-ice-right-01-front-01_n.png</filename>
             <filename>../png/caveexpress/bridge-wall-left-01-front-01.png</filename>
+            <filename>../png/caveexpress/bridge-wall-left-01-front-01_n.png</filename>
             <filename>../png/caveexpress/bridge-wall-right-01-front-01.png</filename>
+            <filename>../png/caveexpress/bridge-wall-right-01-front-01_n.png</filename>
             <filename>../png/caveexpress/liane-01-front-01.png</filename>
+            <filename>../png/caveexpress/liane-01-front-01_n.png</filename>
             <filename>../png/caveexpress/liane-02-front-01.png</filename>
+            <filename>../png/caveexpress/liane-02-front-01_n.png</filename>
             <filename>../png/caveexpress/liane-03-front-01.png</filename>
+            <filename>../png/caveexpress/liane-03-front-01_n.png</filename>
             <filename>../png/caveexpress/tree-dazed-middle-01.png</filename>
             <filename>../png/caveexpress/item-bomb-idle-front-01.png</filename>
+            <filename>../png/caveexpress/item-bomb-idle-front-01_n.png</filename>
             <filename>../png/caveexpress/item-apple-idle-front-01.png</filename>
+            <filename>../png/caveexpress/item-apple-idle-front-01_n.png</filename>
             <filename>../png/caveexpress/item-banana-idle-front-01.png</filename>
+            <filename>../png/caveexpress/item-banana-idle-front-01_n.png</filename>
             <filename>../png/caveexpress/item-egg-idle-front-01.png</filename>
+            <filename>../png/caveexpress/item-egg-idle-front-01_n.png</filename>
             <filename>../png/caveexpress/item-package-ice-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/item-package-ice-idle-middle-01_n.png</filename>
             <filename>../png/caveexpress/item-package-idle-middle-01.png</filename>
+            <filename>../png/caveexpress/item-package-idle-middle-01_n.png</filename>
             <filename>../png/caveexpress/tile-gate-rock-01-open-back-01.png</filename>
+            <filename>../png/caveexpress/tile-gate-rock-01-open-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-gate-rock-01-mid1-back-01.png</filename>
+            <filename>../png/caveexpress/tile-gate-rock-01-mid1-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-gate-rock-01-mid2-back-01.png</filename>
+            <filename>../png/caveexpress/tile-gate-rock-01-mid2-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-gate-rock-01-closed-back-01.png</filename>
+            <filename>../png/caveexpress/tile-gate-rock-01-closed-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-plate-01-back-01.png</filename>
+            <filename>../png/caveexpress/tile-plate-01-back-01_n.png</filename>
             <filename>../png/caveexpress/tile-plate-01-back-02.png</filename>
+            <filename>../png/caveexpress/tile-plate-01-back-02_n.png</filename>
 			<filename>../png/caveexpress/particle-leaf.png</filename>
+			<filename>../png/caveexpress/particle-leaf_n.png</filename>
             <filename>../png/caveexpress/leaf-01.png</filename>
+            <filename>../png/caveexpress/leaf-01_n.png</filename>
             <filename>../png/caveexpress/bubble-01.png</filename>
             <filename>../png/caveexpress/bubble-02.png</filename>
             <filename>../png/caveexpress/bubble-03.png</filename>
@@ -262,12 +290,19 @@
             <filename>../png/caveexpress/sparkle-02.png</filename>
             <filename>../png/caveexpress/sparkle-03.png</filename>
             <filename>../png/caveexpress/cave-sign-01-front-01.png</filename>
+            <filename>../png/caveexpress/cave-sign-01-front-01_n.png</filename>
             <filename>../png/caveexpress/cave-sign-02-front-01.png</filename>
+            <filename>../png/caveexpress/cave-sign-02-front-01_n.png</filename>
             <filename>../png/caveexpress/cave-sign-03-front-01.png</filename>
+            <filename>../png/caveexpress/cave-sign-03-front-01_n.png</filename>
             <filename>../png/caveexpress/cave-sign-04-front-01.png</filename>
+            <filename>../png/caveexpress/cave-sign-04-front-01_n.png</filename>
             <filename>../png/caveexpress/cave-sign-05-front-01.png</filename>
+            <filename>../png/caveexpress/cave-sign-05-front-01_n.png</filename>
             <filename>../png/caveexpress/cave-sign-06-front-01.png</filename>
+            <filename>../png/caveexpress/cave-sign-06-front-01_n.png</filename>
             <filename>../png/caveexpress/cave-sign-07-front-01.png</filename>
+            <filename>../png/caveexpress/cave-sign-07-front-01_n.png</filename>
             <filename>../png/caveexpress/cavenumber1.png</filename>
             <filename>../png/caveexpress/cavenumber2.png</filename>
             <filename>../png/caveexpress/cavenumber3.png</filename>
@@ -277,15 +312,23 @@
             <filename>../png/caveexpress/cavenumber7.png</filename>
             <filename>../png/caveexpress/cavenumber8.png</filename>
             <filename>../png/caveexpress/icon-cavenumber1.png</filename>
+            <filename>../png/caveexpress/icon-cavenumber1_n.png</filename>
             <filename>../png/caveexpress/icon-cavenumber2.png</filename>
+            <filename>../png/caveexpress/icon-cavenumber2_n.png</filename>
             <filename>../png/caveexpress/icon-cavenumber3.png</filename>
+            <filename>../png/caveexpress/icon-cavenumber3_n.png</filename>
             <filename>../png/caveexpress/icon-cavenumber4.png</filename>
+            <filename>../png/caveexpress/icon-cavenumber4_n.png</filename>
             <filename>../png/caveexpress/icon-cavenumber5.png</filename>
+            <filename>../png/caveexpress/icon-cavenumber5_n.png</filename>
             <filename>../png/caveexpress/icon-cavenumber6.png</filename>
+            <filename>../png/caveexpress/icon-cavenumber6_n.png</filename>
             <filename>../png/caveexpress/icon-cavenumber7.png</filename>
+            <filename>../png/caveexpress/icon-cavenumber7_n.png</filename>
             <filename>../png/caveexpress/icon-cavenumber8.png</filename>
+            <filename>../png/caveexpress/icon-cavenumber8_n.png</filename>
             <filename>../png/caveexpress/icon-targetcave.png</filename>
-            <filename>../png/caveexpress/tree-dazed-middle-02_n.png</filename>
+            <filename>../png/caveexpress/icon-targetcave_n.png</filename>
             <filename>../png/caveexpress/tree-idle-middle-01_n.png</filename>
             <filename>../png/caveexpress/tree-idle-middle-02_n.png</filename>
             <filename>../png/caveexpress/tree-dazed-middle-01_n.png</filename>
@@ -294,24 +337,43 @@
             <filename>../png/caveexpress/item-stone-idle-front-02_n.png</filename>
             <filename>../png/caveexpress/item-stone-idle-front-03_n.png</filename>
             <filename>../png/caveexpress/rope.png</filename>
+            <filename>../png/caveexpress/rope_n.png</filename>
             <filename>../png/caveexpress/tree-dazed-jungle-middle-01.png</filename>
+            <filename>../png/caveexpress/tree-dazed-jungle-middle-01_n.png</filename>
             <filename>../png/caveexpress/tree-idle-jungle-middle-01.png</filename>
+            <filename>../png/caveexpress/tree-idle-jungle-middle-01_n.png</filename>
             <filename>../png/caveexpress/tree-idle-jungle-middle-02.png</filename>
+            <filename>../png/caveexpress/tree-idle-jungle-middle-02_n.png</filename>
             <filename>../png/caveexpress/tree-idle-jungle-middle-03.png</filename>
+            <filename>../png/caveexpress/tree-idle-jungle-middle-03_n.png</filename>
             <filename>../png/caveexpress/tree-dazed-desert-middle-01.png</filename>
+            <filename>../png/caveexpress/tree-dazed-desert-middle-01_n.png</filename>
             <filename>../png/caveexpress/tree-idle-desert-middle-01.png</filename>
+            <filename>../png/caveexpress/tree-idle-desert-middle-01_n.png</filename>
             <filename>../png/caveexpress/tree-idle-desert-middle-02.png</filename>
+            <filename>../png/caveexpress/tree-idle-desert-middle-02_n.png</filename>
             <filename>../png/caveexpress/tree-idle-desert-middle-03.png</filename>
+            <filename>../png/caveexpress/tree-idle-desert-middle-03_n.png</filename>
             <filename>../png/caveexpress/waste.png</filename>
+            <filename>../png/caveexpress/waste_n.png</filename>
             <filename>../png/caveexpress/idea.png</filename>
+            <filename>../png/caveexpress/idea_n.png</filename>
             <filename>../png/caveexpress/dust-01.png</filename>
+            <filename>../png/caveexpress/dust-01_n.png</filename>
             <filename>../png/caveexpress/dust-02.png</filename>
+            <filename>../png/caveexpress/dust-02_n.png</filename>
             <filename>../png/caveexpress/dust-03.png</filename>
+            <filename>../png/caveexpress/dust-03_n.png</filename>
             <filename>../png/caveexpress/dust-04.png</filename>
+            <filename>../png/caveexpress/dust-04_n.png</filename>
             <filename>../png/caveexpress/dust-05.png</filename>
+            <filename>../png/caveexpress/dust-05_n.png</filename>
             <filename>../png/caveexpress/dust-06.png</filename>
+            <filename>../png/caveexpress/dust-06_n.png</filename>
             <filename>../png/caveexpress/dust-07.png</filename>
+            <filename>../png/caveexpress/dust-07_n.png</filename>
             <filename>../png/caveexpress/dust-08.png</filename>
+            <filename>../png/caveexpress/dust-08_n.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

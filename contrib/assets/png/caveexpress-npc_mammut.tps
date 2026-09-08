@@ -211,58 +211,111 @@
         <key>fileList</key>
         <array>
             <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-12.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-12_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-04_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-05_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-init-DIR-middle-06_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-04_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-05_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-06_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-07_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-08.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-08_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-09.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-09_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-10.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-10_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-11.png</filename>
+            <filename>../png/caveexpress/npc-mammut-idle-DIR-middle-11_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-07_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-04_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-05_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-mammut-turn-DIR-middle-06_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-05_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-06_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-07_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-04_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-mammut-attack-DIR-middle-05_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-04_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-05_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-06.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-06_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-07.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-07_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-08.png</filename>
+            <filename>../png/caveexpress/npc-mammut-dazed-DIR-middle-08_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-knockout-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-knockout-DIR-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-knockout-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-knockout-DIR-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-knockout-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-knockout-DIR-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-wakeup-DIR-middle-04_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-01.png</filename>
+            <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-01_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-02.png</filename>
+            <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-02_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-03.png</filename>
+            <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-03_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-04.png</filename>
+            <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-04_n.png</filename>
             <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-05.png</filename>
+            <filename>../png/caveexpress/npc-mammut-walk-DIR-middle-05_n.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
