@@ -7,8 +7,10 @@
 #include "common/TextureDefinition.h"
 #include "common/SpriteDefinition.h"
 #include "common/MapSettings.h"
+#include "common/MapManager.h"
 #include "common/Log.h"
 #include "common/String.h"
+#include <sstream>
 #include <vector>
 
 namespace caveexpress {
@@ -71,6 +73,39 @@ protected:
 		}
 	}
 };
+
+TEST_F(MapValidatorTest, testAllMapsValidate)
+{
+	LUAMapManager mgr;
+	mgr.loadMaps();
+	ASSERT_FALSE(mgr.getMaps().empty());
+
+	std::ostringstream failed;
+	int checked = 0;
+	for (const auto& entry : mgr.getMaps()) {
+		const std::string& id = entry.first;
+		if (string::startsWith(id, "test") || string::startsWith(id, "empty"))
+			continue;
+		CaveExpressMapContext ctx(id);
+		if (!ctx.load(true)) {
+			failed << id << ": failed to load\n";
+			continue;
+		}
+		++checked;
+		const MapMetrics m = evaluateContext(ctx);
+		if (m.valid)
+			continue;
+		failed << id << ": " << m.failureReason
+				<< " (caves " << m.cavesReachable << "/" << m.caveCount
+				<< ", covered=" << m.cavesCoveredBySolid
+				<< ", overlap=" << m.cavesOverlappingTiles
+				<< ", noPlatform=" << m.cavesMissingPlatform
+				<< ", targets " << m.packageTargetsReachable << "/" << m.packageTargetCount
+				<< ")\n";
+	}
+	EXPECT_GT(checked, 0);
+	EXPECT_TRUE(failed.str().empty()) << "maps that fail MapValidator::evaluate:\n" << failed.str();
+}
 
 TEST_F(MapValidatorTest, testHandMapBaseline)
 {

@@ -356,6 +356,8 @@ sprites = {
 	["tree-idle"] = {
 		fps = 5,
 		maptile = true,
+		width = 2,
+		height = 2,
 		delays = { 2000, },
 	},
 
@@ -367,6 +369,8 @@ sprites = {
 	["tree-idle-jungle"] = {
 		fps = 5,
 		maptile = true,
+		width = 2,
+		height = 2,
 		delays = { 2000, },
 	},
 
@@ -378,6 +382,8 @@ sprites = {
 	["tree-idle-desert"] = {
 		fps = 5,
 		maptile = true,
+		width = 2,
+		height = 2,
 		delays = { 2000, },
 	},
 

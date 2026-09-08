@@ -477,10 +477,36 @@ bool IMapEditorDocument::checkTileHit (const MapEditorTileItem& tileItem, bool r
 	return false;
 }
 
+void IMapEditorDocument::buryEmittersUnder (const MapEditorTileItem& solid)
+{
+	if (solid.layer != LAYER_SOLID || !solid.def)
+		return;
+	const vec2 size = solid.getSize(false);
+	const gridCoord x = solid.gridX + solid.getX(false) + EPSILON;
+	const gridCoord y = solid.gridY + solid.getY(false) + EPSILON;
+	const gridSize w = size.x - 2.0f * EPSILON;
+	const gridSize h = size.y - 2.0f * EPSILON;
+	for (auto item = _map.begin(); item != _map.end();) {
+		if (item->layer != LAYER_EMITTER || item->entityType == nullptr) {
+			++item;
+			continue;
+		}
+		if (!isOverlapping(x, y, w, h, *item)) {
+			++item;
+			continue;
+		}
+		if (_highlightItem == &(*item))
+			_highlightItem = nullptr;
+		item = _map.erase(item);
+	}
+}
+
 bool IMapEditorDocument::placeTileItem (const MapEditorTileItem& item, bool overwrite)
 {
 	if (!item.def || item.gridX >= _mapWidth || item.gridY >= _mapHeight)
 		return false;
+	if (overwrite && item.layer == LAYER_SOLID)
+		buryEmittersUnder(item);
 	if (overwrite) {
 		// Already have an identical tile here - treat as success without mutating.
 		for (const MapEditorTileItem& existing : _map) {
@@ -1124,7 +1150,10 @@ void IMapEditorDocument::setHighlightPosition (gridCoord x, gridCoord y)
 	if (!canPlaceTileItem(*_highlightItem)) {
 		_highlightItem->gridX = oldX;
 		_highlightItem->gridY = oldY;
+		return;
 	}
+	if (_highlightItem->layer == LAYER_SOLID)
+		buryEmittersUnder(*_highlightItem);
 }
 
 bool IMapEditorDocument::floodFillCanPaint (int, int, const SpriteDefPtr&) const

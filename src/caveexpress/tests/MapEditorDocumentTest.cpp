@@ -279,6 +279,57 @@ TEST_F(MapEditorDocumentTest, testSolidBuriesOverlappingEmitters)
 	EXPECT_TRUE(hasSpriteAt(doc, "tile-ground-01", 2.0f, 4.0f));
 }
 
+TEST_F(MapEditorDocumentTest, testBigSolidOverlapsTreeBoundingBox)
+{
+	ASSERT_FLOAT_EQ(2.0f, EntityTypes::TREE.width);
+	ASSERT_FLOAT_EQ(2.0f, EntityTypes::TREE.height);
+	MapEditorDocument doc(_mapMgr);
+	const SpriteDefPtr rock = requireSprite("tile-rock-big-01");
+	ASSERT_TRUE(!!rock);
+	EXPECT_FLOAT_EQ(2.0f, rock->width);
+	EXPECT_FLOAT_EQ(2.0f, rock->height);
+
+	paintEmitterAt(doc, EntityTypes::TREE, 2.0f, 2.0f);
+	EXPECT_EQ(1, doc.countEntitiesOfType(EntityTypes::TREE));
+
+	// 2x2 rock one cell right and one cell down: foliage sits above the rock,
+	// trunk overlaps the left column of the rock (the reported editor case).
+	doc.setSprite(rock);
+	doc.setSelectedGrid(3.0f, 3.0f);
+	ASSERT_TRUE(doc.paintAtSelection(true, false));
+	EXPECT_EQ(0, doc.countEntitiesOfType(EntityTypes::TREE))
+			<< "2x2 solid must bury a 2x2 tree whose AABB overlaps it";
+	EXPECT_TRUE(hasSpriteAt(doc, "tile-rock-big-01", 3.0f, 3.0f));
+}
+
+TEST_F(MapEditorDocumentTest, testRepaintSolidBuriesOverlappingTree)
+{
+	MapEditorDocument doc(_mapMgr);
+	const SpriteDefPtr rock = requireSprite("tile-rock-big-01");
+	ASSERT_TRUE(!!rock);
+
+	doc.setSprite(rock);
+	doc.setSelectedGrid(3.0f, 3.0f);
+	ASSERT_TRUE(doc.paintAtSelection(true, false));
+
+	// Emitters lift off solids on click-place; move the tree back so it
+	// overlaps the existing 2x2 rock (same state as a loaded map).
+	doc.setEditMode(IMapEditorDocument::EditMode::Entities);
+	paintEmitterAt(doc, EntityTypes::TREE, 2.0f, 2.0f);
+	ASSERT_EQ(1, doc.countEntitiesOfType(EntityTypes::TREE));
+	doc.setHighlightFromSelection();
+	ASSERT_NE(nullptr, doc.getHighlightItem());
+	doc.setHighlightPosition(2.0f, 2.0f);
+	doc.setEditMode(IMapEditorDocument::EditMode::Tiles);
+	EXPECT_EQ(1, doc.countEntitiesOfType(EntityTypes::TREE));
+
+	doc.setSprite(rock);
+	doc.setSelectedGrid(3.0f, 3.0f);
+	ASSERT_TRUE(doc.paintAtSelection(true, false));
+	EXPECT_EQ(0, doc.countEntitiesOfType(EntityTypes::TREE))
+			<< "Re-painting an existing solid must still bury overlapping emitters";
+}
+
 TEST_F(MapEditorDocumentTest, testSolidUnderEmitterFeetDoesNotRemoveIt)
 {
 	MapEditorDocument doc(_mapMgr);

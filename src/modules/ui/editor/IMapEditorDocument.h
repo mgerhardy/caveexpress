@@ -133,6 +133,7 @@ protected:
 
 	bool placeTileItem (const MapEditorTileItem& item, bool overwrite);
 	bool checkTileHit (const MapEditorTileItem& tileItem, bool remove);
+	void buryEmittersUnder (const MapEditorTileItem& solid);
 	bool isEntityItem (const MapEditorTileItem& item) const;
 	bool matchesEditMode (const MapEditorTileItem& item) const;
 	virtual bool isOverlapping (const MapEditorTileItem& item1, const MapEditorTileItem& item2) const;
