@@ -100,6 +100,7 @@ TEST_F(MapValidatorTest, testAllMapsValidate)
 				<< ", covered=" << m.cavesCoveredBySolid
 				<< ", overlap=" << m.cavesOverlappingTiles
 				<< ", noPlatform=" << m.cavesMissingPlatform
+				<< ", noConnectedGround=" << m.cavesMissingConnectedGround
 				<< ", targets " << m.packageTargetsReachable << "/" << m.packageTargetCount
 				<< ")\n";
 	}
@@ -477,16 +478,19 @@ TEST_F(MapValidatorTest, testCavePlatformAcceptsLedgeAndBridgeRejectsRock)
 			}
 		}
 		addTile(tiles, belowId, 2, 5);
+		addTile(tiles, belowId, 3, 5);
 	};
 
 	paintHost("tile-ground-ledge-desert-left-01");
 	MapMetrics ledge = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
 	EXPECT_EQ(0, ledge.cavesMissingPlatform);
+	EXPECT_EQ(0, ledge.cavesMissingConnectedGround);
 	EXPECT_TRUE(ledge.valid) << ledge.failureReason;
 
 	paintHost("bridge-plank-01");
 	MapMetrics bridge = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
 	EXPECT_EQ(0, bridge.cavesMissingPlatform);
+	EXPECT_EQ(0, bridge.cavesMissingConnectedGround);
 	EXPECT_TRUE(bridge.valid) << bridge.failureReason;
 
 	paintHost("tile-rock-01");
@@ -494,6 +498,44 @@ TEST_F(MapValidatorTest, testCavePlatformAcceptsLedgeAndBridgeRejectsRock)
 	EXPECT_GT(rock.cavesMissingPlatform, 0);
 	EXPECT_FALSE(rock.valid);
 	EXPECT_EQ("cave has no ground, ledge, or bridge below", rock.failureReason);
+}
+
+TEST_F(MapValidatorTest, testCaveIsolatedGroundFailsConnectedCheck)
+{
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	IMap::StartPositions starts = { { "3", "2" } };
+	const int w = 8;
+	const int h = 8;
+	for (int y = 0; y < h; ++y) {
+		for (int x = 0; x < w; ++x) {
+			if (x == 0 || y == 0 || x == w - 1 || y == h - 1)
+				addTile(tiles, "tile-rock-01", x, y);
+			else if (!(x == 2 && y == 4))
+				addTile(tiles, "tile-background-01", x, y);
+		}
+	}
+	addTile(tiles, "tile-ground-01", 2, 5);
+	const SpriteDefPtr caveDef = requireSprite("tile-cave-01");
+	ASSERT_TRUE(!!caveDef);
+	caves.emplace_back(2, 4, caveDef, EntityType::NONE, 1000);
+
+	const MapMetrics m = MapValidator().evaluate(w, h, tiles, caves, emitters, starts);
+	EXPECT_EQ(0, m.cavesMissingPlatform);
+	EXPECT_GT(m.cavesMissingConnectedGround, 0);
+	EXPECT_FALSE(m.valid);
+	EXPECT_EQ("cave has no connected ground, ledge, or bridge", m.failureReason);
+}
+
+TEST_F(MapValidatorTest, testDesert03PyramidCavesNeedConnectedGround)
+{
+	CaveExpressMapContext ctx("desert-03");
+	ASSERT_TRUE(ctx.load(false));
+	const MapMetrics m = evaluateContext(ctx);
+	EXPECT_GT(m.cavesMissingConnectedGround, 0) << m.failureReason;
+	EXPECT_FALSE(m.valid);
+	EXPECT_EQ("cave has no connected ground, ledge, or bridge", m.failureReason);
 }
 
 TEST_F(MapValidatorTest, testIntroMoviePackageLayout)

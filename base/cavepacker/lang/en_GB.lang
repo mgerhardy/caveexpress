@@ -95,7 +95,6 @@ Height|Height
 Help|Help
 Hints|Hints
 Homepage|Homepage
-Horizontal position in tiles. Drag in Select tool to slide.|Horizontal position in tiles. Drag in Select tool to slide.
 Hover a map edge and drag to resize|Hover a map edge and drag to resize
 In campaigns|In campaigns
 Input|Input
@@ -136,6 +135,7 @@ Not found in entities.lua|Not found in entities.lua
 Not found in sprites.lua|Not found in sprites.lua
 Objectives|Objectives
 Off|Off
+Offset in tiles (0.1). Pack several fruit/eggs in one cell, or slide a liane. Select-tool drag also works.|Offset in tiles (0.1). Pack several fruit/eggs in one cell, or slide a liane. Select-tool drag also works.
 OK|OK
 On|On
 On save, copy initMap from the existing file instead of regenerating tiles.|On save, copy initMap from the existing file instead of regenerating tiles.
@@ -192,7 +192,7 @@ Script tab: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script tab: edit 
 See docs/caveexpress/MAPS.md|See docs/caveexpress/MAPS.md
 Select a sprite|Select a sprite
 Select a tile on the map|Select a tile on the map
-Select + drag a liane to move it horizontally|Select + drag a liane to move it horizontally
+Select + drag a liane or small item (fruit, egg) to offset it|Select + drag a liane or small item (fruit, egg) to offset it
 Select game mode|Select game mode
 Selection|Selection
 Select tile|Select tile
@@ -238,6 +238,7 @@ Use as brush|Use as brush
 Used on this map|Used on this map
 User data|User data
 Username|Username
+Vertical offset in tiles (0.1). Shift+arrows nudge too.|Vertical offset in tiles (0.1). Shift+arrows nudge too.
 Vertices|Vertices
 Volume|Volume
 Waiting|Waiting
@@ -249,7 +250,8 @@ Write into the project maps folder|Write into the project maps folder
 Write sprites.lua|Write sprites.lua
 Wrote entities.lua|Wrote entities.lua
 Wrote sprites.lua|Wrote sprites.lua
-X|X
+X shift|X shift
 Yes|Yes
 You have unsaved changes. Continue?|You have unsaved changes. Continue?
 Your player|Your player
+Y shift|Y shift

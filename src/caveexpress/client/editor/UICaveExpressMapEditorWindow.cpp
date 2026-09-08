@@ -418,6 +418,9 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 			if (_layoutMetrics.cavesMissingPlatform > 0)
 				ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %i", tr("Caves missing ground below").c_str(),
 						_layoutMetrics.cavesMissingPlatform);
+			if (_layoutMetrics.cavesMissingConnectedGround > 0)
+				ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.3f, 1.0f), "%s: %i", tr("Caves without connected ground").c_str(),
+						_layoutMetrics.cavesMissingConnectedGround);
 		}
 	}
 	if (ImGui::BeginPopupModal((tr("Theme remap") + "###themeremap").c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {

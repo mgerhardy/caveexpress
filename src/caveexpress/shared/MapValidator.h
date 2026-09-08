@@ -47,6 +47,8 @@ struct MapMetrics {
 	int cavesOverlappingTiles = 0;
 	/** Caves with no NPC-walkable ground, ledge, or bridge in the cell immediately below. */
 	int cavesMissingPlatform = 0;
+	/** Caves whose supporting tile is an isolated 1-cell platform (no orthogonal ground/ledge/bridge). */
+	int cavesMissingConnectedGround = 0;
 	int shortPlatformRuns = 0;
 	int smallSolidComponents = 0;
 	int isolatedWalkables = 0;
@@ -70,7 +72,8 @@ struct MapMetrics {
  * conditions. Catches Lua mistakes such as packagetransfercount with no
  * shredder, npctransfercount with fewer than two caves, or a 1x2 waterfall
  * covering another solid. Cutscenes skip package/NPC quota checks but still
- * validate cave placement, empty cells, and occupying-tile overlaps.
+ * validate cave placement (including a connected ground/ledge/bridge under each cave),
+ * empty cells, and occupying-tile overlaps.
  */
 struct MapWinCondition {
 	bool winnable = true;

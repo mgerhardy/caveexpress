@@ -72,6 +72,27 @@ bool tileSupportsCavePlatform (const SpriteType& type)
 	return SpriteTypes::isNpcGround(type);
 }
 
+bool cellHasCavePlatform (const std::vector<MapTileDefinition>& tiles, int x, int y)
+{
+	for (const MapTileDefinition& tile : tiles) {
+		if (!tile.spriteDef)
+			continue;
+		if (tileCoversCell(tile, x, y) && tileSupportsCavePlatform(tile.spriteDef->type))
+			return true;
+	}
+	return false;
+}
+
+bool cavePlatformIsConnected (const std::vector<MapTileDefinition>& tiles, int supportX, int supportY)
+{
+	static const int N4[4][2] = { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } };
+	for (const auto& d : N4) {
+		if (cellHasCavePlatform(tiles, supportX + d[0], supportY + d[1]))
+			return true;
+	}
+	return false;
+}
+
 bool tileOccupiesCell (const SpriteType& type)
 {
 	return !SpriteTypes::isBackgroundOverlay(type) && !SpriteTypes::isCaveSign(type);
@@ -86,27 +107,28 @@ bool tileConflictsWithCave (const SpriteType& type)
 }
 
 void countCavePlacement (const std::vector<MapTileDefinition>& tiles,
-		const std::vector<CaveTileDefinition>& caves, int& overlappingTiles, int& missingPlatform)
+		const std::vector<CaveTileDefinition>& caves, int& overlappingTiles, int& missingPlatform,
+		int& missingConnectedGround)
 {
 	overlappingTiles = 0;
 	missingPlatform = 0;
+	missingConnectedGround = 0;
 	for (const CaveTileDefinition& cave : caves) {
 		const int cx = static_cast<int>(cave.x);
 		const int cy = static_cast<int>(cave.y);
 		bool overlap = false;
-		bool support = false;
 		for (const MapTileDefinition& tile : tiles) {
 			if (!tile.spriteDef)
 				continue;
 			if (tileCoversCell(tile, cx, cy) && tileConflictsWithCave(tile.spriteDef->type))
 				overlap = true;
-			if (tileCoversCell(tile, cx, cy + 1) && tileSupportsCavePlatform(tile.spriteDef->type))
-				support = true;
 		}
 		if (overlap)
 			++overlappingTiles;
-		if (!support)
+		if (!cellHasCavePlatform(tiles, cx, cy + 1))
 			++missingPlatform;
+		else if (!cavePlatformIsConnected(tiles, cx, cy + 1))
+			++missingConnectedGround;
 	}
 }
 
@@ -426,7 +448,8 @@ MapMetrics MapValidator::evaluate (int width, int height,
 		if (grid.kind[grid.idx(c.first, c.second)] == CellKind::Collider)
 			++m.cavesCoveredBySolid;
 	}
-	countCavePlacement(tiles, caves, m.cavesOverlappingTiles, m.cavesMissingPlatform);
+	countCavePlacement(tiles, caves, m.cavesOverlappingTiles, m.cavesMissingPlatform,
+			m.cavesMissingConnectedGround);
 
 	for (const EmitterDefinition& e : emitters) {
 		if (!e.type)
@@ -913,6 +936,11 @@ MapMetrics MapValidator::evaluate (int width, int height,
 		if (m.failureReason.empty())
 			m.failureReason = "cave has no ground, ledge, or bridge below";
 	}
+	if (m.cavesMissingConnectedGround > 0) {
+		m.valid = false;
+		if (m.failureReason.empty())
+			m.failureReason = "cave has no connected ground, ledge, or bridge";
+	}
 	if (m.caveCount > 0 && m.cavesReachable < m.caveCount) {
 		m.valid = false;
 		if (m.failureReason.empty())
@@ -949,6 +977,7 @@ MapMetrics MapValidator::evaluate (int width, int height,
 	score += 5.0f * (m.cavesCoveredBySolid == 0 ? 1.0f : 0.0f);
 	score += 4.0f * (m.cavesOverlappingTiles == 0 ? 1.0f : 0.0f);
 	score += 4.0f * (m.cavesMissingPlatform == 0 ? 1.0f : 0.0f);
+	score += 4.0f * (m.cavesMissingConnectedGround == 0 ? 1.0f : 0.0f);
 	score += 4.0f * (m.shortPlatformRuns == 0 ? 1.0f : 0.0f);
 	score += 4.0f * (m.smallSolidComponents == 0 ? 1.0f : 0.0f);
 	score += 3.0f * (m.isolatedWalkables == 0 ? 1.0f : 0.0f);
@@ -1037,11 +1066,14 @@ MapWinCondition MapValidator::checkWinConditions (const IMap::SettingsMap& setti
 
 	int overlappingTiles = 0;
 	int missingPlatform = 0;
-	countCavePlacement(tiles, caves, overlappingTiles, missingPlatform);
+	int missingConnectedGround = 0;
+	countCavePlacement(tiles, caves, overlappingTiles, missingPlatform, missingConnectedGround);
 	if (overlappingTiles > 0)
 		result.issues.emplace_back("cave overlaps another tile - remove the existing tile at the cave cell");
 	if (missingPlatform > 0)
 		result.issues.emplace_back("cave has no ground, ledge, or bridge in the cell below");
+	if (missingConnectedGround > 0)
+		result.issues.emplace_back("cave has no connected ground, ledge, or bridge");
 
 	const int width = string::toInt(settingValue(settings, msn::WIDTH, "0"));
 	const int height = string::toInt(settingValue(settings, msn::HEIGHT, "0"));

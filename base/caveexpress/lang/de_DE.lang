@@ -37,6 +37,7 @@ Caves covered|Höhlen verdeckt
 Caves missing ground below|Caves missing ground below
 Caves overlapping tiles|Caves overlapping tiles
 Caves reachable|Höhlen erreichbar
+Caves without connected ground|Caves without connected ground
 Change the grid tile size to check alignment against the other texture atlas.|Change the grid tile size to check alignment against the other texture atlas.
 Check layout|Layout prüfen
 Clear|Clear

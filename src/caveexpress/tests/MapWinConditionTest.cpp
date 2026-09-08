@@ -45,6 +45,7 @@ protected:
 		ASSERT_TRUE(!!ground);
 		caves.emplace_back(x, y, caveDef, npc, 1000);
 		tiles.emplace_back(x, y + 1, ground, 0);
+		tiles.emplace_back(x + 1, y + 1, ground, 0);
 	}
 
 	static std::string joinIssues (const MapWinCondition& win)
@@ -225,9 +226,31 @@ TEST_F(MapWinConditionTest, testCaveAcceptsLedgeAndBridgeBelow)
 	caves.emplace_back(1, 2, caveDef, EntityTypes::NPC_FRIENDLY_MAN, 1000);
 	caves.emplace_back(6, 2, caveDef, EntityType::NONE, 1000);
 	tiles.emplace_back(1, 3, ledge, 0);
+	tiles.emplace_back(2, 3, ledge, 0);
 	tiles.emplace_back(6, 3, plank, 0);
+	tiles.emplace_back(7, 3, plank, 0);
 	const MapWinCondition win = MapValidator::checkWinConditions(settings, tiles, caves, emitters);
 	EXPECT_TRUE(win.winnable) << joinIssues(win);
+}
+
+TEST_F(MapWinConditionTest, testCaveNeedsConnectedGround)
+{
+	IMap::SettingsMap settings;
+	settings[msn::NPC_TRANSFER_COUNT] = "1";
+	std::vector<MapTileDefinition> tiles;
+	std::vector<CaveTileDefinition> caves;
+	std::vector<EmitterDefinition> emitters;
+	const SpriteDefPtr caveDef = requireSprite("tile-cave-01");
+	const SpriteDefPtr ground = requireSprite("tile-ground-01");
+	ASSERT_TRUE(!!caveDef);
+	ASSERT_TRUE(!!ground);
+	caves.emplace_back(1, 2, caveDef, EntityTypes::NPC_FRIENDLY_MAN, 1000);
+	caves.emplace_back(6, 2, caveDef, EntityType::NONE, 1000);
+	tiles.emplace_back(1, 3, ground, 0);
+	tiles.emplace_back(6, 3, ground, 0);
+	const MapWinCondition isolated = MapValidator::checkWinConditions(settings, tiles, caves, emitters);
+	EXPECT_FALSE(isolated.winnable) << joinIssues(isolated);
+	EXPECT_NE(std::string::npos, joinIssues(isolated).find("connected ground"));
 }
 
 TEST_F(MapWinConditionTest, testCaveRejectsRockBelow)

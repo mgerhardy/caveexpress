@@ -95,7 +95,6 @@ Height|Höhe
 Help|Hilfe
 Hints|Hinweise
 Homepage|Homepage
-Horizontal position in tiles. Drag in Select tool to slide.|Horizontal position in tiles. Drag in Select tool to slide.
 Hover a map edge and drag to resize|Map-Rand anfahren und ziehen, um die Größe zu ändern
 In campaigns|In Kampagnen
 Input|Eingabe
@@ -136,6 +135,7 @@ Not found in entities.lua|Nicht in entities.lua gefunden
 Not found in sprites.lua|Nicht in sprites.lua gefunden
 Objectives|Ziele
 Off|Aus
+Offset in tiles (0.1). Pack several fruit/eggs in one cell, or slide a liane. Select-tool drag also works.|Offset in tiles (0.1). Pack several fruit/eggs in one cell, or slide a liane. Select-tool drag also works.
 OK|OK
 On|An
 On save, copy initMap from the existing file instead of regenerating tiles.|On save, copy initMap from the existing file instead of regenerating tiles.
@@ -192,7 +192,7 @@ Script tab: edit Lua (onUpdate/onMapLoaded); Save & Go to test|Script tab: edit 
 See docs/caveexpress/MAPS.md|See docs/caveexpress/MAPS.md
 Select a sprite|Select a sprite
 Select a tile on the map|Select a tile on the map
-Select + drag a liane to move it horizontally|Select + drag a liane to move it horizontally
+Select + drag a liane or small item (fruit, egg) to offset it|Select + drag a liane or small item (fruit, egg) to offset it
 Select game mode|Spielemodus aussuchen
 Selection|Auswahl
 Select tile|Teil selektieren
@@ -238,6 +238,7 @@ Use as brush|Als Pinsel verwenden
 Used on this map|Auf dieser Karte verwendet
 User data|User data
 Username|Username
+Vertical offset in tiles (0.1). Shift+arrows nudge too.|Vertical offset in tiles (0.1). Shift+arrows nudge too.
 Vertices|Vertices
 Volume|Volume
 Waiting|Warten
@@ -249,7 +250,8 @@ Write into the project maps folder|Write into the project maps folder
 Write sprites.lua|Write sprites.lua
 Wrote entities.lua|entities.lua geschrieben
 Wrote sprites.lua|Wrote sprites.lua
-X|X
+X shift|X shift
 Yes|Ja
 You have unsaved changes. Continue?|Es gibt ungespeicherte Änderungen. Fortfahren?
 Your player|Dein Spieler
+Y shift|Y shift
