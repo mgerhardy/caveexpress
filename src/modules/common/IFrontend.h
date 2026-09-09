@@ -114,6 +114,9 @@ public:
 		(void)lights;
 		(void)count;
 	}
+	virtual void setRenderAmbientLight (float ambientLight) {
+		(void)ambientLight;
+	}
 	/**
 	 * Submit pending buffered draw calls. Immediate renderers do not need to override this.
 	 */

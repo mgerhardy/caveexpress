@@ -11,7 +11,7 @@
 
 AbstractGLFrontend::AbstractGLFrontend (std::shared_ptr<IConsole> console) :
 		SDLFrontend(console), _currentTexture(-1), _currentNormal(-1), _rx(1.0f), _ry(1.0f), _renderTargetTexture(0), _white(0), _alpha(0),
-		_flatNormal(0), _lightCount(0)
+		_flatNormal(0), _lightCount(0), _ambientLight(1.0f)
 {
 	_context = nullptr;
 	_currentVertexIndex = 0;

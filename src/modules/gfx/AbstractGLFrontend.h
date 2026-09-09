@@ -86,6 +86,7 @@ protected:
 	TexNum _flatNormal;
 	RenderLight _lights[MAX_RENDER_LIGHTS];
 	int _lightCount;
+	float _ambientLight;
 
 	TexNum uploadTexture(const unsigned char* pixels, int w, int h) const;
 	GLuint dummyNormal () const;
@@ -112,6 +113,7 @@ public:
 	void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha = 1.0f) override;
 	void bindTexture (Texture* texture, int textureUnit) override;
 	void setRenderLights (const RenderLight* lights, int count) override;
+	void setRenderAmbientLight (float ambientLight) override { _ambientLight = ambientLight; }
 	void flushRenderBatches () override { renderBatches(); }
 	RenderTarget* renderToTexture (int x, int y, int w, int h) override;
 	bool renderTarget (RenderTarget* target) override;

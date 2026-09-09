@@ -70,6 +70,7 @@ See [SPRITES.md](SPRITES.md) for how sprite `width`/`height` relates to the draw
 | `tutorial` | Do not increment the global “maps finished” counter |
 | `cutscene` | Hide the HUD. The script owns the ending (see below). |
 | `zoom` | Client camera zoom on load (e.g. `0.5` for large maps). Restart keeps the player's zoom. |
+| `ambientlight` | Ambient multiplier for normal-mapped sprites. Defaults to `1.0`, preserving the pre-lighting appearance; values below `1.0` darken and values above `1.0` brighten. |
 
 ### Intro help (`function intro`)
 

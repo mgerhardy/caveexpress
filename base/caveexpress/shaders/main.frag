@@ -1,6 +1,7 @@
 uniform sampler2D u_texture;
 uniform sampler2D u_normals;
 uniform int u_lightcount;
+uniform float u_ambientlight;
 uniform vec4 u_lights[MAX_RENDER_LIGHTS];
 uniform vec3 u_lightcolors[MAX_RENDER_LIGHTS];
 uniform float u_lightfalloff[MAX_RENDER_LIGHTS];
@@ -23,7 +24,7 @@ void main(void) {
 			n /= nlen;
 		else
 			n = vec3(0.0, 0.0, 1.0);
-		vec3 lighting = vec3(0.72);
+		vec3 lighting = vec3(u_ambientlight);
 		for (int i = 0; i < MAX_RENDER_LIGHTS; ++i) {
 			if (i >= u_lightcount)
 				break;
@@ -41,7 +42,7 @@ void main(void) {
 			float diff = max(dot(n, Ln), 0.0);
 			lighting += u_lightcolors[i] * intensity * diff * att;
 		}
-		lighting = min(lighting, vec3(1.55));
+		lighting = min(lighting, vec3(max(1.55, u_ambientlight)));
 		outc.rgb *= lighting;
 	}
 	o_color = outc;

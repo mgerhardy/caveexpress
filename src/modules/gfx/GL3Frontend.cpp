@@ -117,6 +117,8 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 	}
 	if (shader.hasUniform("u_lightcount"))
 		shader.setUniformi("u_lightcount", _lightCount);
+	if (shader.hasUniform("u_ambientlight"))
+		shader.setUniformf("u_ambientlight", _ambientLight);
 	if (shader.hasUniform("u_lights") && _lightCount > 0) {
 		float packed[MAX_RENDER_LIGHTS * 4];
 		for (int i = 0; i < _lightCount; ++i) {

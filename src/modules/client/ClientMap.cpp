@@ -23,7 +23,7 @@
 #include <vector>
 
 ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth) :
-		IMap(), _x(x), _y(y), _width(width), _height(height), _scaleGridToPixel(referenceTileWidth), _zoom(1.0f), _player(nullptr), _restartDue(0), _restartInitialized(0), _mapGridWidth(
+		IMap(), _x(x), _y(y), _width(width), _height(height), _scaleGridToPixel(referenceTileWidth), _zoom(1.0f), _ambientLight(1.0f), _player(nullptr), _restartDue(0), _restartInitialized(0), _mapGridWidth(
 				0), _mapGridHeight(0), _time(0), _playerID(0), _frontend(frontend), _pause(false), _serviceProvider(
 						serviceProvider), _screenRumble(false), _screenRumbleStrength(0.0f), _screenRumbleOffsetX(
 						0), _screenRumbleOffsetY(0), _particleSystem(
@@ -86,6 +86,7 @@ void ClientMap::resetCurrentMap ()
 	_joinAsSpectator = false;
 	_tutorial = false;
 	_cutscene = false;
+	_ambientLight = string::toFloat(msd::AMBIENT_LIGHT);
 	_mapGridWidth = 0;
 	_mapGridHeight = 0;
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
@@ -210,6 +211,7 @@ void ClientMap::renderLayers (int x, int y) const {
 }
 
 void ClientMap::renderBegin (int x, int y) const {
+	_frontend->setRenderAmbientLight(_ambientLight);
 	collectAndUploadLights(x, y);
 }
 
@@ -314,6 +316,7 @@ void ClientMap::render () const
 	// their map lights are still bound rather than clearing the uniforms first.
 	_frontend->flushRenderBatches();
 	_frontend->setRenderLights(nullptr, 0);
+	_frontend->setRenderAmbientLight(string::toFloat(msd::AMBIENT_LIGHT));
 
 	if (_restartDue != 0) {
 		renderFadeOutOverlay(x, y);
@@ -619,6 +622,8 @@ void ClientMap::setSetting (const std::string& key, const std::string& value)
 		_mapDefaultZoom = string::toFloat(value);
 		if (!_preserveZoomOnLoad)
 			setZoom(_mapDefaultZoom);
+	} else if (key == msn::AMBIENT_LIGHT) {
+		_ambientLight = std::max(0.0f, string::toFloat(value));
 	} else if (key == msn::THEME) {
 		_theme = &ThemeType::getByName(value);
 	} else if (key == msn::TUTORIAL) {

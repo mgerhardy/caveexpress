@@ -38,6 +38,7 @@ protected:
 	// the reference tile width to convert the grid sizes into pixels
 	int _scaleGridToPixel;
 	float _zoom;
+	float _ambientLight;
 
 	// all the maptiles and other entities (e.g. stones) in this map
 	ClientEntityMap _entities;

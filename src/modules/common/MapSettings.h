@@ -31,6 +31,8 @@ const std::string THEME = "theme";
 const std::string CUTSCENE = "cutscene";
 /** Client camera zoom applied when the map is loaded. Restart keeps the player's zoom. */
 const std::string ZOOM = "zoom";
+/** Ambient multiplier for normal-mapped sprites. */
+const std::string AMBIENT_LIGHT = "ambientlight";
 }
 
 // map setting default
@@ -52,6 +54,7 @@ const std::string WATER_FALLING_DELAY = "0";
 const std::string INTROWINDOW = "";
 const std::string CUTSCENE = "false";
 const std::string ZOOM = "1.0";
+const std::string AMBIENT_LIGHT = "1.0";
 }
 
 // map setting default values
