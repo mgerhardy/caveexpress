@@ -170,6 +170,8 @@ TEST(NetworkTest, testListenServerAcceptsSpectatorClient)
 
 	remoteB.closeClient();
 	remoteA.closeClient();
+	remoteB.shutdown();
+	remoteA.shutdown();
 	server.closeClient();
 	server.closeServer();
 	server.shutdown();
