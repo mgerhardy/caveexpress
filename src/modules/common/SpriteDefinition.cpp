@@ -67,6 +67,25 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 		def->friction = lua.getValueFloatFromTable("friction", 0.2f);
 		def->restitution = lua.getValueFloatFromTable("restitution", 0.0f);
 
+		const int lightKeys = lua.getTable("light");
+		if (lightKeys != -1) {
+			def->hasLight = true;
+			def->lightRadius = lua.getValueFloatFromTable("radius", 0.0f);
+			def->lightIntensity = lua.getValueFloatFromTable("intensity", 1.0f);
+			def->lightOffsetX = lua.getValueFloatFromTable("offsetx", 0.0f);
+			def->lightOffsetY = lua.getValueFloatFromTable("offsety", 0.0f);
+			def->lightFalloff = lua.getValueFloatFromTable("falloff", 2.0f);
+			const int colorLen = lua.getTable("color");
+			if (colorLen >= 3) {
+				def->lightR = lua.getTableFloat(1);
+				def->lightG = lua.getTableFloat(2);
+				def->lightB = lua.getTableFloat(3);
+			}
+			if (colorLen != -1)
+				lua.pop();
+			lua.pop();
+		}
+
 		// push the frames table
 		const int layers = lua.getTable("frames");
 		Log::debug(LOG_COMMON, "id: %s => %i frames", id.c_str(), layers);

@@ -25,6 +25,10 @@ struct RenderLight {
 	float y = 0.0f;
 	float radius = 0.0f;
 	float intensity = 1.0f;
+	float r = 1.0f;
+	float g = 0.82f;
+	float b = 0.48f;
+	float falloff = 2.0f;
 };
 
 #define TINY_FONT "font-8"

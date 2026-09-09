@@ -1,3 +1,27 @@
+-- Point lights sampled by sprites that have a normal map (*_n). radius is in
+-- tiles; offsety is added to the entity position (Y increases downward).
+-- falloff 2 is quadratic (the previous hardcoded curve).
+local LIGHT_CAVE = {
+	radius = 6.0,
+	intensity = 1.0,
+	color = { 1.0, 0.82, 0.48 },
+	offsety = 0.35,
+	falloff = 2.0,
+}
+local LIGHT_WINDOW = {
+	radius = 4.0,
+	intensity = 0.7,
+	color = { 1.0, 0.82, 0.48 },
+	falloff = 2.0,
+}
+local LIGHT_LAVA = {
+	radius = 3.5,
+	intensity = 0.85,
+	color = { 1.0, 0.22, 0.05 },
+	offsety = -0.2,
+	falloff = 2.0,
+}
+
 sprites = {
 
 -- Player
@@ -494,6 +518,7 @@ sprites = {
 	["tile-background-ice-big-01"] = { type = "background", width = 2, height = 2, theme = "ice", },
 	["tile-background-ice-window-01"] = {
 		type = "window",
+		light = LIGHT_WINDOW,
 		theme = "ice",
 		frames = {
 			{ "tile-background-ice-window-01-on", "tile-background-ice-window-01-off", }, --back
@@ -504,6 +529,7 @@ sprites = {
 	},
 	["tile-background-ice-window-02"] = {
 		type = "window",
+		light = LIGHT_WINDOW,
 		theme = "ice",
 		frames = {
 			{ "tile-background-ice-window-02-on", "tile-background-ice-window-02-off", }, --back
@@ -515,6 +541,7 @@ sprites = {
 
 	["tile-cave-ice-01"] = {
 		type = "cave",
+		light = LIGHT_CAVE,
 		theme = "ice",
 		frames = {
 			{ "tile-cave-ice-01-on", "tile-cave-ice-01-off", }, --back
@@ -525,6 +552,7 @@ sprites = {
 	},
 	["tile-cave-ice-02"] = {
 		type = "cave",
+		light = LIGHT_CAVE,
 		theme = "ice",
 		frames = {
 			{ "tile-cave-ice-02-on", "tile-cave-ice-02-off", }, --back
@@ -551,6 +579,7 @@ sprites = {
 	["tile-ground-ice-big-01"] = { type = "ground", width = 2, height = 2, theme = "ice", },
 	["tile-lava-ice-left-01"] = {
 		type = "lava",
+		light = LIGHT_LAVA,
 		theme = "ice",
 		fps = 2,
 		polygons = {
@@ -564,6 +593,7 @@ sprites = {
 	},
 	["tile-lava-ice-left-02"] = {
 		type = "lava",
+		light = LIGHT_LAVA,
 		theme = "ice",
 		fps = 2,
 		polygons = {
@@ -577,6 +607,7 @@ sprites = {
 	},
 	["tile-lava-ice-right-01"] = {
 		type = "lava",
+		light = LIGHT_LAVA,
 		theme = "ice",
 		fps = 2,
 		polygons = {
@@ -590,6 +621,7 @@ sprites = {
 	},
 	["tile-lava-ice-right-02"] = {
 		type = "lava",
+		light = LIGHT_LAVA,
 		theme = "ice",
 		fps = 2,
 		polygons = {
@@ -868,6 +900,7 @@ sprites = {
 	["tile-background-big-01"] = { type = "background", width = 2, height = 2, theme = "rock", },
 	["tile-background-window-01"] = {
 		type = "window",
+		light = LIGHT_WINDOW,
 		theme = "rock",
 		frames = {
 			{ "tile-background-window-01-on", "tile-background-window-01-off", }, --back
@@ -878,6 +911,7 @@ sprites = {
 	},
 	["tile-background-window-02"] = {
 		type = "window",
+		light = LIGHT_WINDOW,
 		theme = "rock",
 		frames = {
 			{ "tile-background-window-02-on", "tile-background-window-02-off", }, --back
@@ -889,6 +923,7 @@ sprites = {
 
 	["tile-cave-01"] = {
 		type = "cave",
+		light = LIGHT_CAVE,
 		theme = "rock",
 		frames = {
 			{ "tile-cave-01-on", "tile-cave-01-off", }, --back
@@ -899,6 +934,7 @@ sprites = {
 	},
 	["tile-cave-02"] = {
 		type = "cave",
+		light = LIGHT_CAVE,
 		theme = "rock",
 		frames = {
 			{ "tile-cave-02-on", "tile-cave-02-off", }, --back
@@ -1013,6 +1049,7 @@ sprites = {
 	["tile-rock-big-01"] = { type = "rock", width = 2, height = 2, theme = "rock", },
 	["tile-lava-rock-left-01"] = {
 		type = "lava",
+		light = LIGHT_LAVA,
 		theme = "rock",
 		fps = 2,
 		polygons = {
@@ -1026,6 +1063,7 @@ sprites = {
 	},
 	["tile-lava-rock-right-01"] = {
 		type = "lava",
+		light = LIGHT_LAVA,
 		theme = "rock",
 		fps = 2,
 		polygons = {
@@ -1039,6 +1077,7 @@ sprites = {
 	},
 	["lava-idle"] = {
 		type = "lava",
+		light = LIGHT_LAVA,
 		theme = "rock",
 		fps = 2,
 		frames = {
@@ -1261,6 +1300,7 @@ sprites = {
 	["tile-background-desert-big-01"] = { type = "background", width = 2, height = 2, theme = "desert", },
 	["tile-background-desert-window-01"] = {
 		type = "window",
+		light = LIGHT_WINDOW,
 		theme = "desert",
 		frames = {
 			{ "tile-background-desert-window-01-on", "tile-background-desert-window-01-off", }, --back
@@ -1271,6 +1311,7 @@ sprites = {
 	},
 	["tile-background-desert-window-02"] = {
 		type = "window",
+		light = LIGHT_WINDOW,
 		theme = "desert",
 		frames = {
 			{ "tile-background-desert-window-02-on", "tile-background-desert-window-02-off", }, --back
@@ -1282,6 +1323,7 @@ sprites = {
 
 	["tile-cave-desert-01"] = {
 		type = "cave",
+		light = LIGHT_CAVE,
 		theme = "desert",
 		frames = {
 			{ "tile-cave-desert-01-on", "tile-cave-desert-01-off", }, --back
@@ -1292,6 +1334,7 @@ sprites = {
 	},
 	["tile-cave-desert-02"] = {
 		type = "cave",
+		light = LIGHT_CAVE,
 		theme = "desert",
 		frames = {
 			{ "tile-cave-desert-02-on", "tile-cave-desert-02-off", }, --back
@@ -1318,6 +1361,7 @@ sprites = {
 	["tile-ground-desert-big-01"] = { type = "ground", width = 2, height = 2, theme = "desert", },
 	["tile-lava-desert-left-01"] = {
 		type = "lava",
+		light = LIGHT_LAVA,
 		theme = "desert",
 		fps = 2,
 		polygons = {
@@ -1331,6 +1375,7 @@ sprites = {
 	},
 	["tile-lava-desert-left-02"] = {
 		type = "lava",
+		light = LIGHT_LAVA,
 		theme = "desert",
 		fps = 2,
 		polygons = {
@@ -1344,6 +1389,7 @@ sprites = {
 	},
 	["tile-lava-desert-right-01"] = {
 		type = "lava",
+		light = LIGHT_LAVA,
 		theme = "desert",
 		fps = 2,
 		polygons = {
@@ -1357,6 +1403,7 @@ sprites = {
 	},
 	["tile-lava-desert-right-02"] = {
 		type = "lava",
+		light = LIGHT_LAVA,
 		theme = "desert",
 		fps = 2,
 		polygons = {
@@ -1540,6 +1587,7 @@ sprites = {
 	["tile-background-jungle-big-01"] = { type = "background", width = 2, height = 2, theme = "jungle", },
 	["tile-background-jungle-window-01"] = {
 		type = "window",
+		light = LIGHT_WINDOW,
 		theme = "jungle",
 		frames = {
 			{ "tile-background-jungle-window-01-on", "tile-background-jungle-window-01-off", }, --back
@@ -1550,6 +1598,7 @@ sprites = {
 	},
 	["tile-background-jungle-window-02"] = {
 		type = "window",
+		light = LIGHT_WINDOW,
 		theme = "jungle",
 		frames = {
 			{ "tile-background-jungle-window-02-on", "tile-background-jungle-window-02-off", }, --back
@@ -1561,6 +1610,7 @@ sprites = {
 
 	["tile-cave-jungle-01"] = {
 		type = "cave",
+		light = LIGHT_CAVE,
 		theme = "jungle",
 		frames = {
 			{ "tile-cave-jungle-01-on", "tile-cave-jungle-01-off", }, --back
@@ -1571,6 +1621,7 @@ sprites = {
 	},
 	["tile-cave-jungle-02"] = {
 		type = "cave",
+		light = LIGHT_CAVE,
 		theme = "jungle",
 		frames = {
 			{ "tile-cave-jungle-02-on", "tile-cave-jungle-02-off", }, --back
@@ -1685,6 +1736,7 @@ sprites = {
 	["tile-rock-big-jungle-01"] = { type = "rock", width = 2, height = 2, theme = "jungle", },
 	["tile-lava-rock-jungle-left-01"] = {
 		type = "lava",
+		light = LIGHT_LAVA,
 		theme = "jungle",
 		fps = 2,
 		polygons = {
@@ -1698,6 +1750,7 @@ sprites = {
 	},
 	["tile-lava-rock-jungle-right-01"] = {
 		type = "lava",
+		light = LIGHT_LAVA,
 		theme = "jungle",
 		fps = 2,
 		polygons = {

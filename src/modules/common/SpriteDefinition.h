@@ -69,8 +69,10 @@ private:
 	mutable bool _shapeSizeCalculated;
 public:
 	SpriteDef (const std::string& _id, const SpriteType& _type, const ThemeType& _theme) :
-			_shapeSizeCalculated(false), id(_id), type(_type), theme(_theme), redirect(""), placement("any"), fps(0.0f), width(1.0f), height(
-					1.0f), angle(0), rotateable(0.0f), friction(0.2f), restitution(0.0f), delay(0)
+			_shapeSizeCalculated(false), id(_id), type(_type), theme(_theme), redirect(""), placement("any"), fps(0.0f),
+			width(1.0f), height(1.0f), angle(0), rotateable(0.0f), friction(0.2f), restitution(0.0f), hasLight(false),
+			lightRadius(0.0f), lightIntensity(1.0f), lightR(1.0f), lightG(0.82f), lightB(0.48f), lightOffsetX(0.0f),
+			lightOffsetY(0.0f), lightFalloff(2.0f), delay(0)
 	{
 	}
 
@@ -144,6 +146,24 @@ public:
 
 	float friction;
 	float restitution;
+
+	// Optional point light for normal-map shading. hasLight is set when sprites.lua
+	// defines a `light` table. radius is in tiles; offsets are added to the entity pos
+	// (Y increases downward). falloff 2 matches the previous quadratic attenuation.
+	bool hasLight;
+	float lightRadius;
+	float lightIntensity;
+	float lightR;
+	float lightG;
+	float lightB;
+	float lightOffsetX;
+	float lightOffsetY;
+	float lightFalloff;
+
+	inline bool emitsLight () const
+	{
+		return hasLight && lightRadius > 0.0f;
+	}
 
 	void invalidateShapeSize ()
 	{

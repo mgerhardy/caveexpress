@@ -2,7 +2,8 @@ uniform sampler2D u_texture;
 uniform sampler2D u_normals;
 uniform int u_lightcount;
 uniform vec4 u_lights[16];
-uniform vec3 u_lightcolor;
+uniform vec3 u_lightcolors[16];
+uniform float u_lightfalloff[16];
 
 in vec2 v_texcoord;
 in vec2 v_normalcoord;
@@ -35,10 +36,10 @@ void main(void) {
 			vec3 L = vec3(delta.x, -delta.y, radius * 0.05);
 			float dist = length(delta);
 			float att = 1.0 - clamp(dist / radius, 0.0, 1.0);
-			att *= att;
+			att = pow(max(att, 0.0), max(u_lightfalloff[i], 0.01));
 			vec3 Ln = normalize(L);
 			float diff = max(dot(n, Ln), 0.0);
-			lighting += u_lightcolor * intensity * diff * att;
+			lighting += u_lightcolors[i] * intensity * diff * att;
 		}
 		lighting = min(lighting, vec3(1.55));
 		outc.rgb *= lighting;

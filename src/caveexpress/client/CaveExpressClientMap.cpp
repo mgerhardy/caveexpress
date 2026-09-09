@@ -4,6 +4,7 @@
 #include "caveexpress/client/entities/ClientWindowTile.h"
 #include "caveexpress/client/entities/ClientCaveTile.h"
 #include "caveexpress/client/entities/ClientGate.h"
+#include "common/SpriteDefinition.h"
 #include "caveexpress/shared/network/messages/ProtocolMessages.h"
 #include "common/ThemeType.h"
 #include "common/vec2.h"
@@ -362,35 +363,72 @@ void CaveExpressClientMap::renderBegin (int x, int y) const
 	RenderLight lights[MAX_RENDER_LIGHTS];
 	int lightCount = 0;
 	const float tilePx = static_cast<float>(_scaleGridToPixel) * _zoom;
+	struct LavaSpot {
+		float x;
+		float y;
+		SpriteDefPtr def;
+	};
+	std::vector<LavaSpot> lavaSpots;
+	const bool hasWater = getWaterHeight() > 0.000001f;
+	auto fillLight = [x, y, tilePx] (RenderLight& light, const SpriteDefPtr& def, float px, float py, float radiusTiles) {
+		light.x = static_cast<float>(x) + (px + def->lightOffsetX) * tilePx;
+		light.y = static_cast<float>(y) + (py + def->lightOffsetY) * tilePx;
+		light.radius = radiusTiles * tilePx;
+		light.intensity = def->lightIntensity;
+		light.r = def->lightR;
+		light.g = def->lightG;
+		light.b = def->lightB;
+		light.falloff = def->lightFalloff;
+	};
 	for (const auto &iter : _entities) {
-		if (lightCount >= MAX_RENDER_LIGHTS)
-			break;
 		const ClientEntityPtr& e = iter.second;
-		float radiusTiles = 0.0f;
-		float intensity = 0.0f;
+		const SpriteDefPtr def = SpriteDefinition::get().getSpriteDefinition(e->getSpriteName());
+		if (!def || !def->emitsLight())
+			continue;
 		if (EntityTypes::isCave(e->getType())) {
 			const ClientCaveTile *cave = static_cast<const ClientCaveTile*>(e);
 			if (!cave->isLightState())
 				continue;
-			radiusTiles = 6.0f;
-			intensity = 1.0f;
 		} else if (EntityTypes::isWindow(e->getType())) {
 			const ClientWindowTile *window = static_cast<const ClientWindowTile*>(e);
 			if (!window->isLightState())
 				continue;
-			radiusTiles = 4.0f;
-			intensity = 0.7f;
-		} else {
-			continue;
 		}
 		const vec2& pos = e->getPos();
-		lights[lightCount].x = static_cast<float>(x) + pos.x * tilePx;
-		// Caves sit on a platform; the opening is the lower half of the tile.
-		const float mouth = EntityTypes::isCave(e->getType()) ? 0.35f : 0.0f;
-		lights[lightCount].y = static_cast<float>(y) + (pos.y + mouth) * tilePx;
-		lights[lightCount].radius = radiusTiles * tilePx;
-		lights[lightCount].intensity = intensity;
+		if (EntityTypes::isLava(e->getType())) {
+			if (hasWater && pos.y >= _waterHeight)
+				continue;
+			lavaSpots.push_back(LavaSpot{pos.x, pos.y, def});
+			continue;
+		}
+		if (lightCount >= MAX_RENDER_LIGHTS)
+			continue;
+		fillLight(lights[lightCount], def, pos.x, pos.y, def->lightRadius);
 		++lightCount;
+	}
+	std::sort(lavaSpots.begin(), lavaSpots.end(), [] (const LavaSpot& a, const LavaSpot& b) {
+		if (a.y != b.y)
+			return a.y < b.y;
+		return a.x < b.x;
+	});
+	for (size_t i = 0; i < lavaSpots.size() && lightCount < MAX_RENDER_LIGHTS; ) {
+		size_t j = i + 1;
+		float sumX = lavaSpots[i].x;
+		float sumY = lavaSpots[i].y;
+		while (j < lavaSpots.size() && fabs(lavaSpots[j].y - lavaSpots[i].y) < 0.6f
+				&& lavaSpots[j].x - lavaSpots[j - 1].x < 1.2f) {
+			sumX += lavaSpots[j].x;
+			sumY += lavaSpots[j].y;
+			++j;
+		}
+		const float run = static_cast<float>(j - i);
+		const SpriteDefPtr& def = lavaSpots[i].def;
+		float radiusTiles = def->lightRadius + 0.45f * (run - 1.0f);
+		if (radiusTiles > def->lightRadius + 2.5f)
+			radiusTiles = def->lightRadius + 2.5f;
+		fillLight(lights[lightCount], def, sumX / run, sumY / run, radiusTiles);
+		++lightCount;
+		i = j;
 	}
 	_frontend->setRenderLights(lights, lightCount);
 }

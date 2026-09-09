@@ -127,8 +127,21 @@ void GL3Frontend::renderBatchesWithShader (Shader& shader)
 		}
 		shader.setUniform4fv("u_lights", packed, 0, _lightCount * 4);
 	}
-	if (shader.hasUniform("u_lightcolor"))
-		shader.setUniformf("u_lightcolor", 1.0f, 0.82f, 0.48f);
+	if (shader.hasUniform("u_lightcolors") && _lightCount > 0) {
+		float colors[MAX_RENDER_LIGHTS * 3];
+		for (int i = 0; i < _lightCount; ++i) {
+			colors[i * 3 + 0] = _lights[i].r;
+			colors[i * 3 + 1] = _lights[i].g;
+			colors[i * 3 + 2] = _lights[i].b;
+		}
+		shader.setUniform3fv("u_lightcolors", colors, 0, _lightCount * 3);
+	}
+	if (shader.hasUniform("u_lightfalloff") && _lightCount > 0) {
+		float falloff[MAX_RENDER_LIGHTS];
+		for (int i = 0; i < _lightCount; ++i)
+			falloff[i] = _lights[i].falloff;
+		shader.setUniform1fv("u_lightfalloff", falloff, 0, _lightCount);
+	}
 	glBindVertexArray(_vao);
 	GL_checkError();
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);

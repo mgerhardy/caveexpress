@@ -67,6 +67,23 @@ A sprite that should cover characters (dust, waste piles, idea bubbles) belongs 
 
 Empty layer tables (`{}`) draw nothing on that pass.
 
+### `light`
+
+Optional point light for sprites that should illuminate nearby `*_n` maps (caves, windows, lava). Caves and windows only emit while their in-game light is on.
+
+```lua
+light = {
+    radius = 6.0,                 -- tiles
+    intensity = 1.0,
+    color = { 1.0, 0.82, 0.48 },  -- RGB
+    offsetx = 0.0,
+    offsety = 0.35,               -- added to entity pos; Y increases downward
+    falloff = 2.0,                -- 1 linear, 2 quadratic
+},
+```
+
+Shared presets at the top of `sprites.lua`: `LIGHT_CAVE`, `LIGHT_WINDOW`, `LIGHT_LAVA`.
+
 ### Animation
 
 - `fps` and optional `delays` drive frame timing.
