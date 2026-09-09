@@ -62,6 +62,14 @@ protected:
 	PlayerList _playersWaitingForSpawn;
 	// these are the already spawned players
 	PlayerList _players;
+	// Connected after the match began; these clients receive a world snapshot but no player entity.
+	PlayerList _spectators;
+	ClientId _hostClientId;
+	bool _hostClientIdSet;
+	bool _matchStarted;
+	bool _endScreenHold;
+	bool _lobbyAutoStartEnabled;
+	bool _sendCloseMapOnReset;
 
 	EntityList _entities;
 
@@ -100,7 +108,13 @@ public:
 	virtual ~Map ();
 
 	const PlayerList& getPlayers () const;
-	inline int getConnectedPlayers () const { return static_cast<int>(_playersWaitingForSpawn.size() + _players.size()); }
+	const PlayerList& getSpectators () const;
+	inline int getConnectedPlayers () const {
+		return static_cast<int>(_playersWaitingForSpawn.size() + _players.size() + _spectators.size());
+	}
+	inline int getSessionPlayerCount () const {
+		return static_cast<int>(_playersWaitingForSpawn.size() + _players.size());
+	}
 	Player* getPlayer (ClientId clientId);
 
 	void rebuildField ();
@@ -136,6 +150,8 @@ public:
 	void reload ();
 	bool isFailed () const;
 	bool isPause () const;
+	bool isMatchStarted () const;
+	bool isEndScreenHold () const;
 	const BoardState& getBoardState() const;
 
 	inline bool isFree(int col, int row) {
@@ -166,6 +182,11 @@ public:
 	void startMap ();
 	bool isReadyToStart () const;
 	void sendPlayersList () const;
+	std::vector<std::string> getLobbyPlayerNames () const;
+	ClientId getHostClientId () const;
+	bool returnToLobby ();
+	void triggerReturnToLobby ();
+	void holdForEndScreen ();
 	void sendMessage (ClientId clientId, const std::string& message) const;
 	void printPlayersList () const;
 
@@ -209,6 +230,8 @@ public:
 private:
 	void solveMap () { solve(); }
 	void finishMap ();
+	void sendWorldSnapshotToClient (ClientId clientId) const;
+	void noteHostPlayer (const Player* player);
 
 	// command callbacks
 	void triggerRestart ();
@@ -224,6 +247,11 @@ inline uint32_t Map::getTime () const
 inline const Map::PlayerList& Map::getPlayers () const
 {
 	return _players;
+}
+
+inline const Map::PlayerList& Map::getSpectators () const
+{
+	return _spectators;
 }
 
 inline int Map::getMapWidth () const
@@ -266,6 +294,16 @@ inline bool Map::isFinishPending () const
 inline bool Map::isPause () const
 {
 	return _pause;
+}
+
+inline bool Map::isMatchStarted () const
+{
+	return _matchStarted;
+}
+
+inline bool Map::isEndScreenHold () const
+{
+	return _endScreenHold;
 }
 
 inline const BoardState& Map::getBoardState () const

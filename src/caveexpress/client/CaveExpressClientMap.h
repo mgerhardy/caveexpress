@@ -12,7 +12,6 @@ private:
 	float _waterHeight = 0.0f;
 	float _wind = 0.0f;
 	mutable RenderTarget* _target = nullptr;
-	uint16_t _spectateEntityId = 0;
 	uint16_t _appliedSpectateHudEntityId = 0;
 	bool _appliedSpectateHudValid = false;
 	struct SpectatePlayerHud {
@@ -29,7 +28,7 @@ private:
 	SpectatePlayerHud _appliedSpectateHud;
 	std::unordered_map<uint16_t, SpectatePlayerHud> _playerHud;
 
-	void collectSpectateTargets (std::vector<uint16_t>& ids) const;
+	bool isSpectateCandidate (const ClientEntity& entity) const override;
 	void renderWater (int x, int y) const;
 	void renderLavaHeat (int x, int y) const;
 	SDL_Rect getWaterRect(int x, int y) const;
@@ -47,12 +46,9 @@ public:
 	void setGateState (uint16_t id, uint8_t openAmount);
 	bool drop ();
 	void start () override;
-	ClientEntity* getSpectateTarget () const override;
-	uint16_t cycleSpectateTarget (int dir) override;
 	void storePlayerHud (uint16_t entityId, uint16_t hitpoints, uint8_t lives, uint8_t targetCave, uint8_t collectedTypeId);
 	void applyFollowedPlayerHudIfChanged () override;
 	void init (uint16_t playerID) override;
-	bool keepSessionOnMatchEnd () const override { return _serviceProvider.getNetwork().isMultiplayer(); }
 	void handleWaterImpact (float x, float force);
 	void setWaterHeight (float height);
 	// the water height in physic units

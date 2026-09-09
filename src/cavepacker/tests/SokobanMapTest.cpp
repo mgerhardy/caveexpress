@@ -5,6 +5,8 @@
 #include "cavepacker/shared/BoardState.h"
 #include "cavepacker/shared/network/ProtocolMessageTypes.h"
 #include "common/FileSystem.h"
+#include "common/ConfigManager.h"
+#include "common/LobbyPlayers.h"
 #include "tests/NetworkTestListener.h"
 #include "data.h"
 #include <cstring>
@@ -94,6 +96,100 @@ protected:
 TEST_F(SokobanMapTest, testSolutionSasquatch02_0017)
 {
 	ASSERT_NE("", Map::getSolution("sasquatch02_0017"));
+}
+
+TEST_F(SokobanMapTest, multiplayerLobbyMarksHostAndAutoStartsAtConfiguredCap)
+{
+	_serviceProvider.updateNetwork(true);
+	Config.getConfigVar("maxplayers", "2")->setValue(2);
+	Map map;
+	map.init(&_testFrontend, _serviceProvider);
+	ASSERT_TRUE(map.load("xsokoban0001"));
+	ASSERT_EQ(2, map.getMaxPlayers());
+
+	Player* host = new Player(map, 1);
+	host->setName("Alice");
+	ASSERT_TRUE(map.initPlayer(host));
+	EXPECT_FALSE(map.isMatchStarted());
+	Player* guest = new Player(map, 2);
+	guest->setName("Bob");
+	ASSERT_TRUE(map.initPlayer(guest));
+
+	EXPECT_TRUE(map.isMatchStarted());
+	ASSERT_EQ(2u, map.getPlayers().size());
+	const std::vector<std::string> names = map.getLobbyPlayerNames();
+	ASSERT_EQ(2u, names.size());
+	EXPECT_EQ(std::string("Alice") + lobby::HOST_SUFFIX, names[0]);
+	EXPECT_EQ("Bob", names[1]);
+	map.shutdown();
+}
+
+TEST_F(SokobanMapTest, multiplayerLateJoinSpectatesAndNextRoundWaitsForHost)
+{
+	_serviceProvider.updateNetwork(true);
+	Config.getConfigVar("maxplayers", "2")->setValue(2);
+	Map map;
+	map.init(&_testFrontend, _serviceProvider);
+	ASSERT_TRUE(map.load("xsokoban0001"));
+
+	Player* host = new Player(map, 1);
+	host->setName("Alice");
+	ASSERT_TRUE(map.initPlayer(host));
+	Player* guest = new Player(map, 2);
+	guest->setName("Bob");
+	ASSERT_TRUE(map.initPlayer(guest));
+	ASSERT_TRUE(map.isMatchStarted());
+
+	Player* spectator = new Player(map, 3);
+	spectator->setName("Carol");
+	ASSERT_TRUE(map.initPlayer(spectator));
+	ASSERT_EQ(2u, map.getPlayers().size());
+	ASSERT_EQ(1u, map.getSpectators().size());
+	EXPECT_TRUE(spectator->isSpectator());
+	EXPECT_EQ(spectator, map.getPlayer(3));
+	const std::vector<std::string> activeNames = map.getLobbyPlayerNames();
+	ASSERT_EQ(3u, activeNames.size());
+	EXPECT_EQ(std::string("Carol") + lobby::SPECTATING_SUFFIX, activeNames[2]);
+
+	ASSERT_TRUE(map.returnToLobby());
+	EXPECT_FALSE(map.isMatchStarted());
+	EXPECT_FALSE(map.isEndScreenHold());
+	EXPECT_TRUE(map.getPlayers().empty());
+	EXPECT_TRUE(map.getSpectators().empty());
+	EXPECT_FALSE(map.isFailed());
+
+	Player* hostAgain = new Player(map, 1);
+	hostAgain->setName("Alice");
+	ASSERT_TRUE(map.initPlayer(hostAgain));
+	Player* guestAgain = new Player(map, 2);
+	guestAgain->setName("Bob");
+	ASSERT_TRUE(map.initPlayer(guestAgain));
+	EXPECT_FALSE(map.isMatchStarted()) << "later rounds must wait for the host Start command";
+	map.startMap();
+	EXPECT_TRUE(map.isMatchStarted());
+	map.shutdown();
+}
+
+TEST_F(SokobanMapTest, multiplayerGuestLeaveKeepsHostMatchRunning)
+{
+	_serviceProvider.updateNetwork(true);
+	Map map;
+	map.init(&_testFrontend, _serviceProvider);
+	ASSERT_TRUE(map.load("xsokoban0001"));
+	Player* host = new Player(map, 1);
+	ASSERT_TRUE(map.initPlayer(host));
+	map.startMap();
+	ASSERT_TRUE(map.isMatchStarted());
+
+	Player* guest = new Player(map, 2);
+	ASSERT_TRUE(map.initPlayer(guest));
+	ASSERT_EQ(1u, map.getSpectators().size());
+	map.disconnect(2);
+	EXPECT_TRUE(map.isMatchStarted());
+	EXPECT_EQ(1u, map.getPlayers().size());
+	EXPECT_TRUE(map.getSpectators().empty());
+	EXPECT_EQ("xsokoban0001", map.getName());
+	map.shutdown();
 }
 
 // we don't have solutions here

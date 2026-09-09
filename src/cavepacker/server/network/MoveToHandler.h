@@ -18,7 +18,7 @@ public:
 	void execute (const ClientId& clientId, const IProtocolMessage& message) override
 	{
 		Player* player = _map.getPlayer(clientId);
-		if (player == nullptr)
+		if (player == nullptr || player->isSpectator())
 			return;
 		const MoveToMessage* msg = static_cast<const MoveToMessage*>(&message);
 		const int col = msg->getCol();

@@ -19,7 +19,7 @@ public:
 	{
 		_map.abortAutoSolve();
 		Player* player = _map.getPlayer(clientId);
-		if (player == nullptr) {
+		if (player == nullptr || player->isSpectator()) {
 			Log::error(LOG_GAMEIMPL, "movement for player with clientId %i failed", (int)clientId);
 			return;
 		}

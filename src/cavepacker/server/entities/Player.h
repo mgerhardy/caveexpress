@@ -25,6 +25,7 @@ private:
 	int _targetIndex;
 	uint32_t _lastStep;
 	Direction _heldDirection;
+	bool _spectator;
 
 	char getHeldMoveStep () const;
 public:
@@ -39,6 +40,8 @@ public:
 	ClientId getClientId () const;
 	const std::string& getName () const;
 	void setName (const std::string& name);
+	void setSpectator (bool spectator);
+	bool isSpectator () const;
 	void storeStep (char step);
 	bool undo ();
 	const std::string& getSolution () const;
@@ -57,6 +60,16 @@ inline const std::string& Player::getName () const
 inline void Player::setName (const std::string& name)
 {
 	_name = name;
+}
+
+inline void Player::setSpectator (bool spectator)
+{
+	_spectator = spectator;
+}
+
+inline bool Player::isSpectator () const
+{
+	return _spectator;
 }
 
 inline const std::string& Player::getSolution () const

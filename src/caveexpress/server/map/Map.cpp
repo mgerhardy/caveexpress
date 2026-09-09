@@ -1414,12 +1414,9 @@ std::vector<std::string> Map::getLobbyPlayerNames () const
 	std::vector<std::string> names;
 	names.reserve(_players.size() + _playersWaitingForSpawn.size() + _spectators.size());
 	const ClientId hostId = getHostClientId();
-	for (Player* player : _players)
-		names.push_back(lobby::formatPlayerName(player->getName(), player->getClientId() == hostId));
-	for (Player* player : _playersWaitingForSpawn)
-		names.push_back(lobby::formatPlayerName(player->getName(), player->getClientId() == hostId));
-	for (Player* player : _spectators)
-		names.push_back(lobby::formatPlayerName(player->getName(), player->getClientId() == hostId, true));
+	lobby::appendPlayerNames(names, _players, hostId);
+	lobby::appendPlayerNames(names, _playersWaitingForSpawn, hostId);
+	lobby::appendPlayerNames(names, _spectators, hostId, true);
 	return names;
 }
 

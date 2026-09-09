@@ -40,6 +40,7 @@ protected:
 	int _scaleGridToPixel;
 	float _zoom;
 	float _ambientLight;
+	uint16_t _spectateEntityId;
 
 	// all the maptiles and other entities (e.g. stones) in this map
 	ClientEntityMap _entities;
@@ -98,14 +99,16 @@ protected:
 	virtual void couldNotFindEntity (const std::string& prefix, uint16_t id) const;
 	void disableScreenRumble ();
 
-	virtual bool updateCameraPosition ();
+	bool updateCameraPosition ();
 
 	/**
 	 * Whether a sprite-defined point light should be uploaded this frame.
 	 * Default: `def->emitsLight()` and `e->isLightEnabled()`.
 	 */
 	virtual bool acceptSpriteLight (const ClientEntityPtr& e, const SpriteDefPtr& def) const;
+	virtual bool isSpectateCandidate (const ClientEntity& entity) const;
 	void collectAndUploadLights (int x, int y) const;
+	void collectSpectateTargets (std::vector<uint16_t>& ids) const;
 
 	/**
 	 * Whether new position updates should start interpolating.
@@ -224,7 +227,7 @@ public:
 	bool isLocalPlayerSpectating () const;
 	virtual ClientEntity* getSpectateTarget () const;
 	/** Cycle follow target while spectating. dir > 0 next, dir < 0 previous. */
-	virtual uint16_t cycleSpectateTarget (int dir) { (void)dir; return 0; }
+	virtual uint16_t cycleSpectateTarget (int dir);
 	virtual void applyFollowedPlayerHudIfChanged () {}
 	bool isJoinAsSpectator () const;
 	void setJoinAsSpectator (bool spectator);
@@ -234,8 +237,7 @@ public:
 
 	bool isStarted () const;
 	virtual void start ();
-	/** CaveExpress multiplayer keeps the session after fail/finish. */
-	virtual bool keepSessionOnMatchEnd () const;
+	bool keepSessionOnMatchEnd () const;
 
 	void setPos (int x, int y);
 	void setSize (int width, int height);
@@ -281,11 +283,6 @@ inline const ThemeType& ClientMap::getTheme () const
 inline bool ClientMap::isActive () const
 {
 	return _mapGridWidth > 0 && _mapGridHeight > 0 && !_name.empty();
-}
-
-inline bool ClientMap::keepSessionOnMatchEnd () const
-{
-	return false;
 }
 
 inline Camera& ClientMap::getCamera ()

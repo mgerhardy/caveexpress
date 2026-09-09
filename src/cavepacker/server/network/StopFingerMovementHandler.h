@@ -18,7 +18,7 @@ public:
 	void execute (const ClientId& clientId, const IProtocolMessage& message) override
 	{
 		Player* player = _map.getPlayer(clientId);
-		if (player == nullptr) {
+		if (player == nullptr || player->isSpectator()) {
 			Log::error(LOG_GAMEIMPL, "movement for player with clientId %i failed", (int)clientId);
 			return;
 		}

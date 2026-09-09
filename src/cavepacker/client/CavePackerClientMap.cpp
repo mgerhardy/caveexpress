@@ -8,6 +8,7 @@
 #include "service/ServiceProvider.h"
 #include "cavepacker/shared/CavePackerAnimation.h"
 #include "cavepacker/shared/CavePackerEntityType.h"
+#include "network/INetwork.h"
 
 namespace cavepacker {
 
@@ -35,7 +36,7 @@ void CavePackerClientMap::setDeadlocks(const std::vector<int>& _deadlocks) {
 		if (!EntityTypes::isGround(type)) {
 			continue;
 		}
-		ClientMapTile* tile = static_cast<ClientMapTile*>(entity);
+		ClientMapTile* tile = assert_cast<ClientMapTile*, ClientEntity*>(entity);
 		const vec2& pos = tile->getPos();
 		const int col = pos.x + 0.5f;
 		const int row = pos.y + 0.5f;
@@ -48,6 +49,11 @@ void CavePackerClientMap::setDeadlocks(const std::vector<int>& _deadlocks) {
 		deadlocks.erase(iter);
 		tile->addOverlay(_deadlockOverlay);
 	}
+}
+
+bool CavePackerClientMap::isSpectateCandidate (const ClientEntity& entity) const
+{
+	return EntityTypes::isPlayer(entity.getType());
 }
 
 void CavePackerClientMap::update(uint32_t deltaTime) {

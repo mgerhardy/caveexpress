@@ -28,6 +28,7 @@
 #include "common/vec2.h"
 #include "common/ExecutionTime.h"
 #include "common/Commands.h"
+#include "common/LobbyPlayers.h"
 #include "cavepacker/server/map/SokobanMapContext.h"
 #include "cavepacker/shared/Pathfinding.h"
 #include "cavepacker/shared/CavePackerSpriteType.h"
@@ -47,12 +48,15 @@ static const SoundMessage TARGETSOUND(0.0f, 0.0f, SoundTypes::TARGET);
 static const SoundMessage DEADLOCKSOUND(0.0f, 0.0f, SoundTypes::DEADLOCK);
 
 Map::Map () :
-		IMap(), _frontend(nullptr), _serviceProvider(nullptr), _forcedFinish(false), _autoSolve(false), _nextSolveStep(0)
+		IMap(), _hostClientId(0), _hostClientIdSet(false), _matchStarted(false), _endScreenHold(false),
+		_lobbyAutoStartEnabled(true), _sendCloseMapOnReset(true), _frontend(nullptr), _serviceProvider(nullptr),
+		_forcedFinish(false), _autoSolve(false), _nextSolveStep(0)
 {
 	Commands.registerCommandVoid(CMD_MAP_PAUSE, bindFunctionVoid(Map::triggerPause));
 	Commands.registerCommandVoid(CMD_MAP_RESTART, bindFunctionVoid(Map::triggerRestart));
 	Commands.registerCommandVoid(CMD_START, bindFunctionVoid(Map::startMap));
 	Commands.registerCommandVoid(CMD_FINISHMAP, bindFunctionVoid(Map::finishMap));
+	Commands.registerCommandVoid(CMD_RETURN_TO_LOBBY, bindFunctionVoid(Map::triggerReturnToLobby));
 	Commands.registerCommandVoid("map_print", bindFunctionVoid(Map::printMap));
 	Commands.registerCommandVoid("solve", bindFunctionVoid(Map::solveMap));
 
@@ -65,6 +69,7 @@ Map::~Map ()
 	Commands.removeCommand(CMD_MAP_RESTART);
 	Commands.removeCommand(CMD_START);
 	Commands.removeCommand(CMD_FINISHMAP);
+	Commands.removeCommand(CMD_RETURN_TO_LOBBY);
 	Commands.removeCommand("map_print");
 	Commands.removeCommand("solve");
 }
@@ -107,7 +112,7 @@ void Map::disconnect (ClientId clientId)
 
 	_serviceProvider->getNetwork().disconnectClientFromServer(clientId);
 
-	if (_players.size() == 1 && _playersWaitingForSpawn.empty())
+	if (_players.empty() && _playersWaitingForSpawn.empty() && _spectators.empty())
 		resetCurrentMap();
 }
 
@@ -150,6 +155,12 @@ Player* Map::getPlayer (ClientId clientId)
 		}
 	}
 
+	for (PlayerListIter i = _spectators.begin(); i != _spectators.end(); ++i) {
+		if ((*i)->getClientId() == clientId) {
+			return *i;
+		}
+	}
+
 	Log::error(LOG_GAMEIMPL, "no player found for the client id %i", clientId);
 	return nullptr;
 }
@@ -161,6 +172,8 @@ bool Map::isForcedFinished () const
 
 bool Map::isDone () const
 {
+	if (!_matchStarted)
+		return false;
 	if (_forcedFinish)
 		return true;
 	if (isFailed())
@@ -395,6 +408,8 @@ void Map::increasePushes ()
 
 bool Map::isFailed () const
 {
+	if (!_matchStarted)
+		return false;
 	if (_players.empty())
 		return true;
 
@@ -451,8 +466,10 @@ void Map::resetCurrentMap ()
 	_deadLocks.clear();
 	_timeManager.reset();
 	if (!_name.empty()) {
-		const CloseMapMessage msg;
-		_serviceProvider->getNetwork().sendToAllClients(msg);
+		if (_sendCloseMapOnReset) {
+			const CloseMapMessage msg;
+			_serviceProvider->getNetwork().sendToAllClients(msg);
+		}
 		Log::info(LOG_GAMEIMPL, "reset map: %s", _name.c_str());
 	}
 	_field.clear();
@@ -464,6 +481,12 @@ void Map::resetCurrentMap ()
 	_finishPending = false;
 	_pause = false;
 	_mapRunning = false;
+	_matchStarted = false;
+	_endScreenHold = false;
+	_lobbyAutoStartEnabled = true;
+	_sendCloseMapOnReset = true;
+	_hostClientId = 0;
+	_hostClientIdSet = false;
 	_width = 0;
 	_height = 0;
 	_time = 0;
@@ -483,6 +506,11 @@ void Map::resetCurrentMap ()
 		}
 		_players.clear();
 		_players.reserve(MAX_CLIENTS);
+		for (PlayerListIter i = _spectators.begin(); i != _spectators.end(); ++i) {
+			delete *i;
+		}
+		_spectators.clear();
+		_spectators.reserve(MAX_CLIENTS);
 		if (!_name.empty())
 			Log::info(LOG_GAMEIMPL, "* removed allocated memory");
 	}
@@ -583,9 +611,22 @@ bool Map::spawnPlayer (Player* player)
 
 	const int startPosIdx = (int)_players.size();
 	int col, row;
-	if (!getStartPosition(startPosIdx, col, row)) {
-		Log::error(LOG_GAMEIMPL, "no player position for index %i", startPosIdx);
-		return false;
+	if (!getStartPosition(startPosIdx, col, row) || !_state.isFree(col, row)) {
+		bool found = false;
+		for (int candidateRow = 0; candidateRow < _height && !found; ++candidateRow) {
+			for (int candidateCol = 0; candidateCol < _width; ++candidateCol) {
+				if (_state.isFree(candidateCol, candidateRow)) {
+					col = candidateCol;
+					row = candidateRow;
+					found = true;
+					break;
+				}
+			}
+		}
+		if (!found) {
+			Log::error(LOG_GAMEIMPL, "no free player position for index %i", startPosIdx);
+			return false;
+		}
 	}
 	if (!player->setPos(col, row)) {
 		Log::error(LOG_GAMEIMPL, "failed to set the player position to %i:%i", col, row);
@@ -595,6 +636,7 @@ bool Map::spawnPlayer (Player* player)
 	addEntity(0, *player);
 	Log::info(LOG_GAMEIMPL, "spawned player %i", player->getID());
 	_players.push_back(player);
+	rebuildField();
 	return true;
 }
 
@@ -655,11 +697,20 @@ void Map::printMap ()
 
 void Map::startMap ()
 {
+	if (_matchStarted)
+		return;
+
 	rebuildField();
-	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
-		spawnPlayer(*i);
+	for (PlayerListIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end();) {
+		if (spawnPlayer(*i)) {
+			i = _playersWaitingForSpawn.erase(i);
+		} else {
+			++i;
+		}
 	}
-	_playersWaitingForSpawn.clear();
+	if (_players.empty())
+		return;
+	_matchStarted = true;
 
 	INetwork& network = _serviceProvider->getNetwork();
 	network.sendToAllClients(StartMapMessage());
@@ -709,20 +760,32 @@ bool Map::initPlayer (Player* player)
 
 	INetwork& network = _serviceProvider->getNetwork();
 	const ClientId clientId = player->getClientId();
-	Log::info(LOG_GAMEIMPL, "init player %i", player->getID());
+	const bool spectator = network.isMultiplayer() && _matchStarted;
+	Log::info(LOG_GAMEIMPL, "init player %i%s", player->getID(), spectator ? " as spectator" : "");
+	player->setSpectator(spectator);
 	const MapSettingsMessage mapSettingsMsg(_settings, (int)_startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);
 
-	const InitDoneMessage msgInit(player->getID(), 0, 0, 0, 0);
+	const InitDoneMessage msgInit(player->getID(), 0, 0, 0, 0, spectator);
 	network.sendToClient(clientId, msgInit);
 
-	network.sendToClient(clientId, InitWaitingMapMessage());
 	sendMapToClient(clientId);
-	if (!_players.empty()) {
-		const bool spawned = spawnPlayer(player);
-		return spawned;
+	if (spectator) {
+		_spectators.push_back(player);
+		sendWorldSnapshotToClient(clientId);
+		network.sendToClient(clientId, StartMapMessage());
+		sendPlayersList();
+		return true;
 	}
+	network.sendToClient(clientId, InitWaitingMapMessage());
 	_playersWaitingForSpawn.push_back(player);
+	noteHostPlayer(player);
+	if (_lobbyAutoStartEnabled && lobby::shouldAutoStartMatch(network.isMultiplayer(), _matchStarted,
+			static_cast<int>(_playersWaitingForSpawn.size()), getMaxPlayers())) {
+		Log::info(LOG_GAMEIMPL, "auto-start: lobby is full (%i/%i)",
+				(int)_playersWaitingForSpawn.size(), getMaxPlayers());
+		startMap();
+	}
 	return true;
 }
 
@@ -736,21 +799,75 @@ void Map::printPlayersList () const
 		const std::string& name = (*i)->getName();
 		Log::info(LOG_GAMEIMPL, "* %s (spawned)", name.c_str());
 	}
+	for (PlayerListConstIter i = _spectators.begin(); i != _spectators.end(); ++i) {
+		const std::string& name = (*i)->getName();
+		Log::info(LOG_GAMEIMPL, "* %s (watching)", name.c_str());
+	}
+}
+
+void Map::noteHostPlayer (const Player* player)
+{
+	if (_hostClientIdSet || player == nullptr)
+		return;
+	_hostClientId = player->getClientId();
+	_hostClientIdSet = true;
+}
+
+ClientId Map::getHostClientId () const
+{
+	return _hostClientIdSet ? _hostClientId : 0;
+}
+
+std::vector<std::string> Map::getLobbyPlayerNames () const
+{
+	std::vector<std::string> names;
+	names.reserve(_players.size() + _playersWaitingForSpawn.size() + _spectators.size());
+	const ClientId hostId = getHostClientId();
+	lobby::appendPlayerNames(names, _players, hostId);
+	lobby::appendPlayerNames(names, _playersWaitingForSpawn, hostId);
+	lobby::appendPlayerNames(names, _spectators, hostId, true);
+	return names;
 }
 
 void Map::sendPlayersList () const
 {
-	std::vector<std::string> names;
-	for (PlayerListConstIter i = _players.begin(); i != _players.end(); ++i) {
-		const std::string& name = (*i)->getName();
-		names.push_back(name);
-	}
-	for (PlayerListConstIter i = _playersWaitingForSpawn.begin(); i != _playersWaitingForSpawn.end(); ++i) {
-		const std::string& name = (*i)->getName();
-		names.push_back(name);
-	}
 	INetwork& network = _serviceProvider->getNetwork();
-	network.sendToAllClients(PlayerListMessage(names));
+	network.sendToAllClients(PlayerListMessage(getLobbyPlayerNames()));
+}
+
+void Map::holdForEndScreen ()
+{
+	_endScreenHold = true;
+	_pause = true;
+	abortAutoSolve();
+}
+
+void Map::triggerReturnToLobby ()
+{
+	if (_serviceProvider == nullptr || !_serviceProvider->getNetwork().isServer() || !_endScreenHold)
+		return;
+	returnToLobby();
+}
+
+bool Map::returnToLobby ()
+{
+	if (_serviceProvider == nullptr || !_serviceProvider->getNetwork().isMultiplayer() || _name.empty())
+		return false;
+
+	const std::string name = _name;
+	const ClientId hostId = getHostClientId();
+	const bool hostSet = _hostClientIdSet;
+	_sendCloseMapOnReset = false;
+	const bool loaded = load(name);
+	_sendCloseMapOnReset = true;
+	if (!loaded)
+		return false;
+	if (hostSet) {
+		_hostClientId = hostId;
+		_hostClientIdSet = true;
+	}
+	_lobbyAutoStartEnabled = false;
+	return true;
 }
 
 void Map::removeEntity (int clientMask, const IEntity& entity) const
@@ -850,6 +967,13 @@ void Map::sendMapToClient (ClientId clientId) const
 	}
 }
 
+void Map::sendWorldSnapshotToClient (ClientId clientId) const
+{
+	const int clientMask = ClientIdToClientMask(clientId);
+	for (const Player* player : _players)
+		addEntity(clientMask, *player);
+}
+
 void Map::loadEntity (IEntity *entity)
 {
 	SDL_assert(_entityRemovalAllowed);
@@ -879,6 +1003,16 @@ bool Map::removePlayer (ClientId clientId)
 		(*i)->remove();
 		delete *i;
 		_players.erase(i);
+		sendPlayersList();
+		return true;
+	}
+
+	for (PlayerListIter i = _spectators.begin(); i != _spectators.end(); ++i) {
+		if ((*i)->getClientId() != clientId)
+			continue;
+		delete *i;
+		_spectators.erase(i);
+		sendPlayersList();
 		return true;
 	}
 	Log::error(LOG_GAMEIMPL, "could not find the player with the clientId %i", clientId);
@@ -907,20 +1041,13 @@ void Map::rebuildField ()
 }
 
 void Map::autoStart () {
-	// already spawned
-	if (!_players.empty())
+	if (_serviceProvider == nullptr || !_lobbyAutoStartEnabled)
 		return;
-	// no players available yet
-	if (_playersWaitingForSpawn.empty())
-		return;
-	// singleplayer already auto starts a map
-	if (!_serviceProvider->getNetwork().isMultiplayer())
-		return;
-	// not enough players connected yet
-	if (_playersWaitingForSpawn.size() < _startPositions.size())
-		return;
-	Log::info(LOG_GAMEIMPL, "starting the map");
-	startMap();
+	if (lobby::shouldAutoStartMatch(_serviceProvider->getNetwork().isMultiplayer(), _matchStarted,
+			static_cast<int>(_playersWaitingForSpawn.size()), getMaxPlayers())) {
+		Log::info(LOG_GAMEIMPL, "starting the map");
+		startMap();
+	}
 }
 
 void Map::sendDeadlocks(ClientId clientId)
@@ -1066,7 +1193,8 @@ void Map::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 
 int Map::getMaxPlayers() const
 {
-	return (int)_startPositions.size();
+	const int configured = Config.getConfigVar("maxplayers", "2")->getIntValue();
+	return lobby::clampSessionMaxPlayers(configured, MAX_CLIENTS);
 }
 
 void Map::triggerPause ()

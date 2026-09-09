@@ -24,7 +24,6 @@
 #include "service/ServiceProvider.h"
 #include "common/DateUtil.h"
 #include "common/Math.h"
-#include "common/Spectate.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <algorithm>
@@ -42,7 +41,6 @@ void CaveExpressClientMap::resetCurrentMap ()
 {
 	Super::resetCurrentMap();
 	_waterHeight = 0.0f;
-	_spectateEntityId = 0;
 	_appliedSpectateHudEntityId = 0;
 	_appliedSpectateHudValid = false;
 	_appliedSpectateHud = SpectatePlayerHud();
@@ -257,75 +255,9 @@ void CaveExpressClientMap::couldNotFindEntity (const std::string& prefix, uint16
 	}
 }
 
-ClientEntity* CaveExpressClientMap::getSpectateTarget () const
+bool CaveExpressClientMap::isSpectateCandidate (const ClientEntity& entity) const
 {
-	if (!isLocalPlayerSpectating())
-		return Super::getSpectateTarget();
-
-	std::vector<uint16_t> ids;
-	collectSpectateTargets(ids);
-	if (ids.empty())
-		return _player;
-
-	uint16_t want = _spectateEntityId;
-	bool found = false;
-	if (want != 0) {
-		for (uint16_t id : ids) {
-			if (id == want) {
-				found = true;
-				break;
-			}
-		}
-	}
-	if (!found)
-		want = ids.front();
-
-	ClientEntityMapConstIter i = _entities.find(want);
-	if (i != _entities.end())
-		return i->second;
-	return _player;
-}
-
-void CaveExpressClientMap::collectSpectateTargets (std::vector<uint16_t>& ids) const
-{
-	ids.clear();
-	std::vector<uint16_t> living;
-	std::vector<uint16_t> crashed;
-	for (ClientEntityMapConstIter i = _entities.begin(); i != _entities.end(); ++i) {
-		ClientEntity* e = i->second;
-		if (e == nullptr || !EntityTypes::isPlayer(e->getType()))
-			continue;
-		if (_player != nullptr && e == _player)
-			continue;
-		if (e->getAnimation().name == "crashed")
-			crashed.push_back(e->getID());
-		else
-			living.push_back(e->getID());
-	}
-	std::sort(living.begin(), living.end());
-	std::sort(crashed.begin(), crashed.end());
-	if (!living.empty())
-		ids.swap(living);
-	else
-		ids.swap(crashed);
-}
-
-uint16_t CaveExpressClientMap::cycleSpectateTarget (int dir)
-{
-	if (!isLocalPlayerSpectating())
-		return 0;
-
-	std::vector<uint16_t> ids;
-	collectSpectateTargets(ids);
-	if (ids.empty())
-		return 0;
-
-	uint16_t current = _spectateEntityId;
-	if (current == 0)
-		current = ids.front();
-	_spectateEntityId = spectate::cycleId(ids, current, dir);
-	applyFollowedPlayerHudIfChanged();
-	return _spectateEntityId;
+	return EntityTypes::isPlayer(entity.getType());
 }
 
 void CaveExpressClientMap::storePlayerHud (uint16_t entityId, uint16_t hitpoints, uint8_t lives, uint8_t targetCave,

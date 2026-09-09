@@ -17,13 +17,14 @@
 #include "common/ExecutionTime.h"
 #include "common/Commands.h"
 #include "common/Log.h"
+#include "common/Spectate.h"
 #include <SDL.h>
 #include <algorithm>
 #include <cmath>
 #include <vector>
 
 ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth) :
-		IMap(), _x(x), _y(y), _width(width), _height(height), _scaleGridToPixel(referenceTileWidth), _zoom(1.0f), _ambientLight(1.0f), _player(nullptr), _restartDue(0), _restartInitialized(0), _mapGridWidth(
+		IMap(), _x(x), _y(y), _width(width), _height(height), _scaleGridToPixel(referenceTileWidth), _zoom(1.0f), _ambientLight(1.0f), _spectateEntityId(0), _player(nullptr), _restartDue(0), _restartInitialized(0), _mapGridWidth(
 				0), _mapGridHeight(0), _time(0), _playerID(0), _frontend(frontend), _pause(false), _serviceProvider(
 						serviceProvider), _screenRumble(false), _screenRumbleStrength(0.0f), _screenRumbleOffsetX(
 						0), _screenRumbleOffsetY(0), _particleSystem(
@@ -42,6 +43,11 @@ ClientMap::~ClientMap ()
 {
 	resetCurrentMap();
 	_serviceProvider.getEventHandler().removeObserver(this);
+}
+
+bool ClientMap::keepSessionOnMatchEnd () const
+{
+	return _serviceProvider.getNetwork().isMultiplayer();
 }
 
 void ClientMap::onWindowResize ()
@@ -84,6 +90,7 @@ void ClientMap::resetCurrentMap ()
 	_time = 0;
 	_started = false;
 	_joinAsSpectator = false;
+	_spectateEntityId = 0;
 	_tutorial = false;
 	_cutscene = false;
 	_ambientLight = getDefaultAmbientLight();
@@ -505,17 +512,55 @@ ClientEntity* ClientMap::getSpectateTarget () const
 		return _player;
 	if (_player == nullptr)
 		return nullptr;
+	std::vector<uint16_t> ids;
+	collectSpectateTargets(ids);
+	if (ids.empty())
+		return _player;
+	uint16_t wanted = _spectateEntityId;
+	if (std::find(ids.begin(), ids.end(), wanted) == ids.end())
+		wanted = ids.front();
+	const ClientEntityMapConstIter i = _entities.find(wanted);
+	return i == _entities.end() ? _player : i->second;
+}
+
+void ClientMap::collectSpectateTargets (std::vector<uint16_t>& ids) const
+{
+	ids.clear();
+	std::vector<uint16_t> living;
+	std::vector<uint16_t> crashed;
 	for (ClientEntityMapConstIter i = _entities.begin(); i != _entities.end(); ++i) {
-		ClientEntity* e = i->second;
-		if (e == nullptr || e == _player)
+		ClientEntity* entity = i->second;
+		if (entity == nullptr || !isSpectateCandidate(*entity) || entity == _player)
 			continue;
-		if (!(e->getType() == _player->getType()))
-			continue;
-		if (e->getAnimation().name == "crashed")
-			continue;
-		return e;
+		if (entity->getAnimation().name == "crashed")
+			crashed.push_back(entity->getID());
+		else
+			living.push_back(entity->getID());
 	}
-	return _player;
+	std::sort(living.begin(), living.end());
+	std::sort(crashed.begin(), crashed.end());
+	ids = living.empty() ? crashed : living;
+}
+
+bool ClientMap::isSpectateCandidate (const ClientEntity& entity) const
+{
+	return _player != nullptr && entity.getType() == _player->getType();
+}
+
+uint16_t ClientMap::cycleSpectateTarget (int dir)
+{
+	if (!isLocalPlayerSpectating())
+		return 0;
+
+	std::vector<uint16_t> ids;
+	collectSpectateTargets(ids);
+	if (ids.empty())
+		return 0;
+	if (_spectateEntityId == 0)
+		_spectateEntityId = ids.front();
+	_spectateEntityId = spectate::cycleId(ids, _spectateEntityId, dir);
+	applyFollowedPlayerHudIfChanged();
+	return _spectateEntityId;
 }
 
 bool ClientMap::updateCameraPosition ()

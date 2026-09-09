@@ -33,6 +33,7 @@ public:
 	void update (uint32_t deltaTime) override;
 	std::string getMapName () override;
 	int getMaxClients () override;
+	bool isMatchInProgress () const override;
 	void init (IFrontend *frontend, ServiceProvider& serviceProvider) override;
 	void shutdown () override;
 	int getPlayers () override;

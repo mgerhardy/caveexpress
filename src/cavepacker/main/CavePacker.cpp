@@ -115,6 +115,14 @@ void CavePacker::update (uint32_t deltaTime)
 	if (_map.isPause())
 		return;
 
+	if (_map.isEndScreenHold())
+		return;
+
+	if (!_map.isMatchStarted()) {
+		_mapFinishSent = false;
+		_mapFinishDelayStarted = false;
+	}
+
 	_map.update(deltaTime);
 
 	const bool isDone = _map.isDone();
@@ -196,6 +204,8 @@ void CavePacker::update (uint32_t deltaTime)
 		} else {
 			const FinishedMapMessage msg(_finishMapName, _finishMoves, _finishPushes, _finishStars);
 			_serviceProvider->getNetwork().sendToAllClients(msg);
+			if (_serviceProvider->getNetwork().isMultiplayer())
+				_map.holdForEndScreen();
 			_mapFinishSent = true;
 			_mapFinishDelayStarted = false;
 		}
@@ -262,7 +272,7 @@ int CavePacker::disconnect (ClientId clientId)
 
 int CavePacker::getPlayers ()
 {
-	return _map.getConnectedPlayers();
+	return _map.getSessionPlayerCount();
 }
 
 std::string CavePacker::getMapName ()
@@ -273,6 +283,11 @@ std::string CavePacker::getMapName ()
 int CavePacker::getMaxClients ()
 {
 	return _map.getMaxPlayers();
+}
+
+bool CavePacker::isMatchInProgress () const
+{
+	return _map.isMatchStarted();
 }
 
 void CavePacker::shutdown ()

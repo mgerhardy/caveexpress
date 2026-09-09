@@ -1,6 +1,8 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
+#include <vector>
 
 namespace lobby {
 
@@ -15,6 +17,14 @@ inline std::string formatPlayerName (const std::string& name, bool isHost, bool 
 	if (spectating)
 		formatted += SPECTATING_SUFFIX;
 	return formatted;
+}
+
+template<typename PlayerList>
+inline void appendPlayerNames (std::vector<std::string>& names, const PlayerList& players, uint16_t hostId,
+		bool spectating = false)
+{
+	for (const auto* player : players)
+		names.push_back(formatPlayerName(player->getName(), player->getClientId() == hostId, spectating));
 }
 
 const int MIN_SESSION_PLAYERS = 2;
