@@ -79,6 +79,13 @@ canvas.emscripten {
 		var progressElement = document.getElementById('progress');
 		// connect to canvas
 		var Module = {
+			noImageDecoding : true,
+			arguments : (function() {
+				var search = window.location.search.substring(1);
+				if (!search)
+					return [];
+				return decodeURIComponent(search.replace(/\+/g, ' ')).trim().split(/\s+/);
+			})(),
 			preRun : [],
 			postRun : [],
 			print : (function() {

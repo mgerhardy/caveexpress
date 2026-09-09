@@ -98,6 +98,10 @@ make android-run                # host-ABI APK, start emulator, install, launch 
 
 Need JDK 17+, ninja, unzip, and `/dev/kvm` for a fast emulator. The SDK is stored in `build/android_sdk/` by default. `ANDROID_SKIP_APK=1` builds only the native `.so` files. `ANDROID_ABI` defaults to `arm64-v8a` for `make android` and to the host ABI (`x86_64` or `arm64-v8a`) for `make android-run`.
 
+### Emscripten (web)
+
+HTML5 builds and local HTTP testing: [docs/EMSCRIPTEN.md](docs/EMSCRIPTEN.md).
+
 `make android-aab` packages release Play App Bundles. Signed bundles need `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, and optionally `ANDROID_KEY_PASSWORD`.
 
 Helper targets after the Android tree is configured: `android-caveexpress-apk`, `android-cavepacker-apk`, `android-caveexpress-aab`, `android-caveexpress-install`, `android-caveexpress-start`.

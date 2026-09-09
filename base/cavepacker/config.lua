@@ -29,6 +29,7 @@ elseif isHTML5() then
 	defaultsoundengine = "dummy"
 else
 	defaultgamecontroller = true
+	defaultfrontend = "opengl3"
 end
 
 settings = {

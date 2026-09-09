@@ -1,27 +1,18 @@
-//"use strict";
+// Emscripten JS library (linked via em_link_js_library).
+// Image decoding is configured on Module in shell.html.in (noImageDecoding),
+// not here — js-library files do not reliably mutate the runtime Module.
 
-var OwnLib = {
-	$OwnLib__deps: [],
-	$OwnLib: {
-	},
+mergeInto(LibraryManager.library, {
 	_jsOpenURL: function (url, newwindow) {
-		var target = newwindow ? '_blank' : '_self'
-		var win = window.open(Pointer_stringify(url), target);
-		win.focus();
+		var target = newwindow ? '_blank' : '_self';
+		var win = window.open(UTF8ToString(url), target);
+		if (win)
+			win.focus();
 	},
 	_jsAlert: function (reason) {
-		alert(Pointer_stringify(reason));
+		alert(UTF8ToString(reason));
 	},
 	_jsBacktrace: function () {
-		alert(new Error().stack);
+		console.error(new Error().stack);
 	}
-};
-
-autoAddDeps(OwnLib, '$OwnLib');
-mergeInto(LibraryManager.library, OwnLib);
-
-var Module;
-if (!Module) Module = (typeof Module !== 'undefined' ? Module : null) || {};
-// Disable image and audio decoding
-Module.noImageDecoding = true;
-Module.noAudioDecoding = true;
+});

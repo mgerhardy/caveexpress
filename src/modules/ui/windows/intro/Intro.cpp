@@ -305,6 +305,8 @@ bool Intro::pushFromMapScript (const std::string& mapName, IFrontend* frontend)
 		return false;
 
 	const std::string mapFile = FS.getMapsDir() + mapName + ".lua";
+	if (!FS.exists(mapFile))
+		return false;
 	LUA lua;
 	lua_register(lua.getState(), "tr", luaTr);
 	if (!lua.load(mapFile))
