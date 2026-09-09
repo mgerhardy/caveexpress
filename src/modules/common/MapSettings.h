@@ -62,4 +62,5 @@ namespace msdv {
 const float GRAVITY = 9.81f;
 const int POINTS = 100;
 const int REFERENCETIME = 30;
+const float AMBIENT_LIGHT = 1.0f;
 }

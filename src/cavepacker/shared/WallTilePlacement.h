@@ -7,11 +7,12 @@ namespace cavepacker {
 /**
  * Wall sprite placement constraint (cavepacker only).
  * Each rock tile art asset has exactly one orientation; the map loader picks a
- * sprite whose placement matches the wall cell's neighborhood.
+ * sprite whose placement permits the wall cell's neighborhood. Unconstrained
+ * `any` art is eligible at every wall cell.
  *
  * - left/right/top/down: exactly one playable (non-wall) neighbor in that direction
  * - full: all four neighbors are walls (interior of a thick wall)
- * - any: fallback / ambiguous (corners, exterior-only edges, unconstrained art)
+ * - any: valid at every wall cell, including corners and exterior-only edges
  */
 enum class WallPlacement {
 	Any,
@@ -54,6 +55,33 @@ inline WallPlacement wallPlacementFromString (const std::string& value)
 	if (value == "full")
 		return WallPlacement::Full;
 	return WallPlacement::Any;
+}
+
+/**
+ * @brief Whether a wall sprite placement is eligible for this neighborhood.
+ *
+ * Directional placement is not exclusive: e.g. a right-facing tile is valid
+ * whenever the cell on its right is playable, even if other neighbors are
+ * playable too.
+ */
+inline bool wallPlacementMatches (WallPlacement placement, bool openL, bool openR, bool openT, bool openD,
+		bool wallL, bool wallR, bool wallT, bool wallD)
+{
+	switch (placement) {
+	case WallPlacement::Left:
+		return openL;
+	case WallPlacement::Right:
+		return openR;
+	case WallPlacement::Top:
+		return openT;
+	case WallPlacement::Down:
+		return openD;
+	case WallPlacement::Full:
+		return !openL && !openR && !openT && !openD && wallL && wallR && wallT && wallD;
+	case WallPlacement::Any:
+	default:
+		return true;
+	}
 }
 
 /**

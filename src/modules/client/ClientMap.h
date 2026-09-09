@@ -8,6 +8,7 @@
 #include "common/IMap.h"
 #include "common/ConfigVar.h"
 #include "common/ThemeType.h"
+#include "common/MapSettings.h"
 #include "common/Cooldown.h"
 #include "common/TimeManager.h"
 #include "network/INetwork.h"
@@ -90,6 +91,7 @@ protected:
 	float _mapDefaultZoom;
 
 	float getEffectiveMinZoom () const;
+	virtual float getDefaultAmbientLight () const { return msdv::AMBIENT_LIGHT; }
 
 	virtual void renderLayer (int x, int y, Layer layer) const;
 	void renderFadeOutOverlay (int x, int y) const;

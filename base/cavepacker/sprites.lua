@@ -37,4 +37,5 @@ sprites = {
 	["tile-rock-03"] = { type = "solid", placement = "any", },
 	["tile-rock-04"] = { type = "solid", placement = "down", }, -- cave opening faces down / inward
 	["tile-rock-05"] = { type = "solid", placement = "down", light = LIGHT_TORCH, }, -- torch faces down / inward
+	["tile-rock-06"] = { type = "solid", placement = "right", light = LIGHT_TORCH, }, -- torch faces right / inward
 }

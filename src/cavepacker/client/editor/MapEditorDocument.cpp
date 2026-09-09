@@ -375,8 +375,7 @@ void MapEditorDocument::autoTileWalls (bool recordUndo)
 		const WallPlacement placement = wallPlacementFromString(i->second->placement);
 		rocksByPlacement[wallPlacementToString(placement)].push_back(i->first);
 	}
-	const std::vector<std::string>& anyRocks = rocksByPlacement["any"];
-	if (anyRocks.empty() && rocksByPlacement.empty())
+	if (rocksByPlacement.empty())
 		return;
 
 	for (MapEditorTileItem& item : _map) {
@@ -392,17 +391,12 @@ void MapEditorDocument::autoTileWalls (bool recordUndo)
 		const bool wallR = isWallAt(col + 1, row);
 		const bool wallT = isWallAt(col, row - 1);
 		const bool wallD = isWallAt(col, row + 1);
-		const WallPlacement needed = computeWallPlacement(openL, openR, openT, openD, wallL, wallR, wallT, wallD);
-		const char* neededStr = wallPlacementToString(needed);
 		std::vector<std::string> candidates;
-		if (needed != WallPlacement::Any) {
-			const std::vector<std::string>& specific = rocksByPlacement[neededStr];
-			candidates.insert(candidates.end(), specific.begin(), specific.end());
-		}
-		if (candidates.empty())
-			candidates.insert(candidates.end(), anyRocks.begin(), anyRocks.end());
-		if (candidates.empty()) {
-			for (const auto& entry : rocksByPlacement)
+		// Unconstrained art is valid everywhere. Directional art is valid
+		// whenever the corresponding neighboring cell is walkable.
+		for (const auto& entry : rocksByPlacement) {
+			const WallPlacement placement = wallPlacementFromString(entry.first);
+			if (wallPlacementMatches(placement, openL, openR, openT, openD, wallL, wallR, wallT, wallD))
 				candidates.insert(candidates.end(), entry.second.begin(), entry.second.end());
 		}
 		if (candidates.empty())

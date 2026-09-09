@@ -48,7 +48,7 @@ The selected cell's Sokoban character is shown on Properties.
 ## Properties
 
 - **Make playable** adds a wall border, interior floors, one package, one target, and a start if they are missing.
-- **Auto-tile walls** picks `tile-rock-*` art from neighboring floors (the same placement rules as map load). Existing art is kept when it still matches. Paint and erase update neighbors the same way; the button records undo.
+- **Auto-tile walls** picks `tile-rock-*` art from neighboring floors (the same placement rules as map load). `placement = "any"` art is eligible everywhere; directional placement art is additionally eligible whenever its named neighboring cell is walkable. Existing art is kept when it still matches. Paint and erase update neighbors the same way; the button records undo.
 - **Check layout** flood-fills from the player along playable cells. Packages and targets must be reachable.
 - Start positions can be edited, deleted, or used as **Play**.
 - Campaign add/remove/create works on `base/cavepacker/campaigns/*.lua` (`c:addMaps`, including wildcards such as `tutorial*`). Wildcard membership is listed but not removed from here.

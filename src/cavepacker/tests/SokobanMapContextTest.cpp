@@ -106,11 +106,23 @@ TEST_F(SokobanMapContextTest, testWallPlacementCompute)
 	EXPECT_EQ(WallPlacement::Any, computeWallPlacement(false, false, false, false, false, true, true, true));
 }
 
-TEST_F(SokobanMapContextTest, testDownPlacementTilesOnlyOnDownEdges)
+TEST_F(SokobanMapContextTest, testDirectionalPlacementMatchesWalkableNeighbor)
 {
-	ASSERT_EQ("down", SpriteDefinition::get().getSpriteDefinition("tile-rock-04")->placement);
+	// Directional placement is independent of the other neighbors, so interior
+	// walls can select more than one directional pool.
+	EXPECT_TRUE(wallPlacementMatches(WallPlacement::Right, false, true, false, true, true, false, true, false));
+	EXPECT_TRUE(wallPlacementMatches(WallPlacement::Down, false, true, false, true, true, false, true, false));
+	EXPECT_FALSE(wallPlacementMatches(WallPlacement::Left, false, true, false, true, true, false, true, false));
+	EXPECT_FALSE(wallPlacementMatches(WallPlacement::Top, false, true, false, true, true, false, true, false));
+	EXPECT_TRUE(wallPlacementMatches(WallPlacement::Any, false, true, false, true, true, false, true, false));
+}
+
+TEST_F(SokobanMapContextTest, testPlacementSpecificTilesAugmentAnyCandidates)
+{
 	ASSERT_EQ("down", SpriteDefinition::get().getSpriteDefinition("tile-rock-05")->placement);
+	ASSERT_EQ("right", SpriteDefinition::get().getSpriteDefinition("tile-rock-06")->placement);
 	ASSERT_EQ("any", SpriteDefinition::get().getSpriteDefinition("tile-rock-01")->placement);
+	ASSERT_EQ("any", SpriteDefinition::get().getSpriteDefinition("tile-rock-04")->placement);
 
 	// Force many loads; down-only rocks must never appear on a pure left-edge wall.
 	const char* board =
@@ -125,37 +137,50 @@ TEST_F(SokobanMapContextTest, testDownPlacementTilesOnlyOnDownEdges)
 	const std::string absPath = FS.getAbsoluteWritePath() + relPath;
 	ASSERT_NE(-1L, FS.writeSysFile(absPath, (const unsigned char*)board, strlen(board), true));
 
-	int caveCount = 0;
-	int torchCount = 0;
+	int downTorchCount = 0;
+	int rightTorchCount = 0;
+	int anyOnDownEdgeCount = 0;
+	int anyOnRightEdgeCount = 0;
 	for (int n = 0; n < 40; ++n) {
 		SokobanMapContext ctx(name);
 		ASSERT_TRUE(ctx.load(false));
-		// Left wall column 0, rows 1-3: open only to the right -> not "down"
+		// Left wall column 0, rows 1-3: open only to the right. It admits
+		// right-specific art plus the unconstrained art, never down-specific art.
 		for (int row = 1; row <= 3; ++row) {
 			const std::string id = rockAt(ctx, 0, row);
-			EXPECT_TRUE(id == "tile-rock-01" || id == "tile-rock-02" || id == "tile-rock-03")
+			EXPECT_TRUE(id == "tile-rock-01" || id == "tile-rock-02" || id == "tile-rock-03"
+					|| id == "tile-rock-04" || id == "tile-rock-06")
 				<< "unexpected rock " << id << " on left edge at row " << row;
+			if (id == "tile-rock-06")
+				++rightTorchCount;
+			else
+				++anyOnRightEdgeCount;
 		}
-		// Right wall column 4, rows 1-3
+		// Right wall column 4, rows 1-3: no left-specific art exists, so
+		// only unconstrained rocks are eligible.
 		for (int row = 1; row <= 3; ++row) {
 			const std::string id = rockAt(ctx, 4, row);
-			EXPECT_TRUE(id == "tile-rock-01" || id == "tile-rock-02" || id == "tile-rock-03")
+			EXPECT_TRUE(id == "tile-rock-01" || id == "tile-rock-02" || id == "tile-rock-03" || id == "tile-rock-04")
 				<< "unexpected rock " << id << " on right edge at row " << row;
 		}
-		// Top wall (row 0, cols 1-3): open below -> down-only pool (cave/torch)
+		// Top wall (row 0, cols 1-3): open below. Down-specific cave/torch
+		// art augments rather than replaces the unconstrained pool.
 		for (int col = 1; col <= 3; ++col) {
 			const std::string id = rockAt(ctx, col, 0);
-			EXPECT_TRUE(id == "tile-rock-04" || id == "tile-rock-05")
-				<< "expected cave/torch on down edge, got " << id;
-			if (id == "tile-rock-04")
-				++caveCount;
-			else if (id == "tile-rock-05")
-				++torchCount;
+			EXPECT_TRUE(id == "tile-rock-01" || id == "tile-rock-02" || id == "tile-rock-03"
+					|| id == "tile-rock-04" || id == "tile-rock-05")
+				<< "unexpected rock " << id << " on top edge";
+			if (id == "tile-rock-05")
+				++downTorchCount;
+			else
+				++anyOnDownEdgeCount;
 		}
 	}
 
-	EXPECT_GT(caveCount, 0) << "tile-rock-04 (cave) was never selected on down edges";
-	EXPECT_GT(torchCount, 0) << "tile-rock-05 (torch) was never selected on down edges";
+	EXPECT_GT(downTorchCount, 0) << "tile-rock-05 (down torch) was never selected on down edges";
+	EXPECT_GT(rightTorchCount, 0) << "tile-rock-06 (right torch) was never selected on right edges";
+	EXPECT_GT(anyOnDownEdgeCount, 0) << "unconstrained rocks were never selected on down edges";
+	EXPECT_GT(anyOnRightEdgeCount, 0) << "unconstrained rocks were never selected on right edges";
 
 	FS.deleteFile(relPath);
 }

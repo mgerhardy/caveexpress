@@ -86,7 +86,7 @@ void ClientMap::resetCurrentMap ()
 	_joinAsSpectator = false;
 	_tutorial = false;
 	_cutscene = false;
-	_ambientLight = string::toFloat(msd::AMBIENT_LIGHT);
+	_ambientLight = getDefaultAmbientLight();
 	_mapGridWidth = 0;
 	_mapGridHeight = 0;
 	for (ClientEntityMapIter i = _entities.begin(); i != _entities.end(); ++i) {
@@ -316,7 +316,7 @@ void ClientMap::render () const
 	// their map lights are still bound rather than clearing the uniforms first.
 	_frontend->flushRenderBatches();
 	_frontend->setRenderLights(nullptr, 0);
-	_frontend->setRenderAmbientLight(string::toFloat(msd::AMBIENT_LIGHT));
+	_frontend->setRenderAmbientLight(msdv::AMBIENT_LIGHT);
 
 	if (_restartDue != 0) {
 		renderFadeOutOverlay(x, y);

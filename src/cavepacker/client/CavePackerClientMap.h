@@ -19,6 +19,7 @@ public:
 	float getWind() const override { return 0.f; }
 
 	uint32_t getEntityMoveLerpMillis () const override;
+	float getDefaultAmbientLight () const override { return 0.6f; }
 
 	void undo ();
 

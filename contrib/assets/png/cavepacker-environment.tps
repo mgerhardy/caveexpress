@@ -233,6 +233,8 @@
             <filename>../png/cavepacker/tile-rock-04-back-01_n.png</filename>
             <filename>../png/cavepacker/tile-rock-05-back-01.png</filename>
             <filename>../png/cavepacker/tile-rock-05-back-01_n.png</filename>
+            <filename>../png/cavepacker/tile-rock-06-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-06-back-01_n.png</filename>
             <filename>../png/cavepacker/target-back-01.png</filename>
             <filename>../png/cavepacker/target-back-01_n.png</filename>
             <filename>../png/cavepacker/target-back-02.png</filename>

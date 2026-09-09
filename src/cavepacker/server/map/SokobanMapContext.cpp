@@ -75,8 +75,7 @@ void SokobanMapContext::resolveWallTiles() {
 		rocksByPlacement[wallPlacementToString(placement)].push_back(i->first);
 	}
 
-	const std::vector<std::string>& anyRocks = rocksByPlacement["any"];
-	if (anyRocks.empty() && rocksByPlacement.empty()) {
+	if (rocksByPlacement.empty()) {
 		Log::error(LOG_GAMEIMPL, "no tile-rock sprites available for wall placement");
 		return;
 	}
@@ -96,20 +95,12 @@ void SokobanMapContext::resolveWallTiles() {
 		const bool wallT = isWallAt(col, row - 1);
 		const bool wallD = isWallAt(col, row + 1);
 
-		const WallPlacement needed = computeWallPlacement(openL, openR, openT, openD, wallL, wallR, wallT, wallD);
-		const char* neededStr = wallPlacementToString(needed);
-
-		// Prefer orientation-specific art when available (do not dilute with "any"),
-		// so rare feature tiles like cave/torch actually show up on matching edges.
 		std::vector<std::string> candidates;
-		if (needed != WallPlacement::Any) {
-			const std::vector<std::string>& specific = rocksByPlacement[neededStr];
-			candidates.insert(candidates.end(), specific.begin(), specific.end());
-		}
-		if (candidates.empty())
-			candidates.insert(candidates.end(), anyRocks.begin(), anyRocks.end());
-		if (candidates.empty()) {
-			for (const auto& entry : rocksByPlacement)
+		// "any" is valid at every wall position. Each directional pool is also
+		// valid whenever its corresponding neighbor is playable.
+		for (const auto& entry : rocksByPlacement) {
+			const WallPlacement placement = wallPlacementFromString(entry.first);
+			if (wallPlacementMatches(placement, openL, openR, openT, openD, wallL, wallR, wallT, wallD))
 				candidates.insert(candidates.end(), entry.second.begin(), entry.second.end());
 		}
 		if (candidates.empty())
