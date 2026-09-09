@@ -27,6 +27,7 @@ public:
 		return _rect;
 	}
 
+	void setRect (int x, int y, int w, int h);
 	bool isSuccessful ();
 
 	/**

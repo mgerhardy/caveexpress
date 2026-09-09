@@ -8,22 +8,12 @@ namespace cavepacker {
 class CavePackerClientMap: public ClientMap {
 private:
 	SpritePtr _deadlockOverlay;
-	mutable RenderTarget* _target;
-	mutable std::size_t _targetEnts;
 	ConfigVarPtr _moveLerpMillis;
-	void renderLayer (int x, int y, Layer layer) const override;
-	void renderBackLayerEntities (int x, int y, bool animated) const;
 
 public:
 	CavePackerClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider,
 			int referenceTileWidth);
 
-	virtual void onWindowResize () override;
-
-	bool updateCameraPosition () override;
-	void scroll (int relX, int Y) override;
-	void setZoom (const float zoom) override;
-	
 	int getWaterSurface() const override { return 0; }
 	int getWaterGround() const override { return 0; }
 	float getWind() const override { return 0.f; }
@@ -34,7 +24,6 @@ public:
 
 	void setDeadlocks(const std::vector<int>& deadlocks);
 
-	void start () override;
 	virtual void update (uint32_t deltaTime) override;
 };
 

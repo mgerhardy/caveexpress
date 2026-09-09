@@ -48,7 +48,8 @@ RenderTarget* AbstractGLFrontend::renderToTexture (int x, int y, int w, int h)
 	renderBatches();
 	static RenderTarget target;
 	target.fbo = &_fbo;
-	target.fbo->bind(x, y, w, h);
+	target.fbo->bind(0, 0, _viewPort.w, _viewPort.h);
+	target.fbo->setRect(x, y, w, h);
 	return &target;
 }
 

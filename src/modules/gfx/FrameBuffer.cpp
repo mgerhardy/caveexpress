@@ -45,10 +45,7 @@ void FrameBuffer::bind ()
 
 void FrameBuffer::bind (int x, int y, int w, int h)
 {
-	_rect.x = x;
-	_rect.y = y;
-	_rect.w = w;
-	_rect.h = h;
+	setRect(x, y, w, h);
 	bind();
 	glViewport(x, y, w, h);
 	glClear(GL_COLOR_BUFFER_BIT | (_depth ? GL_DEPTH_BUFFER_BIT : 0));
@@ -59,6 +56,14 @@ void FrameBuffer::bind (int x, int y, int w, int h)
 	} else {
 		_bound = true;
 	}
+}
+
+void FrameBuffer::setRect (int x, int y, int w, int h)
+{
+	_rect.x = x;
+	_rect.y = y;
+	_rect.w = w;
+	_rect.h = h;
 }
 
 void FrameBuffer::unbind ()
