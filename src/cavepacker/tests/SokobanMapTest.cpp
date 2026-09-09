@@ -1328,6 +1328,7 @@ TEST_F(SokobanMapTest, testStartMarksLockedPackageAsDeadlock)
 	EXPECT_EQ(CavePackerEntityStates::DEADLOCK, (int)packages.packages[0]->getState())
 		<< "locked package should be highlighted when the map starts\n" << map.getMapString();
 
+	map.shutdown();
 	_serviceProvider.getNetwork().closeClient();
 	_serviceProvider.getNetwork().closeServer();
 	FS.deleteFile(relPath);

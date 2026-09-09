@@ -108,10 +108,11 @@ Layers|Layers
 Layout|Layout
 Layout ok|Layout ok
 Leaderboard|Leaderboard
+Leave|Leave
 Lines|Lines
-lobby|Lobby
 LMB: paint / place (also selects)|LMB: paint / place (also selects)
 LMB place / drag, RMB delete vertex, wheel zoom, MMB pan|LMB place / drag, RMB delete vertex, wheel zoom, MMB pan
+lobby|Lobby
 Lua API|Lua API
 Lua polygon / circle definition|Lua polygon / circle definition
 Make playable|Make playable
@@ -120,6 +121,7 @@ Map Editor|Map Editor
 Maps|Maps
 Maps in campaign|Maps in campaign
 Map validation|Map validation
+Max players|Max players
 MMB click: pick, MMB drag or Space+LMB: pan|MMB click: pick, MMB drag or Space+LMB: pan
 Move all packages onto their targets|Move all packages onto their targets
 Multiplayer|Multiplayer

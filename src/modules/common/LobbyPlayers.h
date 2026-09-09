@@ -7,8 +7,6 @@ namespace lobby {
 const char *const HOST_SUFFIX = " (host)";
 const char *const SPECTATING_SUFFIX = " (watching)";
 const char *const UNNAMED_PLAYER = "Player";
-const char *const SESSION_LOBBY = "lobby";
-const char *const SESSION_IN_GAME = "in game";
 
 inline std::string formatPlayerName (const std::string& name, bool isHost, bool spectating = false)
 {
@@ -17,11 +15,6 @@ inline std::string formatPlayerName (const std::string& name, bool isHost, bool 
 	if (spectating)
 		formatted += SPECTATING_SUFFIX;
 	return formatted;
-}
-
-inline const char* sessionPhaseLabel (bool inGame)
-{
-	return inGame ? SESSION_IN_GAME : SESSION_LOBBY;
 }
 
 const int MIN_SESSION_PLAYERS = 2;

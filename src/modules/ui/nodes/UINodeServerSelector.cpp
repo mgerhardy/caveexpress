@@ -89,7 +89,8 @@ void UINodeServerSelector::renderSelectorEntry (int index, const ServerEntry& da
 
 	const int nameWidth = getMapX() - getNameX() - _rowSpacingPixel;
 	const int mapNameWidth = getPlayersX() - getMapX() - _rowSpacingPixel;
-	const std::string mapLabel = data.mapName + " (" + tr(lobby::sessionPhaseLabel(data.inGame)) + ")";
+	const std::string sessionPhase = data.inGame ? tr("in game") : tr("lobby");
+	const std::string mapLabel = data.mapName + " (" + sessionPhase + ")";
 	const std::string players = string::toString(data.playerCount) + "/" + string::toString(data.maxPlayerCount);
 	const int playersWidth = _font->getTextWidth(PLAYERS_HEADLINE) - _rowSpacingPixel;
 

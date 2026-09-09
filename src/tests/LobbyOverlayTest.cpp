@@ -12,12 +12,6 @@ TEST(LobbyOverlayTest, formatPlayerNameMarksHost)
 	EXPECT_EQ(std::string("Bob") + lobby::SPECTATING_SUFFIX, lobby::formatPlayerName("Bob", false, true));
 }
 
-TEST(LobbyOverlayTest, sessionPhaseLabel)
-{
-	EXPECT_STREQ(lobby::SESSION_LOBBY, lobby::sessionPhaseLabel(false));
-	EXPECT_STREQ(lobby::SESSION_IN_GAME, lobby::sessionPhaseLabel(true));
-}
-
 TEST(LobbyOverlayTest, clampSessionMaxPlayers)
 {
 	EXPECT_EQ(2, lobby::clampSessionMaxPlayers(0, 4));
