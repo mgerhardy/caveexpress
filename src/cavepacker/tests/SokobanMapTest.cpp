@@ -54,19 +54,20 @@ protected:
 		_serviceProvider.getNetwork().update(1);
 		map.startMap();
 		_serviceProvider.getNetwork().update(1);
-		if (!solve)
-			return;
-		Config.getConfigVar("solvestepmillis")->setValue("0");
-		const int steps = map.solve();
-		ASSERT_TRUE(map.isAutoSolve()) << "Map " << mapName << " is not in autoSolve mode";
-		ASSERT_TRUE(steps >= 1) << "No step in solution for map " << mapName;
-		for (int s = 0; s < steps; ++s) {
-			map.update(10000);
+		if (solve) {
+			Config.getConfigVar("solvestepmillis")->setValue("0");
+			const int steps = map.solve();
+			ASSERT_TRUE(map.isAutoSolve()) << "Map " << mapName << " is not in autoSolve mode";
+			ASSERT_TRUE(steps >= 1) << "No step in solution for map " << mapName;
+			for (int s = 0; s < steps; ++s) {
+				map.update(10000);
+				_serviceProvider.getNetwork().update(1);
+				ASSERT_TRUE(map.isAutoSolve()) << "Map " << mapName << " is no longer in autoSolve mode in step " << s;
+			}
+			EXPECT_TRUE(map.isDone()) << "Autosolve for map " << mapName << " did not lead to a done map:\n" << map.getMapString() << "\n" << map.getStateString();
 			_serviceProvider.getNetwork().update(1);
-			ASSERT_TRUE(map.isAutoSolve()) << "Map " << mapName << " is no longer in autoSolve mode in step " << s;
 		}
-		EXPECT_TRUE(map.isDone()) << "Autosolve for map " << mapName << " did not lead to a done map:\n" << map.getMapString() << "\n" << map.getStateString();
-		_serviceProvider.getNetwork().update(1);
+		map.shutdown();
 	}
 
 	void testMapRegion (int begin, const std::string& prefix, int amount = 10)

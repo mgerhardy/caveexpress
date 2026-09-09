@@ -104,8 +104,8 @@ CaveExpress::~CaveExpress ()
 {
 	Commands.removeCommand(CMD_MAP_OPEN_IN_EDITOR);
 	Commands.removeCommand(CMD_DROP);
-	delete _persister;
 	delete _campaignManager;
+	delete _persister;
 	delete _clientMap;
 }
 
@@ -317,6 +317,10 @@ void CaveExpress::shutdown ()
 	_map.shutdown();
 	delete _clientMap;
 	_clientMap = nullptr;
+	delete _campaignManager;
+	_campaignManager = nullptr;
+	delete _persister;
+	_persister = nullptr;
 }
 
 void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)

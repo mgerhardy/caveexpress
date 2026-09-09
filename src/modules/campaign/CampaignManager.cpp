@@ -29,6 +29,7 @@ CampaignManager::CampaignManager (IGameStatePersister *persister, const IMapMana
 
 CampaignManager::~CampaignManager ()
 {
+	Commands.removeCommand(CMD_UNLOCK);
 	_campaigns.clear();
 }
 

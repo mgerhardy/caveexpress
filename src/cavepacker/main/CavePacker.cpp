@@ -91,8 +91,8 @@ CavePacker::CavePacker ():
 CavePacker::~CavePacker ()
 {
 	Commands.removeCommand(CMD_MAP_OPEN_IN_EDITOR);
-	delete _persister;
 	delete _campaignManager;
+	delete _persister;
 	delete _clientMap;
 }
 
@@ -280,6 +280,10 @@ void CavePacker::shutdown ()
 	mapShutdown();
 	delete _clientMap;
 	_clientMap = nullptr;
+	delete _campaignManager;
+	_campaignManager = nullptr;
+	delete _persister;
+	_persister = nullptr;
 }
 
 void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)

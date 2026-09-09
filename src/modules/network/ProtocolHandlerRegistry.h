@@ -41,7 +41,13 @@ public:
 
 	void registerClientHandler (protocolId type, IClientProtocolHandler* handler)
 	{
-		_clientRegistry.insert(std::make_pair(type, handler));
+		ClientProtocolHandlers::iterator i = _clientRegistry.find(type);
+		if (i != _clientRegistry.end()) {
+			delete i->second;
+			i->second = handler;
+			return;
+		}
+		_clientRegistry.emplace(type, handler);
 	}
 
 	void unregisterClientHandler (protocolId type)
@@ -62,9 +68,15 @@ public:
 		return nullptr;
 	}
 
-	inline void registerServerHandler (protocolId type, IServerProtocolHandler* handler)
+	void registerServerHandler (protocolId type, IServerProtocolHandler* handler)
 	{
-		_serverRegistry.insert(std::make_pair(type, handler));
+		ServerProtocolHandlers::iterator i = _serverRegistry.find(type);
+		if (i != _serverRegistry.end()) {
+			delete i->second;
+			i->second = handler;
+			return;
+		}
+		_serverRegistry.emplace(type, handler);
 	}
 
 	inline IServerProtocolHandler* getServerHandler (const IProtocolMessage& msg)

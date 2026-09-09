@@ -33,6 +33,25 @@ TEST_F(ProtocolTest, testProtocols)
 	testMessage("PlayerHudMessage", PlayerHudMessage(7, 80, 3, 2, 0));
 }
 
+TEST_F(ProtocolTest, testPlayerListMessageFactoryReuse)
+{
+	std::vector<std::string> firstNames = { "first" };
+	PlayerListMessage first(firstNames);
+	ByteStream firstData;
+	first.serialize(firstData);
+	const PlayerListMessage* firstParsed = static_cast<const PlayerListMessage*>(
+			ProtocolMessageFactory::get().createMsg(firstData));
+	ASSERT_EQ(firstNames, firstParsed->getList());
+
+	std::vector<std::string> secondNames = { "second", "third" };
+	PlayerListMessage second(secondNames);
+	ByteStream secondData;
+	second.serialize(secondData);
+	const PlayerListMessage* secondParsed = static_cast<const PlayerListMessage*>(
+			ProtocolMessageFactory::get().createMsg(secondData));
+	EXPECT_EQ(secondNames, secondParsed->getList());
+}
+
 TEST_F(ProtocolTest, testPingMessageOldServersOmitInGameFlag)
 {
 	ByteStream s;

@@ -18,6 +18,7 @@ typedef uint8_t protocolId;
 		Factory() : _memory(new uint8_t[sizeof(className)]), _initialized(false) {} \
 		virtual ~Factory() { if (_initialized) { className* obj = reinterpret_cast<className*>(_memory); obj->~className(); } delete[] _memory; } \
 		IProtocolMessage* create (const ByteStream *ctx) const override { \
+			if (_initialized) { className* obj = reinterpret_cast<className*>(_memory); obj->~className(); } \
 			_initialized = true; \
 			return new (_memory) className(*const_cast<ByteStream*>(ctx)); \
 		} \
