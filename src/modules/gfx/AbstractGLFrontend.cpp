@@ -74,6 +74,7 @@ bool AbstractGLFrontend::disableRenderTarget (RenderTarget* target)
 	// render the current batches to the fbo texture - and unbind the fbo
 	renderBatches();
 	target->fbo->unbind();
+	glViewport(_viewPort.x, _viewPort.y, _viewPort.w, _viewPort.h);
 	return true;
 }
 
