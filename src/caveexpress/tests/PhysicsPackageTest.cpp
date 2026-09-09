@@ -11,13 +11,10 @@ TEST_F(PhysicsTest, PackageArrivesAtMatchingTarget)
 {
 	MapTile* tile = _map.addTileScripted("tile-packagetarget-rock-01-idle", 8.0f, 10.0f);
 	ASSERT_NE(nullptr, tile);
-	PackageTarget* target = static_cast<PackageTarget*>(tile);
 	Package* package = addPackage(8.5f, 9.0f);
 	package->setLinearVelocity(PhysicsVec2(0.0f, 3.0f));
 	tick(120);
-	EXPECT_TRUE(package->isArrived() || package->isDelivered());
-	EXPECT_TRUE(target->getAnimationType() == Animations::ANIMATION_ACTIVE
-			|| package->isDelivered());
+	EXPECT_EQ(1, _map.getDeliveredPackageCount());
 }
 
 TEST_F(PhysicsTest, AttackingNpcDestroysPackage)
