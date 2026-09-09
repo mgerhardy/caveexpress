@@ -317,14 +317,15 @@ void CaveExpress::shutdown ()
 	_map.shutdown();
 	delete _clientMap;
 	_clientMap = nullptr;
-	delete _campaignManager;
-	_campaignManager = nullptr;
-	delete _persister;
-	_persister = nullptr;
 }
 
 void CaveExpress::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 {
+	delete _campaignManager;
+	_campaignManager = nullptr;
+	delete _persister;
+	_persister = nullptr;
+
 	registerCaveExpressConfigVars();
 
 	Cooldowns::INVULNERABLE.setRuntime(15000L);

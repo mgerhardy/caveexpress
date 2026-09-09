@@ -280,14 +280,15 @@ void CavePacker::shutdown ()
 	mapShutdown();
 	delete _clientMap;
 	_clientMap = nullptr;
-	delete _campaignManager;
-	_campaignManager = nullptr;
-	delete _persister;
-	_persister = nullptr;
 }
 
 void CavePacker::init (IFrontend *frontend, ServiceProvider& serviceProvider)
 {
+	delete _campaignManager;
+	_campaignManager = nullptr;
+	delete _persister;
+	_persister = nullptr;
+
 	_frontend = frontend;
 	_serviceProvider = &serviceProvider;
 
