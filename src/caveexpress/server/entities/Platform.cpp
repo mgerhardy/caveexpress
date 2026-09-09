@@ -37,23 +37,16 @@ void Platform::onPreSolve (PhysicsContact contact, IEntity* entity, const Physic
 	if (_caveTile == nullptr)
 		return;
 
-	if (player->isLandedOn(_caveTile))
+	// World-manifold normals are oriented by fixture A/B ordering. Compare
+	// positions instead so below and side contacts can never become landings.
+	if (player->getPos().y >= getPos().y - EPSILON)
 		return;
 
-	PhysicsWorldManifold worldManifold;
-	contact.getWorldManifold(worldManifold);
-	const PhysicsVec2 worldNormal = worldManifold.normal;
-	// not from above - then we don't care	// -1/sqrt(2)
-	if (worldNormal.y >= -0.07 ||
-		fabs(worldNormal.x) > fabs(worldNormal.y))
+	if (player->isLandedOn(_caveTile))
 		return;
 
 	const PhysicsManifold maniFold = contact.getManifold();
 	if (maniFold.pointCount <= 0)
-		return;
-	const float normalImpulse = maniFold.points[0].normalImpulse;
-	const float absNormalImpulse = fabs(normalImpulse);
-	if (absNormalImpulse < EPSILON)
 		return;
 
 	player->setPlatform(this);

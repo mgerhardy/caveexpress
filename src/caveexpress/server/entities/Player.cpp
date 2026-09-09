@@ -697,7 +697,14 @@ bool Player::isCloseOverNpcGround (float distance) const
 
 bool Player::isLandedOn (const CaveMapTile *cave) const
 {
-	if (cave == nullptr || !isCloseOverNpcGround())
+	if (cave == nullptr)
+		return false;
+	const float platformY = cave->getGridY() + cave->getSize().y;
+	// The platform is a thin horizontal body. A player at or below it has
+	// approached from underneath or the side and must not deliver a passenger.
+	if (getPos().y >= platformY - EPSILON)
+		return false;
+	if (!isCloseOverNpcGround())
 		return false;
 	if (_touching != nullptr && _touching->getCave() == cave)
 		return true;
@@ -707,9 +714,8 @@ bool Player::isLandedOn (const CaveMapTile *cave) const
 	const float end = static_cast<float>(cave->getPlatformEndGridX()) + 1.0f;
 	if (end < start || getPos().x < start || getPos().x > end)
 		return false;
-	const float platformY = cave->getGridY() + cave->getSize().y;
 	const float y = getPos().y;
-	return y >= platformY - 0.5f && y <= platformY + 1.25f;
+	return y >= platformY - 0.5f;
 }
 
 void Player::setPlatform (Platform* entity)

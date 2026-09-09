@@ -468,6 +468,13 @@ TEST_F(MapTest, testLetter01TaxiLandingAndKnockOff)
 	}
 	ASSERT_NE(nullptr, cave5);
 
+	const float platformY = cave5->getGridY() + cave5->getSize().y;
+	const float platformCenterX = (cave5->getPlatformStartGridX() + cave5->getPlatformEndGridX() + 1.0f) * 0.5f;
+	player->setPos(PhysicsVec2(platformCenterX, platformY + 0.1f));
+	EXPECT_FALSE(player->isLandedOn(cave5)) << "approaching a cave platform from below must not count as landing";
+	player->setPos(PhysicsVec2(cave5->getPlatformStartGridX() - 0.1f, platformY - 0.25f));
+	EXPECT_FALSE(player->isLandedOn(cave5)) << "approaching a cave platform from the side must not count as landing";
+
 	class PlatformVisitor: public IEntityVisitor {
 	public:
 		int platforms = 0;
