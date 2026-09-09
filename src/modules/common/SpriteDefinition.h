@@ -72,7 +72,7 @@ public:
 			_shapeSizeCalculated(false), id(_id), type(_type), theme(_theme), redirect(""), placement("any"), fps(0.0f),
 			width(1.0f), height(1.0f), angle(0), rotateable(0.0f), friction(0.2f), restitution(0.0f), hasLight(false),
 			lightRadius(0.0f), lightIntensity(1.0f), lightR(1.0f), lightG(0.82f), lightB(0.48f), lightOffsetX(0.0f),
-			lightOffsetY(0.0f), lightFalloff(2.0f), delay(0)
+			lightOffsetY(0.0f), lightFalloff(2.0f), lightMerge(false), delay(0)
 	{
 	}
 
@@ -159,6 +159,8 @@ public:
 	float lightOffsetX;
 	float lightOffsetY;
 	float lightFalloff;
+	// Adjacent tiles on the same row share one light (lava).
+	bool lightMerge;
 
 	inline bool emitsLight () const
 	{

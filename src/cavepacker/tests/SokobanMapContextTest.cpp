@@ -223,4 +223,25 @@ TEST_F(SokobanMapContextTest, testEmptyUserOverlayDoesNotHidePackagedMap)
 	FS.deleteFile(relPath);
 }
 
+TEST_F(SokobanMapContextTest, testSpriteLights)
+{
+	const SpriteDefPtr target = SpriteDefinition::get().getSpriteDefinition("target");
+	ASSERT_TRUE(target.get());
+	EXPECT_TRUE(target->emitsLight());
+	EXPECT_NEAR(2.5f, target->lightRadius, 0.001f);
+	EXPECT_NEAR(0.5f, target->lightOffsetX, 0.001f);
+	EXPECT_NEAR(0.5f, target->lightOffsetY, 0.001f);
+
+	const SpriteDefPtr torch = SpriteDefinition::get().getSpriteDefinition("tile-rock-05");
+	ASSERT_TRUE(torch.get());
+	EXPECT_TRUE(torch->emitsLight());
+	EXPECT_NEAR(4.0f, torch->lightRadius, 0.001f);
+	EXPECT_NEAR(0.5f, torch->lightOffsetX, 0.001f);
+	EXPECT_NEAR(0.85f, torch->lightOffsetY, 0.001f);
+
+	const SpriteDefPtr rock = SpriteDefinition::get().getSpriteDefinition("tile-rock-01");
+	ASSERT_TRUE(rock.get());
+	EXPECT_FALSE(rock->emitsLight());
+}
+
 }

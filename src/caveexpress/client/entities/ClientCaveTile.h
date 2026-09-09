@@ -22,12 +22,18 @@ public:
 
 	void setLightState (bool lightState);
 	bool isLightState () const;
+	bool isLightEnabled () const override;
 
 	// ClientEntity
 	void render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int mapPixelWidth, int mapPixelHeight) const override;
 };
 
 inline bool ClientCaveTile::isLightState () const
+{
+	return _lightState;
+}
+
+inline bool ClientCaveTile::isLightEnabled () const
 {
 	return _lightState;
 }

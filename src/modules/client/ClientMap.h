@@ -97,6 +97,13 @@ protected:
 	virtual bool updateCameraPosition ();
 
 	/**
+	 * Whether a sprite-defined point light should be uploaded this frame.
+	 * Default: `def->emitsLight()` and `e->isLightEnabled()`.
+	 */
+	virtual bool acceptSpriteLight (const ClientEntityPtr& e, const SpriteDefPtr& def) const;
+	void collectAndUploadLights (int x, int y) const;
+
+	/**
 	 * Whether new position updates should start interpolating.
 	 * False while a restart/finish fade is pending (_restartDue != 0).
 	 * In-progress timed grid lerps still complete in ClientEntity::update.

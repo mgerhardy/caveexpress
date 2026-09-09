@@ -213,11 +213,17 @@
         <key>fileList</key>
         <array>
             <filename>../png/cavepacker/package-deadlock-front-01.png</filename>
+            <filename>../png/cavepacker/package-deadlock-front-01_n.png</filename>
             <filename>../png/cavepacker/package-delivered-front-01.png</filename>
+            <filename>../png/cavepacker/package-delivered-front-01_n.png</filename>
             <filename>../png/cavepacker/package-front-01.png</filename>
+            <filename>../png/cavepacker/package-front-01_n.png</filename>
             <filename>../png/cavepacker/player-middle-01.png</filename>
+            <filename>../png/cavepacker/player-middle-01_n.png</filename>
             <filename>../png/cavepacker/player-middle-02.png</filename>
+            <filename>../png/cavepacker/player-middle-02_n.png</filename>
             <filename>../png/cavepacker/player-middle-03.png</filename>
+            <filename>../png/cavepacker/player-middle-03_n.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

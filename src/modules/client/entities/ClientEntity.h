@@ -109,6 +109,9 @@ public:
 		_animationSound = animationSound;
 	}
 
+	/** When false, a sprite `light` table is ignored (caves/windows with the light off). */
+	virtual bool isLightEnabled () const { return true; }
+
 	// @param[in] scale The conversion from the physics coordinate system to the pixel coordinate system.
 	virtual void render(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX,
 						int offsetY, int mapPixelWidth, int mapPixelHeight) const;

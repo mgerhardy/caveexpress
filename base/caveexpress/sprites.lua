@@ -20,6 +20,7 @@ local LIGHT_LAVA = {
 	color = { 1.0, 0.22, 0.05 },
 	offsety = -0.2,
 	falloff = 2.0,
+	merge = true,
 }
 
 sprites = {

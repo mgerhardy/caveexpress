@@ -1,5 +1,6 @@
 #include "client/ClientMap.h"
 #include "common/MapSettings.h"
+#include "common/SpriteDefinition.h"
 #include "network/messages/StopMovementMessage.h"
 #include "network/messages/MovementMessage.h"
 #include "network/messages/FingerMovementMessage.h"
@@ -17,6 +18,9 @@
 #include "common/Commands.h"
 #include "common/Log.h"
 #include <SDL.h>
+#include <algorithm>
+#include <cmath>
+#include <vector>
 
 ClientMap::ClientMap (int x, int y, int width, int height, IFrontend *frontend, ServiceProvider& serviceProvider, int referenceTileWidth) :
 		IMap(), _x(x), _y(y), _width(width), _height(height), _scaleGridToPixel(referenceTileWidth), _zoom(1.0f), _player(nullptr), _restartDue(0), _restartInitialized(0), _mapGridWidth(
@@ -205,9 +209,80 @@ void ClientMap::renderLayers (int x, int y) const {
 }
 
 void ClientMap::renderBegin (int x, int y) const {
+	collectAndUploadLights(x, y);
 }
 
 void ClientMap::renderEnd (int x, int y) const {
+}
+
+bool ClientMap::acceptSpriteLight (const ClientEntityPtr& e, const SpriteDefPtr& def) const
+{
+	return e != nullptr && def && def->emitsLight() && e->isLightEnabled();
+}
+
+static void fillRenderLight (RenderLight& light, const SpriteDefPtr& def, float px, float py, float radiusTiles, int x, int y, float tilePx)
+{
+	light.x = static_cast<float>(x) + (px + def->lightOffsetX) * tilePx;
+	light.y = static_cast<float>(y) + (py + def->lightOffsetY) * tilePx;
+	light.radius = radiusTiles * tilePx;
+	light.intensity = def->lightIntensity;
+	light.r = def->lightR;
+	light.g = def->lightG;
+	light.b = def->lightB;
+	light.falloff = def->lightFalloff;
+}
+
+void ClientMap::collectAndUploadLights (int x, int y) const
+{
+	RenderLight lights[MAX_RENDER_LIGHTS];
+	int lightCount = 0;
+	const float tilePx = static_cast<float>(_scaleGridToPixel) * _zoom;
+	struct MergeSpot {
+		float x;
+		float y;
+		SpriteDefPtr def;
+	};
+	std::vector<MergeSpot> mergeSpots;
+	for (const auto &iter : _entities) {
+		const ClientEntityPtr& e = iter.second;
+		const SpriteDefPtr def = SpriteDefinition::get().getSpriteDefinition(e->getSpriteName());
+		if (!acceptSpriteLight(e, def))
+			continue;
+		const vec2& pos = e->getPos();
+		if (def->lightMerge) {
+			mergeSpots.push_back(MergeSpot{pos.x, pos.y, def});
+			continue;
+		}
+		if (lightCount >= MAX_RENDER_LIGHTS)
+			continue;
+		fillRenderLight(lights[lightCount], def, pos.x, pos.y, def->lightRadius, x, y, tilePx);
+		++lightCount;
+	}
+	std::sort(mergeSpots.begin(), mergeSpots.end(), [] (const MergeSpot& a, const MergeSpot& b) {
+		if (a.y != b.y)
+			return a.y < b.y;
+		return a.x < b.x;
+	});
+	for (size_t i = 0; i < mergeSpots.size() && lightCount < MAX_RENDER_LIGHTS; ) {
+		size_t j = i + 1;
+		float sumX = mergeSpots[i].x;
+		float sumY = mergeSpots[i].y;
+		while (j < mergeSpots.size() && fabs(mergeSpots[j].y - mergeSpots[i].y) < 0.6f
+				&& mergeSpots[j].x - mergeSpots[j - 1].x < 1.2f) {
+			sumX += mergeSpots[j].x;
+			sumY += mergeSpots[j].y;
+			++j;
+		}
+		const float run = static_cast<float>(j - i);
+		const SpriteDefPtr& def = mergeSpots[i].def;
+		float radiusTiles = def->lightRadius + 0.45f * (run - 1.0f);
+		if (radiusTiles > def->lightRadius + 2.5f)
+			radiusTiles = def->lightRadius + 2.5f;
+		fillRenderLight(lights[lightCount], def, sumX / run, sumY / run, radiusTiles, x, y, tilePx);
+		++lightCount;
+		i = j;
+	}
+	_frontend->setRenderLights(lights, lightCount);
 }
 
 void ClientMap::render () const
@@ -234,6 +309,7 @@ void ClientMap::render () const
 	renderCooldowns(x, y);
 	renderTitle(x, y); // TODO: this shouldn't be x and y - because it will scroll out of the map
 	renderEnd(x, y);
+	_frontend->setRenderLights(nullptr, 0);
 
 	if (_restartDue != 0) {
 		renderFadeOutOverlay(x, y);

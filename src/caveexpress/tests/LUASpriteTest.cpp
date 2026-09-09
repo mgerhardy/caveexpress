@@ -57,6 +57,7 @@ TEST_F(LUASpriteTest, testSpriteLight)
 	EXPECT_NEAR(3.5f, lava->lightRadius, 0.001f);
 	EXPECT_NEAR(1.0f, lava->lightR, 0.001f);
 	EXPECT_NEAR(0.22f, lava->lightG, 0.001f);
+	EXPECT_TRUE(lava->lightMerge);
 
 	const SpriteDefPtr rock = SpriteDefinition::get().getSpriteDefinition("tile-rock-01");
 	if (rock) {

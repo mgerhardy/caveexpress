@@ -22,11 +22,17 @@ public:
 
 	void setLightState (bool lightState);
 	bool isLightState () const;
+	bool isLightEnabled () const override;
 
 	void render (IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int mapPixelWidth, int mapPixelHeight) const override;
 };
 
 inline bool ClientWindowTile::isLightState () const
+{
+	return _lightState;
+}
+
+inline bool ClientWindowTile::isLightEnabled () const
 {
 	return _lightState;
 }

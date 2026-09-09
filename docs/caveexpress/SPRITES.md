@@ -79,6 +79,7 @@ light = {
     offsetx = 0.0,
     offsety = 0.35,               -- added to entity pos; Y increases downward
     falloff = 2.0,                -- 1 linear, 2 quadratic
+    merge = false,                -- true: adjacent tiles on a row share one light (lava)
 },
 ```
 

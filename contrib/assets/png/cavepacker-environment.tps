@@ -213,18 +213,30 @@
         <key>fileList</key>
         <array>
             <filename>../png/cavepacker/tile-background-04-back-01.png</filename>
+            <filename>../png/cavepacker/tile-background-04-back-01_n.png</filename>
             <filename>../png/cavepacker/tile-background-01-back-01.png</filename>
+            <filename>../png/cavepacker/tile-background-01-back-01_n.png</filename>
             <filename>../png/cavepacker/tile-background-02-back-01.png</filename>
+            <filename>../png/cavepacker/tile-background-02-back-01_n.png</filename>
             <filename>../png/cavepacker/tile-background-03-back-01.png</filename>
+            <filename>../png/cavepacker/tile-background-03-back-01_n.png</filename>
             <filename>../png/cavepacker/tile-reference.png</filename>
+            <filename>../png/cavepacker/tile-reference_n.png</filename>
             <filename>../png/cavepacker/deadlock-middle-01.png</filename>
             <filename>../png/cavepacker/tile-rock-01-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-01-back-01_n.png</filename>
             <filename>../png/cavepacker/tile-rock-02-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-02-back-01_n.png</filename>
             <filename>../png/cavepacker/tile-rock-03-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-03-back-01_n.png</filename>
             <filename>../png/cavepacker/tile-rock-04-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-04-back-01_n.png</filename>
             <filename>../png/cavepacker/tile-rock-05-back-01.png</filename>
+            <filename>../png/cavepacker/tile-rock-05-back-01_n.png</filename>
             <filename>../png/cavepacker/target-back-01.png</filename>
+            <filename>../png/cavepacker/target-back-01_n.png</filename>
             <filename>../png/cavepacker/target-back-02.png</filename>
+            <filename>../png/cavepacker/target-back-02_n.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

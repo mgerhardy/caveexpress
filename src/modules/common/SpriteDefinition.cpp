@@ -75,6 +75,7 @@ void SpriteDefinition::init (const TextureDefinition& textureDefinition)
 			def->lightOffsetX = lua.getValueFloatFromTable("offsetx", 0.0f);
 			def->lightOffsetY = lua.getValueFloatFromTable("offsety", 0.0f);
 			def->lightFalloff = lua.getValueFloatFromTable("falloff", 2.0f);
+			def->lightMerge = lua.getValueBoolFromTable("merge", false);
 			const int colorLen = lua.getTable("color");
 			if (colorLen >= 3) {
 				def->lightR = lua.getTableFloat(1);
