@@ -46,5 +46,5 @@ Version 2.7 (not yet released)
 * Fade map out when finishing a level
 * Animated player sprite
 * Reworked map editor UI (ImGui)
-* Shift+LMB or middle-click to pick the tile under the cursor in the editor
-* Updated editor translations (English and German)
+* Lighting effects
+* Multiplayer improvements

@@ -166,9 +166,11 @@ Version 2.6 (2025-06-07)
 
 Version 2.7 (not yet released)
 * Fade map out when finishing a level
+* Finished lava implementation
 * Editor
   * Reworked map editor UI (ImGui)
-  * Shift+LMB or middle-click to pick the tile under the cursor
-  * Bridges and lianes can only be placed on background tiles
   * Improved random map generator (Auto) with seed support
   * Updated editor translations (English and German)
+* Adding lighting effects for caves and lava as well as a heat haze to lava
+* Improved map validation
+* Multiplayer improvements
