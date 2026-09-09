@@ -677,6 +677,7 @@ void Map::startMap ()
 			package->setState(CavePackerEntityStates::DELIVERED);
 		}
 	}
+	checkDeadlock();
 }
 
 MapTile* Map::getPackage (int col, int row) const

@@ -1282,6 +1282,56 @@ TEST_F(SokobanMapTest, testUndoClearsDeadlockPackageState)
 	FS.deleteFile(relPath);
 }
 
+TEST_F(SokobanMapTest, testStartMarksLockedPackageAsDeadlock)
+{
+	const char* board =
+		";initial-deadlock-test\n"
+		"#####\n"
+		"#$@ #\n"
+		"# . #\n"
+		"#####\n";
+	const std::string name = "initial_deadlock_test";
+	const std::string relPath = FS.getDataDir() + FS.getMapsDir() + name + ".sok";
+	const std::string absPath = FS.getAbsoluteWritePath() + relPath;
+	ASSERT_NE(-1L, FS.writeSysFile(absPath, (const unsigned char*)board, strlen(board), true))
+		<< "Failed to write " << absPath;
+
+	NetworkTestListener listener;
+	NetworkTestServerListener serverListener;
+	ASSERT_TRUE(_serviceProvider.getNetwork().openServer(12345, &serverListener));
+	ASSERT_TRUE(_serviceProvider.getNetwork().openClient("localhost", 12345, &listener));
+
+	Map map;
+	map.init(&_testFrontend, _serviceProvider);
+	ASSERT_TRUE(map.load(name));
+	_serviceProvider.getNetwork().update(1);
+	Player* player = new Player(map, 1);
+	ASSERT_TRUE(map.initPlayer(player));
+	_serviceProvider.getNetwork().update(1);
+	map.startMap();
+	_serviceProvider.getNetwork().update(1);
+
+	class PackageCollector: public IEntityVisitor {
+	public:
+		std::vector<MapTile*> packages;
+		bool visitEntity (IEntity *entity) override {
+			if (EntityTypes::isPackage(entity->getType()))
+				packages.push_back(static_cast<MapTile*>(entity));
+			return false;
+		}
+	};
+
+	PackageCollector packages;
+	map.visitEntities(&packages, EntityTypes::PACKAGE);
+	ASSERT_EQ(1u, packages.packages.size());
+	EXPECT_EQ(CavePackerEntityStates::DEADLOCK, (int)packages.packages[0]->getState())
+		<< "locked package should be highlighted when the map starts\n" << map.getMapString();
+
+	_serviceProvider.getNetwork().closeClient();
+	_serviceProvider.getNetwork().closeServer();
+	FS.deleteFile(relPath);
+}
+
 TEST_F(SokobanMapTest, testUndoAfterPackagePushDoesNotFinishMap)
 {
 	const char* board =
