@@ -112,6 +112,7 @@ public:
 	void renderImage (Texture* texture, int x, int y, int w, int h, int16_t angle, float alpha = 1.0f) override;
 	void bindTexture (Texture* texture, int textureUnit) override;
 	void setRenderLights (const RenderLight* lights, int count) override;
+	void flushRenderBatches () override { renderBatches(); }
 	RenderTarget* renderToTexture (int x, int y, int w, int h) override;
 	bool renderTarget (RenderTarget* target) override;
 	bool disableRenderTarget (RenderTarget* target) override;

@@ -310,6 +310,9 @@ void ClientMap::render () const
 	renderCooldowns(x, y);
 	renderTitle(x, y); // TODO: this shouldn't be x and y - because it will scroll out of the map
 	renderEnd(x, y);
+	// GL batches are submitted later than their sprites are queued. Submit them while
+	// their map lights are still bound rather than clearing the uniforms first.
+	_frontend->flushRenderBatches();
 	_frontend->setRenderLights(nullptr, 0);
 
 	if (_restartDue != 0) {

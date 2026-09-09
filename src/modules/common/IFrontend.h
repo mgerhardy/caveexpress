@@ -114,6 +114,10 @@ public:
 		(void)lights;
 		(void)count;
 	}
+	/**
+	 * Submit pending buffered draw calls. Immediate renderers do not need to override this.
+	 */
+	virtual void flushRenderBatches () {}
 	virtual RenderTarget* renderToTexture (int x, int y, int w, int h) { return nullptr; }
 	virtual bool renderTarget (RenderTarget* target) { return false; }
 	virtual bool disableRenderTarget (RenderTarget* target) { return false; }
