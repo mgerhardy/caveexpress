@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include "common/IFrontend.h"
 #include "common/Log.h"
 #include "common/FileSystem.h"
 
@@ -99,6 +100,9 @@ std::string Shader::getSource (ShaderType shaderType, const char *buffer, int le
 #else
 	src.append("#version 130\n");
 #endif
+	src.append("#define MAX_RENDER_LIGHTS ");
+	src.append(std::to_string(MAX_RENDER_LIGHTS));
+	src.append("\n");
 
 	std::string append(buffer, len);
 

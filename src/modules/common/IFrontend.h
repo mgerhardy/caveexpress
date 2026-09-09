@@ -17,7 +17,7 @@ typedef std::shared_ptr<BitmapFont> BitmapFontPtr;
 struct RenderTarget;
 struct TextureData;
 
-#define MAX_RENDER_LIGHTS 16
+#define MAX_RENDER_LIGHTS 32
 
 /** Screen-space point light used by the GL shader when a sprite has a normal map. */
 struct RenderLight {

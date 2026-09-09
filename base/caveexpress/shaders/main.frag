@@ -1,9 +1,9 @@
 uniform sampler2D u_texture;
 uniform sampler2D u_normals;
 uniform int u_lightcount;
-uniform vec4 u_lights[16];
-uniform vec3 u_lightcolors[16];
-uniform float u_lightfalloff[16];
+uniform vec4 u_lights[MAX_RENDER_LIGHTS];
+uniform vec3 u_lightcolors[MAX_RENDER_LIGHTS];
+uniform float u_lightfalloff[MAX_RENDER_LIGHTS];
 
 in vec2 v_texcoord;
 in vec2 v_normalcoord;
@@ -24,7 +24,7 @@ void main(void) {
 		else
 			n = vec3(0.0, 0.0, 1.0);
 		vec3 lighting = vec3(0.72);
-		for (int i = 0; i < 16; ++i) {
+		for (int i = 0; i < MAX_RENDER_LIGHTS; ++i) {
 			if (i >= u_lightcount)
 				break;
 			vec2 lpos = u_lights[i].xy;
