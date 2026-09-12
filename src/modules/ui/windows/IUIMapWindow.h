@@ -50,6 +50,8 @@ protected:
 	virtual void initInputHudNodes();
 	virtual void showCursor (bool show);
 	void applyLobbyOverlay (const lobby::OverlayVisibility& visibility);
+	bool isLobbyVisible () const;
+	void applyBindingsSpace ();
 public:
 	IUIMapWindow (IFrontend *frontend, ServiceProvider& serviceProvider, CampaignManager& campaignManager, IUINodeMap* nodeMap, bool continuousMovement);
 	virtual ~IUIMapWindow() {}

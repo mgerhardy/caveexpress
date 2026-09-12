@@ -5,6 +5,7 @@
 #include "ui/nodes/UINodeMainButton.h"
 #include "caveexpress/client/ui/nodes/UINodeBackgroundScene.h"
 #include "ui/windows/main/ReplayNodeListener.h"
+#include "common/ConfigManager.h"
 #include <string>
 
 namespace caveexpress {
@@ -38,6 +39,12 @@ UIMapFailedWindow::UIMapFailedWindow (IFrontend *frontend, CampaignManager& camp
 	}
 
 	add(new UINodeBackButton(frontend, _background));
+}
+
+void UIMapFailedWindow::onActive ()
+{
+	UIWindow::onActive();
+	Config.setBindingsSpace(BINDINGS_UI);
 }
 
 void UIMapFailedWindow::updateReason (bool isMultiplayer, const MapFailedReason& reason, const ThemeType& theme)

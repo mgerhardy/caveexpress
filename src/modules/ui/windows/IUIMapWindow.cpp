@@ -151,13 +151,26 @@ UINode* IUIMapWindow::getFingerControl ()
 	return node;
 }
 
+bool IUIMapWindow::isLobbyVisible () const
+{
+	return (_startButton && _startButton->isVisible())
+			|| (_waitLabel && _waitLabel->isVisible())
+			|| (_leaveButton && _leaveButton->isVisible());
+}
+
+void IUIMapWindow::applyBindingsSpace ()
+{
+	if (isLobbyVisible() || !_nodeMap->getMap().isStarted())
+		Config.setBindingsSpace(BINDINGS_UI);
+	else
+		Config.setBindingsSpace(BINDINGS_MAP);
+}
+
 void IUIMapWindow::onActive ()
 {
 	UIWindow::onActive();
 	_cursorActive = UI::get().isCursorVisible();
-	const bool lobby = (_startButton && _startButton->isVisible())
-			|| (_waitLabel && _waitLabel->isVisible())
-			|| (_leaveButton && _leaveButton->isVisible());
+	const bool lobby = isLobbyVisible();
 	if (_cursorActive && !lobby)
 		showCursor(false);
 	UINode* lives = getNode(UINODE_LIVES);
@@ -167,8 +180,7 @@ void IUIMapWindow::onActive ()
 	if (lobby)
 		hideHud();
 
-	if (_nodeMap->getMap().isStarted())
-		Config.setBindingsSpace(BINDINGS_MAP);
+	applyBindingsSpace();
 }
 
 void IUIMapWindow::onPushedOver ()
@@ -177,6 +189,9 @@ void IUIMapWindow::onPushedOver ()
 	UIWindow::onPushedOver();
 	if (_cursorActive)
 		showCursor(true);
+	// Finish/fail/options sit on top of a live ClientMap. Map bindings would
+	// steal TAB/SPACE/arrows (spectate/drop/move) from ui_focus/ui_execute.
+	Config.setBindingsSpace(BINDINGS_UI);
 }
 
 bool IUIMapWindow::onPop ()

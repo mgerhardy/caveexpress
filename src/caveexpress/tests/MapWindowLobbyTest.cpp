@@ -13,6 +13,7 @@
 #include "caveexpress/client/ui/windows/UIMapFailedWindow.h"
 #include "caveexpress/shared/CaveExpressMapFailedReasons.h"
 #include "common/ThemeType.h"
+#include "common/ConfigManager.h"
 #include <string>
 #include <vector>
 
@@ -162,6 +163,54 @@ TEST_F(MapWindowLobbyTest, failedWindowMultiplayerReturnsToLobby)
 	EXPECT_FALSE(retry->isVisible());
 	EXPECT_TRUE(lobbyBtn->isVisible());
 	EXPECT_TRUE(failed->isFullscreen()) << "fail overlay must hide the map so it does not keep drawing";
+}
+
+TEST_F(MapWindowLobbyTest, overlayOverStartedMapUsesUiBindings)
+{
+	_window->start();
+	EXPECT_EQ(BINDINGS_MAP, Config.getBindingsSpace());
+	_window->onPushedOver();
+	EXPECT_EQ(BINDINGS_UI, Config.getBindingsSpace())
+			<< "finish/fail/options must not keep spectate/drop/move bindings";
+}
+
+TEST_F(MapWindowLobbyTest, lobbyStaysOnUiBindingsWhenMapBecomesActive)
+{
+	_serviceProvider.updateNetwork(true);
+	_window->start();
+	ASSERT_EQ(BINDINGS_MAP, Config.getBindingsSpace());
+	_window->initWaitingForPlayers(true);
+	EXPECT_EQ(BINDINGS_UI, Config.getBindingsSpace());
+	_window->onActive();
+	EXPECT_EQ(BINDINGS_UI, Config.getBindingsSpace())
+			<< "after a match the map is still started; lobby chrome must keep UI keys";
+}
+
+TEST_F(MapWindowLobbyTest, startedMatchUsesMapBindingsWhenFront)
+{
+	_window->start();
+	_window->onActive();
+	EXPECT_EQ(BINDINGS_MAP, Config.getBindingsSpace());
+}
+
+TEST_F(MapWindowLobbyTest, finishedWindowForcesUiBindings)
+{
+	auto* finished = UI::get().getWindow(UI_WINDOW_MAPFINISHED);
+	ASSERT_NE(nullptr, finished);
+	_window->start();
+	ASSERT_EQ(BINDINGS_MAP, Config.getBindingsSpace());
+	finished->onActive();
+	EXPECT_EQ(BINDINGS_UI, Config.getBindingsSpace());
+}
+
+TEST_F(MapWindowLobbyTest, failedWindowForcesUiBindings)
+{
+	auto* failed = UI::get().getWindow(UI_WINDOW_MAPFAILED);
+	ASSERT_NE(nullptr, failed);
+	_window->start();
+	ASSERT_EQ(BINDINGS_MAP, Config.getBindingsSpace());
+	failed->onActive();
+	EXPECT_EQ(BINDINGS_UI, Config.getBindingsSpace());
 }
 
 TEST_F(MapWindowLobbyTest, createServerHasMaxPlayersSpinner)
