@@ -491,8 +491,7 @@ void UI::onFingerMotion (int64_t finger, float x, float y, float dx, float dy)
 	const int16_t _dy = dy * _frontend->getHeight();
 	UIStack stack = _stack;
 
-	const int motionDelta = 10;
-	if (_dx > motionDelta || _dy > motionDelta)
+	if (isFingerMotionDelta(_dx, _dy))
 		_motionFinger = true;
 
 	for (UIStackReverseIter i = stack.rbegin(); i != stack.rend(); ++i) {

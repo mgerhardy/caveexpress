@@ -121,6 +121,12 @@ public:
 	virtual ~UI ();
 	static UI& get ();
 
+	/** True if a finger move is a drag, not a tap. Both signs count (issue #88). */
+	static bool isFingerMotionDelta (int16_t dx, int16_t dy, int threshold = 10)
+	{
+		return std::abs(static_cast<int>(dx)) > threshold || std::abs(static_cast<int>(dy)) > threshold;
+	}
+
 	inline void disableRotatingFonts() { _rotateFonts = false; }
 
 	inline IFrontend *getFrontend () const

@@ -1,7 +1,11 @@
 #include "TestShared.h"
+#ifdef scroll
+#undef scroll
+#endif
 #include "ui/UI.h"
 #include "ui/windows/UIWindow.h"
 #include "ui/nodes/UINode.h"
+#include "ui/nodes/UINodeSelector.h"
 #include "ui/layouts/UIHBoxLayout.h"
 #include "ui/layouts/UIVBoxLayout.h"
 
@@ -229,4 +233,55 @@ TEST_F(UITest, testVLayout) {
 TEST_F(UITest, testRestart) {
 	UI::get().initRestart();
 	UI::get().restart();
+}
+
+TEST_F(UITest, testFingerMotionDeltaBothSigns) {
+	EXPECT_TRUE(UI::isFingerMotionDelta(40, 0));
+	EXPECT_TRUE(UI::isFingerMotionDelta(-40, 0));
+	EXPECT_TRUE(UI::isFingerMotionDelta(0, 40));
+	EXPECT_TRUE(UI::isFingerMotionDelta(0, -40));
+	EXPECT_FALSE(UI::isFingerMotionDelta(5, 5));
+	EXPECT_FALSE(UI::isFingerMotionDelta(-5, -5));
+	EXPECT_FALSE(UI::isFingerMotionDelta(10, 0));
+	EXPECT_FALSE(UI::isFingerMotionDelta(-10, 0));
+}
+
+class TestSelector: public UINodeSelector<int> {
+public:
+	int selectCount;
+	explicit TestSelector (IFrontend* frontend) :
+			UINodeSelector<int>(frontend, 1, 1), selectCount(0)
+	{
+		setScrollingEnabled(false);
+		setSize(0.8f, 0.6f);
+		addData(1);
+		addData(2);
+		addData(3);
+		selectEntry(0);
+	}
+
+	bool onSelect (const int&) override
+	{
+		++selectCount;
+		return true;
+	}
+};
+
+TEST_F(UITest, testSelectorSwipeDoesNotActivate) {
+	TestSelector selector(&_testFrontend);
+
+	selector.onFingerMotion(1, 10, 10, -40, 0);
+	selector.onFingerRelease(1, 10, 10, UI::isFingerMotionDelta(-40, 0));
+	EXPECT_EQ(0, selector.selectCount) << "swipe left (forward page) must not activate";
+
+	selector.onFingerMotion(1, 10, 10, 40, 0);
+	selector.onFingerRelease(1, 10, 10, UI::isFingerMotionDelta(40, 0));
+	EXPECT_EQ(0, selector.selectCount) << "swipe right (back page) must not activate";
+
+	selector.onFingerMotion(1, 10, 10, -40, 0);
+	selector.onFingerRelease(1, 10, 10, false);
+	EXPECT_EQ(0, selector.selectCount) << "page swipe must not activate even if UI forgets motion";
+
+	selector.onFingerRelease(1, 0, 0, false);
+	EXPECT_EQ(1, selector.selectCount) << "a tap still activates";
 }

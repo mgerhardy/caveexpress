@@ -237,9 +237,10 @@ public:
 
 	bool onFingerRelease (int64_t finger, uint16_t x, uint16_t y, bool motion) override
 	{
+		const bool paged = _motionHandled;
 		_motionHandled = false;
-		// ignore this if the finger was released after a motion event
-		if (motion)
+		// ignore this if the finger was released after a drag or page swipe
+		if (motion || paged)
 			return Super::onFingerRelease(finger, x, y, motion);
 
 		addFocus(x, y);
