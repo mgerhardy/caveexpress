@@ -297,6 +297,13 @@ void Player::setCrashed (const PlayerCrashReason& reason)
 	setState(PlayerState::PLAYER_CRASHED);
 	setAnimationType(Animations::ANIMATION_CRASHED);
 	_crashReason = reason;
+	drop();
+	if (_collectedNPC != nullptr) {
+		NPCFriendly* npc = _collectedNPC;
+		npc->createBody(getPos(), false);
+		npc->setFalling();
+		setCollectedNPC(nullptr);
+	}
 	_acceleration = PhysicsVec2_zero;
 	_fingerAcceleration = false;
 	_accelerateX = 0;

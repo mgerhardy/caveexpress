@@ -1,4 +1,5 @@
 #include "PhysicsTest.h"
+#include "caveexpress/server/entities/CaveMapTile.h"
 
 namespace caveexpress {
 
@@ -164,6 +165,49 @@ TEST_F(PhysicsTest, CrashedPlayerIgnoresInputAndKeepsCrashedAnimation)
 	player->setFingerAcceleration(10, -10);
 	player->resetFingerAcceleration();
 	EXPECT_TRUE(player->getAnimationType() == Animations::ANIMATION_CRASHED);
+}
+
+TEST_F(PhysicsTest, CrashedPlayerDropsAllPackages)
+{
+	Player* player = addPlayer(8.0f, 6.0f);
+	ASSERT_NE(nullptr, player);
+	tick(1);
+	Package* first = addPackage(6.0f, 6.0f);
+	Package* second = addPackage(10.0f, 6.0f);
+	ASSERT_NE(nullptr, first);
+	ASSERT_NE(nullptr, second);
+	ASSERT_TRUE(player->collect(first));
+	first->setCollected(true, player);
+	ASSERT_TRUE(player->collect(second));
+	second->setCollected(true, player);
+	ASSERT_EQ(2, player->getCollectedPackageCount());
+
+	player->setCrashed(CRASH_DAMAGE);
+
+	EXPECT_EQ(0, player->getCollectedPackageCount());
+	EXPECT_FALSE(first->isCollected());
+	EXPECT_FALSE(second->isCollected());
+}
+
+TEST_F(PhysicsTest, CrashedPlayerReleasesPassengerFalling)
+{
+	CaveMapTile* cave = static_cast<CaveMapTile*>(_map.addTileScripted("tile-cave-01", 5.0f, 9.0f));
+	ASSERT_NE(nullptr, cave);
+	Player* player = addPlayer(8.0f, 6.0f);
+	ASSERT_NE(nullptr, player);
+	tick(1);
+	NPCFriendly* passenger = _map.spawnFriendlyNPCScripted(cave, EntityTypes::NPC_FRIENDLY_MAN, false);
+	ASSERT_NE(nullptr, passenger);
+	player->setCollectedNPC(passenger);
+	passenger->remove();
+	ASSERT_TRUE(player->isTransfering(passenger));
+	ASSERT_TRUE(passenger->getBodies().empty());
+
+	player->setCrashed(CRASH_DAMAGE);
+
+	EXPECT_FALSE(player->isTransfering(passenger));
+	EXPECT_TRUE(passenger->isFalling());
+	EXPECT_FALSE(passenger->getBodies().empty());
 }
 
 TEST_F(PhysicsTest, CrashedPlayerKeepsWorldCollision)
