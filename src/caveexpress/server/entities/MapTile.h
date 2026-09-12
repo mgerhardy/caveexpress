@@ -23,6 +23,8 @@ protected:
 
 	PhysicsVec2 _pos;
 
+	static bool isFallingOrDyingNpc (const IEntity* entity);
+
 public:
 	MapTile (Map& map, const std::string& spriteID, gridCoord gridX, gridCoord gridY, const EntityType &type);
 	virtual ~MapTile ();

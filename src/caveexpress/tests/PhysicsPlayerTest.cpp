@@ -1,5 +1,9 @@
 #include "PhysicsTest.h"
+#include "caveexpress/server/entities/Border.h"
 #include "caveexpress/server/entities/CaveMapTile.h"
+#include "caveexpress/server/entities/Gate.h"
+#include "caveexpress/server/entities/Platform.h"
+#include "caveexpress/server/entities/PressurePlate.h"
 
 namespace caveexpress {
 
@@ -189,7 +193,7 @@ TEST_F(PhysicsTest, CrashedPlayerDropsAllPackages)
 	EXPECT_FALSE(second->isCollected());
 }
 
-TEST_F(PhysicsTest, CrashedPlayerReleasesPassengerFalling)
+TEST_F(PhysicsTest, CrashedPlayerReleasesPassengerDying)
 {
 	CaveMapTile* cave = static_cast<CaveMapTile*>(_map.addTileScripted("tile-cave-01", 5.0f, 9.0f));
 	ASSERT_NE(nullptr, cave);
@@ -199,15 +203,107 @@ TEST_F(PhysicsTest, CrashedPlayerReleasesPassengerFalling)
 	NPCFriendly* passenger = _map.spawnFriendlyNPCScripted(cave, EntityTypes::NPC_FRIENDLY_MAN, false);
 	ASSERT_NE(nullptr, passenger);
 	player->setCollectedNPC(passenger);
-	passenger->remove();
+	passenger->setState(NPCState::NPC_COLLECTED);
+	ASSERT_TRUE(_map.removeNPCFromWorld(passenger));
+	ASSERT_EQ(passenger, cave->getNPC());
 	ASSERT_TRUE(player->isTransfering(passenger));
 	ASSERT_TRUE(passenger->getBodies().empty());
 
 	player->setCrashed(CRASH_DAMAGE);
 
 	EXPECT_FALSE(player->isTransfering(passenger));
-	EXPECT_TRUE(passenger->isFalling());
+	EXPECT_TRUE(passenger->isDying());
+	EXPECT_FALSE(passenger->isFalling());
+	EXPECT_FALSE(passenger->isStruggle());
 	EXPECT_FALSE(passenger->getBodies().empty());
+	EXPECT_EQ(nullptr, cave->getNPC());
+}
+
+TEST_F(PhysicsTest, DyingPassengerIgnoresWorldGeometry)
+{
+	addGroundRow(10.0f, 3, 12);
+	CaveMapTile* cave = static_cast<CaveMapTile*>(_map.addTileScripted("tile-cave-01", 5.0f, 9.0f));
+	MapTile* lava = _map.addTileScripted("tile-lava-rock-left-01", 10.0f, 10.0f);
+	MapTile* bridge = _map.addTileScripted("bridge-plank-01", 7.0f, 8.0f);
+	PressurePlate* plate = static_cast<PressurePlate*>(_map.addTileScripted("tile-plate-01-idle", 12.0f, 10.0f));
+	Gate* gate = static_cast<Gate*>(_map.addTileScripted("tile-gate-rock-01", 14.0f, 8.0f));
+	ASSERT_NE(nullptr, cave);
+	ASSERT_NE(nullptr, lava);
+	ASSERT_NE(nullptr, bridge);
+	ASSERT_NE(nullptr, plate);
+	ASSERT_NE(nullptr, gate);
+	Player* player = addPlayer(8.0f, 6.0f);
+	ASSERT_NE(nullptr, player);
+	tick(1);
+	NPCFriendly* passenger = _map.spawnFriendlyNPCScripted(cave, EntityTypes::NPC_FRIENDLY_MAN, false);
+	ASSERT_NE(nullptr, passenger);
+	player->setCollectedNPC(passenger);
+	player->setCrashed(CRASH_DAMAGE);
+	ASSERT_TRUE(passenger->isDying());
+
+	EXPECT_FALSE(lava->shouldCollide(passenger));
+	EXPECT_FALSE(passenger->shouldCollide(lava));
+	EXPECT_FALSE(bridge->shouldCollide(passenger));
+	EXPECT_FALSE(passenger->shouldCollide(bridge));
+	EXPECT_FALSE(plate->shouldCollide(passenger));
+	EXPECT_FALSE(gate->shouldCollide(passenger));
+
+	Platform* platform = findType<Platform>(EntityTypes::PLATFORM);
+	ASSERT_NE(nullptr, platform);
+	EXPECT_FALSE(platform->shouldCollide(passenger));
+	EXPECT_FALSE(passenger->shouldCollide(platform));
+
+	ASSERT_FALSE(passenger->getBodies().empty());
+	ASSERT_FALSE(lava->getBodies().empty());
+	ASSERT_FALSE(bridge->getBodies().empty());
+	ASSERT_FALSE(plate->getBodies().empty());
+	ASSERT_FALSE(gate->getBodies().empty());
+	ASSERT_FALSE(platform->getBodies().empty());
+	const PhysicsFixture npcFix = passenger->getBodies()[0].getFixtureList();
+	EXPECT_FALSE(_map.filterCollide(npcFix, lava->getBodies()[0].getFixtureList()));
+	EXPECT_FALSE(_map.filterCollide(npcFix, bridge->getBodies()[0].getFixtureList()));
+	EXPECT_FALSE(_map.filterCollide(npcFix, plate->getBodies()[0].getFixtureList()));
+	EXPECT_FALSE(_map.filterCollide(npcFix, gate->getBodies()[0].getFixtureList()));
+	EXPECT_FALSE(_map.filterCollide(npcFix, platform->getBodies()[0].getFixtureList()));
+}
+
+TEST_F(PhysicsTest, DyingPassengerStaysDyingInWater)
+{
+	CaveMapTile* cave = static_cast<CaveMapTile*>(_map.addTileScripted("tile-cave-01", 5.0f, 9.0f));
+	ASSERT_NE(nullptr, cave);
+	Player* player = addPlayer(8.0f, 6.0f);
+	ASSERT_NE(nullptr, player);
+	tick(1);
+	NPCFriendly* passenger = _map.spawnFriendlyNPCScripted(cave, EntityTypes::NPC_FRIENDLY_MAN, false);
+	ASSERT_NE(nullptr, passenger);
+	player->setCollectedNPC(passenger);
+	player->setCrashed(CRASH_DAMAGE);
+	ASSERT_TRUE(passenger->isDying());
+
+	freeze(passenger, PhysicsVec2(8.0f, 14.5f));
+	tick(20);
+	EXPECT_TRUE(passenger->isDying());
+	EXPECT_FALSE(passenger->isStruggle());
+	EXPECT_FALSE(passenger->isSwimming());
+	EXPECT_FALSE(passenger->isIdle());
+}
+
+TEST_F(PhysicsTest, DyingPassengerRemovedAtBottomBorder)
+{
+	CaveMapTile* cave = static_cast<CaveMapTile*>(_map.addTileScripted("tile-cave-01", 5.0f, 9.0f));
+	ASSERT_NE(nullptr, cave);
+	Player* player = addPlayer(8.0f, 6.0f);
+	ASSERT_NE(nullptr, player);
+	tick(1);
+	NPCFriendly* passenger = _map.spawnFriendlyNPCScripted(cave, EntityTypes::NPC_FRIENDLY_MAN, false);
+	ASSERT_NE(nullptr, passenger);
+	player->setCollectedNPC(passenger);
+	player->setCrashed(CRASH_DAMAGE);
+	ASSERT_TRUE(passenger->isDying());
+
+	Border bottom(BorderType::BOTTOM, _map);
+	passenger->onContact(PhysicsContact(), &bottom);
+	EXPECT_TRUE(passenger->isRemove());
 }
 
 TEST_F(PhysicsTest, CrashedPlayerKeepsWorldCollision)

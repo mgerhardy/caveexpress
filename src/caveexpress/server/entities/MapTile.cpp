@@ -1,4 +1,5 @@
 #include "MapTile.h"
+#include "caveexpress/server/entities/npcs/NPC.h"
 #include "caveexpress/server/map/Map.h"
 #include "caveexpress/shared/constants/Density.h"
 #include "common/SpriteDefinition.h"
@@ -24,10 +25,18 @@ bool MapTile::isUnderWater () const
 	return _map.getWaterHeight() < getPos().y;
 }
 
+bool MapTile::isFallingOrDyingNpc (const IEntity* entity)
+{
+	if (entity == nullptr || !entity->isNpc())
+		return false;
+	const NPC* npc = assert_cast<const NPC*, const IEntity*>(entity);
+	return npc->isFalling() || npc->isDying();
+}
+
 bool MapTile::shouldCollide (const IEntity* entity) const
 {
-	if (isLava())
-		return entity->isDynamic();
+	if (isFallingOrDyingNpc(entity))
+		return false;
 	return entity->isSolid();
 }
 

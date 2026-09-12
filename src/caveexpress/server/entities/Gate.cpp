@@ -103,6 +103,8 @@ bool Gate::shouldCollide (const IEntity* entity) const
 {
 	if (_protrusion < GATE_OPEN_THRESHOLD)
 		return false;
+	if (isFallingOrDyingNpc(entity))
+		return false;
 	return entity->isSolid() || entity->isDynamic();
 }
 

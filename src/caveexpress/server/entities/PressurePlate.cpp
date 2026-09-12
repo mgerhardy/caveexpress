@@ -19,6 +19,8 @@ PressurePlate::~PressurePlate ()
 
 bool PressurePlate::shouldCollide (const IEntity* entity) const
 {
+	if (isFallingOrDyingNpc(entity))
+		return false;
 	// Solid ground for anything that can land or walk on regular tiles.
 	return entity->isDynamic();
 }

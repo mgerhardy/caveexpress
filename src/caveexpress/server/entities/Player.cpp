@@ -300,9 +300,13 @@ void Player::setCrashed (const PlayerCrashReason& reason)
 	drop();
 	if (_collectedNPC != nullptr) {
 		NPCFriendly* npc = _collectedNPC;
+		npc->remove();
 		npc->createBody(getPos(), false);
-		npc->setFalling();
+		npc->setDying(this);
 		setCollectedNPC(nullptr);
+		CaveMapTile* cave = npc->getCave();
+		if (cave != nullptr && cave->getNPC() == npc)
+			cave->setNPC(nullptr);
 	}
 	_acceleration = PhysicsVec2_zero;
 	_fingerAcceleration = false;
