@@ -326,8 +326,11 @@ int LUAMapContext::luaAddStartPosition (lua_State * l) {
 	LUAMapContext *ctx = _luaGetContext(l, 1);
 	const std::string x = luaL_checkstring(l, 2);
 	const std::string y = luaL_checkstring(l, 3);
+	StartPositionModes::Type mode = StartPositionModes::BOTH;
+	if (!lua_isnoneornil(l, 4))
+		mode = StartPositionModes::fromString(luaL_checkstring(l, 4));
 
-	const IMap::StartPosition p{x, y};
+	const IMap::StartPosition p{x, y, mode};
 	ctx->_startPositions.push_back(p);
 
 	return 0;
@@ -364,6 +367,7 @@ void LUAMapContext::capturePreservedLogic (const std::string& source)
 bool LUAMapContext::load (bool skipErrors)
 {
 	resetTiles();
+	_startPositions.clear();
 	_preservedLogic.clear();
 
 	const std::string mapFile = FS.getMapsDir() + _name + ".lua";
@@ -563,6 +567,10 @@ bool LUAMapContext::writeMapFile (const std::string& path) const
 		file->appendString(pos._x.c_str());
 		file->appendString("\", \"");
 		file->appendString(pos._y.c_str());
+		if (pos._mode != StartPositionModes::BOTH) {
+			file->appendString("\", \"");
+			file->appendString(StartPositionModes::toString(pos._mode));
+		}
 		file->appendString("\")\n");
 	}
 

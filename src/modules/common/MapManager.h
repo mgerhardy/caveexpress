@@ -99,6 +99,8 @@ public:
 		const std::string& name = _lua.getStringFromStack();
 		return name;
 	}
+
+	int getStartPositions (const std::string& filename) override;
 };
 
 class FileMapManager: public IMapManager {

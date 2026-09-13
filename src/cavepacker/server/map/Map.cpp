@@ -611,7 +611,8 @@ bool Map::spawnPlayer (Player* player)
 
 	const int startPosIdx = (int)_players.size();
 	int col, row;
-	if (!getStartPosition(startPosIdx, col, row) || !_state.isFree(col, row)) {
+	INetwork& network = _serviceProvider->getNetwork();
+	if (!getSessionStartPosition(startPosIdx, network.isMultiplayer(), col, row) || !_state.isFree(col, row)) {
 		bool found = false;
 		for (int candidateRow = 0; candidateRow < _height && !found; ++candidateRow) {
 			for (int candidateCol = 0; candidateCol < _width; ++candidateCol) {
@@ -765,7 +766,7 @@ bool Map::initPlayer (Player* player)
 	player->setSpectator(spectator);
 	player->setColorIndex(player::colorIndexForJoin(network.isMultiplayer(), spectator, _players,
 			_playersWaitingForSpawn));
-	const MapSettingsMessage mapSettingsMsg(_settings, (int)_startPositions.size());
+	const MapSettingsMessage mapSettingsMsg(_settings, getSessionStartPositionCount(network.isMultiplayer()));
 	network.sendToClient(clientId, mapSettingsMsg);
 
 	const InitDoneMessage msgInit(player->getID(), 0, 0, 0, 0, spectator);

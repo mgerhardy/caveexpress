@@ -504,7 +504,14 @@ MapMetrics MapValidator::evaluate (int width, int height,
 
 	int startX = -1;
 	int startY = -1;
-	if (!starts.empty()) {
+	for (const IMap::StartPosition& start : starts) {
+		if (!StartPositionModes::allowsSingleplayer(start._mode))
+			continue;
+		startX = string::toInt(start._x);
+		startY = string::toInt(start._y);
+		break;
+	}
+	if ((startX < 0 || startY < 0) && !starts.empty()) {
 		startX = string::toInt(starts[0]._x);
 		startY = string::toInt(starts[0]._y);
 	}

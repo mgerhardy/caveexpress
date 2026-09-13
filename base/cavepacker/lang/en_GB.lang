@@ -12,6 +12,7 @@ Auto-tile walls picks rock art from neighboring floors.|Auto-tile walls picks ro
 Back|Back
 background|background
 Big|Big
+Both|Both
 Campaign|Campaign
 Campaign id|Campaign id
 Campaigns|Campaigns
@@ -208,6 +209,7 @@ Shapes tab: edit polygons/circles and write sprites.lua|Shapes tab: edit polygon
 Shift+arrows: nudge a liane or emitter by 0.1 tiles|Shift+arrows: nudge a liane or emitter by 0.1 tiles
 Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge|Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge
 Show Grid|Show Grid
+Singleplayer|Singleplayer
 Size|Size
 Skip|Skip
 Small|Small

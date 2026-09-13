@@ -1406,6 +1406,12 @@ void UIMapEditorWindow::renderMapIntoCanvas (ImDrawList* drawList) const
 		item.gridY = string::toFloat(position._y);
 		item.mapTile = false;
 		renderSprite(drawList, item, x, y, tileW, tileH);
+		if (position._mode != StartPositionModes::BOTH) {
+			const float px = x + item.gridX * tileW - _panX;
+			const float py = y + item.gridY * tileH - _panY;
+			drawList->AddText(ImVec2(px + 2.0f, py + tileH - 14.0f), IM_COL32(255, 220, 80, 255),
+					StartPositionModes::shortLabel(position._mode));
+		}
 	}
 
 	renderCanvasOverlay(drawList, x, y, tileW, tileH);

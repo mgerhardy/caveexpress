@@ -12,6 +12,7 @@ Auto-tile walls picks rock art from neighboring floors.|Auto-Kacheln wählt Fels
 Back|Zurück
 background|Hintergrund
 Big|Groß
+Both|Both
 Campaign|Kampagne
 Campaign id|Kampagnen-ID
 Campaigns|Kampagnen
@@ -208,6 +209,7 @@ Shapes tab: edit polygons/circles and write sprites.lua|Shapes tab: edit polygon
 Shift+arrows: nudge a liane or emitter by 0.1 tiles|Shift+arrows: nudge a liane or emitter by 0.1 tiles
 Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge|Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge
 Show Grid|Gitter anzeigen
+Singleplayer|Singleplayer
 Size|Größe
 Skip|Nächste
 Small|Klein

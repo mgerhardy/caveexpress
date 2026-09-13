@@ -2,6 +2,9 @@
 
 #include "cavepacker/server/map/SokobanMapContext.h"
 #include "common/FileSystem.h"
+#include "common/MapManager.h"
+#include "common/StartPositionMode.h"
+#include <memory>
 
 namespace cavepacker {
 
@@ -16,13 +19,9 @@ public:
 		char *buffer;
 		const int fileLen = file->read((void **) &buffer);
 		const std::unique_ptr<char[]> p(buffer);
-		int players = 0;
-		for (int i = 0; i < fileLen; ++i) {
-			if (buffer[i] == Sokoban::PLAYER || buffer[i] == Sokoban::PLAYERONTARGET) {
-				++players;
-			}
-		}
-		return players;
+		if (!buffer || fileLen <= 0)
+			return 0;
+		return StartPositionModes::countMultiplayerStartsFromSokoban(std::string(buffer, fileLen));
 	}
 };
 

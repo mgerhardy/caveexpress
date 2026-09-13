@@ -23,6 +23,7 @@ Back|Back
 background|background
 Big|Big
 Blow strength|Blow strength
+Both|Both
 Camera zoom when the map starts. Restart keeps the player's zoom.|Camera zoom when the map starts. Restart keeps the player's zoom.
 Campaign|Campaign
 Campaign id|Campaign id
@@ -306,6 +307,7 @@ Shift+drag (Select): rectangle. Ctrl+C/V copy/paste, arrows nudge|Shift+drag (Se
 Show all trigger links|Show all trigger links
 Show Grid|Show Grid
 Shredder|Shredder
+Singleplayer|Singleplayer
 Size|Size
 Small|Small
 solid|solid

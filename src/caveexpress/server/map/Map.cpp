@@ -1272,7 +1272,7 @@ bool Map::spawnPlayer (Player* player)
 		playerStartY = string::toFloat(editorY);
 		Config.getConfigVar("editor-play-x")->setValue("");
 		Config.getConfigVar("editor-play-y")->setValue("");
-	} else if (!getStartPosition(startPosIdx, playerStartX, playerStartY)) {
+	} else if (!getSessionStartPosition(startPosIdx, isMultiplayerSession(), playerStartX, playerStartY)) {
 		Log::error(LOG_GAMEIMPL, "no player position for index %i", startPosIdx);
 		return false;
 	}
@@ -1346,7 +1346,7 @@ bool Map::initPlayer (Player* player)
 	player->setColorIndex(player::colorIndexForJoin(isMultiplayerSession(), spectator, _players,
 			_playersWaitingForSpawn));
 	const int clientMask = ClientIdToClientMask(clientId);
-	const MapSettingsMessage mapSettingsMsg(_settings, _startPositions.size());
+	const MapSettingsMessage mapSettingsMsg(_settings, getSessionStartPositionCount(isMultiplayerSession()));
 	network.sendToClient(clientId, mapSettingsMsg);
 	GameEvent.sendWaterUpdate(clientMask, *_water);
 

@@ -7,6 +7,7 @@
 #include "common/TextureDefinition.h"
 #include "caveexpress/shared/CaveExpressMapContext.h"
 #include "common/MapSettings.h"
+#include "common/StartPositionMode.h"
 
 namespace caveexpress {
 
@@ -106,8 +107,19 @@ TEST(CampaignTest, testMaps) {
 				// Scripted intros park the player off-map until a beat reveals them.
 				if (string::toBool(settings[msn::CUTSCENE]))
 					continue;
-				const gridCoord x = string::toFloat(ctx.getStartPositions()[0]._x);
-				const gridCoord y = string::toFloat(ctx.getStartPositions()[0]._y);
+				const IMap::StartPositions& starts = ctx.getStartPositions();
+				ASSERT_FALSE(starts.empty()) << "map " << id << " has no start positions";
+				const IMap::StartPosition* start = nullptr;
+				for (const IMap::StartPosition& candidate : starts) {
+					if (StartPositionModes::allowsSingleplayer(candidate._mode)) {
+						start = &candidate;
+						break;
+					}
+				}
+				if (start == nullptr)
+					start = &starts[0];
+				const gridCoord x = string::toFloat(start->_x);
+				const gridCoord y = string::toFloat(start->_y);
 				EXPECT_TRUE(ctx.isLocationValid(x, y)) << "map " << id << " has invalid player start positions: " << x << ":" << y << " (" << settings[msn::WIDTH] << ":" << settings[msn::HEIGHT] << ")";
 				EXPECT_TRUE(ctx.isLocationFree(x, y)) << "map " << id << " has blocked player start positions: " << x << ":" << y;
 			}

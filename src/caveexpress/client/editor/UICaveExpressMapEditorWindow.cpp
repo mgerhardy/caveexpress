@@ -351,6 +351,15 @@ void UICaveExpressMapEditorWindow::drawPropertiesPanel () const
 			if (ImGui::InputFloat("##sy", &sy, 0.0f, 0.0f, "%.2f"))
 				doc.setStartPositionAt(i, sx, sy);
 			ImGui::SameLine();
+			int mode = static_cast<int>(starts[i]._mode);
+			ImGui::SetNextItemWidth(120.0f);
+			const std::string bothLabel = tr("Both");
+			const std::string singleLabel = tr("Singleplayer");
+			const std::string multiLabel = tr("Multiplayer");
+			const char* modeItems[] = { bothLabel.c_str(), singleLabel.c_str(), multiLabel.c_str() };
+			if (ImGui::Combo("##mode", &mode, modeItems, 3))
+				doc.setStartPositionMode(i, static_cast<StartPositionModes::Type>(mode));
+			ImGui::SameLine();
 			if (ImGui::Button(tr("Play").c_str())) {
 				doc.setFileName(_fileNameBuf);
 				doc.setMapName(_mapTitleBuf);

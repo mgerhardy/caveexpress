@@ -72,10 +72,7 @@ bool IMapEditorDocument::stateDiffersFrom (const State& state) const
 		return true;
 	if (!std::equal(state.settingsMap.begin(), state.settingsMap.end(), _settings.begin()))
 		return true;
-	if (!std::equal(state.startPositions.begin(), state.startPositions.end(), _startPositions.begin(),
-			[] (const IMap::StartPosition& a, const IMap::StartPosition& b) {
-				return a._x == b._x && a._y == b._y;
-			}))
+	if (!std::equal(state.startPositions.begin(), state.startPositions.end(), _startPositions.begin()))
 		return true;
 	return !std::equal(state.map.begin(), state.map.end(), _map.begin());
 }
@@ -376,6 +373,16 @@ void IMapEditorDocument::setStartPositionAt (size_t index, gridCoord gridX, grid
 		return;
 	_startPositions[index]._x = string::toString(gridX);
 	_startPositions[index]._y = string::toString(gridY);
+}
+
+void IMapEditorDocument::setStartPositionMode (size_t index, StartPositionModes::Type mode)
+{
+	if (index >= _startPositions.size())
+		return;
+	if (_startPositions[index]._mode == mode)
+		return;
+	MapEditorUndo();
+	_startPositions[index]._mode = mode;
 }
 
 bool IMapEditorDocument::isOverlapping (gridCoord gridX, gridCoord gridY, const MapEditorTileItem& item) const

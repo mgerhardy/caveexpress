@@ -8,6 +8,8 @@
 #include "cavepacker/shared/WallTilePlacement.h"
 #include <map>
 #include <cstdlib>
+#include <vector>
+#include "common/StartPositionMode.h"
 
 namespace cavepacker {
 
@@ -178,6 +180,22 @@ bool SokobanMapContext::writeBoard (const std::string& path) const {
 		out += _title;
 		out += '\n';
 	}
+	bool writeModes = false;
+	for (const IMap::StartPosition& pos : _startPositions) {
+		if (pos._mode != StartPositionModes::BOTH) {
+			writeModes = true;
+			break;
+		}
+	}
+	if (writeModes) {
+		out += "StartModes: ";
+		for (size_t i = 0; i < _startPositions.size(); ++i) {
+			if (i > 0)
+				out += ',';
+			out += StartPositionModes::toString(_startPositions[i]._mode);
+		}
+		out += '\n';
+	}
 
 	std::vector<char> board;
 	board.resize(width * height, Sokoban::GROUND);
@@ -244,6 +262,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 	_playerSpawned = false;
 	Log::info(LOG_GAMEIMPL, "load the map %s", _name.c_str());
 	resetTiles();
+	_startPositions.clear();
 
 	FilePtr filePtr = FS.getFileFromURL("maps://" + _name + ".sok");
 	if (filePtr->exists() && filePtr->length() <= 0) {
@@ -281,6 +300,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 	int pendingGroundCol = -1;
 	int pendingGroundCount = 0;
 	std::string line;
+	std::vector<StartPositionModes::Type> startModes;
 
 	auto discardPendingGrounds = [&] () {
 		pendingGroundCol = -1;
@@ -302,14 +322,18 @@ bool SokobanMapContext::load(bool skipErrors) {
 				line.push_back(buffer[i]);
 			} else {
 				const std::string& lower = string::toLower(line);
-				if (string::startsWith(lower, "title:") || string::startsWith(lower, "collection:")) {
+				if (StartPositionModes::parseStartModesLine(line, startModes)) {
+					line = "";
+				} else if (string::startsWith(lower, "title:") || string::startsWith(lower, "collection:")) {
 					std::vector<std::string> tokens;
 					string::splitString(string::trim(line), tokens, ":");
 					if (tokens.size() == 2) {
 						_title = string::trim(tokens[1]);
 					}
+					line = "";
+				} else {
+					line = "";
 				}
-				line = "";
 			}
 			continue;
 		}
@@ -318,6 +342,7 @@ bool SokobanMapContext::load(bool skipErrors) {
 			if (inComment)
 				line.push_back(buffer[i]);
 			else {
+				StartPositionModes::parseStartModesLine(line, startModes);
 				Log::info(LOG_GAMEIMPL, "comment: %s", line.c_str());
 				line.clear();
 			}
@@ -394,6 +419,8 @@ bool SokobanMapContext::load(bool skipErrors) {
 	_settings[msn::HEIGHT] = string::toString(row);
 
 	resolveWallTiles();
+
+	StartPositionModes::applyStartModes(_startPositions, startModes);
 
 	Log::info(LOG_GAMEIMPL, "found %i start positions", (int)_startPositions.size());
 

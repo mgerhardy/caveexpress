@@ -5,6 +5,8 @@
 #include "common/FileSystem.h"
 #include "common/CommandSystem.h"
 #include "common/Commands.h"
+#include "common/StartPositionMode.h"
+#include <memory>
 
 namespace {
 const std::string EMPTY = "";
@@ -96,5 +98,16 @@ void IMapManager::loadMaps ()
 	}
 
 	Log::info(LOG_COMMON, "loaded %i maps", static_cast<int>(_maps.size()));
+}
+
+int LUAMapManager::getStartPositions (const std::string& filename)
+{
+	const FilePtr& file = FS.getFile(filename);
+	char *buffer;
+	const int fileLen = file->read((void **) &buffer);
+	const std::unique_ptr<char[]> p(buffer);
+	if (!buffer || fileLen <= 0)
+		return 0;
+	return StartPositionModes::countMultiplayerStartsFromLua(std::string(buffer, fileLen));
 }
 

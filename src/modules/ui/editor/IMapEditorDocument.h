@@ -271,6 +271,7 @@ public:
 	void setPlayerPosition (gridCoord gridX, gridCoord gridY);
 	void removeStartPosition (size_t index);
 	void setStartPositionAt (size_t index, gridCoord gridX, gridCoord gridY);
+	void setStartPositionMode (size_t index, StartPositionModes::Type mode);
 	void setEmitterAmount (int amount) { _emitterAmount = amount; }
 	void setEmitterDelay (int delay) { _emitterDelay = delay; }
 	int getEmitterAmount () const { return _emitterAmount; }

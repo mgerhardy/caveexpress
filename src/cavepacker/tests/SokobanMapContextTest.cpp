@@ -233,6 +233,47 @@ TEST_F(SokobanMapContextTest, testSaveWritesTitleAndPackageOnTarget)
 	FS.deleteFile(outRel);
 }
 
+TEST_F(SokobanMapContextTest, testStartModesRoundTrip)
+{
+	const char* board =
+		";start-modes\n"
+		"StartModes: both,multiplayer\n"
+		"######\n"
+		"#@$.@#\n"
+		"######\n";
+	const std::string name = "start_modes_test";
+	const std::string relPath = FS.getDataDir() + FS.getMapsDir() + name + ".sok";
+	const std::string absPath = FS.getAbsoluteWritePath() + relPath;
+	ASSERT_NE(-1L, FS.writeSysFile(absPath, (const unsigned char*)board, strlen(board), true));
+
+	SokobanMapContext ctx(name);
+	ASSERT_TRUE(ctx.load(false));
+	const IMap::StartPositions& starts = ctx.getStartPositions();
+	ASSERT_EQ(2u, starts.size());
+	EXPECT_EQ(StartPositionModes::BOTH, starts[0]._mode);
+	EXPECT_EQ(StartPositionModes::MULTIPLAYER, starts[1]._mode);
+
+	const std::string outName = "start_modes_test_out";
+	const std::string outRel = FS.getDataDir() + FS.getMapsDir() + outName + ".sok";
+	const std::string outAbs = FS.getAbsoluteWritePath() + outRel;
+	ASSERT_TRUE(ctx.saveToPath(outAbs));
+
+	std::ifstream in(outAbs.c_str(), std::ios::binary);
+	ASSERT_TRUE(in.good());
+	const std::string saved((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+	EXPECT_NE(std::string::npos, saved.find("StartModes:"));
+	EXPECT_NE(std::string::npos, saved.find("multiplayer"));
+
+	SokobanMapContext reloaded(outName);
+	ASSERT_TRUE(reloaded.load(false));
+	ASSERT_EQ(2u, reloaded.getStartPositions().size());
+	EXPECT_EQ(StartPositionModes::BOTH, reloaded.getStartPositions()[0]._mode);
+	EXPECT_EQ(StartPositionModes::MULTIPLAYER, reloaded.getStartPositions()[1]._mode);
+
+	FS.deleteFile(relPath);
+	FS.deleteFile(outRel);
+}
+
 TEST_F(SokobanMapContextTest, testEmptyUserOverlayDoesNotHidePackagedMap)
 {
 	const std::string name = "xsokoban0001";

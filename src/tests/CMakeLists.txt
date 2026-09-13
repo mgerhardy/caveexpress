@@ -12,6 +12,7 @@ set(${PROJECT_NAME}_SRC
 	NoNetworkTest.cpp
 	ParticleTest.cpp
 	SQLiteTest.cpp
+	StartPositionModeTest.cpp
 	SystemTest.cpp
 	TestAll.cpp
 	TestGame.cpp
