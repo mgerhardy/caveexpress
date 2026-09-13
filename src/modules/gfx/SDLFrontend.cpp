@@ -501,7 +501,8 @@ void SDLFrontend::makeScreenshot (const std::string& filename)
 	SDL_RenderGetViewport(_renderer, &viewport);
 
 	SDL_PixelFormatEnumToMasks(SDL_PIXELFORMAT_RGBA8888, &bpp, &rmask, &gmask, &bmask, &amask);
-	std::unique_ptr<SDL_Surface> surface(SDL_CreateRGBSurface(0, viewport.w, viewport.h, bpp, rmask, gmask, bmask, amask));
+	std::unique_ptr<SDL_Surface, void(*)(SDL_Surface*)> surface(
+			SDL_CreateRGBSurface(0, viewport.w, viewport.h, bpp, rmask, gmask, bmask, amask), SDL_FreeSurface);
 	if (!surface) {
 		Log::warn(LogCategory::LOG_GFX, "Failed to create screenshot surface");
 		return;

@@ -618,13 +618,13 @@ void AbstractGLFrontend::makeScreenshot (const std::string& filename)
 	glPixelStorei(GL_PACK_ALIGNMENT, rowPack);
 	GL_checkError();
 
-	std::unique_ptr<SDL_Surface> surface(SDL_CreateRGBSurface(SDL_SWSURFACE, _width, _height, 24,
+	std::unique_ptr<SDL_Surface, void(*)(SDL_Surface*)> surface(SDL_CreateRGBSurface(SDL_SWSURFACE, _width, _height, 24,
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 			0x000000ff, 0x0000ff00, 0x00ff0000
 #else
 			0x00ff0000, 0x0000ff00, 0x000000ff
 #endif
-			, 0));
+			, 0), SDL_FreeSurface);
 	if (!surface) {
 		Log::warn(LogCategory::LOG_GFX, "Failed to create screenshot surface");
 		return;
