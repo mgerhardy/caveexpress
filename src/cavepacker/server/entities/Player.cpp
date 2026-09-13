@@ -12,7 +12,7 @@ namespace cavepacker {
 
 Player::Player (Map& map, ClientId clientId) :
 		IEntity(EntityTypes::PLAYER, map, 0, 0), _clientId(clientId), _targetIndex(NO_TARGET_INDEX), _lastStep(0u),
-		_heldDirection(0), _spectator(false) {
+		_heldDirection(0), _spectator(false), _colorIndex(player::COLOR_NONE) {
 	_solutionSave.reserve(256);
 }
 

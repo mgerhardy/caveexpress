@@ -18,13 +18,14 @@ private:
 	float _sizeY;
 	EntityAngle _angle;
 	EntityAlignment _spriteAlign;
+	uint8_t _colorIndex;
 public:
 	AddEntityMessage (uint16_t entityId, const EntityType& entityType, const Animation& animation,
 			const std::string& sprite, float xpos, float ypos, float sizeX, float sizeY, EntityAngle angle,
-			EntityAlignment spriteAlign) :
+			EntityAlignment spriteAlign, uint8_t colorIndex = player::COLOR_NONE) :
 			IProtocolMessage(protocol::PROTO_ADDENTITY), _entityId(entityId), _animation(&animation), _entityType(
 					&entityType), _sprite(sprite), _xpos(xpos), _ypos(ypos), _sizeX(sizeX), _sizeY(sizeY), _angle(angle), _spriteAlign(
-					spriteAlign)
+					spriteAlign), _colorIndex(colorIndex)
 	{
 	}
 
@@ -43,6 +44,7 @@ public:
 		_sizeY = input.readShortScaled();
 		_angle = static_cast<EntityAngle>(input.readShort());
 		_spriteAlign = static_cast<EntityAlignment>(input.readByte());
+		_colorIndex = input.readByte();
 	}
 
 	void serialize (ByteStream& out) const override
@@ -58,6 +60,7 @@ public:
 		out.addShortScaled(_sizeY);
 		out.addShort(_angle);
 		out.addByte(_spriteAlign);
+		out.addByte(_colorIndex);
 	}
 
 	inline uint16_t getEntityId () const
@@ -108,5 +111,10 @@ public:
 	inline EntityAlignment getSpriteAlignment () const
 	{
 		return _spriteAlign;
+	}
+
+	inline uint8_t getColorIndex () const
+	{
+		return _colorIndex;
 	}
 };

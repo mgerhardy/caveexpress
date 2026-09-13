@@ -8,6 +8,7 @@
 #include "common/SoundType.h"
 #include "common/ConfigVar.h"
 #include "common/Log.h"
+#include "common/PlayerColors.h"
 #include <memory>
 #include "network/IProtocolHandler.h"
 
@@ -86,6 +87,7 @@ private:
 
 	PlayerCrashReason _crashReason;
 	bool _spectator;
+	uint8_t _colorIndex;
 
 	float getCompleteMass () const;
 
@@ -115,6 +117,8 @@ public:
 	bool acceptsControlInput () const;
 	bool isSpectator () const;
 	void setSpectator (bool spectator);
+	void setColorIndex (uint8_t colorIndex);
+	uint8_t getColorIndex () const override;
 	const PlayerCrashReason& getCrashReason () const;
 	// returns true if the player does not carry anything
 	bool isFree () const;
@@ -210,6 +214,16 @@ inline bool Player::isSpectator () const
 inline void Player::setSpectator (bool spectator)
 {
 	_spectator = spectator;
+}
+
+inline void Player::setColorIndex (uint8_t colorIndex)
+{
+	_colorIndex = colorIndex;
+}
+
+inline uint8_t Player::getColorIndex () const
+{
+	return _colorIndex;
 }
 
 inline uint16_t Player::getHitpoints () const

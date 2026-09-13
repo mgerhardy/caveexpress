@@ -121,6 +121,13 @@ TEST_F(SokobanMapTest, multiplayerLobbyMarksHostAndAutoStartsAtConfiguredCap)
 	ASSERT_EQ(2u, names.size());
 	EXPECT_EQ(std::string("Alice") + lobby::HOST_SUFFIX, names[0]);
 	EXPECT_EQ("Bob", names[1]);
+	EXPECT_EQ(0, host->getColorIndex());
+	EXPECT_EQ(1, guest->getColorIndex());
+	EXPECT_NE(host->getColorIndex(), guest->getColorIndex());
+	const std::vector<lobby::PlayerEntry> lobbyPlayers = map.getLobbyPlayers();
+	ASSERT_EQ(2u, lobbyPlayers.size());
+	EXPECT_EQ(0, lobbyPlayers[0].colorIndex);
+	EXPECT_EQ(1, lobbyPlayers[1].colorIndex);
 	map.shutdown();
 }
 
@@ -150,6 +157,10 @@ TEST_F(SokobanMapTest, multiplayerLateJoinSpectatesAndNextRoundWaitsForHost)
 	const std::vector<std::string> activeNames = map.getLobbyPlayerNames();
 	ASSERT_EQ(3u, activeNames.size());
 	EXPECT_EQ(std::string("Carol") + lobby::SPECTATING_SUFFIX, activeNames[2]);
+	EXPECT_EQ(player::COLOR_NONE, spectator->getColorIndex());
+	const std::vector<lobby::PlayerEntry> activePlayers = map.getLobbyPlayers();
+	ASSERT_EQ(3u, activePlayers.size());
+	EXPECT_EQ(player::COLOR_NONE, activePlayers[2].colorIndex);
 
 	ASSERT_TRUE(map.returnToLobby());
 	EXPECT_FALSE(map.isMatchStarted());
@@ -189,6 +200,50 @@ TEST_F(SokobanMapTest, multiplayerGuestLeaveKeepsHostMatchRunning)
 	EXPECT_EQ(1u, map.getPlayers().size());
 	EXPECT_TRUE(map.getSpectators().empty());
 	EXPECT_EQ("xsokoban0001", map.getName());
+	map.shutdown();
+}
+
+TEST_F(SokobanMapTest, singlePlayerKeepsUntintedColor)
+{
+	Map map;
+	map.init(&_testFrontend, _serviceProvider);
+	ASSERT_TRUE(map.load("xsokoban0001"));
+	Player* player = new Player(map, 1);
+	ASSERT_TRUE(map.initPlayer(player));
+	map.startMap();
+	EXPECT_EQ(player::COLOR_NONE, player->getColorIndex());
+	const std::vector<lobby::PlayerEntry> lobbyPlayers = map.getLobbyPlayers();
+	ASSERT_EQ(1u, lobbyPlayers.size());
+	EXPECT_EQ(player::COLOR_NONE, lobbyPlayers[0].colorIndex);
+	map.shutdown();
+}
+
+TEST_F(SokobanMapTest, multiplayerRecyclesColorSlotOnLeave)
+{
+	_serviceProvider.updateNetwork(true);
+	Config.getConfigVar("maxplayers", "4")->setValue(4);
+	Map map;
+	map.init(&_testFrontend, _serviceProvider);
+	ASSERT_TRUE(map.load("xsokoban0001"));
+
+	Player* host = new Player(map, 1);
+	host->setName("Alice");
+	ASSERT_TRUE(map.initPlayer(host));
+	Player* guest = new Player(map, 2);
+	guest->setName("Bob");
+	ASSERT_TRUE(map.initPlayer(guest));
+	EXPECT_EQ(0, host->getColorIndex());
+	EXPECT_EQ(1, guest->getColorIndex());
+
+	map.disconnect(2);
+	Player* replacement = new Player(map, 3);
+	replacement->setName("Dana");
+	ASSERT_TRUE(map.initPlayer(replacement));
+	EXPECT_EQ(1, replacement->getColorIndex());
+	const std::vector<lobby::PlayerEntry> lobbyPlayers = map.getLobbyPlayers();
+	ASSERT_EQ(2u, lobbyPlayers.size());
+	EXPECT_EQ(0, lobbyPlayers[0].colorIndex);
+	EXPECT_EQ(1, lobbyPlayers[1].colorIndex);
 	map.shutdown();
 }
 

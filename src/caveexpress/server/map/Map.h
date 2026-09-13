@@ -14,6 +14,7 @@
 #include "common/TimeManager.h"
 #include "network/IProtocolHandler.h"
 #include "common/LUALibrary.h"
+#include "common/LobbyPlayers.h"
 #include <string>
 #include <vector>
 #include <list>
@@ -379,6 +380,7 @@ public:
 	bool isReadyToStart () const;
 	void sendPlayersList () const;
 	std::vector<std::string> getLobbyPlayerNames () const;
+	std::vector<lobby::PlayerEntry> getLobbyPlayers () const;
 	ClientId getHostClientId () const;
 	/** Reload the current map and keep connected clients in the wait overlay. */
 	bool returnToLobby ();

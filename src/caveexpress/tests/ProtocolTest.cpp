@@ -42,14 +42,18 @@ TEST_F(ProtocolTest, testPlayerListMessageFactoryReuse)
 	const PlayerListMessage* firstParsed = static_cast<const PlayerListMessage*>(
 			ProtocolMessageFactory::get().createMsg(firstData));
 	ASSERT_EQ(firstNames, firstParsed->getList());
+	EXPECT_EQ(player::COLOR_NONE, firstParsed->getColorIndex(0));
 
 	std::vector<std::string> secondNames = { "second", "third" };
-	PlayerListMessage second(secondNames);
+	std::vector<uint8_t> secondColors = { 0, 1 };
+	PlayerListMessage second(secondNames, secondColors);
 	ByteStream secondData;
 	second.serialize(secondData);
 	const PlayerListMessage* secondParsed = static_cast<const PlayerListMessage*>(
 			ProtocolMessageFactory::get().createMsg(secondData));
 	EXPECT_EQ(secondNames, secondParsed->getList());
+	EXPECT_EQ(0, secondParsed->getColorIndex(0));
+	EXPECT_EQ(1, secondParsed->getColorIndex(1));
 }
 
 TEST_F(ProtocolTest, testPingMessageOldServersOmitInGameFlag)

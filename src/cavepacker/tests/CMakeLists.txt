@@ -32,7 +32,7 @@ set(_sokoban_batches
 	"microban|SokobanMapTest.testmicroban*"
 	"sasquatch|SokobanMapTest.testsasquatch*"
 	"gri|SokobanMapTest.testgri*:SokobanMapTest.testgrigrspecial*"
-	"misc|SokobanMapTest.testTutorials:SokobanMapTest.testmgerhardy*:SokobanMapTest.testSolution*:SokobanMapTest.testUndo*"
+	"misc|SokobanMapTest.testTutorials:SokobanMapTest.testmgerhardy*:SokobanMapTest.testSolution*:SokobanMapTest.testUndo*:SokobanMapTest.multiplayer*:SokobanMapTest.singlePlayer*"
 )
 foreach (_batch ${_sokoban_batches})
 	string(REPLACE "|" ";" _parts "${_batch}")

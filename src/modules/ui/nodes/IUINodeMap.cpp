@@ -1,4 +1,5 @@
 #include "IUINodeMap.h"
+#include <algorithm>
 #include "common/CommandSystem.h"
 #include "common/Commands.h"
 #include "common/ConfigManager.h"
@@ -223,8 +224,18 @@ void IUINodeMap::render (int x, int y) const
 	x += getRenderWidth() / 10;
 
 	y += font->print(tr("Players"), colorWhite, x, y) + font->getCharHeight();
-	for (std::vector<std::string>::const_iterator i = _players.begin(); i != _players.end(); ++i) {
-		y += font->print(*i, colorWhite, x + 10, y) + font->getCharHeight();
+	const int charHeight = font->getCharHeight();
+	const int swatch = std::max(8, charHeight * 3 / 5);
+	for (const lobby::PlayerEntry& entry : _playerEntries) {
+		const bool tinted = player::isValidIndex(entry.colorIndex);
+		const Color& tint = player::color(entry.colorIndex);
+		int textX = x + 10;
+		if (tinted) {
+			const int swatchY = y + (charHeight - swatch) / 2;
+			renderFilledRect(textX, swatchY, swatch, swatch, tint);
+			textX += swatch + 8;
+		}
+		y += font->print(entry.name, tinted ? tint : colorWhite, textX, y) + charHeight;
 	}
 }
 

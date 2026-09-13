@@ -29,7 +29,8 @@ const float gravityScale = 0.3f;
 Player::Player (Map& map, ClientId clientId) :
 		IEntity(EntityTypes::PLAYER, map), _touching(nullptr), _invulnerableTime(0u), _powerUpTime(0u), _collectedNPC(nullptr), _acceleration(PhysicsVec2_zero), _fingerAcceleration(
 				false), _accelerateX(0), _accelerateY(0), _clientId(clientId), _lastAccelerate(0), _name(""), _lastFruitCollected(0), _hitpoints(
-				0), _lives(0), _fruitsCollectedInARow(0), _revoluteJoint(), _crashReason(CRASH_NONE), _spectator(false) {
+				0), _lives(0), _fruitsCollectedInARow(0), _revoluteJoint(), _crashReason(CRASH_NONE), _spectator(false),
+				_colorIndex(player::COLOR_NONE) {
 	_godMode = Config.getConfigVar(GOD_MODE);
 	_maxHitPoints = Config.getConfigVar(MAX_HITPOINTS);
 	_hitpoints = _maxHitPoints->getIntValue();

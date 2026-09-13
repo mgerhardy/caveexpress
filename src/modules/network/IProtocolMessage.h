@@ -2,6 +2,7 @@
 
 #include "common/ByteStream.h"
 #include "common/Compiler.h"
+#include "common/PlayerColors.h"
 #include <memory>
 #include "common/IFactoryRegistry.h"
 #include <vector>
@@ -163,8 +164,73 @@ PROTOCOL_CLASS_SIMPLE(DisconnectMessage, protocol::PROTO_DISCONNECT);
 // that the game is starting now.
 PROTOCOL_CLASS_SIMPLE(StartMapMessage, protocol::PROTO_STARTMAP);
 PROTOCOL_CLASS_SIMPLE(CloseMapMessage, protocol::PROTO_CLOSEMAP);
-// Multiplayer message that sends the current connected players to the clients
-PROTOCOL_CLASS_SIMPLE_LIST(PlayerListMessage, protocol::PROTO_PLAYERLIST);
+
+/** Lobby roster: name (host/watching suffixes) plus a color slot (255 = none). */
+class PlayerListMessage: public IProtocolMessage {
+private:
+	std::vector<std::string> _names;
+	std::vector<uint8_t> _colors;
+
+	void padColors ()
+	{
+		if (_colors.size() < _names.size())
+			_colors.resize(_names.size(), player::COLOR_NONE);
+	}
+
+public:
+	PROTOCOL_CLASS_FACTORY(PlayerListMessage);
+
+	explicit PlayerListMessage (const std::vector<std::string>& names) :
+			IProtocolMessage(protocol::PROTO_PLAYERLIST), _names(names), _colors(names.size(), player::COLOR_NONE)
+	{
+	}
+
+	PlayerListMessage (const std::vector<std::string>& names, const std::vector<uint8_t>& colors) :
+			IProtocolMessage(protocol::PROTO_PLAYERLIST), _names(names), _colors(colors)
+	{
+		padColors();
+	}
+
+	explicit PlayerListMessage (ByteStream& input) :
+			IProtocolMessage(protocol::PROTO_PLAYERLIST)
+	{
+		const int16_t size = input.readShort();
+		_names.reserve(size);
+		_colors.reserve(size);
+		for (int16_t i = 0; i < size; ++i) {
+			_names.push_back(input.readString());
+			_colors.push_back(input.readByte());
+		}
+	}
+
+	void serialize (ByteStream& out) const override
+	{
+		out.addByte(_id);
+		out.addShort(static_cast<int16_t>(_names.size()));
+		for (size_t i = 0; i < _names.size(); ++i) {
+			out.addString(_names[i]);
+			out.addByte(i < _colors.size() ? _colors[i] : player::COLOR_NONE);
+		}
+	}
+
+	inline const std::vector<std::string>& getList () const
+	{
+		return _names;
+	}
+
+	inline const std::vector<uint8_t>& getColorIndices () const
+	{
+		return _colors;
+	}
+
+	inline uint8_t getColorIndex (size_t index) const
+	{
+		if (index >= _colors.size())
+			return player::COLOR_NONE;
+		return _colors[index];
+	}
+};
+
 // This message is only sent in multiplayer mode and initializes the waiting dialogs until the
 // server admin starts the server or the max amount of clients are connected
 PROTOCOL_CLASS_SIMPLE(InitWaitingMapMessage, protocol::PROTO_INITWAITING);

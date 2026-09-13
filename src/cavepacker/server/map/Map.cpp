@@ -763,6 +763,8 @@ bool Map::initPlayer (Player* player)
 	const bool spectator = network.isMultiplayer() && _matchStarted;
 	Log::info(LOG_GAMEIMPL, "init player %i%s", player->getID(), spectator ? " as spectator" : "");
 	player->setSpectator(spectator);
+	player->setColorIndex(player::colorIndexForJoin(network.isMultiplayer(), spectator, _players,
+			_playersWaitingForSpawn));
 	const MapSettingsMessage mapSettingsMsg(_settings, (int)_startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);
 
@@ -780,6 +782,7 @@ bool Map::initPlayer (Player* player)
 	network.sendToClient(clientId, InitWaitingMapMessage());
 	_playersWaitingForSpawn.push_back(player);
 	noteHostPlayer(player);
+	sendPlayersList();
 	if (_lobbyAutoStartEnabled && lobby::shouldAutoStartMatch(network.isMultiplayer(), _matchStarted,
 			static_cast<int>(_playersWaitingForSpawn.size()), getMaxPlayers())) {
 		Log::info(LOG_GAMEIMPL, "auto-start: lobby is full (%i/%i)",
@@ -820,19 +823,21 @@ ClientId Map::getHostClientId () const
 
 std::vector<std::string> Map::getLobbyPlayerNames () const
 {
-	std::vector<std::string> names;
-	names.reserve(_players.size() + _playersWaitingForSpawn.size() + _spectators.size());
-	const ClientId hostId = getHostClientId();
-	lobby::appendPlayerNames(names, _players, hostId);
-	lobby::appendPlayerNames(names, _playersWaitingForSpawn, hostId);
-	lobby::appendPlayerNames(names, _spectators, hostId, true);
-	return names;
+	return lobby::namesFromEntries(getLobbyPlayers());
+}
+
+std::vector<lobby::PlayerEntry> Map::getLobbyPlayers () const
+{
+	return lobby::collectPlayerEntries(_players, _playersWaitingForSpawn, _spectators, getHostClientId());
 }
 
 void Map::sendPlayersList () const
 {
 	INetwork& network = _serviceProvider->getNetwork();
-	network.sendToAllClients(PlayerListMessage(getLobbyPlayerNames()));
+	std::vector<std::string> names;
+	std::vector<uint8_t> colors;
+	lobby::toListPayload(getLobbyPlayers(), names, colors);
+	network.sendToAllClients(PlayerListMessage(names, colors));
 }
 
 void Map::holdForEndScreen ()
@@ -945,7 +950,8 @@ void Map::addEntity (int clientMask, const IEntity& entity) const
 {
 	const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(entity.getAngle()));
 	const AddEntityMessage msg(entity.getID(), entity.getType(), Animation::NONE,
-			entity.getSpriteID(), entity.getCol(), entity.getRow(), 1.0f, 1.0f, angle, ENTITY_ALIGN_UPPER_LEFT);
+			entity.getSpriteID(), entity.getCol(), entity.getRow(), 1.0f, 1.0f, angle, ENTITY_ALIGN_UPPER_LEFT,
+			entity.getColorIndex());
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 
@@ -970,8 +976,10 @@ void Map::sendMapToClient (ClientId clientId) const
 void Map::sendWorldSnapshotToClient (ClientId clientId) const
 {
 	const int clientMask = ClientIdToClientMask(clientId);
-	for (const Player* player : _players)
+	for (const Player* player : _players) {
 		addEntity(clientMask, *player);
+		updateEntity(clientMask, *player);
+	}
 }
 
 void Map::loadEntity (IEntity *entity)

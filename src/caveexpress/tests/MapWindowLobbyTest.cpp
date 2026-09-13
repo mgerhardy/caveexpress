@@ -100,6 +100,27 @@ TEST_F(MapWindowLobbyTest, playerListKeepsHostMarker)
 	ASSERT_EQ(2u, _nodeMap->getPlayerList().size());
 	EXPECT_EQ(std::string("Alice") + lobby::HOST_SUFFIX, _nodeMap->getPlayerList()[0]);
 	EXPECT_EQ("Bob", _nodeMap->getPlayerList()[1]);
+	EXPECT_EQ(player::COLOR_NONE, _nodeMap->getPlayerColorIndex(0));
+	EXPECT_EQ(player::COLOR_NONE, _nodeMap->getPlayerColorIndex(1));
+}
+
+TEST_F(MapWindowLobbyTest, playerListKeepsColorIndex)
+{
+	std::vector<lobby::PlayerEntry> players;
+	lobby::PlayerEntry host;
+	host.name = lobby::formatPlayerName("Alice", true);
+	host.colorIndex = 0;
+	lobby::PlayerEntry guest;
+	guest.name = lobby::formatPlayerName("Bob", false);
+	guest.colorIndex = 1;
+	players.push_back(host);
+	players.push_back(guest);
+	_nodeMap->setPlayerList(players);
+	ASSERT_EQ(2u, _nodeMap->getPlayerList().size());
+	EXPECT_EQ(std::string("Alice") + lobby::HOST_SUFFIX, _nodeMap->getPlayerList()[0]);
+	EXPECT_EQ("Bob", _nodeMap->getPlayerList()[1]);
+	EXPECT_EQ(0, _nodeMap->getPlayerColorIndex(0));
+	EXPECT_EQ(1, _nodeMap->getPlayerColorIndex(1));
 }
 
 TEST_F(MapWindowLobbyTest, leaveButtonIsWiredToDisconnect)

@@ -578,6 +578,8 @@ TEST_F(MapTest, testLobbyPlayerListMarksHost)
 	ASSERT_EQ(2u, names.size());
 	EXPECT_EQ(std::string("Alice") + " (host)", names[0]);
 	EXPECT_EQ("Bob", names[1]);
+	EXPECT_EQ(player::COLOR_NONE, host->getColorIndex());
+	EXPECT_EQ(player::COLOR_NONE, guest->getColorIndex());
 	_map.startMap();
 	ASSERT_TRUE(_map.isActive());
 	const std::vector<std::string> afterStart = _map.getLobbyPlayerNames();
@@ -599,6 +601,8 @@ TEST_F(MapTest, testReturnToLobbyAllowsSecondStart)
 	guest->setLives(3);
 	guest->setName("Bob");
 	ASSERT_TRUE(_map.initPlayer(guest));
+	EXPECT_EQ(0, host->getColorIndex());
+	EXPECT_EQ(1, guest->getColorIndex());
 	_map.startMap();
 	ASSERT_EQ(2u, _map.getPlayers().size());
 	ASSERT_TRUE(_map.isActive());
@@ -626,6 +630,12 @@ TEST_F(MapTest, testReturnToLobbyAllowsSecondStart)
 	ASSERT_EQ(2u, names.size());
 	EXPECT_EQ(std::string("Alice") + " (host)", names[0]);
 	EXPECT_EQ("Bob", names[1]);
+	EXPECT_EQ(0, hostAgain->getColorIndex());
+	EXPECT_EQ(1, guestAgain->getColorIndex());
+	const std::vector<lobby::PlayerEntry> lobbyPlayers = _map.getLobbyPlayers();
+	ASSERT_EQ(2u, lobbyPlayers.size());
+	EXPECT_EQ(0, lobbyPlayers[0].colorIndex);
+	EXPECT_EQ(1, lobbyPlayers[1].colorIndex);
 	_map.startMap();
 	ASSERT_EQ(2u, _map.getPlayers().size());
 	ASSERT_TRUE(_map.isActive());
@@ -659,12 +669,43 @@ TEST_F(MapTest, testSinglePlayerStartsWithoutLobbyReadyCheck)
 	EXPECT_FALSE(_map.isFailed()) << "waiting to start is not a fail";
 	ASSERT_EQ(1u, _map.getLobbyPlayerNames().size());
 	EXPECT_EQ(std::string("Solo") + " (host)", _map.getLobbyPlayerNames()[0]);
+	EXPECT_EQ(player::COLOR_NONE, player->getColorIndex());
+	ASSERT_EQ(1u, _map.getLobbyPlayers().size());
+	EXPECT_EQ(player::COLOR_NONE, _map.getLobbyPlayers()[0].colorIndex);
 	// Single player calls startMap() directly (CMD_START), not StartMapHandler.
 	_map.startMap();
 	ASSERT_TRUE(_map.isActive());
 	ASSERT_TRUE(_map.isMatchStarted());
 	ASSERT_EQ(1u, _map.getPlayers().size());
 	EXPECT_FALSE(_map.isFailed());
+	_map.shutdown();
+}
+
+TEST_F(MapTest, testMultiplayerRecyclesColorSlotOnLeave)
+{
+	_serviceProvider.updateNetwork(true);
+	Config.getConfigVar("maxplayers", "4")->setValue(4);
+	ASSERT_TRUE(_map.load("ice-01")) << "Could not load ice-01";
+	Player* host = new Player(_map, 1);
+	host->setLives(3);
+	host->setName("Alice");
+	ASSERT_TRUE(_map.initPlayer(host));
+	Player* guest = new Player(_map, 2);
+	guest->setLives(3);
+	guest->setName("Bob");
+	ASSERT_TRUE(_map.initPlayer(guest));
+	EXPECT_EQ(0, host->getColorIndex());
+	EXPECT_EQ(1, guest->getColorIndex());
+	_map.disconnect(2);
+	Player* replacement = new Player(_map, 3);
+	replacement->setLives(3);
+	replacement->setName("Dana");
+	ASSERT_TRUE(_map.initPlayer(replacement));
+	EXPECT_EQ(1, replacement->getColorIndex());
+	const std::vector<lobby::PlayerEntry> lobbyPlayers = _map.getLobbyPlayers();
+	ASSERT_EQ(2u, lobbyPlayers.size());
+	EXPECT_EQ(0, lobbyPlayers[0].colorIndex);
+	EXPECT_EQ(1, lobbyPlayers[1].colorIndex);
 	_map.shutdown();
 }
 
@@ -752,6 +793,8 @@ TEST_F(MapTest, testJoinAfterStartIsSpectator)
 	const std::vector<std::string> names = _map.getLobbyPlayerNames();
 	ASSERT_EQ(3u, names.size());
 	EXPECT_EQ(std::string("Carol") + lobby::SPECTATING_SUFFIX, names[2]);
+	EXPECT_EQ(player::COLOR_NONE, late->getColorIndex());
+	EXPECT_EQ(player::COLOR_NONE, _map.getLobbyPlayers()[2].colorIndex);
 
 	int platforms = 0;
 	class ServerOnlyCount: public IEntityVisitor {

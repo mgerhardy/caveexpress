@@ -2,6 +2,7 @@
 
 #include "TestShared.h"
 #include "network/ProtocolMessageFactory.h"
+#include "network/IProtocolMessage.h"
 
 #include "network/messages/PingMessage.h"
 #include "network/messages/LoadMapMessage.h"
@@ -45,6 +46,7 @@ protected:
 		testMessage("TextMessage", TextMessage("message"));
 		testMessage("PauseMessage", PauseMessage(false));
 		testMessage("AddEntityMessage", AddEntityMessage(1, EntityType::NONE, Animation::NONE, "sprite", 0.0f, 0.0f, 0.0f, 0.0f, 0, ENTITY_ALIGN_UPPER_LEFT));
+		testMessage("AddEntityMessageColored", AddEntityMessage(1, EntityType::NONE, Animation::NONE, "sprite", 0.0f, 0.0f, 0.0f, 0.0f, 0, ENTITY_ALIGN_UPPER_LEFT, 2));
 		testMessage("UpdateEntityMessage", UpdateEntityMessage(1, 0.0f, 0.0f, 42, 1));
 		std::map<std::string, std::string> settings;
 		settings["foo"] = "bar";
@@ -80,6 +82,9 @@ protected:
 		testMessage("TimeRemainingMessage", TimeRemainingMessage(1));
 		testMessage("UpdatePointsMessage", UpdatePointsMessage(12314));
 		testMessage("UpdatePackageCountMessage", UpdatePackageCountMessage(254,254));
+		std::vector<std::string> playerNames = { "Alice", "Bob" };
+		std::vector<uint8_t> playerColors = { 0, 1 };
+		testMessage("PlayerListMessage", PlayerListMessage(playerNames, playerColors));
 	}
 
 	template<class MSG>

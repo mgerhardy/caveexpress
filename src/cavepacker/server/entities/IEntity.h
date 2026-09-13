@@ -8,6 +8,7 @@
 #include "common/EntityAlignment.h"
 #include <memory>
 #include "common/Math.h"
+#include "common/PlayerColors.h"
 #include <vector>
 #include <list>
 #include <string>
@@ -72,6 +73,7 @@ public:
 
 	inline uint8_t getState () const { return _state; }
 	uint8_t setState (uint8_t state);
+	virtual uint8_t getColorIndex () const { return player::COLOR_NONE; }
 
 	// angle in radians
 	inline void setAngle (float angle)

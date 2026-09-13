@@ -7,6 +7,7 @@
 #include "common/ThemeType.h"
 #include "sprites/Sprite.h"
 #include "common/SpriteDefinition.h"
+#include "common/PlayerColors.h"
 #include <memory>
 #include <unordered_map>
 #include <string>
@@ -22,6 +23,7 @@ protected:
 
 	virtual void onVisibilityChanged ();
 	void renderDot (IFrontend* frontend, int x, int y, const Color& color = colorRed) const;
+	void renderPlayerColorMarker (IFrontend *frontend, float zoom) const;
 	void renderOverlays(IFrontend *frontend, Layer layer, int scale, float zoom, int offsetX, int offsetY, int posX, int posY, int mapPixelWidth, int mapPixelHeight) const;
 
 	void calcPosition(const Layer &layer, int scale, float zoom, int &posX, int &posY) const;
@@ -104,6 +106,16 @@ public:
 		return _state;
 	}
 
+	inline void setColorIndex (uint8_t colorIndex)
+	{
+		_colorIndex = colorIndex;
+	}
+
+	inline uint8_t getColorIndex () const
+	{
+		return _colorIndex;
+	}
+
 	inline void setAnimationSound (int animationSound)
 	{
 		_animationSound = animationSound;
@@ -183,6 +195,7 @@ protected:
 	typedef SpritesMap::const_iterator SpritesMapConstIter;
 	SpritesMap _sprites;
 	uint8_t _state;
+	uint8_t _colorIndex;
 	// the current animation to play
 	const Animation *_animation;
 	const ThemeType *_theme;

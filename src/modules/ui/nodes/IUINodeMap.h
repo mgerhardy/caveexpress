@@ -2,6 +2,7 @@
 
 #include "ui/nodes/UINode.h"
 #include "common/ICommand.h"
+#include "common/LobbyPlayers.h"
 #include "client/ClientMap.h"
 #include "campaign/CampaignManager.h"
 #include <string>
@@ -21,6 +22,7 @@ protected:
 	CampaignManager &_campaignManager;
 	std::string _campaignTextForNextPush;
 	std::vector<std::string> _players;
+	std::vector<lobby::PlayerEntry> _playerEntries;
 	std::string _title;
 	
 	bool keys[4];  // pressed state for all directions, arrows keys
@@ -34,7 +36,9 @@ public:
 	virtual ~IUINodeMap ();
 
 	void setPlayerList (const std::vector<std::string>& players);
+	void setPlayerList (const std::vector<lobby::PlayerEntry>& players);
 	const std::vector<std::string>& getPlayerList () const;
+	uint8_t getPlayerColorIndex (size_t index) const;
 	void setTitle (const std::string& title);
 	void start();
 
@@ -60,11 +64,35 @@ inline ClientMap& IUINodeMap::getMap()
 inline void IUINodeMap::setPlayerList (const std::vector<std::string>& players)
 {
 	_players = players;
+	_playerEntries.clear();
+	_playerEntries.reserve(players.size());
+	for (const std::string& name : players) {
+		lobby::PlayerEntry entry;
+		entry.name = name;
+		entry.colorIndex = player::COLOR_NONE;
+		_playerEntries.push_back(entry);
+	}
+}
+
+inline void IUINodeMap::setPlayerList (const std::vector<lobby::PlayerEntry>& players)
+{
+	_playerEntries = players;
+	_players.clear();
+	_players.reserve(players.size());
+	for (const lobby::PlayerEntry& entry : players)
+		_players.push_back(entry.name);
 }
 
 inline const std::vector<std::string>& IUINodeMap::getPlayerList () const
 {
 	return _players;
+}
+
+inline uint8_t IUINodeMap::getPlayerColorIndex (size_t index) const
+{
+	if (index >= _playerEntries.size())
+		return player::COLOR_NONE;
+	return _playerEntries[index].colorIndex;
 }
 
 inline void IUINodeMap::setTitle (const std::string& title)

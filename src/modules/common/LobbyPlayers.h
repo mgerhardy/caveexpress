@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/PlayerColors.h"
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -9,6 +10,11 @@ namespace lobby {
 const char *const HOST_SUFFIX = " (host)";
 const char *const SPECTATING_SUFFIX = " (watching)";
 const char *const UNNAMED_PLAYER = "Player";
+
+struct PlayerEntry {
+	std::string name;
+	uint8_t colorIndex = player::COLOR_NONE;
+};
 
 inline std::string formatPlayerName (const std::string& name, bool isHost, bool spectating = false)
 {
@@ -25,6 +31,52 @@ inline void appendPlayerNames (std::vector<std::string>& names, const PlayerList
 {
 	for (const auto* player : players)
 		names.push_back(formatPlayerName(player->getName(), player->getClientId() == hostId, spectating));
+}
+
+template<typename PlayerList>
+inline void appendPlayerEntries (std::vector<PlayerEntry>& out, const PlayerList& players, uint16_t hostId,
+		bool spectating = false)
+{
+	for (const auto* player : players) {
+		PlayerEntry entry;
+		entry.name = formatPlayerName(player->getName(), player->getClientId() == hostId, spectating);
+		entry.colorIndex = spectating ? player::COLOR_NONE : player->getColorIndex();
+		out.push_back(entry);
+	}
+}
+
+template<typename PlayerList>
+inline std::vector<PlayerEntry> collectPlayerEntries (const PlayerList& spawned, const PlayerList& waiting,
+		const PlayerList& spectators, uint16_t hostId)
+{
+	std::vector<PlayerEntry> players;
+	players.reserve(spawned.size() + waiting.size() + spectators.size());
+	appendPlayerEntries(players, spawned, hostId);
+	appendPlayerEntries(players, waiting, hostId);
+	appendPlayerEntries(players, spectators, hostId, true);
+	return players;
+}
+
+inline std::vector<std::string> namesFromEntries (const std::vector<PlayerEntry>& players)
+{
+	std::vector<std::string> names;
+	names.reserve(players.size());
+	for (const PlayerEntry& player : players)
+		names.push_back(player.name);
+	return names;
+}
+
+inline void toListPayload (const std::vector<PlayerEntry>& players, std::vector<std::string>& names,
+		std::vector<uint8_t>& colors)
+{
+	names.clear();
+	colors.clear();
+	names.reserve(players.size());
+	colors.reserve(players.size());
+	for (const PlayerEntry& player : players) {
+		names.push_back(player.name);
+		colors.push_back(player.colorIndex);
+	}
 }
 
 const int MIN_SESSION_PLAYERS = 2;

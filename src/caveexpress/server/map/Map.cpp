@@ -1343,6 +1343,8 @@ bool Map::initPlayer (Player* player)
 	Log::info(LOG_GAMEIMPL, "init player %i%s", player->getID(), spectator ? " as spectator" : "");
 	if (spectator)
 		player->setSpectator(true);
+	player->setColorIndex(player::colorIndexForJoin(isMultiplayerSession(), spectator, _players,
+			_playersWaitingForSpawn));
 	const int clientMask = ClientIdToClientMask(clientId);
 	const MapSettingsMessage mapSettingsMsg(_settings, _startPositions.size());
 	network.sendToClient(clientId, mapSettingsMsg);
@@ -1371,6 +1373,7 @@ bool Map::initPlayer (Player* player)
 	Log::info(LOG_GAMEIMPL, "delay spawn of player");
 	_playersWaitingForSpawn.push_back(player);
 	noteHostPlayer(player);
+	sendPlayersList();
 	if (_lobbyAutoStartEnabled && lobby::shouldAutoStartMatch(isMultiplayerSession(), _matchStarted,
 			static_cast<int>(_playersWaitingForSpawn.size()), getMaxPlayers())) {
 		Log::info(LOG_GAMEIMPL, "auto-start: lobby is full (%i/%i)",
@@ -1411,19 +1414,21 @@ ClientId Map::getHostClientId () const
 
 std::vector<std::string> Map::getLobbyPlayerNames () const
 {
-	std::vector<std::string> names;
-	names.reserve(_players.size() + _playersWaitingForSpawn.size() + _spectators.size());
-	const ClientId hostId = getHostClientId();
-	lobby::appendPlayerNames(names, _players, hostId);
-	lobby::appendPlayerNames(names, _playersWaitingForSpawn, hostId);
-	lobby::appendPlayerNames(names, _spectators, hostId, true);
-	return names;
+	return lobby::namesFromEntries(getLobbyPlayers());
+}
+
+std::vector<lobby::PlayerEntry> Map::getLobbyPlayers () const
+{
+	return lobby::collectPlayerEntries(_players, _playersWaitingForSpawn, _spectators, getHostClientId());
 }
 
 void Map::sendPlayersList () const
 {
 	INetwork& network = _serviceProvider->getNetwork();
-	network.sendToAllClients(PlayerListMessage(getLobbyPlayerNames()));
+	std::vector<std::string> names;
+	std::vector<uint8_t> colors;
+	lobby::toListPayload(getLobbyPlayers(), names, colors);
+	network.sendToAllClients(PlayerListMessage(names, colors));
 }
 
 bool Map::returnToLobby ()

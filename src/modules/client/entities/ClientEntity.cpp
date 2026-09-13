@@ -12,6 +12,7 @@
 ClientEntity::ClientEntity (const EntityType& type, uint16_t id, float x, float y, float sizeX, float sizeY,
 		const SoundMapping& soundMapping, EntityAlignment align, EntityAngle angle) :
 		_lerpDuration(0), _lerpElapsed(0), _type(type), _id(id), _angle(angle), _time(0), _currSprite(), _state(0),
+		_colorIndex(player::COLOR_NONE),
 		_animation(&Animation::NONE), _theme(&ThemeType::NONE), _fadeOutTime(0), _alpha(1.0f), _ropeEntity(nullptr),
 		_animationSound(-1), _soundMapping(soundMapping), _visible(true), _visChanged(false), _align(align),
 		_screenPosX(0), _screenPosY(0), _screenWidth(0), _screenHeight(0)
@@ -130,6 +131,9 @@ void ClientEntity::render(IFrontend *frontend, Layer layer, int scale, float zoo
 
 	renderOverlays(frontend, layer, scale, zoom, offsetX, offsetY, posX, posY, mapPixelWidth, mapPixelHeight);
 
+	if (layer == LAYER_FRONT_2)
+		renderPlayerColorMarker(frontend, zoom);
+
 	if (layer != LAYER_FRONT && layer != LAYER_FRONT_1 && layer != LAYER_FRONT_2)
 		return;
 
@@ -162,6 +166,21 @@ void ClientEntity::render(IFrontend *frontend, Layer layer, int scale, float zoo
 inline void ClientEntity::renderDot (IFrontend* frontend, int x, int y, const Color& color) const
 {
 	frontend->renderFilledRect(x, y, 5, 5, color);
+}
+
+void ClientEntity::renderPlayerColorMarker (IFrontend *frontend, float zoom) const
+{
+	if (!player::isValidIndex(_colorIndex) || !_currSprite)
+		return;
+	const int spriteW = static_cast<int>(_currSprite->getMaxWidth() * zoom);
+	const int spriteH = static_cast<int>(_currSprite->getMaxHeight() * zoom);
+	if (spriteW <= 0 || spriteH <= 0)
+		return;
+	const int size = std::max(6, std::min(10, spriteW / 8));
+	const int x = _screenPosX + (spriteW - size) / 2;
+	const int y = _screenPosY + spriteH - size;
+	frontend->renderFilledRect(x - 1, y - 1, size + 2, size + 2, colorBlack);
+	frontend->renderFilledRect(x, y, size, size, player::color(_colorIndex));
 }
 
 void ClientEntity::setThemeType (const ThemeType& theme)

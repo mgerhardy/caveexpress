@@ -15,7 +15,15 @@ public:
 	}
 	void execute (const PlayerListMessage* msg) override
 	{
-		const std::vector<std::string>& list = msg->getList();
+		std::vector<lobby::PlayerEntry> list;
+		const std::vector<std::string>& names = msg->getList();
+		list.reserve(names.size());
+		for (size_t i = 0; i < names.size(); ++i) {
+			lobby::PlayerEntry entry;
+			entry.name = names[i];
+			entry.colorIndex = msg->getColorIndex(i);
+			list.push_back(entry);
+		}
 		_mapNode->setPlayerList(list);
 	}
 };

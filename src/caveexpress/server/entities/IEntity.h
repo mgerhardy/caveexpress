@@ -12,6 +12,7 @@
 #include "common/EntityType.h"
 #include <memory>
 #include "common/Math.h"
+#include "common/PlayerColors.h"
 #include <vector>
 #include <list>
 #include <string>
@@ -474,6 +475,11 @@ public:
 	inline int getState () const
 	{
 		return _state;
+	}
+
+	virtual uint8_t getColorIndex () const
+	{
+		return player::COLOR_NONE;
 	}
 
 	inline void setPosAndAngle (const PhysicsVec2& pos, float angle)

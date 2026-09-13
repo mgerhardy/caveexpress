@@ -8,6 +8,7 @@
 #include "cavepacker/server/entities/Player.h"
 #include "cavepacker/server/entities/MapTile.h"
 #include "cavepacker/shared/BoardState.h"
+#include "common/LobbyPlayers.h"
 #include <string>
 #include <vector>
 
@@ -183,6 +184,7 @@ public:
 	bool isReadyToStart () const;
 	void sendPlayersList () const;
 	std::vector<std::string> getLobbyPlayerNames () const;
+	std::vector<lobby::PlayerEntry> getLobbyPlayers () const;
 	ClientId getHostClientId () const;
 	bool returnToLobby ();
 	void triggerReturnToLobby ();

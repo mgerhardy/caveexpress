@@ -5,6 +5,7 @@
 #include "common/SoundType.h"
 #include "common/ConfigVar.h"
 #include "common/Log.h"
+#include "common/PlayerColors.h"
 #include <memory>
 #include "network/IProtocolHandler.h"
 
@@ -26,6 +27,7 @@ private:
 	uint32_t _lastStep;
 	Direction _heldDirection;
 	bool _spectator;
+	uint8_t _colorIndex;
 
 	char getHeldMoveStep () const;
 public:
@@ -42,6 +44,8 @@ public:
 	void setName (const std::string& name);
 	void setSpectator (bool spectator);
 	bool isSpectator () const;
+	void setColorIndex (uint8_t colorIndex);
+	uint8_t getColorIndex () const override;
 	void storeStep (char step);
 	bool undo ();
 	const std::string& getSolution () const;
@@ -70,6 +74,16 @@ inline void Player::setSpectator (bool spectator)
 inline bool Player::isSpectator () const
 {
 	return _spectator;
+}
+
+inline void Player::setColorIndex (uint8_t colorIndex)
+{
+	_colorIndex = colorIndex;
+}
+
+inline uint8_t Player::getColorIndex () const
+{
+	return _colorIndex;
 }
 
 inline const std::string& Player::getSolution () const

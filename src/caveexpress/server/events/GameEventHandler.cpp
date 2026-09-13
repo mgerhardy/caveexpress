@@ -84,7 +84,8 @@ void GameEventHandler::addEntity (int clientMask, const IEntity& entity) const
 	const PhysicsVec2& size = entity.getSize();
 	const EntityAngle angle = static_cast<EntityAngle>(RadiansToDegrees(entity.getAngle()));
 	const AddEntityMessage msg(entity.getID(), entity.getType(), entity.getAnimationType(),
-			entity.getSpriteID(), pos.x, pos.y, size.x, size.y, angle, entity.getSpriteAlignment());
+			entity.getSpriteID(), pos.x, pos.y, size.x, size.y, angle, entity.getSpriteAlignment(),
+			entity.getColorIndex());
 	_serviceProvider->getNetwork().sendToClients(clientMask, msg);
 }
 

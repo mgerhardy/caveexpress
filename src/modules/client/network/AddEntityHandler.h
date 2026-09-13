@@ -30,6 +30,7 @@ public:
 		const ClientEntityPtr& entity = ClientEntityRegistry::get(type, id, sprite, animation, xpos, ypos, sizeX, sizeY, angle, spriteAlign, theme);
 		if (!entity)
 			System.exit("no entity type registered for " + type.name, 1);
+		entity->setColorIndex(msg->getColorIndex());
 		_map.addEntity(entity);
 	}
 };

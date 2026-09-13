@@ -106,6 +106,8 @@ TEST(NetworkTest, testSendStringList)
 			PlayerListMessage msg(data);
 			ASSERT_EQ("Test1", msg.getList()[0]);
 			ASSERT_EQ("Test2", msg.getList()[1]);
+			ASSERT_EQ(player::COLOR_NONE, msg.getColorIndex(0));
+			ASSERT_EQ(player::COLOR_NONE, msg.getColorIndex(1));
 			++count;
 		}
 	};
