@@ -24,6 +24,7 @@ public:
 	void setMax (float max);
 
 	// UINode
+	bool blocksMapPan () const override { return true; }
 	void render (int x, int y) const override;
 	bool onMouseWheel (int32_t x, int32_t y) override;
 	bool onControllerMotion (uint8_t axis, int value, uint32_t id) override;

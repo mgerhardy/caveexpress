@@ -6,6 +6,7 @@ SET(${PROJECT_NAME}_SRC
 	ProtocolTest.cpp
 	SokobanMapContextTest.cpp
 	SokobanMapTest.cpp
+	MapWindowTouchTest.cpp
 	CampaignTest.cpp
 	PathfindingTest.cpp
 	SolutionUtilTest.cpp

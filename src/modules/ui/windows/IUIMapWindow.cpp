@@ -265,9 +265,10 @@ bool IUIMapWindow::onFingerPress (int64_t finger, uint16_t x, uint16_t y)
 bool IUIMapWindow::onMultiGesture (float theta, float dist, int32_t numFingers)
 {
 	const bool retVal = UIWindow::onMultiGesture(theta, dist, numFingers);
-	if (numFingers == 2 && _time - _lastFingerPressEvent > 500L) {
+	if (numFingers == 2) {
 		const float currentZoom = _nodeMap->getMap().getZoom();
 		_nodeMap->getMap().setZoom(currentZoom + dist * 4.0f);
+		return true;
 	}
 	return retVal;
 }

@@ -312,6 +312,8 @@ public:
 	virtual bool runFocusNode ();
 	bool checkFocus (UIFocusAddReason reason, int32_t x, int32_t y);
 	virtual bool isActive () const;
+	/** True if a finger drag on this node should not pan the map. */
+	virtual bool blocksMapPan () const { return false; }
 	UINode* getNode (const std::string& nodeId, bool check = false);
 	virtual bool nextFocus (bool cursordown);
 	virtual bool prevFocus (bool cursorup);

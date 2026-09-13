@@ -145,9 +145,24 @@ void UIMapWindow::initWaitingForPlayers (bool adminOptions) {
 	}
 }
 
+bool UIMapWindow::hitsInteractiveHud (uint16_t x, uint16_t y) const
+{
+	for (auto i = _nodes.rbegin(); i != _nodes.rend(); ++i) {
+		UINode* node = *i;
+		if (node == _nodeMap || !node->isVisible())
+			continue;
+		if (!node->checkBounds(x, y))
+			continue;
+		if (node->blocksMapPan())
+			return true;
+	}
+	return false;
+}
+
 bool UIMapWindow::onFingerMotion (int64_t finger, uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 {
-	if (IUIMapWindow::onFingerMotion(finger, x, y, dx, dy))
+	IUIMapWindow::onFingerMotion(finger, x, y, dx, dy);
+	if (hitsInteractiveHud(x, y))
 		return true;
 	_nodeMap->getMap().scroll(dx, dy);
 	return true;

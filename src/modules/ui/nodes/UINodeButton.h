@@ -32,6 +32,7 @@ public:
 	virtual float getAutoWidth () const override;
 	virtual float getAutoHeight () const override;
 	virtual bool isActive () const override;
+	bool blocksMapPan () const override { return true; }
 	virtual void render (int x, int y) const override;
 };
 
