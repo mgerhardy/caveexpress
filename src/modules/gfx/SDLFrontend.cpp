@@ -88,8 +88,27 @@ void SDLFrontend::onControllerDeviceAdded (int32_t device)
 
 void SDLFrontend::onWindowResize ()
 {
-	int w, h;
+	if (_window == nullptr) {
+		return;
+	}
+
+	int w = _width;
+	int h = _height;
 	SDL_GetWindowSize(_window, &w, &h);
+	if (w <= 0 || h <= 0) {
+		Log::error(LOG_GFX, "window resize ignored: invalid size %dx%d (keeping %dx%d)", w, h, _width, _height);
+		return;
+	}
+
+	int dw = w;
+	int dh = h;
+	SDL_GL_GetDrawableSize(_window, &dw, &dh);
+	if (dw <= 0 || dh <= 0) {
+		dw = w;
+		dh = h;
+	}
+
+	Log::info(LOG_GFX, "window resize: %dx%d (drawable %dx%d)", w, h, dw, dh);
 	_width = w;
 	_height = h;
 
@@ -613,6 +632,16 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 
 	INIT_Subsystem(SDL_INIT_VIDEO, true);
 
+	{
+		SDL_version compiled;
+		SDL_version linked;
+		SDL_VERSION(&compiled);
+		SDL_GetVersion(&linked);
+		Log::info(LOG_GFX, "SDL version: compiled %u.%u.%u, linked %u.%u.%u",
+				compiled.major, compiled.minor, compiled.patch,
+				linked.major, linked.minor, linked.patch);
+	}
+
 	INIT_Subsystem(SDL_INIT_JOYSTICK, false);
 	INIT_Subsystem(SDL_INIT_GAMECONTROLLER, false);
 	INIT_Subsystem(SDL_INIT_HAPTIC, false);
@@ -731,9 +760,25 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 
 	// some platforms may override or hardcode the resolution - so
 	// we have to query it here to get the resolution
+	const int requestedW = width;
+	const int requestedH = height;
 	SDL_GetWindowSize(_window, &width, &height);
+	if (width <= 0 || height <= 0) {
+		Log::error(LOG_GFX, "SDL_GetWindowSize returned invalid %dx%d, falling back to %dx%d",
+				width, height, requestedW, requestedH);
+		width = requestedW;
+		height = requestedH;
+	}
 
-	Log::info(LOG_GFX, "resolution: %dx%d", width, height);
+	int drawableW = width;
+	int drawableH = height;
+	SDL_GL_GetDrawableSize(_window, &drawableW, &drawableH);
+	if (drawableW <= 0 || drawableH <= 0) {
+		drawableW = width;
+		drawableH = height;
+	}
+
+	Log::info(LOG_GFX, "resolution: %dx%d (drawable %dx%d)", width, height, drawableW, drawableH);
 	setVSync(ConfigManager::get().isVSync());
 
 	const int initState = IMG_Init(IMG_INIT_PNG);

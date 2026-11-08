@@ -18,7 +18,8 @@ UINode::UINode (IFrontend *frontend, const std::string& id) :
 				false), _visible(true), _enabled(true), _renderBorder(false), _dragStartX(-1), _dragStartY(-1), _alpha(1.0f), _previousAlpha(
 				1.0f), _id(id), _frontend(frontend), _align(NODE_ALIGN_LEFT), _time(0),
 				_flashMillis(0), _originalAlpha(-1.0f), _flashAlwaysFreq(1),
-				_layout(nullptr), _parent(nullptr), _fingerPressed(false), _mousePressed(false), _autoId(false) {
+				_layout(nullptr), _parent(nullptr), _fingerPressed(false), _mousePressed(false), _autoId(false),
+				_autoSized(false) {
 	setPos(0.0f, 0.0f);
 	setSize(0.0f, 0.0f);
 	Vector4Set(colorWhite, _borderColor);
@@ -66,6 +67,7 @@ void UINode::setPos (float x, float y)
 
 void UINode::setSize (float w, float h)
 {
+	_autoSized = false;
 	_size.x = clamp(w, 0.0f, 1.0f);
 	_size.y = clamp(h, 0.0f, 1.0f);
 	updateAlignment();
@@ -91,15 +93,20 @@ const TexturePtr& UINode::setImage (const std::string& texture)
 	if (!hasImage())
 		return _texture;
 
+	bool sizedFromContent = false;
 	float w = getWidth();
 	if (w <= 0.0f) {
 		w = getAutoWidth();
+		sizedFromContent = true;
 	}
 	float h = getHeight();
 	if (h <= 0.0f) {
 		h = getAutoHeight();
+		sizedFromContent = true;
 	}
 	setSize(w, h);
+	if (sizedFromContent)
+		_autoSized = true;
 	updateAlignment();
 
 	return _texture;
@@ -894,6 +901,9 @@ bool UINode::onGesture (int64_t gestureId, float error, int32_t numFingers)
 
 void UINode::onWindowResize ()
 {
+	if (_autoSized)
+		autoSize();
+
 	for (UINodeListIter i = _nodes.begin(); i != _nodes.end(); ++i) {
 		UINode* nodePtr = *i;
 		nodePtr->onWindowResize();

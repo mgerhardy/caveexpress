@@ -28,6 +28,7 @@ UINodeBackground::UINodeBackground (IFrontend *frontend, const std::string& titl
 }
 
 void UINodeBackground::onWindowResize () {
+	UINode::onWindowResize();
 	_amountHorizontal = _imageWidth <= 0 ? 1 : getRenderWidth(false) / _imageWidth + 1;
 	_amountVertical = _imageHeight <= 0 ? 1 : getRenderHeight(false) / _imageHeight + 1;
 }

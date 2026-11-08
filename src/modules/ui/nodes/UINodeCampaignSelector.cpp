@@ -17,6 +17,7 @@ UINodeCampaignSelector::~UINodeCampaignSelector ()
 
 void UINodeCampaignSelector::onWindowResize()
 {
+	Super::onWindowResize();
 	setColsRowsFromTexture("icon-campaign");
 }
 

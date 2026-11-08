@@ -175,6 +175,9 @@ protected:
 	bool _fingerPressed;
 	bool _mousePressed;
 	bool _autoId;
+	// true if the current size came from autoSize()/content metrics (texture, font, ...)
+	// and must be recomputed when the frontend resolution changes
+	bool _autoSized;
 
 	TexturePtr loadTexture (const std::string& name) const;
 	void renderImage (const TexturePtr& texture, int x, int y, int w = -1, int h = -1, float alpha = 1.0f) const;
@@ -236,6 +239,7 @@ protected:
 		const float w = std::max(_minSize.x, getAutoWidth());
 		const float h = std::max(_minSize.y, getAutoHeight());
 		setSize(w, h);
+		_autoSized = true;
 	}
 
 	void updateAlignment ();

@@ -31,6 +31,7 @@ UINodeMapSelector::~UINodeMapSelector ()
 
 void UINodeMapSelector::onWindowResize()
 {
+	UINodeBackgroundSelector<std::string>::onWindowResize();
 	setColsRowsFromTexture("map-icon-locked");
 }
 
