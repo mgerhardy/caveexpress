@@ -55,7 +55,10 @@ void ServiceProvider::initTextureDefinition (IFrontend *frontend, const std::str
 		delete _textureDefinition;
 	ExecutionTime e("texture definition");
 	if (textureSize == "auto") {
-		if (System.isSmallScreen(frontend)) {
+		const bool small = System.isSmallScreen(frontend);
+		Log::info(LOG_SERVICE, "texturesize=auto -> %s (frontend %dx%d)",
+				small ? "small" : "big", frontend->getWidth(), frontend->getHeight());
+		if (small) {
 			_textureDefinition = new TextureDefinition("small", progress);
 		} else {
 			_textureDefinition = new TextureDefinition("big", progress);

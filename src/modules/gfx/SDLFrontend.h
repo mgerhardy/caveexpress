@@ -57,6 +57,8 @@ protected:
 	 * 90x88 then later 1920x1080). UI and texturesize=auto must not see that transient size.
 	 */
 	void ensureUsableWindowSize (int requestedW, int requestedH, bool fullscreen);
+	/** True if @p w/@p h are junk relative to the requested/desktop reference size. */
+	static bool isUnusableWindowSize (int w, int h, int refW, int refH);
 
 	virtual void newFrameImGui();
 	virtual void renderImGui();

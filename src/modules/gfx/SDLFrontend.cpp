@@ -86,6 +86,17 @@ void SDLFrontend::onControllerDeviceAdded (int32_t device)
 	_updateControllers = true;
 }
 
+bool SDLFrontend::isUnusableWindowSize (int w, int h, int refW, int refH)
+{
+	if (w < 320 || h < 240)
+		return true;
+	if (refW > 0 && w * 4 < refW)
+		return true;
+	if (refH > 0 && h * 4 < refH)
+		return true;
+	return false;
+}
+
 void SDLFrontend::onWindowResize ()
 {
 	if (_window == nullptr) {
@@ -97,6 +108,12 @@ void SDLFrontend::onWindowResize ()
 	SDL_GetWindowSize(_window, &w, &h);
 	if (w <= 0 || h <= 0) {
 		Log::error(LOG_GFX, "window resize ignored: invalid size %dx%d (keeping %dx%d)", w, h, _width, _height);
+		return;
+	}
+
+	if (!isUnusableWindowSize(_width, _height, 0, 0)
+			&& isUnusableWindowSize(w, h, _width, _height)) {
+		Log::warn(LOG_GFX, "window resize ignored: transient %dx%d (keeping %dx%d)", w, h, _width, _height);
 		return;
 	}
 
@@ -588,8 +605,7 @@ void SDLFrontend::ensureUsableWindowSize (int requestedW, int requestedH, bool f
 
 	const int refW = requestedW > 0 ? requestedW : bounds.w;
 	const int refH = requestedH > 0 ? requestedH : bounds.h;
-	const bool tooSmall = w < 320 || h < 240 || (refW > 0 && w * 4 < refW) || (refH > 0 && h * 4 < refH);
-	if (!tooSmall)
+	if (!isUnusableWindowSize(w, h, refW, refH))
 		return;
 
 	Log::warn(LOG_GFX, "window size %dx%d is unusable (requested/desktop ~%dx%d) - forcing display 0", w, h, refW, refH);
@@ -896,8 +912,11 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	}
 
 	Log::info(LOG_GFX, "resolution: %dx%d (drawable %dx%d)", width, height, drawableW, drawableH);
-	if (width < 320 || height < 240) {
-		Log::warn(LOG_GFX, "window still only %dx%d after stabilize - UI may layout incorrectly", width, height);
+	if (isUnusableWindowSize(width, height, requestedW, requestedH)) {
+		Log::warn(LOG_GFX, "SDL still reports %dx%d after stabilize - using logical size %dx%d for UI/textures",
+				width, height, requestedW, requestedH);
+		width = requestedW;
+		height = requestedH;
 	}
 	setVSync(ConfigManager::get().isVSync());
 
