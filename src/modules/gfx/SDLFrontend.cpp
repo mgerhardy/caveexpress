@@ -571,6 +571,61 @@ bool SDLFrontend::isFullscreen ()
 	return (flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_FULLSCREEN_DESKTOP)) != 0;
 }
 
+void SDLFrontend::ensureUsableWindowSize (int requestedW, int requestedH, bool fullscreen)
+{
+	if (_window == nullptr)
+		return;
+
+	int w = 0;
+	int h = 0;
+	SDL_GetWindowSize(_window, &w, &h);
+
+	SDL_Rect bounds = { 0, 0, requestedW, requestedH };
+	if (SDL_GetDisplayBounds(0, &bounds) != 0) {
+		bounds.w = std::max(requestedW, 1280);
+		bounds.h = std::max(requestedH, 720);
+	}
+
+	const int refW = requestedW > 0 ? requestedW : bounds.w;
+	const int refH = requestedH > 0 ? requestedH : bounds.h;
+	const bool tooSmall = w < 320 || h < 240 || (refW > 0 && w * 4 < refW) || (refH > 0 && h * 4 < refH);
+	if (!tooSmall)
+		return;
+
+	Log::warn(LOG_GFX, "window size %dx%d is unusable (requested/desktop ~%dx%d) - forcing display 0", w, h, refW, refH);
+
+	// Leave any fullscreen mode so move/size sticks on multi-monitor WMs.
+	SDL_SetWindowFullscreen(_window, 0);
+	SDL_SetWindowBordered(_window, fullscreen ? SDL_FALSE : SDL_TRUE);
+	SDL_SetWindowPosition(_window, bounds.x, bounds.y);
+	if (fullscreen) {
+		SDL_SetWindowSize(_window, bounds.w, bounds.h);
+		if (SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN_DESKTOP) != 0)
+			sdlCheckError();
+	} else {
+		// If the requested size itself is unusable, fall back to a fraction of display 0.
+		int winW = refW;
+		int winH = refH;
+		if (winW < 320 || winH < 240) {
+			winW = std::max(640, bounds.w * 3 / 4);
+			winH = std::max(480, bounds.h * 3 / 4);
+		}
+		winW = std::min(winW, std::max(1, bounds.w));
+		winH = std::min(winH, std::max(1, bounds.h));
+		SDL_SetWindowSize(_window, winW, winH);
+		SDL_SetWindowPosition(_window, bounds.x + (bounds.w - winW) / 2, bounds.y + (bounds.h - winH) / 2);
+	}
+	SDL_RaiseWindow(_window);
+	SDL_PumpEvents();
+	// Drop pending window events from the transient tiny mapping; UI is not ready yet.
+	SDL_Event event;
+	while (SDL_PeepEvents(&event, 1, SDL_GETEVENT, SDL_WINDOWEVENT, SDL_WINDOWEVENT) > 0) {
+	}
+
+	SDL_GetWindowSize(_window, &w, &h);
+	Log::info(LOG_GFX, "window size after stabilize: %dx%d", w, h);
+}
+
 void SDLFrontend::setFullscreen (bool fullscreen)
 {
 	if (_window == nullptr)
@@ -754,6 +809,17 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	Log::info(LOG_GFX, "driver: %s", SDL_GetCurrentVideoDriver());
 	const int displays = SDL_GetNumVideoDisplays();
 	Log::info(LOG_GFX, "found %i display(s)", displays);
+	for (int d = 0; d < displays; ++d) {
+		SDL_Rect bounds;
+		SDL_DisplayMode mode;
+		SDL_GetDisplayBounds(d, &bounds);
+		SDL_GetDesktopDisplayMode(d, &mode);
+		const char *displayName = SDL_GetDisplayName(d);
+		Log::info(LOG_GFX, "display %i '%s': bounds %dx%d%+d%+d, desktop %dx%d@%dHz (%s)",
+				d, displayName ? displayName : "?",
+				bounds.w, bounds.h, bounds.x, bounds.y,
+				mode.w, mode.h, mode.refresh_rate, SDL_GetPixelFormatName(mode.format));
+	}
 	if (fullscreen && displays > 1) {
 		width = displayMode.w;
 		height = displayMode.h;
@@ -761,7 +827,8 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	}
 
 	const char *title = Singleton<Application>::getInstance().getName().c_str();
-	_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
+	// Pin to display 0 - SDL_WINDOWPOS_CENTERED can land on a tiny secondary output
+	_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED_DISPLAY(0), SDL_WINDOWPOS_CENTERED_DISPLAY(0), width, height, flags);
 	if (!_window) {
 		sdlCheckError();
 		return -1;
@@ -810,6 +877,8 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	// we have to query it here to get the resolution
 	const int requestedW = width;
 	const int requestedH = height;
+	ensureUsableWindowSize(requestedW, requestedH, fullscreen);
+
 	SDL_GetWindowSize(_window, &width, &height);
 	if (width <= 0 || height <= 0) {
 		Log::error(LOG_GFX, "SDL_GetWindowSize returned invalid %dx%d, falling back to %dx%d",
@@ -827,6 +896,9 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	}
 
 	Log::info(LOG_GFX, "resolution: %dx%d (drawable %dx%d)", width, height, drawableW, drawableH);
+	if (width < 320 || height < 240) {
+		Log::warn(LOG_GFX, "window still only %dx%d after stabilize - UI may layout incorrectly", width, height);
+	}
 	setVSync(ConfigManager::get().isVSync());
 
 	const int initState = IMG_Init(IMG_INIT_PNG);

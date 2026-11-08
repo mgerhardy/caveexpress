@@ -382,9 +382,12 @@ void UI::update (uint32_t deltaTime)
 
 void UI::onWindowResize ()
 {
-	for (UIStackIter i = _stack.begin(); i != _stack.end(); ++i) {
-		UIWindow* window = *i;
-		window->onWindowResize();
+	// Resize every registered window, not only the stack. Windows are constructed during
+	// init; if the drawable was still tiny then (issue #201) inactive windows would keep
+	// wrong content sizes forever if we only touched the active stack.
+	for (UIWindowMapIter i = _windows.begin(); i != _windows.end(); ++i) {
+		if (i->second)
+			i->second->onWindowResize();
 	}
 }
 

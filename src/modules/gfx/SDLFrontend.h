@@ -52,6 +52,11 @@ protected:
 	void setVSync (bool vsync);
 	void setSDLColor (const Color& rgba);
 	void initControllerAndHaptic ();
+	/**
+	 * Some multi-monitor / WM setups briefly map the window at a tiny size (issue #201:
+	 * 90x88 then later 1920x1080). UI and texturesize=auto must not see that transient size.
+	 */
+	void ensureUsableWindowSize (int requestedW, int requestedH, bool fullscreen);
 
 	virtual void newFrameImGui();
 	virtual void renderImGui();
