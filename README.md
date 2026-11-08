@@ -147,7 +147,7 @@ There is an in-game console (open it with `SHIFT+TAB` where you can execute comm
 
 ### Runtime command pipe (`app_pipe`)
 
-For headless / remote debugging (same idea as vengi’s named pipe), start with `-set app_pipe true`. The game opens a FIFO under the write path, e.g. `~/.local/share/caveexpress/input.pipe` (or `…/cavepacker/…`). Each newline-terminated line is executed like a console command:
+For headless / remote debugging (same idea as vengi’s named pipe), start with `-set app_pipe true` on desktop Linux/macOS/Windows. Unsupported on Android, iOS, and Emscripten (cvar is ignored). The game opens a FIFO under the write path, e.g. `~/.local/share/caveexpress/input.pipe` (or `…/cavepacker/…`). Each newline-terminated line is executed like a console command:
 
 ```sh
 ./caveexpress -set app_pipe true

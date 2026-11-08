@@ -9,6 +9,8 @@
  * (e.g. ~/.local/share/caveexpress/input.pipe) and executes each newline-
  * terminated line via the command system (@c set, @c ui_push, …).
  *
+ * Supported on desktop Unix/macOS and Windows. No-op on Android, iOS, Emscripten.
+ *
  * Example:
  * @code
  * ./caveexpress -set app_pipe true
@@ -19,15 +21,17 @@
 class CommandPipe {
 private:
 #if defined(_WIN32)
-	void *_pipe; // HANDLE, INVALID_HANDLE_VALUE when closed
-	void *_connectEvent = nullptr;
-	bool _connected = false;
-#elif !defined(EMSCRIPTEN)
-	int _fd = -1;
+	void *_pipe; // HANDLE
+	void *_connectEvent;
+	bool _connected;
+#elif defined(__ANDROID__) || defined(EMSCRIPTEN) || defined(__IPHONEOS__)
+	/* unsupported platform - no pipe fd */
+#else
+	int _fd;
 #endif
 	std::string _pipePath;
 	std::string _pending;
-	bool _enabled = false;
+	bool _enabled;
 
 	void executeLine(const std::string& line);
 	void consume(const char *data, size_t len);

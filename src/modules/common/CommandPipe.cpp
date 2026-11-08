@@ -8,9 +8,13 @@
 #include "common/String.h"
 
 #if defined(_WIN32)
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
-#elif !defined(EMSCRIPTEN)
+#elif defined(__ANDROID__) || defined(EMSCRIPTEN) || defined(__IPHONEOS__)
+/* no fifo APIs used */
+#else
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
@@ -21,7 +25,11 @@
 
 CommandPipe::CommandPipe()
 #if defined(_WIN32)
-	: _pipe(INVALID_HANDLE_VALUE)
+	: _pipe(INVALID_HANDLE_VALUE), _connectEvent(nullptr), _connected(false), _enabled(false)
+#elif defined(__ANDROID__) || defined(EMSCRIPTEN) || defined(__IPHONEOS__)
+	: _enabled(false)
+#else
+	: _fd(-1), _enabled(false)
 #endif
 {
 }
@@ -73,27 +81,29 @@ bool CommandPipe::init()
 		return true;
 	}
 
-#if defined(EMSCRIPTEN)
+#if defined(__ANDROID__) || defined(EMSCRIPTEN) || defined(__IPHONEOS__)
 	Log::warn(LOG_COMMON, "app_pipe is not supported on this platform");
 	_enabled = false;
 	return true;
 #elif defined(_WIN32)
 	_pipePath = "\\\\.\\pipe\\" + Singleton<Application>::getInstance().getName() + "-input";
 	_pipe = CreateNamedPipeA(_pipePath.c_str(), PIPE_ACCESS_INBOUND | FILE_FLAG_OVERLAPPED,
-			PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT, 1, 1024, 1024, 0, nullptr);
+			PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT, 1, 1024, 1024, 0, NULL);
 	if (_pipe == INVALID_HANDLE_VALUE) {
-		Log::error(LOG_COMMON, "Failed to create named pipe %s (%lu)", _pipePath.c_str(), GetLastError());
+		Log::error(LOG_COMMON, "Failed to create named pipe %s (%lu)", _pipePath.c_str(),
+				(unsigned long)GetLastError());
 		return false;
 	}
-	_connectEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
-	if (!_connectEvent) {
+	_connectEvent = CreateEventA(NULL, TRUE, FALSE, NULL);
+	if (_connectEvent == NULL) {
 		CloseHandle((HANDLE)_pipe);
 		_pipe = INVALID_HANDLE_VALUE;
 		return false;
 	}
-	OVERLAPPED ov = {};
+	OVERLAPPED ov;
+	ZeroMemory(&ov, sizeof(ov));
 	ov.hEvent = (HANDLE)_connectEvent;
-	BOOL ok = ConnectNamedPipe((HANDLE)_pipe, &ov);
+	const BOOL ok = ConnectNamedPipe((HANDLE)_pipe, &ov);
 	if (!ok) {
 		const DWORD err = GetLastError();
 		if (err == ERROR_IO_PENDING) {
@@ -102,7 +112,7 @@ bool CommandPipe::init()
 			_connected = true;
 			SetEvent((HANDLE)_connectEvent);
 		} else {
-			Log::error(LOG_COMMON, "ConnectNamedPipe failed (%lu)", err);
+			Log::error(LOG_COMMON, "ConnectNamedPipe failed (%lu)", (unsigned long)err);
 			shutdown();
 			return false;
 		}
@@ -135,12 +145,14 @@ void CommandPipe::shutdown()
 		CloseHandle((HANDLE)_pipe);
 		_pipe = INVALID_HANDLE_VALUE;
 	}
-	if (_connectEvent) {
+	if (_connectEvent != NULL) {
 		CloseHandle((HANDLE)_connectEvent);
-		_connectEvent = nullptr;
+		_connectEvent = NULL;
 	}
 	_connected = false;
-#elif !defined(EMSCRIPTEN)
+#elif defined(__ANDROID__) || defined(EMSCRIPTEN) || defined(__IPHONEOS__)
+	/* nothing */
+#else
 	if (_fd != -1) {
 		close(_fd);
 		_fd = -1;
@@ -160,19 +172,22 @@ void CommandPipe::update()
 		return;
 
 #if defined(_WIN32)
-	if (_pipe == nullptr || _pipe == INVALID_HANDLE_VALUE)
+	if (_pipe == INVALID_HANDLE_VALUE)
 		return;
 	if (!_connected) {
+		if (_connectEvent == NULL)
+			return;
 		if (WaitForSingleObject((HANDLE)_connectEvent, 0) != WAIT_OBJECT_0)
 			return;
 		_connected = true;
 	}
 	DWORD bytesAvailable = 0;
-	if (!PeekNamedPipe((HANDLE)_pipe, nullptr, 0, nullptr, &bytesAvailable, nullptr)) {
+	if (!PeekNamedPipe((HANDLE)_pipe, NULL, 0, NULL, &bytesAvailable, NULL)) {
 		if (GetLastError() == ERROR_BROKEN_PIPE) {
 			DisconnectNamedPipe((HANDLE)_pipe);
 			ResetEvent((HANDLE)_connectEvent);
-			OVERLAPPED ov = {};
+			OVERLAPPED ov;
+			ZeroMemory(&ov, sizeof(ov));
 			ov.hEvent = (HANDLE)_connectEvent;
 			ConnectNamedPipe((HANDLE)_pipe, &ov);
 			_connected = false;
@@ -183,10 +198,12 @@ void CommandPipe::update()
 		return;
 	char buffer[1024];
 	DWORD bytesRead = 0;
-	if (!ReadFile((HANDLE)_pipe, buffer, sizeof(buffer), &bytesRead, nullptr) || bytesRead == 0)
+	if (!ReadFile((HANDLE)_pipe, buffer, sizeof(buffer), &bytesRead, NULL) || bytesRead == 0)
 		return;
 	consume(buffer, (size_t)bytesRead);
-#elif !defined(EMSCRIPTEN)
+#elif defined(__ANDROID__) || defined(EMSCRIPTEN) || defined(__IPHONEOS__)
+	/* unsupported */
+#else
 	if (_fd == -1)
 		return;
 	char buffer[1024];
