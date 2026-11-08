@@ -134,7 +134,7 @@ jobs:
         - name: Configure Android NDK
           run: echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> "$GITHUB_ENV"
 
-        - uses: android-actions/setup-android@v3
+        - uses: android-actions/setup-android@v4
 
         - name: Install Android SDK packages
           run: |
