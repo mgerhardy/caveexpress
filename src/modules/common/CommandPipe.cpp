@@ -1,15 +1,11 @@
 #include "CommandPipe.h"
-#include "common/Application.h"
-#include "common/CommandSystem.h"
-#include "common/ConfigManager.h"
-#include "common/FileSystem.h"
-#include "common/Log.h"
-#include "common/Singleton.h"
-#include "common/String.h"
 
 #if defined(_WIN32)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX
 #endif
 #include <windows.h>
 #elif defined(__ANDROID__) || defined(EMSCRIPTEN) || defined(__IPHONEOS__)
@@ -22,6 +18,14 @@
 #include <sys/types.h>
 #include <unistd.h>
 #endif
+
+#include "common/Application.h"
+#include "common/CommandSystem.h"
+#include "common/ConfigManager.h"
+#include "common/FileSystem.h"
+#include "common/Log.h"
+#include "common/Singleton.h"
+#include "common/String.h"
 
 CommandPipe::CommandPipe()
 #if defined(_WIN32)
