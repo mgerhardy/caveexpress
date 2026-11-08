@@ -324,9 +324,6 @@ SpriteDefPtr SpriteDefinition::getSpriteDefinition (const std::string& spriteNam
 	SpriteDefMapConstIter i = _spriteDefs.find(spriteName);
 	if (i == _spriteDefs.end()) {
 		Log::error(LOG_COMMON, "could not find sprite definition for %s", spriteName.c_str());
-		for (SpriteDefMapConstIter iter = _spriteDefs.begin(); iter != _spriteDefs.end(); ++iter) {
-			Log::error(LOG_COMMON, " + found: %s", iter->first.c_str());
-		}
 		return SpriteDefPtr();
 	}
 
@@ -334,9 +331,6 @@ SpriteDefPtr SpriteDefinition::getSpriteDefinition (const std::string& spriteNam
 		i = _spriteDefs.find(spriteName);
 		if (i == _spriteDefs.end()) {
 			Log::error(LOG_COMMON, "could not find sprite redirect definition for %s", spriteName.c_str());
-			for (SpriteDefMapConstIter iter = _spriteDefs.begin(); iter != _spriteDefs.end(); ++iter) {
-				Log::error(LOG_COMMON, " + found: %s", iter->first.c_str());
-			}
 			return SpriteDefPtr();
 		}
 	}

@@ -255,7 +255,10 @@ void ClientMap::collectAndUploadLights (int x, int y) const
 	std::vector<MergeSpot> mergeSpots;
 	for (const auto &iter : _entities) {
 		const ClientEntityPtr& e = iter.second;
-		const SpriteDefPtr def = SpriteDefinition::get().getSpriteDefinition(e->getSpriteName());
+		const std::string &spriteName = e->getSpriteName();
+		if (!SpriteDefinition::get().exists(spriteName))
+			continue;
+		const SpriteDefPtr def = SpriteDefinition::get().getSpriteDefinition(spriteName);
 		if (!acceptSpriteLight(e, def))
 			continue;
 		const vec2& pos = e->getPos();
