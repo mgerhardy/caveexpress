@@ -143,4 +143,15 @@ Generate tiled mapeditor tileset definitions.
 
 ## CVARs
 
-There is an in-game console (open it with `SHIFT+TAB` where you can execute commands and show or change configuration variables)
+There is an in-game console (open it with `SHIFT+TAB` where you can execute commands and show or change configuration variables).
+
+### Runtime command pipe (`app_pipe`)
+
+For headless / remote debugging (same idea as vengi’s named pipe), start with `-set app_pipe true`. The game opens a FIFO under the write path, e.g. `~/.local/share/caveexpress/input.pipe` (or `…/cavepacker/…`). Each newline-terminated line is executed like a console command:
+
+```sh
+./caveexpress -set app_pipe true
+echo 'set fullscreen false' > ~/.local/share/caveexpress/input.pipe
+echo 'screenshot pipe-test' > ~/.local/share/caveexpress/input.pipe
+echo 'quit' > ~/.local/share/caveexpress/input.pipe
+```

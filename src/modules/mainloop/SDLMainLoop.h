@@ -6,6 +6,7 @@
 #include "common/IEventObserver.h"
 #include "common/IBindingSpaceListener.h"
 #include "common/TextConsole.h"
+#include "common/CommandPipe.h"
 #include "service/ServiceProvider.h"
 #include "common/Singleton.h"
 #include "game/GameRegistry.h"
@@ -56,6 +57,7 @@ private:
 	ControllerSet _controllerButtons;
 	ServiceProvider _serviceProvider;
 	TextConsole _console;
+	CommandPipe _commandPipe;
 
 	bool handleInit();
 	void handleEvent (SDL_Event &event);

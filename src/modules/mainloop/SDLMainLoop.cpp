@@ -60,6 +60,7 @@ SDLMainLoop::~SDLMainLoop ()
 {
 	Log::info(LOG_SERVER, "-----");
 	Log::info(LOG_SERVER, "shutdown backend");
+	_commandPipe.shutdown();
 	_eventHandler.removeObserver(this);
 
 	Commands.removeCommand(CMD_SCREENSHOT);
@@ -262,6 +263,9 @@ bool SDLMainLoop::handleInit() {
 		break;
 	case InitState::INITSTATE_START:
 		handleCommandLineArguments(_argc, _argv);
+		if (!_commandPipe.init()) {
+			Log::warn(LOG_SERVER, "command pipe init failed");
+		}
 		Log::info(LOG_SERVER, "frontend start");
 		_frontend->onStart();
 		_initState = InitState::INITSTATE_DONE;
@@ -307,6 +311,8 @@ void SDLMainLoop::runFrame ()
 	}
 
 	_serviceProvider.getNetwork().update(deltaTime);
+
+	_commandPipe.update();
 
 	getGame()->update(deltaTime);
 	_frontend->update(deltaTime);

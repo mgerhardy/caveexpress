@@ -8,6 +8,7 @@ set(common_SRCS
 	SQLite.cpp
 	Thread.cpp
 	ConfigManager.cpp
+	CommandPipe.cpp
 	EventHandler.cpp
 	MemoryAllocator.cpp
 	TextConsole.cpp

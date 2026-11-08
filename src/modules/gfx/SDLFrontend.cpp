@@ -152,6 +152,12 @@ void SDLFrontend::update (uint32_t deltaTime)
 
 	const bool vsync = ConfigManager::get().isVSync();
 	setVSync(vsync);
+
+	ConfigVarPtr fullscreenVar = Config.getConfigVar("fullscreen");
+	if (fullscreenVar->isDirty()) {
+		fullscreenVar->resetDirtyState();
+		setFullscreen(fullscreenVar->getBoolValue());
+	}
 }
 
 bool SDLFrontend::setFrameCallback (int interval, void (*callback) (void*), void *callbackParam)
@@ -559,13 +565,48 @@ void SDLFrontend::showCursor (bool show)
 
 bool SDLFrontend::isFullscreen ()
 {
-	return SDL_GetWindowFlags(_window) & SDL_WINDOW_FULLSCREEN;
+	if (_window == nullptr)
+		return false;
+	const Uint32 flags = SDL_GetWindowFlags(_window);
+	return (flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_FULLSCREEN_DESKTOP)) != 0;
 }
 
 void SDLFrontend::setFullscreen (bool fullscreen)
 {
-	const SDL_bool b = fullscreen ? SDL_TRUE : SDL_FALSE;
-	SDL_SetWindowFullscreen(_window, b);
+	if (_window == nullptr)
+		return;
+
+	if (fullscreen) {
+		// Match window creation: desktop fullscreen, not exclusive modeset.
+		if (SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN_DESKTOP) != 0)
+			sdlCheckError();
+		return;
+	}
+
+	if (SDL_SetWindowFullscreen(_window, 0) != 0)
+		sdlCheckError();
+
+	// Leaving FULLSCREEN_DESKTOP without resizing leaves a borderless desktop-sized
+	// window that still looks fullscreen (issue #105).
+	int w = Config.getWidth();
+	int h = Config.getHeight();
+	if (w <= 0 || h <= 0) {
+		SDL_DisplayMode mode;
+		if (SDL_GetDesktopDisplayMode(0, &mode) == 0) {
+			w = std::max(640, mode.w * 3 / 4);
+			h = std::max(480, mode.h * 3 / 4);
+		} else {
+			w = 1280;
+			h = 720;
+		}
+		Config.getConfigVar("width")->setValue(string::toString(w));
+		Config.getConfigVar("height")->setValue(string::toString(h));
+	}
+
+	SDL_SetWindowBordered(_window, SDL_TRUE);
+	SDL_SetWindowSize(_window, w, h);
+	SDL_SetWindowPosition(_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+	onWindowResize();
 }
 
 #define INIT_Subsystem(flags, fatal) if (!SDL_WasInit(flags)) { if (SDL_Init(flags) == -1) { sdlCheckError(); if (fatal) return -1; } }
@@ -625,9 +666,6 @@ void SDLFrontend::initControllerAndHaptic ()
 
 int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eventHandler)
 {
-	if (width == -1 && height == -1)
-		fullscreen = true;
-
 	Log::info(LOG_GFX, "initializing: %i:%i - fullscreen: %s", width, height, fullscreen ? "true" : "false");
 
 	INIT_Subsystem(SDL_INIT_VIDEO, true);
@@ -665,10 +703,20 @@ int SDLFrontend::init (int width, int height, bool fullscreen, EventHandler &eve
 	const char *name = SDL_GetPixelFormatName(displayMode.format);
 	Log::info(LOG_GFX, "current desktop mode: %dx%d@%dHz (%s)",
 			displayMode.w, displayMode.h, displayMode.refresh_rate, name);
-	if (width == -1)
-		width = displayMode.w;
-	if (height == -1)
-		height = displayMode.h;
+	if (width <= 0 || height <= 0) {
+		if (fullscreen) {
+			if (width <= 0)
+				width = displayMode.w;
+			if (height <= 0)
+				height = displayMode.h;
+		} else {
+			// Windowed + unspecified size: use a fraction of the desktop so the
+			// result is visibly windowed rather than a borderless desktop surface.
+			width = std::max(640, displayMode.w * 3 / 4);
+			height = std::max(480, displayMode.h * 3 / 4);
+			Log::info(LOG_GFX, "windowed mode with unspecified size - using %dx%d", width, height);
+		}
+	}
 
 	setGLAttributes();
 	setHints();
